@@ -5570,7 +5570,7 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
 
   virtual double rage_modifier() const
   {
-    return kb_excess_rage / kb_max_excess_rage;
+    return kb_max_excess_rage ? kb_excess_rage / kb_max_excess_rage : 0.0;
   }
 
   void execute() override
@@ -8027,16 +8027,17 @@ struct shooting_stars_t : public druid_spell_t
     }
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    druid_spell_t::execute();
+    druid_spell_t::impact( s );
 
-    p()->buff.orbit_breaker->trigger();
-
-    if ( p()->buff.orbit_breaker->at_max_stacks() && p()->active.orbit_breaker )
+    if ( p()->buff.orbit_breaker->trigger() )
     {
-      p()->active.orbit_breaker->execute_on_target( target );
-      p()->buff.orbit_breaker->expire();
+      if ( p()->buff.orbit_breaker->at_max_stacks() && p()->active.orbit_breaker )
+      {
+        p()->active.orbit_breaker->execute_on_target( target );
+        p()->buff.orbit_breaker->expire();
+      }
     }
   }
 };
@@ -10950,6 +10951,7 @@ void druid_t::create_buffs()
 
   buff.orbit_breaker = make_fallback( talent.orbit_breaker.ok(), this, "orbit_breaker" )
     ->set_quiet( true )
+    ->set_cooldown( talent.orbit_breaker->internal_cooldown() )
     ->set_max_stack( std::max( 1, as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) ) );
 
   buff.owlkin_frenzy = make_fallback( specialization() == DRUID_BALANCE && talent.moonkin_form.ok(),

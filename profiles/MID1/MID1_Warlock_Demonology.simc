@@ -120,3 +120,5 @@ main_hand=spire_of_the_furious_construct,id=110031,bonus_id=12806/13577,enchant_
 # set_bonus=midnight_season_1_4pc=1
 soul_shards=0
 default_pet=felguard
+eye_explosion_instanced_bug_cb=true
+eye_explosion_instanced_bug_sb=true

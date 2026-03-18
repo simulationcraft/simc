@@ -8,10 +8,9 @@ namespace evoker_apl
 
 std::string potion( const player_t* p )
 {
-  if ( p->specialization() == EVOKER_AUGMENTATION )
-    return ( p->true_level > 89 ) ? "lights_potential_2" : "tempered_potion_3";
+  return ( p->true_level > 89 ) ? "lights_potential_2" : "tempered_potion_3";
 
-  return ( p->true_level > 89 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
+  // return ( p->true_level > 89 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
 }
 
 std::string flask( const player_t* p )
@@ -21,10 +20,8 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  if ( p->specialization() == EVOKER_AUGMENTATION )
-    return ( p->true_level > 89 ) ? "silvermoon_parade" : "feast_of_the_divine_day";
-
-  return ( p->true_level > 89 ) ? "blooming_feast" : "feast_of_the_divine_day";
+  return ( p->true_level > 89 ) ? "silvermoon_parade" : "feast_of_the_divine_day";
+  // return ( p->true_level > 89 ) ? "blooming_feast" : "feast_of_the_divine_day";
 }
 
 std::string rune( const player_t* p )
@@ -97,6 +94,7 @@ void devastation( player_t* p )
   aoe_fs->add_action( "dragonrage,target_if=max:target.time_to_die,if=target.time_to_die>=15|!raid_event.adds.exists" );
   aoe_fs->add_action( "call_action_list,name=es,if=(buff.dragonrage.up|cooldown.dragonrage.remains>variable.dr_prep_time_aoe)&(buff.dragonrage.up|talent.azure_sweep&!buff.azure_sweep.up)&(active_dot.fire_breath_damage=0|active_enemies<=3)" );
   aoe_fs->add_action( "pyre,target_if=max:target.health.pct,if=(cooldown.dragonrage.remains>gcd.max*4)&(buff.charged_blast.stack>=12|active_enemies>=4|active_enemies>=3&(talent.feed_the_flames|talent.volatility))" );
+  aoe_fs->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies=3&!talent.feed_the_flames&!talent.volatility" );
   aoe_fs->add_action( "deep_breath,if=talent.imminent_destruction&active_dot.fire_breath_damage=0,cancel_if=gcd.remains=0,interrupt_if=gcd.remains=0" );
   aoe_fs->add_action( "azure_sweep,target_if=max:target.health.pct" );
   aoe_fs->add_action( "living_flame,target_if=max:target.health.pct,if=buff.leaping_flames.up&(!talent.burnout|buff.burnout.up|active_dot.fire_breath_damage=0|buff.scarlet_adaptation.up|buff.ancient_flame.up)&(!buff.essence_burst.up&essence.deficit>1|cooldown.fire_breath.remains<=gcd.max*3&buff.essence_burst.stack<buff.essence_burst.max_stack)" );
@@ -215,6 +213,7 @@ void augmentation( player_t* p )
   default_->add_action( "variable,name=eons_remains,op=setif,value=cooldown.allied_virtual_cd_time.remains,value_else=cooldown.breath_of_eons.remains,condition=variable.enforce_timings,if=talent.breath_of_eons" );
   default_->add_action( "cancel_buff,name=tip_the_scales,if=cooldown.upheaval.remains>0&(talent.energy_cycles|talent.temporal_burst)" );
   default_->add_action( "hover,use_off_gcd=1,if=gcd.remains>=0.5&(!raid_event.movement.exists|raid_event.movement.in<=6)" );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.duplicate.up" );
   default_->add_action( "ebon_might,if=((buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*variable.ebon_might_pandemic_threshold)&(active_enemies>0|raid_event.adds.in<=3)&(buff.ebon_might_self.value<=0.05|(buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*0.3)" );
   default_->add_action( "prescience,target_if=min:(debuff.prescience.remains-200*(target.role.attack|target.role.spell|target.role.dps)+50*target.spec.augmentation),if=debuff.prescience.remains<gcd.max*2&time<=8" );
   default_->add_action( "potion,if=variable.eons_remains<=0|cooldown.breath_of_eons.remains>=90|fight_remains<=30&!fight_style.dungeonroute" );
@@ -226,7 +225,7 @@ void augmentation( player_t* p )
   default_->add_action( "call_action_list,name=fb,if=(raid_event.adds.remains>6|raid_event.adds.in>20|evoker.allied_cds_up>0|!raid_event.adds.exists)&(!cooldown.breath_of_eons.up|!talent.temporal_burst)&(!buff.tip_the_scales.up|!talent.molten_embers)" );
   default_->add_action( "upheaval,target_if=target.time_to_die>duration+0.2,empower_to=1,if=buff.ebon_might_self.remains>duration&(raid_event.adds.remains>10|evoker.allied_cds_up>0|!raid_event.adds.exists|raid_event.adds.in>20)" );
   default_->add_action( "prescience,target_if=min:(debuff.prescience.remains-200*(target.role.attack|target.role.spell|target.role.dps)+50*target.spec.augmentation),if=debuff.prescience.remains<gcd.max*2&(!talent.anachronism|buff.essence_burst.stack<buff.essence_burst.max_stack)" );
-  default_->add_action( "time_skip,if=!talent.chronoboon|cooldown.tip_the_scales.remains>=6&!buff.tip_the_scales.up" );
+  default_->add_action( "time_skip,if=!talent.chronoboon&cooldown.breath_of_eons.remains>=15|cooldown.tip_the_scales.remains>=6&!buff.tip_the_scales.up" );
   default_->add_action( "emerald_blossom,if=talent.dream_of_spring&buff.essence_burst.react&(variable.spam_heal=2|variable.spam_heal=1&!buff.ancient_flame.up&talent.ancient_flame)&(buff.ebon_might_self.up|essence.deficit=0|buff.essence_burst.stack=buff.essence_burst.max_stack&cooldown.ebon_might.remains>4)" );
   default_->add_action( "eruption,target_if=min:debuff.bombardments.remains,if=buff.ebon_might_self.remains>execute_time|essence.deficit=0|buff.essence_burst.stack=buff.essence_burst.max_stack&cooldown.ebon_might.remains>4" );
   default_->add_action( "run_action_list,name=filler" );

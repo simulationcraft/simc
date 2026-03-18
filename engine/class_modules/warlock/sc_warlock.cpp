@@ -101,6 +101,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                ->set_tick_behavior( buff_tick_behavior::REFRESH )
                                ->set_freeze_stacks( true );
 
+  debuffs.wither = make_buff( *this, "wither", p.hero.wither_dot ); // Dummy debuff
+
   // Soul Harvester
   dots.soul_anathema = target->get_dot( "soul_anathema", &p );
 
@@ -189,6 +191,7 @@ int warlock_td_t::count_affliction_dots() const
 warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : parse_player_effects_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
+    bugged_mayhem( false ),
     havoc_spells(),
     diabolic_ritual( 0 ),
     demonic_art_buff_replaced( false ),
@@ -206,7 +209,10 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     initial_soul_shards(),
     default_pet(),
     disable_auto_felstorm( false ),
-    normalize_destruction_mastery( false )
+    normalize_destruction_mastery( false ),
+    eye_explosion_instanced_bug_cb( true ),
+    eye_explosion_instanced_bug_sb( true ),
+    eye_explosion_instanced_bug_rof( false )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
   cooldowns.dark_harvest = get_cooldown( "dark_harvest" );
@@ -475,6 +481,12 @@ std::string warlock_t::create_profile( save_e stype )
       profile_str += "disable_felstorm=" + util::to_string( disable_auto_felstorm ) + "\n";
     if ( normalize_destruction_mastery )
       profile_str += "normalize_destruction_mastery=" + util::to_string( normalize_destruction_mastery ) + "\n";
+    if ( eye_explosion_instanced_bug_cb )
+      profile_str += "eye_explosion_instanced_bug_cb=" + util::to_string( eye_explosion_instanced_bug_cb ) + "\n";
+    if ( eye_explosion_instanced_bug_sb )
+      profile_str += "eye_explosion_instanced_bug_sb=" + util::to_string( eye_explosion_instanced_bug_sb ) + "\n";
+    if ( eye_explosion_instanced_bug_rof )
+      profile_str += "eye_explosion_instanced_bug_rof=" + util::to_string( eye_explosion_instanced_bug_rof ) + "\n";
 
     rng_settings.for_each( [ this, &profile_str ]( auto& setting )
     {
@@ -495,6 +507,9 @@ void warlock_t::copy_from( player_t* source )
   default_pet = p->default_pet;
   disable_auto_felstorm = p->disable_auto_felstorm;
   normalize_destruction_mastery = p->normalize_destruction_mastery;
+  eye_explosion_instanced_bug_cb = p->eye_explosion_instanced_bug_cb;
+  eye_explosion_instanced_bug_sb = p->eye_explosion_instanced_bug_sb;
+  eye_explosion_instanced_bug_rof = p->eye_explosion_instanced_bug_rof;
 
   rng_settings = p->rng_settings;
 }
@@ -1014,7 +1029,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 
 void warlock_t::feast_of_souls_gain( bool from_quietus_seed )
 {
-  // TOCHECK: 2025-08-27 The shard gained from Feast of Souls can also proc another Succulent Soul (bug?)
+  // NOTE: 2026-03-17 The shard gained from Feast of Souls can also proc another Succulent Soul (bug?)
   if ( bugs )
     resource_gain( RESOURCE_SOUL_SHARD, 1.0, gains.feast_of_souls );
   else
@@ -1073,7 +1088,7 @@ std::vector<player_t*> warlock_t::get_smart_targets( const std::vector<player_t*
   if ( n_targets < 1 || !_tl.size() )
     return {};
 
-  auto tl = _tl;  // make a copy
+  auto tl = _tl; // make a copy
 
   if ( exclude )
   {

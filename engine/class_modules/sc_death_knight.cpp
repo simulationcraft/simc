@@ -2669,14 +2669,24 @@ struct death_knight_pet_t : public pet_t
 
     double value() override
     {
-      return pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
-             ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() );
+      double v = ( pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
+                   ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() ) );
+
+      if ( pet()->dk()->bugs )
+        v *= 0.5;
+
+      return v;
     }
 
     double check_value() const override
     {
-      return pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
-             ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() );
+      double v = ( pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
+                   ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() ) );
+
+      if ( pet()->dk()->bugs )
+        v *= 0.5;
+
+      return v;
     }
   };
 
@@ -17385,7 +17395,7 @@ struct death_knight_module_t : public module_t
      */
   }
 
-  
+  /*
   void register_hotfixes() const override
   {
     hotfix::register_effect( "Death Knight", "2026-3-13", "Virulent Plague buffed 15%", 281049,
@@ -17500,7 +17510,7 @@ struct death_knight_module_t : public module_t
         .modifier( 30 )
         .verification_value( 10 );
   }
-  
+  */
 
   void init( player_t* ) const override
   {

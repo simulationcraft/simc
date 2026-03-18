@@ -8,9 +8,9 @@ position=back
 talents=CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMDMDzgBmZGjZaYmpZMWmxMzMz8AzMzAmxMGzMLzMDMwYwCsMGN2GQmBBbYGMzghB
 
 # Default consumables
-potion=potion_of_recklessness_2
+potion=lights_potential_2
 flask=flask_of_the_blood_knights_2
-food=blooming_feast
+food=silvermoon_parade
 augmentation=void_touched
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
@@ -70,6 +70,7 @@ actions.aoe_fs+=/fire_breath,target_if=max:target.health.pct,empower_to=1,if=tal
 actions.aoe_fs+=/dragonrage,target_if=max:target.time_to_die,if=target.time_to_die>=15|!raid_event.adds.exists
 actions.aoe_fs+=/call_action_list,name=es,if=(buff.dragonrage.up|cooldown.dragonrage.remains>variable.dr_prep_time_aoe)&(buff.dragonrage.up|talent.azure_sweep&!buff.azure_sweep.up)&(active_dot.fire_breath_damage=0|active_enemies<=3)
 actions.aoe_fs+=/pyre,target_if=max:target.health.pct,if=(cooldown.dragonrage.remains>gcd.max*4)&(buff.charged_blast.stack>=12|active_enemies>=4|active_enemies>=3&(talent.feed_the_flames|talent.volatility))
+actions.aoe_fs+=/pyre,target_if=max:target.health.pct,if=active_enemies=3&!talent.feed_the_flames&!talent.volatility
 actions.aoe_fs+=/deep_breath,if=talent.imminent_destruction&active_dot.fire_breath_damage=0,cancel_if=gcd.remains=0,interrupt_if=gcd.remains=0
 actions.aoe_fs+=/azure_sweep,target_if=max:target.health.pct
 actions.aoe_fs+=/living_flame,target_if=max:target.health.pct,if=buff.leaping_flames.up&(!talent.burnout|buff.burnout.up|active_dot.fire_breath_damage=0|buff.scarlet_adaptation.up|buff.ancient_flame.up)&(!buff.essence_burst.up&essence.deficit>1|cooldown.fire_breath.remains<=gcd.max*3&buff.essence_burst.stack<buff.essence_burst.max_stack)

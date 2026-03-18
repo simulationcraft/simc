@@ -107,18 +107,18 @@ actions.kotg_st+=/sunfire,target_if=remains<2|refreshable&variable.eclipse_down
 # Fury of Elune
 actions.kotg_st+=/fury_of_elune,if=variable.opener&!variable.eclipse_down&buff.ascendant_stars.down|!variable.opener&(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains<gcd.max|talent.radiant_moonlight&cooldown.force_of_nature.remains>20)
 # Enter Eclipse
-actions.kotg_st+=/solar_eclipse,if=variable.opener&cooldown.eclipse.charges_fractional=2|!variable.opener&cooldown.solar_eclipse.charges_fractional>1.5&variable.cd_window|cooldown.solar_eclipse.ready&variable.cd_window_narrow|fight_remains<15
+actions.kotg_st+=/solar_eclipse,if=variable.opener&cooldown.eclipse.charges=2|!variable.opener&cooldown.solar_eclipse.charges_fractional>1.5&variable.cd_window|cooldown.solar_eclipse.ready&variable.cd_window_narrow|fight_remains<15
+# Treants
+actions.kotg_st+=/force_of_nature,if=variable.opener&buff.ascendant_stars.down&dot.sunfire.remains>16|!variable.opener&(buff.eclipse.remains>cooldown.force_of_nature.duration|!buff.eclipse.up&(cooldown.eclipse.remains<gcd.max|cooldown.ca_inc.ready&(!talent.convoke_the_spirits|cooldown.convoke_the_spirits.remains<gcd.max*5)))|fight_remains<15
 # Convoke
-actions.kotg_st+=/convoke_the_spirits,if=buff.ca_inc.up&astral_power<40|cooldown.ca_inc.remains>50&buff.harmony_of_the_grove.up&buff.ca_inc.down
+actions.kotg_st+=/convoke_the_spirits,if=buff.ca_inc.up&astral_power<40|cooldown.ca_inc.remains>50&buff.harmony_of_the_grove.up&buff.ca_inc.down&astral_power<50
 # Cast Wrath if Going Solar
 actions.kotg_st+=/wrath,if=!talent.convoke_the_spirits&buff.ascendant_stars.down&(variable.opener&astral_power<50|!variable.opener&astral_power<80&variable.no_weaver_procs&cooldown.force_of_nature.remains<15)
 # Cast Sunfire Before Cooldowns
 actions.kotg_st+=/sunfire,target_if=variable.opener&buff.ascendant_stars.down|!variable.opener&dot.sunfire.remains<10&variable.ca_soon&cooldown.force_of_nature.remains<3,line_cd=10
-# Treants
-actions.kotg_st+=/force_of_nature,if=!variable.opener|buff.ascendant_stars.down
 # Spenders
-actions.kotg_st+=/starfall,if=buff.starweavers_warp.react|buff.touch_the_cosmos.react&talent.starweaver&buff.ascendant_stars.down
-actions.kotg_st+=/starsurge,if=astral_power>80|buff.eclipse_solar.up
+actions.kotg_st+=/starfall,if=buff.starweavers_warp.react
+actions.kotg_st+=/starsurge,if=(astral_power>action.starsurge.cost*2-(1*(buff.starweavers_weft.react+buff.touch_the_cosmos.react+buff.starweavers_warp.react))|buff.eclipse_solar.up)|buff.touch_the_cosmos.react&buff.ascendant_stars.up|buff.starweavers_weft.react
 # Instant Builder
 actions.kotg_st+=/starfire,if=buff.ascendant_fires.up&buff.eclipse_lunar.up
 # Builders

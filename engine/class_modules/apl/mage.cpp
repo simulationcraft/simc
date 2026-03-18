@@ -103,7 +103,7 @@ void arcane( player_t* p )
   default_->add_action( "call_action_list,name=sunfury,if=!talent.splintering_sorcery" );
   default_->add_action( "arcane_barrage,if=(time>5&!prev_gcd.1.arcane_surge)|(prev_off_gcd.touch_of_the_magi&buff.arcane_salvo.react=(20+(5*talent.spellfire_salvo)))" );
 
-  cooldowns->add_action( "arcane_orb,if=(talent.splintering_sorcery|variable.sf_touch_surge)&variable.opener&!variable.time_for_pooling,line_cd=30", "Orb Mastery Slinger builds throw an Orb right after Blasting on pull, other Spellslinger builds will just go for Touch, and Sunfury opens by spending the Clearcasting from Surge on pull." );
+  cooldowns->add_action( "arcane_orb,if=(talent.splintering_sorcery|variable.sf_touch_surge)&variable.opener&variable.time_for_pooling,line_cd=30", "Orb Mastery Slinger builds throw an Orb right after Blasting on pull, other Spellslinger builds will just go for Touch, and Sunfury opens by spending the Clearcasting from Surge on pull." );
   cooldowns->add_action( "arcane_orb,if=talent.splintering_sorcery&prev_off_gcd.touch_of_the_magi&time<5&buff.arcane_salvo.react<=14,line_cd=999" );
   cooldowns->add_action( "arcane_orb,if=!variable.did_not_pool,line_cd=999" );
   cooldowns->add_action( "arcane_missiles,if=talent.spellfire_spheres&!variable.sf_touch_surge&variable.opener,line_cd=30" );
