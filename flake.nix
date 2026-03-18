@@ -80,7 +80,7 @@
           '';
         };
 
-        packages.simc = llvm.stdenv.mkDerivation rec {
+        packages.simc = llvm.stdenv.mkDerivation {
           pname = "simc";
           version = "1201.01.${rev}";
           src = self;
