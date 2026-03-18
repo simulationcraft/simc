@@ -36,7 +36,6 @@ actions+=/call_action_list,name=sentcleave,if=active_enemies>2&!talent.howl_of_t
 actions.cds=blood_fury,if=buff.takedown.up|cooldown.takedown.ready
 actions.cds+=/use_items,if=buff.takedown.up|cooldown.takedown.ready|!talent.takedown
 actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.takedown.up&!buff.power_infusion.up|fight_remains<16
-actions.cds+=/harpoon,if=prev.kill_command
 actions.cds+=/ancestral_call,if=buff.takedown.up|cooldown.takedown.ready
 actions.cds+=/fireblood,if=buff.takedown.up|cooldown.takedown.ready
 actions.cds+=/berserking,if=buff.takedown.up|cooldown.takedown.ready

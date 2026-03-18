@@ -180,7 +180,7 @@ public:
   {
     priest_spell_t::impact( s );
 
-    priest_td_t& td = get_td( s->target );
+    [[maybe_unused]] priest_td_t& td = get_td( s->target );
 
     if ( result_is_hit( s->result ) )
     {
@@ -2101,7 +2101,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
                           {
                             p.allies_with_atonement.find_and_erase_unordered( target );
                           }
-                          size_t idx = std::clamp( as<int>( p.allies_with_atonement.size() ) - 1, 0, 19 );
+                          // size_t idx = std::clamp( as<int>( p.allies_with_atonement.size() ) - 1, 0, 19 );
                         } );
 
   buffs.resonant_energy = make_buff_fallback( p.talents.archon.resonant_energy.enabled(), *this, "resonant_energy",
@@ -2849,7 +2849,7 @@ void priest_t::init_spells()
   auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
   auto HT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::HERO, n ); };
 
-  auto sd_nf = spell_data_t::not_found();
+  [[maybe_unused]] auto sd_nf = spell_data_t::not_found();
 
   init_spells_shadow();
   init_spells_discipline();

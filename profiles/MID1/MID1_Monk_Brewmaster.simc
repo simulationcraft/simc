@@ -5,7 +5,7 @@ level=90
 race=tauren
 role=tank
 position=front
-talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZbxYGzM2mxGmZAAAAAAAYZBjYmBmhBzYMzMzwsMmZMzyw2ittxMmFAAYZWmWmlZWGAAIAzwGYmBMNGAAwA
+talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZbzYGzM2mxGmZAAAAAAAYZBjYmBmhBzYMzMzwsMmZMzywymttxMmFAAYZWmWmtZWGAAIAzwGYmBMNGAAwA
 
 # Default consumables
 potion=draught_of_rampant_abandon_2
@@ -38,18 +38,20 @@ actions+=/keg_smash,if=buff.aspect_of_harmony_spender.up&buff.empty_barrel.up
 actions+=/breath_of_fire,if=talent.wisdom_of_the_wall.enabled&buff.invoke_niuzao_the_black_ox.up
 actions+=/keg_smash,if=talent.wisdom_of_the_wall.enabled&buff.invoke_niuzao_the_black_ox.up
 actions+=/blackout_kick,if=talent.blackout_combo.enabled&!buff.blackout_combo.up
-actions+=/celestial_brew,if=!(apex.3&buff.empty_barrel.up)&buff.aspect_of_harmony_accumulator.value>0.95*health.max
+actions+=/celestial_brew,if=!(apex.3&buff.empty_barrel.up)&buff.aspect_of_harmony_accumulator.value>0.3*health.max&cooldown.celestial_brew.charges_fractional>1.9
 actions+=/celestial_brew,if=!(apex.3&buff.empty_barrel.up)&target.time_to_die<15&buff.aspect_of_harmony_accumulator.value>0.2*health.max
 actions+=/purifying_brew,if=!(apex.1&buff.empty_barrel.up)
 actions+=/fortifying_brew,if=!(apex.3&buff.empty_barrel.up)
 actions+=/chi_burst
+actions+=/invoke_niuzao
+actions+=/tiger_palm,if=buff.blackout_combo.up&cooldown.blackout_kick.remains<1.3
 actions+=/exploding_keg,if=cooldown.keg_smash.charges_fractional<1
 actions+=/empty_the_cellar,if=talent.aspect_of_harmony.enabled&cooldown.celestial_brew.remains>15
 actions+=/empty_the_cellar,if=!talent.aspect_of_harmony.enabled&buff.empty_the_cellar.remains<1.5
-actions+=/invoke_niuzao
 actions+=/breath_of_fire,if=cooldown.blackout_kick.remains>1.5&!buff.empty_barrel.up&cooldown.keg_smash.charges<1+talent.stormstouts_last_keg.enabled
 actions+=/tiger_palm,if=buff.blackout_combo.up
 actions+=/celestial_brew,if=talent.flurry_strikes.enabled&!(apex.3&buff.empty_barrel.up)
+actions+=/breath_of_fire,if=talent.flurry_strikes.enabled
 actions+=/keg_smash,if=talent.flurry_strikes.enabled
 actions+=/keg_smash,if=talent.scalding_brew.enabled
 actions+=/keg_smash,if=buff.empty_barrel.up

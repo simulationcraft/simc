@@ -2203,28 +2203,20 @@ public:
     ab::parse_effects( p()->buff.demonsurge );
     ab::parse_effects( p()->buff.voidsurge );
 
-    // 2026-03-05 -- Blind Focus does not get the extra benefit to direct damage in Meta currently.
-    effect_mask_t blind_focus_direct_mask = effect_mask_t( false ).enable( 1, 3 );
-    ab::parse_effects( p()->talent.scarred.blind_focus, blind_focus_direct_mask, USE_CURRENT );
-
-    effect_mask_t blind_focus_periodic_mask = effect_mask_t( false ).enable( 2, 4 );
-    ab::parse_effects(
-        p()->talent.scarred.blind_focus,
-        [ this ]( double v ) {
-          if ( p()->buff.metamorphosis->check() )
-          {
-            if ( p()->specialization() == DEMON_HUNTER_DEVOURER )
-            {
-              v *= 1.0 + p()->spec.void_metamorphosis->effectN( 16 ).percent();
-            }
-            else
-            {
-              v *= 1.0 + p()->spec.metamorphosis_buff->effectN( 13 ).percent();
-            }
-          }
-          return v;
-        },
-        blind_focus_periodic_mask );
+    ab::parse_effects( p()->talent.scarred.blind_focus, [ this ]( double v ) {
+      if ( p()->buff.metamorphosis->check() )
+      {
+        if ( p()->specialization() == DEMON_HUNTER_DEVOURER )
+        {
+          v *= 1.0 + p()->spec.void_metamorphosis->effectN( 16 ).percent();
+        }
+        else
+        {
+          v *= 1.0 + p()->spec.metamorphosis_buff->effectN( 13 ).percent();
+        }
+      }
+      return v;
+    } );
 
     // Tier sets
   }
@@ -5767,7 +5759,7 @@ struct consume_t : public consume_base_t
   }
 };
 
-// TOCHECK: Voidblade currently does not trigger burning blades and instead is bugged to trigger for Havoc Felblade
+// 0/3/17 TOCHECK: Voidblade currently does not trigger burning blades even after getting removed from Felblade
 
 struct voidblade_base_t : public voidrush_trigger_t<hungering_slash_trigger_t<demon_hunter_spell_t>>
 {
@@ -7680,13 +7672,13 @@ struct essence_break_t : public demon_hunter_attack_t
 
 // Felblade =================================================================
 // TODO: Real movement stuff.
-// TOCHECK: Voidblade currently does not trigger burning blades and instead is bugged to trigger for Havoc Felblade
 
 struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
 {
-  struct felblade_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
+  struct felblade_damage_t : public demon_hunter_attack_t
   {
-    felblade_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spell.felblade_damage )
+    felblade_damage_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_attack_t( name, p, p->spell.felblade_damage )
     {
       background = dual               = true;
       gain                            = p->get_gain( "felblade" );
@@ -7695,7 +7687,7 @@ struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
 
     double action_multiplier() const override
     {
-      double am = base_t::action_multiplier();
+      double am = demon_hunter_attack_t::action_multiplier();
 
       am *= 1.0 + p()->buff.unbound_chaos->value();
 

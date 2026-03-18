@@ -1580,11 +1580,11 @@ public:
 
     if ( triggers_crusade_stacks && p->talents.crusade->ok() && p->buffs.avenging_wrath->up() )
     {
-      int crusade_stacks = num_hopo_spent;
+      int crusade_stacks = as<int>( num_hopo_spent );
       // Hammer of Light always gives 5 Stacks, even if it's free
       if ( is_hammer_of_light_main )
       {
-        crusade_stacks = hol_cost;
+        crusade_stacks = as<int>( hol_cost );
         // 2025-12-24 Fluttershy: Currently, if HoL is cast with less then 5 stacks, you gain 10 Crusade Stacks
         if ( p->bugs && p->buffs.avenging_wrath->stack() < 5 )
           crusade_stacks *= 2;
@@ -1721,7 +1721,7 @@ struct judgment_base_t : public paladin_melee_attack_t
   judgment_base_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   judgment_base_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s = spell_data_t::nil() );
   void impact( action_state_t* s ) override;
-  void execute();
+  void execute() override;
 };
 
 struct hammer_of_wrath_t : public judgment_base_t

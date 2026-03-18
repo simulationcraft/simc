@@ -5140,9 +5140,10 @@ struct lava_lash_t : public shaman_attack_t
       p()->trigger_elemental_overflow( execute_state, p()->action.tww3_lava_lash );
     }
 
-    if ( p()->buff.lightning_strikes->consume( this ) )
+    if ( p()->buff.lightning_strikes->up() )
     {
       p()->generate_maelstrom_weapon( this, 1 );
+      p()->buff.lightning_strikes->decrement();
     }
 
     if ( p()->talent.ashen_catalyst.ok() &&
@@ -5498,9 +5499,10 @@ struct stormstrike_base_t : public shaman_attack_t
 
     p()->trigger_awakening_storms( execute_state );
 
-    if ( p()->buff.lightning_strikes->consume( this ) )
+    if ( p()->buff.lightning_strikes->up() )
     {
       p()->generate_maelstrom_weapon( this, 1 );
+      p()->buff.lightning_strikes->decrement();
     }
   }
 };
@@ -8506,7 +8508,7 @@ struct stormkeeper_t : public shaman_spell_t
     }
 
     p()->summon_ancestor();
-    p()->buff.stormkeeper->trigger( data().effectN( 5 ).base_value() );
+    p()->buff.stormkeeper->trigger( as<int>( data().effectN( 5 ).base_value() ) );
 
     p()->buff.mid1_ele_2pc->trigger();
 

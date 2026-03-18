@@ -262,7 +262,7 @@ struct expurgation_t : public paladin_spell_t
     return new state_t( this, target );
   }
 
-  double composite_rolling_ta_multiplier( const action_state_t* s ) const
+  double composite_rolling_ta_multiplier( const action_state_t* s ) const override
   {
     auto s_ = static_cast<const state_t*>( s );
     // Copied from base composite_rolling_ta_multiplier

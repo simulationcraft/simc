@@ -1713,7 +1713,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     // -1 to compensate for zero index, -1 to skip last tick
     aoe->target = target;
     for ( unsigned i = 0; i <= dot_duration / base_tick_time - 2.0; i++ )
-      make_event<events::delayed_cb_event_t>( *p()->sim, p(), i * base_tick_time, [ = ] { aoe->execute( !i ); } );
+      make_event<events::delayed_cb_event_t>( *p()->sim, p(), i * base_tick_time, [ i, this ] { aoe->execute( !i ); } );
 
     p()->buff.heart_of_the_jade_serpent->trigger();
     p()->buff.inner_compass_serpent_stance->trigger();
@@ -4491,7 +4491,7 @@ aspect_of_harmony_t::accumulator_t::accumulator_t( monk_t *player, aspect_of_har
 
   freeze_stacks = true;
 
-  set_tick_callback( [ = ]( buff_t *buff, int, timespan_t ) {
+  set_tick_callback( [ this ]( buff_t *buff, int, timespan_t ) {
     if ( buff->sim->current_iteration == 0 )  // only collect data from the first iteration
       pool_size_percent.add_max( buff->sim->current_time(), buff->check_value() / buff->player->max_health() );
   } );
@@ -6525,7 +6525,7 @@ void monk_t::init_special_effects()
 
   // Doesn't use effect 468 for trigger behaviour, let's just pretend it does (:
   if ( talent.shado_pan.whirling_steel->ok() )
-    create_proc_callback( { talent.shado_pan.whirling_steel } )
+    create_proc_callback( { talent.shado_pan.whirling_steel.spell() } )
         ->register_callback_trigger_function(
             dbc_proc_callback_t::trigger_fn_type::CONDITION,
             [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {

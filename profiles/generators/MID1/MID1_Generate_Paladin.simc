@@ -1,25 +1,25 @@
 paladin=MID1_Paladin_Retribution_Herald
 level=90
-race=dwarf
+race=dark_iron_dwarf
 role=attack
 position=back
 spec=retribution
 talents=CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAQzy2MzsMMzAAAAAAwoMmhZGbDz2wMbzYMmZYGLsNMgZZ2mZmtGEAAwCgBAjZYGMjxsAMzMMmxgB
 
 head=,id=249961,bonus_id=1808,gem_id=240983,ilevel=289
-neck=,id=250247,bonus_id=1808,gem_id=240898/240898,ilevel=289
+neck=,id=250247,bonus_id=1808,gem_id=240906/240906,ilevel=289
 shoulder=,id=249959,ilevel=289
-back=,id=239656,bonus_id=12384,crafted_stats=32/49,ilevel=285
+back=,id=239656,bonus_id=12384,crafted_stats=32/40,ilevel=285
 chest=,id=249964,enchant_id=7987,ilevel=289
-wrist=,id=237834,bonus_id=12384/1808,gem_id=240898,crafted_stats=49/32,ilevel=285
+wrist=,id=237834,bonus_id=12384/1808,gem_id=240906,crafted_stats=40/32,ilevel=285
 hands=,id=151332,ilevel=289
-waist=,id=249380,bonus_id=1808,gem_id=240898,ilevel=289
+waist=,id=249380,bonus_id=1808,gem_id=240906,ilevel=289
 legs=,id=249960,enchant_id=8159,ilevel=289
 feet=,id=249963,ilevel=289
-finger1=,id=249920,bonus_id=1808,enchant_id=7967,gem_id=240898/240898,ilevel=289
-finger2=,id=49812,bonus_id=1808,enchant_id=7967,gem_id=240898,ilevel=289
-trinket1=,id=260235,ilevel=289
-trinket2=,id=249343,ilevel=289
+finger1=,id=249920,bonus_id=1808,enchant_id=7967,gem_id=240906/240906,ilevel=289
+finger2=,id=49812,bonus_id=1808,enchant_id=7967,gem_id=240906,ilevel=289
+trinket1=,id=260235,bonus_id=13335,ilevel=289
+trinket2=,id=193701,bonus_id=13335,ilevel=289
 main_hand=,id=249277,enchant_id=8039,ilevel=289
 
 save=MID1_Paladin_Retribution_Herald.simc
@@ -30,22 +30,22 @@ race=dark_iron_dwarf
 role=attack
 position=back
 spec=retribution
-talents=CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAQz22MzsMMzYAAAAAAGlxMMzYbY2GmZbGjxMDzYjtHgBAgMz02Mz2MAgNADAGzwMYmZYDLzghxMGM
+talents=CYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAQz22MzsMMzAAAAAAwoMmhZGbDz2wMbzYMmZYGbsNMAAkZm2mZ2mBAsBYAwYGmBzYMbYZGMMmxgB
 
 head=,id=249961,bonus_id=1808,gem_id=240983,ilevel=289
-neck=,id=250247,bonus_id=1808,gem_id=240898/240898,ilevel=289
+neck=,id=250247,bonus_id=1808,gem_id=240906/240906,ilevel=289
 shoulder=,id=249959,ilevel=289
 back=,id=239656,bonus_id=12384,crafted_stats=32/49,ilevel=285
 chest=,id=249964,enchant_id=7987,ilevel=289
-wrist=,id=237834,bonus_id=12384/1808,gem_id=240898,crafted_stats=49/32,ilevel=285
+wrist=,id=237834,bonus_id=12384/1808,gem_id=240906,crafted_stats=49/32,ilevel=285
 hands=,id=151332,ilevel=289
-waist=,id=249380,bonus_id=1808,gem_id=240898,ilevel=289
+waist=,id=249380,bonus_id=1808,gem_id=240906,ilevel=289
 legs=,id=249960,enchant_id=8159,ilevel=289
 feet=,id=249381,ilevel=289
-finger1=,id=249920,bonus_id=1808,enchant_id=7967,gem_id=240898/240898,ilevel=289
-finger2=,id=249919,bonus_id=1808,enchant_id=7967,gem_id=240898,ilevel=289
-trinket1=,id=260235,ilevel=289
-trinket2=,id=249343,ilevel=289
+finger1=,id=249920,bonus_id=1808,enchant_id=7967,gem_id=240906/240906,ilevel=289
+finger2=,id=249919,bonus_id=1808,enchant_id=7967,gem_id=240906,ilevel=289
+trinket1=,id=260235,bonus_id=13335,ilevel=289
+trinket2=,id=193701,bonus_id=13335,ilevel=289
 main_hand=,id=249277,enchant_id=8039,ilevel=289
 
 save=MID1_Paladin_Retribution.simc
