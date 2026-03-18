@@ -269,7 +269,8 @@ public:
     // Arms Apex
     buff_t* master_of_warfare_proc;
     buff_t* master_of_warfare; // Damage buff
-    buff_t* master_of_warfare_colossus_smash;
+    buff_t* heroic_might_accumulator;
+    buff_t* heroic_might;
 
     // Fury Apex
     buff_t* berserk;
@@ -1095,6 +1096,9 @@ public:
         parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 5 ) );
 
       parse_effects( p()->buff.shield_block, effect_mask_t( false ).enable( 2, 4 ) );
+
+      // Apex
+      parse_effects( p()->buff.phalanx );
     }
 
     // Colossus
@@ -1662,8 +1666,8 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     double m = base_t::composite_target_multiplier( target );
     auto target_data = td( target );
     if ( p()->talents.arms.master_of_warfare_3.ok() && target_data &&
-    target_data->debuffs_colossus_smash->up() && p()->buff.master_of_warfare_colossus_smash->up() )
-      m *= 1.0 + ( p()->buff.master_of_warfare_colossus_smash->stack_value() / 100 );
+    target_data->debuffs_colossus_smash->up() && p()->buff.heroic_might->up() )
+      m *= 1.0 + ( p()->buff.heroic_might->stack_value() / 100 );
     return m;
   }
 
@@ -3497,10 +3501,7 @@ struct heroic_strike_t : public slam_base_t
     p()->buff.master_of_warfare->trigger();
 
     if ( p()->talents.arms.master_of_warfare_3.ok() )
-    {
-      // p()->cooldown.colossus_smash->adjust( p()->talents.arms.master_of_warfare_3->effectN( 1 ).time_value() );
-      p()->buff.master_of_warfare_colossus_smash->trigger();
-    }
+      p()->buff.heroic_might_accumulator->trigger();
   }
 
   bool ready() override
@@ -3675,6 +3676,12 @@ struct colossus_smash_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+
+    if ( p()->talents.arms.master_of_warfare_3.ok() && p()->buff.heroic_might_accumulator->up() )
+    {
+      p()->buff.heroic_might->trigger( p()->buff.heroic_might_accumulator->stack(), buff_t::DEFAULT_VALUE(), 1.0, p()->spell.colossus_smash_debuff->duration() );
+      p()->buff.heroic_might_accumulator->expire();
+    }
 
     if ( p()->talents.arms.tactical_edge.ok() )
       p()->buff.tactical_edge->trigger();
@@ -5885,7 +5892,7 @@ struct phalanx_t : public warrior_attack_t
       warrior_attack_t::impact( state );
 
       auto target_data = td( state->target );
-      if ( target_data )
+      if ( target_data && p()->talents.protection.phalanx_3.ok() )
         target_data->debuffs_phalanx->trigger();
     }
 };
@@ -7124,7 +7131,7 @@ void warrior_t::init_spells()
   spell.devastator              = find_spell( 236279 );
   spell.devastating_focus_debuff= find_spell( 1277983 );
   spell.phalanx_buff            = find_spell( 1278009 );
-  spell.phalanx_debuff          = find_spell( 1270116 );
+  spell.phalanx_debuff          = find_spell( 1292071 );
 
   // Shared Spells
   spell.bloodsurge_energize     = find_spell( 384362 );
@@ -8130,10 +8137,8 @@ void warrior_t::create_buffs()
                                 ->set_disable_async_expire_events_removal( true )
                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
-  buff.master_of_warfare_colossus_smash = make_buff( this, "master_of_warfare_colossus_smash", find_spell( 1269306 ) )
-                                ->set_max_stack( 2 )
-                                ->set_default_value( 3 )
-                                ->set_duration( 30_s );
+  buff.heroic_might_accumulator = make_buff( this, "heroic_might_accumulator", find_spell( 1292058 ) );
+  buff.heroic_might = make_buff( this, "heroic_might", find_spell( 1292058 ) );
 
   // Protection Apex
   buff.phalanx = make_buff( this, "phalanx", spell.phalanx_buff );
