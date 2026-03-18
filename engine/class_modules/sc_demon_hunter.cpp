@@ -7687,7 +7687,7 @@ struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
 
     double action_multiplier() const override
     {
-      double am = base_t::action_multiplier();
+      double am = demon_hunter_attack_t::action_multiplier();
 
       am *= 1.0 + p()->buff.unbound_chaos->value();
 
