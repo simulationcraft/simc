@@ -2163,7 +2163,7 @@ void sim_t::analyze_error()
       {
         double mean_error = sim_t::distribution_mean_error( *this, cd.target_metric );
         current_error = mean_error / current_mean;
-        current_standard_error = cd.target_metric.std_dev / sqrt(cd.target_metric.count());
+        current_standard_error = cd.target_metric.std_dev / sqrt( cd.target_metric.count() );
       }
     }
   }
@@ -2196,6 +2196,7 @@ void sim_t::analyze_error()
              if ( error > current_error )
               current_error = error;
           }
+          current_standard_error = cd.target_metric.std_dev / sqrt( cd.target_metric.count() );
           mean_total += mean;
           mean_count++;
         }
