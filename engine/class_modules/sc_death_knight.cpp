@@ -14921,6 +14921,9 @@ void death_knight_t::init_spells()
                                                                         ? effect_mask_t( true ).disable( 2 )
                                                                         : effect_mask_t( true ).disable( 1, 3) );
 
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+    register_passive_effect_mask( talent.cleaving_strikes, effect_mask_t( true ).disable( 4 ) );
+
   if ( main_hand_weapon.group() != WEAPON_2H )
     deregister_passive_spell( spec.might_of_the_frozen_wastes );
 
