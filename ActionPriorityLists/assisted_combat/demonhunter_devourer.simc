@@ -10,7 +10,7 @@ actions+=/call_action_list,name=assisted_combat
 # This is the default action priority list from the game's Assisted Combat system.
 # This is for Blizzard automation and is not included in the game's Assisted Combat system.
 actions.assisted_combat=metamorphosis,if=target.distance<=25&buff.metamorphosis.down
-actions.assisted_combat+=/metamorphosis,if=buff.collapsing_star_ready.up&spell_targets.unknown_spell_25>0
+actions.assisted_combat+=/metamorphosis,if=buff.collapsing_star.up&spell_targets.unknown_spell_25>0
 actions.assisted_combat+=/void_ray,if=target.distance<=25&buff.metamorphosis.up
 actions.assisted_combat+=/reap,if=buff.moment_of_craving.up&spell_targets.unknown_spell_25>0
 actions.assisted_combat+=/void_ray,if=target.distance<=25

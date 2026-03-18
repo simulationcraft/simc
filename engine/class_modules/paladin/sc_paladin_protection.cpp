@@ -135,12 +135,14 @@ struct avengers_shield_base_t : public paladin_spell_t
   refining_fire_dot_t* refining_fire_dot;
   consecration_tick_t* consecration_tick;
   glory_of_the_vanguard_t* glory_of_the_vanguard;
+  bool triggers_apex;
   avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str, double mul = 1.0 )
     : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) ),
       tyrs_enforcer( nullptr ),
       refining_fire_dot( nullptr ),
       consecration_tick( nullptr ),
-      glory_of_the_vanguard( nullptr )
+      glory_of_the_vanguard( nullptr ),
+      triggers_apex( true )
   {
     parse_options( options_str );
     if ( !p->has_shield_equipped() )
@@ -249,7 +251,7 @@ struct avengers_shield_base_t : public paladin_spell_t
       consecration_tick->execute_on_target( target );
     }
     bool isApex3 = p()->wings_up() && p()->talents.glory_of_the_vanguard_3->ok();
-    if ( ( p()->talents.glory_of_the_vanguard_1->ok() && p()->buffs.vanguard->up() ) || isApex3)
+    if ( triggers_apex && ( ( p()->talents.glory_of_the_vanguard_1->ok() && p()->buffs.vanguard->up() ) || isApex3 ) )
     {
       if (!isApex3)
         p()->buffs.vanguard->decrement();
@@ -260,7 +262,8 @@ struct avengers_shield_base_t : public paladin_spell_t
         p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.glory_of_the_vanguard_2->effectN( 2 ).base_value(),
                             p()->gains.hp_glory_of_the_vanguard_2 );
       }
-      p()->buffs.valor->trigger();
+      if ( p()->talents.glory_of_the_vanguard_3->ok() )
+        p()->buffs.valor->trigger();
     }
   }
 };
@@ -290,6 +293,7 @@ struct avengers_shield_dr_t : public avengers_shield_base_t
     avengers_shield_base_t( "avengers_shield_dr", p, "" )
   {
     background = true;
+    triggers_apex = false;
   }
 };
 
@@ -310,6 +314,7 @@ struct avengers_shield_divine_exaction_t :public avengers_shield_base_t
                               p->talents.templar.divine_exaction->effectN( 2 ).percent() )
   {
     background = true;
+    base_multiplier += 1.0;
   }
 };
 
@@ -874,7 +879,7 @@ void paladin_t::trigger_grand_crusader( grand_crusader_source source )
   else
     procs.as_grand_crusader_wasted->occur();
 
-  if ( talents.crusaders_judgment->ok() && cooldowns.judgment->current_charge < cooldowns.judgment->charges )
+  if ( cooldowns.judgment != nullptr && talents.crusaders_judgment->ok() && cooldowns.judgment->current_charge < cooldowns.judgment->charges )
   {
     cooldowns.judgment->adjust( -( talents.crusaders_judgment->effectN( 2 ).time_value() ), true );
   }

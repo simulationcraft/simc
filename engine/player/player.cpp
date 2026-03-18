@@ -17,7 +17,7 @@
 #include "action/spell.hpp"
 #include "action/variable.hpp"
 #include "buff/buff.hpp"
-#include "dbc/active_spells.hpp"
+#include "dbc/class_spells.hpp"
 #include "dbc/azerite.hpp"
 #include "dbc/character_loadout.hpp"
 #include "dbc/dbc.hpp"
@@ -1312,8 +1312,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   healing_received_multiplier( 1.0 ),
   armor_penetration( 1.0 ),
   movement_speed( 0 ),
-  stacking_movement_speed_modifier( 1.0 ),
-  non_stacking_movement_speed_modifier( 1.0 ),
+  stacking_movement_speed_modifier( 0.0 ),
+  non_stacking_movement_speed_modifier( 0.0 ),
   position( POSITION_BACK )
 {
   range::fill( attribute_multiplier, 1.0 );
@@ -1919,7 +1919,7 @@ void player_t::init_items()
     matching_gear_slots[ i ] = !util::is_match_slot( i );
 
   // Override with item slot overrides. Note this will completely replace any player-scoped item options
-  if ( is_player() )
+  if ( is_player() && type != PLAYER_SIMPLIFIED )
   {
     for ( const auto& [ override_slot, override_str ] : sim->item_slot_overrides )
     {
@@ -2237,7 +2237,7 @@ void player_t::create_special_effects()
     special_effects.push_back( new special_effect_t( effect ) );
   }
 
-  if ( sim->enable_all_item_effects )
+  if ( sim->enable_all_item_effects && type != PLAYER_SIMPLIFIED )
   {
     for ( auto id : unique_gear::midnight::__mid_special_effect_ids )
     {
@@ -3093,29 +3093,10 @@ static void enable_default_talents( player_t* player )
       auto tree = static_cast<talent_tree>( trait->tree_index );
       auto ranks = traits[ i ].rank;
 
-      if ( trait->node_type == NODE_TIERED )
-      {
-        auto _entries = trait_data_t::data( trait->id_node, util::class_id( player->type ), tree, player->is_ptr() );
-        for ( const auto& entry : _entries )
-        {
-          auto allocated = std::min( ranks, entry.max_ranks );
-          player->player_traits.emplace_back( tree, entry.id_trait_node_entry, allocated );
-          player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
-                                    util::talent_tree_string( tree ), entry.name, entry.id_node,
-                                    entry.id_trait_node_entry, allocated, entry.max_ranks );
-
-          ranks -= allocated;
-          if ( !ranks )
-            break;
-        }
-      }
-      else
-      {
-        player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, ranks );
-        player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
-                                  util::talent_tree_string( tree ), trait->name, trait->id_node,
-                                  trait->id_trait_node_entry, ranks, trait->max_ranks );
-      }
+      player->player_traits.emplace_back( tree, traits[ i ].id_trait_node_entry, ranks );
+      player->sim->print_debug( "{} adding {} talent {} (node={} entry={} rank={}/{})", *player,
+                                util::talent_tree_string( tree ), trait->name, trait->id_node,
+                                trait->id_trait_node_entry, ranks, trait->max_ranks );
     }
   }
 }
@@ -3773,7 +3754,15 @@ void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   if ( base_expr != expr && show_diff )
     comment += ( comment.empty() ? ""  : " " ) + fmt::format( "(Overridden from '{}')", base_expr );
 
-  for ( const auto& name : action_names_from_spell_id( step.spell_id ) )
+  auto action_names = action_names_from_spell_id( step.spell_id );
+  if ( action_names.empty() )
+  {
+    sim->print_debug(
+      "{} action name not found for assisted combat step {} with spell id {} and expression '{}', skipping.", *this,
+      step.order_index, step.spell_id, expr );
+  }
+
+  for ( const auto& name : action_names )
   {
     if ( name.empty() )
       continue;
@@ -4171,13 +4160,6 @@ void player_t::init_background_actions()
 
 void player_t::create_actions()
 {
-  // if actor is not valid, set `quiet` and skip the rest of action creation
-  if ( !validate_actor() )
-  {
-    quiet = true;
-    return;
-  }
-
   if( is_player() && !is_enemy() && !is_pet() )
     consumable::create_consumeable_actions( this );
 
@@ -5069,7 +5051,7 @@ void player_t::create_buffs()
         ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
 
     // Dragonflight Raid Damage Modifier Debuffs
-    debuffs.hunters_mark = make_buff( this, "hunters_mark", find_spell( 257284 ) )
+    debuffs.hunters_mark = make_buff( this, "hunters_mark", find_spell( 259556 ) )
         ->disable_ticking( true )
         ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
   }
@@ -5693,11 +5675,6 @@ double player_t::composite_damage_versatility() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     cdv += b->check_stack_value();
 
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    cdv += sim->auras.mark_of_the_wild->check_value();
-  }
-
   if ( buffs.dmf_well_fed )
     cdv += buffs.dmf_well_fed->check_value();
 
@@ -5714,11 +5691,6 @@ double player_t::composite_heal_versatility() const
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     chv += b->check_stack_value();
 
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    chv += sim->auras.mark_of_the_wild->check_value();
-  }
-
   if ( buffs.dmf_well_fed )
     chv += buffs.dmf_well_fed->check_value();
 
@@ -5734,11 +5706,6 @@ double player_t::composite_mitigation_versatility() const
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
     cmv += b->check_stack_value() / 2;
-
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    cmv += sim->auras.mark_of_the_wild->check_value() / 2;
-  }
 
   if ( buffs.dmf_well_fed )
     cmv += buffs.dmf_well_fed->check_value() / 2;
@@ -5819,20 +5786,17 @@ double player_t::composite_player_target_multiplier( player_t* t, school_e /* sc
 {
   double m = 1.0;
 
-  if ( t->race == RACE_DEMON && buffs.demon_damage_buff && buffs.demon_damage_buff->check() )
+  for ( const auto& entry : buffs.creature_type_buffs )
   {
-    // Bad idea to hardcode the effect number, but it'll work for now. The buffs themselves are
-    // stat buffs.
-    m *= 1.0 + buffs.demon_damage_buff->data().effectN( 2 ).percent();
-  }
+    // check buff if buff exists, otherwise assume passive
+    if ( auto buff = std::get<0>( entry ); buff && !buff->check() )
+      continue;
 
-  if ( t->race == RACE_ABERRATION && buffs.damage_to_aberrations && buffs.damage_to_aberrations->check() )
-    m *= 1.0 + buffs.damage_to_aberrations->stack_value();
-
-  if ( ( t->race == RACE_ABERRATION || t->race == RACE_BEAST || t->race == RACE_ELEMENTAL ) &&
-       racials.subterranean_predator->ok() )
-  {
-    m *= 1.0 + racials.subterranean_predator->effectN( 2 ).percent();
+    // check against creature type mask
+    if ( std::get<1>( entry ) & ( 1 << ( t->race - 1 ) ) )
+    {
+      m *= 1.0 + std::get<2>( entry );
+    }
   }
 
   auto td = find_target_data( t );
@@ -6413,7 +6377,9 @@ void player_t::combat_begin()
           if ( first_cast )
           {
             if ( !is_enemy() )
-              sequence_add( action, action->target );
+              sequence_add( action, action->target, [ action ]( std::string& a_str, std::string& t_str ) {
+                t_str = action->target->name_str;
+              } );
 
             action->execute();
             first_cast = false;
@@ -6426,7 +6392,9 @@ void player_t::combat_begin()
         else
         {
           if ( !is_enemy() )
-            sequence_add( action, action->target );
+            sequence_add( action, action->target, [ action ]( std::string& a_str, std::string& t_str ) { 
+              t_str = action->target->name_str; 
+            } );
 
           action->execute();
         }
@@ -6497,9 +6465,9 @@ void player_t::combat_end()
   // phase, while a child thread is already done (their init). Note that this may mean that with
   // target_error option, some data to estimate the target error can be missed (in the main thread).
   // In turn, lazily finding the parent actor here ensures that the performance hit on the init
-  // process is minimal (no need for locks).
+  // process is minimal.
   if ( parent == nullptr && !is_pet() && !is_enemy() && sim->parent != nullptr &&
-      sim->parent->initialized && sim->thread_index > 0 )
+      sim->parent->is_initialized() && sim->thread_index > 0 )
   {
     // NOTE NOTE NOTE: This search can no longer be run based on find_player() because it uses
     // actor_list. Ever since pet_spawner support, the actor_list of the parent sim can (and will)
@@ -7681,7 +7649,9 @@ action_t* player_t::execute_action()
         off_gcdactions.push_back( action );
 
       if ( !is_enemy() )
-        sequence_add( action, action->target );
+        sequence_add( action, action->target, [ action ]( std::string& a_str, std::string& t_str ) {
+          t_str = action->target->name_str;
+        } );
     }
   }
 
@@ -9059,11 +9029,11 @@ shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, int success_e
   return get_rng<shuffled_rng_t>( name, success_entries, total_entries );
 }
 
-accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double chance,
+accumulated_rng_t* player_t::get_accumulated_rng( std::string_view name, double chance, unsigned cap,
                                                   accumulated_rng_fn accumulator_fn,
                                                   unsigned initial_count )
 {
-  return get_rng<accumulated_rng_t>( name, chance, accumulator_fn, initial_count );
+  return get_rng<accumulated_rng_t>( name, chance, cap, accumulator_fn, initial_count );
 }
 
 threshold_rng_t* player_t::get_threshold_rng( std::string_view name, double increment_max,
@@ -10818,7 +10788,7 @@ struct cancel_buff_t : public action_t
     {
       throw sc_invalid_apl_argument( fmt::format( "Buff '{}' not found.", buff_name ) );
     }
-    else if ( !buff->can_cancel )
+    else if ( !buff->is_fallback && !buff->can_cancel )
     {
       throw sc_invalid_apl_argument( fmt::format( "Buff '{}' cannot be cancelled.", buff_name ) );
     }
@@ -12453,12 +12423,16 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     }
     else if ( splits[ 0 ] == "cooldown" )
     {
-      if ( cooldown_t* cooldown = get_cooldown( splits[ 1 ] ) )
+      // since we have no fallback system for cooldowns, all cooldowns must be created if not found.
+      auto _cooldown = find_cooldown( splits[ 1 ] );
+
+      if ( !_cooldown )
       {
-        return cooldown->create_expression( splits[ 2 ] );
+        sim->print_debug( "{} cooldown '{}' not found, creating placeholder.", *this, splits[ 1 ] );
+        _cooldown = get_cooldown( splits[ 1 ] );
       }
 
-      throw sc_invalid_apl_argument( fmt::format( "Cooldown '{}' not found.", splits[ 1 ] ) );
+      return _cooldown->create_expression( splits[ 2 ] );
     }
     else if ( splits[ 0 ] == "swing" )
     {
@@ -12507,13 +12481,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
     if ( splits[ 0 ] == "apex" )
     {
-      // temporary hack to allow apex.# in prepatch apls
-      if ( sim->dbc->wowv() < wowv_t( 12, 0, 1 ) )
-      {
-        _talent = player_talent_t( this );
-      }
-      else
-      {
       // assume apex talents are always on the spec tree, and that each spec tree only has a single apex talent
       std::vector<const trait_data_t*> apex_traits;
 
@@ -12531,22 +12498,24 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         throw sc_invalid_apl_argument( fmt::format( "Apex talent index '{}' not found.", splits[ 1 ] ) );
 
       _talent = create_talent_obj( this, apex_traits[ index ] );
-      }
     }
     else if ( splits[ 0 ] == "talent" )
     {
+      auto _name = splits[ 1 ];  // make a copy view
       auto _index = 0U;
+
       if ( auto _split = util::string_split<std::string_view>( splits[ 1 ], "_" );
            _split.size() >= 2 && util::is_number( _split.back() ) )
       {
+        _name = _name.substr( 0, _name.size() - _split.back().size() - 1 );
         _index = util::to_unsigned( _split.back() );
       }
 
-      _talent = find_talent_spell( talent_tree::SPECIALIZATION, splits[ 1 ], specialization(), true, _index );
+      _talent = find_talent_spell( talent_tree::SPECIALIZATION, _name, specialization(), true, _index );
       if ( _talent.invalid() )
-        _talent = find_talent_spell( talent_tree::HERO, splits[ 1 ], specialization(), true, _index );
+        _talent = find_talent_spell( talent_tree::HERO, _name, specialization(), true, _index );
       if ( _talent.invalid() )
-        _talent = find_talent_spell( talent_tree::CLASS, splits[ 1 ], specialization(), true, _index );
+        _talent = find_talent_spell( talent_tree::CLASS, _name, specialization(), true, _index );
 
       if ( _talent.invalid() )
         throw sc_invalid_apl_argument( fmt::format( "Talent '{}' not found.", splits[ 1 ] ) );
@@ -13823,16 +13792,22 @@ void player_t::create_options()
                         thewarwithin_opts.attuned_to_the_aether ) );
 
   // Midnight options
-  add_option( opt_timespan( "midnight.arcanoweave_lining_update_interval",
-                            midnight_opts.arcanoweave_lining_update_interval, 1_s, timespan_t::max() ) );
-  add_option( opt_timespan( "midnight.arcanoweave_lining_update_stddev",
-                            midnight_opts.arcanoweave_lining_update_stddev, 250_ms, timespan_t::max() ) );
-  add_option( opt_float(    "midnight_arcanoweave_lining_uptime",
-                            midnight_opts.arcanoweave_lining_uptime, 0, 1.0 ) );
-  add_option( opt_string( "midnight.darkmoon_hunt_race", midnight_opts.darkmoon_hunt_race ) );
-  add_option( opt_timespan( "midnight.sealed_chaos_urn_dispell_time", midnight_opts.sealed_chaos_urn_dispell_time,
-                            500_ms, 5_s ) );
-  add_option( opt_bool( "midnight.sealed_chaos_urn_dispell", midnight_opts.sealed_chaos_urn_dispell ) );
+  add_option(   opt_string( "midnight.darkmoon_hunt_race",
+                            midnight_opts.darkmoon_hunt_race ) );
+  add_option( opt_timespan( "midnight.sealed_chaos_urn_dispell_time",
+                            midnight_opts.sealed_chaos_urn_dispell_time, 500_ms, 5_s ) );
+  add_option(     opt_bool( "midnight.sealed_chaos_urn_dispell",
+                            midnight_opts.sealed_chaos_urn_dispell ) );
+  add_option(    opt_float( "midnight.refueling_orb_heal_chance",
+                            midnight_opts.refueling_orb_heal_chance, 0, 1 ) );
+  add_option(     opt_bool( "midnight.crucible_of_erratic_energies_violence",
+                            midnight_opts.crucible_of_erratic_energies_violence ) );
+  add_option(     opt_bool( "midnight.crucible_of_erratic_energies_sustenance",
+                            midnight_opts.crucible_of_erratic_energies_sustenance ) );
+  add_option(     opt_bool( "midnight.crucible_of_erratic_energies_predation",
+                            midnight_opts.crucible_of_erratic_energies_predation ) );
+  add_option(    opt_float( "midnight.vessel_of_tortured_souls_miss_chance",
+                            midnight_opts.vessel_of_tortured_souls_miss_chance, 0, 1 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
@@ -14142,7 +14117,7 @@ void player_t::check_resource_change_for_callback( resource_e resource, double p
     if ( callback.is_consumed )
       continue;
 
-      if ( callback.resource != resource )
+    if ( callback.resource != resource )
       continue;
 
     // Evaluate if callback condition is met.
@@ -15026,6 +15001,34 @@ void player_t::register_init_finished_callback( std::function<void( player_t* )>
   callbacks_on_init_finished.emplace_back( std::move( fn ) );
 }
 
+void player_t::register_creature_type_buff( buff_t* buff, const spell_data_t* s_data )
+{
+  if ( !s_data->ok() )
+    s_data = &buff->data();
+
+  if ( !s_data->ok() )
+    return;
+
+  auto effect = spell_data_t::find_spelleffect( *s_data, E_APPLY_AURA, A_MOD_DAMAGE_DONE_VERSUS );
+  if ( !effect.ok() )
+    return;
+
+  std::vector<std::string> _strs;
+  auto _mask = effect.misc_value1();
+
+  for ( auto i = 1; _mask; _mask >>= 1, i++ )
+    if ( _mask & 1 )
+      _strs.emplace_back( util::race_type_string( static_cast<race_e>( i ) ) );
+
+  assert( _strs.size() );
+
+  sim->print_debug( "{} {} ({}) granting {}% increased damage {}against creature type: {}", *this, s_data->name_cstr(),
+                    s_data->id(), effect.base_value(), buff ? "with buff '" + std::string( buff->name() ) + "' " : "",
+                    fmt::join( _strs, ", " ) );
+
+  buffs.creature_type_buffs.emplace_back( buff, effect.misc_value1(), effect.percent() );
+}
+
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const
 {
   auto it = range::find_if( spawners, [ id ]( spawner::base_actor_spawner_t* o ) {
@@ -15246,9 +15249,11 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_CRIT_DAMAGE_MULTIPLIER,             "crit_damage_multiplier"           },  // 163
   { A_MOD_ATTACK_POWER_PCT,                   "attack_power_multiplier",         },  // 166
   { A_MOD_SPEED_NOT_STACK,                    "non_stacking_move_speed_modifier" },  // 171
+  { A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK,    "charge_cooldown"                  },  // 173
   { A_MOD_MAX_MANA_PCT,                       "resource_multiplier"              },  // 178
   { A_MOD_ATTACKER_MELEE_CRIT_CHANCE,         "crit_avoidance"                   },  // 187
   { A_HASTE_ALL,                              "all_haste"                        },  // 193
+  { A_MOD_RECHARGE_TIME_CATEGORY_MASK,        "charge_cooldown"                  },  // 205
   { A_MODIFY_SCHOOL,                          "school"                           },  // 220
   { A_MOD_EXPERTISE,                          "expertise"                        },  // 240
   { A_MOD_BLOCK_PCT,                          "block_reduction"                  },  // 272
@@ -15447,6 +15452,20 @@ std::vector<const spell_data_t*> player_t::spells_affected_by_passive( const spe
     case A_HASTED_GCD:  // 417
       affected_spells = dbc->effect_affects_spells( eff.spell()->class_family(), &eff );
       break;
+    case A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK:  // 173
+    case A_MOD_RECHARGE_TIME_CATEGORY_MASK:  // 205
+      if ( auto _mask = as<unsigned>( eff.misc_value1() ) )
+      {
+        for ( unsigned i = 1; _mask; _mask >>= 1, i++ )
+        {
+          if ( _mask & 1 )
+          {
+            auto span_ = dbc->spells_by_category_mask_bit( i );
+            affected_spells.insert( affected_spells.end(), span_.begin(), span_.end() );
+          }
+        }
+      }
+      break;
     case A_ADD_PCT_LABEL_MODIFIER:  // 218
     case A_ADD_FLAT_LABEL_MODIFIER:  // 219
     case A_APPLY_HASTED_GCD_LABEL:  // 320
@@ -15526,25 +15545,26 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     auto misc_type = modifying_eff.misc_value1();
     std::string id_field;
     double flat_val = 0.0;
-    double pct_val = 0.0;
+    double pct_val = 0.0;  // initially set in percent value, then multiplied by 0.01 later
 
     switch ( sub_type )
     {
       // special handling
       case A_MOD_STAT:  // 29
         // parse scaling value if necessary
-        flat_val = modifying_eff.scaling_class() < 0 ? modifying_eff.average( this ) : modifying_eff.base_value();
+        flat_val = modifying_eff.average( this );
         break;
       case A_MOD_INCREASE_RESOURCE: // 35
       case A_MOD_MAX_RESOURCE:  // 418
         misc_type = util::power_type_to_resource( static_cast<power_e>( modifying_eff.misc_value1() ) );
-        flat_val = modifying_eff.resource();  // resource divisor adjusted value
+        // resource divisor adjusted value
+        flat_val = modifying_eff.average( this ) * modifying_eff.resource_multiplier();
         break;
       case A_MOD_RESISTANCE_PCT:  // 101
       case A_MOD_BASE_RESISTANCE_PCT:  // 142
         if ( ( misc_type & SCHOOL_MASK_PHYSICAL ) == 0 )  // only parse armor
           return false;
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
       case A_MOD_TOTAL_STAT_PERCENTAGE:  // 137
         if ( modifying_spell->equipped_class() == ITEM_CLASS_ARMOR &&
@@ -15558,15 +15578,16 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         }
 
         misc_type = modifying_eff.misc_value2();  // Stat type is in misc_value2
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
       case A_MOD_MAX_MANA_PCT:  // 178
       case A_MOD_MANA_REGEN_PCT:  // 379
         misc_type = RESOURCE_MANA;  // hardcode to mana
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
+      case A_MOD_TARGET_ARMOR_PCT:  // 280
       case A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED:  // 342
-        pct_val = -modifying_eff.percent();  // reversed value
+        pct_val = -modifying_eff.average( this );  // reversed value
         break;
 
       // percent multipliers
@@ -15591,7 +15612,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_PET_DAMAGE_DONE:  // 429
       case A_MOD_AUTO_ATTACK_DAMAGE_PCT:  // 530
       case A_MOD_GUARDIAN_DAMAGE_DONE:  // 531
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
 
       // flat modifiers
@@ -15610,14 +15631,14 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_VERSATILITY_PCT:  // 417
       case A_MOD_LEECH_PERCENT:  // 443
       case A_MOD_PARRY_FROM_CRIT_RATING:  // 463
-        flat_val = modifying_eff.percent();
+        flat_val = modifying_eff.average( this ) * 0.01;
         break;
       case A_MOD_MASTERY_PCT:  // 318
-        flat_val = modifying_eff.base_value();
+        flat_val = modifying_eff.average( this );
         break;
 
       case A_MOD_PERCENT_STAT:  // 80
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         sim->error( SEVERE,
                     "{}(id={}) effect #:{} is utilizing aura subtype 80, rather than 137. This is a bug, as it only "
                     "modifies base attributes.",
@@ -15630,6 +15651,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
     if ( !flat_val && !pct_val )
       return false;
+
+    pct_val *= 0.01;  // convert from percent value to decimal
 
     if ( id_field.empty() )
       id_field = get_field_from_type( sub_type );
@@ -15644,13 +15667,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
     auto do_debug = [ & ]( std::string type_str, const auto& prev, const auto& now ) {
       std::string field_str = type_str.empty() ? id_field : fmt::format( "{}_{}", type_str, id_field );
-      std::string _tmp_full_message_tmp_ = fmt::format(
+      sim->print_debug(
         "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
         modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
         remove ? "reverting" : "modifying", *this, field_str, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%",
         now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 );
-      sim->print_debug( "{}", _tmp_full_message_tmp_ );
-      _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
     };
 
     auto add_reporting = [ & ]( int type ) {
@@ -15797,8 +15818,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     int eff_idx = 0;
     unsigned pow_idx_bit = 0U;
     double flat_val = 0.0;
-    double pct_val = 0.0;
-    bool is_dbc = true;  // modifies the dbc
+    double pct_val = 0.0;    // initially set in percent value, then multiplied by 0.01 later
+    bool is_dbc = true;      // modifies the dbc
     bool is_damage = false;  // only modifies E_SCHOOL_DAMAGE
     bool allow_zero = true;  // modify even if base dbc value is 0
 
@@ -15806,11 +15827,11 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     {
       case A_ADD_FLAT_MODIFIER:  // 107
       case A_ADD_FLAT_LABEL_MODIFIER:  // 219
-        flat_val = modifying_eff.base_value();
+        flat_val = modifying_eff.average( this );
         break;
       case A_ADD_PCT_MODIFIER:  // 108
       case A_ADD_PCT_LABEL_MODIFIER:  // 218
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         break;
       case A_MODIFY_SCHOOL:  // 220
         field = get_field_from_type( sub_type );
@@ -15826,7 +15847,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         break;
       case A_MODIFY_CATEGORY_COOLDOWN:  // 341
         field = "category_cooldown";
-        flat_val = modifying_eff.base_value();
+        flat_val = modifying_eff.average( this );
         // if a spell has category_cooldown but no cooldown, category_cooldown value will be used for cooldown field.
         // if category_cooldown == cooldown assume this happened and modify both.
         if ( spell->get_field( "category_cooldown" ) == spell->get_field( "cooldown" ) )
@@ -15835,13 +15856,15 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           field_type2 = P_COOLDOWN;
         }
         break;
+      case A_MOD_RECHARGE_TIME_CATEGORY_MASK:  // 205
       case A_MOD_MAX_CHARGES:  // 411
       case A_MOD_RECHARGE_TIME_CATEGORY:  // 453
-        flat_val = modifying_eff.base_value();
+        flat_val = modifying_eff.average( this );
         field = get_field_from_type( sub_type );
         break;
+      case A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK:  // 173
       case A_MOD_RECHARGE_TIME_PCT_CATEGORY:  // 454
-        pct_val = modifying_eff.percent();
+        pct_val = modifying_eff.average( this );
         field = get_field_from_type( sub_type );
         break;
       default:
@@ -15851,6 +15874,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     // filter out zero value
     if ( !flat_val && !pct_val )
       continue;
+
+    pct_val *= 0.01;  // convert from percent value to decimal
 
     if ( !field.empty() && !property )
     {
@@ -15951,11 +15976,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     }
 
     auto do_debug = [ & ]( std::string msg ) {
-      std::string _tmp_full_message_tmp_ = fmt::format(
-        "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
-        remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(), msg );
-      sim->print_debug( "{}", _tmp_full_message_tmp_ );
-      _tmp_registered_passive_printout_tmp_.push_back( _tmp_full_message_tmp_ );
+      sim->print_debug( "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(),
+                        modifying_eff.index() + 1, remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(),
+                        msg );
     };
 
     auto add_reporting = [ & ]( std::string field ) {
@@ -16186,7 +16209,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
           register_passive_effect( *eff, true );
         }
 
-        auto data_val = eff->base_value();
+        auto data_val = eff->average( this );
         auto [ prev, now ] =
           add_passive_effect_modifier( passive_effect_modifiers_, id, field_type, data_val, flat_val, pct_val );
 
@@ -16413,17 +16436,13 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
 
 void player_t::parse_all_class_passives()
 {
-  // class aura
-  parse_passive_effects( find_spell( dbc::get_class_aura_id( type ) ), false, PARSE_SOURCE_CLASS );
-
-  // class-wide rank spells
-  for ( const auto& rank_spell : rank_class_spell_t::data( dbc->ptr ) )
+  // class passives
+  for ( const auto& passive_spell : passive_class_spell_t::data( dbc->ptr ) )
   {
-    if ( as<int>( rank_spell.class_id ) == util::class_id( type ) && rank_spell.spec_id == 0 )
+    if ( as<int>( passive_spell.class_id ) == util::class_id( type ) )
     {
-      auto spell = find_spell( rank_spell.spell_id );
-      if ( spell->flags( SX_PASSIVE ) )
-        parse_passive_effects( spell, false, PARSE_SOURCE_CLASS );
+      auto spell = find_spell( passive_spell.spell_id );
+      parse_passive_effects( spell, false, PARSE_SOURCE_CLASS );
     }
   }
 
@@ -16444,13 +16463,18 @@ void player_t::parse_all_class_passives()
   // racials
   for ( const auto& racial_spell : racial_spell_entry_t::data( dbc->ptr ) )
   {
-    if ( util::race_mask( race ) & racial_spell.mask_race && util::class_id_mask( type ) & racial_spell.mask_class )
+    if ( util::race_mask( race ) & racial_spell.mask_race &&
+         ( !racial_spell.mask_class || util::class_id_mask( type ) & racial_spell.mask_class ) )
     {
       auto spell = find_spell( racial_spell.spell_id );
       if ( spell->flags( SX_PASSIVE ) )
         parse_passive_effects( spell, false, PARSE_SOURCE_RACIAL );
     }
   }
+
+  // may as well handle this here
+  if ( racials.subterranean_predator->ok() )
+    register_creature_type_buff( nullptr, racials.subterranean_predator );
 }
 
 void player_t::parse_all_passive_talents()
@@ -16473,8 +16497,31 @@ void player_t::parse_all_passive_sets()
   for ( const auto& type : sets->set_bonus_spec_data )
     for ( const auto& bonus : type )
       for ( const auto& data : bonus )
-        if ( data.enabled && range::contains( sets->current_sets, data.bonus->enum_id ) )
+        if ( data.enabled )
           parse_passive_effects( data.spell, false, PARSE_SOURCE_SET );
+}
+
+void player_t::parse_raid_buffs()
+{
+  // blessing of the bronze
+  if ( sim->overrides.blessing_of_the_bronze )
+  {
+    // classes are assigned alphabetically starting from eff#1
+    auto spell = find_spell( 364342 )->effectN( static_cast<unsigned>( type ) ).trigger();
+    parse_passive_effects( spell, true );
+
+    auto buff = make_buff( this, "blessing_of_the_bronze", spell );
+    register_precombat_begin( [ buff ]( auto ) { buff->override_buff(); } );
+  }
+
+  // mark of the wild
+  if ( sim->overrides.mark_of_the_wild )
+  {
+    // if overrides are registered for the 'self-buff' talents, use the cloned spell_data_t
+    auto spell = dbc_override->find_spell( sim->auras.mark_of_the_wild->data().id(), is_ptr() );
+
+    parse_passive_effects( spell ? spell : &sim->auras.mark_of_the_wild->data(), true );
+  }
 }
 
 void player_t::register_passive_spell_override( const spell_data_t& spell, double value, std::string_view field )
@@ -16511,6 +16558,7 @@ std::string_view player_t::get_parsed_source( unsigned spell_id ) const
         case PARSE_SOURCE_RACIAL: return "Racial";
         case PARSE_SOURCE_TALENT: return "Talent";
         case PARSE_SOURCE_SET:    return "Set Bonus";
+        case PARSE_SOURCE_ITEM:   return "Item";
         default:                  return "BAD_SOURCE";
       }
     }
@@ -16566,9 +16614,9 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
         if ( !row_open )
           os << "<tr>";
 
-        os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
+        os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.2f}{}</td><td>{}</td>)",
                    report_decorators::decorated_spell_data( *sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
-                   eff->base_value(), eff->default_multiplier() == 0.01 ? "%" : "",
+                   eff->average( this ), eff->default_multiplier() == 0.01 ? "%" : "",
                    get_parsed_source( eff->spell()->id() ) );
 
         os << "</tr>\n";
@@ -16643,7 +16691,7 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
 
         os.format( R"(<td>{}</td><td class="right">{}</td><td>#{}</td><td class="right">{:.1f}{}</td><td>{}</td>)",
                    report_decorators::decorated_spell_data( *sim, eff->spell() ), eff->spell()->id(), eff->index() + 1,
-                   eff->base_value(), is_pct ? "%" : "", get_parsed_source( eff->spell()->id() ) );
+                   eff->average( this ), is_pct ? "%" : "", get_parsed_source( eff->spell()->id() ) );
 
         os << "</tr>\n";
         row_open = false;
@@ -16656,4 +16704,14 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
   print_custom_parsed_effects( os );
 
   os << "</div></div>\n";
+}
+
+void player_t::parse_passive_item_effect( const spell_data_t* spell )
+{
+  parse_passive_effects( spell, true, PARSE_SOURCE_ITEM );
+}
+
+void player_t::register_passive_item_effect_override( const spelleffect_data_t& effect, double value )
+{
+  register_passive_effect_override( effect, value );
 }

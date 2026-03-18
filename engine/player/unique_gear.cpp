@@ -1517,34 +1517,38 @@ void item::spellbound_solium_band( special_effect_t& effect )
 
 void item::gronntooth_war_horn( special_effect_t& effect )
 {
-  stat_buff_t* buff = make_buff<stat_buff_t>( effect.player, "demonbane", effect.driver() -> effectN( 1 ).trigger(), effect.item );
+  stat_buff_t* buff =
+    make_buff<stat_buff_t>( effect.player, "demonbane", effect.driver()->effectN( 1 ).trigger(), effect.item );
   effect.custom_buff = buff;
-  effect.player -> buffs.demon_damage_buff = buff;
+  effect.player->register_creature_type_buff( buff );
 
   new dbc_proc_callback_t( effect.item, effect );
 }
 
 void item::infallible_tracking_charm( special_effect_t& effect )
 {
-  effect.custom_buff = make_buff( effect.player, "cleansing_flame", effect.driver() -> effectN( 1 ).trigger(), effect.item );
-  effect.execute_action = new spell_t( "cleansing_flame", effect.player, effect.driver() -> effectN( 1 ).trigger() );
+  effect.custom_buff =
+    make_buff( effect.player, "cleansing_flame", effect.driver()->effectN( 1 ).trigger(), effect.item );
+  effect.execute_action = new spell_t( "cleansing_flame", effect.player, effect.driver()->effectN( 1 ).trigger() );
 
-  effect.execute_action -> background = true;
-  effect.execute_action -> item = effect.item;
-  effect.execute_action -> base_dd_min = effect.execute_action -> base_dd_max = effect.execute_action -> data().effectN( 1 ).average( effect.item );
+  effect.execute_action->background = true;
+  effect.execute_action->item = effect.item;
+  effect.execute_action->base_dd_min = effect.execute_action->base_dd_max =
+    effect.execute_action->data().effectN( 1 ).average( effect.item );
 
   effect.rppm_scale_ = RPPM_HASTE;
 
-  effect.player -> buffs.demon_damage_buff = effect.custom_buff;
+  effect.player->register_creature_type_buff( effect.custom_buff );
 
   new dbc_proc_callback_t( effect.item, effect );
 }
 
 void item::orb_of_voidsight( special_effect_t& effect )
 {
-  stat_buff_t* buff = make_buff<stat_buff_t>( effect.player, "voidsight", effect.driver() -> effectN( 1 ).trigger(), effect.item );
+  stat_buff_t* buff =
+    make_buff<stat_buff_t>( effect.player, "voidsight", effect.driver()->effectN( 1 ).trigger(), effect.item );
   effect.custom_buff = buff;
-  effect.player -> buffs.demon_damage_buff = buff;
+  effect.player->register_creature_type_buff( buff );
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -3527,6 +3531,23 @@ void unique_gear::initialize_special_effect( special_effect_t& effect, unsigned 
   if ( effect.spell_id == 0 )
     effect.spell_id = spell_id;
 
+  // Check the passive effects database. These are initialized in the first phase since they may affect player base
+  // stats
+  for ( const auto dbitem : find_passive_effect_db_item( spell_id ) )
+  {
+    // Check that a custom special effect initializer exists and is valid
+    if ( !dbitem->cb_obj || !dbitem->cb_obj->valid( effect ) )
+      continue;
+
+    dbitem->cb_obj->initialize( effect );
+    // Set as passive so second phase initialization doesn't happen
+    effect.type = SPECIAL_EFFECT_PASSIVE;
+  }
+
+  // No further processing is necessary for passive effects.
+  if ( effect.type == SPECIAL_EFFECT_PASSIVE )
+    return;
+
   // Custom init found a valid initializer callback, this special effect will be initialized with it
   // later on
   if ( !effect.custom_init_object.empty() )
@@ -3588,6 +3609,9 @@ void unique_gear::initialize_special_effect( special_effect_t& effect, unsigned 
 // effects, or calls the custom initialization function given in the first phase initialization.
 void unique_gear::initialize_special_effect_2( special_effect_t* effect )
 {
+  if ( effect->type == SPECIAL_EFFECT_PASSIVE )
+    return;
+
   if ( effect -> custom_init || !effect -> custom_init_object.empty() )
   {
     if ( effect -> custom_init )
@@ -4372,7 +4396,7 @@ namespace unique_gear
     gain = player->get_gain(name());
   }
 
-std::vector<special_effect_db_item_t> __special_effect_db, __fallback_effect_db;
+std::vector<special_effect_db_item_t> __special_effect_db, __fallback_effect_db, __passive_effect_db;
 
 bool class_scoped_callback_t::valid(const special_effect_t& effect) const
 {
@@ -4466,29 +4490,38 @@ static special_effect_set_t find_fallback_effect_db_item( unsigned spell_id )
 special_effect_set_t unique_gear::find_special_effect_db_item( unsigned spell_id )
 { return do_find_special_effect_db_item( __special_effect_db, spell_id ); }
 
+special_effect_set_t unique_gear::find_passive_effect_db_item( unsigned spell_id )
+{ return do_find_special_effect_db_item( __passive_effect_db, spell_id ); }
+
 void unique_gear::add_effect( const special_effect_db_item_t& dbitem )
 {
-  __special_effect_db.push_back( dbitem );
+  // Passive special effects are processed during first phase initialization so aren't added to __special_effect_db if
+  // they have a custom initializer.
+  if ( dbitem.passive && dbitem.cb_obj )
+    __passive_effect_db.push_back( dbitem );
+  else
+    __special_effect_db.push_back( dbitem );
+
   if ( dbitem.fallback )
     __fallback_effect_db.push_back( dbitem );
 }
 
-void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback,
+void unique_gear::register_special_effect( unsigned spell_id, custom_cb_t init_callback, bool fallback, bool passive,
                                            wowv_t min_build, wowv_t max_build )
 {
   special_effect_db_item_t dbitem;
   dbitem.spell_id = spell_id;
   dbitem.cb_obj = new wrapper_callback_t( std::move( init_callback ), min_build, max_build );
   dbitem.fallback = fallback;
-
+  dbitem.passive = passive;
   add_effect( dbitem );
 }
 
 void unique_gear::register_special_effect( std::initializer_list<unsigned> spell_ids, custom_cb_t init_callback,
-                                           bool fallback, wowv_t min_build, wowv_t max_build )
+                                           bool fallback, bool passive, wowv_t min_build, wowv_t max_build )
 {
   for ( auto id : spell_ids )
-    register_special_effect( id, init_callback, fallback, min_build, max_build );
+    register_special_effect( id, init_callback, fallback, passive, min_build, max_build );
 }
 
 void unique_gear::register_special_effect( unsigned spell_id, const char* encoded_str )
@@ -4780,9 +4813,12 @@ void unique_gear::register_special_effects()
 
 void unique_gear::unregister_special_effects()
 {
-  for ( auto& dbitem: __special_effect_db )
+  for ( auto& dbitem : __special_effect_db )
     delete dbitem.cb_obj;
-}
+
+  for ( auto& dbitem : __passive_effect_db )
+    delete dbitem.cb_obj;
+  }
 
 action_t* unique_gear::create_action( player_t* player, util::string_view name, util::string_view options )
 {
@@ -4817,30 +4853,37 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   midnight::register_target_data_initializers( *sim );
 }
 
-special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id, special_effect_e type )
+std::vector<special_effect_t*> unique_gear::find_special_effects( player_t* p, unsigned id, special_effect_e type )
 {
-  auto it = range::find_if( actor -> special_effects, [ spell_id, type ]( const special_effect_t* e ) {
-    return e -> driver() -> id() == spell_id && ( type == SPECIAL_EFFECT_NONE || type == e -> type );
-  });
+  std::vector<special_effect_t*> effects;
 
-  if ( it != actor -> special_effects.end() )
+  for ( auto e : p->special_effects )
   {
-    return *it;
-  }
-
-  for ( const auto& item: actor -> items )
-  {
-    auto it = range::find_if( item.parsed.special_effects, [ spell_id, type ]( const special_effect_t* e ) {
-      return e -> driver() -> id() == spell_id && ( type == SPECIAL_EFFECT_NONE || type == e -> type );
-    });
-
-    if ( it != item.parsed.special_effects.end() )
+    if ( e->driver()->id() == id && ( type == SPECIAL_EFFECT_NONE || type == e->type ) )
     {
-      return *it;
+      effects.push_back( e );
     }
   }
 
-  return nullptr;
+  for ( const auto& item : p->items )
+  {
+    for ( auto e : item.parsed.special_effects )
+    {
+      if ( e->driver()->id() == id && ( type == SPECIAL_EFFECT_NONE || type == e->type ) )
+      {
+        effects.push_back( e );
+      }
+    }
+  }
+
+  return effects;
+}
+
+special_effect_t* unique_gear::find_special_effect( player_t* p, unsigned id, special_effect_e type )
+{
+  auto effects = unique_gear::find_special_effects( p, id, type );
+
+  return effects.empty() ? nullptr : effects.front();
 }
 
 // Some special effects may use fallback initializers, where the fallback initializer is called if
@@ -4862,7 +4905,7 @@ void unique_gear::initialize_special_effect_fallbacks( player_t* actor )
   });
 
   // Check all fallback ids
-  for ( auto fallback_id: fallback_ids )
+  for ( auto fallback_id : fallback_ids )
   {
     // Actor already has a special effect with the fallback id, so don't do anything
     if ( find_special_effect( actor, fallback_id ) )
@@ -4939,6 +4982,7 @@ void unique_gear::sort_special_effects()
 {
   range::sort( __special_effect_db, cmp_special_effect );
   range::sort( __fallback_effect_db, cmp_special_effect );
+  range::sort( __passive_effect_db, cmp_special_effect );
 }
 
 bool unique_gear::has_role_mult( player_t* player, const spell_data_t* s_data )

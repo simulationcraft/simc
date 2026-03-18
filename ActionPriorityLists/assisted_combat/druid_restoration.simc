@@ -20,6 +20,7 @@ actions.assisted_combat+=/starfire,if=active_enemies>3&buff.cat_form.down,cooldo
 actions.assisted_combat+=/wrath,if=buff.cat_form.down,cooldown_allow_casting_success=1
 actions.assisted_combat+=/moonfire
 
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury

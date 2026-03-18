@@ -11,6 +11,7 @@
 #include "util/chrono.hpp"
 
 #include <string>
+#include <shared_mutex>
 
 struct sim_progress_t;
 struct sim_t;
@@ -26,6 +27,7 @@ struct progress_bar_t
   size_t work_index, total_work_;
   double elapsed_time;
   size_t time_count;
+  std::shared_mutex lock;
 
   progress_bar_t( sim_t& s );
   void init();
@@ -38,7 +40,7 @@ struct progress_bar_t
   void add_simulation_time( double t );
   size_t current_progress() const;
   size_t total_work() const;
-  double average_simulation_time() const;
+  double average_simulation_time();
 
   static std::string format_time( double t );
 private:

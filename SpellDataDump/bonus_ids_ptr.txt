@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.65769 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.66330 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
@@ -1662,6 +1662,7 @@ bonus_id={ 3451 }, base_ilevel={ 865 }, quality={ epic }
 bonus_id={ 3452 }, base_ilevel={ 855 }, desc={ Mythic }
 bonus_id={ 3453 }, base_ilevel={ 860 }, desc={ Mythic }
 bonus_id={ 3454 }, base_ilevel={ 875 }, desc={ Mythic }
+bonus_id={ 3455 }, recursive_bonus_ids={ 3530 }
 bonus_id={ 3457 }, base_ilevel={ 810 }, quality={ rare }
 bonus_id={ 3458 }, base_ilevel={ 56 }, req_ilevel={ 45 }
 bonus_id={ 3460 }, base_ilevel={ 810 }, quality={ rare }
@@ -3764,17 +3765,17 @@ bonus_id={ 6649 }, mod_to_stat={ Haste (100) }
 bonus_id={ 6650 }, mod_to_stat={ Vers (100) }
 bonus_id={ 6651 }
 bonus_id={ 6653 }, effects={ Unknown Effect (id=117295) }
-bonus_id={ 6654 }, base_ilevel={ 5 }
+bonus_id={ 6654 }, base_ilevel={ 1 }
 bonus_id={ 6655 }, recursive_bonus_ids={ 6654 }
-bonus_id={ 6656 }, base_ilevel={ -1 }, quality={ poor }
+bonus_id={ 6656 }, base_ilevel={ -5 }, quality={ poor }
 bonus_id={ 6657 }, recursive_bonus_ids={ 6656 }
-bonus_id={ 6658 }, base_ilevel={ 8 }, quality={ rare }
+bonus_id={ 6658 }, base_ilevel={ 4 }, quality={ rare }
 bonus_id={ 6659 }, recursive_bonus_ids={ 6658 }
-bonus_id={ 6660 }, base_ilevel={ 11 }, quality={ epic }
+bonus_id={ 6660 }, base_ilevel={ 7 }, quality={ epic }
 bonus_id={ 6661 }, recursive_bonus_ids={ 6660 }
 bonus_id={ 6662 }, ilevel={ 75 @plvl 1 - 75 @plvl 75 }
 bonus_id={ 6663 }, recursive_bonus_ids={ 6664 }
-bonus_id={ 6664 }, base_ilevel={ 2 }
+bonus_id={ 6664 }, base_ilevel={ -2 }
 bonus_id={ 6665 }, ilevel_adjust={ 40 }
 bonus_id={ 6666 }, ilevel_adjust={ 60 }
 bonus_id={ 6667 }, ilevel_adjust={ 150 }
@@ -3869,7 +3870,7 @@ bonus_id={ 6820 }, ilevel={ 4 @plvl 1 - 65 @plvl 70 }
 bonus_id={ 6821 }, ilevel={ 6 @plvl 1 - 71 @plvl 70 }
 bonus_id={ 6822 }, base_ilevel={ 4 }
 bonus_id={ 6823 }, quality={ legendary }, effects={ Slick Ice (id=327508, index=0, type=equip) }
-bonus_id={ 6825 }, ilevel={ 5 @plvl 0 - 61 @plvl 80 }
+bonus_id={ 6825 }, ilevel={ 1 @plvl 0 - 63 @plvl 80 }
 bonus_id={ 6826 }, ilevel={ 50 @plvl 50 - 70 @plvl 70 }
 bonus_id={ 6828 }, quality={ legendary }, effects={ Cold Front (id=327284, index=0, type=equip) }
 bonus_id={ 6829 }, quality={ legendary }, effects={ Freezing Winds (id=327364, index=0, type=equip) }
@@ -4343,6 +4344,9 @@ bonus_id={ 7745 }, stats={ 100% Crit [0.0460] }
 bonus_id={ 7746 }, stats={ 100% Haste [0.0940] }
 bonus_id={ 7747 }, effects={ Render Tribute (id=357585, index=2, type=use), Harsh Tutelage (id=358569, index=2, type=equip) }
 bonus_id={ 7748 }, effects={ Harsh Tutelage (id=358571, index=2, type=equip) }
+bonus_id={ 7753 }, base_ilevel={ 71 }, req_ilevel={ 60 }
+bonus_id={ 7754 }, base_ilevel={ 72 }, req_ilevel={ 60 }, desc={ Heroic }
+bonus_id={ 7755 }, base_ilevel={ 73 }, req_ilevel={ 60 }, desc={ Mythic }
 bonus_id={ 7880 }, quality={ epic }, ilevel={ 233 @plvl 0 - 233 @plvl 0 }
 bonus_id={ 7881 }, quality={ epic }, ilevel={ 262 @plvl 0 - 262 @plvl 0 }
 bonus_id={ 7883 }, ilevel={ 5 @plvl 1 - 220 @plvl 60 }
@@ -4933,8 +4937,8 @@ bonus_id={ 9116 }, base_ilevel={ 70 }, req_ilevel={ 60 }, desc={ Heroic }, quali
 bonus_id={ 9117 }, base_ilevel={ 71 }, req_ilevel={ 60 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 9118 }, base_ilevel={ 70 }, req_ilevel={ 60 }
 bonus_id={ 9119 }, base_ilevel={ 71 }, req_ilevel={ 60 }
-bonus_id={ 9120 }, base_ilevel={ 72 }, req_ilevel={ 60 }, desc={ Heroic }
-bonus_id={ 9121 }, base_ilevel={ 73 }, req_ilevel={ 60 }, desc={ Mythic }
+bonus_id={ 9120 }, base_ilevel={ 72 }, req_ilevel={ 60 }
+bonus_id={ 9121 }, base_ilevel={ 73 }, req_ilevel={ 60 }
 bonus_id={ 9122 }, base_ilevel={ 72 }, req_ilevel={ 60 }
 bonus_id={ 9123 }, base_ilevel={ 73 }, req_ilevel={ 60 }
 bonus_id={ 9124 }, base_ilevel={ 74 }, req_ilevel={ 60 }
@@ -7320,7 +7324,7 @@ bonus_id={ 12234 }, socket={ 3 }
 bonus_id={ 12235 }, effects={ Unknown Effect (id=206760) }
 bonus_id={ 12236 }, effects={ Unknown Effect (id=206761) }
 bonus_id={ 12237 }, effects={ Skrog Tooth (id=1223600, index=0, type=equip) }
-bonus_id={ 12245 }, base_ilevel={ 259 }, req_ilevel={ 90 }
+bonus_id={ 12245 }, base_ilevel={ 175 }, req_ilevel={ 90 }
 bonus_id={ 12247 }, base_ilevel={ 201 }, req_ilevel={ 90 }
 bonus_id={ 12249 }, base_ilevel={ 165 }, req_ilevel={ 81 }
 bonus_id={ 12252 }, base_ilevel={ 41 }, req_ilevel={ 78 }
@@ -8107,14 +8111,14 @@ bonus_id={ 13559 }, base_ilevel={ 70 }, req_ilevel={ 60 }, quality={ rare }
 bonus_id={ 13560 }, base_ilevel={ 68 }, req_ilevel={ 60 }, quality={ rare }
 bonus_id={ 13561 }, base_ilevel={ 62 }, req_ilevel={ 50 }, quality={ rare }
 bonus_id={ 13562 }, effects={ Griftah's Fool-Proof Embellishing Powder (id=1260254, index=0, type=equip) }
-bonus_id={ 13563 }, base_ilevel={ 201 }, req_ilevel={ 90 }, quality={ uncommon }
+bonus_id={ 13563 }, base_ilevel={ 175 }, req_ilevel={ 90 }, quality={ uncommon }
 bonus_id={ 13564 }, base_ilevel={ 120 }, quality={ uncommon }
 bonus_id={ 13565 }, ilevel={ 15 @plvl 10 - 232 @plvl 90 }
 bonus_id={ 13566 }, ilevel={ 15 @plvl 10 - 239 @plvl 90 }
 bonus_id={ 13567 }, quality={ rare }, ilevel={ 15 @plvl 10 - 232 @plvl 90 }
 bonus_id={ 13568 }, quality={ epic }, ilevel={ 15 @plvl 10 - 239 @plvl 90 }
 bonus_id={ 13569 }, quality={ rare }, ilevel={ 15 @plvl 10 - 239 @plvl 90 }
-bonus_id={ 13570 }, base_ilevel={ 220 }, req_ilevel={ 90 }, quality={ rare }
+bonus_id={ 13570 }, base_ilevel={ 204 }, req_ilevel={ 90 }, quality={ rare }
 bonus_id={ 13571 }, base_ilevel={ 233 }, req_ilevel={ 90 }, quality={ epic }
 bonus_id={ 13572 }, ilevel={ 1 @plvl 1 - 655 @plvl 80 }
 bonus_id={ 13573 }, base_ilevel={ 120 }
@@ -8172,6 +8176,14 @@ bonus_id={ 13646 }, base_ilevel={ 133 }, quality={ epic }
 bonus_id={ 13647 }, base_ilevel={ 1 }, quality={ uncommon }
 bonus_id={ 13648 }, base_ilevel={ 126 }, quality={ rare }
 bonus_id={ 13649 }, base_ilevel={ 180 }, req_ilevel={ 81 }, quality={ rare }
+bonus_id={ 13651 }, base_ilevel={ 246 }, req_ilevel={ 90 }
+bonus_id={ 13652 }, base_ilevel={ 259 }, req_ilevel={ 90 }
+bonus_id={ 13653 }, base_ilevel={ 285 }, req_ilevel={ 90 }, desc={ Ascendant Voidforged: Hero }, quality={ epic }
+bonus_id={ 13654 }, base_ilevel={ 298 }, req_ilevel={ 90 }, desc={ Ascendant Voidforged: Myth }, quality={ epic }
+bonus_id={ 13655 }, desc={ Ascendant Voidforged }, ilevel_adjust={ 10 }
 bonus_id={ 13668 }, socket={ 1 }
 bonus_id={ 13669 }, base_ilevel={ 220 }, req_ilevel={ 90 }
 bonus_id={ 13670 }, base_ilevel={ 80 }, req_ilevel={ 80 }, quality={ epic }
+bonus_id={ 13689 }, base_ilevel={ 49 }, req_ilevel={ 40 }, quality={ rare }
+bonus_id={ 13729 }, base_ilevel={ 133 }
+bonus_id={ 13730 }, base_ilevel={ 139 }, quality={ rare }

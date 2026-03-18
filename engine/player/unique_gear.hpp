@@ -62,6 +62,7 @@ void unregister_special_effects();
 
 void add_effect( const special_effect_db_item_t& );
 special_effect_set_t find_special_effect_db_item( unsigned spell_id );
+special_effect_set_t find_passive_effect_db_item( unsigned spell_id );
 
 action_t* create_action( player_t* player, util::string_view name, util::string_view options );
 
@@ -71,7 +72,8 @@ void register_target_data_initializers_bfa( sim_t* );     // Battle for Azeroth 
 
 void init( player_t* );
 
-special_effect_t* find_special_effect( player_t* actor, unsigned spell_id, special_effect_e = SPECIAL_EFFECT_NONE );
+std::vector<special_effect_t*> find_special_effects( player_t*, unsigned, special_effect_e = SPECIAL_EFFECT_NONE );
+special_effect_t* find_special_effect( player_t*, unsigned, special_effect_e = SPECIAL_EFFECT_NONE );
 
 // First-phase special effect initializers
 void initialize_special_effect( special_effect_t& effect, unsigned spell_id );

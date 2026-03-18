@@ -230,6 +230,7 @@ public:
     action_t* arcane_assault;
     action_t* arcane_echo;
     action_t* burnout;
+    action_t* cinderstorm;
     action_t* flash_freezeburn;
     action_t* frostfire_empowerment;
     action_t* glacial_assault;
@@ -366,9 +367,10 @@ public:
     unsigned initial_spellfire_spheres = 5;
     unsigned initial_icicles = 5;
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
-    int clearcasting_blp_threshold = -1;
-    int sphere_blp_threshold = 11;
-    bool il_requires_freezing = true;
+    unsigned clearcasting_blp_threshold = 0;
+    unsigned sphere_blp_threshold = 11;
+    unsigned augury_blp_threshold = 21;
+    bool il_requires_freezing = false;
     bool il_sort_by_freezing = true;
     bool randomize_si_target = false;
   } options;
@@ -409,6 +411,9 @@ public:
   struct accumulated_rngs_t
   {
     accumulated_rng_t* pyromaniac;
+    accumulated_rng_t* clearcasting;
+    accumulated_rng_t* spellfire_spheres;
+    accumulated_rng_t* augury_abounds;
   } accumulated_rng;
 
   // Sample data
@@ -447,13 +452,11 @@ public:
     bool had_low_mana;
     bool trigger_ff_empowerment;
     bool trigger_overpowered_missiles;
-    bool heat_shimmer;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
+    timespan_t last_random_clearcasting; // Brainstorm cannot be triggered twice if a singular spell/action triggers Clearcasting twice.
     bool eureka;
     bool thermal_void_active;
     int glorious_incandescence_snapshot;
-    int clearcasting_blp_count;
-    int sphere_blp_count;
     int icicles;
     int fired_up_count; // number of Fired Up procs in this Combustion
   } state;
@@ -902,10 +905,11 @@ public:
   void trigger_arcane_charge( int stacks = 1 );
   bool trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0_ms );
   bool trigger_crowd_control( const action_state_t* s, spell_mechanic type );
-  bool trigger_clearcasting( double chance = 1.0, timespan_t delay = 0_ms, bool allow_predict = true );
+  bool trigger_clearcasting( double chance = 1.0, bool allow_predict = true, bool has_double_proc_delay = false );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void trigger_mana_cascade();
   void trigger_fired_up();
+  void trigger_cinderstorm( player_t* target );
   void trigger_merged_buff( buff_t* buff, bool trigger );
   void trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration );
   void trigger_spellfire_sphere( specialization_e m_spec, bool background = false );
@@ -1851,39 +1855,11 @@ public:
 
     if ( p()->spec.clearcasting->ok() && triggers.clearcasting )
     {
-      // In Midnight, Clearcasting has an unmentioned 2% increased trigger rate, resulting in
-      // the base rate being 12% and 15% with Illuminated Thoughts.
-      //
-      // The quadratic expression is an approximation based upon what was visible in-game,
-      // tailored between the ranges of 10 to 18 percent -- it isn't 100% accurate, but close.
-      // https://www.desmos.com/calculator/gi5dgjw9ui, with Y-values representing the random
-      // proc chance needed with a BLP of 13 to match expected total.
-      double proc_chance = p()->spec.clearcasting->effectN( 2 ).percent() + p()->talents.illuminated_thoughts->effectN( 1 ).percent() + 0.02;
-      proc_chance = 0.41342 * proc_chance * proc_chance + 0.325242 * proc_chance - 0.0264015;
-
-      // TODO: Sometime near the beginning of December 2025, the BLP threshold was removed.
-      // We're unsure whether or not the random proc chance was increased to match the expected rate.
-      // With just Clearcasting talented (without Illuminated Thoughts or Archmage's Wrath), 
-      // the old expression above (0.41342x^2 + 0.325242x - 0.0264015 -- previously used before the removal)
-      // matches the ~11.35% expected total seen in-game.
-      //
-      // However, it's hard to tell with IT and/or AW talented as their initial proc chances being higher
-      // leads to less deviation from the 15% total.  For the moment, the equation above is accurate enough
-      // for pretty much 99% of purposes, the result is losing around 40 total applications out of thousands.
-      // We just need more data -- specifically for IT/AW -- which takes a bunch of time.
-      p()->state.clearcasting_blp_count++;
-      if ( p()->state.clearcasting_blp_count == p()->options.clearcasting_blp_threshold )
-        proc_chance = 1.0;
-      else
-        proc_chance *= p()->state.clearcasting_blp_count;
-
-      sim->print_debug( "Clearcasting proc chance: {}% ({}/{} BLP)", 
-        proc_chance * 100, p()->state.clearcasting_blp_count, p()->options.clearcasting_blp_threshold );
-
-      if ( proc_chance == 1.0 || !background )
+      int result = p()->accumulated_rng.clearcasting->trigger();
+      if ( result == ARNG_GUARANTEED || ( !background && result ) )
       {
-        if ( p()->trigger_clearcasting( proc_chance, 100_ms, !background ) )
-          p()->state.clearcasting_blp_count = 0;
+        p()->trigger_clearcasting( 1.0, false );
+        p()->state.last_random_clearcasting = sim->current_time();
       }
     }
 
@@ -2339,7 +2315,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.scorch.ok() )
       return false;
 
-    if ( p()->state.heat_shimmer && p()->buffs.heat_shimmer->check() )
+    if ( p()->buffs.heat_shimmer->check() )
       return true;
 
     return target->health_percentage() <= p()->talents.scorch->effectN( 2 ).base_value();
@@ -2434,7 +2410,16 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
   void execute() override
   {
+    if ( last_hot_streak )
+    {
+      p()->trigger_fired_up();
+      p()->trigger_spellfire_sphere( MAGE_FIRE );
+    }
+
     custom_state_spell_t::execute();
+
+    // TODO: When exactly in execute does this trigger the first cinder?
+    p()->trigger_cinderstorm( target );
 
     if ( p()->sets->set( MAGE_FIRE, MID1, B4 )->ok() )
       p()->cooldowns.fire_blast->adjust( -p()->sets->set( MAGE_FIRE, MID1, B4 )->effectN( 1 ).time_value(), false, false );
@@ -2446,9 +2431,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     {
       p()->buffs.hot_streak->decrement();
       p()->buffs.pyroclasm->trigger();
-      p()->trigger_fired_up();
 
-      p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
     }
 
@@ -2457,8 +2440,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     {
       p()->cooldowns.pyromaniac->start( p()->talents.pyromaniac->internal_cooldown() );
 
-      // TODO: Pyromaniac increments Sphere's BLP (and thus can proc Spheres w/ the cap), 
-      // but it hasn't been tested whether it can roll the random chance.
+      p()->trigger_fired_up();
       p()->trigger_spellfire_sphere( MAGE_FIRE );
       p()->trigger_mana_cascade();
 
@@ -2578,7 +2560,8 @@ struct ignite_t final : public residual_action::residual_periodic_action_t<spell
     residual_action_t::tick( d );
 
     auto p = debug_cast<mage_t*>( player );
-    p->buffs.heat_shimmer->trigger();
+    if ( !p->executing || p->executing->id != 2948 ) // Heat Shimmer cannot trigger while Scorch is casting
+      p->buffs.heat_shimmer->trigger();
 
     if ( p->get_active_dots( d ) <= p->talents.intensifying_flame->effectN( 1 ).base_value() )
     {
@@ -2702,11 +2685,8 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
 
     custom_state_spell_t::execute();
 
-    // TODO: PTR check
-    if ( p()->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
-      p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 2 ).base_value() ) );
-
     p()->trigger_arcane_charge();
+    p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 2 ).base_value() ) );
     clearcasting_snapshot = false;
   }
 
@@ -2720,8 +2700,7 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
     if ( p()->talents.splintering_orbs.ok() )
     {
       int count = as<int>( p()->talents.splintering_orbs->effectN( 4 ).base_value() );
-      // TODO: Conjures up to 4 splinters despite spelldata claiming 2
-      int max_count = p()->bugs ? 2 * count : as<int>( p()->talents.splintering_orbs->effectN( 1 ).base_value() );
+      int max_count = as<int>( p()->talents.splintering_orbs->effectN( 1 ).base_value() );
       assert( count > 0 );
       if ( s->chain_target < max_count / count )
         p()->trigger_splinter( s->target, count );
@@ -2806,7 +2785,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     int salvo = p()->buffs.arcane_salvo->check();
     if ( p()->buffs.arcane_soul->check() )
     {
-      p()->trigger_clearcasting();
+      p()->trigger_clearcasting( 1.0, true, true );
       p()->trigger_arcane_charge( arcane_soul_charges );
       p()->trigger_arcane_salvo( arcane_soul_salvo, as<int>( p()->buffs.arcane_soul->data().effectN( 2 ).base_value() ) );
     }
@@ -2972,8 +2951,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    triggers.clearcasting = !echo;
-    triggers.spellfire_sphere = triggers.mana_cascade = true;  // Echo triggers Mana Cascade as well
+    triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = !echo;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
 
     if ( echo )
@@ -3008,12 +2986,20 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
-    p()->trigger_splinter( p()->target ); // Also triggers from echo
+
+    // In-game, Arcane Pulse internally sets a target it hits as a "Background Target",
+    // resulting in all of Pulse's background effects to be directed towards them.
+    // TODO: If we're implementing the radius, revise this to use the spell's target list instead.
+    player_t* effect_target = target;
     if ( !background )
+    {
       p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
+      effect_target = rng().range( target_list() );
+      p()->trigger_splinter( effect_target );
+    }
 
     if ( arcane_pulse_echo && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
-      make_event( *sim, 500_ms, [ this, t = target ] { arcane_pulse_echo->execute_on_target( t ); } );
+      make_event( *sim, 500_ms, [ this, t = effect_target ] { arcane_pulse_echo->execute_on_target( t ); } );
   }
 
   double action_multiplier() const override
@@ -3414,6 +3400,51 @@ struct blizzard_t final : public frost_mage_spell_t
   }
 };
 
+struct cinderstorm_t final : public fire_mage_spell_t
+{
+  cinderstorm_t( std::string_view n, mage_t* p ) :
+    fire_mage_spell_t( n, p, p->find_spell( 1254024 ) )
+  {
+    background = proc = true;
+    triggers.ignite = true;
+    base_ignite_multiplier *= p->talents.cinderstorm->effectN( 5 ).percent();
+  };
+
+  void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    if ( !result_is_hit( s->result ) )
+      return;
+
+    // TODO: Technically, the primary target does not have to be in this list anymore.
+    auto spread_targets = target_list();
+    if ( spread_targets.size() < 2 )
+      return;
+
+    // TODO: If this is ever increased to hit more than 1 additional target, check if it can pick the same target multiple times.
+    for ( size_t i = 0; i < as<size_t>( p()->talents.cinderstorm->effectN( 3 ).base_value() ); i++ )
+    {
+      // This spreads Ignite to a random target.
+      size_t target_index = rng().range( spread_targets.size() - 1 );
+      player_t* spread_target = spread_targets[ target_index ];
+      if ( spread_target == s->target )
+        spread_target = spread_targets.back();
+
+      // Despite the tooltip, this chains to a target and applies Ignite based on Cinderstorm's damage.
+      // TODO: This may actually calculate the damage freshly in some way, but for now this uses damage to the main target.
+      //       The applied Ignite values don't match perfectly, but do seem to respect whether the initial Cinderstorm crit.
+      // TODO: Check whether multipliers such as composite_ignite_multiplier consider the initial target or the chained target.
+      action_state_t* spread_state = get_state( s );
+      spread_state->target = spread_target;
+      spread_state->result_total *= 2.0; // This applies Ignite at 200% effectiveness to the secondary target.
+      // TODO: Implement travel time to the secondary target if needed. This should use the same missile speed as this action.
+      trigger_ignite( spread_state );
+      action_state_t::release( spread_state );
+    }
+  }
+};
+
 struct cold_snap_t final : public frost_mage_spell_t
 {
   cold_snap_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -3770,11 +3801,12 @@ struct flamestrike_t final : public hot_streak_spell_t
     triggers.ignite = true;
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
+    // TODO: This 50% is applied to Ignite's effect#4. In the future, it may be better to use that value here instead.
+    base_ignite_multiplier *= 1.0 + p->talents.ignition->effectN( 2 ).percent();
 
     if ( p->talents.pyromaniac.ok() )
       pyromaniac_action = get_action<flamestrike_pyromaniac_t>( "flamestrike_pyromaniac", p );
   }
-
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
@@ -3782,16 +3814,6 @@ struct flamestrike_t final : public hot_streak_spell_t
 
     unsigned scaling_targets = std::min( s->n_targets, as<unsigned>( p()->talents.fuel_the_fire->effectN( 3 ).base_value() ) );
     m *= 1.0 + p()->talents.fuel_the_fire->effectN( 2 ).percent() * scaling_targets;
-
-    return m;
-  }
-
-  double composite_ignite_multiplier( const action_state_t* s ) const override
-  {
-    double m = hot_streak_spell_t::composite_ignite_multiplier( s );
-
-    // TODO: This 50% is applied to Ignite's effect#4. In the future, it may be better to use that value here instead.
-    m *= 1.0 + p()->talents.ignition->effectN( 2 ).percent();
 
     return m;
   }
@@ -3928,7 +3950,22 @@ struct frostbolt_t final : public frost_mage_spell_t
     freezing_stacks = as<int>( p->spec.shatter->effectN( 1 ).base_value() );
 
     chain_multiplier = p->talents.splitting_ice->effectN( 2 ).percent();
-    // TODO: Doesn't seem to affect Frostbolt for some reason
+    // TODO: Splitting Ice has a couple of issues that affect Frostbolt and Frostfire Bolt
+    //
+    // 1) Frostbolt cleave distance is much smaller than the other SI spells (including FFB)
+    // 2) The secondary target reduction is applied by keeping track of the target
+    // of the last cast. The impact spell then deals full damage if its target matches the one
+    // above. This has its own set of (rather meaningless) bugs, e.g. casting another spell
+    // before the previous one hits can change how the previous spell deals damage.
+    //
+    // However, the bigger issue is that it's currently only Frostfire Bolt that sets this tracked
+    // target. Frostbolt uses it to deal damage but doesn't set it. This has the following consequences:
+    //
+    // * If you cast Frostfire Bolt and then switch to Spellslinger, your Frostbolt will only ever
+    // deal full damage to the last FFB target.
+    // * If you never cast Frostfire Bolt, Frostbolt simply deals full damage to everything.
+    //
+    // Since the last behavior is the most common one, that's what we'll model in simc.
     if ( p->bugs && !frostfire )
       chain_multiplier = 1.0;
 
@@ -4175,17 +4212,26 @@ struct glacial_spike_t final : public frost_mage_spell_t
     p()->buffs.glacial_spike->decrement();
     p()->state.icicles = 0;
 
-    p()->trigger_fof( fof_chance, proc_fof );
-    p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), proc_fof );
     p()->trigger_brain_freeze( bf_chance, proc_brain_freeze, 150_ms );
     p()->trigger_splinter( p()->target );
     p()->trigger_splinter( p()->target, as<int>( p()->talents.signature_spell->effectN( 2 ).base_value() ) );
+
+    // TODO: If GS is cast with no FoF, the guaranteed FoF from Flash Freeze is applied with a short delay
+    auto fn = [ this ] { p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), proc_fof ); };
+    if ( p()->bugs && !p()->buffs.fingers_of_frost->check() )
+      make_event( *sim, 100_ms, fn );
+    else
+      fn();
+    p()->trigger_fof( fof_chance, proc_fof );
 
     if ( duality_pyroblast )
       duality_pyroblast->execute_on_target( target );
 
     if ( p()->talents.flash_freezeburn.ok() )
+    {
       p()->buffs.frostfire_empowerment->trigger();
+      p()->buffs.frostfire_empowerment->predict();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4316,13 +4362,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     enable_calculate_on_impact( 228598 );
 
     if ( p->talents.fractured_frost.ok() )
-    {
       aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
-      // TODO: Still seems to be doing 90% damage to the secondary target, despite no longer
-      // having 0.9 chain multiplier (and the talent description)
-      if ( p->bugs )
-        chain_multiplier = 0.9;
-    }
 
     if ( p->spec.shatter->ok() )
       add_child( p->action.shatter.ice_lance );
@@ -4346,22 +4386,16 @@ struct ice_lance_t final : public frost_mage_spell_t
     if ( result_is_hit( s->result ) && p()->action.shatter.ice_lance )
     {
       int consume = ( p()->state.thermal_void_active ? 2 : 1 ) * freezing_consume;
-      p()->state.thermal_void_active = false;
-
       int stacks = p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, consume,
                                          s->chain_target == 0 ? shatter_source : shatter_source_cleave, p()->state.fingers_of_frost_active );
 
       if ( s->chain_target == 0 && p()->talents.force_of_will.ok() )
         p()->trigger_splinter( s->target, stacks / as<int>( p()->talents.force_of_will->effectN( 3 ).base_value() ) );
 
-      if ( stacks >= 1 || p()->bugs )
-      {
-        // TODO: This now happens without any shattered stacks (giving the base 0.5 sec cdr)
-        timespan_t whiteout = p()->talents.white_out->effectN( 1 ).time_value();
-        whiteout += stacks * p()->talents.white_out->effectN( 2 ).time_value();
-        p()->cooldowns.frozen_orb->adjust( -whiteout );
-        p()->cooldowns.ray_of_frost->adjust( -stacks * p()->talents.glaciate->effectN( 2 ).time_value() );
-      }
+      timespan_t whiteout = p()->talents.white_out->effectN( 1 ).time_value();
+      whiteout += stacks * p()->talents.white_out->effectN( 2 ).time_value();
+      p()->cooldowns.frozen_orb->adjust( -whiteout );
+      p()->cooldowns.ray_of_frost->adjust( -stacks * p()->talents.glaciate->effectN( 2 ).time_value() );
     }
   }
 
@@ -4513,11 +4547,8 @@ struct meteor_burn_t final : public fire_mage_spell_t
     // tick on each pulse.
     dot_duration = base_tick_time = 1_ms;
     hasted_ticks = false;
-
-    // TODO: Hard to say how the new tick_zero attribute is supposed to work with
-    // Meteor Burn, but it definitely shouldn't make it tick ~12 times.
-    if ( p->bugs && p->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
-      dot_duration = 3_ms;
+    // Handled by the parent action
+    tick_on_application = false;
   }
 };
 
@@ -4537,9 +4568,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
     meteor_burn( burn ),
     meteor_burn_duration( p->find_spell( 175396 )->duration() ),
     meteor_burn_pulse_time( p->find_spell( 155158 )->effectN( 1 ).period() ),
-    // TODO: Seems to use the Ice Lance value rather than the CmS/Meteor value
-    // TODO: Fixed on beta, remove PTR check
-    freezing_consume( as<int>( p->spec.shatter->effectN( p->bugs && p->dbc->wowv() < wowv_t{ 12, 0, 1 } ? 4 : 5 ).base_value() ) ),
+    freezing_consume( as<int>( p->spec.shatter->effectN( 5 ).base_value() ) ),
     shatter_source( p->get_shatter_source( name_str, freezing_consume ) )
   {
     aoe = -1;
@@ -4553,10 +4582,6 @@ struct meteor_impact_t final : public fire_mage_spell_t
     double m = 1.0 + p->talents.deep_impact->effectN( 1 ).percent();
     base_multiplier     *= m;
     base_aoe_multiplier /= m;
-    
-    // TODO: Seems to miss the final tick now that the duration is a multiple of the tick time once again.
-    if ( p->bugs )
-      meteor_burn_duration -= 1.0_s;
   }
 
   void execute() override
@@ -4641,12 +4666,15 @@ struct meteor_t final : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     if ( !background && p()->talents.flash_freezeburn.ok() )
+    {
       p()->buffs.frostfire_empowerment->trigger();
+      p()->buffs.frostfire_empowerment->predict();
+    }
 
     if ( p()->action.isothermic_comet_storm )
       p()->action.isothermic_comet_storm->execute_on_target( target );
-    
-    if ( p()->talents.sunfury_execution.ok() )
+
+    if ( p()->talents.pyroclasm.ok() && p()->talents.sunfury_execution.ok() )
        p()->buffs.pyroclasm->execute();
   }
 };
@@ -4828,9 +4856,7 @@ struct splintering_ray_t final : public spell_t
     background = proc = true;
     target_filter_callback = secondary_targets_only();
     base_dd_min = base_dd_max = 1.0;
-    // TODO: Seems to hit 1 fewer target. See flash_freezeburn_t for possible explanation.
-    if ( p->bugs )
-      aoe--;
+    aoe = as<int>( p->talents.splintering_ray->effectN( 2 ).base_value() );
   }
 
   void init() override
@@ -4885,9 +4911,16 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     if ( splintering_ray )
       splintering_ray->execute_on_target( d->target, p()->talents.splintering_ray->effectN( 1 ).percent() * d->state->result_total );
 
-    // TODO: use the spell data in some way
-    if ( p()->action.hand_of_frost && p()->talents.hand_of_frost_3.ok() && d->current_tick % 2 == 1 )
-      p()->action.hand_of_frost->execute_on_target( d->target );
+    if ( p()->action.hand_of_frost && p()->talents.hand_of_frost_3.ok() )
+    {
+      // TODO: This is a bit of a hack to make it work for both 4 and 8 in spell data
+      // TODO: In game, there's actually a global "RoF tick" counter that triggers HoF on every second tick
+      // (so it's possible to get HoF ticks on 1/3/5/7 but also 2/4/6/8).
+      int every = static_cast<int>(
+          std::round( ( dot_duration / base_tick_time ) / p()->talents.hand_of_frost_3->effectN( 1 ).base_value() ) );
+      if ( ( d->current_tick - 1 ) % every == 0 )
+        p()->action.hand_of_frost->execute_on_target( d->target );
+    }
   }
 
   void execute() override
@@ -4919,24 +4952,12 @@ struct scorch_t final : public fire_mage_spell_t
     travel_delay = p->options.scorch_delay.total_seconds();
   }
 
-  void schedule_execute( action_state_t* s ) override
-  {
-    fire_mage_spell_t::schedule_execute( s );
-
-    // Heat Shimmer cannot be consumed or apply its benefit unless
-    // it was already active at the beginning of the Scorch cast.
-    p()->state.heat_shimmer = p()->buffs.heat_shimmer->check();
-  }
-
   void execute() override
   {
     fire_mage_spell_t::execute();
 
-    if ( p()->state.heat_shimmer && p()->buffs.heat_shimmer->up() )
-    {
+    if ( p()->buffs.heat_shimmer->up() )
       p()->buffs.heat_shimmer->decrement();
-      p()->state.heat_shimmer = false;
-    }
   }
 
   timespan_t execute_time() const override
@@ -5200,10 +5221,7 @@ struct flash_freezeburn_t final : public spell_t
     background = proc = true;
     target_filter_callback = secondary_targets_only();
     base_dd_min = base_dd_max = 1.0;
-    // TODO: Hits one fewer target. It is possible that the main target
-    // (which is not dealt damage) is counted as one of the five targets.
-    if ( p->bugs )
-      aoe--;
+    aoe = as<int>( p->talents.flash_freezeburn->effectN( 3 ).base_value() );
   }
 };
 
@@ -5214,11 +5232,20 @@ struct controlled_instincts_t final : public spell_t
   {
     background = proc = true;
     target_filter_callback = secondary_targets_only();
-    // TODO: Only hits 5 targets despite max_targets being 6
+
+    // TODO: Description says the spell does reduced damage beyond 5 targets but
+    // in game it's a 5 target hardcap.
+    int cap = as<int>( p->talents.controlled_instincts->effectN( 5 ).base_value() );
     if ( p->bugs )
-      aoe--;
-    // TODO: The tooltip still mentions this, but it's untestable at the moment since it can't hit 6 or more targets
-    reduced_aoe_targets = p->talents.controlled_instincts->effectN( 5 ).base_value();
+    {
+      aoe = cap;
+    }
+    else
+    {
+      aoe = -1;
+      reduced_aoe_targets = cap;
+    }
+
     base_dd_min = base_dd_max = 1.0;
   }
 };
@@ -5274,6 +5301,18 @@ struct splinter_t final : public mage_spell_t
       // Best guess: some rounding issue; adjust as needed
       cdr = 100_ms * std::round( 0.01 * cdr.total_millis() );
     cd->adjust( -cdr, false );
+  }
+
+  void execute() override
+  {
+    mage_spell_t::execute();
+
+    if ( p()->talents.augury_abounds.ok() && p()->cooldowns.augury_abounds->up() )
+    {
+      p()->cooldowns.augury_abounds->start( p()->talents.augury_abounds->internal_cooldown() );
+      if ( p()->accumulated_rng.augury_abounds->trigger() )
+        make_event( *sim, 100_ms, [ this ] { p()->trigger_splinter( nullptr, as<int>( p()->talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
+    }
   }
 
   timespan_t travel_time() const override
@@ -5421,9 +5460,7 @@ struct icicle_event_t final : public mage_event_t
   static void schedule_next( mage_t* p, bool randomize = false )
   {
     timespan_t next = p->talents.icicles->effectN( 1 ).period();
-    // TODO: PTR check
-    if ( !p->bugs || p->dbc->wowv() >= wowv_t{ 12, 0, 1 } )
-      next *= p->cache.spell_cast_speed();
+    next *= p->cache.spell_cast_speed();
     if ( randomize ) next *= p->rng().real();
     p->events.icicle = make_event<icicle_event_t>( *p->sim, *p, next );
   }
@@ -5701,6 +5738,9 @@ void mage_t::create_actions()
   if ( talents.burnout.ok() )
     action.burnout = get_action<burnout_t>( "burnout", this );
 
+  if ( talents.cinderstorm.ok() )
+    action.cinderstorm = get_action<cinderstorm_t>( "cinderstorm", this );
+
   player_t::create_actions();
 }
 
@@ -5724,8 +5764,9 @@ void mage_t::create_options()
                   throw std::invalid_argument( "valid options are 'default', 'st', and 'aoe'." );
                 return true;
               } ) );
-  add_option( opt_int( "mage.clearcasting_blp_threshold", options.clearcasting_blp_threshold ) );
-  add_option( opt_int( "mage.sphere_blp_threshold", options.sphere_blp_threshold ) );
+  add_option( opt_uint( "mage.clearcasting_blp_threshold", options.clearcasting_blp_threshold ) );
+  add_option( opt_uint( "mage.sphere_blp_threshold", options.sphere_blp_threshold ) );
+  add_option( opt_uint( "mage.augury_blp_threshold", options.augury_blp_threshold ) );
   add_option( opt_bool( "mage.il_requires_freezing", options.il_requires_freezing ) );
   add_option( opt_bool( "mage.il_sort_by_freezing", options.il_sort_by_freezing ) );
   add_option( opt_bool( "mage.randomize_si_target", options.randomize_si_target ) );
@@ -6173,9 +6214,6 @@ void mage_t::init_spells()
   cooldowns.arcane_echo->duration = find_spell( 464515 )->internal_cooldown();
 
   // Register passives
-  // Arcane aura mana regen includes points per level adjustment, handled manually in mage_t::resource_regen_per_second
-  deregister_passive_effect( spec.arcane_mage->effectN( 5 ) );
-
   // Fire's Ire is dynamic and should not be applied as a passive
   deregister_passive_spell( talents.fires_ire );
 
@@ -6199,11 +6237,7 @@ void mage_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  // Wizardry
-  parse_passive_effects( find_spell( 89744 ) );
-  // Mana Attunement
-  parse_passive_effects( find_spell( 121039 ) );
+  parse_raid_buffs();
 }
 
 void mage_t::init_base_stats()
@@ -6295,6 +6329,7 @@ void mage_t::create_buffs()
   buffs.fired_up                 = make_buff( this, "fired_up", find_spell( 1257350 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                                     ->set_activated( true )
                                      ->set_chance( talents.fired_up_1.ok() );
   buffs.heat_shimmer             = make_buff( this, "heat_shimmer", find_spell( 458964 ) )
                                      ->set_default_value_from_effect( 3 )
@@ -6354,6 +6389,7 @@ void mage_t::create_buffs()
                                    ->set_default_value_from_effect( 2, 0.001 )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                    ->set_disable_async_expire_events_removal( bugs )
+                                   ->set_activated( true )
                                    ->set_chance( talents.mana_cascade.ok() );
   buffs.spellfire_sphere       = make_buff( this, "spellfire_sphere", find_spell( 448604 ) )
                                    ->set_default_value_from_effect( 1 )
@@ -6477,6 +6513,23 @@ void mage_t::init_rng()
   // Accumulated RNG is also not present in the game data.
   // TODO: Double check that this RNG is the same in Midnight.
   accumulated_rng.pyromaniac = get_accumulated_rng( "pyromaniac", talents.pyromaniac.ok() ? 0.00605 : 0.0 );
+
+  // TODO: Seems to have an undocumented extra 2% proc chance.
+  double cc_chance = spec.clearcasting->effectN( 2 ).percent() + talents.illuminated_thoughts->effectN( 1 ).percent() + 0.02;
+  // TODO: There is no longer a cap on the BLP but the constant still assumes a BLP cap is present
+  accumulated_rng.clearcasting = get_accumulated_rng(
+    "clearcasting", prd::find_constant( cc_chance, bugs ? 13 : options.clearcasting_blp_threshold ),
+    options.clearcasting_blp_threshold );
+
+  double sphere_chance = talents.spellfire_spheres->effectN( 1 ).percent();
+  accumulated_rng.spellfire_spheres = get_accumulated_rng(
+    "spellfire_spheres", prd::find_constant( sphere_chance, options.sphere_blp_threshold ),
+    options.sphere_blp_threshold );
+
+  double augury_chance = talents.augury_abounds->effectN( 1 ).percent();
+  accumulated_rng.augury_abounds = get_accumulated_rng(
+    "augury_abounds", prd::find_constant( augury_chance, options.augury_blp_threshold ),
+    options.augury_blp_threshold );
 }
 
 void mage_t::init_finished()
@@ -6580,7 +6633,6 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
 
   if ( specialization() == MAGE_ARCANE && rt == RESOURCE_MANA )
   {
-    reg *= 1.0 + 0.01 * spec.arcane_mage->effectN( 5 ).average( this );
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 4 ).mastery_value();
     reg *= 1.0 + buffs.evocation->check_value();
     if ( buffs.enlightened->check() )
@@ -6965,8 +7017,7 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
     action->base_multiplier = old_mult;
   }
 
-  // TODO: HoF doesn't seem to need any shattered stacks to trigger
-  if ( shatter_stacks > 0 || bugs )
+  if ( shatter_stacks > 0 )
   {
     action_t* hof = this->action.hand_of_frost;
     double hof_chance = talents.hand_of_frost_1->effectN( 1 ).percent();
@@ -7036,6 +7087,20 @@ void mage_t::trigger_fired_up()
 
     if ( buffs.combustion->check() )
       state.fired_up_count++;
+  }
+}
+
+void mage_t::trigger_cinderstorm( player_t* target )
+{
+  if ( !talents.cinderstorm.ok() )
+    return;
+
+  if ( rng().roll( talents.cinderstorm->effectN( 1 ).percent() ) )
+  {
+    action.cinderstorm->execute_on_target( target );
+    int count = as<int>( talents.cinderstorm->effectN( 4 ).base_value() ) - 1;
+    if ( count > 0 )
+      make_repeating_event( *sim, 200_ms, [ this, t = target ] { action.cinderstorm->execute_on_target( t ); }, count );
   }
 }
 
@@ -7111,26 +7176,12 @@ void mage_t::trigger_spellfire_sphere( specialization_e m_spec, bool background 
 {
   if ( !talents.spellfire_spheres.ok() || m_spec != specialization() )
     return;
-  
-  // https://www.desmos.com/calculator/7akzzy14fg;
-  // the expression approximates the random proc chance needed to match the final expected rate with a BLP cap.
-  // Bug: Fire's total rate is 12%, not the tooltip's 20% -- Sphere's effectN1 in-game is (probably?) unmodified by 137019's effectN7.
-  double proc_chance = talents.spellfire_spheres->effectN( 1 ).percent();
-  if ( bugs )
-    proc_chance -= spec.fire_mage->effectN( 7 ).percent();
-  proc_chance = -0.202381 * proc_chance * proc_chance + 0.550833 * proc_chance - 0.0481071;
 
-  state.sphere_blp_count++;
-  proc_chance *= state.sphere_blp_count;
-
-  sim->print_debug( "Sphere proc chance: {}% ({}/{} BLP)", 
-    proc_chance * 100, state.sphere_blp_count, options.sphere_blp_threshold );
-
-  if ( state.sphere_blp_count == options.sphere_blp_threshold || ( !background && rng().roll( proc_chance ) ) )
+  int result = accumulated_rng.spellfire_spheres->trigger();
+  if ( result == ARNG_GUARANTEED || ( !background && result ) )
   {
     buffs.spellfire_sphere->trigger();
     buffs.glorious_incandescence->trigger();
-    state.sphere_blp_count = 0;
   }
 }
 
@@ -7172,16 +7223,9 @@ void mage_t::trigger_splinter( player_t* target, int count )
       total_delay += splinter_delay;
     }
   }
-
-  if ( talents.augury_abounds.ok() && cooldowns.augury_abounds->up() )
-  {
-    cooldowns.augury_abounds->start( talents.augury_abounds->internal_cooldown() );
-    if ( rng().roll( talents.augury_abounds->effectN( 1 ).percent() ) )
-      make_event( *sim, [ this ] { trigger_splinter( nullptr, as<int>( talents.augury_abounds->effectN( 2 ).base_value() ) ); } );
-  }
 }
 
-bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool allow_predict )
+bool mage_t::trigger_clearcasting( double chance, bool allow_predict, bool has_double_proc_delay )
 {
   if ( specialization() != MAGE_ARCANE )
     return false;
@@ -7195,6 +7239,11 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool allow_p
       state.gained_initial_clearcasting = true;
       make_event( *sim, 50_ms, [ this ] { state.gained_initial_clearcasting = false; } );
     }
+
+    timespan_t delay = 0_ms;
+    if ( has_double_proc_delay && state.last_random_clearcasting == sim->current_time() )
+      delay = 100_ms;
+    // TODO: had_clearcasting may be inaccurate; unlike previously, there's no methods to delay a CC trigger w/o CC. Revisit later.
     if ( delay > 0_ms && had_clearcasting )
       make_event( *sim, delay, [ this ] { buffs.clearcasting->trigger(); } );
     else
@@ -7202,8 +7251,21 @@ bool mage_t::trigger_clearcasting( double chance, timespan_t delay, bool allow_p
     if ( chance >= 1.0 && allow_predict )
       buffs.clearcasting->predict();
 
-    // TODO: double check timing
-    buffs.brainstorm->trigger();
+    // Due to Brainstorm being async in sims, its trigger will be scheduled w/ make_event ~30ms later, whereas CC is instantaneous.
+    // In-game, Blast (triggering CC + BS) into a queued Barrage will lead to CC + BS to be applied AFTER the Barrage.
+    // However, in sims, CC will be active prior to the Barrage.
+    // If Clearcasting would directly grant Intellect: in sims, the queued Barrage would benefit from Clearcasting; in game, the Barrage wouldn't.
+    // TODO: Currently doesn't trigger for Arcane at all
+    if ( talents.brainstorm.ok() && !bugs )
+    {
+      // TODO: we don't know what happens if a single spell triggers two (or more) separate sources of guaranteed Clearcastings.
+      // Since there's no such thing in-game yet, we can't know with certainty whether brainstorm will trigger once or twice.
+      if ( !has_double_proc_delay || state.last_random_clearcasting != sim->current_time() )
+        buffs.brainstorm->trigger();
+      else
+        sim->print_debug( "Gaining Clearcasting in {} s; Brainstorm trigger skipped.", delay );
+    }
+
     trigger_splinter( target, as<int>( talents.shifting_shards->effectN( 1 ).base_value() ) );
 
     if ( rng().roll( talents.overpowered_missiles->effectN( 1 ).percent() ) )

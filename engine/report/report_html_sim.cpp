@@ -769,7 +769,7 @@ void print_html_style( report::sc_html_stream& os, const sim_t& )
   os << "<style type=\"text/css\" media=\"all\">\n"
      << "#logo {background-image: url(data:image/png;base64,";
   print_text_array( os, __logo );
-  os << "); background-repeat: no-repeat; position: absolute;width: 350px; height: 158px; background-size: cover; }\n"
+  os << "); background-repeat: no-repeat; position: absolute;width: 350px; height: 141px; background-size: cover; }\n"
      << "</style>\n";
 
   // Rest
@@ -846,21 +846,23 @@ void print_html_errors( report::sc_html_stream& os, const sim_t& sim )
 {
   if ( !sim.error_list.empty() )
   {
-    std::map<error_level_e, std::vector<std::string_view>> error_map;
-    for ( const auto& error : sim.error_list )
-      error_map[ error.first ].emplace_back( error.second );
+    os << "<div class=\"section section-open\" style=\"color: black; background-color: white;\">\n";
 
-    os << "<pre class=\"section section-open\" style=\"color: black; background-color: white; font-weight: bold;\">\n";
-
-    for ( const auto& error_list : error_map )
+    for ( const auto& error_level : sim.error_list )
     {
-      os.format( "{}:\n", util::error_level_string( error_list.first ) );
+      os.format( "<h2>{}</h2>\n", util::error_level_string( error_level.first ) );
 
-      for ( const auto& error : error_list.second )
-        os.format( "  {}\n", util::encode_html( error ) );
+      os << "<ul>\n";
+
+      for ( const auto& error : error_level.second )
+      {
+        os.format( "<li>{}</li>\n", util::encode_html( error ) );
+      }
+
+      os << "</ul>\n";
     }
 
-    os << "</pre>\n\n";
+    os << "</div>\n";
   }
 }
 

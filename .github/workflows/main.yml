@@ -43,7 +43,8 @@ jobs:
 
   spec-test-ptr:
     needs: [build]
-    if: github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch
+    if: false # Disabled as of build 12.0.1.66220. Re-enable when 12.0.5 PTR becomes publicly available
+    # if: github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
@@ -56,6 +57,6 @@ jobs:
 
   # this job will do bad things if enabled for non-default branch without additional work
   update-generated-files:
-    needs: [build, spec-test]
+    needs: [build, spec-test] # requires spec-test as this job downloads files generated from spec-test
     if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc' && github.ref_name == github.event.repository.default_branch
     uses: ./.github/workflows/generate_files.yml

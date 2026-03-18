@@ -1,0 +1,164 @@
+warlock="MID1_Warlock_Affliction_Soul_Harvester"
+source=default
+spec=affliction
+level=90
+race=pandaren
+role=spell
+position=ranged_back
+talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZxyMzsMzAAjllBGwEMDbBG2GAAAmBAAwMDzMjBGmZmZGzgZmZGAwMwA
+
+# Default consumables
+potion=lights_potential_2
+flask=flask_of_the_magisters_2
+food=harandar_celebration
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=summon_pet
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/seed_of_corruption,if=(hero_tree.soul_harvester&active_enemies>1)|active_enemies>2
+actions.precombat+=/haunt,if=active_enemies<2|(hero_tree.hellcaller&active_enemies<3)
+
+# Executed every time the actor is available.
+actions=call_action_list,name=variables
+actions+=/call_action_list,name=end_of_fight
+actions+=/call_action_list,name=ogcd
+actions+=/call_action_list,name=items
+actions+=/call_action_list,name=soul_harvester,if=hero_tree.soul_harvester
+actions+=/call_action_list,name=hellcaller,if=hero_tree.hellcaller
+actions+=/seed_of_corruption,if=talent.nocturnal_yield&active_enemies>1&buff.nightfall.react&(buff.nightfall.react=buff.nightfall.max_stack|buff.nightfall.remains<execute_time*buff.nightfall.max_stack)
+actions+=/malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active&buff.nightfall.react&(buff.nightfall.react=buff.nightfall.max_stack|buff.nightfall.remains<execute_time*buff.nightfall.max_stack)
+actions+=/drain_soul,if=buff.nightfall.react&(buff.nightfall.react=buff.nightfall.max_stack|buff.nightfall.remains<execute_time*buff.nightfall.max_stack)
+actions+=/shadow_bolt,if=buff.nightfall.react&(buff.nightfall.react=buff.nightfall.max_stack|buff.nightfall.remains<execute_time*buff.nightfall.max_stack)
+actions+=/malefic_grasp,chain=1,early_chain_if=buff.nightfall.react,if=pet.darkglare.active
+actions+=/drain_soul,chain=1,early_chain_if=buff.nightfall.react,interrupt_if=tick_time>0.5
+actions+=/shadow_bolt
+
+actions.HC_aoe=haunt,if=cooldown.haunt.ready
+actions.HC_aoe+=/seed_of_corruption,if=(!dot.wither.ticking|dot.wither.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight
+actions.HC_aoe+=/dark_harvest
+actions.HC_aoe+=/agony,target_if=min:remains,if=active_dot.agony<active_enemies&remains<5
+actions.HC_aoe+=/summon_darkglare
+actions.HC_aoe+=/malevolence
+actions.HC_aoe+=/seed_of_corruption,if=talent.sow_the_seeds
+actions.HC_aoe+=/unstable_affliction,if=(pet.darkglare.active|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react|buff.cascading_calamity.remains<gcd.max)&!talent.sow_the_seeds
+actions.HC_aoe+=/unstable_affliction,if=buff.shard_instability.react
+actions.HC_aoe+=/agony,target_if=min:remains,if=remains<duration*0.5
+actions.HC_aoe+=/malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active
+
+actions.HC_cleave=haunt,if=cooldown.haunt.ready
+actions.HC_cleave+=/seed_of_corruption,if=talent.sow_the_seeds&!dot.wither.ticking&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight
+actions.HC_cleave+=/wither,target_if=min:remains,if=remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)&fight_remains>remains+5
+actions.HC_cleave+=/agony,if=refreshable
+actions.HC_cleave+=/dark_harvest
+actions.HC_cleave+=/summon_darkglare
+actions.HC_cleave+=/malevolence
+actions.HC_cleave+=/malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active&pet.darkglare.remains<gcd
+actions.HC_cleave+=/unstable_affliction,if=(pet.darkglare.active|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react|buff.cascading_calamity.remains<gcd.max)&!talent.patient_zero&!talent.sow_the_seeds
+actions.HC_cleave+=/seed_of_corruption,if=talent.patient_zero&talent.sow_the_seeds
+actions.HC_cleave+=/unstable_affliction,if=buff.shard_instability.react|(talent.cascading_calamity&buff.cascading_calamity.remains<gcd.max)
+
+actions.HC_st=haunt,if=cooldown.haunt.ready
+actions.HC_st+=/agony,if=!ticking|refreshable
+actions.HC_st+=/wither,if=!ticking|refreshable
+actions.HC_st+=/dark_harvest,if=execute_time<(dot.agony.remains<?dot.corruption.remains)
+actions.HC_st+=/agony,if=dot.agony.remains<20&cooldown.summon_darkglare.remains<gcd
+actions.HC_st+=/summon_darkglare
+actions.HC_st+=/malevolence
+actions.HC_st+=/malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active&pet.darkglare.remains<gcd
+actions.HC_st+=/unstable_affliction,if=pet.darkglare.active|buff.malevolence.remains|soul_shard>4|(talent.shard_instability&buff.shard_instability.react)|buff.cascading_calamity.remains<gcd.max
+
+actions.SH_aoe=haunt,if=buff.nightfall.react<2
+actions.SH_aoe+=/seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight
+actions.SH_aoe+=/dark_harvest
+actions.SH_aoe+=/agony,target_if=min:remains,if=active_dot.agony<5&remains<5
+actions.SH_aoe+=/summon_darkglare
+actions.SH_aoe+=/seed_of_corruption,if=talent.sow_the_seeds
+actions.SH_aoe+=/unstable_affliction,if=!talent.sow_the_seeds
+actions.SH_aoe+=/agony,target_if=min:remains,if=remains<duration*0.5
+actions.SH_aoe+=/malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active&pet.darkglare.remains<gcd
+
+actions.SH_cleave=haunt,if=buff.nightfall.react<2
+actions.SH_cleave+=/seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight
+actions.SH_cleave+=/dark_harvest
+actions.SH_cleave+=/agony,if=refreshable
+actions.SH_cleave+=/summon_darkglare
+actions.SH_cleave+=/malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active&pet.darkglare.remains<gcd
+actions.SH_cleave+=/unstable_affliction,if=pet.darkglare.active|(!talent.patient_zero&!talent.sow_the_seeds)
+actions.SH_cleave+=/seed_of_corruption
+
+actions.SH_st=haunt,if=buff.nightfall.react<2
+actions.SH_st+=/agony,if=!ticking|refreshable
+actions.SH_st+=/corruption,if=!ticking|refreshable
+actions.SH_st+=/summon_darkglare,if=soul_shard<3|cooldown.dark_harvest.remains
+actions.SH_st+=/dark_harvest,if=soul_shard<3&execute_time<(dot.agony.remains<?dot.corruption.remains)&buff.cascading_calamity.remains
+actions.SH_st+=/malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active&pet.darkglare.remains<gcd
+actions.SH_st+=/drain_soul,if=buff.nightfall.react>1
+actions.SH_st+=/shadow_bolt,if=buff.nightfall.react>1
+actions.SH_st+=/unstable_affliction,if=pet.darkglare.active|soul_shard>1|(talent.shard_instability&buff.shard_instability.react)|buff.cascading_calamity.remains<gcd.max
+
+actions.end_of_fight=unstable_affliction,if=soul_shard&fight_remains<8&(!talent.patient_zero&!talent.sow_the_seeds)
+actions.end_of_fight+=/drain_soul,if=buff.nightfall.react&fight_remains<5
+actions.end_of_fight+=/shadow_bolt,if=buff.nightfall.react&fight_remains<5
+
+actions.hellcaller=call_action_list,name=HC_st,if=active_enemies=1
+actions.hellcaller+=/call_action_list,name=HC_cleave,if=active_enemies=2
+actions.hellcaller+=/call_action_list,name=HC_aoe,if=active_enemies>2
+
+actions.items=use_item,use_off_gcd=1,slot=trinket1,if=variable.cds_active
+actions.items+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.cds_active
+
+actions.ogcd=potion,use_off_gcd=1,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<32
+actions.ogcd+=/berserking,use_off_gcd=1,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<14
+actions.ogcd+=/blood_fury,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<17
+actions.ogcd+=/fireblood,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<10
+actions.ogcd+=/ancestral_call,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<17
+
+actions.soul_harvester=call_action_list,name=SH_st,if=active_enemies=1
+actions.soul_harvester+=/call_action_list,name=SH_cleave,if=active_enemies=2
+actions.soul_harvester+=/call_action_list,name=SH_aoe,if=active_enemies>2
+
+actions.variables=variable,name=cds_active,op=set,value=!talent.summon_darkglare|cooldown.summon_darkglare.remains>20|pet.darkglare.remains
+
+head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=1808/13575,ilevel=289,gem_id=240983,enchant_id=7961
+neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240916
+shoulders=echoing_void_mantle,id=249328,bonus_id=12806/13577,enchant_id=8001
+back=adherents_silken_shroud,id=239656,bonus_id=8795/8960/12214/12384/13622/13667/9627,crafted_stats=36/49
+chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575,ilevel=289,enchant_id=7987
+wrists=martyrs_bindings,id=239648,bonus_id=1808/8795/8960/12066/12214/12384/13622/13667/9627,gem_id=240916,crafted_stats=32/36
+hands=abyssal_immolators_grasps,id=250043,bonus_id=13574,ilevel=289
+waist=clasp_of_compliance,id=251102,bonus_id=1808/12806/13577,gem_id=240916
+legs=abyssal_immolators_pillars,id=250041,bonus_id=13575,ilevel=289,enchant_id=7935
+feet=slippers_of_the_midnight_flame,id=249305,bonus_id=1532/4786/4800/12803/12806,enchant_id=7993
+finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240916/240916,enchant_id=7967
+finger2=occlusion_of_void,id=251217,bonus_id=12806/13577/13668,gem_id=240916,enchant_id=7967
+trinket1=emberwing_feather,id=250144,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
+main_hand=splitshroud_stinger,id=251111,bonus_id=12806/13577,enchant_id=8039
+off_hand=grimoire_of_the_eternal_light,id=249276,ilevel=289
+
+# Gear Summary
+# gear_ilvl=288.50
+# gear_stamina=17604
+# gear_intellect=1670
+# gear_crit_rating=760
+# gear_haste_rating=1204
+# gear_mastery_rating=301
+# gear_versatility_rating=261
+# gear_leech_rating=83
+# gear_avoidance_rating=111
+# gear_armor=531
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1
+soul_shards=0
+default_pet=sayaad
+eye_explosion_instanced_bug_cb=true
+eye_explosion_instanced_bug_sb=true

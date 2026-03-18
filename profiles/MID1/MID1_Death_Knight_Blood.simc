@@ -1,0 +1,113 @@
+deathknight="MID1_Death_Knight_Blood_San'layn"
+source=default
+spec=blood
+level=90
+race=mechagnome
+role=tank
+position=front
+talents=CoPAAAAAAAAAAAAAAAAAAAAAAwYWGzMmZmZmhZbmZmmZxMjhxAAAAAzMzMzwMzYmZMDAMzMzAAAwADMjNNW2AZZAbAmhBAAMzgBGA
+
+# Default consumables
+potion=draught_of_rampant_abandon_2
+flask=flask_of_the_shattered_sun_2
+food=silvermoon_parade
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/deaths_caress
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/use_items
+actions+=/use_item,name=light_company_guidon,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<15
+actions+=/use_item,name=algethar_puzzle_box,if=fight_remains>122|cooldown.dancing_rune_weapon.remains>78|fight_remains<25
+actions+=/fireblood,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<8
+actions+=/blood_fury,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<12
+actions+=/berserking,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<=15
+actions+=/ancestral_call,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<15
+actions+=/potion,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<=30
+actions+=/vampiric_blood,if=!buff.vampiric_blood.up
+actions+=/call_action_list,name=high_prio_actions
+actions+=/run_action_list,name=deathbringer,if=hero_tree.deathbringer
+actions+=/run_action_list,name=san_gift,if=hero_tree.sanlayn&buff.gift_of_the_sanlayn.up
+actions+=/run_action_list,name=sanlayn,if=hero_tree.sanlayn
+
+actions.deathbringer=death_strike,if=(runic_power.deficit<20|(runic_power.deficit<26&buff.dancing_rune_weapon.up))
+actions.deathbringer+=/death_and_decay,if=!buff.death_and_decay.up
+actions.deathbringer+=/reapers_mark
+actions.deathbringer+=/marrowrend,if=buff.exterminate.up
+actions.deathbringer+=/deaths_caress,if=(!buff.bone_shield.up|buff.bone_shield.remains<3|buff.bone_shield.stack<6)&rune<4
+actions.deathbringer+=/marrowrend,if=!buff.bone_shield.up|buff.bone_shield.remains<3|buff.bone_shield.stack<6
+actions.deathbringer+=/death_strike
+actions.deathbringer+=/blood_boil
+actions.deathbringer+=/consumption,empower_to=1,if=!buff.dancing_rune_weapon.up
+actions.deathbringer+=/heart_strike
+actions.deathbringer+=/consumption,empower_to=1
+actions.deathbringer+=/arcane_torrent,if=runic_power.deficit>20
+
+actions.high_prio_actions=raise_dead,use_off_gcd=1
+actions.high_prio_actions+=/death_strike,if=buff.coagulopathy.up&buff.coagulopathy.remains<=gcd
+actions.high_prio_actions+=/dancing_rune_weapon,if=!buff.exterminate.up&!debuff.reapers_mark_debuff.up&!buff.dancing_rune_weapon.up&(fight_remains>95|fight_remains<25|time>300)
+
+actions.san_gift=heart_strike,if=buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains
+actions.san_gift+=/death_strike,if=runic_power.deficit<36
+actions.san_gift+=/blood_boil,if=!drw.bp_ticking
+actions.san_gift+=/any_dnd,if=buff.crimson_scourge.remains
+actions.san_gift+=/heart_strike,if=buff.essence_of_the_blood_queen.stack<7
+actions.san_gift+=/death_strike
+actions.san_gift+=/blood_boil,if=buff.boiling_point.up&!buff.boiling_point_echo.up
+actions.san_gift+=/heart_strike
+actions.san_gift+=/blood_boil
+
+actions.sanlayn=deaths_caress,if=!buff.bone_shield.up|buff.bone_shield.remains<1.5|buff.bone_shield.stack<=1
+actions.sanlayn+=/blood_boil,if=dot.blood_plague.remains<3
+actions.sanlayn+=/heart_strike,if=(buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains&buff.vampiric_strike.remains)
+actions.sanlayn+=/death_strike,if=runic_power.deficit<20
+actions.sanlayn+=/deaths_caress,if=buff.bone_shield.stack<6
+actions.sanlayn+=/marrowrend,if=buff.bone_shield.stack<6
+actions.sanlayn+=/any_dnd,if=buff.crimson_scourge.remains
+actions.sanlayn+=/heart_strike,if=buff.vampiric_strike.up
+actions.sanlayn+=/death_strike
+actions.sanlayn+=/blood_boil,if=buff.boiling_point.up&!buff.boiling_point_echo.up
+actions.sanlayn+=/consumption,empower_to=1
+actions.sanlayn+=/heart_strike,if=rune>=2
+actions.sanlayn+=/blood_boil
+actions.sanlayn+=/heart_strike
+
+head=relentless_riders_crown,id=249970,ilevel=289,gem_id=240983
+neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240890/240890
+shoulders=relentless_riders_dreadthorns,id=249968,ilevel=289
+back=adherents_silken_shroud,id=239656,ilevel=285,embellishment=arcanoweave_lining,crafted_stats=32/36
+chest=relentless_riders_cuirass,id=249973,ilevel=289,enchant=enchant_chest__mark_of_the_worldsoul_2
+wrists=spellbreakers_bracers,id=237834,ilevel=285,gem_id=240910,embellishment=arcanoweave_lining,crafted_stats=32/36
+hands=voidclaw_gauntlets,id=151332,ilevel=289
+waist=ezzoraks_gloombind,id=249331,ilevel=289,gem_id=240908
+legs=relentless_riders_legguards,id=249969,ilevel=289,enchant=forest_hunters_armor_kit_2
+feet=greaves_of_the_unformed,id=249381,ilevel=289,enchant=enchant_boots__farstriders_hunt_2
+finger1=occlusion_of_void,id=251217,ilevel=289,gem_id=240910/240908,enchant=enchant_ring__natures_fury_2
+finger2=omission_of_light,id=251093,ilevel=289,gem_id=240910/240908,enchant=enchant_ring__natures_fury_2
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
+trinket2=algethar_puzzle_box,id=193701,ilevel=289
+main_hand=alahendal_the_dawnsong,id=249296,ilevel=289,enchant=rune_of_sanguination
+
+# Gear Summary
+# gear_ilvl=288.47
+# gear_strength=1243
+# gear_stamina=17604
+# gear_crit_rating=728
+# gear_haste_rating=1290
+# gear_mastery_rating=501
+# gear_versatility_rating=114
+# gear_speed_rating=11
+# gear_armor=1863
+# set_bonus=voidlight_bindings_2pc=1
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1

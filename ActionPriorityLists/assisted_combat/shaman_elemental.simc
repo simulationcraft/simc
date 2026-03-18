@@ -7,46 +7,43 @@ actions=call_action_list,name=cooldowns
 actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
-actions.assisted_combat=flametongue_weapon,if=talent.improved_flametongue_weapon&buff.flametongue_weapon.down
+actions.assisted_combat=lightning_shield,if=buff.lightning_shield.down
+actions.assisted_combat+=/flametongue_weapon,if=buff.flametongue_weapon.down
 actions.assisted_combat+=/thunderstrike_ward,if=buff.thunderstrike_ward.down
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat+=/ascendance
 actions.assisted_combat+=/chain_lightning,if=active_enemies>3&buff.stormkeeper.up&buff.stormkeeper.remains<=3
+actions.assisted_combat+=/tempest,if=buff.stormkeeper.up&buff.stormkeeper.remains<=3
 actions.assisted_combat+=/lightning_bolt,if=buff.stormkeeper.up&buff.stormkeeper.remains<=3
+actions.assisted_combat+=/flame_shock,if=talent.voltaic_blaze&active_enemies>2&!talent.purging_flames&!dot.flame_shock.ticking
+actions.assisted_combat+=/flame_shock,if=talent.voltaic_blaze&active_enemies>2&talent.purging_flames&buff.purging_flames.down
 actions.assisted_combat+=/stormkeeper,if=buff.stormkeeper.down
-actions.assisted_combat+=/fire_elemental
-actions.assisted_combat+=/storm_elemental
-actions.assisted_combat+=/liquid_magma_totem
 actions.assisted_combat+=/flame_shock,if=!dot.flame_shock.ticking&active_enemies<=2
 actions.assisted_combat+=/lava_burst,if=talent.master_of_the_elements&buff.master_of_the_elements.down&dot.flame_shock.ticking&active_enemies<=2
-actions.assisted_combat+=/primordial_wave,if=dot.flame_shock.ticking
-actions.assisted_combat+=/earth_shock,if=buff.echoes_of_great_sundering.down&talent.echoes_of_great_sundering
-actions.assisted_combat+=/elemental_blast,if=buff.echoes_of_great_sundering.down&talent.echoes_of_great_sundering
-actions.assisted_combat+=/earthquake,if=buff.echoes_of_great_sundering.up
-actions.assisted_combat+=/earthquake,if=buff.echoes_of_great_sundering.up
-actions.assisted_combat+=/earthquake,if=active_enemies>3&!talent.echoes_of_great_sundering
-actions.assisted_combat+=/earthquake,if=active_enemies>3&!talent.echoes_of_great_sundering
+actions.assisted_combat+=/earthquake,if=active_enemies>3&1
+actions.assisted_combat+=/earthquake,if=active_enemies>3&1
 actions.assisted_combat+=/ancestral_swiftness,if=action.elemental_blast.cost_affordable&cooldown.elemental_blast.ready
 actions.assisted_combat+=/elemental_blast
 actions.assisted_combat+=/earth_shock
-actions.assisted_combat+=/lightning_bolt,if=buff.tempest.up
+actions.assisted_combat+=/lava_burst,if=active_enemies>2&buff.purging_flames.up
 actions.assisted_combat+=/chain_lightning,if=buff.stormkeeper.up&active_enemies>3
+actions.assisted_combat+=/tempest,if=buff.stormkeeper.up
 actions.assisted_combat+=/lightning_bolt,if=buff.stormkeeper.up
-actions.assisted_combat+=/frost_shock,if=buff.icefury.up&buff.ascendance.down
-actions.assisted_combat+=/ice_strike,if=buff.icefury.up&buff.ascendance.down
-actions.assisted_combat+=/frost_shock,if=buff.icefury_dmg.up
-actions.assisted_combat+=/ice_strike,if=buff.icefury_dmg.up
 actions.assisted_combat+=/ancestral_swiftness,if=active_enemies>3&cooldown.chain_lightning.ready
 actions.assisted_combat+=/chain_lightning,if=active_enemies>3,cooldown_allow_casting_success=1
 actions.assisted_combat+=/ancestral_swiftness,if=cooldown.lava_burst.ready
 actions.assisted_combat+=/lava_burst,if=charges>=2,cooldown_allow_casting_success=1
 actions.assisted_combat+=/lava_burst,if=buff.master_of_the_elements.down&talent.master_of_the_elements
 actions.assisted_combat+=/lava_burst,if=!talent.master_of_the_elements
+actions.assisted_combat+=/tempest,cooldown_allow_casting_success=1
 actions.assisted_combat+=/lightning_bolt,cooldown_allow_casting_success=1
 actions.assisted_combat+=/lava_burst
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/ascendance

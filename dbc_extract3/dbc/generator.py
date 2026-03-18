@@ -1529,6 +1529,11 @@ class SpellDataGenerator(DataGenerator):
          1232321, 1232324, 1219182, 1232086, 1232087, 1232313, 1232318, 1232325, 1232490, 1232491, 1232493, 1232498, 1232582, 1232585, 1233400, 1233401, 1233403, 1233404, 1233406, 1219183, 1219184, 1219185, 1232089, 1232091, 1232316, 1232317, 1232320, 1232492, 1232496, 1232500, 1232501, 1232584, 1233402, 1233405, 1233407, 1233408, # Midnight Food Buffs
          1252524, 1257183, 1252814, 1252817, 1252818, 1252832, # Loa Worshipers Band
          1252486, 1252487, 1252488, 1252489, # Darkmoon Deck: Hunt
+         1255853, 1255857, 1255856, # Emberwing Feather
+         1255298, 1254328, 1250561, 1255379, # Latch's Crooked Hook
+         1263768, # Lightspire Core
+         1263614, # Wraps of Cosmic Madness
+         1255685, 1255687, 1255688, # crucible of erratic energies
         ),
 
         # Warrior:
@@ -1636,6 +1641,8 @@ class SpellDataGenerator(DataGenerator):
             ( 1239276, 0),          # Lesser Weapon Healing (TWW3 Lightsmith 4p)
             ( 1236972, 0),          # Solar Wrath (TWW3 Herald of the Sun 2pc)
             ( 431522, 0),           # Dawnlight Buff
+            ( 406957, 0),           # Divine Toll Judgment
+            ( 402916, 0),           # Righteous Cause Buff
         ),
 
         # Hunter:
@@ -2065,6 +2072,8 @@ class SpellDataGenerator(DataGenerator):
           ( 467283, 0 ),                                # Reactivity proc
           ( 408390, 0 ),                                # Elemental Weapons actual
           ( 1239170, 0 ),                               # TWW3 Enhancement 4 piece set bonus buff
+          ( 383009, 0 ),                                 # Stormkeeper buff for tier set impl
+          ( 211094, 0 ),                                # Arc Discharge Chain Lightning
         ),
 
         # Mage:
@@ -2243,6 +2252,27 @@ class SpellDataGenerator(DataGenerator):
           ( 438973, 0 ),    # Diabolist - Felseeker
           ( 434404, 0 ),    # Diabolist - Felseeker
           ( 438823, 0 ),    # Diabolic Bolt (pet spell)
+          ( 1269885, 0 ),   # Diabolic Gaze
+          ( 1269886, 0 ),   # Diabolic Gaze
+          ( 1277099, 5 ),   # Soul Barrage (pet spell)
+          ( 1277116, 5 ),   # Greater Felbolt (pet spell)
+          ( 1277117, 5 ),   # Abyssal Bite (pet spell)
+          ( 1277879, 0 ),   # Echo of Sargeras
+          ( 1279998, 0 ),   # Seed of Corruption Is Out [DNT]
+          ( 1280307, 5 ),   # Soul Barrage (pet spell)
+          ( 1280457, 5 ),   # Mind Sear (pet spell)
+          ( 1280460, 5 ),   # Mind Sear (pet spell)
+          ( 1280461, 5 ),   # Mind Sear (pet spell)
+          ( 1282507, 5 ),   # Shadow Nova (pet spell)
+          ( 1282533, 5 ),   # Blaze (pet spell)
+          ( 1282534, 5 ),   # Blaze (pet spell)
+          ( 1282748, 5 ),   # Blaze (pet spell)
+          ( 1282757, 5 ),   # Shadow Nova (pet spell)
+          ( 1282501, 0 ),   # Dominion of Argus: Lady Sacrolash
+          ( 1282502, 0 ),   # Dominion of Argus: Grand Warlock Alythess
+          ( 1276283, 0 ),   # Dominion of Argus: Antoran Inquisitor
+          ( 1276182, 0 ),   # Dominion of Argus: Antoran Jailer
+          ( 1276282, 0 ),   # Dominion of Argus: Doommaiden (Maybe Unused?)
         ),
 
         # Monk:
@@ -3986,6 +4016,16 @@ class SetBonusListGenerator(DataGenerator):
             'tier'   : 'TWW3'
         },
         {
+            'name'   : 'sunfire_silk_trappings',
+            'bonuses': [ 1957 ],
+            'tier'   : 'MID_ST'
+        },
+        {
+            'name'   : 'arcanoweave_trappings',
+            'bonuses': [ 1958 ],
+            'tier'   : 'MID_AT'
+        },
+        {
             'name'   : 'shards_of_the_void',
             'bonuses': [ 1960 ],
             'tier'   : 'TWW_SOTV'
@@ -5171,6 +5211,49 @@ class ItemOffsetCurveGenerator(DataGenerator):
 
         for entry in data:
             fields = entry.field('id', 'id_curve', 'offset')
+            self.output_record(fields)
+
+        self.output_footer()
+
+class PassiveClassSpellGenerator(DataGenerator):
+    def filter(self):
+        _data = []
+
+        for v in self.db('SkillLineAbility').values():
+            if v.id_parent not in util.class_skills(): # filter out non-class skills
+                continue
+
+            if v.acquire_method != 2: # filter out non-granted spells
+                continue
+
+            _spell = v.ref('id_spell')
+            if _spell.id == 0 or util.is_blacklisted(spell_name = _spell.name): # filter out invalid spells
+                continue
+
+            _misc = _spell.children('SpellMisc')
+            if len(_misc) == 0 or not _misc[0].flags_1 & 0x40: # filter out non-passives
+                continue
+
+            _data.append((next(c for c in constants.CLASS_INFO if c['skill'] == v.id_skill), v, _spell))
+
+        return _data
+
+    def generate(self, data = None):
+        data.sort(key = lambda e: (e[0]['id'], e[1].id_spell))
+
+        self.output_header(
+            header = 'Passive class spells',
+            type = 'passive_class_spell_t',
+            array = 'passive_spells',
+            length = len(data))
+
+        for info, skill, spell in data:
+            fields = []
+
+            fields = [f"{info['id']:2d}"]
+            fields += [f"{skill.id_spell:7d}"]
+            fields += spell.field('name')
+
             self.output_record(fields)
 
         self.output_footer()

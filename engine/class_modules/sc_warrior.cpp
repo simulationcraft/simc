@@ -269,6 +269,8 @@ public:
     // Arms Apex
     buff_t* master_of_warfare_proc;
     buff_t* master_of_warfare; // Damage buff
+    buff_t* heroic_might_accumulator;
+    buff_t* heroic_might;
 
     // Fury Apex
     buff_t* berserk;
@@ -494,6 +496,7 @@ public:
     // Protection Spells
     const spell_data_t* protection_warrior;
     const spell_data_t* protection_warrior_2;
+    const spell_data_t* protection_warrior_3;
     const spell_data_t* devastate;
     const spell_data_t* riposte;
     const spell_data_t* vanguard;
@@ -918,8 +921,6 @@ public:
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
   void parse_player_effects();
-  double pseudo_random_p_from_c( double c );
-  double pseudo_random_c_from_p( double p );
 
   void datacollection_begin() override;
   void datacollection_end() override;
@@ -1091,10 +1092,13 @@ public:
       parse_effects( p()->buff.revenge );
 
       parse_effects( p()->buff.best_served_cold );
-      if ( p()->talents.protection.ravager.ok() )
+      if ( p()->talents.protection.ravager.ok() || p()->talents.protection.whirling_blade.ok() )
         parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 5 ) );
 
       parse_effects( p()->buff.shield_block, effect_mask_t( false ).enable( 2, 4 ) );
+
+      // Apex
+      parse_effects( p()->buff.phalanx );
     }
 
     // Colossus
@@ -1610,9 +1614,9 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     master_of_warfare_proc_chance( 0 )
   {
     if ( p->talents.slayer.slayers_dominance->ok() )
-      slayers_strike_proc_chance = p->pseudo_random_c_from_p( p->talents.slayer.slayers_dominance->effectN( 1 ).percent() );
+      slayers_strike_proc_chance = prd::find_constant( p->talents.slayer.slayers_dominance->effectN( 1 ).percent() );
     if ( p->talents.arms.master_of_warfare_1.ok() )
-      master_of_warfare_proc_chance = p->pseudo_random_c_from_p( 0.15 );  // Not in spelldata
+      master_of_warfare_proc_chance = prd::find_constant( 0.15 );  // Not in spelldata
     special = true;
   }
 
@@ -1655,6 +1659,16 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
       p()->cooldown.sudden_death_icd->start();
       p()->cooldown.execute->reset( true );
     }
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = base_t::composite_target_multiplier( target );
+    auto target_data = td( target );
+    if ( p()->talents.arms.master_of_warfare_3.ok() && target_data &&
+    target_data->debuffs_colossus_smash->up() && p()->buff.heroic_might->up() )
+      m *= 1.0 + ( p()->buff.heroic_might->stack_value() / 100 );
+    return m;
   }
 
   player_t* select_random_target() const
@@ -1901,7 +1915,7 @@ struct melee_t : public warrior_attack_t
       base_rage_generation( 1.75 ),
       arms_rage_multiplier( 1.0 + p->spec.arms_warrior->effectN( 7 ).percent() ),
       fury_rage_multiplier( 1.0 + p->spec.fury_warrior->effectN( 6 ).percent() ),
-      prot_rage_multiplier( 1.0 + p->spec.protection_warrior->effectN( 5 ).percent() ),
+      prot_rage_multiplier( 1.0 + p->spec.protection_warrior_3->effectN( 5 ).percent() ),
       seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
       war_machine_rage_multiplier( 1.0 ),
       devastator( nullptr )
@@ -2166,7 +2180,7 @@ struct rend_dot_t : public warrior_attack_t
 {
   double bloodsurge_chance, rage_from_bloodsurge;
   rend_dot_t( warrior_t* p )
-    : warrior_attack_t( "rend", p, p->find_spell( 388539 ) ),
+    : warrior_attack_t( "rend_dot", p, p->find_spell( 388539 ) ),
       bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
       rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
@@ -2323,12 +2337,7 @@ struct slayers_strike_t : public warrior_attack_t
       }
     }
 
-    // TODO this uses a different async behavior than what is default in simc.  This looks to be
-    // Used by a lot of new spells now, so may be the default wow implementation these days
-    // When you get a proc with max stats, rather than remove the oldest stack, and push on a fresh stack
-    // it now appears to just refresh the buff on the top of the stack, leaving the bottom buffs untouched, so
-    // they expire earlier than you would expect.
-    if ( p()->talents.slayer.slayers_dominance->ok() && !p()->buff.executioner->at_max_stacks() )
+    if ( p()->talents.slayer.slayers_dominance->ok() )
       p()->buff.executioner->trigger();
   }
 
@@ -3054,12 +3063,6 @@ struct mortal_strike_t : public warrior_attack_t
     if( !background )
       p()->buff.tactical_edge->decrement();
 
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
-    {
-      p()->buff.master_of_warfare_proc->trigger();
-      p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
-
     if ( !background )
       p()->buff.battlelord->expire();
   }
@@ -3110,10 +3113,15 @@ struct mortal_strike_t : public warrior_attack_t
     auto target_data = td( s->target );
 
     if ( p()->sets->has_set_bonus( WARRIOR_ARMS, MID1, B4 ) &&
-            target_data && target_data->debuffs_colossus_smash->up() &&
-            s->n_targets >= p()->sets->set( WARRIOR_ARMS, MID1, B4 )->effectN( 2 ).base_value() )
+            target_data && target_data->debuffs_colossus_smash->up() )
     {
       target_data->debuffs_colossus_smash->extend_duration_or_trigger( p()->sets->set( WARRIOR_ARMS, MID1, B4 )->effectN( 1 ).time_value() );
+    }
+
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
     }
   }
 
@@ -3438,6 +3446,16 @@ struct slam_base_t : public warrior_attack_t
     return warrior_attack_t::cost();
   }
 
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -3449,12 +3467,6 @@ struct slam_base_t : public warrior_attack_t
 
     if ( p()->talents.arms.martial_prowess.ok() )
       p()->buff.martial_prowess->trigger();
-
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
-    {
-      p()->buff.master_of_warfare_proc->trigger();
-      p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
   }
 
   bool ready() override
@@ -3489,7 +3501,7 @@ struct heroic_strike_t : public slam_base_t
     p()->buff.master_of_warfare->trigger();
 
     if ( p()->talents.arms.master_of_warfare_3.ok() )
-      p()->cooldown.colossus_smash->adjust( p()->talents.arms.master_of_warfare_3->effectN( 1 ).time_value() );
+      p()->buff.heroic_might_accumulator->trigger();
   }
 
   bool ready() override
@@ -3664,6 +3676,12 @@ struct colossus_smash_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+
+    if ( p()->talents.arms.master_of_warfare_3.ok() && p()->buff.heroic_might_accumulator->up() )
+    {
+      p()->buff.heroic_might->trigger( p()->buff.heroic_might_accumulator->stack(), buff_t::DEFAULT_VALUE(), 1.0, p()->spell.colossus_smash_debuff->duration() );
+      p()->buff.heroic_might_accumulator->expire();
+    }
 
     if ( p()->talents.arms.tactical_edge.ok() )
       p()->buff.tactical_edge->trigger();
@@ -3947,6 +3965,8 @@ struct thunder_clap_t : public warrior_attack_t
     aoe       = -1;
     may_dodge = may_parry = may_block = false;
 
+    cooldown = p->cooldown.thunder_clap;
+
     energize_type = action_energize::NONE;
 
     if ( p->talents.warrior.rend.ok() )
@@ -4081,19 +4101,17 @@ struct execute_damage_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if ( p()->buff.sudden_death->up() )
-    {
-      if ( p()->talents.slayer.unrelenting_onslaught->ok() )
-      {
-        p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() ) ) );
-        // Overwhelmed is only applied to your primary target.  If you cleave via WW, you do not get double benefit for the debuff, only for the bladestorm CDR
-        if ( state->target == p()->target && p()->buff.executioner->up() )
-          td( state->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * p()->buff.executioner->stack() );
-      }
-    }
-
     if ( p()->talents.shared.deep_wounds->ok() )
       p()->active.deep_wounds->execute_on_target( state->target );
+
+    if( p()->talents.arms.fatality.ok() && td( state->target )->debuffs_fatal_mark->check() )
+      p()->active.fatality->execute_on_target( state->target );
+
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
   }
 };
 
@@ -4195,6 +4213,12 @@ struct execute_arms_t : public warrior_attack_t
           p()->cooldown.reap_the_storm_icd->start();
         }
       }
+
+      if ( p()->talents.slayer.unrelenting_onslaught->ok() && p()->buff.executioner->up() )
+      {
+          p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() * p()->buff.executioner->stack() ) ) );
+          td( p()->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * p()->buff.executioner->stack() );
+      }
     }
 
     if ( rng().roll( shield_slam_reset ) )
@@ -4211,24 +4235,10 @@ struct execute_arms_t : public warrior_attack_t
       {
         lightning_strike->execute();
       }
-
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
-    {
-      p()->buff.master_of_warfare_proc->trigger();
-      p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
     }
 
     if ( p()->talents.arms.executioners_precision.ok() )
       p()->buff.executioners_precision->trigger();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    warrior_attack_t::impact( state );
-
-    if( p()->talents.arms.fatality.ok() && td( state->target )->debuffs_fatal_mark->check() )
-      p()->active.fatality->execute_on_target( state->target );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -4296,13 +4306,7 @@ struct execute_main_hand_t : public warrior_attack_t
   void impact( action_state_t* state ) override
   {
     warrior_attack_t::impact( state );
-    if ( p()->talents.slayer.unrelenting_onslaught->ok() && p()->buff.sudden_death->up() )
-    {
-      p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() ) ) );
-      // Overwhelmed is only applied to your primary target.  If you cleave via WW, you do not get double benefit for the debuff, only for the bladestorm CDR
-      if ( state->target == p()->target && p()->buff.executioner->up() )
-        td( state->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * p()->buff.executioner->stack() );
-    }
+
     if( p()->talents.shared.deep_wounds->ok() )
       p()->active.deep_wounds->execute_on_target( state->target );
   }
@@ -4419,6 +4423,12 @@ struct execute_fury_t : public warrior_attack_t
           p()->cooldown.reap_the_storm_icd->start();
         }
       }
+
+      if ( p()->talents.slayer.unrelenting_onslaught->ok() && p()->buff.executioner->up() )
+      {
+        p()->cooldown.bladestorm->adjust( - ( timespan_t::from_seconds( p()->talents.slayer.unrelenting_onslaught->effectN( 1 ).base_value() * p()->buff.executioner->stack() ) ) );
+        td( p()->target )->debuffs_overwhelmed->trigger( as<int>( p()->talents.slayer.unrelenting_onslaught->effectN( 2 ).base_value() ) * p()->buff.executioner->stack() );
+      }
     }
 
     if ( p()->talents.mountain_thane.lightning_strikes->ok() )
@@ -4434,8 +4444,6 @@ struct execute_fury_t : public warrior_attack_t
 
     if ( p()->talents.fury.executioners_wrath->ok() )
       p()->buff.executioners_wrath->trigger();
-
-
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -5285,6 +5293,12 @@ struct overpower_t : public warrior_attack_t
     {
       dreadnaught->execute_on_target( s->target );
     }
+
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
   }
 
   void execute() override
@@ -5305,12 +5319,6 @@ struct overpower_t : public warrior_attack_t
 
     if ( p()->talents.arms.martial_prowess.ok() )
       p()->buff.martial_prowess->trigger();
-
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
-    {
-      p()->buff.master_of_warfare_proc->trigger();
-      p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
   }
 
   bool ready() override
@@ -5884,7 +5892,7 @@ struct phalanx_t : public warrior_attack_t
       warrior_attack_t::impact( state );
 
       auto target_data = td( state->target );
-      if ( target_data )
+      if ( target_data && p()->talents.protection.phalanx_3.ok() )
         target_data->debuffs_phalanx->trigger();
     }
 };
@@ -7111,8 +7119,9 @@ void warrior_t::init_spells()
 
   // Protection Spells
   mastery.critical_block        = find_mastery_spell( WARRIOR_PROTECTION );
-  spec.protection_warrior       = find_specialization_spell( "Protection Warrior" );
+  spec.protection_warrior       = find_specialization_spell( "Protection Warrior" );  // Main spec effects
   spec.protection_warrior_2     = find_spell( 462119 );  // Trinket aura
+  spec.protection_warrior_3     = find_spell( 1258163 );  // More spec effects
   spec.devastate                = find_specialization_spell( "Devastate" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
   spec.vanguard                 = find_specialization_spell( "Vanguard" );
@@ -7122,7 +7131,7 @@ void warrior_t::init_spells()
   spell.devastator              = find_spell( 236279 );
   spell.devastating_focus_debuff= find_spell( 1277983 );
   spell.phalanx_buff            = find_spell( 1278009 );
-  spell.phalanx_debuff          = find_spell( 1270116 );
+  spell.phalanx_debuff          = find_spell( 1292071 );
 
   // Shared Spells
   spell.bloodsurge_energize     = find_spell( 384362 );
@@ -7514,6 +7523,7 @@ void warrior_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
+  parse_raid_buffs();
 
   // Shared Talents - needed when using the same spell data with a spec check (ravager)
 
@@ -7888,7 +7898,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   hit_by_fresh_meat = false;
   dots_deep_wounds = target->get_dot( "deep_wounds", &p );
-  dots_rend        = target->get_dot( "rend", &p );
+  dots_rend        = target->get_dot( "rend_dot", &p );
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash", p.spell.colossus_smash_debuff );
@@ -8114,7 +8124,7 @@ void warrior_t::create_buffs()
   buff.thunder_blast          = make_buff( this, "thunder_blast", find_spell( 435615 ) );
   buff.steadfast_as_the_peaks = new buffs::steadfast_as_the_peaks_buff_t( *this, "steadfast_as_the_peaks", find_spell( 437152 ) );
   buff.burst_of_power         = make_buff( this, "burst_of_power", find_spell( 437121 ) )
-                                  ->set_initial_stack( find_spell( 437121 )->max_stacks() )
+                                  ->set_initial_stack_to_max_stack()
                                   ->set_cooldown( talents.mountain_thane.burst_of_power -> internal_cooldown() )
                                   ->set_chance( talents.mountain_thane.burst_of_power->proc_chance() );
 
@@ -8126,6 +8136,9 @@ void warrior_t::create_buffs()
   buff.master_of_warfare = make_buff( this, "master_of_warfare", spell.master_of_warfare_2_buff )
                                 ->set_disable_async_expire_events_removal( true )
                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  buff.heroic_might_accumulator = make_buff( this, "heroic_might_accumulator", find_spell( 1292058 ) );
+  buff.heroic_might = make_buff( this, "heroic_might", find_spell( 1292058 ) );
 
   // Protection Apex
   buff.phalanx = make_buff( this, "phalanx", spell.phalanx_buff );
@@ -8258,24 +8271,24 @@ void warrior_t::init_procs()
 std::string warrior_t::default_potion() const
 {
   std::string fury_pot =
-      ( true_level > 70 )
-          ? "tempered_potion_3"
-          : ( true_level > 60 )
-                ? "elemental_potion_of_ultimate_power_3"
+      ( true_level > 80 )
+          ? "potion_of_recklessness_2"
+          : ( true_level > 70 )
+                ? "tempered_potion_3"
                 : "disabled";
 
   std::string arms_pot =
-      ( true_level > 70 )
-          ? "tempered_potion_3"
-          : ( true_level > 60 )
-                ? "elemental_potion_of_ultimate_power_3"
+      ( true_level > 80 )
+          ? "potion_of_recklessness_2"
+          : ( true_level > 70 )
+                ? "tempered_potion_3"
                 : "disabled";
 
   std::string protection_pot =
-      ( true_level > 70 )
-          ? "tempered_potion_3"
-          : ( true_level > 60 )
-                ? "elemental_potion_of_ultimate_power_3"
+      ( true_level > 80 )
+          ? "potion_of_recklessness_2"
+          : ( true_level > 70 )
+                ? "tempered_potion_3"
                 : "disabled";
 
   switch ( specialization() )
@@ -8295,13 +8308,13 @@ std::string warrior_t::default_potion() const
 
 std::string warrior_t::default_flask() const
 {
-  if ( specialization() == WARRIOR_PROTECTION && true_level > 70 )
-    return "flask_of_alchemical_chaos_3";
+  if ( specialization() == WARRIOR_FURY && true_level > 80 )
+    return "flask_of_the_magisters_2";
 
-  return ( true_level > 70 )
-             ? "flask_of_alchemical_chaos_3"
-             : ( true_level > 50 )
-                   ? "spectral_flask_of_power"
+  return ( true_level > 80 )
+             ? "flask_of_the_shattered_sun_2"
+             : ( true_level > 70 )
+                   ? "flask_of_alchemical_chaos_3"
                    : "disabled";
 }
 
@@ -8309,22 +8322,22 @@ std::string warrior_t::default_flask() const
 
 std::string warrior_t::default_food() const
 {
-  std::string fury_food = ( true_level > 70 )
-                              ? "the_sushi_special"
-                              : ( true_level > 60 )
-                                    ? "thousandbone_tongueslicer"
+  std::string fury_food = ( true_level > 80 )
+                              ? "harandar_celebration"
+                              : ( true_level > 70 )
+                                    ? "the_sushi_specia"
                                     : "disabled";
 
-  std::string arms_food = ( true_level > 70 )
-                              ? "the_sushi_special"
-                              : ( true_level > 60 )
-                                    ? "feisty_fish_sticks"
+  std::string arms_food = ( true_level > 80 )
+                              ? "blooming_feast"
+                              : ( true_level > 70 )
+                                    ? "the_sushi_specia"
                                     : "disabled";
 
-  std::string protection_food = ( true_level > 70 )
-                              ? "feast_of_the_midnight_masquerade"
-                              : ( true_level > 60 )
-                                    ? "feisty_fish_sticks"
+  std::string protection_food = ( true_level > 80 )
+                              ? "harandar_celebration"
+                              : ( true_level > 70 )
+                                    ? "the_sushi_specia"
                                     : "disabled";
 
   switch ( specialization() )
@@ -8344,24 +8357,24 @@ std::string warrior_t::default_food() const
 
 std::string warrior_t::default_rune() const
 {
-  return ( true_level >= 70 ) ? "crystallized"
-                               : ( true_level >= 60 ) ? "draconic" : "disabled";
+  return ( true_level >= 80 ) ? "void_touched"
+                               : ( true_level >= 70 ) ? "crystallized" : "disabled";
 }
 
 // warrior_t::default_temporary_enchant =====================================
 
 std::string warrior_t::default_temporary_enchant() const
 {
-  std::string fury_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3"
+  std::string fury_temporary_enchant = ( true_level > 80 )
+                              ? "main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2"
                               : "disabled";
 
-  std::string arms_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:algari_mana_oil_3"
+  std::string arms_temporary_enchant = ( true_level > 80 )
+                              ? "main_hand:thalassian_phoenix_oil_2"
                               : "disabled";
 
-  std::string protection_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:ironclaw_whetstone_3"
+  std::string protection_temporary_enchant = ( true_level > 80 )
+                              ? "main_hand:thalassian_phoenix_oil_2"
                               : "disabled";
   switch ( specialization() )
   {
@@ -8490,6 +8503,13 @@ parsed_assisted_combat_rule_t warrior_t::parse_assisted_combat_rule( const assis
     rule_copy.condition_value_1 = 6;
     return { player_t::parse_assisted_combat_rule( rule_copy, step ), true };
   }
+
+  // New rule added to slam in midnight, refers to old legion-era Rampage! (209694), so ignoring for now
+  if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 209694 )
+  {
+    return { "", true };
+  }
+
   return player_t::parse_assisted_combat_rule( rule, step );
 }
 
@@ -9147,58 +9167,6 @@ void warrior_t::copy_from( player_t* source )
   warrior_fixed_time    = p->warrior_fixed_time;
   into_the_fray_friends = p->into_the_fray_friends;
   never_surrender_percentage = p -> never_surrender_percentage;
-}
-
-double warrior_t::pseudo_random_p_from_c( double c )
-{
-  if ( c <= 0 )
-    return 0.0;
-
-  double p_proc_on_n       = 0;
-  double p_proc_by_n       = 0;
-  double sum_n_p_proc_on_n = 0;
-
-  int max_fails = as<int>( std::ceil( 1 / c ) );
-  for ( int n = 1; n <= max_fails; ++n )
-  {
-    p_proc_on_n = std::min( 1.0, n * c ) * ( 1 - p_proc_by_n );
-    p_proc_by_n += p_proc_on_n;
-    sum_n_p_proc_on_n += n * p_proc_on_n;
-  }
-
-  return ( 1 / sum_n_p_proc_on_n );
-}
-
-double warrior_t::pseudo_random_c_from_p( double p )
-{
-  if ( p <= 0 )
-    return 0.0;
-
-  double c_upper = p;
-  double c_lower = 0;
-  double c_mid;
-  double p1;
-  double p2 = 1;
-  while ( true )
-  {
-    c_mid = ( c_upper + c_lower ) * 0.5;
-    p1    = pseudo_random_p_from_c( c_mid );
-    if ( std::abs( p1 - p2 ) <= 0 )
-      break;
-
-    if ( p1 > p )
-    {
-      c_upper = c_mid;
-    }
-    else
-    {
-      c_lower = c_mid;
-    }
-
-    p2 = p1;
-  }
-
-  return c_mid;
 }
 
 void warrior_t::parse_player_effects()

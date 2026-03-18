@@ -448,44 +448,51 @@ const char* util::race_type_string( race_e type )
     case RACE_ABERRATION:          return "aberration";
     case RACE_BEAST:               return "beast";
     case RACE_BLOOD_ELF:           return "blood_elf";
+    case RACE_DARK_IRON_DWARF:     return "dark_iron_dwarf";
     case RACE_DEMON:               return "demon";
+    case RACE_DRACTHYR_ALLIANCE:   return "dracthyr_alliance";
+    case RACE_DRACTHYR_HORDE:      return "dracthyr_horde";
     case RACE_DRAENEI:             return "draenei";
     case RACE_DRAGONKIN:           return "dragonkin";
     case RACE_DWARF:               return "dwarf";
+    case RACE_EARTHEN_ALLIANCE:    return "earthen_alliance";
+    case RACE_EARTHEN_HORDE:       return "earthen_horde";
     case RACE_ELEMENTAL:           return "elemental";
     case RACE_GIANT:               return "giant";
     case RACE_GNOME:               return "gnome";
+    case RACE_GOBLIN:              return "goblin";
+    case RACE_HARANIR_ALLIANCE:    return "haranir_alliance";
+    case RACE_HARANIR_HORDE:       return "haranir_horde";
+    case RACE_HIGHMOUNTAIN_TAUREN: return "highmountain_tauren";
     case RACE_HUMAN:               return "human";
     case RACE_HUMANOID:            return "humanoid";
+    case RACE_KUL_TIRAN:           return "kul_tiran";
+    case RACE_LIGHTFORGED_DRAENEI: return "lightforged_draenei";
+    case RACE_MAGHAR_ORC:          return "maghar_orc";
+    case RACE_MECHANICAL:          return "mechanical";
+    case RACE_MECHAGNOME:          return "mechagnome";
     case RACE_NIGHT_ELF:           return "night_elf";
+    case RACE_NIGHTBORNE:          return "nightborne";
+    case RACE_NOT_SPECIFIED:       return "not_specified";
     case RACE_ORC:                 return "orc";
-    case RACE_TAUREN:              return "tauren";
-    case RACE_TROLL:               return "troll";
-    case RACE_UNDEAD:              return "undead";
-    case RACE_GOBLIN:              return "goblin";
-    case RACE_WORGEN:              return "worgen";
     case RACE_PANDAREN:            return "pandaren";
     case RACE_PANDAREN_ALLIANCE:   return "pandaren_alliance";
     case RACE_PANDAREN_HORDE:      return "pandaren_horde";
+    case RACE_TAUREN:              return "tauren";
+    case RACE_TOTEM:               return "totem";
+    case RACE_TROLL:               return "troll";
+    case RACE_UNDEAD:              return "undead";
     case RACE_VOID_ELF:            return "void_elf";
-    case RACE_HIGHMOUNTAIN_TAUREN: return "highmountain_tauren";
-    case RACE_LIGHTFORGED_DRAENEI: return "lightforged_draenei";
-    case RACE_NIGHTBORNE:          return "nightborne";
-    case RACE_DARK_IRON_DWARF:     return "dark_iron_dwarf";
-    case RACE_MAGHAR_ORC:          return "maghar_orc";
-    case RACE_ZANDALARI_TROLL:     return "zandalari_troll";
-    case RACE_KUL_TIRAN:           return "kul_tiran";
     case RACE_VULPERA:             return "vulpera";
-    case RACE_MECHAGNOME:          return "mechagnome";
-    case RACE_DRACTHYR_ALLIANCE:   return "dracthyr_alliance";
-    case RACE_DRACTHYR_HORDE:      return "dracthyr_horde";
-    case RACE_EARTHEN_ALLIANCE:    return "earthen_alliance";
-    case RACE_EARTHEN_HORDE:       return "earthen_horde";
-    case RACE_HARANIR_ALLIANCE:    return "haranir_alliance";
-    case RACE_HARANIR_HORDE:       return "haranir_horde";
-    case RACE_MECHANICAL:          return "mechanical";
-    case RACE_MAX:                 return "unknown";
+    case RACE_WORGEN:              return "worgen";
+    case RACE_ZANDALARI_TROLL:     return "zandalari_troll";
     case RACE_UNKNOWN:             return "unknown";
+    case RACE_MAX:                 return "unknown";
+    // trivial npcs
+    case RACE_CRITTER:             return "critter";
+    case RACE_NON_COMBAT_PET:      return "non_combat_pet";
+    case RACE_GAS_CLOUD:           return "gas_cloud";
+    case RACE_WILD_PET:            return "wild_pet";
     // no default statement so we get warnings if something is missing.
   }
   return "unknown";
@@ -517,8 +524,10 @@ race_e util::parse_race_type( util::string_view name )
     return RACE_EARTHEN_HORDE;
   if ( name == "earthen_dwarf" )
     return RACE_EARTHEN_HORDE;
-  if ( name == "haranir" )
+  if ( name == "haranir" || name == "harronir" || name == "harronir_horde" )
     return RACE_HARANIR_HORDE;
+  if ( name == "harronir_alliance" )
+    return RACE_HARANIR_ALLIANCE;
 
   return parse_enum_with_default<race_e, RACE_NONE, RACE_MAX, RACE_UNKNOWN, race_type_string>( name );
 }
@@ -1529,10 +1538,11 @@ const char* util::special_effect_string( special_effect_e type )
 {
   switch ( type )
   {
-    case SPECIAL_EFFECT_EQUIP: return "equip";
-    case SPECIAL_EFFECT_USE: return "use";
+    case SPECIAL_EFFECT_EQUIP:
+    case SPECIAL_EFFECT_PASSIVE:  return "equip";
+    case SPECIAL_EFFECT_USE:      return "use";
     case SPECIAL_EFFECT_FALLBACK: return "fallback";
-    default: return "unknown";
+    default:                      return "unknown";
   }
 }
 
@@ -2839,11 +2849,14 @@ const char* util::error_level_string( error_level_e level )
 {
   switch ( level )
   {
-    case error_level_e::TRIVIAL:     return "Trivial";
-    case error_level_e::MODERATE:    return "Moderate";
-    case error_level_e::SEVERE:      return "Severe";
-    case error_level_e::PLACEHOLDER: return "!!!PLACEHOLDER!!!";
-    default:                         return "Unknown";
+    case error_level_e::TRIVIAL:                   return "Trivial";
+    case error_level_e::MODERATE:                  return "Moderate";
+    case error_level_e::SEVERE:                    return "Severe";
+    case error_level_e::UNIMPLEMENTED:             return "Not Yet Implemented";
+    case error_level_e::UNVERIFIED_VALUE:          return "Using Unverified Values";
+    case error_level_e::UNVERIFIED_IMPLEMENTATION: return "Implementation Not Yet Verified";
+    case error_level_e::IMPLEMENTATION_NOTES:      return "Implementation Notes";
+    default:                                       return "Unknown";
   }
 }
 
@@ -3425,6 +3438,26 @@ bool util::is_number( util::string_view s )
     }
   }
   return true;
+}
+
+// Effect Index from property type ==========================================
+int util::effect_idx_from_property_type( property_type_t type )
+{
+  switch ( type )
+  {
+    case P_EFFECT_1:
+      return 1;
+    case P_EFFECT_2:
+      return 2;
+    case P_EFFECT_3:
+      return 3;
+    case P_EFFECT_4:
+      return 4;
+    case P_EFFECT_5:
+      return 5;
+    default:
+      return -1;
+  }
 }
 
 // fuzzy_stats ==============================================================

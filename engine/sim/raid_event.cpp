@@ -1004,6 +1004,7 @@ struct movement_ticker_t : public event_t
       duration = next_execute( players );
     }
   }
+
   const char* name() const override
   {
     return "Player Movement Event";
@@ -1062,6 +1063,9 @@ struct movement_event_t final : public raid_event_t
   double move_distance_max;
   double move;
   double avg_player_movement_speed;
+  bool retarget;
+  player_t* target;
+  std::string target_str;
 
   movement_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "movement" ),
@@ -1071,14 +1075,25 @@ struct movement_event_t final : public raid_event_t
       move_distance_min( 0 ),
       move_distance_max( 0 ),
       move(),
-      avg_player_movement_speed( 7.0 )
+      avg_player_movement_speed( 7.0 ),
+      retarget( false ),
+      target( nullptr )
   {
     add_option( opt_float( "distance", move_distance ) );
     add_option( opt_string( "direction", move_direction ) );
     add_option( opt_float( "distance_range", distance_range ) );
     add_option( opt_float( "move_distance_min", move_distance_min ) );
     add_option( opt_float( "move_distance_max", move_distance_max ) );
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+      add_option( opt_string( "target", target_str ) );
+    else
+      add_option( opt_func( "target", [ this ]( sim_t* sim, util::string_view name, util::string_view value ) {
+        return parse_target( sim, name, value );
+      } ) );
     parse_options( options_str );
+
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+      target_str = "Pull_" + util::to_string( pull ) + "_" + target_str;
 
     if ( duration.mean > 0_ms )
     {
@@ -1125,6 +1140,24 @@ struct movement_event_t final : public raid_event_t
     }
   }
 
+  bool parse_target( sim_t* /* sim */, util::string_view /* name */, util::string_view value )
+  {
+    auto it = range::find_if( sim->target_list, [ &value ]( const player_t* target ) {
+      return util::str_compare_ci( value, target->name() );
+    } );
+
+    if ( it != sim->target_list.end() )
+    {
+      target = *it;
+      return true;
+    }
+    else
+    {
+      sim->error( "Unknown movement raid event target '{}'", value );
+      return false;
+    }
+  }
+
   void _start() override
   {
     movement_direction_type m = direction;
@@ -1150,6 +1183,15 @@ struct movement_event_t final : public raid_event_t
 
     if ( move <= 0.0 )
       return;
+
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && !target_str.empty() )
+      target = sim->find_player( target_str );
+
+    if ( target )
+    {
+      affected_players.clear();
+      affected_players.push_back( target );
+    }
 
     for ( auto p : affected_players )
     {

@@ -1558,6 +1558,7 @@ sim_t::sim_t()
     pause_mutex( nullptr ),
     paused( false ),
     chart_show_relative_difference( false ),
+    chart_show_relative_difference_percent( true ),
     relative_difference_from_max( false ),
     relative_difference_base(),
     chart_boxplot_percentile( .25 ),
@@ -2566,7 +2567,7 @@ void sim_t::init_actors()
   {
     out_debug.printf( "Initializing actors." );
   }
-  
+
   for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
   {
     player_no_pet_list[ i ]->create_permanent_actors();
@@ -2672,6 +2673,11 @@ void sim_t::init_actor( player_t* p )
     // Main spell looksup. Populate class/spec/hero talents & spells.
     p->init_spells();
 
+    // First-phase creation of special effects from various sources. Needed to be able to create actions (APLs, really)
+    // based on the presence of special effects on items. Certain effects, such as effects that modify base stats, may
+    // be flagged to have their custom initialization run on creation.
+    p->create_special_effects();
+
     // Initialize stats from DBC. Base stats can be modified until init_initial_stats().
     p->init_base_stats();
 
@@ -2683,12 +2689,18 @@ void sim_t::init_actor( player_t* p )
     // Currently this only holds leech_t.
     p->init_background_actions();
 
-    // First-phase creation of special effects from various sources. Needed to be able to create
-    // actions (APLs, really) based on the presence of special effects on items.
-    p->create_special_effects();
-
-    // First, create all the action objects and set up action lists properly
-    p->create_actions();
+    // First, validate the actor and create all the action objects and set up action lists properly.
+    // If actor is not valid, set quiet and skip action creation.
+    if ( p->validate_actor() )
+    {
+      p->create_actions();
+    }
+#ifdef NDBEBUG
+    else
+    {
+      quiet = true;
+    }
+  #endif
 
     // More initilization of class modules. Needed to create shared actions provided by a class.
     for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
@@ -2859,13 +2871,11 @@ void sim_t::init()
                                ->add_invalidate( CACHE_INTELLECT );
 
   auras.battle_shout = make_buff( this, "battle_shout", dbc::find_spell( this, 6673 ) )
-                           ->set_cooldown( 0_ms )
                            ->set_default_value_from_effect( 1 )
                            ->add_invalidate( CACHE_ATTACK_POWER );
 
   auras.mark_of_the_wild = make_buff( this, "mark_of_the_wild", dbc::find_spell( this, 1126 ) )
-                               ->set_default_value_from_effect( 1 )
-                               ->add_invalidate( CACHE_VERSATILITY );
+                               ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
 
   auras.power_word_fortitude = make_buff( this, "power_word_fortitude", dbc::find_spell( this, 21562 ) )
                                    ->set_default_value_from_effect( 1 )
@@ -3041,7 +3051,9 @@ void sim_t::init()
     plot->initialize();
   }
 
+  init_mutex.lock();
   initialized = true;
+  init_mutex.unlock();
 
   init_time = chrono::elapsed(start_time);
 
@@ -3412,10 +3424,13 @@ void sim_t::do_pause()
 void sim_t::set_error( error_level_e level, std::string error )
 {
   util::replace_all( error, "\n", "" );
-  fmt::print( stderr, "{}: {}\n", util::error_level_string( level ), error );
-  std::fflush( stderr );
 
-  error_list.emplace_back( level, std::move( error ) );
+  auto [ it, success ] = error_list[ level ].insert( std::move( error ) );
+  if ( !success )
+    return;
+
+  fmt::print( stderr, "{}: {}\n", util::error_level_string( level ), *it );
+  std::fflush( stderr );
 }
 
 /// merge sims
@@ -3679,6 +3694,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 
   overrides.arcane_intellect        = optimal_raid;
   overrides.battle_shout            = optimal_raid;
+  overrides.blessing_of_the_bronze  = optimal_raid;
   overrides.mark_of_the_wild        = optimal_raid;
   overrides.power_word_fortitude    = optimal_raid;
   overrides.skyfury                 = optimal_raid;
@@ -3966,6 +3982,7 @@ void sim_t::create_options()
   add_option( opt_func( "fight_style", parse_fight_style ) );
   add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );
   add_option( opt_int( "override.battle_shout", overrides.battle_shout ) );
+  add_option( opt_int( "override.blessing_of_the_bronze", overrides.blessing_of_the_bronze ) );
   add_option( opt_int( "override.mark_of_the_wild", overrides.mark_of_the_wild ) );
   add_option( opt_int( "override.power_word_fortitude", overrides.power_word_fortitude ) );
   add_option( opt_int( "override.skyfury", overrides.skyfury ) );
@@ -4172,6 +4189,7 @@ void sim_t::create_options()
   add_option( opt_uint( "spell_query_wrap", spell_query_wrap ) );
   // Charts
   add_option( opt_bool( "chart_show_relative_difference", chart_show_relative_difference ) );
+  add_option( opt_bool( "chart_show_relative_difference_percent", chart_show_relative_difference_percent ) );
   add_option( opt_string( "relative_difference_base", relative_difference_base ) );
   add_option( opt_bool( "relative_difference_from_max", relative_difference_from_max ) );
   add_option( opt_float( "chart_boxplot_percentile", chart_boxplot_percentile ) );

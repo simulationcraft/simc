@@ -8,7 +8,7 @@ actions=call_action_list,name=cooldowns
 actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
-actions.assisted_combat=power_word_fortitude,if=0
+actions.assisted_combat=power_word_fortitude,if=aura.power_word_fortitude.down
 actions.assisted_combat+=/shadowform,if=buff.shadowform.down&buff.voidform.down
 actions.assisted_combat+=/tentacle_slam,if=active_enemies<=2&!dot.vampiric_touch.ticking&(!action.tentacle_slam.in_flight)
 actions.assisted_combat+=/tentacle_slam,if=active_enemies>3

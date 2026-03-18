@@ -1159,6 +1159,26 @@ public:
     ab::snapshot_state( s, rt );
   }
 
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double ea = ab::composite_energize_amount( s );
+
+    if ( cast_state( s )->chain_number > 0 )
+    {
+      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1385
+      if ( priest().bugs )
+      {
+        ea = std::round( ea * priest().talents.shadow.deaths_torment->effectN( 2 ).percent() );
+      }
+      else
+      {
+        ea *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
+      }
+    }
+
+    return ea;
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = ab::composite_da_multiplier( s );
@@ -2668,15 +2688,13 @@ void priest_t::create_pets()
 
 void priest_t::init_base_stats()
 {
-  // Halo has a 30 yard range
-  // Divine Star gets two hits if used at or below 24yd, only 1 up to 28yd. 0 hits from 29-30yd
   if ( base.distance < 1 )
   {
     // Bug: Halo is a few yards short
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1225
     if ( talents.archon.halo.enabled() )
     {
-      base.distance = ( bugs ? 28.0 : 30.0 ) + ( talents.archon.power_surge.enabled() ? 10.0 : 0.0 );
+      base.distance = ( bugs ? 38.0 : 40.0 );
     }
 
     if ( talents.phantom_reach.enabled() )
@@ -3021,9 +3039,7 @@ void priest_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  // Mysticism
-  parse_passive_effects( find_spell( 89745 ) );
+  parse_raid_buffs();
 }
 
 void priest_t::create_buffs()
@@ -3433,7 +3449,7 @@ parsed_assisted_combat_rule_t priest_t::parse_assisted_combat_rule( const assist
   // guard against buff.power_word_fortitude_highlight, base sim handles this
   if ( step.spell_id == 21562 && rule.condition_value_1 == 1271911 )
   {
-    return { "0" };
+    return { "aura.power_word_fortitude.down" };
   }
 
   return player_t::parse_assisted_combat_rule( rule, step );
@@ -3762,7 +3778,7 @@ void priest_t::trigger_divine_aegis( action_state_t* s )
 
 void priest_t::spawn_idol_of_cthun( action_state_t* s )
 {
-  if ( !talents.shadow.idol_of_cthun.enabled() )
+  if ( !talents.shadow.idol_of_cthun.enabled() && !talents.shadow.void_apparitions_3.enabled() )
     return;
 
   if ( s->action->target_list().size() > 2 )

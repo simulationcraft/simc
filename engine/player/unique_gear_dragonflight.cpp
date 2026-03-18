@@ -1502,7 +1502,7 @@ void emerald_coachs_whistle( special_effect_t& effect )
   effect.custom_buff = buff;
 
   // self driver procs off druid hostile abilities as well as shadow hostile abilities
-  if ( effect.player->type == player_e::DRUID || effect.player->specialization() == PRIEST_SHADOW )
+  if ( effect.player->type == player_e::DRUID || effect.player->specialization() == PRIEST_SHADOW || effect.player->type == EVOKER )
     effect.proc_flags_ |= PF_MAGIC_SPELL | PF_MELEE_ABILITY;
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -3058,6 +3058,9 @@ void tome_of_unstable_power( special_effect_t& effect )
 // 383781 Driver and Buff
 void algethar_puzzle_box( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "algethar_puzzle" } ) )
+    return;
+
   struct puzzle_box_channel_t : public proc_spell_t
   {
     buff_t* buff;
@@ -3066,7 +3069,7 @@ void algethar_puzzle_box( special_effect_t& effect )
     puzzle_box_channel_t( const special_effect_t& e, buff_t* solved ) :
       proc_spell_t( "algethar_puzzle_box_channel", e.player, e.driver(), e.item)
     {
-      channeled = hasted_ticks = true;
+      channeled = hasted_ticks = hasted_dot_duration = true;
       harmful = false;
       dot_duration = base_tick_time = base_execute_time;
       base_execute_time = 0_s;
@@ -3214,12 +3217,6 @@ void algethar_puzzle_box( special_effect_t& effect )
     }
   };
   auto value = effect.driver()->effectN( 1 ).average( effect.item );
-
-  if (effect.player->specialization() == DEATH_KNIGHT_UNHOLY)
-  {
-    auto mod = 1.0 + effect.player -> find_spell( 137007 ) -> effectN( 6 ).percent();
-    value = value * mod;
-  }
 
   auto buff_spell = effect.player->find_spell( 383781 );
   buff_t* buff    = create_buff<stat_buff_t>( effect.player, buff_spell )
@@ -4980,6 +4977,7 @@ void hellsteel_plating( special_effect_t& e )
   damage->split_aoe_damage = false;
   damage->aoe              = 5;
   auto buff                = create_buff<buff_t>( e.player, e.driver() )
+                  ->set_reverse( true )
                   ->set_stack_change_callback( [ damage ]( buff_t* b, int old, int new_ ) {
                     // buff decrements so subtract
                     auto diff = old - new_;
@@ -4988,8 +4986,6 @@ void hellsteel_plating( special_effect_t& e )
                       damage->execute_on_target( b->player->target );
                     }
                   } );
-  buff->set_initial_stack( buff->max_stack() );
-  buff->set_reverse( true );
 
   e.custom_buff = buff;
 }

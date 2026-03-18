@@ -11,6 +11,7 @@ actions.assisted_combat=arcane_intellect,if=aura.arcane_intellect.down
 actions.assisted_combat+=/arcane_barrage,if=buff.arcane_charge.stack>=4&talent.spellfire_salvo&buff.arcane_salvo.stack>=22
 actions.assisted_combat+=/arcane_barrage,if=buff.arcane_charge.stack>=4&!talent.spellfire_salvo&buff.arcane_salvo.stack>=17
 actions.assisted_combat+=/touch_of_the_magi,if=cooldown.arcane_blast.ready&debuff.touch_of_the_magi.down
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
 actions.assisted_combat+=/arcane_surge
 actions.assisted_combat+=/arcane_missiles,if=buff.overpowered_missiles.up
 actions.assisted_combat+=/arcane_orb,if=buff.arcane_charge.stack<=1&active_enemies>2

@@ -1,0 +1,89 @@
+paladin="MID1_Paladin_Protection_Lightsmith"
+source=default
+spec=protection
+level=90
+race=draenei
+role=tank
+position=front
+talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMzAzyMLmZMDLLDzYmFbzYAAAAAAAAg0MziZMmxYmt2AgBADsNAAACwMzyySbzMWMwgFzMDwMDAmZAwMDyA
+
+# Default consumables
+potion=lights_potential_2
+flask=flask_of_the_shattered_sun_2
+food=blooming_feast
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2,if=!(talent.rite_of_adjuration.enabled|talent.rite_of_sanctification.enabled)
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=rite_of_sanctification
+actions.precombat+=/rite_of_adjuration
+actions.precombat+=/snapshot_stats
+actions.precombat+=/devotion_aura
+actions.precombat+=/lights_judgment
+actions.precombat+=/consecration
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/use_item,name=algethar_puzzle_box
+actions+=/use_items
+actions+=/potion,if=buff.avenging_wrath.up
+actions+=/avenging_wrath,if=cooldown.divine_toll.remains<=10
+actions+=/fireblood,if=buff.avenging_wrath.up
+actions+=/divine_toll,if=buff.avenging_wrath.up|(!talent.righteous_protector.enabled&cooldown.avenging_wrath.remains<30)
+actions+=/hammer_of_light,if=(!buff.undisputed_ruling.up|buff.hammer_of_light_ready.remains<5)&debuff.judgment.up
+actions+=/shield_of_the_righteous,if=!buff.hammer_of_light_ready.up|(!buff.hammer_of_light_ready.remains<5&buff.undisputed_ruling.up)|buff.hammer_of_light_free.up|prev_gcd.1.divine_toll
+actions+=/holy_armaments,if=next_armament=sacred_weapon&(buff.sacred_weapon.remains<6|!buff.sacred_weapon.up)
+actions+=/hammer_of_wrath,if=buff.hammer_of_light_ready.up&!debuff.judgment.up
+actions+=/judgment,if=buff.hammer_of_light_ready.up&!debuff.judgment.up
+actions+=/avengers_shield,if=buff.vanguard.up|(buff.avenging_wrath.up&apex.3)
+actions+=/holy_armaments,if=next_armament=holy_bulwark&cooldown.avenging_wrath.remains<5
+actions+=/consecration,if=buff.divine_guidance.stack>=5
+actions+=/hammer_of_wrath
+actions+=/judgment,if=full_recharge_time<=gcd*2
+actions+=/avengers_shield
+actions+=/hammer_of_the_righteous,if=buff.blessed_assurance.up
+actions+=/blessed_hammer,if=buff.blessed_assurance.up
+actions+=/judgment
+actions+=/holy_armaments,if=next_armament=holy_bulwark&charges=2
+actions+=/consecration,if=!consecration.up
+actions+=/blessed_hammer
+actions+=/hammer_of_the_righteous
+actions+=/arcane_torrent
+actions+=/word_of_glory,if=buff.shining_light_free.up
+actions+=/consecration
+
+head=luminant_verdicts_unwavering_gaze,id=249961,bonus_id=1808/13575/13575/13575/13575,ilevel=289,gem_id=240983
+neck=eternal_voidsong_chain,id=249368,bonus_id=4786/4800/12806/13668,gem_id=240890
+shoulders=luminant_verdicts_providence_watch,id=249959,bonus_id=13574/13574/13574/13574,ilevel=289
+back=soulhunters_mask,id=251161,bonus_id=4786/12806
+chest=luminant_verdicts_divine_warplate,id=249964,bonus_id=13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=spellbreakers_bracers,id=237834,bonus_id=12066/12214/12214/12384/13622/13667/13668/9627,gem_id=240890,crafted_stats=36/32
+hands=voidclaw_gauntlets,id=151332,bonus_id=13574,ilevel=289
+waist=shadowsplit_girdle,id=251112,bonus_id=4786/12806/13668,gem_id=240888
+legs=luminant_verdicts_greaves,id=249960,bonus_id=13575/13575/13575/13575,ilevel=289,enchant_id=8159
+feet=aetherlume_stompers,id=244774,bonus_id=12066/12214/12214/12384/13622/13667/9627,crafted_stats=36/32
+finger1=occlusion_of_void,id=251217,bonus_id=4786/4800/12806/13668,gem_id=240890,enchant_id=8025
+finger2=omission_of_light,id=251093,bonus_id=4786/4800/12806/13668,gem_id=240890,enchant_id=8025
+trinket1=umbral_plume,id=260235,ilevel=289
+trinket2=algethar_puzzle_box,id=193701,ilevel=289
+main_hand=turalyons_false_echo,id=249295,ilevel=289,enchant_id=8039
+off_hand=bulwark_of_noble_resolve,id=249275,ilevel=289
+
+# Gear Summary
+# gear_ilvl=288.50
+# gear_strength=1361
+# gear_stamina=17357
+# gear_crit_rating=503
+# gear_haste_rating=1285
+# gear_mastery_rating=371
+# gear_versatility_rating=249
+# gear_armor=2814
+# set_bonus=voidlight_bindings_2pc=1
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1

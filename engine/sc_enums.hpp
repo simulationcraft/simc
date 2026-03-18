@@ -197,15 +197,22 @@ enum class movement_direction_type : int
 enum race_e
 {
   RACE_NONE = 0,
-  // Target Races
+  // Creature Types
   RACE_BEAST,
   RACE_DRAGONKIN,
-  RACE_GIANT,
-  RACE_HUMANOID,
   RACE_DEMON,
   RACE_ELEMENTAL,
-  RACE_ABERRATION,
+  RACE_GIANT,
+  RACE_UNDEAD,          // also player race, decouple if necessary
+  RACE_HUMANOID,
+  RACE_CRITTER,         // trivial
   RACE_MECHANICAL,
+  RACE_NOT_SPECIFIED,
+  RACE_TOTEM,
+  RACE_NON_COMBAT_PET,  // trivial
+  RACE_GAS_CLOUD,       // trivial
+  RACE_WILD_PET,        // trivial
+  RACE_ABERRATION,
   // Player Races
   RACE_NIGHT_ELF,
   RACE_HUMAN,
@@ -215,7 +222,6 @@ enum race_e
   RACE_WORGEN,
   RACE_ORC,
   RACE_TROLL,
-  RACE_UNDEAD,
   RACE_BLOOD_ELF,
   RACE_TAUREN,
   RACE_GOBLIN,
@@ -408,6 +414,10 @@ enum pet_e
   PET_DARKGLARE,
   PET_OBSERVER,
   PET_THAL_KIEL,
+  PET_LADY_SACROLASH,
+  PET_GRAND_WARLOCK_ALYTHESS,
+  PET_ANTORAN_INQUISITOR,
+  PET_ANTORAN_JAILER,
   PET_WARLOCK,
 
   PET_GHOUL,
@@ -587,6 +597,7 @@ enum special_effect_e
   SPECIAL_EFFECT_NONE = -1,
   SPECIAL_EFFECT_EQUIP,
   SPECIAL_EFFECT_USE,
+  SPECIAL_EFFECT_PASSIVE,
   SPECIAL_EFFECT_FALLBACK // Internal use only for fallback special effects
 };
 
@@ -854,6 +865,8 @@ enum set_bonus_type_e
   TWW_WDawn,
   TWW2,
   TWW3,
+  MID_ST,
+  MID_AT,
   TWW_SOTV,
   MID_MRM,
   MID_RWR,
@@ -1493,8 +1506,11 @@ enum trait_node_type_e
 // sim_t::error() severity level
 enum error_level_e : unsigned short
 {
-  TRIVIAL,
-  MODERATE,
   SEVERE,
-  PLACEHOLDER,
+  MODERATE,
+  TRIVIAL,
+  UNIMPLEMENTED,
+  UNVERIFIED_IMPLEMENTATION,
+  UNVERIFIED_VALUE,
+  IMPLEMENTATION_NOTES,
 };

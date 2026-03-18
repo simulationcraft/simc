@@ -10,33 +10,35 @@ actions+=/auto_attack
 actions+=/charge,if=time<=0.5|movement.distance>5
 
 # This is the default action priority list from the game's Assisted Combat system.
-actions.assisted_combat=rampage,if=buff.enrage.down
+actions.assisted_combat=battle_shout,if=buff.battle_shout_highlight.up
+actions.assisted_combat+=/thunder_clap,if=!dot.rend.ticking&talent.rend
+actions.assisted_combat+=/rend,if=!dot.rend.ticking
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat+=/recklessness,if=cooldown.slam.ready
+# This is for Blizzard automation and is not included in the game's Assisted Combat system.
+actions.assisted_combat+=/avatar,if=cooldown.slam.ready
+actions.assisted_combat+=/odyns_fury,if=target.distance<=12
+actions.assisted_combat+=/rampage,if=buff.enrage.down
 # (Overridden from 'buff.thunder_blast.up&target.distance<=5&buff.enrage.up')
 actions.assisted_combat+=/thunder_clap,if=buff.thunder_blast.up&target.distance<=6&buff.enrage.up
-# (Overridden from 'target.distance<=5&buff.enrage.up')
-actions.assisted_combat+=/thunderous_roar,if=target.distance<=6&buff.enrage.up
-actions.assisted_combat+=/ravager
-actions.assisted_combat+=/odyns_fury,if=target.distance<=12
-# (Overridden from 'target.distance<=5&talent.crashing_thunder&talent.improved_whirlwind&buff.meat_cleaver.down')
-actions.assisted_combat+=/thunder_clap,if=target.distance<=6&talent.crashing_thunder&talent.improved_whirlwind&buff.meat_cleaver.down
-actions.assisted_combat+=/whirlwind,if=target.distance<=10&!talent.crashing_thunder&talent.improved_whirlwind&buff.meat_cleaver.down&active_enemies>3
-actions.assisted_combat+=/champions_spear,if=target.distance<=25
+# (Overridden from 'target.distance<=5&talent.crashing_thunder&talent.improved_whirlwind&buff.whirlwind.down')
+actions.assisted_combat+=/thunder_clap,if=target.distance<=6&talent.crashing_thunder&talent.improved_whirlwind&buff.whirlwind.down
+actions.assisted_combat+=/whirlwind,if=target.distance<=10&!talent.crashing_thunder&talent.improved_whirlwind&buff.whirlwind.down&active_enemies>3
 actions.assisted_combat+=/bladestorm,if=target.distance<=10&buff.enrage.up
 actions.assisted_combat+=/rampage
-actions.assisted_combat+=/onslaught
 actions.assisted_combat+=/execute
 # (Overridden from 'target.distance<=5&talent.crashing_thunder&active_enemies>3')
 actions.assisted_combat+=/thunder_clap,if=target.distance<=6&talent.crashing_thunder&active_enemies>3
-actions.assisted_combat+=/raging_blow
 actions.assisted_combat+=/bloodthirst
+actions.assisted_combat+=/raging_blow
 # (Overridden from 'target.distance<=5&talent.crashing_thunder')
 actions.assisted_combat+=/thunder_clap,if=target.distance<=6&talent.crashing_thunder
-actions.assisted_combat+=/slam
 actions.assisted_combat+=/heroic_throw,if=target.distance>15
-actions.assisted_combat+=/bloodthirst
+# (Overridden from 'buff.unknown_spell_209694.down')
 actions.assisted_combat+=/slam
+actions.assisted_combat+=/whirlwind
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=use_items
 actions.cooldowns+=/potion
 actions.cooldowns+=/blood_fury

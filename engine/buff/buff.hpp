@@ -46,7 +46,7 @@ struct rng_t;
 }
 
 
-using buff_tick_callback_t = std::function<void(buff_t* buff, int current_tick, timespan_t tick_time)>;
+using buff_tick_callback_t = std::function<void(buff_t* buff, int remaining_ticks, timespan_t tick_time)>;
 using buff_tick_time_callback_t = std::function<timespan_t(const buff_t*, unsigned)>;
 using buff_refresh_duration_callback_t = std::function<timespan_t(const buff_t*, timespan_t)>;
 using buff_stack_change_callback_t = std::function<void(buff_t*, int old_stack, int new_stack)>;
@@ -373,6 +373,7 @@ public:
   buff_t* modify_max_stack( int max_stack );
   buff_t* set_initial_stack( int initial_stack );
   buff_t* modify_initial_stack( int initial_stack );
+  buff_t* set_initial_stack_to_max_stack();
   buff_t* set_expire_at_max_stack( bool );
   buff_t* set_consume_all_stacks( bool );
   buff_t* set_cooldown( timespan_t duration );
@@ -597,7 +598,10 @@ struct damage_buff_t : public buff_t
 
   // Get current direct damage buff multiplier value multiplied by current stacks + benefit tracking.
   double stack_value_direct()
-  { return !current_stack ? 1.0 : direct_mod.initial_multiplier + current_stack * ( value_direct() - 1.0 ); }
+  {
+    buff_t::stack();
+    return !current_stack ? 1.0 : direct_mod.initial_multiplier + current_stack * ( value_direct() - 1.0 );
+  }
 
   // Get current direct damage buff multiplier value + NO benefit tracking.
   double check_value_direct() const

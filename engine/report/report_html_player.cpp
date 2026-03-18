@@ -972,6 +972,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  "<li><span>min_gcd:</span>{:.4f}</li>"
                  "<li><span>cooldown:</span>{:.3f}</li>"
                  "<li><span>cooldown hasted:</span>{}</li>"
+                 "<li><span>category cooldown:</span>{}</li>"
                  "<li><span>charges:</span>{}</li>"
                  "<li><span>base_recharge_multiplier:</span>{:.3f}</li>"
                  "<li><span>base_execute_time:</span>{:.2f}</li>"
@@ -989,6 +990,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  a->min_gcd.total_seconds(),
                  a->cooldown->duration.total_seconds(),
                  a->cooldown->hasted ? "true" : "false",
+                 a->cooldown->category ? "true" : "false",
                  a->cooldown->charges,
                  a->base_recharge_multiplier,
                  a->base_execute_time.total_seconds(),
@@ -1890,13 +1892,13 @@ void print_html_talent_table( report::sc_html_stream& os, const player_t& p, std
   os.format( "<table class=\"sc talents\"><tr><th></th><th colspan=\"{}\">{} Talents [{}]</th></tr>\n", max_col, title,
              points );
 
-  unsigned offset = hero_tree && max_col % 2 == 1 ? ( max_col - 1 ) / 2 : 0;
+  short offset = hero_tree && max_col % 2 == 1 ? ( max_col - 1 ) / 2 : 0;
 
-  for ( unsigned row = 0; row < traits.size(); row++ )
+  for ( short row = 0; row < as<short>( traits.size() ); row++ )
   {
     os.format( "<tr><th class=\"right\">{}</th>\n", row + 1 );
 
-    if ( offset && ( row == 0 || row == traits.size() - 1 ) )
+    if ( offset && ( row == 0 || row == as<short>( traits.size() ) - 1 ) )
     {
       const auto& entry = traits[ row ][ offset ];
       if ( !entry.first )
@@ -1921,15 +1923,27 @@ void print_html_talent_table( report::sc_html_stream& os, const player_t& p, std
       {
         os << "<td></td>\n";
       }
-      else if ( rank != trait->max_ranks )
-      {
-        os.format( "<td class=\"filler\">{} [{}]<b>*</b></td>\n",
-                   report_decorators::decorated_spell_data( *p.sim, p.find_spell( trait->id_spell ) ), rank );
-      }
       else
       {
-        os.format( "<td>{} [{}]</td>\n",
-                   report_decorators::decorated_spell_data( *p.sim, p.find_spell( trait->id_spell ) ), rank );
+        auto max_rank = trait->max_ranks;
+
+        if ( trait->node_type == NODE_TIERED )
+        {
+          auto _entries = trait_data_t::data( trait->id_node, util::class_id( p.type ),
+                                              static_cast<talent_tree>( trait->tree_index ), p.is_ptr() );
+          max_rank = range::accumulate( _entries, 0, []( const auto& e ) { return e.max_ranks; } );
+        }
+
+        if ( rank != max_rank )
+        {
+          os.format( "<td class=\"filler\">{} [{}]<b>*</b></td>\n",
+                     report_decorators::decorated_spell_data( *p.sim, p.find_spell( trait->id_spell ) ), rank );
+        }
+        else
+        {
+          os.format( "<td>{} [{}]</td>\n",
+                     report_decorators::decorated_spell_data( *p.sim, p.find_spell( trait->id_spell ) ), rank );
+        }
       }
     }
     os << "</tr>\n";
@@ -1970,13 +1984,13 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
     switch ( _tree )
     {
       case talent_tree::CLASS:
-        assert( class_traits.at( trait->row - 1 ).size() >= trait->col );
+        assert( as<short>( class_traits.at( trait->row - 1 ).size() ) >= trait->col );
         cell_ptr = &class_traits.at( trait->row - 1 ).at( trait->col - 1 );
         points_ptr = &class_points;
         break;
 
       case talent_tree::SPECIALIZATION:
-        assert( spec_traits.at( trait->row - 1 ).size() >= trait->col );
+        assert( as<short>( spec_traits.at( trait->row - 1 ).size() ) >= trait->col );
         cell_ptr = &spec_traits.at( trait->row - 1 ).at( trait->col - 1 );
         points_ptr = &spec_points;
         break;
@@ -1989,7 +2003,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
           if ( !hero_traits.count( id ) )
             range::for_each( hero_traits[ id ], []( auto& row ) { row.resize( HERO_TREE_COLUMNS ); } );
 
-          assert( hero_traits[ id ].at( trait->row - 1 ).size() >= trait->col );
+          assert( as<short>( hero_traits[ id ].at( trait->row - 1 ).size() ) >= trait->col );
           cell_ptr = &hero_traits[ id ].at( trait->row - 1 ).at( trait->col - 1 );
           points_ptr = &hero_points[ id ];
           break;
@@ -2003,8 +2017,18 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
 
     assert( cell_ptr && points_ptr );
 
-    cell_ptr->first = trait;
-    cell_ptr->second = _rank;
+    if ( trait->node_type == NODE_TIERED && cell_ptr->first )
+    {
+      if ( trait->selection_index < cell_ptr->first->selection_index )
+        cell_ptr->first = trait;
+
+      cell_ptr->second += _rank;
+    }
+    else
+    {
+      cell_ptr->first = trait;
+      cell_ptr->second = _rank;
+    }
 
     if ( !trait_data_t::is_granted( trait, p.type, p.specialization(), p.is_ptr() ) )
       *points_ptr += _rank;
@@ -2018,7 +2042,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   if ( num_players == 1 )
   {
     auto max_col = class_columns( p.specialization(), p.is_ptr() ) + spec_columns( p.specialization(), p.is_ptr() );
-    auto h_ = static_cast<int>( 1165 - max_col * 29.125 );
+    auto h_ = static_cast<int>( 1165 - max_col * 28 );
     os.format( R"(<iframe src="{}" width="1165" height="{}"></iframe>)",
                raidbots_talent_render_src( p.talents_str, p.true_level, 1165, false, p.dbc->ptr ), h_ );
 
@@ -3644,7 +3668,7 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
 
     for ( const auto* b : ri.constant_buffs )
     {
-       os << "<tbody>\n";
+      os << "<tbody>\n";
       print_html_player_buff( os, *b, p.sim->report_details, p, true );
       os << "</tbody>\n";
     }
@@ -3658,17 +3682,6 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
 void print_html_player_custom_section( report::sc_html_stream& os, const player_t& p,
                                        const player_processed_report_information_t& /*ri*/ )
 {
-  os << R"(<div class="player-section parsed_passives">)";
-  os << R"(<h3 class="toggle">!!!Parse Passive Debug Output!!!</h3>)";
-  os << R"(<div class="toggle-content hide">)";
-  os << R"(<div class="subsection force-wrap">)";
-  os << "<table>\n";
-
-  for ( const auto& tmp : p._tmp_registered_passive_printout_tmp_ )
-    os << "<tr><td>" << tmp << "</td></tr>\n";
-
-  os << "</table></div></div></div>";
-
   p.print_parsed_effects( os );
 
   if ( p.report_extension )
@@ -3803,7 +3816,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     auto max_col = class_columns( p.specialization(), p.is_ptr() ) + spec_columns( p.specialization(), p.is_ptr() );
     auto w_ = static_cast<int>( max_col * 12.5 - 25 );
     os.format(
-      R"(<iframe src="{}" width="{}" height="125" style="margin-right: 8px; margin-top: 5px; float: left"></iframe>)",
+      R"(<iframe src="{}" width="{}" height="120" style="margin-right: 8px; margin-top: 5px; float: left"></iframe>)",
       raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
 
     os << "\n";

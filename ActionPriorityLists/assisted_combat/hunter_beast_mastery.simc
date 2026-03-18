@@ -11,6 +11,7 @@ actions+=/call_action_list,name=assisted_combat
 # This is the default action priority list from the game's Assisted Combat system.
 actions.assisted_combat=call_pet_1,if=!pet.any.active
 actions.assisted_combat+=/bestial_wrath
+actions.assisted_combat+=/wailing_arrow
 actions.assisted_combat+=/wild_thrash,if=active_enemies>3&buff.beast_cleave.down
 actions.assisted_combat+=/wild_thrash,if=buff.beast_cleave.up&buff.beast_cleave.remains<=2&active_enemies>3
 actions.assisted_combat+=/black_arrow
@@ -27,4 +28,3 @@ actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 actions.cooldowns+=/fireblood
 actions.cooldowns+=/ancestral_call
-actions.cooldowns+=/bestial_wrath

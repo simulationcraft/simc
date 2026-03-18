@@ -347,8 +347,6 @@ public:
     const spell_data_t* aegis_of_light;
     const spell_data_t* aegis_of_light_2;
 
-    const spell_data_t* boundless_conviction;
-
     const spell_data_t* art_of_war;
     const spell_data_t* art_of_war_2;
   } passives;
@@ -393,8 +391,6 @@ public:
     const spell_data_t* sanctify;
 
     const spell_data_t* sotr_buff;
-
-    const spell_data_t* judgment_2;
 
     const spell_data_t* consecrated_blade;
     const spell_data_t* crusade;
@@ -750,6 +746,7 @@ public:
     bool fake_solidarity                  = true;
     double ror_bulwark_additional_proc_chance = .3;
     double blessed_hammer_strikes          = 2.0;
+    std::string starting_armament             = "sacred_weapon";
   } options;
   player_t* beacon_target;
 
@@ -780,7 +777,6 @@ public:
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                             const assisted_combat_step_data_t& step ) const override;
   virtual bool validate_fight_style( fight_style_e style ) const override;
-  virtual bool validate_actor() override;
   virtual void reset() override;
   virtual std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
 
@@ -911,7 +907,6 @@ struct execution_sentence_debuff_t : public buff_t
   void expire_override( int stacks, timespan_t duration ) override
   {
     buff_t::expire_override( stacks, duration );
-
     paladin_t* paladin = debug_cast<paladin_t*>( source );
     paladin->trigger_es_explosion( player );
   }
@@ -1108,15 +1103,13 @@ public:
   bool clears_judgment;
 
   bool triggers_higher_calling;
-  bool skip_es_accum;
 
   paladin_action_t( util::string_view n, paladin_t* p, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, p, s ),
       affected_by( affected_by_t() ),
       hasted_cd( false ),
       clears_judgment( false ),
-      triggers_higher_calling( false ),
-      skip_es_accum( false )
+      triggers_higher_calling( false )
   {
     ab::track_cd_waste = s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms;
 
@@ -1272,38 +1265,6 @@ public:
       cttm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
 
     return cttm;
-  }
-
-  virtual void assess_damage( result_amount_type typ, action_state_t* s ) override
-  {
-    ab::assess_damage( typ, s );
-
-    paladin_td_t* td = this->td( s->target );
-
-    if ( td->debuff.execution_sentence_gather->check() && dbc::is_school( ab::school, SCHOOL_HOLY ) && !skip_es_accum )
-    {
-      double mult = 1.0;
-
-      // ES counts damage before wings & mastery, but after most other multipliers,
-      // per bolas test Aug 17 2024
-      if ( affected_by.avenging_wrath && p()->buffs.avenging_wrath->up() )
-      {
-        mult /= 1.0 + p()->buffs.avenging_wrath->value();
-      }
-
-      if ( affected_by.highlords_judgment )
-      {
-        double mastery_amount = p()->cache.mastery_value();
-        if ( affected_by.highlords_judgment_hidden && p()->talents.highlords_wrath->ok() )
-        {
-          // TODO: this has gotta be wrong. Where's the actual spell data for this?
-          mastery_amount *= 1.0 + (p()->talents.highlords_wrath->effectN( 3 ).percent() / p()->talents.highlords_wrath->effectN( 2 ).base_value());
-        }
-        mult /= 1.0 + mastery_amount;
-      }
-
-      p()->accumulate_es_damage( s, mult );
-    }
   }
 };
 
@@ -1756,6 +1717,7 @@ struct judgment_base_t : public paladin_melee_attack_t
   hammer_and_anvil_t* hammer_and_anvil;
   int judge_holy_power;
   int sw_holy_power;
+  bool triggers_highlords_judgment;
   judgment_base_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   judgment_base_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s = spell_data_t::nil() );
   void impact( action_state_t* s ) override;
@@ -1770,7 +1732,6 @@ private:
 public:
   bool triggers_second_sunrise   = false;
   bool triggers_divine_resonance = false;
-  bool triggers_sanctification   = false;
   hammer_of_wrath_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str,
                      const spell_data_t* s = spell_data_t::nil() );

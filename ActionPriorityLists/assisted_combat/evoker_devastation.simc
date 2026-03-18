@@ -8,23 +8,23 @@ actions=call_action_list,name=cooldowns
 actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
-actions.assisted_combat=fire_breath,cooldown_allow_casting_success=1
-actions.assisted_combat+=/living_flame,if=talent.ruby_embers&cooldown.engulf.ready&!dot.living_flame_damage.ticking
-actions.assisted_combat+=/pyre,if=talent.ruby_embers&cooldown.engulf.ready&!dot.enkindle.ticking&active_enemies>3
-actions.assisted_combat+=/disintegrate,if=talent.ruby_embers&cooldown.engulf.ready&!dot.enkindle.ticking
-actions.assisted_combat+=/engulf,if=dot.fire_breath_damage.ticking
-actions.assisted_combat+=/shattering_star,if=cooldown.eternity_surge.ready
+actions.assisted_combat=dragonrage
+actions.assisted_combat+=/fire_breath,if=talent.consume_flame&!dot.fire_breath_damage.ticking,cooldown_allow_casting_success=1
+actions.assisted_combat+=/tip_the_scales,if=cooldown.fire_breath.ready
+actions.assisted_combat+=/fire_breath,if=!talent.consume_flame,cooldown_allow_casting_success=1
 actions.assisted_combat+=/eternity_surge,cooldown_allow_casting_success=1
+# (Overridden from 'buff.recall.down&target.distance<=40')
+actions.assisted_combat+=/deep_breath,if=target.distance<=40
 actions.assisted_combat+=/disintegrate,if=active_enemies>3&buff.mass_disintegrate_stacks.up
 actions.assisted_combat+=/pyre,if=active_enemies>3
+actions.assisted_combat+=/azure_strike,if=buff.azure_sweep.up
 actions.assisted_combat+=/living_flame,if=active_enemies>3&buff.burnout.up&buff.leaping_flames.up
-actions.assisted_combat+=/firestorm,if=active_enemies>3
-actions.assisted_combat+=/living_flame,if=active_enemies>3,cooldown_allow_casting_success=1
+actions.assisted_combat+=/azure_strike,if=active_enemies>3
 actions.assisted_combat+=/disintegrate
 actions.assisted_combat+=/living_flame,cooldown_allow_casting_success=1
 actions.assisted_combat+=/living_flame
 
-# Major cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
+# Some cooldowns are not used by the Assisted Combat system. This simple default cooldown usage has been provided by simc.
 actions.cooldowns=potion
 actions.cooldowns+=/deep_breath,if=talent.imminent_destruction|talent.melt_armor|talent.maneuverability|active_enemies>1
 actions.cooldowns+=/dragonrage

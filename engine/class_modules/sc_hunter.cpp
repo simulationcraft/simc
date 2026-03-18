@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include <memory>
+#include <optional>
 
 #include "simulationcraft.hpp"
 #include "player/pet_spawner.hpp"
@@ -514,8 +515,6 @@ public:
 
     cooldown_t* black_arrow;
     cooldown_t* bleak_powder;
-
-    cooldown_t* sentinels_mark;
   } cooldowns;
 
   struct gains_t
@@ -525,6 +524,7 @@ public:
     gain_t* invigorating_pulse;
     gain_t* serpentine_strikes;
     gain_t* lethal_barbs;
+    gain_t* disruptive_rounds;
   } gains;
 
   struct procs_t
@@ -564,18 +564,18 @@ public:
     spell_data_ptr_t hunters_avoidance; //Utility talent, won't implement
 
     spell_data_ptr_t wilderness_medicine; //Utility talent, won't implement
-    spell_data_ptr_t combat_experience; //TODO fix runtime error
+    spell_data_ptr_t combat_experience;
     spell_data_ptr_t improved_aspect_of_the_cheetah; //Utility talent, won't implement
-    spell_data_ptr_t concussive_shot; //TODO Not implemented - probably not needed
+    spell_data_ptr_t concussive_shot; //Not implemented - probably not needed
 
     spell_data_ptr_t precision_strikes;
     spell_data_ptr_t counter_shot;
     spell_data_ptr_t muzzle;
     spell_data_ptr_t serrated_tips;
 
-    spell_data_ptr_t tranquilizing_shot; //TODO Not implemented - probably not needed
+    spell_data_ptr_t tranquilizing_shot; //Not implemented - probably not needed
     spell_data_ptr_t pathfinding; //Utility talent, won't implement
-    spell_data_ptr_t disruptive_rounds; //TODO Not implemented
+    spell_data_ptr_t disruptive_rounds;
     spell_data_ptr_t improved_feign_death; //Utility talent, won't implement
     spell_data_ptr_t misdirection; //Utility talent, won't implement
 
@@ -726,7 +726,7 @@ public:
     spell_data_ptr_t obsidian_arrowhead;
     spell_data_ptr_t on_target;
     spell_data_ptr_t trueshot;
-    spell_data_ptr_t kill_shot; //TODO Moved to MM exclusive 
+    spell_data_ptr_t kill_shot;
 
     spell_data_ptr_t target_acquisition;
     spell_data_ptr_t critical_precision;
@@ -743,8 +743,7 @@ public:
     spell_data_ptr_t bullseye;
     spell_data_ptr_t bullseye_buff;
     spell_data_ptr_t calling_the_shots;
-    spell_data_ptr_t unerring_vision; /* Spelldata now scuffed because of Streamline's removal, this is also reflected in-game.
-                                         TODO reconfirm before launch */
+    spell_data_ptr_t unerring_vision; 
     spell_data_ptr_t small_game_hunter;
     spell_data_ptr_t eagles_accuracy;
 
@@ -960,9 +959,6 @@ public:
   // Specialization Spells
   struct specs_t
   {
-    spell_data_ptr_t critical_strikes;
-    spell_data_ptr_t mail_specialization;
-    spell_data_ptr_t control_pet; // Does nothing for sim purposes as of 2026-01-30 but adding for completeness
     spell_data_ptr_t pet_damage; // 2026-02-03: Generic "Pet Damage" buff, used as a tuning knob for Dire Beasts
     spell_data_ptr_t hunter;
     spell_data_ptr_t beast_mastery_hunter;
@@ -1060,8 +1056,6 @@ public:
 
     cooldowns.black_arrow = get_cooldown( "black_arrow" );
     cooldowns.bleak_powder = get_cooldown( "bleak_powder_icd" );
-
-    cooldowns.sentinels_mark = get_cooldown( "sentinels_mark_icd" );
 
     base_gcd = 1.5_s;
 
@@ -1324,31 +1318,23 @@ public:
   {
     ab::execute();
 
-    if ( decrements_tip_of_the_spear && p()->buffs.tip_of_the_spear->check() )
+    if ( affected_by.wallop.direct )
+      p()->buffs.wallop->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    ab::impact( s );
+
+    // Tip removal and effects are triggered on impact but only once
+    if ( decrements_tip_of_the_spear && s->chain_target == 0 && p()->buffs.tip_of_the_spear->check() )
     {
       p()->buffs.tip_of_the_spear->decrement();
       p()->buffs.stargazer->trigger();
 
-      /* On Survival, Sentinel's Mark applies to a random target hit for AoE spells. 
-         For now, pick a random target in the target_list(), even if they were not hit.
-         Results should be unaffected but ideally it would be accurate.
-
-         Note: This same logic is used in boomstick_t::execute().
-
-         2026-01-18: Needs a revisit after class implementation is done, slice the vector probably.
-
-         TODO reconfirm before launch */
-      if ( this->aoe )
-      {
-        auto tl = this->target_list();
-        p()->rng().shuffle( tl.begin(), tl.end() );
-        p()->trigger_eagles_mark( tl.front(), true );
-        this->target_cache.is_valid = false;
-      }
-      else
-      {
-        p()->trigger_eagles_mark( this->target, true );
-      }
+      // 2026-02-13: For Survival, Sentinel's Mark applies to a random target hit for AoE spells.
+      //             Tipped Wildfire Bombs can also trigger an additional mark after consuming one so make an event.
+      make_event( p()->sim, [ this ]() { p()->trigger_eagles_mark( get_random_valid_target(), true ); } );
 
       if ( p()->cooldowns.strike_as_one->up() )
       {
@@ -1360,14 +1346,6 @@ public:
         }
       }
     }
-
-    if ( affected_by.wallop.direct )
-      p()->buffs.wallop->expire();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    ab::impact( s );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1613,6 +1591,40 @@ public:
     if ( ab::is_precombat && !in_combat && precast_time > 0_ms )
       ab::cooldown -> adjust( -precast_time );
   }
+
+  player_t* get_random_valid_target( std::optional<int> aoe_override = std::nullopt ) const
+  {
+    const int aoe = aoe_override.value_or( ab::aoe );
+
+    switch ( aoe )
+    {
+      case 0: 
+        return ab::target;
+
+      case -1:
+      {
+        const auto tl = ab::target_list();
+        if ( !tl.empty() )
+          return p()->rng().range( tl );
+
+        break;
+      }
+
+      // Capped targets
+      default:
+      {
+        const auto tl = ab::target_list();
+        if ( !tl.empty() && aoe > 0 )
+        {
+          const size_t cap = std::min<size_t>( aoe, tl.size() );
+          const size_t t   = p()->rng().template range<size_t>( 0, cap );
+          return tl[ t ];
+        }
+        break;
+      }
+    }
+    return ab::target;
+  }
 };
 
 struct hunter_spell_t : public hunter_action_t<spell_t>
@@ -1744,8 +1756,7 @@ struct dark_minion_t final : public hunter_pet_t
 
   void update_stats() override
   {
-    /* 2026-01-25: Dark Minions only seem to inherit AP and Crit from the player.
-                   TODO reconfirm before launch */
+    // 2026-01-25: Dark Minions only seem to inherit AP and Crit from the player.
     current_pet_stats.attack_power_from_ap = owner->composite_total_attack_power_by_type( owner->default_ap_type() ) * owner_coeff.ap_from_ap;
     sim->print_debug( "{} refreshed AP from owner (ap={})", name(), composite_melee_attack_power() );
 
@@ -1776,8 +1787,7 @@ struct dark_minion_t final : public hunter_pet_t
     pet_t::arise();
 
     /* 2026-01-25: Dark Minions don't cast Shoot for ~1.25s after they spawn.
-                   Further log data required for more accurate range.
-                   TODO reconfirm before launch */
+                   Further log data required for more accurate range. */
     actions.shoot->cooldown->start( owner->rng().range( 1000_ms, 1500_ms ) );
   }
 
@@ -1882,10 +1892,8 @@ struct dark_hound_t final : public dire_critter_t
   dark_hound_t( hunter_t* owner, util::string_view n = "dark_hound" ) : dire_critter_t( owner, n )
   {
     resource_regeneration  = regen_type::DISABLED;
-    owner_coeff.ap_from_ap = 2;
+    owner_coeff.ap_from_ap = 1.5;
     auto_attack_multiplier = 4;
-    // Best guess estimates based on logs and testing
-    // TODO reconfirm before launch
     triggers_heart_of_the_pack = true;
   }
 
@@ -1905,8 +1913,6 @@ struct dark_hound_t final : public dire_critter_t
 
 struct dire_beast_t final : public dire_critter_t
 {
-  const spell_data_t* energize = find_spell( 281036 );
-
   dire_beast_t( hunter_t* owner, util::string_view n = "dire_beast" ) : dire_critter_t( owner, n )
   {
     // 11-10-22 Dire Beast - Damage increased by 400%. (15% -> 60%)
@@ -2232,17 +2238,21 @@ struct animal_companion_t final : public hunter_main_pet_base_t
 // Nature's Ally Pet
 // ==========================================================================
 
-/* 2026-01-24: Nature's Ally pets suck and take a lifetime to reach the target. 
-               Assuming for now that this is beta behaviour and will be fixed. 
-               If this goes live, have them spawn far away and run to the target. 
-               See DK's pets::base_ghoul_pet_t::arise() code for an example. 
-               TODO reconfirm before launch */
-
 struct natures_ally_pet_t final : public hunter_main_pet_base_t
 {
   natures_ally_pet_t( hunter_t* owner ) : hunter_main_pet_base_t( owner, "natures_ally_pet", PET_HUNTER )
   {
     resource_regeneration = regen_type::DISABLED;
+  }
+
+  void create_buffs() override
+  {
+    hunter_main_pet_base_t::create_buffs();
+
+    // Nature's Ally pets have a unique Bestial Wrath aura
+    buffs.bestial_wrath =
+      make_buff( this, "bestial_wrath_apex", find_spell( 1285912 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE );
   }
 
   void summon( timespan_t duration = 0_ms ) override
@@ -3092,8 +3102,7 @@ struct takedown_t : public hunter_pet_attack_t<hunter_main_pet_t>
   {
     background = true;
 
-    /* 2026-01-17: Takedown's pet damage spell effect has an energize baked in which is not reflected in-game. 
-                   TODO reconfirm before launch */
+    // 2026-01-17: Takedown's pet damage spell effect has an energize baked in which is not reflected in-game. 
     energize_type = action_energize::NONE;
   }
 };
@@ -3117,18 +3126,31 @@ struct stomp_t : public hunter_pet_attack_t<hunter_pet_t>
   {
     hunter_pet_attack_t::execute();
 
-    if ( o()->talents.wild_instincts.ok() && p() == o()->pets.main )
+    if ( o()->talents.wild_instincts.ok() )
     {
-      // Prioritise targets without Barbed Shot ticking.
       auto tl = target_list();
 
-      // 2026-01-29: Thundering Hooves stomps can hit the primary target.
-      range::erase_remove(
-          tl, [ this ]( player_t* t ) { return ( !thundering_hooves && t == target ) || o()->get_target_data( t )->dots.barbed_shot->is_ticking(); } );
-      target_cache.is_valid = false;
+      if ( p() == o()->pets.main )
+      {
+        // Prioritise targets without Barbed Shot ticking.
+        // Thundering Hooves stomps can trigger Wild Instincts on the primary target.
+        range::erase_remove( tl, [ this ]( player_t* t ) {
+          return ( !thundering_hooves && t == target ) || o()->get_target_data( t )->dots.barbed_shot->is_ticking();
+        } );
+        target_cache.is_valid = false;
 
-      if ( !tl.empty() )
-        o()->actions.wild_instincts->execute_on_target( tl.front() );
+        if ( !tl.empty() )
+          o()->actions.wild_instincts->execute_on_target( tl.front() );
+      }
+      // 2026-03-04: Nature's Ally pets trigger Wild Instincts on the primary target if any undotted target exists in range
+      else if ( o()->bugs && p() == o()->pets.natures_ally_pet.active_pet() )
+      {
+        bool undotted_exists = range::any_of(
+            tl, [ this ]( player_t* t ) { return !o()->get_target_data( t )->dots.barbed_shot->is_ticking(); } );
+        
+        if ( undotted_exists )
+          o()->actions.wild_instincts->execute_on_target( target );
+      }
     }
   }
 
@@ -3152,22 +3174,18 @@ struct bloodshed_t : hunter_pet_attack_t<hunter_main_pet_base_t>
   {
     background = true;
 
-    /* 2026-01-31: Bloodshed is affected by Unnatural Causes but this is not reflected in spell data.
-                   TODO reconfirm before launch */ 
+    // 2026-01-31: Bloodshed is affected by Unnatural Causes but this is not reflected in spell data.
     if ( o()->bugs )
       affected_by.unnatural_causes.tick = as<uint8_t>( 2 );
   }
 
-  double composite_ta_multiplier( const action_state_t* s ) const override
+  void init() override
   {
-    double am = hunter_pet_attack_t::composite_ta_multiplier( s );
+    hunter_pet_attack_t::init();
 
-    /* 2026-01-31: Bloodshed is double-dipping Jagged Wounds' modifier.
-                   TODO reconfirm before launch */ 
-    if ( o()->bugs && o()->talents.jagged_wounds.ok() )
-      am *= 1 + o()->talents.jagged_wounds->effectN( 1 ).percent();
-
-    return am;
+    // 2026-02-12: Bloodshed is bugged and cannot proc Dire Beasts.
+    if ( o()->bugs )
+      dire_beast_chance = 0;
   }
 };
 
@@ -3236,18 +3254,6 @@ struct ravenous_leap_t : public hunter_pet_attack_t<fenryr_t>
     background = true;
     dire_beast_chance = -1;
   }
-
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double am = hunter_pet_attack_t::composite_ta_multiplier( s );
-
-    /* 2026-02-05: Ravenous Leap is double-dipping Jagged Wounds' modifier.
-                   TODO reconfirm before launch */
-    if ( o()->bugs && o()->talents.jagged_wounds.ok() )
-      am *= 1 + o()->talents.jagged_wounds->effectN( 1 ).percent();
-
-    return am;
-  }
 };
 
 // Rend Flesh (Bear) ===================================================
@@ -3275,13 +3281,7 @@ struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
   {
     double am = hunter_pet_attack_t::composite_ta_multiplier( s );
 
-    /* 2026-02-05: Rend Flesh is double-dipping Jagged Wounds' modifier.
-                   TODO reconfirm before launch */
-    if ( o()->bugs && o()->talents.jagged_wounds.ok() )
-      am *= 1 + o()->talents.jagged_wounds->effectN( 1 ).percent();
-
-    /* 2026-02-07: Rend Flesh is double-dipping Spirit Bond's modifier.
-                   TODO reconfirm before launch */
+    // 2026-02-07: Rend Flesh is double-dipping Spirit Bond's modifier.
     if ( o()->mastery.spirit_bond.ok() )
     {
       double bonus = o()->cache.mastery() * o()->mastery.spirit_bond->effectN( affected_by.spirit_bond.tick ).mastery_value();
@@ -3305,8 +3305,7 @@ struct shoot_t final : public hunter_pet_attack_t<dark_minion_t>
   shoot_t( dark_minion_t* p ) : hunter_pet_attack_t( "shoot", p, p->find_spell( 1264357 ) ) 
   {
     /* 2026-01-25: The pet stands around for a variable amount of time between casts.
-                   Log testing puts it between 350ms and 650ms but longer testing required.
-                   TODO reconfirm before launch */
+                   Log testing puts it between 350ms and 650ms but longer testing required. */
     cooldown->duration = rng().range( 350_ms, 650_ms );
   }
 };
@@ -3670,7 +3669,7 @@ void hunter_t::consume_precise_shots()
   if ( !buffs.precise_shots->check() )
     return;
 
-  cooldowns.aimed_shot->adjust( -talents.focused_aim->effectN( 1 ).time_value() * buffs.precise_shots->check() );
+  cooldowns.aimed_shot->adjust( -talents.focused_aim->effectN( 1 ).time_value() );
 
   buffs.precise_shots->expire();
   buffs.stargazer->trigger();
@@ -3685,16 +3684,13 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   {
     auto td = get_target_data( target );
     sentinel ? td->debuffs.sentinels_mark->trigger() : td->debuffs.spotters_mark->trigger();
+
+    cooldowns.aimed_shot->adjust( -talents.moons_blessing->effectN( 2 ).time_value() );
+    cooldowns.wildfire_bomb->adjust( -talents.moons_blessing->effectN( 3 ).time_value() );
+
     return;
   }
 
-  if ( cooldowns.sentinels_mark->down() )
-    return;
-
-  /* Further testing is required on the calculation sequence for this chance. 
-     When is Feathered Frenzy's bonus applied?
-     How does Lunar Calling affect it?
-     TODO reconfirm before launch */
   auto spec = specialization();
   double chance = 0;
   double lunar_calling_bonus = talents.lunar_calling->effectN( spec == HUNTER_MARKSMANSHIP ? 1 : 2 ).percent();
@@ -3703,25 +3699,29 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   {
     chance += specs.spotters_mark_data->effectN( 1 ).percent();
 
-    /* 2026-01-15: Moon's Blessing spell data is applied to Survival but not Marksmanship, so do it manually.
-       TODO reconfirm before launch */
+    // 2026-01-15: Moon's Blessing spell data is applied to Survival but not Marksmanship, so do it manually.
     chance += talents.moons_blessing->effectN( 1 ).percent();
-    chance += lunar_calling_bonus;
 
-    if ( talents.feathered_frenzy.ok() && buffs.trueshot->up() )
-      chance *= 1 + talents.feathered_frenzy->effectN( 1 ).percent();
+    if ( buffs.trueshot->check() )
+    {
+      if ( talents.feathered_frenzy.ok() )
+        chance *= 1 + talents.feathered_frenzy->effectN( 1 ).percent();
+
+      chance += lunar_calling_bonus;
+    }
   }
   else if ( spec == HUNTER_SURVIVAL )
   {
     chance += talents.sentinel->effectN( 1 ).percent();
-    chance += lunar_calling_bonus;
+
+    if ( buffs.takedown->check() )
+      chance += lunar_calling_bonus;
   }
 
   if ( rng().roll( chance ) )
   {
     auto td = get_target_data( target );
     sentinel ? td->debuffs.sentinels_mark->trigger() : td->debuffs.spotters_mark->trigger();
-    cooldowns.sentinels_mark->start();
 
     cooldowns.aimed_shot->adjust( -talents.moons_blessing->effectN( 2 ).time_value() );
     cooldowns.wildfire_bomb->adjust( -talents.moons_blessing->effectN( 3 ).time_value() );
@@ -4090,20 +4090,6 @@ struct steady_shot_t: public hunter_ranged_attack_t
 
 struct arcane_shot_base_t: public hunter_ranged_attack_t
 {
-  arcane_shot_base_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->specs.arcane_shot ) {}
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double am = hunter_ranged_attack_t::composite_da_multiplier( s );
-
-    am *= 1 + p()->buffs.precise_shots->check_stack_value();
-
-    return am;
-  }
-};
-
-struct arcane_shot_t : public arcane_shot_base_t
-{
   struct state_data_t
   {
     bool empowered_by_precise_shots = false;
@@ -4115,6 +4101,52 @@ struct arcane_shot_t : public arcane_shot_base_t
   };
   using state_t = hunter_action_state_t<state_data_t>;
 
+  arcane_shot_base_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->specs.arcane_shot ) {}
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double am = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+    am *= 1 + p()->buffs.precise_shots->check_stack_value();
+
+    return am;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( debug_cast<state_t*>( s )->empowered_by_precise_shots )
+      p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok() );
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = hunter_ranged_attack_t::composite_crit_chance();
+
+    if ( p()->talents.critical_precision.ok() && p()->buffs.precise_shots->up() )
+    {
+      cc += p()->talents.critical_precision->effectN( 1 ).percent();
+    }
+
+    return cc;
+  }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    hunter_ranged_attack_t::snapshot_internal( s, flags, rt );
+
+    debug_cast<state_t*>( s )->empowered_by_precise_shots = p()->buffs.precise_shots->up();
+  }
+};
+
+struct arcane_shot_t : public arcane_shot_base_t
+{
   struct arcane_shot_aspect_of_the_hydra_t : arcane_shot_base_t
   {
     arcane_shot_aspect_of_the_hydra_t( util::string_view n, hunter_t* p ) : arcane_shot_base_t( n, p )
@@ -4155,8 +4187,6 @@ struct arcane_shot_t : public arcane_shot_base_t
 
     if ( debug_cast<state_t*>( s )->empowered_by_precise_shots )
     {
-      p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok() );
-
       if ( p()->tier_set.mid_s1_mm_4pc.ok() && p()->rppm.let_fly->trigger() )
         make_event( sim, 300_ms, [ this ]() { p()->actions.let_fly->execute_on_target( target ); } );
     }
@@ -4181,18 +4211,6 @@ struct arcane_shot_t : public arcane_shot_base_t
     
     return std::max( min_gcd, g );
   }
-
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
-  {
-    arcane_shot_base_t::snapshot_internal( s, flags, rt );
-
-    debug_cast<state_t*>( s )->empowered_by_precise_shots = p()->buffs.precise_shots->up();
-  }
 };
 
 // Counter Shot (Marksmanship/Beast Mastery Talent) ===========================================================
@@ -4205,6 +4223,14 @@ struct counter_shot_t : public hunter_ranged_attack_t
 
     may_miss = may_block = may_dodge = may_parry = false;
     is_interrupt = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    if( s->target->debuffs.casting->check() && p()->talents.disruptive_rounds.ok() )
+      p()->resource_gain( RESOURCE_FOCUS, p()->talents.disruptive_rounds->effectN( 1 ).base_value(), p()->gains.disruptive_rounds,  this );
+
+    hunter_ranged_attack_t::impact( s );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -4484,9 +4510,7 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
       p()->buffs.stargazer->trigger();
       p()->buffs.tip_of_the_spear_chakram->trigger();
 
-      /* 2026-01-23: Chakram cannot proc Sentinel's Mark
-                     TODO reconfirm before launch */
-
+      // 2026-01-23: Chakram cannot proc Sentinel's Mark
       if ( p()->cooldowns.strike_as_one->up() )
       {
         auto pet = p()->pets.main;
@@ -4600,7 +4624,7 @@ struct black_arrow_base_t : public kill_shot_base_t
           if ( p()->specialization() == HUNTER_BEAST_MASTERY && p()->talents.beast_cleave.ok() )
           {
             p()->buffs.beast_cleave->trigger();
-            for ( auto pet : pets::active<pets::hunter_pet_t>( p()->pets.main, p()->pets.animal_companion ) )
+            for ( auto pet : pets::active<pets::hunter_pet_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
               pet->buffs.beast_cleave->trigger();
           }
           else if ( p()->specialization() == HUNTER_MARKSMANSHIP && p()->talents.trick_shots.ok() )
@@ -4804,8 +4828,12 @@ struct boar_charge_t final : hunter_ranged_attack_t
     cleave_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.howl_of_the_pack_leader_boar_charge_cleave )
     {
       background = dual = true;
-      aoe = as<int>( data().effectN( 2 ).base_value() );
       travel_speed = 50; // 2026-01-19: Not in spelldata, estimating based on log data.
+
+      // 2026-02-12: Boar Charge's Cleave is softcapped when it should be capped to 8.
+      const double cleave_targets = data().effectN( 2 ).base_value();
+      aoe = p->bugs ? -1 : as<int>( cleave_targets );
+      reduced_aoe_targets = cleave_targets;
 
       // TODO 31/1/25: currently hits primary target
       // 2026-01-19: still hits primary target
@@ -4854,6 +4882,7 @@ struct lunar_storm_t : hunter_ranged_attack_t
   {
     background = dual = true;
     aoe = -1;
+    reduced_aoe_targets = 8; // TEMP use spelldata when it exists
   }
 };
 
@@ -5134,7 +5163,6 @@ struct multishot_t: public hunter_ranged_attack_t
 
     // Delay this since secondary Aimed Shots can cleave with a Trick Shots from Volley, but will not be affected by a Trick Shots 
     // from a queued Multi-Shot that might be executed before they are since they are delayed 10 ms.
-    // TODO reconfirm before launch
     if ( ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() ) )
       make_event( p()->sim, 10_ms, [ this ]() { p()->buffs.trick_shots->trigger(); } );
   }
@@ -5189,7 +5217,6 @@ struct multishot_t: public hunter_ranged_attack_t
   {
     double cc = hunter_ranged_attack_t::composite_crit_chance();
 
-    // TODO confirm if crit bonus stacks with Windrunner Quiver
     if ( p()->talents.critical_precision.ok() && p()->buffs.precise_shots->up() )
     {
       cc += p()->talents.critical_precision->effectN( 1 ).percent();
@@ -5417,8 +5444,6 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     double c = aimed_shot_base_t::cost_pct_multiplier();
 
-    /* Spelldata percent is not negative as of 2026-01-11 
-       TODO reconfirm before launch */
     if ( p()->buffs.trueshot->check() )
       c *= 1 - p()->talents.tensile_bowstring->effectN( 2 ).percent();
 
@@ -5432,8 +5457,6 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     auto et = aimed_shot_base_t::execute_time_pct_multiplier();
 
-    /* Spelldata percent is not negative as of 2026-01-11
-       TODO reconfirm before launch */
     if ( p()->buffs.trueshot->check() )
       et *= 1 - p()->talents.tensile_bowstring->effectN( 1 ).percent();
 
@@ -5596,8 +5619,7 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_dd_multiplier *= p->talents.unload->effectN( 1 ).percent();
 
-      // Can't guarantee action exists here, find a better solution
-      // TODO reconfirm before launch
+      // TODO can't guarantee action exists here, find a better solution
       auto arcane_shot = p->find_action( "arcane_shot" );
       if ( arcane_shot )
         arcane_shot->add_child( this );
@@ -5608,8 +5630,11 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       arcane_shot_base_t::impact( s );
 
       // Despite not consuming Precise Shots, these Arcanes can trigger Let Fly.
-      if ( p()->tier_set.mid_s1_mm_4pc.ok() && p()->buffs.precise_shots->check() && p()->rppm.let_fly->trigger() )
-        make_event( sim, 300_ms, [ this, s ]() { p()->actions.let_fly->execute_on_target( s->target ); } );
+      if ( debug_cast<state_t*>( s )->empowered_by_precise_shots )
+      {
+        if ( p()->tier_set.mid_s1_mm_4pc.ok() && p()->rppm.let_fly->trigger() )
+          make_event( sim, 300_ms, [ this ]() { p()->actions.let_fly->execute_on_target( target ); } );
+      }
     }
   };
 
@@ -5621,8 +5646,7 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_dd_multiplier *= p->talents.unload->effectN( 1 ).percent();
 
-      // Can't guarantee action exists here, find a better solution
-      // TODO reconfirm before launch
+      // TODO can't guarantee action exists here, find a better solution
       auto kill_shot = p->find_action( "kill_shot" );
       if ( kill_shot )
         kill_shot->add_child( this );
@@ -5637,8 +5661,7 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_dd_multiplier *= p->talents.unload->effectN( 1 ).percent();
 
-      // Can't guarantee action exists here, find a better solution
-      // TODO reconfirm before launch
+      // TODO can't guarantee action exists here, find a better solution
       auto black_arrow = p->find_action( "black_arrow" );
       if ( black_arrow )
         black_arrow->add_child( this );
@@ -5884,6 +5907,14 @@ struct muzzle_t : public hunter_melee_attack_t
 
     may_miss = may_block = may_dodge = may_parry = false;
     is_interrupt = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    if( s->target->debuffs.casting->check() && p()->talents.disruptive_rounds.ok() )
+      p()->resource_gain( RESOURCE_FOCUS, p()->talents.disruptive_rounds->effectN( 1 ).base_value(), p()->gains.disruptive_rounds,  this );
+
+    hunter_melee_attack_t::impact( s );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -6154,10 +6185,7 @@ struct boomstick_t : public hunter_spell_t
 
       p()->buffs.stargazer->trigger();
       
-      auto tl = target_list();
-      p()->rng().shuffle( tl.begin(), tl.end() );
-      p()->trigger_eagles_mark( tl.front(), true );
-      target_cache.is_valid = false;
+      p()->trigger_eagles_mark( get_random_valid_target( boomstick_tick->aoe ), true );
       
       if ( p()->cooldowns.strike_as_one->up() )
       {
@@ -6239,8 +6267,6 @@ struct takedown_t : public hunter_spell_t
     if ( p()->talents.lunar_calling.ok() )
       p()->trigger_eagles_mark( target, true, true );
 
-    // For Coordinated Assault, some weapon group checking happened here, why?
-    // TODO reconfirm before launch
     damage->execute_on_target( target );
     if ( auto pet = p()->pets.main )
       pet->actions.takedown->execute_on_target( target );
@@ -6477,9 +6503,6 @@ struct kill_command_t: public hunter_spell_t
         fury_of_the_wyvern.extension = p->talents.fury_of_the_wyvern->effectN( 2 ).time_value();
         fury_of_the_wyvern.cap = timespan_t::from_seconds( p->talents.fury_of_the_wyvern->effectN( 4 ).base_value() );
       }
-
-      if ( p->talents.dire_command.ok() && p->talents.dire_command->effectN( 1 ).base_value() != 20 )
-        sim->error( "Dire Command's nominal chance has changed since BLP was calculated, please tell a Hunter maintainer." );
     }
   }
 
@@ -6610,11 +6633,11 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
     {
+      trigger_buff( pet->buffs.bestial_wrath, precast_time );
+
       // Assume the pet is out of range / not engaged when precasting.
       if ( !is_precombat )
         pet -> actions.bestial_wrath -> execute_on_target( target );
-
-      trigger_buff( pet -> buffs.bestial_wrath, precast_time );
     }
 
     if ( p()->talents.wildspeaker.ok() )
@@ -6942,6 +6965,9 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
     {
       background = dual = true;
 
+      // 2026-02-11: Wildfire Bomb's direct damage is not buffed by Unnatural Causes in game, despite being in spell data
+      affected_by.unnatural_causes.direct = as<uint8_t>( 0 );
+
       aoe = -1;
       reduced_aoe_targets = p -> talents.wildfire_bomb -> effectN( 2 ).base_value();
       radius = 5; // XXX: It's actually a circle + cone, but we sadly can't really model that
@@ -7026,6 +7052,11 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
 
   void execute() override
   {
+    // Tip of the Spear is decremented in execute() so run here
+    if ( p()->tier_set.mid_s1_sv_4pc.ok() && p()->buffs.tip_of_the_spear->check() )
+      if ( auto pet = p()->pets.main )
+        pet->actions.strike_as_one->execute_on_target( target );
+
     wildfire_bomb_base_t::execute();
 
     if ( p()->buffs.wyverns_cry->check() && p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
@@ -7034,10 +7065,6 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
       p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
       p()->state.fury_of_the_wyvern_extendable = p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap;
     }
-
-    if ( p()->tier_set.mid_s1_sv_4pc.ok() )
-      if ( auto pet = p()->pets.main )
-        pet->actions.strike_as_one->execute_on_target( target );
   }
 };
 
@@ -7077,7 +7104,9 @@ struct auto_attack_t: public action_t
     ignore_false_positive = true;
     trigger_gcd = 0_ms;
 
+  #ifdef NDEBUG
     assert( p->main_hand_weapon.type != WEAPON_NONE );
+  #endif
 
     if ( p->main_hand_weapon.group() == WEAPON_RANGED )
     {
@@ -7108,8 +7137,7 @@ struct auto_attack_t: public action_t
   {
     player->main_hand_attack->schedule_execute();
 
-    /* 2026-01-24: Sync swings by default, with more log data maybe add some delay for accuracy.
-                   TODO reconfirm before launch */
+    // 2026-01-24: Sync swings by default, with more log data maybe add some delay for accuracy.
     if ( player->off_hand_attack )
       player->off_hand_attack->schedule_execute();
   }
@@ -7131,8 +7159,7 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
 {
   double outland_venom_value = p->talents.outland_venom_debuff->effectN( 1 ).percent();
   if ( p->bugs )
-    outland_venom_value /= 2; /* 2026-01-24: Outland Venom is only giving half of its value.
-                                             TODO reconfirm before launch */
+    outland_venom_value /= 2; // 2026-01-24: Outland Venom is only giving half of its value.
   debuffs.outland_venom = make_buff( *this, "outland_venom", p->talents.outland_venom_debuff )
     ->set_default_value( outland_venom_value )
     ->disable_ticking( true );
@@ -7378,8 +7405,6 @@ void hunter_t::init_spells()
 
   talents.unnatural_causes                  = find_talent_spell( talent_tree::CLASS, "Unnatural Causes" );
   talents.unnatural_causes_debuff           = talents.unnatural_causes.ok() ? find_spell( 459529 ) : spell_data_t::not_found();
-
-  //TODO Remove 
 
   talents.blackrock_munitions               = find_talent_spell( talent_tree::CLASS, "Blackrock Munitions" );
   talents.born_to_be_wild                   = find_talent_spell( talent_tree::CLASS, "Born To Be Wild" );
@@ -7747,9 +7772,6 @@ void hunter_t::init_spells()
   mastery.spirit_bond_buff     = mastery.spirit_bond.ok() ? find_spell( 459722 ) : spell_data_t::not_found();
 
   // Spec spells
-  specs.critical_strikes     = find_spell( 157443 );
-  specs.mail_specialization  = find_spell( 86538 );
-  specs.control_pet          = find_spell( 93321 );
   specs.pet_damage           = find_spell( 1284992 );
   specs.hunter               = find_spell( 137014 );
   specs.beast_mastery_hunter = find_specialization_spell( "Beast Mastery Hunter" );
@@ -7785,10 +7807,6 @@ void hunter_t::init_spells()
 
   cooldowns.bleak_powder->duration = talents.bleak_powder->internal_cooldown();
 
-  /* Sentinel Owl has an ICD but it doesn't seem to be in spelldata, using 500ms as an estimate. 
-     TODO reconfirm before launch */
-  cooldowns.sentinels_mark->duration = 500_ms;
-
   // Register passives
   register_passive_effect_mask( talents.precision_strikes, 
                                 specialization() == HUNTER_BEAST_MASTERY ||
@@ -7816,10 +7834,7 @@ void hunter_t::init_spells()
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
-
-  parse_passive_effects( specs.critical_strikes );
-  parse_passive_effects( specs.mail_specialization );
-  parse_passive_effects( specs.control_pet );
+  parse_raid_buffs();
 }
 
 void hunter_t::init_base_stats()
@@ -7963,8 +7978,7 @@ void hunter_t::create_buffs()
   buffs.heart_of_the_pack = 
     make_buff( this, "heart_of_the_pack", talents.heart_of_the_pack_buff )
       -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-      -> set_default_value( talents.heart_of_the_pack->effectN( 1 ).percent() / 10 ) /* Spelldata is scuffed as of 2026-01-08
-                                                                                        TODO: reconfirm before launch */
+      -> set_default_value( talents.heart_of_the_pack->effectN( 1 ).percent() / 10 ) // Spelldata is scuffed as of 2026-01-08
       -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buffs.natures_ally_3 = 
@@ -8200,12 +8214,7 @@ void hunter_t::init_rng()
   rppm.corpsecaller = get_rppm( "Corpsecaller", talents.corpsecaller );
   rppm.let_fly      = get_rppm( "Let Fly", tier_set.mid_s1_mm_4pc );
 
-  /* 2026-02-03:
-    Dire Command's accumulating chance has been precomputed using...
-    death_knight_t::pseudo_random_c_from_p() based on the nominal chance (20%) and hard coded.
-    A trivial error will be thrown if the nominal value changes.
-  */
-  accumulated_rng.dire_command = get_accumulated_rng( "Dire Command", talents.dire_command.ok() ? 0.055704042949781851858398652 : 0 );
+  accumulated_rng.dire_command = get_accumulated_rng( "Dire Command", prd::find_constant( talents.dire_command->effectN( 1 ).percent() ) );
 }
 
 void hunter_t::init_scaling()
@@ -8313,7 +8322,6 @@ void hunter_t::init_blizzard_action_list()
   switch ( specialization() )
   {
     case HUNTER_BEAST_MASTERY:
-      cooldowns->add_action( "bestial_wrath" );
       break;
     case HUNTER_MARKSMANSHIP:
       cooldowns->add_action( "trueshot" );
@@ -8334,9 +8342,14 @@ parsed_assisted_combat_rule_t hunter_t::parse_assisted_combat_rule( const assist
 
 std::vector<std::string> hunter_t::action_names_from_spell_id( unsigned int spell_id ) const
 {
-  if ( spell_id == 53351 && specialization() != HUNTER_SURVIVAL )
+  if ( spell_id == 53351 )
   {
     return { "kill_shot", "black_arrow" };
+  }
+
+  if( spell_id == 19574 )
+  {
+    return { "bestial_wrath", "wailing_arrow" };
   }
 
   return player_t::action_names_from_spell_id( spell_id );

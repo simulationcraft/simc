@@ -556,6 +556,21 @@ struct shadow_word_pain_t final : public priest_spell_t
           child_searing_light->execute();
         }
       }
+
+      if ( s->result_amount > 0 && priest().talents.shadow.tormented_spirits.enabled() )
+      {
+        // TODO: figure out what this actually is, applying a 40% nerf based on patch notes
+        // TODO: Check if this is nerfed by active SWPs.
+        auto chance = 2.0 / 9.0 * 0.6;
+
+        if ( s->result == RESULT_CRIT )
+          chance *= 1 + priest().talents.shadow.tormented_spirits->effectN( 1 ).percent();
+
+        if ( rng().roll( chance ) )
+        {
+          priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp );
+        }
+      }
     }
   }
 
@@ -568,15 +583,18 @@ struct shadow_word_pain_t final : public priest_spell_t
       trigger_power_of_the_dark_side();
       priest().trigger_shadowy_insight();
 
-      // TODO: figure out what this actually is, applying a 40% nerf based on patch notes
-      auto chance = 2.0 / 9.0 * 0.6 * std::pow( priest().get_active_dots( d ), -0.9 );
-
-      if ( d->state->result == RESULT_CRIT )
-        chance *= 1 + priest().talents.shadow.tormented_spirits->effectN( 1 ).percent();
-
-      if ( priest().talents.shadow.tormented_spirits.enabled() && rng().roll( chance ) )
+      if ( priest().talents.shadow.tormented_spirits.enabled() )
       {
-        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp );
+        // TODO: figure out what this actually is, applying a 40% nerf based on patch notes
+        auto chance = 2.0 / 9.0 * 0.6 * std::pow( priest().get_active_dots( d ), -0.9 );
+
+        if ( d->state->result == RESULT_CRIT )
+          chance *= 1 + priest().talents.shadow.tormented_spirits->effectN( 1 ).percent();
+
+        if ( rng().roll( chance ) )
+        {
+          priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp );
+        }
       }
     }
   }
@@ -2479,7 +2497,8 @@ void priest_t::trigger_random_idol( action_state_t* s )
       break;
     case idol_e::CTHUN:
       procs.void_apparition_cthun->occur();
-      trigger_idol_of_cthun( s );
+      // Tentacle Slam already rolled this idol. Spawn directly to avoid additional C'Thun RPPM gating.
+      spawn_idol_of_cthun( s );
       break;
     default:
       sim->print_debug( "Could not trigger a valid Idol" );
