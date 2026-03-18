@@ -413,7 +413,6 @@ void survival( player_t* p )
   cds->add_action( "blood_fury,if=buff.takedown.up|cooldown.takedown.ready", "CDS" );
   cds->add_action( "use_items,if=buff.takedown.up|cooldown.takedown.ready|!talent.takedown" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.takedown.up&!buff.power_infusion.up|fight_remains<16" );
-  cds->add_action( "harpoon,if=prev.kill_command" );
   cds->add_action( "ancestral_call,if=buff.takedown.up|cooldown.takedown.ready" );
   cds->add_action( "fireblood,if=buff.takedown.up|cooldown.takedown.ready" );
   cds->add_action( "berserking,if=buff.takedown.up|cooldown.takedown.ready" );

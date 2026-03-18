@@ -622,7 +622,7 @@ namespace warlock
     hero.malevolence_buff = conditional_spell_lookup( hero.malevolence.ok(), 442726 );
     hero.malevolence_dmg = conditional_spell_lookup( hero.malevolence.ok(), 446285 );
 
-    cooldowns.blackened_soul->duration = 0_ms; // TODO: Set using data once hotfix is in using hero.blackened_soul->internal_cooldown();
+    cooldowns.blackened_soul->duration = hero.blackened_soul->internal_cooldown();
     cooldowns.seeds_of_their_demise->duration = 15_s;
   }
 
@@ -1190,7 +1190,7 @@ namespace warlock
           inc_max *= 1.0 + ( talents.creeping_death->effectN( 1 ).percent() * 0.5 );
       }
 
-      // Sataiel’s Volition no longer affects the chance of gaining Nightfall
+      // Sataiel's Volition no longer affects the chance of gaining Nightfall
       if ( hero.sataiels_volition.ok() )
         inc_max *= 1.0 + hero.sataiels_volition->effectN( 1 ).percent();
 
@@ -1596,6 +1596,9 @@ namespace warlock
     add_option( opt_string( "default_pet", default_pet ) );
     add_option( opt_bool( "disable_felstorm", disable_auto_felstorm ) );
     add_option( opt_bool( "normalize_destruction_mastery", normalize_destruction_mastery ) );
+    add_option( opt_bool( "eye_explosion_instanced_bug_cb", eye_explosion_instanced_bug_cb ) );
+    add_option( opt_bool( "eye_explosion_instanced_bug_sb", eye_explosion_instanced_bug_sb ) );
+    add_option( opt_bool( "eye_explosion_instanced_bug_rof", eye_explosion_instanced_bug_rof ) );
 
     rng_settings.for_each( [ this ]( auto& setting )
     {
@@ -1633,6 +1636,7 @@ namespace warlock
 
     warlock_pet_list.active = nullptr;
     havoc_target = nullptr;
+    bugged_mayhem = false;
     haunt_target = nullptr;
     wild_imp_spawns.clear();
     diabolic_ritual = rng().range( 0, 3 );

@@ -195,13 +195,14 @@ void arms( player_t* p )
 
   colossus_aoe->add_action( "thunder_clap,if=!dot.rend_dot.remains" );
   colossus_aoe->add_action( "rend,if=!dot.rend_dot.remains" );
-  colossus_aoe->add_action( "sweeping_strikes,if=cooldown.colossus_smash.remains>5&buff.sweeping_strikes.down|!talent.broad_strokes" );
+  colossus_aoe->add_action( "sweeping_strikes,if=cooldown.colossus_smash.remains>10&buff.sweeping_strikes.down|!talent.broad_strokes" );
   colossus_aoe->add_action( "ravager,if=cooldown.colossus_smash.remains<3" );
   colossus_aoe->add_action( "avatar" );
   colossus_aoe->add_action( "colossus_smash" );
   colossus_aoe->add_action( "champions_spear" );
-  colossus_aoe->add_action( "demolish,if=buff.colossal_might.stack>=5&debuff.colossus_smash.remains>=2" );
+  colossus_aoe->add_action( "demolish,if=buff.colossal_might.stack=10" );
   colossus_aoe->add_action( "cleave" );
+  colossus_aoe->add_action( "demolish,if=debuff.colossus_smash.remains>=2" );
   colossus_aoe->add_action( "whirlwind,if=talent.fervor_of_battle&buff.collateral_damage.stack=3" );
   colossus_aoe->add_action( "mortal_strike" );
   colossus_aoe->add_action( "rend,if=dot.rend_dot.remains<4" );
@@ -226,8 +227,9 @@ void arms( player_t* p )
   colossus_execute->add_action( "mortal_strike,if=buff.executioners_precision.stack=2|!talent.executioners_precision|talent.battlelord" );
   colossus_execute->add_action( "cleave,if=buff.ravager.remains" );
   colossus_execute->add_action( "overpower" );
-  colossus_execute->add_action( "execute,if=talent.deep_wounds" );
+  colossus_execute->add_action( "execute,if=talent.deep_wounds&talent.critical_thinking" );
   colossus_execute->add_action( "cleave,if=talent.mass_execution" );
+  colossus_execute->add_action( "execute,if=talent.deep_wounds" );
   colossus_execute->add_action( "slam,if=!talent.critical_thinking" );
   colossus_execute->add_action( "execute" );
   colossus_execute->add_action( "bladestorm" );
@@ -254,16 +256,16 @@ void arms( player_t* p )
   colossus_st->add_action( "slam" );
 
   slayer_aoe->add_action( "rend,if=!dot.rend_dot.remains&talent.rend" );
-  slayer_aoe->add_action( "sweeping_strikes,if=!buff.sweeping_strikes.up&cooldown.colossus_smash.remains>4|!talent.broad_strokes" );
+  slayer_aoe->add_action( "sweeping_strikes,if=!buff.sweeping_strikes.up&cooldown.colossus_smash.remains>10|!talent.broad_strokes" );
   slayer_aoe->add_action( "avatar" );
   slayer_aoe->add_action( "champions_spear" );
+  slayer_aoe->add_action( "ravager,if=debuff.colossus_smash.up" );
   slayer_aoe->add_action( "colossus_smash" );
   slayer_aoe->add_action( "cleave" );
   slayer_aoe->add_action( "whirlwind,if=talent.fervor_of_battle&buff.collateral_damage.stack=3" );
   slayer_aoe->add_action( "execute,if=buff.sudden_death.up" );
-  slayer_aoe->add_action( "bladestorm" );
-  slayer_aoe->add_action( "overpower,if=buff.opportunist.up&talent.dreadnaught|talent.dreadnaught&charges=2" );
-  slayer_aoe->add_action( "mortal_strike,if=buff.executioners_precision.stack=2" );
+  slayer_aoe->add_action( "bladestorm,if=debuff.colossus_smash.up" );
+  slayer_aoe->add_action( "mortal_strike" );
   slayer_aoe->add_action( "thunder_clap,if=dot.rend_dot.remains<8&talent.rend" );
   slayer_aoe->add_action( "overpower,if=talent.dreadnaught" );
   slayer_aoe->add_action( "whirlwind,if=talent.fervor_of_battle" );
@@ -282,7 +284,7 @@ void arms( player_t* p )
   slayer_execute->add_action( "colossus_smash" );
   slayer_execute->add_action( "heroic_strike" );
   slayer_execute->add_action( "bladestorm,if=debuff.colossus_smash.up" );
-  slayer_execute->add_action( "mortal_strike,if=buff.executioners_precision.stack=2" );
+  slayer_execute->add_action( "mortal_strike,if=buff.executioners_precision.stack=2|debuff.colossus_smash.up" );
   slayer_execute->add_action( "overpower,if=buff.opportunist.up&talent.opportunist" );
   slayer_execute->add_action( "overpower,if=talent.fierce_followthrough&!buff.battlelord.up&rage<90" );
   slayer_execute->add_action( "execute,if=rage>40|buff.sudden_death.up" );

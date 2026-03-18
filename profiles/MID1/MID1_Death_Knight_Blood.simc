@@ -27,6 +27,8 @@ actions.precombat+=/deaths_caress
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/use_items
+actions+=/use_item,name=light_company_guidon,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<15
+actions+=/use_item,name=algethar_puzzle_box,if=fight_remains>122|cooldown.dancing_rune_weapon.remains>78|fight_remains<25
 actions+=/fireblood,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<8
 actions+=/blood_fury,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<12
 actions+=/berserking,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<=15
@@ -93,7 +95,7 @@ feet=greaves_of_the_unformed,id=249381,ilevel=289,enchant=enchant_boots__farstri
 finger1=occlusion_of_void,id=251217,ilevel=289,gem_id=240910/240908,enchant=enchant_ring__natures_fury_2
 finger2=omission_of_light,id=251093,ilevel=289,gem_id=240910/240908,enchant=enchant_ring__natures_fury_2
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
-trinket2=radiant_plume,id=249806,ilevel=289
+trinket2=algethar_puzzle_box,id=193701,ilevel=289
 main_hand=alahendal_the_dawnsong,id=249296,ilevel=289,enchant=rune_of_sanguination
 
 # Gear Summary

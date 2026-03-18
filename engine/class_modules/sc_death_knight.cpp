@@ -2669,14 +2669,24 @@ struct death_knight_pet_t : public pet_t
 
     double value() override
     {
-      return pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
-             ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() );
+      double v = ( pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
+                   ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() ) );
+
+      if ( pet()->dk()->bugs )
+        v *= 0.5;
+
+      return v;
     }
 
     double check_value() const override
     {
-      return pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
-             ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() );
+      double v = ( pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
+                   ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() ) );
+
+      if ( pet()->dk()->bugs )
+        v *= 0.5;
+
+      return v;
     }
   };
 
@@ -4351,14 +4361,6 @@ struct magus_pet_t : public death_knight_pet_t
       cooldown->duration = dk()->pet_spell.frostbolt->duration();
     }
 
-    void execute() override
-    {
-      // Magus of the Dead waits a little bit after executing
-      if ( dk()->bugs )
-        trigger_gcd = execute_time() + rng().gauss_ab( 1_s, 200_ms, 250_ms, 2_s );
-      magus_spell_t::execute();
-    }
-
     // Frostbolt applies a slowing debuff on non-boss targets
     // This is needed because Frostbolt won't ever target an enemy affected by the debuff
     void impact( action_state_t* state ) override
@@ -4377,14 +4379,6 @@ struct magus_pet_t : public death_knight_pet_t
     shadow_bolt_magus_t( magus_pet_t* p, std::string_view options_str )
       : magus_spell_t( p, "shadow_bolt", p->dk()->pet_spell.shadow_bolt, options_str )
     {
-    }
-
-    void execute() override
-    {
-      // Magus of the Dead waits a little bit after executing
-      if ( dk()->bugs )
-        trigger_gcd = execute_time() + rng().gauss_ab( 1_s, 200_ms, 250_ms, 2_s );
-      magus_spell_t::execute();
     }
   };
 
@@ -4854,31 +4848,12 @@ struct whitemane_pet_t final : public horseman_pet_t
   struct death_coil_whitemane_background_t final : public horseman_spell_t
   {
     death_coil_whitemane_background_t( std::string_view name, horseman_pet_t* p )
-      : horseman_spell_t( p, name, p->dk()->pet_spell.whitemane_death_coil ), dc_cd( nullptr )
+      : horseman_spell_t( p, name, p->dk()->pet_spell.whitemane_death_coil )
     {
       background         = true;
       base_multiplier    = dk()->talent.rider.let_terror_reign->effectN( 2 ).percent();
       cooldown->duration = 0_ms;  // Ignore the cooldown for the background casts
-      dc_cd              = debug_cast<whitemane_pet_t*>( p )->death_coil_foreground->cooldown;
     }
-
-    void execute() override
-    {
-      if ( dk()->bugs )
-      {
-        // Whitemane's forced death coil triggers the cooldown for her main death coil, preventing it from being cast
-        // most of the time.
-        assert( dc_cd && "Whitemane's background Death Coil cant find the main Death Coil's cooldown" );
-        if ( dc_cd->ongoing() )
-          dc_cd->adjust( dc_cd->duration - dc_cd->remains() );
-        else
-          dc_cd->start();
-      }
-
-      horseman_spell_t::execute();
-    }
-
-    cooldown_t* dc_cd;
   };
 
   struct epidemic_aoe_whitemane_t final : public horseman_spell_t
@@ -7047,7 +7022,7 @@ struct runic_corruption_buff_t final : public death_knight_buff_t
   {
     timespan_t initial_duration = death_knight_buff_t::buff_duration();
 
-    return initial_duration * p()->cache.attack_haste();
+    return initial_duration * ( p()->bugs ? 1.0 : p()->cache.attack_haste() );
   }
 };
 
@@ -9482,6 +9457,9 @@ struct necrotic_coil_shadow_t final : public death_coil_damage_base_t
   {
     background = true;
     aoe        = -1;
+    // Necrotic Coil is using Melee defensive types rather than spell defensive types, so it can be blocked, parried and 
+    // dodged.
+    may_block = may_dodge = may_parry = true;
   }
 };
 
@@ -9493,6 +9471,9 @@ struct necrotic_coil_shadowstrike_t final : public death_coil_damage_base_t
     background       = true;
     aoe              = as<int>( p->talent.unholy.forbidden_knowledge_1->effectN( 2 ).base_value() );
     execute_action   = get_action<necrotic_coil_shadow_t>( "necrotic_coil_shadow", p );
+    // Necrotic Coil is using Melee defensive types rather than spell defensive types, so it can be blocked, parried and
+    // dodged.
+    may_block = may_dodge = may_parry = true;
     triggers_effects = false;
   }
 };
@@ -12783,7 +12764,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       // Free Death Coils are still handled in the action
       for ( auto& gargoyle : pets.gargoyle )
       {
-        gargoyle->increase_power( calc_rp_cost );
+        gargoyle->increase_power( bugs ? actual_amount : calc_rp_cost );
       }
     }
 
@@ -12795,13 +12776,13 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     if ( talent.rider.fury_of_the_horsemen.ok() )
     {
       if ( pets.whitemane.active_pet() != nullptr )
-        extend_rider( calc_rp_cost, pets.whitemane.active_pet() );
+        extend_rider( bugs && specialization() == DEATH_KNIGHT_UNHOLY ? actual_amount : calc_rp_cost, pets.whitemane.active_pet() );
       if ( pets.mograine.active_pet() != nullptr )
-        extend_rider( calc_rp_cost, pets.mograine.active_pet() );
+        extend_rider( bugs && specialization() == DEATH_KNIGHT_UNHOLY ? actual_amount : calc_rp_cost, pets.mograine.active_pet() );
       if ( pets.nazgrim.active_pet() != nullptr )
-        extend_rider( calc_rp_cost, pets.nazgrim.active_pet() );
+        extend_rider( bugs && specialization() == DEATH_KNIGHT_UNHOLY ? actual_amount : calc_rp_cost, pets.nazgrim.active_pet() );
       if ( pets.trollbane.active_pet() != nullptr )
-        extend_rider( calc_rp_cost, pets.trollbane.active_pet() );
+        extend_rider( bugs && specialization() == DEATH_KNIGHT_UNHOLY ? actual_amount : calc_rp_cost, pets.trollbane.active_pet() );
     }
 
     if ( talent.unholy.ancient_power.ok() )
@@ -13595,7 +13576,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   params.y( target->y_position );
 
   params.state_callback(
-      [ &, tracker, n_ticks, partial_tick, period ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+      [ &, tracker, partial_tick, period ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
         switch ( type )
         {
           case ground_aoe_params_t::EVENT_CREATED:
@@ -14945,6 +14926,9 @@ void death_knight_t::init_spells()
   register_passive_effect_mask( talent.deathbringer.frigid_resolve, specialization() == DEATH_KNIGHT_BLOOD
                                                                         ? effect_mask_t( true ).disable( 2 )
                                                                         : effect_mask_t( true ).disable( 1, 3) );
+
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+    register_passive_effect_mask( talent.cleaving_strikes, effect_mask_t( true ).disable( 4 ) );
 
   if ( main_hand_weapon.group() != WEAPON_2H )
     deregister_passive_spell( spec.might_of_the_frozen_wastes );
@@ -17420,7 +17404,7 @@ struct death_knight_module_t : public module_t
      */
   }
 
-  
+  /*
   void register_hotfixes() const override
   {
     hotfix::register_effect( "Death Knight", "2026-3-13", "Virulent Plague buffed 15%", 281049,
@@ -17535,7 +17519,7 @@ struct death_knight_module_t : public module_t
         .modifier( 30 )
         .verification_value( 10 );
   }
-  
+  */
 
   void init( player_t* ) const override
   {

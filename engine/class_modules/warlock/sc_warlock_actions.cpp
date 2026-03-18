@@ -187,8 +187,10 @@ using namespace helpers;
       // Diabolist
       if ( diabolist() )
       {
-        // TODO: Check that the damage increase from these buffs (modified by Touch of Rancora) is not being applied twice
-        // TODO: Actually checking how Touch of Rancora is working ingame for both Destro and Demon and replicating that behavior here
+        // The Demonic Art buffs now include the damage increase from Touch of Rancora (except for RoF), which causes several effects (bugs):
+        // - SB benefits twice from Touch of Rancora dmg amp during Demonic Art
+        // - CB benefits twice from Touch of Rancora if the cast was started with Demonic Art, and only once if it was started without it
+        // - Although the HoG Impact spell is listed, the buff is expired before the HoG impact spell is executed, so it has no effect
         parse_effects( p()->buffs.art_overlord ); // 428524
         parse_effects( p()->buffs.art_mother ); // 432794
         parse_effects( p()->buffs.art_pit_lord ); // 432795
@@ -345,7 +347,25 @@ using namespace helpers;
             if ( p()->buffs.demonic_oculi->check() &&
                  ( p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() ||
                    p()->buffs.art_pit_lord->check() ) )
-              p()->proc_actions.eye_explosion->execute_on_target( this->target );
+            {
+              // NOTE: 2026-03-17 Explosion damage is bugged and may not occur on instantiated content for some triggers (bug)
+              // It seems that having the GoSac buff prevents these bugs
+              if ( p()->bugs && !p()->buffs.grimoire_of_sacrifice->check()
+                    && ( ( this->id == p()->talents.chaos_bolt->id() && p()->eye_explosion_instanced_bug_cb )
+                      || ( this->id == p()->talents.shadowburn->id() && p()->eye_explosion_instanced_bug_sb )
+                      || ( this->id == p()->talents.rain_of_fire->id() && p()->eye_explosion_instanced_bug_rof ) ) )
+              {
+                // Even if the explosion damage does not occur, the Mind's Eyes buff is still granted and the Demonic Oculi still expire
+                if ( p()->hero.minds_eyes.ok() )
+                  p()->buffs.minds_eyes->trigger( p()->buffs.demonic_oculi->check() );
+
+                p()->buffs.demonic_oculi->expire();
+              }
+              else
+              {
+                p()->proc_actions.eye_explosion->execute_on_target( this->target );
+              }
+            }
           } );
         }
         // Force event sequencing in a manner that lets Rain of Fire pick up the persistent multiplier for Touch of Rancora
@@ -368,8 +388,23 @@ using namespace helpers;
         if ( n > 1u )
         {
           player_t* trigger_target = tl.at( 1u + rng().range( n - 1u ) );
+          const player_t* prev_havoc_target = p()->havoc_target;
+
           if ( td( trigger_target )->debuffs.havoc->trigger() )
           {
+            assert( p()->havoc_target == trigger_target );
+
+            // NOTE: 2026-03-17 Due to a bug, Mayhem will stop working if triggered on another target while another havoc debuff is already active.
+            // This can only happen with Improved Havoc talent, which makes the ICD less than its duration.
+            // It will work correctly again if the Havoc debuff expires normally or if it is applied to the same target that already has it.
+            if ( p()->talents.improved_havoc.ok() )
+            {
+              if ( prev_havoc_target == nullptr || trigger_target == prev_havoc_target )
+                p()->bugged_mayhem = false;
+              else
+                p()->bugged_mayhem = true;
+            }
+
             p()->procs.mayhem->occur();
           }
         }
@@ -443,21 +478,24 @@ using namespace helpers;
       return m;
     }
 
-    // TODO: Touch of Rancora should now affect instant effects (not 'touch_of_rancora_casted') via the Demonic Art buff
-    // double composite_persistent_multiplier( const action_state_t* s ) const override
-    // {
-    //   double m = action_base_t::composite_persistent_multiplier( s );
-    //
-    //   // Demonology only has Hand of Gul'dan affected by Touch of Rancora, which requires special handling
-    //   // Spells affected by touch_of_rancora_casted use a custom action_state_t and require special handling
-    //   if ( diabolist() && destruction() && affected_by.touch_of_rancora && !affected_by.touch_of_rancora_casted )
-    //   {
-    //     if ( p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() || p()->buffs.art_pit_lord->check() )
-    //         m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
-    //   }
-    //
-    //   return m;
-    // }
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    {
+      double m = action_base_t::composite_persistent_multiplier( s );
+
+      // Demonology only has Hand of Gul'dan affected by Touch of Rancora, which requires special handling
+      // Spells affected by touch_of_rancora_casted use a custom action_state_t and require special handling
+      if ( diabolist() && destruction() && affected_by.touch_of_rancora && !affected_by.touch_of_rancora_casted )
+      {
+        if ( p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() || p()->buffs.art_pit_lord->check() )
+        {
+          // NOTE: Shadowburn is double dipping the dmg amp bonus (bug). It works fine for RoF.
+          if ( p()->bugs || ( this->id != p()->talents.shadowburn->id() ) )
+            m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
+        }
+      }
+
+      return m;
+    }
 
     double composite_da_multiplier( const action_state_t* s ) const override
     {
@@ -507,7 +545,9 @@ using namespace helpers;
 
     int n_targets() const override
     {
-      if ( destruction() && use_havoc() )
+      // NOTE: 2026-03-17 Mayhem with Improved Havoc is bugged and there are certain conditions
+      // that may cause it to stop working for a while (bug)
+      if ( destruction() && use_havoc() && ( !p()->bugs || !p()->bugged_mayhem ) )
       {
         assert( action_base_t::n_targets() == 0 );
         return 2;
@@ -1069,7 +1109,10 @@ using namespace helpers;
         if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && p()->flat_rng.mark_of_perotharn->trigger() )
         {
           // Wither stack gain by Mark of Perotharn does not directly trigger collapse in that tick (it will be trigged on the next tick)
+          // Wither stack gain by Mark of Perotharn does not benefit from Bleakheart Tactics
           d->increment( 1 );
+          td( d->target )->debuffs.wither->bump( 1 );
+          assert( d->current_stack() == td( d->target )->debuffs.wither->check() && d->remains() == td( d->target )->debuffs.wither->remains() );
           p()->procs.mark_of_perotharn->occur();
         }
 
@@ -1086,17 +1129,24 @@ using namespace helpers;
       void trigger_dot( action_state_t* s ) override
       {
         warlock_spell_t::trigger_dot( s );
+        auto& debuff = td( s->target )->debuffs.wither;
+        auto& dot = td( s->target )->dots.wither;
+        debuff->trigger( 1, dot->remains() );
+        assert( dot->current_stack() == debuff->check() && dot->remains() == debuff->remains() );
 
         timespan_t duration = composite_dot_duration( s );
         if ( duration <= timespan_t::zero() )
           return;
 
-        auto& dot = td( s->target )->dots.wither;
         // In simc dots increase their stack count when refreshed.
         // Ingame, however, Wither does not increase stacks on dot refresh.
         // Therefore, its stack count should be decreased by 1 after refreshing to match ingame behavior.
         if ( dot->is_ticking() && dot->current_stack() > 1 )
+        {
           dot->decrement( 1 );
+          debuff->decrement( 1 );
+          assert( dot->current_stack() == debuff->check() && dot->remains() == debuff->remains() );
+        }
       }
     };
 
@@ -1125,8 +1175,13 @@ using namespace helpers;
 
       if ( s->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && p()->flat_rng.mark_of_perotharn->trigger() )
       {
+        auto& wither_dot = td( s->target )->dots.wither;
+        auto& wither_debuff = td( s->target )->debuffs.wither;
         // Wither stack gain by Mark of Perotharn does not directly trigger collapse (it will be trigged on the next Wither tick)
-        td( s->target )->dots.wither->increment( 1 );
+        // Wither stack gain by Mark of Perotharn does not benefit from Bleakheart Tactics
+        wither_dot->increment( 1 );
+        wither_debuff->bump( 1 );
+        assert( wither_dot->current_stack() == wither_debuff->check() && wither_dot->remains() == wither_debuff->remains() );
         p()->procs.mark_of_perotharn->occur();
       }
     }
@@ -1160,8 +1215,14 @@ using namespace helpers;
     {
       // Wither stack decrement is done before damage. Relevant for Mark of Xavius talent.
       // (e.g.) Blackened Soul where 10 to 9 stacks: Mark of Xavius talent bonus damage is calculated on 9 stacks.
-      if ( td( target )->dots.wither->current_stack() > 1 )
-        td( target )->dots.wither->decrement( 1 );
+      auto& wither_dot = td( target )->dots.wither;
+      if ( wither_dot->current_stack() > 1 )
+      {
+        auto& wither_debuff = td( target )->debuffs.wither;
+        wither_dot->decrement( 1 );
+        wither_debuff->decrement( 1 );
+        assert( wither_dot->current_stack() == wither_debuff->check() && wither_dot->remains() == wither_debuff->remains() );
+      }
 
       warlock_spell_t::execute();
     }
@@ -1378,6 +1439,8 @@ using namespace helpers;
 
   struct unstable_affliction_t : public warlock_spell_t
   {
+    bool is_fatal_echoes_execute = false;
+
     unstable_affliction_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Unstable Affliction", p, p->talents.unstable_affliction, options_str )
     {
@@ -1392,6 +1455,7 @@ using namespace helpers;
       // - Succulent Soul: consumes a stack and triggers its effects (Demonic Soul dmg and Manifested Avarice rng proc)
       // - Cull the Weak: reduces the cooldown of Dark Harvest
       // - Shard Instability: consumes a stack but does nothing (bug?) because the Fatal Echoes UA is already free and instant
+      // - Hellcaller Blackened Soul: increments wither stacks
 
       warlock_spell_t::execute();
 
@@ -1458,10 +1522,9 @@ using namespace helpers;
             p()->procs.fatal_echoes->occur();
             make_event( sim, 1_ms, [ this, t = d->state->target ] {
               this->set_target( t );
-              auto tmp_cost = this->base_costs[ RESOURCE_SOUL_SHARD ];
-              this->base_costs[ RESOURCE_SOUL_SHARD ] = 0;
+              this->is_fatal_echoes_execute = true;
               this->execute();
-              this->base_costs[ RESOURCE_SOUL_SHARD ] = tmp_cost;
+              this->is_fatal_echoes_execute = false;
             } );
           }
         }
@@ -1496,6 +1559,14 @@ using namespace helpers;
       }
 
       return m;
+    }
+
+    double cost_pct_multiplier() const override
+    {
+      if ( is_fatal_echoes_execute )
+        return 0.0;
+
+      return warlock_spell_t::cost_pct_multiplier();
     }
   };
 
@@ -2450,24 +2521,11 @@ using namespace helpers;
           m *= 1.0 + p()->talents.dominant_hand->effectN( 1 ).percent();
 
         bool rancora_empowered = debug_cast<const hog_impact_state_t*>( s )->state.rancora_empowered;
-        // TODO: In TWW Touch of Rancora only affected one of HoG's hits in AoE (bug?), randomly selected. Is this still true in Midnight? Check ingame
-        //if ( diabolist() && affected_by.touch_of_rancora && rancora_empowered && ( !p()->bugs || s->chain_target == last_hit_random_target ) )
         if ( diabolist() && affected_by.touch_of_rancora && rancora_empowered )
         {
-          // TODO: How does Touch of Rancora interact with HoG in Midnight? Check ingame
-          if ( p()->bugs )
-          {
-            // TODO: Currently in Midnight Touch of Rancora seems to not be applying to HoG (at least not through this specialized handling)
-            // NOTE: Touch of Rancora is a +100% ADDITION to the MULTIPLIER (bug?), we currently believe this must be done at the end of action_multiplier() calculation
-            // At this point, this 'm *= ( X + A ) / A' adjustment is equivalent to ADDITIVELY applying the multiplier 'X' to 'm' just after A
-            // (a.k.a. action_multiplier) but before action_da_multiplier and the subsequent multipliers of warlock_spell_t::composite_da_multiplier
-            // const double mult_am = action_multiplier();
-            // m *= ( mult_am != 0.0 ) ? ( ( p()->hero.touch_of_rancora->effectN( 1 ).percent() + mult_am ) / mult_am ) : 0.0;
-          }
-          else
-          {
+          // NOTE: 2026-03-17 Touch of Rancora is not affecting HoG damage (bug)
+          if ( !p()->bugs )
             m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
-          }
         }
 
         return m;
@@ -2538,8 +2596,9 @@ using namespace helpers;
     action_state_t* new_state() override
     { return new hand_of_guldan_state_t( this, target ); }
 
+    // Small travel time to mimic ingame ordering of cast-consumed effects
     timespan_t travel_time() const override
-    { return 0_ms; }
+    { return 1_ms; }
 
     bool ready() override
     {
@@ -3510,6 +3569,16 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       dot->adjust_duration( -remaining );
+      if ( p()->hero.wither.ok() )
+      {
+        auto& wither_debuff = td( target )->debuffs.wither;
+        if ( wither_debuff->remains() - remaining <= timespan_t::zero() )
+          wither_debuff->expire();
+        else
+          wither_debuff->extend_duration( p(), -remaining );
+
+        assert( dot->current_stack() == wither_debuff->check() && dot->remains() == wither_debuff->remains() );
+      }
     }
   };
 
@@ -3587,12 +3656,11 @@ using namespace helpers;
       }
     };
 
-    double havoc_rancora_mod_value;
+    double havoc_rancora_mul_adjust;
     internal_combustion_t* internal_combustion;
 
     chaos_bolt_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Chaos Bolt", p, p->talents.chaos_bolt, options_str ),
-      havoc_rancora_mod_value( 0.8 )
+      : warlock_spell_t( "Chaos Bolt", p, p->talents.chaos_bolt, options_str )
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
@@ -3604,7 +3672,13 @@ using namespace helpers;
       triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
       triggers.rancora_cb_bonus = true;
 
-      havoc_rancora_mod_value /= p->talents.havoc_debuff->effectN( 1 ).percent();
+      const double havoc_coeff = p->talents.havoc_debuff->effectN( 1 ).percent();
+      const double rancora_bonus = p->hero.touch_of_rancora->effectN( 1 ).percent();
+      // Observed bug: on Rancora-empowered Havoc copies, the second Touch of Rancora 20% damage bonus is added to the Havoc
+      // coefficient instead of being applied multiplicatively. Since execute() already includes the empowered damage multiplier,
+      // we divide out one Touch of Rancora multiplier from the coefficient adjustment below.
+      const double rancora_havoc_coeff = ( havoc_coeff + rancora_bonus ) / ( 1.0 + rancora_bonus );
+      havoc_rancora_mul_adjust = rancora_havoc_coeff / havoc_coeff;
 
       if ( p->talents.internal_combustion.ok() )
       {
@@ -3669,11 +3743,13 @@ using namespace helpers;
       if ( p()->hero.diabolic_oculi.ok() )
         p()->buffs.demonic_oculi->trigger();
 
-      // NOTE: 2025-08-27 Rancora Empowered Havoc spells deals 80% of the original damage (bug?)
+      // NOTE: 2026-03-17 Rancora-empowered Havoc copies behave as if +0.20 were added to the Havoc coefficient before only one 1.20x bonus, instead
+      // of applying the second 1.20x multiplicatively to the final damage (bug). To emulate that behavior, temporarily rescale 'base_aoe_multiplier'
+      // from: 0.60 -> 0.6667 and 0.70 -> 0.75; so that execute() produces final damage multipliers of 0.96 / 1.08 on Havoc copies.
       const double prev_base_aoe_multiplier = base_aoe_multiplier;
       const bool rancora_empowered = pre_execute_state && debug_cast<chaos_bolt_state_t*>( pre_execute_state )->rancora_empowered;
       if ( p()->bugs && diabolist() && affected_by.touch_of_rancora && affected_by.havoc && rancora_empowered )
-        base_aoe_multiplier *= havoc_rancora_mod_value;
+        base_aoe_multiplier *= havoc_rancora_mul_adjust;
 
       warlock_spell_t::execute();
 
@@ -3699,8 +3775,8 @@ using namespace helpers;
       double m = warlock_spell_t::composite_persistent_multiplier( s );
 
       // An incoming rancora empowered casted spell will remain empowered even if the Demonic Art buff falls off during cast
-      // TODO: Check how Touch of Rancora behaves in Midnight and be careful that 'parse_effects' may already be applying the damage buff
-      if ( debug_cast<const chaos_bolt_state_t*>( s )->rancora_empowered )
+      // NOTE: Chaos Bolt is double dipping the dmg amp bonus (from Demonic Art buff effect #1 and the custom rancora_empowered state) (bug)
+      if ( debug_cast<const chaos_bolt_state_t*>( s )->rancora_empowered && p()->bugs )
         m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
 
       return m;
@@ -3890,7 +3966,13 @@ using namespace helpers;
     void execute() override
     {
       if ( p()->hero.diabolic_oculi.ok() )
-        p()->buffs.demonic_oculi->trigger();
+      {
+        // NOTE: 2026-03-17 Demonic Oculi stack buff is obtained after the explosion for RoF (bug?)
+        if ( p()->bugs )
+          make_event( *sim, 1_ms, [ this ] { p()->buffs.demonic_oculi->trigger(); } );
+        else
+          p()->buffs.demonic_oculi->trigger();
+      }
 
       warlock_spell_t::execute();
 
@@ -4068,11 +4150,10 @@ using namespace helpers;
 
   struct shadowburn_t : public warlock_spell_t
   {
-    double havoc_rancora_mod_value;
+    double havoc_rancora_mul_adjust;
 
     shadowburn_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Shadowburn", p, p->talents.shadowburn, options_str ),
-      havoc_rancora_mod_value( 0.8 )
+      : warlock_spell_t( "Shadowburn", p, p->talents.shadowburn, options_str )
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
@@ -4082,7 +4163,13 @@ using namespace helpers;
       triggers.dimensional_rift = p->talents.dimensional_rift.ok();
       triggers.diabolic_ritual = triggers.demonic_art = triggers.demonic_art_buff = p->hero.diabolic_ritual.ok();
 
-      havoc_rancora_mod_value /= p->talents.havoc_debuff->effectN( 1 ).percent();
+      const double havoc_coeff = p->talents.havoc_debuff->effectN( 1 ).percent();
+      const double rancora_bonus = p->hero.touch_of_rancora->effectN( 1 ).percent();
+      // Observed bug: on Rancora-empowered Havoc copies, the second Touch of Rancora 20% damage bonus is added to the Havoc
+      // coefficient instead of being applied multiplicatively. Since execute() already includes the empowered damage multiplier,
+      // we divide out one Touch of Rancora multiplier from the coefficient adjustment below.
+      const double rancora_havoc_coeff = ( havoc_coeff + rancora_bonus ) / ( 1.0 + rancora_bonus );
+      havoc_rancora_mul_adjust = rancora_havoc_coeff / havoc_coeff;
     }
 
     bool ready() override
@@ -4111,11 +4198,13 @@ using namespace helpers;
       if ( p()->hero.diabolic_oculi.ok() )
         p()->buffs.demonic_oculi->trigger();
 
-      // NOTE: 2025-08-27 Rancora Empowered Havoc spells deals 80% of the original damage (bug?)
+      // NOTE: 2026-03-17 Rancora-empowered Havoc copies behave as if +0.20 were added to the Havoc coefficient before only one 1.20x bonus, instead
+      // of applying the second 1.20x multiplicatively to the final damage (bug). To emulate that behavior, temporarily rescale 'base_aoe_multiplier'
+      // from: 0.60 -> 0.6667 and 0.70 -> 0.75; so that execute() produces final damage multipliers of 0.96 / 1.08 on Havoc copies.
       const double prev_base_aoe_multiplier = base_aoe_multiplier;
       const bool rancora_empowered = p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() || p()->buffs.art_pit_lord->check();
       if ( p()->bugs && diabolist() && affected_by.touch_of_rancora && affected_by.havoc && rancora_empowered )
-        base_aoe_multiplier *= havoc_rancora_mod_value;
+        base_aoe_multiplier *= havoc_rancora_mul_adjust;
 
       warlock_spell_t::execute();
 
@@ -4175,11 +4264,18 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots.immolate->is_ticking() )
-        td( s->target )->dots.immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+      warlock_td_t* tdata = td( s->target );
+      const timespan_t extra_time = p()->talents.raging_demonfire->effectN( 2 ).time_value();
 
-      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots.wither->is_ticking() )
-        td( s->target )->dots.wither->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+      if ( p()->talents.raging_demonfire.ok() && tdata->dots.immolate->is_ticking() )
+        tdata->dots.immolate->adjust_duration( extra_time );
+
+      if ( p()->talents.raging_demonfire.ok() && tdata->dots.wither->is_ticking() )
+      {
+        tdata->dots.wither->adjust_duration( extra_time );
+        tdata->debuffs.wither->extend_duration( p(), extra_time );
+        assert( tdata->dots.wither->current_stack() == tdata->debuffs.wither->check() && tdata->dots.wither->remains() == tdata->debuffs.wither->remains() );
+      }
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -4415,6 +4511,26 @@ using namespace helpers;
     }
   };
 
+  struct embers_of_nihilam_t : public warlock_spell_t
+  {
+    embers_of_nihilam_t( warlock_t* p )
+      : warlock_spell_t( "Embers of Nihilam", p, p->talents.embers_of_nihilam_1.ok() ? p->talents.embers_of_nihilam_1
+                                                 : ( p->talents.embers_of_nihilam_3.ok() ? p->talents.embers_of_nihilam_3 : spell_data_t::not_found() ) )
+    {
+      background = dual = true;
+
+      if ( p->talents.embers_of_nihilam_1.ok() )
+        add_child( p->proc_actions.echo_of_sargeras );
+
+      if ( p->talents.embers_of_nihilam_3.ok() )
+      {
+        add_child( p->proc_actions.echo_of_sargeras_cb );
+        add_child( p->proc_actions.echo_of_sargeras_sb );
+        add_child( p->proc_actions.echo_of_sargeras_rof );
+      }
+    }
+  };
+
   // Destruction Actions End
   // Diabolist Actions Begin
 
@@ -4565,7 +4681,7 @@ using namespace helpers;
 
     void execute() override
     {
-      // In game happens just before the damage // TOCHECK: Is this still true in Midnight?
+      // In-game happens just before the damage
       if ( p()->hero.minds_eyes.ok() )
         p()->buffs.minds_eyes->trigger( p()->buffs.demonic_oculi->check() );
 
@@ -4657,20 +4773,32 @@ using namespace helpers;
       }
 
       tdata->dots.wither->increment( stacks );
+      tdata->debuffs.wither->bump( stacks );
+      assert( tdata->dots.wither->current_stack() == tdata->debuffs.wither->check() && tdata->dots.wither->remains() == tdata->debuffs.wither->remains() );
       stack_gained = true;
 
+      // Wither extra stack from Malevolence Effect #2 does not benefit from Bleakheart Tactics
       if ( p->buffs.malevolence->check() && !malevolence )
-        tdata->dots.wither->increment( as<int>( p->hero.malevolence->effectN( 2 ).base_value() ) );
+      {
+        const int inc = as<int>( p->hero.malevolence->effectN( 2 ).base_value() );
+        tdata->dots.wither->increment( inc );
+        tdata->debuffs.wither->bump( inc );
+        assert( tdata->dots.wither->current_stack() == tdata->debuffs.wither->check() && tdata->dots.wither->remains() == tdata->debuffs.wither->remains() );
+      }
 
+      // Malevolence stack gains do not benefit from Bleakheart Tactics
       if ( p->hero.bleakheart_tactics.ok() && !malevolence && p->flat_rng.bleakheart_tactics->trigger() )
       {
-        tdata->dots.wither->increment( 1 );
+        const int inc = as<int>( p->hero.bleakheart_tactics->effectN( 3 ).base_value() );
+        tdata->dots.wither->increment( inc );
+        tdata->debuffs.wither->bump( inc );
+        assert( tdata->dots.wither->current_stack() == tdata->debuffs.wither->check() && tdata->dots.wither->remains() == tdata->debuffs.wither->remains() );
         p->procs.bleakheart_tactics->occur();
       }
 
       if ( !tdata->debuffs.blackened_soul->check() )
       {
-        bool collapse = false; // 2024-09-06 Malevolence no longer initiates collapse automatically
+        bool collapse = false; // Malevolence no longer initiates collapse automatically. Last tested 2026-03-17
         collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots.wither->current_stack() > 1 && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() );
         collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots.wither->current_stack() >= as<int>( p->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
 
@@ -4680,7 +4808,7 @@ using namespace helpers;
           p->sim->print_debug( "{} wither stack collapse in {} started (seeds of their demise) (stack gain check). wither_current_stack={}, wither_target_health_percentage={:.2f}%",
                       p->name(), target->name(), tdata->dots.wither->current_stack(), target->health_percentage() );
         }
-        else if ( p->flat_rng.blackened_soul->trigger() )
+        else if ( p->flat_rng.blackened_soul->trigger() && !malevolence ) // Malevolence stack gains do not trigger Blackened Soul collapse proc
         {
           tdata->debuffs.blackened_soul->trigger();
           p->procs.blackened_soul->occur();
@@ -4704,6 +4832,10 @@ using namespace helpers;
     // If no valid target provided, find a random target with Immolate or Wither ticking
     if ( !target || target->is_sleeping() )
     {
+      // NOTE: 2026-03-17 RoF does not proc Embers of Sargeras unless you are targeting an enemy (bug)
+      if ( p->bugs && proc == p->procs.echo_of_sargeras_rof )
+        return;
+
       std::vector<player_t*> candidates;
 
       for ( const auto t : p->sim->target_non_sleeping_list )
@@ -4724,7 +4856,11 @@ using namespace helpers;
 
     echo_action->execute_on_target( target );
     proc->occur();
-    p->buffs.vision_of_nihilam->trigger();
+
+    // NOTE: 2026-03-17 Vision of Nihilam buff does not proc from RoF (bug)
+    if ( !p->bugs || proc != p->procs.echo_of_sargeras_rof )
+      p->buffs.vision_of_nihilam->trigger();
+
     p->cooldowns.echo_of_sargeras->start();
   }
 
@@ -4802,10 +4938,9 @@ using namespace helpers;
       {
         p->procs.fatal_echoes->occur();
         dot->current_action->set_target( target );
-        auto tmp_cost = dot->current_action->base_costs[ RESOURCE_SOUL_SHARD ];
-        dot->current_action->base_costs[ RESOURCE_SOUL_SHARD ] = 0;
+        debug_cast<unstable_affliction_t*>( dot->current_action )->is_fatal_echoes_execute = true;
         dot->current_action->execute();
-        dot->current_action->base_costs[ RESOURCE_SOUL_SHARD ] = tmp_cost;
+        debug_cast<unstable_affliction_t*>( dot->current_action )->is_fatal_echoes_execute = false;
       }
     }
   }
@@ -5050,10 +5185,14 @@ using namespace helpers;
 
     if ( talents.embers_of_nihilam_3.ok() )
     {
-      proc_actions.echo_of_sargeras_cb = new echo_of_sargeras_t( this, "echo_of_sargeras_cb", talents.embers_of_nihilam_3->effectN( 1 ).percent() );
-      proc_actions.echo_of_sargeras_sb = new echo_of_sargeras_t( this, "echo_of_sargeras_sb", talents.embers_of_nihilam_3->effectN( 2 ).percent() );
-      proc_actions.echo_of_sargeras_rof = new echo_of_sargeras_t( this, "echo_of_sargeras_rof", talents.embers_of_nihilam_3->effectN( 3 ).percent() );
+      // NOTE: 2026-03-17 Echo of Sargeras is not scaled as stated for any of the spenders (bug)
+      proc_actions.echo_of_sargeras_cb = new echo_of_sargeras_t( this, "echo_of_sargeras_cb", bugs ? 1.0 : talents.embers_of_nihilam_3->effectN( 1 ).percent() );
+      proc_actions.echo_of_sargeras_sb = new echo_of_sargeras_t( this, "echo_of_sargeras_sb", bugs ? 1.0 : talents.embers_of_nihilam_3->effectN( 2 ).percent() );
+      proc_actions.echo_of_sargeras_rof = new echo_of_sargeras_t( this, "echo_of_sargeras_rof", bugs ? 0.5 : talents.embers_of_nihilam_3->effectN( 3 ).percent() );
     }
+
+    if ( talents.embers_of_nihilam_1.ok() || talents.embers_of_nihilam_3.ok() )
+      proc_actions.embers_of_nihilam = new embers_of_nihilam_t( this );
   }
 
   void warlock_t::create_diabolist_proc_actions()

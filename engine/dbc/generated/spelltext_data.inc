@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.1.66384
-static constexpr std::array<spelltext_data_t, 28635> __spelltext_data { {
+// Spell text, wow build 12.0.1.66431
+static constexpr std::array<spelltext_data_t, 28638> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28103,13 +28103,13 @@ static constexpr std::array<spelltext_data_t, 28635> __spelltext_data { {
   { 1269300, "$@spelldesc47568", "Your next Obliterate deals $w1% increased damage.\r\n\r\nYour next Frostscythe deals $w2% increased damage.", 0 },
   { 1269305, "$@spelldesc1277461", 0, 0 },
   { 1269306, "Each stack of Master of Warfare increases Mortal Strike, Cleave, and Overpower damage by ${$s1/10}.1% and critical strike damage by ${$s2/10}.1%.", 0, 0 },
-  { 1269307, "Heroic Strike reduces the cooldown of Colossus Smash by ${$s1/-1000}.1 sec.", 0, 0 },
+  { 1269307, "Heroic Strike increases the damage you deal to enemies affected by your next Colossus Smash by an additional ${$1292058s1}.1%. Stacks up to $1292058u times.", 0, 0 },
   { 1269308, "Rampage damage increased by $s1% and Rampage makes you go Berserk, increasing your Strength by $1269349s1% for $1269349d. Multiple applications of Berserk may overlap.", 0, 0 },
   { 1269309, "Rampage's Rage cost is reduced by ${$s1/-10} and damage is increased by a further $s2% during Recklessness.", 0, 0 },
   { 1269310, "Recklessness grants $s2 stacks of Berserk and duration of Recklessness increased by $s1%.", 0, 0 },
-  { 1269311, "Thunder Clap causes your next Shield Slam to unleash a wave of force, dealing $1270116s1 Physical damage to all enemies in front of you, and reducing the damage they deal to you by $1270116s2% for $1270116d.", 0, 0 },
+  { 1269311, "Thunder Clap causes your next Shield Slam to deal $1278009s1% additional damage and unleash a wave of force, dealing $1270116s1 Physical damage to all enemies in front of you.", 0, 0 },
   { 1269312, "Damage dealt by Thunder Clap and Phalanx's wave of force is increased by $s1%.", 0, 0 },
-  { 1269313, "While Shield Block is active, Shield Slam deals 10% additional damage and has a 20% increased chance to critically strike.", 0, 0 },
+  { 1269313, "While Shield Block is active, Shield Slam deals 10% additional damage and has a 20% increased chance to critically strike.\r\n\r\nEnemies damaged by Phalanx's wave of force deal $1292071s1% reduced damage to you for $1292071d.", 0, 0 },
   { 1269314, "Your single target melee abilities have a chance to upgrade Slam to Heroic Strike.\r\nAll modifiers and talents that affect Slam also affect Heroic Strike.\r\n\r\n$@spellicon1269383 $@spelltooltip1269383", 0, 0 },
   { 1269322, "$@spelldesc1264802", "Your next Empower Rune Weapon incurs no cooldown.", 0 },
   { 1269336, "$@spelldesc185438", 0, 0 },
@@ -28467,7 +28467,7 @@ static constexpr std::array<spelltext_data_t, 28635> __spelltext_data { {
   { 1277879, "Hurl an ember torn from Nihilam at the target, dealing $s1 Shadowflame damage and an additional $s2 Shadowflame damage to all enemies within $a2 yds.\r\n\r\nDamage reduced beyond $s3 targets.", 0, 0 },
   { 1277933, "Immediately reset the cooldowns of Adrenaline Rush, Between the Eyes, Blade Flurry, Blade Rush, and Killing Spree.", 0, 0 },
   { 1277983, "$@spelldesc1264330", "Taking $w1% additional Revenge damage from you.", 0 },
-  { 1278009, "Your next Shield Slam will trigger Phalanx.", "Your next Shield Slam will trigger Phalanx.", 0 },
+  { 1278009, "Your next Shield Slam will trigger Phalanx.", "Your next Shield Slam deals $w1% additional damage and will trigger Phalanx.", 0 },
   { 1278047, "$@spelldesc1262028", 0, 0 },
   { 1278079, "$@spelldesc431178", 0, 0 },
   { 1278150, "Rakes an enemy with deformed claws, dealing $<sweepingclaw> Shadow damage to the target and $<sweepingclawSecond> Shadow damage to nearby enemies.", 0, 0 },
@@ -28635,14 +28635,20 @@ static constexpr std::array<spelltext_data_t, 28635> __spelltext_data { {
   { 1291466, "Temporarily grants your shoulders a magical illusion of nature's splendor.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
   { 1291471, "$@spelldesc354124", "Healing received reduced by $w1%.", 0 },
   { 1292031, "$@spelldesc1278886", "When you or a nearby ally drops below $s1% health, you consume a charge of Dream Guide to automatically cast Regrowth on them.", 0 },
+  { 1292058, "$@spelldesc1269307", "Damage bonus of your next Colossus Smash increased by $w1%.", 0 },
+  { 1292071, "$@spelldesc1269313", "Dealing $w1% reduced damage to $@auracaster.", 0 },
+  { 1292874, "$@spelldesc1262076", "Stunned", 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.1.66384
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
-  { 1259518,  0, "Your harmful spells have a high chance to call cosmic shards from the heavens to slice your target and one nearby enemy for ${$s1*$<rolemult>} Cosmic damage.\r\n\r\nIf either enemy is below $s3% health, gain $s4 Haste for $1264337d as you speed them to their fate.", "Your harmful spells have a high chance to call cosmic shards from the heavens to slice your target and one nearby enemy for ${$s1*$<rolemult>} Cosmic damage.\r\n\r\nIf either enemy is below $s3% health, gain $s2 Haste for $1264337d as you speed them to their fate." },
+// spelltext hotfix entries, wow build 12.0.1.66431
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
+  { 1269307,  0, "Heroic Strike reduces the cooldown of Colossus Smash by ${$s1/-1000}.1 sec.", "Heroic Strike increases the damage you deal to enemies affected by your next Colossus Smash by an additional ${$1292058s1}.1%. Stacks up to $1292058u times." },
+  { 1269311,  0, "Thunder Clap causes your next Shield Slam to unleash a wave of force, dealing $1270116s1 Physical damage to all enemies in front of you, and reducing the damage they deal to you by $1270116s2% for $1270116d.", "Thunder Clap causes your next Shield Slam to deal $1278009s1% additional damage and unleash a wave of force, dealing $1270116s1 Physical damage to all enemies in front of you." },
+  { 1269313,  0, "While Shield Block is active, Shield Slam deals 10% additional damage and has a 20% increased chance to critically strike.", "While Shield Block is active, Shield Slam deals 10% additional damage and has a 20% increased chance to critically strike.\r\n\r\nEnemies damaged by Phalanx's wave of force deal $1292071s1% reduced damage to you for $1292071d." },
+  { 1278009,  1, "Your next Shield Slam will trigger Phalanx.", "Your next Shield Slam deals $w1% additional damage and will trigger Phalanx." },
 } };
 
-// Spell description variables, wow build 12.0.1.66384
+// Spell description variables, wow build 12.0.1.66431
 static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29339,7 +29345,7 @@ static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { 
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.1.66384
+// spelldesc_vars hotfix entries, wow build 12.0.1.66431
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

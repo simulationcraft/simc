@@ -79,7 +79,7 @@ trinket1=locuswalkers_ribbon,id=249809,bonus_id=4786/4800/12806
 trinket2=emberwing_feather,id=250144,bonus_id=12806/13577,ilevel=289
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=12806/13577,enchant_id=8039
 
-save=MID1_Warlock_Demonology_Soul_Harvester.simc
+save=MID1_Warlock_Demonology.simc
 
 # warlock="MID1_Warlock_Demonology_Diabolist"
 # spec=demonology

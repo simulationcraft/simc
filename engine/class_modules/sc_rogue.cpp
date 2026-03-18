@@ -3538,7 +3538,7 @@ struct shadow_clone_t : public rogue_attack_t
     affected_by.mid1_subtlety_2pc = true;
   }
 
-  virtual double combo_point_da_multiplier( const action_state_t* s ) const
+  double combo_point_da_multiplier( const action_state_t* s ) const override
   {
     const int cp = cast_state( s )->get_combo_points();
     if ( cp > 0 )
@@ -7759,7 +7759,7 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques_buff( const action
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_shadow_techniques_cp( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_shadow_techniques_cp( const action_state_t* )
 {
   if ( !p()->spec.shadow_techniques->ok() || !p()->buffs.shadow_techniques->up() || ab::energize_amount == 0 )
     return;
@@ -7942,8 +7942,8 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   if ( p()->talent.fatebound.controlled_chaos->ok() )
   {
     int streak = as<int>( p()->talent.fatebound.controlled_chaos->effectN( 1 ).base_value() );
-    if ( p()->buffs.fatebound_coin_tails->total_stack() >= streak && result == fatebound_t::coinflip_e::HEADS ||
-         p()->buffs.fatebound_coin_heads->total_stack() >= streak && result == fatebound_t::coinflip_e::TAILS )
+    if ( ( p()->buffs.fatebound_coin_tails->total_stack() >= streak && result == fatebound_t::coinflip_e::HEADS ) ||
+         ( p()->buffs.fatebound_coin_heads->total_stack() >= streak && result == fatebound_t::coinflip_e::TAILS ) )
     {
       // 250ms so it does not coincide with an Overflowing Purse roll at the same time for now
       trigger_fatebound_coinflip( state, result, 250_ms + current_delay );

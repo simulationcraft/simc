@@ -158,15 +158,15 @@ finger2=eye_of_midnight,id=249920,bonus_id=12806/13335,gem_id=240900/240900,ench
 trinket1=gaze_of_the_alnseer,id=249343,bonus_id=12806/13335
 trinket2=heart_of_ancient_hunger,id=249342,bonus_id=12806/13335
 main_hand=bellamys_final_judgement,id=249277,bonus_id=12806/13335,enchant_id=8041
-off_hand=blood_knights_impetus,id=237847,bonus_id=8960/12066/12693/13622/9627,enchant_id=7983
+off_hand=blood_knights_impetus,id=237847,bonus_id=8793/8960/12066/12693/13622/9627,enchant_id=7983
 
 # Gear Summary
 # gear_ilvl=288.50
 # gear_strength=1365
 # gear_stamina=19221
 # gear_crit_rating=617
-# gear_haste_rating=960
-# gear_mastery_rating=953
+# gear_haste_rating=1041
+# gear_mastery_rating=1034
 # gear_versatility_rating=56
 # gear_leech_rating=166
 # gear_avoidance_rating=56
