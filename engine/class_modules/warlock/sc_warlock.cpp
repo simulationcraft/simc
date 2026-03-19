@@ -968,7 +968,9 @@ void warlock_t::parse_player_effects()
     // Affliction Mastery
     parse_effects( warlock_base.potent_afflictions ); // 77215
     // Affliction Debuffs/DoTs
-    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::haunt ), talents.haunt, talents.shadow_of_nathreza_2 );
+    // NOTE: Shadow of Nathreza II (rank 2) only increases by 2% (as if it were rank 1) the
+    // effect #2 and #3 (pet and guardian damage) of the Haunt debuff damage bonus (bug)
+    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::haunt ), talents.haunt );
   }
 
   // Demonology
