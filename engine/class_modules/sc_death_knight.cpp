@@ -12678,9 +12678,8 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     if ( talent.blood.dance_of_midnight_3.ok() )
     {
-      for ( int i = 0; i < as<int>( amount ); i++ )
-        if ( pseudo_random.dance_of_midnight->trigger() )
-          pets.dance_of_midnight_pet.spawn();
+      if ( pseudo_random.dance_of_midnight->trigger() )
+        pets.dance_of_midnight_pet.spawn();
     }
   }
 
