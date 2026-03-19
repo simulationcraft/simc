@@ -4931,6 +4931,68 @@ void print_html_player_deaths( report::sc_html_stream& os, const player_t& p,
   }
 }
 
+// print_html_pvp_section ===================================================
+
+void print_html_pvp_section( report::sc_html_stream& os, const player_t& p )
+{
+  const sim_t& sim = *p.sim;
+  if ( !sim.pvp.enabled )
+    return;
+
+  os << "<div class=\"player-section\">\n"
+     << "<h3 class=\"toggle\">PvP Scaling</h3>\n"
+     << "<div class=\"toggle-content\">\n"
+     << "<table class=\"sc stripebody\">\n"
+     << "<thead><tr><th>Modifier</th><th>Value</th></tr></thead>\n"
+     << "<tbody>\n";
+
+  os << "<tr><td>Mode</td><td>" << sim.pvp.mode << "</td></tr>\n";
+  os << "<tr><td>Crit Damage Mod</td><td>" << fmt::format( "{:.2f}", sim.pvp.crit_damage_mod ) << "</td></tr>\n";
+  os << "<tr><td>Healing Received Mod</td><td>" << fmt::format( "{:.2f}", sim.pvp.healing_received_mod ) << "</td></tr>\n";
+  os << "<tr><td>Absorb Done Mod</td><td>" << fmt::format( "{:.2f}", sim.pvp.absorb_done_mod ) << "</td></tr>\n";
+  os << "<tr><td>Pet Damage Mod</td><td>" << fmt::format( "{:.2f}", sim.pvp.pet_damage_mod ) << "</td></tr>\n";
+  os << "<tr><td>Mana Regen Mod</td><td>" << fmt::format( "{:.2f}", sim.pvp.mana_regen_mod ) << "</td></tr>\n";
+  os << "<tr><td>Versatility Effectiveness</td><td>" << fmt::format( "{:.2f}", sim.pvp.versatility_damage_mod ) << "</td></tr>\n";
+  os << "<tr><td>Tier Set Effectiveness</td><td>" << fmt::format( "{:.2f}", sim.pvp.tier_set_effectiveness ) << "</td></tr>\n";
+
+  if ( sim.pvp.dampening_enabled )
+  {
+    double final_reduction = std::min(
+      sim.pvp_dampening_stacks * sim.pvp.dampening_pct_per_stack,
+      sim.pvp.dampening_max_pct );
+    os << "<tr><td>Dampening (final)</td><td>"
+       << fmt::format( "{:.1f}% ({} stacks)", final_reduction * 100.0, sim.pvp_dampening_stacks )
+       << "</td></tr>\n";
+  }
+
+  os << "</tbody></table>\n";
+
+  // Per-ability PvP coefficients table
+  os << "<h4>Ability PvP Coefficients</h4>\n"
+     << "<table class=\"sc stripebody\">\n"
+     << "<thead><tr><th>Ability</th><th>PvP Coefficient</th></tr></thead>\n"
+     << "<tbody>\n";
+
+  for ( const auto* a : p.action_list )
+  {
+    if ( !a->data().ok() )
+      continue;
+    for ( size_t i = 1; i <= a->data().effect_count(); i++ )
+    {
+      double c = a->data().effectN( i ).pvp_coeff();
+      if ( c != 0.0 && c != 1.0 )
+      {
+        os << "<tr><td>" << report_decorators::decorated_action( *a )
+           << "</td><td>" << fmt::format( "{:.4f}", c ) << "</td></tr>\n";
+        break;
+      }
+    }
+  }
+
+  os << "</tbody></table>\n"
+     << "</div></div>\n";
+}
+
 // print_html_player_ =======================================================
 
 void print_html_player_( report::sc_html_stream& os, const player_t& p )
@@ -4966,6 +5028,8 @@ void print_html_player_( report::sc_html_stream& os, const player_t& p )
   print_html_player_action_priority_list( os, p );
 
   print_html_stats( os, p );
+
+  print_html_pvp_section( os, p );
 
   print_html_gear( os, p );
 

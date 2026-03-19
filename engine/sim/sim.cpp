@@ -1472,6 +1472,8 @@ sim_t::sim_t()
     use_item_verification( true ),
     pvp_rules(),
     pvp_mode( false ),
+    pvp(),
+    pvp_dampening_stacks( 0 ),
     auto_attacks_always_land( false ),
     log_spell_id( true ),
     active_enemies( 0 ),
@@ -1832,6 +1834,37 @@ void sim_t::reset()
   raid_event_t::reset( this );
 }
 
+struct dampening_event_t : public event_t
+{
+  sim_t& sim;
+
+  dampening_event_t( sim_t& s, timespan_t delay )
+    : event_t( s, delay ), sim( s )
+  {
+  }
+
+  const char* name() const override
+  { return "pvp_dampening"; }
+
+  void execute() override
+  {
+    sim.pvp_dampening_stacks++;
+    double reduction = std::min(
+      sim.pvp_dampening_stacks * sim.pvp.dampening_pct_per_stack,
+      sim.pvp.dampening_max_pct );
+
+    for ( auto* p : sim.player_no_pet_list )
+      p->pvp_dampening_multiplier = 1.0 - reduction;
+
+    // Stop scheduling if at max
+    if ( reduction < sim.pvp.dampening_max_pct )
+    {
+      make_event<dampening_event_t>( sim, sim,
+        timespan_t::from_seconds( sim.pvp.dampening_stack_interval ) );
+    }
+  }
+};
+
 /// Start combat.
 void sim_t::combat_begin()
 {
@@ -1950,6 +1983,13 @@ void sim_t::combat_begin()
     make_event<heartbeat_event_t>( *this, *this, timespan_t::from_millis( rng().range( 1, 5249 ) ) );
 
   raid_event_t::combat_begin( this );
+
+  if ( pvp.enabled && pvp.dampening_enabled )
+  {
+    pvp_dampening_stacks = 0;
+    make_event<dampening_event_t>( *this, *this,
+      timespan_t::from_seconds( pvp.dampening_start_sec ) );
+  }
 }
 
 // sim_t::combat_end ========================================================
@@ -2749,7 +2789,21 @@ void sim_t::init()
   }
 
   if ( pvp_mode )
+  {
+    pvp.enabled = true;
     pvp_rules = dbc::find_spell( this, 134735 );
+    pvp::init_modifiers_from_spell( pvp, pvp_rules, this );
+    pvp::init_format_defaults( pvp, pvp.dampening_start_sec != 300.0 );
+    pvp::parse_coefficient_overrides( pvp );
+  }
+  if ( pvp.enabled && !pvp_mode )
+  {
+    pvp_mode = true;
+    pvp_rules = dbc::find_spell( this, 134735 );
+    pvp::init_modifiers_from_spell( pvp, pvp_rules, this );
+    pvp::init_format_defaults( pvp, pvp.dampening_start_sec != 300.0 );
+    pvp::parse_coefficient_overrides( pvp );
+  }
 
   // set scaling metric
   if ( !scaling->scale_over.empty() )
@@ -3827,6 +3881,26 @@ void sim_t::create_options()
   add_option( opt_string( "enable_2_set", enable_2_set ) );
   add_option( opt_string( "enable_4_set", enable_4_set ) );
   add_option( opt_bool( "pvp", pvp_mode ) );
+  add_option( opt_string( "pvp_mode", pvp.mode ) );
+  add_option( opt_bool( "pvp_coefficients", pvp.coefficients ) );
+  add_option( opt_bool( "pvp_trinket_bonus", pvp.trinket_bonus ) );
+  add_option( opt_bool( "pvp_stat_scaling", pvp.stat_scaling ) );
+  add_option( opt_bool( "pvp_item_scaling", pvp.item_scaling ) );
+  add_option( opt_bool( "pvp_tier_penalty", pvp.tier_penalty ) );
+  add_option( opt_bool( "pvp_dampening", pvp.dampening_enabled ) );
+  add_option( opt_float( "pvp_dampening_start", pvp.dampening_start_sec ) );
+  add_option( opt_float( "pvp_tier_effectiveness", pvp.tier_set_effectiveness ) );
+  add_option( opt_float( "pvp_vers_damage_mod", pvp.versatility_damage_mod ) );
+  add_option( opt_float( "pvp_vers_healing_mod", pvp.versatility_healing_mod ) );
+  add_option( opt_float( "pvp_vers_dr_mod", pvp.versatility_dr_mod ) );
+  add_option( opt_float( "pvp_healing_mod", pvp.healing_received_mod ) );
+  add_option( opt_float( "pvp_absorb_mod", pvp.absorb_done_mod ) );
+  add_option( opt_float( "pvp_absorb_received_mod", pvp.absorb_received_mod ) );
+  add_option( opt_float( "pvp_crit_damage_mod", pvp.crit_damage_mod ) );
+  add_option( opt_float( "pvp_pet_damage_mod", pvp.pet_damage_mod ) );
+  add_option( opt_float( "pvp_mana_regen_mod", pvp.mana_regen_mod ) );
+  add_option( opt_float( "pvp_resistance_mod", pvp.resistance_mod ) );
+  add_option( opt_string( "pvp_coefficient_override", pvp.coefficient_override_str ) );
   add_option( opt_bool( "auto_attacks_always_land", auto_attacks_always_land ) );
   add_option( opt_bool( "log_spell_id", log_spell_id ) );
   add_option( opt_int( "desired_targets", desired_targets ) );

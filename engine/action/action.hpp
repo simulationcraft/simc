@@ -824,6 +824,8 @@ public:
 
   virtual double total_crit_bonus( const action_state_t* /* state */ ) const; // Check if we want to move this into the stateless system.
 
+  virtual double get_pvp_coefficient() const;
+
   virtual int num_targets() const;
 
   virtual size_t available_targets( std::vector< player_t* >& ) const;

@@ -2066,6 +2066,26 @@ void player_t::init_items()
 
   init_meta_gem();
 
+  // Detect PvP trinket 2-set (Gladiator's Distinction, set ID 1458, spell 365043)
+  if ( sim->pvp.enabled && sim->pvp.trinket_bonus )
+  {
+    constexpr unsigned GLADIATORS_DISTINCTION_SET_ID = 1458;
+    constexpr unsigned GLADIATORS_DISTINCTION_SPELL_ID = 365043;
+    int pvp_trinket_count = 0;
+    for ( auto slot : { SLOT_TRINKET_1, SLOT_TRINKET_2 } )
+    {
+      if ( items[ slot ].parsed.data.id_set == GLADIATORS_DISTINCTION_SET_ID )
+        pvp_trinket_count++;
+    }
+    if ( pvp_trinket_count >= 2 )
+    {
+      pvp_trinket_2pc_active = true;
+      pvp_trinket_spell = find_spell( GLADIATORS_DISTINCTION_SPELL_ID );
+      sim->print_debug( "Player {} has Gladiator's Distinction 2pc active (spell {})",
+                        name(), GLADIATORS_DISTINCTION_SPELL_ID );
+    }
+  }
+
   // Needs to be initialized after old set bonus system
   if ( sets != nullptr )
   {
@@ -5678,6 +5698,9 @@ double player_t::composite_damage_versatility() const
   if ( buffs.dmf_well_fed )
     cdv += buffs.dmf_well_fed->check_value();
 
+  if ( sim->pvp.enabled && sim->pvp.stat_scaling )
+    cdv *= sim->pvp.versatility_damage_mod;
+
   return cdv;
 }
 
@@ -5694,6 +5717,9 @@ double player_t::composite_heal_versatility() const
   if ( buffs.dmf_well_fed )
     chv += buffs.dmf_well_fed->check_value();
 
+  if ( sim->pvp.enabled && sim->pvp.stat_scaling )
+    chv *= sim->pvp.versatility_healing_mod;
+
   return chv;
 }
 
@@ -5709,6 +5735,9 @@ double player_t::composite_mitigation_versatility() const
 
   if ( buffs.dmf_well_fed )
     cmv += buffs.dmf_well_fed->check_value() / 2;
+
+  if ( sim->pvp.enabled && sim->pvp.stat_scaling )
+    cmv *= sim->pvp.versatility_dr_mod;
 
   return cmv;
 }
@@ -5751,6 +5780,9 @@ double player_t::composite_total_corruption() const
 double player_t::composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const
 {
   double m = guardian ? current.guardian_damage_multiplier : current.pet_damage_multiplier;
+
+  if ( sim->pvp.enabled && sim->pvp.stat_scaling )
+    m *= sim->pvp.pet_damage_mod;
 
   return m;
 }
@@ -5823,6 +5855,12 @@ double player_t::composite_player_heal_multiplier( const action_state_t* ) const
   if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
     m *= 1.0 + buffs.entropic_embrace->data().effectN( 3 ).percent();
 
+  if ( sim->pvp.enabled && sim->pvp.stat_scaling )
+  {
+    m *= sim->pvp.healing_received_mod;
+    m *= pvp_dampening_multiplier;
+  }
+
   return m;
 }
 
@@ -5837,6 +5875,13 @@ double player_t::composite_player_absorb_multiplier( const action_state_t* ) con
 
   if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
     m *= 1.0 + buffs.entropic_embrace->data().effectN( 4 ).percent();
+
+  if ( sim->pvp.enabled && sim->pvp.stat_scaling )
+  {
+    // absorb_received_mod from spell 134735 effect (subtype 422, currently 0 = no change)
+    m *= sim->pvp.absorb_received_mod;
+    m *= pvp_dampening_multiplier;
+  }
 
   return m;
 }
@@ -6029,6 +6074,35 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       m *= 1.0 + b->check_stack_value();
   }
 
+  if ( sim->pvp.enabled && sim->pvp.stat_scaling )
+  {
+    if ( attr == ATTR_STAMINA )
+      m *= sim->pvp.stamina_mod;
+  }
+
+  if ( sim->pvp.enabled && sim->pvp.trinket_bonus && pvp_trinket_2pc_active )
+  {
+    // Gladiator's Distinction (set 1458, spell 365043):
+    //   Effect 1 = +12% primary stat (Str/Agi/Int)
+    //   Effect 2 = +5% stamina
+    // Spell 365043 may not be in extracted data — use spell effects if available,
+    // otherwise fall back to hardcoded values for trinket 2-set bonus
+    if ( pvp_trinket_spell && pvp_trinket_spell->ok() && pvp_trinket_spell->effect_count() >= 2 )
+    {
+      if ( attr == ATTR_STAMINA )
+        m *= 1.0 + pvp_trinket_spell->effectN( 2 ).percent();
+      else if ( attr == static_cast<attribute_e>( convert_hybrid_stat( STAT_STR_AGI_INT ) ) )
+        m *= 1.0 + pvp_trinket_spell->effectN( 1 ).percent();
+    }
+    else
+    {
+      if ( attr == ATTR_STAMINA )
+        m *= 1.05;  // +5% stamina (Midnight S1)
+      else if ( attr == static_cast<attribute_e>( convert_hybrid_stat( STAT_STR_AGI_INT ) ) )
+        m *= 1.12;  // +12% primary stat (Midnight S1)
+    }
+  }
+
   return m;
 }
 
@@ -6160,7 +6234,12 @@ double player_t::composite_player_target_armor( player_t* t ) const
 
 double player_t::composite_mitigation_multiplier( school_e /* school */ ) const
 {
-  return 1.0;
+  double m = 1.0;
+
+  if ( sim->pvp.enabled && sim->pvp.stat_scaling )
+    m *= sim->pvp.resistance_mod;
+
+  return m;
 }
 
 double player_t::composite_mastery_value() const
@@ -6863,6 +6942,7 @@ void player_t::reset()
 
   // Reset current stats to initial stats
   current = initial;
+  pvp_dampening_multiplier = 1.0;
 
   current.sleeping = true;
 

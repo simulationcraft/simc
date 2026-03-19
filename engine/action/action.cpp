@@ -1391,8 +1391,8 @@ double action_t::total_crit_bonus( const action_state_t* state ) const
   double damage_from_crit_multiplier = composite_player_critical_multiplier( state );
 
   double base_bonus = base_crit_bonus;
-  if ( sim->pvp_mode )
-    base_bonus += sim->pvp_rules->effectN( 3 ).percent();
+  if ( sim->pvp.enabled )
+    base_bonus += ( sim->pvp.crit_damage_mod - 1.0 );
 
   // applies only to bonus from crit
   double bonus_mult =
@@ -1407,6 +1407,43 @@ double action_t::total_crit_bonus( const action_state_t* state ) const
   }
 
   return bonus;
+}
+
+double action_t::get_pvp_coefficient() const
+{
+  unsigned sid = data().id();
+
+  // Priority 1: Effect-level overrides
+  for ( size_t i = 1; i <= data().effect_count(); i++ )
+  {
+    auto it = sim->pvp.effect_overrides.find( data().effectN( i ).id() );
+    if ( it != sim->pvp.effect_overrides.end() )
+      return it->second;
+  }
+
+  // Priority 2: Spell-level override
+  {
+    auto it = sim->pvp.coefficient_overrides.find( sid );
+    if ( it != sim->pvp.coefficient_overrides.end() )
+      return it->second;
+  }
+
+  // Priority 3: Item bonus coefficients
+  {
+    auto it = sim->pvp.item_bonus_coefficients.find( sid );
+    if ( it != sim->pvp.item_bonus_coefficients.end() )
+      return it->second;
+  }
+
+  // Priority 4: DBC pvp_coeff on the spell's effects
+  for ( size_t i = 1; i <= data().effect_count(); i++ )
+  {
+    double c = data().effectN( i ).pvp_coeff();
+    if ( c != 0.0 && c != 1.0 )
+      return c;
+  }
+
+  return 1.0;
 }
 
 double action_t::calculate_weapon_damage( double attack_power ) const
@@ -1446,6 +1483,11 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   amount += state->composite_attack_power() * attack_tick_power_coefficient( state );
   amount *= state->composite_ta_multiplier();
   amount *= state->composite_rolling_ta_multiplier();
+
+  if ( sim->pvp.enabled && sim->pvp.coefficients )
+  {
+    amount *= get_pvp_coefficient();
+  }
 
   double init_tick_amount = amount;
 
@@ -1520,6 +1562,11 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
     amount += bonus_da( state );
 
   amount *= state->composite_da_multiplier();
+
+  if ( sim->pvp.enabled && sim->pvp.coefficients )
+  {
+    amount *= get_pvp_coefficient();
+  }
 
   // damage variation in WoD is based on the delta field in the spell data, applied to entire amount
   double delta_mod = amount_delta_modifier( state );

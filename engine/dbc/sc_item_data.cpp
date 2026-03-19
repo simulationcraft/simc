@@ -505,8 +505,21 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     case ITEM_BONUS_ILEVEL_IN_PVP:
       if ( item.sim->pvp_mode )
       {
-        // TODO: Should this be disabled if Midnight scaling bonuses are present?
         item.parsed.data.level += entry.value_1;
+      }
+      break;
+    // Midnight+: Set item level to an absolute value in PvP mode
+    // e.g., bonus_id=13448 → type 43, val_1=289 → ilvl becomes 289 in PvP
+    // This is a post-squish absolute ilvl, not a pre-squish value
+    case ITEM_BONUS_SET_ILEVEL_PVP:
+      if ( item.sim->pvp_mode )
+      {
+        item.sim->print_debug( "Player {} item '{}' PvP ilvl set to {} (was {})",
+                               item.player->name(), item.name(), entry.value_1, item.parsed.data.level );
+        item.parsed.data.level = as<unsigned>( entry.value_1 );
+        // The PvP ilvl is already a post-squish value (e.g., 289 in Midnight).
+        // Mark as midnight-scaled to prevent the fallback squish from re-squishing it.
+        item.parsed.has_midnight_scaling = true;
       }
       break;
     default:
@@ -528,10 +541,12 @@ void item_database::sort_item_bonuses( item_t& item )
     bool a_is_scaling = false;
     bool b_is_scaling = false;
     for ( const auto& entry : a_entries )
-      if ( entry.type == ITEM_BONUS_POST_SQUISH_ITEM_LEVEL || entry.type == ITEM_BONUS_CRAFTING_QUALITY )
+      if ( entry.type == ITEM_BONUS_POST_SQUISH_ITEM_LEVEL || entry.type == ITEM_BONUS_CRAFTING_QUALITY ||
+           entry.type == ITEM_BONUS_SET_ILEVEL_PVP )
         a_is_scaling = true;
     for ( const auto& entry : b_entries )
-      if ( entry.type == ITEM_BONUS_POST_SQUISH_ITEM_LEVEL || entry.type == ITEM_BONUS_CRAFTING_QUALITY )
+      if ( entry.type == ITEM_BONUS_POST_SQUISH_ITEM_LEVEL || entry.type == ITEM_BONUS_CRAFTING_QUALITY ||
+           entry.type == ITEM_BONUS_SET_ILEVEL_PVP )
         b_is_scaling = true;
 
     if ( a_is_scaling != b_is_scaling )

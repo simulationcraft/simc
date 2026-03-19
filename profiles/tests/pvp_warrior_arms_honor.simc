@@ -1,0 +1,44 @@
+# Galactic Aspirant Arms Warrior PvP Test Profile
+# Full Honor gear, Level 90 Midnight Season 1
+#
+# Bonus ID 13447: Honor PvP scaling (type 43, sets ilvl to 276 in PvP)
+# Bonus ID 13452: PvP stat template
+# Base item level: 197 (scales to 276 in PvP via bonus_id=13447)
+
+warrior="PvP_Warrior_Arms_Honor"
+source=default
+spec=arms
+level=90
+race=human
+role=attack
+position=back
+talents=CcEAAAAAAAAAAAAAAAAAAAAAAAzMzsMzMzMDAAAghphxYmxyMzMzgxMDAAAAgZWmZAZMWWGYBMgZYCZGsBMjNz2YwMGgZGAmxwA
+
+# PvP Mode — Arena
+pvp=1
+pvp_mode=arena
+
+# No consumables in arena
+potion=disabled
+flask=disabled
+food=disabled
+augmentation=disabled
+temporary_enchant=disabled
+
+# Gear: Full Galactic Aspirant Honor Set (Plate - Warrior)
+# bonus_id=13447 triggers ITEM_BONUS_SET_ILEVEL_PVP (type 43) → ilvl 276 in PvP
+head=galactic_aspirants_plate_helm,id=255262,bonus_id=13447/13452
+neck=galactic_aspirants_necklace,id=255334,bonus_id=13447/13452
+shoulder=galactic_aspirants_plate_shoulders,id=255283,bonus_id=13447/13452
+back=galactic_aspirants_cloak,id=255338,bonus_id=13447/13452
+chest=galactic_aspirants_chestplate,id=255264,bonus_id=13447/13452
+wrist=galactic_aspirants_plate_cuffs,id=255291,bonus_id=13447/13452
+hands=galactic_aspirants_plate_gauntlets,id=255272,bonus_id=13447/13452
+waist=galactic_aspirants_plate_girdle,id=255286,bonus_id=13447/13452
+legs=galactic_aspirants_plate_legguards,id=255278,bonus_id=13447/13452
+feet=galactic_aspirants_plate_warboots,id=255267,bonus_id=13447/13452
+finger1=galactic_aspirants_ring,id=255331,bonus_id=13447/13452
+finger2=galactic_aspirants_band,id=255332,bonus_id=13447/13452
+trinket1=galactic_aspirants_badge_of_ferocity,id=255326,bonus_id=13447/13452
+trinket2=galactic_aspirants_emblem,id=255329,bonus_id=13447/13452
+main_hand=galactic_aspirants_greatsword,id=255346,bonus_id=13447/13452

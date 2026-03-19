@@ -1211,6 +1211,43 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   options_root[ "challenge_mode" ] = sim.challenge_mode;
   options_root[ "timewalk" ] = sim.timewalk;
   options_root[ "pvp_mode" ] = sim.pvp_mode;
+
+  if ( sim.pvp.enabled )
+  {
+    auto pvp_root = options_root[ "pvp" ];
+    pvp_root[ "mode" ] = sim.pvp.mode;
+
+    // Enabled systems as individual booleans
+    pvp_root[ "coefficients_enabled" ] = sim.pvp.coefficients;
+    pvp_root[ "trinket_bonus_enabled" ] = sim.pvp.trinket_bonus;
+    pvp_root[ "stat_scaling_enabled" ] = sim.pvp.stat_scaling;
+    pvp_root[ "item_scaling_enabled" ] = sim.pvp.item_scaling;
+    pvp_root[ "tier_penalty_enabled" ] = sim.pvp.tier_penalty;
+
+    // Global modifiers
+    auto mods = pvp_root[ "global_modifiers" ];
+    mods[ "crit_damage_mod" ] = sim.pvp.crit_damage_mod;
+    mods[ "healing_received_mod" ] = sim.pvp.healing_received_mod;
+    mods[ "absorb_done_mod" ] = sim.pvp.absorb_done_mod;
+    mods[ "absorb_received_mod" ] = sim.pvp.absorb_received_mod;
+    mods[ "pet_damage_mod" ] = sim.pvp.pet_damage_mod;
+    mods[ "mana_regen_mod" ] = sim.pvp.mana_regen_mod;
+    mods[ "resistance_mod" ] = sim.pvp.resistance_mod;
+    mods[ "versatility_damage_mod" ] = sim.pvp.versatility_damage_mod;
+    mods[ "versatility_healing_mod" ] = sim.pvp.versatility_healing_mod;
+    mods[ "versatility_dr_mod" ] = sim.pvp.versatility_dr_mod;
+    mods[ "tier_set_effectiveness" ] = sim.pvp.tier_set_effectiveness;
+
+    // Dampening
+    auto damp = pvp_root[ "dampening" ];
+    damp[ "enabled" ] = sim.pvp.dampening_enabled;
+    damp[ "start_sec" ] = sim.pvp.dampening_start_sec;
+    damp[ "final_stacks" ] = sim.pvp_dampening_stacks;
+    damp[ "final_reduction_pct" ] = std::min(
+      sim.pvp_dampening_stacks * sim.pvp.dampening_pct_per_stack,
+      sim.pvp.dampening_max_pct );
+  }
+
   options_root[ "rng" ] = sim.rng();
   options_root[ "deterministic" ] = sim.deterministic;
   options_root[ "average_range" ] = sim.average_range;

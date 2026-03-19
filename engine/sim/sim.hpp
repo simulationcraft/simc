@@ -11,6 +11,7 @@
 #include "progress_bar.hpp"
 #include "sim_ostream.hpp"
 #include "sim/option.hpp"
+#include "sim/pvp_scaling.hpp"
 #include "util/concurrency.hpp"
 #include "util/rng.hpp"
 #include "util/sample_data.hpp"
@@ -180,6 +181,8 @@ struct sim_t : private sc_thread_t
   std::string enable_4_set; // Enables all 4 set bonuses for the tier that this is set as
   const spell_data_t* pvp_rules; // Hidden aura that contains the PvP crit damage reduction
   bool pvp_mode; // Enables PvP mode - reduces crit damage, adjusts PvP gear iLvl
+  pvp::pvp_config_t pvp;
+  int pvp_dampening_stacks = 0;
   bool auto_attacks_always_land; /// Allow Auto Attacks (white attacks) to always hit the enemy
   bool log_spell_id; // Add spell data ids to log/debug output where available. (actions, buffs)
 

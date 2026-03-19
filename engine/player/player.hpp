@@ -465,6 +465,11 @@ struct player_t : public actor_t
   double auto_attack_base_modifier;
   double auto_attack_multiplier;
 
+  // PvP scaling fields
+  double pvp_dampening_multiplier = 1.0;
+  bool   pvp_trinket_2pc_active = false;
+  const spell_data_t* pvp_trinket_spell = nullptr;
+
   // Scale Factors
   std::unique_ptr<player_scaling_t> scaling;
 
