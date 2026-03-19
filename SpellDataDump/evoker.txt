@@ -1418,7 +1418,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Proc Flags       : Generic Heal Taken, Magic Heal Taken, Magic Hostile Spell Taken, Helpful Periodic Taken
+Proc Flags       : Generic Helpful Taken, Magic Heal Taken, Magic Hostile Spell Taken, Helpful Periodic Taken
 Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Aura Cancel (31), No Threat (42), No Aura Icon (60), DoT Stacking Rule (103), Suppress Caster Procs (112), Ignore Caster Modifiers (125), Do Not Display Range (126), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), No Aura Log (202), Ignore Caster Damage Modifiers (221), Can Be Multi Cast (229), Aura Points On Client (268), Cannot Kill Target (316), Ignore Positive Damage Taken Modifiers (321), Ignore Damage Cancels Aura Interrupt (394), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=898532)   : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
@@ -1677,7 +1677,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
+Proc Flags       : Generic Helpful, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=901887)   : Apply Aura (6) | Dummy (4)
@@ -2865,7 +2865,7 @@ Labels           : 16: Class Spells
                  : 1467: Bronze Evoker Spells
 Stacks           : 3 maximum
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
+Proc Flags       : Generic Helpful, Magic Heal, Helpful Periodic
 Family Flags     : 17
 Attributes       : Not Shapeshifted (16), Cooldown On Event (25), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Leave Arena or Battleground (45)
@@ -3511,7 +3511,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
+Proc Flags       : Generic Helpful, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=997120)   : Apply Aura (6) | Dummy (4)
@@ -3652,7 +3652,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
 Proc Chance      : 100%
-Proc Flags       : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
+Proc Flags       : Generic Helpful Taken, Magic Heal Taken, Helpful Periodic Taken
 Affecting Spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Honed Aggression (371038 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Augmentation Evoker (396186 effects: #5, #6), Arcane Reach (454983 effect#1), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2), Evoker - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283653 effects: #1, #2), Evoker - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283654 effects: #1, #2)
 Family Flags     : 1
 Attributes       : Do Not Sheath (18), DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428), Non-secret Aura (506)
@@ -7735,7 +7735,7 @@ Duration         : Aura (infinite)
 Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1072076)  : Apply Aura (6) | Proc Trigger Spell (42): Call to Chaos
@@ -8159,7 +8159,7 @@ Labels           : 16: Class Spells
                  : 1467: Bronze Evoker Spells
                  : 5959
 Proc Chance      : 25%
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Affecting Spells : Mastery: Timewalker (406380 effect#2)
 Family Flags     : 67
 Attributes       : Can Proc From Procs (122), Do Not Display Range (126), Can Target Untargetable (216), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
@@ -9407,7 +9407,7 @@ Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 3959: Item Effects
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
+Proc Flags       : Generic Helpful, Magic Heal, Helpful Periodic
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1112845)  : Apply Aura (6) | Proc Trigger Spell (42): Fragile Echo
@@ -9608,7 +9608,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 5137: Temporal Burst (431698 effect#11), Temporal Burst (431698 effect#12), Temporal Cycle (1237269 effect#11), Temporal Cycle (1237269 effect#12), Overclock (1260647 effect#2)
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Temporal Burst (431698), Temporal Cycle (1237269), Overclock (1260647)
 Attributes       : Passive (6), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Spellcast Override In Spellbook (310), Unknown (450)
 Effects          :
@@ -9929,7 +9929,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 33%
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Family Flags     : 77
 Attributes       : Can Proc From Procs (122), Do Not Display Range (126), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
@@ -11861,7 +11861,7 @@ Labels           : 16: Class Spells
                  : 4720
 Proc Chance      : 100%
 Real PPM         : 4 (Haste multiplier)
-Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
+Proc Flags       : Generic Helpful, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198573)  : Apply Aura (6) | Proc Trigger Spell (42): Insurance!
@@ -11879,7 +11879,7 @@ Labels           : 16: Class Spells
                  : 295
                  : 1216: Evoker Spells
 Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Honed Aggression (371038 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Augmentation Evoker (396186 effects: #5, #6), Arcane Reach (454983 effect#1), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2), Evoker - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283653 effects: #1, #2), Evoker - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283654 effects: #1, #2)
 Triggered By     : Evoker Preservation 11.1 Class Set 2pc (1215549)
 Family Flags     : 1

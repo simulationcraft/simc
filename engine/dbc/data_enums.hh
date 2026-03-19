@@ -111,10 +111,10 @@ enum proc_types
   PROC1_RANGED_TAKEN,
   PROC1_RANGED_ABILITY,
   PROC1_RANGED_ABILITY_TAKEN,
-  PROC1_NONE_HEAL,
-  PROC1_NONE_HEAL_TAKEN,
-  PROC1_NONE_SPELL,
-  PROC1_NONE_SPELL_TAKEN,
+  PROC1_NONE_HELPFUL,
+  PROC1_NONE_HELPFUL_TAKEN,
+  PROC1_NONE_HARMFUL,
+  PROC1_NONE_HARMFUL_TAKEN,
   PROC1_MAGIC_HEAL,
   PROC1_MAGIC_HEAL_TAKEN,
   PROC1_MAGIC_SPELL,
@@ -186,10 +186,10 @@ enum proc_flag : uint64_t
   PF_RANGED_TAKEN           = uint64_t( 1 ) << PROC1_RANGED_TAKEN,
   PF_RANGED_ABILITY         = uint64_t( 1 ) << PROC1_RANGED_ABILITY,
   PF_RANGED_ABILITY_TAKEN   = uint64_t( 1 ) << PROC1_RANGED_ABILITY_TAKEN,
-  PF_NONE_HEAL              = uint64_t( 1 ) << PROC1_NONE_HEAL,
-  PF_NONE_HEAL_TAKEN        = uint64_t( 1 ) << PROC1_NONE_HEAL_TAKEN,
-  PF_NONE_SPELL             = uint64_t( 1 ) << PROC1_NONE_SPELL,
-  PF_NONE_SPELL_TAKEN       = uint64_t( 1 ) << PROC1_NONE_SPELL_TAKEN,
+  PF_NONE_HELPFUL           = uint64_t( 1 ) << PROC1_NONE_HELPFUL,
+  PF_NONE_HELPFUL_TAKEN     = uint64_t( 1 ) << PROC1_NONE_HELPFUL_TAKEN,
+  PF_NONE_HARMFUL           = uint64_t( 1 ) << PROC1_NONE_HARMFUL,
+  PF_NONE_HARMFUL_TAKEN     = uint64_t( 1 ) << PROC1_NONE_HARMFUL_TAKEN,
   PF_MAGIC_HEAL             = uint64_t( 1 ) << PROC1_MAGIC_HEAL,
   PF_MAGIC_HEAL_TAKEN       = uint64_t( 1 ) << PROC1_MAGIC_HEAL_TAKEN,
   PF_MAGIC_SPELL            = uint64_t( 1 ) << PROC1_MAGIC_SPELL, // Any "negative" spell
@@ -221,13 +221,13 @@ enum proc_flag : uint64_t
   // Helper types
   PF_ALL_DAMAGE             = PF_MELEE | PF_MELEE_ABILITY |
                               PF_RANGED | PF_RANGED_ABILITY |
-                              PF_NONE_SPELL | PF_MAGIC_SPELL,
-  PF_ALL_HEAL               = PF_NONE_HEAL | PF_MAGIC_HEAL,
+                              PF_NONE_HARMFUL | PF_MAGIC_SPELL,
+  PF_ALL_HEAL               = PF_NONE_HELPFUL | PF_MAGIC_HEAL,
 
   PF_DAMAGE_TAKEN           = PF_MELEE_TAKEN | PF_MELEE_ABILITY_TAKEN |
                               PF_RANGED_TAKEN | PF_RANGED_ABILITY_TAKEN |
-                              PF_NONE_SPELL_TAKEN | PF_MAGIC_SPELL_TAKEN,
-  PF_ALL_HEAL_TAKEN         = PF_NONE_HEAL_TAKEN | PF_MAGIC_HEAL_TAKEN,
+                              PF_NONE_HARMFUL_TAKEN | PF_MAGIC_SPELL_TAKEN,
+  PF_ALL_HEAL_TAKEN         = PF_NONE_HELPFUL_TAKEN | PF_MAGIC_HEAL_TAKEN,
 };
 
 // Qualifier on what result / advanced type allows a proc trigger

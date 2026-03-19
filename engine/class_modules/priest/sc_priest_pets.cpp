@@ -1150,7 +1150,7 @@ void priest_t::trigger_inescapable_torment( player_t* target, bool echo, double 
   if ( !talents.shared.inescapable_torment.enabled() )
     return;
 
-  auto extend = talents.shared.inescapable_torment->effectN( 2 ).time_value() * mod;
+  // auto extend = talents.shared.inescapable_torment->effectN( 2 ).time_value() * mod;
 
   if ( talents.shared.shadowfiend.enabled() && pets.shadowfiend.n_active_pets() > 0 )
   {

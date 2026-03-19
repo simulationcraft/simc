@@ -3682,6 +3682,20 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
 void print_html_player_custom_section( report::sc_html_stream& os, const player_t& p,
                                        const player_processed_report_information_t& /*ri*/ )
 {
+  if ( p.sim->debug )
+  {
+    os << R"(<div class="player-section parsed_passives_debug">)";
+    os << R"(<h3 class="toggle">!!!Parse Passive Debug Output!!!</h3>)";
+    os << R"(<div class="toggle-content hide">)";
+    os << R"(<div class="subsection force-wrap">)";
+    os << "<table>\n";
+
+    for ( const auto& tmp : p.registered_passive_debug_printout )
+      os << "<tr><td>" << tmp << "</td></tr>\n";
+
+    os << "</table></div></div></div>";
+  }
+
   p.print_parsed_effects( os );
 
   if ( p.report_extension )

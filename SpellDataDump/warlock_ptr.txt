@@ -733,7 +733,7 @@ Labels           : 16: Class Spells
                  : 566
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Family Flags     : 26
 Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Not In Combat (Only Peaceful) (28), No Threat (42), Allow Class Ability Procs (416)
 Aura Interrupt   : Hostile Action Received (0), Damage (1)
@@ -3540,7 +3540,7 @@ Spell Type       : None
 Max Aura Level   : 49
 Labels           : 112
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Use float values for scaling amounts (405)
 Effects          :
 #1 (id=268067)   : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
@@ -5346,7 +5346,7 @@ Spell Type       : None
 Labels           : 187
                  : 294
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=357083)   : Apply Aura (6) | Dummy (4)
@@ -5629,7 +5629,7 @@ Max Aura Level   : 49
 Labels           : 187
                  : 294
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=464795)   : Apply Aura (6) | Dummy (4)
@@ -6225,7 +6225,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=713720)   : Apply Aura (6) | Dummy (4)
@@ -7328,7 +7328,7 @@ Max Aura Level   : 49
 Labels           : 187
                  : 294
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=740062)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -8197,7 +8197,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 931
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
 Effects          :
 #1 (id=834759)   : Apply Aura (6) | Dummy (4)
@@ -10859,7 +10859,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal, Cast Successful
+Proc Flags       : Generic Helpful, Magic Heal, Cast Successful
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1025951)  : Apply Aura (6) | Proc Trigger Spell (42): Abyss Walker
@@ -12148,7 +12148,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1109408)  : Apply Aura (6) | Dummy (4)

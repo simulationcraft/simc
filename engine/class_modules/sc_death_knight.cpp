@@ -2672,9 +2672,6 @@ struct death_knight_pet_t : public pet_t
       double v = ( pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
                    ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() ) );
 
-      if ( pet()->dk()->bugs )
-        v *= 0.5;
-
       return v;
     }
 
@@ -2682,9 +2679,6 @@ struct death_knight_pet_t : public pet_t
     {
       double v = ( pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
                    ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() ) );
-
-      if ( pet()->dk()->bugs )
-        v *= 0.5;
 
       return v;
     }
@@ -12749,7 +12743,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Presence, RE is using the ability's base cost for its proc chance calculation, just like Runic Corruption
     // 2025-07-28 If an ability costs more than its base_cost, RE takes the higher cost.
     trigger_runic_empowerment( calc_rp_cost );
-    trigger_runic_corruption( procs.rp_runic_corruption, bugs ? actual_amount : calc_rp_cost, false );
+    trigger_runic_corruption( procs.rp_runic_corruption, calc_rp_cost, false );
 
     if ( talent.unholy.summon_gargoyle.ok() )
     {
@@ -13570,7 +13564,7 @@ void death_knight_t::create_dnd_event( action_t* a, timespan_t dur, timespan_t p
   params.y( target->y_position );
 
   params.state_callback(
-      [ &, tracker, n_ticks, partial_tick, period ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+      [ &, tracker, partial_tick, period ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
         switch ( type )
         {
           case ground_aoe_params_t::EVENT_CREATED:

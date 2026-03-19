@@ -25,21 +25,21 @@ struct proc_parse_opt_t
 
 constexpr proc_parse_opt_t __proc_opts[] =
 {
-  { "genericspell", PF_NONE_SPELL                                               },
-  { "spell",        PF_MAGIC_SPELL | PF_PERIODIC                                },
-  { "directspell",  PF_MAGIC_SPELL                                              },
-  { "periodic",     PF_PERIODIC                                                 },
-  { "genericheal",  PF_NONE_HEAL                                                },
-  { "heal",         PF_MAGIC_HEAL | PF_PERIODIC                                 },
-  { "directheal",   PF_MAGIC_HEAL                                               },
-  { "attack",       PF_MELEE | PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY },
-  { "wattack",      PF_MELEE | PF_RANGED                                        },
-  { "sattack",      PF_MELEE_ABILITY | PF_RANGED_ABILITY                        },
-  { "melee",        PF_MELEE | PF_MELEE_ABILITY                                 },
-  { "wmelee",       PF_MELEE                                                    },
-  { "smelee",       PF_MELEE_ABILITY                                            },
-  { "wranged",      PF_RANGED                                                   },
-  { "sranged",      PF_RANGED_ABILITY                                           },
+  { "genericharmful",  PF_NONE_HARMFUL                                             },
+  { "spell",           PF_MAGIC_SPELL | PF_PERIODIC                                },
+  { "directspell",     PF_MAGIC_SPELL                                              },
+  { "periodic",        PF_PERIODIC                                                 },
+  { "generichelpful",  PF_NONE_HELPFUL                                             },
+  { "heal",            PF_MAGIC_HEAL | PF_PERIODIC                                 },
+  { "directheal",      PF_MAGIC_HEAL                                               },
+  { "attack",          PF_MELEE | PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY },
+  { "wattack",         PF_MELEE | PF_RANGED                                        },
+  { "sattack",         PF_MELEE_ABILITY | PF_RANGED_ABILITY                        },
+  { "melee",           PF_MELEE | PF_MELEE_ABILITY                                 },
+  { "wmelee",          PF_MELEE                                                    },
+  { "smelee",          PF_MELEE_ABILITY                                            },
+  { "wranged",         PF_RANGED                                                   },
+  { "sranged",         PF_RANGED_ABILITY                                           },
 };
 
 constexpr proc_parse_opt_t __proc2_opts[] =

@@ -466,7 +466,7 @@ proc_types melee_attack_t::proc_type() const
   {
     switch ( s_data->dmg_class() )
     {
-      case SPELL_TYPE_NONE:   return PROC1_NONE_SPELL;
+      case SPELL_TYPE_NONE:   return PROC1_NONE_HARMFUL;
       case SPELL_TYPE_MAGIC:  return PROC1_MAGIC_SPELL;
       case SPELL_TYPE_MELEE:  return special ? PROC1_MELEE_ABILITY : PROC1_MELEE;
       case SPELL_TYPE_RANGED: return special ? PROC1_RANGED_ABILITY : PROC1_RANGED;
@@ -549,7 +549,7 @@ proc_types ranged_attack_t::proc_type() const
   {
     switch ( s_data->dmg_class() )
     {
-      case SPELL_TYPE_NONE:   return PROC1_NONE_SPELL;
+      case SPELL_TYPE_NONE:   return PROC1_NONE_HARMFUL;
       case SPELL_TYPE_MAGIC:  return PROC1_MAGIC_SPELL;
       case SPELL_TYPE_MELEE:  return special ? PROC1_MELEE_ABILITY : PROC1_MELEE;
       case SPELL_TYPE_RANGED: return special ? PROC1_RANGED_ABILITY : PROC1_RANGED;

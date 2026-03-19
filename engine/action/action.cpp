@@ -71,7 +71,7 @@ void do_execute( action_t* action, execute_type type )
     {
       action->player->iteration_executed_foreground_actions++;
       action->total_executions++;
-      action->player->sequence_add( action, action->target, [ action ]( std::string& a_str, std::string& t_str ) {
+      action->player->sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
         t_str = action->target->name_str;
       } );
     }
@@ -3262,6 +3262,9 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
 
   if ( name == "cost" )
     return make_mem_fn_expr( name, *this, &action_t::cost );
+
+  if ( name == "base_cost" )
+    return make_mem_fn_expr( name, *this, &action_t::base_cost );
 
   if ( name == "cost_affordable" )
     return make_mem_fn_expr( name, *this, &action_t::cost_affordable );

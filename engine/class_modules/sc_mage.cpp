@@ -7072,7 +7072,7 @@ void mage_t::trigger_fired_up()
   double chance;
   // TODO: This is bugged and seems to apply its changes to the proc chance during Combustion even when the talent is not learned.
   if ( buffs.combustion->check() && ( bugs || talents.fired_up_3.ok() ) )
-    chance = state.fired_up_count < combustion_chance.size() ? combustion_chance[ state.fired_up_count ] : 0.0;
+    chance = state.fired_up_count < as<int>( combustion_chance.size() ) ? combustion_chance[ state.fired_up_count ] : 0.0;
   else
     chance = talents.fired_up_1->effectN( 1 ).percent();
 

@@ -4108,12 +4108,6 @@ struct execute_damage_t : public warrior_attack_t
 
     if( p()->talents.arms.fatality.ok() && td( state->target )->debuffs_fatal_mark->check() )
       p()->active.fatality->execute_on_target( state->target );
-
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
-    {
-      p()->buff.master_of_warfare_proc->trigger();
-      p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
   }
 };
 
@@ -4241,6 +4235,13 @@ struct execute_arms_t : public warrior_attack_t
 
     if ( p()->talents.arms.executioners_precision.ok() )
       p()->buff.executioners_precision->trigger();
+
+    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() &&
+         p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -4597,7 +4598,7 @@ struct impending_victory_heal_t : public warrior_heal_t
 
   proc_types proc_type() const override
   {
-    return PROC1_NONE_HEAL;
+    return PROC1_NONE_HELPFUL;
   }
 
   resource_e current_resource() const override
@@ -6803,7 +6804,7 @@ struct recklessness_t : public warrior_spell_t
       p()->buff.thunder_blast->trigger();
 
     if ( p()->talents.fury.rampaging_berserker_3->ok() )
-      p()->buff.berserk->trigger( p()->talents.fury.rampaging_berserker_3->effectN( 2 ).base_value() );
+      p()->buff.berserk->trigger( as<int>( p()->talents.fury.rampaging_berserker_3->effectN( 2 ).base_value() ) );
   }
 };
 

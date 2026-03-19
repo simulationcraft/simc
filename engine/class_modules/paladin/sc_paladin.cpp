@@ -1355,7 +1355,7 @@ hammer_and_anvil_t::hammer_and_anvil_t( paladin_t* p, util::string_view n )
 }
 
 bool trigger_hammer_and_anvil( paladin_t* p, player_t* target, hammer_and_anvil_t* haa,
-                               hammer_and_anvil_source haas = HAA_JUDGMENT )
+                               hammer_and_anvil_source = HAA_JUDGMENT )
 {
   if ( p->talents.lightsmith.hammer_and_anvil->ok() )
   {
@@ -2721,7 +2721,7 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, ar
   }
   if ( talents.lightsmith.masterwork->ok() && src != LS_DIVINE_INSPIRATION )
   {
-    int amount = talents.lightsmith.masterwork->effectN( 1 ).base_value();
+    int amount = as<int>( talents.lightsmith.masterwork->effectN( 1 ).base_value() );
     if ( usedArmament == HOLY_BULWARK )
       buffs.lightsmith.masterwork_bulwark->trigger( amount );
     else
@@ -2873,7 +2873,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     blaze_of_glory_t( paladin_t* p ) : paladin_spell_t( "blaze_of_glory", p, p->spells.blaze_of_glory )
     {
       background             = true;
-      aoe                    = p->talents.glory_of_the_vanguard_3->effectN( 1 ).base_value();
+      aoe                    = as<int>( p->talents.glory_of_the_vanguard_3->effectN( 1 ).base_value() );
       target_filter_callback = secondary_targets_only();
     }
   };
@@ -4082,7 +4082,7 @@ void paladin_t::init_special_effects()
     divine_inspiration_driver->rppm_scale_ = RPPM_HASTE;
     divine_inspiration_driver->type        = SPECIAL_EFFECT_EQUIP;
     divine_inspiration_driver->proc_flags_ =
-        PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY | PF_NONE_SPELL | PF_MAGIC_SPELL | PF_ALL_HEAL;
+        PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY | PF_NONE_HARMFUL | PF_MAGIC_SPELL | PF_ALL_HEAL;
     special_effects.push_back( divine_inspiration_driver );
 
     auto cb = new divine_inspiration_cb_t( this, *divine_inspiration_driver );
@@ -5183,7 +5183,7 @@ public:
   }
 
 private:
-  paladin_t& p;
+  [[maybe_unused]] paladin_t& p;
 };
 
 // PALADIN MODULE INTERFACE =================================================

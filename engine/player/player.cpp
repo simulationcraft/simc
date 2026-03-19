@@ -6377,7 +6377,7 @@ void player_t::combat_begin()
           if ( first_cast )
           {
             if ( !is_enemy() )
-              sequence_add( action, action->target, [ action ]( std::string& a_str, std::string& t_str ) {
+              sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
                 t_str = action->target->name_str;
               } );
 
@@ -6392,7 +6392,7 @@ void player_t::combat_begin()
         else
         {
           if ( !is_enemy() )
-            sequence_add( action, action->target, [ action ]( std::string& a_str, std::string& t_str ) { 
+            sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
               t_str = action->target->name_str; 
             } );
 
@@ -7649,7 +7649,7 @@ action_t* player_t::execute_action()
         off_gcdactions.push_back( action );
 
       if ( !is_enemy() )
-        sequence_add( action, action->target, [ action ]( std::string& a_str, std::string& t_str ) {
+        sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
           t_str = action->target->name_str;
         } );
     }
@@ -15666,12 +15666,17 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     }
 
     auto do_debug = [ & ]( std::string type_str, const auto& prev, const auto& now ) {
+      if ( !sim->debug )
+        return;
+
       std::string field_str = type_str.empty() ? id_field : fmt::format( "{}_{}", type_str, id_field );
-      sim->print_debug(
+      std::string _tmp_full_message_tmp_ = fmt::format(
         "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
         modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
         remove ? "reverting" : "modifying", *this, field_str, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%",
         now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 );
+      sim->print_debug( "{}", _tmp_full_message_tmp_ );
+      registered_passive_debug_printout.push_back( _tmp_full_message_tmp_ );
     };
 
     auto add_reporting = [ & ]( int type ) {
@@ -15976,9 +15981,14 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     }
 
     auto do_debug = [ & ]( std::string msg ) {
-      sim->print_debug( "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(),
-                        modifying_eff.index() + 1, remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(),
-                        msg );
+      if ( !sim->debug )
+        return;
+
+      std::string _tmp_full_message_tmp_ = fmt::format(
+        "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
+        remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(), msg );
+      sim->print_debug( "{}", _tmp_full_message_tmp_ );
+      registered_passive_debug_printout.push_back( _tmp_full_message_tmp_ );
     };
 
     auto add_reporting = [ & ]( std::string field ) {

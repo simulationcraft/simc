@@ -1071,7 +1071,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=6447)     : Apply Aura (6) | Dummy (4)
@@ -1103,7 +1103,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2365
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Log (8), Instant Target Procs (115), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=6473)     : Apply Aura (6) | Dummy (4)
@@ -1574,7 +1574,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 184
                  : 292
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell
 Affecting Spells : Adrenaline Rush (13750 effect#4), Deeper Stratagem (193531 effects: #1, #4), Tight Spender (381621 effect#1), Devious Stratagem (394321 effects: #1, #4), Fazed (441224 effect#5), Disorienting Strikes (441274 effect#1), Flawless Form (441326 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4), Crescendo of Violence (1259499 effects: #1, #2), Deadly Pursuit (1259614 effect#1), Cold Blood (1264297 effect#1), Deep Cuts (1267216 effects: #1, #2)
 Family Flags     : 55
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Immunities (29), No Aura Cancel (31), Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), Name in Channel Bar (61), PvP Enabling (96), Requires Main-Hand Weapon (106), Force Display Castbar (155), Extra Initial Period (169), Spell Haste Affects Periodic (173), Delay Combat Timer During Cast (211), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Defense While Channeling (338), Allow Class Ability Procs (416)
@@ -1716,7 +1716,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=51794)    : Apply Aura (6) | Dummy (4)
@@ -1904,7 +1904,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Affecting Spells : Mastery: Executioner (76808 effect#2), True Bearing (193359 effect#1), Triple Threat (1214935 effect#4), Jackpot (1214937 effect#4)
 Family Flags     : 77
 Attributes       : Passive (6), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416)
@@ -2123,7 +2123,7 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 6 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Is Ability (4), No Threat (42), Allow Dead Target (64), Do Not Report Spell Failure (71), Not an Action (92), Requires Main-Hand Weapon (106), Suppress Target Procs (113), No Harmful Threat (132), Not an Attack (194)
 Effects          :
 #1 (id=121645)   : Energize Power (30)
@@ -2267,7 +2267,7 @@ Labels           : 16: Class Spells
                  : 1387
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : White Melee, White Melee Taken, Yellow Melee, Yellow Melee Taken, White Ranged, White Ranged Taken, Yellow Ranged, Yellow Ranged Taken, Generic Heal, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Heal, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : White Melee, White Melee Taken, Yellow Melee, Yellow Melee Taken, White Ranged, White Ranged Taken, Yellow Ranged, Yellow Ranged Taken, Generic Helpful, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Heal, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Subterfuge (108208 effect#1), Shadowrunner (378807 effect#1)
 Family Flags     : 22
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cooldown On Event (25), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Skill Increase (36), No Threat (42), Fail on all targets immune (85), Can Proc From Procs (122), Allow Proc While Sitting (147), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
@@ -3343,7 +3343,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=283935)   : Apply Aura (6) | Modify All Haste% (193)
@@ -3657,7 +3657,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 106
                  : 293
 Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), No Helpful Threat (131), Aura Never Bounces (148), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=289989)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
@@ -4054,7 +4054,7 @@ Labels           : 162
                  : 187
                  : 294
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=309167)   : Apply Aura (6) | Dummy (4)
@@ -4732,7 +4732,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Generic Heal
+Proc Flags       : Generic Helpful
 Attributes       : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
 Effects          :
 #1 (id=374033)   : Apply Aura (6) | Proc Trigger Spell (42): Sprint
@@ -4806,7 +4806,7 @@ Labels           : 187
                  : 294
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=464790)   : Apply Aura (6) | Proc Trigger Spell (42): The First of the Dead
@@ -4949,7 +4949,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Generic Heal
+Proc Flags       : Generic Helpful
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=478588)   : Apply Aura (6) | Proc Trigger Spell (42): Loaded Dice
@@ -4967,7 +4967,7 @@ Labels           : 16: Class Spells
                  : 1387
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : Generic Heal
+Proc Flags       : Generic Helpful
 Triggered By     : Loaded Dice (256170)
 Attributes       : Allow While Stealthed (37), Suppress Target Procs (113), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
@@ -6434,7 +6434,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.1 seconds
 Stacks           : 30 maximum
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deeper Daggers (341550 effect#1), Deathly Shadows (350964 effects: #1, #2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #2, #3), Deeper Daggers (382517 effects: #1, #2), Deeper Daggers (383405 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Winning Streak! (1218143 effects: #2, #3), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 54, 124
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), DoT Stacking Rule (103), Only Proc on Caster (123), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
@@ -6840,7 +6840,7 @@ Labels           : 16: Class Spells
                  : 931
                  : 1076
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal
 Attributes       : Passive (6)
 Effects          :
 #1 (id=839731)   : Apply Aura (6) | Dummy (4)
@@ -7596,7 +7596,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Generic Heal, Magic Heal
+Proc Flags       : Yellow Melee, Generic Helpful, Magic Heal
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Skill Increase (36), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Not In Spellbook Until Learned (269), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=874048)   : Apply Aura (6) | Modify Stance Mask (275)
@@ -7726,7 +7726,7 @@ Labels           : 20: Rogue Spells
                  : 931
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Obedience (364927)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
@@ -8050,7 +8050,7 @@ Labels           : 292
                  : 295
                  : 1375
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=903646)   : Apply Aura (6) | Dummy (4)
@@ -9505,7 +9505,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Hostile Spell
+Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1013915)  : Apply Aura (6) | Dummy (4)
@@ -9613,7 +9613,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.1 seconds
 Stacks           : 30 maximum
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deeper Daggers (341550 effect#1), Deathly Shadows (350964 effects: #1, #2), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #2, #3), Deeper Daggers (382517 effects: #1, #2), Deeper Daggers (383405 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Winning Streak! (1218143 effects: #2, #3), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 54, 124
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), DoT Stacking Rule (103), Only Proc on Caster (123), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
@@ -11000,7 +11000,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2557
 Proc Chance      : 100%
-Proc Flags       : Generic Heal
+Proc Flags       : Generic Helpful
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053903)  : Apply Aura (6) | Dummy (4)
@@ -11283,7 +11283,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2848
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098503)  : Apply Aura (6) | Dummy (4)
@@ -11847,7 +11847,7 @@ Labels           : 16: Class Spells
                  : 2942: Shadow Blades (121471 effect#4)
 Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal
+Proc Flags       : Yellow Melee, Generic Helpful
 Triggered By     : Goremaw's Bite (426591)
 Attributes       : Is Ability (4), Do Not Sheath (18), Requires Off-Hand Weapon (120), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Allow Class Ability Procs (416)
 Effects          :
@@ -12390,7 +12390,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 5 seconds
 Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1135766)  : Apply Aura (6) | Dummy (4)
@@ -12660,7 +12660,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 0.2 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1153776)  : Apply Aura (6) | Dummy (4)
@@ -13761,7 +13761,7 @@ Spell Type       : None
 Duration         : 3 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : Generic Heal
+Proc Flags       : Generic Helpful
 Attributes       : Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=1162287)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
@@ -13778,7 +13778,7 @@ Spell Type       : None
 Duration         : 3 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : Generic Heal
+Proc Flags       : Generic Helpful
 Attributes       : Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=1162308)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
@@ -15414,7 +15414,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1252175)  : Apply Aura (6) | Dummy (4)
@@ -15697,7 +15697,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal
+Proc Flags       : Yellow Melee, Generic Helpful
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1254308)  : Apply Aura (6) | Proc Trigger Spell (42): Deadly Momentum
@@ -16140,7 +16140,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1268755)  : Apply Aura (6) | Dummy (4)
@@ -16170,7 +16170,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :

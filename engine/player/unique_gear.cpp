@@ -2462,7 +2462,7 @@ struct mark_of_doom_t : public buff_t
     effect = new special_effect_t( p.source );
     effect -> name_str = "mark_of_doom_damage_driver";
     effect -> proc_chance_ = 1.0;
-    effect -> proc_flags_ = PF_MAGIC_SPELL | PF_NONE_SPELL;
+    effect -> proc_flags_ = PF_MAGIC_SPELL | PF_NONE_HARMFUL;
     effect -> proc_flags2_ = PF2_ALL_HIT;
     p.source -> special_effects.push_back( effect );
 
@@ -2518,7 +2518,7 @@ struct prophecy_of_fear_driver_t : public dbc_proc_callback_t
 
 void item::prophecy_of_fear( special_effect_t& effect )
 {
-  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_NONE_SPELL;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_NONE_HARMFUL;
   effect.proc_flags2_ = PF2_ALL_HIT;
 
   new prophecy_of_fear_driver_t( effect );

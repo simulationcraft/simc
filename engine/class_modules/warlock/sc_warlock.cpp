@@ -488,7 +488,7 @@ std::string warlock_t::create_profile( save_e stype )
     if ( eye_explosion_instanced_bug_rof )
       profile_str += "eye_explosion_instanced_bug_rof=" + util::to_string( eye_explosion_instanced_bug_rof ) + "\n";
 
-    rng_settings.for_each( [ this, &profile_str ]( auto& setting )
+    rng_settings.for_each( [ &profile_str ]( auto& setting )
     {
       profile_str += append_rng_option( setting );
     } );
@@ -1157,7 +1157,7 @@ public:
   {}
 
 private:
-  warlock_t& p;
+  [[maybe_unused]] warlock_t& p;
 };
 
 struct warlock_module_t : public module_t
