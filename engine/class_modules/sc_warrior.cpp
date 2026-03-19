@@ -4108,6 +4108,13 @@ struct execute_damage_t : public warrior_attack_t
 
     if( p()->talents.arms.fatality.ok() && td( state->target )->debuffs_fatal_mark->check() )
       p()->active.fatality->execute_on_target( state->target );
+
+    if ( p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() &&
+         p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    {
+      p()->buff.master_of_warfare_proc->trigger();
+      p()->master_of_warfare_attempts_since_last_proc = 0;
+    }
   }
 };
 
@@ -4235,13 +4242,6 @@ struct execute_arms_t : public warrior_attack_t
 
     if ( p()->talents.arms.executioners_precision.ok() )
       p()->buff.executioners_precision->trigger();
-
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() &&
-         p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
-    {
-      p()->buff.master_of_warfare_proc->trigger();
-      p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
   }
 
   bool target_ready( player_t* candidate_target ) override
