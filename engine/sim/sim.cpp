@@ -1834,6 +1834,9 @@ void sim_t::reset()
   raid_event_t::reset( this );
 }
 
+// Dampening (spell 110310): periodic healing/absorb reduction in PvP arena.
+// +1% reduction per stack every 10s, up to 100%. Starts immediately in arena,
+// at 300s in wargames, disabled in battlegrounds. (2026-03-20)
 struct dampening_event_t : public event_t
 {
   sim_t& sim;
@@ -1856,7 +1859,6 @@ struct dampening_event_t : public event_t
     for ( auto* p : sim.player_no_pet_list )
       p->pvp_dampening_multiplier = 1.0 - reduction;
 
-    // Stop scheduling if at max
     if ( reduction < sim.pvp.dampening_max_pct )
     {
       make_event<dampening_event_t>( sim, sim,
@@ -2788,6 +2790,9 @@ void sim_t::init()
     scale_itemlevel_down_only = true;
   }
 
+  // Initialize PvP subsystem from spell 134735 ("PvP Rules Enabled").
+  // Either pvp=1 or pvp.enabled=true triggers full init. Both paths kept
+  // in sync so the legacy "pvp" option and the new config are interchangeable.
   if ( pvp_mode )
   {
     pvp.enabled = true;

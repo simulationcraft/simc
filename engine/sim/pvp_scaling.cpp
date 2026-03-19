@@ -7,6 +7,8 @@
 namespace pvp
 {
 
+// Parse user-provided PvP coefficient override string.
+// Format: "spell_id:multiplier/espell_effect_id:multiplier" ('e' prefix = effect-level)
 void parse_coefficient_overrides( pvp_config_t& pvp )
 {
   if ( pvp.coefficient_override_str.empty() )
@@ -36,6 +38,8 @@ void parse_coefficient_overrides( pvp_config_t& pvp )
   }
 }
 
+// Set dampening defaults based on PvP format. Arena starts dampening immediately,
+// battlegrounds have no dampening, wargames start at 5 minutes. (2026-03-20)
 void init_format_defaults( pvp_config_t& pvp, bool user_set_dampening_start )
 {
   if ( pvp.mode == "arena" )
@@ -54,6 +58,9 @@ void init_format_defaults( pvp_config_t& pvp, bool user_set_dampening_start )
   }
 }
 
+// Iterate spell 134735 effects by aura subtype and populate pvp_config_t fields.
+// As of 12.0.1 the spell has 11 effects; only effect 3 (A_448, crit -50%) is non-zero.
+// Subtypes 42/119/240 are skipped (proc trigger, PvP state check, expertise). (2026-03-20)
 void init_modifiers_from_spell( pvp_config_t& pvp, const spell_data_t* pvp_rules, sim_t* sim )
 {
   if ( !pvp_rules || !pvp_rules->ok() )

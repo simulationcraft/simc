@@ -2066,7 +2066,8 @@ void player_t::init_items()
 
   init_meta_gem();
 
-  // Detect PvP trinket 2-set (Gladiator's Distinction, set ID 1458, spell 365043)
+  // Detect PvP trinket 2-set: Gladiator's Distinction (set 1458, spell 365043).
+  // Grants +12% primary stat and +5% stamina when two PvP trinkets are equipped. (2026-03-20)
   if ( sim->pvp.enabled && sim->pvp.trinket_bonus )
   {
     constexpr unsigned GLADIATORS_DISTINCTION_SET_ID = 1458;
@@ -5698,6 +5699,7 @@ double player_t::composite_damage_versatility() const
   if ( buffs.dmf_well_fed )
     cdv += buffs.dmf_well_fed->check_value();
 
+  // PvP versatility override (default 1.0 = no change, user-configurable)
   if ( sim->pvp.enabled && sim->pvp.stat_scaling )
     cdv *= sim->pvp.versatility_damage_mod;
 
@@ -5717,6 +5719,7 @@ double player_t::composite_heal_versatility() const
   if ( buffs.dmf_well_fed )
     chv += buffs.dmf_well_fed->check_value();
 
+  // PvP versatility override (default 1.0 = no change, user-configurable)
   if ( sim->pvp.enabled && sim->pvp.stat_scaling )
     chv *= sim->pvp.versatility_healing_mod;
 
@@ -5736,6 +5739,7 @@ double player_t::composite_mitigation_versatility() const
   if ( buffs.dmf_well_fed )
     cmv += buffs.dmf_well_fed->check_value() / 2;
 
+  // PvP versatility override (default 1.0 = no change, user-configurable)
   if ( sim->pvp.enabled && sim->pvp.stat_scaling )
     cmv *= sim->pvp.versatility_dr_mod;
 
@@ -5781,6 +5785,7 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t*, 
 {
   double m = guardian ? current.guardian_damage_multiplier : current.pet_damage_multiplier;
 
+  // Spell 134735 effect (subtype A_MOD_PET_DAMAGE_DONE): pet damage modifier in PvP
   if ( sim->pvp.enabled && sim->pvp.stat_scaling )
     m *= sim->pvp.pet_damage_mod;
 
@@ -5855,6 +5860,7 @@ double player_t::composite_player_heal_multiplier( const action_state_t* ) const
   if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
     m *= 1.0 + buffs.entropic_embrace->data().effectN( 3 ).percent();
 
+  // Spell 134735 healing modifier + dampening (spell 110310) reduction over time
   if ( sim->pvp.enabled && sim->pvp.stat_scaling )
   {
     m *= sim->pvp.healing_received_mod;
@@ -5876,9 +5882,9 @@ double player_t::composite_player_absorb_multiplier( const action_state_t* ) con
   if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
     m *= 1.0 + buffs.entropic_embrace->data().effectN( 4 ).percent();
 
+  // Spell 134735 absorb modifier (subtype A_MOD_ABSORB_RECEIVED_PERCENT) + dampening
   if ( sim->pvp.enabled && sim->pvp.stat_scaling )
   {
-    // absorb_received_mod from spell 134735 effect (subtype 422, currently 0 = no change)
     m *= sim->pvp.absorb_received_mod;
     m *= pvp_dampening_multiplier;
   }
@@ -6074,19 +6080,18 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       m *= 1.0 + b->check_stack_value();
   }
 
+  // PvP stamina override (default 1.0 = no change, user-configurable)
   if ( sim->pvp.enabled && sim->pvp.stat_scaling )
   {
     if ( attr == ATTR_STAMINA )
       m *= sim->pvp.stamina_mod;
   }
 
+  // Gladiator's Distinction 2pc (set 1458, spell 365043):
+  //   Effect 1 = +12% primary stat (Str/Agi/Int), Effect 2 = +5% stamina
+  // Falls back to hardcoded Midnight S1 values if spell data unavailable. (2026-03-20)
   if ( sim->pvp.enabled && sim->pvp.trinket_bonus && pvp_trinket_2pc_active )
   {
-    // Gladiator's Distinction (set 1458, spell 365043):
-    //   Effect 1 = +12% primary stat (Str/Agi/Int)
-    //   Effect 2 = +5% stamina
-    // Spell 365043 may not be in extracted data — use spell effects if available,
-    // otherwise fall back to hardcoded values for trinket 2-set bonus
     if ( pvp_trinket_spell && pvp_trinket_spell->ok() && pvp_trinket_spell->effect_count() >= 2 )
     {
       if ( attr == ATTR_STAMINA )
@@ -6097,9 +6102,9 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
     else
     {
       if ( attr == ATTR_STAMINA )
-        m *= 1.05;  // +5% stamina (Midnight S1)
+        m *= 1.05;  // +5% stamina (Midnight S1, 2026-03-20)
       else if ( attr == static_cast<attribute_e>( convert_hybrid_stat( STAT_STR_AGI_INT ) ) )
-        m *= 1.12;  // +12% primary stat (Midnight S1)
+        m *= 1.12;  // +12% primary stat (Midnight S1, 2026-03-20)
     }
   }
 
@@ -6236,6 +6241,7 @@ double player_t::composite_mitigation_multiplier( school_e /* school */ ) const
 {
   double m = 1.0;
 
+  // Spell 134735 effect (subtype A_MOD_RESISTANCE_PCT): armor/resistance modifier in PvP
   if ( sim->pvp.enabled && sim->pvp.stat_scaling )
     m *= sim->pvp.resistance_mod;
 

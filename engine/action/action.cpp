@@ -1391,6 +1391,7 @@ double action_t::total_crit_bonus( const action_state_t* state ) const
   double damage_from_crit_multiplier = composite_player_critical_multiplier( state );
 
   double base_bonus = base_crit_bonus;
+  // Spell 134735 effect 3 (subtype A_448): -50% crit bonus in PvP (2026-03-20)
   if ( sim->pvp.enabled )
     base_bonus += ( sim->pvp.crit_damage_mod - 1.0 );
 
@@ -1409,6 +1410,9 @@ double action_t::total_crit_bonus( const action_state_t* state ) const
   return bonus;
 }
 
+// Returns the PvP damage/healing multiplier for this spell.
+// Each spell effect has a pvp_coeff field in the DBC data that scales its value in PvP combat.
+// User overrides take priority over DBC values. (2026-03-20)
 double action_t::get_pvp_coefficient() const
 {
   unsigned sid = data().id();
@@ -1484,6 +1488,7 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   amount *= state->composite_ta_multiplier();
   amount *= state->composite_rolling_ta_multiplier();
 
+  // Apply per-spell PvP coefficient from DBC pvp_coeff or user overrides
   if ( sim->pvp.enabled && sim->pvp.coefficients )
   {
     amount *= get_pvp_coefficient();
@@ -1563,6 +1568,7 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
 
   amount *= state->composite_da_multiplier();
 
+  // Apply per-spell PvP coefficient from DBC pvp_coeff or user overrides
   if ( sim->pvp.enabled && sim->pvp.coefficients )
   {
     amount *= get_pvp_coefficient();
