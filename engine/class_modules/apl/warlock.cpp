@@ -41,21 +41,21 @@ void affliction( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* end_of_fight = p->get_action_priority_list( "end_of_fight" );
-  action_priority_list_t* items = p->get_action_priority_list( "items" );
-  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
-  action_priority_list_t* variables = p->get_action_priority_list( "variables" );
   action_priority_list_t* soul_harvester = p->get_action_priority_list( "soul_harvester" );
   action_priority_list_t* hellcaller = p->get_action_priority_list( "hellcaller" );
+  action_priority_list_t* items = p->get_action_priority_list( "items" );
+  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
   action_priority_list_t* SH_st = p->get_action_priority_list( "SH_st" );
-  action_priority_list_t* SH_cleave = p->get_action_priority_list( "SH_cleave" );
   action_priority_list_t* SH_aoe = p->get_action_priority_list( "SH_aoe" );
+  action_priority_list_t* SH_cleave = p->get_action_priority_list( "SH_cleave" );
   action_priority_list_t* HC_st = p->get_action_priority_list( "HC_st" );
-  action_priority_list_t* HC_cleave = p->get_action_priority_list( "HC_cleave" );
   action_priority_list_t* HC_aoe = p->get_action_priority_list( "HC_aoe" );
+  action_priority_list_t* HC_cleave = p->get_action_priority_list( "HC_cleave" );
+  action_priority_list_t* end_of_fight = p->get_action_priority_list( "end_of_fight" );
+  action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
   precombat->add_action( "summon_pet" );
-  precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
+  precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "seed_of_corruption,if=(hero_tree.soul_harvester&active_enemies>1)|active_enemies>2" );
   precombat->add_action( "haunt,if=active_enemies<2|(hero_tree.hellcaller&active_enemies<3)" );
@@ -67,9 +67,6 @@ void affliction( player_t* p )
   default_->add_action( "call_action_list,name=soul_harvester,if=hero_tree.soul_harvester" );
   default_->add_action( "call_action_list,name=hellcaller,if=hero_tree.hellcaller" );
   default_->add_action( "seed_of_corruption,if=talent.nocturnal_yield&active_enemies>1&buff.nightfall.react&(buff.nightfall.react=buff.nightfall.max_stack|buff.nightfall.remains<execute_time*buff.nightfall.max_stack)" );
-  default_->add_action( "malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active&buff.nightfall.react&(buff.nightfall.react=buff.nightfall.max_stack|buff.nightfall.remains<execute_time*buff.nightfall.max_stack)" );
-  default_->add_action( "drain_soul,if=buff.nightfall.react&(buff.nightfall.react=buff.nightfall.max_stack|buff.nightfall.remains<execute_time*buff.nightfall.max_stack)" );
-  default_->add_action( "shadow_bolt,if=buff.nightfall.react&(buff.nightfall.react=buff.nightfall.max_stack|buff.nightfall.remains<execute_time*buff.nightfall.max_stack)" );
   default_->add_action( "malefic_grasp,chain=1,early_chain_if=buff.nightfall.react,if=pet.darkglare.active" );
   default_->add_action( "drain_soul,chain=1,early_chain_if=buff.nightfall.react,interrupt_if=tick_time>0.5" );
   default_->add_action( "shadow_bolt" );
@@ -82,83 +79,87 @@ void affliction( player_t* p )
   hellcaller->add_action( "call_action_list,name=HC_cleave,if=active_enemies=2" );
   hellcaller->add_action( "call_action_list,name=HC_aoe,if=active_enemies>2" );
 
-  SH_st->add_action( "haunt,if=buff.nightfall.react<2" );
-  SH_st->add_action( "agony,if=!ticking|refreshable" );
-  SH_st->add_action( "corruption,if=!ticking|refreshable" );
-  SH_st->add_action( "summon_darkglare,if=soul_shard<3|cooldown.dark_harvest.remains" );
-  SH_st->add_action( "dark_harvest,if=soul_shard<3&execute_time<(dot.agony.remains<?dot.corruption.remains)&buff.cascading_calamity.remains" );
-  SH_st->add_action( "malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active&pet.darkglare.remains<gcd" );
+  items->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=variable.cds_active" );
+  items->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=variable.cds_active" );
+
+  ogcd->add_action( "potion,use_off_gcd=1,if=variable.cds_active|fight_remains<32" );
+  ogcd->add_action( "berserking,use_off_gcd=1,if=variable.cds_active|fight_remains<14" );
+  ogcd->add_action( "blood_fury,use_off_gcd=1,if=variable.cds_active|fight_remains<17" );
+  ogcd->add_action( "fireblood,use_off_gcd=1,if=variable.cds_active|fight_remains<10" );
+  ogcd->add_action( "ancestral_call,use_off_gcd=1,if=variable.cds_active|fight_remains<17" );
+
+  SH_st->add_action( "haunt", "Haunt on CD for apex, regardless of Nightfall stacks" );
+  SH_st->add_action( "agony,if=refreshable" );
+  SH_st->add_action( "corruption,if=refreshable" );
+  SH_st->add_action( "dark_harvest,if=soul_shard<3&execute_time<(dot.agony.remains<?dot.corruption.remains)", "Do not overcap shards" );
+  SH_st->add_action( "summon_darkglare,if=cooldown.dark_harvest.remains", "use Dark Harvest only outside Darkglare" );
+  SH_st->add_action( "malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd" );
   SH_st->add_action( "drain_soul,if=buff.nightfall.react>1" );
   SH_st->add_action( "shadow_bolt,if=buff.nightfall.react>1" );
-  SH_st->add_action( "unstable_affliction,if=pet.darkglare.active|soul_shard>1|(talent.shard_instability&buff.shard_instability.react)|buff.cascading_calamity.remains<gcd.max" );
+  SH_st->add_action( "unstable_affliction,if=soul_shard|buff.shard_instability.react", "SH does not care about saving shards in pure patchwerk. In reality it's good to save 1 shard for cascading calamity" );
 
-  SH_cleave->add_action( "haunt,if=buff.nightfall.react<2" );
-  SH_cleave->add_action( "seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
-  SH_cleave->add_action( "dark_harvest" );
-  SH_cleave->add_action( "agony,if=refreshable" );
-  SH_cleave->add_action( "summon_darkglare" );
-  SH_cleave->add_action( "malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active&pet.darkglare.remains<gcd" );
-  SH_cleave->add_action( "unstable_affliction,if=pet.darkglare.active|(!talent.patient_zero&!talent.sow_the_seeds)" );
-  SH_cleave->add_action( "seed_of_corruption" );
-
-  SH_aoe->add_action( "haunt,if=buff.nightfall.react<2" );
+  SH_aoe->add_action( "haunt" );
   SH_aoe->add_action( "seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
-  SH_aoe->add_action( "dark_harvest" );
-  SH_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<5&remains<5" );
+  SH_aoe->add_action( "dark_harvest", "Do not care about losing shards in 2+ targets" );
+  SH_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<5&remains<5", "Maintain ~5 agonies (will be 6 with Shared Agony)" );
   SH_aoe->add_action( "summon_darkglare" );
   SH_aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
   SH_aoe->add_action( "unstable_affliction,if=!talent.sow_the_seeds" );
   SH_aoe->add_action( "agony,target_if=min:remains,if=remains<duration*0.5" );
-  SH_aoe->add_action( "malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active&pet.darkglare.remains<gcd" );
+  SH_aoe->add_action( "malefic_grasp,if=pet.darkglare.remains<gcd" );
 
-  HC_st->add_action( "haunt,if=cooldown.haunt.ready" );
-  HC_st->add_action( "agony,if=!ticking|refreshable" );
-  HC_st->add_action( "wither,if=!ticking|refreshable" );
-  HC_st->add_action( "dark_harvest,if=execute_time<(dot.agony.remains<?dot.corruption.remains)" );
-  HC_st->add_action( "agony,if=dot.agony.remains<20&cooldown.summon_darkglare.remains<gcd" );
+  SH_cleave->add_action( "haunt" );
+  SH_cleave->add_action( "seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
+  SH_cleave->add_action( "dark_harvest", "Do not care about losing shards in 2+ targets" );
+  SH_cleave->add_action( "agony,target_if=refreshable" );
+  SH_cleave->add_action( "summon_darkglare" );
+  SH_cleave->add_action( "malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd" );
+  SH_cleave->add_action( "drain_soul,if=buff.nightfall.react>1" );
+  SH_cleave->add_action( "shadow_bolt,if=buff.nightfall.react>1" );
+  SH_cleave->add_action( "unstable_affliction,if=!talent.patient_zero&!talent.sow_the_seeds&(soul_shard|buff.shard_instability.react)" );
+  SH_cleave->add_action( "seed_of_corruption,if=talent.patient_zero&talent.sow_the_seeds" );
+
+  HC_st->add_action( "haunt", "Haunt on CD for apex" );
+  HC_st->add_action( "agony,if=refreshable" );
+  HC_st->add_action( "wither,if=refreshable" );
+  HC_st->add_action( "dark_harvest,if=execute_time<(dot.agony.remains<?dot.corruption.remains)", "Dark Harvest on CD regardless of Darkglare" );
+  HC_st->add_action( "agony,if=dot.agony.remains<20&cooldown.summon_darkglare.remains<gcd", "Refresh agony right before Darkglare so it lasts the entire duration" );
   HC_st->add_action( "summon_darkglare" );
   HC_st->add_action( "malevolence" );
-  HC_st->add_action( "malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active&pet.darkglare.remains<gcd" );
-  HC_st->add_action( "unstable_affliction,if=pet.darkglare.active|buff.malevolence.remains|soul_shard>4|(talent.shard_instability&buff.shard_instability.react)|buff.cascading_calamity.remains<gcd.max" );
+  HC_st->add_action( "malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd" );
+  HC_st->add_action( "drain_soul,if=buff.nightfall.react>1" );
+  HC_st->add_action( "shadow_bolt,if=buff.nightfall.react>1" );
+  HC_st->add_action( "unstable_affliction,if=pet.darkglare.remains|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react|buff.cascading_calamity.remains<gcd.max", "Always maintain Cascading Calamity, only dump inside Malevolence" );
 
-  HC_cleave->add_action( "haunt,if=cooldown.haunt.ready" );
-  HC_cleave->add_action( "seed_of_corruption,if=talent.sow_the_seeds&!dot.wither.ticking&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
-  HC_cleave->add_action( "wither,target_if=min:remains,if=remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)&fight_remains>remains+5" );
-  HC_cleave->add_action( "agony,if=refreshable" );
-  HC_cleave->add_action( "dark_harvest" );
-  HC_cleave->add_action( "summon_darkglare" );
-  HC_cleave->add_action( "malevolence" );
-  HC_cleave->add_action( "malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active&pet.darkglare.remains<gcd" );
-  HC_cleave->add_action( "unstable_affliction,if=(pet.darkglare.active|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react|buff.cascading_calamity.remains<gcd.max)&!talent.patient_zero&!talent.sow_the_seeds" );
-  HC_cleave->add_action( "seed_of_corruption,if=talent.patient_zero&talent.sow_the_seeds" );
-  HC_cleave->add_action( "unstable_affliction,if=buff.shard_instability.react|(talent.cascading_calamity&buff.cascading_calamity.remains<gcd.max)" );
-
-  HC_aoe->add_action( "haunt,if=cooldown.haunt.ready" );
+  HC_aoe->add_action( "haunt" );
   HC_aoe->add_action( "seed_of_corruption,if=(!dot.wither.ticking|dot.wither.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
   HC_aoe->add_action( "dark_harvest" );
   HC_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<active_enemies&remains<5" );
   HC_aoe->add_action( "summon_darkglare" );
   HC_aoe->add_action( "malevolence" );
-  HC_aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
-  HC_aoe->add_action( "unstable_affliction,if=(pet.darkglare.active|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react|buff.cascading_calamity.remains<gcd.max)&!talent.sow_the_seeds" );
+  HC_aoe->add_action( "seed_of_corruption" );
   HC_aoe->add_action( "unstable_affliction,if=buff.shard_instability.react" );
   HC_aoe->add_action( "agony,target_if=min:remains,if=remains<duration*0.5" );
-  HC_aoe->add_action( "malefic_grasp,if=talent.malefic_grasp&pet.darkglare.active" );
+  HC_aoe->add_action( "malefic_grasp,if=pet.darkglare.remains<gcd" );
+
+  HC_cleave->add_action( "haunt" );
+  HC_cleave->add_action( "seed_of_corruption,if=talent.sow_the_seeds&!dot.wither.ticking&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
+  HC_cleave->add_action( "wither,target_if=min:remains,if=remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)&fight_remains>remains+5" );
+  HC_cleave->add_action( "agony,target_if=refreshable" );
+  HC_cleave->add_action( "dark_harvest" );
+  HC_cleave->add_action( "summon_darkglare" );
+  HC_cleave->add_action( "malevolence" );
+  HC_cleave->add_action( "malefic_grasp,if=pet.darkglare.remains<gcd" );
+  HC_cleave->add_action( "unstable_affliction,if=!talent.sow_the_seeds&!talent.patient_zero&(pet.darkglare.remains|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react|buff.cascading_calamity.remains<gcd.max)" );
+  HC_cleave->add_action( "seed_of_corruption,if=talent.patient_zero&talent.sow_the_seeds" );
 
   end_of_fight->add_action( "unstable_affliction,if=soul_shard&fight_remains<8&(!talent.patient_zero&!talent.sow_the_seeds)" );
+  end_of_fight->add_action( "seed_of_corruption,if=soul_shard&fight_remains<8&(talent.patient_zero&talent.sow_the_seeds)" );
   end_of_fight->add_action( "drain_soul,if=buff.nightfall.react&fight_remains<5" );
   end_of_fight->add_action( "shadow_bolt,if=buff.nightfall.react&fight_remains<5" );
 
-  ogcd->add_action( "potion,use_off_gcd=1,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<32" );
-  ogcd->add_action( "berserking,use_off_gcd=1,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<14" );
-  ogcd->add_action( "blood_fury,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<17" );
-  ogcd->add_action( "fireblood,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<10" );
-  ogcd->add_action( "ancestral_call,if=!talent.summon_darkglare|pet.darkglare.active|fight_remains<17" );
-
-  items->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=variable.cds_active" );
-  items->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=variable.cds_active" );
-
-  variables->add_action( "variable,name=cds_active,op=set,value=!talent.summon_darkglare|cooldown.summon_darkglare.remains>20|pet.darkglare.remains" );
+  variables->add_action( "variable,name=cds_active,op=set,value=!talent.summon_darkglare|pet.darkglare.remains" );
+  variables->add_action( "cycling_variable,name=min_agony,op=min,value=dot.agony.remains+(99*!dot.agony.remains)" );
 }
 //affliction_apl_end
 
