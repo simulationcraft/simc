@@ -1321,7 +1321,8 @@ public:
   unsigned get_inactive_soul_fragments( soul_fragment = soul_fragment::ANY ) const;
   unsigned get_total_soul_fragments( soul_fragment = soul_fragment::ANY ) const;
   void activate_soul_fragment( soul_fragment_t* );
-  void spawn_soul_fragment( proc_t*, soul_fragment, unsigned = 1, bool = false );
+  void spawn_soul_fragment( proc_t*, soul_fragment, unsigned = 1, bool = false,
+                            timespan_t = timespan_t::min() );
   void trigger_demonic() const;
   void trigger_demonsurge( demonsurge_ability, bool = true );
   void trigger_demonsurge( demonsurge_ability, timespan_t, bool = true );
@@ -1696,9 +1697,12 @@ struct soul_fragment_t
   event_t* expiration;
   const soul_fragment type;
   bool consume_on_activation;
+  timespan_t activation_delay;  // min() = use default Gaussian
 
-  soul_fragment_t( demon_hunter_t* p, soul_fragment t, bool consume_on_activation )
-    : dh( p ), type( t ), consume_on_activation( consume_on_activation )
+  soul_fragment_t( demon_hunter_t* p, soul_fragment t, bool consume_on_activation,
+                   timespan_t activation_delay = timespan_t::min() )
+    : dh( p ), type( t ), consume_on_activation( consume_on_activation ),
+      activation_delay( activation_delay )
   {
     activate = expiration = nullptr;
 
@@ -1722,6 +1726,9 @@ struct soul_fragment_t
     if ( ( activation && consume_on_activation ) || velocity == 0 )
       return timespan_t::zero();
 
+    if ( activation && activation_delay > timespan_t::min() )
+      return activation_delay;
+
     if ( activation )
     {
       switch ( dh->specialization() )
@@ -1734,9 +1741,9 @@ struct soul_fragment_t
           // 2023-06-26 -- Recent testing appears to show a roughly fixed 1s activation time for Havoc
           return 1_s;
         case DEMON_HUNTER_VENGEANCE:
-          // 2024-02-12 -- Recent testing appears to show a roughly 0.76s activation time for Vengeance
-          //               with some slight variance
-          return dh->rng().gauss<760, 120>();
+          // 2026-02-26 -- WCL empirical data (5200+ events, 3 VDH runs) shows ~830-864ms server-tick
+          //               cluster for damage-tick fragments, tighter variance than previously modeled
+          return dh->rng().gauss<830, 80>();
         default:
           // cause it to fall down to velocity check
           break;
@@ -2771,7 +2778,19 @@ struct art_of_the_glaive_trigger_t : public BASE
       }
       if ( BASE::p()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
       {
-        BASE::p()->spawn_soul_fragment( BASE::p()->proc.soul_fragment_from_aldrachi_tactics, soul_fragment::LESSER );
+        // 2026-02-26 -- WCL data: AT fragment at ~940ms (no Meta) / ~1065ms (Meta)
+        //               Default Vengeance Gaussian(830) handles activation timing
+        if ( BASE::p()->specialization() == DEMON_HUNTER_VENGEANCE )
+        {
+          timespan_t at_delay = BASE::p()->buff.metamorphosis->check() ? 235_ms : 110_ms;
+          make_event( *BASE::p()->sim, at_delay, [ p = BASE::p() ]() {
+            p->spawn_soul_fragment( p->proc.soul_fragment_from_aldrachi_tactics, soul_fragment::LESSER );
+          } );
+        }
+        else
+        {
+          BASE::p()->spawn_soul_fragment( BASE::p()->proc.soul_fragment_from_aldrachi_tactics, soul_fragment::LESSER );
+        }
       }
     }
   }
@@ -7848,13 +7867,6 @@ struct fracture_t : public voidfall_building_trigger_t<
       dual     = true;
       may_miss = may_dodge = may_parry = false;
     }
-
-    void impact( action_state_t* s ) override
-    {
-      demon_hunter_attack_t::impact( s );
-
-      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_fracture, soul_fragment::LESSER, soul_fragments_to_spawn );
-    }
   };
 
   fracture_damage_t *mh, *oh;
@@ -7923,13 +7935,30 @@ struct fracture_t : public voidfall_building_trigger_t<
       mh->execute();
 
       // offhand hit is ~150ms after cast
-      make_event<delayed_execute_event_t>( *p()->sim, p(), oh, s->target,
-                                           timespan_t::from_millis( data().effectN( 3 ).misc_value1() ) );
+      auto oh_delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() );
+      make_event<delayed_execute_event_t>( *p()->sim, p(), oh, s->target, oh_delay );
 
+      // 2026-02-26 -- WCL empirical per-fragment timing (5200+ events, 3 VDH runs)
+      // Gauss is sampled once per spawn call; safe because Fracture spawns 1 fragment per hand.
+      assert( mh->soul_fragments_to_spawn == 1 );
+      assert( oh->soul_fragments_to_spawn == 1 );
+
+      // MH fragment: 641ms from cast
+      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_fracture, soul_fragment::LESSER,
+                                mh->soul_fragments_to_spawn, false,
+                                p()->rng().gauss<641, 10>() );
+
+      // OH fragment: activates 783ms after OH hit = ~933ms total from cast
+      make_event( *p()->sim, oh_delay, [ this ]() {
+        p()->spawn_soul_fragment( p()->proc.soul_fragment_from_fracture, soul_fragment::LESSER,
+                                  oh->soul_fragments_to_spawn, false,
+                                  p()->rng().gauss<783, 20>() );
+      } );
+
+      // Meta fragment: 170ms spawn + default Gaussian(830) = ~1000ms (already accurate)
       if ( p()->buff.metamorphosis->check() )
       {
-        // In all reviewed logs, it's always 500ms (based on Fires of Fel application)
-        make_event( sim, 500_ms, [ this ]() {
+        make_event( *p()->sim, 170_ms, [ this ]() {
           p()->spawn_soul_fragment( p()->proc.soul_fragment_from_fracture_meta, soul_fragment::LESSER );
         } );
       }
@@ -12339,7 +12368,7 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
 // demon_hunter_t::spawn_soul_fragment ======================================
 
 void demon_hunter_t::spawn_soul_fragment( proc_t* source_proc, soul_fragment type, unsigned n,
-                                          bool consume_on_activation )
+                                          bool consume_on_activation, timespan_t activation_delay )
 {
   if ( type == soul_fragment::GREATER && sim->target->race == RACE_DEMON )
   {
@@ -12365,7 +12394,7 @@ void demon_hunter_t::spawn_soul_fragment( proc_t* source_proc, soul_fragment typ
 
   for ( unsigned i = 0; i < n; i++ )
   {
-    soul_fragments.push_back( new soul_fragment_t( this, type, consume_on_activation ) );
+    soul_fragments.push_back( new soul_fragment_t( this, type, consume_on_activation, activation_delay ) );
     source_proc->occur();
     soul_proc->occur();
   }
