@@ -478,20 +478,20 @@ std::string warlock_t::create_profile( save_e stype )
     if ( !default_pet.empty() )
       profile_str += "default_pet=" + default_pet + "\n";
     if ( disable_auto_felstorm )
-      profile_str += "disable_felstorm=" + util::to_string( disable_auto_felstorm ) + "\n";
+      profile_str += "disable_felstorm=" + util::to_string( as<int>( disable_auto_felstorm ) ) + "\n";
     if ( normalize_destruction_mastery )
-      profile_str += "normalize_destruction_mastery=" + util::to_string( normalize_destruction_mastery ) + "\n";
+      profile_str +=
+          "normalize_destruction_mastery=" + util::to_string( as<int>( normalize_destruction_mastery ) ) + "\n";
     if ( eye_explosion_instanced_bug_cb )
-      profile_str += "eye_explosion_instanced_bug_cb=" + util::to_string( eye_explosion_instanced_bug_cb ) + "\n";
+      profile_str +=
+          "eye_explosion_instanced_bug_cb=" + util::to_string( as<int>( eye_explosion_instanced_bug_cb ) ) + "\n";
     if ( eye_explosion_instanced_bug_sb )
-      profile_str += "eye_explosion_instanced_bug_sb=" + util::to_string( eye_explosion_instanced_bug_sb ) + "\n";
+      profile_str +=
+          "eye_explosion_instanced_bug_sb=" + util::to_string( as<int>( eye_explosion_instanced_bug_sb ) ) + "\n";
     if ( eye_explosion_instanced_bug_rof )
-      profile_str += "eye_explosion_instanced_bug_rof=" + util::to_string( eye_explosion_instanced_bug_rof ) + "\n";
-
-    rng_settings.for_each( [ &profile_str ]( auto& setting )
-    {
-      profile_str += append_rng_option( setting );
-    } );
+      profile_str +=
+          "eye_explosion_instanced_bug_rof=" + util::to_string( as<int>( eye_explosion_instanced_bug_rof ) ) + "\n";
+    rng_settings.for_each( [ &profile_str ]( auto& setting ) { profile_str += append_rng_option( setting ); } );
   }
 
   return profile_str;
