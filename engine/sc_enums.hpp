@@ -465,8 +465,7 @@ enum class result_amount_type
   DMG_OVER_TIME    = 1,
   HEAL_DIRECT,
   HEAL_OVER_TIME,
-  ABSORB,
-  ENERGIZE  // unique_ptr to player, only used to indicate the trigger_callback is from an energize_power effect
+  ABSORB
 };
 
 enum stats_e

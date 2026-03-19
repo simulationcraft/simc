@@ -5150,7 +5150,7 @@ double action_t::gain_energize_resource( resource_e resource_type, double amount
   if ( callbacks && caster_callbacks && ( !suppress_caster_procs || enable_proc_from_suppressed ) &&
        !suppress_callback_from_energize )
   {
-    player->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, this, player->energize_state.get() );
+    player->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, this, action_state_t::energize() );
   }
 
   return ret;

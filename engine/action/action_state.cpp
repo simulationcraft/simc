@@ -272,7 +272,7 @@ void travel_event_t::execute()
 
 void action_state_t::release( action_state_t*& s )
 {
-  assert( s && s->result_type != result_amount_type::ENERGIZE );
+  assert( s && s != action_state_t::energize() );
   s->action->release_state( s );
   s = nullptr;
 }
