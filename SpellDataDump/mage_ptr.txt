@@ -947,7 +947,7 @@ Spell Type       : Magic
 Duration         : 60 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Is Ability (4), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=14615)    : Energize Power (30) | Scaling Class: Primary Attribute (-1)
@@ -1855,7 +1855,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Mechanic         : Freeze
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Time Manipulation (387807 effect#1), Elemental Affinity (431067 effect#1)
 Family Flags     : 70
 Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No AutoCast (AI) (49), Allow While Invisible (78), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Limit N (165), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
@@ -4559,7 +4559,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 6261: Touch of the Archmage (1257942 effect#1)
 Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Triggered By     : Touch of the Magi (210725), Touch of the Magi (321507)
 Attributes       : DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -6878,7 +6878,7 @@ Labels           : 292
                  : 375
                  : 416
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Wildfire (288755)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
 Effects          :
@@ -7119,7 +7119,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 6 seconds
 Stacks           : 3 initial, 3 maximum
 Proc Chance      : 100%
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Family Flags     : 75
 Attributes       : DoT Stacking Rule (103), Aura Points On Client (268), Not In Spellbook Until Learned (269), Target Procs On Caster (270), Proc cooldown on a per target basis (330), Allow Class Ability Procs (416)
 Effects          :
@@ -7644,7 +7644,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 931
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=818816)   : Apply Aura (6) | Dummy (4)
@@ -7947,7 +7947,7 @@ Spell Type       : None
 Labels           : 931
 Proc Chance      : 100%
 Real PPM         : 1.66
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Can Proc From Procs (122)
 Effects          :
 #1 (id=828099)   : Apply Aura (6) | Proc Trigger Spell (42): Firestorm
@@ -8707,7 +8707,7 @@ Labels           : 292
                  : 295
                  : 1375
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Generic Heal Taken, Magic Heal, Magic Heal Taken
+Proc Flags       : Generic Helpful, Generic Helpful Taken, Magic Heal, Magic Heal Taken
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=902903)   : Apply Aura (6) | Proc Trigger Spell (42): Fiery Rush
@@ -9464,7 +9464,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 60 seconds
 Proc Chance      : 100%
 Mechanic         : Polymorph
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Redirection (35), No Reflection (39), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Cannot cast on tapped (70), PvP Enabling (96), Can Proc From Procs (122), No Partial Immunity (139), Aura Bounce Fails Spell (157), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Damage (Script) (27)
 Effects          :
@@ -9521,7 +9521,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Generic Heal Taken, Magic Heal, Magic Heal Taken
+Proc Flags       : Generic Helpful, Generic Helpful Taken, Magic Heal, Magic Heal Taken
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Not In Spellbook (143), Allow Entering Arena (149), Disable Aura While Dead (226), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1015682)  : Apply Aura (6) | Proc Trigger Spell (42): Fiery Rush
@@ -13712,7 +13712,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Hostile Spell, Periodic
+Proc Flags       : Generic Helpful, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1163297)  : Apply Aura (6) | Dummy (4)
@@ -14136,7 +14136,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 0.2 seconds
 Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Is Debuff (26), DoT Stacking Rule (103), Can Proc From Procs (122), Limit N (165), Allow Class Ability Procs (416), Unknown (467)
 Effects          :
 #1 (id=1175799)  : Apply Aura (6) | Dummy (4)

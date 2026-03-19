@@ -330,7 +330,7 @@ Labels           : 16: Class Spells
                  : 1150
 Proc Chance      : 101%
 Mechanic         : Freeze
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Mastery: Master of Beasts (76657 effects: #5, #6)
 Family Flags     : 36
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), No Partial Immunity (139), Aura Bounce Fails Spell (157), Allow While Stunned (163), Limit N (165), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Allow While Charmed (261), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
@@ -798,7 +798,7 @@ Spell Type       : Magic
 Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Not Shapeshifted (16), Instant Target Procs (115), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=13973)    : Apply Aura (6) | Proc Trigger Spell (42): Arcane Detonation
@@ -4312,7 +4312,7 @@ Labels           : 164
                  : 187
                  : 294
 Proc Chance      : 101%
-Proc Flags       : Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Hostile Spell
+Proc Flags       : Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=305965)   : Apply Aura (6) | Dummy (4)
@@ -8085,7 +8085,7 @@ Labels           : 292
                  : 382
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Triggered By     : Haze of Rage (273262)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
 Effects          :
@@ -8239,7 +8239,7 @@ Labels           : 292
                  : 375
                  : 382
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Triggered By     : Unerring Vision (274444)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
 Effects          :
@@ -8450,7 +8450,7 @@ Labels           : 292
                  : 382
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Triggered By     : Primal Instincts (279806)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
 Effects          :
@@ -8920,7 +8920,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Mechanic         : Freeze
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), No Partial Immunity (139), Aura Bounce Fails Spell (157), Allow While Stunned (163), Limit N (165), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
@@ -9420,7 +9420,7 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 931
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Don't close loot window (379), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=834326)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
@@ -9539,7 +9539,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 931
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
 Effects          :
 #1 (id=834523)   : Apply Aura (6) | Proc Trigger Spell (42): Eagletalon's True Focus
@@ -9608,7 +9608,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 931
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
 Effects          :
 #1 (id=834562)   : Apply Aura (6) | Dummy (4)
@@ -10644,7 +10644,7 @@ Labels           : 292
                  : 295
                  : 1375
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Helpful Periodic
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=903206)   : Apply Aura (6) | Dummy (4)
@@ -12422,7 +12422,7 @@ Class            : Hunter
 School           : Nature
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1070840)  : Apply Aura (6) | Proc Trigger Spell (42): Bloody Frenzy
@@ -13480,7 +13480,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1166701)  : Apply Aura (6) | Dummy (4)
@@ -14206,6 +14206,7 @@ Damaging an enemy with abilities empowered by Precise Shots has a $1219616s1% ch
 
 
 Name             : Spotter's Mark (id=466872) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -14218,7 +14219,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Ranged Taken
 Affecting Spells : Avian Specialization (466867 effect#1), Arcane Talons (1253846 effects: #1, #2)
 Family Flags     : 117
-Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Threat (42), DoT Stacking Rule (103), Can Proc From Procs (122), Allow Cast While Casting (135), Allow While Charmed (261), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Threat (42), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow While Charmed (261), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1179729)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
@@ -14414,7 +14415,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=1181046)  : Apply Aura (6) | Dummy (4)
@@ -14528,6 +14529,7 @@ Effects          :
 Description      : Black Arrow now explodes in a cloud of shadow and sulfur on impact, dealing $?c1[$472084s1][$467914s1] Shadow damage to all enemies within an $s2 yd cone behind the target. Damage reduced beyond $s2 targets.
 
 Name             : Bleak Powder (id=467912) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -14536,7 +14538,7 @@ Duration         : 0.5 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
+Attributes       : Allow Dead Target (64), Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1181296)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 35089 | Target: At Enemy (53)
@@ -17384,6 +17386,7 @@ $@spellicon1253601$@spellname1253601
 $@spellaura1253601
 
 Name             : Sentinel's Mark (id=1253601) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -17396,7 +17399,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Ranged Taken
 Affecting Spells : Avian Specialization (466867 effect#1), Arcane Talons (1253846 effects: #1, #2)
 Family Flags     : 117
-Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Threat (42), DoT Stacking Rule (103), Can Proc From Procs (122), Allow Cast While Casting (135), Allow While Charmed (261), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Threat (42), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow While Charmed (261), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1259473)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
@@ -19244,7 +19247,7 @@ Duration         : 60 seconds
 Labels           : 5958
 Proc Chance      : 101%
 Mechanic         : Freeze
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Heartbeat Resist (30), Allow While Stealthed (37), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), No Partial Immunity (139), Aura Bounce Fails Spell (157), Allow While Stunned (163), Limit N (165), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Damage (1), Leave World (19), Enter World (22)
 Effects          :

@@ -883,7 +883,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 45 seconds
 Proc Chance      : 15%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=27679)    : Apply Aura (6) | Proc Trigger Spell (42): Blessing of Righteousness
@@ -1000,7 +1000,7 @@ Name             : Paladin Tier 6 Trinket (id=40470) [Spell Family (10), Passive
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Instant Target Procs (115), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=31646)    : Apply Aura (6) | Dummy (4)
@@ -1134,7 +1134,7 @@ Labels           : 16: Class Spells
                  : 3895
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46, 56
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Proc While Sitting (147), Limit N (165), Extra Initial Period (169), Not an Attack (194), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (456), Non-secret Aura (506)
@@ -1254,7 +1254,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Magic Heal, Periodic
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Magic Heal, Periodic
 Affecting Spells : Commanding Light (387781 effect#1)
 Triggered By     : Beacon of Light (53563), Beacon of Faith (156910), Beacon of the Savior (1244893)
 Family Flags     : 104
@@ -1363,7 +1363,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=51278)    : Apply Aura (6) | Proc Trigger Spell (42): Fire From the Heavens
@@ -3569,7 +3569,7 @@ Labels           : 16: Class Spells
                  : 3893
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46, 56
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Allow Proc While Sitting (147), Limit N (165), Extra Initial Period (169), Not an Attack (194), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (456), Non-secret Aura (506)
@@ -3677,7 +3677,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Magic Heal, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Magic Heal, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Allow Low Level Buff (67), Can Proc From Procs (122), Not In Spellbook (143), Allow Proc While Sitting (147), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=253587)   : Apply Aura (6) | Dummy (4)
@@ -3759,7 +3759,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
+Proc Flags       : Generic Helpful Taken, Magic Heal Taken, Helpful Periodic Taken
 Family Flags     : 119
 Attributes       : Passive (6), No Aura Icon (60), Not In Spellbook (143), Allow Cast While Channeling (308), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
 Effects          :
@@ -4097,7 +4097,7 @@ Duration         : 15 seconds
 Labels           : 77
                  : 293
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Invoke the Naaru (196685), Divine Image (336401)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Immunities (29), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
 Effects          :
@@ -4315,7 +4315,7 @@ Labels           : 16: Class Spells
                  : 118
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
+Proc Flags       : Generic Helpful Taken, Magic Heal Taken, Helpful Periodic Taken
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=293474)   : Apply Aura (6) | Dummy (4)
@@ -4440,7 +4440,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=295064)   : Apply Aura (6) | Dummy (4)
@@ -4693,7 +4693,7 @@ Labels           : 145
                  : 187
                  : 294
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=305119)   : Apply Aura (6) | Dummy (4)
@@ -5060,7 +5060,7 @@ Labels           : 145
                  : 187
                  : 294
 Proc Chance      : 100%
-Proc Flags       : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
+Proc Flags       : Generic Helpful Taken, Magic Heal Taken, Helpful Periodic Taken
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Can Proc From Procs (122), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=312528)   : Apply Aura (6) | Dummy (4)
@@ -5485,7 +5485,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=334765)   : Apply Aura (6) | Dummy (4)
@@ -5618,7 +5618,7 @@ Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 3959: Item Effects
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
+Proc Flags       : Generic Helpful, Magic Heal, Helpful Periodic
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=337546)   : Apply Aura (6) | Proc Trigger Spell (42): Fragile Echo
@@ -5929,7 +5929,7 @@ Labels           : 74
                  : 293
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Attributes       : Passive (6)
 Effects          :
 #1 (id=360747)   : Apply Aura (6) | Dummy (4)
@@ -7235,7 +7235,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
 #1 (id=737871)   : Apply Aura (6) | Dummy (4)
@@ -7309,7 +7309,7 @@ Labels           : 145
                  : 187
                  : 294
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Do Not Display Duration (170), Not in Battleground (284), Not In Arena (297)
 Effects          :
 #1 (id=740277)   : Apply Aura (6) | Modify Healing% Done (136)
@@ -7348,7 +7348,7 @@ Labels           : 292
                  : 375
                  : 412
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Triggered By     : Light's Decree (286229)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
 Effects          :
@@ -8205,7 +8205,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.1 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Helpful Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Helpful Periodic
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #3, #4), Avenging Wrath (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Righteous Might (340192 effect#1), Duty-Bound Gavel (355099 effects: #2, #3), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Retribution Paladin (412314 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Holy Paladin (428076 effects: #3, #4), Avenging Wrath (454351 effects: #1, #2), Avenging Wrath (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2), Protection Paladin (1256936 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 2pc (1283659 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc (1283660 effects: #1, #2)
 Family Flags     : 65, 123
 Attributes       : Do Not Sheath (18), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
@@ -8646,7 +8646,7 @@ Duration         : 15 seconds
 Labels           : 931
 Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=835841)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (6)
@@ -9512,7 +9512,7 @@ Range            : 30 yards
 Duration         : Aura (infinite)
 Internal Cooldown: 3 seconds
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Divine Resonance (364724), Divine Resonance (367662)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
@@ -9546,7 +9546,7 @@ School           : Nature
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
+Proc Flags       : Generic Helpful, Magic Heal, Helpful Periodic
 Triggered By     : Seasons of Plenty (364715), Seasons of Plenty (367665)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
@@ -10887,7 +10887,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 3 seconds
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Divine Resonance (384027)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
@@ -11033,7 +11033,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), Can Proc From Procs (122), Not In Spellbook (143), No Aura Log (202), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1017684)  : Apply Aura (6) | Dummy (4)
@@ -11138,7 +11138,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display Range (126), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1018609)  : Apply Aura (6) | Dummy (4)
@@ -11384,7 +11384,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 3 seconds
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Divine Resonance (386738)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
@@ -11511,7 +11511,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1022557)  : Apply Aura (6) | Dummy (4)
@@ -11860,7 +11860,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 120 seconds
 Stacks           : 15 maximum
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Affecting Spells : Sanctified Wrath (53376 effect#1), Righteous Protector (204074 effects: #1, #2), Avenging Wrath (384376 effects: #1, #2, #3)
 Family Flags     : 76
 Attributes       : Do Not Sheath (18), No Threat (42), Aura Is Buff (140), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Important Spell (C_Spell.IsSpellImportant) (491)
@@ -12104,7 +12104,7 @@ Labels           : 16: Class Spells
                  : 2693
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Cast Successful
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Cast Successful
 Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1031501)  : Apply Aura (6) | Dummy (4)
@@ -12120,7 +12120,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1031516)  : Apply Aura (6) | Dummy (4)
@@ -12350,7 +12350,7 @@ Labels           : 292
                  : 295
                  : 2317
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032757)  : Apply Aura (6) | Proc Trigger Spell (42): Luminous Force
@@ -12366,7 +12366,7 @@ Labels           : 292
                  : 295
                  : 2317
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032759)  : Apply Aura (6) | Proc Trigger Spell (42): Lightspark
@@ -12603,7 +12603,7 @@ Labels           : 292
                  : 375
                  : 412
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Triggered By     : Avenging Wrath (231895), Sanctified Wrath (317866), Avenging Wrath (454351), Avenging Wrath (454373)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
 Effects          :
@@ -13243,7 +13243,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Divine Image (392990)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Immunities (29), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
 Effects          :
@@ -13538,7 +13538,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Stealthed (37), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1054804)  : Apply Aura (6) | Dummy (4)
@@ -13910,7 +13910,7 @@ Duration         : Aura (infinite)
 Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1072070)  : Apply Aura (6) | Proc Trigger Spell (42): Call to Chaos
@@ -14063,7 +14063,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1072597)  : Apply Aura (6) | Dummy (4)
@@ -14344,7 +14344,7 @@ Labels           : 16: Class Spells
                  : 2739
 Internal Cooldown: 0.4 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
 #1 (id=1083047)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -15088,7 +15088,7 @@ Labels           : 16: Class Spells
                  : 2848
 Stacks           : 10 maximum
 Proc Chance      : 50%
-Proc Flags       : White Melee, Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : White Melee, Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
@@ -15362,7 +15362,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 0.25 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1119122)  : Apply Aura (6) | Dummy (4)
@@ -15524,7 +15524,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1119166)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -15563,7 +15563,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1119174)  : Apply Aura (6) | Dummy (4)
@@ -15759,7 +15759,7 @@ Labels           : 16: Class Spells
                  : 4716: Retribution Paladin (1258011 effect#20), Retribution Paladin (1258011 effect#21), Holy Paladin (1258016 effect#28), Holy Paladin (1258016 effect#29)
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1119279)  : Apply Aura (6) | Dummy (4)
@@ -15842,7 +15842,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.9 seconds
 Stacks           : 6 maximum
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Dawnlight (431460)
 Attributes       : Can Proc From Procs (122), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
@@ -15965,7 +15965,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 5613: Retribution Paladin (137027 effect#24), Holy Paladin (1258016 effect#30)
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1119458)  : Apply Aura (6) | Dummy (4)
@@ -16163,7 +16163,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1121178)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -16225,7 +16225,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3116
 Proc Chance      : 101%
-Proc Flags       : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
+Proc Flags       : Generic Helpful Taken, Magic Heal Taken, Helpful Periodic Taken
 Triggered By     : Holy Bulwark (432459)
 Attributes       : No Aura Cancel (31), Ignore Line of Sight (66), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Enter Instance (43), Change Talent (46)
@@ -16259,7 +16259,7 @@ Labels           : 16: Class Spells
                  : 3116
 Proc Chance      : 101%
 Real PPM         : 8 (Haste multiplier)
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Sacred Weapon (432472)
 Attributes       : No Aura Cancel (31), Ignore Line of Sight (66), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
@@ -16510,7 +16510,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
-Proc Flags       : White Melee, Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : White Melee, Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
@@ -16698,7 +16698,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 0.75 seconds
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Allow Aura While Dead (116), Allow Entering Arena (149), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
@@ -16938,7 +16938,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Blessing of the Forge (434132)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Immunities (29), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
 Effects          :
@@ -17977,7 +17977,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1169532)  : Apply Aura (6) | Dummy (4)
@@ -18051,7 +18051,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
 #1 (id=1169627)  : Apply Aura (6) | Dummy (4)
@@ -18372,7 +18372,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Magic Heal, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Magic Heal, Periodic, Helpful Periodic
 Affecting Spells : Commanding Light (387781 effect#1)
 Family Flags     : 104
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Allow Low Level Buff (67), Can Proc From Procs (122), Not In Spellbook (143), Allow Proc While Sitting (147), Allow Class Ability Procs (416)
@@ -18614,7 +18614,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
+Proc Flags       : Generic Helpful Taken, Magic Heal Taken, Helpful Periodic Taken
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1183768)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -18913,7 +18913,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Unknown 37
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Unknown 37
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
@@ -18963,7 +18963,7 @@ Labels           : 16: Class Spells
                  : 4720
 Proc Chance      : 100%
 Real PPM         : 4 (Haste multiplier)
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198548)  : Apply Aura (6) | Proc Trigger Spell (42): Insurance!
@@ -18980,7 +18980,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
 Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Triggered By     : Paladin Holy 11.1 Class Set 2pc (1215533)
 Family Flags     : 46
@@ -19081,7 +19081,7 @@ Labels           : 16: Class Spells
                  : 4720
 Proc Chance      : 100%
 Real PPM         : 1
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1199254)  : Apply Aura (6) | Proc Trigger Spell (42): Luck of the Draw!
@@ -19146,7 +19146,7 @@ Labels           : 16: Class Spells
                  : 295
 Internal Cooldown: 0.3 seconds
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1200486)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -19569,7 +19569,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.75 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Cast Successful
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Cast Successful
 Triggered By     : Masterwork: Weapon (1271436)
 Attributes       : Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Allow Class Ability Procs (416)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
@@ -19785,7 +19785,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
 #1 (id=1240860)  : Apply Aura (6) | Dummy (4)
@@ -19967,7 +19967,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 5330: Commanding Light (387781 effect#2), Beacon of the Savior (1245367 effect#1)
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1245645)  : Apply Aura (6) | Dummy (4)
@@ -19998,7 +19998,7 @@ Labels           : 16: Class Spells
                  : 5936: Beacon of the Savior (1245367 effect#2)
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46, 56
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Proc While Sitting (147), Limit N (165), Extra Initial Period (169), Not an Attack (194), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (456), Non-secret Aura (506)
@@ -20246,7 +20246,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.3 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Triggered By     : Judge, Jury and Executioner (406157)
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -21329,7 +21329,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.75 seconds
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
@@ -21365,7 +21365,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.75 seconds
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :

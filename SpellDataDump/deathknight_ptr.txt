@@ -617,7 +617,7 @@ Labels           : 16: Class Spells
                  : 1284
 Proc Chance      : 100%
 Stance Mask      : 0x01000000
-Proc Flags       : Killing Blow, White Melee, White Melee Taken, Yellow Melee, Yellow Melee Taken, White Ranged Taken, Yellow Ranged, Yellow Ranged Taken, Generic Heal, Generic Heal Taken, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Heal, Magic Heal Taken, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic, Periodic Taken, Helpful Periodic, Helpful Periodic Taken
+Proc Flags       : Killing Blow, White Melee, White Melee Taken, Yellow Melee, Yellow Melee Taken, White Ranged Taken, Yellow Ranged, Yellow Ranged Taken, Generic Helpful, Generic Helpful Taken, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Heal, Magic Heal Taken, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic, Periodic Taken, Helpful Periodic, Helpful Periodic Taken
 Affecting Spells : Cold Hearted (288425 effect#2)
 Family Flags     : 20
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
@@ -1149,7 +1149,7 @@ Labels           : 16: Class Spells
                  : 690: Major Cooldowns
 Proc Chance      : 101%
 Stance Mask      : 0x01000000
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Affecting Spells : Death Knight (137005 effect#2), Pillar of Frost (281214 effect#1)
 Family Flags     : 21, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity to Hostile & Friendly Effects (48), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491)
@@ -1832,7 +1832,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Affecting Spells : Dark Transformation (325554 effect#1)
 Family Flags     : 69
 Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
@@ -2221,7 +2221,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.1 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Cast Successful
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Cast Successful
 Affecting Spells : Harbinger of Doom (276023 effect#1)
 Triggered By     : Sudden Doom (49530)
 Family Flags     : 81
@@ -2799,7 +2799,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Hostile Spell
+Proc Flags       : Generic Helpful, Magic Hostile Spell
 Affecting Spells : Grip of the Dead (273984 effect#1), Iron Heart (391395 effects: #1, #2), Bloodshot (391398 effects: #1, #2)
 Family Flags     : 70, 83
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
@@ -3721,7 +3721,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=286103)   : Apply Aura (6) | Dummy (4)
@@ -5176,7 +5176,7 @@ Labels           : 142
                  : 187
                  : 294
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee Taken, Generic Heal Taken, Magic Heal Taken
+Proc Flags       : Yellow Melee Taken, Generic Helpful Taken, Magic Heal Taken
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Can Proc From Procs (122), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=309662)   : Apply Aura (6) | Dummy (4)
@@ -6470,7 +6470,7 @@ Labels           : 292
                  : 375
                  : 394
 Proc Chance      : 100%
-Proc Flags       : Generic Heal
+Proc Flags       : Generic Helpful
 Triggered By     : Icy Citadel (272718)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
 Effects          :
@@ -7024,7 +7024,7 @@ Labels           : 292
                  : 394
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Eternal Rune Weapon (278479)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
 Effects          :
@@ -7042,7 +7042,7 @@ Labels           : 292
                  : 375
                  : 394
 Proc Chance      : 101%
-Proc Flags       : White Melee, Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : White Melee, Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Eternal Rune Weapon (278534)
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
 Effects          :
@@ -7246,7 +7246,7 @@ Labels           : 16: Class Spells
                  : 117
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Generic Heal
+Proc Flags       : Generic Helpful
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=739508)   : Apply Aura (6) | Proc Trigger Spell (42): Obliteration
@@ -7460,7 +7460,7 @@ Labels           : 292
                  : 375
                  : 394
 Proc Chance      : 100%
-Proc Flags       : Generic Heal
+Proc Flags       : Generic Helpful
 Triggered By     : Frostwhelp's Indignation (287283)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
 Effects          :
@@ -7659,7 +7659,7 @@ Labels           : 292
                  : 394
 Internal Cooldown: 10 seconds
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Triggered By     : Bloody Runeblade (289339)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
 Effects          :
@@ -7796,7 +7796,7 @@ Labels           : 292
                  : 640: Azerite Essences
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Strive for Perfection (296321)
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Can't Crit (93), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
@@ -9152,7 +9152,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 931
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee Taken, Generic Heal Taken, Magic Heal Taken
+Proc Flags       : Yellow Melee Taken, Generic Helpful Taken, Magic Heal Taken
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Can Proc From Procs (122)
 Effects          :
 #1 (id=830478)   : Apply Aura (6) | Dummy (4)
@@ -9403,7 +9403,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 931
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=831205)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
@@ -9519,7 +9519,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 999
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=836487)   : Apply Aura (6) | Trigger Spell with Value (231)
@@ -10936,7 +10936,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Generic Heal
+Proc Flags       : Generic Helpful
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1004884)  : Apply Aura (6) | Proc Trigger Spell (42): Enduring Strength
@@ -12037,7 +12037,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
+Proc Flags       : Generic Helpful, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1029083)  : Apply Aura (6) | Proc Trigger Spell (42): Umbilicus Eternus
@@ -12074,7 +12074,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1029125)  : Apply Aura (6) | Trigger Spell with Value (231)
@@ -12546,7 +12546,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2557
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053833)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -12601,7 +12601,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2557
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053837)  : Apply Aura (6) | Dummy (4)
@@ -12833,7 +12833,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2848
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1098449)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Radius (6)
@@ -12851,7 +12851,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2848
 Proc Chance      : 101%
-Proc Flags       : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098450)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -12893,7 +12893,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2848
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1098452)  : Apply Aura (6) | Dummy (4)
@@ -14090,7 +14090,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Proc Chance      : 101%
-Proc Flags       : White Melee Taken, Yellow Melee, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal, Generic Heal Taken, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Heal, Magic Heal Taken, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic, Periodic Taken, Helpful Periodic, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful, Generic Helpful Taken, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Heal, Magic Heal Taken, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic, Periodic Taken, Helpful Periodic, Helpful Periodic Taken
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Update Passives on Apply/Remove (344), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1134061)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -16511,7 +16511,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : Generic Heal, Magic Heal
+Proc Flags       : Generic Helpful, Magic Heal
 Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1162885)  : Apply Aura (6) | Proc Trigger Spell (42): Unyielding Will
@@ -17085,7 +17085,7 @@ Labels           : 16: Class Spells
                  : 295
                  : 4720
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198829)  : Apply Aura (6) | Dummy (4)
@@ -17126,7 +17126,7 @@ Labels           : 16: Class Spells
                  : 4720
 Proc Chance      : 100%
 Real PPM         : 1.5
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1199259)  : Apply Aura (6) | Proc Trigger Spell (42): Luck of the Draw!
@@ -18712,7 +18712,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 881
 Proc Chance      : 101%
-Proc Flags       : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
+Proc Flags       : Generic Helpful Taken, Magic Heal Taken, Helpful Periodic Taken
 Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2, #5), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Ebon Fever (207269 effects: #1, #2, #3), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Morbidity (377592 effects: #7, #8, #9), Plague Mastery (390166 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Hungering Thirst (444037 effects: #1, #2), Foul Infections (455396 effects: #1, #2, #3), Luck of the Draw! (1218601 effects: #1, #2), Soul Reaper (1241521 effect#3), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Death Knight Unholy 12.0 Class Set 2pc (1264803 effect#1), Thrill of Blood (1265547 effect#5), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
 Triggered By     : Outbreak (77575)
 Family Flags     : 43, 65, 77, 78, 119
@@ -19578,7 +19578,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Unknown 38
+Proc Flags       : Yellow Melee, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Unknown 38
 Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264520)  : Apply Aura (6) | Dummy (4)

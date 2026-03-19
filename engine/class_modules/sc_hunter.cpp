@@ -1502,8 +1502,10 @@ public:
     ab::tick( dot );
 
     if ( p()->rng().roll( dire_beast_chance ) && p()->cooldowns.dire_beast->up() )
+    {
       p()->spawn_dire_beast( p()->talents.dire_beast_summon->duration() );
       p()->cooldowns.dire_beast->start();
+    }
   }
 
   void update_ready( timespan_t cd ) override
@@ -2680,8 +2682,10 @@ public:
     ab::tick( dot );
 
     if ( o()->rng().roll( dire_beast_chance ) && o()->cooldowns.dire_beast->up() )
+    {
       o()->spawn_dire_beast( o()->talents.dire_beast_summon->duration() );
       o()->cooldowns.dire_beast->start();
+    }
   }
 
   T_PET* p() { return static_cast<T_PET*>( ab::player ); }
@@ -7913,7 +7917,7 @@ void hunter_t::create_buffs()
       ->set_refresh_behavior( buff_refresh_behavior::EXTEND )
       ->add_invalidate( cache_e::CACHE_CRIT_CHANCE )
       ->set_stack_change_callback(
-        [ this ]( buff_t*, int, int cur ) {
+        [ this ]( buff_t*, int, int ) {
           cooldowns.aimed_shot->adjust_recharge_multiplier();
           cooldowns.rapid_fire->adjust_recharge_multiplier();
         } );

@@ -5759,7 +5759,7 @@ struct consume_t : public consume_base_t
   }
 };
 
-// TOCHECK: Voidblade currently does not trigger burning blades and instead is bugged to trigger for Havoc Felblade
+// 0/3/17 TOCHECK: Voidblade currently does not trigger burning blades even after getting removed from Felblade
 
 struct voidblade_base_t : public voidrush_trigger_t<hungering_slash_trigger_t<demon_hunter_spell_t>>
 {
@@ -7672,13 +7672,13 @@ struct essence_break_t : public demon_hunter_attack_t
 
 // Felblade =================================================================
 // TODO: Real movement stuff.
-// TOCHECK: Voidblade currently does not trigger burning blades and instead is bugged to trigger for Havoc Felblade
 
 struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
 {
-  struct felblade_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
+  struct felblade_damage_t : public demon_hunter_attack_t
   {
-    felblade_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spell.felblade_damage )
+    felblade_damage_t( util::string_view name, demon_hunter_t* p )
+      : demon_hunter_attack_t( name, p, p->spell.felblade_damage )
     {
       background = dual               = true;
       gain                            = p->get_gain( "felblade" );
@@ -7687,7 +7687,7 @@ struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
 
     double action_multiplier() const override
     {
-      double am = base_t::action_multiplier();
+      double am = demon_hunter_attack_t::action_multiplier();
 
       am *= 1.0 + p()->buff.unbound_chaos->value();
 

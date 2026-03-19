@@ -1144,8 +1144,6 @@ public:
     // Shared
 
     // Arms
-    parse_target_effects( d_fn( &warrior_td_t::debuffs_colossus_smash ),
-                          p()->spell.colossus_smash_debuff );
 
     // Fury
 
@@ -1665,9 +1663,13 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
   {
     double m = base_t::composite_target_multiplier( target );
     auto target_data = td( target );
-    if ( p()->talents.arms.master_of_warfare_3.ok() && target_data &&
-    target_data->debuffs_colossus_smash->up() && p()->buff.heroic_might->up() )
-      m *= 1.0 + ( p()->buff.heroic_might->stack_value() / 100 );
+    if ( target_data && target_data->debuffs_colossus_smash->up() )
+    {
+      auto multi = 1.0 + p()->spell.colossus_smash_debuff->effectN( 1 ).percent();
+      if ( p()->talents.arms.master_of_warfare_3.ok() && p()->buff.heroic_might->up() )
+        multi += p()->buff.heroic_might->stack_value() / 100;
+      m *= multi;
+    }
     return m;
   }
 
@@ -4107,7 +4109,8 @@ struct execute_damage_t : public warrior_attack_t
     if( p()->talents.arms.fatality.ok() && td( state->target )->debuffs_fatal_mark->check() )
       p()->active.fatality->execute_on_target( state->target );
 
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    if ( p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() &&
+         p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
     {
       p()->buff.master_of_warfare_proc->trigger();
       p()->master_of_warfare_attempts_since_last_proc = 0;
@@ -4595,7 +4598,7 @@ struct impending_victory_heal_t : public warrior_heal_t
 
   proc_types proc_type() const override
   {
-    return PROC1_NONE_HEAL;
+    return PROC1_NONE_HELPFUL;
   }
 
   resource_e current_resource() const override
@@ -6801,7 +6804,7 @@ struct recklessness_t : public warrior_spell_t
       p()->buff.thunder_blast->trigger();
 
     if ( p()->talents.fury.rampaging_berserker_3->ok() )
-      p()->buff.berserk->trigger( p()->talents.fury.rampaging_berserker_3->effectN( 2 ).base_value() );
+      p()->buff.berserk->trigger( as<int>( p()->talents.fury.rampaging_berserker_3->effectN( 2 ).base_value() ) );
   }
 };
 
@@ -8138,7 +8141,8 @@ void warrior_t::create_buffs()
                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buff.heroic_might_accumulator = make_buff( this, "heroic_might_accumulator", find_spell( 1292058 ) );
-  buff.heroic_might = make_buff( this, "heroic_might", find_spell( 1292058 ) );
+  buff.heroic_might = make_buff( this, "heroic_might", find_spell( 1292058 ) )
+                                  ->set_default_value_from_effect( 1 );
 
   // Protection Apex
   buff.phalanx = make_buff( this, "phalanx", spell.phalanx_buff );

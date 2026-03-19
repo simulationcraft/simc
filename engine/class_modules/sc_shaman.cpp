@@ -8508,7 +8508,7 @@ struct stormkeeper_t : public shaman_spell_t
     }
 
     p()->summon_ancestor();
-    p()->buff.stormkeeper->trigger( data().effectN( 5 ).base_value() );
+    p()->buff.stormkeeper->trigger( as<int>( data().effectN( 5 ).base_value() ) );
 
     p()->buff.mid1_ele_2pc->trigger();
 

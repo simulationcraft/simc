@@ -1838,55 +1838,69 @@ void sealed_chaos_urn( special_effect_t& effect )
 // 1266182 Primary
 // 1266184 Secondary (Highest)
 // 1266197 Secondary (Lowest)
-// TODO: Can the different buffs overlap? Or do they expire existing ones?
 void lost_idol_of_the_hashey( special_effect_t& effect )
 {
-  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Lost Idol of the Hash'ey: Implementation assumes you can proc while a buff is already up, "
-    "including proccing the same buff against which will refresh the buff." );
-
   struct lost_idol_of_the_hashey_cb_t final : public dbc_proc_callback_t
   {
+    enum idol_type_e
+    {
+      NONE,
+      PRIMARY,
+      HIGHEST,
+      LOWEST
+    };
+
     buff_t* primary;
     std::unordered_map<stat_e, buff_t*> highest;
     std::unordered_map<stat_e, buff_t*> lowest;
+    std::vector<idol_type_e> idol_types;
+    idol_type_e last_type = NONE;
 
-    lost_idol_of_the_hashey_cb_t( const special_effect_t& e )
-      : dbc_proc_callback_t( e.player, e ), primary( nullptr ), highest(), lowest()
+    lost_idol_of_the_hashey_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), highest(), lowest()
     {
       primary = create_buff<stat_buff_t>( e.player, e.player->find_spell( 1266182 ) )
-                    ->set_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 2 ).average( e ) );
+        ->set_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 2 ).average( e ) );
+      deactivate_with_buff( primary );
 
       create_all_stat_buffs( e, e.player->find_spell( 1266184 ), e.driver()->effectN( 1 ).average( e ),
-                             [ & ]( stat_e s, buff_t* b ) { highest[ s ] = b; } );
+        [ this ]( stat_e s, buff_t* b ) {
+          highest[ s ] = b;
+          deactivate_with_buff( b );
+        } );
 
       create_all_stat_buffs( e, e.player->find_spell( 1266197 ), e.driver()->effectN( 1 ).average( e ),
-                             [ & ]( stat_e s, buff_t* b ) { lowest[ s ] = b; } );
+        [ this ]( stat_e s, buff_t* b ) {
+          lowest[ s ] = b;
+          deactivate_with_buff( b );
+        } );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+
+      idol_types = { PRIMARY, HIGHEST, LOWEST };
     }
 
     void execute( action_t*, action_state_t* ) override
     {
-      int type = rng().range( 0, 3 );
+      rng().shuffle( idol_types.begin(), idol_types.end() );
 
-      if ( type == 0 )
-        primary->trigger();
+      auto type = idol_types.back();
 
-      if ( type == 1 )
+      idol_types.pop_back();  // remove the current type from pool
+
+      if ( last_type != NONE )
+        idol_types.push_back( last_type );  // add the previous type back into the pool
+
+      last_type = type;
+
+      switch ( type )
       {
-        for ( auto& stat : secondary_ratings )
-          highest[ stat ]->expire();
-
-        auto stat = util::highest_stat( listener, secondary_ratings );
-        highest[ stat ]->trigger();
-      }
-
-      if ( type == 2 )
-      {
-        for ( auto& stat : secondary_ratings )
-          lowest[ stat ]->expire();
-
-        auto stat = util::lowest_stat( listener, secondary_ratings );
-        lowest[ stat ]->trigger();
+        case PRIMARY: primary->trigger(); break;
+        case HIGHEST: highest[ util::highest_stat( listener, secondary_ratings ) ]->trigger(); break;
+        case LOWEST:  lowest[ util::lowest_stat( listener, secondary_ratings ) ]->trigger(); break;
+        default:                   break;
       }
     }
   };

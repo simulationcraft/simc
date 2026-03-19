@@ -12092,23 +12092,6 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
 bool druid_t::validate_actor()
 {
   sim->error( error_level_e::MODERATE, "Druid sims are not fully tested and may still have bugs." );
-  
-  static constexpr std::string_view guardian[] = {
-    "when multiple dread shades are active only the latest one casts dire echo",
-    "tier 4pc repeats can proc wild guardian echoes",
-  };
-
-#ifdef NDEBUG
-  switch ( specialization() )
-  {
-    case DRUID_GUARDIAN:
-      for ( auto ph : guardian )
-        sim->error( error_level_e::IMPLEMENTATION_NOTES, "{}", ph );
-      break;
-    default:
-      break;
-  }
-#endif
 
   return true;
 }

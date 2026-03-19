@@ -128,11 +128,27 @@ void dbc_proc_callback_t::activate_with_buff( buff_t* buff, bool init )
 
   deactivate();
 
-  buff->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+  buff->add_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
     if ( !old_ )
       activate();
     else if ( !new_ )
       deactivate();
+  } );
+}
+
+void dbc_proc_callback_t::deactivate_with_buff( buff_t* buff, bool init )
+{
+  if ( buff->is_fallback )
+    return;
+
+  if ( init )
+    initialize();
+
+  buff->add_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+    if ( !old_ )
+      deactivate();
+    else if ( !new_ )
+      activate();
   } );
 }
 

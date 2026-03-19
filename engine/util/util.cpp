@@ -1477,10 +1477,10 @@ const char* util::proc_type_string( proc_types type )
     case PROC1_RANGED_TAKEN:           return "RangedShotTaken";
     case PROC1_RANGED_ABILITY:         return "RangedAbility";
     case PROC1_RANGED_ABILITY_TAKEN:   return "RangedAbilityTaken";
-    case PROC1_NONE_HEAL:              return "GenericHeal";
-    case PROC1_NONE_HEAL_TAKEN:        return "GenericHealTaken";
-    case PROC1_NONE_SPELL:             return "GenericHarmfulSpell";
-    case PROC1_NONE_SPELL_TAKEN:       return "GenericHarmfulSpellTaken";
+    case PROC1_NONE_HELPFUL:           return "GenericHeal";
+    case PROC1_NONE_HELPFUL_TAKEN:     return "GenericHealTaken";
+    case PROC1_NONE_HARMFUL:           return "GenericHarmful";
+    case PROC1_NONE_HARMFUL_TAKEN:     return "GenericHarmfulTaken";
     case PROC1_MAGIC_HEAL:             return "MagicHeal";
     case PROC1_MAGIC_HEAL_TAKEN:       return "MagicHealTaken";
     case PROC1_MAGIC_SPELL:            return "MagicHarmfulSpell";
