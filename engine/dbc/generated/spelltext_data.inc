@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.66431
-static constexpr std::array<spelltext_data_t, 28638> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28644> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28129,8 +28129,11 @@ static constexpr std::array<spelltext_data_t, 28638> __spelltext_data { {
   { 1269452, "Combine $s2 Mentor's Helpful Handiwork to create a Artisan's Consortium Gold Star.", 0, 0 },
   { 1269453, "Convert $s2 Stranded Bloomline to create a Stranded Bloomline.", 0, 0 },
   { 1269454, "Convert $s2 Stranded Bloomline to create a Weak Bloomline.", 0, 0 },
+  { 1269455, "Convert $s2 Weak Bloomline to create a Angler's Bloomline.", 0, 0 },
   { 1269458, "Convert $s2 Shredded Glimmerline to create a Stranded Glimmerline.", 0, 0 },
   { 1269459, "Combine $s2 Stranded Glimmerline to create a Weak Glimmerline.", 0, 0 },
+  { 1269472, "Combine an Angler's Glimmerline and Angler's Bloomline to create the Midnight Angler's Grand Line.", 0, 0 },
+  { 1269474, "Spin the thread into your Fishing Pole, granting the following aura.\r\n\r\n$@spellicon1269475$@spellname1269475\r\n\r\nWhenever you acquire Treasures, acquire another.", 0, 0 },
   { 1269475, 0, "Midnight Fishing Skill increased by $w1.\r\n\r\nMidnight Fishing Perception increased by $w2.\r\n\r\nWhen fishing up a treasure in Midnight zones, gain another.", 0 },
   { 1269560, "$@spelldesc280719", 0, 0 },
   { 1269565, "$@spelldesc319175\r\n", 0, 0 },
@@ -28638,6 +28641,9 @@ static constexpr std::array<spelltext_data_t, 28638> __spelltext_data { {
   { 1292058, "$@spelldesc1269307", "Damage bonus of your next Colossus Smash increased by $w1%.", 0 },
   { 1292071, "$@spelldesc1269313", "Dealing $w1% reduced damage to $@auracaster.", 0 },
   { 1292874, "$@spelldesc1262076", "Stunned", 0 },
+  { 1293136, "Collect 20 Hero Dawncrests.", 0, 0 },
+  { 1293139, "Collect 40 Champion Dawncrests.", 0, 0 },
+  { 1293143, "Collect 60 Veteran Dawncrests.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.66431
