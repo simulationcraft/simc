@@ -10838,7 +10838,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Ig
 Effects          :
 #1 (id=1028403)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Corrupted Apparitions (73510), Mindbender (123040), Mindbender (200174), Void Bolt (205448), Voidform (228260), Void Eruption (228360), Void Eruption (228361), Mindgames (323673), Shadow Word: Madness (335467), Painbreaker Psalm (336167), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Shadowy Apparition (413231), Entropic Rift (447445), Entropic Rift (447448), Collapsing Void (448405), Entropic Rift (450193), Void Blast (450983), Entropic Rift (459314), Tentacle Slam (1227280), Tentacle Slam (1227621), Mindbender (1230339), Void Volley (1242173), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Shadowfiend (1280172)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Corrupted Apparitions (73510), Mindbender (123040), Mindbender (200174), Void Bolt (205448), Voidform (228260), Void Eruption (228360), Void Eruption (228361), Mindgames (323673), Shadow Word: Madness (335467), Painbreaker Psalm (336167), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Shadowy Apparition (413231), Entropic Rift (447445), Entropic Rift (447448), Collapsing Void (448405), Entropic Rift (450193), Void Blast (450983), Entropic Rift (459314), Tentacle Slam (1227280), Tentacle Slam (1227621), Mindbender (1230339), Void Volley (1242173), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Shield (1253828), Void Apparition (1264176), Shadowfiend (1280172)
                    Family Flags: 13, 15, 19, 23, 30, 31, 33, 36, 40, 41, 44, 67, 80, 84, 85, 87, 90, 106, 121
 #2 (id=1030642)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16298,10 +16298,13 @@ $penancedamage=${$47666s1*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<har
 $penancehealing=${$47750s1*$<darkside>*(3+$<castigation>+$<harsh>)}
 
 Name             : Void Shield (id=1253828) [Spell Family (6)] 
+Hotfixed         : Affecting Spells
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Range            : 50000 yards
+Affecting Spells : Dark Ascension (391109 effect#1)
+Family Flags     : 67
 Attributes       : Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Can't Crit (93), Treat As Periodic (121), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Not In Spellbook (143), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Ignore Caster Damage Modifiers (221), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1259895)  : School Damage (2): shadow

@@ -14206,6 +14206,7 @@ Damaging an enemy with abilities empowered by Precise Shots has a $1219616s1% ch
 
 
 Name             : Spotter's Mark (id=466872) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -14218,7 +14219,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Ranged Taken
 Affecting Spells : Avian Specialization (466867 effect#1), Arcane Talons (1253846 effects: #1, #2)
 Family Flags     : 117
-Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Threat (42), DoT Stacking Rule (103), Can Proc From Procs (122), Allow Cast While Casting (135), Allow While Charmed (261), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Threat (42), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow While Charmed (261), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1179729)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
@@ -14528,6 +14529,7 @@ Effects          :
 Description      : Black Arrow now explodes in a cloud of shadow and sulfur on impact, dealing $?c1[$472084s1][$467914s1] Shadow damage to all enemies within an $s2 yd cone behind the target. Damage reduced beyond $s2 targets.
 
 Name             : Bleak Powder (id=467912) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -14536,7 +14538,7 @@ Duration         : 0.5 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Attributes       : Ignore Line of Sight (66), Allow Class Ability Procs (416)
+Attributes       : Allow Dead Target (64), Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1181296)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 35089 | Target: At Enemy (53)
@@ -17384,6 +17386,7 @@ $@spellicon1253601$@spellname1253601
 $@spellaura1253601
 
 Name             : Sentinel's Mark (id=1253601) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -17396,7 +17399,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Ranged Taken
 Affecting Spells : Avian Specialization (466867 effect#1), Arcane Talons (1253846 effects: #1, #2)
 Family Flags     : 117
-Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Threat (42), DoT Stacking Rule (103), Can Proc From Procs (122), Allow Cast While Casting (135), Allow While Charmed (261), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Threat (42), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow While Charmed (261), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1259473)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)

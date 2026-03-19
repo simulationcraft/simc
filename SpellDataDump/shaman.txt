@@ -2992,13 +2992,15 @@ Hotfixed         : Base Value (-33 -> 7)
                    Affected Spells: Flame Shock (188389), Flame Shock (470411)
                    Family Flags: 28
 #24 (id=1166446) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -35 | Scaled Value: -35 | Target: Self (1)
+                   Base Value: -28 | Scaled Value: -28 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0
+Hotfixed         : Base Value (-35 -> -28)
 #25 (id=1172978) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -39 | Scaled Value: -39 | Target: Self (1)
+                   Base Value: -33 | Scaled Value: -33 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443), Chain Lightning (211094)
                    Family Flags: 1
+Hotfixed         : Base Value (-39 -> -33)
 #26 (id=1174461) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -15 | Scaled Value: -15 | Target: Self (1)
                    Affected Spells: Tempest (452201)

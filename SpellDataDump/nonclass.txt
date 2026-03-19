@@ -165215,6 +165215,7 @@ Description      : Permanently enchants boots to increase your Stamina by $ec1. 
 Name             : Spark of the Primals (id=389498) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 71
 Proc Chance      : 101%
 Proc Flags       : Killing Blow
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Aura Points On Client (268), Not In Proving Grounds (401), Recompute Aura On Level Scale (446)
@@ -165671,6 +165672,7 @@ Name             : Primal Power (id=389987) [Passive]
 School           : Arcane
 Spell Type       : None
 Max Scaling Level: 70
+Max Aura Level   : 71
 Attributes       : Passive (6), Allow Dead Target (64), Allow Aura While Dead (116), Do Not Display Range (126), Aura Is Buff (140), Aura Points On Client (268), Do Not Display Cast Time (441)
 Aura Interrupt   : Enter World (22)
 Effects          :
@@ -167294,6 +167296,7 @@ Description      : Perform an elemental invocation, transforming into the elemen
 Name             : Protection of the Fallen Dragons (id=391117) [Passive] 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 71
 Attributes       : Passive (6), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Not in Battleground (284), Not in Instances (363), Not In Proving Grounds (401)
 Aura Interrupt   : Leave World (19), Enter Instance (43)
 Effects          :
@@ -236490,12 +236493,14 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Min Travel Time  : 1 seconds
 Duration         : 30 seconds
+Labels           : 4132
 Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), Aura Is Buff (140), Aura Points On Client (268)
 Effects          :
 #1 (id=1230125)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: at Fishing Target (39)
 #2 (id=1230126)  : Apply Aura (6) | Enable Profession Effects (511)
-                   Base Value: 150 | Scaled Value: 150 | Misc Value: 323 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 323 | Target: Self (1)
+Hotfixed         : Base Value (150 -> 50)
 Description      : Throw the creature back into the water to gain $s2 Midnight Perception for $d.
 
 Throwing multiple creatures can extend this buff up to $M1 min.
@@ -242447,6 +242452,7 @@ Description      : Upon your untimely demise outdoors, summon Meddy to... medica
 This effect can only occur every 30 minutes.
 
 Name             : Summon Meddy (id=1246335) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 10 yards
@@ -242455,7 +242461,7 @@ Duration         : 900 seconds
 Cooldown         : 300 seconds
 Category         : 2078 (Type 0x0)
 Category Cooldown: 300 seconds
-Attributes       : Not In Arena or Rated Battleground (144), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382), Not In Proving Grounds (401), Unknown (508)
+Attributes       : Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Not in Battleground (284), Not In Arena (297), Scales with Casting Item's Level (354), Not in Instances (363), Not in Mythic+ Mode (Challenge Mode) (368), Check Required Target Aura By Caster (382), Not In Proving Grounds (401), Unknown (508)
 Effects          :
 #1 (id=1247904)  : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 248535 | Misc Value 2: 5514 | Radius: 5 yards | Target: Front of Self (47)
@@ -245159,7 +245165,8 @@ Effects          :
 #1 (id=1255683)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: at Fishing Target (39)
 #2 (id=1255684)  : Apply Aura (6) | Enable Profession Effects (511)
-                   Base Value: 45 | Scaled Value: 45 | Misc Value: 323 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 323 | Target: Self (1)
+Hotfixed         : Base Value (45 -> 50)
 Description      : Throw the fish back into the water to gain $s2 Midnight Perception for $d.
 
 Throwing multiple fish can extend this buff up to $M1 min.
@@ -252327,6 +252334,17 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 Description      : Convert $s2 Stranded Bloomline to create a Weak Bloomline.
 
+Name             : Angler's Bloomline (id=1269455) 
+School           : Physical
+Spell Type       : None
+Attributes       : Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1281299)  : Create Item (24)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 300 | Target: Self (1)
+#2 (id=1281300)  : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+Description      : Convert $s2 Weak Bloomline to create a Angler's Bloomline.
+
 Name             : Stranded Glimmerline (id=1269458) 
 School           : Physical
 Spell Type       : None
@@ -252348,6 +252366,30 @@ Effects          :
 #2 (id=1281306)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Combine $s2 Stranded Glimmerline to create a Weak Glimmerline.
+
+Name             : Midnight Angler's Grand Line (id=1269472) 
+School           : Physical
+Spell Type       : None
+Attributes       : Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1281331)  : Create Item (24)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 300 | Target: Self (1)
+#2 (id=1281332)  : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Combine an Angler's Glimmerline and Angler's Bloomline to create the Midnight Angler's Grand Line.
+
+Name             : Midnight Angler's Grand Line (id=1269474) 
+School           : Physical
+Spell Type       : None
+Attributes       : Enchant own item only (77)
+Effects          :
+#1 (id=1281334)  : Enchant Item (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 8638
+Description      : Spin the thread into your Fishing Pole, granting the following aura.
+
+$@spellicon1269475$@spellname1269475
+
+Whenever you acquire Treasures, acquire another.
 
 Name             : Midnight Angler's Grand Line (id=1269475) 
 School           : Physical
@@ -253637,4 +253679,46 @@ Effects          :
 Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1262076
 Tooltip          : Stunned
+
+Name             : Warbound Pack of Hero Dawncrests (id=1293136) 
+Hotfixed         : NEW SPELL
+School           : Physical
+Spell Type       : None
+Cast Time        : 0.5 seconds
+Cooldown         : 0.5 seconds
+Category         : 133 (Type 0x0)
+Category Cooldown: 0.5 seconds
+Effects          :
+#1 (id=1313595)  : Loot (189)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 140962 | Misc Value 2: 556 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+Description      : Collect 20 Hero Dawncrests.
+
+Name             : Warbound Pack of Champion Dawncrests (id=1293139) 
+Hotfixed         : NEW SPELL
+School           : Physical
+Spell Type       : None
+Cast Time        : 0.5 seconds
+Cooldown         : 0.5 seconds
+Category         : 133 (Type 0x0)
+Category Cooldown: 0.5 seconds
+Effects          :
+#1 (id=1313603)  : Loot (189)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 140963 | Misc Value 2: 556 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+Description      : Collect 40 Champion Dawncrests.
+
+Name             : Warbound Pack of Veteran Dawncrests (id=1293143) 
+Hotfixed         : NEW SPELL
+School           : Physical
+Spell Type       : None
+Cast Time        : 0.5 seconds
+Cooldown         : 0.5 seconds
+Category         : 133 (Type 0x0)
+Category Cooldown: 0.5 seconds
+Effects          :
+#1 (id=1313608)  : Loot (189)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 140964 | Misc Value 2: 556 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+Description      : Collect 60 Veteran Dawncrests.
 
