@@ -1501,10 +1501,6 @@ void emerald_coachs_whistle( special_effect_t& effect )
 
   effect.custom_buff = buff;
 
-  // self driver procs off druid hostile abilities as well as shadow hostile abilities
-  if ( effect.player->type == player_e::DRUID || effect.player->specialization() == PRIEST_SHADOW || effect.player->type == EVOKER )
-    effect.proc_flags_ |= PF_MAGIC_SPELL | PF_MELEE_ABILITY;
-
   new dbc_proc_callback_t( effect.player, effect );
 
   // Pretend we are our bonded partner for the sake of procs from partner

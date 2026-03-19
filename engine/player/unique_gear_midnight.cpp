@@ -702,8 +702,8 @@ void blessed_pango_charm( special_effect_t& effect )
 // 1259130 heal
 void primal_spore_binding( special_effect_t& effect )
 {
-  effect.player->sim->error( UNVERIFIED_VALUE,
-    "Primal Spore Binding: Damage has only been verified to the tooltip and not to actual in-game damage." );
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Primal Spore Binding: What determines if you get a damage proc vs healing proc is unknown." );
 
   auto damage_amount = effect.driver()->effectN( 1 ).average( effect );
   auto heal_amount   = effect.driver()->effectN( 2 ).average( effect );
@@ -1000,7 +1000,7 @@ void b0p_curator_of_booms( special_effect_t& effect )
       auto _bombs = s->action->rng().range( max_bombs ) + 1;
       auto _mul = as<double>( _bombs ) / max_bombs;
 
-      s->action->sim->print_debug( "{} launching {} BIG BOMBS", *damage->player, _bombs );
+      s->action->sim->print_debug( "{} launching {} BIG BOMBS", *s->action->player, _bombs );
 
       if ( s->target->is_enemy() )
       {
