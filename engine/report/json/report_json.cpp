@@ -406,7 +406,7 @@ void gear_to_json( JsonOutput root, const player_t& p )
   }
 }
 
-void to_json( JsonOutput root, const player_t& p, const player_collected_data_t::buffed_stats_t& bs,
+void to_json( JsonOutput root, const player_collected_data_t::buffed_stats_t& bs,
               const std::vector<resource_e>& relevant_resources )
 {
   for ( attribute_e a = ATTRIBUTE_NONE; a < ATTRIBUTE_MAX; ++a )
@@ -437,30 +437,27 @@ void to_json( JsonOutput root, const player_t& p, const player_collected_data_t:
   // doll stats in-game. crit and haste pick the max between melee/spell which seems to be the game logic
 
   add_non_zero( root[ "stats" ], "crit_rating",
-                p.composite_melee_crit_rating() > p.composite_spell_crit_rating() ? p.composite_melee_crit_rating()
-                                                                                  : p.composite_spell_crit_rating() );
+                bs.melee_crit_rating > bs.spell_crit_rating ? bs.melee_crit_rating : bs.spell_crit_rating );
   add_non_zero( root[ "stats" ], "crit_pct",
                 bs.attack_crit_chance > bs.spell_crit_chance ? bs.attack_crit_chance : bs.spell_crit_chance );
 
   double attack_haste_pct = bs.attack_haste != 0 ? 1 / bs.attack_haste - 1 : 0;
   double spell_haste_pct = bs.spell_haste != 0 ? 1 / bs.spell_haste - 1 : 0;
   add_non_zero( root[ "stats" ], "haste_rating",
-                p.composite_melee_haste_rating() > p.composite_spell_haste_rating()
-                    ? p.composite_melee_haste_rating()
-                    : p.composite_spell_haste_rating() );
+                bs.melee_haste_rating > bs.spell_haste_rating ? bs.melee_haste_rating : bs.spell_haste_rating );
   add_non_zero( root[ "stats" ], "haste_pct", attack_haste_pct > spell_haste_pct ? attack_haste_pct : spell_haste_pct );
 
-  add_non_zero( root[ "stats" ], "mastery_rating", p.composite_mastery_rating() );
+  add_non_zero( root[ "stats" ], "mastery_rating", bs.mastery_rating );
   add_non_zero( root[ "stats" ], "mastery_pct", bs.mastery_value );
 
-  add_non_zero( root[ "stats" ], "versatility_rating", p.composite_damage_versatility_rating() );
+  add_non_zero( root[ "stats" ], "versatility_rating", bs.versatility_rating );
   add_non_zero( root[ "stats" ], "versatility_pct", bs.damage_versatility );
 
-  add_non_zero( root[ "stats" ], "avoidance_rating", p.composite_avoidance_rating() );
+  add_non_zero( root[ "stats" ], "avoidance_rating", bs.avoidance_rating );
   add_non_zero( root[ "stats" ], "avoidance_pct", bs.avoidance );
-  add_non_zero( root[ "stats" ], "leech_rating", p.composite_leech_rating() );
+  add_non_zero( root[ "stats" ], "leech_rating", bs.leech_rating );
   add_non_zero( root[ "stats" ], "leech_pct", bs.leech );
-  add_non_zero( root[ "stats" ], "speed_rating", p.composite_speed_rating() );
+  add_non_zero( root[ "stats" ], "speed_rating", bs.speed_rating );
   add_non_zero( root[ "stats" ], "speed_pct", bs.run_speed );
 
   add_non_zero( root[ "stats" ], "manareg_per_second", bs.manareg_per_second );
@@ -627,7 +624,7 @@ void collected_data_to_json( JsonOutput root, const ::report::json::report_confi
   }
 
   // always include buffed_stats in JSON
-  to_json( root[ "buffed_stats" ], p, cd.buffed_stats_snapshot, relevant_resources );
+  to_json( root[ "buffed_stats" ], cd.buffed_stats_snapshot, relevant_resources );
 
   if ( sim.report_details != 0 )
   {

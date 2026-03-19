@@ -1542,10 +1542,11 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format( R"(<tr class="right"><th class="left">Crit</th>)"
                  "<td></td>"
                  "<td></td>"
-                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}% ({:.0f})</td>"
                  "<td>{:.2f}%</td>"
                  "<td>{:.0f}</td></tr>\n",
                  100 * buffed_stats.attack_crit_chance,
+                 buffed_stats.melee_crit_rating,
                  100 * p.composite_melee_crit_chance(),
                  p.composite_melee_crit_rating() );
     }
@@ -1554,19 +1555,21 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format( R"(<tr class="right"><th class="left">Melee Crit</th>)"
                  "<td></td>"
                  "<td></td>"
-                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}% ({:.0f})</td>"
                  "<td>{:.2f}%</td>"
                  "<td>{:.0f}</td></tr>\n"
                  R"(<tr class="right"><th class="left">Spell Crit</th>)"
                  "<td></td>"
                  "<td></td>"
-                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}% ({:.0f})</td>"
                  "<td>{:.2f}%</td>"
                  "<td>{:.0f}</td></tr>\n",
                  100 * buffed_stats.attack_crit_chance,
+                 buffed_stats.melee_crit_rating,
                  100 * p.composite_melee_crit_chance(),
                  p.composite_melee_crit_rating(),
                  100 * buffed_stats.spell_crit_chance,
+                 buffed_stats.spell_crit_rating,
                  100 * p.composite_spell_crit_chance(),
                  p.composite_spell_crit_rating() );
     }
@@ -1575,10 +1578,11 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format( R"(<tr class="right"><th class="left">Haste</th>)"
                  "<td></td>"
                  "<td></td>"
-                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}% ({:.0f})</td>"
                  "<td>{:.2f}%</td>"
                  "<td>{:.0f}</td></tr>\n",
                  100 * ( 1 / buffed_stats.attack_haste - 1 ),  // Melee/Spell haste have been merged into a single stat.
+                 buffed_stats.melee_haste_rating,
                  100 * ( 1 / p.composite_melee_haste() - 1 ),
                  p.composite_melee_haste_rating() );
     }
@@ -1587,19 +1591,21 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.format( R"(<tr class="right"><th class="left">Melee Haste</th>)"
                  "<td></td>"
                  "<td></td>"
-                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}% ({:.0f})</td>"
                  "<td>{:.2f}%</td>"
                  "<td>{:.0f}</td></tr>\n"
                  R"(<tr class="right"><th class="left">Spell Haste</th>)"
                  "<td></td>"
                  "<td></td>"
-                 "<td>{:.2f}%</td>"
+                 "<td>{:.2f}% ({:.0f})</td>"
                  "<td>{:.2f}%</td>"
                  "<td>{:.0f}</td></tr>\n",
                  100 * ( 1 / buffed_stats.attack_haste - 1 ),
+                 buffed_stats.melee_haste_rating,
                  100 * ( 1 / p.composite_melee_haste() - 1 ),
                  p.composite_melee_haste_rating(),
                  100 * ( 1 / buffed_stats.spell_haste - 1 ),
+                 buffed_stats.spell_haste_rating,
                  100 * ( 1 / p.composite_spell_haste() - 1 ),
                  p.composite_spell_haste_rating() );
     }
@@ -1632,10 +1638,11 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     os.format( R"(<tr class="right"><th class="left">Versatility</th>)"
                "<td></td>"
                "<td></td>"
-               "<td>{:.2f}%</td>"
+               "<td>{:.2f}% ({:.0f})</td>"
                "<td>{:.2f}%</td>"
                "<td>{:.0f}</td></tr>\n",
                100 * buffed_stats.damage_versatility,
+               buffed_stats.versatility_rating,
                100 * p.composite_damage_versatility(),
                p.composite_damage_versatility_rating() );
     if ( p.primary_role() == ROLE_TANK )
@@ -1676,10 +1683,11 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     os.format( R"(<tr class="right"><th class="left">Mastery</th>)"
                "<td></td>"
                "<td></td>"
-               "<td>{:.2f}%</td>"
+               "<td>{:.2f}% ({:.0f})</td>"
                "<td>{:.2f}%</td>"
                "<td>{:.0f}</td></tr>\n",
                100.0 * buffed_stats.mastery_value,
+               buffed_stats.mastery_rating,
                100.0 * p.cache.mastery_value(), p.composite_mastery_rating() );
     if ( buffed_stats.mh_attack_expertise > 7.5 )
     {
