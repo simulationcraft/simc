@@ -353,6 +353,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     target_callbacks( true ),
     suppress_caster_procs(),
     suppress_target_procs(),
+    suppress_callback_from_energize(),
     enable_proc_from_suppressed(),
     allow_class_ability_procs(),
     not_a_proc(),
@@ -5143,7 +5144,16 @@ player_t* action_t::get_expression_target()
 
 double action_t::gain_energize_resource( resource_e resource_type, double amount, gain_t* g )
 {
-  return player->resource_gain( resource_type, amount, g, this );
+  auto ret = player->resource_gain( resource_type, amount, g, this );
+
+  // energize_power can trigger generic helpful proc effects
+  if ( callbacks && caster_callbacks && ( !suppress_caster_procs || enable_proc_from_suppressed ) &&
+       !suppress_callback_from_energize )
+  {
+    player->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, this, player->energize_state.get() );
+  }
+
+  return ret;
 }
 
 bool action_t::usable_during_current_cast() const

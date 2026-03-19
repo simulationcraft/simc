@@ -1063,6 +1063,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     cast_delay_reaction( 0_ms ),
     cast_delay_occurred( 0_ms ),
     callbacks( s ),
+    energize_state( std::make_unique<action_state_t>( nullptr, this ) ),
     use_apl( "" ),
     // Actions
     use_default_action_list( false ),
@@ -1218,6 +1219,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
       items[ i ].player = this;
     }
   }
+
+  energize_state->result_type = result_amount_type::ENERGIZE;
 
   main_hand_weapon.slot = SLOT_MAIN_HAND;
   off_hand_weapon.slot  = SLOT_OFF_HAND;

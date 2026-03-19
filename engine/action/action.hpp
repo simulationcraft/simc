@@ -121,6 +121,9 @@ public:
   /// if true, does not trigger callbacks on caster/target.
   bool suppress_caster_procs, suppress_target_procs;
 
+  /// engerize_power effects can trigger generic helpful procs. if true, disable this behavior for the action.
+  bool suppress_callback_from_energize;
+
   /// can trigger callbacks on caster even if suppress_caster_proc is true, as long as the callback has can_proc_from_suppressed = true.
   /// TODO: determine if equivalent for suppressed target procs is needed.
   bool enable_proc_from_suppressed;

@@ -350,6 +350,7 @@ struct player_t : public actor_t
   std::vector<std::function<void( player_t*, bool )>> callbacks_on_combat_state;
   std::vector<std::function<void( bool )>> callbacks_on_movement;  // called in movement_buff_t
   std::vector<std::function<void( player_t* )>> callbacks_on_init_finished;
+  std::unique_ptr<action_state_t> energize_state;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
