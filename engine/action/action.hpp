@@ -597,7 +597,6 @@ public:
   std::unique_ptr<cooldown_t> line_cooldown;
   const action_priority_t* signature;
 
-
   /// State of the last execute()
   action_state_t* execute_state;
 
@@ -607,6 +606,9 @@ public:
   unsigned snapshot_flags;
 
   unsigned update_flags;
+
+  /// placeholder dummy to use for energize effects that trigger generic helpful procs
+  std::unique_ptr<action_state_t> energize_state;
 
   /**
    * Target Cache System

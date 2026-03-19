@@ -498,6 +498,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     pre_execute_state(),
     snapshot_flags(),
     update_flags( STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT ),
+    energize_state( std::make_unique<action_state_t>( this, p ) ),
     target_cache(),
     options(),
     state_cache(),
@@ -5150,7 +5151,7 @@ double action_t::gain_energize_resource( resource_e resource_type, double amount
   if ( callbacks && caster_callbacks && ( !suppress_caster_procs || enable_proc_from_suppressed ) &&
        !suppress_callback_from_energize )
   {
-    player->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, this, action_state_t::energize() );
+    player->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, this, energize_state.get() );
   }
 
   return ret;

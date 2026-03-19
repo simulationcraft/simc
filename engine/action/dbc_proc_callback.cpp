@@ -38,7 +38,7 @@ struct proc_event_t : public event_t
     // state cache
     if ( s )
     {
-      if ( s == action_state_t::energize() )
+      if ( s->is_energize() )
         source_state = s;
       else
         source_state = s->action->get_state( s );
@@ -70,7 +70,7 @@ struct proc_event_t : public event_t
   ~proc_event_t() override
   {
     // DON'T RELEASE ENERGIZE STATES
-    if ( source_state && source_state != action_state_t::energize() )
+    if ( source_state && !source_state->is_energize() )
       action_state_t::release( source_state );
   }
 
@@ -268,7 +268,7 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 
   if ( triggered )
   {
-    assert( state && ( state->action || state == action_state_t::energize() ) );
+    assert( state && state->action );
     // Detach proc execution from proc triggering
     make_event<proc_event_t>( *listener->sim, this, a, state );
 
@@ -460,7 +460,7 @@ player_t* dbc_proc_callback_t::target( const action_state_t* state, action_t* pr
     case ACTION_SPELL:
       // Self Damage and energize targets are redirected to the players main target. Else they target the player.
       // TODO: Verify this behaviour with damage to friendly Allies.
-      if ( state == action_state_t::energize() || state->action->player == listener )
+      if ( state->action->player == listener )
         return listener->target;
       SC_FALLTHROUGH;
     default:

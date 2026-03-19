@@ -997,10 +997,10 @@ void b0p_curator_of_booms( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function(
     effect.spell_id, [ damage, heal, max_bombs ]( auto, auto, const action_state_t* s ) {
-      auto _bombs = damage->rng().range( max_bombs ) + 1;
+      auto _bombs = s->action->rng().range( max_bombs ) + 1;
       auto _mul = as<double>( _bombs ) / max_bombs;
 
-      damage->sim->print_debug( "{} launching {} BIG BOMBS", *damage->player, _bombs );
+      s->action->sim->print_debug( "{} launching {} BIG BOMBS", *damage->player, _bombs );
 
       if ( s->target->is_enemy() )
       {
@@ -3189,7 +3189,7 @@ void rangergenerals_call( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function( effect.spell_id,
     [ damage, delay ]( auto, auto, const action_state_t* s ) {
-      make_event( *damage->sim, delay, [ damage, t = s->target ] {
+      make_event( *s->action->sim, delay, [ damage, t = s->target ] {
         damage->execute_on_target( t );
       } );
     } );

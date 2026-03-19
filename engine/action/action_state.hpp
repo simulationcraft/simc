@@ -141,12 +141,9 @@ struct action_state_t : private noncopyable
 
   virtual proc_types2 interrupt_proc_type2() const;
 
-  // static dummy states
-  static action_state_t* energize();
+  // checks for special states
+  bool is_energize() const;
 };
-
-inline action_state_t energize_state_v { nullptr, nullptr };
-inline action_state_t* action_state_t::energize() { return &energize_state_v; }
 
 struct travel_event_t : public event_t
 {
