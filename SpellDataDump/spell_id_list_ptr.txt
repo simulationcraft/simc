@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.5.66330
+Class Spell ID List, wow build 12.0.5.66529
 
 Death Knight
 3714     Path of Frost
@@ -1756,6 +1756,7 @@ Death Knight
 1283622  Death Knight - Midnight PrePatch - 11.2 Class Set 4pc
 1286168 *Frenzied Decay
 1290864  Cycle of Death
+1292107 *Frostbolt
 
 Demon Hunter
 1490     Chaos Brand
@@ -3229,6 +3230,7 @@ Demon Hunter
 1285387 *Shattered Souls
 1287949  Eye Beam
 1288123  Devour
+1292047 *Spontaneous Immolation
 
 Druid
 99       Incapacitating Roar
@@ -5382,6 +5384,7 @@ Druid
 1283650  Druid - Midnight PrePatch - 11.2 Class Set 4pc - Healing
 1286243  Starfall
 1286247  Starfall
+1292031  Dream Guide
 
 Evoker
 351338   Quell
@@ -8459,7 +8462,7 @@ Hunter
 471350   Obsidian Arrowhead
 471363   Headshot
 471366   Tensile Bowstring
-471369  *Precision Detonation
+471369   Precision Detonation
 471426  *Focused Barrage
 471427  *Improved Streamline
 471428   Incendiary Ammunition
@@ -8505,8 +8508,8 @@ Hunter
 473340  *Wyvern Dressing
 473369   Eagle's Accuracy
 473370   Double Tap
-473378   Bullet Hell
-473379   Target Acquisition
+473378  *Bullet Hell
+473379  *Target Acquisition
 473380   Quickdraw
 473385   No Scope
 473461  *Summon Wyvern - FX
@@ -8514,7 +8517,7 @@ Hunter
 473522  *Tactical Reload
 473523   Windrunner Quiver
 474190  *Lock and Load
-474199  *Precision Detonation
+474199   Precision Detonation
 474257   On Target
 474293   Moving Target
 474296  *Moving Target
@@ -8683,7 +8686,7 @@ Hunter
 1259003  Raptor Swipe
 1259017  Raptor Swipe
 1259019  Raptor Swipe
-1259922  Lethality
+1259922 *Lethality
 1261193  Boomstick
 1261215  Boomstick
 1261229  Wildfire Shells
@@ -8793,6 +8796,7 @@ Hunter
 1285912  Bestial Wrath
 1286400  Scout's Vigil
 1289896  Misdirection
+1292687  Shrapnel Bomb
 
 Mage
 66       Invisibility
@@ -12951,7 +12955,7 @@ Monk
 1268807  Emperor's Elixir
 1268808 *Jadefire Stomp
 1268817  Misty Coalescence
-1268958  Soothing Mist
+1268958 *Soothing Mist
 1269159  Rushing Wind Kick
 1270621  Tranquil Tea
 1270958  Harmonic Surge
@@ -12987,6 +12991,8 @@ Monk
 1283667  Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing
 1285660  Serene Vitality
 1291484  Zenith Stomp
+1292919  Coalescence
+1292922  Coalescence
 
 Paladin
 465      Devotion Aura
@@ -14598,7 +14604,7 @@ Paladin
 397191   Recompense
 398901   Inflorescence of the Sunwell
 402912   Righteous Cause
-402916  *Righteous Cause
+402916   Righteous Cause
 402964   Sanctified Plates
 402971   Jurisdiction
 403010   Blessed Champion
@@ -17073,7 +17079,7 @@ Priest
 1250691  Void Tendrils
 1250806  False Autonomy
 1250818  Spiritual Guidance
-1250820  Strength of Soul
+1250820  Strength of Resolve
 1250835  Dark Enlightenment
 1251029  Mindpierce
 1251030  Painful Invocation
@@ -18478,7 +18484,7 @@ Rogue
 441415   Don't Be Suspicious
 441423   Coup de Grace
 441429   Cloud Cover
-441587   Distract
+441587   Cloud Cover
 441640   Smokescreen
 441662   Distract
 441776   Coup de Grace
@@ -18767,6 +18773,10 @@ Rogue
 1283637  Rogue - Midnight PrePatch - 11.2 Class Set 2pc
 1283639  Rogue - Midnight PrePatch - 11.2 Class Set 4pc
 1291471  Hemotoxin
+1292996  Negotiable Contract
+1293135  Sanguine Vial
+1293138  Sanguine Vial
+1293149  Crimson Vial
 
 Shaman
 370      Purge
@@ -22049,7 +22059,6 @@ Warlock
 387103   Ruin
 387108   Conflagration of Chaos
 387109   Conflagration of Chaos
-387110   Conflagration of Chaos
 387118  *Soul Tap
 387153  *Burn to Ashes
 387154  *Burn to Ashes
@@ -22691,7 +22700,7 @@ Warlock
 1276433  Dominant Hand
 1276452  Grimoire: Imp Lord
 1276467  Grimoire: Fel Ravager
-1276610  Spell Lock
+1276610  Devour Magic
 1276623  Singe Magic
 1276661  Stabilized Portals
 1276672  Summon Doomguard
@@ -22751,6 +22760,8 @@ Warlock
 1288945 *Imp Lord
 1288950 *Fel Ravager
 1288970 *Recently Demon Has Been Summoned [DNT]
+1292384 *Soul Barrage
+1292391 *Soul Barrage
 
 Warrior
 71       Vanguard
@@ -23719,7 +23730,7 @@ Warrior
 280122  *Demoralizing Shout
 280209   Moment of Glory
 280211   Bury the Hatchet
-280270  *Always Angry
+280270  *Improved Raging Blow
 280283  *Endless Rage
 280392   Meat Cleaver
 280561  *Surge
@@ -24597,3 +24608,6 @@ Warrior
 1283442  Bloodthirst Heal
 1283642  Warrior - Midnight PrePatch - 11.2 Class Set 2pc
 1283643  Warrior - Midnight PrePatch - 11.2 Class Set 4pc
+1292024 *Improved Execute
+1292058  Heroic Might
+1292071  Phalanx

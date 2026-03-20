@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.66330 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.66529 PTR
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -98,6 +98,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=1132070) : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
+#11 (id=1312900) : Apply Aura (6) | Modify Healing Taken% from Caster (504)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc134732
 Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
@@ -397,7 +399,7 @@ Effects          :
 #2 (id=983057)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 #3 (id=1037451)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.536 | PvP Coefficient: 1.2 | Radius: 41 yards | Target: Allies in Cone (59) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.8432 | PvP Coefficient: 1.2 | Radius: 41 yards | Target: Allies in Cone (59) -> At Ally in Area (31)
 Description      : $@spelldesc355936
 Tooltip          : Healing $w1 every $t1 sec.
 
@@ -444,7 +446,7 @@ Effects          :
                    Family Flags: 36
 #10 (id=1045262) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 88 | Scaled Value: 88 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355916)
+                   Affected Spells: Emerald Blossom (355916), Fluttering Seedlings (361361)
                    Family Flags: 49
 #11 (id=1045271) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Misc Value 2: 2669 (Label) | Target: Self (1)
@@ -654,6 +656,7 @@ Spell Type       : None
 Resource         : 2.2% Base Mana (0) (id=232449)
 Range            : 30 yards
 Duration         : 8 seconds
+Cooldown         : 1 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 2411 (Type 0x1): Just in Time (376204 effect#1), Just in Time (376204 effect#2), Flow State (390148 effect#5), Temporal Burst (431698 effect#13)
 Labels           : 16: Class Spells
@@ -1476,10 +1479,11 @@ Range            : 40 yards
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
+                 : 1466: Green Evoker Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Honed Aggression (371038 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Augmentation Evoker (396186 effects: #5, #6), Arcane Reach (454983 effect#1), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2), Evoker - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283653 effects: #1, #2), Evoker - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283654 effects: #1, #2)
-Family Flags     : 1, 14
+Affecting Spells : Devastation Evoker (356809 effects: #5, #6, #10), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Bountiful Bloom (370886 effect#1), Honed Aggression (371038 effect#1), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Ouroboros (387350 effect#1), Augmentation Evoker (396186 effects: #5, #6, #15), Dream of Spring (414969 effect#4), Temporal Burst (431698 effect#15), Arcane Reach (454983 effect#1), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2), Evoker - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283653 effects: #1, #2), Evoker - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283654 effects: #1, #2)
+Family Flags     : 1, 49
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=899173)   : Direct Heal (10)
@@ -1873,9 +1877,9 @@ Effects          :
 #2 (id=902964)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=1012965)  : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.6667
+                   Base Value: 30 | Scaled Value: 30
 #4 (id=1013052)  : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100
+                   Base Value: 200 | Scaled Value: 200
 Description      : Rewind $?s376210[${$s3/2}%][$s3%] of damage taken in the last $s2 seconds by all allies within $a1 yds. Always heals for at least $<min>.
 
 Healing increased by $s4% when not in a raid.
@@ -1904,7 +1908,7 @@ Class            : Evoker
 School           : Firestorm
 Spell Type       : None
 Spell Level      : 60
-Range            : 30 yards
+Range            : 300 yards
 Duration         : 12 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (90 seconds cooldown)
@@ -1920,21 +1924,23 @@ Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Mastery: Timewalker (406380 effect#2), Hardened Scales (441180 effect#1)
 Family Flags     : 39, 67
-Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
+Attributes       : Not Shapeshifted (16), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=903598)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Targeted Ally (21) -> Self (1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
                    Modified By: Hardened Scales (441180 effect#1)
 #2 (id=903601)   : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 26 | Target: Targeted Ally (21) -> Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 26 | Target: Self (1)
 #3 (id=1015125)  : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 15 | Target: Targeted Ally (21) -> Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 15 | Target: Self (1)
 #4 (id=1015126)  : Apply Aura (6) | Mechanic Immunity (77)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 9 | Target: Targeted Ally (21) -> Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 9 | Target: Self (1)
 #5 (id=1306575)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21) -> Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#6 (id=1313362)  : Dummy (3) | Attributes: Don't Fail Spell On Targeting Failure (20)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 Description      : Reinforce your scales, reducing damage taken by $s1% $?s374348[and causing you to be healed over $374349d equal to the damage it prevented][]. Lasts $d.
 Tooltip          : Damage taken reduced by $w1%$?$e4[ and healing equal to damage prevented.][.]$?$w2=1[
 Immune to interrupt and silence effects.][]
@@ -2138,7 +2144,7 @@ Family Flags     : 1, 8
 Attributes       : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Non-secret Aura (506)
 Effects          :
 #1 (id=907578)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.342 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.4275 | Target: Targeted Ally (21)
 #2 (id=1003140)  : Apply Aura (6) | Modify Healing Taken% from Caster (504)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
                    Modified By: Grace Period (376239 effect#1)
@@ -2319,7 +2325,7 @@ Family Flags     : 1, 8
 Attributes       : Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Non-secret Aura (506)
 Effects          :
 #1 (id=911002)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.342 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.4275 | Target: Targeted Ally (21)
 #2 (id=1003141)  : Apply Aura (6) | Modify Healing Taken% from Caster (504)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
                    Modified By: Grace Period (376239 effect#1)
@@ -2629,7 +2635,7 @@ Labels           : 16: Class Spells
                  : 1465: Blue Evoker Spells
 Affecting Spells : Mastery: Timewalker (406380 effect#2), Potent Mana (418101 effects: #1, #2), Arcane Reach (454983 effect#1)
 Family Flags     : 67, 74
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Exclude Caster (51), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Cannot Be Stolen (134), Limit N (165), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Exclude Caster (51), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Cannot Be Stolen (134), Limit N (165), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=914804)   : Apply Aura (6) | Dummy (4)
@@ -3077,7 +3083,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=982456)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355916)
+                   Affected Spells: Emerald Blossom (355916), Fluttering Seedlings (361361)
                    Family Flags: 49
 Description      : Emerald Blossom heals $s1 additional allies.
 
@@ -4886,7 +4892,7 @@ Effects          :
 #2 (id=1037759)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1037768)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.536 | PvP Coefficient: 1.2 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.8432 | PvP Coefficient: 1.2 | Target: Targeted Ally (21)
 Description      : $@spelldesc355936
 Tooltip          : Healing $w1 every $t1 sec.
 
@@ -5099,7 +5105,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
 Triggered By     : Blessing of the Bronze (364342)
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=1012758)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 1941 (Category) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
@@ -5119,7 +5125,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
 Triggered By     : Blessing of the Bronze (364342)
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=1012770)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 1545 (Category) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
@@ -5142,7 +5148,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
 Triggered By     : Blessing of the Bronze (364342)
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=1012780)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
@@ -5162,7 +5168,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
 Triggered By     : Blessing of the Bronze (364342)
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=1012782)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 1948 (Category) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
@@ -5182,7 +5188,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
 Triggered By     : Blessing of the Bronze (364342)
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=1012783)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
@@ -5202,7 +5208,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
 Triggered By     : Blessing of the Bronze (364342)
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=1012785)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 1446 (Category) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
@@ -5225,7 +5231,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
 Triggered By     : Blessing of the Bronze (364342)
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=1012787)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 1365 (Category) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
@@ -5245,7 +5251,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
 Triggered By     : Blessing of the Bronze (364342)
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=1012788)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 1662 (Category) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
@@ -5265,7 +5271,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
 Triggered By     : Blessing of the Bronze (364342)
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=1012789)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 2308 (Category) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
@@ -5285,7 +5291,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
 Triggered By     : Blessing of the Bronze (364342)
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=1012790)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
@@ -5305,7 +5311,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
 Triggered By     : Blessing of the Bronze (364342)
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=1012792)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
@@ -5325,7 +5331,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
 Triggered By     : Blessing of the Bronze (364342)
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=1012793)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
@@ -5345,7 +5351,7 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
 Triggered By     : Blessing of the Bronze (364342)
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=1012794)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 1211 (Category) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
@@ -5759,7 +5765,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1020439)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355916), Living Flame (361469), Living Flame (361500), Living Flame (361509), Chrono Flames (431443)
+                   Affected Spells: Emerald Blossom (355916), Fluttering Seedlings (361361), Living Flame (361469), Living Flame (361500), Living Flame (361509), Chrono Flames (431443)
                    Family Flags: 7, 49
 Description      : Your Living Flame and Emerald Blossom are $s1% more effective on yourself.
 
@@ -5863,7 +5869,7 @@ Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start 
 Effects          :
 #1 (id=1022092)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355916)
+                   Affected Spells: Emerald Blossom (355916), Fluttering Seedlings (361361)
                    Family Flags: 49
 Description      : $@spelldesc381921
 Tooltip          : Next Emerald Blossom's healing increased by $s1%.
@@ -6382,7 +6388,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087), Upheaval (396288), Fire Breath (444249)
                    Family Flags: 35, 58
-                   Modified By: Evoker Augmentation 12.0 Class Set 4pc (1264820 effect#2)
+                   Modified By: Evoker Augmentation 12.0 Class Set 4pc (1264820 effect#1)
 #3 (id=1084345)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087), Upheaval (396288), Fire Breath (444249)
@@ -6392,7 +6398,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Fire Breath (357208), Fire Breath (382266), Upheaval (396286), Upheaval (408092)
                    Family Flags: 15, 59
-                   Modified By: Evoker Augmentation 10.1 Class Set 2pc (414877 effect#2), Evoker Augmentation 12.0 Class Set 4pc (1264820 effect#1)
+                   Modified By: Evoker Augmentation 10.1 Class Set 2pc (414877 effect#2), Evoker Augmentation 12.0 Class Set 4pc (1264820 effect#2)
 #5 (id=1092313)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2456 (Category) | Target: Self (1)
                    Affected Spells (Category): Fire Breath (357208), Fire Breath (382266)
@@ -6436,17 +6442,17 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1037188)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Disintegrate (1236949), Pyre (1236970), Eruption (1259172), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980)
                    Family Flags: 0
 #2 (id=1037189)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Disintegrate (1236949), Pyre (1236970), Eruption (1259172), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980)
                    Family Flags: 0
 #3 (id=1037190)  : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #4 (id=1037191)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #5 (id=1037192)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Verdant Embrace (409895), Molten Blood (410651), Insurance! (1215550), Insurance! (1215553), Merithra's Blessing (1256581), Twin Flame (1265991)
@@ -6480,7 +6486,7 @@ Effects          :
                    Family Flags: 36
 #15 (id=1081002) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 88 | Scaled Value: 88 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355916)
+                   Affected Spells: Emerald Blossom (355916), Fluttering Seedlings (361361)
                    Family Flags: 49
 #16 (id=1082681) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Misc Value 2: 2669 (Label) | Target: Self (1)
@@ -7962,7 +7968,7 @@ Labels           : 16: Class Spells
                  : 1466: Green Evoker Spells
 Affecting Spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Honed Aggression (371038 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Augmentation Evoker (396186 effects: #5, #6), Arcane Reach (454983 effect#1), Inner Flame (1242747 effect#1), Preservation Evoker (1256944 effects: #1, #2), Evoker - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283653 effects: #1, #2), Evoker - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283654 effects: #1, #2)
 Family Flags     : 1
-Attributes       : DoT Stacking Rule (103), Ignore Healing Modifiers (219), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416)
+Attributes       : DoT Stacking Rule (103), Ignore Healing Modifiers (219), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
 #1 (id=1075114)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -8955,7 +8961,7 @@ Effects          :
                    Family Flags: 10
 #4 (id=1084557)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355916)
+                   Affected Spells: Emerald Blossom (355916), Fluttering Seedlings (361361)
                    Family Flags: 49
 #5 (id=1089041)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 3 (39)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 39 | Target: Self (1)
@@ -9808,7 +9814,7 @@ Effects          :
                    Affected Spells (Label): Afterimage (431875)
 #15 (id=1260183) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355916), Echo (364343), Eruption (395160), Eruption (438653), Eruption (1259172)
+                   Affected Spells: Emerald Blossom (355916), Fluttering Seedlings (361361), Echo (364343), Eruption (395160), Eruption (438653), Eruption (1259172)
                    Family Flags: 11, 49, 54
 #16 (id=1308692) : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2054 (Category) | Target: Self (1)
@@ -10348,7 +10354,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 2 | Target: Self (1)
                    Modified By: Concentrated Power (1261448 effect#1)
 #2 (id=1127596)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 2 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 2 | Target: Self (1)
 Description      : Empower spells cause your next Disintegrate to strike up to $s1 targets. When striking fewer than $s1 targets, Disintegrate damage is increased by $s2% for each missing target.
 
 Name             : Mass Disintegrate (desc=Black) (id=436336) [Spell Family (224)] 
@@ -10389,7 +10395,7 @@ Effects          :
 #1 (id=1131288)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 2 | Target: Self (1)
 #2 (id=1131289)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | SP Coefficient: 2 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 2 | Target: Self (1)
 Description      : Empower spells cause your next Eruption to strike up to $s1 targets. When striking less than $s1 targets, Eruption damage is increased by $s2% for each missing target.
 
 Name             : Mass Eruption (desc=Black) (id=438588) [Spell Family (224)] 
@@ -12555,7 +12561,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264311)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Reversion protects allies, reversing ${$s1/10}.1% of all damage taken and healing them instead.
 
 Name             : Merithra's Blessing (desc=Green) (id=1256688) [Spell Family (224)] 
@@ -12583,7 +12589,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264326)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 125 | Scaled Value: 125 | Target: Self (1)
+                   Base Value: 250 | Scaled Value: 250 | Target: Self (1)
                    Affected Spells: Dream Breath (355941), Dream Breath (376788)
                    Family Flags: 21
 #2 (id=1264327)  : Apply Aura (6) | Dummy (4)
@@ -12690,7 +12696,7 @@ Effects          :
 #1 (id=1268124)  : Summon Guardian (28)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 253466 | Misc Value 2: 6515 | Radius: 3 yards | Target: Right in Area (80)
 #2 (id=1268128)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | Target: Self (1)
 #3 (id=1268131)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Eruption (395160), Upheaval (396288), Eruption (438653), Eruption (1259172)
@@ -12762,7 +12768,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), No Aura Icon (60), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1268129)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | Target: Self (1)
 #2 (id=1268130)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : While your duplicate is active, your Ebon Might grants $s1% additional stats and Upheaval and Eruption deal $1259171s3% increased damage.
@@ -12960,11 +12966,11 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1276425)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Eruption (395160), Eruption (438653), Eruption (1259172)
                    Family Flags: 54
 #2 (id=1282504)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 0.5 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Sands of Time (395153)
                    Family Flags: 88
 Description      : Eruption damage increased by $s1% and it extends Ebon Might by an additional ${$s2/1000}.1 sec.
@@ -12979,20 +12985,20 @@ Labels           : 16: Class Spells
                  : 5829
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1276426)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 32 | Target: Self (1)
+#1 (id=1276426)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Ebon Might (395296)
                    Family Flags: 66
-#2 (id=1282551)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 12 | Target: Self (1)
+#2 (id=1282551)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Ebon Might (395296)
                    Family Flags: 66
 #3 (id=1282552)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Ebon Might (395296)
                    Family Flags: 66
 #4 (id=1282559)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 33 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Ebon Might (395296)
                    Family Flags: 66
 Description      : While Ebon Might is active, empower spells deal $s1% more damage and cool down $s2% faster.
