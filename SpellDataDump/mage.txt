@@ -9175,6 +9175,7 @@ Effects          :
 Description      : Frostbolt and Flurry have a $s2% chance to generate $s1 Icicles.
 
 Name             : Flash Freeze (id=379993) [Spell Family (3), Passive] 
+Hotfixed         : Proc Flags 1 (0 -> 65536), Proc Flags 2 (4 -> 0)
 Talent Entry     : Frost [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Mage
 School           : Frost
@@ -9183,7 +9184,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 5380: Flash Freeze (379993 effect#1)
-Proc Flags       : Cast Successful
+Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1009493)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Proc Chance (18)
@@ -10911,6 +10912,7 @@ Effects          :
 Description      : Ice Block now reduces all damage taken by $414658s8% for $414658d but no longer grants Immunity, prevents movement, attacks, or casting spells. Does not incur the Global Cooldown.
 
 Name             : Mass Invisibility (id=414664) [Spell Family (3)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=9, col=6, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
@@ -10925,17 +10927,21 @@ Labels           : 16: Class Spells
                  : 566
 Affecting Spells : Improved Mass Invisibility (415945 effect#1)
 Family Flags     : 103
-Attributes       : No Threat (42), Ignore Line of Sight (66), No Initial Threat (86), Not an Action (92), Only On Player (104), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Attributes       : No Threat (42), Ignore Line of Sight (66), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Aura Interrupt   : Damage (1), Action (2), Mount (17)
 Effects          :
 #1 (id=1083970)  : Apply Aura (6) | Invisibility (18)
-                   Base Value: 200 | Scaled Value: 200 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
+                   Base Value: 200 | Scaled Value: 200 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
+Hotfixed         : Target 1 (22 -> 18), Target 2 (56 -> 31)
 #2 (id=1083971)  : Apply Aura (6) | Unknown(335)
-                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
+Hotfixed         : Target 1 (22 -> 18), Target 2 (56 -> 31)
 #3 (id=1083972)  : Apply Aura (6) | Unknown(260)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1421 | Misc Value 2: 7 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1421 | Misc Value 2: 7 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
+Hotfixed         : Target 1 (22 -> 18), Target 2 (56 -> 31)
 #4 (id=1083973)  : Sanctuary (176)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: Source (22) -> Raid in Area (56)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
+Hotfixed         : Target 1 (22 -> 18), Target 2 (56 -> 31)
 Description      : You and your allies within $A1 yards instantly become invisible for $d. Taking any action will cancel the effect.
 
 $?a415945[]
