@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66431 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66527 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -236500,7 +236500,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: at Fishing Target (39)
 #2 (id=1230126)  : Apply Aura (6) | Enable Profession Effects (511)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 323 | Target: Self (1)
-Hotfixed         : Base Value (150 -> 50)
 Description      : Throw the creature back into the water to gain $s2 Midnight Perception for $d.
 
 Throwing multiple creatures can extend this buff up to $M1 min.
@@ -242452,7 +242451,6 @@ Description      : Upon your untimely demise outdoors, summon Meddy to... medica
 This effect can only occur every 30 minutes.
 
 Name             : Summon Meddy (id=1246335) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 10 yards
@@ -245166,7 +245164,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: at Fishing Target (39)
 #2 (id=1255684)  : Apply Aura (6) | Enable Profession Effects (511)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 323 | Target: Self (1)
-Hotfixed         : Base Value (45 -> 50)
 Description      : Throw the fish back into the water to gain $s2 Midnight Perception for $d.
 
 Throwing multiple fish can extend this buff up to $M1 min.
@@ -245480,7 +245477,6 @@ Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29)
 Effects          :
 #1 (id=1256802)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Prismatic Focusing Iris | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 778.1547 (coefficient=6.088682) | Trigger Spell: 1252383 | Target: Self (1)
-Hotfixed         : Coefficient (12.178715 -> 6.088682)
 #2 (id=1257591)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=1266101)  : Apply Aura (6) | Dummy (4)
@@ -245626,7 +245622,6 @@ Effects          :
 Description      : $@spelldesc1251906
 
 Name             : Prismatic Focusing Iris (id=1252389) 
-Hotfixed         : Attributes
 School           : Arcane
 Spell Type       : Magic
 Range            : 40 yards
@@ -246949,7 +246944,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1264645)  : Apply Aura (6) | Proc Trigger Spell (42): Alnsight | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 18.9275 (coefficient=0.144396) | PvP Coefficient: 0.5 | Trigger Spell: 1266686 | Target: Self (1)
-Hotfixed         : Coefficient (0.180495 -> 0.144396)
 Description      : Your damage and healing has a chance to grant you Alnsight for $1266686d. While active, casting spells and abilities manifests unstable Alnscorned and consumes their essence to grant you $s1 $pri for $1266687d. Multiple applications may overlap.
 
 Name             : Nalorakk's Call to War (id=1257183) 
@@ -248738,7 +248732,6 @@ Tooltip          : Your harmful spells and abilities have a $?a1248927[${($12489
 $?a1262364[Mandate of Sacred Death has a very small chance to execute non-boss enemies.]?a1262359[Mandate of Sacred Death has a very small chance to execute non-boss enemies.][]
 
 Name             : Mandate of Sacred Death (id=1261341) 
-Hotfixed         : Attributes
 School           : Holy
 Spell Type       : Magic
 Range            : 50000 yards
@@ -252690,7 +252683,6 @@ Description      : $@spelldesc1271211
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
 Name             : Crucible of Erratic Energies (id=1272091) [Passive] 
-Hotfixed         : Proc Flags 1 (87296 -> 87312)
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -253667,7 +253659,6 @@ Description      : Temporarily grants your shoulders a magical illusion of natur
 |cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
 
 Name             : Holy Bounding Hand Grenade (id=1292874) [Hidden] 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -253676,12 +253667,10 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow 
 Effects          :
 #1 (id=1313221)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1262076
 Tooltip          : Stunned
 
 Name             : Warbound Pack of Hero Dawncrests (id=1293136) 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -253691,11 +253680,9 @@ Category Cooldown: 0.5 seconds
 Effects          :
 #1 (id=1313595)  : Loot (189)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 140962 | Misc Value 2: 556 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Collect 20 Hero Dawncrests.
 
 Name             : Warbound Pack of Champion Dawncrests (id=1293139) 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -253705,11 +253692,9 @@ Category Cooldown: 0.5 seconds
 Effects          :
 #1 (id=1313603)  : Loot (189)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 140963 | Misc Value 2: 556 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Collect 40 Champion Dawncrests.
 
 Name             : Warbound Pack of Veteran Dawncrests (id=1293143) 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -253719,6 +253704,5 @@ Category Cooldown: 0.5 seconds
 Effects          :
 #1 (id=1313608)  : Loot (189)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 140964 | Misc Value 2: 556 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Collect 60 Veteran Dawncrests.
 
