@@ -252692,8 +252692,9 @@ Real PPM         : 4
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1285139)  : Apply Aura (6) | Proc Trigger Spell (42): Voidlust | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 86.41363 (coefficient=0.659241) | Trigger Spell: 1277482 | Target: Self (1)
+#1 (id=1285139)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 86.41363 (coefficient=0.659241) | Target: Self (1)
+Hotfixed         : Trigger Spell (1277482 -> 0)
 #2 (id=1285205)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=1285226)  : Dummy (3)
@@ -253010,7 +253011,6 @@ Spell Type       : None
 Range            : 100 yards
 Velocity         : 25 yards/sec
 Duration         : 10 seconds
-Triggered By     : Crucible of Erratic Energies (1272091)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), DoT Stacking Rule (103), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Aura Is Buff (140), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Ignore Phase Shift (205), Aura Points On Client (268), Allow Cast While Channeling (308), Bypass Visibility Check (320)
 Effects          :
 #1 (id=1289880)  : Apply Aura (6) | Modify Rating (189)

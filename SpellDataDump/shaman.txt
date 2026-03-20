@@ -15779,6 +15779,7 @@ Effects          :
 Description      : Consuming Power of the Maelstrom additionally fires an Elemental Blast at your target at $s1% effectiveness.
 
 Name             : Skyfury (id=462854) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -15794,7 +15795,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 20%
 Proc Flags       : White Melee
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=1173055)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 2 | Scaled Value: 2 | Radius: 100 yards | Target: Targeted Ally or Raid (118)

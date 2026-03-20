@@ -742,6 +742,7 @@ Effects          :
 Description      : Upon death, you become the Spirit of Redemption for $27827d. You cannot move, attack, be attacked, or be targeted by any spells or effects, and your healing spells cost no mana. When the effect ends, you die.
 
 Name             : Power Word: Fortitude (id=21562) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -756,7 +757,7 @@ Labels           : 16: Class Spells
                  : 5980
 Stance Mask      : 0x88000000
 Family Flags     : 3
-Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Not On Player Controlled NPC (168), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Aura Interrupt   : Enter World (22), Disconnect (42)
 Effects          :
 #1 (id=12246)    : Apply Aura (6) | Modify Total Stat% (137)
