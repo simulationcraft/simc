@@ -916,6 +916,7 @@ public:
     const spell_data_t* thrill_of_the_fight_haste_buff;
     const spell_data_t* thrill_of_the_fight_damage_buff;
     double wounded_quarry_proc_rate;
+    std::array<double, 3> voidfall_proc_chances;
 
     // Annihilator
     const spell_data_t* voidfall_meteor;
@@ -1215,6 +1216,15 @@ public:
     double wounded_quarry_chance_vengeance = 0.30;
     // Proc rate for Wounded Quarry for Havoc
     double wounded_quarry_chance_havoc = 0.10;
+    // Voidfall proc rate per building stack count (WCL analysis, ~72k casts).
+    // Fits rate = base - k*sqrt(stacks) within 0.5pp, but no spell data
+    // parameterizes the decay, so these are likely server-side lookup tables.
+    double voidfall_proc_chance_0_stacks_vengeance = 0.385;
+    double voidfall_proc_chance_1_stacks_vengeance = 0.325;
+    double voidfall_proc_chance_2_stacks_vengeance = 0.30;
+    double voidfall_proc_chance_0_stacks_havoc = 0.41;
+    double voidfall_proc_chance_1_stacks_havoc = 0.34;
+    double voidfall_proc_chance_2_stacks_havoc = 0.325;
     // How many seconds that Vengeful Retreat locks out Felblade
     double felblade_lockout_from_vengeful_retreat    = 0.6;
     bool enable_dungeon_slice                        = false;
@@ -2948,7 +2958,8 @@ struct voidfall_building_trigger_t : public BASE
     if ( !BASE::p()->talent.annihilator.voidfall->ok() )
       return;
 
-    if ( !BASE::rng().roll( BASE::p()->talent.annihilator.voidfall->effectN( 3 ).percent() ) )
+    int stacks = std::min( BASE::p()->buff.voidfall_building->check(), 2 );
+    if ( !BASE::rng().roll( BASE::p()->hero_spec.voidfall_proc_chances[ stacks ] ) )
       return;
 
     // can't gain building while spending is up
@@ -10113,6 +10124,12 @@ void demon_hunter_t::create_options()
       opt_float( "soul_fragment_movement_consume_chance", options.soul_fragment_movement_consume_chance, 0, 1 ) );
   add_option( opt_float( "wounded_quarry_chance_vengeance", options.wounded_quarry_chance_vengeance, 0, 1 ) );
   add_option( opt_float( "wounded_quarry_chance_havoc", options.wounded_quarry_chance_havoc, 0, 1 ) );
+  add_option( opt_float( "voidfall_proc_chance_0_stacks_vengeance", options.voidfall_proc_chance_0_stacks_vengeance, 0, 1 ) );
+  add_option( opt_float( "voidfall_proc_chance_1_stacks_vengeance", options.voidfall_proc_chance_1_stacks_vengeance, 0, 1 ) );
+  add_option( opt_float( "voidfall_proc_chance_2_stacks_vengeance", options.voidfall_proc_chance_2_stacks_vengeance, 0, 1 ) );
+  add_option( opt_float( "voidfall_proc_chance_0_stacks_havoc", options.voidfall_proc_chance_0_stacks_havoc, 0, 1 ) );
+  add_option( opt_float( "voidfall_proc_chance_1_stacks_havoc", options.voidfall_proc_chance_1_stacks_havoc, 0, 1 ) );
+  add_option( opt_float( "voidfall_proc_chance_2_stacks_havoc", options.voidfall_proc_chance_2_stacks_havoc, 0, 1 ) );
   add_option(
       opt_float( "felblade_lockout_from_vengeful_retreat", options.felblade_lockout_from_vengeful_retreat, 0, 1 ) );
   add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
@@ -10981,6 +10998,9 @@ void demon_hunter_t::init_spells()
       hero_spec.meteor_shower_driver = talent_spell_lookup( talent.annihilator.dark_matter, 1264126 );
       hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 1 ).trigger();
       hero_spec.world_killer         = talent_spell_lookup( talent.annihilator.world_killer, 1256618 );
+      hero_spec.voidfall_proc_chances = { options.voidfall_proc_chance_0_stacks_havoc,
+                                          options.voidfall_proc_chance_1_stacks_havoc,
+                                          options.voidfall_proc_chance_2_stacks_havoc };
       break;
     case DEMON_HUNTER_VENGEANCE:
       hero_spec.voidfall_meteor      = talent_spell_lookup( talent.annihilator.voidfall, 1256303 );
@@ -10988,6 +11008,9 @@ void demon_hunter_t::init_spells()
       hero_spec.meteor_shower_driver = talent_spell_lookup( talent.annihilator.dark_matter, 1264128 );
       hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 1 ).trigger();
       hero_spec.world_killer         = talent_spell_lookup( talent.annihilator.world_killer, 1256616 );
+      hero_spec.voidfall_proc_chances = { options.voidfall_proc_chance_0_stacks_vengeance,
+                                          options.voidfall_proc_chance_1_stacks_vengeance,
+                                          options.voidfall_proc_chance_2_stacks_vengeance };
       break;
     default:
       hero_spec.voidfall_meteor      = spell_data_t::not_found();
@@ -10995,6 +11018,7 @@ void demon_hunter_t::init_spells()
       hero_spec.meteor_shower_driver = spell_data_t::not_found();
       hero_spec.meteor_shower_damage = spell_data_t::not_found();
       hero_spec.world_killer         = spell_data_t::not_found();
+      hero_spec.voidfall_proc_chances = { 0, 0, 0 };
       break;
   }
 
