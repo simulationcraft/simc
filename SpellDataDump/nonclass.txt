@@ -250573,13 +250573,14 @@ Effects          :
 Description      : $@spelldesc1250604
 
 Name             : Gloom-Spattered Dreadscale (id=1263141) 
+Hotfixed         : Aura Interrupt
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 292
                  : 3959: Item Effects
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Enter World (22), Raid Encounter Start or M+ Start (40), Enter Instance (43)
 Effects          :
 #1 (id=1273725)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
