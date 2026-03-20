@@ -160,5 +160,5 @@ off_hand=grimoire_of_the_eternal_light,id=249276,ilevel=289
 # set_bonus=midnight_season_1_4pc=1
 soul_shards=0
 default_pet=sayaad
-eye_explosion_instanced_bug_cb=true
-eye_explosion_instanced_bug_sb=true
+eye_explosion_instanced_bug_cb=1
+eye_explosion_instanced_bug_sb=1

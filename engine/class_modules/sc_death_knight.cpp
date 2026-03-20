@@ -6601,12 +6601,6 @@ struct blood_shield_buff_t final : public absorb_buff_t
       if ( dk->talent.blood.consumption.ok() )
         dk->cooldown.consumption->reset( true );
     }
-
-    if ( dk->talent.blood.bloody_reflection.ok() && dk->cooldown.bloody_reflection_icd->up() )
-    {
-      dk->background_actions.bloody_reflection->execute_on_target( source );
-      dk->cooldown.bloody_reflection_icd->start();
-    }
   }
 };
 
@@ -12678,9 +12672,8 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     if ( talent.blood.dance_of_midnight_3.ok() )
     {
-      for ( int i = 0; i < as<int>( amount ); i++ )
-        if ( pseudo_random.dance_of_midnight->trigger() )
-          pets.dance_of_midnight_pet.spawn();
+      if ( pseudo_random.dance_of_midnight->trigger() )
+        pets.dance_of_midnight_pet.spawn();
     }
   }
 
@@ -16366,6 +16359,16 @@ void death_knight_t::reset()
 void death_knight_t::assess_damage( school_e school, result_amount_type type, action_state_t* s )
 {
   parse_player_effects_t::assess_damage( school, type, s );
+
+  // As of Mar 19 2026 bloody reflection only reflects if blood shield isn't consumed by the hit.
+  // Consumption of the absorb will happen in the parent call to assess_damage, so if it is still up
+  // at this point, then we can trigger the reflect
+  if ( talent.blood.bloody_reflection.ok() && cooldown.bloody_reflection_icd->up() &&
+        buffs.blood_shield->up() && s->result_type == result_amount_type::DMG_DIRECT )
+  {
+    background_actions.bloody_reflection->execute_on_target( target );
+    cooldown.bloody_reflection_icd->start();
+  }
 
   if ( specialization() == DEATH_KNIGHT_BLOOD && s->result == RESULT_PARRY )
   {

@@ -1326,8 +1326,7 @@ using namespace helpers;
       if ( demonology() && p()->hero.demoniacs_fervor.ok() && s->chain_target == 0 )
         m *= 1.0 + p()->hero.demoniacs_fervor->effectN( 1 ).percent();
 
-      // NOTE: 2026-02-20 Demoniacs Fervor talent does not work for Affliction (bug)
-      if ( affliction() && p()->hero.demoniacs_fervor.ok() && !p()->bugs && td( s->target )->dots.unstable_affliction->is_ticking() )
+      if ( affliction() && p()->hero.demoniacs_fervor.ok() && td( s->target )->dots.unstable_affliction->is_ticking() )
         m *= 1.0 + p()->hero.demoniacs_fervor->effectN( 1 ).percent();
 
       return m;
@@ -1619,8 +1618,7 @@ using namespace helpers;
       {
         aoe = -1;
         background = dual = true;
-        // NOTE: 2026-02-20 Seed of Corruption is currently reducing damage beyond 1 target ignoring the spell data (bug)
-        reduced_aoe_targets = p->bugs ? 1 : as<int>( p->talents.seed_of_corruption->effectN( 4 ).base_value() );
+        reduced_aoe_targets = as<int>( p->talents.seed_of_corruption->effectN( 4 ).base_value() );
 
         affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 

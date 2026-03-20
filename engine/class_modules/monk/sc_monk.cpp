@@ -869,7 +869,7 @@ struct rising_sun_kick_t : monk_melee_attack_t
             .set_eff( &effect );
       }
 
-      if ( const auto &effect = player->talent.windwalker.sunfire_spiral->effectN( 1 ); effect.ok() && !player->bugs )
+      if ( const auto &effect = player->talent.windwalker.sunfire_spiral->effectN( 1 ); effect.ok() )
         add_parse_entry( da_multiplier_effects )
             .set_buff( player->buff.combo_strikes )
             .set_value( effect.percent() )
@@ -987,12 +987,6 @@ struct rising_sun_kick_t : monk_melee_attack_t
     damage_t( monk_t *player )
       : combined_type_t( player, "rising_sun_kick_damage", player->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
     {
-      if ( const auto &effect = player->talent.windwalker.sunfire_spiral->effectN( 1 ); effect.ok() && player->bugs )
-        add_parse_entry( da_multiplier_effects )
-            .set_buff( player->buff.combo_strikes )
-            .set_value( effect.percent() )
-            .set_note( "Applies when buffed by Mastery" )
-            .set_eff( &effect );
     }
   };
 
@@ -6312,11 +6306,16 @@ monk_effect_callback_t *monk_t::create_proc_callback( monk_callback_init_t param
       // e.g., the driver for a debuff uses MELEE_ABILITY_TAKEN instead of MELEE_ABILITY
 
       const std::unordered_map<uint64_t, uint64_t> translation_map = {
-          { PF_MELEE_TAKEN, PF_MELEE },               { PF_MELEE_ABILITY_TAKEN, PF_MELEE_ABILITY },
-          { PF_RANGED_TAKEN, PF_RANGED },             { PF_RANGED_ABILITY_TAKEN, PF_RANGED_ABILITY },
-          { PF_NONE_HELPFUL_TAKEN, PF_NONE_HELPFUL }, { PF_NONE_HARMFUL_TAKEN, PF_NONE_HARMFUL },
-          { PF_MAGIC_HEAL_TAKEN, PF_MAGIC_HEAL },     { PF_MAGIC_SPELL_TAKEN, PF_MAGIC_SPELL },
-          { PF_PERIODIC_TAKEN, PF_PERIODIC },         { PF_DAMAGE_TAKEN, PF_ALL_DAMAGE },
+          { PF_MELEE_TAKEN, PF_MELEE },
+          { PF_MELEE_ABILITY_TAKEN, PF_MELEE_ABILITY },
+          { PF_RANGED_TAKEN, PF_RANGED },
+          { PF_RANGED_ABILITY_TAKEN, PF_RANGED_ABILITY },
+          { PF_NONE_HELPFUL_TAKEN, PF_NONE_HELPFUL },
+          { PF_NONE_HARMFUL_TAKEN, PF_NONE_HARMFUL },
+          { PF_MAGIC_HEAL_TAKEN, PF_MAGIC_HEAL },
+          { PF_MAGIC_SPELL_TAKEN, PF_MAGIC_SPELL },
+          { PF_PERIODIC_TAKEN, PF_PERIODIC },
+          { PF_DAMAGE_TAKEN, PF_ALL_DAMAGE },
       };
 
       for ( auto t : translation_map )
@@ -6959,7 +6958,6 @@ public:
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
     ReportIssue( "Press the Advantage Tiger Palm does not trigger Overwhelming Force", "2026-02-09", true );
-    ReportIssue( "Sunfire Spiral only applies to Rising Sun Kick.", "20205-03-14", true );
 
     os << "<div class=\"player-section\">\n";
     os << "<h3 class=\"toggle\">Known Bugs and Issues</h3>\n";

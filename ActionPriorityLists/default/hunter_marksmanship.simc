@@ -31,32 +31,32 @@ actions.cds+=/lights_judgment,if=buff.trueshot.down
 actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|fight_remains<120-30*talent.calling_the_shots)|fight_remains<31
 
 actions.draoe=black_arrow
+actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down
+actions.draoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(talent.unload&(talent.no_scope&buff.bulletstorm.stack<10|target.health.pct<20)|buff.bulletstorm.remains<action.aimed_shot.execute_time)
 actions.draoe+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
-actions.draoe+=/multishot,target_if=1+debuff.spotters_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down
-actions.draoe+=/rapid_fire,if=talent.unload&(talent.no_scope&buff.bulletstorm.stack<10|target.health.pct<20)
-actions.draoe+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
 actions.draoe+=/volley,if=!buff.double_tap.up
-actions.draoe+=/aimed_shot,target_if=1+debuff.spotters_mark.remains
+actions.draoe+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
 actions.draoe+=/wailing_arrow
-actions.draoe+=/rapid_fire
+actions.draoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time
 actions.draoe+=/steady_shot
 
 actions.drst=black_arrow
 actions.drst+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
 actions.drst+=/rapid_fire,if=talent.unload&(talent.no_scope&buff.bulletstorm.stack<10|target.health.pct<20)
-actions.drst+=/arcane_shot,target_if=1+debuff.spotters_mark.down,if=buff.precise_shots.up
+actions.drst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.volley.remains%action.aimed_shot.execute_time>action.arcane_shot.execute_time&buff.trueshot.down
+actions.drst+=/arcane_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
 actions.drst+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
 actions.drst+=/volley,if=!buff.double_tap.up
-actions.drst+=/aimed_shot,target_if=1+debuff.spotters_mark.remains
+actions.drst+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage
 actions.drst+=/wailing_arrow
 actions.drst+=/rapid_fire
 actions.drst+=/steady_shot
 
-actions.sentaoe=multishot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down
+actions.sentaoe=multishot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down
 actions.sentaoe+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
 actions.sentaoe+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
 actions.sentaoe+=/volley,if=!buff.double_tap.up
-actions.sentaoe+=/aimed_shot,target_if=1+debuff.sentinels_mark.remains
+actions.sentaoe+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage
 actions.sentaoe+=/moonlight_chakram
 actions.sentaoe+=/rapid_fire
 actions.sentaoe+=/steady_shot
@@ -64,14 +64,17 @@ actions.sentaoe+=/steady_shot
 actions.sentst=volley,if=!buff.double_tap.up&active_enemies=1
 actions.sentst+=/trueshot,if=!buff.double_tap.up&active_enemies=1&variable.trueshot_ready
 actions.sentst+=/rapid_fire,if=talent.unload&((buff.precise_shots.up&!talent.no_scope)&buff.bulletstorm.stack<10|target.health.pct<20)
-actions.sentst+=/arcane_shot,target_if=1+debuff.sentinels_mark.down,if=buff.precise_shots.up
+actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=active_enemies>2&buff.volley.remains%action.aimed_shot.execute_time>action.arcane_shot.execute_time&buff.trueshot.down
+actions.sentst+=/arcane_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
 actions.sentst+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
 actions.sentst+=/trueshot,if=!buff.double_tap.up&active_enemies>1&variable.trueshot_ready
 actions.sentst+=/volley,if=!buff.double_tap.up&active_enemies>1
-actions.sentst+=/aimed_shot,target_if=1+debuff.sentinels_mark.remains
+actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=cooldown.volley.remains>2|buff.trueshot.up
 actions.sentst+=/moonlight_chakram
 actions.sentst+=/rapid_fire
 actions.sentst+=/steady_shot
 
-actions.trinkets=use_items,slots=trinket1:trinket2,if=(cooldown.trueshot.remains<2|!this_trinket.has_use_buff|buff.trueshot.up|cooldown.trueshot.remains>45)&!this_trinket.is.algethar_puzzle_box
-actions.trinkets+=/use_item,name=algethar_puzzle_box,if=!buff.double_tap.up&variable.trueshot_ready&cooldown.trueshot.remains<5
+actions.trinkets=use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&this_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14|this_trinket.is.algethar_puzzle_box&variable.trueshot_ready&cooldown.trueshot.remains<5)
+actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&other_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14&other_trinket.cooldown.remains|cooldown.trueshot.remains>20&other_trinket.cooldown.remains<=cooldown.trueshot.remains)
+actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(buff.trueshot.remains>14|buff.trueshot.up&fight_remains<cooldown.trueshot.remains+15|fight_remains<21)
+actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&cooldown.trueshot.remains>20

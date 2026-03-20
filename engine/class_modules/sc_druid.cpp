@@ -582,7 +582,6 @@ struct druid_t final : public parse_player_effects_t
     double initial_astral_power = 0.0;
     int initial_moon_stage = static_cast<int>( moon_stage_e::NEW_MOON );
     int initial_orbit_breaker_stacks = -1;
-    bool enable_dungeon_slice_for_balance = false;
 
     // Feral
     bool disable_ready_trigger = false;
@@ -12061,22 +12060,27 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
   switch ( specialization() )
   {
     case DRUID_BALANCE:
-#ifdef NDEBUG
-      if ( style == FIGHT_STYLE_DUNGEON_SLICE && !options.enable_dungeon_slice_for_balance )
+      if ( style == FIGHT_STYLE_PATCHWERK )
       {
-        throw sc_invalid_fight_style(
-          "DungeonSlice is disabled for Balance Druids. To force enable, use "
-          "'druid.enable_dungeon_slice_for_balance=1'" );
+        if ( sim->desired_targets > 1 )
+        {
+          sim->error( error_level_e::MODERATE,
+                      "Balance APL has not been fully tested for multi-target scenarios. Results may be incorrect." );
+        }
+        return true;
       }
-#endif
-      if ( style != FIGHT_STYLE_PATCHWERK && style != FIGHT_STYLE_DUNGEON_ROUTE )
-        return false;
+      return false;
 
-      break;
     case DRUID_FERAL:
       break;
 
     case DRUID_GUARDIAN:
+      if ( style == FIGHT_STYLE_DUNGEON_SLICE || style == FIGHT_STYLE_DUNGEON_ROUTE )
+      {
+        sim->error( error_level_e::MODERATE,
+                    "DungeonSlice and DungeonRoute have no incoming tank damage which may result in incorrect "
+                    "evaluation of some talents & items." );
+      }
       break;
 
     case DRUID_RESTORATION:
@@ -12091,8 +12095,6 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
 
 bool druid_t::validate_actor()
 {
-  sim->error( error_level_e::MODERATE, "Druid sims are not fully tested and may still have bugs." );
-
   return true;
 }
 
@@ -13483,7 +13485,6 @@ void druid_t::create_options()
   add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
   add_option( opt_int( "druid.initial_orbit_breaker_stacks", options.initial_orbit_breaker_stacks ) );
-  add_option( opt_bool( "druid.enable_dungeon_slice_for_balance", options.enable_dungeon_slice_for_balance ) );
 
   // Feral
   add_option( opt_bool( "druid.disable_ready_trigger", options.disable_ready_trigger ) );

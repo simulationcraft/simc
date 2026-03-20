@@ -33,15 +33,15 @@ def->add_action( "run_action_list,name=ec_st,if=hero_tree.elunes_chosen&spell_ta
 def->add_action( "run_action_list,name=kotg_st,if=spell_targets=1" );
 def->add_action( "run_action_list,name=aoe,if=spell_targets>1" );
 
-aoe->add_action( "celestial_alignment,if=prev_gcd.1.force_of_nature&!variable.ec|variable.ec&prev_gcd.1.fury_of_elune&buff.ca_inc.down&buff.ascendant_stars.down&(trinket.1.cooldown.remains>60|trinket.1.cooldown.ready|fight_remains<trinket.1.cooldown.remains|trinket.2.cooldown.remains>60|trinket.2.cooldown.ready|fight_remains<trinket.2.cooldown.remains)|fight_remains<20","Cooldowns" );
+aoe->add_action( "celestial_alignment,if=prev_gcd.1.force_of_nature&!variable.ec|variable.ec&prev_gcd.1.fury_of_elune&buff.eclipse.down&(variable.on_use_trinket=0|trinket.1.cooldown.remains>60|trinket.1.cooldown.ready|fight_remains<trinket.1.cooldown.remains|trinket.2.cooldown.remains>60|trinket.2.cooldown.ready|fight_remains<trinket.2.cooldown.remains)|fight_remains<20","Cooldowns" );
 aoe->add_action( "moonfire,target_if=remains<2|refreshable&variable.eclipse_down","Dots" );
 aoe->add_action( "sunfire,target_if=remains<2|refreshable&variable.eclipse_down" );
-aoe->add_action( "fury_of_elune,if=variable.opener&!variable.eclipse_down&buff.ascendant_stars.down|!variable.opener&(!variable.ec&(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains<gcd.max|talent.radiant_moonlight&cooldown.force_of_nature.remains>20)|variable.ec&buff.ascendant_stars.down&(cooldown.ca_inc.ready&trinket.1.cooldown.ready|cooldown.ca_inc.remains>10|trinket.1.cooldown.remains>10))","Fury of Elune" );
+aoe->add_action( "fury_of_elune,if=variable.ec|!variable.ec&(variable.opener&!variable.eclipse_down&buff.ascendant_stars.down|!variable.opener&(!variable.ec&(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains<gcd.max|talent.radiant_moonlight&cooldown.force_of_nature.remains>20)))","Fury of Elune" );
 aoe->add_action( "solar_eclipse,if=variable.opener&cooldown.eclipse.charges_fractional=2|!variable.opener&cooldown.solar_eclipse.charges_fractional>1.5&variable.cd_window|cooldown.solar_eclipse.ready&variable.cd_window_narrow|fight_remains<15","Enter Solar" );
 aoe->add_action( "lunar_eclipse,if=!variable.prio&spell_targets>2&!variable.ec&(variable.opener&cooldown.eclipse.charges_fractional=2|!variable.opener&cooldown.lunar_eclipse.charges_fractional>1.5&variable.cd_window|cooldown.lunar_eclipse.ready&variable.cd_window_narrow)|variable.ec&(variable.opener|cooldown.ca_inc.full_recharge_time>15)|fight_remains<15","Enter Lunar" );
 aoe->add_action( "convoke_the_spirits,if=buff.ca_inc.up&astral_power<40|cooldown.ca_inc.remains>50&buff.harmony_of_the_grove.up&buff.ca_inc.down","Convoke" );
 aoe->add_action( "wrath,if=!talent.convoke_the_spirits&spell_targets<3&buff.ascendant_stars.down&(variable.opener&astral_power<50|!variable.opener&astral_power<80&variable.no_weaver_procs&cooldown.force_of_nature.remains<15)","Cast Wrath if Going Solar" );
-aoe->add_action( "sunfire,target_if=variable.opener&buff.ascendant_stars.down|!variable.opener&dot.sunfire.remains<10&variable.ca_soon&cooldown.force_of_nature.remains<3,line_cd=10","Cast Sunfire Before Cooldowns" );
+aoe->add_action( "sunfire,target_if=!talent.aetherial_kindling&(variable.opener&buff.ascendant_stars.down|!variable.opener&dot.sunfire.remains<10&variable.ca_soon&cooldown.force_of_nature.remains<3),line_cd=10","Cast Sunfire Before Cooldowns" );
 aoe->add_action( "force_of_nature,if=!variable.opener|buff.ascendant_stars.down","Treants" );
 aoe->add_action( "starfall,if=astral_power>80|!variable.eclipse_down|!buff.starweavers_weft.react","Spenders" );
 aoe->add_action( "starsurge,if=buff.starweavers_weft.react" );

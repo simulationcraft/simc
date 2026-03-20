@@ -26,9 +26,9 @@ jobs:
             os: ubuntu-24.04
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         env:
           CCACHE_PREFIX: "ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.CCACHE_GENERATION }}"
         with:
@@ -59,7 +59,7 @@ jobs:
           ninja -C '${{ runner.workspace }}/b/ninja'
           ccache -s
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
@@ -87,9 +87,9 @@ jobs:
             enable_file_prefix_map: true
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         env:
           CCACHE_PREFIX: "ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.CCACHE_GENERATION }}"
         with:
@@ -126,7 +126,7 @@ jobs:
           ninja -C '${{ runner.workspace }}/b/ninja'
           ccache -s
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
@@ -140,7 +140,7 @@ jobs:
     name: macos-latest
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Build
         run: make SANITIZE=1 -C engine debug -j 2
@@ -164,7 +164,7 @@ jobs:
       CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
         # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest

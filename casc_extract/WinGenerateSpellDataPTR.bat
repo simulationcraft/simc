@@ -10,5 +10,5 @@ cd dbc_extract3
 robocopy "C:\Program Files (x86)\World of Warcraft\_ptr_\Cache\ADB\enUS" "%cd%\cache\ptr" DBCache.bin
 robocopy "C:\Program Files (x86)\Warcraft\_ptr_\Cache\ADB\enUS" "%cd%\cache\ptr" DBCache.bin
 robocopy "C:\World of Warcraft\_ptr_\Cache\ADB\enUS" "%cd%\cache\ptr" DBCache.bin
-call generate.bat ptr %wowdir% %curr%\casc_extract\wow
+call generate.bat ptr %wowdir% %curr%\casc_extract\wow_ptr
 pause

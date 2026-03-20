@@ -24,6 +24,7 @@ actions=auto_attack
 # Choose Action list to run
 actions+=/call_action_list,name=variables
 actions+=/call_action_list,name=racials
+actions+=/potion,if=(variable.st_planning|variable.adds_remain)&variable.cds_active&(variable.trinket_priority=1&trinket.1.has_use_buff&!trinket.1.proc.mastery.duration>0|variable.trinket_priority=2&trinket.2.has_use_buff&!trinket.2.proc.mastery.duration>0)
 actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=aoe,if=active_enemies>=4
@@ -48,7 +49,7 @@ actions.cooldowns+=/outbreak,if=dot.virulent_plague.ticks_remain<3&!buff.pestile
 actions.cooldowns+=/army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(talent.summon_gargoyle&runic_power>=30|debuff.festering_scythe_debuff.up|!talent.festering_scythe)
 actions.cooldowns+=/dark_transformation,if=(variable.st_planning|variable.adds_remain)&pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead
 actions.cooldowns+=/soul_reaper,if=!talent.pestilence|talent.pestilence&talent.infliction_of_sorrow&(buff.dark_transformation.remains<5|buff.reaping.remains<=gcd.max)|target.health.pct<=35
-actions.cooldowns+=/putrefy,if=(variable.st_planning|variable.adds_remain)&(cooldown.dark_transformation.remains>15&(talent.soul_reaper&target.health.pct>35&!action.soul_reaper.ready|!talent.soul_reaper)|charges=max_charges&(cooldown.dark_transformation.remains>gcd.max|!talent.reaping)|buff.reaping.up&talent.infliction_of_sorrow&talent.pestilence&buff.dark_transformation.remains>10&(charges=max_charges|!dot.virulent_plague.ticking&talent.blightburst))
+actions.cooldowns+=/putrefy,if=(variable.st_planning|variable.adds_remain)&(cooldown.dark_transformation.remains>15&runic_power<90&(talent.soul_reaper&target.health.pct>35&!action.soul_reaper.ready|!talent.soul_reaper&(talent.commander_of_the_dead&!cooldown.dark_transformation.ready|!talent.commander_of_the_dead))|charges=max_charges&(cooldown.dark_transformation.remains>gcd.max|!talent.reaping)|buff.reaping.up&talent.infliction_of_sorrow&talent.pestilence&buff.dark_transformation.remains>10&(charges=max_charges|!dot.virulent_plague.ticking&talent.blightburst))
 
 # Racials
 actions.racials=ancestral_call,if=variable.cds_active

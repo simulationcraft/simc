@@ -17,8 +17,8 @@ bear->add_action( "maul,if=buff.ravage.up&rage>=40&!talent.killing_blow.enabled"
 bear->add_action( "maul,if=buff.ravage.up&rage>=60&talent.killing_blow.enabled" );
 bear->add_action( "maul,if=!buff.ravage.up&rage>=55&!talent.fount_of_strength.enabled" );
 bear->add_action( "mangle,if=dot.red_moon.ticking" );
-bear->add_action( "rake,if=!buff.cat_form.up&talent.fluid_form.enabled&cooldown.heart_of_the_wild.up&(active_enemies<=5&talent.moonkin_form.enabled|!talent.moonkin_form.enabled)&(rage<30&!talent.fount_of_strength.enabled|talent.fount_of_strength.enabled)" );
-bear->add_action( "cat_form,if=!buff.cat_form.up&!talent.fluid_form.enabled&cooldown.heart_of_the_wild.up&(active_enemies<=5&talent.moonkin_form.enabled|!talent.moonkin_form.enabled)&(rage<30&!talent.fount_of_strength.enabled|talent.fount_of_strength.enabled)" );
+bear->add_action( "rake,if=!buff.cat_form.up&talent.fluid_form.enabled&cooldown.heart_of_the_wild.up&talent.heart_of_the_wild.enabled&(active_enemies<=5&talent.moonkin_form.enabled|!talent.moonkin_form.enabled)&(rage<30&!talent.fount_of_strength.enabled|talent.fount_of_strength.enabled)" );
+bear->add_action( "cat_form,if=!buff.cat_form.up&!talent.fluid_form.enabled&cooldown.heart_of_the_wild.up&talent.heart_of_the_wild.enabled&(active_enemies<=5&talent.moonkin_form.enabled|!talent.moonkin_form.enabled)&(rage<30&!talent.fount_of_strength.enabled|talent.fount_of_strength.enabled)" );
 bear->add_action( "moonkin_form,if=!buff.moonkin_form.up&cooldown.heart_of_the_wild.up&active_enemies>=6&talent.moonkin_form.enabled" );
 bear->add_action( "thrash,target_if=refreshable|(dot.thrash.stack<5&talent.flashing_claws.rank=2|dot.thrash.stack<4&talent.flashing_claws.rank=1|dot.thrash.stack<3&!talent.flashing_claws.enabled)" );
 bear->add_action( "ironfur,if=!buff.ironfur.up&!buff.ravage.up&!target.cooldown.pause_action.remains" );

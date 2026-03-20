@@ -27,7 +27,6 @@ struct mind_flay_base_t : public priest_spell_t
     affected_by_shadow_weaving = true;
     may_crit                   = false;
     channeled                  = true;
-    use_off_gcd                = true;
     idol_of_nzoth_tick_stacks  = 1;
   }
 

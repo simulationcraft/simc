@@ -43,8 +43,7 @@ jobs:
 
   spec-test-ptr:
     needs: [build]
-    if: false # Disabled as of build 12.0.1.66220. Re-enable when 12.0.5 PTR becomes publicly available
-    # if: github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch
+    if: github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17

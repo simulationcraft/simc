@@ -1447,6 +1447,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 47666 | Target: Self (1)
 
 Name             : Guardian Spirit (id=47788) [Spell Family (6)] 
+Hotfixed         : Attributes
 Talent Entry     : Holy [tree=spec, row=2, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
@@ -1461,7 +1462,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Phyrix's Embrace (234689 effects: #1, #2), Foreseen Circumstances (440738 effect#2)
 Family Flags     : 75
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Allow While Stunned by Stun Mechanic (378), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), External Defensive (C_Spell.IsExternalDefensive) (499)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Allow While Stunned by Stun Mechanic (378), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), External Defensive (C_Spell.IsExternalDefensive) (499), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=40042)    : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -11061,6 +11062,7 @@ Effects          :
 Description      : Mind Flay damage increased by $s1% and Insanity generation increased by $s2%.
 
 Name             : Mind Flay: Insanity (id=391401) [Spell Family (6)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -11072,6 +11074,7 @@ Stacks           : 1 initial, 4 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Talent (46)
 Effects          :
 #1 (id=1028893)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 391403 | Scaled Value: 391403 | Misc Value 2: 2 | Target: Self (1)

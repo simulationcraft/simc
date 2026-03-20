@@ -1003,6 +1003,7 @@ public:
     cooldown_t* reap;
     cooldown_t* voidblade;
     cooldown_t* void_ray;
+    cooldown_t* soul_immolation;
 
     // Havoc
     cooldown_t* blade_dance;
@@ -3058,6 +3059,64 @@ struct burning_blades_trigger_t : public BASE
   void impact( action_state_t* s ) override
   {
     BASE::impact( s );
+
+    if ( !BASE::p()->talent.scarred.burning_blades->ok() )
+      return;
+
+    if ( !action_t::result_is_hit( s->result ) )
+      return;
+
+    const double dot_damage = s->result_amount * BASE::p()->talent.scarred.burning_blades->effectN( 1 ).percent();
+    residual_action::trigger( BASE::p()->active.burning_blades, s->target, dot_damage );
+  }
+};
+
+template <typename BASE>
+struct burning_blades_live_trigger_t : public BASE
+{
+  using base_t = burning_blades_live_trigger_t<BASE>;
+
+  burning_blades_live_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                                 util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( BASE::p()->is_ptr() )
+      return;
+
+    if ( !BASE::p()->talent.scarred.burning_blades->ok() )
+      return;
+
+    if ( !action_t::result_is_hit( s->result ) )
+      return;
+
+    const double dot_damage = s->result_amount * BASE::p()->talent.scarred.burning_blades->effectN( 1 ).percent();
+    residual_action::trigger( BASE::p()->active.burning_blades, s->target, dot_damage );
+  }
+};
+
+template <typename BASE>
+struct burning_blades_ptr_trigger_t : public BASE
+{
+  using base_t = burning_blades_ptr_trigger_t<BASE>;
+
+  burning_blades_ptr_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                                util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    if ( !BASE::p()->is_ptr() )
+      return;
 
     if ( !BASE::p()->talent.scarred.burning_blades->ok() )
       return;
@@ -5421,6 +5480,13 @@ struct the_hunt_base_t
       {
         p()->spawn_soul_fragment( p()->proc.soul_fragment_from_broken_spirit, soul_fragment::LESSER );
       }
+
+      if ( s->chain_target == 0 && p()->specialization() == DEMON_HUNTER_DEVOURER && p()->is_ptr() &&
+           p()->talent.scarred.violent_transformation->ok() )
+      {
+        // only resets one charge of Soul Immo
+        p()->cooldown.soul_immolation->reset( true, 1 );
+      }
     }
   };
 
@@ -5923,7 +5989,7 @@ struct soul_immolation_t : public soul_immolation_base_t
 
   bool action_ready() override
   {
-    if ( p()->talent.devourer.spontaneous_immolation->ok() )
+    if ( !p()->is_ptr() && p()->talent.devourer.spontaneous_immolation->ok() )
     {
       return false;
     }
@@ -5947,9 +6013,60 @@ struct spontaneous_immolation_t : public soul_immolation_base_t
   }
 };
 
+struct soul_immolation_heal_t : public demon_hunter_heal_t
+{
+  soul_immolation_heal_t( demon_hunter_t* p, util::string_view o )
+    : demon_hunter_heal_t( "soul_immolation", p, p->talent.devourer.soul_immolation, o )
+  {
+    tick_energize_action = p->get_background_action<demon_hunter_energize_t>( fmt::format( "{}_energize", name() ),
+                                                                              p->spec.soul_immolation_energize );
+  }
+
+  void execute() override
+  {
+    target = p();
+    demon_hunter_heal_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    assert( s->target == p() );
+    demon_hunter_heal_t::impact( s );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    demon_hunter_heal_t::tick( d );
+
+    // seems to spawn a soul fragment every other tick, starting with the first tick
+    if ( d->current_tick % 2 == 0 )
+    {
+      p()->spawn_soul_fragment( p()->proc.soul_fragment_from_soul_immolation, soul_fragment::LESSER, 1 );
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    demon_hunter_heal_t::last_tick( d );
+
+    if ( p()->talent.scarred.undying_embers->ok() &&
+         rng().roll( p()->talent.scarred.undying_embers->effectN( 2 ).percent() ) )
+    {
+      p()->proc.undying_embers->occur();
+
+      // retriggers the DoT but doesn't count as a cast/execute
+      action_state_t* undying_embers_state = get_state();
+      undying_embers_state->target         = d->state->target;
+      snapshot_state( undying_embers_state, result_amount_type::HEAL_OVER_TIME );
+
+      make_event<undying_embers_event_t>( *sim, p(), this, undying_embers_state );
+    }
+  }
+};
+
 struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
 {
-  struct reap_damage_t : public shattered_souls_trigger_t<burning_blades_trigger_t<demon_hunter_spell_t>>
+  struct reap_damage_t : public shattered_souls_trigger_t<burning_blades_live_trigger_t<demon_hunter_spell_t>>
   {
     reap_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s, "" )
     {
@@ -6023,7 +6140,7 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
 
 struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
 {
-  struct eradicate_damage_t : public shattered_souls_trigger_t<burning_blades_trigger_t<demon_hunter_spell_t>>
+  struct eradicate_damage_t : public shattered_souls_trigger_t<burning_blades_live_trigger_t<demon_hunter_spell_t>>
   {
     eradicate_damage_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : base_t( n, p, s, "" )
     {
@@ -6550,7 +6667,7 @@ struct meteor_shower_t : public demon_hunter_spell_t
 
 struct hungering_slash_base_t : public demon_hunter_spell_t
 {
-  struct hungering_slash_damage_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
+  struct hungering_slash_damage_t : public shattered_souls_trigger_t<burning_blades_ptr_trigger_t<demon_hunter_spell_t>>
   {
     int number_of_souls_to_spawn;
     proc_t* soul_generation_proc;
@@ -9557,7 +9674,9 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
     return new voidblade_t( this, options_str );
   if ( name == "pierce_the_veil" )
     return new pierce_the_veil_t( this, options_str );
-  if ( name == "soul_immolation" )
+  if ( name == "soul_immolation" && is_ptr() )
+    return new soul_immolation_heal_t(this, options_str);
+  if ( name == "soul_immolation" && !is_ptr() )
     return new soul_immolation_t( this, options_str );
   if ( name == "eradicate" )
     return new eradicate_t( this, options_str );
@@ -10350,7 +10469,7 @@ void demon_hunter_t::init_special_effects()
   base_t::init_special_effects();
 
   // Devourer
-  if ( talent.devourer.spontaneous_immolation->ok() )
+  if ( !is_ptr() && talent.devourer.spontaneous_immolation->ok() )
   {
     auto effect            = new special_effect_t( this );
     effect->name_str       = "spontaneous_immolation";
@@ -11139,7 +11258,7 @@ void demon_hunter_t::init_spells()
   active.consume_soul_empowered_demon = new consume_soul_t(
       this, "consume_soul_empowered_demon", spec.consume_soul_greater_heal, soul_fragment::EMPOWERED_DEMON );
 
-  if ( talent.devourer.spontaneous_immolation->ok() )
+  if ( talent.devourer.spontaneous_immolation->ok() && !is_ptr() )
   {
     active.spontaneous_immolation = get_background_action<spontaneous_immolation_t>( "soul_immolation_spontaneous" );
   }
@@ -11356,8 +11475,8 @@ bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
       return style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_DUNGEON_ROUTE ||
              style == FIGHT_STYLE_CASTING_PATCHWERK || style == FIGHT_STYLE_HECTIC_ADD_CLEAVE;
     case DEMON_HUNTER_VENGEANCE:
-      return style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_CASTING_PATCHWERK ||
-             style == FIGHT_STYLE_HECTIC_ADD_CLEAVE;
+      return style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_DUNGEON_ROUTE ||
+             style == FIGHT_STYLE_CASTING_PATCHWERK || style == FIGHT_STYLE_HECTIC_ADD_CLEAVE;
     default:
       return false;
   }
@@ -11537,10 +11656,11 @@ void demon_hunter_t::create_cooldowns()
   cooldown.metamorphosis    = get_cooldown( "metamorphosis" );
 
   // Devourer
-  cooldown.consume   = get_cooldown( "consume" );
-  cooldown.reap      = get_cooldown( "reap" );
-  cooldown.voidblade = get_cooldown( "voidblade" );
-  cooldown.void_ray  = get_cooldown( "void_ray" );
+  cooldown.consume         = get_cooldown( "consume" );
+  cooldown.reap            = get_cooldown( "reap" );
+  cooldown.voidblade       = get_cooldown( "voidblade" );
+  cooldown.void_ray        = get_cooldown( "void_ray" );
+  cooldown.soul_immolation = get_cooldown( "soul_immolation" );
 
   // Havoc
   cooldown.blade_dance                               = get_cooldown( "blade_dance" );
