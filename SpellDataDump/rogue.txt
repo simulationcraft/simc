@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66431 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66527 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -20,7 +20,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
 #2 (id=31)       : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.0731 | PvP Coefficient: 1.74 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.89424 -> 1.0731)
 #3 (id=32)       : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
                    Modified By: Shadow Blades (121471 effect#3), Backstab (245689 effect#1), The First of the Dead (248210 effect#3), The Rotten (341134 effect#2), The Rotten (394203 effect#2)
@@ -2498,7 +2497,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
 #11 (id=1312900) : Apply Aura (6) | Modify Healing Taken% from Caster (504)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc134732
 Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
@@ -2530,21 +2528,16 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
-Hotfixed         : Base Value (-3 -> 10)
 #2 (id=191060)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
-Hotfixed         : Base Value (-3 -> 10), PvP Coefficient (1 -> 0)
 #3 (id=191061)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0 | Target: Self (1)
-Hotfixed         : Base Value (-3 -> 10), PvP Coefficient (1 -> 0)
 #4 (id=191062)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0 | Target: Self (1)
-Hotfixed         : Base Value (-3 -> 10), PvP Coefficient (1 -> 0)
 #5 (id=191063)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 145 | Scaled Value: 145 | Target: Self (1)
-Hotfixed         : Base Value (113 -> 145)
 #6 (id=260977)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 2.87 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Rupture (360826), Rupture (394031), Rupture (1270203)
@@ -2577,23 +2570,18 @@ Hotfixed         : Base Value (113 -> 145)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Unseen Blade (441144)
                    Family Flags: 125
-Hotfixed         : NEW EFFECT
 #16 (id=1312895) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -13 | Scaled Value: -13 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
-Hotfixed         : NEW EFFECT
 #17 (id=1312896) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -13 | Scaled Value: -13 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
-Hotfixed         : NEW EFFECT
 #18 (id=1312897) : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -13 | Scaled Value: -13 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #19 (id=1312898) : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: -13 | Scaled Value: -13 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 
 Name             : Outlaw Rogue (id=137036) [Spell Family (8), Passive, Hidden] 
 Class            : Outlaw Rogue
@@ -2608,18 +2596,14 @@ Effects          :
                    Base Value: 34 | Scaled Value: 34 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
-Hotfixed         : Base Value (20 -> 34)
 #2 (id=191056)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 34 | Scaled Value: 34 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
-Hotfixed         : Base Value (20 -> 34)
 #3 (id=191057)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 34 | Scaled Value: 34 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 34)
 #4 (id=191058)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 34 | Scaled Value: 34 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 34)
 #5 (id=191059)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
 #6 (id=260967)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
@@ -2637,18 +2621,14 @@ Hotfixed         : Base Value (20 -> 34)
                    Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
-Hotfixed         : NEW EFFECT
 #10 (id=1312946) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
-Hotfixed         : NEW EFFECT
 #11 (id=1312947) : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 0 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #12 (id=1312948) : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 0 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 
 Name             : Assassination Rogue (id=137037) [Spell Family (8), Passive, Hidden] 
 Class            : Assassination Rogue
@@ -2663,18 +2643,14 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
-Hotfixed         : Base Value (25 -> 30)
 #2 (id=191052)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
-Hotfixed         : Base Value (25 -> 30)
 #3 (id=191053)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 30)
 #4 (id=191054)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 30)
 #5 (id=191055)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 348 | Scaled Value: 348 | Target: Self (1)
 #6 (id=261017)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
@@ -2697,18 +2673,14 @@ Hotfixed         : Base Value (25 -> 30)
                    Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
-Hotfixed         : NEW EFFECT
 #11 (id=1312953) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061)
                    Family Flags: 54
-Hotfixed         : NEW EFFECT
 #12 (id=1312954) : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 0 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #13 (id=1312955) : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 0 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 
 Name             : Fortitude (id=137593) [Spell Family (8)] 
 School           : Physical
@@ -3022,7 +2994,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=269259)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.59 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (4.86 -> 5.59)
 #2 (id=269260)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Resource: combo_points | Target: Self (1)
                    Modified By: Shadow Blades (121471 effect#2), The First of the Dead (248210 effect#1), The Rotten (341134 effect#1), The Rotten (394203 effect#1)
@@ -3512,7 +3483,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=288959)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.37325 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.3456 -> 0.37325)
 Description      : Finishing move that disembowels the target, causing damage per combo point.$?s382511[ Targets with Find Weakness suffer an additional $382511s1% damage as Shadow.][]
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -3932,7 +3902,6 @@ Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=295616)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.23 | PvP Coefficient: 1.74 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (1.02492 -> 1.23)
 #2 (id=295617)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
                    Modified By: Shadow Blades (121471 effect#2), The First of the Dead (248210 effect#2), The Rotten (341134 effect#1), The Rotten (394203 effect#1)
@@ -6241,7 +6210,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Display Range (126
 Effects          :
 #1 (id=805458)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.185 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (0.21 -> 0.185)
 #2 (id=805481)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=806748)   : Dummy (3)
@@ -6274,7 +6242,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), No Skill Increase (36)
 Effects          :
 #1 (id=805486)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.185 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (0.21 -> 0.185)
 Description      : $@spelldesc319175
 
 Name             : Mastery: Potent Assassin (desc=Rank 2) (id=319473) [Spell Family (8), Passive] 
@@ -6611,7 +6578,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=819933)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.37325 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.3456 -> 0.37325)
 Description      : $@spelldesc196819
 
 Name             : Blindside (id=328085) [Spell Family (8), Passive] 
@@ -7620,7 +7586,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=870090)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.59 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (4.5 -> 5.59)
 Description      : $@spelldesc185438
 
 Name             : Flagellation (desc=Venthyr) (id=345316) [Spell Family (8)] 
@@ -12496,7 +12461,6 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | Target: Self (1)
 #3 (id=1166349)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Hotfixed         : Base Value (65 -> 50)
 Description      : $?a137036[Blade Flurry damage is increased by $s1%][Your auto-attacks, Unseen Blade, and Coup de Grace also strike up to $s2 nearby enemies for $s3% of normal damage] while Flawless Form is active.
 
 Name             : No Scruples (id=441398) [Spell Family (8), Passive] 
@@ -14186,7 +14150,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171851)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.0864 -> 0.094)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462242) [Spell Family (8)] 
@@ -14206,7 +14169,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171852)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.0864 -> 0.094)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462243) [Spell Family (8)] 
@@ -14226,7 +14188,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171853)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.187 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.1728 -> 0.187)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462244) [Spell Family (8)] 
@@ -14246,7 +14207,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171854)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.0864 -> 0.094)
 Description      : $@spelldesc196819
 
 Name             : Eviscerate (Coup de Grace) (id=462247) [Spell Family (8)] 
@@ -14266,7 +14226,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171857)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.0864 -> 0.094)
 Description      : $@spelldesc196819
 
 Name             : Eviscerate (Coup de Grace) (id=462248) [Spell Family (8)] 
@@ -14286,7 +14245,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171858)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.187 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.1728 -> 0.187)
 Description      : $@spelldesc196819
 
 Name             : Dispatch (id=467059) [Spell Family (8)] 
@@ -16600,7 +16558,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Ignore Line of Sight (66)
 Effects          :
 #1 (id=1277766)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.8 | PvP Coefficient: 0.65 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.65)
 Description      : $@spelldesc1265387
 
 Name             : Implacable Strikes (id=1265795) [Spell Family (8)] 
@@ -16617,7 +16574,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Ignore Line of Sight (66)
 Effects          :
 #1 (id=1277767)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.6 | PvP Coefficient: 0.65 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.65)
 #2 (id=1277768)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc1265387
@@ -16753,7 +16709,6 @@ Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (2
 Effects          :
 #1 (id=1278047)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 20)
 #2 (id=1278048)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Black Powder deals increased damage equal to $s1% of your Mastery when it spends $s2 or more combo points.
@@ -16945,7 +16900,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1280916)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.37325 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.3456 -> 0.37325)
 Description      : $@spelldesc196819
 
 Name             : Backstab (id=1269209) [Spell Family (8)] 
@@ -16964,7 +16918,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1280921)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.0731 | PvP Coefficient: 1.74 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.89424 -> 1.0731)
 Description      : $@spelldesc53
 Variables        : $mult=${($max(0,$min($pl-10,10))*11+260)/370}
 
@@ -16985,7 +16938,6 @@ Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1280932)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.23 | PvP Coefficient: 1.74 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (1.02492 -> 1.23)
 Description      : $@spelldesc200758
 
 Name             : Goremaw's Bite (id=1269217) [Spell Family (8)] 
@@ -17020,7 +16972,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=1281095)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.59 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (4.86 -> 5.59)
 Description      : $@spelldesc185438
 
 Name             : Shuriken Storm (id=1269340) [Spell Family (8)] 
@@ -17098,7 +17049,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Do Not Display Range (126
 Effects          :
 #1 (id=1281473)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.185 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (0.21 -> 0.185)
 #2 (id=1281474)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1281475)  : Dummy (3)
@@ -17508,7 +17458,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Shuriken Storm (197835), Shuriken Storm (1269340)
                    Family Flags: 127
-Hotfixed         : Base Value (15 -> 10)
 Description      : $?c2[Pistol Shot][Shuriken Storm] has $?c2[$s1][$s2]% increased critical strike chance and now triggers Unseen Blade when available.
 
 Name             : Ravenholdt Mint (id=1276809) [Spell Family (8), Passive] 
