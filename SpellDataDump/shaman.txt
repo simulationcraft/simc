@@ -3610,6 +3610,9 @@ Attributes       : Not Shapeshifted (16), No Threat (42), Allow Class Ability Pr
 Effects          :
 #1 (id=274045)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 195592 | Target: Self (1)
+#2 (id=1313366)  : Apply Aura (6) | Modify Mastery% (318)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc187874
 Tooltip          : Stormstrike and Lava Lash deal an additional $195592s1 damage to all targets in front of you.
 
@@ -17641,7 +17644,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Modified By: Storm Unleashed (1252373 effect#3)
 #3 (id=1281833)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.5 -> 1)
 Description      : $@spelldesc187874
 Tooltip          : Stormstrike and Lava Lash deal an additional $195592s1 damage split between up to $195592i targets in front of you.$?s1252373[
 
