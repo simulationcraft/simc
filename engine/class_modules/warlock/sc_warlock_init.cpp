@@ -121,6 +121,10 @@ namespace warlock
     // NOTE: 2026-02-17 Mark of Perotharn is being applied twice in what appears to be a bug
     if ( bugs )
       parse_passive_effects( hero.mark_of_perotharn, true );
+
+    // NOTE: 2026-03-21 An additional effect of Fel Armaments talent is applied even if the talent is not selected (bug)
+    if ( demonology() && bugs )
+      parse_passive_effects( talents.fel_armaments_2, true );
   }
 
   void warlock_t::init_spells_affliction()
@@ -274,6 +278,7 @@ namespace warlock
     talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194;
 
     talents.fel_armaments = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Armaments" ); // Should be ID 1263935
+    talents.fel_armaments_2 = conditional_spell_lookup( warlock_base.demonology_warlock->ok() && bugs, 1263938 ); // Always active due to a bug
 
     talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 1250768
 
@@ -1599,6 +1604,7 @@ namespace warlock
     add_option( opt_bool( "eye_explosion_instanced_bug_cb", eye_explosion_instanced_bug_cb ) );
     add_option( opt_bool( "eye_explosion_instanced_bug_sb", eye_explosion_instanced_bug_sb ) );
     add_option( opt_bool( "eye_explosion_instanced_bug_rof", eye_explosion_instanced_bug_rof ) );
+    add_option( opt_float( "tyrant_antoran_armaments_target_mul", tyrant_antoran_armaments_target_mul, 0.0, 1.0 ));
 
     rng_settings.for_each( [ this ]( auto& setting )
     {

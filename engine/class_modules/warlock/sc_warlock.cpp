@@ -212,7 +212,8 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     normalize_destruction_mastery( false ),
     eye_explosion_instanced_bug_cb( true ),
     eye_explosion_instanced_bug_sb( true ),
-    eye_explosion_instanced_bug_rof( false )
+    eye_explosion_instanced_bug_rof( false ),
+    tyrant_antoran_armaments_target_mul( 1.0 )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
   cooldowns.dark_harvest = get_cooldown( "dark_harvest" );
@@ -482,15 +483,18 @@ std::string warlock_t::create_profile( save_e stype )
     if ( normalize_destruction_mastery )
       profile_str +=
           "normalize_destruction_mastery=" + util::to_string( as<int>( normalize_destruction_mastery ) ) + "\n";
-    if ( eye_explosion_instanced_bug_cb )
+    if ( !eye_explosion_instanced_bug_cb )
       profile_str +=
           "eye_explosion_instanced_bug_cb=" + util::to_string( as<int>( eye_explosion_instanced_bug_cb ) ) + "\n";
-    if ( eye_explosion_instanced_bug_sb )
+    if ( !eye_explosion_instanced_bug_sb )
       profile_str +=
           "eye_explosion_instanced_bug_sb=" + util::to_string( as<int>( eye_explosion_instanced_bug_sb ) ) + "\n";
     if ( eye_explosion_instanced_bug_rof )
       profile_str +=
           "eye_explosion_instanced_bug_rof=" + util::to_string( as<int>( eye_explosion_instanced_bug_rof ) ) + "\n";
+    if ( tyrant_antoran_armaments_target_mul < 1.0 )
+      profile_str +=
+          "tyrant_antoran_armaments_target_mul=" + util::to_string( tyrant_antoran_armaments_target_mul ) + "\n";
     rng_settings.for_each( [ &profile_str ]( auto& setting ) { profile_str += append_rng_option( setting ); } );
   }
 
@@ -510,6 +514,7 @@ void warlock_t::copy_from( player_t* source )
   eye_explosion_instanced_bug_cb = p->eye_explosion_instanced_bug_cb;
   eye_explosion_instanced_bug_sb = p->eye_explosion_instanced_bug_sb;
   eye_explosion_instanced_bug_rof = p->eye_explosion_instanced_bug_rof;
+  tyrant_antoran_armaments_target_mul = p->tyrant_antoran_armaments_target_mul;
 
   rng_settings = p->rng_settings;
 }
