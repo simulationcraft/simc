@@ -241835,6 +241835,7 @@ These explosions are split among all targets hit, and their effectiveness increa
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Rot (id=1244332) 
+Hotfixed         : Attributes
 School           : Holy
 Spell Type       : Magic
 Range            : 30 yards
@@ -241843,7 +241844,7 @@ Proc Chance      : 101%
 Real PPM         : 30 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Triggered By     : Rot (1245051), Rot (1245055)
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Do Not Report Spell Failure (71), Allow While Invisible (78), Suppress Target Procs (113), Allow Cast While Casting (135), Not In Spellbook (143), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Aura Icon (60), Do Not Report Spell Failure (71), Allow While Invisible (78), Can Proc From Procs (122), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1245028)  : Apply Aura (6) | Proc Trigger Spell (42): Root Rot
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1247411 | Target: Self (1)
@@ -242162,8 +242163,9 @@ School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1245931)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Rot | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 66.92774 (coefficient=0.523677) | Trigger Spell: 1244332 | Target: Self (1)
+#1 (id=1245931)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Rot | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 113.2316 (coefficient=0.863833) | Trigger Spell: 1244332 | Target: Self (1)
+Hotfixed         : Coefficient (0.523677 -> 0.863833), Scaling Class (-9 -> -7)
 Description      : Afflict your target with Rotting Roots dealing $s1 Nature Damage every $1247411t seconds for $1247411d. This effect stacks up to $1247411u times. New stacks do not refresh applied stacks.
 
 Name             : [DNT] Equip Artifact (id=1245110) [Hidden] 
@@ -242752,19 +242754,20 @@ Effects          :
 Description      : Echo the sound of your drum through a sacred loa temple, aligning its beat with the will of the loa.
 
 Name             : Root Rot (id=1247411) 
+Hotfixed         : Velocity (1 -> 0.3), Learn Level (1 -> 0), Attributes, Required Level (1 -> 0)
 School           : Nature
 Spell Type       : Magic
-Spell Level      : 1
 Range            : 100 yards
-Travel Time      : 1 seconds
+Travel Time      : 0.3 seconds
 Duration         : 6 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Triggered By     : Rot (1244332)
-Attributes       : Aura Is Debuff (26), No Reflection (39), No Threat (42), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Allow Cast While Channeling (308), Don't Cancel When All Effects are Disabled (353), Asynchronous Buff (490)
+Attributes       : Aura Is Debuff (26), No Reflection (39), No Threat (42), DoT Stacking Rule (103), Suppress Caster Procs (112), Allow Cast While Casting (135), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Allow Cast While Channeling (308), Don't Cancel When All Effects are Disabled (353), Asynchronous Buff (490)
 Effects          :
-#1 (id=1249550)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1245051 | Mechanic: Snare | Target: Targeted Enemy (6)
+#1 (id=1249550)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds | Attributes: Aura Points Stack (9)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1245051 | Target: Targeted Enemy (6)
+Hotfixed         : Mechanic (11 -> 0), Attribute (64 -> 512)
 Description      : Dealing $s1 Nature damage every $t seconds.
 Tooltip          : Dealing $w1 Nature damage every $t seconds.
 
