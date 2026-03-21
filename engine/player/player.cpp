@@ -7834,6 +7834,17 @@ double player_t::resource_gain( resource_e resource_type, double amount, gain_t*
                     resources.current[ resource_type ], resources.max[ resource_type ] );
   }
 
+  // energize_power from actions can trigger generic helpful proc effects
+  if ( action && resource_type > RESOURCE_MANA && resource_type < RESOURCE_MAX )
+  {
+    if ( action->callbacks && action->caster_callbacks &&
+         ( !action->suppress_caster_procs || action->enable_proc_from_suppressed ) &&
+         !action->suppress_callback_from_energize )
+    {
+      trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, action, action->energize_state.get() );
+    }
+  }
+
   return actual_amount;
 }
 
