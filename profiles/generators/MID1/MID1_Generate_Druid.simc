@@ -81,31 +81,30 @@ main_hand=roostwardens_bough,id=251077,enchant_id=8039,ilevel=289
 
 save=MID1_Druid_Feral.simc
 
-# druid=MID1_Druid_Guardian
-# level=90
-# race=night_elf
-# timeofday=night
-# role=tank
-# position=front
-# spec=guardian
-# talents=CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzYmZmZWmBzMDGLmhZsYZAYMay0MzsY2mxYMDDAAAAAAjZGAAAAUzsNLzMLDAgFGjBYxMYA
+druid=MID1_Druid_Guardian
+level=90
+race=night_elf
+timeofday=night
+role=tank
+position=front
+spec=guardian
+talents=CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmxsYmZMzmZZgZbZgxMMaimZmFzMzMLjZeADAAAAgZYGLzAAAAQNzysMzMDAgFMDgFzgBsYZbAwMbwA
 
 
-# head=skymane_of_the_mother_eagle,id=237682,bonus_id=12361/10356/12231/40/12921/12676/1533/10255/1808,gem_id=213743
-# neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=10035/12361/12239/8781,gem_id=213461/213461
-# shoulder=ritual_pauldrons_of_the_mother_eagle,id=237680,bonus_id=12361/10356/12233/40/12675/1533/10255
-# back=reshii_wraps,id=235499,bonus_id=12401/9893,gem_id=238044,enchant_id=7409
-# chest=vest_of_the_mother_eagle,id=237685,bonus_id=12361/10356/12229/40/12676/1533/10255,enchant_id=7364
-# wrist=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/12053/12050/1485/1808/11303/8960,gem_id=213461,enchant_id=7391,crafted_stats=49/36
-# hands=winged_gamma_handlers,id=237540,bonus_id=1533/12361/12239
-# waist=runebranded_waistband,id=219331,bonus_id=10421/9633/8902/12053/12050/1485/1808/11303/8960,gem_id=213482,crafted_stats=49/36
-# legs=breeches_of_the_mother_eagle,id=237681,bonus_id=12361/10356/12232/40/12676/1533/10255,enchant_id=7595
-# feet=feathered_boots_of_the_mother_eagle,id=237684,bonus_id=1533/12361,enchant_id=7418
-# finger1=band_of_the_shattered_soul,id=242405,bonus_id=1533/12361/12239/8781,gem_id=213470/213467,enchant_id=7340
-# finger2=high_nerubian_signet,id=221141,bonus_id=3215/12361/12239/8781,gem_id=213494/213491,enchant_id=7340
-# trinket1=ticking_sack_of_terror,id=190652,bonus_id=4786/10035/12361
-# trinket2=tome_of_lights_devotion,id=219309,bonus_id=3215/12361/12239
-# main_hand=harvesters_interdiction,id=221159,bonus_id=3215/12361/12239,enchant_id=7448
+head=mask_of_darkest_intent,id=249913,bonus_id=1808/3170/4786/4800/12806,gem_id=240983,enchant_id=7961
+neck=pendant_of_aching_grief,id=251096,bonus_id=12806/13577/13668,gem_id=240900
+shoulders=seedpods_of_the_luminous_bloom,id=250022,bonus_id=12806/13574/13574/13574/13574/13574/13574/13574,enchant_id=8031
+back=potionstained_cloak,id=193712,bonus_id=12806/13577
+chest=trunk_of_the_luminous_bloom,id=250027,bonus_id=12806/13575/13575/13575/13575/13575/13575/13575,enchant_id=7987
+wrists=silvermoon_agents_deflectors,id=244576,bonus_id=1808/8790/8960/12066/12214/12384/13622/13667/9627,gem_id=240900,crafted_stats=32/49
+hands=arbortenders_of_the_luminous_bloom,id=250025,bonus_id=12806/13574/13574/13574/13574/13574/13574/13574
+waist=silvermoon_agents_utility_belt,id=244573,bonus_id=1808/8790/8960/12066/12214/12384/13622/13667/9627,gem_id=240900,crafted_stats=32/49
+legs=phloemwraps_of_the_luminous_bloom,id=250023,bonus_id=12806/13575/13575/13575/13575/13575/13575/13575,enchant_id=8159
+feet=eclipse_espadrilles,id=251210,bonus_id=12806/13577,enchant_id=7993
+finger1=omission_of_light,id=251093,bonus_id=12806/13577/13668,gem_id=240900,enchant_id=8025
+finger2=occlusion_of_void,id=251217,bonus_id=12806/13577/13668,gem_id=240900,enchant_id=8025
+trinket1=algethar_puzzle_box,id=193701,bonus_id=3148/4786/12806
+trinket2=umbral_plume,id=260235,bonus_id=12806/13577
+main_hand=traitors_talon,id=251162,bonus_id=4786/12806,enchant_id=8039
 
-
-# save=MID1_Druid_Guardian.simc
+save=MID1_Druid_Guardian.simc
