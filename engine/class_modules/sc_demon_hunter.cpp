@@ -6120,19 +6120,23 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
     p()->buff.reap->trigger();
 
     base_t::execute();
-    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, true, souls_to_consume() );
+    unsigned fragments_consumed = souls_to_consume();
+    
+    p()->consume_soul_fragments( soul_fragment::LESSER, false, fragments_consumed );
 
-    damage_action->set_target( target );
-    action_state_t* damage_state = damage_action->get_state();
-    damage_state->target         = target;
-    damage_action->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+    make_event( *p()->sim, 220_ms, [ this, fragments_consumed ] {
+      damage_action->set_target( target );
+      action_state_t* damage_state = damage_action->get_state();
+      damage_state->target         = target;
+      damage_action->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
 
-    if ( p()->talent.devourer.soulshaper->ok() )
-    {
-      damage_state->da_multiplier *= 1.0 + fragments_consumed * p()->talent.devourer.soulshaper->effectN( 1 ).percent();
-    }
-
-    damage_action->schedule_execute( damage_state );
+      if ( p()->talent.devourer.soulshaper->ok() )
+      {
+        damage_state->da_multiplier *=
+            1.0 + fragments_consumed * p()->talent.devourer.soulshaper->effectN( 1 ).percent();
+      }
+      damage_action->schedule_execute( damage_state );
+    } );
 
     p()->buff.moment_of_craving->expire();
   }
@@ -6206,21 +6210,24 @@ struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
 
     base_t::execute();
 
-    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, true, souls_to_consume() );
+    unsigned fragments_consumed = souls_to_consume();
+    p()->consume_soul_fragments( soul_fragment::LESSER, false, fragments_consumed );
     auto damage                 = p()->buff.metamorphosis->up() ? damage_action_meta : damage_action;
 
-    damage->set_target( target );
-    action_state_t* damage_state = damage->get_state();
-    damage_state->target         = target;
-    damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+    make_event( *p()->sim, 220_ms, [ this, fragments_consumed, damage ] {
+      damage->set_target( target );
+      action_state_t* damage_state = damage->get_state();
+      damage_state->target         = target;
+      damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
 
-    if ( p()->talent.devourer.soulshaper->ok() )
-    {
-      damage_state->da_multiplier *= 1.0 + fragments_consumed * p()->talent.devourer.soulshaper->effectN( 1 ).percent();
-    }
+      if ( p()->talent.devourer.soulshaper->ok() )
+      {
+        damage_state->da_multiplier *=
+            1.0 + fragments_consumed * p()->talent.devourer.soulshaper->effectN( 1 ).percent();
+      }
 
-    damage->schedule_execute( damage_state );
-
+      damage->schedule_execute( damage_state );
+    } );
     p()->buff.moment_of_craving->expire();
 
     p()->buff.eradicate->expire();
