@@ -12797,7 +12797,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
         cooldown.vampiric_blood->adjust( -sec );
       }
 
-      if ( talent.blood.sanguinary_burst.ok() && buffs.dancing_rune_weapon->check() )
+      if ( talent.blood.sanguinary_burst.ok() && buffs.blood_mist->check() )
         buffs.sanguinary_burst->trigger( as<int>( final_spend ) );
     }
   }
