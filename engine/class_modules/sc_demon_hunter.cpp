@@ -3035,12 +3035,14 @@ struct meteoric_fall_trigger_t : public BASE
 
     for ( int i = 0; i < stacks; ++i )
     {
-      BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
+      make_event<delayed_execute_event_t>( *BASE::sim, BASE::p(), BASE::p()->active.voidfall_meteor, BASE::target,
+                                           ( BASE::p()->active.voidfall_meteor->travel_time() * i ) );
     }
 
     if ( BASE::p()->talent.annihilator.world_killer->ok() )
     {
-      BASE::p()->active.world_killer->execute_on_target( BASE::target );
+      make_event<delayed_execute_event_t>( *BASE::sim, BASE::p(), BASE::p()->active.world_killer, BASE::target,
+                                           ( stacks * BASE::p()->active.voidfall_meteor->travel_time() ) );
     }
   }
 };
