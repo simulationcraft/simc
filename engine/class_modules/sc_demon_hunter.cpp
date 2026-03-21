@@ -6562,9 +6562,9 @@ struct voidfall_meteor_base_t : public demon_hunter_spell_t
   voidfall_meteor_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
     : demon_hunter_spell_t( n, p, s )
   {
-    execute_action = p->get_background_action<voidfall_meteor_damage_t>( fmt::format( "{}_damage", name() ),
+    impact_action = p->get_background_action<voidfall_meteor_damage_t>( fmt::format( "{}_damage", name() ),
                                                                          s->effectN( 2 ).trigger() );
-    add_child( execute_action );
+    add_child( impact_action );
   }
 };
 
