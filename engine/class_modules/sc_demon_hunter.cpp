@@ -6124,6 +6124,7 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
     
     p()->consume_soul_fragments( soul_fragment::LESSER, false, fragments_consumed );
 
+    // TOCHECK: This delay is a guess based on averages in logs as there is no spelldata
     make_event( *p()->sim, 220_ms, [ this, fragments_consumed ] {
       damage_action->set_target( target );
       action_state_t* damage_state = damage_action->get_state();
@@ -6214,6 +6215,7 @@ struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
     p()->consume_soul_fragments( soul_fragment::LESSER, false, fragments_consumed );
     auto damage                 = p()->buff.metamorphosis->up() ? damage_action_meta : damage_action;
 
+    // TOCHECK: This delay is a guess based on averages in logs as there is no spelldata
     make_event( *p()->sim, 220_ms, [ this, fragments_consumed, damage ] {
       damage->set_target( target );
       action_state_t* damage_state = damage->get_state();
