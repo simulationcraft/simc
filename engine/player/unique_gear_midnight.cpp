@@ -2100,6 +2100,7 @@ void emberwing_feather( special_effect_t& effect )
     }
   };
 
+  effect.has_use_buff_override = true;
   effect.execute_action = create_proc_action<emberwing_heatwave_t>( "emberwing_heatwave", effect );
 }
 
@@ -2301,6 +2302,7 @@ void vaelgors_final_stare( special_effect_t& e )
   double buff_val    = equip->driver()->effectN( 1 ).average( e );
   double buff_stacks = buff_val / stacks;
 
+  e.has_use_buff_override = true;
   e.custom_buff = create_buff<stat_buff_t>( e.player, buff_spell )
                       ->set_stat_from_effect_type( A_MOD_RATING, buff_stacks )
                       ->set_max_stack( stacks )
@@ -2328,7 +2330,6 @@ void evercollapsing_void_fissure( special_effect_t& e )
 
   e.custom_buff = create_buff<evercollapsing_void_fissure_buff_t>( e.player, e.driver(), e );
 }
-
 
 // Locus-Walker's Ribbon
 // 1259314 Driver
@@ -2436,6 +2437,7 @@ void wraps_of_cosmic_madness( special_effect_t& effect )
     }
   };
 
+  effect.has_use_damage_override = true;
   effect.execute_action = create_proc_action<cosmic_madness_channel_t>( "wraps_of_cosmic_madness", effect );
 }
 
@@ -2627,6 +2629,7 @@ void deadly_precision( special_effect_t& effect )
     ->set_initial_stack_to_max_stack();
 
   effect.custom_buff = buff;
+  effect.has_use_buff_override = true;
 
   // setup the driver to consume the buff
   auto driver = new special_effect_t( effect.player );
