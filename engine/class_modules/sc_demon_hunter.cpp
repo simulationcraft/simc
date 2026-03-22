@@ -1222,9 +1222,9 @@ public:
     double voidfall_proc_chance_0_stacks_vengeance = 0.385;
     double voidfall_proc_chance_1_stacks_vengeance = 0.325;
     double voidfall_proc_chance_2_stacks_vengeance = 0.30;
-    double voidfall_proc_chance_0_stacks_havoc = 0.41;
-    double voidfall_proc_chance_1_stacks_havoc = 0.34;
-    double voidfall_proc_chance_2_stacks_havoc = 0.325;
+    double voidfall_proc_chance_0_stacks_devourer = 0.41;
+    double voidfall_proc_chance_1_stacks_devourer = 0.34;
+    double voidfall_proc_chance_2_stacks_devourer = 0.325;
     // How many seconds that Vengeful Retreat locks out Felblade
     double felblade_lockout_from_vengeful_retreat    = 0.6;
     bool enable_dungeon_slice                        = false;
@@ -10127,9 +10127,9 @@ void demon_hunter_t::create_options()
   add_option( opt_float( "voidfall_proc_chance_0_stacks_vengeance", options.voidfall_proc_chance_0_stacks_vengeance, 0, 1 ) );
   add_option( opt_float( "voidfall_proc_chance_1_stacks_vengeance", options.voidfall_proc_chance_1_stacks_vengeance, 0, 1 ) );
   add_option( opt_float( "voidfall_proc_chance_2_stacks_vengeance", options.voidfall_proc_chance_2_stacks_vengeance, 0, 1 ) );
-  add_option( opt_float( "voidfall_proc_chance_0_stacks_havoc", options.voidfall_proc_chance_0_stacks_havoc, 0, 1 ) );
-  add_option( opt_float( "voidfall_proc_chance_1_stacks_havoc", options.voidfall_proc_chance_1_stacks_havoc, 0, 1 ) );
-  add_option( opt_float( "voidfall_proc_chance_2_stacks_havoc", options.voidfall_proc_chance_2_stacks_havoc, 0, 1 ) );
+  add_option( opt_float( "voidfall_proc_chance_0_stacks_devourer", options.voidfall_proc_chance_0_stacks_devourer, 0, 1 ) );
+  add_option( opt_float( "voidfall_proc_chance_1_stacks_devourer", options.voidfall_proc_chance_1_stacks_devourer, 0, 1 ) );
+  add_option( opt_float( "voidfall_proc_chance_2_stacks_devourer", options.voidfall_proc_chance_2_stacks_devourer, 0, 1 ) );
   add_option(
       opt_float( "felblade_lockout_from_vengeful_retreat", options.felblade_lockout_from_vengeful_retreat, 0, 1 ) );
   add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
@@ -10998,9 +10998,9 @@ void demon_hunter_t::init_spells()
       hero_spec.meteor_shower_driver = talent_spell_lookup( talent.annihilator.dark_matter, 1264126 );
       hero_spec.meteor_shower_damage = hero_spec.meteor_shower_driver->effectN( 1 ).trigger();
       hero_spec.world_killer         = talent_spell_lookup( talent.annihilator.world_killer, 1256618 );
-      hero_spec.voidfall_proc_chances = { options.voidfall_proc_chance_0_stacks_havoc,
-                                          options.voidfall_proc_chance_1_stacks_havoc,
-                                          options.voidfall_proc_chance_2_stacks_havoc };
+      hero_spec.voidfall_proc_chances = { options.voidfall_proc_chance_0_stacks_devourer,
+                                          options.voidfall_proc_chance_1_stacks_devourer,
+                                          options.voidfall_proc_chance_2_stacks_devourer };
       break;
     case DEMON_HUNTER_VENGEANCE:
       hero_spec.voidfall_meteor      = talent_spell_lookup( talent.annihilator.voidfall, 1256303 );
