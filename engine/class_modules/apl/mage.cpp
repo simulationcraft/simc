@@ -161,13 +161,14 @@ void fire( player_t* p )
   precombat->add_action( "variable,name=cast_remains_time,value=0.2" );
   precombat->add_action( "variable,name=pooling_time,value=10*gcd.max" );
   precombat->add_action( "variable,name=flamestriking,op=reset,default=1" );
-  precombat->add_action( "variable,name=ff_combustion_flamestrike,if=!talent.spellfire_spheres,value=4+(999*!talent.fuel_the_fire)", "Flamestrike at 4 targets during Combustion. Do at 3 targets if you don't care about prio dmg." );
-  precombat->add_action( "variable,name=ff_filler_flamestrike,if=!talent.spellfire_spheres,value=4+(999*!talent.fuel_the_fire)", "Flamestrike at 4 targets." );
+  precombat->add_action( "variable,name=ff_combustion_flamestrike,if=!talent.spellfire_spheres,value=4+(999*!talent.fuel_the_fire)", "Flamestrike at 4 targets during Combustion." );
+  precombat->add_action( "variable,name=ff_filler_flamestrike,if=!talent.spellfire_spheres,value=8+(999*!talent.fuel_the_fire)", "Flamestrike at 8 targets." );
   precombat->add_action( "variable,name=sf_combustion_flamestrike,if=talent.spellfire_spheres,value=4+(999*!talent.fuel_the_fire)", "Flamestrike at 4 targets during Combustion. Do at 3 targets if you don't care about prio dmg." );
-  precombat->add_action( "variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=3+(999*!talent.fuel_the_fire)", "Flamestrike at 3 targets." );
+  precombat->add_action( "variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=4+(999*!talent.fuel_the_fire)", "Flamestrike at 4 targets." );
   precombat->add_action( "variable,name=combustion_delay,value=10+(8*talent.firestarter)-(10*(expected_combat_length<60)+10*(expected_combat_length<30))-10*(((expected_combat_length%%60)>=25)&((expected_combat_length%%60)<=40))", "Delay Combustion to stack up buffs for all builds unless it means losing casts of Combustion. Do not do so if fight length is short." );
   precombat->add_action( "variable,name=15ssteroid_trinket_equipped,op=set,value=equipped.nevermelting_ice_crystal|equipped.lily_of_the_eternal_weave|equipped.sunblood_amethyst|equipped.astral_gladiators_badge_of_ferocity|equipped.arazs_ritual_forge|equipped.freightrunners_flask|equipped.emberwing_feather|equipped.vaelgors_final_stare|equipped.galactic_gladiators_badge_of_ferocity" );
   precombat->add_action( "variable,name=10ssteroid_trinket_equipped,op=set,value=equipped.ever_collapsing_void_fissure" );
+  precombat->add_action( "variable,name=nonsteroid_trinket_equipped,op=set,value=equipped.mereldars_toll|equipped.perfidious_projector|equipped.chaotic_nethergate|equipped.wraps_of_cosmic_madness|equipped.astalors_anguish_agitator" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
   precombat->add_action( "frostfire_bolt,if=talent.frostfire_bolt", "Precast one of these." );
@@ -175,14 +176,24 @@ void fire( player_t* p )
   precombat->add_action( "pyroblast" );
 
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "run_action_list,name=ff_combustion,if=talent.frostfire_bolt&((time>=variable.combustion_delay)&(cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready))", "Combustion delayed on pull by 10 seconds for most non-Firestarter builds, and 18 seconds for all Firestarter builds." );
+  default_->add_action( "run_action_list,name=ff_combustion,if=talent.frostfire_bolt&((time>=variable.combustion_delay)&(cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready))", "Combustion is delayed on pull by 10 seconds for most non-Firestarter builds, and 18 seconds for all Firestarter builds to simulate realistic timings for when a boss drops below 90% hp." );
   default_->add_action( "run_action_list,name=sf_combustion,if=!talent.frostfire_bolt&((time>=variable.combustion_delay)&(cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready))" );
   default_->add_action( "run_action_list,name=ff_filler,if=talent.frostfire_bolt" );
   default_->add_action( "run_action_list,name=sf_filler" );
 
   cds->add_action( "variable,name=combustion_precast_time,value=(action.scorch.cast_time*!buff.pyroclasm.up*scorch_execute.active)+(action.fireball.cast_time*!buff.pyroclasm.up*!scorch_execute.active)+(action.pyroblast.cast_time*buff.pyroclasm.up)-variable.cast_remains_time" );
   cds->add_action( "potion,if=time>=(0+(4*(talent.firestarter&talent.spellfire_spheres)+4*(talent.savor_the_moment)+4*(talent.pyroclasm&talent.firestarter&talent.spellfire_spheres)))|buff.combustion.remains>6|fight_remains<35", "Use Potion on pull. Delay by 4 seconds for each of these that are true: [Firestarter Sunfury] [Savor] [Pyroclasm+Firestarter+Sunfury]. Goal is to make pot last all of CDs." );
-  cds->add_action( "use_items,if=buff.combustion.remains>6|cooldown.combustion.remains<3&time>=variable.combustion_delay-2&talent.frostfire_bolt&variable.15ssteroid_trinket_equipped|fight_remains<20", "Note for future: check if the 10 second trinkets are actually worse with this line or if we can remove the conditional variables" );
+  cds->add_action( "use_item,slot=trinket1,if=equipped.vaelgors_final_stare&equipped.emberwing_feather&trinket.1.ilvl>trinket.2.ilvl&(buff.combustion.remains>6|fight_remains<20)&active_enemies=1", "If similar steriod trinkets are equipped in both slots, prioritise the highest ilvl trinket being used first. Exception is cleave/AoE where Vaelgor is superior always." );
+  cds->add_action( "use_item,slot=trinket2,if=equipped.vaelgors_final_stare&equipped.emberwing_feather&trinket.2.ilvl>trinket.1.ilvl&(buff.combustion.remains>6|fight_remains<20)&active_enemies=1" );
+  cds->add_action( "use_item,name=vaelgors_final_stare,if=buff.combustion.remains>6|fight_remains<20", "Force Vaelgor as highest priority on-use trinket, if potentially two on-use trinkets are equipped." );
+  cds->add_action( "use_item,name=emberwing_feather,if=buff.combustion.remains>6|fight_remains<20" );
+  cds->add_action( "use_item,name=nevermelting_ice_crystal,if=buff.combustion.remains>6|fight_remains<20" );
+  cds->add_action( "use_item,name=freightrunners_flask,if=buff.combustion.remains>6|fight_remains<20" );
+  cds->add_action( "use_item,name=astral_gladiators_badge_of_ferocity,if=buff.combustion.remains>6|fight_remains<20" );
+  cds->add_action( "use_item,name=galactic_gladiators_badge_of_ferocity,if=buff.combustion.remains>6|fight_remains<20" );
+  cds->add_action( "use_item,name=ever_collapsing_void_fissure,if=buff.combustion.remains>6|fight_remains<20" );
+  cds->add_action( "use_items,if=variable.nonsteroid_trinket_equipped&time>variable.combustion_delay&buff.combustion.down&buff.hyperthermia.down&cooldown.combustion.remains>20", "Non-steriod trinkets are used outside cooldowns." );
+  cds->add_action( "use_items,if=buff.combustion.remains>6|fight_remains<20" );
   cds->add_action( "ancestral_call,if=buff.combustion.remains>6|fight_remains<20" );
   cds->add_action( "berserking,if=buff.combustion.remains>6|fight_remains<20" );
   cds->add_action( "blood_fury,if=buff.combustion.remains>6|fight_remains<20" );
@@ -190,10 +201,11 @@ void fire( player_t* p )
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down&(buff.combustion.remains>6|fight_remains<25)" );
 
   fireblast->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(buff.combustion.up|buff.hyperthermia.up)&(hot_streak_spells_in_flight+buff.heating_up.react=1)&gcd.remains<gcd.max", "During Combustion/Hyperthermia, spend Fire Blasts with Heating Up." );
-  fireblast->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(action.fireball.executing&action.fireball.execute_remains>0.1|buff.pyroclasm.react&action.pyroblast.executing&action.pyroblast.execute_remains>0.1)&((target.health.pct>=30|!talent.scorch)&buff.heating_up.react)&(hot_streak_spells_in_flight+buff.heating_up.react=1)&gcd.remains<gcd.max", "During non-execute filler, use Fire Blast with Heating Up while hardcasting Fireball/FFB/Pyroblast." );
+  fireblast->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(action.fireball.executing&action.fireball.execute_remains>0.1|buff.pyroclasm.react&action.pyroblast.executing&action.pyroblast.execute_remains>0.1)&((target.health.pct>=30|!talent.scorch)&buff.heating_up.react)&(hot_streak_spells_in_flight+buff.heating_up.react=1)&gcd.remains<gcd.max", "During non-execute filler, use Fire Blast with Heating Up while hardcasting Fireball/Frostfire Bolt/Pyroblast." );
   fireblast->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(target.health.pct<30&talent.scorch)&(hot_streak_spells_in_flight+buff.heating_up.react=0)&action.scorch.executing&buff.heat_shimmer.down&gcd.remains<gcd.max", "During execute, spend Fire Blasts while casting Scorch if you don't have Heating Up." );
   fireblast->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&time<variable.combustion_delay&(talent.firestarter|action.fireball.executing&action.fireball.execute_remains>0.1|buff.pyroclasm.react&action.pyroblast.executing&action.pyroblast.execute_remains>0.1)&(hot_streak_spells_in_flight+buff.heating_up.react=1)&gcd.remains<gcd.max&cooldown.combustion.ready", "While delaying Combustion on pull (Firestarter or not), spend Fire Blasts with Heating Up freely. If not playing Firestarter, only do so during hardcasts." );
   fireblast->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&(time>=variable.combustion_delay&(cooldown.combustion.remains<=variable.combustion_precast_time))&buff.combustion.down&talent.spontaneous_combustion&(action.scorch.executing|action.fireball.executing|action.pyroblast.executing|action.flamestrike.executing)", "When talented into Spontaneous Combustion, spend all Fire Blasts during the pre-cast going into Combustion regardless of Heating Up / Hot Streak status." );
+  fireblast->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=talent.frostfire_bolt&target.health.pct<30&buff.combustion.down&cooldown.combustion.remains>5", "As Frostfire in execute, since we ignore Hot Streak Pyroblast, send Fire Blasts freely." );
   fireblast->add_action( "fire_blast,use_off_gcd=1,use_while_casting=1,if=fight_remains<1", "Spend all available Fire Blasts if fight is ending." );
 
   ff_combustion->add_action( "combustion,use_off_gcd=1,use_while_casting=1,if=buff.combustion.down&action.fireball.executing&(action.fireball.execute_remains<variable.cast_remains_time)|action.meteor.in_flight&(action.meteor.in_flight_remains<0.3)|action.pyroblast.executing&(action.pyroblast.execute_remains<variable.cast_remains_time)|prev_gcd.1.meteor" );
@@ -207,12 +219,12 @@ void fire( player_t* p )
   ff_combustion->add_action( "pyroblast,if=buff.pyroclasm.up&cast_time<buff.combustion.remains" );
   ff_combustion->add_action( "scorch,if=buff.heat_shimmer.react|talent.scald&target.health.pct<30&buff.frostfire_empowerment.down" );
   ff_combustion->add_action( "fireball" );
-  ff_combustion->add_action( "call_action_list,name=fireblast" );
+  ff_combustion->add_action( "call_action_list,name=fireblast,if=!talent.pyroclasm|(buff.pyroclasm.stack<2|action.pyroblast.executing&action.pyroblast.execute_remains>0.2&buff.pyroclasm.stack=2|cooldown.fire_blast.charges_fractional>=2|buff.combustion.remains<action.pyroblast.cast_time)&(active_enemies<variable.sf_combustion_flamestrike&variable.flamestriking|buff.pyroclasm.down|!action.flamestrike.executing)" );
 
   ff_filler->add_action( "meteor,if=time>=(variable.combustion_delay-gcd.max)", "Cast Meteor on CD starting from the precast of your first Combustion." );
   ff_filler->add_action( "pyroblast,if=buff.hot_streak.up&talent.firestarter&time<variable.combustion_delay", "During Firestarter, only use Pyroblast as your spender, even for AoE." );
   ff_filler->add_action( "flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.ff_filler_flamestrike&variable.flamestriking&(buff.hot_streak.react&(cooldown.combustion.remains>=5|time<variable.combustion_delay))", "Hold Hot Streak if Combustion is coming up soon. Do not hold if intentionally delaying Combustion." );
-  ff_filler->add_action( "pyroblast,if=buff.hot_streak.react&(cooldown.combustion.remains>=5|time<variable.combustion_delay)" );
+  ff_filler->add_action( "pyroblast,if=buff.hot_streak.react&(cooldown.combustion.remains>=(5-(5*buff.pyroclasm.up))|time<variable.combustion_delay)&target.health.pct>30" );
   ff_filler->add_action( "flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.ff_filler_flamestrike&variable.flamestriking&(buff.pyroclasm.up&cooldown.combustion.remains>12|buff.pyroclasm.stack=2)", "Spend Pyroclasm immediately if you have 2 stacks available. Otherwise, hold one stack if it lasts until Combustion comes up." );
   ff_filler->add_action( "pyroblast,if=buff.pyroclasm.up&cooldown.combustion.remains>12|buff.pyroclasm.stack=2" );
   ff_filler->add_action( "scorch,if=buff.heat_shimmer.react" );
@@ -220,12 +232,12 @@ void fire( player_t* p )
   ff_filler->add_action( "call_action_list,name=fireblast" );
 
   sf_combustion->add_action( "combustion,use_off_gcd=1,use_while_casting=1,if=action.scorch.executing&(action.scorch.execute_remains<variable.cast_remains_time)|action.fireball.executing&(action.fireball.execute_remains<variable.cast_remains_time)|action.pyroblast.executing&(action.pyroblast.execute_remains<variable.cast_remains_time)|action.flamestrike.executing&(action.flamestrike.execute_remains<variable.cast_remains_time)|action.meteor.in_flight&(action.meteor.in_flight_remains<0.3|buff.bloodlust.up)&!talent.sunfury_execution" );
-  sf_combustion->add_action( "meteor,if=buff.bloodlust.up&buff.combustion.down&(talent.blast_zone|active_enemies>=4)&!talent.sunfury_execution", "Precast one of these into Combustion." );
+  sf_combustion->add_action( "meteor,if=buff.bloodlust.up&buff.combustion.down", "Precast one of these into Combustion." );
   sf_combustion->add_action( "flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.sf_combustion_flamestrike&variable.flamestriking&(buff.combustion.down&!buff.hot_streak.react&buff.pyroclasm.up)" );
   sf_combustion->add_action( "pyroblast,if=buff.combustion.down&!buff.hot_streak.react&buff.pyroclasm.up" );
   sf_combustion->add_action( "scorch,if=buff.combustion.down&(target.health.pct<30|active_enemies>=4)" );
   sf_combustion->add_action( "fireball,if=buff.combustion.down&(!prev_gcd.1.meteor|buff.bloodlust.down)", "If precasting Meteor into Combustion, can fit a Fireball unless Bloodlust is active." );
-  sf_combustion->add_action( "meteor,if=(talent.burnout&buff.combustion.remains<8|!talent.burnout&buff.combustion.remains>2)|buff.combustion.remains>2&active_enemies>=4", "Meteor is used towards the end of Combustion to maximize the Ignite bank for Burnout. If not playing Burnout, just make sure the Meteor lands during Combustion at any time." );
+  sf_combustion->add_action( "meteor,if=buff.combustion.remains>2", "Make sure Meteor lands during Combustion." );
   sf_combustion->add_action( "flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.sf_combustion_flamestrike&variable.flamestriking&(buff.hot_streak.react|prev_gcd.1.scorch&buff.heating_up.react&time-action.scorch.last_used<0.2)", "Spend Hot Streaks on Pyroblast in ST or Flamestrike in AoE. The Scorch condition is simply to simulate predictable guaranteed crits during Combustion." );
   sf_combustion->add_action( "pyroblast,if=buff.hot_streak.react|prev_gcd.1.scorch&buff.heating_up.react&time-action.scorch.last_used<0.2" );
   sf_combustion->add_action( "flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.sf_combustion_flamestrike&variable.flamestriking&(buff.pyroclasm.up&!buff.hot_streak.up&cast_time<buff.combustion.remains)", "Make sure Pyroclasm FINISHES its cast before Combustion ends." );
