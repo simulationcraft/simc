@@ -183,8 +183,6 @@ void fire( player_t* p )
 
   cds->add_action( "variable,name=combustion_precast_time,value=(action.scorch.cast_time*!buff.pyroclasm.up*scorch_execute.active)+(action.fireball.cast_time*!buff.pyroclasm.up*!scorch_execute.active)+(action.pyroblast.cast_time*buff.pyroclasm.up)-variable.cast_remains_time" );
   cds->add_action( "potion,if=time>=(0+(4*(talent.firestarter&talent.spellfire_spheres)+4*(talent.savor_the_moment)+4*(talent.pyroclasm&talent.firestarter&talent.spellfire_spheres)))|buff.combustion.remains>6|fight_remains<35", "Use Potion on pull. Delay by 4 seconds for each of these that are true: [Firestarter Sunfury] [Savor] [Pyroclasm+Firestarter+Sunfury]. Goal is to make pot last all of CDs." );
-  cds->add_action( "use_item,slot=trinket1,if=equipped.vaelgors_final_stare&equipped.emberwing_feather&trinket.1.ilvl>trinket.2.ilvl&(buff.combustion.remains>6|fight_remains<20)&active_enemies=1", "If similar steriod trinkets are equipped in both slots, prioritise the highest ilvl trinket being used first. Exception is cleave/AoE where Vaelgor is superior always." );
-  cds->add_action( "use_item,slot=trinket2,if=equipped.vaelgors_final_stare&equipped.emberwing_feather&trinket.2.ilvl>trinket.1.ilvl&(buff.combustion.remains>6|fight_remains<20)&active_enemies=1" );
   cds->add_action( "use_item,name=vaelgors_final_stare,if=buff.combustion.remains>6|fight_remains<20", "Force Vaelgor as highest priority on-use trinket, if potentially two on-use trinkets are equipped." );
   cds->add_action( "use_item,name=emberwing_feather,if=buff.combustion.remains>6|fight_remains<20" );
   cds->add_action( "use_item,name=nevermelting_ice_crystal,if=buff.combustion.remains>6|fight_remains<20" );
