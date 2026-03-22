@@ -6647,7 +6647,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
     if ( is_variant( spell_variant::PURGING_FLAMES ) && p()->bugs )
     {
-      m *= p()->talent.purging_flames->effectN( 1 ).percent();
+      m *= p()->buff.purging_flames->data().effectN( 1 ).percent();
     }
 
     if ( player->specialization() == SHAMAN_ELEMENTAL )
@@ -6967,7 +6967,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( is_variant( spell_variant::PURGING_FLAMES ) && p()->bugs )
     {
-      m *= p()->talent.purging_flames->effectN( 1 ).percent();
+      m *= p()->buff.purging_flames->data().effectN( 1 ).percent();
     }
 
     if (player->specialization() == SHAMAN_ELEMENTAL)
