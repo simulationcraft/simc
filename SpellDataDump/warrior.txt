@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66431 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66527 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -675,6 +675,7 @@ Your successful dodges and parries have a chance to make your next Revenge cost 
 Variables        : $cap=${5}
 
 Name             : Battle Shout (id=6673) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Magic
@@ -687,7 +688,7 @@ Labels           : 16: Class Spells
                  : 5980
 Affecting Spells : Warrior (137047 effect#2), Resonant Voice (1243660 effect#1)
 Family Flags     : 8, 16, 70
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506), Unknown (515)
 Effects          :
 #1 (id=2384)     : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 5 | Scaled Value: 5 | Radius: 100 yards | Target: Raid in Area (56)
@@ -761,7 +762,6 @@ Description      : A vicious strike that deals $s1 Physical damage and reduces t
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
 Name             : Piercing Howl (id=12323) [Spell Family (4)] 
-Hotfixed         : Cooldown (30000 -> 90000)
 Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8, select_idx=200]
 Class            : Warrior
 School           : Physical
@@ -1300,7 +1300,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=42845)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.71635 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : PvP Coefficient (0.77 -> 1)
 #2 (id=42846)    : Trigger Spell (64): Bladestorm Off-Hand
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 95738 | Target: Source (22)
 #3 (id=1134341)  : Energize Power (30)
@@ -1740,7 +1739,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=101423)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.71635 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : PvP Coefficient (0.77 -> 1)
 Description      : You become a whirling storm of destructive force, striking all nearby targets with your off-hand weapon for $s1 Physical damage.
 
 Name             : Raging Blow (id=96103) [Spell Family (4)] 
@@ -2362,21 +2360,16 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Tough as Nails (385890), Shield Charge (385954), Rend (388539), Shattering Throw (394352), Wrecking Throw (394354), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Rampaging Ruin (1265579), Rampaging Ruin (1265580), Rampaging Ruin (1265581), Rampaging Ruin (1265582), Heroic Strike (1269383), Phalanx (1270116), Champion's Leap (1271985)
                    Family Flags: 9
-Hotfixed         : Base Value (0 -> 10)
 #2 (id=186944)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Tough as Nails (385890), Shield Charge (385954), Rend (388539), Shattering Throw (394352), Wrecking Throw (394354), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Rampaging Ruin (1265579), Rampaging Ruin (1265580), Rampaging Ruin (1265581), Rampaging Ruin (1265582), Heroic Strike (1269383), Phalanx (1270116), Champion's Leap (1271985)
                    Family Flags: 9
-Hotfixed         : Base Value (0 -> 10)
 #3 (id=191017)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 10)
 #4 (id=191018)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 10)
 #5 (id=191019)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 120 | Scaled Value: 120 | Target: Self (1)
-Hotfixed         : Base Value (100 -> 120)
 #6 (id=261027)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Misc Value 2: 2670 (Label) | Target: Self (1)
                    Affected Spells (Label): Fueled by Violence (383103)
@@ -2429,23 +2422,18 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Tough as Nails (385890), Shield Charge (385954), Rend (388539), Shattering Throw (394352), Wrecking Throw (394354), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Rampaging Ruin (1265579), Rampaging Ruin (1265580), Rampaging Ruin (1265581), Rampaging Ruin (1265582), Heroic Strike (1269383), Phalanx (1270116), Champion's Leap (1271985)
                    Family Flags: 9
-Hotfixed         : Base Value (0 -> 15)
 #2 (id=186754)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Tough as Nails (385890), Shield Charge (385954), Rend (388539), Shattering Throw (394352), Wrecking Throw (394354), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Rampaging Ruin (1265579), Rampaging Ruin (1265580), Rampaging Ruin (1265581), Rampaging Ruin (1265582), Heroic Strike (1269383), Phalanx (1270116), Champion's Leap (1271985)
                    Family Flags: 9
-Hotfixed         : Base Value (0 -> 15)
 #3 (id=191014)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 15)
 #4 (id=191015)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 15)
 #5 (id=191016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=261047)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 188 | Scaled Value: 188 | Target: Self (1)
-Hotfixed         : Base Value (150 -> 188)
 #7 (id=261048)   : Apply Aura (6) | Modify Rage Generated From Auto Attacks (213)
                    Base Value: 250 | Scaled Value: 250 | Target: Self (1)
 #8 (id=261049)   : Apply Aura (6) | Dummy (4)
@@ -2481,21 +2469,16 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Tough as Nails (385890), Shield Charge (385954), Rend (388539), Shattering Throw (394352), Wrecking Throw (394354), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Rampaging Ruin (1265579), Rampaging Ruin (1265580), Rampaging Ruin (1265581), Rampaging Ruin (1265582), Heroic Strike (1269383), Phalanx (1270116), Champion's Leap (1271985)
                    Family Flags: 9
-Hotfixed         : Base Value (0 -> 10)
 #2 (id=191010)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Tough as Nails (385890), Shield Charge (385954), Rend (388539), Shattering Throw (394352), Wrecking Throw (394354), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Rampaging Ruin (1265579), Rampaging Ruin (1265580), Rampaging Ruin (1265581), Rampaging Ruin (1265582), Heroic Strike (1269383), Phalanx (1270116), Champion's Leap (1271985)
                    Family Flags: 9
-Hotfixed         : Base Value (0 -> 10)
 #3 (id=191011)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 10)
 #4 (id=191012)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 10)
 #5 (id=191013)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 120 | Scaled Value: 120 | Target: Self (1)
-Hotfixed         : Base Value (100 -> 120)
 #6 (id=831458)   : Apply Aura (6) | Modify Rage Generated From Auto Attacks (213)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=877674)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
@@ -3917,7 +3900,6 @@ Effects          :
 Description      : Damaging enemies with your Fire, Frost, or Nature abilities increases all damage you deal by ${$207995s1/10}.1% for $207995d. Each element adds a separate application.
 
 Name             : Colossus Smash (id=208086) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -10518,7 +10500,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #2 (id=1020845)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.4 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.6 -> 0.4)
 Description      : Every $s1 strikes of Bladestorm, you automatically cast a $?c1[Mortal Strike][Bloodthirst] at your target or random nearby enemy, dealing $s2% of normal damage.
 
 
@@ -13002,7 +12983,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #4 (id=1300777)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 20)
 Description      : $?c1[Mortal Strike and Cleave when it hits $s2 or more targets have][Bloodthirst has] a $?c1[$s3][$s4]% chance to cause you to unleash a flurry of steel, striking all nearby enemies for $446005s1 Physical damage and applying Overwhelmed. Deals reduced damage beyond $s1 targets.
 
 
@@ -15752,7 +15732,6 @@ Effects          :
 Description      : Each stack of Master of Warfare increases Mortal Strike, Cleave, and Overpower damage by ${$s1/10}.1% and critical strike damage by ${$s2/10}.1%.
 
 Name             : Master of Warfare (id=1269307) [Spell Family (4), Passive, Hidden] 
-Hotfixed         : Description
 Talent Entry     : Arms [tree=spec, row=11, col=4, max_rank=1, req_points=20, select_idx=300]
 Class            : Warrior
 School           : Physical
@@ -15765,7 +15744,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1281053)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Base Value (-2000 -> 0)
 Description      : Heroic Strike increases the damage you deal to enemies affected by your next Colossus Smash by an additional ${$1292058s1}.1%. Stacks up to $1292058u times.
 
 Name             : Rampaging Berserker (id=1269308) [Spell Family (4), Passive, Hidden] 
@@ -15831,7 +15809,6 @@ Effects          :
 Description      : Recklessness grants $s2 stacks of Berserk and duration of Recklessness increased by $s1%.
 
 Name             : Phalanx (id=1269311) [Spell Family (4), Passive, Hidden] 
-Hotfixed         : Description
 Talent Entry     : Protection [tree=spec, row=11, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Warrior
 School           : Physical
@@ -15873,7 +15850,6 @@ Effects          :
 Description      : Damage dealt by Thunder Clap and Phalanx's wave of force is increased by $s1%.
 
 Name             : Phalanx (id=1269313) [Spell Family (4), Passive, Hidden] 
-Hotfixed         : Description
 Talent Entry     : Protection [tree=spec, row=11, col=5, max_rank=1, req_points=20, select_idx=300]
 Class            : Warrior
 School           : Physical
@@ -16487,7 +16463,6 @@ Tooltip          : Taking $w1% additional Revenge damage from you.
 Variables        : $cap=${5}
 
 Name             : Phalanx (id=1278009) [Spell Family (4)] 
-Hotfixed         : Proc Flags 1 (0 -> 16), Attributes, Tooltip
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -16506,7 +16481,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Shield Slam (23922)
                    Family Flags: 41
-Hotfixed         : Sub Type (4 -> 108), Base Value (0 -> 10), Affects Spells
 Description      : Your next Shield Slam will trigger Phalanx.
 Tooltip          : Your next Shield Slam deals $w1% additional damage and will trigger Phalanx.
 
@@ -16602,7 +16576,6 @@ Description      : Damage done increased by $s1%.
 
 
 Name             : Heroic Might (id=1292058) [Spell Family (4)] 
-Hotfixed         : NEW SPELL
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -16620,16 +16593,13 @@ Effects          :
 #1 (id=1311854)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 3 | Misc Value 2: 2443 (Label) | Target: Self (1)
                    Affected Spells (Label): Colossus Smash (208086)
-Hotfixed         : NEW EFFECT
 #2 (id=1311855)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 12 | Misc Value 2: 2443 (Label) | Target: Self (1)
                    Affected Spells (Label): Colossus Smash (208086)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1269307
 Tooltip          : Damage bonus of your next Colossus Smash increased by $w1%.
 
 Name             : Phalanx (id=1292071) [Spell Family (4)] 
-Hotfixed         : NEW SPELL
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -16644,7 +16614,6 @@ Effects          :
 #1 (id=1311875)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1269313
 Tooltip          : Dealing $w1% reduced damage to $@auracaster.
 
