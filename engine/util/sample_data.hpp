@@ -54,7 +54,7 @@ range::value_type_t<Range> calculate_variance( const Range& r,
   }
   auto length = std::size( r );
   if ( length > 1 )
-    tmp /= length;
+    tmp /= length - 1;
   return tmp;
 }
 
