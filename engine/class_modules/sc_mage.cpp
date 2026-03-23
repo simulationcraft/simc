@@ -414,6 +414,7 @@ public:
     accumulated_rng_t* clearcasting;
     accumulated_rng_t* spellfire_spheres;
     accumulated_rng_t* augury_abounds;
+    accumulated_rng_t* infused_splinters;
   } accumulated_rng;
 
   // Sample data
@@ -917,7 +918,7 @@ public:
   void trigger_freezing( player_t* target, int stacks, proc_t* source, double chance = 1.0 );
   int  trigger_shatter( player_t* target, action_t* action, int max_consumption, shatter_source_t* source, bool fof = false );
   void trigger_icicle( int count = 1, bool grant_buff = true );
-  void trigger_arcane_salvo( proc_t* source, int stacks = 1, double chance = 1.0 );
+  void trigger_arcane_salvo( proc_t* source, int stacks = 1, double chance = 1.0, bool predictable = true );
 };
 
 namespace pets {
@@ -5274,7 +5275,6 @@ struct splinter_t final : public mage_spell_t
       add_child( controlled_instincts );
     }
 
-    freezing_chance = p->talents.infused_splinters->effectN( 2 ).percent();
     freezing_stacks = as<int>( p->talents.infused_splinters->effectN( 4 ).base_value() );
   }
 
@@ -5289,6 +5289,9 @@ struct splinter_t final : public mage_spell_t
 
   void impact( action_state_t* s ) override
   {
+    auto infused_outcome = p()->accumulated_rng.infused_splinters->trigger();
+    freezing_chance = infused_outcome;
+
     mage_spell_t::impact( s );
 
     if ( !result_is_hit( s->result ) )
@@ -5301,7 +5304,7 @@ struct splinter_t final : public mage_spell_t
     }
 
     p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.infused_splinters->effectN( 3 ).base_value() ),
-                               p()->talents.infused_splinters->effectN( 1 ).percent() );
+                              infused_outcome, false );
 
     auto cd = p()->specialization() == MAGE_FROST ? p()->cooldowns.frozen_orb : p()->cooldowns.arcane_orb;
     // TODO: This is actually 300 ms (rather than 250), not sure how
@@ -6539,6 +6542,9 @@ void mage_t::init_rng()
   accumulated_rng.augury_abounds = get_accumulated_rng(
     "augury_abounds", prd::find_constant( augury_chance, options.augury_blp_threshold ),
     options.augury_blp_threshold );
+
+  double infused_chance = talents.infused_splinters->effectN( specialization() == MAGE_ARCANE ? 1 : 2 ).percent();
+  accumulated_rng.infused_splinters = get_accumulated_rng( "infused_splinters", prd::find_constant( infused_chance ) );
 }
 
 void mage_t::init_finished()
@@ -7113,7 +7119,7 @@ void mage_t::trigger_cinderstorm( player_t* target )
   }
 }
 
-void mage_t::trigger_arcane_salvo( proc_t* source, int stacks, double chance )
+void mage_t::trigger_arcane_salvo( proc_t* source, int stacks, double chance, bool predictable )
 {
   if ( !talents.arcane_salvo->ok() || stacks <= 0 )
     return;
@@ -7125,7 +7131,7 @@ void mage_t::trigger_arcane_salvo( proc_t* source, int stacks, double chance )
     buff->trigger( stacks );
     int new_stacks = buff->check();
 
-    if ( chance >= 1.0 )
+    if ( chance >= 1.0 && predictable )
       buff->predict();
 
     if ( buff->at_max_stacks() && old_stacks < new_stacks )
