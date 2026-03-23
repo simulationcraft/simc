@@ -15876,6 +15876,7 @@ Priest
 199388  *Fleeting Embrace
 199445  *Mind Trauma
 199484   Psychic Link
+199486   Psychic Link
 199579   Hallucinations
 199683  *Last Word
 199816  *Last Word

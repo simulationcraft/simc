@@ -16409,8 +16409,10 @@ Attributes       : Passive (6), Do Not Display Range (126), Not In Spellbook (14
 Effects          :
 #1 (id=1211164)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-#2 (id=1211841)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+#2 (id=1211841)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7f | Target: Active Pet (5)
+                   Affected School(s): All
+Hotfixed         : Sub Type (381 -> 87), Base Value (15 -> -15), Misc Value (0 -> 127), Target 1 (1 -> 5)
 Description      : Regain access to Call Pet.
 
 While outdoors, your pet deals $s1% increased damage and takes $s2% reduced damage.

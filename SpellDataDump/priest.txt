@@ -4017,7 +4017,8 @@ Description      : Your direct damage spells inflict $s1% of their damage on all
 
 Does not apply to damage from Shadowy Apparitions, Shadow Word: Pain, and Vampiric Touch.
 
-Name             : Psychic Link (id=199486) 
+Name             : Psychic Link (id=199486) [Spell Family (6)] 
+Hotfixed         : Affecting Spells
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic

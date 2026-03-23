@@ -10913,7 +10913,7 @@ Effects          :
 Description      : Ice Block now reduces all damage taken by $414658s8% for $414658d but no longer grants Immunity, prevents movement, attacks, or casting spells. Does not incur the Global Cooldown.
 
 Name             : Mass Invisibility (id=414664) [Spell Family (3)] 
-Hotfixed         : Attributes
+Hotfixed         : Attributes, Aura Interrupt
 Talent Entry     : Generic [tree=class, row=9, col=6, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
@@ -10929,7 +10929,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Improved Mass Invisibility (415945 effect#1)
 Family Flags     : 103
 Attributes       : No Threat (42), Ignore Line of Sight (66), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Aura Interrupt   : Damage (1), Action (2), Mount (17)
+Aura Interrupt   : Damage (1), Action (2), Attacking (12), Mount (17)
 Effects          :
 #1 (id=1083970)  : Apply Aura (6) | Invisibility (18)
                    Base Value: 200 | Scaled Value: 200 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
@@ -12105,6 +12105,7 @@ Effects          :
 Description      : $?c1[$s1%][$s4%] of the direct damage dealt by $?c1[an Arcane Splinter][a Frost Splinter] is also dealt to nearby enemies. Damage reduced beyond $s5 targets.
 
 Name             : Controlled Instincts (id=444487) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -12112,7 +12113,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Attributes       : No Redirection (35), No Reflection (39), Allow Dead Target (64), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
+Attributes       : No Redirection (35), No Reflection (39), Allow Dead Target (64), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1140964)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -12153,6 +12154,7 @@ Effects          :
 Description      : $?c1[Casting Arcane Barrage conjures an Arcane Splinter for every $s1 Arcane Salvo stacks consumed][Ice Lance conjures a Frost Splinter for every $s3 Freezing stacks Shattered from its primary target].
 
 Name             : Controlled Instincts (id=444720) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -12160,7 +12162,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Attributes       : No Redirection (35), No Reflection (39), Allow Dead Target (64), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
+Attributes       : No Redirection (35), No Reflection (39), Allow Dead Target (64), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1141292)  : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -13977,6 +13979,7 @@ Effects          :
 Description      : Reduces Arcane Blast's mana cost by $s1% and increases its damage by $s2%.
 
 Name             : Brainstorm (id=461261) [Spell Family (3), Passive, Hidden] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
@@ -13984,7 +13987,9 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
+Proc Chance      : 100%
+Proc Flags       : Magic Heal, Magic Hostile Spell
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1169580)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)

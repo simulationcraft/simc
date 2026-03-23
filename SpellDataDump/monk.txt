@@ -4091,6 +4091,7 @@ Effects          :
 Description      : Conjures a cloud of hypnotic mist that slowly travels forward. Enemies touched by the mist fall asleep, Disoriented for $198909d.
 
 Name             : Song of Chi-Ji (id=198909) [Spell Family (53)] 
+Hotfixed         : Mechanic (2 -> 10)
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -4103,7 +4104,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Mechanic         : Disorient
+Mechanic         : Sleep
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Do Not Sheath (18), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Prevents Anim (50), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Do Not Display Range (126), No Cast Log (128), Always AOE Line of Sight (186), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Bypass Visibility Check (320), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Damage (Script) (27)
