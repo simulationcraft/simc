@@ -13,6 +13,7 @@
 
 #include "util/generic.hpp"
 #include "util/string_view.hpp"
+#include "util/rng.hpp"
 
 /* Collection of statistical formulas for sequences
  * Note: Returns 0 for empty sequences
@@ -186,6 +187,27 @@ inline std::vector<double> normalize_histogram( const std::vector<size_t>& in )
   size_t count = std::accumulate( in.begin(), in.end(), size_t() );
 
   return normalize_histogram( in, count );
+}
+
+template <typename Range>
+bool is_normal( const Range& r, range::value_type_t<Range> mean,
+                range::value_type_t<Range> stddev )
+{
+  range::value_type_t<Range> tmp {};
+  range::value_type_t<Range> y_cdf {};
+
+  size_t length = std::size( r );
+  if ( length < 2 )
+    return false;
+
+  for ( size_t i = 0; i < length; ++i )
+  {
+    y_cdf = rng::stdnormal_cdf( ( r[ i ] - mean ) / stddev );
+    tmp += ( 2 * i - 1 ) * std::log( y_cdf );
+    tmp += ( 2 * ( length - i ) + 1 ) * std::log( 1 - y_cdf );
+  }
+
+  return - length - tmp / length > 0.752;
 }
 
 }  // end sd namespace
@@ -387,12 +409,17 @@ public:
   }
 
   // Analyze collected data
+
+  // void analyze( sim_t& sim ) <- allows sample data objects to emit warnings
   void analyze()
   {
     sort();
     analyze_basics();
     analyze_variance();
     create_histogram();
+
+    // cannot warn, just asserting for now.
+    assert( is_normal() );
   }
 
   /*
@@ -490,6 +517,21 @@ public:
 
     distribution = statistics::create_histogram( data(), num_buckets,
                                                  base_t::min(), base_t::max() );
+  }
+
+  /*
+   * Test Normality
+   * Requires: Analyzed Mean, stddev, sorted
+   */
+  bool is_normal()
+  {
+    if ( simple )
+      return true;
+
+    if ( data().empty() )
+      return true;
+
+    return count() > 10 ? statistics::is_normal( sorted_data(), _mean, std_dev ) : true;
   }
 
   void clear()
