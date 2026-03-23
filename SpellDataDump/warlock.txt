@@ -17956,6 +17956,7 @@ Effects          :
 Description      : Increases damage dealt by Hand of Gul'dan to its main target by $s1%.
 
 Name             : Grimoire: Imp Lord (id=1276452) [Spell Family (5)] 
+Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Warlock
 School           : Shadow
@@ -17972,7 +17973,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 6015: Stabilized Portals (1276661 effect#2)
 Category Cooldown: 120 seconds
-Attributes       : No Reflection (39), No AutoCast (AI) (49), Allow Class Ability Procs (416)
+Attributes       : No Reflection (39), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1288224)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -17983,6 +17984,7 @@ Description      : Summons an Imp Lord to assist you in combat for $d and will r
 Transforms into Singe Magic while on cooldown.
 
 Name             : Grimoire: Fel Ravager (id=1276467) [Spell Family (5)] 
+Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=200]
 Class            : Warlock
 School           : Shadow
@@ -17998,7 +18000,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 6016: Stabilized Portals (1276661 effect#3)
 Category Cooldown: 120 seconds
-Attributes       : No Reflection (39), No AutoCast (AI) (49), Allow Class Ability Procs (416)
+Attributes       : No Reflection (39), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1288226)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -18009,6 +18011,7 @@ Description      : Summons a Fel Ravager to assist you in combat for $d and will
 Turns into Spell Lock while on cooldown. 
 
 Name             : Spell Lock (id=1276610) [Spell Family (5)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18017,6 +18020,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Attributes       : No Aura Cancel (31), Allow Aura While Dead (116), Aura Icon Only For Caster (Limit 10) (212), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1288471)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): (132409) overrides (1276467)
                    Base Value: 132409 | Scaled Value: 132409 | Misc Value: 1276467 | Misc Value 2: 3 | Target: Self (1)
@@ -18024,6 +18028,7 @@ Description      : $@spelldesc1276467
 Tooltip          : Grimoire: Fel Ravager is transformed into Spell Lock while on cooldown.
 
 Name             : Singe Magic (id=1276623) [Spell Family (5)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18032,6 +18037,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Attributes       : No Aura Cancel (31), Allow Aura While Dead (116), Aura Icon Only For Caster (Limit 10) (212), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1288495)  : Apply Aura (6) | Override Triggered Action Spell (Misc w/ Base) (333): (132411) overrides (1276452)
                    Base Value: 132411 | Scaled Value: 132411 | Misc Value: 1276452 | Misc Value 2: 3 | Target: Self (1)
@@ -18061,6 +18067,7 @@ Effects          :
 Description      : Increases the duration of your Summon Vilefiend, Grimoire: Imp Lord, and Grimoire: Fel Ravager by ${$s1/1000} sec.
 
 Name             : Summon Doomguard (id=1276672) [Spell Family (5)] 
+Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow
@@ -18073,7 +18080,7 @@ Cooldown         : 120 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Attributes       : No Reflection (39), No AutoCast (AI) (49), Allow Class Ability Procs (416)
+Attributes       : No Reflection (39), No AutoCast (AI) (49), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1288585)  : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 250785 | Misc Value 2: 5970 | Radius: 5 yards | Target: Summoner in Area (32)
