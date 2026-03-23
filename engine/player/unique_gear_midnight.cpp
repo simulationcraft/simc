@@ -2953,7 +2953,7 @@ void crucible_of_erratic_energies( special_effect_t& effect )
   if ( !effect.player->midnight_opts.crucible_of_erratic_energies_violence )
     effect.rppm_modifier_ = 1.0 / effect.driver()->effectN( 3 ).base_value();
 
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1277482 ) )
     ->set_stat_from_effect_type( A_MOD_RATING, stat_value );
 
   // Protocol of Sustenance doubles the buff duration.
