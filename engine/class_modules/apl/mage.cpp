@@ -272,17 +272,18 @@ void frost( player_t* p )
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "summon_water_elemental" );
-  precombat->add_action( "blizzard,if=talent.frostfire_bolt|active_enemies>=3", "Frostfire can open with a precast Blizzard even in ST. This is at least neutral, and a gain for builds that use Glacial Shatter." );
+  precombat->add_action( "blizzard,if=talent.frostfire_bolt|active_enemies>=4&talent.freezing_rain", "Frostfire can open with a precast Blizzard against all target counts. Spellslinger AoE starts at 4+, but Blizzard is only cast with Freezing Rain." );
   precombat->add_action( "glacial_spike" );
   precombat->add_action( "frostbolt" );
 
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "run_action_list,name=ff_aoe,if=talent.frostfire_bolt&active_enemies>=3" );
+  default_->add_action( "run_action_list,name=ff_aoe,if=talent.frostfire_bolt&active_enemies>=3", "Frostfire AoE starts at 3+ targets." );
   default_->add_action( "run_action_list,name=ff_st,if=talent.frostfire_bolt" );
-  default_->add_action( "run_action_list,name=ss_aoe,if=active_enemies>=3" );
+  default_->add_action( "run_action_list,name=ss_aoe,if=active_enemies>=4", "Spellslinger AoE starts at 4+ targets." );
   default_->add_action( "run_action_list,name=ss_st" );
 
-  cds->add_action( "use_item,name=nevermelting_ice_crystal,if=time=0|talent.frostfire_bolt|prev_gcd.1.frozen_orb|prev_gcd.1.ray_of_frost|debuff.freezing.react<6&cooldown.ray_of_frost.charges>=1|fight_remains<20", "Potion, Items and Racials are used on cd for Frostfire and paired with either Orb or Ray as Spellslinger  Use Haste trinkets always after pot, Crit trinkets always before pot, and Mastery trinkets after pot if crit is your highest stat and before pot otherwise." );
+  cds->add_action( "use_item,name=nevermelting_ice_crystal,if=time=0|talent.frostfire_bolt|prev_gcd.1.frozen_orb|prev_gcd.1.ray_of_frost|debuff.freezing.react<6&cooldown.ray_of_frost.charges>=1|fight_remains<20", "Potion, Items and Racials are used on cd for Frostfire and paired with either Orb or Ray as Spellslinger. Use Haste trinkets always after pot, Crit trinkets always before pot, and Mastery trinkets after pot if crit is your highest stat and before pot otherwise." );
+  cds->add_action( "use_item,name=freightrunners_flask,if=time=0|talent.frostfire_bolt|prev_gcd.1.frozen_orb|prev_gcd.1.ray_of_frost|debuff.freezing.react<6&cooldown.ray_of_frost.charges>=1|fight_remains<20" );
   cds->add_action( "use_item,name=vaelgors_final_stare,if=(stat.haste_rating>stat.crit_rating|stat.versatility_rating>stat.crit_rating)&(time=0|talent.frostfire_bolt|prev_gcd.1.frozen_orb|prev_gcd.1.ray_of_frost|debuff.freezing.react<6&cooldown.ray_of_frost.charges>=1|fight_remains<20)" );
   cds->add_action( "potion,if=time=0|talent.frostfire_bolt|prev_gcd.1.frozen_orb|prev_gcd.1.ray_of_frost|debuff.freezing.react<6&cooldown.ray_of_frost.charges>=1|fight_remains<35" );
   cds->add_action( "use_item,name=vaelgors_final_stare,if=time=0|talent.frostfire_bolt|prev_gcd.1.frozen_orb|prev_gcd.1.ray_of_frost|debuff.freezing.react<6&cooldown.ray_of_frost.charges>=1|fight_remains<20" );
@@ -296,9 +297,11 @@ void frost( player_t* p )
   cds->add_action( "flurry,if=talent.frostfire_bolt,line_cd=9999" );
   cds->add_action( "ray_of_frost,if=talent.frostfire_bolt,line_cd=9999" );
   cds->add_action( "frozen_orb,if=talent.frostfire_bolt,line_cd=9999" );
-  cds->add_action( "flurry,if=talent.splinterstorm,line_cd=9999", "Opener Spellslinger" );
-  cds->add_action( "frozen_orb,if=talent.splinterstorm,line_cd=9999" );
-  cds->add_action( "ray_of_frost,if=talent.splinterstorm,line_cd=9999" );
+  cds->add_action( "ice_lance,if=active_enemies<=3&talent.flash_freeze&talent.splinterstorm,line_cd=9999", "Opener Spellslinger ST" );
+  cds->add_action( "ray_of_frost,if=active_enemies<=3&talent.splinterstorm,line_cd=9999" );
+  cds->add_action( "flurry,if=active_enemies>=4&talent.wintertide&talent.splinterstorm,line_cd=9999", "Opener Spellslinger AoE" );
+  cds->add_action( "frozen_orb,if=active_enemies>=4&talent.splinterstorm,line_cd=9999" );
+  cds->add_action( "ray_of_frost,if=active_enemies>=4&talent.splinterstorm,line_cd=9999" );
   cds->add_action( "ray_of_frost,if=fight_remains<12", "End-Of-Fight Actions" );
   cds->add_action( "ice_lance,if=fight_remains<gcd.max*1.5" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down", "Externals" );
@@ -308,11 +311,11 @@ void frost( player_t* p )
   ff_aoe->add_action( "frozen_orb" );
   ff_aoe->add_action( "glacial_spike" );
   ff_aoe->add_action( "comet_storm" );
-  ff_aoe->add_action( "blizzard,if=active_enemies>=(5-talent.freezing_rain-talent.freezing_winds)&(cooldown.frozen_orb.remains>12*spell_haste|!talent.freezing_rain)", "Only hardcast Blizzard at 4 (with one Blizzard talent) or 5 (without any Blizzard talents) targets. Holding it when Frozen Orb is about to come up is mostly QOL with a minimal impact on sim-dps." );
+  ff_aoe->add_action( "blizzard,if=active_enemies>=(5-talent.freezing_rain-talent.freezing_winds)&(cooldown.frozen_orb.remains>12*spell_haste|!talent.freezing_rain)" );
   ff_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
   ff_aoe->add_action( "ice_lance,if=debuff.freezing.stack>=10" );
   ff_aoe->add_action( "flurry,if=cooldown_react" );
-  ff_aoe->add_action( "ray_of_frost,if=!buff.frostfire_empowerment.react", "Spend Frostfire Empowerment to build up Freezing on all targets before casting Ray, so the following Comet Storm shatters the stacks." );
+  ff_aoe->add_action( "ray_of_frost,if=!buff.frostfire_empowerment.react" );
   ff_aoe->add_action( "frostbolt" );
   ff_aoe->add_action( "call_action_list,name=movement" );
 
@@ -323,7 +326,7 @@ void frost( player_t* p )
   ff_st->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
   ff_st->add_action( "ice_lance,if=debuff.freezing.stack>=10" );
   ff_st->add_action( "flurry,if=cooldown_react" );
-  ff_st->add_action( "ray_of_frost,if=active_enemies=1|!buff.frostfire_empowerment.react", "Spend Frostfire Empowerment to build up Freezing on two targets before casting Ray, so the following Comet Storm shatters the stacks." );
+  ff_st->add_action( "ray_of_frost,if=active_enemies=1|!buff.frostfire_empowerment.react" );
   ff_st->add_action( "frostbolt" );
   ff_st->add_action( "call_action_list,name=movement" );
 
@@ -333,28 +336,30 @@ void frost( player_t* p )
   movement->add_action( "cone_of_cold,if=talent.cone_of_frost" );
   movement->add_action( "ice_lance" );
 
-  ss_aoe->add_action( "comet_storm,if=buff.splinterstorm.down" );
+  ss_aoe->add_action( "comet_storm" );
   ss_aoe->add_action( "blizzard,if=buff.freezing_rain.up" );
   ss_aoe->add_action( "flurry,if=buff.brain_freeze.react&buff.thermal_void.down" );
+  ss_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react=2" );
   ss_aoe->add_action( "frozen_orb" );
-  ss_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
   ss_aoe->add_action( "glacial_spike" );
+  ss_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
   ss_aoe->add_action( "ice_lance,if=debuff.freezing.react>=6" );
-  ss_aoe->add_action( "ice_nova,if=talent.cone_of_frost&active_enemies>=4" );
-  ss_aoe->add_action( "cone_of_cold,if=talent.cone_of_frost&active_enemies>=4" );
+  ss_aoe->add_action( "ice_nova,if=talent.cone_of_frost" );
+  ss_aoe->add_action( "cone_of_cold,if=talent.cone_of_frost" );
   ss_aoe->add_action( "blizzard,if=active_enemies>=5&talent.freezing_winds&talent.freezing_rain" );
+  ss_aoe->add_action( "ray_of_frost,if=icicles<3|time-action.potion.last_used<25" );
   ss_aoe->add_action( "flurry,if=cooldown_react" );
-  ss_aoe->add_action( "ray_of_frost" );
   ss_aoe->add_action( "frostbolt" );
   ss_aoe->add_action( "call_action_list,name=movement" );
 
-  ss_st->add_action( "comet_storm,if=buff.splinterstorm.down" );
+  ss_st->add_action( "comet_storm" );
   ss_st->add_action( "flurry,if=buff.brain_freeze.react&buff.thermal_void.down" );
+  ss_st->add_action( "ice_lance,if=buff.fingers_of_frost.react=2" );
   ss_st->add_action( "frozen_orb" );
-  ss_st->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
   ss_st->add_action( "glacial_spike" );
+  ss_st->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
   ss_st->add_action( "ice_lance,if=debuff.freezing.react>=6" );
-  ss_st->add_action( "ray_of_frost" );
+  ss_st->add_action( "ray_of_frost,if=icicles<3|time-action.potion.last_used<25" );
   ss_st->add_action( "flurry,if=cooldown_react" );
   ss_st->add_action( "frostbolt" );
   ss_st->add_action( "call_action_list,name=movement" );
