@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66527 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66562 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -138714,6 +138714,7 @@ Description      : Summon a cluster of Glimmerflies to lift your spirit, grantin
 Tooltip          : Floating.
 
 Name             : Sinstone Bond (id=343960) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 900 seconds
@@ -138722,6 +138723,7 @@ Labels           : 2399
 Internal Cooldown: 30 seconds
 Proc Chance      : 50%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Attributes       : Unknown (505)
 Effects          :
 #1 (id=867953)   : Apply Aura (6) | Periodic Dummy (226): every 60 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -138729,6 +138731,7 @@ Description      : Activate to gain insight from the sinstone.
 Tooltip          : The sinstone is giving you questionable advice and insight.
 
 Name             : Val'kyr Bond (id=343963) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 900 seconds
@@ -138736,6 +138739,7 @@ Cooldown         : 10 seconds
 Labels           : 2399
 Internal Cooldown: 30 seconds
 Proc Chance      : 50%
+Attributes       : Unknown (505)
 Effects          :
 #1 (id=867959)   : Apply Aura (6) | Periodic Dummy (226): every 60 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -159669,7 +159673,8 @@ Effects          :
 #1 (id=1015949)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1025880)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 264.9297 (coefficient=2.021122) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 132.7356 (coefficient=1.012627) | Target: Self (1)
+Hotfixed         : Coefficient (2.021122 -> 1.012627)
 Description      : Your helpful spells and abilities have a chance to pep up you and your Coached ally, granting you both $s2 Mastery for $383803d. 
 
 
@@ -159697,7 +159702,8 @@ Labels           : 3959: Item Effects
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1015955)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 204.5959 (coefficient=1.560842) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 132.7356 (coefficient=1.012627) | Rating: Mastery | Target: Self (1)
+Hotfixed         : Coefficient (1.560842 -> 1.012627)
 Tooltip          : Mastery increased by $s1.
 
 Name             : Ruby Whelp Shell (id=383812) [Passive, Hidden] 
@@ -162717,7 +162723,8 @@ Attributes       : Exclude Caster (51), Allow Aura While Dead (116), Cannot Be S
 Aura Interrupt   : Leave World (19), Enter World (22), Enter Instance (43), Leave Arena or Battleground (45)
 Effects          :
 #1 (id=1020761)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 102.298 (coefficient=0.780421) | Target: Targeted Raid Member (57)
+                   Base Value: 0 | Scaled Value: 132.7356 (coefficient=1.012627) | Target: Targeted Raid Member (57)
+Hotfixed         : Coefficient (0.780421 -> 1.012627)
 Description      : Select a target friendly player to coach.
 Tooltip          : You are being coached. Your attacks and abilities have a chance to increase your Mastery as well as your coach's by $w1 for $383799d1.
 
@@ -165505,7 +165512,8 @@ Attributes       : Allow Aura While Dead (116), Aura Points On Client (268), Sca
 Aura Interrupt   : Leave World (19), Enter World (22), Enter Instance (43), Leave Arena or Battleground (45)
 Effects          :
 #1 (id=1025908)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 102.298 (coefficient=0.780421) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 132.7356 (coefficient=1.012627) | Target: Self (1)
+Hotfixed         : Coefficient (0.780421 -> 1.012627)
 #2 (id=1041663)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 383798
 Description      : $@spelldesc386578
@@ -225541,6 +225549,7 @@ Tooltip          : Absorbs $w1 damage.
 Name             : Ethereal Energy (id=1217091) [Passive] 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 85
 Labels           : 292
 Triggered By     : Ethereal Reaping (1223417)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -247604,6 +247613,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60
 
 Name             : Primal Spore Binding (id=1259124) [Passive, Hidden] 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Labels           : 4124
@@ -247611,7 +247621,7 @@ Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Primal Spore Binding (1244276)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1268064)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
