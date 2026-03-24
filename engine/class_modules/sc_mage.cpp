@@ -370,6 +370,7 @@ public:
     unsigned clearcasting_blp_threshold = 0;
     unsigned sphere_blp_threshold = 11;
     unsigned augury_blp_threshold = 21;
+    unsigned infused_blp_threshold = 10;
     bool il_requires_freezing = false;
     bool il_sort_by_freezing = true;
     bool randomize_si_target = false;
@@ -5779,6 +5780,7 @@ void mage_t::create_options()
   add_option( opt_uint( "mage.clearcasting_blp_threshold", options.clearcasting_blp_threshold ) );
   add_option( opt_uint( "mage.sphere_blp_threshold", options.sphere_blp_threshold ) );
   add_option( opt_uint( "mage.augury_blp_threshold", options.augury_blp_threshold ) );
+  add_option( opt_uint( "mage.infused_blp_threshold", options.infused_blp_threshold ) );
   add_option( opt_bool( "mage.il_requires_freezing", options.il_requires_freezing ) );
   add_option( opt_bool( "mage.il_sort_by_freezing", options.il_sort_by_freezing ) );
   add_option( opt_bool( "mage.randomize_si_target", options.randomize_si_target ) );
@@ -6544,7 +6546,11 @@ void mage_t::init_rng()
     options.augury_blp_threshold );
 
   double infused_chance = talents.infused_splinters->effectN( specialization() == MAGE_ARCANE ? 1 : 2 ).percent();
-  accumulated_rng.infused_splinters = get_accumulated_rng( "infused_splinters", prd::find_constant( infused_chance ) );
+  // Thresholds may be uncapped (particularily Frost's).
+  // It's incredibly rare to reach 10/20: out of their (very) few instances, they've respectively shown a 100% success rate.
+  const unsigned infused_cap = specialization() == MAGE_ARCANE ? options.infused_blp_threshold : options.infused_blp_threshold * 2;
+  accumulated_rng.infused_splinters = get_accumulated_rng(
+    "infused_splinters", prd::find_constant( infused_chance, infused_cap ), infused_cap );
 }
 
 void mage_t::init_finished()

@@ -244,7 +244,7 @@ constexpr double find_constant( double p, unsigned K = 0 )
 //   % success = proc_chance * trigger_count
 //
 // where trigger_count is the number of trigger attempts since the last success, including the current attempt.
-// Thefirst trigger attempt after a successful proc will have a trigger count of 1.
+// The first trigger attempt after a successful proc will have a trigger count of 1.
 //
 // cap is an optional parameter that sets the maximum number of attempts before the proc is guaranteed. If set
 // to a nonzero value, it guarantees a proc when trigger_count == cap (even if proc_chance * trigger_count < 1).
