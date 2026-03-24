@@ -2763,6 +2763,7 @@ Tooltip          : Damage done increased by $76856s3%$?s383848[, Haste increased
 Damage taken reduced by $w3%.][]
 
 Name             : Enraged Regeneration (id=184364) [Spell Family (4)] 
+Hotfixed         : Attributes
 Talent Entry     : Fury [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
@@ -2777,7 +2778,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Bladestorm (227847 effect#3), Invigorating Fury (383468 effect#1), Honed Reflexes (391271 effect#1), Bladestorm (446035 effect#3)
 Family Flags     : 11, 64
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Can't Crit (93), Suppress Caster Procs (112), Allow While Stunned (163), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Can't Crit (93), Suppress Caster Procs (112), Allow While Stunned (163), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=267211)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self (1)

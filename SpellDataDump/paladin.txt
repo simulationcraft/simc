@@ -33,6 +33,7 @@ Description      : Party and raid members within $a1 yds are bolstered by their 
 Tooltip          : Damage taken reduced by $w1%.
 
 Name             : Divine Protection (id=498) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Holy Paladin
 School           : Holy
 Spell Type       : None
@@ -47,7 +48,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Unbreakable Spirit (114154 effect#1), Retribution Paladin (412314 effect#6), Inspired Guard (469439 effect#2), Retribution Paladin (1258011 effect#8), Shield of Vengeance (1261562 effect#1)
 Family Flags     : 72
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Fail on all targets immune (85), Remove Entering Arena (162), Aura Points On Client (268), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Fail on all targets immune (85), Remove Entering Arena (162), Aura Points On Client (268), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=211)      : Apply Aura (6) | Modify Damage Taken% (87)
@@ -92,6 +93,7 @@ Grants the target $387792s1% increased armor for $387792d.][]
 Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.
 
 Name             : Divine Shield (id=642) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -106,7 +108,7 @@ Labels           : 16: Class Spells
 Mechanic         : Invulnerable
 Affecting Spells : Unbreakable Spirit (114154 effect#1), Light's Revocation (146956 effect#3), Uther's Counsel (378425 effect#1)
 Family Flags     : 22
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Remove Entering Arena (162), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Remove Entering Arena (162), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=254)      : Apply Aura (6) | School Immunity (39)
