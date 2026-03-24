@@ -4527,6 +4527,7 @@ void action_t::trigger_dot( action_state_t* s )
   }
 
   dot->trigger( duration );
+  player->trigger_callbacks( PROC1_NONE_HARMFUL, PROC2_LANDED, this, dot->state );
 }
 
 /**

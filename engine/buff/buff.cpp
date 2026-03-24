@@ -678,6 +678,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     trigger_successes(),
     simulation_max_stack( 0 ),
     invalidate_list(),
+    triggers_callbacks( false ),
     benefit_pct(),
     trigger_pct(),
     avg_start(),
@@ -759,6 +760,10 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
     set_activated( false );
   }
+
+  if ( s_data->flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS ) || s_data->flags( spell_attribute::SX_ABILITY ) ||
+       s_data->flags( spell_attribute::SX_NOT_A_PROC ) )
+    triggers_callbacks = true;
 
   update_trigger_calculations();
 }
@@ -2431,6 +2436,14 @@ void buff_t::bump( int stacks, double value )
     overflow_count++;
     overflow_total += stacks;
   }
+
+  // Trigger Generic Harmful Proc Callbacks if a debuff is applied/refreshed.
+  if ( triggers_callbacks && source && player && source->is_player() && player->is_enemy() && player != source )
+    source->trigger_callbacks( PROC1_NONE_HARMFUL, PROC2_LANDED, nullptr, nullptr );
+
+  // Trigger Generic Helpful Proc Callbacks if a buff is applied/refreshed.
+  if ( triggers_callbacks && source && player && player->is_player() && source->is_player() && player == source )
+    source->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_LANDED, nullptr, nullptr );
 
   if ( changes_stack_value )
   {

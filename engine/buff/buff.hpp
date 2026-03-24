@@ -147,6 +147,7 @@ protected:
   int trigger_attempts, trigger_successes;
   int simulation_max_stack;
   std::vector<cache_e> invalidate_list;
+  bool triggers_callbacks;
 
   // report data
 public:
