@@ -13227,6 +13227,7 @@ Description      : $@spelldesc227847
 Tooltip          : $@spellaura227847
 
 Name             : Relentless Pursuit (id=446040) [Spell Family (4), Hidden] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -13235,7 +13236,7 @@ Duration         : 3 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), Immunity Purges Effect (47), Allow While Not Shapeshifted (caster form) (83), Always Hit (114), Aura Never Bounces (148), Extra Initial Period (169), Taps immediately (215), Aura Points On Client (268), Immunity Purges Spell (396), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), Immunity Purges Effect (47), Allow While Not Shapeshifted (caster form) (83), Always Hit (114), Aura Never Bounces (148), Extra Initial Period (169), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1143216)  : Apply Aura (6) | Periodic Dummy (226): every 0.1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
