@@ -1,3 +1,25 @@
+rogue="MID1_Rogue_Assassination"
+source=default
+spec=assassination
+level=90
+race=orc
+role=attack
+position=back
+talents=CMQAAAAAAAAAAAAAAAAAAAAAAYmZMbzgBAAAAAmlBbzAAAAAAabbmZmZmZMmZmZ2mZZmZGMmZmZMzYYAMwCMjRjZBklBsZAwMzgB
+
+# Default consumables
+potion=lights_potential_2
+flask=flask_of_the_shattered_sun_2
+food=harandar_celebration
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=apply_poison
 actions.precombat+=/snapshot_stats
@@ -43,11 +65,10 @@ actions.cds+=/call_action_list,name=vanish,if=!stealthed.rogue
 actions.core_dot=garrote,if=(buff.improved_garrote.up|stealthed.rogue)&(pmultiplier<=1|remains<=14+6*talent.razor_wire+4*!variable.single_target)
 # Normal Garrote Maintanence
 actions.core_dot+=/garrote,if=combo_points.deficit>=1&(pmultiplier<=1|!variable.single_target)&refreshable&target.time_to_die-remains>12
-# Cycle Garrote without Crimson Tempest
+# Cycle 
 actions.core_dot+=/garrote,cycle_targets=1,if=!talent.crimson_tempest&combo_points.deficit>=1&(pmultiplier<=1|!variable.single_target)&refreshable&target.time_to_die-remains>12
 # Normal Rupture Maintanence, making sure to not waste Darkest Night
 actions.core_dot+=/rupture,if=combo_points>=5&refreshable&target.time_to_die-remains>12&(!buff.darkest_night.up|!dot.rupture.ticking)
-# Cycle Rupture without Crimson Tempest
 actions.core_dot+=/rupture,cycle_targets=1,if=!talent.crimson_tempest&combo_points>=5&refreshable&target.time_to_die-remains>12&(!buff.darkest_night.up|!dot.rupture.ticking)
 
 # Generator List Crimson Tempest to spread bleeds to everything in AoE
@@ -85,3 +106,20 @@ actions.spend+=/envenom,if=energy.pct>70|fight_remains<15
 actions.vanish=vanish,if=variable.single_target&talent.improved_garrote&dot.garrote.pmultiplier<=1&(cooldown.deathmark.remains<5|cooldown.deathmark.remains>target.time_to_die-10)&!raid_event.adds.in<=30
 # AoE vanish check to spread improved garrote in multitarget
 actions.vanish+=/vanish,if=!variable.single_target&talent.improved_garrote&dot.garrote.pmultiplier<=1&(raid_event.adds.remains>=10|!raid_event.adds.in<=30)
+
+head=masquerade_of_the_grim_jest,id=250006,bonus_id=6652/12667/12806/13335/13338/13575/13575/13575/13575/13575/13575/13575/13575,ilvel=289
+neck=ribbon_of_coiled_malice,id=249337,bonus_id=12806/13577/13668,gem_id=240967,ilvel=289
+shoulder=venom_casks_of_the_grim_jest,id=250004,bonus_id=6652/12806/13335/13340/13574/13574/13574/13574/13574/13574/13574/13574,ilvel=289
+back=defiant_defenders_drape,id=260312,bonus_id=12806/13577,ilvel=289
+chest=fantastic_finery_of_the_grim_jest,id=250009,bonus_id=6652/12806/13335/13336/13575/13575/13575/13575/13575/13575/13575/13575,enchant_id=7987,ilvel=289
+wrist=silvermoon_agents_deflectors,id=244576,bonus_id=8960/12066/12214/12214/12214/12214/12214/12214/12384/13622/13667,crafted_stats=32/36,ilvel=285
+hands=sleight_of_hand_of_the_grim_jest,id=250007,bonus_id=6652/12806/13335/13337/13574/13574/13574/13574/13574/13574/13574/13574,ilvel=289
+waist=scornscarred_shulkas_belt,id=249374,bonus_id=12806/13577,ilvel=289
+legs=legwraps_of_lingering_legacies,id=251087,bonus_id=12806/13577,enchant_id=8159,ilvel=289
+feet=canopy_walkers_footwraps,id=249382,bonus_id=12806/13577,ilvel=289
+finger1=eye_of_midnight,id=249920,bonus_id=6652/12806/13335/13668,gem_id=240898/240890,enchant_id=7967,ilvel=289
+finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967,ilvel=289
+trinket1=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577,ilvel=289
+trinket2=algethar_puzzle_box,id=193701,bonus_id=12806/13577,ilvel=289
+main_hand=hungering_victory,id=249925,bonus_id=12806/13577,enchant_id=7981,ilvel=289
+off_hand=farstriders_mercy,id=237837,bonus_id=8791/8960/12066/12214/12214/12214/12214/12214/12214/12693/13622/13667/12497,enchant_id=7983,crafted_stats=32/36,ilvel=285
