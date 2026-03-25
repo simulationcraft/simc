@@ -250767,7 +250767,7 @@ Name             : Litany of Lightblind Wrath (id=1263721) [Hidden]
 Hotfixed         : Proc Flags 1 (69888 -> 69904)
 School           : Physical
 Spell Type       : None
-Duration         : Aura (infinite)
+Duration         : 30 seconds
 Labels           : 292
                  : 3959: Item Effects
 Proc Chance      : 101%
