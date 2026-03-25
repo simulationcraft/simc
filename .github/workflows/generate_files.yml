@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         id: cache
         with:
           path: |
@@ -19,7 +19,7 @@ jobs:
             .git
           key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup
         run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV

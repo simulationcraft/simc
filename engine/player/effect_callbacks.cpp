@@ -47,7 +47,7 @@ void effect_callbacks_t::add_proc_callback( proc_types type, uint64_t flags, act
     // hit/crit".
     if ( pt == PROC2_LANDED &&
          ( type == PROC1_PERIODIC || type == PROC1_PERIODIC_TAKEN || type == PROC1_HELPFUL_PERIODIC ||
-           type == PROC1_HELPFUL_PERIODIC_TAKEN || type == PROC1_NONE_HEAL || type == PROC1_MAGIC_HEAL ) )
+           type == PROC1_HELPFUL_PERIODIC_TAKEN || type == PROC1_NONE_HELPFUL || type == PROC1_MAGIC_HEAL ) )
     {
       add_callback( type, PROC2_HIT, cb );
       if ( cb->listener->sim->debug )

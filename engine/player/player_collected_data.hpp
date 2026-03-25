@@ -157,6 +157,11 @@ struct player_collected_data_t
     double mastery_value;
     double damage_versatility, heal_versatility, mitigation_versatility;
     double leech, run_speed, avoidance;
+    double spell_crit_rating, melee_crit_rating;
+    double spell_haste_rating, melee_haste_rating;
+    double mastery_rating;
+    double versatility_rating;
+    double avoidance_rating, leech_rating, speed_rating;
     double corruption, corruption_resistance;
   } buffed_stats_snapshot;
 

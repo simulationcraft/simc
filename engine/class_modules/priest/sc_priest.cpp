@@ -180,7 +180,7 @@ public:
   {
     priest_spell_t::impact( s );
 
-    priest_td_t& td = get_td( s->target );
+    [[maybe_unused]] priest_td_t& td = get_td( s->target );
 
     if ( result_is_hit( s->result ) )
     {
@@ -442,6 +442,11 @@ struct halo_spell_t final : public priest_spell_t
 
   void execute() override
   {
+    if ( returning && !rng().roll( p().options.archon_halo_return_hit_chance ) )
+    {
+      return;
+    }
+
     priest_spell_t::execute();
 
     if ( p().talents.archon.divine_halo.enabled() && !returning && return_spell )
@@ -1157,6 +1162,26 @@ public:
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     ab::snapshot_state( s, rt );
+  }
+
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double ea = ab::composite_energize_amount( s );
+
+    if ( cast_state( s )->chain_number > 0 )
+    {
+      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1385
+      if ( priest().bugs )
+      {
+        ea = std::round( ea * priest().talents.shadow.deaths_torment->effectN( 2 ).percent() );
+      }
+      else
+      {
+        ea *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
+      }
+    }
+
+    return ea;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -2081,7 +2106,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
                           {
                             p.allies_with_atonement.find_and_erase_unordered( target );
                           }
-                          size_t idx = std::clamp( as<int>( p.allies_with_atonement.size() ) - 1, 0, 19 );
+                          // size_t idx = std::clamp( as<int>( p.allies_with_atonement.size() ) - 1, 0, 19 );
                         } );
 
   buffs.resonant_energy = make_buff_fallback( p.talents.archon.resonant_energy.enabled(), *this, "resonant_energy",
@@ -2829,7 +2854,7 @@ void priest_t::init_spells()
   auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
   auto HT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::HERO, n ); };
 
-  auto sd_nf = spell_data_t::not_found();
+  [[maybe_unused]] auto sd_nf = spell_data_t::not_found();
 
   init_spells_shadow();
   init_spells_discipline();
@@ -3673,6 +3698,7 @@ void priest_t::create_options()
                          0.0, 1.0 ) );
   add_option( opt_float( "priest.synergistic_brewterializer_barrel_hit_chance",
                          options.synergistic_brewterializer_barrel_hit_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "priest.archon_halo_return_hit_chance", options.archon_halo_return_hit_chance, 0.0, 1.0 ) );
 }
 
 std::string priest_t::create_profile( save_e type )

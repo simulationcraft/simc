@@ -1502,8 +1502,10 @@ public:
     ab::tick( dot );
 
     if ( p()->rng().roll( dire_beast_chance ) && p()->cooldowns.dire_beast->up() )
+    {
       p()->spawn_dire_beast( p()->talents.dire_beast_summon->duration() );
       p()->cooldowns.dire_beast->start();
+    }
   }
 
   void update_ready( timespan_t cd ) override
@@ -2680,8 +2682,10 @@ public:
     ab::tick( dot );
 
     if ( o()->rng().roll( dire_beast_chance ) && o()->cooldowns.dire_beast->up() )
+    {
       o()->spawn_dire_beast( o()->talents.dire_beast_summon->duration() );
       o()->cooldowns.dire_beast->start();
+    }
   }
 
   T_PET* p() { return static_cast<T_PET*>( ab::player ); }
@@ -3994,7 +3998,6 @@ struct auto_shot_base_t : public auto_attack_base_t<ranged_attack_t>
     if ( rng().roll( lock_and_load_chance ) )
     {
       p()->buffs.lock_and_load->trigger();
-      p()->cooldowns.aimed_shot->reset( true );
     }
 
     if ( p()->talents.lethal_barbs.ok() )
@@ -4129,11 +4132,9 @@ struct arcane_shot_base_t: public hunter_ranged_attack_t
   {
     double cc = hunter_ranged_attack_t::composite_crit_chance();
 
-    // TODO: Needs some long-duration log tests to verify whether each stack grants a bonus.
-    //       Early data leans towards it being the case.
     if ( p()->talents.critical_precision.ok() && p()->buffs.precise_shots->up() )
     {
-      cc += p()->talents.critical_precision->effectN( 1 ).percent() * p()->buffs.precise_shots->check();
+      cc += p()->talents.critical_precision->effectN( 1 ).percent();
     }
 
     return cc;
@@ -5219,11 +5220,9 @@ struct multishot_t: public hunter_ranged_attack_t
   {
     double cc = hunter_ranged_attack_t::composite_crit_chance();
 
-    // TODO: Needs some long-duration log tests to verify whether each stack grants a bonus.
-    //       Early data leans towards it being the case.
     if ( p()->talents.critical_precision.ok() && p()->buffs.precise_shots->up() )
     {
-      cc += p()->talents.critical_precision->effectN( 1 ).percent() * p()->buffs.precise_shots->check();
+      cc += p()->talents.critical_precision->effectN( 1 ).percent();
     }
 
     return cc;
@@ -7905,7 +7904,12 @@ void hunter_t::create_buffs()
     make_buff( this, "trick_shots", talents.trick_shots_buff );
   
   buffs.lock_and_load =
-    make_buff( this, "lock_and_load", talents.lock_and_load_buff );
+    make_buff( this, "lock_and_load", talents.lock_and_load_buff )
+      ->set_stack_change_callback(
+        [ this ]( buff_t*, int _old, int _new ) {
+          if ( _new > _old )
+            cooldowns.aimed_shot->reset( true );
+        } );
 
   buffs.in_the_rhythm = 
     make_buff( this, "in_the_rhythm", talents.in_the_rhythm_buff )
@@ -7917,7 +7921,7 @@ void hunter_t::create_buffs()
       ->set_refresh_behavior( buff_refresh_behavior::EXTEND )
       ->add_invalidate( cache_e::CACHE_CRIT_CHANCE )
       ->set_stack_change_callback(
-        [ this ]( buff_t*, int, int cur ) {
+        [ this ]( buff_t*, int, int ) {
           cooldowns.aimed_shot->adjust_recharge_multiplier();
           cooldowns.rapid_fire->adjust_recharge_multiplier();
         } );

@@ -5140,9 +5140,10 @@ struct lava_lash_t : public shaman_attack_t
       p()->trigger_elemental_overflow( execute_state, p()->action.tww3_lava_lash );
     }
 
-    if ( p()->buff.lightning_strikes->consume( this ) )
+    if ( p()->buff.lightning_strikes->up() )
     {
       p()->generate_maelstrom_weapon( this, 1 );
+      p()->buff.lightning_strikes->decrement();
     }
 
     if ( p()->talent.ashen_catalyst.ok() &&
@@ -5498,9 +5499,10 @@ struct stormstrike_base_t : public shaman_attack_t
 
     p()->trigger_awakening_storms( execute_state );
 
-    if ( p()->buff.lightning_strikes->consume( this ) )
+    if ( p()->buff.lightning_strikes->up() )
     {
       p()->generate_maelstrom_weapon( this, 1 );
+      p()->buff.lightning_strikes->decrement();
     }
   }
 };
@@ -6645,7 +6647,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
     if ( is_variant( spell_variant::PURGING_FLAMES ) && p()->bugs )
     {
-      m *= p()->talent.purging_flames->effectN( 1 ).percent();
+      m *= p()->buff.purging_flames->data().effectN( 1 ).percent();
     }
 
     if ( player->specialization() == SHAMAN_ELEMENTAL )
@@ -6965,7 +6967,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( is_variant( spell_variant::PURGING_FLAMES ) && p()->bugs )
     {
-      m *= p()->talent.purging_flames->effectN( 1 ).percent();
+      m *= p()->buff.purging_flames->data().effectN( 1 ).percent();
     }
 
     if (player->specialization() == SHAMAN_ELEMENTAL)
@@ -8506,7 +8508,7 @@ struct stormkeeper_t : public shaman_spell_t
     }
 
     p()->summon_ancestor();
-    p()->buff.stormkeeper->trigger( data().effectN( 5 ).base_value() );
+    p()->buff.stormkeeper->trigger( as<int>( data().effectN( 5 ).base_value() ) );
 
     p()->buff.mid1_ele_2pc->trigger();
 
@@ -8566,11 +8568,6 @@ struct doom_winds_t : public shaman_attack_t
     }
     else
     {
-      if ( player->action.doom_winds == nullptr )
-      {
-        p()->action.doom_winds = new doom_winds_damage_t( player,
-          variant_flag( spell_variant::NORMAL ) );
-      }
       add_child( player->action.doom_winds );
     }
   }
@@ -10502,6 +10499,11 @@ void shaman_t::create_actions()
   {
     action.ascendance_damage = new ascendance_damage_t( this, "ascendance_damage" );
     action.ascendance->add_child( action.ascendance_damage );
+  }
+
+  if ( specialization() == SHAMAN_ENHANCEMENT )
+  {
+    action.doom_winds = new doom_winds_damage_t( this, variant_flag( spell_variant::NORMAL ) );
   }
 }
 
@@ -12829,7 +12831,7 @@ std::string shaman_t::default_potion() const
 
 std::string shaman_t::default_flask() const
 {
-  std::string enhancement_flask = ( true_level >= 81 ) ? "flask_of_the_shattered_sun_2" :
+  std::string enhancement_flask = ( true_level >= 81 ) ? "flask_of_the_blood_knights_2" :
                                   ( true_level >= 71 ) ? "flask_of_alchemical_chaos_3" :
                                   ( true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" :
                                   ( true_level >= 51 ) ? "spectral_flask_of_power" :

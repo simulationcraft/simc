@@ -269,7 +269,8 @@ public:
     // Arms Apex
     buff_t* master_of_warfare_proc;
     buff_t* master_of_warfare; // Damage buff
-    buff_t* master_of_warfare_colossus_smash;
+    buff_t* heroic_might_accumulator;
+    buff_t* heroic_might;
 
     // Fury Apex
     buff_t* berserk;
@@ -1095,6 +1096,9 @@ public:
         parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 5 ) );
 
       parse_effects( p()->buff.shield_block, effect_mask_t( false ).enable( 2, 4 ) );
+
+      // Apex
+      parse_effects( p()->buff.phalanx );
     }
 
     // Colossus
@@ -1140,8 +1144,6 @@ public:
     // Shared
 
     // Arms
-    parse_target_effects( d_fn( &warrior_td_t::debuffs_colossus_smash ),
-                          p()->spell.colossus_smash_debuff );
 
     // Fury
 
@@ -1661,9 +1663,13 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
   {
     double m = base_t::composite_target_multiplier( target );
     auto target_data = td( target );
-    if ( p()->talents.arms.master_of_warfare_3.ok() && target_data &&
-    target_data->debuffs_colossus_smash->up() && p()->buff.master_of_warfare_colossus_smash->up() )
-      m *= 1.0 + ( p()->buff.master_of_warfare_colossus_smash->stack_value() / 100 );
+    if ( target_data && target_data->debuffs_colossus_smash->up() )
+    {
+      auto multi = 1.0 + p()->spell.colossus_smash_debuff->effectN( 1 ).percent();
+      if ( p()->talents.arms.master_of_warfare_3.ok() && p()->buff.heroic_might->up() )
+        multi += p()->buff.heroic_might->stack_value() / 100;
+      m *= multi;
+    }
     return m;
   }
 
@@ -3497,10 +3503,7 @@ struct heroic_strike_t : public slam_base_t
     p()->buff.master_of_warfare->trigger();
 
     if ( p()->talents.arms.master_of_warfare_3.ok() )
-    {
-      // p()->cooldown.colossus_smash->adjust( p()->talents.arms.master_of_warfare_3->effectN( 1 ).time_value() );
-      p()->buff.master_of_warfare_colossus_smash->trigger();
-    }
+      p()->buff.heroic_might_accumulator->trigger();
   }
 
   bool ready() override
@@ -3675,6 +3678,12 @@ struct colossus_smash_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+
+    if ( p()->talents.arms.master_of_warfare_3.ok() && p()->buff.heroic_might_accumulator->up() )
+    {
+      p()->buff.heroic_might->trigger( p()->buff.heroic_might_accumulator->stack(), buff_t::DEFAULT_VALUE(), 1.0, p()->spell.colossus_smash_debuff->duration() );
+      p()->buff.heroic_might_accumulator->expire();
+    }
 
     if ( p()->talents.arms.tactical_edge.ok() )
       p()->buff.tactical_edge->trigger();
@@ -4100,7 +4109,8 @@ struct execute_damage_t : public warrior_attack_t
     if( p()->talents.arms.fatality.ok() && td( state->target )->debuffs_fatal_mark->check() )
       p()->active.fatality->execute_on_target( state->target );
 
-    if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
+    if ( p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() &&
+         p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
     {
       p()->buff.master_of_warfare_proc->trigger();
       p()->master_of_warfare_attempts_since_last_proc = 0;
@@ -4588,7 +4598,7 @@ struct impending_victory_heal_t : public warrior_heal_t
 
   proc_types proc_type() const override
   {
-    return PROC1_NONE_HEAL;
+    return PROC1_NONE_HELPFUL;
   }
 
   resource_e current_resource() const override
@@ -5885,7 +5895,7 @@ struct phalanx_t : public warrior_attack_t
       warrior_attack_t::impact( state );
 
       auto target_data = td( state->target );
-      if ( target_data )
+      if ( target_data && p()->talents.protection.phalanx_3.ok() )
         target_data->debuffs_phalanx->trigger();
     }
 };
@@ -6794,7 +6804,7 @@ struct recklessness_t : public warrior_spell_t
       p()->buff.thunder_blast->trigger();
 
     if ( p()->talents.fury.rampaging_berserker_3->ok() )
-      p()->buff.berserk->trigger( p()->talents.fury.rampaging_berserker_3->effectN( 2 ).base_value() );
+      p()->buff.berserk->trigger( as<int>( p()->talents.fury.rampaging_berserker_3->effectN( 2 ).base_value() ) );
   }
 };
 
@@ -7124,7 +7134,7 @@ void warrior_t::init_spells()
   spell.devastator              = find_spell( 236279 );
   spell.devastating_focus_debuff= find_spell( 1277983 );
   spell.phalanx_buff            = find_spell( 1278009 );
-  spell.phalanx_debuff          = find_spell( 1270116 );
+  spell.phalanx_debuff          = find_spell( 1292071 );
 
   // Shared Spells
   spell.bloodsurge_energize     = find_spell( 384362 );
@@ -8130,10 +8140,9 @@ void warrior_t::create_buffs()
                                 ->set_disable_async_expire_events_removal( true )
                                 ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
-  buff.master_of_warfare_colossus_smash = make_buff( this, "master_of_warfare_colossus_smash", find_spell( 1269306 ) )
-                                ->set_max_stack( 2 )
-                                ->set_default_value( 3 )
-                                ->set_duration( 30_s );
+  buff.heroic_might_accumulator = make_buff( this, "heroic_might_accumulator", find_spell( 1292058 ) );
+  buff.heroic_might = make_buff( this, "heroic_might", find_spell( 1292058 ) )
+                                  ->set_default_value_from_effect( 1 );
 
   // Protection Apex
   buff.phalanx = make_buff( this, "phalanx", spell.phalanx_buff );
@@ -9339,76 +9348,6 @@ struct warrior_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_spell( "Warrior", "2026-3-13", "Piercing Howl cooldown to 90s", 12323,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "cooldown" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 90000 )
-        .verification_value( 30000 );
-    // Arms
-    hotfix::register_effect( "Warrior", "2026-3-13", "Direct Damage Aura Buffed 15%", 179733,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 15 )
-        .verification_value( 0 );
-
-    hotfix::register_effect( "Warrior", "2026-3-13", "Periodic Damage Aura Buffed 15%", 186754,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 15 )
-        .verification_value( 0 );
-
-    hotfix::register_effect( "Warrior", "2026-3-13", "Pet Damage Aura Buffed 15%", 191014,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 15 )
-        .verification_value( 0 );
-
-    hotfix::register_effect( "Warrior", "2026-3-13", "Guardian Damage Aura Buffed 15%", 191015,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 15 )
-        .verification_value( 0 );
-
-    // Fury
-    hotfix::register_effect( "Warrior", "2026-3-13", "Direct Damage Aura Buffed 10%", 179734,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 10 )
-        .verification_value( 0 );
-
-    hotfix::register_effect( "Warrior", "2026-3-13", "Periodic Damage Aura Buffed 10%", 191010,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 10 )
-        .verification_value( 0 );
-
-    hotfix::register_effect( "Warrior", "2026-3-13", "Pet Damage Aura Buffed 10%", 191011,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 10 )
-        .verification_value( 0 );
-
-    hotfix::register_effect( "Warrior", "2026-3-13", "Guardian Damage Aura Buffed 10%", 191012,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 10 )
-        .verification_value( 0 );
-
-    hotfix::register_effect( "Warrior", "2026-3-13", "Fury reap the storm proc chance nerfed to 20%", 1300777,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 20 )
-        .verification_value( 30 );
   }
 
   void init( player_t* p ) const override

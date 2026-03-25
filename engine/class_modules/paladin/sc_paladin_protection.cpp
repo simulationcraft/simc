@@ -53,7 +53,10 @@ namespace paladin {
     }
     set_refresh_behavior( buff_refresh_behavior::NONE );
 
-    cooldown->duration = p->spells.sentinel->effectN( 14 ).time_value() * (p->talents.righteous_protector->ok() ? (1.0-(abs(p->talents.righteous_protector->effectN(2).percent()))) : 1.0);
+    cooldown->duration = p->spells.sentinel->effectN( 14 ).time_value() *
+                         ( p->talents.righteous_protector->ok()
+                             ? ( 1.0 - ( std::abs( p->talents.righteous_protector->effectN( 2 ).percent() ) ) )
+                             : 1.0 );
 
     add_invalidate( CACHE_STAMINA );
   }
@@ -857,7 +860,7 @@ void paladin_t::target_mitigation( school_e school,
   }
 }
 
-void paladin_t::trigger_grand_crusader( grand_crusader_source source )
+void paladin_t::trigger_grand_crusader( grand_crusader_source /* source */ )
 {
   // escape if we don't have Grand Crusader
   if ( ! talents.grand_crusader->ok() )

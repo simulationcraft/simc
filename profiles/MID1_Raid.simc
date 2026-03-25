@@ -1,5 +1,6 @@
 optimal_raid=1
 default_actions=1
+single_actor_batch=1
 
 MID1_Death_Knight_Blood.simc
 MID1_Death_Knight_Blood_Deathbringer.simc
@@ -49,8 +50,7 @@ MID1_Paladin_Retribution_Herald.simc
 MID1_Priest_Shadow.simc
 MID1_Priest_Shadow_Archon.simc
 
-# MID1_Rogue_Assassination.simc
-# MID1_Rogue_Assassination_Deathstalker.simc
+MID1_Rogue_Assassination.simc
 MID1_Rogue_Outlaw.simc
 MID1_Rogue_Outlaw_Trickster.simc
 MID1_Rogue_Subtlety.simc
@@ -63,7 +63,7 @@ MID1_Shaman_Enhancement_Stormbringer.simc
 MID1_Warlock_Affliction.simc
 MID1_Warlock_Affliction_Hellcaller.simc
 # # MID1_Warlock_Demonology_Soul_Harvester.simc
-# MID1_Warlock_Demonology.simc
+MID1_Warlock_Demonology.simc
 MID1_Warlock_Destruction_Diabolist.simc
 MID1_Warlock_Destruction.simc
 

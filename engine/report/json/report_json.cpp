@@ -406,7 +406,7 @@ void gear_to_json( JsonOutput root, const player_t& p )
   }
 }
 
-void to_json( JsonOutput root, const player_t& p, const player_collected_data_t::buffed_stats_t& bs,
+void to_json( JsonOutput root, const player_collected_data_t::buffed_stats_t& bs,
               const std::vector<resource_e>& relevant_resources )
 {
   for ( attribute_e a = ATTRIBUTE_NONE; a < ATTRIBUTE_MAX; ++a )
@@ -437,30 +437,27 @@ void to_json( JsonOutput root, const player_t& p, const player_collected_data_t:
   // doll stats in-game. crit and haste pick the max between melee/spell which seems to be the game logic
 
   add_non_zero( root[ "stats" ], "crit_rating",
-                p.composite_melee_crit_rating() > p.composite_spell_crit_rating() ? p.composite_melee_crit_rating()
-                                                                                  : p.composite_spell_crit_rating() );
+                bs.melee_crit_rating > bs.spell_crit_rating ? bs.melee_crit_rating : bs.spell_crit_rating );
   add_non_zero( root[ "stats" ], "crit_pct",
                 bs.attack_crit_chance > bs.spell_crit_chance ? bs.attack_crit_chance : bs.spell_crit_chance );
 
   double attack_haste_pct = bs.attack_haste != 0 ? 1 / bs.attack_haste - 1 : 0;
   double spell_haste_pct = bs.spell_haste != 0 ? 1 / bs.spell_haste - 1 : 0;
   add_non_zero( root[ "stats" ], "haste_rating",
-                p.composite_melee_haste_rating() > p.composite_spell_haste_rating()
-                    ? p.composite_melee_haste_rating()
-                    : p.composite_spell_haste_rating() );
+                bs.melee_haste_rating > bs.spell_haste_rating ? bs.melee_haste_rating : bs.spell_haste_rating );
   add_non_zero( root[ "stats" ], "haste_pct", attack_haste_pct > spell_haste_pct ? attack_haste_pct : spell_haste_pct );
 
-  add_non_zero( root[ "stats" ], "mastery_rating", p.composite_mastery_rating() );
+  add_non_zero( root[ "stats" ], "mastery_rating", bs.mastery_rating );
   add_non_zero( root[ "stats" ], "mastery_pct", bs.mastery_value );
 
-  add_non_zero( root[ "stats" ], "versatility_rating", p.composite_damage_versatility_rating() );
+  add_non_zero( root[ "stats" ], "versatility_rating", bs.versatility_rating );
   add_non_zero( root[ "stats" ], "versatility_pct", bs.damage_versatility );
 
-  add_non_zero( root[ "stats" ], "avoidance_rating", p.composite_avoidance_rating() );
+  add_non_zero( root[ "stats" ], "avoidance_rating", bs.avoidance_rating );
   add_non_zero( root[ "stats" ], "avoidance_pct", bs.avoidance );
-  add_non_zero( root[ "stats" ], "leech_rating", p.composite_leech_rating() );
+  add_non_zero( root[ "stats" ], "leech_rating", bs.leech_rating );
   add_non_zero( root[ "stats" ], "leech_pct", bs.leech );
-  add_non_zero( root[ "stats" ], "speed_rating", p.composite_speed_rating() );
+  add_non_zero( root[ "stats" ], "speed_rating", bs.speed_rating );
   add_non_zero( root[ "stats" ], "speed_pct", bs.run_speed );
 
   add_non_zero( root[ "stats" ], "manareg_per_second", bs.manareg_per_second );
@@ -627,7 +624,7 @@ void collected_data_to_json( JsonOutput root, const ::report::json::report_confi
   }
 
   // always include buffed_stats in JSON
-  to_json( root[ "buffed_stats" ], p, cd.buffed_stats_snapshot, relevant_resources );
+  to_json( root[ "buffed_stats" ], cd.buffed_stats_snapshot, relevant_resources );
 
   if ( sim.report_details != 0 )
   {
@@ -1015,25 +1012,25 @@ void profileset_json2( const profileset::profilesets_t& profileset, const sim_t&
 
                      if ( profileset->results() > 1 )
                      {
-                       auto results2 = obj[ "additional_metrics" ].make_array();
+                       auto more_results = obj[ "additional_metrics" ].make_array();
                        for ( size_t midx = 1; midx < sim.profileset_metric.size(); ++midx )
                        {
-                         auto obj2 = results2.add();
-                         const auto& result = profileset->result( sim.profileset_metric[ midx ] );
+                         auto obj2 = more_results.add();
+                         const auto& result2 = profileset->result( sim.profileset_metric[ midx ] );
 
                          obj2[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
-                         obj2[ "mean" ] = result.mean();
-                         obj2[ "min" ] = result.min();
-                         obj2[ "max" ] = result.max();
-                         obj2[ "stddev" ] = result.stddev();
-                         obj2[ "mean_stddev" ] = result.mean_stddev();
-                         obj2[ "mean_error" ] = result.mean_stddev() * sim.confidence_estimator;
+                         obj2[ "mean" ] = result2.mean();
+                         obj2[ "min" ] = result2.min();
+                         obj2[ "max" ] = result2.max();
+                         obj2[ "stddev" ] = result2.stddev();
+                         obj2[ "mean_stddev" ] = result2.mean_stddev();
+                         obj2[ "mean_error" ] = result2.mean_stddev() * sim.confidence_estimator;
 
-                         if ( result.median() != 0 )
+                         if ( result2.median() != 0 )
                          {
-                           obj2[ "median" ] = result.median();
-                           obj2[ "first_quartile" ] = result.first_quartile();
-                           obj2[ "third_quartile" ] = result.third_quartile();
+                           obj2[ "median" ] = result2.median();
+                           obj2[ "first_quartile" ] = result2.first_quartile();
+                           obj2[ "third_quartile" ] = result2.third_quartile();
                          }
                        }
                      }
@@ -1063,24 +1060,24 @@ void profileset_json3( const profileset::profilesets_t& profilesets, const sim_t
                      {
                        const auto& result = profileset->result( sim.profileset_metric[ midx ] );
 
-                       auto&& obj = results_obj.add();
+                       auto&& obj2 = results_obj.add();
 
-                       obj[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
-                       obj[ "mean" ] = result.mean();
-                       obj[ "min" ] = result.min();
-                       obj[ "max" ] = result.max();
-                       obj[ "stddev" ] = result.stddev();
-                       obj[ "mean_stddev" ] = result.mean_stddev();
-                       obj[ "mean_error" ] = result.mean_stddev() * sim.confidence_estimator;
+                       obj2[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric[ midx ] );
+                       obj2[ "mean" ] = result.mean();
+                       obj2[ "min" ] = result.min();
+                       obj2[ "max" ] = result.max();
+                       obj2[ "stddev" ] = result.stddev();
+                       obj2[ "mean_stddev" ] = result.mean_stddev();
+                       obj2[ "mean_error" ] = result.mean_stddev() * sim.confidence_estimator;
 
                        if ( result.median() != 0 )
                        {
-                         obj[ "median" ] = result.median();
-                         obj[ "first_quartile" ] = result.first_quartile();
-                         obj[ "third_quartile" ] = result.third_quartile();
+                         obj2[ "median" ] = result.median();
+                         obj2[ "first_quartile" ] = result.first_quartile();
+                         obj2[ "third_quartile" ] = result.third_quartile();
                        }
 
-                       obj[ "iterations" ] = as<uint64_t>( result.iterations() );
+                       obj2[ "iterations" ] = as<uint64_t>( result.iterations() );
                      }
 
                      // Optional override ouput data

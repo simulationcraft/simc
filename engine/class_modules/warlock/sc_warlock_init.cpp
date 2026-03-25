@@ -121,6 +121,10 @@ namespace warlock
     // NOTE: 2026-02-17 Mark of Perotharn is being applied twice in what appears to be a bug
     if ( bugs )
       parse_passive_effects( hero.mark_of_perotharn, true );
+
+    // NOTE: 2026-03-21 An additional effect of Fel Armaments talent is applied even if the talent is not selected (bug)
+    if ( demonology() && bugs )
+      parse_passive_effects( talents.fel_armaments_2, true );
   }
 
   void warlock_t::init_spells_affliction()
@@ -274,6 +278,7 @@ namespace warlock
     talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194;
 
     talents.fel_armaments = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Armaments" ); // Should be ID 1263935
+    talents.fel_armaments_2 = conditional_spell_lookup( warlock_base.demonology_warlock->ok() && bugs, 1263938 ); // Always active due to a bug
 
     talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 1250768
 
@@ -622,7 +627,7 @@ namespace warlock
     hero.malevolence_buff = conditional_spell_lookup( hero.malevolence.ok(), 442726 );
     hero.malevolence_dmg = conditional_spell_lookup( hero.malevolence.ok(), 446285 );
 
-    cooldowns.blackened_soul->duration = 0_ms; // TODO: Set using data once hotfix is in using hero.blackened_soul->internal_cooldown();
+    cooldowns.blackened_soul->duration = hero.blackened_soul->internal_cooldown();
     cooldowns.seeds_of_their_demise->duration = 15_s;
   }
 
@@ -1190,7 +1195,7 @@ namespace warlock
           inc_max *= 1.0 + ( talents.creeping_death->effectN( 1 ).percent() * 0.5 );
       }
 
-      // Sataiel’s Volition no longer affects the chance of gaining Nightfall
+      // Sataiel's Volition no longer affects the chance of gaining Nightfall
       if ( hero.sataiels_volition.ok() )
         inc_max *= 1.0 + hero.sataiels_volition->effectN( 1 ).percent();
 
@@ -1596,6 +1601,10 @@ namespace warlock
     add_option( opt_string( "default_pet", default_pet ) );
     add_option( opt_bool( "disable_felstorm", disable_auto_felstorm ) );
     add_option( opt_bool( "normalize_destruction_mastery", normalize_destruction_mastery ) );
+    add_option( opt_bool( "eye_explosion_instanced_bug_cb", eye_explosion_instanced_bug_cb ) );
+    add_option( opt_bool( "eye_explosion_instanced_bug_sb", eye_explosion_instanced_bug_sb ) );
+    add_option( opt_bool( "eye_explosion_instanced_bug_rof", eye_explosion_instanced_bug_rof ) );
+    add_option( opt_float( "tyrant_antoran_armaments_target_mul", tyrant_antoran_armaments_target_mul, 0.0, 1.0 ));
 
     rng_settings.for_each( [ this ]( auto& setting )
     {
@@ -1633,6 +1642,7 @@ namespace warlock
 
     warlock_pet_list.active = nullptr;
     havoc_target = nullptr;
+    bugged_mayhem = false;
     haunt_target = nullptr;
     wild_imp_spawns.clear();
     diabolic_ritual = rng().range( 0, 3 );

@@ -502,68 +502,34 @@ void arcanoweave_lining( special_effect_t& effect )
 
   struct arcanoweave_lining_cb_t : public dbc_proc_callback_t
   {
-    target_specific_t<buff_t> buffs;
+    stat_buff_t* buff;
     double ally_conversion_multiplier;
-    arcanoweave_lining_cb_t( const special_effect_t& e, buff_t* personal_buff )
+
+    arcanoweave_lining_cb_t( const special_effect_t& e, stat_buff_t* personal_buff )
       : dbc_proc_callback_t( e.player, e ),
-        buffs{ false },
+        buff( personal_buff ),
         ally_conversion_multiplier( e.driver()->effectN( 3 ).percent() / e.driver()->effectN( 2 ).percent() )
+    {}
+
+    buff_t* create_debuff( player_t* t ) override
     {
-      buffs[ e.player ] = personal_buff;
-    }
+      // don't cache in ctor so we can grab double value for double embellishment
+      auto ally_stat_amount = buff->stats.front().amount * ally_conversion_multiplier;
 
-    double ally_buff_size()
-    {
-      return debug_cast<stat_buff_t*>( get_buff( effect.player ) )->stats[ 0 ].amount * ally_conversion_multiplier;
-    }
-
-    buff_t* get_buff( player_t* buff_player )
-    {
-      if ( buffs[ buff_player ] )
-        return buffs[ buff_player ];
-
-      if ( auto buff = buff_t::find( buff_player, "arcanoweave_insight", effect.player ) )
-      {
-        buffs[ buff_player ] = buff;
-        return buff;
-      }
-
-      auto buff_spell = effect.player->find_spell( 1229746 );
-
-      auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, "arcanoweave_insight", buff_spell );
-      buff->set_stat_from_effect_type( A_MOD_STAT, ally_buff_size() );
-
-      buffs[ buff_player ] = buff;
-
-      return buff;
-    }
-
-    void trigger_buff( player_t* buff_player )
-    {
-      if ( buff_player->is_sleeping() )
-        return;
-
-      auto buff               = get_buff( buff_player );
-      buff->trigger();
+      return make_buff<stat_buff_t>( actor_pair_t( t, listener ), "arcanoweave_insight_ally", &buff->data() )
+        ->set_stat_from_effect_type( A_MOD_STAT, ally_stat_amount )
+        ->set_name_reporting( "Ally" );
     }
 
     void execute( action_t*, action_state_t* ) override
     {
-      trigger_buff( effect.player );
+      buff->trigger();
 
       if ( effect.player->sim->player_non_sleeping_list.size() > 1 && !effect.player->sim->single_actor_batch )
       {
-        std::vector<player_t*> helper_vector = effect.player->sim->player_non_sleeping_list.data();
-        rng().shuffle( helper_vector.begin(), helper_vector.end() );
-
-        for ( auto* player : helper_vector )
-        {
-          if ( player->is_pet() || player == effect.player )
-            continue;
-
-          trigger_buff( player );
-          break;
-        }
+        auto allies = effect.player->sim->player_non_sleeping_list.data();  // make a copy
+        range::erase_remove( allies, effect.player );
+        get_debuff( rng().range( allies ) )->trigger();
       }
     }
   };
@@ -702,8 +668,8 @@ void blessed_pango_charm( special_effect_t& effect )
 // 1259130 heal
 void primal_spore_binding( special_effect_t& effect )
 {
-  effect.player->sim->error( UNVERIFIED_VALUE,
-    "Primal Spore Binding: Damage has only been verified to the tooltip and not to actual in-game damage." );
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Primal Spore Binding: What determines if you get a damage proc vs healing proc is unknown." );
 
   auto damage_amount = effect.driver()->effectN( 1 ).average( effect );
   auto heal_amount   = effect.driver()->effectN( 2 ).average( effect );
@@ -743,8 +709,7 @@ void primal_spore_binding( special_effect_t& effect )
 // 1252389 dot
 void prismatic_focusing_iris( special_effect_t& effect )
 {
-  // It appears that in game, it's taking the damage from spelldata, and dividing by 5 to get damage per tick
-  auto dot_damage = effect.driver()->effectN( 1 ).average( effect ) / 5;
+  auto dot_damage = effect.driver()->effectN( 1 ).average( effect );
 
   auto dot =
     create_proc_action<generic_proc_t>( "prismatic_focusing_iris", effect, effect.trigger()->effectN( 1 ).trigger() );
@@ -1125,9 +1090,9 @@ void rot( special_effect_t& effect )
       return m;
     }
 
-    buff_t* create_debuff( player_t* target ) override
+    buff_t* create_debuff( player_t* t ) override
     {
-      return make_buff<buff_t>( actor_pair_t( target, player ), "root_rot_debuff", &data() )
+      return make_buff<buff_t>( actor_pair_t( t, player ), "root_rot_debuff", &data() )
         ->set_activated( true )
         ->set_duration( data().duration() + 1_ms );  // Extra 1ms to avoid expiration before next tick
     }
@@ -1451,9 +1416,9 @@ void solarflare_prism( special_effect_t& effect )
 
     void bump( int s, double v ) override
     {
-      for ( auto& s : stats )
+      for ( auto& stat : stats )
       {
-        s.amount = std::min( default_value + hp_inc * hp_mult, max_val );
+        stat.amount = std::min( default_value + hp_inc * hp_mult, max_val );
       }
       stat_buff_t::bump( s, v );
     }
@@ -1630,24 +1595,62 @@ void gaze_of_the_alnseer( special_effect_t& effect )
 {
   auto alnsight_spell = effect.trigger();
 
-  auto buff = create_buff<buff_t>( effect.player, alnsight_spell );
-  auto stat = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1266687 ) )
-                ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
+  struct alnsight_cb_t : public dbc_proc_callback_t
+  {
+    bool refreshed;
+    cooldown_t* icd;
+    alnsight_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), refreshed( false ), icd( nullptr )
+    {
+      icd = e.player->get_cooldown( e.cooldown_name() );
+    }
 
-  auto alnsight         = new special_effect_t( effect.player );
-  alnsight->name_str    = "alnsight_proc";
-  alnsight->item        = effect.item;
-  alnsight->spell_id    = alnsight_spell->id();
-  alnsight->custom_buff = stat;
+    void execute( action_t*, action_state_t* ) override
+    {
+      effect.custom_buff->trigger();
+      // This is a complete guess at the rate, but, if refreshed, occasionally youll get multiple procs that seem to
+      // ignore the internal cooldown. Its not that often, and its not consistent at all. Need more data.
+      if ( refreshed && rng().roll( 0.05 ) )
+      {
+        make_event( *effect.player->sim, 1_ms, [ this ] {
+          // Randomly reset the ICD if refreshed to emulate the behavior where we see extra stacks being generated.
+          if ( icd )
+            icd->reset( false );
+        } );
+      }
+    }
+  };
+
+  auto buff = create_buff<buff_t>( effect.player, alnsight_spell );
+
+  auto stat = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1266687 ) )
+                  ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
+
+  auto alnsight          = new special_effect_t( effect.player );
+  alnsight->name_str     = "alnsight_proc";
+  alnsight->item         = effect.item;
+  alnsight->spell_id     = alnsight_spell->id();
+  alnsight->custom_buff  = stat;
+  alnsight->proc_flags2_ = PF2_LANDED;
   effect.player->special_effects.push_back( alnsight );
 
-  auto alnsight_cb = new dbc_proc_callback_t( effect.player, *alnsight );
+  auto alnsight_cb = new alnsight_cb_t( *alnsight );
   alnsight_cb->activate_with_buff( buff, true );
 
-  effect.custom_buff = buff;
+  buff->set_expire_callback( [ alnsight_cb ]( buff_t*, int, timespan_t ) { alnsight_cb->refreshed = false; } );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), [ &effect, stat, buff, alnsight_cb ]( auto, auto, const action_state_t* ) {
+        buff->trigger();
+        if ( stat->check() )
+        {
+          stat->trigger();
+          alnsight_cb->refreshed = true;
+        }
+      } );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
 
 // Resonant Bellowstone
 // 1250564 Driver
@@ -1839,55 +1842,69 @@ void sealed_chaos_urn( special_effect_t& effect )
 // 1266182 Primary
 // 1266184 Secondary (Highest)
 // 1266197 Secondary (Lowest)
-// TODO: Can the different buffs overlap? Or do they expire existing ones?
 void lost_idol_of_the_hashey( special_effect_t& effect )
 {
-  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Lost Idol of the Hash'ey: Implementation assumes you can proc while a buff is already up, "
-    "including proccing the same buff against which will refresh the buff." );
-
   struct lost_idol_of_the_hashey_cb_t final : public dbc_proc_callback_t
   {
+    enum idol_type_e
+    {
+      NONE,
+      PRIMARY,
+      HIGHEST,
+      LOWEST
+    };
+
     buff_t* primary;
     std::unordered_map<stat_e, buff_t*> highest;
     std::unordered_map<stat_e, buff_t*> lowest;
+    std::vector<idol_type_e> idol_types;
+    idol_type_e last_type = NONE;
 
-    lost_idol_of_the_hashey_cb_t( const special_effect_t& e )
-      : dbc_proc_callback_t( e.player, e ), primary( nullptr ), highest(), lowest()
+    lost_idol_of_the_hashey_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), highest(), lowest()
     {
       primary = create_buff<stat_buff_t>( e.player, e.player->find_spell( 1266182 ) )
-                    ->set_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 2 ).average( e ) );
+        ->set_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 2 ).average( e ) );
+      deactivate_with_buff( primary );
 
       create_all_stat_buffs( e, e.player->find_spell( 1266184 ), e.driver()->effectN( 1 ).average( e ),
-                             [ & ]( stat_e s, buff_t* b ) { highest[ s ] = b; } );
+        [ this ]( stat_e s, buff_t* b ) {
+          highest[ s ] = b;
+          deactivate_with_buff( b );
+        } );
 
       create_all_stat_buffs( e, e.player->find_spell( 1266197 ), e.driver()->effectN( 1 ).average( e ),
-                             [ & ]( stat_e s, buff_t* b ) { lowest[ s ] = b; } );
+        [ this ]( stat_e s, buff_t* b ) {
+          lowest[ s ] = b;
+          deactivate_with_buff( b );
+        } );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+
+      idol_types = { PRIMARY, HIGHEST, LOWEST };
     }
 
     void execute( action_t*, action_state_t* ) override
     {
-      int type = rng().range( 0, 3 );
+      rng().shuffle( idol_types.begin(), idol_types.end() );
 
-      if ( type == 0 )
-        primary->trigger();
+      auto type = idol_types.back();
 
-      if ( type == 1 )
+      idol_types.pop_back();  // remove the current type from pool
+
+      if ( last_type != NONE )
+        idol_types.push_back( last_type );  // add the previous type back into the pool
+
+      last_type = type;
+
+      switch ( type )
       {
-        for ( auto& stat : secondary_ratings )
-          highest[ stat ]->expire();
-
-        auto stat = util::highest_stat( listener, secondary_ratings );
-        highest[ stat ]->trigger();
-      }
-
-      if ( type == 2 )
-      {
-        for ( auto& stat : secondary_ratings )
-          lowest[ stat ]->expire();
-
-        auto stat = util::lowest_stat( listener, secondary_ratings );
-        lowest[ stat ]->trigger();
+        case PRIMARY: primary->trigger(); break;
+        case HIGHEST: highest[ util::highest_stat( listener, secondary_ratings ) ]->trigger(); break;
+        case LOWEST:  lowest[ util::lowest_stat( listener, secondary_ratings ) ]->trigger(); break;
+        default:                   break;
       }
     }
   };
@@ -2194,12 +2211,12 @@ void latchs_crooked_hook( special_effect_t& effect )
       main_damage->add_child( impact_damage );
     }
 
-    buff_t* create_debuff( player_t* target ) override
+    buff_t* create_debuff( player_t* t ) override
     {
-      auto debuff = generic_proc_t::create_debuff( target );
-      debuff->set_expire_callback( [ &, target ]( buff_t*, int, timespan_t d ) {
+      auto debuff = generic_proc_t::create_debuff( t );
+      debuff->set_expire_callback( [ &, t ]( buff_t*, int, timespan_t d ) {
         if ( d == 0_ms )
-          impact_damage->execute_on_target( target );
+          impact_damage->execute_on_target( t );
       } );
 
       return debuff;
@@ -2345,15 +2362,16 @@ void locuswalkers_ribbon( special_effect_t& effect )
     locuswalkers_ribbon_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {
       stack_buff = create_buff<buff_t>( e.player, e.trigger()->effectN( 2 ).trigger() )
-                     ->set_freeze_stacks( true )
-                     ->set_default_value( e.driver()->effectN( 2 ).percent() )
-                     ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                       if ( !stack_buff->player->in_combat && stack_buff->check() )
-                         stack_buff->decrement();
-                     } );
+                       ->set_freeze_stacks( true )
+                       ->set_default_value( e.driver()->effectN( 2 ).percent() )
+                       ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                         if ( !stack_buff->player->in_combat && stack_buff->check() )
+                           stack_buff->decrement();
+                       } );
 
       stat_buff = create_buff<riftwalkers_temptation_t>( e.player, e.trigger(), stack_buff )
-                    ->set_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) );
+                      ->set_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) );
+      stat_buff->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
     }
 
     void execute( action_t*, action_state_t* ) override
@@ -2685,7 +2703,7 @@ void glorious_crusaders_keepsake( special_effect_t& e )
     }
 
     // Adapted create all buffs.
-    void create_all_buffs( player_t* target, const special_effect_t& effect, const spell_data_t* buff_data,
+    void create_all_buffs( player_t* target, const special_effect_t& effect_, const spell_data_t* buff_data,
                            double amount, std::function<void( stat_e, buff_t* )> add_fn )
     {
       auto buff_name = util::tokenize_fn( buff_data->name_cstr() );
@@ -2709,10 +2727,10 @@ void glorious_crusaders_keepsake( special_effect_t& e )
         }
 
         auto buff = make_buff<stat_buff_t>( actor_pair_t{ target, target }, name, buff_data )
-                        ->add_stat( stats.front(), amount ? amount : eff.average( effect ) )
+                        ->add_stat( stats.front(), amount ? amount : eff.average( effect_ ) )
                         ->set_name_reporting( util::string_join( stat_strs ) );
 
-        if ( target != effect.player )
+        if ( target != effect_.player )
           buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
         if ( add_fn )
@@ -2800,88 +2818,58 @@ void refueling_orb( special_effect_t& e )
 {
   struct refueling_orb_cb_t : public dbc_proc_callback_t
   {
-    target_specific_t<stat_buff_t> buffs;
     double refueling_orb_heal_chance;
     int chain_targets;
     double velocity;
     timespan_t min_travel;
-    double buff_size;
+    const spell_data_t* buff_data;
+    double stat_amount;
+
     refueling_orb_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
-        buffs{ false },
         refueling_orb_heal_chance( effect.player->midnight_opts.refueling_orb_heal_chance ),
         chain_targets( effect.player->find_spell( 1254534 )->effectN( 1 ).chain_target() ),
         velocity( effect.player->find_spell( 1254534 )->missile_speed() ),
         min_travel( timespan_t::from_seconds( effect.player->find_spell( 1254534 )->missile_min_duration() ) ),
-        buff_size( effect.driver()->effectN( 2 ).average( effect ) )
+        buff_data( effect.player->find_spell( 1254577 ) ),
+        stat_amount( effect.driver()->effectN( 2 ).average( effect ) )
+    {}
+
+    buff_t* create_debuff( player_t* t ) override
     {
-      get_buff( effect.player );
-    }
-
-    stat_buff_t* get_buff( player_t* buff_player )
-    {
-      if ( buffs[ buff_player ] )
-        return buffs[ buff_player ];
-
-      auto buff_spell = effect.player->find_spell( 1254577 );
-
-      if ( auto buff = buff_t::find( buff_player, "refueling_orb" ) )
-      {
-        buffs[ buff_player ] = dynamic_cast<stat_buff_t*>( buff );
-        return buffs[ buff_player ];
-      }
-
-      auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, buff_player }, "refueling_orb", buff_spell );
-      buff->set_stat_from_effect_type( A_MOD_RATING, buff_size );
-
-      buffs[ buff_player ] = buff;
-
-      return buff;
-    }
-
-    void trigger_buff( player_t* buff_player )
-    {
-      if ( buff_player->is_sleeping() )
-          return;
-
-      auto buff               = get_buff( buff_player );
-      buff->stats[ 0 ].amount = buff_size;
-      buff->trigger();
+      return make_buff<stat_buff_t>( actor_pair_t( t, listener ), "refueling_orb", buff_data )
+        ->set_stat_from_effect_type( A_MOD_RATING, stat_amount );
     }
 
     void execute( action_t*, action_state_t* ) override
     {
       if ( effect.player->sim->player_non_sleeping_list.size() == 1 )
       {
-        trigger_buff( effect.player );
+        get_debuff( effect.player )->trigger();
       }
       else
       {
-        std::vector<player_t*> helper_vector = effect.player->sim->player_non_sleeping_list.data();
-        rng().shuffle( helper_vector.begin(), helper_vector.end() );
+        auto allies = effect.player->sim->player_non_sleeping_list.data(); // make a copy
 
-        auto it = std::find( helper_vector.begin(), helper_vector.end(), effect.player );
-
-        if ( it != helper_vector.end() )
-        {
-          std::iter_swap( it, std::prev( helper_vector.end() ) );
-        }
+        if ( auto it = std::find( allies.begin(), allies.end(), effect.player ); it != allies.end() )
+          std::iter_swap( it, std::prev ( allies.end() ) );
 
         timespan_t total_travel_time = 0_s;
         player_t* previous_target    = effect.player;
 
         for ( int i = 0; i < chain_targets; i++ )
         {
-          auto target_iterator = rng().range( helper_vector.begin(), std::prev( helper_vector.end() ) );
+          auto target_iterator = rng().range( allies.begin(), std::prev( allies.end() ) );
           player_t* target     = *target_iterator;
-          std::iter_swap( target_iterator, std::prev( helper_vector.end() ) );
+          std::iter_swap( target_iterator, std::prev( allies.end() ) );
 
           total_travel_time += std::max(
               min_travel, timespan_t::from_seconds( previous_target->get_player_distance( *target ) / velocity ) );
 
           if ( !rng().roll( refueling_orb_heal_chance ) )
-            make_event( effect.player->sim, total_travel_time,
-                        std::bind( &refueling_orb_cb_t::trigger_buff, this, target ) );
+          {
+            make_event( effect.player->sim, total_travel_time, [ this, target ] { get_debuff( target )->trigger(); } );
+          }
 
           previous_target = target;
         }
@@ -2940,7 +2928,7 @@ void crucible_of_erratic_energies( special_effect_t& effect )
   if ( !effect.player->midnight_opts.crucible_of_erratic_energies_violence )
     effect.rppm_modifier_ = 1.0 / effect.driver()->effectN( 3 ).base_value();
 
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1277482 ) )
     ->set_stat_from_effect_type( A_MOD_RATING, stat_value );
 
   // Protocol of Sustenance doubles the buff duration.

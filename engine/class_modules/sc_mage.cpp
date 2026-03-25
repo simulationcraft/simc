@@ -1607,6 +1607,14 @@ public:
     affected_by.freeze_and_shatter_1 = data().affected_by( p->spec.freeze_and_shatter->effectN( 1 ) );
     affected_by.freeze_and_shatter_2 = data().affected_by( p->spec.freeze_and_shatter->effectN( 2 ) );
 
+    if ( p->talents.splitting_ice.ok() && range::any_of( p->talents.splitting_ice->effects(),
+          [ this ] ( const auto& eff ) { return data().affected_by_all( eff ); } ) )
+    {
+      // TODO: This isn't uniform across all spells (Frostbolt's radius is smaller, for some reason)
+      // but this should be good enough for split cleave sims
+      radius = 8;
+    }
+
     if ( p->talents.molten_chill.ok() && school == SCHOOL_FROSTFIRE )
     {
       base_ignite_multiplier *= 1.0 + p->talents.molten_chill->effectN( 2 ).percent();
@@ -1780,8 +1788,15 @@ public:
   {
     calculate_on_impact = true;
     auto spell = player->find_spell( spell_id );
+
+    // Radius is given by the parent spell, not by the child.
+    // Restore it after parse_effect_data finishes.
+    auto radius_copy = radius;
     for ( const auto& eff : spell->effects() )
       parse_effect_data( eff );
+    if ( radius_copy > 0 )
+      radius = radius_copy;
+
     may_crit = !spell->flags( SX_CANNOT_CRIT );
     tick_may_crit = spell->flags( SX_TICK_MAY_CRIT );
     rolling_periodic = spell->flags( SX_ROLLING_PERIODIC );
@@ -2583,8 +2598,11 @@ struct molten_chill_ignite_t final : public residual_action::residual_periodic_a
 
 struct arcane_orb_bolt_t final : public arcane_mage_spell_t
 {
-  arcane_orb_bolt_t( std::string_view n, mage_t* p ) :
-    arcane_mage_spell_t( n, p, p->find_spell( 153640 ) )
+  const ao_type type;
+
+  arcane_orb_bolt_t( std::string_view n, mage_t* p, ao_type type_ ) :
+    arcane_mage_spell_t( n, p, p->find_spell( 153640 ) ),
+    type( type_ )
   {
     background = proc = true;
   }
@@ -2601,7 +2619,7 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    if ( p()->state.eureka )
+    if ( p()->state.eureka || type == ao_type::ORB_MASTERY )
       am *= 1.0 + p()->talents.eureka->effectN( 1 ).percent();
 
     return am;
@@ -2646,7 +2664,7 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
         break;
     }
 
-    impact_action = get_action<arcane_orb_bolt_t>( bolt_name, p );
+    impact_action = get_action<arcane_orb_bolt_t>( bolt_name, p, type );
     add_child( impact_action );
 
     if ( type != ao_type::NORMAL )
@@ -4213,16 +4231,10 @@ struct glacial_spike_t final : public frost_mage_spell_t
     p()->state.icicles = 0;
 
     p()->trigger_brain_freeze( bf_chance, proc_brain_freeze, 150_ms );
+    p()->trigger_fof( fof_chance, proc_fof );
+    p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), proc_fof );
     p()->trigger_splinter( p()->target );
     p()->trigger_splinter( p()->target, as<int>( p()->talents.signature_spell->effectN( 2 ).base_value() ) );
-
-    // TODO: If GS is cast with no FoF, the guaranteed FoF from Flash Freeze is applied with a short delay
-    auto fn = [ this ] { p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), proc_fof ); };
-    if ( p()->bugs && !p()->buffs.fingers_of_frost->check() )
-      make_event( *sim, 100_ms, fn );
-    else
-      fn();
-    p()->trigger_fof( fof_chance, proc_fof );
 
     if ( duality_pyroblast )
       duality_pyroblast->execute_on_target( target );
@@ -7072,7 +7084,7 @@ void mage_t::trigger_fired_up()
   double chance;
   // TODO: This is bugged and seems to apply its changes to the proc chance during Combustion even when the talent is not learned.
   if ( buffs.combustion->check() && ( bugs || talents.fired_up_3.ok() ) )
-    chance = state.fired_up_count < combustion_chance.size() ? combustion_chance[ state.fired_up_count ] : 0.0;
+    chance = state.fired_up_count < as<int>( combustion_chance.size() ) ? combustion_chance[ state.fired_up_count ] : 0.0;
   else
     chance = talents.fired_up_1->effectN( 1 ).percent();
 
@@ -7251,21 +7263,7 @@ bool mage_t::trigger_clearcasting( double chance, bool allow_predict, bool has_d
     if ( chance >= 1.0 && allow_predict )
       buffs.clearcasting->predict();
 
-    // Due to Brainstorm being async in sims, its trigger will be scheduled w/ make_event ~30ms later, whereas CC is instantaneous.
-    // In-game, Blast (triggering CC + BS) into a queued Barrage will lead to CC + BS to be applied AFTER the Barrage.
-    // However, in sims, CC will be active prior to the Barrage.
-    // If Clearcasting would directly grant Intellect: in sims, the queued Barrage would benefit from Clearcasting; in game, the Barrage wouldn't.
-    // TODO: Currently doesn't trigger for Arcane at all
-    if ( talents.brainstorm.ok() && !bugs )
-    {
-      // TODO: we don't know what happens if a single spell triggers two (or more) separate sources of guaranteed Clearcastings.
-      // Since there's no such thing in-game yet, we can't know with certainty whether brainstorm will trigger once or twice.
-      if ( !has_double_proc_delay || state.last_random_clearcasting != sim->current_time() )
-        buffs.brainstorm->trigger();
-      else
-        sim->print_debug( "Gaining Clearcasting in {} s; Brainstorm trigger skipped.", delay );
-    }
-
+    buffs.brainstorm->trigger();
     trigger_splinter( target, as<int>( talents.shifting_shards->effectN( 1 ).base_value() ) );
 
     if ( rng().roll( talents.overpowered_missiles->effectN( 1 ).percent() ) )

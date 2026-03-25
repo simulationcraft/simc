@@ -5,7 +5,7 @@ level=90
 race=tauren
 role=tank
 position=front
-talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZbxYGzM2mxGmZAAAAAAAYZBjYmBmhBzYMzMzwsMmZMzyw2ittxMmFAAYZWmWmlZWGAAIAzwGYmBMNGAAwA
+talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZbzYGzM2mxGmZAAAAAAAYZBjYmBmhBzYMzMzwsMmZMzywymttxMmFAAYZWmWmtZWGAAIAzwGYmBMNGAAwA
 
 head=fearsome_visage_of_radens_chosen,id=250015,bonus_id=13575/13575/13575/12806/1808,enchant_id=7991,gem_id=240983
 neck=masterwork_sindorei_amulet,id=240950,bonus_id=12214/13622/13667/12066/9627/8791/13454/8960,gem_id=240914,crafted_stats=32/40

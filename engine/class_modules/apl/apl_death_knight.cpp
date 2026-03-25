@@ -120,7 +120,9 @@ void blood( player_t* p )
   precombat->add_action( "deaths_caress" );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "use_items,use_off_gcd=1" );
+  default_->add_action( "use_items" );
+  default_->add_action( "use_item,name=light_company_guidon,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<15" );
+  default_->add_action( "use_item,name=algethar_puzzle_box,if=fight_remains>122|cooldown.dancing_rune_weapon.remains>78|fight_remains<25" );
   default_->add_action( "fireblood,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<8" );
   default_->add_action( "blood_fury,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<12" );
   default_->add_action( "berserking,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<=15" );
@@ -210,8 +212,7 @@ void frost( player_t* p )
   default_->add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
   default_->add_action( "run_action_list,name=single_target" );
 
-  cooldowns->add_action( "potion,use_off_gcd=1,if=variable.cooldown_check|fight_remains<25", "target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice+((hero_tree.deathbringer&debuff.reapers_mark_debuff.up)*5)  Cooldowns" );
-  cooldowns->add_action( "remorseless_winter,if=variable.sending_cds&(active_enemies>1|talent.gathering_storm)|(buff.gathering_storm.stack=10&buff.remorseless_winter.remains<gcd.max)&fight_remains>10" );
+  cooldowns->add_action( "remorseless_winter,if=variable.sending_cds&(active_enemies>1|talent.gathering_storm)|(buff.gathering_storm.stack=10&buff.remorseless_winter.remains<gcd.max)&fight_remains>10", "Cooldowns" );
   cooldowns->add_action( "reapers_mark,target_if=first:debuff.reapers_mark_debuff.down,if=cooldown.pillar_of_frost.remains<=gcd.max&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>20|cooldown.breath_of_sindragosa.remains<gcd.max&runic_power>=40)|fight_remains<20" );
   cooldowns->add_action( "pillar_of_frost,if=variable.sending_cds&(!hero_tree.deathbringer|cooldown.reapers_mark.remains>10)&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>20|cooldown.breath_of_sindragosa.up&runic_power>=60)|fight_remains<20" );
   cooldowns->add_action( "breath_of_sindragosa,use_off_gcd=1,if=!buff.breath_of_sindragosa.up&(buff.pillar_of_frost.up|fight_remains<20)" );
@@ -263,7 +264,8 @@ void frost( player_t* p )
   aoe->add_action( "obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)" );
   aoe->add_action( "howling_blast,if=!buff.killing_machine.react&(talent.obliteration&buff.pillar_of_frost.up)" );
 
-  trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.cast_time>0&variable.trinket_1_buffs&!variable.trinket_1_manual&buff.pillar_of_frost.remains&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)", "Trinkets  Trinkets The trinket with the highest estimated value, will be used first and paired with Pillar of Frost." );
+  trinkets->add_action( "potion,use_off_gcd=1,if=variable.cooldown_check|fight_remains<25", "Trinkets  Trinkets The trinket with the highest estimated value, will be used first and paired with Pillar of Frost." );
+  trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.cast_time>0&variable.trinket_1_buffs&!variable.trinket_1_manual&buff.pillar_of_frost.remains&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)" );
   trinkets->add_action( "use_item,slot=trinket2,if=!trinket.2.cast_time>0&variable.trinket_2_buffs&!variable.trinket_2_manual&buff.pillar_of_frost.remains&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)" );
   trinkets->add_action( "use_item,slot=trinket1,if=trinket.1.cast_time>0&(!hero_tree.rider_of_the_apocalypse|cooldown.frostwyrms_fury.remains)&variable.trinket_1_buffs&!variable.trinket_1_manual&cooldown.pillar_of_frost.remains<trinket.1.cast_time&(!talent.breath_of_sindragosa|variable.breath_of_sindragosa_check)&variable.sending_cds&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|variable.trinket_1_duration>=fight_remains", "Channeled buff trinkets will be used before cooldowns" );
   trinkets->add_action( "use_item,slot=trinket2,if=trinket.2.cast_time>0&(!hero_tree.rider_of_the_apocalypse|cooldown.frostwyrms_fury.remains)&variable.trinket_2_buffs&!variable.trinket_2_manual&cooldown.pillar_of_frost.remains<trinket.2.cast_time&(!talent.breath_of_sindragosa|variable.breath_of_sindragosa_check)&variable.sending_cds&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|variable.trinket_2_duration>=fight_remains" );
@@ -311,6 +313,7 @@ void unholy( player_t* p )
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=variables", "Choose Action list to run" );
   default_->add_action( "call_action_list,name=racials" );
+  default_->add_action( "potion,if=(variable.st_planning|variable.adds_remain)&variable.cds_active&(variable.trinket_priority=1&trinket.1.has_use_buff&!trinket.1.proc.mastery.duration>0|variable.trinket_priority=2&trinket.2.has_use_buff&!trinket.2.proc.mastery.duration>0)" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
@@ -332,7 +335,7 @@ void unholy( player_t* p )
   cooldowns->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(talent.summon_gargoyle&runic_power>=30|debuff.festering_scythe_debuff.up|!talent.festering_scythe)" );
   cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
   cooldowns->add_action( "soul_reaper,if=!talent.pestilence|talent.pestilence&talent.infliction_of_sorrow&(buff.dark_transformation.remains<5|buff.reaping.remains<=gcd.max)|target.health.pct<=35" );
-  cooldowns->add_action( "putrefy,if=(variable.st_planning|variable.adds_remain)&(cooldown.dark_transformation.remains>15&(talent.soul_reaper&target.health.pct>35&!action.soul_reaper.ready|!talent.soul_reaper)|charges=max_charges&(cooldown.dark_transformation.remains>gcd.max|!talent.reaping)|buff.reaping.up&talent.infliction_of_sorrow&talent.pestilence&buff.dark_transformation.remains>10&(charges=max_charges|!dot.virulent_plague.ticking&talent.blightburst))" );
+  cooldowns->add_action( "putrefy,if=(variable.st_planning|variable.adds_remain)&(cooldown.dark_transformation.remains>15&runic_power<90&(talent.soul_reaper&target.health.pct>35&!action.soul_reaper.ready|!talent.soul_reaper&(talent.commander_of_the_dead&!cooldown.dark_transformation.ready|!talent.commander_of_the_dead))|charges=max_charges&(cooldown.dark_transformation.remains>gcd.max|!talent.reaping)|buff.reaping.up&talent.infliction_of_sorrow&talent.pestilence&buff.dark_transformation.remains>10&(charges=max_charges|!dot.virulent_plague.ticking&talent.blightburst))" );
 
   racials->add_action( "ancestral_call,if=variable.cds_active", "Racials" );
   racials->add_action( "arcane_pulse,if=runic_power<20&rune<2" );
@@ -355,9 +358,9 @@ void unholy( player_t* p )
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)" );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)" );
 
-  variables->add_action( "variable,name=spending_rp,value=rune<2|buff.forbidden_knowledge.up&rune<4|buff.sudden_doom.react", "Variables" );
-  variables->add_action( "variable,name=st_planning,op=setif,value=1,value_else=0,condition=active_enemies=1&(!raid_event.adds.exists|!raid_event.adds.in|raid_event.adds.in>15)" );
-  variables->add_action( "variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|!raid_event.pull.exists&raid_event.adds.remains>5|raid_event.pull.exists&raid_event.adds.in>20)" );
+  variables->add_action( "variable,name=spending_rp,value=rune<2|buff.forbidden_knowledge.up&(rune<4|active_enemies>=6)|buff.sudden_doom.react|active_enemies>=7", "Variables" );
+  variables->add_action( "variable,name=st_planning,op=setif,value=1,value_else=0,condition=active_enemies=1&(!raid_event.adds.exists|!raid_event.adds.in|raid_event.adds.in>15|!raid_event.pull.exists|raid_event.pull.exists&raid_event.pull.in>15)" );
+  variables->add_action( "variable,name=adds_remain,value=active_enemies>=2&((!raid_event.adds.exists|!raid_event.pull.exists)|raid_event.adds.remains>5|raid_event.pull.remains>5)" );
   variables->add_action( "variable,name=cds_active,value=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up&buff.dark_transformation.remains>5" );
   variables->add_action( "variable,name=epidemic_prio,value=active_enemies>=4-pet.whitemane.active&!buff.forbidden_knowledge.up|active_enemies>=6-pet.whitemane.active&buff.forbidden_knowledge.up" );
 }

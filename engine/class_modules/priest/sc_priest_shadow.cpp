@@ -13,6 +13,19 @@
 
 namespace priestspace
 {
+namespace
+{
+enum class random_idol_e : int
+{
+  NONE = 0,
+  YSHAARJ,
+  NZOTH_HORRIFIC_VISION,
+  NZOTH_VISION_OF_NZOTH,
+  YOGG,
+  CTHUN
+};
+}  // namespace
+
 namespace actions
 {
 namespace spells
@@ -27,7 +40,6 @@ struct mind_flay_base_t : public priest_spell_t
     affected_by_shadow_weaving = true;
     may_crit                   = false;
     channeled                  = true;
-    use_off_gcd                = true;
     idol_of_nzoth_tick_stacks  = 1;
   }
 
@@ -375,9 +387,7 @@ public:
 
       if ( priest().talents.shadow.auspicious_spirits.enabled() )
       {
-        // Not found in spelldata, hardcoding based on empirical data
-        auto chance = 0.8 * std::pow( cast_state( s )->number_spawned, -0.8 );
-        if ( rng().roll( chance ) )
+        if ( priest().threshold_rng.auspicious_spirits->trigger( s ) )
         {
           priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
         }
@@ -559,14 +569,7 @@ struct shadow_word_pain_t final : public priest_spell_t
 
       if ( s->result_amount > 0 && priest().talents.shadow.tormented_spirits.enabled() )
       {
-        // TODO: figure out what this actually is, applying a 40% nerf based on patch notes
-        // TODO: Check if this is nerfed by active SWPs.
-        auto chance = 2.0 / 9.0 * 0.6;
-
-        if ( s->result == RESULT_CRIT )
-          chance *= 1 + priest().talents.shadow.tormented_spirits->effectN( 1 ).percent();
-
-        if ( rng().roll( chance ) )
+        if ( priest().threshold_rng.tormented_spirits->trigger( s ) )
         {
           priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp );
         }
@@ -581,17 +584,11 @@ struct shadow_word_pain_t final : public priest_spell_t
     if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
     {
       trigger_power_of_the_dark_side();
-      priest().trigger_shadowy_insight();
+      priest().trigger_shadowy_insight( false, d->state );
 
       if ( priest().talents.shadow.tormented_spirits.enabled() )
       {
-        // TODO: figure out what this actually is, applying a 40% nerf based on patch notes
-        auto chance = 2.0 / 9.0 * 0.6 * std::pow( priest().get_active_dots( d ), -0.9 );
-
-        if ( d->state->result == RESULT_CRIT )
-          chance *= 1 + priest().talents.shadow.tormented_spirits->effectN( 1 ).percent();
-
-        if ( rng().roll( chance ) )
+        if ( priest().threshold_rng.tormented_spirits->trigger( d->state ) )
         {
           priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp );
         }
@@ -756,13 +753,14 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
     {
-      if ( priest().talents.shadow.maddening_touch.enabled() && priest().cooldowns.maddening_touch_icd->up() )
+      if ( priest().talents.shadow.maddening_touch.enabled() )
       {
-        // Not found in spelldata, based on empirical data
-        auto chance = 0.25 * std::pow( priest().get_active_dots( d ), -0.6 );
-        if ( rng().roll( chance ) )
+        // No CD?
+        // priest().cooldowns.maddening_touch_icd->up();
+
+        if ( priest().threshold_rng.maddening_touch->trigger( d->state ) )
         {
-          priest().cooldowns.maddening_touch_icd->start();
+          // priest().cooldowns.maddening_touch_icd->start();
           priest().generate_insanity(
               priest().talents.shadow.maddening_touch->effectN( 2 ).resource( RESOURCE_INSANITY ),
               priest().gains.insanity_maddening_touch, d->state->action );
@@ -883,18 +881,20 @@ struct shadow_word_madness_t final : public priest_spell_t
       dot->state->copy_state( s );
 
       // compute weights in ticks
-      double ticks_left = dot->ticks_left_fractional();
-      timespan_t new_tick = tick_time( s );
+      double ticks_left       = dot->ticks_left_fractional();
+      timespan_t new_tick     = tick_time( s );
       timespan_t new_duration = composite_dot_duration( s );
-      double new_base_ticks = new_duration / new_tick;
+      double new_base_ticks   = new_duration / new_tick;
 
       // Protect against divide-by-zero: use sum of weighted ticks to preserve total damage.
       double ticks_sum = ticks_left + new_base_ticks;
       if ( ticks_sum > 0.0 )
       {
         double combined = ( ticks_left * old_persistent + new_base_ticks * s->persistent_multiplier ) / ticks_sum;
-        sim->print_debug( "shadow_word_madness refresh: old_persistent={} new_persistent={} ticks_left={} new_base_ticks={} ticks_sum={} combined={}",
-                          old_persistent, s->persistent_multiplier, ticks_left, new_base_ticks, ticks_sum, combined );
+        sim->print_debug(
+            "shadow_word_madness refresh: old_persistent={} new_persistent={} ticks_left={} new_base_ticks={} "
+            "ticks_sum={} combined={}",
+            old_persistent, s->persistent_multiplier, ticks_left, new_base_ticks, ticks_sum, combined );
         dot->state->persistent_multiplier = combined;
       }
       else
@@ -1590,8 +1590,8 @@ struct tentacle_slam_t final : public priest_spell_t
 
   tentacle_slam_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "tentacle_slam", p, p.talents.shadow.tentacle_slam ),
-      tentacle_slam_damage( nullptr ),
       tentacle_slam_dots( nullptr ),
+      tentacle_slam_damage( nullptr ),
       child_swm( nullptr )
   {
     parse_options( options_str );
@@ -2004,19 +2004,78 @@ void priest_t::init_rng_shadow()
   rppm.idol_of_cthun          = get_rppm( "idol_of_cthun", talents.shadow.idol_of_cthun );
   rppm.power_of_the_dark_side = get_rppm( "power_of_the_dark_side", talents.discipline.power_of_the_dark_side );
 
+  // Deck of cards model for void_apparitions_3 random idol selection: 3/4/1/2/7 out of 17.
+  deck_rng.random_idol = get_shuffled_rng( "void_apparitions_3_random_idol",
+                                           { { static_cast<int>( random_idol_e::YSHAARJ ), 3 },
+                                             { static_cast<int>( random_idol_e::NZOTH_HORRIFIC_VISION ), 4 },
+                                             { static_cast<int>( random_idol_e::NZOTH_VISION_OF_NZOTH ), 1 },
+                                             { static_cast<int>( random_idol_e::YOGG ), 2 },
+                                             { static_cast<int>( random_idol_e::CTHUN ), 7 } } );
+
   // Shadowy Insight
   const dot_t* shadow_word_pain = get_dot( "shadow_word_pain", this );
-  double mod =
-      talents.shadow.dark_thoughts.enabled() ? 1.0 + talents.shadow.dark_thoughts->effectN( 2 ).percent() : 1.0;
 
-  threshold_rng.shadowy_insight =
-      get_threshold_rng( "shadowy_insight", talents.shadow.shadowy_insight.ok() ? 0.1558 * mod : 0.0,
-                         [ this, shadow_word_pain ]( double increment_max, action_state_t* ) {
-                           unsigned active_dots = get_active_dots( shadow_word_pain );
-                           if ( active_dots == 0 )
-                             return 0.0;
-                           return rng().range( increment_max ) / active_dots;
-                         } );
+  double si_chance = talents.shadow.shadowy_insight.ok() ? 0.08 : 0.0;
+  si_chance *= 1.0 + talents.shadow.dark_thoughts->effectN( 2 ).percent();
+
+  threshold_rng.shadowy_insight = get_threshold_rng(
+      "shadowy_insight", si_chance,
+      [ this, shadow_word_pain ]( double increment_max, action_state_t* ) {
+        unsigned active_dots = get_active_dots( shadow_word_pain );
+        if ( active_dots == 0 )
+          return 0.0;
+        return increment_max * rng().range( 0.0, 2.0 ) / pow( active_dots, 0.9 );
+      },
+      true, true );
+
+  // Maddening Touch
+  double mt_chance = talents.shadow.maddening_touch.ok() ? 0.25 : 0.0;
+
+  const dot_t* vampiric_touch = get_dot( "vampiric_touch", this );
+
+  threshold_rng.maddening_touch = get_threshold_rng(
+      "maddening_touch", mt_chance,
+      [ this, vampiric_touch ]( double increment_max, action_state_t* ) {
+        unsigned active_dots = get_active_dots( vampiric_touch );
+        if ( active_dots == 0 )
+          return 0.0;
+        return increment_max * rng().range( 0.25, 1.75 ) / pow( active_dots, 0.6 );
+      },
+      true, true );
+
+  // Tormented Spirits
+  double ts_chance = talents.shadow.tormented_spirits.ok() ? 0.13 : 0;
+
+  threshold_rng.tormented_spirits = get_threshold_rng(
+      "tormented_spirits", ts_chance,
+      [ this, shadow_word_pain ]( double increment_max, action_state_t* s ) {
+        unsigned active_dots = get_active_dots( shadow_word_pain );
+        if ( active_dots == 0 )
+          return 0.0;
+
+        double chance = increment_max * rng().range( 0.0, 2.0 ) / pow( active_dots, 0.9 );
+
+        if ( s->result == RESULT_CRIT )
+          return 2.0 * chance;
+
+        return chance;
+      },
+      true, true );
+
+  // Auspicious Spirits
+  double as_chance = talents.shadow.auspicious_spirits.ok() ? 0.8 : 0;
+
+  threshold_rng.auspicious_spirits = get_threshold_rng(
+      "auspicious_spirits", as_chance,
+      [ this ]( double increment_max, action_state_t* s ) {
+        auto* state = background_actions.shadowy_apparitions->cast_state( s );
+
+        if ( state->number_spawned == 0 )
+          return 0.0;
+
+        return increment_max / pow( state->number_spawned, 0.8 );
+      },
+      true, true );
 }
 
 void priest_t::init_spells_shadow()
@@ -2449,53 +2508,31 @@ void priest_t::trigger_random_idol( action_state_t* s )
 
   procs.tentacle_slam_idol->occur();
 
-  enum class idol_e
+  random_idol_e chosen_idol = random_idol_e::NONE;
+  if ( deck_rng.random_idol )
   {
-    NONE = 0,
-    YSHAARJ,
-    NZOTH_HORRIFIC_VISION,
-    NZOTH_VISION_OF_NZOTH,
-    YOGG,
-    CTHUN,
-    MAX
-  };
-
-  constexpr std::array<double, static_cast<unsigned>( idol_e::MAX )> weights = { 0, 0.2, 0.2, 0.05, 0.15, 0.4 };
-
-  double n = rng().real();
-
-  idol_e chosen_idol = idol_e::NONE;
-
-  for ( idol_e idol = idol_e::YSHAARJ; idol < idol_e::MAX; idol++ )
-  {
-    auto weight = weights[ static_cast<unsigned>( idol ) ];
-    if ( n <= weight )
-    {
-      chosen_idol = idol;
-      break;
-    }
-    n -= weight;
+    chosen_idol = static_cast<random_idol_e>( deck_rng.random_idol->trigger() );
   }
 
   switch ( chosen_idol )
   {
-    case idol_e::YSHAARJ:
+    case random_idol_e::YSHAARJ:
       procs.void_apparition_yshaarj->occur();
       trigger_idol_of_yshaarj();
       break;
-    case idol_e::NZOTH_HORRIFIC_VISION:
+    case random_idol_e::NZOTH_HORRIFIC_VISION:
       procs.void_apparition_horrific_vision->occur();
       trigger_horrific_vision( s->target );
       break;
-    case idol_e::NZOTH_VISION_OF_NZOTH:
+    case random_idol_e::NZOTH_VISION_OF_NZOTH:
       procs.void_apparition_vision_of_nzoth->occur();
       trigger_vision_of_nzoth( s->target );
       break;
-    case idol_e::YOGG:
+    case random_idol_e::YOGG:
       procs.void_apparition_yogg->occur();
       spawn_thing_from_beyond();
       break;
-    case idol_e::CTHUN:
+    case random_idol_e::CTHUN:
       procs.void_apparition_cthun->occur();
       // Tentacle Slam already rolled this idol. Spawn directly to avoid additional C'Thun RPPM gating.
       spawn_idol_of_cthun( s );
@@ -2506,7 +2543,7 @@ void priest_t::trigger_random_idol( action_state_t* s )
   }
 }
 
-void priest_t::trigger_shadowy_insight( bool guaranteed )
+void priest_t::trigger_shadowy_insight( bool guaranteed, action_state_t* s )
 {
   if ( !talents.shadow.shadowy_insight.enabled() && !talents.voidweaver.void_empowerment.enabled() )
   {
@@ -2514,7 +2551,7 @@ void priest_t::trigger_shadowy_insight( bool guaranteed )
   }
 
   int stack = buffs.shadowy_insight->check();
-  if ( guaranteed || threshold_rng.shadowy_insight->trigger() )
+  if ( guaranteed || threshold_rng.shadowy_insight->trigger( s ) )
   {
     buffs.shadowy_insight->trigger();
 

@@ -2462,7 +2462,7 @@ struct mark_of_doom_t : public buff_t
     effect = new special_effect_t( p.source );
     effect -> name_str = "mark_of_doom_damage_driver";
     effect -> proc_chance_ = 1.0;
-    effect -> proc_flags_ = PF_MAGIC_SPELL | PF_NONE_SPELL;
+    effect -> proc_flags_ = PF_MAGIC_SPELL | PF_NONE_HARMFUL;
     effect -> proc_flags2_ = PF2_ALL_HIT;
     p.source -> special_effects.push_back( effect );
 
@@ -2518,7 +2518,7 @@ struct prophecy_of_fear_driver_t : public dbc_proc_callback_t
 
 void item::prophecy_of_fear( special_effect_t& effect )
 {
-  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_NONE_SPELL;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_NONE_HARMFUL;
   effect.proc_flags2_ = PF2_ALL_HIT;
 
   new prophecy_of_fear_driver_t( effect );
@@ -4056,7 +4056,7 @@ struct item_has_use_expr_t : public item_effect_expr_t
         }
 
         // Check if the special effect has a suitable buff effect
-        for ( size_t i = 1, end = e->trigger()->effect_count(); i <= end; i++ )
+        for ( size_t i = 1, i_end = e->trigger()->effect_count(); i <= i_end; i++ )
         {
           if ( has_buff )
             break;
@@ -4074,9 +4074,9 @@ struct item_has_use_expr_t : public item_effect_expr_t
           // Check if an effect triggers something with a suitable buff effect
           if ( effect.trigger() )
           {
-            for ( size_t i = 1, end = effect.trigger()->effect_count(); i <= end; i++ )
+            for ( size_t j = 1, j_end = effect.trigger()->effect_count(); j <= j_end; j++ )
             {
-              const spelleffect_data_t& trigger_effect = effect.trigger()->effectN( i );
+              const spelleffect_data_t& trigger_effect = effect.trigger()->effectN( j );
               if ( trigger_effect.id() == 0 )
                 continue;
 

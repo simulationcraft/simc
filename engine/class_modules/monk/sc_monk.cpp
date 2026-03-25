@@ -869,7 +869,7 @@ struct rising_sun_kick_t : monk_melee_attack_t
             .set_eff( &effect );
       }
 
-      if ( const auto &effect = player->talent.windwalker.sunfire_spiral->effectN( 1 ); effect.ok() && !player->bugs )
+      if ( const auto &effect = player->talent.windwalker.sunfire_spiral->effectN( 1 ); effect.ok() )
         add_parse_entry( da_multiplier_effects )
             .set_buff( player->buff.combo_strikes )
             .set_value( effect.percent() )
@@ -987,12 +987,6 @@ struct rising_sun_kick_t : monk_melee_attack_t
     damage_t( monk_t *player )
       : combined_type_t( player, "rising_sun_kick_damage", player->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
     {
-      if ( const auto &effect = player->talent.windwalker.sunfire_spiral->effectN( 1 ); effect.ok() && player->bugs )
-        add_parse_entry( da_multiplier_effects )
-            .set_buff( player->buff.combo_strikes )
-            .set_value( effect.percent() )
-            .set_note( "Applies when buffed by Mastery" )
-            .set_eff( &effect );
     }
   };
 
@@ -1713,7 +1707,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     // -1 to compensate for zero index, -1 to skip last tick
     aoe->target = target;
     for ( unsigned i = 0; i <= dot_duration / base_tick_time - 2.0; i++ )
-      make_event<events::delayed_cb_event_t>( *p()->sim, p(), i * base_tick_time, [ = ] { aoe->execute( !i ); } );
+      make_event<events::delayed_cb_event_t>( *p()->sim, p(), i * base_tick_time, [ i, this ] { aoe->execute( !i ); } );
 
     p()->buff.heart_of_the_jade_serpent->trigger();
     p()->buff.inner_compass_serpent_stance->trigger();
@@ -4491,7 +4485,7 @@ aspect_of_harmony_t::accumulator_t::accumulator_t( monk_t *player, aspect_of_har
 
   freeze_stacks = true;
 
-  set_tick_callback( [ = ]( buff_t *buff, int, timespan_t ) {
+  set_tick_callback( [ this ]( buff_t *buff, int, timespan_t ) {
     if ( buff->sim->current_iteration == 0 )  // only collect data from the first iteration
       pool_size_percent.add_max( buff->sim->current_time(), buff->check_value() / buff->player->max_health() );
   } );
@@ -6312,11 +6306,16 @@ monk_effect_callback_t *monk_t::create_proc_callback( monk_callback_init_t param
       // e.g., the driver for a debuff uses MELEE_ABILITY_TAKEN instead of MELEE_ABILITY
 
       const std::unordered_map<uint64_t, uint64_t> translation_map = {
-          { PF_MELEE_TAKEN, PF_MELEE },           { PF_MELEE_ABILITY_TAKEN, PF_MELEE_ABILITY },
-          { PF_RANGED_TAKEN, PF_RANGED },         { PF_RANGED_ABILITY_TAKEN, PF_RANGED_ABILITY },
-          { PF_NONE_HEAL_TAKEN, PF_NONE_HEAL },   { PF_NONE_SPELL_TAKEN, PF_NONE_SPELL },
-          { PF_MAGIC_HEAL_TAKEN, PF_MAGIC_HEAL }, { PF_MAGIC_SPELL_TAKEN, PF_MAGIC_SPELL },
-          { PF_PERIODIC_TAKEN, PF_PERIODIC },     { PF_DAMAGE_TAKEN, PF_ALL_DAMAGE },
+          { PF_MELEE_TAKEN, PF_MELEE },
+          { PF_MELEE_ABILITY_TAKEN, PF_MELEE_ABILITY },
+          { PF_RANGED_TAKEN, PF_RANGED },
+          { PF_RANGED_ABILITY_TAKEN, PF_RANGED_ABILITY },
+          { PF_NONE_HELPFUL_TAKEN, PF_NONE_HELPFUL },
+          { PF_NONE_HARMFUL_TAKEN, PF_NONE_HARMFUL },
+          { PF_MAGIC_HEAL_TAKEN, PF_MAGIC_HEAL },
+          { PF_MAGIC_SPELL_TAKEN, PF_MAGIC_SPELL },
+          { PF_PERIODIC_TAKEN, PF_PERIODIC },
+          { PF_DAMAGE_TAKEN, PF_ALL_DAMAGE },
       };
 
       for ( auto t : translation_map )
@@ -6525,7 +6524,7 @@ void monk_t::init_special_effects()
 
   // Doesn't use effect 468 for trigger behaviour, let's just pretend it does (:
   if ( talent.shado_pan.whirling_steel->ok() )
-    create_proc_callback( { talent.shado_pan.whirling_steel } )
+    create_proc_callback( { talent.shado_pan.whirling_steel.spell() } )
         ->register_callback_trigger_function(
             dbc_proc_callback_t::trigger_fn_type::CONDITION,
             [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
@@ -6959,7 +6958,6 @@ public:
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
     ReportIssue( "Press the Advantage Tiger Palm does not trigger Overwhelming Force", "2026-02-09", true );
-    ReportIssue( "Sunfire Spiral only applies to Rising Sun Kick.", "20205-03-14", true );
 
     os << "<div class=\"player-section\">\n";
     os << "<h3 class=\"toggle\">Known Bugs and Issues</h3>\n";

@@ -94,6 +94,16 @@ void snapshot_stats_t::execute()
   buffed_stats.corruption_resistance = p->cache.corruption_resistance();
   buffed_stats.leech = p->cache.leech();
 
+  buffed_stats.spell_crit_rating = p->composite_spell_crit_rating();
+  buffed_stats.melee_crit_rating = p->composite_melee_crit_rating();
+  buffed_stats.spell_haste_rating = p->composite_spell_haste_rating();
+  buffed_stats.melee_haste_rating = p->composite_melee_haste_rating();
+  buffed_stats.mastery_rating = p->composite_mastery_rating();
+  buffed_stats.versatility_rating = p->composite_damage_versatility_rating();
+  buffed_stats.avoidance_rating = p->composite_avoidance_rating();
+  buffed_stats.leech_rating = p->composite_leech_rating();
+  buffed_stats.speed_rating = p->composite_speed_rating();
+
   buffed_stats.spell_power =
       static_cast<int>( p->cache.spell_power( SCHOOL_MAX ) * p->composite_spell_power_multiplier() );
   buffed_stats.spell_hit = p->cache.spell_hit();

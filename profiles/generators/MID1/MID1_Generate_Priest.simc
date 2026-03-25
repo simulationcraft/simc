@@ -4,7 +4,7 @@ race=pandaren
 spec=shadow
 role=spell
 position=ranged_back
-talents=CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAgBLmxYZmBz2MzYG2mZGzMzYDZGLmpBYmZGAIAz2stEMbMAzMeAMmZmxsNmBzMYGMA
+talents=CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAgxYxMGLzMY2mZGzw2MzYmZGbIzYxMNAzMzAABY2mtlgZjBYGgxMzMmtxMYmBzgB
 
 head=blind_oaths_winged_crest,id=250051,bonus_id=13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
 neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240892
@@ -30,7 +30,7 @@ race=pandaren
 spec=shadow
 role=spell
 position=ranged_back
-talents=CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAgxYxMGLzMY2mZGzw2MzYmZGbIzYxMNAzAMziZ0sZAIjxCAmBYMzMjZbMz2yAMDGA
+talents=CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAgxYxMGLzMY2mZGzw2MzYmZGbIzYxMNAzAMzmZ0sZAIjxCAmBYMzMjZbMz2yAMDGA
 
 head=blind_oaths_winged_crest,id=250051,bonus_id=13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
 neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240892

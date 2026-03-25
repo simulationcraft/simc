@@ -2,14 +2,14 @@ shaman="MID1_Shaman_Enhancement_Totemic"
 source=default
 spec=enhancement
 level=90
-race=troll
+race=orc
 role=attack
 position=back
 talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZmZmZmZmZmZmZGAAAAAAAAAYB2gZsox2AYmgNAsMjZMWWmBmZ2GLzMzMMWGzAAYAGzMxMDAMGA
 
 # Default consumables
 potion=lights_potential_2
-flask=flask_of_the_shattered_sun_2
+flask=flask_of_the_blood_knights_2
 food=harandar_celebration
 augmentation=void_touched
 temporary_enchant=disabled

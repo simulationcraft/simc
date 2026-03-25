@@ -137,7 +137,7 @@ proc_types spell_base_t::proc_type() const
   {
     switch ( s_data->dmg_class() )
     {
-      case SPELL_TYPE_NONE:   return is_heal ? PROC1_NONE_HEAL : PROC1_NONE_SPELL;
+      case SPELL_TYPE_NONE:   return is_heal ? PROC1_NONE_HELPFUL : PROC1_NONE_HARMFUL;
       case SPELL_TYPE_MAGIC:  return is_heal ? PROC1_MAGIC_HEAL : PROC1_MAGIC_SPELL;
       case SPELL_TYPE_MELEE:  return PROC1_MELEE_ABILITY;
       case SPELL_TYPE_RANGED: return PROC1_RANGED_ABILITY;
@@ -150,7 +150,7 @@ proc_types spell_base_t::proc_type() const
   else if ( is_heal && has_amount_result() )
     return PROC1_MAGIC_HEAL;
 
-  return PROC1_NONE_SPELL;
+  return PROC1_NONE_HARMFUL;
 }
 
 // ==========================================================================

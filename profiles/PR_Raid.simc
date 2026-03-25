@@ -1,6 +1,6 @@
-ptr=1
 optimal_raid=1
 default_actions=1
+single_actor_batch=1
 
 # PR_Death_Knight_Blood.simc
 # PR_Death_Knight_Frost.simc

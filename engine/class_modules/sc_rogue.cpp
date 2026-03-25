@@ -2127,7 +2127,7 @@ public:
   { return false; }
 
   // Generic rules for proccing Cold-Blooded Killer, used by rogue_t::trigger_cold_blood()
-  virtual bool procs_cold_blood() const
+  virtual bool procs_cold_blood( const action_state_t* ) const
   { return ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT && ab::energize_amount > 0; }
 
   // Placeholder for actions which trigger Subtlety Shadow Clone attacks to be overridden
@@ -3538,7 +3538,7 @@ struct shadow_clone_t : public rogue_attack_t
     affected_by.mid1_subtlety_2pc = true;
   }
 
-  virtual double combo_point_da_multiplier( const action_state_t* s ) const
+  double combo_point_da_multiplier( const action_state_t* s ) const override
   {
     const int cp = cast_state( s )->get_combo_points();
     if ( cp > 0 )
@@ -3557,6 +3557,11 @@ struct shadow_clone_t : public rogue_attack_t
     {
       trigger_shadow_techniques_buff( execute_state );
     }
+  }
+
+  bool procs_cold_blood( const action_state_t* s ) const override
+  {
+    return cast_state( s )->get_combo_points() == 0;
   }
 };
 
@@ -4661,7 +4666,7 @@ struct kingsbane_t : public rogue_attack_t
       bool procs_poison() const override
       { return true; }
 
-      bool procs_cold_blood() const override
+      bool procs_cold_blood( const action_state_t* ) const override
       { return false; }
     };
 
@@ -4908,7 +4913,7 @@ struct mutilate_t : public rogue_attack_t
     bool procs_deal_fate() const override
     { return true; }
 
-    bool procs_cold_blood() const override
+    bool procs_cold_blood( const action_state_t* ) const override
     { return true; }
   };
 
@@ -5563,11 +5568,30 @@ struct black_powder_t: public rogue_attack_t
 
 struct shuriken_storm_t: public rogue_attack_t
 {
-  action_t* clone_attack;
+  struct shuriken_storm_shadow_clone_t : public shadow_clone_t
+  {
+    shuriken_storm_shadow_clone_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
+      shadow_clone_t( name, p, s )
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 4 ).base_value();
+    }
+
+    double action_multiplier() const override
+    {
+      double m = rogue_attack_t::action_multiplier();
+
+      if ( p()->stealthed( STEALTH_STANCE ) )
+      {
+        m *= 1.0 + p()->spec.shuriken_storm_rank_2->effectN( 1 ).percent();
+      }
+
+      return m;
+    }
+  };
 
   shuriken_storm_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ):
-    rogue_attack_t( name, p, p->spec.shuriken_storm, options_str ),
-    clone_attack( nullptr )
+    rogue_attack_t( name, p, p->spec.shuriken_storm, options_str )
   {
     energize_type = action_energize::PER_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
@@ -5589,7 +5613,7 @@ struct shuriken_storm_t: public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( p()->stealthed( STEALTH_BASIC ) )
+    if ( p()->stealthed( STEALTH_STANCE ) )
     {
       m *= 1.0 + p()->spec.shuriken_storm_rank_2->effectN( 1 ).percent();
     }
@@ -7759,7 +7783,7 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques_buff( const action
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_shadow_techniques_cp( const action_state_t* state )
+void actions::rogue_action_t<Base>::trigger_shadow_techniques_cp( const action_state_t* )
 {
   if ( !p()->spec.shadow_techniques->ok() || !p()->buffs.shadow_techniques->up() || ab::energize_amount == 0 )
     return;
@@ -7942,8 +7966,8 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   if ( p()->talent.fatebound.controlled_chaos->ok() )
   {
     int streak = as<int>( p()->talent.fatebound.controlled_chaos->effectN( 1 ).base_value() );
-    if ( p()->buffs.fatebound_coin_tails->total_stack() >= streak && result == fatebound_t::coinflip_e::HEADS ||
-         p()->buffs.fatebound_coin_heads->total_stack() >= streak && result == fatebound_t::coinflip_e::TAILS )
+    if ( ( p()->buffs.fatebound_coin_tails->total_stack() >= streak && result == fatebound_t::coinflip_e::HEADS ) ||
+         ( p()->buffs.fatebound_coin_heads->total_stack() >= streak && result == fatebound_t::coinflip_e::TAILS ) )
     {
       // 250ms so it does not coincide with an Overflowing Purse roll at the same time for now
       trigger_fatebound_coinflip( state, result, 250_ms + current_delay );
@@ -8531,7 +8555,7 @@ void actions::rogue_action_t<Base>::trigger_cold_blood( const action_state_t* st
   if ( !p()->talent.rogue.cold_blooded_killer->ok() )
     return;
 
-  if ( !procs_cold_blood() )
+  if ( !procs_cold_blood( state ) )
     return;
 
   if ( state->result != RESULT_CRIT )
@@ -9930,7 +9954,11 @@ void rogue_t::init_spells()
   register_passive_effect_mask( talent.outlaw.summarily_dispatched, effect_mask_t( true ).disable( 2 ) );
 
   // Improved Secret Technique effect 1 does not directly affect the pet damage spell
-  register_passive_affect_list( talent.subtlety.improved_secret_technique, affect_list_t( 1 ).remove_spell( 282449 ) );
+  // 2026-03-20 -- Appears this is now double-dipping in-game
+  if ( !bugs )
+  {
+    register_passive_affect_list( talent.subtlety.improved_secret_technique, affect_list_t( 1 ).remove_spell( 282449 ) );
+  }
 
   // Corrupt the blood effects are exclusive per spec
   register_passive_effect_mask( talent.deathstalker.corrupt_the_blood, specialization() == ROGUE_ASSASSINATION ?
@@ -10037,16 +10065,13 @@ void rogue_t::init_spells()
       secondary_trigger::SHADOW_CLONE, "shadow_clone_secret_technique", spec.shadow_clone_secret_technique_attack );
     active.shadow_clone_attack.shadowstrike = get_secondary_trigger_action<actions::shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_shadowstrike", spec.shadow_clone_shadowstrike_attack );
-    active.shadow_clone_attack.shuriken_storm = get_secondary_trigger_action<actions::shadow_clone_t>(
+    active.shadow_clone_attack.shuriken_storm = get_secondary_trigger_action<actions::shuriken_storm_t::shuriken_storm_shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_shuriken_storm", spec.shadow_clone_shuriken_storm_attack );
     active.shadow_clone_attack.shuriken_toss = get_secondary_trigger_action<actions::shadow_clone_t>(
       secondary_trigger::SHADOW_CLONE, "shadow_clone_shuriken_toss", spec.shadow_clone_shuriken_toss_attack );
 
     active.shadow_clone_attack.eviscerate->affected_by.darkest_night = true;
     active.shadow_clone_attack.eviscerate->affected_by.darkest_night_crit = true;
-
-    active.shadow_clone_attack.shuriken_storm->aoe = -1;
-    active.shadow_clone_attack.shuriken_storm->reduced_aoe_targets = spec.shadow_clone_shuriken_storm_attack->effectN( 4 ).base_value();
   }
 
   if ( talent.subtlety.weaponmaster->ok() )

@@ -688,7 +688,15 @@ public:
   struct threshold_rngs_t
   {
     threshold_rng_t* shadowy_insight;
+    threshold_rng_t* maddening_touch;
+    threshold_rng_t* tormented_spirits;
+    threshold_rng_t* auspicious_spirits;
   } threshold_rng;
+
+  struct deck_rngs_t
+  {
+    shuffled_rng_t* random_idol;
+  } deck_rng;
 
   // Gains
   struct
@@ -862,6 +870,9 @@ public:
     double synergistic_brewterializer_tof_chance = 0.7;
     // ~20% damage penalty to account for GCD. ~10% Miss general chance.
     double synergistic_brewterializer_barrel_hit_chance = 0.75;
+
+    // Chance for returning Halo damage pulses to hit (Divine Halo / Archon).
+    double archon_halo_return_hit_chance = 0.5;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -973,7 +984,6 @@ public:
   void trigger_idol_of_nzoth( player_t* target, int stacks );
   double shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
-  spawner::pet_spawner_t<pet_t, priest_t>& get_current_main_pet();
   // Stores the currently active Entropic Rift event
   void trigger_entropic_rift();
   void extend_entropic_rift();
@@ -982,7 +992,7 @@ public:
   void trigger_random_idol( action_state_t* s );
   void trigger_horrific_vision( player_t* target );
   void trigger_vision_of_nzoth( player_t* target );
-  void trigger_shadowy_insight( bool guaranteed = false );
+  void trigger_shadowy_insight( bool guaranteed = false, action_state_t* s = nullptr );
   void trigger_idol_of_yshaarj();
 
   std::vector<action_t*> secondary_action_list;

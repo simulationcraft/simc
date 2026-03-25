@@ -118,6 +118,8 @@ struct dbc_proc_callback_t : public action_callback_t
 
   void activate_with_buff( buff_t* buff, bool init = false );
 
+  void deactivate_with_buff( buff_t* buff, bool init = false );
+
   void trigger( action_t* a, action_state_t* state ) override;
 
   // Determine target for the callback (action).
