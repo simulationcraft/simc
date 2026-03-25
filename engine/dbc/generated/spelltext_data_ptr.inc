@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.5.66529
-static constexpr std::array<spelltext_data_t, 28682> __ptr_spelltext_data { {
+// Spell text, wow build 12.0.5.66591
+static constexpr std::array<spelltext_data_t, 28690> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -1772,7 +1772,7 @@ static constexpr std::array<spelltext_data_t, 28682> __ptr_spelltext_data { {
   {   55019, "Absorbs $s1 damage.  Lasts $d.", "Absorbs $s1 damage.", 0 },
   {   55039, "Generates a bolt of lightning to strike an enemy for $s1 Nature damage.  This entire device is made of metal....", "Generates a bolt of lightning to strike an enemy for $s1 Nature damage.  This entire device is made of metal....", 0 },
   {   55078, "A shadowy disease that drains $o1 health from the target over $d. ", "Draining $w1 health from the target every $t1 sec.", 0 },
-  {   55090, "An unholy strike that deals $s1 Shadow damage and causing your plagues on the target to erupt, dealing their damage an additional time at $s2% effectiveness.\r\n\r\nSpreads Virulent Plague on the target to a nearby enemy.", 0, 0 },
+  {   55090, "An unholy strike that deals $s1 Shadow damage and causing your plagues on the target to erupt, dealing their damage an additional time at $s2% effectiveness.\r\n\r\nApplies Virulent Plague or spreads it to a nearby enemy.", 0, 0 },
   {   55095, "A disease that deals ${$o1*$<CAP>/$AP} Frost damage over $d and has a chance to grant the Death Knight ${$195617m1/10} Runic Power each time it deals damage.", "Suffering $w1 Frost damage every $t1 sec.", 0 },
   {   55115, "$@spelldesc89401", 0, 0 },
   {   55233, "Embrace your undeath, increasing your maximum health by $s4% and increasing all healing and absorbs received by $s1% for $d.", "Maximum health increased by $s4%. Healing and absorbs received increased by $s1%.", 0 },
@@ -16177,7 +16177,7 @@ static constexpr std::array<spelltext_data_t, 28682> __ptr_spelltext_data { {
   {  368276, "$@spelldesc368275", 0, 0 },
   {  368328, "Add the Encrypted affix to a Mythic Keystone.", 0, 0 },
   {  368342, 0, "Heals for $368343M~2% upon taking damage.", 0 },
-  {  368412, "When you or an ally fall below $s1% health, a version of yourself enters your timeline and heals them for $361195s1. Your alternate self continues healing for $368415d before returning to their timeline.\r\n\r\nMay only occur once every $s2 sec.", 0, 0 },
+  {  368412, "When you or an ally fall below $s1% health, a version of yourself enters your timeline and heals them for $<amount>. Your alternate self continues healing for $368415d before returning to their timeline.\r\n\r\nMay only occur once every $s2 sec.", 0, 0 },
   {  368415, "$@spelldesc368412", 0, 0 },
   {  368435, "$@spelldesc368412", 0, 0 },
   {  368437, "Enables Dracthyr to switch between Visage and Dracthyr forms.", 0, "Racial Passive" },
@@ -16552,6 +16552,8 @@ static constexpr std::array<spelltext_data_t, 28682> __ptr_spelltext_data { {
   {  373700, "$@spelldesc371204", 0, 0 },
   {  373766, "$@spelldesc355913", 0, "Green" },
   {  373834, "Dream Breath healing increased by $s1%, and Living Flame healing increased by $s2%.", 0, 0 },
+  {  373861, "Send forward a vortex of temporal energy, absorbing $<shield> damage on you and any allies in its path. Absorption is reduced beyond $s2 targets.\r\n\r\nApplies Echo at $s4% effectiveness on the first $s2 allies it passes through.", 0, "Bronze" },
+  {  373862, "$@spelldesc373861", "Absorbing $w1 damage.", "Bronze" },
   {  373930, "Chains of Ice affects $s1 additional nearby enemy.", 0, 0 },
   {  373931, "Enemies hit by Chains of Ice are afflicted by Deep Frost increasing the damage you deal to them by $s1% for $373934d. ", 0, 0 },
   {  373934, "$@spelldesc373931\r\n", "Damage taken from $@auracaster increased by $s1%.", 0 },
@@ -16683,11 +16685,10 @@ static constexpr std::array<spelltext_data_t, 28682> __ptr_spelltext_data { {
   {  376179, "Red spells deal $s1% additional damage and healing.", 0, 0 },
   {  376204, "Time Dilation gains an additional charge, and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   {  376207, "$s1% of delayed damage from Time Dilation is absorbed.", 0, 0 },
-  {  376236, "Temporal Anomaly applies Echo at $s1% effectiveness.", 0, 0 },
   {  376237, "Temporal Anomaly reduces the cooldowns of your empower spells by $s1 sec.", 0, 0 },
   {  376238, "When Obtained: Become surged with lightning for $d.", "Dealing spell damage has a chance to cast Chain Lightning between $376241x1 enemies.", 0 },
   {  376239, "Your healing is increased by $s1% on targets with your Reversion.", 0, 0 },
-  {  376240, "Reversion, Time Dilation, Echo, and Temporal Anomaly last $s1% longer and cost $s2% less mana.", 0, 0 },
+  {  376240, "Reversion, Time Dilation, Echo, and $?s1291636[Temporal Barrier][Temporal Anomaly] last $s1% longer and cost $s2% less mana.", 0, 0 },
   {  376251, "Increases your maximum Runic Power by ${$s1/10}.\r\n\r\nIncreases Rune regeneration rate by $s2%.", 0, 0 },
   {  376300, "Visit a place you may have long since forgotten.", 0, 0 },
   {  376361, "$?s376361[Engulfs the surrounding area in hellfire, causing $376363m1 Fire damage to all nearby enemies every $t1 sec.][Deals $376363m1 Fire damage every $t1 sec.]", "Engulfing the surrounding area in hellfire, damaging all nearby enemies.", "Offensive" },
@@ -20840,7 +20841,7 @@ static constexpr std::array<spelltext_data_t, 28682> __ptr_spelltext_data { {
   {  429483, "Hover now causes you to briefly warp out of existence and appear at your destination. Hover's cooldown is also reduced by ${$s1/-1000} sec.\r\n\r\nHover continues to allow Evoker spells to be cast while moving.", 0, "Bronze" },
   {  429520, "$?a137013[Moonfire and Starfire generate ${$s1/10} additional Astral Power.][Free automatic Moonfires from Galactic Guardian generate ${$430581s1/10} Rage.]", 0, 0 },
   {  429523, "$?a137013[Starfire deals $s1% increased damage to its primary target.\r\n\r\nWrath no longer changes your Eclipse ability's mode to Solar Eclipse.][Thrash now deals Arcane damage and its damage is increased by $s2%.]", 0, 0 },
-  {  429530, "Moonfire deals $s1% additional damage.", 0, 0 },
+  {  429530, "Moonfire deals $s1% increased damage.$?a137010[\r\n\r\nRed Moon deals $s3% increased damage.][]", 0, 0 },
   {  429532, "Enemies damaged by $?a137013[Full Moon or Fury of Elune][Lunar Beam or Fury of Elune] take $430589s1% increased damage from you for $430589d.", 0, 0 },
   {  429533, "Bear Form and Moonkin Form reduce Arcane damage taken by $s2% and all other magic damage taken by $s1%.", 0, 0 },
   {  429536, "$?a137013[Incarnation: Chosen of Elune][Incarnation: Guardian of Ursoc] increases Arcane damage from spells and abilities by $102560s6% while active.\r\n\r\nIncreases the duration and number of spells cast by Convoke the Spirits by $s1%.", 0, 0 },
@@ -22052,13 +22053,13 @@ static constexpr std::array<spelltext_data_t, 28682> __ptr_spelltext_data { {
   {  444763, "While Nazgrim is active, gain Apocalyptic Conquest, increasing your Strength by $s1%.", "Your Strength is increased by $w1%.", 0 },
   {  444764, "$@spelldesc442290", 0, 0 },
   {  444767, "Your attacks against your primary target have a $s1% chance to overwhelm their defenses and trigger a Slayer's Strike, dealing $445579s1 Physical damage and granting you a stack of Executioner, increasing your Execute damage by $445584s1% for $445584d. Multiple stacks of Executioner may overlap.", 0, 0 },
-  {  444769, "Every $s1 Slayer's Strikes you gain Sudden Death.\r\n\r\nUsing Sudden Death accelerates your next Bladestorm, striking 1 additional time (max $445606u). Bladestorm's total duration is unchanged.", 0, 0 },
+  {  444769, "Every $s1 Slayer's Strikes you gain Sudden Death.\r\n\r\nUsing Sudden Death accelerates your next Bladestorm, striking 1 additional time (max $445606u). Bladestorm's total duration is unchanged.\r\n\r\nWhen Sudden Death strikes multiple targets via $?c1[Sweeping Strikes][Improved Whirlwind], you have a $s2% chance to trigger Reap the Storm.", 0, 0 },
   {  444770, "You heal for $s1% of damage dealt by Sudden Death.", 0, 0 },
   {  444771, "Executioner also increases your Execute critical strike chance and critical strike damage by $445584s2% per stack.", 0, 0 },
   {  444772, "Each strike of Bladestorm applies Overwhelmed to all enemies affected, increasing damage you deal to them by $445836s1% for $445836d, max $445836u stacks.", 0, 0 },
   {  444773, "$?c1[Mortal Strike][Bloodthirst] critical strikes increase the damage of your next $?c1[Mortal Strike][Bloodthirst] by $?c1[$458689s1][$458689s2]%.\r\n", 0, 0 },
   {  444774, "$?c1[When Overpower has its cooldown reset by Tactician, your next Overpower deals $456120s3% additional damage and $456120s4% additional critical damage.][When Raging Blow resets its own cooldown, your next Raging Blow deals $456120s1% additional damage and $456120s2% additional critical damage.] Stacking up to $456120u times.", 0, 0 },
-  {  444775, "When $?c1[Cleave or ][]Whirlwind $?c1[hit][hits] $s2 or more targets you have a $?c1[$s3][$s4]% chance to cause you to unleash a flurry of steel, striking all nearby enemies for $446005s1 Physical damage and applying Overwhelmed. Deals reduced damage beyond $s1 targets.\r\n", 0, 0 },
+  {  444775, "When $?c1[Cleave hits][Rampage hits] $s2 or more targets$?c2[ via Improved Whirlwind][] you have a $?c1[$s3][$s4]% chance to unleash a flurry of steel, striking all nearby enemies for $446005s1 Physical damage and applying Overwhelmed. Deals reduced damage beyond $s1 targets.\r\n", 0, 0 },
   {  444776, "Charge increases your movement speed by $446044s1% for $446044d.\r\n\r\nCharge removes all movement impairing effects, this effect cannot occur more than once every $458386d.\r\n", 0, 0 },
   {  444777, "Heroic Leap reduces the cooldown of Charge by $s1 sec and Charge reduces the cooldown of Heroic Leap by $s2 sec.", 0, 0 },
   {  444778, "Each strike of Bladestorm deals an additional $s1% damage evenly split across all targets.", 0, 0 },
@@ -23459,7 +23460,7 @@ static constexpr std::array<spelltext_data_t, 28682> __ptr_spelltext_data { {
   {  457022, "Cloak of Shadows duration increased by ${$s1/1000} sec.", 0, 0 },
   {  457034, "Evasion reduces magical damage taken by ${-$s1}%. \r\n\r\nCloak of Shadows reduces physical damage taken by ${-$s2}%.", 0, 0 },
   {  457049, "$@spellicon457049  $@spellname457049 \r\r\nIf you spend at least 10 seconds eating you will become $@spellname457049 and gain $456961s4 Critical Strike for $d.", "Critical Strike increased by $w4.", 0 },
-  {  457052, "$?c1[Garrote][Shadowstrike] applies $s1 stacks of Deathstalker's Mark to your target, unless Deathstalker's Mark is already active.\r\n\r\nWhen you spend $s2 or more combo points on attacks against a Marked target you consume an application of Deathstalker's Mark, dealing $457157s1 Plague damage.", 0, 0 },
+  {  457052, "$?c1[Garrote][Shadowstrike] applies $s1 stacks of Deathstalker's Mark to your target, unless Deathstalker's Mark is already active. You learn Mark for Death.\r\n\r\nWhen you spend $s2 or more combo points on attacks against a Marked target you consume an application of Deathstalker's Mark, dealing $457157s1 Plague damage.\r\n\r\n$@spellicon1293340\r\n$@spellname1293340\r\n$@spelldesc1293340", 0, 0 },
   {  457054, "Auto-attacks against Marked targets deal an additional $457193s1 Plague damage.", 0, 0 },
   {  457055, "Damage dealt to targets other than your Marked target deals $s1% Plague damage to your Marked target.\r\n", 0, 0 },
   {  457056, "After $?c1[Deathmark][Shadow Blades] expires, gain $?c1[$457273s1][$457273s2]% increased $?c1[Nature][Shadow] damage for $457273d.", 0, 0 },
@@ -26462,7 +26463,7 @@ static constexpr std::array<spelltext_data_t, 28682> __ptr_spelltext_data { {
   { 1244295, "The duration of Feast of Souls is increased by ${$s1/1000} sec.\r\n\r\n$@spellicon1237270 $@spellname1237270\r\n$@spelldesc1237270", 0, 0 },
   { 1244310, "Increases Conflagrate damage by $s1%. \r\n\r\nConflagrate now erupts the target's $?a445465[Wither][Immolate], spreading it up to $s2 nearby enemies.", 0, 0 },
   { 1244329, "Gaining Clearcasting has a $s1% chance to cause your next Arcane Missiles to be Overpowered, causing it to deal $1277009s1% increased damage, generate maximum stacks of Arcane Salvo, and strike $1277009s2 additional $Ltarget:targets; at $1243307s1% effectiveness.", 0, 0 },
-  { 1244331, "$s2% of Lifebloom's healing splashes to $s1 allies within $1244341a1 yds.", 0, 0 },
+  { 1244331, "$s2% of Lifebloom's final bloom splashes to all allies within $1244341a1 yds, reduced beyond $s3.", 0, 0 },
   { 1244332, "Afflict your target with Rotting Roots dealing $s1 Nature Damage every $1247411t seconds for $1247411d. This effect stacks up to $1247411u times. \r\n\r\nThis effect is augmented by Darkmoon Sigil: Rot.", 0, 0 },
   { 1244340, "$?s212653[Shimmer][Blink]'s cooldown is reduced by ${-$s1/1000} sec.", 0, 0 },
   { 1244341, "$@spelldesc1244331", 0, 0 },
@@ -28298,7 +28299,7 @@ static constexpr std::array<spelltext_data_t, 28682> __ptr_spelltext_data { {
   { 1271981, "$@spelldesc376079", "Able to leap to the location of your Champion's Spear.", 0 },
   { 1271982, "$@spelldesc376079", 0, 0 },
   { 1271985, "$@spelldesc376079", 0, 0 },
-  { 1272091, "$@spelldesc1277482\r\n\r\n$?pc149756[Protocol of Violence: The Voidlust consumes you more often.][Engage the Protocol of Violence to increase the frequency of Voidlust episodes.]\r\n\r\n$?pc149755[Protocol of Sustenance: Voidlust episodes last longer.][Engage the Protocol of Sustenance to increase the duration of Voidlust episodes.]\r\n\r\n$?pc149754[Protocol of Predation: Voidlust episodes are more intense.][Engage the Protocol of Predation to increase the intensity of Voidlust episodes.]", 0, 0 },
+  { 1272091, "$@spelldesc1277482\r\n\r\n$?pc149756[Protocol of Violence: The Voidlust consumes you more often.][Engage the Protocol of Violence to increase the frequency of Voidlust episodes.]\r\n\r\n$?pc149755[Protocol of Sustenance: Voidlust episodes last longer.][Engage the Protocol of Sustenance to increase the duration of Voidlust episodes.]\r\n\r\n$?pc149754[Protocol of Predation: Voidlust episodes are more intense.][Engage the Protocol of Predation to increase the intensity of Voidlust episodes.]\r\n\r\n\r\n\r\n", 0, 0 },
   { 1272094, "Your pet protects you at all times, reducing the damage you take by $s1%. Your pet receives $s2% of the damage it mitigates.", 0, 0 },
   { 1272097, "$@spelldesc1272094", 0, 0 },
   { 1272099, "Bestial Wrath provokes your pets to tear into your target, causing your target to bleed for $321538o1 damage over $321538d.\r\n", 0, 0 },
@@ -28626,6 +28627,7 @@ static constexpr std::array<spelltext_data_t, 28682> __ptr_spelltext_data { {
   { 1289616, "$@spelldesc190784", "Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].", 0 },
   { 1289617, "$@spelldesc190784", "Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].", 0 },
   { 1289728, "$@spelldesc432472", 0, 0 },
+  { 1289789, "Activate to automatically assume your Visage whenever you are not casting draconic spells such as Fire Breath and Soar.", 0, "Racial" },
   { 1289890, "$@spelldesc432472", 0, 0 },
   { 1289892, "$@spelldesc432472", 0, 0 },
   { 1289896, "$@spelldesc34477", "Threat redirected from Hunter.", 0 },
@@ -28646,7 +28648,7 @@ static constexpr std::array<spelltext_data_t, 28682> __ptr_spelltext_data { {
   { 1291471, "$@spelldesc354124", "Healing received reduced by $w1%.", 0 },
   { 1291484, "$@spelldesc1272694", "Zenith Stomp may be cast.", 0 },
   { 1291522, "Living Flame's cast time is reduced by ${$s1/-1000}.1 sec, and it deals $s2% increased damage or healing when it is a non-instant cast.", 0, 0 },
-  { 1291636, "Summon a vortex of temporal energy, absorbing $<shield> damage on your target and up to $s2 allies within $a1 yds.", "Absorbing $w1 damage.", "Bronze" },
+  { 1291636, "Send out a ripple of temporal energy, absorbing $s1 damage and applying Echo at $s3% effectiveness on your target and up to $s2 allies within $a1 yds.", "Absorbing $w1 damage.", "Bronze" },
   { 1291791, "Restores $s1% of your maximum mana every second over $d. Must remain seated while drinking.", "Restoring $w1% mana every sec.", 0 },
   { 1291824, "Restores $s1% of your maximum health every second over $d. Must remain seated while eating.", "Restoring $s1% health every sec.", 0 },
   { 1291831, "Restores $s1% of your maximum mana every second over $d. Must remain seated while drinking.", "Restoring $w1% mana every sec.", 0 },
@@ -28682,14 +28684,20 @@ static constexpr std::array<spelltext_data_t, 28682> __ptr_spelltext_data { {
   { 1293139, "Collect 40 Champion Dawncrests.", 0, 0 },
   { 1293143, "Collect 60 Veteran Dawncrests.", 0, 0 },
   { 1293149, "$@spelldesc1293135", 0, 0 },
+  { 1293340, "Move your active Deathstalker's Mark to your target.", 0, 0 },
+  { 1293411, "$@spelldesc1229383", 0, 0 },
+  { 1293412, "Wrap your wounds with protective cloth.\r\n\r\n$@spellicon1229383$@spellname1229383\r\nWhile channeling, heal $o1 damage over $d.", "Healing $w1 damage every second.", 0 },
+  { 1293563, "While active, you automatically assume your Visage whenever you are not casting draconic spells such as Fire Breath and Soar.\r\n\r\nActivate to disable this effect.", 0, "Racial" },
+  { 1293603, "$@spelldesc384110", 0, 0 },
+  { 1293610, "$@spelldesc384110", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.5.66529
+// spelltext hotfix entries, wow build 12.0.5.66591
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.5.66529
-static constexpr std::array<spelldesc_vars_data_t, 693> __ptr_spelldesc_vars_data { {
+// Spell description variables, wow build 12.0.5.66591
+static constexpr std::array<spelldesc_vars_data_t, 697> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29026,6 +29034,7 @@ static constexpr std::array<spelldesc_vars_data_t, 693> __ptr_spelldesc_vars_dat
   {  367226, "$range=${30}" },
   {  367231, "$dmg=${$359077s2}" },
   {  367902, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  {  368412, "$amount=${$361195s1*3}" },
   {  368495, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   {  368847, "$damage=${$369374s1*(1+$369372d/2)}" },
   {  369908, "$max=${6}" },
@@ -29035,6 +29044,7 @@ static constexpr std::array<spelldesc_vars_data_t, 693> __ptr_spelldesc_vars_dat
   {  372469, "$pvp=$?a134735[${0.7}][${1}]\r\n$cap=${$SP*2.254*$<pvp>}" },
   {  373129, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390707[${1+($390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${1+($322105s1/100)}][${1}]\r\n$penancedamage=${$373130s1*$<shadowcov>*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$400187s1*$<shadowcov>*$<darkside>*(3+$<castigation>+$<harsh>)}" },
   {  373427, "$mindbendermult=$?a137032[${0.478}][${0.442}]\r\n$value=${$s4*$<mindbendermult>}" },
+  {  373861, "$shield=${$SP*6*(1+$@versadmg)}" },
   {  375574, "$newDur=${4}" },
   {  375777, "$pyreCap=${($s2/-1000)*5}.1" },
   {  375801, "$rate=${30}" },
@@ -29382,10 +29392,12 @@ static constexpr std::array<spelldesc_vars_data_t, 693> __ptr_spelldesc_vars_dat
   { 1280645, "$mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]\r\n$damage=${0.21*($1247379s1)*(1+$@versadmg)*$<mastery>}" },
   { 1283380, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
-  { 1291636, "$shield=${$SP*$s2*(1+$@versadmg)}" },
+  { 1291636, "$shield=${$SP*6*(1+$@versadmg)}" },
+  { 1293603, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
+  { 1293610, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.5.66529
+// spelldesc_vars hotfix entries, wow build 12.0.5.66591
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
