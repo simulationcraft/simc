@@ -173,7 +173,7 @@ Affecting Spells : Improved Fade (390670 effect#1)
 Family Flags     : 14
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=237)      : Apply Aura (6) | Temporary Thread Reduction (103)
+#1 (id=237)      : Apply Aura (6) | Temporary Threat Reduction (103)
                    Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self (1)
 #2 (id=819476)   : Apply Aura (6) | Modify Aggro Distance (152)
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)

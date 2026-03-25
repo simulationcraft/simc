@@ -10483,6 +10483,7 @@ struct frostbane_t final : public frost_strike_base_t
       delay_2( 0_ms )
   {
     parse_options( options_str );
+    aoe = -1;
     if ( data().ok() )
     {
       frostbane_strike->stats = stats;
@@ -12790,7 +12791,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
         cooldown.vampiric_blood->adjust( -sec );
       }
 
-      if ( talent.blood.sanguinary_burst.ok() && buffs.dancing_rune_weapon->check() )
+      if ( talent.blood.sanguinary_burst.ok() && buffs.blood_mist->check() )
         buffs.sanguinary_burst->trigger( as<int>( final_spend ) );
     }
   }
@@ -15114,7 +15115,7 @@ void death_knight_t::spell_lookups()
   spell.summon_gargoyle          = conditional_spell_lookup( talent.unholy.summon_gargoyle.ok(), 49206 );
   spell.summon_abomination       = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 288853 );
   spell.summon_army_ghoul        = conditional_spell_lookup( talent.unholy.army_of_the_dead.ok(), 1282535 );
-  spell.summon_lesser_ghoul      = conditional_spell_lookup( talent.unholy.doomed_bidding.ok(), 275430 );
+  spell.summon_lesser_ghoul      = conditional_spell_lookup( talent.unholy.scourge_strike.ok(), 275430 );
   spell.summon_putrefy_ghoul     = conditional_spell_lookup( talent.unholy.putrefy.ok(), 1277098 );
   spell.summon_magus             = conditional_spell_lookup( talent.unholy.magus_of_the_dead.ok(), 317776 );
   spell.summon_reanimation_magus = conditional_spell_lookup( talent.unholy.reanimation.ok(), 1242294 );
@@ -16156,20 +16157,6 @@ void death_knight_t::init_finished()
   if ( off_hand_weapon.type != WEAPON_NONE && oh_runeforge == RUNEFORGE_NONE )
     sim->error( TRIVIAL, "Player {} has no Off-Hand Runeforge enchanted.", name() );
 
-  // Exclude Blood from recklessness checks
-  if ( specialization() != DEATH_KNIGHT_BLOOD )
-  {
-    std::array<stat_e, 4> offensive_stats = { STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING,
-                                              STAT_VERSATILITY_RATING };
-    if ( ( util::str_compare_ci( potion_str, "potion_of_recklessness" ) ||
-         util::str_compare_ci( potion_str, "potion_of_recklessness_2" ) ) &&
-             util::highest_stat( this, offensive_stats ) != STAT_MASTERY_RATING )
-      sim->error( MODERATE,
-                  "Player {} has selected Potion of Recklessness but does not have Mastery as their highest offensive "
-                  "stat. Results may be inaccurate.",
-                  name() );
-  }
-
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
     magus_active = 0;
 
@@ -16638,6 +16625,20 @@ void death_knight_t::arise()
 
   if ( talent.rider.a_feast_of_souls.ok() )
     start_a_feast_of_souls();
+
+  // Exclude Blood from recklessness checks
+  if ( specialization() != DEATH_KNIGHT_BLOOD )
+  {
+    std::array<stat_e, 4> offensive_stats = { STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING,
+                                              STAT_VERSATILITY_RATING };
+    if ( ( util::str_compare_ci( potion_str, "potion_of_recklessness" ) ||
+           util::str_compare_ci( potion_str, "potion_of_recklessness_2" ) ) &&
+         util::highest_stat( this, offensive_stats ) != STAT_MASTERY_RATING )
+      sim->error( MODERATE,
+                  "Player {} has selected Potion of Recklessness but does not have Mastery as their highest offensive "
+                  "stat. Results may be inaccurate.",
+                  name() );
+  }
 }
 
 void death_knight_t::adjust_dynamic_cooldowns()

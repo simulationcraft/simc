@@ -35,9 +35,9 @@ bool item_set_bonus_t::has_spec( int spec_id ) const
   }
 }
 
-bool item_set_bonus_t::has_spec( specialization_e spec ) const
+bool item_set_bonus_t::has_spec( specialization_e s ) const
 {
-  return has_spec( static_cast<int>( spec ) );
+  return has_spec( static_cast<int>( s ) );
 }
 
 bool item_set_bonus_t::has_trait_sub_tree( int trait_sub_tree_id ) const

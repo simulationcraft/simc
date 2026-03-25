@@ -1,61 +1,30 @@
-# rogue="MID1_Rogue_Assassination_Fatebound"
-# source=default
-# spec=assassination
-# level=80
-# race=maghar_orc
-# role=attack
-# position=back
-# spec=assassination
-# talents=CMQAAAAAAAAAAAAAAAAAAAAAAMjZmhxMAAAAAAAzGsNDAAAAAAttNzMzMzMGzMzysMzMjZwwMzMmZz2YGADsAzY0Y2AZbAbA
+rogue="MID1_Rogue_Assassination"
+spec=assassination
+level=90
+race=orc
+role=attack
+position=back
+talents=CMQAAAAAAAAAAAAAAAAAAAAAAYmZMbzgBAAAAAmlBbzAAAAAAabbmZmZmZMmZmZ2mZZmZGMmZmZMzYYAMwCMjRjZBklBsZAwMzgB
 
-# head=hood_of_the_sudden_eclipse,id=237664,bonus_id=1808,gem_id=213743,ilevel=723
-# neck=ornately_engraved_amplifier,id=185842,bonus_id=8781,gem_id=213473/213461,ilevel=723
-# shoulder=smokemantle_of_the_sudden_eclipse,id=237662,ilevel=723
-# back=reshii_wraps,id=235499,bonus_id=12399/12256/9893,enchant_id=7403,gem_id=238046
-# chest=tactical_vest_of_the_sudden_eclipse,id=237667,enchant_id=7364,ilevel=723
-# wrist=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/8795/1808/11109/8960,enchant_id=7385,gem_id=213461,ilevel=720
-# hands=deathgrips_of_the_sudden_eclipse,id=237665,ilevel=723
-# waist=shadow_congregants_belt,id=221134,bonus_id=1808,gem_id=213461,ilevel=723
-# legs=pants_of_the_sudden_eclipse,id=237663,enchant_id=7601,ilevel=723
-# feet=interlopers_reinforced_sandals,id=243306,bonus_id=13504,ilevel=723
-# finger1=logic_gate_alpha,id=237567,bonus_id=8781,enchant_id=7346,gem_id=213461/213461,ilevel=723
-# finger2=radiant_necromancers_band,id=221200,bonus_id=8781,enchant_id=7346,gem_id=213482/213494,ilevel=723
-# trinket1=lily_of_the_eternal_weave,id=242494,ilevel=723
-# trinket2=astral_antenna,id=242395,ilevel=723
-# main_hand=vengeful_netherspike,id=237740,enchant_id=7463,ilevel=723
-# off_hand=everforged_stabber,id=222438,bonus_id=10421/9633/8902/8791/11300/8960,enchant_id=7463,ilevel=720
+head=masquerade_of_the_grim_jest,id=250006,bonus_id=6652/12667/12806/13335/13338/13575/13575/13575/13575/13575/13575/13575/13575,ilvel=289
+neck=ribbon_of_coiled_malice,id=249337,bonus_id=12806/13577/13668,gem_id=240967,ilvel=289
+shoulder=venom_casks_of_the_grim_jest,id=250004,bonus_id=6652/12806/13335/13340/13574/13574/13574/13574/13574/13574/13574/13574,ilvel=289
+back=defiant_defenders_drape,id=260312,bonus_id=12806/13577,ilvel=289
+chest=fantastic_finery_of_the_grim_jest,id=250009,bonus_id=6652/12806/13335/13336/13575/13575/13575/13575/13575/13575/13575/13575,enchant_id=7987,ilvel=289
+wrist=silvermoon_agents_deflectors,id=244576,bonus_id=8960/12066/12214/12214/12214/12214/12214/12214/12384/13622/13667,crafted_stats=32/36,ilvel=285
+hands=sleight_of_hand_of_the_grim_jest,id=250007,bonus_id=6652/12806/13335/13337/13574/13574/13574/13574/13574/13574/13574/13574,ilvel=289
+waist=scornscarred_shulkas_belt,id=249374,bonus_id=12806/13577,ilvel=289
+legs=legwraps_of_lingering_legacies,id=251087,bonus_id=12806/13577,enchant_id=8159,ilvel=289
+feet=canopy_walkers_footwraps,id=249382,bonus_id=12806/13577,ilvel=289
+finger1=eye_of_midnight,id=249920,bonus_id=6652/12806/13335/13668,gem_id=240898/240890,enchant_id=7967,ilvel=289
+finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967,ilvel=289
+trinket1=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577,ilvel=289
+trinket2=algethar_puzzle_box,id=193701,bonus_id=12806/13577,ilvel=289
+main_hand=hungering_victory,id=249925,bonus_id=12806/13577,enchant_id=7981,ilvel=289
+off_hand=farstriders_mercy,id=237837,bonus_id=8791/8960/12066/12214/12214/12214/12214/12214/12214/12693/13622/13667/12497,enchant_id=7983,crafted_stats=32/36,ilvel=285
 
-# save=MID1_Rogue_Assassination.simc
+save=MID1_Rogue_Assassination.simc
 
-
-# rogue="MID1_Rogue_Assassination_Deathstalker"
-# source=default
-# spec=assassination
-# level=80
-# race=maghar_orc
-# role=attack
-# position=back
-# spec=assassination
-# talents=CMQAAAAAAAAAAAAAAAAAAAAAAMjZmhxMAAAAAAAzGsMDAAAAAAttNzMzMzMGzMzysMzMjZwwMzMmZz2YGgtZWGLMmxs0Y2WGmsNMsA
-
-# head=hood_of_the_sudden_eclipse,id=237664,bonus_id=1808,gem_id=213743,ilevel=723
-# neck=duskblazes_desperation,id=237569,bonus_id=8781,gem_id=213473/213461,ilevel=723
-# shoulder=mantle_of_wounded_fate,id=242486,ilevel=723
-# back=reshii_wraps,id=235499,bonus_id=12399/12256/9893,enchant_id=7403,gem_id=238046
-# chest=tactical_vest_of_the_sudden_eclipse,id=237667,enchant_id=7364,ilevel=723
-# wrist=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/1808/11109/8960/8794,enchant_id=7385,gem_id=213482,ilevel=720
-# hands=deathgrips_of_the_sudden_eclipse,id=237665,ilevel=723
-# waist=reapers_dreadbelt,id=237557,bonus_id=1808,gem_id=213482,ilevel=723
-# legs=pants_of_the_sudden_eclipse,id=237663,enchant_id=7601,ilevel=723
-# feet=interlopers_reinforced_sandals,id=243306,bonus_id=13504,ilevel=723
-# finger1=logic_gate_alpha,id=237567,bonus_id=8781,enchant_id=7346,gem_id=213494/213494,ilevel=723
-# finger2=radiant_necromancers_band,id=221200,bonus_id=8781,enchant_id=7346,gem_id=213482/213482,ilevel=723
-# trinket1=arazs_ritual_forge,id=242402,ilevel=723
-# trinket2=astral_antenna,id=242395,ilevel=723
-# main_hand=vengeful_netherspike,id=237740,enchant_id=7463,ilevel=723
-# off_hand=everforged_stabber,id=222438,bonus_id=10421/9633/8902/8791/11300/8960,enchant_id=7463,ilevel=720
-
-# save=MID1_Rogue_Assassination_Deathstalker.simc
 
 rogue="MID1_Rogue_Outlaw_Fatebound"
 level=90

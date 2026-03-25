@@ -1229,7 +1229,7 @@ public:
     bool shattered_souls_chance_aoe_reduction_linear = false;
     int entropy_starting_souls                       = -1;
     int channel_tick_cutoff_benefit                  = 2;
-    double void_metamorphosis_initial_drain          = 7.0;
+    double void_metamorphosis_initial_drain          = 8.5;
     double void_metamorphosis_drain_per_stack        = 0.025;
   } options;
 
@@ -2987,11 +2987,13 @@ struct voidfall_spending_trigger_t : public BASE
     if ( !BASE::p()->buff.voidfall_spending->up() )
       return;
 
+    if ( BASE::p()->buff.voidfall_spending->at_max_stacks() && BASE::p()->talent.annihilator.meteoric_fall->ok() )
+      return;
+
     BASE::p()->sim->print_debug( "{} triggering Voidfall spending", BASE::p()->name() );
 
-    BASE::p()->buff.voidfall_spending->decrement();
-
-    if ( BASE::p()->buff.voidfall_spending->stack() == 0 && BASE::p()->talent.annihilator.world_killer->ok() )
+    if ( BASE::p()->buff.voidfall_spending->stack() == 1 && BASE::p()->talent.annihilator.world_killer->ok() &&
+         !BASE::p()->talent.annihilator.meteoric_fall->ok() )
     {
       BASE::p()->active.world_killer->execute_on_target( BASE::target );
     }
@@ -3031,16 +3033,16 @@ struct meteoric_fall_trigger_t : public BASE
       stacks -= 1;
     }
 
-    BASE::p()->buff.voidfall_spending->expire();
-
     for ( int i = 0; i < stacks; ++i )
     {
-      BASE::p()->active.voidfall_meteor->execute_on_target( BASE::target );
+      make_event<delayed_execute_event_t>( *BASE::sim, BASE::p(), BASE::p()->active.voidfall_meteor, BASE::target,
+                                           ( BASE::p()->active.voidfall_meteor->travel_time() * i ) );
     }
 
     if ( BASE::p()->talent.annihilator.world_killer->ok() )
     {
-      BASE::p()->active.world_killer->execute_on_target( BASE::target );
+      make_event<delayed_execute_event_t>( *BASE::sim, BASE::p(), BASE::p()->active.world_killer, BASE::target,
+                                           ( stacks * BASE::p()->active.voidfall_meteor->travel_time() ) );
     }
   }
 };
@@ -5292,9 +5294,10 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
 // Spirit Bomb ==============================================================
 
-struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
+struct spirit_bomb_t : public demon_hunter_spell_t
 {
-  struct spirit_bomb_damage_t : public otherworldly_focus_benefit_t<dark_matter_trigger_t<demon_hunter_spell_t>>
+  struct spirit_bomb_damage_t
+    : public meteoric_fall_trigger_t<otherworldly_focus_benefit_t<dark_matter_trigger_t<demon_hunter_spell_t>>>
   {
     spirit_bomb_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.spirit_bomb_damage )
     {
@@ -5319,7 +5322,7 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
   unsigned max_fragments_consumed;
 
   spirit_bomb_t( demon_hunter_t* p, util::string_view options_str )
-    : base_t( "spirit_bomb", p, p->talent.vengeance.spirit_bomb, options_str ),
+    : demon_hunter_spell_t( "spirit_bomb", p, p->talent.vengeance.spirit_bomb, options_str ),
       max_fragments_consumed( static_cast<unsigned>( data().effectN( 2 ).base_value() ) )
   {
     may_miss = proc = callbacks = false;
@@ -5335,7 +5338,7 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
 
   void execute() override
   {
-    base_t::execute();
+    demon_hunter_spell_t::execute();
 
     // Soul fragments consumed are capped for Spirit Bomb
     const int fragments_consumed = p()->consume_soul_fragments( soul_fragment::ANY, true, max_fragments_consumed );
@@ -5358,7 +5361,7 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
     if ( p()->get_active_soul_fragments() < 1 )
       return false;
 
-    return base_t::action_ready();
+    return demon_hunter_spell_t::action_ready();
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
@@ -5371,7 +5374,7 @@ struct spirit_bomb_t : public meteoric_fall_trigger_t<demon_hunter_spell_t>
         return std::min( p()->get_active_soul_fragments( soul_fragment::ANY ), max_fragments_consumed );
       } );
 
-    return base_t::create_expression( name );
+    return demon_hunter_spell_t::create_expression( name );
   }
 };
 
@@ -6120,19 +6123,22 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
     p()->buff.reap->trigger();
 
     base_t::execute();
-    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, true, souls_to_consume() );
+    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
 
-    damage_action->set_target( target );
-    action_state_t* damage_state = damage_action->get_state();
-    damage_state->target         = target;
-    damage_action->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+    // TOCHECK: This delay is a guess based on averages in logs as there is no spelldata
+    make_event( *p()->sim, 220_ms, [ this, fragments_consumed ] {
+      damage_action->set_target( target );
+      action_state_t* damage_state = damage_action->get_state();
+      damage_state->target         = target;
+      damage_action->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
 
-    if ( p()->talent.devourer.soulshaper->ok() )
-    {
-      damage_state->da_multiplier *= 1.0 + fragments_consumed * p()->talent.devourer.soulshaper->effectN( 1 ).percent();
-    }
-
-    damage_action->schedule_execute( damage_state );
+      if ( p()->talent.devourer.soulshaper->ok() )
+      {
+        damage_state->da_multiplier *=
+            1.0 + fragments_consumed * p()->talent.devourer.soulshaper->effectN( 1 ).percent();
+      }
+      damage_action->schedule_execute( damage_state );
+    } );
 
     p()->buff.moment_of_craving->expire();
   }
@@ -6206,21 +6212,24 @@ struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
 
     base_t::execute();
 
-    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, true, souls_to_consume() );
+    unsigned fragments_consumed = p()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
     auto damage                 = p()->buff.metamorphosis->up() ? damage_action_meta : damage_action;
 
-    damage->set_target( target );
-    action_state_t* damage_state = damage->get_state();
-    damage_state->target         = target;
-    damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
+    // TOCHECK: This delay is a guess based on averages in logs as there is no spelldata
+    make_event( *p()->sim, 220_ms, [ this, fragments_consumed, damage ] {
+      damage->set_target( target );
+      action_state_t* damage_state = damage->get_state();
+      damage_state->target         = target;
+      damage->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
 
-    if ( p()->talent.devourer.soulshaper->ok() )
-    {
-      damage_state->da_multiplier *= 1.0 + fragments_consumed * p()->talent.devourer.soulshaper->effectN( 1 ).percent();
-    }
+      if ( p()->talent.devourer.soulshaper->ok() )
+      {
+        damage_state->da_multiplier *=
+            1.0 + fragments_consumed * p()->talent.devourer.soulshaper->effectN( 1 ).percent();
+      }
 
-    damage->schedule_execute( damage_state );
-
+      damage->schedule_execute( damage_state );
+    } );
     p()->buff.moment_of_craving->expire();
 
     p()->buff.eradicate->expire();
@@ -6562,9 +6571,16 @@ struct voidfall_meteor_base_t : public demon_hunter_spell_t
   voidfall_meteor_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
     : demon_hunter_spell_t( n, p, s )
   {
-    execute_action = p->get_background_action<voidfall_meteor_damage_t>( fmt::format( "{}_damage", name() ),
-                                                                         s->effectN( 2 ).trigger() );
-    add_child( execute_action );
+    impact_action = p->get_background_action<voidfall_meteor_damage_t>( fmt::format( "{}_damage", name() ),
+                                                                        s->effectN( 2 ).trigger() );
+    add_child( impact_action );
+  }
+
+  void execute() override
+  {
+    demon_hunter_spell_t::execute();
+
+    p()->buff.voidfall_spending->decrement();
   }
 };
 
@@ -6586,9 +6602,9 @@ struct world_killer_t : public voidfall_meteor_base_t
   {
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    voidfall_meteor_base_t::execute();
+    voidfall_meteor_base_t::impact( s );
 
     switch ( p()->specialization() )
     {
@@ -8082,13 +8098,12 @@ struct inner_demon_t : public demon_hunter_spell_t
 // Soul Cleave ==============================================================
 
 struct soul_cleave_t
-  : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
-        art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>>>
+  : public art_of_the_glaive_trigger_t<art_of_the_glaive_ability::GLAIVE_FLURRY, demon_hunter_attack_t>
 {
-  struct soul_cleave_damage_t : public burning_blades_trigger_t<demon_hunter_attack_t>
+  struct soul_cleave_damage_t
+    : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<burning_blades_trigger_t<demon_hunter_attack_t>>>
   {
-    soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
-      : burning_blades_trigger_t( name, p, s )
+    soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s ) : base_t( name, p, s )
     {
       background = dual = true;
     }
@@ -9675,7 +9690,7 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
   if ( name == "pierce_the_veil" )
     return new pierce_the_veil_t( this, options_str );
   if ( name == "soul_immolation" && is_ptr() )
-    return new soul_immolation_heal_t(this, options_str);
+    return new soul_immolation_heal_t( this, options_str );
   if ( name == "soul_immolation" && !is_ptr() )
     return new soul_immolation_t( this, options_str );
   if ( name == "eradicate" )
@@ -10524,7 +10539,8 @@ void demon_hunter_t::init_scaling()
 {
   base_t::init_scaling();
 
-  scaling->enable( STAT_WEAPON_OFFHAND_DPS );
+  if ( specialization() != DEMON_HUNTER_DEVOURER )
+    scaling->enable( STAT_WEAPON_OFFHAND_DPS );
 
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
     scaling->enable( STAT_BONUS_ARMOR );

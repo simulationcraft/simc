@@ -2885,7 +2885,7 @@ Affecting Spells : Dark Shadow (245687 effects: #1, #2), Death Perception (46964
 Family Flags     : 103
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Aura Cancel (31), No Skill Increase (36), No Threat (42), No Aura Icon (60), Suppress Caster Procs (112), Suppress Target Procs (113), No Aura Log (202), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
-#1 (id=269037)   : Apply Aura (6) | Temporary Thread Reduction (103)
+#1 (id=269037)   : Apply Aura (6) | Temporary Threat Reduction (103)
                    Base Value: -10000000 | Scaled Value: -1e+07 | Target: Self (1)
 #2 (id=317950)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)

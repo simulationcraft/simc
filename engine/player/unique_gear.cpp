@@ -4056,7 +4056,7 @@ struct item_has_use_expr_t : public item_effect_expr_t
         }
 
         // Check if the special effect has a suitable buff effect
-        for ( size_t i = 1, end = e->trigger()->effect_count(); i <= end; i++ )
+        for ( size_t i = 1, i_end = e->trigger()->effect_count(); i <= i_end; i++ )
         {
           if ( has_buff )
             break;
@@ -4074,9 +4074,9 @@ struct item_has_use_expr_t : public item_effect_expr_t
           // Check if an effect triggers something with a suitable buff effect
           if ( effect.trigger() )
           {
-            for ( size_t i = 1, end = effect.trigger()->effect_count(); i <= end; i++ )
+            for ( size_t j = 1, j_end = effect.trigger()->effect_count(); j <= j_end; j++ )
             {
-              const spelleffect_data_t& trigger_effect = effect.trigger()->effectN( i );
+              const spelleffect_data_t& trigger_effect = effect.trigger()->effectN( j );
               if ( trigger_effect.id() == 0 )
                 continue;
 

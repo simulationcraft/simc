@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66431 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66562 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -1608,7 +1608,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Check Required Target Aura By Caster (382)
 Effects          :
-#1 (id=5545)     : Apply Aura (6) | Temporary Thread Reduction (103)
+#1 (id=5545)     : Apply Aura (6) | Temporary Threat Reduction (103)
                    Base Value: -55 | Scaled Value: -55 | Target: Self (1)
 Description      : Reduces threat level on all enemies by a small amount for $d.
 Tooltip          : Reduced threat level.
@@ -134680,7 +134680,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=874955)   : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Misc Value: 176474 | Misc Value 2: 5101 | Radius: 3 yards | Target: Right of Self (49)
-#3 (id=874956)   : Apply Aura (6) | Temporary Thread Reduction (103)
+#3 (id=874956)   : Apply Aura (6) | Temporary Threat Reduction (103)
                    Base Value: -5000 | Scaled Value: -5000 | Target: Self (1)
 Description      : Because you were in imminent danger, the Inscrutable Quantum Device created an illusory decoy to distract your nearby enemies.
 
@@ -138714,6 +138714,7 @@ Description      : Summon a cluster of Glimmerflies to lift your spirit, grantin
 Tooltip          : Floating.
 
 Name             : Sinstone Bond (id=343960) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 900 seconds
@@ -138722,6 +138723,7 @@ Labels           : 2399
 Internal Cooldown: 30 seconds
 Proc Chance      : 50%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Attributes       : Unknown (505)
 Effects          :
 #1 (id=867953)   : Apply Aura (6) | Periodic Dummy (226): every 60 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -138729,6 +138731,7 @@ Description      : Activate to gain insight from the sinstone.
 Tooltip          : The sinstone is giving you questionable advice and insight.
 
 Name             : Val'kyr Bond (id=343963) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 900 seconds
@@ -138736,6 +138739,7 @@ Cooldown         : 10 seconds
 Labels           : 2399
 Internal Cooldown: 30 seconds
 Proc Chance      : 50%
+Attributes       : Unknown (505)
 Effects          :
 #1 (id=867959)   : Apply Aura (6) | Periodic Dummy (226): every 60 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -159669,7 +159673,8 @@ Effects          :
 #1 (id=1015949)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1025880)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 264.9297 (coefficient=2.021122) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 132.7356 (coefficient=1.012627) | Target: Self (1)
+Hotfixed         : Coefficient (2.021122 -> 1.012627)
 Description      : Your helpful spells and abilities have a chance to pep up you and your Coached ally, granting you both $s2 Mastery for $383803d. 
 
 
@@ -159697,7 +159702,8 @@ Labels           : 3959: Item Effects
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1015955)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 204.5959 (coefficient=1.560842) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 132.7356 (coefficient=1.012627) | Rating: Mastery | Target: Self (1)
+Hotfixed         : Coefficient (1.560842 -> 1.012627)
 Tooltip          : Mastery increased by $s1.
 
 Name             : Ruby Whelp Shell (id=383812) [Passive, Hidden] 
@@ -162717,7 +162723,8 @@ Attributes       : Exclude Caster (51), Allow Aura While Dead (116), Cannot Be S
 Aura Interrupt   : Leave World (19), Enter World (22), Enter Instance (43), Leave Arena or Battleground (45)
 Effects          :
 #1 (id=1020761)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 102.298 (coefficient=0.780421) | Target: Targeted Raid Member (57)
+                   Base Value: 0 | Scaled Value: 132.7356 (coefficient=1.012627) | Target: Targeted Raid Member (57)
+Hotfixed         : Coefficient (0.780421 -> 1.012627)
 Description      : Select a target friendly player to coach.
 Tooltip          : You are being coached. Your attacks and abilities have a chance to increase your Mastery as well as your coach's by $w1 for $383799d1.
 
@@ -165505,7 +165512,8 @@ Attributes       : Allow Aura While Dead (116), Aura Points On Client (268), Sca
 Aura Interrupt   : Leave World (19), Enter World (22), Enter Instance (43), Leave Arena or Battleground (45)
 Effects          :
 #1 (id=1025908)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 102.298 (coefficient=0.780421) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 132.7356 (coefficient=1.012627) | Target: Self (1)
+Hotfixed         : Coefficient (0.780421 -> 1.012627)
 #2 (id=1041663)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 383798
 Description      : $@spelldesc386578
@@ -222875,7 +222883,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Current Target (25)
 #3 (id=1197423)  : Remove Aura (203): Pinged Augment Chip
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1214802 | Target: Current Target (25)
-#4 (id=1223920)  : Apply Aura (6) | Temporary Thread Reduction (103)
+#4 (id=1223920)  : Apply Aura (6) | Temporary Threat Reduction (103)
                    Base Value: -90000000 | Scaled Value: -9e+07 | Mechanic: Stun | Target: Current Target (25)
 Description      : $@spelldesc467037
 Tooltip          : Stunned.
@@ -225541,6 +225549,7 @@ Tooltip          : Absorbs $w1 damage.
 Name             : Ethereal Energy (id=1217091) [Passive] 
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 85
 Labels           : 292
 Triggered By     : Ethereal Reaping (1223417)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -236500,7 +236509,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: at Fishing Target (39)
 #2 (id=1230126)  : Apply Aura (6) | Enable Profession Effects (511)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 323 | Target: Self (1)
-Hotfixed         : Base Value (150 -> 50)
 Description      : Throw the creature back into the water to gain $s2 Midnight Perception for $d.
 
 Throwing multiple creatures can extend this buff up to $M1 min.
@@ -241836,6 +241844,7 @@ These explosions are split among all targets hit, and their effectiveness increa
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Rot (id=1244332) 
+Hotfixed         : Attributes
 School           : Holy
 Spell Type       : Magic
 Range            : 30 yards
@@ -241844,7 +241853,7 @@ Proc Chance      : 101%
 Real PPM         : 30 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Triggered By     : Rot (1245051), Rot (1245055)
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Do Not Report Spell Failure (71), Allow While Invisible (78), Suppress Target Procs (113), Allow Cast While Casting (135), Not In Spellbook (143), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Aura Icon (60), Do Not Report Spell Failure (71), Allow While Invisible (78), Can Proc From Procs (122), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1245028)  : Apply Aura (6) | Proc Trigger Spell (42): Root Rot
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1247411 | Target: Self (1)
@@ -242163,8 +242172,9 @@ School           : Physical
 Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1245931)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Rot | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 66.92774 (coefficient=0.523677) | Trigger Spell: 1244332 | Target: Self (1)
+#1 (id=1245931)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Rot | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 113.2316 (coefficient=0.863833) | Trigger Spell: 1244332 | Target: Self (1)
+Hotfixed         : Coefficient (0.523677 -> 0.863833), Scaling Class (-9 -> -7)
 Description      : Afflict your target with Rotting Roots dealing $s1 Nature Damage every $1247411t seconds for $1247411d. This effect stacks up to $1247411u times. New stacks do not refresh applied stacks.
 
 Name             : [DNT] Equip Artifact (id=1245110) [Hidden] 
@@ -242452,7 +242462,6 @@ Description      : Upon your untimely demise outdoors, summon Meddy to... medica
 This effect can only occur every 30 minutes.
 
 Name             : Summon Meddy (id=1246335) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 10 yards
@@ -242659,7 +242668,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Is Ability (4), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Skill Increase (36), No Threat (42), No AutoCast (AI) (49), Ignore Line of Sight (66), Fail on all targets immune (85), Can Proc From Procs (122), Not In Arena or Rated Battleground (144), Allow Proc While Sitting (147), Remove Entering Arena (162), Not in Battleground (284)
 Aura Interrupt   : Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17), Damage (Script) (27)
 Effects          :
-#1 (id=1249034)  : Apply Aura (6) | Temporary Thread Reduction (103)
+#1 (id=1249034)  : Apply Aura (6) | Temporary Threat Reduction (103)
                    Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self (1)
 #2 (id=1249035)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: at Self (18) -> At Ally in Area (31)
@@ -242754,19 +242763,20 @@ Effects          :
 Description      : Echo the sound of your drum through a sacred loa temple, aligning its beat with the will of the loa.
 
 Name             : Root Rot (id=1247411) 
+Hotfixed         : Velocity (1 -> 0.3), Learn Level (1 -> 0), Attributes, Required Level (1 -> 0)
 School           : Nature
 Spell Type       : Magic
-Spell Level      : 1
 Range            : 100 yards
-Travel Time      : 1 seconds
+Travel Time      : 0.3 seconds
 Duration         : 6 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Triggered By     : Rot (1244332)
-Attributes       : Aura Is Debuff (26), No Reflection (39), No Threat (42), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Allow Cast While Channeling (308), Don't Cancel When All Effects are Disabled (353), Asynchronous Buff (490)
+Attributes       : Aura Is Debuff (26), No Reflection (39), No Threat (42), DoT Stacking Rule (103), Suppress Caster Procs (112), Allow Cast While Casting (135), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Allow Cast While Channeling (308), Don't Cancel When All Effects are Disabled (353), Asynchronous Buff (490)
 Effects          :
-#1 (id=1249550)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1245051 | Mechanic: Snare | Target: Targeted Enemy (6)
+#1 (id=1249550)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds | Attributes: Aura Points Stack (9)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1245051 | Target: Targeted Enemy (6)
+Hotfixed         : Mechanic (11 -> 0), Attribute (64 -> 512)
 Description      : Dealing $s1 Nature damage every $t seconds.
 Tooltip          : Dealing $w1 Nature damage every $t seconds.
 
@@ -245166,7 +245176,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: at Fishing Target (39)
 #2 (id=1255684)  : Apply Aura (6) | Enable Profession Effects (511)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 323 | Target: Self (1)
-Hotfixed         : Base Value (45 -> 50)
 Description      : Throw the fish back into the water to gain $s2 Midnight Perception for $d.
 
 Throwing multiple fish can extend this buff up to $M1 min.
@@ -245480,7 +245489,6 @@ Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29)
 Effects          :
 #1 (id=1256802)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Prismatic Focusing Iris | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 778.1547 (coefficient=6.088682) | Trigger Spell: 1252383 | Target: Self (1)
-Hotfixed         : Coefficient (12.178715 -> 6.088682)
 #2 (id=1257591)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=1266101)  : Apply Aura (6) | Dummy (4)
@@ -245626,7 +245634,6 @@ Effects          :
 Description      : $@spelldesc1251906
 
 Name             : Prismatic Focusing Iris (id=1252389) 
-Hotfixed         : Attributes
 School           : Arcane
 Spell Type       : Magic
 Range            : 40 yards
@@ -246825,30 +246832,33 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 
 Name             : Emberwing Burn (id=1255853) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Attributes       : Aura Is Debuff (26), Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1263040)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 Tooltip          : Critical Strike decreased by $w1.
 
 Name             : Emberwing Burn (id=1255856) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Attributes       : Aura Is Debuff (26), Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1263043)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
 Tooltip          : Mastery decreased by $w1.
 
 Name             : Emberwing Burn (id=1255857) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Attributes       : Aura Is Debuff (26), Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1263044)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
@@ -246949,7 +246959,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1264645)  : Apply Aura (6) | Proc Trigger Spell (42): Alnsight | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 18.9275 (coefficient=0.144396) | PvP Coefficient: 0.5 | Trigger Spell: 1266686 | Target: Self (1)
-Hotfixed         : Coefficient (0.180495 -> 0.144396)
 Description      : Your damage and healing has a chance to grant you Alnsight for $1266686d. While active, casting spells and abilities manifests unstable Alnscorned and consumes their essence to grant you $s1 $pri for $1266687d. Multiple applications may overlap.
 
 Name             : Nalorakk's Call to War (id=1257183) 
@@ -247604,6 +247613,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60
 
 Name             : Primal Spore Binding (id=1259124) [Passive, Hidden] 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Labels           : 4124
@@ -247611,7 +247621,7 @@ Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Primal Spore Binding (1244276)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1268064)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -248738,7 +248748,6 @@ Tooltip          : Your harmful spells and abilities have a $?a1248927[${($12489
 $?a1262364[Mandate of Sacred Death has a very small chance to execute non-boss enemies.]?a1262359[Mandate of Sacred Death has a very small chance to execute non-boss enemies.][]
 
 Name             : Mandate of Sacred Death (id=1261341) 
-Hotfixed         : Attributes
 School           : Holy
 Spell Type       : Magic
 Range            : 50000 yards
@@ -250580,13 +250589,14 @@ Effects          :
 Description      : $@spelldesc1250604
 
 Name             : Gloom-Spattered Dreadscale (id=1263141) 
+Hotfixed         : Aura Interrupt
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 292
                  : 3959: Item Effects
 Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Enter World (22), Raid Encounter Start or M+ Start (40), Enter Instance (43)
 Effects          :
 #1 (id=1273725)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -250753,13 +250763,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Litany of Lightblind Wrath (id=1263721) [Hidden] 
+Hotfixed         : Proc Flags 1 (69888 -> 69904)
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 292
                  : 3959: Item Effects
 Proc Chance      : 101%
-Proc Flags       : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Beacon of Lightblind Wrath (1258283)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
@@ -252202,6 +252213,7 @@ Effects          :
 Description      : $@spelldesc1259518
 
 Name             : Relaxed (id=1269152) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
@@ -252214,7 +252226,7 @@ Labels           : 4127
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
 Proc Chance      : 101%
 Proc Flags       : Death
-Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), Aura Is Buff (140), Aura Points On Client (268)
+Attributes       : Only Outdoors (15), Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), Aura Is Buff (140), Aura Points On Client (268)
 Effects          :
 #1 (id=1280798)  : Apply Aura (6) | Enable Profession Effects (511) | Scaling Class: Primary Attribute (-1)
                    Base Value: 15 | Scaled Value: 49.99999 (coefficient=1.486703) | Misc Value: 323 | Target: Self (1)
@@ -252690,7 +252702,6 @@ Description      : $@spelldesc1271211
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
 Name             : Crucible of Erratic Energies (id=1272091) [Passive] 
-Hotfixed         : Proc Flags 1 (87296 -> 87312)
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -252699,8 +252710,9 @@ Real PPM         : 4
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1285139)  : Apply Aura (6) | Proc Trigger Spell (42): Voidlust | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 86.41363 (coefficient=0.659241) | Trigger Spell: 1277482 | Target: Self (1)
+#1 (id=1285139)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 86.41363 (coefficient=0.659241) | Target: Self (1)
+Hotfixed         : Trigger Spell (1277482 -> 0)
 #2 (id=1285205)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=1285226)  : Dummy (3)
@@ -253017,7 +253029,6 @@ Spell Type       : None
 Range            : 100 yards
 Velocity         : 25 yards/sec
 Duration         : 10 seconds
-Triggered By     : Crucible of Erratic Energies (1272091)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), DoT Stacking Rule (103), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Aura Is Buff (140), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Ignore Phase Shift (205), Aura Points On Client (268), Allow Cast While Channeling (308), Bypass Visibility Check (320)
 Effects          :
 #1 (id=1289880)  : Apply Aura (6) | Modify Rating (189)
@@ -253667,7 +253678,6 @@ Description      : Temporarily grants your shoulders a magical illusion of natur
 |cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
 
 Name             : Holy Bounding Hand Grenade (id=1292874) [Hidden] 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -253676,12 +253686,10 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow 
 Effects          :
 #1 (id=1313221)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1262076
 Tooltip          : Stunned
 
 Name             : Warbound Pack of Hero Dawncrests (id=1293136) 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -253691,11 +253699,9 @@ Category Cooldown: 0.5 seconds
 Effects          :
 #1 (id=1313595)  : Loot (189)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 140962 | Misc Value 2: 556 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Collect 20 Hero Dawncrests.
 
 Name             : Warbound Pack of Champion Dawncrests (id=1293139) 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -253705,11 +253711,9 @@ Category Cooldown: 0.5 seconds
 Effects          :
 #1 (id=1313603)  : Loot (189)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 140963 | Misc Value 2: 556 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Collect 40 Champion Dawncrests.
 
 Name             : Warbound Pack of Veteran Dawncrests (id=1293143) 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -253719,6 +253723,5 @@ Category Cooldown: 0.5 seconds
 Effects          :
 #1 (id=1313608)  : Loot (189)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 140964 | Misc Value 2: 556 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Collect 60 Veteran Dawncrests.
 

@@ -820,6 +820,7 @@ struct player_t : public actor_t
     int windweaver_party = 4;
     // Tinker Ilvls of party members using the Windweaver Tinker. If not specified they will be your Main Hands ilvl.
     player_option_t<std::string> windweaver_party_ilvls = "";
+    int emerald_coachs_whistle_ally_ilvl                = -1;
   } dragonflight_opts;
 
   struct thewarwithin_opt_t
@@ -919,7 +920,7 @@ struct player_t : public actor_t
     bool crucible_of_erratic_energies_sustenance = false;
     bool crucible_of_erratic_energies_predation = false;
     // Chance to miss vessel of tortured souls orb
-    double vessel_of_tortured_souls_miss_chance = 0.1;
+    double vessel_of_tortured_souls_miss_chance = 0.6;
   } midnight_opts;
 
 private:

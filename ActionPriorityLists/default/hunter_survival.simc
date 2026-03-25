@@ -8,6 +8,8 @@
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=summon_pet
 actions.precombat+=/snapshot_stats
+actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/wildfire_bomb
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -43,12 +45,14 @@ actions.plcleave+=/takedown
 
 # ST - PL
 actions.plst=kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)
+actions.plst+=/wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.wyverns_cry.remains<gcd
 actions.plst+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
+actions.plst+=/raptor_strike,if=!buff.raptor_swipe.up&cooldown.takedown.remains<gcd
+actions.plst+=/boomstick,if=buff.tip_of_the_spear.up|cooldown.takedown.remains<gcd&talent.twin_fangs
 actions.plst+=/takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs
 actions.plst+=/flamefang_pitch
-actions.plst+=/boomstick,if=buff.tip_of_the_spear.up
-actions.plst+=/wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.tip_of_the_spear.up
-actions.plst+=/raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up
+actions.plst+=/wildfire_bomb,if=fury_of_the_wyvern_extendable&buff.tip_of_the_spear.up&!buff.takedown.remains
+actions.plst+=/raptor_strike,if=(buff.tip_of_the_spear.up|!buff.raptor_swipe.up)
 actions.plst+=/kill_command,if=cooldown.takedown.remains
 actions.plst+=/wildfire_bomb
 actions.plst+=/takedown

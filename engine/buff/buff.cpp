@@ -721,6 +721,14 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   // If there's no overridden proc chance (%), setup any potential custom RPPM-affecting attribute
   set_rppm( RPPM_NONE, -1, -1 );
 
+  if ( s_data->flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
+  {
+    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+    // Reset this after parsing the flag since the `set_refresh_behavior` call will set `refresh_behavior_overridden` to
+    // true, which we don't want in this case.
+    refresh_behavior_overridden = false;
+  }
+
   set_period( timespan_t::min() );
 
   set_tick_on_application( s_data->flags( spell_attribute::SX_TICK_ON_APPLICATION ) );
@@ -728,12 +736,10 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
   set_tick_behavior( buff_tick_behavior::NONE );
 
   if ( s_data->flags( spell_attribute::SX_DOT_HASTED ) )
-  {
     set_tick_time_behavior( buff_tick_time_behavior::HASTED );
-  }
 
   // Refresh behavior can be set during the `set_period` call above. If it wasn't, set it now.
-  if( refresh_behavior == buff_refresh_behavior::NONE )
+  if ( refresh_behavior == buff_refresh_behavior::NONE )
     set_refresh_behavior( buff_refresh_behavior::NONE );
 
   set_stack_behavior( buff_stack_behavior::DEFAULT );
@@ -2524,7 +2530,7 @@ bool buff_t::can_consume( action_t* action ) const
 
 int buff_t::consume( action_t* action, int stacks )
 {
-  if ( !check() )
+  if ( !stacks || !check() )
     return 0;
 
   if ( internal_cooldown && internal_cooldown->down() )
@@ -3863,7 +3869,8 @@ damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, const s
   if( multiplier != 0.0 )
     mod.multiplier = 1.0 + multiplier;
 
-  if ( !s->ok() || !s->effectN( effect_idx ).ok() || s->effectN( effect_idx ).type() != E_APPLY_AURA )
+  if ( !s->ok() || !s->effectN( effect_idx ).ok() || ( s->effectN( effect_idx ).type() != E_APPLY_AURA &&
+                                                       s->effectN( effect_idx ).type() != E_APPLY_AREA_AURA_PARTY ) )
     return this;
 
   if ( multiplier == 0.0 )

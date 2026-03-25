@@ -537,7 +537,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   { return action_t::composite_haste() * player->cache.spell_cast_speed(); }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
-  { return s->action->tick_time( s ) * 5.0; }
+  { return s->action->tick_time( s ) * data().duration().total_seconds(); }
 
   void execute() override
   {
@@ -596,7 +596,7 @@ void felguard_pet_t::init_base_stats()
   melee_attack = new felguard_melee_t( this, 1.0, "melee" );
 
   // 2026-02-17: Validated coefficients
-  owner_coeff.ap_from_sp = 1.521;
+  owner_coeff.ap_from_sp = 1.5201;
   owner_coeff.sp_from_sp = 1.4519; // not validated
   owner_coeff.health = 0.75;
 
@@ -1364,6 +1364,21 @@ struct burning_cleave_t : public warlock_pet_spell_t
     reduced_aoe_targets = as<int>( data().effectN( 2 ).base_value() );
   }
 
+  int n_targets() const override
+  {
+    // Tyrant with Antoran Armaments (Burning Cleave) has a very narrow arc, so it often misses some targets.
+    // This behavior is replicated through a configurable option that controls the target ratio affected by Burning Cleave.
+    if ( p()->o()->talents.antoran_armaments.ok() && p()->o()->tyrant_antoran_armaments_target_mul < 1.0 )
+    {
+      assert( warlock_pet_spell_t::n_targets() == -1 );
+      const int cur_n_targets = target_list().size();
+      return std::max( 1, as<int>( std::lround( cur_n_targets * p()->o()->tyrant_antoran_armaments_target_mul ) ) );
+    }
+    else
+    {
+      return warlock_pet_spell_t::n_targets();
+    }
+  }
 };
 
 struct demonic_tyrant_leap_t : warlock_pet_t::travel_t

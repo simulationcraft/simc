@@ -794,9 +794,27 @@ class CDNIndex(CASCObject):
 
             handle, cached = self.cached_open(index_file_path, index_file_url)
             if not self.parse_archive(handle, idx):
-                self.options.parser.error(
-                    'Unable to parse index file %s, aborting ...' %
-                    index_file_name)
+                if not cached:
+                    # CDN may have returned an empty/truncated response, retry
+                    for retry in range(2):
+                        print(f"Retrying {index_file_name} (attempt {retry + 2}) ...",
+                              file=sys.stderr)
+                        time.sleep(1)
+                        handle, _ = self.cached_open(index_file_path, index_file_url)
+                        if self.parse_archive(handle, idx):
+                            break
+                    else:
+                        self.options.parser.error(
+                            'Unable to parse index file %s, aborting ...' %
+                            index_file_name)
+                else:
+                    # Cached file is corrupt, delete and re-fetch
+                    os.unlink(index_file_path)
+                    handle, _ = self.cached_open(index_file_path, index_file_url)
+                    if not self.parse_archive(handle, idx):
+                        self.options.parser.error(
+                            'Unable to parse index file %s, aborting ...' %
+                            index_file_name)
 
             if not cached:
                 self.write_cache(index_file_path, handle)

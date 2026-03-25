@@ -353,6 +353,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     target_callbacks( true ),
     suppress_caster_procs(),
     suppress_target_procs(),
+    suppress_callback_from_energize(),
+    suppress_callback_from_trigger_dot(),
     enable_proc_from_suppressed(),
     allow_class_ability_procs(),
     not_a_proc(),
@@ -497,6 +499,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     pre_execute_state(),
     snapshot_flags(),
     update_flags( STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT ),
+    energize_state( std::make_unique<action_state_t>( this, p ) ),
     target_cache(),
     options(),
     state_cache(),
@@ -4525,6 +4528,13 @@ void action_t::trigger_dot( action_state_t* s )
   }
 
   dot->trigger( duration );
+
+  if ( callbacks && caster_callbacks && !suppress_callback_from_trigger_dot )
+  {
+    // TODO: should this be based on whether the action is harmful or not?
+    player->trigger_callbacks( s->target->is_enemy() ? PROC1_NONE_HARMFUL : PROC1_NONE_HELPFUL, PROC2_LANDED, this,
+                               dot->state );
+  }
 }
 
 /**

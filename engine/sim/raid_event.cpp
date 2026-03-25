@@ -903,7 +903,7 @@ struct invulnerable_event_t final : public raid_event_t
     if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
       add_option( opt_string( "target", target_str ) );
     else
-      add_option( opt_func( "target", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_target(sim, name, value); } ) );
+      add_option( opt_func( "target", [ this ]( auto, auto, util::string_view v ) { return parse_target( v ); } ) );
 
     parse_options( options_str );
 
@@ -911,7 +911,7 @@ struct invulnerable_event_t final : public raid_event_t
       target_str = "Pull_" + util::to_string( pull ) + "_" + target_str;
   }
 
-  bool parse_target( sim_t* /* sim */, util::string_view /* name */, util::string_view value )
+  bool parse_target( std::string_view value )
   {
     auto it = range::find_if( sim->target_list, [ &value ]( const player_t* target ) {
       return util::str_compare_ci( value, target->name() );
@@ -1087,9 +1087,7 @@ struct movement_event_t final : public raid_event_t
     if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
       add_option( opt_string( "target", target_str ) );
     else
-      add_option( opt_func( "target", [ this ]( sim_t* sim, util::string_view name, util::string_view value ) {
-        return parse_target( sim, name, value );
-      } ) );
+      add_option( opt_func( "target", [ this ]( auto, auto, util::string_view v ) { return parse_target( v ); } ) );
     parse_options( options_str );
 
     if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
@@ -1140,7 +1138,7 @@ struct movement_event_t final : public raid_event_t
     }
   }
 
-  bool parse_target( sim_t* /* sim */, util::string_view /* name */, util::string_view value )
+  bool parse_target( std::string_view value )
   {
     auto it = range::find_if( sim->target_list, [ &value ]( const player_t* target ) {
       return util::str_compare_ci( value, target->name() );
@@ -1546,7 +1544,7 @@ struct vulnerable_event_t final : public raid_event_t
     if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
       add_option( opt_string( "target", target_str ) );
     else
-      add_option( opt_func( "target", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_target(sim, name, value); } ) );
+      add_option( opt_func( "target", [ this ]( auto, auto, util::string_view v ) { return parse_target( v ); } ) );
 
     parse_options( options_str );
 
@@ -1554,7 +1552,7 @@ struct vulnerable_event_t final : public raid_event_t
       target_str = "Pull_" + util::to_string( pull ) + "_" + target_str;
   }
 
-  bool parse_target( sim_t* /* sim */, util::string_view /* name */, util::string_view value )
+  bool parse_target( std::string_view value )
   {
     auto it = range::find_if( sim->target_list, [ &value ]( const player_t* target ) {
       return util::str_compare_ci( value, target->name() );

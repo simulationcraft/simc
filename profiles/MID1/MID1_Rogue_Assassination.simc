@@ -1,0 +1,138 @@
+rogue="MID1_Rogue_Assassination"
+source=default
+spec=assassination
+level=90
+race=orc
+role=attack
+position=back
+talents=CMQAAAAAAAAAAAAAAAAAAAAAAYmZMbzgBAAAAAmlBbzAAAAAAabbmZmZmZMmZmZ2mZZmZGMmZmZMzYYAMwCMjRjZBklBsZAwMzgB
+
+# Default consumables
+potion=lights_potential_2
+flask=flask_of_the_shattered_sun_2
+food=harandar_celebration
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=apply_poison
+actions.precombat+=/snapshot_stats
+# Check which trinket slots have Stat Values
+actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)&!trinket.2.is.treacherous_transmitter|trinket.1.is.treacherous_transmitter|trinket.1.is.house_of_cards
+actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.2.cooldown.duration>trinket.1.cooldown.duration)&!trinket.1.is.treacherous_transmitter|trinket.2.is.treacherous_transmitter|trinket.2.is.house_of_cards
+# Pre-cast Slice and Dice if possible
+actions.precombat+=/stealth
+actions.precombat+=/slice_and_dice,precombat_seconds=1
+
+# Executed every time the actor is available.
+# Restealth if possible (no vulnerable enemies in combat)
+actions=stealth
+# Interrupt on cooldown to allow simming interactions with that
+actions+=/kick
+# Helper Variable to check for single target in combat
+actions+=/variable,name=single_target,value=spell_targets.fan_of_knives=1
+# Edge-case check to dump thistle tea at the end of fights
+actions+=/thistle_tea,if=energy.pct<50&fight_remains<10
+# Special Ambush condition for the start of fights when applicable
+actions+=/ambush,if=stealthed.rogue&variable.single_target&talent.blindside&talent.improved_ambush&!talent.shrouded_suffocation
+# Cooldown list takes priority
+actions+=/call_action_list,name=cds
+# Maintain dots when possible
+actions+=/call_action_list,name=core_dot
+# Build combo points until 5, max with darkest night
+actions+=/call_action_list,name=generate,if=!buff.darkest_night.up&combo_points<5|buff.darkest_night.up&combo_points.deficit>0
+# If combo point threshold is reached, spend them
+actions+=/call_action_list,name=spend,if=!buff.darkest_night.up&combo_points>=5|buff.darkest_night.up&combo_points.deficit=0
+
+# Cooldown list Deathmark if bleeds are active, kingsbane is ready, and we have envenom
+actions.cds=deathmark,if=dot.garrote.ticking&dot.rupture.ticking&cooldown.kingsbane.remains<=2&buff.envenom.up&(target.time_to_die>10|fight_remains<20)
+# Check for on-use trinket usage
+actions.cds+=/call_action_list,name=items
+# Check for Racial abilties, potions, and any other misc cooldowns
+actions.cds+=/call_action_list,name=misc_cds
+# Kingsbane if bleeds are active and Deathmark is either on cooldown or active.
+actions.cds+=/kingsbane,if=dot.garrote.ticking&dot.rupture.ticking&(dot.deathmark.ticking|cooldown.deathmark.remains>52)&buff.envenom.up&(target.time_to_die>10|fight_remains<20)
+# Vanish conditions for Improved Garrote
+actions.cds+=/call_action_list,name=vanish,if=!stealthed.rogue
+
+# DoT list Garrote for improved garrote when applicable
+actions.core_dot=garrote,if=(buff.improved_garrote.up|stealthed.rogue)&(pmultiplier<=1|remains<=14+6*talent.razor_wire+4*!variable.single_target)
+# Normal Garrote Maintanence
+actions.core_dot+=/garrote,if=combo_points.deficit>=1&(pmultiplier<=1|!variable.single_target)&refreshable&target.time_to_die-remains>12
+# Cycle Garrote without Crimson Tempest
+actions.core_dot+=/garrote,cycle_targets=1,if=!talent.crimson_tempest&combo_points.deficit>=1&(pmultiplier<=1|!variable.single_target)&refreshable&target.time_to_die-remains>12
+# Normal Rupture Maintanence, making sure to not waste Darkest Night
+actions.core_dot+=/rupture,if=combo_points>=5&refreshable&target.time_to_die-remains>12&(!buff.darkest_night.up|!dot.rupture.ticking)
+# Cycle Rupture without Crimson Tempest
+actions.core_dot+=/rupture,cycle_targets=1,if=!talent.crimson_tempest&combo_points>=5&refreshable&target.time_to_die-remains>12&(!buff.darkest_night.up|!dot.rupture.ticking)
+
+# Generator List Crimson Tempest to spread bleeds to everything in AoE
+actions.generate=crimson_tempest,if=!variable.single_target&(active_dot.garrote<spell_targets.fan_of_knives|active_dot.rupture<spell_targets.fan_of_knives)
+# Special Edge Case to use Shiv for Darkest Night in low target cleave as Toxic Stiletto makes it very efficient
+actions.generate+=/shiv,if=buff.darkest_night.up&combo_points.deficit=1&spell_targets.fan_of_knives<=3&talent.toxic_stiletto
+# Ambush on low target counts when available
+actions.generate+=/ambush,if=spell_targets.fan_of_knives<=1+talent.blindside
+# Mutilate on low target counts
+actions.generate+=/mutilate,if=spell_targets.fan_of_knives<=1+talent.blindside
+# Fan of Knives in AoE to fill if nothing else
+actions.generate+=/fan_of_knives,if=spell_targets.fan_of_knives>1+talent.blindside
+
+# Special Case Trinkets
+actions.items=variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2|dot.deathmark.ticking|fight_remains<=22
+actions.items+=/use_item,name=astral_gladiators_badge_of_ferocity,use_off_gcd=1,if=dot.kingsbane.ticking|dot.deathmkark.ticking|(cooldown.kingsbane.remains>60|cooldown.deathmark.remains>60)
+actions.items+=/use_item,name=algethar_puzzle_box,use_off_gcd=1,if=variable.base_trinket_condition&buff.envenom.up
+actions.items+=/use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(debuff.deathmark.up)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot|fight_remains<=20
+actions.items+=/use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(debuff.deathmark.up)|(variable.trinket_sync_slot=1&!trinket.1.cooldown.ready&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot|fight_remains<=20
+
+# Miscellaneous Cooldowns Potion
+actions.misc_cds=potion,if=dot.rupture.ticking&(buff.bloodlust.react|fight_remains<30|debuff.deathmark.up)
+# Various special racials to be synced with cooldowns
+actions.misc_cds+=/blood_fury,use_off_gcd=1,if=debuff.deathmark.up
+actions.misc_cds+=/berserking,use_off_gcd=1,if=debuff.deathmark.up
+actions.misc_cds+=/fireblood,use_off_gcd=1,if=debuff.deathmark.up
+actions.misc_cds+=/ancestral_call,use_off_gcd=1,if=debuff.deathmark.up
+
+# Spend List Envenom if we are not at max stacks of the Apex talent
+actions.spend=envenom,if=buff.implacable_tracker.stack<4
+# Envenom if we are going to overcap on energy
+actions.spend+=/envenom,if=energy.pct>70|fight_remains<15
+
+# Vanish list Single Target vanish check to line up improved garrote with Deathmark, making sure there are no adds soon
+actions.vanish=vanish,if=variable.single_target&talent.improved_garrote&dot.garrote.pmultiplier<=1&(cooldown.deathmark.remains<5|cooldown.deathmark.remains>target.time_to_die-10)&!raid_event.adds.in<=30
+# AoE vanish check to spread improved garrote in multitarget
+actions.vanish+=/vanish,if=!variable.single_target&talent.improved_garrote&dot.garrote.pmultiplier<=1&(raid_event.adds.remains>=10|!raid_event.adds.in<=30)
+
+head=masquerade_of_the_grim_jest,id=250006,bonus_id=6652/12667/12806/13335/13338/13575/13575/13575/13575/13575/13575/13575/13575
+neck=ribbon_of_coiled_malice,id=249337,bonus_id=12806/13577/13668,gem_id=240967
+shoulders=venom_casks_of_the_grim_jest,id=250004,bonus_id=6652/12806/13335/13340/13574/13574/13574/13574/13574/13574/13574/13574
+back=defiant_defenders_drape,id=260312,bonus_id=12806/13577
+chest=fantastic_finery_of_the_grim_jest,id=250009,bonus_id=6652/12806/13335/13336/13575/13575/13575/13575/13575/13575/13575/13575,enchant_id=7987
+wrists=silvermoon_agents_deflectors,id=244576,bonus_id=8960/12066/12214/12214/12214/12214/12214/12214/12384/13622/13667,crafted_stats=32/36
+hands=sleight_of_hand_of_the_grim_jest,id=250007,bonus_id=6652/12806/13335/13337/13574/13574/13574/13574/13574/13574/13574/13574
+waist=scornscarred_shulkas_belt,id=249374,bonus_id=12806/13577
+legs=legwraps_of_lingering_legacies,id=251087,bonus_id=12806/13577,enchant_id=8159
+feet=canopy_walkers_footwraps,id=249382,bonus_id=12806/13577
+finger1=eye_of_midnight,id=249920,bonus_id=6652/12806/13335/13668,gem_id=240898/240890,enchant_id=7967
+finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967
+trinket1=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577
+trinket2=algethar_puzzle_box,id=193701,bonus_id=12806/13577
+main_hand=hungering_victory,id=249925,bonus_id=12806/13577,enchant_id=7981
+off_hand=farstriders_mercy,id=237837,bonus_id=8791/8960/12066/12214/12214/12214/12214/12214/12214/12693/13622/13667/12497,enchant_id=7983,crafted_stats=32/36
+
+# Gear Summary
+# gear_ilvl=287.69
+# gear_agility=1228
+# gear_stamina=17236
+# gear_crit_rating=1000
+# gear_haste_rating=788
+# gear_mastery_rating=613
+# gear_versatility_rating=82
+# gear_armor=869
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1

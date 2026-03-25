@@ -3998,7 +3998,6 @@ struct auto_shot_base_t : public auto_attack_base_t<ranged_attack_t>
     if ( rng().roll( lock_and_load_chance ) )
     {
       p()->buffs.lock_and_load->trigger();
-      p()->cooldowns.aimed_shot->reset( true );
     }
 
     if ( p()->talents.lethal_barbs.ok() )
@@ -7905,7 +7904,12 @@ void hunter_t::create_buffs()
     make_buff( this, "trick_shots", talents.trick_shots_buff );
   
   buffs.lock_and_load =
-    make_buff( this, "lock_and_load", talents.lock_and_load_buff );
+    make_buff( this, "lock_and_load", talents.lock_and_load_buff )
+      ->set_stack_change_callback(
+        [ this ]( buff_t*, int _old, int _new ) {
+          if ( _new > _old )
+            cooldowns.aimed_shot->reset( true );
+        } );
 
   buffs.in_the_rhythm = 
     make_buff( this, "in_the_rhythm", talents.in_the_rhythm_buff )

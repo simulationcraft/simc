@@ -7339,39 +7339,39 @@ bonus_id={ 12261 }, stats={ 100% Crit [0.5600] }
 bonus_id={ 12262 }, stats={ 100% Haste [0.5600] }
 bonus_id={ 12263 }, ilevel={ 24 @plvl 1 - 623 @plvl 80 }
 bonus_id={ 12264 }, desc={ Timewarped }, ilevel={ 19 @plvl 1 - 587 @plvl 80 }
-bonus_id={ 12265 }, quality={ uncommon }
-bonus_id={ 12266 }, quality={ uncommon }
-bonus_id={ 12267 }, quality={ rare }
-bonus_id={ 12268 }, quality={ rare }
-bonus_id={ 12269 }, quality={ rare }
-bonus_id={ 12270 }, quality={ rare }
-bonus_id={ 12271 }, quality={ rare }
-bonus_id={ 12272 }, quality={ rare }
+bonus_id={ 12265 }, base_ilevel={ 98 }, quality={ uncommon }
+bonus_id={ 12266 }, base_ilevel={ 99 }, quality={ uncommon }
+bonus_id={ 12267 }, base_ilevel={ 100 }, quality={ rare }
+bonus_id={ 12268 }, base_ilevel={ 101 }, quality={ rare }
+bonus_id={ 12269 }, base_ilevel={ 102 }, quality={ rare }
+bonus_id={ 12270 }, base_ilevel={ 103 }, quality={ rare }
+bonus_id={ 12271 }, base_ilevel={ 104 }, quality={ rare }
+bonus_id={ 12272 }, base_ilevel={ 105 }, quality={ rare }
 bonus_id={ 12273 }, effects={ Unknown Effect (id=207254) }
-bonus_id={ 12274 }, quality={ rare }
-bonus_id={ 12275 }, quality={ rare }
-bonus_id={ 12276 }, quality={ rare }
-bonus_id={ 12277 }, quality={ rare }
-bonus_id={ 12278 }, quality={ epic }
-bonus_id={ 12279 }, quality={ epic }
-bonus_id={ 12280 }, quality={ epic }
-bonus_id={ 12281 }, quality={ epic }
-bonus_id={ 12282 }, quality={ epic }
-bonus_id={ 12283 }, quality={ epic }
-bonus_id={ 12284 }, quality={ epic }
-bonus_id={ 12285 }, quality={ epic }
-bonus_id={ 12286 }, quality={ epic }
-bonus_id={ 12287 }, quality={ epic }
-bonus_id={ 12288 }, quality={ epic }
-bonus_id={ 12289 }, quality={ epic }
-bonus_id={ 12290 }, quality={ epic }
-bonus_id={ 12291 }, quality={ epic }
-bonus_id={ 12292 }, quality={ epic }
-bonus_id={ 12293 }, quality={ epic }
-bonus_id={ 12294 }, quality={ epic }
-bonus_id={ 12295 }, quality={ epic }
-bonus_id={ 12296 }, quality={ epic }
-bonus_id={ 12297 }, quality={ epic }
+bonus_id={ 12274 }, base_ilevel={ 102 }, quality={ rare }
+bonus_id={ 12275 }, base_ilevel={ 103 }, quality={ rare }
+bonus_id={ 12276 }, base_ilevel={ 104 }, quality={ rare }
+bonus_id={ 12277 }, base_ilevel={ 105 }, quality={ rare }
+bonus_id={ 12278 }, base_ilevel={ 108 }, quality={ epic }
+bonus_id={ 12279 }, base_ilevel={ 111 }, quality={ epic }
+bonus_id={ 12280 }, base_ilevel={ 115 }, quality={ epic }
+bonus_id={ 12281 }, base_ilevel={ 118 }, quality={ epic }
+bonus_id={ 12282 }, base_ilevel={ 108 }, quality={ epic }
+bonus_id={ 12283 }, base_ilevel={ 111 }, quality={ epic }
+bonus_id={ 12284 }, base_ilevel={ 115 }, quality={ epic }
+bonus_id={ 12285 }, base_ilevel={ 118 }, quality={ epic }
+bonus_id={ 12286 }, base_ilevel={ 121 }, quality={ epic }
+bonus_id={ 12287 }, base_ilevel={ 124 }, quality={ epic }
+bonus_id={ 12288 }, base_ilevel={ 128 }, quality={ epic }
+bonus_id={ 12289 }, base_ilevel={ 131 }, quality={ epic }
+bonus_id={ 12290 }, base_ilevel={ 121 }, quality={ epic }
+bonus_id={ 12291 }, base_ilevel={ 124 }, quality={ epic }
+bonus_id={ 12292 }, base_ilevel={ 128 }, quality={ epic }
+bonus_id={ 12293 }, base_ilevel={ 131 }, quality={ epic }
+bonus_id={ 12294 }, base_ilevel={ 134 }, quality={ epic }
+bonus_id={ 12295 }, base_ilevel={ 137 }, quality={ epic }
+bonus_id={ 12296 }, base_ilevel={ 141 }, quality={ epic }
+bonus_id={ 12297 }, base_ilevel={ 144 }, quality={ epic }
 bonus_id={ 12298 }, desc={ Rank 1/4 }, effects={ Adding (id=1224959, index=0, type=use) }
 bonus_id={ 12299 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=1224961, index=0, type=use) }
 bonus_id={ 12300 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=1224962, index=0, type=use) }
@@ -7424,18 +7424,18 @@ bonus_id={ 12346 }, desc={ Rank 1/4 }, effects={ Adding (id=1224996, index=0, ty
 bonus_id={ 12347 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=1224998, index=0, type=use) }
 bonus_id={ 12348 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=1225000, index=0, type=use) }
 bonus_id={ 12349 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=1225001, index=0, type=use) }
-bonus_id={ 12350 }, quality={ epic }
-bonus_id={ 12351 }, quality={ epic }
-bonus_id={ 12352 }, quality={ epic }
-bonus_id={ 12353 }, quality={ epic }
-bonus_id={ 12354 }, quality={ epic }
-bonus_id={ 12355 }, quality={ epic }
-bonus_id={ 12356 }, quality={ epic }
-bonus_id={ 12357 }, quality={ epic }
-bonus_id={ 12358 }, quality={ epic }
-bonus_id={ 12359 }, quality={ epic }
-bonus_id={ 12360 }, quality={ epic }
-bonus_id={ 12361 }, quality={ epic }
+bonus_id={ 12350 }, base_ilevel={ 134 }, quality={ epic }
+bonus_id={ 12351 }, base_ilevel={ 137 }, quality={ epic }
+bonus_id={ 12352 }, base_ilevel={ 141 }, quality={ epic }
+bonus_id={ 12353 }, base_ilevel={ 144 }, quality={ epic }
+bonus_id={ 12354 }, base_ilevel={ 147 }, quality={ epic }
+bonus_id={ 12355 }, base_ilevel={ 150 }, quality={ epic }
+bonus_id={ 12356 }, base_ilevel={ 147 }, quality={ epic }
+bonus_id={ 12357 }, base_ilevel={ 150 }, quality={ epic }
+bonus_id={ 12358 }, base_ilevel={ 154 }, quality={ epic }
+bonus_id={ 12359 }, base_ilevel={ 157 }, quality={ epic }
+bonus_id={ 12360 }, base_ilevel={ 160 }, quality={ epic }
+bonus_id={ 12361 }, base_ilevel={ 163 }, quality={ epic }
 bonus_id={ 12362 }, ilevel={ 15 @plvl 10 - 626 @plvl 80 }
 bonus_id={ 12363 }, ilevel={ 15 @plvl 10 - 629 @plvl 80 }
 bonus_id={ 12364 }, ilevel={ 15 @plvl 10 - 632 @plvl 80 }
@@ -7581,7 +7581,7 @@ bonus_id={ 12533 }, quality={ epic }
 bonus_id={ 12534 }, quality={ rare }
 bonus_id={ 12535 }, quality={ rare }
 bonus_id={ 12536 }, quality={ rare }
-bonus_id={ 12537 }, quality={ rare }
+bonus_id={ 12537 }, base_ilevel={ 170 }, quality={ rare }
 bonus_id={ 12538 }, quality={ rare }
 bonus_id={ 12539 }, quality={ rare }
 bonus_id={ 12540 }, quality={ rare }
@@ -8020,7 +8020,7 @@ bonus_id={ 13351 }, base_ilevel={ 266 }, req_ilevel={ 90 }
 bonus_id={ 13354 }, base_ilevel={ 276 }, req_ilevel={ 90 }
 bonus_id={ 13355 }, base_ilevel={ 279 }, req_ilevel={ 90 }
 bonus_id={ 13357 }, quality={ epic }
-bonus_id={ 13359 }
+bonus_id={ 13359 }, base_ilevel={ 170 }
 bonus_id={ 13360 }, effects={ Infinite Power (id=1250717, index=0, type=no_delay_use) }
 bonus_id={ 13361 }, effects={ Infinite Power (id=1250753, index=0, type=no_delay_use) }
 bonus_id={ 13362 }, effects={ Infinite Power (id=1250750, index=0, type=no_delay_use) }
@@ -8030,10 +8030,10 @@ bonus_id={ 13365 }, effects={ Infinite Power (id=1250760, index=0, type=no_delay
 bonus_id={ 13435 }, effects={ Infinite Power (id=1250552, index=0, type=equip) }
 bonus_id={ 13441 }, base_ilevel={ 126 }
 bonus_id={ 13442 }, base_ilevel={ 214 }, req_ilevel={ 90 }, quality={ rare }
-bonus_id={ 13443 }, quality={ epic }
-bonus_id={ 13444 }, quality={ epic }
-bonus_id={ 13445 }, quality={ epic }
-bonus_id={ 13446 }, quality={ epic }
+bonus_id={ 13443 }, base_ilevel={ 154 }, quality={ epic }
+bonus_id={ 13444 }, base_ilevel={ 157 }, quality={ epic }
+bonus_id={ 13445 }, base_ilevel={ 167 }, quality={ epic }
+bonus_id={ 13446 }, base_ilevel={ 170 }, quality={ epic }
 bonus_id={ 13453 }, effects={ Prismatic Focusing Iris (id=1251906, index=0, type=equip) }
 bonus_id={ 13454 }, effects={ Stabilizing Gemstone Bandolier (id=1251905, index=0, type=equip) }
 bonus_id={ 13468 }, ilevel_adjust={ 7 }

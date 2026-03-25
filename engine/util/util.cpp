@@ -2486,8 +2486,6 @@ weapon_e util::translate_weapon_subclass( int weapon_subclass )
     case ITEM_SUBCLASS_WEAPON_WARGLAIVE:    return WEAPON_WARGLAIVE;
     default: return WEAPON_NONE;
   }
-
-  return WEAPON_NONE;
 }
 
 // translate_weapon =========================================================

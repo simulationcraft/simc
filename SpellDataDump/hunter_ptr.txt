@@ -3135,7 +3135,7 @@ Effects          :
 #3 (id=271166)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
-#4 (id=271167)   : Apply Aura (6) | Temporary Thread Reduction (103)
+#4 (id=271167)   : Apply Aura (6) | Temporary Threat Reduction (103)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 Description      : $@spelldesc19574
 Tooltip          : Damage dealt increased by $w1%.
@@ -4333,7 +4333,7 @@ Effects          :
 #3 (id=306205)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Current Target (25)
                    Affected School(s): All
-#4 (id=306206)   : Apply Aura (6) | Temporary Thread Reduction (103)
+#4 (id=306206)   : Apply Aura (6) | Temporary Threat Reduction (103)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
 Description      : $@spelldesc19574
 Tooltip          : Damage dealt increased by $w1%.
@@ -16610,7 +16610,7 @@ Effects          :
                    Affected School(s): All
 #2 (id=1230673)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-#3 (id=1230674)  : Apply Aura (6) | Temporary Thread Reduction (103)
+#3 (id=1230674)  : Apply Aura (6) | Temporary Threat Reduction (103)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 Description      : $@spelldesc1232739
 Tooltip          : Damage dealt increased by $w1%.
@@ -19995,7 +19995,7 @@ Effects          :
 #3 (id=1302316)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
-#4 (id=1302317)  : Apply Aura (6) | Temporary Thread Reduction (103)
+#4 (id=1302317)  : Apply Aura (6) | Temporary Threat Reduction (103)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 Description      : $@spelldesc19574
 Tooltip          : Damage dealt increased by $w1%.

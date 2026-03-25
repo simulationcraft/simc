@@ -117,26 +117,29 @@ void devastation( player_t* p )
   st_fs->add_action( "call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&talent.scarlet_adaptation&!buff.dragonrage.up" );
   st_fs->add_action( "azure_strike" );
 
-  aoe_sc->add_action( "hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5", "Scalemander 3+ Target List" );
+  aoe_sc->add_action( "hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5" );
   aoe_sc->add_action( "deep_breath,if=talent.imminent_destruction&talent.strafing_run&!buff.strafing_run.up,cancel_if=gcd.remains=0" );
-  aoe_sc->add_action( "tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up" );
+  aoe_sc->add_action( "tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up&action.fire_breath.usable_in<=action.eternity_surge.usable_in" );
   aoe_sc->add_action( "dragonrage,target_if=max:target.time_to_die,if=target.time_to_die>=15|!raid_event.adds.exists" );
   aoe_sc->add_action( "eternity_surge,target_if=max:target.health.pct,empower_to=1" );
   aoe_sc->add_action( "fire_breath,target_if=max:target.health.pct,empower_to=1" );
   aoe_sc->add_action( "deep_breath,if=talent.imminent_destruction,cancel_if=gcd.remains=0,interrupt_if=gcd.remains=0" );
-  aoe_sc->add_action( "pyre,target_if=max:target.health.pct,if=cooldown.dragonrage.remains>gcd.max*4&!buff.mass_disintegrate_stacks.up&(active_enemies>=4|active_enemies>=3&(talent.feed_the_flames|talent.volatility))" );
-  aoe_sc->add_action( "disintegrate,target_if=min:debuff.bombardments.remains,if=talent.mass_disintegrate&(!talent.volatility|buff.mass_disintegrate_stacks.up),interrupt=1,interrupt_if=talent.volatility&active_enemies>=8" );
+  aoe_sc->add_action( "pyre,target_if=max:target.health.pct,if=active_enemies>=4&buff.charged_blast.stack>=18&cooldown.dragonrage.remains>gcd.max*4" );
+  aoe_sc->add_action( "azure_sweep,if=active_enemies<=3&(buff.essence_burst.down|buff.essence_burst.stack<buff.essence_burst.max_stack)" );
+  aoe_sc->add_action( "pyre,target_if=max:target.health.pct,if=cooldown.dragonrage.remains>gcd.max*4&!buff.mass_disintegrate_stacks.up&(active_enemies>=4|active_enemies>=3&talent.feed_the_flames)" );
+  aoe_sc->add_action( "disintegrate,target_if=min:debuff.bombardments.remains,if=talent.mass_disintegrate&(!talent.feed_the_flames|buff.mass_disintegrate_stacks.up),interrupt=1,interrupt_if=talent.volatility&active_enemies>=8" );
   aoe_sc->add_action( "azure_sweep,target_if=max:target.health.pct" );
-  aoe_sc->add_action( "living_flame,target_if=max:target.health.pct,if=buff.leaping_flames.up&(!talent.burnout|buff.burnout.up|buff.scarlet_adaptation.up|buff.ancient_flame.up)&(!buff.essence_burst.up&essence.deficit>1)", "Check" );
+  aoe_sc->add_action( "living_flame,target_if=max:target.health.pct,if=buff.leaping_flames.up&(!talent.burnout|buff.burnout.up|buff.scarlet_adaptation.up|buff.ancient_flame.up)&(!buff.essence_burst.up&essence.deficit>1)" );
   aoe_sc->add_action( "call_action_list,name=es,if=(buff.dragonrage.up|cooldown.dragonrage.remains>variable.dr_prep_time_aoe)&(talent.azure_sweep&!buff.azure_sweep.up)" );
   aoe_sc->add_action( "azure_strike,target_if=max:target.health.pct" );
 
-  st_sc->add_action( "deep_breath,if=buff.strafing_run.remains<=gcd.max*2,cancel_if=gcd.remains=0", "Scalemander 1 / 2 Target List" );
+  st_sc->add_action( "deep_breath,if=buff.strafing_run.remains<=gcd.max*2,cancel_if=gcd.remains=0" );
   st_sc->add_action( "dragonrage,if=target.time_to_die>=30&raid_event.adds.in>=60|!raid_event.adds.exists|raid_event.adds.in=0" );
   st_sc->add_action( "hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5|talent.slipstream&gcd.remains>=0.5" );
-  st_sc->add_action( "tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up" );
+  st_sc->add_action( "tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up&action.fire_breath.usable_in<=action.eternity_surge.usable_in" );
   st_sc->add_action( "eternity_surge,empower_to=1" );
   st_sc->add_action( "fire_breath,empower_to=1" );
+  st_sc->add_action( "azure_sweep,if=buff.essence_burst.down|buff.essence_burst.stack<buff.essence_burst.max_stack" );
   st_sc->add_action( "disintegrate,target_if=min:debuff.bombardments.remains,early_chain_if=ticks_remain<=1&buff.mass_disintegrate_stacks.up,if=(raid_event.movement.in>2|buff.hover.up)&buff.mass_disintegrate_stacks.up&talent.mass_disintegrate" );
   st_sc->add_action( "disintegrate,target_if=max:dot.fire_breath_damage.remains,chain=1,if=(raid_event.movement.in>2|buff.hover.up),early_chain_if=ticks_remain<=1,interrupt_if=ticks_remain<=1" );
   st_sc->add_action( "azure_sweep" );

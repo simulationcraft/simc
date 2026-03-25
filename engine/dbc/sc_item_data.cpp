@@ -809,8 +809,6 @@ int item_database::random_suffix_type( const dbc_item_data_t& item )
     default:
       return -1;
   }
-
-  return -1;
 }
 
 int item_database::random_suffix_type( item_t& item )
@@ -1307,12 +1305,12 @@ static std::pair<int, int> get_midnight_scaling_values( const dbc_t& dbc, util::
   {
     if ( entry.type == ITEM_BONUS_SQUISH_CURVE )
     {
-      int item_level = as<int>( util::round( item_database::curve_point_value( dbc, entry.value_1, entry.value_2 ) ) );
+      int curve_level = as<int>( util::round( item_database::curve_point_value( dbc, entry.value_1, entry.value_2 ) ) );
       // TODO: In the future, multiple squish curves may need to be applied here and
       // we can extract them from ItemSquishEra.db2. For now, only the midnight curve
       // needs to be applied and only when value_3 is 1.
       if ( entry.value_3 == 1 )
-        item_level = as<int>( util::round( item_database::curve_point_value( dbc, SQUISH_CURVE_MIDNIGHT, item_level ) ) );
+        item_level = as<int>( util::round( item_database::curve_point_value( dbc, SQUISH_CURVE_MIDNIGHT, curve_level ) ) );
     }
 
     if ( entry.type == ITEM_BONUS_SCALE_CONFIG || entry.type == ITEM_BONUS_SCALE_CONFIG_2 )

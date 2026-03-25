@@ -8276,14 +8276,14 @@ std::string warrior_t::default_potion() const
 {
   std::string fury_pot =
       ( true_level > 80 )
-          ? "potion_of_recklessness_2"
+          ? "lights_potential_2"
           : ( true_level > 70 )
                 ? "tempered_potion_3"
                 : "disabled";
 
   std::string arms_pot =
       ( true_level > 80 )
-          ? "potion_of_recklessness_2"
+          ? "lights_potential_2"
           : ( true_level > 70 )
                 ? "tempered_potion_3"
                 : "disabled";

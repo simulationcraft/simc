@@ -2252,6 +2252,77 @@ void player_t::create_special_effects()
     }
   }
 
+  if ( dragonflight_opts.emerald_coachs_whistle_ally_ilvl > 0 )
+  {
+    auto stat_amount =
+        find_spell( 383798 )->effectN( 2 ).average_no_item( this, dragonflight_opts.emerald_coachs_whistle_ally_ilvl );
+
+    auto buff_spell = find_spell( 383799 );
+    auto buff_name  = util::tokenize_fn( buff_spell->name_cstr() );
+
+    auto b = buff_t::find( this, buff_name );
+
+    stat_buff_t* buff = nullptr;
+
+    if ( b )
+    {
+      buff = debug_cast<stat_buff_t*>( b );
+    }
+    else
+    {
+      buff = make_buff<stat_buff_t>( this, buff_name, buff_spell )->set_stat_from_effect( 1, stat_amount );
+    }
+
+    // Copy the code out of unique gear.
+    struct emerald_coachs_whistle_cb_t : public dbc_proc_callback_t
+    {
+      double buff_size;
+
+      stat_buff_t* buff;
+
+      emerald_coachs_whistle_cb_t( const special_effect_t& e, stat_buff_t* buff, double buff_size )
+        : dbc_proc_callback_t( e.player, e ), buff( buff ), buff_size( buff_size )
+      {
+        deactivate_with_buff( buff );
+      }
+
+      void trigger( action_t* a, action_state_t* state ) override
+      {
+        if ( buff->check() )
+          return;
+
+        dbc_proc_callback_t::trigger( a, state );
+      }
+
+      void execute( action_t* a, action_state_t* state ) override
+      {
+        buff->stats[ 0 ].amount = buff_size;
+        buff->trigger();
+      }
+    };
+
+    // Create multiple copies of the coached buff as it has all flags.
+    // We will just pretend we are the ally multiple times for the sake of driving the buff.
+    // We assume that if the current actor is unable to act the buff(ing) player would also be unable to act.
+
+    auto coached         = new special_effect_t( this );
+    coached->type        = SPECIAL_EFFECT_EQUIP;
+    coached->source      = SPECIAL_EFFECT_SOURCE_ITEM;
+    coached->spell_id    = 386578;
+    coached->name_str    = "coached_ally";
+    special_effects.push_back( coached );
+
+    new emerald_coachs_whistle_cb_t( *coached, buff, stat_amount );
+
+    auto coached2         = new special_effect_t( this );
+    coached2->type        = SPECIAL_EFFECT_EQUIP;
+    coached2->source      = SPECIAL_EFFECT_SOURCE_ITEM;
+    coached2->spell_id    = 386578;
+    coached2->name_str    = "whistle_ally";
+    special_effects.push_back( coached2 );
+
+    new emerald_coachs_whistle_cb_t( *coached2, buff, stat_amount );
+  }
 
   unique_gear::initialize_racial_effects( this );
 
@@ -7808,7 +7879,7 @@ double player_t::resource_gain( resource_e resource_type, double amount, gain_t*
     iteration_resource_gained[ resource_type ] += actual_amount;
   }
   double overflow_amount = amount - actual_amount;
-  if (overflow_amount > 0)
+  if ( overflow_amount > 0 )
   {
     iteration_resource_overflowed[ resource_type ] += overflow_amount;
   }
@@ -7833,6 +7904,15 @@ double player_t::resource_gain( resource_e resource_type, double amount, gain_t*
                     name(), actual_amount, amount, resource_type,
                     source ? source->name() : action ? action->name() : "unknown",
                     resources.current[ resource_type ], resources.max[ resource_type ] );
+  }
+
+  // energize_power from actions can trigger generic helpful proc effects
+  if ( action && resource_type > RESOURCE_MANA && resource_type < RESOURCE_MAX )
+  {
+    if ( action->callbacks && action->caster_callbacks && !action->suppress_callback_from_energize )
+    {
+      trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_LANDED, action, action->energize_state.get() );
+    }
   }
 
   return actual_amount;
@@ -10668,8 +10748,8 @@ struct use_items_t : public action_t
           return;
 
         // Find out if the item is worn
-        auto it = range::find_if( player->items, [ action ]( const item_t& item ) {
-          return util::str_compare_ci( item.name(), action->item_name );
+        auto it = range::find_if( player->items, [ action ]( const item_t& i ) {
+          return util::str_compare_ci( i.name(), action->item_name );
         } );
 
         // Worn item, remove slot if necessary
@@ -10699,9 +10779,9 @@ struct use_items_t : public action_t
           return;
 
         // Find out if the item is worn
-        auto it = range::find_if( player->items, [ action ]( const item_t& item ) {
-          return item.has_use_special_effect() &&
-                 util::str_compare_ci( item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE )->name(),
+        auto it = range::find_if( player->items, [ action ]( const item_t& i ) {
+          return i.has_use_special_effect() &&
+                 util::str_compare_ci( i.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE )->name(),
                                        action->effect_name );
         } );
 
@@ -11552,16 +11632,16 @@ static player_talent_t create_talent_obj( const player_t* player, const trait_da
 }
 
 player_talent_t player_t::find_talent_spell( hero_tree_e tree, std::string_view name, bool name_tokenized,
-                                             unsigned index ) const
+                                             unsigned idx ) const
 {
-  return find_talent_spell( talent_tree::HERO, name, _spec, name_tokenized, index, tree );
+  return find_talent_spell( talent_tree::HERO, name, _spec, name_tokenized, idx, tree );
 }
 
 player_talent_t player_t::find_talent_spell( talent_tree tree, std::string_view name, specialization_e s,
-                                             bool name_tokenized, unsigned index, hero_tree_e hero_tree ) const
+                                             bool name_tokenized, unsigned idx, hero_tree_e hero_tree ) const
 {
   auto trait = trait_data_t::find( tree, name, util::class_id( type ), s == SPEC_NONE ? _spec : s, dbc->ptr,
-                                   name_tokenized, index, static_cast<unsigned>( hero_tree ) );
+                                   name_tokenized, idx, static_cast<unsigned>( hero_tree ) );
 
   if ( trait == &trait_data_t::nil() )
   {
@@ -11573,9 +11653,9 @@ player_talent_t player_t::find_talent_spell( talent_tree tree, std::string_view 
   return create_talent_obj( this, trait );
 }
 
-player_talent_t player_t::find_talent_spell( talent_tree tree, std::string_view name, unsigned index ) const
+player_talent_t player_t::find_talent_spell( talent_tree tree, std::string_view name, unsigned idx ) const
 {
-  return find_talent_spell( tree, name, SPEC_NONE, false, index );
+  return find_talent_spell( tree, name, SPEC_NONE, false, idx );
 }
 
 player_talent_t player_t::find_talent_spell( talent_tree tree, unsigned spell_id, specialization_e s ) const
@@ -12494,11 +12574,11 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         }
       }
 
-      auto index = util::to_unsigned( splits[ 1 ] ) - 1;
-      if ( index >= apex_traits.size() )
+      auto _index = util::to_unsigned( splits[ 1 ] ) - 1;
+      if ( _index >= apex_traits.size() )
         throw sc_invalid_apl_argument( fmt::format( "Apex talent index '{}' not found.", splits[ 1 ] ) );
 
-      _talent = create_talent_obj( this, apex_traits[ index ] );
+      _talent = create_talent_obj( this, apex_traits[ _index ] );
     }
     else if ( splits[ 0 ] == "talent" )
     {
@@ -13711,6 +13791,7 @@ void player_t::create_options()
   add_option( opt_int( "dragonflight.brilliance_party", dragonflight_opts.brilliance_party, 0, 4 ) );
   add_option( opt_int( "dragonflight.windweaver_party", dragonflight_opts.windweaver_party, 0, 4 ) );
   add_option( opt_string( "dragonflight.windweaver_party_ilvls", dragonflight_opts.windweaver_party_ilvls ) );
+  add_option( opt_int( "dragonflight.emerald_coachs_whistle_ally_ilvl", dragonflight_opts.emerald_coachs_whistle_ally_ilvl ) );
 
   // The War Within options
   add_option( opt_string( "thewarwithin.sikrans_endless_arsenal_stance",
@@ -15374,10 +15455,10 @@ std::array<double, 3> player_t::get_passive_value( const spell_data_t& spell, st
     return get_owner_or_self()->get_passive_value( spell, field );
 
   auto id = as<int>( spell.id() );
-  auto type = get_type_from_field( field );
+  auto field_type = get_type_from_field( field );
 
-  auto it = range::find_if( passive_spell_modifiers_, [ id, type ]( const auto& mod ) {
-    return mod.id == id && mod.field_id == type;
+  auto it = range::find_if( passive_spell_modifiers_, [ id, field_type ]( const auto& mod ) {
+    return mod.id == id && mod.field_id == field_type;
   } );
   if ( it == passive_spell_modifiers_.end() )
     return { spell.get_field( field ) * mul, 0.0, 1.0 };
@@ -15392,10 +15473,10 @@ std::array<double, 3> player_t::get_passive_value( const spellpower_data_t& powe
     return get_owner_or_self()->get_passive_value( power, field );
 
   auto id = as<int>( power.id() );
-  auto type = get_type_from_field( field );
+  auto field_type = get_type_from_field( field );
 
-  auto it = range::find_if( passive_power_modifiers_, [ id, type ]( const auto& mod ) {
-    return mod.id == id && mod.field_id == type;
+  auto it = range::find_if( passive_power_modifiers_, [ id, field_type ]( const auto& mod ) {
+    return mod.id == id && mod.field_id == field_type;
   } );
   if ( it == passive_power_modifiers_.end() )
     return { power.get_field( field ) / power.cost_divisor( false ), 0.0, 1.0 };
@@ -15410,10 +15491,10 @@ std::array<double, 3> player_t::get_passive_value( const spelleffect_data_t& eff
     return get_owner_or_self()->get_passive_value( eff, field );
 
   auto id = as<int>( eff.id() );
-  auto type = get_type_from_field( field );
+  auto field_type = get_type_from_field( field );
 
-  auto it = range::find_if( passive_effect_modifiers_, [ id, type ]( const auto& mod ) {
-    return mod.id == id && mod.field_id == type;
+  auto it = range::find_if( passive_effect_modifiers_, [ id, field_type ]( const auto& mod ) {
+    return mod.id == id && mod.field_id == field_type;
   } );
   if ( it == passive_effect_modifiers_.end() )
     return { eff.get_field( field ), 0.0, 1.0 };
@@ -15427,10 +15508,10 @@ double player_t::get_passive_player_value( double base_val, std::string_view fie
   if ( is_pet() )
     return get_owner_or_self()->get_passive_player_value( base_val, field, misc_type );
 
-  auto id_type = get_type_from_field( field );
+  auto field_type = get_type_from_field( field );
 
-  auto it = range::find_if( passive_player_modifiers_, [ id_type, misc_type ]( const auto& mod ) {
-    return mod.id == id_type && mod.field_id == misc_type;
+  auto it = range::find_if( passive_player_modifiers_, [ field_type, misc_type ]( const auto& mod ) {
+    return mod.id == field_type && mod.field_id == misc_type;
   } );
   if ( it == passive_player_modifiers_.end() )
     return base_val;
@@ -16460,12 +16541,12 @@ void player_t::parse_all_class_passives()
   // spec passives & spec-only rank spells
   auto mastery_id = mastery_spell_entry_t::find( specialization(), dbc->ptr ).spell_id;
 
-  for ( const auto& spec_spell : specialization_spell_entry_t::data( dbc->ptr ) )
+  for ( const auto& spec_entry : specialization_spell_entry_t::data( dbc->ptr ) )
   {
-    if ( spec_spell.specialization_id == static_cast<unsigned>( specialization() ) &&
-         spec_spell.spell_id != mastery_id )
+    if ( spec_entry.specialization_id == static_cast<unsigned>( specialization() ) &&
+         spec_entry.spell_id != mastery_id )
     {
-      auto spell = find_spell( spec_spell.spell_id );
+      auto spell = find_spell( spec_entry.spell_id );
       if ( spell->flags( SX_PASSIVE ) )
         parse_passive_effects( spell, false, PARSE_SOURCE_SPEC );
     }
@@ -16505,8 +16586,8 @@ void player_t::parse_all_passive_talents()
 
 void player_t::parse_all_passive_sets()
 {
-  for ( const auto& type : sets->set_bonus_spec_data )
-    for ( const auto& bonus : type )
+  for ( const auto& bonus_type : sets->set_bonus_spec_data )
+    for ( const auto& bonus : bonus_type )
       for ( const auto& data : bonus )
         if ( data.enabled )
           parse_passive_effects( data.spell, false, PARSE_SOURCE_SET );

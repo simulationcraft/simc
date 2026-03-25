@@ -32,10 +32,22 @@ struct proc_event_t : public event_t
   proc_event_t( dbc_proc_callback_t* c, action_t* a, action_state_t* s )
     : event_t( *c->listener->sim ),
       cb( c ),
-      source_action( a ),
-      // Note, state has to be cloned as it's about to get recycled back into the action state cache
-      source_state( s ? s->action->get_state( s ) : nullptr )
+      source_action( a )
   {
+    // Unless the state is an energize state, it has to be cloned as it's about to get recycled back into the action
+    // state cache
+    if ( s )
+    {
+      if ( s->is_energize() )
+        source_state = s;
+      else
+        source_state = s->action->get_state( s );
+    }
+    else
+    {
+      source_state = nullptr;
+    }
+
     schedule( timespan_t::zero() );
 #ifndef NDEBUG
     if ( !cb )
@@ -57,7 +69,8 @@ struct proc_event_t : public event_t
 
   ~proc_event_t() override
   {
-    if ( source_state )
+    // DON'T RELEASE ENERGIZE STATES
+    if ( source_state && !source_state->is_energize() )
       action_state_t::release( source_state );
   }
 
@@ -255,7 +268,7 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 
   if ( triggered )
   {
-    assert( state && state -> action);
+    assert( state && state->action );
     // Detach proc execution from proc triggering
     make_event<proc_event_t>( *listener->sim, this, a, state );
 
@@ -435,9 +448,6 @@ player_t* dbc_proc_callback_t::target( const action_state_t* state, action_t* pr
     return state->target;
   }
 
-  // TODO: Verify this behaviour with damage to friendly Allies.
-  bool self_hit = state->action->player == listener;
-
   // Incoming callbacks target either the callback actor, or the source of the incoming state.
   // Which is selected depends on the type of the callback proc action.
   //
@@ -446,13 +456,15 @@ player_t* dbc_proc_callback_t::target( const action_state_t* state, action_t* pr
   assert( _action && "Cannot determine target of incoming callback, there is no proc_action" );
   switch ( _action->type )
   {
-      // Heals are always targeted to the callback actor on incoming events
-    case ACTION_ABSORB:
-    case ACTION_HEAL:
-      return listener;
-      // Self Damage targets are redirected to the players main target. Else they target the player.
+    case ACTION_ATTACK:
+    case ACTION_SPELL:
+      // Self Damage and energize targets are redirected to the players main target. Else they target the player.
+      // TODO: Verify this behaviour with damage to friendly Allies.
+      if ( state->action->player == listener )
+        return listener->target;
+      SC_FALLTHROUGH;
     default:
-      return self_hit ? state->action->player->target : state->action->player;
+      return listener;
   }
 }
 

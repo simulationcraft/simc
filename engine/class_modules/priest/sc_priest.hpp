@@ -693,6 +693,11 @@ public:
     threshold_rng_t* auspicious_spirits;
   } threshold_rng;
 
+  struct deck_rngs_t
+  {
+    shuffled_rng_t* random_idol;
+  } deck_rng;
+
   // Gains
   struct
   {
@@ -865,6 +870,9 @@ public:
     double synergistic_brewterializer_tof_chance = 0.7;
     // ~20% damage penalty to account for GCD. ~10% Miss general chance.
     double synergistic_brewterializer_barrel_hit_chance = 0.75;
+
+    // Chance for returning Halo damage pulses to hit (Divine Halo / Archon).
+    double archon_halo_return_hit_chance = 0.5;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );

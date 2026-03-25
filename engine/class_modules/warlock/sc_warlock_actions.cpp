@@ -352,6 +352,7 @@ using namespace helpers;
               // It seems that having the GoSac buff prevents these bugs
               if ( p()->bugs && !p()->buffs.grimoire_of_sacrifice->check()
                     && ( ( this->id == p()->talents.chaos_bolt->id() && p()->eye_explosion_instanced_bug_cb )
+                      || ( this->id == p()->hero.ruination_cast->id() && p()->eye_explosion_instanced_bug_sb )
                       || ( this->id == p()->talents.shadowburn->id() && p()->eye_explosion_instanced_bug_sb )
                       || ( this->id == p()->talents.rain_of_fire->id() && p()->eye_explosion_instanced_bug_rof ) ) )
               {
@@ -2054,7 +2055,8 @@ using namespace helpers;
 
       if ( soul_harvester() && p()->buffs.nightfall->check() )
       {
-        if ( p()->hero.wicked_reaping.ok() )
+        // NOTE: 2026-03-21 Malefic Grasp consumes Nightfall without triggering Wicked Reaping (bug)
+        if ( !p()->bugs && p()->hero.wicked_reaping.ok() )
           p()->proc_actions.wicked_reaping->execute_on_target( target );
 
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
@@ -4635,6 +4637,10 @@ using namespace helpers;
     ruination_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Ruination", p, p->hero.ruination_cast, options_str )
     {
+      // Ruination triggers Demonic Art, but not Diabolic Ritual.
+      // On top of that, it does so even if the cast starts before gaining the Demonic Art buff.
+      triggers.demonic_art = triggers.demonic_art_buff = p->hero.diabolic_ritual.ok();
+
       impact_action = new ruination_impact_t( p );
       add_child( impact_action );
     }
@@ -4652,6 +4658,15 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       p()->buffs.ruination->decrement();
+
+      // Ruination triggers Dominion of Argus
+      if ( p()->talents.dominion_of_argus_1.ok() && p()->buffs.dominion_of_argus->check() )
+        p()->buffs.dominion_of_argus->trigger();
+
+      // Ruination "refunds" one shard even though it doesn't actually consume any
+      if ( p()->talents.dominion_of_argus_3.ok() && p()->buffs.dominion_of_argus->check() )
+        p()->resource_gain( RESOURCE_SOUL_SHARD, p()->talents.dominion_of_argus_3_gain->effectN( 1 ).resource(),
+                            p()->gains.dominion_of_argus );
     }
   };
 
@@ -4684,14 +4699,8 @@ using namespace helpers;
         p()->buffs.minds_eyes->trigger( p()->buffs.demonic_oculi->check() );
 
       warlock_spell_t::execute();
-    }
 
-    void impact( action_state_t* s ) override
-    {
-      warlock_spell_t::impact( s );
-
-      if ( s->chain_target == 0 )
-        p()->buffs.demonic_oculi->expire();
+      p()->buffs.demonic_oculi->expire();
     }
   };
 
@@ -4827,12 +4836,13 @@ using namespace helpers;
     if ( p->cooldowns.echo_of_sargeras->down() )
       return;
 
+    // NOTE: 2026-03-17 RoF does not proc Embers of Sargeras out of combat (bug?)
+    if ( p->bugs && !p->in_combat && proc == p->procs.echo_of_sargeras_rof )
+      return;
+
     // If no valid target provided, find a random target with Immolate or Wither ticking
     if ( !target || target->is_sleeping() )
     {
-      // NOTE: 2026-03-17 RoF does not proc Embers of Sargeras unless you are targeting an enemy (bug)
-      if ( p->bugs && proc == p->procs.echo_of_sargeras_rof )
-        return;
 
       std::vector<player_t*> candidates;
 
@@ -4854,11 +4864,7 @@ using namespace helpers;
 
     echo_action->execute_on_target( target );
     proc->occur();
-
-    // NOTE: 2026-03-17 Vision of Nihilam buff does not proc from RoF (bug)
-    if ( !p->bugs || proc != p->procs.echo_of_sargeras_rof )
-      p->buffs.vision_of_nihilam->trigger();
-
+    p->buffs.vision_of_nihilam->trigger();
     p->cooldowns.echo_of_sargeras->start();
   }
 
@@ -5186,7 +5192,7 @@ using namespace helpers;
       // NOTE: 2026-03-17 Echo of Sargeras is not scaled as stated for any of the spenders (bug)
       proc_actions.echo_of_sargeras_cb = new echo_of_sargeras_t( this, "echo_of_sargeras_cb", bugs ? 1.0 : talents.embers_of_nihilam_3->effectN( 1 ).percent() );
       proc_actions.echo_of_sargeras_sb = new echo_of_sargeras_t( this, "echo_of_sargeras_sb", bugs ? 1.0 : talents.embers_of_nihilam_3->effectN( 2 ).percent() );
-      proc_actions.echo_of_sargeras_rof = new echo_of_sargeras_t( this, "echo_of_sargeras_rof", bugs ? 0.5 : talents.embers_of_nihilam_3->effectN( 3 ).percent() );
+      proc_actions.echo_of_sargeras_rof = new echo_of_sargeras_t( this, "echo_of_sargeras_rof", bugs ? 1.0 : talents.embers_of_nihilam_3->effectN( 3 ).percent() );
     }
 
     if ( talents.embers_of_nihilam_1.ok() || talents.embers_of_nihilam_3.ok() )

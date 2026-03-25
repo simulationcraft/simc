@@ -415,6 +415,15 @@ struct divine_storm_second_sunrise_tempest_t : public holy_power_consumer_t<pala
     triggers_crusade_stacks  = false;
     triggers_righteous_cause = false;
   }
+  void impact(action_state_t* s) override
+  {
+    holy_power_consumer_t::impact( s );
+    if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, MID1, B4 ) && p()->talents.expurgation->ok() )
+    {
+      double mult = p()->sets->set( PALADIN_RETRIBUTION, MID1, B4 )->effectN( 2 ).percent() * base_multiplier;
+      p()->trigger_expurgation( execute_state->target, mult );
+    }
+  }
 };
 
 struct divine_storm_tempest_t : public holy_power_consumer_t<paladin_melee_attack_t>
@@ -432,6 +441,15 @@ struct divine_storm_tempest_t : public holy_power_consumer_t<paladin_melee_attac
     triggers_divine_purpose  = true;
     triggers_crusade_stacks  = false;
     triggers_righteous_cause = false;
+  }
+  void impact( action_state_t* s ) override
+  {
+    holy_power_consumer_t::impact( s );
+    if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, MID1, B4 ) && p()->talents.expurgation->ok() )
+    {
+      double mult = p()->sets->set( PALADIN_RETRIBUTION, MID1, B4 )->effectN( 2 ).percent() * base_multiplier;
+      p()->trigger_expurgation( execute_state->target, mult );
+    }
   }
 };
 
@@ -467,6 +485,15 @@ struct divine_storm_second_sunrise_t : public holy_power_consumer_t<paladin_mele
 
     if ( p()->talents.tempest_of_the_lightbringer->ok() )
       tempest->schedule_execute();
+  }
+  void impact( action_state_t* s ) override
+  {
+    holy_power_consumer_t::impact( s );
+    if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, MID1, B4 ) && p()->talents.expurgation->ok() )
+    {
+      double mult = p()->sets->set( PALADIN_RETRIBUTION, MID1, B4 )->effectN( 2 ).percent() * base_multiplier;
+      p()->trigger_expurgation( execute_state->target, mult );
+    }
   }
 };
 
@@ -542,8 +569,6 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     if ( p()->talents.tempest_of_the_lightbringer->ok() )
       tempest->schedule_execute();
 
-    bool has_echo = false;
-
     if ( sunrise_echo && p()->cooldowns.second_sunrise_icd->up() )
     {
       if ( rng().roll( p()->talents.herald_of_the_sun.second_sunrise->effectN( 1 ).percent() ) )
@@ -551,20 +576,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
         p()->cooldowns.second_sunrise_icd->start();
         // TODO(mserrano): validate the correct delay here
         sunrise_echo->start_action_execute_event( 200_ms );
-        has_echo = true;
       }
-    }
-    // ToDo Fluttershy: If this ever gets sensible results, move to impact
-    if ( !background && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, MID1, B4 ) && p()->talents.expurgation->ok() )
-    {
-      // ToDo Fluttershy: Rewrite to spell data later
-      double mult  = .5;
-      if ( has_echo )
-        mult *= 2;
-      if ( p()->talents.tempest_of_the_lightbringer->ok() )
-        mult *= 1.2;
-
-      p()->trigger_expurgation( execute_state->target, mult );
     }
   }
 
@@ -583,6 +595,11 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
         p()->active.sun_sear->target = s->target;
         p()->active.sun_sear->execute();
       }
+    }
+    if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, MID1, B4 ) && p()->talents.expurgation->ok() )
+    {
+      double mult = p()->sets->set(PALADIN_RETRIBUTION, MID1, B4)->effectN(2).percent() * base_multiplier;
+      p()->trigger_expurgation( execute_state->target, mult );
     }
   }
 };
@@ -652,18 +669,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       p()->resource_gain( RESOURCE_HOLY_POWER, c, p()->gains.hp_templars_verdict_refund );
     }
 
-    
-    if ( !background && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, MID1, B4 ) && p()->talents.expurgation->ok() )
-    {
-      // ToDo Fluttershy: Rewrite to spell data later
-      double mult = 1.0;
-      if ( p()->buffs.empyrean_legacy->up() )
-      {
-        mult = p()->talents.tempest_of_the_lightbringer->ok() ? 1.6875 : 1.625;
-      }
-      p()->trigger_expurgation( execute_state->target, mult );
-    }
-
     if ( p()->buffs.empyrean_legacy->up() )
     {
       p()->active.empyrean_legacy->schedule_execute();
@@ -681,6 +686,15 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
         if ( p()->cooldowns.hammer_of_wrath != nullptr )
           p()->cooldowns.hammer_of_wrath->reset( true );
       }
+    }
+  }
+  void impact(action_state_t* s) override
+  {
+    holy_power_consumer_t::impact(s);
+    if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, MID1, B4 ) && p()->talents.expurgation->ok() )
+    {
+      double mult = p()->sets->set( PALADIN_RETRIBUTION, MID1, B4 )->effectN( 1 ).percent() * base_multiplier;
+      p()->trigger_expurgation( execute_state->target, mult );
     }
   }
 };

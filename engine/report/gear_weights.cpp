@@ -226,15 +226,15 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::pawn(
       if ( value == 0 )
         continue;
 
-      const char* name = pawn_stat_name( i );
-      if ( name )
+      const char* stat_name = pawn_stat_name( i );
+      if ( stat_name )
       {
         if ( !first )
         {
           s += ",";
         }
         first = false;
-        s += fmt::format(" {}={:.{}f}", name, value, p.sim->report_precision );
+        s += fmt::format(" {}={:.{}f}", stat_name, value, p.sim->report_precision );
       }
     }
     s += " )";

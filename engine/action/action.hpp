@@ -121,6 +121,12 @@ public:
   /// if true, does not trigger callbacks on caster/target.
   bool suppress_caster_procs, suppress_target_procs;
 
+  /// engerize_power effects can trigger generic helpful procs. if true, disable this behavior for the action.
+  bool suppress_callback_from_energize;
+
+  /// trigger_dot can trigger generic helpful/harmful procs. if true, disable this behavior for the action.
+  bool suppress_callback_from_trigger_dot;
+
   /// can trigger callbacks on caster even if suppress_caster_proc is true, as long as the callback has can_proc_from_suppressed = true.
   /// TODO: determine if equivalent for suppressed target procs is needed.
   bool enable_proc_from_suppressed;
@@ -594,7 +600,6 @@ public:
   std::unique_ptr<cooldown_t> line_cooldown;
   const action_priority_t* signature;
 
-
   /// State of the last execute()
   action_state_t* execute_state;
 
@@ -604,6 +609,9 @@ public:
   unsigned snapshot_flags;
 
   unsigned update_flags;
+
+  /// placeholder dummy to use for energize effects that trigger generic helpful procs
+  std::unique_ptr<action_state_t> energize_state;
 
   /**
    * Target Cache System

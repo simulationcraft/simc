@@ -95,12 +95,12 @@ std::string parse_cb_str( parse_callback_e type )
 }
 }  // namespace opt_strings
 
-player_effect_t& player_effect_t::add_parse_callback( parse_effects_t* base, parse_callback_e type, parse_cb_t fn )
+player_effect_t& player_effect_t::add_parse_callback( parse_effects_t* base, parse_callback_e cb_type, parse_cb_t fn )
 {
-  uint32_t mask = 1U << ( base->callback_list[ type ].size() + 8 * static_cast<unsigned>( type ) );
+  uint32_t mask = 1U << ( base->callback_list[ cb_type ].size() + 8 * static_cast<unsigned>( cb_type ) );
   idx |= mask;
-  base->callback_mask[ type ] |= mask;
-  base->callback_list[ type ].push_back( std::move( fn ) );
+  base->callback_mask[ cb_type ] |= mask;
+  base->callback_list[ cb_type ].push_back( std::move( fn ) );
   simple = false;
   return *this;
 }
