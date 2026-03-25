@@ -2956,6 +2956,84 @@ void tangle_of_vibrant_vines( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1260633 driver
+// 1260627 damage
+// 1263141 absorb
+void gloomspattered_dreadscale( special_effect_t& effect )
+{
+  struct fractional_absorb_t : public absorb_buff_t
+  {
+    double absorb_fraction;
+
+    fractional_absorb_t( player_t* player, std::string_view name, const spell_data_t* spell )
+      : absorb_buff_t( player, name, spell ), absorb_fraction( 1.0 )
+    {
+    }
+
+    double consume( double amount, action_state_t* state = nullptr ) override
+    {
+      return absorb_buff_t::consume( amount * absorb_fraction, state );
+    }
+
+    absorb_buff_t* set_absorb_fraction( double fraction )
+    {
+      absorb_fraction = fraction;
+      return this;
+    }
+  };
+
+  struct gloomspattered_dreadscale_absorb_t : public absorb_t
+  {
+    gloomspattered_dreadscale_absorb_t( player_t* player )
+      : absorb_t( "gloomspattered_dreadscale_absorb", player, player->find_spell( 1263141 ) )
+    {
+      harmful = false;
+      target  = player;
+    }
+
+    absorb_buff_t* create_buff( const action_state_t* state ) override
+    {
+      buff_t* b = buff_t::find( state->target, name_str, player );
+      if ( b )
+        return debug_cast<fractional_absorb_t*>( b );
+
+      auto buff = make_buff<fractional_absorb_t>( player, name_str, &data() );
+      buff->set_absorb_fraction( data().effectN( 2 ).percent() );
+      buff->set_absorb_source( stats );
+
+      return buff;
+    }
+
+    void execute_with_amount( double amount )
+    {
+      base_dd_min = base_dd_max = amount;
+      absorb_t::execute();
+    }
+  };
+
+  struct gloomspattered_dreadscale_t : public generic_aoe_proc_t
+  {
+    gloomspattered_dreadscale_absorb_t* absorb;
+
+    gloomspattered_dreadscale_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "gloomspattered_dreadscale_damage", e.driver(), true ),
+        absorb( new gloomspattered_dreadscale_absorb_t( e.player ) )
+    {
+      // Most spell data comes from the driver, but damage is determined by another spell
+      base_dd_min = base_dd_max = e.player->find_spell( 1260627 )->effectN( 1 ).average( e );
+    }
+
+    void execute() override
+    {
+      generic_aoe_proc_t::execute();
+
+      absorb->execute_with_amount( execute_state->result_amount * execute_state->n_targets );
+    }
+  };
+
+  effect.execute_action = create_proc_action<gloomspattered_dreadscale_t>( "gloomspattered_dreadscale", effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -3588,6 +3666,7 @@ void register_special_effects()
   register_special_effect( 1247311, DISABLED_EFFECT ); // Drum of Renewed Bonds on use
   register_special_effect( 1253120, trinkets::glorious_crusaders_keepsake ); 
   register_special_effect( 1253112, trinkets::sylvan_wakrapuku );
+  register_special_effect( 1260633, trinkets::gloomspattered_dreadscale );
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
