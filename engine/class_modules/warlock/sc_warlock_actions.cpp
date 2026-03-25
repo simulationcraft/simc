@@ -352,7 +352,7 @@ using namespace helpers;
               // It seems that having the GoSac buff prevents these bugs
               if ( p()->bugs && !p()->buffs.grimoire_of_sacrifice->check()
                     && ( ( this->id == p()->talents.chaos_bolt->id() && p()->eye_explosion_instanced_bug_cb )
-                      || ( this->id == p()->hero.ruination_cast->id() && p()->eye_explosion_instanced_bug_sb )
+                      || ( this->id == p()->hero.ruination_cast->id() && destruction() && p()->eye_explosion_instanced_bug_cb )
                       || ( this->id == p()->talents.shadowburn->id() && p()->eye_explosion_instanced_bug_sb )
                       || ( this->id == p()->talents.rain_of_fire->id() && p()->eye_explosion_instanced_bug_rof ) ) )
               {
@@ -389,23 +389,9 @@ using namespace helpers;
         if ( n > 1u )
         {
           player_t* trigger_target = tl.at( 1u + rng().range( n - 1u ) );
-          const player_t* prev_havoc_target = p()->havoc_target;
-
           if ( td( trigger_target )->debuffs.havoc->trigger() )
           {
             assert( p()->havoc_target == trigger_target );
-
-            // NOTE: 2026-03-17 Due to a bug, Mayhem will stop working if triggered on another target while another havoc debuff is already active.
-            // This can only happen with Improved Havoc talent, which makes the ICD less than its duration.
-            // It will work correctly again if the Havoc debuff expires normally or if it is applied to the same target that already has it.
-            if ( p()->talents.improved_havoc.ok() )
-            {
-              if ( prev_havoc_target == nullptr || trigger_target == prev_havoc_target )
-                p()->bugged_mayhem = false;
-              else
-                p()->bugged_mayhem = true;
-            }
-
             p()->procs.mayhem->occur();
           }
         }
@@ -546,9 +532,7 @@ using namespace helpers;
 
     int n_targets() const override
     {
-      // NOTE: 2026-03-17 Mayhem with Improved Havoc is bugged and there are certain conditions
-      // that may cause it to stop working for a while (bug)
-      if ( destruction() && use_havoc() && ( !p()->bugs || !p()->bugged_mayhem ) )
+      if ( destruction() && use_havoc() )
       {
         assert( action_base_t::n_targets() == 0 );
         return 2;
