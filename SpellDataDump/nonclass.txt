@@ -247912,11 +247912,12 @@ Description      : $@spelldesc1250580
 Tooltip          : Mastery increased by $w1.
 
 Name             : Sealed Chaos Urn (id=1259442) 
+Hotfixed         : Proc Flags 1 (2 -> 16777218), Proc Flags 2 (0 -> 1)
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
 Proc Chance      : 100%
-Proc Flags       : Killing Blow
+Proc Flags       : Killing Blow, Death, Target Dies
 Triggered By     : Sealed Chaos Urn (1253115)
 Attributes       : Aura Is Debuff (26)
 Effects          :
