@@ -4,93 +4,82 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    treefmt-nix = {
-      url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    git-hooks = {
-      url = "github:cachix/git-hooks.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
     {
       flake-utils,
-      treefmt-nix,
       nixpkgs,
-      git-hooks,
       self,
       ...
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
+        rev = self.rev or "dirty";
         pkgs = import nixpkgs { inherit system; };
-        treefmt = treefmt-nix.lib.evalModule pkgs (_: {
-          projectRootFile = "flake.nix";
-          programs = {
-            actionlint.enable = true;
-            dockerfmt.enable = true;
-            nixfmt.enable = true;
-          };
-        });
-
-        githooksEval = git-hooks.lib.${system}.run {
-          src = self;
-          hooks.treefmt = {
-            enable = true;
-            package = treefmt.config.build.wrapper;
-          };
-        };
-
         llvm = pkgs.llvmPackages_latest;
+
         packages = with pkgs; [
           clang-tools
           llvm.clang
           llvm.lldb
-          qt6.qtbase
-          qt6.qtwebengine
         ];
+
+        qtPackages =
+          with pkgs;
+          [
+            qt6.qtbase
+            qt6.qtwebengine
+          ]
+          ++ packages;
 
         nbi = with pkgs; [
-          pkg-config
           curlFull
           cmake
-          qt6.wrapQtAppsHook
+          pkg-config
         ];
 
-        qtCmakePath = pkgs.symlinkJoin {
-          name = "qt6-cmake";
-          paths = with pkgs.qt6; [
-            qtbase
-            qtwebengine
-          ];
-        };
-
-        rev = self.rev or "dirty";
+        qtNbi = with pkgs; [ qt6.wrapQtAppsHook ] ++ nbi;
       in
       {
-        formatter = treefmt.config.build.wrapper;
-        devShells.default = pkgs.mkShell {
-          nativeBuildInputs = nbi;
-          packages = packages;
-          shellHook = ''
-            ${githooksEval.shellHook}
-          '';
+        devShells = {
+          default = self.devShells.${system}.simc;
+          simc = pkgs.mkShell {
+            nativeBuildInputs = nbi;
+            packages = packages;
+          };
+
+          simcqt = pkgs.mkShell {
+            nativeBuildInputs = qtNbi;
+            packages = qtPackages;
+          };
         };
 
-        packages.simc = llvm.stdenv.mkDerivation {
-          pname = "simc";
-          version = "1201.01.${rev}";
-          src = self;
-          nativeBuildInputs = nbi;
-          buildInputs = packages;
-          sconsFlags = "";
-          enableParallelBuilding = true;
-          cmakeFlags = [ "-DCMAKE_PREFIX_PATH=${qtCmakePath}/lib/cmake" ];
+        packages = {
+          default = self.packages.${system}.simc;
+          simc = llvm.stdenv.mkDerivation {
+            pname = "simc";
+            version = "1201.01.${rev}";
+            src = self;
+            nativeBuildInputs = nbi;
+            buildInputs = packages;
+            sconsFlags = "";
+            enableParallelBuilding = true;
+            cmakeFlags = [ "-DBUILD_GUI=OFF" ];
+          };
+
+          simcqt = llvm.stdenv.mkDerivation {
+            pname = "simcqt";
+            version = "1201.01.${rev}";
+            src = self;
+            nativeBuildInputs = qtNbi;
+            buildInputs = qtPackages;
+            sconsFlags = "";
+            enableParallelBuilding = true;
+            cmakeFlags = [ "-DCMAKE_PREFIX_PATH=${pkgs.qt6.qtbase}/lib/cmake" ];
+          };
         };
-        packages.default = self.packages.${system}.simc;
       }
     );
 }
