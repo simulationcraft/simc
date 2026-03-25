@@ -16225,6 +16225,7 @@ Effects          :
 Description      : $@spelldesc1257052
 
 Name             : Unstable Affliction (id=1259790) [Spell Family (5)] 
+Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -16243,7 +16244,7 @@ Stacks           : 99 maximum
 Proc Chance      : 101%
 Affecting Spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Xavius' Gambit (416615 effects: #1, #2, #3), Xalan's Cruelty (440040 effects: #1, #3, #4), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Jackpot! (1219034 effects: #2, #3), Affliction Warlock (1256906 effects: #1, #2), Demonology Warlock (1256907 effects: #1, #2), Destruction Warlock (1256908 effects: #1, #2), Potent Soul Shards (1259815 effects: #1, #2), Shard Instability (1260269 effects: #1, #2, #3), Warlock Affliction 12.0 Class Set 2pc (1264869 effect#2), Through the Felvine (1266799 effects: #1, #2), Demonic Touch (1269221 effect#1), Darkglare Presence (1280663 effects: #1, #2), Warlock - Midnight PrePatch - 11.2 Class Set 2pc (1283640 effects: #1, #2), Warlock - Midnight PrePatch - 11.2 Class Set 4pc (1283641 effects: #1, #2)
 Family Flags     : 40, 49
-Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (456), Asynchronous Buff (490)
+Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Asynchronous Buff (490)
 Effects          :
 #1 (id=1269007)  : Dummy (3)
                    Base Value: 5170 | Scaled Value: 5170 | Target: Targeted Enemy (6)
