@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.66529 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.66591 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -12966,17 +12966,17 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1195342)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -8 | Scaled Value: -8 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Target: Self (1)
                    Affected Spells: Consume (473662), Void Ray (1213649), Void Ray (1214595), Devour (1217610), Collapsing Star (1221162), Reap (1225823), Eradicate (1225827), Hungering Slash (1239127), Voidblade (1245414), Cull (1245455), Voidsurge (1246160), The Hunt (1246168), The Hunt (1246169), Voidfall Meteor (1256305), World Killer (1256619), Meteor Shower (1264129), Eradicate (1279200)
                    Family Flags: 95
 #2 (id=1195343)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -8 | Scaled Value: -8 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Consume (473662), Void Ray (1213649), Void Ray (1214595), Devour (1217610), Collapsing Star (1221162), Reap (1225823), Eradicate (1225827), Hungering Slash (1239127), Voidblade (1245414), Cull (1245455), Voidsurge (1246160), The Hunt (1246168), The Hunt (1246169), Voidfall Meteor (1256305), World Killer (1256619), Meteor Shower (1264129), Eradicate (1279200)
                    Family Flags: 95
 #3 (id=1195344)  : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: -8 | Scaled Value: -8 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Target: Self (1)
 #4 (id=1195345)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: -8 | Scaled Value: -8 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Target: Self (1)
 #5 (id=1195346)  : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Spectral Sight (188501), Metamorphosis (191427), Darkness (196718), Annihilation (201427), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Death Sweep (210152), Felblade (213241), Imprison (217832), Soul Cleave (228477), Spirit Bomb (247454), Essence Break (258860), Immolation Aura (258920), Fracture (263642), Elysian Decree (306830), Sinful Brand (317009), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Throw Glaive (337819), Glaive Tempest (342817), Demon's Bite (344859), Chaos Strike (344862), Chaos Nova (344867), Throw Glaive (346665), The Hunt (370965), Sigil of Spite (390163), Fodder to the Flame (391430), Throw Glaive (393035), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427917), Reaver's Glaive (442294), Soul Sunder (452436), Spirit Burst (452437), Consuming Fire (452487), Sigil of Doom (452490), Consuming Fire (456640), Sigil of Doom (469991), Consume (473662), Void Metamorphosis (1217605), Devour (1217610), Eradicate (1225826), Reap (1226019), Void Nova (1234195), Voidblade (1241285), Cull (1245453), The Hunt (1246167), Spectral Sight (1251417), Predator's Wake (1259431), Reaver's Glaive (1283344)
@@ -13424,7 +13424,7 @@ Effects          :
 #1 (id=1207505)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Targeted Enemy (6)
 #2 (id=1290193)  : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 75 | Scaled Value: 75
 Description      : Channel an immense amount of void energy into a single, cataclysmic blast, $?a1242486[critically striking for ${$1221162s1*2}][dealing $1221162s1] Cosmic damage to your target and $?a1242486[${2*($1221162s1*($s2/100))}][${$1221162s1*($s2/100)}] Cosmic damage to all nearby enemies. Damage reduced beyond $s1 targets.
 
 While casting Collapsing Star, your Fury drain is significantly reduced.$?a1240204[
@@ -14354,7 +14354,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1238387)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.3 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.3 | Target: Self (1)
 #2 (id=1239241)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Void Ray deals $s1% more damage when damaging a single target.
