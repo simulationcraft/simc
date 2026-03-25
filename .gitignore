@@ -131,7 +131,6 @@ dbc_extract3/cache/ptr/DBCache.bin
 .direnv
 .envrc
 result
-.pre-commit-config.yaml
 
 apikey.txt
 
