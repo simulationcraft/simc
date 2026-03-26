@@ -252107,6 +252107,7 @@ Name             : Alnscorned Manifestation (id=1266701) [Hidden]
 School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
+Cooldown         : 0.75 seconds
 Labels           : 292
                  : 3959: Item Effects
 Stacks           : 20 maximum
