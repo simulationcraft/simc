@@ -2066,7 +2066,7 @@ public:
 
   void trigger_secondary_flame_shock( player_t* target, spell_variant variant = spell_variant::NORMAL ) const;
   void trigger_secondary_flame_shock( const action_state_t* state, spell_variant variant = spell_variant::NORMAL ) const;
-  void regenerate_flame_shock_dependent_target_list( const action_t* action, const bool ignore_target = false ) const;
+  void regenerate_flame_shock_dependent_target_list( const action_t* action ) const;
 
   void generate_maelstrom_weapon( const action_t* action, int stacks = 1 );
   void generate_maelstrom_weapon( const action_state_t* state, int stacks = 1 );
@@ -3105,7 +3105,7 @@ public:
       this->p()->proc.aftershock->occur();
     }
 
-    if ( ( this->execute_state && this->execute_state->action->id == 188389 ) ||
+    if ( ( this->execute_state->action->id == 188389 ) ||
       ( this->is_variant( spell_variant::NORMAL ) && !this->background) )
     {
       this->p()->trigger_ancestor( ancestor_trigger, this->execute_state );
@@ -6904,7 +6904,7 @@ struct lava_burst_t : public shaman_spell_t
 
       if ( is_variant( spell_variant::PURGING_FLAMES ) )
       {
-        aoe     = 5;
+        aoe = 5;
         if ( auto vb = p()->find_action( "voltaic_blaze" ) )
         {
           vb->add_child( this );
@@ -6932,7 +6932,7 @@ struct lava_burst_t : public shaman_spell_t
   size_t available_targets( std::vector<player_t*>& tl ) const override
   {
     shaman_spell_t::available_targets( tl );
-    p()->regenerate_flame_shock_dependent_target_list( this, is_variant( spell_variant::PURGING_FLAMES ));
+    p()->regenerate_flame_shock_dependent_target_list( this );
 
     return tl.size();
   }
@@ -7050,7 +7050,14 @@ struct lava_burst_t : public shaman_spell_t
     if (p()->buff.purging_flames->check() && !background)
     {
       assert( p()->action.lava_burst_pf );
-      p()->action.lava_burst_pf->execute();
+      for ( auto t : target_list() )
+      {
+        if (t == target)
+        {
+          continue;
+        }
+        p()->action.lava_burst_pf->execute_on_target( t );
+      }
       p()->buff.purging_flames->decrement();
     }
 
@@ -11423,7 +11430,7 @@ void shaman_t::trigger_secondary_flame_shock( const action_state_t* state, spell
   trigger_secondary_flame_shock( state->target, variant );
 }
 
-void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* action, const bool ignore_target ) const
+void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* action ) const
 {
   auto& tl = action->target_cache.list;
 
@@ -11432,11 +11439,6 @@ void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* act
   } );
 
   tl.erase( it, tl.end() );
-
-  if ( ignore_target )
-  {
-    tl.erase( std::remove( tl.begin(), tl.end(), action->target ), tl.end() );
-  }
 
   if ( sim->debug )
   {
