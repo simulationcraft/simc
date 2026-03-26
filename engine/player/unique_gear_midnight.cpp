@@ -2983,52 +2983,38 @@ void gloomspattered_dreadscale( special_effect_t& effect )
     }
   };
 
-  struct gloomspattered_dreadscale_absorb_t : public absorb_t
-  {
-    gloomspattered_dreadscale_absorb_t( player_t* player )
-      : absorb_t( "gloomspattered_dreadscale_absorb", player, player->find_spell( 1263141 ) )
-    {
-      harmful = false;
-      target  = player;
-    }
-
-    absorb_buff_t* create_buff( const action_state_t* state ) override
-    {
-      buff_t* b = buff_t::find( state->target, name_str, player );
-      if ( b )
-        return debug_cast<fractional_absorb_t*>( b );
-
-      auto buff = make_buff<fractional_absorb_t>( player, name_str, &data() );
-      buff->set_absorb_fraction( data().effectN( 2 ).percent() );
-      buff->set_absorb_source( stats );
-
-      return buff;
-    }
-
-    void execute_with_amount( double amount )
-    {
-      base_dd_min = base_dd_max = amount;
-      absorb_t::execute();
-    }
-  };
-
   struct gloomspattered_dreadscale_t : public generic_aoe_proc_t
   {
-    gloomspattered_dreadscale_absorb_t* absorb;
+    buff_t* absorb;
+    double shield_amount;
 
-    gloomspattered_dreadscale_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "gloomspattered_dreadscale_damage", e.driver(), true ),
-        absorb( new gloomspattered_dreadscale_absorb_t( e.player ) )
+    gloomspattered_dreadscale_t( const special_effect_t& effect )
+      : generic_aoe_proc_t( effect, "gloomspattered_dreadscale_damage", effect.driver(), true ), shield_amount( 0 )
     {
-      // Most spell data comes from the driver, but damage is determined by another spell
-      base_dd_min = base_dd_max = e.player->find_spell( 1260627 )->effectN( 1 ).average( e );
+      auto equip = find_special_effect( effect.player, 1260627 );
+      assert( equip && "Gloom-Spattered Dreadscale missing equip effect" );
+
+      base_dd_min = base_dd_max = equip->driver()->effectN( 1 ).average( effect );
+
+      auto absorb_spell = effect.player->find_spell( 1263141 );
+      absorb = create_buff<fractional_absorb_t>( effect.player, "gloomspattered_dreadscale_absorb", absorb_spell )
+                   ->set_absorb_fraction( absorb_spell->effectN( 2 ).percent() )
+                   ->set_absorb_source( effect.player->get_stats( "gloomspattered_dreadscale_absorb" ) );
     }
 
     void execute() override
     {
       generic_aoe_proc_t::execute();
 
-      absorb->execute_with_amount( execute_state->result_amount * execute_state->n_targets );
+      absorb->trigger( -1, shield_amount );
+      shield_amount = 0;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      generic_aoe_proc_t::impact( state );
+
+      shield_amount += state->result_amount;
     }
   };
 
@@ -3667,6 +3653,7 @@ void register_special_effects()
   register_special_effect( 1253120, trinkets::glorious_crusaders_keepsake ); 
   register_special_effect( 1253112, trinkets::sylvan_wakrapuku );
   register_special_effect( 1260633, trinkets::gloomspattered_dreadscale );
+  register_special_effect( 1260627, DISABLED_EFFECT );  // Gloom-Spattered Dreadscale Passive Driver
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
