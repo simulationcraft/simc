@@ -14629,7 +14629,8 @@ Family Flags     : 27, 52, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Always Line of Sight (185), No Cooldown On Tooltip (192), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1084762)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.98 | Radius: 6 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.465 | Radius: 6 yards | Target: Enemies in Cone to Targeted Enemy (104)
+Hotfixed         : AP Coefficient (1.98 -> 2.465)
 #2 (id=1084763)  : Trigger Spell (64): Lightforged Blessing
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403460
 #3 (id=1084764)  : Trigger Spell (64): Lightforged Blessing
