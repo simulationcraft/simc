@@ -16,7 +16,6 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        rev = self.rev or "dirty";
         pkgs = import nixpkgs { inherit system; };
         llvm = pkgs.llvmPackages_latest;
 
@@ -41,6 +40,13 @@
         ];
 
         qtNbi = with pkgs; [ qt6.wrapQtAppsHook ] ++ nbi;
+
+        rev = self.rev or "dirty";
+        version = pkgs.runCommand "version" { } ''
+          SC_MAJOR_VERSION=$(cat ${self}/engine/config.hpp | grep "#define SC_MAJOR_VERSION" | awk '{ print $3 }' | tr -d '"')
+          SC_MINOR_VERSION=$(cat ${self}/engine/config.hpp | grep "#define SC_MINOR_VERSION" | awk '{ print $3 }' | tr -d '"')
+          echo "$SC_MAJOR_VERSION"-"$SC_MINOR_VERSION" >> $out
+        '';
       in
       {
         devShells = {
@@ -60,7 +66,7 @@
           default = self.packages.${system}.simc;
           simc = llvm.stdenv.mkDerivation {
             pname = "simc";
-            version = "1201.01.${rev}";
+            version = "${builtins.readFile version}${rev}";
             src = self;
             nativeBuildInputs = nbi;
             buildInputs = packages;
@@ -71,7 +77,7 @@
 
           simcqt = llvm.stdenv.mkDerivation {
             pname = "simcqt";
-            version = "1201.01.${rev}";
+            version = "${builtins.readFile version}${rev}";
             src = self;
             nativeBuildInputs = qtNbi;
             buildInputs = qtPackages;
