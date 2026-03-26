@@ -13028,6 +13028,17 @@ public:
         .operation( hotfix::HOTFIX_SET )
         .modifier( 16.0 )
         .verification_value( 50.0 );
+    hotfix::register_effect( "Demon Hunter", "2025-03-26", "Focused Ray works on up to 3 targets", 1239241 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 3.0 )
+        .verification_value( 1.0 );
+    hotfix::register_effect( "Demon Hunter", "2025-03-26",
+                             "Collapsing star still only does 50% additional damage to primary target", 1290193 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 50.0 )
+        .verification_value( 75.0 );
   }
 
   void combat_begin( sim_t* ) const override
