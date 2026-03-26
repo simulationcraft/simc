@@ -2663,6 +2663,11 @@ public:
       return;
     }
 
+    if (!state)
+    {
+      return;
+    }
+
     double g = maelstrom_gain;
     g *= composite_maelstrom_gain_coefficient( state );
 
@@ -3100,7 +3105,7 @@ public:
       this->p()->proc.aftershock->occur();
     }
 
-    if ( ( this->execute_state->action->id == 188389 ) ||
+    if ( ( this->execute_state && this->execute_state->action->id == 188389 ) ||
       ( this->is_variant( spell_variant::NORMAL ) && !this->background) )
     {
       this->p()->trigger_ancestor( ancestor_trigger, this->execute_state );
@@ -6927,8 +6932,7 @@ struct lava_burst_t : public shaman_spell_t
   size_t available_targets( std::vector<player_t*>& tl ) const override
   {
     shaman_spell_t::available_targets( tl );
-
-    p()->regenerate_flame_shock_dependent_target_list( this );
+    p()->regenerate_flame_shock_dependent_target_list( this, is_variant( spell_variant::PURGING_FLAMES ));
 
     return tl.size();
   }
@@ -7045,12 +7049,9 @@ struct lava_burst_t : public shaman_spell_t
 
     if (p()->buff.purging_flames->check() && !background)
     {
-      p()->regenerate_flame_shock_dependent_target_list( this, true );
       assert( p()->action.lava_burst_pf );
       p()->action.lava_burst_pf->execute();
       p()->buff.purging_flames->decrement();
-
-      this->target_cache.is_valid = false;
     }
 
     // [BUG] 2024-08-23 Supercharge works on Lava Burst in-game
