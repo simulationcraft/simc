@@ -2966,8 +2966,9 @@ void gloomspattered_dreadscale( special_effect_t& effect )
   {
     double absorb_fraction;
 
-    fractional_absorb_t( player_t* player, std::string_view name, const spell_data_t* spell )
-      : absorb_buff_t( player, name, spell ), absorb_fraction( 1.0 )
+    fractional_absorb_t( player_t* player, std::string_view name, const spell_data_t* spell,
+                         const item_t* item = nullptr )
+      : absorb_buff_t( player, name, spell, item ), absorb_fraction( 1.0 )
     {
     }
 
@@ -2989,7 +2990,7 @@ void gloomspattered_dreadscale( special_effect_t& effect )
     double shield_amount;
 
     gloomspattered_dreadscale_t( const special_effect_t& effect )
-      : generic_aoe_proc_t( effect, "gloomspattered_dreadscale_damage", effect.driver(), true ), shield_amount( 0 )
+      : generic_aoe_proc_t( effect, "gloomspattered_dreadscale", effect.driver(), true ), shield_amount( 0 )
     {
       auto equip = find_special_effect( effect.player, 1260627 );
       assert( equip && "Gloom-Spattered Dreadscale missing equip effect" );
@@ -2997,9 +2998,9 @@ void gloomspattered_dreadscale( special_effect_t& effect )
       base_dd_min = base_dd_max = equip->driver()->effectN( 1 ).average( effect );
 
       auto absorb_spell = effect.player->find_spell( 1263141 );
-      absorb = create_buff<fractional_absorb_t>( effect.player, "gloomspattered_dreadscale_absorb", absorb_spell )
+      absorb = create_buff<fractional_absorb_t>( effect.player, name(), absorb_spell )
                    ->set_absorb_fraction( absorb_spell->effectN( 2 ).percent() )
-                   ->set_absorb_source( effect.player->get_stats( "gloomspattered_dreadscale_absorb" ) );
+                   ->set_absorb_source( effect.player->get_stats( "gloomspattered_dreadscale_absorb", this ) );
     }
 
     void execute() override
