@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66562 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66666 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -138714,7 +138714,6 @@ Description      : Summon a cluster of Glimmerflies to lift your spirit, grantin
 Tooltip          : Floating.
 
 Name             : Sinstone Bond (id=343960) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 900 seconds
@@ -138731,7 +138730,6 @@ Description      : Activate to gain insight from the sinstone.
 Tooltip          : The sinstone is giving you questionable advice and insight.
 
 Name             : Val'kyr Bond (id=343963) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 900 seconds
@@ -159674,7 +159672,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1025880)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 132.7356 (coefficient=1.012627) | Target: Self (1)
-Hotfixed         : Coefficient (2.021122 -> 1.012627)
 Description      : Your helpful spells and abilities have a chance to pep up you and your Coached ally, granting you both $s2 Mastery for $383803d. 
 
 
@@ -159703,7 +159700,6 @@ Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scal
 Effects          :
 #1 (id=1015955)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 132.7356 (coefficient=1.012627) | Rating: Mastery | Target: Self (1)
-Hotfixed         : Coefficient (1.560842 -> 1.012627)
 Tooltip          : Mastery increased by $s1.
 
 Name             : Ruby Whelp Shell (id=383812) [Passive, Hidden] 
@@ -162724,7 +162720,6 @@ Aura Interrupt   : Leave World (19), Enter World (22), Enter Instance (43), Leav
 Effects          :
 #1 (id=1020761)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 132.7356 (coefficient=1.012627) | Target: Targeted Raid Member (57)
-Hotfixed         : Coefficient (0.780421 -> 1.012627)
 Description      : Select a target friendly player to coach.
 Tooltip          : You are being coached. Your attacks and abilities have a chance to increase your Mastery as well as your coach's by $w1 for $383799d1.
 
@@ -165513,7 +165508,6 @@ Aura Interrupt   : Leave World (19), Enter World (22), Enter Instance (43), Leav
 Effects          :
 #1 (id=1025908)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 132.7356 (coefficient=1.012627) | Target: Self (1)
-Hotfixed         : Coefficient (0.780421 -> 1.012627)
 #2 (id=1041663)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 383798
 Description      : $@spelldesc386578
@@ -241844,7 +241838,6 @@ These explosions are split among all targets hit, and their effectiveness increa
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Rot (id=1244332) 
-Hotfixed         : Attributes
 School           : Holy
 Spell Type       : Magic
 Range            : 30 yards
@@ -242174,7 +242167,6 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1245931)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Rot | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 113.2316 (coefficient=0.863833) | Trigger Spell: 1244332 | Target: Self (1)
-Hotfixed         : Coefficient (0.523677 -> 0.863833), Scaling Class (-9 -> -7)
 Description      : Afflict your target with Rotting Roots dealing $s1 Nature Damage every $1247411t seconds for $1247411d. This effect stacks up to $1247411u times. New stacks do not refresh applied stacks.
 
 Name             : [DNT] Equip Artifact (id=1245110) [Hidden] 
@@ -242763,7 +242755,6 @@ Effects          :
 Description      : Echo the sound of your drum through a sacred loa temple, aligning its beat with the will of the loa.
 
 Name             : Root Rot (id=1247411) 
-Hotfixed         : Velocity (1 -> 0.3), Learn Level (1 -> 0), Attributes, Required Level (1 -> 0)
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
@@ -242776,7 +242767,6 @@ Attributes       : Aura Is Debuff (26), No Reflection (39), No Threat (42), DoT 
 Effects          :
 #1 (id=1249550)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1245051 | Target: Targeted Enemy (6)
-Hotfixed         : Mechanic (11 -> 0), Attribute (64 -> 512)
 Description      : Dealing $s1 Nature damage every $t seconds.
 Tooltip          : Dealing $w1 Nature damage every $t seconds.
 
@@ -246832,7 +246822,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 
 Name             : Emberwing Burn (id=1255853) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
@@ -246843,7 +246832,6 @@ Effects          :
 Tooltip          : Critical Strike decreased by $w1.
 
 Name             : Emberwing Burn (id=1255856) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
@@ -246854,7 +246842,6 @@ Effects          :
 Tooltip          : Mastery decreased by $w1.
 
 Name             : Emberwing Burn (id=1255857) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
@@ -247613,7 +247600,6 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60
 
 Name             : Primal Spore Binding (id=1259124) [Passive, Hidden] 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Labels           : 4124
@@ -247912,7 +247898,6 @@ Description      : $@spelldesc1250580
 Tooltip          : Mastery increased by $w1.
 
 Name             : Sealed Chaos Urn (id=1259442) 
-Hotfixed         : Proc Flags 1 (2 -> 16777218), Proc Flags 2 (0 -> 1)
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
@@ -250590,7 +250575,6 @@ Effects          :
 Description      : $@spelldesc1250604
 
 Name             : Gloom-Spattered Dreadscale (id=1263141) 
-Hotfixed         : Aura Interrupt
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -250764,7 +250748,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Litany of Lightblind Wrath (id=1263721) [Hidden] 
-Hotfixed         : Proc Flags 1 (69888 -> 69904)
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
@@ -252215,7 +252198,6 @@ Effects          :
 Description      : $@spelldesc1259518
 
 Name             : Relaxed (id=1269152) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
@@ -252714,7 +252696,6 @@ Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting
 Effects          :
 #1 (id=1285139)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 86.41363 (coefficient=0.659241) | Target: Self (1)
-Hotfixed         : Trigger Spell (1277482 -> 0)
 #2 (id=1285205)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=1285226)  : Dummy (3)

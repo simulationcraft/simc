@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66562 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66666 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -3114,18 +3114,14 @@ Effects          :
                    Base Value: -4 | Scaled Value: -4 | Target: Self (1)
                    Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Immolation (20153), Infernal Awakening (22703), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Umbral Blaze (273526), Pandemic Invocation (289367), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Channel Demonfire (409890), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Felseeker (434404), Infernal Bolt (434506), Chaos Bolt (434589), Ruination (434636), Diabolic Bolt (438823), Felseeker (438973), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Demonic Soul (449801), Wicked Reaping (449826), Soul Anathema (450538), Shared Fate (450593), Shadowbolt Volley (453176), Doom (460553), Doom (460555), Channel Demonfire (1217787), Unstable Affliction (1219045), Soul Swipe (1239714), Demonic Soul (1239715), Lake of Fire (1244890), Lake of Fire (1244918), Dark Harvest (1257065), Unstable Affliction (1259790), Malefic Grasp (1261153), Corruption (1261158), Unstable Affliction (1261176), Infernal Grudge (1264017), Echo of Sargeras (1265884), Soul Swipe (1269049), Manifested Avarice (1269050), Demonic Touch (1269221), Eye Explosion (1269800), Diabolic Gaze (1269886), Echo of Sargeras (1277879)
                    Family Flags: 49
-Hotfixed         : Base Value (0 -> -4)
 #2 (id=191027)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -4 | Scaled Value: -4 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Immolation (20153), Infernal Awakening (22703), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Umbral Blaze (273526), Pandemic Invocation (289367), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Channel Demonfire (409890), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Felseeker (434404), Infernal Bolt (434506), Chaos Bolt (434589), Ruination (434636), Diabolic Bolt (438823), Felseeker (438973), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Demonic Soul (449801), Wicked Reaping (449826), Soul Anathema (450538), Shared Fate (450593), Shadowbolt Volley (453176), Doom (460553), Doom (460555), Channel Demonfire (1217787), Unstable Affliction (1219045), Soul Swipe (1239714), Demonic Soul (1239715), Lake of Fire (1244890), Lake of Fire (1244918), Dark Harvest (1257065), Unstable Affliction (1259790), Malefic Grasp (1261153), Corruption (1261158), Unstable Affliction (1261176), Infernal Grudge (1264017), Echo of Sargeras (1265884), Soul Swipe (1269049), Manifested Avarice (1269050), Demonic Touch (1269221), Eye Explosion (1269800), Diabolic Gaze (1269886), Echo of Sargeras (1277879)
                    Family Flags: 49
-Hotfixed         : Base Value (0 -> -4)
 #3 (id=191028)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -4 | Scaled Value: -4 | Target: Self (1)
-Hotfixed         : Base Value (0 -> -4)
 #4 (id=191029)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: -4 | Scaled Value: -4 | Target: Self (1)
-Hotfixed         : Base Value (0 -> -4)
 #5 (id=191030)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506), Malefic Grasp (1261153)
@@ -4154,7 +4150,6 @@ Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Loo
 Effects          :
 #1 (id=291909)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2.5 | SP Coefficient: 1.11375 | PvP Coefficient: 1.7 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (0.85 -> 1.7)
 #2 (id=355424)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5
 #3 (id=734824)   : Dummy (3)
@@ -16110,7 +16105,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506), Malefic Grasp (1261153)
                    Family Flags: 0
-Hotfixed         : Base Value (-50 -> 0)
 #4 (id=1264887)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: -13 | Scaled Value: -13 | Misc Value 2: 3444 (Label) | Target: Self (1)
 #5 (id=1264888)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Periodic Amount (1)
@@ -16131,17 +16125,14 @@ Hotfixed         : Base Value (-50 -> 0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831), Wither (445468), Wither (445474), Corruption (1261158), Wither (1279686)
                    Family Flags: 1
-Hotfixed         : NEW EFFECT
 #13 (id=1314352) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831), Wither (445468), Wither (445474), Corruption (1261158), Wither (1279686)
                    Family Flags: 1
-Hotfixed         : NEW EFFECT
 #14 (id=1314353) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Agony (980), Agony (1261166)
                    Family Flags: 10
-Hotfixed         : NEW EFFECT
 
 Name             : Demonology Warlock (id=1256907) [Spell Family (5), Passive, Hidden] 
 Class            : Demonology Warlock
@@ -16226,7 +16217,6 @@ Effects          :
 Description      : $@spelldesc1257052
 
 Name             : Unstable Affliction (id=1259790) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Affliction [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -17979,7 +17969,6 @@ Effects          :
 Description      : Increases damage dealt by Hand of Gul'dan to its main target by $s1%.
 
 Name             : Grimoire: Imp Lord (id=1276452) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Warlock
 School           : Shadow
@@ -18007,7 +17996,6 @@ Description      : Summons an Imp Lord to assist you in combat for $d and will r
 Transforms into Singe Magic while on cooldown.
 
 Name             : Grimoire: Fel Ravager (id=1276467) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=9, col=5, max_rank=1, req_points=20, select_idx=200]
 Class            : Warlock
 School           : Shadow
@@ -18034,7 +18022,6 @@ Description      : Summons a Fel Ravager to assist you in combat for $d and will
 Turns into Spell Lock while on cooldown. 
 
 Name             : Spell Lock (id=1276610) [Spell Family (5)] 
-Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18051,7 +18038,6 @@ Description      : $@spelldesc1276467
 Tooltip          : Grimoire: Fel Ravager is transformed into Spell Lock while on cooldown.
 
 Name             : Singe Magic (id=1276623) [Spell Family (5)] 
-Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -18090,7 +18076,6 @@ Effects          :
 Description      : Increases the duration of your Summon Vilefiend, Grimoire: Imp Lord, and Grimoire: Fel Ravager by ${$s1/1000} sec.
 
 Name             : Summon Doomguard (id=1276672) [Spell Family (5)] 
-Hotfixed         : Attributes
 Talent Entry     : Demonology [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Warlock
 School           : Shadow

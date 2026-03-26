@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66562 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66666 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -33,7 +33,6 @@ Description      : Party and raid members within $a1 yds are bolstered by their 
 Tooltip          : Damage taken reduced by $w1%.
 
 Name             : Divine Protection (id=498) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Holy Paladin
 School           : Holy
 Spell Type       : None
@@ -93,7 +92,6 @@ Grants the target $387792s1% increased armor for $387792d.][]
 Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.
 
 Name             : Divine Shield (id=642) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -14629,7 +14627,8 @@ Family Flags     : 27, 52, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Always Line of Sight (185), No Cooldown On Tooltip (192), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1084762)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.98 | Radius: 6 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.465 | Radius: 6 yards | Target: Enemies in Cone to Targeted Enemy (104)
+Hotfixed         : AP Coefficient (1.98 -> 2.465)
 #2 (id=1084763)  : Trigger Spell (64): Lightforged Blessing
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403460
 #3 (id=1084764)  : Trigger Spell (64): Lightforged Blessing
@@ -15391,7 +15390,6 @@ Tooltip          : Dealing $w1 Radiant damage and radiating $431581s1% of this d
 Movement speed reduced by $w3%.][]
 
 Name             : Dawnlight (id=431381) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -16848,7 +16846,6 @@ Attributes       : Always AOE Line of Sight (186), Area Effects Use Target Radiu
 Effects          :
 #1 (id=1123227)  : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.134 | PvP Coefficient: 0.741 | Radius: 0 - 30 yards | Target: at Target (63) -> At Ally in Area (31)
-Hotfixed         : SP Coefficient (0.84 -> 1.134), PvP Coefficient (1 -> 0.741)
 Description      : $@spelldesc433718
 
 Name             : Light's Deliverance (id=433732) [Spell Family (10)] 

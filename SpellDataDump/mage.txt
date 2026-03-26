@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66562 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66666 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -192,7 +192,6 @@ Description      : Causes an explosion of magic around the caster, dealing $s2 A
 |cFFFFFFFFGenerates $s1 Arcane Charge if any targets are hit.|r][]
 
 Name             : Arcane Intellect (id=1459) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -9175,7 +9174,6 @@ Effects          :
 Description      : Frostbolt and Flurry have a $s2% chance to generate $s1 Icicles.
 
 Name             : Flash Freeze (id=379993) [Spell Family (3), Passive] 
-Hotfixed         : Proc Flags 1 (0 -> 65536), Proc Flags 2 (4 -> 0)
 Talent Entry     : Frost [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Mage
 School           : Frost
@@ -10912,7 +10910,6 @@ Effects          :
 Description      : Ice Block now reduces all damage taken by $414658s8% for $414658d but no longer grants Immunity, prevents movement, attacks, or casting spells. Does not incur the Global Cooldown.
 
 Name             : Mass Invisibility (id=414664) [Spell Family (3)] 
-Hotfixed         : Attributes, Aura Interrupt
 Talent Entry     : Generic [tree=class, row=9, col=6, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
@@ -10932,16 +10929,12 @@ Aura Interrupt   : Damage (1), Action (2), Attacking (12), Mount (17)
 Effects          :
 #1 (id=1083970)  : Apply Aura (6) | Invisibility (18)
                    Base Value: 200 | Scaled Value: 200 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
-Hotfixed         : Target 1 (22 -> 18), Target 2 (56 -> 31)
 #2 (id=1083971)  : Apply Aura (6) | Unknown(335)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
-Hotfixed         : Target 1 (22 -> 18), Target 2 (56 -> 31)
 #3 (id=1083972)  : Apply Aura (6) | Unknown(260)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1421 | Misc Value 2: 7 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
-Hotfixed         : Target 1 (22 -> 18), Target 2 (56 -> 31)
 #4 (id=1083973)  : Sanctuary (176)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
-Hotfixed         : Target 1 (22 -> 18), Target 2 (56 -> 31)
 Description      : You and your allies within $A1 yards instantly become invisible for $d. Taking any action will cancel the effect.
 
 $?a415945[]
@@ -12103,7 +12096,6 @@ Effects          :
 Description      : $?c1[$s1%][$s4%] of the direct damage dealt by $?c1[an Arcane Splinter][a Frost Splinter] is also dealt to nearby enemies. Damage reduced beyond $s5 targets.
 
 Name             : Controlled Instincts (id=444487) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -12152,7 +12144,6 @@ Effects          :
 Description      : $?c1[Casting Arcane Barrage conjures an Arcane Splinter for every $s1 Arcane Salvo stacks consumed][Ice Lance conjures a Frost Splinter for every $s3 Freezing stacks Shattered from its primary target].
 
 Name             : Controlled Instincts (id=444720) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -13977,7 +13968,6 @@ Effects          :
 Description      : Reduces Arcane Blast's mana cost by $s1% and increases its damage by $s2%.
 
 Name             : Brainstorm (id=461261) [Spell Family (3), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=8, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
