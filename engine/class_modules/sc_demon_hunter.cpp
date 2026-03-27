@@ -1393,12 +1393,10 @@ public:
     event_t* next_drain_event;
     int drain_stacks;
     demon_hunter_t* actor;
-    double initial_drain      = 20.0;
-    double drain_per_stack    = 0;
-    double drain_per_stack_sq = 0.008;
-    double exp_factor         = 0.3;
-    double exp_power          = 0.1;
-    bool exp_meta             = true;
+    double meta_drain_multiplier = 1.0;
+    double initial_drain      = 15.0;
+    double exp_factor         = 1.455;
+    double exp_power          = 0.075;
 
     fury_state_t( demon_hunter_t* a )
       : start_time( timespan_t::min() ),
@@ -1411,11 +1409,20 @@ public:
     void init()
     {
       if ( p()->talent.devourer.soul_glutton.enabled() )
-
       {
-        // This is negative and lowers something to 75% for some reason
-        initial_drain *= 1 - p()->talent.devourer.soul_glutton->effectN( 2 ).percent();
+        // Why separate multiplier - Easier to find stuff in the future. 
+        meta_drain_multiplier /= 1 + p()->talent.devourer.soul_glutton->effectN( 2 ).percent();
       }
+
+      p()->sim->print_debug( "{} applying overall drain multiplier of {} to initial drain of {}, result: {}", *p(),
+                             meta_drain_multiplier, initial_drain, initial_drain * meta_drain_multiplier );
+
+      p()->sim->print_debug( "{} applying overall drain multiplier of {} to exp_factor of {}, result: {}", *p(),
+                             meta_drain_multiplier, exp_factor, exp_factor * meta_drain_multiplier );
+
+      // Handled here to do less runtime math later - If formula changes, may need to move Drain Multiplier into the calculation.
+      initial_drain *= meta_drain_multiplier;
+      exp_factor *= meta_drain_multiplier;
     }
 
     void clear_state();
@@ -1440,9 +1447,7 @@ public:
 
     double base_fury_drain_per_second( int stacks ) const
     {
-      if ( exp_meta )
-        return initial_drain + exp_factor * exp( exp_power * stacks );
-      return initial_drain + drain_per_stack * stacks + drain_per_stack_sq * stacks * stacks;
+      return initial_drain + exp_factor * exp( exp_power * stacks );
     }
 
     double fury_drain_per_second( int stacks ) const;
@@ -9062,11 +9067,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       freeze_stacks = true;
       set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { p()->devourer_fury_state.drain_stacks++; } );
-
-      if ( p()->talent.devourer.soul_glutton.enabled() )
-      {
-        set_period( buff_period * ( 1 + p()->talent.devourer.soul_glutton->effectN( 2 ).percent() ) );
-      }
     }
     // Spell 187827 has a Periodic Dummy effect (#7, 2s period) for visual/server logic that
     // SimC doesn't model. Without this override, init() -> set_period() detects the periodic
@@ -10284,11 +10284,8 @@ void demon_hunter_t::create_options()
   add_option( opt_int( "channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
 
   add_option( opt_float( "void_metamorphosis_initial_drain", devourer_fury_state.initial_drain, 0, 100 ) );
-  add_option( opt_float( "void_metamorphosis_drain_per_stack", devourer_fury_state.drain_per_stack, 0, 100 ) );
-  add_option( opt_float( "void_metamorphosis_drain_per_stack_sq", devourer_fury_state.drain_per_stack_sq, 0, 100 ) );
   add_option( opt_float( "void_metamorphosis_exp_factor", devourer_fury_state.exp_factor, 0, 100 ) );
   add_option( opt_float( "void_metamorphosis_exp_power", devourer_fury_state.exp_power, 0, 100 ) );
-  add_option( opt_bool( "void_metamorphosis_exp", devourer_fury_state.exp_meta ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -12365,7 +12362,7 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
   if ( drain_stacks < 1 )
   {
     // Slow after meta cast
-    drain *= 0.4;
+    drain = 15;
   }
 
   return drain;
