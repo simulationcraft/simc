@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66666 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66709 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -1260,7 +1260,6 @@ Effects          :
 Description      : You master the art of beast training, teaching you the ability to tame Exotic pets.
 
 Name             : Master's Call (desc=Cunning Ability) (id=53271) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Cunning Hunter Pet
 School           : Physical
 Spell Type       : None
@@ -16796,7 +16795,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1241117)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-Hotfixed         : Target 1 (1 -> 21)
 Description      : $@spelldesc53271
 
 Name             : Track Pets (id=1244920) [Passive, Hidden] 

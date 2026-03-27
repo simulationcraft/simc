@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66666 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66709 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -17224,6 +17224,7 @@ Description      : $@spelldesc467307
 Tooltip          : Renewing Mist healing increased by $w1%.
 
 Name             : Rushing Wind Kick (id=468179) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -17233,10 +17234,11 @@ Labels           : 16: Class Spells
 Affecting Spells : Soothing Mist (115175 effect#3), Thunder Focus Tea (116680 effect#1), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #11), Mistweaver Monk (137024 effects: #3, #4, #11), Windwalker Monk (137025 effects: #1, #2, #15), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Xuen's Battlegear (392993 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Pressure Point (393053 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Mistweaver Monk (428200 effects: #3, #4), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Yu'lon's Knowledge (443625 effect#1), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Tiger Strikes (454485 effect#1), Flow of Battle (457257 effect#1), Winning Streak! (1216182 effects: #1, #2), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2, #6), Heart of the Jade Serpent (1238904 effect#2), Skyfire Heel (1248705 effect#1), Zenith (1249625 effects: #2, #4, #7, #13), Rushing Wind Kick (1250554 effect#1), Brewmaster Monk (1256978 effects: #1, #2), Windwalker Monk (1258122 effect#8), Mistweaver Monk (1258138 effects: #4, #8), Brewmaster Monk (1258153 effect#7), Spiritfont (1260677 effect#2), Fast Feet (1261543 effect#1), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Triggered By     : Rushing Wind Kick (467307)
 Family Flags     : 39, 103
-Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Treat as Area Effect (175), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Treat as Area Effect (175), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1181673)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.7975 | Radius: 25 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.7975 | Radius: 25 yards | Target: Enemies in Cone (24)
+Hotfixed         : Target 1 (104 -> 24)
 Description      : $@spelldesc467307
 
 Name             : Glyph of Tiger Palm (id=468605) [Spell Family (53)] 
@@ -18435,6 +18437,7 @@ Effects          :
 Description      : You release a Jadefire Stomp, dealing $388207s1 damage to $s2 enemies in front of you.
 
 Name             : Jadefire Stomp (id=1248815) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -18445,7 +18448,7 @@ Labels           : 16: Class Spells
                  : 3053: Windwalker Monk (137025 effect#19), Singularly Focused Jade (451573 effect#2), Mistweaver Monk (1258138 effect#18)
 Affecting Spells : Soothing Mist (115175 effect#3), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #3, #4), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Mistweaver Monk (428200 effects: #3, #4), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Family Flags     : 14, 103
-Attributes       : Is Ability (4), Do Not Sheath (18), Discount Power On Miss (59), No Aura Icon (60), No Helpful Threat (131), Treat as Area Effect (175), No Aura Log (202), Treat as NPC AoE (250), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Sheath (18), Discount Power On Miss (59), No Aura Icon (60), No Helpful Threat (131), Treat as Area Effect (175), Always Line of Sight (185), Always AOE Line of Sight (186), No Aura Log (202), Treat as NPC AoE (250), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1251991)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1 | PvP Coefficient: 0.5 | Radius: 30 yards | Target: Front of Self (47) -> Line to Enemy (134)

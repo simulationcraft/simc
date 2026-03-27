@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66666 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66709 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -1521,6 +1521,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 1 (240 seconds cooldown)
 Category         : 1560 (Type 0x1): Winter's Protection (382424 effect#1), Glacial Bulwark (1244110 effect#1), Permafrost Bauble (1265517 effect#1)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -10858,6 +10859,7 @@ Spell Type       : Magic
 Duration         : 6 seconds
 Charges          : 1 (240 seconds cooldown)
 Category         : 1560 (Type 0x1): Winter's Protection (382424 effect#1), Glacial Bulwark (1244110 effect#1), Permafrost Bauble (1265517 effect#1)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292

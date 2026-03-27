@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66666 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66709 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -3137,7 +3137,6 @@ Effects          :
 #9 (id=1300823)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 200 | Scaled Value: 200 | Misc Value 2: 5185 (Label) | Target: Self (1)
                    Affected Spells (Label): Wicked Reaping (449826)
-Hotfixed         : Base Value (300 -> 200)
 #10 (id=1300824) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -36 | Scaled Value: -36 | Misc Value: 22 | Misc Value 2: 3545 (Label) | Target: Self (1)
                    Affected Spells (Label): Soul Anathema (450538)
@@ -12571,10 +12570,12 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), No Reflection (39), No Threat (42), Track Target in Channel (46), Require All Targets (58), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Spell Haste Affects Periodic (173), No Aura Log (202), Allow Class Ability Procs (416)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
 Effects          :
-#1 (id=1121387)  : Apply Aura (6) | Dummy (4)
+#1 (id=1121387)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#2 (id=1131464)  : Apply Aura (6) | Periodic Trigger Spell (23): Chaos Salvo every 0.2 seconds
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 432592 | Target: Self (1)
+Hotfixed         : Sub Type (4 -> 23), Period (0 -> 200)
+#2 (id=1131464)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : Sub Type (23 -> 4), Period (200 -> 0), Trigger Spell (432592 -> 0)
 Description      : $@spelldesc428518
 
 Name             : Chaos Salvo (id=432592) [Spell Family (5)] 
@@ -12586,11 +12587,11 @@ Velocity         : 20 yards/sec
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Triggered By     : Chaos Salvo (432569)
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1121422)  : Trigger Missiles (32): Chaos Salvo
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 432596 | Target: Channel Target (77)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 432596 | Target: Targeted Enemy (6)
+Hotfixed         : Target 1 (77 -> 6)
 Description      : $@spelldesc428518
 
 Name             : Chaos Salvo (id=432596) [Spell Family (5)] 
@@ -12607,7 +12608,8 @@ Family Flags     : 49
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1121429)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.543679 | Radius: 0 - 10 yards | Target: at Channel Target (76) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.543679 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : Target 1 (76 -> 53)
 Description      : $@spelldesc428514
 
 Name             : Demonic Art: Mother of Chaos (id=432794) [Spell Family (5)] 
