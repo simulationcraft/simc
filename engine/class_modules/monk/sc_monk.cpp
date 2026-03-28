@@ -6493,26 +6493,6 @@ void monk_t::init_special_effects()
           action.flurry_strikes->execute( actions::flurry_strikes_t::STAND_READY );
         } );
 
-  if ( baseline.windwalker.empowered_tiger_lightning->ok() )
-    create_proc_callback( { baseline.windwalker.empowered_tiger_lightning, PF_ALL_DAMAGE,
-                            static_cast<proc_flag2>( PF2_ALL_HIT | PF2_PERIODIC_DAMAGE ) } )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          monk_td_t *target_data = get_target_data( state->target );
-          if ( !target_data )
-            return;
-
-          propagate_const<buff_t *> debuff = target_data->debuff.empowered_tiger_lightning;
-          if ( !debuff )
-            return;
-
-          debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get() )->trigger( state );
-        } )
-        ->register_post_init_callback( []( monk_effect_callback_t *cb ) {
-          cb->proc_chance                       = 1.0;
-          cb->can_proc_from_procs               = true;
-          cb->can_only_proc_from_class_abilites = true;
-        } );
-
   if ( talent.brewmaster.elixir_of_determination->ok() )
     create_proc_callback( { &buff.elixir_of_determination->data() } )
         ->register_callback_trigger_function(
@@ -6597,6 +6577,29 @@ void monk_t::init_special_effects()
   }
 
   base_t::init_special_effects();
+}
+
+void monk_t::init_assessors()
+{
+  base_t::init_assessors();
+
+  if ( baseline.windwalker.empowered_tiger_lightning->ok() )
+    assessor_out_damage.add( assessor::TARGET_DAMAGE, [ this ]( result_amount_type, action_state_t *state ) {
+      if ( !state->result_amount )
+        return assessor::CONTINUE;
+
+      monk_td_t *target_data = get_target_data( state->target );
+      if ( !target_data )
+        return assessor::CONTINUE;
+
+      propagate_const<buff_t *> debuff = target_data->debuff.empowered_tiger_lightning;
+      if ( !debuff )
+        return assessor::CONTINUE;
+
+      debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get() )->trigger( state );
+
+      return assessor::CONTINUE;
+    } );
 }
 
 void monk_t::init_finished()
