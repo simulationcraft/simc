@@ -60,7 +60,7 @@ actions.aoe+=/tempest,target_if=min:debuff.lightning_rod.remains,if=buff.master_
 
 actions.aoe+=/tempest,target_if=min:debuff.lightning_rod.remains,if=buff.stormkeeper.stack<4&buff.tempest.stack=2
 
-actions.aoe+=/chain_lightning,if=buff.stormkeeper.up&maelstrom.deficit>spell_targets.chain_lightning*(2+spell_targets.chain_lightning+2)
+actions.aoe+=/chain_lightning,if=buff.stormkeeper.up&maelstrom.deficit>(spell_targets.chain_lightning>?5)*(2+(spell_targets.chain_lightning>?5)+2)
 
 actions.aoe+=/earthquake,if=!talent.elemental_blast&maelstrom.deficit<15+(buff.stormkeeper.up*(spell_targets.chain_lightning>?5)*(2+(spell_targets.chain_lightning>?5)))
 actions.aoe+=/elemental_blast
