@@ -281,11 +281,11 @@ void sinful_revelation( special_effect_t& effect )
   {
     sinful_revelation_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ) {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      dbc_proc_callback_t::execute( a, s );
+      dbc_proc_callback_t::execute( spell, t, s );
 
-      auto td = a->player->get_target_data( s->target );
+      auto td = listener->get_target_data( t );
       td->debuff.sinful_revelation->trigger();
     }
   };
@@ -644,11 +644,11 @@ void memory_of_past_sins( special_effect_t& effect )
     {
     }
 
-    void execute( action_t*, action_state_t* trigger_state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       if ( buff->check() )
       {
-        damage->set_target( trigger_state->target );
+        damage->set_target( t );
         damage->execute();
         buff->decrement();
       }
@@ -801,14 +801,14 @@ void hateful_chain( special_effect_t& effect )
   {
     using dbc_proc_callback_t::dbc_proc_callback_t;
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
     {
-      if ( state->target->is_sleeping() )
+      if ( t->is_sleeping() )
         return;
 
       // XXX: Assume the actor always has more health than the target
       // TODO: Handle actor health < target health case?
-      proc_action->target = target( state );
+      proc_action->target = get_target( t, s );
       proc_action->schedule_execute();
     }
   };
@@ -1183,7 +1183,7 @@ void infinitely_divisible_ooze( special_effect_t& effect )
       spawner.set_default_duration( e.player->find_spell( 345489 )->duration() );
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       spawner.spawn();
     }
@@ -1365,18 +1365,18 @@ void phial_of_putrefaction( special_effect_t& effect )
     phial_of_putrefaction_proc_t( const special_effect_t* e ) :
       dbc_proc_callback_t( e->player, *e ) { }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       // Only allow one proc on simultaneous hits
       if ( !proc_buff->check() )
         return;
 
       // Targets at max stacks do not 'eat' proc attempts or consume the player buff
-      auto d = proc_action->get_dot( s->target );
+      auto d = proc_action->get_dot( t );
       if ( !d->is_ticking() || !d->at_max_stacks() )
       {
         proc_buff->expire();
-        proc_action->set_target( s->target );
+        proc_action->set_target( t );
         proc_action->execute();
       }
     }
@@ -1469,7 +1469,7 @@ void anima_field_emitter( special_effect_t& effect )
                    e.player->find_spell( 345534 )->duration() )
     { }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       timespan_t buff_duration = _duration.max;
       if ( _duration.mean != 0_ms )
@@ -1685,14 +1685,14 @@ void hymnal_of_the_path( special_effect_t& effect )
   {
     using dbc_proc_callback_t::dbc_proc_callback_t;
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
     {
-      if ( state->target->is_sleeping() )
+      if ( t->is_sleeping() )
         return;
 
       // XXX: Assume the actor always has more health than the target
       // TODO: Handle actor health < target health case?
-      proc_action->set_target( target( state ) );
+      proc_action->set_target( get_target( t, s ) );
       proc_action->schedule_execute();
     }
   };
@@ -1931,7 +1931,7 @@ void forbidden_necromantic_tome( special_effect_t& effect )  // NYI: Battle Rezz
   {
     using dbc_proc_callback_t::dbc_proc_callback_t;
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       if ( proc_buff->at_max_stacks() )
         return;
@@ -2026,12 +2026,12 @@ void tormentors_rack_fragment( special_effect_t& effect )
   {
     using dbc_proc_callback_t::dbc_proc_callback_t;
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
     {
-      if ( state->target->is_sleeping() )
+      if ( t->is_sleeping() )
         return;
 
-      proc_action->target = target( state );
+      proc_action->target = get_target( t, s );
       proc_action->schedule_execute();
     }
   };
@@ -2095,11 +2095,11 @@ void salvaged_fusion_amplifier( special_effect_t& effect)
     {
     }
 
-    void execute( action_t*, action_state_t* trigger_state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       if ( buff->check() )
       {
-        damage->set_target( trigger_state->target );
+        damage->set_target( t );
         damage->execute();
       }
     }
@@ -2163,12 +2163,12 @@ void miniscule_mailemental_in_an_envelope( special_effect_t& effect )
   {
     using dbc_proc_callback_t::dbc_proc_callback_t;
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
     {
-      if ( state->target->is_sleeping() )
+      if ( t->is_sleeping() )
         return;
 
-      proc_action->target = target( state );
+      proc_action->target = get_target( t, s );
       proc_action->schedule_execute();
     }
   };
@@ -2685,11 +2685,11 @@ void ticking_sack_of_terror( special_effect_t& effect )
         } );
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      dbc_proc_callback_t::execute( a, s );
+      dbc_proc_callback_t::execute( spell, t, s );
 
-      auto debuff = get_debuff( s->target );
+      auto debuff = get_debuff( t );
 
       // Damage is dealt when the debuff falls off *or* reaches max stacks, whichever comes first
       if ( debuff->at_max_stacks() )
@@ -2906,7 +2906,7 @@ void brokers_lucky_coin( special_effect_t& effect )
       tails->stats[ 0 ].amount = e.driver()->effectN( 1 ).average( effect.item );
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       if ( rng().roll( 0.5 ) )
         heads->trigger();
@@ -3382,18 +3382,18 @@ void bells_of_the_endless_feast( special_effect_t& effect )
         ->set_cooldown( 0_ms );
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      dbc_proc_callback_t::execute( a, s );
+      dbc_proc_callback_t::execute( spell, t, s );
 
-      auto debuff = get_debuff( s->target );
+      auto debuff = get_debuff( t );
 
       // NOTE: Damage triggers on the next tick of the debuff after it reaches max stacks, but I'm not sure if it's
       // worth modeling that properly, so we instead trigger it as soon as it reaches max stacks.
       if ( debuff->at_max_stacks() )
       {
         debuff->expire();
-        damage->execute_on_target( s->target );
+        damage->execute_on_target( t );
       }
       else
       {
@@ -3821,7 +3821,7 @@ void prismatic_brilliance( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
         cb->rng().range( buffs )->trigger();
       } );
 }
@@ -3851,9 +3851,9 @@ struct chains_of_domination_cb_t : public dbc_proc_callback_t
   {
   }
 
-  void execute( action_t*, action_state_t* s ) override
+  void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
   {
-    if ( debuff && debuff->check() && s->target == debuff->player )
+    if ( debuff && debuff->check() && t == debuff->player )
     {
       accumulated_damage = std::min( damage_cap, accumulated_damage + ( s->result_amount * damage_fraction ) );
       if ( auto_break && accumulated_damage >= damage_cap )
@@ -4137,7 +4137,7 @@ void cruciform_veinripper(special_effect_t& effect)
     {
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       assert( rppm );
       assert( s->target );
@@ -4152,7 +4152,7 @@ void cruciform_veinripper(special_effect_t& effect)
         // CC'd/Snared mobs appear to take the full proc rate, which does not work on bosses
         // The "from behind" rate is roughly half the CC'd target rate in the spell data
         proc_modifier = 0.5;
-        if ( a->player->position() == POSITION_FRONT )
+        if ( listener->position() == POSITION_FRONT )
         {
           if ( proc_modifier_in_front_override > 0.0 )
           {
@@ -4165,7 +4165,7 @@ void cruciform_veinripper(special_effect_t& effect)
             //
             // When the role is not tank, this is explicitly set to 0 to allow DPS to model bosses where
             // they can't hit from behind.
-            proc_modifier *= a->player->primary_role() == ROLE_TANK ? 0.4 : 0.0;
+            proc_modifier *= listener->primary_role() == ROLE_TANK ? 0.4 : 0.0;
           }
         }
       }
@@ -4173,11 +4173,12 @@ void cruciform_veinripper(special_effect_t& effect)
       if ( proc_modifier != rppm->get_modifier() )
       {
         effect.player->sim->print_debug( "Player {} (position: {}, role: {}) adjusts {} rppm modifer: old={} new={}",
-                                         *a->player, a->player->position(), a->player->primary_role(), effect, rppm->get_modifier(), proc_modifier);
+                                         *listener, listener->position(), listener->primary_role(), effect,
+                                         rppm->get_modifier(), proc_modifier );
         rppm->set_modifier( proc_modifier );
       }
 
-      dbc_proc_callback_t::trigger( a, s );
+      dbc_proc_callback_t::trigger( data, t, s, type );
     }
   };
 
@@ -4262,7 +4263,7 @@ void singularity_supreme( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ singularity_buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+      [ singularity_buff ]( auto, const auto&, auto, auto, auto ) {
         return !singularity_buff->lockout->check();
       } );
 }
@@ -4662,7 +4663,7 @@ void soulwarped_seal_of_wrynn( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       assert( rppm );
       assert( s->target );
@@ -4689,7 +4690,7 @@ void soulwarped_seal_of_wrynn( special_effect_t& effect )
         rppm->set_modifier( mod );
       }
 
-      dbc_proc_callback_t::trigger( a, s );
+      dbc_proc_callback_t::trigger( data, t, s, type );
     }
   };
 
@@ -4721,16 +4722,16 @@ void soulwarped_seal_of_menethil( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       assert( rppm );
-      assert( s->target );
+      assert( t );
 
       // Below 70% HP, proc rate appears to be 2rppm
       double mod = 0.150;
 
       // Above 70% HP, proc rate appears to be the full 20rppm.
-      if ( s -> target -> health_percentage() >= 70 )
+      if ( t->health_percentage() >= 70 )
 		mod = 1;
 
       if ( effect.player->sim->debug )
@@ -4741,13 +4742,13 @@ void soulwarped_seal_of_menethil( special_effect_t& effect )
 
       rppm->set_modifier( mod );
 
-      dbc_proc_callback_t::trigger( a, s );
+      dbc_proc_callback_t::trigger( data, t, s, type );
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      dbc_proc_callback_t::execute( a, s );
-      auto td = a->player->get_target_data( s->target );
+      dbc_proc_callback_t::execute( spell, t, s );
+      auto td = listener->get_target_data( t );
       td->debuff.remnants_despair->set_default_value( debuff_value );
       td->debuff.remnants_despair->trigger();
     }
@@ -4944,8 +4945,8 @@ void branding_blade( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       ripped->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
-        return a->weapon && a->weapon->slot == SLOT_MAIN_HAND;
+      []( auto, const auto&, auto, const action_state_t* s, auto ) {
+        return s->action->weapon && s->action->weapon->slot == SLOT_MAIN_HAND;
       } );
 
   auto branding_dam =
@@ -4958,9 +4959,9 @@ void branding_blade( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ ripped_dot ]( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
-        return a->weapon && a->weapon->slot == SLOT_OFF_HAND && s->target &&
-               ripped_dot->get_dot( s->target )->is_ticking();
+      [ ripped_dot ]( auto, const auto&, player_t* t, const action_state_t* s, auto ) {
+        return s->action->weapon && s->action->weapon->slot == SLOT_OFF_HAND && t &&
+               ripped_dot->get_dot( t )->is_ticking();
       } );
 }
 }  // namespace set_bonus

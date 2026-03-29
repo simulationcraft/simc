@@ -1514,3 +1514,13 @@ enum error_level_e : unsigned short
   UNVERIFIED_VALUE,
   IMPLEMENTATION_NOTES,
 };
+
+enum proc_trigger_type_e : unsigned short
+{
+  TRIGGER_ACTION,
+  TRIGGER_ACTION_PROC,
+  TRIGGER_ACTION_TAKEN,
+  TRIGGER_ACTION_PROC_TAKEN,
+  TRIGGER_AURA_APPLIED,
+  TRIGGER_HEARTBEAT,
+};

@@ -3269,8 +3269,8 @@ struct melee_t : public rogue_attack_t
     rogue_attack_t( name, p ), sync_weapons( sw ), first( true ), canceled( false ),
     prev_scheduled_time( timespan_t::zero() )
   {
-    background = repeating = may_glance = may_crit = true;
-    allow_class_ability_procs = not_a_proc = true;
+    background = repeating = may_glance = may_crit = not_a_proc = true;
+    proc_data.allow_class_ability_procs = true;
     special = false;
     school = SCHOOL_PHYSICAL;
     trigger_gcd = timespan_t::zero();
@@ -10957,8 +10957,8 @@ void rogue_t::init_special_effects()
 
     callbacks.register_callback_trigger_function(
       448000, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ poison_ids ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
-        return !a->special || range::contains( poison_ids, a->data().id() );
+      [ poison_ids ]( const dbc_proc_callback_t*, const proc_data_t& data, player_t*, action_state_t* s, proc_trigger_type_e ) {
+        return !s->action->special || range::contains( poison_ids, data->id() );
     } );
   }
 
@@ -11000,9 +11000,9 @@ void rogue_t::init_special_effects()
       {
       }
 
-      void execute( action_t* a, action_state_t* s ) override
+      void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
       {
-        dbc_proc_callback_t::execute( a, s );
+        dbc_proc_callback_t::execute( spell, t, s );
         rogue->buffs.unseen_blade_cd->expire();
       }
     };
@@ -11030,15 +11030,15 @@ void rogue_t::init_special_effects()
       {
       }
 
-      void execute( action_t* a, action_state_t* s ) override
+      void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
       {
-        dbc_proc_callback_t::execute( a, s );
+        dbc_proc_callback_t::execute( spell, t, s );
 
         if ( rogue->sim->active_enemies == 1 )
           return;
 
         buff_t* debuff = rogue->deathstalkers_mark_debuff;
-        if ( !debuff || !debuff->check() || debuff->player == s->target || debuff->player->is_sleeping() )
+        if ( !debuff || !debuff->check() || debuff->player == t || debuff->player->is_sleeping() )
           return;
 
         if ( !rogue->active.deathstalker.singular_focus )

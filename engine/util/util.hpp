@@ -141,6 +141,7 @@ const char* action_type_string( action_e type );
 const char* talent_tree_string( talent_tree type );
 const char* trait_definition_op_string( trait_definition_op op );
 const char* error_level_string( error_level_e level );
+const char* proc_trigger_type_string( proc_trigger_type_e type );
 
 std::string rppm_scaling_string( unsigned );
 std::string profile_source_string( profile_source );
@@ -361,6 +362,7 @@ SC_ENUM_FORMATTER( buff_tick_behavior,      util::buff_tick_behavior_string );
 SC_ENUM_FORMATTER( buff_tick_time_behavior, util::buff_tick_time_behavior_string );
 SC_ENUM_FORMATTER( action_energize,         util::action_energize_type_string );
 SC_ENUM_FORMATTER( action_e,                util::action_type_string );
+SC_ENUM_FORMATTER( proc_trigger_type_e,     util::proc_trigger_type_string );
 
 #undef SC_ENUM_FORMATTER
 } // namespace fmt

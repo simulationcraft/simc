@@ -346,12 +346,12 @@ public:
     // Setup Channel Flags.
     hasted_ticks =
         s_channel->flags( spell_attribute::SX_DOT_HASTED ) || s_channel->flags( spell_attribute::SX_DOT_HASTED_MELEE );
-    tick_on_application       = s_channel->flags( spell_attribute::SX_TICK_ON_APPLICATION );
-    hasted_dot_duration       = s_channel->flags( spell_attribute::SX_DURATION_HASTED );
-    rolling_periodic          = s_channel->flags( spell_attribute::SX_ROLLING_PERIODIC );
-    treat_as_periodic         = s_channel->flags( spell_attribute::SX_TREAT_AS_PERIODIC );
-    allow_class_ability_procs = s_channel->flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
-    not_a_proc                = s_channel->flags( spell_attribute::SX_NOT_A_PROC );
+    tick_on_application = s_channel->flags( spell_attribute::SX_TICK_ON_APPLICATION );
+    hasted_dot_duration = s_channel->flags( spell_attribute::SX_DURATION_HASTED );
+    rolling_periodic    = s_channel->flags( spell_attribute::SX_ROLLING_PERIODIC );
+    treat_as_periodic   = s_channel->flags( spell_attribute::SX_TREAT_AS_PERIODIC );
+    not_a_proc          = s_channel->flags( spell_attribute::SX_NOT_A_PROC );
+    proc_data.allow_class_ability_procs = s_channel->flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
 
     if ( s_channel->flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
       dot_behavior = dot_behavior_e::DOT_REFRESH_PANDEMIC;

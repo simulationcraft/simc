@@ -1437,7 +1437,12 @@ public:
   virtual void assess_damage_imminent( school_e, result_amount_type, action_state_t* );
   virtual void do_damage( action_state_t* );
   virtual void assess_heal( school_e, result_amount_type, action_state_t* );
-  virtual void trigger_callbacks( proc_types, proc_types2, action_t*, action_state_t* );
+  virtual void trigger_callbacks( proc_types, proc_types2, action_t* action, action_state_t* state,
+                                  proc_trigger_type_e pt_type = TRIGGER_ACTION );
+  virtual void trigger_callbacks( proc_types, proc_types2, buff_t* buff,
+                                  proc_trigger_type_e pt_type = TRIGGER_AURA_APPLIED );
+  virtual void trigger_callbacks( proc_types, proc_types2, player_t* target,
+                                  proc_trigger_type_e type = TRIGGER_HEARTBEAT );
 
   virtual bool taunt( player_t* /* source */ ) { return false; }
 

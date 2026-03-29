@@ -6872,12 +6872,12 @@ struct auto_attack_damage_t : public burning_blades_trigger_t<demon_hunter_attac
   {
     school     = SCHOOL_PHYSICAL;
     special    = false;
-    background = repeating = may_glance = may_crit = true;
-    allow_class_ability_procs = not_a_proc = true;
-    trigger_gcd                            = timespan_t::zero();
-    weapon                                 = w;
-    weapon_multiplier                      = 1.0;
-    base_execute_time                      = weapon->swing_time;
+    background = repeating = may_glance = may_crit = not_a_proc = true;
+    proc_data.allow_class_ability_procs = true;
+    trigger_gcd                         = timespan_t::zero();
+    weapon                              = w;
+    weapon_multiplier                   = 1.0;
+    base_execute_time                   = weapon->swing_time;
 
     status.main_hand = status.off_hand = aa_contact::LOST_RANGE;
 
@@ -8761,7 +8761,7 @@ struct wounded_quarry_t : public demon_hunter_attack_t
     if ( p->bugs )
     {
       // 2025-02-23 -- WQ seems to proc things like Chaotic Disposition
-      allow_class_ability_procs = true;
+      proc_data.allow_class_ability_procs = true;
     }
 
     // WQ is affected by Havoc mastery

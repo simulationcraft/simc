@@ -1238,7 +1238,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
   {
     sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
       if ( in_combat )
-        trigger_callbacks( PROC1_HEARTBEAT, PROC2_LANDED, nullptr, nullptr );
+        trigger_callbacks( PROC1_HEARTBEAT, PROC2_LANDED, this );
 
       for ( auto& pet : active_pets )
       {
@@ -4530,12 +4530,15 @@ void player_t::init_assessors()
 
   // Generic actor callbacks
   assessor_out_damage.add( assessor::CALLBACKS, [this]( result_amount_type, action_state_t* state ) {
-    if ( state->action->callbacks && state->action->caster_callbacks )
+    auto action = state->action;
+    if ( action->callbacks && action->caster_callbacks &&
+         ( !action->proc_data.suppress_caster_procs || action->proc_data.enable_proc_from_suppressed ) )
     {
       proc_types pt   = state->proc_type();
       proc_types2 pt2 = state->impact_proc_type2();
+
       if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-        trigger_callbacks( pt, pt2, state->action, state );
+        trigger_callbacks( pt, pt2, action, state, action->proc_trigger_type( pt, TRIGGER_ACTION ) );
     }
 
     return assessor::CONTINUE;
@@ -7868,15 +7871,6 @@ double player_t::resource_gain( resource_e resource_type, double amount, gain_t*
                     resources.current[ resource_type ], resources.max[ resource_type ] );
   }
 
-  // energize_power from actions can trigger generic helpful proc effects
-  if ( action && resource_type > RESOURCE_MANA && resource_type < RESOURCE_MAX )
-  {
-    if ( action->callbacks && action->caster_callbacks && !action->suppress_callback_from_energize )
-    {
-      trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, action, action->energize_state.get() );
-    }
-  }
-
   return actual_amount;
 }
 
@@ -8704,18 +8698,20 @@ void player_t::do_damage( action_state_t* incoming_state )
 {
   using namespace assess_dmg_helper_functions;
 
+  action_t* incoming_action = incoming_state->action;
   double actual_amount = 0.0;
+
   collect_dmg_taken_data( *this, incoming_state,
                           incoming_state->result_mitigated - incoming_state->self_absorb_amount );
 
   if ( incoming_state->result_amount > 0.0 )
   {
-    actual_amount = resource_loss( RESOURCE_HEALTH, incoming_state->result_amount, nullptr, incoming_state->action );
+    actual_amount = resource_loss( RESOURCE_HEALTH, incoming_state->result_amount, nullptr, incoming_action );
   }
 
   // New callback system; proc abilities on incoming events.
-  if ( incoming_state->action && incoming_state->action->callbacks && incoming_state->action->target_callbacks &&
-       !incoming_state->action->suppress_target_procs )
+  if ( incoming_action && incoming_action->callbacks && incoming_action->target_callbacks &&
+       ( !incoming_action->proc_data.suppress_target_procs || incoming_action->proc_data.enable_proc_from_suppressed ) )
   {
     proc_types pt = incoming_state->proc_type();
     if ( pt != PROC1_INVALID )
@@ -8727,17 +8723,20 @@ void player_t::do_damage( action_state_t* incoming_state )
       if ( pt == PROC1_HELPFUL_PERIODIC )
         pt_taken = PROC1_HELPFUL_PERIODIC_TAKEN;
 
+      // only direct damage triggers obey proc-related trigger attributes
+      auto pt_type = incoming_action->proc_trigger_type( pt_taken, TRIGGER_ACTION_TAKEN );
+
       // Because most procs in simc default to using PROC2_LANDED for most proc types,
       // trigger the execute_proc_type2() here to ensure that those procs will work.
       proc_types2 execute_pt2 = incoming_state->execute_proc_type2();
       if ( execute_pt2 != PROC2_INVALID )
-        trigger_callbacks( pt_taken, execute_pt2, incoming_state->action, incoming_state );
+        trigger_callbacks( pt_taken, execute_pt2, incoming_action, incoming_state, pt_type );
 
       // Additionally, trigger the impact_proc_type2() so that periodic effects and
       // procs not using execute proc types will also work.
       proc_types2 impact_pt2 = incoming_state->impact_proc_type2();
       if ( impact_pt2 != PROC2_INVALID )
-        trigger_callbacks( pt_taken, impact_pt2, incoming_state->action, incoming_state );
+        trigger_callbacks( pt_taken, impact_pt2, incoming_action, incoming_state, pt_type );
     }
   }
 
@@ -8869,9 +8868,23 @@ void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
   iteration_heal_taken += s->result_amount;
 }
 
-void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, action_t* action, action_state_t* state )
+void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, action_t* action, action_state_t* state,
+                                  proc_trigger_type_e pt_type )
 {
-  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], action, state );
+  assert( action && state && state->target );
+  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], action->proc_data, state->target, state, pt_type );
+}
+
+void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, buff_t* buff, proc_trigger_type_e pt_type )
+{
+  assert( buff && buff->player );
+  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], buff->proc_data, buff->player, nullptr, pt_type );
+}
+
+void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, player_t* t, proc_trigger_type_e pt_type )
+{
+  assert( t );
+  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], proc_data_t::nil(), t, nullptr, pt_type );
 }
 
 void player_t::summon_pet( util::string_view pet_name, const timespan_t duration )

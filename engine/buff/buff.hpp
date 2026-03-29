@@ -7,6 +7,7 @@
 
 #include "config.hpp"
 
+#include "action/action_callback.hpp"
 #include "dbc/data_enums.hh"
 #include "player/actor_pair.hpp"
 #include "sc_enums.hpp"
@@ -72,6 +73,7 @@ public:
   std::unique_ptr<cooldown_t> internal_cooldown;
   sc_timeline_t uptime_array;
   real_ppm_t* rppm;
+  proc_data_t proc_data;
 
   // static values
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
