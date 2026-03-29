@@ -123,6 +123,8 @@ void devourer( player_t* p )
   default_->add_action( "consume" );
 
   illicit_doping->add_action( "invoke_external_buff,name=power_infusion,if=buff.metamorphosis.up&!buff.power_infusion.up" );
+  illicit_doping->add_action( "use_item,slot=trinket1,if=trinket.1.is.vaelgors_final_stare&buff.metamorphosis.up&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains" );
+  illicit_doping->add_action( "use_item,slot=trinket2,if=trinket.2.is.vaelgors_final_stare&buff.metamorphosis.up&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2|variable.trinket_1_exclude)&!variable.trinket_2_manual|trinket.2.proc.any_dps.duration>=fight_remains" );
   illicit_doping->add_action( "potion,if=buff.metamorphosis.up|fight_remains<=30" );
   illicit_doping->add_action( "use_item,slot=trinket1,if=buff.metamorphosis.up&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains" );
   illicit_doping->add_action( "use_item,slot=trinket2,if=buff.metamorphosis.up&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2|variable.trinket_1_exclude)&!variable.trinket_2_manual|trinket.2.proc.any_dps.duration>=fight_remains" );
