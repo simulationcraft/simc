@@ -246491,6 +246491,7 @@ Effects          :
 Description      : Your damaging abilities have a chance to unleash the prism's radiant light, increasing your Critical Strike by $s1 for $1255504d, further increased by $s2 for every $s3% of the target's missing health, up to a maximum of $s4. 
 
 Name             : Rotting Globule (id=1254641) 
+Hotfixed         : Tooltip
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
@@ -246506,7 +246507,7 @@ Effects          :
 Description      : Cover yourself in four fetid pustules, absorbing $1257925s1 damage for $d. Each time the shield loses $1257925s2% of its value, a pustule erupts, dealing $1257925s3  Plague damage split among nearby enemies.
 
 If all pustules erupt, the final burst deals $1257925s4 additional Plague damage.
-Tooltip          : Absorb $1257925s1 damage for $d.
+Tooltip          : Absorb $w1 damage for $d.
 
 Name             : Refueling Orb (id=1254752) [Passive, Hidden] 
 School           : Arcane
