@@ -7083,6 +7083,14 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
     }
   }
 
+  timespan_t travel_time() const override
+  {
+    if ( is_precombat )
+      return timespan_t::from_millis( 0 );
+
+    return wildfire_bomb_base_t::travel_time();
+  }
+
   void execute() override
   {
     // Tip of the Spear is decremented in execute() so run here
