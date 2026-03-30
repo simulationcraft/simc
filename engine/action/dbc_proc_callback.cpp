@@ -41,7 +41,8 @@ struct proc_event_t : public event_t
   {
     schedule( timespan_t::zero() );
 #ifndef NDEBUG
-    debug_str = util::proc_trigger_type_string( type ) + ':';
+    debug_str = util::proc_trigger_type_string( type );
+    debug_str += ':';
 
     if ( !cb )
       debug_str += name();
@@ -212,8 +213,16 @@ void dbc_proc_callback_t::trigger( const proc_data_t& source_data, player_t* tar
 
   if ( listener->sim->debug )
   {
-    std::string source_str =
-      type == proc_trigger_type_e::TRIGGER_HEARTBEAT ? "" : fmt::format( " {}", *source_data.spell );
+    std::string source_str;
+    if ( type != proc_trigger_type_e::TRIGGER_HEARTBEAT )
+    {
+      if ( source_data->ok() )
+        source_str = fmt::format( " {}", *source_data.spell );
+      else if ( state && state->action )
+        source_str = fmt::format( " {}", state->action->name_str );
+      else
+        source_str = " unknown";
+    }
 
     listener->sim->print_debug( "{} attempts to proc {} on {}{}: {:d}", *listener, effect,
                                 util::proc_trigger_type_string( type ), source_str, triggered );

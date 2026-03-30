@@ -1238,7 +1238,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
   {
     sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
       if ( in_combat )
-        trigger_callbacks( PROC1_HEARTBEAT, PROC2_LANDED, this );
+        trigger_callbacks( PROC1_HEARTBEAT, PROC2_LANDED, proc_data_t::nil(), this, TRIGGER_HEARTBEAT );
 
       for ( auto& pet : active_pets )
       {
@@ -8881,10 +8881,11 @@ void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, buff_t* buff, 
   action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], buff->proc_data, buff->player, nullptr, pt_type );
 }
 
-void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, player_t* t, proc_trigger_type_e pt_type )
+void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, const proc_data_t& data, player_t* t,
+                                  proc_trigger_type_e pt_type )
 {
   assert( t );
-  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], proc_data_t::nil(), t, nullptr, pt_type );
+  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], data, t, nullptr, pt_type );
 }
 
 void player_t::summon_pet( util::string_view pet_name, const timespan_t duration )

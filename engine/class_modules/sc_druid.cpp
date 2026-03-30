@@ -12643,7 +12643,7 @@ void druid_t::init_special_effects()
 
     callbacks.register_callback_trigger_function(
       driver->spell_id, trigger_type::CONDITION, []( auto, const auto&, auto, const action_state_t* s, auto ) {
-        return dbc::has_common_school( s->action->get_school(), SCHOOL_ASTRAL );
+        return s && s->result_amount && dbc::has_common_school( s->action->get_school(), SCHOOL_ASTRAL );
       } );
 
     auto _mul = talent.elunes_favored->effectN( 1 ).percent();
