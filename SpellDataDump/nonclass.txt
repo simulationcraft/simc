@@ -231134,8 +231134,8 @@ Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
                  : 4370
-                 : 4377
-                 : 4377
+                 : 4377: Pausing Pylon 2.0 (1259647 effect#4)
+                 : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4902
                  : 4905
                  : 4906
@@ -231176,8 +231176,8 @@ Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
                  : 4370
-                 : 4377
-                 : 4377
+                 : 4377: Pausing Pylon 2.0 (1259647 effect#4)
+                 : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4902
                  : 4905
                  : 4906
@@ -234277,7 +234277,7 @@ Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
                  : 4370
-                 : 4377
+                 : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4897
                  : 4907
                  : 4913
@@ -234317,7 +234317,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4900
                  : 4905
                  : 4913
@@ -234336,7 +234336,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4900
                  : 4905
                  : 4913
@@ -234355,7 +234355,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4900
                  : 4905
                  : 4913
@@ -234374,7 +234374,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4900
                  : 4905
                  : 4913
@@ -234393,7 +234393,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4900
                  : 4905
                  : 4913
@@ -234412,7 +234412,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4900
                  : 4905
                  : 4913
@@ -234431,7 +234431,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4899
                  : 4905
                  : 4913
@@ -234455,7 +234455,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4905
                  : 4913
                  : 6100
@@ -248073,6 +248073,10 @@ Effects          :
 #3 (id=1268813)  : Apply Aura Raid (65) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 4877 (Label) | Radius: 15 yards | Target: Self (1)
                    Affected Spells (Label): Haranir Phial of Perception (1236763), Haranir Phial of Finesse (1236767), Haranir Phial of Ingenuity (1239755)
+#4 (id=1315453)  : Apply Aura Raid (65) | Modify Time Rate (Label) (470)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 4377 (Label) | Radius: 15 yards | Target: Self (1)
+                   Affected Spells (Label): Hearty Well Fed (1232076), Affected Spells (Label): Hearty Well Fed (1232076), Hearty Well Fed (1232078), Hearty Well Fed (1232078), Hearty Well Fed (1233733), Hearty Refreshment (1233738), Hearty Refreshment (1233739), Hearty Refreshment (1233740), Hearty Refreshment (1233741), Hearty Refreshment (1233742), Hearty Refreshment (1233743), Hearty Refreshment (1233744), Hearty Refreshment (1233745)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc452993
 Tooltip          : The expiration of Khaz Algar Flasks, Phials, and Well Fed effects have been halted.
 
