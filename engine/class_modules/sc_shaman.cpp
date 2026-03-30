@@ -4911,7 +4911,7 @@ struct melee_t : public shaman_attack_t
   {
     id                                  = w->slot == SLOT_MAIN_HAND ? 1U : 2U;
     background = repeating = may_glance = true;
-    proc_data.allow_class_ability_procs = true;
+    allow_class_ability_procs           = true;
     not_a_proc                          = true;
     special                             = false;
     trigger_gcd                         = timespan_t::zero();

@@ -2506,13 +2506,10 @@ bool buff_t::can_trigger( action_t* action ) const
   if ( is_fallback || !action->data().ok() || !trigger_data->ok() )
     return false;
 
-  if ( !action->proc_data.allow_class_ability_procs &&
-       trigger_data->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
-  {
+  if ( !action->allow_class_ability_procs && trigger_data->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
     return false;
-  }
 
-  if ( action->proc_data.suppress_caster_procs && !trigger_data->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
+  if ( action->suppress_caster_procs && !trigger_data->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
     return false;
 
   if ( action->proc && !action->not_a_proc && !trigger_data->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
@@ -2534,13 +2531,10 @@ bool buff_t::can_consume( action_t* action ) const
   if ( is_fallback || !action->data().ok() || !data().ok() )
     return false;
 
-  if ( !action->proc_data.allow_class_ability_procs &&
-       data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
-  {
+  if ( !action->allow_class_ability_procs && data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
     return false;
-  }
 
-  if ( action->proc_data.suppress_caster_procs && !data().flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
+  if ( action->suppress_caster_procs && !data().flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
     return false;
 
   // TODO: check if trigger spell having CAN_PROC_FROM_PROCS is sufficient to allow the buff to consume

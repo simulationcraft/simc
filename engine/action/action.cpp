@@ -351,7 +351,10 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     caster_callbacks( true ),
     target_callbacks( true ),
     proc_data( s ),
-    suppress_callback_from_trigger_dot(),
+    suppress_caster_procs( proc_data.suppress_caster_procs ),
+    suppress_target_procs( proc_data.suppress_target_procs ),
+    enable_proc_from_suppressed( proc_data.enable_proc_from_suppressed ),
+    allow_class_ability_procs( proc_data.allow_class_ability_procs ),
     not_a_proc(),
     special(),
     channeled(),
@@ -1940,8 +1943,7 @@ void action_t::execute()
       execute_action->execute();
     }
 
-    if ( callbacks && caster_callbacks && execute_state &&
-         ( !proc_data.suppress_caster_procs || proc_data.enable_proc_from_suppressed ) )
+    if ( callbacks && caster_callbacks && execute_state && ( !suppress_caster_procs || enable_proc_from_suppressed ) )
     {
       // Proc generic abilities on execute.
       proc_types pt = execute_state->proc_type();;
@@ -4520,8 +4522,7 @@ void action_t::trigger_dot( action_state_t* s )
   dot->trigger( duration );
 
   // TODO: does proc suppression matter for aura applied triggers?
-  if ( callbacks && caster_callbacks && !suppress_callback_from_trigger_dot &&
-       ( !proc_data.suppress_caster_procs || proc_data.enable_proc_from_suppressed ) )
+  if ( callbacks && caster_callbacks && ( !suppress_caster_procs || enable_proc_from_suppressed ) )
   {
     // Current implementation splits helpful PF2_LANDED into PF1_HIT and PF1_CRIT so we need to adjust here
     // TODO: assumption is that PROC1_NONE_HELPFUL actually applies to all aura application, whether hostile or not

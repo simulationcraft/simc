@@ -975,12 +975,12 @@ struct melee_t : public paladin_melee_attack_t
     school            = SCHOOL_PHYSICAL;
     special           = false;
     background        = true;
+    allow_class_ability_procs = true;
     not_a_proc        = true;
     repeating         = true;
     trigger_gcd       = 0_ms;
     base_execute_time = p->main_hand_weapon.swing_time;
     weapon_multiplier = 1.0;
-    proc_data.allow_class_ability_procs = true;
 
     if ( p->talents.crusading_strikes->ok() )
     {

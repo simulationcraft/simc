@@ -617,9 +617,9 @@ struct simplified_player_t : public player_t
       simple_proc_t( simplified_player_t* p, bob_settings_t settings ) : spell_t( "simple_proc", p )
       {
         background = true;
-        may_crit   = true;
 
-        proc_data.allow_class_ability_procs = false;
+        allow_class_ability_procs = false;
+        may_crit                  = true;
 
         set_action_stats( settings, p );
       }
@@ -655,8 +655,10 @@ struct simplified_player_t : public player_t
     simple_ability_t( simplified_player_t* p, bob_settings_t settings )
       : spell_t( "simple_spell", p ), damage_proc( nullptr ), haste_modifier( 0.0 )
     {
-      background = repeating = may_crit = not_a_proc = true;
-      proc_data.allow_class_ability_procs            = true;
+      background = repeating = true;
+
+      allow_class_ability_procs = not_a_proc = true;
+      may_crit                               = true;
 
       set_action_stats( settings, p );
     }
@@ -6070,7 +6072,7 @@ struct disintegrate_t : public essence_spell_t
 
     // Not in Spell Data, However it would appear to proc class ability related effects. Primarily made to Fix Irideus
     // Fragment Bug - TODO: Review for other class based procs.
-    proc_data.allow_class_ability_procs = true;
+    allow_class_ability_procs = true;
 
     // 25/11/2022 - Override the lag handling for Disintegrate so that it doesn't use channeled ready behavior
     //              In-game tests have shown it is possible to cast after faster than the 250ms channel_lag using a

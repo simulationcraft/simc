@@ -1859,9 +1859,9 @@ struct auto_attack_t : public monk_melee_attack_t
       damage_t( monk_t *player, weapon_t *weapon )
         : monk_spell_t( player, "dual_threat", player->talent.windwalker.dual_threat_damage ), allowed( false )
       {
-        background = true;
-        may_miss   = false;
-        proc_data.allow_class_ability_procs = false;
+        background                = true;
+        allow_class_ability_procs = false;
+        may_miss                  = false;
 
         if ( weapon->group() == WEAPON_2H )
           add_parse_entry( da_multiplier_effects ).set_value( 3.6 / 2.6 * 2.0 - 1.0 ).set_note( "Two-hand adjustment" );
@@ -2036,12 +2036,12 @@ struct auto_attack_t : public monk_melee_attack_t
         first( true ),
         sync_weapons( false )
     {
-      background = repeating = may_glance = may_crit = not_a_proc = true;
-      proc_data.allow_class_ability_procs = true;
-      special           = false;
-      trigger_gcd       = 0_ms;
-      school            = SCHOOL_PHYSICAL;
-      weapon_multiplier = 1.0;
+      background = repeating = may_glance = true;
+      may_crit = allow_class_ability_procs = not_a_proc = true;
+      special                                           = false;
+      trigger_gcd                                       = 0_ms;
+      school                                            = SCHOOL_PHYSICAL;
+      weapon_multiplier                                 = 1.0;
 
       switch ( weapon->slot )
       {
@@ -6481,9 +6481,9 @@ void monk_t::init_special_effects()
                                                        buff.balanced_stratagem_physical->trigger( data );
                                               } )
         ->register_post_init_callback( []( monk_effect_callback_t *cb ) {
-          cb->proc_chance                                  = 1.0;
-          cb->proc_data.can_proc_from_procs                = true;
-          cb->proc_data.can_only_proc_from_class_abilities = true;
+          cb->proc_chance                        = 1.0;
+          cb->can_proc_from_procs                = true;
+          cb->can_only_proc_from_class_abilities = true;
         } );
 
   if ( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok() )
@@ -6601,9 +6601,9 @@ void monk_t::init_special_effects()
               buff.empty_barrel->trigger();
             } )
         ->register_post_init_callback( []( monk_effect_callback_t *cb ) {
-          cb->proc_chance                                  = 1.0;
-          cb->proc_data.can_proc_from_procs                = true;
-          cb->proc_data.can_only_proc_from_class_abilities = true;
+          cb->proc_chance                        = 1.0;
+          cb->can_proc_from_procs                = true;
+          cb->can_only_proc_from_class_abilities = true;
         } );
 
     create_proc_callback( { &buff.refreshing_drink->data(), PF_ALL_DAMAGE_TAKEN,

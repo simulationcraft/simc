@@ -686,7 +686,7 @@ self_damage_t<derived_actor_t, residual_type>::self_damage_t(
   residual_type::target      = player;
   residual_type::stats->type = stats_e::STATS_NEUTRAL;
 
-  residual_type::proc_data.suppress_caster_procs = false;
+  residual_type::suppress_caster_procs = false;
 }
 
 template <class derived_actor_t, class residual_type>

@@ -4525,7 +4525,7 @@ void player_t::init_assessors()
   assessor_out_damage.add( assessor::CALLBACKS, [this]( result_amount_type, action_state_t* state ) {
     auto action = state->action;
     if ( action->callbacks && action->caster_callbacks &&
-         ( !action->proc_data.suppress_caster_procs || action->proc_data.enable_proc_from_suppressed ) )
+         ( !action->suppress_caster_procs || action->enable_proc_from_suppressed ) )
     {
       proc_types pt   = state->proc_type();
       proc_types2 pt2 = state->impact_proc_type2();
@@ -8704,7 +8704,7 @@ void player_t::do_damage( action_state_t* incoming_state )
 
   // New callback system; proc abilities on incoming events.
   if ( incoming_action && incoming_action->callbacks && incoming_action->target_callbacks &&
-       ( !incoming_action->proc_data.suppress_target_procs || incoming_action->proc_data.enable_proc_from_suppressed ) )
+       ( !incoming_action->suppress_target_procs || incoming_action->enable_proc_from_suppressed ) )
   {
     proc_types pt = incoming_state->proc_type();
     if ( pt != PROC1_INVALID )

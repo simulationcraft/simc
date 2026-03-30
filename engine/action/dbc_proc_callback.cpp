@@ -254,7 +254,11 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, player_t* p, const sp
     trigger_type( trigger_fn_type::NONE ),
     trigger_fn( nullptr ),
     execute_fn( nullptr ),
-    proc_data()
+    proc_data(),
+    can_only_proc_from_class_abilities( proc_data.can_only_proc_from_class_abilities ),
+    can_proc_from_procs( proc_data.can_proc_from_procs ),
+    can_proc_from_suppressed( proc_data.can_proc_from_suppressed ),
+    can_proc_from_suppressed_target( proc_data.can_proc_from_suppressed_target )
 {
   assert( e.proc_flags() != 0 );
 }
@@ -349,10 +353,10 @@ void dbc_proc_callback_t::initialize()
   }
 
   proc_data.spell = effect.driver();
-  proc_data.can_only_proc_from_class_abilities = effect.can_only_proc_from_class_abilities();
-  proc_data.can_proc_from_procs = effect.can_proc_from_procs();
-  proc_data.can_proc_from_suppressed = effect.can_proc_from_suppressed();
-  proc_data.can_proc_from_suppressed_target = effect.can_proc_from_suppressed_target();
+  can_only_proc_from_class_abilities = effect.can_only_proc_from_class_abilities();
+  can_proc_from_procs = effect.can_proc_from_procs();
+  can_proc_from_suppressed = effect.can_proc_from_suppressed();
+  can_proc_from_suppressed_target = effect.can_proc_from_suppressed_target();
 }
 
 // Determine target for the callback (action).

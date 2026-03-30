@@ -1926,12 +1926,12 @@ struct melee_t : public warrior_attack_t
     may_crit                  = true;
     may_glance                = true;
     background                = true;
+    allow_class_ability_procs = true;
     not_a_proc                = true;
     repeating                 = true;
     trigger_gcd               = timespan_t::zero();
     special                   = false;
     usable_while_channeling   = true;
-    proc_data.allow_class_ability_procs = true;
 
     weapon_multiplier = 1.0;
     if ( p->dual_wield() )
@@ -6463,8 +6463,8 @@ struct champions_spear_damage_t : public warrior_attack_t
     aoe                        = -1;
     reduced_aoe_targets        = 5.0;
     dual                       = true;
-    energize_type              = action_energize::NONE;
-    proc_data.allow_class_ability_procs  = true;
+    allow_class_ability_procs  = true;
+    energize_type     = action_energize::NONE;
   }
 
   void execute() override

@@ -98,6 +98,10 @@ struct dbc_proc_callback_t : public action_callback_t
   execute_fn_t* execute_fn;
 
   proc_data_t proc_data;
+  bool& can_only_proc_from_class_abilities;
+  bool& can_proc_from_procs;
+  bool& can_proc_from_suppressed;
+  bool& can_proc_from_suppressed_target;
 
   dbc_proc_callback_t( const item_t& i, player_t* p, const special_effect_t& e );
 

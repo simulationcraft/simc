@@ -120,9 +120,10 @@ public:
   bool callbacks, caster_callbacks, target_callbacks;
 
   proc_data_t proc_data;
-
-  /// trigger_dot can trigger generic helpful/harmful procs. if true, disable this behavior for the action.
-  bool suppress_callback_from_trigger_dot;
+  bool& suppress_caster_procs;
+  bool& suppress_target_procs;
+  bool& enable_proc_from_suppressed;
+  bool& allow_class_ability_procs;
 
   /// Specifies that a spell is not a proc and can be considered for triggering only proc from class abilities procs even if it is a background ability.
   bool not_a_proc;

@@ -1743,13 +1743,13 @@ public:
     if ( Base::is_fallback || !a->data().ok() || !Base::get_trigger_data()->ok() )
       return false;
 
-    if ( !a->proc_data.allow_class_ability_procs &&
+    if ( !a->allow_class_ability_procs &&
          Base::get_trigger_data()->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
     {
       return false;
     }
 
-    if ( a->proc_data.suppress_caster_procs && !Base::get_trigger_data()->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
+    if ( a->suppress_caster_procs && !Base::get_trigger_data()->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
       return false;
 
     if ( a->proc && !a->not_a_proc )
@@ -1788,10 +1788,10 @@ public:
     if ( Base::is_fallback || !a->data().ok() || !Base::data().ok() )
       return false;
 
-    if ( !a->proc_data.allow_class_ability_procs && Base::data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
+    if ( !a->allow_class_ability_procs && Base::data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
       return false;
 
-    if ( a->proc_data.suppress_caster_procs && !Base::data().flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
+    if ( a->suppress_caster_procs && !Base::data().flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
       return false;
 
     if ( a->proc && !a->not_a_proc )
@@ -9712,8 +9712,8 @@ protected:
 public:
   druid_melee_t( std::string_view n, druid_t* p ) : Base( n, p, spell_data_t::nil(), flag_e::AUTOATTACK )
   {
-    ab::may_crit = ab::background = ab::repeating = ab::not_a_proc = true;
-    ab::proc_data.allow_class_ability_procs = true;
+    ab::may_crit = ab::background = ab::repeating = true;
+    ab::allow_class_ability_procs = ab::not_a_proc = true;
     ab::school = SCHOOL_PHYSICAL;
     ab::trigger_gcd = 0_ms;
     ab::special = false;

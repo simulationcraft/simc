@@ -7332,16 +7332,16 @@ struct melee_t : public death_knight_melee_attack_t
   melee_t( const char* name, death_knight_t* p, int sw )
     : death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first( true ), idt_chance( 0 )
   {
-    school            = SCHOOL_PHYSICAL;
-    may_crit          = true;
-    may_glance        = true;
-    background        = true;
-    not_a_proc        = true;
-    repeating         = true;
-    trigger_gcd       = 0_ms;
-    special           = false;
-    weapon_multiplier = 1.0;
-    proc_data.allow_class_ability_procs = true;
+    school                    = SCHOOL_PHYSICAL;
+    may_crit                  = true;
+    may_glance                = true;
+    background                = true;
+    allow_class_ability_procs = true;
+    not_a_proc                = true;
+    repeating                 = true;
+    trigger_gcd               = 0_ms;
+    special                   = false;
+    weapon_multiplier         = 1.0;
 
     if ( p->talent.frost.icy_death_torrent.ok() )
     {
