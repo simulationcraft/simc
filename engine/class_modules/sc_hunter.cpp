@@ -4843,6 +4843,21 @@ struct boar_charge_t final : hunter_ranged_attack_t
       // target_filter_callback = secondary_targets_only();
     }
 
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double am = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+      // 2026-03-30: Boar Charges double dip Spirit Bond's bonus
+      if ( p()->bugs )
+      {
+        double bonus = p()->cache.mastery() * p()->mastery.spirit_bond->effectN( affected_by.spirit_bond.direct ).mastery_value();
+        bonus *= 1 + p()->mastery.spirit_bond_buff->effectN( 1 ).percent();
+        am *= 1 + bonus;
+      }
+
+      return am;
+    }
+
     void impact( action_state_t* s ) override
     {
       hunter_ranged_attack_t::impact( s );
@@ -4860,6 +4875,21 @@ struct boar_charge_t final : hunter_ranged_attack_t
     travel_speed = 50; // 2026-01-19: Not in spelldata, estimating based on log data.
 
     add_child( cleave );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double am = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+    // 2026-03-30: Boar Charges double dip Spirit Bond's bonus
+    if ( p()->bugs )
+    {
+      double bonus = p()->cache.mastery() * p()->mastery.spirit_bond->effectN( affected_by.spirit_bond.direct ).mastery_value();
+      bonus *= 1 + p()->mastery.spirit_bond_buff->effectN( 1 ).percent();
+      am *= 1 + bonus;
+    }
+
+    return am;
   }
 
   void execute() override
