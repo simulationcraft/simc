@@ -345,7 +345,7 @@ struct balanced_stratagem_t : monk_buff_t<>
                         std::unordered_set<unsigned> allowlist );
 
   using monk_buff_t<>::trigger;
-  bool trigger( const action_state_t * );
+  bool trigger( const spell_data_t * );
 };
 
 struct fractional_absorb_t : public monk_buff_t<absorb_buff_t>

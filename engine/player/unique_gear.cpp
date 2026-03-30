@@ -793,7 +793,7 @@ void profession::draenor_philosophers_stone( special_effect_t& effect )
       buff_int = make_buff<common_buff_t>( listener, "int", STAT_INTELLECT, spell, data.item );
     }
 
-    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       if ( listener->strength() > listener->agility() )
       {
@@ -2345,7 +2345,7 @@ struct hammering_blows_driver_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t( effect.player, effect )
   { }
 
-  void execute( const spell_data_t*, player_t* t, action_state_t* ) override
+  void execute( const spell_data_t*, player_t*, action_state_t* ) override
   {
     int stack = proc_buff -> check();
 
@@ -2890,7 +2890,7 @@ void item::tyrants_decree( special_effect_t& effect )
   } );
 
   // Create a callback that triggers on damage taken to check if the buff should be expired.
-  effect.proc_flags_= PF_DAMAGE_TAKEN;
+  effect.proc_flags_= PF_ALL_DAMAGE_TAKEN;
   effect.proc_chance_ = 1.0;
 
   new tyrants_decree_callback_t( effect.player, effect, trigger );

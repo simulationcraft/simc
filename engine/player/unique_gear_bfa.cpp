@@ -765,7 +765,7 @@ void items::incessantly_ticking_clock( special_effect_t& effect )
     {
     }
 
-    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       buffs[ state ]->trigger();
       state ^= 1U;
@@ -956,7 +956,7 @@ void items::bygone_bee_almanac( special_effect_t& effect )
       assert( bba_buff );
     }
 
-    void execute( const spell_data_t*, player_t* t, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* state ) override
     {
       timespan_t adjust = value<RC_BUFF>( state );
       if ( adjust == timespan_t::zero() )
@@ -977,7 +977,7 @@ void items::bygone_bee_almanac( special_effect_t& effect )
     {
     }
 
-    void execute( const spell_data_t*, player_t* t, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* state ) override
     {
       timespan_t adjust = value<RC_COOLDOWN>( state );
       if ( adjust == timespan_t::zero() )
@@ -3034,7 +3034,7 @@ void items::exploding_pufferfish( special_effect_t& effect )
     {
     }
 
-    void execute( const spell_data_t* spell, player_t* t, action_state_t* ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       make_event<ground_aoe_event_t>( *listener->sim, listener,
                                       ground_aoe_params_t()

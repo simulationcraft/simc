@@ -1794,7 +1794,7 @@ void retaliatory_fury( special_effect_t& effect )
       dbc_proc_callback_t( effect.player, effect ), buffs( b )
     {}
 
-    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       for ( auto b : buffs )
         b -> trigger();
@@ -2906,7 +2906,7 @@ void meticulous_scheming( special_effect_t& effect )
     bool trigger_seize() const
     { return casts.size() == as<size_t>( effect.driver()->effectN( 1 ).base_value() ); }
 
-    void execute( const spell_data_t* spell, player_t* t, action_state_t* ) override
+    void execute( const spell_data_t* spell, player_t*, action_state_t* ) override
     {
       // Presume the broken spells not affecting Meticulous Scheming is a bug
       if ( listener->bugs && __spell_blacklist.find( spell->id() ) != __spell_blacklist.end() )
@@ -3773,7 +3773,7 @@ void gemhide(special_effect_t& effect)
     {
     }
 
-    void execute( const spell_data_t*, player_t* t, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* state ) override
     {
       // Gemhide takes the amount of damage before absorbs
       if ( state -> result_mitigated > listener -> max_health() * damage_threshold )
@@ -3850,7 +3850,7 @@ void crystalline_carapace( special_effect_t& effect )
     {
     }
 
-    void execute( const spell_data_t*, player_t* t, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* state ) override
     {
       if ( state->result_amount * 10.0 > listener->max_health() )
       {
@@ -3869,7 +3869,7 @@ void crystalline_carapace( special_effect_t& effect )
     {
     }
 
-    void execute( const spell_data_t*, player_t* t, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* state ) override
     {
       if ( state->action )
       {

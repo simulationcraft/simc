@@ -6688,7 +6688,7 @@ void ratfang_toxin( special_effect_t& effect )
         dbc_proc_callback_t::trigger( data, t, s, type );
     }
 
-    void execute( const spell_data_t* spell, player_t* t, action_state_t* ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       if ( buff_t* d = get_debuff( t ) )
         d->trigger();
@@ -11645,7 +11645,7 @@ struct seabed_leviathans_citrine_proc_buff_t : stat_buff_current_value_t
     damage->name_str       = "seabed_leviathans_citrine_proc";
     damage->item           = effect.item;
     damage->spell_id       = proc_spell->id();
-    damage->proc_flags_    = PF_DAMAGE_TAKEN;
+    damage->proc_flags_    = PF_ALL_DAMAGE_TAKEN;
     damage->proc_flags2_   = PF2_ALL_HIT;
     damage->proc_chance_   = 1.0;
     damage->execute_action = damage_action;
@@ -11965,7 +11965,7 @@ void seabed_leviathans_citrine( special_effect_t& effect )
   auto damage = create_citrine_action( effect, SEABED_LEVIATHANS_CITRINE );
   // Manually setting the proc flags, Driver appears to use a 0 value absorb buff
   // to check for incoming damage, rather than traditional proc flags.
-  effect.proc_flags_    = PF_DAMAGE_TAKEN;
+  effect.proc_flags_    = PF_ALL_DAMAGE_TAKEN;
   effect.proc_flags2_   = PF2_ALL_HIT;
   effect.proc_chance_   = 1.0;
   effect.execute_action = damage;

@@ -2066,7 +2066,8 @@ public:
       else if ( !has_flag( flag_e::NOUNSHIFT ) && form_mask & NO_FORM )
         p()->active.shift_to_caster->execute();
       else
-        assert( false && "Action executed in wrong form with no valid form to shift to!" );
+        throw sc_runtime_error( fmt::format( "{} executed in wrong form with no valid form to shift to!", *this ) );
+        //assert( false && "Action executed in wrong form with no valid form to shift to!" );
     }
   }
 

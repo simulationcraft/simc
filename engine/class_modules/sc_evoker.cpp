@@ -7889,7 +7889,7 @@ struct fate_mirror_cb_t : public dbc_proc_callback_t
 
   void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
   {
-    if ( t->is_sleeping() )
+    if ( t->is_sleeping() || !s )
       return;
 
     double da = s->result_amount;

@@ -2201,7 +2201,7 @@ struct riftworld_codex_callback_t : public dbc_proc_callback_t
     dbc_proc_callback_t( effect.item, effect ), buffs( std::move(b) )
   {}
 
-  void execute( const spell_data_t*, player_t* t, action_state_t* ) override
+  void execute( const spell_data_t*, player_t*, action_state_t* ) override
   {
     // Codex prefers to proc inactive buffs over active ones.
     // Make a vector with only the inactive buffs.

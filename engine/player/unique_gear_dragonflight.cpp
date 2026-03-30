@@ -6038,7 +6038,7 @@ void pips_emerald_friendship_badge( special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ), buffs( b ), max_stacks( i )
     {}
 
-    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       rng().shuffle( buffs.begin(), buffs.end() );
 
@@ -7244,7 +7244,7 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
 
   if ( effect.player->primary_role() == ROLE_TANK )
   {
-    effect.proc_flags_    = PF_DAMAGE_TAKEN;
+    effect.proc_flags_    = PF_ALL_DAMAGE_TAKEN;
     effect.proc_flags2_   = PF2_ALL_HIT | PF2_DODGE | PF2_PARRY | PF2_MISS;
     effect.execute_action = action;
 
@@ -8946,7 +8946,7 @@ void rallied_to_victory( special_effect_t& effect )
       return buff;
     }
 
-    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       if ( effect.player->dragonflight_opts.rallied_to_victory_ally_estimate )
       {

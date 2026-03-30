@@ -4713,9 +4713,9 @@ balanced_stratagem_t::balanced_stratagem_t( monk_t *player, std::string_view nam
   this->allowlist.erase( 0 );
 }
 
-bool balanced_stratagem_t::trigger( const action_state_t *state )
+bool balanced_stratagem_t::trigger( const spell_data_t *spell )
 {
-  if ( range::contains( allowlist, state->action->id ) )
+  if ( range::contains( allowlist, spell->id() ) )
     return monk_buff_t::trigger();
 
   return false;
@@ -6316,7 +6316,7 @@ monk_effect_callback_t *monk_t::create_proc_callback( monk_callback_init_t param
           { PF_MAGIC_HEAL_TAKEN, PF_MAGIC_HEAL },
           { PF_MAGIC_SPELL_TAKEN, PF_MAGIC_SPELL },
           { PF_PERIODIC_TAKEN, PF_PERIODIC },
-          { PF_DAMAGE_TAKEN, PF_ALL_DAMAGE },
+          { PF_ALL_DAMAGE_TAKEN, PF_ALL_DAMAGE },
       };
 
       for ( auto t : translation_map )
@@ -6464,10 +6464,10 @@ void monk_t::init_special_effects()
                             static_cast<proc_flag>( PF_ALL_DAMAGE | PF_ALL_HEAL | PF_CAST_SUCCESSFUL ),
                             static_cast<proc_flag2>( PF2_ALL_CAST | PF2_ALL_HIT ) } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                              [ & ]( const dbc_proc_callback_t *, const proc_data_t &, player_t *,
-                                                     action_state_t *state, proc_trigger_type_e ) {
-                                                return buff.balanced_stratagem_magic->trigger( state ) ||
-                                                       buff.balanced_stratagem_physical->trigger( state );
+                                              [ & ]( const dbc_proc_callback_t *, const proc_data_t &data, player_t *,
+                                                     action_state_t *, proc_trigger_type_e ) {
+                                                return buff.balanced_stratagem_magic->trigger( data ) ||
+                                                       buff.balanced_stratagem_physical->trigger( data );
                                               } )
         ->register_post_init_callback( []( monk_effect_callback_t *cb ) {
           cb->proc_chance                                  = 1.0;
@@ -6595,7 +6595,7 @@ void monk_t::init_special_effects()
           cb->proc_data.can_only_proc_from_class_abilities = true;
         } );
 
-    create_proc_callback( { &buff.refreshing_drink->data(), PF_DAMAGE_TAKEN,
+    create_proc_callback( { &buff.refreshing_drink->data(), PF_ALL_DAMAGE_TAKEN,
                             static_cast<proc_flag2>( PF2_ALL_HIT | PF2_PERIODIC_DAMAGE ) } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::TRIGGER,
                                               [ & ]( const dbc_proc_callback_t *, const proc_data_t &, player_t *,
