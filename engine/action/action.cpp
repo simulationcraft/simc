@@ -4523,12 +4523,10 @@ void action_t::trigger_dot( action_state_t* s )
   if ( callbacks && caster_callbacks && !suppress_callback_from_trigger_dot &&
        ( !proc_data.suppress_caster_procs || proc_data.enable_proc_from_suppressed ) )
   {
-    // TODO: should this be based on whether the action is harmful or not?
+    // Current implementation splits helpful PF2_LANDED into PF1_HIT and PF1_CRIT so we need to adjust here
+    // TODO: assumption is that PROC1_NONE_HELPFUL actually applies to all aura application, whether hostile or not
     // NOTE: we don't pass state since this is an aura_applied trigger
-    if ( dot->target->is_enemy() )
-      player->trigger_callbacks( PROC1_NONE_HARMFUL, PROC2_LANDED, proc_data, dot->target, TRIGGER_AURA_APPLIED );
-    else  // Current implementation splits helpful PF2_LANDED into PF1_HIT and PF1_CRIT so we need to adjust here
-      player->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, proc_data, dot->target, TRIGGER_AURA_APPLIED );
+    player->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, proc_data, dot->target, TRIGGER_AURA_APPLIED );
   }
 }
 

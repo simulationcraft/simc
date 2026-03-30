@@ -41,22 +41,20 @@ struct proc_event_t : public event_t
   {
     schedule( timespan_t::zero() );
 #ifndef NDEBUG
-    debug_str = util::proc_trigger_type_string( type );
-    debug_str += ':';
-
+    std::string _name_str;
     if ( !cb )
-      debug_str += name();
+      _name_str = name();
     else if ( !cb->effect.name_str.empty() )
-      debug_str += cb->effect.name_str;
+      _name_str = cb->effect.name_str;
     else
     {
       if ( cb->effect.generated_name_str.empty() )
         cb->effect.name();
 
-      debug_str += cb->effect.generated_name_str;
+      _name_str = cb->effect.generated_name_str;
     }
 
-    debug_str += '-' + spell->name_cstr();
+    debug_str = fmt::format( "{}:{}-{}", util::proc_trigger_type_string( type ), _name_str, spell->name_cstr() );
 #endif
   }
 
