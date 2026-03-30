@@ -250749,6 +250749,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Litany of Lightblind Wrath (id=1263721) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
@@ -250757,7 +250758,7 @@ Labels           : 292
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Beacon of Lightblind Wrath (1258283)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1274575)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
