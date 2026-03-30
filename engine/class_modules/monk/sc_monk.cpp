@@ -1591,6 +1591,15 @@ struct fists_of_fury_t : monk_melee_attack_t
 
       return cam;
     }
+
+    std::vector<player_t *> &target_list() const override
+    {
+      auto &tl = monk_melee_attack_t::target_list();
+
+      p()->rng().shuffle( tl.begin(), tl.end() );
+
+      return tl;
+    }
   };
 
   action_t *jadefire_stomp;
