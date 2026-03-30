@@ -716,72 +716,48 @@ struct player_t : public actor_t
 
   using resource_callback_function_t = std::function<void( bool )>;
 
-  template <typename T>
-  struct player_option_t
-  {
-    T default_value;
-    T current_value;
-
-    player_option_t( const T val = T() ) : default_value( val ), current_value( val ) {}
-
-    template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, std::string>>>
-    player_option_t( const char* val ) : default_value( val ), current_value( val ) {}
-
-    operator T&() { return current_value; }
-    operator T&() const { return current_value; }
-    bool operator==( T other ) { return current_value == other; }
-
-    template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, std::string>>>
-    operator std::string_view() const { return current_value; }
-
-    bool is_default() const { return current_value == default_value; }
-
-    friend void sc_format_to( const player_option_t<T>& opt, fmt::format_context::iterator out )
-    { fmt::format_to( out, "{}", opt.current_value ); }
-  };
-
   struct shadowlands_opt_t
   {
     /// Type stat gained from So'leah's Secret Technique
     /// Buff type: "mastery", "haste", "crit", "versatility"
     /// Overrides sim-wide option with a player-specific one
     /// Empty value indicates use sim-wide option.
-    player_option_t<std::string> soleahs_secret_technique_type;
+    default_value_t<std::string> soleahs_secret_technique_type;
   } shadowlands_opts;
 
   struct dragonflight_opt_t
   {
     /// Stat to trigger for Gyroscopic Kaleidoscope
     /// Buff type: "mastery", "haste", "crit", "versatility"
-    player_option_t<std::string> gyroscopic_kaleidoscope_stat = "haste";
+    default_value_t<std::string> gyroscopic_kaleidoscope_stat = "haste";
     // Ruby Whelp Shell training levels
     // Overrides sim-wide option with a player-specific one
-    player_option_t<std::string> ruby_whelp_shell_training;
+    default_value_t<std::string> ruby_whelp_shell_training;
     // A list of context-aware procs for Ruby Whelp Shell
     // Overrides sim-wide option with a player-specific one
-    player_option_t<std::string> ruby_whelp_shell_context;
+    default_value_t<std::string> ruby_whelp_shell_context;
     // Set the dragonflight for Glimmering Chromatic Orb
     // Overrides sim-wide option with a player-specific one
-    player_option_t<std::string> ominous_chromatic_essence_dragonflight = "obsidian";
+    default_value_t<std::string> ominous_chromatic_essence_dragonflight = "obsidian";
     // Set the allies dragonflights for Glimmering Chromatic Orb
     // Overrides sim-wide option with a player-specific one
-    player_option_t<std::string> ominous_chromatic_essence_allies;
+    default_value_t<std::string> ominous_chromatic_essence_allies;
     // Set the target type for Askhandur's Damage Doubling
     // Overrides sim-wide option with a player-specific one
-    player_option_t<bool> ashkandur_humanoid;
+    default_value_t<bool> ashkandur_humanoid;
     // Set the initial starting state for the igneous flowstone trinket Ebb/Flood/High/Low Tides.
     // Any other input will have it randomly select between High and Low Tide, and this this is default.
     // Overrides sim-wide option with a player-specific one
-    player_option_t<std::string> flowstone_starting_state = "random_active";
+    default_value_t<std::string> flowstone_starting_state = "random_active";
     /// Type stat given by Spoils of Neltharus on pull
     /// Buff type: "mastery", "haste", "crit", "vers", other for random
-    player_option_t<std::string> spoils_of_neltharus_initial_type = "";
+    default_value_t<std::string> spoils_of_neltharus_initial_type;
     /// Chance for igenous flowstone lave wave to hit twice
-    player_option_t<double> igneous_flowstone_double_lava_wave_chance;
+    default_value_t<double> igneous_flowstone_double_lava_wave_chance;
     /// Enable Voice of the Silent Star's proc
-    player_option_t<bool> voice_of_the_silent_star_enable = true;
+    default_value_t<bool> voice_of_the_silent_star_enable = true;
     // Force the extra damage from Nymue's Unraveling Spindle against Immobilized targets
-    player_option_t<bool> nymue_forced_immobilized = false;
+    default_value_t<bool> nymue_forced_immobilized;
     // Option to control the timing to pick up each orb for the Witherbarks Branch Trinket.
     timespan_t witherbarks_branch_timing[ 3 ] = { 1_s, 1_s, 7_s };
     // Enable Rallied to Victory Ally estimation
@@ -799,7 +775,7 @@ struct player_t : public actor_t
     // String of Delicacies skip chance for multi actor sims. Makes it skip a buff to lower the power and simulate loosing some to healers.
     double string_of_delicacies_multi_actor_skip_chance = 0.2;
     // Which random method to use to determine Balefire Branch stack loss from damage. Accepts "rppm", "percent", or "constant"
-    player_option_t<std::string> balefire_branch_loss_rng_type = "constant";
+    default_value_t<std::string> balefire_branch_loss_rng_type = "constant";
     // Set RPPM when "rppm" method is selected
     double balefire_branch_loss_rppm = 2;
     // Set percent chance when "percent" method is selected
@@ -813,13 +789,13 @@ struct player_t : public actor_t
     bool rashoks_use_true_overheal      = false;
     double rashoks_fake_overheal        = 0.4;
     // A list of stat amounts provided by the Timerunner's Advantage buff.
-    player_option_t<std::string> timerunners_advantage;
+    default_value_t<std::string> timerunners_advantage;
     // Number of party members using the Brilliance Tinker.
     int brilliance_party = 1;
     // Number of party members using the Windweaver Tinker.
     int windweaver_party = 4;
     // Tinker Ilvls of party members using the Windweaver Tinker. If not specified they will be your Main Hands ilvl.
-    player_option_t<std::string> windweaver_party_ilvls = "";
+    default_value_t<std::string> windweaver_party_ilvls;
     // Item level of ally using emerald coach's whistle on you.
     int emerald_coachs_whistle_ally_ilvl = -1;
     // Whether the ally is a healer or not
@@ -829,10 +805,10 @@ struct player_t : public actor_t
   struct thewarwithin_opt_t
   {
     // Starting stance for Sik'rans Shadow Arsenal
-    player_option_t<std::string> sikrans_endless_arsenal_stance = "";
+    default_value_t<std::string> sikrans_endless_arsenal_stance;
     // starting & desired stacks for Ovinax's Mercurial Egg
-    player_option_t<int> ovinaxs_mercurial_egg_initial_primary_stacks = 20;
-    player_option_t<int> ovinaxs_mercurial_egg_desired_primary_stacks = 20;
+    default_value_t<int> ovinaxs_mercurial_egg_initial_primary_stacks = 20;
+    default_value_t<int> ovinaxs_mercurial_egg_desired_primary_stacks = 20;
     // how close to desired stacks you can be before potentially adjusting
     int ovinaxs_mercurial_egg_desired_primary_stacks_leeway = 3;
     // time to pick up Entropic Skardyn Core fragment
@@ -844,7 +820,7 @@ struct player_t : public actor_t
     timespan_t carved_blazikon_wax_stay_in_light_duration = 0_s;  // remain until the end
     timespan_t carved_blazikon_wax_stay_in_light_stddev = 0_s;
     // allies with signet of the priory
-    player_option_t<std::string> signet_of_the_priory_party_stats;
+    default_value_t<std::string> signet_of_the_priory_party_stats;
     timespan_t signet_of_the_priory_party_use_cooldown = 120_s;
     timespan_t signet_of_the_priory_party_use_stddev = 6_s;
     // harvester's edict chance to intercept
@@ -874,15 +850,15 @@ struct player_t : public actor_t
     // currently bugged to trigger on them.
     double mereldars_toll_ally_trigger_chance             = 0.6;
     double sureki_zealots_insignia_rppm_multiplier        = 0.9;
-    player_option_t<std::string> windsingers_passive_stat = "";
+    default_value_t<std::string> windsingers_passive_stat;
     // Mister Lock-n-Stalk mode of operation
-    player_option_t<std::string> mister_locknstalk_mode = "dynamic";
-    player_option_t<std::string> jastor_diamond_ally_stat = "none";
+    default_value_t<std::string> mister_locknstalk_mode = "dynamic";
+    default_value_t<std::string> jastor_diamond_ally_stat = "none";
     double suspicious_energy_drink_bonus_chance           = 0;
     timespan_t additional_gcd_time                        = 0_s;
     // Alchemical Chaos Flask
-    player_option_t<std::string> alchemical_initial_stat    = "none";  // Initial stat for Alchemical Chaos Flask
-    player_option_t<std::string> alchemical_initial_penalty = "none";  // Initial penalty for Alchemical Chaos Flask
+    default_value_t<std::string> alchemical_initial_stat    = "none";  // Initial stat for Alchemical Chaos Flask
+    default_value_t<std::string> alchemical_initial_penalty = "none";  // Initial penalty for Alchemical Chaos Flask
     // Whether or not to use lowest or highest (ethereal) secondary stat
     bool incorporeal_essence_gorger_ethereal = false;
     // Chance to miss the astral antenna orbs due to movement
@@ -903,7 +879,7 @@ struct player_t : public actor_t
     // Default is "raid_random", picking a random race of a raid boss in the current tier
     // "random" picks a random valid race.
     // "none" will use the targets actual race.
-    player_option_t<std::string> darkmoon_hunt_race = "raid_random";
+    default_value_t<std::string> darkmoon_hunt_race = "raid_random";
     // Set the average duration after getting the sealed chaos urn fear effect where it is dispelled.
     timespan_t sealed_chaos_urn_dispell_time = 2.5_s;
     // Set weather you expect to be dispelled by a healer when getting the sealed chaos urn fear.

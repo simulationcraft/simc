@@ -11411,9 +11411,7 @@ void druid_t::create_buffs()
     debug_cast<druid_absorb_buff_t*>( buff.ursocs_fury )->set_cumulative( true );
 
   buff.waking_nightmare = make_fallback( talent.waking_nightmare.ok(),
-    this, "waking_nightmare", find_trigger( talent.waking_nightmare ).trigger() )
-      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-      ->set_max_stack( 10 );
+    this, "waking_nightmare", find_trigger( talent.waking_nightmare ).trigger() );
 
   buff.wild_guardian = make_fallback( talent.wild_guardian_1.ok(), this, "wild_guardian", find_spell( 1269616 ) );
 
@@ -12798,7 +12796,8 @@ void druid_t::init_special_effects()
       buff.waking_nightmare->trigger();
     } );
 
-    new dbc_proc_callback_t( this, * driver );
+    auto cb = new dbc_proc_callback_t( this, * driver );
+    cb->deactivate_with_buff( buff.waking_nightmare );
   }
 
   // Hero talents

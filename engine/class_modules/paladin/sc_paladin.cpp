@@ -3998,6 +3998,19 @@ bool paladin_t::validate_fight_style( fight_style_e style ) const
   return true;
 }
 
+// paladin_t::validate_actor ================================================
+bool paladin_t::validate_actor()
+{
+  if ( specialization() == PALADIN_HOLY )
+  {
+    if ( !quiet )
+      sim->error( "Holy Paladin for {} is not currently supported.", *this );
+    return false;
+  }
+
+  return true;
+}
+
 void paladin_t::init_special_effects()
 {
   player_t::init_special_effects();

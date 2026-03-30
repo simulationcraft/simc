@@ -1591,6 +1591,15 @@ struct fists_of_fury_t : monk_melee_attack_t
 
       return cam;
     }
+
+    std::vector<player_t *> &target_list() const override
+    {
+      auto &tl = monk_melee_attack_t::target_list();
+
+      p()->rng().shuffle( tl.begin(), tl.end() );
+
+      return tl;
+    }
   };
 
   action_t *jadefire_stomp;
@@ -3620,6 +3629,7 @@ struct zenith_t : public monk_spell_t
     {
       aoe                 = -1;
       reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
+      ww_mastery          = true;
     }
   };
 
@@ -3645,12 +3655,12 @@ struct zenith_t : public monk_spell_t
 
     monk_spell_t::execute();
 
-    if ( zenith_stomp )
-      zenith_stomp->execute_on_target( target );
-
     p()->buff.zenith->trigger();
     p()->cooldown.rising_sun_kick->reset( true );
     p()->buff.stand_ready->trigger();
+
+    if ( zenith_stomp )
+      zenith_stomp->execute_on_target( target );
   }
 };
 
@@ -6063,7 +6073,8 @@ void monk_t::create_buffs()
                              ->set_default_value( talent.windwalker.tigereye_brew_1_buff->effectN( 1 ).percent() );
 
   buff.tigereye_brew_3 = make_buff_fallback( talent.windwalker.tigereye_brew_3->ok(), this, "tigereye_brew_3",
-                                             talent.windwalker.tigereye_brew_3_buff );
+                                             talent.windwalker.tigereye_brew_3_buff )
+                             ->set_cooldown( talent.windwalker.tigereye_brew_3->internal_cooldown() );
 
   // Conduit of the Celestials
   buff.celestial_conduit =

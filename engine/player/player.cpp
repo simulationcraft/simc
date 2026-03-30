@@ -1405,13 +1405,6 @@ void player_t::init()
                 util::fight_style_string( sim->fight_style ) );
   }
 
-  // Fight style dependent option defaults. Note that these options must be of type player_option_t<T>
-  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
-  {
-    if ( dragonflight_opts.balefire_branch_loss_rng_type.is_default() )
-      dragonflight_opts.balefire_branch_loss_rng_type = "rppm";
-  }
-
   // Ensure the precombat and default lists are the first listed
   auto pre_combat = get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." );
   pre_combat->used = true;
@@ -13066,7 +13059,7 @@ std::string player_t::create_profile( save_e stype )
     auto print_option = [ &profile_str, term ]( std::string_view n, auto option ) {
       if ( !option.is_default() )
       {
-        if constexpr ( std::is_same_v<decltype( option ), player_option_t<bool>> )
+        if constexpr ( std::is_same_v<decltype( option ), default_value_t<bool>> )
           profile_str += fmt::format( "{}={}{}", n, static_cast<int>( option ), term );
         else
           profile_str += fmt::format( "{}={}{}", n, option, term );

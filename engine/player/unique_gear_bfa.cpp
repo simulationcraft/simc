@@ -1771,7 +1771,10 @@ void items::balefire_branch( special_effect_t& effect )
       set_reverse( true );
       set_reverse_stack_count( as<int>( max_stack() / buff_duration().total_seconds() ) );
 
-      if ( p->dragonflight_opts.balefire_branch_loss_rng_type == "rppm" )
+      if ( p->dragonflight_opts.balefire_branch_loss_rng_type == "rppm" ||
+           ( ( sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_SLICE ||
+               sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_ROUTE ) &&
+             p->dragonflight_opts.balefire_branch_loss_rng_type.is_default() ) )
       {
         auto _rppm = p->get_rppm( "balefire_branch_loss", p->dragonflight_opts.balefire_branch_loss_rppm );
 

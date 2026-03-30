@@ -1193,12 +1193,19 @@ void hunt( special_effect_t& effect )
       : dbc_proc_callback_t( e.player, e ), buffs( map ), race( RACE_NONE ), mode( MODE_RAID_RANDOM )
     {
       if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "none" ) ||
-           listener->sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_ROUTE )
+           ( listener->sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_ROUTE &&
+             e.player->midnight_opts.darkmoon_hunt_race.is_default() ) )
+      {
         mode = MODE_ACTUAL;
+      }
       else if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "random" ) )
+      {
         mode = MODE_RANDOM;
+      }
       else if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "raid_random" ) )
+      {
         mode = MODE_RAID_RANDOM;
+      }
       else
       {
         mode = MODE_SPECIFIED;
