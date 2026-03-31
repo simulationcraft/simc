@@ -8387,9 +8387,6 @@ bool actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const act
   if ( !p()->talent.deathstalker.deathstalkers_mark->ok() )
     return false;
 
-  if ( !p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) && !from_darkest_night )
-    return false;
-
   buff_t*& debuff = p()->deathstalkers_mark_debuff;
   if ( debuff && debuff->check() )
   {
