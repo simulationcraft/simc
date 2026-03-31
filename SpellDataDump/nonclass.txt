@@ -252212,6 +252212,7 @@ Effects          :
 Description      : $@spelldesc1259518
 
 Name             : Relaxed (id=1269152) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
@@ -252224,7 +252225,7 @@ Labels           : 4127
                  : 4376: Pausing Pylon 2.0 (1259647 effect#1)
 Proc Chance      : 101%
 Proc Flags       : Death
-Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), Aura Is Buff (140), Aura Points On Client (268)
+Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), Aura Is Buff (140), Not In Raid Instances (203), Aura Points On Client (268), Not in Mythic+ Mode (Challenge Mode) (368)
 Effects          :
 #1 (id=1280798)  : Apply Aura (6) | Enable Profession Effects (511) | Scaling Class: Primary Attribute (-1)
                    Base Value: 15 | Scaled Value: 49.99999 (coefficient=1.486703) | Misc Value: 323 | Target: Self (1)
