@@ -226561,13 +226561,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 63.20347 (coefficient=0.482173) | Target: Self (1)
 
 Name             : Xal'atath's Gift (id=1221063) 
+Hotfixed         : Attributes, Aura Interrupt
 School           : Shadow
 Spell Type       : None
 Duration         : 20 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Attributes       : Ignore Line of Sight (66), Not On Player (167), Not On Player Controlled NPC (168), AI Doesn't Face Target (179), Lock Caster Movement and Facing While Casting (352)
-Aura Interrupt   : Leave World (19), Enter World (22)
+Attributes       : Ignore Line of Sight (66), Not On Player (167), Not On Player Controlled NPC (168), AI Doesn't Face Target (179), Not In Raid Instances (203), Lock Caster Movement and Facing While Casting (352)
+Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1207348)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Radius: 0 - 60 yards | Target: Source (22) -> any in Area (7)
@@ -246455,6 +246456,7 @@ Hidden Trove's contents depend on the completed Delve Tier.
 You are able to unlock a Hidden Trove.
 
 Name             : Solar Core Igniter (id=1254638) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
@@ -246462,7 +246464,7 @@ Cooldown         : 90 seconds
 Category         : 1141 (Type 0x0)
 Labels           : 3959: Item Effects
 Category Cooldown: 20 seconds
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1261142)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -246823,10 +246825,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 
 Name             : Emberwing Burn (id=1255853) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1263040)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
