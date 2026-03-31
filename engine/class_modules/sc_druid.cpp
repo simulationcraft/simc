@@ -2555,8 +2555,11 @@ public:
   {
     BASE::execute();
 
-    if ( echo_action && echo_buff->consume( this ) )
+    if ( echo_action && echo_buff->check() )
+    {
+      echo_buff->decrement();
       trigger_echoes();
+    }
   }
 };
 
@@ -11356,8 +11359,6 @@ void druid_t::create_buffs()
       this, "gift_of_maul", find_spell( 1269660 ) )
         ->set_initial_stack_to_max_stack()
         ->set_consume_all_stacks( false );
-  if ( !buff.gift_of_maul->is_fallback )
-    debug_cast<druid_buff_t*>( buff.gift_of_maul )->set_can_proc_from_procs( true );
 
   buff.gore = make_fallback( talent.gore.ok(), this, "gore", find_spell( 93622 ) )
     ->set_trigger_spell( talent.gore );
