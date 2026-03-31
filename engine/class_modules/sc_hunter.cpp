@@ -4848,7 +4848,7 @@ struct boar_charge_t final : hunter_ranged_attack_t
       double am = hunter_ranged_attack_t::composite_da_multiplier( s );
 
       // 2026-03-30: Boar Charges double dip Spirit Bond's bonus
-      if ( p()->bugs )
+      if ( p()->bugs && p()->specialization() == HUNTER_SURVIVAL )
       {
         double bonus = p()->cache.mastery() * p()->mastery.spirit_bond->effectN( affected_by.spirit_bond.direct ).mastery_value();
         bonus *= 1 + p()->mastery.spirit_bond_buff->effectN( 1 ).percent();
@@ -4882,7 +4882,7 @@ struct boar_charge_t final : hunter_ranged_attack_t
     double am = hunter_ranged_attack_t::composite_da_multiplier( s );
 
     // 2026-03-30: Boar Charges double dip Spirit Bond's bonus
-    if ( p()->bugs )
+    if ( p()->bugs && p()->specialization() == HUNTER_SURVIVAL )
     {
       double bonus = p()->cache.mastery() * p()->mastery.spirit_bond->effectN( affected_by.spirit_bond.direct ).mastery_value();
       bonus *= 1 + p()->mastery.spirit_bond_buff->effectN( 1 ).percent();
