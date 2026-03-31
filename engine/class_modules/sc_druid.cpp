@@ -1708,9 +1708,6 @@ std::function<void( pet_t* )> parent_pet_action_fn( action_t* parent )
 template <typename Base = buff_t, typename = std::enable_if_t<std::is_base_of_v<buff_t, Base>>>
 struct druid_buff_base_t : public Base
 {
-private:
-  bool can_proc_from_procs = false;
-
 protected:
   using base_t = druid_buff_base_t<Base>;
 
@@ -1728,99 +1725,7 @@ public:
   druid_t* p() { return static_cast<druid_t*>( Base::source ); }
 
   const druid_t* p() const { return static_cast<druid_t*>( Base::source ); }
-
-  base_t* set_can_proc_from_procs( bool b ) { can_proc_from_procs = b; return this; }
-
-  bool can_trigger( action_t* a ) const override
-  {
-#ifndef NDEBUG
-    if ( !dynamic_cast<druid_action_data_t*>( a ) )
-    {
-      throw sc_runtime_error( fmt::format( "Passing non-druid {} to {} can_trigger.", *a, *this ) );
-    }
-#endif
-
-    if ( Base::is_fallback || !a->data().ok() || !Base::get_trigger_data()->ok() )
-      return false;
-
-    if ( !a->allow_class_ability_procs &&
-         Base::get_trigger_data()->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
-    {
-      return false;
-    }
-
-    if ( a->suppress_caster_procs && !Base::get_trigger_data()->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
-      return false;
-
-    if ( a->proc && !a->not_a_proc )
-    {
-      // forced override
-      if ( can_proc_from_procs )
-        return true;
-
-      // allow if the driver can proc from procs
-      if ( Base::get_trigger_data()->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
-        return true;
-
-      // allow if the action is from convoke and the driver procs from cast successful
-      if ( ( Base::get_trigger_data()->proc_flags() & PF_CAST_SUCCESSFUL ) &&
-           dynamic_cast<druid_action_data_t*>( a )->has_flag( flag_e::CONVOKE ) )
-      {
-        return true;
-      }
-
-      // by default procs cannot trigger
-      return false;
-    }
-
-    return true;
-  }
-
-  bool can_consume( action_t* a ) const override
-  {
-#ifndef NDEBUG
-    if ( !dynamic_cast<druid_action_data_t*>( a ) )
-    {
-      throw sc_runtime_error( fmt::format( "Passing non-druid {} to {} can_consume.", *a, *this ) );
-    }
-#endif
-
-    if ( Base::is_fallback || !a->data().ok() || !Base::data().ok() )
-      return false;
-
-    if ( !a->allow_class_ability_procs && Base::data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
-      return false;
-
-    if ( a->suppress_caster_procs && !Base::data().flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
-      return false;
-
-    if ( a->proc && !a->not_a_proc )
-    {
-      // forced override
-      if ( can_proc_from_procs )
-        return true;
-
-      // allow if either the buff or the driver can proc from procs
-      if ( Base::data().flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
-      {
-        return true;
-      }
-
-      // allow if the action is from convoke and the buff procs from cast successful
-      if ( ( Base::data().proc_flags() & PF_CAST_SUCCESSFUL ) &&
-           dynamic_cast<druid_action_data_t*>( a )->has_flag( flag_e::CONVOKE ) )
-      {
-        return true;
-      }
-
-      // by default procs cannot expire
-      return false;
-    }
-
-    return true;
-  }
 };
-
 template <class Base>
 struct druid_action_t : public parse_action_effects_t<Base>, public druid_action_data_t
 {

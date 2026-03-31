@@ -8,19 +8,36 @@
 #include "action.hpp"
 #include "player/player.hpp"
 
-proc_data_t::proc_data_t( const spell_data_t* s_data )
-  : spell( s_data ? s_data : spell_data_t::nil() ),
-    suppress_caster_procs( s_data->flags( spell_attribute::SX_SUPPRESS_CASTER_PROCS ) ),
-    enable_proc_from_suppressed( s_data->flags( spell_attribute::SX_ENABLE_PROCS_FROM_SUPPRESSED ) ),
-    can_proc_from_suppressed( s_data->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) ),
-    suppress_target_procs( s_data->flags( spell_attribute::SX_SUPPRESS_TARGET_PROCS ) ),
-    can_proc_from_suppressed_target( s_data->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED_TGT ) ),
-    allow_class_ability_procs( s_data->flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS ) ),
-    can_only_proc_from_class_abilities( s_data->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) ),
-    can_proc_from_procs( s_data->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
+proc_data_t::proc_data_t()
+  : spell( spell_data_t::nil() ),
+    suppress_caster_procs( false ),
+    enable_proc_from_suppressed( false ),
+    can_proc_from_suppressed( false ),
+    suppress_target_procs( false ),
+    can_proc_from_suppressed_target( false ),
+    allow_class_ability_procs( false ),
+    can_only_proc_from_class_abilities( false ),
+    can_proc_from_procs( false ),
+    proc_cast_successful( false )
 {}
 
-proc_data_t::proc_data_t() : proc_data_t( spell_data_t::nil() ) {}
+proc_data_t::proc_data_t( const spell_data_t* s_data ) : spell( s_data ? s_data : spell_data_t::nil() )
+{
+  _init();
+}
+
+void proc_data_t::_init()
+{
+  suppress_caster_procs = spell->flags( spell_attribute::SX_SUPPRESS_CASTER_PROCS );
+  enable_proc_from_suppressed = spell->flags( spell_attribute::SX_ENABLE_PROCS_FROM_SUPPRESSED );
+  can_proc_from_suppressed = spell->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED );
+  suppress_target_procs = spell->flags( spell_attribute::SX_SUPPRESS_TARGET_PROCS );
+  can_proc_from_suppressed_target = spell->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED_TGT );
+  allow_class_ability_procs = spell->flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
+  can_only_proc_from_class_abilities = spell->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES );
+  can_proc_from_procs = spell->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS );
+  proc_cast_successful = spell->proc_flags() & PF_CAST_SUCCESSFUL;
+}
 
 bool proc_data_t::check_proc_trigger( const proc_data_t& source, const proc_data_t& target, proc_trigger_type_e type )
 {

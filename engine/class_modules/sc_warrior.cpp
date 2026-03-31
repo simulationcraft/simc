@@ -1931,6 +1931,7 @@ struct melee_t : public warrior_attack_t
     repeating                 = true;
     trigger_gcd               = timespan_t::zero();
     special                   = false;
+
     usable_while_channeling   = true;
 
     weapon_multiplier = 1.0;

@@ -496,7 +496,7 @@ struct leech_t : public heal_t
 struct invulnerable_debuff_t : public buff_t
 {
   invulnerable_debuff_t( player_t* p ) :
-    buff_t( p, "invulnerable" )
+    buff_t( p->sim, p, "invulnerable", spell_data_t::nil() )
   {
     set_max_stack( 1 );
   }
@@ -5065,35 +5065,37 @@ void player_t::create_buffs()
   // .. for enemies
   else
   {
-    debuffs.bleeding      = make_buff( this, "bleeding" )->set_max_stack( 1 );
-    debuffs.invulnerable  = new invulnerable_debuff_t( this );
-    debuffs.vulnerable    = make_buff( this, "vulnerable" )->set_max_stack( 1 );
-    debuffs.flying        = make_buff( this, "flying" )->set_max_stack( 1 );
-    debuffs.mortal_wounds = make_buff( this, "mortal_wounds", find_spell( 115804 ) )
-        ->set_default_value( std::fabs( find_spell( 115804 )->effectN( 1 ).percent() ) );
+    debuffs.bleeding      = make_buff( sim, this, "bleeding" )->set_max_stack( 1 );
+    debuffs.invulnerable  = make_buff<invulnerable_debuff_t>( this );
+    debuffs.vulnerable    = make_buff( sim, this, "vulnerable" )->set_max_stack( 1 );
+    debuffs.flying        = make_buff( sim, this, "flying" )->set_max_stack( 1 );
+    debuffs.mortal_wounds = make_buff( sim, this, "mortal_wounds", find_spell( 115804 ) )
+      ->set_default_value( std::fabs( find_spell( 115804 )->effectN( 1 ).percent() ) );
 
     // BfA Raid Damage Modifier Debuffs
-    debuffs.chaos_brand = make_buff( this, "chaos_brand", find_spell( 1490 ) )
-        ->set_default_value_from_effect( 1 )
-        ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
-    debuffs.mystic_touch = make_buff( this, "mystic_touch", find_spell( 113746 ) )
-        ->set_default_value_from_effect( 1 )
-        ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
+    debuffs.chaos_brand = make_buff( sim, this, "chaos_brand", find_spell( 1490 ) )
+      ->set_default_value_from_effect( 1 )
+      ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
+    debuffs.mystic_touch = make_buff( sim, this, "mystic_touch", find_spell( 113746 ) )
+      ->set_default_value_from_effect( 1 )
+      ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
 
     // Dragonflight Raid Damage Modifier Debuffs
-    debuffs.hunters_mark = make_buff( this, "hunters_mark", find_spell( 259556 ) )
-        ->disable_ticking( true )
-        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
+    debuffs.hunters_mark = make_buff( sim, this, "hunters_mark", find_spell( 259556 ) )
+      ->disable_ticking( true )
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
   }
 
   // set up always since this can be applied by enemy actions and raid events.
-  debuffs.damage_taken =
-        make_buff( this, "damage_taken" )->set_duration( timespan_t::from_seconds( 20.0 ) )->set_max_stack( 999 );
+  debuffs.damage_taken = make_buff( sim, this, "damage_taken" )
+    ->set_duration( timespan_t::from_seconds( 20.0 ) )
+    ->set_max_stack( 999 );
 
   if ( sim->has_raid_event( "damage_done" ) )
   {
-    buffs.damage_done =
-        make_buff( this, "damage_done" )->set_max_stack( 1 )->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    buffs.damage_done = make_buff( sim, this, "damage_done" )
+      ->set_max_stack( 1 )
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 }
 

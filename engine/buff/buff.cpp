@@ -583,28 +583,33 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
 }
 }  // namespace
 
+buff_t::buff_t( actor_pair_t q, std::string_view name )
+  : buff_t( q.source->sim, q.target, q.source, name, spell_data_t::nil(), nullptr )
+{}
 
-buff_t::buff_t(actor_pair_t q, util::string_view name)
-  : buff_t(q, name, spell_data_t::nil(), nullptr)
-{
-}
-
-buff_t::buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell_data, const item_t* item )
+buff_t::buff_t( actor_pair_t q, std::string_view name, const spell_data_t* spell_data, const item_t* item )
   : buff_t( q.source->sim, q.target, q.source, name, spell_data, item )
-{
-}
+{}
 
-buff_t::buff_t(sim_t* sim, util::string_view name)
-  : buff_t(sim, nullptr, nullptr, name, spell_data_t::nil(), nullptr)
-{
-}
+buff_t::buff_t( sim_t* sim, std::string_view name )
+  : buff_t( sim, nullptr, nullptr, name, spell_data_t::nil(), nullptr )
+{}
 
-buff_t::buff_t( sim_t* sim, util::string_view name, const spell_data_t* spell_data, const item_t* item )
+buff_t::buff_t( sim_t* sim, std::string_view name, const spell_data_t* spell_data, const item_t* item )
   : buff_t( sim, nullptr, nullptr, name, spell_data, item )
-{
-}
+{}
 
-buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_view name, const spell_data_t* spell_data, const item_t* item )
+buff_t::buff_t( sim_t* sim, player_t* target, std::string_view name )
+  : buff_t( sim, target, nullptr, name, spell_data_t::nil(), nullptr )
+{}
+
+buff_t::buff_t( sim_t* sim, player_t* target, std::string_view name, const spell_data_t* spell_data,
+                const item_t* item )
+  : buff_t( sim, target, nullptr, name, spell_data, item )
+{}
+
+buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, std::string_view name, const spell_data_t* spell_data,
+                const item_t* item )
   : sim( sim ),
     player( target ),
     item( item ),
@@ -619,10 +624,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     cooldown(),
     internal_cooldown(),
     rppm( nullptr ),
-    proc_data( spell_data ),
     _max_stack( -1 ),
     _initial_stack( -1 ),
-    trigger_data( s_data ),
     default_value( DEFAULT_VALUE() ),
     default_value_effect_idx( 0 ),
     default_value_effect_multiplier( 1.0 ),
@@ -641,6 +644,14 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     consume_all_stacks( true ),
     ignore_time_modifier( false ),
     reverse_stack_reduction( 1 ),
+    proc_data( s_data ),
+    can_only_proc_from_class_abilities( proc_data.can_only_proc_from_class_abilities ),
+    can_proc_from_procs( proc_data.can_proc_from_procs ),
+    can_proc_from_suppressed( proc_data.can_proc_from_suppressed ),
+    trigger_data( proc_data ),
+    trigger_can_only_proc_from_class_abilities( trigger_data.can_only_proc_from_class_abilities ),
+    trigger_can_proc_from_procs( trigger_data.can_proc_from_procs ),
+    trigger_can_proc_from_suppressed( trigger_data.can_proc_from_suppressed ),
     current_value(),
     current_stack(),
     base_buff_duration( timespan_t::min() ),
@@ -1476,7 +1487,8 @@ buff_t* buff_t::set_trigger_spell( const spell_data_t* s )
   // spell data of the buff.
   if ( s != spell_data_t::nil() )
   {
-    trigger_data = s;
+    trigger_data.spell = s;
+    trigger_data._init();
   }
 
   // TODO: if trigger spell has an A_PROC_TRIGGER effect, set the percent chance to the effect value
@@ -1616,7 +1628,7 @@ void buff_t::datacollection_end()
 {
   // Debuffs need to ensure that the source is active (when single_actor_batch=1) to ensure that
   // reporting stays correct.
-  if ( sim->single_actor_batch && source != player )
+  if ( sim->single_actor_batch && source && source != player )
   {
     if ( !source->is_enemy() && source != sim->player_no_pet_list[ sim->current_index ] )
     {
@@ -2470,11 +2482,11 @@ void buff_t::bump( int stacks, double value )
   if ( player )
     player->trigger_ready();
 
-  if ( source )
+  // Current implementation splits helpful PF2_LANDED into PF1_HIT and PF1_CRIT so we only need to trigger PF1_HIT
+  // TODO: assumption is that PROC1_NONE_HELPFUL actually applies to all aura application, whether hostile or not
+  // NOTE: scheduled as event to ensure buff is fully processed
+  if ( source && !source->callbacks.procs[ PROC1_NONE_HELPFUL ][ PROC2_HIT ].empty() )
   {
-    // Current implementation splits helpful PF2_LANDED into PF1_HIT and PF1_CRIT so we only need to trigger PF1_HIT
-    // TODO: assumption is that PROC1_NONE_HELPFUL actually applies to all aura application, whether hostile or not
-    // NOTE: scheduled as event to ensure buff is fully processed
     make_event( *sim, [ this ] { source->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, this ); } );
   }
 }
@@ -2506,22 +2518,23 @@ bool buff_t::can_trigger( action_t* action ) const
   if ( is_fallback || !action->data().ok() || !trigger_data->ok() )
     return false;
 
-  if ( !action->allow_class_ability_procs && trigger_data->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
-    return false;
+  // only direct damage triggers obey proc-related attributes
+  auto pt_type = !trigger_data.proc_cast_successful && !action->not_a_proc && ( action->proc || action->background )
+                   ? proc_trigger_type_e::TRIGGER_ACTION_PROC
+                   : proc_trigger_type_e::TRIGGER_ACTION;
 
-  if ( action->suppress_caster_procs && !trigger_data->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
-    return false;
-
-  if ( action->proc && !action->not_a_proc && !trigger_data->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
-    return false;
-
-  return true;
+  return proc_data_t::check_proc_trigger( action->proc_data, trigger_data, pt_type );
 }
 
 bool buff_t::trigger( action_t* action, int stacks, double value, double chance, timespan_t duration )
 {
   if ( can_trigger( action ) )
+  {
+    if ( sim->debug )
+      sim->print_debug( "{} triggers {}.", *action, *this );
+
     return trigger( stacks, value, chance, duration );
+  }
 
   return false;
 }
@@ -2531,17 +2544,12 @@ bool buff_t::can_consume( action_t* action ) const
   if ( is_fallback || !action->data().ok() || !data().ok() )
     return false;
 
-  if ( !action->allow_class_ability_procs && data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
-    return false;
+  // only direct damage triggers obey proc-related attributes
+  auto pt_type = !proc_data.proc_cast_successful && !action->not_a_proc && ( action->proc || action->background )
+                   ? proc_trigger_type_e::TRIGGER_ACTION_PROC
+                   : proc_trigger_type_e::TRIGGER_ACTION;
 
-  if ( action->suppress_caster_procs && !data().flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
-    return false;
-
-  // TODO: check if trigger spell having CAN_PROC_FROM_PROCS is sufficient to allow the buff to consume
-  if ( action->proc && !action->not_a_proc && !data().flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
-    return false;
-
-  return true;
+  return proc_data_t::check_proc_trigger( action->proc_data, proc_data, pt_type );
 }
 
 int buff_t::consume( action_t* action, int stacks )
@@ -2572,6 +2580,9 @@ int buff_t::consume( action_t* action, int stacks )
 
   if ( internal_cooldown )
     internal_cooldown->start();
+
+  if ( sim->debug )
+    sim->print_debug( "{} consumes {}.", *action, *this );
 
   return old_stacks - check();
 }
