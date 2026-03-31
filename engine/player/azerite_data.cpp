@@ -2533,7 +2533,7 @@ void swirling_sands( special_effect_t& effect )
       add_stat( STAT_CRIT_RATING, power.value( 1 ) );
     }
 
-    void extend_duration( player_t* p, timespan_t extra_seconds ) override
+    void extend_duration( timespan_t extra_seconds ) override
     {
       if ( !check() || cooldown -> down() )
         return;
@@ -2542,7 +2542,7 @@ void swirling_sands( special_effect_t& effect )
       if ( extra_seconds == timespan_t::zero() )
         return;
 
-      stat_buff_t::extend_duration( p, extra_seconds );
+      stat_buff_t::extend_duration( extra_seconds );
       current_extension += extra_seconds;
       cooldown -> start();
     }
@@ -2578,7 +2578,7 @@ void swirling_sands( special_effect_t& effect )
 
     void execute( action_t* a, action_state_t* ) override
     {
-      proc_buff -> extend_duration( a -> player, extension );
+      proc_buff -> extend_duration( extension );
     }
   };
 
@@ -4133,7 +4133,7 @@ struct memory_of_lucid_dreams_t : public azerite_essence_major_t
 
     if ( ! player -> in_combat && precombat_time > 0 )
     {
-      player -> buffs.memory_of_lucid_dreams -> extend_duration( player, timespan_t::from_seconds( -precombat_time ) );
+      player -> buffs.memory_of_lucid_dreams -> extend_duration( timespan_t::from_seconds( -precombat_time ) );
       cooldown -> adjust( timespan_t::from_seconds( -precombat_time ), false );
 
       sim -> print_debug( "{} used Memory of Lucid Dreams in precombat with precombat time = {}, adjusting duration and remaining cooldown.",
@@ -5315,7 +5315,7 @@ struct worldvein_resonance_t : public azerite_essence_major_t
 
     if ( ! player -> in_combat && precombat_time > 0 )
     {
-      worldvein_resonance -> extend_duration( player, timespan_t::from_seconds( -precombat_time ) );
+      worldvein_resonance -> extend_duration( timespan_t::from_seconds( -precombat_time ) );
       cooldown -> adjust( timespan_t::from_seconds( -precombat_time ), false );
 
       sim -> print_debug( "{} used Worldvein Resonance in precombat with precombat time = {}, adjusting duration and remaining cooldown.",

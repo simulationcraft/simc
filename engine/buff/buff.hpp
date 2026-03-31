@@ -256,8 +256,8 @@ public:
   // is that the stack count will be adjusted by a single stack, regardless of buff_t::_initial_stack
   virtual void increment( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual void decrement( int stacks = 1, double value = DEFAULT_VALUE() );
-  virtual void extend_duration( player_t* p, timespan_t seconds );
-  virtual void extend_duration_or_trigger( timespan_t duration = timespan_t::min(), player_t* p = nullptr );
+  virtual void extend_duration( timespan_t seconds );
+  virtual void extend_duration_or_trigger( timespan_t duration = timespan_t::min() );
   virtual void reschedule_tick( timespan_t delta );
 
   virtual void start( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
@@ -371,6 +371,7 @@ public:
   buff_t* set_dynamic_time_duration_multiplier( double multiplier );
   buff_t* set_max_stack( int max_stack );
   buff_t* modify_max_stack( int max_stack );
+  buff_t* increase_max_stack_uptime( int max_stack_uptime );
   buff_t* set_initial_stack( int initial_stack );
   buff_t* modify_initial_stack( int initial_stack );
   buff_t* set_initial_stack_to_max_stack();

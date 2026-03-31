@@ -292,34 +292,34 @@ using namespace helpers;
             case 0:
               if ( p()->buffs.ritual_overlord->check() )
               {
-                p()->buffs.ritual_overlord->extend_duration( p(), adjustment );
+                p()->buffs.ritual_overlord->extend_duration( adjustment );
               }
               else
               {
                 p()->buffs.ritual_overlord->trigger();
-                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_overlord->extend_duration( p(), adjustment ); } );
+                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_overlord->extend_duration( adjustment ); } );
               }
               break;
             case 1:
               if ( p()->buffs.ritual_mother->check() )
               {
-                p()->buffs.ritual_mother->extend_duration( p(), adjustment );
+                p()->buffs.ritual_mother->extend_duration( adjustment );
               }
               else
               {
                 p()->buffs.ritual_mother->trigger();
-                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_mother->extend_duration( p(), adjustment ); } );
+                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_mother->extend_duration( adjustment ); } );
               }
               break;
             case 2:
               if ( p()->buffs.ritual_pit_lord->check() )
               {
-                p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment );
+                p()->buffs.ritual_pit_lord->extend_duration( adjustment );
               }
               else
               {
                 p()->buffs.ritual_pit_lord->trigger();
-                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment ); } );
+                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_pit_lord->extend_duration( adjustment ); } );
               }
               break;
             default:
@@ -2654,7 +2654,7 @@ using namespace helpers;
         for ( const auto t : p()->sim->target_non_sleeping_list )
         {
           if ( td( t )->debuffs.doom->check() )
-            td( t )->debuffs.doom->extend_duration( p(), -p()->talents.doom->effectN( 1 ).time_value() );
+            td( t )->debuffs.doom->extend_duration( -p()->talents.doom->effectN( 1 ).time_value() );
         }
       }
 
@@ -3168,7 +3168,7 @@ using namespace helpers;
       if ( p()->talents.reign_of_tyranny.ok() )
       {
         if ( p()->buffs.dreadstalkers->check() )
-          p()->buffs.dreadstalkers->extend_duration( p(), extension_time );
+          p()->buffs.dreadstalkers->extend_duration( extension_time );
       }
 
       if ( demon_counter > 0 )
@@ -3192,9 +3192,9 @@ using namespace helpers;
       {
         timespan_t reduction = -p()->hero.cruelty_of_kerxan->effectN( 1 ).time_value();
 
-        p()->buffs.ritual_overlord->extend_duration( p(), reduction );
-        p()->buffs.ritual_mother->extend_duration( p(), reduction );
-        p()->buffs.ritual_pit_lord->extend_duration( p(), reduction );
+        p()->buffs.ritual_overlord->extend_duration( reduction );
+        p()->buffs.ritual_mother->extend_duration( reduction );
+        p()->buffs.ritual_pit_lord->extend_duration( reduction );
       }
 
       if ( soul_harvester() && p()->hero.shadow_of_death.ok() )
@@ -3575,7 +3575,7 @@ using namespace helpers;
         if ( wither_debuff->remains() - remaining <= timespan_t::zero() )
           wither_debuff->expire();
         else
-          wither_debuff->extend_duration( p(), -remaining );
+          wither_debuff->extend_duration( -remaining );
 
         assert( dot->current_stack() == wither_debuff->check() && dot->remains() == wither_debuff->remains() );
       }
@@ -4273,7 +4273,7 @@ using namespace helpers;
       if ( p()->talents.raging_demonfire.ok() && tdata->dots.wither->is_ticking() )
       {
         tdata->dots.wither->adjust_duration( extra_time );
-        tdata->debuffs.wither->extend_duration( p(), extra_time );
+        tdata->debuffs.wither->extend_duration( extra_time );
         assert( tdata->dots.wither->current_stack() == tdata->debuffs.wither->check() && tdata->dots.wither->remains() == tdata->debuffs.wither->remains() );
       }
     }
@@ -4435,9 +4435,9 @@ using namespace helpers;
       {
         timespan_t reduction = -p()->hero.cruelty_of_kerxan->effectN( 1 ).time_value();
 
-        p()->buffs.ritual_overlord->extend_duration( p(), reduction );
-        p()->buffs.ritual_mother->extend_duration( p(), reduction );
-        p()->buffs.ritual_pit_lord->extend_duration( p(), reduction );
+        p()->buffs.ritual_overlord->extend_duration( reduction );
+        p()->buffs.ritual_mother->extend_duration( reduction );
+        p()->buffs.ritual_pit_lord->extend_duration( reduction );
       }
     }
   };

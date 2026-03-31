@@ -1405,13 +1405,6 @@ void player_t::init()
                 util::fight_style_string( sim->fight_style ) );
   }
 
-  // Fight style dependent option defaults. Note that these options must be of type player_option_t<T>
-  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
-  {
-    if ( dragonflight_opts.balefire_branch_loss_rng_type.is_default() )
-      dragonflight_opts.balefire_branch_loss_rng_type = "rppm";
-  }
-
   // Ensure the precombat and default lists are the first listed
   auto pre_combat = get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." );
   pre_combat->used = true;
@@ -2254,74 +2247,36 @@ void player_t::create_special_effects()
 
   if ( dragonflight_opts.emerald_coachs_whistle_ally_ilvl > 0 )
   {
-    auto stat_amount =
-        find_spell( 383798 )->effectN( 2 ).average_no_item( this, dragonflight_opts.emerald_coachs_whistle_ally_ilvl );
-
-    auto buff_spell = find_spell( 383799 );
-    auto buff_name  = util::tokenize_fn( buff_spell->name_cstr() );
-
-    auto b = buff_t::find( this, buff_name );
-
-    stat_buff_t* buff = nullptr;
-
-    if ( b )
+    struct emerald_coachs_whistle_ally_t : public special_effect_t
     {
-      buff = debug_cast<stat_buff_t*>( b );
-    }
-    else
-    {
-      buff = make_buff<stat_buff_t>( this, buff_name, buff_spell )->set_stat_from_effect( 1, stat_amount );
-    }
+      std::unique_ptr<item_t> _item;
 
-    // Copy the code out of unique gear.
-    struct emerald_coachs_whistle_cb_t : public dbc_proc_callback_t
-    {
-      double buff_size;
-
-      stat_buff_t* buff;
-
-      emerald_coachs_whistle_cb_t( const special_effect_t& e, stat_buff_t* buff, double buff_size )
-        : dbc_proc_callback_t( e.player, e ), buff( buff ), buff_size( buff_size )
+      emerald_coachs_whistle_ally_t( player_t* p ) : special_effect_t( p )
       {
-        deactivate_with_buff( buff );
-      }
+        // make a fake
+        _item = std::make_unique<item_t>(
+          p, fmt::format( ",id=193718,ilevel={}", p->dragonflight_opts.emerald_coachs_whistle_ally_ilvl ) );
+        _item->parse_options();
+        _item->initialize_data();
+        _item->init();
 
-      void trigger( action_t* a, action_state_t* state ) override
-      {
-        if ( buff->check() )
-          return;
+        // validate data
+        auto it = range::find( _item->parsed.data.effects, ITEM_SPELLTRIGGER_ON_EQUIP, &item_effect_t::type );
+        if ( it == _item->parsed.data.effects.end() )
+        {
+          throw sc_invalid_player_argument(
+            "Cannot find on-equip effect on item id=193718 for 'dragonflight.emerald_coachs_whistle_ally_ilvl'." );
+        }
 
-        dbc_proc_callback_t::trigger( a, state );
-      }
+        spell_id = p->dragonflight_opts.emerald_coachs_whistle_ally_is_healer ? 386578 : it->spell_id;
+        name_str = "emerald_coachs_whistle_ally";
+        item = _item.get();
 
-      void execute( action_t* a, action_state_t* state ) override
-      {
-        buff->stats[ 0 ].amount = buff_size;
-        buff->trigger();
+        unique_gear::initialize_special_effect( *this, spell_id );
       }
     };
 
-    // Create multiple copies of the coached buff as it has all flags.
-    // We will just pretend we are the ally multiple times for the sake of driving the buff.
-    // We assume that if the current actor is unable to act the buff(ing) player would also be unable to act.
-
-    auto coached         = new special_effect_t( this );
-    coached->type        = SPECIAL_EFFECT_EQUIP;
-    coached->source      = SPECIAL_EFFECT_SOURCE_ITEM;
-    coached->spell_id    = 386578;
-    coached->name_str    = "coached_ally";
-    special_effects.push_back( coached );
-
-    new emerald_coachs_whistle_cb_t( *coached, buff, stat_amount );
-
-    auto coached2         = new special_effect_t( this );
-    coached2->type        = SPECIAL_EFFECT_EQUIP;
-    coached2->source      = SPECIAL_EFFECT_SOURCE_ITEM;
-    coached2->spell_id    = 386578;
-    coached2->name_str    = "whistle_ally";
-    special_effects.push_back( coached2 );
-
-    new emerald_coachs_whistle_cb_t( *coached2, buff, stat_amount );
+    special_effects.push_back( new emerald_coachs_whistle_ally_t( this ) );
   }
 
   unique_gear::initialize_racial_effects( this );
@@ -7911,7 +7866,7 @@ double player_t::resource_gain( resource_e resource_type, double amount, gain_t*
   {
     if ( action->callbacks && action->caster_callbacks && !action->suppress_callback_from_energize )
     {
-      trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_LANDED, action, action->energize_state.get() );
+      trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, action, action->energize_state.get() );
     }
   }
 
@@ -13090,7 +13045,7 @@ std::string player_t::create_profile( save_e stype )
     auto print_option = [ &profile_str, term ]( std::string_view n, auto option ) {
       if ( !option.is_default() )
       {
-        if constexpr ( std::is_same_v<decltype( option ), player_option_t<bool>> )
+        if constexpr ( std::is_same_v<decltype( option ), default_value_t<bool>> )
           profile_str += fmt::format( "{}={}{}", n, static_cast<int>( option ), term );
         else
           profile_str += fmt::format( "{}={}{}", n, option, term );
@@ -13792,6 +13747,7 @@ void player_t::create_options()
   add_option( opt_int( "dragonflight.windweaver_party", dragonflight_opts.windweaver_party, 0, 4 ) );
   add_option( opt_string( "dragonflight.windweaver_party_ilvls", dragonflight_opts.windweaver_party_ilvls ) );
   add_option( opt_int( "dragonflight.emerald_coachs_whistle_ally_ilvl", dragonflight_opts.emerald_coachs_whistle_ally_ilvl ) );
+  add_option( opt_bool( "dragonflight.emerald_coachs_whistle_ally_is_healer", dragonflight_opts.emerald_coachs_whistle_ally_is_healer ) );
 
   // The War Within options
   add_option( opt_string( "thewarwithin.sikrans_endless_arsenal_stance",
@@ -13890,6 +13846,12 @@ void player_t::create_options()
                             midnight_opts.crucible_of_erratic_energies_predation ) );
   add_option(    opt_float( "midnight.vessel_of_tortured_souls_miss_chance",
                             midnight_opts.vessel_of_tortured_souls_miss_chance, 0, 1 ) );
+  add_option(
+      opt_float( "midnight.arcanoweave_trappings_uptime", midnight_opts.arcanoweave_trappings_uptime, 0.0, 1.0 ) );
+  add_option( opt_timespan( "midnight.arcanoweave_trappings_update_interval",
+                            midnight_opts.arcanoweave_trappings_update_interval, 1_s, timespan_t::max() ) );
+  add_option( opt_timespan( "midnight.arcanoweave_trappings_update_interval_stddev",
+                            midnight_opts.arcanoweave_trappings_update_interval_stddev, 1_s, timespan_t::max() ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
@@ -15104,8 +15066,8 @@ void player_t::register_creature_type_buff( buff_t* buff, const spell_data_t* s_
 
   assert( _strs.size() );
 
-  sim->print_debug( "{} {} ({}) granting {}% increased damage {}against creature type: {}", *this, s_data->name_cstr(),
-                    s_data->id(), effect.base_value(), buff ? "with buff '" + std::string( buff->name() ) + "' " : "",
+  sim->print_debug( "{} {} granting {}% increased damage {}against creature type: {}", *this, *s_data,
+                    effect.base_value(), buff ? "with buff '" + std::string( buff->name() ) + "' " : "",
                     fmt::join( _strs, ", " ) );
 
   buffs.creature_type_buffs.emplace_back( buff, effect.misc_value1(), effect.percent() );
@@ -15753,10 +15715,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
 
       std::string field_str = type_str.empty() ? id_field : fmt::format( "{}_{}", type_str, id_field );
       std::string _tmp_full_message_tmp_ = fmt::format(
-        "{} ({}) eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
-        modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
-        remove ? "reverting" : "modifying", *this, field_str, flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%",
-        now.orig, prev.value(), prev.flat, prev.pct * 100, now.value(), now.flat, now.pct * 100 );
+        "{} eff#{} {} {} {} by {:.7g}{} (orig={:.7g} prev={:.7g}[{:.7g}/{:.7g}%] now={:.7g}[{:.7g}/{:.7g}%])",
+        *modifying_spell, modifying_eff.index() + 1, remove ? "reverting" : "modifying", *this, field_str,
+        flat_val ? flat_val : pct_val * 100, flat_val ? "" : "%", now.orig, prev.value(), prev.flat, prev.pct * 100,
+        now.value(), now.flat, now.pct * 100 );
       sim->print_debug( "{}", _tmp_full_message_tmp_ );
       registered_passive_debug_printout.push_back( _tmp_full_message_tmp_ );
     };
@@ -16066,9 +16028,9 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       if ( !sim->debug )
         return;
 
-      std::string _tmp_full_message_tmp_ = fmt::format(
-        "{} ({}) eff#{} {} {} ({}) {}", modifying_spell->name_cstr(), modifying_spell->id(), modifying_eff.index() + 1,
-        remove ? "reverting" : "modifying", spell->name_cstr(), spell->id(), msg );
+      std::string _tmp_full_message_tmp_ =
+        fmt::format( "{} eff#{} {} {} {}", *modifying_spell, modifying_eff.index() + 1,
+                     remove ? "reverting" : "modifying", *spell, msg );
       sim->print_debug( "{}", _tmp_full_message_tmp_ );
       registered_passive_debug_printout.push_back( _tmp_full_message_tmp_ );
     };
@@ -16269,9 +16231,8 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     {
       if ( as<int>( spell->effect_count() ) < eff_idx )
       {
-        sim->print_debug( "{} ({}) only has {} effects, but {} ({}) is trying to modify eff#{}, ignoring.",
-                          spell->name_cstr(), spell->id(), spell->effect_count(), modifying_spell->name_cstr(),
-                          modifying_spell->id(), eff_idx );
+        sim->print_debug( "{} only has {} effects, but {} is trying to modify eff#{}, ignoring.", *spell,
+                          spell->effect_count(), *modifying_spell, eff_idx );
         continue;
       }
       // populate all effects in case of P_EFFECTS
@@ -16294,8 +16255,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         {
           if ( sim->debug )
           {
-            sim->print_debug( "De-register {} ({}) eff#{}", eff->spell()->name_cstr(), eff->spell()->id(),
-                              eff->index() + 1 );
+            sim->print_debug( "De-register {} eff#{}", *eff->spell(), eff->index() + 1 );
           }
 
           register_passive_effect( *eff, true );
@@ -16324,8 +16284,7 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         // re-register if necessary
         if ( deregister )
         {
-          sim->print_debug( "Re-register {} ({}) eff#{}", eff->spell()->name_cstr(), eff->spell()->id(),
-                            eff->index() + 1 );
+          sim->print_debug( "Re-register {} eff#{}", *eff, eff->index() + 1 );
 
           register_passive_effect( *eff );
         }
@@ -16344,19 +16303,19 @@ void player_t::parse_passive_effects( const spell_data_t* spell, bool force, par
   if ( !force &&
        range::contains( registered_passive_spells_, spell->id(), &std::pair<unsigned, parse_source_e>::first ) )
   {
-    sim->error( "Unable to register {} ({}), spell already registered.", spell->name_cstr(), spell->id() );
+    sim->error( "Unable to register {}, spell already registered.", *spell );
     return;
   }
 
   if ( !force && range::contains( deregistered_passive_spells_, spell->id() ) )
   {
-    sim->print_debug( "Unable to register {} ({}), spell has been de-registered.", spell->name_cstr(), spell->id() );
+    sim->print_debug( "Unable to register {}, spell has been de-registered.", *spell );
     return;
   }
 
   if ( !force && !spell->flags( SX_PASSIVE ) )
   {
-    sim->error( "Unable to register {} ({}), spell is not passive.", spell->name_cstr(), spell->id() );
+    sim->error( "Unable to register {}, spell is not passive.", *spell );
     return;
   }
 
@@ -16368,8 +16327,7 @@ void player_t::parse_passive_effects( const spell_data_t* spell, bool force, par
     // filter out ignore list
     if ( range::contains( registered_effect_ignore_list_, eff.id() ) )
     {
-      sim->print_debug( "Skipping {} ({}) eff#{} ({}), effect has been de-registered.", spell->name_cstr(), spell->id(),
-                        eff.index() + 1, eff.id() );
+      sim->print_debug( "Skipping {} eff#{} ({}), effect has been de-registered.", *spell, eff.index() + 1, eff.id() );
       continue;
     }
 
@@ -16389,8 +16347,7 @@ void player_t::deregister_passive_spell( const spell_data_t* spell )
   if ( !spell || !spell->ok() || range::contains( deregistered_passive_spells_, spell->id() ) )
     return;
 
-  sim->print_debug( "De-registering {} ({}), current and all future parsing on this spell blocked.", spell->name_cstr(),
-                    spell->id() );
+  sim->print_debug( "De-registering {}, current and all future parsing on this spell blocked.", *spell );
 
   deregistered_passive_spells_.push_back( spell->id() );
 
@@ -16423,8 +16380,8 @@ void player_t::deregister_passive_effect( const spelleffect_data_t& effect )
   bool deregister =
     range::contains( registered_passive_spells_, effect.spell()->id(), &std::pair<unsigned, parse_source_e>::first );
 
-  sim->print_debug( "De-registering {} ({}) eff#{} ({}), current and all future parsing of this effect blocked.",
-                    effect.spell()->name_cstr(), effect.spell()->id(), effect.index() + 1, effect.id() );
+  sim->print_debug( "De-registering {} eff#{} ({}), current and all future parsing of this effect blocked.",
+                    *effect.spell(), effect.index() + 1, effect.id() );
 
   registered_effect_ignore_list_.push_back( effect.id() );
 
@@ -16446,8 +16403,7 @@ void player_t::register_passive_effect_mask( const spell_data_t* spell, uint32_t
     if ( mask_ & 1 )
       msg.push_back( std::to_string( i ) );
 
-  sim->print_debug( "Registering {} ({}) effect_mask eff#{} ({:#b})", spell->name_cstr(), spell->id(),
-                    util::string_join( msg, "," ), mask );
+  sim->print_debug( "Registering {} effect_mask eff#{} ({:#b})", *spell, util::string_join( msg, "," ), mask );
 
   for ( const auto& eff : spell->effects() )
   {
@@ -16457,8 +16413,7 @@ void player_t::register_passive_effect_mask( const spell_data_t* spell, uint32_t
 
       if ( deregister )
       {
-        sim->print_debug( "De-register {} ({}) eff#{} ({})", spell->name_cstr(), spell->id(), eff.index() + 1,
-                          eff.id() );
+        sim->print_debug( "De-register {} eff#{} ({})", *spell, eff.index() + 1, eff.id() );
         register_passive_effect( eff, true );
       }
     }
@@ -16481,8 +16436,8 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
   if ( !mod.family.empty() )
     list_str.push_back( fmt::format( "family_flag={}", fmt::join( mod.family, ", " ) ) );
 
-  sim->print_debug( "Registering {} ({}) eff#{} affect_list ({})", spell->name_cstr(), spell->id(),
-                    fmt::join( mod.idx, "," ), fmt::join( list_str, ", " ) );
+  sim->print_debug( "Registering {} eff#{} affect_list ({})", *spell, fmt::join( mod.idx, "," ),
+                    fmt::join( list_str, ", " ) );
 
   for ( auto idx : mod.idx )
   {
@@ -16510,7 +16465,7 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
       {
         if ( deregister )
         {
-          sim->print_debug( "De-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), idx );
+          sim->print_debug( "De-register {} eff#{}", *spell, idx );
           register_passive_effect( eff, true );
         }
 
@@ -16518,7 +16473,7 @@ void player_t::register_passive_affect_list( const spell_data_t* spell, const af
 
         if ( deregister )
         {
-          sim->print_debug( "Re-register {} ({}) eff#{}", spell->name_cstr(), spell->id(), idx );
+          sim->print_debug( "Re-register {} eff#{}", *spell, idx );
           register_passive_effect( eff );
         }
       }

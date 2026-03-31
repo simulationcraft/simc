@@ -994,6 +994,13 @@ buff_t* buff_t::modify_max_stack( int max_stack )
   return this;
 }
 
+// TODO: find less blunt & hacky way to handle this
+buff_t* buff_t::increase_max_stack_uptime( int max_stack_uptime )
+{
+  stack_uptime.resize( stack_uptime.size() + max_stack_uptime );
+  return this;
+}
+
 buff_t* buff_t::set_initial_stack( int initial_stack )
 {
   // _initial_stack is initialized at -1, then set_initial_stack is called in the buff_t base constructor
@@ -1580,8 +1587,8 @@ buff_t* buff_t::apply_time_rate_modifier( const spell_data_t* spell )
 
     if ( sim->debug )
     {
-      sim->print_debug( "{} {} time rate modified by {} to {} from {} ({}) eff#{}", *source, *this, mul,
-                        base_time_duration_multiplier, spell->name_cstr(), spell->id(), effect.index() + 1 );
+      sim->print_debug( "{} {} time rate modified by {} to {} from {} eff#{}", *source, *this, mul,
+                        base_time_duration_multiplier, *spell, effect.index() + 1 );
     }
   }
 
@@ -2030,7 +2037,7 @@ void buff_t::decrement( int stacks, double value )
   }
 }
 
-void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
+void buff_t::extend_duration( timespan_t extra_seconds )
 {
   if ( !check() )
   {
@@ -2039,7 +2046,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
-    throw sc_runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *p, *this ) );
+    throw sc_runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *source, *this ) );
   }
 
   if ( expiration.empty() )
@@ -2055,7 +2062,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
   {
     expiration.front()->reschedule( expiration.front()->remains() + extra_seconds );
 
-    sim->print_log( "{} extends {} by {}. New expiration time: {}", *p, *this, extra_seconds,
+    sim->print_log( "{} extends {} by {}. New expiration time: {}", *source, *this, extra_seconds,
                     expiration.front()->occurs() );
   }
   else if ( extra_seconds < timespan_t::zero() )
@@ -2067,7 +2074,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
       // When Strength of Soul removes the Weakened Soul debuff completely,
       // there's a delay before the server notifies the client. Modeling
       // this effect as a world lag.
-      reschedule_time = rng().gauss( p->world_lag );
+      reschedule_time = rng().gauss( source->world_lag );
     }
 
     event_t::cancel( expiration.front() );
@@ -2075,20 +2082,20 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
     expiration.push_back( make_event<expiration_t>( *sim, this, reschedule_time ) );
 
-    sim->print_log( "{} decreases {} by {}. New expiration: {}", *p, *this, -extra_seconds,
+    sim->print_log( "{} decreases {} by {}. New expiration: {}", *source, *this, -extra_seconds,
                     expiration.back()->occurs() );
   }
 }
 
 // Trigger the buff with the specified duration or extend it by the same amount
 // Cannot be used for negative adjustments like buff_t::extend_duration() can
-void buff_t::extend_duration_or_trigger( timespan_t duration, player_t* p )
+void buff_t::extend_duration_or_trigger( timespan_t duration )
 {
   timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration();
 
   if ( check() )
   {
-    extend_duration( p == nullptr ? this->source : p, d );
+    extend_duration( d );
   }
   else
   {

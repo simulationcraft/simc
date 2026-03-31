@@ -6321,7 +6321,7 @@ void improvised_seaforium_pacemaker( special_effect_t& effect )
     void execute( action_t*, action_state_t* ) override
     {
       if ( extensions++ < max_extensions )
-        crit_buff->extend_duration( listener, extension );
+        crit_buff->extend_duration( extension );
     }
 
     void activate() override

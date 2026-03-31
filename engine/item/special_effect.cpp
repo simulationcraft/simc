@@ -441,27 +441,31 @@ special_effect_buff_e special_effect_t::buff_type() const
 
 buff_t* special_effect_t::create_buff() const
 {
-  if ( buff_type() != SPECIAL_EFFECT_BUFF_CUSTOM && buff_type() != SPECIAL_EFFECT_BUFF_NONE &&
-       buff_type() != SPECIAL_EFFECT_BUFF_DISABLED )
-  {
-    buff_t* b = buff_t::find( player, name() );
-    if ( b )
-    {
-      return b;
-    }
-  }
+  buff_t* buff = nullptr;
 
   switch ( buff_type() )
   {
     case SPECIAL_EFFECT_BUFF_CUSTOM:
-      return custom_buff;
+      buff = custom_buff;
+      break;
     case SPECIAL_EFFECT_BUFF_STAT:
-      return initialize_stat_buff();
+      buff = initialize_stat_buff();  // method has buff_t::find
+      break;
     case SPECIAL_EFFECT_BUFF_ABSORB:
-      return initialize_absorb_buff();
+      buff = initialize_absorb_buff();  // method has buff_t::find
+      break;
+    case SPECIAL_EFFECT_BUFF_NONE:
+    case SPECIAL_EFFECT_BUFF_DISABLED:
+      break;
     default:
-      return nullptr;
+      buff = buff_t::find( player, name() );
+      break;
   }
+
+  if ( buff && !range::contains( buff_list, buff ) )
+    buff_list.push_back( buff );
+
+  return buff;
 }
 
 action_t* special_effect_t::create_action() const

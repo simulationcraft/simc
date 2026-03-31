@@ -1591,6 +1591,15 @@ struct fists_of_fury_t : monk_melee_attack_t
 
       return cam;
     }
+
+    std::vector<player_t *> &target_list() const override
+    {
+      auto &tl = monk_melee_attack_t::target_list();
+
+      p()->rng().shuffle( tl.begin(), tl.end() );
+
+      return tl;
+    }
   };
 
   action_t *jadefire_stomp;
@@ -3620,6 +3629,7 @@ struct zenith_t : public monk_spell_t
     {
       aoe                 = -1;
       reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
+      ww_mastery          = true;
     }
   };
 
@@ -3645,12 +3655,12 @@ struct zenith_t : public monk_spell_t
 
     monk_spell_t::execute();
 
-    if ( zenith_stomp )
-      zenith_stomp->execute_on_target( target );
-
     p()->buff.zenith->trigger();
     p()->cooldown.rising_sun_kick->reset( true );
     p()->buff.stand_ready->trigger();
+
+    if ( zenith_stomp )
+      zenith_stomp->execute_on_target( target );
   }
 };
 
@@ -6063,7 +6073,8 @@ void monk_t::create_buffs()
                              ->set_default_value( talent.windwalker.tigereye_brew_1_buff->effectN( 1 ).percent() );
 
   buff.tigereye_brew_3 = make_buff_fallback( talent.windwalker.tigereye_brew_3->ok(), this, "tigereye_brew_3",
-                                             talent.windwalker.tigereye_brew_3_buff );
+                                             talent.windwalker.tigereye_brew_3_buff )
+                             ->set_cooldown( talent.windwalker.tigereye_brew_3->internal_cooldown() );
 
   // Conduit of the Celestials
   buff.celestial_conduit =
@@ -6493,26 +6504,6 @@ void monk_t::init_special_effects()
           action.flurry_strikes->execute( actions::flurry_strikes_t::STAND_READY );
         } );
 
-  if ( baseline.windwalker.empowered_tiger_lightning->ok() )
-    create_proc_callback( { baseline.windwalker.empowered_tiger_lightning, PF_ALL_DAMAGE,
-                            static_cast<proc_flag2>( PF2_ALL_HIT | PF2_PERIODIC_DAMAGE ) } )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          monk_td_t *target_data = get_target_data( state->target );
-          if ( !target_data )
-            return;
-
-          propagate_const<buff_t *> debuff = target_data->debuff.empowered_tiger_lightning;
-          if ( !debuff )
-            return;
-
-          debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get() )->trigger( state );
-        } )
-        ->register_post_init_callback( []( monk_effect_callback_t *cb ) {
-          cb->proc_chance                       = 1.0;
-          cb->can_proc_from_procs               = true;
-          cb->can_only_proc_from_class_abilites = true;
-        } );
-
   if ( talent.brewmaster.elixir_of_determination->ok() )
     create_proc_callback( { &buff.elixir_of_determination->data() } )
         ->register_callback_trigger_function(
@@ -6597,6 +6588,29 @@ void monk_t::init_special_effects()
   }
 
   base_t::init_special_effects();
+}
+
+void monk_t::init_assessors()
+{
+  base_t::init_assessors();
+
+  if ( baseline.windwalker.empowered_tiger_lightning->ok() )
+    assessor_out_damage.add( assessor::TARGET_DAMAGE, [ this ]( result_amount_type, action_state_t *state ) {
+      if ( !state->result_amount )
+        return assessor::CONTINUE;
+
+      monk_td_t *target_data = get_target_data( state->target );
+      if ( !target_data )
+        return assessor::CONTINUE;
+
+      propagate_const<buff_t *> debuff = target_data->debuff.empowered_tiger_lightning;
+      if ( !debuff )
+        return assessor::CONTINUE;
+
+      debug_cast<buffs::empowered_tiger_lightning_t *>( debuff.get() )->trigger( state );
+
+      return assessor::CONTINUE;
+    } );
 }
 
 void monk_t::init_finished()

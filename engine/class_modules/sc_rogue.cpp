@@ -3481,8 +3481,8 @@ struct adrenaline_rush_t : public rogue_spell_t
     if ( precombat_seconds > 0_s && !p()->in_combat )
     {
       p()->cooldowns.adrenaline_rush->adjust( -precombat_seconds, false );
-      p()->buffs.adrenaline_rush->extend_duration( p(), -precombat_seconds );
-      p()->buffs.loaded_dice->extend_duration( p(), -precombat_seconds );
+      p()->buffs.adrenaline_rush->extend_duration( -precombat_seconds );
+      p()->buffs.loaded_dice->extend_duration( -precombat_seconds );
     }
 
     trigger_fatebound_edge_case( execute_state );
@@ -5337,7 +5337,7 @@ struct shadow_blades_t : public rogue_spell_t
     if ( precombat_seconds > 0_s && !p()->in_combat )
     {
       p()->cooldowns.shadow_blades->adjust( -precombat_seconds, false );
-      p()->buffs.shadow_blades->extend_duration( p(), -precombat_seconds );
+      p()->buffs.shadow_blades->extend_duration( -precombat_seconds );
     }
   }
 };
@@ -7297,7 +7297,7 @@ struct roll_the_bones_t : public buff_t
         std::max( 0_s, std::min( duration, ( 60_s - buff->remains() ) ) ) :
         duration;
 
-      buff->extend_duration( rogue, extend_duration );
+      buff->extend_duration( extend_duration );
     }
   }
 
@@ -8154,7 +8154,7 @@ void actions::rogue_action_t<Base>::trigger_keep_it_rolling()
   timespan_t extend_duration = timespan_t::from_millis( p()->talent.outlaw.keep_it_rolling->effectN( 1 ).base_value() );
   debug_cast<buffs::roll_the_bones_t*>( p()->buffs.roll_the_bones )->extend_secondary_buffs( extend_duration );
   // Extend container buff so buffs.roll_the_bones->check_value() works during the extended secondary buffs
-  p()->buffs.roll_the_bones->extend_duration( p(), extend_duration );
+  p()->buffs.roll_the_bones->extend_duration( extend_duration );
 }
 
 template <typename Base>
@@ -8312,7 +8312,7 @@ void actions::rogue_action_t<Base>::trigger_cut_to_the_chase( const action_state
   // Max duration it extends to is the maximum possible full pandemic duration, i.e. around 46s without and 54s with Deeper Stratagem.
   timespan_t max_duration = ( p()->consume_cp_max() + 1 ) * p()->buffs.slice_and_dice->data().duration() * 1.3;
   timespan_t effective_extend = std::min( timespan_t::from_seconds( extend_duration ), max_duration - p()->buffs.slice_and_dice->remains() );
-  p()->buffs.slice_and_dice->extend_duration_or_trigger( effective_extend, p() );
+  p()->buffs.slice_and_dice->extend_duration_or_trigger( effective_extend );
 }
 
 template <typename Base>
@@ -8385,9 +8385,6 @@ template <typename Base>
 bool actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const action_state_t* state, bool from_darkest_night )
 {
   if ( !p()->talent.deathstalker.deathstalkers_mark->ok() )
-    return false;
-
-  if ( !p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) && !from_darkest_night )
     return false;
 
   buff_t*& debuff = p()->deathstalkers_mark_debuff;

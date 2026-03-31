@@ -73,11 +73,11 @@ void beast_mastery( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
-  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
-  action_priority_list_t* st = p->get_action_priority_list( "st" );
   action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
-  action_priority_list_t* drst = p->get_action_priority_list( "drst" );
   action_priority_list_t* drcleave = p->get_action_priority_list( "drcleave" );
+  action_priority_list_t* drst = p->get_action_priority_list( "drst" );
+  action_priority_list_t* st = p->get_action_priority_list( "st" );
+  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
@@ -98,24 +98,6 @@ void beast_mastery( player_t* p )
   cds->add_action( "fireblood,if=cooldown.bestial_wrath.ready|fight_remains<9" );
   cds->add_action( "potion,if=cooldown.bestial_wrath.ready|fight_remains<31" );
 
-  trinkets->add_action( "use_item,name=light_company_guidon,if=cooldown.bestial_wrath.ready|fight_remains<21" );
-  trinkets->add_action( "use_item,name=void_execution_mandate,if=cooldown.bestial_wrath.ready|fight_remains<21" );
-  trinkets->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.bestial_wrath.remains<2|fight_remains<23" );
-  trinkets->add_action( "use_item,name=emberwing_feather,if=cooldown.bestial_wrath.ready|fight_remains<16" );
-  trinkets->add_action( "use_item,name=freightrunners_flask,if=cooldown.bestial_wrath.ready|fight_remains<16" );
-  trinkets->add_action( "use_item,name=sealed_chaos_urn,if=cooldown.bestial_wrath.ready|fight_remains<21" );
-  trinkets->add_action( "use_item,name=evercollapsing_void_fissure,if=cooldown.bestial_wrath.ready|fight_remains<11" );
-  trinkets->add_action( "use_item,name=rangercaptains_iridescent_insignia" );
-  trinkets->add_action( "use_item,name=void_stalkers_contract" );
-  trinkets->add_action( "use_item,name=latchs_crooked_hook" );
-
-  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd" );
-  st->add_action( "bestial_wrath" );
-  st->add_action( "wild_thrash,if=active_enemies>1" );
-  st->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.up|howl_summon.ready)|!apex.3" );
-  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
-  st->add_action( "cobra_shot" );
-
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd" );
   cleave->add_action( "wild_thrash,if=talent.beast_cleave" );
   cleave->add_action( "bestial_wrath" );
@@ -124,6 +106,17 @@ void beast_mastery( player_t* p )
   cleave->add_action( "cobra_shot,if=cooldown.wild_thrash.remains>gcd&buff.hogstrider.up&active_enemies<4" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
   cleave->add_action( "cobra_shot,if=talent.beast_cleave&cooldown.wild_thrash.remains>gcd|!talent.beast_cleave" );
+
+  drcleave->add_action( "bestial_wrath,if=buff.beast_cleave.remains" );
+  drcleave->add_action( "wild_thrash" );
+  drcleave->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3" );
+  drcleave->add_action( "barbed_shot,if=full_recharge_time<1*gcd,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
+  drcleave->add_action( "black_arrow,if=buff.withering_fire.up" );
+  drcleave->add_action( "wailing_arrow,if=buff.withering_fire.remains<execute_time+gcd|time_to_die.remains<execute_time+gcd" );
+  drcleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
+  drcleave->add_action( "black_arrow" );
+  drcleave->add_action( "wailing_arrow" );
+  drcleave->add_action( "cobra_shot" );
 
   drst->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<2*gcd" );
   drst->add_action( "bestial_wrath" );
@@ -135,15 +128,23 @@ void beast_mastery( player_t* p )
   drst->add_action( "black_arrow" );
   drst->add_action( "cobra_shot" );
 
-  drcleave->add_action( "bestial_wrath,if=buff.beast_cleave.remains" );
-  drcleave->add_action( "wild_thrash" );
-  drcleave->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3" );
-  drcleave->add_action( "black_arrow,if=buff.withering_fire.up" );
-  drcleave->add_action( "wailing_arrow,if=buff.withering_fire.remains<execute_time+gcd|time_to_die.remains<execute_time+gcd" );
-  drcleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
-  drcleave->add_action( "wailing_arrow" );
-  drcleave->add_action( "black_arrow" );
-  drcleave->add_action( "cobra_shot" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd" );
+  st->add_action( "bestial_wrath" );
+  st->add_action( "wild_thrash,if=active_enemies>1" );
+  st->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.up|howl_summon.ready)|!apex.3" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
+  st->add_action( "cobra_shot" );
+
+  trinkets->add_action( "use_item,name=light_company_guidon,if=cooldown.bestial_wrath.ready|fight_remains<21" );
+  trinkets->add_action( "use_item,name=void_execution_mandate,if=cooldown.bestial_wrath.ready|fight_remains<21" );
+  trinkets->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.bestial_wrath.remains<2|fight_remains<23" );
+  trinkets->add_action( "use_item,name=emberwing_feather,if=cooldown.bestial_wrath.ready|fight_remains<16" );
+  trinkets->add_action( "use_item,name=freightrunners_flask,if=cooldown.bestial_wrath.ready|fight_remains<16" );
+  trinkets->add_action( "use_item,name=sealed_chaos_urn,if=cooldown.bestial_wrath.ready|fight_remains<21" );
+  trinkets->add_action( "use_item,name=evercollapsing_void_fissure,if=cooldown.bestial_wrath.ready|fight_remains<11" );
+  trinkets->add_action( "use_item,name=rangercaptains_iridescent_insignia" );
+  trinkets->add_action( "use_item,name=void_stalkers_contract" );
+  trinkets->add_action( "use_item,name=latchs_crooked_hook" );
 }
 //beast_mastery_apl_end
 
@@ -153,11 +154,11 @@ void beast_mastery_ptr( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
-  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
-  action_priority_list_t* st = p->get_action_priority_list( "st" );
   action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
-  action_priority_list_t* drst = p->get_action_priority_list( "drst" );
   action_priority_list_t* drcleave = p->get_action_priority_list( "drcleave" );
+  action_priority_list_t* drst = p->get_action_priority_list( "drst" );
+  action_priority_list_t* st = p->get_action_priority_list( "st" );
+  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
@@ -178,24 +179,6 @@ void beast_mastery_ptr( player_t* p )
   cds->add_action( "fireblood,if=cooldown.bestial_wrath.ready|fight_remains<9" );
   cds->add_action( "potion,if=cooldown.bestial_wrath.ready|fight_remains<31" );
 
-  trinkets->add_action( "use_item,name=light_company_guidon,if=cooldown.bestial_wrath.ready|fight_remains<21" );
-  trinkets->add_action( "use_item,name=void_execution_mandate,if=cooldown.bestial_wrath.ready|fight_remains<21" );
-  trinkets->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.bestial_wrath.remains<2|fight_remains<23" );
-  trinkets->add_action( "use_item,name=emberwing_feather,if=cooldown.bestial_wrath.ready|fight_remains<16" );
-  trinkets->add_action( "use_item,name=freightrunners_flask,if=cooldown.bestial_wrath.ready|fight_remains<16" );
-  trinkets->add_action( "use_item,name=sealed_chaos_urn,if=cooldown.bestial_wrath.ready|fight_remains<21" );
-  trinkets->add_action( "use_item,name=evercollapsing_void_fissure,if=cooldown.bestial_wrath.ready|fight_remains<11" );
-  trinkets->add_action( "use_item,name=rangercaptains_iridescent_insignia" );
-  trinkets->add_action( "use_item,name=void_stalkers_contract" );
-  trinkets->add_action( "use_item,name=latchs_crooked_hook" );
-
-  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd" );
-  st->add_action( "bestial_wrath" );
-  st->add_action( "wild_thrash,if=active_enemies>1" );
-  st->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.up|howl_summon.ready)|!apex.3" );
-  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
-  st->add_action( "cobra_shot" );
-
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd" );
   cleave->add_action( "wild_thrash,if=talent.beast_cleave" );
   cleave->add_action( "bestial_wrath" );
@@ -204,6 +187,17 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "cobra_shot,if=cooldown.wild_thrash.remains>gcd&buff.hogstrider.up&active_enemies<4" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
   cleave->add_action( "cobra_shot,if=talent.beast_cleave&cooldown.wild_thrash.remains>gcd|!talent.beast_cleave" );
+
+  drcleave->add_action( "bestial_wrath,if=buff.beast_cleave.remains" );
+  drcleave->add_action( "wild_thrash" );
+  drcleave->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3" );
+  drcleave->add_action( "barbed_shot,if=full_recharge_time<1*gcd,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
+  drcleave->add_action( "black_arrow,if=buff.withering_fire.up" );
+  drcleave->add_action( "wailing_arrow,if=buff.withering_fire.remains<execute_time+gcd|time_to_die.remains<execute_time+gcd" );
+  drcleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
+  drcleave->add_action( "black_arrow" );
+  drcleave->add_action( "wailing_arrow" );
+  drcleave->add_action( "cobra_shot" );
 
   drst->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<2*gcd" );
   drst->add_action( "bestial_wrath" );
@@ -215,15 +209,23 @@ void beast_mastery_ptr( player_t* p )
   drst->add_action( "black_arrow" );
   drst->add_action( "cobra_shot" );
 
-  drcleave->add_action( "bestial_wrath,if=buff.beast_cleave.remains" );
-  drcleave->add_action( "wild_thrash" );
-  drcleave->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3" );
-  drcleave->add_action( "black_arrow,if=buff.withering_fire.up" );
-  drcleave->add_action( "wailing_arrow,if=buff.withering_fire.remains<execute_time+gcd|time_to_die.remains<execute_time+gcd" );
-  drcleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
-  drcleave->add_action( "wailing_arrow" );
-  drcleave->add_action( "black_arrow" );
-  drcleave->add_action( "cobra_shot" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd" );
+  st->add_action( "bestial_wrath" );
+  st->add_action( "wild_thrash,if=active_enemies>1" );
+  st->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.up|howl_summon.ready)|!apex.3" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
+  st->add_action( "cobra_shot" );
+
+  trinkets->add_action( "use_item,name=light_company_guidon,if=cooldown.bestial_wrath.ready|fight_remains<21" );
+  trinkets->add_action( "use_item,name=void_execution_mandate,if=cooldown.bestial_wrath.ready|fight_remains<21" );
+  trinkets->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.bestial_wrath.remains<2|fight_remains<23" );
+  trinkets->add_action( "use_item,name=emberwing_feather,if=cooldown.bestial_wrath.ready|fight_remains<16" );
+  trinkets->add_action( "use_item,name=freightrunners_flask,if=cooldown.bestial_wrath.ready|fight_remains<16" );
+  trinkets->add_action( "use_item,name=sealed_chaos_urn,if=cooldown.bestial_wrath.ready|fight_remains<21" );
+  trinkets->add_action( "use_item,name=evercollapsing_void_fissure,if=cooldown.bestial_wrath.ready|fight_remains<11" );
+  trinkets->add_action( "use_item,name=rangercaptains_iridescent_insignia" );
+  trinkets->add_action( "use_item,name=void_stalkers_contract" );
+  trinkets->add_action( "use_item,name=latchs_crooked_hook" );
 }
 //beast_mastery_ptr_apl_end
 

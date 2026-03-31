@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.66529 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.66591 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -12893,7 +12893,9 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Every $s1 Slayer's Strikes you gain Sudden Death.
 
-Using Sudden Death accelerates your next Bladestorm, striking 1 additional time (max $445606u). Bladestorm's total duration is unchanged.
+Using Sudden Death accelerates your next Bladestorm, striking 1 additional time (max $445606u). Bladestorm's total duration is unchanged.
+
+When Sudden Death strikes multiple targets via $?c1[Sweeping Strikes][Improved Whirlwind], you have a $s2% chance to trigger Reap the Storm.
 
 Name             : Death Drive (id=444770) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=3, col=1, max_rank=1, req_points=0]
@@ -12984,7 +12986,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Update Passives on Apply/Remove (344), Do Not Log on Learn (355)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Aura Points On Client (268), Update Passives on Apply/Remove (344), Do Not Log on Learn (355)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1141373)  : Apply Aura (6) | Dummy (4)
@@ -12995,7 +12997,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #4 (id=1300777)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Description      : When $?c1[Cleave or ][]Whirlwind $?c1[hit][hits] $s2 or more targets you have a $?c1[$s3][$s4]% chance to cause you to unleash a flurry of steel, striking all nearby enemies for $446005s1 Physical damage and applying Overwhelmed. Deals reduced damage beyond $s1 targets.
+Description      : When $?c1[Cleave hits][Rampage hits] $s2 or more targets$?c2[ via Improved Whirlwind][] you have a $?c1[$s3][$s4]% chance to unleash a flurry of steel, striking all nearby enemies for $446005s1 Physical damage and applying Overwhelmed. Deals reduced damage beyond $s1 targets.
 
 
 Name             : Relentless Pursuit (id=444776) [Spell Family (4), Passive, Hidden] 
@@ -16409,7 +16411,7 @@ Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
 Mechanic         : Silence
-Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286)
+Attributes       : Do Not Log Immune Misses (3), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286)
 Effects          :
 #1 (id=1289260)  : Apply Aura (6) | Silence (27)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Targeted Enemy (6)
@@ -16636,4 +16638,34 @@ Effects          :
 Description      : Enemies damaged by Phalanx's wave of force deal ${$s1}.1% reduced damage to you for $d.
 
 Tooltip          : Dealing ${$W1/-1}.1% reduced damage to $@auracaster.
+
+Name             : Wrecking Throw Highlight (id=1293603) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1314405)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc384110
+Variables        : $damage=${($AP*1.0)*(1+$@versadmg)}
+
+Name             : Shattering Throw Highlight (id=1293610) [Spell Family (4), Passive, Hidden] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Labels           : 16: Class Spells
+                 : 25: Warrior Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1314421)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc384110
+Variables        : $damage=${($AP*1.0)*(1+$@versadmg)}
 

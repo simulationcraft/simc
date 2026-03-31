@@ -1581,7 +1581,7 @@ public:
     const bool triggered = buff -> trigger(duration);
     if ( triggered && ab::is_precombat && !in_combat && precast_time > 0_ms )
     {
-      buff -> extend_duration( ab::player, -std::min( precast_time, buff -> buff_duration() ) );
+      buff -> extend_duration( -std::min( precast_time, buff -> buff_duration() ) );
       buff -> cooldown -> adjust( -precast_time );
     }
     return triggered;
@@ -4843,6 +4843,21 @@ struct boar_charge_t final : hunter_ranged_attack_t
       // target_filter_callback = secondary_targets_only();
     }
 
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double am = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+      // 2026-03-30: Boar Charges double dip Spirit Bond's bonus
+      if ( p()->bugs && p()->specialization() == HUNTER_SURVIVAL )
+      {
+        double bonus = p()->cache.mastery() * p()->mastery.spirit_bond->effectN( affected_by.spirit_bond.direct ).mastery_value();
+        bonus *= 1 + p()->mastery.spirit_bond_buff->effectN( 1 ).percent();
+        am *= 1 + bonus;
+      }
+
+      return am;
+    }
+
     void impact( action_state_t* s ) override
     {
       hunter_ranged_attack_t::impact( s );
@@ -4860,6 +4875,21 @@ struct boar_charge_t final : hunter_ranged_attack_t
     travel_speed = 50; // 2026-01-19: Not in spelldata, estimating based on log data.
 
     add_child( cleave );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double am = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+    // 2026-03-30: Boar Charges double dip Spirit Bond's bonus
+    if ( p()->bugs && p()->specialization() == HUNTER_SURVIVAL )
+    {
+      double bonus = p()->cache.mastery() * p()->mastery.spirit_bond->effectN( affected_by.spirit_bond.direct ).mastery_value();
+      bonus *= 1 + p()->mastery.spirit_bond_buff->effectN( 1 ).percent();
+      am *= 1 + bonus;
+    }
+
+    return am;
   }
 
   void execute() override
@@ -4974,7 +5004,7 @@ struct cobra_shot_base_t: public hunter_ranged_attack_t
     if ( p()->talents.barbed_scales.ok() )
       p()->cooldowns.barbed_shot->adjust( -p()->talents.barbed_scales->effectN( 1 ).time_value() );
 
-    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( 3 ).time_value() );
+    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( -p()->talents.dire_summons->effectN( 3 ).time_value() );
 
     p()->buffs.hogstrider->expire();
 
@@ -6002,7 +6032,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( 4 ).time_value() );
+    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( -p()->talents.dire_summons->effectN( 4 ).time_value() );
   }
 
   bool ready() override
@@ -6550,11 +6580,11 @@ struct kill_command_t: public hunter_spell_t
 
     p()->cooldowns.wildfire_bomb->adjust( -p()->talents.wildfire_infusion->effectN( 1 ).time_value() );
 
-    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( p()->specialization() == HUNTER_BEAST_MASTERY ? 1 : 2 ).time_value() );
+    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( -p()->talents.dire_summons->effectN( p()->specialization() == HUNTER_BEAST_MASTERY ? 1 : 2 ).time_value() );
     
     if ( p()->buffs.wyverns_cry->check() && p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
     {
-      p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
+      p()->buffs.wyverns_cry->extend_duration( fury_of_the_wyvern.extension );
       p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
       p()->state.fury_of_the_wyvern_extendable = p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap;
     }
@@ -7053,6 +7083,14 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
     }
   }
 
+  timespan_t travel_time() const override
+  {
+    if ( is_precombat )
+      return timespan_t::from_millis( 0 );
+
+    return wildfire_bomb_base_t::travel_time();
+  }
+
   void execute() override
   {
     // Tip of the Spear is decremented in execute() so run here
@@ -7064,7 +7102,7 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
 
     if ( p()->buffs.wyverns_cry->check() && p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
     {
-      p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
+      p()->buffs.wyverns_cry->extend_duration( fury_of_the_wyvern.extension );
       p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
       p()->state.fury_of_the_wyvern_extendable = p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap;
     }

@@ -296,11 +296,11 @@ void enchants::mark_of_the_thunderlord( special_effect_t& effect )
       extensions( 0 ), max_extensions( max_ext )
     { }
 
-    void extend_duration( player_t* p, timespan_t extend_duration ) override
+    void extend_duration( timespan_t extend_duration ) override
     {
       if ( extensions < max_extensions )
       {
-        stat_buff_t::extend_duration( p, extend_duration );
+        stat_buff_t::extend_duration( extend_duration );
         extensions++;
       }
     }
@@ -360,7 +360,7 @@ void enchants::mark_of_the_thunderlord( special_effect_t& effect )
     void execute( action_t*, action_state_t* ) override
     {
       if ( proc_buff -> check() )
-        proc_buff -> extend_duration( listener, timespan_t::from_seconds( 2 ) );
+        proc_buff -> extend_duration( timespan_t::from_seconds( 2 ) );
     }
   };
 
@@ -3389,26 +3389,25 @@ bool action_has_damage( const action_t* action )
 
   // check direct damage
   if ( action->does_direct_damage() )
-  {
     return true;
-  }
 
   // check periodic damage
   if ( action->does_periodic_damage() )
-  {
     return true;
-  }
-
-  // check tick action
-  if ( action->tick_action && action_has_damage( action->tick_action ) )
-  {
-    return true;
-  }
 
   // check impact action
   if ( action->impact_action && action_has_damage( action->impact_action ) )
-  {
     return true;
+
+  // check tick action
+  if ( action->tick_action )
+  {
+    if ( action_has_damage( action->tick_action ) )
+      return true;
+
+    // check tick action's impact action
+    if ( action->tick_action->impact_action && action_has_damage( action->tick_action->impact_action ) )
+      return true;
   }
 
   return false;
@@ -3801,7 +3800,7 @@ struct item_buff_expr_t : public item_effect_expr_t
     for ( auto e : effects )
     {
       auto _list = e->buff_list;  // make a copy
-      if ( auto _buff = buff_t::find( &player, e->name() ) )
+      if ( auto _buff = buff_t::find( &player, e->name() ); _buff && !range::contains( _list, _buff ) )
         _list.push_back( _buff );
 
       for ( auto b : _list )
@@ -3827,7 +3826,7 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
     for ( auto e : effects )
     {
       auto _list = e->buff_list;  // make a copy
-      if ( auto _buff = buff_t::find( &player, e->name() ) )
+      if ( auto _buff = buff_t::find( &player, e->name() ); _buff && !range::contains( _list, _buff ) )
         _list.push_back( _buff );
 
       for ( auto b : _list )
@@ -5063,7 +5062,7 @@ const spell_data_t* unique_gear::spell_from_spell_text( const special_effect_t& 
       auto id = as<unsigned>( std::stoi( m.str( 1 ) ) );
       auto spell = e.player->find_spell( id );
 
-      e.player->sim->print_debug( "parsed spell for special effect '{}': {} ({})", e.name(), spell->name_cstr(), id );
+      e.player->sim->print_debug( "parsed spell for special effect '{}': {}", e.name(), *spell );
       return spell;
     }
   }

@@ -4532,8 +4532,10 @@ void action_t::trigger_dot( action_state_t* s )
   if ( callbacks && caster_callbacks && !suppress_callback_from_trigger_dot )
   {
     // TODO: should this be based on whether the action is harmful or not?
-    player->trigger_callbacks( s->target->is_enemy() ? PROC1_NONE_HARMFUL : PROC1_NONE_HELPFUL, PROC2_LANDED, this,
-                               dot->state );
+    if ( s->target->is_enemy() )
+      player->trigger_callbacks( PROC1_NONE_HARMFUL, PROC2_LANDED, this, dot->state );
+    else  // Current implementation splits helpful PF2_LANDED into PF1_HIT and PF1_CRIT so we need to adjust here
+      player->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, this, dot->state );
   }
 }
 

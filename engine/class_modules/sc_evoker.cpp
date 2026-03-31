@@ -1085,6 +1085,7 @@ struct evoker_t : public player_t
     int upheaval_default_rank                                  = 0;
     bool allow_precombat_buffs_for_debug                       = false;
     int estimated_raid_dps_allies                              = 13;
+    bool patchwerk_in_dungeon                                  = false;
   } option;
 
   // Action pointers
@@ -2989,7 +2990,7 @@ struct essence_base_t : public BASE
     {
       if ( BASE::p()->buff.time_convergence_intellect->check() )
       {
-        BASE::p()->buff.time_convergence_intellect->extend_duration( BASE::player, time_convergence_extension );
+        BASE::p()->buff.time_convergence_intellect->extend_duration( time_convergence_extension );
       }
     }
 
@@ -3001,7 +3002,7 @@ struct essence_base_t : public BASE
         auto td = BASE::p()->get_target_data( p_ );
         if ( td->debuffs.bombardments->check() )
         {
-          td->debuffs.bombardments->extend_duration( BASE::player, extended_battle_duration );
+          td->debuffs.bombardments->extend_duration( extended_battle_duration );
         }
       }
     }
@@ -4333,7 +4334,7 @@ struct empowered_release_spell_t : public empowered_release_t<evoker_spell_t>
 
     if ( p()->talent.animosity.ok() && p()->buff.dragonrage->check() )
     {
-      p()->buff.dragonrage->extend_duration( p(), animosity_extend * p()->buff.dragonrage->check_value() );
+      p()->buff.dragonrage->extend_duration( animosity_extend * p()->buff.dragonrage->check_value() );
       p()->buff.dragonrage->current_value *= animosity_stack_mul;
     }
 
@@ -4347,9 +4348,9 @@ struct empowered_release_spell_t : public empowered_release_t<evoker_spell_t>
     if ( rng().roll( p()->sets->set( EVOKER_DEVASTATION, DF1, B4 )->effectN( 2 ).percent() ) )
     {
       if ( p()->buffs.bloodlust->check() )
-        p()->buffs.bloodlust->extend_duration( p(), extend_tier29_4pc );
+        p()->buffs.bloodlust->extend_duration( extend_tier29_4pc );
       else if ( p()->buff.fury_of_the_aspects->check() )
-        p()->buff.fury_of_the_aspects->extend_duration( p(), extend_tier29_4pc );
+        p()->buff.fury_of_the_aspects->extend_duration( extend_tier29_4pc );
       else
         p()->buff.fury_of_the_aspects->trigger( extend_tier29_4pc );
     }
@@ -4474,14 +4475,14 @@ public:
 
     if ( p()->buff.ebon_might_self_buff->check() )
     {
-      p()->buff.ebon_might_self_buff->extend_duration( p(), extend );
+      p()->buff.ebon_might_self_buff->extend_duration( extend );
     }
 
     for ( auto ally : p()->allies_with_my_ebon )
     {
       auto ebon = p()->get_target_data( ally )->buffs.ebon_might;
 
-      ebon->extend_duration( p(), extend );
+      ebon->extend_duration( extend );
     }
 
     if ( p()->talent.duplicate2.enabled() && p()->pets.duplicate_pet.n_active_pets() > 0 )
@@ -4579,7 +4580,7 @@ public:
       auto time = ebon_time;
       if ( crit )
         time *= 1 + p()->talent.sands_of_time->effectN( 4 ).percent();
-      buff->extend_duration( p(), time );
+      buff->extend_duration( time );
     }
   }
 
@@ -5913,9 +5914,9 @@ struct deep_breath_t : public evoker_spell_t
       {
         make_event( sim, player->gcd_ready - sim->current_time() - 1_ms, [ this ] {
           if ( p()->buffs.bloodlust->check() )
-            p()->buffs.bloodlust->extend_duration( p(), plot_duration );
+            p()->buffs.bloodlust->extend_duration( plot_duration );
           else if ( p()->buff.fury_of_the_aspects->check() )
-            p()->buff.fury_of_the_aspects->extend_duration( p(), plot_duration );
+            p()->buff.fury_of_the_aspects->extend_duration( plot_duration );
           else
           {
             p()->buff.fury_of_the_aspects->trigger( plot_duration );
@@ -7219,7 +7220,7 @@ public:
       for ( auto ally : p()->allies_with_my_prescience )
       {
         p()->get_target_data( ally )->buffs.prescience->extend_duration(
-            p(), ally == s->target ? -gcd() : -cooldown->cooldown_duration( cooldown ) );
+            ally == s->target ? -gcd() : -cooldown->cooldown_duration( cooldown ) );
       }
     }
 
@@ -7561,9 +7562,9 @@ struct breath_of_eons_t : public evoker_spell_t
       {
         make_event( sim, player->gcd_ready - sim->current_time() - 1_ms, [ this ] {
           if ( p()->buffs.bloodlust->check() )
-            p()->buffs.bloodlust->extend_duration( p(), plot_duration );
+            p()->buffs.bloodlust->extend_duration( plot_duration );
           else if ( p()->buff.fury_of_the_aspects->check() )
-            p()->buff.fury_of_the_aspects->extend_duration( p(), plot_duration );
+            p()->buff.fury_of_the_aspects->extend_duration( plot_duration );
           else
           {
             p()->buff.fury_of_the_aspects->trigger( plot_duration );
@@ -9053,7 +9054,7 @@ void evoker_t::create_permanent_actors()
 
     std::vector<std::pair<std::string_view, std::string_view>> bobs;
 
-    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || option.patchwerk_in_dungeon )
     {
       option.force_clutchmates = "yes";
       close_as_clutchmates     = true;
@@ -10279,6 +10280,7 @@ void evoker_t::create_options()
   add_option( opt_int( "evoker.upheaval_default_rank", option.upheaval_default_rank, 0, 5 ) );
   add_option( opt_bool( "evoker.allow_precombat_buffs_for_debug", option.allow_precombat_buffs_for_debug ) );
   add_option( opt_int( "evoker.estimated_raid_dps_allies", option.estimated_raid_dps_allies ) );
+  add_option( opt_bool( "evoker.patchwerk_in_dungeon", option.patchwerk_in_dungeon ) );
 }
 
 void evoker_t::analyze( sim_t& sim )

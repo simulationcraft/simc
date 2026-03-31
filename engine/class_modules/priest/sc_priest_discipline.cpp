@@ -196,7 +196,7 @@ struct evangelism_t final : public priest_heal_t
 
     for ( auto ally : p().allies_with_atonement )
     {
-      p().find_target_data( ally )->buffs.atonement->extend_duration( &p(), atonement_extend );
+      p().find_target_data( ally )->buffs.atonement->extend_duration( atonement_extend );
     }
   }
 };

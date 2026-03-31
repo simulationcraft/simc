@@ -18,7 +18,7 @@ legs=blind_oaths_leggings,id=250050,bonus_id=13575/13575/13575/13575,ilevel=289,
 feet=lightbinder_treads,id=109796,ilevel=289,enchant_id=7993
 finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240918/240900,enchant_id=7969
 finger2=omission_of_light,id=251093,ilevel=289,gem_id=240900,enchant_id=7997
-trinket1=soulcatchers_charm,id=250223,ilevel=289
+trinket1=vaelgors_final_stare,id=249346,ilevel=289
 trinket2=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577,ilevel=289
 main_hand=brazier_of_the_dissonant_dirge,id=249286,ilevel=289,enchant_id=8041
 
@@ -44,7 +44,7 @@ legs=blind_oaths_leggings,id=250050,bonus_id=13575/13575/13575/13575,ilevel=289,
 feet=lightbinder_treads,id=109796,ilevel=289,enchant_id=7993
 finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240918/240900,enchant_id=7969
 finger2=omission_of_light,id=251093,ilevel=289,gem_id=240900,enchant_id=7997
-trinket1=soulcatchers_charm,id=250223,ilevel=289
+trinket1=vaelgors_final_stare,id=249346,ilevel=289
 trinket2=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577,ilevel=289
 main_hand=brazier_of_the_dissonant_dirge,id=249286,ilevel=289,enchant_id=8041
 

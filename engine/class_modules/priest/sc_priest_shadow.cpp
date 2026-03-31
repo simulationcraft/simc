@@ -983,11 +983,11 @@ struct shadow_word_madness_t final : public priest_spell_t
 
         timespan_t extension_ms = base_duration * factor;
 
-        priest().buffs.voidform->extend_duration( &priest(), extension_ms );
+        priest().buffs.voidform->extend_duration( extension_ms );
       }
       else
       {
-        priest().buffs.voidform->extend_duration( &priest(), base_duration );
+        priest().buffs.voidform->extend_duration( base_duration );
       }
 
       priest().buffs.ancient_madness->trigger();
@@ -1216,8 +1216,7 @@ struct voidform_t final : public priest_spell_t
 
     if ( priest().buffs.sustained_potency->check() )
     {
-      priest().buffs.voidform->extend_duration( player,
-                                                timespan_t::from_seconds( priest().buffs.sustained_potency->check() ) );
+      priest().buffs.voidform->extend_duration( timespan_t::from_seconds( priest().buffs.sustained_potency->check() ) );
 
       priest().buffs.sustained_potency->expire();
     }
@@ -1330,13 +1329,13 @@ struct void_torrent_t final : public priest_spell_t
   {
     priest().buffs.void_torrent->expire();
 
-    priest().buffs.entropic_rift->extend_duration(
-        player, priest().buffs.entropic_rift->buff_duration() - priest().buffs.entropic_rift->remains() );
+    priest().buffs.entropic_rift->extend_duration( priest().buffs.entropic_rift->buff_duration() -
+                                                   priest().buffs.entropic_rift->remains() );
 
     if ( priest().talents.voidweaver.voidheart.enabled() )
     {
-      priest().buffs.voidheart->extend_duration(
-          player, priest().buffs.voidheart->buff_duration() - priest().buffs.voidheart->remains() );
+      priest().buffs.voidheart->extend_duration( priest().buffs.voidheart->buff_duration() -
+                                                 priest().buffs.voidheart->remains() );
     }
 
     priest_spell_t::last_tick( d );

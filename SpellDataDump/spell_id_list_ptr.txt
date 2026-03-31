@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.5.66529
+Class Spell ID List, wow build 12.0.5.66591
 
 Death Knight
 3714     Path of Frost
@@ -5644,8 +5644,8 @@ Evoker
 373770  *Sands of Time
 373771  *Sands of Time
 373834   Call of Ysera
-373861  *Temporal Anomaly
-373862  *Temporal Anomaly
+373861   Temporal Anomaly
+373862   Temporal Anomaly
 374227   Zephyr
 374229   Zephyr
 374251   Cauterizing Flame
@@ -5692,7 +5692,7 @@ Evoker
 376179   Lifeforce Mender
 376204   Just in Time
 376207   Delay Harm
-376236   Resonating Sphere
+376236  *Resonating Sphere
 376237   Nozdormu's Teachings
 376239   Grace Period
 376240   Timeless Magic
@@ -6245,7 +6245,7 @@ Evoker
 1289650 *Visage Chosen Identity Tracker [DNT]
 1291457  Mighty Inferno
 1291522  Chronal Dynamo
-1291636  Temporal Anomaly
+1291636  Temporal Barrier
 
 Hunter
 75       Auto Shot
@@ -18777,6 +18777,8 @@ Rogue
 1293135  Sanguine Vial
 1293138  Sanguine Vial
 1293149  Crimson Vial
+1293340  Mark for Death
+1293579 *Mark for Death Enabler
 
 Shaman
 370      Purge
@@ -24611,3 +24613,5 @@ Warrior
 1292024 *Improved Execute
 1292058  Heroic Might
 1292071  Phalanx
+1293603  Wrecking Throw Highlight
+1293610  Shattering Throw Highlight

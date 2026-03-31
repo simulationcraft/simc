@@ -1193,12 +1193,19 @@ void hunt( special_effect_t& effect )
       : dbc_proc_callback_t( e.player, e ), buffs( map ), race( RACE_NONE ), mode( MODE_RAID_RANDOM )
     {
       if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "none" ) ||
-           listener->sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_ROUTE )
+           ( listener->sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_ROUTE &&
+             e.player->midnight_opts.darkmoon_hunt_race.is_default() ) )
+      {
         mode = MODE_ACTUAL;
+      }
       else if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "random" ) )
+      {
         mode = MODE_RANDOM;
+      }
       else if ( util::str_compare_ci( e.player->midnight_opts.darkmoon_hunt_race, "raid_random" ) )
+      {
         mode = MODE_RAID_RANDOM;
+      }
       else
       {
         mode = MODE_SPECIFIED;
@@ -1594,32 +1601,6 @@ void idol_of_the_war_loa( special_effect_t& effect )
 void gaze_of_the_alnseer( special_effect_t& effect )
 {
   auto alnsight_spell = effect.trigger();
-
-  struct alnsight_cb_t : public dbc_proc_callback_t
-  {
-    bool refreshed;
-    cooldown_t* icd;
-    alnsight_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), refreshed( false ), icd( nullptr )
-    {
-      icd = e.player->get_cooldown( e.cooldown_name() );
-    }
-
-    void execute( action_t*, action_state_t* ) override
-    {
-      effect.custom_buff->trigger();
-      // This is a complete guess at the rate, but, if refreshed, occasionally youll get multiple procs that seem to
-      // ignore the internal cooldown. Its not that often, and its not consistent at all. Need more data.
-      if ( refreshed && rng().roll( 0.05 ) )
-      {
-        make_event( *effect.player->sim, 1_ms, [ this ] {
-          // Randomly reset the ICD if refreshed to emulate the behavior where we see extra stacks being generated.
-          if ( icd )
-            icd->reset( false );
-        } );
-      }
-    }
-  };
-
   auto buff = create_buff<buff_t>( effect.player, alnsight_spell );
 
   auto stat = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1266687 ) )
@@ -1633,20 +1614,10 @@ void gaze_of_the_alnseer( special_effect_t& effect )
   alnsight->proc_flags2_ = PF2_LANDED;
   effect.player->special_effects.push_back( alnsight );
 
-  auto alnsight_cb = new alnsight_cb_t( *alnsight );
+  auto alnsight_cb = new dbc_proc_callback_t( effect.player, *alnsight );
   alnsight_cb->activate_with_buff( buff, true );
 
-  buff->set_expire_callback( [ alnsight_cb ]( buff_t*, int, timespan_t ) { alnsight_cb->refreshed = false; } );
-
-  effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ &effect, stat, buff, alnsight_cb ]( auto, auto, const action_state_t* ) {
-        buff->trigger();
-        if ( stat->check() )
-        {
-          stat->trigger();
-          alnsight_cb->refreshed = true;
-        }
-      } );
+  effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -2956,6 +2927,71 @@ void tangle_of_vibrant_vines( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// 1260633 driver
+// 1260627 damage
+// 1263141 absorb
+void gloomspattered_dreadscale( special_effect_t& effect )
+{
+  struct fractional_absorb_t : public absorb_buff_t
+  {
+    double absorb_fraction;
+
+    fractional_absorb_t( player_t* player, std::string_view name, const spell_data_t* spell,
+                         const item_t* item = nullptr )
+      : absorb_buff_t( player, name, spell, item ), absorb_fraction( 1.0 )
+    {
+    }
+
+    double consume( double amount, action_state_t* state = nullptr ) override
+    {
+      return absorb_buff_t::consume( amount * absorb_fraction, state );
+    }
+
+    absorb_buff_t* set_absorb_fraction( double fraction )
+    {
+      absorb_fraction = fraction;
+      return this;
+    }
+  };
+
+  struct gloomspattered_dreadscale_t : public generic_aoe_proc_t
+  {
+    buff_t* absorb;
+    double shield_amount;
+
+    gloomspattered_dreadscale_t( const special_effect_t& effect )
+      : generic_aoe_proc_t( effect, "gloomspattered_dreadscale", effect.driver(), true ), shield_amount( 0 )
+    {
+      auto equip = find_special_effect( effect.player, 1260627 );
+      assert( equip && "Gloom-Spattered Dreadscale missing equip effect" );
+
+      base_dd_min = base_dd_max = equip->driver()->effectN( 1 ).average( effect );
+
+      auto absorb_spell = effect.player->find_spell( 1263141 );
+      absorb = create_buff<fractional_absorb_t>( effect.player, name(), absorb_spell )
+                   ->set_absorb_fraction( absorb_spell->effectN( 2 ).percent() )
+                   ->set_absorb_source( effect.player->get_stats( "gloomspattered_dreadscale_absorb", this ) );
+    }
+
+    void execute() override
+    {
+      generic_aoe_proc_t::execute();
+
+      absorb->trigger( -1, shield_amount );
+      shield_amount = 0;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      generic_aoe_proc_t::impact( state );
+
+      shield_amount += state->result_amount;
+    }
+  };
+
+  effect.execute_action = create_proc_action<gloomspattered_dreadscale_t>( "gloomspattered_dreadscale", effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -3588,6 +3624,8 @@ void register_special_effects()
   register_special_effect( 1247311, DISABLED_EFFECT ); // Drum of Renewed Bonds on use
   register_special_effect( 1253120, trinkets::glorious_crusaders_keepsake ); 
   register_special_effect( 1253112, trinkets::sylvan_wakrapuku );
+  register_special_effect( 1260633, trinkets::gloomspattered_dreadscale );
+  register_special_effect( 1260627, DISABLED_EFFECT );  // Gloom-Spattered Dreadscale Passive Driver
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );

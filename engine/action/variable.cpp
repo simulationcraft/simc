@@ -261,12 +261,6 @@ void variable_t::execute()
 {
   double old_value = var->current_value_;
 
-  if ( operation != OPERATION_PRINT && sim->debug )
-  {
-    sim->print_debug( "{} variable name={} op={} value={} default={} sig={}", *player, var->name_,
-                      static_cast<int>( operation ), var->current_value_, var->default_value_, signature_str );
-  }
-
   switch ( operation )
   {
     case OPERATION_SET:
@@ -336,6 +330,13 @@ void variable_t::execute()
     default:
       assert( 0 );
       break;
+  }
+
+  if ( operation != OPERATION_PRINT && sim->debug )
+  {
+    sim->print_debug( "{} variable name={} op={} value={} prev_value={} default={} sig={}", *player, var->name_,
+                      static_cast<int>( operation ), var->current_value_, old_value, var->default_value_,
+                      signature_str );
   }
 
   if ( var->report && old_value != var->current_value_ && !var->is_constant() )

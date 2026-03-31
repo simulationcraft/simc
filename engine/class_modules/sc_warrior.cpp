@@ -2646,10 +2646,10 @@ struct bloodthirst_t : public warrior_attack_t
 
     if ( p()->buff.enrage->up() )
     {
-      p()->buff.enrage->extend_duration( p(), p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
+      p()->buff.enrage->extend_duration( p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
       // Double the benefit on crit
       if( execute_state && execute_state->result == RESULT_CRIT )
-        p()->buff.enrage->extend_duration( p(), p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
+        p()->buff.enrage->extend_duration( p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
 
     }
 
@@ -2904,10 +2904,10 @@ struct bloodbath_t : public warrior_attack_t
 
     if ( p()->buff.enrage->up() )
     {
-      p()->buff.enrage->extend_duration( p(), p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
+      p()->buff.enrage->extend_duration( p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
       // Double the benefit on crit
       if( execute_state && execute_state->result == RESULT_CRIT )
-        p()->buff.enrage->extend_duration( p(), p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
+        p()->buff.enrage->extend_duration( p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
     }
 
     p()->buff.fierce_followthrough->expire();
@@ -5946,7 +5946,7 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( p()->buff.shield_block->up() && p()->talents.protection.heavy_repercussions->ok() )
     {
-      p()->buff.shield_block->extend_duration( p(),
+      p()->buff.shield_block->extend_duration(
           timespan_t::from_seconds( p()->talents.protection.heavy_repercussions->effectN( 1 ).percent() ) );
     }
 

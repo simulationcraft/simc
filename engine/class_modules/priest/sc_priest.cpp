@@ -605,7 +605,7 @@ struct halo_t final : public priest_spell_t
       if ( is_precombat )
       {
         // TODO: Handle very early precombat
-        priest().buffs.power_surge->extend_duration( player, -prepull_timespent );
+        priest().buffs.power_surge->extend_duration( -prepull_timespent );
 
         if ( priest().buffs.power_surge->check() )
         {
@@ -622,7 +622,7 @@ struct halo_t final : public priest_spell_t
       if ( priest().buffs.voidform->check() )
       {
         extended = true;
-        priest().buffs.voidform->extend_duration( player, 1_s );
+        priest().buffs.voidform->extend_duration( 1_s );
       }
       if ( !extended )
       {
@@ -776,7 +776,7 @@ struct smite_base_t : public priest_spell_t
           auto atone = priest().find_target_data( it )->buffs.atonement;
           if ( atone->remains() < 30_s )
           {
-            atone->extend_duration( player, divine_procession_extend );
+            atone->extend_duration( divine_procession_extend );
           }
         }
       }
@@ -3891,16 +3891,16 @@ void priest_t::extend_entropic_rift()
   {
     auto extension = timespan_t::from_seconds( talents.voidweaver.darkening_horizon->effectN( 3 ).base_value() );
 
-    buffs.entropic_rift->extend_duration( this, extension );
+    buffs.entropic_rift->extend_duration( extension );
 
     if ( buffs.voidheart->check() )
     {
-      buffs.voidheart->extend_duration( this, extension );
+      buffs.voidheart->extend_duration( extension );
     }
 
     if ( buffs.darkening_horizon->check() )
     {
-      buffs.darkening_horizon->extend_duration( this, extension );
+      buffs.darkening_horizon->extend_duration( extension );
       buffs.darkening_horizon->increment();
     }
     else

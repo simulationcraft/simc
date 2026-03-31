@@ -1158,6 +1158,7 @@ public:
   void init_gains() override;
   void init_procs() override;
   void init_special_effects() override;
+  void init_assessors() override;
   void init_finished() override;
   void create_buffs() override;
   action_t *create_action( std::string_view name, std::string_view options ) override;
