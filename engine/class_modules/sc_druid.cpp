@@ -1801,8 +1801,7 @@ public:
         return true;
 
       // allow if either the buff or the driver can proc from procs
-      if ( Base::data().flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) ||
-           Base::get_trigger_data()->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
+      if ( Base::data().flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
       {
         return true;
       }
