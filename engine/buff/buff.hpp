@@ -173,15 +173,12 @@ public:
   buff_t( actor_pair_t q, std::string_view name, const spell_data_t*, const item_t* = nullptr );
   buff_t( sim_t* sim, std::string_view name );
   buff_t( sim_t* sim, std::string_view name, const spell_data_t*, const item_t* = nullptr );
-  buff_t( sim_t* sim, player_t* target, std::string_view name );
-  buff_t( sim_t* sim, player_t* target, std::string_view name, const spell_data_t*, const item_t* = nullptr );
 
 protected:
   buff_t( sim_t* sim, player_t* target, player_t* source, std::string_view name, const spell_data_t*, const item_t* );
 
 public:
-  const spell_data_t& data() const
-  { return *s_data; }
+  const spell_data_t& data() const { return *s_data; }
   const spell_data_t& data_reporting() const;
 
   /**

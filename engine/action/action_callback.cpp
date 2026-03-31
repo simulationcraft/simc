@@ -17,8 +17,7 @@ proc_data_t::proc_data_t()
     can_proc_from_suppressed_target( false ),
     allow_class_ability_procs( false ),
     can_only_proc_from_class_abilities( false ),
-    can_proc_from_procs( false ),
-    proc_cast_successful( false )
+    can_proc_from_procs( false )
 {}
 
 proc_data_t::proc_data_t( const spell_data_t* s_data ) : spell( s_data ? s_data : spell_data_t::nil() )
@@ -36,7 +35,6 @@ void proc_data_t::_init()
   allow_class_ability_procs = spell->flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
   can_only_proc_from_class_abilities = spell->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES );
   can_proc_from_procs = spell->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS );
-  proc_cast_successful = spell->proc_flags() & PF_CAST_SUCCESSFUL;
 }
 
 bool proc_data_t::check_proc_trigger( const proc_data_t& source, const proc_data_t& target, proc_trigger_type_e type )

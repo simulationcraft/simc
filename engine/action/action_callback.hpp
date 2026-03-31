@@ -28,7 +28,6 @@ struct proc_data_t
   bool allow_class_ability_procs;
   bool can_only_proc_from_class_abilities;
   bool can_proc_from_procs;
-  bool proc_cast_successful;
 
   proc_data_t();
   proc_data_t( const spell_data_t* );

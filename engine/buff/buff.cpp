@@ -599,15 +599,6 @@ buff_t::buff_t( sim_t* sim, std::string_view name, const spell_data_t* spell_dat
   : buff_t( sim, nullptr, nullptr, name, spell_data, item )
 {}
 
-buff_t::buff_t( sim_t* sim, player_t* target, std::string_view name )
-  : buff_t( sim, target, nullptr, name, spell_data_t::nil(), nullptr )
-{}
-
-buff_t::buff_t( sim_t* sim, player_t* target, std::string_view name, const spell_data_t* spell_data,
-                const item_t* item )
-  : buff_t( sim, target, nullptr, name, spell_data, item )
-{}
-
 buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, std::string_view name, const spell_data_t* spell_data,
                 const item_t* item )
   : sim( sim ),
@@ -2485,7 +2476,7 @@ void buff_t::bump( int stacks, double value )
   // Current implementation splits helpful PF2_LANDED into PF1_HIT and PF1_CRIT so we only need to trigger PF1_HIT
   // TODO: assumption is that PROC1_NONE_HELPFUL actually applies to all aura application, whether hostile or not
   // NOTE: scheduled as event to ensure buff is fully processed
-  if ( source && !source->callbacks.procs[ PROC1_NONE_HELPFUL ][ PROC2_HIT ].empty() )
+  if ( !constant && source && !source->callbacks.procs[ PROC1_NONE_HELPFUL ][ PROC2_HIT ].empty() )
   {
     make_event( *sim, [ this ] { source->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, this ); } );
   }
@@ -2518,8 +2509,12 @@ bool buff_t::can_trigger( action_t* action ) const
   if ( is_fallback || !action->data().ok() || !trigger_data->ok() )
     return false;
 
+  if ( trigger_data->proc_flags() == 0 )
+    return true;
+
   // only direct damage triggers obey proc-related attributes
-  auto pt_type = !trigger_data.proc_cast_successful && !action->not_a_proc && ( action->proc || action->background )
+  auto pt_type = !( trigger_data->proc_flags() & PF_CAST_SUCCESSFUL ) && !action->not_a_proc &&
+                     ( action->proc || action->background )
                    ? proc_trigger_type_e::TRIGGER_ACTION_PROC
                    : proc_trigger_type_e::TRIGGER_ACTION;
 
@@ -2544,8 +2539,12 @@ bool buff_t::can_consume( action_t* action ) const
   if ( is_fallback || !action->data().ok() || !data().ok() )
     return false;
 
+  if ( proc_data->proc_flags() == 0 )
+    return true;
+
   // only direct damage triggers obey proc-related attributes
-  auto pt_type = !proc_data.proc_cast_successful && !action->not_a_proc && ( action->proc || action->background )
+  auto pt_type = !( proc_data->proc_flags() & PF_CAST_SUCCESSFUL ) && !action->not_a_proc &&
+                     ( action->proc || action->background )
                    ? proc_trigger_type_e::TRIGGER_ACTION_PROC
                    : proc_trigger_type_e::TRIGGER_ACTION;
 
@@ -2562,6 +2561,9 @@ int buff_t::consume( action_t* action, int stacks )
 
   if ( !can_consume( action ) )
     return 0;
+
+  if ( sim->debug )
+    sim->print_debug( "{} consumes {}.", *action, *this );
 
   int old_stacks = check();
 
@@ -2580,9 +2582,6 @@ int buff_t::consume( action_t* action, int stacks )
 
   if ( internal_cooldown )
     internal_cooldown->start();
-
-  if ( sim->debug )
-    sim->print_debug( "{} consumes {}.", *action, *this );
 
   return old_stacks - check();
 }
