@@ -1726,6 +1726,7 @@ public:
 
   const druid_t* p() const { return static_cast<druid_t*>( Base::source ); }
 };
+
 template <class Base>
 struct druid_action_t : public parse_action_effects_t<Base>, public druid_action_data_t
 {
