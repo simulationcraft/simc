@@ -18457,7 +18457,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1293212)  : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 10 | Scaled Value: 10 | Radius: 0 - 40 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 #2 (id=1293213)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : Releases a volley of fel fire, firing $s1 bolts at your target and $s2 $L:bolts,bolt at all enemies within $a1 yards of your target for $1277099s1 Chaos damage.
