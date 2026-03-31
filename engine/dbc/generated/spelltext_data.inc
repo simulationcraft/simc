@@ -27101,7 +27101,7 @@ static constexpr std::array<spelltext_data_t, 28644> __spelltext_data { {
   { 1254631, "At any time, decipher the map and guarantee that you'll find a Hidden Trove at the end of the next Tier 4+ Delve you complete.\r\n\r\nHidden Trove's contents depend on the completed Delve Tier.", "You'll find a Hidden Trove at the end of the next Tier 4+ Delve you complete.\r\n\r\nHidden Trove's contents depend on the completed Delve Tier.\r\n\r\nYou are able to unlock a Hidden Trove.", 0 },
   { 1254638, "Ignite the Solar Core within you for $d, forming a radiant shield that absorbs $s2% of incoming damage, up to $1257989s1. Gain up to $1257989s3 Versatility for $1257988d if the shield expires, based on its remaining power.", "Absorbing $s2% of incoming damage until ${$w1} is prevented.", 0 },
   { 1254640, "Your damaging abilities have a chance to unleash the prism's radiant light, increasing your Critical Strike by $s1 for $1255504d, further increased by $s2 for every $s3% of the target's missing health, up to a maximum of $s4. ", 0, 0 },
-  { 1254641, "Cover yourself in four fetid pustules, absorbing $1257925s1 damage for $d. Each time the shield loses $1257925s2% of its value, a pustule erupts, dealing $1257925s3  Plague damage split among nearby enemies.\r\n\r\nIf all pustules erupt, the final burst deals $1257925s4 additional Plague damage.", "Absorb $1257925s1 damage for $d.", 0 },
+  { 1254641, "Cover yourself in four fetid pustules, absorbing $1257925s1 damage for $d. Each time the shield loses $1257925s2% of its value, a pustule erupts, dealing $1257925s3  Plague damage split among nearby enemies.\r\n\r\nIf all pustules erupt, the final burst deals $1257925s4 additional Plague damage.", "Absorb $w1 damage for $d.", 0 },
   { 1254752, "Your spells and abilities have a chance to release an energy orb that bounces between up to $1254534x nearby allies, increasing their Versatility by $s2 for $1254577d. If an ally is below $s3% health, the orb heals them for $s4 instead.", 0, 0 },
   { 1254756, "Fire Blast now spreads $s3% of your target's Ignite to $s1 $Lenemy:enemies;.\r\n\r\nFlamestrike applies $s2% more Ignite.", 0, 0 },
   { 1254828, "Fire Blast damage increased by $s2% and it now spreads Ignite to $s1 additional $Ltarget:targets;.", 0, 0 },
@@ -28647,7 +28647,8 @@ static constexpr std::array<spelltext_data_t, 28644> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.1.66709
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  { 1254641,  1, "Absorb $1257925s1 damage for $d.", "Absorb $w1 damage for $d." },
 } };
 
 // Spell description variables, wow build 12.0.1.66709

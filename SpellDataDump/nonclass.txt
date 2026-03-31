@@ -85193,7 +85193,8 @@ Triggered By     : Whispers of L'ura (250768)
 Attributes       : Do Not Sheath (18), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=469647)   : Direct Heal (10) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4196.271 (coefficient=32.83378) | PvP Coefficient: 0.25 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 5664.966 (coefficient=44.3256) | PvP Coefficient: 0.25 | Target: Targeted Ally (21)
+Hotfixed         : Coefficient (32.833778 -> 44.325603)
 Description      : $@spelldesc250768
 
 Name             : Wormhole Teleport (id=250796) 
@@ -226561,13 +226562,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 63.20347 (coefficient=0.482173) | Target: Self (1)
 
 Name             : Xal'atath's Gift (id=1221063) 
+Hotfixed         : Attributes, Aura Interrupt
 School           : Shadow
 Spell Type       : None
 Duration         : 20 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Attributes       : Ignore Line of Sight (66), Not On Player (167), Not On Player Controlled NPC (168), AI Doesn't Face Target (179), Lock Caster Movement and Facing While Casting (352)
-Aura Interrupt   : Leave World (19), Enter World (22)
+Attributes       : Ignore Line of Sight (66), Not On Player (167), Not On Player Controlled NPC (168), AI Doesn't Face Target (179), Not In Raid Instances (203), Lock Caster Movement and Facing While Casting (352)
+Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1207348)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Radius: 0 - 60 yards | Target: Source (22) -> any in Area (7)
@@ -231134,8 +231136,8 @@ Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
                  : 4370
-                 : 4377
-                 : 4377
+                 : 4377: Pausing Pylon 2.0 (1259647 effect#4)
+                 : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4902
                  : 4905
                  : 4906
@@ -231176,8 +231178,8 @@ Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
                  : 4370
-                 : 4377
-                 : 4377
+                 : 4377: Pausing Pylon 2.0 (1259647 effect#4)
+                 : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4902
                  : 4905
                  : 4906
@@ -234277,7 +234279,7 @@ Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 959
                  : 4370
-                 : 4377
+                 : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4897
                  : 4907
                  : 4913
@@ -234317,7 +234319,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4900
                  : 4905
                  : 4913
@@ -234336,7 +234338,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4900
                  : 4905
                  : 4913
@@ -234355,7 +234357,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4900
                  : 4905
                  : 4913
@@ -234374,7 +234376,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4900
                  : 4905
                  : 4913
@@ -234393,7 +234395,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4900
                  : 4905
                  : 4913
@@ -234412,7 +234414,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4900
                  : 4905
                  : 4913
@@ -234431,7 +234433,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4899
                  : 4905
                  : 4913
@@ -234455,7 +234457,7 @@ School           : Physical
 Spell Type       : None
 Max Scaling Level: 60
 Duration         : 20 seconds
-Labels           : 4377
+Labels           : 4377: Pausing Pylon 2.0 (1259647 effect#4)
                  : 4905
                  : 4913
                  : 6100
@@ -244945,7 +244947,8 @@ Triggered By     : Duskwraith's Infusion (1263446), Duskwraith's Infusion (12634
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254739)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 9696.511 (coefficient=75.87048) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 13090.29 (coefficient=102.4252) | Target: Self (1)
+Hotfixed         : Coefficient (75.870483 -> 102.425163)
 #2 (id=1254740)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0.5 | Scaled Value: 47.69049 (coefficient=0.363826) | Target: Self (1)
 #3 (id=1254741)  : Dummy (3)
@@ -246455,6 +246458,7 @@ Hidden Trove's contents depend on the completed Delve Tier.
 You are able to unlock a Hidden Trove.
 
 Name             : Solar Core Igniter (id=1254638) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
@@ -246462,7 +246466,7 @@ Cooldown         : 90 seconds
 Category         : 1141 (Type 0x0)
 Labels           : 3959: Item Effects
 Category Cooldown: 20 seconds
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1261142)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -246491,6 +246495,7 @@ Effects          :
 Description      : Your damaging abilities have a chance to unleash the prism's radiant light, increasing your Critical Strike by $s1 for $1255504d, further increased by $s2 for every $s3% of the target's missing health, up to a maximum of $s4. 
 
 Name             : Rotting Globule (id=1254641) 
+Hotfixed         : Tooltip
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
@@ -246506,7 +246511,7 @@ Effects          :
 Description      : Cover yourself in four fetid pustules, absorbing $1257925s1 damage for $d. Each time the shield loses $1257925s2% of its value, a pustule erupts, dealing $1257925s3  Plague damage split among nearby enemies.
 
 If all pustules erupt, the final burst deals $1257925s4 additional Plague damage.
-Tooltip          : Absorb $1257925s1 damage for $d.
+Tooltip          : Absorb $w1 damage for $d.
 
 Name             : Refueling Orb (id=1254752) [Passive, Hidden] 
 School           : Arcane
@@ -246802,7 +246807,8 @@ Triggered By     : Radiant Blessing (1254624)
 Attributes       : Passive (6), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1262936)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 43913.86 (coefficient=343.6046) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 59283.72 (coefficient=463.8662) | Target: Self (1)
+Hotfixed         : Coefficient (343.604614 -> 463.866241)
 #2 (id=1262937)  : Dummy (3) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 2352.397 (coefficient=18.40636) | Target: Self (1)
 Tooltip          : Your healing spells and abilities also heal the imbued ally for $w2.
@@ -246822,10 +246828,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 
 Name             : Emberwing Burn (id=1255853) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1263040)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
@@ -247432,7 +247439,8 @@ Effects          :
 #1 (id=1267480)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 38.96536 (coefficient=0.304885) | Target: Self (1)
 #2 (id=1267481)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 5549.319 (coefficient=43.42072) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7491.468 (coefficient=58.61709) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (43.420719 -> 58.617092)
 #3 (id=1276709)  : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #4 (id=1277034)  : Dummy (3)
@@ -247965,7 +247973,8 @@ Proc Flags       : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Pe
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1268661)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 6949.907 (coefficient=54.37964) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8339.889 (coefficient=65.25558) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (54.379642 -> 65.255577)
 #2 (id=1268759)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 75.05092 (coefficient=0.572556) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1268760)  : Dummy (3)
@@ -248072,6 +248081,10 @@ Effects          :
 #3 (id=1268813)  : Apply Aura Raid (65) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 4877 (Label) | Radius: 15 yards | Target: Self (1)
                    Affected Spells (Label): Haranir Phial of Perception (1236763), Haranir Phial of Finesse (1236767), Haranir Phial of Ingenuity (1239755)
+#4 (id=1315453)  : Apply Aura Raid (65) | Modify Time Rate (Label) (470)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 4377 (Label) | Radius: 15 yards | Target: Self (1)
+                   Affected Spells (Label): Hearty Well Fed (1232076), Affected Spells (Label): Hearty Well Fed (1232076), Hearty Well Fed (1232078), Hearty Well Fed (1232078), Hearty Well Fed (1233733), Hearty Refreshment (1233738), Hearty Refreshment (1233739), Hearty Refreshment (1233740), Hearty Refreshment (1233741), Hearty Refreshment (1233742), Hearty Refreshment (1233743), Hearty Refreshment (1233744), Hearty Refreshment (1233745)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc452993
 Tooltip          : The expiration of Khaz Algar Flasks, Phials, and Well Fed effects have been halted.
 
@@ -250748,6 +250761,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 
 Name             : Litany of Lightblind Wrath (id=1263721) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
@@ -250756,7 +250770,7 @@ Labels           : 292
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Beacon of Lightblind Wrath (1258283)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1274575)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -253017,7 +253031,8 @@ Effects          :
 #1 (id=1289880)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 #2 (id=1289881)  : Apply Aura (6) | Modify Leech% (443)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Hotfixed         : Base Value (2 -> 1)
 #3 (id=1289882)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #4 (id=1289883)  : Apply Aura (6) | Scale% (Stacking) (61)

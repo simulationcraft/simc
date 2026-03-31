@@ -12956,13 +12956,15 @@ Effects          :
                    Affected Spells: Flamestrike (2120), Flamestrike (460476), Flamestrike (1254851)
                    Family Flags: 2
 #3 (id=1261872)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
                    Family Flags: 29
+Hotfixed         : Base Value (5 -> 25)
 #4 (id=1261873)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Arcane Pulse (1241462), Arcane Pulse (1243460)
                    Family Flags: 18
+Hotfixed         : Base Value (5 -> 15)
 Description      : $?c1[Arcane Blast damage increased by $s3%.
 
 Arcane Pulse damage increased by $s4%][Pyroblast damage increased by $s1%.
@@ -16144,13 +16146,15 @@ Effects          :
 #1 (id=1260949)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=1260950)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Combustion (190319)
                    Family Flags: 58
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1260951)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Combustion (190319)
                    Family Flags: 58
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Combustion grants you $s2% increased spell damage plus an additional $s1% of your critical strike chance as spell damage.
 
 Name             : Ignition (id=1254756) [Spell Family (3), Passive] 
@@ -16685,8 +16689,9 @@ Attributes       : Allow Class Ability Procs (416), Asynchronous Buff (490)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1265238)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 0x4 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Misc Value: 0x4 | Target: Self (1)
                    Affected School(s): Fire
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc1257349
 Tooltip          : Fire damage increased by $s1%.
 
