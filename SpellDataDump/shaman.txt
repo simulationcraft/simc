@@ -8038,7 +8038,8 @@ Attributes       : Not Shapeshifted (16), Is Channelled (34), Name in Channel Ba
 Channel Interrupt: Damage (2), Attacking (13)
 Effects          :
 #1 (id=782727)   : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.7 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (1.4 -> 7.7)
 Description      : $@spelldesc305483
 Tooltip          : Suffering $w1 Nature damage every $t1 sec.
 
@@ -8059,7 +8060,8 @@ Attributes       : Not Shapeshifted (16), Is Channelled (34), Name in Channel Ba
 Channel Interrupt: Damage (2), Attacking (13)
 Effects          :
 #1 (id=782730)   : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.7 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (1.4 -> 7.7)
 #2 (id=782731)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Targeted Enemy (6)
 Description      : $@spelldesc305483
@@ -13058,13 +13060,15 @@ Effects          :
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
                    Family Flags: 44, 86
 #3 (id=1144386)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
+Hotfixed         : PvP Coefficient (0.5 -> 1.25)
 #4 (id=1144387)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.25 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
+Hotfixed         : PvP Coefficient (0.5 -> 1.25)
 #5 (id=1144388)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1228 (Category) | Target: Self (1)
                    Affected Spells (Category): Riptide (61295)
@@ -16701,9 +16705,10 @@ Effects          :
                    Affected Spells: Elemental Blast (117014)
                    Family Flags: 98
 #9 (id=1213844)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -15 | Scaled Value: -15 | Target: Self (1)
+                   Base Value: -28 | Scaled Value: -28 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
+Hotfixed         : Base Value (-15 -> -28)
 #10 (id=1213848) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
