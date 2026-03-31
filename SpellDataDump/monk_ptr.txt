@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.66591 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.66741 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -429,7 +429,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 359
                  : 2835: Spatial Paradox (406789 effect#13)
-Affecting Spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#11), Mistweaver Monk (137024 effect#11), Windwalker Monk (137025 effect#15), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Xuen's Battlegear (392993 effect#1), Pressure Point (393053 effect#1), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Yu'lon's Knowledge (443625 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Tiger Strikes (454485 effect#1), Winning Streak! (1216182 effects: #1, #2), Windwalker Monk (1222923 effect#6), Heart of the Jade Serpent (1238904 effect#2), Skyfire Heel (1248705 effect#1), Zenith (1249625 effects: #7, #13), Rushing Wind Kick (1250554 effect#1), Windwalker Monk (1258122 effect#8), Mistweaver Monk (1258138 effects: #4, #8), Brewmaster Monk (1258153 effect#7), Spiritfont (1260677 effect#2), Fast Feet (1261543 effect#1)
+Affecting Spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#11), Mistweaver Monk (137024 effect#11), Windwalker Monk (137025 effect#15), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Xuen's Battlegear (392993 effect#1), Pressure Point (393053 effect#1), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Yu'lon's Knowledge (443625 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Tiger Strikes (454485 effect#1), Winning Streak! (1216182 effects: #1, #2), Heart of the Jade Serpent (1238904 effect#2), Skyfire Heel (1248705 effect#1), Zenith (1249625 effects: #7, #13), Rushing Wind Kick (1250554 effect#1), Windwalker Monk (1258122 effect#8), Mistweaver Monk (1258138 effects: #4, #8), Brewmaster Monk (1258153 effect#7), Spiritfont (1260677 effect#2), Fast Feet (1261543 effect#1)
 Family Flags     : 39, 67
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Aura Points On Client (268), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
 Effects          :
@@ -492,7 +492,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 359
-Affecting Spells : Invoke Xuen, the White Tiger (123904 effects: #4, #5), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #3, #4), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Fists of Primordium (364418 effect#1), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Mistweaver Monk (428200 effects: #3, #4), Heart of the Jade Serpent (443421 effects: #2, #5, #6), Heart of the Jade Serpent (443616 effects: #2, #5, #6), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Heart of the Jade Serpent (1238904 effects: #2, #5, #6), Crashing Fists (1248747 effect#1), Zenith (1249625 effects: #2, #4, #7), Harmonic Combo (1250041 effect#1), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
+Affecting Spells : Invoke Xuen, the White Tiger (123904 effects: #4, #5), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #3, #4), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Fists of Primordium (364418 effect#1), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Mistweaver Monk (428200 effects: #3, #4), Heart of the Jade Serpent (443421 effects: #2, #5, #6), Heart of the Jade Serpent (443616 effects: #2, #5, #6), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Heart of the Jade Serpent (1238904 effects: #2, #5, #6), Zenith (1249625 effects: #2, #4, #7), Harmonic Combo (1250041 effect#1), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Triggered By     : Katsuo's Eclipse (208045)
 Family Flags     : 55, 67, 103
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), No Pushback (207), Delay Combat Timer During Cast (211), Aura Points On Client (268), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
@@ -1240,7 +1240,7 @@ Labels           : 16: Class Spells
                  : 741: Healing Spells
                  : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1), Devout Spirit (319919 effect#1)
                  : 3566: Balanced Stratagem (451508 effect#1)
-Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#7), Mistweaver Monk (137024 effects: #1, #2, #8), Windwalker Monk (137025 effect#8), Dome of Mist (205655 effect#2), The Black Flame's Gamble (217006 effect#1), Ovyd's Winter Wrap (217642 effect#2), Improved Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effects: #1, #2), Invoke Yu'lon, the Jade Serpent (322118 effects: #8, #9), Celestial Brew (322507 effect#2), Invoke Chi-Ji, the Red Crane (325197 effects: #7, #8), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #1, #2), Tear of Morning (337993 effect#2), Escape from Reality (343249 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Save Them All (389579 effect#1), Vivacious Vivification (392883 effects: #1, #3, #4), Monk Mistweaver Class Set 4pc (393663 effects: #1, #2), Jadefire Brand (395413 effect#1), Soulfang Vitality (410082 effects: #1, #2), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effects: #1, #2), Temple Training (442743 effects: #1, #3), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effect#3), Renewing Mist (1238851 effect#2), Serene Vitality (1242468 effect#1), Way of the Serpent (1243155 effect#1), Serene Surge (1266735 effect#1), Vital Clarity (1266748 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283666 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283667 effects: #1, #2)
+Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#7), Mistweaver Monk (137024 effects: #1, #2, #8), Windwalker Monk (137025 effect#8), Dome of Mist (205655 effect#2), The Black Flame's Gamble (217006 effect#1), Ovyd's Winter Wrap (217642 effect#2), Improved Vivify (231602 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effects: #1, #2), Invoke Yu'lon, the Jade Serpent (322118 effects: #8, #9), Celestial Brew (322507 effect#2), Invoke Chi-Ji, the Red Crane (325197 effects: #7, #8), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #1, #2), Tear of Morning (337993 effect#2), Escape from Reality (343249 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Save Them All (389579 effect#1), Vivacious Vivification (392883 effects: #1, #3, #4), Monk Mistweaver Class Set 4pc (393663 effects: #1, #2), Jadefire Brand (395413 effect#1), Soulfang Vitality (410082 effects: #1, #2), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effects: #1, #2), Temple Training (442743 effects: #1, #3), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effect#3), Renewing Mist (1238851 effect#2), Way of the Serpent (1243155 effect#1), Serene Surge (1266735 effect#1), Vital Clarity (1266748 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283666 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283667 effects: #1, #2), Serene Vitality (1285660 effect#1)
 Family Flags     : 26, 48
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -1506,7 +1506,7 @@ Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Burst of Life (287472 effect#1), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Heart of the Jade Serpent (1238904 effect#2)
 Family Flags     : 78
-Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), External Defensive (C_Spell.IsExternalDefensive) (499)
+Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), External Defensive (C_Spell.IsExternalDefensive) (499), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=132060)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.3 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -1531,13 +1531,13 @@ Range            : 8 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting Spells : Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #3, #4), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Fists of Primordium (364418 effect#1), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Fists of Flowing Momentum (394951 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Mistweaver Monk (428200 effects: #3, #4), Temple Training (442743 effect#2), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), One Versus Many (450988 effect#2), Momentum Boost (451297 effect#1), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Zenith (1249625 effects: #2, #4), Harmonic Combo (1250041 effect#2), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
+Affecting Spells : Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #3, #4), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Fists of Primordium (364418 effect#1), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Fists of Flowing Momentum (394951 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Mistweaver Monk (428200 effects: #3, #4), Temple Training (442743 effect#2), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), One Versus Many (450988 effect#2), Momentum Boost (451297 effect#1), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Crashing Fists (1248747 effect#1), Zenith (1249625 effects: #2, #4), Harmonic Combo (1250041 effect#2), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Triggered By     : Fists of Fury (113656)
 Family Flags     : 20, 103
 Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Do Not Display Duration (170), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=133162)   : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.6082 | Radius: 0 - 8 yards | Target: Source (22) -> Enemies in Cone (24)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.6082 | PvP Coefficient: 1.15 | Radius: 0 - 8 yards | Target: Source (22) -> Enemies in Cone (24)
 #2 (id=155264)   : Trigger Spell (64): Fists of Fury Visual Target
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 123154 | Radius: 0 - 8 yards | Target: Source (22) -> Enemies in Cone (24)
 Description      : $@spelldesc113656
@@ -1824,7 +1824,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Mechanic         : Stun
-Affecting Spells : Monk (137022 effect#1), Katsuo's Eclipse (208045 effect#1), Weapons of Order (311054 effect#1), Fists of Primordium (364418 effect#1), Heart of the Jade Serpent (443421 effects: #2, #5, #6), Heart of the Jade Serpent (443616 effects: #2, #5, #6), Heart of the Jade Serpent (1238904 effects: #2, #5, #6), Crashing Fists (1248747 effect#1), Zenith (1249625 effect#7), Harmonic Combo (1250041 effect#1)
+Affecting Spells : Monk (137022 effect#1), Katsuo's Eclipse (208045 effect#1), Weapons of Order (311054 effect#1), Fists of Primordium (364418 effect#1), Heart of the Jade Serpent (443421 effects: #2, #5, #6), Heart of the Jade Serpent (443616 effects: #2, #5, #6), Heart of the Jade Serpent (1238904 effects: #2, #5, #6), Zenith (1249625 effect#7), Harmonic Combo (1250041 effect#1)
 Triggered By     : Fists of Fury (113656)
 Family Flags     : 55
 Attributes       : Display Large Aura Icon On Unit Frames (Boss Aura) (286), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
@@ -1893,7 +1893,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2355: Fortifying Brew: Determination (322960 effect#3), Fortifying Brew (388917 effect#1), Fortifying Brew (388917 effect#2)
 Family Flags     : 51
-Attributes       : No Threat (42), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : No Threat (42), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=141067)   : Apply Aura (6) | Increase Health (34)
@@ -2086,11 +2086,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: -30 | Target: Self (1)
                    Affected School(s): All
 #3 (id=220987)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.2
 #4 (id=753843)   : Dummy (3)
                    Base Value: 70 | Scaled Value: 70
 #5 (id=1094967)  : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 120 | Scaled Value: 120 | Target: Self (1)
 Description      : Absorbs all damage taken for $d, up to $s3% of your maximum health, and redirects $s4% of that amount to the enemy target as Nature damage over $124280d.
 Tooltip          : Damage dealt to the Monk is redirected to you as Nature damage over $124280d.
 
@@ -3613,7 +3613,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 3567: Balanced Stratagem (451514 effect#1)
-Affecting Spells : Thunder Focus Tea (116680 effect#1), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #11), Mistweaver Monk (137024 effects: #3, #4, #11), Windwalker Monk (137025 effects: #1, #2, #15), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Xuen's Battlegear (392993 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Pressure Point (393053 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Mistweaver Monk (428200 effects: #3, #4), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Yu'lon's Knowledge (443625 effect#1), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Tiger Strikes (454485 effect#1), Flow of Battle (457257 effect#1), Winning Streak! (1216182 effects: #1, #2), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2, #6), Heart of the Jade Serpent (1238904 effect#2), Skyfire Heel (1248705 effect#1), Zenith (1249625 effects: #2, #4, #7, #13), Rushing Wind Kick (1250554 effect#1), Brewmaster Monk (1256978 effects: #1, #2), Windwalker Monk (1258122 effect#8), Mistweaver Monk (1258138 effects: #4, #8), Brewmaster Monk (1258153 effect#7), Spiritfont (1260677 effect#2), Fast Feet (1261543 effect#1), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
+Affecting Spells : Thunder Focus Tea (116680 effect#1), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #11), Mistweaver Monk (137024 effects: #3, #4, #11), Windwalker Monk (137025 effects: #1, #2, #15), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Xuen's Battlegear (392993 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Pressure Point (393053 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Mistweaver Monk (428200 effects: #3, #4), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Yu'lon's Knowledge (443625 effect#1), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Tiger Strikes (454485 effect#1), Flow of Battle (457257 effect#1), Winning Streak! (1216182 effects: #1, #2), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Heart of the Jade Serpent (1238904 effect#2), Skyfire Heel (1248705 effect#1), Zenith (1249625 effects: #2, #4, #7, #13), Rushing Wind Kick (1250554 effect#1), Brewmaster Monk (1256978 effects: #1, #2), Windwalker Monk (1258122 effect#8), Mistweaver Monk (1258138 effects: #4, #8), Brewmaster Monk (1258153 effect#7), Spiritfont (1260677 effect#2), Fast Feet (1261543 effect#1), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Triggered By     : Rising Sun Kick (107428)
 Family Flags     : 39, 103
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Aura Points On Client (268), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
@@ -4099,7 +4099,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Mechanic         : Disorient
+Mechanic         : Sleep
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : Do Not Sheath (18), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Prevents Anim (50), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Do Not Display Range (126), No Cast Log (128), Always AOE Line of Sight (186), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Bypass Visibility Check (320), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Damage (Script) (27)
@@ -5273,7 +5273,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Mechanic         : Stun
-Affecting Spells : Monk (137022 effect#1), Katsuo's Eclipse (208045 effect#1), Weapons of Order (311054 effect#1), Fists of Primordium (364418 effect#1), Heart of the Jade Serpent (443421 effects: #2, #5, #6), Heart of the Jade Serpent (443616 effects: #2, #5, #6), Heart of the Jade Serpent (1238904 effects: #2, #5, #6), Crashing Fists (1248747 effect#1), Zenith (1249625 effect#7), Harmonic Combo (1250041 effect#1)
+Affecting Spells : Monk (137022 effect#1), Katsuo's Eclipse (208045 effect#1), Weapons of Order (311054 effect#1), Fists of Primordium (364418 effect#1), Heart of the Jade Serpent (443421 effects: #2, #5, #6), Heart of the Jade Serpent (443616 effects: #2, #5, #6), Heart of the Jade Serpent (1238904 effects: #2, #5, #6), Zenith (1249625 effect#7), Harmonic Combo (1250041 effect#1)
 Family Flags     : 55
 Attributes       : Display Large Aura Icon On Unit Frames (Boss Aura) (286), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Enter World (22)
@@ -11328,7 +11328,7 @@ Range            : 5 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting Spells : Thunder Focus Tea (116680 effect#1), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #11), Mistweaver Monk (137024 effects: #3, #4, #11), Windwalker Monk (137025 effects: #1, #2, #15), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Xuen's Battlegear (392993 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Pressure Point (393053 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Mistweaver Monk (428200 effects: #3, #4), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Yu'lon's Knowledge (443625 effect#1), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Tiger Strikes (454485 effect#1), Flow of Battle (457257 effect#1), Winning Streak! (1216182 effects: #1, #2), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2, #6), Heart of the Jade Serpent (1238904 effect#2), Skyfire Heel (1248705 effect#1), Zenith (1249625 effects: #2, #4, #7, #13), Rushing Wind Kick (1250554 effect#1), Brewmaster Monk (1256978 effects: #1, #2), Windwalker Monk (1258122 effect#8), Mistweaver Monk (1258138 effects: #4, #8), Brewmaster Monk (1258153 effect#7), Spiritfont (1260677 effect#2), Fast Feet (1261543 effect#1), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
+Affecting Spells : Thunder Focus Tea (116680 effect#1), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #11), Mistweaver Monk (137024 effects: #3, #4, #11), Windwalker Monk (137025 effects: #1, #2, #15), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Xuen's Battlegear (392993 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Pressure Point (393053 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Mistweaver Monk (428200 effects: #3, #4), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Yu'lon's Knowledge (443625 effect#1), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Tiger Strikes (454485 effect#1), Flow of Battle (457257 effect#1), Winning Streak! (1216182 effects: #1, #2), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Heart of the Jade Serpent (1238904 effect#2), Skyfire Heel (1248705 effect#1), Zenith (1249625 effects: #2, #4, #7, #13), Rushing Wind Kick (1250554 effect#1), Brewmaster Monk (1256978 effects: #1, #2), Windwalker Monk (1258122 effect#8), Mistweaver Monk (1258138 effects: #4, #8), Brewmaster Monk (1258153 effect#7), Spiritfont (1260677 effect#2), Fast Feet (1261543 effect#1), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Family Flags     : 39, 103
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
 Effects          :
@@ -12269,7 +12269,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2545: Legacy of Wisdom (404408 effect#1), Legacy of Wisdom (404408 effect#2), Emperor's Favor (471761 effect#1), Emperor's Favor (471761 effect#2), Emperor's Favor (471761 effect#3)
                  : 3566: Balanced Stratagem (451508 effect#1)
-Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Dome of Mist (205655 effect#2), Ovyd's Winter Wrap (217642 effect#2), Invoke Yu'lon, the Jade Serpent (322118 effects: #8, #9), Invoke Chi-Ji, the Red Crane (325197 effects: #7, #8), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387991 effect#3), Save Them All (389579 effect#1), Vivacious Vivification (392883 effect#1), Jadefire Brand (395413 effect#1), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effects: #1, #2), Temple Training (442743 effect#1), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Renewing Mist (1238851 effect#2), Serene Vitality (1242468 effect#1), Way of the Serpent (1243155 effect#1), Serene Surge (1266735 effect#1), Vital Clarity (1266748 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283666 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283667 effects: #1, #2)
+Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Dome of Mist (205655 effect#2), Ovyd's Winter Wrap (217642 effect#2), Invoke Yu'lon, the Jade Serpent (322118 effects: #8, #9), Invoke Chi-Ji, the Red Crane (325197 effects: #7, #8), Enveloping Breath (325209 effect#3), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387991 effect#3), Save Them All (389579 effect#1), Vivacious Vivification (392883 effect#1), Jadefire Brand (395413 effect#1), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effects: #1, #2), Temple Training (442743 effect#1), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Renewing Mist (1238851 effect#2), Way of the Serpent (1243155 effect#1), Serene Surge (1266735 effect#1), Vital Clarity (1266748 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283666 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283667 effects: #1, #2), Serene Vitality (1285660 effect#1)
 Triggered By     : Sheilun's Gift (399497)
 Family Flags     : 48, 114
 Attributes       : Doesn't Reset Swing Timer if Instant (217), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
@@ -13081,11 +13081,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1108337)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -16 | Scaled Value: -16 | Target: Self (1)
+                   Base Value: -19 | Scaled Value: -19 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48
 #2 (id=1108338)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: -16 | Scaled Value: -16 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -19 | Scaled Value: -19 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48
 #3 (id=1109279)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
@@ -13109,6 +13109,10 @@ Effects          :
                    Family Flags: 95
 #9 (id=1266555)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 5 | Target: Self (1)
+#10 (id=1315666) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value 2: 3448 (Label) | Target: Self (1)
+#11 (id=1315671) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 2 (6)
+                   Base Value: -60 | Scaled Value: -60 | Misc Value: 6 | Misc Value 2: 4586 (Label) | Target: Self (1)
 Description      : Mistweaver Monk core passive
 
 Name             : Healing Elixir (id=428439) [Spell Family (53)] 
@@ -16855,7 +16859,7 @@ Effects          :
 #2 (id=1251978)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Modified By: Singularly Focused Jade (451573 effect#1)
-Description      : At the end of your Fists of Fury channel, you release a Jadefire Stomp, dealing $1248815s1 damage to $s2 enemies in front of you and increasing your movement speed by $451943s1% for $451943d.
+Description      : At the end of your Fists of Fury channel, you release a Jadefire Stomp, dealing $1248815s1 damage to $s2 $Lenemy:enemies; in front of you and increasing your movement speed by $451943s1% for $451943d.
 
 Name             : Lotus Infusion (id=458431) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=7, col=6, max_rank=1, req_points=8]
@@ -17142,8 +17146,8 @@ Cooldown         : 10 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 6424: Windwalker Monk (1258122 effect#21), Windwalker Monk (1258122 effect#24)
-Affecting Spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#11), Mistweaver Monk (137024 effect#11), Windwalker Monk (137025 effect#15), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Xuen's Battlegear (392993 effect#1), Pressure Point (393053 effect#1), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Yu'lon's Knowledge (443625 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Tiger Strikes (454485 effect#1), Winning Streak! (1216182 effects: #1, #2), Windwalker Monk (1222923 effect#6), Heart of the Jade Serpent (1238904 effect#2), Skyfire Heel (1248705 effect#1), Zenith (1249625 effects: #7, #13), Rushing Wind Kick (1250554 effect#1), Windwalker Monk (1258122 effect#8), Mistweaver Monk (1258138 effects: #4, #8), Brewmaster Monk (1258153 effect#7), Spiritfont (1260677 effect#2), Fast Feet (1261543 effect#1)
+                 : 6424: Windwalker Monk (1222923 effect#6), Windwalker Monk (1258122 effect#21), Windwalker Monk (1258122 effect#24)
+Affecting Spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effect#11), Mistweaver Monk (137024 effect#11), Windwalker Monk (137025 effect#15), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Xuen's Battlegear (392993 effect#1), Pressure Point (393053 effect#1), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Yu'lon's Knowledge (443625 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Tiger Strikes (454485 effect#1), Winning Streak! (1216182 effects: #1, #2), Heart of the Jade Serpent (1238904 effect#2), Skyfire Heel (1248705 effect#1), Zenith (1249625 effects: #7, #13), Rushing Wind Kick (1250554 effect#1), Windwalker Monk (1258122 effect#8), Mistweaver Monk (1258138 effects: #4, #8), Brewmaster Monk (1258153 effect#7), Spiritfont (1260677 effect#2), Fast Feet (1261543 effect#1)
 Family Flags     : 39
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
 Effects          :
@@ -17234,13 +17238,13 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting Spells : Thunder Focus Tea (116680 effect#1), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #11), Mistweaver Monk (137024 effects: #3, #4, #11), Windwalker Monk (137025 effects: #1, #2, #15), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Xuen's Battlegear (392993 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Pressure Point (393053 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Mistweaver Monk (428200 effects: #3, #4), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Yu'lon's Knowledge (443625 effect#1), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Tiger Strikes (454485 effect#1), Flow of Battle (457257 effect#1), Winning Streak! (1216182 effects: #1, #2), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2, #6), Heart of the Jade Serpent (1238904 effect#2), Skyfire Heel (1248705 effect#1), Zenith (1249625 effects: #2, #4, #7, #13), Rushing Wind Kick (1250554 effect#1), Brewmaster Monk (1256978 effects: #1, #2), Windwalker Monk (1258122 effect#8), Mistweaver Monk (1258138 effects: #4, #8), Brewmaster Monk (1258153 effect#7), Spiritfont (1260677 effect#2), Fast Feet (1261543 effect#1), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
+Affecting Spells : Thunder Focus Tea (116680 effect#1), Invoke Xuen, the White Tiger (123904 effects: #4, #5), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #11), Mistweaver Monk (137024 effects: #3, #4, #11), Windwalker Monk (137025 effects: #1, #2, #15), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Xuen's Battlegear (392993 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Pressure Point (393053 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), Mistweaver Monk (428200 effects: #3, #4), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Yu'lon's Knowledge (443625 effect#1), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Tiger Strikes (454485 effect#1), Flow of Battle (457257 effect#1), Winning Streak! (1216182 effects: #1, #2), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Heart of the Jade Serpent (1238904 effect#2), Skyfire Heel (1248705 effect#1), Zenith (1249625 effects: #2, #4, #7, #13), Rushing Wind Kick (1250554 effect#1), Brewmaster Monk (1256978 effects: #1, #2), Windwalker Monk (1258122 effect#8), Mistweaver Monk (1258138 effects: #4, #8), Brewmaster Monk (1258153 effect#7), Spiritfont (1260677 effect#2), Fast Feet (1261543 effect#1), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Triggered By     : Rushing Wind Kick (467307)
 Family Flags     : 39, 103
-Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Treat as Area Effect (175), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Treat as Area Effect (175), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1181673)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.7975 | Radius: 25 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.7975 | Radius: 25 yards | Target: Enemies in Cone (24)
 Description      : $@spelldesc467307
 
 Name             : Glyph of Tiger Palm (id=468605) [Spell Family (53)] 
@@ -17840,10 +17844,9 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
-#6 (id=1266882)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
-                   Family Flags: 39
+#6 (id=1266882)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value 2: 6424 (Label) | Target: Self (1)
+                   Affected Spells (Label): Rushing Wind Kick (467307)
 
 Name             : Luck of the Draw! (id=1226058) [Spell Family (53)] 
 Class            : Monk
@@ -18192,10 +18195,8 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Can Proc From Procs (122)
 Effects          :
-#1 (id=1241997)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
+#1 (id=1241997)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
-                   Affected Spells: Vivify (116670), Sheilun's Gift (399491)
-                   Family Flags: 26, 114
 Description      : Sheilun's Gift and Vivify healing is increased by $s1% on yourself.
 
 Name             : Jade Infusion (id=1242910) [Spell Family (53), Passive] 
@@ -18317,8 +18318,8 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
 Effects          :
 #1 (id=1251876)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Fists of Fury (113656), Fists of Fury (120086), Fists of Fury (232055)
-                   Family Flags: 55
+                   Affected Spells: Fists of Fury (117418)
+                   Family Flags: 20
 Description      : The damage of Fists of Fury is increased by $s1%.
 
 Name             : Cyclone's Drift (id=1248749) [Spell Family (53), Passive] 
@@ -18362,7 +18363,7 @@ Labels           : 16: Class Spells
                  : 3053: Windwalker Monk (137025 effect#19), Singularly Focused Jade (451573 effect#2), Mistweaver Monk (1258138 effect#18)
 Affecting Spells : Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #3, #4), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Mistweaver Monk (428200 effects: #3, #4), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Family Flags     : 14, 103
-Attributes       : Is Ability (4), Do Not Sheath (18), Discount Power On Miss (59), No Aura Icon (60), No Helpful Threat (131), Treat as Area Effect (175), No Aura Log (202), Treat as NPC AoE (250), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Sheath (18), Discount Power On Miss (59), No Aura Icon (60), No Helpful Threat (131), Treat as Area Effect (175), Always Line of Sight (185), Always AOE Line of Sight (186), No Aura Log (202), Treat as NPC AoE (250), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1251991)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1 | PvP Coefficient: 0.5 | Radius: 30 yards | Target: Front of Self (47) -> Line to Enemy (134)
@@ -18485,7 +18486,7 @@ Proc Chance      : 101%
 Affecting Spells : Tear of Morning (337993 effect#2), Tear of Morning (387995 effect#2), Drinking Horn Cover (391370 effect#1), Windwalker Monk (1258122 effect#8), Brewmaster Monk (1258153 effect#7), Weapon of Wind (1272678 effects: #1, #2)
 Triggered By     : Tigereye Brew (1261724)
 Family Flags     : 77
-Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333)
+Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Cast While Channeling (308), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1253256)  : Apply Aura (6) | Modify Critical Strike% (290)
@@ -19179,7 +19180,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=1269976)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Rising Sun Kick and Vivify have a chance to activate Spiritfont, causing your next Enveloping Mist to be instant cast and channel Soothing Mist from you onto up to $s2 allies at $s1% effectiveness for $1260670d.
+Description      : Rising Sun Kick and Vivify have a chance to activate Spiritfont, causing your next Enveloping Mist's cast time to be reduced by $1260565s3% and channel Soothing Mist from you onto up to $s2 allies at $s1% effectiveness for $1260670d.
 
 If Spiritfont's Soothing Mists heal a full health target, they will jump to another injured ally or split its healing into your remaining Soothing Mists.
 
@@ -19203,11 +19204,11 @@ Effects          :
 #2 (id=1269992)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=1313044)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Breath (358560)
                    Family Flags: 79
 Description      : $@spelldesc1260511
-Tooltip          : Your next Enveloping Mist is instant cast and channels Soothing Mist from you onto up to $w2 allies at $w1% effectiveness for $1260670d.
+Tooltip          : Your next Enveloping Mist's cast time is reduced by $w3% and channels Soothing Mist from you onto up to $w2 allies at $w1% effectiveness for $1260670d.
 
 Name             : Elevated Stagger (id=1260619) [Spell Family (53)] 
 Class            : Monk
@@ -20666,7 +20667,7 @@ Family Flags     : 103
 Attributes       : Is Ability (4), Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1285950)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10 | PvP Coefficient: 0.5 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10 | PvP Coefficient: 0.375 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=1310821)  : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Resource: chi | Target: Self (1)
 Description      : Release a powerful stomp, dealing $1272696s1 Nature damage to nearby enemies, reduced beyond $1272694s1 targets.
@@ -20940,8 +20941,10 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Can Proc From Procs (122), Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=1301852)  : Apply Aura (6) | Dummy (4)
+#1 (id=1301852)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Affected Spells: Vivify (116670), Sheilun's Gift (399491)
+                   Family Flags: 26, 114
 #2 (id=1301853)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Serene Vitality overrides Expel Harm
                    Base Value: 1242468 | Scaled Value: 1242468 | Misc Value: 322101 | Target: Self (1)
 Description      : Sheilun's Gift and Vivify healing is increased by $s1% on yourself.
