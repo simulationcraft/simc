@@ -18466,7 +18466,7 @@ Name             : Mind Sear (id=1280457) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
-Range            : 40 yards
+Range            : 55 yards
 Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
