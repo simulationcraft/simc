@@ -83,6 +83,8 @@ void devourer( player_t* p )
   action_priority_list_t* reaps = p->get_action_priority_list( "reaps" );
 
   precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "variable,name=trinket_1_mastery,value=trinket.1.has_use_buff&trinket.1.has_buff.mastery" );
+  precombat->add_action( "variable,name=trinket_2_mastery,value=trinket.2.has_use_buff&trinket.2.has_buff.mastery" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.mirror_of_fractured_tomorrows|trinket.1.is.signet_of_the_priory" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.is.signet_of_the_priory" );
   precombat->add_action( "variable,name=weapon_buffs,value=equipped.bestinslots" );
@@ -99,40 +101,41 @@ void devourer( player_t* p )
   precombat->add_action( "variable,name=trinket_priority,op=set,value=trinket.1.is.signet_of_the_priory+2*trinket.2.is.signet_of_the_priory,if=equipped.signet_of_the_priory&variable.trinket_priority=3" );
   precombat->add_action( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl" );
   precombat->add_action( "variable,name=should_use_star,default=0,value=0,op=reset" );
+  precombat->add_action( "variable,name=melee_vs,op=set,value=!talent.voidfall&talent.the_hunt&!apex.1" );
   precombat->add_action( "arcane_torrent" );
   precombat->add_action( "consume" );
 
-  default_->add_action( "call_action_list,name=math_for_wizards", "Variables" );
-  default_->add_action( "call_action_list,name=illicit_doping", "Acquire steroids like Potion, trinkets or PI" );
-  default_->add_action( "void_ray,if=talent.eradicate&active_enemies>1&!buff.eradicate.up", "Smuggle an Eradicate into Meta if on AOE (+0.5%)" );
-  default_->add_action( "pierce_the_veil,if=buff.moment_of_craving.up&action.collapsing_star.ready" );
+  default_->add_action( "call_action_list,name=math_for_wizards" );
+  default_->add_action( "call_action_list,name=illicit_doping" );
+  default_->add_action( "void_ray,if=talent.eradicate&active_enemies>1&!buff.eradicate.up&talent.voidsurge" );
   default_->add_action( "voidblade,if=buff.void_metamorphosis_stack.at_max_stacks&talent.devourers_bite&talent.voidsurge" );
   default_->add_action( "the_hunt,if=buff.void_metamorphosis_stack.at_max_stacks&talent.devourers_bite&talent.voidsurge" );
-  default_->add_action( "metamorphosis,if=buff.eradicate.up|!talent.eradicate|active_enemies=1" );
-  default_->add_action( "call_action_list,name=reaps,if=talent.moment_of_craving&action.reap.souls_consumed>=4&buff.metamorphosis.up&!talent.voidfall&cooldown.void_ray.remains<=gcd.max&((buff.collapsing_star_stacking.stack+action.reap.souls_consumed)<=buff.collapsing_star_stacking.max_stack|!variable.should_use_star)" );
-  default_->add_action( "void_ray,if=!buff.eradicate.up|active_enemies=1", "Do not waste Eradicate on AOE." );
-  default_->add_action( "voidblade,if=buff.moment_of_craving.up&(buff.collapsing_star_stacking.at_max_stacks|buff.collapsing_star_stacking.stack+soul_fragments>=buff.collapsing_star_stacking.max_stack)&talent.devourers_bite" );
-  default_->add_action( "collapsing_star,if=(!cooldown.predators_wake.up&talent.voidrush&!buff.hungering_slash.up&cooldown.voidblade.remains>=6|!talent.voidrush)&variable.should_use_star", "Use CStar after Predators Wake for VS, do not waste Voidblade CDR if possible." );
-  default_->add_action( "call_action_list,name=reaps,if=(action.reap.souls_consumed>=4&buff.metamorphosis.up|full_recharge_time<=gcd.max)&!talent.voidfall", "Meta Cull Line" );
-  default_->add_action( "call_action_list,name=reaps,if=buff.voidfall_spending.react|buff.eradicate.up&active_enemies>1", "Annihilator Reap Line" );
+  default_->add_action( "metamorphosis,if=buff.eradicate.up|!talent.eradicate|active_enemies=1|talent.voidfall" );
+  default_->add_action( "call_action_list,name=reaps,if=talent.moment_of_craving&action.reap.souls_consumed>=4&buff.metamorphosis.up&!talent.voidfall&cooldown.void_ray.remains<=gcd.max&((buff.collapsing_star_stacking.stack+action.reap.souls_consumed)<=buff.collapsing_star_stacking.max_stack|!variable.should_use_star)", "Do not overcap Moment of Craving" );
+  default_->add_action( "void_ray" );
+  default_->add_action( "pierce_the_veil,if=buff.moment_of_craving.up&variable.should_use_star&buff.collapsing_star_stacking.stack>=30&talent.devourers_bite" );
+  default_->add_action( "collapsing_star,if=variable.should_use_star" );
+  default_->add_action( "call_action_list,name=reaps,if=buff.eradicate.up&active_enemies>1", "Eradichad" );
   default_->add_action( "call_action_list,name=melee_combo" );
-  default_->add_action( "soul_immolation,if=active_dot.soul_immolation=0&!buff.metamorphosis.up&active_enemies>1" );
-  default_->add_action( "collapsing_star,if=variable.should_use_star", "Fall through Star. Do this it's better than Devour." );
-  default_->add_action( "call_action_list,name=reaps,if=!buff.metamorphosis.up&buff.moment_of_craving.up" );
+  default_->add_action( "call_action_list,name=reaps,if=buff.voidfall_spending.stack>=3&prev_gcd.1.void_ray|buff.voidfall_spending.react>=3", "Annihilator wants to play the game too" );
+  default_->add_action( "call_action_list,name=reaps,if=buff.metamorphosis.up&variable.should_use_star&(buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30&buff.collapsing_star_stacking.stack+action.reap.souls_consumed<=40)", "Star Accelerator" );
+  default_->add_action( "call_action_list,name=reaps,if=!buff.metamorphosis.up&(fury+4*action.reap.souls_consumed+10*talent.scythes_embrace)>=100", "Beam Accelerator" );
+  default_->add_action( "call_action_list,name=reaps,if=!talent.voidfall&(buff.metamorphosis.up|buff.moment_of_craving.up|!talent.moment_of_craving&action.reap.souls_consumed>=4)", "Just reap bro one time bro pls bro" );
+  default_->add_action( "soul_immolation,if=active_dot.soul_immolation=0&!buff.metamorphosis.up" );
   default_->add_action( "devour" );
   default_->add_action( "consume" );
 
   illicit_doping->add_action( "invoke_external_buff,name=power_infusion,if=buff.metamorphosis.up&!buff.power_infusion.up" );
-  illicit_doping->add_action( "potion,if=buff.metamorphosis.up|fight_remains<=30" );
-  illicit_doping->add_action( "use_item,slot=trinket1,if=buff.metamorphosis.up&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains" );
-  illicit_doping->add_action( "use_item,slot=trinket2,if=buff.metamorphosis.up&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2|variable.trinket_1_exclude)&!variable.trinket_2_manual|trinket.2.proc.any_dps.duration>=fight_remains" );
+  illicit_doping->add_action( "potion,if=buff.metamorphosis.up&void_metamorphosis_base_drain_ps<30&(!variable.trinket_1_mastery&!variable.trinket_2_mastery|stat.mastery_rating>stat.haste_rating|variable.trinket_1_mastery&trinket.1.cooldown.remains>=30|variable.trinket_2_mastery&trinket.2.cooldown.remains>=30)|fight_remains<=30" );
+  illicit_doping->add_action( "use_item,slot=trinket1,if=buff.metamorphosis.up&void_metamorphosis_base_drain_ps<30&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains|fight_remains<=trinket.1.buff.any_dps.duration" );
+  illicit_doping->add_action( "use_item,slot=trinket2,if=buff.metamorphosis.up&void_metamorphosis_base_drain_ps<30&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2|variable.trinket_1_exclude)&!variable.trinket_2_manual|trinket.2.proc.any_dps.duration>=fight_remains|fight_remains<=trinket.2.buff.any_dps.duration" );
   illicit_doping->add_action( "use_item,slot=main_hand,if=variable.weapon_buffs&(variable.trinket_2_buffs&(trinket.2.cooldown.remains|trinket.2.cooldown.duration<=20)|!variable.trinket_2_buffs|variable.trinket_2_exclude|variable.trinket_priority=3)&(variable.trinket_1_buffs&(trinket.1.cooldown.remains|trinket.1.cooldown.duration<=20)|!variable.trinket_1_buffs|variable.trinket_1_exclude|variable.trinket_priority=3)" );
   illicit_doping->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&(gcd.remains>0.1)" );
   illicit_doping->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&(gcd.remains>0.1)" );
   illicit_doping->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&(!variable.trinket_1_ogcd_cast)" );
   illicit_doping->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&(!variable.trinket_2_ogcd_cast)" );
 
-  math_for_wizards->add_action( "variable,name=should_use_star,op=set,value=(active_enemies>1|apex.1|buff.dark_matter.up|talent.star_fragments&talent.emptiness),if=talent.collapsing_star" );
+  math_for_wizards->add_action( "variable,name=should_use_star,op=set,value=(active_enemies>1|apex.1|buff.dark_matter.up|talent.star_fragments)&!variable.melee_vs,if=talent.collapsing_star" );
 
   melee_combo->add_action( "vengeful_retreat,if=buff.voidstep.up&(buff.collapsing_star_stacking.stack<30|cooldown.voidblade.up|cooldown.predators_wake.up|buff.collapsing_star_stacking.stack<=38)", "Use Voidsteps on CD - Do not use Voidstep if you need to be stationary for Collapsing Star afterwards." );
   melee_combo->add_action( "hungering_slash,if=active_enemies>1" );

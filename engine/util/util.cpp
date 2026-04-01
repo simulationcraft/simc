@@ -2858,6 +2858,20 @@ const char* util::error_level_string( error_level_e level )
   }
 }
 
+const char* util::proc_trigger_type_string( proc_trigger_type_e type )
+{
+  switch ( type )
+  {
+    case proc_trigger_type_e::TRIGGER_ACTION:            return "action";
+    case proc_trigger_type_e::TRIGGER_ACTION_PROC:       return "action_proc";
+    case proc_trigger_type_e::TRIGGER_ACTION_TAKEN:      return "action_taken";
+    case proc_trigger_type_e::TRIGGER_ACTION_PROC_TAKEN: return "action_proc_taken";
+    case proc_trigger_type_e::TRIGGER_AURA_APPLIED:      return "aura_applied";
+    case proc_trigger_type_e::TRIGGER_HEARTBEAT:         return "heartbeat";
+    default:                                             return "unknown";
+  }
+}
+
 /// Textual representation of rppm scaling bitfield
 std::string util::rppm_scaling_string( unsigned s )
 {

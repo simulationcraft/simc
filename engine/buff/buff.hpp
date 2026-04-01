@@ -7,6 +7,7 @@
 
 #include "config.hpp"
 
+#include "action/action_callback.hpp"
 #include "dbc/data_enums.hh"
 #include "player/actor_pair.hpp"
 #include "sc_enums.hpp"
@@ -77,7 +78,6 @@ public:
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
   int _max_stack;
   int _initial_stack;
-  const spell_data_t* trigger_data;
 
 public:
   double default_value;
@@ -98,6 +98,18 @@ public:
   bool ignore_time_modifier;
 
   int reverse_stack_reduction; /// Number of stacks reduced when reverse = true
+
+  proc_data_t proc_data;
+  bool& can_only_proc_from_class_abilities;
+  bool& can_proc_from_procs;
+  bool& can_proc_from_suppressed;
+  bool& suppress_caster_procs;
+  bool& enable_proc_from_suppressed;
+
+  proc_data_t trigger_data;
+  bool& trigger_can_only_proc_from_class_abilities;
+  bool& trigger_can_proc_from_procs;
+  bool& trigger_can_proc_from_suppressed;
 
   // dynamic values
   double current_value;
@@ -159,12 +171,14 @@ public:
 
   virtual ~buff_t();
 
-  buff_t( actor_pair_t q, util::string_view name );
-  buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
-  buff_t( sim_t* sim, util::string_view name );
-  buff_t( sim_t* sim, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
+  buff_t( actor_pair_t q, std::string_view name );
+  buff_t( actor_pair_t q, std::string_view name, const spell_data_t*, const item_t* = nullptr );
+  buff_t( sim_t* sim, std::string_view name );
+  buff_t( sim_t* sim, std::string_view name, const spell_data_t*, const item_t* = nullptr );
+
 protected:
-  buff_t( sim_t* sim, player_t* target, player_t* source, util::string_view name, const spell_data_t*, const item_t* item );
+  buff_t( sim_t* sim, player_t* target, player_t* source, std::string_view name, const spell_data_t*, const item_t* );
+
 public:
   const spell_data_t& data() const { return *s_data; }
   const spell_data_t& data_reporting() const;
@@ -271,12 +285,12 @@ public:
   virtual void expire( timespan_t d = timespan_t::zero() );
   // TODO: are these the same checks and can be combined?
   // check if the action matches the trigger spell's proc flags
-  virtual bool can_trigger( action_t* action ) const;
+  virtual bool can_trigger( action_t* ) const;
   // check if the action matches the buff's proc flags
-  virtual bool can_consume( action_t* action ) const;
+  virtual bool can_consume( action_t* ) const;
   // trigger the buff only if the action matches the trigger_spell's proc flags
-  bool trigger( action_t* action, int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0,
-                timespan_t duration = timespan_t::min() );
+  bool trigger( action_t*, int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0,
+                timespan_t = timespan_t::min() );
   // remove stacks if the action match the buff's proc flags
   int consume( action_t*, int stacks = -1 );
   // Completely remove the buff, including any delayed applications and expirations.

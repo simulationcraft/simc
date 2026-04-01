@@ -259,12 +259,12 @@ void enchants::mark_of_blackrock( special_effect_t& effect )
       dbc_proc_callback_t( i, effect )
     { }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       if ( listener -> resources.pct( RESOURCE_HEALTH ) >= 0.6 )
         return;
 
-      dbc_proc_callback_t::trigger( a, s );
+      dbc_proc_callback_t::trigger( data, t, s, type );
     }
   };
 
@@ -349,15 +349,15 @@ void enchants::mark_of_the_thunderlord( special_effect_t& effect )
       dbc_proc_callback_t( item, effect )
     { }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       if ( proc_buff -> check() )
       {
-        dbc_proc_callback_t::trigger( a, s );
+        dbc_proc_callback_t::trigger( data, t, s, type );
       }
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       if ( proc_buff -> check() )
         proc_buff -> extend_duration( timespan_t::from_seconds( 2 ) );
@@ -520,7 +520,7 @@ struct windsong_callback_t : public dbc_proc_callback_t
     haste( hb ), crit( cb ), mastery( mb )
   { }
 
-  void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
+  void execute( const spell_data_t*, player_t*, action_state_t* ) override
   {
     stat_buff_t* buff;
 
@@ -565,7 +565,7 @@ struct hurricane_spell_proc_t : public dbc_proc_callback_t
     mh_buff( mhb ), oh_buff( ohb ), s_buff( sb )
   { }
 
-  void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
+  void execute( const spell_data_t*, player_t*, action_state_t* ) override
   {
     if ( mh_buff && mh_buff -> check() )
       mh_buff -> trigger();
@@ -740,18 +740,16 @@ void profession::zen_alchemist_stone( special_effect_t& effect )
       buff_int = make_buff<common_buff_t>( listener, "int", STAT_INTELLECT, spell, effect.item );
     }
 
-    void execute( action_t* a, action_state_t* /* state */ ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* /* state */ ) override
     {
-      player_t* p = a -> player;
-
-      if ( p -> strength() > p -> agility() )
+      if ( listener -> strength() > listener -> agility() )
       {
-        if ( p -> strength() > p -> intellect() )
+        if ( listener -> strength() > listener -> intellect() )
           buff_str -> trigger();
         else
           buff_int -> trigger();
       }
-      else if ( p -> agility() > p -> intellect() )
+      else if ( listener -> agility() > listener -> intellect() )
         buff_agi -> trigger();
       else
         buff_int -> trigger();
@@ -795,21 +793,19 @@ void profession::draenor_philosophers_stone( special_effect_t& effect )
       buff_int = make_buff<common_buff_t>( listener, "int", STAT_INTELLECT, spell, data.item );
     }
 
-    void execute( action_t* a, action_state_t* /* state */ ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
-      player_t* p = a -> player;
-
-      if ( p -> strength() > p -> agility() )
+      if ( listener->strength() > listener->agility() )
       {
-        if ( p -> strength() > p -> intellect() )
-          buff_str -> trigger();
+        if ( listener->strength() > listener->intellect() )
+          buff_str->trigger();
         else
-          buff_int -> trigger();
+          buff_int->trigger();
       }
-      else if ( p -> agility() > p -> intellect() )
-        buff_agi -> trigger();
+      else if ( listener->agility() > listener->intellect() )
+        buff_agi->trigger();
       else
-        buff_int -> trigger();
+        buff_int->trigger();
     }
   };
 
@@ -878,16 +874,16 @@ void item::blazefury_medallion( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
     {
-      if ( a->result_is_hit( s->result ) )
+      if ( s->action->result_is_hit( s->result ) )
       {
         // Currently only uses MH weapon speed, not the speed of the triggering weapon
         // Leaving this in a CB handler just in case this changes at some point via hotfix
         // TOCHECK -- Unclear if this uses equipped weapon speed for Feral or not
-        double speed_mod = ( a->player->main_hand_weapon.type == WEAPON_NONE ? 2.0 :
-                             a->player->main_hand_weapon.swing_time.total_seconds() );
-        damage->execute_on_target( s->target, base_damage * speed_mod );
+        double speed_mod = ( listener->main_hand_weapon.type == WEAPON_NONE ? 2.0 :
+                             listener->main_hand_weapon.swing_time.total_seconds() );
+        damage->execute_on_target( t, base_damage * speed_mod );
       }
     }
   };
@@ -918,35 +914,35 @@ void item::rune_of_reorigination( special_effect_t& effect )
       buff = static_cast< stat_buff_t* >( effect.custom_buff );
     }
 
-    void execute( action_t* action, action_state_t* /* state */ ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       // We can never allow this trinket to refresh, so force the trinket to
       // always expire, before we proc a new one.
       buff -> expire();
 
-      player_t* p = action -> player;
-
       // Determine highest stat based on rating multipliered stats
-      double chr = p -> composite_melee_haste_rating();
-      if ( p -> sim -> scaling -> scale_stat == STAT_HASTE_RATING )
-        chr -= p -> sim -> scaling -> scale_value * p -> composite_rating_multiplier( RATING_MELEE_HASTE );
+      double chr = listener->composite_melee_haste_rating();
+      if ( listener->sim->scaling->scale_stat == STAT_HASTE_RATING )
+        chr -= listener->sim->scaling->scale_value * listener->composite_rating_multiplier( RATING_MELEE_HASTE );
 
-      double ccr = p -> composite_melee_crit_rating();
-      if ( p -> sim -> scaling -> scale_stat == STAT_CRIT_RATING )
-        ccr -= p -> sim -> scaling -> scale_value * p -> composite_rating_multiplier( RATING_MELEE_CRIT );
+      double ccr = listener->composite_melee_crit_rating();
+      if ( listener->sim->scaling->scale_stat == STAT_CRIT_RATING )
+        ccr -= listener->sim->scaling->scale_value * listener->composite_rating_multiplier( RATING_MELEE_CRIT );
 
-      double cmr = p -> composite_mastery_rating();
-      if ( p -> sim -> scaling -> scale_stat == STAT_MASTERY_RATING )
-        cmr -= p -> sim -> scaling -> scale_value * p -> composite_rating_multiplier( RATING_MASTERY );
+      double cmr = listener->composite_mastery_rating();
+      if ( listener->sim->scaling->scale_stat == STAT_MASTERY_RATING )
+        cmr -= listener->sim->scaling->scale_value * listener->composite_rating_multiplier( RATING_MASTERY );
 
       // Give un-multipliered stats so we don't double dip anywhere.
-      chr /= p -> composite_rating_multiplier( RATING_MELEE_HASTE );
-      ccr /= p -> composite_rating_multiplier( RATING_MELEE_CRIT );
-      cmr /= p -> composite_rating_multiplier( RATING_MASTERY );
+      chr /= listener->composite_rating_multiplier( RATING_MELEE_HASTE );
+      ccr /= listener->composite_rating_multiplier( RATING_MELEE_CRIT );
+      cmr /= listener->composite_rating_multiplier( RATING_MASTERY );
 
-      if ( p -> sim -> debug )
-        p -> sim -> out_debug.printf( "%s rune_of_reorigination procs crit=%.0f haste=%.0f mastery=%.0f",
-                            p -> name(), ccr, chr, cmr );
+      if ( listener->sim->debug )
+      {
+        listener->sim->out_debug.printf( "%s rune_of_reorigination procs crit=%.0f haste=%.0f mastery=%.0f",
+                                         listener->name(), ccr, chr, cmr );
+      }
 
       if ( ccr >= chr )
       {
@@ -1026,7 +1022,7 @@ void item::spark_of_zandalar( special_effect_t& effect )
                ->set_quiet( true );
     }
 
-    void execute( action_t* /* action */, action_state_t* /* state */ ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       sparks -> trigger();
 
@@ -1197,14 +1193,12 @@ void item::darkmoon_card_greatness( special_effect_t& effect )
       buff_spi = make_buff<common_buff_t>( listener, i, "spi", STAT_SPIRIT, 60235 );
     }
 
-    void execute( action_t* a, action_state_t* /* state */ ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
-      player_t* p = a -> player;
-
-      double str  = p -> strength();
-      double agi  = p -> agility();
-      double inte = p -> intellect();
-      double spi  = p -> spirit();
+      double str = listener->strength();
+      double agi = listener->agility();
+      double inte = listener->intellect();
+      double spi = listener->spirit();
 
       if ( str > agi )
       {
@@ -1357,11 +1351,9 @@ void item::deathbringers_will( special_effect_t& effect )
       }
     }
 
-    void execute( action_t* a, action_state_t* /* state */ ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
-      player_t* p = a -> player;
-
-      procs[ static_cast<int>( p -> rng().real() * 3 ) ] -> trigger();
+      procs[ static_cast<int>( rng().real() * 3 ) ]->trigger();
     }
   };
 
@@ -1683,13 +1675,13 @@ struct flurry_of_xuen_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t( p, effect )
   { }
 
-  void trigger( action_t* action, action_state_t* s ) override
+  void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
   {
     // Flurry of Xuen, and Lightning Strike cannot proc Flurry of Xuen
-    if ( action -> id == 147891 || action -> id == 146194 || action -> id == 137597 )
+    if ( data.spell->id() == 147891 || data.spell->id() == 146194 || data.spell->id() == 137597 )
       return;
 
-    dbc_proc_callback_t::trigger( action, s );
+    dbc_proc_callback_t::trigger( data, t, s, type );
   }
 };
 
@@ -1742,12 +1734,12 @@ struct essence_of_yulon_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t( p, effect )
   { }
 
-  void trigger( action_t* action, action_state_t* s ) override
+  void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
   {
-    if ( action -> id == 148008 ) // dot direct damage ticks can't proc itself
+    if ( data.spell->id() == 148008 ) // dot direct damage ticks can't proc itself
       return;
 
-    dbc_proc_callback_t::trigger( action, s );
+    dbc_proc_callback_t::trigger( data, t, s, type );
   }
 };
 
@@ -1960,23 +1952,23 @@ void item::cleave( special_effect_t& effect )
 
     }
 
-    void execute( action_t* action, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
     {
       action_t* a = nullptr;
 
-      if ( action -> type == ACTION_ATTACK )
+      if ( s->action->type == ACTION_ATTACK )
         a = cleave_attack;
-      else if ( action -> type == ACTION_SPELL )
+      else if ( s->action->type == ACTION_SPELL )
         a = cleave_spell;
       // TODO: Heal
 
       if ( a )
       {
-        a -> base_dd_min = a -> base_dd_max = state -> result_amount;
+        a->base_dd_min = a->base_dd_max = s->result_amount;
         // Invalidate target cache if target changes
-        if ( a -> target != state -> target )
-          a -> target_cache.is_valid = false;
-        a -> target = state -> target;
+        if ( a->target != t )
+          a->target_cache.is_valid = false;
+        a->target = t;
         a -> schedule_execute();
       }
     }
@@ -2198,12 +2190,12 @@ void item::matrix_restabilizer( special_effect_t& effect )
     {
     }
 
-    void execute(action_t*, action_state_t*) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       static constexpr std::array<stat_e, 3> ratings = { STAT_MASTERY_RATING, STAT_HASTE_RATING,
                                                          STAT_CRIT_RATING };
 
-      stat_e max_stat = util::highest_stat( effect.player, ratings );
+      stat_e max_stat = util::highest_stat( listener, ratings );
 
       (*buffs)[max_stat]->trigger();
     }
@@ -2244,9 +2236,9 @@ struct empty_drinking_horn_cb_t : public dbc_proc_callback_t
     }
   }
 
-  void execute( action_t* /* a */, action_state_t* trigger_state ) override
+  void execute( const spell_data_t*, player_t* t, action_state_t* ) override
   {
-    burn->execute_on_target( trigger_state->target );
+    burn->execute_on_target( t );
   }
 };
 
@@ -2353,7 +2345,7 @@ struct hammering_blows_driver_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t( effect.player, effect )
   { }
 
-  void execute( action_t* /* a */, action_state_t* /* state */ ) override
+  void execute( const spell_data_t*, player_t*, action_state_t* ) override
   {
     int stack = proc_buff -> check();
 
@@ -2428,19 +2420,19 @@ struct mark_of_doom_damage_driver_t : public dbc_proc_callback_t
     dbc_proc_callback_t( effect.player, effect ), damage( d ), target( t )
   { }
 
-  void trigger( action_t* a, action_state_t* s ) override
+  void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
   {
-    if ( s -> target != target )
+    if ( t != target )
     {
       return;
     }
 
-    dbc_proc_callback_t::trigger( a, s );
+    dbc_proc_callback_t::trigger( data, t, s, type );
   }
 
-  void execute( action_t* /* a */, action_state_t* trigger_state ) override
+  void execute( const spell_data_t*, player_t* t, action_state_t* ) override
   {
-    damage -> target = trigger_state -> target;
+    damage -> target = t;
     damage -> execute();
   }
 };
@@ -2510,9 +2502,9 @@ struct prophecy_of_fear_driver_t : public dbc_proc_callback_t
     return new mark_of_doom_t( { t, listener }, eff, eff->trigger(), damage );
   }
 
-  void execute( action_t* /* a */, action_state_t* trigger_state ) override
+  void execute( const spell_data_t*, player_t* t, action_state_t* ) override
   {
-    get_debuff( trigger_state->target )->trigger();
+    get_debuff( t )->trigger();
   }
 };
 
@@ -2861,18 +2853,17 @@ void item::tyrants_decree( special_effect_t& effect )
   struct tyrants_decree_callback_t : public dbc_proc_callback_t
   {
     double cancel_threshold;
-    player_t* p;
     buff_t* tyrant;
 
     tyrants_decree_callback_t( player_t* player, const special_effect_t& effect, buff_t* b ) :
-      dbc_proc_callback_t( player, effect ), p( player ), tyrant( b )
+      dbc_proc_callback_t( player, effect ), tyrant( b )
     {
       cancel_threshold = effect.driver() -> effectN( 2 ).percent();
     }
 
-    void trigger( action_t* , action_state_t* ) override
+    void trigger( const proc_data_t&, player_t*, action_state_t*, proc_trigger_type_e ) override
     {
-      if ( p -> resources.pct( RESOURCE_HEALTH ) < cancel_threshold )
+      if ( listener->resources.pct( RESOURCE_HEALTH ) < cancel_threshold )
         tyrant->expire();
     }
   };
@@ -2899,7 +2890,7 @@ void item::tyrants_decree( special_effect_t& effect )
   } );
 
   // Create a callback that triggers on damage taken to check if the buff should be expired.
-  effect.proc_flags_= PF_DAMAGE_TAKEN;
+  effect.proc_flags_= PF_ALL_DAMAGE_TAKEN;
   effect.proc_chance_ = 1.0;
 
   new tyrants_decree_callback_t( effect.player, effect, trigger );
@@ -2959,8 +2950,8 @@ void item::sorrowsong( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
-        return s->target->health_percentage() <= effect.driver()->effectN( 1 ).base_value();
+      [ effect ]( auto, const auto&, player_t* t, auto, auto ) {
+        return t->health_percentage() <= effect.driver()->effectN( 1 ).base_value();
       } );
 }
 
@@ -3034,7 +3025,7 @@ void racial::brush_it_off( special_effect_t& effect )
                                                                             e.player->find_spell( 291843 ) );
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* s ) override
     {
       residual_action::trigger( regen, listener, s->result_amount * heal_pct );
     }
@@ -3218,7 +3209,7 @@ void generic::skyfury( special_effect_t& effect )
       }
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       if ( !s->action->weapon )
       {
@@ -3235,10 +3226,10 @@ void generic::skyfury( special_effect_t& effect )
         return;
       }
 
-      dbc_proc_callback_t::trigger( a, s );
+      dbc_proc_callback_t::trigger( data, t, s, type );
     }
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* state ) override
     {
       auto atk = state->action->weapon->slot == SLOT_MAIN_HAND
         ? state->action->player->main_hand_attack
@@ -3259,7 +3250,7 @@ void generic::skyfury( special_effect_t& effect )
 
       atk->may_miss = false;
       atk->repeating = false;
-      atk->set_target( state->target );
+      atk->set_target( t );
       atk->execute();
 
       atk->repeating = true;

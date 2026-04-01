@@ -7889,24 +7889,24 @@ struct fate_mirror_cb_t : public dbc_proc_callback_t
     return source;
   }
 
-  void execute( action_t*, action_state_t* s ) override
+  void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
   {
-    if ( s->target->is_sleeping() )
+    if ( t->is_sleeping() || !s )
       return;
 
     double da = s->result_amount;
     if ( da > 0 )
     {
-      if ( s->target->is_enemy() )
+      if ( t->is_enemy() )
       {
         fate_mirror_damage->evoker = source;
-        fate_mirror_damage->execute_on_target( s->target, da );
+        fate_mirror_damage->execute_on_target( t, da );
       }
       else
       {
         // Tested 03/08/2023 Self Damage triggers the *healing effect*
         fate_mirror_heal->evoker = source;
-        fate_mirror_heal->execute_on_target( s->target, da );
+        fate_mirror_heal->execute_on_target( t, da );
       }
     }
   }
@@ -7927,13 +7927,13 @@ struct infernos_blessing_cb_t : public dbc_proc_callback_t
     infernos_blessing = debug_cast<spells::infernos_blessing_t*>( p->find_action( "infernos_blessing" ) );
   }
 
-  void execute( action_t*, action_state_t* s ) override
+  void execute( const spell_data_t*, player_t* t, action_state_t* ) override
   {
-    if ( s->target->is_sleeping() || !infernos_blessing )
+    if ( t->is_sleeping() || !infernos_blessing )
       return;
 
     infernos_blessing->evoker = source;
-    infernos_blessing->execute_on_target( s->target );
+    infernos_blessing->execute_on_target( t );
   }
 };
 
@@ -7967,16 +7967,16 @@ private:
       return source;
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
     {
-      if ( s->target->is_sleeping() )
+      if ( t->is_sleeping() )
         return;
 
       if ( !p()->talent.blistering_scales.enabled() )
-        p()->get_target_data( s->target )->buffs.blistering_scales->decrement();
+        p()->get_target_data( t )->buffs.blistering_scales->decrement();
 
       p()->sim->print_debug( "{}'s blistering scales detonates for action {} from {} targeting {}", *p(), *s->action,
-                             *s->action->player, *s->target );
+                             *s->action->player, *t );
 
       blistering_scales->evoker = source;
       blistering_scales->execute_on_target( s->action->player );
@@ -8129,7 +8129,8 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
 
       trigger_type = trigger_fn_type::CONDITION;
 
-      const trigger_fn_t lambda = [ this ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+      const trigger_fn_t lambda = [ this ]( const dbc_proc_callback_t*, const proc_data_t&, player_t*,
+                                            action_state_t* s, proc_trigger_type_e ) {
         if ( s->result_amount <= 0 )
           return false;
 
@@ -8150,25 +8151,25 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
       return source;
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
     {
-      if ( s->target->is_sleeping() )
+      if ( t->is_sleeping() )
         return;
 
       double da = s->result_amount;
       p()->sim->print_debug( "{} triggers {}s temporal wound on {} with {} dealing {}",
-                             *s->action->player->get_owner_or_self(), *p(), *s->target, *a, da );
+                             *s->action->player->get_owner_or_self(), *p(), *t, *s->action, da );
       if ( da > 0 )
       {
         buffs::temporal_wound_buff_t* buff =
-            debug_cast<buffs::temporal_wound_buff_t*>( p()->get_target_data( s->target )->debuffs.temporal_wound );
+            debug_cast<buffs::temporal_wound_buff_t*>( p()->get_target_data( t )->debuffs.temporal_wound );
 
         if ( buff && buff->up() )
         {
           buff->eon_stored[ buff->player_id( s->action->player->get_owner_or_self() ) ] += da;
           p()->sim->print_debug(
               "{} triggers {}s temporal wound on {} with {} dealing {} increasing stored damage to {} from {}",
-              *s->action->player->get_owner_or_self(), *p(), *s->target, *a, da,
+              *s->action->player->get_owner_or_self(), *p(), *t, *s->action, da,
               buff->eon_stored[ buff->player_id( s->action->player->get_owner_or_self() ) ],
               buff->eon_stored[ buff->player_id( s->action->player->get_owner_or_self() ) ] - da );
         }
@@ -8281,9 +8282,9 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
       return bombardments_actions[ target ];
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
     {
-      if ( s->target->is_sleeping() )
+      if ( t->is_sleeping() )
         return;
 
       double da = s->result_amount;
@@ -8293,7 +8294,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
         player_t* triggering_player = s->action->player->get_owner_or_self();
         auto damage_action          = get_bombardments_action( triggering_player );
         damage_action->evoker       = p();
-        damage_action->execute_on_target( s->target );
+        damage_action->execute_on_target( t );
       }
     }
   };
@@ -9828,7 +9829,7 @@ void evoker_t::init_special_effects()
        talent.essence_burst.enabled() )
   {
     callbacks.register_callback_execute_function(
-        443393, [ this ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
+        443393, [ this ]( const dbc_proc_callback_t* cb, const spell_data_t*, player_t* t, action_state_t* s ) {
           // Only trigger this on Single Target (Pretending its a 2nd target)
           if ( sim->target_non_sleeping_list.size() == 1 &&
                rng().roll( talent.ruby_essence_burst->effectN( 1 ).percent() ) )
@@ -9836,7 +9837,7 @@ void evoker_t::init_special_effects()
             buff.essence_burst->trigger();
           }
 
-          cb->proc_action->set_target( cb->target( s ) );
+          cb->proc_action->set_target( cb->get_target( t, s ) );
           auto proc_state    = cb->proc_action->get_state();
           proc_state->target = cb->proc_action->target;
           cb->proc_action->snapshot_state( proc_state, cb->proc_action->amount_type( proc_state ) );

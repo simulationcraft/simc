@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.5.66591
+Class Spell ID List, wow build 12.0.5.66741
 
 Death Knight
 3714     Path of Frost
@@ -11133,6 +11133,8 @@ Mage
 1285457 *Frost Mage
 1286314 *Dissolve Delay and Transport
 1286444  Cauterize
+1294067 *Shimmer
+1294068 *Blink
 
 Monk
 8647     Mystic Touch
@@ -15897,6 +15899,7 @@ Priest
 199388  *Fleeting Embrace
 199445  *Mind Trauma
 199484   Psychic Link
+199486   Psychic Link
 199579   Hallucinations
 199683  *Last Word
 199816  *Last Word

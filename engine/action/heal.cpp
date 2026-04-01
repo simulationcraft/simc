@@ -257,18 +257,15 @@ void heal_t::assess_damage( result_amount_type heal_type, action_state_t* s )
 
     if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
     {
-      if ( !suppress_caster_procs || enable_proc_from_suppressed )
-        player->trigger_callbacks( pt, pt2, this, s );
+      if ( caster_callbacks && ( !suppress_caster_procs || enable_proc_from_suppressed ) )
+        player->trigger_callbacks( pt, pt2, this, s, proc_trigger_type( pt, TRIGGER_ACTION ) );
 
       // trigger healing taken callbacks
-      if ( !suppress_target_procs )
+      if ( target_callbacks && ( !suppress_target_procs || enable_proc_from_suppressed ) )
       {
-        proc_types pt_taken = static_cast<proc_types>( pt + 1 );
+        auto pt_taken = pt == PROC1_HELPFUL_PERIODIC ? PROC1_HELPFUL_PERIODIC_TAKEN : static_cast<proc_types>( pt + 1 );
 
-        if ( pt == PROC1_HELPFUL_PERIODIC )
-          pt_taken = PROC1_HELPFUL_PERIODIC_TAKEN;
-
-        s->target->trigger_callbacks( pt_taken, pt2, this, s );
+        s->target->trigger_callbacks( pt_taken, pt2, this, s, proc_trigger_type( pt_taken, TRIGGER_ACTION_TAKEN ) );
       }
     }
   }

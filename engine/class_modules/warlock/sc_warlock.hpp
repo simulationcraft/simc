@@ -254,7 +254,6 @@ struct warlock_t : public parse_player_effects_t
 {
 public:
   player_t* havoc_target;
-  bool bugged_mayhem; // Used to control if in a particular moment mayhem is bugged and its not working
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   player_t* haunt_target; // Used for tracking the current haunt target
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
@@ -1072,6 +1071,7 @@ public:
   bool eye_explosion_instanced_bug_cb;
   bool eye_explosion_instanced_bug_sb;
   bool eye_explosion_instanced_bug_rof;
+  bool fel_armaments_extra_effect_bug;
   double tyrant_antoran_armaments_target_mul;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );

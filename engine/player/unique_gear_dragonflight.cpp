@@ -242,16 +242,16 @@ void phial_of_glacial_fury( special_effect_t& effect )
 
     glacial_fury_buff_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ) {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      if ( !a->harmful )
+      if ( !s->action->harmful )
         return;
 
-      if ( range::contains( target_list, s->target->actor_spawn_index ) )
+      if ( range::contains( target_list, t->actor_spawn_index ) )
         return;
 
-      dbc_proc_callback_t::execute( a, s );
-      target_list.push_back( s->target->actor_spawn_index );
+      dbc_proc_callback_t::execute( spell, t, s );
+      target_list.push_back( t->actor_spawn_index );
     }
 
     void reset() override
@@ -539,9 +539,9 @@ void high_intensity_thermal_scanner( special_effect_t& effect )
       crit( crit ), vers( vers ), haste( haste ), mastery( mastery )
     {}
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      switch (s -> target -> race)
+      switch ( t->race )
       {
       case RACE_MECHANICAL:
       case RACE_DRAGONKIN:
@@ -1050,7 +1050,7 @@ custom_cb_t idol_of_the_aspects( std::string_view type )
     } );
 
     effect.player->callbacks.register_callback_execute_function(
-        effect.driver()->id(), [ buff, gems ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        effect.driver()->id(), [ buff, gems ]( auto, auto, auto, auto ) {
           buff->trigger( gems );
         } );
   };
@@ -1326,7 +1326,7 @@ void alacritous_alchemist_stone( special_effect_t& effect )
   auto cd_adj = -timespan_t::from_seconds( effect.driver()->effectN( 1 ).base_value() );
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.spell_id, [ cd, cd_adj ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+      effect.spell_id, [ cd, cd_adj ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
         cb->proc_buff->trigger();
         cd->adjust( cd_adj );
       } );
@@ -1446,8 +1446,8 @@ void globe_of_jagged_ice( special_effect_t& effect )
   effect.execute_action = breaking;
 
   effect.player->callbacks.register_callback_execute_function(
-      impale->spell_id, [ breaking ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
-        breaking->get_debuff( s->target )->trigger();
+      impale->spell_id, [ breaking ]( auto, auto, player_t* t, auto ) {
+        breaking->get_debuff( t )->trigger();
       } );
 }
 
@@ -1484,7 +1484,7 @@ void irideus_fragment( special_effect_t& effect )
   effect.custom_buff = buff;
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.spell_id, [ buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) { buff->trigger(); } );
+      effect.spell_id, [ buff ]( auto, auto, auto, auto ) { buff->trigger(); } );
 }
 
 // TODO: Do properly and add both drivers
@@ -1512,15 +1512,15 @@ void emerald_coachs_whistle( special_effect_t& effect )
       deactivate_with_buff( buff );
     }
 
-    void trigger( action_t* a, action_state_t* state ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       if ( buff->check() )
         return;
 
-      dbc_proc_callback_t::trigger( a, state );
+      dbc_proc_callback_t::trigger( data, t, s, type );
     }
 
-    void execute( action_t* a, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       buff->stats[ 0 ].amount = buff_size;
       buff->trigger();
@@ -1713,22 +1713,9 @@ void rashoks_molten_heart( special_effect_t& effect )
       dbc_proc_callback_t::activate();
     }
 
-    void trigger( action_t* a, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      player_t* target          = state->target->is_enemy() ? effect.player : state->target;
-      player_t* original_target = state->target;
-      state->target             = target;
-
-      dbc_proc_callback_t::trigger( a, state );
-
-      state->target = original_target;
-    }
-
-    void execute( action_t*, action_state_t* state ) override
-    {
-      player_t* target = state->target->is_enemy() ? effect.player : state->target;
-
-      heal->execute_on_target( target );
+      heal->execute_on_target( t->is_enemy() ? listener : t );
       molten_radiance->current_value += 1;
 
       if ( molten_radiance->current_value >= max_triggers )
@@ -1825,11 +1812,11 @@ void furious_ragefeather( special_effect_t& effect )
     soulseeker_arrow_repeat_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), buff( b )
     {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
       buff->expire();
 
-      dbc_proc_callback_t::execute( a, s );
+      dbc_proc_callback_t::execute( spell, t, s );
     }
   };
 
@@ -1896,9 +1883,9 @@ void igneous_flowstone( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      dbc_proc_callback_t::execute( a, s );
+      dbc_proc_callback_t::execute( spell, t, s );
 
       trigger_buff->expire();
       stat_buff->trigger();
@@ -1911,7 +1898,7 @@ void igneous_flowstone( special_effect_t& effect )
 
     high_tide_cb_t( const special_effect_t& e, buff_t* t ) : dbc_proc_callback_t( e.player, e ), trigger_buff( t ) {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
       trigger_buff->expire();
 
@@ -1920,7 +1907,7 @@ void igneous_flowstone( special_effect_t& effect )
         n++;
 
       while ( n-- )
-        dbc_proc_callback_t::execute( a, s );
+        dbc_proc_callback_t::execute( spell, t, s );
     }
   };
 
@@ -2059,7 +2046,7 @@ void idol_of_pure_decay( special_effect_t& effect )
       damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect.item );
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       // damage pulses 3 times over 3s.
       // TODO: confirm if trinket can proc again during the 3s.
@@ -2207,7 +2194,7 @@ void spoils_of_neltharus( special_effect_t& effect )
         : dbc_proc_callback_t( e.player, e ), buff_list( *list )
       {}
 
-      void execute( action_t*, action_state_t* ) override
+      void execute( const spell_data_t*, player_t*, action_state_t* ) override
       {
         buff_list.front().first->expire();
         std::rotate( buff_list.begin(), buff_list.begin() + rng().range( 1, 4 ), buff_list.end() );
@@ -3644,9 +3631,9 @@ void bushwhackers_compass(special_effect_t& effect)
       };
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      dbc_proc_callback_t::execute( a, s );
+      dbc_proc_callback_t::execute( spell, t, s );
 
       effect.player->sim->rng().range( buffs )->trigger();
     }
@@ -3665,7 +3652,7 @@ void seasoned_hunters_trophy( special_effect_t& effect )
       dbc_proc_callback_t( e.player, e ), mastery( m ), haste( h ), crit( c )
     { }
 
-    void execute( action_t* /* a */, action_state_t* /* s */ ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       mastery->expire();
       haste->expire();
@@ -3931,7 +3918,7 @@ void ruby_whelp_shell( special_effect_t& effect )
       }
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* s ) override
     {
       double r = rng().real();
 
@@ -4107,7 +4094,7 @@ void iceblood_deathsnare( special_effect_t& effect )
       auto web_cb = new dbc_proc_callback_t( t, *web );
 
       t->callbacks.register_callback_execute_function(
-          web->spell_id, [ this ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+          web->spell_id, [ this ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
             damage->execute_on_target( cb->listener );
           } );
 
@@ -4396,14 +4383,14 @@ void neltharions_call_to_chaos( special_effect_t& effect )
       // Horrifying state hack to trick the Evoker Module into thinking there is a pre-execute state for the is_aoe
       // calls for eternity surge as the action n_targets is based on that state.
       effect.player->callbacks.register_callback_trigger_function(
-          driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-          []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
-            auto _s              = a->pre_execute_state;
-            a->pre_execute_state = s;
-            auto b               = a->is_aoe();
-            a->pre_execute_state = _s;
-            return b;
-          } );
+        driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+        []( auto, const auto&, auto, action_state_t* s, auto ) {
+          auto _s = s->action->pre_execute_state;
+          s->action->pre_execute_state = s;
+          auto b = s->action->is_aoe();
+          s->action->pre_execute_state = _s;
+          return b;
+        } );
       break;
     case WARRIOR:
       proc_spell_id = { { 1680, 190411, 396719, 6343, 384318, 376079, 46968, 845, 262161, 227847, 50622, 385059, 228920, 156287, 6572, 315961  } };
@@ -4411,10 +4398,10 @@ void neltharions_call_to_chaos( special_effect_t& effect )
       // Spear of Bastion, Shockwave, Cleave, Warbreaker, Bladestorm, BS Tick, Odyns Fury, Ravager, Rav Tick, Revenge
       // Dreadnaught added in Patch 10.1.5
       effect.player->callbacks.register_callback_trigger_function(
-          driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-          [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
-            return range::contains( proc_spell_id, a->data().id() );
-          } );
+        driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+        [ proc_spell_id ]( auto, const proc_data_t& data, auto, auto, auto ) {
+          return range::contains( proc_spell_id, data->id() );
+        } );
       break;
     case PALADIN:
     case MAGE:
@@ -4422,8 +4409,10 @@ void neltharions_call_to_chaos( special_effect_t& effect )
     default:
       // Evoker is unique with it working on cleave abilities. Other classes likely need an ability whitelist but this is a better aproximation for now.
       effect.player->callbacks.register_callback_trigger_function(
-          driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-          []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) { return a->n_targets() == -1; } );
+        driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+        []( auto, const auto&, auto, action_state_t* s, auto ) {
+          return s->action->n_targets() == -1;
+        } );
   }
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -4521,13 +4510,13 @@ void neltharions_call_to_dominance( special_effect_t& effect )
   effect.player->special_effects.push_back( stat_effect );
 
   stat_effect->player->callbacks.register_callback_trigger_function(
-      stat_effect->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
-      return range::contains( proc_spell_id, a->data().id() );
+    stat_effect->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+    [ proc_spell_id ]( auto, const proc_data_t& data, auto, auto, auto ) {
+      return range::contains( proc_spell_id, data->id() );
     } );
 
   stat_effect->player->callbacks.register_callback_execute_function(
-    stat_effect->spell_id, [ stacking_buff, stat_buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+    stat_effect->spell_id, [ stacking_buff, stat_buff ]( auto, auto, auto, auto ) {
       // 2023-04-21 PTR: Subsequent triggers will override existing buff even if lower value (tested with Beast Mastery)
       if ( stacking_buff->check() )
       {
@@ -4724,10 +4713,10 @@ void elementium_pocket_anvil( special_effect_t& e )
   e.player->special_effects.push_back( equip );
 
   equip->player->callbacks.register_callback_trigger_function(
-      driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ proc_spell_id, trigger_from_melees ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
-        return range::contains( proc_spell_id, a->data().id() ) || ( trigger_from_melees && !a->special );
-      } );
+    driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+    [ proc_spell_id, trigger_from_melees ]( auto, const proc_data_t& data, auto, action_state_t* s, auto ) {
+      return range::contains( proc_spell_id, data->id() ) || ( trigger_from_melees && !s->action->special );
+    } );
 
   new dbc_proc_callback_t( e.player, *equip );
 
@@ -5140,10 +5129,10 @@ void drogbar_stones( special_effect_t& effect )
 
     drogbar_stones_damage->player->callbacks.register_callback_execute_function(
         drogbar_stones_damage->spell_id,
-        [ buff, damage_effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        [ buff, damage_effect ]( auto, auto, player_t* t, auto ) {
           if ( buff->check() )
           {
-            damage_effect->execute_on_target( s->target );
+            damage_effect->execute_on_target( t );
             buff->expire();
           }
         } );
@@ -5698,11 +5687,11 @@ void accelerating_sandglass( special_effect_t& e )
     {
     }
 
-    void execute( action_t*, action_state_t* trigger_state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       if ( buff->check() )
       {
-        damage->execute_on_target( trigger_state->target );
+        damage->execute_on_target( t );
         buff->expire();
       }
     }
@@ -5885,8 +5874,8 @@ void paracausal_fragment_of_thunderfin( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       415410, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ ground_effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
-        return ground_effect->get_debuff( s->target )->check();
+      [ ground_effect ]( auto, const auto&, player_t* t, auto, auto ) {
+        return ground_effect->get_debuff( t )->check();
       } );
 
   effect.execute_action = ground_effect;
@@ -6049,7 +6038,7 @@ void pips_emerald_friendship_badge( special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ), buffs( b ), max_stacks( i )
     {}
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       rng().shuffle( buffs.begin(), buffs.end() );
 
@@ -6304,14 +6293,14 @@ void coiled_serpent_idol( special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ), counter( 0 ), serpent( d ), effect( e )
     {}
 
-    void execute( action_t* /*a*/, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       counter++;
-      serpent->execute_on_target( s->target );
+      serpent->execute_on_target( t );
 
       if ( counter == 3 )
       {
-        serpent->get_debuff( s->target )->trigger();
+        serpent->get_debuff( t )->trigger();
         counter = 0;
       }
     }
@@ -6445,7 +6434,7 @@ void pinch_of_dream_magic( special_effect_t& effect )
   add_buff( "dreamsaber", 424275 );
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
         cb->rng().range( buffs )->trigger();
       } );
 
@@ -6748,14 +6737,14 @@ void augury_of_the_primal_flame( special_effect_t& effect )
     {
     }
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* state ) override
     {
       // Remove from the cap before modifiers are added (crit/vers/targets)
       if ( buff->check() )
       {
         // The amount hit is simply the crit amount * the mod (and then can roll crit + apply vers)
         // We take this same amount and remove it from the cap before it rolls crit or applies vers
-        double amount           = state->result_amount * mod;
+        double amount = state->result_amount * mod;
         damage->base_dd_min = damage->base_dd_max = amount;
 
         // After the hit occurs calculate how much is left or expire if needed
@@ -6763,23 +6752,23 @@ void augury_of_the_primal_flame( special_effect_t& effect )
         {
           buff->current_value -= amount;
 
-          effect.player->sim->print_debug(
+          listener->sim->print_debug(
               "{} annihilating_flame accumulates {} damage. {} remains (original crit amount: {})",
-              effect.player->name(), amount, buff->current_value, state->result_amount );
+              *listener, amount, buff->current_value, state->result_amount );
         }
         else
         {
           // If you hit enough to cap, expire the buff
           // Only hit for the remaining amount left on the cap
-          effect.player->sim->print_debug(
-              "{} base hit was over annihilating_flame cap. Exhausting remaining damage of {}.", effect.player->name(),
+          listener->sim->print_debug(
+              "{} base hit was over annihilating_flame cap. Exhausting remaining damage of {}.", *listener,
               buff->current_value );
           damage->base_dd_min = damage->base_dd_max = buff->current_value;
           buff->expire();
         }
 
         // Always trigger the damage event if you have gotten to this point, even if buff was expired
-        damage->execute_on_target( state->target );
+        damage->execute_on_target( t );
       }
     }
   };
@@ -7255,7 +7244,7 @@ void gift_of_ursine_vengeance( special_effect_t& effect )
 
   if ( effect.player->primary_role() == ROLE_TANK )
   {
-    effect.proc_flags_    = PF_DAMAGE_TAKEN;
+    effect.proc_flags_    = PF_ALL_DAMAGE_TAKEN;
     effect.proc_flags2_   = PF2_ALL_HIT | PF2_DODGE | PF2_PARRY | PF2_MISS;
     effect.execute_action = action;
 
@@ -7475,11 +7464,11 @@ void tome_of_unstable_power_new( special_effect_t& effect )
       cast_time = e.player->find_spell( 434070 )->duration();
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       make_event<ground_aoe_event_t>(
           *listener->sim, listener,
-          ground_aoe_params_t().target( s->target ).pulse_time( cast_time ).action( barrage ).n_pulses( 1U ) );
+          ground_aoe_params_t().target( t ).pulse_time( cast_time ).action( barrage ).n_pulses( 1U ) );
     }
   };
 
@@ -7553,11 +7542,11 @@ void frozen_wellspring( special_effect_t& effect )
 
   // make proc trigger damage & debuff on target
   effect.player->callbacks.register_callback_execute_function( proc_driver->spell_id,
-      [ proc, buff, proxy ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+      [ proc, buff, proxy ]( auto, auto, player_t* t, auto ) {
         if ( buff->check() )
         {
-          proc->execute_on_target( s->target );
-          proxy->get_debuff( s->target )->trigger();
+          proc->execute_on_target( t );
+          proxy->get_debuff( t )->trigger();
           buff->trigger();
         }
       } );
@@ -7741,19 +7730,19 @@ void bronzed_grip_wrappings( special_effect_t& effect )
   {
     bronzed_grip_wrappings_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ) {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      if ( s->target->is_sleeping() )
+      if ( t->is_sleeping() )
         return;
 
       if ( execute_fn )
       {
-        ( *execute_fn )( this, a, s );
+        ( *execute_fn )( this, spell, t, s );
       }
       else
       {
-        if ( !a->special )
-          proc_action->execute_on_target( s->target );
+        if ( !s->action->special )
+          proc_action->execute_on_target( t );
       }
     }
   };
@@ -7791,20 +7780,21 @@ void spore_keepers_baton( special_effect_t& effect )
                   ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
-        if ( s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME || s->target->is_enemy() == cb->listener->is_enemy() )
-        {
-          buff->trigger();
-        }
-        else if ( s->target != s->action->player )  // TODO: determine what happens for self-damage
-        {
-          dot->set_target( s->target );
-          auto proc_state    = dot->get_state();
-          proc_state->target = dot->target;
-          dot->snapshot_state( proc_state, dot->amount_type( proc_state ) );
-          dot->schedule_execute( proc_state );
-        }
-      } );
+    effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t* cb, auto, player_t* t, action_state_t* s ) {
+      if ( s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME ||
+           t->is_enemy() == cb->listener->is_enemy() )
+      {
+        buff->trigger();
+      }
+      else if ( t != cb->listener )  // TODO: determine what happens for self-damage
+      {
+        dot->set_target( t );
+        auto proc_state = dot->get_state();
+        proc_state->target = dot->target;
+        dot->snapshot_state( proc_state, dot->amount_type( proc_state ) );
+        dot->schedule_execute( proc_state );
+      }
+    } );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -7875,9 +7865,9 @@ void neltharax( special_effect_t& effect )
       target_debuff = e.player->find_spell( 397478 );
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      auto mark = get_debuff( s->target );
+      auto mark = get_debuff( t );
       if ( mark->check() )
       {
         // Increment the attack speed if target is our current mark.
@@ -7887,7 +7877,7 @@ void neltharax( special_effect_t& effect )
       {
         attack_speed->expire();
         // Find a current mark if there is one and remove the mark on it.
-        auto i = range::find_if( effect.player->sim->target_non_sleeping_list, [ this ]( player_t* t ) {
+        auto i = range::find_if( listener->sim->target_non_sleeping_list, [ this ]( player_t* t ) {
           auto m = get_debuff( t );
           if ( m->check() )
           {
@@ -7897,7 +7887,7 @@ void neltharax( special_effect_t& effect )
           return false;
         } );
         // Only set a new mark and start stacking the buff if there was no mark cleared on this impact.
-        if ( i == effect.player->sim->target_non_sleeping_list.end() )
+        if ( i == listener->sim->target_non_sleeping_list.end() )
         {
           mark->trigger();
           attack_speed->trigger();
@@ -8070,7 +8060,7 @@ void djaruun_pillar_of_the_elder_flame ( special_effect_t& effect )
   effect.custom_buff = buff;
 
   effect.player->callbacks.register_callback_execute_function(
-    effect.spell_id, [ buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) { buff->trigger(); } );
+    effect.spell_id, [ buff ]( auto, auto, auto, auto ) { buff->trigger(); } );
 
   effect.execute_action = create_proc_action<djaruun_of_the_elder_flame_t>( "elder_flame", effect, siphon_damage );
 }
@@ -8091,9 +8081,9 @@ void iridal_the_earths_master( special_effect_t& e )
     {
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      dbc_proc_callback_t::execute( a, s );
+      dbc_proc_callback_t::execute( spell, t, s );
       item_cd->adjust( -timespan_t::from_seconds( cdr_value ) );
     }
   };
@@ -8135,8 +8125,8 @@ void iridal_the_earths_master( special_effect_t& e )
 
   e.player->callbacks.register_callback_trigger_function(
       419282, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ e ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
-        return s->target->health_percentage() < e.driver()->effectN( 2 ).base_value();
+      [ hp_pct = e.driver()->effectN( 2 ).base_value() ]( auto, const auto&, player_t* t, auto, auto ) {
+        return t->health_percentage() < hp_pct;
       } );
 
   e.execute_action = damage;
@@ -8298,8 +8288,8 @@ void thorncaller_claw( special_effect_t& effect ) {
 
   effect.player->callbacks.register_callback_trigger_function(
       thorn_burst->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ thorn_spirit ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
-        return thorn_spirit->get_dot( s->target )->is_ticking();
+      [ thorn_spirit ]( auto, const auto&, player_t* t, auto, auto ) {
+        return thorn_spirit->get_dot( t )->is_ticking();
       } );
 
   // 2023-10-14: When Thorn Spirit spreads to a new target on demise it is applied with full duration.
@@ -8511,9 +8501,8 @@ void fyralath_the_dream_render( special_effect_t& e )
 
   scripted_driver->player->callbacks.register_callback_trigger_function(
     dummy_equip_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-    [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* )
-    {
-      return range::contains( proc_spell_id, a->data().id() );
+    [ proc_spell_id ]( auto, const proc_data_t& data, auto, auto, auto ) {
+      return range::contains( proc_spell_id, data->id() );
     } );
 
   e.execute_action = channel;
@@ -8739,7 +8728,7 @@ void elemental_lariat( special_effect_t& effect )
   add_buff( FROST_GEM, "frost", 375343, STAT_VERSATILITY_RATING );
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
         cb->rng().range( buffs )->trigger();
       } );
 }
@@ -8782,13 +8771,17 @@ void thriving_thorns( special_effect_t& effect )
       heal->name_str_reporting = "Heal";
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
     {
       if ( s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME ||
-           s->target->is_enemy() == listener->is_enemy() )
+           t->is_enemy() == listener->is_enemy() )
+      {
         heal->execute_on_target( listener );
+      }
       else
-        damage->execute_on_target( s->target );
+      {
+        damage->execute_on_target( t );
+      }
     }
   };
 
@@ -8805,11 +8798,11 @@ void broodkeepers_blaze(special_effect_t& effect)
   {
     broodkeepers_blaze_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ) {}
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
-      if ( dbc::is_school( a->get_school(), SCHOOL_FIRE ) )
+      if ( dbc::is_school( s->action->get_school(), SCHOOL_FIRE ) )
       {
-        dbc_proc_callback_t::trigger( a , s );
+        dbc_proc_callback_t::trigger( data, t, s, type );
       }
     }
   };
@@ -8953,7 +8946,7 @@ void rallied_to_victory( special_effect_t& effect )
       return buff;
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       if ( effect.player->dragonflight_opts.rallied_to_victory_ally_estimate )
       {
@@ -9048,13 +9041,13 @@ void hood_of_surging_time( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      if ( range::contains( target_list, s->target->actor_spawn_index ) )
+      if ( range::contains( target_list, t->actor_spawn_index ) )
         return;
 
-      dbc_proc_callback_t::execute( a, s );
-      target_list.push_back( s->target->actor_spawn_index );
+      dbc_proc_callback_t::execute( spell, t, s );
+      target_list.push_back( t->actor_spawn_index );
     }
 
     void reset() override
@@ -9247,21 +9240,21 @@ void ever_decaying_spores( special_effect_t& effect )
           } );
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      dbc_proc_callback_t::execute( a, s );
+      dbc_proc_callback_t::execute( spell, t, s );
 
       // Every time this procs it has a chance to damage the player instead of applying a debuff stack and it will also
       // eat the proc if the debuff is ticking on the target. Testing shows this chance is currently 20% but since it's
       // not found in spell data will have to rechecked in case this changes.
       if ( rng().roll( 0.8 ) )
-        get_debuff( s->target )->trigger();
+        get_debuff( t )->trigger();
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
-      if ( !damage->get_dot( s->target )->is_ticking() )
-        dbc_proc_callback_t::trigger( a, s );
+      if ( !damage->get_dot( t )->is_ticking() )
+        dbc_proc_callback_t::trigger( data, t, s, type );
     }
   };
 
@@ -9289,10 +9282,10 @@ void timestrike( special_effect_t& effect )
       target_debuff = e.player->find_spell( 420144 );
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
     {
       // capture amount & target by value
-      make_event( *listener->sim, delay, [ amt = s->result_amount * mul, t = s->target, this ]() {
+      make_event( *listener->sim, delay, [ amt = s->result_amount * mul, t = t, this ]() {
         if ( !t->is_sleeping() )
         {
           damage->base_dd_min = damage->base_dd_max = amt;
@@ -9301,7 +9294,7 @@ void timestrike( special_effect_t& effect )
       } );
 
       // debuff is purely cosmetic
-      get_debuff( s->target )->trigger();
+      get_debuff( t )->trigger();
     }
   };
 
@@ -9321,7 +9314,7 @@ void demonsbane( special_effect_t& e )
 
   e.player->callbacks.register_callback_trigger_function(
       e.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      []( const dbc_proc_callback_t*, action_t*, action_state_t* s ) { return s->target->race == RACE_DEMON; } );
+      []( auto, const auto&, player_t* t, auto, auto ) { return t->race == RACE_DEMON; } );
 
   e.execute_action = dot;
   new dbc_proc_callback_t( e.player, e );
@@ -9545,7 +9538,7 @@ void verdant_conduit( special_effect_t& effect )
   if ( first )
   {
     effect.player->callbacks.register_callback_execute_function(
-        effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+        effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
           cb->rng().range( buffs )->trigger();
         } );
   }
@@ -9581,7 +9574,7 @@ void string_of_delicacies( special_effect_t& e )
       return buff;
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       if ( effect.player->dragonflight_opts.string_of_delicacies_ally_estimate )
       {
@@ -9777,8 +9770,8 @@ void raging_tempests( special_effect_t& effect )
     } );
 
     effect.player->callbacks.register_callback_execute_function(
-        driver->spell_id, [ cb ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
-          cb->proc_action->execute_on_target( a->target );
+        driver->spell_id, [ cb ]( auto, auto, player_t* t, auto ) {
+          cb->proc_action->execute_on_target( t );
           cb->deactivate();
         } );
 
@@ -10098,12 +10091,12 @@ struct primordial_stone_cb_t : public dbc_proc_callback_t
     }
   }
 
-  void execute( action_t* a, action_state_t* s ) override
+  void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
   {
-    dbc_proc_callback_t::execute( a, s );
+    dbc_proc_callback_t::execute( spell, t, s );
 
     if ( twilight_action )
-      twilight_action->execute_on_target( s->target );
+      twilight_action->execute_on_target( t );
   }
 };
 
@@ -10394,12 +10387,12 @@ void echoing_thunder_stone( special_effect_t& effect )
       primordial_stone_cb_t( e.player, e ), ready_buff ( b )
     {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      if ( s->target->is_sleeping() )
+      if ( t->is_sleeping() )
         return;
 
-      primordial_stone_cb_t::execute( a, s );
+      primordial_stone_cb_t::execute( spell, t, s );
 
       ready_buff->expire();
     }
@@ -10524,8 +10517,8 @@ void humming_arcane_stone( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
-        return a->get_school() != SCHOOL_PHYSICAL;
+      []( auto, const auto&, auto, action_state_t* s, auto  ) {
+        return s->action->get_school() != SCHOOL_PHYSICAL;
       } );
 }
 
@@ -10928,7 +10921,7 @@ void enkindle( special_effect_t& effect )
         initialize();
       }
 
-      void execute( action_t*, action_state_t* s ) override
+      void execute( const spell_data_t*, player_t*, action_state_t* s ) override
       {
         if ( s->action->player->is_sleeping() || !s->action->player->is_enemy() )
           return;
@@ -11106,12 +11099,12 @@ void fervor( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
       if ( listener->health_percentage() < health_threshold )
         return;
 
-      dbc_proc_callback_t::execute( a, s );
+      dbc_proc_callback_t::execute( spell, t, s );
     }
   };
 
@@ -11187,12 +11180,12 @@ void arcanists_edge( special_effect_t& effect )
       }
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       if ( listener->absorb_buff_list.empty() )
         return;
 
-      damage->execute_on_target( s->target, get_current_absorb() * absorb_percent );
+      damage->execute_on_target( t, get_current_absorb() * absorb_percent );
       consume_absorb();
     }
   };
@@ -11281,19 +11274,19 @@ void slay( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      if ( !a->harmful )
+      if ( !s->action->harmful )
         return;
 
-      if ( s->target->health_percentage() > health_threshold )
+      if ( t->health_percentage() > health_threshold )
         return;
 
-      if ( range::contains( target_list, s->target->actor_spawn_index ) )
+      if ( range::contains( target_list, t->actor_spawn_index ) )
         return;
 
-      dbc_proc_callback_t::execute( a, s );
-      target_list.push_back( s->target->actor_spawn_index );
+      dbc_proc_callback_t::execute( spell, t, s );
+      target_list.push_back( t->actor_spawn_index );
     }
 
     void reset() override
@@ -11395,7 +11388,7 @@ void quick_strike( special_effect_t& effect )
     {
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       auto atk = listener->main_hand_attack;
 
@@ -11404,7 +11397,7 @@ void quick_strike( special_effect_t& effect )
 
       atk->repeating = false;
       atk->may_miss  = false;
-      atk->set_target( s->target );
+      atk->set_target( t );
 
       int hits = rng().range( min_hits, max_hits + 1 );
       for ( int i = 0; i < hits; i++ )

@@ -63,8 +63,10 @@ struct dbc_proc_callback_t : public action_callback_t
     TRIGGER
   };
 
-  using execute_fn_t = std::function<void( dbc_proc_callback_t*, action_t*, action_state_t* )>;
-  using trigger_fn_t = std::function<bool( dbc_proc_callback_t*, action_t*, action_state_t* )>;
+  using execute_fn_t =
+    std::function<void( dbc_proc_callback_t*, const spell_data_t*, player_t*, action_state_t* )>;
+  using trigger_fn_t =
+    std::function<bool( dbc_proc_callback_t*, const proc_data_t&, player_t*, action_state_t*, proc_trigger_type_e )>;
 
   static const item_t default_item_;
 
@@ -95,15 +97,16 @@ struct dbc_proc_callback_t : public action_callback_t
   /// Override execution behavior with a separate callback function
   execute_fn_t* execute_fn;
 
-  bool can_only_proc_from_class_abilites;
-  bool can_proc_from_procs;
-  bool can_proc_from_suppressed;
-  // TODO: determine if SX_CAN_PROC_FROM_SUPPRESSED_TGT parsing is also needed
+  proc_data_t proc_data;
+  bool& can_only_proc_from_class_abilities;
+  bool& can_proc_from_procs;
+  bool& can_proc_from_suppressed;
+  bool& can_proc_from_suppressed_target;
+
+  dbc_proc_callback_t( const item_t& i, player_t* p, const special_effect_t& e );
 
   dbc_proc_callback_t( const item_t& i, const special_effect_t& e );
-
   dbc_proc_callback_t( const item_t* i, const special_effect_t& e );
-
   dbc_proc_callback_t( player_t* p, const special_effect_t& e );
 
   void initialize() override;
@@ -120,10 +123,10 @@ struct dbc_proc_callback_t : public action_callback_t
 
   void deactivate_with_buff( buff_t* buff, bool init = false );
 
-  void trigger( action_t* a, action_state_t* state ) override;
+  void trigger( const proc_data_t& data, player_t* target, action_state_t* state, proc_trigger_type_e type ) override;
 
   // Determine target for the callback (action).
-  virtual player_t* target( const action_state_t* state, action_t* proc_action = nullptr ) const;
+  virtual player_t* get_target( player_t* target, action_state_t* state, action_t* p_action = nullptr ) const;
 
   rng::rng_t& rng() const;
 
@@ -147,5 +150,5 @@ protected:
    * TODO: Buff cooldown hackery for expressions. Is this really needed or can
    * we do it in a smarter way (better expression support?)
    */
-  virtual void execute( action_t* /* a */, action_state_t* state );
+  virtual void execute( const spell_data_t* spell, player_t* target, action_state_t* state );
 };

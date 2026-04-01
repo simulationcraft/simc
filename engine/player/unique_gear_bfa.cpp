@@ -375,11 +375,11 @@ void consumables::potion_of_focused_resolve( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* /* a */, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      if ( current_target != state->target )
+      if ( current_target != t )
       {
-        set_target( state->target );
+        set_target( t );
       }
     }
 
@@ -566,7 +566,7 @@ custom_cb_t enchants::weapon_navigation( unsigned buff_id )
     {
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       // From logs it seems like the stacking buff can't trigger while the 'final' one is up. Logs
       // also look like the RPPM effect is allowed to proc, but the stacking buff is not triggered
@@ -765,7 +765,7 @@ void items::incessantly_ticking_clock( special_effect_t& effect )
     {
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       buffs[ state ]->trigger();
       state ^= 1U;
@@ -820,12 +820,12 @@ void items::landois_scrutiny( special_effect_t& effect )
       current_target = listener->default_target;
     }
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      if ( state->target != current_target )
+      if ( t != current_target )
       {
         proc_buff->expire();
-        current_target = state->target;
+        current_target = t;
       }
 
       proc_buff->trigger();
@@ -913,7 +913,7 @@ struct bba_cb_t : public dbc_proc_callback_t
     return timespan_t::from_seconds( cost * std::get<c>( resource_tuple->second ) );
   }
 
-  void trigger( action_t* a, action_state_t* state ) override
+  void trigger( const proc_data_t& data, player_t* t, action_state_t* state, proc_trigger_type_e type ) override
   {
     if ( state->action->last_resource_cost == 0 )
     {
@@ -921,13 +921,13 @@ struct bba_cb_t : public dbc_proc_callback_t
       // The callback should probably rather check for ticks of breath_of_sindragosa, but this will do for now
       if ( state->action->data().id() == 155166U || state->action->data().id() == 53600U )
       {
-        dbc_proc_callback_t::trigger( a, state );
+        dbc_proc_callback_t::trigger( data, t, state, type );
       }
 
       return;
     }
 
-    dbc_proc_callback_t::trigger( a, state );
+    dbc_proc_callback_t::trigger( data, t, state, type );
   }
 
   void reset() override
@@ -956,7 +956,7 @@ void items::bygone_bee_almanac( special_effect_t& effect )
       assert( bba_buff );
     }
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* state ) override
     {
       timespan_t adjust = value<RC_BUFF>( state );
       if ( adjust == timespan_t::zero() )
@@ -977,7 +977,7 @@ void items::bygone_bee_almanac( special_effect_t& effect )
     {
     }
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* state ) override
     {
       timespan_t adjust = value<RC_COOLDOWN>( state );
       if ( adjust == timespan_t::zero() )
@@ -1165,8 +1165,8 @@ void items::deadeye_spyglass( special_effect_t& effect )
 
       effect.player->callbacks.register_callback_trigger_function(
         second->spell_id, trigger_fn_type::CONDITION,
-        [ this ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
-          return get_debuff( s->target )->check();
+        [ this ]( auto, const auto&, player_t* t, auto, auto ) {
+          return get_debuff( t )->check();
         } );
 
       new dbc_proc_callback_t( effect.player, *second );
@@ -1174,9 +1174,9 @@ void items::deadeye_spyglass( special_effect_t& effect )
       target_debuff = effect.trigger();
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      get_debuff( s->target )->trigger();
+      get_debuff( t )->trigger();
     }
   };
 
@@ -1216,12 +1216,12 @@ void items::mydas_talisman( special_effect_t& effect )
     {
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       assert( proc_action );
       assert( proc_buff );
 
-      proc_action->set_target( s->target );
+      proc_action->set_target( t );
       proc_action->execute();
       proc_buff->decrement();
     }
@@ -1278,7 +1278,7 @@ void items::harlans_loaded_dice( special_effect_t& effect )
     {
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       range::for_each( buffs, [this]( const std::vector<buff_t*>& buffs ) {
         // Coinflip for now
@@ -1301,11 +1301,11 @@ void items::kul_tiran_cannonball_runner( special_effect_t& effect )
     {
     }
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       make_event<ground_aoe_event_t>( *listener->sim, listener,
                                       ground_aoe_params_t()
-                                          .target( state->target )
+                                          .target( t )
                                           .pulse_time( effect.trigger()->effectN( 1 ).trigger()->effectN( 2 ).period() )
                                           .duration( effect.trigger()->effectN( 1 ).trigger()->duration() )
                                           .action( proc_action ) );
@@ -1353,7 +1353,7 @@ void items::twitching_tentacle_of_xalzaix( special_effect_t& effect )
     {
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       if ( proc_buff && proc_buff->trigger() && proc_buff->check() == proc_buff->max_stack() )
       {
@@ -1473,7 +1473,7 @@ void items::vanquished_tendril_of_ghuun( special_effect_t& effect )
       spawner.set_default_duration( effect.player->find_spell( 278163 )->duration() );
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       spawner.spawn();
     }
@@ -1600,11 +1600,11 @@ void items::hadals_nautilus( special_effect_t& effect )
     {
     }
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       make_event<ground_aoe_event_t>( *listener->sim, listener,
                                       ground_aoe_params_t()
-                                          .target( state->target )
+                                          .target( t )
                                           .pulse_time( driver->duration() )
                                           .n_pulses( 1 )
                                           .action( proc_action ) );
@@ -1820,7 +1820,7 @@ void items::frenetic_corpuscle( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* /* a */, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       proc_buff->trigger();
       if ( proc_buff->check() == proc_buff->max_stack() )
@@ -1828,7 +1828,7 @@ void items::frenetic_corpuscle( special_effect_t& effect )
         // TODO: Tooltip says "on next attack", which likely uses Frenetic Frenzy buff (278144) to
         // proc trigger the damage Just immediately trigger the damage here, can revisit later and
         // implement a new special_effect callback if needed
-        damage->set_target( state->target );
+        damage->set_target( t );
         damage->execute();
         proc_buff->expire();
       }
@@ -1955,16 +1955,16 @@ void items::syringe_of_bloodborne_infirmity( special_effect_t& effect )
 
       effect.player->callbacks.register_callback_trigger_function(
           second->spell_id, trigger_fn_type::CONDITION,
-          [ this ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
-            return damage->get_dot( s->target )->is_ticking();
+          [ this ]( auto, const auto&, player_t* t, auto, auto ) {
+            return damage->get_dot( t )->is_ticking();
           } );
 
       new dbc_proc_callback_t( effect.player, *second );
     }
 
-    void execute( action_t* /* a */, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      damage->set_target( state->target );
+      damage->set_target( t );
       damage->execute();
     }
   };
@@ -2711,12 +2711,12 @@ void items::leggings_of_the_aberrant_tidesage( special_effect_t& effect )
         damage( create_proc_action<nimbus_bolt_t>( "storm_nimbus", effect ) )
     { }
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       if ( rng().roll( damage->player->sim->bfa_opts.aberrant_tidesage_damage_chance ) )
       {
         // damage proc
-        damage->set_target( state->target );
+        damage->set_target( t );
         damage->execute();
       }
       else
@@ -2758,12 +2758,12 @@ void items::fathuuls_floodguards( special_effect_t& effect )
     {
     }
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       if ( rng().roll( damage->player->sim->bfa_opts.fathuuls_floodguards_damage_chance ) )
       {
         // damage proc
-        damage->set_target( state->target );
+        damage->set_target( t );
         damage->execute();
       }
       else
@@ -2789,11 +2789,11 @@ void items::grips_of_forsaken_sanity( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* action, action_state_t* state ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* state ) override
     {
-      if ( rng().roll( action->player->sim->bfa_opts.grips_of_forsaken_sanity_damage_chance ) )
+      if ( rng().roll( listener->sim->bfa_opts.grips_of_forsaken_sanity_damage_chance ) )
       {
-        dbc_proc_callback_t::execute( action, state );
+        dbc_proc_callback_t::execute( spell, t, state );
       }
     }
   };
@@ -2988,11 +2988,11 @@ void items::legplates_of_unbound_anguish( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
-      if ( rng().roll( a->sim->bfa_opts.legplates_of_unbound_anguish_chance ) )
+      if ( rng().roll( listener->sim->bfa_opts.legplates_of_unbound_anguish_chance ) )
       {
-        dbc_proc_callback_t::trigger( a, s );
+        dbc_proc_callback_t::trigger( data, t, s, type );
       }
     }
   };
@@ -3037,11 +3037,11 @@ void items::exploding_pufferfish( special_effect_t& effect )
     {
     }
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       make_event<ground_aoe_event_t>( *listener->sim, listener,
                                       ground_aoe_params_t()
-                                          .target( state->target )
+                                          .target( t )
                                           .pulse_time( summon_spell->duration() )
                                           .action( proc_action )
                                           .n_pulses( 1U ) );
@@ -3176,9 +3176,9 @@ void items::highborne_compendium_of_storms( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* /* a */, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      proc_action->set_target( target( state ) );
+      proc_action->set_target( t );
       proc_action->execute();
       proc_buff->trigger();
     }
@@ -3347,18 +3347,18 @@ void items::leviathans_lure( special_effect_t& effect )
     leviathan_chomp_cb_t( const special_effect_t& e, dbc_proc_callback_t* cb ) : dbc_proc_callback_t( e.player, e ), algae( cb )
     {}
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       // adjust the rppm before triggering
       rppm->set_modifier( 1.0 + algae->get_debuff( s->target )->check_value() );
-      dbc_proc_callback_t::trigger( a, s );
+      dbc_proc_callback_t::trigger( data, t, s, type );
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
       algae->get_debuff( s->target )->expire();  // debuff removed on execute, not impact
 
-      dbc_proc_callback_t::execute( a, s );
+      dbc_proc_callback_t::execute( spell, t, s );
     }
   };
 
@@ -3376,9 +3376,9 @@ void items::leviathans_lure( special_effect_t& effect )
         ->set_default_value_from_effect( 1, 0.01 );
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      get_debuff( s->target )->trigger();
+      get_debuff( t )->trigger();
     }
   };
 
@@ -3474,7 +3474,7 @@ void items::zaquls_portal_key( special_effect_t& effect )
     {
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       // Approximate player behavior of waiting for the next gcd (or current cast to finish), then spending a gcd to
       // move and open the portal
@@ -3856,12 +3856,12 @@ void items::anuazshara_staff_of_the_eternal( special_effect_t& effect )
       dbc_proc_callback_t( e.player, e ), lockout( b )
     { }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       if ( lockout->check() )
         return;
 
-      dbc_proc_callback_t::trigger( a, s );
+      dbc_proc_callback_t::trigger( data, t, s, type );
     }
   };
 
@@ -4080,15 +4080,15 @@ void items::ashvanes_razor_coral( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
-      if ( action->debuff && s && action->debuff->player == s->target && action->debuff->check() )
-        dbc_proc_callback_t::trigger( a, s );
+      if ( action->debuff && action->debuff->player == t && action->debuff->check() )
+        dbc_proc_callback_t::trigger( data, t, s, type );
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      dbc_proc_callback_t::execute( a, s );
+      dbc_proc_callback_t::execute( spell, t, s );
 
       if ( action->debuff )
         action->debuff->trigger();
@@ -4141,21 +4141,21 @@ void items::dribbling_inkpod( special_effect_t& effect )
         ->set_max_stack( 255 );
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       // Conductive Ink shouldn't be able to proc on the caster (happens when a positive effect like a heal hits the
       // player)
-      if ( s->target->health_percentage() > hp_pct && s->target != a->player )
+      if ( t != listener && t->health_percentage() > hp_pct )
       {
-        dbc_proc_callback_t::trigger( a, s );
+        dbc_proc_callback_t::trigger( data, t, s, type );
       }
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      if ( s->target->is_enemy() && s->target->health_percentage() > hp_pct )
+      if ( t->is_enemy() && t->health_percentage() > hp_pct )
       {
-        get_debuff( s->target )->trigger();
+        get_debuff( t )->trigger();
       }
     }
   };
@@ -4169,21 +4169,21 @@ void items::dribbling_inkpod( special_effect_t& effect )
       : dbc_proc_callback_t( e.player, e ), proc_cb( cb ), hp_pct( primary.driver()->effectN( 3 ).base_value() )
     {}
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
-      if ( proc_cb->get_debuff( s->target )->check() && s->target->health_percentage() <= hp_pct )
+      if ( proc_cb->get_debuff( t )->check() && t->health_percentage() <= hp_pct )
       {
-        dbc_proc_callback_t::trigger( a, s );
+        dbc_proc_callback_t::trigger( data, t, s, type );
       }
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
       // Simultaneous attacks that hit at once can all count as the damage to burst the debuff, triggering the callback
       // multiple times. Ensure the event-scheduled callback execute checks for the debuff so we don't get multiple hits
-      if ( proc_cb->get_debuff( s->target )->check() )
+      if ( proc_cb->get_debuff( t )->check() )
       {
-        dbc_proc_callback_t::execute( a, s );
+        dbc_proc_callback_t::execute( spell, t, s );
       }
     }
   };
@@ -4250,11 +4250,11 @@ void items::dreams_end( special_effect_t& effect )
     {
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      if ( !target || target != s->target )  // new target
+      if ( !target || target != t )  // new target
       {
-        target = s->target;
+        target = t;
         listener->buffs.delirious_frenzy->expire();  // cancel buff, restart below
       }
 
@@ -4294,16 +4294,16 @@ void items::divers_folly( special_effect_t& effect )
 
     divers_folly_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), buff( b ) {}
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       // Doesn't proc when buff is up, and doesn't seem to trigger rppm neither
       if ( buff->check() )
         return;
 
-      dbc_proc_callback_t::trigger( a, s );
+      dbc_proc_callback_t::trigger( data, t, s, type );
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       buff->trigger();
     }
@@ -4338,12 +4338,12 @@ void items::divers_folly( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       listener->sim->print_debug( "Bioelectric Charge (Diver's Folly) discharged for {} damage!",
                                   proc_action->base_dd_min );
 
-      dbc_proc_callback_t::trigger( a, s );
+      dbc_proc_callback_t::trigger( data, t, s, type );
       deactivate();  // trigger should always be a success, so deactivate immediately on trigger
     }
   };
@@ -4905,8 +4905,8 @@ void items::goldcoated_superconductors( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ & ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
-        return dbc::get_school_mask( a->get_school() ) & dbc::get_school_mask( SCHOOL_NATURE );
+      [ & ]( auto, const auto&, auto, const action_state_t* s, auto ) {
+        return dbc::get_school_mask( s->action->get_school() ) & dbc::get_school_mask( SCHOOL_NATURE );
       } );
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -5031,7 +5031,7 @@ void items::subroutine_recalibration( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       // The cast counter does not increase if either of the associated buffs is active
       if ( buff->check() || debuff->check() )
@@ -5041,13 +5041,13 @@ void items::subroutine_recalibration( special_effect_t& effect )
 
       if ( listener->sim->debug )
       {
-        listener->sim->out_debug.print( "{} procs subroutine_recalibration on {}, casts={}, max={}", listener->name(),
-                                        a->name(), casts, req_casts );
+        listener->sim->out_debug.print( "{} procs subroutine_recalibration on {}, casts={}, max={}", *listener,
+                                        *data.spell, casts, req_casts );
       }
 
       if ( ++casts >= req_casts )
       {
-        dbc_proc_callback_t::trigger( a, s );
+        dbc_proc_callback_t::trigger( data, t, s, type );
         casts = 0;
       }
     }
@@ -5448,11 +5448,11 @@ void items::logic_loop_of_division( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, action_state_t* state ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* state, proc_trigger_type_e type ) override
     {
       if ( listener->position() == POSITION_BACK || listener->position() == POSITION_RANGED_BACK )
       {
-        logic_loop_callback_t::trigger( a, state );
+        logic_loop_callback_t::trigger( data, t, state, type );
       }
     }
   };
@@ -5485,14 +5485,14 @@ void items::logic_loop_of_recursion( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
-      int this_id = a->internal_id;
-      auto it     = range::find( list, a->target, &llor_tracker_t::target );
+      int this_id = s->action->internal_id;
+      auto it     = range::find( list, t, &llor_tracker_t::target );
       if ( it == list.end() )  // new target
       {
         llor_tracker_t tmp;
-        tmp.target = a->target;
+        tmp.target = t;
         tmp.action_ids.push_back( this_id );
         list.push_back( std::move( tmp ) );  // create new entry for target
         return;
@@ -5507,7 +5507,7 @@ void items::logic_loop_of_recursion( special_effect_t& effect )
         }
         else  // full, execute
         {
-          logic_loop_callback_t::trigger( a, s );
+          logic_loop_callback_t::trigger( data, t, s, type );
           for ( auto& tracker : list )
             tracker.action_ids.clear();
         }
@@ -5532,11 +5532,11 @@ void items::logic_loop_of_maintenance( special_effect_t& effect )
     {
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       if ( listener->health_percentage() < 50 )
       {
-        logic_loop_callback_t::trigger( a, s );
+        logic_loop_callback_t::trigger( data, t, s, type );
       }
     }
   };
@@ -5676,12 +5676,12 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* a, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* s ) override
     {
-      if ( spell_blacklist.find( a->id ) == spell_blacklist.end() )
+      if ( spell_blacklist.find( s->action->id ) == spell_blacklist.end() )
       {
-        listener->sim->print_debug( "Adding {} to Hyperthread Wristwraps tracked spells.", a->name_str );
-        last_used.push_back( a );
+        listener->sim->print_debug( "Adding {} to Hyperthread Wristwraps tracked spells.", s->action->name_str );
+        last_used.push_back( s->action );
         while ( last_used.size() > max_size )
           last_used.erase( last_used.begin() );
       }
@@ -5821,7 +5821,7 @@ struct titanic_empowerment_cb_t : public dbc_proc_callback_t
   {
   }
 
-  void execute( action_t* /* a */, action_state_t* /* state */ ) override
+  void execute( const spell_data_t*, player_t*, action_state_t* ) override
   {
     for ( auto b : proc_buffs )
     {
@@ -5945,17 +5945,17 @@ void items::psyche_shredder( special_effect_t& effect )
         : dbc_proc_callback_t( effect.player, effect ), damage( d ), target( t ), main( m )
       {}
 
-      void trigger( action_t* a, action_state_t* state ) override
+      void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
       {
-        if ( state->target != target || !main->get_debuff( target )->check() )
+        if ( t != target || !main->get_debuff( t )->check() )
           return;
 
-        dbc_proc_callback_t::trigger( a, state );
+        dbc_proc_callback_t::trigger( data, t, s, type );
       }
 
-      void execute( action_t* /* a */, action_state_t* trigger_state ) override
+      void execute( const spell_data_t*, player_t* t, action_state_t* ) override
       {
-        damage->target = trigger_state->target;
+        damage->target = t;
         damage->execute();
       }
     };
@@ -6039,12 +6039,12 @@ void items::torment_in_a_jar( special_effect_t& effect )
       stacking_damage->add_child( effect.execute_action );
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
     {
-      stacking_damage->set_target( s->target );
+      stacking_damage->set_target( t );
       stacking_damage->execute();
 
-      dbc_proc_callback_t::execute( a, s );
+      dbc_proc_callback_t::execute( spell, t, s );
     }
   };
 

@@ -13895,7 +13895,7 @@ Spell Type       : Magic
 Range            : 30 yards
 Cooldown         : 0.8 seconds
 Charges          : 1 (20 seconds cooldown)
-Category         : 2448 (Type 0x9): Blazing Path (320416 effect#3), Time Spiral (375229 effect#5), Time Spiral (375229 effect#6), Erratic Felheart (391397 effect#3), State of Matter (1253402 effect#2)
+Category         : 2448 (Type 0x9): Blazing Path (320416 effect#3), Time Spiral (375229 effect#5), Time Spiral (375229 effect#6), Blessing of the Bronze (381741 effect#3), Erratic Felheart (391397 effect#3), State of Matter (1253402 effect#2)
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292

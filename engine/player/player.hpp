@@ -1013,6 +1013,9 @@ public:
   const char* name() const override
   { return name_str.c_str(); }
 
+  virtual std::string html_name() const
+  { return name_str; }
+
   // Normal methods
   double get_stat_value(stat_e);
   void stat_gain( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
@@ -1413,7 +1416,13 @@ public:
   virtual void assess_damage_imminent( school_e, result_amount_type, action_state_t* );
   virtual void do_damage( action_state_t* );
   virtual void assess_heal( school_e, result_amount_type, action_state_t* );
-  virtual void trigger_callbacks( proc_types, proc_types2, action_t*, action_state_t* );
+  virtual void trigger_callbacks( proc_types, proc_types2, action_t* action, action_state_t* state,
+                                  proc_trigger_type_e pt_type = TRIGGER_ACTION );
+  virtual void trigger_callbacks( proc_types, proc_types2, buff_t* buff,
+                                  proc_trigger_type_e pt_type = TRIGGER_AURA_APPLIED );
+  virtual void trigger_callbacks( proc_types, proc_types2, const proc_data_t& data, player_t* target,
+                                  proc_trigger_type_e pt_type );
+  virtual void trigger_aura_applied_callbacks( const proc_data_t& data, player_t* target );
 
   virtual bool taunt( player_t* /* source */ ) { return false; }
 

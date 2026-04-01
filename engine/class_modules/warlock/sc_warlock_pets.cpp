@@ -807,13 +807,6 @@ void wild_imp_pet_t::demise()
       {
         core_chance += o()->hero.sataiels_volition->effectN( 3 ).percent();
       }
-      else
-      {
-        // NOTE: 2026-03-06 If a Wild Imp demise normally (by not being imploded), its actual Demoniac chance to generate a
-        // demonic core is about 5x lower than indicated in the spell data (in our tests it is about ~2% instead of 10%).
-        if ( o()->bugs )
-          core_chance *= 0.2;
-      }
 
       if ( !o()->talents.demoniac.ok() )
         core_chance = 0.0;

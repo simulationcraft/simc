@@ -5,7 +5,7 @@ race=pandaren
 role=spell
 position=ranged_back
 talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZxyMzsMzAAjllBGwEMDbBG2GAAAmBAAwMDzMjBGmZmZGzgZmZGAwMwA
-default_pet=sayaad
+warlock.default_pet=sayaad
 
 head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/1808,enchant_id=7961,gem_id=240983,ilevel=289
 neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240916
@@ -33,7 +33,7 @@ race=pandaren
 role=spell
 position=ranged_back
 talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZZWmZmlxAAWgBmFjGzAysBWGAAAmBAAmZAzMjxwwMjZmZGMzMzAAmBG
-default_pet=sayaad
+warlock.default_pet=sayaad
 
 head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/1808,enchant_id=7961,gem_id=240983,ilevel=289
 neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240916
@@ -114,7 +114,7 @@ level=90
 race=Dwarf
 role=spell
 position=ranged_back
-default_pet=sayaad
+warlock.default_pet=sayaad
 talents=CsQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlZjxMLGjFzAAgZmxMzsAGzYYhMw2wGNWYAAgxAjNAMzAYmxYAAAYmZmBAwMDD
 
 head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/13575/13575/13575/1808/13575,enchant_id=7961,gem_id=240983,ilevel=289
@@ -142,7 +142,7 @@ level=90
 race=Dwarf
 role=spell
 position=ranged_back
-default_pet=sayaad
+warlock.default_pet=sayaad
 talents=CsQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlZjxMLGjFzAAgZmxMzsYBGYWMaMDgZL2YAAgxAjNAgZGYmxYAAAYmZmBAwMDD
 
 head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/13575/13575/13575/1808/13575,enchant_id=7961,gem_id=240983,ilevel=289

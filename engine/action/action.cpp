@@ -5,7 +5,6 @@
 
 #include "action/action.hpp"
 
-#include "action/action_callback.hpp"
 #include "action/action_state.hpp"
 #include "action/dot.hpp"
 #include "buff/buff.hpp"
@@ -351,12 +350,11 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     callbacks( true ),
     caster_callbacks( true ),
     target_callbacks( true ),
-    suppress_caster_procs(),
-    suppress_target_procs(),
-    suppress_callback_from_energize(),
-    suppress_callback_from_trigger_dot(),
-    enable_proc_from_suppressed(),
-    allow_class_ability_procs(),
+    proc_data( s ),
+    suppress_caster_procs( proc_data.suppress_caster_procs ),
+    suppress_target_procs( proc_data.suppress_target_procs ),
+    enable_proc_from_suppressed( proc_data.enable_proc_from_suppressed ),
+    allow_class_ability_procs( proc_data.allow_class_ability_procs ),
     not_a_proc(),
     special(),
     channeled(),
@@ -499,7 +497,6 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     pre_execute_state(),
     snapshot_flags(),
     update_flags( STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_CRIT ),
-    energize_state( std::make_unique<action_state_t>( this, p ) ),
     target_cache(),
     options(),
     state_cache(),
@@ -660,9 +657,6 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   }
 
   // parse attributes
-  suppress_caster_procs       = spell_data.flags( spell_attribute::SX_SUPPRESS_CASTER_PROCS );
-  suppress_target_procs       = spell_data.flags( spell_attribute::SX_SUPPRESS_TARGET_PROCS );
-  enable_proc_from_suppressed = spell_data.flags( spell_attribute::SX_ENABLE_PROCS_FROM_SUPPRESSED );
   tick_may_crit               = spell_data.flags( spell_attribute::SX_TICK_MAY_CRIT );
   // check for either spell or melee haste flag. separate if distinction becomes relevant.
   hasted_ticks                = spell_data.flags( spell_attribute::SX_DOT_HASTED ) ||
@@ -673,7 +667,6 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   treat_as_periodic           = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
   ignores_armor               = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );  // TODO: better way to parse this?
   may_miss                    = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
-  allow_class_ability_procs   = spell_data.flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
   not_a_proc                  = spell_data.flags( spell_attribute::SX_NOT_A_PROC );
 
   if ( spell_data.flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
@@ -1950,46 +1943,45 @@ void action_t::execute()
       execute_action->execute();
     }
 
-    if ( callbacks && caster_callbacks )
+    if ( callbacks && caster_callbacks && execute_state && ( !suppress_caster_procs || enable_proc_from_suppressed ) )
     {
       // Proc generic abilities on execute.
-      proc_types pt;
+      proc_types pt = execute_state->proc_type();;
       proc_types2 pt2;
 
-      if ( execute_state && ( !suppress_caster_procs || enable_proc_from_suppressed ) &&
-           ( pt = execute_state->proc_type() ) != PROC1_INVALID )
+      if ( pt != PROC1_INVALID )
       {
+        // only direct damage triggers obey proc-related trigger attributes
+        auto pt_type = proc_trigger_type( pt, TRIGGER_ACTION );
+
         // "On spell cast", only performed for foreground actions
         if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
-          player->trigger_callbacks( pt, pt2, this, execute_state );
+          player->trigger_callbacks( pt, pt2, this, execute_state, pt_type );
 
         // "On an execute result"
         if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
-          player->trigger_callbacks( pt, pt2, this, execute_state );
+          player->trigger_callbacks( pt, pt2, this, execute_state, pt_type );
 
         // "On interrupt cast result"
         if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
-          player->trigger_callbacks( pt, pt2, this, execute_state );
+          player->trigger_callbacks( pt, pt2, this, execute_state, pt_type );
       }
 
       // Special handling for "Cast Successful" procs
       // TODO: What happens when there is a PROC1 type handled above in addition to Cast Successful?
-      if ( execute_state && ( !suppress_caster_procs || enable_proc_from_suppressed ) )
-      {
-        pt = PROC1_CAST_SUCCESSFUL;
+      pt = PROC1_CAST_SUCCESSFUL;
 
-        // "On spell cast", only performed for foreground actions
-        if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
-          player->trigger_callbacks( pt, pt2, this, execute_state );
+      // "On spell cast", only performed for foreground actions
+      if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
+        player->trigger_callbacks( pt, pt2, this, execute_state );
 
-        // "On an execute result"
-        if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
-          player->trigger_callbacks( pt, pt2, this, execute_state );
+      // "On an execute result"
+      if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
+        player->trigger_callbacks( pt, pt2, this, execute_state );
 
-        // "On interrupt cast result"
-        if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
-          player->trigger_callbacks( pt, pt2, this, execute_state );
-      }
+      // "On interrupt cast result"
+      if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
+        player->trigger_callbacks( pt, pt2, this, execute_state );
     }
   }
 
@@ -4529,13 +4521,13 @@ void action_t::trigger_dot( action_state_t* s )
 
   dot->trigger( duration );
 
-  if ( callbacks && caster_callbacks && !suppress_callback_from_trigger_dot )
+  // TODO: does proc suppression matter for aura applied triggers?
+  if ( callbacks && caster_callbacks && ( !suppress_caster_procs || enable_proc_from_suppressed ) )
   {
-    // TODO: should this be based on whether the action is harmful or not?
-    if ( s->target->is_enemy() )
-      player->trigger_callbacks( PROC1_NONE_HARMFUL, PROC2_LANDED, this, dot->state );
-    else  // Current implementation splits helpful PF2_LANDED into PF1_HIT and PF1_CRIT so we need to adjust here
-      player->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, this, dot->state );
+    // Current implementation splits helpful PF2_LANDED into PF1_HIT and PF1_CRIT so we need to adjust here
+    // TODO: assumption is that PROC1_NONE_HELPFUL actually applies to all aura application, whether hostile or not
+    // NOTE: we don't pass state since this is an aura_applied trigger
+    player->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, proc_data, dot->target, TRIGGER_AURA_APPLIED );
   }
 }
 
@@ -5442,6 +5434,44 @@ void action_t::execute_on_target( player_t* t, double amount )
     base_dd_min = base_dd_max = amount;
 
   execute();
+}
+
+proc_trigger_type_e action_t::proc_trigger_type( proc_types p1, proc_trigger_type_e pt_type ) const
+{
+  if ( pt_type == TRIGGER_ACTION_TAKEN )
+  {
+    switch ( p1 )
+    {
+      case PROC1_MELEE_TAKEN:
+      case PROC1_MELEE_ABILITY_TAKEN:
+      case PROC1_RANGED_TAKEN:
+      case PROC1_RANGED_ABILITY_TAKEN:
+      case PROC1_MAGIC_HEAL_TAKEN:
+      case PROC1_MAGIC_SPELL_TAKEN:
+        if ( !not_a_proc && ( proc || background ) )
+          return TRIGGER_ACTION_PROC_TAKEN;
+        break;
+      default: break;
+    }
+  }
+  else if ( pt_type == TRIGGER_ACTION )
+  {
+    switch ( p1 )
+    {
+      case PROC1_MELEE:
+      case PROC1_MELEE_ABILITY:
+      case PROC1_RANGED:
+      case PROC1_RANGED_ABILITY:
+      case PROC1_MAGIC_HEAL:
+      case PROC1_MAGIC_SPELL:
+        if ( !not_a_proc && ( proc || background ) )
+          return TRIGGER_ACTION_PROC;
+        break;
+      default: break;
+    }
+  }
+
+  return pt_type;
 }
 
 void action_t::print_parsed_effects( report::sc_html_stream& os ) const

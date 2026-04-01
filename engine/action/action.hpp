@@ -7,6 +7,7 @@
 
 #include "config.hpp"
 
+#include "action/action_callback.hpp"
 #include "dbc/data_definitions.hh"
 #include "player/target_specific.hpp"
 #include "sc_enums.hpp"
@@ -118,21 +119,11 @@ public:
   /// * damage taken callbacks require both ( callbacks == true && target_callbacks == true )
   bool callbacks, caster_callbacks, target_callbacks;
 
-  /// if true, does not trigger callbacks on caster/target.
-  bool suppress_caster_procs, suppress_target_procs;
-
-  /// engerize_power effects can trigger generic helpful procs. if true, disable this behavior for the action.
-  bool suppress_callback_from_energize;
-
-  /// trigger_dot can trigger generic helpful/harmful procs. if true, disable this behavior for the action.
-  bool suppress_callback_from_trigger_dot;
-
-  /// can trigger callbacks on caster even if suppress_caster_proc is true, as long as the callback has can_proc_from_suppressed = true.
-  /// TODO: determine if equivalent for suppressed target procs is needed.
-  bool enable_proc_from_suppressed;
-
-  /// Allows triggering of procs marked to only proc from class abilities.
-  bool allow_class_ability_procs;
+  proc_data_t proc_data;
+  bool& suppress_caster_procs;
+  bool& suppress_target_procs;
+  bool& enable_proc_from_suppressed;
+  bool& allow_class_ability_procs;
 
   /// Specifies that a spell is not a proc and can be considered for triggering only proc from class abilities procs even if it is a background ability.
   bool not_a_proc;
@@ -610,9 +601,6 @@ public:
 
   unsigned update_flags;
 
-  /// placeholder dummy to use for energize effects that trigger generic helpful procs
-  std::unique_ptr<action_state_t> energize_state;
-
   /**
    * Target Cache System
    * - list: contains the cached target pointers
@@ -720,6 +708,8 @@ public:
   action_state_t* get_state( const action_state_t* = nullptr );
 
   void execute_on_target( player_t*, double = -1.0 );
+
+  proc_trigger_type_e proc_trigger_type( proc_types, proc_trigger_type_e ) const;
 
   void print_parsed_effects( report::sc_html_stream& ) const;
   virtual void print_custom_parsed_effects( report::sc_html_stream& ) const {}

@@ -10954,8 +10954,8 @@ void rogue_t::init_special_effects()
 
     callbacks.register_callback_trigger_function(
       448000, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ poison_ids ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
-        return !a->special || range::contains( poison_ids, a->data().id() );
+      [ poison_ids ]( const dbc_proc_callback_t*, const proc_data_t& data, player_t*, action_state_t* s, proc_trigger_type_e ) {
+        return !s->action->special || range::contains( poison_ids, data->id() );
     } );
   }
 
@@ -10997,9 +10997,9 @@ void rogue_t::init_special_effects()
       {
       }
 
-      void execute( action_t* a, action_state_t* s ) override
+      void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
       {
-        dbc_proc_callback_t::execute( a, s );
+        dbc_proc_callback_t::execute( spell, t, s );
         rogue->buffs.unseen_blade_cd->expire();
       }
     };
@@ -11027,15 +11027,15 @@ void rogue_t::init_special_effects()
       {
       }
 
-      void execute( action_t* a, action_state_t* s ) override
+      void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
       {
-        dbc_proc_callback_t::execute( a, s );
+        dbc_proc_callback_t::execute( spell, t, s );
 
         if ( rogue->sim->active_enemies == 1 )
           return;
 
         buff_t* debuff = rogue->deathstalkers_mark_debuff;
-        if ( !debuff || !debuff->check() || debuff->player == s->target || debuff->player->is_sleeping() )
+        if ( !debuff || !debuff->check() || debuff->player == t || debuff->player->is_sleeping() )
           return;
 
         if ( !rogue->active.deathstalker.singular_focus )

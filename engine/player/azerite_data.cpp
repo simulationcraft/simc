@@ -1564,7 +1564,7 @@ void elemental_whirl( special_effect_t& effect )
       dbc_proc_callback_t( effect.player, effect ), buffs( std::move( b ) )
     { }
 
-    void execute( action_t* /* a */, action_state_t* /* state */ ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       rng().range( buffs )->trigger();
     }
@@ -1794,7 +1794,7 @@ void retaliatory_fury( special_effect_t& effect )
       dbc_proc_callback_t( effect.player, effect ), buffs( b )
     {}
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       for ( auto b : buffs )
         b -> trigger();
@@ -2361,14 +2361,14 @@ void azerite_globules( special_effect_t& effect )
       target_debuff = effect.player->find_spell( 279956 );
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      auto debuff = get_debuff( s->target );
+      auto debuff = get_debuff( t );
       debuff->trigger();
       if ( debuff->check() == debuff->max_stack() )
       {
         debuff->expire();
-        proc_action->set_target( s->target );
+        proc_action->set_target( t );
         proc_action->execute();
       }
     }
@@ -2576,7 +2576,7 @@ void swirling_sands( special_effect_t& effect )
       extension( power.spell_ref().effectN( 2 ).time_value() )
     {}
 
-    void execute( action_t* a, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       proc_buff -> extend_duration( extension );
     }
@@ -2679,7 +2679,7 @@ void secrets_of_the_deep( special_effect_t& effect )
       dbc_proc_callback_t( effect.player, effect ), buffs( std::move( b ) )
     { }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       size_t index = as<size_t>( rng().roll( listener->sim->bfa_opts.secrets_of_the_deep_chance ) );
       buffs[ index ]->trigger();
@@ -2717,7 +2717,7 @@ void combined_might( special_effect_t& effect )
       dbc_proc_callback_t( effect.player, effect ), buffs( std::move( b ) )
     { }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       rng().range( buffs )->trigger();
     }
@@ -2791,7 +2791,7 @@ void relational_normalization_gizmo( special_effect_t& effect )
     { }
 
     // TODO: Probability distribution?
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       size_t index = as<size_t>( rng().roll( 0.5 ) ); // Coin flip
       buffs[ index ]->trigger();
@@ -2868,9 +2868,9 @@ void barrage_of_many_bombs( special_effect_t& effect )
       n_bombs( as<int>( power.spell_ref().effectN( 3 ).base_value() ) )
     { }
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      damage->set_target( state->target );
+      damage->set_target( t );
       for ( int i = 0; i < n_bombs; ++i )
       {
         damage->execute();
@@ -2906,18 +2906,18 @@ void meticulous_scheming( special_effect_t& effect )
     bool trigger_seize() const
     { return casts.size() == as<size_t>( effect.driver()->effectN( 1 ).base_value() ); }
 
-    void execute( action_t* a, action_state_t* ) override
+    void execute( const spell_data_t* spell, player_t*, action_state_t* ) override
     {
       // Presume the broken spells not affecting Meticulous Scheming is a bug
-      if ( listener->bugs && __spell_blacklist.find( a->id ) != __spell_blacklist.end() )
+      if ( listener->bugs && __spell_blacklist.find( spell->id() ) != __spell_blacklist.end() )
       {
         return;
       }
 
-      auto it = range::find( casts, a->id );
+      auto it = range::find( casts, spell->id() );
       if ( it == casts.end() )
       {
-        casts.push_back( a->id );
+        casts.push_back( spell->id() );
       }
 
       if ( trigger_seize() )
@@ -3091,9 +3091,9 @@ void gutripper( special_effect_t& effect )
       threshold( power.spell_ref().effectN( 2 ).base_value() )
     { }
 
-    void trigger( action_t* a, action_state_t* state ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
-      if ( state->target->health_percentage() < threshold )
+      if ( t->health_percentage() < threshold )
       {
         rppm->set_frequency( effect.driver()->real_ppm() );
       }
@@ -3102,7 +3102,7 @@ void gutripper( special_effect_t& effect )
         rppm->set_frequency( listener->sim->bfa_opts.gutripper_default_rppm );
       }
 
-      dbc_proc_callback_t::trigger( a, state );
+      dbc_proc_callback_t::trigger( data, t, s, type );
     }
   };
 
@@ -3136,11 +3136,11 @@ void battlefield_focus_precision( special_effect_t& effect )
       }
     }
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      auto debuff = get_debuff( state->target );
+      auto debuff = get_debuff( t );
       debuff->decrement();
-      proc_action->set_target( state->target );
+      proc_action->set_target( t );
       proc_action->schedule_execute();
 
       // Self-deactivate when the debuff runs out
@@ -3160,9 +3160,9 @@ void battlefield_focus_precision( special_effect_t& effect )
       dbc_proc_callback_t( effect.player, effect ), damage_cb( cb ), stacks( stacks )
     { }
 
-    void execute( action_t*, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      damage_cb->get_debuff( state->target )->trigger( stacks );
+      damage_cb->get_debuff( t )->trigger( stacks );
       damage_cb->activate();
     }
   };
@@ -3326,7 +3326,7 @@ void seductive_power( special_effect_t& effect )
       dbc_proc_callback_t( effect.player, effect )
     { }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       if ( rng().roll( listener->sim->bfa_opts.seductive_power_pickup_chance ) )
         proc_buff->trigger();
@@ -3403,9 +3403,9 @@ void fight_or_flight( special_effect_t& effect )
       threshold( power.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
     {}
 
-    void execute( action_t* /* a */, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
-      if ( state -> target -> health_percentage() < threshold )
+      if ( t -> health_percentage() < threshold )
       {
         fof_buff -> trigger();
       }
@@ -3743,7 +3743,7 @@ void impassive_visage(special_effect_t& effect)
     {
     }
 
-    void execute(action_t* /* a */, action_state_t* /* state */) override
+    void execute(const spell_data_t*, player_t*, action_state_t* ) override
     {
       heal_action->execute();
     }
@@ -3773,7 +3773,7 @@ void gemhide(special_effect_t& effect)
     {
     }
 
-    void execute( action_t* /* a */, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* state ) override
     {
       // Gemhide takes the amount of damage before absorbs
       if ( state -> result_mitigated > listener -> max_health() * damage_threshold )
@@ -3850,7 +3850,7 @@ void crystalline_carapace( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* /* a */, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* state ) override
     {
       if ( state->result_amount * 10.0 > listener->max_health() )
       {
@@ -3869,7 +3869,7 @@ void crystalline_carapace( special_effect_t& effect )
     {
     }
 
-    void execute( action_t* /* a */, action_state_t* state ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* state ) override
     {
       if ( state->action )
       {
@@ -4159,7 +4159,7 @@ void blood_of_the_enemy( special_effect_t& effect )
       dbc_proc_callback_t( p, e ), haste_buff( b ), chance( c ), decrement_stacks(decrement_stacks)
     {}
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       // Does not proc when haste buff is up
       if ( haste_buff->check() )
@@ -4297,7 +4297,7 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
       init_stacks( init_stacks )
     { }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       // The effect remembers which target was hit while no buff was active and then only triggers when
       // that target is hit again.
@@ -4305,10 +4305,10 @@ void essence_of_the_focusing_iris( special_effect_t& effect )
 
       if ( !proc_buff->check() )
       {
-        trigger_target = s->target;
+        trigger_target = t;
         proc_buff->trigger( init_stacks );
       }
-      else if ( trigger_target == s->target )
+      else if ( trigger_target == t )
       {
         proc_buff->trigger();
       }
@@ -4898,7 +4898,7 @@ void the_unbound_force(special_effect_t& effect)
       dbc_proc_callback_t(p, e), crit_buff(b)
     {}
 
-    void execute(action_t*, action_state_t* s) override
+    void execute(const spell_data_t*, player_t*, action_state_t* s) override
     {
       // TODO?: Possible that non-damaging/fully absorbs crits may not proc?
       if (s->result == RESULT_CRIT)
@@ -5018,9 +5018,8 @@ void vision_of_perfection( special_effect_t& effect )
     vision_of_perfection_callback_t( player_t* p, special_effect_t& e ) : dbc_proc_callback_t( p, e )
     {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
-      dbc_proc_callback_t::execute( a, s );
       make_event( *listener->sim, [this] { listener->vision_of_perfection_proc(); } );
     }
   };
@@ -5610,17 +5609,17 @@ void breath_of_the_dying( special_effect_t& effect )
       r3_mul   = ess.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MINOR ).effectN( 1 ).percent();
     }
 
-    void trigger( action_t* a, action_state_t* s ) override
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
     {
       double mod = 1.0;
 
       // TODO: confirm '400% more' means 5x multiplier
-      if ( s->target->health_percentage() < r3_lo_hp )
+      if ( t->health_percentage() < r3_lo_hp )
           mod += r3_mul;
 
       rppm->set_modifier( mod );
 
-      dbc_proc_callback_t::trigger( a, s );
+      dbc_proc_callback_t::trigger( data, t, s, type );
     }
   };
 
@@ -5758,7 +5757,7 @@ void spark_of_inspiration( special_effect_t& effect )
       cdr = timespan_t::from_seconds( essence.spell_ref( 1U, essence_type::MINOR ).effectN( 3 ).base_value() / 10.0 );
     }
 
-    void execute( action_t*, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       buff->trigger();
 

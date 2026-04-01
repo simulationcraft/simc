@@ -2461,15 +2461,15 @@ struct sacred_weapon_cb_t : public dbc_proc_callback_t
     p = paladin;
   }
 
-  void execute( action_t*, action_state_t* s ) override
+  void execute( const spell_data_t*, player_t* t, action_state_t* ) override
   {
-    if ( s->target->is_enemy() )
+    if ( t->is_enemy() )
     {
-      p->active.sacred_weapon_proc_damage->execute_on_target( s->target );
+      p->active.sacred_weapon_proc_damage->execute_on_target( t );
     }
     else
     {
-      p->active.sacred_weapon_proc_heal->execute_on_target( s->target );
+      p->active.sacred_weapon_proc_heal->execute_on_target( t );
     }
   }
 };
@@ -2486,15 +2486,15 @@ struct lesser_weapon_cb_t : public dbc_proc_callback_t
     player = pl;
     index  = idx;
   }
-  void execute(action_t*, action_state_t* s) override
+  void execute( const spell_data_t*, player_t* t, action_state_t* ) override
   {
-    if (s->target->is_enemy())
+    if (t->is_enemy())
     {
-      p->active.lesser_weapon_proc_damage->execute_on_target( s->target );
+      p->active.lesser_weapon_proc_damage->execute_on_target( t );
     }
     else
     {
-      p->active.lesser_weapon_proc_heal->execute_on_target( s->target );
+      p->active.lesser_weapon_proc_heal->execute_on_target( t );
     }
     if (p == player)
     {
@@ -4026,7 +4026,7 @@ void paladin_t::init_special_effects()
       {
       }
 
-      void execute( action_t*, action_state_t* ) override
+      void execute( const spell_data_t*, player_t*, action_state_t* ) override
       {
         p->buffs.herald_of_the_sun.blessing_of_anshe->trigger();
       }
@@ -4052,7 +4052,7 @@ void paladin_t::init_special_effects()
       {
       }
 
-      void execute( action_t*, action_state_t* ) override
+      void execute( const spell_data_t*, player_t*, action_state_t* ) override
       {
         p->cast_holy_armaments( p, paladin::armament::SACRED_WEAPON, LS_DIVINE_INSPIRATION );
         p->procs.divine_inspiration->occur();

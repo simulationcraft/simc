@@ -1305,6 +1305,19 @@ struct druid_t final : public parse_player_effects_t
   // hide player_t::is_ptr()
   bool is_ptr() const { return dbc->wowv() > dbc::client_data_version( false ); }
 
+  std::string html_name() const override
+  {
+    std::string _name = name_str;
+    switch ( specialization() )
+    {
+      case DRUID_BALANCE:     _name += "🌙🐔"; break;
+      case DRUID_FERAL:       _name += "🩸🐱"; break;
+      case DRUID_GUARDIAN:    _name += "🛡️🐻"; break;
+      case DRUID_RESTORATION: _name += "🚑🥦"; break;
+      default: break;
+    }
+    return _name;
+  }
   // Character Definition
   void activate() override;
   void init() override;
@@ -1708,9 +1721,6 @@ std::function<void( pet_t* )> parent_pet_action_fn( action_t* parent )
 template <typename Base = buff_t, typename = std::enable_if_t<std::is_base_of_v<buff_t, Base>>>
 struct druid_buff_base_t : public Base
 {
-private:
-  bool can_proc_from_procs = false;
-
 protected:
   using base_t = druid_buff_base_t<Base>;
 
@@ -1728,97 +1738,6 @@ public:
   druid_t* p() { return static_cast<druid_t*>( Base::source ); }
 
   const druid_t* p() const { return static_cast<druid_t*>( Base::source ); }
-
-  base_t* set_can_proc_from_procs( bool b ) { can_proc_from_procs = b; return this; }
-
-  bool can_trigger( action_t* a ) const override
-  {
-#ifndef NDEBUG
-    if ( !dynamic_cast<druid_action_data_t*>( a ) )
-    {
-      throw sc_runtime_error( fmt::format( "Passing non-druid {} to {} can_trigger.", *a, *this ) );
-    }
-#endif
-
-    if ( Base::is_fallback || !a->data().ok() || !Base::get_trigger_data()->ok() )
-      return false;
-
-    if ( !a->allow_class_ability_procs &&
-         Base::get_trigger_data()->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
-    {
-      return false;
-    }
-
-    if ( a->suppress_caster_procs && !Base::get_trigger_data()->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
-      return false;
-
-    if ( a->proc && !a->not_a_proc )
-    {
-      // forced override
-      if ( can_proc_from_procs )
-        return true;
-
-      // allow if the driver can proc from procs
-      if ( Base::get_trigger_data()->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
-        return true;
-
-      // allow if the action is from convoke and the driver procs from cast successful
-      if ( ( Base::get_trigger_data()->proc_flags() & PF_CAST_SUCCESSFUL ) &&
-           dynamic_cast<druid_action_data_t*>( a )->has_flag( flag_e::CONVOKE ) )
-      {
-        return true;
-      }
-
-      // by default procs cannot trigger
-      return false;
-    }
-
-    return true;
-  }
-
-  bool can_consume( action_t* a ) const override
-  {
-#ifndef NDEBUG
-    if ( !dynamic_cast<druid_action_data_t*>( a ) )
-    {
-      throw sc_runtime_error( fmt::format( "Passing non-druid {} to {} can_consume.", *a, *this ) );
-    }
-#endif
-
-    if ( Base::is_fallback || !a->data().ok() || !Base::data().ok() )
-      return false;
-
-    if ( !a->allow_class_ability_procs && Base::data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
-      return false;
-
-    if ( a->suppress_caster_procs && !Base::data().flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
-      return false;
-
-    if ( a->proc && !a->not_a_proc )
-    {
-      // forced override
-      if ( can_proc_from_procs )
-        return true;
-
-      // allow if either the buff or the driver can proc from procs
-      if ( Base::data().flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
-      {
-        return true;
-      }
-
-      // allow if the action is from convoke and the buff procs from cast successful
-      if ( ( Base::data().proc_flags() & PF_CAST_SUCCESSFUL ) &&
-           dynamic_cast<druid_action_data_t*>( a )->has_flag( flag_e::CONVOKE ) )
-      {
-        return true;
-      }
-
-      // by default procs cannot expire
-      return false;
-    }
-
-    return true;
-  }
 };
 
 template <class Base>
@@ -2065,7 +1984,8 @@ public:
       else if ( !has_flag( flag_e::NOUNSHIFT ) && form_mask & NO_FORM )
         p()->active.shift_to_caster->execute();
       else
-        assert( false && "Action executed in wrong form with no valid form to shift to!" );
+        throw sc_runtime_error( fmt::format( "{} executed in wrong form with no valid form to shift to!", *this ) );
+        //assert( false && "Action executed in wrong form with no valid form to shift to!" );
     }
   }
 
@@ -7099,7 +7019,8 @@ public:
 
   void record_data( action_state_t* s ) override
   {
-    if ( cast_state( s )->umbral_embrace )
+    // only required if there is travel time
+    if ( travel_speed && cast_state( s )->umbral_embrace )
     {
       stats = umbral_stats;
       druid_spell_t::record_data( s );
@@ -12447,7 +12368,7 @@ void druid_t::init_special_effects()
     auto _gain = get_gain( "Rage from being attacked" );
     auto _rage = spec.bear_form_passive->effectN( 3 ).base_value();
 
-    callbacks.register_callback_execute_function( driver->spell_id, [ this, _gain, _rage ]( auto, auto, auto ) {
+    callbacks.register_callback_execute_function( driver->spell_id, [ this, _gain, _rage ]( auto, auto, auto, auto ) {
       resource_gain( RESOURCE_RAGE, _rage, _gain );
     } );
 
@@ -12465,8 +12386,8 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     callbacks.register_callback_trigger_function(
-      driver->spell_id, trigger_type::CONDITION, []( auto, action_t* a, auto ) {
-        auto tmp = dynamic_cast<druid_action_data_t*>( a );
+      driver->spell_id, trigger_type::CONDITION, []( auto, const auto&, auto, action_state_t* s, auto ) {
+        auto tmp = dynamic_cast<druid_action_data_t*>( s->action );
         assert( tmp && "Non-Druid action attempting to proc Ascendant Eclipses." );
 
         return !tmp->has_flag( flag_e::SYLVAN );
@@ -12478,9 +12399,9 @@ void druid_t::init_special_effects()
     auto _mul = talent.ascendant_eclipses_2->effectN( 1 ).percent();
 
     callbacks.register_callback_execute_function(
-      driver->spell_id, [ _damage, _mul ]( auto, auto, const action_state_t* s ) {
+      driver->spell_id, [ _damage, _mul ]( auto, auto, player_t* t, const action_state_t* s ) {
         if ( s->result_amount )
-          residual_action::trigger( _damage, s->target, s->result_amount * _mul );
+          residual_action::trigger( _damage, t, s->result_amount * _mul );
       } );
 
     auto cb = new dbc_proc_callback_t( this, *driver );
@@ -12502,18 +12423,17 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     callbacks.register_callback_trigger_function(
-      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, action_t* a, auto ) {
-        return a->id == spec.moonfire_dmg->id() || a->id == spec.sunfire_dmg->id();
+      driver->spell_id, trigger_type::CONDITION, [ this ]( auto, const proc_data_t& data, auto, auto, auto ) {
+        return data->id() == spec.moonfire_dmg->id() || data->id() == spec.sunfire_dmg->id();
       } );
 
     auto _proc = get_proc( "Denizen of the Dream" )->collect_count();
 
-    callbacks.register_callback_execute_function(
-      driver->spell_id, [ this, _proc ]( auto, auto, auto ) {
-        active.denizen_of_the_dream->execute();
-        buff.denizen_of_the_dream->trigger();
-        _proc->occur();
-      } );
+    callbacks.register_callback_execute_function( driver->spell_id, [ this, _proc ]( auto, auto, auto, auto ) {
+      active.denizen_of_the_dream->execute();
+      buff.denizen_of_the_dream->trigger();
+      _proc->occur();
+    } );
 
     new dbc_proc_callback_t( this, *driver );
   }
@@ -12529,7 +12449,7 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     callbacks.register_callback_trigger_function(
-      driver->spell_id, trigger_type::CONDITION, []( auto, auto, const action_state_t* s ) {
+      driver->spell_id, trigger_type::CONDITION, []( auto, const auto&, auto, const action_state_t* s, auto ) {
         return s->n_targets == 1;
       } );
 
@@ -12549,11 +12469,12 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     callbacks.register_callback_trigger_function(
-      driver->spell_id, trigger_type::CONDITION, []( auto, action_t* a, const action_state_t* s ) {
-        if ( a->id <= 0 || s->result_total <= 0 || a->harmful )
+      driver->spell_id, trigger_type::CONDITION,
+      []( auto, const proc_data_t& data, auto, const action_state_t* s, auto ) {
+        if ( data->id() <= 0 || s->result_total <= 0 || s->action->harmful )
           return false;
 
-        auto pct_heal = debug_cast<heal_t*>( a );
+        auto pct_heal = debug_cast<heal_t*>( s->action );
         assert( pct_heal && "Non-heal action attempting to trigger Nature's Guardian." );
 
         return !pct_heal->base_pct_heal && !pct_heal->tick_pct_heal;
@@ -12565,7 +12486,7 @@ void druid_t::init_special_effects()
     _heal->target = this;
 
     callbacks.register_callback_execute_function(
-      driver->spell_id, [ this, _heal ]( auto, auto, const action_state_t* s ) {
+      driver->spell_id, [ this, _heal ]( auto, auto, auto, const action_state_t* s ) {
         _heal->base_dd_min = _heal->base_dd_max = s->result_total * cache.mastery_value();
         _heal->schedule_execute();
       } );
@@ -12585,7 +12506,7 @@ void druid_t::init_special_effects()
     auto _action = find_action( "bristling_fur" );
 
     callbacks.register_callback_execute_function(
-      driver->spell_id, [ this, _gain, _action ]( auto, auto, const action_state_t* s ) {
+      driver->spell_id, [ this, _gain, _action ]( auto, auto, auto, const action_state_t* s ) {
         // 1 rage per 1% of maximum health taken
         auto pct = std::min( 1.0, s->result_amount / resources.max[ RESOURCE_HEALTH ] );
 
@@ -12614,11 +12535,11 @@ void druid_t::init_special_effects()
     {
       dream_of_cenarius_cb_t( druid_t* p, const special_effect_t& e ) : druid_cb_t( p, e ) {}
 
-      void trigger( action_t* a, action_state_t* s ) override
+      void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
       {
         proc_chance = p()->cache.attack_crit_chance();
 
-        druid_cb_t::trigger( a, s );
+        druid_cb_t::trigger( data, t, s, type );
       }
     };
 
@@ -12640,13 +12561,13 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     callbacks.register_callback_trigger_function(
-      driver->spell_id, trigger_type::CONDITION, []( auto, action_t* a, auto ) {
-        return dbc::has_common_school( a->get_school(), SCHOOL_ASTRAL );
+      driver->spell_id, trigger_type::CONDITION, []( auto, const auto&, auto, const action_state_t* s, auto ) {
+        return s && s->result_amount && dbc::has_common_school( s->action->get_school(), SCHOOL_ASTRAL );
       } );
 
     auto _mul = talent.elunes_favored->effectN( 1 ).percent();
     callbacks.register_callback_execute_function(
-      driver->spell_id, [ this, _mul ]( auto, auto, const action_state_t* s ) {
+      driver->spell_id, [ this, _mul ]( auto, auto, auto, const action_state_t* s ) {
           buff.elunes_favored->current_value += s->result_amount * _mul;
       } );
 
@@ -12672,14 +12593,11 @@ void druid_t::init_special_effects()
           lw_charges( as<int>( p->talent.galactic_guardian->effectN( 2 ).base_value() ) )
       {}
 
-      void trigger( action_t* a, action_state_t* s ) override
+      void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
       {
-        if ( !s || !s->result_amount )
-          return;
-
         assert( proc_chance == orig_proc_chance );
 
-        switch ( a->id )
+        switch ( data->id() )
         {
           case 8921:    // moonfire
           case 164812:  // moonfire damage
@@ -12692,14 +12610,14 @@ void druid_t::init_special_effects()
           default: break;
         }
 
-        druid_cb_t::trigger( a, s );
+        druid_cb_t::trigger( data, t, s, type );
 
         proc_chance = orig_proc_chance;
       }
 
-      void execute( action_t*, action_state_t* s ) override
+      void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
       {
-        p()->active.galactic_guardian->execute_on_target( target( s, p()->active.galactic_guardian ) );
+        p()->active.galactic_guardian->execute_on_target( get_target( t, s, p()->active.galactic_guardian ) );
         p()->buff.galactic_guardian->trigger();
         p()->buff.lunar_wrath->trigger( lw_charges);
         gg_proc->occur();
@@ -12736,11 +12654,11 @@ void druid_t::init_special_effects()
         moonless = p->get_secondary_action<moonless_night_t>( "moonless_night" );
       }
 
-      void trigger( action_t* a, action_state_t* s ) override
+      void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
       {
         if ( !s->target->is_enemy() )
         {
-          throw sc_runtime_error( fmt::format( "{} triggering Moonless Night on {}.", *a, *s->target ) );
+          throw sc_runtime_error( fmt::format( "{} triggering Moonless Night on {}.", *s->action, *t ) );
         }
 
         if ( !s->result_amount )
@@ -12748,7 +12666,7 @@ void druid_t::init_special_effects()
 
         // raze (400254) & ravage (441605) trigger moonless night despite being an aoe spell
         // moonfire (164812) & sunfire (164815) do not trigger
-        switch ( a->id )
+        switch ( data->id() )
         {
           case 164812:  // moonfire
           case 164815:  // sunfire
@@ -12758,7 +12676,7 @@ void druid_t::init_special_effects()
           case 441605:  // ravage
             break;      // continue
           default:
-            if ( a->aoe < 0 || a->aoe > 1 )
+            if ( s->action->aoe < 0 || s->action->aoe > 1 )
               return;   // end
             else
               break;    // continue
@@ -12767,12 +12685,12 @@ void druid_t::init_special_effects()
         if ( auto td = p()->find_target_data( s->target ); !td || !td->dots.moonfire->is_ticking() )
           return;
 
-        druid_cb_t::trigger( a, s );
+        druid_cb_t::trigger( data, t, s, type );
       }
 
-      void execute( action_t*, action_state_t* s ) override
+      void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
       {
-        moonless->execute_on_target( s->target, s->result_amount );
+        moonless->execute_on_target( t, s->result_amount );
       }
     };
 
@@ -12780,7 +12698,7 @@ void druid_t::init_special_effects()
     driver->name_str = talent.moonless_night->name_cstr();
     driver->spell_id = talent.moonless_night->id();
     driver->proc_flags2_ = PF2_ALL_HIT;
-    driver->set_can_only_proc_from_class_abilites( true );
+    driver->set_can_only_proc_from_class_abilities( true );
     special_effects.push_back( driver );
 
     new moonless_night_cb_t( this, *driver );
@@ -12793,7 +12711,7 @@ void druid_t::init_special_effects()
     driver->spell_id = talent.waking_nightmare->id();
     special_effects.push_back( driver );
 
-    callbacks.register_callback_execute_function( driver->spell_id, [ this ]( auto, auto, auto ) {
+    callbacks.register_callback_execute_function( driver->spell_id, [ this ]( auto, auto, auto, auto ) {
       active.waking_nightmare->execute();
       buff.waking_nightmare->trigger();
     } );
@@ -12813,7 +12731,7 @@ void druid_t::init_special_effects()
 
     auto _mul = buff.boundless_moonlight_heal->data().effectN( 1 ).percent();
     callbacks.register_callback_execute_function(
-      driver->spell_id, [ this, _mul ]( auto, auto, const action_state_t* s ) {
+      driver->spell_id, [ this, _mul ]( auto, auto, auto, const action_state_t* s ) {
         buff.boundless_moonlight_heal->current_value += s->result_amount * _mul;
       } );
 
@@ -12838,14 +12756,14 @@ void druid_t::init_special_effects()
 
     // TODO: whitelist aoe spells as necessary if they can trigger
     callbacks.register_callback_trigger_function(
-      driver->spell_id, trigger_type::CONDITION, []( auto, action_t* a, const action_state_t* s ) {
-        return ( s->result_amount > 0 && ( a->aoe == 0 || a->aoe == 1 ) );
+      driver->spell_id, trigger_type::CONDITION, []( auto, const auto&, auto, const action_state_t* s, auto ) {
+        return ( s->result_amount > 0 && ( s->action->aoe == 0 || s->action->aoe == 1 ) );
       } );
 
     callbacks.register_callback_execute_function(
-      driver->spell_id, [ this ]( const dbc_proc_callback_t* cb, action_t* a, const action_state_t* s ) {
-        active.bloodseeker_vines_implant->execute_on_target( cb->target( s, active.bloodseeker_vines_implant ) );
-        buff.implant->consume( a );
+      driver->spell_id, [ this ]( const dbc_proc_callback_t* cb, auto, player_t* t, action_state_t* s ) {
+        active.bloodseeker_vines_implant->execute_on_target( cb->get_target( t, s, active.bloodseeker_vines_implant ) );
+        buff.implant->consume( s->action );
       } );
 
     auto cb = new dbc_proc_callback_t( this, *driver );
@@ -12858,7 +12776,7 @@ void druid_t::init_special_effects()
     driver->name_str = talent.twin_claw->name_cstr();
     driver->spell_id = talent.twin_claw->id();
     driver->proc_flags_ = PF_MELEE_ABILITY;  // only melee abilities trigger
-    driver->set_can_only_proc_from_class_abilites( true );
+    driver->set_can_only_proc_from_class_abilities( true );
   
     if ( specialization() == DRUID_FERAL )
     {
@@ -12880,9 +12798,11 @@ void druid_t::init_special_effects()
     auto _form = specialization() == DRUID_FERAL ? CAT_FORM : BEAR_FORM;
 
     callbacks.register_callback_trigger_function(
-      driver->spell_id, trigger_type::CONDITION, [ this, _form ]( auto, action_t* a, const action_state_t* s ) {
+      driver->spell_id, trigger_type::CONDITION,
+      [ this, _form ]( auto, const proc_data_t& data, auto, const action_state_t* s, auto ) {
         // raze can trigger despite being aoe
-        return form == _form && s->result_amount && ( a->id == talent.raze->id() || a->aoe == 0 || a->aoe == 1 );
+        return form == _form && s->result_amount &&
+               ( data->id() == talent.raze->id() || s->action->aoe == 0 || s->action->aoe == 1 );
       } );
 
     new dbc_proc_callback_t( this, *driver );

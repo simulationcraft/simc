@@ -876,10 +876,12 @@ Family Flags     : 6, 118
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Doesn't Reset Swing Timer if Instant (217), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Non-secret Aura (506)
 Effects          :
 #1 (id=3728)     : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.36 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.36 | PvP Coefficient: 1.4 | Target: Targeted Ally (21)
+Hotfixed         : PvP Coefficient (1 -> 1.4)
                    Modified By: Devout Spirit (319919 effect#1)
 #2 (id=3729)     : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.224968 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.224968 | PvP Coefficient: 1.4 | Target: Targeted Ally (21)
+Hotfixed         : PvP Coefficient (1 -> 1.4)
 #3 (id=1215971)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
@@ -1095,7 +1097,8 @@ Family Flags     : 33, 118
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=10065)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 10.37 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 10.37 | PvP Coefficient: 1.25 | Target: Targeted Ally (21)
+Hotfixed         : PvP Coefficient (1 -> 1.25)
 Description      : $?s392410[Extend the duration of your heal over time effects by $392410s1 sec and][Consume a Regrowth, Wild Growth, or Rejuvenation effect to] instantly heal an ally for $s1.
 
 Name             : Rebirth (id=20484) [Spell Family (7)] 
@@ -1246,7 +1249,7 @@ Labels           : 16: Class Spells
                  : 1284
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Guardian Druid (137010 effect#10), Starfall (191034 effect#2), Survival of the Fittest (203965 effect#1), Verdant Heart (301768 effect#2), Improved Barkskin (327993 effect#1), The Natural Order's Will (339063 effect#1), Ursoc's Endurance (393611 effect#1), Reinforced Fur (393618 effect#2), Flower Walk (439901 effect#1), Oakskin (449191 effect#1), Ward of the Forest (1250923 effect#1)
+Affecting Spells : Guardian Druid (137010 effect#10), Starfall (191034 effect#2), Survival of the Fittest (203965 effect#1), Verdant Heart (301768 effect#2), Improved Barkskin (327993 effect#1), The Natural Order's Will (339063 effect#1), Ursoc's Endurance (393611 effect#1), Reinforced Fur (393618 effect#2), Flower Walk (439901 effect#1), Oakskin (449191 effect#1), Ward of the Forest (1250923 effect#1), Restoration Druid (1256995 effect#11)
 Family Flags     : 50
 Attributes       : No Threat (42), Allow While Stunned (163), Extra Initial Period (169), Allow While Fleeing (177), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
@@ -4240,19 +4243,24 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 42 | Scaled Value: 42 | Target: Self (1)
+                   Base Value: 47 | Scaled Value: 47 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Rampant Ferocity (391710), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812), Frantic Frenzy (1244079), Chomp (1244258), Unseen Slash (1263890), Unseen Swipe (1263908), Twin Claw (1271636), Unseen Slash (1271863)
                    Family Flags: 98
+Hotfixed         : Base Value (42 -> 47)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 42 | Scaled Value: 42 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 47 | Scaled Value: 47 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Rampant Ferocity (391710), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812), Frantic Frenzy (1244079), Chomp (1244258), Unseen Slash (1263890), Unseen Swipe (1263908), Twin Claw (1271636), Unseen Slash (1271863)
                    Family Flags: 98
+Hotfixed         : Base Value (42 -> 47)
 #3 (id=191155)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 42 | Scaled Value: 42 | Target: Self (1)
+                   Base Value: 47 | Scaled Value: 47 | Target: Self (1)
+Hotfixed         : Base Value (42 -> 47)
 #4 (id=191156)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 42 | Scaled Value: 42 | Target: Self (1)
+                   Base Value: 47 | Scaled Value: 47 | Target: Self (1)
+Hotfixed         : Base Value (42 -> 47)
 #5 (id=191157)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 370 | Scaled Value: 370 | Target: Self (1)
+                   Base Value: 385 | Scaled Value: 385 | Target: Self (1)
+Hotfixed         : Base Value (370 -> 385)
 #6 (id=260767)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #7 (id=260768)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
@@ -20603,11 +20611,14 @@ Family Flags     : 94, 98
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1244625)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.1685 | Radius: 0 - 8 yards | Target: at Target (63) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.155 | PvP Coefficient: 1.087 | Radius: 0 - 8 yards | Target: at Target (63) -> at Enemy in Area (16)
+Hotfixed         : AP Coefficient (0.1685 -> 0.155), PvP Coefficient (1 -> 1.087)
 #2 (id=1244626)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.3378 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: at Target (63) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.3108 | PvP Coefficient: 1.087 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: at Target (63) -> at Enemy in Area (16)
+Hotfixed         : AP Coefficient (0.3378 -> 0.3108), PvP Coefficient (1 -> 1.087)
 #3 (id=1244627)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.3378 | Mechanic: Bleed
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.3108 | PvP Coefficient: 1.087 | Mechanic: Bleed
+Hotfixed         : AP Coefficient (0.3378 -> 0.3108), PvP Coefficient (1 -> 1.087)
 Description      : $@spelldesc1243807
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
@@ -21307,13 +21318,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264726)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Rampant Ferocity (391710), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812), Frantic Frenzy (1244079), Chomp (1244258), Unseen Slash (1263890), Unseen Swipe (1263908), Twin Claw (1271636), Unseen Slash (1271863)
                    Family Flags: 98
+Hotfixed         : Base Value (0 -> -3)
 #2 (id=1266733)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Rampant Ferocity (391710), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812), Frantic Frenzy (1244079), Chomp (1244258), Unseen Slash (1263890), Unseen Swipe (1263908), Twin Claw (1271636), Unseen Slash (1271863)
                    Family Flags: 98
+Hotfixed         : Base Value (0 -> -3)
 #3 (id=1266734)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: -21 | Scaled Value: -21 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rip (1079)
@@ -21363,13 +21376,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264729)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 13 | Scaled Value: 13 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Embrace of the Dream (392147), Verdancy (392329), Nourish (422090), Nourish (423618), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121), Reactive Resin (468152), Blossom Burst (473919), Mass Blooming (474149), Insurance! (1215515), Insurance! (1215518), Tranquility (1236573), Regrowth (1264664), Spirit of the Thicket (1264905)
                    Family Flags: 118
+Hotfixed         : Base Value (5 -> 13)
 #2 (id=1266737)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 13 | Scaled Value: 13 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Embrace of the Dream (392147), Verdancy (392329), Nourish (422090), Nourish (423618), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121), Reactive Resin (468152), Blossom Burst (473919), Mass Blooming (474149), Insurance! (1215515), Insurance! (1215518), Tranquility (1236573), Regrowth (1264664), Spirit of the Thicket (1264905)
                    Family Flags: 118
+Hotfixed         : Base Value (5 -> 13)
 #3 (id=1266738)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 16 | Scaled Value: 16 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Ferocious Bite (22568), Mangle (33917), Thrash (77758), Starsurge (78674), Swipe (106785), Thrash (106830), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Swipe (213771), Thrash (405233), Ravage (441591), Red Moon (1252871), Dire Echo (1253489), Red Moon (1253582), Lunar Wrath (1253609), Starsurge (1271222)
@@ -21397,6 +21412,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rip (1079)
                    Family Flags: 85
+#11 (id=1315889) : Apply Aura (6) | Modify Flat PVP Multiplier (646): Modify Effect 1 (5)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 5 | Target: Self (1)
+                   Affected Spells: Barkskin (22812)
+                   Family Flags: 50
+Hotfixed         : NEW EFFECT
 Description      : Restoration Druid core passive
 
 Name             : Balance Druid (id=1256996) [Spell Family (7), Passive, Hidden] 

@@ -345,7 +345,7 @@ struct balanced_stratagem_t : monk_buff_t<>
                         std::unordered_set<unsigned> allowlist );
 
   using monk_buff_t<>::trigger;
-  bool trigger( const action_state_t * );
+  bool trigger( const spell_data_t * );
 };
 
 struct fractional_absorb_t : public monk_buff_t<absorb_buff_t>
@@ -406,8 +406,8 @@ private:
 
 public:
   monk_effect_callback_t( const special_effect_t &effect, monk_t *player );
-  void trigger( action_t *action, action_state_t *state ) override;
-  void execute( action_t *action, action_state_t *state ) override;
+  void trigger( const proc_data_t &data, player_t *target, action_state_t *state, proc_trigger_type_e type ) override;
+  void execute( const spell_data_t *spell, player_t *target, action_state_t *state ) override;
   void initialize() override;
 
   monk_effect_callback_t *register_post_init_callback( const post_init_callback_fn_t &fn );

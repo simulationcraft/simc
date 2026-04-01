@@ -4188,7 +4188,8 @@ struct empty_barrel_buff_t : buffs::monk_buff_t<>
   cooldown_t *keg_smash;
 
   empty_barrel_buff_t( monk_t *player )
-    : monk_buff_t( player, "empty_barrel", player->talent.brewmaster.bring_me_another_1->effectN( 1 ).trigger() )
+    : monk_buff_t( player, "empty_barrel", player->talent.brewmaster.bring_me_another_1->effectN( 1 ).trigger() ),
+      keg_smash( nullptr )
   {
     if ( player->talent.brewmaster.bring_me_another_2->ok() )
       keg_smash = player->get_cooldown( "keg_smash" );
@@ -4723,9 +4724,9 @@ balanced_stratagem_t::balanced_stratagem_t( monk_t *player, std::string_view nam
   this->allowlist.erase( 0 );
 }
 
-bool balanced_stratagem_t::trigger( const action_state_t *state )
+bool balanced_stratagem_t::trigger( const spell_data_t *spell )
 {
-  if ( range::contains( allowlist, state->action->id ) )
+  if ( range::contains( allowlist, spell->id() ) )
     return monk_buff_t::trigger();
 
   return false;
@@ -6217,22 +6218,23 @@ monk_effect_callback_t::monk_effect_callback_t( const special_effect_t &effect, 
 {
 }
 
-void monk_effect_callback_t::trigger( action_t *action, action_state_t *state )
+void monk_effect_callback_t::trigger( const proc_data_t &data, player_t *target, action_state_t *state,
+                                      proc_trigger_type_e type )
 {
-  dbc_proc_callback_t::trigger( action, state );
+  dbc_proc_callback_t::trigger( data, target, state, type );
 
   if ( player->sim->debug )
   {
     // Debug reporting
     auto find_a = range::find_if( player->proc_tracking[ effect.name() ],
-                                  [ & ]( action_t *it ) { return it->id == action->id; } );
+                                  [ & ]( action_t *it ) { return it->id == data->id(); } );
 
     if ( find_a == player->proc_tracking[ effect.name() ].end() )
-      player->proc_tracking[ effect.name() ].push_back( action );
+      player->proc_tracking[ effect.name() ].push_back( state->action );
   }
 }
 
-void monk_effect_callback_t::execute( action_t *action, action_state_t *state )
+void monk_effect_callback_t::execute( const spell_data_t *spell, player_t *target, action_state_t *state )
 {
   if ( !state->target->is_sleeping() )
   {
@@ -6242,7 +6244,7 @@ void monk_effect_callback_t::execute( action_t *action, action_state_t *state )
       effect_proc->occur();
   }
 
-  dbc_proc_callback_t::execute( action, state );
+  dbc_proc_callback_t::execute( spell, target, state );
 }
 
 void monk_effect_callback_t::initialize()
@@ -6326,7 +6328,7 @@ monk_effect_callback_t *monk_t::create_proc_callback( monk_callback_init_t param
           { PF_MAGIC_HEAL_TAKEN, PF_MAGIC_HEAL },
           { PF_MAGIC_SPELL_TAKEN, PF_MAGIC_SPELL },
           { PF_PERIODIC_TAKEN, PF_PERIODIC },
-          { PF_DAMAGE_TAKEN, PF_ALL_DAMAGE },
+          { PF_ALL_DAMAGE_TAKEN, PF_ALL_DAMAGE },
       };
 
       for ( auto t : translation_map )
@@ -6374,7 +6376,8 @@ void monk_t::init_special_effects()
   // TODO: CXX20: use designated initializers to make this suck less
   auto hp_percent_trigger = [ &, this ]( const spelleffect_data_t &effect ) {
     assert( effect.subtype() == A_TRIGGER_SPELL_BY_HEALTH_PCT );
-    return [ &, this, effect ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+    return [ &, this, effect ]( const dbc_proc_callback_t *, const proc_data_t &, player_t *, action_state_t *state,
+                                proc_trigger_type_e ) {
       bool start_state = health_percentage() > effect.base_value();
       bool end_state   = health_percentage() - state->result_amount / max_health() * 100.0 < effect.base_value();
       switch ( effect.misc_value1() )
@@ -6392,16 +6395,20 @@ void monk_t::init_special_effects()
     create_proc_callback( { talent.brewmaster.celestial_flames, PF_CAST_SUCCESSFUL,
                             static_cast<proc_flag2>( PF2_CAST_GENERIC | PF2_CAST_HEAL ) } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+                                              [ & ]( const dbc_proc_callback_t *, const proc_data_t &, player_t *,
+                                                     action_state_t *state, proc_trigger_type_e ) {
                                                 return baseline.brewmaster.brews.contains( state->action );
                                               } )
         ->register_callback_execute_function(
-            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { buff.celestial_flames->trigger(); } );
+            [ & ]( const dbc_proc_callback_t *, const spell_data_t *, player_t *, action_state_t * ) {
+              buff.celestial_flames->trigger();
+            } );
 
   if ( talent.brewmaster.exploding_keg.ok() )
     create_proc_callback( { talent.brewmaster.exploding_keg.spell() } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+                                              [ & ]( const dbc_proc_callback_t *, const proc_data_t &, player_t *,
+                                                     action_state_t *, proc_trigger_type_e ) {
                                                 // Exploding keg damage is only triggered when the player buff is up,
                                                 // regardless if the enemy has the debuff
                                                 return buff.exploding_keg->check();
@@ -6410,12 +6417,15 @@ void monk_t::init_special_effects()
   if ( talent.windwalker.flurry_of_xuen.ok() )
     create_proc_callback( { talent.windwalker.flurry_of_xuen.spell() } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-                                                return state->action->id != action.flurry_of_xuen->id &&
-                                                       state->action->id != action.empowered_tiger_lightning->id;
+                                              [ & ]( const dbc_proc_callback_t *, const proc_data_t &data, player_t *,
+                                                     action_state_t *, proc_trigger_type_e ) {
+                                                return data->id() != action.flurry_of_xuen->id &&
+                                                       data->id() != action.empowered_tiger_lightning->id;
                                               } )
         ->register_callback_execute_function(
-            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { buff.flurry_of_xuen->trigger(); } );
+            [ & ]( const dbc_proc_callback_t *, const spell_data_t *, player_t *, action_state_t * ) {
+              buff.flurry_of_xuen->trigger();
+            } );
 
   if ( talent.monk.chi_burst->ok() && specialization() == MONK_WINDWALKER )
     create_proc_callback( { talent.monk.chi_burst.spell() } );
@@ -6423,60 +6433,67 @@ void monk_t::init_special_effects()
   if ( talent.brewmaster.spirit_of_the_ox->ok() )
     create_proc_callback( { talent.brewmaster.spirit_of_the_ox.spell() } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-                                                return state->action->id == baseline.brewmaster.blackout_kick->id();
+                                              [ & ]( const dbc_proc_callback_t *, const proc_data_t &data, player_t *,
+                                                     action_state_t *, proc_trigger_type_e ) {
+                                                return data->id() == baseline.brewmaster.blackout_kick->id();
                                               } )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-          buff.gift_of_the_ox->spawn_orb( 1 );
-        } );
+        ->register_callback_execute_function(
+            [ & ]( const dbc_proc_callback_t *, const spell_data_t *, player_t *, action_state_t * ) {
+              buff.gift_of_the_ox->spawn_orb( 1 );
+            } );
 
   if ( talent.master_of_harmony.aspect_of_harmony->ok() )
     create_proc_callback( { talent.master_of_harmony.aspect_of_harmony_driver,
                             static_cast<proc_flag>( PF_ALL_DAMAGE | PF_ALL_HEAL | PF_PERIODIC ), PF2_ALL_HIT } )
-        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::TRIGGER,
-                                              [ & ]( const dbc_proc_callback_t *, action_t *action, action_state_t * ) {
-                                                // TODO: don't hardcode these ids
-                                                constexpr std::array<unsigned, 8> blacklist = {
-                                                    216521,  // celestial fortune
-                                                    178173,  // goto expire
-                                                    124507,  // goto trigger
-                                                    387621,  // dragonfire brew
-                                                    115129,  // expel harm damage
-                                                    124255,  // stagger
-                                                    450820,  // purified spirit
-                                                    450763,  // aspect of harmony tick
-                                                };
-                                                if ( range::contains( blacklist, action->id ) )
-                                                  return false;
-                                                if ( action->allow_class_ability_procs )
-                                                  return true;
-                                                return false;
-                                              } )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          buff.aspect_of_harmony.trigger( state );
-        } );
+        ->register_callback_trigger_function(
+            dbc_proc_callback_t::trigger_fn_type::TRIGGER,
+            [ & ]( const dbc_proc_callback_t *, const proc_data_t &data, player_t *, action_state_t *,
+                   proc_trigger_type_e ) {
+              // TODO: don't hardcode these ids
+              constexpr std::array<unsigned, 8> blacklist = {
+                  216521,  // celestial fortune
+                  178173,  // goto expire
+                  124507,  // goto trigger
+                  387621,  // dragonfire brew
+                  115129,  // expel harm damage
+                  124255,  // stagger
+                  450820,  // purified spirit
+                  450763,  // aspect of harmony tick
+              };
+              if ( range::contains( blacklist, data->id() ) )
+                return false;
+              if ( data.allow_class_ability_procs )
+                return true;
+              return false;
+            } )
+        ->register_callback_execute_function(
+            [ & ]( const dbc_proc_callback_t *, const spell_data_t *, player_t *, action_state_t *state ) {
+              buff.aspect_of_harmony.trigger( state );
+            } );
 
   if ( talent.master_of_harmony.balanced_stratagem->ok() )
     create_proc_callback( { talent.master_of_harmony.balanced_stratagem,
                             static_cast<proc_flag>( PF_ALL_DAMAGE | PF_ALL_HEAL | PF_CAST_SUCCESSFUL ),
                             static_cast<proc_flag2>( PF2_ALL_CAST | PF2_ALL_HIT ) } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-                                                return buff.balanced_stratagem_magic->trigger( state ) ||
-                                                       buff.balanced_stratagem_physical->trigger( state );
+                                              [ & ]( const dbc_proc_callback_t *, const proc_data_t &data, player_t *,
+                                                     action_state_t *, proc_trigger_type_e ) {
+                                                return buff.balanced_stratagem_magic->trigger( data ) ||
+                                                       buff.balanced_stratagem_physical->trigger( data );
                                               } )
         ->register_post_init_callback( []( monk_effect_callback_t *cb ) {
-          cb->proc_chance                       = 1.0;
-          cb->can_proc_from_procs               = true;
-          cb->can_only_proc_from_class_abilites = true;
+          cb->proc_chance                        = 1.0;
+          cb->can_proc_from_procs                = true;
+          cb->can_only_proc_from_class_abilities = true;
         } );
 
   if ( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok() )
     create_proc_callback( { talent.conduit_of_the_celestials.courage_of_the_white_tiger, static_cast<proc_flag>( 0ull ),
                             static_cast<proc_flag2>( 0ull ), action.courage_of_the_white_tiger.base } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-                                                return state->action->id == baseline.monk.tiger_palm->id();
+                                              [ & ]( const dbc_proc_callback_t *, const proc_data_t &data, player_t *,
+                                                     action_state_t *, proc_trigger_type_e ) {
+                                                return data->id() == baseline.monk.tiger_palm->id();
                                               } );
 
   if ( talent.brewmaster.walk_with_the_ox.ok() )
@@ -6485,106 +6502,123 @@ void monk_t::init_special_effects()
         "walk_with_the_ox", 0.0075 * talent.brewmaster.walk_with_the_ox->effectN( 1 ).base_value() );
     create_proc_callback( { talent.brewmaster.walk_with_the_ox, static_cast<proc_flag>( 0ull ),
                             static_cast<proc_flag2>( 0ull ), action.walk_with_the_ox } )
-        ->register_callback_trigger_function(
-            dbc_proc_callback_t::trigger_fn_type::CONDITION,
-            [ & ]( const dbc_proc_callback_t *dbc_proc_cb, action_t *, action_state_t * ) {
-              if ( dbc_proc_cb->cooldown->down() )
-                return false;
-              dbc_proc_cb->cooldown->start();
-              return static_cast<bool>( action.walk_with_the_ox_rng->trigger() );
-            } );
+        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                              [ & ]( const dbc_proc_callback_t *dbc_proc_cb, const proc_data_t &,
+                                                     player_t *, action_state_t *, proc_trigger_type_e ) {
+                                                if ( dbc_proc_cb->cooldown->down() )
+                                                  return false;
+                                                dbc_proc_cb->cooldown->start();
+                                                return static_cast<bool>( action.walk_with_the_ox_rng->trigger() );
+                                              } );
   }
 
   if ( talent.shado_pan.stand_ready->ok() )
     create_proc_callback( { talent.shado_pan.stand_ready_buff } )
-        ->register_callback_trigger_function(
-            dbc_proc_callback_t::trigger_fn_type::CONDITION,
-            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { return buff.stand_ready->check(); } )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-          action.flurry_strikes->execute( actions::flurry_strikes_t::STAND_READY );
-        } );
+        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                              [ & ]( const dbc_proc_callback_t *, const proc_data_t &, player_t *,
+                                                     action_state_t *, proc_trigger_type_e ) {
+                                                return buff.stand_ready->check();
+                                              } )
+        ->register_callback_execute_function(
+            [ & ]( const dbc_proc_callback_t *, const spell_data_t *, player_t *, action_state_t * ) {
+              action.flurry_strikes->execute( actions::flurry_strikes_t::STAND_READY );
+            } );
 
   if ( talent.brewmaster.elixir_of_determination->ok() )
     create_proc_callback( { &buff.elixir_of_determination->data() } )
         ->register_callback_trigger_function(
             dbc_proc_callback_t::trigger_fn_type::CONDITION,
             hp_percent_trigger( talent.brewmaster.elixir_of_determination->effectN( 1 ) ) )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-          buff.elixir_of_determination->trigger();
-        } );
+        ->register_callback_execute_function(
+            [ & ]( const dbc_proc_callback_t *, const spell_data_t *, player_t *, action_state_t * ) {
+              buff.elixir_of_determination->trigger();
+            } );
 
   // Doesn't use effect 468 for trigger behaviour, let's just pretend it does (:
   if ( talent.shado_pan.whirling_steel->ok() )
     create_proc_callback( { talent.shado_pan.whirling_steel.spell() } )
         ->register_callback_trigger_function(
             dbc_proc_callback_t::trigger_fn_type::CONDITION,
-            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+            [ & ]( const dbc_proc_callback_t *, const proc_data_t &, player_t *, action_state_t *state,
+                   proc_trigger_type_e ) {
               const spelleffect_data_t &effect = talent.shado_pan.whirling_steel->effectN( 1 );
               bool start_state                 = health_percentage() > effect.base_value();
               bool end_state = health_percentage() - state->result_amount / max_health() * 100.0 < effect.base_value();
               return start_state && end_state;
             } )
         ->register_callback_execute_function(
-            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { buff.whirling_steel->trigger(); } );
+            [ & ]( const dbc_proc_callback_t *, const spell_data_t *, player_t *, action_state_t * ) {
+              buff.whirling_steel->trigger();
+            } );
 
   if ( talent.brewmaster.vital_flame->ok() )
     create_proc_callback( { talent.brewmaster.vital_flame, static_cast<proc_flag>( PF_ALL_DAMAGE | PF_PERIODIC ),
                             static_cast<proc_flag2>( PF2_ALL_HIT | PF2_PERIODIC_DAMAGE ) } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                              []( const dbc_proc_callback_t *, action_t *action, action_state_t * ) {
-                                                if ( action->school != SCHOOL_FIRE && action->school != SCHOOL_NATURE )
+                                              []( const dbc_proc_callback_t *, const proc_data_t &data, player_t *,
+                                                  action_state_t *state, proc_trigger_type_e ) {
+                                                if ( state->action->school != SCHOOL_FIRE && state->action->school != SCHOOL_NATURE )
                                                   return false;
 
-                                                if ( action->allow_class_ability_procs )
+                                                if ( data.allow_class_ability_procs )
                                                   return true;
 
                                                 return false;
                                               } )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          action.vital_flame->base_dd_max = action.vital_flame->base_dd_min = state->result_amount;
-          action.vital_flame->execute();
-        } );
+        ->register_callback_execute_function(
+            [ & ]( const dbc_proc_callback_t *, const spell_data_t *, player_t *, action_state_t *state ) {
+              action.vital_flame->base_dd_max = action.vital_flame->base_dd_min = state->result_amount;
+              action.vital_flame->execute();
+            } );
 
   if ( talent.brewmaster.bring_me_another_1->ok() )
     create_proc_callback( { talent.brewmaster.bring_me_another_1, PF_CAST_SUCCESSFUL,
                             static_cast<proc_flag2>( PF2_CAST_GENERIC | PF2_CAST_HEAL ) } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
+                                              [ & ]( const dbc_proc_callback_t *, const proc_data_t &, player_t *,
+                                                     action_state_t *state, proc_trigger_type_e ) {
                                                 return baseline.brewmaster.brews.contains( state->action );
                                               } )
         ->register_callback_execute_function(
-            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { buff.empty_barrel->trigger(); } );
+            [ & ]( const dbc_proc_callback_t *, const spell_data_t *, player_t *, action_state_t * ) {
+              buff.empty_barrel->trigger();
+            } );
 
   if ( talent.brewmaster.bring_me_another_3->ok() )
   {
     create_proc_callback( { talent.brewmaster.bring_me_another_3, PF_CAST_SUCCESSFUL,
                             static_cast<proc_flag2>( PF2_CAST_GENERIC | PF2_CAST_HEAL ) } )
         ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                              [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-                                                auto id = state->action->id;
+                                              [ & ]( const dbc_proc_callback_t *, const proc_data_t &data, player_t *,
+                                                     action_state_t *, proc_trigger_type_e ) {
+                                                auto id = data->id();
                                                 return id == talent.brewmaster.celestial_brew->id() ||
                                                        id == talent.brewmaster.celestial_infusion->id() ||
                                                        id == talent.monk.fortifying_brew.find_override_spell()->id();
                                               } )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-          buff.refreshing_drink->trigger();
-          buff.empty_barrel->trigger();
-        } )
+        ->register_callback_execute_function(
+            [ & ]( const dbc_proc_callback_t *, const spell_data_t *, player_t *, action_state_t * ) {
+              buff.refreshing_drink->trigger();
+              buff.empty_barrel->trigger();
+            } )
         ->register_post_init_callback( []( monk_effect_callback_t *cb ) {
-          cb->proc_chance                       = 1.0;
-          cb->can_proc_from_procs               = true;
-          cb->can_only_proc_from_class_abilites = true;
+          cb->proc_chance                        = 1.0;
+          cb->can_proc_from_procs                = true;
+          cb->can_only_proc_from_class_abilities = true;
         } );
 
-    create_proc_callback( { &buff.refreshing_drink->data(), PF_DAMAGE_TAKEN,
+    create_proc_callback( { &buff.refreshing_drink->data(), PF_ALL_DAMAGE_TAKEN,
                             static_cast<proc_flag2>( PF2_ALL_HIT | PF2_PERIODIC_DAMAGE ) } )
-        ->register_callback_trigger_function(
-            dbc_proc_callback_t::trigger_fn_type::TRIGGER,
-            [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) { return buff.refreshing_drink->up(); } )
-        ->register_callback_execute_function( [ & ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
-          buff.refreshing_drink->expire();
-          action.refreshing_drink->execute();
-        } );
+        ->register_callback_trigger_function( dbc_proc_callback_t::trigger_fn_type::TRIGGER,
+                                              [ & ]( const dbc_proc_callback_t *, const proc_data_t &, player_t *,
+                                                     action_state_t *, proc_trigger_type_e ) {
+                                                return buff.refreshing_drink->up();
+                                              } )
+        ->register_callback_execute_function(
+            [ & ]( const dbc_proc_callback_t *, const spell_data_t *, player_t *, action_state_t * ) {
+              buff.refreshing_drink->expire();
+              action.refreshing_drink->execute();
+            } );
   }
 
   base_t::init_special_effects();

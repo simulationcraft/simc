@@ -12482,12 +12482,12 @@ void runic_attenuation_proc( const special_effect_t& e )
     {
     }
 
-    void execute( action_t* a, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* s ) override
     {
       p()->resource_gain(
           RESOURCE_RUNIC_POWER,
           p()->talent.runic_attenuation->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
-          p()->gains.runic_attenuation, a );
+          p()->gains.runic_attenuation, s->action );
     }
   };
 
@@ -12584,7 +12584,8 @@ void runeforge::sanguination( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ effect ]( const dbc_proc_callback_t*, action_t*, const action_state_t* ) {
+      [ effect ]( const dbc_proc_callback_t*, const proc_data_t&, player_t*, const action_state_t*,
+                  proc_trigger_type_e ) {
         return effect.player->health_percentage() > effect.driver()->effectN( 1 ).base_value();
       } );
 

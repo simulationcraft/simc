@@ -10622,7 +10622,7 @@ struct maelstrom_weapon_cb_t : public dbc_proc_callback_t
   { }
 
   // Fully override trigger + execute behavior of the proc
-  void trigger( action_t* /* a */, action_state_t* state ) override
+  void trigger( const proc_data_t&, player_t*, action_state_t* state, proc_trigger_type_e ) override
   {
     auto override_state = shaman->get_mw_proc_state( state->action );
     assert( override_state != mw_proc_state::DEFAULT );
@@ -12676,10 +12676,11 @@ void shaman_t::init_special_effects()
 {
   callbacks.register_callback_trigger_function(
       452030, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ id = 51505U ]( const dbc_proc_callback_t*, action_t* a, action_state_t*) {
-        if ( a->data().id() == id )
+      [ id = 51505U ]( const dbc_proc_callback_t*, const proc_data_t& data, player_t*, action_state_t* s,
+                       proc_trigger_type_e ) {
+        if ( data->id() == id )
         {
-          lava_burst_t* lvb = debug_cast<lava_burst_t*>(a);
+          lava_burst_t* lvb = debug_cast<lava_burst_t*>( s->action );
           return lvb->is_variant( spell_variant::NORMAL );
         }
         return false;
