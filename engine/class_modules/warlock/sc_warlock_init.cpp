@@ -1590,22 +1590,22 @@ namespace warlock
 
   void warlock_t::add_rng_option( warlock_t::rng_settings_t::rng_setting_t& setting )
   {
-    add_option( opt_float( "rng_" + setting.option_name, setting.setting_value ) );
+    add_option( opt_float( "warlock.rng_" + setting.option_name, setting.setting_value ) );
   }
 
   void warlock_t::create_options()
   {
     player_t::create_options();
 
-    add_option( opt_int( "soul_shards", initial_soul_shards ) );
-    add_option( opt_string( "default_pet", default_pet ) );
-    add_option( opt_bool( "disable_felstorm", disable_auto_felstorm ) );
-    add_option( opt_bool( "normalize_destruction_mastery", normalize_destruction_mastery ) );
-    add_option( opt_bool( "eye_explosion_instanced_bug_cb", eye_explosion_instanced_bug_cb ) );
-    add_option( opt_bool( "eye_explosion_instanced_bug_sb", eye_explosion_instanced_bug_sb ) );
-    add_option( opt_bool( "eye_explosion_instanced_bug_rof", eye_explosion_instanced_bug_rof ) );
-    add_option( opt_bool( "fel_armaments_extra_effect_bug", fel_armaments_extra_effect_bug ) );
-    add_option( opt_float( "tyrant_antoran_armaments_target_mul", tyrant_antoran_armaments_target_mul, 0.0, 1.0 ));
+    add_option( opt_int( "warlock.soul_shards", initial_soul_shards ) );
+    add_option( opt_string( "warlock.default_pet", default_pet ) );
+    add_option( opt_bool( "warlock.disable_felstorm", disable_auto_felstorm ) );
+    add_option( opt_bool( "warlock.normalize_destruction_mastery", normalize_destruction_mastery ) );
+    add_option( opt_bool( "warlock.eye_explosion_instanced_bug_cb", eye_explosion_instanced_bug_cb ) );
+    add_option( opt_bool( "warlock.eye_explosion_instanced_bug_sb", eye_explosion_instanced_bug_sb ) );
+    add_option( opt_bool( "warlock.eye_explosion_instanced_bug_rof", eye_explosion_instanced_bug_rof ) );
+    add_option( opt_bool( "warlock.fel_armaments_extra_effect_bug", fel_armaments_extra_effect_bug ) );
+    add_option( opt_float( "warlock.tyrant_antoran_armaments_target_mul", tyrant_antoran_armaments_target_mul, 0.0, 1.0 ));
 
     rng_settings.for_each( [ this ]( auto& setting )
     {

@@ -476,29 +476,29 @@ std::string warlock_t::create_profile( save_e stype )
   if ( stype & SAVE_PLAYER )
   {
     if ( initial_soul_shards != 3 )
-      profile_str += "soul_shards=" + util::to_string( initial_soul_shards ) + "\n";
+      profile_str += "warlock.soul_shards=" + util::to_string( initial_soul_shards ) + "\n";
     if ( !default_pet.empty() )
-      profile_str += "default_pet=" + default_pet + "\n";
+      profile_str += "warlock.default_pet=" + default_pet + "\n";
     if ( disable_auto_felstorm )
-      profile_str += "disable_felstorm=" + util::to_string( as<int>( disable_auto_felstorm ) ) + "\n";
+      profile_str += "warlock.disable_felstorm=" + util::to_string( as<int>( disable_auto_felstorm ) ) + "\n";
     if ( normalize_destruction_mastery )
       profile_str +=
-          "normalize_destruction_mastery=" + util::to_string( as<int>( normalize_destruction_mastery ) ) + "\n";
+          "warlock.normalize_destruction_mastery=" + util::to_string( as<int>( normalize_destruction_mastery ) ) + "\n";
     if ( !eye_explosion_instanced_bug_cb )
       profile_str +=
-          "eye_explosion_instanced_bug_cb=" + util::to_string( as<int>( eye_explosion_instanced_bug_cb ) ) + "\n";
+          "warlock.eye_explosion_instanced_bug_cb=" + util::to_string( as<int>( eye_explosion_instanced_bug_cb ) ) + "\n";
     if ( !eye_explosion_instanced_bug_sb )
       profile_str +=
-          "eye_explosion_instanced_bug_sb=" + util::to_string( as<int>( eye_explosion_instanced_bug_sb ) ) + "\n";
+          "warlock.eye_explosion_instanced_bug_sb=" + util::to_string( as<int>( eye_explosion_instanced_bug_sb ) ) + "\n";
     if ( eye_explosion_instanced_bug_rof )
       profile_str +=
-          "eye_explosion_instanced_bug_rof=" + util::to_string( as<int>( eye_explosion_instanced_bug_rof ) ) + "\n";
+          "warlock.eye_explosion_instanced_bug_rof=" + util::to_string( as<int>( eye_explosion_instanced_bug_rof ) ) + "\n";
     if ( fel_armaments_extra_effect_bug )
       profile_str +=
-        "fel_armaments_extra_effect_bug" + util::to_string( as<int>( fel_armaments_extra_effect_bug ) ) + "\n";
+          "warlock.fel_armaments_extra_effect_bug" + util::to_string( as<int>( fel_armaments_extra_effect_bug ) ) + "\n";
     if ( tyrant_antoran_armaments_target_mul < 1.0 )
       profile_str +=
-          "tyrant_antoran_armaments_target_mul=" + util::to_string( tyrant_antoran_armaments_target_mul ) + "\n";
+          "warlock.tyrant_antoran_armaments_target_mul=" + util::to_string( tyrant_antoran_armaments_target_mul ) + "\n";
     rng_settings.for_each( [ &profile_str ]( auto& setting ) { profile_str += append_rng_option( setting ); } );
   }
 
