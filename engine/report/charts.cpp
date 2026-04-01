@@ -841,7 +841,8 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p, resou
     return false;
   }
 
-  pc.set_title( util::encode_html( p.name_str ) + " " + resource_name + " Gains" );
+  // pc.set_title( util::encode_html( p.name_str ) + " " + resource_name + " Gains" );
+  pc.set_title( util::encode_html( p.html_name() ) + " " + resource_name + " Gains" );
   pc.set( "plotOptions.pie.dataLabels.format", "{point.name}: {point.y:.1f}" );
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
@@ -866,7 +867,8 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p, resou
 
 bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
 {
-  pc.set_title( util::encode_html( p.name_str ) + " Spent Time" );
+  // pc.set_title( util::encode_html( p.name_str ) + " Spent Time" );
+  pc.set_title( util::encode_html( p.html_name() ) + " Spent Time" );
   pc.set( "plotOptions.pie.dataLabels.format", "{point.name}: {point.y:.1f}s" );
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
@@ -1032,7 +1034,8 @@ bool chart::generate_damage_stats_sources( highchart::pie_chart_t& chart, const 
   if ( stats_list.size() <= 1 ) // Don't display chart for single source
     return false;
 
-  generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Damage Sources", stats_list, top_only );
+  // generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Damage Sources", stats_list, top_only );
+  generate_stats_sources( chart, p, util::encode_html( p.html_name() ) + " Damage Sources", stats_list, top_only );
   chart.set( "series.0.name", "Damage" );
   chart.set( "plotOptions.pie.tooltip.pointFormat",
              "<span style=\"color:{point.color}\">\xE2\x97\x8F</span> {series.name}: <b>{point.y}</b>%<br/>" );
@@ -1073,7 +1076,8 @@ bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart, const pl
       return l->actual_amount.mean() > r->actual_amount.mean();
   } );
 
-  generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Healing & Absorb Sources", stats_list );
+  // generate_stats_sources( chart, p, util::encode_html( p.name_str ) + " Healing & Absorb Sources", stats_list );
+  generate_stats_sources( chart, p, util::encode_html( p.html_name() ) + " Healing & Absorb Sources", stats_list );
   chart.set( "plotOptions.pie.events.click", "open_details_from_chart" );
   chart.value( "plotOptions.pie.events.click" ).SetRawOutput( true );
 
@@ -1164,8 +1168,8 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::
       {
         longest_name = p->name_str.length();
       }*/
-      if ( strlen( p->html_name() ) > longest_name )
-        longest_name = strlen( p->html_name() );
+      if ( p->html_name().length()  > longest_name )
+        longest_name = p->html_name().length();
 
       sc_js_t e;
       e.set( "color", c.str() );
@@ -1504,7 +1508,8 @@ bool chart::generate_action_dpet( highchart::bar_chart_t& bc, const player_t& p 
     bc.set_yaxis_title( "Damage per Execute Time" );
   }
 
-  bc.set_title( util::encode_html( p.name_str ) + " Damage per Execute Time" );
+  // bc.set_title( util::encode_html( p.name_str ) + " Damage per Execute Time" );
+  bc.set_title( util::encode_html( p.html_name() ) + " Damage per Execute Time" );
   if ( p.sim->player_no_pet_list.size() > 1 )
   {
     bc.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
@@ -1695,7 +1700,8 @@ bool chart::generate_actor_dps_series( highchart::time_series_t& series, const p
 
   series.set( "yAxis.min", 0 );
   series.set_yaxis_title( "Damage per second" );
-  series.set_title( util::encode_html( p.name_str ) + " Damage per second" );
+  // series.set_title( util::encode_html( p.name_str ) + " Damage per second" );
+  series.set_title( util::encode_html( p.html_name() ) + " Damage per second" );
   series.add_simple_series( "area", color::class_color( p.type ), "DPS", timeline_dps.data() );
   series.set_mean( util::round( p.collected_data.dps.mean(), p.sim->report_precision ) );
 
@@ -1713,7 +1719,8 @@ highchart::time_series_t& chart::generate_actor_timeline(
   {
     ts.set_toggle_id( "player" + util::to_string( p.index ) + "toggle" );
   }
-  ts.set_title( util::encode_html( p.name_str ) + " " + attr_str );
+  // ts.set_title( util::encode_html( p.name_str ) + " " + attr_str );
+  ts.set_title( util::encode_html( p.html_name() ) + " " + attr_str );
   ts.set_yaxis_title( "Average " + attr_str );
   ts.add_simple_series( "area", series_color, attr_str, data.data() );
   if ( !p.sim->single_actor_batch )

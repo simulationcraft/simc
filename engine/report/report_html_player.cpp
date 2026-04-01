@@ -2775,7 +2775,8 @@ void print_html_resource_gains_table( report::sc_html_stream& os, const player_t
 
   os << "</tr>\n"
       << "<tr>\n"
-      << "<th colspan=\"8\" class=\"left name\">" << util::encode_html( p.name() ) << "</th>\n"
+      // << "<th colspan=\"8\" class=\"left name\">" << util::encode_html( p.name() ) << "</th>\n"
+      << "<th colspan=\"8\" class=\"left name\">" << util::encode_html( p.html_name() ) << "</th>\n"
       << "</tr>\n"
       << "</thead>\n";
 
@@ -2847,6 +2848,7 @@ void print_html_resource_usage_table( report::sc_html_stream& os, const player_t
 
   os << "</tr>\n"
      << "<tr>\n"
+     // << "<th <th colspan=\"8\" class=\"left name\">" << util::encode_html( p.name() ) << "</th>\n"
      << "<th <th colspan=\"8\" class=\"left name\">" << util::encode_html( p.name() ) << "</th>\n"
      << "</tr>\n"
      << "</thead>\n";
@@ -3145,7 +3147,8 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
 
   highchart::histogram_chart_t dps_dist( highchart::build_id( p, "dps_dist" ), *p.sim );
   if ( chart::generate_distribution( dps_dist, &p, p.collected_data.dps.distribution,
-                                    util::encode_html( p.name_str ) + " DPS", p.collected_data.dps.mean(),
+                                    // util::encode_html( p.name_str ) + " DPS", p.collected_data.dps.mean(),
+                                    util::encode_html( p.html_name() ) + " DPS", p.collected_data.dps.mean(),
                                     p.collected_data.dps.min(), p.collected_data.dps.max() ) )
   {
     dps_dist.set( "tooltip.headerFormat", "<b>{point.key}</b> DPS<br/>" );
@@ -3159,7 +3162,8 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     sc_timeline_t timeline_dps_taken;
     p.collected_data.timeline_dmg_taken.build_derivative_timeline( timeline_dps_taken );
     dps_taken.set_yaxis_title( "Damage taken per second" );
-    dps_taken.set_title( util::encode_html( p.name_str ) + " Damage taken per second" );
+    // dps_taken.set_title( util::encode_html( p.name_str ) + " Damage taken per second" );
+    dps_taken.set_title( util::encode_html( p.html_name() ) + " Damage taken per second" );
     dps_taken.add_simple_series( "area", color::rgb{"FDD017"}, "DPS taken", timeline_dps_taken.data() );
     dps_taken.set_mean( timeline_dps_taken.mean() );
 
@@ -3190,7 +3194,8 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
   {
     highchart::histogram_chart_t hps_dist( highchart::build_id( p, "hps_dist" ), *p.sim );
     if ( chart::generate_distribution( hps_dist, &p, p.collected_data.hps.distribution,
-                                      util::encode_html( p.name_str ) + " HPS", p.collected_data.hps.mean(),
+                                      // util::encode_html( p.name_str ) + " HPS", p.collected_data.hps.mean(),
+                                      util::encode_html( p.html_name() ) + " HPS", p.collected_data.hps.mean(),
                                       p.collected_data.hps.min(), p.collected_data.hps.max() ) )
     {
       os << hps_dist.to_target_div();
@@ -4193,7 +4198,8 @@ void output_player_damage_summary( report::sc_html_stream& os, const player_t& a
 
   os.format(
     R"(<th class="left name">{}</th><th class="right">{:.0Lf}</th><td colspan="{}" class="filler"></td></tr></thead>)",
-    util::encode_html( actor.name() ),
+    // util::encode_html( actor.name() ),
+    util::encode_html( actor.html_name() ),
     actor.collected_data.dps.mean(),
     static_columns + n_optional_columns );
 
@@ -4374,7 +4380,8 @@ void output_player_simple_ability_summary( report::sc_html_stream& os, const pla
   else
     os << "<tr>\n";
 
-  os << "<th <th colspan=\"3\" class=\"left name\">" << util::encode_html( actor.name() ) << "</th>\n"
+  // os << "<th <th colspan=\"3\" class=\"left name\">" << util::encode_html( actor.name() ) << "</th>\n"
+  os << "<th <th colspan=\"3\" class=\"left name\">" << util::encode_html( actor.html_name() ) << "</th>\n"
      << "</tr>\n"
      << "</thead>\n";
 

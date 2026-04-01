@@ -1013,8 +1013,8 @@ public:
   const char* name() const override
   { return name_str.c_str(); }
 
-  virtual const char* html_name() const
-  { return name(); }
+  virtual std::string html_name() const
+  { return name_str; }
 
   // Normal methods
   double get_stat_value(stat_e);

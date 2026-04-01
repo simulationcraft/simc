@@ -31,7 +31,9 @@ struct sequence_t : public action_t
 
   void schedule_execute(action_state_t* execute_state = nullptr) override;
   void reset() override;
+  bool action_ready() override;
   bool ready() override;
+  bool target_ready( player_t* target ) override;
   void init_finished() override;
   
   void restart();

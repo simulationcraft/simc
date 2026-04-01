@@ -749,8 +749,7 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
 {
   auto root = arr.add();  // Add a fresh object to the players array and use it as root
 
-  // root[ "name" ] = p.name();
-  root[ "name" ] = p.html_name();
+  root[ "name" ] = p.name();
   root[ "race" ] = util::race_type_string( p.race );
   root[ "level" ] = p.true_level;
   root[ "role" ] = util::role_type_string( p.role );

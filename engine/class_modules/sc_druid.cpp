@@ -1305,7 +1305,7 @@ struct druid_t final : public parse_player_effects_t
   // hide player_t::is_ptr()
   bool is_ptr() const { return dbc->wowv() > dbc::client_data_version( false ); }
 
-  const char* html_name() const override
+  std::string html_name() const override
   {
     std::string _name = name_str;
     switch ( specialization() )
@@ -1316,7 +1316,7 @@ struct druid_t final : public parse_player_effects_t
       case DRUID_RESTORATION: _name += "🚑🥦"; break;
       default: break;
     }
-    return _name.c_str();
+    return _name;
   }
   // Character Definition
   void activate() override;
