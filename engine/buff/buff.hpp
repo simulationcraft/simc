@@ -103,6 +103,8 @@ public:
   bool& can_only_proc_from_class_abilities;
   bool& can_proc_from_procs;
   bool& can_proc_from_suppressed;
+  bool& suppress_caster_procs;
+  bool& enable_proc_from_suppressed;
 
   proc_data_t trigger_data;
   bool& trigger_can_only_proc_from_class_abilities;
