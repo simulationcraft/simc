@@ -204,7 +204,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #17, #18), Shadow Priest (137033 effects: #1, #2, #16, #17), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Pain and Suffering (390689 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Death's Torment (423726 effect#1), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Instilled Doubt (1242862 effects: #1, #2), Focused Power (1249230 effects: #1, #2), Occultist (1250293 effects: #1, #2), Painful Invocation (1251030 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Quickened Pulse (1266845 effect#1), Invoked Nightmare (1279350 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #17, #18), Shadow Priest (137033 effects: #1, #2, #16, #17), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Revel in Darkness (373003 effects: #1, #3), Pain and Suffering (390689 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Death's Torment (423726 effect#1), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Instilled Doubt (1242862 effects: #1, #2), Focused Power (1249230 effects: #1, #2), Occultist (1250293 effects: #1, #2), Painful Invocation (1251030 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Quickened Pulse (1266845 effect#1), Invoked Nightmare (1279350 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Family Flags     : 15, 72
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Unknown (454)
 Effects          :
@@ -4292,7 +4292,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Proc Chance      : 101%
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Revel in Darkness (373003 effects: #1, #3), Pain and Suffering (390689 effects: #1, #2, #3), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Shadowform (232698 effects: #1, #3), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Pain and Suffering (390689 effects: #1, #2, #3), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
 Family Flags     : 72, 100
 Attributes       : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -9220,9 +9220,10 @@ Effects          :
 Description      : $@spelldesc372991
 
 Name             : Revel in Darkness (id=373003) [Spell Family (6), Passive, Hidden] 
+Hotfixed         : School (2 -> 32)
 Talent Entry     : Discipline [tree=spec, row=4, col=7, max_rank=1, req_points=0]
 Class            : Priest
-School           : Holy
+School           : Shadow
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 18: Priest Spells
@@ -9231,14 +9232,16 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=997947)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-                   Affected Spells: Purge the Wicked (204213), Encroaching Shadows (472568)
-                   Family Flags: 100
+                   Affected Spells: Shadow Word: Pain (589)
+                   Family Flags: 15
+Hotfixed         : Affects Spells
 #2 (id=997948)   : None (0)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=1029516)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Purge the Wicked (204213), Encroaching Shadows (472568)
-                   Family Flags: 100
+                   Affected Spells: Shadow Word: Pain (589)
+                   Family Flags: 15
+Hotfixed         : Affects Spells
 Description      : Shadow Word: Pain deals $s1% additional damage and spreads to $s2 additional $Ltarget:targets; when you cast Penance to its target.
 
 Name             : Protector of the Frail (id=373035) [Spell Family (6), Passive, Hidden] 
@@ -14513,7 +14516,7 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 101%
-Affecting Spells : Death Throes (278659 effect#1), Revel in Darkness (373003 effects: #1, #3), Pain and Suffering (390689 effects: #1, #2, #3), Twilight Equilibrium (390706 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3)
+Affecting Spells : Death Throes (278659 effect#1), Pain and Suffering (390689 effects: #1, #2, #3), Twilight Equilibrium (390706 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3)
 Family Flags     : 100
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
