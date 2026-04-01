@@ -1422,6 +1422,7 @@ public:
                                   proc_trigger_type_e pt_type = TRIGGER_AURA_APPLIED );
   virtual void trigger_callbacks( proc_types, proc_types2, const proc_data_t& data, player_t* target,
                                   proc_trigger_type_e pt_type );
+  virtual void trigger_aura_applied_callbacks( const proc_data_t& data, player_t* target );
 
   virtual bool taunt( player_t* /* source */ ) { return false; }
 

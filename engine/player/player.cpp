@@ -8882,6 +8882,12 @@ void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, const proc_dat
   action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], data, t, nullptr, pt_type );
 }
 
+void player_t::trigger_aura_applied_callbacks( const proc_data_t& data, player_t* t )
+{
+  assert( t );
+  trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, data, t, TRIGGER_AURA_APPLIED );
+}
+
 void player_t::summon_pet( util::string_view pet_name, const timespan_t duration )
 {
   if ( pet_t* p = find_pet( pet_name ) )
