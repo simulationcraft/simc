@@ -2172,6 +2172,7 @@ Effects          :
 Description      : $@spelldesc1219480
 
 Name             : Ascendance (id=114051) [Spell Family (11)] 
+Hotfixed         : Attributes
 Talent Entry     : Enhancement [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200, replace="Doom Winds" (id=384352)]
 Class            : Shaman
 School           : Nature
@@ -2187,7 +2188,7 @@ Labels           : 16: Class Spells
                  : 2339: Static Accumulation (384411 effect#1)
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2)
 Family Flags     : 102
-Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #3 (id=129147)   : Apply Aura (6) | Modify All Haste% (193)
@@ -2224,6 +2225,7 @@ Tooltip          : Transformed into a powerful Air Ascendant. Auto attacks have 
 Generating $384411s1 $lstack:stacks; of Maelstrom Weapon every $384437t1 sec.][]
 
 Name             : Ascendance (id=114052) [Spell Family (11)] 
+Hotfixed         : Attributes
 Talent Entry     : Restoration [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Shaman
 School           : Nature
@@ -2240,7 +2242,7 @@ Proc Chance      : 100%
 Proc Flags       : Magic Heal
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2)
 Family Flags     : 102
-Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #3 (id=762230)   : Apply Aura (6) | Modify All Haste% (193)
@@ -16073,6 +16075,7 @@ Description      : $@spelldesc201845
 Tooltip          : Stormstrike cooldown has been reset$?$?a319930[ and will deal $319930w1% additional damage as Nature][].
 
 Name             : Doom Winds (id=466772) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Type       : Melee
@@ -16087,7 +16090,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#3), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Mastery: Elemental Overload (168534 effects: #3, #4), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #3, #4), Earthen Weapon (392375 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Enhancement Shaman (1214207 effects: #1, #2), Elemental Shaman (1231772 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effect#1), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
 Triggered By     : Doom Winds (384352)
 Family Flags     : 16, 39, 58
-Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=1179546)  : Apply Aura (6) | Add Percent Modifier (108): Spell Proc Chance (18)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 18 | Target: Self (1)
@@ -17170,6 +17173,7 @@ Effects          :
 Description      : $@spelldesc187880
 
 Name             : Ascendance (id=1219480) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Fire
 Spell Type       : None
@@ -17182,7 +17186,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Elemental Rebalancers (208777 effect#1), Thorim's Invocation (384444 effect#4), Maelstrom of Elements (394677 effect#1), First Ascendant (462440 effect#1), Preeminence (462443 effects: #1, #2)
 Family Flags     : 102
-Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #3 (id=1205233)  : Apply Aura (6) | Modify All Haste% (193)
