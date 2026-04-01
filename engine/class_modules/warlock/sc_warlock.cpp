@@ -192,7 +192,6 @@ int warlock_td_t::count_affliction_dots() const
 warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : parse_player_effects_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
-    bugged_mayhem( false ),
     havoc_spells(),
     diabolic_ritual( 0 ),
     demonic_art_buff_replaced( false ),
@@ -214,6 +213,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     eye_explosion_instanced_bug_cb( true ),
     eye_explosion_instanced_bug_sb( true ),
     eye_explosion_instanced_bug_rof( false ),
+    fel_armaments_extra_effect_bug( false ),
     tyrant_antoran_armaments_target_mul( 1.0 )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
@@ -493,6 +493,9 @@ std::string warlock_t::create_profile( save_e stype )
     if ( eye_explosion_instanced_bug_rof )
       profile_str +=
           "eye_explosion_instanced_bug_rof=" + util::to_string( as<int>( eye_explosion_instanced_bug_rof ) ) + "\n";
+    if ( fel_armaments_extra_effect_bug )
+      profile_str +=
+        "fel_armaments_extra_effect_bug" + util::to_string( as<int>( fel_armaments_extra_effect_bug ) ) + "\n";
     if ( tyrant_antoran_armaments_target_mul < 1.0 )
       profile_str +=
           "tyrant_antoran_armaments_target_mul=" + util::to_string( tyrant_antoran_armaments_target_mul ) + "\n";
@@ -515,6 +518,7 @@ void warlock_t::copy_from( player_t* source )
   eye_explosion_instanced_bug_cb = p->eye_explosion_instanced_bug_cb;
   eye_explosion_instanced_bug_sb = p->eye_explosion_instanced_bug_sb;
   eye_explosion_instanced_bug_rof = p->eye_explosion_instanced_bug_rof;
+  fel_armaments_extra_effect_bug = p->fel_armaments_extra_effect_bug;
   tyrant_antoran_armaments_target_mul = p->tyrant_antoran_armaments_target_mul;
 
   rng_settings = p->rng_settings;

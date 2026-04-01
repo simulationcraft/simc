@@ -11499,14 +11499,6 @@ bool demon_hunter_t::validate_fight_style( fight_style_e style ) const
 
 bool demon_hunter_t::validate_actor()
 {
-#ifdef NDEBUG
-  if ( !is_ptr() && specialization() == DEMON_HUNTER_HAVOC )
-  {
-    sim->error(
-        "Warning: The Havoc specialisation implementation is still a work in progress and sim results may not "
-        "necessarily be perfectly accurate. There will be no additional support offered for prepatch simulations." );
-  }
-#endif
   return player_t::validate_actor();
 }
 

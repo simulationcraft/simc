@@ -4188,7 +4188,8 @@ struct empty_barrel_buff_t : buffs::monk_buff_t<>
   cooldown_t *keg_smash;
 
   empty_barrel_buff_t( monk_t *player )
-    : monk_buff_t( player, "empty_barrel", player->talent.brewmaster.bring_me_another_1->effectN( 1 ).trigger() )
+    : monk_buff_t( player, "empty_barrel", player->talent.brewmaster.bring_me_another_1->effectN( 1 ).trigger() ),
+      keg_smash( nullptr )
   {
     if ( player->talent.brewmaster.bring_me_another_2->ok() )
       keg_smash = player->get_cooldown( "keg_smash" );

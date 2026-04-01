@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.66591 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.66741 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -13335,6 +13335,9 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1201793)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.15 | PvP Coefficient: 1.69 | Target: Targeted Enemy (6)
+#2 (id=1229372)  : Energize Power (30)
+                   Base Value: 8 | Scaled Value: 8 | Resource: fury | Target: Self (1)
+                   Modified By: Celestial Echoes (1256312 effect#2)
 Description      : Devour the life essence of your target, dealing $s1 Cosmic damage. Reduces the cooldown of Reap by ${$1217607s14/1000}.1 sec.
 
 Castable while moving.
@@ -14357,7 +14360,7 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.3 | Target: Self (1)
 #2 (id=1239241)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Void Ray deals $s1% more damage when damaging a single target.
+Description      : Void Ray deals $s1% more damage when damaging $s2 $Ltarget:targets;.
 
 Name             : Star Fragments (id=1240204) [Spell Family (107), Passive, Hidden] 
 Talent Entry     : Devourer [tree=spec, row=9, col=6, max_rank=1, req_points=20]

@@ -5177,6 +5177,10 @@ Effects          :
 #2 (id=1012771)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 1553 (Category) | Radius: 100 yards | Target: Raid in Area (56)
                    Affected Spells (Category): Infernal Strike (189110)
+#3 (id=1316373)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 2448 (Category) | Radius: 100 yards | Target: Raid in Area (56)
+                   Affected Spells (Category): Shift (1234796)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Fel Rush and Infernal Strike reduced by $s1%.
 

@@ -9,11 +9,13 @@ actions+=/call_action_list,name=assisted_combat
 # This is the default action priority list from the game's Assisted Combat system.
 actions.assisted_combat=arcane_intellect,if=aura.arcane_intellect.down
 actions.assisted_combat+=/flamestrike,if=buff.hyperthermia.up&active_enemies>3
+actions.assisted_combat+=/flamestrike,if=buff.hyperthermia.up&active_enemies>3
 actions.assisted_combat+=/pyroblast,if=buff.hyperthermia.up
 actions.assisted_combat+=/meteor
 # This is for Blizzard automation and is not included in the game's Assisted Combat system.
 actions.assisted_combat+=/combustion
 actions.assisted_combat+=/fire_blast,if=buff.heating_up.up&buff.hyperthermia.down
+actions.assisted_combat+=/flamestrike,if=buff.hot_streak.up&active_enemies>3
 actions.assisted_combat+=/flamestrike,if=buff.hot_streak.up&active_enemies>3
 actions.assisted_combat+=/pyroblast,if=buff.hot_streak.up
 actions.assisted_combat+=/frostfire_bolt,cooldown_allow_casting_success=1

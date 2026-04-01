@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.66591 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.66741 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -4354,7 +4354,7 @@ Family Flags     : 39, 56, 85, 126
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=287112)   : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.88872 | PvP Coefficient: 1.8 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.88872 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : $@spelldesc187874
 
 Name             : Frost Shock (id=196840) [Spell Family (11)] 
@@ -8044,7 +8044,7 @@ Attributes       : Not Shapeshifted (16), Is Channelled (34), Name in Channel Ba
 Channel Interrupt: Damage (2), Attacking (13)
 Effects          :
 #1 (id=782727)   : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.7 | Target: Targeted Enemy (6)
 Description      : $@spelldesc305483
 Tooltip          : Suffering $w1 Nature damage every $t1 sec.
 
@@ -8065,7 +8065,7 @@ Attributes       : Not Shapeshifted (16), Is Channelled (34), Name in Channel Ba
 Channel Interrupt: Damage (2), Attacking (13)
 Effects          :
 #1 (id=782730)   : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.7 | Target: Targeted Enemy (6)
 #2 (id=782731)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Targeted Enemy (6)
 Description      : $@spelldesc305483
@@ -12037,6 +12037,7 @@ Name             : Shaman Elemental Class Set 2pc (id=393688) [Spell Family (11)
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -13070,11 +13071,11 @@ Effects          :
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
                    Family Flags: 44, 86
 #3 (id=1144386)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
 #4 (id=1144387)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.25 | Target: Self (1)
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
 #5 (id=1144388)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
@@ -16713,7 +16714,7 @@ Effects          :
                    Affected Spells: Elemental Blast (117014)
                    Family Flags: 98
 #9 (id=1213844)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -15 | Scaled Value: -15 | Target: Self (1)
+                   Base Value: -28 | Scaled Value: -28 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
 #10 (id=1213848) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)

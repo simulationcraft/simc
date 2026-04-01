@@ -7006,7 +7006,8 @@ public:
 
   void record_data( action_state_t* s ) override
   {
-    if ( cast_state( s )->umbral_embrace )
+    // only required if there is travel time
+    if ( travel_speed && cast_state( s )->umbral_embrace )
     {
       stats = umbral_stats;
       druid_spell_t::record_data( s );

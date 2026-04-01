@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.5.66591
-static constexpr std::array<spelltext_data_t, 28690> __ptr_spelltext_data { {
+// Spell text, wow build 12.0.5.66741
+static constexpr std::array<spelltext_data_t, 28691> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -11686,7 +11686,7 @@ static constexpr std::array<spelltext_data_t, 28690> __ptr_spelltext_data { {
   {  288570, "Your maximum Focus is increased to $<focus>, and $?s259387[Mongoose Bite][Raptor Strike] increases your Critical Strike by $s1 for $288573d, stacking up to $288573u times.", 0, 0 },
   {  288571, "$@spelldesc288570", 0, 0 },
   {  288573, "$@spelldesc288570", "Critical Strike increased by $w1.", 0 },
-  {  288613, "Increases your critical strike chance by $s3% and critical strike damage by $s4% for $d.\r\n\r\n$@spellicon19434 $@spellname19434\r\nCooldown recovers $s2% faster$?a471366[, cast time reduced by $471366s1%, and Focus cost reduced $471366s2%.][.]\r\n\r\n$@spellicon257044 $@spellname257044\r\nCooldown recovers $s1% faster.$?a470943[\r\n\r\n|cFFFFFFFFApplies Spotter's Mark.|r][]", "Critical strike chance increased by $s3% and critical strike damage increased by $s4%. Aimed Shot recovers its cooldown $s2% faster and Rapid Fire recovers its cooldown $s1% faster$?a471366[, the cast time of Aimed Shot by $471366s1%, and the Focus cost of Aimed Shot by $471366s2%.][.]", 0 },
+  {  288613, "Increases your critical strike chance by $s3% and critical strike damage by $s4% for $d.\r\n\r\n$@spellicon19434 $@spellname19434\r\nCooldown recovers $s2% faster$?a471366[, cast time reduced by $471366s1%, and Focus cost reduced $471366s2%.][.]\r\n\r\n$@spellicon257044 $@spellname257044\r\nCooldown recovers $s1% faster.$?(a1253599&a470943)[\r\n\r\n|cFFFFFFFFApplies Sentinel's Mark.|r]?(!a1253599&a470943)[\r\n\r\n|cFFFFFFFFApplies Spotter's Mark.|r][]", "Critical strike chance increased by $s3% and critical strike damage increased by $s4%. Aimed Shot recovers its cooldown $s2% faster and Rapid Fire recovers its cooldown $s1% faster$?a471366[, the cast time of Aimed Shot by $471366s1%, and the Focus cost of Aimed Shot by $471366s2%.][.]", 0 },
   {  288634, "Rising Sun Kick has a $s3% chance to trigger a second time, dealing $s1 Physical damage and restoring $s2 Chi.", 0, 0 },
   {  288636, "$@spelldesc107428", 0, 0 },
   {  288641, "Intimidating Shout reduces the movement speed of affected enemies by $288644s1%, and prevents the next $s1 damage they deal after Intimidating Shout ends.", 0, 0 },
@@ -21404,7 +21404,7 @@ static constexpr std::array<spelltext_data_t, 28690> __ptr_spelltext_data { {
   {  436340, "Base armor from equipped items is increased by $s1%.", 0, 0 },
   {  436341, "You are always Well Fed at an increased level of effectiveness, but cannot consume food. Consuming a Khaz Algar gem changes the benefit granted to you by Well Fed.\r\n\r\nAmber: Stamina\r\nEmerald: Haste\r\nOnyx: Mastery\r\nRuby: Critical Strike\r\nSapphire: Versatility", 0, 0 },
   {  436344, "Draw upon your inner strength. Release to invoke the power of Azerite to harm your foes and aid your allies.\r\n\r\nEmpowering has the following effects:\r\n\r\n|cFFFFFFFFI:|r Deals $<damage> Fire damage.\r\n\r\n|cFFFFFFFFII:|r Heals allies for $<healing>.\r\n\r\n|cFFFFFFFFIII:|r Deals $<spike> additional Fire damage to the highest health enemy.", 0, 0 },
-  {  436358, "Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within 8 yds of it. Deals reduced damage beyond $s1 targets.\r\n\r\nWhile channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.\r\n\r\nYou can block, parry, dodge, and use certain defensive abilities while channeling Demolish.", 0, 0 },
+  {  436358, "Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 of it. Deals reduced damage beyond $s1 targets.\r\n\r\nWhile channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.\r\n\r\nYou can block, parry, dodge, and use certain defensive abilities while channeling Demolish.", 0, 0 },
   {  436462, "$@spelldesc427054", 0, 0 },
   {  436463, "$@spelldesc429373", 0, 0 },
   {  436464, "$@spelldesc429378", 0, 0 },
@@ -23594,7 +23594,7 @@ static constexpr std::array<spelltext_data_t, 28690> __ptr_spelltext_data { {
   {  457928, "$@spelldesc457815", "Taking $w1 Nature damage per $t1 sec.", 0 },
   {  457965, "$@spelldesc386394", "Damage taken reduced by $s1%. Healing received increased by $s2%.", 0 },
   {  457967, "$@spelldesc456498\r\n", "$@spelldesc456498", 0 },
-  {  457974, "At the end of your Fists of Fury channel, you release a Jadefire Stomp, dealing $1248815s1 damage to $s2 enemies in front of you and increasing your movement speed by $451943s1% for $451943d.", 0, 0 },
+  {  457974, "At the end of your Fists of Fury channel, you release a Jadefire Stomp, dealing $1248815s1 damage to $s2 $Lenemy:enemies; in front of you and increasing your movement speed by $451943s1% for $451943d.", 0, 0 },
   {  457998, "$@spelldesc100", 0, 0 },
   {  458006, "$@spelldesc236279", 0, 0 },
   {  458034, "Increases the damage of Haunt by $s1% and reduces its cast time by ${$abs($s2/1000)}.1 sec.", 0, 0 },
@@ -24450,7 +24450,7 @@ static constexpr std::array<spelltext_data_t, 28690> __ptr_spelltext_data { {
   {  470679, "$@spelldesc453457", 0, 0 },
   {  470680, "$@spelldesc453457", 0, 0 },
   {  470937, "Your Spotting Eagle alerts you to oncoming danger, reducing all damage you take by $s1%", 0, 0 },
-  {  470943, "Trueshot sends your Spotting Eagle into a frenzy, instantly applying Spotter's Mark to your target. \r\n\r\nDuring Trueshot, your chance to apply Spotter's Mark is increased by $s1%.", 0, 0 },
+  {  470943, "Trueshot sends your $?a1253599[Sentinel Owl][Spotting Eagle] into a frenzy, instantly applying $?a1253599[Sentinel's Mark][Spotter's Mark] to your target. \r\n\r\nDuring Trueshot, your chance to apply $?a1253599[Sentinel's Mark][Spotter's Mark] is increased by $s1%.", 0, 0 },
   {  470945, "Aimed Shot, Rapid Fire, and Arcane Shot now hit $s2 additional $Ltarget:targets; for $s1% of their damage.", 0, 0 },
   {  471059, "Launch a Geargrinder trike to its final blaze of glory, exploding upon impacting the first enemy in its path to deal ${$<rolemult>*$471058s1} Fire damage split between all nearby enemies.", 0, 0 },
   {  471063, "Your spells and abilities have a chance to grant you ${$s1*(1-$s2/100)} to ${$s1*(1+$s2/100)} of a random secondary stat for $473492d.\r\n\r\n", 0, 0 },
@@ -26204,7 +26204,7 @@ static constexpr std::array<spelltext_data_t, 28690> __ptr_spelltext_data { {
   { 1240195, "Place a cauldron that allows party and raid members to take flasks of their choosing from among the recipes known by your Warband. Only alchemists with the cauldron recipe will contribute.\r\n\r\nThe cauldron lasts for $d and has $432893M1 charges.", 0, 0 },
   { 1240201, "Damage from Voidblade and the Hunt increases the damage your target takes from you by $1241532s1% for $1241532d. Multiple applications may overlap.", 0, 0 },
   { 1240202, "After fully channeling Void Ray, gain $1241922s1 Fury.", 0, 0 },
-  { 1240203, "Void Ray deals $s1% more damage when damaging a single target.", 0, 0 },
+  { 1240203, "Void Ray deals $s1% more damage when damaging $s2 $Ltarget:targets;.", 0, 0 },
   { 1240204, "Collapsing Star now generates $s1 Soul $LFragment:Fragments;.", 0, 0 },
   { 1240206, "Entering any Eclipse has a $s1% chance to grant the benefits of both Lunar and Solar Eclipse.", 0, 0 },
   { 1240225, "Place a cauldron that allows party and raid members to take potions of their choosing from among the recipes known by your Warband. Only alchemists with the cauldron recipe will contribute.\r\n\r\nThe cauldron lasts for $d and has $433296M1 charges. Each charge grants $M1 potions.", 0, 0 },
@@ -27094,7 +27094,7 @@ static constexpr std::array<spelltext_data_t, 28690> __ptr_spelltext_data { {
   { 1254631, "At any time, decipher the map and guarantee that you'll find a Hidden Trove at the end of the next Tier 4+ Delve you complete.\r\n\r\nHidden Trove's contents depend on the completed Delve Tier.", "You'll find a Hidden Trove at the end of the next Tier 4+ Delve you complete.\r\n\r\nHidden Trove's contents depend on the completed Delve Tier.\r\n\r\nYou are able to unlock a Hidden Trove.", 0 },
   { 1254638, "Ignite the Solar Core within you for $d, forming a radiant shield that absorbs $s2% of incoming damage, up to $1257989s1. Gain up to $1257989s3 Versatility for $1257988d if the shield expires, based on its remaining power.", "Absorbing $s2% of incoming damage until ${$w1} is prevented.", 0 },
   { 1254640, "Your damaging abilities have a chance to unleash the prism's radiant light, increasing your Critical Strike by $s1 for $1255504d, further increased by $s2 for every $s3% of the target's missing health, up to a maximum of $s4. ", 0, 0 },
-  { 1254641, "Cover yourself in four fetid pustules, absorbing $1257925s1 damage for $d. Each time the shield loses $1257925s2% of its value, a pustule erupts, dealing $1257925s3  Plague damage split among nearby enemies.\r\n\r\nIf all pustules erupt, the final burst deals $1257925s4 additional Plague damage.", "Absorb $1257925s1 damage for $d.", 0 },
+  { 1254641, "Cover yourself in four fetid pustules, absorbing $1257925s1 damage for $d. Each time the shield loses $1257925s2% of its value, a pustule erupts, dealing $1257925s3  Plague damage split among nearby enemies.\r\n\r\nIf all pustules erupt, the final burst deals $1257925s4 additional Plague damage.", "Absorb $w1 damage for $d.", 0 },
   { 1254752, "Your spells and abilities have a chance to release an energy orb that bounces between up to $1254534x nearby allies, increasing their Versatility by $s2 for $1254577d. If an ally is below $s3% health, the orb heals them for $s4 instead.", 0, 0 },
   { 1254756, "Fire Blast now spreads $s3% of your target's Ignite to $s1 $Lenemy:enemies;.\r\n\r\nFlamestrike applies $s2% more Ignite.", 0, 0 },
   { 1254828, "Fire Blast damage increased by $s2% and it now spreads Ignite to $s1 additional $Ltarget:targets;.", 0, 0 },
@@ -27300,7 +27300,7 @@ static constexpr std::array<spelltext_data_t, 28690> __ptr_spelltext_data { {
   { 1259644, "$@spelldesc1259645", 0, 0 },
   { 1259645, "Convince a dead ally that being alive is much more fun by catalyzing your whimsy, restoring them to life with $s2% health and $s1% mana. This always succeeds because it's objective truth.\r\n\r\nCastable in combat. Item quality affects cast time. Cannot be used by players higher than level $ctrmax3615.", 0, 0 },
   { 1259646, "$@spelldesc1259645", 0, 0 },
-  { 1259647, "$@spelldesc452993", "The expiration of Khaz Algar Flasks, Phials, and Well Fed effects have been halted.\r\n\r\nInducing nausea.", 0 },
+  { 1259647, "$@spelldesc452993", "The expiration of Midnight Flasks, Phials, and Well Fed effects have been halted.", 0 },
   { 1259648, "Grants the user invisibility for $m5-$M5 sec.\r\n\r\nCan only be used outdoors. Cannot be cast in combat.", "HU5H pup is keeping you cool.", 0 },
   { 1259656, "Place a Blooming Feast for all players to enjoy!|n|n$@spelldesc1232065|n|n$@spellicon457049 $@spellname457049|nIf you spend at least 10 seconds eating, you will become $@spellname457049 gaining $1219179s7 Stamina and $1219179s4 of your highest secondary stat for $462209d.", 0, 0 },
   { 1259657, "Place a Quel'dorei Medley for all players to enjoy!|n|n$@spelldesc1232065|n|n$@spellicon461960  $@spellname461960|nIf you spend at least 10 seconds eating, you will become $@spellname461960 gaining $1219179s7 Stamina and ${$1219179s4*1} of your highest secondary stat for $461960d.", 0, 0 },
@@ -27340,8 +27340,8 @@ static constexpr std::array<spelltext_data_t, 28690> __ptr_spelltext_data { {
   { 1260459, "Seize the eye's draconic power, granting you $1259293s1 Mastery diminishing over $d and allowing you to see hidden enemies.", "Mastery increased by $w1. You can see invisible and stealthed enemies.", 0 },
   { 1260484, "Tip the Scales' cooldown is reduced by ${$s1/-1000} sec.", 0, "Bronze" },
   { 1260504, "Create a piece of Galactic Gladiator's equipment appropriate for your loot specialization ($@lootspec).", 0, 0 },
-  { 1260511, "Rising Sun Kick and Vivify have a chance to activate Spiritfont, causing your next Enveloping Mist to be instant cast and channel Soothing Mist from you onto up to $s2 allies at $s1% effectiveness for $1260670d.\r\n\r\nIf Spiritfont's Soothing Mists heal a full health target, they will jump to another injured ally or split its healing into your remaining Soothing Mists.", 0, 0 },
-  { 1260565, "$@spelldesc1260511", "Your next Enveloping Mist is instant cast and channels Soothing Mist from you onto up to $w2 allies at $w1% effectiveness for $1260670d.", 0 },
+  { 1260511, "Rising Sun Kick and Vivify have a chance to activate Spiritfont, causing your next Enveloping Mist's cast time to be reduced by $1260565s3% and channel Soothing Mist from you onto up to $s2 allies at $s1% effectiveness for $1260670d.\r\n\r\nIf Spiritfont's Soothing Mists heal a full health target, they will jump to another injured ally or split its healing into your remaining Soothing Mists.", 0, 0 },
+  { 1260565, "$@spelldesc1260511", "Your next Enveloping Mist's cast time is reduced by $w3% and channels Soothing Mist from you onto up to $w2 allies at $w1% effectiveness for $1260670d.", 0 },
   { 1260592, "The Plume's radiance grants you $1260592s1 Mastery, waning over ${$1260615t2*$1260615u} sec before reigniting to full incandescence. The Plume's power also regenerates while out of combat.", 0, 0 },
   { 1260615, "$@spelldesc1260592", "Mastery increased by $w1.", 0 },
   { 1260616, "$?c1[Arcane Salvo can stack $s1 additional times][Fire Blast cooldown reduced by ${-$s2/1000}.1 sec].\r\n\r\nMeteorite damage increased by $s3%.", 0, 0 },
@@ -28531,9 +28531,9 @@ static constexpr std::array<spelltext_data_t, 28690> __ptr_spelltext_data { {
   { 1280879, "$@spelldesc422922", 0, 0 },
   { 1280940, "$@spelldesc1280733", 0, 0 },
   { 1280961, "Your stances have additional effects.\r\n\r\n$?c1|c3[$@spellicon386164 $@spellname386164\r\nIncreases the critical strike damage of your abilities by $386164s4%.][$@spellicon386196 $@spellname386196\r\nIncreases your auto-attack speed by $386196s6%.]\r\n\r\n$@spellicon386208 $@spellname386208\r\nWhen an attack deals $386208s5% or more of your maximum health in damage, that damage is reduced by $386208s6%.", 0, 0 },
-  { 1281332, "Temporarily grants your shoulders a magical illusion of the Lightbloom.", 0, 0 },
-  { 1281333, "Temporarily grants your shoulders a magical illusion of nature's splendor.", 0, 0 },
-  { 1281334, "Temporarily grants your shoulders a magical illusion of the Void's might.", 0, 0 },
+  { 1281332, "Temporarily grants your shoulders a magical illusion of the Lightbloom for $M2 min.", 0, 0 },
+  { 1281333, "Temporarily grants your shoulders a magical illusion of nature's splendor for $M2 min.", 0, 0 },
+  { 1281334, "Temporarily grants your shoulders a magical illusion of the Void's might for $M2 min.\r\n", 0, 0 },
   { 1281468, "Shadow Clones deal $s1% increased damage.\r\n\r\nCheap Shot creates a Shadow Clone to Shadowstrike the target for $s2% of normal damage as Shadow.\r\n\r\nKidney Shot creates a Shadow Clone to Eviscerate the target for $s2% of normal damage as Shadow.", 0, 0 },
   { 1281511, "Power Siphon and Implosion summon $s1 Imp Gang Boss for every $s2 Wild Imps sacrificed. Wild Imps summoned this way gain Unstable Soul.\r\n\r\n$@spellicon1281512 $@spellname1281512\r\n$@spelldesc1281512", 0, 0 },
   { 1281512, "Increases damage done by $s1% and Fel Firebolt now jumps to $s2 additional targets.", "Increases damage done by $s1% and Fel Firebolt now jumps to $s2 additional targets.", 0 },
@@ -28638,13 +28638,13 @@ static constexpr std::array<spelltext_data_t, 28690> __ptr_spelltext_data { {
   { 1290926, "Restores $s1% of your maximum health every second over $d. Must remain seated while eating.", "Restoring $s1% health every sec.", 0 },
   { 1290928, "Restores up to $s1% of your maximum health and mana every second over $d. Must remain seated while eating.", "Restoring $s1% health and $1291791w1% mana every second.", 0 },
   { 1290929, "Restores $s1% of your maximum mana every second over $d. Must remain seated while drinking.", "Restoring $w1% mana every sec.", 0 },
-  { 1291455, "Temporarily grants your shoulders a magical illusion of the Lightbloom.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291455, "Temporarily grants your shoulders a magical illusion of the Lightbloom for $M2 min.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
   { 1291457, "Inferno's Blessing's damage is increased by $s1%, and your effects that extend Ebon Might also extend Inferno's Blessing.", 0, 0 },
-  { 1291459, "Temporarily grants your shoulders a magical illusion of the Lightbloom.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
-  { 1291460, "Temporarily grants your shoulders a magical illusion of the Void's might.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
-  { 1291464, "Temporarily grants your shoulders a magical illusion of nature's splendor.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
-  { 1291465, "Temporarily grants your shoulders a magical illusion of the Void's might.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
-  { 1291466, "Temporarily grants your shoulders a magical illusion of nature's splendor.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291459, "Temporarily grants your shoulders a magical illusion of the Lightbloom for $M2 min.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291460, "Temporarily grants your shoulders a magical illusion of the Void's might for $M2 min.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291464, "Temporarily grants your shoulders a magical illusion of nature's splendor for $M2 min.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291465, "Temporarily grants your shoulders a magical illusion of the Void's might for $M2 min.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
+  { 1291466, "Temporarily grants your shoulders a magical illusion of nature's splendor for $M2 min.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
   { 1291471, "$@spelldesc354124", "Healing received reduced by $w1%.", 0 },
   { 1291484, "$@spelldesc1272694", "Zenith Stomp may be cast.", 0 },
   { 1291522, "Living Flame's cast time is reduced by ${$s1/-1000}.1 sec, and it deals $s2% increased damage or healing when it is a non-instant cast.", 0, 0 },
@@ -28690,13 +28690,14 @@ static constexpr std::array<spelltext_data_t, 28690> __ptr_spelltext_data { {
   { 1293563, "While active, you automatically assume your Visage whenever you are not casting draconic spells such as Fire Breath and Soar.\r\n\r\nActivate to disable this effect.", 0, "Racial" },
   { 1293603, "$@spelldesc384110", 0, 0 },
   { 1293610, "$@spelldesc384110", 0, 0 },
+  { 1293918, "$@spelldesc228049", "Immune to all attacks and spells.", "PvP Talent" },
 } };
 
-// spelltext hotfix entries, wow build 12.0.5.66591
+// spelltext hotfix entries, wow build 12.0.5.66741
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.5.66591
+// Spell description variables, wow build 12.0.5.66741
 static constexpr std::array<spelldesc_vars_data_t, 697> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29397,7 +29398,7 @@ static constexpr std::array<spelldesc_vars_data_t, 697> __ptr_spelldesc_vars_dat
   { 1293610, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.5.66591
+// spelldesc_vars hotfix entries, wow build 12.0.5.66741
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

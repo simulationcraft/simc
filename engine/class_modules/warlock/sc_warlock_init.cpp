@@ -123,7 +123,7 @@ namespace warlock
       parse_passive_effects( hero.mark_of_perotharn, true );
 
     // NOTE: 2026-03-21 An additional effect of Fel Armaments talent is applied even if the talent is not selected (bug)
-    if ( demonology() && bugs )
+    if ( demonology() && bugs && ( talents.fel_armaments.ok() || fel_armaments_extra_effect_bug ) )
       parse_passive_effects( talents.fel_armaments_2, true );
   }
 
@@ -1604,6 +1604,7 @@ namespace warlock
     add_option( opt_bool( "eye_explosion_instanced_bug_cb", eye_explosion_instanced_bug_cb ) );
     add_option( opt_bool( "eye_explosion_instanced_bug_sb", eye_explosion_instanced_bug_sb ) );
     add_option( opt_bool( "eye_explosion_instanced_bug_rof", eye_explosion_instanced_bug_rof ) );
+    add_option( opt_bool( "fel_armaments_extra_effect_bug", fel_armaments_extra_effect_bug ) );
     add_option( opt_float( "tyrant_antoran_armaments_target_mul", tyrant_antoran_armaments_target_mul, 0.0, 1.0 ));
 
     rng_settings.for_each( [ this ]( auto& setting )
@@ -1642,7 +1643,6 @@ namespace warlock
 
     warlock_pet_list.active = nullptr;
     havoc_target = nullptr;
-    bugged_mayhem = false;
     haunt_target = nullptr;
     wild_imp_spawns.clear();
     diabolic_ritual = rng().range( 0, 3 );
