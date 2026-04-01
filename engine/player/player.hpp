@@ -1013,6 +1013,9 @@ public:
   const char* name() const override
   { return name_str.c_str(); }
 
+  virtual const char* html_name() const
+  { return name(); }
+
   // Normal methods
   double get_stat_value(stat_e);
   void stat_gain( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );

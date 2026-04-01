@@ -161,7 +161,7 @@ void live_apl( monk_t* player )
 
   // Default List
   def->add_action( "auto_attack,target_if=max:target.time_to_die", "Default List" );
-  def->add_action( "touch_of_karma,target_if=max:target.time_to_die " );
+  def->add_action( "touch_of_karma,target_if=max:target.time_to_die" );
   def->add_action( "roll,if=movement.distance>5", "Move to target" );
   def->add_action( "chi_torpedo,if=movement.distance>5" );
   def->add_action( "flying_serpent_kick,if=movement.distance>5" );

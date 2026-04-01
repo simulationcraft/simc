@@ -1160,14 +1160,17 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::
       }
 
       // Also keep track of longest player name
-      if ( p->name_str.length() > longest_name )
+      /* if ( p->name_str.length() > longest_name )
       {
         longest_name = p->name_str.length();
-      }
+      }*/
+      if ( strlen( p->html_name() ) > longest_name )
+        longest_name = strlen( p->html_name() );
 
       sc_js_t e;
       e.set( "color", c.str() );
-      e.set( "name", util::encode_html( p->name_str ) );
+      // e.set( "name", util::encode_html( p->name_str ) );
+      e.set( "name", util::encode_html( p->html_name() ) );
       e.set( "y", util::round( value, static_cast<unsigned int>( precision ) ) );
       e.set( "id", "#player" + util::to_string( p->index ) + "toggle" );
 
@@ -1189,7 +1192,8 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::
         {
           candlebars = true;
           sc_js_t v;
-          v.set( "name", util::encode_html( p->name_str ) );
+          // v.set( "name", util::encode_html( p->name_str ) );
+          v.set( "name", util::encode_html( p->html_name() ) );
           v.set( "low", boxplot_data[ 0 ] );
           v.set( "q1", boxplot_data[ 1 ] );
           v.set( "median", boxplot_data[ 5 ] );

@@ -3727,7 +3727,8 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
     os << " open";
   }
 
-  const std::string n = util::encode_html( p.name() );
+  // const std::string n = util::encode_html( p.name() );
+  const std::string n = util::encode_html( p.html_name() );
   if ( ( p.collected_data.dps.mean() >= p.collected_data.hps.mean() && sim.enemy_targets > 1 ) ||
        ( p.primary_role() == ROLE_TANK && sim.enemy_targets > 1 ) )
   {
