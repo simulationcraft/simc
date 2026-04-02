@@ -7474,9 +7474,18 @@ void warrior_t::init_spells()
                                        : effect_mask_t( false ).enable( 5, 6 ) );
 
 
-  register_passive_effect_mask( talents.colossus.practiced_strikes,
+  if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+  {
+    register_passive_effect_mask( talents.colossus.practiced_strikes,
+    specialization() == WARRIOR_ARMS ? effect_mask_t( true ).disable( 3, 4, 5 )
+                                     : effect_mask_t( true ).disable( 1, 2 ) );
+  }
+  else
+  {
+    register_passive_effect_mask( talents.colossus.practiced_strikes,
     specialization() == WARRIOR_ARMS ? effect_mask_t( true ).disable( 2, 3 )
                                      : effect_mask_t( true ).disable( 1 ) );
+  }
 
   register_passive_effect_mask( talents.mountain_thane.avatar_of_the_storm,
     specialization() == WARRIOR_FURY ? effect_mask_t( true ).disable( 4 )
