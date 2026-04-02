@@ -21404,7 +21404,7 @@ static constexpr std::array<spelltext_data_t, 28691> __ptr_spelltext_data { {
   {  436340, "Base armor from equipped items is increased by $s1%.", 0, 0 },
   {  436341, "You are always Well Fed at an increased level of effectiveness, but cannot consume food. Consuming a Khaz Algar gem changes the benefit granted to you by Well Fed.\r\n\r\nAmber: Stamina\r\nEmerald: Haste\r\nOnyx: Mastery\r\nRuby: Critical Strike\r\nSapphire: Versatility", 0, 0 },
   {  436344, "Draw upon your inner strength. Release to invoke the power of Azerite to harm your foes and aid your allies.\r\n\r\nEmpowering has the following effects:\r\n\r\n|cFFFFFFFFI:|r Deals $<damage> Fire damage.\r\n\r\n|cFFFFFFFFII:|r Heals allies for $<healing>.\r\n\r\n|cFFFFFFFFIII:|r Deals $<spike> additional Fire damage to the highest health enemy.", 0, 0 },
-  {  436358, "Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 of it. Deals reduced damage beyond $s1 targets.\r\n\r\nWhile channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.\r\n\r\nYou can block, parry, dodge, and use certain defensive abilities while channeling Demolish.", 0, 0 },
+  {  436358, "Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 yds of it. Deals reduced damage beyond $s1 targets.\r\n\r\nWhile channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.\r\n\r\nYou can block, parry, dodge, and use certain defensive abilities while channeling Demolish.", 0, 0 },
   {  436462, "$@spelldesc427054", 0, 0 },
   {  436463, "$@spelldesc429373", 0, 0 },
   {  436464, "$@spelldesc429378", 0, 0 },
@@ -28694,7 +28694,8 @@ static constexpr std::array<spelltext_data_t, 28691> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.5.66741
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  436358,  0, "Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 of it. Deals reduced damage beyond $s1 targets.\r\n\r\nWhile channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.\r\n\r\nYou can block, parry, dodge, and use certain defensive abilities while channeling Demolish.", "Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 yds of it. Deals reduced damage beyond $s1 targets.\r\n\r\nWhile channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.\r\n\r\nYou can block, parry, dodge, and use certain defensive abilities while channeling Demolish." },
 } };
 
 // Spell description variables, wow build 12.0.5.66741
