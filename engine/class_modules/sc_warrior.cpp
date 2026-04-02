@@ -3456,6 +3456,9 @@ struct slam_base_t : public warrior_attack_t
       p()->buff.master_of_warfare_proc->trigger();
       p()->master_of_warfare_attempts_since_last_proc = 0;
     }
+
+    if ( state->result == RESULT_CRIT && p()->talents.arms.mortal_wounds->ok() && sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+      p()->active.deep_wounds->execute_on_target( state->target );
   }
 
   void execute() override
@@ -3597,7 +3600,7 @@ struct cleave_t : public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-    if ( execute_state->result == RESULT_CRIT && p()->talents.arms.mortal_wounds->ok() )
+    if ( execute_state->result == RESULT_CRIT && p()->talents.arms.mortal_wounds->ok() && sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
       p()->active.deep_wounds->execute_on_target( s->target );
 
     auto target_data = td( s->target );
