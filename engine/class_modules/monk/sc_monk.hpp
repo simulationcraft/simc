@@ -245,6 +245,7 @@ struct gift_of_the_ox_t : monk_buff_t<>
   orb_t *heal_expire;
   std::queue<orb_event_t *> queue;
   double accumulator;
+  proc_data_t proc_data;
 
   // just using the first orb spawner.
   // 124503 also exists, but it just spawns an orb on the opposite side, so no
