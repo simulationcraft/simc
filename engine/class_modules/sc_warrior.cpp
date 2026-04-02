@@ -6194,12 +6194,27 @@ struct victory_rush_t : public warrior_attack_t
 
 struct whirlwind_fury_damage_t : public warrior_attack_t
 {
+  warrior_attack_t* rend;
   whirlwind_fury_damage_t( util::string_view name, warrior_t* p, const spell_data_t* whirlwind )
-    : warrior_attack_t( name, p, whirlwind )
+    : warrior_attack_t( name, p, whirlwind ),
+    rend( nullptr )
   {
     background = true;
     aoe = -1;
     reduced_aoe_targets = 5.0;
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && p->talents.warrior.rend.ok() && p->talents.fury.improved_whirlwind.ok() )
+      rend = new rend_dot_t( p );
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( p()->talents.warrior.rend.ok() && p()->talents.fury.improved_whirlwind.ok() &&
+          rend && data().id() == p()->spec.whirlwind->effectN( 4 ).trigger()->id() &&
+          sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+      rend->execute_on_target( state->target );
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
