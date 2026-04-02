@@ -12326,6 +12326,7 @@ Effects          :
 Description      : Your attacks trigger Lightning Strikes $s1% more often.
 
 Name             : Demolish (id=436358) [Spell Family (4)] 
+Hotfixed         : Description
 Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
@@ -12376,7 +12377,7 @@ Effects          :
                    Base Value: 45 | Scaled Value: 45 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Demolish (436358), Demolish (440884), Demolish (440886), Demolish (440888)
                    Family Flags: 126
-Description      : Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 of it. Deals reduced damage beyond $s1 targets.
+Description      : Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 yds of it. Deals reduced damage beyond $s1 targets.
 
 While channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.
 
