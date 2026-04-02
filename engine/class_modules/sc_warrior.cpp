@@ -351,6 +351,7 @@ public:
     cooldown_t* demolish;
     cooldown_t* burst_of_power_icd;
     cooldown_t* slayers_dominance_icd;
+    cooldown_t* hack_and_slash_icd;
   } cooldown;
 
   // Gains
@@ -5382,7 +5383,8 @@ struct rampage_attack_base_t : public warrior_attack_t
        // continue. The animations and timing of everything else still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
 
-      if ( p()->talents.fury.hack_and_slash->ok() && rng().roll( hack_and_slash_chance ) )
+      if ( sim->dbc->wowv() < wowv_t( 12, 0, 5 ) &&
+      p()->talents.fury.hack_and_slash->ok() && rng().roll( hack_and_slash_chance ) )
       {
         p()->cooldown.raging_blow->reset( true );
         p()->cooldown.crushing_blow->reset( true );
@@ -5413,6 +5415,15 @@ struct rampage_attack_t : public rampage_attack_base_t
 
       if ( p()->talents.fury.frenzy->ok() )
         p()->buff.frenzy->trigger();
+    }
+
+    if ( first_attack && sim->dbc->wowv() >= wowv_t( 12, 0, 5 )  &&
+          p()->talents.fury.hack_and_slash.ok() &&
+          p()->cooldown.hack_and_slash_icd->up() )
+    {
+      p()->cooldown.raging_blow->reset( true );
+      p()->cooldown.crushing_blow->reset( true );
+      p()->cooldown.hack_and_slash_icd->start();
     }
   }
 
@@ -7625,6 +7636,11 @@ void warrior_t::init_spells()
   cooldown.burst_of_power_icd -> duration = find_spell( 437121 )->internal_cooldown();
   cooldown.slayers_dominance_icd            = get_cooldown( "slayers_dominance" );
   cooldown.slayers_dominance_icd -> duration = find_spell( 444767 )->internal_cooldown();
+  if( sim->dbc->wowv() >= wowv_t( 12, 0, 5) )
+  {
+    cooldown.hack_and_slash_icd               = get_cooldown( "hack_and_slash" );
+    cooldown.hack_and_slash_icd->duration = talents.fury.hack_and_slash->internal_cooldown();
+  }
 }
 
 // warrior_t::init_items ===============================================
