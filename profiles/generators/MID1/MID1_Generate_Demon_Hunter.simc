@@ -4,24 +4,24 @@ race=night_elf
 spec=devourer
 role=spell
 position=back
-talents=CgcBAAAAAAAAAAAAAAAAAAAAAAA2MmZmZmZmBzMAAAAAAALzYAzAAAAAAAAwMGMmZmZMzMDzsYGjNtsxMzMzWbzMzAYmZmZWmZmmtZWmZGMmB
+talents=CgcBAAAAAAAAAAAAAAAAAAAAAAA2MmZmZmZmxwMAAAAAAAegxsNYGAAAAAAAAmxMMmZmZMzMzMzsNzYsplNAEwAMjZmZZmZa2mZbmZMMA
 
-head=devouring_reavers_intake,id=250033,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983
-neck=eternal_voidsong_chain,id=249368,bonus_id=13534,ilevel=289,gem_id=240892
-shoulders=devouring_reavers_exhaustplates,id=250031,bonus_id=13574/13574/13574/13574/13574/13574/13574,ilevel=289
+head=devouring_reavers_intake,id=250033,bonus_id=1808/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983
+neck=eternal_voidsong_chain,id=249368,bonus_id=13534,ilevel=289,gem_id=240908
+shoulders=devouring_reavers_exhaustplates,id=250031,bonus_id=13574/13574/13574/13574/13574/13574,ilevel=289
 back=draconic_nullcape,id=249370,ilevel=289
-chest=devouring_reavers_engine,id=250036,bonus_id=13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
-wrists=frenzyroot_cuffs,id=193714,bonus_id=1808/12806/13577,gem_id=240892
-hands=devouring_reavers_essence_grips,id=250034,bonus_id=13574/13574/13574/13574/13574/13574/13574,ilevel=289
-waist=scornscarred_shulkas_belt,id=249374,bonus_id=13534,ilevel=289,gem_id=240892
-legs=shaggy_wyrmleather_leggings,id=49817,ilevel=289,enchant_id=7935
-feet=silvermoon_agents_sneakers,id=244569,bonus_id=8793/8960/12066/12214/12214/12214/12384/13622/13667/9627,enchant_id=7963,crafted_stats=32/49
-finger1=loa_worshipers_band,id=251513,bonus_id=8960/8960/12214/12214,ilevel=285,gem_id=240892,enchant_id=7969
-finger2=bond_of_light,id=249369,bonus_id=13534,ilevel=289,gem_id=240892,enchant_id=7969
-trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
+chest=devouring_reavers_engine,id=250036,bonus_id=13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=frenzyroot_cuffs,id=193714,bonus_id=1808/12806/13577,gem_id=240908
+hands=devouring_reavers_essence_grips,id=250034,bonus_id=13574/13574/13574/13574/13574/13574,ilevel=289
+waist=silvermoon_agents_utility_belt,id=244573,bonus_id=8790/8960/12214/12384,ilevel=285,gem_id=240900,crafted_stats=49/36
+legs=legwraps_of_lingering_legacies,id=251087,ilevel=289,enchant_id=7935
+feet=devouring_reavers_soul_flatteners,id=250035,ilevel=289,enchant_id=7963
+finger1=bond_of_light,id=249369,bonus_id=13534,ilevel=289,gem_id=240908,enchant_id=7967
+finger2=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,ilevel=289,gem_id=240908/240908,enchant_id=7997
+trinket1=locuswalkers_ribbon,id=249809,ilevel=289
 trinket2=vaelgors_final_stare,id=249346,ilevel=289
-main_hand=lightless_lament,id=260408,bonus_id=4786/4800/12806,enchant_id=7983
-off_hand=blade_of_the_blind_verdict,id=249294,ilevel=289,enchant_id=7983
+main_hand=lightless_lament,id=260408,bonus_id=4786/4800/12806,enchant_id=7981
+off_hand=spellbreakers_warglaive,id=237840,bonus_id=8790/8960/12066/12214/12693/13622/13667/9627,ilevel=285,enchant_id=7981,crafted_stats=49/36
 
 save=MID1_Demon_Hunter_Devourer_Void-Scarred.simc
 
@@ -34,22 +34,22 @@ role=spell
 position=back
 talents=CgcBAAAAAAAAAAAAAAAAAAAAAAA2MmZmZmZmBzMAAAAAAALzYAzAAAAAAAAwMGMmZmZMzMzYmFzYsotNmZmZ2abmZGAjZAIwMzgxMA
 
-head=devouring_reavers_intake,id=250033,bonus_id=1808/13575/13575,ilevel=289,gem_id=240983
+head=devouring_reavers_intake,id=250033,bonus_id=1808/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983
 neck=eternal_voidsong_chain,id=249368,bonus_id=13534,ilevel=289,gem_id=240900
-shoulders=devouring_reavers_exhaustplates,id=250031,bonus_id=13574/13574,ilevel=289
+shoulders=devouring_reavers_exhaustplates,id=250031,bonus_id=13574/13574/13574/13574/13574,ilevel=289
 back=draconic_nullcape,id=249370,ilevel=289
-chest=devouring_reavers_engine,id=250036,bonus_id=13575/13575,ilevel=289,enchant_id=7987
+chest=devouring_reavers_engine,id=250036,bonus_id=13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
 wrists=frenzyroot_cuffs,id=193714,bonus_id=1808/12806/13577,gem_id=240900
-hands=devouring_reavers_essence_grips,id=250034,bonus_id=13574/13574,ilevel=289
-waist=silvermoon_agents_utility_belt,id=244573,bonus_id=8960/12214/12214/12384,ilevel=285,gem_id=240900,crafted_stats=49/36
+hands=devouring_reavers_essence_grips,id=250034,bonus_id=13574/13574/13574/13574/13574,ilevel=289
+waist=bloodfeather_girdle,id=109830,bonus_id=1808/12806,ilevel=289,gem_id=240900
 legs=shaggy_wyrmleather_leggings,id=49817,ilevel=289,enchant_id=7935
-feet=devouring_reavers_soul_flatteners,id=250035,ilevel=289,enchant_id=7963
+feet=silvermoon_agents_sneakers,id=244569,bonus_id=8793/8960/12066/12214/12214/12214/12384/13622/13667/9627,enchant_id=7963,crafted_stats=32/49
 finger1=bond_of_light,id=249369,bonus_id=13534,ilevel=289,gem_id=240900,enchant_id=7969
 finger2=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,ilevel=289,gem_id=240900/240900,enchant_id=7969
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
 trinket2=vaelgors_final_stare,id=249346,ilevel=289
-main_hand=lightless_lament,id=260408,bonus_id=4786/4800/12806,enchant_id=7983
-off_hand=spellbreakers_warglaive,id=237840,bonus_id=8960/12066/12214/12214/12693/13622/13667/9627,ilevel=285,enchant_id=8041,crafted_stats=49/36
+main_hand=lightless_lament,id=260408,bonus_id=4786/4800/12806,enchant_id=8041
+off_hand=spellbreakers_warglaive,id=237840,bonus_id=8960/12066/12214/12214/12214/12214/12214/12693/13622/13667/9627,ilevel=285,enchant_id=7983,crafted_stats=49/36
 
 save=MID1_Demon_Hunter_Devourer.simc
 
