@@ -18198,6 +18198,9 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 #3 (id=1290065)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+#4 (id=1314791)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
+Hotfixed         : NEW EFFECT
 Description      : Unload a series of ${($d/$t1)+1} shotgun blasts $s3 yds in front of you, dealing ${$1261215s1*4} Physical damage over $d. Deals reduced damage beyond $s2 targets.
 
 Name             : Boomstick (id=1261215) [Spell Family (9)] 
