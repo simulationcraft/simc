@@ -9,6 +9,9 @@ on:
       is-ptr:
         type: boolean
         required: true
+      spec-matrix:
+        type: string
+        required: true
 
 jobs:
   spec-test:
@@ -20,43 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        spec:
-          [
-            deathknight_blood,
-            deathknight_unholy,
-            deathknight_frost,
-            demonhunter_devourer,
-            demonhunter_havoc,
-            demonhunter_vengeance,
-            druid_balance,
-            druid_feral,
-            druid_guardian,
-            druid_restoration,
-            evoker_devastation,
-            evoker_augmentation,
-            hunter_beast_mastery,
-            hunter_marksmanship,
-            hunter_survival,
-            mage_arcane,
-            mage_fire,
-            mage_frost,
-            monk_brewmaster,
-            monk_windwalker,
-            paladin_protection,
-            paladin_retribution,
-            priest_shadow,
-            rogue_assassination,
-            rogue_outlaw,
-            rogue_subtlety,
-            shaman_elemental,
-            shaman_enhancement,
-            warlock_affliction,
-            warlock_demonology,
-            warlock_destruction,
-            warrior_arms,
-            warrior_fury,
-            warrior_protection,
-          ]
+        spec: ${{ fromJson(inputs.spec-matrix) }}
 
     env:
       UBSAN_OPTIONS: print_stacktrace=1
