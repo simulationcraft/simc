@@ -1927,9 +1927,10 @@ Effects          :
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
                    Family Flags: 7
 #10 (id=1193929) : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
                    Family Flags: 7
+Hotfixed         : Base Value (-25 -> -50)
 Description      : Transform into a colossus, increasing all damage you deal by $s1% $?c1[and reducing damage you take from area of effect attacks by $s6% ]?c2[and increasing your movement speed by $s7% ]?c3[and reducing all damage you take by $s8% ][]for $d.
 Tooltip          : Damage done increased by $s1%.
 
