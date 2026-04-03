@@ -11980,42 +11980,42 @@ void druid_t::apl_default()
 // Action Priority Lists ========================================
 void druid_t::apl_feral()
 {
-#include "class_modules/apl/feral_apl.inc"
+#include "class_modules/apl/druid/feral_apl.inc"
 }
 
 void druid_t::apl_feral_ptr()
 {
-#include "class_modules/apl/feral_apl_ptr.inc"
+#include "class_modules/apl/druid/feral_apl_ptr.inc"
 }
 
 void druid_t::apl_balance()
 {
-#include "class_modules/apl/balance_apl.inc"
+#include "class_modules/apl/druid/balance_apl.inc"
 }
 
 void druid_t::apl_balance_ptr()
 {
-#include "class_modules/apl/balance_apl_ptr.inc"
+#include "class_modules/apl/druid/balance_apl_ptr.inc"
 }
 
 void druid_t::apl_guardian()
 {
-#include "class_modules/apl/guardian_apl.inc"
+#include "class_modules/apl/druid/guardian_apl.inc"
 }
 
 void druid_t::apl_guardian_ptr()
 {
-#include "class_modules/apl/guardian_apl_ptr.inc"
+#include "class_modules/apl/druid/guardian_apl_ptr.inc"
 }
 
 void druid_t::apl_restoration()
 {
-#include "class_modules/apl/restoration_druid_apl.inc"
+#include "class_modules/apl/druid/restoration_druid_apl.inc"
 }
 
 void druid_t::apl_restoration_ptr()
 {
-#include "class_modules/apl/restoration_druid_apl_ptr.inc"
+#include "class_modules/apl/druid/restoration_druid_apl_ptr.inc"
 }
 
 // druid_t::init_scaling ====================================================
@@ -14127,11 +14127,11 @@ void druid_t::parse_action_effects( action_t* action )
   // Balance
   _a->parse_effects( mastery.astral_invocation,
                      // arcane passive mastery (eff#1) applies to orbital strike, goldrinn's fang (label 2391)
-                     // and lunar bolt (1263137)
-                     affect_list_t( 1 ).add_label( 2391 ).add_spell( 1263137 ),
+                     // lunar bolt (1263137), meteorites (1240913)
+                     affect_list_t( 1 ).add_label( 2391 ).add_spell( 1263137, 1240913 ),
                      // nature passive mastery (eff#3) applies to orbital strike, goldrinn's fang (label 2391)
-                     // and dream burst (433850) and solar bolt (1261573)
-                     affect_list_t( 3 ).add_label( 2391 ).add_spell( 433850 ).add_spell( 1261573 ) );
+                     // and dream burst (433850), solar bolt (1261573), and meteorites (1240913)
+                     affect_list_t( 3 ).add_label( 2391 ).add_spell( 433850, 1261573, 1240913 ) );
 
   _a->parse_effects( buff.ascendant_fires );  // consumption handled within starfire_base_t/wrath_base_t
   _a->parse_effects( buff.ascendant_stars, CONSUME_BUFF );
@@ -14151,17 +14151,17 @@ void druid_t::parse_action_effects( action_t* action )
   // instead of data value
   _a->parse_effects( buff.eclipse_lunar, effect_mask_t( true ).disable( 1, 2 ) );
   _a->parse_effects( buff.eclipse_lunar, effect_mask_t( false ).enable( 1, 2 ), USE_CURRENT,
-                     // damage (eff#1) applies to orbital strike, goldrinn's fang (label 2391)
-                     // and lunar bolt (1263137)
-                     affect_list_t( 1 ).add_label( 2391 ).add_spell( 1263137 ) );
+                     // damage (eff#1) applies to orbital strike, goldrinn's fang (label 2391),
+                     // lunar bolt (1263137), and meteorites (1240913)
+                     affect_list_t( 1 ).add_label( 2391 ).add_spell( 1263137, 1240913 ) );
 
   // due to harmony of the heavens, we parse the damage effects (#1/#2) separately and use the current buff value
   // instead of data value
   _a->parse_effects( buff.eclipse_solar, effect_mask_t( true ).disable( 1, 2 ) );
   _a->parse_effects( buff.eclipse_solar, effect_mask_t( false ).enable( 1, 2 ), USE_CURRENT,
                      // damage (eff#1) applies to orbital strike, goldrinn's fang (label 2391)
-                     // and dream burst (433850) and solar bolt (1261573)
-                     affect_list_t( 1 ).add_label( 2391 ).add_spell( 433850 ).add_spell( 1261573 ) );
+                     // and dream burst (433850), solar bolt (1261573), and meteorites (1240913)
+                     affect_list_t( 1 ).add_label( 2391 ).add_spell( 433850, 1261573, 1240913 ) );
 
   _a->parse_effects( buff.elunes_challenge );
 
