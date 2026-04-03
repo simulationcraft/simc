@@ -108,25 +108,25 @@ jobs:
             local file="$1"
 
             case "$file" in
-              engine/class_modules/sc_death_knight.cpp|engine/class_modules/apl/apl_death_knight.*|engine/class_modules/apl/death_knight/*)
+              engine/class_modules/sc_death_knight.cpp|engine/class_modules/apl/apl_death_knight.*)
                 mark_class_changed deathknight
                 ;;
               engine/class_modules/sc_demon_hunter.cpp|engine/class_modules/apl/apl_demon_hunter.*|engine/class_modules/apl/demon_hunter/*)
                 mark_class_changed demonhunter
                 ;;
-              engine/class_modules/sc_druid.cpp|engine/class_modules/apl/balance_apl*.inc|engine/class_modules/apl/feral_apl*.inc|engine/class_modules/apl/guardian_apl*.inc|engine/class_modules/apl/restoration_druid_apl*.inc)
+              engine/class_modules/sc_druid.cpp|engine/class_modules/apl/druid/*)
                 mark_class_changed druid
                 ;;
               engine/class_modules/sc_evoker.cpp|engine/class_modules/apl/apl_evoker.*)
                 mark_class_changed evoker
                 ;;
-              engine/class_modules/sc_hunter.cpp|engine/class_modules/apl/apl_hunter.*|engine/class_modules/apl/hunter/*)
+              engine/class_modules/sc_hunter.cpp|engine/class_modules/apl/apl_hunter.*)
                 mark_class_changed hunter
                 ;;
               engine/class_modules/sc_mage.cpp|engine/class_modules/apl/mage.*)
                 mark_class_changed mage
                 ;;
-              engine/class_modules/monk/*|engine/class_modules/apl/apl_monk.cpp)
+              engine/class_modules/monk/*|engine/class_modules/apl/apl_monk.*)
                 mark_class_changed monk
                 ;;
               engine/class_modules/paladin/*|engine/class_modules/apl/apl_paladin.*)
@@ -135,7 +135,7 @@ jobs:
               engine/class_modules/priest/*|engine/class_modules/apl/apl_priest.*)
                 mark_class_changed priest
                 ;;
-              engine/class_modules/sc_rogue.cpp|engine/class_modules/apl/apl_rogue.*|engine/class_modules/apl/rogue/*)
+              engine/class_modules/sc_rogue.cpp|engine/class_modules/apl/apl_rogue.*)
                 mark_class_changed rogue
                 ;;
               engine/class_modules/sc_shaman.cpp|engine/class_modules/apl/apl_shaman.*|engine/class_modules/apl/shaman/*)
