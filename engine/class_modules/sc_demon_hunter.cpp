@@ -5824,8 +5824,6 @@ struct consume_t : public consume_base_t
   }
 };
 
-// 0/3/17 TOCHECK: Voidblade currently does not trigger burning blades even after getting removed from Felblade
-
 struct voidblade_base_t : public burning_blades_ptr_trigger_t<voidrush_trigger_t<hungering_slash_trigger_t<demon_hunter_spell_t>>>
 {
   struct voidblade_damage_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
