@@ -28672,7 +28672,7 @@ static constexpr std::array<spelltext_data_t, 28691> __ptr_spelltext_data { {
   { 1291946, "Restores up to $s1% of your maximum health and mana every second over $d. Must remain seated while eating.", "Restoring $s1% health and $1290929w1% mana every second.", 0 },
   { 1292031, "$@spelldesc1278886", 0, 0 },
   { 1292058, "$@spelldesc1269307", "Damage bonus of your next Colossus Smash increased by $w1%.", 0 },
-  { 1292071, "Enemies damaged by Phalanx's wave of force deal ${$s1}.1% reduced damage to you for $d.\r\n", "Dealing ${$W1/-1}.1% reduced damage to $@auracaster.", 0 },
+  { 1292071, "Enemies damaged by Phalanx's wave of force deal ${$s1/-1}.1% reduced damage to you for $d.\r\n", "Dealing ${$W1/-1}.1% reduced damage to $@auracaster.", 0 },
   { 1292687, "$@spelldesc1253172", "Generating ${$s1*$d} Focus over $d.", 0 },
   { 1292874, "$@spelldesc1262076", "Stunned", 0 },
   { 1292919, "$@spelldesc450529", "Dealing $w1 damage per second.", 0 },
@@ -28694,8 +28694,9 @@ static constexpr std::array<spelltext_data_t, 28691> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.5.66741
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
   {  436358,  0, "Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 of it. Deals reduced damage beyond $s1 targets.\r\n\r\nWhile channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.\r\n\r\nYou can block, parry, dodge, and use certain defensive abilities while channeling Demolish.", "Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 yds of it. Deals reduced damage beyond $s1 targets.\r\n\r\nWhile channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.\r\n\r\nYou can block, parry, dodge, and use certain defensive abilities while channeling Demolish." },
+  { 1292071,  0, "Enemies damaged by Phalanx's wave of force deal ${$s1}.1% reduced damage to you for $d.\r\n", "Enemies damaged by Phalanx's wave of force deal ${$s1/-1}.1% reduced damage to you for $d.\r\n" },
 } };
 
 // Spell description variables, wow build 12.0.5.66741
