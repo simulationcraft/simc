@@ -8665,6 +8665,10 @@ struct blood_boil_t final : public death_knight_spell_t
 
     if ( p()->buffs.boiling_point->up() )
     {
+      // If boiling point echo is already up, we expire it to force it to fire, and queue up a new one
+      // Of note, this means the casting BB, as well as the expired echo BB benefit from the buff
+      if( p()->buffs.boiling_point_echo->up() )
+        p()->buffs.boiling_point_echo->expire();
       p()->buffs.boiling_point->expire();
       p()->buffs.boiling_point_echo->trigger();
     }
