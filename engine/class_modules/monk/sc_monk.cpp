@@ -2205,11 +2205,11 @@ struct keg_smash_t : monk_melee_attack_t
       if ( target_count == 1 )
         return;
 
-      auto chain_state = debug_cast<state_t *>( get_state( state ) );
-
-      if ( ++chain_state->count == data().effectN( 1 ).chain_target() )
+      if ( debug_cast<state_t *>( state )->count + 1 == data().effectN( 1 ).chain_target() )
         return;
 
+      auto chain_state = debug_cast<state_t *>( get_state( state ) );
+      chain_state->count += 1;
       chain_state->target = tl[ chain_state->count % target_count ];
 
       snapshot_state( chain_state, amount_type( chain_state ) );
