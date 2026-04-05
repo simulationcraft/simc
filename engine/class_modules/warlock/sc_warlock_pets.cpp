@@ -798,23 +798,27 @@ void wild_imp_pet_t::demise()
       }
     }
 
-    if ( !power_siphon )
+    if ( o()->talents.demoniac.ok() )
     {
-      // NOTE: 2026-03-06 It has been tested that Demoniac (Wild Imps) follows a Flat % chance model for each imp
-      double core_chance = o()->talents.demonic_core_spell->effectN( 1 ).percent();
-
-      if ( imploded )
+      if ( !power_siphon )
       {
-        core_chance += o()->hero.sataiels_volition->effectN( 3 ).percent();
+        if ( imploded )
+        {
+          if ( o()->flat_rng.demoniac_imp_implosion->trigger() )
+          {
+            o()->buffs.demonic_core->trigger();
+            o()->procs.demonic_core_imps_implosion->occur();
+          }
+        }
+        else
+        {
+          if ( o()->prd_rng.demoniac_imp_fade->trigger() )
+          {
+            o()->buffs.demonic_core->trigger();
+            o()->procs.demonic_core_imps_fade->occur();
+          }
+        }
       }
-
-      if ( !o()->talents.demoniac.ok() )
-        core_chance = 0.0;
-
-      bool success = o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), core_chance );
-
-      if ( success )
-        o()->procs.demonic_core_imps->occur();
     }
 
     // Manual handling of Hellbent Commander buff for Wild Imps

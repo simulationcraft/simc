@@ -1505,10 +1505,14 @@ using namespace helpers;
           {
             p()->procs.fatal_echoes->occur();
             make_event( sim, 1_ms, [ this, t = d->state->target ] {
+              const bool prev_ua_ticking = td( t )->dots.unstable_affliction->is_ticking();
               this->set_target( t );
               this->is_fatal_echoes_execute = true;
               this->execute();
               this->is_fatal_echoes_execute = false;
+              // When UA is applied by Fatal Echoes, Cascading Calamity is also triggered
+              if ( p()->talents.cascading_calamity.ok() && !prev_ua_ticking )
+                p()->buffs.cascading_calamity->trigger();
             } );
           }
         }
@@ -1903,7 +1907,7 @@ using namespace helpers;
     struct agony_mg_t : public mg_extra_tick_base_t
     {
       agony_mg_t( warlock_t* p )
-        : mg_extra_tick_base_t( "Agony (Malefic Grasp)", p, ( p->talents.malefic_grasp.ok() && p->talents.agony->ok() ) ? p->talents.agony_mg : spell_data_t::not_found() )
+        : mg_extra_tick_base_t( "Agony (Malefic Grasp)", p, ( p->talents.malefic_grasp.ok() && p->talents.agony.ok() ) ? p->talents.agony_mg : spell_data_t::not_found() )
       {
         // NOTE: 2026-02-20 Agony (Malefic Grasp) extra tick is not whitelisted in the Direct Damage component of many effects
         // (Summoner's Embrace, Niskaran Methods, Mastery: Potent Afflictions), and others don't even have this effect currently
@@ -1980,7 +1984,7 @@ using namespace helpers;
 
       if ( p->talents.malefic_grasp.ok() )
       {
-        if ( p->talents.agony->ok() )
+        if ( p->talents.agony.ok() )
         {
           agony_mg = new agony_mg_t( p );
           add_child( agony_mg );

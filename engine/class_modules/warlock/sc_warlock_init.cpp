@@ -185,7 +185,7 @@ namespace warlock
     talents.malefic_grasp = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Grasp" ); // Should be ID 1261149
     talents.malefic_grasp_2 = conditional_spell_lookup( talents.malefic_grasp.ok(), 1261153 );
     talents.malefic_grasp_3 = conditional_spell_lookup( talents.malefic_grasp.ok(), 1279659 );
-    talents.agony_mg = conditional_spell_lookup( talents.malefic_grasp.ok() && talents.agony->ok(), 1261166 );
+    talents.agony_mg = conditional_spell_lookup( talents.malefic_grasp.ok() && talents.agony.ok(), 1261166 );
     talents.unstable_affliction_mg = conditional_spell_lookup( talents.malefic_grasp.ok() && talents.unstable_affliction.ok(), 1261176 );
     talents.corruption_mg = conditional_spell_lookup( talents.malefic_grasp.ok(), 1261158 );
     talents.wither_mg = conditional_spell_lookup( talents.malefic_grasp.ok(), 1279686 );
@@ -1075,7 +1075,8 @@ namespace warlock
   void warlock_t::init_procs_demonology()
   {
     procs.demonic_core_dogs = get_proc( "demonic_core_dogs" );
-    procs.demonic_core_imps = get_proc( "demonic_core_imps" );
+    procs.demonic_core_imps_fade = get_proc( "demonic_core_imps_fade" );
+    procs.demonic_core_imps_implosion = get_proc( "demonic_core_imps_implosion" );
     procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
     procs.infernal_rapidity = get_proc( "infernal_rapidity" );
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
@@ -1244,6 +1245,19 @@ namespace warlock
 
   void warlock_t::init_rng_demonology()
   {
+    if ( talents.demoniac.ok() )
+    {
+      // Modeling Demoniac (Wild Imp fade) as a pseudo-random distribution (PRD) with a nominal rate of 10% and a hard cap of 21 attempts.
+      // The corresponding PRD constant, calculated with that cap included, is C = 0.014559015812945588.
+      int demoniac_imp_fade_hardcap = static_cast<int>( rng_settings.demoniac_imp_fade_hard_cap.setting_value );
+      double c_dwif = prd::find_constant( talents.demonic_core_spell->effectN( 1 ).percent(), demoniac_imp_fade_hardcap );
+      prd_rng.demoniac_imp_fade = get_accumulated_rng( "demoniac_imp_fade", c_dwif, demoniac_imp_fade_hardcap );
+
+      // NOTE: 2026-04-05 It has been tested that Demoniac (Wild Imp implosion) follows a Flat % chance model for each wild imp imploded
+      double demoniac_imp_implosion_chance = talents.demonic_core_spell->effectN( 1 ).percent() + hero.sataiels_volition->effectN( 3 ).percent();
+      flat_rng.demoniac_imp_implosion = get_simple_proc_rng( "demoniac_imp_implosion", demoniac_imp_implosion_chance);
+    }
+
     // NOTE: 2026-03-06 It has been tested that Carnivorous Stalkers follows a Flat % chance model for each individual melee hit
     if ( talents.carnivorous_stalkers.ok() )
       flat_rng.carnivorous_stalkers = get_simple_proc_rng( "carnivorous_stalkers", talents.carnivorous_stalkers->effectN( 1 ).percent() );

@@ -210,9 +210,9 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     default_pet(),
     disable_auto_felstorm( false ),
     normalize_destruction_mastery( false ),
-    eye_explosion_instanced_bug_cb( true ),
-    eye_explosion_instanced_bug_sb( true ),
-    eye_explosion_instanced_bug_rof( false ),
+    eye_explosion_instanced_bug_cb( false ),
+    eye_explosion_instanced_bug_sb( false ),
+    eye_explosion_instanced_bug_rof( true ),
     fel_armaments_extra_effect_bug( false ),
     tyrant_antoran_armaments_target_mul( 1.0 )
 {
@@ -484,13 +484,13 @@ std::string warlock_t::create_profile( save_e stype )
     if ( normalize_destruction_mastery )
       profile_str +=
           "warlock.normalize_destruction_mastery=" + util::to_string( as<int>( normalize_destruction_mastery ) ) + "\n";
-    if ( !eye_explosion_instanced_bug_cb )
+    if ( eye_explosion_instanced_bug_cb )
       profile_str +=
           "warlock.eye_explosion_instanced_bug_cb=" + util::to_string( as<int>( eye_explosion_instanced_bug_cb ) ) + "\n";
-    if ( !eye_explosion_instanced_bug_sb )
+    if ( eye_explosion_instanced_bug_sb )
       profile_str +=
           "warlock.eye_explosion_instanced_bug_sb=" + util::to_string( as<int>( eye_explosion_instanced_bug_sb ) ) + "\n";
-    if ( eye_explosion_instanced_bug_rof )
+    if ( !eye_explosion_instanced_bug_rof )
       profile_str +=
           "warlock.eye_explosion_instanced_bug_rof=" + util::to_string( as<int>( eye_explosion_instanced_bug_rof ) ) + "\n";
     if ( fel_armaments_extra_effect_bug )

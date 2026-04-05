@@ -356,7 +356,7 @@ public:
     const spell_data_t* grimoire_of_sacrifice_proc; // Damage data is here, but RPPM of proc trigger is in buff data
 
     // Affliction
-    const spell_data_t* agony;
+    player_talent_t agony;
     player_talent_t unstable_affliction;
     const spell_data_t* unstable_affliction_2; // Soul Shard on demise (learned automatically)
     player_talent_t seed_of_corruption;
@@ -899,7 +899,8 @@ public:
 
     // Demonology
     proc_t* demonic_core_dogs;
-    proc_t* demonic_core_imps;
+    proc_t* demonic_core_imps_fade;
+    proc_t* demonic_core_imps_implosion;
     proc_t* carnivorous_stalkers;
     proc_t* infernal_rapidity;
     proc_t* spiteful_reconstitution;
@@ -976,12 +977,14 @@ public:
     accumulated_rng_t* succulent_soul;
     accumulated_rng_t* manifested_avarice;
     accumulated_rng_t* feast_of_souls;
+    accumulated_rng_t* demoniac_imp_fade;
     accumulated_rng_t* spiteful_reconstitution;
   } prd_rng;
 
   struct flat_rng_t
   {
     simple_proc_t* immolate_crit_energize; // TODO: Need to check the type of rng
+    simple_proc_t* demoniac_imp_implosion;
     simple_proc_t* carnivorous_stalkers;
     simple_proc_t* infernal_rapidity;
     simple_proc_t* demonfire_infusion_dot; // TODO: Need to check the type of rng
@@ -1011,6 +1014,7 @@ public:
     rng_setting_t cunning_cruelty_ds = { 0.25, 0.25, "cunning_cruelty_ds" };
 
     // Demonology
+    rng_setting_t demoniac_imp_fade_hard_cap = { 21.0, 21.0, "demoniac_imp_fade_hard_cap" };
     rng_setting_t spiteful_reconstitution = { 0.10, 0.10, "spiteful_reconstitution" };
     rng_setting_t spiteful_reconstitution_hard_cap = { 21.0, 21.0, "spiteful_reconstitution_hard_cap" };
     rng_setting_t demonic_knowledge_rank1_cards = { 10.0, 10.0, "demonic_knowledge_rank1_cards" };
@@ -1044,6 +1048,7 @@ public:
       f( nightfall );
       f( cunning_cruelty_sb );
       f( cunning_cruelty_ds );
+      f( demoniac_imp_fade_hard_cap );
       f( spiteful_reconstitution );
       f( spiteful_reconstitution_hard_cap );
       f( demonic_knowledge_rank1_cards );
