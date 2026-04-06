@@ -21051,6 +21051,7 @@ Effects          :
 Description      : $@spelldesc1264799
 
 Name             : Blighted (id=1271199) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -21062,7 +21063,7 @@ Internal Cooldown: 0.5 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Not In Spellbook (143)
+Attributes       : No Aura Cancel (31), Not In Spellbook (143)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1283776)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
