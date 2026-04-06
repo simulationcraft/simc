@@ -1612,11 +1612,10 @@ void gaze_of_the_alnseer( special_effect_t& effect )
                   ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
 
   auto alnsight          = new special_effect_t( effect.player );
-  alnsight->name_str     = "alnsight_proc";
   alnsight->item         = effect.item;
   alnsight->spell_id     = alnsight_spell->id();
   alnsight->custom_buff  = stat;
-  alnsight->proc_flags2_ = PF2_LANDED;
+  alnsight->proc_flags2_ = PF2_ALL_HIT;
   effect.player->special_effects.push_back( alnsight );
 
   struct alnsight_cb_t : public dbc_proc_callback_t
@@ -1665,6 +1664,7 @@ void gaze_of_the_alnseer( special_effect_t& effect )
 
   alnsight_cb->activate_with_buff( buff, true );
 
+  effect.name_str = "gaze_of_the_alnseer";  // trigger has it's own cb so explicitly name the driver
   effect.custom_buff = buff;
 
   struct gaze_of_the_alnseer_cb_t : public dbc_proc_callback_t
