@@ -40,6 +40,9 @@ void warlock_pet_t::create_buffs()
   buffs.imp_gang_boss = make_buff( this, "imp_gang_boss", o()->talents.imp_gang_boss_buff )
                             ->set_default_value_from_effect( 2 );
 
+  buffs.infernal_command = make_buff( o(), "infernal_command", o()->warlock_base.infernal_command_buff )
+                               ->set_default_value( o()->warlock_base.infernal_command_buff->effectN( 1 ).percent() ); // buff source is the player
+
   buffs.unstable_soul = make_buff( this, "unstable_soul", o()->talents.unstable_soul_buff )
                             ->set_default_value_from_effect( 1 );
 
@@ -70,10 +73,12 @@ void warlock_pet_t::create_buffs()
                                 o()->buffs.pet_movement->trigger();
                               else if ( cur < prev )
                                 o()->buffs.pet_movement->decrement();
-                            } );
+                            } )
+                          ->set_proc_callbacks( false );
 
   // These buffs are needed for operational purposes but serve little to no reporting purpose
   buffs.imp_gang_boss->quiet = true;
+  buffs.infernal_command->quiet = true;
   buffs.unstable_soul->quiet = true;
   buffs.ferocity_of_fharg->quiet = true;
   buffs.grimoire_of_service->quiet = true;
@@ -774,6 +779,10 @@ void wild_imp_pet_t::arise()
   if ( bugs && o()->talents.hellbent_commander.ok() )
     o()->buffs.hellbent_commander->trigger();
 
+  // Set initial timers for Infernal Command buff sequence of events
+  infernal_command_ev_ts = sim->current_time() + 5045_ms;
+  infernal_command_ev_offset = o()->wild_imp_ic_shared_offset;
+
   // Start casting fel firebolts
   firebolt->set_target( o()->target );
   firebolt->schedule_execute();
@@ -1268,9 +1277,11 @@ void vilefiend_t::create_buffs()
 {
   warlock_simple_pet_t::create_buffs();
 
-  mark_of_shatug = make_buff<buff_t>( this, "mark_of_shatug" );
+  mark_of_shatug = make_buff<buff_t>( this, "mark_of_shatug", o()->talents.mark_of_shatug )
+                       ->set_proc_callbacks( false );
 
-  mark_of_fharg = make_buff<buff_t>( this, "mark_of_fharg" );
+  mark_of_fharg = make_buff<buff_t>( this, "mark_of_fharg", o()->talents.mark_of_fharg )
+                      ->set_proc_callbacks( false );
 
   auto damage = new infernal_presence_t( this );
 

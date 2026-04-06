@@ -59,7 +59,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs.lake_of_fire = make_buff( *this, "lake_of_fire", p.talents.lake_of_fire_debuff )
                              ->set_default_value_from_effect( 1 )
                              ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                             ->set_max_stack( 1 );
+                             ->set_max_stack( 1 )
+                             ->set_proc_callbacks( false );
 
   debuffs.shadowburn = make_buff( *this, "shadowburn", p.talents.shadowburn )
                            ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
@@ -102,7 +103,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                ->set_freeze_stacks( true );
 
   debuffs.wither = make_buff( *this, "wither", p.hero.wither_dot )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION ); // Dummy debuff
+                       ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                       ->set_proc_callbacks( false ); // Dummy debuff
 
   // Soul Harvester
   dots.soul_anathema = target->get_dot( "soul_anathema", &p );
@@ -195,6 +197,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     havoc_spells(),
     diabolic_ritual( 0 ),
     demonic_art_buff_replaced( false ),
+    wild_imp_ic_shared_offset(),
     n_active_pets( 0 ),
     warlock_pet_list( this ),
     talents(),
@@ -251,6 +254,14 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
       assert( ( buffs.hellbent_commander->check() == expected_stacks ) && "Incorrent Demon Count for Hellbent Commander" );
     }
 
+    if ( bugs && talents.fel_armaments.ok() )
+    {
+      // On each Heartbeat, the player periodically applies a hidden Fel Armaments aura to the Felguard, triggering procs
+      auto active_pet = warlock_pet_list.active;
+      if ( active_pet && active_pet->pet_type == PET_FELGUARD )
+        this->trigger_aura_applied_callbacks( talents.fel_armaments_2, active_pet );
+    }
+
     for ( auto pet : active_pets )
     {
       auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
@@ -271,6 +282,40 @@ const spell_data_t* warlock_t::conditional_spell_lookup( bool fn, int id )
     return spell_data_t::not_found();
 
   return find_spell( id );
+}
+
+void warlock_t::trigger_callbacks( proc_types pt, proc_types2 pt2, action_t* action, action_state_t* state, proc_trigger_type_e pt_type )
+{
+  assert( action && state && state->target );
+  if ( pt == PROC1_NONE_HELPFUL && pt2 == PROC2_LANDED )
+    pt2 = PROC2_HIT;
+
+  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], action->proc_data, this, state->target, state, pt_type );
+}
+
+void warlock_t::trigger_callbacks( proc_types pt, proc_types2 pt2, buff_t* buff, proc_trigger_type_e pt_type )
+{
+  assert( buff && buff->player );
+  if ( pt == PROC1_NONE_HELPFUL && pt2 == PROC2_LANDED )
+    pt2 = PROC2_HIT;
+
+  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], buff->proc_data, this, buff->player, nullptr, pt_type );
+}
+
+void warlock_t::trigger_callbacks( proc_types pt, proc_types2 pt2, const proc_data_t& data, player_t* t, proc_trigger_type_e pt_type )
+{
+  assert( t );
+  if ( pt == PROC1_NONE_HELPFUL && pt2 == PROC2_LANDED )
+    pt2 = PROC2_HIT;
+
+  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], data, this, t, nullptr, pt_type );
+}
+
+void warlock_t::trigger_aura_applied_callbacks( const proc_data_t& data, player_t* t )
+{
+  assert( t );
+
+  trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, data, t, TRIGGER_AURA_APPLIED );
 }
 
 bool warlock_t::affliction() const
@@ -305,18 +350,35 @@ void warlock_t::init_assessors()
 {
   player_t::init_assessors();
 
-  auto assessor_fn = [ this ]( result_amount_type, action_state_t* s ){
+  // Assessor responsible for handling the accumulated damage in SoC for the explosion
+  auto assessor_soc_fn = [ this ]( result_amount_type, action_state_t* s ) {
     if ( get_target_data( s->target )->dots.seed_of_corruption->is_ticking() )
       accumulate_seed_of_corruption( get_target_data( s->target ), s->result_total );
 
     return assessor::CONTINUE;
   };
 
-  assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+  assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_soc_fn );
 
   for ( auto pet : pet_list )
   {
-    pet->assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+    pet->assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_soc_fn );
+  }
+
+  if ( hero.shared_fate.ok() || hero.feast_of_souls.ok() )
+  {
+    assert( hero.marked_soul->ok() );
+    // Assessor used with Soul Harvester to handle proc triggers (trinkets, enchants, ...) from damage-over-time effects
+    auto assessor_sh_fn = [ this ]( result_amount_type amount_type, action_state_t* s ) {
+      // Soul Harvester seems to have some hidden trigger tied to damage-over-time effects
+      // We assume this trigger is Marked Soul and that it is only active when Shared Fate or Feast of Souls is selected
+      if ( amount_type == result_amount_type::DMG_OVER_TIME )
+        trigger_aura_applied_callbacks( hero.marked_soul, s->target );
+
+      return assessor::CONTINUE;
+    };
+
+    assessor_out_damage.add ( assessor::TARGET_DAMAGE + 1, assessor_sh_fn );
   }
 }
 
@@ -325,6 +387,39 @@ void warlock_t::init_finished()
   parse_player_effects();
 
   player_t::init_finished();
+
+  // 2026-04-06: The Infernal Command (IC) buff is applied/faded periodically every ~5.25 seconds, with some variance.
+  // The timing of IC buff events starts independently for each imp when it spawns, rather than following a single global
+  // heartbeat window. However, nearby applications/fades do appear to cluster within small time windows.
+  // In-game testing suggests this can be modeled fairly closely using a global periodic window (~0.42s) and some variance.
+  // The current value of this buff is 0, so it does not provide any damage increase.
+  // It is still relevant, however, because applying the buff can trigger trinkets and other proc effects.
+  if ( demonology() )
+  {
+    make_event( sim, rng().range( 0_ms, 420_ms ), [ this ]() {
+      make_repeating_event( sim, 420_ms, [ this ]() {
+        auto active_pet = warlock_pet_list.active;
+        if ( active_pet && active_pet->pet_type == PET_FELGUARD )
+        {
+          wild_imp_ic_shared_offset = timespan_t::from_millis( rng().range( -267, 267 ) );
+          auto imps = warlock_pet_list.wild_imps.active_pets();
+          for ( auto imp : imps )
+          {
+            if ( sim->current_time() >= ( imp->infernal_command_ev_ts + imp->infernal_command_ev_offset ) )
+            {
+              if ( imp->buffs.infernal_command->check() )
+                imp->buffs.infernal_command->decrement();
+              else
+                imp->buffs.infernal_command->trigger();
+
+              imp->infernal_command_ev_ts += 5250_ms;
+              imp->infernal_command_ev_offset = wild_imp_ic_shared_offset;
+            }
+          }
+        }
+      } );
+    } );
+  }
 }
 
 void warlock_t::invalidate_cache( cache_e c )

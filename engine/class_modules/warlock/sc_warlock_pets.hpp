@@ -83,6 +83,7 @@ struct warlock_pet_t : public pet_t
   {
     propagate_const<buff_t*> embers; // Infernal Shard Generation
     propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
+    propagate_const<buff_t*> infernal_command; // Aura applied to Wild Imps periodically
     propagate_const<buff_t*> unstable_soul;
     propagate_const<buff_t*> ferocity_of_fharg;
     propagate_const<buff_t*> demonic_power;
@@ -425,6 +426,8 @@ struct wild_imp_pet_t : public warlock_pet_t
   bool is_hog_imp;
   bool power_siphon;
   bool imploded;
+  timespan_t infernal_command_ev_ts;
+  timespan_t infernal_command_ev_offset;
 
   wild_imp_pet_t( warlock_t* );
   void init_base_stats() override;

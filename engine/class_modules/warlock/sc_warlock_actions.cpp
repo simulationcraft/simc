@@ -842,6 +842,9 @@ using namespace helpers;
           p()->feast_of_souls_gain();
       }
 
+      // Shadow Bolt energize spell triggers procs
+      p()->trigger_aura_applied_callbacks( p()->warlock_base.shadow_bolt_energize, p() );
+
       if ( time_to_execute == 0_ms )
         p()->buffs.nightfall->decrement();
     }
@@ -1058,6 +1061,12 @@ using namespace helpers;
             p()->procs.nightfall->occur();
             p()->buffs.nightfall->trigger();
           }
+          if ( p()->talents.siphon_life.ok() || ( p()->hero.seeds_of_their_demise.ok() && d->target->health_percentage() <= p()->hero.seeds_of_their_demise->effectN( 2 ).base_value() ) )
+          {
+            // Affliction Wither DoT ticks trigger procs when talented into Siphon Life
+            // Affliction Wither DoT ticks also trigger procs when attempting to start a collapse via Seeds of Their Demise
+            p()->trigger_aura_applied_callbacks( s_data, p() );
+          }
         }
 
         if ( destruction() )
@@ -1067,7 +1076,7 @@ using namespace helpers;
 
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither );
 
-          if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
+          if ( p()->talents.flashpoint.ok() && d->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
             p()->buffs.flashpoint->trigger();
 
           if ( p()->talents.demonfire_infusion.ok() && p()->flat_rng.demonfire_infusion_dot->trigger() )
@@ -1075,6 +1084,9 @@ using namespace helpers;
             p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
             p()->procs.demonfire_infusion_dot->occur();
           }
+
+          // Destruction Wither DoT ticks trigger procs through some hidden trigger
+          p()->trigger_aura_applied_callbacks( s_data, p() );
         }
 
         // Seeds of their Demise collapse conditions must be checked periodically for every Wither tick
@@ -1413,11 +1425,16 @@ using namespace helpers;
     void tick( dot_t* d ) override
     {
       if ( p()->progress_rng.agony_energize->trigger( d->state ) )
+      {
         p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
+
+        // Agony energize spell triggers procs
+        p()->trigger_aura_applied_callbacks( p()->talents.agony_energize, p() );
+      }
 
       warlock_spell_t::tick( d );
 
-      td( d->state->target )->dots.agony->increment( 1 );
+      d->increment( 1 );
     }
   };
 
@@ -1497,14 +1514,14 @@ using namespace helpers;
 
       warlock_spell_t::last_tick( d );
 
-      if ( p()->talents.fatal_echoes.ok() && !d->state->target->is_sleeping() )
+      if ( p()->talents.fatal_echoes.ok() && !d->target->is_sleeping() )
       {
         for ( int i = 0; i < stacks; i++ )
         {
           if ( p()->prd_rng.fatal_echoes->trigger() )
           {
             p()->procs.fatal_echoes->occur();
-            make_event( sim, 1_ms, [ this, t = d->state->target ] {
+            make_event( sim, 1_ms, [ this, t = d->target ] {
               const bool prev_ua_ticking = td( t )->dots.unstable_affliction->is_ticking();
               this->set_target( t );
               this->is_fatal_echoes_execute = true;
@@ -2076,7 +2093,7 @@ using namespace helpers;
           volley->execute_on_target( d->target );
         }
 
-        warlock_td_t* tdata = td( d->state->target );
+        warlock_td_t* tdata = td( d->target );
         if ( !tdata )
           return;
 
@@ -2744,6 +2761,9 @@ using namespace helpers;
         {
           p()->warlock_pet_list.wild_imps.spawn( p()->warlock_base.wild_imp_2->duration(), 1u );
           p()->procs.spiteful_reconstitution->occur();
+
+          // Wild Imp summon spell triggers procs
+          p()->trigger_aura_applied_callbacks( p()->warlock_base.wild_imp_2, p() );
         }
       }
 
@@ -2761,6 +2781,9 @@ using namespace helpers;
 
       if ( p()->talents.summon_doomguard.ok() && p()->buffs.demonic_core->check() )
         p()->cooldowns.summon_doomguard->adjust( timespan_t::from_seconds( -p()->talents.summon_doomguard->effectN( 2 ).base_value() ) );
+
+      // Demonbolt energize spell triggers procs
+      p()->trigger_aura_applied_callbacks( p()->talents.demonbolt_energize, p() );
 
       p()->buffs.demonic_core->decrement();
 
@@ -2788,7 +2811,6 @@ using namespace helpers;
       {
         aoe = -1;
         background = dual = true;
-        callbacks = false;
       }
 
       double action_multiplier() const override
@@ -2897,10 +2919,16 @@ using namespace helpers;
             imp->buffs.imp_gang_boss->trigger();
             imp->buffs.unstable_soul->trigger();
           }
+
+          // Wild Imp summon spell triggers procs
+          p()->trigger_aura_applied_callbacks( p()->warlock_base.wild_imp_2, p() );
         }
       }
 
       warlock_spell_t::execute();
+
+      // Implosion cast triggers procs through some hidden trigger
+      p()->trigger_aura_applied_callbacks( s_data, p() );
     }
 
     timespan_t calc_imp_travel_time( double speed )
@@ -2976,6 +3004,9 @@ using namespace helpers;
           d->server_action_delay = delay;
         }
       }
+
+      // Call Dreadstalkers summon spell triggers procs
+      p()->trigger_aura_applied_callbacks( s_data, p() );
 
       if ( p()->talents.summon_vilefiend.ok() )
         summon_vilefiend->execute_on_target( target );
@@ -3103,6 +3134,9 @@ using namespace helpers;
             imp->buffs.imp_gang_boss->trigger();
             imp->buffs.unstable_soul->trigger();
           }
+
+          // Wild Imp summon spell triggers procs
+          p()->trigger_aura_applied_callbacks( p()->warlock_base.wild_imp_2, p() );
         }
       }
     }
@@ -3220,6 +3254,9 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       p()->warlock_pet_list.grimoire_imp_lords.spawn( data().duration() );
+
+      // Grimoire: Imp Lord summon spell triggers procs
+      p()->trigger_aura_applied_callbacks( s_data, p() );
     }
   };
 
@@ -3238,6 +3275,9 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       p()->warlock_pet_list.grimoire_fel_ravagers.spawn( data().duration() );
+
+      // Grimoire: Fel Ravager summon spell triggers procs
+      p()->trigger_aura_applied_callbacks( s_data, p() );
     }
   };
 
@@ -3256,6 +3296,9 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       p()->warlock_pet_list.doomguards.spawn( data().duration() );
+
+      // Summon Doomguard summon spell triggers procs
+      p()->trigger_aura_applied_callbacks( s_data, p() );
     }
   };
 
@@ -3446,6 +3489,9 @@ using namespace helpers;
         p()->procs.demonfire_infusion_inc->occur();
       }
 
+      // Incinerate energize spell triggers procs
+      p()->trigger_aura_applied_callbacks( p()->warlock_base.incinerate_energize, p() );
+
       // Backdraft is not consumed by an instant Incinerate cast benefiting from Chaotic Inferno
       // NOTE: To achieve this, the game checks if the player has the Chaotic Inferno buff
       bool consume_backdraft = p()->bugs ? !p()->buffs.chaotic_inferno->check() : ( time_to_execute != 0_ms );
@@ -3493,7 +3539,7 @@ using namespace helpers;
 
         p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
 
-        if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
+        if ( p()->talents.flashpoint.ok() && d->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
           p()->buffs.flashpoint->trigger();
 
         if ( p()->talents.demonfire_infusion.ok() && p()->flat_rng.demonfire_infusion_dot->trigger() )
@@ -3501,6 +3547,9 @@ using namespace helpers;
           p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
           p()->procs.demonfire_infusion_dot->occur();
         }
+
+        // Immolate DoT ticks trigger procs through some hidden trigger
+        p()->trigger_aura_applied_callbacks( s_data, p() );
       }
     };
 
@@ -4568,6 +4617,9 @@ using namespace helpers;
         p()->procs.demonfire_infusion_inc->occur();
       }
 
+      // Infernal Bolt energize spell effect triggers procs
+      p()->trigger_aura_applied_callbacks( s_data, p() );
+
       p()->buffs.infernal_bolt->decrement();
 
       p()->buffs.backdraft->decrement();
@@ -4617,6 +4669,9 @@ using namespace helpers;
           if ( destruction() )
           {
             p()->warlock_pet_list.diabolic_imps.spawn( as<int>( p()->hero.ruination_buff->effectN( 3 ).base_value() ) );
+
+            // Diabolic Imp summon spell triggers procs
+            p()->trigger_aura_applied_callbacks( p()->hero.diabolic_imp, p() );
           }
         }
       }
@@ -4893,6 +4948,9 @@ using namespace helpers;
       }
     }
 
+    // Wild Imp summon spell triggers procs
+    p->trigger_aura_applied_callbacks( p->warlock_base.wild_imp, p );
+
     // Remove this event from the vector
     auto it = std::find( p->wild_imp_spawns.begin(), p->wild_imp_spawns.end(), this );
     if ( it != p->wild_imp_spawns.end() )
@@ -4920,7 +4978,7 @@ using namespace helpers;
     // if ( dot->is_ticking() && dot->tick_event && dot->current_action && dot->remains() > 0_ms && dot->current_stack() > 1 )
     if ( dot->is_ticking() && dot->tick_event && dot->current_action && dot->remains() > 0_ms )
     {
-      player_t* target = dot->state->target;
+      player_t* target = dot->target;
 
       dot->decrement( 1 );
       assert( ( dot->is_ticking() && dot->current_stack() > 0 ) && "UA stack decrement event should not cancel the DoT" );
@@ -5226,7 +5284,7 @@ using namespace helpers;
       cb->initialize();
       cb->deactivate();
 
-      buffs.grimoire_of_sacrifice->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ){
+      buffs.grimoire_of_sacrifice->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
           if ( new_ == 1 ) cb->activate();
           else cb->deactivate();
         } );

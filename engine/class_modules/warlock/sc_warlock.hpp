@@ -259,6 +259,7 @@ public:
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
   int diabolic_ritual; // Used to cycle between the three different Diabolic Ritual buffs
   bool demonic_art_buff_replaced; // Used to not spawn the Demonic Art demon if the buff is replaced by another
+  timespan_t wild_imp_ic_shared_offset; // Used as a shared offset when scheduling Wild Imp Infernal Command periodic events
 
   unsigned n_active_pets;
 
@@ -270,6 +271,7 @@ public:
     const spell_data_t* drain_life;
     const spell_data_t* corruption;
     const spell_data_t* shadow_bolt;
+    const spell_data_t* shadow_bolt_energize;
 
     // Affliction
     const spell_data_t* affliction_warlock; // Spec aura
@@ -281,6 +283,7 @@ public:
     const spell_data_t* wild_imp; // Data for pet summoning (HoG)
     const spell_data_t* wild_imp_2; // Data for pet summoning (Inner Demons / Spiteful Reconstitution / To Hell and Back)
     const spell_data_t* fel_firebolt_2; // Still a separate spell (learned automatically). Reduces pet's energy cost
+    const spell_data_t* infernal_command_buff; // This still applies but with 0 value
 
     // Destruction
     const spell_data_t* destruction_warlock; // Spec aura
@@ -357,6 +360,7 @@ public:
 
     // Affliction
     player_talent_t agony;
+    const spell_data_t* agony_energize;
     player_talent_t unstable_affliction;
     const spell_data_t* unstable_affliction_2; // Soul Shard on demise (learned automatically)
     player_talent_t seed_of_corruption;
@@ -437,6 +441,7 @@ public:
 
     player_talent_t demoniac;
     const spell_data_t* demonbolt_spell;
+    const spell_data_t* demonbolt_energize;
     const spell_data_t* demonic_core_spell;
     const spell_data_t* demonic_core_buff;
     player_talent_t call_dreadstalkers;
@@ -713,6 +718,7 @@ public:
     player_talent_t shared_fate;
     const spell_data_t* shared_fate_dot;
     player_talent_t feast_of_souls;
+    const spell_data_t* marked_soul;
 
     player_talent_t wicked_reaping;
     const spell_data_t* wicked_reaping_dmg;
@@ -1099,6 +1105,10 @@ public:
   void create_options() override;
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
+  void trigger_callbacks( proc_types, proc_types2, action_t* action, action_state_t* state, proc_trigger_type_e pt_type = TRIGGER_ACTION ) override;
+  void trigger_callbacks( proc_types, proc_types2, buff_t* buff, proc_trigger_type_e pt_type = TRIGGER_AURA_APPLIED ) override;
+  void trigger_callbacks( proc_types, proc_types2, const proc_data_t& data, player_t* target, proc_trigger_type_e pt_type ) override;
+  void trigger_aura_applied_callbacks( const proc_data_t& data, player_t* target ) override;
   void add_rng_option( warlock_t::rng_settings_t::rng_setting_t& );
   int get_spawning_imp_count(); // TODO: Decide if still needed
   timespan_t time_to_imps( int count ); // TODO: Decide if still needed
