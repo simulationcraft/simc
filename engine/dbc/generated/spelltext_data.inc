@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.1.66709
-static constexpr std::array<spelltext_data_t, 28644> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28647> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -9205,6 +9205,9 @@ static constexpr std::array<spelltext_data_t, 28644> __spelltext_data { {
   {  253802, "Increases your $pri against Aberrations by $s1.", 0, 0 },
   {  253807, "Taking Shadow damage has a chance to increase your Leech by $253808s1 for $253808d.", 0, 0 },
   {  253808, "$@spelldesc253807", "Leech increased by $w1.", 0 },
+  {  253819, "Your spells have a chance to grant you Umbral Shift, reducing all Shadow damage taken$?a253819[ by up to $w1][] for $253826d.", 0, 0 },
+  {  253825, "Umbral Shift also increases your Mastery$?a253825[ by $w1][].", 0, 0 },
+  {  253826, "$@spelldesc253819", "Shadow damage taken reduced by $w1.$?a253825[ Mastery increased by $w2.][]", 0 },
   {  253938, "Upgrade your Flight Master's Whistle to summon a krokul tunneler to take you to the nearest Lightforged Beacon while on Argus.\r\n", 0, 0 },
   {  253977, "Temporarily tears a hole into the Twisting Nether for $D, allowing travel for those... brave enough?", 0, 0 },
   {  254050, "Whittle a vrykul toy boat.", 0, 0 },

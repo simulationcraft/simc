@@ -3490,6 +3490,23 @@ void voidlight_bindings( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Umbra-Weaver's Portent
+// 1290152 Driver
+// 253826 Buff
+void umbral_shift( special_effect_t& effect) 
+{
+  auto equip = find_special_effect( effect.player, 1290152 );
+  assert( equip && "Umbra-Weaver's Portent missing equip effect" );
+
+  auto buff = effect.player->find_spell( 253826 );
+  auto stat_coeff = equip->driver()->effectN( 2 ).average( effect );
+
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, buff )
+      ->set_stat_from_effect_type( A_MOD_RATING, stat_coeff );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // 1241262 driver
 // 1241227 coeff (unused?)
 // 1241289 buff
@@ -3716,6 +3733,7 @@ void register_special_effects()
   register_special_effect( 1241262, sets::arcanoweave_trappings );
   register_special_effect( 1270977, sets::sunfire_silk_trappings );
   register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
+  register_special_effect( 1290152, sets::umbral_shift );
 }
 
 void register_target_data_initializers( sim_t& )

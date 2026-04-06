@@ -872,6 +872,7 @@ enum set_bonus_type_e
   MID_RWR,
   MID_TD,
   MID_VB,
+  MID_UWP,
   MID1,
   SET_BONUS_MAX
 };
