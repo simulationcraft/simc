@@ -284,40 +284,6 @@ const spell_data_t* warlock_t::conditional_spell_lookup( bool fn, int id )
   return find_spell( id );
 }
 
-void warlock_t::trigger_callbacks( proc_types pt, proc_types2 pt2, action_t* action, action_state_t* state, proc_trigger_type_e pt_type )
-{
-  assert( action && state && state->target );
-  if ( pt == PROC1_NONE_HELPFUL && pt2 == PROC2_LANDED )
-    pt2 = PROC2_HIT;
-
-  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], action->proc_data, this, state->target, state, pt_type );
-}
-
-void warlock_t::trigger_callbacks( proc_types pt, proc_types2 pt2, buff_t* buff, proc_trigger_type_e pt_type )
-{
-  assert( buff && buff->player );
-  if ( pt == PROC1_NONE_HELPFUL && pt2 == PROC2_LANDED )
-    pt2 = PROC2_HIT;
-
-  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], buff->proc_data, this, buff->player, nullptr, pt_type );
-}
-
-void warlock_t::trigger_callbacks( proc_types pt, proc_types2 pt2, const proc_data_t& data, player_t* t, proc_trigger_type_e pt_type )
-{
-  assert( t );
-  if ( pt == PROC1_NONE_HELPFUL && pt2 == PROC2_LANDED )
-    pt2 = PROC2_HIT;
-
-  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], data, this, t, nullptr, pt_type );
-}
-
-void warlock_t::trigger_aura_applied_callbacks( const proc_data_t& data, player_t* t )
-{
-  assert( t );
-
-  trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, data, t, TRIGGER_AURA_APPLIED );
-}
-
 bool warlock_t::affliction() const
 { return specialization() == WARLOCK_AFFLICTION; }
 

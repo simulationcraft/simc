@@ -1105,10 +1105,6 @@ public:
   void create_options() override;
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
-  void trigger_callbacks( proc_types, proc_types2, action_t* action, action_state_t* state, proc_trigger_type_e pt_type = TRIGGER_ACTION ) override;
-  void trigger_callbacks( proc_types, proc_types2, buff_t* buff, proc_trigger_type_e pt_type = TRIGGER_AURA_APPLIED ) override;
-  void trigger_callbacks( proc_types, proc_types2, const proc_data_t& data, player_t* target, proc_trigger_type_e pt_type ) override;
-  void trigger_aura_applied_callbacks( const proc_data_t& data, player_t* target ) override;
   void add_rng_option( warlock_t::rng_settings_t::rng_setting_t& );
   int get_spawning_imp_count(); // TODO: Decide if still needed
   timespan_t time_to_imps( int count ); // TODO: Decide if still needed

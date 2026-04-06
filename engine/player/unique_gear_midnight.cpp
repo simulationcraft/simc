@@ -1657,11 +1657,6 @@ void gaze_of_the_alnseer( special_effect_t& effect )
   };
 
   auto alnsight_cb = new alnsight_cb_t( *alnsight );
-
-  // Modeling the trinket to proc on impact rather than on execute by default for Warlock
-  if ( effect.player->type == WARLOCK )
-    alnsight->proc_flags2_ = PF2_ALL_HIT;
-
   alnsight_cb->activate_with_buff( buff, true );
 
   effect.name_str = "gaze_of_the_alnseer";  // trigger has it's own cb so explicitly name the driver
