@@ -3491,23 +3491,23 @@ void voidlight_bindings( special_effect_t& effect )
 }
 
 // Umbra-Weaver's Portent
-// 1290152 Driver
-// 253826 Buff
+// 253819 Driver
+// 1290152 Equip Driver
+// 253826 Mastery Buff
 void umbral_shift( special_effect_t& effect)
 {
-  auto equip = find_special_effect( effect.player, 1290152 );
-  assert( equip && "Umbra-Weaver's Portent missing equip effect" );
+  auto equip = find_special_effects( effect.player, 1290152 );
+  assert( !equip.empty() && "Umbra-Weaver's Portent missing equip effect" );
 
-  auto buff = effect.player->find_spell( 253826 );
+  auto buff = effect.driver()->effectN( 1 ).trigger();
   auto stat_buff = create_buff<stat_buff_t>( effect.player, buff );
 
   range::for_each( equip, [ stat_buff ]( auto effect ) {
     auto stat_coeff = effect->driver()->effectN( 2 ).average( *effect );
-    stat_buff->set_stat_from_effect_type( A_MOD_RATING, stat_coeff );
+    stat_buff->add_stat_from_effect_type( A_MOD_RATING, stat_coeff );
   } );
 
   effect.custom_buff = stat_buff;
-
   new dbc_proc_callback_t( effect.player, effect );
 }
 
