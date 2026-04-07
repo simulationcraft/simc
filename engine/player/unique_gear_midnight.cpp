@@ -3502,10 +3502,17 @@ void umbral_shift( special_effect_t& effect)
   auto buff = effect.driver()->effectN( 1 ).trigger();
   auto stat_buff = create_buff<stat_buff_t>( effect.player, buff );
 
-  range::for_each( equip, [ stat_buff ]( auto effect ) {
-    auto stat_coeff = effect->driver()->effectN( 2 ).average( *effect );
-    stat_buff->add_stat_from_effect_type( A_MOD_RATING, stat_coeff );
-  } );
+  const bool has_3pc = effect.player->sets->has_set_bonus(
+    effect.player->specialization(), MID_UWP, B3 );
+
+  // 3pc is required for the buff to grant mastery
+  if ( has_3pc )
+  {
+    range::for_each( equip, [ stat_buff ]( auto effect ) {
+        auto stat_coeff = effect->driver()->effectN( 2 ).average( *effect );
+        stat_buff->add_stat_from_effect_type( A_MOD_RATING, stat_coeff );
+      } );
+  }
 
   effect.custom_buff = stat_buff;
   new dbc_proc_callback_t( effect.player, effect );
