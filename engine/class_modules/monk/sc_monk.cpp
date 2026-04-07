@@ -2178,11 +2178,9 @@ struct keg_smash_t : monk_melee_attack_t
       : monk_spell_t( player, "empty_barrel", player->talent.brewmaster.empty_barrel_damage )
     {
       background = dual = true;
-      aoe               = 0;
-
-      // revert autoparsed multiplier as this action cannot use core handling
-      // of chain_multiplier when `SX_146` (bouncy chain missiles) is set
-      chain_multiplier = 1.0;
+      // aoe == 0 => state->chain_target == 0
+      // as a result, chain_multiplier != 1 is ignored in default implementation
+      aoe = 0;
     }
 
     double composite_da_multiplier( const action_state_t *state ) const override
@@ -2199,10 +2197,8 @@ struct keg_smash_t : monk_melee_attack_t
     {
       monk_spell_t::impact( state );
 
-      auto &tl          = target_list();
-      auto target_count = tl.size();
-
-      if ( target_count == 1 )
+      auto &tl = target_list();
+      if ( tl.size() == 1 )
         return;
 
       if ( debug_cast<state_t *>( state )->count + 1 == data().effectN( 1 ).chain_target() )
@@ -2210,7 +2206,7 @@ struct keg_smash_t : monk_melee_attack_t
 
       auto chain_state = debug_cast<state_t *>( get_state( state ) );
       chain_state->count += 1;
-      chain_state->target = tl[ chain_state->count % target_count ];
+      chain_state->target = tl[ chain_state->count % tl.size() ];
 
       snapshot_state( chain_state, amount_type( chain_state ) );
       schedule_execute( chain_state );
