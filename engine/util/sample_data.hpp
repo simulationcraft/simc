@@ -11,17 +11,45 @@
 #include <string>
 #include <vector>
 
+#include "sim/sim.hpp"
 #include "util/generic.hpp"
 #include "util/string_view.hpp"
 #include "util/rng.hpp"
-
-struct sim_t;
 
 /* Collection of statistical formulas for sequences
  * Note: Returns 0 for empty sequences
  */
 namespace statistics
 {
+enum significance_e : size_t
+{
+  SIGNIFICANCE_1 = 0,
+  SIGNIFICANCE_2_5,
+  SIGNIFICANCE_5,
+  SIGNIFICANCE_10,
+  SIGNIFICANCE_15,
+  SIGNIFICANCE_MAX
+};
+
+const char* significance_string( significance_e significance )
+{
+  switch ( significance )
+  {
+  case SIGNIFICANCE_1:
+    return "1%";
+  case SIGNIFICANCE_2_5:
+    return "2.5%";
+  case SIGNIFICANCE_5:
+    return "5%";
+  case SIGNIFICANCE_10:
+    return "10%";
+  case SIGNIFICANCE_15:
+    return "15%";
+  case SIGNIFICANCE_MAX:
+    return "max";
+  }
+}
+
 /* Arithmetic Sum
  */
 template <typename Range>
@@ -68,8 +96,7 @@ range::value_type_t<Range> calculate_variance( const Range& r )
 {
   return calculate_variance( r, calculate_mean( r ) );
 }
-
-/* Standard Deviation from a given mean
+  /* Standard Deviation from a given mean
  */
 template <typename Range>
 range::value_type_t<Range> calculate_stddev( const Range& r,
@@ -191,28 +218,46 @@ inline std::vector<double> normalize_histogram( const std::vector<size_t>& in )
   return normalize_histogram( in, count );
 }
 
+/*
+ * Tests for normality
+ */
 template <typename Range>
-bool is_normal( const Range& r, range::value_type_t<Range> mean,
-                range::value_type_t<Range> stddev )
+significance_e anderson_darling( const Range& r, range::value_type_t<Range> mean, range::value_type_t<Range> stddev )
 {
-  range::value_type_t<Range> tmp {};
-  range::value_type_t<Range> y_cdf {};
+  range::value_type_t<Range> sum{};
+  range::value_type_t<Range> y_cdf{};
+  range::value_type_t<Range> statistic{};
 
-  size_t length = std::size( r );
-  if ( length < 2 )
-    return false;
+  constexpr std::array<std::pair<significance_e, range::value_type_t<Range>>, significance_e::SIGNIFICANCE_MAX>
+      statistic_critical_values = { { { significance_e::SIGNIFICANCE_1, 1.092 },
+                                      { significance_e::SIGNIFICANCE_2_5, 0.918 },
+                                      { significance_e::SIGNIFICANCE_5, 0.787 },
+                                      { significance_e::SIGNIFICANCE_10, 0.656 },
+                                      { significance_e::SIGNIFICANCE_15, 0.576 } } };
 
-  for ( size_t i = 0; i < length; ++i )
+  size_t n = std::size( r );
+
+  for ( size_t i = 0; i < n; ++i )
   {
     y_cdf = rng::stdnormal_cdf( ( r[ i ] - mean ) / stddev );
-    tmp += ( 2 * i - 1 ) * std::log( y_cdf );
-    tmp += ( 2 * ( length - i ) + 1 ) * std::log( 1 - y_cdf );
+    sum += ( 2 * i - 1 ) * std::log( y_cdf );
+    sum += ( 2 * ( n - i ) + 1 ) * std::log( 1 - y_cdf );
   }
 
-  return - length - tmp / length > 0.752;
-}
+  statistic = ( -n - sum / n ) * ( 1 + 4 / ( 3 * n ) + 9 / ( 4 * n * n ) );
 
-}  // end sd namespace
+  auto cmp = []( const std::pair<significance_e, range::value_type_t<Range>>& pair, range::value_type_t<Range> value ) {
+    return pair.second < value;
+  };
+
+  auto lb = std::lower_bound( statistic_critical_values.begin(), statistic_critical_values.end(), statistic, cmp );
+
+  if ( lb == statistic_critical_values.end() )
+    return significance_e::SIGNIFICANCE_MAX;
+
+  return lb->first;
+}
+}  // namespace statistics
 
 /* Simplest Samplest Data container. Only tracks sum and count
  *
@@ -492,15 +537,13 @@ public:
    * Test Normality
    * Requires: Analyzed Mean, stddev, sorted
    */
-  bool analyze_distribution( sim_t& )
+  void analyze_distribution( sim_t& sim )
   {
-    if ( simple )
-      return true;
+    if ( simple || data().empty() )
+      return;
 
-    if ( data().empty() )
-      return true;
-
-    return count() > 10 ? statistics::is_normal( sorted_data(), _mean, std_dev ) : true;
+    sim.print_debug( "statistics_test: {} anderson-darling test for normality (significance: {})", name(),
+                     statistics::significance_string( statistics::anderson_darling( sorted_data(), _mean, std_dev ) ) );
   }
 
 public:
