@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.5.66741
-static constexpr std::array<spelltext_data_t, 28691> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28694> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -9211,6 +9211,9 @@ static constexpr std::array<spelltext_data_t, 28691> __ptr_spelltext_data { {
   {  253802, "Increases your $pri against Aberrations by $s1.", 0, 0 },
   {  253807, "Taking Shadow damage has a chance to increase your Leech by $253808s1 for $253808d.", 0, 0 },
   {  253808, "$@spelldesc253807", "Leech increased by $w1.", 0 },
+  {  253819, "Your spells have a chance to grant you Umbral Shift, reducing all Shadow damage taken$?a253819[ by up to $w1][] for $253826d.", 0, 0 },
+  {  253825, "Umbral Shift also increases your Mastery$?a253825[ by $w1][].", 0, 0 },
+  {  253826, "$@spelldesc253819", "Shadow damage taken reduced by $w1.$?a253825[ Mastery increased by $w2.][]", 0 },
   {  253938, "Upgrade your Flight Master's Whistle to summon a krokul tunneler to take you to the nearest Lightforged Beacon while on Argus.\r\n", 0, 0 },
   {  253977, "Temporarily tears a hole into the Twisting Nether for $D, allowing travel for those... brave enough?", 0, 0 },
   {  254050, "Whittle a vrykul toy boat.", 0, 0 },
@@ -28672,7 +28675,7 @@ static constexpr std::array<spelltext_data_t, 28691> __ptr_spelltext_data { {
   { 1291946, "Restores up to $s1% of your maximum health and mana every second over $d. Must remain seated while eating.", "Restoring $s1% health and $1290929w1% mana every second.", 0 },
   { 1292031, "$@spelldesc1278886", 0, 0 },
   { 1292058, "$@spelldesc1269307", "Damage bonus of your next Colossus Smash increased by $w1%.", 0 },
-  { 1292071, "Enemies damaged by Phalanx's wave of force deal ${$s1}.1% reduced damage to you for $d.\r\n", "Dealing ${$W1/-1}.1% reduced damage to $@auracaster.", 0 },
+  { 1292071, "Enemies damaged by Phalanx's wave of force deal ${$s1/-1}.1% reduced damage to you for $d.\r\n", "Dealing ${$W1/-1}.1% reduced damage to $@auracaster.", 0 },
   { 1292687, "$@spelldesc1253172", "Generating ${$s1*$d} Focus over $d.", 0 },
   { 1292874, "$@spelldesc1262076", "Stunned", 0 },
   { 1292919, "$@spelldesc450529", "Dealing $w1 damage per second.", 0 },
@@ -28694,8 +28697,9 @@ static constexpr std::array<spelltext_data_t, 28691> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.5.66741
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
   {  436358,  0, "Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 of it. Deals reduced damage beyond $s1 targets.\r\n\r\nWhile channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.\r\n\r\nYou can block, parry, dodge, and use certain defensive abilities while channeling Demolish.", "Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 yds of it. Deals reduced damage beyond $s1 targets.\r\n\r\nWhile channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.\r\n\r\nYou can block, parry, dodge, and use certain defensive abilities while channeling Demolish." },
+  { 1292071,  0, "Enemies damaged by Phalanx's wave of force deal ${$s1}.1% reduced damage to you for $d.\r\n", "Enemies damaged by Phalanx's wave of force deal ${$s1/-1}.1% reduced damage to you for $d.\r\n" },
 } };
 
 // Spell description variables, wow build 12.0.5.66741
