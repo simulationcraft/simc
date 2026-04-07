@@ -3268,7 +3268,8 @@ Effects          :
 #4 (id=191090)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=191091)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+                   Base Value: 350 | Scaled Value: 350 | PvP Coefficient: 0.57 | Target: Self (1)
+Hotfixed         : Base Value (200 -> 350), PvP Coefficient (1 -> 0.57)
 #6 (id=260917)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -55 | Scaled Value: -55 | Misc Value: 1663 (Category) | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779), Judgment (406957), Hammer of Wrath (1241413)
@@ -3300,8 +3301,9 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 3 | Misc Value 2: 2603 (Label) | Target: Self (1)
                    Affected Spells (Label): Faith's Armor (379017)
 #16 (id=1032419) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 2589 (Label) | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Misc Value 2: 2589 (Label) | Target: Self (1)
                    Affected Spells (Label): Judgment (197277), Greater Judgment (231663)
+Hotfixed         : Base Value (20 -> 30)
 #17 (id=1042754) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Misc Value 2: 6075 (Label) | Target: Self (1)
                    Affected Spells (Label): Sacred Weapon (432616)
@@ -7231,7 +7233,8 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
 #1 (id=737871)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 60)
 Description      : Armor granted by Shield of the Righteous is increased by up to $s1%, based on your missing health.
 
 Name             : Redoubt (id=280375) [Spell Family (10)] 
@@ -10249,7 +10252,8 @@ Effects          :
 #1 (id=1006795)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Trigger Spell: 378412 | Target: Self (1)
 #2 (id=1029059)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+Hotfixed         : Base Value (100 -> 200)
 Description      : Word of Glory heals for an additional $s1% over $378412d.
 
 Increased by $s2% if cast on yourself while you are afflicted by a harmful damage over time effect.
@@ -20374,6 +20378,9 @@ Hotfixed         : NEW EFFECT
                    Affected Spells: Word of Glory (85673), Afterimage (391309)
                    Family Flags: 78
 Hotfixed         : NEW EFFECT
+#7 (id=1317414)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 5 | Misc Value 2: 2589 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Retribution Paladin (id=1258011) [Spell Family (10), Passive, Hidden] 
 Class            : Retribution Paladin
@@ -21039,7 +21046,7 @@ Description      : Judgment has a chance to grant you Vanguard, causing your nex
 
 Name             : Glory of the Vanguard (id=1267211) [Spell Family (10), Passive] 
 Talent Entry     : Protection [tree=spec, row=11, col=4, max_rank=2, req_points=20, select_idx=100]
-                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#1 [op=set, values=(20, 40)]
                  : Effect#2 [op=set, values=(1, 3)]
 Class            : Paladin
 School           : Physical
@@ -21154,7 +21161,8 @@ Proc Chance      : 101%
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280841)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 100), PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc1267203
 Tooltip          : Your next Shield of the Righteous deals $s1~% increased damage to your primary target and refracts onto $1267215s2~ nearby enemies for additional Holy damage.
 
@@ -21523,9 +21531,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1289007)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 23 | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Shield of the Righteous (132403)
                    Family Flags: 107
+Hotfixed         : Base Value (-10 -> -12)
 Description      : Shield of the Righteous reduces magical damage taken by $s1%.
 
 Name             : Adjudication (id=1277005) [Spell Family (10), Passive] 
