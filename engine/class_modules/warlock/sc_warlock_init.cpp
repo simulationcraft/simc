@@ -72,6 +72,8 @@ namespace warlock
     warlock_t::init_spells_hellcaller();
     warlock_t::init_spells_soul_harvester();
 
+    warlock_t::init_proc_data_collection();
+
     // Register passives
     // NOTE: 2026-02-17 Currently Gloom of Nathreza talent is bugged for Destruction and does not work
     if ( destruction() && bugs )
@@ -230,6 +232,7 @@ namespace warlock
     talents.shadow_of_nathreza_2 = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow of Nathreza", 2 ); // Should be ID 1261990 (II)
     talents.shadow_of_nathreza_3 = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow of Nathreza", 3 ); // Should be ID 1261992 (III)
     talents.shadow_of_nathreza_dot = conditional_spell_lookup( talents.shadow_of_nathreza_1.ok(), 1262710 );
+    talents.summon_desperate_soul = conditional_spell_lookup( talents.shadow_of_nathreza_3.ok(), 1262094 );
     talents.wrath_of_nathreza = conditional_spell_lookup( talents.shadow_of_nathreza_3.ok(), 1262028 );
     talents.wrath_of_nathreza_impact = conditional_spell_lookup( talents.shadow_of_nathreza_3.ok(), 1278047 );
 
@@ -239,6 +242,7 @@ namespace warlock
 
     // Initialize some default values for pet spawners
     warlock_pet_list.darkglares.set_default_duration( talents.summon_darkglare->duration() );
+    warlock_pet_list.desperate_souls.set_default_duration( talents.summon_desperate_soul->duration() );
   }
 
   void warlock_t::init_spells_demonology()
@@ -255,7 +259,8 @@ namespace warlock
     talents.demonic_core_buff = conditional_spell_lookup( warlock_base.demonology_warlock->ok(), 264173 );
 
     talents.call_dreadstalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Call Dreadstalkers" ); // Should be ID 104316
-    talents.call_dreadstalkers_2 = conditional_spell_lookup( warlock_base.demonology_warlock->ok(), 193332 ); // Duration data
+    talents.call_dreadstalkers_summon_1 = conditional_spell_lookup( warlock_base.demonology_warlock->ok(), 193331 ); // Summon data
+    talents.call_dreadstalkers_summon_2 = conditional_spell_lookup( warlock_base.demonology_warlock->ok(), 193332 ); // Summon data
 
     talents.dominant_hand = find_talent_spell( talent_tree::SPECIALIZATION, "Dominant Hand" ); // Should be ID 1276433
 
@@ -372,7 +377,7 @@ namespace warlock
 
     // Initialize some default values for pet spawners
     warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
-    warlock_pet_list.dreadstalkers.set_default_duration( talents.call_dreadstalkers_2->duration() );
+    warlock_pet_list.dreadstalkers.set_default_duration( talents.call_dreadstalkers_summon_2->duration() );
     warlock_pet_list.demonic_tyrants.set_default_duration( talents.summon_demonic_tyrant->duration() );
     warlock_pet_list.grimoire_imp_lords.set_default_duration( talents.grimoire_imp_lord->duration() );
     warlock_pet_list.grimoire_fel_ravagers.set_default_duration( talents.grimoire_fel_ravager->duration() );
@@ -523,7 +528,7 @@ namespace warlock
     // Initialize some default values for pet spawners
     warlock_pet_list.infernals.set_default_duration( talents.summon_infernal_main->duration() );
     warlock_pet_list.rocs.set_default_duration( talents.summon_infernal_roc->duration() );
-    warlock_pet_list.shadow_rifts.set_default_duration( talents.shadowy_tear_summon->duration() );
+    warlock_pet_list.shadowy_rifts.set_default_duration( talents.shadowy_tear_summon->duration() );
     warlock_pet_list.unstable_rifts.set_default_duration( talents.unstable_tear_summon->duration() );
     warlock_pet_list.chaos_rifts.set_default_duration( talents.chaos_tear_summon->duration() );
     warlock_pet_list.overfiends.set_default_duration( talents.summon_overfiend->duration() );
@@ -675,6 +680,16 @@ namespace warlock
     warlock_pet_list.demonic_souls.set_default_duration( hero.manifested_avarice_spell->duration() );
   }
 
+  void warlock_t::init_proc_data_collection()
+  {
+    proc_data_entries.shadow_bolt_energize = warlock_base.shadow_bolt_energize;
+    proc_data_entries.agony_energize = talents.agony_energize;
+    proc_data_entries.demonbolt_energize = talents.demonbolt_energize;
+    proc_data_entries.incinerate_energize = warlock_base.incinerate_energize;
+    proc_data_entries.fel_armaments_2 = talents.fel_armaments_2;
+    proc_data_entries.marked_soul = hero.marked_soul;
+  }
+
   void warlock_t::init_base_stats()
   {
     if ( base.distance < 1.0 )
@@ -755,9 +770,7 @@ namespace warlock
                              ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                              ->set_tick_zero( true )
                              ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                               warlock_pet_list.wild_imps.spawn( warlock_base.wild_imp_2->duration(), 1u );
-                               // Wild Imp summon spell triggers procs
-                               this->trigger_aura_applied_callbacks( warlock_base.wild_imp_2, this );
+                               summons.wild_imp_2->execute();
                              } );
 
     buffs.tyrants_oblation = make_buff( this, "tyrants_oblation", talents.tyrants_oblation_buff )
@@ -782,7 +795,7 @@ namespace warlock
                           ->set_proc_callbacks( false );
 
     buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 8 )
-                              ->set_duration( talents.call_dreadstalkers_2->duration() )
+                              ->set_duration( talents.call_dreadstalkers_summon_2->duration() )
                               ->set_proc_callbacks( false );
 
     buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 2 )
@@ -900,7 +913,7 @@ namespace warlock
                                {
                                  if ( cur == 0 && in_combat && !demonic_art_buff_replaced )
                                  {
-                                   warlock_pet_list.overlords.spawn();
+                                   summons.overlord->execute();
                                  }
                                } );
 
@@ -910,10 +923,7 @@ namespace warlock
                              {
                                if ( cur == 0 && in_combat && !demonic_art_buff_replaced )
                                {
-                                 warlock_pet_list.mothers.spawn();
-
-                                 if ( hero.secrets_of_the_coven.ok() )
-                                      buffs.infernal_bolt->trigger();
+                                 summons.mother->execute();
                                }
                              } );
 
@@ -923,10 +933,7 @@ namespace warlock
                                {
                                  if ( cur == 0 && in_combat && !demonic_art_buff_replaced )
                                  {
-                                   warlock_pet_list.pit_lords.spawn();
-
-                                   if ( hero.ruination.ok() )
-                                     buffs.ruination->trigger();
+                                   summons.pit_lord->execute();
                                  }
                                } );
 

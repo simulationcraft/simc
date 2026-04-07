@@ -256,13 +256,7 @@ using namespace helpers;
           {
             if ( p()->deck_rng.rain_of_chaos->trigger() )
             {
-              // Random extra duration time between 0_ms and 820_ms following a uniform distribution
-              const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
-              auto spawned = p()->warlock_pet_list.rocs.spawn( p()->talents.summon_infernal_roc->duration() + dur_adjust );
-              for ( pets::destruction::infernal_t* s : spawned )
-              {
-                s->type = pets::destruction::infernal_t::infernal_type_e::RAIN;
-              }
+              p()->summons.roc->execute();
               p()->procs.rain_of_chaos->occur();
             }
           }
@@ -843,7 +837,7 @@ using namespace helpers;
       }
 
       // Shadow Bolt energize spell triggers procs
-      p()->trigger_aura_applied_callbacks( p()->warlock_base.shadow_bolt_energize, p() );
+      p()->trigger_aura_applied_callbacks( p()->proc_data_entries.shadow_bolt_energize, p() );
 
       if ( time_to_execute == 0_ms )
         p()->buffs.nightfall->decrement();
@@ -1065,7 +1059,7 @@ using namespace helpers;
           {
             // Affliction Wither DoT ticks trigger procs when talented into Siphon Life
             // Affliction Wither DoT ticks also trigger procs when attempting to start a collapse via Seeds of Their Demise
-            p()->trigger_aura_applied_callbacks( s_data, p() );
+            p()->trigger_aura_applied_callbacks( proc_data, p() );
           }
         }
 
@@ -1086,7 +1080,7 @@ using namespace helpers;
           }
 
           // Destruction Wither DoT ticks trigger procs through some hidden trigger
-          p()->trigger_aura_applied_callbacks( s_data, p() );
+          p()->trigger_aura_applied_callbacks( proc_data, p() );
         }
 
         // Seeds of their Demise collapse conditions must be checked periodically for every Wither tick
@@ -1357,6 +1351,25 @@ using namespace helpers;
     }
   };
 
+  struct summon_manifested_demonic_soul_t : public warlock_spell_t
+  {
+    summon_manifested_demonic_soul_t( warlock_t* p )
+      : warlock_spell_t( "Manifested Demonic Soul (Summon)", p, p->hero.manifested_avarice_spell )
+    {
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.demonic_souls.spawn( data().duration() );
+
+      p()->buffs.manifested_demonic_soul->trigger();
+    }
+  };
+
   // Soul Harvester Actions End
   // Affliction Actions Begin
 
@@ -1429,7 +1442,7 @@ using namespace helpers;
         p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
 
         // Agony energize spell triggers procs
-        p()->trigger_aura_applied_callbacks( p()->talents.agony_energize, p() );
+        p()->trigger_aura_applied_callbacks( p()->proc_data_entries.agony_energize, p() );
       }
 
       warlock_spell_t::tick( d );
@@ -1472,8 +1485,7 @@ using namespace helpers;
 
         if ( p()->hero.manifested_avarice.ok() && p()->prd_rng.manifested_avarice->trigger() )
         {
-          p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
-          p()->buffs.manifested_demonic_soul->trigger();
+          p()->summons.manifested_demonic_soul->execute();
           p()->procs.manifested_avarice->occur();
         }
 
@@ -1805,8 +1817,7 @@ using namespace helpers;
 
         if ( p()->hero.manifested_avarice.ok() && p()->prd_rng.manifested_avarice->trigger() )
         {
-          p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
-          p()->buffs.manifested_demonic_soul->trigger();
+          p()->summons.manifested_demonic_soul->execute();
           p()->procs.manifested_avarice->occur();
         }
 
@@ -2384,6 +2395,23 @@ using namespace helpers;
     }
   };
 
+  struct summon_desperate_soul_t : public warlock_spell_t
+  {
+    summon_desperate_soul_t( warlock_t* p )
+      : warlock_spell_t( "Summon Desperate Soul", p, p->talents.summon_desperate_soul )
+    {
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.desperate_souls.spawn( data().duration() );
+    }
+  };
+
   struct shadow_of_nathreza_dmg_t : public warlock_spell_t
   {
     shadow_of_nathreza_dmg_t( warlock_t* p )
@@ -2393,19 +2421,55 @@ using namespace helpers;
     }
   };
 
-  struct wrath_of_nathreza_t : public warlock_spell_t
+  // Affliction Actions End
+  // Demonology Actions Begin
+
+  struct summon_wild_imp_base_t : public warlock_spell_t
   {
-    wrath_of_nathreza_t( warlock_t* p )
-      : warlock_spell_t( "wrath_of_nathreza", p, p->talents.wrath_of_nathreza_impact )
+    std::vector<warlock::pets::demonology::wild_imp_pet_t*> last_summoned_imps;
+
+    summon_wild_imp_base_t( util::string_view n, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
+      : warlock_spell_t( n, p, s )
     {
-      background = dual = true;
-      aoe = -1;
-      reduced_aoe_targets = as<int>( p->talents.wrath_of_nathreza->effectN( 2 ).base_value() );
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      last_summoned_imps = p()->warlock_pet_list.wild_imps.spawn( data().duration() );
+
+      // Wild Imp summon spell triggers procs
+      p()->trigger_aura_applied_callbacks( proc_data, p() );
+    }
+
+    std::vector<warlock::pets::demonology::wild_imp_pet_t*> execute_spawn( unsigned n_imps = 1 )
+    {
+      std::vector<warlock::pets::demonology::wild_imp_pet_t*> imps;
+      for ( unsigned i = 0; i < n_imps; i++ )
+      {
+        execute();
+        imps.insert( imps.end(), last_summoned_imps.begin(), last_summoned_imps.end() );
+      }
+      return imps;
     }
   };
 
-  // Affliction Actions End
-  // Demonology Actions Begin
+  struct summon_wild_imp_t : public summon_wild_imp_base_t
+  {
+    summon_wild_imp_t( warlock_t* p )
+      : summon_wild_imp_base_t( "Wild Imp (Summon)", p, p->warlock_base.wild_imp )
+    { }
+  };
+
+  struct summon_wild_imp_2_t : public summon_wild_imp_base_t
+  {
+    summon_wild_imp_2_t( warlock_t* p )
+      : summon_wild_imp_base_t( "Wild Imp (Summon) (Alternate)", p, p->warlock_base.wild_imp_2 )
+    { }
+  };
 
   struct hand_of_guldan_t : public warlock_spell_t
   {
@@ -2675,8 +2739,7 @@ using namespace helpers;
 
           if ( p()->hero.manifested_avarice.ok() && p()->prd_rng.manifested_avarice->trigger() )
           {
-            p()->warlock_pet_list.demonic_souls.spawn( p()->hero.manifested_avarice_spell->duration() );
-            p()->buffs.manifested_demonic_soul->trigger();
+            p()->summons.manifested_demonic_soul->execute();
             p()->procs.manifested_avarice->occur();
           }
 
@@ -2759,11 +2822,8 @@ using namespace helpers;
       {
         if ( p()->talents.spiteful_reconstitution.ok() && p()->prd_rng.spiteful_reconstitution->trigger() )
         {
-          p()->warlock_pet_list.wild_imps.spawn( p()->warlock_base.wild_imp_2->duration(), 1u );
+          p()->summons.wild_imp_2->execute();
           p()->procs.spiteful_reconstitution->occur();
-
-          // Wild Imp summon spell triggers procs
-          p()->trigger_aura_applied_callbacks( p()->warlock_base.wild_imp_2, p() );
         }
       }
 
@@ -2783,7 +2843,7 @@ using namespace helpers;
         p()->cooldowns.summon_doomguard->adjust( timespan_t::from_seconds( -p()->talents.summon_doomguard->effectN( 2 ).base_value() ) );
 
       // Demonbolt energize spell triggers procs
-      p()->trigger_aura_applied_callbacks( p()->talents.demonbolt_energize, p() );
+      p()->trigger_aura_applied_callbacks( p()->proc_data_entries.demonbolt_energize, p() );
 
       p()->buffs.demonic_core->decrement();
 
@@ -2913,22 +2973,19 @@ using namespace helpers;
         unsigned new_imps = ( launch_counter / as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() ) ) * as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
         if ( new_imps > 0 )
         {
-          auto imps = p()->warlock_pet_list.wild_imps.spawn( p()->warlock_base.wild_imp_2->duration(), new_imps );
+          auto imps = debug_cast<summon_wild_imp_2_t*>( p()->summons.wild_imp_2 )->execute_spawn( new_imps );
           for ( auto imp : imps )
           {
             imp->buffs.imp_gang_boss->trigger();
             imp->buffs.unstable_soul->trigger();
           }
-
-          // Wild Imp summon spell triggers procs
-          p()->trigger_aura_applied_callbacks( p()->warlock_base.wild_imp_2, p() );
         }
       }
 
       warlock_spell_t::execute();
 
       // Implosion cast triggers procs through some hidden trigger
-      p()->trigger_aura_applied_callbacks( s_data, p() );
+      p()->trigger_aura_applied_callbacks( proc_data, p() );
     }
 
     timespan_t calc_imp_travel_time( double speed )
@@ -2954,13 +3011,13 @@ using namespace helpers;
     }
   };
 
-  struct summon_vilefiend_t : public warlock_spell_t
+  struct summon_vilefiend_base_t : public warlock_spell_t
   {
-    summon_vilefiend_t( warlock_t* p )
-      : warlock_spell_t( "Summon Vilefiend", p, p->talents.vilefiend )
+    summon_vilefiend_base_t( util::string_view n, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
+      : warlock_spell_t( n, p, s )
     {
-      background = dual = true;
       harmful = may_crit = false;
+      background = true;
     }
 
     void execute() override
@@ -2971,18 +3028,84 @@ using namespace helpers;
     }
   };
 
+  struct summon_vilefiend_t : public summon_vilefiend_base_t
+  {
+    summon_vilefiend_t( warlock_t* p )
+      : summon_vilefiend_base_t( "Summon Vilefiend", p, p->talents.vilefiend )
+    { }
+  };
+
+  struct summon_gloomhound_t : public summon_vilefiend_base_t
+  {
+    summon_gloomhound_t( warlock_t* p )
+      : summon_vilefiend_base_t( "Summon Gloomhound", p, p->talents.gloomhound )
+    { }
+  };
+
+  struct summon_charhound_t : public summon_vilefiend_base_t
+  {
+    summon_charhound_t( warlock_t* p )
+      : summon_vilefiend_base_t( "Summon Charhound", p, p->talents.charhound )
+    { }
+  };
+
+  struct summon_dreadstalker_base_t : public warlock_spell_t
+  {
+    timespan_t dur_adjust;
+    timespan_t server_action_delay;
+
+    summon_dreadstalker_base_t( util::string_view n, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
+      : warlock_spell_t( n, p, s )
+    {
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( data().duration() + dur_adjust );
+
+      for ( auto dog : dogs )
+      {
+        if ( dog->is_active() )
+          dog->server_action_delay = server_action_delay;
+      }
+
+      // Call Dreadstalkers summon spell triggers procs
+      p()->trigger_aura_applied_callbacks( proc_data, p() );
+    }
+
+    void execute(timespan_t dur_adjust_, timespan_t server_action_delay_ )
+    {
+      dur_adjust = dur_adjust_;
+      server_action_delay = server_action_delay_;
+      execute();
+    }
+  };
+
+  struct summon_dreadstalker_1_t : public summon_dreadstalker_base_t
+  {
+    summon_dreadstalker_1_t( warlock_t* p )
+      : summon_dreadstalker_base_t( "Call Dreadstalkers (Summon) (1)", p, p->talents.call_dreadstalkers_summon_1 )
+    { }
+  };
+
+  struct summon_dreadstalker_2_t : public summon_dreadstalker_base_t
+  {
+    summon_dreadstalker_2_t( warlock_t* p )
+      : summon_dreadstalker_base_t( "Call Dreadstalkers (Summon) (2)", p, p->talents.call_dreadstalkers_summon_2 )
+    { }
+  };
+
   struct call_dreadstalkers_t : public warlock_spell_t
   {
-    summon_vilefiend_t* summon_vilefiend;
-
     call_dreadstalkers_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Call Dreadstalkers", p, p->talents.call_dreadstalkers, options_str )
     {
       may_crit = false;
       triggers.diabolic_ritual = p->hero.diabolic_ritual.ok();
-
-      if ( p->talents.summon_vilefiend.ok() )
-        summon_vilefiend = new summon_vilefiend_t( p );
     }
 
     void execute() override
@@ -2995,21 +3118,16 @@ using namespace helpers;
       const timespan_t& delay = delay_dur_adjusts.first;
       const timespan_t& dur_adjust = delay_dur_adjusts.second;
 
-      auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration() + dur_adjust, count );
-
-      for ( auto d : dogs )
+      for ( unsigned i = 0; i < count; i++ )
       {
-        if ( d->is_active() )
-        {
-          d->server_action_delay = delay;
-        }
+        summon_dreadstalker_base_t* summon_dreadstalker_action = i ? debug_cast<summon_dreadstalker_base_t*>( p()->summons.dreadstalker_2 )
+                                                                   : debug_cast<summon_dreadstalker_base_t*>( p()->summons.dreadstalker_1 );
+
+        summon_dreadstalker_action->execute( dur_adjust, delay );
       }
 
-      // Call Dreadstalkers summon spell triggers procs
-      p()->trigger_aura_applied_callbacks( s_data, p() );
-
       if ( p()->talents.summon_vilefiend.ok() )
-        summon_vilefiend->execute_on_target( target );
+        p()->summons.vilefiend->execute_on_target( target );
     }
   };
 
@@ -3128,15 +3246,12 @@ using namespace helpers;
         unsigned new_imps = ( sac_counter / as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() ) ) * as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
         if ( new_imps > 0 )
         {
-          auto imps = p()->warlock_pet_list.wild_imps.spawn( p()->warlock_base.wild_imp_2->duration(), new_imps );
+          auto imps = debug_cast<summon_wild_imp_2_t*>( p()->summons.wild_imp_2 )->execute_spawn( new_imps );
           for ( auto imp : imps )
           {
             imp->buffs.imp_gang_boss->trigger();
             imp->buffs.unstable_soul->trigger();
           }
-
-          // Wild Imp summon spell triggers procs
-          p()->trigger_aura_applied_callbacks( p()->warlock_base.wild_imp_2, p() );
         }
       }
     }
@@ -3256,7 +3371,7 @@ using namespace helpers;
       p()->warlock_pet_list.grimoire_imp_lords.spawn( data().duration() );
 
       // Grimoire: Imp Lord summon spell triggers procs
-      p()->trigger_aura_applied_callbacks( s_data, p() );
+      p()->trigger_aura_applied_callbacks( proc_data, p() );
     }
   };
 
@@ -3277,7 +3392,7 @@ using namespace helpers;
       p()->warlock_pet_list.grimoire_fel_ravagers.spawn( data().duration() );
 
       // Grimoire: Fel Ravager summon spell triggers procs
-      p()->trigger_aura_applied_callbacks( s_data, p() );
+      p()->trigger_aura_applied_callbacks( proc_data, p() );
     }
   };
 
@@ -3298,7 +3413,7 @@ using namespace helpers;
       p()->warlock_pet_list.doomguards.spawn( data().duration() );
 
       // Summon Doomguard summon spell triggers procs
-      p()->trigger_aura_applied_callbacks( s_data, p() );
+      p()->trigger_aura_applied_callbacks( proc_data, p() );
     }
   };
 
@@ -3490,7 +3605,7 @@ using namespace helpers;
       }
 
       // Incinerate energize spell triggers procs
-      p()->trigger_aura_applied_callbacks( p()->warlock_base.incinerate_energize, p() );
+      p()->trigger_aura_applied_callbacks( p()->proc_data_entries.incinerate_energize, p() );
 
       // Backdraft is not consumed by an instant Incinerate cast benefiting from Chaotic Inferno
       // NOTE: To achieve this, the game checks if the player has the Chaotic Inferno buff
@@ -3549,7 +3664,7 @@ using namespace helpers;
         }
 
         // Immolate DoT ticks trigger procs through some hidden trigger
-        p()->trigger_aura_applied_callbacks( s_data, p() );
+        p()->trigger_aura_applied_callbacks( proc_data, p() );
       }
     };
 
@@ -3619,6 +3734,76 @@ using namespace helpers;
     }
   };
 
+  struct summon_shadowy_tear_t : public warlock_spell_t
+  {
+    summon_shadowy_tear_t( warlock_t* p )
+      : warlock_spell_t( "Shadowy Tear (Summon)", p, p->talents.shadowy_tear_summon )
+    {
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.shadowy_rifts.spawn( data().duration() );
+    }
+  };
+
+  struct summon_unstable_tear_t : public warlock_spell_t
+  {
+    summon_unstable_tear_t( warlock_t* p )
+      : warlock_spell_t( "Unstable Tear (Summon)", p, p->talents.unstable_tear_summon )
+    {
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.unstable_rifts.spawn( data().duration() );
+    }
+  };
+
+  struct summon_chaos_tear_t : public warlock_spell_t
+  {
+    summon_chaos_tear_t( warlock_t* p )
+      : warlock_spell_t( "Chaos Tear (Summon)", p, p->talents.chaos_tear_summon )
+    {
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.chaos_rifts.spawn( data().duration() );
+    }
+  };
+
+  struct summon_overfiend_t : public warlock_spell_t
+  {
+    summon_overfiend_t( warlock_t* p )
+      : warlock_spell_t( "Summon Overfiend", p, p->talents.summon_overfiend )
+    {
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.overfiends.spawn( data().duration() );
+
+      p()->buffs.summon_overfiend->trigger();
+    }
+  };
+
   struct dimensional_rift_t : public warlock_spell_t
   {
     dimensional_rift_t( warlock_t* p )
@@ -3636,20 +3821,19 @@ using namespace helpers;
       switch ( rift_pet_index )
       {
         case DR_PET_SHADOWY_TEAR:
-          p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
+          p()->summons.shadowy_rift->execute();
           p()->procs.dimensional_rift->occur();
           break;
         case DR_PET_UNSTABLE_TEAR:
-          p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
+          p()->summons.unstable_rift->execute();
           p()->procs.dimensional_rift->occur();
           break;
         case DR_PET_CHAOS_TEAR:
-          p()->warlock_pet_list.chaos_rifts.spawn( p()->talents.chaos_tear_summon->duration() );
+          p()->summons.chaos_rift->execute();
           p()->procs.dimensional_rift->occur();
           break;
         case DR_PET_OVERFIEND:
-          p()->warlock_pet_list.overfiends.spawn();
-          p()->buffs.summon_overfiend->trigger();
+          p()->summons.overfiend->execute();
           p()->procs.avatar_of_destruction->occur();
         default:
           break;
@@ -4025,7 +4209,7 @@ using namespace helpers;
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
 
       // Rain of Fire spell cast triggers procs
-      p()->trigger_aura_applied_callbacks( s_data, p() );
+      p()->trigger_aura_applied_callbacks( proc_data, p() );
 
       if ( p()->talents.embers_of_nihilam_3.ok() )
         helpers::trigger_echo_of_sargeras( p(), execute_state->target, p()->proc_actions.echo_of_sargeras_rof, p()->procs.echo_of_sargeras_rof );
@@ -4428,6 +4612,65 @@ using namespace helpers;
     }
   };
 
+  struct summon_main_infernal_pet_t : public warlock_spell_t
+  {
+    summon_main_infernal_pet_t( warlock_t* p )
+      : warlock_spell_t( "Summon Infernal (Summon) (Main)", p, p->talents.summon_infernal_main )
+    {
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      // Random extra duration time between 0_ms and 820_ms following a uniform distribution
+      const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
+      p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_main->duration() + dur_adjust );
+    }
+  };
+
+  struct summon_roc_infernal_pet_t : public warlock_spell_t
+  {
+    summon_roc_infernal_pet_t( warlock_t* p )
+      : warlock_spell_t( "Summon Infernal (Summon) (Roc)", p, p->talents.summon_infernal_roc )
+    {
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      // Random extra duration time between 0_ms and 820_ms following a uniform distribution
+      const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
+      auto spawned = p()->warlock_pet_list.rocs.spawn( data().duration() + dur_adjust );
+      for ( pets::destruction::infernal_t* s : spawned )
+        s->type = pets::destruction::infernal_t::infernal_type_e::RAIN;
+    }
+  };
+
+  struct summon_fragment_infernal_pet_t : public warlock_spell_t
+  {
+    summon_fragment_infernal_pet_t( warlock_t* p )
+      : warlock_spell_t( "Infernal Fragmentation (Summon) (Fragment)", p, p->hero.infernal_fragmentation )
+    {
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      // Random extra duration time between 0_ms and 820_ms following a uniform distribution
+      const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
+      p()->warlock_pet_list.fragments.spawn( data().duration() + dur_adjust );
+    }
+  };
+
   struct infernal_awakening_t : public warlock_spell_t
   {
     infernal_awakening_t( warlock_t* p )
@@ -4441,9 +4684,7 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      // Random extra duration time between 0_ms and 820_ms following a uniform distribution
-      const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
-      p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_main->duration() + dur_adjust );
+      p()->summons.infernal->execute();
     }
   };
 
@@ -4517,8 +4758,7 @@ using namespace helpers;
 
       if ( p()->talents.avatar_of_destruction.ok() )
       {
-        p()->warlock_pet_list.overfiends.spawn();
-        p()->buffs.summon_overfiend->trigger();
+        p()->summons.overfiend->execute();
         p()->procs.avatar_of_destruction->occur();
       }
     }
@@ -4621,7 +4861,7 @@ using namespace helpers;
       }
 
       // Infernal Bolt energize spell effect triggers procs
-      p()->trigger_aura_applied_callbacks( s_data, p() );
+      p()->trigger_aura_applied_callbacks( proc_data, p() );
 
       p()->buffs.infernal_bolt->decrement();
 
@@ -4671,10 +4911,7 @@ using namespace helpers;
 
           if ( destruction() )
           {
-            p()->warlock_pet_list.diabolic_imps.spawn( as<int>( p()->hero.ruination_buff->effectN( 3 ).base_value() ) );
-
-            // Diabolic Imp summon spell triggers procs
-            p()->trigger_aura_applied_callbacks( p()->hero.diabolic_imp, p() );
+            p()->summons.diabolic_imp->execute();
           }
         }
       }
@@ -4796,6 +5033,83 @@ using namespace helpers;
       add_child( p->proc_actions.diabolic_gaze_3 );
       add_child( p->proc_actions.diabolic_gaze_2 );
       add_child( p->proc_actions.diabolic_gaze_1 );
+    }
+  };
+
+  struct summon_overlord_t : public warlock_spell_t
+  {
+    summon_overlord_t( warlock_t* p )
+      : warlock_spell_t( "Summon Overlord", p, p->hero.summon_overlord )
+    {
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.overlords.spawn( data().duration() );
+    }
+  };
+
+  struct summon_mother_of_chaos_t : public warlock_spell_t
+  {
+    summon_mother_of_chaos_t( warlock_t* p )
+      : warlock_spell_t( "Summon Mother of Chaos (Summon)", p, p->hero.summon_mother )
+    {
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.mothers.spawn( data().duration() );
+
+      if ( p()->hero.secrets_of_the_coven.ok() )
+        p()->buffs.infernal_bolt->trigger();
+    }
+  };
+
+  struct summon_pit_lord_t : public warlock_spell_t
+  {
+    summon_pit_lord_t( warlock_t* p )
+      : warlock_spell_t( "Summon Pit Lord", p, p->hero.summon_pit_lord )
+    {
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.pit_lords.spawn( data().duration() );
+
+      if ( p()->hero.ruination.ok() )
+        p()->buffs.ruination->trigger();
+    }
+  };
+
+  struct summon_diabolic_imp_t : public warlock_spell_t
+  {
+    summon_diabolic_imp_t( warlock_t* p )
+      : warlock_spell_t( "Diabolic Imp (Summon)", p, p->hero.diabolic_imp )
+    {
+      harmful = may_crit = false;
+      background = true;
+    }
+
+    void execute() override
+    {
+      warlock_spell_t::execute();
+
+      p()->warlock_pet_list.diabolic_imps.spawn( as<int>( p()->hero.ruination_buff->effectN( 3 ).base_value() ) );
+
+      // Diabolic Imp summon spell triggers procs
+      p()->trigger_aura_applied_callbacks( proc_data, p() );
     }
   };
 
@@ -4923,7 +5237,7 @@ using namespace helpers;
     if ( !p->rppm_rng.wrath_of_nathreza->trigger() )
       return;
 
-    p->proc_actions.wrath_of_nathreza->execute_on_target( target );
+    p->summons.desperate_soul->execute_on_target( target );
     p->procs.wrath_of_nathreza->occur();
   }
 
@@ -4941,7 +5255,7 @@ using namespace helpers;
   {
     warlock_t* p = static_cast<warlock_t*>( player() );
 
-    auto imps = p->warlock_pet_list.wild_imps.spawn();
+    auto imps = debug_cast<summon_wild_imp_t*>( p->summons.wild_imp )->execute_spawn();
 
     if ( p->talents.imp_gang_boss.ok() && index == 0 )
     {
@@ -4950,9 +5264,6 @@ using namespace helpers;
         imp->buffs.imp_gang_boss->trigger();
       }
     }
-
-    // Wild Imp summon spell triggers procs
-    p->trigger_aura_applied_callbacks( p->warlock_base.wild_imp, p );
 
     // Remove this event from the vector
     auto it = std::find( p->wild_imp_spawns.begin(), p->wild_imp_spawns.end(), this );
@@ -5214,17 +5525,29 @@ using namespace helpers;
       proc_actions.shadow_of_nathreza = new shadow_of_nathreza_dmg_t( this );
 
     if ( talents.shadow_of_nathreza_3.ok() )
-      proc_actions.wrath_of_nathreza = new wrath_of_nathreza_t( this );
+      summons.desperate_soul = new summon_desperate_soul_t( this );
   }
 
   void warlock_t::create_demonology_proc_actions()
   {
-    proc_actions.doom_proc    = new doom_t( this );
-    proc_actions.blighted_maw = new blighted_maw_t( this );
-    summon.antoran_inquisitor = get_action<summon_antoran_inquisitor_t>( "dominion_of_argus_antoran_inquisitor", this );
-    summon.antoran_jailer     = get_action<summon_antoran_jailer_t>( "dominion_of_argus_antoran_jailer", this );
-    summon.lady_sacrolash     = get_action<summon_lady_sacrolash_t>( "dominion_of_argus_lady_sacrolash", this );
-    summon.grand_warlock_alythess =
+    proc_actions.doom_proc     = new doom_t( this );
+    proc_actions.blighted_maw  = new blighted_maw_t( this );
+    summons.wild_imp           = new summon_wild_imp_t( this );
+    summons.wild_imp_2         = new summon_wild_imp_2_t( this );
+    summons.dreadstalker_1     = new summon_dreadstalker_1_t( this );
+    summons.dreadstalker_2     = new summon_dreadstalker_2_t( this );
+
+    if ( talents.mark_of_shatug.ok() )
+      summons.vilefiend        = new summon_gloomhound_t( this );
+    else if ( talents.mark_of_fharg.ok() )
+      summons.vilefiend        = new summon_charhound_t( this );
+    else
+      summons.vilefiend        = new summon_vilefiend_t( this );
+
+    summons.antoran_inquisitor = get_action<summon_antoran_inquisitor_t>( "dominion_of_argus_antoran_inquisitor", this );
+    summons.antoran_jailer     = get_action<summon_antoran_jailer_t>( "dominion_of_argus_antoran_jailer", this );
+    summons.lady_sacrolash     = get_action<summon_lady_sacrolash_t>( "dominion_of_argus_lady_sacrolash", this );
+    summons.grand_warlock_alythess =
         get_action<summon_grand_warlock_alythess_t>( "dominion_of_argus_grand_warlock_alythess", this );
   }
 
@@ -5246,6 +5569,14 @@ using namespace helpers;
 
     if ( talents.embers_of_nihilam_1.ok() || talents.embers_of_nihilam_3.ok() )
       proc_actions.embers_of_nihilam = new embers_of_nihilam_t( this );
+
+    summons.infernal = new summon_main_infernal_pet_t( this );
+    summons.roc = new summon_roc_infernal_pet_t( this );
+    summons.fragment = new summon_fragment_infernal_pet_t( this );
+    summons.shadowy_rift = new summon_shadowy_tear_t( this );
+    summons.unstable_rift = new summon_unstable_tear_t( this );
+    summons.chaos_rift = new summon_chaos_tear_t( this );
+    summons.overfiend = new summon_overfiend_t( this );
   }
 
   void warlock_t::create_diabolist_proc_actions()
@@ -5255,6 +5586,10 @@ using namespace helpers;
     proc_actions.diabolic_gaze_2 = new diabolic_gaze_2_t( this );
     proc_actions.diabolic_gaze_3 = new diabolic_gaze_3_t( this );
     proc_actions.diabolic_oculi = new diabolic_oculi_t( this );
+    summons.overlord = new summon_overlord_t( this );
+    summons.mother = new summon_mother_of_chaos_t( this );
+    summons.pit_lord = new summon_pit_lord_t( this );
+    summons.diabolic_imp = new summon_diabolic_imp_t( this );
   }
 
   void warlock_t::create_hellcaller_proc_actions()
@@ -5268,6 +5603,7 @@ using namespace helpers;
     proc_actions.demonic_soul = new demonic_soul_t( this );
     proc_actions.shared_fate = new shared_fate_t( this );
     proc_actions.wicked_reaping = new wicked_reaping_t( this );
+    summons.manifested_demonic_soul = new summon_manifested_demonic_soul_t( this );
   }
 
   void warlock_t::init_special_effects()

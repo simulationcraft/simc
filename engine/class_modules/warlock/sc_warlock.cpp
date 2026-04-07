@@ -259,7 +259,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
       // On each Heartbeat, the player periodically applies a hidden Fel Armaments aura to the Felguard, triggering procs
       auto active_pet = warlock_pet_list.active;
       if ( active_pet && active_pet->pet_type == PET_FELGUARD )
-        this->trigger_aura_applied_callbacks( talents.fel_armaments_2, active_pet );
+        this->trigger_aura_applied_callbacks( proc_data_entries.fel_armaments_2, active_pet );
     }
 
     for ( auto pet : active_pets )
@@ -339,7 +339,7 @@ void warlock_t::init_assessors()
       // Soul Harvester seems to have some hidden trigger tied to damage-over-time effects
       // We assume this trigger is Marked Soul and that it is only active when Shared Fate or Feast of Souls is selected
       if ( amount_type == result_amount_type::DMG_OVER_TIME )
-        trigger_aura_applied_callbacks( hero.marked_soul, s->target );
+        trigger_aura_applied_callbacks( proc_data_entries.marked_soul, s->target );
 
       return assessor::CONTINUE;
     };
@@ -1143,16 +1143,16 @@ void warlock_t::summon_dominion_of_argus_pet( dominion_of_argus_pet_e pet )
   switch ( actual_pet )
   {
     case DOA_PET_JAILER:
-      summon.antoran_jailer->execute();
+      summons.antoran_jailer->execute();
       break;
     case DOA_PET_SACROLASH:
-      summon.lady_sacrolash->execute();
+      summons.lady_sacrolash->execute();
       break;
     case DOA_PET_GRAND_WARLOCK:
-      summon.grand_warlock_alythess->execute();
+      summons.grand_warlock_alythess->execute();
       break;
     case DOA_PET_INQUISITOR:
-      summon.antoran_inquisitor->execute();
+      summons.antoran_inquisitor->execute();
       break;
     default:
       break;
@@ -1268,6 +1268,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     infernals( "infernal", w ),
     darkglares( "darkglare", w ),
+    desperate_souls( "desperate_soul", w ),
     dreadstalkers( "dreadstalker", w ),
     vilefiends( "vilefiend", w ),
     demonic_tyrants( "demonic_tyrant", w ),
@@ -1279,7 +1280,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     grand_warlock_alythess( "grand_warlock_alythess", w ),
     antoran_inquisitor( "antoran_inquisitor", w ),
     antoran_jailer( "antoran_jailer", w ),
-    shadow_rifts( "shadowy_tear", w ),
+    shadowy_rifts( "shadowy_tear", w ),
     unstable_rifts( "unstable_tear", w ),
     chaos_rifts( "chaos_tear", w ),
     rocs( "infernal_roc", w ),

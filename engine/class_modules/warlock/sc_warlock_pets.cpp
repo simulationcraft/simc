@@ -879,7 +879,7 @@ double wild_imp_pet_t::composite_player_multiplier( school_e school ) const
 
 dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER, true )
 {
-  npc_id = owner->talents.call_dreadstalkers_2->effectN( 1 ).misc_value1();
+  npc_id = owner->talents.call_dreadstalkers_summon_1->effectN( 1 ).misc_value1();
 
   action_list_str = "leap/travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
@@ -896,7 +896,7 @@ dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "drea
 dreadstalker_t::dreadstalker_t( warlock_t* owner, util::string_view pet_name, pet_e pet_type )
   : warlock_pet_t( owner, pet_name, pet_type, true )
 {
-  npc_id = owner->talents.call_dreadstalkers_2->effectN( 1 ).misc_value1();
+  npc_id = owner->talents.call_dreadstalkers_summon_1->effectN( 1 ).misc_value1();
 
   action_list_str = "leap/travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
@@ -1972,9 +1972,9 @@ void infernal_t::demise()
 
   if ( o()->hero.abyssal_dominion.ok() && type == MAIN )
     make_event( sim, [ this ] {
-      // Random extra duration time between 0_ms and 820_ms following a uniform distribution
-      const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
-      o()->warlock_pet_list.fragments.spawn( o()->hero.infernal_fragmentation->duration() + dur_adjust, 2u );
+      // Summon two infernal fragments
+      o()->summons.fragment->execute();
+      o()->summons.fragment->execute();
     } );
 }
 
@@ -2204,7 +2204,7 @@ action_t* chaos_tear_t::create_action( util::string_view name, util::string_view
 /// Overfiend Begin
 
 overfiend_t::overfiend_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_WARLOCK, true )
+  : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
 {
   npc_id = owner->talents.summon_overfiend->effectN( 1 ).misc_value1();
 
@@ -2356,6 +2356,64 @@ action_t* darkglare_t::create_action( util::string_view name, util::string_view 
 }
 
 /// Darkglare End
+
+/// Desperate Soul Begin
+
+desperate_soul_t::desperate_soul_t( warlock_t* owner, util::string_view name )
+  : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
+{
+  npc_id = owner->talents.summon_desperate_soul->effectN( 1 ).misc_value1();
+
+  action_list_str += "wrath_of_nathreza";
+}
+
+struct wrath_of_nathreza_t : public warlock_pet_spell_t
+{
+  wrath_of_nathreza_t( warlock_pet_t* p )
+    : warlock_pet_spell_t( "Wrath of Nathreza", p, p->o()->talents.wrath_of_nathreza_impact )
+  {
+    aoe = -1;
+    reduced_aoe_targets = as<int>( p->o()->talents.wrath_of_nathreza->effectN( 2 ).base_value() );
+  }
+
+  bool ready() override
+  {
+    if ( debug_cast<desperate_soul_t*>( p() )->wraths <= 0 )
+      return false;
+
+    return warlock_pet_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    if ( p()->o()->haunt_target && !p()->o()->haunt_target->is_sleeping() )
+      target = p()->o()->haunt_target;
+
+    warlock_pet_spell_t::execute();
+
+    debug_cast<desperate_soul_t*>( p() )->wraths--;
+
+    if ( debug_cast<desperate_soul_t*>( p() )->wraths <= 0 )
+      make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
+  }
+};
+
+void desperate_soul_t::arise()
+{
+  warlock_pet_t::arise();
+
+  wraths = 1;
+};
+
+action_t* desperate_soul_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "wrath_of_nathreza" )
+    return new wrath_of_nathreza_t( this );
+
+  return warlock_pet_t::create_action( name, options_str );
+}
+
+/// Desperate_Soul End
 
 }  // namespace affliction
 

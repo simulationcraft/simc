@@ -303,6 +303,7 @@ public:
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t> infernals;
 
     spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglares;
+    spawner::pet_spawner_t<pets::affliction::desperate_soul_t, warlock_t> desperate_souls;
 
     spawner::pet_spawner_t<pets::demonology::dreadstalker_t, warlock_t> dreadstalkers;
     spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends;
@@ -316,7 +317,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::antoran_inquisitor_t, warlock_t> antoran_inquisitor;
     spawner::pet_spawner_t<pets::demonology::antoran_jailer_t, warlock_t> antoran_jailer;
 
-    spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadow_rifts;
+    spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadowy_rifts;
     spawner::pet_spawner_t<pets::destruction::unstable_tear_t, warlock_t> unstable_rifts;
     spawner::pet_spawner_t<pets::destruction::chaos_tear_t, warlock_t> chaos_rifts;
     spawner::pet_spawner_t<pets::destruction::infernal_roc_t, warlock_t> rocs;
@@ -430,6 +431,7 @@ public:
     player_talent_t shadow_of_nathreza_1;
     player_talent_t shadow_of_nathreza_2;
     player_talent_t shadow_of_nathreza_3;
+    const spell_data_t* summon_desperate_soul;
     const spell_data_t* shadow_of_nathreza_dot;
     const spell_data_t* wrath_of_nathreza; // Trigger missile spell
     const spell_data_t* wrath_of_nathreza_impact;
@@ -445,7 +447,8 @@ public:
     const spell_data_t* demonic_core_spell;
     const spell_data_t* demonic_core_buff;
     player_talent_t call_dreadstalkers;
-    const spell_data_t* call_dreadstalkers_2; // Contains duration data
+    const spell_data_t* call_dreadstalkers_summon_1; // Contains summon data
+    const spell_data_t* call_dreadstalkers_summon_2; // Contains summon data
 
     player_talent_t dominant_hand;
     player_talent_t fel_intellect;
@@ -758,16 +761,43 @@ public:
     action_t* echo_of_sargeras_rof;
     action_t* embers_of_nihilam;
     action_t* shadow_of_nathreza;
-    action_t* wrath_of_nathreza;
   } proc_actions;
+
+  struct proc_data_entries_t
+  {
+    proc_data_t shadow_bolt_energize;
+    proc_data_t agony_energize;
+    proc_data_t demonbolt_energize;
+    proc_data_t incinerate_energize;
+    proc_data_t fel_armaments_2;
+    proc_data_t marked_soul;
+  } proc_data_entries;
 
   struct pet_summons_t
   {
-    propagate_const<action_t*> lady_sacrolash;
-    propagate_const<action_t*> grand_warlock_alythess;
-    propagate_const<action_t*> antoran_inquisitor;
-    propagate_const<action_t*> antoran_jailer;
-  } summon;
+    action_t* desperate_soul;
+    action_t* wild_imp;
+    action_t* wild_imp_2;
+    action_t* dreadstalker_1;
+    action_t* dreadstalker_2;
+    action_t* vilefiend;
+    action_t* lady_sacrolash;
+    action_t* grand_warlock_alythess;
+    action_t* antoran_inquisitor;
+    action_t* antoran_jailer;
+    action_t* infernal;
+    action_t* roc;
+    action_t* fragment;
+    action_t* overfiend;
+    action_t* shadowy_rift;
+    action_t* unstable_rift;
+    action_t* chaos_rift;
+    action_t* overlord;
+    action_t* mother;
+    action_t* pit_lord;
+    action_t* diabolic_imp;
+    action_t* manifested_demonic_soul;
+  } summons;
 
   struct tier_sets_t
   {
@@ -1221,6 +1251,7 @@ public:
   void init_rng_soul_harvester();
   void init_procs_soul_harvester();
 
+  void init_proc_data_collection();
   pet_t* create_main_pet( util::string_view pet_name, util::string_view pet_type );
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
 };
