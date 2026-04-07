@@ -18651,7 +18651,8 @@ Triggered By     : Lethal Barbs (1264781)
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1276369)  : Energize Power (30)
-                   Base Value: 2 | Scaled Value: 2 | Resource: focus | Radius: 100 yards | Target: Self and Summons in Area (120)
+                   Base Value: 1 | Scaled Value: 1 | Resource: focus | Radius: 100 yards | Target: Self and Summons in Area (120)
+Hotfixed         : Base Value (2 -> 1)
 Description      : $@spelldesc1264781
 
 Name             : Wyvern's Gaze (id=1264792) [Spell Family (9), Passive] 
