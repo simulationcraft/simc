@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66709 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66838 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1544,7 +1544,6 @@ Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143),
 Effects          :
 #1 (id=133162)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.6082 | PvP Coefficient: 1.15 | Radius: 0 - 8 yards | Target: Source (22) -> Enemies in Cone (24)
-Hotfixed         : PvP Coefficient (1 -> 1.15)
 #2 (id=155264)   : Trigger Spell (64): Fists of Fury Visual Target
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 123154 | Radius: 0 - 8 yards | Target: Source (22) -> Enemies in Cone (24)
 Description      : $@spelldesc113656
@@ -2096,12 +2095,10 @@ Effects          :
                    Affected School(s): All
 #3 (id=220987)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.2
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 #4 (id=753843)   : Dummy (3)
                    Base Value: 70 | Scaled Value: 70
 #5 (id=1094967)  : Dummy (3)
                    Base Value: 120 | Scaled Value: 120 | Target: Self (1)
-Hotfixed         : Base Value (100 -> 120)
 Description      : Absorbs all damage taken for $d, up to $s3% of your maximum health, and redirects $s4% of that amount to the enemy target as Nature damage over $124280d.
 Tooltip          : Damage dealt to the Monk is redirected to you as Nature damage over $124280d.
 
@@ -13084,12 +13081,10 @@ Effects          :
                    Base Value: -19 | Scaled Value: -19 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48
-Hotfixed         : Base Value (-16 -> -19)
 #2 (id=1108338)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: -19 | Scaled Value: -19 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Harmonic Surge (1239443), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48
-Hotfixed         : Base Value (-16 -> -19)
 #3 (id=1109279)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 22 | Scaled Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Blackout Kick (228649), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Thunderfist (393566), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443611), Flurry Strike (450617), Flurry Strike (451250), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411), Harmonic Surge (1239442), Stomp (1242373), Jadefire Stomp (1248815), Spinning Crane Kick (1250999), Empty the Cellar (1262765), Celestial Flames (1263667), Harmonic Surge (1271011), Zenith Stomp (1272696)
@@ -13113,10 +13108,8 @@ Hotfixed         : Base Value (-16 -> -19)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 5 | Target: Self (1)
 #10 (id=1315666) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: -50 | Scaled Value: -50 | Misc Value 2: 3448 (Label) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #11 (id=1315671) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 2 (6)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 6 | Misc Value 2: 4586 (Label) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Mistweaver Monk core passive
 
 Name             : Healing Elixir (id=428439) [Spell Family (53)] 
@@ -17235,7 +17228,6 @@ Description      : $@spelldesc467307
 Tooltip          : Renewing Mist healing increased by $w1%.
 
 Name             : Rushing Wind Kick (id=468179) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -17249,7 +17241,6 @@ Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack)
 Effects          :
 #1 (id=1181673)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.7975 | Radius: 25 yards | Target: Enemies in Cone (24)
-Hotfixed         : Target 1 (104 -> 24)
 Description      : $@spelldesc467307
 
 Name             : Glyph of Tiger Palm (id=468605) [Spell Family (53)] 
@@ -17852,7 +17843,6 @@ Effects          :
 #6 (id=1266882)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -15 | Scaled Value: -15 | Misc Value 2: 6424 (Label) | Target: Self (1)
                    Affected Spells (Label): Rushing Wind Kick (467307)
-Hotfixed         : Sub Type (647 -> 218), Base Value (0 -> -15), Misc Value 2 (0 -> 6424), Affects Spells
 
 Name             : Luck of the Draw! (id=1226058) [Spell Family (53)] 
 Class            : Monk
@@ -18284,7 +18274,6 @@ Attributes       : Passive (6), Can Proc From Procs (122)
 Effects          :
 #1 (id=1241997)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
-Hotfixed         : Sub Type (283 -> 4), Affects Spells
 Description      : Sheilun's Gift and Vivify healing is increased by $s1% on yourself.
 
 Name             : Jade Infusion (id=1242910) [Spell Family (53), Passive] 
@@ -18447,7 +18436,6 @@ Effects          :
 Description      : You release a Jadefire Stomp, dealing $388207s1 damage to $s2 enemies in front of you.
 
 Name             : Jadefire Stomp (id=1248815) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -20785,7 +20773,6 @@ Attributes       : Is Ability (4), Always AOE Line of Sight (186), Allow Class A
 Effects          :
 #1 (id=1285950)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10 | PvP Coefficient: 0.375 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : PvP Coefficient (0.5 -> 0.375)
 Description      : $@spelldesc1272694
 
 Name             : Tiger Fang (id=1272781) [Spell Family (53), Passive] 
@@ -21059,7 +21046,6 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
                    Affected Spells: Vivify (116670), Sheilun's Gift (399491)
                    Family Flags: 26, 114
-Hotfixed         : Sub Type (4 -> 283), Affects Spells
 #2 (id=1301853)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Serene Vitality overrides Expel Harm
                    Base Value: 1242468 | Scaled Value: 1242468 | Misc Value: 322101 | Target: Self (1)
 Description      : Sheilun's Gift and Vivify healing is increased by $s1% on yourself.

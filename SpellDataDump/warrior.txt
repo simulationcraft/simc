@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66709 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66838 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -728,7 +728,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=2780)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.21345 | PvP Coefficient: 1.08 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (2.92132 -> 3.21345), PvP Coefficient (1.2 -> 1.08)
 Description      : Overpower the enemy, dealing $s1 Physical damage. Cannot be blocked, dodged, or parried.$?s316440&s845[
 
 Increases the damage of your next Mortal Strike or Cleave by $s2%, stacking up to $u times]?s316440[
@@ -2451,7 +2450,6 @@ Effects          :
                    Base Value: 38 | Scaled Value: 38 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29
-Hotfixed         : Base Value (15 -> 38)
 #14 (id=1125752) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
@@ -10298,10 +10296,8 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=1020087)  : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 2.5 | Misc Value: 11 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 2.5)
 #3 (id=1020088)  : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 2.5 | Misc Value: 7 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 2.5)
 #4 (id=1293969)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Tough as Nails (385890), Shield Charge (385954), Rend (388539), Shattering Throw (394352), Wrecking Throw (394354), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174), Rampaging Ruin (1265579), Rampaging Ruin (1265580), Rampaging Ruin (1265581), Rampaging Ruin (1265582), Heroic Strike (1269383), Phalanx (1270116), Champion's Leap (1271985)
@@ -12506,7 +12502,6 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.429 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881), Bloodbath (335096)
                    Family Flags: 42
-Hotfixed         : PvP Coefficient (1 -> 0.429)
 #3 (id=1160122)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881), Bloodbath (335096)
@@ -14830,7 +14825,6 @@ Effects          :
                    Base Value: 23 | Scaled Value: 23 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29
-Hotfixed         : Base Value (53 -> 23)
 #5 (id=1265433)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20 | Misc Value 2: 4825 (Label) | Target: Self (1)
 
@@ -14879,7 +14873,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29
-Hotfixed         : NEW EFFECT
 
 Name             : Protection Warrior (id=1258163) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -16440,7 +16433,6 @@ Effects          :
 #1 (id=1289581)  : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 16 | PvP Coefficient: 1.2 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : PvP Coefficient (1 -> 1.2)
                    Modified By: Bloodsport (279172 effect#3)
 #2 (id=1289582)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)

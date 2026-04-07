@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66709 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66838 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -3036,7 +3036,6 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
-Hotfixed         : Base Value (345 -> 300)
 #13 (id=1040381) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 137 | Scaled Value: 137 | Misc Value 2: 4040 (Label) | Target: Self (1)
                    Affected Spells (Label): Mind Blast (8092)
@@ -3048,7 +3047,6 @@ Hotfixed         : Base Value (345 -> 300)
                    Base Value: 208 | Scaled Value: 208 | Target: Self (1)
                    Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
                    Family Flags: 33
-Hotfixed         : Base Value (71 -> 208)
 #16 (id=1041381) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 148 | Scaled Value: 148 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
@@ -4017,7 +4015,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=293563)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 25)
 Description      : Your direct damage spells inflict $s1% of their damage on all other targets afflicted by your Vampiric Touch within $199486A2 yards.
 
 Does not apply to damage from Shadowy Apparitions, Shadow Word: Pain, and Vampiric Touch.
@@ -9220,7 +9217,6 @@ Effects          :
 Description      : $@spelldesc372991
 
 Name             : Revel in Darkness (id=373003) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : School (2 -> 32)
 Talent Entry     : Discipline [tree=spec, row=4, col=7, max_rank=1, req_points=0]
 Class            : Priest
 School           : Shadow
@@ -9234,14 +9230,12 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
-Hotfixed         : Affects Spells
 #2 (id=997948)   : None (0)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=1029516)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
-Hotfixed         : Affects Spells
 Description      : Shadow Word: Pain deals $s1% additional damage and spreads to $s2 additional $Ltarget:targets; when you cast Penance to its target.
 
 Name             : Protector of the Frail (id=373035) [Spell Family (6), Passive, Hidden] 
@@ -9588,7 +9582,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.938961 | Radius: 0 - 10 yards | Target: at Target (63) -> at Enemy in Area (16)
 #2 (id=1078854)  : Dummy (3)
                    Base Value: 53 | Scaled Value: 53 | Target: Targeted Enemy (6)
-Hotfixed         : Base Value (21 -> 53)
 #3 (id=1078855)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
 Description      : Hurls a bolt of dark magic, dealing $s1 Shadow damage and ${$s1*$s2/100} Shadow damage to all enemies within $a1 yards of the target. Damage reduced beyond $s3 targets.
@@ -11469,7 +11462,6 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Mechanic: Snare | Target: Channel Target (77)
 #2 (id=1035091)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.42925 | Radius: 0 - 10 yards | Target: at Channel Target (76) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (0.3434 -> 0.42925)
 #3 (id=1072084)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc394976
@@ -11489,7 +11481,6 @@ Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416), Unkno
 Effects          :
 #1 (id=1038632)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.49698 | Radius: 0 - 10 yards | Target: at Target (63) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (0.397584 -> 0.49698)
 #2 (id=1038633)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=1038634)  : Dummy (3)
@@ -11818,7 +11809,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1070949)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 30)
 Description      : Shadow Apparitions deal $s1% increased damage to targets affected by your Shadow Word: Madness.
 
 Name             : Mind's Eye (id=407470) [Spell Family (6), Passive, Hidden] 
@@ -12018,7 +12008,6 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1081317)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.8505 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.63 -> 0.8505)
 Description      : $@spelldesc341491
 
 Name             : Glyph of the Shath'Yar (id=413413) [Spell Family (6), Passive, Hidden] 
@@ -16642,7 +16631,6 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1275349)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.8505 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.63 -> 0.8505)
 Description      : $@spelldesc341491
 
 Name             : Void Bolt (id=1264177) [Spell Family (6)] 

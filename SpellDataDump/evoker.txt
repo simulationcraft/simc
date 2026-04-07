@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66709 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66838 Live
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -5180,7 +5180,6 @@ Effects          :
 #3 (id=1316373)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 2448 (Category) | Radius: 100 yards | Target: Raid in Area (56)
                    Affected Spells (Category): Shift (1234796)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Fel Rush and Infernal Strike reduced by $s1%.
 

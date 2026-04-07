@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66709 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66838 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -12572,10 +12572,8 @@ Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Loo
 Effects          :
 #1 (id=1121387)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-Hotfixed         : Sub Type (4 -> 23), Period (0 -> 200)
 #2 (id=1131464)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Sub Type (23 -> 4), Period (200 -> 0), Trigger Spell (432592 -> 0)
 Description      : $@spelldesc428518
 
 Name             : Chaos Salvo (id=432592) [Spell Family (5)] 
@@ -12591,7 +12589,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1121422)  : Trigger Missiles (32): Chaos Salvo
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 432596 | Target: Targeted Enemy (6)
-Hotfixed         : Target 1 (77 -> 6)
 Description      : $@spelldesc428518
 
 Name             : Chaos Salvo (id=432596) [Spell Family (5)] 
@@ -12609,7 +12606,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1121429)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.543679 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : Target 1 (76 -> 53)
 Description      : $@spelldesc428514
 
 Name             : Demonic Art: Mother of Chaos (id=432794) [Spell Family (5)] 
