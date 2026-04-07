@@ -10765,13 +10765,13 @@ void shaman_t::analyze( sim_t& sim )
 
   if ( talent.deeply_rooted_elements.ok() )
   {
-    dre_samples.analyze();
+    dre_samples.analyze( sim );
     dre_samples.create_histogram( static_cast<unsigned>( dre_samples.max() - dre_samples.min() + 1 ) );
-    dre_uptime_samples.analyze();
+    dre_uptime_samples.analyze( sim );
     dre_uptime_samples.create_histogram( static_cast<unsigned>( std::ceil( dre_uptime_samples.max() ) - std::floor( dre_uptime_samples.min() ) + 1 ) );
   }
 
-  lvs_samples.analyze();
+  lvs_samples.analyze( sim );
   lvs_samples.create_histogram( static_cast<unsigned>( lvs_samples.max() - lvs_samples.min() + 1 ) );
 }
 

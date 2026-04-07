@@ -12886,21 +12886,21 @@ void death_knight_t::analyze( sim_t& s )
 {
   player_t::analyze( s );
 
-  _runes.rune_waste.analyze();
-  _runes.cumulative_waste.analyze();
+  _runes.rune_waste.analyze( s );
+  _runes.cumulative_waste.analyze( s );
   if ( options.extra_unholy_reporting )
   {
     if ( talent.unholy.commander_of_the_dead.ok() )
-      sample_data.lesser_ghoul_duration->analyze();
+      sample_data.lesser_ghoul_duration->analyze( s );
 
-    sample_data.lesser_ghouls_summoned->analyze();
-    sample_data.lesser_ghouls_active->analyze();
-    sample_data.magus_active->analyze();
+    sample_data.lesser_ghouls_summoned->analyze( s );
+    sample_data.lesser_ghouls_active->analyze( s );
+    sample_data.magus_active->analyze( s );
 
     if ( talent.unholy.pestilence.ok() )
     {
-      sample_data.pest_dp_dur->analyze();
-      sample_data.pest_vp_dur->analyze();
+      sample_data.pest_dp_dur->analyze( s );
+      sample_data.pest_vp_dur->analyze( s );
     }
   }
 }

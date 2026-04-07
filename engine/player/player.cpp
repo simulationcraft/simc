@@ -13826,8 +13826,8 @@ void player_t::analyze( sim_t& s )
   range::for_each( buff_list, []( buff_t* b ) { b->analyze(); } );
 
   range::for_each( proc_list, []( proc_t* pr ) { pr->analyze(); } );
-  range::for_each( uptime_list, []( uptime_t* up ) { up->analyze(); } );
-  range::for_each( benefit_list, []( benefit_t* ben ) { ben->analyze(); } );
+  range::for_each( uptime_list, [ this ]( uptime_t* up ) { up->analyze( *sim ); } );
+  range::for_each( benefit_list, [ this ]( benefit_t* ben ) { ben->analyze( *sim ); } );
   range::for_each( cooldown_waste_data_list, std::mem_fn( &cooldown_waste_data_t::analyze ) );
 
   range::sort( stats_list, []( const stats_t* l, const stats_t* r ) { return l->name_str < r->name_str; } );
@@ -13849,7 +13849,7 @@ void player_t::analyze( sim_t& s )
       return;
   }
 
-  range::for_each( sample_data_list, []( sample_data_helper_t* sd ) { sd->analyze(); } );
+  range::for_each( sample_data_list, [ this ]( sample_data_helper_t* sd ) { sd->analyze( *sim ); } );
 
   // Pet Chart Adjustment ===================================================
   size_t max_buckets = static_cast<size_t>( collected_data.fight_length.max() );

@@ -2986,10 +2986,10 @@ void sim_t::analyze()
 {
   const auto start_time = chrono::wall_clock::now();
 
-  simulation_length.analyze();
+  simulation_length.analyze( *this );
   if ( simulation_length.mean() == 0 ) return;
 
-  raid_dps.analyze();
+  raid_dps.analyze( *this );
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ]->analyze();

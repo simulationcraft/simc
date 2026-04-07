@@ -51,8 +51,8 @@ void cooldown_waste_data_t::merge( const cooldown_waste_data_t& other )
 
 void cooldown_waste_data_t::analyze()
 {
-  normal.analyze();
-  cumulative.analyze();
+  normal.analyze( cd->sim );
+  cumulative.analyze( cd->sim );
 }
 
 void cooldown_waste_data_t::datacollection_begin()

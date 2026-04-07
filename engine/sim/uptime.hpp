@@ -6,6 +6,7 @@
 #pragma once
 
 #include "config.hpp"
+#include "sim.hpp"
 #include "util/sample_data.hpp"
 #include "util/timespan.hpp"
 #include <string>
@@ -78,10 +79,10 @@ struct uptime_t : public uptime_base_t
 
   void update(bool is_up, timespan_t current_time);
 
-  void analyze()
+  void analyze( sim_t& sim )
   {
-    uptime_sum.analyze();
-    uptime_instance.analyze();
+    uptime_sum.analyze( sim );
+    uptime_instance.analyze( sim );
   }
 
   void merge(const uptime_t& other)

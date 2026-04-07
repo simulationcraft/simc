@@ -2568,7 +2568,7 @@ void raid_event_t::analyze( sim_t* sim )
     if ( sim->raid_events[ i ]->type == "pull" )
     {
       auto pull_event = dynamic_cast<pull_event_t*>( sim->raid_events[ i ].get() );
-      pull_event->real_duration.analyze();
+      pull_event->real_duration.analyze( *sim );
     }
   }
 }

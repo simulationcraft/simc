@@ -46,8 +46,8 @@ void proc_t::merge( const proc_t& other )
 
 void proc_t::analyze()
 {
-  count.analyze();
-  interval_sum.analyze();
+  count.analyze( sim );
+  interval_sum.analyze( sim );
 }
 
 void proc_t::datacollection_begin()

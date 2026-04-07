@@ -231,30 +231,30 @@ void player_collected_data_t::merge( const player_t& other_player )
 
 void player_collected_data_t::analyze( const player_t& p )
 {
-  fight_length.analyze();
+  fight_length.analyze( *p.sim );
   // DMG
-  dmg.analyze();
-  compound_dmg.analyze();
-  dps.analyze();
-  prioritydps.analyze();
-  dpse.analyze();
-  dmg_taken.analyze();
-  dtps.analyze();
+  dmg.analyze( *p.sim );
+  compound_dmg.analyze( *p.sim );
+  dps.analyze( *p.sim );
+  prioritydps.analyze( *p.sim );
+  dpse.analyze( *p.sim );
+  dmg_taken.analyze( *p.sim );
+  dtps.analyze( *p.sim );
   // Heal
-  heal.analyze();
-  compound_heal.analyze();
-  hps.analyze();
-  hpse.analyze();
-  heal_taken.analyze();
-  htps.analyze();
+  heal.analyze( *p.sim );
+  compound_heal.analyze( *p.sim );
+  hps.analyze( *p.sim );
+  hpse.analyze( *p.sim );
+  heal_taken.analyze( *p.sim );
+  htps.analyze( *p.sim );
   // Absorb
-  absorb.analyze();
-  compound_absorb.analyze();
-  aps.analyze();
-  absorb_taken.analyze();
-  atps.analyze();
+  absorb.analyze( *p.sim );
+  compound_absorb.analyze( *p.sim );
+  aps.analyze( *p.sim );
+  absorb_taken.analyze( *p.sim );
+  atps.analyze( *p.sim );
   // Tank
-  deaths.analyze();
+  deaths.analyze( *p.sim );
 
   if ( !p.sim->single_actor_batch )
   {

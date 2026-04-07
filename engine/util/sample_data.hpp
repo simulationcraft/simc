@@ -15,6 +15,8 @@
 #include "util/string_view.hpp"
 #include "util/rng.hpp"
 
+struct sim_t;
+
 /* Collection of statistical formulas for sequences
  * Note: Returns 0 for empty sequences
  */
@@ -411,7 +413,7 @@ public:
   // Analyze collected data
 
   // void analyze( sim_t& sim ) <- allows sample data objects to emit warnings
-  void analyze()
+  void analyze( sim_t& sim )
   {
     sort();
     analyze_basics();
@@ -419,7 +421,7 @@ public:
     create_histogram();
 
     // cannot warn, just asserting for now.
-    assert( is_normal() );
+    analyze_distribution( sim );
   }
 
   /*
@@ -486,6 +488,21 @@ public:
     }
   }
 
+  /*
+   * Test Normality
+   * Requires: Analyzed Mean, stddev, sorted
+   */
+  bool analyze_distribution( sim_t& )
+  {
+    if ( simple )
+      return true;
+
+    if ( data().empty() )
+      return true;
+
+    return count() > 10 ? statistics::is_normal( sorted_data(), _mean, std_dev ) : true;
+  }
+
 public:
   // sort data
   void sort()
@@ -517,21 +534,6 @@ public:
 
     distribution = statistics::create_histogram( data(), num_buckets,
                                                  base_t::min(), base_t::max() );
-  }
-
-  /*
-   * Test Normality
-   * Requires: Analyzed Mean, stddev, sorted
-   */
-  bool is_normal()
-  {
-    if ( simple )
-      return true;
-
-    if ( data().empty() )
-      return true;
-
-    return count() > 10 ? statistics::is_normal( sorted_data(), _mean, std_dev ) : true;
   }
 
   void clear()

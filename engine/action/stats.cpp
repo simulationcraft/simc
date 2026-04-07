@@ -314,8 +314,8 @@ void stats_t::analyze()
     r.analyze( num_tick_results.mean() );
   } );
 
-  portion_aps.analyze();
-  portion_apse.analyze();
+  portion_aps.analyze( sim );
+  portion_apse.analyze( sim );
 
   resource_gain.analyze( iterations );
 
@@ -329,8 +329,8 @@ void stats_t::analyze()
     resource_portion[ i ] = ( resource_total > 0 ) ? ( resource_gain.actual[ i ] / resource_total ) : 0;
   }
 
-  total_amount.analyze();
-  actual_amount.analyze();
+  total_amount.analyze( sim );
+  actual_amount.analyze( sim );
 
   compound_amount = actual_amount.count() ? actual_amount.mean() : 0.0;
 

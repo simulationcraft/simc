@@ -2577,7 +2577,7 @@ void priest_t::analyze( sim_t& sim )
 
   if ( talents.shadow.voidform.enabled() )
   {
-    sample_data.voidform_duration->analyze();
+    sample_data.voidform_duration->analyze( sim );
   }
 }
 

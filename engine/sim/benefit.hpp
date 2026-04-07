@@ -36,9 +36,9 @@ public:
       down++;
   }
 
-  void analyze()
+  void analyze( sim_t& sim )
   {
-    ratio.analyze();
+    ratio.analyze( sim );
   }
 
   void datacollection_begin()
