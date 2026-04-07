@@ -86887,6 +86887,47 @@ Effects          :
 Description      : $@spelldesc253807
 Tooltip          : Leech increased by $w1.
 
+Name             : Umbral Shift (id=253819) [Passive, Hidden] 
+School           : Shadow
+Spell Type       : None
+Proc Chance      : 101%
+Real PPM         : 1
+Proc Flags       : Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=474478)   : Apply Aura (6) | Proc Trigger Spell (42): Umbral Shift
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 253826 | Target: Self (1)
+#2 (id=1308913)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1290152
+Description      : Your spells have a chance to grant you Umbral Shift, reducing all Shadow damage taken$?a253819[ by up to $w1][] for $253826d.
+
+Name             : Umbral Shift (id=253825) [Passive, Hidden] 
+School           : Shadow
+Spell Type       : None
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=474489)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=1308914)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1290152
+Description      : Umbral Shift also increases your Mastery$?a253825[ by $w1][].
+
+Name             : Umbral Shift (id=253826) 
+School           : Shadow
+Spell Type       : None
+Duration         : 18 seconds
+Labels           : 330
+Triggered By     : Umbral Shift (253819)
+Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=474490)   : Apply Aura (6) | Damage Taken (14)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x10020 | Target: Self (1)
+                   Affected School(s): Shadow
+#2 (id=474491)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Trigger Spell: 1290152 | Target: Self (1)
+Description      : $@spelldesc253819
+Tooltip          : Shadow damage taken reduced by $w1.$?a253825[ Mastery increased by $w2.][]
+
 Name             : Argussian Krokul Signal (id=253938) [Hidden] 
 School           : Physical
 Spell Type       : None
@@ -253694,6 +253735,7 @@ Effects          :
 Name             : Umbral Shift (id=1290152) [Passive, Hidden] 
 School           : Shadow
 Spell Type       : None
+Triggered By     : Umbral Shift (253819), Umbral Shift (253825), Umbral Shift (253826)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1308891)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)

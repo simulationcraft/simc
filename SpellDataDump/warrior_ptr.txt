@@ -16627,6 +16627,7 @@ Description      : $@spelldesc1269307
 Tooltip          : Damage bonus of your next Colossus Smash increased by $w1%.
 
 Name             : Phalanx (id=1292071) [Spell Family (4)] 
+Hotfixed         : Description
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -16641,7 +16642,7 @@ Effects          :
 #1 (id=1311875)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
-Description      : Enemies damaged by Phalanx's wave of force deal ${$s1}.1% reduced damage to you for $d.
+Description      : Enemies damaged by Phalanx's wave of force deal ${$s1/-1}.1% reduced damage to you for $d.
 
 Tooltip          : Dealing ${$W1/-1}.1% reduced damage to $@auracaster.
 
