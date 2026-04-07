@@ -3972,7 +3972,7 @@ struct crimson_tempest_t : public rogue_attack_t
     }
   }
 
-  void clone_dot( std::function<dot_t*( rogue_td_t* )> dot_selector )
+  void clone_dot( std::function<dot_t*( rogue_td_t* )> dot_selector, bool internal_bleeding = false )
   {
     std::vector<player_t*> tl = target_list();
     size_t num_copies = std::min( tl.size(), as<size_t>( data().effectN( 2 ).base_value() ) );
@@ -3995,11 +3995,18 @@ struct crimson_tempest_t : public rogue_attack_t
 
       if ( target_dot->is_ticking() )
       {
-        target_dot->adjust_duration( source_dot->remains() - target_dot->remains() );
+        // Copies state and duration, does not change tick time
+        source_dot->copy( tl[ i ], DOT_COPY_CLONE_NO_REFRESH );
       }
       else
       {
-        source_dot->copy( tl[ i ], DOT_COPY_CLONE );
+        // State and duration is copied initially, but tick time is not
+        source_dot->copy( tl[ i ], DOT_COPY_START );
+      }
+
+      if ( internal_bleeding && p()->active.internal_bleeding )
+      {
+        p()->active.internal_bleeding->trigger_secondary_action( tl[ i ], cast_state( source_dot->state )->get_combo_points() );
       }
       
       p()->sim->print_log( "{} {} cloning {} from {} to {} with remains={:.3f}",
@@ -4013,7 +4020,7 @@ struct crimson_tempest_t : public rogue_attack_t
 
     if ( target_list().size() > 1 )
     {
-      clone_dot( []( rogue_td_t* td ) { return td->dots.rupture; } );
+      clone_dot( []( rogue_td_t* td ) { return td->dots.rupture; }, true );
       clone_dot( []( rogue_td_t* td ) { return td->dots.garrote; } );
       trigger_scent_of_blood(); // Force recalculate since no Rupture actions are triggered
     }

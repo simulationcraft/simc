@@ -295,11 +295,19 @@ void dot_t::copy( player_t* destination, dot_copy_e copy_type, action_t* copy_ac
     {
       old_remains = other_dot->remains();
 
-      // The new duration is computed through our normal refresh duration
-      // method. End result (by default) will be source_remains + min(
-      // target_remains, 0.3 * source_remains )
-      new_duration = copy_action->calculate_dot_refresh_duration(
+      if ( copy_type == DOT_COPY_CLONE_NO_REFRESH )
+      {
+        // No additional duration granted from the normal refresh process
+        new_duration = remains();
+      }
+      else
+      {
+        // The new duration is computed through our normal refresh duration
+        // method. End result (by default) will be source_remains + min(
+        // target_remains, 0.3 * source_remains )
+        new_duration = copy_action->calculate_dot_refresh_duration(
           other_dot, remains() );
+      }
 
       assert( other_dot->end_event && other_dot->tick_event );
 

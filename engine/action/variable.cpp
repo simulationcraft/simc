@@ -339,14 +339,14 @@ void variable_t::execute()
                       signature_str );
   }
 
-  if ( var->report && var->is_constant() && var->previous_value_ != var->current_value_ )
+  if ( var->report && !var->is_constant() && var->previous_value_ != var->current_value_ )
     player->sequence_add( this, nullptr );
 }
 
 void variable_t::sequence_add_fn( std::string& a_str, std::string& t_str ) const
 {
-  a_str = fmt::format( "VAR {} [{}]", name_str, operation_str( operation ) );
-  t_str = fmt::format( "Old value: {:.4f}<br>New value: <b>{:.4f}</b>", var->previous_value_, var->current_value_ );
+  a_str = fmt::format( "</b>VAR [{}]<br><b>{}", operation_str( operation ), name_str );
+  t_str = fmt::format( "Old:&#160;{:.4f}<br>New:&#160;<b>{:.4f}</b>", var->previous_value_, var->current_value_ );
 }
 
 bool variable_t::action_ready()
