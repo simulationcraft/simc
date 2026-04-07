@@ -721,6 +721,7 @@ public:
   struct deck_rngs_t
   {
     shuffled_rng_t* random_idol;
+    shuffled_rng_t* master_of_darkness;
   } deck_rng;
 
   // Gains

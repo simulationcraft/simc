@@ -64,7 +64,6 @@ actions.main+=/void_volley
 actions.main+=/void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)
 # Use Tentacle Slam to prevent capping charges or to refresh Vampiric Touch
 actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=dot.vampiric_touch.refreshable|cooldown.tentacle_slam.full_recharge_time<=gcd.max*2
-actions.main+=/shadow_word_madness,target_if=max:dot.shadow_word_madness.remains,if=dot.shadow_word_madness.pmultiplier<1&dot.shadow_word_madness.ticking
 # Use Void Torrent if it will get near full Mastery Value
 actions.main+=/void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&variable.dots_up
 # Put out Shadow Word: Pain on enemies that will live at least 12s as a filler when talented into Invoked Nightmare.

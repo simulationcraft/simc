@@ -95,7 +95,6 @@ void shadow( player_t* p )
   main->add_action( "void_volley" );
   main->add_action( "void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)", "Blast more burst :wicked:" );
   main->add_action( "tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=dot.vampiric_touch.refreshable|cooldown.tentacle_slam.full_recharge_time<=gcd.max*2", "Use Tentacle Slam to prevent capping charges or to refresh Vampiric Touch" );
-  main->add_action( "shadow_word_madness,target_if=max:dot.shadow_word_madness.remains,if=dot.shadow_word_madness.pmultiplier<1&dot.shadow_word_madness.ticking" );
   main->add_action( "void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&variable.dots_up", "Use Void Torrent if it will get near full Mastery Value" );
   main->add_action( "shadow_word_pain,target_if=max:(refreshable*100000+target.time_to_die+dot.vampiric_touch.ticking*10000),if=talent.invoked_nightmare&refreshable&target.time_to_die>12&dot.vampiric_touch.ticking", "Put out Shadow Word: Pain on enemies that will live at least 12s as a filler when talented into Invoked Nightmare." );
   main->add_action( "mind_blast,target_if=max:dot.shadow_word_madness.remains,if=(!buff.mind_devourer.react|!talent.mind_devourer)", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
@@ -175,7 +174,6 @@ void shadow_ptr( player_t* p )
   main->add_action( "void_volley" );
   main->add_action( "void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)", "Blast more burst :wicked:" );
   main->add_action( "tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=dot.vampiric_touch.refreshable|cooldown.tentacle_slam.full_recharge_time<=gcd.max*2", "Use Tentacle Slam to prevent capping charges or to refresh Vampiric Touch" );
-  main->add_action( "shadow_word_madness,target_if=max:dot.shadow_word_madness.remains,if=dot.shadow_word_madness.pmultiplier<1&dot.shadow_word_madness.ticking" );
   main->add_action( "void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&variable.dots_up", "Use Void Torrent if it will get near full Mastery Value" );
   main->add_action( "shadow_word_pain,target_if=max:(refreshable*100000+target.time_to_die+dot.vampiric_touch.ticking*10000),if=talent.invoked_nightmare&refreshable&target.time_to_die>12&dot.vampiric_touch.ticking", "Put out Shadow Word: Pain on enemies that will live at least 12s as a filler when talented into Invoked Nightmare." );
   main->add_action( "mind_blast,target_if=max:dot.shadow_word_madness.remains,if=(!buff.mind_devourer.react|!talent.mind_devourer)", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );

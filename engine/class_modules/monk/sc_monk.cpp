@@ -2145,10 +2145,76 @@ struct keg_smash_t : monk_melee_attack_t
 {
   struct empty_barrel_t : monk_spell_t
   {
+    struct state_t : action_state_t
+    {
+      int count;
+
+      state_t( action_t *a, player_t *t ) : action_state_t( a, t ), count( 0 )
+      {
+      }
+
+      std::ostringstream &debug_str( std::ostringstream &s ) override
+      {
+        action_state_t::debug_str( s );
+        fmt::print( s, " count={}", count );
+        return s;
+      }
+
+      void initialize() override
+      {
+        action_state_t::initialize();
+        count = 0;
+      }
+
+      void copy_state( const action_state_t *o ) override
+      {
+        action_state_t::copy_state( o );
+        auto other = debug_cast<const state_t *>( o );
+        count      = other->count;
+      }
+    };
+
     empty_barrel_t( monk_t *player )
       : monk_spell_t( player, "empty_barrel", player->talent.brewmaster.empty_barrel_damage )
     {
       background = dual = true;
+      // aoe == 0 => state->chain_target == 0
+      // as a result, chain_multiplier != 1 is ignored in default implementation
+      aoe = 0;
+    }
+
+    double composite_da_multiplier( const action_state_t *state ) const override
+    {
+      double mul = monk_spell_t::composite_da_multiplier( state );
+
+      auto chain_state = debug_cast<const state_t *>( state );
+      mul *= pow( chain_multiplier, chain_state->count );
+
+      return mul;
+    }
+
+    void impact( action_state_t *state ) override
+    {
+      monk_spell_t::impact( state );
+
+      auto &tl = target_list();
+      if ( tl.size() == 1 )
+        return;
+
+      if ( debug_cast<state_t *>( state )->count + 1 == data().effectN( 1 ).chain_target() )
+        return;
+
+      auto chain_state = debug_cast<state_t *>( get_state( state ) );
+      chain_state->count += 1;
+      chain_state->target = tl[ chain_state->count % tl.size() ];
+
+      snapshot_state( chain_state, amount_type( chain_state ) );
+      schedule_execute( chain_state );
+    }
+
+    action_state_t *new_state() override
+    {
+      return new state_t( this, target );
     }
   };
 

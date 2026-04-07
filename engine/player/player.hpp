@@ -1419,6 +1419,9 @@ public:
   virtual void trigger_callbacks( proc_types, proc_types2, const proc_data_t& data, player_t* target,
                                   proc_trigger_type_e pt_type );
   virtual void trigger_aura_applied_callbacks( const proc_data_t& data, player_t* target );
+  template <typename T>
+  void trigger_aura_applied_callbacks( T, player_t* )  // prevent implicit construction of proc_data_t
+  { static_assert( static_false<T>, "trigger_aura_applied_callbacks must be called with a proc_data_t&" ); }
 
   virtual bool taunt( player_t* /* source */ ) { return false; }
 

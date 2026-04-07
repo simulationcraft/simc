@@ -724,6 +724,7 @@ void priest_t::create_buffs_discipline()
 
 void priest_t::init_rng_discipline()
 {
+  deck_rng.master_of_darkness = get_shuffled_rng( "master_of_darkness", 1, 3 );
 }
 
 void priest_t::init_background_actions_discipline()
@@ -857,6 +858,27 @@ std::unique_ptr<expr_t> priest_t::create_expression_discipline( util::string_vie
       return expr_t::create_constant( name_str, 0 );
 
     return make_fn_expr( name_str, [ this ]() { return allies_with_atonement.size(); } );
+  }
+
+  if ( name_str == "master_of_darkness_positive" )
+  {
+    if ( !talents.discipline.master_the_darkness_1.enabled() )
+      return expr_t::create_constant( name_str, 0 );
+    return make_fn_expr( name_str, [ this ]() { return deck_rng.master_of_darkness->count_remains( 1 ); } );
+  }
+
+  if ( name_str == "master_of_darkness_negative" )
+  {
+    if ( !talents.discipline.master_the_darkness_1.enabled() )
+      return expr_t::create_constant( name_str, 0 );
+    return make_fn_expr( name_str, [ this ]() { return deck_rng.master_of_darkness->count_remains( 0 ); } );
+  }
+
+  if ( name_str == "master_of_darkness_cards" )
+  {
+    if ( !talents.discipline.master_the_darkness_1.enabled() )
+      return expr_t::create_constant( name_str, 0 );
+    return make_fn_expr( name_str, [ this ]() { return deck_rng.master_of_darkness->entry_remains(); } );
   }
 
   if ( name_str == "min_active_atonement" )
