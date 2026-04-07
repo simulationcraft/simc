@@ -72,7 +72,7 @@ namespace warlock
     warlock_t::init_spells_hellcaller();
     warlock_t::init_spells_soul_harvester();
 
-    warlock_t::init_proc_data_collection();
+    warlock_t::init_proc_data_entries();
 
     // Register passives
     // NOTE: 2026-02-17 Currently Gloom of Nathreza talent is bugged for Destruction and does not work
@@ -680,7 +680,7 @@ namespace warlock
     warlock_pet_list.demonic_souls.set_default_duration( hero.manifested_avarice_spell->duration() );
   }
 
-  void warlock_t::init_proc_data_collection()
+  void warlock_t::init_proc_data_entries()
   {
     proc_data_entries.shadow_bolt_energize = warlock_base.shadow_bolt_energize;
     proc_data_entries.agony_energize = talents.agony_energize;

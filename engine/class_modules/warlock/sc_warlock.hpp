@@ -763,16 +763,6 @@ public:
     action_t* shadow_of_nathreza;
   } proc_actions;
 
-  struct proc_data_entries_t
-  {
-    proc_data_t shadow_bolt_energize;
-    proc_data_t agony_energize;
-    proc_data_t demonbolt_energize;
-    proc_data_t incinerate_energize;
-    proc_data_t fel_armaments_2;
-    proc_data_t marked_soul;
-  } proc_data_entries;
-
   struct pet_summons_t
   {
     action_t* desperate_soul;
@@ -798,6 +788,16 @@ public:
     action_t* diabolic_imp;
     action_t* manifested_demonic_soul;
   } summons;
+
+  struct proc_data_entries_t
+  {
+    proc_data_t shadow_bolt_energize;
+    proc_data_t agony_energize;
+    proc_data_t demonbolt_energize;
+    proc_data_t incinerate_energize;
+    proc_data_t fel_armaments_2;
+    proc_data_t marked_soul;
+  } proc_data_entries;
 
   struct tier_sets_t
   {
@@ -1251,7 +1251,7 @@ public:
   void init_rng_soul_harvester();
   void init_procs_soul_harvester();
 
-  void init_proc_data_collection();
+  void init_proc_data_entries();
   pet_t* create_main_pet( util::string_view pet_name, util::string_view pet_type );
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
 };

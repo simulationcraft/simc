@@ -2020,7 +2020,7 @@ using namespace helpers;
         if ( p->talents.unstable_affliction.ok() )
         {
           unstable_affliction_mg = new unstable_affliction_mg_t( p );
-          add_child( unstable_affliction_mg);
+          add_child( unstable_affliction_mg );
         }
         if ( p->hero.wither.ok() )
         {
@@ -2312,7 +2312,7 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      p()->warlock_pet_list.darkglares.spawn( p()->talents.summon_darkglare->duration() );
+      p()->warlock_pet_list.darkglares.spawn( data().duration() );
     }
   };
 
@@ -3077,7 +3077,7 @@ using namespace helpers;
       p()->trigger_aura_applied_callbacks( proc_data, p() );
     }
 
-    void execute(timespan_t dur_adjust_, timespan_t server_action_delay_ )
+    void execute( timespan_t dur_adjust_, timespan_t server_action_delay_ )
     {
       dur_adjust = dur_adjust_;
       server_action_delay = server_action_delay_;
@@ -4627,7 +4627,7 @@ using namespace helpers;
 
       // Random extra duration time between 0_ms and 820_ms following a uniform distribution
       const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
-      p()->warlock_pet_list.infernals.spawn( p()->talents.summon_infernal_main->duration() + dur_adjust );
+      p()->warlock_pet_list.infernals.spawn( data().duration() + dur_adjust );
     }
   };
 
@@ -4911,7 +4911,8 @@ using namespace helpers;
 
           if ( destruction() )
           {
-            p()->summons.diabolic_imp->execute();
+            for ( int i = 0; i < as<int>( p()->hero.ruination_buff->effectN( 3 ).base_value() ); i++ )
+              p()->summons.diabolic_imp->execute();
           }
         }
       }
@@ -5106,7 +5107,7 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      p()->warlock_pet_list.diabolic_imps.spawn( as<int>( p()->hero.ruination_buff->effectN( 3 ).base_value() ) );
+      p()->warlock_pet_list.diabolic_imps.spawn( data().duration() );
 
       // Diabolic Imp summon spell triggers procs
       p()->trigger_aura_applied_callbacks( proc_data, p() );

@@ -2364,7 +2364,7 @@ desperate_soul_t::desperate_soul_t( warlock_t* owner, util::string_view name )
 {
   npc_id = owner->talents.summon_desperate_soul->effectN( 1 ).misc_value1();
 
-  action_list_str += "wrath_of_nathreza";
+  action_list_str = "wrath_of_nathreza";
 }
 
 struct wrath_of_nathreza_t : public warlock_pet_spell_t
@@ -2734,6 +2734,9 @@ namespace diabolist
       warlock_pet_spell_t::execute();
 
       debug_cast<diabolic_imp_t*>( p() )->bolts--;
+
+      if ( debug_cast<diabolic_imp_t*>( p() )->bolts <= 0 )
+        make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
     }
   };
 
