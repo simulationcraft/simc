@@ -308,7 +308,7 @@ namespace warlock
     talents.antoran_armaments = find_talent_spell( talent_tree::SPECIALIZATION, "Antoran Armaments" ); // Should be ID 1250921
 
     talents.flametouched = find_talent_spell( talent_tree::SPECIALIZATION, "Flametouched" ); // Should be ID 453699
-    talents.ferocity_of_fharg_buff = conditional_spell_lookup( talents.flametouched.ok(), 453704 );
+    talents.flametouched_buff = conditional_spell_lookup( talents.flametouched.ok(), 453704 );
 
     talents.demonic_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Knowledge" ); // Should be ID 386185
 

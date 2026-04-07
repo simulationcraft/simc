@@ -85,7 +85,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
     propagate_const<buff_t*> infernal_command; // Aura applied to Wild Imps periodically
     propagate_const<buff_t*> unstable_soul;
-    propagate_const<buff_t*> ferocity_of_fharg;
+    propagate_const<buff_t*> flametouched;
     propagate_const<buff_t*> demonic_power;
     propagate_const<buff_t*> grimoire_of_service;
   } buffs;

@@ -362,27 +362,30 @@ void warlock_t::init_finished()
   // It is still relevant, however, because applying the buff can trigger trinkets and other proc effects.
   if ( demonology() )
   {
-    make_event( sim, rng().range( 0_ms, 420_ms ), [ this ]() {
-      make_repeating_event( sim, 420_ms, [ this ]() {
-        auto active_pet = warlock_pet_list.active;
-        if ( active_pet && active_pet->pet_type == PET_FELGUARD )
-        {
-          wild_imp_ic_shared_offset = timespan_t::from_millis( rng().range( -267, 267 ) );
-          auto imps = warlock_pet_list.wild_imps.active_pets();
-          for ( auto imp : imps )
+    register_combat_begin( [ this ]( player_t* ) {
+      timespan_t initial_delay = rng().range( 0_ms, 420_ms );
+      make_event( sim, initial_delay, [ this ]() {
+        make_repeating_event( sim, 420_ms, [ this ]() {
+          auto active_pet = warlock_pet_list.active;
+          if ( active_pet && active_pet->pet_type == PET_FELGUARD )
           {
-            if ( sim->current_time() >= ( imp->infernal_command_ev_ts + imp->infernal_command_ev_offset ) )
+            wild_imp_ic_shared_offset = timespan_t::from_millis( rng().range( -267, 267 ) );
+            auto imps = warlock_pet_list.wild_imps.active_pets();
+            for ( auto imp : imps )
             {
-              if ( imp->buffs.infernal_command->check() )
-                imp->buffs.infernal_command->decrement();
-              else
-                imp->buffs.infernal_command->trigger();
+              if ( sim->current_time() >= ( imp->infernal_command_ev_ts + imp->infernal_command_ev_offset ) )
+              {
+                if ( imp->buffs.infernal_command->check() )
+                  imp->buffs.infernal_command->expire();
+                else
+                  imp->buffs.infernal_command->trigger();
 
-              imp->infernal_command_ev_ts += 5250_ms;
-              imp->infernal_command_ev_offset = wild_imp_ic_shared_offset;
+                imp->infernal_command_ev_ts += 5250_ms;
+                imp->infernal_command_ev_offset = wild_imp_ic_shared_offset;
+              }
             }
           }
-        }
+        } );
       } );
     } );
   }

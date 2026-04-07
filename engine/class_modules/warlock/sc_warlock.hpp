@@ -481,7 +481,7 @@ public:
     const spell_data_t* tyrants_oblation_buff;
     player_talent_t antoran_armaments;
     player_talent_t flametouched;
-    const spell_data_t* ferocity_of_fharg_buff;
+    const spell_data_t* flametouched_buff;
 
     player_talent_t demonic_knowledge;
     player_talent_t sacrificed_souls;
