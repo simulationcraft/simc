@@ -6335,10 +6335,10 @@ Attributes       : No Aura Cancel (31), Exclude Caster (51), Ignore Line of Sigh
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1035393)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 8 | Scaled Value: 8 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 8 | Scaled Value: 8 | Radius: 0 - 500 yards | Target: at Self (18) -> At Ally in Area (31)
                    Modified By: Close as Clutchmates (396043 effect#1), Evoker Augmentation 10.1 Class Set 4pc (414878 effect#1)
 #2 (id=1035394)  : Apply Aura (6) | Modify Stat With Support Triggers (540)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 0 - 500 yards | Target: at Self (18) -> At Ally in Area (31)
 #3 (id=1248097)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Increase all damage dealing allies' primary stat by $<amount>% of your own and increase your own damage by $395296s1% for $d.
@@ -11047,6 +11047,7 @@ Effects          :
 Description      : Fire Breath $?c1[reaches its][and Dream Breath reach their] maximum empower level $s1% faster.
 
 Name             : Consume Flame (desc=Red) (id=444088) [Spell Family (224), Passive, Hidden] 
+Hotfixed         : Description
 Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=5, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
@@ -11068,14 +11069,18 @@ Effects          :
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
                    Modified By: Preservation Evoker (356810 effect#17)
 #4 (id=1275546)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 115 | Scaled Value: 115 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | Target: Self (1)
+Hotfixed         : Base Value (115 -> 150)
 #5 (id=1275591)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #6 (id=1278179)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+#7 (id=1317269)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 115 | Scaled Value: 115 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $?c1[Disintegrate damage consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.
 
-Pyre damage consumes ${$s3/1000} sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.][Verdant Embrace healing consumes ${$s5/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.
+Pyre damage consumes ${$s3/1000} sec of Fire Breath from enemies it damages, detonating it for $s7% of the amount consumed.][Verdant Embrace healing consumes ${$s5/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.
 
 Emerald Blossom healing consumes ${$s1/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.]
 

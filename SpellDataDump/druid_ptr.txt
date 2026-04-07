@@ -20638,6 +20638,7 @@ Effects          :
 Description      : $@spelldesc1244258
 
 Name             : Everbloom (id=1244331) [Spell Family (7), Passive] 
+Hotfixed         : Description
 Talent Entry     : Restoration [tree=spec, row=11, col=5, max_rank=2, req_points=20, select_idx=200]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Druid
@@ -20655,18 +20656,21 @@ Effects          :
 #2 (id=1245026)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #3 (id=1314559)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : $s2% of Lifebloom's final bloom splashes to all allies within $1244341a1 yds, reduced beyond $s3.
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+Hotfixed         : Base Value (5 -> 8)
+Description      : $s2% of Lifebloom's final bloom heals up to $s3 injured allies within $1244341a1 yds.
 
 Name             : Everbloom (id=1244341) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
+Max Targets      : 8
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Attributes       : Can't Crit (93), Ignore Caster Healing Modifiers (312)
+Attributes       : Can't Crit (93), Limit N (165), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=1245045)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 40 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
@@ -20713,7 +20717,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1245242)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+Hotfixed         : Base Value (5 -> 3)
 Description      : Lifebloom bursts into a Blooming Frenzy when you consume Soul of the Forest, causing it to bloom $s1 times in rapid succession.
 
 Name             : Sudden Ambush (id=1244483) [Spell Family (7)] 
