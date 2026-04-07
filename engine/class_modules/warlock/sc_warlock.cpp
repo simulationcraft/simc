@@ -243,7 +243,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
       const int stack_diff = expected_stacks - current_stacks;
       if ( stack_diff > 0 )
         buffs.hellbent_commander->trigger( stack_diff );
-      else if (stack_diff < 0 )
+      else if ( stack_diff < 0 )
         buffs.hellbent_commander->decrement( std::abs( stack_diff ) );
 
       if ( stack_diff != 0 )

@@ -4024,6 +4024,9 @@ using namespace helpers;
                                         .start_time( sim->current_time() )
                                         .action( p()->proc_actions.rain_of_fire_tick ) );
 
+      // Rain of Fire spell cast triggers procs
+      p()->trigger_aura_applied_callbacks( s_data, p() );
+
       if ( p()->talents.embers_of_nihilam_3.ok() )
         helpers::trigger_echo_of_sargeras( p(), execute_state->target, p()->proc_actions.echo_of_sargeras_rof, p()->procs.echo_of_sargeras_rof );
 
