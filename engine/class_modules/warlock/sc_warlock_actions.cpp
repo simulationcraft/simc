@@ -3606,7 +3606,7 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       dot->adjust_duration( -remaining );
-      if ( p()->hero.wither.ok() )
+      if ( p()->hero.wither.ok() && remaining != 0_ms )
       {
         auto& wither_debuff = td( target )->debuffs.wither;
         if ( wither_debuff->remains() - remaining <= timespan_t::zero() )
