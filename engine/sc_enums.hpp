@@ -1514,3 +1514,14 @@ enum error_level_e : unsigned short
   UNVERIFIED_VALUE,
   IMPLEMENTATION_NOTES,
 };
+
+// statistical significance
+enum significance_e : unsigned short
+{
+  SIGNIFICANCE_1 = 0,
+  SIGNIFICANCE_2_5,
+  SIGNIFICANCE_5,
+  SIGNIFICANCE_10,
+  SIGNIFICANCE_15,
+  SIGNIFICANCE_MAX
+};

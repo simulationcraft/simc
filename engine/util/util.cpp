@@ -2813,6 +2813,27 @@ const char* util::action_type_string( action_e type )
   }
 }
 
+const char* util::significance_string( significance_e significance )
+{
+  switch ( significance )
+  {
+  case SIGNIFICANCE_1:
+    return "1%";
+  case SIGNIFICANCE_2_5:
+    return "2.5%";
+  case SIGNIFICANCE_5:
+    return "5%";
+  case SIGNIFICANCE_10:
+    return "10%";
+  case SIGNIFICANCE_15:
+    return "15%";
+  case SIGNIFICANCE_MAX:
+    return "max";
+  default:
+    return "unknown";
+  }
+}
+
 const char* util::talent_tree_string( talent_tree tree )
 {
   switch ( tree )

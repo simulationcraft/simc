@@ -170,6 +170,7 @@ SRC += \
     util$(PATHSEP)git_info.cpp \
     util$(PATHSEP)io.cpp \
     util$(PATHSEP)rng.cpp \
+    util$(PATHSEP)sample_data.cpp \
     util$(PATHSEP)timespan.cpp \
     util$(PATHSEP)util.cpp \
     util$(PATHSEP)xml.cpp \

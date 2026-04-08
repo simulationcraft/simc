@@ -11,45 +11,18 @@
 #include <string>
 #include <vector>
 
-#include "sim/sim.hpp"
 #include "util/generic.hpp"
 #include "util/string_view.hpp"
 #include "util/rng.hpp"
+#include "sc_enums.hpp"
+
+struct sim_t;
 
 /* Collection of statistical formulas for sequences
  * Note: Returns 0 for empty sequences
  */
 namespace statistics
 {
-enum significance_e : size_t
-{
-  SIGNIFICANCE_1 = 0,
-  SIGNIFICANCE_2_5,
-  SIGNIFICANCE_5,
-  SIGNIFICANCE_10,
-  SIGNIFICANCE_15,
-  SIGNIFICANCE_MAX
-};
-
-const char* significance_string( significance_e significance )
-{
-  switch ( significance )
-  {
-  case SIGNIFICANCE_1:
-    return "1%";
-  case SIGNIFICANCE_2_5:
-    return "2.5%";
-  case SIGNIFICANCE_5:
-    return "5%";
-  case SIGNIFICANCE_10:
-    return "10%";
-  case SIGNIFICANCE_15:
-    return "15%";
-  case SIGNIFICANCE_MAX:
-    return "max";
-  }
-}
-
 /* Arithmetic Sum
  */
 template <typename Range>
@@ -537,14 +510,7 @@ public:
    * Test Normality
    * Requires: Analyzed Mean, stddev, sorted
    */
-  void analyze_distribution( sim_t& sim )
-  {
-    if ( simple || data().empty() )
-      return;
-
-    sim.print_debug( "statistics_test: {} anderson-darling test for normality (significance: {})", name(),
-                     statistics::significance_string( statistics::anderson_darling( sorted_data(), _mean, std_dev ) ) );
-  }
+  void analyze_distribution( sim_t& sim );
 
 public:
   // sort data
