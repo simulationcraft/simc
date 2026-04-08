@@ -287,7 +287,6 @@ void destruction( player_t* p )
   default_->add_action( "cataclysm,if=talent.lake_of_fire" );
   default_->add_action( "chaos_bolt,if=(talent.wither&(soul_shard>=4|buff.malevolence.up|pet.infernal.active|fight_remains<=15))|(talent.diabolic_ritual&variable.ritual_length>4)" );
   default_->add_action( "infernal_bolt,if=soul_shard<=3" );
-  default_->add_action( "channel_demonfire" );
   default_->add_action( "incinerate" );
 
   aoe_hc->add_action( "summon_infernal" );
