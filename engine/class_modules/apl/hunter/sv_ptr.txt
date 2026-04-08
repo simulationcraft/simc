@@ -2,7 +2,7 @@
 actions.precombat=summon_pet
 actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=algethar_puzzle_box
-actions.precombat+=/wildfire_bomb
+actions.precombat+=/wildfire_bomb,if=active_enemies=1
 
 
 actions=auto_attack

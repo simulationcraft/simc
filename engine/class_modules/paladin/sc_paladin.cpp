@@ -1307,7 +1307,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
         timespan_t trigger_duration = timespan_t::from_seconds( p()->talents.awakening->effectN( 2 ).base_value() );
         if ( main_buff->check() )
         {
-          p()->buffs.avenging_wrath->extend_duration( p(), trigger_duration );
+          p()->buffs.avenging_wrath->extend_duration( trigger_duration );
         }
         else
         {
@@ -1391,7 +1391,7 @@ judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, util::st
 {
   parse_options(options_str);
   triggers_higher_calling     = true;
-  triggers_highlords_judgment = p->specialization() == PALADIN_RETRIBUTION && ( s->id() != 24275 || !p->bugs );
+  triggers_highlords_judgment = p->specialization() == PALADIN_RETRIBUTION;
   if ( p->talents.lightsmith.hammer_and_anvil->ok() )
   {
     hammer_and_anvil = new hammer_and_anvil_t( p, "hammer_and_anvil_" + name_str );
@@ -1409,12 +1409,12 @@ void judgment_base_t::execute()
 
     if ( p()->buffs.avenging_wrath->up() )
     {
-      p()->buffs.avenging_wrath->extend_duration( p(), extension );
+      p()->buffs.avenging_wrath->extend_duration( extension );
     }
 
     if ( p()->buffs.sentinel->up() )
     {
-      p()->buffs.sentinel->extend_duration( p(), extension );
+      p()->buffs.sentinel->extend_duration( extension );
     }
   }
 
@@ -1755,17 +1755,15 @@ bool hammer_of_wrath_t::action_ready()
   return judgment_base_t::action_ready() && p()->buffs.hammer_of_wrath->up();
 }
 
-void paladin_t::trigger_greater_judgment( paladin_td_t* targetdata, bool remove_stack )
+void paladin_t::trigger_greater_judgment( paladin_td_t* targetdata )
 {
   if ( !targetdata->target->in_combat )
     return;
 
   auto stack = spells.judgment_debuff->initial_stacks();
-  if ( remove_stack )
-    stack--;
 
   if ( stack )
-    targetdata->debuff.judgment->trigger( stack );
+    targetdata->debuff.judgment->execute( stack );
 }
 
 struct divine_toll_t : public paladin_spell_t
@@ -2065,6 +2063,15 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     void execute() override
     {
+      if ( p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
+           p()->talents.greater_judgment->ok() )
+      {
+        auto tl = target_list();
+        for ( size_t i = 0; i < std::min( as<size_t>( n_targets() ), tl.size() ); i++ )
+        {
+          p()->trigger_greater_judgment( td( tl[ i ] ) );
+        }
+      }
       snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
       holy_power_consumer_t::execute();
       if ( p()->talents.templar.shake_the_heavens->ok() )
@@ -2079,28 +2086,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
         }
         else
           p()->buffs.templar.shake_the_heavens->execute();
-      }
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      // 02.05.25 Fluttershy - Hammer of Light should apply Judgment and consume it instantly to increase damage. It
-      // currently doesn't
-      if ( !p()->bugs && p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
-           p()->talents.greater_judgment->ok() )
-      {
-        p()->trigger_greater_judgment( td( s->target ) );
-      }
-
-      holy_power_consumer_t<paladin_melee_attack_t>::impact( s );
-
-      if ( p()->bugs && p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
-           p()->talents.greater_judgment->ok() )
-      {
-        // 02.05.25 Fluttershy - If target has no Judgment Debuffs, Hammer of Light consumes one stack without damage
-        // increase
-        bool removeStack = td( s->target )->debuff.judgment->stack() == 0;
-        p()->trigger_greater_judgment( td( s->target ), removeStack );
       }
     }
   };
@@ -2159,6 +2144,13 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
    void execute() override
    {
+     if ( p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
+          p()->talents.greater_judgment->ok() )
+     {
+       auto tl = target_list();
+       if ( tl.size() )
+        p()->trigger_greater_judgment( td( tl[ 0 ] ) );
+     }
      holy_power_consumer_t<paladin_melee_attack_t>::execute();
      auto state    = static_cast<state_t*>( cleave_hammer->get_state() );
      state->target = execute_state->target;
@@ -2210,32 +2202,10 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
    }
    void impact( action_state_t* s ) override
    {
-     // 02.05.25 Fluttershy - Hammer of Light should apply Judgment and consume it instantly to increase damage. It currently doesn't
-     if ( !p()->bugs && p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
-          p()->talents.greater_judgment->ok() )
-     {
-       p()->trigger_greater_judgment( td( s->target ) );
-     }
-
      holy_power_consumer_t<paladin_melee_attack_t>::impact( s );
 
      if ( p()->talents.templar.undisputed_ruling->ok() )
        p()->buffs.templar.undisputed_ruling->execute();
-
-     if ( p()->bugs && p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
-          p()->talents.greater_judgment->ok() )
-     {
-       // 02.05.25 Fluttershy - If target has no Judgment Debuffs, Hammer of Light consumes one stack without damage increase
-       bool removeStack = td( s->target )->debuff.judgment->stack() == 0;
-       // 21.12.25 Fluttershy - Currently, the main target just never gets a Judgment stack
-       if ( !p()->bugs )
-         p()->trigger_greater_judgment( td( s->target ), removeStack );
-     }
-     // 25.02.26 Fluttershy - Same bug which affects Ret now also affects Prot. We will lose a Judgment stack for free.
-     else if ( p()->bugs && p()->specialization() == PALADIN_PROTECTION && p()->talents.greater_judgment->ok() )
-     {
-       make_event( *sim, 600_ms, [ this, s ]() { td( s->target )->debuff.judgment->decrement(); } );
-     }
    }
 };
 
@@ -2491,15 +2461,15 @@ struct sacred_weapon_cb_t : public dbc_proc_callback_t
     p = paladin;
   }
 
-  void execute( action_t*, action_state_t* s ) override
+  void execute( const spell_data_t*, player_t* t, action_state_t* ) override
   {
-    if ( s->target->is_enemy() )
+    if ( t->is_enemy() )
     {
-      p->active.sacred_weapon_proc_damage->execute_on_target( s->target );
+      p->active.sacred_weapon_proc_damage->execute_on_target( t );
     }
     else
     {
-      p->active.sacred_weapon_proc_heal->execute_on_target( s->target );
+      p->active.sacred_weapon_proc_heal->execute_on_target( t );
     }
   }
 };
@@ -2516,15 +2486,15 @@ struct lesser_weapon_cb_t : public dbc_proc_callback_t
     player = pl;
     index  = idx;
   }
-  void execute(action_t*, action_state_t* s) override
+  void execute( const spell_data_t*, player_t* t, action_state_t* ) override
   {
-    if (s->target->is_enemy())
+    if (t->is_enemy())
     {
-      p->active.lesser_weapon_proc_damage->execute_on_target( s->target );
+      p->active.lesser_weapon_proc_damage->execute_on_target( t );
     }
     else
     {
-      p->active.lesser_weapon_proc_heal->execute_on_target( s->target );
+      p->active.lesser_weapon_proc_heal->execute_on_target( t );
     }
     if (p == player)
     {
@@ -4028,6 +3998,19 @@ bool paladin_t::validate_fight_style( fight_style_e style ) const
   return true;
 }
 
+// paladin_t::validate_actor ================================================
+bool paladin_t::validate_actor()
+{
+  if ( specialization() == PALADIN_HOLY )
+  {
+    if ( !quiet )
+      sim->error( "Holy Paladin for {} is not currently supported.", *this );
+    return false;
+  }
+
+  return true;
+}
+
 void paladin_t::init_special_effects()
 {
   player_t::init_special_effects();
@@ -4043,7 +4026,7 @@ void paladin_t::init_special_effects()
       {
       }
 
-      void execute( action_t*, action_state_t* ) override
+      void execute( const spell_data_t*, player_t*, action_state_t* ) override
       {
         p->buffs.herald_of_the_sun.blessing_of_anshe->trigger();
       }
@@ -4069,7 +4052,7 @@ void paladin_t::init_special_effects()
       {
       }
 
-      void execute( action_t*, action_state_t* ) override
+      void execute( const spell_data_t*, player_t*, action_state_t* ) override
       {
         p->cast_holy_armaments( p, paladin::armament::SACRED_WEAPON, LS_DIVINE_INSPIRATION );
         p->procs.divine_inspiration->occur();

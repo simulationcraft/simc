@@ -524,6 +524,7 @@ void to_json( JsonOutput root, const ::report::json::report_configuration_t& rep
       range::for_each( entry.cooldown_list, [ &cooldowns ]( const auto& data ) {
         auto entry = cooldowns.add();
 
+        entry[ "id" ] = data.object->action ? data.object->action->data().id() : 0;
         entry[ "name" ] = data.object->name();
         entry[ "stacks" ] = data.value;
         entry[ "remains" ] = data.time_value;
@@ -541,6 +542,7 @@ void to_json( JsonOutput root, const ::report::json::report_configuration_t& rep
         debuffs.make_array();
         range::for_each( target_data.second, [ &debuffs ]( const auto& data ) {
           auto entry = debuffs.add();
+          entry[ "id" ] = data.object->data_reporting().id();
           entry[ "name" ] = data.object->name();
           entry[ "stack" ] = data.value;
           entry[ "remains" ] = data.time_value;

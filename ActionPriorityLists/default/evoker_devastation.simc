@@ -7,15 +7,15 @@
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=snapshot_stats
-actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.mirror_of_fractured_tomorrows|trinket.1.is.signet_of_the_priory
-actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.is.signet_of_the_priory
-actions.precombat+=/variable,name=weapon_buffs,value=equipped.bestinslots
-actions.precombat+=/variable,name=weapon_sync,op=setif,value=1,value_else=0.5,condition=equipped.bestinslots
-actions.precombat+=/variable,name=weapon_stat_value,value=equipped.bestinslots*5142*15
-actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.dragonrage.duration=0|cooldown.dragonrage.duration%%trinket.1.cooldown.duration=0|trinket.1.is.house_of_cards)
-actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.dragonrage.duration=0|cooldown.dragonrage.duration%%trinket.2.cooldown.duration=0|trinket.2.is.house_of_cards)
-actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.belorrelos_the_suncaller|trinket.1.is.nymues_unraveling_spindle|trinket.1.is.spymasters_web
-actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.belorrelos_the_suncaller|trinket.2.is.nymues_unraveling_spindle|trinket.2.is.spymasters_web
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit
+actions.precombat+=/variable,name=weapon_buffs,value=0
+actions.precombat+=/variable,name=weapon_sync,op=setif,value=1,value_else=0.5,condition=0
+actions.precombat+=/variable,name=weapon_stat_value,value=0
+actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.dragonrage.duration=0|cooldown.dragonrage.duration%%trinket.1.cooldown.duration=0)
+actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.dragonrage.duration=0|cooldown.dragonrage.duration%%trinket.2.cooldown.duration=0)
+actions.precombat+=/variable,name=trinket_1_manual,value=0
+actions.precombat+=/variable,name=trinket_2_manual,value=0
 actions.precombat+=/variable,name=trinket_1_ogcd_cast,value=0
 actions.precombat+=/variable,name=trinket_2_ogcd_cast,value=0
 actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
@@ -27,7 +27,6 @@ actions.precombat+=/variable,name=damage_trinket_priority,op=setif,value=2,value
 actions.precombat+=/variable,name=r1_cast_time,value=1.0*spell_haste
 actions.precombat+=/variable,name=dr_prep_time,default=6,op=reset
 actions.precombat+=/variable,name=dr_prep_time_aoe,default=4,op=reset
-actions.precombat+=/variable,name=has_external_pi,value=cooldown.invoke_power_infusion_0.duration>0
 actions.precombat+=/variable,name=can_use_empower,value=1,default=1,if=!talent.animosity|!talent.dragonrage
 actions.precombat+=/verdant_embrace,if=talent.scarlet_adaptation
 actions.precombat+=/hover,if=talent.slipstream
@@ -39,14 +38,14 @@ actions=potion,if=(!talent.dragonrage|buff.dragonrage.up)|fight_remains<35
 actions+=/variable,name=next_dragonrage,value=cooldown.dragonrage.remains<?((cooldown.eternity_surge.remains-8)>?(cooldown.fire_breath.remains-8))
 actions+=/invoke_external_buff,name=power_infusion,if=buff.dragonrage.up|fight_remains<35
 actions+=/variable,name=can_use_empower,op=set,value=cooldown.dragonrage.remains>=gcd.max*variable.dr_prep_time,if=talent.animosity&talent.dragonrage
+actions+=/variable,name=use_pyre,op=set,value=(active_enemies>=4|active_enemies>=3&(talent.volatility.rank=2|talent.feed_the_flames))
 actions+=/quell,use_off_gcd=1,if=target.debuff.casting.react
 actions+=/call_action_list,name=trinkets
-actions+=/run_action_list,name=aoe_sc,if=active_enemies>=3&talent.mass_disintegrate
+actions+=/run_action_list,name=sc,if=talent.mass_disintegrate
 actions+=/run_action_list,name=aoe_fs,if=active_enemies>=3
-actions+=/run_action_list,name=st_sc,if=talent.mass_disintegrate
 actions+=/run_action_list,name=st_fs
 
-# Fameshaper 3+ Target List
+# Flameshaper 3+ Target List
 actions.aoe_fs=hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5&active_enemies<=4
 actions.aoe_fs+=/fire_breath,target_if=max:target.health.pct,empower_to=1,if=cooldown.dragonrage.remains<gcd.max*2&active_dot.fire_breath_damage=0&(target.time_to_die>=15|!raid_event.adds.exists)
 actions.aoe_fs+=/tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up&cooldown.eternity_surge.remains<=action.fire_breath.usable_in
@@ -63,33 +62,36 @@ actions.aoe_fs+=/call_action_list,name=es,if=(buff.dragonrage.up|cooldown.dragon
 actions.aoe_fs+=/living_flame,target_if=max:target.health.pct,if=talent.engulfing_blaze&(buff.leaping_flames.up|buff.burnout.up|buff.scarlet_adaptation.up|buff.ancient_flame.up)
 actions.aoe_fs+=/azure_strike,target_if=max:target.health.pct
 
-actions.aoe_sc=hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5
-actions.aoe_sc+=/deep_breath,if=talent.imminent_destruction&talent.strafing_run&!buff.strafing_run.up,cancel_if=gcd.remains=0
-actions.aoe_sc+=/tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up&action.fire_breath.usable_in<=action.eternity_surge.usable_in
-actions.aoe_sc+=/dragonrage,target_if=max:target.time_to_die,if=target.time_to_die>=15|!raid_event.adds.exists
-actions.aoe_sc+=/eternity_surge,target_if=max:target.health.pct,empower_to=1
-actions.aoe_sc+=/fire_breath,target_if=max:target.health.pct,empower_to=1
-actions.aoe_sc+=/deep_breath,if=talent.imminent_destruction,cancel_if=gcd.remains=0,interrupt_if=gcd.remains=0
-actions.aoe_sc+=/pyre,target_if=max:target.health.pct,if=active_enemies>=4&buff.charged_blast.stack>=18&cooldown.dragonrage.remains>gcd.max*4
-actions.aoe_sc+=/azure_sweep,if=active_enemies<=3&(buff.essence_burst.down|buff.essence_burst.stack<buff.essence_burst.max_stack)
-actions.aoe_sc+=/pyre,target_if=max:target.health.pct,if=cooldown.dragonrage.remains>gcd.max*4&!buff.mass_disintegrate_stacks.up&(active_enemies>=4|active_enemies>=3&talent.feed_the_flames)
-actions.aoe_sc+=/disintegrate,target_if=min:debuff.bombardments.remains,if=talent.mass_disintegrate&(!talent.feed_the_flames|buff.mass_disintegrate_stacks.up),interrupt=1,interrupt_if=talent.volatility&active_enemies>=8
-actions.aoe_sc+=/azure_sweep,target_if=max:target.health.pct
-actions.aoe_sc+=/living_flame,target_if=max:target.health.pct,if=buff.leaping_flames.up&(!talent.burnout|buff.burnout.up|buff.scarlet_adaptation.up|buff.ancient_flame.up)&(!buff.essence_burst.up&essence.deficit>1)
-actions.aoe_sc+=/call_action_list,name=es,if=(buff.dragonrage.up|cooldown.dragonrage.remains>variable.dr_prep_time_aoe)&(talent.azure_sweep&!buff.azure_sweep.up)
-actions.aoe_sc+=/azure_strike,target_if=max:target.health.pct
-
-# Eternity Surge
+# Pick optimal Eternity Surge Rank
 actions.es=eternity_surge,empower_to=1,target_if=max:target.health.pct,if=active_enemies<=1+talent.eternitys_span|active_enemies>4+4*talent.eternitys_span|talent.mass_disintegrate|buff.dragonrage.up
 actions.es+=/eternity_surge,empower_to=2,target_if=max:target.health.pct,if=active_enemies<=2+2*talent.eternitys_span
 actions.es+=/eternity_surge,empower_to=3,target_if=max:target.health.pct,if=active_enemies<=3+3*talent.eternitys_span
 actions.es+=/eternity_surge,empower_to=4,target_if=max:target.health.pct,if=active_enemies<=4+4*talent.eternitys_span
 
-# And that one's still green
+# Green Spells for Ancient Flame
 actions.green=emerald_blossom
 actions.green+=/verdant_embrace
 
-# Fameshaper 1 / 2 Target List
+# SC Action List. Use Deep Breath to optimise for Strafing Run
+actions.sc=deep_breath,if=buff.strafing_run.remains<=gcd.max*2,cancel_if=gcd.remains=0
+actions.sc+=/dragonrage,if=target.time_to_die>=30&raid_event.adds.in>=60|!raid_event.adds.exists|raid_event.adds.in=0
+actions.sc+=/hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5|talent.slipstream&gcd.remains>=0.5
+# Use Azure Sweep if Eternity Surge is reasonably Soon. This is not a magic number, it's just simpler than writing out the expansion to account for azure sweep stacks.
+actions.sc+=/azure_sweep,if=(buff.essence_burst.down|!buff.essence_burst.at_max_stacks)&set_bonus.mid1_2pc&cooldown.eternity_surge.remains<=6
+actions.sc+=/eternity_surge,empower_to=1
+actions.sc+=/tip_the_scales,use_off_gcd=1,if=action.fire_breath.ready
+actions.sc+=/fire_breath,empower_to=1
+# On AOE Deep Breath kinda pipes. Just let it rip to maximise our bomba time.
+actions.sc+=/deep_breath,if=variable.use_pyre&talent.imminent_destruction,cancel_if=gcd.remains=0
+actions.sc+=/disintegrate,target_if=min:debuff.bombardments.remains,early_chain_if=ticks_remain<=1&buff.mass_disintegrate_stacks.up,if=(raid_event.movement.in>2|buff.hover.up)&buff.mass_disintegrate_stacks.up&talent.mass_disintegrate,interrupt_if=talent.volatility&active_enemies>=8
+actions.sc+=/pyre,target_if=max:target.health.pct,if=!buff.mass_disintegrate_stacks.up&variable.use_pyre
+actions.sc+=/disintegrate,target_if=max:dot.fire_breath_damage.remains,if=(raid_event.movement.in>2|buff.hover.up),early_chain_if=ticks_remain<=1
+actions.sc+=/azure_sweep
+actions.sc+=/living_flame,if=buff.burnout.up|(buff.leaping_flames.up|buff.ancient_flame.up|talent.engulfing_blaze)&raid_event.movement.in>execute_time
+actions.sc+=/call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&talent.scarlet_adaptation&!buff.dragonrage.up
+actions.sc+=/azure_strike
+
+# Flameshaper 1 / 2 Target List
 actions.st_fs=dragonrage,if=target.time_to_die>=30&raid_event.adds.in>=60|!raid_event.adds.exists|raid_event.adds.in=0
 actions.st_fs+=/hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5|talent.slipstream&gcd.remains>=0.5
 actions.st_fs+=/tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up&action.eternity_surge.usable_in<=action.fire_breath.usable_in
@@ -104,22 +106,6 @@ actions.st_fs+=/azure_strike,if=active_enemies>1
 actions.st_fs+=/living_flame,if=raid_event.movement.in>execute_time
 actions.st_fs+=/call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&talent.scarlet_adaptation&!buff.dragonrage.up
 actions.st_fs+=/azure_strike
-
-actions.st_sc=deep_breath,if=buff.strafing_run.remains<=gcd.max*2,cancel_if=gcd.remains=0
-actions.st_sc+=/dragonrage,if=target.time_to_die>=30&raid_event.adds.in>=60|!raid_event.adds.exists|raid_event.adds.in=0
-actions.st_sc+=/hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5|talent.slipstream&gcd.remains>=0.5
-actions.st_sc+=/tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up&action.fire_breath.usable_in<=action.eternity_surge.usable_in
-actions.st_sc+=/eternity_surge,empower_to=1
-actions.st_sc+=/fire_breath,empower_to=1
-actions.st_sc+=/azure_sweep,if=buff.essence_burst.down|buff.essence_burst.stack<buff.essence_burst.max_stack
-actions.st_sc+=/disintegrate,target_if=min:debuff.bombardments.remains,early_chain_if=ticks_remain<=1&buff.mass_disintegrate_stacks.up,if=(raid_event.movement.in>2|buff.hover.up)&buff.mass_disintegrate_stacks.up&talent.mass_disintegrate
-actions.st_sc+=/disintegrate,target_if=max:dot.fire_breath_damage.remains,chain=1,if=(raid_event.movement.in>2|buff.hover.up),early_chain_if=ticks_remain<=1,interrupt_if=ticks_remain<=1
-actions.st_sc+=/azure_sweep
-actions.st_sc+=/living_flame,if=buff.burnout.up|(buff.leaping_flames.up|buff.ancient_flame.up)&raid_event.movement.in>execute_time
-actions.st_sc+=/azure_strike,if=active_enemies>1
-actions.st_sc+=/living_flame,if=raid_event.movement.in>execute_time
-actions.st_sc+=/call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&talent.scarlet_adaptation&!buff.dragonrage.up
-actions.st_sc+=/azure_strike
 
 # Trinket Spaghetti
 actions.trinkets=use_item,slot=trinket1,if=buff.dragonrage.up&(buff.rising_fury.stack>=4|talent.legacy_of_the_lifebinder)&((variable.trinket_2_buffs&!cooldown.fire_breath.up&trinket.2.cooldown.remains)|buff.tip_the_scales.up&variable.trinket_priority=1|(!cooldown.fire_breath.up)|active_enemies>=3)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains|trinket.1.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=1)&!variable.trinket_1_manual

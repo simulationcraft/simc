@@ -1846,9 +1846,9 @@ std::string label_str( int label, const dbc_t& dbc, size_t wrap )
 
   return wrap_concatenate( affected_spells, [ first = affected_spells.front() ]( const spell_data_t* spell ) {
     if ( spell == first )
-      return fmt::format( "Affected Spells (Label): {} ({})", spell->name_cstr(), spell->id() );
+      return fmt::format( "Affected Spells (Label): {}", *spell );
     else
-      return fmt::format( "{} ({})", spell->name_cstr(), spell->id() );
+      return fmt::format( "{}", *spell );
   }, wrap );
 }
 
@@ -2357,9 +2357,9 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     s << "                   ";
     s << wrap_concatenate( affected_spells, [ first = affected_spells.front() ]( const spell_data_t* spell ) {
       if ( spell == first )
-        return fmt::format( "Affected Spells: {} ({})", spell->name_cstr(), spell->id() );
+        return fmt::format( "Affected Spells: {}", *spell );
       else
-        return fmt::format( "{} ({})", spell->name_cstr(), spell->id() );
+        return fmt::format( "{}", *spell );
     }, wrap );
     s << std::endl;
   }
@@ -2401,7 +2401,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
       {
         s << "                   Affected Spells (Category): ";
         s << wrap_concatenate( affected, []( const spell_data_t* spell ) {
-          return fmt::format( "{} ({})", spell->name_cstr(), spell->id() );
+          return fmt::format( "{}", *spell );
         }, wrap );
         s << std::endl;
       }
@@ -3205,7 +3205,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   {
     s << "Triggered By     : ";
     s << wrap_concatenate( spell->drivers(), []( const spell_data_t* spell ) {
-      return fmt::format( "{} ({})", spell->name_cstr(), spell->id() );
+      return fmt::format( "{}", *spell );
     }, wrap );
     s << std::endl;
   }

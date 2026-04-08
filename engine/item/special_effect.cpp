@@ -107,9 +107,9 @@ void special_effect_t::reset()
   reverse_stack_reduction = 0;
 
   can_proc_from_procs_ = false;
-  can_only_proc_from_class_abilites_ = false;
+  can_only_proc_from_class_abilities_ = false;
   override_can_proc_from_procs = false;
-  override_can_only_proc_from_class_abilites = false;
+  override_can_only_proc_from_class_abilities = false;
 
   // Must match buff creator defaults for now
   max_stacks = -1;
@@ -441,27 +441,31 @@ special_effect_buff_e special_effect_t::buff_type() const
 
 buff_t* special_effect_t::create_buff() const
 {
-  if ( buff_type() != SPECIAL_EFFECT_BUFF_CUSTOM && buff_type() != SPECIAL_EFFECT_BUFF_NONE &&
-       buff_type() != SPECIAL_EFFECT_BUFF_DISABLED )
-  {
-    buff_t* b = buff_t::find( player, name() );
-    if ( b )
-    {
-      return b;
-    }
-  }
+  buff_t* buff = nullptr;
 
   switch ( buff_type() )
   {
     case SPECIAL_EFFECT_BUFF_CUSTOM:
-      return custom_buff;
+      buff = custom_buff;
+      break;
     case SPECIAL_EFFECT_BUFF_STAT:
-      return initialize_stat_buff();
+      buff = initialize_stat_buff();  // method has buff_t::find
+      break;
     case SPECIAL_EFFECT_BUFF_ABSORB:
-      return initialize_absorb_buff();
+      buff = initialize_absorb_buff();  // method has buff_t::find
+      break;
+    case SPECIAL_EFFECT_BUFF_NONE:
+    case SPECIAL_EFFECT_BUFF_DISABLED:
+      break;
     default:
-      return nullptr;
+      buff = buff_t::find( player, name() );
+      break;
   }
+
+  if ( buff && !range::contains( buff_list, buff ) )
+    buff_list.push_back( buff );
+
+  return buff;
 }
 
 action_t* special_effect_t::create_action() const
@@ -783,10 +787,15 @@ bool special_effect_t::can_proc_from_suppressed() const
   return driver()->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED );
 }
 
-bool special_effect_t::can_only_proc_from_class_abilites() const
+bool special_effect_t::can_proc_from_suppressed_target() const
 {
-  if ( override_can_only_proc_from_class_abilites )
-    return can_only_proc_from_class_abilites_;
+  return driver()->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED_TGT );
+}
+
+bool special_effect_t::can_only_proc_from_class_abilities() const
+{
+  if ( override_can_only_proc_from_class_abilities )
+    return can_only_proc_from_class_abilities_;
 
   return driver()->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES );
 }
@@ -797,10 +806,10 @@ void special_effect_t::set_can_proc_from_procs( bool value )
   can_proc_from_procs_ = value;
 }
 
-void special_effect_t::set_can_only_proc_from_class_abilites( bool value )
+void special_effect_t::set_can_only_proc_from_class_abilities( bool value )
 {
-  override_can_only_proc_from_class_abilites = true;
-  can_only_proc_from_class_abilites_ = value;
+  override_can_only_proc_from_class_abilities = true;
+  can_only_proc_from_class_abilities_ = value;
 }
 
 timespan_t special_effect_t::duration() const

@@ -140,18 +140,18 @@ void sequence_t::reset()
   last_restart = timespan_t::min();
 }
 
-// sequence_t::ready ========================================================
+// sequence_t::action_ready =================================================
 
-bool sequence_t::ready()
+bool sequence_t::action_ready()
 {
-  if ( sub_actions.empty() ) return false;
-  if ( ! action_t::ready() ) return false;
+  if ( sub_actions.empty() || current_action >= as<int>( sub_actions.size() ) || !action_t::action_ready() )
+    return false;
 
   for ( int num_sub_actions = as<int>( sub_actions.size() ); current_action < num_sub_actions; ++current_action )
   {
     action_t* a = sub_actions[ current_action ];
 
-    if ( a -> ready() )
+    if ( a->action_ready() )
       return true;
 
     // If the sequence is flagged wait_on_ready, we'll wait for available()
@@ -165,6 +165,28 @@ bool sequence_t::ready()
   }
 
   return false;
+}
+
+bool sequence_t::ready()
+{
+  return !sub_actions.empty() && current_action < as<int>( sub_actions.size() ) && action_t::ready() &&
+         sub_actions[ current_action ]->ready();
+}
+
+bool sequence_t::target_ready( player_t* target )
+{
+  return !sub_actions.empty() && current_action < as<int>( sub_actions.size() ) && action_t::target_ready( target ) &&
+         sub_actions[ current_action ]->target_ready( target );
+}
+
+// sequence_t::sequence_add_fn ==============================================
+
+void sequence_t::sequence_add_fn( std::string& a_str, std::string& t_str ) const
+{
+  // current_action is advanced in schedule_execute so we need to use current_action - 1
+  auto _idx = current_action - 1;
+  a_str = fmt::format( "</b>SEQ {}[{}]<br><b>{}", name_str, _idx, sub_actions[ _idx ]->name_str );
+  t_str = target->name_str;
 }
 
 // ==========================================================================

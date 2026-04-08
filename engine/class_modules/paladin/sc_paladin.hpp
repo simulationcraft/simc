@@ -777,6 +777,7 @@ public:
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                             const assisted_combat_step_data_t& step ) const override;
   virtual bool validate_fight_style( fight_style_e style ) const override;
+  virtual bool validate_actor() override;
   virtual void reset() override;
   virtual std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
 
@@ -835,7 +836,7 @@ public:
   void adjust_health_percent();
   void cast_holy_armaments( player_t* target, armament usedArmament, armament_source src );
   void cast_lesser_armament( int amount, lesser_armament usedArmament );
-  void trigger_greater_judgment( paladin_td_t* targetdata, bool remove_stack = false );
+  void trigger_greater_judgment( paladin_td_t* targetdata );
   bool get_how_availability() const;
   bool wings_up() const;
 
@@ -1185,7 +1186,7 @@ public:
       // If Crusading Strikes is triggering, extension is only 500ms
       if ( ab::id == 408385 )
         extension = 500_ms;
-      p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
+      p()->buffs.templar.shake_the_heavens->extend_duration( extension );
     }
 
     if ( ab::current_resource() == RESOURCE_HOLY_POWER && ab::last_resource_cost > 0 && p()->buffs.judge_jury_and_executioner->up() )
@@ -1623,12 +1624,12 @@ public:
       // 2022-11-14 Free Holy Power spenders do not delay Sentinel's decay
       if ( !( p->bugs && isFreeSLDPSpender ) )
       {
-        p->buffs.sentinel_decay->extend_duration( p, timespan_t::from_seconds( 1 ) );
+        p->buffs.sentinel_decay->extend_duration( timespan_t::from_seconds( 1 ) );
       }
       // 2025-12-18 Instrument of the Divine talented extends Sentinel's decay by double the time, regardless of Holy Power spent.
       if (p->bugs && p->talents.instrument_of_the_divine->ok())
       {
-        p->buffs.sentinel_decay->extend_duration( p, timespan_t::from_seconds( 1 ) );
+        p->buffs.sentinel_decay->extend_duration( timespan_t::from_seconds( 1 ) );
       }
     }
 

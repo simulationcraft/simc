@@ -123,7 +123,7 @@ namespace warlock
       parse_passive_effects( hero.mark_of_perotharn, true );
 
     // NOTE: 2026-03-21 An additional effect of Fel Armaments talent is applied even if the talent is not selected (bug)
-    if ( demonology() && bugs )
+    if ( demonology() && bugs && ( talents.fel_armaments.ok() || fel_armaments_extra_effect_bug ) )
       parse_passive_effects( talents.fel_armaments_2, true );
   }
 
@@ -185,7 +185,7 @@ namespace warlock
     talents.malefic_grasp = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Grasp" ); // Should be ID 1261149
     talents.malefic_grasp_2 = conditional_spell_lookup( talents.malefic_grasp.ok(), 1261153 );
     talents.malefic_grasp_3 = conditional_spell_lookup( talents.malefic_grasp.ok(), 1279659 );
-    talents.agony_mg = conditional_spell_lookup( talents.malefic_grasp.ok() && talents.agony->ok(), 1261166 );
+    talents.agony_mg = conditional_spell_lookup( talents.malefic_grasp.ok() && talents.agony.ok(), 1261166 );
     talents.unstable_affliction_mg = conditional_spell_lookup( talents.malefic_grasp.ok() && talents.unstable_affliction.ok(), 1261176 );
     talents.corruption_mg = conditional_spell_lookup( talents.malefic_grasp.ok(), 1261158 );
     talents.wither_mg = conditional_spell_lookup( talents.malefic_grasp.ok(), 1279686 );
@@ -1075,7 +1075,8 @@ namespace warlock
   void warlock_t::init_procs_demonology()
   {
     procs.demonic_core_dogs = get_proc( "demonic_core_dogs" );
-    procs.demonic_core_imps = get_proc( "demonic_core_imps" );
+    procs.demonic_core_imps_fade = get_proc( "demonic_core_imps_fade" );
+    procs.demonic_core_imps_implosion = get_proc( "demonic_core_imps_implosion" );
     procs.carnivorous_stalkers = get_proc( "carnivorous_stalkers" );
     procs.infernal_rapidity = get_proc( "infernal_rapidity" );
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
@@ -1244,6 +1245,19 @@ namespace warlock
 
   void warlock_t::init_rng_demonology()
   {
+    if ( talents.demoniac.ok() )
+    {
+      // Modeling Demoniac (Wild Imp fade) as a pseudo-random distribution (PRD) with a nominal rate of 10% and a hard cap of 21 attempts.
+      // The corresponding PRD constant, calculated with that cap included, is C = 0.014559015812945588.
+      int demoniac_imp_fade_hardcap = static_cast<int>( rng_settings.demoniac_imp_fade_hard_cap.setting_value );
+      double c_dwif = prd::find_constant( talents.demonic_core_spell->effectN( 1 ).percent(), demoniac_imp_fade_hardcap );
+      prd_rng.demoniac_imp_fade = get_accumulated_rng( "demoniac_imp_fade", c_dwif, demoniac_imp_fade_hardcap );
+
+      // NOTE: 2026-04-05 It has been tested that Demoniac (Wild Imp implosion) follows a Flat % chance model for each wild imp imploded
+      double demoniac_imp_implosion_chance = talents.demonic_core_spell->effectN( 1 ).percent() + hero.sataiels_volition->effectN( 3 ).percent();
+      flat_rng.demoniac_imp_implosion = get_simple_proc_rng( "demoniac_imp_implosion", demoniac_imp_implosion_chance);
+    }
+
     // NOTE: 2026-03-06 It has been tested that Carnivorous Stalkers follows a Flat % chance model for each individual melee hit
     if ( talents.carnivorous_stalkers.ok() )
       flat_rng.carnivorous_stalkers = get_simple_proc_rng( "carnivorous_stalkers", talents.carnivorous_stalkers->effectN( 1 ).percent() );
@@ -1590,21 +1604,32 @@ namespace warlock
 
   void warlock_t::add_rng_option( warlock_t::rng_settings_t::rng_setting_t& setting )
   {
-    add_option( opt_float( "rng_" + setting.option_name, setting.setting_value ) );
+    add_option( opt_float( "warlock.rng_" + setting.option_name, setting.setting_value ) );
+    add_option( opt_deprecated( "rng_" + setting.option_name,  "warlock.rng_" + setting.option_name ) );
   }
 
   void warlock_t::create_options()
   {
     player_t::create_options();
 
-    add_option( opt_int( "soul_shards", initial_soul_shards ) );
-    add_option( opt_string( "default_pet", default_pet ) );
-    add_option( opt_bool( "disable_felstorm", disable_auto_felstorm ) );
-    add_option( opt_bool( "normalize_destruction_mastery", normalize_destruction_mastery ) );
-    add_option( opt_bool( "eye_explosion_instanced_bug_cb", eye_explosion_instanced_bug_cb ) );
-    add_option( opt_bool( "eye_explosion_instanced_bug_sb", eye_explosion_instanced_bug_sb ) );
-    add_option( opt_bool( "eye_explosion_instanced_bug_rof", eye_explosion_instanced_bug_rof ) );
-    add_option( opt_float( "tyrant_antoran_armaments_target_mul", tyrant_antoran_armaments_target_mul, 0.0, 1.0 ));
+    add_option( opt_int( "warlock.soul_shards", initial_soul_shards ) );
+    add_option( opt_deprecated( "soul_shards", "warlock.soul_shards" ) );
+    add_option( opt_string( "warlock.default_pet", default_pet ) );
+    add_option( opt_deprecated( "default_pet", "warlock.default_pet" ) );
+    add_option( opt_bool( "warlock.disable_felstorm", disable_auto_felstorm ) );
+    add_option( opt_deprecated( "disable_felstorm", "warlock.disable_felstorm" ) );
+    add_option( opt_bool( "warlock.normalize_destruction_mastery", normalize_destruction_mastery ) );
+    add_option( opt_deprecated( "normalize_destruction_mastery", "warlock.normalize_destruction_mastery" ) );
+    add_option( opt_bool( "warlock.eye_explosion_instanced_bug_cb", eye_explosion_instanced_bug_cb ) );
+    add_option( opt_deprecated( "eye_explosion_instanced_bug_cb", "warlock.eye_explosion_instanced_bug_cb" ) );
+    add_option( opt_bool( "warlock.eye_explosion_instanced_bug_sb", eye_explosion_instanced_bug_sb ) );
+    add_option( opt_deprecated( "eye_explosion_instanced_bug_sb", "warlock.eye_explosion_instanced_bug_sb" ) );
+    add_option( opt_bool( "warlock.eye_explosion_instanced_bug_rof", eye_explosion_instanced_bug_rof ) );
+    add_option( opt_deprecated( "eye_explosion_instanced_bug_rof", "warlock.eye_explosion_instanced_bug_rof" ) );
+    add_option( opt_bool( "warlock.fel_armaments_extra_effect_bug", fel_armaments_extra_effect_bug ) );
+    add_option( opt_deprecated( "fel_armaments_extra_effect_bug", "warlock.fel_armaments_extra_effect_bug" ) );
+    add_option( opt_float( "warlock.tyrant_antoran_armaments_target_mul", tyrant_antoran_armaments_target_mul, 0.0, 1.0 ));
+    add_option( opt_deprecated( "tyrant_antoran_armaments_target_mul", "warlock.tyrant_antoran_armaments_target_mul" ) );
 
     rng_settings.for_each( [ this ]( auto& setting )
     {
@@ -1642,7 +1667,6 @@ namespace warlock
 
     warlock_pet_list.active = nullptr;
     havoc_target = nullptr;
-    bugged_mayhem = false;
     haunt_target = nullptr;
     wild_imp_spawns.clear();
     diabolic_ritual = rng().range( 0, 3 );

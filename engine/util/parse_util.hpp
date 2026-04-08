@@ -214,3 +214,28 @@ struct affect_list_t
   affect_list_t& remove_spell( int32_t s, Ts... ss )
   { remove_spell( s ); return remove_spell( ss... ); }
 };
+
+// Container to set the default value during instantiation and allow detection of further value assignment.
+template <typename T>
+struct default_value_t
+{
+  T default_value;
+  T current_value;
+
+  default_value_t( T val = T() ) : default_value( val ), current_value( val ) {}
+
+  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, std::string>>>
+  default_value_t( const char* val ) : default_value( val ), current_value( val ) {}
+
+  operator T&() { return current_value; }
+  operator T&() const { return current_value; }
+  bool operator==( T val ) { return current_value == val; }
+
+  template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, std::string>>>
+  operator std::string_view() const { return current_value; }
+
+  bool is_default() const { return current_value == default_value; }
+
+  friend void sc_format_to( const default_value_t<T>& opt, fmt::format_context::iterator out )
+  { fmt::format_to( out, "{}", opt.current_value ); }
+};

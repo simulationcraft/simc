@@ -1501,10 +1501,14 @@ public:
   {
     ab::tick( dot );
 
-    if ( p()->rng().roll( dire_beast_chance ) && p()->cooldowns.dire_beast->up() )
+    // 2026-04-03: Dire Beast seems to start it's internal cooldown on any bleed tick if the ICD isn't already running regardless of proc or not.
+    if ( p()->cooldowns.dire_beast->up() && dire_beast_chance > 0 )
     {
-      p()->spawn_dire_beast( p()->talents.dire_beast_summon->duration() );
       p()->cooldowns.dire_beast->start();
+      if ( p()->rng().roll( dire_beast_chance ) )
+      {
+        p()->spawn_dire_beast( p()->talents.dire_beast_summon->duration() );
+      }
     }
   }
 
@@ -1581,7 +1585,7 @@ public:
     const bool triggered = buff -> trigger(duration);
     if ( triggered && ab::is_precombat && !in_combat && precast_time > 0_ms )
     {
-      buff -> extend_duration( ab::player, -std::min( precast_time, buff -> buff_duration() ) );
+      buff -> extend_duration( -std::min( precast_time, buff -> buff_duration() ) );
       buff -> cooldown -> adjust( -precast_time );
     }
     return triggered;
@@ -2681,10 +2685,14 @@ public:
   {
     ab::tick( dot );
 
-    if ( o()->rng().roll( dire_beast_chance ) && o()->cooldowns.dire_beast->up() )
+    // 2026-04-03: Dire Beast seems to start it's internal cooldown on any bleed tick if the ICD isn't already running regardless of proc or not.
+    if ( o()->cooldowns.dire_beast->up() && dire_beast_chance > 0 )
     {
-      o()->spawn_dire_beast( o()->talents.dire_beast_summon->duration() );
       o()->cooldowns.dire_beast->start();
+      if ( o()->rng().roll( dire_beast_chance ) )
+      {
+        o()->spawn_dire_beast( o()->talents.dire_beast_summon->duration() );
+      }
     }
   }
 
@@ -3503,16 +3511,16 @@ void hunter_main_pet_base_t::init_special_effects()
       {
       }
 
-      void execute( action_t*, action_state_t* s ) override
+      void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
       {
-        if ( s && s->target->is_sleeping() )
+        if ( t && t->is_sleeping() )
           return;
 
         if ( s )
         {
           double amount = s->result_amount * bleed_amount;
           if ( amount > 0 )
-            residual_action::trigger( bleed, s->target, amount );
+            residual_action::trigger( bleed, t, amount );
         }
       }
     };
@@ -4843,6 +4851,21 @@ struct boar_charge_t final : hunter_ranged_attack_t
       // target_filter_callback = secondary_targets_only();
     }
 
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double am = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+      // 2026-03-30: Boar Charges double dip Spirit Bond's bonus
+      if ( p()->bugs && p()->specialization() == HUNTER_SURVIVAL )
+      {
+        double bonus = p()->cache.mastery() * p()->mastery.spirit_bond->effectN( affected_by.spirit_bond.direct ).mastery_value();
+        bonus *= 1 + p()->mastery.spirit_bond_buff->effectN( 1 ).percent();
+        am *= 1 + bonus;
+      }
+
+      return am;
+    }
+
     void impact( action_state_t* s ) override
     {
       hunter_ranged_attack_t::impact( s );
@@ -4860,6 +4883,21 @@ struct boar_charge_t final : hunter_ranged_attack_t
     travel_speed = 50; // 2026-01-19: Not in spelldata, estimating based on log data.
 
     add_child( cleave );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double am = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+    // 2026-03-30: Boar Charges double dip Spirit Bond's bonus
+    if ( p()->bugs && p()->specialization() == HUNTER_SURVIVAL )
+    {
+      double bonus = p()->cache.mastery() * p()->mastery.spirit_bond->effectN( affected_by.spirit_bond.direct ).mastery_value();
+      bonus *= 1 + p()->mastery.spirit_bond_buff->effectN( 1 ).percent();
+      am *= 1 + bonus;
+    }
+
+    return am;
   }
 
   void execute() override
@@ -4974,7 +5012,7 @@ struct cobra_shot_base_t: public hunter_ranged_attack_t
     if ( p()->talents.barbed_scales.ok() )
       p()->cooldowns.barbed_shot->adjust( -p()->talents.barbed_scales->effectN( 1 ).time_value() );
 
-    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( 3 ).time_value() );
+    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( -p()->talents.dire_summons->effectN( 3 ).time_value() );
 
     p()->buffs.hogstrider->expire();
 
@@ -6002,7 +6040,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( 4 ).time_value() );
+    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( -p()->talents.dire_summons->effectN( 4 ).time_value() );
   }
 
   bool ready() override
@@ -6550,11 +6588,11 @@ struct kill_command_t: public hunter_spell_t
 
     p()->cooldowns.wildfire_bomb->adjust( -p()->talents.wildfire_infusion->effectN( 1 ).time_value() );
 
-    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( p()->specialization() == HUNTER_BEAST_MASTERY ? 1 : 2 ).time_value() );
+    p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( -p()->talents.dire_summons->effectN( p()->specialization() == HUNTER_BEAST_MASTERY ? 1 : 2 ).time_value() );
     
     if ( p()->buffs.wyverns_cry->check() && p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
     {
-      p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
+      p()->buffs.wyverns_cry->extend_duration( fury_of_the_wyvern.extension );
       p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
       p()->state.fury_of_the_wyvern_extendable = p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap;
     }
@@ -7053,6 +7091,14 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
     }
   }
 
+  timespan_t travel_time() const override
+  {
+    if ( is_precombat )
+      return timespan_t::from_millis( 0 );
+
+    return wildfire_bomb_base_t::travel_time();
+  }
+
   void execute() override
   {
     // Tip of the Spear is decremented in execute() so run here
@@ -7064,7 +7110,7 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
 
     if ( p()->buffs.wyverns_cry->check() && p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap )
     {
-      p()->buffs.wyverns_cry->extend_duration( p(), fury_of_the_wyvern.extension );
+      p()->buffs.wyverns_cry->extend_duration( fury_of_the_wyvern.extension );
       p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
       p()->state.fury_of_the_wyvern_extendable = p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap;
     }
@@ -8389,12 +8435,12 @@ void hunter_t::init_special_effects()
       {
       }
 
-      void trigger( action_t* a, action_state_t* state ) override
+      void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
       {
-        if ( state -> target -> health_percentage() >= threshold )
+        if ( t -> health_percentage() >= threshold )
           return;
 
-        dbc_proc_callback_t::trigger( a, state );
+        dbc_proc_callback_t::trigger( data, t, s, type );
       }
     };
 
@@ -8421,9 +8467,9 @@ void hunter_t::init_special_effects()
       {
       }
 
-      void execute( action_t* a, action_state_t* s ) override
+      void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
       {
-        dbc_proc_callback_t::execute( a, s );
+        dbc_proc_callback_t::execute( spell, t, s );
 
         double amount = s -> result_amount * bleed_amount;
         if ( amount > 0 )

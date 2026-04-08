@@ -488,8 +488,9 @@ enum dot_behavior_e
 
 enum dot_copy_e
 {
-  DOT_COPY_START,          // Start a new DoT with the same remaining duration
-  DOT_COPY_CLONE          // Clone everything from source DoT (tick time, stacks, remaining duration, etc)
+  DOT_COPY_START,            // Start a new DoT with the same remaining duration
+  DOT_COPY_CLONE,            // Clone everything from source DoT (tick time, stacks, remaining duration, etc) and refresh if active
+  DOT_COPY_CLONE_NO_REFRESH, // Clone everything from source DoT (tick time, stacks, remaining duration, etc) 
 };
 
 enum attribute_e
@@ -872,6 +873,7 @@ enum set_bonus_type_e
   MID_RWR,
   MID_TD,
   MID_VB,
+  MID_UWP,
   MID1,
   SET_BONUS_MAX
 };
@@ -1513,4 +1515,14 @@ enum error_level_e : unsigned short
   UNVERIFIED_IMPLEMENTATION,
   UNVERIFIED_VALUE,
   IMPLEMENTATION_NOTES,
+};
+
+enum proc_trigger_type_e : unsigned short
+{
+  TRIGGER_ACTION,
+  TRIGGER_ACTION_PROC,
+  TRIGGER_ACTION_TAKEN,
+  TRIGGER_ACTION_PROC_TAKEN,
+  TRIGGER_AURA_APPLIED,
+  TRIGGER_HEARTBEAT,
 };

@@ -281,6 +281,8 @@ public:
 
   void reset( reset_type_e reset_type ) override;
   int trigger( action_state_t* = nullptr ) override;
+  void set_chance( double c )
+  { proc_chance = c; }
 };
 
 // Threshold RNG rng helper class ==========================

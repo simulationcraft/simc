@@ -680,9 +680,9 @@ public:
                                                            const pack_t<target_effect_t>& pack ) = 0;
 
   virtual void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str,
-                              const spell_data_t* s_data, size_t i ) = 0;
+                              const spelleffect_data_t& eff ) = 0;
   virtual void debug_message( const target_effect_t& /* data */, std::string_view type_str, std::string_view val_str,
-                              const spell_data_t* s_data, size_t i ) = 0;
+                              const spelleffect_data_t& eff ) = 0;
 
   virtual void throw_passive_error( const spell_data_t* s ) = 0;
 
@@ -771,10 +771,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, target_effect_t&, double&, std::string&,
                                                    bool&, bool, const pack_t<target_effect_t>& ) override;
 
-  void debug_message( const player_effect_t&, std::string_view, std::string_view, const spell_data_t*,
-                      size_t ) override;
-  void debug_message( const target_effect_t&, std::string_view, std::string_view, const spell_data_t*,
-                      size_t ) override;
+  void debug_message( const player_effect_t&, std::string_view, std::string_view, const spelleffect_data_t& ) override;
+  void debug_message( const target_effect_t&, std::string_view, std::string_view, const spelleffect_data_t& ) override;
 
   void throw_passive_error( const spell_data_t* s ) override;
 
@@ -852,10 +850,8 @@ public:
   std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, target_effect_t&, double&, std::string&,
                                                    bool&, bool, const pack_t<target_effect_t>& ) override;
 
-  void debug_message( const player_effect_t&, std::string_view, std::string_view, const spell_data_t*,
-                      size_t ) override;
-  void debug_message( const target_effect_t&, std::string_view, std::string_view, const spell_data_t*,
-                      size_t ) override;
+  void debug_message( const player_effect_t&, std::string_view, std::string_view, const spelleffect_data_t& ) override;
+  void debug_message( const target_effect_t&, std::string_view, std::string_view, const spelleffect_data_t& ) override;
 
   void throw_passive_error( const spell_data_t* s ) override;
 
@@ -920,9 +916,8 @@ struct parse_action_effects_t : public BASE, public parse_action_base_t
   {
     for ( const auto& data : vec )
     {
-      BASE::sim->print_debug( "action-effects: non-damage action {} ({}) removing {} entry from {} ({}#{})",
-                              BASE::name(), BASE::id, vec_name, data.eff->spell()->name_cstr(), data.eff->spell_id(),
-                              data.eff->index() );
+      BASE::sim->print_debug( "action-effects: non-damage action {} removing {} entry from {}", *this, vec_name,
+                              *data.eff );
     }
 
     vec.clear();
@@ -994,8 +989,21 @@ struct parse_action_effects_t : public BASE, public parse_action_base_t
   {
     auto ta = BASE::composite_ta_multiplier( s );
 
-    for ( const auto& i : ta_multiplier_effects )
-      ta *= 1.0 + get_effect_value( i, true );
+    if ( BASE::sim->debug )
+    {
+      for ( const auto& i : ta_multiplier_effects )
+      {
+        auto val = get_effect_value( i, true );
+        BASE::sim->print_debug( "{} ta_multiplier_effects: {} from {}{}", *this, val, *i.eff,
+                                i.func ? " (Conditional)" : "" );
+        ta *= 1.0 + val;
+      }
+    }
+    else
+    {
+      for ( const auto& i : ta_multiplier_effects )
+        ta *= 1.0 + get_effect_value( i, true );
+    }
 
     return ta;
   }
@@ -1004,8 +1012,21 @@ struct parse_action_effects_t : public BASE, public parse_action_base_t
   {
     auto da = BASE::composite_da_multiplier( s );
 
-    for ( const auto& i : da_multiplier_effects )
-      da *= 1.0 + get_effect_value( i, true );
+    if ( BASE::sim->debug )
+    {
+      for ( const auto& i : da_multiplier_effects )
+      {
+        auto val = get_effect_value( i, true );
+        BASE::sim->print_debug( "{} da_multiplier_effects: {} from {}{}", *this, val, *i.eff,
+                                i.func ? " (Conditional)" : "" );
+        da *= 1.0 + val;
+      }
+    }
+    else
+    {
+      for ( const auto& i : da_multiplier_effects )
+        da *= 1.0 + get_effect_value( i, true );
+    }
 
     return da;
   }

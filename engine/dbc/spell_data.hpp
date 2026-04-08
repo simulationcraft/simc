@@ -416,6 +416,8 @@ struct spelleffect_data_t
   { return base_value() * default_multiplier(); }
   unsigned affected_schools() const;
 
+  friend void sc_format_to( const spelleffect_data_t&, fmt::format_context::iterator );
+
   static const spelleffect_data_t& nil();
   static const spelleffect_data_t* find( unsigned, bool ptr = false );
   static util::span<const spelleffect_data_t> data( bool ptr = false );
@@ -849,6 +851,8 @@ struct spell_data_t
   bool affected_by( const spell_data_t& ) const;
   bool affected_by( const spelleffect_data_t* ) const;
   bool affected_by( const spelleffect_data_t& ) const;
+
+  friend void sc_format_to( const spell_data_t&, fmt::format_context::iterator );
 
   // static functions
   static const spell_data_t* nil();

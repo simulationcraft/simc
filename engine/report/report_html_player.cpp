@@ -2695,9 +2695,10 @@ std::string find_matching_decorator( const player_t& p, std::string_view n )
   if ( action )
     return report_decorators::decorated_action( *action );
 
-  const auto* buff  = buff_t::find( const_cast<player_t*>( &p ), n );
-  if ( !buff ) buff = buff_t::find( const_cast<player_t*>( &p ), n_token );
-  if ( buff )
+  const auto* buff = buff_t::find( const_cast<player_t*>( &p ), n );
+  if ( !buff )
+    buff = buff_t::find( const_cast<player_t*>( &p ), n_token );
+  if ( buff && !buff->is_fallback )
     return report_decorators::decorated_buff( *buff );
 
   auto spell                = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::CLASS, n_token, p.specialization(), true ) );
@@ -2846,6 +2847,7 @@ void print_html_resource_usage_table( report::sc_html_stream& os, const player_t
 
   os << "</tr>\n"
      << "<tr>\n"
+     // << "<th <th colspan=\"8\" class=\"left name\">" << util::encode_html( p.name() ) << "</th>\n"
      << "<th <th colspan=\"8\" class=\"left name\">" << util::encode_html( p.name() ) << "</th>\n"
      << "</tr>\n"
      << "</thead>\n";
@@ -4268,6 +4270,7 @@ void output_player_heal_summary( report::sc_html_stream& os, const player_t& act
   sorttable_help_header( os, "HPS%", "help-hps-pct" );
   sorttable_help_header( os, "Execute", "help-execute" );
   sorttable_help_header( os, "Interval", "help-interval", SORT_FLAG_ASC );
+  sorttable_help_header( os, "Total Time", "help-total-time" );
   sorttable_help_header( os, "HPE", "help-hpe" );
   sorttable_help_header( os, "HPET", "help-hpet" );
   // Optional columns being here

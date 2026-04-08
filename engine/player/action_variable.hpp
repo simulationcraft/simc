@@ -12,7 +12,7 @@ struct action_t;
 
 struct action_variable_t
 {
-  double current_value_, default_value_, constant_value_;
+  double current_value_, default_value_, previous_value_, constant_value_;
   std::string name_;
   std::vector<action_t*> variable_actions;
   bool report;

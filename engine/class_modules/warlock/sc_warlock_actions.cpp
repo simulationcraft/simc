@@ -292,34 +292,34 @@ using namespace helpers;
             case 0:
               if ( p()->buffs.ritual_overlord->check() )
               {
-                p()->buffs.ritual_overlord->extend_duration( p(), adjustment );
+                p()->buffs.ritual_overlord->extend_duration( adjustment );
               }
               else
               {
                 p()->buffs.ritual_overlord->trigger();
-                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_overlord->extend_duration( p(), adjustment ); } );
+                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_overlord->extend_duration( adjustment ); } );
               }
               break;
             case 1:
               if ( p()->buffs.ritual_mother->check() )
               {
-                p()->buffs.ritual_mother->extend_duration( p(), adjustment );
+                p()->buffs.ritual_mother->extend_duration( adjustment );
               }
               else
               {
                 p()->buffs.ritual_mother->trigger();
-                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_mother->extend_duration( p(), adjustment ); } );
+                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_mother->extend_duration( adjustment ); } );
               }
               break;
             case 2:
               if ( p()->buffs.ritual_pit_lord->check() )
               {
-                p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment );
+                p()->buffs.ritual_pit_lord->extend_duration( adjustment );
               }
               else
               {
                 p()->buffs.ritual_pit_lord->trigger();
-                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_pit_lord->extend_duration( p(), adjustment ); } );
+                make_event( sim, 1_ms, [ this, adjustment ] { p()->buffs.ritual_pit_lord->extend_duration( adjustment ); } );
               }
               break;
             default:
@@ -352,7 +352,7 @@ using namespace helpers;
               // It seems that having the GoSac buff prevents these bugs
               if ( p()->bugs && !p()->buffs.grimoire_of_sacrifice->check()
                     && ( ( this->id == p()->talents.chaos_bolt->id() && p()->eye_explosion_instanced_bug_cb )
-                      || ( this->id == p()->hero.ruination_cast->id() && p()->eye_explosion_instanced_bug_sb )
+                      || ( this->id == p()->hero.ruination_cast->id() && destruction() && p()->eye_explosion_instanced_bug_cb )
                       || ( this->id == p()->talents.shadowburn->id() && p()->eye_explosion_instanced_bug_sb )
                       || ( this->id == p()->talents.rain_of_fire->id() && p()->eye_explosion_instanced_bug_rof ) ) )
               {
@@ -389,23 +389,9 @@ using namespace helpers;
         if ( n > 1u )
         {
           player_t* trigger_target = tl.at( 1u + rng().range( n - 1u ) );
-          const player_t* prev_havoc_target = p()->havoc_target;
-
           if ( td( trigger_target )->debuffs.havoc->trigger() )
           {
             assert( p()->havoc_target == trigger_target );
-
-            // NOTE: 2026-03-17 Due to a bug, Mayhem will stop working if triggered on another target while another havoc debuff is already active.
-            // This can only happen with Improved Havoc talent, which makes the ICD less than its duration.
-            // It will work correctly again if the Havoc debuff expires normally or if it is applied to the same target that already has it.
-            if ( p()->talents.improved_havoc.ok() )
-            {
-              if ( prev_havoc_target == nullptr || trigger_target == prev_havoc_target )
-                p()->bugged_mayhem = false;
-              else
-                p()->bugged_mayhem = true;
-            }
-
             p()->procs.mayhem->occur();
           }
         }
@@ -546,9 +532,7 @@ using namespace helpers;
 
     int n_targets() const override
     {
-      // NOTE: 2026-03-17 Mayhem with Improved Havoc is bugged and there are certain conditions
-      // that may cause it to stop working for a while (bug)
-      if ( destruction() && use_havoc() && ( !p()->bugs || !p()->bugged_mayhem ) )
+      if ( destruction() && use_havoc() )
       {
         assert( action_base_t::n_targets() == 0 );
         return 2;
@@ -1521,10 +1505,14 @@ using namespace helpers;
           {
             p()->procs.fatal_echoes->occur();
             make_event( sim, 1_ms, [ this, t = d->state->target ] {
+              const bool prev_ua_ticking = td( t )->dots.unstable_affliction->is_ticking();
               this->set_target( t );
               this->is_fatal_echoes_execute = true;
               this->execute();
               this->is_fatal_echoes_execute = false;
+              // When UA is applied by Fatal Echoes, Cascading Calamity is also triggered
+              if ( p()->talents.cascading_calamity.ok() && !prev_ua_ticking )
+                p()->buffs.cascading_calamity->trigger();
             } );
           }
         }
@@ -1919,7 +1907,7 @@ using namespace helpers;
     struct agony_mg_t : public mg_extra_tick_base_t
     {
       agony_mg_t( warlock_t* p )
-        : mg_extra_tick_base_t( "Agony (Malefic Grasp)", p, ( p->talents.malefic_grasp.ok() && p->talents.agony->ok() ) ? p->talents.agony_mg : spell_data_t::not_found() )
+        : mg_extra_tick_base_t( "Agony (Malefic Grasp)", p, ( p->talents.malefic_grasp.ok() && p->talents.agony.ok() ) ? p->talents.agony_mg : spell_data_t::not_found() )
       {
         // NOTE: 2026-02-20 Agony (Malefic Grasp) extra tick is not whitelisted in the Direct Damage component of many effects
         // (Summoner's Embrace, Niskaran Methods, Mastery: Potent Afflictions), and others don't even have this effect currently
@@ -1996,7 +1984,7 @@ using namespace helpers;
 
       if ( p->talents.malefic_grasp.ok() )
       {
-        if ( p->talents.agony->ok() )
+        if ( p->talents.agony.ok() )
         {
           agony_mg = new agony_mg_t( p );
           add_child( agony_mg );
@@ -2654,7 +2642,7 @@ using namespace helpers;
         for ( const auto t : p()->sim->target_non_sleeping_list )
         {
           if ( td( t )->debuffs.doom->check() )
-            td( t )->debuffs.doom->extend_duration( p(), -p()->talents.doom->effectN( 1 ).time_value() );
+            td( t )->debuffs.doom->extend_duration( -p()->talents.doom->effectN( 1 ).time_value() );
         }
       }
 
@@ -3168,7 +3156,7 @@ using namespace helpers;
       if ( p()->talents.reign_of_tyranny.ok() )
       {
         if ( p()->buffs.dreadstalkers->check() )
-          p()->buffs.dreadstalkers->extend_duration( p(), extension_time );
+          p()->buffs.dreadstalkers->extend_duration( extension_time );
       }
 
       if ( demon_counter > 0 )
@@ -3192,9 +3180,9 @@ using namespace helpers;
       {
         timespan_t reduction = -p()->hero.cruelty_of_kerxan->effectN( 1 ).time_value();
 
-        p()->buffs.ritual_overlord->extend_duration( p(), reduction );
-        p()->buffs.ritual_mother->extend_duration( p(), reduction );
-        p()->buffs.ritual_pit_lord->extend_duration( p(), reduction );
+        p()->buffs.ritual_overlord->extend_duration( reduction );
+        p()->buffs.ritual_mother->extend_duration( reduction );
+        p()->buffs.ritual_pit_lord->extend_duration( reduction );
       }
 
       if ( soul_harvester() && p()->hero.shadow_of_death.ok() )
@@ -3575,7 +3563,7 @@ using namespace helpers;
         if ( wither_debuff->remains() - remaining <= timespan_t::zero() )
           wither_debuff->expire();
         else
-          wither_debuff->extend_duration( p(), -remaining );
+          wither_debuff->extend_duration( -remaining );
 
         assert( dot->current_stack() == wither_debuff->check() && dot->remains() == wither_debuff->remains() );
       }
@@ -4273,7 +4261,7 @@ using namespace helpers;
       if ( p()->talents.raging_demonfire.ok() && tdata->dots.wither->is_ticking() )
       {
         tdata->dots.wither->adjust_duration( extra_time );
-        tdata->debuffs.wither->extend_duration( p(), extra_time );
+        tdata->debuffs.wither->extend_duration( extra_time );
         assert( tdata->dots.wither->current_stack() == tdata->debuffs.wither->check() && tdata->dots.wither->remains() == tdata->debuffs.wither->remains() );
       }
     }
@@ -4435,9 +4423,9 @@ using namespace helpers;
       {
         timespan_t reduction = -p()->hero.cruelty_of_kerxan->effectN( 1 ).time_value();
 
-        p()->buffs.ritual_overlord->extend_duration( p(), reduction );
-        p()->buffs.ritual_mother->extend_duration( p(), reduction );
-        p()->buffs.ritual_pit_lord->extend_duration( p(), reduction );
+        p()->buffs.ritual_overlord->extend_duration( reduction );
+        p()->buffs.ritual_mother->extend_duration( reduction );
+        p()->buffs.ritual_pit_lord->extend_duration( reduction );
       }
     }
   };

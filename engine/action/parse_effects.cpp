@@ -134,8 +134,7 @@ player_effect_t& player_effect_t::print_debug( sim_t* sim, std::string prefix )
   else
     mod_str = "from";
 
-  sim->print_debug( "{} manually modified by {} {} {} ({}#{})", prefix, val_str, mod_str, eff->spell()->name_cstr(),
-                    eff->spell()->id(), eff->index() + 1 );
+  sim->print_debug( "{} manually modified by {} {} {}", prefix, val_str, mod_str, *eff );
 
   return *this;
 }
@@ -737,7 +736,7 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
       val_str += " (value function)";
   }
 
-  debug_message( tmp, type_str, val_str, pack.spell, i );
+  debug_message( tmp, type_str, val_str, eff );
 
   tmp.value = val;
   tmp.mastery = mastery;
@@ -1352,7 +1351,7 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
 }
 
 void parse_player_effects_t::debug_message( const player_effect_t& data, std::string_view type_str,
-                                            std::string_view val_str, const spell_data_t* s_data, size_t i )
+                                            std::string_view val_str, const spelleffect_data_t& eff )
 {
   auto splits = util::string_split<std::string_view>( type_str, "|" );
   auto tok1 = splits[ 0 ];
@@ -1364,17 +1363,16 @@ void parse_player_effects_t::debug_message( const player_effect_t& data, std::st
   if ( data.buff )
   {
     sim->print_debug( "player-effects: {} {} modified by {} {} buff {} ({}#{})", *this, tok1, tok2,
-                      data.use_stacks ? "per stack of" : "with", data.buff->name(), data.buff->data().id(), i );
+                      data.use_stacks ? "per stack of" : "with", data.buff->name(), eff.spell()->id(),
+                      eff.index() + 1 );
   }
   else if ( data.func )
   {
-    sim->print_debug( "player-effects: {} {} modified by {} with condition from {} ({}#{})", *this, tok1, tok2,
-                      s_data->name_cstr(), s_data->id(), i );
+    sim->print_debug( "player-effects: {} {} modified by {} with condition from {}", *this, tok1, tok2, eff );
   }
   else
   {
-    sim->print_debug( "player-effects: {} {} modified by {} from {} ({}#{})", *this, tok1, tok2, s_data->name_cstr(),
-                      s_data->id(), i );
+    sim->print_debug( "player-effects: {} {} modified by {} from {}", *this, tok1, tok2, eff );
   }
 }
 
@@ -1436,10 +1434,9 @@ std::vector<target_effect_t>* parse_player_effects_t::get_effect_vector( const s
 }
 
 void parse_player_effects_t::debug_message( const target_effect_t&, std::string_view type_str, std::string_view val_str,
-                                            const spell_data_t* s_data, size_t i )
+                                            const spelleffect_data_t& eff )
 {
-  sim->print_debug( "target-effects: Target {} damage taken modified by {} from {} ({}#{})", type_str, val_str,
-                    s_data->name_cstr(), s_data->id(), i );
+  sim->print_debug( "target-effects: Target {} damage taken modified by {} from {}", type_str, val_str, eff );
 }
 
 void parse_player_effects_t::print_custom_parsed_effects( report::sc_html_stream& os ) const
@@ -1562,10 +1559,9 @@ void parse_action_base_t::register_callback_function( pack_t<player_effect_t>& p
       continue;
 
     callback_list[ i ].push_back( std::move( pack.callback[ i ] ) );
-    _player->sim->print_debug( "action-effects: {} registering {} parse callback ({:#010x}) on {} {} ({})", *_action,
+    _player->sim->print_debug( "action-effects: {} registering {} parse callback ({:#010x}) on {} {}", *_action,
                                opt_strings::parse_cb_str( static_cast<parse_callback_e>( i ) ),
-                               pack.data.idx & ( 0xFF << ( i * 8 ) ), pack.data.buff ? "buff" : "spell",
-                               pack.spell->name_cstr(), pack.spell->id() );
+                               pack.data.idx & ( 0xFF << ( i * 8 ) ), pack.data.buff ? "buff" : "spell", *pack.spell );
   }
 }
 
@@ -1713,7 +1709,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
 }
 
 void parse_action_base_t::debug_message( const player_effect_t& data, std::string_view type_str,
-                                         std::string_view val_str, const spell_data_t* s_data, size_t i )
+                                         std::string_view val_str, const spelleffect_data_t& eff )
 {
   auto splits = util::string_split<std::string_view>( type_str, "|" );
   auto tok1 = splits[ 0 ];
@@ -1741,17 +1737,16 @@ void parse_action_base_t::debug_message( const player_effect_t& data, std::strin
     }
 
     _action->sim->print_debug( "action-effects: {} {} modified by {} {} buff {} ({}#{})", *_action, tok1, tok2,
-                               stack_str, data.buff->name(), data.buff->data().id(), i );
+                               stack_str, data.buff->name(), eff.spell()->id(), eff.index() + 1 );
   }
   else if ( data.func )
   {
-    _action->sim->print_debug( "action-effects: {} {} modified by {} with condition from {} ({}#{})", *_action, tok1,
-                               tok2, s_data->name_cstr(), s_data->id(), i );
+    _action->sim->print_debug( "action-effects: {} {} modified by {} with condition from {}", *_action, tok1, tok2,
+                               eff );
   }
   else
   {
-    _action->sim->print_debug( "action-effects: {} {} modified by {} from {} ({}#{})", *_action, tok1, tok2,
-                               s_data->name_cstr(), s_data->id(), i );
+    _action->sim->print_debug( "action-effects: {} {} modified by {} from {}", *_action, tok1, tok2, eff );
   }
 }
 
@@ -1819,10 +1814,10 @@ std::vector<target_effect_t>* parse_action_base_t::get_effect_vector( const spel
 }
 
 void parse_action_base_t::debug_message( const target_effect_t&, std::string_view type_str, std::string_view val_str,
-                                         const spell_data_t* s_data, size_t i )
+                                         const spelleffect_data_t& eff )
 {
-  _action->sim->print_debug( "target-effects: {} {} modified by {} on targets with debuff {} ({}#{})", *_action,
-                             type_str, val_str, s_data->name_cstr(), s_data->id(), i );
+  _action->sim->print_debug( "target-effects: {} {} modified by {} on targets with debuff {}", *_action, type_str,
+                             val_str, eff );
 }
 
 bool parse_action_base_t::can_force( const spelleffect_data_t& eff ) const

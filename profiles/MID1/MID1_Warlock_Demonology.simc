@@ -118,5 +118,5 @@ main_hand=spire_of_the_furious_construct,id=110031,bonus_id=12806/13577,enchant_
 # gear_armor=531
 # set_bonus=midnight_season_1_2pc=1
 # set_bonus=midnight_season_1_4pc=1
-soul_shards=0
-default_pet=felguard
+warlock.soul_shards=0
+warlock.default_pet=felguard

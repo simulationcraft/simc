@@ -1,0 +1,112 @@
+druid="MID1_Druid_Guardian"
+source=default
+spec=guardian
+level=90
+race=night_elf
+timeofday=night
+role=tank
+position=front
+talents=CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgZmxsYmZMzmZZgZbZgxMMaimZmFzMzMLjZeADAAAAgZYGLzAAAAQNzysMzMDAgFMDgFzgBsYZbAwMbwA
+
+# Default consumables
+potion=lights_potential_2
+flask=blood_knights_2
+food=harandar_celebration
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Guardian APL can be found at https://github.com/dreamgrove/dreamgrove/blob/master/sims/bear/guardian.txt
+
+# Executed before combat begins. Accepts non-harmful actions only.
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat=snapshot_stats
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat+=/bear_form,if=buff.bear_form.down&!talent.heart_of_the_wild.enabled
+actions.precombat+=/cat_form,if=buff.bear_form.down&talent.heart_of_the_wild.enabled
+actions.precombat+=/variable,name=algethar_puzzle_box_precombat_cast,value=3,if=equipped.algethar_puzzle_box
+actions.precombat+=/use_item,name=algethar_puzzle_box
+
+# Executed every time the actor is available.
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=bear
+
+actions.bear=bear_form,if=!buff.bear_form.up&!buff.feline_potential.up
+actions.bear+=/maul,if=buff.ravage.up&rage>=40&!talent.killing_blow.enabled
+actions.bear+=/maul,if=buff.ravage.up&rage>=60&talent.killing_blow.enabled
+actions.bear+=/maul,if=!buff.ravage.up&rage>=55&!talent.fount_of_strength.enabled
+actions.bear+=/mangle,if=dot.red_moon.ticking
+actions.bear+=/rake,if=!buff.cat_form.up&talent.fluid_form.enabled&cooldown.heart_of_the_wild.up&talent.heart_of_the_wild.enabled&(active_enemies<=5&talent.moonkin_form.enabled|!talent.moonkin_form.enabled)&(rage<30&!talent.fount_of_strength.enabled|talent.fount_of_strength.enabled)
+actions.bear+=/cat_form,if=!buff.cat_form.up&!talent.fluid_form.enabled&cooldown.heart_of_the_wild.up&talent.heart_of_the_wild.enabled&(active_enemies<=5&talent.moonkin_form.enabled|!talent.moonkin_form.enabled)&(rage<30&!talent.fount_of_strength.enabled|talent.fount_of_strength.enabled)
+actions.bear+=/moonkin_form,if=!buff.moonkin_form.up&cooldown.heart_of_the_wild.up&active_enemies>=6&talent.moonkin_form.enabled
+actions.bear+=/thrash,target_if=refreshable|(dot.thrash.stack<5&talent.flashing_claws.rank=2|dot.thrash.stack<4&talent.flashing_claws.rank=1|dot.thrash.stack<3&!talent.flashing_claws.enabled)
+actions.bear+=/ironfur,if=!buff.ironfur.up&!buff.ravage.up&!target.cooldown.pause_action.remains
+actions.bear+=/ferocious_bite,if=(buff.cat_form.up&buff.feline_potential.up&(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up)&!dot.rip.refreshable)
+actions.bear+=/rake,if=!buff.cat_form.up&talent.fluid_form.enabled&buff.feline_potential_counter.stack=6&talent.wildpower_surge.enabled&active_enemies<=2
+actions.bear+=/rip,if=(buff.cat_form.up&buff.feline_potential.up)&active_enemies<=2
+actions.bear+=/red_moon,if=cooldown.mangle.up&!dot.red_moon.ticking
+actions.bear+=/mangle,if=((buff.incarnation_guardian_of_ursoc.up|buff.berserk.up)&buff.feline_potential_counter.stack<6&talent.wildpower_surge.enabled)
+actions.bear+=/shred,if=(buff.feline_potential_counter.stack=6&!buff.cat_form.up&!dot.rake.refreshable&talent.fluid_form.enabled)
+actions.bear+=/rake,if=(buff.feline_potential_counter.stack=6&!buff.cat_form.up&talent.fluid_form.enabled)
+actions.bear+=/thrash,if=talent.lunar_calling.enabled
+actions.bear+=/maul,if=!buff.ravage.up&rage>=90&talent.fount_of_strength.enabled
+actions.bear+=/maul,if=!(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up)&!buff.ravage.up&rage>=40&!talent.killing_blow.enabled
+actions.bear+=/maul,if=!(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up)&!buff.ravage.up&rage>=55&talent.killing_blow.enabled&talent.fount_of_strength.enabled
+actions.bear+=/mangle,if=(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up)|talent.red_moon.enabled&(cooldown.red_moon.remains>3&(((rage<88)&!talent.fount_of_strength.enabled)|((rage<83)&!talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled)|((rage<108)&talent.fount_of_strength.enabled)|((rage<103)&talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled)))
+actions.bear+=/mangle,if=!talent.red_moon.enabled&(((rage<88)&!talent.fount_of_strength.enabled)|((rage<83)&!talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled)|((rage<108)&talent.fount_of_strength.enabled)|((rage<103)&talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled))
+actions.bear+=/thrash
+actions.bear+=/moonfire,if=buff.galactic_guardian.up&buff.bear_form.up&talent.boundless_moonlight.enabled&!talent.red_moon.enabled
+actions.bear+=/swipe_bear,if=(talent.lunation.enabled&active_enemies>4)|!talent.lunation.enabled|talent.lunation.enabled&talent.red_moon.enabled
+actions.bear+=/moonfire,if=(talent.lunation.enabled)&buff.bear_form.up&!talent.red_moon.enabled
+
+actions.cooldowns=use_items
+actions.cooldowns+=/potion,if=buff.lunar_beam.up
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/fireblood
+actions.cooldowns+=/ancestral_call
+actions.cooldowns+=/bristling_fur,if=!target.cooldown.pause_action.remains&cooldown.mangle.remains&cooldown.thrash.remains&(rage<60&talent.killing_blow.enabled|rage<40&!talent.killing_blow.enabled)&!buff.ravage.up
+actions.cooldowns+=/barkskin,if=buff.bear_form.up
+actions.cooldowns+=/lunar_beam,if=(cooldown.incarnation_guardian_of_ursoc.up|cooldown.berserk.up)|((cooldown.incarnation_guardian_of_ursoc.remains>60|cooldown.berserk.remains>60)&!talent.lunation.enabled|(cooldown.incarnation_guardian_of_ursoc.remains>30|cooldown.berserk.remains>30)&talent.lunation.enabled)
+actions.cooldowns+=/heart_of_the_wild,if=(active_enemies<=5&talent.moonkin_form.enabled&buff.cat_form.up|!talent.moonkin_form.enabled&buff.cat_form.up)|buff.moonkin_form.up&active_enemies>=6&talent.moonkin_form.enabled
+actions.cooldowns+=/convoke_the_spirits
+actions.cooldowns+=/sundering_roar,if=(dot.thrash_bear.stack<5&talent.flashing_claws.rank=2|dot.thrash_bear.stack<4&talent.flashing_claws.rank=1|dot.thrash_bear.stack<3&!talent.flashing_claws.enabled)
+actions.cooldowns+=/berserk,if=!cooldown.heart_of_the_wild.up&(talent.heart_of_the_wild.enabled)|!talent.ravage.enabled|!talent.heart_of_the_wild.enabled
+actions.cooldowns+=/wild_guardian,if=(buff.ravage.up&talent.ravage.enabled)|!talent.ravage.enabled
+
+head=mask_of_darkest_intent,id=249913,bonus_id=1808/3170/4786/4800/12806,gem_id=240983,enchant_id=7961
+neck=pendant_of_aching_grief,id=251096,bonus_id=12806/13577/13668,gem_id=240900
+shoulders=seedpods_of_the_luminous_bloom,id=250022,bonus_id=12806/13574/13574/13574/13574/13574/13574/13574,enchant_id=8031
+back=potionstained_cloak,id=193712,bonus_id=12806/13577
+chest=trunk_of_the_luminous_bloom,id=250027,bonus_id=12806/13575/13575/13575/13575/13575/13575/13575,enchant_id=7987
+wrists=silvermoon_agents_deflectors,id=244576,bonus_id=1808/8790/8960/12066/12214/12384/13622/13667/9627,gem_id=240900,crafted_stats=32/49
+hands=arbortenders_of_the_luminous_bloom,id=250025,bonus_id=12806/13574/13574/13574/13574/13574/13574/13574
+waist=silvermoon_agents_utility_belt,id=244573,bonus_id=1808/8790/8960/12066/12214/12384/13622/13667/9627,gem_id=240900,crafted_stats=32/49
+legs=phloemwraps_of_the_luminous_bloom,id=250023,bonus_id=12806/13575/13575/13575/13575/13575/13575/13575,enchant_id=8159
+feet=eclipse_espadrilles,id=251210,bonus_id=12806/13577,enchant_id=7993
+finger1=omission_of_light,id=251093,bonus_id=12806/13577/13668,gem_id=240900,enchant_id=8025
+finger2=occlusion_of_void,id=251217,bonus_id=12806/13577/13668,gem_id=240900,enchant_id=8025
+trinket1=algethar_puzzle_box,id=193701,bonus_id=3148/4786/12806
+trinket2=umbral_plume,id=260235,bonus_id=12806/13577
+main_hand=traitors_talon,id=251162,bonus_id=4786/12806,enchant_id=8039
+
+# Gear Summary
+# gear_ilvl=288.47
+# gear_agility=1361
+# gear_stamina=17589
+# gear_crit_rating=548
+# gear_haste_rating=1090
+# gear_mastery_rating=455
+# gear_versatility_rating=350
+# gear_leech_rating=249
+# gear_armor=873
+# set_bonus=voidlight_bindings_2pc=1
+# set_bonus=midnight_season_1_2pc=1
+# set_bonus=midnight_season_1_4pc=1

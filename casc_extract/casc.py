@@ -823,6 +823,12 @@ class CDNIndex(CASCObject):
 
     def parse_archive(self, handle, idx):
         buf = handle.read()
+
+        if len(buf) < _ARCHIVE_IDX_FOOTER.size:
+            print(f"Archive index too small ({len(buf)} bytes), expected at least {_ARCHIVE_IDX_FOOTER.size}",
+                  file=sys.stderr)
+            return False
+
         data_size = len(buf) - _ARCHIVE_IDX_FOOTER.size
 
         offset_footer = data_size

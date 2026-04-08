@@ -605,7 +605,7 @@ struct halo_t final : public priest_spell_t
       if ( is_precombat )
       {
         // TODO: Handle very early precombat
-        priest().buffs.power_surge->extend_duration( player, -prepull_timespent );
+        priest().buffs.power_surge->extend_duration( -prepull_timespent );
 
         if ( priest().buffs.power_surge->check() )
         {
@@ -622,7 +622,7 @@ struct halo_t final : public priest_spell_t
       if ( priest().buffs.voidform->check() )
       {
         extended = true;
-        priest().buffs.voidform->extend_duration( player, 1_s );
+        priest().buffs.voidform->extend_duration( 1_s );
       }
       if ( !extended )
       {
@@ -743,7 +743,10 @@ struct smite_base_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    priest().buffs.weal_and_woe->expire();
+    if ( priest().talents.discipline.greater_smite.enabled() )
+    {
+      priest().buffs.greater_smite->trigger();
+    }
 
     if ( priest().talents.surge_of_light.enabled() )
       priest().buffs.surge_of_light->trigger();
@@ -776,7 +779,7 @@ struct smite_base_t : public priest_spell_t
           auto atone = priest().find_target_data( it )->buffs.atonement;
           if ( atone->remains() < 30_s )
           {
-            atone->extend_duration( player, divine_procession_extend );
+            atone->extend_duration( divine_procession_extend );
           }
         }
       }
@@ -1173,11 +1176,11 @@ public:
       // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1385
       if ( priest().bugs )
       {
-        ea = std::round( ea * priest().talents.shadow.deaths_torment->effectN( 2 ).percent() );
+        ea = std::round( ea * priest().talents.shared.deaths_torment->effectN( 2 ).percent() );
       }
       else
       {
-        ea *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
+        ea *= priest().talents.shared.deaths_torment->effectN( 2 ).percent();
       }
     }
 
@@ -1190,7 +1193,7 @@ public:
 
     if ( cast_state( s )->chain_number > 0 )
     {
-      m *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
+      m *= priest().talents.shared.deaths_torment->effectN( 2 ).percent();
     }
 
     if ( s->target->health_percentage() < execute_percent )
@@ -1243,11 +1246,19 @@ public:
     if ( priest().talents.shared.inescapable_torment.enabled() )
     {
       auto mod = 1.0;
-      if ( cast_state( s )->chain_number > 0 )
+      if ( priest().specialization() == PRIEST_SHADOW )
       {
-        mod *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
+        if ( cast_state( s )->chain_number > 0 )
+        {
+          mod *= priest().talents.shared.deaths_torment->effectN( 2 ).percent();
+        }
+        priest().trigger_inescapable_torment( s->target, cast_state( s )->chain_number > 0, mod );
       }
-      priest().trigger_inescapable_torment( s->target, cast_state( s )->chain_number > 0, mod );
+      else
+      {
+        // Discipline does not get any negative malus from Death's Torment.
+        priest().trigger_inescapable_torment( s->target, false, 1.0 );
+      }
     }
 
     if ( result_is_hit( s->result ) )
@@ -1260,7 +1271,7 @@ public:
 
         if ( cast_state( s )->chain_number > 0 )
         {
-          chance *= priest().talents.shadow.deaths_torment->effectN( 2 ).percent();
+          chance *= priest().talents.shared.deaths_torment->effectN( 2 ).percent();
         }
 
         if ( ( save_health_percentage <= execute_percent ) && rng().roll( chance ) )
@@ -1270,7 +1281,7 @@ public:
         }
       }
 
-      if ( priest().talents.shadow.deaths_torment.enabled() )
+      if ( priest().talents.shared.deaths_torment.enabled() )
       {
         int number_of_chains;
         state_t* curr_state = cast_state( s );
@@ -1280,7 +1291,7 @@ public:
         }
         else
         {
-          number_of_chains = as<int>( priest().talents.shadow.deaths_torment->effectN( 1 ).base_value() );
+          number_of_chains = as<int>( priest().talents.shared.deaths_torment->effectN( 1 ).base_value() );
         }
 
         sim->print_debug( "{} shadow_word_death_state: chain_number: {}, max_chain: {}", player->name(),
@@ -1876,7 +1887,13 @@ struct power_word_shield_t final : public priest_absorb_t
 // ==========================================================================
 struct atonement_t final : public priest_heal_t
 {
-  atonement_t( priest_t& p ) : priest_heal_t( "atonement", p, p.talents.discipline.atonement_spell )
+  int max_hp_targets;
+  int missing_hp_targets;
+
+  atonement_t( priest_t& p )
+    : priest_heal_t( "atonement", p, p.talents.discipline.atonement_spell ),
+      max_hp_targets( 0 ),
+      missing_hp_targets( 0 )
   {
     aoe       = -1;
     may_dodge = may_parry = may_block = harmful = false;
@@ -1884,6 +1901,8 @@ struct atonement_t final : public priest_heal_t
     base_crit_bonus                             = 0.0;
     disc_mastery                                = true;
     divine_aegis                                = false;
+
+    reduced_aoe_targets = p.talents.discipline.atonement->effectN( 2 ).base_value();
   }
 
   void init() override
@@ -1896,6 +1915,87 @@ struct atonement_t final : public priest_heal_t
   int num_targets() const override
   {
     return as<int>( p().allies_with_atonement.size() );
+  }
+
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    double amount = base_da_max( state );
+
+    if ( round_base_dmg )
+      amount = floor( amount + 0.5 );
+
+    if ( amount == 0 )
+      return 0;
+
+    amount *= state->composite_da_multiplier();
+
+    // AoE with static reduced damage per target
+    if ( state->chain_target > 0 )
+      amount *= base_aoe_multiplier;
+
+    // Spell splits damage across all targets equally
+    if ( state->action->split_aoe_damage )
+      amount /= state->n_targets;
+
+    if ( missing_hp_targets > reduced_aoe_targets && state->target->health_percentage() <= 100.0 )
+    {
+      amount *= std::sqrt( reduced_aoe_targets / missing_hp_targets );
+    }
+
+    amount *= composite_aoe_multiplier( state );
+
+    // Record initial amount to state
+    state->result_raw = amount;
+
+    if ( !sim->average_range )
+      amount = floor( amount + rng().real() );
+
+    if ( amount < 0 )
+    {
+      amount = 0;
+    }
+
+    if ( sim->debug )
+    {
+      sim->print_debug(
+          "{} direct amount for {}: amount={:.6f} initial_amount={:.6f} s_mod={:.7g} "
+          "s_power={:.7g} a_mod={:.7g} a_power={:.7g} mult={:.7g}",
+          *player, *this, amount, state->result_raw, spell_direct_power_coefficient( state ),
+          state->composite_spell_power(), attack_direct_power_coefficient( state ), state->composite_attack_power(),
+          state->composite_da_multiplier() );
+    }
+
+    // Record total amount to state
+    if ( result_is_miss( state->result ) )
+    {
+      state->result_total = 0.0;
+      return 0.0;
+    }
+    else
+    {
+      state->result_total = amount;
+      return amount;
+    }
+  }
+
+  void execute() override
+  {
+    max_hp_targets     = 0;
+    missing_hp_targets = 0;
+
+    for ( auto& t : target_list() )
+    {
+      if ( t->health_percentage() >= 100.0 )
+      {
+        max_hp_targets++;
+      }
+      else
+      {
+        missing_hp_targets++;
+      }
+    }
+
+    priest_heal_t::execute();
   }
 
   size_t available_targets( std::vector<player_t*>& target_list ) const override
@@ -2802,16 +2902,16 @@ void priest_t::init_special_effects()
     {
       callbacks.register_callback_trigger_function(
           452030, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-          []( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
-            return a->data().id() == 585 || a->data().id() == 450215;
+          []( const dbc_proc_callback_t*, const proc_data_t& data, player_t*, action_state_t*, proc_trigger_type_e ) {
+            return data->id() == 585 || data->id() == 450215;
           } );
     }
     if ( specialization() == PRIEST_SHADOW )
     {
       callbacks.register_callback_trigger_function(
           452030, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-          []( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
-            return a->data().id() == 8092 || a->data().id() == 450983;
+          []( const dbc_proc_callback_t*, const proc_data_t& data, player_t*, action_state_t*, proc_trigger_type_e ) {
+            return data->id() == 8092 || data->id() == 450983;
           } );
     }
   }
@@ -2819,7 +2919,7 @@ void priest_t::init_special_effects()
   if ( unique_gear::find_special_effect( this, 443393 ) && talents.twist_of_fate.enabled() )
   {
     callbacks.register_callback_execute_function(
-        443393, [ this ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
+        443393, [ this ]( const dbc_proc_callback_t* cb, const spell_data_t*, player_t* t, action_state_t* s ) {
           if ( rng().roll( options.synergistic_brewterializer_tof_chance ) )
           {
             buffs.twist_of_fate->trigger();
@@ -2827,7 +2927,7 @@ void priest_t::init_special_effects()
 
           if ( rng().roll( options.synergistic_brewterializer_barrel_hit_chance ) )
           {
-            cb->proc_action->set_target( cb->target( s ) );
+            cb->proc_action->set_target( cb->get_target( t, s ) );
             auto proc_state    = cb->proc_action->get_state();
             proc_state->target = cb->proc_action->target;
             cb->proc_action->snapshot_state( proc_state, cb->proc_action->amount_type( proc_state ) );
@@ -2840,7 +2940,9 @@ void priest_t::init_special_effects()
   // as casts for Burst of Knowledge
   callbacks.register_callback_trigger_function(
       469925, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      []( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) { return a->data().id() != 447448; } );
+      []( const dbc_proc_callback_t*, const proc_data_t& data, player_t*, action_state_t*, proc_trigger_type_e ) {
+        return data->id() != 447448;
+      } );
 
   init_special_effects_shadow();
   base_t::init_special_effects();
@@ -2864,6 +2966,7 @@ void priest_t::init_spells()
   talents.shared.mindbender          = ST( "Mindbender" );
   talents.shared.inescapable_torment = ST( "Inescapable Torment" );
   talents.shared.shadowfiend         = ST( "Shadowfiend" );
+  talents.shared.deaths_torment      = ST( "Death's Torment" );
 
   // Generic Spells
   specs.levitate_buff     = find_spell( 111759 );
@@ -2993,19 +3096,24 @@ void priest_t::init_spells()
   talents.archon.divine_halo              = HT( "Divine Halo" );
 
   // Oracle Hero Talents (Holy/Discipline)
-  talents.oracle.guiding_light         = HT( "Guiding Light" );  // NYI
+  talents.oracle.guiding_light         = HT( "Guiding Light" );
   talents.oracle.preventive_measures   = HT( "Preventive Measures" );
-  talents.oracle.preemptive_care       = HT( "Preemptive Care" );        // NYI
-  talents.oracle.waste_no_time         = HT( "Waste No Time" );          // NYI
+  talents.oracle.preemptive_care       = HT( "Preemptive Care" );
+  talents.oracle.waste_no_time         = HT( "Waste No Time" );
+  talents.oracle.words_of_the_wise     = HT( "Words of the Wise" );
   talents.oracle.assured_safety        = HT( "Assured Safety" );         // NYI
   talents.oracle.divine_feathers       = HT( "Divine Feathers" );        // NYI
   talents.oracle.save_the_day          = HT( "Save the Day" );           // NYI
-  talents.oracle.forseen_circumstances = HT( "Forseen Circumstances" );  // NYI
+  talents.oracle.forseen_circumstances = HT( "Forseen Circumstances" );
+  talents.oracle.prophets_insight      = HT( "Prophets Insight" );       // NYI
   talents.oracle.prophets_will         = HT( "Prophets Will" );          // NYI
   talents.oracle.desperate_measures    = HT( "Desperate Measures" );     // NYI
   talents.oracle.prompt_prognosis      = HT( "Prompt Prognosis" );       // NYI
   talents.oracle.piety                 = HT( "Piety" );                  // NYI
+  talents.oracle.unfolding_vision      = HT( "Unfolding Vision" );       // NYI
   talents.oracle.twinsight             = HT( "Twinsight" );              // NYI
+  talents.oracle.twinsight_healing     = find_spell( 1232567 );
+  talents.oracle.twinsight_damage      = find_spell( 1232571 );
 
   // Voidweaver Hero Talents (Discipline/Shadow)
   talents.voidweaver.void_torrent           = HT( "Void Torrent" );   // Shadow Only
@@ -3066,11 +3174,13 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
   buffs.twist_of_fate_heal_ally_fake = make_buff( this, "twist_of_fate_can_trigger_on_ally_heal" )
-                                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+                                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                                           ->set_proc_callbacks( false );
 
   // TODO: Extend functionality to use this.
   buffs.twist_of_fate_heal_self_fake = make_buff( this, "twist_of_fate_can_trigger_on_self_heal" )
-                                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+                                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                                           ->set_proc_callbacks( false );
 
   buffs.protective_light =
       make_buff( this, "protective_light", talents.protective_light_buff )->set_default_value_from_effect( 1 );
@@ -3891,16 +4001,16 @@ void priest_t::extend_entropic_rift()
   {
     auto extension = timespan_t::from_seconds( talents.voidweaver.darkening_horizon->effectN( 3 ).base_value() );
 
-    buffs.entropic_rift->extend_duration( this, extension );
+    buffs.entropic_rift->extend_duration( extension );
 
     if ( buffs.voidheart->check() )
     {
-      buffs.voidheart->extend_duration( this, extension );
+      buffs.voidheart->extend_duration( extension );
     }
 
     if ( buffs.darkening_horizon->check() )
     {
-      buffs.darkening_horizon->extend_duration( this, extension );
+      buffs.darkening_horizon->extend_duration( extension );
       buffs.darkening_horizon->increment();
     }
     else

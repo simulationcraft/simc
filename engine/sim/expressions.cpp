@@ -100,7 +100,26 @@ struct lexer_t
       case '&': match( '&' ); return yield_token( TOK_AND );
       case '|': match( '|' ); return yield_token( TOK_OR );
       case '^': match( '^' ); return yield_token( TOK_XOR );
-      case '~': match( '~' ); return yield_token( TOK_IN );
+      case '~':
+      {
+        if ( match( '=' ) )
+          return yield_token( TOK_FP_EQ );
+        else if ( match( '!' ) && match( '=' ) )
+          return yield_token( TOK_FP_NOTEQ );
+        else if ( match( '<' ) )
+        {
+          if ( match( '=' ) )
+            return yield_token( TOK_FP_LTEQ );
+          return yield_token( TOK_FP_LT );
+        }
+        else if ( match( '>' ) )
+        {
+          if ( match( '=' ) )
+            return yield_token( TOK_FP_GTEQ );
+          return yield_token( TOK_FP_GT );
+        }
+        return yield_token( TOK_IN );
+      }
       case '=': match( '=' ); return yield_token( TOK_EQ );
       case '!':
       {
@@ -190,33 +209,87 @@ struct ceil
 
 namespace binary
 {
-  template<class T = void>
-  struct max
+template <class T = void>
+struct max
+{
+  constexpr T operator()( const T& _Left, const T& _Right ) const
   {
-    constexpr T operator()(const T& _Left, const T& _Right) const
-    {
-      return (std::max(_Left, _Right));
-    }
-  };
+    return ( std::max( _Left, _Right ) );
+  }
+};
 
-  template<class T = void>
-  struct min
+template <class T = void>
+struct min
+{
+  constexpr T operator()( const T& _Left, const T& _Right ) const
   {
-    constexpr T operator()(const T& _Left, const T& _Right) const
-    {
-      return (std::min(_Left, _Right));
-    }
-  };
+    return ( std::min( _Left, _Right ) );
+  }
+};
 
-  template<class T = void>
-  struct modulus
+template <class T = void>
+struct modulus
+{
+  constexpr T operator()( const T& _Left, const T& _Right ) const
   {
-    constexpr T operator()(const T& _Left, const T& _Right) const
-    {
-      return (std::fmod(_Left, _Right));
-    }
-  };
-}
+    return ( std::fmod( _Left, _Right ) );
+  }
+};
+
+template <class T = void>
+struct fp_equal_to
+{
+  constexpr T operator()( const T& _Left, const T& _Right ) const
+  {
+    return std::fabs( _Left - _Right ) < fp_epsilon * std::max( std::fabs( _Left ), std::fabs( _Right ) );
+  }
+};
+
+template <class T = void>
+struct fp_not_equal_to
+{
+  constexpr T operator()( const T& _Left, const T& _Right ) const
+  {
+    return !fp_equal_to<T>()( _Left, _Right );
+  }
+};
+
+template <class T = void>
+struct fp_less
+{
+  constexpr T operator()( const T& _Left, const T& _Right ) const
+  {
+    return ( _Left < _Right ) && !fp_equal_to<T>()( _Left, _Right );
+  }
+};
+
+template <class T = void>
+struct fp_less_equal
+{
+  constexpr T operator()( const T& _Left, const T& _Right ) const
+  {
+    return ( _Left < _Right ) || fp_equal_to<T>()( _Left, _Right );
+  }
+};
+
+template <class T = void>
+struct fp_greater
+{
+  constexpr T operator()( const T& _Left, const T& _Right ) const
+  {
+    return ( _Left > _Right ) && !fp_equal_to<T>()( _Left, _Right );
+  }
+};
+
+template <class T = void>
+struct fp_greater_equal
+{
+  constexpr T operator()( const T& _Left, const T& _Right ) const
+  {
+    return ( _Left > _Right ) || fp_equal_to<T>()( _Left, _Right );
+  }
+};
+}  // namespace binary
 
 std::unique_ptr<expr_t> select_unary( util::string_view name, token_e op, std::unique_ptr<expr_t> input )
 {
@@ -354,6 +427,19 @@ std::unique_ptr<expr_t> select_binary( util::string_view name, token_e op, std::
       return std::make_unique<expr_binary_t<std::greater>>( name, op, std::move(left), std::move(right) );
     case TOK_GTEQ:
       return std::make_unique<expr_binary_t<std::greater_equal>>( name, op, std::move(left), std::move(right) );
+
+    case TOK_FP_EQ:
+      return std::make_unique<expr_binary_t<binary::fp_equal_to>>( name, op, std::move(left), std::move(right) );
+    case TOK_FP_NOTEQ:
+      return std::make_unique<expr_binary_t<binary::fp_not_equal_to>>( name, op, std::move(left), std::move(right) );
+    case TOK_FP_LT:
+      return std::make_unique<expr_binary_t<binary::fp_less>>( name, op, std::move(left), std::move(right) );
+    case TOK_FP_LTEQ:
+      return std::make_unique<expr_binary_t<binary::fp_less_equal>>( name, op, std::move(left), std::move(right) );
+    case TOK_FP_GT:
+      return std::make_unique<expr_binary_t<binary::fp_greater>>( name, op, std::move(left), std::move(right) );
+    case TOK_FP_GTEQ:
+      return std::make_unique<expr_binary_t<binary::fp_greater_equal>>( name, op, std::move(left), std::move(right) );
 
     default:
       assert( false );
@@ -963,6 +1049,19 @@ std::unique_ptr<expr_t> select_analyze_binary( util::string_view name, token_e o
     case TOK_GTEQ:
       return std::make_unique<expr_analyze_binary_t<std::greater_equal>>( name, op, std::move(left), std::move(right) );
 
+    case TOK_FP_EQ:
+      return std::make_unique<expr_analyze_binary_t<binary::fp_equal_to>>( name, op, std::move(left), std::move(right) );
+    case TOK_FP_NOTEQ:
+      return std::make_unique<expr_analyze_binary_t<binary::fp_not_equal_to>>( name, op, std::move(left), std::move(right) );
+    case TOK_FP_LT:
+      return std::make_unique<expr_analyze_binary_t<binary::fp_less>>( name, op, std::move(left), std::move(right) );
+    case TOK_FP_LTEQ:
+      return std::make_unique<expr_analyze_binary_t<binary::fp_less_equal>>( name, op, std::move(left), std::move(right) );
+    case TOK_FP_GT:
+      return std::make_unique<expr_analyze_binary_t<binary::fp_greater>>( name, op, std::move(left), std::move(right) );
+    case TOK_FP_GTEQ:
+      return std::make_unique<expr_analyze_binary_t<binary::fp_greater_equal>>( name, op, std::move(left), std::move(right) );
+
     default:
       assert( false );
       return {};  // throw?
@@ -1012,6 +1111,12 @@ int precedence( token_e expr_token_type )
     case TOK_LTEQ:
     case TOK_GT:
     case TOK_GTEQ:
+    case TOK_FP_EQ:
+    case TOK_FP_NOTEQ:
+    case TOK_FP_LT:
+    case TOK_FP_LTEQ:
+    case TOK_FP_GT:
+    case TOK_FP_GTEQ:
     case TOK_IN:
     case TOK_NOTIN:
       return 4;
@@ -1070,6 +1175,12 @@ bool is_binary( token_e expr_token_type )
     case TOK_LTEQ:
     case TOK_GT:
     case TOK_GTEQ:
+    case TOK_FP_EQ:
+    case TOK_FP_NOTEQ:
+    case TOK_FP_LT:
+    case TOK_FP_LTEQ:
+    case TOK_FP_GT:
+    case TOK_FP_GTEQ:
     case TOK_AND:
     case TOK_XOR:
     case TOK_OR:

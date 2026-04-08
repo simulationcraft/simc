@@ -26,6 +26,168 @@ jobs:
     with:
       do-test: ${{ github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch }}
 
+  spec-test-selection:
+    runs-on: ubuntu-22.04
+    if: github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch
+    outputs:
+      spec-matrix: ${{ steps.select.outputs.spec-matrix }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Select Specs From Changed Files
+        id: select
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ALL_SPECS=(
+            deathknight_blood
+            deathknight_unholy
+            deathknight_frost
+            demonhunter_devourer
+            demonhunter_havoc
+            demonhunter_vengeance
+            druid_balance
+            druid_feral
+            druid_guardian
+            druid_restoration
+            evoker_devastation
+            evoker_augmentation
+            hunter_beast_mastery
+            hunter_marksmanship
+            hunter_survival
+            mage_arcane
+            mage_fire
+            mage_frost
+            monk_brewmaster
+            monk_windwalker
+            paladin_protection
+            paladin_retribution
+            priest_shadow
+            rogue_assassination
+            rogue_outlaw
+            rogue_subtlety
+            shaman_elemental
+            shaman_enhancement
+            warlock_affliction
+            warlock_demonology
+            warlock_destruction
+            warrior_arms
+            warrior_fury
+            warrior_protection
+          )
+
+          if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          else
+            BASE_SHA="${{ github.event.before }}"
+            HEAD_SHA="${{ github.sha }}"
+          fi
+
+          mapfile -t CHANGED_FILES < <(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+
+          echo "Changed files:"
+          printf ' - %s\n' "${CHANGED_FILES[@]}"
+
+          declare -A CLASS_CHANGED
+          CLASS_CHANGED_COUNT=0
+          RUN_ALL=0
+
+          mark_class_changed() {
+            local class_key="$1"
+            if [[ -z "${CLASS_CHANGED[$class_key]:-}" ]]; then
+              CLASS_CHANGED[$class_key]=1
+              CLASS_CHANGED_COUNT=$((CLASS_CHANGED_COUNT + 1))
+            fi
+          }
+
+          add_class_from_file() {
+            local file="$1"
+
+            case "$file" in
+              engine/class_modules/sc_death_knight.cpp|engine/class_modules/apl/apl_death_knight.*)
+                mark_class_changed deathknight
+                ;;
+              engine/class_modules/sc_demon_hunter.cpp|engine/class_modules/apl/apl_demon_hunter.*|engine/class_modules/apl/demon_hunter/*)
+                mark_class_changed demonhunter
+                ;;
+              engine/class_modules/sc_druid.cpp|engine/class_modules/apl/druid/*)
+                mark_class_changed druid
+                ;;
+              engine/class_modules/sc_evoker.cpp|engine/class_modules/apl/apl_evoker.*)
+                mark_class_changed evoker
+                ;;
+              engine/class_modules/sc_hunter.cpp|engine/class_modules/apl/apl_hunter.*)
+                mark_class_changed hunter
+                ;;
+              engine/class_modules/sc_mage.cpp|engine/class_modules/apl/mage.*)
+                mark_class_changed mage
+                ;;
+              engine/class_modules/monk/*|engine/class_modules/apl/apl_monk.*)
+                mark_class_changed monk
+                ;;
+              engine/class_modules/paladin/*|engine/class_modules/apl/apl_paladin.*)
+                mark_class_changed paladin
+                ;;
+              engine/class_modules/priest/*|engine/class_modules/apl/apl_priest.*)
+                mark_class_changed priest
+                ;;
+              engine/class_modules/sc_rogue.cpp|engine/class_modules/apl/apl_rogue.*)
+                mark_class_changed rogue
+                ;;
+              engine/class_modules/sc_shaman.cpp|engine/class_modules/apl/apl_shaman.*|engine/class_modules/apl/shaman/*)
+                mark_class_changed shaman
+                ;;
+              engine/class_modules/warlock/*|engine/class_modules/apl/warlock.*)
+                mark_class_changed warlock
+                ;;
+              engine/class_modules/sc_warrior.cpp|engine/class_modules/apl/apl_warrior.*)
+                mark_class_changed warrior
+                ;;
+              *)
+                RUN_ALL=1
+                ;;
+            esac
+          }
+
+          if (( ${#CHANGED_FILES[@]} == 0 )); then
+            RUN_ALL=1
+          elif (( RUN_ALL == 0 )); then
+            for file in "${CHANGED_FILES[@]}"; do
+              add_class_from_file "$file"
+              if (( RUN_ALL == 1 )); then
+                break
+              fi
+            done
+          fi
+
+          if (( RUN_ALL == 1 || CLASS_CHANGED_COUNT == 0 )); then
+            SELECTED_SPECS=("${ALL_SPECS[@]}")
+          else
+            SELECTED_SPECS=()
+            for spec in "${ALL_SPECS[@]}"; do
+              class_key="${spec%%_*}"
+              if [[ -n "${CLASS_CHANGED[$class_key]:-}" ]]; then
+                SELECTED_SPECS+=("$spec")
+              fi
+            done
+          fi
+
+          SPEC_JSON="["
+          for spec in "${SELECTED_SPECS[@]}"; do
+            if [[ "$SPEC_JSON" != "[" ]]; then
+              SPEC_JSON+=","
+            fi
+            SPEC_JSON+="\"$spec\""
+          done
+          SPEC_JSON+="]"
+
+          echo "spec-matrix=$SPEC_JSON" >> "$GITHUB_OUTPUT"
+          echo "Selected spec matrix: $SPEC_JSON"
+
   environment-configuration-info:
     runs-on: ubuntu-22.04
     steps:
@@ -34,20 +196,22 @@ jobs:
           echo "${{github.event.repository.default_branch}} ${{github.ref}} ${{github.ref_name}} ${{github.base_ref}} ${{github.head_ref}} ${{github.sha}}"
 
   spec-test:
-    needs: [build]
+    needs: [build, spec-test-selection]
     if: github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
       is-ptr: false
+      spec-matrix: ${{ needs.spec-test-selection.outputs.spec-matrix }}
 
   spec-test-ptr:
-    needs: [build]
+    needs: [build, spec-test-selection]
     if: github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch
     uses: ./.github/workflows/spec_test.yml
     with:
       cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
       is-ptr: true
+      spec-matrix: ${{ needs.spec-test-selection.outputs.spec-matrix }}
 
   ubuntu-test:
     needs: [build]

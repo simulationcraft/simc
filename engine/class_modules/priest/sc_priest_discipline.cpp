@@ -16,8 +16,8 @@ struct power_word_radiance_t final : public priest_heal_t
 {
   timespan_t atonement_duration;
 
-  power_word_radiance_t( priest_t& p, util::string_view options_str )
-    : priest_heal_t( "power_word_radiance", p, p.talents.discipline.power_word_radiance )
+  power_word_radiance_t( priest_t& p, std::string_view name, util::string_view options_str )
+    : priest_heal_t( name, p, p.talents.discipline.power_word_radiance )
   {
     parse_options( options_str );
     harmful      = false;
@@ -26,6 +26,11 @@ struct power_word_radiance_t final : public priest_heal_t
     aoe = 1 + as<int>( data().effectN( 3 ).base_value() );
 
     atonement_duration = data().effectN( 4 ).percent() * p.talents.discipline.atonement_buff->duration();
+  }
+
+  power_word_radiance_t( priest_t& p, util::string_view options_str )
+    : power_word_radiance_t( p, "power_word_radiance", options_str )
+  {
   }
 
   void execute() override
@@ -147,56 +152,51 @@ struct pain_suppression_t final : public priest_spell_t
 
 struct evangelism_t final : public priest_heal_t
 {
-  timespan_t atonement_extend;
+  action_t* evangelism_radiance;
+  double radiance_effectiveness;
   evangelism_t( priest_t& p, util::string_view options_str )
     : priest_heal_t( "evangelism", p, p.talents.discipline.evangelism ),
-      atonement_extend( timespan_t::from_seconds( p.talents.discipline.evangelism->effectN( 2 ).base_value() ) )
+      radiance_effectiveness( data().effectN( 2 ).percent() )
   {
     parse_options( options_str );
 
-    target = &p;
+    harmful = false;
 
-    harmful          = false;
-    split_aoe_damage = 1;
-    aoe              = -1;
-  }
+    evangelism_radiance =
+        priest().get_secondary_action<power_word_radiance_t>( "evangelism_radiance", "evangelism_radiance" );
 
-  int num_targets() const override
-  {
-    return std::max( 1, as<int>( p().allies_with_atonement.size() ) );
-  }
-
-  size_t available_targets( std::vector<player_t*>& target_list ) const override
-  {
-    target_list.clear();
-
-    for ( auto t : p().allies_with_atonement )
+    if ( !evangelism_radiance->stats->parent )
     {
-      target_list.push_back( t );
+      evangelism_radiance->proc = true;
+      evangelism_radiance->dual = true;
+      evangelism_radiance->base_multiplier *= radiance_effectiveness;
+      add_child( evangelism_radiance );
     }
-
-    if ( target_list.size() == 0 )
-      target_list.push_back( player );
-
-    return target_list.size();
   }
 
-  void activate() override
+  void impact( action_state_t* s ) override
   {
-    priest_heal_t::activate();
-
-    priest().allies_with_atonement.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
-  }
+    priest_heal_t::impact( s );
+    if ( result_is_hit( s->result ) )
+    {
+      evangelism_radiance->execute_on_target( s->target );
+    }
+  };
 
   void execute() override
   {
     priest_heal_t::execute();
 
-    target->buffs.pain_suppression->trigger();
+    priest().buffs.evangelism->trigger();
 
-    for ( auto ally : p().allies_with_atonement )
+    if ( priest().talents.discipline.archangel.enabled() )
     {
-      p().find_target_data( ally )->buffs.atonement->extend_duration( &p(), atonement_extend );
+      priest().buffs.archangel->trigger();
+    }
+
+    if ( priest().talents.shared.mindbender.enabled() )
+    {
+      priest().pets.mindbender.spawn();
     }
   }
 };
@@ -302,6 +302,16 @@ protected:
       priest_td_t& td = get_td( s->target );
       td.dots.shadow_word_pain->adjust_duration( dot_extension );
       td.dots.purge_the_wicked->adjust_duration( dot_extension );
+    }
+
+    void execute() override
+    {
+      priest_spell_t::execute();
+
+      if ( priest().talents.discipline.holy_ray.enabled() )
+      {
+        priest().buffs.holy_ray->trigger();
+      }
     }
   };
 
@@ -558,6 +568,7 @@ public:
 
   void execute() override
   {
+    priest().buffs.holy_ray->expire();
     priest_spell_t::execute();
 
     priest().buffs.power_of_the_dark_side->expire();
@@ -698,10 +709,22 @@ void priest_t::create_buffs_discipline()
   }
 
   buffs.weal_and_woe = make_buff( this, "weal_and_woe", talents.discipline.weal_and_woe_buff );
+
+  buffs.archangel = make_buff( this, "archangel", talents.discipline.archangel_buff );
+
+  buffs.holy_ray = make_buff( this, "holy_ray", talents.discipline.holy_ray_buff );
+
+  buffs.evangelism = make_buff( this, "evangelism", talents.discipline.evangelism )
+                         ->set_cooldown( 0_s )
+                         ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                         ->set_initial_stack_to_max_stack();
+
+  buffs.greater_smite = make_buff( this, "greater_smite", talents.discipline.greater_smite_buff );
 }
 
 void priest_t::init_rng_discipline()
 {
+  deck_rng.master_of_darkness = get_shuffled_rng( "master_of_darkness", 1, 3 );
 }
 
 void priest_t::init_background_actions_discipline()
@@ -735,7 +758,6 @@ void priest_t::init_spells_discipline()
   // Row 4
   talents.discipline.bright_pupil          = ST( "Bright Pupil" );
   talents.discipline.enduring_luminescence = ST( "Enduring Luminescence" );
-  talents.discipline.plea                  = ST( "Plea" );  // NYI
   talents.discipline.shield_discipline     = ST( "Shield Discipline" );
   talents.discipline.ultimate_penitence    = ST( "Ultimate Penitence" );
   talents.discipline.power_word_barrier    = ST( "Power Word: Barrier" );
@@ -743,43 +765,57 @@ void priest_t::init_spells_discipline()
   talents.discipline.revel_in_darkness     = ST( "Revel in Darkness" );
   // Row 5
   talents.discipline.holy_ray            = ST( "Holy Ray" );  // NYI
+  talents.discipline.holy_ray_buff       = find_spell( 1235193 );
   talents.discipline.lenience            = ST( "Lenience" );
   talents.discipline.shadow_tap          = ST( "Shadow Tap" );  // NYI
   talents.discipline.encroaching_shadows = ST( "Encroaching Shadows" );
   // Row 6
   talents.discipline.purge_the_wicked   = ST( "Purge the Wicked" );
-  talents.discipline.divine_procession  = ST( "Divine Procession" );
+  talents.discipline.castigation        = ST( "Castigation" );
   talents.discipline.indemnity          = ST( "Indemnity" );
   talents.discipline.pain_and_suffering = ST( "Pain and Suffering" );
   talents.discipline.occultist          = ST( "Occultist" );  // NYI
   // Row 7
-  talents.discipline.borrowed_time   = ST( "Borrowed Time" );
-  talents.discipline.evangelism      = ST( "Evangelism" );
-  talents.discipline.abyssal_reverie = ST( "Abyssal Reverie" );
-  // Row 8
-  talents.discipline.inner_focus = ST( "Inner Focus" );
-  talents.discipline.castigation = ST( "Castigation" );
-  talents.discipline.shadow_mend = ST( "Shadow Mend" );  // NYI
-  // Row 9
-  talents.discipline.divine_aegis          = ST( "Divine Aegis" );
-  talents.discipline.divine_aegis_buff     = find_spell( 47753 );
-  talents.discipline.blaze_of_light        = ST( "Blaze of Light" );
-  talents.discipline.greater_smite         = ST( "Greater Smite" );  // NYI
-  talents.discipline.weal_and_woe          = ST( "Weal and Woe" );
-  talents.discipline.weal_and_woe_buff     = find_spell( 390787 );
   talents.discipline.harsh_discipline      = ST( "Harsh Discipline" );
   talents.discipline.harsh_discipline_buff = find_spell( 373183 );
-  talents.discipline.expiation             = ST( "Expiation" );
+  talents.discipline.evangelism            = ST( "Evangelism" );
+  talents.discipline.abyssal_reverie       = ST( "Abyssal Reverie" );
+  // Row 8
+  talents.discipline.divine_procession = ST( "Divine Procession" );
+  talents.discipline.inner_focus       = ST( "Inner Focus" );
+  talents.discipline.archangel         = ST( "Archangel" );
+  talents.discipline.archangel_buff    = find_spell( 81700 );
+  talents.discipline.shadow_mend       = ST( "Shadow Mend" );  // NYI
+  // Row 9
+  talents.discipline.greater_smite      = ST( "Greater Smite" );  // NYI
+  talents.discipline.greater_smite_buff = find_spell( 1253725 );
+  talents.discipline.divine_aegis       = ST( "Divine Aegis" );
+  talents.discipline.divine_aegis_buff  = find_spell( 47753 );
+  talents.discipline.borrowed_time      = ST( "Borrowed Time" );
+  talents.discipline.blaze_of_light     = ST( "Blaze of Light" );
   // Row 10
-  talents.discipline.eternal_barrier = ST( "Eternal Barrier" );
-  talents.discipline.inner_light     = ST( "Inner Light" );  // NYI
+  talents.discipline.eternal_barrier   = ST( "Eternal Barrier" );
+  talents.discipline.weal_and_woe      = ST( "Weal and Woe" );
+  talents.discipline.weal_and_woe_buff = find_spell( 390787 );
+  talents.discipline.searing_light     = ST( "Searing Light" );  // NYI
+  talents.discipline.searing_light_dot = find_spell( 1280134 );
+  talents.discipline.expiation         = ST( "Expiation" );
   // Apex
-  talents.discipline.master_the_darkness = ST( "Master the Darkness" );  // NYI
+  talents.discipline.master_the_darkness_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1253591 );
+  talents.discipline.void_shield           = find_spell( 1253593 );
+  talents.discipline.void_shield_reflect   = find_spell( 1253828 );
+  talents.discipline.master_the_darkness_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1253845 );
+  talents.discipline.master_the_darkness_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1253827 );
 
   // General Spells
   specs.penance         = find_spell( 47540 );
   specs.penance_channel = find_spell( 47758 );   // Channel spell, triggered by 47540, executes 47666 every tick
   specs.penance_tick    = find_spell( 47666 );   // Not triggered from 47540, only 47758
+
+  specs.plea = find_spell( 200829 );
+
+  specs.contrition_heal      = find_spell( 270501 );
+  specs.contrition_heal_crit = find_spell( 281469 );
 }
 
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )
@@ -822,6 +858,27 @@ std::unique_ptr<expr_t> priest_t::create_expression_discipline( util::string_vie
       return expr_t::create_constant( name_str, 0 );
 
     return make_fn_expr( name_str, [ this ]() { return allies_with_atonement.size(); } );
+  }
+
+  if ( name_str == "master_of_darkness_positive" )
+  {
+    if ( !talents.discipline.master_the_darkness_1.enabled() )
+      return expr_t::create_constant( name_str, 0 );
+    return make_fn_expr( name_str, [ this ]() { return deck_rng.master_of_darkness->count_remains( 1 ); } );
+  }
+
+  if ( name_str == "master_of_darkness_negative" )
+  {
+    if ( !talents.discipline.master_the_darkness_1.enabled() )
+      return expr_t::create_constant( name_str, 0 );
+    return make_fn_expr( name_str, [ this ]() { return deck_rng.master_of_darkness->count_remains( 0 ); } );
+  }
+
+  if ( name_str == "master_of_darkness_cards" )
+  {
+    if ( !talents.discipline.master_the_darkness_1.enabled() )
+      return expr_t::create_constant( name_str, 0 );
+    return make_fn_expr( name_str, [ this ]() { return deck_rng.master_of_darkness->entry_remains(); } );
   }
 
   if ( name_str == "min_active_atonement" )

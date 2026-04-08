@@ -272,7 +272,7 @@ void travel_event_t::execute()
 
 void action_state_t::release( action_state_t*& s )
 {
-  assert( s && !s->is_energize() );
+  assert( s );
   s->action->release_state( s );
   s = nullptr;
 }
@@ -403,9 +403,4 @@ proc_types2 action_state_t::interrupt_proc_type2() const
     return PROC2_CAST_INTERRUPT;
   else
     return PROC2_INVALID;
-}
-
-bool action_state_t::is_energize() const
-{
-  return this == action->energize_state.get();
 }

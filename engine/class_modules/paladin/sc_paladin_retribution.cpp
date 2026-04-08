@@ -187,6 +187,7 @@ struct execution_sentence_t : public paladin_melee_attack_t
     es_inner_t( paladin_t* p ) :
       paladin_melee_attack_t( "execution_sentence_init", p, p->find_spell( 1260251 ) )
     {
+      aoe = -1;
       dual = background = true;
     }
 

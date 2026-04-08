@@ -1477,8 +1477,8 @@ const char* util::proc_type_string( proc_types type )
     case PROC1_RANGED_TAKEN:           return "RangedShotTaken";
     case PROC1_RANGED_ABILITY:         return "RangedAbility";
     case PROC1_RANGED_ABILITY_TAKEN:   return "RangedAbilityTaken";
-    case PROC1_NONE_HELPFUL:           return "GenericHeal";
-    case PROC1_NONE_HELPFUL_TAKEN:     return "GenericHealTaken";
+    case PROC1_NONE_HELPFUL:           return "GenericHelpful";
+    case PROC1_NONE_HELPFUL_TAKEN:     return "GenericHelpfulTaken";
     case PROC1_NONE_HARMFUL:           return "GenericHarmful";
     case PROC1_NONE_HARMFUL_TAKEN:     return "GenericHarmfulTaken";
     case PROC1_MAGIC_HEAL:             return "MagicHeal";
@@ -2855,6 +2855,20 @@ const char* util::error_level_string( error_level_e level )
     case error_level_e::UNVERIFIED_IMPLEMENTATION: return "Implementation Not Yet Verified";
     case error_level_e::IMPLEMENTATION_NOTES:      return "Implementation Notes";
     default:                                       return "Unknown";
+  }
+}
+
+const char* util::proc_trigger_type_string( proc_trigger_type_e type )
+{
+  switch ( type )
+  {
+    case proc_trigger_type_e::TRIGGER_ACTION:            return "action";
+    case proc_trigger_type_e::TRIGGER_ACTION_PROC:       return "action_proc";
+    case proc_trigger_type_e::TRIGGER_ACTION_TAKEN:      return "action_taken";
+    case proc_trigger_type_e::TRIGGER_ACTION_PROC_TAKEN: return "action_proc_taken";
+    case proc_trigger_type_e::TRIGGER_AURA_APPLIED:      return "aura_applied";
+    case proc_trigger_type_e::TRIGGER_HEARTBEAT:         return "heartbeat";
+    default:                                             return "unknown";
   }
 }
 
