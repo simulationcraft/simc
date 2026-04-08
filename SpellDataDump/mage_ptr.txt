@@ -1498,7 +1498,8 @@ Family Flags     : 44
 Attributes       : Not Shapeshifted (16), No Threat (42), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=36562)    : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 3 | Scaled Value: 3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+Hotfixed         : Mechanic (11 -> 0)
                    Modified By: Improved Flurry (1247769 effect#1)
 #2 (id=376737)   : Trigger Spell (64): Flurry
                    Base Value: 0 | Scaled Value: 0 (delta=0.1) | Trigger Spell: 228596 | Target: Targeted Enemy (6)
