@@ -147,7 +147,7 @@ void affliction( player_t* p )
   HC_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<(10+(8*!talent.sow_the_seeds)&remains<5" );
   HC_aoe->add_action( "summon_darkglare" );
   HC_aoe->add_action( "malevolence" );
-  HC_aoe->add_action( "talent.sow_the_seeds|(!pet.darkglare.active&active_enemies>(5+talent.cull_the_weak))" );
+  HC_aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds|(!pet.darkglare.active&active_enemies>(5+talent.cull_the_weak))" );
   HC_aoe->add_action( "unstable_affliction,if=!talent.sow_the_seeds|buff.shard_instability.react" );
   HC_aoe->add_action( "agony,target_if=min:remains,if=remains<duration*0.5" );
   HC_aoe->add_action( "malefic_grasp,if=pet.darkglare.remains<gcd" );
