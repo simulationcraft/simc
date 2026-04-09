@@ -1053,10 +1053,13 @@ public:
     rng_setting_t demoniac_imp_fade_hard_cap = { 21.0, 21.0, "demoniac_imp_fade_hard_cap" };
     rng_setting_t spiteful_reconstitution = { 0.10, 0.10, "spiteful_reconstitution" };
     rng_setting_t spiteful_reconstitution_hard_cap = { 21.0, 21.0, "spiteful_reconstitution_hard_cap" };
-    rng_setting_t demonic_knowledge_rank1_cards = { 10.0, 10.0, "demonic_knowledge_rank1_cards" };
-    rng_setting_t demonic_knowledge_rank2_cards = { 18.0, 18.0, "demonic_knowledge_rank2_cards" };
+    rng_setting_t demonic_knowledge_rank1_cards = { 6.0, 6.0, "demonic_knowledge_rank1_cards" };
+    rng_setting_t demonic_knowledge_rank2_cards = { 12.0, 12.0, "demonic_knowledge_rank2_cards" };
+    rng_setting_t demonic_knowledge_deck_size = { 80.0, 80.0, "demonic_knowledge_deck_size" };
 
     // Destruction
+    rng_setting_t rain_of_chaos_cards = { 3.0, 3.0, "rain_of_chaos_cards" };
+    rng_setting_t rain_of_chaos_deck_size = { 20.0, 20.0, "rain_of_chaos_deck_size" };
     rng_setting_t alythesss_ire_shift = { 0.01, 0.01, "alythesss_ire_shift" };
     rng_setting_t echo_of_sargeras = { 0.10, 0.10, "echo_of_sargeras" };
 
@@ -1089,6 +1092,9 @@ public:
       f( spiteful_reconstitution_hard_cap );
       f( demonic_knowledge_rank1_cards );
       f( demonic_knowledge_rank2_cards );
+      f( demonic_knowledge_deck_size );
+      f( rain_of_chaos_cards );
+      f( rain_of_chaos_deck_size );
       f( alythesss_ire_shift );
       f( echo_of_sargeras );
       f( blackened_soul );

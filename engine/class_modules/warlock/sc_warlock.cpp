@@ -233,11 +233,11 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   regen_caches[ CACHE_SPELL_HASTE ] = true;
 
   sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
-    // NOTE (2026-03-08): Wild Imps are currently bugged when updating Hellbent Commander stacks on demise.
+    // NOTE (2026-03-08): Some pets are currently bugged when updating Hellbent Commander stacks on arise/demise.
     // Hellbent Commander's stacks are updated to their correct value on each heartbeat update.
     if ( bugs && talents.hellbent_commander.ok() )
     {
-      const int expected_stacks = active_demon_count( !bugs );
+      const int expected_stacks = active_demon_count();
       const int current_stacks = buffs.hellbent_commander->check();
 
       const int stack_diff = expected_stacks - current_stacks;
@@ -484,7 +484,7 @@ int warlock_t::active_demon_count( bool include_diabolist ) const
     if ( lock_pet->is_sleeping() )
       continue;
 
-    // NOTE: 2026-02-17 Dibolist guardians seems to not count for some effects/talents (Sacrificed Souls and Hellbent Commander)
+    // NOTE: 2026-02-17 Dibolist guardians seems to not count for some effects/talents (Sacrificed Souls)
     if ( !include_diabolist && lock_pet->is_diabolist_guardian )
       continue;
 

@@ -1304,28 +1304,18 @@ namespace warlock
       prd_rng.spiteful_reconstitution = get_accumulated_rng( "spiteful_reconstitution", c_sr, spiteful_reconstitution_hardcap );
     }
 
-    // Demonic Knowledge uses Deck of Cards RNG at 10 out of 80 (rank 1) and 18 out of 80 (rank 2)
-    // NOTE: 2026-03-06 Demonic Knowledge does not appear to use the average chance indicated in the spell data, but
-    // rather follows a deck of cards model that also does not match the expected average chance (bug)
+    // Demonic Knowledge uses Deck of Cards RNG at 6 out of 80 (rank 1) and 12 out of 80 (rank 2)
     if ( talents.demonic_knowledge.ok() )
     {
-      const int max_cards = 80;
-
+      int deck_size = static_cast<int>( rng_settings.demonic_knowledge_deck_size.setting_value );
       int cards = 0;
-      if ( bugs )
-      {
-        assert( talents.demonic_knowledge.rank() == 2 || talents.demonic_knowledge.rank() == 1 );
-        if ( talents.demonic_knowledge.rank() == 2 )
-          cards = static_cast<int>( rng_settings.demonic_knowledge_rank2_cards.setting_value );
-        else if ( talents.demonic_knowledge.rank() == 1 )
-          cards = static_cast<int>( rng_settings.demonic_knowledge_rank1_cards.setting_value );
-      }
-      else
-      {
-        cards = static_cast<int>( talents.demonic_knowledge->effectN( 1 ).percent() * max_cards + 0.5 );
-      }
+      assert( talents.demonic_knowledge.rank() == 2 || talents.demonic_knowledge.rank() == 1 );
+      if ( talents.demonic_knowledge.rank() == 2 )
+        cards = static_cast<int>( rng_settings.demonic_knowledge_rank2_cards.setting_value );
+      else if ( talents.demonic_knowledge.rank() == 1 )
+        cards = static_cast<int>( rng_settings.demonic_knowledge_rank1_cards.setting_value );
 
-      deck_rng.demonic_knowledge = get_shuffled_rng( "demonic_knowledge", cards, max_cards );
+      deck_rng.demonic_knowledge = get_shuffled_rng( "demonic_knowledge", cards, deck_size );
     }
   }
 
@@ -1350,7 +1340,11 @@ namespace warlock
     }
 
     // Rain of Chaos uses Deck of Cards RNG at 3 out of 20
-    deck_rng.rain_of_chaos = get_shuffled_rng( "rain_of_chaos", 3, 20 );
+    if ( talents.rain_of_chaos.ok() ) {
+      int deck_size = static_cast<int>( rng_settings.rain_of_chaos_deck_size.setting_value );
+      int cards = static_cast<int>( rng_settings.rain_of_chaos_cards.setting_value );
+      deck_rng.rain_of_chaos = get_shuffled_rng( "rain_of_chaos", cards, deck_size );
+    }
 
     // Modeling Dimensional Rift as a pseudo-random distribution (PRD) with a nominal
     // rate of 10%, which corresponds to PRD constant C = 0.014745844781072676.
