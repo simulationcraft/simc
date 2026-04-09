@@ -2269,6 +2269,7 @@ struct keg_smash_t : monk_melee_attack_t
     // TODO: can cast_during_sck be automated?
     cast_during_sck = true;
 
+    full_amount_targets = 1;
     reduced_aoe_targets = data().effectN( 7 ).base_value();
     aoe                 = -1;
 
@@ -2280,6 +2281,14 @@ struct keg_smash_t : monk_melee_attack_t
           .set_eff( &effect );
 
     // increased damage to primary target
+    if ( const auto &effect = data().effectN( 8 ); effect.ok() )
+      add_parse_entry( target_multiplier_effects )
+          .set_func( [ this ]( actor_target_data_t *target_data ) { return target_data->target == target; } )
+          .set_value( effect.percent() )
+          .set_eff( &effect )
+          .set_note( "Primary Target" );
+
+    // SSLK increased damage to primary target
     if ( const auto &effect = player->talent.brewmaster.stormstouts_last_keg->effectN( 1 ); effect.ok() )
       add_parse_entry( target_multiplier_effects )
           .set_func( [ this ]( actor_target_data_t *target_data ) { return target_data->target == target; } )
