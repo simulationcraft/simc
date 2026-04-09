@@ -7,6 +7,12 @@ position=ranged_back
 talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZZ2MzsMzAAjllBGwEMDbBG2GAAAmBAAwMDzMjxwwMmZmxgZmZGAwMwA
 warlock.default_pet=sayaad
 
+potion=lights_potential_2
+food=silvermoon_parade
+flask=flask_of_the_shattered_sun_2
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
+
 head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/1808,enchant_id=7961,gem_id=240983,ilevel=289
 neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240916
 shoulder=echoing_void_mantle,id=249328,bonus_id=12806/13577,enchant_id=8001
@@ -35,6 +41,12 @@ position=ranged_back
 talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZZWmZmlxAAWgBmFjGzAysBWGAAAmBAAmZAzMjxwwMjZmZGMzMzAAmBG
 warlock.default_pet=sayaad
 
+potion=lights_potential_2
+food=silvermoon_parade
+flask=flask_of_the_shattered_sun_2
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
+
 head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/1808,enchant_id=7961,gem_id=240983,ilevel=289
 neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240916
 shoulder=echoing_void_mantle,id=249328,bonus_id=12806/13577,enchant_id=8001
@@ -48,7 +60,7 @@ feet=slippers_of_the_midnight_flame,id=249305,bonus_id=4786/4800/12803/12806/153
 finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240916/240916
 finger2=occlusion_of_void,id=251217,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240916
 trinket1=emberwing_feather,id=250144,ilevel=289
-trinket2=shadow_of_the_empyrean_requiem,id=249810,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
 main_hand=splitshroud_stinger,id=251111,bonus_id=12806/13577,enchant_id=8039
 off_hand=grimoire_of_the_eternal_light,id=249276,ilevel=289
 
