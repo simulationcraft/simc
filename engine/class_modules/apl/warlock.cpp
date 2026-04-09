@@ -144,7 +144,7 @@ void affliction( player_t* p )
   HC_aoe->add_action( "haunt" );
   HC_aoe->add_action( "seed_of_corruption,if=(!dot.wither.ticking|dot.wither.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
   HC_aoe->add_action( "dark_harvest" );
-  HC_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<(10+(8*!talent.sow_the_seeds)&remains<5" );
+  HC_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<(10+(8*!talent.sow_the_seeds))&remains<5" );
   HC_aoe->add_action( "summon_darkglare" );
   HC_aoe->add_action( "malevolence" );
   HC_aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds|(!pet.darkglare.active&active_enemies>(5+talent.cull_the_weak))" );
