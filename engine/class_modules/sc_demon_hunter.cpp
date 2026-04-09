@@ -1225,7 +1225,7 @@ public:
     // How many seconds that Vengeful Retreat locks out Felblade
     double felblade_lockout_from_vengeful_retreat    = 0.6;
     bool enable_dungeon_slice                        = false;
-    double soul_fragment_from_shattered_souls_chance = 0.4;
+    double proc_from_killing_blow_chance             = 0.4;
     int entropy_starting_souls                       = -1;
     int channel_tick_cutoff_benefit                  = 2;
   } options;
@@ -9554,18 +9554,29 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
 }
 
 // Spawn soul fragments from shattered souls proc using chance from sim options,
+// Proc Soul Immolation reset on target death for Devourer using chance from sim options
 // TODO: only spawn for actors killing blows for non-single actor batch
 
 void demon_hunter_td_t::target_demise()
 {
-  if ( dh().specialization() == DEMON_HUNTER_DEVOURER )
-    return;
   if ( !( target->is_enemy() ) )
     return;
   // Don't pollute results at the end-of-iteration deaths of everyone
   if ( source->sim->event_mgr.canceled )
     return;
-  if ( dh().rng().roll( dh().options.soul_fragment_from_shattered_souls_chance ) )
+
+  if ( dh().specialization() == DEMON_HUNTER_DEVOURER )
+  {
+    if ( dh().talent.devourer.spontaneous_immolation.enabled() && dh().is_ptr() &&
+         dh().rng().roll( dh().options.proc_from_killing_blow_chance ) )
+    {
+      dh().cooldown.soul_immolation->reset( true, 1 );
+      dh().proc.spontaneous_immolation->occur();
+    }
+    else
+      return;
+  }
+  if ( dh().rng().roll( dh().options.proc_from_killing_blow_chance ) )
   {
     dh().spawn_soul_fragment( dh().proc.soul_fragment_from_death, soul_fragment::GREATER );
     dh().proc.soul_fragment_from_death->occur();
@@ -10286,7 +10297,7 @@ void demon_hunter_t::create_options()
   add_option(
       opt_float( "felblade_lockout_from_vengeful_retreat", options.felblade_lockout_from_vengeful_retreat, 0, 1 ) );
   add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
-  add_option( opt_float( "soul_fragment_from_shattered_souls_chance", options.soul_fragment_from_shattered_souls_chance,
+  add_option( opt_float( "proc_from_killing_blow_chance", options.proc_from_killing_blow_chance,
                          0.0, 1.0 ) );
   add_option( opt_int( "entropy_starting_souls", options.entropy_starting_souls, -1, 50 ) );
   add_option( opt_int( "channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
