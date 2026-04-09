@@ -246,6 +246,9 @@ class rogue_t : public player_t
 
 public:
 
+  // Venomous Wounds energy refund overflow
+  double venomous_wounds_accumulator;
+
   // Deadly Pursuit CDR list
   std::vector<cooldown_t*> deadly_pursuit_cooldowns;
 
@@ -455,6 +458,7 @@ public:
     cooldown_t* secret_technique;
     cooldown_t* shadow_blades;
     cooldown_t* shadow_dance;
+    cooldown_t* shadow_techniques_icd;
     cooldown_t* shadowstep;
     cooldown_t* shiv;
     cooldown_t* sprint;
@@ -1090,6 +1094,7 @@ public:
   rogue_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, ROGUE, name, r ),
     rogue_ready_trigger_threshold( 25 ),
+    venomous_wounds_accumulator( 0 ),
     shadow_techniques_counter( 0 ),
     deathstalkers_mark_debuff( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
@@ -1129,6 +1134,7 @@ public:
     cooldowns.secret_technique          = get_cooldown( "secret_technique" );
     cooldowns.shadow_blades             = get_cooldown( "shadow_blades" );
     cooldowns.shadow_dance              = get_cooldown( "shadow_dance" );
+    cooldowns.shadow_techniques_icd     = get_cooldown( "shadow_techniques_icd" );
     cooldowns.shadowstep                = get_cooldown( "shadowstep" );
     cooldowns.shiv                      = get_cooldown( "shiv" );
     cooldowns.sprint                    = get_cooldown( "sprint" );   
@@ -3477,8 +3483,8 @@ struct adrenaline_rush_t : public rogue_spell_t
     if ( precombat_seconds > 0_s && !p()->in_combat )
     {
       p()->cooldowns.adrenaline_rush->adjust( -precombat_seconds, false );
-      p()->buffs.adrenaline_rush->extend_duration( p(), -precombat_seconds );
-      p()->buffs.loaded_dice->extend_duration( p(), -precombat_seconds );
+      p()->buffs.adrenaline_rush->extend_duration( -precombat_seconds );
+      p()->buffs.loaded_dice->extend_duration( -precombat_seconds );
     }
 
     trigger_fatebound_edge_case( execute_state );
@@ -3966,38 +3972,56 @@ struct crimson_tempest_t : public rogue_attack_t
     }
   }
 
-  void clone_dot( std::function<dot_t*( rogue_td_t* )> dot_selector )
+  void clone_dot( std::function<dot_t*( rogue_td_t* )> dot_selector, bool internal_bleeding = false )
   {
     std::vector<player_t*> tl = target_list();
     size_t num_copies = std::min( tl.size(), as<size_t>( data().effectN( 2 ).base_value() ) );
 
     range::sort( tl, [ this, dot_selector ]( player_t* l, player_t* r ) {
-      auto lr = dot_selector( td( l ) )->remains();
-      auto rr = dot_selector( td( r ) )->remains();
-      if ( lr == rr )
-        return l < r;
+      dot_t* ld = dot_selector( td( l ) );
+      dot_t* rd = dot_selector( td( r ) );
+      // Sort equal remains by last refreshed time
+      if ( ld->remains() == rd->remains() )
+        if ( ld->end_event && rd->end_event )
+          return ld->end_event->id < rd->end_event->id;
+        else
+          return l < r; // Fallback to target pointer
       else
-        return lr < rr;
+        return ld->remains() < rd->remains();
     } );
 
     for ( size_t i = 0; i < num_copies; ++i )
     {
       auto source_dot = dot_selector( td( tl.back() ) );
       auto target_dot = dot_selector( td( tl[ i ] ) );
-      if ( !source_dot->is_ticking() || source_dot->remains() <= target_dot->remains() )
+
+      if ( source_dot == target_dot )
+        continue;
+
+      // 2026-04-08 -- DoTs still apply even if the source and target remains are equal, relevant for Internal Bleeding
+      if ( !source_dot->is_ticking() || source_dot->remains() < target_dot->remains() )
         break;
 
       if ( target_dot->is_ticking() )
       {
-        target_dot->adjust_duration( source_dot->remains() - target_dot->remains() );
+        // Copies state and duration, does not change tick time
+        source_dot->copy( tl[ i ], DOT_COPY_CLONE_NO_REFRESH );
       }
       else
       {
-        source_dot->copy( tl[ i ], DOT_COPY_CLONE );
+        // State and duration is copied initially, but tick time is not
+        source_dot->copy( tl[ i ], DOT_COPY_START );
       }
-      
+
       p()->sim->print_log( "{} {} cloning {} from {} to {} with remains={:.3f}",
                            *p(), *this, *source_dot, *tl.back(), *tl[ i ], source_dot->remains().total_seconds() );
+
+      if ( internal_bleeding && p()->active.internal_bleeding )
+      {
+        p()->active.internal_bleeding->trigger_secondary_action( tl[ i ], cast_state( source_dot->state )->get_combo_points() );
+        p()->sim->print_log( "{} {} clone of {} triggered internal_bleeding on {} with {} cp",
+                             *p(), *this, *source_dot, *tl[ i ], cast_state( source_dot->state )->get_combo_points() );
+      }
     }
   }
 
@@ -4007,7 +4031,7 @@ struct crimson_tempest_t : public rogue_attack_t
 
     if ( target_list().size() > 1 )
     {
-      clone_dot( []( rogue_td_t* td ) { return td->dots.rupture; } );
+      clone_dot( []( rogue_td_t* td ) { return td->dots.rupture; }, true );
       clone_dot( []( rogue_td_t* td ) { return td->dots.garrote; } );
       trigger_scent_of_blood(); // Force recalculate since no Rupture actions are triggered
     }
@@ -4397,12 +4421,8 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // 2022-11-28 -- Currently does not work correctly at all without Improved Garrote
-    //               Additionally works every global of Improved Garrote regardless of Subterfuge
     if ( p()->talent.assassination.shrouded_suffocation->ok() && !is_secondary_action() &&
-         ( !p()->bugs || p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) &&
-         ( p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) ||
-           ( p()->bugs && p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) ) )
+         p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
     {
       trigger_combo_point_gain( as<int>( p()->talent.assassination.shrouded_suffocation->effectN( 2 ).base_value() ),
                                 p()->gains.shrouded_suffocation );
@@ -5326,7 +5346,7 @@ struct shadow_blades_t : public rogue_spell_t
     if ( precombat_seconds > 0_s && !p()->in_combat )
     {
       p()->cooldowns.shadow_blades->adjust( -precombat_seconds, false );
-      p()->buffs.shadow_blades->extend_duration( p(), -precombat_seconds );
+      p()->buffs.shadow_blades->extend_duration( -precombat_seconds );
     }
   }
 };
@@ -7126,14 +7146,16 @@ struct shadow_dance_t : public stealth_like_buff_t<buff_t>
       bd += rogue->spec.the_first_dance_buff->effectN( 1 ).time_value();
     }
 
-    // MIDNIGHT TOCHECK -- Is this just rating? Or base+rating? Is this before or after The First Dance?
+    // Current testing is that this applies the rating tooltip percentage value after TfD
     if ( rogue->talent.subtlety.deepening_shadows->ok() )
     {
       double h = std::max( 0.0, rogue->composite_melee_haste_rating() ) / rogue->current.rating.attack_haste;
-      h = rogue->apply_combat_rating_dr( RATING_MELEE_HASTE, h );
-      h = 1.0 / ( 1.0 + h );
-      h *= rogue->current.melee_haste;
-      bd *= 1.0 + rogue->spec.deepening_shadows_buff->effectN( 3 ).percent() * ( 1.0 - h);
+      // 2026-04-08 -- Currently doesn't appear to use diminishing returns
+      if ( !rogue->bugs )
+      {
+        h = rogue->apply_combat_rating_dr( RATING_MELEE_HASTE, h );
+      }
+      bd *= 1.0 + rogue->spec.deepening_shadows_buff->effectN( 3 ).percent() * h;
     }
 
     return bd;
@@ -7286,7 +7308,7 @@ struct roll_the_bones_t : public buff_t
         std::max( 0_s, std::min( duration, ( 60_s - buff->remains() ) ) ) :
         duration;
 
-      buff->extend_duration( rogue, extend_duration );
+      buff->extend_duration( extend_duration );
     }
   }
 
@@ -7421,14 +7443,27 @@ void rogue_t::trigger_venomous_wounds_death( player_t* target )
   unsigned full_ticks_remaining =
       (unsigned)( td->dots.rupture->remains() / td->dots.rupture->current_action->base_tick_time );
 
-  // 2025-04-12 -- The death effect was never updated to use the new VW value of 8 Energy, and still uses the old value of 10
   // MIDNIGHT TOCHECK -- Assume this was revised with the new tick values based on patch notes, maybe reduced more
-  int replenish = as<int>( talent.assassination.venomous_wounds->effectN( 1 ).base_value() );
-  
-  sim->print_log( "{} venomous_wounds replenish on death: full_ticks={}, ticks_left={}, vw_replenish={}, remaining_time={}",
-                  *this, full_ticks_remaining, td->dots.rupture->ticks_left(), replenish, td->dots.rupture->remains() );
+  double poisoned_bleeds = 0;
+  for ( auto t : sim->target_non_sleeping_list )
+  {
+    rogue_td_t* tdata = get_target_data( t );
+    if ( tdata->is_poisoned() )
+    {
+      poisoned_bleeds += tdata->dots.garrote->is_ticking() + tdata->dots.rupture->is_ticking();
+    }
+  }
 
-  resource_gain( RESOURCE_ENERGY, full_ticks_remaining * replenish, gains.venomous_wounds_death,
+  // 2026-03-24 -- Logs indicate the descripted formula is closer to #bleeds / 2 rather than #bleeds
+  const double refund_amount = poisoned_bleeds <= 2 ?
+    talent.assassination.venomous_wounds->effectN( 1 ).base_value() :
+    talent.assassination.venomous_wounds->effectN( 1 ).base_value() /
+    std::pow( poisoned_bleeds / 2.0, talent.assassination.venomous_wounds->effectN( 3 ).percent() );
+
+  sim->print_log( "{} venomous_wounds replenish on death: full_ticks={}, ticks_left={}, vw_replenish={}, remaining_time={}",
+                  *this, full_ticks_remaining, td->dots.rupture->ticks_left(), refund_amount, td->dots.rupture->remains() );
+
+  resource_gain( RESOURCE_ENERGY, full_ticks_remaining * refund_amount, gains.venomous_wounds_death,
                  td->dots.rupture->current_action );
 }
 
@@ -7657,24 +7692,31 @@ void actions::rogue_action_t<Base>::trigger_venomous_wounds( const action_state_
   if ( !p()->rng().roll( chance ) )
     return;
 
-  int poisoned_bleeds = 1;
+  double poisoned_bleeds = 0;
   for ( auto t : ab::sim->target_non_sleeping_list )
   {
-    if ( t == state->target )
-      continue;
-
     rogue_td_t* tdata = p()->get_target_data( t );
-    if ( tdata->is_lethal_poisoned() )
+    if ( tdata->is_poisoned() )
     {
       poisoned_bleeds += tdata->dots.garrote->is_ticking() + tdata->dots.rupture->is_ticking();
     }
   }
 
-  // MIDNIGHT TOCHECK -- Currently diminishes to 1 when any AoE units are present
-  double energy_gain = ( poisoned_bleeds > 1 ?
-                         p()->talent.assassination.venomous_wounds->effectN( 2 ).base_value() :
-                         p()->talent.assassination.venomous_wounds->effectN( 1 ).base_value() );
-  p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.venomous_wounds );
+  // 2026-03-24 -- Logs indicate the descripted formula is closer to #bleeds / 2 rather than #bleeds
+  const double refund_amount = poisoned_bleeds <= 2 ?
+    p()->talent.assassination.venomous_wounds->effectN( 1 ).base_value() :
+    p()->talent.assassination.venomous_wounds->effectN( 1 ).base_value() /
+    std::pow( poisoned_bleeds / 2.0, p()->talent.assassination.venomous_wounds->effectN( 3 ).percent() );
+
+  p()->venomous_wounds_accumulator += refund_amount;
+  p()->sim->print_debug( "{} {} accumulates {} Venomous Wounds ({})", *p(), *this, refund_amount, p()->venomous_wounds_accumulator );
+
+  const int energize = as<int>( std::floor( p()->venomous_wounds_accumulator ) );
+  if ( energize >= 1 )
+  {
+    p()->resource_gain( RESOURCE_ENERGY, energize, p()->gains.venomous_wounds );
+    p()->venomous_wounds_accumulator -= energize;
+  }
 }
 
 template <typename Base>
@@ -7754,11 +7796,22 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
   const unsigned shadowcraft_adjustment = ( p()->talent.subtlety.shadowcraft->ok() && p()->buffs.shadow_dance->check() ) ? 1 : 0;
   const unsigned shadow_techniques_upper = 4 - shadowcraft_adjustment;
   const unsigned shadow_techniques_lower = 3 - shadowcraft_adjustment;
-  if ( ++p()->shadow_techniques_counter >= shadow_techniques_upper || ( p()->shadow_techniques_counter == shadow_techniques_lower && p()->rng().roll( 0.5 ) ) )
+  if ( ++p()->shadow_techniques_counter >= shadow_techniques_upper ||
+       ( p()->shadow_techniques_counter == shadow_techniques_lower && p()->rng().roll( 0.5 ) ) )
   {
-    p()->sim->print_debug( "{} trigger_shadow_techniques proc'd at {}, resetting counter to 0", *p(), p()->shadow_techniques_counter );
-    p()->shadow_techniques_counter = 0;
+    // Trigger ICD only appears to be enforced on AA triggers, not Apex-triggered stacks
+    if ( p()->cooldowns.shadow_techniques_icd->down() )
+    {
+      p()->sim->print_debug( "{} trigger_shadow_techniques from {} skipped due to internal cooldown ({} remains)",
+                             *p(), *this, p()->cooldowns.shadow_techniques_icd->remains() );
+      return;
+    }
+
     trigger_shadow_techniques_buff( state );
+    p()->sim->print_debug( "{} trigger_shadow_techniques proc'd at {}, resetting counter to 0", *p(), p()->shadow_techniques_counter );
+
+    p()->shadow_techniques_counter = 0;
+    p()->cooldowns.shadow_techniques_icd->start();
   }
 }
 
@@ -7773,13 +7826,14 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques_buff( const action
                                             p()->buffs.shadow_dance->check() &&
                                             !ignore_shadowcraft ) ? 1 : 0;
 
+  // Trigger the buff stacks for Combo Point storage 
+  p()->buffs.shadow_techniques->trigger( 1 + shadowcraft_adjustment );
   p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
   // 2024-11-28 -- Shadowcraft's implementation appears to trigger the energize twice
   if ( shadowcraft_adjustment > 0 )
   {
     p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
   }
-  p()->buffs.shadow_techniques->trigger( 1 + shadowcraft_adjustment ); // Combo Point storage
 }
 
 template <typename Base>
@@ -8123,7 +8177,7 @@ void actions::rogue_action_t<Base>::trigger_keep_it_rolling()
   timespan_t extend_duration = timespan_t::from_millis( p()->talent.outlaw.keep_it_rolling->effectN( 1 ).base_value() );
   debug_cast<buffs::roll_the_bones_t*>( p()->buffs.roll_the_bones )->extend_secondary_buffs( extend_duration );
   // Extend container buff so buffs.roll_the_bones->check_value() works during the extended secondary buffs
-  p()->buffs.roll_the_bones->extend_duration( p(), extend_duration );
+  p()->buffs.roll_the_bones->extend_duration( extend_duration );
 }
 
 template <typename Base>
@@ -8281,7 +8335,7 @@ void actions::rogue_action_t<Base>::trigger_cut_to_the_chase( const action_state
   // Max duration it extends to is the maximum possible full pandemic duration, i.e. around 46s without and 54s with Deeper Stratagem.
   timespan_t max_duration = ( p()->consume_cp_max() + 1 ) * p()->buffs.slice_and_dice->data().duration() * 1.3;
   timespan_t effective_extend = std::min( timespan_t::from_seconds( extend_duration ), max_duration - p()->buffs.slice_and_dice->remains() );
-  p()->buffs.slice_and_dice->extend_duration_or_trigger( effective_extend, p() );
+  p()->buffs.slice_and_dice->extend_duration_or_trigger( effective_extend );
 }
 
 template <typename Base>
@@ -8354,9 +8408,6 @@ template <typename Base>
 bool actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const action_state_t* state, bool from_darkest_night )
 {
   if ( !p()->talent.deathstalker.deathstalkers_mark->ok() )
-    return false;
-
-  if ( !p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) && !from_darkest_night )
     return false;
 
   buff_t*& debuff = p()->deathstalkers_mark_debuff;
@@ -10072,6 +10123,8 @@ void rogue_t::init_spells()
 
     active.shadow_clone_attack.eviscerate->affected_by.darkest_night = true;
     active.shadow_clone_attack.eviscerate->affected_by.darkest_night_crit = true;
+
+    cooldowns.shadow_techniques_icd->duration = spec.shadow_techniques_energize->internal_cooldown();
   }
 
   if ( talent.subtlety.weaponmaster->ok() )
@@ -10356,6 +10409,7 @@ void rogue_t::create_buffs()
   if ( talent.outlaw.deadly_pursuit->ok() )
   {
     buffs.deadly_pursuit_tracker
+      ->set_proc_callbacks( false )
       ->set_max_stack( as<int>( talent.outlaw.deadly_pursuit->effectN( 1 ).base_value() ) )
       ->set_expire_at_max_stack( true )
       ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
@@ -10585,13 +10639,16 @@ void rogue_t::create_buffs()
 
   buffs.implacable = make_buff( this, "implacable", spec.implacable_buff );
   buffs.implacable_tracker = make_buff( this, "implacable_tracker", spec.implacable_tracker_buff )
+    ->set_proc_callbacks( false )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 ); // Set to 14s in spell data to match Envenom, makes timing easier this way
 
   // Part of the Envenom buff in effects 8-10 but entirely scripted in-game, handle as a distinct buff in sims for tracking
   // Use the Envenom whitelists for the damage buff and sync up on trigger and expire
   buffs.inspiring_strike = make_buff<damage_buff_t>( this, "inspiring_strike", talent.assassination.inspiring_strike, false );
-  buffs.inspiring_strike->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.inspiring_strike
+    ->set_proc_callbacks( false )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   if ( talent.assassination.inspiring_strike->ok() )
   {
     const double talent_value = talent.assassination.inspiring_strike->effectN( 1 ).percent();
@@ -10673,6 +10730,7 @@ void rogue_t::create_buffs()
     ->set_duration( sim->max_time / 2 );
 
   buffs.secret_technique = make_buff( this, "secret_technique", spec.secret_technique )
+    ->set_proc_callbacks( false )
     ->set_cooldown( timespan_t::zero() )
     ->set_quiet( true );
 
@@ -10926,8 +10984,8 @@ void rogue_t::init_special_effects()
 
     callbacks.register_callback_trigger_function(
       448000, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ poison_ids ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
-        return !a->special || range::contains( poison_ids, a->data().id() );
+      [ poison_ids ]( const dbc_proc_callback_t*, const proc_data_t& data, player_t*, action_state_t* s, proc_trigger_type_e ) {
+        return !s->action->special || range::contains( poison_ids, data->id() );
     } );
   }
 
@@ -10969,9 +11027,9 @@ void rogue_t::init_special_effects()
       {
       }
 
-      void execute( action_t* a, action_state_t* s ) override
+      void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
       {
-        dbc_proc_callback_t::execute( a, s );
+        dbc_proc_callback_t::execute( spell, t, s );
         rogue->buffs.unseen_blade_cd->expire();
       }
     };
@@ -10999,15 +11057,15 @@ void rogue_t::init_special_effects()
       {
       }
 
-      void execute( action_t* a, action_state_t* s ) override
+      void execute( const spell_data_t* spell, player_t* t, action_state_t* s ) override
       {
-        dbc_proc_callback_t::execute( a, s );
+        dbc_proc_callback_t::execute( spell, t, s );
 
         if ( rogue->sim->active_enemies == 1 )
           return;
 
         buff_t* debuff = rogue->deathstalkers_mark_debuff;
-        if ( !debuff || !debuff->check() || debuff->player == s->target || debuff->player->is_sleeping() )
+        if ( !debuff || !debuff->check() || debuff->player == t || debuff->player->is_sleeping() )
           return;
 
         if ( !rogue->active.deathstalker.singular_focus )
@@ -11038,6 +11096,8 @@ void rogue_t::init_finished()
 void rogue_t::reset()
 {
   player_t::reset();
+
+  venomous_wounds_accumulator = 0;
 
   if( options.initial_shadow_techniques >= 0 )
     shadow_techniques_counter = options.initial_shadow_techniques;

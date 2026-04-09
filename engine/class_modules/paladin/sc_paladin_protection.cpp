@@ -112,6 +112,17 @@ struct avengers_shield_base_t : public paladin_spell_t
       // Theoretically, it also has a chance to miss completely, for whatever reasons. Drunk Paladins.
       aoe = -1;
     }
+    void execute() override
+    {
+      paladin_spell_t::execute();
+      if ( p()->talents.glory_of_the_vanguard_2->ok() )
+      {
+        p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.glory_of_the_vanguard_2->effectN( 2 ).base_value(),
+                            p()->gains.hp_glory_of_the_vanguard_2 );
+      }
+      if ( p()->talents.glory_of_the_vanguard_3->ok() )
+        p()->buffs.valor->trigger();
+    }
   };
 
   struct refining_fire_dot_t : public residual_action::residual_periodic_action_t<paladin_spell_t>
@@ -259,14 +270,7 @@ struct avengers_shield_base_t : public paladin_spell_t
       if (!isApex3)
         p()->buffs.vanguard->decrement();
 
-      glory_of_the_vanguard->execute_on_target( target );
-      if (p()->talents.glory_of_the_vanguard_2->ok())
-      {
-        p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.glory_of_the_vanguard_2->effectN( 2 ).base_value(),
-                            p()->gains.hp_glory_of_the_vanguard_2 );
-      }
-      if ( p()->talents.glory_of_the_vanguard_3->ok() )
-        p()->buffs.valor->trigger();
+      make_event<delayed_execute_event_t>( *sim, p(), glory_of_the_vanguard, execute_state->target, 300_ms );
     }
   }
 };

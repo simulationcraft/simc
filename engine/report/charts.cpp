@@ -1161,9 +1161,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::
 
       // Also keep track of longest player name
       if ( p->name_str.length() > longest_name )
-      {
         longest_name = p->name_str.length();
-      }
 
       sc_js_t e;
       e.set( "color", c.str() );

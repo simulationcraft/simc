@@ -222,12 +222,12 @@ enum proc_flag : uint64_t
   PF_ALL_DAMAGE             = PF_MELEE | PF_MELEE_ABILITY |
                               PF_RANGED | PF_RANGED_ABILITY |
                               PF_NONE_HARMFUL | PF_MAGIC_SPELL,
-  PF_ALL_HEAL               = PF_NONE_HELPFUL | PF_MAGIC_HEAL,
+  PF_ALL_HEAL               = /* PF_NONE_HELPFUL | */ PF_MAGIC_HEAL,  // generic helpful is used for aura application
 
-  PF_DAMAGE_TAKEN           = PF_MELEE_TAKEN | PF_MELEE_ABILITY_TAKEN |
+  PF_ALL_DAMAGE_TAKEN       = PF_MELEE_TAKEN | PF_MELEE_ABILITY_TAKEN |
                               PF_RANGED_TAKEN | PF_RANGED_ABILITY_TAKEN |
                               PF_NONE_HARMFUL_TAKEN | PF_MAGIC_SPELL_TAKEN,
-  PF_ALL_HEAL_TAKEN         = PF_NONE_HELPFUL_TAKEN | PF_MAGIC_HEAL_TAKEN,
+  PF_ALL_HEAL_TAKEN         = /* PF_NONE_HELPFUL_TAKEN | */ PF_MAGIC_HEAL_TAKEN,
 };
 
 // Qualifier on what result / advanced type allows a proc trigger

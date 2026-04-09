@@ -85,8 +85,8 @@ actions.single_target+=/putrefy,if=!talent.soul_reaper&cooldown.dark_transformat
 actions.single_target+=/death_coil
 
 # Trinkets
-actions.trinkets=use_item,slot=trinket1,if=variable.trinket_1_buffs&(variable.trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)&(variable.cds_active)
-actions.trinkets+=/use_item,slot=trinket2,if=variable.trinket_2_buffs&(variable.trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)&(variable.cds_active)
+actions.trinkets=use_item,slot=trinket1,if=variable.trinket_1_buffs&(variable.trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)&(trinket.1.cast_time>0&trinket.1.cast_time>cooldown.army_of_the_dead.remains&(!talent.festering_scythe|debuff.festering_scythe_debuff.up)|variable.cds_active)
+actions.trinkets+=/use_item,slot=trinket2,if=variable.trinket_2_buffs&(variable.trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)&(trinket.2.cast_time>0&trinket.2.cast_time>cooldown.army_of_the_dead.remains&(!talent.festering_scythe|debuff.festering_scythe_debuff.up)|variable.cds_active)
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)
 

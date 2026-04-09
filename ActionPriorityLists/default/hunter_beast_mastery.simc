@@ -38,11 +38,12 @@ actions.cleave+=/cobra_shot,if=talent.beast_cleave&cooldown.wild_thrash.remains>
 actions.drcleave=bestial_wrath,if=buff.beast_cleave.remains
 actions.drcleave+=/wild_thrash
 actions.drcleave+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3
+actions.drcleave+=/barbed_shot,if=full_recharge_time<1*gcd,target_if=min:dot.barbed_shot.remains|max_prio_damage
 actions.drcleave+=/black_arrow,if=buff.withering_fire.up
 actions.drcleave+=/wailing_arrow,if=buff.withering_fire.remains<execute_time+gcd|time_to_die.remains<execute_time+gcd
 actions.drcleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage
-actions.drcleave+=/wailing_arrow
 actions.drcleave+=/black_arrow
+actions.drcleave+=/wailing_arrow
 actions.drcleave+=/cobra_shot
 
 actions.drst=barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<2*gcd

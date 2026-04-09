@@ -287,18 +287,17 @@ void destruction( player_t* p )
   default_->add_action( "cataclysm,if=talent.lake_of_fire" );
   default_->add_action( "chaos_bolt,if=(talent.wither&(soul_shard>=4|buff.malevolence.up|pet.infernal.active|fight_remains<=15))|(talent.diabolic_ritual&variable.ritual_length>4)" );
   default_->add_action( "infernal_bolt,if=soul_shard<=3" );
-  default_->add_action( "channel_demonfire" );
   default_->add_action( "incinerate" );
 
   aoe_hc->add_action( "summon_infernal" );
   aoe_hc->add_action( "malevolence" );
-  aoe_hc->add_action( "rain_of_fire,if=(soul_shard>=(4.0-0.1*(active_dot.wither)))&active_enemies>=4" );
+  aoe_hc->add_action( "rain_of_fire,if=(soul_shard>=(4.0-0.1*(active_dot.wither)))&active_enemies>=(5-talent.destructive_rapidity)" );
   aoe_hc->add_action( "conflagrate,target_if=max:(dot.wither.remains-99*debuff.havoc.remains),if=dot_refreshable_count.wither>0&!dot.wither.refreshable" );
-  aoe_hc->add_action( "shadowburn,target_if=min:(time_to_die+999*debuff.havoc.remains),if=buff.malevolence.up||buff.fiendish_cruelty.up|active_enemies<=3|(talent.conflagration_of_chaos&((active_enemies<=5&talent.destructive_rapidity)|(active_enemies<=6&!talent.destructive_rapidity)))" );
+  aoe_hc->add_action( "shadowburn,target_if=min:(time_to_die+999*debuff.havoc.remains),if=buff.fiendish_cruelty.up|(talent.conflagration_of_chaos&((active_enemies<=5&talent.destructive_rapidity)|(active_enemies<=6&!talent.destructive_rapidity)))" );
   aoe_hc->add_action( "cataclysm,if=raid_event.adds.in>15" );
   aoe_hc->add_action( "havoc,target_if=min:((-target.time_to_die)<?-15)+dot.wither.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal)&target.time_to_die>8&(cooldown.malevolence.remains>15|!talent.malevolence)|time<5" );
-  aoe_hc->add_action( "rain_of_fire,if=active_enemies>=4" );
-  aoe_hc->add_action( "chaos_bolt,if=active_enemies<=(3+(havoc_active*!talent.destructive_rapidity))" );
+  aoe_hc->add_action( "rain_of_fire,if=active_enemies>=(5-talent.destructive_rapidity)" );
+  aoe_hc->add_action( "chaos_bolt,if=active_enemies<=(4-talent.destructive_rapidity)" );
   aoe_hc->add_action( "soul_fire,target_if=min:(dot.wither.remains+100*debuff.havoc.remains),if=soul_shard<4&(active_enemies<=8|talent.avatar_of_destruction)" );
   aoe_hc->add_action( "wither,target_if=min:dot.wither.remains+99*debuff.havoc.remains,if=dot.wither.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.wither.remains)&active_dot.wither<=active_enemies&target.time_to_die>8" );
   aoe_hc->add_action( "incinerate,if=talent.fire_and_brimstone&buff.backdraft.up" );

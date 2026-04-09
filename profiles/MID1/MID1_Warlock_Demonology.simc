@@ -103,20 +103,20 @@ finger1=platinum_star_band,id=193708,bonus_id=12806/13577/13668,gem_id=240906,en
 finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967
 trinket1=locuswalkers_ribbon,id=249809,bonus_id=4786/4800/12806
 trinket2=emberwing_feather,id=250144,bonus_id=12806/13577,ilevel=289
-main_hand=spire_of_the_furious_construct,id=110031,bonus_id=12806/13577,enchant_id=8039
+main_hand=umbral_spire_of_zuraal,id=258514,bonus_id=12806/13577,enchant_id=7981
 
 # Gear Summary
 # gear_ilvl=288.47
 # gear_stamina=17604
 # gear_intellect=1670
-# gear_crit_rating=1091
+# gear_crit_rating=1074
 # gear_haste_rating=580
-# gear_mastery_rating=770
+# gear_mastery_rating=788
 # gear_versatility_rating=61
 # gear_leech_rating=83
 # gear_avoidance_rating=111
 # gear_armor=531
 # set_bonus=midnight_season_1_2pc=1
 # set_bonus=midnight_season_1_4pc=1
-soul_shards=0
-default_pet=felguard
+warlock.soul_shards=0
+warlock.default_pet=felguard

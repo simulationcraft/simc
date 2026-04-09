@@ -2132,6 +2132,17 @@ struct arcane_mage_spell_t : public mage_spell_t
 
     return 1.0 + p()->buffs.arcane_charge->check() * per_charge;
   }
+
+  double execute_time_pct_multiplier() const override
+  {
+    double mul = mage_spell_t::execute_time_pct_multiplier();
+
+    const auto& cast_time_eff = p()->buffs.arcane_charge->data().effectN( 4 );
+    if ( data().affected_by( cast_time_eff ) )
+      mul *= 1.0 + p()->buffs.arcane_charge->check() * cast_time_eff.percent();
+
+    return mul;
+  }
 };
 
 // ==========================================================================
@@ -2928,16 +2939,12 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     return am;
   }
 
-  double execute_time_pct_multiplier() const override
+  timespan_t execute_time() const override
   {
     if ( p()->buffs.presence_of_mind->check() )
-      return 0.0;
+      return 0_ms;
 
-    double mul = arcane_mage_spell_t::execute_time_pct_multiplier();
-
-    mul *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 4 ).percent();
-
-    return mul;
+    return arcane_mage_spell_t::execute_time();
   }
 };
 
@@ -3933,6 +3940,10 @@ struct flurry_t final : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
+
+    // TODO: Flurry cleave doesn't seem to work against boss enemies
+    if ( p()->bugs && s->chain_target > 0 && !p()->trigger_crowd_control( s, MECHANIC_SLOW ) )
+      return;
 
     auto e = make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
@@ -7092,7 +7103,7 @@ void mage_t::trigger_fired_up()
   {
     buffs.fired_up->trigger();
     cooldowns.fire_blast->adjust( -talents.fired_up_1->effectN( 2 ).time_value(), false, false );
-    buffs.combustion->extend_duration( this, talents.fired_up_1->effectN( 3 ).time_value() );
+    buffs.combustion->extend_duration( talents.fired_up_1->effectN( 3 ).time_value() );
 
     if ( pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() )
       pets.arcane_phoenix->adjust_duration( talents.fired_up_1->effectN( 3 ).time_value() );

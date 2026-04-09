@@ -983,11 +983,11 @@ struct shadow_word_madness_t final : public priest_spell_t
 
         timespan_t extension_ms = base_duration * factor;
 
-        priest().buffs.voidform->extend_duration( &priest(), extension_ms );
+        priest().buffs.voidform->extend_duration( extension_ms );
       }
       else
       {
-        priest().buffs.voidform->extend_duration( &priest(), base_duration );
+        priest().buffs.voidform->extend_duration( base_duration );
       }
 
       priest().buffs.ancient_madness->trigger();
@@ -1216,8 +1216,7 @@ struct voidform_t final : public priest_spell_t
 
     if ( priest().buffs.sustained_potency->check() )
     {
-      priest().buffs.voidform->extend_duration( player,
-                                                timespan_t::from_seconds( priest().buffs.sustained_potency->check() ) );
+      priest().buffs.voidform->extend_duration( timespan_t::from_seconds( priest().buffs.sustained_potency->check() ) );
 
       priest().buffs.sustained_potency->expire();
     }
@@ -1330,13 +1329,13 @@ struct void_torrent_t final : public priest_spell_t
   {
     priest().buffs.void_torrent->expire();
 
-    priest().buffs.entropic_rift->extend_duration(
-        player, priest().buffs.entropic_rift->buff_duration() - priest().buffs.entropic_rift->remains() );
+    priest().buffs.entropic_rift->extend_duration( priest().buffs.entropic_rift->buff_duration() -
+                                                   priest().buffs.entropic_rift->remains() );
 
     if ( priest().talents.voidweaver.voidheart.enabled() )
     {
-      priest().buffs.voidheart->extend_duration(
-          player, priest().buffs.voidheart->buff_duration() - priest().buffs.voidheart->remains() );
+      priest().buffs.voidheart->extend_duration( priest().buffs.voidheart->buff_duration() -
+                                                 priest().buffs.voidheart->remains() );
     }
 
     priest_spell_t::last_tick( d );
@@ -1990,7 +1989,8 @@ void priest_t::create_buffs_shadow()
   // Tracking buff to see if the free reset is available for SW:D with DaM talented.
   buffs.death_and_madness_reset =
       make_buff( this, "death_and_madness_reset", talents.shadow.death_and_madness_reset_buff )
-          ->set_trigger_spell( talents.shadow.death_and_madness );
+          ->set_trigger_spell( talents.shadow.death_and_madness )
+          ->set_proc_callbacks( false );
 
   buffs.crushing_void = make_buff( this, "crushing_void", talents.shadow.crushing_void_buff );
 
@@ -2133,7 +2133,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.maddening_tentacles          = ST( "Maddening Tentacles" );
   // Row 9
   talents.shadow.madness_weaving     = ST( "Madness Weaving" );
-  talents.shadow.deaths_torment      = ST( "Death's Torment" );
+  // Deaths Torment (Shared)
   talents.shadow.screams_of_the_void = ST( "Screams of the Void" );
   talents.shadow.tormented_spirits   = ST( "Tormented Spirits" );
   talents.shadow.insidious_ire       = ST( "Insidious Ire" );

@@ -53,7 +53,7 @@ jobs:
         env:
           CCACHE_BASEDIR: ${{ runner.workspace }}
           CCACHE_DIR: ${{ runner.workspace }}/.ccache
-          CCACHE_MAXSIZE: 192M # full build consumes around ~80, ~2x that to be safe
+          CCACHE_MAXSIZE: 256M # original size ~1.1G, assume ~5x compression
         run: |
           ccache -z
           ninja -C '${{ runner.workspace }}/b/ninja'
@@ -120,7 +120,7 @@ jobs:
         env:
           CCACHE_BASEDIR: ${{ runner.workspace }}
           CCACHE_DIR: ${{ runner.workspace }}/.ccache
-          CCACHE_MAXSIZE: 256M # full build consumes around ~124, ~2x that to be safe
+          CCACHE_MAXSIZE: 304M # original size ~1.5G, assume ~5x compression
         run: |
           ccache -z
           ninja -C '${{ runner.workspace }}/b/ninja'
@@ -142,23 +142,35 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Build
-        run: make SANITIZE=1 -C engine debug -j 2
+      - uses: actions/cache@v5
+        env:
+          CCACHE_PREFIX: "macos-cpp-ccache-${{ env.CCACHE_GENERATION }}"
+        with:
+          path: ${{ runner.workspace }}/.ccache
+          key: ${{ env.CCACHE_PREFIX }}-${{ github.sha }}
+          restore-keys: ${{ env.CCACHE_PREFIX }}-
 
-      - name: Smoke Test
-        if: inputs.do-test == 'true'
-        run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
+      - name: Install deps
+        run: |
+          brew update
+          brew install ccache
+
+      - name: Build
+        env:
+          CCACHE_BASEDIR: ${{ runner.workspace }}
+          CCACHE_DIR: ${{ runner.workspace }}/.ccache
+          CCACHE_MAXSIZE: 416M # original size ~2.0G, assume ~5x compression
+        run: |
+          ccache -z
+          make CXX="ccache c++" SANITIZE=1 -C engine debug -j 2
+          ccache -s
 
   windows-VS:
-    name: windows-VS-${{ matrix.vs }}-${{ matrix.arch }}
+    name: windows-VS-${{ matrix.arch }}
     runs-on: windows-latest
     strategy:
       matrix:
-        vs: [2019]
         arch: [x64, amd64_arm64]
-        include:
-          - arch: x64
-            runSmokeTest: false # disable smoke test for now, as it seems to hang the workflow indefinitely on assert, instead of failing.
 
     env:
       CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/
@@ -166,22 +178,38 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-        # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
-      - uses: lukka/get-cmake@latest
+      - uses: actions/cache@v5
+        env:
+          CCACHE_PREFIX: "windows-${{ matrix.arch }}-cpp-ccache-${{ env.CCACHE_GENERATION }}"
+        with:
+          path: ${{ github.workspace }}\.ccache
+          key: ${{ env.CCACHE_PREFIX }}-${{ github.sha }}
+          restore-keys: ${{ env.CCACHE_PREFIX }}-
 
       # On Windows runners, let's ensure to have the Developer Command Prompt environment setup correctly. As used here the Developer Command Prompt created is targeting x64 and using the default the Windows SDK.
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ matrix.arch }}
 
+      - name: Install deps
+        run: |
+          choco install -y ccache
+
       - name: Generate project files
         run: |
-          cmake -B "${{ env.CMAKE_BUILD_DIR }}" -GNinja -DBUILD_GUI=OFF -DCMAKE_BUILD_TYPE=Debug
+          cmake -B "${{ env.CMAKE_BUILD_DIR }}" `
+            -GNinja `
+            -DBUILD_GUI=OFF `
+            -DCMAKE_BUILD_TYPE=Debug `
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache `
+            -DCMAKE_CXX_FLAGS_DEBUG="/Z7"
 
       - name: Build
+        env:
+          CCACHE_BASEDIR: ${{ github.workspace }}
+          CCACHE_DIR: ${{ github.workspace }}\.ccache
+          CCACHE_MAXSIZE: 192M # original size ~1.1G, assume ~6x compression
         run: |
+          ccache -z
           cmake --build "${{ env.CMAKE_BUILD_DIR }}"
-
-      - name: Smoke Test
-        if: matrix.runSmokeTest && inputs.do-test == 'true'
-        run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
+          ccache -s

@@ -6879,7 +6879,7 @@ struct pillar_of_frost_buff_t final : public death_knight_buff_t
 
     int added_duration = as<unsigned>( p()->talent.frost.the_long_winter->effectN( 1 ).base_value() );
     pillar_extension += added_duration;
-    extend_duration( p(), timespan_t::from_seconds( added_duration ) );
+    extend_duration( timespan_t::from_seconds( added_duration ) );
   }
 
   void trigger_enduring_strength()
@@ -6887,9 +6887,9 @@ struct pillar_of_frost_buff_t final : public death_knight_buff_t
     p()->buffs.enduring_strength->trigger();
     auto max_duration_extension = p()->talent.frost.enduring_strength->effectN( 4 ).time_value();
     p()->buffs.enduring_strength->extend_duration(
-        p(), std::min( p()->talent.frost.enduring_strength->effectN( 2 ).time_value() *
-                           p()->buffs.enduring_strength_builder->stack(),
-                       max_duration_extension ) );
+        std::min( p()->talent.frost.enduring_strength->effectN( 2 ).time_value() *
+                      p()->buffs.enduring_strength_builder->stack(),
+                  max_duration_extension ) );
     p()->buffs.enduring_strength_builder->expire();
   }
 
@@ -7595,6 +7595,7 @@ struct dread_plague_death_t final : public death_knight_spell_t
     : death_knight_spell_t( name, p, p->spell.dread_plague_death_damage )
   {
     background = true;
+    aoe        = -1;
     may_miss = may_dodge = may_parry = false;
   }
 };
@@ -8665,6 +8666,10 @@ struct blood_boil_t final : public death_knight_spell_t
 
     if ( p()->buffs.boiling_point->up() )
     {
+      // If boiling point echo is already up, we expire it to force it to fire, and queue up a new one
+      // Of note, this means the casting BB, as well as the expired echo BB benefit from the buff
+      if ( p()->buffs.boiling_point_echo->up() )
+        p()->buffs.boiling_point_echo->expire();
       p()->buffs.boiling_point->expire();
       p()->buffs.boiling_point_echo->trigger();
     }
@@ -10265,7 +10270,7 @@ struct fwf_action_base_t : public death_knight_spell_t
     }
 
     if ( p()->talent.frost.chosen_of_frostbrood_2.ok() && p()->buffs.pillar_of_frost->check() )
-      p()->buffs.pillar_of_frost->extend_duration( p(), pillar_extension );
+      p()->buffs.pillar_of_frost->extend_duration( pillar_extension );
   }
 
 public:
@@ -11217,7 +11222,7 @@ struct howling_blast_t final : public death_knight_spell_t
       if ( p()->talent.frost.breath_of_sindragosa.ok() && p()->buffs.breath_of_sindragosa->check() )
       {
         timespan_t base_extension = p()->talent.frost.breath_of_sindragosa->effectN( 3 ).time_value();
-        p()->buffs.breath_of_sindragosa->extend_duration( p(), base_extension );
+        p()->buffs.breath_of_sindragosa->extend_duration( base_extension );
       }
 
       if ( p()->talent.frost.howling_blades->ok() )
@@ -12482,12 +12487,12 @@ void runic_attenuation_proc( const special_effect_t& e )
     {
     }
 
-    void execute( action_t* a, action_state_t* ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* s ) override
     {
       p()->resource_gain(
           RESOURCE_RUNIC_POWER,
           p()->talent.runic_attenuation->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
-          p()->gains.runic_attenuation, a );
+          p()->gains.runic_attenuation, s->action );
     }
   };
 
@@ -12584,7 +12589,8 @@ void runeforge::sanguination( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ effect ]( const dbc_proc_callback_t*, action_t*, const action_state_t* ) {
+      [ effect ]( const dbc_proc_callback_t*, const proc_data_t&, player_t*, const action_state_t*,
+                  proc_trigger_type_e ) {
         return effect.player->health_percentage() > effect.driver()->effectN( 1 ).base_value();
       } );
 
@@ -12681,6 +12687,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
   // Procs from runes spent
   if ( resource_type == RESOURCE_RUNE && action )
   {
+    int base_cost = as<int>( action->base_costs.at( RESOURCE_RUNE ).value() );
     // Gathering Storm triggers a stack and extends RW duration by 0.5s
     // for each spell cast that normally consumes a rune (even if it ended up free)
     // But it doesn't count the original Relentless Winter cast
@@ -12688,16 +12695,23 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
          ( buffs.remorseless_winter->check() || buffs.frozen_dominion_remorseless_winter->check() ) &&
          action->data().id() != spec.remorseless_winter->id() )
     {
-      unsigned consumed = static_cast<unsigned>( action->base_costs[ RESOURCE_RUNE ] );
-      buffs.gathering_storm->trigger( consumed );
+      buffs.gathering_storm->trigger( base_cost );
       timespan_t base_extension =
           timespan_t::from_seconds( talent.frost.gathering_storm->effectN( 1 ).base_value() * 0.1 );
-      buffs.remorseless_winter->extend_duration( this, base_extension * consumed );
-      buffs.frozen_dominion_remorseless_winter->extend_duration( this, base_extension * consumed );
+      buffs.remorseless_winter->extend_duration( base_extension * base_cost );
+      buffs.frozen_dominion_remorseless_winter->extend_duration( base_extension * base_cost );
     }
 
     if ( talent.rune_mastery.ok() )
       buffs.rune_mastery->trigger();
+
+    // Scourge Strike with blighted uses base cost rather than actual spend.
+    if ( talent.rider.nazgrims_conquest.ok() && buffs.apocalyptic_conquest->check() &&
+         action->data().id() == talent.unholy.scourge_strike->id() )
+    {
+      debug_cast<buffs::apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest += base_cost;
+      invalidate_cache( CACHE_STRENGTH );
+    }
 
     // Proc Chance does not appear to be in data, using testing data that is current as of 4/19/2024
     if ( talent.rider.riders_champion.ok() && rng().roll( 0.2 ) )
@@ -12706,11 +12720,12 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Effects that require the player to actually spend runes
     if ( actual_amount > 0 )
     {
-      if ( talent.rider.nazgrims_conquest.ok() && buffs.apocalyptic_conquest->check() &&
-           action->data().id() != spec.remorseless_winter->id() )
+      std::array<unsigned, 2> ignored_actions = { spec.remorseless_winter->id(), talent.unholy.scourge_strike->id() };
+      bool uses_actual_amount = action && !range::contains( ignored_actions, action->data().id() );
+      if ( talent.rider.nazgrims_conquest.ok() && buffs.apocalyptic_conquest->check() && uses_actual_amount )
       {
         debug_cast<buffs::apocalyptic_conquest_buff_t*>( buffs.apocalyptic_conquest )->nazgrims_conquest +=
-            as<int>( amount );
+            as<int>( actual_amount );
         invalidate_cache( CACHE_STRENGTH );
       }
     }
@@ -12729,7 +12744,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     // If an action is linked, fetch its base cost.
     if ( action )
-      base_rp_cost = action->base_costs[ RESOURCE_RUNIC_POWER ];
+      base_rp_cost = action->base_costs.at( RESOURCE_RUNIC_POWER ).value();
 
     double calc_rp_cost = std::max( base_rp_cost, actual_amount );
 
@@ -12975,7 +12990,7 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
     if ( talent.frost.breath_of_sindragosa.ok() && buffs.breath_of_sindragosa->check() )
     {
       timespan_t base_extension = talent.frost.breath_of_sindragosa->effectN( 3 ).time_value();
-      buffs.breath_of_sindragosa->extend_duration( this, base_extension * decrement_count );
+      buffs.breath_of_sindragosa->extend_duration( base_extension * decrement_count );
     }
 
 
@@ -13136,7 +13151,7 @@ void death_knight_t::sudden_doom_impact_effects( action_state_t* /*state*/, bool
 void death_knight_t::unholy_rp_execute_effects( bool sd, bool coil )
 {
   if ( buffs.dark_transformation->up() )
-    buffs.dark_transformation->extend_duration( this, spell.eternal_agony->effectN( 1 ).time_value() );
+    buffs.dark_transformation->extend_duration( spell.eternal_agony->effectN( 1 ).time_value() );
 
   if ( talent.sanlayn.vampiric_strike.ok() && !buffs.gift_of_the_sanlayn->check() )
     trigger_vampiric_strike_proc( target );
@@ -15545,6 +15560,7 @@ void death_knight_t::create_buffs()
           ->set_default_value( talent.icy_talons->effectN( 1 ).percent() )
           ->set_cooldown( talent.icy_talons->internal_cooldown() )
           ->set_trigger_spell( talent.icy_talons )
+          ->increase_max_stack_uptime( as<int>( talent.deathbringer.dark_talons->effectN( 2 ).base_value() ) )
           ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
             if ( talent.deathbringer.dark_talons.ok() )
             {

@@ -41,7 +41,6 @@ actions+=/ruination
 actions+=/cataclysm,if=talent.lake_of_fire
 actions+=/chaos_bolt,if=(talent.wither&(soul_shard>=4|buff.malevolence.up|pet.infernal.active|fight_remains<=15))|(talent.diabolic_ritual&variable.ritual_length>4)
 actions+=/infernal_bolt,if=soul_shard<=3
-actions+=/channel_demonfire
 actions+=/incinerate
 
 actions.aoe_dia=summon_infernal
@@ -61,13 +60,13 @@ actions.aoe_dia+=/incinerate
 
 actions.aoe_hc=summon_infernal
 actions.aoe_hc+=/malevolence
-actions.aoe_hc+=/rain_of_fire,if=(soul_shard>=(4.0-0.1*(active_dot.wither)))&active_enemies>=4
+actions.aoe_hc+=/rain_of_fire,if=(soul_shard>=(4.0-0.1*(active_dot.wither)))&active_enemies>=(5-talent.destructive_rapidity)
 actions.aoe_hc+=/conflagrate,target_if=max:(dot.wither.remains-99*debuff.havoc.remains),if=dot_refreshable_count.wither>0&!dot.wither.refreshable
-actions.aoe_hc+=/shadowburn,target_if=min:(time_to_die+999*debuff.havoc.remains),if=buff.malevolence.up||buff.fiendish_cruelty.up|active_enemies<=3|(talent.conflagration_of_chaos&((active_enemies<=5&talent.destructive_rapidity)|(active_enemies<=6&!talent.destructive_rapidity)))
+actions.aoe_hc+=/shadowburn,target_if=min:(time_to_die+999*debuff.havoc.remains),if=buff.fiendish_cruelty.up|(talent.conflagration_of_chaos&((active_enemies<=5&talent.destructive_rapidity)|(active_enemies<=6&!talent.destructive_rapidity)))
 actions.aoe_hc+=/cataclysm,if=raid_event.adds.in>15
 actions.aoe_hc+=/havoc,target_if=min:((-target.time_to_die)<?-15)+dot.wither.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal)&target.time_to_die>8&(cooldown.malevolence.remains>15|!talent.malevolence)|time<5
-actions.aoe_hc+=/rain_of_fire,if=active_enemies>=4
-actions.aoe_hc+=/chaos_bolt,if=active_enemies<=(3+(havoc_active*!talent.destructive_rapidity))
+actions.aoe_hc+=/rain_of_fire,if=active_enemies>=(5-talent.destructive_rapidity)
+actions.aoe_hc+=/chaos_bolt,if=active_enemies<=(4-talent.destructive_rapidity)
 actions.aoe_hc+=/soul_fire,target_if=min:(dot.wither.remains+100*debuff.havoc.remains),if=soul_shard<4&(active_enemies<=8|talent.avatar_of_destruction)
 actions.aoe_hc+=/wither,target_if=min:dot.wither.remains+99*debuff.havoc.remains,if=dot.wither.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.wither.remains)&active_dot.wither<=active_enemies&target.time_to_die>8
 actions.aoe_hc+=/incinerate,if=talent.fire_and_brimstone&buff.backdraft.up

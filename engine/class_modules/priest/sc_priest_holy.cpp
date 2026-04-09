@@ -53,8 +53,7 @@ struct holy_word_sanctify_t final : public priest_heal_t
 
     if ( priest().talents.holy.eternal_sanctity.enabled() )
     {
-      priest().buffs.apotheosis->extend_duration( player,
-                                                  priest().talents.holy.eternal_sanctity->effectN( 1 ).time_value() );
+      priest().buffs.apotheosis->extend_duration( priest().talents.holy.eternal_sanctity->effectN( 1 ).time_value() );
     }
 
     if ( priest().talents.holy.divine_image.enabled() )
@@ -91,8 +90,7 @@ struct holy_word_serenity_t final : public priest_heal_t
 
     if ( priest().talents.holy.eternal_sanctity.enabled() )
     {
-      priest().buffs.apotheosis->extend_duration( player,
-                                                  priest().talents.holy.eternal_sanctity->effectN( 1 ).time_value() );
+      priest().buffs.apotheosis->extend_duration( priest().talents.holy.eternal_sanctity->effectN( 1 ).time_value() );
     }
 
     if ( priest().talents.holy.divine_image.enabled() )
@@ -403,8 +401,7 @@ struct holy_word_chastise_t final : public priest_spell_t
 
     if ( priest().talents.holy.eternal_sanctity.enabled() )
     {
-      priest().buffs.apotheosis->extend_duration( player,
-                                                  priest().talents.holy.eternal_sanctity->effectN( 1 ).time_value() );
+      priest().buffs.apotheosis->extend_duration( priest().talents.holy.eternal_sanctity->effectN( 1 ).time_value() );
     }
 
     if ( priest().talents.holy.divine_image.enabled() )

@@ -1887,6 +1887,8 @@ public:
     rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> deeply_rooted_elements;
     rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> tempest_enh;
     rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> tempest_ele;
+    rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> storm_unleashed;
+    rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> asc_dw;
 
     rng_obj_t( shaman_t* s ) :
       awakening_storms( nullptr ), lively_totems( nullptr ), totemic_rebound( nullptr ),
@@ -1894,7 +1896,9 @@ public:
       lively_totems_ptr( nullptr ),
         deeply_rooted_elements( "dre", s ),
         tempest_enh( "tempest", s ),
-        tempest_ele( "tempest_ele", s )
+        tempest_ele( "tempest_ele", s ),
+        storm_unleashed( "storm_unleashed", s ),
+        asc_dw( "asc_dw", s )
     { }
   } rng_obj;
 
@@ -2066,7 +2070,7 @@ public:
 
   void trigger_secondary_flame_shock( player_t* target, spell_variant variant = spell_variant::NORMAL ) const;
   void trigger_secondary_flame_shock( const action_state_t* state, spell_variant variant = spell_variant::NORMAL ) const;
-  void regenerate_flame_shock_dependent_target_list( const action_t* action, const bool ignore_target = false ) const;
+  void regenerate_flame_shock_dependent_target_list( const action_t* action ) const;
 
   void generate_maelstrom_weapon( const action_t* action, int stacks = 1 );
   void generate_maelstrom_weapon( const action_state_t* state, int stacks = 1 );
@@ -2659,6 +2663,11 @@ public:
   virtual void trigger_maelstrom_gain( const action_state_t* state )
   {
     if ( maelstrom_gain == 0 )
+    {
+      return;
+    }
+
+    if (!state)
     {
       return;
     }
@@ -6883,13 +6892,13 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( !is_variant( spell_variant::NORMAL ) )
     {
-      aoe = -1;
       background = true;
       base_execute_time = 0_s;
       cooldown->duration = 0_s;
 
       if ( is_variant( spell_variant::ASCENDANCE ) )
       {
+        aoe = 6;
         auto asc_action = p()->find_action( "ascendance" );
         if ( p()->talent.ascendance->ok() && asc_action )
         {
@@ -6899,7 +6908,13 @@ struct lava_burst_t : public shaman_spell_t
 
       if ( is_variant( spell_variant::PURGING_FLAMES ) )
       {
-        aoe     = 5;
+        // If anyone knows which spelldata to use here, that would be great.
+        // Currently there exists a stackable ingame bug to apply this ms gain
+        // to the base lvb cast AND ALSO with additional stacks decrease ms
+        // gain further to 1 and 0. Which makes me believe this would need to
+        // be an ms gain multiplier instead of a fixed value. But this is now
+        // still better than not lowering ms gain.
+        maelstrom_gain = 2;
         if ( auto vb = p()->find_action( "voltaic_blaze" ) )
         {
           vb->add_child( this );
@@ -6927,7 +6942,6 @@ struct lava_burst_t : public shaman_spell_t
   size_t available_targets( std::vector<player_t*>& tl ) const override
   {
     shaman_spell_t::available_targets( tl );
-
     p()->regenerate_flame_shock_dependent_target_list( this );
 
     return tl.size();
@@ -7045,12 +7059,16 @@ struct lava_burst_t : public shaman_spell_t
 
     if (p()->buff.purging_flames->check() && !background)
     {
-      p()->regenerate_flame_shock_dependent_target_list( this, true );
       assert( p()->action.lava_burst_pf );
-      p()->action.lava_burst_pf->execute();
+      for ( auto t : target_list() )
+      {
+        if (t == target)
+        {
+          continue;
+        }
+        p()->action.lava_burst_pf->execute_on_target( t );
+      }
       p()->buff.purging_flames->decrement();
-
-      this->target_cache.is_valid = false;
     }
 
     // [BUG] 2024-08-23 Supercharge works on Lava Burst in-game
@@ -8394,7 +8412,7 @@ struct ascendance_t : public shaman_spell_t
         }
       }
       assert( ( duration != timespan_t::zero() ) );
-      p()->buff.ascendance->extend_duration_or_trigger( duration, player );
+      p()->buff.ascendance->extend_duration_or_trigger( duration );
     }
     else
     {
@@ -10614,7 +10632,7 @@ struct maelstrom_weapon_cb_t : public dbc_proc_callback_t
   { }
 
   // Fully override trigger + execute behavior of the proc
-  void trigger( action_t* /* a */, action_state_t* state ) override
+  void trigger( const proc_data_t&, player_t*, action_state_t* state, proc_trigger_type_e ) override
   {
     auto override_state = shaman->get_mw_proc_state( state->action );
     assert( override_state != mw_proc_state::DEFAULT );
@@ -11249,8 +11267,7 @@ void shaman_t::summon_elemental( elemental type, timespan_t override_duration )
     timespan_t new_duration = spawner_ptr->active_pet()->expiration->remains();
     new_duration += override_duration > 0_ms ? override_duration : elemental_buff->buff_duration();
 
-    elemental_buff->extend_duration( this,
-      override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
+    elemental_buff->extend_duration( override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
     spawner_ptr->active_pet()->expiration->reschedule( new_duration );
     for (auto action : spawner_ptr->active_pet()->action_list)
     {
@@ -11422,7 +11439,7 @@ void shaman_t::trigger_secondary_flame_shock( const action_state_t* state, spell
   trigger_secondary_flame_shock( state->target, variant );
 }
 
-void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* action, const bool ignore_target ) const
+void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* action ) const
 {
   auto& tl = action->target_cache.list;
 
@@ -11431,11 +11448,6 @@ void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* act
   } );
 
   tl.erase( it, tl.end() );
-
-  if ( ignore_target )
-  {
-    tl.erase( std::remove( tl.begin(), tl.end(), action->target ), tl.end() );
-  }
 
   if ( sim->debug )
   {
@@ -11515,22 +11527,43 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
     }
   }
 
-  // TODO-midnight-talent: What RNG process to use here?
   if ( talent.ascendance.ok() && !buff.ascendance->check() && stacks > 0 )
   {
-    double proc_chance = spell.ascendance_mw_passive->effectN( 1 ).base_value() * 0.1 * 0.01 * stacks;
-    sim->print_debug(" {} attempts to proc doom_winds on {}, mw_stacks={}, proc_chance={}%",
-      name(), state->action->name(), stacks, proc_chance * 100.0 );
-    if ( rng().roll( proc_chance ) )
+    auto success = false;
+    for ( auto draw = 0U; draw < as<unsigned>( stacks ); ++draw )
+    {
+      if ( rng_obj.asc_dw.trigger() )
+      {
+        assert( !success );
+        success = true;
+      }
+    }
+
+    sim->print_debug("{} attempts to proc doom_winds on {}, mw_stacks={}, success={}",
+      name(), state->action->name(), stacks, success );
+
+    if ( success )
     {
       action.doom_winds_asc->execute_on_target( state->target );
     }
   }
 
-  if ( talent.storm_unleashed_1.ok() &&
-    rng().roll( talent.storm_unleashed_1->effectN( 1 ).base_value() * 0.1 * 0.01 * stacks ) )
+  if ( talent.storm_unleashed_1.ok() && stacks > 0 )
   {
-    buff.storm_unleashed->trigger();
+    auto success = false;
+    for ( auto draw = 0U; draw < as<unsigned>( stacks ); ++draw )
+    {
+      if ( rng_obj.storm_unleashed.trigger() )
+      {
+        assert( !success );
+        success = true;
+      }
+    }
+
+    if ( success )
+    {
+      buff.storm_unleashed->trigger();
+    }
   }
 
   if ( talent.totemic_momentum.ok() && stacks > 0 && buff.hot_hand->check() )
@@ -11538,7 +11571,7 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
     auto extension = timespan_t::from_seconds(
       talent.totemic_momentum->effectN( 1 ).base_value() * 0.001 * stacks );
 
-    buff.hot_hand->extend_duration( this, extension );
+    buff.hot_hand->extend_duration( extension );
 
   }
 }
@@ -11798,7 +11831,7 @@ void shaman_t::trigger_whirling_fire( const action_state_t* state )
     // Mote of Fire extends an existing Hot Hand buff, or triggers a new one with its duration
     if ( buff.hot_hand->check() )
     {
-      buff.hot_hand->extend_duration( this, buff.whirling_fire->data().effectN( 1 ).time_value() );
+      buff.hot_hand->extend_duration( buff.whirling_fire->data().effectN( 1 ).time_value() );
     }
     else
     {
@@ -12653,7 +12686,7 @@ void shaman_t::init_rng()
         .build();
   }
 
-    if ( talent.tempest.ok() && specialization() == SHAMAN_ELEMENTAL )
+  if ( talent.tempest.ok() && specialization() == SHAMAN_ELEMENTAL )
   {
       unsigned int successes_per_deck = 2;
       double tempest_chance           = talent.tempest->effectN( 1 ).percent() * 0.01;
@@ -12668,16 +12701,43 @@ void shaman_t::init_rng()
         } )
         .build();
   }
+
+  if ( talent.storm_unleashed_1.ok() )
+  {
+    rng_obj.storm_unleashed
+        .set_param_fn( []( rng::deck_rng_wrapper_t<rng::dre_deck_rng_t>& obj ) {
+          // Default: 5 successful procs per deck
+          auto n_draws = obj.opt_success() != -1 ? as<unsigned>( obj.opt_success() ) : 5U;
+          // Default: 250 total cards
+          auto n_total = obj.opt_total() > 0 ? obj.opt_total() : 250U;
+          return std::make_tuple( n_total, n_draws, 10U );
+        } )
+        .build();
+  }
+
+  if ( talent.ascendance.ok() )
+  {
+    rng_obj.asc_dw
+        .set_param_fn( []( rng::deck_rng_wrapper_t<rng::dre_deck_rng_t>& obj ) {
+          // Default: 3 successful procs per deck
+          auto n_draws = obj.opt_success() != -1 ? as<unsigned>( obj.opt_success() ) : 3U;
+          // Default: 600 total cards
+          auto n_total = obj.opt_total() > 0 ? obj.opt_total() : 600U;
+          return std::make_tuple( n_total, n_draws, 10U );
+        } )
+        .build();
+  }
 }
 
 void shaman_t::init_special_effects()
 {
   callbacks.register_callback_trigger_function(
       452030, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ id = 51505U ]( const dbc_proc_callback_t*, action_t* a, action_state_t*) {
-        if ( a->data().id() == id )
+      [ id = 51505U ]( const dbc_proc_callback_t*, const proc_data_t& data, player_t*, action_state_t* s,
+                       proc_trigger_type_e ) {
+        if ( data->id() == id )
         {
-          lava_burst_t* lvb = debug_cast<lava_burst_t*>(a);
+          lava_burst_t* lvb = debug_cast<lava_burst_t*>( s->action );
           return lvb->is_variant( spell_variant::NORMAL );
         }
         return false;
@@ -12725,7 +12785,17 @@ void shaman_t::apply_player_effects()
 
   // Enhancement
   eff::source_eff_builder_t( buff.flurry ).set_flag( IGNORE_STACKS ).build( this );
-  eff::source_eff_builder_t( buff.crash_lightning ).build( this );
+  // Enable attack speed bonus individually, so we can apply a bug to the mastery bonus (12.0 4PC)
+  eff::source_eff_builder_t( buff.crash_lightning )
+    .set_effect_mask( effect_mask_t( false ).enable( 2 ) )
+    .build( this );
+  // [20260328] BUG: Enhancement 12.0 4PC gives half as much mastery as is on the tin
+  eff::source_eff_builder_t( buff.crash_lightning )
+    .set_effect_mask( effect_mask_t( false ).enable( 3 ) )
+    .set_value( [ this ]( double value ) -> double {
+      return value * ( bugs ? 0.5 : 1.0 );
+    } )
+    .build( this );
 
   // Elemental
   eff::source_eff_builder_t( mastery.elemental_overload ).build( this );

@@ -254,12 +254,12 @@ struct warlock_t : public parse_player_effects_t
 {
 public:
   player_t* havoc_target;
-  bool bugged_mayhem; // Used to control if in a particular moment mayhem is bugged and its not working
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   player_t* haunt_target; // Used for tracking the current haunt target
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
   int diabolic_ritual; // Used to cycle between the three different Diabolic Ritual buffs
   bool demonic_art_buff_replaced; // Used to not spawn the Demonic Art demon if the buff is replaced by another
+  timespan_t wild_imp_ic_shared_offset; // Used as a shared offset when scheduling Wild Imp Infernal Command periodic events
 
   unsigned n_active_pets;
 
@@ -271,6 +271,7 @@ public:
     const spell_data_t* drain_life;
     const spell_data_t* corruption;
     const spell_data_t* shadow_bolt;
+    const spell_data_t* shadow_bolt_energize;
 
     // Affliction
     const spell_data_t* affliction_warlock; // Spec aura
@@ -282,6 +283,7 @@ public:
     const spell_data_t* wild_imp; // Data for pet summoning (HoG)
     const spell_data_t* wild_imp_2; // Data for pet summoning (Inner Demons / Spiteful Reconstitution / To Hell and Back)
     const spell_data_t* fel_firebolt_2; // Still a separate spell (learned automatically). Reduces pet's energy cost
+    const spell_data_t* infernal_command_buff; // This still applies but with 0 value
 
     // Destruction
     const spell_data_t* destruction_warlock; // Spec aura
@@ -301,6 +303,7 @@ public:
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t> infernals;
 
     spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglares;
+    spawner::pet_spawner_t<pets::affliction::desperate_soul_t, warlock_t> desperate_souls;
 
     spawner::pet_spawner_t<pets::demonology::dreadstalker_t, warlock_t> dreadstalkers;
     spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends;
@@ -314,7 +317,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::antoran_inquisitor_t, warlock_t> antoran_inquisitor;
     spawner::pet_spawner_t<pets::demonology::antoran_jailer_t, warlock_t> antoran_jailer;
 
-    spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadow_rifts;
+    spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadowy_rifts;
     spawner::pet_spawner_t<pets::destruction::unstable_tear_t, warlock_t> unstable_rifts;
     spawner::pet_spawner_t<pets::destruction::chaos_tear_t, warlock_t> chaos_rifts;
     spawner::pet_spawner_t<pets::destruction::infernal_roc_t, warlock_t> rocs;
@@ -357,7 +360,8 @@ public:
     const spell_data_t* grimoire_of_sacrifice_proc; // Damage data is here, but RPPM of proc trigger is in buff data
 
     // Affliction
-    const spell_data_t* agony;
+    player_talent_t agony;
+    const spell_data_t* agony_energize;
     player_talent_t unstable_affliction;
     const spell_data_t* unstable_affliction_2; // Soul Shard on demise (learned automatically)
     player_talent_t seed_of_corruption;
@@ -427,6 +431,7 @@ public:
     player_talent_t shadow_of_nathreza_1;
     player_talent_t shadow_of_nathreza_2;
     player_talent_t shadow_of_nathreza_3;
+    const spell_data_t* summon_desperate_soul;
     const spell_data_t* shadow_of_nathreza_dot;
     const spell_data_t* wrath_of_nathreza; // Trigger missile spell
     const spell_data_t* wrath_of_nathreza_impact;
@@ -438,10 +443,12 @@ public:
 
     player_talent_t demoniac;
     const spell_data_t* demonbolt_spell;
+    const spell_data_t* demonbolt_energize;
     const spell_data_t* demonic_core_spell;
     const spell_data_t* demonic_core_buff;
     player_talent_t call_dreadstalkers;
-    const spell_data_t* call_dreadstalkers_2; // Contains duration data
+    const spell_data_t* call_dreadstalkers_summon_1; // Contains summon data
+    const spell_data_t* call_dreadstalkers_summon_2; // Contains summon data
 
     player_talent_t dominant_hand;
     player_talent_t fel_intellect;
@@ -477,7 +484,7 @@ public:
     const spell_data_t* tyrants_oblation_buff;
     player_talent_t antoran_armaments;
     player_talent_t flametouched;
-    const spell_data_t* ferocity_of_fharg_buff;
+    const spell_data_t* flametouched_buff;
 
     player_talent_t demonic_knowledge;
     player_talent_t sacrificed_souls;
@@ -714,6 +721,7 @@ public:
     player_talent_t shared_fate;
     const spell_data_t* shared_fate_dot;
     player_talent_t feast_of_souls;
+    const spell_data_t* marked_soul;
 
     player_talent_t wicked_reaping;
     const spell_data_t* wicked_reaping_dmg;
@@ -753,16 +761,43 @@ public:
     action_t* echo_of_sargeras_rof;
     action_t* embers_of_nihilam;
     action_t* shadow_of_nathreza;
-    action_t* wrath_of_nathreza;
   } proc_actions;
 
   struct pet_summons_t
   {
-    propagate_const<action_t*> lady_sacrolash;
-    propagate_const<action_t*> grand_warlock_alythess;
-    propagate_const<action_t*> antoran_inquisitor;
-    propagate_const<action_t*> antoran_jailer;
-  } summon;
+    action_t* desperate_soul;
+    action_t* wild_imp;
+    action_t* wild_imp_2;
+    action_t* dreadstalker_1;
+    action_t* dreadstalker_2;
+    action_t* vilefiend;
+    action_t* lady_sacrolash;
+    action_t* grand_warlock_alythess;
+    action_t* antoran_inquisitor;
+    action_t* antoran_jailer;
+    action_t* infernal;
+    action_t* roc;
+    action_t* fragment;
+    action_t* overfiend;
+    action_t* shadowy_rift;
+    action_t* unstable_rift;
+    action_t* chaos_rift;
+    action_t* overlord;
+    action_t* mother;
+    action_t* pit_lord;
+    action_t* diabolic_imp;
+    action_t* manifested_demonic_soul;
+  } summons;
+
+  struct proc_data_entries_t
+  {
+    proc_data_t shadow_bolt_energize;
+    proc_data_t agony_energize;
+    proc_data_t demonbolt_energize;
+    proc_data_t incinerate_energize;
+    proc_data_t fel_armaments_2;
+    proc_data_t marked_soul;
+  } proc_data_entries;
 
   struct tier_sets_t
   {
@@ -900,7 +935,8 @@ public:
 
     // Demonology
     proc_t* demonic_core_dogs;
-    proc_t* demonic_core_imps;
+    proc_t* demonic_core_imps_fade;
+    proc_t* demonic_core_imps_implosion;
     proc_t* carnivorous_stalkers;
     proc_t* infernal_rapidity;
     proc_t* spiteful_reconstitution;
@@ -977,12 +1013,14 @@ public:
     accumulated_rng_t* succulent_soul;
     accumulated_rng_t* manifested_avarice;
     accumulated_rng_t* feast_of_souls;
+    accumulated_rng_t* demoniac_imp_fade;
     accumulated_rng_t* spiteful_reconstitution;
   } prd_rng;
 
   struct flat_rng_t
   {
     simple_proc_t* immolate_crit_energize; // TODO: Need to check the type of rng
+    simple_proc_t* demoniac_imp_implosion;
     simple_proc_t* carnivorous_stalkers;
     simple_proc_t* infernal_rapidity;
     simple_proc_t* demonfire_infusion_dot; // TODO: Need to check the type of rng
@@ -1012,6 +1050,7 @@ public:
     rng_setting_t cunning_cruelty_ds = { 0.25, 0.25, "cunning_cruelty_ds" };
 
     // Demonology
+    rng_setting_t demoniac_imp_fade_hard_cap = { 21.0, 21.0, "demoniac_imp_fade_hard_cap" };
     rng_setting_t spiteful_reconstitution = { 0.10, 0.10, "spiteful_reconstitution" };
     rng_setting_t spiteful_reconstitution_hard_cap = { 21.0, 21.0, "spiteful_reconstitution_hard_cap" };
     rng_setting_t demonic_knowledge_rank1_cards = { 10.0, 10.0, "demonic_knowledge_rank1_cards" };
@@ -1045,6 +1084,7 @@ public:
       f( nightfall );
       f( cunning_cruelty_sb );
       f( cunning_cruelty_ds );
+      f( demoniac_imp_fade_hard_cap );
       f( spiteful_reconstitution );
       f( spiteful_reconstitution_hard_cap );
       f( demonic_knowledge_rank1_cards );
@@ -1072,6 +1112,7 @@ public:
   bool eye_explosion_instanced_bug_cb;
   bool eye_explosion_instanced_bug_sb;
   bool eye_explosion_instanced_bug_rof;
+  bool fel_armaments_extra_effect_bug;
   double tyrant_antoran_armaments_target_mul;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
@@ -1210,6 +1251,7 @@ public:
   void init_rng_soul_harvester();
   void init_procs_soul_harvester();
 
+  void init_proc_data_entries();
   pet_t* create_main_pet( util::string_view pet_name, util::string_view pet_type );
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
 };

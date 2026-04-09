@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66562 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.1.66838 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -47,7 +47,7 @@ Labels           : 16: Class Spells
                  : 1284
 Affecting Spells : Unbreakable Spirit (114154 effect#1), Retribution Paladin (412314 effect#6), Inspired Guard (469439 effect#2), Retribution Paladin (1258011 effect#8), Shield of Vengeance (1261562 effect#1)
 Family Flags     : 72
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Fail on all targets immune (85), Remove Entering Arena (162), Aura Points On Client (268), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Fail on all targets immune (85), Remove Entering Arena (162), Aura Points On Client (268), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=211)      : Apply Aura (6) | Modify Damage Taken% (87)
@@ -106,7 +106,7 @@ Labels           : 16: Class Spells
 Mechanic         : Invulnerable
 Affecting Spells : Unbreakable Spirit (114154 effect#1), Light's Revocation (146956 effect#3), Uther's Counsel (378425 effect#1)
 Family Flags     : 22
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Remove Entering Arena (162), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442), Important Spell (C_Spell.IsSpellImportant) (491)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Fail on all targets immune (85), Can't Crit (93), Remove Entering Arena (162), Ignore Healing Modifiers (219), No Client Fail While Stunned, Fleeing, Confused (244), Allow While Banished Aura State (299), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=254)      : Apply Aura (6) | School Immunity (39)
@@ -381,7 +381,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 741: Healing Spells
                  : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1), Devout Spirit (319919 effect#1)
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Increased Flash of Light Crit Chance (38522 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effects: #1, #3, #8), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#6), Protection Paladin (137028 effect#21), Holy Paladin (137029 effects: #1, #2, #8), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Retribution Paladin (412314 effect#8), Initial Paladin (417383 effects: #3, #4), Awestruck (417855 effect#1), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Liberation (461471 effect#3), Beacon of the Savior (1244893 effect#3), Protection Paladin (1256936 effect#3), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Increased Flash of Light Crit Chance (38522 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effects: #1, #3, #8), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#6), Protection Paladin (137028 effect#21), Holy Paladin (137029 effects: #1, #2, #8), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Retribution Paladin (412314 effect#8), Initial Paladin (417383 effects: #3, #4), Awestruck (417855 effect#1), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Liberation (461471 effect#3), Beacon of the Savior (1244893 effect#3), Protection Paladin (1256936 effects: #3, #4, #5), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 30, 46
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
@@ -569,7 +569,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 741: Healing Spells
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Tyr's Deliverance (200654 effect#2), Sacred Dawn (243174 effect#1), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Divine Glimpse (387805 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Lightspark (394667 effect#1), Paladin Holy 10.1 Class Set 2pc (405545 effect#1), Reclamation (415364 effect#2), Initial Paladin (417383 effects: #3, #4), Awestruck (417855 effect#1), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Blessing of An'she (445200 effect#1), Light of the Martyr (447988 effect#1), Paladin Holy 11.0 Class Set 2pc (453658 effect#1), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Glorious Dawn (461246 effect#2), Beacon of the Savior (1244893 effect#3), Paladin Holy 12.0 Class Set 2pc (1264844 effect#1), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Tyr's Deliverance (200654 effect#2), Sacred Dawn (243174 effect#1), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Divine Glimpse (387805 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Lightspark (394667 effect#1), Paladin Holy 10.1 Class Set 2pc (405545 effect#1), Reclamation (415364 effect#2), Initial Paladin (417383 effects: #3, #4), Awestruck (417855 effect#1), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Blessing of An'she (445200 effect#1), Light of the Martyr (447988 effect#1), Paladin Holy 11.0 Class Set 2pc (453658 effect#1), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Glorious Dawn (461246 effect#2), Beacon of the Savior (1244893 effect#3), Protection Paladin (1256936 effects: #3, #4), Paladin Holy 12.0 Class Set 2pc (1264844 effect#1), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46, 48
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
@@ -1134,7 +1134,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46, 56
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Proc While Sitting (147), Limit N (165), Extra Initial Period (169), Not an Attack (194), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (456), Non-secret Aura (506)
 Aura Interrupt   : Leave World (19)
@@ -1232,10 +1232,10 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (
 Effects          :
 #1 (id=46256)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.95 | Radius: 6 yards | Target: Enemies in Cone (24)
-#2 (id=1055445)  : Trigger Spell (64)
-                   Base Value: 0 | Scaled Value: 0 | Delay: 200_ms
-#3 (id=1073752)  : Trigger Spell (64)
-                   Base Value: 0 | Scaled Value: 0 | Delay: 200_ms
+#2 (id=1055445)  : Trigger Spell (64): Lightforged Blessing
+                   Base Value: 0 | Scaled Value: 0 | Delay: 200_ms | Trigger Spell: 403460
+#3 (id=1073752)  : Trigger Spell (64): Lightforged Blessing
+                   Base Value: 0 | Scaled Value: 0 | Delay: 200_ms | Trigger Spell: 407467
 Description      : Slams enemies in front of you with your shield, causing $s1 Holy damage, and increasing your Armor by $?c1[${$132403s1*$INT/100}][${$132403s1*$STR/100}] for $132403d.$?a386568[
 
 $@spelldesc386568][]$?a280373[
@@ -1760,7 +1760,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 741: Healing Spells
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#3), Temporal Shift (225768 effect#2), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Hand of Divinity (414273 effects: #1, #2), Initial Paladin (417383 effects: #3, #4), Awestruck (417855 effect#1), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Liberation (461471 effect#1), Beacon of the Savior (1244893 effect#3), Divine Favor (1270916 effects: #1, #2), Divine Overload (1271077 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#3), Temporal Shift (225768 effect#2), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Hand of Divinity (414273 effects: #1, #2), Initial Paladin (417383 effects: #3, #4), Awestruck (417855 effect#1), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Liberation (461471 effect#1), Beacon of the Savior (1244893 effect#3), Protection Paladin (1256936 effects: #3, #4), Divine Favor (1270916 effects: #1, #2), Divine Overload (1271077 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Triggered By     : Inflorescence of the Sunwell (398901)
 Family Flags     : 46, 74
 Attributes       : Not Shapeshifted (16), Heal Prediction (280), Allow Class Ability Procs (416)
@@ -1804,12 +1804,13 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 2706: Spatial Paradox (406732 effect#11), Spatial Paradox (406789 effect#10)
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#7), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Dawn Will Come (364306 effect#2), Breaking Dawn (387879 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Gleaming Rays (431480 effect#1), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Beacon of the Savior (1244893 effect#3), Holy Paladin (1258016 effect#1), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#7), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Dawn Will Come (364306 effect#2), Breaking Dawn (387879 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Luminosity (431402 effect#1), Gleaming Rays (431480 effect#1), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Beacon of the Savior (1244893 effect#3), Protection Paladin (1256936 effects: #3, #4), Holy Paladin (1258016 effect#1), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46, 82
 Attributes       : Not Shapeshifted (16), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=86331)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.06 | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.672 | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
+Hotfixed         : SP Coefficient (3.06 -> 3.672)
 #2 (id=337580)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 4 yards | Target: Source (22) -> Ally in Area (30)
 #3 (id=736030)   : Dummy (3)
@@ -1879,7 +1880,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 741: Healing Spells
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#22), Holy Paladin (137029 effects: #1, #2, #9), Beacon of Faith (156910 effect#3), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Royal Decree (340147 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Gleaming Rays (431480 effect#1), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Protection Paladin (1256936 effect#4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#22), Holy Paladin (137029 effects: #1, #2, #9), Beacon of Faith (156910 effect#3), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Royal Decree (340147 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Gleaming Rays (431480 effect#1), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Protection Paladin (1256936 effects: #3, #4, #6), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46, 78
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
@@ -3267,7 +3268,8 @@ Effects          :
 #4 (id=191090)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=191091)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+                   Base Value: 350 | Scaled Value: 350 | PvP Coefficient: 0.57 | Target: Self (1)
+Hotfixed         : Base Value (200 -> 350), PvP Coefficient (1 -> 0.57)
 #6 (id=260917)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -55 | Scaled Value: -55 | Misc Value: 1663 (Category) | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779), Judgment (406957), Hammer of Wrath (1241413)
@@ -3299,8 +3301,9 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 3 | Misc Value 2: 2603 (Label) | Target: Self (1)
                    Affected Spells (Label): Faith's Armor (379017)
 #16 (id=1032419) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 2589 (Label) | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Misc Value 2: 2589 (Label) | Target: Self (1)
                    Affected Spells (Label): Judgment (197277), Greater Judgment (231663)
+Hotfixed         : Base Value (20 -> 30)
 #17 (id=1042754) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Misc Value 2: 6075 (Label) | Target: Self (1)
                    Affected Spells (Label): Sacred Weapon (432616)
@@ -3529,7 +3532,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 741: Healing Spells
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effects: #8, #9), Holy Paladin (137029 effects: #1, #2, #10, #11), Beacon of Faith (156910 effect#3), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effect#9), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Gleaming Rays (431480 effects: #1, #2), Gleaming Rays (431481 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Retribution Paladin (1258011 effect#23), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effects: #8, #9), Holy Paladin (137029 effects: #1, #2, #10, #11), Beacon of Faith (156910 effect#3), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effect#9), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2, #15, #16), Gleaming Rays (431480 effects: #1, #2), Gleaming Rays (431481 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Protection Paladin (1256936 effects: #3, #4), Retribution Paladin (1258011 effect#23), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46, 89, 115
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Non-secret Aura (506)
 Effects          :
@@ -3562,7 +3565,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46, 56
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Allow Proc While Sitting (147), Limit N (165), Extra Initial Period (169), Not an Attack (194), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (456), Non-secret Aura (506)
 Aura Interrupt   : Leave World (19)
@@ -3826,7 +3829,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 741: Healing Spells
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Maraad's Dying Breath (234862 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Maraad's Dying Breath (340459 effect#1), Maraad's Dying Breath (388019 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Beacon of the Savior (1244893 effect#3), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Maraad's Dying Breath (234862 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Maraad's Dying Breath (340459 effect#1), Maraad's Dying Breath (388019 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Beacon of the Savior (1244893 effect#3), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46, 124
 Attributes       : Not Shapeshifted (16), Exclude Caster (51), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
@@ -4290,7 +4293,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : Not Shapeshifted (16), Do Not Display Range (126), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
@@ -5561,7 +5564,7 @@ Family Flags     : 27, 44, 65, 77
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Display Range (126), Melee Chain Targeting (172), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=335615)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.76062 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.76062 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
 #2 (id=335616)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
 #3 (id=335617)   : Dummy (3)
@@ -7056,7 +7059,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 412
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Triggered By     : Radiant Incandescence (278142)
 Family Flags     : 41, 46
 Attributes       : Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -7110,7 +7113,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 412
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Triggered By     : Grace of the Justicar (278784)
 Family Flags     : 41, 46
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -7230,7 +7233,8 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
 #1 (id=737871)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 60)
 Description      : Armor granted by Shield of the Righteous is increased by up to $s1%, based on your missing health.
 
 Name             : Redoubt (id=280375) [Spell Family (10)] 
@@ -7493,7 +7497,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 412
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
@@ -7778,7 +7782,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : No Redirection (35), No Reflection (39), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
@@ -7938,7 +7942,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 2683
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Blessed Focus (414708 effect#2), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Blessed Focus (414708 effect#2), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46, 103
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -8485,7 +8489,7 @@ Family Flags     : 27, 44, 65, 77
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Melee Chain Targeting (172), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=834556)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.4495 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.4495 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
 #2 (id=835153)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Unleashes a powerful weapon strike that deals $s1 Holy damage to an enemy target.
@@ -8757,7 +8761,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 931
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Limit N (165), Not On Player Controlled NPC (168), Extra Initial Period (169), Vehicle Immunity Category (218), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
@@ -9202,7 +9206,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : No Redirection (35), No Reflection (39), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
@@ -10063,7 +10067,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 5350
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Paladin (137026 effect#8), Retribution Paladin (137027 effects: #1, #2, #11, #12), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #1, #2, #3, #4), Beacon of Faith (156910 effect#3), Divine Purpose (223819 effect#4), Avenging Wrath (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Quickened Invocation (379391 effect#1), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Divine Purpose (408458 effect#4), Retribution Paladin (412314 effects: #1, #2), Initial Paladin (417383 effects: #1, #2, #3, #4), Holy Paladin (428076 effects: #1, #2, #3, #4), Avenging Wrath (454351 effects: #1, #2), Avenging Wrath (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2), Protection Paladin (1256936 effects: #1, #2), Holy Paladin (1258016 effects: #7, #12), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc (1283659 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc (1283660 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Paladin (137026 effect#8), Retribution Paladin (137027 effects: #1, #2, #11, #12), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #1, #2, #3, #4), Beacon of Faith (156910 effect#3), Divine Purpose (223819 effect#4), Avenging Wrath (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Quickened Invocation (379391 effect#1), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Divine Purpose (408458 effect#4), Retribution Paladin (412314 effects: #1, #2), Initial Paladin (417383 effects: #1, #2, #3, #4), Holy Paladin (428076 effects: #1, #2, #3, #4), Avenging Wrath (454351 effects: #1, #2), Avenging Wrath (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2), Protection Paladin (1256936 effects: #1, #2, #3, #4), Holy Paladin (1258016 effects: #7, #12), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc (1283659 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc (1283660 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Triggered By     : Quickened Invocation (379391), Holy Paladin (1258016)
 Family Flags     : 27, 46, 65, 92
 Attributes       : Is Ability (4), No Threat (42), Not a Proc (105), Always AOE Line of Sight (186), Not In Spellbook Until Learned (269), Only Proc From Class Abilities (415), Allow Class Ability Procs (416)
@@ -10164,7 +10168,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2664: Consecrated Ground (204054 effect#5), Sanctification (424622 effect#2)
                  : 2939: Holy Paladin (137029 effect#13), Sanctification (424622 effect#5)
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : Ignore Line of Sight (66), Treat As Periodic (121), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
@@ -10248,7 +10252,8 @@ Effects          :
 #1 (id=1006795)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Trigger Spell: 378412 | Target: Self (1)
 #2 (id=1029059)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+Hotfixed         : Base Value (100 -> 200)
 Description      : Word of Glory heals for an additional $s1% over $378412d.
 
 Increased by $s2% if cast on yourself while you are afflicted by a harmful damage over time effect.
@@ -10263,7 +10268,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 2358
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Triggered By     : Light of the Titans (378405)
 Family Flags     : 46
 Attributes       : No Threat (42), Include In Advanced Combat Log (72), Can't Crit (93), DoT Stacking Rule (103), Ignore Healing Modifiers (219), Aura Points On Client (268), Heal Prediction (280), Rolling Periodic (334), Allow Class Ability Procs (416)
@@ -10609,7 +10614,7 @@ Family Flags     : 27, 44, 65, 77
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1015174)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.04408 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.04408 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
 #2 (id=1015175)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Unleashes a powerful weapon strike that deals $s1 $?s403664[Holystrike][Holy] damage to an enemy target,
@@ -11005,7 +11010,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : None
 Proc Chance      : 100%
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46
 Attributes       : Include In Advanced Combat Log (72), Can't Crit (93)
 Effects          :
@@ -11072,7 +11077,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Magic Heal
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #1, #2, #3, #4), Beacon of Faith (156910 effect#3), Avenging Wrath (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Retribution Paladin (412314 effects: #1, #2), Initial Paladin (417383 effects: #1, #2, #3, #4), Holy Paladin (428076 effects: #1, #2, #3, #4), Avenging Wrath (454351 effects: #1, #2), Avenging Wrath (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2), Protection Paladin (1256936 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc (1283659 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc (1283660 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #1, #2, #3, #4), Beacon of Faith (156910 effect#3), Avenging Wrath (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Retribution Paladin (412314 effects: #1, #2), Initial Paladin (417383 effects: #1, #2, #3, #4), Holy Paladin (428076 effects: #1, #2, #3, #4), Avenging Wrath (454351 effects: #1, #2), Avenging Wrath (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2), Protection Paladin (1256936 effects: #1, #2, #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc (1283659 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc (1283660 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46, 65
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
@@ -11969,7 +11974,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#22), Holy Paladin (137029 effect#9), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Royal Decree (340147 effect#1), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Gleaming Rays (431480 effect#1), Gleaming Rays (431481 effect#1), Pure Light (454653 effect#1), Sacred Strength (469337 effect#1), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Protection Paladin (1256936 effect#4)
+Affecting Spells : Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#22), Holy Paladin (137029 effect#9), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Royal Decree (340147 effect#1), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Gleaming Rays (431480 effect#1), Gleaming Rays (431481 effect#1), Pure Light (454653 effect#1), Sacred Strength (469337 effect#1), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Protection Paladin (1256936 effect#6)
 Family Flags     : 78
 Attributes       : Do Not Log (8), Allow While Sitting (27), Not an Action (92), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
@@ -12789,8 +12794,8 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
-Triggered By     : Denounce (2812), Divine Storm (53385), Shield of the Righteous (415091)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Triggered By     : Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Shield of the Righteous (415091)
 Family Flags     : 41, 46
 Attributes       : Exclude Caster (51), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
@@ -13828,8 +13833,8 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
-Triggered By     : Denounce (2812), Divine Storm (53385), Shield of the Righteous (415091)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Triggered By     : Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Shield of the Righteous (415091)
 Family Flags     : 41, 46
 Attributes       : Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -14171,6 +14176,8 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 5 | Misc Value 2: 2629 (Label) | Target: Self (1)
 #13 (id=1266256) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 2 (6)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 6 | Misc Value 2: 2627 (Label) | Target: Self (1)
+#14 (id=1315844) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Periodic Amount (1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Misc Value 2: 6251 (Label) | Target: Self (1)
 
 Name             : Aura Mastery (id=412629) [Spell Family (10), Hidden] 
 Class            : Paladin
@@ -14627,7 +14634,7 @@ Family Flags     : 27, 52, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Always Line of Sight (185), No Cooldown On Tooltip (192), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1084762)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.98 | Radius: 6 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.465 | Radius: 6 yards | Target: Enemies in Cone to Targeted Enemy (104)
 #2 (id=1084763)  : Trigger Spell (64): Lightforged Blessing
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403460
 #3 (id=1084764)  : Trigger Spell (64): Lightforged Blessing
@@ -14713,7 +14720,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 2683
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Blessed Focus (414708 effect#2), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Blessed Focus (414708 effect#2), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46, 103
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -14910,7 +14917,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : Allow While Sitting (27), Ignore Line of Sight (66), Aura Is Buff (140), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
@@ -15316,6 +15323,14 @@ Effects          :
                    Base Value: 67 | Scaled Value: 67 | Misc Value: 6 | Misc Value 2: 2602 (Label) | Target: Self (1)
 #14 (id=1266316) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 3 (7)
                    Base Value: 67 | Scaled Value: 67 | Misc Value: 7 | Misc Value 2: 2602 (Label) | Target: Self (1)
+#15 (id=1315695) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20
+                   Affected Spells: Eternal Flame (156322), Eternal Flame (461432)
+                   Family Flags: 89
+#16 (id=1315696) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 1
+                   Affected Spells: Eternal Flame (156322), Eternal Flame (461432)
+                   Family Flags: 89
 Description      : Holy Paladin core passive
 
 Name             : Hammer of Light (id=429826) [Spell Family (10)] 
@@ -15397,9 +15412,9 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effect#16), Holy Paladin (137029 effects: #1, #2, #14), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Sun's Avatar (431425 effect#1), Avenging Wrath (454351 effects: #1, #2, #13), Heightened Wrath (456759 effects: #1, #2), Paladin Herald of the Sun 11.2 Class Set 2pc (1236383 effects: #1, #6), Born in Sunlight (1264050 effect#1), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effect#16), Holy Paladin (137029 effects: #1, #2, #14), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Sun's Avatar (431425 effect#1), Avenging Wrath (454351 effects: #1, #2, #13), Heightened Wrath (456759 effects: #1, #2), Paladin Herald of the Sun 11.2 Class Set 2pc (1236383 effects: #1, #6), Protection Paladin (1256936 effects: #3, #4), Born in Sunlight (1264050 effect#1), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 1, 46
-Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268)
+Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Non-secret Aura (506)
 Effects          :
 #1 (id=1119127)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.3455 | Target: Targeted Ally (21)
@@ -15583,7 +15598,7 @@ Duration         : 4 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -16102,7 +16117,7 @@ Labels           : 16: Class Spells
                  : 3780: Retribution Paladin (137027 effect#10), Holy Paladin (1258016 effect#31)
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46
 Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
@@ -16765,7 +16780,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 6555
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -16839,13 +16854,12 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 5174
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : Always AOE Line of Sight (186), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1123227)  : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.134 | PvP Coefficient: 0.741 | Radius: 0 - 30 yards | Target: at Target (63) -> At Ally in Area (31)
-Hotfixed         : SP Coefficient (0.84 -> 1.134), PvP Coefficient (1 -> 0.741)
 Description      : $@spelldesc433718
 
 Name             : Light's Deliverance (id=433732) [Spell Family (10)] 
@@ -16873,7 +16887,7 @@ Range            : 40 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -16985,7 +16999,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 3109
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : Not In Spellbook (143), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -17161,7 +17175,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3465
                  : 5328: Holy Paladin (1258016 effect#32)
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
@@ -18055,7 +18069,7 @@ Duration         : 16 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effects: #8, #9), Holy Paladin (137029 effects: #1, #2, #10, #11), Beacon of Faith (156910 effect#3), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effect#9), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Gleaming Rays (431480 effects: #1, #2), Gleaming Rays (431481 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Retribution Paladin (1258011 effect#23), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effects: #8, #9), Holy Paladin (137029 effects: #1, #2, #10, #11), Beacon of Faith (156910 effect#3), Consecration (188370 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Judge, Jury and Executioner (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effect#9), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2, #15, #16), Gleaming Rays (431480 effects: #1, #2), Gleaming Rays (431481 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1), Solar Wrath (1236972 effects: #1, #2), Seraphic Barrier (1241714 effect#2), Protection Paladin (1256936 effects: #3, #4), Retribution Paladin (1258011 effect#23), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46, 89, 115
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -18122,7 +18136,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46
 Attributes       : Can't Crit (93), Do Not Display Range (126), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
@@ -18139,7 +18153,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 3892
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
@@ -18323,7 +18337,7 @@ Labels           : 16: Class Spells
                  : 3780: Retribution Paladin (137027 effect#10), Holy Paladin (1258016 effect#31)
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -18583,7 +18597,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 41, 46
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -18967,7 +18981,7 @@ Labels           : 16: Class Spells
                  : 295
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Triggered By     : Paladin Holy 11.1 Class Set 2pc (1215533)
 Family Flags     : 46
 Attributes       : Can Proc From Procs (122), Spell Haste Affects Periodic (173), Periodic Can Crit (265)
@@ -18991,7 +19005,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 295
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Unknown (452)
 Effects          :
@@ -19332,7 +19346,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -19532,7 +19546,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 99 maximum
 Proc Chance      : 101%
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Triggered By     : Masterwork: Bulwark (1271383)
 Family Flags     : 46
 Attributes       : Aura Is Buff (140), Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -19573,7 +19587,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -19863,7 +19877,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
 Effects          :
 #1 (id=1241255)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.4 | Target: Self (1)
 Description      : Hammer of Wrath deals up to $s1% additional damage based on its target's health. Lower health targets receive more damage.
 
 Name             : Hand of Divinity (id=1242008) [Spell Family (10), Passive] 
@@ -19985,7 +19999,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Protection Paladin (1256936 effects: #3, #4), Rising Sunlight (1277651 effects: #1, #3), Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283662 effect#1), Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283663 effects: #1, #2)
 Family Flags     : 46, 56
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Proc While Sitting (147), Limit N (165), Extra Initial Period (169), Not an Attack (194), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Unknown (456), Non-secret Aura (506)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
@@ -20337,21 +20351,36 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264700)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Target: Self (1)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Recompense (384914), Inner Light (386553), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Judgment (406957), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311), Hammer of Light (1235934), Lesser Weapon (1239282), Hammer of Wrath (1241413), Execution Sentence (1260251), Light Within (1261160), Glory of the Vanguard (1269175), Blaze of Glory (1269224), Crusader Strike (1279187), Hammer of Wrath (1279408)
                    Family Flags: 65
 #2 (id=1266344)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Recompense (384914), Inner Light (386553), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Judgment (406957), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311), Hammer of Light (1235934), Lesser Weapon (1239282), Hammer of Wrath (1241413), Execution Sentence (1260251), Light Within (1261160), Glory of the Vanguard (1269175), Blaze of Glory (1269224), Crusader Strike (1279187), Hammer of Wrath (1279408)
                    Family Flags: 65
 #3 (id=1266345)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
+                   Base Value: -10 | Scaled Value: -10 | Target: Self (1)
+                   Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002), Lesser Weapon (1239276), Beacon of the Savior (1244893)
+                   Family Flags: 46
+Hotfixed         : Base Value (0 -> -10), Affects Spells
+#4 (id=1266346)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002), Lesser Weapon (1239276), Beacon of the Savior (1244893)
+                   Family Flags: 46
+Hotfixed         : Base Value (0 -> -10), Misc Value (0 -> 1), Affects Spells
+#5 (id=1317267)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
-#4 (id=1266346)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
+Hotfixed         : NEW EFFECT
+#6 (id=1317268)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Word of Glory (85673), Afterimage (391309)
                    Family Flags: 78
+Hotfixed         : NEW EFFECT
+#7 (id=1317414)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 5 | Misc Value 2: 2589 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Retribution Paladin (id=1258011) [Spell Family (10), Passive, Hidden] 
 Class            : Retribution Paladin
@@ -21017,7 +21046,7 @@ Description      : Judgment has a chance to grant you Vanguard, causing your nex
 
 Name             : Glory of the Vanguard (id=1267211) [Spell Family (10), Passive] 
 Talent Entry     : Protection [tree=spec, row=11, col=4, max_rank=2, req_points=20, select_idx=100]
-                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#1 [op=set, values=(20, 40)]
                  : Effect#2 [op=set, values=(1, 3)]
 Class            : Paladin
 School           : Physical
@@ -21114,7 +21143,8 @@ Family Flags     : 65
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280836)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3 | PvP Coefficient: 0.75 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.75)
 Description      : $@spelldesc1267203
 
 Name             : Valor (id=1269179) [Spell Family (10)] 
@@ -21131,7 +21161,8 @@ Proc Chance      : 101%
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280841)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 100), PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc1267203
 Tooltip          : Your next Shield of the Righteous deals $s1~% increased damage to your primary target and refracts onto $1267215s2~ nearby enemies for additional Holy damage.
 
@@ -21500,9 +21531,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1289007)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 23 | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Shield of the Righteous (132403)
                    Family Flags: 107
+Hotfixed         : Base Value (-10 -> -12)
 Description      : Shield of the Righteous reduces magical damage taken by $s1%.
 
 Name             : Adjudication (id=1277005) [Spell Family (10), Passive] 

@@ -83,8 +83,9 @@ struct warlock_pet_t : public pet_t
   {
     propagate_const<buff_t*> embers; // Infernal Shard Generation
     propagate_const<buff_t*> imp_gang_boss; // Aura applied to some Wild Imps for increased damage (and size)
+    propagate_const<buff_t*> infernal_command; // Aura applied to Wild Imps periodically
     propagate_const<buff_t*> unstable_soul;
-    propagate_const<buff_t*> ferocity_of_fharg;
+    propagate_const<buff_t*> flametouched;
     propagate_const<buff_t*> demonic_power;
     propagate_const<buff_t*> grimoire_of_service;
   } buffs;
@@ -425,6 +426,8 @@ struct wild_imp_pet_t : public warlock_pet_t
   bool is_hog_imp;
   bool power_siphon;
   bool imploded;
+  timespan_t infernal_command_ev_ts;
+  timespan_t infernal_command_ev_offset;
 
   wild_imp_pet_t( warlock_t* );
   void init_base_stats() override;
@@ -581,7 +584,7 @@ struct shadowy_tear_t : public warlock_pet_t
   int barrages;
   action_t* cinder;
 
-  shadowy_tear_t( warlock_t*, util::string_view = "Shadowy Tear" );
+  shadowy_tear_t( warlock_t*, util::string_view = "shadowy_tear" );
   void arise() override;
   action_t* create_action( util::string_view, util::string_view ) override;
 };
@@ -591,7 +594,7 @@ struct unstable_tear_t : public warlock_pet_t
   int barrages;
   action_t* cinder;
 
-  unstable_tear_t( warlock_t*, util::string_view = "Unstable Tear" );
+  unstable_tear_t( warlock_t*, util::string_view = "unstable_tear" );
   void arise() override;
   action_t* create_action( util::string_view, util::string_view ) override;
 };
@@ -601,14 +604,14 @@ struct chaos_tear_t : public warlock_pet_t
   int bolts;
   action_t* cinder;
 
-  chaos_tear_t( warlock_t*, util::string_view = "Chaos Tear" );
+  chaos_tear_t( warlock_t*, util::string_view = "chaos_tear" );
   void arise() override;
   action_t* create_action( util::string_view, util::string_view ) override;
 };
 
 struct overfiend_t : public warlock_pet_t
 {
-  overfiend_t( warlock_t*, util::string_view = "Overfiend" );
+  overfiend_t( warlock_t*, util::string_view = "overfiend" );
   action_t* create_action( util::string_view, util::string_view ) override;
 };
 }  // namespace destruction
@@ -620,6 +623,15 @@ struct darkglare_t : public warlock_pet_t
   darkglare_t( warlock_t*, util::string_view = "darkglare" );
   void arise() override;
   void demise() override;
+  action_t* create_action( util::string_view , util::string_view ) override;
+};
+
+struct desperate_soul_t : public warlock_pet_t
+{
+  int wraths;
+
+  desperate_soul_t( warlock_t*, util::string_view = "desperate_souls" );
+  void arise() override;
   action_t* create_action( util::string_view , util::string_view ) override;
 };
 }  // namespace affliction

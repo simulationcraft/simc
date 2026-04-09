@@ -5,7 +5,7 @@
 # role=spell
 # position=ranged_back
 # talents=3302013
-# default_pet=sayaad
+# warlock.default_pet=sayaad
 
 # head=horns_of_the_demon_star,id=188889,bonus_id=1498/7187/6935,gem_id=173130
 # neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173130
@@ -60,7 +60,7 @@
 # role=spell
 # position=ranged_back
 # talents=2103021
-# default_pet=sayaad
+# warlock.default_pet=sayaad
 
 # head=grimveiled_hood,id=173245,bonus_id=6716/7039/6647/6649/1808/1588/6935,gem_id=173128
 # neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128

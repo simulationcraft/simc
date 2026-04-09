@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.1.66562
-static constexpr std::array<spelltext_data_t, 28644> __spelltext_data { {
+// Spell text, wow build 12.0.1.66838
+static constexpr std::array<spelltext_data_t, 28647> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -9205,6 +9205,9 @@ static constexpr std::array<spelltext_data_t, 28644> __spelltext_data { {
   {  253802, "Increases your $pri against Aberrations by $s1.", 0, 0 },
   {  253807, "Taking Shadow damage has a chance to increase your Leech by $253808s1 for $253808d.", 0, 0 },
   {  253808, "$@spelldesc253807", "Leech increased by $w1.", 0 },
+  {  253819, "Your spells have a chance to grant you Umbral Shift, reducing all Shadow damage taken$?a253819[ by up to $w1][] for $253826d.", 0, 0 },
+  {  253825, "Umbral Shift also increases your Mastery$?a253825[ by $w1][].", 0, 0 },
+  {  253826, "$@spelldesc253819", "Shadow damage taken reduced by $w1.$?a253825[ Mastery increased by $w2.][]", 0 },
   {  253938, "Upgrade your Flight Master's Whistle to summon a krokul tunneler to take you to the nearest Lightforged Beacon while on Argus.\r\n", 0, 0 },
   {  253977, "Temporarily tears a hole into the Twisting Nether for $D, allowing travel for those... brave enough?", 0, 0 },
   {  254050, "Whittle a vrykul toy boat.", 0, 0 },
@@ -21988,7 +21991,7 @@ static constexpr std::array<spelltext_data_t, 28644> __spelltext_data { {
   {  444074, "While at your aid, the Horsemen will occasionally cast Anti-Magic Shell on you and themselves at $s1% effectiveness.\r\n\r\nYou may only benefit from this effect every $451777d.", 0, 0 },
   {  444082, "$@spelldesc429026", 0, 0 },
   {  444083, "When you take damage, $s1% of the damage is redirected to each active horsemen.", 0, 0 },
-  {  444088, "$?c1[Disintegrate damage consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.\r\n\r\nPyre damage consumes ${$s3/1000} sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.][Verdant Embrace healing consumes ${$s5/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.\r\n\r\nEmerald Blossom healing consumes ${$s1/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.]", 0, "Red" },
+  {  444088, "$?c1[Disintegrate damage consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.\r\n\r\nPyre damage consumes ${$s3/1000} sec of Fire Breath from enemies it damages, detonating it for $s7% of the amount consumed.][Verdant Embrace healing consumes ${$s5/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.\r\n\r\nEmerald Blossom healing consumes ${$s1/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.]", 0, "Red" },
   {  444089, "$@spelldesc444088", 0, "Red" },
   {  444097, "$?a137006[Obliterate and Frostscythe]?s207311[Clawing Shadows][Scourge Strike] $?a137006[shatter][shatters] Trollbane's Chains of Ice when hit, dealing $444834s2 Shadowfrost damage to nearby enemies, and slowing them by $444834s1% for $444834d. Deals reduced damage beyond $s1 targets.", 0, 0 },
   {  444099, "$?a137006[Obliterate deals $s4]?s207311[Clawing Shadows deals $s3][Scourge Strike deals $s3]% increased damage and $?s152280[the cooldown of your Defile is reduced by ${$s2/-1000}]?a137006[your Remorseless Winter lasts ${$s5/1000} sec longer][the cooldown of your Death and Decay is reduced by ${$s1/-1000} sec].", 0, 0 },
@@ -27101,7 +27104,7 @@ static constexpr std::array<spelltext_data_t, 28644> __spelltext_data { {
   { 1254631, "At any time, decipher the map and guarantee that you'll find a Hidden Trove at the end of the next Tier 4+ Delve you complete.\r\n\r\nHidden Trove's contents depend on the completed Delve Tier.", "You'll find a Hidden Trove at the end of the next Tier 4+ Delve you complete.\r\n\r\nHidden Trove's contents depend on the completed Delve Tier.\r\n\r\nYou are able to unlock a Hidden Trove.", 0 },
   { 1254638, "Ignite the Solar Core within you for $d, forming a radiant shield that absorbs $s2% of incoming damage, up to $1257989s1. Gain up to $1257989s3 Versatility for $1257988d if the shield expires, based on its remaining power.", "Absorbing $s2% of incoming damage until ${$w1} is prevented.", 0 },
   { 1254640, "Your damaging abilities have a chance to unleash the prism's radiant light, increasing your Critical Strike by $s1 for $1255504d, further increased by $s2 for every $s3% of the target's missing health, up to a maximum of $s4. ", 0, 0 },
-  { 1254641, "Cover yourself in four fetid pustules, absorbing $1257925s1 damage for $d. Each time the shield loses $1257925s2% of its value, a pustule erupts, dealing $1257925s3  Plague damage split among nearby enemies.\r\n\r\nIf all pustules erupt, the final burst deals $1257925s4 additional Plague damage.", "Absorb $1257925s1 damage for $d.", 0 },
+  { 1254641, "Cover yourself in four fetid pustules, absorbing $1257925s1 damage for $d. Each time the shield loses $1257925s2% of its value, a pustule erupts, dealing $1257925s3  Plague damage split among nearby enemies.\r\n\r\nIf all pustules erupt, the final burst deals $1257925s4 additional Plague damage.", "Absorb $w1 damage for $d.", 0 },
   { 1254752, "Your spells and abilities have a chance to release an energy orb that bounces between up to $1254534x nearby allies, increasing their Versatility by $s2 for $1254577d. If an ally is below $s3% health, the orb heals them for $s4 instead.", 0, 0 },
   { 1254756, "Fire Blast now spreads $s3% of your target's Ignite to $s1 $Lenemy:enemies;.\r\n\r\nFlamestrike applies $s2% more Ignite.", 0, 0 },
   { 1254828, "Fire Blast damage increased by $s2% and it now spreads Ignite to $s1 additional $Ltarget:targets;.", 0, 0 },
@@ -28646,11 +28649,12 @@ static constexpr std::array<spelltext_data_t, 28644> __spelltext_data { {
   { 1293143, "Collect 60 Veteran Dawncrests.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.1.66562
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 12.0.1.66838
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  444088,  0, "$?c1[Disintegrate damage consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.\r\n\r\nPyre damage consumes ${$s3/1000} sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.][Verdant Embrace healing consumes ${$s5/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.\r\n\r\nEmerald Blossom healing consumes ${$s1/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.]", "$?c1[Disintegrate damage consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.\r\n\r\nPyre damage consumes ${$s3/1000} sec of Fire Breath from enemies it damages, detonating it for $s7% of the amount consumed.][Verdant Embrace healing consumes ${$s5/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.\r\n\r\nEmerald Blossom healing consumes ${$s1/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.]" },
 } };
 
-// Spell description variables, wow build 12.0.1.66562
+// Spell description variables, wow build 12.0.1.66838
 static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29347,7 +29351,7 @@ static constexpr std::array<spelldesc_vars_data_t, 693> __spelldesc_vars_data { 
   { 1283718, "$bD=$?s375510[${$375510s1}][${0}]\r\n$bF=$?s375510[${$375510s1/2}][${0}]\r\n$bE=$?s1264321[${$1264321s1}][${0}]\r\n$dE=$?s1264321[${$1264321s1/2}][${0}]\r\n$dmI=${$357209s1}\r\n$doI=${$357209o2*(10+$<bF>+$<dE>)}\r\n$duI=${20+$<bD>+$<bE>}\r\n$dmII=${$357209s1+($357209o2*3)}\r\n$doII=${$357209o2*(7+$<bF>+$<dE>)}\r\n$duII=${14+$<bD>+$<bE>}\r\n$dmIII=${$357209s1+($357209o2*6)}\r\n$doIII=${$357209o2*(4+$<bF>+$<dE>)}\r\n$duIII=${8+$<bD>+$<bE>}\r\n$dmIV=${$357209s1+($357209o2*9)}\r\n$doIV=${$357209o2*(1+$<bF>+$<dE>)}\r\n$duIV=${2+$<bD>+$<bE>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.1.66562
+// spelldesc_vars hotfix entries, wow build 12.0.1.66838
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

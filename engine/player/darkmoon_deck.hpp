@@ -197,9 +197,9 @@ struct darkmoon_deck_cb_t : public dbc_proc_callback_t
     } );
   }
 
-  void execute( action_t*, action_state_t* state ) override
+  void execute( const spell_data_t*, player_t* t, action_state_t* ) override
   {
-    deck->top_card->set_target( state->target );
+    deck->top_card->set_target( t );
     deck->top_card->schedule_execute();
   }
 };

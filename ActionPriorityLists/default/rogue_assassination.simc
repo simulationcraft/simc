@@ -36,7 +36,7 @@ actions+=/call_action_list,name=generate,if=!buff.darkest_night.up&combo_points<
 actions+=/call_action_list,name=spend,if=!buff.darkest_night.up&combo_points>=5|buff.darkest_night.up&combo_points.deficit=0
 
 # Cooldown list Deathmark if bleeds are active, kingsbane is ready, and we have envenom
-actions.cds=deathmark,if=dot.garrote.ticking&dot.rupture.ticking&cooldown.kingsbane.remains<=2&buff.envenom.up&(target.time_to_die>10|fight_remains<20)
+actions.cds=deathmark,if=dot.garrote.ticking&dot.rupture.ticking&cooldown.kingsbane.remains<=2&buff.envenom.remains>2&(target.time_to_die>10|fight_remains<20)
 # Check for on-use trinket usage
 actions.cds+=/call_action_list,name=items
 # Check for Racial abilties, potions, and any other misc cooldowns
@@ -50,15 +50,14 @@ actions.cds+=/call_action_list,name=vanish,if=!stealthed.rogue
 actions.core_dot=garrote,if=(buff.improved_garrote.up|stealthed.rogue)&(pmultiplier<=1|remains<=14+6*talent.razor_wire+4*!variable.single_target)
 # Normal Garrote Maintanence
 actions.core_dot+=/garrote,if=combo_points.deficit>=1&(pmultiplier<=1|!variable.single_target)&refreshable&target.time_to_die-remains>12
-# Cycle Garrote without Crimson Tempest
+# Cycle
 actions.core_dot+=/garrote,cycle_targets=1,if=!talent.crimson_tempest&combo_points.deficit>=1&(pmultiplier<=1|!variable.single_target)&refreshable&target.time_to_die-remains>12
 # Normal Rupture Maintanence, making sure to not waste Darkest Night
 actions.core_dot+=/rupture,if=combo_points>=5&refreshable&target.time_to_die-remains>12&(!buff.darkest_night.up|!dot.rupture.ticking)
-# Cycle Rupture without Crimson Tempest
 actions.core_dot+=/rupture,cycle_targets=1,if=!talent.crimson_tempest&combo_points>=5&refreshable&target.time_to_die-remains>12&(!buff.darkest_night.up|!dot.rupture.ticking)
 
 # Generator List Crimson Tempest to spread bleeds to everything in AoE
-actions.generate=crimson_tempest,if=!variable.single_target&(active_dot.garrote<spell_targets.fan_of_knives|active_dot.rupture<spell_targets.fan_of_knives)
+actions.generate=crimson_tempest,target_if=max:dot.rupture.remains,if=!variable.single_target&(active_dot.garrote<spell_targets.fan_of_knives|active_dot.rupture<spell_targets.fan_of_knives)&(dot.rupture.remains>5|energy.regen_combined>40)
 # Special Edge Case to use Shiv for Darkest Night in low target cleave as Toxic Stiletto makes it very efficient
 actions.generate+=/shiv,if=buff.darkest_night.up&combo_points.deficit=1&spell_targets.fan_of_knives<=3&talent.toxic_stiletto
 # Ambush on low target counts when available
@@ -88,7 +87,7 @@ actions.spend=envenom,if=buff.implacable_tracker.stack<4
 # Envenom if we are going to overcap on energy
 actions.spend+=/envenom,if=energy.pct>70|fight_remains<15
 
-# Vanish list Single Target vanish check to line up improved garrote with Deathmark, making sure there are no adds soon
-actions.vanish=vanish,if=variable.single_target&talent.improved_garrote&dot.garrote.pmultiplier<=1&(cooldown.deathmark.remains<5|cooldown.deathmark.remains>target.time_to_die-10)&!raid_event.adds.in<=30
+# Vanish list Single Target vanish check to line up improved garrote with Deathmark, making sure there are no adds soon. TODO Check after ImpGar fixes
+actions.vanish=vanish,if=variable.single_target&talent.improved_garrote&dot.garrote.pmultiplier<=1&(dot.deathmark.ticking|cooldown.deathmark.remains>target.time_to_die-10)&!raid_event.adds.in<=30
 # AoE vanish check to spread improved garrote in multitarget
 actions.vanish+=/vanish,if=!variable.single_target&talent.improved_garrote&dot.garrote.pmultiplier<=1&(raid_event.adds.remains>=10|!raid_event.adds.in<=30)

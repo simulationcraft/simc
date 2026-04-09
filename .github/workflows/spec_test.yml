@@ -9,6 +9,9 @@ on:
       is-ptr:
         type: boolean
         required: true
+      spec-matrix:
+        type: string
+        required: true
 
 jobs:
   spec-test:
@@ -20,49 +23,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        spec:
-          [
-            deathknight_blood,
-            deathknight_unholy,
-            deathknight_frost,
-            demonhunter_devourer,
-            demonhunter_havoc,
-            demonhunter_vengeance,
-            druid_balance,
-            druid_feral,
-            druid_guardian,
-            druid_restoration,
-            evoker_devastation,
-            evoker_augmentation,
-            hunter_beast_mastery,
-            hunter_marksmanship,
-            hunter_survival,
-            mage_arcane,
-            mage_fire,
-            mage_frost,
-            monk_brewmaster,
-            monk_windwalker,
-            paladin_protection,
-            paladin_retribution,
-            priest_shadow,
-            rogue_assassination,
-            rogue_outlaw,
-            rogue_subtlety,
-            shaman_elemental,
-            shaman_enhancement,
-            warlock_affliction,
-            warlock_demonology,
-            warlock_destruction,
-            warrior_arms,
-            warrior_fury,
-            warrior_protection,
-          ]
+        spec: ${{ fromJson(inputs.spec-matrix) }}
 
     env:
       UBSAN_OPTIONS: print_stacktrace=1
       SIMC_ARGS: output=/dev/null threads=4 profileset_work_threads=2 iterations=10 cleanup_threads=1 allow_experimental_specializations=1
       PLAYER_ARGS: load_default_gear=1
-      MT_ARGS: desired_targets=10
+      MT_ARGS: desired_targets=10 max_time=60
       DS_ARGS: fight_style=DungeonSlice
 
     steps:
@@ -90,220 +57,268 @@ jobs:
 
       - name: "Assisted Combat Validation"
         run: |
+          SECONDS=0
           echo ">>>>> Hero Tree 1 <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} iterations=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             load_default_talents=1 hero_talents=1 set_bonus=latest_2pc=1/latest_4pc=1 use_blizzard_action_list=1
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Hero Tree 2 <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} iterations=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             load_default_talents=1 hero_talents=2 set_bonus=latest_2pc=1/latest_4pc=1 use_blizzard_action_list=1
+          echo "Run time: $SECONDS seconds"
 
       - name: "Log Debug"
         if: always()
         run: |
+          SECONDS=0
           echo ">>>>> Single Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} log=1 debug=1 \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Multi Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} log=1 debug=1 \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Dungeon Slice <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} log=1 debug=1 \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo "Run time: $SECONDS seconds"
 
       - name: "HTML JSON"
         if: always()
         run: |
+          SECONDS=0
           echo ">>>>> Single Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} html=test.html json=test.json \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Multi Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} html=test_mt.html json=test_mt.json \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Dungeon Slice <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} html=test_ds.html json=test_ds.json \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo "Run time: $SECONDS seconds"
 
       - name: "No Talents, No Effects, No Sets"
         if: always()
         run: |
+          SECONDS=0
           echo ">>>>> Single Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Multi Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Dungeon Slice <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          SECONDS=0
 
       - name: "No Talents, No Effects, All Sets"
         if: always()
         run: |
+          SECONDS=0
           echo ">>>>> Single Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Multi Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Dungeon Slice <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo "Run time: $SECONDS seconds"
 
       - name: "No Talents, All Effects, No Sets"
         if: always()
         run: |
+          SECONDS=0
           echo ">>>>> Single Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             enable_all_item_effects=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Multi Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
             enable_all_item_effects=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Dungeon Slice <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
             enable_all_item_effects=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo "Run time: $SECONDS seconds"
 
       - name: "All Talents, No Effects, No Sets"
         if: always()
         run: |
+          SECONDS=0
           echo ">>>>> Single Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             enable_all_talents=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Multi Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
             enable_all_talents=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Dungeon Slice <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
             enable_all_talents=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo "Run time: $SECONDS seconds"
 
       - name: "Starter Talents, Hero Tree 1, No Sets"
         if: always()
         run: |
+          SECONDS=0
           echo ">>>>> Single Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             load_default_talents=1 hero_talents=1
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Multi Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             load_default_talents=1 hero_talents=1
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Dungeon Slice <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             load_default_talents=1 hero_talents=1
+          echo "Run time: $SECONDS seconds"
 
       - name: "Starter Talents, Hero Tree 2, No Sets"
         if: always()
         run: |
+          SECONDS=0
           echo ">>>>> Single Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             load_default_talents=1 hero_talents=2
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Multi Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             load_default_talents=1 hero_talents=2
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Dungeon Slice <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             load_default_talents=1 hero_talents=2
+          echo "Run time: $SECONDS seconds"
 
       - name: "Starter Talents, Hero Tree 1, All Sets"
         if: always()
         run: |
+          SECONDS=0
           echo ">>>>> Single Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             load_default_talents=1 hero_talents=1
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Multi Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             load_default_talents=1 hero_talents=1
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Dungeon Slice <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             load_default_talents=1 hero_talents=1
+          echo "Run time: $SECONDS seconds"
 
       - name: "Starter Talents, Hero Tree 2, All Sets"
         if: always()
         run: |
+          SECONDS=0
           echo ">>>>> Single Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             load_default_talents=1 hero_talents=2
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Multi Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             load_default_talents=1 hero_talents=2
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Dungeon Slice <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             load_default_talents=1 hero_talents=2
+          echo "Run time: $SECONDS seconds"
 
       - name: "All Talents, All Effects, All Sets"
         if: always()
         run: |
+          SECONDS=0
           echo ">>>>> Single Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Multi Target <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo
+          echo "Run time: $SECONDS seconds"
+          SECONDS=0
           echo ">>>>> Dungeon Slice <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
+          echo "Run time: $SECONDS seconds"
 
       - name: "Profileset Test"
         if: always()
         run: |
+          SECONDS=0
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
             profileset.base=load_default_talents=1 \
@@ -317,6 +332,7 @@ jobs:
             profileset.one_4pc+=set_bonus=latest_2pc=1 profileset.one_4pc+=set_bonus+=/latest_4pc=1 \
             profileset.two_4pc=load_default_talents=1 profileset.two_4pc+=hero_talents=2 \
             profileset.two_4pc+=set_bonus=latest_2pc=1 profileset.two_4pc+=set_bonus+=/latest_4pc=1
+          echo "Run time: $SECONDS seconds"
 
       - name: Dump APL Default
         id: dump_apl_default
@@ -343,7 +359,7 @@ jobs:
       - name: Upload APL
         if: steps.dump_apl_default.outcome == 'success' || steps.dump_apl_assisted.outcome == 'success'
         continue-on-error: true
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: apl-${{ github.sha }}-${{ matrix.spec }}
           path: |

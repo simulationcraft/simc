@@ -597,6 +597,11 @@ unsigned spelleffect_data_t::affected_schools() const
   return 0U;
 }
 
+void sc_format_to( const spelleffect_data_t& effect, fmt::format_context::iterator out )
+{
+  fmt::format_to( out, "{} ({}#{})", effect.spell()->name_cstr(), effect.spell_id(), effect.index() +1 );
+}
+
 const spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
 {
   const auto index = SC_DBC_GET_DATA( __spelleffect_id_index, __ptr_spelleffect_id_index, ptr );
@@ -738,6 +743,11 @@ bool spell_data_t::affected_by( const spelleffect_data_t* effect ) const
 bool spell_data_t::affected_by( const spelleffect_data_t& effect ) const
 {
   return affected_by( &effect );
+}
+
+void sc_format_to( const spell_data_t& spell, fmt::format_context::iterator out )
+{
+  fmt::format_to( out, "{} ({})", spell.name_cstr(), spell.id() );
 }
 
 const spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )

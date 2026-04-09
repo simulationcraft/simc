@@ -23,54 +23,44 @@
 struct proc_event_t : public event_t
 {
   dbc_proc_callback_t* cb;
-  action_t* source_action;
+  const spell_data_t* spell;
+  player_t* target; 
   action_state_t* source_state;
 #ifndef NDEBUG
   std::string debug_str;
 #endif
 
-  proc_event_t( dbc_proc_callback_t* c, action_t* a, action_state_t* s )
+  proc_event_t( dbc_proc_callback_t* c, const spell_data_t* spell, player_t* target, action_state_t* state,
+                proc_trigger_type_e type )
     : event_t( *c->listener->sim ),
       cb( c ),
-      source_action( a )
+      spell( spell ),
+      target( target ),
+      // Note, state has to be cloned as it's about to get recycled back into the action state cache
+      source_state( state ? state->action->get_state( state ) : nullptr )
   {
-    // Unless the state is an energize state, it has to be cloned as it's about to get recycled back into the action
-    // state cache
-    if ( s )
-    {
-      if ( s->is_energize() )
-        source_state = s;
-      else
-        source_state = s->action->get_state( s );
-    }
-    else
-    {
-      source_state = nullptr;
-    }
-
     schedule( timespan_t::zero() );
 #ifndef NDEBUG
+    std::string _name_str;
     if ( !cb )
-      debug_str = name();
+      _name_str = name();
     else if ( !cb->effect.name_str.empty() )
-      debug_str = cb->effect.name_str;
+      _name_str = cb->effect.name_str;
     else
     {
       if ( cb->effect.generated_name_str.empty() )
         cb->effect.name();
 
-      debug_str = cb->effect.generated_name_str;
+      _name_str = cb->effect.generated_name_str;
     }
 
-    if ( source_action )
-      debug_str += '-' + source_action->name_str;
+    debug_str = fmt::format( "{}:{}-{}", util::proc_trigger_type_string( type ), _name_str, spell->name_cstr() );
 #endif
   }
 
   ~proc_event_t() override
   {
-    // DON'T RELEASE ENERGIZE STATES
-    if ( source_state && !source_state->is_energize() )
+    if ( source_state )
       action_state_t::release( source_state );
   }
 
@@ -86,7 +76,7 @@ struct proc_event_t : public event_t
 #endif
   void execute() override
   {
-    cb->execute( source_action, source_state );
+    cb->execute( spell, target, source_state );
   }
 };
 
@@ -100,32 +90,32 @@ cooldown_t* dbc_proc_callback_t::get_cooldown( player_t* target )
   return target_specific_cooldown->get_cooldown( target );
 }
 
-buff_t* dbc_proc_callback_t::find_debuff( player_t* t ) const
+buff_t* dbc_proc_callback_t::find_debuff( player_t* target ) const
 {
-  if ( !t )
+  if ( !target )
     return nullptr;
 
-  return target_specific_debuff[ t ];
+  return target_specific_debuff[ target ];
 }
 
-buff_t* dbc_proc_callback_t::get_debuff( player_t* t )
+buff_t* dbc_proc_callback_t::get_debuff( player_t* target )
 {
-  if ( !t )
-    t = listener->target;
-  if ( !t )
+  if ( !target )
+    target = listener->target;
+  if ( !target )
     return nullptr;
 
-  buff_t*& debuff = target_specific_debuff[ t ];
+  buff_t*& debuff = target_specific_debuff[ target ];
   if ( !debuff )
-    debuff = create_debuff( t );
+    debuff = create_debuff( target );
   return debuff;
 }
 
-buff_t* dbc_proc_callback_t::create_debuff( player_t* t )
+buff_t* dbc_proc_callback_t::create_debuff( player_t* target )
 {
   std::string name_ = target_debuff->ok() ? target_debuff->name_cstr() : effect.name();
   util::tokenize( name_ );
-  return make_buff( actor_pair_t( t, listener ), name_, target_debuff );
+  return make_buff( actor_pair_t( target, listener ), name_, target_debuff );
 }
 
 // Set up the callback to be activated when the buff triggers, and deactivated when the buff expires.
@@ -165,64 +155,36 @@ void dbc_proc_callback_t::deactivate_with_buff( buff_t* buff, bool init )
   } );
 }
 
-void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
+void dbc_proc_callback_t::trigger( const proc_data_t& source_data, player_t* target, action_state_t* state,
+                                   proc_trigger_type_e type )
 {
-  // special handling for heartbeat trigger with no action nor state
-  if ( !a && !state )
-  {
-    auto cd = get_cooldown( listener );
-    if ( cd && cd->down() )
-      return;
-
-    assert( rppm || proc_chance > 0 );
-    bool triggered = roll( a );
-
-    if ( listener->sim->debug )
-    {
-      listener->sim->print_debug( "{} attempts to proc {} on heartbeat: {:d}", listener->name(), effect, triggered );
-    }
-
-    if ( triggered )
-    {
-      make_event<proc_event_t>( *listener->sim, this, nullptr, nullptr );
-
-      if ( cd )
-        cd->start();
-    }
-
-    return;
-  }
-
-  // both action_t::enabled_proc_from_suppressed AND dbc_proc_callback_t::can_proc_from_suppressed are necessary if
-  // action_t::suppress_caster_procs is true
-  if ( a->suppress_caster_procs && ( !a->enable_proc_from_suppressed || !can_proc_from_suppressed ) )
+  auto cd = get_cooldown( target );
+  if ( cd && cd->down() )
     return;
 
-  cooldown_t* cd = get_cooldown( state->target );
-
-  // Fully overridden trigger condition check; if allowed, perform normal proc chance
-  // behavior.
+  // Fully overridden trigger condition check; if allowed, perform normal proc chance behavior.
   if ( trigger_type == trigger_fn_type::TRIGGER )
   {
-    if ( !(*trigger_fn)( this, a, state ) )
+    if ( !( *trigger_fn )( this, source_data.spell, target, state, type ) )
     {
       return;
     }
   }
   else
   {
-    if ( cd && cd->down() )
-      return;
-
     // Weapon-based proc triggering differs from "old" callbacks. When used
     // (weapon_proc == true), dbc_proc_callback_t _REQUIRES_ that the action
     // has the correct weapon specified. Old style procs allowed actions
     // without any weapon to pass through.
-    if ( weapon && ( !a->weapon || ( a->weapon && a->weapon != weapon ) ) )
-      return;
+    if ( weapon )
+    {
+      assert( state );
+      if ( !state->action->weapon || ( state->action->weapon && state->action->weapon != weapon ) )
+        return;
+    }
 
     // Don't allow procs to proc itself
-    if ( proc_action && state->action && state->action->internal_id == proc_action->internal_id )
+    if ( proc_action && state && state->action && state->action->internal_id == proc_action->internal_id )
     {
       return;
     }
@@ -230,55 +192,52 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
     if ( proc_action && proc_action->harmful )
     {
       // Don't allow players to harm other players, and enemies harm other enemies
-      if ( state->action && listener->is_enemy() == target( state )->is_enemy() )
-      {
-        return;
-      }
-    }
-
-    if ( can_only_proc_from_class_abilites )
-    {
-      if ( !a->allow_class_ability_procs )
+      if ( listener->is_enemy() == target->is_enemy() )
         return;
     }
 
-    if ( !can_proc_from_procs )
-    {
-      if ( !a->not_a_proc && ( a->background || a->proc ) )
-      {
-        // only direct damage obeys proc-related attributes
-        if ( state->proc_type() != PROC1_PERIODIC && state->proc_type() != PROC1_HELPFUL_PERIODIC )
-          return;
-      }
-    }
+    if ( !proc_data_t::check_proc_trigger( source_data, proc_data, type ) )
+      return;
 
     // Additional trigger condition to check before performing proc chance process.
-    if ( trigger_type == trigger_fn_type::CONDITION && !(*trigger_fn)( this, a, state ) )
+    if ( trigger_type == trigger_fn_type::CONDITION &&
+         !( *trigger_fn )( this, source_data.spell, target, state, type ) )
     {
       return;
     }
   }
 
-  bool triggered = roll( a );
+  bool triggered = roll( state ? state->action : nullptr );
 
   if ( listener->sim->debug )
   {
-    listener->sim->print_debug( "{} attempts to proc {} on {}: {:d}", listener->name(), effect, a->name(), triggered );
+    std::string source_str;
+    if ( type != proc_trigger_type_e::TRIGGER_HEARTBEAT )
+    {
+      if ( source_data->ok() )
+        source_str = fmt::format( " {}", *source_data.spell );
+      else if ( state && state->action )
+        source_str = fmt::format( " {}", state->action->name_str );
+      else
+        source_str = " unknown";
+    }
+
+    listener->sim->print_debug( "{} attempts to proc {} on {}{}: {:d}", *listener, effect,
+                                util::proc_trigger_type_string( type ), source_str, triggered );
   }
 
   if ( triggered )
   {
-    assert( state && state->action );
     // Detach proc execution from proc triggering
-    make_event<proc_event_t>( *listener->sim, this, a, state );
+    make_event<proc_event_t>( *listener->sim, this, source_data.spell, target, state, type );
 
     if ( cd )
       cd->start();
   }
 }
 
-dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_t& e )
-  : action_callback_t( i.player ),
+dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, player_t* p, const special_effect_t& e )
+  : action_callback_t( p ),
     item( i ),
     effect( e ),
     cooldown( nullptr ),
@@ -295,62 +254,26 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_
     trigger_type( trigger_fn_type::NONE ),
     trigger_fn( nullptr ),
     execute_fn( nullptr ),
-    can_only_proc_from_class_abilites( false ),
-    can_proc_from_procs( false ),
-    can_proc_from_suppressed( false )
+    proc_data(),
+    can_only_proc_from_class_abilities( proc_data.can_only_proc_from_class_abilities ),
+    can_proc_from_procs( proc_data.can_proc_from_procs ),
+    can_proc_from_suppressed( proc_data.can_proc_from_suppressed ),
+    can_proc_from_suppressed_target( proc_data.can_proc_from_suppressed_target )
 {
   assert( e.proc_flags() != 0 );
 }
+
+dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_t& e )
+  : dbc_proc_callback_t( i, i.player, e )
+{}
 
 dbc_proc_callback_t::dbc_proc_callback_t( const item_t* i, const special_effect_t& e )
-  : action_callback_t( i->player ),
-    item( *i ),
-    effect( e ),
-    cooldown( nullptr ),
-    target_specific_cooldown( nullptr ),
-    target_specific_debuff( false ),
-    target_debuff( spell_data_t::nil() ),
-    rppm( nullptr ),
-    proc_chance( 0 ),
-    ppm( 0 ),
-    proc_buff( nullptr ),
-    proc_action( nullptr ),
-    weapon( nullptr ),
-    expire_on_max_stack( false ),
-    trigger_type( trigger_fn_type::NONE ),
-    trigger_fn( nullptr ),
-    execute_fn( nullptr ),
-    can_only_proc_from_class_abilites( false ),
-    can_proc_from_procs( false ),
-    can_proc_from_suppressed( false )
-{
-  assert( e.proc_flags() != 0 );
-}
+  : dbc_proc_callback_t( *i, i->player, e )
+{}
 
 dbc_proc_callback_t::dbc_proc_callback_t( player_t* p, const special_effect_t& e )
-  : action_callback_t( p ),
-    item( default_item_ ),
-    effect( e ),
-    cooldown( nullptr ),
-    target_specific_cooldown( nullptr ),
-    target_specific_debuff( false ),
-    target_debuff( spell_data_t::nil() ),
-    rppm( nullptr ),
-    proc_chance( 0 ),
-    ppm( 0 ),
-    proc_buff( nullptr ),
-    proc_action( nullptr ),
-    weapon( nullptr ),
-    expire_on_max_stack( false ),
-    trigger_type( trigger_fn_type::NONE ),
-    trigger_fn( nullptr ),
-    execute_fn( nullptr ),
-    can_only_proc_from_class_abilites( false ),
-    can_proc_from_procs( false ),
-    can_proc_from_suppressed( false )
-{
-  assert( e.proc_flags() != 0 );
-}
+  : dbc_proc_callback_t( default_item_, p, e )
+{}
 
 /**
  * Initialize the proc callback. This method is called by each actor through
@@ -429,23 +352,23 @@ void dbc_proc_callback_t::initialize()
     execute_fn = listener->callbacks.callback_execute_function( effect.driver()->id() );
   }
 
-  can_only_proc_from_class_abilites = effect.can_only_proc_from_class_abilites();
+  proc_data.spell = effect.driver();
+  can_only_proc_from_class_abilities = effect.can_only_proc_from_class_abilities();
   can_proc_from_procs = effect.can_proc_from_procs();
   can_proc_from_suppressed = effect.can_proc_from_suppressed();
+  can_proc_from_suppressed_target = effect.can_proc_from_suppressed_target();
 }
 
 // Determine target for the callback (action).
 
-player_t* dbc_proc_callback_t::target( const action_state_t* state, action_t* proc ) const
+player_t* dbc_proc_callback_t::get_target( player_t* target, action_state_t* state, action_t* p_action ) const
 {
-  // Incoming event to the callback actor, or outgoing
-  bool incoming = state->target == listener;
-  auto _action = proc ? proc : proc_action;
+  auto _action = p_action ? p_action : proc_action;
 
   // Outgoing callbacks always target the target of the state object
-  if ( !incoming )
+  if ( target != listener )
   {
-    return state->target;
+    return target;
   }
 
   // Incoming callbacks target either the callback actor, or the source of the incoming state.
@@ -502,7 +425,7 @@ bool dbc_proc_callback_t::roll( action_t* action )
  * we do it in a smarter way (better expression support?)
  */
 
-void dbc_proc_callback_t::execute( action_t* action, action_state_t* state )
+void dbc_proc_callback_t::execute( const spell_data_t* spell, player_t* target, action_state_t* state )
 {
   if ( state && state->target->is_sleeping() )
   {
@@ -511,7 +434,7 @@ void dbc_proc_callback_t::execute( action_t* action, action_state_t* state )
 
   if ( execute_fn )
   {
-    (*execute_fn)( this, action, state );
+    ( *execute_fn )( this, spell, target, state );
   }
   else
   {
@@ -522,7 +445,7 @@ void dbc_proc_callback_t::execute( action_t* action, action_state_t* state )
     if ( state && triggered && proc_action && ( !proc_buff || proc_buff->check() == proc_buff->max_stack() ) )
     {
       // Snapshot a new state for schedule_execute() as AoE-triggered procs may require different targets
-      proc_action->set_target( target( state ) );
+      proc_action->set_target( get_target( target, state ) );
       auto proc_state = proc_action->get_state();
       proc_state->target = proc_action->target;
       proc_action->snapshot_state( proc_state, proc_action->amount_type( proc_state ) );
@@ -531,7 +454,7 @@ void dbc_proc_callback_t::execute( action_t* action, action_state_t* state )
       // Decide whether to expire the buff even with 1 max stack
       if ( expire_on_max_stack )
       {
-        assert(proc_buff);
+        assert( proc_buff );
         proc_buff->expire();
       }
     }

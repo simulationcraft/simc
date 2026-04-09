@@ -245,6 +245,7 @@ struct gift_of_the_ox_t : monk_buff_t<>
   orb_t *heal_expire;
   std::queue<orb_event_t *> queue;
   double accumulator;
+  proc_data_t proc_data;
 
   // just using the first orb spawner.
   // 124503 also exists, but it just spawns an orb on the opposite side, so no
@@ -345,7 +346,7 @@ struct balanced_stratagem_t : monk_buff_t<>
                         std::unordered_set<unsigned> allowlist );
 
   using monk_buff_t<>::trigger;
-  bool trigger( const action_state_t * );
+  bool trigger( const spell_data_t * );
 };
 
 struct fractional_absorb_t : public monk_buff_t<absorb_buff_t>
@@ -406,8 +407,8 @@ private:
 
 public:
   monk_effect_callback_t( const special_effect_t &effect, monk_t *player );
-  void trigger( action_t *action, action_state_t *state ) override;
-  void execute( action_t *action, action_state_t *state ) override;
+  void trigger( const proc_data_t &data, player_t *target, action_state_t *state, proc_trigger_type_e type ) override;
+  void execute( const spell_data_t *spell, player_t *target, action_state_t *state ) override;
   void initialize() override;
 
   monk_effect_callback_t *register_post_init_callback( const post_init_callback_fn_t &fn );
@@ -1158,6 +1159,7 @@ public:
   void init_gains() override;
   void init_procs() override;
   void init_special_effects() override;
+  void init_assessors() override;
   void init_finished() override;
   void create_buffs() override;
   action_t *create_action( std::string_view name, std::string_view options ) override;

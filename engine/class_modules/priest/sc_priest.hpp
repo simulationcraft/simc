@@ -192,6 +192,10 @@ public:
     propagate_const<buff_t*> train_of_thought;
     propagate_const<buff_t*> wrath_unleashed;
     propagate_const<buff_t*> weal_and_woe;
+    propagate_const<buff_t*> evangelism;
+    propagate_const<buff_t*> archangel;
+    propagate_const<buff_t*> holy_ray;
+    propagate_const<buff_t*> greater_smite;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -310,6 +314,7 @@ public:
       player_talent_t mindbender;
       player_talent_t inescapable_torment;
       player_talent_t shadowfiend;
+      player_talent_t deaths_torment;
     } shared;
 
     struct
@@ -367,7 +372,7 @@ public:
       player_talent_t maddening_tentacles;
       // Row 9
       player_talent_t madness_weaving;
-      player_talent_t deaths_torment;
+      // Death's Torment (Shared)
       player_talent_t screams_of_the_void;
       player_talent_t tormented_spirits;
       player_talent_t insidious_ire;
@@ -413,7 +418,6 @@ public:
       // Row 4
       player_talent_t bright_pupil;
       player_talent_t enduring_luminescence;
-      player_talent_t plea;
       player_talent_t shield_discipline;
       player_talent_t ultimate_penitence;
       player_talent_t power_word_barrier;
@@ -421,37 +425,50 @@ public:
       player_talent_t revel_in_darkness;
       // Row 5
       player_talent_t holy_ray;
+      const spell_data_t* holy_ray_buff;  // 1235193
       player_talent_t lenience;
       player_talent_t shadow_tap;
       // Row 6
       player_talent_t purge_the_wicked;
-      player_talent_t divine_procession;
+      player_talent_t castigation;
       player_talent_t indemnity;
       player_talent_t pain_and_suffering;
       player_talent_t occultist;
       // Row 7
-      player_talent_t borrowed_time;
+      player_talent_t harsh_discipline;
+      const spell_data_t* harsh_discipline_buff;
       player_talent_t evangelism;
       player_talent_t abyssal_reverie;
       // Row 8
+      player_talent_t divine_procession;
       player_talent_t inner_focus;
-      player_talent_t castigation;
+      player_talent_t archangel;
+      const spell_data_t* archangel_buff; // 81700
+      // Mindbender (Shared)
       player_talent_t shadow_mend;
+      // Shadowfiend (Shared)
       // Row 9
+      player_talent_t greater_smite;
+      const spell_data_t* greater_smite_buff; // 1253725
       player_talent_t divine_aegis;
       const spell_data_t* divine_aegis_buff;
+      player_talent_t borrowed_time;
       player_talent_t blaze_of_light;
-      player_talent_t greater_smite;
-      player_talent_t weal_and_woe;
-      const spell_data_t* weal_and_woe_buff;
-      player_talent_t harsh_discipline;
-      const spell_data_t* harsh_discipline_buff;
-      player_talent_t expiation;
+      // Deaths Torment (Shared)
+      // Inescapable Torment (Shared)
       // Row 10
       player_talent_t eternal_barrier;
-      player_talent_t inner_light;
+      player_talent_t weal_and_woe;
+      const spell_data_t* weal_and_woe_buff;
+      player_talent_t searing_light;
+      const spell_data_t* searing_light_dot; // 1280134
+      player_talent_t expiation;
       // Apex
-      player_talent_t master_the_darkness;
+      player_talent_t master_the_darkness_1;
+      player_talent_t master_the_darkness_2;
+      player_talent_t master_the_darkness_3;
+      const spell_data_t* void_shield;          // 1253593
+      const spell_data_t* void_shield_reflect;  // 1253828
     } discipline;
 
     struct
@@ -560,15 +577,20 @@ public:
       player_talent_t preventive_measures;
       player_talent_t preemptive_care;
       player_talent_t waste_no_time;
+      player_talent_t words_of_the_wise;
       player_talent_t assured_safety;
       player_talent_t divine_feathers;
       player_talent_t save_the_day;
       player_talent_t forseen_circumstances;
+      player_talent_t prophets_insight;
       player_talent_t prophets_will;
       player_talent_t desperate_measures;
       player_talent_t prompt_prognosis;
       player_talent_t piety;
+      player_talent_t unfolding_vision;
       player_talent_t twinsight;
+      const spell_data_t* twinsight_healing; // 1232567
+      const spell_data_t* twinsight_damage;  // 1232571
     } oracle;
 
     struct
@@ -622,6 +644,9 @@ public:
     const spell_data_t* penance;
     const spell_data_t* penance_channel;
     const spell_data_t* penance_tick;
+    const spell_data_t* contrition_heal; // 270501
+    const spell_data_t* contrition_heal_crit; // 281469
+    const spell_data_t* plea;  // 200829
 
     // Holy
     const spell_data_t* holy_priest;  // General holy data
@@ -696,6 +721,7 @@ public:
   struct deck_rngs_t
   {
     shuffled_rng_t* random_idol;
+    shuffled_rng_t* master_of_darkness;
   } deck_rng;
 
   // Gains
@@ -871,6 +897,8 @@ public:
     // ~20% damage penalty to account for GCD. ~10% Miss general chance.
     double synergistic_brewterializer_barrel_hit_chance = 0.75;
 
+    // Chance for outgoing Halo damage pulses to hit (Divine Halo / Archon).
+    double archon_halo_outgoing_hit_chance = 0.5;
     // Chance for returning Halo damage pulses to hit (Divine Halo / Archon).
     double archon_halo_return_hit_chance = 0.5;
   } options;
@@ -1182,6 +1210,10 @@ public:
     if ( p().specialization() == PRIEST_DISCIPLINE )
     {
       parse_effects( p().buffs.weal_and_woe );
+      parse_effects( p().buffs.archangel );
+      parse_effects( p().buffs.holy_ray );
+      parse_effects( p().buffs.evangelism );
+      parse_effects( p().buffs.greater_smite );
     }
 
     // HOLY BUFF EFFECTS

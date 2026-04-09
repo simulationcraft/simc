@@ -583,28 +583,24 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
 }
 }  // namespace
 
+buff_t::buff_t( actor_pair_t q, std::string_view name )
+  : buff_t( q.source->sim, q.target, q.source, name, spell_data_t::nil(), nullptr )
+{}
 
-buff_t::buff_t(actor_pair_t q, util::string_view name)
-  : buff_t(q, name, spell_data_t::nil(), nullptr)
-{
-}
-
-buff_t::buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell_data, const item_t* item )
+buff_t::buff_t( actor_pair_t q, std::string_view name, const spell_data_t* spell_data, const item_t* item )
   : buff_t( q.source->sim, q.target, q.source, name, spell_data, item )
-{
-}
+{}
 
-buff_t::buff_t(sim_t* sim, util::string_view name)
-  : buff_t(sim, nullptr, nullptr, name, spell_data_t::nil(), nullptr)
-{
-}
+buff_t::buff_t( sim_t* sim, std::string_view name )
+  : buff_t( sim, nullptr, nullptr, name, spell_data_t::nil(), nullptr )
+{}
 
-buff_t::buff_t( sim_t* sim, util::string_view name, const spell_data_t* spell_data, const item_t* item )
+buff_t::buff_t( sim_t* sim, std::string_view name, const spell_data_t* spell_data, const item_t* item )
   : buff_t( sim, nullptr, nullptr, name, spell_data, item )
-{
-}
+{}
 
-buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_view name, const spell_data_t* spell_data, const item_t* item )
+buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, std::string_view name, const spell_data_t* spell_data,
+                const item_t* item )
   : sim( sim ),
     player( target ),
     item( item ),
@@ -621,7 +617,6 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     rppm( nullptr ),
     _max_stack( -1 ),
     _initial_stack( -1 ),
-    trigger_data( s_data ),
     default_value( DEFAULT_VALUE() ),
     default_value_effect_idx( 0 ),
     default_value_effect_multiplier( 1.0 ),
@@ -640,6 +635,17 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     consume_all_stacks( true ),
     ignore_time_modifier( false ),
     reverse_stack_reduction( 1 ),
+    proc_callbacks( true ),
+    proc_data( s_data ),
+    can_only_proc_from_class_abilities( proc_data.can_only_proc_from_class_abilities ),
+    can_proc_from_procs( proc_data.can_proc_from_procs ),
+    can_proc_from_suppressed( proc_data.can_proc_from_suppressed ),
+    suppress_caster_procs( proc_data.suppress_caster_procs ),
+    enable_proc_from_suppressed( proc_data.enable_proc_from_suppressed ),
+    trigger_data( proc_data ),
+    trigger_can_only_proc_from_class_abilities( trigger_data.can_only_proc_from_class_abilities ),
+    trigger_can_proc_from_procs( trigger_data.can_proc_from_procs ),
+    trigger_can_proc_from_suppressed( trigger_data.can_proc_from_suppressed ),
     current_value(),
     current_stack(),
     base_buff_duration( timespan_t::min() ),
@@ -994,6 +1000,13 @@ buff_t* buff_t::modify_max_stack( int max_stack )
   return this;
 }
 
+// TODO: find less blunt & hacky way to handle this
+buff_t* buff_t::increase_max_stack_uptime( int max_stack_uptime )
+{
+  stack_uptime.resize( stack_uptime.size() + max_stack_uptime );
+  return this;
+}
+
 buff_t* buff_t::set_initial_stack( int initial_stack )
 {
   // _initial_stack is initialized at -1, then set_initial_stack is called in the buff_t base constructor
@@ -1144,11 +1157,7 @@ buff_t* buff_t::modify_cooldown( timespan_t duration )
 
 buff_t* buff_t::set_period( timespan_t period )
 {
-  if ( period > timespan_t::zero() )
-  {
-    buff_period = period;
-  }
-  else
+  if ( period == timespan_t::min() )
   {
     for ( size_t i = 1; i <= s_data->effect_count(); i++ )
     {
@@ -1183,6 +1192,10 @@ buff_t* buff_t::set_period( timespan_t period )
           break;
       }
     }
+  }
+  else
+  {
+    buff_period = period;
   }
 
   // Recheck tick behaviour, which is dependent on buff_period.
@@ -1468,7 +1481,8 @@ buff_t* buff_t::set_trigger_spell( const spell_data_t* s )
   // spell data of the buff.
   if ( s != spell_data_t::nil() )
   {
-    trigger_data = s;
+    trigger_data.spell = s;
+    trigger_data._init();
   }
 
   // TODO: if trigger spell has an A_PROC_TRIGGER effect, set the percent chance to the effect value
@@ -1580,8 +1594,8 @@ buff_t* buff_t::apply_time_rate_modifier( const spell_data_t* spell )
 
     if ( sim->debug )
     {
-      sim->print_debug( "{} {} time rate modified by {} to {} from {} ({}) eff#{}", *source, *this, mul,
-                        base_time_duration_multiplier, spell->name_cstr(), spell->id(), effect.index() + 1 );
+      sim->print_debug( "{} {} time rate modified by {} to {} from {} eff#{}", *source, *this, mul,
+                        base_time_duration_multiplier, *spell, effect.index() + 1 );
     }
   }
 
@@ -1608,7 +1622,7 @@ void buff_t::datacollection_end()
 {
   // Debuffs need to ensure that the source is active (when single_actor_batch=1) to ensure that
   // reporting stays correct.
-  if ( sim->single_actor_batch && source != player )
+  if ( sim->single_actor_batch && source && source != player )
   {
     if ( !source->is_enemy() && source != sim->player_no_pet_list[ sim->current_index ] )
     {
@@ -1652,20 +1666,22 @@ timespan_t buff_t::refresh_duration( timespan_t new_duration ) const
     {
       assert( tick_event );
       timespan_t residual = remains() % static_cast<tick_t*>( tick_event )->tick_time;
-      sim->print_debug(
-            "{} {} carryover duration from ongoing tick: {}, refresh_duration={} new_duration={}",
-            *player, *this,
-            residual, new_duration, ( new_duration + residual ) );
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} {} carryover duration from ongoing tick: {}, refresh_duration={} new_duration={}",
+                          *player, *this, residual, new_duration, ( new_duration + residual ) );
+      }
 
       return new_duration + residual;
     }
     case buff_refresh_behavior::PANDEMIC:
     {
       timespan_t residual = std::min( new_duration * 0.3, remains() );
-      sim->print_debug(
-            "{} {} carryover duration from ongoing tick: {}, refresh_duration={} new_duration={}",
-            *player, *this,
-            residual, new_duration, ( new_duration + residual ) );
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} {} carryover from ongoing buff: {}, refresh_duration={} new_duration={}",
+                          *player, *this, residual, new_duration, ( new_duration + residual ) );
+      }
 
       return new_duration + residual;
     }
@@ -2030,7 +2046,7 @@ void buff_t::decrement( int stacks, double value )
   }
 }
 
-void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
+void buff_t::extend_duration( timespan_t extra_seconds )
 {
   if ( !check() )
   {
@@ -2039,7 +2055,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
-    throw sc_runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *p, *this ) );
+    throw sc_runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *source, *this ) );
   }
 
   if ( expiration.empty() )
@@ -2055,7 +2071,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
   {
     expiration.front()->reschedule( expiration.front()->remains() + extra_seconds );
 
-    sim->print_log( "{} extends {} by {}. New expiration time: {}", *p, *this, extra_seconds,
+    sim->print_log( "{} extends {} by {}. New expiration time: {}", *source, *this, extra_seconds,
                     expiration.front()->occurs() );
   }
   else if ( extra_seconds < timespan_t::zero() )
@@ -2067,7 +2083,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
       // When Strength of Soul removes the Weakened Soul debuff completely,
       // there's a delay before the server notifies the client. Modeling
       // this effect as a world lag.
-      reschedule_time = rng().gauss( p->world_lag );
+      reschedule_time = rng().gauss( source->world_lag );
     }
 
     event_t::cancel( expiration.front() );
@@ -2075,20 +2091,20 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
     expiration.push_back( make_event<expiration_t>( *sim, this, reschedule_time ) );
 
-    sim->print_log( "{} decreases {} by {}. New expiration: {}", *p, *this, -extra_seconds,
+    sim->print_log( "{} decreases {} by {}. New expiration: {}", *source, *this, -extra_seconds,
                     expiration.back()->occurs() );
   }
 }
 
 // Trigger the buff with the specified duration or extend it by the same amount
 // Cannot be used for negative adjustments like buff_t::extend_duration() can
-void buff_t::extend_duration_or_trigger( timespan_t duration, player_t* p )
+void buff_t::extend_duration_or_trigger( timespan_t duration )
 {
   timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration();
 
   if ( check() )
   {
-    extend_duration( p == nullptr ? this->source : p, d );
+    extend_duration( d );
   }
   else
   {
@@ -2461,6 +2477,14 @@ void buff_t::bump( int stacks, double value )
 
   if ( player )
     player->trigger_ready();
+
+  // TODO: assumption is that PROC1_NONE_HELPFUL actually applies to all aura application, whether hostile or not
+  // NOTE: scheduled as event to ensure buff is fully processed
+  if ( proc_callbacks && !constant && ( !suppress_caster_procs || enable_proc_from_suppressed ) && source &&
+       !source->callbacks.procs[ PROC1_NONE_HELPFUL ][ PROC2_LANDED ].empty() )
+  {
+    make_event( *sim, [ this ] { source->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_LANDED, this ); } );
+  }
 }
 
 void buff_t::override_buff( int stacks, double value )
@@ -2490,22 +2514,27 @@ bool buff_t::can_trigger( action_t* action ) const
   if ( is_fallback || !action->data().ok() || !trigger_data->ok() )
     return false;
 
-  if ( !action->allow_class_ability_procs && trigger_data->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
-    return false;
+  if ( trigger_data->proc_flags() == 0 )
+    return true;
 
-  if ( action->suppress_caster_procs && !trigger_data->flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
-    return false;
+  // only direct damage triggers obey proc-related attributes
+  auto pt_type = !( trigger_data->proc_flags() & PF_CAST_SUCCESSFUL ) && !action->not_a_proc &&
+                     ( action->proc || action->background )
+                   ? proc_trigger_type_e::TRIGGER_ACTION_PROC
+                   : proc_trigger_type_e::TRIGGER_ACTION;
 
-  if ( action->proc && !action->not_a_proc && !trigger_data->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
-    return false;
-
-  return true;
+  return proc_data_t::check_proc_trigger( action->proc_data, trigger_data, pt_type );
 }
 
 bool buff_t::trigger( action_t* action, int stacks, double value, double chance, timespan_t duration )
 {
   if ( can_trigger( action ) )
+  {
+    if ( sim->debug )
+      sim->print_debug( "{} triggers {}.", *action, *this );
+
     return trigger( stacks, value, chance, duration );
+  }
 
   return false;
 }
@@ -2515,17 +2544,16 @@ bool buff_t::can_consume( action_t* action ) const
   if ( is_fallback || !action->data().ok() || !data().ok() )
     return false;
 
-  if ( !action->allow_class_ability_procs && data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
-    return false;
+  if ( proc_data->proc_flags() == 0 )
+    return true;
 
-  if ( action->suppress_caster_procs && !data().flags( spell_attribute::SX_CAN_PROC_FROM_SUPPRESSED ) )
-    return false;
+  // only direct damage triggers obey proc-related attributes
+  auto pt_type = !( proc_data->proc_flags() & PF_CAST_SUCCESSFUL ) && !action->not_a_proc &&
+                     ( action->proc || action->background )
+                   ? proc_trigger_type_e::TRIGGER_ACTION_PROC
+                   : proc_trigger_type_e::TRIGGER_ACTION;
 
-  // TODO: check if trigger spell having CAN_PROC_FROM_PROCS is sufficient to allow the buff to consume
-  if ( action->proc && !action->not_a_proc && !data().flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
-    return false;
-
-  return true;
+  return proc_data_t::check_proc_trigger( action->proc_data, proc_data, pt_type );
 }
 
 int buff_t::consume( action_t* action, int stacks )
@@ -2538,6 +2566,9 @@ int buff_t::consume( action_t* action, int stacks )
 
   if ( !can_consume( action ) )
     return 0;
+
+  if ( sim->debug )
+    sim->print_debug( "{} consumes {}.", *action, *this );
 
   int old_stacks = check();
 

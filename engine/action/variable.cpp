@@ -259,13 +259,7 @@ void variable_t::optimize_expressions()
 
 void variable_t::execute()
 {
-  double old_value = var->current_value_;
-
-  if ( operation != OPERATION_PRINT && sim->debug )
-  {
-    sim->print_debug( "{} variable name={} op={} value={} default={} sig={}", *player, var->name_,
-                      static_cast<int>( operation ), var->current_value_, var->default_value_, signature_str );
-  }
+  var->previous_value_ = var->current_value_;
 
   switch ( operation )
   {
@@ -338,13 +332,21 @@ void variable_t::execute()
       break;
   }
 
-  if ( var->report && old_value != var->current_value_ && !var->is_constant() )
+  if ( operation != OPERATION_PRINT && sim->debug )
   {
-    player->sequence_add( this, nullptr, [ this, old_value ]( std::string& a_str, std::string& t_str ) {
-      a_str = fmt::format( "VAR {} [{}]", name_str, operation_str( operation ) );
-      t_str = fmt::format( "Old value: {:.4f}<br>New value: <b>{:.4f}</b>", old_value, var->current_value_ );
-    } );
+    sim->print_debug( "{} variable name={} op={} value={} prev_value={} default={} sig={}", *player, var->name_,
+                      static_cast<int>( operation ), var->current_value_, var->previous_value_, var->default_value_,
+                      signature_str );
   }
+
+  if ( var->report && !var->is_constant() && var->previous_value_ != var->current_value_ )
+    player->sequence_add( this, nullptr );
+}
+
+void variable_t::sequence_add_fn( std::string& a_str, std::string& t_str ) const
+{
+  a_str = fmt::format( "</b>VAR [{}]<br><b>{}", operation_str( operation ), name_str );
+  t_str = fmt::format( "Old:&#160;{:.4f}<br>New:&#160;<b>{:.4f}</b>", var->previous_value_, var->current_value_ );
 }
 
 bool variable_t::action_ready()

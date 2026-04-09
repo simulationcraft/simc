@@ -524,9 +524,8 @@ void spell_hotfix_entry_t::apply_hotfix( bool ptr )
   if ( !valid() )
   {
     fmt::print( stderr,
-      "[{}]: {}Hotfix '{}' for spell '{} ({})' failed verification. Field: {}, DBC: {}, Verify: {}\n",
-      tag_, ptr ? "PTR-" : "", note_, s->name_cstr(), s->id(),
-      field_name_, util::round( dbc_value_, 5 ), util::round( orig_value_, 5 ) );
+      "[{}]: {}Hotfix '{}' for spell '{}' failed verification. Field: {}, DBC: {}, Verify: {}\n",
+      tag_, ptr ? "PTR-" : "", note_, *s, field_name_, util::round( dbc_value_, 5 ), util::round( orig_value_, 5 ) );
     return;
   }
 
@@ -549,9 +548,9 @@ void effect_hotfix_entry_t::apply_hotfix( bool ptr )
   if ( ! valid() )
   {
     fmt::print( stderr,
-      "[{}]: {}Hotfix '{}' for spell '{} ({})' effect#{} ({}) failed verification. Field: {}, DBC: {}, Verify: {}\n",
-      tag_, ptr ? "PTR-" : "", note_, s->name_cstr(), s->id(), e->index() + 1, e->id(), field_name_,
-      util::round( dbc_value_, 5 ), util::round( orig_value_, 5 ) );
+      "[{}]: {}Hotfix '{}' for spell '{}' effect#{} ({}) failed verification. Field: {}, DBC: {}, Verify: {}\n",
+      tag_, ptr ? "PTR-" : "", note_, *s, e->index() + 1, e->id(), field_name_, util::round( dbc_value_, 5 ),
+      util::round( orig_value_, 5 ) );
     return;
   }
 
@@ -575,9 +574,9 @@ void power_hotfix_entry_t::apply_hotfix( bool ptr )
   if ( !valid() )
   {
     fmt::print( stderr,
-      "[{}]: {}Hotfix '{}' for spell '{} ({})' power ({}) failed verification. Field: {}, DBC: {}, Verify: {}\n",
-      tag_, ptr ? "PTR-" : "", note_, s->name_cstr(), s->id(), p->id(),
-      field_name_, util::round( dbc_value_, 5 ), util::round( orig_value_, 5 ) );
+      "[{}]: {}Hotfix '{}' for spell '{}' power ({}) failed verification. Field: {}, DBC: {}, Verify: {}\n",
+      tag_, ptr ? "PTR-" : "", note_, *s, p->id(), field_name_, util::round( dbc_value_, 5 ),
+      util::round( orig_value_, 5 ) );
     return;
   }
 

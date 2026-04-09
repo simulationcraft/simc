@@ -16,6 +16,7 @@
 action_variable_t::action_variable_t( std::string name, double default_value )
   : current_value_( default_value ),
     default_value_( default_value ),
+    previous_value_( default_value ),
     constant_value_( std::numeric_limits<double>::lowest() ),
     name_( std::move( name ) ),
     report( false )
@@ -72,5 +73,6 @@ void action_variable_t::optimize()
     constant_value_ = current_value_;
     // Make default value also the constant value, so that debug output is sensible
     default_value_ = current_value_;
+    previous_value_ = current_value_;
   }
 }

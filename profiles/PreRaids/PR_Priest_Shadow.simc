@@ -25,8 +25,8 @@ actions.precombat=snapshot_stats
 actions.precombat+=/shadowform,if=!buff.shadowform.up
 actions.precombat+=/variable,name=trinket_1_buffs,value=(trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.signet_of_the_priory)&(trinket.1.cooldown.duration>=20)
 actions.precombat+=/variable,name=trinket_2_buffs,value=(trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.signet_of_the_priory)&(trinket.2.cooldown.duration>=20)
-actions.precombat+=/variable,name=dr_force_prio,default=1,op=reset
-actions.precombat+=/variable,name=me_force_prio,default=1,op=reset
+actions.precombat+=/variable,name=dr_force_prio,default=0,op=reset
+actions.precombat+=/variable,name=me_force_prio,default=0,op=reset
 actions.precombat+=/variable,name=max_vts,default=12,op=reset
 actions.precombat+=/variable,name=is_vt_possible,default=0,op=reset
 actions.precombat+=/arcane_torrent
@@ -79,7 +79,6 @@ actions.main+=/void_volley
 actions.main+=/void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)
 # Use Tentacle Slam to prevent capping charges or to refresh Vampiric Touch
 actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=dot.vampiric_touch.refreshable|cooldown.tentacle_slam.full_recharge_time<=gcd.max*2
-actions.main+=/shadow_word_madness,target_if=max:dot.shadow_word_madness.remains,if=dot.shadow_word_madness.pmultiplier<1&dot.shadow_word_madness.ticking
 # Use Void Torrent if it will get near full Mastery Value
 actions.main+=/void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&variable.dots_up
 # Put out Shadow Word: Pain on enemies that will live at least 12s as a filler when talented into Invoked Nightmare.
@@ -97,6 +96,7 @@ actions.main+=/call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff
 # Put out Vampiric Touch on enemies that will live at least 12s as a filler action.
 actions.main+=/vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die),if=refreshable&target.time_to_die>12
 actions.main+=/shadow_word_death,target_if=min:target.health.pct,if=(pet.mindbender.active|pet.voidwraith.active|pet.shadowfiend.active)&talent.inescapable_torment|target.health.pct<(20+15*talent.deathspeaker)&talent.shadowfiend&talent.idol_of_yshaarj
+actions.main+=/shadow_word_death,target_if=min:target.health.pct,if=(target.health.pct<(20+15*talent.deathspeaker))
 actions.main+=/mind_flay,target_if=max:dot.shadow_word_madness.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=3,interrupt_global=1
 # Use Tentacle Slam while moving as a low-priority action when adds will not spawn in 20 seconds.
 actions.main+=/tentacle_slam,if=raid_event.adds.in>20

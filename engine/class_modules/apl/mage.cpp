@@ -17,7 +17,16 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  return p->true_level >= 90 ? "flask_of_thalassian_resistance_2"
+  std::string lvl90_flask = "disabled";
+
+  switch ( p->specialization() )
+  {
+    case MAGE_ARCANE: lvl90_flask = "flask_of_thalassian_resistance_2"; break;
+    case MAGE_FIRE: lvl90_flask = "flask_of_the_magisters_2"; break;
+    case MAGE_FROST: lvl90_flask = "flask_of_the_shattered_sun_2"; break;
+  }
+  
+  return p->true_level >= 90 ? lvl90_flask
        : p->true_level >= 80 ? "flask_of_alchemical_chaos_3"    
        : p->true_level >= 70 ? "phial_of_tepid_versatility_3"
        : p->true_level >= 60 ? "spectral_flask_of_power"

@@ -74,7 +74,7 @@ struct special_effect_t
   int expire_on_max_stack;
 private:
   bool override_can_proc_from_procs, can_proc_from_procs_;
-  bool override_can_only_proc_from_class_abilites, can_only_proc_from_class_abilites_;
+  bool override_can_only_proc_from_class_abilities, can_only_proc_from_class_abilities_;
 
 public:
   unsigned spell_id, trigger_spell_id;
@@ -168,9 +168,10 @@ public:
 
   bool can_proc_from_procs() const;
   bool can_proc_from_suppressed() const;
-  bool can_only_proc_from_class_abilites() const;
+  bool can_proc_from_suppressed_target() const;
+  bool can_only_proc_from_class_abilities() const;
   void set_can_proc_from_procs( bool );
-  void set_can_only_proc_from_class_abilites( bool );
+  void set_can_only_proc_from_class_abilities( bool );
 
   /* Accessors for buff specific features of the proc. */
   timespan_t duration() const;
