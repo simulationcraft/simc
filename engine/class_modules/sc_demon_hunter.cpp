@@ -9570,7 +9570,7 @@ void demon_hunter_td_t::target_demise()
     if ( dh().talent.devourer.spontaneous_immolation.enabled() && dh().is_ptr() &&
          dh().rng().roll( dh().options.proc_from_killing_blow_chance ) )
     {
-      dh().cooldown.soul_immolation->reset( true, 1 );
+      dh().cooldown.soul_immolation->reset( true );
       dh().proc.spontaneous_immolation->occur();
     }
     else
