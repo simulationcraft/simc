@@ -7,12 +7,6 @@ position=ranged_back
 talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZZ2MzsMzAAjllBGwEMDbBG2GAAAmBAAwMDzMjxwwMmZmxgZmZGAwMwA
 warlock.default_pet=sayaad
 
-potion=lights_potential_2
-food=silvermoon_parade
-flask=flask_of_the_shattered_sun_2
-augmentation=void_touched
-temporary_enchant=main_hand:thalassian_phoenix_oil_2
-
 head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/1808,enchant_id=7961,gem_id=240983,ilevel=289
 neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240916
 shoulder=echoing_void_mantle,id=249328,bonus_id=12806/13577,enchant_id=8001
@@ -40,12 +34,6 @@ role=spell
 position=ranged_back
 talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZZWmZmlxAAWgBmFjGzAysBWGAAAmBAAmZAzMjxwwMjZmZGMzMzAAmBG
 warlock.default_pet=sayaad
-
-potion=lights_potential_2
-food=silvermoon_parade
-flask=flask_of_the_shattered_sun_2
-augmentation=void_touched
-temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
 head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/1808,enchant_id=7961,gem_id=240983,ilevel=289
 neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240916

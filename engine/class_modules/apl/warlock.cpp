@@ -14,9 +14,18 @@ namespace warlock_apl{
 
   std::string flask( const player_t* p )
   {
-    if ( p->true_level >= 90 ) return "flask_of_the_magisters_2";
+    std::string lvl90_flask = "disabled";
+
+    switch ( p->specialization() )
+    {
+      case WARLOCK_AFFLICTION: lvl90_flask = "flask_of_the_shattered_sun_2"; break;
+      case WARLOCK_DEMONOLOGY: lvl90_flask = "flask_of_the_magisters_2"; break;
+      case WARLOCK_DESTRUCTION: lvl90_flask = "flask_of_the_magisters_2"; break;
+    }
+
+    if ( p->true_level >= 90 ) return lvl90_flask;
     return ( p->true_level >= 80 ) ? "flask_of_alchemical_chaos_3" : "disabled";
-  }
+}
 
   std::string food( const player_t* p )
   {
