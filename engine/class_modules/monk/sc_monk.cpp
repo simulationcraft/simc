@@ -3743,58 +3743,39 @@ struct zenith_stomp_t : monk_spell_t
     }
   };
 
-  base_damage_t *zenith_stomp_damage;
-
   zenith_stomp_t( monk_t *player, std::string_view options_str )
-    : monk_spell_t( player, "zenith_stomp", player->talent.monk.zenith_stomp ), zenith_stomp_damage( nullptr )
+    : monk_spell_t( player, "zenith_stomp", player->talent.monk.zenith_stomp )
   {
     if ( !player->wowv_ge( wowv_t( 12, 0, 5 ) ) )
       return;
 
     parse_options( options_str );
-
     may_combo_strike = false;  // This is bugged and currently is not triggering combo strikes
 
-    zenith_stomp_damage = new base_damage_t( player, "action" );
-    monk_spell_t::add_child( zenith_stomp_damage );
+    execute_action = new base_damage_t( player, "on_use" );
   }
 
   bool ready() override
   {
     return p()->buff.zenith_stomp->check();
   }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    zenith_stomp_damage->execute_on_target( target );
-  }
 };
 
 struct zenith_t : public monk_spell_t
 {
-  using base_damage_t = zenith_stomp_t::base_damage_t;
-  struct damage_t : base_damage_t
-  {
-    damage_t( monk_t *player ) : base_damage_t( player, "cooldown" )
-    {
-    }
-  };
-
-  damage_t *zenith_stomp_damage;
+  action_t *zenith_stomp;
 
   zenith_t( monk_t *player, std::string_view options_str )
-    : monk_spell_t( player, "zenith", player->talent.windwalker.zenith ), zenith_stomp_damage( nullptr )
+    : monk_spell_t( player, "zenith", player->talent.windwalker.zenith ),
+      zenith_stomp( nullptr )
   {
     parse_options( options_str );
-
     may_combo_strike = true;
 
     if ( player->talent.monk.zenith_stomp->ok() )
     {
-      zenith_stomp_damage = new damage_t( player );
-      add_child( zenith_stomp_damage );
+      zenith_stomp = new zenith_stomp_t::base_damage_t( player, "background" );
+      add_child( zenith_stomp );
     }
   }
 
@@ -3812,8 +3793,8 @@ struct zenith_t : public monk_spell_t
     p()->cooldown.rising_sun_kick->reset( true );
     p()->buff.stand_ready->trigger();
 
-    if ( zenith_stomp_damage )
-      zenith_stomp_damage->execute_on_target( target );
+    if ( zenith_stomp )
+      zenith_stomp->execute_on_target( target );
   }
 };
 
