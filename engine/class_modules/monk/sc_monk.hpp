@@ -557,6 +557,7 @@ public:
     propagate_const<buff_t *> touch_of_karma;
     propagate_const<buff_t *> whirling_dragon_punch;
     propagate_const<buff_t *> zenith;
+    propagate_const<buff_t *> zenith_stomp;
     propagate_const<buff_t *> rushing_wind_kick;
     propagate_const<buff_t *> tigereye_brew_1;
     propagate_const<buff_t *> tigereye_brew_3;
@@ -756,6 +757,7 @@ public:
       player_talent_t summon_black_ox_statue;  // Brewmaster
       player_talent_t zenith_stomp;            // Windwalker
       const spell_data_t *zenith_stomp_damage;
+      const spell_data_t *zenith_stomp_buff;
       player_talent_t ironshell_brew;
       player_talent_t expeditious_fortification;
       player_talent_t diffuse_magic;

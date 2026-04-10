@@ -3696,22 +3696,71 @@ struct celestial_conduit_t : public monk_spell_t
   }
 };
 
-struct zenith_t : public monk_spell_t
+struct zenith_stomp_t : monk_spell_t
 {
-  struct zenith_stomp_t : public monk_spell_t
+  struct base_damage_t : monk_spell_t
   {
-    zenith_stomp_t( monk_t *player ) : monk_spell_t( player, "zenith_stomp", player->talent.monk.zenith_stomp_damage )
+    base_damage_t( monk_t *player, std::string_view name )
+      : monk_spell_t( player, fmt::format( "zenith_stomp_{}_damage", name ), player->talent.monk.zenith_stomp_damage )
     {
+      background = dual = true;
+
       aoe                 = -1;
       reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
       ww_mastery          = true;
     }
+
+    void execute() override
+    {
+      monk_spell_t::execute();
+
+      p()->buff.zenith_stomp->trigger();
+    }
   };
 
-  action_t *zenith_stomp;
+  base_damage_t *zenith_stomp_damage;
+
+  zenith_stomp_t( monk_t *player, std::string_view options_str )
+    : monk_spell_t( player, "zenith_stomp", player->talent.monk.zenith_stomp ), zenith_stomp_damage( nullptr )
+  {
+    if ( !player->wowv_ge( wowv_t( 12, 0, 5 ) ) )
+      return;
+
+    parse_options( options_str );
+
+    may_combo_strike = false;  // This is bugged and currently is not triggering combo strikes
+
+    zenith_stomp_damage = new base_damage_t( player, "action" );
+    monk_spell_t::add_child( zenith_stomp_damage );
+  }
+
+  bool ready() override
+  {
+    return p()->buff.zenith_stomp->check();
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    zenith_stomp_damage->execute_on_target( target );
+  }
+};
+
+struct zenith_t : public monk_spell_t
+{
+  using base_damage_t = zenith_stomp_t::base_damage_t;
+  struct damage_t : base_damage_t
+  {
+    damage_t( monk_t *player ) : base_damage_t( player, "cooldown" )
+    {
+    }
+  };
+
+  damage_t *zenith_stomp_damage;
 
   zenith_t( monk_t *player, std::string_view options_str )
-    : monk_spell_t( player, "zenith", player->talent.windwalker.zenith ), zenith_stomp( nullptr )
+    : monk_spell_t( player, "zenith", player->talent.windwalker.zenith ), zenith_stomp_damage( nullptr )
   {
     parse_options( options_str );
 
@@ -3719,8 +3768,8 @@ struct zenith_t : public monk_spell_t
 
     if ( player->talent.monk.zenith_stomp->ok() )
     {
-      zenith_stomp = new zenith_stomp_t( player );
-      add_child( zenith_stomp );
+      zenith_stomp_damage = new damage_t( player );
+      add_child( zenith_stomp_damage );
     }
   }
 
@@ -3730,12 +3779,16 @@ struct zenith_t : public monk_spell_t
 
     monk_spell_t::execute();
 
+    // Zenith Stomp buff is currently only triggered if the player doesn't have the Zenith buff active
+    if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && !p()->buff.zenith->up() )
+      p()->buff.zenith_stomp->trigger();
+
     p()->buff.zenith->trigger();
     p()->cooldown.rising_sun_kick->reset( true );
     p()->buff.stand_ready->trigger();
 
-    if ( zenith_stomp )
-      zenith_stomp->execute_on_target( target );
+    if ( zenith_stomp_damage )
+      zenith_stomp_damage->execute_on_target( target );
   }
 };
 
@@ -5158,6 +5211,9 @@ action_t *monk_t::create_action( std::string_view name, std::string_view options
     return new whirling_dragon_punch_t( this, options_str );
   if ( name == "zenith" )
     return new zenith_t( this, options_str );
+  if ( name == "zenith_stomp" )
+    return new zenith_stomp_t( this, options_str );
+
 
   // Conduit of the Celestials
   if ( name == "celestial_conduit" )
@@ -5437,6 +5493,7 @@ void monk_t::init_spells()
     talent.monk.summon_black_ox_statue       = _CT( "Summon Black Ox Statue" );
     talent.monk.zenith_stomp                 = _CT( "Zenith Stomp" );
     talent.monk.zenith_stomp_damage          = find_spell( 1272696 );
+    talent.monk.zenith_stomp_buff            = find_spell( 1291484 );
     talent.monk.ironshell_brew               = _CT( "Ironshell Brew" );
     talent.monk.expeditious_fortification    = _CT( "Expeditious Fortification" );
     talent.monk.diffuse_magic                = _CT( "Diffuse Magic" );
@@ -6144,6 +6201,15 @@ void monk_t::create_buffs()
       talent.windwalker.whirling_dragon_punch->ok(), this, "whirling_dragon_punch" );
 
   buff.zenith = make_buff_fallback<buffs::zenith_t>( talent.windwalker.zenith->ok(), this, "zenith" );
+
+  buff.zenith_stomp =
+      make_buff_fallback( talent.monk.zenith_stomp->ok(), this, "zenith_stomp", talent.monk.zenith_stomp_buff )
+          ->set_trigger_spell( talent.monk.zenith_stomp )
+          ->set_reverse( true )
+          ->set_reverse_stack_count( as<int>( talent.monk.zenith_stomp_buff->effectN( 1 ).base_value() +
+                                                      talent.windwalker.tigereye_brew_3->ok()
+                                                  ? talent.windwalker.tigereye_brew_3->effectN( 1 ).base_value()
+                                                  : 0 ) );
 
   buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
                                                talent.windwalker.rushing_wind_kick_buff );
