@@ -3854,6 +3854,17 @@ struct blade_flurry_t : public rogue_attack_t
       return m;
     }
 
+    void impact( action_state_t* state ) override
+    {
+      rogue_attack_t::impact( state );
+
+      // 2026-04-10 -- Whirl of Blades is triggered by Blade Flurry cast damage only with Deft talented
+      if ( p()->bugs && p()->talent.outlaw.deft_maneuvers->ok() ) 
+      {
+        p()->buffs.mid1_outlaw_4pc->trigger();
+      }
+    }
+
     bool procs_main_gauche() const override
     { return true; }
   };
@@ -3929,6 +3940,11 @@ struct blade_rush_t : public rogue_attack_t
     {
       rogue_attack_t::execute();
       p()->buffs.blade_rush->trigger();
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      rogue_attack_t::impact( state );
       p()->buffs.mid1_outlaw_4pc->trigger();
     }
 
@@ -7332,8 +7348,6 @@ struct roll_the_bones_t : public buff_t
     {
       // RtB uses hardcoded probabilities even after the redesign
       // Current beta testing appears to show 55%, 30%, 10%, 5% for the four states
-      // Loaded Dice appears to increase the rolled tier by one
-      // Sleight of Hand is currently TBD, thought to mean a 20% increased chance to be elevated currently
       rogue->options.fixed_rtb_odds = { 55.0, 30.0, 10.0, 5.0 };
       rogue->sim->print_log( "{} {} odds set to {:.1f}% / {:.1f}% / {:.1f}% / {:.1f}% buffs",
                              *rogue, *this, rogue->options.fixed_rtb_odds[ 0 ], rogue->options.fixed_rtb_odds[ 1 ],
@@ -7360,12 +7374,16 @@ struct roll_the_bones_t : public buff_t
         }
       }
 
-      if ( loaded_dice )
+      // Sleight of Hand appears to be a chance to elevate the rolled state by 1
+      // However, it cannot elevate Triple Threat into Jackpot
+      if ( rogue->talent.outlaw.sleight_of_hand->ok() && num_buffs < 3 && 
+           rogue->rng().roll( rogue->talent.outlaw.sleight_of_hand->effectN( 1 ).percent() ) )
       {
         num_buffs += 1;
       }
 
-      if ( rogue->talent.outlaw.sleight_of_hand->ok() && rogue->rng().roll( rogue->talent.outlaw.sleight_of_hand->effectN( 1 ).percent() ) )
+      // Loaded Dice always elevates the rolled state by 1 and happens after Sleight
+      if ( loaded_dice )
       {
         num_buffs += 1;
       }

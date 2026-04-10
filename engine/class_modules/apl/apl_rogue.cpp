@@ -158,7 +158,7 @@ void outlaw( player_t* p )
   default_->add_action( "bag_of_tricks" );
 
   build->add_action( "ambush,if=talent.hidden_opportunity&buff.audacity.up", "Builders   High priority Ambush with Hidden Opportunity." );
-  build->add_action( "blade_flurry,if=talent.deft_maneuvers&spell_targets>=4", "With Deft Maneuvers, build CPs with Blade Flurry at 4+ targets." );
+  build->add_action( "blade_flurry,if=talent.deft_maneuvers&spell_targets>=3", "With Deft Maneuvers, build CPs with Blade Flurry at 4+ targets." );
   build->add_action( "coup_de_grace,if=buff.disorienting_strikes.up", "Prioritize Coup de Grace if Unseen Blade is guaranteed after Killing Spree." );
   build->add_action( "pistol_shot,if=talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up", "With Audacity + Hidden Opportunity, consume Opportunity to proc Audacity any time Ambush is not available." );
   build->add_action( "pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)", "With Fan the Hammer, consume Opportunity if at max stacks or if it will expire." );
