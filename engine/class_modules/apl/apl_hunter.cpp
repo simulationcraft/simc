@@ -98,9 +98,9 @@ void beast_mastery( player_t* p )
   cds->add_action( "fireblood,if=cooldown.bestial_wrath.ready|fight_remains<9" );
   cds->add_action( "potion,if=cooldown.bestial_wrath.ready|fight_remains<31" );
 
-  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd" );
+  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=full_recharge_time<gcd" );
   cleave->add_action( "wild_thrash,if=talent.beast_cleave" );
-  cleave->add_action( "bestial_wrath" );
+  cleave->add_action( "bestial_wrath,if=!prev.wild_thrash" );
   cleave->add_action( "wild_thrash,if=!talent.beast_cleave" );
   cleave->add_action( "kill_command" );
   cleave->add_action( "cobra_shot,if=cooldown.wild_thrash.remains>gcd&buff.hogstrider.up&active_enemies<4" );
@@ -132,7 +132,7 @@ void beast_mastery( player_t* p )
   st->add_action( "bestial_wrath" );
   st->add_action( "wild_thrash,if=active_enemies>1" );
   st->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.up|howl_summon.ready)|!apex.3" );
-  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
+  st->add_action( "barbed_shot,if=(focus<75|full_recharge_time<gcd)&!talent.serpentine_strikes|talent.serpentine_strikes" );
   st->add_action( "cobra_shot" );
 
   trinkets->add_action( "use_item,name=light_company_guidon,if=cooldown.bestial_wrath.ready|fight_remains<21" );
@@ -179,9 +179,9 @@ void beast_mastery_ptr( player_t* p )
   cds->add_action( "fireblood,if=cooldown.bestial_wrath.ready|fight_remains<9" );
   cds->add_action( "potion,if=cooldown.bestial_wrath.ready|fight_remains<31" );
 
-  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd" );
+  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=full_recharge_time<gcd" );
   cleave->add_action( "wild_thrash,if=talent.beast_cleave" );
-  cleave->add_action( "bestial_wrath" );
+  cleave->add_action( "bestial_wrath,if=!prev.wild_thrash" );
   cleave->add_action( "wild_thrash,if=!talent.beast_cleave" );
   cleave->add_action( "kill_command" );
   cleave->add_action( "cobra_shot,if=cooldown.wild_thrash.remains>gcd&buff.hogstrider.up&active_enemies<4" );
@@ -213,7 +213,7 @@ void beast_mastery_ptr( player_t* p )
   st->add_action( "bestial_wrath" );
   st->add_action( "wild_thrash,if=active_enemies>1" );
   st->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.up|howl_summon.ready)|!apex.3" );
-  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
+  st->add_action( "barbed_shot,if=(focus<75|full_recharge_time<gcd)&!talent.serpentine_strikes|talent.serpentine_strikes" );
   st->add_action( "cobra_shot" );
 
   trinkets->add_action( "use_item,name=light_company_guidon,if=cooldown.bestial_wrath.ready|fight_remains<21" );

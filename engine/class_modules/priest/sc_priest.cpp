@@ -3316,6 +3316,27 @@ void priest_t::init_background_actions()
   init_background_actions_holy();
 }
 
+bool priest_t::validate_actor()
+{
+  switch ( specialization() )
+  {
+    case PRIEST_HOLY:
+    case PRIEST_DISCIPLINE:
+      if ( !sim->allow_experimental_specializations )
+      {
+        if ( !quiet )
+          sim->error( "Healing Priest specializations for {} are not currently supported.", *this );
+        return false;
+      }
+    case PRIEST_SHADOW:
+      break;
+    default:
+      assert( false );
+  }
+
+  return player_t::validate_actor();
+}
+
 void priest_t::do_dynamic_regen( bool forced )
 {
   player_t::do_dynamic_regen( forced );

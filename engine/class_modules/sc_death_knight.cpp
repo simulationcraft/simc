@@ -8388,6 +8388,9 @@ struct dark_transformation_t : public death_knight_spell_t
 
     if ( p()->talent.unholy.pestilence.ok() )
       p()->buffs.pestilence->trigger();
+
+    if ( p()->bugs && p()->talent.sanlayn.inevitable.ok() )
+      p()->buffs.clawing_shadows->trigger( p()->buffs.clawing_shadows->max_stack() );
   }
 
   bool ready() override
@@ -14009,7 +14012,7 @@ void death_knight_t::create_actions()
     if ( talent.unholy.soul_reaper.ok() )
     {
       background_actions.putrefy_sr_aoe = new putrefy_aoe_t( options.wcl_reporting_mode ? "putrefy_aoe" : "putrefy_sr_aoe", this, PUTREFY_SOURCE_SOUL_REAPER );
-      background_actions.putrefy_sr_st  = new putrefy_st_t( options.wcl_reporting_mode ? "putrefy_st" : "putrefy_sr_aoe", this, PUTREFY_SOURCE_SOUL_REAPER );
+      background_actions.putrefy_sr_st  = new putrefy_st_t( options.wcl_reporting_mode ? "putrefy_st" : "putrefy_sr_st", this, PUTREFY_SOURCE_SOUL_REAPER );
       background_actions.putrefy_sr     = get_action<putrefy_sr_t>( "putrefy_sr", this );
       pet_summon.sr_ghoul = get_action<summon_lesser_ghoul_t>( "sr_ghoul", this, spell.summon_putrefy_ghoul,
                                                                lesser_ghoul_e::LESSER_SOUL_REAPER );

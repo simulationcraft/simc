@@ -3613,6 +3613,18 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
     } );
   }
 
+  else if ( name == "active_dots" )
+  {
+    return make_fn_expr( name, [ this ]() {
+      auto dot = find_dot( nullptr );
+
+      if ( dot )
+        return player->get_active_dots( dot );
+
+      return 0u;
+    } );
+  }
+
   if ( name == "last_used" )
   {
     std::vector<action_t*> last_used_list;
