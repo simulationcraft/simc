@@ -915,6 +915,7 @@ public:
   void init_scaling() override;
   void init_finished() override;
   void init_background_actions() override;
+  bool validate_actor() override;
   void reset() override;
   void create_options() override;
   std::string create_profile( save_e ) override;
