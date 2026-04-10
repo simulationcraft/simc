@@ -3316,7 +3316,7 @@ void priest_t::init_background_actions()
   init_background_actions_holy();
 }
 
-bool priest_t::validate_actor() override
+bool priest_t::validate_actor()
 {
   switch ( specialization() )
   {
@@ -3326,7 +3326,9 @@ bool priest_t::validate_actor() override
         sim->error( "Healing Priest specializations for {} area not currently supported.", *this );
       return false;
     case PRIEST_SHADOW:
-      continue;
+      break;
+    default:
+      assert( false );
   }
 
   return player_t::validate_actor();
