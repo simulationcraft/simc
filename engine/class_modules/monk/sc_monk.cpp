@@ -398,8 +398,7 @@ void monk_action_t<Base>::consume_resource()
 
     if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.tigereye_brew_1->ok() )
     {
-      double chi_cost = base_t::last_resource_cost;
-      double current_value = p()->buff.tigereye_brew_1_accumulator->stack_value() + chi_cost;
+      double current_value = p()->buff.tigereye_brew_1_accumulator->stack_value() + base_t::last_resource_cost;
       double trigger_amount = p()->talent.windwalker.tigereye_brew_1->effectN( 2 ).base_value();
       if ( current_value >= trigger_amount )
       {
@@ -6237,7 +6236,6 @@ void monk_t::create_buffs()
 
   buff.zenith_stomp =
       make_buff_fallback( talent.monk.zenith_stomp->ok(), this, "zenith_stomp", talent.monk.zenith_stomp_buff )
-          ->set_trigger_spell( talent.monk.zenith_stomp )
           ->set_reverse( true )
           ->set_reverse_stack_count( as<int>( talent.monk.zenith_stomp_buff->effectN( 1 ).base_value() +
                                                       talent.windwalker.tigereye_brew_3->ok()
