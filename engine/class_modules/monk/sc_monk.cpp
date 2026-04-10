@@ -888,7 +888,7 @@ struct rising_sun_kick_t : monk_melee_attack_t
       {
         timespan_t value = -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value();
         p()->cooldown.fists_of_fury->adjust( value, true );
-        p()->proc.xuens_battlegear_reduction->occur();
+        p()->proc.xuens_battlegear_rsk_reduction->occur();
       }
     }
   };
@@ -1508,6 +1508,21 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( jade_ignition )
       jade_ignition->execute();
+  }
+
+  void impact( action_state_t *state ) override
+  {
+    monk_melee_attack_t::impact( state );
+
+    if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.xuens_battlegear->ok() )
+    {
+      timespan_t reduction = p()->talent.windwalker.xuens_battlegear->effectN( 4 ).time_value();
+      // There is a misc value of 5 within each effect but not 100% sure to use those or not.
+      int max_targets = as<int>( p()->talent.windwalker.xuens_battlegear->effectN( 5 ).time_value() / reduction );
+      timespan_t value = -1 * std::min( max_targets, as<int>( state->n_targets ) ) * reduction;
+      p()->cooldown.fists_of_fury->adjust( value, true );
+      p()->proc.xuens_battlegear_sck_reduction->occur();
+    }
   }
 };
 
@@ -6347,16 +6362,17 @@ void monk_t::init_procs()
 {
   base_t::init_procs();
 
-  proc.anvil_and_stave            = get_proc( "Anvil & Stave" );
-  proc.blackout_combo_tiger_palm  = get_proc( "Blackout Combo - Tiger Palm" );
-  proc.blackout_combo_keg_smash   = get_proc( "Blackout Combo - Keg Smash" );
-  proc.charred_passions           = get_proc( "Charred Passions" );
-  proc.elusive_footwork_proc      = get_proc( "Elusive Footwork" );
-  proc.salsalabims_strength       = get_proc( "Sal'salabim Breath of Fire Reset" );
-  proc.tranquil_spirit_expel_harm = get_proc( "Tranquil Spirit - Expel Harm" );
-  proc.tranquil_spirit_goto       = get_proc( "Tranquil Spirit - Gift of the Ox" );
-  proc.xuens_battlegear_reduction = get_proc( "Xuen's Battlegear CD Reduction" );
-  proc.elusive_brawler_preserved  = get_proc( "Elusive Brawler Stacks Preserved" );
+  proc.anvil_and_stave                = get_proc( "Anvil & Stave" );
+  proc.blackout_combo_tiger_palm      = get_proc( "Blackout Combo - Tiger Palm" );
+  proc.blackout_combo_keg_smash       = get_proc( "Blackout Combo - Keg Smash" );
+  proc.charred_passions               = get_proc( "Charred Passions" );
+  proc.elusive_footwork_proc          = get_proc( "Elusive Footwork" );
+  proc.salsalabims_strength           = get_proc( "Sal'salabim Breath of Fire Reset" );
+  proc.tranquil_spirit_expel_harm     = get_proc( "Tranquil Spirit - Expel Harm" );
+  proc.tranquil_spirit_goto           = get_proc( "Tranquil Spirit - Gift of the Ox" );
+  proc.xuens_battlegear_rsk_reduction = get_proc( "Xuen's Battlegear CD RSK Reduction" );
+  proc.xuens_battlegear_sck_reduction = get_proc( "Xuen's Battlegear CD SCK Reduction" );
+  proc.elusive_brawler_preserved      = get_proc( "Elusive Brawler Stacks Preserved" );
 }
 
 monk_effect_callback_t::monk_effect_callback_t( const special_effect_t &effect, monk_t *player )
