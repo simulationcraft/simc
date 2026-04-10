@@ -391,8 +391,27 @@ void monk_action_t<Base>::consume_resource()
   if ( !base_t::execute_state )  // Fixes rare crashes at combat_end.
     return;
 
-  if ( current_resource() == RESOURCE_CHI && p()->talent.windwalker.dance_of_chiji->ok() )
-    p()->buff.dance_of_chiji->trigger();
+  if ( current_resource() == RESOURCE_CHI )
+  {
+    if ( p()->talent.windwalker.dance_of_chiji->ok() )
+      p()->buff.dance_of_chiji->trigger();
+
+    if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.tigereye_brew_1->ok() )
+    {
+      double chi_cost = base_t::last_resource_cost;
+      double current_value = p()->buff.tigereye_brew_1_accumulator->stack_value();
+      double trigger_amount = p()->talent.windwalker.tigereye_brew_1->effectN( 2 ).base_value();
+      if ( current_value + chi_cost >= trigger_amount )
+      {
+        p()->buff.tigereye_brew_1->trigger();
+        current_value += chi_cost - trigger_amount;
+      }
+      else
+        current_value += chi_cost;
+
+      p()->buff.tigereye_brew_1_accumulator->trigger( 1, current_value );
+    }
+  } 
 
   // Chi Savings on Dodge & Parry & Miss
   if ( base_t::last_resource_cost > 0 )
@@ -6234,6 +6253,13 @@ void monk_t::create_buffs()
                                              talent.windwalker.tigereye_brew_1_buff )
                              ->set_default_value( talent.windwalker.tigereye_brew_1_buff->effectN( 1 ).percent() );
 
+  buff.tigereye_brew_1_accumulator =
+      make_buff_fallback( talent.windwalker.tigereye_brew_1->ok(), this, "tigereye_brew_1_accumulator" )
+          ->set_quiet( true )
+          ->set_cooldown( 0_ms )
+          ->set_duration( 6000_s )
+          ->set_max_stack( 1 );
+
   buff.tigereye_brew_3 = make_buff_fallback( talent.windwalker.tigereye_brew_3->ok(), this, "tigereye_brew_3",
                                              talent.windwalker.tigereye_brew_3_buff )
                              ->set_cooldown( talent.windwalker.tigereye_brew_3->internal_cooldown() );
@@ -6974,7 +7000,8 @@ void monk_t::combat_begin()
     make_repeating_event( sim, talent.monk.chi_wave->effectN( 1 ).period(), [ this ]() { buff.chi_wave->trigger(); } );
   }
 
-  if ( talent.windwalker.tigereye_brew_1->ok() )
+  // This is just for easier cleanup later
+  if ( talent.windwalker.tigereye_brew_1->ok() && wowv_l( wowv_t( 12, 0, 5 ) ) )
   {
     const auto period_fn = []( monk_t *player ) -> timespan_t {
       return player->talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * player->composite_melee_haste();
@@ -6990,6 +7017,11 @@ void monk_t::combat_begin()
 
     if ( !buff.tigereye_brew_1->check() )
       buff.tigereye_brew_1->trigger( as<int>( talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() ) );
+  }
+
+  if ( talent.windwalker.tigereye_brew_1->ok() && wowv_ge( wowv_t( 12, 0, 5 ) ) )
+  {
+    buff.tigereye_brew_1_accumulator->trigger( 1, 0 );
   }
 
   if ( specialization() == MONK_WINDWALKER )

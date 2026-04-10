@@ -560,6 +560,7 @@ public:
     propagate_const<buff_t *> zenith_stomp;
     propagate_const<buff_t *> rushing_wind_kick;
     propagate_const<buff_t *> tigereye_brew_1;
+    propagate_const<buff_t *> tigereye_brew_1_accumulator;
     propagate_const<buff_t *> tigereye_brew_3;
 
     // Conduit of the Celestials
