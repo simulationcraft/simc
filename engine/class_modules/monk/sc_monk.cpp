@@ -3766,8 +3766,7 @@ struct zenith_t : public monk_spell_t
   action_t *zenith_stomp;
 
   zenith_t( monk_t *player, std::string_view options_str )
-    : monk_spell_t( player, "zenith", player->talent.windwalker.zenith ),
-      zenith_stomp( nullptr )
+    : monk_spell_t( player, "zenith", player->talent.windwalker.zenith ), zenith_stomp( nullptr )
   {
     parse_options( options_str );
     may_combo_strike = true;
@@ -6210,10 +6209,10 @@ void monk_t::create_buffs()
   buff.zenith_stomp =
       make_buff_fallback( talent.monk.zenith_stomp->ok(), this, "zenith_stomp", talent.monk.zenith_stomp_buff )
           ->set_reverse( true )
-          ->set_reverse_stack_count( as<int>( talent.monk.zenith_stomp_buff->effectN( 1 ).base_value() +
-                                                      talent.windwalker.tigereye_brew_3->ok()
-                                                  ? talent.windwalker.tigereye_brew_3->effectN( 1 ).base_value()
-                                                  : 0 ) );
+          ->set_reverse_stack_count(
+              as<int>( talent.monk.zenith_stomp_buff->initial_stacks() + talent.windwalker.tigereye_brew_3->ok()
+                           ? talent.windwalker.tigereye_brew_3->effectN( 1 ).base_value()
+                           : 0 ) );
 
   buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
                                                talent.windwalker.rushing_wind_kick_buff );
