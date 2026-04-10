@@ -25,7 +25,7 @@ namespace warlock_apl{
 
     if ( p->true_level >= 90 ) return lvl90_flask;
     return ( p->true_level >= 80 ) ? "flask_of_alchemical_chaos_3" : "disabled";
-}
+  }
 
   std::string food( const player_t* p )
   {
