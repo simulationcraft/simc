@@ -3322,9 +3322,12 @@ bool priest_t::validate_actor()
   {
     case PRIEST_HOLY:
     case PRIEST_DISCIPLINE:
-      if ( !quiet )
-        sim->error( "Healing Priest specializations for {} area not currently supported.", *this );
-      return false;
+      if ( !sim->allow_experimental_specializations )
+      {
+        if ( !quiet )
+          sim->error( "Healing Priest specializations for {} are not currently supported.", *this );
+        return false;
+      }
     case PRIEST_SHADOW:
       break;
     default:
