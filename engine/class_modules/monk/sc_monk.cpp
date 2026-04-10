@@ -1532,7 +1532,8 @@ struct fists_of_fury_t : monk_melee_attack_t
                 [ & ]( double ) { return ( ( 1.0 / p()->composite_melee_haste() ) - 1.0 ) * effect.percent(); } )
             .set_eff( &effect );
 
-      parse_effects( player->buff.tigereye_brew_3 );
+      if ( player->wowv_l( wowv_t( 12, 0, 5 ) ) )
+        parse_effects( player->buff.tigereye_brew_3 );
 
       add_parse_entry( da_multiplier_effects )
           .set_value( player->talent.windwalker.fists_of_fury->effectN( 6 ).percent() - 1.0 )
@@ -1556,7 +1557,7 @@ struct fists_of_fury_t : monk_melee_attack_t
       monk_melee_attack_t::impact( state );
 
       p()->buff.momentum_boost_damage->trigger();
-      if ( p()->rng().roll( p()->composite_melee_crit_chance() ) )
+      if ( p()->wowv_l( wowv_t( 12, 0, 5 ) ) && p()->rng().roll( p()->composite_melee_crit_chance() ) )
         p()->buff.tigereye_brew_3->trigger();
     }
   };
