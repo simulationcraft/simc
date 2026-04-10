@@ -544,22 +544,36 @@ struct harmonic_surge_t : public base_action_t
   using base_t = harmonic_surge_t<base_action_t>;
 
   template <typename TBase>
-  struct impact_t : TBase
+  struct impact_base_t : TBase
   {
-    impact_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+    impact_t( monk_t *player, std::string_view name, unsigned effect_index = 0, const spell_data_t *spell_data )
       : TBase( player, fmt::format( "harmonic_surge_{}", name ), spell_data )
     {
-      TBase::aoe              = -1;
-      TBase::split_aoe_damage = true;
+      TBase::background = true;
+      TBase::dual       = true;
+
+      const auto &effect            = spell_data->effectN( effect_index ? effect_index : 1 );
+      TBase::spell_power_mod.direct = effect.sp_coeff();
+
+      if ( effect.target_1() == 53 && effect.target_2() == 16 )
+      {
+        TBase::aoe                    = -1;
+        TBase::reduced_aoe_targets    = player->talent.master_of_harmony.harmonic_surge->effectN( 7 ).base_value();
+        TBase::target_filter_callback = secondary_targets_only();
+      }
+
+      if ( effect.target_1() == 18 && effect.target_2() == 31 )
+      {
+        TBase::aoe = spell_data->effectN( 2 ).base_value();
+      }
 
       size_t offset = 1;
-
-      switch ( spell_data->effectN( 1 ).type() )
+      switch ( effect.type() )
       {
         case E_SCHOOL_DAMAGE:
           break;
         case E_HEAL:
-          offset++;
+          offset += 2;
           break;
         default:
           assert( false );
@@ -567,24 +581,39 @@ struct harmonic_surge_t : public base_action_t
 
       if ( const spelleffect_data_t &effect = player->talent.master_of_harmony.harmonic_surge->effectN( offset );
            effect.ok() )
-        add_parse_entry( TBase::da_multiplier_effects ).set_value( effect.percent() - 1.0 ).set_eff( &effect );
+        add_parse_entry( TBase::da_multiplier_effects )
+            .set_value( effect.percent() - 1.0 )
+            .set_note( "Scripted Direct Damage/Healing Aura" )
+            .set_eff( &effect );
+
+      if ( const spelleffect_data_t &effect = player->talent.master_of_harmony.harmonic_surge->effectN( 1 );
+           effect.ok() )
+        add_parse_entry( TBase::da_multiplier_effects )
+            .set_buff( player->buff.potential_energy )
+            .set_use_stacks( true )
+            .set_value( 1.0 )
+            .set_note( "Potential Energy Stack Count" )
+            .set_eff( &effect );
     }
   };
 
-  action_t *damage;
+  action_t *aoe;
+  action_t *st;
   action_t *heal;
 
   template <typename... Args>
   harmonic_surge_t( monk_t *player, std::string_view name, Args &&...args )
-    : base_action_t( player, name, std::forward<Args>( args )... ), damage( nullptr ), heal( nullptr )
+    : base_action_t( player, name, std::forward<Args>( args )... ), aoe( nullptr ), st( nullptr ), heal( nullptr )
   {
     if ( !player->talent.master_of_harmony.harmonic_surge->ok() )
       return;
 
-    damage = new impact_t<monk_spell_t>( player, fmt::format( "damage_{}", name ),
-                                         player->talent.master_of_harmony.harmonic_surge_damage );
-    heal   = new impact_t<monk_heal_t>( player, fmt::format( "heal_{}", name ),
-                                        player->talent.master_of_harmony.harmonic_surge_heal );
+    st   = new impact_t<monk_spell_t>( player, fmt::format( "damage_st_{}", name ),
+                                       1 player->talent.master_of_harmony.harmonic_surge_damage );
+    aoe  = new impact_t<monk_spell_t>( player, fmt::format( "damage_aoe_{}", name ),
+                                       2 player->talent.master_of_harmony.harmonic_surge_damage );
+    heal = new impact_t<monk_heal_t>( player, fmt::format( "heal_{}", name ),
+                                      player->talent.master_of_harmony.harmonic_surge_heal );
 
     base_action_t::add_child( damage );
     base_action_t::add_child( heal );
@@ -597,9 +626,11 @@ struct harmonic_surge_t : public base_action_t
     if ( !base_action_t::p()->buff.harmonic_surge->up() )
       return;
 
-    base_action_t::p()->buff.harmonic_surge->decrement();
-    damage->execute();
+    st->execute();
+    aoe->execute();
     heal->execute();
+
+    base_action_t::p()->buff.harmonic_surge->expire();
   }
 };
 
