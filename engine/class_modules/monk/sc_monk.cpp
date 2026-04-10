@@ -398,7 +398,7 @@ void monk_action_t<Base>::consume_resource()
 
     if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.tigereye_brew_1->ok() )
     {
-      double current_value = p()->buff.tigereye_brew_1_accumulator->stack_value() + base_t::last_resource_cost;
+      double current_value  = p()->buff.tigereye_brew_1_accumulator->stack_value() + base_t::last_resource_cost;
       double trigger_amount = p()->talent.windwalker.tigereye_brew_1->effectN( 2 ).base_value();
       if ( current_value >= trigger_amount )
       {
@@ -408,7 +408,7 @@ void monk_action_t<Base>::consume_resource()
 
       p()->buff.tigereye_brew_1_accumulator->trigger( 1, current_value );
     }
-  } 
+  }
 
   // Chi Savings on Dodge & Parry & Miss
   if ( base_t::last_resource_cost > 0 )
@@ -1524,19 +1524,12 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( jade_ignition )
       jade_ignition->execute();
-  }
-
-  void impact( action_state_t *state ) override
-  {
-    monk_melee_attack_t::impact( state );
 
     if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.xuens_battlegear->ok() )
     {
-      timespan_t reduction = p()->talent.windwalker.xuens_battlegear->effectN( 4 ).time_value();
-      // There is a misc value of 5 within each effect but not 100% sure to use those or not.
-      int max_targets = as<int>( p()->talent.windwalker.xuens_battlegear->effectN( 5 ).time_value() / reduction );
-      timespan_t value = -1 * std::min( max_targets, as<int>( state->n_targets ) ) * reduction;
-      p()->cooldown.fists_of_fury->adjust( value, true );
+      timespan_t base_reduction = p()->talent.windwalker.xuens_battlegear->effectN( 4 ).time_value() * num_targets_hit;
+      timespan_t max_reduction  = p()->talent.windwalker.xuens_battlegear->effectN( 5 ).time_value();
+      p()->cooldown.fists_of_fury->adjust( -1 * std::min( base_reduction, max_reduction ), true );
       p()->proc.xuens_battlegear_sck_reduction->occur();
     }
   }
@@ -5245,7 +5238,6 @@ action_t *monk_t::create_action( std::string_view name, std::string_view options
     return new zenith_t( this, options_str );
   if ( name == "zenith_stomp" )
     return new zenith_stomp_t( this, options_str );
-
 
   // Conduit of the Celestials
   if ( name == "celestial_conduit" )
