@@ -399,15 +399,13 @@ void monk_action_t<Base>::consume_resource()
     if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.tigereye_brew_1->ok() )
     {
       double chi_cost = base_t::last_resource_cost;
-      double current_value = p()->buff.tigereye_brew_1_accumulator->stack_value();
+      double current_value = p()->buff.tigereye_brew_1_accumulator->stack_value() + chi_cost;
       double trigger_amount = p()->talent.windwalker.tigereye_brew_1->effectN( 2 ).base_value();
-      if ( current_value + chi_cost >= trigger_amount )
+      if ( current_value >= trigger_amount )
       {
         p()->buff.tigereye_brew_1->trigger();
-        current_value += chi_cost - trigger_amount;
+        current_value -= trigger_amount;
       }
-      else
-        current_value += chi_cost;
 
       p()->buff.tigereye_brew_1_accumulator->trigger( 1, current_value );
     }
