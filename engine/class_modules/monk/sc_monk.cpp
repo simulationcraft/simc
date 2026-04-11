@@ -398,7 +398,7 @@ void monk_action_t<Base>::consume_resource()
 
     if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.tigereye_brew_1->ok() )
     {
-      double current_value  = p()->buff.tigereye_brew_1_accumulator->stack_value() + base_t::last_resource_cost;
+      double current_value  = p()->buff.tigereye_brew_1_accumulator->stack_value() + base_t::base_costs[ RESOURCE_CHI ];
       double trigger_amount = p()->talent.windwalker.tigereye_brew_1->effectN( 2 ).base_value();
       if ( current_value >= trigger_amount )
       {
@@ -7003,6 +7003,9 @@ void monk_t::combat_begin()
   if ( talent.windwalker.tigereye_brew_1->ok() && wowv_ge( wowv_t( 12, 0, 5 ) ) )
   {
     buff.tigereye_brew_1_accumulator->trigger( 1, 0 );
+
+    if ( !buff.tigereye_brew_1->check() )
+      buff.tigereye_brew_1->trigger( as<int>( talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() ) );
   }
 
   if ( talent.conduit_of_the_celestials.inner_compass->ok() && wowv_ge( { 12, 0, 5 } ) )
