@@ -569,6 +569,7 @@ public:
     propagate_const<buff_t *> heart_of_the_jade_serpent;
     propagate_const<buff_t *> heart_of_the_jade_serpent_yulons_avatar;
     propagate_const<buff_t *> heart_of_the_jade_serpent_unity_within;
+    propagate_const<buff_t *> inner_compass_crane_stance;
     propagate_const<buff_t *> inner_compass_ox_stance;
     propagate_const<buff_t *> inner_compass_serpent_stance;
     propagate_const<buff_t *> inner_compass_tiger_stance;
@@ -1013,6 +1014,7 @@ public:
       const spell_data_t *celestial_conduit_damage;
       const spell_data_t *celestial_conduit_heal;
       player_talent_t inner_compass;
+      const spell_data_t *inner_compass_crane_stance_buff;
       const spell_data_t *inner_compass_ox_stance_buff;
       const spell_data_t *inner_compass_tiger_stance_buff;
       const spell_data_t *inner_compass_serpent_stance_buff;

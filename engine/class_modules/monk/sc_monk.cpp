@@ -1744,7 +1744,8 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
       make_event<events::delayed_cb_event_t>( *p()->sim, p(), i * base_tick_time, [ i, this ] { aoe->execute( !i ); } );
 
     p()->buff.heart_of_the_jade_serpent->trigger();
-    p()->buff.inner_compass_serpent_stance->trigger();
+    if ( p()->wowv_l( { 12, 0, 5 } ) )
+      p()->buff.inner_compass_serpent_stance->trigger();
 
     if ( const player_talent_t &talent = p()->talent.windwalker.knowledge_of_the_broken_temple; talent->ok() )
       p()->buff.teachings_of_the_monastery->trigger( as<unsigned>( talent->effectN( 1 ).base_value() ) );
@@ -1859,7 +1860,8 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       main_hand->execute();
 
     p()->buff.heart_of_the_jade_serpent->trigger();
-    p()->buff.inner_compass_serpent_stance->trigger();
+    if ( p()->wowv_l( { 12, 0, 5 } ) )
+      p()->buff.inner_compass_serpent_stance->trigger();
 
     if ( const player_talent_t &talent = p()->talent.windwalker.knowledge_of_the_broken_temple; talent->ok() )
       p()->buff.teachings_of_the_monastery->trigger( as<unsigned>( talent->effectN( 1 ).base_value() ) );
@@ -3410,7 +3412,8 @@ struct courage_of_the_white_tiger_t : conduit_of_the_celestials_container_t
       if ( source == BASE )
       {
         p()->buff.strength_of_the_black_ox->trigger();
-        p()->buff.inner_compass_tiger_stance->trigger();
+        if ( p()->wowv_l( { 12, 0, 5 } ) )
+          p()->buff.inner_compass_tiger_stance->trigger();
         p()->buff.courage_of_the_white_tiger->expire();
       }
 
@@ -3519,7 +3522,8 @@ struct strength_of_the_black_ox_t : conduit_of_the_celestials_container_t
           return;
 
         p()->buff.strength_of_the_black_ox->expire();
-        p()->buff.inner_compass_ox_stance->trigger();
+        if ( p()->wowv_l( { 12, 0, 5 } ) )
+          p()->buff.inner_compass_ox_stance->trigger();
       }
 
       monk_spell_t::execute();
@@ -5115,6 +5119,7 @@ void monk_t::parse_player_effects()
   parse_effects( buff.inner_compass_ox_stance );
   parse_effects( buff.inner_compass_serpent_stance );
   parse_effects( buff.inner_compass_tiger_stance );
+  parse_effects( buff.inner_compass_crane_stance );
 
   effect_mask_t em = talent.conduit_of_the_celestials.flowing_wisdom->ok() ? effect_mask_t( true )
                                                                            : effect_mask_t( true ).disable( 8 );
@@ -5722,6 +5727,7 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.inner_compass_ox_stance_buff      = find_spell( 443574 );
     talent.conduit_of_the_celestials.inner_compass_tiger_stance_buff   = find_spell( 443575 );
     talent.conduit_of_the_celestials.inner_compass_serpent_stance_buff = find_spell( 443576 );
+    talent.conduit_of_the_celestials.inner_compass_crane_stance_buff   = find_spell( 443572 );
     talent.conduit_of_the_celestials.flowing_wisdom                    = _HT( "Flowing Wisdom" );
     talent.conduit_of_the_celestials.unity_within                      = _HT( "Unity Within" );
     talent.conduit_of_the_celestials.unity_within_buff                 = find_spell( 443592 );
@@ -6258,12 +6264,17 @@ void monk_t::create_buffs()
               buff.heart_of_the_jade_serpent->expire();
           } );
 
+  buff.inner_compass_crane_stance =
+      make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "crane_stance",
+                          talent.conduit_of_the_celestials.inner_compass_crane_stance_buff );
+
   buff.inner_compass_ox_stance =
       make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "ox_stance",
                           talent.conduit_of_the_celestials.inner_compass_ox_stance_buff )
           ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
-            if ( old_ == 0 )
+            if ( old_ == 0 && wowv_l( { 12, 0, 5 } ) )
             {
+              buff.inner_compass_crane_stance->expire();
               buff.inner_compass_serpent_stance->expire();
               buff.inner_compass_tiger_stance->expire();
             }
@@ -6273,8 +6284,9 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "serpent_stance",
                           talent.conduit_of_the_celestials.inner_compass_serpent_stance_buff )
           ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
-            if ( old_ == 0 )
+            if ( old_ == 0 && wowv_l( { 12, 0, 5 } ) )
             {
+              buff.inner_compass_crane_stance->expire();
               buff.inner_compass_ox_stance->expire();
               buff.inner_compass_tiger_stance->expire();
             }
@@ -6284,8 +6296,9 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.conduit_of_the_celestials.inner_compass->ok(), this, "tiger_stance",
                           talent.conduit_of_the_celestials.inner_compass_tiger_stance_buff )
           ->set_stack_change_callback( [ this ]( buff_t *, int old_, int ) {
-            if ( old_ == 0 )
+            if ( old_ == 0 && wowv_l( { 12, 0, 5 } ) )
             {
+              buff.inner_compass_crane_stance->expire();
               buff.inner_compass_ox_stance->expire();
               buff.inner_compass_serpent_stance->expire();
             }
@@ -6990,6 +7003,26 @@ void monk_t::combat_begin()
   if ( talent.windwalker.tigereye_brew_1->ok() && wowv_ge( wowv_t( 12, 0, 5 ) ) )
   {
     buff.tigereye_brew_1_accumulator->trigger( 1, 0 );
+  }
+
+  if ( talent.conduit_of_the_celestials.inner_compass->ok() && wowv_ge( { 12, 0, 5 } ) )
+  {
+    const std::array<buff_t *, 4> stances = { buff.inner_compass_crane_stance, buff.inner_compass_ox_stance,
+                                              buff.inner_compass_tiger_stance, buff.inner_compass_serpent_stance };
+
+    // Select a random stance to begin the iteration.
+    rng().range( stances )->trigger();
+
+    make_repeating_event(
+        sim, talent.conduit_of_the_celestials.inner_compass->effectN( 1 ).period(), [ this, stances ]() {
+          auto current_stance =
+              std::find_if( stances.begin(), stances.end(), []( auto &stance ) { return stance->check(); } );
+          ( *current_stance )->expire();
+          if ( std::next( current_stance ) != stances.end() )
+            ( *std::next( current_stance ) )->trigger();
+          else
+            ( *stances.begin() )->trigger();
+        } );
   }
 
   if ( specialization() == MONK_WINDWALKER )
