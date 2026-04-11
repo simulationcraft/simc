@@ -640,7 +640,7 @@ wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
 
   // Each Wild Imp uses its own independent accumulator PRD, reset to 0 on arise
   if ( owner->talents.infernal_rapidity.ok() )
-    prd_rng_infernal_rapidity = get_accumulated_rng( "infernal_rapidity_i" + actor_index, owner->prd_rng.infernal_rapidity_prd_c_value );
+    prd_rng_infernal_rapidity = get_accumulated_rng( "infernal_rapidity_i" + std::to_string( actor_index ), owner->prd_rng.infernal_rapidity_prd_c_value );
 }
 
 struct fel_firebolt_t : public warlock_pet_spell_t
