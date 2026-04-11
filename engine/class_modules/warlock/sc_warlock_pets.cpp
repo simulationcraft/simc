@@ -637,12 +637,17 @@ wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
 
   resource_regeneration = regen_type::DISABLED;
   owner_coeff.health = 0.15;
+
+  // Each Wild Imp uses its own independent accumulator PRD, reset to 0 on arise
+  if ( owner->talents.infernal_rapidity.ok() )
+    prd_rng_infernal_rapidity = get_accumulated_rng( "infernal_rapidity_i" + actor_index, owner->prd_rng.infernal_rapidity_prd_c_value );
 }
 
 struct fel_firebolt_t : public warlock_pet_spell_t
 {
   fel_firebolt_t* twin = nullptr;
   const bool is_twin;
+  mutable bool target_cache_unstable_soul_state = false;
 
   fel_firebolt_t( warlock_pet_t* p, bool _is_twin = false )
     : warlock_pet_spell_t( "fel_firebolt", p, p->find_spell( 104318 ) ),
@@ -692,11 +697,64 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     }
   }
 
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    warlock_pet_spell_t::available_targets( tl );
+
+    // If there is more than one target, Unstable Soul always fires all extra hits,
+    // even if some targets are hit multiple times
+    if ( p()->buffs.unstable_soul->check() )
+    {
+      const int n_tar = n_targets();
+      const size_t og_tar_count = tl.size();
+
+      if ( n_tar > 1 && og_tar_count > 1 && og_tar_count < as<size_t>( n_tar ) )
+      {
+        size_t remaining_tar = as<size_t>( n_tar ) - og_tar_count;
+
+        tl.reserve( as<size_t>( n_tar ) );
+        while ( remaining_tar >= og_tar_count )
+        {
+          for ( size_t i = 0; i < og_tar_count; ++i )
+            tl.push_back( tl[ i ] );
+
+          remaining_tar -= og_tar_count;
+        }
+
+        if ( remaining_tar > 0 )
+        {
+          std::vector<player_t*> shuff_tar( tl.begin(), tl.begin() + og_tar_count );
+          rng().shuffle( shuff_tar.begin(), shuff_tar.end() );
+
+          for ( size_t i = 0; i < remaining_tar; ++i )
+            tl.push_back( shuff_tar[ i ] );
+        }
+      }
+    }
+
+    return tl.size();
+  }
+
+  std::vector<player_t*>& target_list() const override
+  {
+    // Invalidate the target cache whenever the current Unstable Soul buff state differs from the cached one,
+    // since available_targets() builds a different target list depending on whether the buff is active or not.
+    const bool unstable_soul_buff = p()->buffs.unstable_soul->check();
+    if ( target_cache_unstable_soul_state != unstable_soul_buff )
+    {
+      target_cache.is_valid = false;
+      target_cache_unstable_soul_state = unstable_soul_buff;
+    }
+
+    return warlock_pet_spell_t::target_list();
+  }
+
   void execute() override
   {
     warlock_pet_spell_t::execute();
 
-    if ( ( twin != nullptr ) && p()->o()->flat_rng.infernal_rapidity->trigger() )
+    // Extra Fel Firebolts from Infernal Rapidity cannot proc Infernal Rapidity again
+    if ( ( twin != nullptr ) && ( p()->bugs ? debug_cast<wild_imp_pet_t*>( p() )->prd_rng_infernal_rapidity->trigger() : rng().roll( p()->o()->talents.infernal_rapidity->effectN( 1 ).percent() ) ) )
     {
       p()->o()->procs.infernal_rapidity->occur();
       twin->execute_on_target( target );
@@ -765,6 +823,11 @@ void wild_imp_pet_t::arise()
   is_hog_imp = ( duration == o()->warlock_base.wild_imp->duration() ); // TODO: Only valid because duration diff, look for a safer way
   power_siphon = false;
   imploded = false;
+
+  // Each Wild Imp uses its own independent accumulator PRD, reset to 0 on arise
+  if ( o()->talents.infernal_rapidity.ok() )
+    prd_rng_infernal_rapidity->reset( reset_type_e::COMBAT );
+
   o()->buffs.wild_imps->trigger();
 
   if ( o()->talents.summon_demonic_tyrant.ok() )

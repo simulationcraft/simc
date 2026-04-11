@@ -1015,6 +1015,7 @@ public:
     accumulated_rng_t* feast_of_souls;
     accumulated_rng_t* demoniac_imp_fade;
     accumulated_rng_t* spiteful_reconstitution;
+    double infernal_rapidity_prd_c_value;
   } prd_rng;
 
   struct flat_rng_t
@@ -1022,7 +1023,6 @@ public:
     simple_proc_t* immolate_crit_energize; // TODO: Need to check the type of rng
     simple_proc_t* demoniac_imp_implosion;
     simple_proc_t* carnivorous_stalkers;
-    simple_proc_t* infernal_rapidity;
     simple_proc_t* demonfire_infusion_dot; // TODO: Need to check the type of rng
     simple_proc_t* demonfire_infusion_inc; // TODO: Need to check the type of rng
     simple_proc_t* alythesss_ire_shift;

@@ -1285,13 +1285,12 @@ namespace warlock
     if ( talents.carnivorous_stalkers.ok() )
       flat_rng.carnivorous_stalkers = get_simple_proc_rng( "carnivorous_stalkers", talents.carnivorous_stalkers->effectN( 1 ).percent() );
 
-    // NOTE: 2026-03-06 It has been tested that Infernal Rapidity follows a Flat % chance model for each individual cast
-    // However, the % chance seems to be bugged and only half of what is specified in the spell data is being applied (bug)
+    // Modeling Infernal Rapidity as a pseudo-random distribution (PRD) with a nominal rate of 10%, which corresponds to PRD constant
+    // C = 0.014745844781072676. Each Wild Imp uses its own independent accumulator PRD, reset to 0 on spawn. Since a single Wild Imp
+    // can cast at most 6 Fel Firebolts, the PRD never has time to fully ramp up, resulting in an average proc chance of ~4.80%.
     if ( talents.infernal_rapidity.ok() )
     {
-      double infernal_rapidity_chance = talents.infernal_rapidity->effectN( 1 ).percent();
-      infernal_rapidity_chance = bugs ? infernal_rapidity_chance * 0.5 : infernal_rapidity_chance;
-      flat_rng.infernal_rapidity = get_simple_proc_rng( "infernal_rapidity", infernal_rapidity_chance );
+      prd_rng.infernal_rapidity_prd_c_value = prd::find_constant( talents.infernal_rapidity->effectN( 1 ).percent() );
     }
 
     // Modeling Spiteful Reconstitution as a pseudo-random distribution (PRD) with an uncapped nominal rate of 10%.
