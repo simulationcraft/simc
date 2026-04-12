@@ -534,6 +534,8 @@ public:
 
     proc_t* deathblow;
 
+    proc_t* windrunner_quiver;
+
     proc_t* dire_beast_spawn;
     proc_t* dark_minion_spawn;
     proc_t* dark_hound_spawn;
@@ -3685,6 +3687,15 @@ void hunter_t::consume_precise_shots()
 
   buffs.precise_shots->expire();
   buffs.stargazer->trigger();
+
+  if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+  {
+    if ( rng().roll( talents.windrunner_quiver->effectN( 3 ).percent() ) )
+    {
+      buffs.precise_shots->trigger();
+      procs.windrunner_quiver->occur();
+    }
+  }
 }
 
 void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force )
@@ -5526,8 +5537,13 @@ struct aimed_shot_t : public aimed_shot_base_t
     p()->consume_trick_shots();
 
     int precise_shot_stacks = 1;
-    if ( rng().roll( p()->talents.windrunner_quiver->effectN( 6 ).percent() ) )
-      precise_shot_stacks++;
+
+    if ( p()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    {
+      if ( rng().roll( p()->talents.windrunner_quiver->effectN( 6 ).percent() ) )
+        precise_shot_stacks++;
+    }
+    
     p()->buffs.precise_shots->increment( precise_shot_stacks );
 
     if ( rng().roll( deathblow.chance ) )
@@ -8250,6 +8266,9 @@ void hunter_t::init_procs()
 
   if ( talents.deathblow_buff.ok() )
     procs.deathblow = get_proc( "Deathblow" );
+
+  if ( talents.windrunner_quiver.ok() && sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+    procs.windrunner_quiver = get_proc( "Windrunner Quiver" );
 
   if ( talents.dire_beast_summon.ok() )
     procs.dire_beast_spawn = get_proc( "Dire Beast" );
