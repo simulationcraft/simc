@@ -6110,6 +6110,16 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
         m *= 1 + td->debuff.wave_of_souls->check_stack_value();
       }
     }
+    // Death strike only appears to get the value of a single stack of wave of souls
+    if ( p()->talent.deathbringer.wave_of_souls->ok() && p()->talent.deathbringer.dark_talons->ok() &&
+          this->data().id() == p()->talent.death_strike->id() && p()->buffs.icy_talons->up() )
+    {
+      death_knight_td_t* td = get_td( state->target );
+      if ( td->debuff.wave_of_souls->check() )
+      {
+        m *= 1 + td->debuff.wave_of_souls->value();
+      }
+    }
     return m;
   }
 };
