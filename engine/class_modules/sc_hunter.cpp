@@ -3988,7 +3988,7 @@ struct auto_shot_base_t : public auto_attack_base_t<ranged_attack_t>
     snakeskin_quiver_chance = p->talents.snakeskin_quiver->effectN( 1 ).percent();
     lock_and_load_chance = p->talents.lock_and_load->effectN( 1 ).percent();
     
-    if ( p->talents.precise_shots.ok() )
+    if ( p->talents.precise_shots.ok() && p->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
     {
       base_execute_time += p->talents.precise_shots->effectN( 1 ).time_value();
     }
@@ -4228,8 +4228,11 @@ struct arcane_shot_t : public arcane_shot_base_t
   {
     timespan_t g = arcane_shot_base_t::gcd();
 
-    if ( p()->buffs.precise_shots->check() )
-      g *= 1 + p()->talents.precise_shots_buff->effectN( 4 ).percent();
+    if ( p()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    {
+      if ( p()->buffs.precise_shots->check() )
+        g *= 1 + p()->talents.precise_shots_buff->effectN( 4 ).percent();
+    }
     
     return std::max( min_gcd, g );
   }
@@ -4376,6 +4379,18 @@ struct kill_shot_base_t : hunter_ranged_attack_t
 {
   double health_threshold_pct;
 
+  struct state_data_t
+  {
+    bool empowered_by_precise_shots = false;
+
+    friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out )
+    {
+      fmt::format_to( out, "empowered_by_precise_shots={}", data.empowered_by_precise_shots );
+    }
+  };
+
+  using state_t = hunter_action_state_t<state_data_t>;
+
   kill_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
     hunter_ranged_attack_t( n, p, s ),
     health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() ) {}
@@ -4386,6 +4401,67 @@ struct kill_shot_base_t : hunter_ranged_attack_t
       return 0;
 
     return hunter_ranged_attack_t::cost();
+  }
+
+  double cost_pct_multiplier() const override
+  {
+    double c = hunter_ranged_attack_t::cost_pct_multiplier();
+
+    if ( p()->buffs.precise_shots->check() && p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+      c *= 1 + p()->talents.precise_shots_buff->effectN( 3 ).percent();
+
+    return c;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double am = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+    if ( p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+    {
+      // Can't use check_stack_value() as Kill Shot uses a different effect for its mod
+      am *= 1 + ( p()->buffs.precise_shots->check() * p()->talents.precise_shots_buff->effectN( 2 ).percent() );
+    }
+
+    return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = hunter_ranged_attack_t::composite_crit_chance();
+
+    if ( p()->talents.critical_precision.ok() && p()->buffs.precise_shots->up() && p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+    {
+      cc += p()->talents.critical_precision->effectN( 1 ).percent();
+    }
+
+    return cc;
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    hunter_ranged_attack_t::snapshot_internal( s, flags, rt );
+
+    if ( p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+    {
+      debug_cast<state_t*>( s )->empowered_by_precise_shots = p()->buffs.precise_shots->up();
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( debug_cast<state_t*>( s )->empowered_by_precise_shots && !p()->bugs )
+      p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok() );
+
+    if ( p()->talents.headshot.ok() )
+      td( s->target )->debuffs.headshot->trigger();
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -4433,19 +4509,16 @@ struct kill_shot_t : public kill_shot_base_t
     parse_options( options_str );
   }
 
-  void impact( action_state_t* s ) override
-  {
-    kill_shot_base_t::impact( s );
-
-    if ( p()->talents.headshot.ok() )
-      td( s->target )->debuffs.headshot->trigger();
-  }
-
   void execute() override
   {
     kill_shot_base_t::execute();
 
     p()->buffs.deathblow->expire();
+    
+    if ( p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+    {
+      p()->consume_precise_shots();
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -4764,6 +4837,11 @@ struct black_arrow_t final : public black_arrow_base_t
     p()->buffs.deathblow->expire();
 
     p()->trigger_natures_ally_3();
+
+    if ( p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+    {
+      p()->consume_precise_shots();
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -5281,8 +5359,11 @@ struct multishot_t: public hunter_ranged_attack_t
   {
     timespan_t g = hunter_ranged_attack_t::gcd();
 
-    if ( p()->buffs.precise_shots->check() )
-      g *= 1 + p()->talents.precise_shots_buff->effectN( 4 ).percent();
+    if ( p()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    {
+      if ( p()->buffs.precise_shots->check() )
+        g *= 1 + p()->talents.precise_shots_buff->effectN( 4 ).percent();
+    }
 
     return std::max( min_gcd, g );
   }
