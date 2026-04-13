@@ -436,6 +436,7 @@ public:
     buff_t* volley;
     buff_t* double_tap;
     buff_t* focus_fire;
+    buff_t* precision_detonation_hidden;
 
     // Beast Mastery Tree
     buff_t* barbed_shot;
@@ -536,6 +537,7 @@ public:
     proc_t* deathblow;
 
     proc_t* windrunner_quiver;
+    proc_t* precision_detonation;
 
     proc_t* dire_beast_spawn;
     proc_t* dark_minion_spawn;
@@ -733,6 +735,9 @@ public:
 
     spell_data_ptr_t explosive_shot;
     spell_data_ptr_t explosive_shot_damage;
+
+    spell_data_ptr_t precision_detonation;
+    spell_data_ptr_t precision_detonation_buff;
 
     spell_data_ptr_t target_acquisition;
     spell_data_ptr_t critical_precision;
@@ -1016,6 +1021,7 @@ public:
   struct {
     events::tar_trap_aoe_t* tar_trap_aoe = nullptr;
     event_t* current_volley = nullptr;
+    event_t* precision_detonation_expiry = nullptr;
     howl_of_the_pack_leader_beast howl_of_the_pack_leader_next_beast = WYVERN;
     timespan_t fury_of_the_wyvern_extension = 0_s;
     bool fury_of_the_wyvern_extendable = false;
@@ -4046,7 +4052,10 @@ struct auto_shot_base_t : public auto_attack_base_t<ranged_attack_t>
   {
     timespan_t m = auto_attack_base_t::execute_time_flat_modifier();
 
-    m += timespan_t::from_millis( p()->buffs.in_the_rhythm->check_value() );
+    if ( p()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    {
+      m += timespan_t::from_millis( p()->buffs.in_the_rhythm->check_value() );
+    }
 
     return m;
   }
@@ -4295,6 +4304,11 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       double m = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+      if ( p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+      {
+        m *= 1 + p()->buffs.precision_detonation_hidden->check_value();
+      }
 
       return m;
     }
@@ -5513,16 +5527,38 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
     hunter_td_t* target_data = td( s->target );
 
+    if ( p()->talents.precision_detonation.ok() && p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+    {
+      if ( target_data->dots.explosive_shot->is_ticking() )
+      {
+        p()->buffs.precision_detonation_hidden->trigger();
+
+        // Expire Precision Detonation after other possible impacts.
+        if ( !p()->state.precision_detonation_expiry )
+          p()->state.precision_detonation_expiry = make_event( p()->sim, [ this ]() {
+            p()->buffs.precision_detonation_hidden->expire();
+            p()->state.precision_detonation_expiry = nullptr;
+          } );
+
+        p()->procs.precision_detonation->occur();
+        p()->buffs.precision_detonation_hidden->trigger();
+        target_data->dots.explosive_shot->cancel();
+      }
+    }
+
     if ( target_data->debuffs.spotters_mark->check() || target_data->debuffs.sentinels_mark->check() )
     {
       target_data->debuffs.spotters_mark->expire();
       target_data->debuffs.sentinels_mark->expire();
       p()->trigger_lunar_storm( s->target );
 
-      if ( p()->talents.target_acquisition.ok() && p()->cooldowns.target_acquisition->up() )
+      if ( p()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
       {
-        p()->cooldowns.target_acquisition->start();
-        p()->cooldowns.aimed_shot->adjust( -target_acquisition_reduction );
+        if ( p()->talents.target_acquisition.ok() && p()->cooldowns.target_acquisition->up() )
+        {
+          p()->cooldowns.target_acquisition->start();
+          p()->cooldowns.aimed_shot->adjust( -target_acquisition_reduction );
+        }
       }
     }
   }
@@ -5969,9 +6005,12 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     execute_unload();
 
     //If a Rapid Fire is cancelled it does not trigger In The Rhythm
-    if ( d->ticks_left() == 0 )
+    if ( p()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
     {
-      p()->buffs.in_the_rhythm->trigger();
+      if ( d->ticks_left() == 0 )
+      {
+        p()->buffs.in_the_rhythm->trigger();
+      }
     }
   }
 
@@ -7733,6 +7772,9 @@ void hunter_t::init_spells()
     // TODO condition these correctly when 12.0.5 goes live
     talents.explosive_shot                    = find_spell( 212431 );
     talents.explosive_shot_damage             = find_spell( 212680 );
+
+    talents.precision_detonation              = find_talent_spell( talent_tree::SPECIALIZATION, "Precision Detonation", HUNTER_MARKSMANSHIP );
+    talents.precision_detonation_buff         = talents.precision_detonation.ok() ? find_spell( 474199 ) : spell_data_t::not_found();
    
     talents.target_acquisition                = find_talent_spell( talent_tree::SPECIALIZATION, "Target Acquisition", HUNTER_MARKSMANSHIP );
     talents.critical_precision                = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Precision", HUNTER_MARKSMANSHIP );
@@ -8127,6 +8169,11 @@ void hunter_t::create_buffs()
           cooldowns.rapid_fire->adjust_recharge_multiplier();
         } );
 
+  buffs.precision_detonation_hidden = 
+    make_buff( this, "precision_detonation", talents.precision_detonation_buff )
+      ->set_default_value_from_effect( 1 )
+      ->set_quiet( true );
+
   buffs.bullseye =
     make_buff( this, "bullseye", talents.bullseye_buff )
       ->set_default_value_from_effect( 1 )
@@ -8408,6 +8455,9 @@ void hunter_t::init_procs()
 
   if ( talents.windrunner_quiver.ok() && sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
     procs.windrunner_quiver = get_proc( "Windrunner Quiver" );
+
+  if ( talents.precision_detonation.ok() && sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+    procs.precision_detonation = get_proc( "Precision Detonation" );
 
   if ( talents.dire_beast_summon.ok() )
     procs.dire_beast_spawn = get_proc( "Dire Beast" );
