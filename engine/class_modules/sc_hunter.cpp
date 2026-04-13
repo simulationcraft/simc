@@ -4398,6 +4398,19 @@ struct explosive_shot_t : public explosive_shot_base_t
     explosion->stats = stats;
     stats->action_list.push_back( explosion );
   }
+
+  void execute() override
+  {
+    explosive_shot_base_t::execute();
+
+    if ( p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+    {
+      if ( p()->talents.shrapnel_shot.ok() && p()->rng().roll( p()->talents.shrapnel_shot->effectN( 1 ).percent() ) )
+      {
+        p()->buffs.lock_and_load->trigger();
+      }
+    }
+  }
 };
 
 struct explosive_shot_background_t : public explosive_shot_base_t
@@ -7094,8 +7107,11 @@ struct volley_t : public hunter_spell_t
 
     p()->buffs.double_tap->trigger();
     
-    if ( p()->talents.shrapnel_shot.ok() && rng().roll( p()->talents.shrapnel_shot->effectN( 1 ).percent() ) )
-      p()->buffs.lock_and_load->trigger();
+    if ( p()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    {
+      if ( p()->talents.shrapnel_shot.ok() && rng().roll( p()->talents.shrapnel_shot->effectN( 1 ).percent() ) )
+        p()->buffs.lock_and_load->trigger();
+    }
   }
 };
 
