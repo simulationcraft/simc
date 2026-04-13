@@ -460,6 +460,7 @@ public:
     buff_t* takedown;
     buff_t* wildfire_imbuement;
     buff_t* raptor_swipe;
+    buff_t* shrapnel_bomb;
 
     // Pet family buffs
     buff_t* endurance_training;
@@ -526,6 +527,7 @@ public:
     gain_t* invigorating_pulse;
     gain_t* serpentine_strikes;
     gain_t* lethal_barbs;
+    gain_t* shrapnel_bomb;
     gain_t* disruptive_rounds;
   } gains;
 
@@ -809,6 +811,7 @@ public:
 
     spell_data_ptr_t shrapnel_bomb;
     spell_data_ptr_t shrapnel_bomb_bleed;
+    spell_data_ptr_t shrapnel_bomb_buff;
     spell_data_ptr_t flamebreak;
     spell_data_ptr_t bloodseeker;
     spell_data_ptr_t quick_reload;
@@ -7257,6 +7260,11 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
         bomb_dot->target_cache.is_valid     = true;
         bomb_dot->execute();
       }
+
+      if ( p()->talents.shrapnel_bomb.ok() && p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+      {
+        p()->buffs.shrapnel_bomb->trigger();
+      }
     }
 
     void impact( action_state_t* s ) override
@@ -7898,6 +7906,7 @@ void hunter_t::init_spells()
 
     talents.shrapnel_bomb                     = find_talent_spell( talent_tree::SPECIALIZATION, "Shrapnel Bomb", HUNTER_SURVIVAL );
     talents.shrapnel_bomb_bleed               = talents.shrapnel_bomb.ok() ? find_spell( 1253171 ) : spell_data_t::not_found();
+    talents.shrapnel_bomb_buff                = talents.shrapnel_bomb.ok() ? find_spell( 1292687 ) : spell_data_t::not_found();
     talents.flamebreak                        = find_talent_spell( talent_tree::SPECIALIZATION, "Flamebreak", HUNTER_SURVIVAL );
     talents.bloodseeker                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodseeker", HUNTER_SURVIVAL );
     talents.quick_reload                      = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Reload", HUNTER_SURVIVAL );
@@ -8346,6 +8355,13 @@ void hunter_t::create_buffs()
   buffs.raptor_swipe = 
     make_buff( this, "raptor_swipe", talents.raptor_swipe_buff );
 
+  buffs.shrapnel_bomb = 
+    make_buff( this, "shrapnel_bomb", talents.shrapnel_bomb_buff )
+      ->set_default_value( talents.shrapnel_bomb_buff->effectN( 1 ).resource( RESOURCE_FOCUS ) )
+      ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+        resource_gain( RESOURCE_FOCUS, b->check_value(), gains.shrapnel_bomb );
+      } );
+
   // Pet family buffs
 
   buffs.endurance_training =
@@ -8461,6 +8477,7 @@ void hunter_t::init_gains()
   gains.invigorating_pulse        = get_gain( "Invigorating Pulse" );
   gains.serpentine_strikes        = get_gain( "Serpentine Strikes" );
   gains.lethal_barbs              = get_gain( "Lethal Barbs" );
+  gains.shrapnel_bomb             = get_gain( "Shrapnel Bomb" );
 }
 
 void hunter_t::init_position()
