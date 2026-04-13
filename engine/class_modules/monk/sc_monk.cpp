@@ -3781,8 +3781,7 @@ struct zenith_stomp_t : monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( source == ZENITH_STOMP_CAST )
-      p()->buff.zenith_stomp->decrement();
+    p()->buff.zenith_stomp->decrement();
   }
 };
 
@@ -3803,14 +3802,21 @@ struct zenith_t : public monk_spell_t
     }
   }
 
+  bool ready() override
+  {
+    if ( p()->buff.zenith_stomp->check() )
+      return false;
+
+    return monk_spell_t::ready();
+  }
+
   void execute() override
   {
     p()->buff.heart_of_the_jade_serpent_yulons_avatar->trigger();
 
     monk_spell_t::execute();
 
-    // Zenith Stomp buff is currently only triggered if the player doesn't have the Zenith buff active
-    if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && !p()->buff.zenith->up() )
+    if ( p()->wowv_ge( { 12, 0, 5 } ) )
       p()->buff.zenith_stomp->trigger();
 
     p()->buff.zenith->trigger();
@@ -6235,10 +6241,9 @@ void monk_t::create_buffs()
 
   buff.zenith_stomp =
       make_buff_fallback( talent.monk.zenith_stomp->ok(), this, "zenith_stomp", talent.monk.zenith_stomp_buff )
-          ->set_initial_stack( as<int>( talent.windwalker.tigereye_brew_3->ok()
-                                            ? talent.windwalker.tigereye_brew_3->effectN( 1 ).base_value()
-                                            : talent.monk.zenith_stomp_buff->initial_stacks() ) )
-          ->modify_initial_stack( as<int>( !talent.monk.zenith_stomp->ok() ) );
+          ->modify_initial_stack( as<int>( talent.windwalker.tigereye_brew_3->ok()
+                                               ? talent.windwalker.tigereye_brew_3->effectN( 1 ).base_value()
+                                               : 0 ) );
 
   buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
                                                talent.windwalker.rushing_wind_kick_buff );
