@@ -3728,41 +3728,61 @@ struct celestial_conduit_t : public monk_spell_t
 
 struct zenith_stomp_t : monk_spell_t
 {
-  struct base_damage_t : monk_spell_t
+  enum source_e
   {
-    base_damage_t( monk_t *player, std::string_view name )
-      : monk_spell_t( player, fmt::format( "zenith_stomp_{}_damage", name ), player->talent.monk.zenith_stomp_damage )
-    {
-      background = dual = true;
-
-      aoe                 = -1;
-      reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
-      ww_mastery          = true;
-    }
-
-    void execute() override
-    {
-      monk_spell_t::execute();
-
-      p()->buff.zenith_stomp->trigger();
-    }
+    ZENITH_STOMP_CAST,
+    ZENITH_STOMP_TRIGGER
   };
 
-  zenith_stomp_t( monk_t *player, std::string_view options_str )
-    : monk_spell_t( player, "zenith_stomp", player->talent.monk.zenith_stomp )
+  source_e source;
+
+  zenith_stomp_t( monk_t *player, source_e source, std::string_view options_str )
+    : monk_spell_t( player, fmt::format( "zenith_stomp_{}", source == ZENITH_STOMP_CAST ? "cast" : "trigger" ),
+                    player->talent.monk.zenith_stomp_damage ),
+      source( source )
   {
-    if ( !player->wowv_ge( wowv_t( 12, 0, 5 ) ) )
+    if ( player->wowv_l( { 12, 0, 5 } ) && source == ZENITH_STOMP_CAST )
       return;
 
     parse_options( options_str );
-    may_combo_strike = false;  // This is bugged and currently is not triggering combo strikes
 
-    execute_action = new base_damage_t( player, "on_use" );
+    if ( source == ZENITH_STOMP_TRIGGER )
+    {
+      background = dual = true;
+      trigger_gcd       = 0_ms;
+    }
+
+    aoe                 = -1;
+    reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
+    may_combo_strike    = false;
+    ww_mastery          = true;
+  }
+
+  void init() override
+  {
+    monk_spell_t::init();
+
+    if ( auto *zenith = p()->find_action( "zenith" ); zenith )
+      zenith->add_child( this );
   }
 
   bool ready() override
   {
-    return p()->buff.zenith_stomp->check();
+    if ( source == ZENITH_STOMP_TRIGGER )
+      return true;
+
+    if ( p()->buff.zenith_stomp->check() )
+      return monk_spell_t::ready();
+
+    return false;
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    if ( source == ZENITH_STOMP_CAST )
+      p()->buff.zenith_stomp->decrement();
   }
 };
 
@@ -3778,7 +3798,7 @@ struct zenith_t : public monk_spell_t
 
     if ( player->talent.monk.zenith_stomp->ok() )
     {
-      zenith_stomp = new zenith_stomp_t::base_damage_t( player, "background" );
+      zenith_stomp = new zenith_stomp_t( player, zenith_stomp_t::ZENITH_STOMP_TRIGGER, "" );
       add_child( zenith_stomp );
     }
   }
@@ -5223,7 +5243,7 @@ action_t *monk_t::create_action( std::string_view name, std::string_view options
   if ( name == "zenith" )
     return new zenith_t( this, options_str );
   if ( name == "zenith_stomp" )
-    return new zenith_stomp_t( this, options_str );
+    return new zenith_stomp_t( this, zenith_stomp_t::ZENITH_STOMP_CAST, options_str );
 
   // Conduit of the Celestials
   if ( name == "celestial_conduit" )
@@ -6215,11 +6235,9 @@ void monk_t::create_buffs()
 
   buff.zenith_stomp =
       make_buff_fallback( talent.monk.zenith_stomp->ok(), this, "zenith_stomp", talent.monk.zenith_stomp_buff )
-          ->set_reverse( true )
-          ->set_reverse_stack_count(
-              as<int>( talent.monk.zenith_stomp_buff->initial_stacks() + talent.windwalker.tigereye_brew_3->ok()
-                           ? talent.windwalker.tigereye_brew_3->effectN( 1 ).base_value()
-                           : 0 ) );
+          ->set_initial_stack( as<int>( talent.windwalker.tigereye_brew_3->ok()
+                                            ? talent.windwalker.tigereye_brew_3->effectN( 1 ).base_value()
+                                            : talent.monk.zenith_stomp_buff->initial_stacks() ) );
 
   buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
                                                talent.windwalker.rushing_wind_kick_buff );
