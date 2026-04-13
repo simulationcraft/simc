@@ -2849,7 +2849,7 @@ struct kill_command_sv_t : public hunter_pet_attack_t<hunter_main_pet_t>
   {
     hunter_pet_attack_t::impact( s );
 
-    if ( o()->talents.sic_em.ok() && s->result == RESULT_CRIT )
+    if ( o()->talents.sic_em.ok() && s->result == RESULT_CRIT && o()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
       p()->actions.sic_em->execute_on_target( s->target );
   }
   
@@ -2898,9 +2898,18 @@ struct sic_em_t : public hunter_pet_attack_t<hunter_main_pet_t>
   {
     background = dual = true;
 
-    auto kc = p->find_action( "kill_command" );
-    if ( kc )
-      kc->add_child( this );
+    if ( p->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    {
+      auto kc = p->find_action( "kill_command" );
+      if ( kc )
+        kc->add_child( this );
+    }
+    else
+    {
+      auto sao = p->find_action( "strike_as_one" );
+      if ( sao )
+        sao->add_child( this );
+    }
   }
 };
 
@@ -2922,6 +2931,14 @@ struct strike_as_one_t : public hunter_pet_attack_t<hunter_main_pet_t>
       dm *= 1 + ( s->n_targets - 1 ) * o()->talents.two_against_many->effectN( 2 ).percent();
 
     return dm;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_pet_attack_t::impact( s );
+
+    if ( o()->talents.sic_em.ok() && s->result == RESULT_CRIT && o()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+      p()->actions.sic_em->execute_on_target( s->target );
   }
 };
 
