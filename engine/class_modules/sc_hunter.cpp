@@ -8112,6 +8112,11 @@ void hunter_t::init_spells()
                                                     ? effect_mask_t( true ).disable( 1, 3 )
                                                     : effect_mask_t( true ).disable( 2, 4 ) );
 
+  if ( specialization() == HUNTER_SURVIVAL && sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+  {
+    register_passive_effect_mask( talents.hoof_and_blade, effect_mask_t( true ).disable( 3 ) );
+  }
+
   deregister_passive_spell( talents.penetrating_shots );
 
   parse_all_class_passives();
