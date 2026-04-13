@@ -1103,6 +1103,7 @@ public:
   void datacollection_begin() override;
   void datacollection_end() override;
 
+  double composite_attribute_multiplier( attribute_e ) const override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
   double composite_rating_multiplier( rating_e ) const override;
@@ -8780,6 +8781,22 @@ void hunter_t::datacollection_end()
     cd_waste.datacollection_end();
 
   player_t::datacollection_end();
+}
+
+double hunter_t::composite_attribute_multiplier( attribute_e attr ) const
+{
+  double m = player_t::composite_attribute_multiplier( attr );
+
+  if ( attr == ATTR_AGILITY )
+  {
+    if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && talents.lunge.ok() && dual_wield() )
+    {
+      // TODO confirm if the dual-wield bonus is additive or multiplicative, assuming the latter for now.
+      m *= 1 + talents.lunge->effectN( 2 ).percent();
+    }
+  }
+
+  return m;
 }
 
 double hunter_t::composite_melee_crit_chance() const
