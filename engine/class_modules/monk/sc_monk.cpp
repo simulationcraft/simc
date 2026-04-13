@@ -6237,7 +6237,8 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.monk.zenith_stomp->ok(), this, "zenith_stomp", talent.monk.zenith_stomp_buff )
           ->set_initial_stack( as<int>( talent.windwalker.tigereye_brew_3->ok()
                                             ? talent.windwalker.tigereye_brew_3->effectN( 1 ).base_value()
-                                            : talent.monk.zenith_stomp_buff->initial_stacks() ) );
+                                            : talent.monk.zenith_stomp_buff->initial_stacks() ) )
+          ->modify_initial_stack( as<int>( !talent.monk.zenith_stomp->ok() ) );
 
   buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
                                                talent.windwalker.rushing_wind_kick_buff );
@@ -7001,27 +7002,20 @@ void monk_t::combat_begin()
   }
 
   // This is just for easier cleanup later
-  if ( talent.windwalker.tigereye_brew_1->ok() && wowv_l( wowv_t( 12, 0, 5 ) ) )
+  if ( talent.windwalker.tigereye_brew_1->ok() )
   {
     const auto period_fn = []( monk_t *player ) -> timespan_t {
       return player->talent.windwalker.tigereye_brew_1->effectN( 1 ).period() * player->composite_melee_haste();
     };
     const auto callback = []( monk_t *player ) -> void {
-      player->buff.tigereye_brew_1->trigger();
+      if ( player->wowv_l( { 12, 0, 5 } ) )
+        player->buff.tigereye_brew_1->trigger();
 
       if ( !player->sim->active_enemies && player->buff.tigereye_brew_1->stack() <
                                                player->talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() )
         make_event<events::delayed_buff_trigger_event_t>( *player->sim, player, player->buff.tigereye_brew_1, 2_s );
     };
     make_event<events::repeating_dynamic_period_cb_event_t>( *sim, this, period_fn, callback );
-
-    if ( !buff.tigereye_brew_1->check() )
-      buff.tigereye_brew_1->trigger( as<int>( talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() ) );
-  }
-
-  if ( talent.windwalker.tigereye_brew_1->ok() && wowv_ge( wowv_t( 12, 0, 5 ) ) )
-  {
-    buff.tigereye_brew_1_accumulator->trigger( 1, 0 );
 
     if ( !buff.tigereye_brew_1->check() )
       buff.tigereye_brew_1->trigger( as<int>( talent.windwalker.tigereye_brew_1->effectN( 1 ).base_value() ) );
