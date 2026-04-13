@@ -6208,14 +6208,20 @@ struct hatchet_toss_t final : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p()->buffs.hogstrider->expire();
+    if ( p()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    {
+      p()->buffs.hogstrider->expire();
+    }
   }
 
   int n_targets() const override
   {
     int n = hunter_ranged_attack_t::n_targets();
 
-    n += p()->buffs.hogstrider->check();
+    if ( p()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    {
+      n += p()->buffs.hogstrider->check();
+    }
 
     return n;
   }
@@ -6224,8 +6230,11 @@ struct hatchet_toss_t final : public hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::composite_da_multiplier( s );
 
-    if ( p()->buffs.hogstrider->up() )
-      am *= 1 + p()->talents.hogstrider_buff->effectN( 2 ).percent();
+    if ( p()->sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    {
+      if ( p()->buffs.hogstrider->up() )
+        am *= 1 + p()->talents.hogstrider_buff->effectN( 2 ).percent();
+    }
 
     return am;
   }
@@ -6399,6 +6408,11 @@ struct boomstick_t : public hunter_spell_t
       }
       dm *= 1 + shellshock_bonus;
 
+      if ( p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+      {
+        dm *= 1 + ( p()->buffs.hogstrider->check() * p()->talents.hogstrider_buff->effectN( 2 ).percent() );
+      }
+
       return dm;
     }
   };
@@ -6461,6 +6475,11 @@ struct boomstick_t : public hunter_spell_t
     hunter_spell_t::last_tick( dot );
 
     p()->buffs.tip_of_the_spear_boomstick->expire();
+
+    if ( p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+    {
+      p()->buffs.hogstrider->expire();
+    }
   }
 };
 
