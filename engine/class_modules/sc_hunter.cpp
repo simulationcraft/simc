@@ -491,6 +491,7 @@ public:
   struct cooldowns_t
   {
     cooldown_t* kill_shot;
+    cooldown_t* explosive_shot;
     
     cooldown_t* aimed_shot;
     cooldown_t* rapid_fire;
@@ -730,6 +731,9 @@ public:
     spell_data_ptr_t trueshot;
     spell_data_ptr_t kill_shot;
 
+    spell_data_ptr_t explosive_shot;
+    spell_data_ptr_t explosive_shot_damage;
+
     spell_data_ptr_t target_acquisition;
     spell_data_ptr_t critical_precision;
     spell_data_ptr_t no_scope;
@@ -766,8 +770,6 @@ public:
     spell_data_ptr_t double_tap;
     spell_data_ptr_t double_tap_buff;
     spell_data_ptr_t salvo;
-    spell_data_ptr_t explosive_shot_data;
-    spell_data_ptr_t explosive_shot_damage;
     spell_data_ptr_t bullet_hell;
     spell_data_ptr_t shrapnel_shot;
     spell_data_ptr_t unload;
@@ -1035,6 +1037,7 @@ public:
     procs()
   {
     cooldowns.kill_shot       = get_cooldown( "kill_shot" );
+    cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
 
     cooldowns.aimed_shot                = get_cooldown( "aimed_shot" );
     cooldowns.rapid_fire                = get_cooldown( "rapid_fire" );
@@ -4265,16 +4268,15 @@ struct counter_shot_t : public hunter_ranged_attack_t
   }
 };
 
-// Explosive Shot (Salvo)  ============================================================================
-
-struct explosive_shot_t : public hunter_ranged_attack_t
+// Explosive Shot ===============================================================================
+struct explosive_shot_base_t : public hunter_ranged_attack_t
 {
   struct damage_t final : hunter_ranged_attack_t
   {
     damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.explosive_shot_damage )
     {
       background = dual = true;
-      reduced_aoe_targets = p->talents.explosive_shot_data->effectN( 2 ).base_value();
+      reduced_aoe_targets = p->talents.explosive_shot->effectN( 2 ).base_value();
       aoe = -1;
     }
 
@@ -4289,17 +4291,22 @@ struct explosive_shot_t : public hunter_ranged_attack_t
 
       hunter_ranged_attack_t::execute();
     }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+      return m;
+    }
   };
 
   damage_t* explosion = nullptr;
 
-  explosive_shot_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.explosive_shot_data )
+  explosive_shot_base_t( util::string_view n, hunter_t* p, const spell_data_t* s ) : hunter_ranged_attack_t( n, p, s )
   {
     may_miss = may_crit = false;
-    background = dual = proc = true;
 
     explosion = p->get_background_action<damage_t>( "explosive_shot_damage" );
-    add_child( explosion );
   }
 
   void init() override
@@ -4316,7 +4323,6 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     s->persistent_multiplier = 1.0;
   }
 
-  // We have a whole lot of Explosive Shot variations that all need to work with the same dot.
   dot_t* get_dot( player_t* t ) override
   {
     if ( !t )
@@ -4370,6 +4376,35 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     // The dot should have the state from the cast that triggered it, so forward it to the explosion.
     explosion->pre_execute_state->copy_state( d->state );
     explosion->execute_on_target( d->target );
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+  }
+};
+
+struct explosive_shot_t : public explosive_shot_base_t
+{
+  explosive_shot_t( hunter_t* p, util::string_view options_str ) : explosive_shot_base_t( "explosive_shot", p, p->talents.explosive_shot )
+  {
+    parse_options( options_str );
+  }
+
+  void init() override
+  {
+    explosive_shot_base_t::init();
+
+    explosion->stats = stats;
+    stats->action_list.push_back( explosion );
+  }
+};
+
+struct explosive_shot_background_t : public explosive_shot_base_t
+{
+  explosive_shot_background_t( util::string_view n, hunter_t* p ) : explosive_shot_base_t( n, p, p->talents.explosive_shot )
+  {
+    background = dual = proc = true;
   }
 };
 
@@ -6976,7 +7011,7 @@ struct volley_t : public hunter_spell_t
   struct damage_t final : hunter_ranged_attack_t
   {
     struct salvo {
-      attacks::explosive_shot_t* explosive = nullptr;
+      attacks::explosive_shot_background_t* explosive = nullptr;
       int targets = 0;
     } salvo;
 
@@ -6988,7 +7023,7 @@ struct volley_t : public hunter_spell_t
       if ( p -> talents.salvo.ok() )
       {
         salvo.targets = as<int>( p->talents.salvo->effectN( 1 ).base_value() );
-        salvo.explosive = p -> get_background_action<attacks::explosive_shot_t>( "explosive_shot" );
+        salvo.explosive = p->get_background_action<attacks::explosive_shot_background_t>( "explosive_shot" );
       }
     }
 
@@ -7436,6 +7471,11 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "black_arrow"           ) return new            black_arrow_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "counter_shot"          ) return new           counter_shot_t( this, options_str );
+  if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+  {
+    if ( name == "explosive_shot" )
+      return new explosive_shot_t( this, options_str );
+  }
   if ( name == "flamefang_pitch"       ) return new        flamefang_pitch_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "boomstick"             ) return new              boomstick_t( this, options_str );
@@ -7673,6 +7713,10 @@ void hunter_t::init_spells()
     talents.on_target                         = find_talent_spell( talent_tree::SPECIALIZATION, "On Target", HUNTER_MARKSMANSHIP );
     talents.trueshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Trueshot", HUNTER_MARKSMANSHIP );
     talents.kill_shot                         = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Shot", HUNTER_MARKSMANSHIP );
+
+    // TODO condition these correctly when 12.0.5 goes live
+    talents.explosive_shot                    = find_spell( 212431 );
+    talents.explosive_shot_damage             = find_spell( 212680 );
    
     talents.target_acquisition                = find_talent_spell( talent_tree::SPECIALIZATION, "Target Acquisition", HUNTER_MARKSMANSHIP );
     talents.critical_precision                = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Precision", HUNTER_MARKSMANSHIP );
@@ -7707,8 +7751,6 @@ void hunter_t::init_spells()
     talents.double_tap                        = find_talent_spell( talent_tree::SPECIALIZATION, "Double Tap", HUNTER_MARKSMANSHIP );
     talents.double_tap_buff                   = talents.double_tap.ok() ? find_spell( 260402 ) : spell_data_t::not_found();
     talents.salvo                             = find_talent_spell( talent_tree::SPECIALIZATION, "Salvo", HUNTER_MARKSMANSHIP );
-    talents.explosive_shot_data               = talents.salvo.ok() ? find_spell( 212431 ) : spell_data_t::not_found();
-    talents.explosive_shot_damage             = talents.salvo.ok() ? find_spell( 212680 ) : spell_data_t::not_found();
     talents.bullet_hell                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bullet Hell", HUNTER_MARKSMANSHIP );
     talents.shrapnel_shot                     = find_talent_spell( talent_tree::SPECIALIZATION, "Shrapnel Shot", HUNTER_MARKSMANSHIP );
     talents.unload                            = find_talent_spell( talent_tree::SPECIALIZATION, "Unload", HUNTER_MARKSMANSHIP );
