@@ -7280,7 +7280,14 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
       double am = hunter_ranged_attack_t::composite_da_multiplier( s );
 
       if ( s->chain_target == 0 )
+      {
         am *= 1.0 + p()->talents.wildfire_bomb->effectN( 3 ).percent();
+
+        if ( p()->sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+        {
+          am *= 1 + p()->talents.sharpened_fangs->effectN( 2 ).percent();
+        }
+      }
 
       return am;
     }
