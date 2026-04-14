@@ -6344,10 +6344,10 @@ Attributes       : No Aura Cancel (31), Exclude Caster (51), Ignore Line of Sigh
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1035393)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 8 | Scaled Value: 8 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 8 | Scaled Value: 8 | Radius: 0 - 500 yards | Target: at Self (18) -> At Ally in Area (31)
                    Modified By: Close as Clutchmates (396043 effect#1), Evoker Augmentation 10.1 Class Set 4pc (414878 effect#1)
 #2 (id=1035394)  : Apply Aura (6) | Modify Stat With Support Triggers (540)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 0 - 500 yards | Target: at Self (18) -> At Ally in Area (31)
 #3 (id=1248097)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Increase all damage dealing allies' primary stat by $<amount>% of your own and increase your own damage by $395296s1% for $d.
