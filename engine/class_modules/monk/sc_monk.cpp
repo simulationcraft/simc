@@ -7318,7 +7318,7 @@ public:
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
     ReportIssue( "Press the Advantage Tiger Palm does not trigger Overwhelming Force", "2026-02-09", true );
-    ReportIssue( "Dragonfire Brew damage scales with Stagger level", "2026-04-14", true );
+    ReportIssue( "Dragonfire Brew causes Breath of Fire damage to scale with Stagger level", "2026-04-14", true );
 
     os << "<div class=\"player-section\">\n";
     os << "<h3 class=\"toggle\">Known Bugs and Issues</h3>\n";
