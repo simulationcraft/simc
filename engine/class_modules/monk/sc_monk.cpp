@@ -1398,42 +1398,41 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
 struct spinning_crane_kick_t : public monk_melee_attack_t
 {
+  struct state_t : action_state_t
+  {
+    std::unordered_set<int> targets_hit;
+
+    state_t( action_t *action, player_t *target ) : action_state_t( action, target ), targets_hit()
+    {
+    }
+
+    std::ostringstream &debug_str( std::ostringstream &stream ) override
+    {
+      action_state_t::debug_str( stream );
+      fmt::print( stream, " targets_hit={}", targets_hit.size() );
+      return stream;
+    }
+
+    void initialize() override
+    {
+      action_state_t::initialize();
+      targets_hit.clear();
+    }
+
+    void copy_state( const action_state_t *other ) override
+    {
+      action_state_t::copy_state( other );
+      auto _other = debug_cast<const state_t *>( other );
+      targets_hit = std::move( _other->targets_hit );
+    }
+  };
+
   struct tick_t : charred_passions_t<monk_melee_attack_t>
   {
-    struct state_t : action_state_t
-    {
-      std::set<player_t *> targets_hit;
-      int count;
-
-      state_t( action_t *action, player_t *target ) : action_state_t( action, target ), targets_hit( {} ), count( 0 )
-      {
-      }
-
-      std::ostringstream &debug_str( std::ostringstream &stream ) override
-      {
-        action_state_t::debug_str( stream );
-        fmt::print( stream, " targets_hit={}", targets_hit.size() );
-        return stream;
-      }
-
-      void initialize() override
-      {
-        action_state_t::initialize();
-        targets_hit.clear();
-        count = 0;
-      }
-
-      void copy_state( const action_state_t *other ) override
-      {
-        action_state_t::copy_state( other );
-        auto _other = debug_cast<const state_t *>( other );
-        targets_hit = _other->targets_hit;
-        count       = _other->count;
-      }
-    };
+    state_t *parent_state;
 
     tick_t( monk_t *player, std::string_view name, const spell_data_t *data )
-      : charred_passions_t<monk_melee_attack_t>( player, name, data )
+      : charred_passions_t<monk_melee_attack_t>( player, name, data ), parent_state( nullptr )
     {
       dual = background   = true;
       aoe                 = -1;
@@ -1470,26 +1469,15 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     {
       monk_melee_attack_t::impact( state );
 
-      debug_cast<state_t *>( state )->targets_hit.insert( state->target );
-      debug_cast<state_t *>( state )->count++;
+      assert( parent_state );
+      parent_state->targets_hit.insert( state->target->actor_spawn_index );
     }
 
-    void last_tick( dot_t *dot ) override
+    void execute_with_state( action_state_t *state )
     {
-      monk_melee_attack_t::last_tick( dot );
+      parent_state = debug_cast<state_t *>( state );
 
-      if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.xuens_battlegear->ok() )
-      {
-        timespan_t reduction_per_target = p()->talent.windwalker.xuens_battlegear->effectN( 4 ).time_value();
-        int max_targets_hit =
-            as<int>( p()->talent.windwalker.xuens_battlegear->effectN( 5 ).time_value() / reduction_per_target );
-        int reduction_count = std::min( num_targets_hit, max_targets_hit );
-        p()->cooldown.fists_of_fury->adjust( -reduction_per_target * reduction_count, true );
-
-        // Proc once per half second reduced
-        for ( int i = 0; i < reduction_count; ++i )
-          p()->proc.xuens_battlegear_sck_reduction->occur();
-      }
+      execute();
     }
 
     void execute() override
@@ -1500,9 +1488,11 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
           timespan_t::from_seconds( p()->baseline.brewmaster.spinning_crane_kick_rank_2->effectN( 1 ).base_value() ) );
     }
 
-    action_state_t *new_state() override
+    void reset() override
     {
-      return new state_t( this, target );
+      monk_melee_attack_t::reset();
+
+      parent_state = nullptr;
     }
   };
 
@@ -1517,20 +1507,22 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   };
 
   action_t *jade_ignition;
+  tick_t *spinning_crane_kick_tick;
 
   spinning_crane_kick_t( monk_t *player, std::string_view options_str )
     : monk_melee_attack_t(
           player, "spinning_crane_kick",
           ( player->specialization() == MONK_BREWMASTER ? player->baseline.brewmaster.spinning_crane_kick
                                                         : player->baseline.monk.spinning_crane_kick ) ),
-      jade_ignition( nullptr )
+      jade_ignition( nullptr ),
+      spinning_crane_kick_tick( nullptr )
   {
     parse_options( options_str );
 
-    may_combo_strike = true;
-    tick_zero        = true;
-    tick_action      = new tick_t( player, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
-    add_child( tick_action );
+    may_combo_strike         = true;
+    tick_zero                = true;
+    spinning_crane_kick_tick = new tick_t( player, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
+    add_child( spinning_crane_kick_tick );
 
     interrupt_auto_attack = player->specialization() != MONK_WINDWALKER;
     if ( player->specialization() == MONK_BREWMASTER )
@@ -1567,9 +1559,29 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
   void last_tick( dot_t *dot ) override
   {
-    (void)0;
-
     monk_melee_attack_t::last_tick( dot );
+
+    if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.xuens_battlegear->ok() )
+    {
+      std::unordered_set<int> &targets_hit = debug_cast<state_t *>( dot->state )->targets_hit;
+      timespan_t reduction_per_target      = p()->talent.windwalker.xuens_battlegear->effectN( 4 ).time_value();
+      size_t max_targets_hit =
+          as<unsigned>( p()->talent.windwalker.xuens_battlegear->effectN( 5 ).time_value() / reduction_per_target );
+      size_t reduction_count = std::min( targets_hit.size(), max_targets_hit );
+      p()->cooldown.fists_of_fury->adjust( -reduction_per_target * reduction_count, true );
+
+      // Proc once per half second reduced
+      for ( size_t i = 0; i < reduction_count; ++i )
+        p()->proc.xuens_battlegear_sck_reduction->occur();
+    }
+  }
+
+  void tick( dot_t *dot ) override
+  {
+    monk_melee_attack_t::tick( dot );
+
+    assert( dot->state );
+    spinning_crane_kick_tick->execute_with_state( dot->state );
   }
 
   void execute() override
@@ -1596,6 +1608,11 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( jade_ignition )
       jade_ignition->execute();
+  }
+
+  action_state_t *new_state() override
+  {
+    return new state_t( this, target );
   }
 };
 
