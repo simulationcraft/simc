@@ -611,7 +611,6 @@ public:
     propagate_const<proc_t *> salsalabims_strength;
     propagate_const<proc_t *> tranquil_spirit_expel_harm;
     propagate_const<proc_t *> tranquil_spirit_goto;
-    propagate_const<proc_t *> xuens_battlegear_rsk_reduction;
     propagate_const<proc_t *> xuens_battlegear_sck_reduction;
     propagate_const<proc_t *> elusive_brawler_preserved;
   } proc;

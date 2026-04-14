@@ -401,7 +401,7 @@ void monk_action_t<Base>::consume_resource()
       double base_cost = base_t::base_costs[ RESOURCE_CHI ].base;
       if ( base_t::id == 100784 )  // Blackout Kick
         base_cost = base_t::base_costs[ RESOURCE_CHI ];
-      double current_value = p()->buff.tigereye_brew_1_accumulator->stack_value() + base_cost;
+      double current_value  = p()->buff.tigereye_brew_1_accumulator->stack_value() + base_cost;
       double trigger_amount = p()->talent.windwalker.tigereye_brew_1->effectN( 2 ).base_value();
       if ( current_value >= trigger_amount )
       {
@@ -907,7 +907,6 @@ struct rising_sun_kick_t : monk_melee_attack_t
       {
         timespan_t value = -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value();
         p()->cooldown.fists_of_fury->adjust( value, true );
-        p()->proc.xuens_battlegear_rsk_reduction->occur();
       }
     }
   };
@@ -1441,6 +1440,19 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
       p()->buff.shuffle->trigger(
           timespan_t::from_seconds( p()->baseline.brewmaster.spinning_crane_kick_rank_2->effectN( 1 ).base_value() ) );
+
+      if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.xuens_battlegear->ok() )
+      {
+        timespan_t reduction_per_target = p()->talent.windwalker.xuens_battlegear->effectN( 4 ).time_value();
+        int max_targets_hit =
+            as<int>( p()->talent.windwalker.xuens_battlegear->effectN( 5 ).time_value() / reduction_per_target );
+        int reduction_count = std::min( num_targets_hit, max_targets_hit );
+        p()->cooldown.fists_of_fury->adjust( -reduction_per_target * reduction_count, true );
+
+        // Proc once per half second reduced
+        for ( int i = 0; i < reduction_count; ++i )
+          p()->proc.xuens_battlegear_sck_reduction->occur();
+      }
     }
   };
 
@@ -1527,14 +1539,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( jade_ignition )
       jade_ignition->execute();
-
-    if ( p()->wowv_ge( wowv_t( 12, 0, 5 ) ) && p()->talent.windwalker.xuens_battlegear->ok() )
-    {
-      timespan_t base_reduction = p()->talent.windwalker.xuens_battlegear->effectN( 4 ).time_value() * num_targets_hit;
-      timespan_t max_reduction  = p()->talent.windwalker.xuens_battlegear->effectN( 5 ).time_value();
-      p()->cooldown.fists_of_fury->adjust( -1 * std::min( base_reduction, max_reduction ), true );
-      p()->proc.xuens_battlegear_sck_reduction->occur();
-    }
   }
 };
 
@@ -4443,10 +4447,11 @@ struct zenith_t : monk_buff_t<>
       value = p().buff.tigereye_brew_1->stack_value();
       p().buff.tigereye_brew_1->expire();
     }
-    else {
+    else
+    {
       int stack = std::min( p().buff.tigereye_brew_1->stack(),
-                               as<int>( p().talent.windwalker.tigereye_brew_1->effectN( 3 ).base_value() ) );
-      value          = p().buff.tigereye_brew_1->value() * stack;
+                            as<int>( p().talent.windwalker.tigereye_brew_1->effectN( 3 ).base_value() ) );
+      value     = p().buff.tigereye_brew_1->value() * stack;
       p().buff.tigereye_brew_1->decrement( stack );
     }
     return monk_buff_t::trigger( stacks, value, chance, duration );
@@ -6429,8 +6434,7 @@ void monk_t::init_procs()
   proc.salsalabims_strength           = get_proc( "Sal'salabim Breath of Fire Reset" );
   proc.tranquil_spirit_expel_harm     = get_proc( "Tranquil Spirit - Expel Harm" );
   proc.tranquil_spirit_goto           = get_proc( "Tranquil Spirit - Gift of the Ox" );
-  proc.xuens_battlegear_rsk_reduction = get_proc( "Xuen's Battlegear CD RSK Reduction" );
-  proc.xuens_battlegear_sck_reduction = get_proc( "Xuen's Battlegear CD SCK Reduction" );
+  proc.xuens_battlegear_sck_reduction = get_proc( "Xuen's Battlegear CD SCK Half-Second Reduction" );
   proc.elusive_brawler_preserved      = get_proc( "Elusive Brawler Stacks Preserved" );
 }
 
