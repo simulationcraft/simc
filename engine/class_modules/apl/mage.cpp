@@ -174,7 +174,7 @@ void fire( player_t* p )
   precombat->add_action( "variable,name=ff_filler_flamestrike,if=!talent.spellfire_spheres,value=8+(999*!talent.fuel_the_fire)", "Flamestrike at 8 targets." );
   precombat->add_action( "variable,name=sf_combustion_flamestrike,if=talent.spellfire_spheres,value=4+(999*!talent.fuel_the_fire)", "Flamestrike at 4 targets during Combustion. Do at 3 targets if you don't care about prio dmg." );
   precombat->add_action( "variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=4+(999*!talent.fuel_the_fire)", "Flamestrike at 4 targets." );
-  precombat->add_action( "variable,name=combustion_delay,value=10+(8*talent.firestarter)-(10*(expected_combat_length<60)+10*(expected_combat_length<30))-10*(((expected_combat_length%%60)>=25)&((expected_combat_length%%60)<=40))", "Delay Combustion to stack up buffs for all builds unless it means losing casts of Combustion. Do not do so if fight length is short." );
+  precombat->add_action( "variable,name=combustion_delay,value=(18*talent.firestarter)-(10*(expected_combat_length<60)+10*(expected_combat_length<30))-10*(((expected_combat_length%%60)>=25)&((expected_combat_length%%60)<=40))", "Delay Combustion if playing Firestarter until the target is >=90% HP unless it means losing casts of Combustion. Do not do so if fight length is short." );
   precombat->add_action( "variable,name=15ssteroid_trinket_equipped,op=set,value=equipped.nevermelting_ice_crystal|equipped.lily_of_the_eternal_weave|equipped.sunblood_amethyst|equipped.astral_gladiators_badge_of_ferocity|equipped.arazs_ritual_forge|equipped.freightrunners_flask|equipped.emberwing_feather|equipped.vaelgors_final_stare|equipped.galactic_gladiators_badge_of_ferocity" );
   precombat->add_action( "variable,name=10ssteroid_trinket_equipped,op=set,value=equipped.ever_collapsing_void_fissure" );
   precombat->add_action( "variable,name=nonsteroid_trinket_equipped,op=set,value=equipped.mereldars_toll|equipped.perfidious_projector|equipped.chaotic_nethergate|equipped.wraps_of_cosmic_madness|equipped.astalors_anguish_agitator" );
@@ -185,13 +185,13 @@ void fire( player_t* p )
   precombat->add_action( "pyroblast" );
 
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "run_action_list,name=ff_combustion,if=talent.frostfire_bolt&((time>=variable.combustion_delay)&(cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready))", "Combustion is delayed on pull by 10 seconds for most non-Firestarter builds, and 18 seconds for all Firestarter builds to simulate realistic timings for when a boss drops below 90% hp." );
+  default_->add_action( "run_action_list,name=ff_combustion,if=talent.frostfire_bolt&((time>=variable.combustion_delay)&(cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready))", "Combustion is delayed on pull 18 seconds for all Firestarter builds to simulate realistic timings for when a boss drops below 90% HP." );
   default_->add_action( "run_action_list,name=sf_combustion,if=!talent.frostfire_bolt&((time>=variable.combustion_delay)&(cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready))" );
   default_->add_action( "run_action_list,name=ff_filler,if=talent.frostfire_bolt" );
   default_->add_action( "run_action_list,name=sf_filler" );
 
   cds->add_action( "variable,name=combustion_precast_time,value=(action.scorch.cast_time*!buff.pyroclasm.up*scorch_execute.active)+(action.fireball.cast_time*!buff.pyroclasm.up*!scorch_execute.active)+(action.pyroblast.cast_time*buff.pyroclasm.up)-variable.cast_remains_time" );
-  cds->add_action( "potion,if=time>=(0+(4*(talent.firestarter&talent.spellfire_spheres)+4*(talent.savor_the_moment)+4*(talent.pyroclasm&talent.firestarter&talent.spellfire_spheres)))|buff.combustion.remains>6|fight_remains<35", "Use Potion on pull. Delay by 4 seconds for each of these that are true: [Firestarter Sunfury] [Savor] [Pyroclasm+Firestarter+Sunfury]. Goal is to make pot last all of CDs." );
+  cds->add_action( "potion,if=time>=(8*(talent.firestarter&talent.spellfire_spheres))|buff.combustion.remains>6|fight_remains<35", "Use Potion on pull. Delay by about 8 seconds if playing with Firestarter as Sunfury." );
   cds->add_action( "use_item,name=vaelgors_final_stare,if=buff.combustion.remains>6|fight_remains<20", "Force Vaelgor as highest priority on-use trinket, if potentially two on-use trinkets are equipped." );
   cds->add_action( "use_item,name=emberwing_feather,if=buff.combustion.remains>6|fight_remains<20" );
   cds->add_action( "use_item,name=nevermelting_ice_crystal,if=buff.combustion.remains>6|fight_remains<20" );
