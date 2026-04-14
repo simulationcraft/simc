@@ -3217,7 +3217,7 @@ struct breath_of_fire_t : public monk_spell_t
                 [ this ]( double value ) { return 1.0 + p()->find_stagger( "Stagger" )->level_index() / 3.0 * value; } )
             .set_value( effect.percent() )
             .set_eff( &effect )
-            .set_note( "Stagger Level Scaling");
+            .set_note( "Stagger Level Scaling" );
     }
   }
 
