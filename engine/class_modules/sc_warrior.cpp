@@ -4128,25 +4128,6 @@ struct execute_damage_t : public warrior_attack_t
       p()->master_of_warfare_attempts_since_last_proc = 0;
     }
   }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() &&
-          p()->buff.sudden_death->up() )
-    {
-      if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
-      {
-        if ( execute_state->n_targets > 1 && p()->cooldown.reap_the_storm_icd->is_ready() &&
-        rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
-        {
-          reap_the_storm->execute();
-          p()->cooldown.reap_the_storm_icd->start();
-        }
-      }
-    }
-  }
 };
 
 struct execute_arms_t : public warrior_attack_t
@@ -4239,16 +4220,11 @@ struct execute_arms_t : public warrior_attack_t
       if ( p()->talents.slayer.imminent_demise->ok() && p()->talents.shared.sudden_death->ok() )
         p()->buff.imminent_demise->trigger();
 
-      if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() )
+      if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() &&
+            p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
       {
-        if ( sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-        {
-          if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
-          {
-            reap_the_storm->execute();
-            p()->cooldown.reap_the_storm_icd->start();
-          }
-        }
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
       }
 
       if ( p()->talents.slayer.unrelenting_onslaught->ok() && p()->buff.executioner->up() )
