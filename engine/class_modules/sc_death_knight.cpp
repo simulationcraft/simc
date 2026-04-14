@@ -13963,7 +13963,7 @@ void death_knight_t::create_actions()
     pet_summon.blood_beast               = get_action<blood_beast_summon_t>( "blood_beast", this );
   }
 
-  if ( talent.sanlayn.desecrate.ok() )
+  if ( talent.sanlayn.desecrate.ok() && dbc->wowv() < wowv_t( 12, 0, 5 ) )
     background_actions.desecrate = get_action<desecrate_t>( "desecrate", this );
 
   // Deathbringer
