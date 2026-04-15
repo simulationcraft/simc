@@ -3136,8 +3136,9 @@ Effects          :
                    Base Value: -40 | Scaled Value: -40 | Misc Value 2: 6521 (Label) | Target: Self (1)
                    Affected Spells (Label): Soul Swipe (1269049)
 #9 (id=1300823)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 300 | Scaled Value: 300 | Misc Value 2: 5185 (Label) | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value 2: 5185 (Label) | Target: Self (1)
                    Affected Spells (Label): Wicked Reaping (449826)
+Hotfixed         : Base Value (300 -> 200)
 #10 (id=1300824) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -36 | Scaled Value: -36 | Misc Value: 22 | Misc Value 2: 3545 (Label) | Target: Self (1)
                    Affected Spells (Label): Soul Anathema (450538)
@@ -16225,7 +16226,8 @@ Effects          :
 #1 (id=1269007)  : Dummy (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 5170 | Scaled Value: 5170 | Target: Targeted Enemy (6)
 #2 (id=1269008)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.629917 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.629917 | PvP Coefficient: 1.15 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.15)
 #3 (id=1305431)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Targeted Enemy (6)
 #4 (id=1305448)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -17175,9 +17177,10 @@ Effects          :
                    Family Flags: 36, 47
                    Modified By: Malevolence (442726 effect#4)
 #4 (id=1281488)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.285714 | Target: Self (1)
                    Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
+Hotfixed         : PvP Coefficient (1 -> 0.285714)
                    Modified By: Malevolence (442726 effect#4)
 #5 (id=1281489)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)

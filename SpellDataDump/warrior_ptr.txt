@@ -12879,6 +12879,7 @@ Effects          :
 Description      : Your attacks against your primary target have a $s1% chance to overwhelm their defenses and trigger a Slayer's Strike, dealing $445579s1 Physical damage and granting you a stack of Executioner, increasing your Execute damage by $445584s1% for $445584d. Multiple stacks of Executioner may overlap.
 
 Name             : Imminent Demise (id=444769) [Spell Family (4), Passive, Hidden] 
+Hotfixed         : Description
 Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=2, col=1, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
@@ -12893,11 +12894,14 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=1298727)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+#3 (id=1318124)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Every $s1 Slayer's Strikes you gain Sudden Death.
 
 Using Sudden Death accelerates your next Bladestorm, striking 1 additional time (max $445606u). Bladestorm's total duration is unchanged.
 
-When Sudden Death strikes multiple targets via $?c1[Sweeping Strikes][Improved Whirlwind], you have a $s2% chance to trigger Reap the Storm.
+Sudden Death has a $s2% chance to trigger Reap the Storm at $s3% effectiveness.
 
 Name             : Death Drive (id=444770) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=3, col=1, max_rank=1, req_points=0]
