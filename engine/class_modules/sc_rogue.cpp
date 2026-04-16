@@ -3821,6 +3821,7 @@ struct blade_flurry_attack_t : public rogue_attack_t
     aoe = static_cast<int>( p->spec.blade_flurry->effectN( 3 ).base_value() +
                             p->talent.outlaw.dancing_steel->effectN( 3 ).base_value() );
     target_filter_callback = secondary_targets_only();
+    affected_by.fazed_damage = true; // Not in spell data, scripted fix on 2025-04-30
   }
 
   void init() override
