@@ -246754,14 +246754,15 @@ Name             : Tangle of Vibrant Vines (id=1255278) [Passive]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Real PPM         : 1.5
+Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1262075)  : Apply Aura (6) | Proc Trigger Spell (42): Tangle of Vibrant Vines
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1255296 | Target: Self (1)
 #2 (id=1274848)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 2721.62 (coefficient=21.29535) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2366.807 (coefficient=18.51911) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (21.295353 -> 18.519114)
 #3 (id=1274849)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 38786.05 (coefficient=303.482) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take ${$s2*5} Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.
