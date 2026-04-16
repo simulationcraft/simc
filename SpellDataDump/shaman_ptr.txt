@@ -1775,7 +1775,8 @@ Family Flags     : 41, 80
 Attributes       : Not Shapeshifted (16), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 13.6458 | PvP Coefficient: 1.518 | Target: Chain Heal Ally (45)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 13.6458 | PvP Coefficient: 1.82 | Target: Chain Heal Ally (45)
+Hotfixed         : PvP Coefficient (1.518 -> 1.82)
 Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 

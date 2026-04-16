@@ -11334,7 +11334,8 @@ Family Flags     : 39, 103
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1031561)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.5 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.5 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1031562)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 288634
 #3 (id=1031563)  : Energize Power (30)
@@ -17826,13 +17827,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1210529)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Blackout Kick (228649), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Thunderfist (393566), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443611), Flurry Strike (450617), Flurry Strike (451250), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411), Stomp (1242373), Jadefire Stomp (1248815), Spinning Crane Kick (1250999), Empty the Cellar (1262765), Celestial Flames (1263667), Harmonic Surge (1271011), Zenith Stomp (1272696)
                    Family Flags: 103
+Hotfixed         : Base Value (0 -> -3)
 #2 (id=1266878)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Blackout Kick (228649), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Thunderfist (393566), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443611), Flurry Strike (450617), Flurry Strike (451250), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411), Stomp (1242373), Jadefire Stomp (1248815), Spinning Crane Kick (1250999), Empty the Cellar (1262765), Celestial Flames (1263667), Harmonic Surge (1271011), Zenith Stomp (1272696)
                    Family Flags: 103
+Hotfixed         : Base Value (0 -> -3)
 #3 (id=1266879)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: -40 | Scaled Value: -40 | Target: Self (1)
                    Affected Spells: Vivify (116670)
@@ -20603,13 +20606,15 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1285925)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Weapons of Order (310454), Zenith (1249625)
                    Family Flags: 77
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1285926)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Weapons of Order (310454), Zenith (1249625)
                    Family Flags: 77
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Your damage during Zenith is increased by $s1%.
 
 Name             : Martial Agility (id=1272685) [Spell Family (53), Passive] 

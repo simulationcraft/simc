@@ -16382,7 +16382,8 @@ Family Flags     : 95, 108, 109
 Attributes       : Allow Dead Target (64), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1263763)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2 | PvP Coefficient: 0.9 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+Hotfixed         : PvP Coefficient (1 -> 0.9)
 Description      : $@spelldesc1253304
 
 Name             : Voidfall Meteor (id=1256306) [Spell Family (107)] 

@@ -8173,11 +8173,13 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
+                 : 6594
 Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1026102)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 0.6 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 0.667 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+Hotfixed         : PvP Coefficient (0.6 -> 0.667)
 Description      : Reduces magic damage taken by $s1%.
 
 Name             : Fel Flame Fortification (id=389705) [Spell Family (107), Passive] 
@@ -15058,7 +15060,8 @@ Family Flags     : 95
 Attributes       : Not In Spellbook (143), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
 #1 (id=1247641)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.25 | Radius: 0 - 10 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.25 | PvP Coefficient: 0.8 | Radius: 0 - 10 yards | Target: at Self (18) -> at Enemy in Area (16)
+Hotfixed         : PvP Coefficient (1 -> 0.8)
 #2 (id=1247642)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Misc Value 2: 3594 (Label) | Target: Self (1)
                    Affected Spells (Label): Demonsurge (452416), Demonsurge (453323), Demonsurge (1238696), Voidsurge (1246160), Voidsurge (1246161)
@@ -15734,7 +15737,8 @@ Family Flags     : 95, 108, 109
 Attributes       : Allow Dead Target (64), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1263763)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2 | PvP Coefficient: 0.9 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+Hotfixed         : PvP Coefficient (1 -> 0.9)
 Description      : $@spelldesc1253304
 
 Name             : Voidfall Meteor (id=1256306) [Spell Family (107)] 
@@ -16053,13 +16057,21 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264720)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | Target: Self (1)
                    Affected Spells: Consume (473662), Void Ray (1213649), Void Ray (1214595), Devour (1217610), Collapsing Star (1221162), Reap (1225823), Eradicate (1225827), Hungering Slash (1239127), Voidblade (1245414), Cull (1245455), Voidsurge (1246160), The Hunt (1246168), The Hunt (1246169), Voidfall Meteor (1256305), World Killer (1256619), Meteor Shower (1264129), Eradicate (1279200)
                    Family Flags: 95
+Hotfixed         : Base Value (9 -> 18)
 #2 (id=1266631)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: 9 | Scaled Value: 9 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Consume (473662), Void Ray (1213649), Void Ray (1214595), Devour (1217610), Collapsing Star (1221162), Reap (1225823), Eradicate (1225827), Hungering Slash (1239127), Voidblade (1245414), Cull (1245455), Voidsurge (1246160), The Hunt (1246168), The Hunt (1246169), Voidfall Meteor (1256305), World Killer (1256619), Meteor Shower (1264129), Eradicate (1279200)
                    Family Flags: 95
+Hotfixed         : Base Value (9 -> 18)
+#3 (id=1317253)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 5 | Misc Value 2: 6285 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#4 (id=1317259)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 1 (5)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 5 | Misc Value 2: 6594 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Devourer Demon Hunter (id=1256968) [Spell Family (107), Passive, Hidden] 
 Class            : Devourer Demon Hunter
