@@ -4906,6 +4906,7 @@ Description      : $@spelldesc215209
 Tooltip          : The damage of your next Void Bolt is increased by $s1%.
 
 Name             : Blaze of Light (id=215768) [Spell Family (6), Passive, Hidden] 
+Hotfixed         : Internal Cooldown (2500 -> 0)
 Talent Entry     : Discipline [tree=spec, row=9, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(8, 15)]
                  : Effect#2 [op=set, values=(25, 50)]
@@ -4915,7 +4916,6 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Internal Cooldown: 2.5 seconds
 Proc Chance      : 100%
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355), Allow Class Ability Procs (416)

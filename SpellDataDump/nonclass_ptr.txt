@@ -236859,8 +236859,9 @@ Proc Chance      : 101%
 Attributes       : Retain Item Cast (95), Aura Is Buff (140), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353), Scales with Casting Item's Level (354), Unknown (508)
 Effects          :
 #1 (id=1231028)  : Apply Aura (6) | Absorb Damage (69) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 13805.32 (coefficient=108.0199) | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 38886.28 (coefficient=304.2662) | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : Coefficient (108.019943 -> 304.266205)
 #2 (id=1231039)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Conjure a shield of light that absorbs $s1 damage for $d.
@@ -244472,13 +244473,14 @@ Jumping while at $w2 stacks consumes them to grant you $w3% Haste per stack for 
 Can only occur every $1256628d.
 
 Name             : Mandate of Sacred Death (id=1248927) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5748
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1252123)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -244508,13 +244510,14 @@ $@spellicon1251603 $@spellname1251603
 $@spelldesc1251603
 
 Name             : Ebon Crown of Subjugation (id=1248931) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5741
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1252127)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -248038,10 +248041,11 @@ Effects          :
 Tooltip          : As the void dissipates, you will be horrified for $1259443d1. Killing an enemy prevents this effect from occurring.
 
 Name             : Sealed Chaos Urn (id=1259443) 
+Hotfixed         : Mechanic (24 -> 5)
 School           : Physical
 Spell Type       : Magic
 Duration         : 5 seconds
-Mechanic         : Horrify
+Mechanic         : Flee
 Attributes       : Aura Is Debuff (26), Ignore Line of Sight (66), No Deflect (409)
 Effects          :
 #2 (id=1268562)  : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -249936,13 +249940,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 246.5914 (coefficient=1.881221) | Trigger Spell: 1262338 | Target: Self (1)
 
 Name             : Mandate of Sacred Death (id=1262359) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5748
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1272540)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -249976,13 +249981,14 @@ $@spellicon1251603 $@spellname1251603
 $@spelldesc1251603
 
 Name             : Mandate of Sacred Death (id=1262364) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5748
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1272554)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -250016,13 +250022,14 @@ $@spellicon1251603 $@spellname1251603
 $@spelldesc1251603
 
 Name             : Mandate of Sacred Death (id=1262365) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5748
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1272561)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -250052,13 +250059,14 @@ $@spellicon1251603 $@spellname1251603
 $@spelldesc1251603
 
 Name             : Ebon Crown of Subjugation (id=1262376) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5741
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1272592)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -250100,13 +250108,14 @@ You may have up to $w4 Subjugated Burdens at a time.
 After gathering at least $w5 worshipers the amount of granted $pri per Burden is increased.
 
 Name             : Ebon Crown of Subjugation (id=1262377) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5741
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1272606)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -250148,13 +250157,14 @@ You may have up to $w4 Subjugated Burdens at a time.
 After gathering at least $w5 worshipers the amount of granted $pri per Burden is increased.
 
 Name             : Ebon Crown of Subjugation (id=1262378) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5741
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1272619)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
