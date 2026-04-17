@@ -19356,7 +19356,8 @@ Attributes       : Allow Aura While Dead (116), Aura Points On Client (268), All
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1271571)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 2 | Scaled Value: 2 | Trigger Spell: 1249625 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1249625 | Target: Self (1)
+Hotfixed         : Base Value (2 -> 1)
 Description      : $@spelldesc1261703
 Tooltip          : Your critical strike chance is increased by $s1% during your next Zenith per stack consumed.
 
