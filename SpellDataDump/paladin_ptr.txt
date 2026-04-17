@@ -157,6 +157,7 @@ Description      : Stuns the target for $d.
 Tooltip          : Stunned.
 
 Name             : Blessing of Protection (id=1022) [Spell Family (10)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
@@ -175,7 +176,7 @@ Labels           : 16: Class Spells
 Mechanic         : Invulnerable
 Affecting Spells : Uther's Guard (207558 effect#2), Echoing Blessings (387801 effect#4), Blessed Calling (469770 effect#3)
 Family Flags     : 7
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Immunity Purges Effect (47), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Fail on all targets immune (85), Remove Entering Arena (162), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), External Defensive (C_Spell.IsExternalDefensive) (499)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Immunity Purges Effect (47), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Fail on all targets immune (85), Remove Entering Arena (162), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), External Defensive (C_Spell.IsExternalDefensive) (499), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=378)      : Apply Aura (6) | School Immunity (39)
@@ -4459,6 +4460,7 @@ Effects          :
 Description      : Avenger's Shield hits $s1 additional targets, and grants you an absorb shield for $s2% of all damage it deals.
 
 Name             : Blessing of Spellwarding (id=204018) [Spell Family (10)] 
+Hotfixed         : Attributes
 Talent Entry     : Protection [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Holy
@@ -4480,7 +4482,7 @@ Labels           : 16: Class Spells
 Mechanic         : Invulnerable
 Affecting Spells : Uther's Guard (207558 effect#2), Echoing Blessings (387801 effects: #4, #6), Blessed Calling (469770 effect#3)
 Family Flags     : 7, 28
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Fail on all targets immune (85), Remove Entering Arena (162), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), External Defensive (C_Spell.IsExternalDefensive) (499)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Fail on all targets immune (85), Remove Entering Arena (162), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), External Defensive (C_Spell.IsExternalDefensive) (499), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=301055)   : Apply Aura (6) | School Immunity (39)
