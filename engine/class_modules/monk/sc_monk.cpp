@@ -544,9 +544,9 @@ struct harmonic_surge_t : public base_action_t
   using base_t = harmonic_surge_t<base_action_t>;
 
   template <typename TBase>
-  struct impact_base_t : TBase
+  struct impact_t : TBase
   {
-    impact_t( monk_t *player, std::string_view name, unsigned effect_index = 0, const spell_data_t *spell_data )
+    impact_t( monk_t *player, std::string_view name, const spell_data_t *spell_data, unsigned effect_index = 0 )
       : TBase( player, fmt::format( "harmonic_surge_{}", name ), spell_data )
     {
       TBase::background = true;
@@ -559,7 +559,7 @@ struct harmonic_surge_t : public base_action_t
       {
         TBase::aoe                    = -1;
         TBase::reduced_aoe_targets    = player->talent.master_of_harmony.harmonic_surge->effectN( 7 ).base_value();
-        TBase::target_filter_callback = secondary_targets_only();
+        TBase::target_filter_callback = TBase::secondary_targets_only();
       }
 
       if ( effect.target_1() == 18 && effect.target_2() == 31 )
@@ -589,7 +589,7 @@ struct harmonic_surge_t : public base_action_t
       if ( const spelleffect_data_t &effect = player->talent.master_of_harmony.harmonic_surge->effectN( 1 );
            effect.ok() )
         add_parse_entry( TBase::da_multiplier_effects )
-            .set_buff( player->buff.potential_energy )
+            .set_buff( player->buff.harmonic_surge )
             .set_use_stacks( true )
             .set_value( 1.0 )
             .set_note( "Potential Energy Stack Count" )
@@ -609,13 +609,14 @@ struct harmonic_surge_t : public base_action_t
       return;
 
     st   = new impact_t<monk_spell_t>( player, fmt::format( "damage_st_{}", name ),
-                                       1 player->talent.master_of_harmony.harmonic_surge_damage );
+                                       player->talent.master_of_harmony.harmonic_surge_damage, 1 );
     aoe  = new impact_t<monk_spell_t>( player, fmt::format( "damage_aoe_{}", name ),
-                                       2 player->talent.master_of_harmony.harmonic_surge_damage );
+                                       player->talent.master_of_harmony.harmonic_surge_damage, 2 );
     heal = new impact_t<monk_heal_t>( player, fmt::format( "heal_{}", name ),
                                       player->talent.master_of_harmony.harmonic_surge_heal );
 
-    base_action_t::add_child( damage );
+    base_action_t::add_child( st );
+    base_action_t::add_child( aoe );
     base_action_t::add_child( heal );
   }
 
@@ -1609,7 +1610,7 @@ struct fists_of_fury_t : monk_melee_attack_t
             .set_eff( &effect );
     }
 
-    double composite_aoe_multiplier( const action_state_t *state ) const
+    double composite_aoe_multiplier( const action_state_t *state ) const override
     {
       double cam = monk_melee_attack_t::composite_aoe_multiplier( state );
 
