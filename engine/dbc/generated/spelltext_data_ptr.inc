@@ -1,4 +1,4 @@
-// Spell text, wow build 12.0.5.66741
+// Spell text, wow build 12.0.5.67088
 static constexpr std::array<spelltext_data_t, 28694> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -28696,16 +28696,11 @@ static constexpr std::array<spelltext_data_t, 28694> __ptr_spelltext_data { {
   { 1293918, "$@spelldesc228049", "Immune to all attacks and spells.", "PvP Talent" },
 } };
 
-// spelltext hotfix entries, wow build 12.0.5.66741
-static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __ptr_spelltext_hotfix_data { {
-  {  436358,  0, "Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 of it. Deals reduced damage beyond $s1 targets.\r\n\r\nWhile channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.\r\n\r\nYou can block, parry, dodge, and use certain defensive abilities while channeling Demolish.", "Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 yds of it. Deals reduced damage beyond $s1 targets.\r\n\r\nWhile channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.\r\n\r\nYou can block, parry, dodge, and use certain defensive abilities while channeling Demolish." },
-  {  444088,  0, "$?c1[Disintegrate damage consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.\r\n\r\nPyre damage consumes ${$s3/1000} sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.][Verdant Embrace healing consumes ${$s5/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.\r\n\r\nEmerald Blossom healing consumes ${$s1/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.]", "$?c1[Disintegrate damage consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.\r\n\r\nPyre damage consumes ${$s3/1000} sec of Fire Breath from enemies it damages, detonating it for $s7% of the amount consumed.][Verdant Embrace healing consumes ${$s5/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.\r\n\r\nEmerald Blossom healing consumes ${$s1/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.]" },
-  {  444769,  0, "Every $s1 Slayer's Strikes you gain Sudden Death.\r\n\r\nUsing Sudden Death accelerates your next Bladestorm, striking 1 additional time (max $445606u). Bladestorm's total duration is unchanged.\r\n\r\nWhen Sudden Death strikes multiple targets via $?c1[Sweeping Strikes][Improved Whirlwind], you have a $s2% chance to trigger Reap the Storm.", "Every $s1 Slayer's Strikes you gain Sudden Death.\r\n\r\nUsing Sudden Death accelerates your next Bladestorm, striking 1 additional time (max $445606u). Bladestorm's total duration is unchanged.\r\n\r\nSudden Death has a $s2% chance to trigger Reap the Storm at $s3% effectiveness." },
-  { 1244331,  0, "$s2% of Lifebloom's final bloom splashes to all allies within $1244341a1 yds, reduced beyond $s3.", "$s2% of Lifebloom's final bloom heals up to $s3 injured allies within $1244341a1 yds." },
-  { 1292071,  0, "Enemies damaged by Phalanx's wave of force deal ${$s1}.1% reduced damage to you for $d.\r\n", "Enemies damaged by Phalanx's wave of force deal ${$s1/-1}.1% reduced damage to you for $d.\r\n" },
+// spelltext hotfix entries, wow build 12.0.5.67088
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.5.66741
+// Spell description variables, wow build 12.0.5.67088
 static constexpr std::array<spelldesc_vars_data_t, 697> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29406,7 +29401,7 @@ static constexpr std::array<spelldesc_vars_data_t, 697> __ptr_spelldesc_vars_dat
   { 1293610, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.5.66741
+// spelldesc_vars hotfix entries, wow build 12.0.5.67088
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
