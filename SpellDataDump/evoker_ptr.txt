@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.66741 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 PTR
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -504,12 +504,10 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.8 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Verdant Embrace (409895), Molten Blood (410651), Insurance! (1215550), Insurance! (1215553), Merithra's Blessing (1256581), Twin Flame (1265991)
                    Family Flags: 1
-Hotfixed         : Base Value (-16 -> -20), PvP Coefficient (1 -> 0.8)
 #2 (id=896453)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.8 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Verdant Embrace (409895), Molten Blood (410651), Insurance! (1215550), Insurance! (1215553), Merithra's Blessing (1256581), Twin Flame (1265991)
                    Family Flags: 1
-Hotfixed         : Base Value (-16 -> -20), PvP Coefficient (1 -> 0.8)
 #3 (id=900193)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Disintegrate (1236949), Pyre (1236970), Eruption (1259172), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980)
@@ -1354,7 +1352,7 @@ Talent Entry     : Generic [free=(Preservation), tree=class, row=2, col=6, max_r
 Class            : Evoker
 School           : Nature
 Spell Type       : None
-Resource         : 2.4% Base Mana (0) (id=232526) w/ Preservation Evoker (id=356810)[Hotfixed: Percent Cost (3.3 -> 2.4)]
+Resource         : 2.4% Base Mana (0) (id=232526) w/ Preservation Evoker (id=356810)
 Resource         : 10% Base Mana (0) (id=305271) w/ Devastation Evoker (id=356809)
 Resource         : 10% Base Mana (0) (id=305272) w/ Augmentation Evoker (id=396186)
 Range            : 25 yards
@@ -5176,7 +5174,6 @@ Effects          :
 #3 (id=1316373)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 2448 (Category) | Radius: 100 yards | Target: Raid in Area (56)
                    Affected Spells (Category): Shift (1234796)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Fel Rush and Infernal Strike reduced by $s1%.
 
@@ -11053,7 +11050,6 @@ Effects          :
 Description      : Fire Breath $?c1[reaches its][and Dream Breath reach their] maximum empower level $s1% faster.
 
 Name             : Consume Flame (desc=Red) (id=444088) [Spell Family (224), Passive, Hidden] 
-Hotfixed         : Description
 Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=5, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
@@ -11076,14 +11072,12 @@ Effects          :
                    Modified By: Preservation Evoker (356810 effect#17)
 #4 (id=1275546)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
-Hotfixed         : Base Value (115 -> 150)
 #5 (id=1275591)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #6 (id=1278179)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 #7 (id=1317269)  : Apply Aura (6) | Dummy (4)
                    Base Value: 115 | Scaled Value: 115 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $?c1[Disintegrate damage consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.
 
 Pyre damage consumes ${$s3/1000} sec of Fire Breath from enemies it damages, detonating it for $s7% of the amount consumed.][Verdant Embrace healing consumes ${$s5/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.

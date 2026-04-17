@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.66741 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -236861,7 +236861,6 @@ Effects          :
 #1 (id=1231028)  : Apply Aura (6) | Absorb Damage (69) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 38886.28 (coefficient=304.2662) | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Coefficient (108.019943 -> 304.266205)
 #2 (id=1231039)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Conjure a shield of light that absorbs $s1 damage for $d.
@@ -244473,7 +244472,6 @@ Jumping while at $w2 stacks consumes them to grant you $w3% Haste per stack for 
 Can only occur every $1256628d.
 
 Name             : Mandate of Sacred Death (id=1248927) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -244510,7 +244508,6 @@ $@spellicon1251603 $@spellname1251603
 $@spelldesc1251603
 
 Name             : Ebon Crown of Subjugation (id=1248931) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -246765,7 +246762,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1255296 | Target: Self (1)
 #2 (id=1274848)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 2366.807 (coefficient=18.51911) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (21.295353 -> 18.519114)
 #3 (id=1274849)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 38786.05 (coefficient=303.482) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take ${$s2*5} Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.
@@ -248041,7 +248037,6 @@ Effects          :
 Tooltip          : As the void dissipates, you will be horrified for $1259443d1. Killing an enemy prevents this effect from occurring.
 
 Name             : Sealed Chaos Urn (id=1259443) 
-Hotfixed         : Mechanic (24 -> 5)
 School           : Physical
 Spell Type       : Magic
 Duration         : 5 seconds
@@ -249940,7 +249935,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 246.5914 (coefficient=1.881221) | Trigger Spell: 1262338 | Target: Self (1)
 
 Name             : Mandate of Sacred Death (id=1262359) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -249981,7 +249975,6 @@ $@spellicon1251603 $@spellname1251603
 $@spelldesc1251603
 
 Name             : Mandate of Sacred Death (id=1262364) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -250022,7 +250015,6 @@ $@spellicon1251603 $@spellname1251603
 $@spelldesc1251603
 
 Name             : Mandate of Sacred Death (id=1262365) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -250059,7 +250051,6 @@ $@spellicon1251603 $@spellname1251603
 $@spelldesc1251603
 
 Name             : Ebon Crown of Subjugation (id=1262376) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -250108,7 +250099,6 @@ You may have up to $w4 Subjugated Burdens at a time.
 After gathering at least $w5 worshipers the amount of granted $pri per Burden is increased.
 
 Name             : Ebon Crown of Subjugation (id=1262377) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -250157,7 +250147,6 @@ You may have up to $w4 Subjugated Burdens at a time.
 After gathering at least $w5 worshipers the amount of granted $pri per Burden is increased.
 
 Name             : Ebon Crown of Subjugation (id=1262378) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards

@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.66741 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -5399,7 +5399,7 @@ Family Flags     : 18, 55
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), PvP Enabling (96), Not a Proc (105), Allow Aura While Dead (116), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=280158)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.2176 | PvP Coefficient: 0.969 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.253 | PvP Coefficient: 0.833 | Target: Targeted Enemy (6)
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
@@ -6434,7 +6434,7 @@ Effects          :
                    Affected Spells: Thrash (192090)
                    Family Flags: 40
 #3 (id=301124)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: -2 | Scaled Value: -2 | Misc Value: 32 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Thrash (192090)
                    Family Flags: 40
 Description      : Each stack of Thrash reduces the target's damage to you by $s3% and increases your damage to them by $s1%.
@@ -7760,7 +7760,7 @@ Tooltip          : Your next Maim costs no Energy, deals $s2% increased damage, 
 
 Name             : Scintillating Moonlight (id=238049) [Spell Family (7), Passive] 
 Talent Entry     : Guardian [tree=spec, row=5, col=7, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(5, 10)]
+                 : Effect#1 [op=set, values=(6, 12)]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -14869,7 +14869,6 @@ Effects          :
 Description      : $@spelldesc106951
 
 Name             : Overflowing Power (id=405189) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -20646,7 +20645,6 @@ Effects          :
 Description      : $@spelldesc1244258
 
 Name             : Everbloom (id=1244331) [Spell Family (7), Passive] 
-Hotfixed         : Description
 Talent Entry     : Restoration [tree=spec, row=11, col=5, max_rank=2, req_points=20, select_idx=200]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Druid
@@ -20663,14 +20661,11 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #2 (id=1245026)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 25)
 #3 (id=1314559)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
-Hotfixed         : Base Value (8 -> 6)
 Description      : $s2% of Lifebloom's final bloom heals up to $s3 injured allies within $1244341a1 yds.
 
 Name             : Everbloom (id=1244341) [Spell Family (7)] 
-Hotfixed         : Attributes, Max Targets (8 -> 6)
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -20727,7 +20722,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
 Effects          :
 #1 (id=1245242)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Hotfixed         : Base Value (5 -> 3)
 Description      : Lifebloom bursts into a Blooming Frenzy when you consume Soul of the Forest, causing it to bloom $s1 times in rapid succession.
 
 Name             : Sudden Ambush (id=1244483) [Spell Family (7)] 
@@ -21660,7 +21654,7 @@ Family Flags     : 18
 Attributes       : Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1273712)  : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.8232 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.9055 | PvP Coefficient: 0.91 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc1261566
 
 Name             : Astral Smolder (id=1263250) [Spell Family (7)] 

@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.66741 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -652,7 +652,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
 Stance Mask      : 0x01000000
-Affecting Spells : Killing Machine (51124 effects: #1, #2), Might of the Frozen Wastes (81333 effect#1), Death Knight (137005 effect#2), Death and Decay (188290 effect#4), Koltira's Newfound Will (208782 effect#2), Koltira's Favor (334583 effect#2), Exterminate (441416 effects: #2, #4), Exterminate (447954 effect#2), Empower Rune Weapon (1230959 effects: #2, #4), Empowered Strikes (1269300 effect#1)
+Affecting Spells : Killing Machine (51124 effects: #1, #2), Might of the Frozen Wastes (81333 effect#1), Death Knight (137005 effect#2), Death and Decay (188290 effect#4), Koltira's Newfound Will (208782 effect#2), Koltira's Favor (334583 effect#2), Exterminate (441416 effects: #2, #4), Exterminate (447954 effect#2), Empower Rune Weapon (1230959 effects: #2, #4), Frost Death Knight (1256915 effect#4), Empowered Strikes (1269300 effect#1)
 Family Flags     : 49, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Suppress Weapon Procs (151), Allow Class Ability Procs (416)
 Effects          :
@@ -779,7 +779,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
 Stance Mask      : 0x01000000
-Affecting Spells : Rime (59052 effect#4), Death Knight (137005 effect#2), Runic Overflow (316803 effect#1), A Feast of Souls (440861 effect#1), Dark Talons (443586 effect#1), Hungering Thirst (444037 effects: #1, #2), Death Knight Frost 11.0 Class Set 2pc (453634 effect#1), Winning Streak! (1217897 effect#1), Icy Onslaught (1230273 effects: #1, #2), Deathly Blows (1265932 effect#1)
+Affecting Spells : Rime (59052 effect#4), Death Knight (137005 effect#2), Runic Overflow (316803 effect#1), A Feast of Souls (440861 effect#1), Dark Talons (443586 effect#1), Hungering Thirst (444037 effects: #1, #2), Death Knight Frost 11.0 Class Set 2pc (453634 effect#1), Winning Streak! (1217897 effect#1), Icy Onslaught (1230273 effects: #1, #2), Frost Death Knight (1256915 effect#3), Deathly Blows (1265932 effect#1)
 Family Flags     : 34, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Suppress Weapon Procs (151), Allow Class Ability Procs (416)
 Effects          :
@@ -1871,13 +1871,13 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 881
-Affecting Spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Rime (59052 effect#4), Mastery: Frozen Heart (77514 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Runic Overflow (316803 effect#1), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), A Feast of Souls (440861 effect#1), Dark Talons (443586 effect#1), Hungering Thirst (444037 effects: #1, #2), Death Knight Frost 11.0 Class Set 2pc (453634 effect#1), Winning Streak! (1217897 effect#1), Luck of the Draw! (1218601 effects: #1, #2), Icy Onslaught (1230273 effects: #1, #2), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Chosen of Frostbrood (1265637 effects: #3, #4), Deathly Blows (1265932 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
+Affecting Spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Rime (59052 effect#4), Mastery: Frozen Heart (77514 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Runic Overflow (316803 effect#1), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), A Feast of Souls (440861 effect#1), Dark Talons (443586 effect#1), Hungering Thirst (444037 effects: #1, #2), Death Knight Frost 11.0 Class Set 2pc (453634 effect#1), Winning Streak! (1217897 effect#1), Luck of the Draw! (1218601 effects: #1, #2), Icy Onslaught (1230273 effects: #1, #2), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2, #3), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Chosen of Frostbrood (1265637 effects: #3, #4), Deathly Blows (1265932 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
 Triggered By     : Frost Strike (49143)
 Family Flags     : 34, 43, 110, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Always Hit (114), Requires Off-Hand Weapon (120), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=60368)    : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.807582 | PvP Coefficient: 2 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.928719 | PvP Coefficient: 2 | Target: Targeted Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Obliterate Off-Hand (id=66198) [Spell Family (15)] 
@@ -1890,13 +1890,13 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 881
-Affecting Spells : Killing Machine (51124 effects: #1, #2), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Koltira's Newfound Will (208782 effect#2), War (327096 effect#1), Koltira's Favor (334583 effect#2), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Exterminate (441416 effects: #2, #4), Exterminate (447954 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Empower Rune Weapon (1230959 effects: #2, #4), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Empowered Strikes (1269300 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
+Affecting Spells : Killing Machine (51124 effects: #1, #2), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Koltira's Newfound Will (208782 effect#2), War (327096 effect#1), Koltira's Favor (334583 effect#2), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Exterminate (441416 effects: #2, #4), Exterminate (447954 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Empower Rune Weapon (1230959 effects: #2, #4), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2, #4), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Empowered Strikes (1269300 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
 Triggered By     : Obliterate (49020)
 Family Flags     : 43, 49, 111
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Always Hit (114), Requires Off-Hand Weapon (120), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=60372)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.714357 | PvP Coefficient: 1.26775 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.80008 | PvP Coefficient: 1.26775 | Target: Targeted Enemy (6)
 Description      : $@spelldesc49020
 
 Name             : Soul Fragment (id=71905) [Spell Family (15)] 
@@ -2971,7 +2971,7 @@ Effects          :
 #4 (id=191168)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=191169)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+                   Base Value: 275 | Scaled Value: 275 | Target: Self (1)
 #6 (id=260807)   : Apply Aura (6) | Threat (10)
                    Base Value: 950 | Scaled Value: 950 | Misc Value: 127 | Target: Self (1)
 #7 (id=260808)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
@@ -3006,7 +3006,7 @@ Effects          :
                    Base Value: 5000 | Scaled Value: 5000 | Misc Value: 1 | Misc Value 2: 3134 (Label) | Target: Self (1)
                    Affected Spells (Label): Essence of the Blood Queen (433925)
 #18 (id=1191490) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 140 | Scaled Value: 140 | Target: Self (1)
+                   Base Value: 169 | Scaled Value: 169 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
 #19 (id=1266597) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3791,7 +3791,7 @@ Attributes       : Do Not Sheath (18), No Threat (42), Can Proc From Procs (122)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=286506)   : Apply Aura (6) | Modify Armor by Primary Stat% (268) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 150 | Scaled Value: 150 | Target: Self (1)
+                   Base Value: 180 | Scaled Value: 180 | Target: Self (1)
                    Modified By: Rattlegore Bone Legplates (205816 effect#2)
 #2 (id=293376)   : Apply Aura (6) | Set Action Button Spell Count (408): Marrowrend
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 195182 | Target: Self (1)
@@ -5759,13 +5759,13 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 881
-Affecting Spells : Killing Machine (51124 effects: #1, #2, #3), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Koltira's Newfound Will (208782 effect#2), War (327096 effect#1), Koltira's Favor (334583 effect#2), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Exterminate (441416 effects: #2, #4), Mawsworn Menace (444099 effect#4), Exterminate (447954 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Frostreaper (1230301 effect#4), Empower Rune Weapon (1230959 effects: #2, #4), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Empowered Strikes (1269300 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
+Affecting Spells : Killing Machine (51124 effects: #1, #2, #3), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Koltira's Newfound Will (208782 effect#2), War (327096 effect#1), Koltira's Favor (334583 effect#2), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Exterminate (441416 effects: #2, #4), Mawsworn Menace (444099 effect#4), Exterminate (447954 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Frostreaper (1230301 effect#4), Empower Rune Weapon (1230959 effects: #2, #4), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2, #4), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Empowered Strikes (1269300 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
 Triggered By     : Obliterate (49020)
 Family Flags     : 7, 43, 49
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=331344)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.714357 | PvP Coefficient: 1.26775 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.80008 | PvP Coefficient: 1.26775 | Target: Targeted Enemy (6)
 Description      : $@spelldesc49020
 
 
@@ -5779,13 +5779,13 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 881
-Affecting Spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Rime (59052 effect#4), Mastery: Frozen Heart (77514 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Runic Overflow (316803 effect#1), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), A Feast of Souls (440861 effect#1), Dark Talons (443586 effect#1), Hungering Thirst (444037 effects: #1, #2), Death Knight Frost 11.0 Class Set 2pc (453634 effect#1), Winning Streak! (1217897 effect#1), Luck of the Draw! (1218601 effects: #1, #2), Icy Onslaught (1230273 effects: #1, #2), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Chosen of Frostbrood (1265637 effects: #3, #4), Deathly Blows (1265932 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
+Affecting Spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Rime (59052 effect#4), Mastery: Frozen Heart (77514 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Runic Overflow (316803 effect#1), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), A Feast of Souls (440861 effect#1), Dark Talons (443586 effect#1), Hungering Thirst (444037 effects: #1, #2), Death Knight Frost 11.0 Class Set 2pc (453634 effect#1), Winning Streak! (1217897 effect#1), Luck of the Draw! (1218601 effects: #1, #2), Icy Onslaught (1230273 effects: #1, #2), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2, #3), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Chosen of Frostbrood (1265637 effects: #3, #4), Deathly Blows (1265932 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
 Triggered By     : Frost Strike (49143)
 Family Flags     : 34, 43, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=331347)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.807582 | PvP Coefficient: 2 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.928719 | PvP Coefficient: 2 | Target: Targeted Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Pestilence Trigger (id=223032) [Spell Family (15)] 
@@ -8524,13 +8524,13 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 881
-Affecting Spells : Killing Machine (51124 effects: #1, #2, #3), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Koltira's Newfound Will (208782 effect#2), War (327096 effect#1), Koltira's Favor (334583 effect#2), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Exterminate (441416 effects: #2, #4), Mawsworn Menace (444099 effect#4), Exterminate (447954 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Frostreaper (1230301 effect#4), Empower Rune Weapon (1230959 effects: #2, #4), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Empowered Strikes (1269300 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
+Affecting Spells : Killing Machine (51124 effects: #1, #2, #3), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Koltira's Newfound Will (208782 effect#2), War (327096 effect#1), Koltira's Favor (334583 effect#2), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Exterminate (441416 effects: #2, #4), Mawsworn Menace (444099 effect#4), Exterminate (447954 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Frostreaper (1230301 effect#4), Empower Rune Weapon (1230959 effects: #2, #4), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2, #4), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Empowered Strikes (1269300 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
 Triggered By     : Obliterate (49020)
 Family Flags     : 7, 43, 49
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=815754)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.05751 | PvP Coefficient: 1.26775 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.18441 | PvP Coefficient: 1.26775 | Target: Targeted Enemy (6)
 Description      : $@spelldesc49020
 
 
@@ -8544,13 +8544,13 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 881
-Affecting Spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Rime (59052 effect#4), Mastery: Frozen Heart (77514 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Runic Overflow (316803 effect#1), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), A Feast of Souls (440861 effect#1), Dark Talons (443586 effect#1), Hungering Thirst (444037 effects: #1, #2), Death Knight Frost 11.0 Class Set 2pc (453634 effect#1), Winning Streak! (1217897 effect#1), Luck of the Draw! (1218601 effects: #1, #2), Icy Onslaught (1230273 effects: #1, #2), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Chosen of Frostbrood (1265637 effects: #3, #4), Deathly Blows (1265932 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
+Affecting Spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Rime (59052 effect#4), Mastery: Frozen Heart (77514 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Runic Overflow (316803 effect#1), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), A Feast of Souls (440861 effect#1), Dark Talons (443586 effect#1), Hungering Thirst (444037 effects: #1, #2), Death Knight Frost 11.0 Class Set 2pc (453634 effect#1), Winning Streak! (1217897 effect#1), Luck of the Draw! (1218601 effects: #1, #2), Icy Onslaught (1230273 effects: #1, #2), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2, #3), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Chosen of Frostbrood (1265637 effects: #3, #4), Deathly Blows (1265932 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
 Triggered By     : Frost Strike (49143)
 Family Flags     : 34, 43, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=815761)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.14834 | PvP Coefficient: 2 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.32059 | PvP Coefficient: 2 | Target: Targeted Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Dark Transformation (desc=Rank 2) (id=325554) [Spell Family (15), Passive] 
@@ -10624,7 +10624,7 @@ Effects          :
 #1 (id=1000722)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 2 | Stat: Sta | Target: Self (1)
 #2 (id=1000723)  : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | Misc Value: 1 | Target: Self (1)
 Description      : Your Blood thickens increasing your Stamina by $s1% and your Armor by $s2%.
 
 Name             : Perseverance of the Ebon Blade (id=374747) [Passive] 
@@ -13467,7 +13467,6 @@ Effects          :
 #9 (id=1319005)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 4 (32)
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 32 | Misc Value 2: 3134 (Label) | Target: Self (1)
                    Affected Spells (Label): Essence of the Blood Queen (433925)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc434152
 Tooltip          : The effectiveness of Essence of the Blood Queen is increased by $?a137007[$w1][$w4]%.
 
@@ -17565,12 +17564,12 @@ Labels           : 16: Class Spells
                  : 292
                  : 881
 Stance Mask      : 0x01000000
-Affecting Spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Rime (59052 effect#4), Mastery: Frozen Heart (77514 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Runic Overflow (316803 effect#1), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), A Feast of Souls (440861 effect#1), Dark Talons (443586 effect#1), Hungering Thirst (444037 effects: #1, #2), Death Knight Frost 11.0 Class Set 2pc (453634 effect#1), Winning Streak! (1217897 effect#1), Luck of the Draw! (1218601 effects: #1, #2), Icy Onslaught (1230273 effects: #1, #2), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Chosen of Frostbrood (1265637 effects: #3, #4), Deathly Blows (1265932 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
+Affecting Spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Rime (59052 effect#4), Mastery: Frozen Heart (77514 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Runic Overflow (316803 effect#1), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), A Feast of Souls (440861 effect#1), Dark Talons (443586 effect#1), Hungering Thirst (444037 effects: #1, #2), Death Knight Frost 11.0 Class Set 2pc (453634 effect#1), Winning Streak! (1217897 effect#1), Luck of the Draw! (1218601 effects: #1, #2), Icy Onslaught (1230273 effects: #1, #2), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2, #3), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Chosen of Frostbrood (1265637 effects: #3, #4), Deathly Blows (1265932 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
 Family Flags     : 34, 43, 120, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Treat as Area Effect (175), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1219457)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.7452 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.85698 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1228433
 
 Name             : Frostbane (id=1229279) [Hidden] 
@@ -19617,6 +19616,14 @@ Effects          :
                    Base Value: 19 | Scaled Value: 19 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Outbreak (77575), Festering Strike (85948), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Avalanche (207150), Frostscythe (207230), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Graveyard (383313), Putrefy (390220), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Undeath (444633), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Heart Strike (460501), Shadow and Flame (1221634), Shadow and Flame (1221647), Shadow and Flame (1221747), Shadow and Flame (1221831), Frostbane (1228433), Frostbane (1228436), Frostbane (1228443), Howling Blades (1231082), Howling Blades (1231083), Breath of Sindragosa (1231316), Desecrate (1232346), Frostreaper (1233619), Frostscythe (1237388), Festering Strike (1240994), Dread Plague (1240996), Infected Claws (1241786), Necrotic Coil (1242172), Necrotic Coil (1242174), Necrotic Coil (1242178), Dread Plague (1242564), Disease Cloud (1244347), Abomination Limb (1263566), Abomination Limb (1263568), Graveyard (1263602), Blood Mist (1263752), Consumption (1263825), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084), Putrefy (1277016), Bloody Reflection (1279656)
                    Family Flags: 43
+#3 (id=1317283)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
+                   Base Value: -13 | Scaled Value: -13 | Target: Self (1)
+                   Affected Spells: Frost Strike (49143), Frost Strike Off-Hand (66196), Frost Strike (222026), Frost Strike (325464), Frostbane (1228443)
+                   Family Flags: 34
+#4 (id=1317284)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
+                   Base Value: -10 | Scaled Value: -10 | Target: Self (1)
+                   Affected Spells: Obliterate (49020), Obliterate Off-Hand (66198), Obliterate (222024), Obliterate (325461), Obliterate (1264082), Obliterate Off-Hand (1264083), Obliterate (1264084)
+                   Family Flags: 49
 
 Name             : Blood Death Knight (id=1256916) [Spell Family (15), Passive, Hidden] 
 Class            : Blood Death Knight
@@ -19981,13 +19988,13 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 881
-Affecting Spells : Killing Machine (51124 effects: #1, #2, #3), Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Koltira's Newfound Will (208782 effect#2), War (327096 effect#1), Koltira's Favor (334583 effect#2), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Exterminate (441416 effects: #2, #4), Mawsworn Menace (444099 effect#4), Exterminate (447954 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Frostreaper (1230301 effect#4), Empower Rune Weapon (1230959 effects: #2, #4), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Chosen of Frostbrood (1265637 effects: #3, #4), Empowered Strikes (1269300 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
+Affecting Spells : Killing Machine (51124 effects: #1, #2, #3), Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Koltira's Newfound Will (208782 effect#2), War (327096 effect#1), Koltira's Favor (334583 effect#2), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Exterminate (441416 effects: #2, #4), Mawsworn Menace (444099 effect#4), Exterminate (447954 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Frostreaper (1230301 effect#4), Empower Rune Weapon (1230959 effects: #2, #4), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2, #4), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Chosen of Frostbrood (1265637 effects: #3, #4), Empowered Strikes (1269300 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
 Triggered By     : Obliterate (49020)
 Family Flags     : 7, 43, 49, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1275166)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.714357 | PvP Coefficient: 1.26775 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.80008 | PvP Coefficient: 1.26775 | Target: Targeted Enemy (6)
 Description      : $@spelldesc49020
 
 
@@ -20001,13 +20008,13 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 881
-Affecting Spells : Killing Machine (51124 effects: #1, #2), Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Koltira's Newfound Will (208782 effect#2), War (327096 effect#1), Koltira's Favor (334583 effect#2), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Exterminate (441416 effects: #2, #4), Exterminate (447954 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Empower Rune Weapon (1230959 effects: #2, #4), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Chosen of Frostbrood (1265637 effects: #3, #4), Empowered Strikes (1269300 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
+Affecting Spells : Killing Machine (51124 effects: #1, #2), Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Koltira's Newfound Will (208782 effect#2), War (327096 effect#1), Koltira's Favor (334583 effect#2), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Exterminate (441416 effects: #2, #4), Exterminate (447954 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Empower Rune Weapon (1230959 effects: #2, #4), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2, #4), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Chosen of Frostbrood (1265637 effects: #3, #4), Empowered Strikes (1269300 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
 Triggered By     : Obliterate (49020)
 Family Flags     : 43, 49, 111, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Always Hit (114), Requires Off-Hand Weapon (120), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1275169)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.714357 | PvP Coefficient: 1.26775 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.80008 | PvP Coefficient: 1.26775 | Target: Targeted Enemy (6)
 Description      : $@spelldesc49020
 
 Name             : Obliterate (id=1264084) [Spell Family (15)] 
@@ -20020,13 +20027,13 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 881
-Affecting Spells : Killing Machine (51124 effects: #1, #2, #3), Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Koltira's Newfound Will (208782 effect#2), War (327096 effect#1), Koltira's Favor (334583 effect#2), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Exterminate (441416 effects: #2, #4), Mawsworn Menace (444099 effect#4), Exterminate (447954 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Frostreaper (1230301 effect#4), Empower Rune Weapon (1230959 effects: #2, #4), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Chosen of Frostbrood (1265637 effects: #3, #4), Empowered Strikes (1269300 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
+Affecting Spells : Killing Machine (51124 effects: #1, #2, #3), Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Blood Shield (77535 effects: #2, #3), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Koltira's Newfound Will (208782 effect#2), War (327096 effect#1), Koltira's Favor (334583 effect#2), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Exterminate (441416 effects: #2, #4), Mawsworn Menace (444099 effect#4), Exterminate (447954 effect#2), Luck of the Draw! (1218601 effects: #1, #2), Frostreaper (1230301 effect#4), Empower Rune Weapon (1230959 effects: #2, #4), Dread Plague (1240996 effect#2), Infected Claws (1241786 effect#2), Frost Death Knight (1256915 effects: #1, #2, #4), Blood Death Knight (1256916 effects: #1, #2), Unholy Death Knight (1256918 effects: #1, #2), Dance of Midnight (1264407 effects: #1, #2), Chosen of Frostbrood (1265637 effects: #3, #4), Empowered Strikes (1269300 effect#1), Death Knight - Midnight PrePatch - 11.2 Class Set 2pc (1283621 effects: #1, #2), Death Knight - Midnight PrePatch - 11.2 Class Set 4pc (1283622 effects: #1, #2)
 Triggered By     : Obliterate (49020)
 Family Flags     : 7, 43, 49, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1275170)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.05751 | PvP Coefficient: 1.26775 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.18441 | PvP Coefficient: 1.26775 | Target: Targeted Enemy (6)
 Description      : $@spelldesc49020
 
 
@@ -20391,17 +20398,14 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Virulent Plague (191587), Virulent Eruption (191685), Virulent Plague (Erupt) (1241167)
                    Family Flags: 40, 41
-Hotfixed         : NEW EFFECT
 #7 (id=1319201)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Blood Plague (55078), Consumption (1263872)
                    Family Flags: 57
-Hotfixed         : NEW EFFECT
 #8 (id=1319202)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Festering Wound (194311), Dread Plague (1240996), Dread Plague (Erupt) (1241171), Dread Plague (1242564)
                    Family Flags: 119
-Hotfixed         : NEW EFFECT
 Description      : Essence of the Blood Queen additionally increases your Mastery by $?c3[${$s1/10}.1][${$s3/10}.1]% per stack.
 
 $?c3[Dread Plague deals $s5% and Virulent Plague deals $s3%][Blood Plague deals $s4%] increased damage.
@@ -21042,7 +21046,6 @@ Effects          :
 Description      : $@spelldesc1264799
 
 Name             : Blighted (id=1271199) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
