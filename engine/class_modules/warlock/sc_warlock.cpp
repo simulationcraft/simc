@@ -100,7 +100,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                  warlock.proc_actions.blackened_soul->execute_on_target( target );
                                } )
                                ->set_tick_behavior( buff_tick_behavior::REFRESH )
-                               ->set_freeze_stacks( true );
+                               ->set_freeze_stacks( true )
+                               ->set_max_stack( 99 );
 
   debuffs.wither = make_buff( *this, "wither", p.hero.wither_dot )
                        ->set_refresh_behavior( buff_refresh_behavior::DURATION )
