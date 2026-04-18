@@ -367,6 +367,7 @@ void frost( player_t* p )
   ss_aoe->add_action( "blizzard,if=talent.freezing_winds" );
   ss_aoe->add_action( "ray_of_frost,if=icicles<3|time-action.potion.last_used<25" );
   ss_aoe->add_action( "flurry,if=cooldown_react" );
+  ss_aoe->add_action( "blizzard,if=active_enemies>=4" );
   ss_aoe->add_action( "frostbolt" );
   ss_aoe->add_action( "call_action_list,name=movement" );
 
