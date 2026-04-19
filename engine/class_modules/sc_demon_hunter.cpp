@@ -345,6 +345,7 @@ public:
     buff_t* hungering_slash;
     buff_t* voidstep;
     buff_t* voidrush;
+    buff_t* entropy_out_of_combat;
 
     // Havoc
     buff_t* blind_fury;
@@ -1082,6 +1083,7 @@ public:
 
     // Devourer
     proc_t* spontaneous_immolation;
+    proc_t* void_metamorphosis_stack_from_entropy;
     proc_t* soul_fragment_from_consume;
     proc_t* soul_fragment_from_devour;
     proc_t* soul_fragment_from_soul_immolation;
@@ -9057,6 +9059,11 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       {
         dh()->interrupt();
       }
+
+      if ( dh()->talent.devourer.entropy->ok() && !dh()->in_combat )
+      {
+        dh() ->buff.entropy_out_of_combat->trigger();
+      }
     }
 
     for ( demonsurge_ability ability : demonsurge_abilities )
@@ -9666,6 +9673,20 @@ void demon_hunter_t::activate()
       }
     } );
   }
+
+  if ( talent.devourer.entropy->ok() && !buff.metamorphosis->up() )
+  {
+    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
+      if ( c )
+      {
+        buff.entropy_out_of_combat->expire();
+      }
+      else
+      {
+        buff.entropy_out_of_combat->trigger();
+      }
+    } );
+  }
 }
 
 // demon_hunter_t::create_buffs =============================================
@@ -9735,6 +9756,16 @@ void demon_hunter_t::create_buffs()
           ->set_duration( 0.5_s )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->add_stack_change_callback( [ this ]( buff_t*, int, int ) { devourer_fury_state.reschedule_drain(); } );
+
+  buff.entropy_out_of_combat =
+      make_buff( this, "entropy_out_of_combat" )
+          ->set_quiet( true )
+          ->set_period( 1_s )
+          ->set_tick_on_application( false )
+                                   ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                                     buff.void_metamorphosis_stack->increment();
+                                     proc.void_metamorphosis_stack_from_entropy->occur();
+                                   } );
 
   // Havoc ==================================================================
 
@@ -10296,6 +10327,7 @@ void demon_hunter_t::init_procs()
 
   // Devourer
   proc.spontaneous_immolation                = get_proc( "Spontaneous Immolation" );
+  proc.void_metamorphosis_stack_from_entropy = get_proc( "Void Metamorphosis Stack from Entropy" );
   proc.soul_fragment_from_consume            = get_proc( "Soul Fragment from Consume" );
   proc.soul_fragment_from_devour             = get_proc( "Soul Fragment from Devour" );
   proc.soul_fragment_from_soul_immolation    = get_proc( "Soul Fragment from Soul Immolation" );
