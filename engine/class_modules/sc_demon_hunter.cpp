@@ -9062,7 +9062,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
       if ( dh()->talent.devourer.entropy->ok() && !dh()->in_combat )
       {
-        dh() ->buff.entropy_out_of_combat->trigger();
+        dh()->buff.entropy_out_of_combat->trigger( dh()->buff.void_metamorphosis_stack->stack() );
       }
     }
 
