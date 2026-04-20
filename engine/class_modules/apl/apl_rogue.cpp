@@ -16,9 +16,6 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  if ( p->specialization() == ROGUE_SUBTLETY && p->true_level >= 81 )
-    return "flask_of_the_magisters_2";
-
   return ( ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" :
            ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" :
            ( p->true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" :
@@ -215,7 +212,7 @@ void subtlety( player_t* p )
   default_->add_action( "variable,name=stealth,value=buff.shadow_dance.up|buff.stealth.up|buff.vanish.up" );
   default_->add_action( "variable,name=targets,value=spell_targets.shuriken_storm" );
   default_->add_action( "variable,name=racial_sync,value=(buff.shadow_blades.up&buff.shadow_dance.up)|fight_remains<20" );
-  default_->add_action( "variable,name=shd_cp,value=buff.slice_and_dice.up&combo_points<=2&talent.deathstalkers_mark|combo_points>=6&talent.unseen_blade|variable.targets>=5" );
+  default_->add_action( "variable,name=shd_cp,value=buff.slice_and_dice.up&combo_points<=2&talent.deathstalkers_mark|combo_points>=6&(!talent.deathstalkers_mark|variable.targets>=5)" );
   default_->add_action( "stealth" );
   default_->add_action( "call_action_list,name=race" );
   default_->add_action( "call_action_list,name=item" );
@@ -230,7 +227,7 @@ void subtlety( player_t* p )
   cds->add_action( "shadow_dance,if=!variable.stealth&variable.shd_cp&energy>=30&((cooldown.secret_technique.ready|buff.darkest_night.up)&(cooldown.shadow_blades.remains>=30-cooldown.secret_technique.duration)|(buff.shadow_blades.up&cooldown.secret_technique.duration>=18))|(fight_remains<=10|target.time_to_die-remains<=9)" );
   cds->add_action( "shadow_dance,if=buff.shadow_blades.up&talent.unseen_blade&buff.shadow_blades.remains<=buff.shadow_dance.duration", "Have the second Shadow Dance in Shadow Blades line up with the end of Shadow Blades instead of back-to-back for trickster." );
   cds->add_action( "shadow_dance,if=equipped.algethar_puzzle_box&talent.unseen_blade&!variable.stealth&variable.shd_cp&energy>=30&((cooldown.secret_technique.ready|buff.darkest_night.up)&(trinket.algethar_puzzle_box.cooldown.remains>=39-30*cooldown.shadow_blades.up))", "Used for when Shadow Blades is ready but holding for Algethar Puzzlebox trinket at the end of pull" );
-  cds->add_action( "vanish,if=!variable.stealth&energy>=50&!buff.subterfuge.up&combo_points<=1" );
+  cds->add_action( "vanish,if=!variable.stealth&energy>=50&!buff.subterfuge.up&combo_points<=2" );
   cds->add_action( "shadowmeld,if=energy>=50&!variable.stealth&combo_points.deficit>=2" );
 
   race->add_action( "blood_fury,if=variable.racial_sync", "Race Cooldowns" );
@@ -254,8 +251,8 @@ void subtlety( player_t* p )
   build->add_action( "shadowstrike,if=!debuff.deathstalkers_mark.up&talent.deathstalkers_mark&!buff.darkest_night.up|variable.targets<=3|variable.priority_rotation" );
   build->add_action( "shuriken_storm,if=variable.targets>1" );
   build->add_action( "goremaws_bite,if=combo_points.deficit>=3" );
-  build->add_action( "gloomblade,if=variable.targets<2" );
-  build->add_action( "backstab,if=variable.targets<2" );
+  build->add_action( "gloomblade,if=variable.targets<2&!variable.stealth" );
+  build->add_action( "backstab,if=variable.targets<2&!variable.stealth" );
 
   fill->add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen", "This list usually contains Cooldowns with negligible impact that causes global cooldowns" );
   fill->add_action( "arcane_pulse" );
