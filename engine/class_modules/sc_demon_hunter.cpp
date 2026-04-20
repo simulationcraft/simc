@@ -9062,7 +9062,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
       if ( dh()->talent.devourer.entropy->ok() && !dh()->in_combat )
       {
-        dh()->buff.entropy_out_of_combat->trigger( dh()->buff.void_metamorphosis_stack->stack() );
+        dh()->buff.entropy_out_of_combat->trigger();
       }
     }
 
@@ -9674,14 +9674,14 @@ void demon_hunter_t::activate()
     } );
   }
 
-  if ( talent.devourer.entropy->ok() && !buff.metamorphosis->up() )
+  if ( talent.devourer.entropy->ok() )
   {
     register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
       if ( c )
       {
         buff.entropy_out_of_combat->expire();
       }
-      else
+      else if ( !buff.metamorphosis->check() )
       {
         buff.entropy_out_of_combat->trigger();
       }
@@ -9757,17 +9757,22 @@ void demon_hunter_t::create_buffs()
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->add_stack_change_callback( [ this ]( buff_t*, int, int ) { devourer_fury_state.reschedule_drain(); } );
 
-  buff.entropy_out_of_combat = make_buff( this, "entropy_out_of_combat" )
-                                   ->set_quiet( true )
-                                   ->set_period( 1_s )
-                                   ->set_max_stack( talent.devourer.entropy->effectN( 2 ).base_value() )
-                                   ->set_expire_at_max_stack( true )
-                                   ->set_tick_on_application( false )
-                                   ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-                                     buff.void_metamorphosis_stack->increment();
-                                     proc.void_metamorphosis_stack_from_entropy->occur();
-                                     b->increment();
-                                   } );
+  buff.entropy_out_of_combat =
+      make_buff( this, "entropy_out_of_combat" )
+          ->set_quiet( true )
+          ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+          ->set_period( 1_s )
+          ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+          ->set_tick_on_application( false )
+          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+            if ( buff.void_metamorphosis_stack->stack() < talent.devourer.entropy->effectN( 2 ).base_value() )
+            {
+              buff.void_metamorphosis_stack->trigger();
+              proc.void_metamorphosis_stack_from_entropy->occur();
+            }
+            else
+              b->expire();
+          } );
 
   // Havoc ==================================================================
 
