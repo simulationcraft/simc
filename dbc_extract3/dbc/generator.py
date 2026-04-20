@@ -2399,7 +2399,7 @@ class SpellDataGenerator(DataGenerator):
 
           # Master of Harmony
           ( 451299, 0 ), # Mantra of Tenacity Chi Cocoon
-
+          ( 1270990, 0 ), # Potential Energy Buff
         ),
 
         # Druid:
