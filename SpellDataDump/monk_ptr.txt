@@ -20421,6 +20421,26 @@ Description      : Casting $?s322507[Celestial Brew]?s1241059[Celestial Infusion
 $@spellicon1271011$@spellname1271011:
 $@spelldesc1271011
 
+Name             : Potential Energy (id=1270990) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 16: Class Spells
+                 : 22: Monk Spells
+                 : 292
+Internal Cooldown: 0.5 seconds
+Stacks           : 6 maximum
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, Magic Heal
+Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Effects          :
+#1 (id=1283459)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : Your next cast of Tiger Palm or Vivify triggers a Harmonic Surge, dealing $?c1[${$1271011s1*$1270958s1/100}][${$1271011s1*$1270958s2/100}] Nature damage to your target and $?c1[${$1271011s1*$1270958s1/100}][${$1271011s1*$1270958s2/100}] to other nearby enemies, and $?c1[${$1271045s1*$1270958s3/100}][${$1271045s1*$1270958s4/100}] healing to up to $1271045s2 injured allies. Damage and healing increased per charge of Potential Energy.
+Tooltip          : Your next Tiger Palm or Vivify will cause a Harmonic Surge.
+
 Name             : Harmonic Surge (id=1271011) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
