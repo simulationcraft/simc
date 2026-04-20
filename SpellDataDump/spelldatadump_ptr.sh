@@ -19,22 +19,22 @@ do
   echo "Processing $CLASS"
   FILE="SpellDataDump/${CLASS}_ptr.txt"
   echo $FILE
-  ./engine/simc display_build="0" $PTR spell_query="spell.class=$CLASS" > $FILE.unix
+  ./build/simc display_build="0" $PTR spell_query="spell.class=$CLASS" > $FILE.unix
   convert_line_ending $FILE
 done
 
 FILE=SpellDataDump/allspells_ptr.txt
-./engine/simc display_build="0" $PTR spell_query="spell" > $FILE.unix
+./build/simc display_build="0" $PTR spell_query="spell" > $FILE.unix
 convert_line_ending $FILE
 
 FILE=SpellDataDump/nonclass_ptr.txt
-./engine/simc display_build="0" $PTR spell_query="spell.class=none" > $FILE.unix
+./build/simc display_build="0" $PTR spell_query="spell.class=none" > $FILE.unix
 convert_line_ending $FILE
 
 FILE=SpellDataDump/build_info_ptr.txt
-./engine/simc display_build="2" $PTR > $FILE.unix
+./build/simc display_build="2" $PTR > $FILE.unix
 convert_line_ending $FILE
 
 FILE=SpellDataDump/bonus_ids_ptr.txt
-./engine/simc display_build="0" $PTR show_bonus_ids="1" > $FILE.unix
+./build/simc display_build="0" $PTR show_bonus_ids="1" > $FILE.unix
 convert_line_ending $FILE

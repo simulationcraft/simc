@@ -12961,7 +12961,7 @@ Monk
 1269159  Rushing Wind Kick
 1270621  Tranquil Tea
 1270958  Harmonic Surge
-1270990 *Potential Energy
+1270990  Potential Energy
 1271011  Harmonic Surge
 1271045  Harmonic Surge
 1271048  Potential Energy

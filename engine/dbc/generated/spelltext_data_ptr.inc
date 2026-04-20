@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.5.67088
-static constexpr std::array<spelltext_data_t, 28694> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28695> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28237,6 +28237,7 @@ static constexpr std::array<spelltext_data_t, 28694> __ptr_spelltext_data { {
   { 1270958, "Casting $?s322507[Celestial Brew]?s1241059[Celestial Infusion][Thunder Focus Tea] grants $?c1[$s5][$s6] $Lcharge:charges; of Potential Energy. Your next cast of Tiger Palm or Vivify consumes all charges of Potential Energy to cause a Harmonic Surge.\r\n\r\n$@spellicon1271011$@spellname1271011:\r\n$@spelldesc1271011", 0, 0 },
   { 1270977, "Gain $1270985s1 Haste while above $1270977s1% health.", "Increased Haste.", 0 },
   { 1270985, "$@spelldesc1270976", "Haste increased by $w1.", 0 },
+  { 1270990, "Your next cast of Tiger Palm or Vivify triggers a Harmonic Surge, dealing $?c1[${$1271011s1*$1270958s1/100}][${$1271011s1*$1270958s2/100}] Nature damage to your target and $?c1[${$1271011s1*$1270958s1/100}][${$1271011s1*$1270958s2/100}] to other nearby enemies, and $?c1[${$1271045s1*$1270958s3/100}][${$1271045s1*$1270958s4/100}] healing to up to $1271045s2 injured allies. Damage and healing increased per charge of Potential Energy.", "Your next Tiger Palm or Vivify will cause a Harmonic Surge.", 0 },
   { 1271011, "For each charge of Potential Energy, deal $?c1[${$1271011s1*$1270958s1/100}][${$1271011s1*$1270958s2/100}] Nature damage to your target and $?c1[${$1271011s2*$1270958s1/100}][${$1271011s2*$1270958s2/100}] Nature damage to other nearby enemies, and heal up to $1271045s2 allies for $?c1[${$1271045s1*$1270958s3/100}][${$1271045s1*$1270958s4/100}]. Damage reduced above $1270958s7 targets.", 0, 0 },
   { 1271016, "While Avenging Wrath is not active, you gain $s1% Mastery.\r\n\r\nWhile Avenging Wrath is active, you gain $s2% movement speed.", 0, 0 },
   { 1271045, "$@spelldesc1271011", 0, 0 },
