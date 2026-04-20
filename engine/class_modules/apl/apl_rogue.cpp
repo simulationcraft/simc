@@ -157,7 +157,7 @@ void outlaw( player_t* p )
   default_->add_action( "lights_judgment" );
   default_->add_action( "bag_of_tricks" );
 
-  build->add_action( "ambush,if=talent.hidden_opportunity&buff.audacity.up", "Builders   High priority Ambush with Hidden Opportunity." );
+  build->add_action( "ambush,if=talent.hidden_opportunity&buff.audacity.up", "Builders  High priority Ambush with Hidden Opportunity." );
   build->add_action( "blade_flurry,if=talent.deft_maneuvers&spell_targets>=3", "With Deft Maneuvers, build CPs with Blade Flurry at 3+ targets." );
   build->add_action( "coup_de_grace,if=buff.disorienting_strikes.up", "Prioritize Coup de Grace if Unseen Blade is guaranteed after Killing Spree." );
   build->add_action( "pistol_shot,if=talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up", "With Audacity + Hidden Opportunity, consume Opportunity to proc Audacity any time Ambush is not available." );
@@ -168,12 +168,12 @@ void outlaw( player_t* p )
   build->add_action( "ambush,if=talent.hidden_opportunity" );
   build->add_action( "sinister_strike" );
 
-  cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)&(raid_event.adds.remains>5|raid_event.adds.in<5|!raid_event.adds.exists|!raid_event.adds.count)", "Cooldowns   Maintain Adrenaline Rush. With Improved AR, use at low CPs. Has a cursory check to try not to send if immediate downtime is expected." );
+  cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)&(raid_event.adds.remains>5|raid_event.adds.in<5|!raid_event.adds.exists|!raid_event.adds.count)", "Cooldowns  Maintain Adrenaline Rush. With Improved AR, use at low CPs. Has a cursory check to try not to send if immediate downtime is expected." );
   cds->add_action( "blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd", "Maintain Blade Flurry at 2+ targets." );
-  cds->add_action( "preparation,if=cooldown.adrenaline_rush.remains>30&!cooldown.between_the_eyes.ready&(!cooldown.killing_spree.ready|!hero_tree.trickster)|fight_remains<30", "Use Preparation to reset Adrenaline Rush, Between the Eyes, and Killing Spree if Trickster." );
-  cds->add_action( "keep_it_rolling,if=rtb_buffs=2&buff.roll_the_bones.remains<cooldown.adrenaline_rush.remains&!buff.loaded_dice.up&(cooldown.preparation.remains|!talent.preparation)|rtb_buffs>=3", "Use Keep it Rolling with at least stage 2 of RtB. Try not to KIR at stage 2 if your next roll is guaranteed to have Loaded Dice." );
-  cds->add_action( "roll_the_bones,if=!buff.roll_the_bones.up|rtb_buffs=1", "Use Roll the Bones if not active, or reroll for stage 2." );
-  cds->add_action( "blade_rush,if=set_bonus.mid1_4pc&!buff.whirl_of_blades.up|spell_targets=1&energy.base_time_to_max>2|spell_targets>=2", "Use Blade Rush if tier bonus is not active, or in AoE, or if you will not overcap energy within the gcd on ST." );
+  cds->add_action( "preparation,if=cooldown.adrenaline_rush.remains>30&!cooldown.between_the_eyes.ready|fight_remains<30", "Use Preparation to reset Adrenaline Rush and Between the Eyes." );
+  cds->add_action( "keep_it_rolling,if=rtb_buffs>=3", "Use Keep it Rolling with at least stage 3 of RtB." );
+  cds->add_action( "roll_the_bones,if=!buff.roll_the_bones.up|rtb_buffs=1+(buff.loaded_dice.up&cooldown.between_the_eyes.ready)", "Use Roll the Bones if not active, or reroll for stage 2. Roll over stage 2 if both Loaded Dice is active and KIR is ready." );
+  cds->add_action( "blade_rush,if=set_bonus.mid1_2pc|spell_targets=1&energy.base_time_to_max>2|spell_targets>=2", "Use Blade Rush if using tier, or in AoE, or if you will not overcap energy within the gcd on ST." );
   cds->add_action( "vanish,if=!variable.finish_condition&talent.hidden_opportunity&!buff.audacity.up&!buff.opportunity.up", "Hidden Opportunity builds use Vanish or Shadowmeld for an extra Ambush in between procs." );
   cds->add_action( "shadowmeld,if=!variable.finish_condition&talent.hidden_opportunity&!buff.audacity.up&!buff.opportunity.up" );
   cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.adrenaline_rush.up" );
@@ -184,10 +184,9 @@ void outlaw( player_t* p )
   cds->add_action( "use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20", "Default conditions for usable items." );
   cds->add_action( "use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20" );
 
-  finish->add_action( "dispatch,if=!buff.slice_and_dice.up", "Finishers" );
-  finish->add_action( "between_the_eyes,if=cooldown.adrenaline_rush.remains>30|buff.adrenaline_rush.up|!talent.supercharger|!talent.zero_in", "With Supercharger and Zero In, hold BtE for an upcoming Adrenaline Rush" );
+  finish->add_action( "between_the_eyes,if=cooldown.adrenaline_rush.remains>30|buff.adrenaline_rush.up|!talent.supercharger|!talent.zero_in", "Finishers  With Supercharger and Zero In, hold BtE for an upcoming Adrenaline Rush" );
   finish->add_action( "pool_resource,for_next=1" );
-  finish->add_action( "killing_spree" );
+  finish->add_action( "killing_spree,interrupt_if=energy.time_to_max<2,interrupt_global=1", "Cancel Killing Spree with a builder/finisher if approaching max energy." );
   finish->add_action( "coup_de_grace" );
   finish->add_action( "dispatch" );
 }

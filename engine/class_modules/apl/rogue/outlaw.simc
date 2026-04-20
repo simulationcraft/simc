@@ -24,7 +24,7 @@ actions+=/arcane_pulse
 actions+=/lights_judgment
 actions+=/bag_of_tricks
 
-# Builders 
+# Builders
 # High priority Ambush with Hidden Opportunity.
 actions.build=ambush,if=talent.hidden_opportunity&buff.audacity.up
 # With Deft Maneuvers, build CPs with Blade Flurry at 3+ targets.
@@ -44,19 +44,19 @@ actions.build+=/pool_resource,for_next=1
 actions.build+=/ambush,if=talent.hidden_opportunity
 actions.build+=/sinister_strike
 
-# Cooldowns 
+# Cooldowns
 # Maintain Adrenaline Rush. With Improved AR, use at low CPs. Has a cursory check to try not to send if immediate downtime is expected.
 actions.cds=adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)&(raid_event.adds.remains>5|raid_event.adds.in<5|!raid_event.adds.exists|!raid_event.adds.count)
 # Maintain Blade Flurry at 2+ targets.
 actions.cds+=/blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd
-# Use Preparation to reset Adrenaline Rush, Between the Eyes, and Killing Spree if Trickster.
-actions.cds+=/preparation,if=cooldown.adrenaline_rush.remains>30&!cooldown.between_the_eyes.ready&(!cooldown.killing_spree.ready|!hero_tree.trickster)|fight_remains<30
-# Use Keep it Rolling with at least stage 2 of RtB. Try not to KIR at stage 2 if your next roll is guaranteed to have Loaded Dice.
-actions.cds+=/keep_it_rolling,if=rtb_buffs=2&buff.roll_the_bones.remains<cooldown.adrenaline_rush.remains&!buff.loaded_dice.up&(cooldown.preparation.remains|!talent.preparation)|rtb_buffs>=3
-# Use Roll the Bones if not active, or reroll for stage 2.
-actions.cds+=/roll_the_bones,if=!buff.roll_the_bones.up|rtb_buffs=1
-# Use Blade Rush if tier bonus is not active, or in AoE, or if you will not overcap energy within the gcd on ST.
-actions.cds+=/blade_rush,if=set_bonus.mid1_4pc&!buff.whirl_of_blades.up|spell_targets=1&energy.base_time_to_max>2|spell_targets>=2
+# Use Preparation to reset Adrenaline Rush and Between the Eyes.
+actions.cds+=/preparation,if=cooldown.adrenaline_rush.remains>30&!cooldown.between_the_eyes.ready|fight_remains<30
+# Use Keep it Rolling with at least stage 3 of RtB.
+actions.cds+=/keep_it_rolling,if=rtb_buffs>=3
+# Use Roll the Bones if not active, or reroll for stage 2. Roll over stage 2 if both Loaded Dice is active and KIR is ready.
+actions.cds+=/roll_the_bones,if=!buff.roll_the_bones.up|rtb_buffs=1+(buff.loaded_dice.up&cooldown.between_the_eyes.ready)
+# Use Blade Rush if using tier, or in AoE, or if you will not overcap energy within the gcd on ST.
+actions.cds+=/blade_rush,if=set_bonus.mid1_2pc|spell_targets=1&energy.base_time_to_max>2|spell_targets>=2
 # Hidden Opportunity builds use Vanish or Shadowmeld for an extra Ambush in between procs.
 actions.cds+=/vanish,if=!variable.finish_condition&talent.hidden_opportunity&!buff.audacity.up&!buff.opportunity.up
 actions.cds+=/shadowmeld,if=!variable.finish_condition&talent.hidden_opportunity&!buff.audacity.up&!buff.opportunity.up
@@ -69,11 +69,11 @@ actions.cds+=/ancestral_call
 actions.cds+=/use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20
 actions.cds+=/use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20
 
-# Finishers 
-actions.finish=dispatch,if=!buff.slice_and_dice.up
+# Finishers
 # With Supercharger and Zero In, hold BtE for an upcoming Adrenaline Rush
-actions.finish+=/between_the_eyes,if=cooldown.adrenaline_rush.remains>30|buff.adrenaline_rush.up|!talent.supercharger|!talent.zero_in
+actions.finish=between_the_eyes,if=cooldown.adrenaline_rush.remains>30|buff.adrenaline_rush.up|!talent.supercharger|!talent.zero_in
 actions.finish+=/pool_resource,for_next=1
-actions.finish+=/killing_spree
+# Cancel Killing Spree with a builder/finisher if approaching max energy.
+actions.finish+=/killing_spree,interrupt_if=energy.time_to_max<2,interrupt_global=1
 actions.finish+=/coup_de_grace
 actions.finish+=/dispatch
