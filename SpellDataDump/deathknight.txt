@@ -11797,11 +11797,13 @@ Labels           : 16: Class Spells
 Attributes       : Include In Advanced Combat Log (72), Allow Aura While Dead (116), Do Not Display Range (126), Do Not Display Duration (170), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1026956)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 100 yards | Target: Self and Summons in Area (120)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+Hotfixed         : Target 1 (120 -> 21)
                    Modified By: Commander of the Dead (390259 effect#2)
 #2 (id=1026957)  : Apply Aura (6) | Scale% (Stacking) (61)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 25 yards | Target: Self and Summons in Area (120)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+Hotfixed         : Target 1 (120 -> 21)
                    Modified By: Commander of the Dead (390259 effect#3)
 Description      : $@spelldesc390259
 Tooltip          : All damage done increased by $s1%.
