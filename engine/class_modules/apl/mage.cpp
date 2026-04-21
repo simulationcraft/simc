@@ -285,7 +285,7 @@ void frost( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=target_swapping,op=reset,default=0" );
   precombat->add_action( "summon_water_elemental" );
-  precombat->add_action( "blizzard,if=talent.frostfire_bolt|active_enemies>=4&(talent.freezing_rain|talent.freezing_winds)", "Frostfire can open with a precast Blizzard against all target counts. Spellslinger AoE starts at 4+, but Blizzard is only cast with any of the Blizzard talents." );
+  precombat->add_action( "blizzard,if=active_enemies>=(4-talent.frostfire_bolt)|talent.freezing_rain|talent.freezing_winds", "Precast Blizzard against all targets if you have any of the Blizzard talents. In AoE (3+ for FF, 4+ for SS) Blizzard is always the precast." );
   precombat->add_action( "glacial_spike" );
   precombat->add_action( "frostbolt" );
 
@@ -308,20 +308,14 @@ void frost( player_t* p )
   cds->add_action( "berserking,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
   cds->add_action( "fireblood,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
   cds->add_action( "ancestral_call,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
-  cds->add_action( "flurry,if=talent.frostfire_bolt,line_cd=9999", "Opener Frostfire" );
-  cds->add_action( "glacial_spike,if=talent.frostfire_bolt,line_cd=9999" );
-  cds->add_action( "flurry,if=talent.frostfire_bolt,line_cd=9999" );
+  cds->add_action( "flurry,if=active_enemies>=3&talent.wintertide&talent.frostfire_bolt,line_cd=9999", "Opener Frostfire" );
   cds->add_action( "ray_of_frost,if=talent.frostfire_bolt,line_cd=9999" );
-  cds->add_action( "frozen_orb,if=talent.frostfire_bolt,line_cd=9999" );
-  cds->add_action( "ice_lance,if=active_enemies<=3&talent.flash_freeze&talent.splinterstorm,line_cd=9999", "Opener Spellslinger ST" );
-  cds->add_action( "ray_of_frost,if=active_enemies<=3&talent.splinterstorm&!variable.target_swapping,line_cd=9999" );
-  cds->add_action( "ray_of_frost,target_if=min:debuff.freezing.react,if=active_enemies<=3&talent.splinterstorm&variable.target_swapping,line_cd=9999" );
-  cds->add_action( "flurry,if=active_enemies>=4&talent.wintertide&talent.splinterstorm&!variable.target_swapping,line_cd=9999", "Opener Spellslinger AoE" );
+  cds->add_action( "flurry,if=active_enemies>=4&talent.wintertide&talent.splinterstorm&!variable.target_swapping,line_cd=9999", "Opener Spellslinger" );
   cds->add_action( "flurry,target_if=min:debuff.freezing.react,if=active_enemies>=4&talent.wintertide&talent.splinterstorm&variable.target_swapping,line_cd=9999" );
   cds->add_action( "frozen_orb,if=active_enemies>=4&talent.splinterstorm,line_cd=9999" );
-  cds->add_action( "ray_of_frost,if=active_enemies>=4&talent.splinterstorm&!variable.target_swapping,line_cd=9999" );
-  cds->add_action( "ray_of_frost,target_if=min:debuff.freezing.react,if=active_enemies>=4&talent.splinterstorm&variable.target_swapping,line_cd=9999" );
-  cds->add_action( "ray_of_frost,if=fight_remains<12&!variable.target_swapping", "End-Of-Fight Actions" );
+  cds->add_action( "ray_of_frost,if=talent.splinterstorm&!variable.target_swapping,line_cd=9999" );
+  cds->add_action( "ray_of_frost,target_if=min:debuff.freezing.react,if=talent.splinterstorm&variable.target_swapping,line_cd=9999" );
+  cds->add_action( "ray_of_frost,if=fight_remains<12&(!variable.target_swapping|talent.frostfire_bolt)", "End-Of-Fight Actions" );
   cds->add_action( "ray_of_frost,target_if=min:debuff.freezing.react,if=fight_remains<12&variable.target_swapping" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down", "Externals" );
 
@@ -330,7 +324,7 @@ void frost( player_t* p )
   ff_aoe->add_action( "frozen_orb" );
   ff_aoe->add_action( "glacial_spike" );
   ff_aoe->add_action( "comet_storm" );
-  ff_aoe->add_action( "blizzard,if=active_enemies>=(5-talent.freezing_rain-talent.freezing_winds)&(cooldown.frozen_orb.remains>12*spell_haste|!talent.freezing_rain)" );
+  ff_aoe->add_action( "blizzard,if=active_enemies>=(5-talent.freezing_rain-talent.freezing_winds)" );
   ff_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
   ff_aoe->add_action( "ice_lance,if=debuff.freezing.stack>=10" );
   ff_aoe->add_action( "flurry,if=cooldown_react" );
