@@ -22765,8 +22765,8 @@ Warlock
 1288945 *Imp Lord
 1288950 *Fel Ravager
 1288970 *Recently Demon Has Been Summoned [DNT]
-1292384 *Soul Barrage
-1292391 *Soul Barrage
+1292384  Soul Barrage
+1292391  Soul Barrage
 
 Warrior
 71       Vanguard
