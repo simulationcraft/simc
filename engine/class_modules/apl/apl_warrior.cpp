@@ -375,6 +375,7 @@ void protection( player_t* p )
   default_->add_action( "run_action_list,name=thane_st,if=talent.lightning_strikes" );
 
   colossus_aoe->add_action( "thunder_clap,if=dot.rend_dot.remains<=1" );
+  colossus_aoe->add_action( "shield_slam,if=buff.violent_outburst.up&buff.phalanx.up" );
   colossus_aoe->add_action( "thunder_clap,if=spell_targets.thunder_clap>6&buff.avatar.up" );
   colossus_aoe->add_action( "revenge,if=rage>=70&spell_targets.revenge>=3" );
   colossus_aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up" );
@@ -384,7 +385,9 @@ void protection( player_t* p )
 
   thane_aoe->add_action( "thunder_blast,if=dot.rend_dot.remains<=1" );
   thane_aoe->add_action( "thunder_clap,if=dot.rend_dot.remains<=1" );
+  thane_aoe->add_action( "shield_slam,if=buff.violent_outburst.up&buff.phalanx.up" );
   thane_aoe->add_action( "thunder_blast,if=spell_targets.thunder_clap>=2&buff.avatar.up" );
+  thane_aoe->add_action( "shield_slam,if=buff.phalanx.up" );
   thane_aoe->add_action( "thunder_clap,if=spell_targets.thunder_clap>=4&buff.avatar.up" );
   thane_aoe->add_action( "revenge,if=rage>=70&spell_targets.revenge>=3" );
   thane_aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up" );
