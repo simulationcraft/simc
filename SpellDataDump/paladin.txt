@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.1.66838 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -157,6 +157,7 @@ Description      : Stuns the target for $d.
 Tooltip          : Stunned.
 
 Name             : Blessing of Protection (id=1022) [Spell Family (10)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
@@ -175,7 +176,7 @@ Labels           : 16: Class Spells
 Mechanic         : Invulnerable
 Affecting Spells : Uther's Guard (207558 effect#2), Echoing Blessings (387801 effect#4), Blessed Calling (469770 effect#3)
 Family Flags     : 7
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Immunity Purges Effect (47), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Fail on all targets immune (85), Remove Entering Arena (162), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), External Defensive (C_Spell.IsExternalDefensive) (499)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Immunity Purges Effect (47), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Fail on all targets immune (85), Remove Entering Arena (162), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), External Defensive (C_Spell.IsExternalDefensive) (499), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=378)      : Apply Aura (6) | School Immunity (39)
@@ -574,7 +575,8 @@ Family Flags     : 46, 48
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=15852)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.125 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.7375 | PvP Coefficient: 0.909 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (6.125 -> 6.7375), PvP Coefficient (1 -> 0.909)
 Description      : $@spelldesc20473
 
 Name             : Consecration (id=26573) [Spell Family (10)] 
@@ -1809,8 +1811,8 @@ Family Flags     : 46, 82
 Attributes       : Not Shapeshifted (16), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=86331)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.672 | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
-Hotfixed         : SP Coefficient (3.06 -> 3.672)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.4064 | PvP Coefficient: 0.8333 | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
+Hotfixed         : SP Coefficient (3.672 -> 4.4064), PvP Coefficient (1 -> 0.8333)
 #2 (id=337580)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 4 yards | Target: Source (22) -> Ally in Area (30)
 #3 (id=736030)   : Dummy (3)
@@ -3269,7 +3271,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=191091)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 350 | Scaled Value: 350 | PvP Coefficient: 0.57 | Target: Self (1)
-Hotfixed         : Base Value (200 -> 350), PvP Coefficient (1 -> 0.57)
 #6 (id=260917)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -55 | Scaled Value: -55 | Misc Value: 1663 (Category) | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779), Judgment (406957), Hammer of Wrath (1241413)
@@ -3303,7 +3304,6 @@ Hotfixed         : Base Value (200 -> 350), PvP Coefficient (1 -> 0.57)
 #16 (id=1032419) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Misc Value 2: 2589 (Label) | Target: Self (1)
                    Affected Spells (Label): Judgment (197277), Greater Judgment (231663)
-Hotfixed         : Base Value (20 -> 30)
 #17 (id=1042754) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Misc Value 2: 6075 (Label) | Target: Self (1)
                    Affected Spells (Label): Sacred Weapon (432616)
@@ -3994,8 +3994,7 @@ Effects          :
                    Affected School(s): All
                    Modified By: Sanctuary (379021 effect#2)
 Description      : $@spelldesc26573
-Tooltip          : $?c1[Shield of the Righteous damage and Word of Glory healing increased by $w2%.]?c2[Hammer of the Righteous also causes a wave of light that hits all other enemies near the target.]?c3[Shield of the Righteous damage and Word of Glory healing increased by $w2%.][]$?$w3<0[
-Damage taken reduced by $w3%.][]
+Tooltip          : $?s53595[Hammer of the Righteous also causes a wave of light that hits all other enemies near the target.][]$?$w3<0[Damage taken reduced by $w3%.][]$?!s53595&$w3=0[Standing in Consecration.][]
 
 Name             : Divine Steed (id=190784) [Spell Family (10)] 
 Talent Entry     : Generic [free=(Holy, Protection), tree=class, row=3, col=4, max_rank=1, req_points=0]
@@ -4347,7 +4346,7 @@ Attributes       : Passive (6), Allow While Stealthed (37), Not In Spellbook (14
 Effects          :
 #1 (id=293638)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804)
+                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804), Divine Steed (1289616), Divine Steed (1289617)
                    Family Flags: 60
 Description      : Your Divine Steed lasts for an additional ${$m1/1000} sec.
 
@@ -4462,6 +4461,7 @@ Effects          :
 Description      : Avenger's Shield hits $s1 additional targets, and grants you an absorb shield for $s2% of all damage it deals.
 
 Name             : Blessing of Spellwarding (id=204018) [Spell Family (10)] 
+Hotfixed         : Attributes
 Talent Entry     : Protection [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Holy
@@ -4483,7 +4483,7 @@ Labels           : 16: Class Spells
 Mechanic         : Invulnerable
 Affecting Spells : Uther's Guard (207558 effect#2), Echoing Blessings (387801 effects: #4, #6), Blessed Calling (469770 effect#3)
 Family Flags     : 7, 28
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Fail on all targets immune (85), Remove Entering Arena (162), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), External Defensive (C_Spell.IsExternalDefensive) (499)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Fail on all targets immune (85), Remove Entering Arena (162), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491), External Defensive (C_Spell.IsExternalDefensive) (499), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=301055)   : Apply Aura (6) | School Immunity (39)
@@ -5671,7 +5671,7 @@ Labels           : 16: Class Spells
                  : 118
                  : 292
 Mechanic         : Invulnerable
-Attributes       : Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Do Not Display Range (126), Spell Haste Affects Periodic (173), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Attributes       : Track Target in Channel (46), Name in Channel Bar (61), Do Not Display Range (126), Spell Haste Affects Periodic (173), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=343141)   : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -5751,7 +5751,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Only In Spellbook Until Learned (240), Do Not Log on Learn (355), Cooldown Shared With AI Group (418)
 Effects          :
 #1 (id=349470)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 138 | Scaled Value: 138 | PvP Coefficient: 1.3 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 483 | Scaled Value: 483 | PvP Coefficient: 0.3714 | Misc Value: 12 | Target: Self (1)
+Hotfixed         : Base Value (138 -> 483), PvP Coefficient (1.3 -> 0.3714)
 Description      : Judgment deems the target unworthy, preventing the next $<shield> damage dealt by the target.
 
 Variables        : $shield=${($SPS*$231644s1/100)*(1+$@versadmg)}
@@ -7234,7 +7235,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
 Effects          :
 #1 (id=737871)   : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 60)
 Description      : Armor granted by Shield of the Righteous is increased by up to $s1%, based on your missing health.
 
 Name             : Redoubt (id=280375) [Spell Family (10)] 
@@ -10118,7 +10118,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook
 Effects          :
 #1 (id=1004580)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804)
+                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804), Divine Steed (1289616), Divine Steed (1289617)
                    Family Flags: 36
 Description      : Increases the duration of Divine Steed by ${$s1/1000} sec.
 
@@ -10253,7 +10253,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Trigger Spell: 378412 | Target: Self (1)
 #2 (id=1029059)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-Hotfixed         : Base Value (100 -> 200)
 Description      : Word of Glory heals for an additional $s1% over $378412d.
 
 Increased by $s2% if cast on yourself while you are afflicted by a harmful damage over time effect.
@@ -10619,7 +10618,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Unleashes a powerful weapon strike that deals $s1 $?s403664[Holystrike][Holy] damage to an enemy target,
 
-Final Verdict has a $s2% chance to reset the cooldown of Judgement.
+Final Verdict has a $s2% chance to reset the cooldown of Judgment.
 
 Name             : Final Verdict (id=383329) [Spell Family (10)] 
 Class            : Paladin
@@ -14634,7 +14633,7 @@ Family Flags     : 27, 52, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Always Line of Sight (185), No Cooldown On Tooltip (192), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1084762)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.465 | Radius: 6 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.98 | Radius: 6 yards | Target: Enemies in Cone to Targeted Enemy (104)
 #2 (id=1084763)  : Trigger Spell (64): Lightforged Blessing
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403460
 #3 (id=1084764)  : Trigger Spell (64): Lightforged Blessing
@@ -16127,7 +16126,6 @@ Description      : $@spelldesc431425
 
 Name             : Holy Bulwark (id=432459) [Spell Family (10)] 
 Talent Entry     : Lightsmith (Protection) [tree=hero, row=1, col=3, max_rank=1, req_points=0, name="Holy Armaments"]
-                 : Lightsmith (Holy) [tree=hero, row=1, col=3, max_rank=1, req_points=0, name="Holy Armaments", replace="Divine Toll" (id=375576)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -16141,18 +16139,23 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 3113
+Triggered By     : Holy Armaments (1289892)
 Family Flags     : 64
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1121173)  : Trigger Missiles (32): Holy Bulwark
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 432496 | Target: Targeted Ally (21)
+#2 (id=1311044)  : Energize Power (30)
+                   Base Value: 3 | Scaled Value: 3 | Resource: holy_power | Target: Self (1)
 Description      : Will the Light to coalesce and become manifest as a Holy Armament, wielded by your friendly target.
 
 $@spellicon432496 $@spellname432496:
 
 $@spelldesc432496
 
-Becomes Sacred Weapon after use.
+Becomes Sacred Weapon after use.$?c1[
+
+|cFFFFFFFFGenerates $s2 Holy Power.][]
 
 Name             : Hammerfall (id=432463) [Spell Family (10), Passive] 
 Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=4, col=2, max_rank=1, req_points=1]
@@ -16189,13 +16192,17 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1121188)  : Trigger Missiles (32): Sacred Weapon
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 432502 | Target: Targeted Ally (21)
+#2 (id=1311043)  : Energize Power (30)
+                   Base Value: 3 | Scaled Value: 3 | Resource: holy_power | Target: Self (1)
 Description      : Will the Light to coalesce and become manifest as a Holy Armament, wielded by your target.
 
 $@spellicon432502 $@spellname432502: 
 
 $@spelldesc432502
 
-Becomes Holy Bulwark after use.
+Becomes Holy Bulwark after use.$?c1[
+
+|cFFFFFFFFGenerates $s2 Holy Power.][]
 
 Name             : Holy Armament Override (id=432478) [Hidden] 
 Class            : Paladin
@@ -16540,7 +16547,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1122024)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804)
+                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804), Divine Steed (1289616), Divine Steed (1289617)
                    Family Flags: 36
 Description      : Divine Steed lasts ${$s1/1000} sec longer and increases your movement speed by an additional $442221s1% for the first $442221d.
 
@@ -17049,7 +17056,7 @@ Attributes       : Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1137232)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 4 (32)
                    Base Value: 30 | Scaled Value: 30 | Value Multiplier: 1 | Misc Value: 32 | Target: Self (1)
-                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804)
+                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804), Divine Steed (1289616), Divine Steed (1289617)
                    Family Flags: 36
 Description      : $@spelldesc432990
 
@@ -17068,11 +17075,11 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #2 (id=1137355)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 4 (32)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 32 | Target: Self (1)
-                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804)
+                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804), Divine Steed (1289616), Divine Steed (1289617)
                    Family Flags: 36
 #3 (id=1137356)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 5 (33)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 33 | Target: Self (1)
-                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804)
+                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804), Divine Steed (1289616), Divine Steed (1289617)
                    Family Flags: 36
 Description      : $@spelldesc432990
 Tooltip          : Divine Steed movement speed increased by $w1%.
@@ -18565,7 +18572,7 @@ Effects          :
                    Affected Spells (Category): Divine Steed (190784)
 #2 (id=1183757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804)
+                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804), Divine Steed (1289616), Divine Steed (1289617)
                    Family Flags: 36
 #3 (id=1190388)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Duration (1)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 1 | Misc Value 2: 4172 (Label) | Target: Self (1)
@@ -20025,7 +20032,7 @@ Effects          :
 Description      : $@spelldesc1244878
 Tooltip          : Healed whenever the Paladin heals a nearby ally.$?e3[
 
-Damage taken reduced by $w4%.][]$?e4[
+Damage taken reduced by $w4%.][]$?e5[
 
 Healed for $w6 every $t6 sec.][]
 
@@ -20072,11 +20079,16 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+Internal Cooldown: 5 seconds
+Proc Chance      : 100%
+Proc Flags       : Magic Heal
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1246374)  : Apply Aura (6) | Periodic Dummy (226): every 8 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Every $t1 sec or when Beacon of the Savior transfers to a new injured target, they are granted an absorb shield that prevents the next $1245369s1 damage and reduces damage taken by $1245369s2% for $1245369d.
+Description      : Every $t1 sec or when Beacon of the Savior transfers to a new injured target, they are granted an absorb shield that prevents the next $1245369s1 damage and reduces damage taken by $1245369s2% for $1245369d.
+
+Beacon of the Savior now additionally follows the target of your Holy Light and Flash of Light spells once every $proccooldown sec.
 
 Name             : Beacon of the Savior (id=1245369) [Spell Family (10)] 
 Class            : Paladin
@@ -20362,25 +20374,20 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002), Lesser Weapon (1239276), Beacon of the Savior (1244893)
                    Family Flags: 46
-Hotfixed         : Base Value (0 -> -10), Affects Spells
 #4 (id=1266346)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002), Lesser Weapon (1239276), Beacon of the Savior (1244893)
                    Family Flags: 46
-Hotfixed         : Base Value (0 -> -10), Misc Value (0 -> 1), Affects Spells
 #5 (id=1317267)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
-Hotfixed         : NEW EFFECT
 #6 (id=1317268)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Word of Glory (85673), Afterimage (391309)
                    Family Flags: 78
-Hotfixed         : NEW EFFECT
 #7 (id=1317414)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 5 | Misc Value 2: 2589 (Label) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 
 Name             : Retribution Paladin (id=1258011) [Spell Family (10), Passive, Hidden] 
 Class            : Retribution Paladin
@@ -20418,7 +20425,7 @@ Effects          :
                    Family Flags: 72
 #9 (id=1266231)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804)
+                   Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804), Divine Steed (1289616), Divine Steed (1289617)
                    Family Flags: 36
 #10 (id=1266232) : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11 | Target: Self (1)
@@ -20758,9 +20765,9 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #3 (id=1297607)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : You have a $s1% chance to $?c3[gain Blessing of An'she and ][]generate $s2 Holy Power after casting Avenging Wrath.$?c3[
+Description      : $?c3[You have a $s1% chance to gain Blessing of An'she and generate $s2 Holy Power after casting Avenging Wrath.
 
-During Avenging Wrath, Hammer of Wrath casts Blade of Justice at $s3% effectiveness.][]
+During Avenging Wrath, Hammer of Wrath casts Blade of Justice at $s3% effectiveness.][Infusion of Light occurs $s4% more often during Avenging Wrath.]
 
 Name             : Endless Gleam (id=1263787) [Spell Family (10), Passive, Hidden] 
 Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=2, col=5, max_rank=1, req_points=1]
@@ -21116,7 +21123,7 @@ Effects          :
 Description      : $@spelldesc1267203
 Tooltip          : Your next Avenger's Shield will leave an echoing bolt of light.
 
-Name             : Glory of the Vanguard (id=1269142) [Spell Family (10)] 
+Name             : Glory of the Vanguard (id=1269142) [Spell Family (10), Hidden] 
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -21124,10 +21131,10 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Attributes       : Allow Class Ability Procs (416)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Immunities (29), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Suppress Weapon Procs (151), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280785)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: at Area (87)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1267203
 
 Name             : Glory of the Vanguard (id=1269175) [Spell Family (10)] 
@@ -21144,7 +21151,6 @@ Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), A
 Effects          :
 #1 (id=1280836)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3 | PvP Coefficient: 0.75 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.75)
 Description      : $@spelldesc1267203
 
 Name             : Valor (id=1269179) [Spell Family (10)] 
@@ -21162,8 +21168,7 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280841)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 100), PvP Coefficient (1 -> 0.5)
-Description      : $@spelldesc1267203
+Description      : $@spelldesc1267215
 Tooltip          : Your next Shield of the Righteous deals $s1~% increased damage to your primary target and refracts onto $1267215s2~ nearby enemies for additional Holy damage.
 
 Name             : Blaze of Glory (id=1269224) [Spell Family (10)] 
@@ -21183,7 +21188,7 @@ Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), A
 Effects          :
 #1 (id=1280950)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Description      : $@spelldesc1267203
+Description      : Shield of the Righteous deals $1269179s1% increased damage to your primary target and refracts light onto $1267215s2~ nearby enemies for $s1 Holy damage.
 
 Name             : Blaze of Glory (id=1269225) [Spell Family (10), Hidden] 
 Class            : Paladin
@@ -21534,7 +21539,6 @@ Effects          :
                    Base Value: -12 | Scaled Value: -12 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Shield of the Righteous (132403)
                    Family Flags: 107
-Hotfixed         : Base Value (-10 -> -12)
 Description      : Shield of the Righteous reduces magical damage taken by $s1%.
 
 Name             : Adjudication (id=1277005) [Spell Family (10), Passive] 
@@ -21842,4 +21846,174 @@ Effects          :
                    Family Flags: 46
 Description      : Healing is increased by $s1%.
 
+
+Name             : Divine Steed (id=1289616) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Spell Level      : 1
+GCD              : 1.5 seconds
+Duration         : 3 seconds
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 67
+                 : 292
+                 : 373
+                 : 4638
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Family Flags     : 36, 60
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1308074)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+#2 (id=1308075)  : Apply Aura (6) | Increase Mounted Speed% (172)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1308076)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
+#4 (id=1308077)  : Server Side Script (77)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
+#5 (id=1308078)  : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
+#6 (id=1308079)  : Apply Aura (6) | Mount Cosmetic Mount (487)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14584 | Target: Self (1)
+#7 (id=1308080)  : Apply Aura (6) | Use Base Move Speed (191)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#8 (id=1308081)  : Apply Aura (6) | Replace Animation (Set) (312)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1154 | Target: Self (1)
+Description      : $@spelldesc190784
+Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
+
+Name             : Divine Steed (id=1289617) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Spell Level      : 1
+GCD              : 1.5 seconds
+Duration         : 3 seconds
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 67
+                 : 292
+                 : 373
+                 : 4638
+Affecting Spells : Steed of Glory (199542 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2), Retribution Paladin (1258011 effect#9)
+Family Flags     : 36, 60
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1308082)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+#2 (id=1308083)  : Apply Aura (6) | Increase Mounted Speed% (172)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1308084)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14565 | Misc Value 2: 230 | Target: Self (1)
+#4 (id=1308085)  : Server Side Script (77)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effect#2)
+#5 (id=1308086)  : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Modified By: Unrelenting Charger (442264 effect#3)
+#6 (id=1308087)  : Apply Aura (6) | Mount Cosmetic Mount (487)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 19085 | Target: Self (1)
+#7 (id=1308088)  : Apply Aura (6) | Use Base Move Speed (191)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#8 (id=1308089)  : Apply Aura (6) | Replace Animation (Set) (312)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1154 | Target: Self (1)
+Description      : $@spelldesc190784
+Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
+
+Name             : Holy Armaments (id=1289728) [Spell Family (10), Passive, Hidden] 
+Talent Entry     : Lightsmith (Holy) [tree=hero, row=1, col=3, max_rank=1, req_points=0, override="Holy Bulwark" (id=432459)]
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1308254)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc432472
+
+Name             : Holy Armaments (id=1289890) [Spell Family (10), Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), Allow Dead Target (64), Allow Aura While Dead (116), Allow Entering Arena (149), No Aura Log (202), Aura Points On Client (268), Spellcast Override In Spellbook (310), Visible only to caster (conversations only) (343), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Effects          :
+#1 (id=1308476)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Holy Bulwark overrides Divine Toll
+                   Base Value: 432459 | Scaled Value: 432459 | Misc Value: 375576 | Target: Self (1)
+Description      : $@spelldesc432472
+
+Name             : Holy Armaments (id=1289892) [Spell Family (10), Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), Allow Dead Target (64), Allow Aura While Dead (116), Allow Entering Arena (149), No Aura Log (202), Aura Points On Client (268), Spellcast Override In Spellbook (310), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Effects          :
+#1 (id=1308479)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Holy Bulwark overrides Holy Prism
+                   Base Value: 432459 | Scaled Value: 432459 | Misc Value: 114165 | Misc Value 2: 2 | Trigger Spell: 432459 | Target: Self (1)
+Description      : $@spelldesc432472
+
+Name             : Holy Armament Override (id=1289922) [Spell Family (10), Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Spellcast Override In Spellbook (310), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Effects          :
+#1 (id=1308529)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sacred Weapon overrides Divine Toll
+                   Base Value: 432472 | Scaled Value: 432472 | Misc Value: 375576 | Target: Self (1)
+Description      : $@spelldesc432472
+
+Name             : Holy Armament Override (id=1289943) [Spell Family (10), Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Spellcast Override In Spellbook (310), Newest Exclusive Complete (362), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Effects          :
+#1 (id=1308563)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Sacred Weapon overrides Holy Prism
+                   Base Value: 432472 | Scaled Value: 432472 | Misc Value: 114165 | Target: Self (1)
+Description      : $@spelldesc432472
+
+Name             : Divine Shield (desc=PvP Talent) (id=1293918) [Hidden] 
+School           : Holy
+Spell Type       : Magic
+Range            : 50000 yards
+Max Targets      : 1
+Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 118
+                 : 292
+Mechanic         : Invulnerable
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Do Not Display Range (126), Spell Haste Affects Periodic (173), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1314980)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+Description      : $@spelldesc228049
+Tooltip          : Immune to all attacks and spells.
 
