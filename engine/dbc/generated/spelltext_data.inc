@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.5.67088
-static constexpr std::array<spelltext_data_t, 28695> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28697> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28677,6 +28677,8 @@ static constexpr std::array<spelltext_data_t, 28695> __spelltext_data { {
   { 1292031, "$@spelldesc1278886", 0, 0 },
   { 1292058, "$@spelldesc1269307", "Damage bonus of your next Colossus Smash increased by $w1%.", 0 },
   { 1292071, "Enemies damaged by Phalanx's wave of force deal ${$s1/-1}.1% reduced damage to you for $d.\r\n", "Dealing ${$W1/-1}.1% reduced damage to $@auracaster.", 0 },
+  { 1292384, "Releases a volley of Chaos magic that deals $1292391s1 Chaos damage to the target and up to $i additional targets within $a1 yds.", 0, 0 },
+  { 1292391, "$@spelldesc1292384", 0, 0 },
   { 1292687, "$@spelldesc1253172", "Generating ${$s1*$d} Focus over $d.", 0 },
   { 1292874, "$@spelldesc1262076", "Stunned", 0 },
   { 1292919, "$@spelldesc450529", "Dealing $w1 damage per second.", 0 },
