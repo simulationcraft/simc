@@ -374,29 +374,24 @@ void protection( player_t* p )
   default_->add_action( "run_action_list,name=colossus_st,if=talent.demolish" );
   default_->add_action( "run_action_list,name=thane_st,if=talent.lightning_strikes" );
 
-  colossus_aoe->add_action( "thunder_blast,if=dot.rend_dot.remains<=1" );
   colossus_aoe->add_action( "thunder_clap,if=dot.rend_dot.remains<=1" );
-  colossus_aoe->add_action( "thunder_blast,if=spell_targets.thunder_clap>=2&buff.avatar.up" );
-  colossus_aoe->add_action( "thunder_clap,if=spell_targets.thunder_clap>=4&buff.avatar.up&hero_tree.mountain_thane|spell_targets.thunder_clap>6&buff.avatar.up" );
+  colossus_aoe->add_action( "thunder_clap,if=spell_targets.thunder_clap>6&buff.avatar.up" );
   colossus_aoe->add_action( "revenge,if=rage>=70&spell_targets.revenge>=3" );
   colossus_aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up" );
-  colossus_aoe->add_action( "thunder_blast" );
   colossus_aoe->add_action( "thunder_clap" );
-  colossus_aoe->add_action( "execute,if=hero_tree.mountain_thane&spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled" );
   colossus_aoe->add_action( "revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled" );
   colossus_aoe->add_action( "execute,if=hero_tree.colossus&spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled" );
 
   thane_aoe->add_action( "thunder_blast,if=dot.rend_dot.remains<=1" );
   thane_aoe->add_action( "thunder_clap,if=dot.rend_dot.remains<=1" );
   thane_aoe->add_action( "thunder_blast,if=spell_targets.thunder_clap>=2&buff.avatar.up" );
-  thane_aoe->add_action( "thunder_clap,if=spell_targets.thunder_clap>=4&buff.avatar.up&hero_tree.mountain_thane|spell_targets.thunder_clap>6&buff.avatar.up" );
+  thane_aoe->add_action( "thunder_clap,if=spell_targets.thunder_clap>=4&buff.avatar.up" );
   thane_aoe->add_action( "revenge,if=rage>=70&spell_targets.revenge>=3" );
   thane_aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up" );
   thane_aoe->add_action( "thunder_blast" );
   thane_aoe->add_action( "thunder_clap" );
   thane_aoe->add_action( "execute,if=hero_tree.mountain_thane&spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled" );
   thane_aoe->add_action( "revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled" );
-  thane_aoe->add_action( "execute,if=hero_tree.colossus&spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled" );
 
   colossus_st->add_action( "shield_slam" );
   colossus_st->add_action( "thunder_clap" );
