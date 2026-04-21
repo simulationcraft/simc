@@ -369,8 +369,8 @@ void protection( player_t* p )
   default_->add_action( "demolish,if=buff.colossal_might.stack>=3" );
   default_->add_action( "shield_charge" );
   default_->add_action( "shield_block,if=buff.shield_block.remains<=10" );
-  default_->add_action( "run_action_list,name=colossus_aoe,if=spell_targets.thunder_clap>=3" );
-  default_->add_action( "run_action_list,name=thane_aoe,if=spell_targets.thunder_clap>=3" );
+  default_->add_action( "run_action_list,name=colossus_aoe,if=hero_tree.colossus&spell_targets.thunder_clap>=3" );
+  default_->add_action( "run_action_list,name=thane_aoe,if=hero_tree.mountain_thane&spell_targets.thunder_clap>=3" );
   default_->add_action( "run_action_list,name=colossus_st,if=talent.demolish" );
   default_->add_action( "run_action_list,name=thane_st,if=talent.lightning_strikes" );
 
