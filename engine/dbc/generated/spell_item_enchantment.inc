@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 12.0.1.66838
-static constexpr std::array<item_enchantment_data_t, 5333> __spell_item_ench_data { {
+// Item enchantment data, wow build 12.0.5.67088
+static constexpr std::array<item_enchantment_data_t, 5334> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },       0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },       0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 10, 120,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },    2831, "Reinforced (+$k1 Armor)"           },
@@ -5124,8 +5124,8 @@ static constexpr std::array<item_enchantment_data_t, 5333> __spell_item_ench_dat
   { 7973,      0, -7,   0,  80, 120, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     61,      0,      0 }, {  1.9327f,  0.0000f,  0.0000f },       0, "Enchant Shoulders - Akil'zon's Swiftness |A:Professions-ChatIcon-Quality-12-Tier2:20:20|a" },
   { 7974,      0, -7,   1,   1, 175, 367,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     79,      0,      0 }, { 10.5784f,  0.0000f,  0.0000f },       0, "Enchant Tool - Amani Perception |A:Professions-ChatIcon-Quality-12-Tier1:20:20|a" },
   { 7975,      0, -7,   1,   1, 175, 367,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     79,      0,      0 }, { 21.1568f,  0.0000f,  0.0000f },       0, "Enchant Tool - Amani Perception |A:Professions-ChatIcon-Quality-12-Tier2:20:20|a" },
-  { 7976,      0, -7,   1,   1, 175, 367,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     76,      0,      0 }, { 10.5784f,  0.0000f,  0.0000f },       0, "Enchant Tool - Amani Resourcfulness |A:Professions-ChatIcon-Quality-12-Tier1:20:20|a" },
-  { 7977,      0, -7,   1,   1, 175, 367,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     76,      0,      0 }, { 21.1568f,  0.0000f,  0.0000f },       0, "Enchant Tool - Amani Resourcfulness |A:Professions-ChatIcon-Quality-12-Tier2:20:20|a" },
+  { 7976,      0, -7,   1,   1, 175, 367,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     76,      0,      0 }, { 10.5784f,  0.0000f,  0.0000f },       0, "Enchant Tool - Amani Resourcefulness |A:Professions-ChatIcon-Quality-12-Tier1:20:20|a" },
+  { 7977,      0, -7,   1,   1, 175, 367,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     76,      0,      0 }, { 21.1568f,  0.0000f,  0.0000f },       0, "Enchant Tool - Amani Resourcefulness |A:Professions-ChatIcon-Quality-12-Tier2:20:20|a" },
   { 7978,      0,  0,   0,  80, 120, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1236733,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Enchant Weapon - Strength of Halazzi |A:Professions-ChatIcon-Quality-12-Tier1:20:20|a" },
   { 7979,      0,  0,   0,  80, 120, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1236734,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Enchant Weapon - Strength of Halazzi |A:Professions-ChatIcon-Quality-12-Tier2:20:20|a" },
   { 7980,      0,  0,   0,  80, 120, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1236724,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Enchant Weapon - Jan'alai's Precision |A:Professions-ChatIcon-Quality-12-Tier1:20:20|a" },
@@ -5329,6 +5329,7 @@ static constexpr std::array<item_enchantment_data_t, 5333> __spell_item_ench_dat
   { 8649,      0,  0,   0,  80, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1236743,      0,      0 }, {  0.2868f,  0.0000f,  0.0000f },       0, "Conjured Illusory Adornment - Blooming Light" },
   { 8650,      0,  0,   0,  80, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1236744,      0,      0 }, {  0.2868f,  0.0000f,  0.0000f },       0, "Conjured Illusory Adornment - Nature's Embrace" },
   { 8651,      0,  0,   0,  80, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1236745,      0,      0 }, {  0.2868f,  0.0000f,  0.0000f },       0, "Conjured Illusory Adornment - Voidtouched" },
+  { 8674,      0,  0,   0,  60, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Internal Testing Visual Enchant"   },
   { 8675,      0,  0,   0,  50, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1284998,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Fishing Lure (+$1284998s1 Fishing Skill)" },
   { 8684, 241143, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 377360,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and opponent's failed interrupt attempts grant Precognition" },
   { 8685, 241144, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 435550,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and +$435550s1% Damage Reduction when affected by Crowd Control" },

@@ -1,5 +1,5 @@
-// Racial abilities, wow build 12.0.1.66838
-static constexpr std::array<racial_spell_entry_t, 180> __racial_spell_data { {
+// Racial abilities, wow build 12.0.5.67088
+static constexpr std::array<racial_spell_entry_t, 181> __racial_spell_data { {
   { 0x0000000000000001, 0x00003fff,  458619, "No Place Like Home"                 },
   { 0x0000000000000001, 0x00003fff,   20598, "The Human Spirit"                   },
   { 0x0000000000000001, 0x00003fff,   59752, "Will to Survive"                    },
@@ -95,6 +95,7 @@ static constexpr std::array<racial_spell_entry_t, 180> __racial_spell_data { {
   { 0x0000000000004000, 0x00003fff,  312890, "Skeleton Pinkie"                    },
   { 0x0000000000018000, 0x00001000,  403216, "Aerial Halt"                        },
   { 0x0000000000018000, 0x00003fff,  365575, "Awakened"                           },
+  { 0x0000000000018000, 0x00001000, 1289789, "Battle Visage"                      },
   { 0x0000000000018000, 0x00001000,  360022, "Chosen Identity"                    },
   { 0x0000000000018000, 0x0000019d,  360022, "Chosen Identity"                    },
   { 0x0000000000018000, 0x00003fff,  366489, "Discerning Eye"                     },
