@@ -487,11 +487,10 @@ namespace warlock
     talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
     talents.soul_fire_2 = conditional_spell_lookup( talents.soul_fire.ok(), 281490 );
 
-    talents.inferno = find_talent_spell( talent_tree::SPECIALIZATION, "Inferno" ); // Should be ID 1280483
+    talents.chaos_incarnate = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Incarnate" ); // Should be ID 387275
 
     talents.conflagration_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagration of Chaos" ); // Should be ID 387108
-    talents.conflagration_of_chaos_cf = conditional_spell_lookup( talents.conflagration_of_chaos.ok(), 387109 );
-    talents.conflagration_of_chaos_sb = conditional_spell_lookup( talents.conflagration_of_chaos.ok() && talents.shadowburn.ok(), 387110 );
+    talents.conflagration_of_chaos_buff = conditional_spell_lookup( talents.conflagration_of_chaos.ok(), 387109 );
 
     talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
 
@@ -506,7 +505,7 @@ namespace warlock
     talents.overfiend_buff = conditional_spell_lookup( talents.avatar_of_destruction.ok(), 457578 );
     talents.overfiend_cb = conditional_spell_lookup( talents.avatar_of_destruction.ok(), 434589 );
 
-    talents.chaos_incarnate = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Incarnate" ); // Should be ID 387275
+    talents.inferno = find_talent_spell( talent_tree::SPECIALIZATION, "Inferno" ); // Should be ID 1280483
 
     talents.alythesss_ire = find_talent_spell( talent_tree::SPECIALIZATION, "Alythess's Ire" ); // Should be ID 1244941
     talents.alythesss_ire_buff = conditional_spell_lookup( talents.alythesss_ire.ok(), 1244947 );
@@ -837,13 +836,8 @@ namespace warlock
 
     buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", talents.rain_of_chaos_buff );
 
-    buffs.conflagration_of_chaos_cf = make_buff( this, "conflagration_of_chaos_cf", talents.conflagration_of_chaos_cf )
-                                          ->set_default_value_from_effect( 1 )
-                                          ->set_chance( talents.conflagration_of_chaos->effectN( 1 ).percent() );
-
-    buffs.conflagration_of_chaos_sb = make_buff( this, "conflagration_of_chaos_sb", talents.conflagration_of_chaos_sb )
-                                          ->set_default_value_from_effect( 1 )
-                                          ->set_chance( talents.conflagration_of_chaos->effectN( 1 ).percent() );
+    buffs.conflagration_of_chaos = make_buff( this, "conflagration_of_chaos", talents.conflagration_of_chaos_buff )
+                                       ->set_chance( talents.conflagration_of_chaos->effectN( 1 ).percent() );
 
     buffs.flashpoint = make_buff( this, "flashpoint", talents.flashpoint_buff )
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -1113,8 +1107,7 @@ namespace warlock
     procs.chaotic_inferno = get_proc( "chaotic_inferno" );
     procs.dimensional_rift = get_proc( "dimensional_rift" );
     procs.avatar_of_destruction = get_proc( "avatar_of_destruction" );
-    procs.conflagration_of_chaos_cf = get_proc( "conflagration_of_chaos_cf" );
-    procs.conflagration_of_chaos_sb = get_proc( "conflagration_of_chaos_sb" );
+    procs.conflagration_of_chaos = get_proc( "conflagration_of_chaos" );
     procs.alythesss_ire = get_proc( "alythesss_ire" );
     procs.reverse_entropy = get_proc( "reverse_entropy" );
     procs.rain_of_chaos = get_proc( "rain_of_chaos" );

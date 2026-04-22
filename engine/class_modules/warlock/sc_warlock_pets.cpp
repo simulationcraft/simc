@@ -1688,8 +1688,6 @@ action_t* grimoire_fel_ravager_t::create_action( util::string_view name, util::s
 {
   if ( name == "abyssal_bite" )
     return new abyssal_bite_t( this, options_str );
-  if ( name == "spell_lock" )
-    return new base::spell_lock_t( this, options_str );
 
   return warlock_pet_t::create_action( name, options_str );
 }

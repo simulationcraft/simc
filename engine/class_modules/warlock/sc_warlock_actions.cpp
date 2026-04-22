@@ -178,8 +178,7 @@ using namespace helpers;
         parse_effects( p()->buffs.backdraft ); // 117828
         parse_effects( p()->buffs.fiendish_cruelty ); // 1245664
         parse_effects( p()->buffs.chaotic_inferno ); // 1244860
-        parse_effects( p()->buffs.conflagration_of_chaos_cf ); // 387109
-        parse_effects( p()->buffs.conflagration_of_chaos_sb ); // 387110
+        parse_effects( p()->buffs.conflagration_of_chaos ); // 387109
         parse_effects( p()->buffs.crashing_chaos ); // 417282 // RoF is dummy
         parse_effects( p()->buffs.alythesss_ire ); // 1244947
       }
@@ -4102,14 +4101,14 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      p()->buffs.conflagration_of_chaos_cf->expire();
+      p()->buffs.conflagration_of_chaos->expire();
 
       if ( p()->talents.conflagration_of_chaos.ok() )
       {
-        bool success = p()->buffs.conflagration_of_chaos_cf->trigger();
+        bool success = p()->buffs.conflagration_of_chaos->trigger();
 
         if ( success )
-          p()->procs.conflagration_of_chaos_cf->occur();
+          p()->procs.conflagration_of_chaos->occur();
       }
 
       if ( p()->talents.backdraft.ok() )
@@ -4120,7 +4119,7 @@ using namespace helpers;
     {
       double amt = warlock_spell_t::calculate_direct_amount( s );
 
-      if ( p()->buffs.conflagration_of_chaos_cf->check() )
+      if ( p()->buffs.conflagration_of_chaos->check() )
       {
         s->result_total *= 1.0 + player->cache.spell_crit_chance();
         return s->result_total;
@@ -4434,14 +4433,14 @@ using namespace helpers;
 
       base_aoe_multiplier = prev_base_aoe_multiplier; // Restore original previous havoc aoe multiplier
 
-      p()->buffs.conflagration_of_chaos_sb->expire();
+      p()->buffs.conflagration_of_chaos->expire();
 
       if ( p()->talents.conflagration_of_chaos.ok() )
       {
-        bool success = p()->buffs.conflagration_of_chaos_sb->trigger();
+        bool success = p()->buffs.conflagration_of_chaos->trigger();
 
         if ( success )
-          p()->procs.conflagration_of_chaos_sb->occur();
+          p()->procs.conflagration_of_chaos->occur();
       }
 
       p()->buffs.fiendish_cruelty->decrement();
@@ -4451,7 +4450,7 @@ using namespace helpers;
     {
       double amt = warlock_spell_t::calculate_direct_amount( state );
 
-      if ( p()->buffs.conflagration_of_chaos_sb->check() )
+      if ( p()->buffs.conflagration_of_chaos->check() )
       {
         state->result_total *= 1.0 + player->cache.spell_crit_chance();
         return state->result_total;

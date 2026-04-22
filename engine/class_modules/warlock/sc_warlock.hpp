@@ -603,10 +603,9 @@ public:
     const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
     player_talent_t soul_fire;
     const spell_data_t* soul_fire_2; // Contains Soul Shard energize data
-    player_talent_t inferno;
+    player_talent_t chaos_incarnate; // Greater mastery value for some spells
     player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit
-    const spell_data_t* conflagration_of_chaos_cf; // Player buff which affects next Conflagrate
-    const spell_data_t* conflagration_of_chaos_sb; // Player buff which affects next Shadowburn
+    const spell_data_t* conflagration_of_chaos_buff; // Player buff which affects next Conflagrate/Shadowburn
     player_talent_t diabolic_embers; // Incinerate generates more Soul Shards
     player_talent_t demonfire_infusion;
     player_talent_t channel_demonfire;
@@ -617,7 +616,7 @@ public:
     const spell_data_t* summon_overfiend;
     const spell_data_t* overfiend_buff; // Buff on Warlock while Overfiend is out, generates Soul Shards
     const spell_data_t* overfiend_cb; // Chaos Bolt cast by Overfiend
-    player_talent_t chaos_incarnate; // Greater mastery value for some spells
+    player_talent_t inferno;
     player_talent_t alythesss_ire;
     const spell_data_t* alythesss_ire_buff;
     player_talent_t raging_demonfire;
@@ -858,8 +857,7 @@ public:
     propagate_const<buff_t*> fiendish_cruelty;
     propagate_const<buff_t*> chaotic_inferno;
     propagate_const<buff_t*> rain_of_chaos;
-    propagate_const<buff_t*> conflagration_of_chaos_cf;
-    propagate_const<buff_t*> conflagration_of_chaos_sb;
+    propagate_const<buff_t*> conflagration_of_chaos;
     propagate_const<buff_t*> flashpoint;
     propagate_const<buff_t*> crashing_chaos;
     propagate_const<buff_t*> alythesss_ire;
@@ -950,8 +948,7 @@ public:
     proc_t* chaotic_inferno;
     proc_t* dimensional_rift;
     proc_t* avatar_of_destruction;
-    proc_t* conflagration_of_chaos_cf;
-    proc_t* conflagration_of_chaos_sb;
+    proc_t* conflagration_of_chaos;
     proc_t* demonfire_infusion_inc;
     proc_t* demonfire_infusion_dot;
     proc_t* alythesss_ire;
