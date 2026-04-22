@@ -18852,3 +18852,36 @@ Effects          :
 Description      : Damage done increased by $s1%.
 
 
+Name             : Soul Barrage (id=1292384) [Spell Family (5)] 
+Class            : Warlock
+School           : Magic
+Spell Type       : Magic
+Range            : 40 yards
+Max Targets      : 10
+Cast Time        : 2 seconds
+GCD              : 1.5 seconds
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1312414)  : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10 | Radius: 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Description      : Releases a volley of Chaos magic that deals $1292391s1 Chaos damage to the target and up to $i additional targets within $a1 yds.
+
+Name             : Soul Barrage (id=1292391) [Spell Family (5)] 
+Class            : Warlock
+School           : Chaos
+Spell Type       : Magic
+Range            : 40 yards
+GCD              : 1.5 seconds
+Velocity         : 20 yards/sec
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1312424)  : School Damage (2): chaos
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.848 | Target: Targeted Enemy (6)
+Description      : $@spelldesc1292384
+
