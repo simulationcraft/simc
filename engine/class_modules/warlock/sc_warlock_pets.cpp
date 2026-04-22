@@ -2874,10 +2874,6 @@ struct soul_swipe_base_t : public warlock_pet_spell_t
 {
   soul_swipe_base_t( std::string_view n, warlock_pet_t* p, const spell_data_t* s ) : warlock_pet_spell_t( n, p, s )
   {
-    // Rampaging Demonic Soul has a custom damage modifier for demonology
-    if ( p->o()->demonology() )
-      base_dd_multiplier *= 1.0 + p->o()->warlock_base.demonology_warlock->effectN( 8 ).percent();
-
     base_dd_multiplier *= 1.0 + p->o()->hero.eternal_hunger->effectN( 2 ).percent();
   }
 };
