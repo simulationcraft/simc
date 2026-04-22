@@ -2214,6 +2214,7 @@ public:
   void trigger_master_of_shadows();
   void trigger_nimble_flurry( const action_state_t* state );
   void trigger_opportunity( const action_state_t*, rogue_attack_t* action, double modifier = 1.0 );
+  void trigger_palmed_bullets( const action_state_t* state );
   void trigger_poison_bomb( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_restless_blades( const action_state_t* );
@@ -3709,17 +3710,7 @@ struct dispatch_t: public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
-
-    if ( result_is_hit( state->result ) )
-    {
-      const int cp_spend = cast_state( state )->get_combo_points();
-
-      if ( p()->talent.outlaw.gravedigger_3->ok() && rng().roll( p()->talent.outlaw.gravedigger_3->effectN( 1 ).percent() * cp_spend ) )
-      {
-        p()->buffs.palmed_bullets->trigger();
-      }
-    }
-
+    trigger_palmed_bullets( state );
     trigger_scoundrel_strike( state, p()->active.scoundrel_strike.dispatch );
   }
 
@@ -6594,6 +6585,7 @@ struct coup_de_grace_t : public rogue_attack_t
 
     trigger_restless_blades( execute_state );
     trigger_cut_to_the_chase( execute_state );
+    trigger_palmed_bullets( execute_state );
     trigger_scoundrel_strike( execute_state, p()->active.scoundrel_strike.coup_de_grace );
 
     p()->buffs.escalating_blade->expire();
@@ -8570,6 +8562,23 @@ void actions::rogue_action_t<Base>::trigger_scoundrel_strike( const action_state
   if ( cp_spend >= p()->talent.outlaw.gravedigger_2->effectN( 1 ).base_value() )
   {
     action->trigger_secondary_action( state->target, 200_ms );
+  }
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_palmed_bullets( const action_state_t* state )
+{
+  if ( !p()->talent.outlaw.gravedigger_3->ok() )
+    return;
+
+  if ( !ab::result_is_hit( state->result ) )
+    return;
+
+  const int cp_spend = cast_state( state )->get_combo_points();
+
+  if ( p()->rng().roll( p()->talent.outlaw.gravedigger_3->effectN( 1 ).percent() * cp_spend ) )
+  {
+    p()->buffs.palmed_bullets->trigger();
   }
 }
 

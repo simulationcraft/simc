@@ -144,7 +144,7 @@ void outlaw( player_t* p )
   default_->add_action( "stealth", "Restealth if possible (no vulnerable enemies in combat)." );
   default_->add_action( "kick", "Interrupt on cooldown to allow simming interactions with that." );
   default_->add_action( "variable,name=ambush_condition,value=(talent.hidden_opportunity|combo_points.deficit>=2+talent.improved_ambush)&energy>=50" );
-  default_->add_action( "variable,name=finish_condition,value=combo_points>=cp_max_spend-1-(hero_tree.fatebound&!cooldown.between_the_eyes.ready)", "Use finishers if at -1 from max combo points, but Fatebound uses Dispatch at -2." );
+  default_->add_action( "variable,name=finish_condition,value=combo_points>=cp_max_spend-1-(!cooldown.between_the_eyes.ready&(hero_tree.fatebound|cooldown.killing_spree.ready))", "Use finishers if at -1 from max combo points, but Killing Spree is used at -2, and Fatebound uses Dispatch at -2." );
   default_->add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "run_action_list,name=finish,if=variable.finish_condition" );
