@@ -13374,9 +13374,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1201793)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.15 | PvP Coefficient: 1.69 | Target: Targeted Enemy (6)
-#2 (id=1229372)  : Energize Power (30)
-                   Base Value: 8 | Scaled Value: 8 | Resource: fury | Target: Self (1)
-                   Modified By: Celestial Echoes (1256312 effect#2)
 Description      : Devour the life essence of your target, dealing $s1 Cosmic damage. Reduces the cooldown of Reap by ${$1217607s14/1000}.1 sec.
 
 Castable while moving.
@@ -14738,8 +14735,9 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1244971)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Misc Value 2: 5312 (Label) | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1 | Misc Value 2: 5312 (Label) | Target: Self (1)
                    Affected Spells (Label): Feast of Souls (1232310)
+Hotfixed         : Base Value (2000 -> 1000)
 Description      : The duration of Feast of Souls is increased by ${$s1/1000} sec.
 
 $@spellicon1237270 $@spellname1237270
