@@ -193,7 +193,7 @@ jobs:
 
       - name: Install deps
         run: |
-          choco install -y ccache
+          winget install --id ccache.ccache --exact --accept-source-agreements --accept-package-agreements
 
       - name: Generate project files
         run: |
