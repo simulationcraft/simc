@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67114 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -19390,7 +19390,6 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1271571)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1249625 | Target: Self (1)
-Hotfixed         : Base Value (2 -> 1)
 Description      : $@spelldesc1261703
 Tooltip          : Your critical strike chance is increased by $s1% during your next Zenith per stack consumed.
 

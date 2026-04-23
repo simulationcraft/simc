@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67114 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -157,7 +157,6 @@ Description      : Stuns the target for $d.
 Tooltip          : Stunned.
 
 Name             : Blessing of Protection (id=1022) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
@@ -4462,7 +4461,6 @@ Effects          :
 Description      : Avenger's Shield hits $s1 additional targets, and grants you an absorb shield for $s2% of all damage it deals.
 
 Name             : Blessing of Spellwarding (id=204018) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Protection [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Holy
