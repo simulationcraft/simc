@@ -939,7 +939,8 @@ namespace warlock
 
     buffs.infernal_bolt = make_buff( this, "infernal_bolt", hero.infernal_bolt_buff );
 
-    buffs.abyssal_dominion = make_buff( this, "abyssal_dominion", hero.abyssal_dominion_buff );
+    buffs.abyssal_dominion = make_buff( this, "abyssal_dominion", hero.abyssal_dominion_buff )
+                                 ->set_duration( hero.abyssal_dominion_buff->duration() + talents.reign_of_tyranny->effectN( 1 ).time_value() );
 
     buffs.ruination = make_buff( this, "ruination", hero.ruination_buff );
 
@@ -1677,6 +1678,7 @@ namespace warlock
     warlock_pet_list.active = nullptr;
     havoc_target = nullptr;
     haunt_target = nullptr;
+    patient_zero_target = nullptr;
     wild_imp_spawns.clear();
     diabolic_ritual = rng().range( 0, 3 );
     demonic_art_buff_replaced = false;

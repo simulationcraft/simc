@@ -72,6 +72,7 @@ struct warlock_pet_t : public pet_t
 
   struct triggers_t
   {
+    bool hellbent_commander_heartbeat;
     bool hellbent_commander_arise;
     bool hellbent_commander_demise;
   } triggers;

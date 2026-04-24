@@ -256,6 +256,7 @@ public:
   player_t* havoc_target;
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   player_t* haunt_target; // Used for tracking the current haunt target
+  player_t* patient_zero_target; // Used to track which target benefits from the Patient Zero talent damage increase
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
   int diabolic_ritual; // Used to cycle between the three different Diabolic Ritual buffs
   bool demonic_art_buff_replaced; // Used to not spawn the Demonic Art demon if the buff is replaced by another

@@ -1426,7 +1426,13 @@ using namespace helpers;
         initial_stacks += ( int )( p()->talents.sudden_onset->effectN( 2 ).base_value() );
 
       if ( active_4pc<MID1>() )
-        initial_stacks += ( int )( p()->tier.wl_affliction_12_0_class_set_4pc->effectN( 1 ).base_value() );
+      {
+        // NOTE: 2026-04-24 Tier set is only applying 1 additional stack to Agony on initial cast if Sudden Onset is not talented (bug?)
+        if ( p()->bugs && !p()->talents.sudden_onset.ok() )
+          initial_stacks += ( int )( p()->tier.wl_affliction_12_0_class_set_4pc->effectN( 1 ).base_value() * 0.5 );
+        else
+          initial_stacks += ( int )( p()->tier.wl_affliction_12_0_class_set_4pc->effectN( 1 ).base_value() );
+      }
 
       int delta_stacks = initial_stacks - td( execute_state->target )->dots.agony->current_stack();
 
@@ -1671,14 +1677,14 @@ using namespace helpers;
 
         if ( p()->talents.patient_zero.ok() )
         {
-          // NOTE (2026-02-20): Patient Zero interacts incorrectly with Sow the Seeds (bug?).
-          // In-game testing shows that its damage bonus is applied to the host of the original (main) seed, even for
-          // explosions triggered by additional seeds. If the original host of the main seed is out of range, dead, or
-          // otherwise invalid (e.g., immune) at the time of explosion, the bonus is not reassigned and is simply not applied.
+          // NOTE (2026-04-24): Patient Zero does not track seeds individually (bug?). Instead, it uses a single
+          // per-caster target reference updated by the most recently Seed of Corruption casted. Any seed explosion 
+          // hitting that target gets the Patient Zero bonus. If the target is out of range, dead, or otherwise invalid 
+          // (e.g., immune) at the time of explosion, the bonus is not reassigned and is simply not applied.
           if ( p()->bugs )
           {
-            assert( main_seed_target && "SoC does not have a valid main seed target" );
-            if ( t == main_seed_target )
+            assert( p()->patient_zero_target && "SoC does not have a valid Patient Zero target" );
+            if ( t == p()->patient_zero_target )
               m *= 1.0 + p()->talents.patient_zero->effectN( 1 ).percent();
           }
           else
@@ -1785,6 +1791,10 @@ using namespace helpers;
 
     void execute() override
     {
+      // Patient Zero target is updated on SoC cast success, not on impact or debuff application
+      if ( p()->talents.patient_zero.ok() )
+        p()->patient_zero_target = target;
+
       warlock_spell_t::execute();
 
       p()->buffs.seed_of_corruption_is_out_dnt->trigger();
@@ -3278,14 +3288,8 @@ using namespace helpers;
       timespan_t extraTyrantTime = rng().gauss<380,220>();
       auto tyrants = p()->warlock_pet_list.demonic_tyrants.spawn( data().duration() + extraTyrantTime );
 
-      int demon_counter = 0;
+      int demonic_power_counter = 0;
       const timespan_t extension_time = 15_s; // TODO: Where is this 15_s in the spell data?
-
-      for ( auto wild_imp : p()->warlock_pet_list.wild_imps )
-      {
-        if ( !wild_imp->is_sleeping() )
-          demon_counter++;
-      }
 
       for ( auto dreadstalker : p()->warlock_pet_list.dreadstalkers )
       {
@@ -3298,7 +3302,27 @@ using namespace helpers;
             dreadstalker->expiration->reschedule_time = dreadstalker->expiration->time + extension_time;
         }
 
-        demon_counter++;
+        demonic_power_counter++;
+      }
+
+      for ( auto wild_imp : p()->warlock_pet_list.wild_imps )
+      {
+        if ( !wild_imp->is_sleeping() )
+          demonic_power_counter++;
+      }
+
+      // NOTE: 2026-04-24: Vilefiend (all variants) and Felguard count for Demonic Power buff (only at Tyrant summon) (bug?)
+      if ( p()->bugs )
+      {
+        for ( auto vilefiend : p()->warlock_pet_list.vilefiends )
+        {
+          if ( !vilefiend->is_sleeping() )
+            demonic_power_counter++;
+        }
+
+        auto active_pet = p()->warlock_pet_list.active;
+        if ( active_pet && active_pet->pet_type == PET_FELGUARD )
+          demonic_power_counter++;
       }
 
       if ( p()->talents.reign_of_tyranny.ok() )
@@ -3307,12 +3331,12 @@ using namespace helpers;
           p()->buffs.dreadstalkers->extend_duration( extension_time );
       }
 
-      if ( demon_counter > 0 )
+      if ( demonic_power_counter > 0 )
       {
         for ( auto t : tyrants )
         {
           if ( t->is_active() )
-            t->buffs.demonic_power->trigger( demon_counter );
+            t->buffs.demonic_power->trigger( demonic_power_counter );
         }
       }
 
