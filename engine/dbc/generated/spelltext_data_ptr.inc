@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.5.67088
-static constexpr std::array<spelltext_data_t, 28697> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28696> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26902,7 +26902,6 @@ static constexpr std::array<spelltext_data_t, 28697> __ptr_spelltext_data { {
   { 1251069, "Critical strikes of your Nature abilities reduce the target's movement speed by $1251059s1% for $1251059d.", 0, 0 },
   { 1251077, "Increases the damage and healing of your Holy and Shadow spells by $s1%.", 0, 0 },
   { 1251228, "Gut the Shimmersiren. You monster.", 0, 0 },
-  { 1251229, "Throw the fish back into the water to gain $s2 Midnight Perception for $d.\r\n\r\nThrowing multiple fish can extend this buff up to $M1 min.", "Midnight Perception increased by $w2.", 0 },
   { 1251259, "Add the Tyrannically Fortified affix to a Mythic Keystone.", 0, 0 },
   { 1251406, "When you shapeshift out of Bear Form, its benefits to health and armor slowly decay over $1251407d.", 0, 0 },
   { 1251407, "$@spelldesc1251406", "Stamina increased by $w1%.\r\nArmor increased by $w2%.", 0 },
