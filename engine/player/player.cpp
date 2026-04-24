@@ -6359,6 +6359,20 @@ void player_t::sequence_add( const action_t* a, const player_t* t )
       {
         auto& data = collected_data.action_sequence.emplace_back( a, t, sim->current_time(), this );
         a->sequence_add_fn( data.action_reporting, data.target_reporting );
+        data.spell_id = a->id;
+        if ( data.spell_id == 0 && a->type == ACTION_SEQUENCE )
+        {
+          const sequence_t* seq = static_cast<const sequence_t*>( a );
+          if ( seq->current_action > 0 && seq->current_action <= as<int>( seq->sub_actions.size() ) )
+          {
+            const action_t* sub_action = seq->sub_actions[ seq->current_action - 1 ];
+            data.spell_id = sub_action->id;
+            const char* spell_name = sub_action->data_reporting().name_cstr();
+            if ( spell_name == nullptr || spell_name[ 0 ] == '\0' )
+              spell_name = sub_action->name_reporting();
+            data.spell_name = spell_name;
+          }
+        }
       }
     }
     else
