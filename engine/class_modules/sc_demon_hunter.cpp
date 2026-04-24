@@ -12074,7 +12074,8 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
 
   bool has_reduced_drain = !dh()->in_combat || dh()->buff.voidrush->check() ||
                            ( dh()->executing && dh()->executing->id == dh()->spec.collapsing_star_spell->id() ) ||
-                           ( dh()->channeling && dh()->channeling->id == dh()->talent.devourer.void_ray->id() );
+                           ( dh()->channeling && dh()->channeling->id == dh()->talent.devourer.void_ray->id() ||
+                             dh()->buffs.stunned->check() );
 
   if ( has_reduced_drain )
   {
