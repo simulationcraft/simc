@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67186 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -4556,7 +4556,6 @@ Effects          :
 Description      : $@spelldesc192246
 
 Name             : Touch of the Magi (id=210824) [Spell Family (3)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Mage
 School           : Arcane
 Spell Type       : None

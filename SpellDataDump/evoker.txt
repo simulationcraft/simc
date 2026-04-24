@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67186 Live
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -5180,7 +5180,6 @@ Effects          :
 #3 (id=1316373)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 2448 (Category) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
                    Affected Spells (Category): Shift (1234796)
-Hotfixed         : Target 1 (56 -> 118)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Fel Rush and Infernal Strike reduced by $s1%.
 
@@ -12345,7 +12344,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Temporal Barrier (1291636)
                    Family Flags: 90
-Hotfixed         : NEW EFFECT
 Description      : Bronze healing and absorption increased by $s1%.
 
 Name             : Delay Harm (id=1239574) [Spell Family (224)] 
@@ -13790,7 +13788,6 @@ Effects          :
 Description      : Living Flame's cast time is reduced by ${$s1/-1000}.1 sec, and it deals $s2% increased damage or healing when it is a non-instant cast.
 
 Name             : Temporal Barrier (desc=Bronze) (id=1291636) [Spell Family (224)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Preservation [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=100, replace="Temporal Anomaly" (id=373861)]
 Class            : Evoker
 School           : Arcane

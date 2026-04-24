@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67186 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -14737,7 +14737,6 @@ Effects          :
 #1 (id=1244971)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1 | Misc Value 2: 5312 (Label) | Target: Self (1)
                    Affected Spells (Label): Feast of Souls (1232310)
-Hotfixed         : Base Value (2000 -> 1000)
 Description      : The duration of Feast of Souls is increased by ${$s1/1000} sec.
 
 $@spellicon1237270 $@spellname1237270

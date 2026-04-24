@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67186 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -4337,22 +4337,18 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Sunfire (164815)
                    Family Flags: 127
-Hotfixed         : Base Value (-20 -> 0)
 #11 (id=876349)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Sunfire (164815)
                    Family Flags: 127
-Hotfixed         : Base Value (-20 -> 0)
 #12 (id=1032349) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 277 | Scaled Value: 277 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2
-Hotfixed         : Base Value (169 -> 277)
 #13 (id=1032350) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 135 | Scaled Value: 135 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Starsurge (197626), Starsurge (1271222)
                    Family Flags: 89
-Hotfixed         : Base Value (68 -> 135)
 #14 (id=1039258) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 48 | Scaled Value: 48 | Target: Self (1)
                    Affected Spells: Shred (5221)
@@ -4397,12 +4393,10 @@ Hotfixed         : Base Value (68 -> 135)
                    Base Value: 62 | Scaled Value: 62 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (164812), Red Moon (1252871), Red Moon (1253582), Lunar Wrath (1253609)
                    Family Flags: 92
-Hotfixed         : Base Value (30 -> 62)
 #25 (id=1307596) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 62 | Scaled Value: 62 | Target: Self (1)
                    Affected Spells: Moonfire (164812), Red Moon (1252871), Red Moon (1253582), Lunar Wrath (1253609)
                    Family Flags: 92
-Hotfixed         : Base Value (30 -> 62)
 Description      : Restoration Druid core passive
 
 Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 

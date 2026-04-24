@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67186 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -247120,20 +247120,22 @@ Effects          :
 Tooltip          : Critical Strike decreased by $w1.
 
 Name             : Emberwing Burn (id=1255856) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1263043)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
 Tooltip          : Mastery decreased by $w1.
 
 Name             : Emberwing Burn (id=1255857) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1263044)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
