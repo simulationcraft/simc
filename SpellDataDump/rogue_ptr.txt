@@ -12570,16 +12570,15 @@ Description      : Activating $?a137036[Adrenaline Rush][Shadow Blades] creates 
 Effect persists for $?a137036[${$s1/1000}][${$s2/1000}] sec after leaving the cloud.
 
 Name             : Cloud Cover (id=441587) [Spell Family (8)] 
+Hotfixed         : Mechanic (4 -> 0), Spell Type (1 -> 0)
 Class            : Rogue
 School           : Physical
-Spell Type       : Magic
-Resource         : 30 Energy (3) (id=306428)
+Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Mechanic         : Distract
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1136148)  : Create Area Trigger (179)
