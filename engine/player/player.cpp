@@ -6362,15 +6362,25 @@ void player_t::sequence_add( const action_t* a, const player_t* t )
         data.spell_id = a->id;
         if ( data.spell_id == 0 && a->type == ACTION_SEQUENCE )
         {
-          const sequence_t* seq = static_cast<const sequence_t*>( a );
-          if ( seq->current_action > 0 && seq->current_action <= as<int>( seq->sub_actions.size() ) )
+          const sequence_t* seq = dynamic_cast<const sequence_t*>( a );
+          const strict_sequence_t* strict_seq = nullptr;
+          if ( !seq )
+            strict_seq = dynamic_cast<const strict_sequence_t*>( a );
+
+          if ( seq || strict_seq )
           {
-            const action_t* sub_action = seq->sub_actions[ seq->current_action - 1 ];
-            data.spell_id = sub_action->id;
-            const char* spell_name = sub_action->data_reporting().name_cstr();
-            if ( spell_name == nullptr || spell_name[ 0 ] == '\0' )
-              spell_name = sub_action->name_reporting();
-            data.spell_name = spell_name;
+            int idx = seq ? seq->current_action : static_cast<int>( strict_seq->current_action );
+            const auto& sub_actions = seq ? seq->sub_actions : strict_seq->sub_actions;
+
+            if ( idx > 0 && idx <= as<int>( sub_actions.size() ) )
+            {
+              const action_t* sub_action = sub_actions[ idx - 1 ];
+              data.spell_id = sub_action->id;
+              const char* spell_name = sub_action->data_reporting().name_cstr();
+              if ( spell_name == nullptr || spell_name[ 0 ] == '\0' )
+                spell_name = sub_action->name_reporting();
+              data.spell_name = spell_name;
+            }
           }
         }
       }
