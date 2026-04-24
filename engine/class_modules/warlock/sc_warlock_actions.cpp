@@ -4474,7 +4474,8 @@ using namespace helpers;
     {
       double amt = warlock_spell_t::calculate_direct_amount( state );
 
-      if ( p()->buffs.conflagration_of_chaos->check() )
+      // NOTE: 2026-04-25 Conflagration of Chaos crit damage bonus is not applied to Shadowburn (bug)
+      if ( p()->buffs.conflagration_of_chaos->check() && !p()->bugs )
       {
         state->result_total *= 1.0 + player->cache.spell_crit_chance();
         return state->result_total;
