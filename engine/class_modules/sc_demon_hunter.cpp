@@ -9475,6 +9475,11 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
   create_benefits();
 
   resource_regeneration = regen_type::DISABLED;
+
+  sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
+    if ( talent.devourer.entropy && !buff.entropy_out_of_combat->check() && !in_combat && !buff.metamorphosis->check() )
+      buff.entropy_out_of_combat->trigger();
+  } );
 }
 
 // ==========================================================================
@@ -9678,13 +9683,7 @@ void demon_hunter_t::activate()
   {
     register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
       if ( c )
-      {
         buff.entropy_out_of_combat->expire();
-      }
-      else if ( !buff.metamorphosis->check() )
-      {
-        buff.entropy_out_of_combat->trigger();
-      }
     } );
   }
 }
@@ -9770,8 +9769,6 @@ void demon_hunter_t::create_buffs()
               buff.void_metamorphosis_stack->trigger();
               proc.void_metamorphosis_stack_from_entropy->occur();
             }
-            else
-              b->expire();
           } );
 
   // Havoc ==================================================================
