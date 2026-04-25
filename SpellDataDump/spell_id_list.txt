@@ -8797,6 +8797,7 @@ Hunter
 1286400  Scout's Vigil
 1289896  Misdirection
 1292687  Shrapnel Bomb
+1298446 *Unbreakable Bond
 
 Mage
 66       Invisibility
