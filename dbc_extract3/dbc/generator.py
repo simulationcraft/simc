@@ -2489,6 +2489,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1245455, 2 ), # Cull Damage
           ( 1266301, 2 ), # Consume Soul Heal
           ( 1223423, 2 ), # Consume Soul Missile
+          ( 1292047, 2 ), # Spontaneous Immolation
 
           # Annihilator
 
