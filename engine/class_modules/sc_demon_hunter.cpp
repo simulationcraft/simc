@@ -9060,11 +9060,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       {
         dh()->interrupt();
       }
-
-      if ( dh()->talent.devourer.entropy->ok() && !dh()->in_combat )
-      {
-        dh()->buff.entropy_out_of_combat->trigger();
-      }
     }
 
     for ( demonsurge_ability ability : demonsurge_abilities )
