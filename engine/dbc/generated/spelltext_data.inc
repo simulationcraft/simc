@@ -28187,7 +28187,7 @@ static constexpr std::array<spelltext_data_t, 28696> __spelltext_data { {
   { 1270350, "$?c3[Water][Lightning] Shield increases your $?c2[Agility][Intellect] by $s1%.\r\n\r\nCasting $?c3[Water][Lightning] Shield now applies your weapon imbuements. Earth Shield is also applied if you have the Elemental Orbit talent.", 0, 0 },
   { 1270375, "Mastery increased by $s1%.", 0, 0 },
   { 1270443, "$@spelldesc1247378", 0, 0 },
-  { 1270444, "Soul Cleave and Spirit Bomb have a chance per soul fragment consumed to grant Untethered Rage, allowing Metamorphosis to be cast without incurring its cooldown and lasting $1270476d.", 0, 0 },
+  { 1270444, "Soul Cleave and Spirit Bomb have a chance per soul fragment consumed to grant Untethered Rage, allowing Metamorphosis to be cast without incurring its cooldown and lasting $s1 sec.", 0, 0 },
   { 1270446, "Your Intellect is increased by ${$s1}.1% for each Ancestor active.", 0, 0 },
   { 1270447, "The cast times of $?c1[Healing Surge, Chain Heal and][Healing Wave, Chain Heal, and] Lava Burst are reduced by $s1%.", 0, 0 },
   { 1270448, "Soul Cleave and Spirit Bomb can consume an additional soul fragment and deal an additional $s1% damage for each consumed.", 0, 0 },
@@ -28699,7 +28699,8 @@ static constexpr std::array<spelltext_data_t, 28696> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.5.67186
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  { 1270444,  0, "Soul Cleave and Spirit Bomb have a chance per soul fragment consumed to grant Untethered Rage, allowing Metamorphosis to be cast without incurring its cooldown and lasting $1270476d.", "Soul Cleave and Spirit Bomb have a chance per soul fragment consumed to grant Untethered Rage, allowing Metamorphosis to be cast without incurring its cooldown and lasting $s1 sec." },
 } };
 
 // Spell description variables, wow build 12.0.5.67186
