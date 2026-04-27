@@ -16833,6 +16833,7 @@ Effects          :
 Description      : Your movement speed is increased by $s1%.
 
 Name             : Untethered Rage (id=1270444) [Spell Family (107), Passive] 
+Hotfixed         : Description
 Talent Entry     : Vengeance [tree=spec, row=11, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
@@ -16844,7 +16845,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1282474)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Soul Cleave and Spirit Bomb have a chance per soul fragment consumed to grant Untethered Rage, allowing Metamorphosis to be cast without incurring its cooldown and lasting $1270476d.
+Description      : Soul Cleave and Spirit Bomb have a chance per soul fragment consumed to grant Untethered Rage, allowing Metamorphosis to be cast without incurring its cooldown and lasting $s1 sec.
 
 Name             : Untethered Rage (id=1270448) [Spell Family (107), Passive] 
 Talent Entry     : Vengeance [tree=spec, row=11, col=5, max_rank=2, req_points=20, select_idx=200]
