@@ -2605,6 +2605,7 @@ Effects          :
 Description      : $@spelldesc125151
 
 Name             : Touch of Karma (id=125174) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -2615,7 +2616,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Do Not Log (8), Allow Class Ability Procs (416)
+Attributes       : Allow Class Ability Procs (416), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Effects          :
 #1 (id=158688)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)

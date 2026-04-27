@@ -15528,9 +15528,10 @@ Effects          :
                    Affected Spells: Consume (473662), Devour (1217610)
                    Family Flags: 97
 #5 (id=1275185)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Fracture (263642)
                    Family Flags: 73
+Hotfixed         : Base Value (5 -> 3)
 Description      : $?s263642[Fracture]?a212613[Shear][Consume] generates $?a212613[$s1][$s2] additional Fury and deals $?a212613[$s3%][$s4%] increased damage.
 
 Name             : Swift Erasure (id=1253668) [Spell Family (107), Passive] 
@@ -15846,9 +15847,10 @@ Attributes       : No Aura Cancel (31), Not In Spellbook (143), Do Not Log on Le
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1263777)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shear (203782)
                    Family Flags: 22
+Hotfixed         : Base Value (5 -> 3)
 #2 (id=1263778)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Consume (473662), Devour (1217610)
@@ -15862,9 +15864,10 @@ Effects          :
                    Affected Spells: Consume (473662), Devour (1217610)
                    Family Flags: 97
 #5 (id=1263781)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Fracture (263642)
                    Family Flags: 73
+Hotfixed         : Base Value (5 -> 3)
 Description      : $@spelldesc1253415
 Tooltip          : $?s263642[Fracture]?a212613[Shear][Consume] generates additional Fury and deals increased damage.
 
