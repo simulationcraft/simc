@@ -17582,3 +17582,16 @@ Effects          :
                    Modified By: Celestial Echoes (1253415 effect#2)
 Description      : $@spelldesc473662
 
+Name             : Spontaneous Immolation (id=1292047) [Spell Family (107), Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 1 seconds
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Floating Combat Text On Cast (198), Allow Class Ability Procs (416), Unknown (489)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
+Effects          :
+#1 (id=1311826)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+

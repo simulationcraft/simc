@@ -3230,7 +3230,7 @@ Demon Hunter
 1285387 *Shattered Souls
 1287949  Eye Beam
 1288123  Devour
-1292047 *Spontaneous Immolation
+1292047  Spontaneous Immolation
 
 Druid
 99       Incapacitating Roar
