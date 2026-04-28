@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67235 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -4556,7 +4556,6 @@ Effects          :
 Description      : $@spelldesc192246
 
 Name             : Touch of the Magi (id=210824) [Spell Family (3)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -10918,6 +10917,7 @@ Effects          :
 Description      : Ice Block now reduces all damage taken by $414658s8% for $414658d but no longer grants Immunity, prevents movement, attacks, or casting spells. Does not incur the Global Cooldown.
 
 Name             : Mass Invisibility (id=414664) [Spell Family (3)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=9, col=6, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
@@ -10932,7 +10932,7 @@ Labels           : 16: Class Spells
                  : 566
 Affecting Spells : Improved Mass Invisibility (415945 effect#1)
 Family Flags     : 103
-Attributes       : No Threat (42), Ignore Line of Sight (66), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Attributes       : No Threat (42), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Suppress Weapon Procs (151), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Aura Interrupt   : Damage (1), Action (2), Attacking (12), Mount (17)
 Effects          :
 #1 (id=1083970)  : Apply Aura (6) | Invisibility (18)

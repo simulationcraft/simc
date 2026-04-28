@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67235 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -12570,7 +12570,6 @@ Description      : Activating $?a137036[Adrenaline Rush][Shadow Blades] creates 
 Effect persists for $?a137036[${$s1/1000}][${$s2/1000}] sec after leaving the cloud.
 
 Name             : Cloud Cover (id=441587) [Spell Family (8)] 
-Hotfixed         : Mechanic (4 -> 0), Spell Type (1 -> 0)
 Class            : Rogue
 School           : Physical
 Spell Type       : None

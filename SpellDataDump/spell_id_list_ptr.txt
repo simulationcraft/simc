@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.5.67088
+Class Spell ID List, wow build 12.0.5.67235
 
 Death Knight
 3714     Path of Frost
@@ -3230,7 +3230,7 @@ Demon Hunter
 1285387 *Shattered Souls
 1287949  Eye Beam
 1288123  Devour
-1292047 *Spontaneous Immolation
+1292047  Spontaneous Immolation
 
 Druid
 99       Incapacitating Roar
@@ -8797,6 +8797,7 @@ Hunter
 1286400  Scout's Vigil
 1289896  Misdirection
 1292687  Shrapnel Bomb
+1298446 *Unbreakable Bond
 
 Mage
 66       Invisibility

@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67235 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -14737,7 +14737,6 @@ Effects          :
 #1 (id=1244971)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1 | Misc Value 2: 5312 (Label) | Target: Self (1)
                    Affected Spells (Label): Feast of Souls (1232310)
-Hotfixed         : Base Value (2000 -> 1000)
 Description      : The duration of Feast of Souls is increased by ${$s1/1000} sec.
 
 $@spellicon1237270 $@spellname1237270
@@ -15529,7 +15528,7 @@ Effects          :
                    Affected Spells: Consume (473662), Devour (1217610)
                    Family Flags: 97
 #5 (id=1275185)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Fracture (263642)
                    Family Flags: 73
 Description      : $?s263642[Fracture]?a212613[Shear][Consume] generates $?a212613[$s1][$s2] additional Fury and deals $?a212613[$s3%][$s4%] increased damage.
@@ -15847,7 +15846,7 @@ Attributes       : No Aura Cancel (31), Not In Spellbook (143), Do Not Log on Le
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1263777)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shear (203782)
                    Family Flags: 22
 #2 (id=1263778)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -15863,7 +15862,7 @@ Effects          :
                    Affected Spells: Consume (473662), Devour (1217610)
                    Family Flags: 97
 #5 (id=1263781)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Fracture (263642)
                    Family Flags: 73
 Description      : $@spelldesc1253415
@@ -16845,7 +16844,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1282474)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Soul Cleave and Spirit Bomb have a chance per soul fragment consumed to grant Untethered Rage, allowing Metamorphosis to be cast without incurring its cooldown and lasting $1270476d.
+Description      : Soul Cleave and Spirit Bomb have a chance per soul fragment consumed to grant Untethered Rage, allowing Metamorphosis to be cast without incurring its cooldown and lasting $s1 sec.
 
 Name             : Untethered Rage (id=1270448) [Spell Family (107), Passive] 
 Talent Entry     : Vengeance [tree=spec, row=11, col=5, max_rank=2, req_points=20, select_idx=200]
@@ -17578,4 +17577,17 @@ Effects          :
                    Base Value: 16 | Scaled Value: 16 | Resource: fury | Target: Self (1)
                    Modified By: Celestial Echoes (1253415 effect#2)
 Description      : $@spelldesc473662
+
+Name             : Spontaneous Immolation (id=1292047) [Spell Family (107), Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 1 seconds
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Floating Combat Text On Cast (198), Allow Class Ability Procs (416), Unknown (489)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
+Effects          :
+#1 (id=1311826)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
