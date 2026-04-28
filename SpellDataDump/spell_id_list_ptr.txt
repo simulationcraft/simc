@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.5.66741
+Class Spell ID List, wow build 12.0.5.67088
 
 Death Knight
 3714     Path of Frost
@@ -12961,7 +12961,7 @@ Monk
 1269159  Rushing Wind Kick
 1270621  Tranquil Tea
 1270958  Harmonic Surge
-1270990 *Potential Energy
+1270990  Potential Energy
 1271011  Harmonic Surge
 1271045  Harmonic Surge
 1271048  Potential Energy
@@ -22765,8 +22765,8 @@ Warlock
 1288945 *Imp Lord
 1288950 *Fel Ravager
 1288970 *Recently Demon Has Been Summoned [DNT]
-1292384 *Soul Barrage
-1292391 *Soul Barrage
+1292384  Soul Barrage
+1292391  Soul Barrage
 
 Warrior
 71       Vanguard

@@ -183,11 +183,11 @@ void frost( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
   action_priority_list_t* high_prio_actions = p->get_action_priority_list( "high_prio_actions" );
   action_priority_list_t* racials = p->get_action_priority_list( "racials" );
   action_priority_list_t* single_target = p->get_action_priority_list( "single_target" );
-  action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
@@ -212,12 +212,26 @@ void frost( player_t* p )
   default_->add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
   default_->add_action( "run_action_list,name=single_target" );
 
+  aoe->add_action( "frostscythe,if=buff.killing_machine.react=2&active_enemies>=variable.frostscythe_priority", "Aoe Rotation" );
+  aoe->add_action( "frost_strike,target_if=max:(talent.shattering_blade&debuff.razorice.react=5),if=debuff.razorice.react=5&buff.frostbane.react" );
+  aoe->add_action( "frostscythe,if=buff.killing_machine.react&rune>=3&active_enemies>=variable.frostscythe_priority" );
+  aoe->add_action( "obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=buff.killing_machine.react=2|(buff.killing_machine.react&rune>=3)" );
+  aoe->add_action( "howling_blast,if=buff.rime.react&talent.frostbound_will|!dot.frost_fever.ticking" );
+  aoe->add_action( "frost_strike,target_if=max:(talent.shattering_blade&debuff.razorice.react=5),if=debuff.razorice.react=5&talent.shattering_blade&active_enemies<5&!variable.rp_pooling&!talent.frostbane" );
+  aoe->add_action( "frostscythe,if=buff.killing_machine.react&!variable.rune_pooling&active_enemies>=variable.frostscythe_priority" );
+  aoe->add_action( "obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=buff.killing_machine.react&!variable.rune_pooling" );
+  aoe->add_action( "howling_blast,if=buff.rime.react" );
+  aoe->add_action( "glacial_advance,if=!variable.rp_pooling" );
+  aoe->add_action( "frostscythe,if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)&active_enemies>=variable.frostscythe_priority" );
+  aoe->add_action( "obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)" );
+  aoe->add_action( "howling_blast,if=!buff.killing_machine.react&(talent.obliteration&buff.pillar_of_frost.up)" );
+
   cooldowns->add_action( "remorseless_winter,if=variable.sending_cds&(active_enemies>1|talent.gathering_storm)|(buff.gathering_storm.stack=10&buff.remorseless_winter.remains<gcd.max)&fight_remains>10", "Cooldowns" );
   cooldowns->add_action( "reapers_mark,target_if=first:debuff.reapers_mark_debuff.down,if=cooldown.pillar_of_frost.remains<=gcd.max&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>20|cooldown.breath_of_sindragosa.remains<gcd.max&runic_power>=40)|fight_remains<20" );
   cooldowns->add_action( "pillar_of_frost,if=variable.sending_cds&(!hero_tree.deathbringer|cooldown.reapers_mark.remains>10)&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>20|cooldown.breath_of_sindragosa.up&runic_power>=60)|fight_remains<20" );
   cooldowns->add_action( "breath_of_sindragosa,use_off_gcd=1,if=!buff.breath_of_sindragosa.up&(buff.pillar_of_frost.up|fight_remains<20)" );
   cooldowns->add_action( "frostwyrms_fury,if=((talent.apocalypse_now|talent.chosen_of_frostbrood)&!buff.chosen_of_frostbrood_fwf.up)&variable.sending_cds&(!talent.breath_of_sindragosa&buff.pillar_of_frost.up|buff.breath_of_sindragosa.up)&!debuff.reapers_mark_debuff.up&!buff.exterminate.up|(fight_remains<20&!buff.chosen_of_frostbrood_haste.up)" );
-  cooldowns->add_action( "frostwyrms_fury,if=buff.chosen_of_frostbrood_fwf.up&!buff.chosen_of_frostbrood_haste.up&!debuff.reapers_mark_debuff.up&buff.exterminate.stack<=1" );
+  cooldowns->add_action( "frostwyrms_fury,if=buff.chosen_of_frostbrood_fwf.up&variable.fwf_buffs" );
   cooldowns->add_action( "frostwyrms_fury,if=!(talent.apocalypse_now|talent.chosen_of_frostbrood)&active_enemies=1&(talent.pillar_of_frost&buff.pillar_of_frost.up&!talent.obliteration|!talent.pillar_of_frost)&(!raid_event.adds.exists|raid_event.adds.in>cooldown.frostwyrms_fury.duration+raid_event.adds.duration)&variable.fwf_buffs|fight_remains<3" );
   cooldowns->add_action( "frostwyrms_fury,if=!(talent.apocalypse_now|talent.chosen_of_frostbrood)&active_enemies>=2&(talent.pillar_of_frost&buff.pillar_of_frost.up|raid_event.adds.exists&raid_event.adds.up&raid_event.adds.in<cooldown.pillar_of_frost.remains-raid_event.adds.in-raid_event.adds.duration)&variable.fwf_buffs" );
   cooldowns->add_action( "frostwyrms_fury,if=!(talent.apocalypse_now|talent.chosen_of_frostbrood)&talent.obliteration&(talent.pillar_of_frost&buff.pillar_of_frost.up&!main_hand.2h|!buff.pillar_of_frost.up&main_hand.2h&cooldown.pillar_of_frost.remains|!talent.pillar_of_frost)&variable.fwf_buffs&(!raid_event.adds.exists|raid_event.adds.in>cooldown.frostwyrms_fury.duration+raid_event.adds.duration)" );
@@ -249,20 +263,6 @@ void frost( player_t* p )
   single_target->add_action( "frost_strike,if=!variable.rp_pooling" );
   single_target->add_action( "obliterate,if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)" );
   single_target->add_action( "howling_blast,if=!buff.killing_machine.react&(talent.obliteration&buff.pillar_of_frost.up)" );
-
-  aoe->add_action( "frostscythe,if=buff.killing_machine.react=2&active_enemies>=variable.frostscythe_priority", "Aoe Rotation" );
-  aoe->add_action( "frost_strike,target_if=max:(talent.shattering_blade&debuff.razorice.react=5),if=debuff.razorice.react=5&buff.frostbane.react" );
-  aoe->add_action( "frostscythe,if=buff.killing_machine.react&rune>=3&active_enemies>=variable.frostscythe_priority" );
-  aoe->add_action( "obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=buff.killing_machine.react=2|(buff.killing_machine.react&rune>=3)" );
-  aoe->add_action( "howling_blast,if=buff.rime.react&talent.frostbound_will|!dot.frost_fever.ticking" );
-  aoe->add_action( "frost_strike,target_if=max:(talent.shattering_blade&debuff.razorice.react=5),if=debuff.razorice.react=5&talent.shattering_blade&active_enemies<5&!variable.rp_pooling&!talent.frostbane" );
-  aoe->add_action( "frostscythe,if=buff.killing_machine.react&!variable.rune_pooling&active_enemies>=variable.frostscythe_priority" );
-  aoe->add_action( "obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=buff.killing_machine.react&!variable.rune_pooling" );
-  aoe->add_action( "howling_blast,if=buff.rime.react" );
-  aoe->add_action( "glacial_advance,if=!variable.rp_pooling" );
-  aoe->add_action( "frostscythe,if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)&active_enemies>=variable.frostscythe_priority" );
-  aoe->add_action( "obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)" );
-  aoe->add_action( "howling_blast,if=!buff.killing_machine.react&(talent.obliteration&buff.pillar_of_frost.up)" );
 
   trinkets->add_action( "potion,use_off_gcd=1,if=variable.cooldown_check|fight_remains<25", "Trinkets  Trinkets The trinket with the highest estimated value, will be used first and paired with Pillar of Frost." );
   trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.cast_time>0&variable.trinket_1_buffs&!variable.trinket_1_manual&buff.pillar_of_frost.remains&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)" );
@@ -316,26 +316,25 @@ void unholy( player_t* p )
   default_->add_action( "potion,if=(variable.st_planning|variable.adds_remain)&variable.cds_active&(variable.trinket_priority=1&trinket.1.has_use_buff&!trinket.1.proc.mastery.duration>0|variable.trinket_priority=2&trinket.2.has_use_buff&!trinket.2.proc.mastery.duration>0)" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=cooldowns" );
-  default_->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
-  default_->add_action( "call_action_list,name=single_target,if=active_enemies<4" );
+  default_->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
+  default_->add_action( "call_action_list,name=single_target,if=active_enemies<3" );
 
-  aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate", "Aoe Rotation" );
-  aoe->add_action( "festering_strike,target_if=min:health.pct,if=talent.festering_scythe&(fight_remains>3|raid_event.adds.exists&raid_event.adds.remains>3)&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)|!buff.festering_scythe.up&debuff.festering_scythe_debuff.remains<3)" );
+  aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate|talent.cycle_of_death&cooldown.putrefy.charges<cooldown.putrefy.max_charges&(raid_event.adds.exists&raid_event.adds.remains>duration%2|!raid_event.adds.exists&fight_remains>duration%2)&(raid_event.adds.exists&raid_event.adds.count<active_enemies|!raid_event.adds.exists|charges=max_charges|raid_event.adds.remains>cooldown.any_dnd.duration)", "Aoe Rotation" );
+  aoe->add_action( "festering_strike,target_if=min:health.pct,if=talent.festering_scythe&(fight_remains>3|raid_event.adds.exists&raid_event.adds.remains>3)&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|buff.festering_scythe_tt.remains<3)|!buff.festering_scythe.up&buff.festering_scythe_tt.remains<3)" );
   aoe->add_action( "epidemic,if=variable.spending_rp&variable.epidemic_prio" );
   aoe->add_action( "death_coil,target_if=min:health.pct,if=variable.spending_rp&!variable.epidemic_prio" );
   aoe->add_action( "festering_strike,target_if=min:health.pct,if=buff.lesser_ghoul_ready.stack=0" );
   aoe->add_action( "scourge_strike,target_if=min:health.pct,if=buff.lesser_ghoul_ready.stack>=1" );
-  aoe->add_action( "putrefy" );
   aoe->add_action( "epidemic,if=variable.epidemic_prio" );
   aoe->add_action( "death_coil,target_if=min:health.pct,if=!variable.epidemic_prio" );
 
   cooldowns->add_action( "potion,if=(variable.st_planning|variable.adds_remain)&variable.cds_active", "Cooldowns" );
   cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up", "Use<a href = 'https://www.wowhead.com/spell=10060/power-infusion'> Power Infusion</ a> while<a href = 'https://www.wowhead.com/spell=1233448/dark-transformation'> Dark Transformation</ a> is up" );
-  cooldowns->add_action( "outbreak,if=(!talent.blightburst|talent.blightburst&(cooldown.putrefy.remains>gcd.max*2|time<5))&(dot.dread_plague.active_dots=0|dot.virulent_plague.active_dots=0)&fight_remains>gcd.max*2&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>gcd.max*2)" );
-  cooldowns->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(talent.summon_gargoyle&runic_power>=30|debuff.festering_scythe_debuff.up|!talent.festering_scythe)" );
-  cooldowns->add_action( "soul_reaper,target_if=min:health.pct,if=!talent.pestilence&(!debuff.soul_reaper_debuff.up|!variable.cds_active&cooldown.dark_transformation.remains>cooldown.soul_reaper.duration-1|cooldown.dark_transformation.remains<gcd.max&talent.reaping)|talent.pestilence&talent.infliction_of_sorrow&(buff.dark_transformation.remains<5|buff.reaping.remains<=gcd.max)" );
-  cooldowns->add_action( "putrefy,if=(variable.st_planning|variable.adds_remain)*(target.health.pct>35|!talent.soul_reaper)&(charges=max_charges&!buff.sudden_doom.react&(cooldown.dark_transformation.remains>9|!talent.reaping)|buff.dark_transformation.up)|fight_remains<cooldown.soul_reaper.remains|raid_event.adds.exists&raid_event.adds.remains<3" );
-  cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead" );
+  cooldowns->add_action( "outbreak,if=(!talent.blightburst|talent.blightburst&(cooldown.putrefy.remains>gcd.max*2|time<5))&(dot.dread_plague.active_dots=0|dot.virulent_plague.active_dots=0)&(fight_remains>gcd.max*2&!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>gcd.max*2)" );
+  cooldowns->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(buff.festering_scythe_tt.up|!talent.festering_scythe)" );
+  cooldowns->add_action( "soul_reaper,target_if=min:health.pct,if=!talent.blightfall&(!debuff.soul_reaper_debuff.up|!variable.cds_active&cooldown.dark_transformation.remains>cooldown.soul_reaper.duration-1|cooldown.dark_transformation.remains<gcd.max&talent.reaping)|talent.blightfall&talent.infliction_of_sorrow&(buff.dark_transformation.remains<5|buff.reaping.remains<=gcd.max)" );
+  cooldowns->add_action( "putrefy,if=(variable.st_planning|variable.adds_remain)*(target.health.pct>35|!talent.soul_reaper)&(charges=max_charges&!buff.sudden_doom.react&(cooldown.dark_transformation.remains>9|!talent.reaping|!talent.soul_reaper)|buff.dark_transformation.up)|fight_remains<cooldown.soul_reaper.remains|raid_event.adds.exists&raid_event.adds.remains<3" );
+  cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&!buff.blightfall.up&(pet.lesser_ghoul_army.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead)|buff.blightfall.up&buff.dark_transformation.remains<4" );
 
   racials->add_action( "ancestral_call,if=variable.cds_active", "Racials" );
   racials->add_action( "arcane_pulse,if=runic_power<20&rune<2" );
@@ -346,7 +345,7 @@ void unholy( player_t* p )
   racials->add_action( "fireblood,if=variable.cds_active" );
   racials->add_action( "lights_judgment,if=runic_power<20&rune<2" );
 
-  single_target->add_action( "festering_strike,if=talent.festering_scythe&fight_remains>3&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|debuff.festering_scythe_debuff.remains<3)|!buff.festering_scythe.up&debuff.festering_scythe_debuff.remains<3)", "Single Target Rotation" );
+  single_target->add_action( "festering_strike,if=talent.festering_scythe&fight_remains>3&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|buff.festering_scythe_tt.remains<3)|!buff.festering_scythe.up&buff.festering_scythe_tt.remains<3)", "Single Target Rotation" );
   single_target->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1&talent.gift_of_the_sanlayn&buff.essence_of_the_blood_queen.stack<5&buff.vampiric_strike.up" );
   single_target->add_action( "death_coil,if=buff.sudden_doom.react" );
   single_target->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1&buff.blighted.up" );
@@ -356,12 +355,12 @@ void unholy( player_t* p )
   single_target->add_action( "festering_strike" );
   single_target->add_action( "death_coil" );
 
-  trinkets->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&(variable.trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)&(trinket.1.cast_time>0&trinket.1.cast_time>cooldown.army_of_the_dead.remains&(!talent.festering_scythe|debuff.festering_scythe_debuff.up)|trinket.1.cast_time=0&variable.cds_active)", "Trinkets" );
-  trinkets->add_action( "use_item,slot=trinket2,if=variable.trinket_2_buffs&(variable.trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)&(trinket.2.cast_time>0&trinket.2.cast_time>cooldown.army_of_the_dead.remains&(!talent.festering_scythe|debuff.festering_scythe_debuff.up)|trinket.2.cast_time=0&variable.cds_active)" );
+  trinkets->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&(variable.trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)&(trinket.1.cast_time>0&trinket.1.cast_time>cooldown.army_of_the_dead.remains&(!talent.festering_scythe|buff.festering_scythe_tt.up)|trinket.1.cast_time=0&variable.cds_active)", "Trinkets" );
+  trinkets->add_action( "use_item,slot=trinket2,if=variable.trinket_2_buffs&(variable.trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)&(trinket.2.cast_time>0&trinket.2.cast_time>cooldown.army_of_the_dead.remains&(!talent.festering_scythe|buff.festering_scythe_tt.up)|trinket.2.cast_time=0&variable.cds_active)" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)" );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)" );
 
-  variables->add_action( "variable,name=spending_rp,value=rune<2|buff.forbidden_knowledge.up&(rune<4|active_enemies>=6)|buff.sudden_doom.react|active_enemies>=7", "Variables" );
+  variables->add_action( "variable,name=spending_rp,value=rune<2|buff.forbidden_knowledge.up&(rune<4|pet.gargoyle.active)|buff.sudden_doom.react|active_enemies>=3", "Variables" );
   variables->add_action( "variable,name=st_planning,op=setif,value=1,value_else=0,condition=active_enemies=1&(!raid_event.adds.exists|!raid_event.adds.in|raid_event.adds.in>15|!raid_event.pull.exists|raid_event.pull.exists&raid_event.pull.in>15)" );
   variables->add_action( "variable,name=adds_remain,value=active_enemies>=2&((!raid_event.adds.exists|!raid_event.pull.exists)|raid_event.adds.remains>5|raid_event.pull.remains>5)" );
   variables->add_action( "variable,name=cds_active,value=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up&buff.dark_transformation.remains>5" );

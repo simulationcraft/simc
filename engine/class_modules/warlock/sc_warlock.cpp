@@ -233,11 +233,25 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   regen_caches[ CACHE_SPELL_HASTE ] = true;
 
   sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
-    // NOTE (2026-03-08): Some pets are currently bugged when updating Hellbent Commander stacks on arise/demise.
-    // Hellbent Commander's stacks are updated to their correct value on each heartbeat update.
+    // NOTE (2026-04-24): Some pets are currently bugged when updating Hellbent Commander stacks on arise/demise.
+    // Hellbent Commander's stacks are refreshed on each heartbeat update, but not all pets are correctly accounted for.
     if ( bugs && talents.hellbent_commander.ok() )
     {
-      const int expected_stacks = active_demon_count();
+      int expected_stacks = 0;
+
+      for ( auto pet : pet_list )
+      {
+        auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
+
+        if ( lock_pet == nullptr )
+          continue;
+        if ( lock_pet->is_sleeping() )
+          continue;
+
+        if ( lock_pet->triggers.hellbent_commander_heartbeat )
+          expected_stacks++;
+      }
+
       const int current_stacks = buffs.hellbent_commander->check();
 
       const int stack_diff = expected_stacks - current_stacks;
@@ -259,7 +273,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
       // On each Heartbeat, the player periodically applies a hidden Fel Armaments aura to the Felguard, triggering procs
       auto active_pet = warlock_pet_list.active;
       if ( active_pet && active_pet->pet_type == PET_FELGUARD )
-        this->trigger_aura_applied_callbacks( proc_data_entries.fel_armaments_2, active_pet );
+        trigger_aura_applied_callbacks( proc_data_entries.fel_armaments_2, active_pet );
     }
 
     for ( auto pet : active_pets )

@@ -372,6 +372,8 @@ public:
   double armor_mitigation_constant( unsigned level ) const;
   double get_armor_constant_mod( difficulty_e diff ) const;
   double npc_armor_value( unsigned level ) const;
+  double expected_creature_health( unsigned level ) const;
+  double expected_creature_health_mod( difficulty_e diff ) const;
 
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
 

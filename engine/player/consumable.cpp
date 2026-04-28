@@ -810,10 +810,26 @@ dbc_consumable_base_t::dbc_consumable_base_t( player_t* p, std::string_view name
 std::unique_ptr<expr_t> dbc_consumable_base_t::create_expression( std::string_view name )
 {
   auto split = util::string_split<util::string_view>( name, "." );
+
   if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "consumable" ) )
   {
-    auto match = util::str_compare_ci( consumable_name, split[ 1 ] );
-    return expr_t::create_constant( name, match );
+    if ( util::str_compare_ci( consumable_name, split[ 1 ] ) )
+      return expr_t::create_constant( name, true );
+
+    if ( consumable_name.size() < 2 )
+      return expr_t::create_constant( name, false );
+
+    auto last_char = std::prev( consumable_name.end() );
+    if ( std::isdigit( *last_char ) && *std::prev( last_char ) == '_' )
+    {
+      std::string_view consumable_name_view = consumable_name;
+      consumable_name_view.remove_suffix( 2 );
+
+      if ( util::str_compare_ci( consumable_name_view, split[ 1 ] ) )
+        return expr_t::create_constant( name, true );
+    }
+
+    return expr_t::create_constant( name, false );
   }
 
   return action_t::create_expression( name );

@@ -1381,7 +1381,6 @@ public:
     buff_t* feral_spirit_maelstrom;
 
     buff_t* crash_lightning;     // Buffs stormstrike and lava lash after using crash lightning
-    buff_t* cl_crash_lightning;  // Buffs crash lightning with extra damage, after using chain lightning
     buff_t* hot_hand;
     buff_t* lightning_shield;
     buff_t* stormsurge;
@@ -2204,16 +2203,6 @@ struct ascendance_buff_t : public buff_t
   void ascendance( attack_t* mh, attack_t* oh );
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
-};
-
-struct cl_crash_lightning_buff_t : public buff_t
-{
-  shaman_t* shaman;
-  cl_crash_lightning_buff_t( shaman_t* p ) : buff_t( p, "cl_crash_lightning", p->find_spell(333964) ),
-      shaman( p )
-  {
-    set_default_value_from_effect_type( A_ADD_PCT_LABEL_MODIFIER, P_GENERIC );
-  }
 };
 
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t( target, p )
@@ -5888,15 +5877,6 @@ struct crash_lightning_t : public shaman_attack_t
     return shaman_attack_t::create_expression( expression_str );
   }
 
-  double action_multiplier() const override
-  {
-    double m = shaman_attack_t::action_multiplier();
-
-    m *= 1.0 + p()->buff.cl_crash_lightning->stack_value();
-
-    return m;
-  }
-
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = shaman_attack_t::composite_da_multiplier( state );
@@ -5923,8 +5903,6 @@ struct crash_lightning_t : public shaman_attack_t
         p()->buff.converging_storms->trigger( num_targets_hit );
       }
     }
-
-    p()->buff.cl_crash_lightning->expire();
 
     p()->buff.tww2_enh_4pc->decrement( p()->buff.tww2_enh_4pc_damage->check() );
     p()->buff.tww2_enh_4pc_damage->expire();
@@ -6468,11 +6446,6 @@ struct chain_lightning_t : public chained_base_t
     if ( p()->buff.storm_elemental->check() && p()->talent.primal_elementalist.ok() )
     {
       p()->buff.wind_gust->trigger();
-    }
-
-    if ( num_targets_hit - 1 > 0 && p()->specialization() == SHAMAN_ENHANCEMENT )
-    {
-      p()->buff.cl_crash_lightning->trigger( num_targets_hit );
     }
 
     // Track last cast for LB / CL because of Thorim's Invocation
@@ -12455,8 +12428,6 @@ void shaman_t::create_buffs()
       : buff_stack_behavior::DEFAULT
     )
     ->set_chance( talent.crash_lightning.ok() ? 1.0 : 0.0 );
-  // Buffs crash lightning with extra damage, after using chain lightning
-  buff.cl_crash_lightning = new cl_crash_lightning_buff_t( this );
 
   buff.hot_hand = make_buff( this, "hot_hand", find_spell( 215785 ) )
     ->set_chance( talent.hot_hand.ok()
@@ -13622,7 +13593,7 @@ public:
   void mw_consumer_stack_header( report::sc_html_stream& os )
   {
     auto columns = std::max( p.buff.maelstrom_weapon->data().max_stacks(),
-      as<unsigned>( p.talent.overflowing_maelstrom->effectN( 1 ).base_value() ) ) + 1;
+      as<unsigned>( p.talent.raging_maelstrom->effectN( 1 ).base_value() ) ) + 1;
 
     os << "<table class=\"sc sort\" style=\"float: left;margin-right: 10px;\">\n"
        << "<thead>\n"
@@ -13641,7 +13612,7 @@ public:
   void mw_consumer_stack_contents( report::sc_html_stream& os )
   {
     auto columns = std::max( p.buff.maelstrom_weapon->data().max_stacks(),
-      as<unsigned>( p.talent.overflowing_maelstrom->effectN( 1 ).base_value() ) ) + 1;
+      as<unsigned>( p.talent.raging_maelstrom->effectN( 1 ).base_value() ) ) + 1;
 
     int row = 0;
     std::vector<double> row_totals( columns, 0.0 );

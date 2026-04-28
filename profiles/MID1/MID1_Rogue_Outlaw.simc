@@ -48,8 +48,8 @@ actions+=/bag_of_tricks
 
 # Builders   High priority Ambush with Hidden Opportunity.
 actions.build=ambush,if=talent.hidden_opportunity&buff.audacity.up
-# With Deft Maneuvers, build CPs with Blade Flurry at 4+ targets.
-actions.build+=/blade_flurry,if=talent.deft_maneuvers&spell_targets>=4
+# With Deft Maneuvers, build CPs with Blade Flurry at 3+ targets.
+actions.build+=/blade_flurry,if=talent.deft_maneuvers&spell_targets>=3
 # Prioritize Coup de Grace if Unseen Blade is guaranteed after Killing Spree.
 actions.build+=/coup_de_grace,if=buff.disorienting_strikes.up
 # With Audacity + Hidden Opportunity, consume Opportunity to proc Audacity any time Ambush is not available.

@@ -160,8 +160,8 @@ void preservation( player_t* /*p*/ )
 {
 }
 
-//augmentation_apl_start
-void augmentation( player_t* p )
+//augmentation_12_0_0_apl_start
+void augmentation_12_0_0( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
@@ -235,13 +235,84 @@ void augmentation( player_t* p )
   items->add_action( "use_item,name=bestinslots,use_off_gcd=1,if=buff.ebon_might_self.up&(!variable.trinket_1_buffs|trinket.1.cooldown.duration<=20|trinket.1.cooldown.remains>=10)&(!variable.trinket_2_buffs|trinket.2.cooldown.duration<=20|trinket.2.cooldown.remains>=10)" );
   items->add_action( "use_item,slot=main_hand,use_off_gcd=1,if=gcd.remains>=gcd.max*0.6&!equipped.bestinslots", "Use on use weapons" );
 }
-//augmentation_apl_end
+//augmentation_12_0_0_apl_end
 
-//augmentation_ptr_apl_start
-void augmentation_ptr( player_t* )
+//augmentation_12_0_5_apl_start
+void augmentation_12_0_5( player_t* p )
 {
+  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
+  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* filler = p->get_action_priority_list( "filler" );
+  action_priority_list_t* items = p->get_action_priority_list( "items" );
+
+  precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "variable,name=spam_heal,default=0,op=reset" );
+  precombat->add_action( "variable,name=minimum_opener_delay,op=reset,default=0" );
+  precombat->add_action( "variable,name=opener_delay,value=variable.minimum_opener_delay,if=!talent.interwoven_threads" );
+  precombat->add_action( "variable,name=opener_delay,value=variable.minimum_opener_delay+variable.opener_delay,if=talent.interwoven_threads" );
+  precombat->add_action( "variable,name=opener_cds_detected,op=reset,default=0" );
+  precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon|trinket.1.is.ovinaxs_mercurial_egg|trinket.1.is.aberrant_spellforge" );
+  precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon|trinket.2.is.ovinaxs_mercurial_egg|trinket.2.is.aberrant_spellforge" );
+  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.nymues_unraveling_spindle|trinket.1.is.spymasters_web|trinket.1.is.treacherous_transmitter|trinket.1.is.house_of_cards|trinket.1.is.vaelgors_final_stare", "Nymues is complicated, Manual Handle" );
+  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.nymues_unraveling_spindle|trinket.2.is.spymasters_web|trinket.2.is.treacherous_transmitter|trinket.2.is.house_of_cards|trinket.2.is.vaelgors_final_stare" );
+  precombat->add_action( "variable,name=trinket_1_ogcd_cast,value=trinket.1.is.beacon_to_the_beyond" );
+  precombat->add_action( "variable,name=trinket_2_ogcd_cast,value=trinket.2.is.beacon_to_the_beyond" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=(trinket.1.has_use_buff|(trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit)&!variable.trinket_1_exclude)&(!trinket.1.is.flarendos_pilot_light)" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=(trinket.2.has_use_buff|(trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)&!variable.trinket_2_exclude)&(!trinket.2.is.flarendos_pilot_light)" );
+  precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%120=0)" );
+  precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%120=0)" );
+  precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs&(trinket.2.has_cooldown&!variable.trinket_2_exclude|!trinket.1.has_cooldown)|variable.trinket_2_buffs&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(0.5+trinket.2.has_buff.intellect*3+trinket.2.has_buff.mastery)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(0.5+trinket.1.has_buff.intellect*3+trinket.1.has_buff.mastery)*(variable.trinket_1_sync)*(1+((trinket.1.ilvl-trinket.2.ilvl)%100)))" );
+  precombat->add_action( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl" );
+  precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=trinket.1.is.nymues_unraveling_spindle&trinket.2.has_buff.intellect|trinket.2.is.nymues_unraveling_spindle&!trinket.1.has_buff.intellect,if=(trinket.1.is.nymues_unraveling_spindle|trinket.2.is.nymues_unraveling_spindle)&(variable.trinket_1_buffs&variable.trinket_2_buffs)", "Double on use - Priotize Intellect on use trinkets over Nymues, force overwriting the normal logic to guarantee it is correct." );
+  precombat->add_action( "variable,name=ebon_might_pandemic_threshold,op=reset,default=0.4" );
+  precombat->add_action( "variable,name=enforce_timings,op=reset,default=0" );
+  precombat->add_action( "variable,name=spam_on_use_trinket,op=reset,default=1" );
+  precombat->add_action( "variable,name=azure_st_filler,op=reset,default=1" );
+  precombat->add_action( "variable,name=bombardments_pooling,op=reset,default=1" );
+  precombat->add_action( "variable,name=crit_fish,op=reset,default=0" );
+  precombat->add_action( "use_item,name=aberrant_spellforge" );
+  precombat->add_action( "blistering_scales,target_if=target.role.tank" );
+  precombat->add_action( "living_flame" );
+
+  default_->add_action( "variable,name=eons_remains,op=setif,value=cooldown.allied_virtual_cd_time.remains,value_else=cooldown.breath_of_eons.remains,condition=variable.enforce_timings,if=talent.breath_of_eons" );
+  default_->add_action( "cancel_buff,name=tip_the_scales,if=cooldown.fire_breath.remains>0&talent.temporal_burst&talent.time_skip&!talent.interwoven_threads" );
+  default_->add_action( "hover,use_off_gcd=1,if=gcd.remains>=0.5&(!raid_event.movement.exists|raid_event.movement.in<=6)" );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.duplicate.up" );
+  default_->add_action( "potion,if=consumable.potion_of_recklessness&talent.doubletime" );
+  default_->add_action( "ebon_might,if=((buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*variable.ebon_might_pandemic_threshold)&(active_enemies>0|raid_event.adds.in<=3)&(buff.ebon_might_self.value<=0.05|variable.crit_fish<1)|buff.ebon_might_self.value<=0.05&talent.doubletime&variable.crit_fish>=1" );
+  default_->add_action( "prescience,target_if=min:(debuff.prescience.remains-200*(target.role.attack|target.role.spell|target.role.dps)+50*target.spec.augmentation),if=debuff.prescience.remains<gcd.max*2&time<=8" );
+  default_->add_action( "potion,if=variable.eons_remains<=0|cooldown.breath_of_eons.remains>=90|fight_remains<=30&!fight_style.dungeonroute" );
+  default_->add_action( "call_action_list,name=items" );
+  default_->add_action( "fury_of_the_aspects,if=talent.time_convergence&!buff.time_convergence_intellect.up&(essence>=2|buff.essence_burst.react)&variable.eons_remains>=8" );
+  default_->add_action( "tip_the_scales,if=!cooldown.breath_of_eons.up&(cooldown.fire_breath.up|talent.temporal_burst&cooldown.fire_breath.remains>gcd.max*2)" );
+  default_->add_action( "deep_breath,cancel_if=gcd.remains<=0" );
+  default_->add_action( "breath_of_eons,if=target.time_to_die>=20&!variable.enforce_timings|variable.enforce_timings&(evoker.allied_cds_up>0|cooldown.allied_virtual_cd_time.up),cancel_if=gcd.remains<=0" );
+  default_->add_action( "fire_breath,target_if=target.time_to_die>duration+0.2,empower_to=4,if=buff.ebon_might_self.up&talent.leaping_flames" );
+  default_->add_action( "fire_breath,target_if=target.time_to_die>duration+0.2,empower_to=1,if=buff.ebon_might_self.up&!talent.leaping_flames" );
+  default_->add_action( "upheaval,target_if=target.time_to_die>duration+0.2,empower_to=1,if=buff.ebon_might_self.up" );
+  default_->add_action( "prescience,target_if=min:(debuff.prescience.remains-200*(target.role.attack|target.role.spell|target.role.dps)+50*target.spec.augmentation),if=debuff.prescience.remains<gcd.max*2&(!talent.anachronism|buff.essence_burst.stack<buff.essence_burst.max_stack)|cooldown.time_skip.up&talent.time_skip" );
+  default_->add_action( "time_skip,if=!talent.chronoboon&cooldown.breath_of_eons.remains>=15|cooldown.tip_the_scales.remains>=6&!buff.tip_the_scales.up" );
+  default_->add_action( "emerald_blossom,if=talent.dream_of_spring&buff.essence_burst.react&(variable.spam_heal=2|variable.spam_heal=1&!buff.ancient_flame.up&talent.ancient_flame)&(buff.ebon_might_self.up|essence.deficit=0|buff.essence_burst.stack=buff.essence_burst.max_stack&cooldown.ebon_might.remains>4)" );
+  default_->add_action( "run_action_list,name=filler,if=(cooldown.fire_breath.remains<=gcd.max*4|cooldown.upheaval.remains<=gcd.max*4)&talent.extended_battle&buff.essence_burst.react<2&variable.bombardments_pooling" );
+  default_->add_action( "eruption,target_if=min:debuff.bombardments.remains+100*(target.time_to_die<=8),if=buff.mass_eruption_stacks.up" );
+  default_->add_action( "eruption,target_if=max:debuff.bombardments.remains,if=debuff.bombardments.remains>execute_time|buff.ebon_might_self.remains>execute_time&(buff.essence_burst.react>1|!talent.bombardments|!variable.bombardments_pooling)" );
+  default_->add_action( "run_action_list,name=filler" );
+
+  filler->add_action( "living_flame,if=(buff.ancient_flame.up|mana>=200000|!talent.dream_of_spring|variable.spam_heal=0)&(talent.pupil_of_alexstrasza&active_enemies>1|!talent.echoing_strike&!variable.azure_st_filler|talent.chrono_flame&variable.azure_st_filler<2)|buff.leaping_flames.up" );
+  filler->add_action( "azure_strike" );
+
+  items->add_action( "use_item,name=vaelgors_final_stare,if=evoker.shifting_buffs>=2|evoker.shifting_buffs>=1&(cooldown.fire_breath.remains<=7|cooldown.upheaval.remains<=7)" );
+  items->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&!variable.trinket_1_manual&!variable.trinket_1_exclude&((debuff.temporal_wound.up|prev_gcd.1.breath_of_eons|!talent.breath_of_eons&buff.ebon_might_self.up&active_enemies>=1|variable.spam_on_use_trinket&(!cooldown.breath_of_eons.up|variable.eons_remains>=10))|variable.trinket_2_buffs&!trinket.2.cooldown.up&(prev_gcd.1.fire_breath|prev_gcd.1.upheaval)&buff.ebon_might_self.up)&(variable.trinket_2_exclude|!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains" );
+  items->add_action( "use_item,slot=trinket2,if=variable.trinket_2_buffs&!variable.trinket_2_manual&!variable.trinket_2_exclude&((debuff.temporal_wound.up|prev_gcd.1.breath_of_eons|!talent.breath_of_eons&buff.ebon_might_self.up&active_enemies>=1|variable.spam_on_use_trinket&(!cooldown.breath_of_eons.up|variable.eons_remains>=10))|variable.trinket_1_buffs&!trinket.1.cooldown.up&(prev_gcd.1.fire_breath|prev_gcd.1.upheaval)&buff.ebon_might_self.up)&(variable.trinket_1_exclude|!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains" );
+  items->add_action( "azure_strike,if=cooldown.item_cd_1141.up&(variable.trinket_1_ogcd_cast&trinket.1.cooldown.up&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains)|variable.trinket_2_ogcd_cast&trinket.2.cooldown.up&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains))", "Azure Strike for OGCD trinkets. Ideally this would be Prescience casts in reality but this is simpler and seems to have no noticeable diferrence in DPS." );
+  items->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&!variable.trinket_1_exclude&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web&buff.spymasters_report.stack<30|variable.eons_remains>=20|!talent.breath_of_eons|trinket.2.cooldown.duration=0|variable.trinket_2_exclude)&(gcd.remains>0.1&variable.trinket_1_ogcd_cast)", "If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown." );
+  items->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&!variable.trinket_2_exclude&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web&buff.spymasters_report.stack<30|variable.eons_remains>=20|!talent.breath_of_eons|trinket.1.cooldown.duration=0|variable.trinket_1_exclude)&(gcd.remains>0.1&variable.trinket_2_ogcd_cast)" );
+  items->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&!variable.trinket_1_exclude&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web&buff.spymasters_report.stack<30|variable.eons_remains>=20|!talent.breath_of_eons|trinket.2.cooldown.duration=0|variable.trinket_2_exclude)&(!variable.trinket_1_ogcd_cast)" );
+  items->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&!variable.trinket_2_exclude&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web&buff.spymasters_report.stack<30|variable.eons_remains>=20|!talent.breath_of_eons|trinket.1.cooldown.duration=0|variable.trinket_1_exclude)&(!variable.trinket_2_ogcd_cast)" );
+  items->add_action( "use_item,name=bestinslots,use_off_gcd=1,if=buff.ebon_might_self.up&(!variable.trinket_1_buffs|trinket.1.cooldown.duration<=20|trinket.1.cooldown.remains>=10)&(!variable.trinket_2_buffs|trinket.2.cooldown.duration<=20|trinket.2.cooldown.remains>=10)" );
+  items->add_action( "use_item,slot=main_hand,use_off_gcd=1,if=gcd.remains>=gcd.max*0.6&!equipped.bestinslots", "Use on use weapons" );
 }
-//augmentation_ptr_apl_end
+//augmentation_12_0_5_apl_end
 
 void no_spec( player_t* /*p*/ )
 {

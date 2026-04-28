@@ -35,20 +35,19 @@ actions+=/thunder_blast,if=spell_targets.thunder_blast>=2&buff.thunder_blast.sta
 actions+=/demolish,if=buff.colossal_might.stack>=3
 actions+=/shield_charge
 actions+=/shield_block,if=buff.shield_block.remains<=10
-actions+=/run_action_list,name=aoe,if=spell_targets.thunder_clap>=3
+actions+=/run_action_list,name=colossus_aoe,if=hero_tree.colossus&spell_targets.thunder_clap>=3
+actions+=/run_action_list,name=thane_aoe,if=hero_tree.mountain_thane&spell_targets.thunder_clap>=3
 actions+=/run_action_list,name=colossus_st,if=talent.demolish
 actions+=/run_action_list,name=thane_st,if=talent.lightning_strikes
 
-actions.aoe=thunder_blast,if=dot.rend_dot.remains<=1
-actions.aoe+=/thunder_clap,if=dot.rend_dot.remains<=1
-actions.aoe+=/thunder_blast,if=spell_targets.thunder_clap>=2&buff.avatar.up
-actions.aoe+=/execute,if=spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled
-actions.aoe+=/thunder_clap,if=spell_targets.thunder_clap>=4&buff.avatar.up&hero_tree.mountain_thane|spell_targets.thunder_clap>6&buff.avatar.up
-actions.aoe+=/revenge,if=rage>=70&spell_targets.revenge>=3
-actions.aoe+=/shield_slam,if=rage<=60|buff.violent_outburst.up
-actions.aoe+=/thunder_blast
-actions.aoe+=/thunder_clap
-actions.aoe+=/revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled
+actions.colossus_aoe=thunder_clap,if=dot.rend_dot.remains<=1
+actions.colossus_aoe+=/shield_slam,if=buff.violent_outburst.up&buff.phalanx.up
+actions.colossus_aoe+=/thunder_clap,if=spell_targets.thunder_clap>6&buff.avatar.up
+actions.colossus_aoe+=/revenge,if=rage>=70&spell_targets.revenge>=3
+actions.colossus_aoe+=/shield_slam,if=rage<=60|buff.violent_outburst.up
+actions.colossus_aoe+=/thunder_clap
+actions.colossus_aoe+=/revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled
+actions.colossus_aoe+=/execute,if=spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled
 
 actions.colossus_st=shield_slam
 actions.colossus_st+=/thunder_clap
@@ -60,6 +59,19 @@ actions.colossus_st+=/wrecking_throw,if=talent.javelineer.enabled
 actions.colossus_st+=/shattering_throw,if=talent.javelineer.enabled
 actions.colossus_st+=/revenge
 actions.colossus_st+=/devastate
+
+actions.thane_aoe=thunder_blast,if=dot.rend_dot.remains<=1
+actions.thane_aoe+=/thunder_clap,if=dot.rend_dot.remains<=1
+actions.thane_aoe+=/shield_slam,if=buff.violent_outburst.up&buff.phalanx.up
+actions.thane_aoe+=/thunder_blast,if=spell_targets.thunder_clap>=2&buff.avatar.up
+actions.thane_aoe+=/shield_slam,if=buff.phalanx.up
+actions.thane_aoe+=/thunder_clap,if=spell_targets.thunder_clap>=4&buff.avatar.up
+actions.thane_aoe+=/revenge,if=rage>=70&spell_targets.revenge>=3
+actions.thane_aoe+=/shield_slam,if=rage<=60|buff.violent_outburst.up
+actions.thane_aoe+=/thunder_blast
+actions.thane_aoe+=/thunder_clap
+actions.thane_aoe+=/execute,if=spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled
+actions.thane_aoe+=/revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled
 
 actions.thane_st=thunder_blast
 actions.thane_st+=/thunder_clap,if=buff.ravager.up

@@ -275,11 +275,11 @@ void dot_t::copy( player_t* destination, dot_copy_e copy_type, action_t* copy_ac
 
   other_dot->current_action = copy_action;
 
-  // Default behavior simply copies the current stat of the source dot
+  // Default behavior simply copies the current state of the source dot
   // (including duration) to the target and starts it
   if ( copy_type == DOT_COPY_START )
   {
-    other_dot->trigger( current_duration );
+    other_dot->trigger( remains() );
   }
   // If we don't start the copied dot from the beginning, we need to bypass a
   // lot of the dot scheduling logic, and simply do the minimum amount possible

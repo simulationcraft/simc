@@ -1545,9 +1545,17 @@ void parse_action_base_t::parse_callback_function( pack_t<player_effect_t>& pack
   {
     assert( pack.data.buff && "CONSUME_BUFF requires a buff" );
 
-    parse_callback_function( pack, [ a = _action, b = pack.data.buff ]( action_state_t* ) {
-      b->consume( a );
-    } );
+    if ( !pack.data.buff->can_consume( _action ) )
+    {
+      _player->sim->print_debug( "action-effects: {} cannot consume buff {}, skipping CONSUME_BUFF.", *_action,
+                                 *pack.data.buff );
+    }
+    else
+    {
+      parse_callback_function( pack, [ a = _action, b = pack.data.buff ]( action_state_t* ) {
+        b->consume( a );
+      } );
+    }
   }
 }
 

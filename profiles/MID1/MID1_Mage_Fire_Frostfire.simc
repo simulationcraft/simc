@@ -33,8 +33,8 @@ actions.precombat+=/variable,name=ff_filler_flamestrike,if=!talent.spellfire_sph
 actions.precombat+=/variable,name=sf_combustion_flamestrike,if=talent.spellfire_spheres,value=4+(999*!talent.fuel_the_fire)
 # Flamestrike at 4 targets.
 actions.precombat+=/variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=4+(999*!talent.fuel_the_fire)
-# Delay Combustion to stack up buffs for all builds unless it means losing casts of Combustion. Do not do so if fight length is short.
-actions.precombat+=/variable,name=combustion_delay,value=10+(8*talent.firestarter)-(10*(expected_combat_length<60)+10*(expected_combat_length<30))-10*(((expected_combat_length%%60)>=25)&((expected_combat_length%%60)<=40))
+# Delay Combustion if playing Firestarter until the target is >=90% HP unless it means losing casts of Combustion. Do not do so if fight length is short.
+actions.precombat+=/variable,name=combustion_delay,value=(18*talent.firestarter)-(10*(expected_combat_length<60)+10*(expected_combat_length<30))-10*(((expected_combat_length%%60)>=25)&((expected_combat_length%%60)<=40))
 actions.precombat+=/variable,name=15ssteroid_trinket_equipped,op=set,value=equipped.nevermelting_ice_crystal|equipped.lily_of_the_eternal_weave|equipped.sunblood_amethyst|equipped.astral_gladiators_badge_of_ferocity|equipped.arazs_ritual_forge|equipped.freightrunners_flask|equipped.emberwing_feather|equipped.vaelgors_final_stare|equipped.galactic_gladiators_badge_of_ferocity
 actions.precombat+=/variable,name=10ssteroid_trinket_equipped,op=set,value=equipped.ever_collapsing_void_fissure
 actions.precombat+=/variable,name=nonsteroid_trinket_equipped,op=set,value=equipped.mereldars_toll|equipped.perfidious_projector|equipped.chaotic_nethergate|equipped.wraps_of_cosmic_madness|equipped.astalors_anguish_agitator
@@ -47,15 +47,15 @@ actions.precombat+=/pyroblast
 
 # Executed every time the actor is available.
 actions=call_action_list,name=cds
-# Combustion is delayed on pull by 10 seconds for most non-Firestarter builds, and 18 seconds for all Firestarter builds to simulate realistic timings for when a boss drops below 90% hp.
+# Combustion is delayed on pull 18 seconds for all Firestarter builds to simulate realistic timings for when a boss drops below 90% HP.
 actions+=/run_action_list,name=ff_combustion,if=talent.frostfire_bolt&((time>=variable.combustion_delay)&(cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready))
 actions+=/run_action_list,name=sf_combustion,if=!talent.frostfire_bolt&((time>=variable.combustion_delay)&(cooldown.combustion.remains<=variable.combustion_precast_time|buff.combustion.up|cooldown.combustion.ready))
 actions+=/run_action_list,name=ff_filler,if=talent.frostfire_bolt
 actions+=/run_action_list,name=sf_filler
 
 actions.cds=variable,name=combustion_precast_time,value=(action.scorch.cast_time*!buff.pyroclasm.up*scorch_execute.active)+(action.fireball.cast_time*!buff.pyroclasm.up*!scorch_execute.active)+(action.pyroblast.cast_time*buff.pyroclasm.up)-variable.cast_remains_time
-# Use Potion on pull. Delay by 4 seconds for each of these that are true: [Firestarter Sunfury] [Savor] [Pyroclasm+Firestarter+Sunfury]. Goal is to make pot last all of CDs.
-actions.cds+=/potion,if=time>=(0+(4*(talent.firestarter&talent.spellfire_spheres)+4*(talent.savor_the_moment)+4*(talent.pyroclasm&talent.firestarter&talent.spellfire_spheres)))|buff.combustion.remains>6|fight_remains<35
+# Use Potion on pull. Delay by about 8 seconds if playing with Firestarter as Sunfury.
+actions.cds+=/potion,if=time>=(8*(talent.firestarter&talent.spellfire_spheres))|buff.combustion.remains>6|fight_remains<35
 # Force Vaelgor as highest priority on-use trinket, if potentially two on-use trinkets are equipped.
 actions.cds+=/use_item,name=vaelgors_final_stare,if=buff.combustion.remains>6|fight_remains<20
 actions.cds+=/use_item,name=emberwing_feather,if=buff.combustion.remains>6|fight_remains<20
@@ -169,20 +169,20 @@ legs=voidbreakers_britches,id=250059,bonus_id=40/12676/12806/13335/13339/13575/1
 feet=voidbreakers_treads,id=250062,bonus_id=40/12806/13335,ilevel=289,enchant_id=8019
 finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240906/240900,enchant_id=7967
 finger2=bond_of_light,id=249369,ilevel=289,gem_id=240916,enchant_id=7967
-trinket1=emberwing_feather,id=250144,bonus_id=40/12806/13440,ilevel=289
-trinket2=gaze_of_the_alnseer,id=249343,bonus_id=40/12806/13335,ilevel=289
-main_hand=brazier_of_the_dissonant_dirge,id=249286,bonus_id=12792/13448/13452,ilevel=289,enchant_id=8039
+trinket1=emberwing_feather,id=250144,bonus_id=40/12806/13440,ilevel=298
+trinket2=gaze_of_the_alnseer,id=249343,bonus_id=40/12806/13335,ilevel=298
+main_hand=brazier_of_the_dissonant_dirge,id=249286,bonus_id=12792/13448/13452,ilevel=298,enchant_id=8039
 
 # Gear Summary
-# gear_ilvl=288.47
-# gear_stamina=17604
-# gear_intellect=1661
+# gear_ilvl=290.27
+# gear_stamina=17810
+# gear_intellect=1720
 # gear_crit_rating=87
 # gear_haste_rating=1201
-# gear_mastery_rating=1205
+# gear_mastery_rating=1218
 # gear_versatility_rating=59
 # gear_speed_rating=98
-# gear_avoidance_rating=407
+# gear_avoidance_rating=411
 # gear_armor=531
 # set_bonus=midnight_season_1_2pc=1
 # set_bonus=midnight_season_1_4pc=1

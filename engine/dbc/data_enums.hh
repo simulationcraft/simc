@@ -2113,4 +2113,12 @@ enum assisted_combat_rule_e : unsigned
   AC_AUTOMATION_ONLY                  = 70,
 };
 
+enum pet_stat_mod_e
+{
+  PET_STAT_MOD_HEALTH = 1,
+  PET_STAT_MOD_ATTACK_POWER_INHERITENCE = 2,
+  PET_STAT_MOD_SPELL_POWER_INHERITENCE = 3,
+  PET_STAT_MOD_HEALTH_REGEN_RATE = 28
+};
+
 #endif

@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.66741 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -1596,6 +1596,7 @@ Description      : Deals $12278s1 Fire damage every $t1 sec for $d1 to all enemi
 Name             : Breath of Fire (id=12278) 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 53 degrees
 Triggered By     : Breath of Fire (12257)
 Attributes       : No Redirection (35), No Reflection (39), Scales with Casting Item's Level (354)
 Effects          :
@@ -1792,6 +1793,7 @@ Tooltip          : Dealing $13184s1 fire damage per second.
 Name             : Goblin Dragon Gun (id=13184) 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 53 degrees
 Attributes       : Active Threat (94), Not a Proc (105), No Cast Log (128), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=5853)     : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
@@ -3709,6 +3711,7 @@ Tooltip          : Increases Fire Resistance and causes $s1 Fire damage to attac
 Name             : Smokey's Lighter (id=17283) 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 53 degrees
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=9025)     : School Damage (2): fire | Scaling Class: Replace Primary (-8)
@@ -19323,6 +19326,7 @@ Name             : Foam Sword Attack (id=62973)
 School           : Physical
 Spell Type       : None
 Range            : 5 yards
+Cone Angle       : 10 degrees
 Duration         : 1 seconds
 Attributes       : Do Not Log (8), No Threat (42), Exclude Caster (51), No Aura Icon (60), Not an Attack (194), No Aura Log (202), Visible only to caster (conversations only) (343)
 Effects          :
@@ -19336,6 +19340,7 @@ Name             : Bonked! (id=62991)
 School           : Physical
 Spell Type       : None
 Range            : 5 yards
+Cone Angle       : 10 degrees
 Duration         : 60 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
@@ -31356,6 +31361,7 @@ Description      : Your harmful spellcasts have a chance to poison all enemies n
 Name             : Cleansing Flames (id=107835) 
 School           : Holy
 Spell Type       : Magic
+Cone Angle       : 180 degrees
 Triggered By     : Item - Dragon Soul - Proc - Int Spirit Mace 1H (107836)
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Scales with Casting Item's Level (354)
 Effects          :
@@ -32897,6 +32903,7 @@ Description      : Your spells have a chance to grant you ${$109844m1+$109844m2}
 Name             : Cleansing Flames (id=109847) 
 School           : Holy
 Spell Type       : Magic
+Cone Angle       : 180 degrees
 Triggered By     : Item - Dragon Soul - Proc - Int Spirit Mace 1H LFR (109848)
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Scales with Casting Item's Level (354)
 Effects          :
@@ -32919,6 +32926,7 @@ Description      : Your healing spells have a chance to trigger Cleansing Flames
 Name             : Cleansing Flames (id=109849) 
 School           : Holy
 Spell Type       : Magic
+Cone Angle       : 180 degrees
 Triggered By     : Item - Dragon Soul - Proc - Int Spirit Mace 1H Heroic (109850)
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Scales with Casting Item's Level (354)
 Effects          :
@@ -38879,6 +38887,7 @@ School           : Nature
 Spell Type       : None
 Max Scaling Level: 32
 Range            : 10 yards
+Cone Angle       : 60 degrees
 Triggered By     : Goblin Dragon Gun, Mark II (126294)
 Attributes       : No Redirection (35), No Reflection (39), Active Threat (94), Ignore Caster Modifiers (125), Allow Cast While Channeling (308)
 Effects          :
@@ -40898,6 +40907,7 @@ May walk while casting.
 Name             : Shado-Pan Dragon Gun (id=129116) 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 60 degrees
 Cooldown         : 3 seconds
 Triggered By     : Shado-Pan Dragon Gun (129115)
 Attributes       : No Redirection (35), No Reflection (39), Active Threat (94), No Aura Log (202), Allow Cast While Channeling (308), Scales with Casting Item's Level (354)
@@ -45484,6 +45494,7 @@ Name             : Flurry of Xuen (id=147891)
 School           : Physical
 Spell Type       : Melee
 Max Targets      : 5
+Cone Angle       : 60 degrees
 Triggered By     : Flurry of Xuen (146194)
 Attributes       : Suppress Weapon Procs (151), Aura Points On Client (268), Area Effects Use Target Radius (328), Not in Mythic+ Mode (Challenge Mode) (368), Not In Proving Grounds (401)
 Effects          :
@@ -58970,6 +58981,7 @@ Name             : Darklight Ray (id=183950)
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 5 yards
 Velocity         : 200 yards/sec
 Labels           : 112
 Attributes       : Always Hit (114), Do Not Display Range (126), Always AOE Line of Sight (186), Scales with Casting Item's Level (354)
@@ -59065,6 +59077,7 @@ Name             : Fel Cleave (id=184248)
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
+Cone Angle       : 150 degrees
 Labels           : 112
 Triggered By     : Howling Madness (184249)
 Attributes       : Do Not Display Range (126), Area Effects Use Target Radius (328), Scales with Casting Item's Level (354)
@@ -65230,6 +65243,8 @@ Name             : Intra-Dalaran Wormhole (id=199978)
 School           : Physical
 Spell Type       : None
 Range            : 90 yards
+Cone Angle       : 40 degrees
+Line Width       : 30 yards
 GCD              : 1 seconds
 Charges          : 5 (60 seconds cooldown)
 Category         : 1574 (Type 0x0)
@@ -66351,6 +66366,7 @@ Name             : Bug Spray (id=201857)
 School           : Nature
 Spell Type       : None
 Range            : 10 yards
+Cone Angle       : 30 degrees
 Duration         : 10 seconds
 Triggered By     : Bug Spray (201854)
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -66598,6 +66614,7 @@ Name             : Stellagosa's Breath (id=202841)
 School           : Fire
 Spell Type       : Magic
 Range            : 12 yards
+Cone Angle       : 60 degrees
 Triggered By     : Stellagosa's Breath (202845)
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
@@ -69297,6 +69314,7 @@ Name             : Landslide (id=214397)
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
+Line Width       : 5 yards
 Labels           : 3959: Item Effects
 Triggered By     : Landslide (214396)
 Attributes       : No Redirection (35), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Area Effects Use Target Radius (328), Scales with Casting Item's Level (354)
@@ -69309,6 +69327,7 @@ Name             : Dark Blast (id=214399) [Hidden]
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 5 yards
 Labels           : 3959: Item Effects
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Redirection (35), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
@@ -70498,6 +70517,7 @@ Name             : Dark Blast (id=215407)
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 5 yards
 Labels           : 3959: Item Effects
 Attributes       : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
@@ -72813,6 +72833,7 @@ Name             : Cleansed Drake's Breath (id=222520)
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 90 degrees
 Attributes       : Do Not Display Range (126), Area Effects Use Target Radius (328), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=332186)   : School Damage (2): nature
@@ -73702,6 +73723,7 @@ Name             : Fetid Regurgitation (id=224437)
 School           : Nature
 Spell Type       : Magic
 Range            : 8 yards
+Cone Angle       : 60 degrees
 Labels           : 3959: Item Effects
 Triggered By     : Fetid Regurgitation (215127)
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -75118,6 +75140,8 @@ Name             : Crystalline Shockwave (id=225716)
 School           : Physical
 Spell Type       : Magic
 Range            : 10 yards
+Cone Angle       : 90 degrees
+Line Width       : 7 yards
 Cooldown         : 1 seconds
 Labels           : 230
 Triggered By     : Crystalline Shockwave (225123)
@@ -75155,6 +75179,7 @@ Name             : Arcane Swipe (id=225721)
 School           : Arcane
 Spell Type       : Magic
 Range            : 12 yards
+Cone Angle       : 60 degrees
 Labels           : 230
 Triggered By     : Arcane Swipe (225127)
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -75240,6 +75265,7 @@ Name             : Carrion Swarm (id=225731)
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 8 yards
 Velocity         : 10 yards/sec
 Duration         : 8 seconds
 Triggered By     : Carrion Swarm (225131)
@@ -75507,6 +75533,7 @@ Name             : Arcane Beam (id=225826)
 School           : Arcane
 Spell Type       : None
 Range            : 20 yards
+Cone Angle       : 5 degrees
 Cast Time        : 1.5 seconds
 Duration         : 10 seconds
 Attributes       : Allow Item Spell In PvP (13), No Threat (42)
@@ -82298,6 +82325,7 @@ Name             : Spear of Anguish (id=242607)
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 8 yards
 Attributes       : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=368376)   : School Damage (2): shadow
@@ -86785,6 +86813,7 @@ Name             : Gorshalach's Legacy (id=253329)
 School           : Fire
 Spell Type       : Magic
 Range            : 12 yards
+Cone Angle       : 60 degrees
 Labels           : 230
                  : 248
                  : 265
@@ -88689,6 +88718,7 @@ Name             : Echo of Gorshalach (id=255672)
 School           : Fire
 Spell Type       : Magic
 Range            : 12 yards
+Cone Angle       : 60 degrees
 Labels           : 230
 Attributes       : Do Not Sheath (18), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
@@ -88701,6 +88731,7 @@ Name             : Gorshalach's Legacy (id=255673)
 School           : Fire
 Spell Type       : Magic
 Range            : 12 yards
+Cone Angle       : 60 degrees
 Labels           : 230
                  : 248
                  : 265
@@ -88867,6 +88898,7 @@ Description      : $@spelldesc253263
 Name             : Shadow Blades (id=255819) [Hidden] 
 School           : Shadow
 Spell Type       : Magic
+Line Width       : 6 yards
 Duration         : 0.2 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Icon (60), Always AOE Line of Sight (186), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
 Effects          :
@@ -91209,6 +91241,7 @@ School           : Holystrike
 Spell Type       : Magic
 Range            : 20 yards
 Max Targets      : 10
+Cone Angle       : 45 degrees
 Cast Time        : 0.5 seconds
 Cooldown         : 30 seconds
 Attributes       : Can't Crit (93), Always Hit (114)
@@ -91224,6 +91257,7 @@ School           : Holystrike
 Spell Type       : Magic
 Range            : 40 yards
 Max Targets      : 10
+Cone Angle       : 45 degrees
 Duration         : 30 seconds
 Triggered By     : Witchrend (261479)
 Attributes       : Can't Crit (93), Always Hit (114)
@@ -91243,6 +91277,7 @@ School           : Physical
 Spell Type       : Magic
 Range            : 40 yards
 Max Targets      : 10
+Cone Angle       : 45 degrees
 Cooldown         : 30 seconds
 Triggered By     : Witchrend (261479)
 Attributes       : Can't Crit (93), Always Hit (114)
@@ -92771,6 +92806,7 @@ Tooltip          : Your damaging abilities have a chance to grant you 25 applica
 Name             : Bilgewater Patented Flamethrower (id=266310) 
 School           : Fire
 Spell Type       : None
+Cone Angle       : 60 degrees
 Duration         : 5 seconds
 Attributes       : Is Self Channelled (38), Ignore Line of Sight (66), Ignore Caster & Target Restrictions (124), Extra Initial Period (169)
 Aura Interrupt   : Action (2), Moving (3)
@@ -92786,6 +92822,7 @@ Name             : Bilgewater Patented Flamethrower (id=266313) [Hidden]
 School           : Fire
 Spell Type       : None
 Range            : 10 yards
+Cone Angle       : 60 degrees
 Triggered By     : Bilgewater Patented Flamethrower (266310)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Ignore Line of Sight (66), Allow Cast While Channeling (308)
 Effects          :
@@ -93068,6 +93105,7 @@ Name             : Noxious Venom (id=267410)
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
+Cone Angle       : 60 degrees
 Duration         : 4 seconds
 Labels           : 3959: Item Effects
 Stacks           : 3 maximum
@@ -95553,6 +95591,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 20 yards
 Max Targets      : 1
+Cone Angle       : 60 degrees
 Duration         : 600 seconds
 Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
@@ -95569,6 +95608,7 @@ School           : Arcane
 Spell Type       : Magic
 Range            : 20 yards
 Max Targets      : 1
+Cone Angle       : 60 degrees
 Duration         : 600 seconds
 Attributes       : Visible only to caster (conversations only) (343)
 Effects          :
@@ -100338,6 +100378,7 @@ Description      : Your attacks have a chance to cause a Void Sector, instantly 
 Name             : Voided Sectors (id=278153) 
 School           : Shadow
 Spell Type       : Magic
+Cone Angle       : 90 degrees
 Triggered By     : Systematic Regression (278152)
 Attributes       : Always AOE Line of Sight (186), Aura Points On Client (268), Area Effects Use Target Radius (328), Scales with Casting Item's Level (354)
 Effects          :
@@ -102854,6 +102895,7 @@ School           : Physical
 Spell Type       : None
 Range            : 20 yards
 Max Targets      : 1
+Cone Angle       : 60 degrees
 Duration         : 600 seconds
 Attributes       : Check Required Target Aura By Caster (382)
 Effects          :
@@ -102870,6 +102912,7 @@ School           : Physical
 Spell Type       : None
 Range            : 20 yards
 Max Targets      : 1
+Cone Angle       : 60 degrees
 Duration         : 600 seconds
 Attributes       : Check Required Target Aura By Caster (382)
 Effects          :
@@ -102886,6 +102929,7 @@ School           : Physical
 Spell Type       : None
 Range            : 20 yards
 Max Targets      : 1
+Cone Angle       : 60 degrees
 Duration         : 600 seconds
 Attributes       : Check Required Target Aura By Caster (382)
 Effects          :
@@ -102901,6 +102945,7 @@ School           : Physical
 Spell Type       : None
 Range            : 20 yards
 Max Targets      : 1
+Cone Angle       : 60 degrees
 Duration         : 1800 seconds
 Attributes       : Check Required Target Aura By Caster (382)
 Effects          :
@@ -102916,6 +102961,7 @@ School           : Physical
 Spell Type       : None
 Range            : 20 yards
 Max Targets      : 1
+Cone Angle       : 60 degrees
 Duration         : 600 seconds
 Attributes       : Check Required Target Aura By Caster (382)
 Effects          :
@@ -102931,6 +102977,7 @@ School           : Physical
 Spell Type       : None
 Range            : 20 yards
 Max Targets      : 1
+Cone Angle       : 60 degrees
 Duration         : 600 seconds
 Attributes       : Check Required Target Aura By Caster (382)
 Effects          :
@@ -102946,6 +102993,7 @@ School           : Physical
 Spell Type       : None
 Range            : 20 yards
 Max Targets      : 1
+Cone Angle       : 60 degrees
 Duration         : 600 seconds
 Attributes       : Check Required Target Aura By Caster (382)
 Effects          :
@@ -102962,6 +103010,7 @@ School           : Physical
 Spell Type       : None
 Range            : 20 yards
 Max Targets      : 1
+Cone Angle       : 60 degrees
 Cooldown         : 60 seconds
 Attributes       : Check Required Target Aura By Caster (382)
 Effects          :
@@ -103005,6 +103054,7 @@ School           : Physical
 Spell Type       : None
 Range            : 20 yards
 Max Targets      : 1
+Cone Angle       : 60 degrees
 Duration         : 1 seconds
 Attributes       : No Immunities (29), Check Required Target Aura By Caster (382)
 Effects          :
@@ -111454,6 +111504,7 @@ Description      : $@spelldesc295254
 Name             : Focused Azerite Beam (desc=Azerite Essence) (id=295258) 
 School           : Fire
 Spell Type       : Magic
+Line Width       : 3 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 3 seconds
@@ -111476,6 +111527,7 @@ Name             : Focused Azerite Beam (id=295261)
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 3 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
@@ -111492,6 +111544,7 @@ Description      : $@spelldesc295258
 Name             : Focused Azerite Beam (id=295262) [Passive] 
 School           : Fire
 Spell Type       : Magic
+Line Width       : 3 yards
 Labels           : 292
                  : 640: Azerite Essences
 Azerite EssenceId: 5 (Type: Major/Upgrade, Rank: 2)
@@ -111555,6 +111608,7 @@ Tooltip          : Absorbing the next $w1 damage or healing taken.
 Name             : Focused Azerite Beam (id=295272) 
 School           : Fire
 Spell Type       : Magic
+Line Width       : 3 yards
 Duration         : 2 seconds
 Labels           : 292
                  : 640: Azerite Essences
@@ -111569,6 +111623,7 @@ Description      : $@spelldesc295258
 Name             : Focused Azerite Beam (id=295273) 
 School           : Fire
 Spell Type       : Magic
+Line Width       : 3 yards
 Velocity         : 25 yards/sec
 Labels           : 292
                  : 640: Azerite Essences
@@ -114664,6 +114719,7 @@ Name             : Spirit of Preservation (id=297935)
 School           : Nature
 Spell Type       : None
 Range            : 40 yards
+Line Width       : 3 yards
 Labels           : 292
                  : 640: Azerite Essences
                  : 698
@@ -117593,6 +117649,7 @@ Description      : Your damaging spells and abilities grant you ${$295246s2*(1+(
 Name             : Focused Azerite Beam (desc=Azerite Essence) (id=299336) 
 School           : Fire
 Spell Type       : Magic
+Line Width       : 3 yards
 Cast Time        : 1.333 seconds
 GCD              : 1.5 seconds
 Duration         : 3 seconds
@@ -117629,6 +117686,7 @@ When you have no stacks of Focused Energy, generate $s1 stacks from your first d
 Name             : Focused Azerite Beam (desc=Azerite Essence) (id=299338) 
 School           : Fire
 Spell Type       : Magic
+Line Width       : 3 yards
 Cast Time        : 1.333 seconds
 GCD              : 1.5 seconds
 Duration         : 3 seconds
@@ -118728,6 +118786,7 @@ Effects          :
 Name             : Focused Azerite Beam (id=299564) 
 School           : Fire
 Spell Type       : Magic
+Line Width       : 3 yards
 Duration         : 1.75 seconds
 Labels           : 292
                  : 640: Azerite Essences
@@ -120574,6 +120633,7 @@ Tooltip          : Critical Strike, Haste, Mastery, and Versatility increased by
 Name             : Anodized Deflection (id=301554) 
 School           : Physical
 Spell Type       : Melee
+Cone Angle       : 90 degrees
 Triggered By     : Anodized Deflectors (300140)
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
@@ -126274,6 +126334,7 @@ School           : Fire
 Spell Type       : Magic
 Max Scaling Level: 60
 Min Scaling Level: 50
+Cone Angle       : 60 degrees
 Labels           : 959
 Triggered By     : Well Fed (308637)
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Show Mechanic as Combat Text (213), Aura Points On Client (268), Area Effects Use Target Radius (328), Don't Cancel When All Effects are Disabled (353)
@@ -130460,6 +130521,7 @@ Tooltip          : Shadowflame smolders in your throat...
 Name             : Searing Breath (id=316704) 
 School           : Shadowflame
 Spell Type       : Magic
+Cone Angle       : 60 degrees
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=801381)   : School Damage (2): shadowflame | Attributes: Always AOE Line of Sight (5), Area Effects Use Target Radius (17)
@@ -131034,6 +131096,7 @@ Description      : Your attacks have a chance to lash your target with a living 
 Name             : Lash of the Void (id=317291) 
 School           : Shadow
 Spell Type       : Magic
+Cone Angle       : 60 degrees
 Attributes       : DoT Stacking Rule (103), Aura Points On Client (268), Area Effects Use Target Radius (328), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=802394)   : School Damage (2): shadow
@@ -131999,6 +132062,7 @@ Name             : Lash of the Void (id=319241)
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 60 degrees
 Duration         : 6 seconds
 Mechanic         : Snare
 Triggered By     : Lash of the Void (317291)
@@ -137699,6 +137763,7 @@ School           : Shadow
 Spell Type       : Magic
 Max Scaling Level: 60
 Range            : 50 yards
+Line Width       : 2 yards
 Labels           : 931
                  : 1059
 Attributes       : Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Aura Points On Client (268), Allow Cast While Channeling (308)
@@ -138440,6 +138505,7 @@ Name             : Splash of Anima-Charged Wind (id=342428)
 School           : Arcane
 Spell Type       : Magic
 Range            : 10 yards
+Cone Angle       : 40 degrees
 Labels           : 3959: Item Effects
 Triggered By     : Splash of Anima-Charged Wind (342427)
 Attributes       : Do Not Display Range (126), AI Face Target (283), Scales with Casting Item's Level (354), Do Not Display Cast Time (441)
@@ -138796,6 +138862,7 @@ Name             : Ember Blast (id=343540)
 School           : Holy
 Spell Type       : Magic
 Range            : 40 yards
+Line Width       : 5 yards
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=845416)   : School Damage (2): holy
@@ -138806,6 +138873,7 @@ Name             : Ember Blast (id=343541)
 School           : Holy
 Spell Type       : None
 Range            : 40 yards
+Line Width       : 5 yards
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=845417)   : Direct Heal (10)
@@ -139620,6 +139688,7 @@ Name             : Blazing Surge (id=345215)
 School           : Fire
 Spell Type       : Magic
 Range            : 40 yards
+Cone Angle       : 65 degrees
 Velocity         : 42 yards/sec
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
@@ -140690,6 +140759,7 @@ Name             : Whisper of Death (id=345963)
 School           : Shadow
 Spell Type       : None
 Range            : 100 yards
+Cone Angle       : 60 degrees
 Attributes       : Do Not Display Range (126)
 Effects          :
 #1 (id=872201)   : Dummy (3) | Attributes: Area Effects Use Target Radius (17)
@@ -142437,6 +142507,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 60 yards
 Max Targets      : 5
+Cone Angle       : 90 degrees
 Velocity         : 40 yards/sec
 Labels           : 292
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -142657,6 +142728,7 @@ Description      : Your damaging melee attacks have a chance to cause $355068s1 
 Name             : Auditory Suppression (id=355068) 
 School           : Physical
 Spell Type       : Melee
+Cone Angle       : 100 degrees
 Triggered By     : Auditory Suppression (355065)
 Attributes       : No Aura Icon (60), Scales with Casting Item's Level (354)
 Effects          :
@@ -143669,6 +143741,7 @@ Tooltip          : Taking $w1% more damage from $@auracaster.
 Name             : Coalesced Wrath (id=356385) 
 School           : Holy
 Spell Type       : Magic
+Cone Angle       : 60 degrees
 Attributes       : Can't Crit (93), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Scales with Casting Item's Level (354), Ignore Caster Absorb Modifiers (370)
 Effects          :
 #1 (id=890225)   : School Damage (2): holy
@@ -146478,6 +146551,7 @@ Name             : Mighty Ox Kick (desc=Utility) (id=361618) [Spell Family (227)
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Cooldown         : 35 seconds
 Category         : 2148 (Type 0x0)
@@ -146732,6 +146806,7 @@ Name             : Fists of Earthen Fury (desc=Offensive) (id=362349) [Spell Fam
 School           : Nature
 Spell Type       : Melee
 Max Targets      : 6
+Cone Angle       : 60 degrees
 Triggered By     : Fists of Earthen Fury (361622)
 Family Flags     : 9
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Treat as Area Effect (175), Allow Class Ability Procs (416)
@@ -147279,6 +147354,7 @@ Description      : Permanently increases cyphers acquired by this character by $
 Name             : Gladiator's Maledict (id=363715) 
 School           : Cosmic
 Spell Type       : Magic
+Cone Angle       : 60 degrees
 Duration         : 6 seconds
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354)
 Effects          :
@@ -151449,6 +151525,7 @@ Tooltip          : Being leeched $w1 health per second.
 Name             : Boon of the End (id=368702) 
 School           : Shadow
 Spell Type       : Magic
+Cone Angle       : 100 degrees
 Triggered By     : Boon of the End (368697)
 Attributes       : Aura Points On Client (268), Area Effects Use Target Radius (328), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
@@ -153855,6 +153932,7 @@ Description      : Allows opening of locks that require up to $s1 lockpicking sk
 Name             : Dragon's Breath (desc=Utility) (id=371846) [Spell Family (227)] 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Duration         : 2 seconds
 Cooldown         : 45 seconds
@@ -154052,6 +154130,7 @@ Name             : Frostscythe (desc=Main Hand) (id=372331) [Spell Family (227)]
 School           : Frost
 Spell Type       : Melee
 Range            : 8 yards
+Cone Angle       : 120 degrees
 GCD              : 1 seconds
 Labels           : 1440
                  : 2509
@@ -154473,6 +154552,7 @@ Description      : Fulfil the destiny of a Fated raid item, upgrading it to Myth
 Name             : Spitfire (desc=Offensive) (id=373272) [Spell Family (227)] 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Duration         : 5 seconds
 Cooldown         : 20 seconds
@@ -154949,6 +155029,7 @@ Name             : Spitfire (desc=Offensive) (id=375698) [Spell Family (227)]
 School           : Fire
 Spell Type       : Magic
 Spell Level      : 29
+Cone Angle       : 90 degrees
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 10 seconds
@@ -155970,6 +156051,7 @@ Name             : Elemental Stance: Earth (id=377458)
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
+Cone Angle       : 110 degrees
 Duration         : 10 seconds
 Attributes       : Always AOE Line of Sight (186), Aura Points On Client (268), Area Effects Use Target Radius (328), Scales with Casting Item's Level (354), Do Not Display Cast Time (441)
 Effects          :
@@ -155987,6 +156069,7 @@ Name             : Elemental Stance: Fire (id=377459)
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 110 degrees
 Duration         : 6 seconds
 Attributes       : Always AOE Line of Sight (186), Aura Points On Client (268), Area Effects Use Target Radius (328), Scales with Casting Item's Level (354), Do Not Display Cast Time (441)
 Effects          :
@@ -156003,6 +156086,7 @@ Name             : Elemental Stance: Air (id=377461)
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 110 degrees
 Duration         : 10 seconds
 Attributes       : Always AOE Line of Sight (186), Aura Points On Client (268), Area Effects Use Target Radius (328), Scales with Casting Item's Level (354), Do Not Display Cast Time (441)
 Effects          :
@@ -157340,6 +157424,7 @@ Tooltip          : Get carried away by five dragon whelplings!
 Name             : Mutated Tentacle Slam (id=381760) 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 60 degrees
 Labels           : 3959: Item Effects
 Effects          :
 #1 (id=1012798)  : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
@@ -157926,6 +158011,7 @@ Name             : Elemental Stance: Ice (id=382133)
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 110 degrees
 Duration         : 6 seconds
 Attributes       : Always AOE Line of Sight (186), Aura Points On Client (268), Area Effects Use Target Radius (328), Scales with Casting Item's Level (354), Do Not Display Cast Time (441)
 Effects          :
@@ -161021,6 +161107,7 @@ Description      : Consume Brimming Life-Pod to gain $384658s1 Versatility and $
 Name             : Trampling Hooves Speed Zone (id=384639) [Hidden] 
 School           : Physical
 Spell Type       : Magic
+Line Width       : 5 yards
 Velocity         : 15 yards/sec
 Labels           : 3959: Item Effects
 Triggered By     : Trampling Hooves (392908)
@@ -161445,6 +161532,7 @@ School           : Fire
 Spell Type       : Melee
 Max Scaling Level: 70
 Range            : 100 yards
+Cone Angle       : 120 degrees
 Labels           : 1530
                  : 1694
 Triggered By     : Breath of Neltharion (385520)
@@ -161478,6 +161566,7 @@ Name             : Trampling Hooves (id=385533)
 School           : Physical
 Spell Type       : Magic
 Range            : 40 yards
+Line Width       : 5 yards
 Labels           : 3959: Item Effects
 Triggered By     : Idol of Trampling Hooves (386175)
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -161728,6 +161817,7 @@ Name             : Hunting Bow (desc=Main Hand) (id=385804) [Spell Family (227)]
 School           : Physical
 Spell Type       : Ranged
 Range            : 20 yards
+Cone Angle       : 120 degrees
 Duration         : 1.75 seconds
 Family Flags     : 4, 9, 18
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Is Channelled (34), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
@@ -164052,6 +164142,7 @@ Name             : Furious Ragefeather (id=387800)
 School           : Physical
 Spell Type       : None
 Range            : 50 yards
+Line Width       : 2 yards
 Duration         : 1.5 seconds
 Labels           : 3959: Item Effects
 Triggered By     : Furious Ragefeather (383920), Furious Ragefeather (389407)
@@ -166763,6 +166854,7 @@ Description      : $@spelldesc389549
 Name             : Frozen Devotion (id=390350) 
 School           : Frost
 Spell Type       : Magic
+Cone Angle       : 60 degrees
 Labels           : 969
                  : 974
                  : 1396
@@ -169171,6 +169263,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Max Targets      : 8
+Cone Angle       : 60 degrees
 GCD              : 1 seconds
 Family Flags     : 4, 9
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), No Target Aura Icon (188), Allow Class Ability Procs (416)
@@ -169683,6 +169776,7 @@ Name             : Light of Creation (desc=Blue) (id=394927)
 School           : Arcane
 Spell Type       : Magic
 Range            : 25 yards
+Line Width       : 3 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 3 seconds
@@ -169734,6 +169828,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Max Targets      : 8
+Cone Angle       : 5 degrees
 GCD              : 1 seconds
 Duration         : 1 seconds
 Family Flags     : 4, 9
@@ -170221,6 +170316,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 35 yards
 Max Targets      : 8
+Cone Angle       : 45 degrees
 Triggered By     : Shadow Barrage (395758)
 Family Flags     : 14
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
@@ -171542,6 +171638,7 @@ Description      : $?s397232[Summons a totem at your enemy's location that gathe
 Name             : Dragon's Breath (desc=Utility) (id=397233) [Spell Family (227)] 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Duration         : 2 seconds
 Cooldown         : 35 seconds
@@ -171563,6 +171660,7 @@ Variables        : $breath=${$s1+($371848s1*3)}
 Name             : Dragon's Breath (desc=Utility) (id=397234) [Spell Family (227)] 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Duration         : 2 seconds
 Cooldown         : 25 seconds
@@ -171584,6 +171682,7 @@ Variables        : $breath=${$s1+($371848s1*3)}
 Name             : Dragon's Breath (desc=Utility) (id=397235) [Spell Family (227)] 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Duration         : 2 seconds
 Cooldown         : 20 seconds
@@ -171860,6 +171959,7 @@ Name             : Mighty Ox Kick (desc=Utility) (id=397248) [Spell Family (227)
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Cooldown         : 30 seconds
 Category         : 2148 (Type 0x0)
@@ -171877,6 +171977,7 @@ Name             : Mighty Ox Kick (desc=Utility) (id=397249) [Spell Family (227)
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Cooldown         : 25 seconds
 Category         : 2148 (Type 0x0)
@@ -171894,6 +171995,7 @@ Name             : Mighty Ox Kick (desc=Utility) (id=397250) [Spell Family (227)
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Cooldown         : 20 seconds
 Category         : 2148 (Type 0x0)
@@ -173223,6 +173325,7 @@ Tooltip          : Critical Strike increased by $w1. Exuding a fetid breath.
 Name             : Fetid Breath (id=397401) 
 School           : Shadow
 Spell Type       : Magic
+Cone Angle       : 60 degrees
 Labels           : 3959: Item Effects
 Triggered By     : Bonemaw's Big Toe (397400)
 Attributes       : Scales with Casting Item's Level (354)
@@ -173372,6 +173475,7 @@ Variables        : $wave=${$397697s1*12}
 Name             : Spitfire (desc=Offensive) (id=397625) [Spell Family (227)] 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 16 seconds
@@ -173393,6 +173497,7 @@ Tooltip          : Continuously dealing Fire damage every $t1 sec to enemies in 
 Name             : Spitfire (desc=Offensive) (id=397626) [Spell Family (227)] 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Duration         : 7 seconds
 Cooldown         : 14 seconds
@@ -173414,6 +173519,7 @@ Tooltip          : Continuously dealing Fire damage every $t1 sec to enemies in 
 Name             : Spitfire (desc=Offensive) (id=397627) [Spell Family (227)] 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 90 degrees
 GCD              : 1 seconds
 Duration         : 8 seconds
 Cooldown         : 12 seconds
@@ -173436,6 +173542,7 @@ Name             : Spitfire (desc=Offensive) (id=397628) [Spell Family (227)]
 School           : Fire
 Spell Type       : Magic
 Spell Level      : 29
+Cone Angle       : 90 degrees
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 10 seconds
@@ -173455,6 +173562,7 @@ Name             : Spitfire (desc=Offensive) (id=397629) [Spell Family (227)]
 School           : Fire
 Spell Type       : Magic
 Spell Level      : 29
+Cone Angle       : 90 degrees
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 10 seconds
@@ -173474,6 +173582,7 @@ Name             : Spitfire (desc=Offensive) (id=397630) [Spell Family (227)]
 School           : Fire
 Spell Type       : Magic
 Spell Level      : 29
+Cone Angle       : 90 degrees
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 10 seconds
@@ -174066,6 +174175,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 35 yards
 Max Targets      : 8
+Cone Angle       : 45 degrees
 Triggered By     : Shadow Barrage (397673)
 Family Flags     : 14
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
@@ -174101,6 +174211,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 35 yards
 Max Targets      : 8
+Cone Angle       : 45 degrees
 Triggered By     : Shadow Barrage (397675)
 Family Flags     : 14
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
@@ -174136,6 +174247,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 35 yards
 Max Targets      : 8
+Cone Angle       : 45 degrees
 Triggered By     : Shadow Barrage (397677)
 Family Flags     : 14
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
@@ -174984,6 +175096,7 @@ Name             : Fists of Earthen Fury (desc=Offensive) (id=398379) [Spell Fam
 School           : Nature
 Spell Type       : Melee
 Max Targets      : 6
+Cone Angle       : 60 degrees
 Triggered By     : Fists of Earthen Fury (398378)
 Family Flags     : 9
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Treat as Area Effect (175), Allow Class Ability Procs (416)
@@ -174998,6 +175111,7 @@ Name             : Fists of Earthen Fury (desc=Offensive) (id=398382) [Spell Fam
 School           : Nature
 Spell Type       : Melee
 Max Targets      : 6
+Cone Angle       : 60 degrees
 Triggered By     : Fists of Earthen Fury (398383)
 Family Flags     : 9
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Treat as Area Effect (175), Allow Class Ability Procs (416)
@@ -175054,6 +175168,7 @@ Name             : Fists of Earthen Fury (desc=Offensive) (id=398390) [Spell Fam
 School           : Nature
 Spell Type       : Melee
 Max Targets      : 6
+Cone Angle       : 60 degrees
 Triggered By     : Fists of Earthen Fury (398389)
 Family Flags     : 9
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Treat as Area Effect (175), Allow Class Ability Procs (416)
@@ -177236,6 +177351,7 @@ Description      : $@spelldesc402931
 Name             : Searing Smokey Stone (id=403257) 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 70 degrees
 Labels           : 2513
                  : 2521
                  : 2522
@@ -177302,6 +177418,7 @@ Description      : $@spelldesc402931
 Name             : Chaotic Smoke (id=403321) 
 School           : Chaos
 Spell Type       : Magic
+Cone Angle       : 70 degrees
 Labels           : 2513
                  : 2514
                  : 2522
@@ -180507,6 +180624,7 @@ Tooltip          : Suffering $w1 Nature damage.
 Name             : Heatbound Release (id=407512) 
 School           : Fire
 Spell Type       : Magic
+Cone Angle       : 60 degrees
 Cooldown         : 90 seconds
 Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
@@ -181184,6 +181302,7 @@ Name             : Djaruun, Pillar of the Elder Flame (id=408836)
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 110 degrees
 Triggered By     : Seething Rage (408835)
 Attributes       : Always AOE Line of Sight (186), Aura Points On Client (268), Area Effects Use Target Radius (328), Do Not Display Cast Time (441)
 Effects          :
@@ -183359,6 +183478,7 @@ Name             : Rage of Fyr'alath (id=417134)
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 50 yards
+Cone Angle       : 60 degrees
 Attributes       : Track Target in Cast (Player Only) (22), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1088505)  : School Damage (2): shadowflame | Scaling Class: Replace Primary (-8) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
@@ -185903,6 +186023,7 @@ Name             : Rage of Fyr'alath (id=424094)
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 50 yards
+Cone Angle       : 60 degrees
 Attributes       : Track Target in Cast (Player Only) (22), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1100542)  : School Damage (2): shadowflame | Scaling Class: Replace Primary (-8) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
@@ -187856,6 +187977,7 @@ Name             : Twisted Blade (id=427430)
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 4.5 yards
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1106864)  : School Damage (2): shadowflame
@@ -189726,6 +189848,7 @@ Name             : Searing Axe (id=432493)
 School           : Flamestrike
 Spell Type       : None
 Range            : 20 yards
+Cone Angle       : 55 degrees
 Cast Time        : 0.8 seconds
 Triggered By     : Searing Axe (432490)
 Attributes       : No Active Defense (21), Can't Crit (93), Do Not Display Range (126), No Cast Log (128), Force Display Castbar (155), Prevent Client Cast Cancel (350), Do Not Display Cast Time (441)
@@ -190234,6 +190357,7 @@ Name             : Searing Axe (id=432751)
 School           : Flamestrike
 Spell Type       : None
 Range            : 20 yards
+Cone Angle       : 55 degrees
 Cast Time        : 0.8 seconds
 Triggered By     : Searing Axe (432752)
 Attributes       : No Active Defense (21), Can't Crit (93), Do Not Display Range (126), No Cast Log (128), Force Display Castbar (155), Prevent Client Cast Cancel (350), Do Not Display Cast Time (441)
@@ -190271,6 +190395,7 @@ Name             : Searing Axe (id=432753)
 School           : Flamestrike
 Spell Type       : None
 Range            : 20 yards
+Cone Angle       : 55 degrees
 Cast Time        : 0.8 seconds
 Triggered By     : Searing Axe (432754)
 Attributes       : No Active Defense (21), Can't Crit (93), Do Not Display Range (126), No Cast Log (128), Force Display Castbar (155), Prevent Client Cast Cancel (350), Do Not Display Cast Time (441)
@@ -190308,6 +190433,7 @@ Name             : Searing Axe (id=432755)
 School           : Flamestrike
 Spell Type       : None
 Range            : 20 yards
+Cone Angle       : 55 degrees
 Cast Time        : 0.8 seconds
 Triggered By     : Searing Axe (432756)
 Attributes       : No Active Defense (21), Can't Crit (93), Do Not Display Range (126), No Cast Log (128), Force Display Castbar (155), Prevent Client Cast Cancel (350), Do Not Display Cast Time (441)
@@ -192088,6 +192214,7 @@ Name             : Star Bomb (desc=Offensive) (id=434880)
 School           : Physical
 Spell Type       : None
 Range            : 20 yards
+Line Width       : 40 yards
 GCD              : 1 seconds
 Cooldown         : 16 seconds
 Category         : 2240 (Type 0x0)
@@ -192309,6 +192436,7 @@ Name             : Star Bomb (desc=Offensive) (id=435030)
 School           : Physical
 Spell Type       : None
 Range            : 20 yards
+Line Width       : 40 yards
 GCD              : 1 seconds
 Cooldown         : 14 seconds
 Category         : 2240 (Type 0x0)
@@ -192330,6 +192458,7 @@ Name             : Star Bomb (desc=Offensive) (id=435032)
 School           : Physical
 Spell Type       : None
 Range            : 20 yards
+Line Width       : 40 yards
 GCD              : 1 seconds
 Cooldown         : 12 seconds
 Category         : 2240 (Type 0x0)
@@ -192363,6 +192492,7 @@ Name             : Star Bomb (desc=Offensive) (id=435034)
 School           : Physical
 Spell Type       : None
 Range            : 20 yards
+Line Width       : 40 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Category         : 2240 (Type 0x0)
@@ -193007,6 +193137,7 @@ Description      : Spells and abilities have a chance to unearth a Colourful Fun
 Name             : Silken Chain Weaver (id=435482) 
 School           : Physical
 Spell Type       : Magic
+Cone Angle       : 75 degrees
 Duration         : 15 seconds
 Cooldown         : 60 seconds
 Category         : 1141 (Type 0x0)
@@ -193698,6 +193829,7 @@ Name             : Toxic Smackerel (desc=Offensive) (id=436254)
 School           : Nature
 Spell Type       : None
 Range            : 15 yards
+Cone Angle       : 55 degrees
 Cast Time        : 0.5 seconds
 GCD              : 1 seconds
 Cooldown         : 7 seconds
@@ -193746,6 +193878,7 @@ Name             : Toxic Smackerel (desc=Offensive) (id=436308)
 School           : Nature
 Spell Type       : None
 Range            : 15 yards
+Cone Angle       : 55 degrees
 Cast Time        : 0.5 seconds
 GCD              : 1 seconds
 Cooldown         : 6.5 seconds
@@ -193780,6 +193913,7 @@ Name             : Toxic Smackerel (desc=Offensive) (id=436310)
 School           : Nature
 Spell Type       : None
 Range            : 15 yards
+Cone Angle       : 55 degrees
 Cast Time        : 0.5 seconds
 GCD              : 1 seconds
 Cooldown         : 6 seconds
@@ -193815,6 +193949,7 @@ Name             : Toxic Smackerel (desc=Offensive) (id=436312)
 School           : Nature
 Spell Type       : None
 Range            : 10 yards
+Cone Angle       : 55 degrees
 Cast Time        : 0.5 seconds
 GCD              : 1 seconds
 Cooldown         : 5.5 seconds
@@ -194780,6 +194915,7 @@ Name             : Hunting Scope (id=439348)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
+Line Width       : 3 yards
 Triggered By     : Hunting Scope (445598), Hunting Scope (459027), Hunting Scope (459032), Hunting Scope (459037)
 Attributes       : No Aura Icon (60), Do Not Display Range (126), Allow Cast While Casting (135), Always Line of Sight (185), Always AOE Line of Sight (186), No Aura Log (202), Aura Points On Client (268), AI Face Target (283), Allow Cast While Channeling (308), Area Effects Use Target Radius (328)
 Effects          :
@@ -196459,6 +196595,7 @@ Name             : Storm Archon (id=442434)
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
+Line Width       : 5 yards
 Cast Time        : 0.75 seconds
 Triggered By     : Storm Archon (442445)
 Attributes       : No Cast Log (128), Prevent Client Cast Cancel (350)
@@ -196561,6 +196698,7 @@ Name             : Storm Archon (id=442551)
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
+Line Width       : 5 yards
 Cast Time        : 0.75 seconds
 Triggered By     : Storm Archon (442594)
 Attributes       : No Cast Log (128), Prevent Client Cast Cancel (350)
@@ -196625,6 +196763,7 @@ Name             : Storm Archon (id=442599)
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
+Line Width       : 5 yards
 Cast Time        : 1 seconds
 Triggered By     : Storm Archon (442598)
 Attributes       : No Cast Log (128), Prevent Client Cast Cancel (350)
@@ -196756,6 +196895,7 @@ Name             : Storm Archon (id=442821)
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
+Line Width       : 5 yards
 Cast Time        : 0.75 seconds
 Triggered By     : Storm Archon (442819)
 Attributes       : No Cast Log (128), Prevent Client Cast Cancel (350)
@@ -196787,6 +196927,7 @@ Name             : Storm Archon (id=442825)
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
+Line Width       : 5 yards
 Cast Time        : 0.75 seconds
 Triggered By     : Storm Archon (442826)
 Attributes       : No Cast Log (128), Prevent Client Cast Cancel (350)
@@ -196847,6 +196988,7 @@ Name             : Storm Archon (id=442831)
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
+Line Width       : 5 yards
 Cast Time        : 1 seconds
 Triggered By     : Storm Archon (442832)
 Attributes       : No Cast Log (128), Prevent Client Cast Cancel (350)
@@ -196873,6 +197015,7 @@ Name             : Storm Archon (id=442834)
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
+Line Width       : 5 yards
 Cast Time        : 0.75 seconds
 Triggered By     : Storm Archon (442835)
 Attributes       : No Cast Log (128), Prevent Client Cast Cancel (350)
@@ -196922,6 +197065,7 @@ Name             : Storm Archon (id=442839)
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
+Line Width       : 5 yards
 Cast Time        : 0.75 seconds
 Triggered By     : Storm Archon (442840)
 Attributes       : No Cast Log (128), Prevent Client Cast Cancel (350)
@@ -196970,6 +197114,7 @@ Name             : Storm Archon (id=442843)
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
+Line Width       : 5 yards
 Cast Time        : 1 seconds
 Triggered By     : Storm Archon (442844)
 Attributes       : No Cast Log (128), Prevent Client Cast Cancel (350)
@@ -197027,6 +197172,7 @@ Name             : Storm Archon (id=442856)
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
+Line Width       : 5 yards
 Cast Time        : 0.75 seconds
 Triggered By     : Storm Archon (442857)
 Attributes       : No Cast Log (128), Prevent Client Cast Cancel (350)
@@ -197076,6 +197222,7 @@ Name             : Storm Archon (id=442861)
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
+Line Width       : 5 yards
 Cast Time        : 0.75 seconds
 Triggered By     : Storm Archon (442862)
 Attributes       : No Cast Log (128), Prevent Client Cast Cancel (350)
@@ -197124,6 +197271,7 @@ Name             : Storm Archon (id=442866)
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
+Line Width       : 5 yards
 Cast Time        : 1 seconds
 Triggered By     : Storm Archon (442867)
 Attributes       : No Cast Log (128), Prevent Client Cast Cancel (350)
@@ -198698,6 +198846,7 @@ Effects          :
 Name             : Lamplighter Firearm (id=444274) 
 School           : Fire
 Spell Type       : None
+Cone Angle       : 60 degrees
 Duration         : 5 seconds
 Attributes       : Is Self Channelled (38), Ignore Line of Sight (66), Ignore Caster & Target Restrictions (124), Extra Initial Period (169)
 Aura Interrupt   : Action (2), Moving (3)
@@ -198734,6 +198883,7 @@ Name             : Lamplighter Firearm (id=444277) [Hidden]
 School           : Fire
 Spell Type       : None
 Range            : 10 yards
+Cone Angle       : 60 degrees
 Triggered By     : Lamplighter Firearm (444274)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Ignore Line of Sight (66), Can Assist Immune PC (195), Can Attack ImmunePC (287), Allow Cast While Channeling (308)
 Effects          :
@@ -200329,6 +200479,7 @@ Description      : Create a piece of Forged Gladiator's equipment appropriate fo
 Name             : Surekian Barrage (id=445475) 
 School           : Shadow
 Spell Type       : Magic
+Cone Angle       : 45 degrees
 Velocity         : 40 yards/sec
 Labels           : 292
                  : 3959: Item Effects
@@ -201345,6 +201496,7 @@ Name             : Bubbling Wax (id=448001)
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
+Cone Angle       : 100 degrees
 Triggered By     : Bubbling Wax (448000)
 Attributes       : Aura Points On Client (268), Area Effects Use Target Radius (328), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
@@ -201374,6 +201526,7 @@ Name             : Surekian Decimation (id=448090)
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 2.5 yards
 Labels           : 292
                  : 3959: Item Effects
 Attributes       : Always Line of Sight (185), Area Effects Use Target Radius (328)
@@ -201995,6 +202148,7 @@ Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a
 Name             : Ravenous Honey Buzzer (id=448909) 
 School           : Fire
 Spell Type       : Magic
+Line Width       : 3 yards
 Labels           : 3959: Item Effects
 Triggered By     : Ravenous Honey Buzzer (448903)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow Cast While Channeling (308), Scales with Casting Item's Level (354)
@@ -203705,6 +203859,7 @@ Name             : Vx's Frost Slash (id=450158)
 School           : Frost
 Spell Type       : Magic
 Range            : 50000 yards
+Line Width       : 7 yards
 Labels           : 292
                  : 3959: Item Effects
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Always Line of Sight (185), Always AOE Line of Sight (186), No Aura Log (202), Aura Points On Client (268), Area Effects Use Target Radius (328)
@@ -205589,6 +205744,7 @@ Name             : Thundering Bolt (id=452445)
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 6 yards
 Velocity         : 40 yards/sec
 Labels           : 3959: Item Effects
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Area Effects Use Target Radius (328)
@@ -208724,6 +208880,7 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Category         : 38 (Type 0x0)
+Labels           : 2857
 Triggered By     : Algari Weaverline (455832), Algari Seekerthread (456126), Algari Anglerthread (456127)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Not a Proc (105), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446), Unknown (452)
 Effects          :
@@ -208795,6 +208952,7 @@ Name             : Voltaic Stormstrike (id=455910)
 School           : Stormstrike
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 4 yards
 Labels           : 3959: Item Effects
 Effects          :
 #1 (id=1159733)  : School Damage (2): stormstrike | Attributes: Always AOE Line of Sight (5), Area Effects Use Target Radius (17)
@@ -209760,6 +209918,7 @@ Tooltip          : $@spelldesc455602
 Name             : Ravenous Honey Buzzer (id=456830) [Hidden] 
 School           : Fire
 Spell Type       : Magic
+Line Width       : 3 yards
 Labels           : 3959: Item Effects
 Triggered By     : Ravenous Honey Buzzer (448903)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow Cast While Channeling (308), Scales with Casting Item's Level (354)
@@ -223432,6 +223591,7 @@ Name             : Pacifire (id=1215086)
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
+Cone Angle       : 90 degrees
 Triggered By     : Pacifire-Spitter (1215139)
 Effects          :
 #1 (id=1197793)  : School Damage (2): fire
@@ -236614,13 +236774,14 @@ Effects          :
 Description      : $@spelldesc1235159
 
 Name             : Midnight Perception (id=1235216) 
+Hotfixed         : Cooldown (0 -> 1000), GCD (1500 -> 0)
 School           : Physical
 Spell Type       : None
 Range            : 12 - 15 yards
-GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Min Travel Time  : 1 seconds
 Duration         : 30 seconds
+Cooldown         : 1 seconds
 Labels           : 4132
 Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), Aura Is Buff (140), Aura Points On Client (268)
 Effects          :
@@ -236859,7 +237020,7 @@ Proc Chance      : 101%
 Attributes       : Retain Item Cast (95), Aura Is Buff (140), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353), Scales with Casting Item's Level (354), Unknown (508)
 Effects          :
 #1 (id=1231028)  : Apply Aura (6) | Absorb Damage (69) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 13805.32 (coefficient=108.0199) | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 38886.28 (coefficient=304.2662) | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=1231039)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -239361,13 +239522,14 @@ Effects          :
 Tooltip          : Taking increased damage from $@spellname1237158.
 
 Name             : Chum (id=1237942) 
+Hotfixed         : Cooldown (0 -> 1000), GCD (1500 -> 0)
 School           : Physical
 Spell Type       : None
 Range            : 12 - 15 yards
-GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Min Travel Time  : 1 seconds
 Duration         : 30 seconds
+Cooldown         : 1 seconds
 Labels           : 4132
 Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), Aura Is Buff (140), Aura Points On Client (268)
 Effects          :
@@ -239970,6 +240132,7 @@ Name             : Naazindhri's Mystic Lash (id=1239809) [Hidden]
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 2 yards
 Labels           : 292
                  : 3959: Item Effects
 Triggered By     : Naazindhri's Mystic Lash (1235387)
@@ -241488,6 +241651,7 @@ Description      : $@spelldesc1243118
 Name             : Warplance Strike (id=1243411) 
 School           : Arcane
 Spell Type       : Magic
+Cone Angle       : 75 degrees
 Cooldown         : 120 seconds
 Labels           : 3959: Item Effects
 Attributes       : Scales with Casting Item's Level (354)
@@ -244478,7 +244642,7 @@ Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5748
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1252123)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -244514,7 +244678,7 @@ Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5741
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1252127)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -245276,26 +245440,6 @@ Effects          :
 #1 (id=1255682)  : Create Item (157)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 139971 | Target: Self (1)
 Description      : Gut the Shimmersiren. You monster.
-
-Name             : Chum (id=1251229) 
-School           : Physical
-Spell Type       : None
-Range            : 12 - 15 yards
-GCD              : 1.5 seconds
-Velocity         : 20 yards/sec
-Min Travel Time  : 1 seconds
-Duration         : 30 seconds
-Labels           : 4132
-Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), Aura Is Buff (140), Aura Points On Client (268)
-Effects          :
-#1 (id=1255683)  : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | Target: at Fishing Target (39)
-#2 (id=1255684)  : Apply Aura (6) | Enable Profession Effects (511)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 323 | Target: Self (1)
-Description      : Throw the fish back into the water to gain $s2 Midnight Perception for $d.
-
-Throwing multiple fish can extend this buff up to $M1 min.
-Tooltip          : Midnight Perception increased by $w2.
 
 Name             : Add Keystone Affix: Tyrannically Fortified (id=1251259) 
 School           : Physical
@@ -246428,6 +246572,7 @@ Name             : Latch's Crooked Hook (id=1254193)
 School           : Physical
 Spell Type       : Melee
 Range            : 20 yards
+Line Width       : 7 yards
 Velocity         : 30 yards/sec
 Duration         : 0.7 seconds
 Cooldown         : 90 seconds
@@ -246754,14 +246899,14 @@ Name             : Tangle of Vibrant Vines (id=1255278) [Passive]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Real PPM         : 1.5
+Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1262075)  : Apply Aura (6) | Proc Trigger Spell (42): Tangle of Vibrant Vines
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1255296 | Target: Self (1)
 #2 (id=1274848)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 2721.62 (coefficient=21.29535) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2366.807 (coefficient=18.51911) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1274849)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 38786.05 (coefficient=303.482) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your spells and abilities have a chance to unleash vibrant vines that surge toward your target. Enemies struck take ${$s2*5} Nature damage over $1255357d. Allies are wrapped in protective flora, absorbing up to $s3 damage over $1255367d.
@@ -246958,20 +247103,22 @@ Effects          :
 Tooltip          : Critical Strike decreased by $w1.
 
 Name             : Emberwing Burn (id=1255856) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1263043)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
 Tooltip          : Mastery decreased by $w1.
 
 Name             : Emberwing Burn (id=1255857) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Attributes       : Aura Is Debuff (26), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1263044)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
@@ -248040,7 +248187,7 @@ Name             : Sealed Chaos Urn (id=1259443)
 School           : Physical
 Spell Type       : Magic
 Duration         : 5 seconds
-Mechanic         : Horrify
+Mechanic         : Flee
 Attributes       : Aura Is Debuff (26), Ignore Line of Sight (66), No Deflect (409)
 Effects          :
 #2 (id=1268562)  : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -249941,7 +250088,7 @@ Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5748
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1272540)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -249981,7 +250128,7 @@ Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5748
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1272554)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -250021,7 +250168,7 @@ Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5748
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Aura Icon (60), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1272561)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -250057,7 +250204,7 @@ Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5741
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1272592)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -250105,7 +250252,7 @@ Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5741
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1272606)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -250153,7 +250300,7 @@ Range            : 50000 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 5741
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1272619)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -252510,7 +252657,8 @@ Labels           : 4132
 Attributes       : No Aura Cancel (31), Aura Points On Client (268), Visible only to caster (conversations only) (343)
 Effects          :
 #2 (id=1281336)  : Apply Aura (6) | Enable Profession Effects (511)
-                   Base Value: 150 | Scaled Value: 150 | Misc Value: 397 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: 323 | Target: Self (1)
+Hotfixed         : Misc Value (397 -> 323)
 Tooltip          : Midnight Fishing Skill increased by $w1.
 
 Midnight Fishing Perception increased by $w2.
@@ -253214,6 +253362,7 @@ Spell Type       : Melee
 Max Scaling Level: 90
 Min Scaling Level: 90
 Range            : 100 yards
+Cone Angle       : 120 degrees
 Triggered By     : B1P, Scorcher of Souls (1246309)
 Attributes       : No Active Defense (21), Area Effects Use Target Radius (328)
 Effects          :

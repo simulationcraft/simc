@@ -52,6 +52,16 @@ enum stealth_type_e
 struct fatebound_t
 {
   enum coinflip_e { HEADS, TAILS, EDGE };
+  static const char* coinflip_string( coinflip_e coinflip )
+  {
+    switch ( coinflip )
+    {
+      case HEADS: return "heads";
+      case TAILS: return "tails";
+      case EDGE:  return "edge";
+      default:    return "unknown";
+    }
+  }
 };
 
 namespace actions
@@ -466,7 +476,9 @@ public:
     cooldown_t* unseen_blade_icd;
     cooldown_t* vanish;
 
+    target_specific_cooldown_t* cloud_cover;
     target_specific_cooldown_t* weaponmaster;
+    
   } cooldowns;
 
   // Gains
@@ -547,7 +559,8 @@ public:
     const spell_data_t* vanish_buff;
 
     // Hero Spells
-    const spell_data_t* cloud_cover_distract;
+    const spell_data_t* cloud_cover_buff;
+    const spell_data_t* cloud_cover_aura;
     const spell_data_t* coup_de_grace;
     const spell_data_t* coup_de_grace_damage_1;
     const spell_data_t* coup_de_grace_damage_2;
@@ -807,6 +820,7 @@ public:
       player_talent_t systemic_failure;
       player_talent_t venomous_wounds;
       player_talent_t amplifying_poison;
+      player_talent_t negotiable_contract;
       
       player_talent_t blindside;
       player_talent_t kingsbane;
@@ -1089,6 +1103,7 @@ public:
     int initial_supercharged_cp = 0;
     bool rogue_ready_trigger = true;
     bool priority_rotation = false;
+    double the_first_dance_trigger_rate = 0.75;
   } options;
 
   rogue_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
@@ -1142,6 +1157,7 @@ public:
     cooldowns.unseen_blade_icd          = get_cooldown( "unseen_blade_icd" );
     cooldowns.vanish                    = get_cooldown( "vanish" );
 
+    cooldowns.cloud_cover               = get_target_specific_cooldown( "cloud_cover" );
     cooldowns.weaponmaster              = get_target_specific_cooldown( "weaponmaster" );
 
     resource_regeneration = regen_type::DYNAMIC;
@@ -2018,15 +2034,22 @@ public:
     const double base_damage = unmitigated ? s->result_total : s->result_amount;
     // Target multipliers may not replicate to secondary targets, which requires reversing them out
     const double target_da_multiplier = ( unmitigated && reverse_target_da_multiplier ) ? ( 1.0 / s->target_da_multiplier ) : 1.0;
-    const double amount = base_damage * multiplier * target_da_multiplier;
+    // Target crit damage taken multipliers are baked into the result_crit_bonus and result_total
+    // Since it's not currently in the action state, fetch this directly from the action to reverse out
+    // Full value in result_total is multiplied by 1.0 + result_crit_bonus so need to factor that out
+    const double target_crit_bonus_adjustment = ( unmitigated && reverse_target_da_multiplier && s->result_crit_bonus > 0 ) ?
+      ( 1.0 + s->result_crit_bonus * ( 1.0 / s->action->composite_target_crit_damage_bonus_multiplier( s->target ) ) ) / ( 1.0 + s->result_crit_bonus ) : 1.0;
+
+    const double amount = base_damage * multiplier * target_da_multiplier * target_crit_bonus_adjustment;
 
     if ( amount <= 0 )
       return;
 
     player_t* primary_target = override_target ? override_target : s->target;
 
-    p()->sim->print_debug( "{} triggers residual {} for {:.2f} damage ({:.2f} * {} * {:.3f}) on {}",
-                           *p(), *this, amount, base_damage, multiplier, target_da_multiplier, *primary_target );
+    p()->sim->print_log( "{} triggers residual {} for {:.2f} damage ({:.2f} * {:.2f} * {:.3f} * {:.3f}) on {}",
+                         *p(), *this, amount, base_damage, multiplier, target_da_multiplier,
+                         target_crit_bonus_adjustment, *primary_target );
 
     if ( !ab::callbacks || !trigger_event )
     {
@@ -2166,11 +2189,10 @@ public:
 
   double parry_chance( double exp, player_t* target ) const override
   {
+    if ( td( target )->debuffs.fazed->up() )
+      return 0.0;
+
     auto chance = ab::parry_chance(exp, target);
-    if ( chance > 0.0 && td( target )->debuffs.fazed->up() )
-    {
-      chance += td( target )->debuffs.fazed->data().effectN( 2 ).percent();
-    }
     return std::max(0.0, chance);
   }
 
@@ -2200,6 +2222,7 @@ public:
   void trigger_fatal_flourish( const action_state_t* );
   void trigger_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay = timespan_t::zero() );
   void trigger_fatebound_edge_case( const action_state_t* state );
+  void trigger_fazed( const action_state_t* state );
   void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
   void trigger_hand_of_fate( const action_state_t*, bool biased = false, timespan_t current_delay = timespan_t::zero() );
   void trigger_keep_it_rolling();
@@ -2208,6 +2231,7 @@ public:
   void trigger_master_of_shadows();
   void trigger_nimble_flurry( const action_state_t* state );
   void trigger_opportunity( const action_state_t*, rogue_attack_t* action, double modifier = 1.0 );
+  void trigger_palmed_bullets( const action_state_t* state );
   void trigger_poison_bomb( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_restless_blades( const action_state_t* );
@@ -2470,7 +2494,7 @@ public:
 
     if ( affected_by.fazed_damage )
     {
-      m *= tdata->debuffs.fazed->value_direct();
+      m *= tdata->debuffs.fazed->stack_value_direct();
     }
 
     return m;
@@ -2482,7 +2506,7 @@ public:
 
     if ( affected_by.fazed_crit_chance && td( target )->debuffs.fazed->check() )
     {
-      c += td( target )->debuffs.fazed->value_crit_chance();
+      c += td( target )->debuffs.fazed->stack_value_crit_chance();
     }
 
     return c;
@@ -2538,9 +2562,9 @@ public:
   {
     double cm = ab::composite_target_crit_damage_bonus_multiplier( target );
 
-    if ( affected_by.fazed_crit_damage && td( target )->debuffs.fazed->check() )
+    if ( affected_by.fazed_crit_damage )
     {
-      cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent();
+      cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent() * td( target )->debuffs.fazed->check();
     }
 
     return cm;
@@ -3353,7 +3377,7 @@ struct melee_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_target_multiplier( target );
 
-    m *= td( target )->debuffs.fazed->value_auto_attack();
+    m *= td( target )->debuffs.fazed->stack_value_auto_attack();
 
     return m;
   }
@@ -3489,6 +3513,7 @@ struct adrenaline_rush_t : public rogue_spell_t
 
     trigger_fatebound_edge_case( execute_state );
     trigger_supercharger();
+    p()->buffs.cloud_cover->trigger();
   }
 };
 
@@ -3702,17 +3727,7 @@ struct dispatch_t: public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
-
-    if ( result_is_hit( state->result ) )
-    {
-      const int cp_spend = cast_state( state )->get_combo_points();
-
-      if ( p()->talent.outlaw.gravedigger_3->ok() && rng().roll( p()->talent.outlaw.gravedigger_3->effectN( 1 ).percent() * cp_spend ) )
-      {
-        p()->buffs.palmed_bullets->trigger();
-      }
-    }
-
+    trigger_palmed_bullets( state );
     trigger_scoundrel_strike( state, p()->active.scoundrel_strike.dispatch );
   }
 
@@ -3813,6 +3828,7 @@ struct blade_flurry_attack_t : public rogue_attack_t
     aoe = static_cast<int>( p->spec.blade_flurry->effectN( 3 ).base_value() +
                             p->talent.outlaw.dancing_steel->effectN( 3 ).base_value() );
     target_filter_callback = secondary_targets_only();
+    affected_by.fazed_damage = true; // Not in spell data, scripted fix on 2025-04-30
   }
 
   void init() override
@@ -3852,6 +3868,17 @@ struct blade_flurry_t : public rogue_attack_t
       }
 
       return m;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      rogue_attack_t::impact( state );
+
+      // 2026-04-10 -- Whirl of Blades is triggered by Blade Flurry cast damage only with Deft talented
+      if ( p()->bugs && p()->talent.outlaw.deft_maneuvers->ok() ) 
+      {
+        p()->buffs.mid1_outlaw_4pc->trigger();
+      }
     }
 
     bool procs_main_gauche() const override
@@ -3929,6 +3956,11 @@ struct blade_rush_t : public rogue_attack_t
     {
       rogue_attack_t::execute();
       p()->buffs.blade_rush->trigger();
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      rogue_attack_t::impact( state );
       p()->buffs.mid1_outlaw_4pc->trigger();
     }
 
@@ -4087,16 +4119,10 @@ struct detection_t : public rogue_spell_t
 struct distract_t : public rogue_spell_t
 {
   distract_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_spell_t( name, p, p->talent.trickster.cloud_cover->ok() ? p->spell.cloud_cover_distract : p->spell.distract, options_str )
+    rogue_spell_t( name, p, p->spell.distract, options_str)
   {
     harmful = false;
     set_target( p );
-  }
-
-  void execute() override
-  {
-    rogue_spell_t::execute();
-    p()->buffs.cloud_cover->trigger();
   }
 };
 
@@ -4543,7 +4569,7 @@ struct killing_spree_tick_t : public rogue_attack_t
 
     if ( p()->talent.trickster.devious_distractions->ok() && weapon != nullptr && weapon->slot == SLOT_MAIN_HAND )
     {
-      p()->get_target_data( state->target )->debuffs.fazed->trigger();
+      trigger_fazed( state );
     }
   }
 
@@ -5220,7 +5246,7 @@ struct secret_technique_t : public rogue_attack_t
 
       if ( p()->talent.trickster.devious_distractions->ok() )
       {
-        p()->get_target_data( state->target )->debuffs.fazed->trigger();
+        trigger_fazed( state );
       }
     }
 
@@ -5348,6 +5374,8 @@ struct shadow_blades_t : public rogue_spell_t
       p()->cooldowns.shadow_blades->adjust( -precombat_seconds, false );
       p()->buffs.shadow_blades->extend_duration( -precombat_seconds );
     }
+
+    p()->buffs.cloud_cover->trigger();
   }
 };
 
@@ -5375,8 +5403,8 @@ struct shadow_dance_t : public rogue_spell_t
 
   bool ready() override
   {
-    // Cannot dance during stealth. Vanish works.
-    if ( p()->buffs.stealth->check() )
+    // Cannot dance during basic stealth and cannot refresh. Vanish works.
+    if ( p()->buffs.stealth->check() || p()->buffs.shadow_dance->check() )
       return false;
 
     return rogue_spell_t::ready();
@@ -6366,6 +6394,10 @@ struct fatebound_coin_tails_t : public rogue_attack_t
 
   bool procs_poison() const override
   { return true; }
+
+  // 2026-04-26 -- Logs indicate that tails crits currently trigger Seal Fate
+  bool procs_seal_fate() const override
+  { return p()->bugs; }
 };
 
 // Trickster ================================================================
@@ -6386,7 +6418,8 @@ struct unseen_blade_t : public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
-    p()->get_target_data( state->target )->debuffs.fazed->trigger();
+
+    trigger_fazed( state );
 
     if ( p()->talent.trickster.flawless_form->ok() )
     {
@@ -6573,6 +6606,7 @@ struct coup_de_grace_t : public rogue_attack_t
 
     trigger_restless_blades( execute_state );
     trigger_cut_to_the_chase( execute_state );
+    trigger_palmed_bullets( execute_state );
     trigger_scoundrel_strike( execute_state, p()->active.scoundrel_strike.coup_de_grace );
 
     p()->buffs.escalating_blade->expire();
@@ -7332,8 +7366,6 @@ struct roll_the_bones_t : public buff_t
     {
       // RtB uses hardcoded probabilities even after the redesign
       // Current beta testing appears to show 55%, 30%, 10%, 5% for the four states
-      // Loaded Dice appears to increase the rolled tier by one
-      // Sleight of Hand is currently TBD, thought to mean a 20% increased chance to be elevated currently
       rogue->options.fixed_rtb_odds = { 55.0, 30.0, 10.0, 5.0 };
       rogue->sim->print_log( "{} {} odds set to {:.1f}% / {:.1f}% / {:.1f}% / {:.1f}% buffs",
                              *rogue, *this, rogue->options.fixed_rtb_odds[ 0 ], rogue->options.fixed_rtb_odds[ 1 ],
@@ -7360,12 +7392,16 @@ struct roll_the_bones_t : public buff_t
         }
       }
 
-      if ( loaded_dice )
+      // Sleight of Hand appears to be a chance to elevate the rolled state by 1
+      // However, it cannot elevate Triple Threat into Jackpot
+      if ( rogue->talent.outlaw.sleight_of_hand->ok() && num_buffs < 3 && 
+           rogue->rng().roll( rogue->talent.outlaw.sleight_of_hand->effectN( 1 ).percent() ) )
       {
         num_buffs += 1;
       }
 
-      if ( rogue->talent.outlaw.sleight_of_hand->ok() && rogue->rng().roll( rogue->talent.outlaw.sleight_of_hand->effectN( 1 ).percent() ) )
+      // Loaded Dice always elevates the rolled state by 1 and happens after Sleight
+      if ( loaded_dice )
       {
         num_buffs += 1;
       }
@@ -8033,7 +8069,8 @@ template <typename Base>
 void actions::rogue_action_t<Base>::trigger_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay )
 {
   auto coin_target = state->target->is_enemy() ? state->target : p()->target;
-  make_event( *p()->sim, delay, [ this, coin_target, result ] {
+  make_event( *p()->sim, delay, [ this, coin_target, result, delay ] {
+    p()->sim->print_log( "{} triggered fatebound coinflip with result '{}' and {} delay", *p(), fatebound_t::coinflip_string( result ), delay );
     if ( result == fatebound_t::coinflip_e::HEADS || result == fatebound_t::coinflip_e::EDGE )
     {
       p()->buffs.fatebound_coin_heads->increment();
@@ -8051,7 +8088,8 @@ void actions::rogue_action_t<Base>::trigger_fatebound_coinflip( const action_sta
       }
       if ( result != fatebound_t::coinflip_e::EDGE )
       {
-        p()->buffs.fatebound_coin_heads->expire();
+        // 2026-04-26 -- Logs suggest that the first tails attack is calculated before this fades
+        p()->buffs.fatebound_coin_heads->expire( !ab::is_precombat ? 1_ms : 0_ms );
       }
     }
   } );
@@ -8081,6 +8119,40 @@ void actions::rogue_action_t<Base>::trigger_fatebound_edge_case( const action_st
     return;
 
   trigger_fatebound_coinflip( state, fatebound_t::coinflip_e::EDGE );
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_fazed( const action_state_t* state )
+{
+  if ( !p()->talent.trickster.unseen_blade->ok() )
+    return;
+
+  // The Cloud Cover aura dynamically increases the max stack of the debuff
+  // This only refreshes on application, allowing a higher stack to overhang unless refreshed
+  const int max_stacks = p()->spell.fazed_debuff->max_stacks() +
+    ( p()->buffs.cloud_cover->up() * as<int>( p()->spell.cloud_cover_aura->effectN( 2 ).base_value() ) );
+
+  rogue_td_t* tdata = td( state->target );
+  if ( tdata->debuffs.fazed->max_stack() != max_stacks )
+  {
+    if ( tdata->debuffs.fazed->check() > max_stacks )
+    {
+      tdata->debuffs.fazed->decrement( tdata->debuffs.fazed->check() - max_stacks );
+    }
+
+    tdata->debuffs.fazed->set_max_stack( max_stacks );      
+  }
+
+  if ( p()->buffs.cloud_cover->check() )
+  {
+    cooldown_t* tcd = p()->cooldowns.cloud_cover->get_cooldown( state->target );
+    if ( !tcd || tcd->down() )
+      return;
+
+    tcd->start();
+  }
+
+  tdata->debuffs.fazed->trigger();
 }
 
 template <typename Base>
@@ -8237,8 +8309,7 @@ void actions::rogue_action_t<Base>::trigger_scent_of_blood()
 
   if ( current_stacks != desired_stacks )
   {
-    p()->sim->print_log( "{} adjusting Scent of Blood stacks from {} to {}",
-                         *p(), current_stacks, desired_stacks );
+    p()->sim->print_log( "{} adjusting Scent of Blood stacks from {} to {}", *p(), current_stacks, desired_stacks );
   }
 
   if ( desired_stacks < current_stacks )
@@ -8304,17 +8375,18 @@ void actions::rogue_action_t<Base>::trigger_ancient_arts( const action_state_t* 
     if ( !p()->buffs.ancient_arts->check() )
       return;
 
-    const int current_deficit = as<int>( p()->consume_cp_max() - p()->current_cp() );
-    if ( current_deficit == 0 || p()->buffs.shadow_techniques->check() < current_deficit )
+    // TOCHECK -- Does this enforce the 5 stack criteria on the finisher or just buff application? Or both?
+    auto consume_stacks = std::min( p()->buffs.shadow_techniques->check(),
+                                    std::max( 0, as<int>( p()->consume_cp_max() - p()->current_cp() ) ) );
+    if ( consume_stacks == 0 )
       return;
     
-    trigger_combo_point_gain( current_deficit, p()->gains.shadow_techniques_ancient_arts );
-    p()->buffs.shadow_techniques->decrement( current_deficit );
+    trigger_combo_point_gain( consume_stacks, p()->gains.shadow_techniques_ancient_arts );
+    p()->buffs.shadow_techniques->decrement( consume_stacks );
 
-    // MIDNIGHT TOCHECK -- Assume this is intended to trigger off Ancient Arts 3 as well?
     if ( p()->talent.subtlety.ancient_arts_1->ok() )
     {
-      const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * current_deficit;
+      const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * consume_stacks;
       trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance, 500_ms );
     }
 
@@ -8347,7 +8419,7 @@ void actions::rogue_action_t<Base>::trigger_cloud_cover( const action_state_t* s
   if ( !p()->buffs.cloud_cover->check() )
     return;
 
-  p()->get_target_data( state->target )->debuffs.fazed->trigger();
+  trigger_fazed( state );
 }
 
 template <typename Base>
@@ -8517,6 +8589,23 @@ void actions::rogue_action_t<Base>::trigger_scoundrel_strike( const action_state
 }
 
 template <typename Base>
+void actions::rogue_action_t<Base>::trigger_palmed_bullets( const action_state_t* state )
+{
+  if ( !p()->talent.outlaw.gravedigger_3->ok() )
+    return;
+
+  if ( !ab::result_is_hit( state->result ) )
+    return;
+
+  const int cp_spend = cast_state( state )->get_combo_points();
+
+  if ( p()->rng().roll( p()->talent.outlaw.gravedigger_3->effectN( 1 ).percent() * cp_spend ) )
+  {
+    p()->buffs.palmed_bullets->trigger();
+  }
+}
+
+template <typename Base>
 void actions::rogue_action_t<Base>::trigger_supercharger()
 {
   if ( !p()->talent.rogue.supercharger->ok() )
@@ -8652,6 +8741,14 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.fazed->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
     return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds, not in spell data
   } );
+  // Set initial max stack to the max Cloud Cover stacks for stack_uptime tracking
+  // This will be resized dynamically in trigger_fazed()
+  if ( source->talent.trickster.cloud_cover->ok() )
+  {
+    const int max_stacks = source->spell.fazed_debuff->max_stacks() +
+      as<int>( source->spell.cloud_cover_aura->effectN( 2 ).base_value() );
+    debuffs.fazed->set_max_stack( max_stacks );
+  }
 
   // Type-Based Tracking for Accumulators
   bleeds = { dots.deathmark, dots.garrote, dots.internal_bleeding, dots.rupture, dots.mutilated_flesh };
@@ -8677,6 +8774,26 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
       {
         source->resource_gain( RESOURCE_ENERGY, source->spell.darkest_night_buff->effectN( 1 ).resource(), source->gains.darkest_night );
         source->buffs.darkest_night->trigger();
+      }
+    } );
+  }
+
+  // Negotiable Contract DoT Trigger
+  if ( source->talent.assassination.negotiable_contract->ok() )
+  {
+    target->register_on_demise_callback( source, [ this, source ]( player_t* target ) {
+      if ( dots.deathmark->is_ticking() )
+      {
+        for ( auto* t : source->sim->target_non_sleeping_list )
+        {
+          if ( !t->is_enemy() || t == target )
+            continue;
+
+          dots.deathmark->copy( t, DOT_COPY_START );
+          source->sim->print_log( "{} replicated {} on {} to {} with remaining duration of {}",
+                                  *source, *dots.deathmark, *target, *t, dots.deathmark->remains() );
+          break;
+        }
       }
     } );
   }
@@ -9660,6 +9777,7 @@ void rogue_t::init_spells()
   talent.assassination.kingsbane = find_talent_spell( talent_tree::SPECIALIZATION, "Kingsbane" );
   talent.assassination.lethal_dose = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Dose" );
   talent.assassination.motivated_murderer = find_talent_spell( talent_tree::SPECIALIZATION, "Motivated Murderer" );
+  talent.assassination.negotiable_contract = find_talent_spell( talent_tree::SPECIALIZATION, "Negotiable Contract" );
   talent.assassination.path_of_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Path of Blood" );
   talent.assassination.poison_bomb = find_talent_spell( talent_tree::SPECIALIZATION, "Poison Bomb" );
   talent.assassination.poisoners_drive = find_talent_spell( talent_tree::SPECIALIZATION, "Poisoner's Drive" );
@@ -9871,7 +9989,8 @@ void rogue_t::init_spells()
   spell.fatebound_lucky_coin_buff = talent.fatebound.lucky_coin->ok() ? find_spell( 1248971 ) : spell_data_t::not_found();
 
   // Trickster
-  spell.cloud_cover_distract = talent.trickster.cloud_cover->ok() ? find_spell( as<unsigned>( talent.trickster.cloud_cover->effectN( 1 ).base_value() ) ) : spell_data_t::not_found();
+  spell.cloud_cover_buff = talent.trickster.cloud_cover->ok() ? find_spell( 441587 ) : spell_data_t::not_found();
+  spell.cloud_cover_aura = talent.trickster.cloud_cover->ok() ? find_spell( 441640 ) : spell_data_t::not_found();
   spell.coup_de_grace = talent.trickster.coup_de_grace->ok() ? find_spell( 441776 ) : spell_data_t::not_found();
   spell.coup_de_grace_damage_1 = talent.trickster.coup_de_grace->ok() ? ( specialization() == ROGUE_SUBTLETY ? find_spell( 462241 ) : find_spell( 462140 ) ) : spell_data_t::not_found();
   spell.coup_de_grace_damage_2 = talent.trickster.coup_de_grace->ok() ? ( specialization() == ROGUE_SUBTLETY ? find_spell( 462242 ) : find_spell( 462239 ) ) : spell_data_t::not_found();
@@ -10591,7 +10710,15 @@ void rogue_t::create_buffs()
 
   // Trickster
 
-  buffs.cloud_cover = make_buff( this, "cloud_cover", spell.cloud_cover_distract );
+  buffs.cloud_cover = make_buff( this, "cloud_cover", spell.cloud_cover_buff );
+  if ( talent.trickster.cloud_cover->ok() )
+  {
+    timespan_t extra_duration = specialization() == ROGUE_OUTLAW ?
+      talent.trickster.cloud_cover->effectN( 1 ).time_value() :
+      talent.trickster.cloud_cover->effectN( 2 ).time_value();
+    buffs.cloud_cover->set_duration( spell.cloud_cover_buff->duration() + extra_duration );
+    cooldowns.cloud_cover->base_duration = 1_ms; // Prevent refresh spam
+  }
 
   // TOCHECK -- Find the proper buff spell someday? Still doesn't seem to exist...
   buffs.disorienting_strikes = make_buff( this, "disorienting_strikes", talent.trickster.disorienting_strikes );
@@ -10736,10 +10863,14 @@ void rogue_t::create_buffs()
 
   buffs.the_first_dance = make_buff( this, "the_first_dance", spec.the_first_dance_buff )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  // TODO -- Add register_on_combat_state_callback out of combat behavior
 
   buffs.the_rotten = make_buff<damage_buff_t>( this, "the_rotten", talent.subtlety.the_rotten->effectN( 1 ).trigger() )
     ->set_is_stacking_mod( false );
+  if ( talent.subtlety.the_rotten->ok() )
+  {
+    // 2026-04-14 -- Initial stacks on the buff is set to 1, with trigger stacks in the talent spell data
+    buffs.the_rotten->set_initial_stack( as<int>( talent.subtlety.the_rotten->effectN( 1 ).base_value() ) );
+  }
 
   buffs.goremaws_bite = make_buff( this, "goremaws_bite", spec.goremaws_bite_buff )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 )
@@ -10848,6 +10979,7 @@ void rogue_t::create_options()
   add_option( opt_int( "fixed_rtb", options.fixed_rtb, 0, 4 ) );
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
   add_option( opt_bool( "priority_rotation", options.priority_rotation ) );
+  add_option( opt_float( "the_first_dance_trigger_rate", options.the_first_dance_trigger_rate, 0, 1 ) );
 }
 
 // rogue_t::copy_from =======================================================
@@ -10877,6 +11009,8 @@ void rogue_t::copy_from( player_t* source )
   options.fixed_rtb_odds = rogue->options.fixed_rtb_odds;
   options.rogue_ready_trigger = rogue->options.rogue_ready_trigger;
   options.priority_rotation = rogue->options.priority_rotation;
+
+  options.the_first_dance_trigger_rate = rogue->options.the_first_dance_trigger_rate;
 }
 
 // rogue_t::create_profile  =================================================
@@ -11139,6 +11273,17 @@ void rogue_t::activate()
   player_t::activate();
 
   sim->target_non_sleeping_list.register_callback( restealth_callback_t( this ) );
+
+  if ( talent.subtlety.the_first_dance->ok() )
+  {
+    // Technically speaking this is a 6s timer but % chance makes more sense for composite dungeon sims
+    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
+      if ( !c && rng().roll( options.the_first_dance_trigger_rate ) )
+      {
+        buffs.the_first_dance->trigger();
+      }
+    } );
+  }
 }
 
 // rogue_t::break_stealth ===================================================

@@ -24,10 +24,10 @@ legs=commanders_faded_breeches,id=251090,ilevel=289,enchant_id=7937
 feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
 finger1=sindorei_band_of_hope,id=249919,ilevel=289,bonus_id=13534,gem_id=240902,enchant_id=7967
 finger2=eye_of_midnight,id=249920,ilevel=289,bonus_id=13534,gem_id=240902/240902,enchant_id=7967
-trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
-trinket2=vaelgors_final_stare,id=249346,ilevel=289
-main_hand=,id=258218,ilevel=289,enchant_id=8039
-off_hand=,id=251094,ilevel=289
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=298
+trinket2=vaelgors_final_stare,id=249346,ilevel=298
+main_hand=,id=258218,ilevel=298,enchant_id=8039
+off_hand=,id=251094,ilevel=298
 
 save=MID1_Mage_Arcane.simc
 
@@ -57,10 +57,10 @@ legs=commanders_faded_breeches,id=251090,ilevel=289,enchant_id=7937
 feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
 finger1=sindorei_band_of_hope,id=249919,ilevel=289,bonus_id=13534,gem_id=240902,enchant_id=7967
 finger2=eye_of_midnight,id=249920,ilevel=289,bonus_id=13534,gem_id=240902/240902,enchant_id=7967
-trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
-trinket2=vaelgors_final_stare,id=249346,ilevel=289
-main_hand=,id=258218,ilevel=289,enchant_id=8039
-off_hand=,id=251094,ilevel=289
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=298
+trinket2=vaelgors_final_stare,id=249346,ilevel=298
+main_hand=,id=258218,ilevel=298,enchant_id=8039
+off_hand=,id=251094,ilevel=298
 
 save=MID1_Mage_Arcane_Sunfury.simc
 
@@ -90,9 +90,9 @@ legs=voidbreakers_britches,id=250059,bonus_id=40/12676/12806/13335/13339/13575/1
 feet=voidbreakers_treads,id=250062,bonus_id=40/12806/13335,ilevel=289,enchant_id=8019
 finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240906/240900,enchant_id=7967
 finger2=bond_of_light,id=249369,ilevel=289,gem_id=240916,enchant_id=7967
-trinket1=emberwing_feather,id=250144,bonus_id=40/12806/13440,ilevel=289
-trinket2=gaze_of_the_alnseer,id=249343,bonus_id=40/12806/13335,ilevel=289
-main_hand=brazier_of_the_dissonant_dirge,id=249286,bonus_id=12792/13452,ilevel=289,enchant_id=8039
+trinket1=emberwing_feather,id=250144,bonus_id=40/12806/13440,ilevel=298
+trinket2=gaze_of_the_alnseer,id=249343,bonus_id=40/12806/13335,ilevel=298
+main_hand=brazier_of_the_dissonant_dirge,id=249286,bonus_id=12792/13452,ilevel=298,enchant_id=8039
 
 save=MID1_Mage_Fire.simc
 
@@ -122,9 +122,9 @@ legs=voidbreakers_britches,id=250059,bonus_id=40/12676/12806/13335/13339/13575/1
 feet=voidbreakers_treads,id=250062,bonus_id=40/12806/13335,ilevel=289,enchant_id=8019
 finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240906/240900,enchant_id=7967
 finger2=bond_of_light,id=249369,ilevel=289,gem_id=240916,enchant_id=7967
-trinket1=emberwing_feather,id=250144,bonus_id=40/12806/13440,ilevel=289
-trinket2=gaze_of_the_alnseer,id=249343,bonus_id=40/12806/13335,ilevel=289
-main_hand=brazier_of_the_dissonant_dirge,id=249286,bonus_id=12792/13448/13452,ilevel=289,enchant_id=8039
+trinket1=emberwing_feather,id=250144,bonus_id=40/12806/13440,ilevel=298
+trinket2=gaze_of_the_alnseer,id=249343,bonus_id=40/12806/13335,ilevel=298
+main_hand=brazier_of_the_dissonant_dirge,id=249286,bonus_id=12792/13448/13452,ilevel=298,enchant_id=8039
 
 save=MID1_Mage_Fire_Frostfire.simc
 
@@ -154,10 +154,10 @@ legs=voidbreakers_britches,id=250059,bonus_id=13575,ilevel=289,enchant_id=7935
 feet=dreamscorched_striders,id=249373,ilevel=289
 finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240908/240908,enchant_id=7967
 finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240908,enchant_id=7967
-trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
-trinket2=vaelgors_final_stare,id=249346,bonus_id=12806/13577
-main_hand=skybreakers_blade,id=258218,ilevel=289,enchant_id=7981
-off_hand=alnhara_lantern,id=245769,bonus_id=8791/8960/12214/12693,ilevel=285,crafted_stats=36/32
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=298
+trinket2=vaelgors_final_stare,id=249346,ilevel=298
+main_hand=skybreakers_blade,id=258218,ilevel=298,enchant_id=7981
+off_hand=alnhara_lantern,id=245769,bonus_id=8791/8960/12214/12693,ilevel=295,crafted_stats=36/32
 
 save=MID1_Mage_Frost.simc
 
@@ -187,9 +187,9 @@ legs=voidbreakers_britches,id=250059,bonus_id=13575,ilevel=289,enchant_id=7935
 feet=dreamscorched_striders,id=249373,ilevel=289
 finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240908/240908,enchant_id=7967
 finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240908,enchant_id=7967
-trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
-trinket2=vaelgors_final_stare,id=249346,bonus_id=12806/13577
-main_hand=skybreakers_blade,id=258218,ilevel=289,enchant_id=7981
-off_hand=alnhara_lantern,id=245769,bonus_id=8791/8960/12214/12693,ilevel=285,crafted_stats=36/32
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=298
+trinket2=vaelgors_final_stare,id=249346,ilevel=298
+main_hand=skybreakers_blade,id=258218,ilevel=298,enchant_id=7981
+off_hand=alnhara_lantern,id=245769,bonus_id=8791/8960/12214/12693,ilevel=295,crafted_stats=36/32
 
 save=MID1_Mage_Frost_Frostfire.simc

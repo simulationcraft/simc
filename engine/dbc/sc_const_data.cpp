@@ -1528,6 +1528,17 @@ double dbc_t::npc_armor_value( unsigned level ) const
   return expected_stat( level ).creature_armor;
 }
 
+double dbc_t::expected_creature_health( unsigned level ) const
+{
+  assert( level > 0 && level <= ( MAX_SCALING_LEVEL + 3 ) );
+  return expected_stat( level ).creature_health;
+}
+
+double dbc_t::expected_creature_health_mod( difficulty_e diff ) const
+{
+  return expected_stat_mod( diff, &expected_stat_mod_t::creature_health );
+}
+
 /* Generic helper methods */
 
 double dbc_t::effect_average( unsigned effect_id, unsigned level ) const

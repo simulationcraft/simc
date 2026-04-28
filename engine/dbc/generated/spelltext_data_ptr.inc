@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.5.66741
-static constexpr std::array<spelltext_data_t, 28694> __ptr_spelltext_data { {
+// Spell text, wow build 12.0.5.67088
+static constexpr std::array<spelltext_data_t, 28696> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -22056,7 +22056,7 @@ static constexpr std::array<spelltext_data_t, 28694> __ptr_spelltext_data { {
   {  444763, "While Nazgrim is active, gain Apocalyptic Conquest, increasing your Strength by $s1%.", "Your Strength is increased by $w1%.", 0 },
   {  444764, "$@spelldesc442290", 0, 0 },
   {  444767, "Your attacks against your primary target have a $s1% chance to overwhelm their defenses and trigger a Slayer's Strike, dealing $445579s1 Physical damage and granting you a stack of Executioner, increasing your Execute damage by $445584s1% for $445584d. Multiple stacks of Executioner may overlap.", 0, 0 },
-  {  444769, "Every $s1 Slayer's Strikes you gain Sudden Death.\r\n\r\nUsing Sudden Death accelerates your next Bladestorm, striking 1 additional time (max $445606u). Bladestorm's total duration is unchanged.\r\n\r\nWhen Sudden Death strikes multiple targets via $?c1[Sweeping Strikes][Improved Whirlwind], you have a $s2% chance to trigger Reap the Storm.", 0, 0 },
+  {  444769, "Every $s1 Slayer's Strikes you gain Sudden Death.\r\n\r\nUsing Sudden Death accelerates your next Bladestorm, striking 1 additional time (max $445606u). Bladestorm's total duration is unchanged.\r\n\r\nSudden Death has a $s2% chance to trigger Reap the Storm at $s3% effectiveness.", 0, 0 },
   {  444770, "You heal for $s1% of damage dealt by Sudden Death.", 0, 0 },
   {  444771, "Executioner also increases your Execute critical strike chance and critical strike damage by $445584s2% per stack.", 0, 0 },
   {  444772, "Each strike of Bladestorm applies Overwhelmed to all enemies affected, increasing damage you deal to them by $445836s1% for $445836d, max $445836u stacks.", 0, 0 },
@@ -26902,7 +26902,6 @@ static constexpr std::array<spelltext_data_t, 28694> __ptr_spelltext_data { {
   { 1251069, "Critical strikes of your Nature abilities reduce the target's movement speed by $1251059s1% for $1251059d.", 0, 0 },
   { 1251077, "Increases the damage and healing of your Holy and Shadow spells by $s1%.", 0, 0 },
   { 1251228, "Gut the Shimmersiren. You monster.", 0, 0 },
-  { 1251229, "Throw the fish back into the water to gain $s2 Midnight Perception for $d.\r\n\r\nThrowing multiple fish can extend this buff up to $M1 min.", "Midnight Perception increased by $w2.", 0 },
   { 1251259, "Add the Tyrannically Fortified affix to a Mythic Keystone.", 0, 0 },
   { 1251406, "When you shapeshift out of Bear Form, its benefits to health and armor slowly decay over $1251407d.", 0, 0 },
   { 1251407, "$@spelldesc1251406", "Stamina increased by $w1%.\r\nArmor increased by $w2%.", 0 },
@@ -28237,6 +28236,7 @@ static constexpr std::array<spelltext_data_t, 28694> __ptr_spelltext_data { {
   { 1270958, "Casting $?s322507[Celestial Brew]?s1241059[Celestial Infusion][Thunder Focus Tea] grants $?c1[$s5][$s6] $Lcharge:charges; of Potential Energy. Your next cast of Tiger Palm or Vivify consumes all charges of Potential Energy to cause a Harmonic Surge.\r\n\r\n$@spellicon1271011$@spellname1271011:\r\n$@spelldesc1271011", 0, 0 },
   { 1270977, "Gain $1270985s1 Haste while above $1270977s1% health.", "Increased Haste.", 0 },
   { 1270985, "$@spelldesc1270976", "Haste increased by $w1.", 0 },
+  { 1270990, "Your next cast of Tiger Palm or Vivify triggers a Harmonic Surge, dealing $?c1[${$1271011s1*$1270958s1/100}][${$1271011s1*$1270958s2/100}] Nature damage to your target and $?c1[${$1271011s1*$1270958s1/100}][${$1271011s1*$1270958s2/100}] to other nearby enemies, and $?c1[${$1271045s1*$1270958s3/100}][${$1271045s1*$1270958s4/100}] healing to up to $1271045s2 injured allies. Damage and healing increased per charge of Potential Energy.", "Your next Tiger Palm or Vivify will cause a Harmonic Surge.", 0 },
   { 1271011, "For each charge of Potential Energy, deal $?c1[${$1271011s1*$1270958s1/100}][${$1271011s1*$1270958s2/100}] Nature damage to your target and $?c1[${$1271011s2*$1270958s1/100}][${$1271011s2*$1270958s2/100}] Nature damage to other nearby enemies, and heal up to $1271045s2 allies for $?c1[${$1271045s1*$1270958s3/100}][${$1271045s1*$1270958s4/100}]. Damage reduced above $1270958s7 targets.", 0, 0 },
   { 1271016, "While Avenging Wrath is not active, you gain $s1% Mastery.\r\n\r\nWhile Avenging Wrath is active, you gain $s2% movement speed.", 0, 0 },
   { 1271045, "$@spelldesc1271011", 0, 0 },
@@ -28676,6 +28676,8 @@ static constexpr std::array<spelltext_data_t, 28694> __ptr_spelltext_data { {
   { 1292031, "$@spelldesc1278886", 0, 0 },
   { 1292058, "$@spelldesc1269307", "Damage bonus of your next Colossus Smash increased by $w1%.", 0 },
   { 1292071, "Enemies damaged by Phalanx's wave of force deal ${$s1/-1}.1% reduced damage to you for $d.\r\n", "Dealing ${$W1/-1}.1% reduced damage to $@auracaster.", 0 },
+  { 1292384, "Releases a volley of Chaos magic that deals $1292391s1 Chaos damage to the target and up to $i additional targets within $a1 yds.", 0, 0 },
+  { 1292391, "$@spelldesc1292384", 0, 0 },
   { 1292687, "$@spelldesc1253172", "Generating ${$s1*$d} Focus over $d.", 0 },
   { 1292874, "$@spelldesc1262076", "Stunned", 0 },
   { 1292919, "$@spelldesc450529", "Dealing $w1 damage per second.", 0 },
@@ -28696,15 +28698,11 @@ static constexpr std::array<spelltext_data_t, 28694> __ptr_spelltext_data { {
   { 1293918, "$@spelldesc228049", "Immune to all attacks and spells.", "PvP Talent" },
 } };
 
-// spelltext hotfix entries, wow build 12.0.5.66741
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __ptr_spelltext_hotfix_data { {
-  {  436358,  0, "Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 of it. Deals reduced damage beyond $s1 targets.\r\n\r\nWhile channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.\r\n\r\nYou can block, parry, dodge, and use certain defensive abilities while channeling Demolish.", "Unleash a series of precise and powerful strikes against your target, dealing ${$440884s1+$440886s1+$440888s1} damage to it, and $440888s1 damage to enemies within $440888A1 yds of it. Deals reduced damage beyond $s1 targets.\r\n\r\nWhile channeling Demolish, you take $s4% less damage and are immune to stuns, knockbacks, and forced movement effects.\r\n\r\nYou can block, parry, dodge, and use certain defensive abilities while channeling Demolish." },
-  {  444088,  0, "$?c1[Disintegrate damage consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.\r\n\r\nPyre damage consumes ${$s3/1000} sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.][Verdant Embrace healing consumes ${$s5/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.\r\n\r\nEmerald Blossom healing consumes ${$s1/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.]", "$?c1[Disintegrate damage consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.\r\n\r\nPyre damage consumes ${$s3/1000} sec of Fire Breath from enemies it damages, detonating it for $s7% of the amount consumed.][Verdant Embrace healing consumes ${$s5/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.\r\n\r\nEmerald Blossom healing consumes ${$s1/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.]" },
-  { 1244331,  0, "$s2% of Lifebloom's final bloom splashes to all allies within $1244341a1 yds, reduced beyond $s3.", "$s2% of Lifebloom's final bloom heals up to $s3 injured allies within $1244341a1 yds." },
-  { 1292071,  0, "Enemies damaged by Phalanx's wave of force deal ${$s1}.1% reduced damage to you for $d.\r\n", "Enemies damaged by Phalanx's wave of force deal ${$s1/-1}.1% reduced damage to you for $d.\r\n" },
+// spelltext hotfix entries, wow build 12.0.5.67088
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.5.66741
+// Spell description variables, wow build 12.0.5.67088
 static constexpr std::array<spelldesc_vars_data_t, 697> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29405,7 +29403,7 @@ static constexpr std::array<spelldesc_vars_data_t, 697> __ptr_spelldesc_vars_dat
   { 1293610, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.5.66741
+// spelldesc_vars hotfix entries, wow build 12.0.5.67088
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

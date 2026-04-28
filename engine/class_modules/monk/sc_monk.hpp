@@ -557,8 +557,10 @@ public:
     propagate_const<buff_t *> touch_of_karma;
     propagate_const<buff_t *> whirling_dragon_punch;
     propagate_const<buff_t *> zenith;
+    propagate_const<buff_t *> zenith_stomp;
     propagate_const<buff_t *> rushing_wind_kick;
     propagate_const<buff_t *> tigereye_brew_1;
+    propagate_const<buff_t *> tigereye_brew_1_accumulator;
     propagate_const<buff_t *> tigereye_brew_3;
 
     // Conduit of the Celestials
@@ -567,6 +569,7 @@ public:
     propagate_const<buff_t *> heart_of_the_jade_serpent;
     propagate_const<buff_t *> heart_of_the_jade_serpent_yulons_avatar;
     propagate_const<buff_t *> heart_of_the_jade_serpent_unity_within;
+    propagate_const<buff_t *> inner_compass_crane_stance;
     propagate_const<buff_t *> inner_compass_ox_stance;
     propagate_const<buff_t *> inner_compass_serpent_stance;
     propagate_const<buff_t *> inner_compass_tiger_stance;
@@ -608,7 +611,7 @@ public:
     propagate_const<proc_t *> salsalabims_strength;
     propagate_const<proc_t *> tranquil_spirit_expel_harm;
     propagate_const<proc_t *> tranquil_spirit_goto;
-    propagate_const<proc_t *> xuens_battlegear_reduction;
+    propagate_const<proc_t *> xuens_battlegear_sck_reduction;
     propagate_const<proc_t *> elusive_brawler_preserved;
   } proc;
 
@@ -756,6 +759,7 @@ public:
       player_talent_t summon_black_ox_statue;  // Brewmaster
       player_talent_t zenith_stomp;            // Windwalker
       const spell_data_t *zenith_stomp_damage;
+      const spell_data_t *zenith_stomp_buff;
       player_talent_t ironshell_brew;
       player_talent_t expeditious_fortification;
       player_talent_t diffuse_magic;
@@ -1009,6 +1013,7 @@ public:
       const spell_data_t *celestial_conduit_damage;
       const spell_data_t *celestial_conduit_heal;
       player_talent_t inner_compass;
+      const spell_data_t *inner_compass_crane_stance_buff;
       const spell_data_t *inner_compass_ox_stance_buff;
       const spell_data_t *inner_compass_tiger_stance_buff;
       const spell_data_t *inner_compass_serpent_stance_buff;

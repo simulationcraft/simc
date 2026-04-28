@@ -1801,7 +1801,7 @@ class SpellDataGenerator(DataGenerator):
             ( 459002, 0 ),          # Outlaw 11.0 Set Bonus damage spell
             ( 467059, 0 ),          # Outlaw Crackshot Dispatch clone damage spell
             ( 1219264, 0 ),         # Assassination TWW2 4pc set bonus buff spell
-            
+
             # Midnight
             ( 1214933, 0 ),         # Roll the Bones - One of a Kind
             ( 1214934, 0 ),         # Roll the Bones - Double Trouble
@@ -2273,6 +2273,8 @@ class SpellDataGenerator(DataGenerator):
           ( 1276283, 0 ),   # Dominion of Argus: Antoran Inquisitor
           ( 1276182, 0 ),   # Dominion of Argus: Antoran Jailer
           ( 1276282, 0 ),   # Dominion of Argus: Doommaiden (Maybe Unused?)
+          ( 1292384, 0 ),   # Dominion of Argus: Antoran Jailer soul barrage
+          ( 1292391, 0 ),   # Dominion of Argus: Antoran Jailer soul barrage
         ),
 
         # Monk:
@@ -2399,7 +2401,7 @@ class SpellDataGenerator(DataGenerator):
 
           # Master of Harmony
           ( 451299, 0 ), # Mantra of Tenacity Chi Cocoon
-
+          ( 1270990, 0 ), # Potential Energy Buff
         ),
 
         # Druid:
@@ -2487,6 +2489,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1245455, 2 ), # Cull Damage
           ( 1266301, 2 ), # Consume Soul Heal
           ( 1223423, 2 ), # Consume Soul Missile
+          ( 1292047, 2 ), # Spontaneous Immolation
 
           # Annihilator
 
@@ -3400,7 +3403,7 @@ class SpellDataGenerator(DataGenerator):
             spell = self.db('SpellName')[id]
 
             # Unused hotfix IDs: 1, 2, 5, 6, 7, 54
-            # MAX hotfix id: 58
+            # MAX hotfix id: 60
             hotfix = HotfixDataRecord()
             power_count = 0
 
@@ -3470,8 +3473,10 @@ class SpellDataGenerator(DataGenerator):
             fields += category.field('dmg_class')
             hotfix.add(category, ('dmg_class', 47))
 
-            fields += spell.child('SpellTargetRestrictions').field('max_affected_targets')
+            fields += spell.child('SpellTargetRestrictions').field('max_affected_targets', 'cone', 'width')
             hotfix.add(spell.child('SpellTargetRestrictions'), ('max_affected_targets', 48))
+            hotfix.add(spell.child('SpellTargetRestrictions'), ('cone', 59))
+            hotfix.add(spell.child('SpellTargetRestrictions'), ('width', 60))
 
             duration_entry = misc.ref('id_duration')
             fields += duration_entry.field('duration_1')
@@ -5029,7 +5034,7 @@ class ExpectedStatGenerator(DataGenerator):
             length = len(data))
 
         for es in sorted(data, key = lambda e: e.id_parent):
-            fields = es.field('id_parent', 'creature_auto_attack_dps', 'creature_armor',
+            fields = es.field('id_parent', 'creature_health', 'creature_auto_attack_dps', 'creature_armor',
                               'player_primary_stat', 'player_secondary_stat',
                               'armor_constant', 'creature_spell_damage')
             self.output_record(fields)
@@ -5048,7 +5053,7 @@ class ExpectedStatModGenerator(DataGenerator):
             length = len(data))
 
         for esm in sorted(data, key = lambda e: (e[1], e[0].id)):
-            fields = esm[0].field('id', 'mod_creature_auto_attack_dps', 'mod_creature_armor',
+            fields = esm[0].field('id', 'mod_creature_health', 'mod_creature_auto_attack_dps', 'mod_creature_armor',
                                   'mod_player_primary_stat', 'mod_player_secondary_stat',
                                   'mod_armor_constant', 'mod_creature_spell_damage')
             fields += [str(esm[1])]

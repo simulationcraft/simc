@@ -89,9 +89,13 @@ actions.sentst+=/moonlight_chakram
 actions.sentst+=/rapid_fire
 actions.sentst+=/steady_shot
 
+# A buff trinket that lines up cleanly with Trueshot; use with Trueshot.
 actions.trinkets=use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&this_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14|this_trinket.is.algethar_puzzle_box&variable.trueshot_ready&cooldown.trueshot.remains<5)
-actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&other_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14&other_trinket.cooldown.remains|cooldown.trueshot.remains>20&other_trinket.cooldown.remains<=cooldown.trueshot.remains)
+# A buff trinket paired with a trinket that matches the above line; use with Trueshot if the other trinket is not ready or use without Trueshot if the other trinket will come up for the next Trueshot.
+actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&other_trinket.has_use_buff&other_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14&other_trinket.cooldown.remains|cooldown.trueshot.remains>20&other_trinket.cooldown.remains<=cooldown.trueshot.remains)
+# A buff trinket, use with Trueshot or in the last ~20 seconds of the fight.
 actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(buff.trueshot.remains>14|buff.trueshot.up&fight_remains<cooldown.trueshot.remains+15|fight_remains<21)
+# A damage trinket; use when Trueshot has at least 20 seconds remaining on its cooldown.
 actions.trinkets+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage&cooldown.trueshot.remains>20
 
 head=primal_sentrys_maw,id=249988,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240967

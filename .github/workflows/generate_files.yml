@@ -31,7 +31,7 @@ jobs:
         run: ${{ github.workspace }}/generate_apl_modules_ci.sh
 
       - name: Download APL Dumps
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: ActionPriorityLists
           pattern: apl-${{ github.sha }}-*
@@ -58,7 +58,7 @@ jobs:
 
       - name: Commit Updated Files
         continue-on-error: true
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v10
         with:
           message: "Update Generated Files ${{ env.SHORT_SHA }}"
           default_author: github_actions
@@ -69,6 +69,6 @@ jobs:
             - "*.txt"
 
       - name: Cleanup APL Dumps
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@v6
         with:
           name: apl-${{ github.sha }}-*

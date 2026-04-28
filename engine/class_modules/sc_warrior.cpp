@@ -4076,11 +4076,9 @@ struct execute_damage_t : public warrior_attack_t
   double max_rage;
   double cost_rage;
   finishing_wound_t* finishing_wound;
-  action_t* reap_the_storm;
   execute_damage_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "execute_damage", p, p->spell.execute->effectN( 1 ).trigger() ), max_rage( 40 ),
-    finishing_wound( nullptr ),
-    reap_the_storm( nullptr )
+    finishing_wound( nullptr )
   {
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
@@ -4091,12 +4089,6 @@ struct execute_damage_t : public warrior_attack_t
     if ( p->talents.protection.heavy_handed->ok() )
     {
       base_aoe_multiplier = p->talents.protection.heavy_handed->effectN( 2 ).percent();
-    }
-
-    if ( p->talents.slayer.reap_the_storm->ok() && p->talents.slayer.imminent_demise.ok() && sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
-    {
-      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_execute", p );
-      add_child( reap_the_storm );
     }
   }
 
@@ -4126,25 +4118,6 @@ struct execute_damage_t : public warrior_attack_t
     {
       p()->buff.master_of_warfare_proc->trigger();
       p()->master_of_warfare_attempts_since_last_proc = 0;
-    }
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() &&
-          p()->buff.sudden_death->up() )
-    {
-      if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
-      {
-        if ( execute_state->n_targets > 1 && p()->cooldown.reap_the_storm_icd->is_ready() &&
-        rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
-        {
-          reap_the_storm->execute();
-          p()->cooldown.reap_the_storm_icd->start();
-        }
-      }
     }
   }
 };
@@ -4195,7 +4168,7 @@ struct execute_arms_t : public warrior_attack_t
       shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
     }
 
-    if ( p->talents.slayer.reap_the_storm->ok() && p->talents.slayer.imminent_demise.ok() && sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    if ( p->talents.slayer.reap_the_storm->ok() && p->talents.slayer.imminent_demise.ok() )
     {
       reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_execute", p );
       add_child( reap_the_storm );
@@ -4239,16 +4212,11 @@ struct execute_arms_t : public warrior_attack_t
       if ( p()->talents.slayer.imminent_demise->ok() && p()->talents.shared.sudden_death->ok() )
         p()->buff.imminent_demise->trigger();
 
-      if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() )
+      if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() &&
+            p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
       {
-        if ( sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-        {
-          if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
-          {
-            reap_the_storm->execute();
-            p()->cooldown.reap_the_storm_icd->start();
-          }
-        }
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
       }
 
       if ( p()->talents.slayer.unrelenting_onslaught->ok() && p()->buff.executioner->up() )
@@ -4320,23 +4288,15 @@ struct fatality_t : public warrior_attack_t
 struct execute_main_hand_t : public warrior_attack_t
 {
   int aoe_targets;
-  action_t* reap_the_storm;
   execute_main_hand_t( warrior_t* p, const char* name, const spell_data_t* s )
     : warrior_attack_t( name, p, s ),
-      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
-      reap_the_storm( nullptr )
+      aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
   {
     background = true;
     dual   = true;
     weapon = &( p->main_hand_weapon );
     radius = 5;
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
-
-    if ( p->talents.slayer.reap_the_storm->ok() && p->talents.slayer.imminent_demise.ok() && sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
-    {
-      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_execute", p );
-      add_child( reap_the_storm );
-    }
   }
 
   int n_targets() const override
@@ -4354,25 +4314,6 @@ struct execute_main_hand_t : public warrior_attack_t
 
     if( p()->talents.shared.deep_wounds->ok() )
       p()->active.deep_wounds->execute_on_target( state->target );
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() &&
-          p()->buff.sudden_death->up() )
-    {
-      if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
-      {
-        if ( execute_state->n_targets > 1 && p()->cooldown.reap_the_storm_icd->is_ready() &&
-        rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
-        {
-          reap_the_storm->execute();
-          p()->cooldown.reap_the_storm_icd->start();
-        }
-      }
-    }
   }
 };
 
@@ -4444,7 +4385,7 @@ struct execute_fury_t : public warrior_attack_t
       add_child( lightning_strike );
     }
 
-    if ( p->talents.slayer.reap_the_storm->ok() && p->talents.slayer.imminent_demise.ok() && sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
+    if ( p->talents.slayer.reap_the_storm->ok() && p->talents.slayer.imminent_demise.ok() )
     {
       reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_execute", p );
       add_child( reap_the_storm );
@@ -4470,16 +4411,11 @@ struct execute_fury_t : public warrior_attack_t
       if ( p()->talents.slayer.imminent_demise->ok() && p()->talents.shared.sudden_death->ok() )
         p()->buff.imminent_demise->trigger();
 
-      if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() )
+      if ( p()->talents.slayer.reap_the_storm->ok() && p()->talents.slayer.imminent_demise.ok() &&
+            p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
       {
-        if ( sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-        {
-          if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.imminent_demise->effectN( 2 ).percent() ) )
-          {
-            reap_the_storm->execute();
-            p()->cooldown.reap_the_storm_icd->start();
-          }
-        }
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
       }
 
       if ( p()->talents.slayer.unrelenting_onslaught->ok() && p()->buff.executioner->up() )

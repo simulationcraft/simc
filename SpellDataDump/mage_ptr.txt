@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.66741 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -57,6 +57,7 @@ School           : Frost
 Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=27)
 Spell Level      : 18
+Cone Angle       : 90 degrees
 GCD              : 1.5 seconds
 Cooldown         : 25 seconds
 Labels           : 16: Class Spells
@@ -1102,6 +1103,7 @@ School           : Fire
 Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=1267)
 Spell Level      : 27
+Cone Angle       : 90 degrees
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
@@ -1499,7 +1501,6 @@ Attributes       : Not Shapeshifted (16), No Threat (42), Allow Class Ability Pr
 Effects          :
 #1 (id=36562)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : Mechanic (11 -> 0)
                    Modified By: Improved Flurry (1247769 effect#1)
 #2 (id=376737)   : Trigger Spell (64): Flurry
                    Base Value: 0 | Scaled Value: 0 (delta=0.1) | Trigger Spell: 228596 | Target: Targeted Enemy (6)
@@ -4555,6 +4556,7 @@ Effects          :
 Description      : $@spelldesc192246
 
 Name             : Touch of the Magi (id=210824) [Spell Family (3)] 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -4567,7 +4569,8 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Triggered By     : Touch of the Magi (210725), Touch of the Magi (321507)
-Attributes       : DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Expires Offline (130), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=312287)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -4693,7 +4696,7 @@ Effects          :
 #4 (id=315253)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #5 (id=315254)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 159 | Scaled Value: 159 | Target: Self (1)
+                   Base Value: 263 | Scaled Value: 263 | Target: Self (1)
 #6 (id=315255)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Spectral Sight (188501), Metamorphosis (191427), Darkness (196718), Annihilation (201427), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204596), Soul Carver (207407), Sigil of Misery (207684), Death Sweep (210152), Felblade (213241), Imprison (217832), Soul Cleave (228477), Spirit Bomb (247454), Essence Break (258860), Immolation Aura (258920), Fracture (263642), Elysian Decree (306830), Sinful Brand (317009), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Throw Glaive (337819), Glaive Tempest (342817), Demon's Bite (344859), Chaos Strike (344862), Chaos Nova (344867), Throw Glaive (346665), The Hunt (370965), Sigil of Spite (390163), Fodder to the Flame (391430), Throw Glaive (393035), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427917), Reaver's Glaive (442294), Soul Sunder (452436), Spirit Burst (452437), Consuming Fire (452487), Sigil of Doom (452490), Consuming Fire (456640), Sigil of Doom (469991), Consume (473662), Void Metamorphosis (1217605), Devour (1217610), Eradicate (1225826), Reap (1226019), Void Nova (1234195), Voidblade (1241285), Cull (1245453), The Hunt (1246167), Spectral Sight (1251417), Predator's Wake (1259431), Reaver's Glaive (1283344)
@@ -16382,7 +16385,7 @@ Family Flags     : 95, 108, 109
 Attributes       : Allow Dead Target (64), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1263763)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2 | PvP Coefficient: 0.9 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc1253304
 
 Name             : Voidfall Meteor (id=1256306) [Spell Family (107)] 

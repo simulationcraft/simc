@@ -171,7 +171,6 @@ struct player_t : public actor_t
   bool        potion_used;
   double      leech_pool;  // for leech batching
 
-
   std::string talents_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
@@ -419,6 +418,8 @@ struct player_t : public actor_t
   std::vector<std::vector<plot_data_t>> reforge_plot_data;
   auto_dispose<std::vector<sample_data_helper_t*>> sample_data_list;
   std::vector<std::unique_ptr<cooldown_waste_data_t>> cooldown_waste_data_list;
+
+  bool collect_pet_sequence_data;
 
   // All Data collected during / end of combat
   player_collected_data_t collected_data;
@@ -892,8 +893,8 @@ struct player_t : public actor_t
     // Interval between checking sunfire silk trappings uptime
     timespan_t sunfire_silk_trappings_update_interval = 10_s;
     timespan_t sunfire_silk_trappings_update_interval_stddev = 2.5_s;
-    // Chance refueling orb will count as healing.
-    double refueling_orb_heal_chance = 0.10;
+    // Chance refueling orb will count as healing. Increased because of pet bug.
+    double refueling_orb_heal_chance = 0.50;
     bool crucible_of_erratic_energies_violence = false;
     bool crucible_of_erratic_energies_sustenance = false;
     bool crucible_of_erratic_energies_predation = false;
@@ -1439,7 +1440,7 @@ public:
 
   virtual action_t* create_action( util::string_view name, util::string_view options );
   virtual void      create_pets() { }
-  virtual void      create_permanent_actors() { }
+  virtual void      create_permanent_actors();
 
   virtual pet_t*    create_pet( util::string_view name,  util::string_view type = {} );
 

@@ -70,15 +70,15 @@ actions.aoe_builder+=/swipe_cat,if=combo_points>1|spell_targets>2|!talent.panthe
 # primal wrath in pandemic during berserk, else with sub 6.5s remaining
 actions.aoe_finisher=primal_wrath,target_if=min:remains,if=combo_points>=5&spell_targets.primal_wrath>1&(dot.primal_wrath.remains<6.5&!buff.bs_inc.up|dot.primal_wrath.refreshable)
 # without pw, we prio ravage>rip at 2t with rampant ferocity, and 5t without TODO: check vines
-actions.aoe_finisher+=/ferocious_bite,if=buff.ravage.up&combo_points>=4&!talent.primal_wrath&spell_targets>=2+(3*!talent.rampant_ferocity)
+actions.aoe_finisher+=/ferocious_bite,if=buff.ravage.up&combo_points>=5&!talent.primal_wrath&spell_targets>=2+(3*!talent.rampant_ferocity)
 # if we dont have primal wrath, indefinitely apply manual 4cp rips (minmax note: without rampant, its ~0.3% better to do 5cp rip/5cp bite on 3/4t)
-actions.aoe_finisher+=/rip,target_if=min:remains,if=combo_points>=4&!talent.primal_wrath&refreshable
+actions.aoe_finisher+=/rip,target_if=min:remains,if=combo_points>=5&!talent.primal_wrath&refreshable
 # we can send bite with rampant or under 5t with vines, 8t with ravage. TODO: check these numbers
-actions.aoe_finisher+=/ferocious_bite,target_if=min:dot.rip.remains,if=combo_points>=4+talent.primal_wrath&(talent.rampant_ferocity|buff.ravage.up&spell_targets<8|dot.bloodseeker_vines.ticking&spell_targets<5)
+actions.aoe_finisher+=/ferocious_bite,target_if=min:dot.rip.remains,if=combo_points>=5&(talent.rampant_ferocity|buff.ravage.up&spell_targets<8|dot.bloodseeker_vines.ticking&spell_targets<5)
 # fallback primal wrath
 actions.aoe_finisher+=/primal_wrath,if=combo_points>=5
 # if we dont have primal wrath then bite here
-actions.aoe_finisher+=/ferocious_bite,target_if=min:dot.rip.remains,if=combo_points>=4+talent.primal_wrath
+actions.aoe_finisher+=/ferocious_bite,target_if=min:dot.rip.remains,if=combo_points>=5
 
 actions.builder=prowl,if=!buff.shadowmeld.up&(action.rake.pmultiplier<1.6|dot.rake.refreshable)
 actions.builder+=/shadowmeld,if=!buff.prowl.up&(action.rake.pmultiplier<1.6|dot.rake.refreshable)
@@ -169,12 +169,7 @@ actions.custom_timers+=/variable,name=tfNow,default=0,op=set,value=variable.use_
 # we are clear to use berserk. This is the same timer < time < timer + 4, so if our timer is 121s, then its true between 121 and 125 seconds.
 actions.custom_timers+=/variable,name=zerkNow,default=0,op=set,value=variable.use_custom_timers*(variable.currentBSTimer+4>time&time>=variable.currentBSTimer)
 
-# maintain rip in single-target. 5cp rips is a ~0.3% loss for dotc
-actions.finisher=rip,if=combo_points>=4&refreshable&(buff.tigers_fury.up|dot.rip.remains<variable.tfRemains)
+# maintain rip in single-target. 4cp rips is a ~0.1-0.2% gain, omitted for simplicity
+actions.finisher=rip,if=combo_points>=5&refreshable&(buff.tigers_fury.up|dot.rip.remains<variable.tfRemains)
 actions.finisher+=/pool_resource,for_next=1
-# ferocious bite asap, dont pool
-actions.finisher+=/ferocious_bite,if=combo_points>=4+buff.bs_inc.up&(!talent.saber_jaws|buff.bs_inc.up)
-# &(!talent.saber_jaws|!buff.ravage.up)
-actions.finisher+=/pool_resource,for_next=1
-# with sj + without panthers guile, its a sizable increase to do 5cp bite
-actions.finisher+=/ferocious_bite,max_energy=1,if=combo_points>=5-talent.panthers_guile&!buff.bs_inc.up
+actions.finisher+=/ferocious_bite,max_energy=1,if=combo_points>=5

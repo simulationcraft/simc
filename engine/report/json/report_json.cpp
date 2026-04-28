@@ -950,8 +950,8 @@ void profileset_fetch_output_data( const profileset::profile_output_data_t& outp
   {
     ovr[ "stats" ][ "stamina" ] = output_data.stamina();
     ovr[ "stats" ][ "agility" ] = output_data.agility();
-    ovr[ "stats" ][ "intellect" ] = output_data.strength();
-    ovr[ "stats" ][ "strength" ] = output_data.intellect();
+    ovr[ "stats" ][ "intellect" ] = output_data.intellect();
+    ovr[ "stats" ][ "strength" ] = output_data.strength();
 
     ovr[ "stats" ][ "crit_rating" ] = output_data.crit_rating();
     ovr[ "stats" ][ "crit_pct" ] = output_data.crit_pct();

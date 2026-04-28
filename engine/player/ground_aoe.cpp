@@ -251,7 +251,7 @@ void ground_aoe_event_t::execute()
         pulse_state->ta_multiplier *= multiplier;
       }
     }
-
+    spell_->set_target( pulse_state->target );
     spell_->schedule_execute( spell_->get_state( pulse_state ) );
   }
 

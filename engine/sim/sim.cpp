@@ -1465,6 +1465,9 @@ sim_t::sim_t()
     timewalk( -1 ),
     scale_to_itemlevel( -1 ),
     dungeon_route_smart_targeting( true ),
+    dungeon_route_simple_dps_members( 0 ),
+    dungeon_route_key_level( 0 ),
+    dungeon_route_pct_hp( 0 ),
     challenge_mode( false ),
     scale_itemlevel_down_only( false ),
     disable_set_bonuses( false ),
@@ -3833,9 +3836,10 @@ void sim_t::create_options()
   add_option( opt_int( "desired_tank_targets", desired_tank_targets ) );
   add_option( opt_bool( "enable_taunts", enable_taunts ) );
   add_option( opt_bool( "use_item_verification", use_item_verification ) );
-  add_option( opt_obsoleted( "keystone_level" ) );
-  add_option( opt_obsoleted( "keystone_pct_hp" ) );
+  add_option( opt_int( "keystone_level", dungeon_route_key_level ) );
+  add_option( opt_int( "keystone_pct_hp", dungeon_route_pct_hp, 0, 100 ) );
   add_option( opt_bool( "dungeon_route_smart_targeting", dungeon_route_smart_targeting ) );
+  add_option( opt_int( "dungeon_route_simple_dps_members", dungeon_route_simple_dps_members, 0, 3 ) );
 
   // Character Creation
   add_option( opt_func( "deathknight", parse_player ) );

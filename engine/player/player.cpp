@@ -1,4 +1,4 @@
-// ==========================================================================
+﻿// ==========================================================================
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -63,6 +63,7 @@
 #include "util/io.hpp"
 #include "util/plot_data.hpp"
 #include "util/util.hpp"
+#include "class_modules/class_module.hpp"
 
 #include <cctype>
 #include <cerrno>
@@ -1091,6 +1092,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     rps_gain( 0 ),
     rps_loss( 0 ),
     collected_data( this ),
+    collect_pet_sequence_data( false ),
     // Damage
     iteration_dmg( 0 ),
     priority_iteration_dmg( 0 ),
@@ -4345,7 +4347,7 @@ void player_t::create_actions()
 
   if ( !is_add() && ( !is_pet() || sim->report_pets_separately ) )
   {
-    int capacity = std::max( 1200, static_cast<int>( sim->max_time.total_seconds() / 2.0 ) );
+    int capacity = std::max( 3000, static_cast<int>( sim->max_time.total_seconds() ) );
     collected_data.action_sequence.reserve( capacity );
     collected_data.action_sequence.clear();
   }
@@ -4695,12 +4697,14 @@ void player_t::init_finished()
     if ( c.is_percentage )
     {
       stat_pct_buff_type stat_pct;
+      double stat_amount = c.amount * 0.01;
+
       switch ( convert_hybrid_stat( c.stat ) )
       {
         case STAT_CRIT_RATING:        stat_pct = STAT_PCT_BUFF_CRIT; break;
         case STAT_HASTE_RATING:       stat_pct = STAT_PCT_BUFF_HASTE; break;
         case STAT_VERSATILITY_RATING: stat_pct = STAT_PCT_BUFF_VERSATILITY; break;
-        case STAT_MASTERY_RATING:     stat_pct = STAT_PCT_BUFF_MASTERY; break;
+        case STAT_MASTERY_RATING:     stat_pct = STAT_PCT_BUFF_MASTERY; stat_amount = c.amount; break;
         case STAT_STRENGTH:           stat_pct = STAT_PCT_BUFF_STRENGTH; break;
         case STAT_AGILITY:            stat_pct = STAT_PCT_BUFF_AGILITY; break;
         case STAT_STAMINA:            stat_pct = STAT_PCT_BUFF_STAMINA; break;
@@ -4712,7 +4716,7 @@ void player_t::init_finished()
       }
 
       custom_buff = make_buff( this, buff_name )
-                      ->set_default_value( c.amount * 0.01 )
+                      ->set_default_value( stat_amount )
                       ->set_pct_buff_type( stat_pct )
                       ->set_duration( c.duration );
     }
@@ -7670,7 +7674,7 @@ action_t* player_t::execute_action()
       else
         off_gcdactions.push_back( action );
 
-      if ( !is_enemy() )
+      if ( !is_add() && ( !is_pet() || collect_pet_sequence_data ) )
         sequence_add( action, action->target );
     }
   }
@@ -9385,7 +9389,7 @@ struct shadowmeld_t : public racial_spell_t
     // Shadowmeld stops autoattacks
     player->cancel_auto_attacks();
 
-    if ( !player->in_boss_encounter )
+    if ( !player->in_boss_encounter || sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
       player->leave_combat();
   }
 };
@@ -11417,6 +11421,53 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
   return consumable::create_action( this, name, options_str );
 }
 
+void player_t::create_permanent_actors()
+{
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && sim->dungeon_route_simple_dps_members > 0 && is_player() && type != PLAYER_SIMPLIFIED )
+  {
+    // keep it simple and require one input player
+    int players = 0;
+    for ( player_t* p : sim->player_no_pet_list )
+    {
+      if ( p->is_player() && type != PLAYER_SIMPLIFIED )
+      {
+        players++;
+      }
+    }
+
+    if ( players > 1 )
+    {
+      sim->error( "Warning: ignoring dungeon_route_simple_dps_members since more than one player was defined" );
+      sim->dungeon_route_simple_dps_members = 0;
+      return;
+    }
+
+    // make sure we are actually simming the whole party together
+    if ( sim->single_actor_batch )
+    {
+      sim->error( "Warning: ignoring dungeon_route_simple_dps_members since single_actor_batch was enabed" );
+      sim->dungeon_route_simple_dps_members = 0;
+      return;
+    }
+
+    const module_t* module = module_t::get( PLAYER_SIMPLIFIED );
+
+    bool dps_role = primary_role() != ROLE_TANK && primary_role() != ROLE_HEAL && primary_role() != ROLE_HYBRID;
+
+    if ( dps_role && sim->dungeon_route_simple_dps_members > 2 )
+    {
+      sim->error( "Warning: clamping dungeon_route_simple_dps_members to 2 since player is dps" );
+      sim->dungeon_route_simple_dps_members = 2;
+    }
+
+    for ( int i = 1; i <= sim->dungeon_route_simple_dps_members; i++ )
+    {
+      player_t* p = module->create_player( sim, "Dungeon Buddy " + util::to_string( i ) );
+      p->true_level = level();
+    }
+  }
+}
+
 pet_t* player_t::create_pet( util::string_view, util::string_view )
 {
   return nullptr;
@@ -12332,7 +12383,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     if ( splits[ 0 ] == "set_bonus" )
       return sets->create_expression( this, splits[ 1 ] );
 
-    if ( splits[ 0 ] == "active_dot" )
+    if ( splits[ 0 ] == "active_dot" || splits[ 0 ] == "active_dots" )
     {
       action_t* action = find_action( splits[ 1 ] );
       if ( action )
@@ -12584,6 +12635,41 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     }
 
     throw sc_invalid_apl_argument( fmt::format( "Invalid talent expression '{}'.", splits[ 2 ] ) );
+  }
+
+  if ( splits.size() == 2 && splits[ 0 ] == "potion" )
+  {
+    std::string_view potion_view;
+
+    if ( !potion_str.empty() )
+    {
+      potion_view = potion_str;
+    }
+    else if ( default_potion().empty() )
+    {
+      potion_view = default_potion();
+    }
+    else
+    {
+      return expr_t::create_constant( expression_str, false );
+    }
+
+    if ( util::str_compare_ci( potion_view, splits[ 1 ] ) )
+      return expr_t::create_constant( expression_str, true );
+
+    if ( potion_view.size() < 2 )
+      return expr_t::create_constant( expression_str, false );
+
+    auto last_char = std::prev( potion_view.end() );
+    if ( std::isdigit( *last_char ) && *std::prev( last_char ) == '_' )
+    {
+      potion_view.remove_suffix( 2 );
+
+      if ( util::str_compare_ci( potion_view, splits[ 1 ] ) )
+        return expr_t::create_constant( expression_str, true );
+    }
+
+    return expr_t::create_constant( expression_str, false );
   }
 
   // trinkets
@@ -13436,6 +13522,7 @@ void player_t::create_options()
   add_option( opt_bool( "disable_hotfixes", disable_hotfixes ) );
   add_option( opt_func( "min_gcd", parse_min_gcd ) );
   add_option( opt_bool( "load_default_gear", load_default_gear ) );
+  add_option( opt_bool( "collect_pet_sequence_data", collect_pet_sequence_data ) );
 
   // Talents
   add_option( opt_string( "class_talents", class_talents_str ) );

@@ -3178,9 +3178,6 @@ namespace armors
 // 1271226 DoT
 void eternal_voidsong_chain( special_effect_t& effect )
 {
-  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Eternal Voidsong Chain: Implementation is speculative and has not been tested. Sim results may be inaccurate." );
-
   auto dot     = create_proc_action<generic_proc_t>( "voidstalker_sting", effect, 1271226 );
   dot->base_td = effect.driver()->effectN( 1 ).average( effect );
   dot->base_td_multiplier *= role_mult( effect );

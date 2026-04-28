@@ -460,7 +460,7 @@ void authority_of_radiant_power( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function(
     effect.spell_id, [ buff, damage ]( auto, auto, player_t* t, auto ) {
-      damage->execute_on_target( t->target );
+      damage->execute_on_target( t );
       buff->trigger();
     } );
 
@@ -1600,7 +1600,7 @@ void sikrans_endless_arsenal( special_effect_t& effect )
 
       e.player->callbacks.register_callback_trigger_function( d_driver->spell_id,
         dbc_proc_callback_t::trigger_fn_type::CONDITION,
-        []( auto, const auto&, player_t* t, auto, auto ) { return t->target->is_enemy(); } );
+        []( auto, const auto&, player_t* t, auto, auto ) { return t->is_enemy(); } );
 
       auto d_cb = new dbc_proc_callback_t( e.player, *d_driver );
       d_cb->activate_with_buff( d_stance );

@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.66741 PTR
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 PTR
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -381,6 +381,7 @@ Class            : Evoker
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
+Cone Angle       : 90 degrees
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Labels           : 16: Class Spells
@@ -501,11 +502,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=890886)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -16 | Scaled Value: -16 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.8 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Verdant Embrace (409895), Molten Blood (410651), Insurance! (1215550), Insurance! (1215553), Merithra's Blessing (1256581), Twin Flame (1265991)
                    Family Flags: 1
 #2 (id=896453)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -16 | Scaled Value: -16 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.8 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Verdant Embrace (409895), Molten Blood (410651), Insurance! (1215550), Insurance! (1215553), Merithra's Blessing (1256581), Twin Flame (1265991)
                    Family Flags: 1
 #3 (id=900193)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -733,6 +734,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 30 degrees
 Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 292
@@ -1352,7 +1354,7 @@ Talent Entry     : Generic [free=(Preservation), tree=class, row=2, col=6, max_r
 Class            : Evoker
 School           : Nature
 Spell Type       : None
-Resource         : 3.3% Base Mana (0) (id=232526) w/ Preservation Evoker (id=356810)
+Resource         : 2.4% Base Mana (0) (id=232526) w/ Preservation Evoker (id=356810)
 Resource         : 10% Base Mana (0) (id=305271) w/ Devastation Evoker (id=356809)
 Resource         : 10% Base Mana (0) (id=305272) w/ Augmentation Evoker (id=396186)
 Range            : 25 yards
@@ -2178,6 +2180,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
+Cone Angle       : 30 degrees
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
@@ -2193,6 +2196,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
+Cone Angle       : 30 degrees
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
@@ -2208,6 +2212,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : None
 Range            : 100 yards
+Cone Angle       : 30 degrees
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
@@ -3384,6 +3389,7 @@ Class            : Evoker
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
+Cone Angle       : 60 degrees
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
@@ -5171,6 +5177,10 @@ Effects          :
 #2 (id=1012771)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 1553 (Category) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
                    Affected Spells (Category): Infernal Strike (189110)
+#3 (id=1316373)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 2448 (Category) | Radius: 100 yards | Target: Targeted Ally or Raid (118)
+                   Affected Spells (Category): Shift (1234796)
+Hotfixed         : Target 1 (56 -> 118)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Fel Rush and Infernal Strike reduced by $s1%.
 
@@ -7414,6 +7424,7 @@ Class            : Evoker
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
+Cone Angle       : 60 degrees
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
@@ -8883,6 +8894,7 @@ Class            : Evoker
 School           : Firestorm
 Spell Type       : None
 Range            : 10 - 40 yards
+Cone Angle       : 60 degrees
 Effects          :
 #1 (id=1083139)  : Force Cast (160): Landslide
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 414255 | Target: Self (1)
@@ -9523,6 +9535,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 30 degrees
 Duration         : 24 seconds
 Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Spell Haste Affects Periodic (173), Aura Icon Only For Caster (Limit 10) (212), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -11047,7 +11060,6 @@ Effects          :
 Description      : Fire Breath $?c1[reaches its][and Dream Breath reach their] maximum empower level $s1% faster.
 
 Name             : Consume Flame (desc=Red) (id=444088) [Spell Family (224), Passive, Hidden] 
-Hotfixed         : Description
 Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=5, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
@@ -11070,14 +11082,12 @@ Effects          :
                    Modified By: Preservation Evoker (356810 effect#17)
 #4 (id=1275546)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
-Hotfixed         : Base Value (115 -> 150)
 #5 (id=1275591)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #6 (id=1278179)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 #7 (id=1317269)  : Apply Aura (6) | Dummy (4)
                    Base Value: 115 | Scaled Value: 115 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $?c1[Disintegrate damage consumes ${$s2/1000}.1 sec of Fire Breath from enemies it damages, detonating it for $s4% of the amount consumed.
 
 Pyre damage consumes ${$s3/1000} sec of Fire Breath from enemies it damages, detonating it for $s7% of the amount consumed.][Verdant Embrace healing consumes ${$s5/1000} sec of Dream Breath from allies it heals, detonating it and healing them for $s6% of the amount consumed.
@@ -11340,6 +11350,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 30 degrees
 Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
@@ -12330,6 +12341,11 @@ Effects          :
 #3 (id=1294408)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Misc Value 2: 6229 (Label) | Target: Self (1)
                    Affected Spells (Label): Temporal Anomaly (373861), Temporal Barrier (1291636)
+#4 (id=1319670)  : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 24 | Target: Self (1)
+                   Affected Spells: Temporal Barrier (1291636)
+                   Family Flags: 90
+Hotfixed         : NEW EFFECT
 Description      : Bronze healing and absorption increased by $s1%.
 
 Name             : Delay Harm (id=1239574) [Spell Family (224)] 
@@ -13673,6 +13689,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 30 degrees
 Duration         : 24 seconds
 Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Spell Haste Affects Periodic (173), Aura Icon Only For Caster (Limit 10) (212), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -13773,6 +13790,7 @@ Effects          :
 Description      : Living Flame's cast time is reduced by ${$s1/-1000}.1 sec, and it deals $s2% increased damage or healing when it is a non-instant cast.
 
 Name             : Temporal Barrier (desc=Bronze) (id=1291636) [Spell Family (224)] 
+Hotfixed         : Affecting Spells
 Talent Entry     : Preservation [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=100, replace="Temporal Anomaly" (id=373861)]
 Class            : Evoker
 School           : Arcane
@@ -13789,8 +13807,8 @@ Labels           : 16: Class Spells
                  : 1216: Evoker Spells
                  : 1467: Bronze Evoker Spells
                  : 6229: Tempo Charged (1237978 effect#3)
-Affecting Spells : Preservation Evoker (356810 effect#12), Hover (358267 effect#5), Timeless Magic (376240 effects: #1, #2), Hover (393271 effect#1), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Nozdormu Adept (431715 effects: #1, #2), Tempo Charged (1237978 effect#1)
-Family Flags     : 2, 45
+Affecting Spells : Preservation Evoker (356810 effect#12), Hover (358267 effect#5), Timeless Magic (376240 effects: #1, #2), Hover (393271 effect#1), Spatial Paradox (406732 effect#3), Spatial Paradox (406789 effect#3), Nozdormu Adept (431715 effects: #1, #2), Tempo Charged (1237978 effects: #1, #4)
+Family Flags     : 2, 45, 90
 Attributes       : Limit N (165), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1311112)  : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)

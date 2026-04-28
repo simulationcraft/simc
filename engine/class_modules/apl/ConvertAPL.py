@@ -2,6 +2,7 @@ import sys
 import getopt
 import os
 import shutil
+import re
 
 # Add spec names here; these will be used to find the method in the apl file so should match your method name not necessarily tokenized spec name
 # The script will only attempt to generate the APL of specs listed here
@@ -9,7 +10,7 @@ specList = ['blood', 'frost', 'unholy',  # Death Knight
             'arcane', 'fire', # Mage (frost is ignored because of duplicate name)
             'marksmanship', 'beast_mastery', 'survival', 'marksmanship_ptr', 'beast_mastery_ptr', 'survival_ptr', # Hunter
             'affliction', 'demonology', 'destruction', # Warlock
-            'devastation', 'augmentation', 'devastation_ptr', 'augmentation_ptr', # Evoker
+            'devastation', 'augmentation', 'devastation_ptr', # Evoker
             'shadow', 'shadow_ptr', 'holy', 'discipline', # Priest
             'retribution', 'protection', # Paladin
             'assassination', 'outlaw', 'subtlety', # Rogue
@@ -125,7 +126,8 @@ def main(argv):
             outputFilePath = arg
         elif opt in ("-s", "--spec"):
             specString = arg.lower()
-            if specString not in specList:
+            modifiedSpecString = re.sub(r'_[0-9]+', "", specString)
+            if modifiedSpecString not in specList:
                 print('Invalid spec selected')
                 sys.exit(2)
     subaplList, aplList = read_apl(inputFilePath)

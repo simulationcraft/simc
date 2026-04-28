@@ -122,7 +122,7 @@ jobs:
               engine/class_modules/sc_evoker.cpp|engine/class_modules/apl/apl_evoker.*)
                 mark_class_changed evoker
                 ;;
-              engine/class_modules/sc_hunter.cpp|engine/class_modules/apl/apl_hunter.*)
+              engine/class_modules/sc_hunter.cpp|engine/class_modules/apl/hunter/*|engine/class_modules/apl/apl_hunter.*)
                 mark_class_changed hunter
                 ;;
               engine/class_modules/sc_mage.cpp|engine/class_modules/apl/mage.*)
@@ -137,7 +137,7 @@ jobs:
               engine/class_modules/priest/*|engine/class_modules/apl/apl_priest.*)
                 mark_class_changed priest
                 ;;
-              engine/class_modules/sc_rogue.cpp|engine/class_modules/apl/apl_rogue.*)
+              engine/class_modules/sc_rogue.cpp|engine/class_modules/apl/rogue/*|engine/class_modules/apl/apl_rogue.*)
                 mark_class_changed rogue
                 ;;
               engine/class_modules/sc_shaman.cpp|engine/class_modules/apl/apl_shaman.*|engine/class_modules/apl/shaman/*)

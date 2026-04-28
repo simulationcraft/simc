@@ -297,8 +297,8 @@
     "parent": "ContentTuning",
     "fields": [
       { "data_type": "i", "field": "id_expected_stat_mod" },
-      { "data_type": "i", "field": "id_mythic_plus_season", "ref": "MythicPlusSeason" },
-      { "data_type": "i", "field": "unk_1" }
+      { "data_type": "i", "field": "id_mythic_plus_season_min", "ref": "MythicPlusSeason" },
+      { "data_type": "i", "field": "id_mythic_plus_season_max", "ref": "MythicPlusSeason" }
     ]
   },
   "Covenant": {

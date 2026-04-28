@@ -487,11 +487,10 @@ namespace warlock
     talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
     talents.soul_fire_2 = conditional_spell_lookup( talents.soul_fire.ok(), 281490 );
 
-    talents.inferno = find_talent_spell( talent_tree::SPECIALIZATION, "Inferno" ); // Should be ID 1280483
+    talents.chaos_incarnate = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Incarnate" ); // Should be ID 387275
 
     talents.conflagration_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagration of Chaos" ); // Should be ID 387108
-    talents.conflagration_of_chaos_cf = conditional_spell_lookup( talents.conflagration_of_chaos.ok(), 387109 );
-    talents.conflagration_of_chaos_sb = conditional_spell_lookup( talents.conflagration_of_chaos.ok() && talents.shadowburn.ok(), 387110 );
+    talents.conflagration_of_chaos_buff = conditional_spell_lookup( talents.conflagration_of_chaos.ok(), 387109 );
 
     talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
 
@@ -506,7 +505,7 @@ namespace warlock
     talents.overfiend_buff = conditional_spell_lookup( talents.avatar_of_destruction.ok(), 457578 );
     talents.overfiend_cb = conditional_spell_lookup( talents.avatar_of_destruction.ok(), 434589 );
 
-    talents.chaos_incarnate = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Incarnate" ); // Should be ID 387275
+    talents.inferno = find_talent_spell( talent_tree::SPECIALIZATION, "Inferno" ); // Should be ID 1280483
 
     talents.alythesss_ire = find_talent_spell( talent_tree::SPECIALIZATION, "Alythess's Ire" ); // Should be ID 1244941
     talents.alythesss_ire_buff = conditional_spell_lookup( talents.alythesss_ire.ok(), 1244947 );
@@ -837,13 +836,8 @@ namespace warlock
 
     buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", talents.rain_of_chaos_buff );
 
-    buffs.conflagration_of_chaos_cf = make_buff( this, "conflagration_of_chaos_cf", talents.conflagration_of_chaos_cf )
-                                          ->set_default_value_from_effect( 1 )
-                                          ->set_chance( talents.conflagration_of_chaos->effectN( 1 ).percent() );
-
-    buffs.conflagration_of_chaos_sb = make_buff( this, "conflagration_of_chaos_sb", talents.conflagration_of_chaos_sb )
-                                          ->set_default_value_from_effect( 1 )
-                                          ->set_chance( talents.conflagration_of_chaos->effectN( 1 ).percent() );
+    buffs.conflagration_of_chaos = make_buff( this, "conflagration_of_chaos", talents.conflagration_of_chaos_buff )
+                                       ->set_chance( talents.conflagration_of_chaos->effectN( 1 ).percent() );
 
     buffs.flashpoint = make_buff( this, "flashpoint", talents.flashpoint_buff )
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -945,7 +939,8 @@ namespace warlock
 
     buffs.infernal_bolt = make_buff( this, "infernal_bolt", hero.infernal_bolt_buff );
 
-    buffs.abyssal_dominion = make_buff( this, "abyssal_dominion", hero.abyssal_dominion_buff );
+    buffs.abyssal_dominion = make_buff( this, "abyssal_dominion", hero.abyssal_dominion_buff )
+                                 ->set_duration( hero.abyssal_dominion_buff->duration() + talents.reign_of_tyranny->effectN( 1 ).time_value() );
 
     buffs.ruination = make_buff( this, "ruination", hero.ruination_buff );
 
@@ -1113,8 +1108,7 @@ namespace warlock
     procs.chaotic_inferno = get_proc( "chaotic_inferno" );
     procs.dimensional_rift = get_proc( "dimensional_rift" );
     procs.avatar_of_destruction = get_proc( "avatar_of_destruction" );
-    procs.conflagration_of_chaos_cf = get_proc( "conflagration_of_chaos_cf" );
-    procs.conflagration_of_chaos_sb = get_proc( "conflagration_of_chaos_sb" );
+    procs.conflagration_of_chaos = get_proc( "conflagration_of_chaos" );
     procs.alythesss_ire = get_proc( "alythesss_ire" );
     procs.reverse_entropy = get_proc( "reverse_entropy" );
     procs.rain_of_chaos = get_proc( "rain_of_chaos" );
@@ -1285,13 +1279,12 @@ namespace warlock
     if ( talents.carnivorous_stalkers.ok() )
       flat_rng.carnivorous_stalkers = get_simple_proc_rng( "carnivorous_stalkers", talents.carnivorous_stalkers->effectN( 1 ).percent() );
 
-    // NOTE: 2026-03-06 It has been tested that Infernal Rapidity follows a Flat % chance model for each individual cast
-    // However, the % chance seems to be bugged and only half of what is specified in the spell data is being applied (bug)
+    // Modeling Infernal Rapidity as a pseudo-random distribution (PRD) with a nominal rate of 10%, which corresponds to PRD constant
+    // C = 0.014745844781072676. Each Wild Imp uses its own independent accumulator PRD, reset to 0 on spawn. Since a single Wild Imp
+    // can cast at most 6 Fel Firebolts, the PRD never has time to fully ramp up, resulting in an average proc chance of ~4.80%.
     if ( talents.infernal_rapidity.ok() )
     {
-      double infernal_rapidity_chance = talents.infernal_rapidity->effectN( 1 ).percent();
-      infernal_rapidity_chance = bugs ? infernal_rapidity_chance * 0.5 : infernal_rapidity_chance;
-      flat_rng.infernal_rapidity = get_simple_proc_rng( "infernal_rapidity", infernal_rapidity_chance );
+      prd_rng.infernal_rapidity_prd_c_value = prd::find_constant( talents.infernal_rapidity->effectN( 1 ).percent() );
     }
 
     // Modeling Spiteful Reconstitution as a pseudo-random distribution (PRD) with an uncapped nominal rate of 10%.
@@ -1685,6 +1678,7 @@ namespace warlock
     warlock_pet_list.active = nullptr;
     havoc_target = nullptr;
     haunt_target = nullptr;
+    patient_zero_target = nullptr;
     wild_imp_spawns.clear();
     diabolic_ritual = rng().range( 0, 3 );
     demonic_art_buff_replaced = false;

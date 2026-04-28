@@ -72,6 +72,7 @@ struct warlock_pet_t : public pet_t
 
   struct triggers_t
   {
+    bool hellbent_commander_heartbeat;
     bool hellbent_commander_arise;
     bool hellbent_commander_demise;
   } triggers;
@@ -429,6 +430,7 @@ struct wild_imp_pet_t : public warlock_pet_t
   bool imploded;
   timespan_t infernal_command_ev_ts;
   timespan_t infernal_command_ev_offset;
+  accumulated_rng_t* prd_rng_infernal_rapidity;
 
   wild_imp_pet_t( warlock_t* );
   void init_base_stats() override;

@@ -368,68 +368,70 @@ struct simplified_player_t : public player_t
   // Options
   struct options_t
   {
-    int item_level      = 278;
+    int item_level      = 281;
     std::string variant = "default";
+    double skill         = 1.0;
   } option;
 
   std::map<std::string, bob_settings_t> bob_settings = {
       { "default", 
-        { ROLE_SPELL, 30, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0.1, 0.2,
+        { ROLE_SPELL, 29.4, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0.1, 0.2,
           {
             { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
           } 
         } 
       },
       { "tank", 
-        { ROLE_TANK, 19.0, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0, 0,
+        { ROLE_TANK, 20.9, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0, 0,
           {
             { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
           } 
         } 
       },
       { "healer", 
-        { ROLE_HEAL, 5, true, 1.5_s, 0.25, -1, 5, 1, 0.0, 20000.0, 0.0011, 0, 0,
+        { ROLE_HEAL, 5.4, true, 1.5_s, 0.25, -1, 5, 1, 0.0, 20000.0, 0.0011, 0, 0,
           {
             { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
           } 
         } 
       },
       { "shadow_archon", 
-        { ROLE_SPELL, 13.3, true, 1.5_s, 0.6, -1, 12, 1, 0.0, 20000.0, 0.0011, 0.1, 0.35,
+        { ROLE_SPELL, 19.1, true, 1.5_s, 0.6, -1, 12, 1, -0.1, 20000.0, 0.0011, 0.1, 0.35,
           { 
-            { "two_mins_cds", 0.3, 15_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
-            { "one_mins_cds", 0.4, 25_s, 60_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "trinket", 0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
+            { "pi", 0.2, 15_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
+            { "vf", 0.3, 26_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "one_mins_cds", 0.3, 25_s, 60_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "one_mins_cds_part2", 0.1, 25_s, 60_s, 8_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "one_mins_cds_lingering", 0.1, 35_s, 60_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "two_mins_cds_two", 0.35, 85_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "two_mins_cds_three", 0.125, 26_s, 123_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "dps_pot", 695.0, 30_s, 360_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
+            { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
           } 
         }
       },
       { "shadow",
-        { ROLE_SPELL, 10.12, true, 1.5_s, 0.6, -1, 12, 1, 0.0,  20000.0, 0.0011, 0.1, 0.35,
+        { ROLE_SPELL, 21.0, true, 1.5_s, 0.6, -1, 12, 1, -0.1,  20000.0, 0.0011, 0.1, 0.35,
           { 
-            { "two_mins_cds", 0.2, 15_s, 123_s, 3_s, bob_buff_type_e::BUFF_HASTE },
-            { "30s_cds", 0.3, 12_s, 30.75_s, 5_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "30s_cds_two", 1.1, 13_s, 30.75_s, 4_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "one_mins_cds", 0.25, 20_s, 61.5_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "one_mins_cds_two", 0.05, 20_s, 61.5_s, 3_s, bob_buff_type_e::BUFF_CRIT },
-            { "two_mins_cds_two", 0.2, 20_s, 123_s, 3_s, bob_buff_type_e::BUFF_PCT_PRIMARY },
-            { "two_mins_cds_three", 0.125, 20_s, 123_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "dps_pot", 695.0, 30_s, 360_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
+            { "trinket", 0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
+            { "pi", 0.2, 15_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
+            { "vf", 0.3, 20_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "30s_cds", 0.4, 12_s, 30.75_s, 2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "dps_pot", 695.0, 30_s, 300_s, 2_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
           } 
         }
       },
       { "bm",
-        { ROLE_SPELL, 19.4, true, 1.5_s, 0.45, -1, 8, 1, 0.5, 14000.0, 0.0011, 0, 0,
+        { ROLE_SPELL, 16.4, true, 1.5_s, 0.45, -1, 8, 1, -0.1, 14000.0, 0.0011, 0, 0,
           { 
-            { "beastial_wrath", 0.45, 15_s, 23_s, 2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "dps_pot", 695.0, 30_s, 300_s, 2_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } 
+            { "trinket",            0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
+            { "beastial_wrath",     0.8, 16_s,  30_s, 1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "beastial_wrath2",    0.8,  8_s,  30_s, 1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "dps_pot",          695.0, 30_s, 300_s, 1_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } ,
+            { "racial",           168.7, 15_s, 120_s, 1_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } 
           } 
         }
       },
       { "assa",
-        { ROLE_SPELL, 14.3, false, 1_s, 0.5, -1, 8, 1, 0.8, 11100.0, 0.0011, 0.25, 0.35,
+        { ROLE_SPELL, 13.5, false, 1_s, 0.5, -1, 8, 1, 0.8, 11100.0, 0.0011, 0.25, 0.35,
           { 
             { "two_mins_cds", 0.9, 20_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "one_mins_cds", 0.65, 14_s, 60_s, 4_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -438,38 +440,54 @@ struct simplified_player_t : public player_t
         }
       },
       { "unh",
-        { ROLE_SPELL, 19.3, true, 1.5_s, 0.5, -1, 8, 1, 0.0, 18000.0, 0.0011, 0.05, 0.35,
+        { ROLE_SPELL, 19.6, true, 1.5_s, 0.5, -1, 8, 1, 0, 18000.0, 0.0011, 0.1, 0.35,
           { 
-            { "90s_cds", 1.1, 20_s, 90_s, 6_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "45s_cds", 0.6, 20_s, 45_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "90s_cds", 0.8, 20_s, 90_s, 6_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "45s_cds", 0.55, 20_s, 45_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "45s_cds_2", 0.2, 30_s, 45_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "dps_pot", 695.0, 30_s, 360_s, 7_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } 
           }
         } 
       },
-      { "arcane",
-        { ROLE_SPELL, 10.75, true, 1.5_s, 0.45, -1,  8, 1, 0.0, 20000.0, 0.0011, 0.15, 0.35,
+      { "demo",
+        { ROLE_SPELL, 19.0, true, 1.5_s, 0.5, -1, 8, 1, -0.2, 9000.0, 0.0011, 0.1, 0.35,
           { 
-            { "haste_buff", 0.2, 120_s, 120_s, 2_s, bob_buff_type_e::BUFF_HASTE },
-            { "80s_cds", 0.8, 12_s, 80_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "80s_cds_gcd", 0.3, 1.5_s, 80_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "40s_cds", 1.0, 10_s, 40_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "40s_cds_gcd", 0.4, 1.5_s, 40_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "40s_cds_gcd_two", 0.4, 1.5_s, 40_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "80s_cds_lingering", 0.5, 20_s, 80_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "60s_cds_p1", 0.2,  30_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "60s_cds_p2", 0.2,  30_s,  60_s,  7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "60s_cds_p3", 0.1,  30_s,  60_s, 11_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "60s_cds_p4", 0.1,  20_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "60s_cds_p5", 0.3,  15_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "20s_cds",    0.2,  12_s,  20_s,  2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "120s_cds",   0.2,  15_s, 120_s,  2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "120s_cds_2", 0.2,  15_s, 120_s,  2_s, bob_buff_type_e::BUFF_HASTE },
+            { "dps_pot",  695.0,  30_s, 300_s,  7_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } 
+          }
+        } 
+      },
+      { "arcane",
+        { ROLE_SPELL, 16.4, true, 1.5_s, 0.45, -1,  8, 1, 0.0, 20000.0, 0.0011, 0.15, 0.35,
+          { 
+            { "90s_cds", 1.2, 15_s, 90_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "45s_cds", 0.8, 12_s, 45_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "dps_pot", 695.0, 30_s, 320_s, 2_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } 
           }
         }
       },
       { "dk_frost",
-        { ROLE_SPELL, 16.7, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 13900.0, 0.0011, 0.05, 0.35,
-          { 
-            { "120s_trinket", 0.15, 20_s, 45_s * 3, 3_s, bob_buff_type_e::BUFF_PCT_PRIMARY },
-            { "90s_window", 0.1, 20_s, 90_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "90s_window_rider", 0.25, 30_s, 90_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "pillar_of_frost", 0.4, 18_s, 45_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "pillar_of_frost_smoothing", 0.15, 38_s, 45_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "pillar_of_frost_rider", 0.35, 15_s, 45_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "dps_pot", 695.0, 30_s, 360_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
+        { ROLE_SPELL, 16.2, true, 1.5_s, 0.45, -1, 8, 1, 0, 6900.0, 0.0011, 0.05, 0.35,
+          { { "nerf_lust",                 -0.2,     8_s,  600_s,  0_s, bob_buff_type_e::BUFF_HASTE },
+            { "90s_trinket",                0.15,   20_s,   90_s,  1_s, bob_buff_type_e::BUFF_HASTE },
+            { "funny_dragon",               0.10,    3_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "funny_dragon_haste",         0.12,   12_s,   90_s,  1_s, bob_buff_type_e::BUFF_HASTE },
+            { "breath_of_sindragosa",       0.2,    30_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "pillar_cd_dump",             0.3,    20_s,   45_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "pillar_of_frost",            0.3,    18_s,   45_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "pillar_of_frost_lingering",  0.1,    20_s,   45_s, 19_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "reapers_mark_1",             0.2,    16_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "reapers_mark_2",             0.1,    12_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "reapers_mark_3",             0.2,     8_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "reapers_mark_4",             0.5,     4_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "dps_pot",                  695.0,    30_s,  300_s,  3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
           }
         }
       }
@@ -515,6 +533,7 @@ struct simplified_player_t : public player_t
         b->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
         break;
       case bob_buff_type_e::BUFF_MAST:
+        b->default_value *= 100.0;
         b->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
         break;
       case bob_buff_type_e::BUFF_PCT_PRIMARY:
@@ -679,14 +698,6 @@ struct simplified_player_t : public player_t
 
       m *= 1.0 + p()->cache.mastery_value();
 
-      for ( auto* b : p()->damage_buffs )
-      {
-        if ( b->check() )
-        {
-          m *= 1.0 + b->check_stack_value();
-        }
-      }
-
       m *= 1.0 - haste_modifier + haste_modifier / p()->cache.spell_cast_speed();
 
       return m;
@@ -696,7 +707,7 @@ struct simplified_player_t : public player_t
     {
       double scaling_factor = pow( 1 + settings.scaling_factor, ( p->option.item_level - 489 ) );
 
-      spell_power_mod.direct = settings.sp_coeff * scaling_factor;
+      spell_power_mod.direct = settings.sp_coeff * scaling_factor * p->option.skill;
       gcd_type               = settings.hasted_gcds ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
       base_execute_time      = settings.gcd_time;
 
@@ -742,6 +753,14 @@ struct simplified_player_t : public player_t
       player->started_waiting = sim->current_time();
     }
 
+    void execute() override
+    {
+      pre_execute_state = get_state( pre_execute_state );
+      snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
+
+      spell_t::execute();
+    }
+
     void impact( action_state_t* s ) override
     {
       spell_t::impact( s );
@@ -768,6 +787,21 @@ struct simplified_player_t : public player_t
     make_damage_buffs( get_variant_settings() );
   }
 
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = player_t::composite_player_multiplier( school );
+
+    for ( auto* b : damage_buffs )
+    {
+      if ( b->check() )
+      {
+        m *= 1.0 + b->check_stack_value();
+      }
+    }
+
+    return m;
+  }
+
   double composite_mastery_value() const override
   {
     return composite_mastery() * 0.0125;
@@ -786,22 +820,26 @@ struct simplified_player_t : public player_t
   {
     int item_level = option.item_level;
 
+    const int crafted_item_ilvl = item_level - 4;
+    bool void_event           = ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && sim->dbc->wowv() < wowv_t( 12, 1, 0 ) );
+    const int void_event_ilvl = void_event ? item_level + 9 : item_level;
+
     std::map<slot_e, std::string> default_items = {
-        { SLOT_HEAD, fmt::format( ",id=195476,ilevel={}", item_level ) },
-        { SLOT_NECK, fmt::format( ",id=207163,ilevel={}", item_level ) },
+        { SLOT_HEAD, fmt::format( ",id=195476,gem_id=240983,ilevel={}", item_level ) },
+        { SLOT_NECK, fmt::format( ",id=207163,gem_id=240900,ilevel={}", item_level ) },
         { SLOT_SHOULDERS, fmt::format( ",id=193637,ilevel={}", item_level ) },
         { SLOT_BACK, fmt::format( ",id=195482,ilevel={}", item_level ) },
         { SLOT_CHEST, fmt::format( ",id=193801,ilevel={},enchant_id=7987", item_level ) },
-        { SLOT_WRISTS, fmt::format( ",id=193812,ilevel={}", item_level ) },
+        { SLOT_WRISTS, fmt::format( ",id=193812,gem_id=240900,ilevel={},enchant=23int", crafted_item_ilvl ) },
         { SLOT_HANDS, fmt::format( ",id=193818,ilevel={}", item_level ) },
-        { SLOT_WAIST, fmt::format( ",id=207144,ilevel={}", item_level ) },
+        { SLOT_WAIST, fmt::format( ",id=207144,gem_id=240900,ilevel={},enchant=23int", crafted_item_ilvl ) },
         { SLOT_LEGS, fmt::format( ",id=193759,ilevel={},enchant_id=7935", item_level ) },
         { SLOT_FEET, fmt::format( ",id=207139,ilevel={}", item_level ) },
-        { SLOT_FINGER_1, fmt::format( ",id=207159,ilevel={},enchant_id=7997", item_level ) },
-        { SLOT_FINGER_2, fmt::format( ",id=237570,ilevel={},enchant_id=7997", item_level ) },
-        { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", item_level ) },
-        { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", item_level ) },
-        { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={}", item_level ) },
+        { SLOT_FINGER_1, fmt::format( ",id=207159,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
+        { SLOT_FINGER_2, fmt::format( ",id=237570,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
+        { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", void_event_ilvl ) },
+        { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", void_event_ilvl ) },
+        { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={},enchant=39int", void_event_ilvl ) },
     };
 
     for ( const auto& [ slot, item_str ] : default_items )
@@ -826,7 +864,7 @@ struct simplified_player_t : public player_t
   // Not actually used, emulated.
   std::string default_potion() const override
   {
-    return "potion_of_lights_potential_2";
+    return "lights_potential_2";
   }
 
   std::string default_flask() const override
@@ -1007,6 +1045,7 @@ struct simplified_player_t : public player_t
 
     add_option( opt_string( "variant", option.variant ) );
     add_option( opt_int( "item_level", option.item_level, 0, 4096 ) );
+    add_option( opt_float( "skill", option.skill, 0, 100 ) );
   }
 
   void arise() override
@@ -1076,6 +1115,7 @@ struct evoker_t : public player_t
     bool make_simplified_if_alone                              = true;
     bool remove_precombat_ancient_flame                        = true;
     int simplified_actor_ilevel                                = -1;
+    double ally_skill                                          = 0.9;
     bool simulate_bombardments                                 = true;
     timespan_t simulate_bombardments_time_between_procs_mean   = 0.2_s;
     timespan_t simulate_bombardments_time_between_procs_stddev = 0.10_s;
@@ -1086,7 +1126,9 @@ struct evoker_t : public player_t
     int upheaval_default_rank                                  = 0;
     bool allow_precombat_buffs_for_debug                       = false;
     int estimated_raid_dps_allies                              = 13;
+    bool nerf_em_for_external_sims                             = false;
     bool patchwerk_in_dungeon                                  = false;
+    bool force_raid                                            = false;
   } option;
 
   // Action pointers
@@ -1172,7 +1214,7 @@ struct evoker_t : public player_t
     const spell_data_t* evoker;        // evoker class aura
     const spell_data_t* devastation;   // devastation class aura
     const spell_data_t* preservation;  // preservation class aura
-    const spell_data_t* augmentation;  // augmentation class aura
+    const spell_data_t* augmentation;  // augmentation_12_0_0 class aura
     const spell_data_t* mastery;       // Mastery Spell Data
 
     const spell_data_t* tempered_scales;
@@ -1542,6 +1584,8 @@ struct evoker_t : public player_t
     propagate_const<action_t*> tip_the_scales;
     propagate_const<action_t*> consume_flame;
   } background_actions;
+
+  proc_data_t background_proc_data;
 
   evoker_t( sim_t* sim, std::string_view name, race_e r = RACE_DRACTHYR_HORDE );
 
@@ -4455,7 +4499,11 @@ public:
   {
     auto amount = ebon_int();
 
-    if ( p()->allies_with_my_ebon.size() > p()->spec.ebon_might->effectN( 3 ).base_value() )
+    if ( p()->option.nerf_em_for_external_sims )
+    {
+      amount *= p()->spec.ebon_might->effectN( 3 ).base_value() / p()->option.estimated_raid_dps_allies;
+    }
+    else if ( p()->allies_with_my_ebon.size() > p()->spec.ebon_might->effectN( 3 ).base_value() )
     {
       amount *= p()->spec.ebon_might->effectN( 3 ).base_value() / p()->allies_with_my_ebon.size();
     }
@@ -4835,8 +4883,8 @@ struct living_flame_base_t : public Base
 struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
 {
   chrono_flame_damage_t* chrono_flame;
-  living_flame_damage_t( evoker_t* p, std::string_view name = "living_flame", bool st_only = false )
-    : base_t( std::string( name ) + "_damage", p, p->spec.living_flame_damage, st_only ), chrono_flame( nullptr )
+  living_flame_damage_t( evoker_t* p, std::string_view name = "living_flame", bool afterimage = false )
+    : base_t( std::string( name ) + "_damage", p, p->spec.living_flame_damage, afterimage ), chrono_flame( nullptr )
   {
     if ( p->talent.chronowarden.chrono_flame.enabled() )
     {
@@ -4863,8 +4911,9 @@ struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
 
     da *= 1.0 + p()->buff.iridescence_red->check_value();
 
-    // TODO: Require Instant Cast.
-    da *= 1.0 + p()->talent.chronowarden.chronal_dynamo->effectN( 2 ).percent();
+    // Afterimage
+    if ( !st_only )
+      da *= 1.0 + p()->talent.chronowarden.chronal_dynamo->effectN( 2 ).percent();
 
     return da;
   }
@@ -6274,6 +6323,8 @@ struct disintegrate_t : public essence_spell_t
   {
     essence_spell_t::tick( d );
 
+    p()->trigger_aura_applied_callbacks( proc_data, p() );
+
     if ( current_dots[ 0 ] == d )
     {
       p()->buff.mass_disintegrate_ticks->decrement();
@@ -7150,8 +7201,9 @@ public:
     int player_count = as<int>( p( s )->allies_with_my_ebon.size() );
 
     // Depower Breath of Eons in Raid Encounters
-    if ( p( s ) == s->action->player && player_count > p( s )->spec.ebon_might->effectN( 3 ).base_value() &&
-         p( s )->option.estimated_raid_dps_allies > player_count )
+    if ( ( p( s ) == s->action->player && player_count > p( s )->spec.ebon_might->effectN( 3 ).base_value() &&
+             p( s )->option.estimated_raid_dps_allies > player_count ) ||
+         p( s )->option.force_raid )
     {
       player_count = p( s )->option.estimated_raid_dps_allies;
     }
@@ -7864,19 +7916,9 @@ public:
     if ( p( s )->talent.scalecommander.wingleader.ok() && s->chain_target == 0 )
     {
       cooldown_t* cd = get_cd_for_player( p( s ) );
-      timespan_t cdr;
-      if ( sim->dbc->wowv() < wowv_t( 12, 0, 1 ) )
-      {
-        cdr = -timespan_t::from_seconds(
-            std::min( p( s )->talent.scalecommander.wingleader->effectN( 1 ).base_value() * s->n_targets,
-                      p( s )->talent.scalecommander.wingleader->effectN( 2 ).base_value() ) );
-      }
-      else
-      {
-        size_t idx = p( s )->specialization() == EVOKER_AUGMENTATION ? 3 : 1;
-        cdr        = -std::min( p( s )->talent.scalecommander.wingleader->effectN( idx ).time_value() * s->n_targets,
-                                p( s )->talent.scalecommander.wingleader->effectN( idx + 1 ).time_value() );
-      }
+      size_t idx     = p( s )->specialization() == EVOKER_AUGMENTATION ? 3 : 1;
+      timespan_t cdr = -std::min( p( s )->talent.scalecommander.wingleader->effectN( idx ).time_value() * s->n_targets,
+                                  p( s )->talent.scalecommander.wingleader->effectN( idx + 1 ).time_value() );
       cd->adjust( cdr );
     }
   }
@@ -8690,8 +8732,8 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     allies_with_my_ebon(),
     allies_with_my_prescience(),
     allies_with_my_shifting_sands(),
-    allied_ebons_on_me(),
     active_infernos_blessings(),
+    allied_ebons_on_me(),
     allied_major_cds(),
     last_scales_target( nullptr ),
     was_empowering( false ),
@@ -8873,7 +8915,10 @@ void evoker_t::init_action_list()
       evoker_apl::preservation( this );
       break;
     case EVOKER_AUGMENTATION:
-      evoker_apl::augmentation( this );
+      if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+        evoker_apl::augmentation_12_0_5( this );
+      else
+        evoker_apl::augmentation_12_0_0( this );
       break;
     default:
       evoker_apl::no_spec( this );
@@ -9098,8 +9143,7 @@ void evoker_t::create_permanent_actors()
       option.force_clutchmates = "yes";
       close_as_clutchmates     = true;
 
-      bobs = {
-          { "Bob Flat", "default" }, { "Bob UDK", "unh" }, { "Bob Tank", "tank" }, { "Bob Healer", "healer" } };
+      bobs = { { "Bob Demo", "demo" }, { "Bob UDK", "unh" }, { "Bob Tank", "tank" }, { "Bob Healer", "healer" } };
     }
     else
     {
@@ -9110,12 +9154,11 @@ void evoker_t::create_permanent_actors()
       // This will slightly over-estimate the power of Ebon Might but makes the sims significantly faster.
       bobs = {
           { "Bob UHDK1", "unh" },
-          { "Bob FDK1", "dk_frost" },
+          { "Bob Demo", "demo" },
           { "Bob BM", "bm" },
           { "Bob Flat1", "default" },
           { "Bob Flat2", "default" },
-          { "Bob ShadowA", "shadow_archon" },  // These exist to Sandbag because Shadow sucks right now. This will
-                                               // more accurately represent what the game looks like in a normal comp.
+          { "Bob ShadowVW", "shadow" },  // Local sandbag spec to estimate the more varied damage profiles of a real raid.
           { "Bob Healer1", "healer" },
           { "Bob Tank1", "tank" },
       };
@@ -9127,6 +9170,11 @@ void evoker_t::create_permanent_actors()
 
       p->true_level     = level();
       p->option.variant = pair.second;
+
+      if ( option.ally_skill >= 0 )
+      {
+        p->option.skill = option.ally_skill;
+      }
 
       if ( option.simplified_actor_ilevel >= 0 )
       {
@@ -9398,6 +9446,20 @@ void evoker_t::init_finished()
     } );
   }
 
+  // I hate gaze.
+  // This might be shifting sands but it seems to get slightly too many from sands.
+  // This is about right, though.
+  if ( specialization() == EVOKER_AUGMENTATION )
+  {
+    register_combat_begin( [ this ]( player_t* ) {
+      make_event( sim, timespan_t::from_millis( rng().range( 0, 1250 ) ), [ this ] {
+        trigger_aura_applied_callbacks( background_proc_data, this );
+        make_repeating_event( sim, 1.25_s,
+                              [ this ]() { trigger_aura_applied_callbacks( background_proc_data, this ); } );
+      } );
+    } );
+  }
+
   if ( talent.scalecommander.onslaught.enabled() )
   {
     register_on_combat_state_callback( [ this ]( player_t*, bool in_combat ) {
@@ -9551,6 +9613,8 @@ void evoker_t::init_items()
 void evoker_t::init_spells()
 {
   player_t::init_spells();
+
+  background_proc_data = find_spell( 364342 ); // Blessing of the Bronze
 
   // Evoker Specialization Spells
   spec.evoker               = find_spell( 353167 );  // TODO: confirm this is the class aura
@@ -10276,7 +10340,7 @@ void evoker_t::create_buffs()
                                    talent.scalecommander.unrelenting_siege_buff )
                                ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                                ->set_freeze_stacks( true )
-                               ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                               ->set_tick_callback( []( buff_t* b, int, timespan_t ) {
                                  if ( !b->at_max_stacks() )
                                    b->bump( 1, b->current_value );
                                } );
@@ -10314,6 +10378,7 @@ void evoker_t::create_options()
   add_option( opt_bool( "evoker.make_simplified_if_alone", option.make_simplified_if_alone ) );
   add_option( opt_bool( "evoker.remove_precombat_ancient_flame", option.remove_precombat_ancient_flame ) );
   add_option( opt_int( "evoker.simplified_actor_ilevel", option.simplified_actor_ilevel, 0, 4096 ) );
+  add_option( opt_float( "evoker.ally_skill", option.ally_skill, 0, 10 ) );
   add_option( opt_bool( "evoker.simulate_bombardments", option.simulate_bombardments ) );
   add_option( opt_timespan( "evoker.simulate_bombardments_time_between_procs_mean",
                             option.simulate_bombardments_time_between_procs_mean, 0_s, 9999_s ) );
@@ -10329,6 +10394,8 @@ void evoker_t::create_options()
   add_option( opt_bool( "evoker.allow_precombat_buffs_for_debug", option.allow_precombat_buffs_for_debug ) );
   add_option( opt_int( "evoker.estimated_raid_dps_allies", option.estimated_raid_dps_allies ) );
   add_option( opt_bool( "evoker.patchwerk_in_dungeon", option.patchwerk_in_dungeon ) );
+  add_option( opt_bool( "evoker.nerf_em_for_external_sims", option.nerf_em_for_external_sims ) );
+  add_option( opt_bool( "evoker.force_raid", option.force_raid ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
@@ -10768,26 +10835,7 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
         rng().range<unsigned>( talent.clairvoyant.enabled() ? mote_buffs_e::MAX : mote_buffs_e::PRESCIENCE ) );
   }
 
-  if ( target )
-  {
-    auto td = get_target_data( target );
-    switch ( mote_buff )
-    {
-      case mote_buffs_e::INFERNOS_BLESSING:
-        td->buffs.infernos_blessing->trigger();
-        return;
-      case mote_buffs_e::PRESCIENCE:
-        td->buffs.prescience->trigger();
-        return;
-      case mote_buffs_e::SHIFTING_SANDS:
-        td->buffs.shifting_sands->current_value = cache.mastery_value();
-        td->buffs.shifting_sands->trigger();
-        return;
-      default:
-        return;
-    }
-  }
-  else
+  if ( !target )
   {
     target                        = this;
     std::vector<player_t*> helper = sim->player_non_sleeping_list.data();
@@ -10801,38 +10849,40 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
       case mote_buffs_e::SYMBIOTIC_BLOOM:
       case mote_buffs_e::SHIFTING_SANDS:
       default:
-
-        // Add a 3 copies of yourself. 50%~ for M+, relatively low in Raid.
-        // TODO: Rework this entire system to use actions with travel times.
-        helper.push_back( this );
-        helper.push_back( this );
-        helper.push_back( this );
+        //// Add a 3 copies of yourself. 50%~ for M+, relatively low in Raid.
+        //// TODO: Rework this entire system to use actions with travel times.
+        // helper.push_back( this );
+        // helper.push_back( this );
+        // helper.push_back( this );
         target = rng().range( helper );
         break;
     }
+  }
 
-    assert( target && "Target should be non-null" );
+  assert( target && "Target should be non-null" );
 
-    switch ( mote_buff )
+  switch ( mote_buff )
+  {
+    case mote_buffs_e::INFERNOS_BLESSING:
+      // Maintain two IBs
+      if ( active_infernos_blessings.size() > 0 )
+        rng().range( active_infernos_blessings )->cancel();
+      get_target_data( target )->buffs.infernos_blessing->trigger();
+      return;
+    case mote_buffs_e::PRESCIENCE:
+      get_target_data( target )->buffs.prescience->trigger();
+      return;
+    case mote_buffs_e::SYMBIOTIC_BLOOM:
+      return;
+    case mote_buffs_e::SHIFTING_SANDS:
     {
-      case mote_buffs_e::INFERNOS_BLESSING:
-        get_target_data( target )->buffs.infernos_blessing->trigger();
-        return;
-      case mote_buffs_e::PRESCIENCE:
-        get_target_data( target )->buffs.prescience->trigger();
-        return;
-      case mote_buffs_e::SYMBIOTIC_BLOOM:
-        return;
-      case mote_buffs_e::SHIFTING_SANDS:
-      {
-        auto td                                 = get_target_data( target );
-        td->buffs.shifting_sands->current_value = cache.mastery_value();
-        td->buffs.shifting_sands->trigger();
-        return;
-      }
-      default:
-        return;
+      auto td                                 = get_target_data( target );
+      td->buffs.shifting_sands->current_value = cache.mastery_value();
+      td->buffs.shifting_sands->trigger();
+      return;
     }
+    default:
+      return;
   }
 }
 

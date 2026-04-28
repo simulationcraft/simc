@@ -1,5 +1,6 @@
 from collections import defaultdict
 import logging
+import math
 
 from dbc import db, util, constants
 
@@ -805,18 +806,17 @@ class ExpectedStatModSet(DataSet):
                     mod_ids.append([e, c[1]])
                     break
             else:
-                # check if it's m+ season for the current expansion
-                if e.id_parent == dungeon_id[0] and e.ref('id_mythic_plus_season').id_expansion == xpac:
+                if e.id_parent == dungeon_id[0]:
                     mod_d_ids.append([e, dungeon_id[1]])
 
         # assume highest mythic plus season id is the current season
-        mod_d_ids.sort(key = lambda e: e[0].id_mythic_plus_season, reverse = True)
-        mod_d_ids = [
-            e for e in mod_d_ids
-                if e[0].id_mythic_plus_season == mod_d_ids[0][0].id_mythic_plus_season
-        ]
+        season = max(max(e[0].id_mythic_plus_season_min, e[0].id_mythic_plus_season_max) for e in mod_d_ids)
+        def in_bounds(e):
+            min_season = e[0].id_mythic_plus_season_min or -math.inf
+            max_season = e[0].id_mythic_plus_season_max or  math.inf
+            return min_season <= season < max_season
 
-        mod_ids += mod_d_ids
+        mod_ids += [e for e in mod_d_ids if in_bounds(e)]
 
         # fill in results
         for entry in self.db('ExpectedStatMod').values():
