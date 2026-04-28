@@ -2380,7 +2380,7 @@ Effects          :
                    Family Flags: 2
 #3 (id=191143)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Dire Beast (120679), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Freezing Trap (187650), Tar Trap (187698), Harpoon (190925), Hatchet Toss (193265), Cobra Shot (193455), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), High Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Kill Command (259489), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Death Chakram (325553), Wild Mark (328275), Wild Spirit (328520), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Spearhead (360966), Death Chakram (361756), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Hunter's Mark (428402), Black Arrow (466930), Intimidation (474421), Unbreakable Bond (1223323), Raptor Swipe (1262293), Raptor Swipe (1262343), Wild Thrash (1264359), Moonlight Chakram (1264949), Moonlight Chakram (1266081)
+                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Dire Beast (120679), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Freezing Trap (187650), Tar Trap (187698), Harpoon (190925), Hatchet Toss (193265), Cobra Shot (193455), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), High Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Kill Command (259489), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Death Chakram (325553), Wild Mark (328275), Wild Spirit (328520), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Spearhead (360966), Death Chakram (361756), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Hunter's Mark (428402), Black Arrow (466930), Intimidation (474421), Raptor Swipe (1262293), Raptor Swipe (1262343), Wild Thrash (1264359), Moonlight Chakram (1264949), Moonlight Chakram (1266081)
                    Family Flags: 1
 #4 (id=191144)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1628 (Category) | Target: Self (1)
@@ -11408,7 +11408,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1019312)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Dire Beast (120679), Dire Beast (219199), Dire Beast (281036), Dark Hound (442419), Summon Fenryr (459735), Summon Hati (459738), Bear Summon (471993), Unbreakable Bond (1223323)
+                   Affected Spells: Dire Beast (120679), Dire Beast (219199), Dire Beast (281036), Dark Hound (442419), Summon Fenryr (459735), Summon Hati (459738), Bear Summon (471993)
                    Family Flags: 100
 #2 (id=1019319)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -16395,6 +16395,7 @@ Description      : $@spelldesc471876
 Tooltip          : Wyvern is summoned.
 
 Name             : Unbreakable Bond (id=1223323) [Spell Family (9), Passive] 
+Hotfixed         : Affecting Spells
 Talent Entry     : Marksmanship [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Hunter
 School           : Nature
@@ -16403,15 +16404,10 @@ Range            : 40 yards
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Hunter (137014 effect#3), Dire Frenzy (385810 effect#1)
-Family Flags     : 1, 100
 Attributes       : Passive (6), Do Not Display Range (126), Not In Spellbook (143)
 Effects          :
 #1 (id=1211164)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-#2 (id=1211841)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7f | Target: Active Pet (5)
-                   Affected School(s): All
 Description      : Regain access to Call Pet.
 
 While outdoors, your pet deals $s1% increased damage and takes $s2% reduced damage.

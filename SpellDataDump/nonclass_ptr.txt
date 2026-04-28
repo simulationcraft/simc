@@ -254436,7 +254436,7 @@ Tooltip          : Healing $w1 damage every second.
 Name             : [DNT] Fused Vitality (id=1293502) 
 School           : Physical
 Spell Type       : None
-Cooldown         : 1 seconds
+Cooldown         : 0.001 seconds
 Effects          :
 #1 (id=1314189)  : Create Item (24)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)

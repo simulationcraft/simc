@@ -1905,6 +1905,7 @@ Effects          :
 Description      : $@spelldesc358385
 
 Name             : Obsidian Scales (desc=Black) (id=363916) [Spell Family (224)] 
+Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Augmentation), tree=class, row=1, col=4, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
@@ -1926,7 +1927,7 @@ Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Mastery: Timewalker (406380 effect#2), Hardened Scales (441180 effect#1)
 Family Flags     : 39, 67
-Attributes       : Not Shapeshifted (16), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
+Attributes       : Not Shapeshifted (16), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (C_Spell.IsSpellImportant) (491), Big Defensive (C_UnitAuras.AuraIsBigDefensive) (512)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=903598)   : Apply Aura (6) | Modify Damage Taken% (87)
