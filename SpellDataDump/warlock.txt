@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67186 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67235 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -13031,6 +13031,9 @@ Effects          :
 #8 (id=1313880)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Misc Value 2: 6542 (Label) | Target: Self (1)
                    Affected Spells (Label): Dark Harvest (1257065)
+#9 (id=1322330)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Misc Value 2: 6704 (Label) | Radius: 100 yards | Target: Self and Summons in Area (120)
+Hotfixed         : NEW EFFECT
 Description      : Shadow damage dealt by your spells and abilities is increased by $s3% and your Shadow spells gain $s1% more critical strike chance from all sources.
 
 Name             : Blackened Soul (id=440043) [Spell Family (5), Passive, Hidden] 
@@ -16382,6 +16385,7 @@ Effects          :
 Description      : Damage dealt by $?s388667[Drain Soul][Shadow Bolt] has a $?s198590[$s1][$s2]% chance to make your next Unstable Affliction cost no Soul Shards and cast instantly.
 
 Name             : Shard Instability (id=1260269) [Spell Family (5)] 
+Hotfixed         : Proc Stacks (1 -> 0)
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -16389,7 +16393,7 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Stacks           : 1 initial, 3 maximum
+Stacks           : 3 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Allow Class Ability Procs (416), Do Not Display Cast Time (441)
@@ -18318,6 +18322,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 5671
+                 : 6704: Xalan's Cruelty (440040 effect#9)
 Triggered By     : Wrath of Nathreza (1262028)
 Attributes       : Do Not Display Range (126), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :

@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67186 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67235 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -15531,7 +15531,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Fracture (263642)
                    Family Flags: 73
-Hotfixed         : Base Value (5 -> 3)
 Description      : $?s263642[Fracture]?a212613[Shear][Consume] generates $?a212613[$s1][$s2] additional Fury and deals $?a212613[$s3%][$s4%] increased damage.
 
 Name             : Swift Erasure (id=1253668) [Spell Family (107), Passive] 
@@ -15850,7 +15849,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shear (203782)
                    Family Flags: 22
-Hotfixed         : Base Value (5 -> 3)
 #2 (id=1263778)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Consume (473662), Devour (1217610)
@@ -15867,7 +15865,6 @@ Hotfixed         : Base Value (5 -> 3)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Fracture (263642)
                    Family Flags: 73
-Hotfixed         : Base Value (5 -> 3)
 Description      : $@spelldesc1253415
 Tooltip          : $?s263642[Fracture]?a212613[Shear][Consume] generates additional Fury and deals increased damage.
 
@@ -16836,7 +16833,6 @@ Effects          :
 Description      : Your movement speed is increased by $s1%.
 
 Name             : Untethered Rage (id=1270444) [Spell Family (107), Passive] 
-Hotfixed         : Description
 Talent Entry     : Vengeance [tree=spec, row=11, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
@@ -17581,4 +17577,17 @@ Effects          :
                    Base Value: 16 | Scaled Value: 16 | Resource: fury | Target: Self (1)
                    Modified By: Celestial Echoes (1253415 effect#2)
 Description      : $@spelldesc473662
+
+Name             : Spontaneous Immolation (id=1292047) [Spell Family (107), Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 1 seconds
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Floating Combat Text On Cast (198), Allow Class Ability Procs (416), Unknown (489)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
+Effects          :
+#1 (id=1311826)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 

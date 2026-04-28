@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67186 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67235 Live
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -1905,7 +1905,6 @@ Effects          :
 Description      : $@spelldesc358385
 
 Name             : Obsidian Scales (desc=Black) (id=363916) [Spell Family (224)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [free=(Augmentation), tree=class, row=1, col=4, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm

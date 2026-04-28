@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67186 Live
+SimulationCraft 1201-01 for World of Warcraft 12.0.5.67235 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -236774,7 +236774,6 @@ Effects          :
 Description      : $@spelldesc1235159
 
 Name             : Midnight Perception (id=1235216) 
-Hotfixed         : Cooldown (0 -> 1000), GCD (1500 -> 0)
 School           : Physical
 Spell Type       : None
 Range            : 12 - 15 yards
@@ -239522,7 +239521,6 @@ Effects          :
 Tooltip          : Taking increased damage from $@spellname1237158.
 
 Name             : Chum (id=1237942) 
-Hotfixed         : Cooldown (0 -> 1000), GCD (1500 -> 0)
 School           : Physical
 Spell Type       : None
 Range            : 12 - 15 yards
@@ -247103,7 +247101,6 @@ Effects          :
 Tooltip          : Critical Strike decreased by $w1.
 
 Name             : Emberwing Burn (id=1255856) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
@@ -247114,7 +247111,6 @@ Effects          :
 Tooltip          : Mastery decreased by $w1.
 
 Name             : Emberwing Burn (id=1255857) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
@@ -252658,7 +252654,6 @@ Attributes       : No Aura Cancel (31), Aura Points On Client (268), Visible onl
 Effects          :
 #2 (id=1281336)  : Apply Aura (6) | Enable Profession Effects (511)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 323 | Target: Self (1)
-Hotfixed         : Misc Value (397 -> 323)
 Tooltip          : Midnight Fishing Skill increased by $w1.
 
 Midnight Fishing Perception increased by $w2.
