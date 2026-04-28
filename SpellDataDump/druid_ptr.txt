@@ -16362,6 +16362,7 @@ Description      : $?c1[Orbital Strike damage increased by $s3%, and damage of S
 Whirling Stars increases the haste you gain during ][]$?c1&s394013[Incarnation: Chosen of Elune]?c1[Celestial Alignment][]$?c1[ by an additional $s4%.][Reforestation grants Tree of Life for $s5 additional sec.]
 
 Name             : Blooming Infusion (id=429433) [Spell Family (7), Passive] 
+Hotfixed         : Internal Cooldown (0 -> 100)
 Talent Entry     : Keeper of the Grove (Balance, Restoration) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
 Class            : Druid
 School           : Physical
@@ -16370,6 +16371,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
                  : 3022
+Internal Cooldown: 0.1 seconds
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
