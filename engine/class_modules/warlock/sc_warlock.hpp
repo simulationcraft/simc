@@ -467,7 +467,6 @@ public:
     player_talent_t rune_of_shadows;
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
     player_talent_t fel_armaments;
-    const spell_data_t* fel_armaments_2; // Another effect of Fel Armaments that, due to a bug, is always active
 
     player_talent_t imp_gang_boss;
     const spell_data_t* imp_gang_boss_buff; // Buff on Wild Imps
@@ -795,7 +794,6 @@ public:
     proc_data_t agony_energize;
     proc_data_t demonbolt_energize;
     proc_data_t incinerate_energize;
-    proc_data_t fel_armaments_2;
     proc_data_t marked_soul;
   } proc_data_entries;
 
@@ -1116,7 +1114,6 @@ public:
   bool eye_explosion_instanced_bug_cb;
   bool eye_explosion_instanced_bug_sb;
   bool eye_explosion_instanced_bug_rof;
-  bool fel_armaments_extra_effect_bug;
   double tyrant_antoran_armaments_target_mul;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );

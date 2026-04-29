@@ -216,7 +216,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     eye_explosion_instanced_bug_cb( false ),
     eye_explosion_instanced_bug_sb( false ),
     eye_explosion_instanced_bug_rof( true ),
-    fel_armaments_extra_effect_bug( false ),
     tyrant_antoran_armaments_target_mul( 1.0 )
 {
   cooldowns.haunt = get_cooldown( "haunt" );
@@ -266,14 +265,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
                         this->name(), buffs.hellbent_commander->name(), current_stacks, expected_stacks );
       }
       assert( ( buffs.hellbent_commander->check() == expected_stacks ) && "Incorrent Demon Count for Hellbent Commander" );
-    }
-
-    if ( bugs && talents.fel_armaments.ok() )
-    {
-      // On each Heartbeat, the player periodically applies a hidden Fel Armaments aura to the Felguard, triggering procs
-      auto active_pet = warlock_pet_list.active;
-      if ( active_pet && active_pet->pet_type == PET_FELGUARD )
-        trigger_aura_applied_callbacks( proc_data_entries.fel_armaments_2, active_pet );
     }
 
     for ( auto pet : active_pets )
@@ -571,9 +562,6 @@ std::string warlock_t::create_profile( save_e stype )
     if ( !eye_explosion_instanced_bug_rof )
       profile_str +=
           "warlock.eye_explosion_instanced_bug_rof=" + util::to_string( as<int>( eye_explosion_instanced_bug_rof ) ) + "\n";
-    if ( fel_armaments_extra_effect_bug )
-      profile_str +=
-          "warlock.fel_armaments_extra_effect_bug" + util::to_string( as<int>( fel_armaments_extra_effect_bug ) ) + "\n";
     if ( tyrant_antoran_armaments_target_mul < 1.0 )
       profile_str +=
           "warlock.tyrant_antoran_armaments_target_mul=" + util::to_string( tyrant_antoran_armaments_target_mul ) + "\n";
@@ -596,7 +584,6 @@ void warlock_t::copy_from( player_t* source )
   eye_explosion_instanced_bug_cb = p->eye_explosion_instanced_bug_cb;
   eye_explosion_instanced_bug_sb = p->eye_explosion_instanced_bug_sb;
   eye_explosion_instanced_bug_rof = p->eye_explosion_instanced_bug_rof;
-  fel_armaments_extra_effect_bug = p->fel_armaments_extra_effect_bug;
   tyrant_antoran_armaments_target_mul = p->tyrant_antoran_armaments_target_mul;
 
   rng_settings = p->rng_settings;

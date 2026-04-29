@@ -1426,13 +1426,7 @@ using namespace helpers;
         initial_stacks += ( int )( p()->talents.sudden_onset->effectN( 2 ).base_value() );
 
       if ( active_4pc<MID1>() )
-      {
-        // NOTE: 2026-04-24 Tier set is only applying 1 additional stack to Agony on initial cast if Sudden Onset is not talented (bug?)
-        if ( p()->bugs && !p()->talents.sudden_onset.ok() )
-          initial_stacks += ( int )( p()->tier.wl_affliction_12_0_class_set_4pc->effectN( 1 ).base_value() * 0.5 );
-        else
-          initial_stacks += ( int )( p()->tier.wl_affliction_12_0_class_set_4pc->effectN( 1 ).base_value() );
-      }
+        initial_stacks += ( int )( p()->tier.wl_affliction_12_0_class_set_4pc->effectN( 1 ).base_value() );
 
       int delta_stacks = initial_stacks - td( execute_state->target )->dots.agony->current_stack();
 
@@ -1470,19 +1464,27 @@ using namespace helpers;
 
     void execute() override
     {
-      // NOTE: 2026-02-20 Currently ingame a UA applied by Fatal Echoes also processes/consumes the UA 'execute' effects:
+      // NOTE: 2026-04-29 Currently ingame a UA applied by Fatal Echoes also processes/consumes some UA 'execute' effects:
       // - Succulent Soul: consumes a stack and triggers its effects (Demonic Soul dmg and Manifested Avarice rng proc)
       // - Cull the Weak: reduces the cooldown of Dark Harvest
-      // - Shard Instability: consumes a stack but does nothing (bug?) because the Fatal Echoes UA is already free and instant
-      // - Hellcaller Blackened Soul: increments wither stacks
+      // - Hellcaller Blackened Soul: increments Wither stacks
+      // - Shard Instability: unaffected; Fatal Echoes does not consume a stack of this buff
 
       warlock_spell_t::execute();
 
       if ( p()->talents.cull_the_weak.ok() )
         p()->cooldowns.dark_harvest->adjust( -p()->talents.cull_the_weak->effectN( 1 ).time_value() );
 
-      // Seems that Shard Instability buff takes effect (and is consumed) even if it is obtained while Unstable Affliction is being cast (bug?)
-      p()->buffs.shard_instability->decrement();
+      // NOTE: 2026-04-29 If Shard Instability buff is gained during the casting of Unstable Affliction, that UA cast benefits from the cost
+      // reduction but does not consume the effect (bug?). As expected, a Fatal Echoes UA proc does not consume it either.
+      if ( p()->talents.shard_instability.ok() && time_to_execute == 0_ms && !is_fatal_echoes_execute )
+      {
+        // NOTE: 2026-04-29 Unstable Affliction consumes all Shard Instability stacks at once (bug)
+        if ( p()->bugs )
+          p()->buffs.shard_instability->expire();
+        else 
+          p()->buffs.shard_instability->decrement();
+      }
 
       if ( soul_harvester() && p()->buffs.succulent_soul->check() )
       {
@@ -1539,14 +1541,19 @@ using namespace helpers;
           {
             p()->procs.fatal_echoes->occur();
             make_event( sim, 1_ms, [ this, t = d->target ] {
-              const bool prev_ua_ticking = td( t )->dots.unstable_affliction->is_ticking();
-              this->set_target( t );
-              this->is_fatal_echoes_execute = true;
-              this->execute();
-              this->is_fatal_echoes_execute = false;
-              // When UA is applied by Fatal Echoes, Cascading Calamity is also triggered
-              if ( p()->talents.cascading_calamity.ok() && !prev_ua_ticking )
-                p()->buffs.cascading_calamity->trigger();
+              // NOTE: 2026-04-29 Fatal Echoes proc needs a Soul Shard to trigger (bug)
+              if ( !p()->bugs || p()->resources.current[ RESOURCE_SOUL_SHARD ] >= 1.0 )
+              {
+                const bool prev_ua_ticking = td( t )->dots.unstable_affliction->is_ticking();
+                this->set_target( t );
+                this->time_to_execute = 0_ms;
+                this->is_fatal_echoes_execute = true;
+                this->execute();
+                this->is_fatal_echoes_execute = false;
+                // When UA is applied by Fatal Echoes, Cascading Calamity is also triggered
+                if ( p()->talents.cascading_calamity.ok() && !prev_ua_ticking )
+                  p()->buffs.cascading_calamity->trigger();
+              }
             } );
           }
         }
@@ -1585,7 +1592,8 @@ using namespace helpers;
 
     double cost_pct_multiplier() const override
     {
-      if ( is_fatal_echoes_execute )
+      // NOTE: 2026-04-29 Fatal Echoes proc consumes a Soul Shard (bug)
+      if ( !p()->bugs && is_fatal_echoes_execute )
         return 0.0;
 
       return warlock_spell_t::cost_pct_multiplier();
@@ -1920,8 +1928,8 @@ using namespace helpers;
         base_dd_min = base_dd_max = 0;
         spell_power_mod.direct = 0;
 
-        // NOTE: 2026-02-20 DoT (Malefic Grasp) extra ticks are not affected by Death's Embrace (bug?)
-        affected_by.deaths_embrace = !p->bugs && p->talents.deaths_embrace.ok();
+        // DoT (Malefic Grasp) extra ticks are affected by Death's Embrace
+        affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
       }
 
       void impact( action_state_t* s ) override
@@ -2013,7 +2021,7 @@ using namespace helpers;
       extra_tick_mul( p->talents.malefic_grasp_2->effectN( 2 ).percent() )
     {
       channeled = true;
-      // NOTE: 2026-02-20 Malefic Grasp extra ticks are not affected by Death's Embrace (bug?)
+      // NOTE: 2026-04-29 Malefic Grasp ticks are not affected by Death's Embrace (bug?)
       affected_by.deaths_embrace = !p->bugs && p->talents.deaths_embrace.ok();
 
       if ( p->talents.cunning_cruelty.ok() )
@@ -2080,8 +2088,7 @@ using namespace helpers;
 
       if ( soul_harvester() && p()->buffs.nightfall->check() )
       {
-        // NOTE: 2026-03-21 Malefic Grasp consumes Nightfall without triggering Wicked Reaping (bug)
-        if ( !p()->bugs && p()->hero.wicked_reaping.ok() )
+        if ( p()->hero.wicked_reaping.ok() )
           p()->proc_actions.wicked_reaping->execute_on_target( target );
 
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
@@ -5081,7 +5088,7 @@ using namespace helpers;
   struct summon_mother_of_chaos_t : public warlock_spell_t
   {
     summon_mother_of_chaos_t( warlock_t* p )
-      : warlock_spell_t( "Summon Mother of Chaos (Summon)", p, p->hero.summon_mother )
+      : warlock_spell_t( "Summon Mother of Chaos", p, p->hero.summon_mother )
     {
       harmful = may_crit = false;
       background = true;
@@ -5322,11 +5329,13 @@ using namespace helpers;
       dot->decrement( 1 );
       assert( ( dot->is_ticking() && dot->current_stack() > 0 ) && "UA stack decrement event should not cancel the DoT" );
 
+      // NOTE: 2026-04-29 Fatal Echoes proc needs a Soul Shard to trigger (bug)
       // if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && dot->is_ticking() && dot->current_stack() > 0 && p->prd_rng.fatal_echoes->trigger() )
-      if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && p->prd_rng.fatal_echoes->trigger() )
+      if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && p->prd_rng.fatal_echoes->trigger() && ( !p->bugs || p->resources.current[ RESOURCE_SOUL_SHARD ] >= 1.0 ) )
       {
         p->procs.fatal_echoes->occur();
         dot->current_action->set_target( target );
+        dot->current_action->time_to_execute = 0_ms;
         debug_cast<unstable_affliction_t*>( dot->current_action )->is_fatal_echoes_execute = true;
         dot->current_action->execute();
         debug_cast<unstable_affliction_t*>( dot->current_action )->is_fatal_echoes_execute = false;
