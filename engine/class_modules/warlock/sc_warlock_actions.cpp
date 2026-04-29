@@ -1477,7 +1477,7 @@ using namespace helpers;
 
       // NOTE: 2026-04-29 If Shard Instability buff is gained during the casting of Unstable Affliction, that UA cast benefits from the cost
       // reduction but does not consume the effect (bug?). As expected, a Fatal Echoes UA proc does not consume it either.
-      if ( p()->talents.shard_instability.ok() && time_to_execute == 0_ms && !is_fatal_echoes_execute )
+      if ( time_to_execute == 0_ms && !is_fatal_echoes_execute )
       {
         // NOTE: 2026-04-29 Unstable Affliction consumes all Shard Instability stacks at once (bug)
         if ( p()->bugs )
