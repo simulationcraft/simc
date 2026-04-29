@@ -231464,7 +231464,7 @@ Labels           : 959
                  : 4902
                  : 4905
                  : 4906
-                 : 4913
+                 : 4906
                  : 6103
 Proc Chance      : 101%
 Proc Flags       : Death
@@ -231506,7 +231506,7 @@ Labels           : 959
                  : 4902
                  : 4905
                  : 4906
-                 : 4913
+                 : 4906
                  : 6103
 Proc Chance      : 101%
 Proc Flags       : Death
@@ -234582,7 +234582,7 @@ Labels           : 959
                  : 4377: W-47CH D0G (1259647 effect#4)
                  : 4897
                  : 4907
-                 : 4913
+                 : 4907
                  : 6101
 Proc Chance      : 101%
 Proc Flags       : Death

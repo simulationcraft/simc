@@ -7873,8 +7873,6 @@ Effects          :
 #1 (id=1074514)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.5 | Radius: 3 - 6 yards | Target: Front in Area (78) -> at Enemy in Area (16)
                    Modified By: Close as Clutchmates (396043 effect#1)
-#2 (id=1075735)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Breath of Eons
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409990 | Radius: 6 yards | Target: at Enemy in Area (16)
 Description      : $@spelldesc403631
 Tooltip          : Accumulating $w1% damage from $@auracaster's allies who are affected by Ebon Might.
 
@@ -7941,8 +7939,6 @@ Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Displa
 Effects          :
 #1 (id=1074767)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#2 (id=1075264)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Breath of Eons
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409990 | Target: Targeted Enemy (6)
 Description      : $@spelldesc403631
 Tooltip          : Accumulating damage done, and will critically strike for $w1 Arcane damage upon expiration.
 
@@ -8068,7 +8064,6 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
-Triggered By     : Temporal Wound (409560), Temporal Wound (409722), Temporal Wound (409992), Temporal Wound (409993), Temporal Wound (409994)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Not an Attack (194), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1075262)  : Apply Aura (6) | Dummy (4)
@@ -8089,8 +8084,6 @@ Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Displa
 Effects          :
 #1 (id=1075265)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#2 (id=1075266)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Breath of Eons
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409990 | Target: Targeted Enemy (6)
 Description      : $@spelldesc403631
 Tooltip          : Accumulating damage done, and will critically strike for $w1 Arcane damage upon expiration.
 
@@ -8108,8 +8101,6 @@ Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Displa
 Effects          :
 #1 (id=1075267)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#2 (id=1075268)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Breath of Eons
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409990 | Target: Targeted Enemy (6)
 Description      : $@spelldesc403631
 Tooltip          : Accumulating damage done, and will critically strike for $w1 Arcane damage upon expiration.
 
@@ -8127,8 +8118,6 @@ Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Displa
 Effects          :
 #1 (id=1075269)  : Apply Aura (6) | Dummy (4) | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-#2 (id=1075270)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Breath of Eons
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409990 | Target: Targeted Enemy (6)
 Description      : $@spelldesc403631
 Tooltip          : Accumulating damage done, and will critically strike for $w1 Arcane damage upon expiration.
 

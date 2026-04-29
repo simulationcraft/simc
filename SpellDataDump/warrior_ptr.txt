@@ -15143,6 +15143,7 @@ $@spellicon262115 $@spellname262115
 $@spelldesc262115
 
 Name             : Mortal Wounds (id=1261062) [Spell Family (4), Passive] 
+Hotfixed         : Attributes
 Talent Entry     : Arms [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
@@ -15152,7 +15153,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee
-Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1270668)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
