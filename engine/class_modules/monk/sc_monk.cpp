@@ -899,6 +899,25 @@ struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_at
 
 struct rising_sun_kick_t : monk_melee_attack_t
 {
+  enum source_e
+  {
+    RISING_SUN_KICK,
+    RUSHING_WIND_KICK
+  };
+
+  static const char *skyfire_heel_source_string( source_e source )
+  {
+    switch ( source )
+    {
+      case RISING_SUN_KICK:
+        return "rising_sun_kick";
+      case RUSHING_WIND_KICK:
+        return "rushing_wind_kick";
+      default:
+        assert( false );
+    }
+  }
+
   struct base_damage_t : monk_melee_attack_t
   {
     base_damage_t( monk_t *player, std::string_view name, const spell_data_t *spell )
@@ -982,40 +1001,71 @@ struct rising_sun_kick_t : monk_melee_attack_t
     }
   };
 
-  template <typename TBase>
+  template <typename TBase, source_e source>
   struct skyfire_heel_t : TBase
   {
     struct damage_t : monk_melee_attack_t
     {
-      damage_t( monk_t *player, std::string_view parent_name )
-        : monk_melee_attack_t( player, fmt::format( "skyfire_heel_{}", parent_name ),
+      damage_t( monk_t *player )
+        : monk_melee_attack_t( player, fmt::format( "skyfire_heel_{}", skyfire_heel_source_string( source ) ),
                                player->talent.windwalker.skyfire_heel_damage )
       {
-        aoe = -1;
-        // TODO: verify this works with overridden base_dd_x
+        switch ( source )
+        {
+          case RISING_SUN_KICK:
+            aoe                    = -1;
+            target_filter_callback = secondary_targets_only();
+            break;
+          case RUSHING_WIND_KICK:
+            break;
+        }
+
         reduced_aoe_targets = player->talent.windwalker.skyfire_heel->effectN( 2 ).base_value();
 
         background = dual = true;
-      }
-
-      std::vector<player_t *> &target_list() const override
-      {
-        std::vector<player_t *> &tl = monk_melee_attack_t::target_list();
-        range::erase_remove( tl, target );
-        return tl;
       }
     };
 
     action_t *damage;
 
+    double total;
+    std::map<player_t *, double> track;
+
     template <typename... Args>
-    skyfire_heel_t( monk_t *player, Args &&...args ) : TBase( player, std::forward<Args>( args )... ), damage( nullptr )
+    skyfire_heel_t( monk_t *player, Args &&...args )
+      : TBase( player, std::forward<Args>( args )... ), damage( nullptr ), total( 0.0 ), track( {} )
     {
       if ( !player->talent.windwalker.skyfire_heel->ok() )
         return;
 
-      damage = new damage_t( player, TBase::name() );
+      damage = new damage_t( player );
       TBase::add_child( damage );
+    }
+
+    void execute() override
+    {
+      TBase::execute();
+
+      if ( TBase::aoe )
+      {
+        /*
+          Manually handle Skyfire Heel when the source action is AOE as impact
+          count scales quadratically with target count. This causes sims to get
+          stuck in some DungeonRoute configurations.
+
+          In most cases this linearization should not negatively impact proc
+          behaviour, but comes with some potential future risk.
+         */
+        double coefficient = TBase::p()->talent.windwalker.skyfire_heel->effectN( 1 ).percent() *
+                             std::sqrt( damage->reduced_aoe_targets /
+                                        std::min<int>( TBase::sim->max_aoe_enemies, TBase::num_targets_hit ) );
+
+        for ( const auto &[ target, amount ] : track )
+          damage->execute_on_target( target, ( total - amount ) * coefficient );
+
+        track.clear();
+        total = 0.0;
+      }
     }
 
     void impact( action_state_t *state ) override
@@ -1025,12 +1075,29 @@ struct rising_sun_kick_t : monk_melee_attack_t
       if ( !damage )
         return;
 
-      double value = state->result_amount * TBase::p()->talent.windwalker.skyfire_heel->effectN( 1 ).percent();
-      damage->execute_on_target( state->target, value );
+      if ( TBase::aoe )
+      {
+        assert( track.find( state->target ) == track.end() );
+        total += state->result_amount;
+        track.emplace( state->target, state->result_amount );
+      }
+      else
+      {
+        double value = state->result_amount * TBase::p()->talent.windwalker.skyfire_heel->effectN( 1 ).percent();
+        damage->execute_on_target( state->target, value );
+      }
+    }
+
+    void reset() override
+    {
+      TBase::reset();
+
+      track.clear();
+      total = 0.0;
     }
   };
 
-  using combined_type_t = glory_of_the_dawn_t<skyfire_heel_t<base_damage_t>>;
+  using combined_type_t = glory_of_the_dawn_t<skyfire_heel_t<base_damage_t, source_e::RISING_SUN_KICK>>;
 
   struct damage_t : combined_type_t
   {
@@ -1078,7 +1145,8 @@ struct rising_sun_kick_t : monk_melee_attack_t
 
 struct rushing_wind_kick_t : monk_melee_attack_t
 {
-  using combined_type_t = rising_sun_kick_t::combined_type_t;
+  using combined_type_t = rising_sun_kick_t::glory_of_the_dawn_t<rising_sun_kick_t::skyfire_heel_t<
+      rising_sun_kick_t::base_damage_t, rising_sun_kick_t::source_e::RUSHING_WIND_KICK>>;
 
   struct damage_t : combined_type_t
   {
@@ -4539,9 +4607,9 @@ struct zenith_t : monk_buff_t<>
                 timespan_t duration = timespan_t::min() ) override
   {
     double value = 0;
-    int stack = std::min( p().buff.tigereye_brew_1->stack(),
-                          as<int>( p().talent.windwalker.tigereye_brew_1->effectN( 3 ).base_value() ) );
-    value     = p().buff.tigereye_brew_1->value() * stack;
+    int stack    = std::min( p().buff.tigereye_brew_1->stack(),
+                             as<int>( p().talent.windwalker.tigereye_brew_1->effectN( 3 ).base_value() ) );
+    value        = p().buff.tigereye_brew_1->value() * stack;
     p().buff.tigereye_brew_1->decrement( stack );
     return monk_buff_t::trigger( stacks, value, chance, duration );
   }
@@ -7127,16 +7195,15 @@ void monk_t::combat_begin()
     // Select a random stance to begin the iteration.
     rng().range( stances )->trigger();
 
-    make_repeating_event(
-        sim, talent.conduit_of_the_celestials.inner_compass->effectN( 1 ).period(), [ stances ]() {
-          auto current_stance =
-              std::find_if( stances.begin(), stances.end(), []( auto &stance ) { return stance->check(); } );
-          ( *current_stance )->expire();
-          if ( std::next( current_stance ) != stances.end() )
-            ( *std::next( current_stance ) )->trigger();
-          else
-            ( *stances.begin() )->trigger();
-        } );
+    make_repeating_event( sim, talent.conduit_of_the_celestials.inner_compass->effectN( 1 ).period(), [ stances ]() {
+      auto current_stance =
+          std::find_if( stances.begin(), stances.end(), []( auto &stance ) { return stance->check(); } );
+      ( *current_stance )->expire();
+      if ( std::next( current_stance ) != stances.end() )
+        ( *std::next( current_stance ) )->trigger();
+      else
+        ( *stances.begin() )->trigger();
+    } );
   }
 
   if ( specialization() == MONK_WINDWALKER )
