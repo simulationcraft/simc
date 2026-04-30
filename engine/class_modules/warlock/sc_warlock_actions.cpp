@@ -1479,11 +1479,7 @@ using namespace helpers;
       // reduction but does not consume the effect (bug?). As expected, a Fatal Echoes UA proc does not consume it either.
       if ( time_to_execute == 0_ms && !is_fatal_echoes_execute )
       {
-        // NOTE: 2026-04-29 Unstable Affliction consumes all Shard Instability stacks at once (bug)
-        if ( p()->bugs )
-          p()->buffs.shard_instability->expire();
-        else 
-          p()->buffs.shard_instability->decrement();
+        p()->buffs.shard_instability->decrement();
       }
 
       if ( soul_harvester() && p()->buffs.succulent_soul->check() )
@@ -1541,19 +1537,15 @@ using namespace helpers;
           {
             p()->procs.fatal_echoes->occur();
             make_event( sim, 1_ms, [ this, t = d->target ] {
-              // NOTE: 2026-04-29 Fatal Echoes proc needs a Soul Shard to trigger (bug)
-              if ( !p()->bugs || p()->resources.current[ RESOURCE_SOUL_SHARD ] >= 1.0 )
-              {
-                const bool prev_ua_ticking = td( t )->dots.unstable_affliction->is_ticking();
-                this->set_target( t );
-                this->time_to_execute = 0_ms;
-                this->is_fatal_echoes_execute = true;
-                this->execute();
-                this->is_fatal_echoes_execute = false;
-                // When UA is applied by Fatal Echoes, Cascading Calamity is also triggered
-                if ( p()->talents.cascading_calamity.ok() && !prev_ua_ticking )
-                  p()->buffs.cascading_calamity->trigger();
-              }
+              const bool prev_ua_ticking = td( t )->dots.unstable_affliction->is_ticking();
+              this->set_target( t );
+              this->time_to_execute = 0_ms;
+              this->is_fatal_echoes_execute = true;
+              this->execute();
+              this->is_fatal_echoes_execute = false;
+              // When UA is applied by Fatal Echoes, Cascading Calamity is also triggered
+              if ( p()->talents.cascading_calamity.ok() && !prev_ua_ticking )
+                p()->buffs.cascading_calamity->trigger();
             } );
           }
         }
@@ -1592,8 +1584,7 @@ using namespace helpers;
 
     double cost_pct_multiplier() const override
     {
-      // NOTE: 2026-04-29 Fatal Echoes proc consumes a Soul Shard (bug)
-      if ( !p()->bugs && is_fatal_echoes_execute )
+      if ( is_fatal_echoes_execute )
         return 0.0;
 
       return warlock_spell_t::cost_pct_multiplier();
@@ -5329,9 +5320,7 @@ using namespace helpers;
       dot->decrement( 1 );
       assert( ( dot->is_ticking() && dot->current_stack() > 0 ) && "UA stack decrement event should not cancel the DoT" );
 
-      // NOTE: 2026-04-29 Fatal Echoes proc needs a Soul Shard to trigger (bug)
-      // if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && dot->is_ticking() && dot->current_stack() > 0 && p->prd_rng.fatal_echoes->trigger() )
-      if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && p->prd_rng.fatal_echoes->trigger() && ( !p->bugs || p->resources.current[ RESOURCE_SOUL_SHARD ] >= 1.0 ) )
+      if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && p->prd_rng.fatal_echoes->trigger() )
       {
         p->procs.fatal_echoes->occur();
         dot->current_action->set_target( target );
