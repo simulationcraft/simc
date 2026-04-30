@@ -14863,6 +14863,7 @@ Tooltip          : Your healing done is increased by $w1%.
 Healing Stream Totem lasts an additional ${$w2/1000} sec.
 
 Name             : Tidecaller's Guard (id=457496) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Frost
 Spell Type       : None
@@ -14874,7 +14875,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3932: Enhanced Imbues (462796 effect#6), Enhanced Imbues (462796 effect#7), Enhanced Imbues (462796 effect#8)
-Attributes       : No Aura Icon (60), Allow Entering Arena (149), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : No Aura Icon (60), Allow Aura While Dead (116), Allow Entering Arena (149), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
 Effects          :
 #1 (id=1162726)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Target: Self (1)
