@@ -157,6 +157,7 @@ sim/proc.hpp
 sim/proc_rng.hpp
 sim/profileset.hpp
 sim/progress_bar.hpp
+sim/pvp_scaling.hpp
 sim/raid_event.hpp
 sim/reforge_plot.hpp
 sim/scale_factor_control.hpp
@@ -346,6 +347,7 @@ sim/proc.cpp
 sim/proc_rng.cpp
 sim/profileset.cpp
 sim/progress_bar.cpp
+sim/pvp_scaling.cpp
 sim/raid_event.cpp
 sim/reforge_plot.cpp
 sim/scale_factor_control.cpp

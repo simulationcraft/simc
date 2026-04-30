@@ -113,14 +113,15 @@ double heal_t::total_crit_bonus( const action_state_t* state ) const
   double damage_from_crit_multiplier = composite_player_critical_multiplier( state );
 
   double base_bonus = base_crit_bonus;
-  if ( sim->pvp_mode )
-    base_bonus += sim->pvp_rules->effectN( 3 ).percent();
+  // Spell 134735 effect 3 (subtype A_448): -50% crit bonus in PvP (2026-03-20)
+  if ( sim->pvp.enabled )
+    base_bonus += ( sim->pvp.crit_damage_mod - 1.0 );
 
   // applies only to bonus from crit
   double bonus_mult = composite_crit_damage_bonus_multiplier() * composite_target_crit_damage_bonus_multiplier( state->target );
 
   // for healing, 'multiplier' is additive with base bonus
-  double bonus = ( base_crit_bonus + damage_from_crit_multiplier - 1.0 ) * bonus_mult;
+  double bonus = ( base_bonus + damage_from_crit_multiplier - 1.0 ) * bonus_mult;
 
   if ( sim->debug )
   {

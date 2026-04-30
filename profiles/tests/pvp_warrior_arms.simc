@@ -1,0 +1,45 @@
+# Galactic Gladiator Arms Warrior PvP Test Profile
+# Full Conquest gear, Level 90 Midnight Season 1
+#
+# Bonus ID 13448: Conquest PvP scaling (type 43, sets ilvl to 289 in PvP)
+# Bonus ID 13452: Conquest stat template (type 7/23)
+# Base item level: 197 (scales to 289 in PvP via bonus_id=13448)
+
+warrior="PvP_Warrior_Arms"
+source=default
+spec=arms
+level=90
+race=human
+role=attack
+position=back
+talents=CcEAAAAAAAAAAAAAAAAAAAAAAAzMzsMzMzMDAAAghphxYmxyMzMzgxMDAAAAgZWmZAZMWWGYBMgZYCZGsBMjNz2YwMGgZGAmxwA
+
+# PvP Mode — Arena
+pvp=1
+pvp_mode=arena
+
+# No consumables in arena
+potion=disabled
+flask=disabled
+food=disabled
+augmentation=disabled
+temporary_enchant=disabled
+
+# Gear: Full Galactic Gladiator Conquest Set (Plate - Warrior)
+# bonus_id=13448 triggers ITEM_BONUS_SET_ILEVEL_PVP (type 43) → ilvl 289 in PvP
+# bonus_id=13452 applies conquest stat template
+head=galactic_gladiators_plate_helm,id=255594,bonus_id=13448/13452
+neck=galactic_gladiators_necklace,id=255610,bonus_id=13448/13452
+shoulder=galactic_gladiators_plate_shoulders,id=255598,bonus_id=13448/13452
+back=galactic_gladiators_cloak,id=255604,bonus_id=13448/13452
+chest=galactic_gladiators_chestplate,id=255589,bonus_id=13448/13452
+wrist=galactic_gladiators_plate_wristguards,id=255602,bonus_id=13448/13452
+hands=galactic_gladiators_plate_gauntlets,id=255592,bonus_id=13448/13452
+waist=galactic_gladiators_plate_girdle,id=255600,bonus_id=13448/13452
+legs=galactic_gladiators_plate_legguards,id=255596,bonus_id=13448/13452
+feet=galactic_gladiators_plate_warboots,id=255590,bonus_id=13448/13452
+finger1=galactic_gladiators_ring,id=255607,bonus_id=13448/13452
+finger2=galactic_gladiators_band,id=255608,bonus_id=13448/13452
+trinket1=galactic_gladiators_badge_of_ferocity,id=255613,bonus_id=13448/13452
+trinket2=galactic_gladiators_emblem,id=255615,bonus_id=13448/13452
+main_hand=galactic_gladiators_greatsword,id=255633,bonus_id=13448/13452
