@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67235 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.5.67314 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -10917,7 +10917,6 @@ Effects          :
 Description      : Ice Block now reduces all damage taken by $414658s8% for $414658d but no longer grants Immunity, prevents movement, attacks, or casting spells. Does not incur the Global Cooldown.
 
 Name             : Mass Invisibility (id=414664) [Spell Family (3)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=9, col=6, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
