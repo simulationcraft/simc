@@ -16775,6 +16775,7 @@ Effects          :
 Description      : $@spelldesc1257950
 
 Name             : Touch of the Archmage (id=1258134) [Spell Family (3)] 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -16783,7 +16784,8 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Attributes       : Do Not Sheath (18), DoT Stacking Rule (103), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Do Not Sheath (18), DoT Stacking Rule (103), Aura Expires Offline (130), Aura Points On Client (268), Allow Class Ability Procs (416)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1266517)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
