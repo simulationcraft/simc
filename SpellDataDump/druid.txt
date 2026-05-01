@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67235 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.5.67314 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -16362,7 +16362,6 @@ Description      : $?c1[Orbital Strike damage increased by $s3%, and damage of S
 Whirling Stars increases the haste you gain during ][]$?c1&s394013[Incarnation: Chosen of Elune]?c1[Celestial Alignment][]$?c1[ by an additional $s4%.][Reforestation grants Tree of Life for $s5 additional sec.]
 
 Name             : Blooming Infusion (id=429433) [Spell Family (7), Passive] 
-Hotfixed         : Internal Cooldown (0 -> 100)
 Talent Entry     : Keeper of the Grove (Balance, Restoration) [tree=hero, row=4, col=4, max_rank=1, req_points=1]
 Class            : Druid
 School           : Physical

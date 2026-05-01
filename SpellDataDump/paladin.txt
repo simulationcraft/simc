@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67235 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.5.67314 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1256,7 +1256,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Magic Heal, Periodic
 Affecting Spells : Commanding Light (387781 effect#1)
-Triggered By     : Beacon of Light (53563), Beacon of Faith (156910), Beacon of the Savior (1244893)
+Triggered By     : Beacon of Light (53563), Beacon of Faith (156910)
 Family Flags     : 104
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Allow Low Level Buff (67), Can Proc From Procs (122), Not In Spellbook (143), Allow Proc While Sitting (147), Allow Class Ability Procs (416)
 Effects          :
@@ -20017,9 +20017,11 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1245666)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 53651 | Target: Targeted Ally (21)
-#2 (id=1245667)  : Trigger Spell (64): Light's Beacon
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 53651 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+Hotfixed         : Trigger Spell (53651 -> 0)
+#2 (id=1245667)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : Type (64 -> 3), Trigger Spell (53651 -> 0)
 #3 (id=1245668)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Light of Dawn (85222), Light of the Martyr (183998)
