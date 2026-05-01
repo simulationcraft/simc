@@ -2566,7 +2566,7 @@ using namespace helpers;
 
       hog_impact_t( warlock_t* p )
         : warlock_spell_t( "Hand of Gul'dan (Impact)", p, p->talents.hog_impact ),
-        meteor_time( 20_ms )
+        meteor_time( 8_ms )
       {
         aoe = -1;
         dual = true;
@@ -2609,9 +2609,32 @@ using namespace helpers;
 
       void execute() override
       {
-        // NOTE: Some effects only affects one of HoG's hits in AoE (bug?), randomly selected
+        // NOTE: Some effects only affect one of HoG's hits in AoE (bug?), randomly selected
         const std::vector<player_t*>& tl = target_list();
         state.last_hit_random_target     = rng().range( as<int>( tl.size() ) );
+
+        // Wild Imp spawn events
+        // NOTE: Old Behavior (pre Midnight):
+        //   Wild Imp spawns appear to have been sped up in Shadowlands. Last tested 2021-04-16.
+        //   HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
+        //   However, damage event occurs before spell effect lands, happening 0.4 seconds after cast.
+        //   Imps then spawn roughly every 0.18 seconds after the damage event.
+        // NOTE: New Behavior (from Midnight onwards):
+        //   The HoG meteor damage event no longer takes 0.4 seconds after cast impact (only about 8ms).
+        //   Wild Imps spawn on HoG meteor execute, not from HoG meteor damage impact.
+        //   Wild Imps spawn sequentially, with a 1-2ms delay from one spawn to the next.
+        //   Last tested: 2026-05-03
+        static constexpr std::array<double, 2> imp_delay{ 1.0, 2.0 };
+
+        double delay = 0.0;
+        for ( int i = 1; i <= state.shards_used; i++ )
+        {
+          delay += rng().range( imp_delay );
+          const double expected_delay = static_cast<double>( ( 3 * i + 1 ) / 2 );
+
+          auto ev = make_event<imp_delay_event_t>( *sim, p(), delay, expected_delay, i - 1 );
+          p()->wild_imp_spawns.push_back( ev );
+        }
 
         warlock_spell_t::execute();
       }
@@ -2628,31 +2651,6 @@ using namespace helpers;
         m *= state.shards_used * ( 1.0 + gloom );
 
         return m;
-      }
-
-      void impact( action_state_t* s ) override
-      {
-        warlock_spell_t::impact( s );
-
-        // Only trigger Wild Imps once for the original target impact.
-        // Still keep it in impact instead of execute because of travel delay.
-        if ( result_is_hit( s->result ) && s->target == target )
-        {
-          // NOTE: Old Behavior (pre Midnight):
-          //   Wild Imp spawns appear to have been sped up in Shadowlands. Last tested 2021-04-16.
-          //   HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
-          //   However, damage event occurs before spell effect lands, happening 0.4 seconds after cast.
-          //   Imps then spawn roughly every 0.18 seconds seconds after the damage event.
-          // NOTE: New Behavior (from Midnight onwards):
-          //   Wild Imps spawn on HoG impact almost instantly, with a 1ms delay between them
-          //   The HoG damage event no longer takes 0.4 seconds after cast (only a few milliseconds)
-          //   Last tested: 2026-02-20
-          for ( int i = 1; i <= debug_cast<hog_impact_state_t*>( s )->state.shards_used; i++ )
-          {
-            auto ev = make_event<imp_delay_event_t>( *sim, p(), ( 1.0 * i ), ( 1.0 * i ), i - 1 );
-            p()->wild_imp_spawns.push_back( ev );
-          }
-        }
       }
     };
 
@@ -4899,7 +4897,7 @@ using namespace helpers;
   {
     struct ruination_impact_t : public warlock_spell_t
     {
-      hand_of_guldan_t::hog_impact_t* hog_impact_spell;
+      hand_of_guldan_t::hog_impact_t* hog_impact_spell = nullptr;
 
       ruination_impact_t( warlock_t* p )
         : warlock_spell_t( "Ruination (Impact)", p, p->hero.ruination_impact )
@@ -4914,7 +4912,7 @@ using namespace helpers;
         {
           hog_impact_spell = new hand_of_guldan_t::hog_impact_t( p );
           hog_impact_spell->state.shards_used = as<int>( p->hero.ruination_buff->effectN( 2 ).base_value() );
-          hog_impact_spell->state.rancora_empowered = false;    // Ruination HoG impact is never rancora empowered
+          hog_impact_spell->state.rancora_empowered = false; // Ruination HoG impact is never rancora empowered
         }
       }
 
@@ -4926,7 +4924,9 @@ using namespace helpers;
         {
           if ( demonology() )
           {
-            make_event( *sim, 0_ms, [ this, t = target ] {
+            // Ruination appears to trigger a HoG-like meteor after a certain delay, which summons the Wild Imps.
+            // This delay can be modeled fairly closely using a normal distribution.
+            make_event( *sim, rng().gauss<395,35>(), [ this, t = target ] {
               hog_impact_spell->execute_on_target( t );
             } );
           }
