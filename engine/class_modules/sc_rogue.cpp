@@ -2494,7 +2494,7 @@ public:
 
     if ( affected_by.fazed_damage )
     {
-      m *= tdata->debuffs.fazed->stack_value_direct();
+      m *= tdata->debuffs.fazed->value_direct();
     }
 
     return m;
@@ -2506,7 +2506,7 @@ public:
 
     if ( affected_by.fazed_crit_chance && td( target )->debuffs.fazed->check() )
     {
-      c += td( target )->debuffs.fazed->stack_value_crit_chance();
+      c += td( target )->debuffs.fazed->value_crit_chance();
     }
 
     return c;
@@ -2564,7 +2564,7 @@ public:
 
     if ( affected_by.fazed_crit_damage )
     {
-      cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent() * td( target )->debuffs.fazed->check();
+      cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent() * td( target )->debuffs.fazed->up();
     }
 
     return cm;
