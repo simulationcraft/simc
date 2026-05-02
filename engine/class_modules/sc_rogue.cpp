@@ -1104,6 +1104,7 @@ public:
     bool rogue_ready_trigger = true;
     bool priority_rotation = false;
     double the_first_dance_trigger_rate = 0.75;
+    bool trickster_cloud_cover_secondary = true;
   } options;
 
   rogue_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
@@ -2494,7 +2495,7 @@ public:
 
     if ( affected_by.fazed_damage )
     {
-      m *= tdata->debuffs.fazed->value_direct();
+      m *= tdata->debuffs.fazed->stack_value_direct();
     }
 
     return m;
@@ -2506,7 +2507,14 @@ public:
 
     if ( affected_by.fazed_crit_chance && td( target )->debuffs.fazed->check() )
     {
-      c += td( target )->debuffs.fazed->value_crit_chance();
+      if ( p()->options.trickster_cloud_cover_secondary )
+      {
+        c += td( target )->debuffs.fazed->stack_value_crit_chance();
+      }
+      else
+      {
+        c += td( target )->debuffs.fazed->value_crit_chance();
+      }
     }
 
     return c;
@@ -2564,7 +2572,13 @@ public:
 
     if ( affected_by.fazed_crit_damage )
     {
-      cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent() * td( target )->debuffs.fazed->up();
+      if ( p()->options.trickster_cloud_cover_secondary )
+      {
+        cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent() * td( target )->debuffs.fazed->check();      }
+      else
+      {
+        cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent() * td( target )->debuffs.fazed->up();
+      }
     }
 
     return cm;
@@ -10980,6 +10994,7 @@ void rogue_t::create_options()
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
   add_option( opt_bool( "priority_rotation", options.priority_rotation ) );
   add_option( opt_float( "the_first_dance_trigger_rate", options.the_first_dance_trigger_rate, 0, 1 ) );
+  add_option( opt_bool( "trickster_cloud_cover_secondary", options.trickster_cloud_cover_secondary ) );
 }
 
 // rogue_t::copy_from =======================================================
@@ -11009,6 +11024,7 @@ void rogue_t::copy_from( player_t* source )
   options.fixed_rtb_odds = rogue->options.fixed_rtb_odds;
   options.rogue_ready_trigger = rogue->options.rogue_ready_trigger;
   options.priority_rotation = rogue->options.priority_rotation;
+  options.trickster_cloud_cover_secondary = rogue->options.trickster_cloud_cover_secondary;
 
   options.the_first_dance_trigger_rate = rogue->options.the_first_dance_trigger_rate;
 }
