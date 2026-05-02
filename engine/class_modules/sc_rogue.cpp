@@ -8069,8 +8069,6 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
         current_is_heads ? fatebound_t::coinflip_e::TAILS : fatebound_t::coinflip_e::HEADS;
     }
 
-    resolve_fatebound_coinflip( coin_target, result );
-
     if ( p()->talent.fatebound.controlled_chaos->ok() )
     {
       int streak = as<int>( p()->talent.fatebound.controlled_chaos->effectN( 1 ).base_value() );
@@ -8081,6 +8079,8 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
         trigger_fatebound_coinflip( coin_target, result, 250_ms );
       }
     }
+
+    resolve_fatebound_coinflip( coin_target, result );
   } );
 }
 
