@@ -2221,6 +2221,8 @@ public:
   void trigger_doomblade( const action_state_t* );
   void trigger_echoing_reprimand( const action_state_t* state );
   void trigger_fatal_flourish( const action_state_t* );
+  void resolve_fatebound_coinflip( player_t* coin_target, fatebound_t::coinflip_e result );
+  void trigger_fatebound_coinflip( player_t* coin_target, fatebound_t::coinflip_e result, timespan_t delay = timespan_t::zero() );
   void trigger_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay = timespan_t::zero() );
   void trigger_fatebound_edge_case( const action_state_t* state );
   void trigger_fazed( const action_state_t* state );
@@ -8026,87 +8028,87 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   if ( cast_state( state )->get_combo_points() < p()->talent.fatebound.hand_of_fate->effectN( 1 ).base_value() )
     return;
 
-  fatebound_t::coinflip_e result;
-
-  // No stacks of either buff or equal stacks of both buffs (thanks to only using edge case)
-  // Nothing to bias, just flip the coin fairly
-  if ( p()->buffs.fatebound_coin_tails->total_stack() == p()->buffs.fatebound_coin_heads->total_stack() )
-  {
-    result = p()->rng().roll( 0.5 ) ? fatebound_t::coinflip_e::HEADS : fatebound_t::coinflip_e::TAILS;
-  }
-  // Flip the coin, potentially with a bias toward matching the last face flipped
-  else
-  {
-    double matching_odds = 0.5;
-    if ( biased )
-    {
-      // TODO: Validate how these stack with the presumed base 50/50 chance and one another
-      if ( p()->talent.fatebound.mean_streak->ok() )
-      {
-        matching_odds += matching_odds * p()->talent.fatebound.mean_streak->effectN( 1 ).percent();
-      }
-      if ( p()->talent.fatebound.destiny_defined->ok() )
-      {
-        matching_odds += p()->talent.fatebound.destiny_defined->effectN( 3 ).percent();
-      }
-      if ( p()->buffs.fatebound_lucky_coin->check() )
-      {
-        // MIDNIGHT TOCHECK -- Is this additive?
-        matching_odds += p()->spell.fatebound_lucky_coin_buff->effectN( 5 ).percent();
-      }
-    }
-
-    // TODO: it's an assumption that if you have both buffs (thanks, edge case) the bias prefers the one with more stacks
-    // (since the last one you hit before the edge case has to be the one with more stacks)
-    const bool is_match = p()->rng().roll( matching_odds );
-    const bool current_is_heads = p()->buffs.fatebound_coin_heads->check() > p()->buffs.fatebound_coin_tails->check();
-    result = is_match ?
-      current_is_heads ? fatebound_t::coinflip_e::HEADS : fatebound_t::coinflip_e::TAILS :
-      current_is_heads ? fatebound_t::coinflip_e::TAILS : fatebound_t::coinflip_e::HEADS;
-  }
-
-  trigger_fatebound_coinflip( state, result, current_delay );
-
-  if ( p()->talent.fatebound.controlled_chaos->ok() )
-  {
-    int streak = as<int>( p()->talent.fatebound.controlled_chaos->effectN( 1 ).base_value() );
-    if ( ( p()->buffs.fatebound_coin_tails->total_stack() >= streak && result == fatebound_t::coinflip_e::HEADS ) ||
-         ( p()->buffs.fatebound_coin_heads->total_stack() >= streak && result == fatebound_t::coinflip_e::TAILS ) )
-    {
-      // 250ms so it does not coincide with an Overflowing Purse roll at the same time for now
-      trigger_fatebound_coinflip( state, result, 250_ms + current_delay );
-    }
-  }
-}
-
-template <typename Base>
-void actions::rogue_action_t<Base>::trigger_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay )
-{
   auto coin_target = state->target->is_enemy() ? state->target : p()->target;
-  make_event( *p()->sim, delay, [ this, coin_target, result, delay ] {
-    p()->sim->print_log( "{} triggered fatebound coinflip with result '{}' and {} delay", *p(), fatebound_t::coinflip_string( result ), delay );
-    if ( result == fatebound_t::coinflip_e::HEADS || result == fatebound_t::coinflip_e::EDGE )
+  make_event( *p()->sim, current_delay, [ this, coin_target, biased ] {
+    fatebound_t::coinflip_e result;
+
+    // No stacks of either buff or equal stacks of both buffs (thanks to only using edge case)
+    // Nothing to bias, just flip the coin fairly
+    if ( p()->buffs.fatebound_coin_tails->total_stack() == p()->buffs.fatebound_coin_heads->total_stack() )
     {
-      p()->buffs.fatebound_coin_heads->increment();
-      if ( result != fatebound_t::coinflip_e::EDGE )
-      {
-        p()->buffs.fatebound_coin_tails->expire();
-      }
+      result = p()->rng().roll( 0.5 ) ? fatebound_t::coinflip_e::HEADS : fatebound_t::coinflip_e::TAILS;
     }
-    if ( result == fatebound_t::coinflip_e::TAILS || result == fatebound_t::coinflip_e::EDGE )
+    // Flip the coin, potentially with a bias toward matching the last face flipped
+    else
     {
-      // Don't fling tails coins at enemies precombat, since that'll start combat (assume the player knows not to have an enemy targeted)
-      if ( !ab::is_precombat )
+      double matching_odds = 0.5;
+      if ( biased )
       {
-        p()->active.fatebound.fatebound_coin_tails->trigger_secondary_action( coin_target );
+        // TODO: Validate how these stack with the presumed base 50/50 chance and one another
+        if ( p()->talent.fatebound.mean_streak->ok() )
+        {
+          matching_odds += matching_odds * p()->talent.fatebound.mean_streak->effectN( 1 ).percent();
+        }
+        if ( p()->talent.fatebound.destiny_defined->ok() )
+        {
+          matching_odds += p()->talent.fatebound.destiny_defined->effectN( 3 ).percent();
+        }
+        if ( p()->buffs.fatebound_lucky_coin->check() )
+        {
+          // MIDNIGHT TOCHECK -- Is this additive?
+          matching_odds += p()->spell.fatebound_lucky_coin_buff->effectN( 5 ).percent();
+        }
       }
-      if ( result != fatebound_t::coinflip_e::EDGE )
+
+      // TODO: it's an assumption that if you have both buffs (thanks, edge case) the bias prefers the one with more stacks
+      // (since the last one you hit before the edge case has to be the one with more stacks)
+      const bool is_match = p()->rng().roll( matching_odds );
+      const bool current_is_heads = p()->buffs.fatebound_coin_heads->check() > p()->buffs.fatebound_coin_tails->check();
+      result = is_match ?
+        current_is_heads ? fatebound_t::coinflip_e::HEADS : fatebound_t::coinflip_e::TAILS :
+        current_is_heads ? fatebound_t::coinflip_e::TAILS : fatebound_t::coinflip_e::HEADS;
+    }
+
+    resolve_fatebound_coinflip( coin_target, result );
+
+    if ( p()->talent.fatebound.controlled_chaos->ok() )
+    {
+      int streak = as<int>( p()->talent.fatebound.controlled_chaos->effectN( 1 ).base_value() );
+      if ( ( p()->buffs.fatebound_coin_tails->total_stack() >= streak && result == fatebound_t::coinflip_e::HEADS ) ||
+           ( p()->buffs.fatebound_coin_heads->total_stack() >= streak && result == fatebound_t::coinflip_e::TAILS ) )
       {
-        // 2026-04-26 -- Logs suggest that the first tails attack is calculated before this fades
-        p()->buffs.fatebound_coin_heads->expire( !ab::is_precombat ? 1_ms : 0_ms );
+        // 250ms so it does not coincide with an Overflowing Purse roll at the same time for now
+        trigger_fatebound_coinflip( coin_target, result, 250_ms );
       }
     }
   } );
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::resolve_fatebound_coinflip( player_t* coin_target, fatebound_t::coinflip_e result )
+{
+  if ( result == fatebound_t::coinflip_e::HEADS || result == fatebound_t::coinflip_e::EDGE )
+  {
+    p()->buffs.fatebound_coin_heads->increment();
+    if ( result != fatebound_t::coinflip_e::EDGE )
+    {
+      p()->buffs.fatebound_coin_tails->expire();
+    }
+  }
+  if ( result == fatebound_t::coinflip_e::TAILS || result == fatebound_t::coinflip_e::EDGE )
+  {
+    // Don't fling tails coins at enemies precombat, since that'll start combat (assume the player knows not to have an enemy targeted)
+    if ( !ab::is_precombat )
+    {
+      p()->active.fatebound.fatebound_coin_tails->trigger_secondary_action( coin_target );
+    }
+    if ( result != fatebound_t::coinflip_e::EDGE )
+    {
+      // 2026-04-26 -- Logs suggest that the first tails attack is calculated before this fades
+      p()->buffs.fatebound_coin_heads->expire( !ab::is_precombat ? 1_ms : 0_ms );
+    }
+  }
+
   if ( p()->talent.fatebound.rush_to_the_inevitable->ok() )
   {
     double energize_normal = p()->specialization() == ROGUE_ASSASSINATION
@@ -8124,6 +8126,22 @@ void actions::rogue_action_t<Base>::trigger_fatebound_coinflip( const action_sta
     if ( !p()->buffs.fatebound_lucky_coin->check() )
       p()->buffs.fatebound_coin_flips->trigger();
   }
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_fatebound_coinflip( player_t* coin_target, fatebound_t::coinflip_e result, timespan_t delay )
+{
+  make_event( *p()->sim, delay, [ this, coin_target, result, delay ] {
+    p()->sim->print_log( "{} triggered fatebound coinflip with result '{}' and {} delay", *p(), fatebound_t::coinflip_string( result ), delay );
+    resolve_fatebound_coinflip( coin_target, result );
+  } );
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay )
+{
+  auto coin_target = state->target->is_enemy() ? state->target : p()->target;
+  trigger_fatebound_coinflip( coin_target, result, delay );
 }
 
 template <typename Base>
