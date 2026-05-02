@@ -1046,7 +1046,7 @@ struct rising_sun_kick_t : monk_melee_attack_t
     {
       TBase::execute();
 
-      if ( TBase::aoe )
+      if ( damage && TBase::aoe )
       {
         /*
           Manually handle Skyfire Heel when the source action is AOE as impact

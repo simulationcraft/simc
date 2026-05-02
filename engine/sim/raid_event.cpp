@@ -736,14 +736,16 @@ struct pull_event_t final : raid_event_t
 
     regenerate_cache();
 
-    if ( has_boss )
+    for ( auto p : affected_players )
     {
-      for ( auto& p : affected_players )
+      if ( p->is_player() )
       {
-        if ( p->is_player() )
-        {
+        if ( has_boss )
           p->in_boss_encounter++;
-        }
+
+        // wake up any ready_trigger players since they are not constantly polling
+        if ( p->ready_type == ready_e::READY_TRIGGER && !p->readying )
+          p->schedule_ready();
       }
     }
 

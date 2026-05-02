@@ -5486,11 +5486,11 @@ maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spend
 
 struct maul_data_t
 {
-  double rage_mul = 0.0;
+  double rage_mod = 0.0;
 
   friend void sc_format_to( const maul_data_t& data, fmt::format_context::iterator out )
   {
-    fmt::format_to( out, " rage_mul={}", data.rage_mul );
+    fmt::format_to( out, " rage_mod={}", data.rage_mod );
   }
 };
 
@@ -5512,20 +5512,20 @@ public:
   {
     // this maul and echo maul are all derived from maul_base_t so we can use ab::cast_state
     make_event( *BASE::sim, BASE::rng().range( WILD_GUARDIAN_ECHO_DELAY ),
-      [ this, rage_mul = 1.0 + BASE::rage_modifier(), t = ab::target ] {
-        snapshot_and_execute( ab::echo_action, nullptr, false, [ this, rage_mul, t ]( auto, auto to ) {
+      [ this, rage_mod = BASE::rage_modifier(), t = ab::target ] {
+        snapshot_and_execute( ab::echo_action, nullptr, false, [ this, rage_mod, t ]( auto, auto to ) {
           auto state = ab::cast_state( to );
-          state->rage_mul = rage_mul;
+          state->rage_mod = rage_mod;
           state->target = t;
           ab::echo_action->set_target( t );
         } );
 
         if ( ab::repeat_delay > 0_ms )
         {
-          make_repeating_event( *BASE::sim, ab::repeat_delay, [ this, rage_mul, t ] {
-            snapshot_and_execute( ab::echo_action, nullptr, false, [ this, rage_mul, t ]( auto, auto to ) {
+          make_repeating_event( *BASE::sim, ab::repeat_delay, [ this, rage_mod, t ] {
+            snapshot_and_execute( ab::echo_action, nullptr, false, [ this, rage_mod, t ]( auto, auto to ) {
               auto state = ab::cast_state( to );
-              state->rage_mul = rage_mul;
+              state->rage_mod = rage_mod;
               state->target = t;
               ab::echo_action->set_target( t );
             } );
@@ -5565,10 +5565,10 @@ public:
       if ( gift_stacks - p_->buff.gift_of_maul->check() > 0 )
         delay += ab::rng().range( WILD_GUARDIAN_ECHO_DELAY );
 
-      make_event( *ab::sim, delay, [ this, rage_mul = 1.0 + BASE::rage_modifier(), t = ab::target ] {
-        snapshot_and_execute( repeat_action, nullptr, false, [ this, rage_mul, t ]( auto, auto to ) {
+      make_event( *ab::sim, delay, [ this, rage_mod = BASE::rage_modifier(), t = ab::target ] {
+        snapshot_and_execute( repeat_action, nullptr, false, [ this, rage_mod, t ]( auto, auto to ) {
           auto state = ab::cast_state( to );
-          state->rage_mul = rage_mul;
+          state->rage_mod = rage_mod;
           state->target = t;
           repeat_action->set_target( t );
         } );
@@ -5707,7 +5707,7 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
     if ( kb_excess_rage_mul )
     {
       assert( p()->resources.current[ RESOURCE_RAGE ] >= cost() );
-      cast_state( s )->rage_mul = 1.0 + rage_modifier();
+      cast_state( s )->rage_mod = rage_modifier();
     }
 
     base_t::snapshot_state( s, rt );
@@ -5715,7 +5715,7 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    return base_t::composite_da_multiplier( s ) * cast_state( s )->rage_mul;
+    return base_t::composite_da_multiplier( s ) * ( 1.0 + cast_state( s )->rage_mod );
   }
 };
 

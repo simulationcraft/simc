@@ -3591,36 +3591,67 @@ void sunfire_silk_trappings( special_effect_t& effect )
 
 namespace omnium
 {
-// 1287555 driver
-// 1287663 dot
-// 1287665 hot
-void apply_rune_of_lingering( player_t* player, action_t* damage, action_t* heal )
+template <typename BASE>
+struct omnium_core_rune_t : public BASE
 {
-  if ( find_special_effects( player, 1287555 ).empty() )
-    return;
+  stat_buff_t* buff = nullptr;
+  const spell_data_t* coeff;
 
-  player->sim->error( UNVERIFIED_VALUE,
-    "Rune of Lingering: Damage using placeholder value of 977. Heal using placeholder value of 1465." );
+  omnium_core_rune_t( const special_effect_t& e, std::string_view n, unsigned id )
+    : BASE( e, n, id ), coeff( e.driver()->effectN( 2 ).trigger() )
+  {
+    constexpr bool heal = std::is_base_of_v<heal_t, BASE>;
 
-  auto coeff = player->find_spell( 1288183 );
+    if ( heal )
+      BASE::name_str_reporting = "Heal";
 
-  // using placeholder values
-  auto dot = create_proc_action<generic_proc_t>( "rune_of_lingering", player, 1287663 );
-  dot->base_td = dot->data().effectN( 2 ).base_value() / dot->dot_duration.value().total_seconds();
+    // using placeholder values
+    BASE::base_dd_min = BASE::base_dd_max = BASE::data().effectN( 2 ).base_value();
 
-  auto hot = create_proc_action<generic_heal_t>( "rune_of_lingering_hot", player, 1287665 );
-  hot->base_td = hot->data().effectN( 2 ).base_value() / hot->dot_duration.value().total_seconds();
-  hot->name_str_reporting = "Heal";
+    // Rune of Lingering: 1287555 driver, 1287663 dot, 1287665 hot
+    if ( find_special_effect( e.player, 1287555 ) )
+    {
+      auto dot = create_proc_action<BASE>( fmt::format( "{}_lingering", n ), e, heal ? 1287665 : 1287663 );
+      dot->base_td = dot->data().effectN( 2 ).base_value() / dot->dot_duration.value().total_seconds();
+      dot->name_str_reporting = "rune_of_lingering";
+      if ( !dot->stats->parent )
+        BASE::add_child( dot );
 
-  damage->impact_action = dot;
-  heal->impact_action = hot;
+      BASE::impact_action = dot;
 
-  if ( !dot->stats->parent )
-    damage->add_child( dot );
+      // Rune of Residual Energy: 1279615 driver
+      if ( auto residual = find_special_effect( e.player, 1279615 ) )
+        dot->base_multiplier *= 1.0 + residual->driver()->effectN( 1 ).percent();
+    }
 
-  if ( !hot->stats->parent )
-    heal->add_child( hot );
-}
+    apply_stat_rune( 1279609, 1287772 );  // Rune of Critical Power
+    apply_stat_rune( 1279610, 1287774 );  // Rune of Burning Haste
+    apply_stat_rune( 1279612, 1287771 );  // Rune of Masterful Cunning
+    apply_stat_rune( 1279613, 1287770 );  // Rune of the Versatile Warrior
+
+    // Rune of Overload: 1279614 driver
+    if ( auto overload = find_special_effect( e.player, 1279614 ) )
+      BASE::base_multiplier *= 1.0 + overload->driver()->effectN( 1 ).percent();
+  }
+
+  void apply_stat_rune( unsigned driver_id, unsigned buff_id )
+  {
+    if ( !find_special_effect( BASE::player, driver_id ) )
+      return;
+
+    buff = create_buff<stat_buff_t>( BASE::player, BASE::player->find_spell( buff_id ) );
+    // using placeholder values
+    buff->set_stat_from_effect_type( A_MOD_RATING, buff->data().effectN( 2 ).base_value() );
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( buff )
+      buff->trigger();
+  }
+};
 
 // 1279599 driver
 // 1286970 damage
@@ -3637,14 +3668,11 @@ void rune_of_unleashed_fire( special_effect_t& effect )
   auto coeff = effect.driver()->effectN( 2 ).trigger();
 
   // using placeholder values, presumably should be based on coeff->effectN( 1 )
-  auto damage = create_proc_action<generic_proc_t>( "rune_of_unleashed_fire", effect, 1286970 );
-  damage->base_dd_min = damage->base_dd_max = damage->data().effectN( 2 ).base_value();
+  auto damage =
+    create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_unleashed_fire", effect, 1286970 );
 
-  auto heal = create_proc_action<generic_heal_t>( "rune_of_unleashed_fire_heal", effect, 1263002 );
-  heal->base_dd_min = heal->base_dd_max = heal->data().effectN( 2 ).base_value();
-  heal->name_str_reporting = "Heal";
-
-  apply_rune_of_lingering( effect.player, damage, heal );
+  auto heal =
+    create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_unleashed_fire_heal", effect, 1263002 );
 
   effect.player->callbacks.register_callback_execute_function(
     effect.spell_id, [ damage, heal ]( auto, auto, player_t* t, auto ) {
@@ -3679,14 +3707,11 @@ void rune_of_voidtouched_orbs( special_effect_t& effect )
   auto coeff = effect.driver()->effectN( 2 ).trigger();
 
   // using placeholder values, presumably should be based on coeff->effectN( 1 )
-  auto damage = create_proc_action<generic_proc_t>( "rune_of_voidtouched_orbs", effect, 1286716 );
-  damage->base_dd_min = damage->base_dd_max = damage->data().effectN( 2 ).base_value();
+  auto damage =
+    create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_voidtouched_orbs", effect, 1286716 );
 
-  auto heal = create_proc_action<generic_heal_t>( "rune_of_voidtouched_orbs_heal", effect, 1286721 );
-  heal->base_dd_min = heal->base_dd_max = heal->data().effectN( 2 ).base_value();
-  heal->name_str_reporting = "Heal";
-
-  apply_rune_of_lingering( effect.player, damage, heal );
+  auto heal =
+    create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_voidtouched_orbs_heal", effect, 1286721 );
 
   // create orb buff & periodic trigger
   auto orb_buff = create_buff( effect.player, effect.trigger() );
@@ -3891,6 +3916,12 @@ void register_special_effects()
   register_special_effect( 1279599, omnium::rune_of_unleashed_fire );
   register_special_effect( 1279596, omnium::rune_of_voidtouched_orbs );
   register_special_effect( 1287555, DISABLED_EFFECT );  // rune of lingering
+  register_special_effect( 1279609, DISABLED_EFFECT );  // rune of critical power
+  register_special_effect( 1279610, DISABLED_EFFECT );  // rune of burning haste
+  register_special_effect( 1279612, DISABLED_EFFECT );  // rune of masterful cunning
+  register_special_effect( 1279613, DISABLED_EFFECT );  // rune of the versatile warrior
+  register_special_effect( 1279614, DISABLED_EFFECT );  // rune of overload
+  register_special_effect( 1279615, DISABLED_EFFECT );  // rune of residual energy
   reset_version_check();
 }
 

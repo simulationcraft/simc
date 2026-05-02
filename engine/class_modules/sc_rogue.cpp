@@ -1079,6 +1079,9 @@ public:
     // Subtlety
     proc_t* weaponmaster;
 
+    // Hero
+    proc_t* controlled_chaos;
+
   } procs;
 
   // Set Bonus effects
@@ -8077,6 +8080,7 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
       {
         // 250ms so it does not coincide with an Overflowing Purse roll at the same time for now
         trigger_fatebound_coinflip( coin_target, result, 250_ms );
+        p()->procs.controlled_chaos->occur();
       }
     }
 
@@ -8121,6 +8125,7 @@ void actions::rogue_action_t<Base>::resolve_fatebound_coinflip( player_t* coin_t
 
     p()->resource_gain( RESOURCE_ENERGY, result == fatebound_t::coinflip_e::EDGE ? energize_edge : energize_normal, p()->gains.rush_to_the_inevitable );
   }
+
   if ( p()->talent.fatebound.lucky_coin->ok() )
   {
     if ( !p()->buffs.fatebound_lucky_coin->check() )
@@ -10394,11 +10399,11 @@ void rogue_t::init_procs()
   auto roll_the_bones = static_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones );
   for ( size_t i = 0; i < roll_the_bones->buffs.size(); i++ )
   {
-    roll_the_bones->procs[ i ] = get_proc( fmt::format( "Roll the Bones Buffs: {}", i + 1 ) );
+    roll_the_bones->procs[ i ] = get_proc( fmt::format( "Roll the Bones: {}", roll_the_bones->buffs[ i ]->name_str ) );
   }
   for ( size_t i = 0; i < roll_the_bones->buffs.size(); i++ )
   {
-    roll_the_bones->loss_procs[ i ] = get_proc( "Roll the Bones Buff Lost: " + roll_the_bones->buffs[ i ]->name_str );
+    roll_the_bones->loss_procs[ i ] = get_proc( "Roll the Bones Lost: " + roll_the_bones->buffs[ i ]->name_str );
   }
 
   procs.supercharger_wasted                   = get_proc( "Supercharger Wasted" );
@@ -10407,6 +10412,8 @@ void rogue_t::init_procs()
 
   procs.amplifying_poison_consumed            = get_proc( "Amplifying Poison Consumed" );
   procs.rapid_injection_applied               = get_proc( "Rapid Injection Applied" );
+
+  procs.controlled_chaos                      = get_proc( "Controlled Chaos" );
 }
 
 // rogue_t::init_scaling ====================================================
@@ -10699,7 +10706,12 @@ void rogue_t::create_buffs()
       ->set_expire_callback( [ this ]( buff_t* b, double stack, timespan_t ) {
         if ( b && stack == b->max_stack() )
         {
-          buffs.fatebound_lucky_coin->trigger();
+          // 2026-05-02 -- Lucky Coin buff application is delayed due to projectile animation
+          // Logs show this causes tracker stacks to get cleared again if they proc during the delay
+          make_event( sim, 1.2_s, [ this ] {
+            buffs.fatebound_lucky_coin->trigger();
+            buffs.fatebound_coin_flips->expire();
+          } );
         }
       } );
   }
