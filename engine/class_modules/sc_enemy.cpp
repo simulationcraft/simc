@@ -92,6 +92,19 @@ struct enemy_t : public player_t
   void demise() override;
   double armor_coefficient( int level, tank_dummy_e diff );
   std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override;
+
+  bool has_absorb() const override
+  {
+    return range::any_of( absorb_buff_list,
+                          []( const absorb_buff_t* ab ) { return ab->check_value() > 0; } );
+  }
+
+  double current_absorb_amount() const override
+  {
+    return range::accumulate( absorb_buff_list, 0.0,
+                              []( const absorb_buff_t* ab ) { return ab->check_value(); } );
+  }
+
   timespan_t available() const override
   {
     return waiting_time;

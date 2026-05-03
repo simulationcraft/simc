@@ -5,6 +5,7 @@
 
 #include "action/heal.hpp"
 #include "action/action.hpp"
+#include "action/action_state.hpp"
 #include "action/spell.hpp"
 #include "buff/buff.hpp"
 #include "dbc/dbc.hpp"
@@ -1667,6 +1668,68 @@ struct vulnerable_event_t final : public raid_event_t
   }
 };
 
+// Absorb ===================================================================
+
+struct absorb_event_t final : public raid_event_t
+{
+  double amount;
+  std::string school_str;
+  std::string target_str;
+  school_e school;
+  target_specific_t<absorb_buff_t> absorb_buffs;
+
+  absorb_event_t( sim_t* s, std::string_view options_str )
+    : raid_event_t( s, "absorb" ), amount( 0.0 ), school( SCHOOL_NONE ), absorb_buffs( false )
+  {
+    add_option( opt_float( "amount", amount ) );
+    add_option( opt_string( "school", school_str ) );
+    add_option( opt_string( "target", target_str ) );
+
+    parse_options( options_str );
+
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+      target_str = "Pull_" + util::to_string( pull ) + "_" + target_str;
+
+    if ( !school_str.empty() )
+    {
+      school = util::parse_school_type( school_str );
+      if ( school == SCHOOL_NONE )
+        throw std::invalid_argument( fmt::format( "Unknown absorb raid event school '{}'", school_str ) );
+    }
+  }
+
+  player_t* resolve_target() const
+  {
+    if ( target_str.empty() )
+      return sim->target;
+    if ( player_t* t = sim->find_player( target_str ) )
+      return t;
+    throw std::invalid_argument( fmt::format( "Unknown absorb raid event target '{}'", target_str ) );
+  }
+
+  void _start() override
+  {
+    player_t* target = resolve_target();
+    absorb_buff_t*& buff = absorb_buffs[ target ];
+    if ( !buff )
+    {
+      buff = make_buff<absorb_buff_t>( target, fmt::format( "raid_event_absorb_{}", internal_id ) );
+      if ( school != SCHOOL_NONE )
+        buff->set_absorb_school( school );
+    }
+
+    // No amount => unbreakable; infinity makes consume() never reduce to 0.
+    double value = amount > 0 ? amount : std::numeric_limits<double>::infinity();
+    buff->trigger( 1, value, -1.0, timespan_t::max() );
+  }
+
+  void _finish() override
+  {
+    if ( absorb_buff_t* buff = absorb_buffs[ resolve_target() ] )
+      buff->expire();
+  }
+};
+
 // Position Switch ==========================================================
 
 struct position_event_t : public raid_event_t
@@ -2311,6 +2374,8 @@ std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim, util::string_vie
     return std::unique_ptr<raid_event_t>( new stun_event_t( sim, options_str ) );
   if ( name == "vulnerable" )
     return std::unique_ptr<raid_event_t>( new vulnerable_event_t( sim, options_str ) );
+  if ( name == "absorb" )
+    return std::unique_ptr<raid_event_t>( new absorb_event_t( sim, options_str ) );
   if ( name == "position_switch" )
     return std::unique_ptr<raid_event_t>( new position_event_t( sim, options_str ) );
   if ( name == "flying" )

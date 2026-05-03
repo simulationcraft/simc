@@ -58,6 +58,7 @@
 #include "sim/plot.hpp"
 #include "sim/proc.hpp"
 #include "sim/proc_rng.hpp"
+#include "sim/raid_event.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sim.hpp"
 #include "util/io.hpp"
@@ -4474,6 +4475,21 @@ void player_t::init_assessors()
     state->target->do_damage( state );
     return assessor::CONTINUE;
   } );
+
+  // Credit absorbed-on-enemy damage back to attacker stats when an absorb raid event is configured.
+  if ( !is_enemy() && range::any_of( sim->raid_events,
+                                     []( const auto& e ) { return e->type == "absorb"; } ) )
+  {
+    assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, []( result_amount_type, action_state_t* s ) {
+      if ( s->target && s->target->is_enemy() )
+      {
+        double absorbed = s->result_mitigated - s->result_absorbed;
+        if ( absorbed > 0 )
+          s->result_amount += absorbed;
+      }
+      return assessor::CONTINUE;
+    } );
+  }
 
   // Logging and debug .. Technically, this should probably be in action_t::assess_damage, but we
   // don't need this piece of code for the vast majority of sims, so it makes sense to yank it out
@@ -12089,6 +12105,9 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
   if ( expression_str == "is_enemy" )
     return expr_t::create_constant( "is_enemy", is_enemy() );
+
+  if ( expression_str == "has_absorb" )
+    return make_fn_expr( expression_str, [ this ] { return has_absorb() ? 1.0 : 0.0; } );
 
   if ( expression_str == "attack_haste" )
     return make_fn_expr( expression_str, [this] { return cache.attack_haste(); } );

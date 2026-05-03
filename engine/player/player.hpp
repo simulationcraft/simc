@@ -1413,6 +1413,10 @@ public:
   virtual void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* );
   virtual void assess_damage_imminent( school_e, result_amount_type, action_state_t* );
   virtual void do_damage( action_state_t* );
+
+  virtual bool has_absorb() const { return false; }
+  virtual double current_absorb_amount() const { return 0.0; }
+
   virtual void assess_heal( school_e, result_amount_type, action_state_t* );
   virtual void trigger_callbacks( proc_types, proc_types2, action_t* action, action_state_t* state,
                                   proc_trigger_type_e pt_type = TRIGGER_ACTION );
