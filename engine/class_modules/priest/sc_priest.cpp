@@ -1081,6 +1081,47 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
   }
 };
 
+struct devour_matter_damage_t final : public priest_spell_t
+{
+  double execute_percent;
+  double execute_modifier;
+  int parent_chain_number = 0;
+
+  devour_matter_damage_t( priest_t& p, const spell_data_t* swd_spell )
+    : priest_spell_t( "shadow_word_death_devour_matter", p, swd_spell ),
+      execute_percent( swd_spell->effectN( 3 ).base_value() ),
+      execute_modifier( swd_spell->effectN( 4 ).percent() )
+  {
+    background                 = true;
+    affected_by_shadow_weaving = true;
+    triggers_atonement         = false;
+    spell_power_mod.direct     = swd_spell->effectN( 1 ).sp_coeff();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    if ( parent_chain_number > 0 )
+      m *= priest().talents.shared.deaths_torment->effectN( 2 ).percent();
+
+    if ( s->target->health_percentage() < execute_percent )
+      m *= 1 + execute_modifier;
+
+    return m;
+  }
+
+  double composite_energize_amount( const action_state_t* /* s */ ) const override
+  {
+    double ea = priest().talents.voidweaver.devour_matter->effectN( 3 ).base_value();
+
+    if ( parent_chain_number > 0 )
+      ea *= priest().talents.shared.deaths_torment->effectN( 2 ).percent();
+
+    return ea;
+  }
+};
+
 struct shadow_word_death_t final : public priest_spell_t
 {
 protected:
@@ -1098,6 +1139,7 @@ public:
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
   propagate_const<expiation_t*> child_expiation;
   action_t* child_searing_light;
+  propagate_const<devour_matter_damage_t*> child_devour_matter;
   timespan_t execute_override;
 
   // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1359
@@ -1108,6 +1150,7 @@ public:
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light ),
+      child_devour_matter( nullptr ),
       execute_override( execute_override )
   {
     affected_by_shadow_weaving   = true;
@@ -1123,13 +1166,9 @@ public:
 
     triggers_atonement = true;
 
-    // Devour Matter gives you more Insanity and an extra amount of sp coeff
-    // TODO: Refactor this into an additional hit (same spell ID)
-    // This additional hit has an independet crit chance, gets the execute mod, and gets the deathspeaker mod
-    if ( priest().options.force_devour_matter && priest().talents.voidweaver.devour_matter.enabled() )
+    if ( priest().talents.voidweaver.devour_matter.enabled() )
     {
-      energize_amount += priest().talents.voidweaver.devour_matter->effectN( 3 ).base_value();
-      spell_power_mod.direct += data().effectN( 1 ).sp_coeff();
+      child_devour_matter = new devour_matter_damage_t( priest(), &data() );
     }
   }
 
@@ -1241,6 +1280,14 @@ public:
   void impact( action_state_t* s ) override
   {
     ab::impact( s );
+
+    if ( child_devour_matter && result_is_hit( s->result ) &&
+         ( priest().options.force_devour_matter || s->target->has_absorb() ) )
+    {
+      child_devour_matter->parent_chain_number = cast_state( s )->chain_number;
+      child_devour_matter->set_target( s->target );
+      child_devour_matter->execute();
+    }
 
     if ( priest().talents.shared.inescapable_torment.enabled() )
     {
