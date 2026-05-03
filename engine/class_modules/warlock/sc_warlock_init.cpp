@@ -125,10 +125,6 @@ namespace warlock
     // NOTE: 2026-02-17 Mark of Perotharn is being applied twice in what appears to be a bug
     if ( bugs )
       parse_passive_effects( hero.mark_of_perotharn, true );
-
-    // NOTE: 2026-03-21 An additional effect of Fel Armaments talent is applied even if the talent is not selected (bug)
-    if ( demonology() && bugs && ( talents.fel_armaments.ok() || fel_armaments_extra_effect_bug ) )
-      parse_passive_effects( talents.fel_armaments_2, true );
   }
 
   void warlock_t::init_spells_affliction()
@@ -287,7 +283,6 @@ namespace warlock
     talents.carnivorous_stalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Carnivorous Stalkers" ); // Should be ID 386194;
 
     talents.fel_armaments = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Armaments" ); // Should be ID 1263935
-    talents.fel_armaments_2 = conditional_spell_lookup( warlock_base.demonology_warlock->ok() && bugs, 1263938 ); // Always active due to a bug
 
     talents.imp_gang_boss = find_talent_spell( talent_tree::SPECIALIZATION, "Imp Gang Boss" ); // Should be ID 1250768
 
@@ -487,11 +482,10 @@ namespace warlock
     talents.soul_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Fire" ); // Should be ID 6353
     talents.soul_fire_2 = conditional_spell_lookup( talents.soul_fire.ok(), 281490 );
 
-    talents.inferno = find_talent_spell( talent_tree::SPECIALIZATION, "Inferno" ); // Should be ID 1280483
+    talents.chaos_incarnate = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Incarnate" ); // Should be ID 387275
 
     talents.conflagration_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagration of Chaos" ); // Should be ID 387108
-    talents.conflagration_of_chaos_cf = conditional_spell_lookup( talents.conflagration_of_chaos.ok(), 387109 );
-    talents.conflagration_of_chaos_sb = conditional_spell_lookup( talents.conflagration_of_chaos.ok() && talents.shadowburn.ok(), 387110 );
+    talents.conflagration_of_chaos_buff = conditional_spell_lookup( talents.conflagration_of_chaos.ok(), 387109 );
 
     talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
 
@@ -506,7 +500,7 @@ namespace warlock
     talents.overfiend_buff = conditional_spell_lookup( talents.avatar_of_destruction.ok(), 457578 );
     talents.overfiend_cb = conditional_spell_lookup( talents.avatar_of_destruction.ok(), 434589 );
 
-    talents.chaos_incarnate = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Incarnate" ); // Should be ID 387275
+    talents.inferno = find_talent_spell( talent_tree::SPECIALIZATION, "Inferno" ); // Should be ID 1280483
 
     talents.alythesss_ire = find_talent_spell( talent_tree::SPECIALIZATION, "Alythess's Ire" ); // Should be ID 1244941
     talents.alythesss_ire_buff = conditional_spell_lookup( talents.alythesss_ire.ok(), 1244947 );
@@ -686,7 +680,6 @@ namespace warlock
     proc_data_entries.agony_energize = talents.agony_energize;
     proc_data_entries.demonbolt_energize = talents.demonbolt_energize;
     proc_data_entries.incinerate_energize = warlock_base.incinerate_energize;
-    proc_data_entries.fel_armaments_2 = talents.fel_armaments_2;
     proc_data_entries.marked_soul = hero.marked_soul;
   }
 
@@ -837,13 +830,8 @@ namespace warlock
 
     buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", talents.rain_of_chaos_buff );
 
-    buffs.conflagration_of_chaos_cf = make_buff( this, "conflagration_of_chaos_cf", talents.conflagration_of_chaos_cf )
-                                          ->set_default_value_from_effect( 1 )
-                                          ->set_chance( talents.conflagration_of_chaos->effectN( 1 ).percent() );
-
-    buffs.conflagration_of_chaos_sb = make_buff( this, "conflagration_of_chaos_sb", talents.conflagration_of_chaos_sb )
-                                          ->set_default_value_from_effect( 1 )
-                                          ->set_chance( talents.conflagration_of_chaos->effectN( 1 ).percent() );
+    buffs.conflagration_of_chaos = make_buff( this, "conflagration_of_chaos", talents.conflagration_of_chaos_buff )
+                                       ->set_chance( talents.conflagration_of_chaos->effectN( 1 ).percent() );
 
     buffs.flashpoint = make_buff( this, "flashpoint", talents.flashpoint_buff )
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -945,7 +933,8 @@ namespace warlock
 
     buffs.infernal_bolt = make_buff( this, "infernal_bolt", hero.infernal_bolt_buff );
 
-    buffs.abyssal_dominion = make_buff( this, "abyssal_dominion", hero.abyssal_dominion_buff );
+    buffs.abyssal_dominion = make_buff( this, "abyssal_dominion", hero.abyssal_dominion_buff )
+                                 ->set_duration( hero.abyssal_dominion_buff->duration() + talents.reign_of_tyranny->effectN( 1 ).time_value() );
 
     buffs.ruination = make_buff( this, "ruination", hero.ruination_buff );
 
@@ -1113,8 +1102,7 @@ namespace warlock
     procs.chaotic_inferno = get_proc( "chaotic_inferno" );
     procs.dimensional_rift = get_proc( "dimensional_rift" );
     procs.avatar_of_destruction = get_proc( "avatar_of_destruction" );
-    procs.conflagration_of_chaos_cf = get_proc( "conflagration_of_chaos_cf" );
-    procs.conflagration_of_chaos_sb = get_proc( "conflagration_of_chaos_sb" );
+    procs.conflagration_of_chaos = get_proc( "conflagration_of_chaos" );
     procs.alythesss_ire = get_proc( "alythesss_ire" );
     procs.reverse_entropy = get_proc( "reverse_entropy" );
     procs.rain_of_chaos = get_proc( "rain_of_chaos" );
@@ -1642,8 +1630,6 @@ namespace warlock
     add_option( opt_deprecated( "eye_explosion_instanced_bug_sb", "warlock.eye_explosion_instanced_bug_sb" ) );
     add_option( opt_bool( "warlock.eye_explosion_instanced_bug_rof", eye_explosion_instanced_bug_rof ) );
     add_option( opt_deprecated( "eye_explosion_instanced_bug_rof", "warlock.eye_explosion_instanced_bug_rof" ) );
-    add_option( opt_bool( "warlock.fel_armaments_extra_effect_bug", fel_armaments_extra_effect_bug ) );
-    add_option( opt_deprecated( "fel_armaments_extra_effect_bug", "warlock.fel_armaments_extra_effect_bug" ) );
     add_option( opt_float( "warlock.tyrant_antoran_armaments_target_mul", tyrant_antoran_armaments_target_mul, 0.0, 1.0 ));
     add_option( opt_deprecated( "tyrant_antoran_armaments_target_mul", "warlock.tyrant_antoran_armaments_target_mul" ) );
 
@@ -1684,6 +1670,7 @@ namespace warlock
     warlock_pet_list.active = nullptr;
     havoc_target = nullptr;
     haunt_target = nullptr;
+    patient_zero_target = nullptr;
     wild_imp_spawns.clear();
     diabolic_ritual = rng().range( 0, 3 );
     demonic_art_buff_replaced = false;

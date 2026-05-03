@@ -3294,7 +3294,17 @@ struct eclipse_buff_base_t : public druid_buff_t
     if ( harmony_cur >= harmony_cap )
       return;
 
-    harmony_cur += harmony_val;
+    // harmory is queued after cast
+    make_event( *sim, 1_ms, [ this ] {
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} increasing {} Harmony of the Heavens by {}% from {}% to {}%", *p(), *this,
+                          harmony_val * 100.0, harmony_cur * 100.0,
+                          std::min( harmony_cur + harmony_val, harmony_cap ) * 100.0 );
+      }
+
+      harmony_cur = std::min( harmony_cur + harmony_val, harmony_cap );
+    } );
   }
 
   virtual void trigger_boat_buff() = 0;
@@ -3325,16 +3335,19 @@ struct eclipse_buff_base_t : public druid_buff_t
       bolt_cd->start();
     }
 
-    p()->buff.ascendant_fires->trigger();
-    p()->buff.ascendant_stars->trigger();
     p()->buff.astral_communion->trigger();
     p()->buff.cenarius_might->trigger();
     p()->buff.parting_skies->trigger();
 
-    p()->buff.solstice->expire();
+    // subsequent effects are queued after eclipse application
+    make_event( *sim, 1_ms, [ this ] {
+      p()->buff.ascendant_fires->trigger();
+      p()->buff.ascendant_stars->trigger();
 
-    if ( p()->talent.solstice.ok() )
-      p()->buff.solstice->trigger();
+      p()->buff.solstice->expire();
+      if ( p()->talent.solstice.ok() )
+        p()->buff.solstice->trigger();
+    } );
 
     return true;
   }
@@ -3665,7 +3678,6 @@ struct cancel_form_t final : public druid_form_t
 {
   DRUID_ABILITY( cancel_form_t, druid_form_t, "cancelform", spell_data_t::nil() )
   {
-    background = true;
     callbacks = false;
 
     set_form( NO_FORM );
@@ -5474,11 +5486,11 @@ maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spend
 
 struct maul_data_t
 {
-  double rage_mul = 0.0;
+  double rage_mod = 0.0;
 
   friend void sc_format_to( const maul_data_t& data, fmt::format_context::iterator out )
   {
-    fmt::format_to( out, " rage_mul={}", data.rage_mul );
+    fmt::format_to( out, " rage_mod={}", data.rage_mod );
   }
 };
 
@@ -5500,20 +5512,20 @@ public:
   {
     // this maul and echo maul are all derived from maul_base_t so we can use ab::cast_state
     make_event( *BASE::sim, BASE::rng().range( WILD_GUARDIAN_ECHO_DELAY ),
-      [ this, rage_mul = 1.0 + BASE::rage_modifier(), t = ab::target ] {
-        snapshot_and_execute( ab::echo_action, nullptr, false, [ this, rage_mul, t ]( auto, auto to ) {
+      [ this, rage_mod = BASE::rage_modifier(), t = ab::target ] {
+        snapshot_and_execute( ab::echo_action, nullptr, false, [ this, rage_mod, t ]( auto, auto to ) {
           auto state = ab::cast_state( to );
-          state->rage_mul = rage_mul;
+          state->rage_mod = rage_mod;
           state->target = t;
           ab::echo_action->set_target( t );
         } );
 
         if ( ab::repeat_delay > 0_ms )
         {
-          make_repeating_event( *BASE::sim, ab::repeat_delay, [ this, rage_mul, t ] {
-            snapshot_and_execute( ab::echo_action, nullptr, false, [ this, rage_mul, t ]( auto, auto to ) {
+          make_repeating_event( *BASE::sim, ab::repeat_delay, [ this, rage_mod, t ] {
+            snapshot_and_execute( ab::echo_action, nullptr, false, [ this, rage_mod, t ]( auto, auto to ) {
               auto state = ab::cast_state( to );
-              state->rage_mul = rage_mul;
+              state->rage_mod = rage_mod;
               state->target = t;
               ab::echo_action->set_target( t );
             } );
@@ -5553,10 +5565,10 @@ public:
       if ( gift_stacks - p_->buff.gift_of_maul->check() > 0 )
         delay += ab::rng().range( WILD_GUARDIAN_ECHO_DELAY );
 
-      make_event( *ab::sim, delay, [ this, rage_mul = 1.0 + BASE::rage_modifier(), t = ab::target ] {
-        snapshot_and_execute( repeat_action, nullptr, false, [ this, rage_mul, t ]( auto, auto to ) {
+      make_event( *ab::sim, delay, [ this, rage_mod = BASE::rage_modifier(), t = ab::target ] {
+        snapshot_and_execute( repeat_action, nullptr, false, [ this, rage_mod, t ]( auto, auto to ) {
           auto state = ab::cast_state( to );
-          state->rage_mul = rage_mul;
+          state->rage_mod = rage_mod;
           state->target = t;
           repeat_action->set_target( t );
         } );
@@ -5695,7 +5707,7 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
     if ( kb_excess_rage_mul )
     {
       assert( p()->resources.current[ RESOURCE_RAGE ] >= cost() );
-      cast_state( s )->rage_mul = 1.0 + rage_modifier();
+      cast_state( s )->rage_mod = rage_modifier();
     }
 
     base_t::snapshot_state( s, rt );
@@ -5703,7 +5715,7 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    return base_t::composite_da_multiplier( s ) * cast_state( s )->rage_mul;
+    return base_t::composite_da_multiplier( s ) * ( 1.0 + cast_state( s )->rage_mod );
   }
 };
 
@@ -12117,16 +12129,10 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
   switch ( specialization() )
   {
     case DRUID_BALANCE:
-      if ( style == FIGHT_STYLE_PATCHWERK )
-      {
-        if ( sim->desired_targets > 1 )
-        {
-          sim->error( error_level_e::MODERATE,
-                      "Balance APL has not been fully tested for multi-target scenarios. Results may be incorrect." );
-        }
+      if ( style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_DUNGEON_ROUTE )
         return true;
-      }
-      return false;
+      else
+        return false;
 
     case DRUID_FERAL:
       break;

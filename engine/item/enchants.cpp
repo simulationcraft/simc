@@ -147,6 +147,31 @@ void enchant::initialize_item_enchant( item_t& item, std::vector<stat_pair_t>& s
         effect.type        = SPECIAL_EFFECT_EQUIP;
         effect.proc_flags_ = PF_MELEE | PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY;
         break;
+      case ITEM_ENCHANTMENT_DAMAGE:
+      {
+        double value = 0;
+        if ( enchant.id_scaling == 0 )
+          value = enchant.ench_amount[ i ];
+        else
+        {
+          unsigned level = item.player->level();
+
+          if ( enchant.max_scaling_level != 0 && static_cast<unsigned>( level ) > enchant.max_scaling_level )
+            level = enchant.max_scaling_level;
+
+          double budget = item.player->dbc->spell_scaling( static_cast<player_e>( enchant.id_scaling ), level );
+          value         = util::round( budget * enchant.ench_coeff[ i ] );
+        }
+
+        if ( value != 0 )
+        {
+          item.weapon()->min_dmg += value;
+          item.weapon()->max_dmg += value;
+          item.weapon()->dps += value / item.weapon()->swing_time.total_seconds();
+          item.weapon()->damage += value;
+        }
+        break;
+      }
       case ITEM_ENCHANTMENT_EQUIP_SPELL:
         // Passive enchants get a special treatment. In essence, we only support
         // a couple, and they are handled without special effect initialization

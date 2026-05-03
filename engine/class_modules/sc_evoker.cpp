@@ -10835,26 +10835,7 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
         rng().range<unsigned>( talent.clairvoyant.enabled() ? mote_buffs_e::MAX : mote_buffs_e::PRESCIENCE ) );
   }
 
-  if ( target )
-  {
-    auto td = get_target_data( target );
-    switch ( mote_buff )
-    {
-      case mote_buffs_e::INFERNOS_BLESSING:
-        td->buffs.infernos_blessing->trigger();
-        return;
-      case mote_buffs_e::PRESCIENCE:
-        td->buffs.prescience->trigger();
-        return;
-      case mote_buffs_e::SHIFTING_SANDS:
-        td->buffs.shifting_sands->current_value = cache.mastery_value();
-        td->buffs.shifting_sands->trigger();
-        return;
-      default:
-        return;
-    }
-  }
-  else
+  if ( !target )
   {
     target                        = this;
     std::vector<player_t*> helper = sim->player_non_sleeping_list.data();
@@ -10868,38 +10849,40 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
       case mote_buffs_e::SYMBIOTIC_BLOOM:
       case mote_buffs_e::SHIFTING_SANDS:
       default:
-
-        // Add a 3 copies of yourself. 50%~ for M+, relatively low in Raid.
-        // TODO: Rework this entire system to use actions with travel times.
-        helper.push_back( this );
-        helper.push_back( this );
-        helper.push_back( this );
+        //// Add a 3 copies of yourself. 50%~ for M+, relatively low in Raid.
+        //// TODO: Rework this entire system to use actions with travel times.
+        // helper.push_back( this );
+        // helper.push_back( this );
+        // helper.push_back( this );
         target = rng().range( helper );
         break;
     }
+  }
 
-    assert( target && "Target should be non-null" );
+  assert( target && "Target should be non-null" );
 
-    switch ( mote_buff )
+  switch ( mote_buff )
+  {
+    case mote_buffs_e::INFERNOS_BLESSING:
+      // Maintain two IBs
+      if ( active_infernos_blessings.size() > 0 )
+        rng().range( active_infernos_blessings )->cancel();
+      get_target_data( target )->buffs.infernos_blessing->trigger();
+      return;
+    case mote_buffs_e::PRESCIENCE:
+      get_target_data( target )->buffs.prescience->trigger();
+      return;
+    case mote_buffs_e::SYMBIOTIC_BLOOM:
+      return;
+    case mote_buffs_e::SHIFTING_SANDS:
     {
-      case mote_buffs_e::INFERNOS_BLESSING:
-        get_target_data( target )->buffs.infernos_blessing->trigger();
-        return;
-      case mote_buffs_e::PRESCIENCE:
-        get_target_data( target )->buffs.prescience->trigger();
-        return;
-      case mote_buffs_e::SYMBIOTIC_BLOOM:
-        return;
-      case mote_buffs_e::SHIFTING_SANDS:
-      {
-        auto td                                 = get_target_data( target );
-        td->buffs.shifting_sands->current_value = cache.mastery_value();
-        td->buffs.shifting_sands->trigger();
-        return;
-      }
-      default:
-        return;
+      auto td                                 = get_target_data( target );
+      td->buffs.shifting_sands->current_value = cache.mastery_value();
+      td->buffs.shifting_sands->trigger();
+      return;
     }
+    default:
+      return;
   }
 }
 

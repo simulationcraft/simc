@@ -52,6 +52,16 @@ enum stealth_type_e
 struct fatebound_t
 {
   enum coinflip_e { HEADS, TAILS, EDGE };
+  static const char* coinflip_string( coinflip_e coinflip )
+  {
+    switch ( coinflip )
+    {
+      case HEADS: return "heads";
+      case TAILS: return "tails";
+      case EDGE:  return "edge";
+      default:    return "unknown";
+    }
+  }
 };
 
 namespace actions
@@ -1069,6 +1079,9 @@ public:
     // Subtlety
     proc_t* weaponmaster;
 
+    // Hero
+    proc_t* controlled_chaos;
+
   } procs;
 
   // Set Bonus effects
@@ -1094,6 +1107,7 @@ public:
     bool rogue_ready_trigger = true;
     bool priority_rotation = false;
     double the_first_dance_trigger_rate = 0.75;
+    bool trickster_cloud_cover_secondary = true;
   } options;
 
   rogue_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
@@ -2024,15 +2038,22 @@ public:
     const double base_damage = unmitigated ? s->result_total : s->result_amount;
     // Target multipliers may not replicate to secondary targets, which requires reversing them out
     const double target_da_multiplier = ( unmitigated && reverse_target_da_multiplier ) ? ( 1.0 / s->target_da_multiplier ) : 1.0;
-    const double amount = base_damage * multiplier * target_da_multiplier;
+    // Target crit damage taken multipliers are baked into the result_crit_bonus and result_total
+    // Since it's not currently in the action state, fetch this directly from the action to reverse out
+    // Full value in result_total is multiplied by 1.0 + result_crit_bonus so need to factor that out
+    const double target_crit_bonus_adjustment = ( unmitigated && reverse_target_da_multiplier && s->result_crit_bonus > 0 ) ?
+      ( 1.0 + s->result_crit_bonus * ( 1.0 / s->action->composite_target_crit_damage_bonus_multiplier( s->target ) ) ) / ( 1.0 + s->result_crit_bonus ) : 1.0;
+
+    const double amount = base_damage * multiplier * target_da_multiplier * target_crit_bonus_adjustment;
 
     if ( amount <= 0 )
       return;
 
     player_t* primary_target = override_target ? override_target : s->target;
 
-    p()->sim->print_debug( "{} triggers residual {} for {:.2f} damage ({:.2f} * {} * {:.3f}) on {}",
-                           *p(), *this, amount, base_damage, multiplier, target_da_multiplier, *primary_target );
+    p()->sim->print_log( "{} triggers residual {} for {:.2f} damage ({:.2f} * {:.2f} * {:.3f} * {:.3f}) on {}",
+                         *p(), *this, amount, base_damage, multiplier, target_da_multiplier,
+                         target_crit_bonus_adjustment, *primary_target );
 
     if ( !ab::callbacks || !trigger_event )
     {
@@ -2214,6 +2235,7 @@ public:
   void trigger_master_of_shadows();
   void trigger_nimble_flurry( const action_state_t* state );
   void trigger_opportunity( const action_state_t*, rogue_attack_t* action, double modifier = 1.0 );
+  void trigger_palmed_bullets( const action_state_t* state );
   void trigger_poison_bomb( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_restless_blades( const action_state_t* );
@@ -2488,7 +2510,14 @@ public:
 
     if ( affected_by.fazed_crit_chance && td( target )->debuffs.fazed->check() )
     {
-      c += td( target )->debuffs.fazed->stack_value_crit_chance();
+      if ( p()->options.trickster_cloud_cover_secondary )
+      {
+        c += td( target )->debuffs.fazed->stack_value_crit_chance();
+      }
+      else
+      {
+        c += td( target )->debuffs.fazed->value_crit_chance();
+      }
     }
 
     return c;
@@ -2546,7 +2575,13 @@ public:
 
     if ( affected_by.fazed_crit_damage )
     {
-      cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent() * td( target )->debuffs.fazed->check();
+      if ( p()->options.trickster_cloud_cover_secondary )
+      {
+        cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent() * td( target )->debuffs.fazed->check();      }
+      else
+      {
+        cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent() * td( target )->debuffs.fazed->up();
+      }
     }
 
     return cm;
@@ -3709,17 +3744,7 @@ struct dispatch_t: public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
-
-    if ( result_is_hit( state->result ) )
-    {
-      const int cp_spend = cast_state( state )->get_combo_points();
-
-      if ( p()->talent.outlaw.gravedigger_3->ok() && rng().roll( p()->talent.outlaw.gravedigger_3->effectN( 1 ).percent() * cp_spend ) )
-      {
-        p()->buffs.palmed_bullets->trigger();
-      }
-    }
-
+    trigger_palmed_bullets( state );
     trigger_scoundrel_strike( state, p()->active.scoundrel_strike.dispatch );
   }
 
@@ -4574,6 +4599,9 @@ struct killing_spree_tick_t : public rogue_attack_t
   { return false; }
 
   bool procs_blade_flurry() const override
+  { return true; }
+
+  bool procs_poison() const override
   { return true; }
 };
 
@@ -6386,6 +6414,10 @@ struct fatebound_coin_tails_t : public rogue_attack_t
 
   bool procs_poison() const override
   { return true; }
+
+  // 2026-04-26 -- Logs indicate that tails crits currently trigger Seal Fate
+  bool procs_seal_fate() const override
+  { return p()->bugs; }
 };
 
 // Trickster ================================================================
@@ -6594,6 +6626,7 @@ struct coup_de_grace_t : public rogue_attack_t
 
     trigger_restless_blades( execute_state );
     trigger_cut_to_the_chase( execute_state );
+    trigger_palmed_bullets( execute_state );
     trigger_scoundrel_strike( execute_state, p()->active.scoundrel_strike.coup_de_grace );
 
     p()->buffs.escalating_blade->expire();
@@ -8048,6 +8081,7 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
     {
       // 250ms so it does not coincide with an Overflowing Purse roll at the same time for now
       trigger_fatebound_coinflip( state, result, 250_ms + current_delay );
+      p()->procs.controlled_chaos->occur();
     }
   }
 }
@@ -8056,7 +8090,8 @@ template <typename Base>
 void actions::rogue_action_t<Base>::trigger_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay )
 {
   auto coin_target = state->target->is_enemy() ? state->target : p()->target;
-  make_event( *p()->sim, delay, [ this, coin_target, result ] {
+  make_event( *p()->sim, delay, [ this, coin_target, result, delay ] {
+    p()->sim->print_log( "{} triggered fatebound coinflip with result '{}' and {} delay", *p(), fatebound_t::coinflip_string( result ), delay );
     if ( result == fatebound_t::coinflip_e::HEADS || result == fatebound_t::coinflip_e::EDGE )
     {
       p()->buffs.fatebound_coin_heads->increment();
@@ -8074,10 +8109,12 @@ void actions::rogue_action_t<Base>::trigger_fatebound_coinflip( const action_sta
       }
       if ( result != fatebound_t::coinflip_e::EDGE )
       {
-        p()->buffs.fatebound_coin_heads->expire();
+        // 2026-04-26 -- Logs suggest that the first tails attack is calculated before this fades
+        p()->buffs.fatebound_coin_heads->expire( !ab::is_precombat ? 1_ms : 0_ms );
       }
     }
   } );
+
   if ( p()->talent.fatebound.rush_to_the_inevitable->ok() )
   {
     double energize_normal = p()->specialization() == ROGUE_ASSASSINATION
@@ -8090,6 +8127,7 @@ void actions::rogue_action_t<Base>::trigger_fatebound_coinflip( const action_sta
 
     p()->resource_gain( RESOURCE_ENERGY, result == fatebound_t::coinflip_e::EDGE ? energize_edge : energize_normal, p()->gains.rush_to_the_inevitable );
   }
+
   if ( p()->talent.fatebound.lucky_coin->ok() )
   {
     if ( !p()->buffs.fatebound_lucky_coin->check() )
@@ -8294,8 +8332,7 @@ void actions::rogue_action_t<Base>::trigger_scent_of_blood()
 
   if ( current_stacks != desired_stacks )
   {
-    p()->sim->print_log( "{} adjusting Scent of Blood stacks from {} to {}",
-                         *p(), current_stacks, desired_stacks );
+    p()->sim->print_log( "{} adjusting Scent of Blood stacks from {} to {}", *p(), current_stacks, desired_stacks );
   }
 
   if ( desired_stacks < current_stacks )
@@ -8361,17 +8398,18 @@ void actions::rogue_action_t<Base>::trigger_ancient_arts( const action_state_t* 
     if ( !p()->buffs.ancient_arts->check() )
       return;
 
-    const int current_deficit = as<int>( p()->consume_cp_max() - p()->current_cp() );
-    if ( current_deficit == 0 || p()->buffs.shadow_techniques->check() < current_deficit )
+    // TOCHECK -- Does this enforce the 5 stack criteria on the finisher or just buff application? Or both?
+    auto consume_stacks = std::min( p()->buffs.shadow_techniques->check(),
+                                    std::max( 0, as<int>( p()->consume_cp_max() - p()->current_cp() ) ) );
+    if ( consume_stacks == 0 )
       return;
     
-    trigger_combo_point_gain( current_deficit, p()->gains.shadow_techniques_ancient_arts );
-    p()->buffs.shadow_techniques->decrement( current_deficit );
+    trigger_combo_point_gain( consume_stacks, p()->gains.shadow_techniques_ancient_arts );
+    p()->buffs.shadow_techniques->decrement( consume_stacks );
 
-    // MIDNIGHT TOCHECK -- Assume this is intended to trigger off Ancient Arts 3 as well?
     if ( p()->talent.subtlety.ancient_arts_1->ok() )
     {
-      const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * current_deficit;
+      const double trigger_chance = p()->talent.subtlety.ancient_arts_1->effectN( 1 ).percent() * consume_stacks;
       trigger_shadow_clone( ab::execute_state, shadow_clone_attack(), trigger_chance, 500_ms );
     }
 
@@ -8570,6 +8608,23 @@ void actions::rogue_action_t<Base>::trigger_scoundrel_strike( const action_state
   if ( cp_spend >= p()->talent.outlaw.gravedigger_2->effectN( 1 ).base_value() )
   {
     action->trigger_secondary_action( state->target, 200_ms );
+  }
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_palmed_bullets( const action_state_t* state )
+{
+  if ( !p()->talent.outlaw.gravedigger_3->ok() )
+    return;
+
+  if ( !ab::result_is_hit( state->result ) )
+    return;
+
+  const int cp_spend = cast_state( state )->get_combo_points();
+
+  if ( p()->rng().roll( p()->talent.outlaw.gravedigger_3->effectN( 1 ).percent() * cp_spend ) )
+  {
+    p()->buffs.palmed_bullets->trigger();
   }
 }
 
@@ -10330,11 +10385,11 @@ void rogue_t::init_procs()
   auto roll_the_bones = static_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones );
   for ( size_t i = 0; i < roll_the_bones->buffs.size(); i++ )
   {
-    roll_the_bones->procs[ i ] = get_proc( fmt::format( "Roll the Bones Buffs: {}", i + 1 ) );
+    roll_the_bones->procs[ i ] = get_proc( fmt::format( "Roll the Bones: {}", roll_the_bones->buffs[ i ]->name_str ) );
   }
   for ( size_t i = 0; i < roll_the_bones->buffs.size(); i++ )
   {
-    roll_the_bones->loss_procs[ i ] = get_proc( "Roll the Bones Buff Lost: " + roll_the_bones->buffs[ i ]->name_str );
+    roll_the_bones->loss_procs[ i ] = get_proc( "Roll the Bones Lost: " + roll_the_bones->buffs[ i ]->name_str );
   }
 
   procs.supercharger_wasted                   = get_proc( "Supercharger Wasted" );
@@ -10343,6 +10398,8 @@ void rogue_t::init_procs()
 
   procs.amplifying_poison_consumed            = get_proc( "Amplifying Poison Consumed" );
   procs.rapid_injection_applied               = get_proc( "Rapid Injection Applied" );
+
+  procs.controlled_chaos                      = get_proc( "Controlled Chaos" );
 }
 
 // rogue_t::init_scaling ====================================================
@@ -10635,7 +10692,12 @@ void rogue_t::create_buffs()
       ->set_expire_callback( [ this ]( buff_t* b, double stack, timespan_t ) {
         if ( b && stack == b->max_stack() )
         {
-          buffs.fatebound_lucky_coin->trigger();
+          // 2026-05-02 -- Lucky Coin buff application is delayed due to projectile animation
+          // Logs show this causes tracker stacks to get cleared again if they proc during the delay
+          make_event( sim, 1.2_s, [ this ] {
+            buffs.fatebound_lucky_coin->trigger();
+            buffs.fatebound_coin_flips->expire();
+          } );
         }
       } );
   }
@@ -10948,6 +11010,7 @@ void rogue_t::create_options()
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
   add_option( opt_bool( "priority_rotation", options.priority_rotation ) );
   add_option( opt_float( "the_first_dance_trigger_rate", options.the_first_dance_trigger_rate, 0, 1 ) );
+  add_option( opt_bool( "trickster_cloud_cover_secondary", options.trickster_cloud_cover_secondary ) );
 }
 
 // rogue_t::copy_from =======================================================
@@ -10977,6 +11040,7 @@ void rogue_t::copy_from( player_t* source )
   options.fixed_rtb_odds = rogue->options.fixed_rtb_odds;
   options.rogue_ready_trigger = rogue->options.rogue_ready_trigger;
   options.priority_rotation = rogue->options.priority_rotation;
+  options.trickster_cloud_cover_secondary = rogue->options.trickster_cloud_cover_secondary;
 
   options.the_first_dance_trigger_rate = rogue->options.the_first_dance_trigger_rate;
 }

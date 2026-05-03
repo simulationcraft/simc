@@ -421,6 +421,8 @@ public:
 
       priest().expand_entropic_rift();
 
+      damage->set_target( d->state->target );
+
       state_t* state       = damage->cast_state( damage->get_state() );
       state->target        = d->state->target;
       state->snapshot_mult = cast_state( d->state )->snapshot_mult;

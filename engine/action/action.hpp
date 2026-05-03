@@ -172,6 +172,9 @@ public:
   /// True if ability is usable while casting another spell
   bool usable_while_casting;
 
+  /// True if the off-gcd action should incur queue lag after execution
+  bool add_queue_lag;
+
   /// True if the action should receive the one button GCD penalty.
   bool can_have_one_button_penalty;
 

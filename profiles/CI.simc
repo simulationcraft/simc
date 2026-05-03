@@ -72,6 +72,20 @@ load_default_talents=1
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
+demonhunter=devourer_1
+spec=devourer
+load_default_gear=1
+load_default_talents=1
+hero_talents=1
+set_bonus=latest_2pc=1/latest_4pc=1
+
+demonhunter=devourer_2
+spec=devourer
+load_default_gear=1
+load_default_talents=1
+hero_talents=2
+set_bonus=latest_2pc=1/latest_4pc=1
+
 druid=balance_1
 spec=balance
 load_default_gear=1

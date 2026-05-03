@@ -256,6 +256,7 @@ public:
   player_t* havoc_target;
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   player_t* haunt_target; // Used for tracking the current haunt target
+  player_t* patient_zero_target; // Used to track which target benefits from the Patient Zero talent damage increase
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
   int diabolic_ritual; // Used to cycle between the three different Diabolic Ritual buffs
   bool demonic_art_buff_replaced; // Used to not spawn the Demonic Art demon if the buff is replaced by another
@@ -466,7 +467,6 @@ public:
     player_talent_t rune_of_shadows;
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
     player_talent_t fel_armaments;
-    const spell_data_t* fel_armaments_2; // Another effect of Fel Armaments that, due to a bug, is always active
 
     player_talent_t imp_gang_boss;
     const spell_data_t* imp_gang_boss_buff; // Buff on Wild Imps
@@ -603,10 +603,9 @@ public:
     const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
     player_talent_t soul_fire;
     const spell_data_t* soul_fire_2; // Contains Soul Shard energize data
-    player_talent_t inferno;
+    player_talent_t chaos_incarnate; // Greater mastery value for some spells
     player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit
-    const spell_data_t* conflagration_of_chaos_cf; // Player buff which affects next Conflagrate
-    const spell_data_t* conflagration_of_chaos_sb; // Player buff which affects next Shadowburn
+    const spell_data_t* conflagration_of_chaos_buff; // Player buff which affects next Conflagrate/Shadowburn
     player_talent_t diabolic_embers; // Incinerate generates more Soul Shards
     player_talent_t demonfire_infusion;
     player_talent_t channel_demonfire;
@@ -617,7 +616,7 @@ public:
     const spell_data_t* summon_overfiend;
     const spell_data_t* overfiend_buff; // Buff on Warlock while Overfiend is out, generates Soul Shards
     const spell_data_t* overfiend_cb; // Chaos Bolt cast by Overfiend
-    player_talent_t chaos_incarnate; // Greater mastery value for some spells
+    player_talent_t inferno;
     player_talent_t alythesss_ire;
     const spell_data_t* alythesss_ire_buff;
     player_talent_t raging_demonfire;
@@ -795,7 +794,6 @@ public:
     proc_data_t agony_energize;
     proc_data_t demonbolt_energize;
     proc_data_t incinerate_energize;
-    proc_data_t fel_armaments_2;
     proc_data_t marked_soul;
   } proc_data_entries;
 
@@ -858,8 +856,7 @@ public:
     propagate_const<buff_t*> fiendish_cruelty;
     propagate_const<buff_t*> chaotic_inferno;
     propagate_const<buff_t*> rain_of_chaos;
-    propagate_const<buff_t*> conflagration_of_chaos_cf;
-    propagate_const<buff_t*> conflagration_of_chaos_sb;
+    propagate_const<buff_t*> conflagration_of_chaos;
     propagate_const<buff_t*> flashpoint;
     propagate_const<buff_t*> crashing_chaos;
     propagate_const<buff_t*> alythesss_ire;
@@ -950,8 +947,7 @@ public:
     proc_t* chaotic_inferno;
     proc_t* dimensional_rift;
     proc_t* avatar_of_destruction;
-    proc_t* conflagration_of_chaos_cf;
-    proc_t* conflagration_of_chaos_sb;
+    proc_t* conflagration_of_chaos;
     proc_t* demonfire_infusion_inc;
     proc_t* demonfire_infusion_dot;
     proc_t* alythesss_ire;
@@ -1118,7 +1114,6 @@ public:
   bool eye_explosion_instanced_bug_cb;
   bool eye_explosion_instanced_bug_sb;
   bool eye_explosion_instanced_bug_rof;
-  bool fel_armaments_extra_effect_bug;
   double tyrant_antoran_armaments_target_mul;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );

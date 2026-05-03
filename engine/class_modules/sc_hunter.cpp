@@ -1977,6 +1977,7 @@ struct fenryr_t final : public dire_critter_t
   {
     // 9-7-25 Hati and Fenryr base damage increased to about 2x of a normal Dire Beast's damage.
     owner_coeff.ap_from_ap = 2;
+    triggers_heart_of_the_pack = true;
   }
 
   void summon( timespan_t duration = 0_ms ) override
@@ -2012,6 +2013,7 @@ struct hati_t final : public dire_critter_t
   {
    // 9-7-25 Hati and Fenryr base damage increased to about 2x of a normal Dire Beast's damage.
     owner_coeff.ap_from_ap = 2;
+    triggers_heart_of_the_pack = true;
   }
 };
 
@@ -3166,15 +3168,6 @@ struct stomp_t : public hunter_pet_attack_t<hunter_pet_t>
 
         if ( !tl.empty() )
           o()->actions.wild_instincts->execute_on_target( tl.front() );
-      }
-      // 2026-03-04: Nature's Ally pets trigger Wild Instincts on the primary target if any undotted target exists in range
-      else if ( o()->bugs && p() == o()->pets.natures_ally_pet.active_pet() )
-      {
-        bool undotted_exists = range::any_of(
-            tl, [ this ]( player_t* t ) { return !o()->get_target_data( t )->dots.barbed_shot->is_ticking(); } );
-        
-        if ( undotted_exists )
-          o()->actions.wild_instincts->execute_on_target( target );
       }
     }
   }
@@ -4786,9 +4779,6 @@ struct black_arrow_base_t : public kill_shot_base_t
       bleak_powder->execute_on_target( s->target );
       p()->cooldowns.bleak_powder->start();
     }
-
-    if ( p()->talents.headshot.ok() )
-      td( s->target )->debuffs.headshot->trigger();
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -5898,6 +5888,11 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     damage -> gain = gain;
     damage -> stats = stats;
     stats -> action_list.push_back( damage );
+  }
+
+  bool ready() override
+  {
+    return hunter_ranged_attack_t::ready() && cooldown->reset_react <= sim->current_time();
   }
 
   void execute() override

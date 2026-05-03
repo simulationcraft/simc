@@ -3691,6 +3691,36 @@ void unique_gear::initialize_racial_effects( player_t* player )
   }
 }
 
+void unique_gear::initialize_expansion_trait_effects( player_t* player, std::string_view talents_str )
+{
+  if ( !player || talents_str.empty() )
+    return;
+
+  for ( auto entry : util::string_split<std::string_view>( talents_str, "/" ) )
+  {
+    auto split = util::string_split<std::string_view>( entry, ":" );
+    auto _trait = split[ 0 ];
+    // auto _rank = split.size() > 1 ? split[ 1 ] : "1"; ignored for now
+
+    unsigned spell_id;
+
+    if ( util::is_number( _trait ) )
+      spell_id = trait_data_t::find( util::to_unsigned( _trait ), player->is_ptr() )->id_spell;
+    else
+      spell_id = trait_data_t::find( talent_tree::EXPANSION, _trait, 0, SPEC_NONE, player->is_ptr(), true )->id_spell;
+
+    if ( !spell_id )
+      throw sc_invalid_player_argument( fmt::format( "Unable to find expansion talent '{}'.", _trait ) );
+
+    special_effect_t _effect( player );
+    _effect.spell_id = spell_id;
+
+    unique_gear::initialize_special_effect( _effect, spell_id );
+
+    player->special_effects.push_back( new special_effect_t( _effect ) );
+  }
+}
+
 // ==========================================================================
 // unique_gear::init
 // ==========================================================================
@@ -4622,7 +4652,7 @@ void unique_gear::register_special_effects()
   shadowlands::register_special_effects();
   dragonflight::register_special_effects();
   thewarwithin::register_special_effects();
-  midnight:: register_special_effects();
+  midnight::register_special_effects();
 
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */

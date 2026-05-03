@@ -306,8 +306,8 @@ void arms( player_t* p )
   slayer_st->add_action( "ravager,if=cooldown.colossus_smash.remains<=gcd" );
   slayer_st->add_action( "colossus_smash" );
   slayer_st->add_action( "bladestorm,if=debuff.colossus_smash.up" );
-  slayer_st->add_action( "mortal_strike" );
   slayer_st->add_action( "heroic_strike" );
+  slayer_st->add_action( "mortal_strike" );
   slayer_st->add_action( "execute,if=buff.sudden_death.up" );
   slayer_st->add_action( "cleave,if=active_enemies=2&buff.collateral_damage.stack=3" );
   slayer_st->add_action( "overpower" );

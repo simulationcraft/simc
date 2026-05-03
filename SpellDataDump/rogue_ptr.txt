@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67227 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -4146,6 +4146,8 @@ Description      : Your single-target combo-point generating attacks deal $s1% a
 Name             : Insignia of Ravenholdt (id=209043) [Spell Family (8)] 
 School           : Shadow
 Spell Type       : Melee
+Cone Angle       : 60 degrees
+Line Width       : 10 yards
 Labels           : 160
                  : 161
                  : 162
@@ -12570,14 +12572,12 @@ Effect persists for $?a137036[${$s1/1000}][${$s2/1000}] sec after leaving the cl
 Name             : Cloud Cover (id=441587) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Spell Type       : Magic
-Resource         : 30 Energy (3) (id=306428)
+Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Mechanic         : Distract
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1136148)  : Create Area Trigger (179)
@@ -15358,6 +15358,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 10 yards
 Max Targets      : 1
+Cone Angle       : 90 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
                  : 20: Rogue Spells

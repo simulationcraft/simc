@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 12.0.5.67088
-static constexpr std::array<item_enchantment_data_t, 5334> __ptr_spell_item_ench_data { {
+// Item enchantment data, wow build 12.0.7.67227
+static constexpr std::array<item_enchantment_data_t, 5335> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },       0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },       0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 10, 120,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },    2831, "Reinforced (+$k1 Armor)"           },
@@ -5001,7 +5001,7 @@ static constexpr std::array<item_enchantment_data_t, 5334> __ptr_spell_item_ench
   { 7523, 225242,  0,   0,  60, 10, 170,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11221,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Refurbished Plane Displacer"       },
   { 7524, 225243,  0,   0,  60, 10, 170,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11222,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Refurbished Supercollide-O-Tron"   },
   { 7525, 225244,  0,   0,  60, 10, 170,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11223,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Refurbished Shadowflame Rockets"   },
-  { 7526,      0,  0,   0,  50, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 455832,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },  455829, "Algari Weaverline"                 },
+  { 7526,      0,  0,   0,  80, 0, 179,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 455832,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },  455829, "Algari Weaverline"                 },
   { 7527,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "11.0.0 FX Testing - Enchant Visual - Goblin" },
   { 7528,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {  100,    0,    0 }, { 457496,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Tidecaller's Guard"                },
   { 7529,      0, -7,   0,  80, 70, 170,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {      5, 457615,      0 }, {  0.1698f,  0.0000f,  0.0000f },  457618, "+$k1 Intellect & +$457615s1% Mana |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
@@ -5331,6 +5331,7 @@ static constexpr std::array<item_enchantment_data_t, 5334> __ptr_spell_item_ench
   { 8651,      0,  0,   0,  80, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1236745,      0,      0 }, {  0.2868f,  0.0000f,  0.0000f },       0, "Conjured Illusory Adornment - Voidtouched" },
   { 8674,      0,  0,   0,  60, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Internal Testing Visual Enchant"   },
   { 8675,      0,  0,   0,  50, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1284998,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Fishing Lure (+$1284998s1 Fishing Skill)" },
+  { 8679,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "12.0.7  FX Testing - Enchant Visual - Midsummer Fire" },
   { 8684, 241143, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 377360,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and opponent's failed interrupt attempts grant Precognition" },
   { 8685, 241144, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 435550,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and +$435550s1% Damage Reduction when affected by Crowd Control" },
   { 8686, 241142, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 411126,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and getting snared increases damage of your next attack by $411132s1 per stack" },

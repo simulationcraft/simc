@@ -169,20 +169,20 @@ legs=voidbreakers_britches,id=250059,bonus_id=40/12676/12806/13335/13339/13575/1
 feet=voidbreakers_treads,id=250062,bonus_id=40/12806/13335,ilevel=289,enchant_id=8019
 finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240906/240900,enchant_id=7967
 finger2=bond_of_light,id=249369,ilevel=289,gem_id=240916,enchant_id=7967
-trinket1=emberwing_feather,id=250144,bonus_id=40/12806/13440,ilevel=289
-trinket2=gaze_of_the_alnseer,id=249343,bonus_id=40/12806/13335,ilevel=289
-main_hand=brazier_of_the_dissonant_dirge,id=249286,bonus_id=12792/13448/13452,ilevel=289,enchant_id=8039
+trinket1=emberwing_feather,id=250144,bonus_id=40/12806/13440,ilevel=298
+trinket2=gaze_of_the_alnseer,id=249343,bonus_id=40/12806/13335,ilevel=298
+main_hand=brazier_of_the_dissonant_dirge,id=249286,bonus_id=12792/13448/13452,ilevel=298,enchant_id=8039
 
 # Gear Summary
-# gear_ilvl=288.47
-# gear_stamina=17604
-# gear_intellect=1661
+# gear_ilvl=290.27
+# gear_stamina=17810
+# gear_intellect=1720
 # gear_crit_rating=87
 # gear_haste_rating=1201
-# gear_mastery_rating=1205
+# gear_mastery_rating=1218
 # gear_versatility_rating=59
 # gear_speed_rating=98
-# gear_avoidance_rating=407
+# gear_avoidance_rating=411
 # gear_armor=531
 # set_bonus=midnight_season_1_2pc=1
 # set_bonus=midnight_season_1_4pc=1

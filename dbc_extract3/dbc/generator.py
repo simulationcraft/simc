@@ -857,7 +857,8 @@ class ItemDataGenerator(DataGenerator):
                 fields += item2.field('classs', 'subclass')
                 fields += item.field('bonding', 'delay', 'dmg_range', 'item_damage_modifier')
                 fields += item_stats_fields(item.id)
-                fields += item.field('class_mask', 'race_mask')
+                fields += item.field('class_mask')
+                fields += [ '%#.16x' % (item.race_mask_1 + (item.race_mask_2 << 32)) ]
                 fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
                 fields += item.field('gem_props', 'socket_bonus', 'item_set', 'id_curve', 'id_artifact' )
                 fields += item2.ref('id_crafting_quality').field('tier')
@@ -2273,6 +2274,8 @@ class SpellDataGenerator(DataGenerator):
           ( 1276283, 0 ),   # Dominion of Argus: Antoran Inquisitor
           ( 1276182, 0 ),   # Dominion of Argus: Antoran Jailer
           ( 1276282, 0 ),   # Dominion of Argus: Doommaiden (Maybe Unused?)
+          ( 1292384, 0 ),   # Dominion of Argus: Antoran Jailer soul barrage
+          ( 1292391, 0 ),   # Dominion of Argus: Antoran Jailer soul barrage
         ),
 
         # Monk:
@@ -2487,6 +2490,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1245455, 2 ), # Cull Damage
           ( 1266301, 2 ), # Consume Soul Heal
           ( 1223423, 2 ), # Consume Soul Missile
+          ( 1292047, 2 ), # Spontaneous Immolation
 
           # Annihilator
 
@@ -2975,14 +2979,15 @@ class SpellDataGenerator(DataGenerator):
             mask_race_category = self.race_mask_by_skill(skill_id)
 
             # Make sure there's a class or a race for an ability we are using
-            if not ability.mask_class and not ability.mask_race and not mask_class_category and not mask_race_category:
+            _mask_race = ability.mask_race_1 + (ability.mask_race_2 << 32)
+            if not ability.mask_class and not _mask_race and not mask_class_category and not mask_race_category:
                 continue
 
             spell = ability.ref('id_spell')
             if not spell.id:
                 continue
 
-            self.process_spell(spell.id, ids, ability.mask_class or mask_class_category, ability.mask_race or mask_race_category)
+            self.process_spell(spell.id, ids, ability.mask_class or mask_class_category, _mask_race or mask_race_category)
 
         # Get specialization skills from SpecializationSpells and masteries from ChrSpecializations
         for spec_spell in self.db('SpecializationSpells').values():
@@ -3400,7 +3405,7 @@ class SpellDataGenerator(DataGenerator):
             spell = self.db('SpellName')[id]
 
             # Unused hotfix IDs: 1, 2, 5, 6, 7, 54
-            # MAX hotfix id: 58
+            # MAX hotfix id: 60
             hotfix = HotfixDataRecord()
             power_count = 0
 
@@ -3470,8 +3475,10 @@ class SpellDataGenerator(DataGenerator):
             fields += category.field('dmg_class')
             hotfix.add(category, ('dmg_class', 47))
 
-            fields += spell.child('SpellTargetRestrictions').field('max_affected_targets')
+            fields += spell.child('SpellTargetRestrictions').field('max_affected_targets', 'cone', 'width')
             hotfix.add(spell.child('SpellTargetRestrictions'), ('max_affected_targets', 48))
+            hotfix.add(spell.child('SpellTargetRestrictions'), ('cone', 59))
+            hotfix.add(spell.child('SpellTargetRestrictions'), ('width', 60))
 
             duration_entry = misc.ref('id_duration')
             fields += duration_entry.field('duration_1')
@@ -3853,11 +3860,10 @@ class RacialSpellGenerator(DataGenerator):
         for v in data:
             # Ensure that all racial spells have a race mask associated with
             # them. Currently, pandaren racial spells lack one.
-            _mask = v.mask_race
-            if _mask == 0:
-                _mask = util.race_mask(skill = v.id_skill)
-
-            fields = [v.field_format('mask_race')[0] % _mask]
+            if v.mask_race_1 == 0 and v.mask_race_2 == 0:
+                fields = [ '%#.16x' % util.race_mask(skill = v.id_skill) ]
+            else:
+                fields = [ '%#.16x' % (v.mask_race_1 + (v.mask_race_2 << 32)) ]
             fields += v.field('mask_class')
             fields += v.ref('id_spell').field('id', 'name')
             self.output_record(fields)
@@ -4378,7 +4384,7 @@ class PowerTypeGenerator(DataGenerator):
 
             cls_mask = 0
             for _cls in self.db('ChrClassesXPowerTypes').values():
-                if _cls.type == entry.type:
+                if _cls.type == entry.type and _cls.id_parent < len(self._class_masks):
                     cls_mask |= self._class_masks[ _cls.id_parent ]
 
             fields += ['{:#06x}'.format(cls_mask)]

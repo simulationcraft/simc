@@ -165,7 +165,7 @@ constexpr double fp_epsilon = 1e-9;
 // Simc related value definitions
 // ==========================================================================
 
-#define SC_MAJOR_VERSION "1201"
+#define SC_MAJOR_VERSION "1205"
 #define SC_MINOR_VERSION "01"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0

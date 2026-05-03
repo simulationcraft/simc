@@ -299,11 +299,11 @@ struct void_blast_shadow_t final : public mind_blast_base_t
   void_blast_shadow_t( priest_t& p, util::string_view options_str )
     : mind_blast_base_t( p, options_str, p.talents.voidweaver.void_blast_shadow )
   {
-    energize_amount   = -base_costs[ RESOURCE_INSANITY ];
+    energize_amount   = data().effectN( 2 ).resource( RESOURCE_INSANITY );
     energize_type     = action_energize::ON_CAST;
     energize_resource = RESOURCE_INSANITY;
 
-    base_costs[ RESOURCE_INSANITY ] = 0;
+    base_costs[ RESOURCE_MANA ] = 0;
 
     if ( cooldown->duration == 0_s )
     {
@@ -1301,6 +1301,9 @@ public:
           shadow_word_death_t* child_death          = priest().background_actions.shadow_word_death.get();
           child_death->idol_of_nzoth_execute_stacks = 1;
           state_t* state                            = child_death->cast_state( child_death->get_state() );
+          
+          child_death->set_target( s->target );
+
           state->target                             = s->target;
           state->chain_number                       = curr_state->chain_number + 1;
           state->max_chain                          = number_of_chains;
@@ -3100,17 +3103,17 @@ void priest_t::init_spells()
   talents.oracle.preemptive_care       = HT( "Preemptive Care" );
   talents.oracle.waste_no_time         = HT( "Waste No Time" );
   talents.oracle.words_of_the_wise     = HT( "Words of the Wise" );
-  talents.oracle.assured_safety        = HT( "Assured Safety" );         // NYI
-  talents.oracle.divine_feathers       = HT( "Divine Feathers" );        // NYI
-  talents.oracle.save_the_day          = HT( "Save the Day" );           // NYI
+  talents.oracle.assured_safety        = HT( "Assured Safety" );   // NYI
+  talents.oracle.divine_feathers       = HT( "Divine Feathers" );  // NYI
+  talents.oracle.save_the_day          = HT( "Save the Day" );     // NYI
   talents.oracle.forseen_circumstances = HT( "Forseen Circumstances" );
-  talents.oracle.prophets_insight      = HT( "Prophets Insight" );       // NYI
-  talents.oracle.prophets_will         = HT( "Prophets Will" );          // NYI
-  talents.oracle.desperate_measures    = HT( "Desperate Measures" );     // NYI
-  talents.oracle.prompt_prognosis      = HT( "Prompt Prognosis" );       // NYI
-  talents.oracle.piety                 = HT( "Piety" );                  // NYI
-  talents.oracle.unfolding_vision      = HT( "Unfolding Vision" );       // NYI
-  talents.oracle.twinsight             = HT( "Twinsight" );              // NYI
+  talents.oracle.prophets_insight      = HT( "Prophets Insight" );    // NYI
+  talents.oracle.prophets_will         = HT( "Prophets Will" );       // NYI
+  talents.oracle.desperate_measures    = HT( "Desperate Measures" );  // NYI
+  talents.oracle.prompt_prognosis      = HT( "Prompt Prognosis" );    // NYI
+  talents.oracle.piety                 = HT( "Piety" );               // NYI
+  talents.oracle.unfolding_vision      = HT( "Unfolding Vision" );    // NYI
+  talents.oracle.twinsight             = HT( "Twinsight" );           // NYI
   talents.oracle.twinsight_healing     = find_spell( 1232567 );
   talents.oracle.twinsight_damage      = find_spell( 1232571 );
 
@@ -3828,7 +3831,8 @@ void priest_t::create_options()
                          0.0, 1.0 ) );
   add_option( opt_float( "priest.synergistic_brewterializer_barrel_hit_chance",
                          options.synergistic_brewterializer_barrel_hit_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "priest.archon_halo_outgoing_hit_chance", options.archon_halo_outgoing_hit_chance, 0.0, 1.0 ) );
+  add_option(
+      opt_float( "priest.archon_halo_outgoing_hit_chance", options.archon_halo_outgoing_hit_chance, 0.0, 1.0 ) );
   add_option( opt_float( "priest.archon_halo_return_hit_chance", options.archon_halo_return_hit_chance, 0.0, 1.0 ) );
 }
 

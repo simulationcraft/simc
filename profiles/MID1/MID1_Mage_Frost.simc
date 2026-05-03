@@ -25,8 +25,8 @@ actions.precombat=arcane_intellect
 actions.precombat+=/snapshot_stats
 actions.precombat+=/variable,name=target_swapping,op=reset,default=0
 actions.precombat+=/summon_water_elemental
-# Frostfire can open with a precast Blizzard against all target counts. Spellslinger AoE starts at 4+, but Blizzard is only cast with any of the Blizzard talents.
-actions.precombat+=/blizzard,if=talent.frostfire_bolt|active_enemies>=4&(talent.freezing_rain|talent.freezing_winds)
+# Precast Blizzard against all targets if you have any of the Blizzard talents. In AoE (3+ for FF, 4+ for SS) Blizzard is always the precast.
+actions.precombat+=/blizzard,if=active_enemies>=(4-talent.frostfire_bolt)|talent.freezing_rain|talent.freezing_winds
 actions.precombat+=/glacial_spike
 actions.precombat+=/frostbolt
 
@@ -55,23 +55,16 @@ actions.cds+=/berserking,if=variable.ff_trinket_timing|variable.ss_trinket_timin
 actions.cds+=/fireblood,if=variable.ff_trinket_timing|variable.ss_trinket_timing
 actions.cds+=/ancestral_call,if=variable.ff_trinket_timing|variable.ss_trinket_timing
 # Opener Frostfire
-actions.cds+=/flurry,if=talent.frostfire_bolt,line_cd=9999
-actions.cds+=/glacial_spike,if=talent.frostfire_bolt,line_cd=9999
-actions.cds+=/flurry,if=talent.frostfire_bolt,line_cd=9999
+actions.cds+=/flurry,if=active_enemies>=3&talent.wintertide&talent.frostfire_bolt,line_cd=9999
 actions.cds+=/ray_of_frost,if=talent.frostfire_bolt,line_cd=9999
-actions.cds+=/frozen_orb,if=talent.frostfire_bolt,line_cd=9999
-# Opener Spellslinger ST
-actions.cds+=/ice_lance,if=active_enemies<=3&talent.flash_freeze&talent.splinterstorm,line_cd=9999
-actions.cds+=/ray_of_frost,if=active_enemies<=3&talent.splinterstorm&!variable.target_swapping,line_cd=9999
-actions.cds+=/ray_of_frost,target_if=min:debuff.freezing.react,if=active_enemies<=3&talent.splinterstorm&variable.target_swapping,line_cd=9999
-# Opener Spellslinger AoE
+# Opener Spellslinger
 actions.cds+=/flurry,if=active_enemies>=4&talent.wintertide&talent.splinterstorm&!variable.target_swapping,line_cd=9999
 actions.cds+=/flurry,target_if=min:debuff.freezing.react,if=active_enemies>=4&talent.wintertide&talent.splinterstorm&variable.target_swapping,line_cd=9999
 actions.cds+=/frozen_orb,if=active_enemies>=4&talent.splinterstorm,line_cd=9999
-actions.cds+=/ray_of_frost,if=active_enemies>=4&talent.splinterstorm&!variable.target_swapping,line_cd=9999
-actions.cds+=/ray_of_frost,target_if=min:debuff.freezing.react,if=active_enemies>=4&talent.splinterstorm&variable.target_swapping,line_cd=9999
+actions.cds+=/ray_of_frost,if=talent.splinterstorm&!variable.target_swapping,line_cd=9999
+actions.cds+=/ray_of_frost,target_if=min:debuff.freezing.react,if=talent.splinterstorm&variable.target_swapping,line_cd=9999
 # End-Of-Fight Actions
-actions.cds+=/ray_of_frost,if=fight_remains<12&!variable.target_swapping
+actions.cds+=/ray_of_frost,if=fight_remains<12&(!variable.target_swapping|talent.frostfire_bolt)
 actions.cds+=/ray_of_frost,target_if=min:debuff.freezing.react,if=fight_remains<12&variable.target_swapping
 # Externals
 actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.power_infusion.down
@@ -81,7 +74,7 @@ actions.ff_aoe+=/flurry,if=buff.brain_freeze.react&buff.thermal_void.down
 actions.ff_aoe+=/frozen_orb
 actions.ff_aoe+=/glacial_spike
 actions.ff_aoe+=/comet_storm
-actions.ff_aoe+=/blizzard,if=active_enemies>=(5-talent.freezing_rain-talent.freezing_winds)&(cooldown.frozen_orb.remains>12*spell_haste|!talent.freezing_rain)
+actions.ff_aoe+=/blizzard,if=active_enemies>=(5-talent.freezing_rain-talent.freezing_winds)
 actions.ff_aoe+=/ice_lance,if=buff.fingers_of_frost.react
 actions.ff_aoe+=/ice_lance,if=debuff.freezing.stack>=10
 actions.ff_aoe+=/flurry,if=cooldown_react
@@ -165,18 +158,18 @@ legs=voidbreakers_britches,id=250059,bonus_id=13575,ilevel=289,enchant_id=7935
 feet=dreamscorched_striders,id=249373,ilevel=289
 finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240908/240908,enchant_id=7967
 finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240908,enchant_id=7967
-trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
-trinket2=vaelgors_final_stare,id=249346,bonus_id=12806/13577
-main_hand=skybreakers_blade,id=258218,ilevel=289,enchant_id=7981
-off_hand=alnhara_lantern,id=245769,bonus_id=8791/8960/12214/12693,ilevel=285,crafted_stats=36/32
+trinket1=gaze_of_the_alnseer,id=249343,ilevel=298
+trinket2=vaelgors_final_stare,id=249346,ilevel=298
+main_hand=skybreakers_blade,id=258218,ilevel=298,enchant_id=7981
+off_hand=alnhara_lantern,id=245769,bonus_id=8791/8960/12214/12693,ilevel=295,crafted_stats=36/32
 
 # Gear Summary
-# gear_ilvl=288.50
-# gear_stamina=17377
-# gear_intellect=1666
-# gear_crit_rating=887
+# gear_ilvl=290.81
+# gear_stamina=17590
+# gear_intellect=1725
+# gear_crit_rating=890
 # gear_haste_rating=712
-# gear_mastery_rating=951
+# gear_mastery_rating=961
 # gear_armor=533
 # set_bonus=midnight_season_1_2pc=1
 # set_bonus=midnight_season_1_4pc=1

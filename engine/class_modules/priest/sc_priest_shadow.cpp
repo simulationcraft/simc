@@ -441,6 +441,7 @@ public:
 
   void impact( action_state_t* s ) override
   {
+    impact_action->set_target( s->target );
     auto state = impact_action->get_state( s );
     impact_action->snapshot_state( state, impact_action->amount_type( state ) );
     impact_action->schedule_execute( state );
@@ -453,6 +454,8 @@ public:
                               proc->name(), vts );
 
     state_t* s = cast_state( get_state() );
+
+    set_target( target );
 
     s->target         = target;
     s->number_spawned = vts;

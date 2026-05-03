@@ -1,4 +1,4 @@
-// ==========================================================================
+﻿// ==========================================================================
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -63,6 +63,7 @@
 #include "util/io.hpp"
 #include "util/plot_data.hpp"
 #include "util/util.hpp"
+#include "class_modules/class_module.hpp"
 
 #include <cctype>
 #include <cerrno>
@@ -313,7 +314,7 @@ struct player_ready_event_t : public player_event_t
   player_ready_event_t( player_t& p, timespan_t delta_time ) : player_event_t( p, delta_time )
   {
     if ( sim().debug )
-      sim().out_debug.printf( "New Player-Ready Event: %s", p.name() );
+      sim().print_debug( "New Player-Ready Event: {}", p.name() );
   }
   const char* name() const override
   {
@@ -2299,6 +2300,9 @@ void player_t::create_special_effects()
   // initialized here.
   azerite::initialize_azerite_powers( this );
 
+  // 12.0.7 omnium folio talents
+  unique_gear::initialize_expansion_trait_effects( this, omnium_talents_str );
+
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
   // potential fallback special effects for the actor.
   unique_gear::initialize_special_effect_fallbacks( this );
@@ -2655,7 +2659,8 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
 
     if ( trait_obj->id_spell == 0 )
     {
-      throw std::invalid_argument( fmt::format( "Unable to find talent '{}'.", talent_split[ 0 ] ) );
+      throw std::invalid_argument(
+        fmt::format( "Unable to find {} talent '{}'.", util::talent_tree_string( tree ), talent_split[ 0 ] ) );
     }
     else
     {
@@ -4696,12 +4701,14 @@ void player_t::init_finished()
     if ( c.is_percentage )
     {
       stat_pct_buff_type stat_pct;
+      double stat_amount = c.amount * 0.01;
+
       switch ( convert_hybrid_stat( c.stat ) )
       {
         case STAT_CRIT_RATING:        stat_pct = STAT_PCT_BUFF_CRIT; break;
         case STAT_HASTE_RATING:       stat_pct = STAT_PCT_BUFF_HASTE; break;
         case STAT_VERSATILITY_RATING: stat_pct = STAT_PCT_BUFF_VERSATILITY; break;
-        case STAT_MASTERY_RATING:     stat_pct = STAT_PCT_BUFF_MASTERY; break;
+        case STAT_MASTERY_RATING:     stat_pct = STAT_PCT_BUFF_MASTERY; stat_amount = c.amount; break;
         case STAT_STRENGTH:           stat_pct = STAT_PCT_BUFF_STRENGTH; break;
         case STAT_AGILITY:            stat_pct = STAT_PCT_BUFF_AGILITY; break;
         case STAT_STAMINA:            stat_pct = STAT_PCT_BUFF_STAMINA; break;
@@ -4713,7 +4720,7 @@ void player_t::init_finished()
       }
 
       custom_buff = make_buff( this, buff_name )
-                      ->set_default_value( c.amount * 0.01 )
+                      ->set_default_value( stat_amount )
                       ->set_pct_buff_type( stat_pct )
                       ->set_duration( c.duration );
     }
@@ -7224,7 +7231,7 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
       {
         lag = rng().gauss( sim->channel_lag );
       }
-      else if ( last_foreground_action->gcd() == 0_ms )
+      else if ( last_foreground_action->gcd() == 0_ms && !last_foreground_action->add_queue_lag )
       {
         lag = 0_ms;
       }
@@ -7664,10 +7671,9 @@ action_t* player_t::execute_action()
     {
       iteration_executed_foreground_actions++;
       action->total_executions++;
+
       if ( action->trigger_gcd > timespan_t::zero() )
-      {
         prev_gcd_actions.push_back( action );
-      }
       else
         off_gcdactions.push_back( action );
 
@@ -11418,6 +11424,53 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
   return consumable::create_action( this, name, options_str );
 }
 
+void player_t::create_permanent_actors()
+{
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && sim->dungeon_route_simple_dps_members > 0 && is_player() && type != PLAYER_SIMPLIFIED )
+  {
+    // keep it simple and require one input player
+    int players = 0;
+    for ( player_t* p : sim->player_no_pet_list )
+    {
+      if ( p->is_player() && type != PLAYER_SIMPLIFIED )
+      {
+        players++;
+      }
+    }
+
+    if ( players > 1 )
+    {
+      sim->error( "Warning: ignoring dungeon_route_simple_dps_members since more than one player was defined" );
+      sim->dungeon_route_simple_dps_members = 0;
+      return;
+    }
+
+    // make sure we are actually simming the whole party together
+    if ( sim->single_actor_batch )
+    {
+      sim->error( "Warning: ignoring dungeon_route_simple_dps_members since single_actor_batch was enabed" );
+      sim->dungeon_route_simple_dps_members = 0;
+      return;
+    }
+
+    const module_t* module = module_t::get( PLAYER_SIMPLIFIED );
+
+    bool dps_role = primary_role() != ROLE_TANK && primary_role() != ROLE_HEAL && primary_role() != ROLE_HYBRID;
+
+    if ( dps_role && sim->dungeon_route_simple_dps_members > 2 )
+    {
+      sim->error( "Warning: clamping dungeon_route_simple_dps_members to 2 since player is dps" );
+      sim->dungeon_route_simple_dps_members = 2;
+    }
+
+    for ( int i = 1; i <= sim->dungeon_route_simple_dps_members; i++ )
+    {
+      player_t* p = module->create_player( sim, "Dungeon Buddy " + util::to_string( i ) );
+      p->true_level = level();
+    }
+  }
+}
+
 pet_t* player_t::create_pet( util::string_view, util::string_view )
 {
   return nullptr;
@@ -13072,6 +13125,11 @@ std::string player_t::create_profile( save_e stype )
       profile_str += "hero_talents=" + hero_talents_str + term;
     }
 
+    if ( !omnium_talents_str.empty() )
+    {
+      profile_str += "omnium_talents=" + omnium_talents_str + term;
+    }
+
     if ( azerite )
     {
       std::string azerite_overrides = azerite -> overrides_str();
@@ -13357,6 +13415,7 @@ void player_t::copy_from( player_t* source )
   class_talents_str                 = source->class_talents_str;
   spec_talents_str                  = source->spec_talents_str;
   hero_talents_str                  = source->hero_talents_str;
+  omnium_talents_str                = source->omnium_talents_str;
   set_bonus_str                     = source->set_bonus_str;
   player_traits                     = source->player_traits;
   player_sub_trees                  = source->player_sub_trees;
@@ -13481,6 +13540,8 @@ void player_t::create_options()
   add_option( opt_append( "spec_talents+", spec_talents_str ) );
   add_option( opt_string( "hero_talents", hero_talents_str ) );
   add_option( opt_append( "hero_talents+", hero_talents_str ) );
+  add_option( opt_string( "omnium_talents", omnium_talents_str ) );
+  add_option( opt_append( "omnium_talents+", omnium_talents_str ) );
   add_option( opt_bool( "load_default_talents", load_default_talents ) );
 
   // Consumables

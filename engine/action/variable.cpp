@@ -340,7 +340,10 @@ void variable_t::execute()
   }
 
   if ( var->report && !var->is_constant() && var->previous_value_ != var->current_value_ )
+  {
     player->sequence_add( this, nullptr );
+    total_executions++;
+  }
 }
 
 void variable_t::sequence_add_fn( std::string& a_str, std::string& t_str ) const

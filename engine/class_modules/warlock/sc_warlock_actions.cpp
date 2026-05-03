@@ -178,8 +178,7 @@ using namespace helpers;
         parse_effects( p()->buffs.backdraft ); // 117828
         parse_effects( p()->buffs.fiendish_cruelty ); // 1245664
         parse_effects( p()->buffs.chaotic_inferno ); // 1244860
-        parse_effects( p()->buffs.conflagration_of_chaos_cf ); // 387109
-        parse_effects( p()->buffs.conflagration_of_chaos_sb ); // 387110
+        parse_effects( p()->buffs.conflagration_of_chaos ); // 387109
         parse_effects( p()->buffs.crashing_chaos ); // 417282 // RoF is dummy
         parse_effects( p()->buffs.alythesss_ire ); // 1244947
       }
@@ -1465,19 +1464,23 @@ using namespace helpers;
 
     void execute() override
     {
-      // NOTE: 2026-02-20 Currently ingame a UA applied by Fatal Echoes also processes/consumes the UA 'execute' effects:
+      // NOTE: 2026-04-29 Currently ingame a UA applied by Fatal Echoes also processes/consumes some UA 'execute' effects:
       // - Succulent Soul: consumes a stack and triggers its effects (Demonic Soul dmg and Manifested Avarice rng proc)
       // - Cull the Weak: reduces the cooldown of Dark Harvest
-      // - Shard Instability: consumes a stack but does nothing (bug?) because the Fatal Echoes UA is already free and instant
-      // - Hellcaller Blackened Soul: increments wither stacks
+      // - Hellcaller Blackened Soul: increments Wither stacks
+      // - Shard Instability: unaffected; Fatal Echoes does not consume a stack of this buff
 
       warlock_spell_t::execute();
 
       if ( p()->talents.cull_the_weak.ok() )
         p()->cooldowns.dark_harvest->adjust( -p()->talents.cull_the_weak->effectN( 1 ).time_value() );
 
-      // Seems that Shard Instability buff takes effect (and is consumed) even if it is obtained while Unstable Affliction is being cast (bug?)
-      p()->buffs.shard_instability->decrement();
+      // NOTE: 2026-04-29 If Shard Instability buff is gained during the casting of Unstable Affliction, that UA cast benefits from the cost
+      // reduction but does not consume the effect (bug?). As expected, a Fatal Echoes UA proc does not consume it either.
+      if ( time_to_execute == 0_ms && !is_fatal_echoes_execute )
+      {
+        p()->buffs.shard_instability->decrement();
+      }
 
       if ( soul_harvester() && p()->buffs.succulent_soul->check() )
       {
@@ -1536,6 +1539,7 @@ using namespace helpers;
             make_event( sim, 1_ms, [ this, t = d->target ] {
               const bool prev_ua_ticking = td( t )->dots.unstable_affliction->is_ticking();
               this->set_target( t );
+              this->time_to_execute = 0_ms;
               this->is_fatal_echoes_execute = true;
               this->execute();
               this->is_fatal_echoes_execute = false;
@@ -1672,14 +1676,14 @@ using namespace helpers;
 
         if ( p()->talents.patient_zero.ok() )
         {
-          // NOTE (2026-02-20): Patient Zero interacts incorrectly with Sow the Seeds (bug?).
-          // In-game testing shows that its damage bonus is applied to the host of the original (main) seed, even for
-          // explosions triggered by additional seeds. If the original host of the main seed is out of range, dead, or
-          // otherwise invalid (e.g., immune) at the time of explosion, the bonus is not reassigned and is simply not applied.
+          // NOTE (2026-04-24): Patient Zero does not track seeds individually (bug?). Instead, it uses a single
+          // per-caster target reference updated by the most recently Seed of Corruption casted. Any seed explosion 
+          // hitting that target gets the Patient Zero bonus. If the target is out of range, dead, or otherwise invalid 
+          // (e.g., immune) at the time of explosion, the bonus is not reassigned and is simply not applied.
           if ( p()->bugs )
           {
-            assert( main_seed_target && "SoC does not have a valid main seed target" );
-            if ( t == main_seed_target )
+            assert( p()->patient_zero_target && "SoC does not have a valid Patient Zero target" );
+            if ( t == p()->patient_zero_target )
               m *= 1.0 + p()->talents.patient_zero->effectN( 1 ).percent();
           }
           else
@@ -1786,6 +1790,10 @@ using namespace helpers;
 
     void execute() override
     {
+      // Patient Zero target is updated on SoC cast success, not on impact or debuff application
+      if ( p()->talents.patient_zero.ok() )
+        p()->patient_zero_target = target;
+
       warlock_spell_t::execute();
 
       p()->buffs.seed_of_corruption_is_out_dnt->trigger();
@@ -1911,8 +1919,8 @@ using namespace helpers;
         base_dd_min = base_dd_max = 0;
         spell_power_mod.direct = 0;
 
-        // NOTE: 2026-02-20 DoT (Malefic Grasp) extra ticks are not affected by Death's Embrace (bug?)
-        affected_by.deaths_embrace = !p->bugs && p->talents.deaths_embrace.ok();
+        // DoT (Malefic Grasp) extra ticks are affected by Death's Embrace
+        affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
       }
 
       void impact( action_state_t* s ) override
@@ -2004,7 +2012,7 @@ using namespace helpers;
       extra_tick_mul( p->talents.malefic_grasp_2->effectN( 2 ).percent() )
     {
       channeled = true;
-      // NOTE: 2026-02-20 Malefic Grasp extra ticks are not affected by Death's Embrace (bug?)
+      // NOTE: 2026-04-29 Malefic Grasp ticks are not affected by Death's Embrace (bug?)
       affected_by.deaths_embrace = !p->bugs && p->talents.deaths_embrace.ok();
 
       if ( p->talents.cunning_cruelty.ok() )
@@ -2071,8 +2079,7 @@ using namespace helpers;
 
       if ( soul_harvester() && p()->buffs.nightfall->check() )
       {
-        // NOTE: 2026-03-21 Malefic Grasp consumes Nightfall without triggering Wicked Reaping (bug)
-        if ( !p()->bugs && p()->hero.wicked_reaping.ok() )
+        if ( p()->hero.wicked_reaping.ok() )
           p()->proc_actions.wicked_reaping->execute_on_target( target );
 
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
@@ -3279,14 +3286,8 @@ using namespace helpers;
       timespan_t extraTyrantTime = rng().gauss<380,220>();
       auto tyrants = p()->warlock_pet_list.demonic_tyrants.spawn( data().duration() + extraTyrantTime );
 
-      int demon_counter = 0;
+      int demonic_power_counter = 0;
       const timespan_t extension_time = 15_s; // TODO: Where is this 15_s in the spell data?
-
-      for ( auto wild_imp : p()->warlock_pet_list.wild_imps )
-      {
-        if ( !wild_imp->is_sleeping() )
-          demon_counter++;
-      }
 
       for ( auto dreadstalker : p()->warlock_pet_list.dreadstalkers )
       {
@@ -3299,7 +3300,27 @@ using namespace helpers;
             dreadstalker->expiration->reschedule_time = dreadstalker->expiration->time + extension_time;
         }
 
-        demon_counter++;
+        demonic_power_counter++;
+      }
+
+      for ( auto wild_imp : p()->warlock_pet_list.wild_imps )
+      {
+        if ( !wild_imp->is_sleeping() )
+          demonic_power_counter++;
+      }
+
+      // NOTE: 2026-04-24: Vilefiend (all variants) and Felguard count for Demonic Power buff (only at Tyrant summon) (bug?)
+      if ( p()->bugs )
+      {
+        for ( auto vilefiend : p()->warlock_pet_list.vilefiends )
+        {
+          if ( !vilefiend->is_sleeping() )
+            demonic_power_counter++;
+        }
+
+        auto active_pet = p()->warlock_pet_list.active;
+        if ( active_pet && active_pet->pet_type == PET_FELGUARD )
+          demonic_power_counter++;
       }
 
       if ( p()->talents.reign_of_tyranny.ok() )
@@ -3308,12 +3329,12 @@ using namespace helpers;
           p()->buffs.dreadstalkers->extend_duration( extension_time );
       }
 
-      if ( demon_counter > 0 )
+      if ( demonic_power_counter > 0 )
       {
         for ( auto t : tyrants )
         {
           if ( t->is_active() )
-            t->buffs.demonic_power->trigger( demon_counter );
+            t->buffs.demonic_power->trigger( demonic_power_counter );
         }
       }
 
@@ -4102,14 +4123,14 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      p()->buffs.conflagration_of_chaos_cf->expire();
+      p()->buffs.conflagration_of_chaos->expire();
 
       if ( p()->talents.conflagration_of_chaos.ok() )
       {
-        bool success = p()->buffs.conflagration_of_chaos_cf->trigger();
+        bool success = p()->buffs.conflagration_of_chaos->trigger();
 
         if ( success )
-          p()->procs.conflagration_of_chaos_cf->occur();
+          p()->procs.conflagration_of_chaos->occur();
       }
 
       if ( p()->talents.backdraft.ok() )
@@ -4120,7 +4141,7 @@ using namespace helpers;
     {
       double amt = warlock_spell_t::calculate_direct_amount( s );
 
-      if ( p()->buffs.conflagration_of_chaos_cf->check() )
+      if ( p()->buffs.conflagration_of_chaos->check() )
       {
         s->result_total *= 1.0 + player->cache.spell_crit_chance();
         return s->result_total;
@@ -4434,14 +4455,14 @@ using namespace helpers;
 
       base_aoe_multiplier = prev_base_aoe_multiplier; // Restore original previous havoc aoe multiplier
 
-      p()->buffs.conflagration_of_chaos_sb->expire();
+      p()->buffs.conflagration_of_chaos->expire();
 
       if ( p()->talents.conflagration_of_chaos.ok() )
       {
-        bool success = p()->buffs.conflagration_of_chaos_sb->trigger();
+        bool success = p()->buffs.conflagration_of_chaos->trigger();
 
         if ( success )
-          p()->procs.conflagration_of_chaos_sb->occur();
+          p()->procs.conflagration_of_chaos->occur();
       }
 
       p()->buffs.fiendish_cruelty->decrement();
@@ -4451,7 +4472,8 @@ using namespace helpers;
     {
       double amt = warlock_spell_t::calculate_direct_amount( state );
 
-      if ( p()->buffs.conflagration_of_chaos_sb->check() )
+      // NOTE: 2026-04-25 Conflagration of Chaos crit damage bonus is not applied to Shadowburn (bug)
+      if ( p()->buffs.conflagration_of_chaos->check() && !p()->bugs )
       {
         state->result_total *= 1.0 + player->cache.spell_crit_chance();
         return state->result_total;
@@ -5057,7 +5079,7 @@ using namespace helpers;
   struct summon_mother_of_chaos_t : public warlock_spell_t
   {
     summon_mother_of_chaos_t( warlock_t* p )
-      : warlock_spell_t( "Summon Mother of Chaos (Summon)", p, p->hero.summon_mother )
+      : warlock_spell_t( "Summon Mother of Chaos", p, p->hero.summon_mother )
     {
       harmful = may_crit = false;
       background = true;
@@ -5298,11 +5320,11 @@ using namespace helpers;
       dot->decrement( 1 );
       assert( ( dot->is_ticking() && dot->current_stack() > 0 ) && "UA stack decrement event should not cancel the DoT" );
 
-      // if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && dot->is_ticking() && dot->current_stack() > 0 && p->prd_rng.fatal_echoes->trigger() )
       if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && p->prd_rng.fatal_echoes->trigger() )
       {
         p->procs.fatal_echoes->occur();
         dot->current_action->set_target( target );
+        dot->current_action->time_to_execute = 0_ms;
         debug_cast<unstable_affliction_t*>( dot->current_action )->is_fatal_echoes_execute = true;
         dot->current_action->execute();
         debug_cast<unstable_affliction_t*>( dot->current_action )->is_fatal_echoes_execute = false;

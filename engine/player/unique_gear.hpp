@@ -84,6 +84,9 @@ void initialize_special_effect_2( special_effect_t* effect );
 // Initialize special effects related to various race spells
 void initialize_racial_effects( player_t* );
 
+// Initialize special effects related to various expansion/patch specific traits
+void initialize_expansion_trait_effects( player_t*, std::string_view talents_str );
+
 std::unique_ptr<expr_t> create_expression( player_t& player, util::string_view name_str );
 
 // Role-base multipliers parsed from description variables

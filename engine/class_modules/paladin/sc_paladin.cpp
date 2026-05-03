@@ -3939,6 +3939,21 @@ void paladin_t::init_action_list()
   player_t::init_action_list();
 }
 
+void paladin_t::init_blizzard_action_list() {
+  action_priority_list_t* default_ = get_action_priority_list( "default" );
+  switch (specialization())
+  {
+    case PALADIN_RETRIBUTION:
+    case PALADIN_PROTECTION:
+      default_->add_action( "auto_attack" );
+      break;
+    default:
+      assert( false );
+      break;
+  }
+  player_t::init_blizzard_action_list();
+}
+
 // paladin_t::parse_assisted_combat_rule ==================================================
 
 parsed_assisted_combat_rule_t paladin_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,

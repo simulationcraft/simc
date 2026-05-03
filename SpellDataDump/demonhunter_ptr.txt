@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67227 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -163,6 +163,7 @@ School           : Chaos
 Spell Type       : Melee
 Resource         : 40 Fury (17) (id=10198)
 Range            : 5 yards
+Cone Angle       : 60 degrees
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, War Glaive, Fist Weapon
 Labels           : 16: Class Spells
@@ -648,6 +649,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 50000 yards
+Line Width       : 10 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -874,6 +876,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
 Range            : 50000 yards
+Line Width       : 6 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -962,6 +965,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
+Cone Angle       : 60 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
@@ -1040,6 +1044,7 @@ School           : Magic
 Spell Type       : Melee
 Resource         : 40 Fury (17) (id=10809)
 Range            : 5 yards
+Cone Angle       : 60 degrees
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
@@ -1063,6 +1068,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
+Cone Angle       : 60 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
@@ -2946,6 +2952,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
+Cone Angle       : 75 degrees
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -2962,6 +2969,7 @@ Name             : Fel Devastation (id=212106) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : None
+Line Width       : 6 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -3710,6 +3718,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
+Cone Angle       : 60 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
@@ -3896,6 +3905,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
+Cone Angle       : 60 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
@@ -3928,6 +3938,7 @@ Spell Type       : Melee
 Resource         : 35 Fury (17) (id=11545)
 Spell Level      : 1
 Range            : 5 yards
+Cone Angle       : 90 degrees
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, War Glaive, Fist Weapon
 Labels           : 16: Class Spells
@@ -3959,6 +3970,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
+Cone Angle       : 90 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
@@ -4447,6 +4459,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 10 yards
+Cone Angle       : 80 degrees
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 40 seconds
@@ -5431,6 +5444,7 @@ Class            : Demon Hunter
 School           : Chromastrike
 Spell Type       : Melee
 Range            : 100 yards
+Cone Angle       : 90 degrees
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
@@ -5892,6 +5906,7 @@ School           : Nature
 Spell Type       : Melee
 Spell Level      : 48
 Range            : 50 yards
+Line Width       : 8 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
@@ -6255,6 +6270,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
+Cone Angle       : 75 degrees
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -6272,6 +6288,7 @@ Name             : Fel Devastation (id=333120) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : None
+Line Width       : 6 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -6302,6 +6319,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
 Range            : 50000 yards
+Line Width       : 6 yards
 Labels           : 627
                  : 630
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow during spell override (404), Allow Class Ability Procs (416)
@@ -6930,6 +6948,7 @@ School           : Chaos
 Spell Type       : Melee
 Resource         : 40 Fury (17) (id=232100)
 Range            : 5 yards
+Cone Angle       : 60 degrees
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, War Glaive, Fist Weapon
 Labels           : 16: Class Spells
@@ -7182,6 +7201,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
+Cone Angle       : 75 degrees
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 151
@@ -7217,6 +7237,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
 Range            : 50000 yards
+Line Width       : 6 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 931
@@ -7527,6 +7548,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
 Range            : 50000 yards
+Line Width       : 6 yards
 Family Flags     : 0, 16
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
@@ -7709,6 +7731,7 @@ School           : Chromatic
 Spell Type       : Melee
 Spell Level      : 48
 Range            : 50 yards
+Line Width       : 8 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -7904,7 +7927,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2448 (Category) | Target: Targeted Ally (21)
                    Affected Spells (Category): Shift (1234796)
 Description      : $@spelldesc374968
-Tooltip          : May use $?c2[Infernal Strike][Fel Rush] once, without incurring its cooldown.
+Tooltip          : May use $?c3[Shift]?c2[Infernal Strike][Fel Rush] once, without incurring its cooldown.
 
 Name             : Soulscar (id=388106) [Spell Family (107), Passive] 
 Talent Entry     : Havoc [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=200]
@@ -8893,6 +8916,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 6 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Blind Fury (203550 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Soul Flame of Insight (226334 effects: #1, #2), Frailty (247456 effect#4), Eyes of Rage (278500 effect#2), Looks Can Kill (320415 effect#1), Exposed Wound (339229 effect#1), Demon Soul (347765 effects: #1, #2), Burning Blood (390213 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Demonsurge (452489 effect#5), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Remorseless (1266328 effects: #1, #2), Empowered Eye Beam (1271144 effect#1), Blind Focus (1272364 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
@@ -9443,6 +9467,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
+Cone Angle       : 75 degrees
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -11927,6 +11952,7 @@ Spell Type       : Melee
 Resource         : 30 Fury (17) (id=306859)
 Spell Level      : 1
 Range            : 5 yards
+Cone Angle       : 90 degrees
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, War Glaive, Fist Weapon
 Labels           : 16: Class Spells
@@ -12836,6 +12862,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
+Cone Angle       : 60 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Cast Log (128), Melee Chain Targeting (172), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
@@ -12848,6 +12875,7 @@ Class            : Demon Hunter
 School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
+Cone Angle       : 60 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Melee Chain Targeting (172), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
@@ -13010,6 +13038,7 @@ School           : Cosmic
 Spell Type       : Magic
 Resource         : 5 Fury (17) (id=310205)
 Range            : 50000 yards
+Line Width       : 8 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -13026,6 +13055,7 @@ Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : Magic
 Range            : 50000 yards
+Line Width       : 8 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -13344,9 +13374,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1201793)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.15 | PvP Coefficient: 1.69 | Target: Targeted Enemy (6)
-#2 (id=1229372)  : Energize Power (30)
-                   Base Value: 8 | Scaled Value: 8 | Resource: fury | Target: Self (1)
-                   Modified By: Celestial Echoes (1256312 effect#2)
 Description      : Devour the life essence of your target, dealing $s1 Cosmic damage. Reduces the cooldown of Reap by ${$1217607s14/1000}.1 sec.
 
 Castable while moving.
@@ -13687,6 +13714,7 @@ Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 20 yards
 Travel Time      : 0.25 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
@@ -14219,6 +14247,7 @@ Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : None
 Range            : 100 yards
+Cone Angle       : 45 degrees
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -14706,7 +14735,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1244971)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Misc Value 2: 5312 (Label) | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1 | Misc Value 2: 5312 (Label) | Target: Self (1)
                    Affected Spells (Label): Feast of Souls (1232310)
 Description      : The duration of Feast of Souls is increased by ${$s1/1000} sec.
 
@@ -15091,6 +15120,7 @@ School           : Cosmic
 Spell Type       : Melee
 Spell Level      : 48
 Range            : 50 yards
+Line Width       : 8 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -15498,7 +15528,7 @@ Effects          :
                    Affected Spells: Consume (473662), Devour (1217610)
                    Family Flags: 97
 #5 (id=1275185)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Fracture (263642)
                    Family Flags: 73
 Description      : $?s263642[Fracture]?a212613[Shear][Consume] generates $?a212613[$s1][$s2] additional Fury and deals $?a212613[$s3%][$s4%] increased damage.
@@ -15816,7 +15846,7 @@ Attributes       : No Aura Cancel (31), Not In Spellbook (143), Do Not Log on Le
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1263777)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shear (203782)
                    Family Flags: 22
 #2 (id=1263778)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -15832,7 +15862,7 @@ Effects          :
                    Affected Spells: Consume (473662), Devour (1217610)
                    Family Flags: 97
 #5 (id=1263781)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Fracture (263642)
                    Family Flags: 73
 Description      : $@spelldesc1253415
@@ -16083,6 +16113,7 @@ School           : Cosmic
 Spell Type       : Melee
 Spell Level      : 48
 Range            : 50 yards
+Line Width       : 8 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
 Duration         : 2 seconds
@@ -16813,7 +16844,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1282474)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Soul Cleave and Spirit Bomb have a chance per soul fragment consumed to grant Untethered Rage, allowing Metamorphosis to be cast without incurring its cooldown and lasting $1270476d.
+Description      : Soul Cleave and Spirit Bomb have a chance per soul fragment consumed to grant Untethered Rage, allowing Metamorphosis to be cast without incurring its cooldown and lasting $s1 sec.
 
 Name             : Untethered Rage (id=1270448) [Spell Family (107), Passive] 
 Talent Entry     : Vengeance [tree=spec, row=11, col=5, max_rank=2, req_points=20, select_idx=200]
@@ -17398,6 +17429,7 @@ Class            : Demon Hunter
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 20 yards
 Travel Time      : 0.25 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
@@ -17518,6 +17550,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Magic
 Range            : 50000 yards
+Line Width       : 8 yards
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -17544,4 +17577,17 @@ Effects          :
                    Base Value: 16 | Scaled Value: 16 | Resource: fury | Target: Self (1)
                    Modified By: Celestial Echoes (1253415 effect#2)
 Description      : $@spelldesc473662
+
+Name             : Spontaneous Immolation (id=1292047) [Spell Family (107), Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 1 seconds
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Floating Combat Text On Cast (198), Allow Class Ability Procs (416), Unknown (489)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
+Effects          :
+#1 (id=1311826)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 

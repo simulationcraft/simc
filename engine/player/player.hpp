@@ -171,11 +171,11 @@ struct player_t : public actor_t
   bool        potion_used;
   double      leech_pool;  // for leech batching
 
-
   std::string talents_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   std::string class_talents_str, spec_talents_str, hero_talents_str;
+  std::string omnium_talents_str;
   // Specify in-game time of day to determine Night Elf racial
   enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday;
   // Specify which loa Zandalari has chosen to determine racial
@@ -1441,7 +1441,7 @@ public:
 
   virtual action_t* create_action( util::string_view name, util::string_view options );
   virtual void      create_pets() { }
-  virtual void      create_permanent_actors() { }
+  virtual void      create_permanent_actors();
 
   virtual pet_t*    create_pet( util::string_view name,  util::string_view type = {} );
 

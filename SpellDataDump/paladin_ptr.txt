@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67227 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -157,7 +157,6 @@ Description      : Stuns the target for $d.
 Tooltip          : Stunned.
 
 Name             : Blessing of Protection (id=1022) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
@@ -576,7 +575,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sittin
 Effects          :
 #1 (id=15852)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.7375 | PvP Coefficient: 0.909 | Target: Targeted Ally (21)
-Hotfixed         : SP Coefficient (6.125 -> 6.7375), PvP Coefficient (1 -> 0.909)
 Description      : $@spelldesc20473
 
 Name             : Consecration (id=26573) [Spell Family (10)] 
@@ -1221,6 +1219,7 @@ Resource         : 3 Holy Power (9) (id=192485)
 Resource         : 3 - 5 Holy Power (9) (id=312790) w/ Instrument of the Divine (id=1277162)
 Spell Level      : 2
 Range            : 5 yards
+Cone Angle       : 120 degrees
 Requires armor   : Shield 
 Cooldown         : 1 seconds
 Labels           : 16: Class Spells
@@ -1812,7 +1811,6 @@ Attributes       : Not Shapeshifted (16), Always Line of Sight (185), Allow Clas
 Effects          :
 #1 (id=86331)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.4064 | PvP Coefficient: 0.8333 | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
-Hotfixed         : SP Coefficient (3.672 -> 4.4064), PvP Coefficient (1 -> 0.8333)
 #2 (id=337580)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 4 yards | Target: Source (22) -> Ally in Area (30)
 #3 (id=736030)   : Dummy (3)
@@ -4461,7 +4459,6 @@ Effects          :
 Description      : Avenger's Shield hits $s1 additional targets, and grants you an absorb shield for $s2% of all damage it deals.
 
 Name             : Blessing of Spellwarding (id=204018) [Spell Family (10)] 
-Hotfixed         : Attributes
 Talent Entry     : Protection [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Holy
@@ -5752,7 +5749,6 @@ Attributes       : Passive (6), Not In Spellbook (143), Only In Spellbook Until 
 Effects          :
 #1 (id=349470)   : Apply Aura (6) | Dummy (4)
                    Base Value: 483 | Scaled Value: 483 | PvP Coefficient: 0.3714 | Misc Value: 12 | Target: Self (1)
-Hotfixed         : Base Value (138 -> 483), PvP Coefficient (1.3 -> 0.3714)
 Description      : Judgment deems the target unworthy, preventing the next $<shield> damage dealt by the target.
 
 Variables        : $shield=${($SPS*$231644s1/100)*(1+$@versadmg)}
@@ -6489,6 +6485,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Spell Level      : 10
+Cone Angle       : 120 degrees
 GCD              : 1.5 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 2285 (Type 0x1)
@@ -8741,6 +8738,7 @@ Name             : Shadowbreaker, Dawn of the Sun (id=337815) [Spell Family (10)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
+Cone Angle       : 90 degrees
 Duration         : 8 seconds
 Labels           : 931
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Confused (178), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
@@ -10755,6 +10753,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Resource         : 3 Holy Power (9) (id=265475)
+Cone Angle       : 120 degrees
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 15 seconds
@@ -12911,6 +12910,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Spell Level      : 1
+Cone Angle       : 120 degrees
 Duration         : 9 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
@@ -13284,6 +13284,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Spell Level      : 1
+Cone Angle       : 120 degrees
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -13301,6 +13302,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Spell Level      : 1
+Cone Angle       : 120 degrees
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -14620,6 +14622,7 @@ Spell Type       : Melee
 Resource         : 3 Holy Power (9) (id=305084)
 Spell Level      : 10
 Range            : 5 yards
+Cone Angle       : 120 degrees
 GCD              : 1.5 seconds
 Requires armor   : Shield 
 Cooldown         : 1 seconds
@@ -16091,6 +16094,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 5 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -16110,6 +16114,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Range            : 100 yards
+Line Width       : 3 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -20670,6 +20675,7 @@ Name             : Light Within (id=1261160) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
+Cone Angle       : 60 degrees
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292

@@ -773,6 +773,7 @@ public:
   virtual void init_rng() override;
   virtual void init_spells() override;
   virtual void init_action_list() override;
+  virtual void init_blizzard_action_list() override;
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                             const assisted_combat_step_data_t& step ) const override;

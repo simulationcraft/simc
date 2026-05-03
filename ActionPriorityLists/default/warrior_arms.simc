@@ -156,8 +156,8 @@ actions.slayer_st+=/champions_spear,if=debuff.colossus_smash.up|buff.avatar.up
 actions.slayer_st+=/ravager,if=cooldown.colossus_smash.remains<=gcd
 actions.slayer_st+=/colossus_smash
 actions.slayer_st+=/bladestorm,if=debuff.colossus_smash.up
-actions.slayer_st+=/mortal_strike
 actions.slayer_st+=/heroic_strike
+actions.slayer_st+=/mortal_strike
 actions.slayer_st+=/execute,if=buff.sudden_death.up
 actions.slayer_st+=/cleave,if=active_enemies=2&buff.collateral_damage.stack=3
 actions.slayer_st+=/overpower

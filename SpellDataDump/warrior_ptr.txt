@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67088 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67227 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -131,6 +131,7 @@ School           : Physical
 Spell Type       : Melee
 Resource         : 20 Rage (1) (id=99)
 Range            : 5 yards
+Cone Angle       : 102 degrees
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 4.5 seconds
@@ -656,6 +657,7 @@ School           : Physical
 Spell Type       : Melee
 Resource         : 20 Rage (1) (id=11771)
 Range            : 5 yards
+Cone Angle       : 110 degrees
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Labels           : 16: Class Spells
@@ -1025,7 +1027,7 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting Spells : Neltharion's Fury (203524 effect#4), Rebound (213915 effect#1), Bladestorm (227847 effect#3), Misshapen Mirror (335253 effect#1), Honed Reflexes (391271 effect#1), Demolish (436358 effect#3), Bladestorm (446035 effect#3)
 Family Flags     : 11, 33
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), No Proc Equip Requirement (97), Can Proc From Procs (122), Allow Proc While Sitting (147), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), No Proc Equip Requirement (97), Can Proc From Procs (122), Allow Proc While Sitting (147), Allow Class Ability Procs (416), Important Spell (C_Spell.IsSpellImportant) (491)
 Effects          :
 #1 (id=14130)    : Apply Aura (6) | Spell Reflection (28)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Target: Self (1)
@@ -1262,6 +1264,7 @@ Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=1, req_points=8]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
+Cone Angle       : 110 degrees
 GCD              : 1.5 seconds
 Cooldown         : 40 seconds
 Labels           : 16: Class Spells
@@ -3671,6 +3674,7 @@ Class            : Warrior
 School           : Shadowflame
 Spell Type       : Melee
 Range            : 100 yards
+Cone Angle       : 120 degrees
 Labels           : 82
                  : 293
 Triggered By     : Neltharion's Fury (203524)
@@ -5598,6 +5602,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
+Line Width       : 5 yards
 Labels           : 292
                  : 374
                  : 375
@@ -6234,6 +6239,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
+Line Width       : 5 yards
 Duration         : 6 seconds
 Labels           : 292
                  : 374
@@ -6533,6 +6539,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
+Line Width       : 5 yards
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -7019,6 +7026,7 @@ Class            : Warrior
 School           : Nature
 Spell Type       : Melee
 Spell Level      : 48
+Cone Angle       : 68 degrees
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
@@ -7114,6 +7122,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 120 yards
 Max Targets      : 5
+Cone Angle       : 60 degrees
 Duration         : 1.5 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
@@ -9799,6 +9808,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
+Line Width       : 5 yards
 Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
@@ -11264,6 +11274,7 @@ Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
 Spell Level      : 1
+Cone Angle       : 120 degrees
 Duration         : 9 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
@@ -11528,6 +11539,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 21
+Cone Angle       : 110 degrees
 Duration         : 5 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
@@ -11570,6 +11582,7 @@ Name             : Crushing Advance (id=411703) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
+Cone Angle       : 110 degrees
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -13847,6 +13860,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
+Cone Angle       : 102 degrees
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
@@ -14097,6 +14111,7 @@ School           : Physical
 Spell Type       : Melee
 Resource         : 20 Rage (1) (id=309315)
 Range            : 5 yards
+Cone Angle       : 110 degrees
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
@@ -15585,6 +15600,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
+Cone Angle       : 110 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
@@ -15605,6 +15621,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
+Cone Angle       : 110 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
@@ -15625,6 +15642,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
+Cone Angle       : 110 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
@@ -15645,6 +15663,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
+Cone Angle       : 110 degrees
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
@@ -16029,6 +16048,7 @@ Name             : Phalanx (id=1270116) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
+Cone Angle       : 110 degrees
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -16501,6 +16521,7 @@ Name             : Phalanx (id=1278009) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
+Cone Angle       : 60 degrees
 Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells

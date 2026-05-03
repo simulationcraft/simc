@@ -345,6 +345,8 @@ public:
     buff_t* hungering_slash;
     buff_t* voidstep;
     buff_t* voidrush;
+    buff_t* entropy_out_of_combat;
+    buff_t* entropy_in_combat;
 
     // Havoc
     buff_t* blind_fury;
@@ -426,7 +428,7 @@ public:
       player_talent_t vengeful_bonds;  // No Implementation
       player_talent_t unrestrained_fury;
       player_talent_t shattered_restoration;
-      player_talent_t improved_sigil_of_misery; // No Implementation
+      player_talent_t improved_sigil_of_misery;  // No Implementation
 
       player_talent_t bouncing_glaives;
       player_talent_t imprison;           // No Implementation
@@ -1082,6 +1084,7 @@ public:
 
     // Devourer
     proc_t* spontaneous_immolation;
+    proc_t* void_metamorphosis_stack_from_entropy;
     proc_t* soul_fragment_from_consume;
     proc_t* soul_fragment_from_devour;
     proc_t* soul_fragment_from_soul_immolation;
@@ -1160,7 +1163,7 @@ public:
     spell_t* collective_anguish          = nullptr;
 
     // Devourer
-    spell_t* void_buildup           = nullptr;
+    spell_t* void_buildup = nullptr;
 
     // Havoc
     spell_t* burning_wound                                         = nullptr;
@@ -1198,8 +1201,8 @@ public:
     action_t* voidsurge      = nullptr;
 
     // Sigils
-    spell_t* sigil_of_flame   = nullptr;
-    spell_t* sigil_of_spite   = nullptr;
+    spell_t* sigil_of_flame = nullptr;
+    spell_t* sigil_of_spite = nullptr;
   } active;
 
   // Pets
@@ -1224,11 +1227,11 @@ public:
     // Proc rate for Wounded Quarry for Havoc
     double wounded_quarry_chance_havoc = 0.10;
     // How many seconds that Vengeful Retreat locks out Felblade
-    double felblade_lockout_from_vengeful_retreat    = 0.6;
-    bool enable_dungeon_slice                        = false;
-    double proc_from_killing_blow_chance             = 0.4;
-    int entropy_starting_souls                       = -1;
-    int channel_tick_cutoff_benefit                  = 2;
+    double felblade_lockout_from_vengeful_retreat = 0.6;
+    bool enable_dungeon_slice                     = false;
+    double proc_from_killing_blow_chance          = 0.4;
+    int entropy_starting_souls                    = -1;
+    int channel_tick_cutoff_benefit               = 2;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -6512,7 +6515,8 @@ struct rolling_torment_energize_t : demon_hunter_energize_t
 
     int stacks = dh()->buff.collapsing_star_stack->check();
 
-    return e * stacks;
+    // 2026-04-29 -- Celestial Echoes is additive, not multiplicative.
+    return e * stacks + dh()->talent.annihilator.celestial_echoes->effectN( 2 ).base_value();
   }
 };
 
@@ -8564,6 +8568,8 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 
         state_t* s = static_cast<state_t*>( p->active.immolation_aura_tick->get_state() );
 
+        p->active.immolation_aura_tick->set_target( p->target );
+
         s->target                     = p->target;
         s->growing_inferno_multiplier = 1 + growing_inferno_ticks * growing_inferno_multiplier;
         s->immolation_aura            = this;
@@ -8588,7 +8594,10 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       {
         state_t* s = static_cast<state_t*>( dh()->active.immolation_aura_initial->get_state() );
 
-        s->target                     = dh()->target;
+        s->target = dh()->target;
+
+        dh()->active.immolation_aura_initial->set_target( dh()->target );
+
         s->growing_inferno_multiplier = 1 + growing_inferno_ticks * growing_inferno_multiplier;
         s->immolation_aura            = this;
 
@@ -9321,6 +9330,11 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
   create_benefits();
 
   resource_regeneration = regen_type::DISABLED;
+
+  sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
+    if ( talent.devourer.entropy && !buff.entropy_out_of_combat->check() && !in_combat && !buff.metamorphosis->check() )
+      buff.entropy_out_of_combat->trigger();
+  } );
 }
 
 // ==========================================================================
@@ -9517,6 +9531,19 @@ void demon_hunter_t::activate()
       }
     } );
   }
+
+  if ( talent.devourer.entropy->ok() )
+  {
+    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
+      if ( c )
+      {
+        buff.entropy_out_of_combat->expire();
+        buff.entropy_in_combat->trigger();
+      }
+      else
+        buff.entropy_in_combat->expire();
+    } );
+  }
 }
 
 // demon_hunter_t::create_buffs =============================================
@@ -9586,6 +9613,35 @@ void demon_hunter_t::create_buffs()
           ->set_duration( 0.5_s )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
           ->add_stack_change_callback( [ this ]( buff_t*, int, int ) { devourer_fury_state.reschedule_drain(); } );
+
+  buff.entropy_out_of_combat =
+      make_buff( this, "entropy_out_of_combat" )
+          ->set_quiet( true )
+          ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+          ->set_period( 1_s )
+          ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+          ->set_tick_on_application( false )
+          ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+            if ( buff.void_metamorphosis_stack->stack() < talent.devourer.entropy->effectN( 2 ).base_value() )
+            {
+              buff.void_metamorphosis_stack->trigger();
+              proc.void_metamorphosis_stack_from_entropy->occur();
+            }
+          } );
+
+  // Devourer spawns a Soul Fragment every 8s with Entropy talented
+
+  buff.entropy_in_combat = make_buff( this, "entropy_in_combat" )
+                               ->set_quiet( true )
+                               ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                               ->set_period( talent.devourer.entropy->effectN( 1 ).period() )
+                               ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+                               ->set_tick_on_application( true )
+                               ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                                 spawn_soul_fragment( proc.soul_fragment_from_entropy, soul_fragment::LESSER, 1 );
+                               } );
+
+  // timespan_t initial_delay = timespan_t::from_millis( rng().range( 0, 5250 ) );
 
   // Havoc ==================================================================
 
@@ -9976,11 +10032,11 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
       {
         auto sof_action = find_action( "sigil_of_flame" );
 
-        if (!sof_action)
+        if ( !sof_action )
           return expr_t::create_constant( name_str, false );
 
         auto expr = sof_action->create_expression( util::string_join( util::make_span( splits ).subspan( 2 ), "." ) );
-        if (expr)
+        if ( expr )
           return expr;
 
         auto tail = name_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
@@ -9992,11 +10048,11 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
       {
         auto sosp_action = find_action( "sigil_of_spite" );
 
-        if (!sosp_action)
+        if ( !sosp_action )
           return expr_t::create_constant( name_str, false );
 
         auto expr = sosp_action->create_expression( util::string_join( util::make_span( splits ).subspan( 2 ), "." ) );
-        if (expr)
+        if ( expr )
           return expr;
 
         auto tail = name_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
@@ -10027,8 +10083,7 @@ void demon_hunter_t::create_options()
   add_option(
       opt_float( "felblade_lockout_from_vengeful_retreat", options.felblade_lockout_from_vengeful_retreat, 0, 1 ) );
   add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
-  add_option( opt_float( "proc_from_killing_blow_chance", options.proc_from_killing_blow_chance,
-                         0.0, 1.0 ) );
+  add_option( opt_float( "proc_from_killing_blow_chance", options.proc_from_killing_blow_chance, 0.0, 1.0 ) );
   add_option( opt_int( "entropy_starting_souls", options.entropy_starting_souls, -1, 50 ) );
   add_option( opt_int( "channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
 
@@ -10147,6 +10202,7 @@ void demon_hunter_t::init_procs()
 
   // Devourer
   proc.spontaneous_immolation                = get_proc( "Spontaneous Immolation" );
+  proc.void_metamorphosis_stack_from_entropy = get_proc( "Void Metamorphosis Stack from Entropy" );
   proc.soul_fragment_from_consume            = get_proc( "Soul Fragment from Consume" );
   proc.soul_fragment_from_devour             = get_proc( "Soul Fragment from Devour" );
   proc.soul_fragment_from_soul_immolation    = get_proc( "Soul Fragment from Soul Immolation" );
@@ -10966,6 +11022,10 @@ void demon_hunter_t::init_spells()
   register_passive_affect_list( talent.havoc.demon_hide,
                                 affect_list_t( 1, 3 ).add_spell( hero_spec.wounded_quarry_damage->id() ) );
 
+  // 2026-04-29 -- Celestial Echoes is additive, not multiplicative.
+  register_passive_affect_list( talent.annihilator.celestial_echoes,
+                                affect_list_t( 2 ).remove_spell( spec.rolling_torment_energize->id() ) );
+
   switch ( specialization() )
   {
     case DEMON_HUNTER_DEVOURER:
@@ -11648,17 +11708,6 @@ void demon_hunter_t::combat_begin()
     resources.current[ RESOURCE_FURY ] = fury_cap;
     sim->print_debug( "Fury for {} capped at combat start to {} (was {})", *this, fury_cap, current_fury );
   }
-
-  // Devourer spawns a Soul Fragment every 8s with Entropy talented
-  if ( talent.devourer.entropy->ok() )
-  {
-    timespan_t initial_delay = timespan_t::from_millis( rng().range( 0, 5250 ) );
-    make_event( sim, initial_delay, [ this ] {
-      make_repeating_event( sim, talent.devourer.entropy->effectN( 1 ).period(), [ this ] {
-        spawn_soul_fragment( proc.soul_fragment_from_entropy, soul_fragment::LESSER, 1 );
-      } );
-    } );
-  }
 }
 
 // demon_hunter_t::interrupt ================================================
@@ -12074,7 +12123,8 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
 
   bool has_reduced_drain = !dh()->in_combat || dh()->buff.voidrush->check() ||
                            ( dh()->executing && dh()->executing->id == dh()->spec.collapsing_star_spell->id() ) ||
-                           ( dh()->channeling && dh()->channeling->id == dh()->talent.devourer.void_ray->id() );
+                           ( dh()->channeling && dh()->channeling->id == dh()->talent.devourer.void_ray->id() ||
+                             dh()->buffs.stunned->check() );
 
   if ( has_reduced_drain )
   {

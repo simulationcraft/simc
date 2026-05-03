@@ -262,7 +262,7 @@ void live_apl( monk_t* player )
 
   // Single Target
   st->add_action( "whirling_dragon_punch,if=!buff.heart_of_the_jade_serpent_unity_within.up&buff.whirling_dragon_punch.remains<1&(buff.zenith.up|cooldown.invoke_xuen_the_white_tiger.remains>5|talent.flurry_strikes|!fight_style.patchwerk)","Single Target" );
-  st->add_action( "zenith_stomp,if=buff.zenith.up&(buff.zenith.remains<5&buff.zenith_stomp.stack=2|buff.zenith.remains<4)|talent.celestial_conduit&chi<5&!buff.heart_of_the_jade_serpent_unity_within.up " );
+  st->add_action( "zenith_stomp,if=buff.zenith.up&(buff.zenith.remains<5&buff.zenith_stomp.stack=2|buff.zenith.remains<4)|talent.celestial_conduit&chi<5&!buff.heart_of_the_jade_serpent_unity_within.up" );
   st->add_action( "whirling_dragon_punch,if=buff.power_infusion.up&(!buff.heart_of_the_jade_serpent_unity_within.up|buff.heart_of_the_jade_serpent_unity_within.remains<2)" );
   st->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.remains<1&buff.combo_breaker.stack<2&talent.sequenced_strikes&buff.dance_of_chiji.up&talent.celestial_conduit" );
   st->add_action( "fists_of_fury,if=buff.heart_of_the_jade_serpent.remains<1&buff.heart_of_the_jade_serpent.up|buff.flurry_charge.stack=30&!buff.zenith.up" );
@@ -295,7 +295,7 @@ void live_apl( monk_t* player )
 
   //Multitarget
   multi->add_action( "fists_of_fury,target_if=max:target.time_to_die,if=buff.heart_of_the_jade_serpent.remains<1&buff.heart_of_the_jade_serpent.up", "Multi Target" );
-  multi->add_action( "zenith_stomp,,target_if=max:target.time_to_die,if=buff.zenith.up&(buff.zenith.remains<5&buff.zenith_stomp.stack=2|buff.zenith.remains<4)|talent.celestial_conduit&chi<5&!buff.heart_of_the_jade_serpent_unity_within.up" );
+  multi->add_action( "zenith_stomp,target_if=max:target.time_to_die,if=buff.zenith.up&(buff.zenith.remains<5&buff.zenith_stomp.stack=2|buff.zenith.remains<4)|talent.celestial_conduit&chi<5&!buff.heart_of_the_jade_serpent_unity_within.up" );
   multi->add_action( "whirling_dragon_punch,if=talent.celestial_conduit&buff.heart_of_the_jade_serpent_unity_within.remains<2" );
   multi->add_action( "whirling_dragon_punch,target_if=max:target.time_to_die,if=!buff.heart_of_the_jade_serpent_unity_within.up&buff.whirling_dragon_punch.remains<1" );
   multi->add_action( "tiger_palm,target_if=max:target.time_to_die,if=buff.zenith.up&chi<2&talent.celestial_conduit&(buff.heart_of_the_jade_serpent.up|buff.heart_of_the_jade_serpent_unity_within.up)&!cooldown.fists_of_fury.remains&combo_strike" );
