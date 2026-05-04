@@ -331,11 +331,6 @@ void warlock_t::init_assessors()
 
   assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_soc_fn );
 
-  for ( auto pet : pet_list )
-  {
-    pet->assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_soc_fn );
-  }
-
   if ( hero.shared_fate.ok() || hero.feast_of_souls.ok() )
   {
     assert( hero.marked_soul->ok() );

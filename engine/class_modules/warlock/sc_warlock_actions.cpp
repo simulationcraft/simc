@@ -1596,26 +1596,22 @@ using namespace helpers;
     struct seed_of_corruption_state_t : public action_state_t
     {
       double effectiveness;
-      player_t* main_seed_target;
 
       seed_of_corruption_state_t( action_t* action, player_t* target )
         : action_state_t( action, target ),
-        effectiveness( 1.0 ),
-        main_seed_target( nullptr )
+        effectiveness( 1.0 )
       { }
 
       void initialize() override
       {
         action_state_t::initialize();
         effectiveness = 1.0;
-        main_seed_target = nullptr;
       }
 
       std::ostringstream& debug_str( std::ostringstream& s ) override
       {
         action_state_t::debug_str( s );
         s << " effectiveness=" << effectiveness;
-        s << " main_seed_target=" << ( main_seed_target ? main_seed_target->name() : "<none>" );
         return s;
       }
 
@@ -1623,7 +1619,6 @@ using namespace helpers;
       {
         action_state_t::copy_state( s );
         effectiveness = debug_cast<const seed_of_corruption_state_t*>( s )->effectiveness;
-        main_seed_target = debug_cast<const seed_of_corruption_state_t*>( s )->main_seed_target;
       }
     };
 
@@ -1631,12 +1626,10 @@ using namespace helpers;
     {
       action_t* applied_dot;
       double effectiveness;
-      player_t* main_seed_target;
 
       seed_of_corruption_aoe_t( warlock_t* p )
         : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
-        effectiveness( 1.0 ),
-        main_seed_target( nullptr )
+        effectiveness( 1.0 )
       {
         aoe = -1;
         background = dual = true;
@@ -1676,10 +1669,11 @@ using namespace helpers;
 
         if ( p()->talents.patient_zero.ok() )
         {
-          // NOTE (2026-04-24): Patient Zero does not track seeds individually (bug?). Instead, it uses a single
-          // per-caster target reference updated by the most recently Seed of Corruption casted. Any seed explosion 
-          // hitting that target gets the Patient Zero bonus. If the target is out of range, dead, or otherwise invalid 
-          // (e.g., immune) at the time of explosion, the bonus is not reassigned and is simply not applied.
+          // NOTE (2026-04-24): Patient Zero does not track seeds individually (bug?). Instead, it
+          // uses a single per-caster target reference updated on cast success to the target of the
+          // primary Seed of Corruption. Any seed explosion hitting that target gets the Patient Zero
+          // bonus. If the target is out of range, dead, or otherwise invalid (e.g., immune) at the
+          // time of explosion, the bonus is not reassigned and is simply not applied.
           if ( p()->bugs )
           {
             assert( p()->patient_zero_target && "SoC does not have a valid Patient Zero target" );
@@ -1733,8 +1727,8 @@ using namespace helpers;
 
       affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
-      if ( p->talents.sow_the_seeds.ok() )
-        aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
+      // Set aoe = 1 even without Sow the Seeds so the special target selection logic is used
+      aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
 
       add_child( explosion );
     }
@@ -1744,12 +1738,10 @@ using namespace helpers;
 
     void snapshot_state( action_state_t* s, result_amount_type rt ) override
     {
-      if ( ( s->target == target ) || !p()->talents.sow_the_seeds.ok() )
+      if ( s->chain_target == 0 || !p()->talents.sow_the_seeds.ok() )
         debug_cast<seed_of_corruption_state_t*>( s )->effectiveness = 1.0;
       else
         debug_cast<seed_of_corruption_state_t*>( s )->effectiveness = p()->talents.sow_the_seeds->effectN( 2 ).percent();
-
-      debug_cast<seed_of_corruption_state_t*>( s )->main_seed_target = target;
 
       warlock_spell_t::snapshot_state( s, rt );
     }
@@ -1764,35 +1756,70 @@ using namespace helpers;
     {
       warlock_spell_t::available_targets( tl );
 
-      // Targeting behavior appears to be as follows:
-      // 1. If any targets have no current seed (in flight or ticking), they are valid
-      // 2. With Sow the Seeds, if at least one target is valid, it will only hit valid targets
-      // 3. If no targets are valid according to the above, all targets are instead valid (will refresh DoT on existing target(s) instead)
-      bool valid_target = false;
-      for ( auto t : tl )
+      // Seed of Corruption has special target selection behavior (smart targeting):
+      // - The primary seed prefers the original target if it does not already have a SoC debuff.
+      //   - If the original target already has a SoC debuff, the primary seed is redirected to a random
+      //     target (from the original target list) without a SoC debuff.
+      //   - If no such target exists, the primary seed falls back to the original target even though
+      //     it already has a SoC debuff.
+      // - With Sow the Seeds, secondary seeds are selected from the remaining targets.
+      //   - Normally they can only select targets without a SoC debuff; if none are available, no
+      //     secondary seed is applied.
+      //   - If the primary seed had to fall back to the original target, secondary seeds may select
+      //     targets that already have a SoC debuff.
+      // - Targets selected by this cast are not duplicated; the primary seed is kept in first position,
+      //   and the remaining targets are shuffled for secondary seed selection. Invalid secondary targets
+      //   are removed from the target list.
+      // - Formerly, SoC smart targeting was based on whether the target had the debuff or had a seed in
+      //   travel. This is no longer the case, and only the presence of the SoC debuff matters. (bug?)
+
+      player_t* main_seed_target = target;
+      bool main_seed_fallback = false;
+
+      std::vector<player_t*> pool = tl;
+
+      range::erase_remove( pool, [ this ]( player_t* t ) {
+        return ( t == target || td( t )->dots.seed_of_corruption->is_ticking() || ( !p()->bugs && has_travel_events_for( t ) ) );
+      } );
+
+      if ( td( target )->dots.seed_of_corruption->is_ticking() || ( !p()->bugs && has_travel_events_for( target ) ) )
       {
-        if ( !( td( t )->dots.seed_of_corruption->is_ticking() || has_travel_events_for( t ) ) )
-        {
-          valid_target = true;
-          break;
-        }
+        if ( !pool.empty() )
+          main_seed_target = pool[ rng().range( size_t{}, pool.size() ) ];
+        else
+          main_seed_fallback = true;
       }
 
-      if ( valid_target )
+      auto it = range::find( tl, main_seed_target );
+      if ( it != tl.end() && it != tl.begin() )
       {
-        range::erase_remove( tl, [ this ]( player_t* t ) {
-          return ( td( t )->dots.seed_of_corruption->is_ticking() || has_travel_events_for( t ) );
+        tl.erase( it );
+        tl.insert( tl.begin(), main_seed_target );
+      }
+
+      if ( !main_seed_fallback )
+      {
+        range::erase_remove( tl, [ this, main_seed_target ]( player_t* t ) {
+          return ( t != main_seed_target && ( td( t )->dots.seed_of_corruption->is_ticking() || ( !p()->bugs && has_travel_events_for( t ) ) ) );
         } );
       }
+
+      if ( tl.size() > 1 )
+        rng().shuffle( tl.begin() + 1, tl.end() );
 
       return tl.size();
     }
 
     void execute() override
     {
+      target_cache.is_valid = false;
+
+      const auto& tl = target_list();
+      player_t* main_seed_target = !tl.empty() ? tl.front() : target;
+
       // Patient Zero target is updated on SoC cast success, not on impact or debuff application
       if ( p()->talents.patient_zero.ok() )
-        p()->patient_zero_target = target;
+        p()->patient_zero_target = main_seed_target;
 
       warlock_spell_t::execute();
 
@@ -1801,10 +1828,10 @@ using namespace helpers;
       if ( time_to_execute == 0_ms && soul_harvester() && p()->talents.nocturnal_yield.ok() && p()->buffs.nightfall->check() )
       {
         if ( p()->hero.wicked_reaping.ok() )
-          p()->proc_actions.wicked_reaping->execute_on_target( target );
+          p()->proc_actions.wicked_reaping->execute_on_target( main_seed_target );
 
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
-          p()->proc_actions.shared_fate->execute_on_target( target );
+          p()->proc_actions.shared_fate->execute_on_target( main_seed_target );
 
         // Feast of Souls is processed before the decrement of Succulent Soul, causing the same SoC cast that gains the Succulent Soul stack to consume it
         if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger() )
@@ -1829,7 +1856,7 @@ using namespace helpers;
           p()->procs.manifested_avarice->occur();
         }
 
-        p()->proc_actions.demonic_soul->execute_on_target( target );
+        p()->proc_actions.demonic_soul->execute_on_target( main_seed_target );
       }
     }
 
@@ -1862,11 +1889,9 @@ using namespace helpers;
       // Explosion parameters must be captured here in the lambda by value for that same reason.
       make_event( sim, 0_ms, [ this,
                                t = d->target,
-                               effectiveness = debug_cast<seed_of_corruption_state_t*>( d->state )->effectiveness,
-                               main_seed_target = debug_cast<seed_of_corruption_state_t*>( d->state )->main_seed_target ]
+                               effectiveness = debug_cast<seed_of_corruption_state_t*>( d->state )->effectiveness ]
       {
         explosion->effectiveness = effectiveness;
-        explosion->main_seed_target = main_seed_target;
         explosion->set_target( t );
         explosion->execute();
       } );
