@@ -4028,6 +4028,8 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_da_multiplier( s );
 
+      m *= 1.0 + player->cache.spell_crit_chance();
+
       // The base effect of Through the Felvine is automatically applied by the parse_effects system
       // However, it is necessary to manually apply its duplicate effect during Malevolence
       if ( p()->hero.through_the_felvine.ok() && p()->hero.malevolence.ok() && p()->buffs.malevolence->check() )
@@ -4041,15 +4043,6 @@ using namespace helpers;
 
     double composite_crit_chance() const override
     { return 1.0; }
-
-    double calculate_direct_amount( action_state_t* s ) const override
-    {
-      warlock_spell_t::calculate_direct_amount( s );
-
-      s->result_total *= 1.0 + player->cache.spell_crit_chance();
-
-      return s->result_total;
-    }
   };
 
   struct conflagrate_t : public warlock_spell_t
@@ -4137,17 +4130,14 @@ using namespace helpers;
         p()->buffs.backdraft->trigger();
     }
 
-    double calculate_direct_amount( action_state_t* s ) const override
+    double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double amt = warlock_spell_t::calculate_direct_amount( s );
+      double m = warlock_spell_t::composite_da_multiplier( s );
 
       if ( p()->buffs.conflagration_of_chaos->check() )
-      {
-        s->result_total *= 1.0 + player->cache.spell_crit_chance();
-        return s->result_total;
-      }
+        m *= 1.0 + player->cache.spell_crit_chance();
 
-      return amt;
+      return m;
     }
   };
 
@@ -4468,18 +4458,15 @@ using namespace helpers;
       p()->buffs.fiendish_cruelty->decrement();
     }
 
-    double calculate_direct_amount( action_state_t* state ) const override
+    double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double amt = warlock_spell_t::calculate_direct_amount( state );
+      double m = warlock_spell_t::composite_da_multiplier( s );
 
       // NOTE: 2026-04-25 Conflagration of Chaos crit damage bonus is not applied to Shadowburn (bug)
       if ( p()->buffs.conflagration_of_chaos->check() && !p()->bugs )
-      {
-        state->result_total *= 1.0 + player->cache.spell_crit_chance();
-        return state->result_total;
-      }
+        m *= 1.0 + player->cache.spell_crit_chance();
 
-      return amt;
+      return m;
     }
   };
 

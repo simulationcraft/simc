@@ -2233,13 +2233,13 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
     debug_cast<chaos_tear_t*>( p() )->bolts--;
   }
 
-  double calculate_direct_amount( action_state_t* s ) const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    warlock_pet_spell_t::calculate_direct_amount( s );
+    double m = warlock_pet_spell_t::composite_da_multiplier( s );
 
-    s->result_total *= 1.0 + p()->current_pet_stats.composite_spell_crit;
+    m *= 1.0 + p()->current_pet_stats.composite_spell_crit;
 
-    return s->result_total;
+    return m;
   }
 
   double action_multiplier() const override
@@ -2300,13 +2300,13 @@ struct overfiend_chaos_bolt_t : public warlock_pet_spell_t
   double composite_crit_chance() const override
   { return 1.0; }
 
-  double calculate_direct_amount( action_state_t* s ) const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    warlock_pet_spell_t::calculate_direct_amount( s );
+    double m = warlock_pet_spell_t::composite_da_multiplier( s );
 
-    s->result_total *= 1.0 + p()->current_pet_stats.composite_spell_crit;
+    m *= 1.0 + p()->current_pet_stats.composite_spell_crit;
 
-    return s->result_total;
+    return m;
   }
 
   double action_multiplier() const override
