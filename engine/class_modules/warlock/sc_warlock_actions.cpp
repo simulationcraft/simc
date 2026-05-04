@@ -2349,15 +2349,10 @@ using namespace helpers;
     {
       target_cache.list = warlock_spell_t::target_list();
 
-      size_t i = target_cache.list.size();
-      while ( i > 0 )
-      {
-        i--;
-
-        if ( !td( target_cache.list[ i ] )->dots.corruption->is_ticking() && !td( target_cache.list[ i ] )->dots.wither->is_ticking()
-          && !td( target_cache.list[ i ] )->dots.agony->is_ticking() && !td( target_cache.list[ i ] )->dots.unstable_affliction->is_ticking() )
-          target_cache.list.erase( target_cache.list.begin() + i );
-      }
+      range::erase_remove( target_cache.list, [ this ]( player_t* t ) {
+        return !td( t )->dots.corruption->is_ticking() && !td( t )->dots.wither->is_ticking()
+               && !td( t )->dots.agony->is_ticking() && !td( t )->dots.unstable_affliction->is_ticking();
+      } );
 
       return target_cache.list;
     }
@@ -2368,11 +2363,13 @@ using namespace helpers;
         return false;
 
       target_cache.is_valid = false;
-      return target_list().size() > 0;
+      return !target_list().empty();
     }
 
     void tick( dot_t* d ) override
     {
+      target_cache.is_valid = false;
+
       warlock_spell_t::tick( d );
 
       const auto& tl = target_list();
@@ -2422,9 +2419,29 @@ using namespace helpers;
   struct shadow_of_nathreza_dmg_t : public warlock_spell_t
   {
     shadow_of_nathreza_dmg_t( warlock_t* p )
-      : warlock_spell_t( "shadow_of_nathreza", p, p->talents.shadow_of_nathreza_dot )
+      : warlock_spell_t( "Shadow of Nathreza", p, p->talents.shadow_of_nathreza_dot )
     {
       background = dual = true;
+    }
+    
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      warlock_spell_t::available_targets( tl );
+
+      // Make sure the primary target is kept first
+      auto it = range::find( tl, target );
+      if ( it != tl.end() && it != tl.begin() )
+      {
+        tl.erase( it );
+        tl.insert( tl.begin(), target );
+      }
+
+      // Secondary targets must have Wither or Corruption ticking
+      range::erase_remove( tl, [ this ]( player_t* t ) {
+        return ( t != target && !td( t )->dots.wither->is_ticking() && !td( t )->dots.corruption->is_ticking() );
+      } );
+
+      return tl.size();
     }
   };
 
@@ -3591,9 +3608,10 @@ using namespace helpers;
       add_child( fnb_action );
     }
 
+    // Custom init() to combine Havoc+FnB coefficients instead of using the generic warlock_spell_t::init() Havoc multiplier
     void init() override
     {
-      spell_t::init();
+      action_base_t::init();
 
       if ( affected_by.havoc )
       {
@@ -4598,14 +4616,9 @@ using namespace helpers;
     {
       target_cache.list = warlock_spell_t::target_list();
 
-      size_t i = target_cache.list.size();
-      while ( i > 0 )
-      {
-        i--;
-
-        if ( !td( target_cache.list[ i ] )->dots.immolate->is_ticking() && !td( target_cache.list[ i ] )->dots.wither->is_ticking() )
-          target_cache.list.erase( target_cache.list.begin() + i );
-      }
+      range::erase_remove( target_cache.list, [ this ]( player_t* t ) {
+        return !td( t )->dots.immolate->is_ticking() && !td( t )->dots.wither->is_ticking();
+      } );
 
       return target_cache.list;
     }
@@ -4627,10 +4640,11 @@ using namespace helpers;
 
     bool ready() override
     {
-      if ( p()->get_active_dots( td( target )->dots.immolate ) == 0 && p()->get_active_dots( td( target )->dots.wither ) == 0 )
+      if ( !warlock_spell_t::ready() )
         return false;
 
-      return warlock_spell_t::ready();
+      target_cache.is_valid = false;
+      return !target_list().empty();
     }
   };
 
