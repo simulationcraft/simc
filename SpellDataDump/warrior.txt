@@ -14443,6 +14443,7 @@ Description      : $@spelldesc1215994
 Tooltip          : Damage increased by $w1%$?$w2>0[. Shield Slam critical strike chance increased by $w2% and its critical strikes reduce the cooldown of Shield Charge by ${$w3/1000}.1 sec.][]
 
 Name             : Berserker Roar (desc=PvP Talent) (id=1219209) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -14456,7 +14457,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken
 Triggered By     : Berserker Shout (384100)
-Attributes       : Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+Attributes       : Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Important Spell (C_Spell.IsSpellImportant) (491)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1204786)  : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
