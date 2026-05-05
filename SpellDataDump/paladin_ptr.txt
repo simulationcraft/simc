@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67227 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67360 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1256,7 +1256,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Magic Heal, Periodic
 Affecting Spells : Commanding Light (387781 effect#1)
-Triggered By     : Beacon of Light (53563), Beacon of Faith (156910), Beacon of the Savior (1244893)
+Triggered By     : Beacon of Light (53563), Beacon of Faith (156910)
 Family Flags     : 104
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Allow Low Level Buff (67), Can Proc From Procs (122), Not In Spellbook (143), Allow Proc While Sitting (147), Allow Class Ability Procs (416)
 Effects          :
@@ -1810,7 +1810,7 @@ Family Flags     : 46, 82
 Attributes       : Not Shapeshifted (16), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=86331)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.4064 | PvP Coefficient: 0.8333 | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.06736 | PvP Coefficient: 0.8333 | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
 #2 (id=337580)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 4 yards | Target: Source (22) -> Ally in Area (30)
 #3 (id=736030)   : Dummy (3)
@@ -20017,9 +20017,9 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1245666)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 53651 | Target: Targeted Ally (21)
-#2 (id=1245667)  : Trigger Spell (64): Light's Beacon
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 53651 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+#2 (id=1245667)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1245668)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Light of Dawn (85222), Light of the Martyr (183998)
@@ -20393,6 +20393,8 @@ Effects          :
                    Family Flags: 78
 #7 (id=1317414)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 5 | Misc Value 2: 2589 (Label) | Target: Self (1)
+#8 (id=1323473)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 2 (6)
+                   Base Value: -75 | Scaled Value: -75 | Misc Value: 6 | Misc Value 2: 6716 (Label) | Target: Self (1)
 
 Name             : Retribution Paladin (id=1258011) [Spell Family (10), Passive, Hidden] 
 Class            : Retribution Paladin
@@ -20617,6 +20619,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+                 : 6716
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1269864)  : Apply Aura (6) | Dummy (4)

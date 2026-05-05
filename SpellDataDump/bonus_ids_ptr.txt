@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67227 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67360 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
@@ -7885,7 +7885,7 @@ bonus_id={ 12903 }, quality={ epic }
 bonus_id={ 12904 }, quality={ epic }
 bonus_id={ 12922 }, socket={ 1 }
 bonus_id={ 12990 }, effects={ B1P, Scorcher of Souls (id=1246309, index=0, type=use) }
-bonus_id={ 12991 }, effects={ Meddy, Pocket-Sized (id=1246312, index=0, type=equip) }
+bonus_id={ 12991 }, effects={ M3ddy, Pocket-Sized (id=1246312, index=0, type=equip) }
 bonus_id={ 13183 }, effects={ Drum of Renewed Bonds (id=1247568, index=2, type=equip) }
 bonus_id={ 13184 }, effects={ Drum of Renewed Bonds (id=1247569, index=2, type=equip) }
 bonus_id={ 13185 }, effects={ Drum of Renewed Bonds (id=1247570, index=2, type=equip) }
@@ -8187,3 +8187,7 @@ bonus_id={ 13670 }, base_ilevel={ 80 }, req_ilevel={ 80 }, quality={ epic }
 bonus_id={ 13689 }, base_ilevel={ 49 }, req_ilevel={ 40 }, quality={ rare }
 bonus_id={ 13729 }, base_ilevel={ 133 }
 bonus_id={ 13730 }, base_ilevel={ 139 }, quality={ rare }
+bonus_id={ 13786 }, base_ilevel={ 298 }, req_ilevel={ 90 }, desc={ Sporefused: Myth }, quality={ epic }
+bonus_id={ 13787 }, base_ilevel={ 285 }, req_ilevel={ 90 }, desc={ Sporefused: Hero }, quality={ epic }
+bonus_id={ 13788 }, base_ilevel={ 272 }, req_ilevel={ 90 }, desc={ Sporefused: Champion }, quality={ epic }
+bonus_id={ 13789 }, base_ilevel={ 259 }, req_ilevel={ 90 }, desc={ Sporefused: Veteran }, quality={ epic }
