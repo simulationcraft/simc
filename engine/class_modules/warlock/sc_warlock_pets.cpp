@@ -262,6 +262,45 @@ timespan_t warlock_simple_pet_t::available() const
   return cd_remains;
 }
 
+warlock_pet_spell_t::warlock_pet_spell_t( util::string_view token, warlock_pet_t* p, const spell_data_t* s )
+  : base_t( token, p, s ),
+    affected_by()
+{
+  affected_by.xalans_cruelty_effect_6 = p->o()->hero.xalans_cruelty.ok() && data().affected_by( p->o()->hero.xalans_cruelty->effectN( 6 ) );
+  if ( sim->dbc->wowv() < wowv_t{ 12, 0, 7 } ) // TODO: Effect is missing from 12.0.7 PTR; remove this check once added
+    affected_by.xalans_cruelty_effect_9 = p->o()->hero.xalans_cruelty.ok() && data().affected_by( p->o()->hero.xalans_cruelty->effectN( 9 ) );
+
+  affected_by.xalans_ferocity_effect_6 = p->o()->hero.xalans_ferocity.ok() && data().affected_by( p->o()->hero.xalans_ferocity->effectN( 6 ) );
+  affected_by.xalans_ferocity_effect_7 = p->o()->hero.xalans_ferocity.ok() && data().affected_by( p->o()->hero.xalans_ferocity->effectN( 7 ) );
+}
+
+warlock_pet_spell_t::warlock_pet_spell_t( warlock_pet_t* p, util::string_view n )
+  : warlock_pet_spell_t( n, p, p->find_pet_spell( n ) )
+{ }
+
+double warlock_pet_spell_t::composite_crit_chance_multiplier() const
+{
+  double m = base_t::composite_crit_chance_multiplier();
+
+  // Xalan's Cruelty effect #6 (id=1190450) is 'Apply Aura Pet (174)' and requires manual handling
+  if ( affected_by.xalans_cruelty_effect_6 )
+    m *= 1.0 + p()->o()->hero.xalans_cruelty->effectN( 6 ).percent();
+
+  // Xalan's Cruelty effect #9 (id=1322330) is 'Apply Aura Pet (174)' and requires manual handling
+  if ( affected_by.xalans_cruelty_effect_9 )
+    m *= 1.0 + p()->o()->hero.xalans_cruelty->effectN( 9 ).percent();
+
+  // Xalan's Ferocity effect #6 (id=1166684) is 'Apply Aura Pet (174)' and requires manual handling
+  if ( affected_by.xalans_ferocity_effect_6 )
+    m *= 1.0 + p()->o()->hero.xalans_ferocity->effectN( 6 ).percent();
+
+  // Xalan's Ferocity effect #7 (id=1190448) is 'Apply Aura Pet (174)' and requires manual handling
+  if ( affected_by.xalans_ferocity_effect_7 )
+    m *= 1.0 + p()->o()->hero.xalans_ferocity->effectN( 7 ).percent();
+
+  return m;
+}
+
 namespace base
 {
 
@@ -1990,17 +2029,6 @@ struct immolation_tick_t : public warlock_pet_spell_t
     aoe = -1;
     background = may_crit = true;
   }
-
-  double composite_crit_chance_multiplier() const override
-  {
-    double m = warlock_pet_spell_t::composite_crit_chance_multiplier();
-
-    // Xalan's Ferocity effect #6 (id=1166684) is 'Apply Aura Pet (174)' and requires manual handling
-    if ( p()->o()->hero.xalans_ferocity.ok() )
-      m *= 1.0 + p()->o()->hero.xalans_ferocity->effectN( 6 ).percent();
-
-    return m;
-  }
 };
 
 struct infernal_melee_t : warlock_pet_melee_t
@@ -2108,17 +2136,6 @@ struct rift_shadow_bolt_t : public warlock_pet_spell_t
   {
       background = dual = true;
   }
-
-  double composite_crit_chance_multiplier() const override
-  {
-    double m = warlock_pet_spell_t::composite_crit_chance_multiplier();
-
-    // Xalan's Cruelty effect #6 (id=1190450) is 'Apply Aura Pet (174)' and requires manual handling
-    if ( p()->o()->hero.xalans_cruelty.ok() )
-      m *= 1.0 + p()->o()->hero.xalans_cruelty->effectN( 6 ).percent();
-
-    return m;
-  }
 };
 
 struct shadow_barrage_t : public warlock_pet_spell_t
@@ -2179,17 +2196,6 @@ struct chaos_barrage_tick_t : public warlock_pet_spell_t
     : warlock_pet_spell_t( "Chaos Barrage (tick)", p, p->o()->talents.chaos_barrage_tick )
   {
       background = dual = true;
-  }
-
-  double composite_crit_chance_multiplier() const override
-  {
-    double m = warlock_pet_spell_t::composite_crit_chance_multiplier();
-
-    // Xalan's Ferocity effect #7 (id=1190448) is 'Apply Aura Pet (174)' and requires manual handling
-    if ( p()->o()->hero.xalans_ferocity.ok() )
-      m *= 1.0 + p()->o()->hero.xalans_ferocity->effectN( 7 ).percent();
-
-    return m;
   }
 };
 
@@ -2286,17 +2292,6 @@ struct rift_chaos_bolt_t : public warlock_pet_spell_t
       chaotic_energies_rng = ( min_percentage + 1.0 ) * 0.5;
 
     m *= 1.0 + chaotic_energies_rng * p()->o()->cache.mastery_value();
-
-    return m;
-  }
-
-  double composite_crit_chance_multiplier() const override
-  {
-    double m = warlock_pet_spell_t::composite_crit_chance_multiplier();
-
-    // Xalan's Ferocity effect #7 (id=1190448) is 'Apply Aura Pet (174)' and requires manual handling
-    if ( p()->o()->hero.xalans_ferocity.ok() )
-      m *= 1.0 + p()->o()->hero.xalans_ferocity->effectN( 7 ).percent();
 
     return m;
   }
@@ -2513,17 +2508,6 @@ struct wrath_of_nathreza_t : public warlock_pet_spell_t
 
     if ( debug_cast<desperate_soul_t*>( p() )->wraths <= 0 )
       make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
-  }
-
-  double composite_crit_chance_multiplier() const override
-  {
-    double m = warlock_pet_spell_t::composite_crit_chance_multiplier();
-
-    // Xalan's Cruelty effect #9 (id=1322330) is 'Apply Aura Pet (174)' and requires manual handling
-    if ( p()->o()->hero.xalans_cruelty.ok() )
-      m *= 1.0 + p()->o()->hero.xalans_cruelty->effectN( 9 ).percent();
-
-    return m;
   }
 };
 
