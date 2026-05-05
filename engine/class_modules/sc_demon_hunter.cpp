@@ -4266,7 +4266,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
       this->schedule_execute();
 
       // 2026-05-04 -- Burning Alive currently refreshes Fiery Brand on the player
-      dh()->buff.fiery_brand->refresh();
+      dh()->buff.fiery_brand->trigger();
     }
   };
 
