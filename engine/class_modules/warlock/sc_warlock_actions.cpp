@@ -93,6 +93,43 @@ using namespace helpers;
     const warlock_td_t* td( player_t* t ) const
     { return p()->get_target_data( t ); }
 
+    template <typename T>
+    target_filter_callback_t dot_or_debuff_only( T d )
+    {
+      return [ this, d ]( const action_t*, player_t* t ) {
+        return p()->dot_or_debuff_active( d, p()->get_target_data( t ) );
+      };
+    }
+
+    target_filter_callback_t primary_target_or( target_filter_callback_t secondary_filter )
+    {
+      return [ secondary_filter = std::move( secondary_filter ) ]( const action_t* a, player_t* t ) {
+        return t == a->target || secondary_filter( a, t );
+      };
+    }
+
+    target_filter_callback_t immolate_or_wither_only()
+    {
+      return [ this ]( const action_t*, player_t* t ) {
+        return td( t )->dots.immolate->is_ticking() || td( t )->dots.wither->is_ticking();
+      };
+    }
+
+    target_filter_callback_t corruption_or_wither_only()
+    {
+      return [ this ]( const action_t*, player_t* t ) {
+        return td( t )->dots.corruption->is_ticking() || td( t )->dots.wither->is_ticking();
+      };
+    }
+
+    target_filter_callback_t affliction_core_dots_only()
+    {
+      return [ this ]( const action_t*, player_t* t ) {
+        return td( t )->dots.corruption->is_ticking() || td( t )->dots.wither->is_ticking()
+               || td( t )->dots.agony->is_ticking() || td( t )->dots.unstable_affliction->is_ticking();
+      };
+    }
+
     void reset() override
     { action_base_t::reset(); }
 
@@ -2342,19 +2379,9 @@ using namespace helpers;
     {
       channeled = true;
 
+      target_filter_callback = affliction_core_dots_only();
+
       add_child( dark_harvest_dmg );
-    }
-
-    std::vector<player_t*>& target_list() const override
-    {
-      target_cache.list = warlock_spell_t::target_list();
-
-      range::erase_remove( target_cache.list, [ this ]( player_t* t ) {
-        return !td( t )->dots.corruption->is_ticking() && !td( t )->dots.wither->is_ticking()
-               && !td( t )->dots.agony->is_ticking() && !td( t )->dots.unstable_affliction->is_ticking();
-      } );
-
-      return target_cache.list;
     }
 
     bool ready() override
@@ -2395,6 +2422,7 @@ using namespace helpers;
     void execute() override
     {
       target_cache.is_valid = false;
+
       warlock_spell_t::execute();
     }
   };
@@ -2422,26 +2450,15 @@ using namespace helpers;
       : warlock_spell_t( "Shadow of Nathreza", p, p->talents.shadow_of_nathreza_dot )
     {
       background = dual = true;
+
+      target_filter_callback = primary_target_or( corruption_or_wither_only() );
     }
-    
-    size_t available_targets( std::vector<player_t*>& tl ) const override
+
+    void execute() override
     {
-      warlock_spell_t::available_targets( tl );
+      target_cache.is_valid = false;
 
-      // Make sure the primary target is kept first
-      auto it = range::find( tl, target );
-      if ( it != tl.end() && it != tl.begin() )
-      {
-        tl.erase( it );
-        tl.insert( tl.begin(), target );
-      }
-
-      // Secondary targets must have Wither or Corruption ticking
-      range::erase_remove( tl, [ this ]( player_t* t ) {
-        return ( t != target && !td( t )->dots.wither->is_ticking() && !td( t )->dots.corruption->is_ticking() );
-      } );
-
-      return tl.size();
+      warlock_spell_t::execute();
     }
   };
 
@@ -4602,6 +4619,8 @@ using namespace helpers;
       may_crit = false;
       cooldown->hasted = true;
 
+      target_filter_callback = immolate_or_wither_only();
+
       if ( !p->talents.demonfire_infusion.ok() || p->talents.channel_demonfire.ok() )
         add_child( channel_demonfire_tick );
 
@@ -4610,17 +4629,6 @@ using namespace helpers;
         int num_ticks = ( int )( dot_duration / base_tick_time );
         dot_duration = num_ticks * base_tick_time;
       }
-    }
-
-    std::vector<player_t*>& target_list() const override
-    {
-      target_cache.list = warlock_spell_t::target_list();
-
-      range::erase_remove( target_cache.list, [ this ]( player_t* t ) {
-        return !td( t )->dots.immolate->is_ticking() && !td( t )->dots.wither->is_ticking();
-      } );
-
-      return target_cache.list;
     }
 
     void tick( dot_t* d ) override

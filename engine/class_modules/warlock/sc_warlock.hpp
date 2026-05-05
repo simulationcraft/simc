@@ -1208,6 +1208,24 @@ public:
     return td;
   }
 
+  template <typename T>
+  bool dot_or_debuff_active( T d, warlock_td_t* t )
+  {
+    if constexpr ( std::is_invocable_v<T, warlock_td_t::debuffs_t> )
+    {
+      return std::invoke( d, t->debuffs )->check() > 0;
+    }
+    else if constexpr ( std::is_invocable_v<T, warlock_td_t::dots_t> )
+    {
+      return std::invoke( d, t->dots )->is_ticking();
+    }
+    else
+    {
+      sim->error( SEVERE, "%s dot_or_debuff_active: Unsupported type passed.\n", name() );
+      return false;
+    }
+  }
+
   action_t* create_action_warlock( util::string_view, util::string_view );
 
   action_t* create_action_affliction( util::string_view, util::string_view );
