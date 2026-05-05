@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67235 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.5.67314 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -15143,7 +15143,6 @@ $@spellicon262115 $@spellname262115
 $@spelldesc262115
 
 Name             : Mortal Wounds (id=1261062) [Spell Family (4), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Arms [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Warrior
 School           : Physical
