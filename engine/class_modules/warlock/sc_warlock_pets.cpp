@@ -266,12 +266,12 @@ warlock_pet_spell_t::warlock_pet_spell_t( util::string_view token, warlock_pet_t
   : base_t( token, p, s ),
     affected_by()
 {
-  affected_by.xalans_cruelty_effect_6 = p->o()->hero.xalans_cruelty.ok() && data().affected_by( p->o()->hero.xalans_cruelty->effectN( 6 ) );
+  affected_by.xalans_cruelty_effect_6 = p->o()->hero.xalans_cruelty.ok() && data().affected_by_label( p->o()->hero.xalans_cruelty->effectN( 6 ) );
   if ( sim->dbc->wowv() < wowv_t{ 12, 0, 7 } ) // TODO: Effect is missing from 12.0.7 PTR; remove this check once added
-    affected_by.xalans_cruelty_effect_9 = p->o()->hero.xalans_cruelty.ok() && data().affected_by( p->o()->hero.xalans_cruelty->effectN( 9 ) );
+    affected_by.xalans_cruelty_effect_9 = p->o()->hero.xalans_cruelty.ok() && data().affected_by_label( p->o()->hero.xalans_cruelty->effectN( 9 ) );
 
-  affected_by.xalans_ferocity_effect_6 = p->o()->hero.xalans_ferocity.ok() && data().affected_by( p->o()->hero.xalans_ferocity->effectN( 6 ) );
-  affected_by.xalans_ferocity_effect_7 = p->o()->hero.xalans_ferocity.ok() && data().affected_by( p->o()->hero.xalans_ferocity->effectN( 7 ) );
+  affected_by.xalans_ferocity_effect_6 = p->o()->hero.xalans_ferocity.ok() && data().affected_by_label( p->o()->hero.xalans_ferocity->effectN( 6 ) );
+  affected_by.xalans_ferocity_effect_7 = p->o()->hero.xalans_ferocity.ok() && data().affected_by_label( p->o()->hero.xalans_ferocity->effectN( 7 ) );
 }
 
 warlock_pet_spell_t::warlock_pet_spell_t( warlock_pet_t* p, util::string_view n )
