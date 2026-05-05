@@ -2273,7 +2273,23 @@ struct natures_ally_pet_t final : public hunter_main_pet_base_t
     // Nature's Ally pets have a unique Bestial Wrath aura
     buffs.bestial_wrath =
       make_buff( this, "bestial_wrath_apex", find_spell( 1285912 ) )
-        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE );
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+        ->set_cooldown( 0_ms )
+        ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+          if ( cur == 0 )
+          {
+            buffs.piercing_fangs->expire();
+          }
+          else if ( old == 0 )
+          {
+            buffs.piercing_fangs->trigger();
+          }
+        } );
+
+    buffs.piercing_fangs =
+      make_buff( this, "piercing_fangs", o()->find_spell( 392054 ) )
+        ->set_default_value_from_effect( 1 )
+        ->set_chance( o()->talents.piercing_fangs.ok() );
   }
 
   void summon( timespan_t duration = 0_ms ) override

@@ -102,7 +102,7 @@ void beast_mastery( player_t* p )
   cleave->add_action( "wild_thrash,if=talent.beast_cleave" );
   cleave->add_action( "bestial_wrath,if=!prev.wild_thrash" );
   cleave->add_action( "wild_thrash,if=!talent.beast_cleave" );
-  cleave->add_action( "kill_command,if=buff.natures_ally.up|talent.master_handler&(active_enemies>3|howl_summon.ready)" );
+  cleave->add_action( "kill_command,if=buff.natures_ally.react|talent.master_handler&(active_enemies>3|howl_summon.ready)" );
   cleave->add_action( "cobra_shot,if=cooldown.wild_thrash.remains>gcd&buff.hogstrider.up&active_enemies<4" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
   cleave->add_action( "cobra_shot,if=talent.beast_cleave&cooldown.wild_thrash.remains>gcd|!talent.beast_cleave" );
@@ -110,7 +110,7 @@ void beast_mastery( player_t* p )
   drcleave->add_action( "black_arrow,if=buff.beast_cleave.remains<gcd&cooldown.bestial_wrath.remains<gcd&active_enemies>2" );
   drcleave->add_action( "bestial_wrath,if=buff.beast_cleave.remains" );
   drcleave->add_action( "wild_thrash" );
-  drcleave->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3" );
+  drcleave->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3" );
   drcleave->add_action( "barbed_shot,if=full_recharge_time<1*gcd,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
   drcleave->add_action( "black_arrow,if=buff.withering_fire.up" );
   drcleave->add_action( "wailing_arrow,if=buff.withering_fire.remains<execute_time+gcd|time_to_die.remains<execute_time+gcd" );
@@ -122,7 +122,7 @@ void beast_mastery( player_t* p )
   drst->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=(talent.bloody_frenzy&talent.snakeskin_quiver&talent.jagged_wounds)&cooldown.bestial_wrath.remains<2*gcd" );
   drst->add_action( "bestial_wrath" );
   drst->add_action( "black_arrow,if=buff.withering_fire.up&cooldown.kill_command.full_recharge_time>gcd" );
-  drst->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3" );
+  drst->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3" );
   drst->add_action( "wailing_arrow,if=buff.withering_fire.remains<execute_time+2*gcd|time_to_die.remains<execute_time+gcd" );
   drst->add_action( "cobra_shot,if=talent.killer_cobra&buff.bestial_wrath.up&cooldown.barbed_shot.charges_fractional<1.4" );
   drst->add_action( "black_arrow" );
@@ -132,7 +132,7 @@ void beast_mastery( player_t* p )
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd" );
   st->add_action( "bestial_wrath" );
   st->add_action( "wild_thrash,if=active_enemies>1" );
-  st->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.up|howl_summon.ready)|!apex.3" );
+  st->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.react|howl_summon.ready)|!apex.3" );
   st->add_action( "barbed_shot,if=(focus<75|full_recharge_time<gcd)&!talent.serpentine_strikes|talent.serpentine_strikes" );
   st->add_action( "cobra_shot,if=cooldown.bestial_wrath.remains>gcd" );
 
@@ -184,7 +184,7 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "wild_thrash,if=talent.beast_cleave" );
   cleave->add_action( "bestial_wrath,if=!prev.wild_thrash" );
   cleave->add_action( "wild_thrash,if=!talent.beast_cleave" );
-  cleave->add_action( "kill_command,if=buff.natures_ally.up|talent.master_handler&(active_enemies>3|howl_summon.ready)" );
+  cleave->add_action( "kill_command,if=buff.natures_ally.react|talent.master_handler&(active_enemies>3|howl_summon.ready)" );
   cleave->add_action( "cobra_shot,if=cooldown.wild_thrash.remains>gcd&buff.hogstrider.up&active_enemies<4" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
   cleave->add_action( "cobra_shot,if=talent.beast_cleave&cooldown.wild_thrash.remains>gcd|!talent.beast_cleave" );
@@ -192,7 +192,7 @@ void beast_mastery_ptr( player_t* p )
   drcleave->add_action( "black_arrow,if=buff.beast_cleave.remains<gcd&cooldown.bestial_wrath.remains<gcd&active_enemies>2" );
   drcleave->add_action( "bestial_wrath,if=buff.beast_cleave.remains" );
   drcleave->add_action( "wild_thrash" );
-  drcleave->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3" );
+  drcleave->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3" );
   drcleave->add_action( "barbed_shot,if=full_recharge_time<1*gcd,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
   drcleave->add_action( "black_arrow,if=buff.withering_fire.up" );
   drcleave->add_action( "wailing_arrow,if=buff.withering_fire.remains<execute_time+gcd|time_to_die.remains<execute_time+gcd" );
@@ -204,7 +204,7 @@ void beast_mastery_ptr( player_t* p )
   drst->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=(talent.bloody_frenzy&talent.snakeskin_quiver&talent.jagged_wounds)&cooldown.bestial_wrath.remains<2*gcd" );
   drst->add_action( "bestial_wrath" );
   drst->add_action( "black_arrow,if=buff.withering_fire.up&cooldown.kill_command.full_recharge_time>gcd" );
-  drst->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3" );
+  drst->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3" );
   drst->add_action( "wailing_arrow,if=buff.withering_fire.remains<execute_time+2*gcd|time_to_die.remains<execute_time+gcd" );
   drst->add_action( "cobra_shot,if=talent.killer_cobra&buff.bestial_wrath.up&cooldown.barbed_shot.charges_fractional<1.4" );
   drst->add_action( "black_arrow" );
@@ -214,7 +214,7 @@ void beast_mastery_ptr( player_t* p )
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd" );
   st->add_action( "bestial_wrath" );
   st->add_action( "wild_thrash,if=active_enemies>1" );
-  st->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.up|howl_summon.ready)|!apex.3" );
+  st->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.react|howl_summon.ready)|!apex.3" );
   st->add_action( "barbed_shot,if=(focus<75|full_recharge_time<gcd)&!talent.serpentine_strikes|talent.serpentine_strikes" );
   st->add_action( "cobra_shot,if=cooldown.bestial_wrath.remains>gcd" );
 
