@@ -29125,7 +29125,7 @@ static constexpr std::array<spelldesc_vars_data_t, 697> __spelldesc_vars_data { 
   {  408092, "$radiusI=${3}\r\n$radiusII=${6}\r\n$radiusIII=${9}\r\n$radiusIV=${12}" },
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
   {  409894, "$dmg=${$359077s2}" },
-  {  410261, "$coeff=${3.5}\r\n$meTalent=$?s1291457[${1+($1291457s1/100)}][${1}]\r\n$dmg=${$INT*$<coeff>*$<meTalent>*(1+$@versadmg)*$pctD}" },
+  {  410261, "$coeff=${2.69}\r\n$meTalent=$?s1291457[${1+($1291457s1/100)}][${1}]\r\n$dmg=${$INT*$<coeff>*$<meTalent>*(1+$@versadmg)*$pctD}" },
   {  410643, "$shield=${$SP*12*(1+$@versadmg)}" },
   {  412774, "$doses=${50}" },
   {  413654, "$stat=${$INT*($s1/100)}\r\n$classset=$?s414878[${$414878s1)}][${0}]\r\n$amount=${$s1+$<classset>}.1" },
@@ -29155,7 +29155,7 @@ static constexpr std::array<spelldesc_vars_data_t, 697> __spelldesc_vars_data { 
   {  431443, "$cap=${($SP*2.5)*(1+$@versadmg)}\r\n$cap2=${($SP*3.5)*(1+$@versadmg)}" },
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
   {  433106, "$prot=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}\r\n$holy=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}\r\n$value=$?a137028[${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}][${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}]" },
-  {  434300, "$dmg=${$INT*4.75*(1+$@versadmg)*$pctD}" },
+  {  434300, "$MotBD=$?s441705[${1+($441705s1/100)}][${1}]\r\n$dmg=${$INT*4.75*(1+$@versadmg)*$pctD*$<MotBD>}" },
   {  435473, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  435475, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  436036, "$flight=$?a375517[${$375517s1/1000}][${0}]\r\n$dura=$?a406380[${6*(1+$406380s2/100)+$<flight>}.1][${6+$<flight>}]" },
@@ -29404,6 +29404,8 @@ static constexpr std::array<spelldesc_vars_data_t, 697> __spelldesc_vars_data { 
 } };
 
 // spelldesc_vars hotfix entries, wow build 12.0.5.67314
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelldesc_vars_hotfix_data { {
+  {  410261,  0, "$coeff=${3.5}\r\n$meTalent=$?s1291457[${1+($1291457s1/100)}][${1}]\r\n$dmg=${$INT*$<coeff>*$<meTalent>*(1+$@versadmg)*$pctD}", "$coeff=${2.69}\r\n$meTalent=$?s1291457[${1+($1291457s1/100)}][${1}]\r\n$dmg=${$INT*$<coeff>*$<meTalent>*(1+$@versadmg)*$pctD}" },
+  {  434300,  0, "$dmg=${$INT*4.75*(1+$@versadmg)*$pctD}", "$MotBD=$?s441705[${1+($441705s1/100)}][${1}]\r\n$dmg=${$INT*4.75*(1+$@versadmg)*$pctD*$<MotBD>}" },
 } };
 
