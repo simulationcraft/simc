@@ -803,7 +803,6 @@ struct druid_t final : public parse_player_effects_t
     buff_t* implant;
     buff_t* killing_strikes;
     buff_t* killing_strikes_combat;
-    buff_t* protective_growth;
     buff_t* ravage_fb;
     buff_t* ravage_maul;
     buff_t* root_network;
@@ -1359,7 +1358,6 @@ struct druid_t final : public parse_player_effects_t
   stat_e convert_hybrid_stat( stat_e s ) const override;
   double resource_regen_per_second( resource_e ) const override;
   double resource_gain( resource_e, double, gain_t*, action_t* a = nullptr ) override;
-  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void assess_damage( school_e, result_amount_type, action_state_t* ) override;
   void recalculate_resource_max( resource_e, gain_t* source = nullptr ) override;
   void create_options() override;
@@ -6378,9 +6376,6 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
 
     p()->buff.forestwalk->trigger( this );
 
-    if ( target == p() )
-      p()->buff.protective_growth->trigger();
-
     p()->buff.blooming_infusion_damage_counter->trigger( this );
     if ( p()->buff.blooming_infusion_damage_counter->at_max_stacks() )
     {
@@ -6392,14 +6387,6 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
 
     if ( is_precombat && boon_of_the_oathsworn_hack && !boon_of_the_oathsworn_hack->check() )
       boon_of_the_oathsworn_hack->trigger();
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    base_t::last_tick( d );
-
-    if ( d->target == p() )
-      p()->buff.protective_growth->expire();
   }
 };
 
@@ -10519,7 +10506,7 @@ void druid_t::init_spells()
   talent.potent_enchantments            = HT( "Potent Enchantments" );
   talent.power_of_nature                = HT( "Power of Nature" );  // TODO: grove guardian buff NYI
   talent.power_of_the_dream             = HT( "Power of the Dream" );
-  talent.protective_growth              = HT( "Protective Growth" );
+  talent.protective_growth              = HT( "Protective Growth" );  // TODO: NYI
   talent.spirit_of_the_thicket          = HT( "Spirit of the Thicket" );
   talent.sylvan_beckoning               = HT( "Sylvan Beckoning" );
   talent.treants_of_the_moon            = HT( "Treants of the Moon" );
@@ -10808,7 +10795,6 @@ void druid_t::create_buffs()
   // Baseline
   buff.barkskin = make_buff<druid_buff_t>( this, "barkskin", find_class_spell( "Barkskin" ) )
     ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
     ->set_tick_behavior( buff_tick_behavior::NONE );
   if ( talent.brambles.ok() )
@@ -10918,8 +10904,7 @@ void druid_t::create_buffs()
   // The buff ID in-game is same as the talent, 61336, but the buff effect is in the hidden buff 50322
   buff.survival_instincts =
     make_fallback( talent.survival_instincts.ok(), this, "survival_instincts", talent.survival_instincts )
-      ->set_cooldown( 0_ms )
-      ->set_default_value( find_effect( find_spell( 50322 ), A_MOD_DAMAGE_PERCENT_TAKEN ).percent() );
+      ->set_cooldown( 0_ms );
 
   // Balance buffs
   buff.ascendant_fires = make_fallback( talent.ascendant_eclipses_1.ok(),
@@ -11477,10 +11462,6 @@ void druid_t::create_buffs()
   buff.killing_strikes_combat =
     make_fallback( talent.killing_strikes.ok(), this, "killing_strikes_combat", find_spell( 441827 ) )
       ->set_quiet( true );
-
-  buff.protective_growth =
-    make_fallback( talent.protective_growth.ok(), this, "protective_growth", find_spell( 433749 ) )
-      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buff.ravage_fb = make_fallback( talent.ravage.ok() && specialization() == DRUID_FERAL,
     this, "ravage", find_spell( 441585 ) )
@@ -13193,7 +13174,7 @@ void druid_t::invalidate_cache( cache_e c )
 
 // Composite combat stat override functions =================================
 
-// Armor ====================================================================
+// Defense ==================================================================
 double druid_t::composite_armor() const
 {
   double a = player_t::composite_armor();
@@ -13212,7 +13193,6 @@ double druid_t::composite_armor() const
   return a;
 }
 
-// Defense ==================================================================
 double druid_t::composite_dodge_rating() const
 {
   double dr = player_t::composite_dodge_rating();
@@ -13663,66 +13643,6 @@ void druid_t::init_absorb_priority()
   add_absorb( buff.brambles );      // brambles always goes first
 }
 
-void druid_t::target_mitigation( school_e school, result_amount_type rt, action_state_t* s )
-{
-  s->result_amount *= 1.0 + buff.barkskin->value();
-
-  s->result_amount *= 1.0 + buff.survival_instincts->value();
-
-  s->result_amount *= 1.0 + talent.thick_hide->effectN( 1 ).percent();
-
-  s->result_amount *= 1.0 + buff.protective_growth->check_value();
-
-  if ( spec.ursine_adept->ok() && form == BEAR_FORM )
-    s->result_amount *= 1.0 + spec.ursine_adept->effectN( 2 ).percent();
-
-  // as this is run-time, we can't use find_effect. TODO: possibly cache these values somewhere
-  if ( talent.glistening_fur.ok() )
-  {
-    switch ( form )
-    {
-      case BEAR_FORM:
-        if ( dbc::is_school( school, SCHOOL_ARCANE ) )
-          s->result_amount *= 1.0 + buff.bear_form->data().effectN( 14 ).percent();
-        else
-          s->result_amount *= 1.0 + buff.bear_form->data().effectN( 13 ).percent();
-        break;
-
-      case MOONKIN_FORM:
-        if ( dbc::is_school( school, SCHOOL_ARCANE ) )
-          s->result_amount *= 1.0 + buff.moonkin_form->data().effectN( 13 ).percent();
-        else
-          s->result_amount *= 1.0 + buff.moonkin_form->data().effectN( 12 ).percent();
-        break;
-
-      default: break;
-    }
-  }
-
-  if ( talent.empowered_shapeshifting.ok() && form == BEAR_FORM &&
-       spec.bear_form_passive_2->effectN( 3 ).has_common_school( school ) )
-  {
-    s->result_amount *= 1.0 + talent.empowered_shapeshifting->effectN( 4 ).percent();
-  }
-
-  if ( s->action->player != this )
-  {
-    if ( auto td = find_target_data( s->action->player ) )
-    {
-      if ( talent.rend_and_tear.ok() )
-        s->result_amount *= 1.0 + talent.rend_and_tear->effectN( 3 ).percent() * td->dots.thrash->current_stack();
-
-      if ( talent.scintillating_moonlight.ok() && td->dots.moonfire->is_ticking() )
-        s->result_amount *= 1.0 + talent.scintillating_moonlight->effectN( 1 ).percent();
-
-      if ( talent.dreadful_wound.ok() && td->dots.dreadful_wound->is_ticking() )
-        s->result_amount *= 1.0 + spec.dreadful_wound->effectN( 2 ).percent();
-    }
-  }
-
-  player_t::target_mitigation( school, rt, s );
-}
-
 void druid_t::assess_damage( school_e school, result_amount_type dtype, action_state_t* s )
 {
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && dtype == result_amount_type::DMG_DIRECT && s->result == RESULT_HIT )
@@ -14138,6 +14058,8 @@ void druid_t::parse_action_effects( action_t* action )
   assert( _a );
 
   // Class
+  _a->parse_effects( buff.bear_form );
+  _a->parse_effects( spec.bear_form_passive_2, [ this ] { return form == BEAR_FORM; } );
   _a->parse_effects( buff.cat_form );
   _a->parse_effects( spec.cat_form_passive_2, [ this ] { return form == CAT_FORM; } );
   _a->parse_effects( buff.moonkin_form );
@@ -14216,9 +14138,6 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.unseen_predators_craving, talent.unseen_predator_2->effectN( 1 ).percent() );
 
   // Guardian
-  _a->parse_effects( buff.bear_form );
-  _a->parse_effects( spec.bear_form_passive_2, [ this ] { return form == BEAR_FORM; } );
-
   _a->parse_effects( buff.berserk_bear, effect_mask_t( true ).disable( 6, 7, 8, 9 ) );
   _a->parse_effects( buff.incarnation_bear, effect_mask_t( true ).disable( 6, 7, 8, 9, 14, 15, 16, 17 ) );
   // additional effects if astral insight is talented
@@ -14265,18 +14184,11 @@ void druid_t::parse_action_target_effects( action_t* action )
   auto _a = dynamic_cast<parse_action_base_t*>( action );
   assert( _a );
 
-  // Balance
-  _a->parse_target_effects( d_fn( &druid_td_t::debuffs_t::stellar_amplification ), spec.stellar_amplification );
-
-  // Feral
-  _a->parse_target_effects( d_fn( &druid_td_t::debuffs_t::sabertooth ),
-                            spec.sabertooth, talent.sabertooth->effectN( 2 ).percent() );
-
-  // Guardian
-  _a->parse_target_effects( d_fn( &druid_td_t::dots_t::thrash ), spec.thrash_bleed );
-
-  // Hero talent
   _a->parse_target_effects( d_fn( &druid_td_t::debuffs_t::atmospheric_exposure ), spec.atmospheric_exposure );
+  _a->parse_target_effects( d_fn( &druid_td_t::debuffs_t::sabertooth ), spec.sabertooth,
+                            talent.sabertooth->effectN( 2 ).percent() );
+  _a->parse_target_effects( d_fn( &druid_td_t::debuffs_t::stellar_amplification ), spec.stellar_amplification );
+  _a->parse_target_effects( d_fn( &druid_td_t::dots_t::thrash ), spec.thrash_bleed );
 
   if ( talent.exacerbating_wounds.ok() )
     _a->parse_target_effects( d_fn( &druid_td_t::dots_t::dreadful_wound ), spec.dreadful_wound );
@@ -14285,13 +14197,24 @@ void druid_t::parse_action_target_effects( action_t* action )
 void druid_t::parse_player_effects()
 {
   parse_effects( mastery.natures_guardian_AP );
-  parse_effects( spec.bear_form_passive, [ this ] { return buff.bear_form->check(); } );
+  parse_effects( talent.thick_hide, PARSE_PASSIVE );
+
+  parse_effects( buff.bear_form, effect_mask_t( true ).disable( 13, 14 ) );
+  parse_effects( spec.bear_form_passive, [ this ] { return form == BEAR_FORM; } );
+  parse_effects( spec.bear_form_passive_2, [ this ] { return form == BEAR_FORM; } );
+  parse_effects( buff.moonkin_form, effect_mask_t( true ).disable( 12, 13 ) );
+
+  if ( talent.glistening_fur.ok() )
+  {
+    parse_effects( buff.bear_form, effect_mask_t( false ).enable( 13, 14 ) );
+    parse_effects( buff.moonkin_form, effect_mask_t( false ).enable( 12, 13 ) );
+  }
+
+  parse_effects( buff.barkskin );
+  parse_effects( buff.killing_strikes );
 
   if ( talent.lycaras_inspiration.ok() )
     parse_effects( buff.lycaras_teachings_crit );
-
-  parse_effects( buff.bear_form );
-  parse_effects( buff.killing_strikes );
 
   parse_effects( buff.persistence, effect_mask_t( false ).enable( 1 ),  // stamina
                  find_effect( spec.bear_form_passive, A_MOD_TOTAL_STAT_PERCENTAGE ).percent() /
@@ -14300,6 +14223,7 @@ void druid_t::parse_player_effects()
                  find_effect( buff.bear_form, A_MOD_BASE_RESISTANCE_PCT ).percent() /
                    buff.persistence->max_stack() );
   parse_effects( buff.ruthless_aggression );
+  parse_effects( buff.survival_instincts );
   parse_effects( buff.ursine_vigor, talent.ursine_vigor );
   parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 2 ),  // base armor
                  find_effect( buff.bear_form, A_MOD_BASE_RESISTANCE_PCT ).percent() *
@@ -14310,6 +14234,15 @@ void druid_t::parse_player_effects()
   parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 4, 5 ) );  // crit avoidance & expertise
 
   parse_target_effects( d_fn( &druid_td_t::debuffs_t::bloodseeker_vines ), spec.bloodseeker_vines );
+  parse_target_effects( d_fn( &druid_td_t::dots_t::dreadful_wound ), spec.dreadful_wound );
+
+  if ( talent.scintillating_moonlight.ok() )
+  {
+    parse_target_effects( d_fn( &druid_td_t::dots_t::moonfire ), spec.moonfire_dmg, effect_mask_t( false ).enable( 6 ),
+                          -talent.scintillating_moonlight->effectN( 1 ).percent() );
+  }
+
+  parse_target_effects( d_fn( &druid_td_t::dots_t::thrash ), spec.thrash_bleed );
 }
 
 /* Report Extension Class

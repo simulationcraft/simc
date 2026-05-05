@@ -875,8 +875,6 @@ public:
     const spell_data_t* sigil_of_flame_damage;
     const spell_data_t* sigil_of_flame_fury;
 
-    const spell_data_t* demonic_wards_2;
-    const spell_data_t* demonic_wards_3;
     const spell_data_t* fiery_brand_debuff;
     const spell_data_t* frailty_debuff;
     const spell_data_t* riposte;
@@ -1307,7 +1305,6 @@ public:
   void merge( player_t& other ) override;
   void datacollection_begin() override;
   void datacollection_end() override;
-  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void analyze( sim_t& sim ) override;
 
   // custom demon_hunter_t functions
@@ -10385,8 +10382,6 @@ void demon_hunter_t::init_spells()
 
   // Spec-Overriden Passives
   spec.demonic_wards       = find_specialization_spell( "Demonic Wards" );
-  spec.demonic_wards_2     = find_rank_spell( "Demonic Wards", "Rank 2" );
-  spec.demonic_wards_3     = find_rank_spell( "Demonic Wards", "Rank 3" );
   spec.immolation_aura_cdr = find_spell( 320378, DEMON_HUNTER_VENGEANCE );
   spec.thick_skin          = find_specialization_spell( "Thick Skin" );
 
@@ -11840,57 +11835,6 @@ void demon_hunter_t::recalculate_resource_max( resource_e r, gain_t* source )
   }
 }
 
-// demon_hunter_t::target_mitigation ========================================
-
-void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
-{
-  base_t::target_mitigation( school, dt, s );
-
-  if ( s->result_amount <= 0 )
-  {
-    return;
-  }
-
-  if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
-  {
-    s->result_amount *= 1.0 + talent.demon_hunter.illidari_knowledge->effectN( 1 ).percent();
-  }
-
-  const demon_hunter_td_t* td = get_target_data( s->action->player );
-  switch ( specialization() )
-  {
-    case DEMON_HUNTER_DEVOURER:
-      s->result_amount *= 1.0 + buff.blur->value();
-
-      break;
-    case DEMON_HUNTER_HAVOC:
-      s->result_amount *= 1.0 + buff.blur->value();
-
-      if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
-      {
-        s->result_amount *=
-            1.0 + spec.demonic_wards->effectN( 1 ).percent() + spec.demonic_wards_2->effectN( 1 ).percent();
-      }
-
-      if ( dbc::get_school_mask( school ) & SCHOOL_MASK_PHYSICAL )
-      {
-        s->result_amount *= 1.0 + talent.havoc.demon_hide->effectN( 2 ).percent();
-      }
-      break;
-    case DEMON_HUNTER_VENGEANCE:
-      s->result_amount *= 1.0 + spec.demonic_wards->effectN( 1 ).percent() +
-                          spec.demonic_wards_2->effectN( 1 ).percent() + spec.demonic_wards_3->effectN( 1 ).percent();
-
-      if ( td->debuffs.frailty->check() && talent.vengeance.void_reaver->ok() )
-      {
-        s->result_amount *= 1.0 + spec.frailty_debuff->effectN( 3 ).percent();
-      }
-      break;
-    default:
-      break;
-  }
-}
-
 // demon_hunter_t::reset ====================================================
 
 void demon_hunter_t::reset()
@@ -12380,6 +12324,9 @@ void demon_hunter_t::trigger_voidsurge( const voidsurge_ability ability, timespa
 void demon_hunter_t::parse_player_effects()
 {
   // Shared
+  parse_effects( talent.demon_hunter.illidari_knowledge, PARSE_PASSIVE );
+  parse_effects( talent.havoc.demon_hide, PARSE_PASSIVE );
+  parse_effects( spec.demonic_wards, PARSE_PASSIVE );
 
   // Devourer
   if ( specialization() == DEMON_HUNTER_DEVOURER )
@@ -12404,6 +12351,12 @@ void demon_hunter_t::parse_player_effects()
     parse_effects( mastery.fel_blood_rank_2 );
     parse_effects( buff.fiery_brand );
     parse_effects( buff.painbringer );
+
+    if ( talent.vengeance.void_reaver.ok() )
+    {
+      parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::frailty ), spec.frailty_debuff );
+    }
+
   }
 
   // Aldrachi Reaver

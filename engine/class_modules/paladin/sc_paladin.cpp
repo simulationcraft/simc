@@ -4611,6 +4611,90 @@ double paladin_t::composite_block() const
   return b;
 }
 
+// paladin_t::composite_mitigation_multiplier =================================
+
+double paladin_t::composite_mitigation_multiplier( const action_state_t* s, school_e school, bool direct ) const
+{
+  double m = player_t::composite_mitigation_multiplier( s, school, direct );
+
+  // Passive sources
+  m *= 1.0 + passives.sanctuary->effectN( 1 ).percent();
+  m *= 1.0 + passives.aegis_of_light->effectN( 3 ).percent();
+
+  // Damage Reduction Cooldowns
+  if ( buffs.sentinel->up() )
+  {
+    m *= 1.0 + buffs.sentinel->get_damage_reduction_mod();
+  }
+
+  if ( buffs.guardian_of_ancient_kings->up() )
+  {
+    m *= 1.0 + buffs.guardian_of_ancient_kings->check_value();
+  }
+
+  if ( buffs.ardent_defender->up() )
+  {
+    m *= 1.0 + buffs.ardent_defender->check_value();
+  }
+
+  if ( buffs.divine_protection->up() )
+  {
+    m *= 1.0 + buffs.divine_protection->check_value();
+  }
+
+  if ( talents.blessing_of_dusk->ok() )
+  {
+    // ToDo Fluttershy: Fix or remove
+    m *= 1.0 - talents.blessing_of_dusk->effectN( 1 ).percent();
+  }
+
+  if ( buffs.devotion_aura->up() )
+  {
+    double devoRed = buffs.devotion_aura->value();
+
+    if ( talents.lightsmith.shared_resolve->ok() )
+    {
+      if ( buffs.lightsmith.sacred_weapon->up() )
+        devoRed *= 1 + buffs.lightsmith.sacred_weapon->data().effectN( 1 ).percent();
+
+      if ( buffs.lightsmith.holy_bulwark->up() )
+        devoRed *= 1 + buffs.lightsmith.holy_bulwark->data().effectN( 1 ).percent();
+    }
+
+    m *= 1.0 + devoRed;
+  }
+
+  if ( const auto& eff = spells.sotr_buff->effectN( 3 ); eff.base_value() && eff.has_common_school( school ) )
+  {
+    m *= 1.0 + eff.percent();
+  }
+
+  if ( specialization() == PALADIN_PROTECTION && standing_in_consecration() )
+  {
+    m *= 1.0 + spells.standing_in_consecration_buff->effectN( 3 ).percent();
+  }
+
+  return m;
+}
+
+// paladin_t::composite_mitigation_from_player_multiplier =====================
+
+double paladin_t::composite_mitigation_from_player_multiplier( player_t* source, const action_state_t* s,
+                                                               school_e school, bool direct ) const
+{
+  double m = player_t::composite_mitigation_from_player_multiplier( source, s, school, direct );
+
+  if ( auto td = find_target_data( source ) )
+  {
+    if ( td->debuff.empyrean_hammer->up() )
+    {
+      m *= 1.0 + td->debuff.empyrean_hammer->data().effectN( 3 ).percent();
+    }
+  }
+
+  return m;
+}
+
 // paladin_t::composite_crit_avoidance ========================================
 
 double paladin_t::composite_crit_avoidance() const

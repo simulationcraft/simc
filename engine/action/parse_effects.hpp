@@ -41,11 +41,12 @@ enum parse_flag_e : uint16_t
   CONSUME_BUFF      = 0x0010,
   ROUND_VALUE       = 0x0020,  // uses std::round (round to nearest integer, round half away from zero)
   IGNORE_WHITELIST  = 0x0040,
+  PARSE_PASSIVE     = 0x0080,  // force parsing of passive effects
   // internal flags that should not be used in parse_effects()
-  VALUE_OVERRIDE    = 0x0100,
-  AFFECTED_OVERRIDE = 0x0200,
-  MANUAL_ENTRY      = 0x0400,
-  VALUE_FUNCTION    = 0x0800
+  VALUE_OVERRIDE    = 0x1000,
+  AFFECTED_OVERRIDE = 0x2000,
+  MANUAL_ENTRY      = 0x4000,
+  VALUE_FUNCTION    = 0x8000
 };
 
 enum parse_callback_e
@@ -346,7 +347,7 @@ struct parse_base_t
           return;
         }
 
-        if ( mod == ROUND_VALUE )
+        if ( mod == ROUND_VALUE || mod == PARSE_PASSIVE )
         {
           pack.data.type |= mod;
           return;
@@ -715,8 +716,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> mastery_effects;
   std::vector<player_effect_t> parry_rating_from_crit_effects;
   std::vector<player_effect_t> dodge_effects;
-  std::vector<player_effect_t> damage_taken_multiplier_effects;
-  std::vector<target_effect_t> target_damage_done_multiplier_effects;
+  std::vector<player_effect_t> mitigation_multiplier_effects;
+  std::vector<target_effect_t> mitigation_from_target_multiplier_effects;
   std::vector<player_effect_t> absorb_multiplier_effects;
   std::vector<player_effect_t> absorb_received_mult_effects;
   std::vector<player_effect_t> healing_received_effects;
@@ -753,13 +754,14 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   double composite_mastery() const override;
   double composite_parry_rating() const override;
   double composite_dodge() const override;
-  double composite_player_absorb_multiplier( const action_state_t* s ) const override;
+  double composite_player_absorb_multiplier( const action_state_t* ) const override;
   double composite_player_healing_received_multiplier() const override;
   double composite_player_absorb_received_multiplier() const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_player_target_pet_damage_multiplier( player_t*, bool ) const override;
-
-  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
+  double composite_mitigation_multiplier( const action_state_t*, school_e, bool direct ) const override;
+  double composite_mitigation_from_player_multiplier( player_t*, const action_state_t*, school_e,
+                                                      bool direct ) const override;
 
   void invalidate_cache( cache_e c ) override;
 

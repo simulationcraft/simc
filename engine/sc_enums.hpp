@@ -711,8 +711,6 @@ enum school_e
   SCHOOL_MAX
 };
 
-const school_e SCHOOL_RADIANT = SCHOOL_HOLYFIRE;
-
 enum school_mask_e
 {
   SCHOOL_MASK_PHYSICAL = 0x01,

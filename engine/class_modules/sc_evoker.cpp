@@ -1657,11 +1657,11 @@ struct evoker_t : public player_t
   double composite_player_target_crit_chance( player_t* target ) const override;
   double composite_spell_haste() const override;
   double composite_melee_haste() const override;
+  double composite_mitigation_multiplier( const action_state_t*, school_e, bool direct ) const override;
   stat_e convert_hybrid_stat( stat_e ) const override;
   double non_stacking_movement_modifier() const override;
   double stacking_movement_modifier() const override;
   double resource_regen_per_second( resource_e ) const override;
-  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
 
   void bounce_naszuro( player_t*, timespan_t );
 
@@ -10075,8 +10075,9 @@ void evoker_t::create_buffs()
 
   buff.leaping_flames = MBF( talent.leaping_flames.ok(), this, "leaping_flames", find_spell( 370901 ) );
 
-  buff.obsidian_scales =
-      MBF( talent.obsidian_scales.ok(), this, "obsidian_scales", talent.obsidian_scales )->set_cooldown( 0_ms );
+  buff.obsidian_scales = MBF( talent.obsidian_scales.ok(), this, "obsidian_scales", talent.obsidian_scales )
+                             ->set_cooldown( 0_ms )
+                             ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buff.scarlet_adaptation = MBF( talent.scarlet_adaptation.ok(), this, "scarlet_adaptation", find_spell( 372470 ) )
                                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
@@ -10751,6 +10752,23 @@ double evoker_t::composite_melee_haste() const
   return h;
 }
 
+double evoker_t::composite_mitigation_multiplier( const action_state_t* s, school_e school, bool direct ) const
+{
+  double m = player_t::composite_mitigation_multiplier( s, school, direct );
+
+  if ( buff.obsidian_scales->check() )
+    m *= 1.0 + buff.obsidian_scales->check_value();
+
+  if ( talent.inherent_resistance.ok() )
+  {
+    const auto& eff = talent.inherent_resistance->effectN( 1 );
+    if ( eff.has_common_school( school ) )
+      m *= 1.0 + eff.percent();
+  }
+
+  return m;
+}
+
 stat_e evoker_t::convert_hybrid_stat( stat_e stat ) const
 {
   switch ( stat )
@@ -10975,25 +10993,6 @@ double evoker_t::resource_regen_per_second( resource_e resource ) const
     rrps *= 1.0 + buff.power_swell->check_value();
 
   return rrps;
-}
-
-void evoker_t::target_mitigation( school_e school, result_amount_type rt, action_state_t* s )
-{
-  if ( buff.obsidian_scales->check() )
-  {
-    const auto& eff = buff.obsidian_scales->data().effectN( 2 );
-    if ( eff.has_common_school( school ) )
-      s->result_amount *= 1.0 + eff.percent();
-  }
-
-  if ( talent.inherent_resistance.ok() )
-  {
-    const auto& eff = talent.inherent_resistance->effectN( 1 );
-    if ( eff.has_common_school( school ) )
-      s->result_amount *= 1.0 + eff.percent();
-  }
-
-  player_t::target_mitigation( school, rt, s );
 }
 
 // Utility functions ========================================================

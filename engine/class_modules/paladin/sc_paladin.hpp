@@ -345,7 +345,6 @@ public:
     const spell_data_t* sanctuary;
 
     const spell_data_t* aegis_of_light;
-    const spell_data_t* aegis_of_light_2;
 
     const spell_data_t* art_of_war;
     const spell_data_t* art_of_war_2;
@@ -391,6 +390,7 @@ public:
     const spell_data_t* sanctify;
 
     const spell_data_t* sotr_buff;
+    const spell_data_t* standing_in_consecration_buff;
 
     const spell_data_t* consecrated_blade;
     const spell_data_t* crusade;
@@ -762,67 +762,69 @@ public:
 
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
-  virtual void init_assessors() override;
-  virtual void init_base_stats() override;
-  virtual void init_gains() override;
-  virtual void init_procs() override;
-  virtual void init() override;
-  virtual void init_scaling() override;
-  virtual void create_buffs() override;
-  virtual void init_special_effects() override;
-  virtual void init_rng() override;
-  virtual void init_spells() override;
-  virtual void init_action_list() override;
-  virtual void init_blizzard_action_list() override;
+  void init_assessors() override;
+  void init_base_stats() override;
+  void init_gains() override;
+  void init_procs() override;
+  void init() override;
+  void init_scaling() override;
+  void create_buffs() override;
+  void init_special_effects() override;
+  void init_rng() override;
+  void init_spells() override;
+  void init_action_list() override;
+  void init_blizzard_action_list() override;
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                             const assisted_combat_step_data_t& step ) const override;
-  virtual bool validate_fight_style( fight_style_e style ) const override;
-  virtual bool validate_actor() override;
-  virtual void reset() override;
-  virtual std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
+  bool validate_fight_style( fight_style_e style ) const override;
+  bool validate_actor() override;
+  void reset() override;
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
 
   // player stat functions
-  virtual double composite_player_multiplier( school_e ) const override;
-  virtual double composite_attribute_multiplier( attribute_e attr ) const override;
-  virtual double composite_attack_power_multiplier() const override;
-  virtual double composite_bonus_armor() const override;
-  virtual double composite_melee_crit_chance() const override;
-  virtual double composite_spell_crit_chance() const override;
-  virtual double composite_damage_versatility() const override;
-  virtual double composite_heal_versatility() const override;
-  virtual double composite_mitigation_versatility() const override;
-  virtual double composite_mastery() const override;
-  virtual double composite_melee_haste() const override;
-  virtual double composite_melee_auto_attack_speed() const override;
-  virtual double composite_spell_haste() const override;
-  virtual double composite_crit_avoidance() const override;
-  virtual double composite_parry() const override;
-  virtual double composite_parry_rating() const override;
-  virtual double composite_block() const override;
-  virtual double non_stacking_movement_modifier() const override;
-  virtual double composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  virtual double composite_base_armor_multiplier() const override;
+  double composite_player_multiplier( school_e ) const override;
+  double composite_attribute_multiplier( attribute_e attr ) const override;
+  double composite_attack_power_multiplier() const override;
+  double composite_bonus_armor() const override;
+  double composite_melee_crit_chance() const override;
+  double composite_spell_crit_chance() const override;
+  double composite_damage_versatility() const override;
+  double composite_heal_versatility() const override;
+  double composite_mitigation_versatility() const override;
+  double composite_mastery() const override;
+  double composite_melee_haste() const override;
+  double composite_melee_auto_attack_speed() const override;
+  double composite_spell_haste() const override;
+  double composite_crit_avoidance() const override;
+  double composite_parry() const override;
+  double composite_parry_rating() const override;
+  double composite_block() const override;
+  double composite_mitigation_multiplier( const action_state_t*, school_e, bool direct ) const override;
+  double composite_mitigation_from_player_multiplier( player_t*, const action_state_t*, school_e, bool direct ) const override;
+  double non_stacking_movement_modifier() const override;
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double composite_base_armor_multiplier() const override;
 
-  virtual double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr,
+  double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr,
                                 action_t* action = nullptr ) override;
-  virtual double resource_loss( resource_e resource_type, double amount, gain_t* source = nullptr,
+  double resource_loss( resource_e resource_type, double amount, gain_t* source = nullptr,
                                 action_t* action = nullptr ) override;
 
   // combat outcome functions
-  virtual void assess_damage( school_e, result_amount_type, action_state_t* ) override;
-  virtual void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
+  void assess_damage( school_e, result_amount_type, action_state_t* ) override;
+  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
 
-  virtual void invalidate_cache( cache_e ) override;
-  virtual void create_options() override;
-  virtual double matching_gear_multiplier( attribute_e attr ) const override;
-  virtual void create_actions() override;
-  virtual action_t* create_action( util::string_view name, util::string_view options_str ) override;
-  virtual resource_e primary_resource() const override;
-  virtual role_e primary_role() const override;
-  virtual stat_e convert_hybrid_stat( stat_e s ) const override;
-  virtual void combat_begin() override;
-  virtual void copy_from( player_t* ) override;
+  void invalidate_cache( cache_e ) override;
+  void create_options() override;
+  double matching_gear_multiplier( attribute_e attr ) const override;
+  void create_actions() override;
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
+  resource_e primary_resource() const override;
+  role_e primary_role() const override;
+  stat_e convert_hybrid_stat( stat_e s ) const override;
+  void combat_begin() override;
+  void copy_from( player_t* ) override;
 
   void trigger_grand_crusader( grand_crusader_source source = GC_NORMAL );
   void trigger_laying_down_arms();

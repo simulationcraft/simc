@@ -976,9 +976,9 @@ public:
   virtual double composite_aoe_multiplier( const action_state_t* ) const
   { return 1.0; }
 
-  virtual double composite_target_mitigation( player_t* t, school_e s ) const;
+  virtual double composite_target_mitigation( const action_state_t*, bool direct ) const;
 
-  virtual double composite_player_critical_multiplier( const action_state_t* s ) const;
+  virtual double composite_player_critical_multiplier( const action_state_t* ) const;
 
   /// Action proc type, needed for dynamic aoe stuff and such.
   virtual proc_types proc_type() const

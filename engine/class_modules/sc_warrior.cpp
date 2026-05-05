@@ -881,7 +881,7 @@ public:
   double composite_armor_multiplier() const override;
   double composite_bonus_armor() const override;
   double composite_block() const override;
-  double composite_block_reduction( action_state_t* s ) const override;
+  double composite_block_reduction( const action_state_t* s ) const override;
   double composite_parry_rating() const override;
   double composite_parry() const override;
   double composite_attack_power_multiplier() const override;
@@ -918,7 +918,6 @@ public:
   // void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* s ) override;
   // void assess_damage_imminent( school_e, result_amount_type, action_state_t* s ) override;
   void assess_damage( school_e, result_amount_type, action_state_t* ) override;
-  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
   void parse_player_effects();
@@ -8103,7 +8102,8 @@ void warrior_t::create_buffs()
 
   buff.whirlwind = make_buff( this, "whirlwind", spell.whirlwind_buff );
 
-  buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection )
+  // reflection NYI
+  buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection->effectN( 2 ).trigger() )
     -> set_cooldown( 0_ms ); // handled by the ability
 
   buff.sweeping_strikes = make_buff( this, "sweeping_strikes", spec.sweeping_strikes)
@@ -8912,7 +8912,7 @@ double warrior_t::composite_block() const
 
 // warrior_t::composite_block_reduction =====================================
 
-double warrior_t::composite_block_reduction( action_state_t* s ) const
+double warrior_t::composite_block_reduction( const action_state_t* s ) const
 {
   double br = parse_player_effects_t::composite_block_reduction( s );
 
@@ -9164,47 +9164,6 @@ void warrior_t::assess_damage( school_e school, result_amount_type type, action_
   }
 }
 
-// warrior_t::target_mitigation ============================================
-
-void warrior_t::target_mitigation( school_e school, result_amount_type dtype, action_state_t* s )
-{
-  parse_player_effects_t::target_mitigation( school, dtype, s );
-
-  if ( s->result == RESULT_HIT || s->result == RESULT_CRIT || s->result == RESULT_GLANCE )
-  {
-    if ( buff.defensive_stance->up() )
-      s->result_amount *= 1.0 + buff.defensive_stance->data().effectN( 1 ).percent();
-
-    if ( buff.defensive_stance->up() && talents.warrior.defensive_stance->effectN( 3 ).affected_schools() & school )
-      s->result_amount *= 1.0 + buff.defensive_stance->data().effectN( 3 ).percent();
-
-    if ( buff.enrage->up() && talents.fury.warpaint->ok() )
-      s->result_amount *= 1.0 + buff.enrage->data().effectN( 3 ).percent();
-
-    warrior_td_t* td = get_target_data( s->action->player );
-
-    if ( td->debuffs_demoralizing_shout->up() )
-      s->result_amount *= 1.0 + td->debuffs_demoralizing_shout->value();
-
-    if ( td -> debuffs_punish -> up() )
-      s -> result_amount *= 1.0 + td -> debuffs_punish -> value();
-
-    if ( school != SCHOOL_PHYSICAL && buff.spell_reflection->up() )
-    {
-      s -> result_amount *= 1.0 + buff.spell_reflection->data().effectN( 2 ).percent();
-      buff.spell_reflection->expire();
-    }
-    // take care of dmg reduction CDs
-    if ( buff.shield_wall->up() )
-      s->result_amount *= 1.0 + buff.shield_wall->value();
-    else if ( buff.die_by_the_sword->up() )
-      s->result_amount *= 1.0 + buff.die_by_the_sword->default_value;
-
-    if ( specialization() == WARRIOR_PROTECTION )
-      s->result_amount *= 1.0 + spec.vanguard -> effectN( 3 ).percent();
-  }
-}
-
 // warrior_t::create_options ================================================
 
 void warrior_t::create_options()
@@ -9255,11 +9214,15 @@ void warrior_t::parse_player_effects()
   if ( specialization() != WARRIOR_PROTECTION )
     parse_effects( buff.defensive_stance, effect_mask_t( false ).enable( 2 ) );
 
+  parse_effects( buff.spell_reflection );
+
   parse_target_effects( d_fn( &warrior_td_t::debuffs_honed_reflexes ), talents.warrior.honed_reflexes->effectN( 5 ).trigger() );
 
   if ( specialization() == WARRIOR_ARMS )
   {
-    if( main_hand_weapon.group() == WEAPON_2H )
+    parse_effects( buff.die_by_the_sword );
+
+    if ( main_hand_weapon.group() == WEAPON_2H )
       parse_effects( mastery.master_of_arms );
   }
   else if ( specialization() == WARRIOR_FURY )
@@ -9270,6 +9233,7 @@ void warrior_t::parse_player_effects()
     if ( talents.warrior.stance_mastery->ok() )
       parse_effects( buff.berserker_stance, effect_mask_t( false ).enable( 6 ) );
 
+    parse_effects( buff.enrage, effect_mask_t( false ).enable( 3 ) );
     if ( talents.fury.frenzied_enrage->ok() )
       parse_effects( buff.enrage, effect_mask_t( false ).enable( 1, 2 ) );
     if ( talents.fury.powerful_enrage->ok() )
@@ -9281,6 +9245,11 @@ void warrior_t::parse_player_effects()
   {
     parse_effects( buff.into_the_fray );
     parse_effects( buff.avatar, effect_mask_t( false ).enable( 8 ) );
+    parse_effects( buff.shield_wall );
+    parse_effects( spec.vanguard, PARSE_PASSIVE );
+
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_demoralizing_shout ), talents.protection.demoralizing_shout );
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_punish ), talents.protection.punish->effectN( 2 ).trigger() );
   }
 
   // Colossus

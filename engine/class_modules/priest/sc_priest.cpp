@@ -2656,6 +2656,22 @@ double priest_t::composite_attribute_multiplier( attribute_e attr ) const
   return mul;
 }
 
+double priest_t::composite_mitigation_multiplier( const action_state_t* s, school_e school, bool direct ) const
+{
+  double m = player_t::composite_mitigation_multiplier( s, school, direct );
+
+  if ( talents.translucent_image.ok() && buffs.fade->check() )
+    m *= 1.0 + buffs.fade->check_value();
+
+  if ( buffs.protective_light->check() )
+    m *= 1.0 + buffs.protective_light->check_value();
+
+  if ( buffs.dispersion->check() )
+    m *= 1.0 + specs.dispersion->effectN( 1 ).percent();
+
+  return m;
+}
+
 void priest_t::pre_analyze_hook()
 {
   player_t::pre_analyze_hook();
@@ -3164,7 +3180,7 @@ void priest_t::create_buffs()
   // Generic buffs
   buffs.desperate_prayer  = make_buff<buffs::desperate_prayer_t>( *this );
   buffs.power_word_shield = new buffs::power_word_shield_buff_t( this, this );
-  buffs.fade              = make_buff( this, "fade", find_class_spell( "Fade" ) )->set_default_value_from_effect( 1 );
+  buffs.fade              = make_buff( this, "fade", find_class_spell( "Fade" ) )->set_default_value_from_effect( 4 );
   buffs.levitate          = make_buff( this, "levitate", specs.levitate_buff )->set_duration( timespan_t::zero() );
 
   // Shared talent buffs
@@ -3783,26 +3799,6 @@ void priest_t::reset()
   state = state_t();
 }
 
-void priest_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
-{
-  base_t::target_mitigation( school, dt, s );
-
-  if ( buffs.dispersion->check() )
-  {
-    s->result_amount *= 1.0 + buffs.dispersion->data().effectN( 1 ).percent();
-  }
-
-  if ( talents.translucent_image.enabled() && buffs.fade->up() )
-  {
-    s->result_amount *= 1.0 + talents.fade->effectN( 4 ).percent();
-  }
-
-  if ( talents.protective_light.enabled() && buffs.protective_light->up() )
-  {
-    s->result_amount *= 1.0 + talents.protective_light_buff->effectN( 1 ).percent();
-  }
-}
-
 void priest_t::create_options()
 {
   base_t::create_options();
@@ -4204,10 +4200,12 @@ struct priest_module_t final : public module_t
   {
     p->buffs.body_and_soul    = make_buff( p, "body_and_soul", p->find_spell( 65081 ) );
     p->buffs.angelic_feather  = make_buff( p, "angelic_feather", p->find_spell( 121557 ) );
-    p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
-    p->buffs.pain_suppression = make_buff( p, "pain_suppression",
-                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
+    p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit", p->find_spell( 47788 ) )
+                                  ->set_default_value_from_effect_type( A_MOD_HEALING_RECEIVED_PCT )
+                                  ->set_cooldown( 0_ms );  // Let the ability handle the CD
+    p->buffs.pain_suppression = make_buff( p, "pain_suppression", p->find_spell( 33206 ) )
+                                  ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
+                                  ->set_cooldown( 0_ms );  // Let the ability handle the CD
   }
   void static_init() const override
   {

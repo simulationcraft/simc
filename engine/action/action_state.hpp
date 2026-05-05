@@ -34,11 +34,10 @@ struct action_state_t : private noncopyable
   block_result_e  block_result;
   double          result_raw;             // Base result value, without crit/glance etc.
   double          result_total;           // Total unmitigated result, including crit bonus, glance penalty, etc.
-  double          result_mitigated;       // Result after mitigation / resist. *NOTENOTENOTE* Only filled after action_t::impact() call
+  double          result_mitigated;       // Result after mitigation / resist.
   double          result_absorbed;        // Result after absorption. *NOTENOTENOTE* Only filled after action_t::impact() call
   double          result_crit_bonus;      // Crit bonus multiplier used in the final calculation
   double          result_amount;          // Final (actual) result
-  double          blocked_amount;         // The amount of damage reduced via block or critical block
   double          self_absorb_amount;     // The amount of damage reduced via personal absorbs such as shield_barrier.
   // Snapshotted stats during execution
   double          haste;

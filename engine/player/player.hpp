@@ -1286,7 +1286,7 @@ public:
   virtual double composite_dodge() const;
   virtual double composite_parry() const;
   virtual double composite_block() const;
-  virtual double composite_block_reduction( action_state_t* s ) const;
+  virtual double composite_block_reduction( const action_state_t* s ) const;
   virtual double composite_crit_block() const;
   virtual double composite_crit_avoidance() const;
   virtual double composite_attack_power_multiplier() const;
@@ -1309,7 +1309,9 @@ public:
   virtual double composite_player_target_armor( player_t* ) const;
   virtual double composite_player_healing_received_multiplier() const;
   virtual double composite_player_absorb_received_multiplier() const;
-  virtual double composite_mitigation_multiplier( school_e ) const;
+  virtual double composite_mitigation_multiplier( const action_state_t*, school_e, bool direct ) const;
+  virtual double composite_mitigation_from_player_multiplier( player_t*, const action_state_t*, school_e,
+                                                              bool direct ) const;
   virtual double non_stacking_movement_modifier() const;
   virtual double stacking_movement_modifier() const;
   virtual double composite_movement_speed() const;

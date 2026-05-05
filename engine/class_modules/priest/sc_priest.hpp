@@ -941,10 +941,10 @@ public:
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
   double composite_leech() const override;
   double composite_attribute_multiplier( attribute_e ) const override;
+  double composite_mitigation_multiplier( const action_state_t*, school_e, bool direct ) const override;
   void pre_analyze_hook() override;
   void analyze( sim_t& sim ) override;
   double matching_gear_multiplier( attribute_e attr ) const override;
-  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void init_action_list() override;
   void init_blizzard_action_list() override;
   void parse_assisted_combat_step( const assisted_combat_step_data_t& step,

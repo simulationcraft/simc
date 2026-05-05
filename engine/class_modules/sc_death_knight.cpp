@@ -1631,6 +1631,7 @@ public:
     const spell_data_t* razorice_debuff;
     const spell_data_t* sanguination_cooldown;
     const spell_data_t* sanguination_heal;
+    const spell_data_t* spellwarding_driver;
     const spell_data_t* spellwarding_absorb;
     const spell_data_t* stoneskin_gargoyle;
     const spell_data_t* unending_thirst;
@@ -1992,7 +1993,6 @@ public:
   void adjust_dynamic_cooldowns() override;
   void assess_damage( school_e, result_amount_type, action_state_t* ) override;
   void assess_damage_imminent( school_e, result_amount_type, action_state_t* ) override;
-  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void do_damage( action_state_t* ) override;
   void create_actions() override;
   action_t* create_action( std::string_view name, std::string_view options ) override;
@@ -14778,6 +14778,7 @@ void death_knight_t::spell_lookups()
   runeforge_spell.razorice_debuff       = conditional_spell_lookup( spec.glacial_advance->ok() || has_runeforge( RUNEFORGE_RAZORICE ), 51714 );
   runeforge_spell.sanguination_cooldown = conditional_spell_lookup( has_runeforge( RUNEFORGE_SANGUINATION ), 326809 );
   runeforge_spell.sanguination_heal     = conditional_spell_lookup( has_runeforge( RUNEFORGE_SANGUINATION ), 326808 );
+  runeforge_spell.spellwarding_driver   = conditional_spell_lookup( has_runeforge( RUNEFORGE_SPELLWARDING ), 326864 );
   runeforge_spell.spellwarding_absorb   = conditional_spell_lookup( has_runeforge( RUNEFORGE_SPELLWARDING ), 326867 );
   runeforge_spell.stoneskin_gargoyle = conditional_spell_lookup( has_runeforge( RUNEFORGE_STONESKIN_GARGOYLE ), 62157 );
   runeforge_spell.unending_thirst    = conditional_spell_lookup( has_runeforge( RUNEFORGE_UNENDING_THIRST ), 326984 );
@@ -16224,36 +16225,6 @@ void death_knight_t::do_damage( action_state_t* state )
   }
 }
 
-// death_knight_t::target_mitigation ========================================
-
-void death_knight_t::target_mitigation( school_e school, result_amount_type type, action_state_t* state )
-{
-  if ( buffs.icebound_fortitude->up() && buffs.icebound_fortitude->data().effectN( 3 ).has_common_school( school ) )
-    state->result_amount *= 1.0 + buffs.icebound_fortitude->data().effectN( 3 ).percent();
-
-  if ( buffs.bloodsoaked_ground->up() && buffs.bloodsoaked_ground->data().effectN( 1 ).has_common_school( school ) )
-    state->result_amount *= 1.0 + buffs.bloodsoaked_ground->data().effectN( 1 ).percent();
-
-  const death_knight_td_t* td = get_target_data( state->action->player );
-  if ( td && has_runeforge( RUNEFORGE_APOCALYPSE ) &&
-       runeforge_spell.apocalypse_famine_debuff->effectN( 1 ).has_common_school( school ) )
-    state->result_amount *= 1.0 + td->debuff.apocalypse_famine->check_stack_value();
-
-  if ( has_runeforge( RUNEFORGE_SPELLWARDING ) &&
-       runeforge_spell.spellwarding_absorb->effectN( 2 ).has_common_school( school ) )
-  {
-    double val = 0;
-    if ( mh_runeforge == RUNEFORGE_SPELLWARDING )
-      val += runeforge_spell.spellwarding_absorb->effectN( 2 ).percent();
-    if ( oh_runeforge == RUNEFORGE_SPELLWARDING )
-      val += runeforge_spell.spellwarding_absorb->effectN( 2 ).percent();
-
-    state->result_amount *= 1.0 + val;
-  }
-
-  player_t::target_mitigation( school, type, state );
-}
-
 // death_knight_t::composite_bonus_armor =========================================
 
 double death_knight_t::composite_bonus_armor() const
@@ -16618,8 +16589,18 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.icy_talons, talent.icy_talons );
   parse_effects( buffs.rune_mastery );
   parse_effects( buffs.antimagic_shell );
+  parse_effects( buffs.icebound_fortitude );
+
+  if ( has_runeforge( RUNEFORGE_SPELLWARDING ) )
+  {
+    double val = ( ( mh_runeforge == RUNEFORGE_SPELLWARDING ) + ( oh_runeforge == RUNEFORGE_SPELLWARDING ) ) *
+                 runeforge_spell.spellwarding_driver->effectN( 2 ).percent();
+    parse_effects( runeforge_spell.spellwarding_driver, val, PARSE_PASSIVE );
+  }
+
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), spell.brittle_debuff );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), runeforge_spell.apocalypse_war_debuff );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_famine ), runeforge_spell.apocalypse_famine_debuff );
 
   switch ( specialization() )
   {
@@ -16677,6 +16658,7 @@ void death_knight_t::parse_player_effects()
                               pet_spell.trollbanes_chains_of_ice_debuff );
         break;
       case HERO_SANLAYN:
+        parse_effects( buffs.bloodsoaked_ground );
         parse_effects( buffs.essence_of_the_blood_queen, effect_mask_t( true ).disable( 3 ), [ & ]( double v ) {
           v *= 0.1;  // Divides by 10 in spell data
           if ( buffs.gift_of_the_sanlayn->check() )

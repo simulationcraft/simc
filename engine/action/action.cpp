@@ -2739,12 +2739,15 @@ void action_t::init()
 
   if ( does_periodic_damage() )
   {
-    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_TGT_MITG_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
   }
 
   if ( does_direct_damage() )
   {
-    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_TGT_MITG_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+
+    if ( school == SCHOOL_PHYSICAL )
+      snapshot_flags |= STATE_TGT_ARMOR;
   }
 
   if ( player->is_pet() && ( snapshot_flags & ( STATE_MUL_DA | STATE_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA |
@@ -2752,9 +2755,6 @@ void action_t::init()
   {
     snapshot_flags |= STATE_MUL_PET | STATE_TGT_MUL_PET;
   }
-
-  if ( school == SCHOOL_PHYSICAL )
-    snapshot_flags |= STATE_TGT_ARMOR;
 
   if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) ||
        data().flags( spell_attribute::SX_DISABLE_PLAYER_HEALING_MULT ) )
@@ -4367,14 +4367,15 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
   if ( flags & STATE_TGT_CRIT )
     state->target_crit_chance = composite_target_crit_chance( state->target ) * composite_crit_chance_multiplier();
 
-  if ( flags & STATE_TGT_MITG_DA )
-    state->target_mitigation_da_multiplier = composite_target_mitigation( state->target, get_school() );
-
-  if ( flags & STATE_TGT_MITG_TA )
-    state->target_mitigation_ta_multiplier = composite_target_mitigation( state->target, get_school() );
-
+  // Armor MUST BE SNAPSHOT BEFORE any mitigation multipliers
   if ( flags & STATE_TGT_ARMOR )
     state->target_armor = composite_target_armor( state->target );
+
+  if ( flags & STATE_TGT_MITG_DA )
+    state->target_mitigation_da_multiplier = composite_target_mitigation( state, true );
+
+  if ( flags & STATE_TGT_MITG_TA )
+    state->target_mitigation_ta_multiplier = composite_target_mitigation( state, false );
 }
 
 // action_t::composite_dot_duration =========================================
@@ -5012,14 +5013,15 @@ double action_t::composite_rolling_ta_multiplier( const action_state_t* s ) cons
 
 /// Persistent modifiers that are snapshot at the start of the spell cast
 
-double action_t::composite_persistent_multiplier(const action_state_t*) const
+double action_t::composite_persistent_multiplier( const action_state_t* ) const
 {
-  return player->composite_persistent_multiplier(get_school());
+  return player->composite_persistent_multiplier( get_school() );
 }
 
-double action_t::composite_target_mitigation(player_t* t, school_e s) const
+double action_t::composite_target_mitigation( const action_state_t* s, bool direct ) const
 {
-  return t->composite_mitigation_multiplier(s);
+  return s->target->composite_mitigation_multiplier( s, get_school(), direct ) *
+         s->target->composite_mitigation_from_player_multiplier( s->action->player, s, get_school(), direct );
 }
 
 double action_t::composite_player_critical_multiplier( const action_state_t* s ) const
