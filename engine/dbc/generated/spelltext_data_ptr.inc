@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.7.67227
-static constexpr std::array<spelltext_data_t, 28751> __ptr_spelltext_data { {
+// Spell text, wow build 12.0.7.67360
+static constexpr std::array<spelltext_data_t, 28752> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -4292,7 +4292,7 @@ static constexpr std::array<spelltext_data_t, 28751> __ptr_spelltext_data { {
   {  132348, "+$s1 Strength.", 0, 0 },
   {  132349, "+$s1 Agility.", 0, 0 },
   {  132403, "$@spelldesc53600", "Armor increased by $?c1[${$W2*$INT/100}][${$W2*$STR/100}].$?$W3<0[\r\nMagical damage taken reduced by $w3%.][]", 0 },
-  {  132404, "$@spelldesc2565", "Block chance increased by $w1%.$?$w4>0[\r\n\r\nShield Slam damage increased by $w4%][]", 0 },
+  {  132404, "$@spelldesc2565", "Block chance increased by $w1%.$?e1[\r\n\r\nShield Slam damage increased by $w2%][]", 0 },
   {  132463, "$@spelldesc450391", 0, 0 },
   {  132466, "$@spelldesc115098", 0, 0 },
   {  132467, "$@spelldesc450391", 0, 0 },
@@ -22399,7 +22399,7 @@ static constexpr std::array<spelltext_data_t, 28751> __ptr_spelltext_data { {
   {  449381, "$@spelldesc443393\r\n", 0, 0 },
   {  449382, "When your Arcane Phoenix is summoned, it consumes all your Spellfire Spheres.\r\n\r\nEach Sphere consumed increases your spell damage during $?c1[Arcane Surge][Combustion] by $?c1[$s1][$s2]% and causes your Arcane Phoenix to cast an exceptional Arcane or Fire spell over its duration.", 0, 0 },
   {  449386, "$@spelldesc443393", 0, 0 },
-  {  449394, "$?c2[Generating a Spellfire Sphere causes your next cast of Fire Blast to call down a storm of $s1 Meteorites on its target.][Arcane Barrage summons $s6 $LMeteor:Meteors; for every $s4 Arcane Salvo stacks consumed.]\r\n\r\n$@spellicon449559 $@spellname449559\r\n$@spelldesc449559", 0, 0 },
+  {  449394, "$?c2[Generating a Spellfire Sphere causes your next cast of Fire Blast to call down a storm of $s1 Meteorites on its target.][Arcane Barrage summons $s6 $LMeteorite:Meteorites; for every $s4 Arcane Salvo stacks consumed.]\r\n\r\n$@spellicon449559 $@spellname449559\r\n$@spelldesc449559", 0, 0 },
   {  449400, "$@spelldesc448601", "Generating a Spellfire Sphere...", 0 },
   {  449406, "Your damaging and healing abilities have a chance to grant you Call of the Horde, increasing your highest secondary stat by $s2 for 10 sec.", 0, 0 },
   {  449407, "@spelldesc449406", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $449406w2.", 0 },
@@ -26561,9 +26561,9 @@ static constexpr std::array<spelltext_data_t, 28751> __ptr_spelltext_data { {
   { 1246298, "+1 Sparkle.", 0, 0 },
   { 1246299, "+$s1 Sparkle.", "+$w1 Sparkle.", 0 },
   { 1246308, "Prime your boots for engagement, launching you into the air and knocking up enemies on impact.\r\n\r\nCan only be used outdoors.", 0, 0 },
-  { 1246309, "Summons Bip, Scorcher of Souls to spray soul sparks on your enemies dealing ${$1279407s1*($d*2)} Fire damage in a cone in front of you for $d.", "Setting souls ablaze.", 0 },
-  { 1246312, "Upon your untimely demise outdoors, summon Meddy to... medicalize you back to life!\r\n\r\nThis effect can only occur every 30 minutes.", 0, 0 },
-  { 1246335, "Upon your untimely demise, summon Meddy to... medicalize you and your raid back to life!\r\n\r\nDoes not work on players whose spirits have been released and are above level $ctrmax3322.", 0, 0 },
+  { 1246309, "Summons B1P, Scorcher of Souls to spray soul sparks on your enemies dealing Fire damage in a cone in front of you for $d.", "Setting souls ablaze.", 0 },
+  { 1246312, "Upon your untimely demise outdoors, summon M3ddy to... medicalize you back to life!\r\n\r\nThis effect can only occur every 30 minutes.", 0, 0 },
+  { 1246335, "Upon your untimely demise, summon M3DDY to... medicalize you and your raid back to life!\r\n\r\nDoes not work on players whose spirits have been released and are above level $ctrmax3322.", 0, 0 },
   { 1246481, "Guardian of Ancient Kings has $s1 additional $Lcharge:charges;.", 0, 0 },
   { 1246488, "Judgment chains to $s1 additional $Ltarget;targets at ${$275779f1*100}% effectiveness.", 0, 0 },
   { 1246517, "Increases the healing done by Holy Word: Serenity by $s2% and causes it to heal $1250581s2 nearby injured allies within $1250581A1 yards for $s3% of its healing done.\r\n\r\nTalents that affect Holy Word: Sanctify instead affect Holy Word: Serenity.", 0, 0 },
@@ -28657,7 +28657,7 @@ static constexpr std::array<spelltext_data_t, 28751> __ptr_spelltext_data { {
   { 1287257, "$@spelldesc1279596", "Stored void orbs.", "Core Rune" },
   { 1287258, "$@spelldesc1279596", "Stored void orbs.", "Core Rune" },
   { 1287425, "$@spelldesc1279596", "Dealing damage or healing will send void orbs out equal to the number of stacks this aura has, dealing Cosmic damage or healing based on whether the target is an enemy or ally.", "Core Rune" },
-  { 1287555, "The effects of your Core Rune leave behind a periodic effect that deals |CFFffffff${$<dmgvalue>*$1286970s2}|R Cosmic damage or restores |CFFffffff${$<dmgvalue>*$1287665s2}|R health over $1287663d sec based on whether the target is an enemy or ally.\r\n\r\nYour Core Rune favors hitting targets that are unaffected by Rune of Lingering.", 0, 0 },
+  { 1287555, "The effects of your Core Rune leave behind a periodic effect that deals |CFFffffff${$<dmgvalue>*$1286970s2}|R Cosmic damage or restores |CFFffffff${$<dmgvalue>*$1287665s2}|R health over $1287663d based on whether the target is an enemy or ally.\r\n\r\nYour Core Rune favors hitting targets that are unaffected by Rune of Lingering.", 0, 0 },
   { 1287613, "$@spelldesc375888", "Your next Mind Blast is instant cast.", 0 },
   { 1287663, "$@spelldesc1287555", "Suffering $w1 Cosmic damage every sec.", "Core Rune" },
   { 1287665, "$@spelldesc1287555", "Restoring $w1 health every sec.", "Core Rune" },
@@ -28706,6 +28706,7 @@ static constexpr std::array<spelltext_data_t, 28751> __ptr_spelltext_data { {
   { 1291842, "Restores $s1% of your maximum health every second over $d. Must remain seated while eating.", "Restoring $s1% health every sec.", 0 },
   { 1291843, "Restores $s1% of your maximum health every second over $d. Must remain seated while eating.", "Restoring $s1% health every sec.", 0 },
   { 1291844, "Restores $s1% of your maximum health every second over $d. Must remain seated while eating.", "Restoring $s1% health every sec.", 0 },
+  { 1291845, "Restores $s1% of your maximum health every second over $d. Must remain seated while eating.", "Restoring $s1% health every sec.", 0 },
   { 1291847, "Restores $s1% of your maximum health every second over $d. Must remain seated while eating.", "Restoring $s1% health every sec.", 0 },
   { 1291848, "Restores $s1% of your maximum health every second over $d. Must remain seated while eating.", "Restoring $s1% health every sec.", 0 },
   { 1291849, "Restores up to $s1% of your maximum health and mana every second over $d. Must remain seated while eating.", "Restoring $s1% health and $1291831w1% mana every second.", 0 },
@@ -28753,11 +28754,11 @@ static constexpr std::array<spelltext_data_t, 28751> __ptr_spelltext_data { {
   { 1298542, "Defeat rare foes to have a chance at gear for your current specialization.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.7.67227
+// spelltext hotfix entries, wow build 12.0.7.67360
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.7.67227
+// Spell description variables, wow build 12.0.7.67360
 static constexpr std::array<spelldesc_vars_data_t, 709> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29180,7 +29181,7 @@ static constexpr std::array<spelldesc_vars_data_t, 709> __ptr_spelldesc_vars_dat
   {  408092, "$radiusI=${3}\r\n$radiusII=${6}\r\n$radiusIII=${9}\r\n$radiusIV=${12}" },
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
   {  409894, "$dmg=${$359077s2}" },
-  {  410261, "$coeff=${3.5}\r\n$meTalent=$?s1291457[${1+($1291457s1/100)}][${1}]\r\n$dmg=${$INT*$<coeff>*$<meTalent>*(1+$@versadmg)*$pctD}" },
+  {  410261, "$coeff=${2.69}\r\n$meTalent=$?s1291457[${1+($1291457s1/100)}][${1}]\r\n$dmg=${$INT*$<coeff>*$<meTalent>*(1+$@versadmg)*$pctD}" },
   {  410643, "$shield=${$SP*12*(1+$@versadmg)}" },
   {  412774, "$doses=${50}" },
   {  413654, "$stat=${$INT*($s1/100)}\r\n$classset=$?s414878[${$414878s1)}][${0}]\r\n$amount=${$s1+$<classset>}.1" },
@@ -29210,7 +29211,7 @@ static constexpr std::array<spelldesc_vars_data_t, 709> __ptr_spelldesc_vars_dat
   {  431443, "$cap=${($SP*2.5)*(1+$@versadmg)}\r\n$cap2=${($SP*3.5)*(1+$@versadmg)}" },
   {  432154, "$penancedamage=${$421543s1>*($421434d/$421434t2)}\r\n$penancehealing=${$421544s1>*($421434d/$421434t2)}" },
   {  433106, "$prot=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}\r\n$holy=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}\r\n$value=$?a137028[${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}][${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}]" },
-  {  434300, "$dmg=${$INT*4.75*(1+$@versadmg)*$pctD}" },
+  {  434300, "$MotBD=$?s441705[${1+($441705s1/100)}][${1}]\r\n$dmg=${$INT*4.75*(1+$@versadmg)*$pctD*$<MotBD>}" },
   {  435473, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  435475, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  436036, "$flight=$?a375517[${$375517s1/1000}][${0}]\r\n$dura=$?a406380[${6*(1+$406380s2/100)+$<flight>}.1][${6+$<flight>}]" },
@@ -29470,7 +29471,7 @@ static constexpr std::array<spelldesc_vars_data_t, 709> __ptr_spelldesc_vars_dat
   { 1293610, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.7.67227
+// spelldesc_vars hotfix entries, wow build 12.0.7.67360
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
