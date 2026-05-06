@@ -881,13 +881,13 @@ public:
   double composite_armor_multiplier() const override;
   double composite_bonus_armor() const override;
   double composite_block() const override;
-  double composite_block_reduction( const action_state_t* s ) const override;
+  double composite_block_value( const action_state_t* s ) const override;
   double composite_parry_rating() const override;
   double composite_parry() const override;
   double composite_attack_power_multiplier() const override;
-  double composite_crit_block() const override;
   double composite_melee_crit_chance() const override;
   double composite_leech() const override;
+  block_result_e target_block_resolution( const action_state_t* ) const override;
   double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   void teleport( double yards, timespan_t duration ) override;
   void trigger_movement( double distance, movement_direction_type direction ) override;
@@ -918,6 +918,7 @@ public:
   // void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* s ) override;
   // void assess_damage_imminent( school_e, result_amount_type, action_state_t* s ) override;
   void assess_damage( school_e, result_amount_type, action_state_t* ) override;
+  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
   void parse_player_effects();
@@ -8910,18 +8911,19 @@ double warrior_t::composite_block() const
   return b;
 }
 
-// warrior_t::composite_block_reduction =====================================
+// warrior_t::composite_block_value ===========================================
 
-double warrior_t::composite_block_reduction( const action_state_t* s ) const
+double warrior_t::composite_block_value( const action_state_t* s ) const
 {
-  double br = parse_player_effects_t::composite_block_reduction( s );
+  double bv = parse_player_effects_t::composite_block_value( s );
 
-  if ( buff.brace_for_impact -> check() )
+  if ( buff.brace_for_impact->check() )
   {
-    br *= 1.0 + buff.brace_for_impact -> check() * talents.protection.brace_for_impact->effectN( 1 ).trigger() -> effectN( 2 ).percent();
+    bv *= 1.0 + buff.brace_for_impact->check() *
+                  talents.protection.brace_for_impact->effectN( 1 ).trigger()->effectN( 2 ).percent();
   }
 
-  return br;
+  return bv;
 }
 
 // warrior_t::composite_parry_rating() ========================================
@@ -8962,21 +8964,6 @@ double warrior_t::composite_attack_power_multiplier() const
   return ap;
 }
 
-// warrior_t::composite_crit_block =====================================
-
-double warrior_t::composite_crit_block() const
-{
-
-  double b = parse_player_effects_t::composite_crit_block();
-
-  if ( mastery.critical_block->ok() )
-  {
-    b += cache.mastery() * mastery.critical_block->effectN( 1 ).mastery_value();
-  }
-
-  return b;
-}
-
 // warrior_t::composite_melee_crit_chance =========================================
 
 double warrior_t::composite_melee_crit_chance() const
@@ -8993,6 +8980,29 @@ double warrior_t::composite_leech() const
   double m = parse_player_effects_t::composite_leech();
 
   return m;
+}
+
+// warrior_t::target_block_resolution =======================================
+
+block_result_e warrior_t::target_block_resolution( const action_state_t* s ) const
+{
+  // Only direct physical attacks may be blocked
+  if ( s->result_type == result_amount_type::DMG_DIRECT && s->action->get_school() == SCHOOL_PHYSICAL &&
+       s->action->type == ACTION_ATTACK )
+  {
+    auto block_chance = cache.block();
+    auto crit_block_chance = cache.mastery() * mastery.critical_block->effectN( 1 ).mastery_value();
+
+    if ( rng().roll( block_chance ) )
+    {
+      if ( rng().roll( crit_block_chance ) )
+        return BLOCK_RESULT_CRIT_BLOCKED;
+      else
+        return BLOCK_RESULT_BLOCKED;
+    }
+  }
+
+  return BLOCK_RESULT_UNBLOCKED;
 }
 
 // warrior_t::resource_gain =================================================
@@ -9061,7 +9071,6 @@ void warrior_t::invalidate_cache( cache_e c )
     if ( c == CACHE_MASTERY )
     {
       parse_player_effects_t::invalidate_cache( CACHE_BLOCK );
-      parse_player_effects_t::invalidate_cache( CACHE_CRIT_BLOCK );
       parse_player_effects_t::invalidate_cache( CACHE_ATTACK_POWER );
     }
     if ( c == CACHE_CRIT_CHANCE )
@@ -9161,6 +9170,29 @@ void warrior_t::assess_damage( school_e school, result_amount_type type, action_
     else
       debug_cast<tough_as_nails_t*>(active.tough_as_nails)->critical_block = false;
     active.tough_as_nails -> execute_on_target( s -> action -> player );
+  }
+}
+
+// warrior_t::target_mitigation ============================================
+
+void warrior_t::target_mitigation( school_e school, result_amount_type dtype, action_state_t* s )
+{
+  parse_player_effects_t::target_mitigation( school, dtype, s );
+
+  if ( s->block_result == BLOCK_RESULT_CRIT_BLOCKED )
+  {
+    double block_value = s->target_block_value;
+    double block_resist = util::calculate_armor_resist( block_value, s->action->player->current.armor_coeff, 2.0 );
+
+    s->result_amount *= 1.0 - block_resist;
+
+    if ( sim->debug )
+    {
+      sim->print_debug(
+        "{} {} damage to {} reduced by {:.7g}% from crit block (block value={:.7g}, armor coeff={:.7g}).",
+        *s->action->player, *s->action, *s->target, block_resist * 100, block_value,
+        s->action->player->current.armor_coeff );
+    }
   }
 }
 

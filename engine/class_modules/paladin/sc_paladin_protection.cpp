@@ -715,11 +715,28 @@ void buffs::sentinel_decay_buff_t::expire_override( int expiration_stacks, times
 
 // paladin_t::target_mitigation ===============================================
 
-void paladin_t::target_mitigation( school_e school,
-                                   result_amount_type    dt,
-                                   action_state_t* s )
+void paladin_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
 {
   player_t::target_mitigation( school, dt, s );
+
+  // Mastery 'block' of periodic damage (absorbed)
+  if ( s->block_result == BLOCK_RESULT_BLOCKED && dt == result_amount_type::DMG_OVER_TIME )
+  {
+    auto block_value = s->target_block_value;
+    auto block_resist = util::calculate_armor_resist( block_value, s->action->player->current.armor_coeff );
+    auto block_amount = s->result_amount * block_resist;
+
+    // update the relevant counters
+    iteration_absorb_taken += block_amount;
+    s->self_absorb_amount += block_amount;
+    s->result_amount -= block_amount;
+    s->result_absorbed = s->result_amount;
+
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} Divine Bulwark absorbs {} damage from block on DOT {}.", *this, block_amount, *s->action );
+    }
+  }
 
   // Blessed Hammer
   if ( talents.blessed_hammer->ok() && s->action )
@@ -784,6 +801,28 @@ void paladin_t::target_mitigation( school_e school,
     if ( sim->debug && s->action && ! s->target->is_enemy() && ! s->target->is_add() )
       sim->print_debug( "Damage to {} after Ardent Defender (death-save) is {}", s->target->name(), s->result_amount );
   }
+}
+
+block_result_e paladin_t::target_block_resolution( const action_state_t* s ) const
+{
+  double block_chance = 0.0;
+
+  // Normal block for direct physical attacks
+  if ( s->result_type == result_amount_type::DMG_DIRECT && s->action->get_school() == SCHOOL_PHYSICAL &&
+       s->action->type == ACTION_ATTACK )
+  {
+    block_chance = cache.block();
+  }
+  // Spell block
+  else if ( s->action->get_school() != SCHOOL_PHYSICAL && s->action->type == ACTION_SPELL )
+  {
+    block_chance = cache.mastery() * mastery.divine_bulwark_2->effectN( 1 ).mastery_value();
+  }
+
+  if ( rng().roll( block_chance ) )
+    return BLOCK_RESULT_BLOCKED;
+  else
+    return BLOCK_RESULT_UNBLOCKED;
 }
 
 void paladin_t::trigger_grand_crusader( grand_crusader_source /* source */ )

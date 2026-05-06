@@ -393,7 +393,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     may_dodge(),
     may_parry(),
     may_glance(),
-    may_block(),
+    may_block( true ),
     may_crit(),
     tick_may_crit(),
     tick_zero(),
@@ -676,6 +676,8 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   treat_as_periodic           = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
   ignores_armor               = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );  // TODO: better way to parse this?
   may_miss                    = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
+  may_block                   = !spell_data.flags( spell_attribute::SX_NO_BLOCK ) &&
+                                !spell_data.flags( spell_attribute::SX_NO_D_P_B );
   not_a_proc                  = spell_data.flags( spell_attribute::SX_NOT_A_PROC );
 
   if ( spell_data.flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
@@ -1782,46 +1784,23 @@ player_t* action_t::find_target_by_number( int number ) const
 }
 
 // action_t::calculate_block_result =========================================
-// moved here now that we found out that spells can be blocked (Holy Shield)
-// block_chance() and crit_block_chance() govern whether any given attack can
-// be blocked or not (zero return if not)
 
 block_result_e action_t::calculate_block_result( action_state_t* s ) const
 {
-  block_result_e block_result = BLOCK_RESULT_UNBLOCKED;
-
-  // 2019-06-02: Looking at logs from Uldir, Battle of Dazar'alor and Crucible of Storms,
-  // It appears that non players can't block attacks or abilities anymore
-  // Non-player Parry and Miss seem unchanged
-  if ( s -> target -> is_enemy() )
+  // target_block_value is only set by enemy actions that damage players
+  if ( may_block && s->target_block_value && result_is_hit( s->result ) && player->position() == POSITION_FRONT &&
+       s->result != RESULT_NONE )
   {
-    return BLOCK_RESULT_UNBLOCKED;
+    // Blocks also get a their own roll, and glances/crits can be blocked.
+    auto block_result = s->target->target_block_resolution( s );
+
+    if ( sim->debug )
+      sim->print_debug( "{} block result for {} is {}", *player, *this, block_result );
+
+    return block_result;
   }
 
-  // Blocks also get a their own roll, and glances/crits can be blocked.
-  if ( result_is_hit( s->result ) && may_block && ( player->position() == POSITION_FRONT ) &&
-       !( s->result == RESULT_NONE ) )
-  {
-    double block_total = block_chance( s );
-
-    if ( block_total > 0 )
-    {
-      double crit_block = crit_block_chance( s );
-
-      // Roll once for block, then again for crit block if the block succeeds
-      if ( rng().roll( block_total ) )
-      {
-        if ( rng().roll( crit_block ) )
-          block_result = BLOCK_RESULT_CRIT_BLOCKED;
-        else
-          block_result = BLOCK_RESULT_BLOCKED;
-      }
-    }
-  }
-
-  sim->print_debug("{} result for {} is {}", *player, *this, block_result );
-
-  return block_result;
+  return BLOCK_RESULT_UNBLOCKED;
 }
 
 // action_t::execute ========================================================
@@ -2746,7 +2725,7 @@ void action_t::init()
   {
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_TGT_MITG_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
-    if ( school == SCHOOL_PHYSICAL )
+    if ( school == SCHOOL_PHYSICAL && !ignores_armor )
       snapshot_flags |= STATE_TGT_ARMOR;
   }
 
@@ -4367,15 +4346,14 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
   if ( flags & STATE_TGT_CRIT )
     state->target_crit_chance = composite_target_crit_chance( state->target ) * composite_crit_chance_multiplier();
 
-  // Armor MUST BE SNAPSHOT BEFORE any mitigation multipliers
-  if ( flags & STATE_TGT_ARMOR )
-    state->target_armor = composite_target_armor( state->target );
-
   if ( flags & STATE_TGT_MITG_DA )
     state->target_mitigation_da_multiplier = composite_target_mitigation( state, true );
 
   if ( flags & STATE_TGT_MITG_TA )
     state->target_mitigation_ta_multiplier = composite_target_mitigation( state, false );
+
+  if ( flags & STATE_TGT_ARMOR )
+    state->target_armor = composite_target_armor( state->target );
 }
 
 // action_t::composite_dot_duration =========================================

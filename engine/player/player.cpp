@@ -1277,7 +1277,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   crit_avoidance( 0 ),
   spell_crit_chance(),
   attack_crit_chance(),
-  block_reduction(),
+  block_value(),
   mastery( 0 ),
   versatility( 0 ),
   all_crit( 0 ),
@@ -1345,7 +1345,7 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " block={}", s.block );
   fmt::format_to( out, " spell_crit_chance={}", s.spell_crit_chance );
   fmt::format_to( out, " attack_crit_chance={}", s.attack_crit_chance );
-  fmt::format_to( out, " block_reduction={}", s.block_reduction );
+  fmt::format_to( out, " block_value={}", s.block_value );
   fmt::format_to( out, " mastery={}", s.mastery );
   fmt::format_to( out, " versatility={}", s.versatility );
   fmt::format_to( out, " all_haste={}", s.all_haste );
@@ -1673,46 +1673,43 @@ void player_t::init_base_stats()
 
   base.dodge = get_passive_player_value( base.dodge, "dodge" );
 
-  // Only Warriors and Paladins (and enemies) can block, defaults to 0
-  if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TANK_DUMMY )
+  switch ( type )
   {
-    // Base block chance is 3%, increased in warriors' and paladins' class aura and protection warrior's spec aura
-    // Further increased by mastery for both Protection specs
-    base.block = 0.03;
-    base.block = get_passive_player_value( base.block, "block" );
+    // Only Warriors and Paladins can block, defaults to 0
+    case PALADIN:
+    case WARRIOR:
+      // Base block chance is 3%, increased in warriors' and paladins' class aura and protection warrior's spec aura
+      // Further increased by mastery for both Protection specs
+      base.block = 0.03;
+      base.block = get_passive_player_value( base.block, "block" );
 
-    switch ( type )
-    {
-      case WARRIOR:
-      case PALADIN:
-        // Currently block reduction is 2.5x the armor value of the shield
-        if ( items[ SLOT_OFF_HAND ].dbc_inventory_type() == INVTYPE_SHIELD )
-          base.block_reduction = items[ SLOT_OFF_HAND ].stats.armor * 2.5;
-        else
-          base.block_reduction = 0;
-        break;
-      default:
-        base.block_reduction = 0.30;
-        break;
-    }
+      // Currently block reduction is 2.5x the armor value of the shield
+      if ( items[ SLOT_OFF_HAND ].dbc_inventory_type() == INVTYPE_SHIELD )
+        base.block_value = items[ SLOT_OFF_HAND ].stats.armor * 2.5;
+      else
+        base.block_value = 0;
+
+      base.block_value = get_passive_player_value( base.block_value, "block_value" );
+      SC_FALLTHROUGH;
+    // Only certain classes can parry, and get 3% base parry, default is 0
+    case DEATH_KNIGHT:
+      // Parry from base strength isn't affected by diminishing returns and is added here
+      base.parry = ( dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength ) * base.parry_per_strength;
+      SC_FALLTHROUGH;
+    case DEMON_HUNTER:
+    case MONK:
+    case ROGUE:
+      base.parry += 0.03;
+      base.parry = get_passive_player_value( base.parry, "parry" );
+      base.parry_rating_per_crit_rating = get_passive_player_value( base.parry_rating_per_crit_rating, "parry_from_crit_rating" );
+      break;
+    case ENEMY:
+    case TANK_DUMMY:
+      base.parry = 0.03;
+      break;
+    default:
+      break;
   }
-
-  base.block_reduction = get_passive_player_value( base.block_reduction, "block_reduction" );
-
-  // Only certain classes can parry, and get 3% base parry, default is 0
-  // Parry from base strength isn't affected by diminishing returns and is added here
-  if ( type == WARRIOR || type == PALADIN || type == ROGUE || type == DEATH_KNIGHT || type == MONK ||
-       type == DEMON_HUNTER )
-  {
-    base.parry = 0.03 + ( dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength ) * base.parry_per_strength;
-    base.parry = get_passive_player_value( base.parry, "parry" );
-  }
-  else if ( type == ENEMY || type == TANK_DUMMY )
-  {
-    base.parry = 0.03;
-  }
-
-  base.parry_rating_per_crit_rating = get_passive_player_value( base.parry_rating_per_crit_rating, "parry_from_crit_rating" );
 
   // Movement Speed
   base.movement_speed = 7.0;  // yards per second
@@ -5533,16 +5530,9 @@ double player_t::composite_parry() const
   return total_parry;
 }
 
-double player_t::composite_block_reduction( const action_state_t* ) const
+double player_t::composite_block_value( const action_state_t* ) const
 {
-  double b = current.block_reduction;
-
-  return b;
-}
-
-double player_t::composite_crit_block() const
-{
-  return 0;
+  return current.block_value;
 }
 
 double player_t::composite_crit_avoidance() const
@@ -6222,53 +6212,14 @@ double player_t::composite_mitigation_multiplier( const action_state_t* s, schoo
 
     m *= 1.0 - cache.mitigation_versatility();
 
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} {} damage to {} reduced by {:.7g}% from versatility.", *s->action->player, *s->action,
+                        *s->target, cache.mitigation_versatility() * 100 );
+    }
+
     if ( s->action->is_aoe() )
       m *= 1.0 - cache.avoidance();
-  }
-
-  if ( school == SCHOOL_PHYSICAL && direct )
-  {
-    // Maximum amount of damage reduced by armor
-    static constexpr double armor_cap = 0.85;
-
-    // Armor
-    if ( s->action && !s->action->ignores_armor )
-    {
-      double armor = s->target_armor;
-      double resist = armor / ( armor + s->action->player->base.armor_coeff );
-
-      resist = clamp( resist, 0.0, armor_cap );
-      m *= 1.0 - resist;
-
-      if ( sim->debug )
-      {
-        sim->print_debug( "{} {} damage to {} reduced by {}% from armor (armor={}, armor coeff={}).",
-                          *s->action->player, *s->action, *s->target, resist * 100, s->target_armor,
-                          s->action->player->current.armor_coeff );
-      }
-    }
-
-    // Block
-    // In BfA, Block and Crit Block work in the same manner as armor and are affected by the same cap
-    if ( s->action && ( s->block_result == BLOCK_RESULT_BLOCKED || s->block_result == BLOCK_RESULT_CRIT_BLOCKED ) )
-    {
-      double block_reduction = composite_block_reduction( s );
-      double block_resist = block_reduction / ( block_reduction + s->action->player->current.armor_coeff );
-
-      if ( s->block_result == BLOCK_RESULT_CRIT_BLOCKED )
-        block_resist *= 2.0;
-
-      block_resist = clamp( block_resist, 0.0, armor_cap );
-      m *= 1.0 - block_resist;
-
-      if ( sim->debug )
-      {
-        sim->print_debug( "{} {} damage to {} reduced by {}% from block{} (block reduction={}, armor coeff={}).",
-                          *s->action->player, *s->action, *s->target, block_resist * 100,
-                          s->block_result == BLOCK_RESULT_CRIT_BLOCKED ? " (crit)" : "", block_reduction,
-                          s->action->player->current.armor_coeff );
-      }
-    }
   }
 
   return m;
@@ -8754,7 +8705,10 @@ void player_t::assess_damage( school_e school, result_amount_type rt, action_sta
   s->result_mitigated = s->result_amount;
 
   if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
-    sim->print_debug( "{} {} damage to {} after mitigation is {}.", *this, *s->action, *s->target, s->result_amount );
+  {
+    sim->print_debug( "{} {} damage to {} after mitigation is {}.", *s->action->player, *s->action, *this,
+                      s->result_amount );
+  }
 
   account_blessing_of_sacrifice( *this, s );
 
@@ -8846,15 +8800,50 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
     return;
   }
 
-  switch( dmg_type )
+  if ( dmg_type == result_amount_type::DMG_OVER_TIME )
   {
-    case result_amount_type::DMG_OVER_TIME:
-    case result_amount_type::HEAL_OVER_TIME:
-      s->result_amount *= s->target_mitigation_ta_multiplier;
-      break;
-    default:
-      s->result_amount *= s->target_mitigation_da_multiplier;
-      break;
+    s->result_amount *= s->target_mitigation_ta_multiplier;
+  }
+  else if ( dmg_type == result_amount_type::DMG_DIRECT )
+  {
+    s->result_amount *= s->target_mitigation_da_multiplier;
+
+    if ( !s->action )
+      return;
+
+    // Maximum amount of damage reduced by armor/block
+    static constexpr double armor_cap = 0.85;
+
+    // Armor
+    if ( auto armor = s->target_armor )
+    {
+      double resist = util::calculate_armor_resist( armor, s->action->player->current.armor_coeff );
+      s->result_amount *= 1.0 - resist;
+
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} {} damage to {} reduced by {:.7g}% from armor (armor={:.7g}, armor coeff={:.7g}).",
+                          *s->action->player, *s->action, *s->target, resist * 100, armor,
+                          s->action->player->current.armor_coeff );
+      }
+    }
+
+    // Block and Crit Block work in the same manner as armor and are affected by the same cap
+    if ( s->block_result == BLOCK_RESULT_BLOCKED )
+    {
+      double block_value = s->target_block_value;
+      double block_resist = util::calculate_armor_resist( block_value, s->action->player->current.armor_coeff );
+
+      block_resist = clamp( block_resist, 0.0, armor_cap );
+      s->result_amount *= 1.0 - block_resist;
+
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} {} damage to {} reduced by {:.7g}% from block (block value={:.7g}, armor coeff={:.7g}).",
+                          *s->action->player, *s->action, *s->target, block_resist * 100, block_value,
+                          s->action->player->current.armor_coeff );
+      }
+    }
   }
 }
 
@@ -15430,7 +15419,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_RECHARGE_TIME_CATEGORY_MASK,        "charge_cooldown"                  },  // 205
   { A_MODIFY_SCHOOL,                          "school"                           },  // 220
   { A_MOD_EXPERTISE,                          "expertise"                        },  // 240
-  { A_MOD_BLOCK_PCT,                          "block_reduction"                  },  // 272
+  { A_MOD_BLOCK_PCT,                          "block_value"                      },  // 272
   { A_MOD_MECHANIC_DAMAGE_DONE_PERCENT,       "mechanic_damage_done"             },  // 276
   { A_MOD_TARGET_ARMOR_PCT,                   "armor_penetration"                },  // 280
   { A_MOD_ALL_CRIT_CHANCE,                    "all_crit"                         },  // 290

@@ -34,7 +34,6 @@ attack_t::attack_t( util::string_view n, player_t* p, const spell_data_t* s )
   {
     may_dodge = !data().flags( spell_attribute::SX_NO_DODGE );
     may_parry = !data().flags( spell_attribute::SX_NO_PARRY );
-    may_block = !data().flags( spell_attribute::SX_NO_BLOCK );
   }
 }
 
@@ -121,34 +120,6 @@ double attack_t::dodge_chance( double expertise, player_t* t ) const
   dodge -= expertise;
 
   return dodge;
-}
-
-double attack_t::block_chance( action_state_t* s ) const
-{
-  if ( s->target->is_enemy() && sim->auto_attacks_always_land && !special )
-  {
-    return 0.0;
-  }
-
-  // cache.block() contains the target's block chance (3.0 base for bosses, more for shield tanks)
-  double block = s->target->cache.block();
-
-  // add or subtract 1.5% per level difference -- Level difference does not seem to matter anymore.
-  // block += ( s->target->level() - player->level() ) * 0.015;
-
-  return block;
-}
-
-double attack_t::crit_block_chance( action_state_t* s ) const
-{
-  // This function is probably unnecessary, as we could just query
-  // cache.crit_block() directly.
-  // I'm leaving it for consistency with *_chance() and in case future changes
-  // modify crit block mechanics
-
-  // Crit Block does not suffer from level-based suppression, return cached
-  // value directly
-  return s->target->cache.crit_block();
 }
 
 double attack_t::bonus_da( const action_state_t* s ) const
@@ -342,6 +313,9 @@ result_e attack_t::calculate_result( action_state_t* s ) const
     if ( rng().roll( crit ) )
       result = RESULT_CRIT;
   }
+
+  if ( sim->debug )
+    sim->print_debug( "{} result for attack {} is {}.", *player, *this, result );
 
   return result;
 }

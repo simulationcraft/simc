@@ -149,7 +149,8 @@ action_state_t::action_state_t( action_t* a, player_t* t )
     target_pet_multiplier( 1.0 ),
     target_mitigation_da_multiplier( 1.0 ),
     target_mitigation_ta_multiplier( 1.0 ),
-    target_armor( 0 )
+    target_armor( 0 ),
+    target_block_value( 0 )
 {
   assert( target );
 }
@@ -230,7 +231,14 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
 
   s << " tgt_mitg_da_mul=" << target_mitigation_da_multiplier;
   s << " tgt_mitg_ta_mul=" << target_mitigation_ta_multiplier;
-  s << " target_armor=" << target_armor;
+  if ( target_armor )
+  {
+    s << " target_armor=" << target_armor;
+  }
+  if ( target_block_value )
+  {
+    s << " target_block_value=" << target_block_value;
+  }
 
   s.precision( ss );
 

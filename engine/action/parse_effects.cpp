@@ -689,7 +689,7 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
 
   if constexpr ( is_detected_v<detect_type, U> )
   {
-    if ( !val && tmp.type == USE_DATA )
+    if ( !val && !( tmp.type & ( USE_CURRENT | USE_DEFAULT | ALLOW_ZERO ) ) )
       return false;
   }
   else
@@ -1420,23 +1420,22 @@ std::vector<target_effect_t>* parse_player_effects_t::get_effect_vector( const s
   {
     case A_MOD_DAMAGE_FROM_CASTER:
       tmp.opt_enum = eff.misc_value1();
-      str = opt_strings::school( tmp.opt_enum );
+      str = fmt::format( "{} damage taken from {}", opt_strings::school( tmp.opt_enum ), *_player );
       return &target_multiplier_effects;
 
     case A_MOD_DAMAGE_FROM_CASTER_PET:
       tmp.opt_enum = 0;
-      str = "pet";
+      str = fmt::format( "pet damage taken from {}", *_player );
       return &target_pet_multiplier_effects;
 
     case A_MOD_DAMAGE_FROM_CASTER_GUARDIAN:
       tmp.opt_enum = 1;
-      str = "guardian";
+      str = fmt::format( "guardian damage taken from {}", *_player );
       return &target_pet_multiplier_effects;
 
     case A_MOD_DAMAGE_TO_CASTER:
       tmp.opt_enum = eff.misc_value1();
-      str = opt_strings::school( tmp.opt_enum );
-      str += " damage taken from target";
+      str = fmt::format( "{} damage done to {}", opt_strings::school( tmp.opt_enum ), *_player );
       return &mitigation_from_target_multiplier_effects;
 
     default:
@@ -1449,7 +1448,7 @@ std::vector<target_effect_t>* parse_player_effects_t::get_effect_vector( const s
 void parse_player_effects_t::debug_message( const target_effect_t&, std::string_view type_str, std::string_view val_str,
                                             const spelleffect_data_t& eff )
 {
-  sim->print_debug( "target-effects: {} {} modified by {} from {}", *this, type_str, val_str, eff );
+  sim->print_debug( "target-effects: Target {} modified by {} from {}", type_str, val_str, eff );
 }
 
 void parse_player_effects_t::print_custom_parsed_effects( report::sc_html_stream& os ) const

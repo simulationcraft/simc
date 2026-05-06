@@ -4664,9 +4664,9 @@ double paladin_t::composite_mitigation_multiplier( const action_state_t* s, scho
     m *= 1.0 + devoRed;
   }
 
-  if ( const auto& eff = spells.sotr_buff->effectN( 3 ); eff.base_value() && eff.has_common_school( school ) )
+  if ( buffs.shield_of_the_righteous->up() && spells.sotr_buff->effectN( 3 ).has_common_school( school ) )
   {
-    m *= 1.0 + eff.percent();
+    m *= 1.0 + buffs.shield_of_the_righteous->check_value();
   }
 
   if ( specialization() == PALADIN_PROTECTION && standing_in_consecration() )
@@ -4839,48 +4839,6 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
   if ( s->result == RESULT_DODGE || s->result == RESULT_PARRY || s->result == RESULT_MISS )
   {
     trigger_grand_crusader();
-  }
-
-  // Holy Shield's magic block
-  // 2022-11-10 Holy Shield can now only block direct magical damage, standing in Consecration can reduce damage over time, but doesn't proc damage
-  if ( school != SCHOOL_PHYSICAL && s->action->harmful )
-  {
-    // Block code mimics attack_t::block_chance()
-    // cache.block() contains our block chance
-
-    // ToDo Fluttershy: Check if we can get double block chance from mastery
-
-    double block = cache.block() * 2.0;
-    // add or subtract 1.5% per level difference
-    block += ( level() - s->action->player->level() ) * 0.015;
-
-    auto absorbName = s->result_type != result_amount_type::DMG_OVER_TIME ? "Holy Shield" : "Divine Bulwark";
-
-    if ( block > 0 )
-    {
-      // Roll for "block"
-      if ( rng().roll( block ) )
-      {
-        // Can't find a block method so lets just copy+paste from sc_player.cpp
-        double block_value = composite_block_reduction( s );
-        double block_amount =
-            s->result_amount *
-            clamp( block_value / ( block_value + s->action->player->current.armor_coeff ), 0.0, 0.85 );
-        sim->print_debug( "{} {} absorbs {}", name(), absorbName, block_amount );
-
-        // update the relevant counters
-        iteration_absorb_taken += block_amount;
-        s->self_absorb_amount += block_amount;
-        s->result_amount -= block_amount;
-        s->result_absorbed = s->result_amount;
-      }
-      else
-      {
-        sim->print_debug( "{} {} fails to activate", name(), absorbName );
-      }
-    }
-
-    sim->print_debug( "Damage to {} after {} mitigation is {}", name(), absorbName, s->result_amount );
   }
 
   player_t::assess_damage( school, dtype, s );

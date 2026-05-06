@@ -196,7 +196,6 @@ bool is_combat_rating( item_mod_type t );
 bool is_combat_rating( stat_e t );
 bool is_primary_stat( stat_e );
 int translate_stat( stat_e stat );
-stat_e translate_attribute( attribute_e attribute );
 stat_e translate_rating_mod( unsigned ratings );
 std::vector<stat_e> translate_all_rating_mod( unsigned ratings );
 unsigned rating_to_rating_mod( rating_e );
@@ -207,6 +206,7 @@ profession_e translate_profession_id( int skill_id );
 bool socket_gem_match( item_socket_color socket, item_socket_color gem );
 double crit_multiplier( meta_gem_e gem );
 bool scale_metric_is_raid( scale_metric_e );
+double calculate_armor_resist( double armor, double armor_coeff, double multipler = 1.0 );
 
 template<typename StringType = std::string>
 inline std::vector<StringType> string_split( util::string_view str, util::string_view delim, bool skip_empty_entries = true )

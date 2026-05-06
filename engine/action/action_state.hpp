@@ -60,6 +60,7 @@ struct action_state_t : private noncopyable
   double          target_mitigation_da_multiplier;
   double          target_mitigation_ta_multiplier;
   double          target_armor;
+  double          target_block_value;  // Only players can block, so this is only set in enemy_action_t::snapshot_internal()
 
   static void release( action_state_t*& s );
   static std::string flags_to_str( unsigned flags );

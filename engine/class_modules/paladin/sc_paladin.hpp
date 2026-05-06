@@ -814,6 +814,7 @@ public:
   // combat outcome functions
   void assess_damage( school_e, result_amount_type, action_state_t* ) override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
+  block_result_e target_block_resolution( const action_state_t* ) const override;
 
   void invalidate_cache( cache_e ) override;
   void create_options() override;

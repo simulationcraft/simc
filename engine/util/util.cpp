@@ -3709,4 +3709,14 @@ double approx_sqrt( double arg )
   return 0.0;
 }
 
+double calculate_armor_resist( double armor, double armor_coeff, double multipler )
+{
+  static constexpr double armor_cap = 0.85;
+
+  double resist = armor / ( armor + armor_coeff );
+  resist *= multipler;
+  resist = clamp( resist, 0.0, armor_cap );
+
+  return resist;
+}
 } // namespace util
