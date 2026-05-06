@@ -1,4 +1,4 @@
-// Item effects, wow build 12.0.7.67227
+// Item effects, wow build 12.0.7.67360
 static constexpr std::array<item_effect_t, 10897> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -931,7 +931,7 @@ static constexpr std::array<item_effect_t, 10897> __ptr_item_effect_data { {
   { 213319, 1246299,      0,   0,   1,    0,      -1,      -1 }, // Lucky Keychain
   { 213322, 1246308,      0,   0,   0,    0,      -1,      -1 }, // Kinetic Ankle Primers
   { 213453, 1246309,      0,   0,   0,    0,      -1,      -1 }, // B1P, Scorcher of Souls
-  { 213454, 1246312,      0,   0,   1,    0,      -1,      -1 }, // Meddy, Pocket-Sized
+  { 213454, 1246312,      0,   0,   1,    0,      -1,      -1 }, // M3ddy, Pocket-Sized
   { 213707, 1248523,      0,   0,   0,    0,      -1,      -1 }, // Adding
   { 213708, 1248525,      0,   0,   0,    0,      -1,      -1 }, // Adding
   { 213709, 1248526,      0,   0,   0,    0,      -1,      -1 }, // Adding

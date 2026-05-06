@@ -381,6 +381,11 @@ public:
     proc_t* grand_crusader_ror_hb;
   } procs;
 
+  struct proc_data_entries_t
+  {
+    proc_data_t crusading_strikes_energize;
+  } proc_data_entries;
+
   // Spells
   struct spells_t
   {
@@ -774,6 +779,7 @@ public:
   void init_spells() override;
   void init_action_list() override;
   void init_blizzard_action_list() override;
+  void init_proc_data_entries();
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                             const assisted_combat_step_data_t& step ) const override;

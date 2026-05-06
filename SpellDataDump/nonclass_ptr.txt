@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67227 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67360 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -231464,7 +231464,7 @@ Labels           : 959
                  : 4902
                  : 4905
                  : 4906
-                 : 4913
+                 : 4906
                  : 6103
 Proc Chance      : 101%
 Proc Flags       : Death
@@ -231506,7 +231506,7 @@ Labels           : 959
                  : 4902
                  : 4905
                  : 4906
-                 : 4913
+                 : 4906
                  : 6103
 Proc Chance      : 101%
 Proc Flags       : Death
@@ -234582,7 +234582,7 @@ Labels           : 959
                  : 4377: W-47CH D0G (1259647 effect#4)
                  : 4897
                  : 4907
-                 : 4913
+                 : 4907
                  : 6101
 Proc Chance      : 101%
 Proc Flags       : Death
@@ -242737,10 +242737,10 @@ Attributes       : Not In Arena or Rated Battleground (144), Not In Arena (297)
 Effects          :
 #1 (id=1247862)  : Apply Aura (6) | Periodic Trigger Spell (23): B1P, Scorcher of Souls every 0.5 seconds
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 1279407 | Target: Self (1)
-Description      : Summons Bip, Scorcher of Souls to spray soul sparks on your enemies dealing ${$1279407s1*($d*2)} Fire damage in a cone in front of you for $d.
+Description      : Summons B1P, Scorcher of Souls to spray soul sparks on your enemies dealing Fire damage in a cone in front of you for $d.
 Tooltip          : Setting souls ablaze.
 
-Name             : Meddy, Pocket-Sized (id=1246312) 
+Name             : M3ddy, Pocket-Sized (id=1246312) 
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -242750,7 +242750,7 @@ Attributes       : Do Not Log (8), No Aura Cancel (31), No Aura Icon (60), Only 
 Effects          :
 #1 (id=1247867)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Upon your untimely demise outdoors, summon Meddy to... medicalize you back to life!
+Description      : Upon your untimely demise outdoors, summon M3ddy to... medicalize you back to life!
 
 This effect can only occur every 30 minutes.
 
@@ -242767,7 +242767,7 @@ Attributes       : Not In Arena or Rated Battleground (144), Not In Raid Instanc
 Effects          :
 #1 (id=1247904)  : Summon Guardian (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 248535 | Misc Value 2: 5514 | Radius: 5 yards | Target: Front of Self (47)
-Description      : Upon your untimely demise, summon Meddy to... medicalize you and your raid back to life!
+Description      : Upon your untimely demise, summon M3DDY to... medicalize you and your raid back to life!
 
 Does not work on players whose spirits have been released and are above level $ctrmax3322.
 
@@ -245442,7 +245442,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 6 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc1251408
 
-Name             : Shimmersiren (id=1251228) 
+Name             : Gut (id=1251228) 
 School           : Physical
 Spell Type       : None
 Labels           : 4132
@@ -245703,7 +245703,7 @@ Effects          :
 #1 (id=1256796)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=1260644)  : Apply Aura (6) | Absorb Damage (69) | Scaling Class: Replace Primary (-8)
-                   Base Value: 1 | Scaled Value: 58417.95 (coefficient=457.0921) | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 58417.95 (coefficient=457.0921) | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #3 (id=1260668)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
@@ -252700,7 +252700,7 @@ Effects          :
 #1 (id=1281307)  : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Misc Value 2: 300 | Target: Self (1)
 #2 (id=1281308)  : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20
+                   Base Value: 5 | Scaled Value: 5
 Description      : Convert $s2 Weak Glimmerline to create a Angler's Glimmerline.
 
 Name             : Midnight Angler's Grand Line (id=1269472) 
@@ -253482,7 +253482,7 @@ School           : Fire
 Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 9
-Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Aura Icon (60), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1292089)  : Apply Aura (6) | Dummy (4)
@@ -254023,8 +254023,8 @@ Real PPM         : 3 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic, Unknown 38
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1300953)  : Apply Aura (6) | Proc Trigger Spell (42): Rotbloom | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1238.002 (coefficient=9.686767) | PvP Coefficient: 0.5 | Trigger Spell: 1286533 | Target: Self (1)
+#1 (id=1300953)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 1238.002 (coefficient=9.686767) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1302740)  : Dummy (3)
                    Base Value: 120 | Scaled Value: 120
 Description      : Dealing Nature damage has a chance to inflict Rotbloom, dealing ${$s1*$<rolemult>} Nature damage over $1286135d. If the enemy is already afflicted by your Rotbloom, it is consumed to deal $s2% of its remaining damage.
@@ -254107,7 +254107,7 @@ Duration         : 15 seconds
 Labels           : 292
                  : 3959: Item Effects
 Triggered By     : Rotbloom (1286533)
-Attributes       : Periodic Can Crit (265), Aura Points On Client (268)
+Attributes       : Suppress Caster Procs (112), Periodic Can Crit (265), Aura Points On Client (268)
 Effects          :
 #1 (id=1302739)  : Apply Aura (6) | Periodic Damage (3): nature every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -254133,7 +254133,6 @@ Range            : 100 yards
 Velocity         : 25 yards/sec
 Labels           : 292
                  : 3959: Item Effects
-Triggered By     : Sporecaller's Blooming Loop (1285138)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Always Line of Sight (185)
 Effects          :
 #1 (id=1303413)  : Trigger Missiles (32): Rotbloom
@@ -254286,7 +254285,7 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Proc Flags       : Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Rune of Void-Touched Orbs (1279596)
 Attributes       : Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
 Effects          :
@@ -254303,7 +254302,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1305151)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : The effects of your Core Rune leave behind a periodic effect that deals |CFFffffff${$<dmgvalue>*$1286970s2}|R Cosmic damage or restores |CFFffffff${$<dmgvalue>*$1287665s2}|R health over $1287663d sec based on whether the target is an enemy or ally.
+Description      : The effects of your Core Rune leave behind a periodic effect that deals |CFFffffff${$<dmgvalue>*$1286970s2}|R Cosmic damage or restores |CFFffffff${$<dmgvalue>*$1287665s2}|R health over $1287663d based on whether the target is an enemy or ally.
 
 Your Core Rune favors hitting targets that are unaffected by Rune of Lingering.
 Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
@@ -254776,6 +254775,20 @@ Effects          :
 #1 (id=1311511)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=1311512)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Restores $s1% of your maximum health every second over $d. Must remain seated while eating.
+Tooltip          : Restoring $s1% health every sec.
+
+Name             : Food (id=1291845) 
+School           : Physical
+Spell Type       : None
+Duration         : 20 seconds
+Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Aura Points On Client (268)
+Aura Interrupt   : Standing (18), Swimming (33)
+Effects          :
+#1 (id=1311513)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
+                   Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Target: Self (1)
+#2 (id=1311514)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Restores $s1% of your maximum health every second over $d. Must remain seated while eating.
 Tooltip          : Restoring $s1% health every sec.

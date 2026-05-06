@@ -947,6 +947,7 @@ struct crusading_strike_t : public paladin_melee_attack_t
           as<int>( p()->spells.crusading_strikes_data->effectN( 1 ).base_value() ),
           p()->gains.hp_crusading_strikes
         );
+      p()->trigger_aura_applied_callbacks( p()->proc_data_entries.crusading_strikes_energize, p() );
     }
 
     if ( result_is_hit( execute_state->result ) && p()->talents.empyrean_power->ok() )
@@ -4295,6 +4296,12 @@ void paladin_t::init_spells()
   parse_all_passive_talents();
   parse_all_passive_sets();
   parse_raid_buffs();
+  init_proc_data_entries();
+}
+
+void paladin_t::init_proc_data_entries()
+{
+  proc_data_entries.crusading_strikes_energize = spells.crusading_strikes_data;
 }
 
 // paladin_t::primary_role ==================================================

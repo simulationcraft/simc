@@ -23,9 +23,10 @@ actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=bear
 
 actions.bear=bear_form,if=!buff.bear_form.up&!buff.feline_potential.up
+actions.bear+=/thrash,if=talent.lunar_calling.enabled
 actions.bear+=/maul,if=buff.ravage.up&rage>=40&!talent.killing_blow.enabled
 actions.bear+=/maul,if=buff.ravage.up&rage>=60&talent.killing_blow.enabled
-actions.bear+=/maul,if=!buff.ravage.up&rage>=55&!talent.fount_of_strength.enabled
+actions.bear+=/maul,if=rage>=55&!talent.fount_of_strength.enabled
 actions.bear+=/mangle,if=dot.red_moon.ticking
 actions.bear+=/rake,if=!buff.cat_form.up&talent.fluid_form.enabled&cooldown.heart_of_the_wild.up&talent.heart_of_the_wild.enabled&(active_enemies<=5&talent.moonkin_form.enabled|!talent.moonkin_form.enabled)&(rage<30&!talent.fount_of_strength.enabled|talent.fount_of_strength.enabled)
 actions.bear+=/cat_form,if=!buff.cat_form.up&!talent.fluid_form.enabled&cooldown.heart_of_the_wild.up&talent.heart_of_the_wild.enabled&(active_enemies<=5&talent.moonkin_form.enabled|!talent.moonkin_form.enabled)&(rage<30&!talent.fount_of_strength.enabled|talent.fount_of_strength.enabled)
@@ -39,10 +40,7 @@ actions.bear+=/red_moon,if=cooldown.mangle.up&!dot.red_moon.ticking
 actions.bear+=/mangle,if=((buff.incarnation_guardian_of_ursoc.up|buff.berserk.up)&buff.feline_potential_counter.stack<6&talent.wildpower_surge.enabled)
 actions.bear+=/shred,if=(buff.feline_potential_counter.stack=6&!buff.cat_form.up&!dot.rake.refreshable&talent.fluid_form.enabled)
 actions.bear+=/rake,if=(buff.feline_potential_counter.stack=6&!buff.cat_form.up&talent.fluid_form.enabled)
-actions.bear+=/thrash,if=talent.lunar_calling.enabled
 actions.bear+=/maul,if=!buff.ravage.up&rage>=90&talent.fount_of_strength.enabled
-actions.bear+=/maul,if=!(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up)&!buff.ravage.up&rage>=40&!talent.killing_blow.enabled
-actions.bear+=/maul,if=!(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up)&!buff.ravage.up&rage>=55&talent.killing_blow.enabled&talent.fount_of_strength.enabled
 actions.bear+=/mangle,if=(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up)|talent.red_moon.enabled&(cooldown.red_moon.remains>3&(((rage<88)&!talent.fount_of_strength.enabled)|((rage<83)&!talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled)|((rage<108)&talent.fount_of_strength.enabled)|((rage<103)&talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled)))
 actions.bear+=/mangle,if=!talent.red_moon.enabled&(((rage<88)&!talent.fount_of_strength.enabled)|((rage<83)&!talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled)|((rage<108)&talent.fount_of_strength.enabled)|((rage<103)&talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled))
 actions.bear+=/thrash
