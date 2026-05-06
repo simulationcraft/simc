@@ -5845,7 +5845,8 @@ void monk_t::init_spells()
     talent.windwalker.obsidian_spiral_energize                 = find_spell( 1249833 );
     talent.windwalker.combo_breaker                            = _ST( "Combo Breaker" );
     talent.windwalker.combo_breaker_buff                       = find_spell( 116768 );
-    talent.windwalker.dance_of_chiji                           = _ST( "Dance of Chi-Ji" );
+    talent.windwalker.dance_of_chiji =
+        find_talent_spell( talent_tree::SPECIALIZATION, "Dance of Chi-Ji", MONK_WINDWALKER );
     // do not use talent.windwalker.dance_of_chiji->effectN( 1 ).trigger() to avoid talent known dependency
     talent.windwalker.dance_of_chiji_buff            = find_spell( 325202 );
     talent.windwalker.shadowboxing_treads            = _STID( 392982 );
@@ -7054,6 +7055,9 @@ double monk_t::composite_player_target_armor( player_t *target ) const
 void monk_t::invalidate_cache( cache_e c )
 {
   base_t::invalidate_cache( c );
+
+  if ( specialization() == MONK_MISTWEAVER )
+    return;
 
   switch ( c )
   {
