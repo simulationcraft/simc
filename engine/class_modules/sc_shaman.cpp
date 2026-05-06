@@ -4608,11 +4608,8 @@ struct windstrike_attack_t : public stormstrike_attack_t
   windstrike_attack_t( util::string_view n, shaman_t* player, const spell_data_t* s, weapon_t* w,
                        strike_variant sf = strike_variant::NORMAL )
     : stormstrike_attack_t( n, player, s, w, sf )
-  { }
-
-  double composite_target_armor( player_t* ) const override
   {
-    return 0.0;
+    ignores_armor = true;
   }
 };
 
@@ -4623,7 +4620,7 @@ struct windlash_t : public shaman_attack_t
   windlash_t( util::string_view n, const spell_data_t* s, shaman_t* player, weapon_t* w, double stv )
     : shaman_attack_t( n, player, s ), swing_timer_variance( stv )
   {
-    background = repeating = may_miss = may_dodge = may_parry = true;
+    background = repeating = may_miss = may_dodge = may_parry = ignores_armor = true;
     may_proc_ability_procs = may_glance = special = false;
     weapon                                        = w;
     weapon_multiplier                             = 1.0;
@@ -4635,11 +4632,6 @@ struct windlash_t : public shaman_attack_t
   proc_types proc_type() const override
   {
     return PROC1_MELEE;
-  }
-
-  double composite_target_armor( player_t* ) const override
-  {
-    return 0.0;
   }
 
   timespan_t execute_time() const override
@@ -7552,7 +7544,7 @@ struct earthquake_damage_base_t : public shaman_spell_t
     shaman_spell_t( name, player, spell ), mote_buffed( false ), parent( p )
   {
     aoe        = -1;
-    ground_aoe = background = true;
+    ground_aoe = background = ignores_armor = true;
   }
 
   // Snapshot base state from the parent to grab proper persistent multiplier for all damage
@@ -7569,9 +7561,6 @@ struct earthquake_damage_base_t : public shaman_spell_t
       shaman_spell_t::snapshot_state( s, rt );
     }
   }
-
-  double composite_target_armor( player_t* ) const override
-  { return 0; }
 
   double composite_target_multiplier( player_t* t ) const override
   {

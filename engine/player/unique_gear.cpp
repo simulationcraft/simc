@@ -392,13 +392,15 @@ void enchants::mark_of_the_shattered_hand( special_effect_t& effect )
     bleed_attack_t( player_t* p, const special_effect_t& effect ) :
       attack_t( effect.name(), p, p -> find_spell( effect.trigger_spell_id ) )
     {
-      hasted_ticks = false; background = true; callbacks = false; special = true;
-      may_miss = may_block = may_dodge = may_parry = false; may_crit = true;
+      hasted_ticks = false;
+      background = true;
+      callbacks = false;
+      special = true;
+      may_miss = may_block = may_dodge = may_parry = false;
+      may_crit = true;
       tick_may_crit = false;
+      ignores_armor = true;
     }
-
-    double composite_target_armor( player_t* ) const override
-    { return 0.0; }
   };
 
   action_t* bleed = effect.player -> find_action( "shattered_bleed" );
@@ -1892,20 +1894,21 @@ struct cleave_t : public T
   cleave_t( const item_t* item, const std::string& name, school_e s ) :
     T( name, item -> player )
   {
-    this -> callbacks = false;
-    this -> may_crit = false;
-    this -> may_glance = false;
-    this -> may_miss = true;
-    this -> special = true;
-    this -> proc = true;
-    this -> background = true;
-    this -> school = s;
-    this -> aoe = 5;
-    if ( this -> type == ACTION_ATTACK )
+    this->callbacks = false;
+    this->may_crit = false;
+    this->may_glance = false;
+    this->may_miss = true;
+    this->special = true;
+    this->proc = true;
+    this->background = true;
+    this->school = s;
+    this->aoe = 5;
+    if ( this->type == ACTION_ATTACK )
     {
-      this -> may_dodge = true;
-      this -> may_parry = true;
-      this -> may_block = true;
+      this->may_dodge = true;
+      this->may_parry = true;
+      this->may_block = true;
+      this->ignores_armor = true;
     }
   }
 
@@ -1930,9 +1933,6 @@ struct cleave_t : public T
 
     return tl.size();
   }
-
-  double composite_target_armor( player_t* ) const override
-  { return 0.0; }
 };
 
 void item::cleave( special_effect_t& effect )

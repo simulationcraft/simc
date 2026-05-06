@@ -912,7 +912,7 @@ public:
 
   virtual double composite_total_spell_power() const;
 
-  virtual double composite_target_armor( player_t* ) const;
+  virtual double composite_target_armor( const action_state_t* ) const;
 
   virtual double composite_target_crit_chance( player_t* ) const;
 

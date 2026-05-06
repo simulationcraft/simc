@@ -1673,9 +1673,12 @@ double action_t::composite_total_spell_power() const
   return spell_power;
 }
 
-double action_t::composite_target_armor( player_t* t ) const
+double action_t::composite_target_armor( const action_state_t* s ) const
 {
-  return player->composite_player_target_armor( t );
+  if ( get_school() == SCHOOL_PHYSICAL )
+    return player->composite_player_target_armor( s->target );
+  else
+    return 0.0;
 }
 
 double action_t::composite_target_crit_chance( player_t* t ) const
@@ -2725,7 +2728,8 @@ void action_t::init()
   {
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_TGT_MITG_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
-    if ( school == SCHOOL_PHYSICAL && !ignores_armor )
+    // Because schools can change during runtime, armor is flagged and not snapshot if determined to be non-physical
+    if ( !ignores_armor )
       snapshot_flags |= STATE_TGT_ARMOR;
   }
 
@@ -4353,7 +4357,7 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->target_mitigation_ta_multiplier = composite_target_mitigation( state, false );
 
   if ( flags & STATE_TGT_ARMOR )
-    state->target_armor = composite_target_armor( state->target );
+    state->target_armor = composite_target_armor( state );
 }
 
 // action_t::composite_dot_duration =========================================

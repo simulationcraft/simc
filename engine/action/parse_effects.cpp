@@ -689,7 +689,7 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
 
   if constexpr ( is_detected_v<detect_type, U> )
   {
-    if ( !val && !( tmp.type & ( USE_CURRENT | USE_DEFAULT | ALLOW_ZERO ) ) )
+    if ( !val && !( tmp.type & ( USE_CURRENT | USE_DEFAULT | ALLOW_ZERO | VALUE_FUNCTION ) ) )
       return false;
   }
   else

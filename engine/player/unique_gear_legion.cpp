@@ -559,10 +559,8 @@ void item::choker_of_barbed_reins( special_effect_t& effect )
     choker_of_barbed_reins_t( const special_effect_t& e ):
       proc_attack_t( "barbed_rebuke", e.player, e.player -> find_spell( 234108 ), e.item )
     {
-      may_block = true;
+      may_block = ignores_armor = true;
     }
-    double composite_target_armor( player_t* ) const override
-    { return 0.0; }
   };
 
   effect.execute_action = effect.player -> find_action( "barbed_rebuke" );
@@ -4678,10 +4676,9 @@ struct spontaneous_appendages_t: public proc_spell_t
     proc_spell_t( "horrific_slam", effect.player,
       effect.player -> find_spell( effect.trigger() -> effectN( 1 ).trigger() -> id() ),
       effect.item )
-  {}
-
-  double composite_target_armor( player_t* ) const override
-  { return 0.0; }
+  {
+    ignores_armor = true;
+  }
 };
 
 void item::spontaneous_appendages( special_effect_t& effect )
@@ -5102,17 +5099,14 @@ struct legion_potion_damage_t : public T
   legion_potion_damage_t( const special_effect_t& effect, ::util::string_view name_str, const spell_data_t* spell ) :
     T( name_str, effect.player, spell )
   {
-    this -> background = this -> may_crit = this -> special = true;
-    this -> callbacks = false;
-    this -> base_dd_min = spell -> effectN( 1 ).min( this -> player );
-    this -> base_dd_max = spell -> effectN( 1 ).max( this -> player );
+    this->background = this->may_crit = this->special = this->ignores_armor = true;
+    this->callbacks = false;
+    this->base_dd_min = spell->effectN( 1 ).min( this->player );
+    this->base_dd_max = spell->effectN( 1 ).max( this->player );
     // Currently 0, but future proof if they decide to make it scale ..
-    this -> attack_power_mod.direct = spell -> effectN( 1 ).ap_coeff();
-    this -> spell_power_mod.direct = spell -> effectN( 1 ).sp_coeff();
+    this->attack_power_mod.direct = spell->effectN( 1 ).ap_coeff();
+    this->spell_power_mod.direct = spell->effectN( 1 ).sp_coeff();
   }
-
-  double composite_target_armor( player_t* ) const override
-  { return 0.0; }
 };
 
 // Potion of the Old War ====================================================

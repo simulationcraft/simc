@@ -2531,9 +2531,9 @@ public:
     }
   }
 
-  double composite_target_armor( player_t* t ) const override
+  double composite_target_armor( const action_state_t* s ) const override
   {
-    return direct_bleed ? 0.0 : ab::composite_target_armor( t );
+    return direct_bleed ? 0.0 : ab::composite_target_armor( s );
   }
 };
 

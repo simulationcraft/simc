@@ -1457,6 +1457,7 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_CORRUPTION:               return "corruption";
     case CACHE_CORRUPTION_RESISTANCE:    return "corruption_resistance";
     case CACHE_AVOIDANCE:                return "avoidance";
+    case CACHE_CRIT_AVOIDANCE:           return "crit_avoidance";
     default:                             return "unknown";
   }
 }

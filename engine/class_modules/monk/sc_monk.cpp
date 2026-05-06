@@ -2594,6 +2594,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     may_crit = hasted_ticks = false;
     may_combo_strike        = true;
     cast_during_sck         = true;
+    ignores_armor           = true;  // instead use the trick to have no multipliers apply?
     parse_options( options_str );
 
     cooldown->duration = data().cooldown();
@@ -2604,12 +2605,6 @@ struct touch_of_death_t : public monk_melee_attack_t
     monk_melee_attack_t::init();
 
     snapshot_flags = update_flags = 0;
-  }
-
-  double composite_target_armor( player_t * ) const override
-  {
-    // instead use the trick to have no multipliers apply?
-    return 0;
   }
 
   bool target_ready( player_t *target ) override
