@@ -139,7 +139,7 @@ std::string default_potion( const monk_t* player )
 std::string default_flask( const monk_t* player )
 {
   if ( player->true_level >= 90 )
-    return "flask_of_the_blood_knights_2";
+    return "flask_of_the_shattered_sun_2";
   return "disabled";
 }
 
