@@ -1030,7 +1030,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                  a->energize_resource,
                  a->energize_amount );
 
-      if ( a->spell_power_mod.direct || a->base_dd_min || a->base_dd_max )
+      if ( a->spell_power_mod.direct || a->attack_power_mod.direct || a->base_dd_min || a->base_dd_max )
       {
         os.format( R"(<div><h4>Direct Damage</h4><ul class="label">)"
                    "<li><span>may_crit:</span>{}</li>"
