@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67314 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.5.67403 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1811,7 +1811,6 @@ Attributes       : Not Shapeshifted (16), Always Line of Sight (185), Allow Clas
 Effects          :
 #1 (id=86331)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.06736 | PvP Coefficient: 0.8333 | Radius: 0 - 40 yards | Target: Source (22) -> Ally in Area (30)
-Hotfixed         : SP Coefficient (4.4064 -> 5.06736)
 #2 (id=337580)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 4 yards | Target: Source (22) -> Ally in Area (30)
 #3 (id=736030)   : Dummy (3)
@@ -9490,7 +9489,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Stat: Sta | Target: Self (1)
 #2 (id=894604)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 1 | Target: Self (1)
-Hotfixed         : Base Value (55 -> 70)
 #3 (id=894606)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -20020,10 +20018,8 @@ Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (
 Effects          :
 #1 (id=1245666)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
-Hotfixed         : Trigger Spell (53651 -> 0)
 #2 (id=1245667)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Type (64 -> 3), Trigger Spell (53651 -> 0)
 #3 (id=1245668)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Light of Dawn (85222), Light of the Martyr (183998)
@@ -20399,7 +20395,6 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 5 | Misc Value 2: 2589 (Label) | Target: Self (1)
 #8 (id=1323473)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 2 (6)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 6 | Misc Value 2: 6716 (Label) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 
 Name             : Retribution Paladin (id=1258011) [Spell Family (10), Passive, Hidden] 
 Class            : Retribution Paladin
