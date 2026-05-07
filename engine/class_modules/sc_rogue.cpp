@@ -1079,6 +1079,9 @@ public:
     // Subtlety
     proc_t* weaponmaster;
 
+    // Hero
+    proc_t* controlled_chaos;
+
   } procs;
 
   // Set Bonus effects
@@ -2382,10 +2385,17 @@ public:
     // Follow the Blood
     if ( affected_by.follow_the_blood.direct )
     {
-      if ( p()->get_active_dots( td( state->target )->dots.rupture ) >=
-           as<unsigned int>( p()->talent.deathstalker.follow_the_blood->effectN( 2 ).base_value() ) )
+      if ( p()->specialization() == ROGUE_ASSASSINATION )
       {
-        m *= 1.0 + p()->talent.deathstalker.follow_the_blood->effectN( 1 ).percent();
+        if ( p()->get_active_dots( td( state->target )->dots.rupture ) >=
+             as<unsigned int>( p()->talent.deathstalker.follow_the_blood->effectN( 2 ).base_value() ) )
+        {
+          m *= 1.0 + p()->talent.deathstalker.follow_the_blood->effectN( 1 ).percent();
+        }
+      }
+      else if( p()->buffs.find_weakness->check() )
+      {
+        m *= 1.0 + p()->talent.deathstalker.follow_the_blood->effectN( 3 ).percent();
       }
     }
 
@@ -2506,7 +2516,8 @@ public:
 
     if ( affected_by.fazed_crit_chance && td( target )->debuffs.fazed->check() )
     {
-      c += td( target )->debuffs.fazed->stack_value_crit_chance();
+      // 2026-05-04 -- No longer stacks with number of Fazed stacks as of hotfix
+      c += td( target )->debuffs.fazed->value_crit_chance();
     }
 
     return c;
@@ -2564,7 +2575,8 @@ public:
 
     if ( affected_by.fazed_crit_damage )
     {
-      cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent() * td( target )->debuffs.fazed->check();
+      // 2026-05-04 -- No longer stacks with number of Fazed stacks as of hotfix
+      cm *= 1.0 + p()->talent.trickster.surprising_strikes->effectN( 1 ).percent() * td( target )->debuffs.fazed->up();
     }
 
     return cm;
@@ -4583,6 +4595,9 @@ struct killing_spree_tick_t : public rogue_attack_t
 
   bool procs_blade_flurry() const override
   { return true; }
+
+  bool procs_poison() const override
+  { return true; }
 };
 
 struct killing_spree_t : public rogue_attack_t
@@ -6326,9 +6341,6 @@ struct hunt_them_down_t : public rogue_attack_t
   {
     p->auto_attack->add_child( this );
   }
-
-  bool procs_shadow_blades_damage() const override
-  { return false; }
 };
 
 struct singular_focus_t : public rogue_attack_t
@@ -6338,9 +6350,6 @@ struct singular_focus_t : public rogue_attack_t
   {
     callbacks = false;
   }
-
-  bool procs_shadow_blades_damage() const override
-  { return false; }
 
   bool procs_caustic_spatter() const override
   { return false; }
@@ -8061,6 +8070,7 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
     {
       // 250ms so it does not coincide with an Overflowing Purse roll at the same time for now
       trigger_fatebound_coinflip( state, result, 250_ms + current_delay );
+      p()->procs.controlled_chaos->occur();
     }
   }
 }
@@ -8093,6 +8103,7 @@ void actions::rogue_action_t<Base>::trigger_fatebound_coinflip( const action_sta
       }
     }
   } );
+
   if ( p()->talent.fatebound.rush_to_the_inevitable->ok() )
   {
     double energize_normal = p()->specialization() == ROGUE_ASSASSINATION
@@ -8105,6 +8116,7 @@ void actions::rogue_action_t<Base>::trigger_fatebound_coinflip( const action_sta
 
     p()->resource_gain( RESOURCE_ENERGY, result == fatebound_t::coinflip_e::EDGE ? energize_edge : energize_normal, p()->gains.rush_to_the_inevitable );
   }
+
   if ( p()->talent.fatebound.lucky_coin->ok() )
   {
     if ( !p()->buffs.fatebound_lucky_coin->check() )
@@ -8337,8 +8349,10 @@ void actions::rogue_action_t<Base>::trigger_caustic_spatter( const action_state_
   if ( !td( state->target )->debuffs.caustic_spatter->up() )
     return;
 
+  // 2026-05-04 -- Caustic Spatter no longer reverses out Deathmark as it did previously with Shiv
+  // TOCHECK -- Need to generally see how this works with other damage taken mods
   double multiplier = p()->spec.caustic_spatter_buff->effectN( 1 ).percent();
-  p()->active.caustic_spatter->trigger_residual_action( state, multiplier );
+  p()->active.caustic_spatter->trigger_residual_action( state, multiplier, true, false );
 }
 
 template <typename Base>
@@ -10362,11 +10376,11 @@ void rogue_t::init_procs()
   auto roll_the_bones = static_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones );
   for ( size_t i = 0; i < roll_the_bones->buffs.size(); i++ )
   {
-    roll_the_bones->procs[ i ] = get_proc( fmt::format( "Roll the Bones Buffs: {}", i + 1 ) );
+    roll_the_bones->procs[ i ] = get_proc( fmt::format( "Roll the Bones: {}", roll_the_bones->buffs[ i ]->name_str ) );
   }
   for ( size_t i = 0; i < roll_the_bones->buffs.size(); i++ )
   {
-    roll_the_bones->loss_procs[ i ] = get_proc( "Roll the Bones Buff Lost: " + roll_the_bones->buffs[ i ]->name_str );
+    roll_the_bones->loss_procs[ i ] = get_proc( "Roll the Bones Lost: " + roll_the_bones->buffs[ i ]->name_str );
   }
 
   procs.supercharger_wasted                   = get_proc( "Supercharger Wasted" );
@@ -10375,6 +10389,8 @@ void rogue_t::init_procs()
 
   procs.amplifying_poison_consumed            = get_proc( "Amplifying Poison Consumed" );
   procs.rapid_injection_applied               = get_proc( "Rapid Injection Applied" );
+
+  procs.controlled_chaos                      = get_proc( "Controlled Chaos" );
 }
 
 // rogue_t::init_scaling ====================================================
@@ -10667,7 +10683,12 @@ void rogue_t::create_buffs()
       ->set_expire_callback( [ this ]( buff_t* b, double stack, timespan_t ) {
         if ( b && stack == b->max_stack() )
         {
-          buffs.fatebound_lucky_coin->trigger();
+          // 2026-05-02 -- Lucky Coin buff application is delayed due to projectile animation
+          // Logs show this causes tracker stacks to get cleared again if they proc during the delay
+          make_event( sim, 1.2_s, [ this ] {
+            buffs.fatebound_lucky_coin->trigger();
+            buffs.fatebound_coin_flips->expire();
+          } );
         }
       } );
   }

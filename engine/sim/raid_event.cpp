@@ -736,14 +736,16 @@ struct pull_event_t final : raid_event_t
 
     regenerate_cache();
 
-    if ( has_boss )
+    for ( auto p : affected_players )
     {
-      for ( auto& p : affected_players )
+      if ( p->is_player() )
       {
-        if ( p->is_player() )
-        {
+        if ( has_boss )
           p->in_boss_encounter++;
-        }
+
+        // wake up any ready_trigger players since they are not constantly polling
+        if ( p->ready_type == ready_e::READY_TRIGGER && !p->readying )
+          p->schedule_ready();
       }
     }
 
@@ -1769,6 +1771,7 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     duration( 0_ms, 0_ms, 0_ms, 0_ms ),
     pull( 0 ),
     pull_target_str(),
+    internal_id( as<int>( sim->raid_events.size() ) ),
     distance_min( 0 ),
     distance_max( 0 ),
     players_only( false ),
@@ -1809,6 +1812,11 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
   add_option( opt_int( "pull", pull ) );
   add_option( opt_string( "pull_target", pull_target_str ) );
   add_option( opt_func( "timestamps", std::bind( &raid_event_t::parse_timestamps, this, std::placeholders::_3 ) ) );
+}
+
+std::string raid_event_t::log_name() const
+{
+  return fmt::format( "{} (id={})", name.empty() ? type : name, internal_id );
 }
 
 timespan_t raid_event_t::cooldown_time()

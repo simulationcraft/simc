@@ -326,6 +326,10 @@ class TraitSet(DataSet):
                 for data in _trait_skills
         )
 
+        # 12.0.7 omnium folio
+        if 1186 in self.db('TraitTree'):
+            _trait_trees[1186] = (self.db('TraitTree')[1186], 0)
+
         # Map TraitTreeNodeGroups to "tree indices" based on the trait tree currency used
         _trait_node_group_map = dict()
         for entry in self.db('TraitTreeXTraitCurrency').values():
@@ -459,7 +463,7 @@ class TraitSet(DataSet):
             )
 
             for node in group['nodes'].values():
-                node_class_id = util.class_id(player_skill=_trait_trees[node['node'].id_parent][1])
+                node_class_id = class_id if class_id else util.class_id(player_skill=_trait_trees[node['node'].id_parent][1])
 
                 node_specs = set(_spec_map.get(cond.id_spec_set, 0)
                     for cond in node['cond'] if cond.type == 1
@@ -469,12 +473,17 @@ class TraitSet(DataSet):
                     for cond in node['cond'] if cond.type == 2
                 )
 
+                # tree type enum: 0 = invald, 1 = class, 2 = spec, 3 = hero, 4 = selection, 5 = max, 6 = expansion
                 # tree selection nodes are type 3
                 if node['node'].type == 3:
                     tree_index = 4
                 # hero tree nodes have a non-zero TraitNode.id_trait_sub_tree
                 elif node['node'].id_trait_sub_tree != 0:
                     tree_index = 3
+                # 12.0.7 omnium folio traits
+                elif node['node'].id_trait_tree == 1186:
+                    tree_index = 6
+                    node_class_id = 0
 
                 for entry, db2_id in node['entries']:
                     key = entry.id
@@ -486,7 +495,7 @@ class TraitSet(DataSet):
                     _traits[key]['entry'] = entry
                     _traits[key]['definition'] = definition
                     _traits[key]['spell'] = definition.ref('id_spell')
-                    _traits[key]['class_'] = class_id if class_id else node_class_id
+                    _traits[key]['class_'] = node_class_id
                     _traits[key]['specs'] |= group_specs | node_specs
                     _traits[key]['specs'].discard(0)
                     _traits[key]['starter'] |= group_starter | node_starter

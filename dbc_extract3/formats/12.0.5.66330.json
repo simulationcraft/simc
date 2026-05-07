@@ -595,7 +595,7 @@
   },
   "ItemSparse": {
     "fields": [
-      { "data_type": "Q", "field": "race_mask", "formats": { "cpp": "%#.16x" } },
+      { "data_type": "Q", "field": "race_mask_old", "formats": { "cpp": "%#.16x" } },
       { "data_type": "S", "field": "desc" },
       { "data_type": "S", "field": "pad2" },
       { "data_type": "S", "field": "pad1" },
@@ -617,7 +617,7 @@
       { "data_type": "i", "field": "max_count" },
       { "data_type": "i", "field": "req_rep_rank" },
       { "data_type": "I", "field": "req_spell" },
-	  { "data_type": "I", "field": "unk_0", "elements": 2 },
+	    { "data_type": "I", "field": "race_mask", "elements": 2, "formats": { "cpp": "%#.8x" } },
       { "data_type": "I", "field": "sell_price" },
       { "data_type": "I", "field": "buy_price" },
       { "data_type": "I", "field": "vendor_stack" },
@@ -1496,7 +1496,7 @@
   "SkillLineAbility": {
     "parent": "SkillLine",
     "fields": [
-      { "data_type": "Q", "field": "mask_race", "formats": { "cpp": "%#.16x" } },
+      { "data_type": "Q", "field": "mask_race_old", "formats": { "cpp": "%#.16x" } },
       { "data_type": "S", "field": "verb" },
       { "data_type": "S", "field": "verb_all" },
       { "data_type": "i", "field": "id" },
@@ -1513,7 +1513,7 @@
       { "data_type": "h", "field": "index" },
       { "data_type": "h", "field": "id_filter", "ref": "TradeSkillCategory" },
       { "data_type": "h", "field": "id_skill_up" },
-      { "data_type": "I", "field": "unk1", "elements": 2 }
+      { "data_type": "I", "field": "mask_race", "elements": 2, "formats": { "cpp": "%#.8x" } }
     ]
   },
   "SkillLineXTraitTree": {

@@ -715,83 +715,27 @@ void buffs::sentinel_decay_buff_t::expire_override( int expiration_stacks, times
 
 // paladin_t::target_mitigation ===============================================
 
-void paladin_t::target_mitigation( school_e school,
-                                   result_amount_type    dt,
-                                   action_state_t* s )
+void paladin_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
 {
   player_t::target_mitigation( school, dt, s );
 
-  // various mitigation effects, Ardent Defender goes last due to absorb/heal mechanics
-
-  // Passive sources (Sanctuary)
-  s->result_amount *= 1.0 + passives.sanctuary->effectN( 1 ).percent();
-
-  if ( passives.aegis_of_light_2->ok() )
-    s->result_amount *= 1.0 + passives.aegis_of_light_2->effectN( 1 ).percent();
-
-  if ( sim->debug && s->action && ! s->target->is_enemy() && ! s->target->is_add() )
-    sim->print_debug( "Damage to {} after passive mitigation is {}", s->target->name(), s->result_amount );
-
-  // Damage Reduction Cooldowns
-
-  // Sentinel
-  if (buffs.sentinel->up())
+  // Mastery 'block' of periodic damage (absorbed)
+  if ( s->block_result == BLOCK_RESULT_BLOCKED && dt == result_amount_type::DMG_OVER_TIME )
   {
-    s->result_amount *= 1.0 + buffs.sentinel->get_damage_reduction_mod();
-  }
+    auto block_value = s->target_block_value;
+    auto block_resist = util::calculate_armor_resist( block_value, s->action->player->current.armor_coeff );
+    auto block_amount = s->result_amount * block_resist;
 
-  // Guardian of Ancient Kings
-  if ( buffs.guardian_of_ancient_kings->up() )
-  {
-    s->result_amount *= 1.0 + buffs.guardian_of_ancient_kings->data().effectN( 3 ).percent();
-  }
+    // update the relevant counters
+    iteration_absorb_taken += block_amount;
+    s->self_absorb_amount += block_amount;
+    s->result_amount -= block_amount;
+    s->result_absorbed = s->result_amount;
 
-  // Divine Protection
-  if ( buffs.divine_protection->up() )
-  {
-    s->result_amount *= 1.0 + buffs.divine_protection->data().effectN( 1 ).percent();
-  }
-
-  if ( buffs.ardent_defender->up() )
-  {
-    double adReduce = buffs.ardent_defender->data().effectN( 1 ).percent();
-    s->result_amount *= 1.0 + adReduce;
-  }
-
-  if ( talents.blessing_of_dusk->ok() )
-  {
-    // ToDo Fluttershy: Fix or remove
-    s->result_amount *= 1.0 - talents.blessing_of_dusk->effectN( 1 ).percent();
-  }
-
-  if ( buffs.devotion_aura->up() )
-  { 
-    double devoRed = buffs.devotion_aura->value();
-    if ( talents.lightsmith.shared_resolve->ok() && ( buffs.lightsmith.sacred_weapon->up() || buffs.lightsmith.holy_bulwark->up() ) )
+    if ( sim->debug )
     {
-      devoRed *= 1 + buffs.lightsmith.holy_bulwark->data().effectN( 1 ).percent(); // Not sure why this is in Holy Bulwark's spell data
+      sim->print_debug( "{} Divine Bulwark absorbs {} damage from block on DOT {}.", *this, block_amount, *s->action );
     }
-    s->result_amount *= 1.0 + devoRed;
-  }
-
-  if (buffs.shield_of_the_righteous->up())
-  {
-    s->result_amount *= 1.0 + buffs.shield_of_the_righteous->default_value;
-  }
-
-  paladin_td_t* td = get_target_data( s->action->player );
-
-  if (td->debuff.empyrean_hammer->up())
-  {
-    s->result_amount *= 1.0 + td->debuff.empyrean_hammer->data().effectN( 3 ).percent();
-  }
-
-  // Divine Bulwark and consecration reduction
-  if ( standing_in_consecration() && specialization() == PALADIN_PROTECTION )
-  {
-    // ToDo Fluttershy: Get the 0.0 from 188370 effect 3
-    double reduction = 0.0 + talents.sanctuary->effectN( 2 ).percent();
-    s->result_amount *= 1.0 + reduction;
   }
 
   // Blessed Hammer
@@ -825,11 +769,6 @@ void paladin_t::target_mitigation( school_e school,
     }
   }
 
-  // Other stuff
-  if ( sim->debug && s->action && ! s->target->is_enemy() && ! s->target->is_add() )
-    sim->print_debug( "Damage to {} after mitigation effects is {}", s->target->name(), s->result_amount );
-
-
   // Ardent Defender
   if ( buffs.ardent_defender->check() )
   {
@@ -862,6 +801,28 @@ void paladin_t::target_mitigation( school_e school,
     if ( sim->debug && s->action && ! s->target->is_enemy() && ! s->target->is_add() )
       sim->print_debug( "Damage to {} after Ardent Defender (death-save) is {}", s->target->name(), s->result_amount );
   }
+}
+
+block_result_e paladin_t::target_block_resolution( const action_state_t* s ) const
+{
+  double block_chance = 0.0;
+
+  // Normal block for direct physical attacks
+  if ( s->result_type == result_amount_type::DMG_DIRECT && s->action->get_school() == SCHOOL_PHYSICAL &&
+       s->action->type == ACTION_ATTACK )
+  {
+    block_chance = cache.block();
+  }
+  // Spell block
+  else if ( s->action->get_school() != SCHOOL_PHYSICAL && s->action->type == ACTION_SPELL )
+  {
+    block_chance = cache.mastery() * mastery.divine_bulwark_2->effectN( 1 ).mastery_value();
+  }
+
+  if ( rng().roll( block_chance ) )
+    return BLOCK_RESULT_BLOCKED;
+  else
+    return BLOCK_RESULT_UNBLOCKED;
 }
 
 void paladin_t::trigger_grand_crusader( grand_crusader_source /* source */ )
@@ -927,10 +888,11 @@ action_t* paladin_t::create_action_protection( util::string_view name, util::str
 
 void paladin_t::create_buffs_protection()
 {
-  buffs.ardent_defender =
-      make_buff( this, "ardent_defender", find_spell( 31850 ) )
-        ->set_cooldown( 0_ms ); // handled by the ability
+  buffs.ardent_defender = make_buff( this, "ardent_defender", find_spell( 31850 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
+        ->set_cooldown( 0_ms );  // handled by the ability
   buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_spell( 86659 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
         ->set_cooldown( 0_ms );
 //HS and BH fake absorbs
   buffs.divine_bulwark_absorb = make_buff<absorb_buff_t>( this, "divine_bulwark", mastery.divine_bulwark );
@@ -1040,6 +1002,7 @@ void paladin_t::init_spells_protection()
     spec.judgment_4 = find_rank_spell( "Judgment", "Rank 4" );
 
     spells.judgment_debuff = find_spell( 197277 );
+    spells.standing_in_consecration_buff = find_spell( 188370 );
   }
 
   spec.shield_of_the_righteous = find_class_spell( "Shield of the Righteous" );
@@ -1047,9 +1010,7 @@ void paladin_t::init_spells_protection()
 
   passives.riposte             = find_specialization_spell( "Riposte" );
   passives.sanctuary           = find_specialization_spell( "Sanctuary" );
-
   passives.aegis_of_light      = find_specialization_spell( "Aegis of Light" );
-  passives.aegis_of_light_2    = find_rank_spell( "Aegis of Light", "Rank 2" );
 
   spells.sentinel = find_spell( 389539 );
   spells.refining_fire_tick = find_spell( 469882 );

@@ -3589,6 +3589,174 @@ void sunfire_silk_trappings( special_effect_t& effect )
 }
 }  // namespace sets
 
+namespace omnium
+{
+template <typename BASE>
+struct omnium_core_rune_t : public BASE
+{
+  stat_buff_t* buff = nullptr;
+  const spell_data_t* coeff;
+
+  omnium_core_rune_t( const special_effect_t& e, std::string_view n, unsigned id )
+    : BASE( e, n, id ), coeff( e.driver()->effectN( 2 ).trigger() )
+  {
+    constexpr bool heal = std::is_base_of_v<heal_t, BASE>;
+
+    if ( heal )
+      BASE::name_str_reporting = "Heal";
+
+    // using placeholder values
+    BASE::base_dd_min = BASE::base_dd_max = BASE::data().effectN( 2 ).base_value();
+
+    // Rune of Lingering: 1287555 driver, 1287663 dot, 1287665 hot
+    if ( find_special_effect( e.player, 1287555 ) )
+    {
+      auto dot = create_proc_action<BASE>( fmt::format( "{}_lingering", n ), e, heal ? 1287665 : 1287663 );
+      dot->base_td = dot->data().effectN( 2 ).base_value() / dot->dot_duration.value().total_seconds();
+      dot->name_str_reporting = "rune_of_lingering";
+      if ( !dot->stats->parent )
+        BASE::add_child( dot );
+
+      BASE::impact_action = dot;
+
+      // Rune of Residual Energy: 1279615 driver
+      if ( auto residual = find_special_effect( e.player, 1279615 ) )
+        dot->base_multiplier *= 1.0 + residual->driver()->effectN( 1 ).percent();
+    }
+
+    apply_stat_rune( 1279609, 1287772 );  // Rune of Critical Power
+    apply_stat_rune( 1279610, 1287774 );  // Rune of Burning Haste
+    apply_stat_rune( 1279612, 1287771 );  // Rune of Masterful Cunning
+    apply_stat_rune( 1279613, 1287770 );  // Rune of the Versatile Warrior
+
+    // Rune of Overload: 1279614 driver
+    if ( auto overload = find_special_effect( e.player, 1279614 ) )
+      BASE::base_multiplier *= 1.0 + overload->driver()->effectN( 1 ).percent();
+  }
+
+  void apply_stat_rune( unsigned driver_id, unsigned buff_id )
+  {
+    if ( !find_special_effect( BASE::player, driver_id ) )
+      return;
+
+    buff = create_buff<stat_buff_t>( BASE::player, BASE::player->find_spell( buff_id ) );
+    // using placeholder values
+    buff->set_stat_from_effect_type( A_MOD_RATING, buff->data().effectN( 2 ).base_value() );
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( buff )
+      buff->trigger();
+  }
+};
+
+// 1279599 driver
+// 1286970 damage
+// 1263002 heal
+void rune_of_unleashed_fire( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Rune of Unleashed Fire: Procs are assumed to target the same unit that triggered them. "
+    "Procs triggered by damage are assumed to proc damage. "
+    "Procs triggered by healing/aura are assumed to proc heal." );
+  effect.player->sim->error( UNVERIFIED_VALUE,
+    "Rune of Unleashed Fire: Damage using placeholder value of 977. Heal using placeholder value of 1465." );
+
+  auto coeff = effect.driver()->effectN( 2 ).trigger();
+
+  // using placeholder values, presumably should be based on coeff->effectN( 1 )
+  auto damage =
+    create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_unleashed_fire", effect, 1286970 );
+
+  auto heal =
+    create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_unleashed_fire_heal", effect, 1263002 );
+
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ damage, heal ]( auto, auto, player_t* t, auto ) {
+      if ( t->is_enemy() )
+        damage->execute_on_target( t );
+      else
+        heal->execute_on_target( t );
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1279596 driver
+// 1286690 orb1?
+// 1286716 damage
+// 1286721 heal
+// 1287255 orb2?
+// 1287256 orb3?
+// 1287257 orb4?
+// 1287258 orb5?
+// 1287425 orb counter/driver
+void rune_of_voidtouched_orbs( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Rune of Voidtouched Orbs: Orbs are assumed to proc on hit and require a damage/healing amount. "
+    "Procs are assumed to target the same unit that triggered them. "
+    "All procs are assumed to fire individually at the same time when triggered. "
+    "Orbs are assumed to stack while out of combat." );
+  effect.player->sim->error( UNVERIFIED_VALUE,
+    "Rune of Voidtouched Orbs: Damage using placeholder value of 977. Heal using placeholder value of 1465." );
+
+  auto coeff = effect.driver()->effectN( 2 ).trigger();
+
+  // using placeholder values, presumably should be based on coeff->effectN( 1 )
+  auto damage =
+    create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_voidtouched_orbs", effect, 1286716 );
+
+  auto heal =
+    create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_voidtouched_orbs_heal", effect, 1286721 );
+
+  // create orb buff & periodic trigger
+  auto orb_buff = create_buff( effect.player, effect.trigger() );
+  auto period = effect.driver()->effectN( 1 ).period();
+
+  effect.player->register_precombat_begin( [ orb_buff, period ]( player_t* p ) {
+    orb_buff->trigger( orb_buff->max_stack() );
+    make_event( *p->sim, p->rng().range( 1_ms, period ), [ orb_buff, period ] {
+      orb_buff->trigger();
+      make_repeating_event( *orb_buff->sim, period, [ orb_buff ] { orb_buff->trigger(); } );
+    } );
+  } );
+
+  // create damage/heal callback
+  auto orb = new special_effect_t( effect.player );
+  orb->name_str = "rune_of_voidtouched_orbs";
+  orb->spell_id = effect.trigger()->id();
+  orb->proc_flags2_ = PF2_ALL_HIT;  // TODO: confirm
+  effect.player->special_effects.push_back( orb );
+
+  effect.player->callbacks.register_callback_trigger_function(
+    orb->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+    []( auto, const auto&, auto, action_state_t* s, auto ) {
+      return s && s->result_amount > 0.0;  // TODO: confirm only trigger on hits that do damage/healing
+    } );
+
+  effect.player->callbacks.register_callback_execute_function(
+    orb->spell_id, [ orb_buff, damage, heal ]( auto, auto, player_t* t, auto ) {
+      auto stacks = orb_buff->check();
+      orb_buff->expire();
+
+      while ( stacks-- )
+      {
+        if ( t->is_enemy() )
+          damage->execute_on_target( t );
+        else
+          heal->execute_on_target( t );
+      }
+    } );
+
+  auto orb_cb = new dbc_proc_callback_t( effect.player, *orb );
+  orb_cb->activate_with_buff( orb_buff );
+}
+}  // namespace omnium
+
 void register_special_effects()
 {
   // NOTE: use unique_gear:: namespace for static consumables so we don't activate them with enable_all_item_effects
@@ -3743,6 +3911,18 @@ void register_special_effects()
   register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
   register_special_effect( 253819, sets::umbral_shift );
   register_special_effect( 1290152, DISABLED_EFFECT ); // umbral shift equip effect
+  // Omnium Folio
+  set_min_version( wowv_t( 12, 0, 7 ) );
+  register_special_effect( 1279599, omnium::rune_of_unleashed_fire );
+  register_special_effect( 1279596, omnium::rune_of_voidtouched_orbs );
+  register_special_effect( 1287555, DISABLED_EFFECT );  // rune of lingering
+  register_special_effect( 1279609, DISABLED_EFFECT );  // rune of critical power
+  register_special_effect( 1279610, DISABLED_EFFECT );  // rune of burning haste
+  register_special_effect( 1279612, DISABLED_EFFECT );  // rune of masterful cunning
+  register_special_effect( 1279613, DISABLED_EFFECT );  // rune of the versatile warrior
+  register_special_effect( 1279614, DISABLED_EFFECT );  // rune of overload
+  register_special_effect( 1279615, DISABLED_EFFECT );  // rune of residual energy
+  reset_version_check();
 }
 
 void register_target_data_initializers( sim_t& )

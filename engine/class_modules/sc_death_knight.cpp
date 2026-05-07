@@ -1631,6 +1631,7 @@ public:
     const spell_data_t* razorice_debuff;
     const spell_data_t* sanguination_cooldown;
     const spell_data_t* sanguination_heal;
+    const spell_data_t* spellwarding_driver;
     const spell_data_t* spellwarding_absorb;
     const spell_data_t* stoneskin_gargoyle;
     const spell_data_t* unending_thirst;
@@ -1992,7 +1993,6 @@ public:
   void adjust_dynamic_cooldowns() override;
   void assess_damage( school_e, result_amount_type, action_state_t* ) override;
   void assess_damage_imminent( school_e, result_amount_type, action_state_t* ) override;
-  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void do_damage( action_state_t* ) override;
   void create_actions() override;
   action_t* create_action( std::string_view name, std::string_view options ) override;
@@ -8522,8 +8522,11 @@ struct army_of_the_dead_t final : public death_knight_summon_spell_t
 
     harmful = false;
     target  = p;
-    p->pets.lesser_ghoul_army.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.army_ghoul ) );
-    add_child( p->pet_summon.army_ghoul );
+    if ( p->talent.unholy.army_of_the_dead.ok() )
+    {
+      p->pets.lesser_ghoul_army.set_creation_event_callback( pets::parent_pet_action_fn( p->pet_summon.army_ghoul ) );
+      add_child( p->pet_summon.army_ghoul );
+    }
     if ( p->talent.unholy.raise_abomination.ok() )
     {
       summon_abomination = get_action<summon_abomination_t>( "raise_abomination", p );
@@ -10487,8 +10490,10 @@ struct frost_strike_base_t : public death_knight_melee_attack_t
 
     // frostbane benefits from IO, and stacks it, but because its damage is delayed it will not get buffed
     // when frostbane procs RE
-    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr )
+    if ( p()->talent.frost.icy_onslaught->ok() && p()->buffs.icy_onslaught->expiration_delay == nullptr && !p()->buffs.icy_onslaught->freeze_stacks )
       p()->buffs.icy_onslaught->trigger();
+    p()->buffs.icy_onslaught->set_freeze_stacks( false );
+
 
     if ( p()->talent.frost.frostreaper.ok() )
     {
@@ -10786,6 +10791,7 @@ struct glacial_advance_t final : public death_knight_spell_t
     {
       p()->buffs.icy_onslaught->trigger();
     }
+    p()->buffs.icy_onslaught->set_freeze_stacks( false );
 
     // 12.0 TODO drive the delay from likely misc values
     make_event<delayed_execute_event_t>( *sim, p(), damage_action, execute_state->target, 100_ms );
@@ -12986,6 +12992,7 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
 
   if ( talent.frost.icy_onslaught->ok() )
   {
+    buffs.icy_onslaught->set_freeze_stacks( true ); // hacky abuse of bool to stop IO from gaining a stack when RE procs at 0 IO stacks
     buffs.icy_onslaught->expire(
         100_ms );  // Delay needed to push icy_onslaughts expiration to after frost strike is resolved
   }
@@ -14770,13 +14777,13 @@ void death_knight_t::spell_lookups()
   runeforge_spell.apocalypse_death_debuff  = conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327095 );
   runeforge_spell.apocalypse_famine_debuff = conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327092 );
   runeforge_spell.apocalypse_war_debuff    = conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327096 );
-  runeforge_spell.apocalypse_pestilence_damage =
-      conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327093 );
+  runeforge_spell.apocalypse_pestilence_damage = conditional_spell_lookup( has_runeforge( RUNEFORGE_APOCALYPSE ), 327093 );
   runeforge_spell.razorice_damage       = conditional_spell_lookup( has_runeforge( RUNEFORGE_RAZORICE ), 50401 );
   runeforge_spell.razorice_debuff       = conditional_spell_lookup( spec.glacial_advance->ok() || has_runeforge( RUNEFORGE_RAZORICE ), 51714 );
   runeforge_spell.sanguination_cooldown = conditional_spell_lookup( has_runeforge( RUNEFORGE_SANGUINATION ), 326809 );
   runeforge_spell.sanguination_heal     = conditional_spell_lookup( has_runeforge( RUNEFORGE_SANGUINATION ), 326808 );
-  runeforge_spell.spellwarding_absorb   = conditional_spell_lookup( has_runeforge( RUNEFORGE_SPELLWARDING ), 326855 );
+  runeforge_spell.spellwarding_driver   = conditional_spell_lookup( has_runeforge( RUNEFORGE_SPELLWARDING ), 326864 );
+  runeforge_spell.spellwarding_absorb   = conditional_spell_lookup( has_runeforge( RUNEFORGE_SPELLWARDING ), 326867 );
   runeforge_spell.stoneskin_gargoyle = conditional_spell_lookup( has_runeforge( RUNEFORGE_STONESKIN_GARGOYLE ), 62157 );
   runeforge_spell.unending_thirst    = conditional_spell_lookup( has_runeforge( RUNEFORGE_UNENDING_THIRST ), 326984 );
   runeforge_spell.unholy_strength    = conditional_spell_lookup( has_runeforge( RUNEFORGE_FALLEN_CRUSADER ), 53365 );
@@ -16222,36 +16229,6 @@ void death_knight_t::do_damage( action_state_t* state )
   }
 }
 
-// death_knight_t::target_mitigation ========================================
-
-void death_knight_t::target_mitigation( school_e school, result_amount_type type, action_state_t* state )
-{
-  if ( buffs.icebound_fortitude->up() && buffs.icebound_fortitude->data().effectN( 3 ).has_common_school( school ) )
-    state->result_amount *= 1.0 + buffs.icebound_fortitude->data().effectN( 3 ).percent();
-
-  if ( buffs.bloodsoaked_ground->up() && buffs.bloodsoaked_ground->data().effectN( 1 ).has_common_school( school ) )
-    state->result_amount *= 1.0 + buffs.bloodsoaked_ground->data().effectN( 1 ).percent();
-
-  const death_knight_td_t* td = get_target_data( state->action->player );
-  if ( td && has_runeforge( RUNEFORGE_APOCALYPSE ) &&
-       runeforge_spell.apocalypse_famine_debuff->effectN( 1 ).has_common_school( school ) )
-    state->result_amount *= 1.0 + td->debuff.apocalypse_famine->check_stack_value();
-
-  if ( has_runeforge( RUNEFORGE_SPELLWARDING ) &&
-       runeforge_spell.spellwarding_absorb->effectN( 2 ).has_common_school( school ) )
-  {
-    double val = 0;
-    if ( mh_runeforge == RUNEFORGE_SPELLWARDING )
-      val += runeforge_spell.spellwarding_absorb->effectN( 2 ).percent();
-    if ( oh_runeforge == RUNEFORGE_SPELLWARDING )
-      val += runeforge_spell.spellwarding_absorb->effectN( 2 ).percent();
-
-    state->result_amount *= 1.0 + val;
-  }
-
-  player_t::target_mitigation( school, type, state );
-}
-
 // death_knight_t::composite_bonus_armor =========================================
 
 double death_knight_t::composite_bonus_armor() const
@@ -16616,8 +16593,18 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.icy_talons, talent.icy_talons );
   parse_effects( buffs.rune_mastery );
   parse_effects( buffs.antimagic_shell );
+  parse_effects( buffs.icebound_fortitude );
+
+  if ( has_runeforge( RUNEFORGE_SPELLWARDING ) )
+  {
+    double val = ( ( mh_runeforge == RUNEFORGE_SPELLWARDING ) + ( oh_runeforge == RUNEFORGE_SPELLWARDING ) ) *
+                 runeforge_spell.spellwarding_driver->effectN( 2 ).percent();
+    parse_effects( runeforge_spell.spellwarding_driver, val, PARSE_PASSIVE );
+  }
+
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::brittle ), spell.brittle_debuff );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_war ), runeforge_spell.apocalypse_war_debuff );
+  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::apocalypse_famine ), runeforge_spell.apocalypse_famine_debuff );
 
   switch ( specialization() )
   {
@@ -16675,6 +16662,7 @@ void death_knight_t::parse_player_effects()
                               pet_spell.trollbanes_chains_of_ice_debuff );
         break;
       case HERO_SANLAYN:
+        parse_effects( buffs.bloodsoaked_ground );
         parse_effects( buffs.essence_of_the_blood_queen, effect_mask_t( true ).disable( 3 ), [ & ]( double v ) {
           v *= 0.1;  // Divides by 10 in spell data
           if ( buffs.gift_of_the_sanlayn->check() )
@@ -17208,117 +17196,54 @@ struct death_knight_module_t : public module_t
   /*
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Virulent Plague buffed 15%", 281049,
+    hotfix::register_effect( "Death Knight", "2026-5-1", "Shadow Bolt Nerfed 15%", 803165,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.2504378 )
-        .verification_value( 0.217772 );
+        .modifier( 0.6587568 )
+        .verification_value( 0.775008 );
 
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Epidemic (main) buffed 10%", 315517,
+    hotfix::register_effect( "Death Knight", "2026-5-1", "Graveyard (main) nerfed 15%", 1015149,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.6255216 )
-        .verification_value( 0.568656 );
+        .modifier( 0.9546775 )
+        .verification_value( 1.12315 );
 
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Epidemic (AoE) buffed 10%", 872659,
+    hotfix::register_effect( "Death Knight", "2026-5-1", "Graveyard (AoE) nerfed 15%", 1274362,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.2502115 )
-        .verification_value( 0.227465 );
+        .modifier( 0.3818761 )
+        .verification_value( 0.449266 );
 
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Graveyard (main) buffed 10%", 1015149,
+    hotfix::register_effect( "Death Knight", "2026-5-1", "Whitemane Epidemic (main) nerfed 25%", 1233789,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.123155 )
-        .verification_value( 1.02105 );
+        .modifier( 0.494484 )
+        .verification_value( 0.659312 );
 
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Graveyard (AoE) buffed 10%", 1274362,
+    hotfix::register_effect( "Death Knight", "2026-5-1", "Whitemane Epidemic (AoE) nerfed 25%", 1233790,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.4492664 )
-        .verification_value( 0.408424 );
+        .modifier( 0.19779525 )
+        .verification_value( 0.263727 );
 
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Direct Damage Aura Nerfed 20%", 179690,
+    hotfix::register_effect( "Death Knight", "2026-5-1", "Trollbanes icy Fury nerfed 25%", 1141463,
                              hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
+        .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( -26 )
-        .verification_value( -8 );
+        .modifier( 0.78975 )
+        .verification_value( 1.053 );
 
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Periodic Damage Aura Nerfed 20%", 191170,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( -26 )
-        .verification_value( -8 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Pet Damage Aura Nerfed 20%", 191171,
+    hotfix::register_effect( "Death Knight", "2026-5-1", "Thrill of Blood DP damage increased to 10%", 1319202,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( -26 )
-        .verification_value( -8 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Guardian Damage Aura Nerfed 20%", 1032341,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( -26 )
-        .verification_value( -8 );
-    // Blood Hotfixes
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Blood Reaper's mark damage buffed 20%", 1133377,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 3.685536 )
-        .verification_value( 3.07125 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Blood Reaper's mark explosion damage buffed 20%", 1127543,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.45348 )
-        .verification_value( 0.3779 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Blood Exterminate 1st damage buffed 20%", 1135880,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 8.58540 )
-        .verification_value( 7.1545 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Blood Exterminate 2nd damage buffed 20%", 1135882,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 4.692 )
-        .verification_value( 3.91 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Blood Wave of souls damage buffed 20%", 1126738,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 2.1192 )
-        .verification_value( 1.766 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Blood Deathly Blows damage buffed to 12%", 1278009,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 12 )
+        .modifier( 10 )
         .verification_value( 5 );
-
-    hotfix::register_effect( "Death Knight", "2026-3-13", "Blood Bind in Darkness blood boil damage buff to 30%", 1183141,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 30 )
-        .verification_value( 10 );
   }
   */
 

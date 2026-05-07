@@ -432,7 +432,6 @@ struct lights_hammer_t : public paladin_spell_t
     tick_zero             = true;
     ignore_false_positive = true;
 
-    dynamic_tick_action = true;
     lh_heal_tick        = new lights_hammer_heal_tick_t( p );
     add_child( lh_heal_tick );
     lh_damage_tick = new lights_hammer_damage_tick_t( p );
@@ -554,6 +553,7 @@ action_t* paladin_t::create_action_holy( util::string_view name, util::string_vi
 void paladin_t::create_buffs_holy()
 {
   buffs.divine_protection = make_buff( this, "divine_protection", find_class_spell( "Divine Protection" ) )
+                                ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
                                 ->set_cooldown( 0_ms );  // Handled by the action
   buffs.infusion_of_light = make_buff( this, "infusion_of_light", find_spell( 54149 ) );
   buffs.avenging_crusader =

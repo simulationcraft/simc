@@ -392,13 +392,15 @@ void enchants::mark_of_the_shattered_hand( special_effect_t& effect )
     bleed_attack_t( player_t* p, const special_effect_t& effect ) :
       attack_t( effect.name(), p, p -> find_spell( effect.trigger_spell_id ) )
     {
-      hasted_ticks = false; background = true; callbacks = false; special = true;
-      may_miss = may_block = may_dodge = may_parry = false; may_crit = true;
+      hasted_ticks = false;
+      background = true;
+      callbacks = false;
+      special = true;
+      may_miss = may_block = may_dodge = may_parry = false;
+      may_crit = true;
       tick_may_crit = false;
+      ignores_armor = true;
     }
-
-    double composite_target_armor( player_t* ) const override
-    { return 0.0; }
   };
 
   action_t* bleed = effect.player -> find_action( "shattered_bleed" );
@@ -1723,7 +1725,6 @@ struct essence_of_yulon_driver_t : public spell_t
     travel_speed = 0;
 
     tick_action = new essence_of_yulon_t( player, data() );
-    dynamic_tick_action = true;
   }
 };
 
@@ -1892,20 +1893,21 @@ struct cleave_t : public T
   cleave_t( const item_t* item, const std::string& name, school_e s ) :
     T( name, item -> player )
   {
-    this -> callbacks = false;
-    this -> may_crit = false;
-    this -> may_glance = false;
-    this -> may_miss = true;
-    this -> special = true;
-    this -> proc = true;
-    this -> background = true;
-    this -> school = s;
-    this -> aoe = 5;
-    if ( this -> type == ACTION_ATTACK )
+    this->callbacks = false;
+    this->may_crit = false;
+    this->may_glance = false;
+    this->may_miss = true;
+    this->special = true;
+    this->proc = true;
+    this->background = true;
+    this->school = s;
+    this->aoe = 5;
+    if ( this->type == ACTION_ATTACK )
     {
-      this -> may_dodge = true;
-      this -> may_parry = true;
-      this -> may_block = true;
+      this->may_dodge = true;
+      this->may_parry = true;
+      this->may_block = true;
+      this->ignores_armor = true;
     }
   }
 
@@ -1930,9 +1932,6 @@ struct cleave_t : public T
 
     return tl.size();
   }
-
-  double composite_target_armor( player_t* ) const override
-  { return 0.0; }
 };
 
 void item::cleave( special_effect_t& effect )
@@ -2092,7 +2091,8 @@ struct felmouth_frenzy_driver_t : public spell_t
     p( effect.player )
   {
     background = true;
-    may_crit = callbacks = hasted_ticks = dynamic_tick_action = false;
+    may_crit = callbacks = hasted_ticks = false;
+    dynamic_tick_action = TICK_ACTION_NONE;
     // Estimated from logs
     base_tick_time = timespan_t::from_millis( 250 );
     dot_behavior = DOT_EXTEND;
@@ -2699,7 +2699,7 @@ struct felstorm_t : public melee_attack_t
     parse_options( opts );
 
     callbacks = may_miss = may_block = may_parry = false;
-    dynamic_tick_action = hasted_ticks = true;
+    hasted_ticks = true;
     trigger_gcd = timespan_t::from_seconds( 1.0 );
 
     tick_action = new felstorm_tick_t( p );
@@ -3691,6 +3691,36 @@ void unique_gear::initialize_racial_effects( player_t* player )
   }
 }
 
+void unique_gear::initialize_expansion_trait_effects( player_t* player, std::string_view talents_str )
+{
+  if ( !player || talents_str.empty() )
+    return;
+
+  for ( auto entry : util::string_split<std::string_view>( talents_str, "/" ) )
+  {
+    auto split = util::string_split<std::string_view>( entry, ":" );
+    auto _trait = split[ 0 ];
+    // auto _rank = split.size() > 1 ? split[ 1 ] : "1"; ignored for now
+
+    unsigned spell_id;
+
+    if ( util::is_number( _trait ) )
+      spell_id = trait_data_t::find( util::to_unsigned( _trait ), player->is_ptr() )->id_spell;
+    else
+      spell_id = trait_data_t::find( talent_tree::EXPANSION, _trait, 0, SPEC_NONE, player->is_ptr(), true )->id_spell;
+
+    if ( !spell_id )
+      throw sc_invalid_player_argument( fmt::format( "Unable to find expansion talent '{}'.", _trait ) );
+
+    special_effect_t _effect( player );
+    _effect.spell_id = spell_id;
+
+    unique_gear::initialize_special_effect( _effect, spell_id );
+
+    player->special_effects.push_back( new special_effect_t( _effect ) );
+  }
+}
+
 // ==========================================================================
 // unique_gear::init
 // ==========================================================================
@@ -4622,7 +4652,7 @@ void unique_gear::register_special_effects()
   shadowlands::register_special_effects();
   dragonflight::register_special_effects();
   thewarwithin::register_special_effects();
-  midnight:: register_special_effects();
+  midnight::register_special_effects();
 
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */

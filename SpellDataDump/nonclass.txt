@@ -1,4 +1,4 @@
-SimulationCraft 1201-01 for World of Warcraft 12.0.5.67186 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.5.67314 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -231464,7 +231464,7 @@ Labels           : 959
                  : 4902
                  : 4905
                  : 4906
-                 : 4913
+                 : 4906
                  : 6103
 Proc Chance      : 101%
 Proc Flags       : Death
@@ -231506,7 +231506,7 @@ Labels           : 959
                  : 4902
                  : 4905
                  : 4906
-                 : 4913
+                 : 4906
                  : 6103
 Proc Chance      : 101%
 Proc Flags       : Death
@@ -234582,7 +234582,7 @@ Labels           : 959
                  : 4377: W-47CH D0G (1259647 effect#4)
                  : 4897
                  : 4907
-                 : 4913
+                 : 4907
                  : 6101
 Proc Chance      : 101%
 Proc Flags       : Death
@@ -236774,7 +236774,6 @@ Effects          :
 Description      : $@spelldesc1235159
 
 Name             : Midnight Perception (id=1235216) 
-Hotfixed         : Cooldown (0 -> 1000), GCD (1500 -> 0)
 School           : Physical
 Spell Type       : None
 Range            : 12 - 15 yards
@@ -239522,7 +239521,6 @@ Effects          :
 Tooltip          : Taking increased damage from $@spellname1237158.
 
 Name             : Chum (id=1237942) 
-Hotfixed         : Cooldown (0 -> 1000), GCD (1500 -> 0)
 School           : Physical
 Spell Type       : None
 Range            : 12 - 15 yards
@@ -244901,10 +244899,12 @@ Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1254614)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 263.868 (coefficient=2.064639) | Rating: Haste | Target: Self (1)
-#2 (id=1254615)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 81.97839 (coefficient=0.641441) | Target: Self (1)
+#1 (id=1254614)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 446.4254 (coefficient=3.405735) | Rating: Haste | Target: Self (1)
+Hotfixed         : Coefficient (2.064639 -> 3.405735), Scaling Class (-9 -> -7)
+#2 (id=1254615)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 138.6952 (coefficient=1.058092) | Target: Self (1)
+Hotfixed         : Coefficient (0.641441 -> 1.058092), Scaling Class (-9 -> -7)
 Description      : Unleash an $@spellname1250508, increasing your Haste by $s1 for $d.
 
 You have a low chance to suffer an $@spellname1255853, reducing one of your other secondary stats by $s2 for $1255853d.
@@ -245184,7 +245184,8 @@ Triggered By     : Mark of Frost (1260316)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254725)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 94.43196 (coefficient=0.720412) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 39.00798 (coefficient=0.297588) | Target: Self (1)
+Hotfixed         : Coefficient (0.720412 -> 0.297588)
 #2 (id=1269744)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=1269745)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
@@ -245692,8 +245693,9 @@ Effects          :
 #1 (id=1256796)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0
 #2 (id=1260644)  : Apply Aura (6) | Absorb Damage (69) | Scaling Class: Replace Primary (-8)
-                   Base Value: 1 | Scaled Value: 58417.95 (coefficient=457.0921) | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 58417.95 (coefficient=457.0921) | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1260668)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : On Use: Activate the array and generate a Voidstone Barrier, absorbing ${$<rolemult>*$s2} damage for the next $d.
@@ -247103,7 +247105,6 @@ Effects          :
 Tooltip          : Critical Strike decreased by $w1.
 
 Name             : Emberwing Burn (id=1255856) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
@@ -247114,7 +247115,6 @@ Effects          :
 Tooltip          : Mastery decreased by $w1.
 
 Name             : Emberwing Burn (id=1255857) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
@@ -252658,7 +252658,6 @@ Attributes       : No Aura Cancel (31), Aura Points On Client (268), Visible onl
 Effects          :
 #2 (id=1281336)  : Apply Aura (6) | Enable Profession Effects (511)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 323 | Target: Self (1)
-Hotfixed         : Misc Value (397 -> 323)
 Tooltip          : Midnight Fishing Skill increased by $w1.
 
 Midnight Fishing Perception increased by $w2.

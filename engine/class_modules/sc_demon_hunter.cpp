@@ -378,6 +378,7 @@ public:
     buff_t* felfire_fist_out_of_combat;
     buff_t* untethered_rage;
     buff_t* seething_anger;
+    buff_t* fiery_brand;
 
     // Aldrachi Reaver
     buff_t* reavers_glaive;
@@ -428,7 +429,7 @@ public:
       player_talent_t vengeful_bonds;  // No Implementation
       player_talent_t unrestrained_fury;
       player_talent_t shattered_restoration;
-      player_talent_t improved_sigil_of_misery; // No Implementation
+      player_talent_t improved_sigil_of_misery;  // No Implementation
 
       player_talent_t bouncing_glaives;
       player_talent_t imprison;           // No Implementation
@@ -874,8 +875,6 @@ public:
     const spell_data_t* sigil_of_flame_damage;
     const spell_data_t* sigil_of_flame_fury;
 
-    const spell_data_t* demonic_wards_2;
-    const spell_data_t* demonic_wards_3;
     const spell_data_t* fiery_brand_debuff;
     const spell_data_t* frailty_debuff;
     const spell_data_t* riposte;
@@ -1163,7 +1162,7 @@ public:
     spell_t* collective_anguish          = nullptr;
 
     // Devourer
-    spell_t* void_buildup           = nullptr;
+    spell_t* void_buildup = nullptr;
 
     // Havoc
     spell_t* burning_wound                                         = nullptr;
@@ -1201,8 +1200,8 @@ public:
     action_t* voidsurge      = nullptr;
 
     // Sigils
-    spell_t* sigil_of_flame   = nullptr;
-    spell_t* sigil_of_spite   = nullptr;
+    spell_t* sigil_of_flame = nullptr;
+    spell_t* sigil_of_spite = nullptr;
   } active;
 
   // Pets
@@ -1227,11 +1226,11 @@ public:
     // Proc rate for Wounded Quarry for Havoc
     double wounded_quarry_chance_havoc = 0.10;
     // How many seconds that Vengeful Retreat locks out Felblade
-    double felblade_lockout_from_vengeful_retreat    = 0.6;
-    bool enable_dungeon_slice                        = false;
-    double proc_from_killing_blow_chance             = 0.4;
-    int entropy_starting_souls                       = -1;
-    int channel_tick_cutoff_benefit                  = 2;
+    double felblade_lockout_from_vengeful_retreat = 0.6;
+    bool enable_dungeon_slice                     = false;
+    double proc_from_killing_blow_chance          = 0.4;
+    int entropy_starting_souls                    = -1;
+    int channel_tick_cutoff_benefit               = 2;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -1306,7 +1305,6 @@ public:
   void merge( player_t& other ) override;
   void datacollection_begin() override;
   void datacollection_end() override;
-  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void analyze( sim_t& sim ) override;
 
   // custom demon_hunter_t functions
@@ -3274,7 +3272,7 @@ struct final_breath_trigger_t : public BASE
       tick_state->target = d->target;
       BASE::tick_action->set_target( d->target );
 
-      if ( BASE::dynamic_tick_action )
+      if ( BASE::dynamic_tick_action == TICK_ACTION_UPDATE )
       {
         BASE::tick_action->update_state( tick_state, BASE::amount_type( tick_state, BASE::tick_action->direct_tick ) );
       }
@@ -4266,6 +4264,9 @@ struct fiery_brand_t : public demon_hunter_spell_t
       player_t* target = targets[ static_cast<int>( dh()->rng().range( 0, static_cast<double>( targets.size() ) ) ) ];
       this->set_target( target );
       this->schedule_execute();
+
+      // 2026-05-04 -- Burning Alive currently refreshes Fiery Brand on the player
+      dh()->buff.fiery_brand->trigger();
     }
   };
 
@@ -4294,6 +4295,8 @@ struct fiery_brand_t : public demon_hunter_spell_t
     dot_action->snapshot_state( fb_state, result_amount_type::DMG_OVER_TIME );
     fb_state->primary = true;
     dot_action->schedule_execute( fb_state );
+
+    dh()->buff.fiery_brand->trigger();
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -6515,7 +6518,8 @@ struct rolling_torment_energize_t : demon_hunter_energize_t
 
     int stacks = dh()->buff.collapsing_star_stack->check();
 
-    return e * stacks;
+    // 2026-04-29 -- Celestial Echoes is additive, not multiplicative.
+    return e * stacks + dh()->talent.annihilator.celestial_echoes->effectN( 2 ).base_value();
   }
 };
 
@@ -8593,7 +8597,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       {
         state_t* s = static_cast<state_t*>( dh()->active.immolation_aura_initial->get_state() );
 
-        s->target                     = dh()->target;
+        s->target = dh()->target;
 
         dh()->active.immolation_aura_initial->set_target( dh()->target );
 
@@ -9639,10 +9643,9 @@ void demon_hunter_t::create_buffs()
                                ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                                  spawn_soul_fragment( proc.soul_fragment_from_entropy, soul_fragment::LESSER, 1 );
                                } );
-  
-  
-    // timespan_t initial_delay = timespan_t::from_millis( rng().range( 0, 5250 ) );
-    
+
+  // timespan_t initial_delay = timespan_t::from_millis( rng().range( 0, 5250 ) );
+
   // Havoc ==================================================================
 
   buff.out_of_range = make_buff( this, "out_of_range", spell_data_t::nil() )->set_chance( 1.0 );
@@ -9742,6 +9745,11 @@ void demon_hunter_t::create_buffs()
                              } );
   buff.seething_anger =
       make_buff( this, "seething_anger", spec.seething_anger_buff )->set_default_value_from_effect( 1 );
+
+  buff.fiery_brand = make_buff( this, "fiery_brand", spec.fiery_brand_debuff )
+                         ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
+                         ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                         ->disable_ticking( true );
 
   // Aldrachi Reaver ========================================================
 
@@ -10032,11 +10040,11 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
       {
         auto sof_action = find_action( "sigil_of_flame" );
 
-        if (!sof_action)
+        if ( !sof_action )
           return expr_t::create_constant( name_str, false );
 
         auto expr = sof_action->create_expression( util::string_join( util::make_span( splits ).subspan( 2 ), "." ) );
-        if (expr)
+        if ( expr )
           return expr;
 
         auto tail = name_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
@@ -10048,11 +10056,11 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
       {
         auto sosp_action = find_action( "sigil_of_spite" );
 
-        if (!sosp_action)
+        if ( !sosp_action )
           return expr_t::create_constant( name_str, false );
 
         auto expr = sosp_action->create_expression( util::string_join( util::make_span( splits ).subspan( 2 ), "." ) );
-        if (expr)
+        if ( expr )
           return expr;
 
         auto tail = name_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
@@ -10083,8 +10091,7 @@ void demon_hunter_t::create_options()
   add_option(
       opt_float( "felblade_lockout_from_vengeful_retreat", options.felblade_lockout_from_vengeful_retreat, 0, 1 ) );
   add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
-  add_option( opt_float( "proc_from_killing_blow_chance", options.proc_from_killing_blow_chance,
-                         0.0, 1.0 ) );
+  add_option( opt_float( "proc_from_killing_blow_chance", options.proc_from_killing_blow_chance, 0.0, 1.0 ) );
   add_option( opt_int( "entropy_starting_souls", options.entropy_starting_souls, -1, 50 ) );
   add_option( opt_int( "channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
 
@@ -10375,8 +10382,6 @@ void demon_hunter_t::init_spells()
 
   // Spec-Overriden Passives
   spec.demonic_wards       = find_specialization_spell( "Demonic Wards" );
-  spec.demonic_wards_2     = find_rank_spell( "Demonic Wards", "Rank 2" );
-  spec.demonic_wards_3     = find_rank_spell( "Demonic Wards", "Rank 3" );
   spec.immolation_aura_cdr = find_spell( 320378, DEMON_HUNTER_VENGEANCE );
   spec.thick_skin          = find_specialization_spell( "Thick Skin" );
 
@@ -11022,6 +11027,10 @@ void demon_hunter_t::init_spells()
   // Wounded Quarry (442808) is affected by Demon Hide.
   register_passive_affect_list( talent.havoc.demon_hide,
                                 affect_list_t( 1, 3 ).add_spell( hero_spec.wounded_quarry_damage->id() ) );
+
+  // 2026-04-29 -- Celestial Echoes is additive, not multiplicative.
+  register_passive_affect_list( talent.annihilator.celestial_echoes,
+                                affect_list_t( 2 ).remove_spell( spec.rolling_torment_energize->id() ) );
 
   switch ( specialization() )
   {
@@ -11826,64 +11835,6 @@ void demon_hunter_t::recalculate_resource_max( resource_e r, gain_t* source )
   }
 }
 
-// demon_hunter_t::target_mitigation ========================================
-
-void demon_hunter_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
-{
-  base_t::target_mitigation( school, dt, s );
-
-  if ( s->result_amount <= 0 )
-  {
-    return;
-  }
-
-  if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
-  {
-    s->result_amount *= 1.0 + talent.demon_hunter.illidari_knowledge->effectN( 1 ).percent();
-  }
-
-  const demon_hunter_td_t* td = get_target_data( s->action->player );
-  switch ( specialization() )
-  {
-    case DEMON_HUNTER_DEVOURER:
-      s->result_amount *= 1.0 + buff.blur->value();
-
-      break;
-    case DEMON_HUNTER_HAVOC:
-      s->result_amount *= 1.0 + buff.blur->value();
-
-      if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
-      {
-        s->result_amount *=
-            1.0 + spec.demonic_wards->effectN( 1 ).percent() + spec.demonic_wards_2->effectN( 1 ).percent();
-      }
-
-      if ( dbc::get_school_mask( school ) & SCHOOL_MASK_PHYSICAL )
-      {
-        s->result_amount *= 1.0 + talent.havoc.demon_hide->effectN( 2 ).percent();
-      }
-      break;
-    case DEMON_HUNTER_VENGEANCE:
-      s->result_amount *= 1.0 + spec.demonic_wards->effectN( 1 ).percent() +
-                          spec.demonic_wards_2->effectN( 1 ).percent() + spec.demonic_wards_3->effectN( 1 ).percent();
-
-      s->result_amount *= 1.0 + buff.painbringer->check_value();
-
-      if ( td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
-      {
-        s->result_amount *= 1.0 + spec.fiery_brand_debuff->effectN( 1 ).percent();
-      }
-
-      if ( td->debuffs.frailty->check() && talent.vengeance.void_reaver->ok() )
-      {
-        s->result_amount *= 1.0 + spec.frailty_debuff->effectN( 3 ).percent();
-      }
-      break;
-    default:
-      break;
-  }
-}
-
 // demon_hunter_t::reset ====================================================
 
 void demon_hunter_t::reset()
@@ -12373,6 +12324,9 @@ void demon_hunter_t::trigger_voidsurge( const voidsurge_ability ability, timespa
 void demon_hunter_t::parse_player_effects()
 {
   // Shared
+  parse_effects( talent.demon_hunter.illidari_knowledge, PARSE_PASSIVE );
+  parse_effects( talent.havoc.demon_hide, PARSE_PASSIVE );
+  parse_effects( spec.demonic_wards, PARSE_PASSIVE );
 
   // Devourer
   if ( specialization() == DEMON_HUNTER_DEVOURER )
@@ -12395,6 +12349,14 @@ void demon_hunter_t::parse_player_effects()
     parse_effects( buff.demon_spikes );
     parse_effects( buff.seething_anger );
     parse_effects( mastery.fel_blood_rank_2 );
+    parse_effects( buff.fiery_brand );
+    parse_effects( buff.painbringer );
+
+    if ( talent.vengeance.void_reaver.ok() )
+    {
+      parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::frailty ), spec.frailty_debuff );
+    }
+
   }
 
   // Aldrachi Reaver

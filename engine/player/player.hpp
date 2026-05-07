@@ -175,6 +175,7 @@ struct player_t : public actor_t
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   std::string class_talents_str, spec_talents_str, hero_talents_str;
+  std::string omnium_talents_str;
   // Specify in-game time of day to determine Night Elf racial
   enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday;
   // Specify which loa Zandalari has chosen to determine racial
@@ -250,7 +251,7 @@ struct player_t : public actor_t
     std::array<double, SCHOOL_MAX> resource_reduction;
     double miss, dodge, parry, block;
     double hit, expertise, leech, avoidance, crit_avoidance;
-    double spell_crit_chance, attack_crit_chance, block_reduction;
+    double spell_crit_chance, attack_crit_chance, block_value;
     double mastery, versatility, all_crit, all_haste;
     double melee_haste, spell_haste, ranged_haste;
     double skill, skill_debuff, distance;
@@ -1285,8 +1286,7 @@ public:
   virtual double composite_dodge() const;
   virtual double composite_parry() const;
   virtual double composite_block() const;
-  virtual double composite_block_reduction( action_state_t* s ) const;
-  virtual double composite_crit_block() const;
+  virtual double composite_block_value( const action_state_t* s ) const;
   virtual double composite_crit_avoidance() const;
   virtual double composite_attack_power_multiplier() const;
   virtual double composite_spell_power_multiplier() const;
@@ -1308,7 +1308,9 @@ public:
   virtual double composite_player_target_armor( player_t* ) const;
   virtual double composite_player_healing_received_multiplier() const;
   virtual double composite_player_absorb_received_multiplier() const;
-  virtual double composite_mitigation_multiplier( school_e ) const;
+  virtual double composite_mitigation_multiplier( const action_state_t*, school_e, bool direct ) const;
+  virtual double composite_mitigation_from_player_multiplier( player_t*, const action_state_t*, school_e,
+                                                              bool direct ) const;
   virtual double non_stacking_movement_modifier() const;
   virtual double stacking_movement_modifier() const;
   virtual double composite_movement_speed() const;
@@ -1407,6 +1409,8 @@ public:
   virtual void cost_reduction_loss( school_e school, double amount, action_t* a = nullptr );
   virtual void collect_resource_timeline_information();
 
+  virtual block_result_e target_block_resolution( const action_state_t* ) const
+  { return BLOCK_RESULT_UNBLOCKED; }
   virtual void assess_damage( school_e, result_amount_type, action_state_t* );
   virtual void target_mitigation( school_e, result_amount_type, action_state_t* );
   virtual void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* );

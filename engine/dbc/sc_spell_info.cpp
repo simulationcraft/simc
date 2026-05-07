@@ -2379,13 +2379,23 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     s << std::endl;
   }
 
-  if ( e->type() == E_APPLY_AURA || e->type() == E_APPLY_AREA_AURA_PARTY || e->type() == E_APPLY_AREA_AURA_RAID ||
-       e->type() == E_APPLY_AREA_AURA_ENEMY || e->type() == E_APPLY_AREA_AURA_FRIEND || e->type() == E_APPLY_AURA_PLAYER_AND_PET ||
-       e->type() == E_APPLY_AREA_AURA_OWNER || e->type() == E_APPLY_AREA_AURA_PARTY_NONRANDOM || e->type() == E_APPLY_AREA_AURA_PET ||
-       e->type() == E_REMOVE_AURA_BY_SPELL_LABEL || e->type() == E_MODIFY_COOLDOWN_IN_CATEGORY || e->type() == E_RECHARGE_CATEGORY_COOLDOWN_IMMEDIATE )
+  switch ( e->type() )
   {
-    switch ( e->subtype() )
-    {
+    case E_APPLY_AURA:
+    case E_APPLY_AREA_AURA_PARTY:
+    case E_APPLY_AREA_AURA_RAID:
+    case E_APPLY_AREA_AURA_PET:
+    case E_APPLY_AREA_AURA_FRIEND:
+    case E_APPLY_AREA_AURA_ENEMY:
+    case E_APPLY_AREA_AURA_OWNER:
+    case E_APPLY_AURA_PET:
+    case E_APPLY_AURA_PLAYER_AND_PET:
+    case E_REMOVE_AURA_BY_SPELL_LABEL:
+    case E_APPLY_AREA_AURA_PARTY_NONRANDOM:
+    case E_MODIFY_COOLDOWN_IN_CATEGORY:
+    case E_RECHARGE_CATEGORY_COOLDOWN_IMMEDIATE:
+      switch ( e->subtype() )
+      {
         case A_MOD_RECHARGE_RATE_LABEL:
         case A_MOD_TIME_RATE_BY_SPELL_LABEL:
         case A_MOD_DAMAGE_FROM_SPELLS_LABEL:
@@ -2402,25 +2412,30 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
           break;
         default:
           break;
-    }
-
-    if ( e->type() == E_REMOVE_AURA_BY_SPELL_LABEL )
-      if ( auto str = label_str( e->misc_value1(), dbc, wrap ); !str.empty() )
-        s << "                   " << str << std::endl;
-
-    if ( range::contains( dbc::effect_category_subtypes(), e->subtype() ) ||
-         e->type() == E_MODIFY_COOLDOWN_IN_CATEGORY ||
-         e->type() == E_RECHARGE_CATEGORY_COOLDOWN_IMMEDIATE )
-    {
-      if ( auto affected = dbc.spells_by_category( e->misc_value1() ); !affected.empty() )
-      {
-        s << "                   Affected Spells (Category): ";
-        s << wrap_concatenate( affected, []( const spell_data_t* spell ) {
-          return fmt::format( "{}", *spell );
-        }, wrap );
-        s << std::endl;
       }
-    }
+
+      if ( e->type() == E_REMOVE_AURA_BY_SPELL_LABEL )
+        if ( auto str = label_str( e->misc_value1(), dbc, wrap ); !str.empty() )
+          s << "                   " << str << std::endl;
+
+      if ( range::contains( dbc::effect_category_subtypes(), e->subtype() ) ||
+           e->type() == E_MODIFY_COOLDOWN_IN_CATEGORY || e->type() == E_RECHARGE_CATEGORY_COOLDOWN_IMMEDIATE )
+      {
+        if ( auto affected = dbc.spells_by_category( e->misc_value1() ); !affected.empty() )
+        {
+          s << "                   Affected Spells (Category): ";
+          s << wrap_concatenate(
+            affected,
+            []( const spell_data_t* spell ) {
+              return fmt::format( "{}", *spell );
+            },
+            wrap );
+          s << std::endl;
+        }
+      }
+      break;
+    default:
+      break;
   }
 
   if ( spell->class_family() > 0 )
@@ -3356,7 +3371,9 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
   s << "Entry        : " << talent->id_trait_node_entry << std::endl;
   s << "Node         : " << talent->id_node << std::endl;
   s << "Definition   : " << talent->id_trait_definition << std::endl;
-  s << "Tree         : " << util::talent_tree_string( static_cast<talent_tree>( talent->tree_index ) ) << std::endl;
+  s << fmt::format( "Tree         : {} ({})",
+                    util::talent_tree_string( static_cast<talent_tree>( talent->tree_index ) ), talent->tree_index )
+    << std::endl;
   s << "Class        : " << util::player_type_string( util::translate_class_id( talent->id_class ) ) << std::endl;
   if ( talent->id_spec[ 0 ] != 0 )
   {

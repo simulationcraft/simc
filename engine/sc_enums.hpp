@@ -85,6 +85,9 @@ constexpr auto DIMINISHING_RETURN_VERS_MITIG_CR_CURVE = 21035u;
 // Midnight curve from ItemSquishEra.db2
 constexpr auto SQUISH_CURVE_MIDNIGHT = 92181u;
 
+// Maximum damage reduction from armor / block
+constexpr auto MAX_ARMOR_DAMAGE_REDUCTION = 0.85;
+
 // Enable/Disable azerite effects
 enum class azerite_control
 {
@@ -493,6 +496,13 @@ enum dot_copy_e
   DOT_COPY_CLONE_NO_REFRESH, // Clone everything from source DoT (tick time, stacks, remaining duration, etc) 
 };
 
+enum dynamic_tick_action_e
+{
+  TICK_ACTION_NONE = 0,  // no state snapshot on parent dot tick
+  TICK_ACTION_UPDATE,    // update state on parent dot tick
+  TICK_ACTION_SNAPSHOT   // snapshot state on parent dot tick
+};
+
 enum attribute_e
 {
   ATTRIBUTE_NONE = 0,
@@ -710,8 +720,6 @@ enum school_e
   SCHOOL_DRAIN,
   SCHOOL_MAX
 };
-
-const school_e SCHOOL_RADIANT = SCHOOL_HOLYFIRE;
 
 enum school_mask_e
 {
@@ -1004,7 +1012,7 @@ enum stat_e
   STAT_RESILIENCE_RATING,
   STAT_DODGE_RATING,
   STAT_PARRY_RATING,
-  STAT_BLOCK_RATING, // Block CHANCE rating. Block damage reduction is in player_t::composite_block_reduction()
+  STAT_BLOCK_RATING, // Block CHANCE rating. Block damage reduction is in player_t::composite_block_value()
   STAT_PVP_POWER,
   STAT_WEAPON_DPS,
   STAT_WEAPON_OFFHAND_DPS,
@@ -1119,7 +1127,6 @@ enum cache_e
   CACHE_DODGE,
   CACHE_PARRY,
   CACHE_BLOCK,
-  CACHE_CRIT_BLOCK,
   CACHE_ARMOR,
   CACHE_BONUS_ARMOR,
   CACHE_CRIT_AVOIDANCE,
@@ -1487,7 +1494,8 @@ enum class talent_tree : unsigned
   SPECIALIZATION,
   HERO,
   SELECTION,
-  MAX
+  MAX,  // Everything below are not player traits
+  EXPANSION  // expansion/patch specific miscellaneous traits
 };
 
 enum trait_definition_op : int

@@ -48,6 +48,7 @@ public:
   int num_targets() const override;
   double composite_da_multiplier( const action_state_t* s ) const override;
   double composite_ta_multiplier( const action_state_t* s ) const override;
+  double composite_target_multiplier( player_t* ) const override;
   double composite_player_critical_multiplier( const action_state_t* /* s */ ) const override;
   double composite_versatility( const action_state_t* state ) const override;
   double total_crit_bonus( const action_state_t* ) const override;

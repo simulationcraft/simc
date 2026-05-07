@@ -977,13 +977,13 @@ const char* util::amount_type_string( result_amount_type type )
 {
   switch ( type )
   {
-    case result_amount_type::NONE: return "none";
-    case result_amount_type::DMG_DIRECT:       return "direct_damage";
-    case result_amount_type::DMG_OVER_TIME:    return "tick_damage";
-    case result_amount_type::HEAL_DIRECT:      return "direct_heal";
-    case result_amount_type::HEAL_OVER_TIME:   return "tick_heal";
-    case result_amount_type::ABSORB:           return "absorb";
-    default:               return "unknown";
+    case result_amount_type::NONE:           return "none";
+    case result_amount_type::DMG_DIRECT:     return "direct_damage";
+    case result_amount_type::DMG_OVER_TIME:  return "tick_damage";
+    case result_amount_type::HEAL_DIRECT:    return "direct_heal";
+    case result_amount_type::HEAL_OVER_TIME: return "tick_heal";
+    case result_amount_type::ABSORB:         return "absorb";
+    default:                                 return "unknown";
   }
 }
 
@@ -1457,6 +1457,7 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_CORRUPTION:               return "corruption";
     case CACHE_CORRUPTION_RESISTANCE:    return "corruption_resistance";
     case CACHE_AVOIDANCE:                return "avoidance";
+    case CACHE_CRIT_AVOIDANCE:           return "crit_avoidance";
     default:                             return "unknown";
   }
 }
@@ -2769,18 +2770,12 @@ const char* util::action_energize_type_string( action_energize energize_type )
 {
   switch ( energize_type )
   {
-    case action_energize::NONE:
-      return "none";
-    case action_energize::ON_CAST:
-      return "on_cast";
-    case action_energize::ON_HIT:
-      return "on_hit";
-    case action_energize::PER_HIT:
-      return "per_hit";
-    case action_energize::PER_TICK:
-      return "per_tick";
-    default:
-      return "unknown";
+    case action_energize::NONE:     return "none";
+    case action_energize::ON_CAST:  return "on_cast";
+    case action_energize::ON_HIT:   return "on_hit";
+    case action_energize::PER_HIT:  return "per_hit";
+    case action_energize::PER_TICK: return "per_tick";
+    default:                        return "unknown";
   }
 }
 
@@ -2788,26 +2783,16 @@ const char* util::action_type_string( action_e type )
 {
   switch ( type )
   {
-    case action_e::ACTION_USE:
-      return "use";
-    case action_e::ACTION_SPELL:
-      return "hostile_spell";
-    case action_e::ACTION_ATTACK:
-      return "attack";
-    case action_e::ACTION_HEAL:
-      return "heal_spell";
-    case action_e::ACTION_ABSORB:
-      return "absorb_spell";
-    case action_e::ACTION_SEQUENCE:
-      return "sequence";
-    case action_e::ACTION_OTHER:
-      return "other";
-    case action_e::ACTION_CALL:
-      return "call_action_list";
-    case action_e::ACTION_VARIABLE:
-      return "action_variable";
-    default:
-      return "unknown";
+    case action_e::ACTION_USE:      return "use";
+    case action_e::ACTION_SPELL:    return "hostile_spell";
+    case action_e::ACTION_ATTACK:   return "attack";
+    case action_e::ACTION_HEAL:     return "heal_spell";
+    case action_e::ACTION_ABSORB:   return "absorb_spell";
+    case action_e::ACTION_SEQUENCE: return "sequence";
+    case action_e::ACTION_OTHER:    return "other";
+    case action_e::ACTION_CALL:     return "call_action_list";
+    case action_e::ACTION_VARIABLE: return "action_variable";
+    default:                        return "unknown";
   }
 }
 
@@ -2815,16 +2800,12 @@ const char* util::talent_tree_string( talent_tree tree )
 {
   switch ( tree )
   {
-    case talent_tree::CLASS:
-      return "class";
-    case talent_tree::SPECIALIZATION:
-      return "spec";
-    case talent_tree::HERO:
-      return "hero";
-    case talent_tree::SELECTION:
-      return "selection";
-    default:
-      return "unknown";
+    case talent_tree::CLASS:          return "class";
+    case talent_tree::SPECIALIZATION: return "spec";
+    case talent_tree::HERO:           return "hero";
+    case talent_tree::SELECTION:      return "selection";
+    case talent_tree::EXPANSION:      return "expansion";
+    default:                          return "unknown";
   }
 }
 
@@ -2832,14 +2813,10 @@ const char* util::trait_definition_op_string( trait_definition_op op )
 {
   switch ( op )
   {
-    case trait_definition_op::TRAIT_OP_NONE:
-      return "none";
-    case trait_definition_op::TRAIT_OP_SET:
-      return "set";
-    case trait_definition_op::TRAIT_OP_MUL:
-      return "mul";
-    default:
-      return "unk";
+    case trait_definition_op::TRAIT_OP_NONE: return "none";
+    case trait_definition_op::TRAIT_OP_SET:  return "set";
+    case trait_definition_op::TRAIT_OP_MUL:  return "mul";
+    default:                                 return "unk";
   }
 }
 
@@ -3733,4 +3710,12 @@ double approx_sqrt( double arg )
   return 0.0;
 }
 
+double calculate_armor_resist( double armor, double armor_coeff, double multipler )
+{
+  double resist = armor / ( armor + armor_coeff );
+  resist *= multipler;
+  resist = clamp( resist, 0.0, MAX_ARMOR_DAMAGE_REDUCTION );
+
+  return resist;
+}
 } // namespace util

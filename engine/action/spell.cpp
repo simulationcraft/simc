@@ -81,7 +81,8 @@ result_e spell_base_t::calculate_result( action_state_t* s ) const
     }
   }
 
-  sim->print_debug( "{} result for {} is {}.", *player, *this, result );
+  if ( sim->debug )
+    sim->print_debug( "{} result for spell {} is {}.", *player, *this, result );
 
   return result;
 }

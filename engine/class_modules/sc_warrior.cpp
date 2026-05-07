@@ -881,13 +881,13 @@ public:
   double composite_armor_multiplier() const override;
   double composite_bonus_armor() const override;
   double composite_block() const override;
-  double composite_block_reduction( action_state_t* s ) const override;
+  double composite_block_value( const action_state_t* s ) const override;
   double composite_parry_rating() const override;
   double composite_parry() const override;
   double composite_attack_power_multiplier() const override;
-  double composite_crit_block() const override;
   double composite_melee_crit_chance() const override;
   double composite_leech() const override;
+  block_result_e target_block_resolution( const action_state_t* ) const override;
   double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   void teleport( double yards, timespan_t duration ) override;
   void trigger_movement( double distance, movement_direction_type direction ) override;
@@ -8103,7 +8103,8 @@ void warrior_t::create_buffs()
 
   buff.whirlwind = make_buff( this, "whirlwind", spell.whirlwind_buff );
 
-  buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection )
+  // reflection NYI
+  buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection->effectN( 2 ).trigger() )
     -> set_cooldown( 0_ms ); // handled by the ability
 
   buff.sweeping_strikes = make_buff( this, "sweeping_strikes", spec.sweeping_strikes)
@@ -8910,18 +8911,19 @@ double warrior_t::composite_block() const
   return b;
 }
 
-// warrior_t::composite_block_reduction =====================================
+// warrior_t::composite_block_value ===========================================
 
-double warrior_t::composite_block_reduction( action_state_t* s ) const
+double warrior_t::composite_block_value( const action_state_t* s ) const
 {
-  double br = parse_player_effects_t::composite_block_reduction( s );
+  double bv = parse_player_effects_t::composite_block_value( s );
 
-  if ( buff.brace_for_impact -> check() )
+  if ( buff.brace_for_impact->check() )
   {
-    br *= 1.0 + buff.brace_for_impact -> check() * talents.protection.brace_for_impact->effectN( 1 ).trigger() -> effectN( 2 ).percent();
+    bv *= 1.0 + buff.brace_for_impact->check() *
+                  talents.protection.brace_for_impact->effectN( 1 ).trigger()->effectN( 2 ).percent();
   }
 
-  return br;
+  return bv;
 }
 
 // warrior_t::composite_parry_rating() ========================================
@@ -8962,21 +8964,6 @@ double warrior_t::composite_attack_power_multiplier() const
   return ap;
 }
 
-// warrior_t::composite_crit_block =====================================
-
-double warrior_t::composite_crit_block() const
-{
-
-  double b = parse_player_effects_t::composite_crit_block();
-
-  if ( mastery.critical_block->ok() )
-  {
-    b += cache.mastery() * mastery.critical_block->effectN( 1 ).mastery_value();
-  }
-
-  return b;
-}
-
 // warrior_t::composite_melee_crit_chance =========================================
 
 double warrior_t::composite_melee_crit_chance() const
@@ -8993,6 +8980,29 @@ double warrior_t::composite_leech() const
   double m = parse_player_effects_t::composite_leech();
 
   return m;
+}
+
+// warrior_t::target_block_resolution =======================================
+
+block_result_e warrior_t::target_block_resolution( const action_state_t* s ) const
+{
+  // Only direct physical attacks may be blocked
+  if ( s->result_type == result_amount_type::DMG_DIRECT && s->action->get_school() == SCHOOL_PHYSICAL &&
+       s->action->type == ACTION_ATTACK )
+  {
+    auto block_chance = cache.block();
+    auto crit_block_chance = cache.mastery() * mastery.critical_block->effectN( 1 ).mastery_value();
+
+    if ( rng().roll( block_chance ) )
+    {
+      if ( rng().roll( crit_block_chance ) )
+        return BLOCK_RESULT_CRIT_BLOCKED;
+      else
+        return BLOCK_RESULT_BLOCKED;
+    }
+  }
+
+  return BLOCK_RESULT_UNBLOCKED;
 }
 
 // warrior_t::resource_gain =================================================
@@ -9061,7 +9071,6 @@ void warrior_t::invalidate_cache( cache_e c )
     if ( c == CACHE_MASTERY )
     {
       parse_player_effects_t::invalidate_cache( CACHE_BLOCK );
-      parse_player_effects_t::invalidate_cache( CACHE_CRIT_BLOCK );
       parse_player_effects_t::invalidate_cache( CACHE_ATTACK_POWER );
     }
     if ( c == CACHE_CRIT_CHANCE )
@@ -9170,38 +9179,20 @@ void warrior_t::target_mitigation( school_e school, result_amount_type dtype, ac
 {
   parse_player_effects_t::target_mitigation( school, dtype, s );
 
-  if ( s->result == RESULT_HIT || s->result == RESULT_CRIT || s->result == RESULT_GLANCE )
+  if ( s->block_result == BLOCK_RESULT_CRIT_BLOCKED )
   {
-    if ( buff.defensive_stance->up() )
-      s->result_amount *= 1.0 + buff.defensive_stance->data().effectN( 1 ).percent();
+    double block_value = s->target_block_value;
+    double block_resist = util::calculate_armor_resist( block_value, s->action->player->current.armor_coeff, 2.0 );
 
-    if ( buff.defensive_stance->up() && talents.warrior.defensive_stance->effectN( 3 ).affected_schools() & school )
-      s->result_amount *= 1.0 + buff.defensive_stance->data().effectN( 3 ).percent();
+    s->result_amount *= 1.0 - block_resist;
 
-    if ( buff.enrage->up() && talents.fury.warpaint->ok() )
-      s->result_amount *= 1.0 + buff.enrage->data().effectN( 3 ).percent();
-
-    warrior_td_t* td = get_target_data( s->action->player );
-
-    if ( td->debuffs_demoralizing_shout->up() )
-      s->result_amount *= 1.0 + td->debuffs_demoralizing_shout->value();
-
-    if ( td -> debuffs_punish -> up() )
-      s -> result_amount *= 1.0 + td -> debuffs_punish -> value();
-
-    if ( school != SCHOOL_PHYSICAL && buff.spell_reflection->up() )
+    if ( sim->debug )
     {
-      s -> result_amount *= 1.0 + buff.spell_reflection->data().effectN( 2 ).percent();
-      buff.spell_reflection->expire();
+      sim->print_debug(
+        "{} {} damage to {} reduced by {:.7g}% from crit block (block value={:.7g}, armor coeff={:.7g}).",
+        *s->action->player, *s->action, *s->target, block_resist * 100, block_value,
+        s->action->player->current.armor_coeff );
     }
-    // take care of dmg reduction CDs
-    if ( buff.shield_wall->up() )
-      s->result_amount *= 1.0 + buff.shield_wall->value();
-    else if ( buff.die_by_the_sword->up() )
-      s->result_amount *= 1.0 + buff.die_by_the_sword->default_value;
-
-    if ( specialization() == WARRIOR_PROTECTION )
-      s->result_amount *= 1.0 + spec.vanguard -> effectN( 3 ).percent();
   }
 }
 
@@ -9255,11 +9246,15 @@ void warrior_t::parse_player_effects()
   if ( specialization() != WARRIOR_PROTECTION )
     parse_effects( buff.defensive_stance, effect_mask_t( false ).enable( 2 ) );
 
+  parse_effects( buff.spell_reflection );
+
   parse_target_effects( d_fn( &warrior_td_t::debuffs_honed_reflexes ), talents.warrior.honed_reflexes->effectN( 5 ).trigger() );
 
   if ( specialization() == WARRIOR_ARMS )
   {
-    if( main_hand_weapon.group() == WEAPON_2H )
+    parse_effects( buff.die_by_the_sword );
+
+    if ( main_hand_weapon.group() == WEAPON_2H )
       parse_effects( mastery.master_of_arms );
   }
   else if ( specialization() == WARRIOR_FURY )
@@ -9270,6 +9265,7 @@ void warrior_t::parse_player_effects()
     if ( talents.warrior.stance_mastery->ok() )
       parse_effects( buff.berserker_stance, effect_mask_t( false ).enable( 6 ) );
 
+    parse_effects( buff.enrage, effect_mask_t( false ).enable( 3 ) );
     if ( talents.fury.frenzied_enrage->ok() )
       parse_effects( buff.enrage, effect_mask_t( false ).enable( 1, 2 ) );
     if ( talents.fury.powerful_enrage->ok() )
@@ -9281,6 +9277,11 @@ void warrior_t::parse_player_effects()
   {
     parse_effects( buff.into_the_fray );
     parse_effects( buff.avatar, effect_mask_t( false ).enable( 8 ) );
+    parse_effects( buff.shield_wall );
+    parse_effects( spec.vanguard, PARSE_PASSIVE );
+
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_demoralizing_shout ), talents.protection.demoralizing_shout );
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_punish ), talents.protection.punish->effectN( 2 ).trigger() );
   }
 
   // Colossus

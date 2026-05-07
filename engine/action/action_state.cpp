@@ -55,8 +55,7 @@ void action_state_t::initialize()
   result       = RESULT_NONE;
   result_type  = result_amount_type::NONE;
   block_result = BLOCK_RESULT_UNBLOCKED;
-  result_raw = result_total = result_mitigated = result_absorbed =
-      result_amount = blocked_amount = self_absorb_amount = 0;
+  result_raw = result_total = result_mitigated = result_absorbed = result_amount = self_absorb_amount = 0;
 }
 /*
 void action_state_t::copy_state( const action_state_t* o )
@@ -91,7 +90,6 @@ void action_state_t::copy_state( const action_state_t* o )
   result_absorbed    = o->result_absorbed;
   result_crit_bonus  = o->result_crit_bonus;
   result_amount      = o->result_amount;
-  blocked_amount     = o->blocked_amount;
   self_absorb_amount = o->self_absorb_amount;
   haste              = o->haste;
   crit_chance        = o->crit_chance;
@@ -133,7 +131,6 @@ action_state_t::action_state_t( action_t* a, player_t* t )
     result_absorbed( 0 ),
     result_crit_bonus( 0 ),
     result_amount( 0 ),
-    blocked_amount( 0 ),
     self_absorb_amount( 0 ),
     haste( 1.0 ),
     crit_chance( 0 ),
@@ -152,7 +149,8 @@ action_state_t::action_state_t( action_t* a, player_t* t )
     target_pet_multiplier( 1.0 ),
     target_mitigation_da_multiplier( 1.0 ),
     target_mitigation_ta_multiplier( 1.0 ),
-    target_armor( 0 )
+    target_armor( 0 ),
+    target_block_value( 0 )
 {
   assert( target );
 }
@@ -210,7 +208,6 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << " absorbed_amount=" << result_absorbed;
   s << " crit_bonus=" << result_crit_bonus;
   s << " actual_amount=" << result_amount;
-  s << " only_blocked_damage=" << blocked_amount;
   s << " self_absorbed_damage=" << self_absorb_amount;
   s << " ap=" << attack_power;
   s << " sp=" << spell_power;
@@ -234,7 +231,14 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
 
   s << " tgt_mitg_da_mul=" << target_mitigation_da_multiplier;
   s << " tgt_mitg_ta_mul=" << target_mitigation_ta_multiplier;
-  s << " target_armor=" << target_armor;
+  if ( target_armor )
+  {
+    s << " target_armor=" << target_armor;
+  }
+  if ( target_block_value )
+  {
+    s << " target_block_value=" << target_block_value;
+  }
 
   s.precision( ss );
 

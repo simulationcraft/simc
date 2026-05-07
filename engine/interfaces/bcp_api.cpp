@@ -7,6 +7,7 @@
 
 #include "class_modules/class_module.hpp"
 #include "dbc/dbc.hpp"
+#include "dbc/item_data.hpp"
 #include "dbc/item_database.hpp"
 #include "interfaces/sc_http_curl.hpp"
 #include "interfaces/sc_http_wininet.hpp"
@@ -572,7 +573,10 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
     if ( slot_data.HasMember( "sockets" ) )
     {
-      for ( auto gem_idx = 0U, gem_end = slot_data[ "sockets" ].Size(); gem_idx < gem_end; ++gem_idx )
+      for ( auto gem_idx = 0U,
+            gem_end = std::min( as<rapidjson::SizeType>( MAX_GEM_SLOTS ), slot_data[ "sockets" ].Size() );
+            gem_idx < gem_end;
+            ++gem_idx )
       {
         const auto& socket_data = slot_data[ "sockets" ][ gem_idx ];
         if ( !socket_data.HasMember( "item" ) )
@@ -896,7 +900,9 @@ void download_item_data( item_t& item, cache::behavior_e caching )
 
     if ( js.HasMember( "bonusStats" ) )
     {
-      for ( rapidjson::SizeType i = 0, n = js[ "bonusStats" ].Size(); i < n; ++i )
+      for ( rapidjson::SizeType i = 0,
+        n = std::min( as<rapidjson::SizeType>( MAX_ITEM_STAT ), js[ "bonusStats" ].Size() );
+        i < n; ++i )
       {
         const rapidjson::Value& stat = js[ "bonusStats" ][ i ];
         if ( ! stat.HasMember( "stat" ) ) throw( "bonus stat" );
@@ -917,7 +923,9 @@ void download_item_data( item_t& item, cache::behavior_e caching )
     {
       const rapidjson::Value& sockets = js[ "socketInfo" ][ "sockets" ];
 
-    for (rapidjson::SizeType i = 0, n = as<rapidjson::SizeType>( std::min(static_cast< size_t >(sockets.Size()), std::size(item.parsed.data.socket_color))); i < n; ++i)
+      for ( rapidjson::SizeType i = 0,
+        n = std::min( as<rapidjson::SizeType>( MAX_ITEM_SOCKET_SLOT ), sockets.Size() );
+        i < n; ++i )
       {
         if ( ! sockets[ i ].HasMember( "type" ) )
           continue;

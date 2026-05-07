@@ -93,6 +93,43 @@ using namespace helpers;
     const warlock_td_t* td( player_t* t ) const
     { return p()->get_target_data( t ); }
 
+    template <typename T>
+    target_filter_callback_t dot_or_debuff_only( T d )
+    {
+      return [ this, d ]( const action_t*, player_t* t ) {
+        return p()->dot_or_debuff_active( d, p()->get_target_data( t ) );
+      };
+    }
+
+    target_filter_callback_t primary_target_or( target_filter_callback_t secondary_filter )
+    {
+      return [ secondary_filter = std::move( secondary_filter ) ]( const action_t* a, player_t* t ) {
+        return t == a->target || secondary_filter( a, t );
+      };
+    }
+
+    target_filter_callback_t immolate_or_wither_only()
+    {
+      return [ this ]( const action_t*, player_t* t ) {
+        return td( t )->dots.immolate->is_ticking() || td( t )->dots.wither->is_ticking();
+      };
+    }
+
+    target_filter_callback_t corruption_or_wither_only()
+    {
+      return [ this ]( const action_t*, player_t* t ) {
+        return td( t )->dots.corruption->is_ticking() || td( t )->dots.wither->is_ticking();
+      };
+    }
+
+    target_filter_callback_t affliction_core_dots_only()
+    {
+      return [ this ]( const action_t*, player_t* t ) {
+        return td( t )->dots.corruption->is_ticking() || td( t )->dots.wither->is_ticking()
+               || td( t )->dots.agony->is_ticking() || td( t )->dots.unstable_affliction->is_ticking();
+      };
+    }
+
     void reset() override
     { action_base_t::reset(); }
 
@@ -1426,13 +1463,7 @@ using namespace helpers;
         initial_stacks += ( int )( p()->talents.sudden_onset->effectN( 2 ).base_value() );
 
       if ( active_4pc<MID1>() )
-      {
-        // NOTE: 2026-04-24 Tier set is only applying 1 additional stack to Agony on initial cast if Sudden Onset is not talented (bug?)
-        if ( p()->bugs && !p()->talents.sudden_onset.ok() )
-          initial_stacks += ( int )( p()->tier.wl_affliction_12_0_class_set_4pc->effectN( 1 ).base_value() * 0.5 );
-        else
-          initial_stacks += ( int )( p()->tier.wl_affliction_12_0_class_set_4pc->effectN( 1 ).base_value() );
-      }
+        initial_stacks += ( int )( p()->tier.wl_affliction_12_0_class_set_4pc->effectN( 1 ).base_value() );
 
       int delta_stacks = initial_stacks - td( execute_state->target )->dots.agony->current_stack();
 
@@ -1470,19 +1501,23 @@ using namespace helpers;
 
     void execute() override
     {
-      // NOTE: 2026-02-20 Currently ingame a UA applied by Fatal Echoes also processes/consumes the UA 'execute' effects:
+      // NOTE: 2026-04-29 Currently ingame a UA applied by Fatal Echoes also processes/consumes some UA 'execute' effects:
       // - Succulent Soul: consumes a stack and triggers its effects (Demonic Soul dmg and Manifested Avarice rng proc)
       // - Cull the Weak: reduces the cooldown of Dark Harvest
-      // - Shard Instability: consumes a stack but does nothing (bug?) because the Fatal Echoes UA is already free and instant
-      // - Hellcaller Blackened Soul: increments wither stacks
+      // - Hellcaller Blackened Soul: increments Wither stacks
+      // - Shard Instability: unaffected; Fatal Echoes does not consume a stack of this buff
 
       warlock_spell_t::execute();
 
       if ( p()->talents.cull_the_weak.ok() )
         p()->cooldowns.dark_harvest->adjust( -p()->talents.cull_the_weak->effectN( 1 ).time_value() );
 
-      // Seems that Shard Instability buff takes effect (and is consumed) even if it is obtained while Unstable Affliction is being cast (bug?)
-      p()->buffs.shard_instability->decrement();
+      // NOTE: 2026-04-29 If Shard Instability buff is gained during the casting of Unstable Affliction, that UA cast benefits from the cost
+      // reduction but does not consume the effect (bug?). As expected, a Fatal Echoes UA proc does not consume it either.
+      if ( time_to_execute == 0_ms && !is_fatal_echoes_execute )
+      {
+        p()->buffs.shard_instability->decrement();
+      }
 
       if ( soul_harvester() && p()->buffs.succulent_soul->check() )
       {
@@ -1541,6 +1576,7 @@ using namespace helpers;
             make_event( sim, 1_ms, [ this, t = d->target ] {
               const bool prev_ua_ticking = td( t )->dots.unstable_affliction->is_ticking();
               this->set_target( t );
+              this->time_to_execute = 0_ms;
               this->is_fatal_echoes_execute = true;
               this->execute();
               this->is_fatal_echoes_execute = false;
@@ -1597,26 +1633,22 @@ using namespace helpers;
     struct seed_of_corruption_state_t : public action_state_t
     {
       double effectiveness;
-      player_t* main_seed_target;
 
       seed_of_corruption_state_t( action_t* action, player_t* target )
         : action_state_t( action, target ),
-        effectiveness( 1.0 ),
-        main_seed_target( nullptr )
+        effectiveness( 1.0 )
       { }
 
       void initialize() override
       {
         action_state_t::initialize();
         effectiveness = 1.0;
-        main_seed_target = nullptr;
       }
 
       std::ostringstream& debug_str( std::ostringstream& s ) override
       {
         action_state_t::debug_str( s );
         s << " effectiveness=" << effectiveness;
-        s << " main_seed_target=" << ( main_seed_target ? main_seed_target->name() : "<none>" );
         return s;
       }
 
@@ -1624,7 +1656,6 @@ using namespace helpers;
       {
         action_state_t::copy_state( s );
         effectiveness = debug_cast<const seed_of_corruption_state_t*>( s )->effectiveness;
-        main_seed_target = debug_cast<const seed_of_corruption_state_t*>( s )->main_seed_target;
       }
     };
 
@@ -1632,12 +1663,10 @@ using namespace helpers;
     {
       action_t* applied_dot;
       double effectiveness;
-      player_t* main_seed_target;
 
       seed_of_corruption_aoe_t( warlock_t* p )
         : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
-        effectiveness( 1.0 ),
-        main_seed_target( nullptr )
+        effectiveness( 1.0 )
       {
         aoe = -1;
         background = dual = true;
@@ -1677,10 +1706,11 @@ using namespace helpers;
 
         if ( p()->talents.patient_zero.ok() )
         {
-          // NOTE (2026-04-24): Patient Zero does not track seeds individually (bug?). Instead, it uses a single
-          // per-caster target reference updated by the most recently Seed of Corruption casted. Any seed explosion 
-          // hitting that target gets the Patient Zero bonus. If the target is out of range, dead, or otherwise invalid 
-          // (e.g., immune) at the time of explosion, the bonus is not reassigned and is simply not applied.
+          // NOTE (2026-04-24): Patient Zero does not track seeds individually (bug?). Instead, it
+          // uses a single per-caster target reference updated on cast success to the target of the
+          // primary Seed of Corruption. Any seed explosion hitting that target gets the Patient Zero
+          // bonus. If the target is out of range, dead, or otherwise invalid (e.g., immune) at the
+          // time of explosion, the bonus is not reassigned and is simply not applied.
           if ( p()->bugs )
           {
             assert( p()->patient_zero_target && "SoC does not have a valid Patient Zero target" );
@@ -1734,8 +1764,8 @@ using namespace helpers;
 
       affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
-      if ( p->talents.sow_the_seeds.ok() )
-        aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
+      // Set aoe = 1 even without Sow the Seeds so the special target selection logic is used
+      aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
 
       add_child( explosion );
     }
@@ -1745,12 +1775,10 @@ using namespace helpers;
 
     void snapshot_state( action_state_t* s, result_amount_type rt ) override
     {
-      if ( ( s->target == target ) || !p()->talents.sow_the_seeds.ok() )
+      if ( s->chain_target == 0 || !p()->talents.sow_the_seeds.ok() )
         debug_cast<seed_of_corruption_state_t*>( s )->effectiveness = 1.0;
       else
         debug_cast<seed_of_corruption_state_t*>( s )->effectiveness = p()->talents.sow_the_seeds->effectN( 2 ).percent();
-
-      debug_cast<seed_of_corruption_state_t*>( s )->main_seed_target = target;
 
       warlock_spell_t::snapshot_state( s, rt );
     }
@@ -1765,35 +1793,70 @@ using namespace helpers;
     {
       warlock_spell_t::available_targets( tl );
 
-      // Targeting behavior appears to be as follows:
-      // 1. If any targets have no current seed (in flight or ticking), they are valid
-      // 2. With Sow the Seeds, if at least one target is valid, it will only hit valid targets
-      // 3. If no targets are valid according to the above, all targets are instead valid (will refresh DoT on existing target(s) instead)
-      bool valid_target = false;
-      for ( auto t : tl )
+      // Seed of Corruption has special target selection behavior (smart targeting):
+      // - The primary seed prefers the original target if it does not already have a SoC debuff.
+      //   - If the original target already has a SoC debuff, the primary seed is redirected to a random
+      //     target (from the original target list) without a SoC debuff.
+      //   - If no such target exists, the primary seed falls back to the original target even though
+      //     it already has a SoC debuff.
+      // - With Sow the Seeds, secondary seeds are selected from the remaining targets.
+      //   - Normally they can only select targets without a SoC debuff; if none are available, no
+      //     secondary seed is applied.
+      //   - If the primary seed had to fall back to the original target, secondary seeds may select
+      //     targets that already have a SoC debuff.
+      // - Targets selected by this cast are not duplicated; the primary seed is kept in first position,
+      //   and the remaining targets are shuffled for secondary seed selection. Invalid secondary targets
+      //   are removed from the target list.
+      // - Formerly, SoC smart targeting was based on whether the target had the debuff or had a seed in
+      //   travel. This is no longer the case, and only the presence of the SoC debuff matters. (bug?)
+
+      player_t* main_seed_target = target;
+      bool main_seed_fallback = false;
+
+      std::vector<player_t*> pool = tl;
+
+      range::erase_remove( pool, [ this ]( player_t* t ) {
+        return ( t == target || td( t )->dots.seed_of_corruption->is_ticking() || ( !p()->bugs && has_travel_events_for( t ) ) );
+      } );
+
+      if ( td( target )->dots.seed_of_corruption->is_ticking() || ( !p()->bugs && has_travel_events_for( target ) ) )
       {
-        if ( !( td( t )->dots.seed_of_corruption->is_ticking() || has_travel_events_for( t ) ) )
-        {
-          valid_target = true;
-          break;
-        }
+        if ( !pool.empty() )
+          main_seed_target = pool[ rng().range( size_t{}, pool.size() ) ];
+        else
+          main_seed_fallback = true;
       }
 
-      if ( valid_target )
+      auto it = range::find( tl, main_seed_target );
+      if ( it != tl.end() && it != tl.begin() )
       {
-        range::erase_remove( tl, [ this ]( player_t* t ) {
-          return ( td( t )->dots.seed_of_corruption->is_ticking() || has_travel_events_for( t ) );
+        tl.erase( it );
+        tl.insert( tl.begin(), main_seed_target );
+      }
+
+      if ( !main_seed_fallback )
+      {
+        range::erase_remove( tl, [ this, main_seed_target ]( player_t* t ) {
+          return ( t != main_seed_target && ( td( t )->dots.seed_of_corruption->is_ticking() || ( !p()->bugs && has_travel_events_for( t ) ) ) );
         } );
       }
+
+      if ( tl.size() > 1 )
+        rng().shuffle( tl.begin() + 1, tl.end() );
 
       return tl.size();
     }
 
     void execute() override
     {
+      target_cache.is_valid = false;
+
+      const auto& tl = target_list();
+      player_t* main_seed_target = !tl.empty() ? tl.front() : target;
+
       // Patient Zero target is updated on SoC cast success, not on impact or debuff application
       if ( p()->talents.patient_zero.ok() )
-        p()->patient_zero_target = target;
+        p()->patient_zero_target = main_seed_target;
 
       warlock_spell_t::execute();
 
@@ -1802,10 +1865,10 @@ using namespace helpers;
       if ( time_to_execute == 0_ms && soul_harvester() && p()->talents.nocturnal_yield.ok() && p()->buffs.nightfall->check() )
       {
         if ( p()->hero.wicked_reaping.ok() )
-          p()->proc_actions.wicked_reaping->execute_on_target( target );
+          p()->proc_actions.wicked_reaping->execute_on_target( main_seed_target );
 
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
-          p()->proc_actions.shared_fate->execute_on_target( target );
+          p()->proc_actions.shared_fate->execute_on_target( main_seed_target );
 
         // Feast of Souls is processed before the decrement of Succulent Soul, causing the same SoC cast that gains the Succulent Soul stack to consume it
         if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger() )
@@ -1830,7 +1893,7 @@ using namespace helpers;
           p()->procs.manifested_avarice->occur();
         }
 
-        p()->proc_actions.demonic_soul->execute_on_target( target );
+        p()->proc_actions.demonic_soul->execute_on_target( main_seed_target );
       }
     }
 
@@ -1863,11 +1926,9 @@ using namespace helpers;
       // Explosion parameters must be captured here in the lambda by value for that same reason.
       make_event( sim, 0_ms, [ this,
                                t = d->target,
-                               effectiveness = debug_cast<seed_of_corruption_state_t*>( d->state )->effectiveness,
-                               main_seed_target = debug_cast<seed_of_corruption_state_t*>( d->state )->main_seed_target ]
+                               effectiveness = debug_cast<seed_of_corruption_state_t*>( d->state )->effectiveness ]
       {
         explosion->effectiveness = effectiveness;
-        explosion->main_seed_target = main_seed_target;
         explosion->set_target( t );
         explosion->execute();
       } );
@@ -1920,8 +1981,8 @@ using namespace helpers;
         base_dd_min = base_dd_max = 0;
         spell_power_mod.direct = 0;
 
-        // NOTE: 2026-02-20 DoT (Malefic Grasp) extra ticks are not affected by Death's Embrace (bug?)
-        affected_by.deaths_embrace = !p->bugs && p->talents.deaths_embrace.ok();
+        // DoT (Malefic Grasp) extra ticks are affected by Death's Embrace
+        affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
       }
 
       void impact( action_state_t* s ) override
@@ -2013,7 +2074,7 @@ using namespace helpers;
       extra_tick_mul( p->talents.malefic_grasp_2->effectN( 2 ).percent() )
     {
       channeled = true;
-      // NOTE: 2026-02-20 Malefic Grasp extra ticks are not affected by Death's Embrace (bug?)
+      // NOTE: 2026-04-29 Malefic Grasp ticks are not affected by Death's Embrace (bug?)
       affected_by.deaths_embrace = !p->bugs && p->talents.deaths_embrace.ok();
 
       if ( p->talents.cunning_cruelty.ok() )
@@ -2080,8 +2141,7 @@ using namespace helpers;
 
       if ( soul_harvester() && p()->buffs.nightfall->check() )
       {
-        // NOTE: 2026-03-21 Malefic Grasp consumes Nightfall without triggering Wicked Reaping (bug)
-        if ( !p()->bugs && p()->hero.wicked_reaping.ok() )
+        if ( p()->hero.wicked_reaping.ok() )
           p()->proc_actions.wicked_reaping->execute_on_target( target );
 
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
@@ -2344,24 +2404,9 @@ using namespace helpers;
     {
       channeled = true;
 
+      target_filter_callback = affliction_core_dots_only();
+
       add_child( dark_harvest_dmg );
-    }
-
-    std::vector<player_t*>& target_list() const override
-    {
-      target_cache.list = warlock_spell_t::target_list();
-
-      size_t i = target_cache.list.size();
-      while ( i > 0 )
-      {
-        i--;
-
-        if ( !td( target_cache.list[ i ] )->dots.corruption->is_ticking() && !td( target_cache.list[ i ] )->dots.wither->is_ticking()
-          && !td( target_cache.list[ i ] )->dots.agony->is_ticking() && !td( target_cache.list[ i ] )->dots.unstable_affliction->is_ticking() )
-          target_cache.list.erase( target_cache.list.begin() + i );
-      }
-
-      return target_cache.list;
     }
 
     bool ready() override
@@ -2370,11 +2415,13 @@ using namespace helpers;
         return false;
 
       target_cache.is_valid = false;
-      return target_list().size() > 0;
+      return !target_list().empty();
     }
 
     void tick( dot_t* d ) override
     {
+      target_cache.is_valid = false;
+
       warlock_spell_t::tick( d );
 
       const auto& tl = target_list();
@@ -2400,6 +2447,7 @@ using namespace helpers;
     void execute() override
     {
       target_cache.is_valid = false;
+
       warlock_spell_t::execute();
     }
   };
@@ -2424,9 +2472,18 @@ using namespace helpers;
   struct shadow_of_nathreza_dmg_t : public warlock_spell_t
   {
     shadow_of_nathreza_dmg_t( warlock_t* p )
-      : warlock_spell_t( "shadow_of_nathreza", p, p->talents.shadow_of_nathreza_dot )
+      : warlock_spell_t( "Shadow of Nathreza", p, p->talents.shadow_of_nathreza_dot )
     {
       background = dual = true;
+
+      target_filter_callback = primary_target_or( corruption_or_wither_only() );
+    }
+
+    void execute() override
+    {
+      target_cache.is_valid = false;
+
+      warlock_spell_t::execute();
     }
   };
 
@@ -2568,7 +2625,7 @@ using namespace helpers;
 
       hog_impact_t( warlock_t* p )
         : warlock_spell_t( "Hand of Gul'dan (Impact)", p, p->talents.hog_impact ),
-        meteor_time( 20_ms )
+        meteor_time( 8_ms )
       {
         aoe = -1;
         dual = true;
@@ -2611,9 +2668,32 @@ using namespace helpers;
 
       void execute() override
       {
-        // NOTE: Some effects only affects one of HoG's hits in AoE (bug?), randomly selected
+        // NOTE: Some effects only affect one of HoG's hits in AoE (bug?), randomly selected
         const std::vector<player_t*>& tl = target_list();
         state.last_hit_random_target     = rng().range( as<int>( tl.size() ) );
+
+        // Wild Imp spawn events
+        // NOTE: Old Behavior (pre Midnight):
+        //   Wild Imp spawns appear to have been sped up in Shadowlands. Last tested 2021-04-16.
+        //   HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
+        //   However, damage event occurs before spell effect lands, happening 0.4 seconds after cast.
+        //   Imps then spawn roughly every 0.18 seconds after the damage event.
+        // NOTE: New Behavior (from Midnight onwards):
+        //   The HoG meteor damage event no longer takes 0.4 seconds after cast impact (only about 8ms).
+        //   Wild Imps spawn on HoG meteor execute, not from HoG meteor damage impact.
+        //   Wild Imps spawn sequentially, with a 1-2ms delay from one spawn to the next.
+        //   Last tested: 2026-05-03
+        static constexpr std::array<double, 2> imp_delay{ 1.0, 2.0 };
+
+        double delay = 0.0;
+        for ( int i = 1; i <= state.shards_used; i++ )
+        {
+          delay += rng().range( imp_delay );
+          const double expected_delay = static_cast<double>( ( 3 * i + 1 ) / 2 );
+
+          auto ev = make_event<imp_delay_event_t>( *sim, p(), delay, expected_delay, i - 1 );
+          p()->wild_imp_spawns.push_back( ev );
+        }
 
         warlock_spell_t::execute();
       }
@@ -2630,31 +2710,6 @@ using namespace helpers;
         m *= state.shards_used * ( 1.0 + gloom );
 
         return m;
-      }
-
-      void impact( action_state_t* s ) override
-      {
-        warlock_spell_t::impact( s );
-
-        // Only trigger Wild Imps once for the original target impact.
-        // Still keep it in impact instead of execute because of travel delay.
-        if ( result_is_hit( s->result ) && s->target == target )
-        {
-          // NOTE: Old Behavior (pre Midnight):
-          //   Wild Imp spawns appear to have been sped up in Shadowlands. Last tested 2021-04-16.
-          //   HoG will spawn a meteor on cast finish. Travel time in spell data is 0.7 seconds.
-          //   However, damage event occurs before spell effect lands, happening 0.4 seconds after cast.
-          //   Imps then spawn roughly every 0.18 seconds seconds after the damage event.
-          // NOTE: New Behavior (from Midnight onwards):
-          //   Wild Imps spawn on HoG impact almost instantly, with a 1ms delay between them
-          //   The HoG damage event no longer takes 0.4 seconds after cast (only a few milliseconds)
-          //   Last tested: 2026-02-20
-          for ( int i = 1; i <= debug_cast<hog_impact_state_t*>( s )->state.shards_used; i++ )
-          {
-            auto ev = make_event<imp_delay_event_t>( *sim, p(), ( 1.0 * i ), ( 1.0 * i ), i - 1 );
-            p()->wild_imp_spawns.push_back( ev );
-          }
-        }
       }
     };
 
@@ -3593,9 +3648,10 @@ using namespace helpers;
       add_child( fnb_action );
     }
 
+    // Custom init() to combine Havoc+FnB coefficients instead of using the generic warlock_spell_t::init() Havoc multiplier
     void init() override
     {
-      spell_t::init();
+      action_base_t::init();
 
       if ( affected_by.havoc )
       {
@@ -4030,6 +4086,8 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_da_multiplier( s );
 
+      m *= 1.0 + player->cache.spell_crit_chance();
+
       // The base effect of Through the Felvine is automatically applied by the parse_effects system
       // However, it is necessary to manually apply its duplicate effect during Malevolence
       if ( p()->hero.through_the_felvine.ok() && p()->hero.malevolence.ok() && p()->buffs.malevolence->check() )
@@ -4043,15 +4101,6 @@ using namespace helpers;
 
     double composite_crit_chance() const override
     { return 1.0; }
-
-    double calculate_direct_amount( action_state_t* s ) const override
-    {
-      warlock_spell_t::calculate_direct_amount( s );
-
-      s->result_total *= 1.0 + player->cache.spell_crit_chance();
-
-      return s->result_total;
-    }
   };
 
   struct conflagrate_t : public warlock_spell_t
@@ -4139,17 +4188,14 @@ using namespace helpers;
         p()->buffs.backdraft->trigger();
     }
 
-    double calculate_direct_amount( action_state_t* s ) const override
+    double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double amt = warlock_spell_t::calculate_direct_amount( s );
+      double m = warlock_spell_t::composite_da_multiplier( s );
 
       if ( p()->buffs.conflagration_of_chaos->check() )
-      {
-        s->result_total *= 1.0 + player->cache.spell_crit_chance();
-        return s->result_total;
-      }
+        m *= 1.0 + player->cache.spell_crit_chance();
 
-      return amt;
+      return m;
     }
   };
 
@@ -4470,18 +4516,15 @@ using namespace helpers;
       p()->buffs.fiendish_cruelty->decrement();
     }
 
-    double calculate_direct_amount( action_state_t* state ) const override
+    double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double amt = warlock_spell_t::calculate_direct_amount( state );
+      double m = warlock_spell_t::composite_da_multiplier( s );
 
       // NOTE: 2026-04-25 Conflagration of Chaos crit damage bonus is not applied to Shadowburn (bug)
       if ( p()->buffs.conflagration_of_chaos->check() && !p()->bugs )
-      {
-        state->result_total *= 1.0 + player->cache.spell_crit_chance();
-        return state->result_total;
-      }
+        m *= 1.0 + player->cache.spell_crit_chance();
 
-      return amt;
+      return m;
     }
   };
 
@@ -4586,6 +4629,8 @@ using namespace helpers;
       may_crit = false;
       cooldown->hasted = true;
 
+      target_filter_callback = immolate_or_wither_only();
+
       if ( !p->talents.demonfire_infusion.ok() || p->talents.channel_demonfire.ok() )
         add_child( channel_demonfire_tick );
 
@@ -4594,22 +4639,6 @@ using namespace helpers;
         int num_ticks = ( int )( dot_duration / base_tick_time );
         dot_duration = num_ticks * base_tick_time;
       }
-    }
-
-    std::vector<player_t*>& target_list() const override
-    {
-      target_cache.list = warlock_spell_t::target_list();
-
-      size_t i = target_cache.list.size();
-      while ( i > 0 )
-      {
-        i--;
-
-        if ( !td( target_cache.list[ i ] )->dots.immolate->is_ticking() && !td( target_cache.list[ i ] )->dots.wither->is_ticking() )
-          target_cache.list.erase( target_cache.list.begin() + i );
-      }
-
-      return target_cache.list;
     }
 
     void tick( dot_t* d ) override
@@ -4629,10 +4658,11 @@ using namespace helpers;
 
     bool ready() override
     {
-      if ( p()->get_active_dots( td( target )->dots.immolate ) == 0 && p()->get_active_dots( td( target )->dots.wither ) == 0 )
+      if ( !warlock_spell_t::ready() )
         return false;
 
-      return warlock_spell_t::ready();
+      target_cache.is_valid = false;
+      return !target_list().empty();
     }
   };
 
@@ -4901,7 +4931,7 @@ using namespace helpers;
   {
     struct ruination_impact_t : public warlock_spell_t
     {
-      hand_of_guldan_t::hog_impact_t* hog_impact_spell;
+      hand_of_guldan_t::hog_impact_t* hog_impact_spell = nullptr;
 
       ruination_impact_t( warlock_t* p )
         : warlock_spell_t( "Ruination (Impact)", p, p->hero.ruination_impact )
@@ -4916,7 +4946,7 @@ using namespace helpers;
         {
           hog_impact_spell = new hand_of_guldan_t::hog_impact_t( p );
           hog_impact_spell->state.shards_used = as<int>( p->hero.ruination_buff->effectN( 2 ).base_value() );
-          hog_impact_spell->state.rancora_empowered = false;    // Ruination HoG impact is never rancora empowered
+          hog_impact_spell->state.rancora_empowered = false; // Ruination HoG impact is never rancora empowered
         }
       }
 
@@ -4928,7 +4958,9 @@ using namespace helpers;
         {
           if ( demonology() )
           {
-            make_event( *sim, 0_ms, [ this, t = target ] {
+            // Ruination appears to trigger a HoG-like meteor after a certain delay, which summons the Wild Imps.
+            // This delay can be modeled fairly closely using a normal distribution.
+            make_event( *sim, rng().gauss<395,35>(), [ this, t = target ] {
               hog_impact_spell->execute_on_target( t );
             } );
           }
@@ -5081,7 +5113,7 @@ using namespace helpers;
   struct summon_mother_of_chaos_t : public warlock_spell_t
   {
     summon_mother_of_chaos_t( warlock_t* p )
-      : warlock_spell_t( "Summon Mother of Chaos (Summon)", p, p->hero.summon_mother )
+      : warlock_spell_t( "Summon Mother of Chaos", p, p->hero.summon_mother )
     {
       harmful = may_crit = false;
       background = true;
@@ -5322,11 +5354,11 @@ using namespace helpers;
       dot->decrement( 1 );
       assert( ( dot->is_ticking() && dot->current_stack() > 0 ) && "UA stack decrement event should not cancel the DoT" );
 
-      // if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && dot->is_ticking() && dot->current_stack() > 0 && p->prd_rng.fatal_echoes->trigger() )
       if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && p->prd_rng.fatal_echoes->trigger() )
       {
         p->procs.fatal_echoes->occur();
         dot->current_action->set_target( target );
+        dot->current_action->time_to_execute = 0_ms;
         debug_cast<unstable_affliction_t*>( dot->current_action )->is_fatal_echoes_execute = true;
         dot->current_action->execute();
         debug_cast<unstable_affliction_t*>( dot->current_action )->is_fatal_echoes_execute = false;

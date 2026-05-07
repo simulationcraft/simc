@@ -447,7 +447,6 @@ public:
   // State
   struct state_t
   {
-    bool brain_freeze_active;
     bool fingers_of_frost_active;
     bool had_low_mana;
     bool trigger_ff_empowerment;
@@ -3864,10 +3863,16 @@ struct glacial_assault_t final : public frost_mage_spell_t
   }
 };
 
-struct flurry_bolt_t final : public frost_mage_spell_t
+struct flurry_data_t
+{
+  bool brain_freeze = false;
+  void debug( std::ostringstream& s ) const { s << " brain_freeze=" << brain_freeze; }
+};
+
+struct flurry_bolt_t final : public custom_state_spell_t<frost_mage_spell_t, flurry_data_t>
 {
   flurry_bolt_t( std::string_view n, mage_t* p ) :
-    frost_mage_spell_t( n, p, p->find_spell( 228354 ) )
+    custom_state_spell_t( n, p, p->find_spell( 228354 ) )
   {
     background = proc = true;
     freezing_stacks = as<int>( p->spec.shatter->effectN( 2 ).base_value() );
@@ -3875,7 +3880,7 @@ struct flurry_bolt_t final : public frost_mage_spell_t
 
   void impact( action_state_t* s ) override
   {
-    frost_mage_spell_t::impact( s );
+    custom_state_spell_t::impact( s );
 
     if ( !result_is_hit( s->result ) )
       return;
@@ -3884,18 +3889,18 @@ struct flurry_bolt_t final : public frost_mage_spell_t
       make_event( *sim, 1.0_s, [ this, t = s->target ] { p()->action.glacial_assault->execute_on_target( t ); } );
   }
 
-  double action_multiplier() const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double am = frost_mage_spell_t::action_multiplier();
+    double m = custom_state_spell_t::composite_da_multiplier( s );
 
-    if ( p()->state.brain_freeze_active )
-      am *= 1.0 + p()->buffs.brain_freeze->data().effectN( 2 ).percent();
+    if ( cast_state( s )->data.brain_freeze )
+      m *= 1.0 + p()->buffs.brain_freeze->data().effectN( 2 ).percent();
 
-    return am;
+    return m;
   }
 };
 
-struct flurry_t final : public frost_mage_spell_t
+struct flurry_t final : public custom_state_spell_t<frost_mage_spell_t, flurry_data_t>
 {
   action_t* flurry_bolt;
 
@@ -3903,7 +3908,7 @@ struct flurry_t final : public frost_mage_spell_t
   const timespan_t pulse_time = 0.4_s;
 
   flurry_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->talents.flurry ),
+    custom_state_spell_t( n, p, p->talents.flurry ),
     flurry_bolt( get_action<flurry_bolt_t>( "flurry_bolt", p ) ),
     pulses( as<int>( data().effectN( 1 ).base_value() ) )
   {
@@ -3922,24 +3927,31 @@ struct flurry_t final : public frost_mage_spell_t
   void init_finished() override
   {
     proc_fof = p()->get_proc( "Fingers of Frost from Flurry" );
-    frost_mage_spell_t::init_finished();
+    custom_state_spell_t::init_finished();
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    cast_state( s )->data.brain_freeze = p()->buffs.brain_freeze->check();
+    custom_state_spell_t::snapshot_state( s, rt );
   }
 
   void execute() override
   {
-    frost_mage_spell_t::execute();
+    custom_state_spell_t::execute();
 
-    p()->state.brain_freeze_active = p()->buffs.brain_freeze->up();
-    p()->buffs.brain_freeze->decrement();
-    if ( p()->state.brain_freeze_active )
+    if ( p()->buffs.brain_freeze->up() )
+    {
+      p()->buffs.brain_freeze->decrement();
       p()->buffs.thermal_void->trigger();
+    }
     p()->trigger_splinter( p()->target );
     p()->trigger_fof( p()->sets->set( MAGE_FROST, MID1, B2 )->effectN( 3 ).percent(), proc_fof );
   }
 
   void impact( action_state_t* s ) override
   {
-    frost_mage_spell_t::impact( s );
+    custom_state_spell_t::impact( s );
 
     auto e = make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time )
@@ -3951,6 +3963,8 @@ struct flurry_t final : public frost_mage_spell_t
     // by Splitting Ice's effectiveness reduction.
     if ( s->chain_target > 0 )
       e->pulse_state->persistent_multiplier *= std::pow( chain_multiplier, s->chain_target );
+
+    cast_state( e->pulse_state )->data = cast_state( s )->data;
   }
 };
 
