@@ -996,6 +996,7 @@ public:
     cooldown_t* metamorphosis;
     cooldown_t* throw_glaive;
     cooldown_t* vengeful_retreat;
+    cooldown_t* soul_splitter_icd;
 
     // Devourer
     cooldown_t* consume;
@@ -11457,15 +11458,16 @@ std::string demon_hunter_t::default_temporary_enchant() const
 void demon_hunter_t::create_cooldowns()
 {
   // General
-  cooldown.sigil_of_spite   = get_cooldown( "sigil_of_spite" );
-  cooldown.felblade         = get_cooldown( "felblade" );
-  cooldown.immolation_aura  = get_cooldown( "immolation_aura" );
-  cooldown.the_hunt         = get_cooldown( "the_hunt" );
-  cooldown.sigil_of_flame   = get_cooldown( "sigil_of_flame" );
-  cooldown.sigil_of_misery  = get_cooldown( "sigil_of_misery" );
-  cooldown.throw_glaive     = get_cooldown( "throw_glaive" );
-  cooldown.vengeful_retreat = get_cooldown( "vengeful_retreat" );
-  cooldown.metamorphosis    = get_cooldown( "metamorphosis" );
+  cooldown.sigil_of_spite    = get_cooldown( "sigil_of_spite" );
+  cooldown.felblade          = get_cooldown( "felblade" );
+  cooldown.immolation_aura   = get_cooldown( "immolation_aura" );
+  cooldown.the_hunt          = get_cooldown( "the_hunt" );
+  cooldown.sigil_of_flame    = get_cooldown( "sigil_of_flame" );
+  cooldown.sigil_of_misery   = get_cooldown( "sigil_of_misery" );
+  cooldown.throw_glaive      = get_cooldown( "throw_glaive" );
+  cooldown.vengeful_retreat  = get_cooldown( "vengeful_retreat" );
+  cooldown.metamorphosis     = get_cooldown( "metamorphosis" );
+  cooldown.soul_splitter_icd = get_cooldown( "soul_splitter_icd" );
 
   // Devourer
   cooldown.consume         = get_cooldown( "consume" );
@@ -12234,7 +12236,7 @@ void demon_hunter_t::spawn_soul_fragment( proc_t* source_proc, soul_fragment typ
   sim->print_log( "{} creates {} {}. active={} total={}", *this, n, get_soul_fragment_str( type ),
                   get_active_soul_fragments( type ), get_total_soul_fragments( type ) );
 
-  if ( talent.demon_hunter.soul_splitter->ok() &&
+  if ( talent.demon_hunter.soul_splitter->ok() && cooldown.soul_splitter_icd->up() &&
        rng().roll( talent.demon_hunter.soul_splitter->effectN( 1 ).percent() ) )
   {
     soul_fragments.push_back( new soul_fragment_t( this, soul_fragment::LESSER, consume_on_activation ) );
@@ -12244,6 +12246,7 @@ void demon_hunter_t::spawn_soul_fragment( proc_t* source_proc, soul_fragment typ
     sim->print_log( "{} creates an additional {} from Soul Splitter. active={} total={}", *this,
                     get_soul_fragment_str( type ), get_active_soul_fragments( type ),
                     get_total_soul_fragments( type ) );
+    cooldown.soul_splitter_icd->start( talent.demon_hunter.soul_splitter->internal_cooldown() );
   }
 }
 
