@@ -8166,7 +8166,7 @@ void actions::rogue_action_t<Base>::trigger_fazed( const action_state_t* state )
 
   // 2026-05-08 -- Fazed duration is reduced to 6 seconds if applied during Cloud Cover
   timespan_t duration = p()->bugs && p()->buffs.cloud_cover->check() ? 
-      p()->spell.cloud_cover_buff->duration() : p()->spell.fazed_debuff->duration();
+    p()->spell.cloud_cover_buff->duration() : p()->spell.fazed_debuff->duration();
 
   tdata->debuffs.fazed->trigger( duration );
 }
