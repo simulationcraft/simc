@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67314 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.5.67403 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -140,7 +140,6 @@ Attributes       : Not Shapeshifted (16), Do Not Chain To Crowd-Controlled Targe
 Effects          :
 #1 (id=91)       : School Damage (2): fire | Attributes: Chain from Initial Target (7), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.88125 | PvP Coefficient: 1.92 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.068 -> 1.92)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Throws a fiery ball that causes $s1 Fire damage.$?a157642[
 
@@ -396,11 +395,9 @@ Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc 
 Effects          :
 #1 (id=2716)     : School Damage (2): arcane | Attributes: Chain from Initial Target (7), Add Target (Dest) Combat Reach to AOE (11), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.97992 | PvP Coefficient: 1.913 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.6632 -> 1.913)
                    Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1243492)  : School Damage (2): arcane | Attributes: Chain from Initial Target (7), Add Target (Dest) Combat Reach to AOE (11), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.48996 | PvP Coefficient: 1.913 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1.6632 -> 1.913)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : $@spelldesc5143
 
@@ -425,7 +422,6 @@ Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Cla
 Effects          :
 #1 (id=4785)     : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.5545 | PvP Coefficient: 1.35 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.44 -> 1.35)
                    Modified By: Rollin' Hot (1219035 effect#2)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].
 
@@ -1060,7 +1056,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Do Not Chain To Cr
 Effects          :
 #1 (id=20028)    : School Damage (2): arcane | Attributes: Always AOE Line of Sight (5), Chain from Initial Target (7), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.239 | PvP Coefficient: 1.83 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.595 -> 1.83)
                    Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=20029)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: none | Target: Self (1)
@@ -3955,7 +3950,6 @@ Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Loo
 Effects          :
 #1 (id=302648)   : Apply Aura (6) | Periodic Damage (3): frost every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.5 | PvP Coefficient: 0.72 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (0.8 -> 0.72)
                    Modified By: Ray of Frost (208141 effect#2), Rollin' Hot (1219035 effect#2)
 Description      : Channel an icy beam at the enemy for $d, dealing $s1 Frost damage every ${$t1}.2 sec.
 
@@ -12566,7 +12560,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1269781)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : When your Arcane Phoenix is summoned, it consumes all your Spellfire Spheres.
 
 Each Sphere consumed increases your spell damage during $?c1[Arcane Surge][Combustion] by $?c1[$s1][$s2]% and causes your Arcane Phoenix to cast an exceptional Arcane or Fire spell over its duration.
@@ -15565,7 +15558,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1248791)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.9154 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.9738 -> 0.9154)
                    Modified By: Rollin' Hot (1219035 effect#2)
 #2 (id=1293650)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.225 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -16393,7 +16385,6 @@ Attributes       : Allow Dead Target (64), Spell Haste Affects Periodic (173), A
 Effects          :
 #1 (id=1263763)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.76 | PvP Coefficient: 0.9 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (2 -> 1.76)
 Description      : $@spelldesc1253304
 
 Name             : Voidfall Meteor (id=1256306) [Spell Family (107)] 
@@ -16527,7 +16518,6 @@ Attributes       : Allow Dead Target (64), Spell Haste Affects Periodic (173), A
 Effects          :
 #1 (id=1264194)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.64 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
-Hotfixed         : SP Coefficient (3 -> 2.64)
 Description      : $@spelldesc1253304
 
 Name             : Arcane Mage (id=1256909) [Spell Family (3), Passive, Hidden] 
@@ -16785,7 +16775,6 @@ Effects          :
 Description      : $@spelldesc1257950
 
 Name             : Touch of the Archmage (id=1258134) [Spell Family (3)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
