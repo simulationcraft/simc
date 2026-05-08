@@ -8164,7 +8164,11 @@ void actions::rogue_action_t<Base>::trigger_fazed( const action_state_t* state )
     tcd->start();
   }
 
-  tdata->debuffs.fazed->trigger();
+  // 2026-05-08 -- Fazed duration is reduced to 6 seconds if applied during Cloud Cover
+  timespan_t duration = p()->bugs && p()->buffs.cloud_cover->check() ? 
+      p()->spell.cloud_cover_buff->duration() : p()->spell.fazed_debuff->duration();
+
+  tdata->debuffs.fazed->trigger( duration );
 }
 
 template <typename Base>
@@ -8752,9 +8756,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 
   debuffs.deathstalkers_mark = make_buff( *this, "deathstalkers_mark", source->spell.deathstalkers_mark_debuff );
   debuffs.fazed = make_buff<damage_buff_t>( *this, "fazed", source->spell.fazed_debuff );
-  debuffs.fazed->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
-    return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds, not in spell data
-  } );
+  debuffs.fazed->set_refresh_behavior( buff_refresh_behavior::DURATION );
   // Set initial max stack to the max Cloud Cover stacks for stack_uptime tracking
   // This will be resized dynamically in trigger_fazed()
   if ( source->talent.trickster.cloud_cover->ok() )
