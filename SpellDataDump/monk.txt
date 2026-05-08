@@ -20387,7 +20387,6 @@ Name             : Rushing Wind Kick (id=1269159) [Spell Family (53)]
 Class            : Monk
 School           : Nature
 Spell Type       : None
-Max Targets      : 5
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
