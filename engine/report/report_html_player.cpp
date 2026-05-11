@@ -3244,7 +3244,7 @@ void print_html_player_plots( report::sc_html_stream& os, const player_t& p, con
       auto gear_rating = scale_override >= 0 ? scale_override : p.composite_rating( util::stat_to_rating( i ) );
 
       size_t count = plot_data.size();
-      size_t rows = as<size_t>( std::ceil( count / 6 ) );
+      size_t rows = count ? ( ( count + 5 ) / 6 ) : 1;
 
       os.format(
         R"(<table class="sc"><tr class="details"><td class="details"><h4>{}</h4></td></tr><tr class="details">)",
