@@ -14352,7 +14352,7 @@ void death_knight_t::init_rng()
 
   // Blood
   pseudo_random.dance_of_midnight =
-      get_accumulated_rng( "dance_of_midnight", prd::find_constant( 0.10 ) );  // 10% chance, not in data.
+      get_accumulated_rng( "dance_of_midnight", prd::find_constant( 0.125 ) );  // 12.5% chance, not in data.
   // Frost
   pseudo_random.killing_machine = get_accumulated_rng(
       "killing_machine", spec.might_of_the_frozen_wastes->ok() && main_hand_weapon.group() == WEAPON_2H ? 1.0 : 0.3 );
@@ -17194,59 +17194,81 @@ struct death_knight_module_t : public module_t
      */
   }
 
-  /*
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2026-5-1", "Shadow Bolt Nerfed 15%", 803165,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.6587568 )
-        .verification_value( 0.775008 );
+    // hotfix::register_effect( "Death Knight", "2026-5-1", "Shadow Bolt Nerfed 15%", 803165,
+    //                          hotfix::HOTFIX_FLAG_LIVE )
+    //     .field( "ap_coefficient" )
+    //     .operation( hotfix::HOTFIX_SET )
+    //     .modifier( 0.6587568 )
+    //     .verification_value( 0.775008 );
 
-    hotfix::register_effect( "Death Knight", "2026-5-1", "Graveyard (main) nerfed 15%", 1015149,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.9546775 )
-        .verification_value( 1.12315 );
+    // hotfix::register_effect( "Death Knight", "2026-5-1", "Graveyard (main) nerfed 15%", 1015149,
+    //                          hotfix::HOTFIX_FLAG_LIVE )
+    //     .field( "ap_coefficient" )
+    //     .operation( hotfix::HOTFIX_SET )
+    //     .modifier( 0.9546775 )
+    //     .verification_value( 1.12315 );
 
-    hotfix::register_effect( "Death Knight", "2026-5-1", "Graveyard (AoE) nerfed 15%", 1274362,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.3818761 )
-        .verification_value( 0.449266 );
+    // hotfix::register_effect( "Death Knight", "2026-5-1", "Graveyard (AoE) nerfed 15%", 1274362,
+    //                          hotfix::HOTFIX_FLAG_LIVE )
+    //     .field( "ap_coefficient" )
+    //     .operation( hotfix::HOTFIX_SET )
+    //     .modifier( 0.3818761 )
+    //     .verification_value( 0.449266 );
 
-    hotfix::register_effect( "Death Knight", "2026-5-1", "Whitemane Epidemic (main) nerfed 25%", 1233789,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.494484 )
-        .verification_value( 0.659312 );
+    // hotfix::register_effect( "Death Knight", "2026-5-1", "Whitemane Epidemic (main) nerfed 25%", 1233789,
+    //                          hotfix::HOTFIX_FLAG_LIVE )
+    //     .field( "ap_coefficient" )
+    //     .operation( hotfix::HOTFIX_SET )
+    //     .modifier( 0.494484 )
+    //     .verification_value( 0.659312 );
 
-    hotfix::register_effect( "Death Knight", "2026-5-1", "Whitemane Epidemic (AoE) nerfed 25%", 1233790,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.19779525 )
-        .verification_value( 0.263727 );
+    // hotfix::register_effect( "Death Knight", "2026-5-1", "Whitemane Epidemic (AoE) nerfed 25%", 1233790,
+    //                          hotfix::HOTFIX_FLAG_LIVE )
+    //     .field( "ap_coefficient" )
+    //     .operation( hotfix::HOTFIX_SET )
+    //     .modifier( 0.19779525 )
+    //     .verification_value( 0.263727 );
 
-    hotfix::register_effect( "Death Knight", "2026-5-1", "Trollbanes icy Fury nerfed 25%", 1141463,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.78975 )
-        .verification_value( 1.053 );
+    // hotfix::register_effect( "Death Knight", "2026-5-1", "Trollbanes icy Fury nerfed 25%", 1141463,
+    //                          hotfix::HOTFIX_FLAG_LIVE )
+    //     .field( "ap_coefficient" )
+    //     .operation( hotfix::HOTFIX_SET )
+    //     .modifier( 0.78975 )
+    //     .verification_value( 1.053 );
 
-    hotfix::register_effect( "Death Knight", "2026-5-1", "Thrill of Blood DP damage increased to 10%", 1319202,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 10 )
-        .verification_value( 5 );
+    // hotfix::register_effect( "Death Knight", "2026-5-1", "Thrill of Blood DP damage increased to 10%", 1319202,
+    //                          hotfix::HOTFIX_FLAG_LIVE )
+    //     .field( "base_value" )
+    //     .operation( hotfix::HOTFIX_SET )
+    //     .modifier( 10 )
+    //     .verification_value( 5 );
+    hotfix::register_effect( "Death Knight", "2026-05-11", "Dancing Rune Weapon grants 25% Parry", 68684,
+                              hotfix::HOTFIX_FLAG_LIVE )
+          .field( "base_value" )
+          .operation( hotfix::HOTFIX_SET )
+          .modifier( 25 )
+          .verification_value( 20 );
+    hotfix::register_effect( "Death Knight", "2026-05-11", "Blood Fortification increased to 40%", 1000722,
+                              hotfix::HOTFIX_FLAG_LIVE )
+          .field( "base_value" )
+          .operation( hotfix::HOTFIX_SET )
+          .modifier( 40 )
+          .verification_value( 35 );
+    hotfix::register_effect( "Death Knight", "2026-05-11", "Improved Death Strike healing increased to 15%", 1000063,
+                              hotfix::HOTFIX_FLAG_LIVE )
+          .field( "base_value" )
+          .operation( hotfix::HOTFIX_SET )
+          .modifier( 15 )
+          .verification_value( 5 );
+    hotfix::register_spell( "Death Knight", "2026-05-11", "Dance of Midnight grants DRW for 8 seconds", 1264353,
+                              hotfix::HOTFIX_FLAG_LIVE )
+          .field( "duration" )
+          .operation( hotfix::HOTFIX_SET )
+          .modifier( 8000 )
+          .verification_value( 6000 );
   }
-  */
 
   void init( player_t* ) const override
   {
