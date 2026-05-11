@@ -12568,19 +12568,22 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
   if ( splits.size() == 2 && splits[ 0 ] == "potion" )
   {
+    std::string default_potion_str;
     std::string_view potion_view;
 
     if ( !potion_str.empty() )
     {
       potion_view = potion_str;
     }
-    else if ( default_potion().empty() )
-    {
-      potion_view = default_potion();
-    }
     else
     {
-      return expr_t::create_constant( expression_str, false );
+      default_potion_str = default_potion();
+      if ( default_potion_str.empty() )
+      {
+        return expr_t::create_constant( expression_str, false );
+      }
+
+      potion_view = default_potion_str;
     }
 
     if ( util::str_compare_ci( potion_view, splits[ 1 ] ) )
