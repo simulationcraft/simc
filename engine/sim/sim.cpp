@@ -3609,7 +3609,7 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
   if ( splits.size() >= 3 && splits[ 0 ] == "actors" )
   {
     player_t* actor = sim_t::find_player( splits[ 1 ] );
-    if ( !target )
+    if ( !actor )
       return nullptr;
 
     auto rest = std::string( splits[ 2 ] );
