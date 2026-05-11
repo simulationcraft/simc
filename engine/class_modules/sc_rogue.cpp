@@ -9298,7 +9298,7 @@ std::unique_ptr<expr_t> rogue_t::create_action_expression( action_t& action, std
       return range::contains( danse_macabre_tracker, action.data().id() );
     } );
   }
-  else if ( split[ 0 ] == "buff" && split[ 1 ] == "envenom" && split[ 2 ] == "remains" && split.size() == 4 )
+  else if ( split.size() == 4 && split[ 0 ] == "buff" && split[ 1 ] == "envenom" && split[ 2 ] == "remains" )
   {
     size_t buff_idx = as<size_t>( util::to_int( split[ 3 ] ) );
     return make_fn_expr( name_str, [ this, buff_idx ]() {
