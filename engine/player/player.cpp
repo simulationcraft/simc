@@ -12611,7 +12611,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   // pet
   if ( splits.size() >= 2 && splits[ 0 ] == "pet" )
   {
-    if ( splits[ 1 ] == "any" && splits[ 2 ] == "active" )
+    if ( splits.size() == 3 && splits[ 1 ] == "any" && splits[ 2 ] == "active" )
     {
       return make_fn_expr( expression_str, [ this ]
       {
