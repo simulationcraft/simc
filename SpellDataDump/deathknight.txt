@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67403 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.5.67451 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -2169,6 +2169,7 @@ Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41), Enter 
 Effects          :
 #1 (id=68684)    : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 25)
 Description      : $@spelldesc49028
 Tooltip          : Parry chance increased by $s1%.
 
@@ -10418,6 +10419,7 @@ Effects          :
                    Family Flags: 4
 #4 (id=1000063)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Hotfixed         : Base Value (5 -> 15)
 #5 (id=1012454)  : Apply Aura (6) | Dummy (4)
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
 Description      : Death Strike's cost is reduced by $?a137008[${$s5/-10}][${$s3/-10}], and its healing is increased by $?a137008[$s4%][$s1%].
@@ -10638,6 +10640,7 @@ Attributes       : Passive (6), Update Passives on Apply/Remove (344)
 Effects          :
 #1 (id=1000722)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 2 | Stat: Sta | Target: Self (1)
+Hotfixed         : Base Value (35 -> 40)
 #2 (id=1000723)  : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 45 | Scaled Value: 45 | Misc Value: 1 | Target: Self (1)
 Description      : Your Blood thickens increasing your Stamina by $s1% and your Armor by $s2%.

@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67403 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.5.67451 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -2986,8 +2986,9 @@ Family Flags     : 11, 109
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=279107)   : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 11.9438 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 12.8993 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : AP Coefficient (11.9438 -> 12.8993)
                    Modified By: Bloodsport (279172 effect#3)
 #2 (id=299580)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
@@ -7462,7 +7463,8 @@ Family Flags     : 9, 45
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Chain From Caster (76), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=831441)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.06997 | PvP Coefficient: 1.3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.48396 | PvP Coefficient: 1.3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (2.06997 -> 2.48396)
 Description      : $@spelldesc335097
 
 Name             : Crushing Blow (id=335100) [Spell Family (4)] 
@@ -7481,7 +7483,8 @@ Family Flags     : 9, 45
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Chain From Caster (76), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=831443)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.06997 | PvP Coefficient: 1.3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.48396 | PvP Coefficient: 1.3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (2.06997 -> 2.48396)
 Description      : $@spelldesc335097
 
 Name             : Leaper (id=335214) [Spell Family (4), Passive] 
@@ -13396,8 +13399,9 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1153689)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
-                   Base Value: -4 | Scaled Value: -4 | Misc Value: 23 | Misc Value 2: 2796 (Label) | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | Misc Value: 23 | Misc Value 2: 2796 (Label) | Target: Self (1)
                    Affected Spells (Label): Defensive Stance (386208)
+Hotfixed         : Base Value (-4 -> -6)
 Description      : Defensive Stance additionally reduces magic damage you take by $s1%.
 
 Name             : Warrior Arms 11.0 Class Set 2pc (id=453636) [Spell Family (4), Passive, Hidden] 
@@ -16667,8 +16671,9 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), DoT Stacking Rule (103), Always AOE Line of Sight (186), Aura Icon Only For Caster (Limit 10) (212), Aura Points On Client (268), Not In Spellbook Until Learned (269), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1311875)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
+                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
+Hotfixed         : Base Value (-5 -> -8)
 Description      : Enemies damaged by Phalanx's wave of force deal ${$s1/-1}.1% reduced damage to you for $d.
 
 Tooltip          : Dealing ${$W1/-1}.1% reduced damage to $@auracaster.
