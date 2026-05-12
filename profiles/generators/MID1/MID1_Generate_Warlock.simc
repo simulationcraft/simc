@@ -55,58 +55,57 @@ off_hand=grimoire_of_the_eternal_light,id=249276,ilevel=289
 save=MID1_Warlock_Affliction_Hellcaller.simc
 
 
-warlock="MID1_Warlock_Demonology_Soul_Harvester"
+# warlock="MID1_Warlock_Demonology_Soul_Harvester"
+# spec=demonology
+# level=90
+# race=Orc
+# role=spell
+# position=ranged_back
+# talents=CoQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmxsMAAAAAAAjtlBGwAmhtQGbGjx2sMzMjZAAzMzMzAMzMmxMDAAwYmZmZMDLDAD
+
+# head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
+# neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240916
+# shoulders=mantle_of_dark_devotion,id=251085,bonus_id=12806/13577,enchant_id=8001
+# back=adherents_silken_shroud,id=239656,bonus_id=8795/8960/12214/12214/12214/12214/12214/12214/12384/13622/13667/9627,crafted_stats=36/49
+# chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+# wrists=martyrs_bindings,id=239648,bonus_id=1808/8960/12066/12214/12214/12214/12384/13622/13667/9627,gem_id=240900,crafted_stats=32/49
+# hands=abyssal_immolators_grasps,id=250043,bonus_id=13574/13574/13574/13574/13574/13574/13574,ilevel=289
+# waist=abyssal_immolators_blazing_core,id=250039,bonus_id=1808/12806,gem_id=240892
+# legs=abyssal_immolators_pillars,id=250041,bonus_id=13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7935
+# feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
+# finger1=platinum_star_band,id=193708,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967
+# finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967
+# trinket1=locuswalkers_ribbon,id=249809,bonus_id=4786/4800/12806
+# trinket2=emberwing_feather,id=250144,bonus_id=12806/13577,ilevel=289
+# main_hand=umbral_spire_of_zuraal,id=258514,bonus_id=12806/13577,enchant_id=7981
+
+# save=MID1_Warlock_Demonology.simc
+
+warlock="MID1_Warlock_Demonology_Diabolist"
 spec=demonology
 level=90
 race=Orc
 role=spell
 position=ranged_back
-talents=CoQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmxsMAAAAAAAjtlBGwAmhtQGbGjx2sMzMjZAAzMzMzAMzMmxMDAAwYmZmZMDLDAD
+talents=CoQAAAAAAAAAAAAAAAAAAAAAAYmxMzoZjZ2mZGzyAAAAAAAAGzYYBGYb0CNsYMGLzyMzMmBAmZMzMzMDgZGzAAAYMzMjhhlZMgB
 
-head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
-neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240916
+head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/13575/1808/13575/13575/13575/13575/13575/13575/13575,enchant_id=7961,gem_id=240983,ilevel=289
+neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240906
 shoulders=mantle_of_dark_devotion,id=251085,bonus_id=12806/13577,enchant_id=8001
-back=adherents_silken_shroud,id=239656,bonus_id=8795/8960/12214/12214/12214/12214/12214/12214/12384/13622/13667/9627,crafted_stats=36/49
-chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
-wrists=martyrs_bindings,id=239648,bonus_id=1808/8960/12066/12214/12214/12214/12384/13622/13667/9627,gem_id=240900,crafted_stats=32/49
-hands=abyssal_immolators_grasps,id=250043,bonus_id=13574/13574/13574/13574/13574/13574/13574,ilevel=289
-waist=abyssal_immolators_blazing_core,id=250039,bonus_id=1808/12806,gem_id=240892
-legs=abyssal_immolators_pillars,id=250041,bonus_id=13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7935
-feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
-finger1=platinum_star_band,id=193708,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967
-finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967
-trinket1=locuswalkers_ribbon,id=249809,bonus_id=4786/4800/12806
-trinket2=emberwing_feather,id=250144,bonus_id=12806/13577,ilevel=289
-main_hand=umbral_spire_of_zuraal,id=258514,bonus_id=12806/13577,enchant_id=7981
+back=adherents_silken_shroud,id=239656,bonus_id=12214/8960/12384/13622/13667/9627/8791,crafted_stats=36/49
+chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575,enchant_id=7987,ilevel=289
+wrists=martyrs_bindings,id=239648,bonus_id=12214/12214/1808/8960/12066/12214/12214/12214/12384/13622/13667/9627,gem_id=240906,crafted_stats=32/49
+hands=abyssal_immolators_grasps,id=250043,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+waist=abyssal_immolators_blazing_core,id=250039,bonus_id=1808/12806,gem_id=240906
+legs=abyssal_immolators_pillars,id=250041,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575,enchant_id=7935,ilevel=289
+feet=dreamscorched_striders,id=249373,enchant_id=7963,ilevel=289
+finger1=omission_of_light,id=251093,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240906
+finger2=occlusion_of_void,id=251217,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240906
+trinket1=emberwing_feather,id=250144,bonus_id=12806/13577,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577
+main_hand=umbral_spire_of_zuraal,id=258514,bonus_id=12806/13577,enchant_id=8039
 
 save=MID1_Warlock_Demonology.simc
-
-# warlock="MID1_Warlock_Demonology_Diabolist"
-# spec=demonology
-# level=80
-# race=Dwarf
-# role=spell
-# position=ranged_back
-# talents=CoQAAAAAAAAAAAAAAAAAAAAAAAmZmZmZEzmBmtZmZY2GAAAAAAAAAAzAGzYYBGYb0CNswMmhtZmZZGzMzYMjhZmxYYmZAAA
-
-# head=elysian_flame_crown,id=221131,bonus_id=3215/12361/12239/1808,gem_id=213743
-# neck=chrysalis_of_sundered_souls,id=237568,bonus_id=1533/12361/12239/8781,gem_id=213491/213461
-# shoulder=inquisitors_gaze_of_madness,id=237698,bonus_id=12675/1533/12361
-# back=reshii_wraps,id=235499,bonus_id=9893/12239,enchant_id=7403,gem_id=238044
-# chest=inquisitors_robes_of_madness,id=237703,bonus_id=12676/12361/1533,enchant_id=7364
-# wrist=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12053/12050/1485/1808/11109/8960/8791,enchant_id=7397,gem_id=213461,crafted_stats=36/49
-# hands=inquisitors_clutches_of_madness,id=237701,bonus_id=12675/1533/12361
-# waist=durable_information_securing_container,id=242664,bonus_id=1489/12352/12239,gem_id=213461,titan_disc_id=1236275
-# legs=inquisitors_leggings_of_madness,id=237699,bonus_id=12676/1533/12361,enchant_id=7534
-# feet=interlopers_silken_striders,id=243305,bonus_id=1533/12361/12239/13504,enchant_id=7424
-# finger1=logic_gate_alpha,id=237567,bonus_id=1533/12361/12239/8781,enchant_id=7352,gem_id=213461/213461
-# finger2=band_of_the_shattered_soul,id=242405,bonus_id=1533/12361/12239/8781,enchant_id=7352,gem_id=213467/213479
-# trinket1=azhiccaran_parapodia,id=242497,bonus_id=3215/12361/12239
-# trinket2=astral_antenna,id=242395,bonus_id=1533/12361/12239
-# main_hand=voidglass_kris,id=237728,bonus_id=1533/12361/12239,enchant_id=7445
-# off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12053/12050/1485/11300/8960/8795,crafted_stats=36/49
-
-# save=MID1_Warlock_Demonology.simc
 
 warlock="MID1_Warlock_Destruction_Diabolist"
 spec=destruction
@@ -115,26 +114,26 @@ race=Dwarf
 role=spell
 position=ranged_back
 warlock.default_pet=sayaad
-talents=CsQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlZjxMLGjFzAAgZmxMzsAGzYYhMw2wGNWYAAgxAjNAMzAYmxYAAAYmZmBAwMDD
+talents=CoQAAAAAAAAAAAAAAAAAAAAAAYmxMzoZjZ2mZGzyAAAAAAAAGzYYBGYb0CNsYMGLzyMzMmBAmZMzMzMDgZGzAAAYMzMjhhlZMgB
 
-head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/13575/13575/13575/1808/13575,enchant_id=7961,gem_id=240983,ilevel=289
-neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240908
-shoulder=mantle_of_dark_devotion,id=251085,bonus_id=12806/13577,enchant_id=8001
-back=adherents_silken_shroud,id=239656,bonus_id=12214/12214/12214/8795/8960/12214/12384/13622/13667/9627,crafted_stats=36/49
-chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575/13575/13575/13575/13575,enchant_id=7987,ilevel=289
-wrist=martyrs_bindings,id=239648,bonus_id=12214/13622/13667/12066/9627/8960/12384/1808,gem_id=240914,crafted_stats=32/49
-hands=abyssal_immolators_grasps,id=250043,bonus_id=13574/13574/13574/13574/13574,ilevel=289
-waist=abyssal_immolators_blazing_core,id=250039,bonus_id=1808/12806,gem_id=240890
-legs=abyssal_immolators_pillars,id=250041,bonus_id=13575/13575/13575/13575/13575,enchant_id=7935,ilevel=289
-feet=slippers_of_the_midnight_flame,id=249305,bonus_id=1532/4786/4800/12803/12806,enchant_id=7993
-finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240890/240890
-finger2=signet_of_the_starved_beast,id=249336,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240898
-trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
-trinket2=vaelgors_final_stare,id=249346,bonus_id=12806/13577
-main_hand=spire_of_the_furious_construct,id=110031,bonus_id=12806/13577,enchant_id=8039
+head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/13575/1808/13575/13575/13575/13575/13575/13575/13575,enchant_id=7961,gem_id=240983,ilevel=289
+neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240906
+shoulders=mantle_of_dark_devotion,id=251085,bonus_id=12806/13577,enchant_id=8001
+back=adherents_silken_shroud,id=239656,bonus_id=12214/8960/12384/13622/13667/9627/8791,crafted_stats=36/49
+chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575,enchant_id=7987,ilevel=289
+wrists=martyrs_bindings,id=239648,bonus_id=12214/12214/1808/8960/12066/12214/12214/12214/12384/13622/13667/9627,gem_id=240906,crafted_stats=32/49
+hands=abyssal_immolators_grasps,id=250043,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+waist=abyssal_immolators_blazing_core,id=250039,bonus_id=1808/12806,gem_id=240906
+legs=abyssal_immolators_pillars,id=250041,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575,enchant_id=7935,ilevel=289
+feet=dreamscorched_striders,id=249373,enchant_id=7963,ilevel=289
+finger1=omission_of_light,id=251093,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240906
+finger2=occlusion_of_void,id=251217,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240906
+trinket1=emberwing_feather,id=250144,bonus_id=12806/13577,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577
+main_hand=umbral_spire_of_zuraal,id=258514,bonus_id=12806/13577,enchant_id=8039
 
 
-save=MID1_Warlock_Destruction_Diabolist.simc
+save=MID1_Warlock_Destruction.simc
 
 warlock="MID1_Warlock_Destruction_Hellcaller"
 spec=destruction
@@ -143,7 +142,7 @@ race=Dwarf
 role=spell
 position=ranged_back
 warlock.default_pet=sayaad
-talents=CsQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlZhxMLGjFzAAgZmxMzsYBGYWMaMDgZL2YAAgxAjNAgZGYmxYAAAYmZmBAwMDD
+talents=CsQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlZxMzMLGjFzAAgZmxMzsYBGYWMaMDgZL2YAAgxAjNAgZGYmxYAAAYmZmBAwYYA
 
 head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/13575/13575/13575/1808/13575,enchant_id=7961,gem_id=240983,ilevel=289
 neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240908
@@ -161,4 +160,4 @@ trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
 trinket2=vaelgors_final_stare,id=249346,bonus_id=12806/13577
 main_hand=spire_of_the_furious_construct,id=110031,bonus_id=12806/13577,enchant_id=8039
 
-save=MID1_Warlock_Destruction.simc
+save=MID1_Warlock_Destruction_Hellcaller.simc
