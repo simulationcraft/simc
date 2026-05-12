@@ -8,7 +8,17 @@
 namespace warlock_apl{
   std::string potion( const player_t* p )
   {
-    if ( p->true_level >= 90 ) return "lights_potential_2";
+    std::string lvl90_potion = "disabled";
+
+    switch ( p->specialization() )
+    {
+      case WARLOCK_AFFLICTION: lvl90_potion = "lights_potential_2"; break;
+      case WARLOCK_DEMONOLOGY: lvl90_potion = "potion_of_recklessness_2"; break;
+      case WARLOCK_DESTRUCTION: lvl90_potion = "potion_of_recklessness_2"; break;
+      default: break;
+    }
+
+    if ( p->true_level >= 90 ) return lvl90_potion;
     return ( p->true_level >= 80 ) ? "tempered_potion_3" : "disabled";
   }
 
@@ -19,8 +29,8 @@ namespace warlock_apl{
     switch ( p->specialization() )
     {
       case WARLOCK_AFFLICTION: lvl90_flask = "flask_of_the_shattered_sun_2"; break;
-      case WARLOCK_DEMONOLOGY: lvl90_flask = "flask_of_the_magisters_2"; break;
-      case WARLOCK_DESTRUCTION: lvl90_flask = "flask_of_the_magisters_2"; break;
+      case WARLOCK_DEMONOLOGY: lvl90_flask = "flask_of_the_shattered_sun_2"; break;
+      case WARLOCK_DESTRUCTION: lvl90_flask = "flask_of_the_shattered_sun_2"; break;
       default: break;
     }
 
