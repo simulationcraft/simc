@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67360 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67525 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -2986,7 +2986,7 @@ Family Flags     : 11, 109
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=279107)   : Apply Aura (6) | Absorb Damage (69) | Attributes: Aura Points Stack (9)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 11.9438 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 12.8993 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
                    Modified By: Bloodsport (279172 effect#3)
 #2 (id=299580)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -7462,7 +7462,7 @@ Family Flags     : 9, 45
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Chain From Caster (76), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=831441)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.06997 | PvP Coefficient: 1.3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.48396 | PvP Coefficient: 1.3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 Description      : $@spelldesc335097
 
 Name             : Crushing Blow (id=335100) [Spell Family (4)] 
@@ -7481,7 +7481,7 @@ Family Flags     : 9, 45
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Chain From Caster (76), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=831443)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.06997 | PvP Coefficient: 1.3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.48396 | PvP Coefficient: 1.3 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 Description      : $@spelldesc335097
 
 Name             : Leaper (id=335214) [Spell Family (4), Passive] 
@@ -13396,7 +13396,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1153689)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
-                   Base Value: -4 | Scaled Value: -4 | Misc Value: 23 | Misc Value 2: 2796 (Label) | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | Misc Value: 23 | Misc Value 2: 2796 (Label) | Target: Self (1)
                    Affected Spells (Label): Defensive Stance (386208)
 Description      : Defensive Stance additionally reduces magic damage you take by $s1%.
 
@@ -14441,7 +14441,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken
 Triggered By     : Berserker Shout (384100)
-Attributes       : Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+Attributes       : Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Important Spell (491)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1204786)  : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
@@ -16667,7 +16667,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), DoT Stacking Rule (103), Always AOE Line of Sight (186), Aura Icon Only For Caster (Limit 10) (212), Aura Points On Client (268), Not In Spellbook Until Learned (269), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1311875)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
+                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
 Description      : Enemies damaged by Phalanx's wave of force deal ${$s1/-1}.1% reduced damage to you for $d.
 

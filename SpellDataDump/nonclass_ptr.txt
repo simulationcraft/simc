@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67360 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67525 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -253505,7 +253505,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292092)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
-Description      : When below $s1% health your Core Rune also heals you for |CFFffffff${$<dmgvalue>*$1287908s2}|R health.
+Description      : When below $s1% health your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R also heals you for |CFFffffff${$<dmgvalue>*$1287908s2}|R health.
 Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
@@ -253551,7 +253551,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292098)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : The effects of your Core Rune increase your Critical Strike rating by |CFFffffff${$<statsvalue>*$1287772s2}|R. This effect may overlap.
+Description      : The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R increase your Critical Strike rating by |CFFffffff${$<statsvalue>*$1287772s2}|R. This effect may overlap.
 Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
@@ -253563,7 +253563,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292099)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : The effects of your Core Rune increase your Haste rating by |CFFffffff${$<statsvalue>*$1287774s2}|R. This effect may overlap.
+Description      : The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R increase your Haste rating by |CFFffffff${$<statsvalue>*$1287774s2}|R. This effect may overlap.
 Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
@@ -253575,7 +253575,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292101)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : The effects of your Core Rune increase your Mastery rating by |CFFffffff${$<statsvalue>*$1287771s2}|R. This effect may overlap.
+Description      : The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R increase your Mastery rating by |CFFffffff${$<statsvalue>*$1287771s2}|R. This effect may overlap.
 Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
@@ -253587,7 +253587,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292102)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : The effects of your Core Rune increase your Versatility rating by |CFFffffff${$<statsvalue>*$1287770s2}|R. This effect may overlap.
+Description      : The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R increase your Versatility rating by |CFFffffff${$<statsvalue>*$1287770s2}|R. This effect may overlap.
 Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
@@ -253599,7 +253599,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292103)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Increase the effectiveness of your Core Rune ability by $s1%.
+Description      : Increase the effectiveness of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R ability by $s1%.
 
 Name             : Rune of Residual Energy (id=1279615) [Passive, Hidden] 
 Talent Entry     : Generic [tree=expansion, row=5, col=1, max_rank=1, req_points=0, select_idx=200]
@@ -253609,7 +253609,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292104)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Increase the effectiveness of your Rune of Lingering by $s1%. 
+Description      : Increase the effectiveness of your |CFF88aaffRune of Lingering|R by $s1%. 
 
 Name             : Rune of Echoes (id=1279616) [Passive, Hidden] 
 Talent Entry     : Generic [tree=expansion, row=5, col=1, max_rank=1, req_points=0, select_idx=300]
@@ -253619,7 +253619,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292105)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : The effects of your Core Rune leave an echoing curse on your target. After $1289063d, an echo of all the damage and healing done by your Core and Lingering Runes is repeated at $s1% effectiveness.
+Description      : The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R leave an echoing curse on your target. After $1289063d, an echo of all the damage and healing done by your |CFF88aaffCore and Lingering Runes|R is repeated at $s1% effectiveness.
 
 Name             : Hydrated (id=1279691) 
 School           : Physical
@@ -254302,9 +254302,11 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1305151)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : The effects of your Core Rune leave behind a periodic effect that deals |CFFffffff${$<dmgvalue>*$1286970s2}|R Cosmic damage or restores |CFFffffff${$<dmgvalue>*$1287665s2}|R health over $1287663d based on whether the target is an enemy or ally.
+Description      : |CFF88aaffLingering Rune|R
 
-Your Core Rune favors hitting targets that are unaffected by Rune of Lingering.
+The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R leave behind a periodic effect that deals |CFFffffff${$<dmgvalue>*$1286970s2}|R Cosmic damage or restores |CFFffffff${$<dmgvalue>*$1287665s2}|R health over $1287663d based on whether the target is an enemy or ally.
+
+Your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R favors hitting targets that are unaffected by |CFF88aaffRune of Lingering|R.
 Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 

@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67360 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67525 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -3854,7 +3854,7 @@ Name             : High Tolerance (id=196737) [Spell Family (53), Passive]
 Talent Entry     : Brewmaster [tree=spec, row=8, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(2, 4)]
                  : Effect#2 [op=set, values=(10, 20)]
-                 : Effect#3 [op=set, values=(3000, 6000)]
+                 : Effect#3 [op=set, values=(2000, 4000)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -3870,7 +3870,7 @@ Effects          :
                    Affected Spells: Stagger (115069), Shuffle (322120)
                    Family Flags: 34
 #3 (id=344134)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 6000 | Scaled Value: 6000 | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 Description      : Stagger is $s1% more effective at delaying damage.
 
 Purifying Brew refunds ${$s3/1000}.1 sec of its cooldown if cast at $@spellname1260619.
@@ -18141,7 +18141,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1239954)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : The effectiveness of your Stagger is increased by up to $s1%, based on your missing health.
 
 Name             : Mighty Stomp (id=1242270) [Spell Family (53)] 
@@ -20387,7 +20387,6 @@ Name             : Rushing Wind Kick (id=1269159) [Spell Family (53)]
 Class            : Monk
 School           : Nature
 Spell Type       : None
-Max Targets      : 5
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292

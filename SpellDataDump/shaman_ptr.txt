@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67360 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67525 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -5105,7 +5105,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Elemental Rebalancers (208777 effect#1), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Earthliving Weapon (382024 effect#2), Overflowing Shores (383222 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #6), Surging Totem (455630 effect#5), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Water Expulsion (1253014 effect#1), Restoration Shaman (1256945 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Elemental Rebalancers (208777 effect#1), Nature's Fury (381655 effect#1), Earthliving Weapon (382024 effect#2), Overflowing Shores (383222 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Surging Totem (455630 effect#5), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Water Expulsion (1253014 effect#1), Restoration Shaman (1256945 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
 Family Flags     : 33, 41
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -10292,12 +10292,12 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph 
 Effects          :
 #1 (id=1006346)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Downpour (207778), Tempest (452201), Downpour (462603)
-                   Family Flags: 7, 8, 33, 51, 80, 84, 98, 107
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Tempest (452201)
+                   Family Flags: 7, 8, 51, 80, 84, 98, 107
 #2 (id=1006347)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Downpour (207778), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201), Downpour (462603)
-                   Family Flags: 0, 1, 7, 8, 33, 51, 80, 84, 98, 107
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201)
+                   Family Flags: 0, 1, 7, 8, 51, 80, 84, 98, 107
 #3 (id=1038703)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816)
@@ -13366,12 +13366,12 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1139375)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Lava Burst (51505), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Downpour (207778), Lava Burst (285452), Downpour (462603)
-                   Family Flags: 7, 8, 33, 44, 51, 80, 84, 98
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Lava Burst (51505), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Lava Burst (285452)
+                   Family Flags: 7, 8, 44, 51, 80, 84, 98
 #2 (id=1144546)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Lava Burst (51505), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Downpour (207778), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lava Burst (285452), Downpour (462603)
-                   Family Flags: 0, 1, 7, 8, 33, 44, 51, 80, 84, 98
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Lava Burst (51505), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lava Burst (285452)
+                   Family Flags: 0, 1, 7, 8, 44, 51, 80, 84, 98
 #3 (id=1144547)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816)
@@ -13386,8 +13386,8 @@ Effects          :
                    Family Flags: 7, 8
 #6 (id=1144550)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472), Downpour (207778), Downpour (462603)
-                   Family Flags: 7, 8, 33, 80
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472)
+                   Family Flags: 7, 8, 80
 #7 (id=1175565)  : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 #8 (id=1247584)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
@@ -15491,7 +15491,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Elemental Rebalancers (208777 effect#1), Nature's Swiftness (378081 effects: #1, #2), Nature's Fury (381655 effect#1), Overflowing Shores (383222 effect#1), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #6), Surging Totem (455630 effect#5), Water Expulsion (1253014 effect#1)
+Affecting Spells : Elemental Rebalancers (208777 effect#1), Nature's Fury (381655 effect#1), Overflowing Shores (383222 effect#1), Maelstrom Supremacy (443447 effect#2), Surging Totem (455630 effect#5), Water Expulsion (1253014 effect#1)
 Family Flags     : 33
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :

@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67360 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67525 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -815,7 +815,7 @@ Effects          :
 #1 (id=2456)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=2457)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.5 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.125 | Target: Targeted Enemy (6)
 Description      : Maul the target for $s2 Physical damage.
 
 Name             : Moonfire (id=8921) [Spell Family (7)] 
@@ -4196,11 +4196,11 @@ Effects          :
                    Affected Spells: Frenzied Regeneration (22842), Echo of Frenzied Regeneration (1269645)
                    Family Flags: 62
 #19 (id=1091200) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 125 | Scaled Value: 125 | Target: Self (1)
                    Affected Spells: Thrash (77758), Dire Echo (1253489)
                    Family Flags: 91
 #20 (id=1091201) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Thrash (192090)
                    Family Flags: 40
 #21 (id=1176394) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -11819,7 +11819,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=981995)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : While in Bear Form, you are healed for $s1% of all Arcane damage done.
 
 Name             : Elune's Favored (id=370588) [Spell Family (7), Hidden] 
@@ -14669,9 +14669,9 @@ Family Flags     : 11, 77
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1045055)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.5 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.125 | Target: Targeted Enemy (6)
 #2 (id=1188876)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.36 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.156 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
 #3 (id=1188877)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Strike with the might of Ursoc, dealing $s1 Physical damage to your target and $s2 to all other enemies in front of you. Damage reduced beyond $s3 targets.
@@ -17497,9 +17497,9 @@ Family Flags     : 11, 77
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), No Level Up Toast (281), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1136169)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.2 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.72 | Target: Targeted Enemy (6)
 #2 (id=1136170)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.68 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.428 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : Slash through your target in a wide arc, dealing $s1 Physical damage to your target and $s2 to all other enemies in front of you.
 
 Name             : Fount of Strength (id=441675) [Spell Family (7), Passive] 
@@ -21053,7 +21053,7 @@ Family Flags     : 92
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1258287)  : Apply Aura (6) | Periodic Damage (3): arcane every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.8 | Target: Targeted Enemy (6)
 #2 (id=1258288)  : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
 Description      : Channel the power of the enraged moon to deal $o1 Arcane damage to your target over $d. Casting Mangle extends its duration by ${$s2/1000}.1 sec and generates ${$1253582s1/10} Rage.
@@ -22577,7 +22577,7 @@ Effects          :
 #1 (id=1281553)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #2 (id=1281973)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 250 | Scaled Value: 250 | Misc Value: 3 | Misc Value 2: 6048 (Label) | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: 3 | Misc Value 2: 6048 (Label) | Target: Self (1)
                    Affected Spells (Label): Wild Guardian (1269614)
 #3 (id=1282068)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)

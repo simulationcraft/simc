@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67360 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67525 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -653,7 +653,7 @@ Class            : Paladin
 School           : Physical
 Spell Type       : Magic
 Spell Level      : 42
-Duration         : 8 seconds
+Duration         : 12 seconds
 Cooldown         : 90 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
@@ -666,7 +666,7 @@ Family Flags     : 87
 Attributes       : Is Ability (4), No Threat (42), Absorb Cannot Be Ignore (214), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Allow Class Ability Procs (416), Important Spell (491), Big Defensive (512)
 Effects          :
 #1 (id=21513)    : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.5 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.5 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
                    Modified By: Improved Ardent Defender (393114 effect#1)
 #2 (id=21514)    : Apply Aura (6) | Dummy (4)
@@ -3350,6 +3350,12 @@ Effects          :
 #30 (id=1295179) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 23 | Misc Value 2: 6226 (Label) | Target: Self (1)
                    Affected Spells (Label): Seal of the Templar (1263252)
+#31 (id=1325149) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Misc Value 2: 2602 (Label) | Target: Self (1)
+                   Affected Spells (Label): Sanctified Plates (402964)
+#32 (id=1325169) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Misc Value 2: 2344 (Label) | Target: Self (1)
+                   Affected Spells (Label): Blessing of Dusk (1241945)
 
 Name             : Lucidity (id=137288) [Spell Family (10)] 
 School           : Holy
@@ -9488,7 +9494,7 @@ Effects          :
 #1 (id=885104)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 30 | Scaled Value: 30 | Stat: Sta | Target: Self (1)
 #2 (id=894604)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 55 | Scaled Value: 55 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | Misc Value: 1 | Target: Self (1)
 #3 (id=894606)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -11842,7 +11848,7 @@ Talent Entry     : Protection [tree=spec, row=6, col=4, max_rank=1, req_points=8
 Class            : Paladin
 School           : Holy
 Spell Type       : None
-Duration         : 16 seconds
+Duration         : 20 seconds
 Cooldown         : 120 seconds
 Category         : 1550 (Type 0x0): Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6), Benevolent Faerie (327710 effect#2), Haunted Mask (356968 effect#2)
 Labels           : 16: Class Spells
@@ -12704,12 +12710,12 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-                 : 2602: Protection Paladin (137028 effect#14), Holy Paladin (1258016 effect#20), Holy Paladin (1258016 effect#21), Holy Paladin (1258016 effect#22)
+                 : 2602: Protection Paladin (137028 effect#14), Protection Paladin (137028 effect#31), Holy Paladin (1258016 effect#20), Holy Paladin (1258016 effect#21), Holy Paladin (1258016 effect#22)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Update Passives on Apply/Remove (344), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1049636)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 5 | Scaled Value: 5 | Stat: Sta | Target: Self (1)
-                   Modified By: Holy Paladin (1258016 effect#20)
+                   Modified By: Protection Paladin (137028 effect#31), Holy Paladin (1258016 effect#20)
 #2 (id=1049637)  : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 127 | Target: Self (1)
                    Modified By: Holy Paladin (1258016 effect#21)
@@ -19867,11 +19873,12 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-                 : 2344
+                 : 2344: Protection Paladin (137028 effect#32)
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1241236)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
+#1 (id=1241236)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Protection Paladin (137028 effect#32)
 #2 (id=1277512)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All

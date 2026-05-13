@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67360 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67525 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -536,6 +536,7 @@ Cooldown         : 30 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
+                 : 6737
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Spectral Sight (320379 effect#1), Lost in Darkness (389849 effects: #1, #2), Fodder to the Flame (391429 effect#2), Devourer Demon Hunter (1213636 effect#5)
@@ -1330,6 +1331,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
+                 : 6737
 Triggered By     : Spectral Sight (188501), Spectral Sight (1251417)
 Attributes       : Do Not Log (8), No Aura Icon (60), Allow Class Ability Procs (416)
 Aura Interrupt   : Damage (1), Attacking (12), Mount (17), Leave World (19)
@@ -1394,10 +1396,10 @@ Family Flags     : 63
 Attributes       : Is Ability (4), Passive (6), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Riding Vehicle (204), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300162)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -8 | Scaled Value: -8 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #2 (id=872124)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -8 | Scaled Value: -8 | Misc Value: 0x1 | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
 Description      : Your tattoos reduce $?$s338682[magic damage taken by $s1% and physical damage taken by $s2%.][all damage taken by $s1%.]
 
@@ -1538,13 +1540,13 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Log (8), Mastery Affects Points (285), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300566)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.875 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25 | Target: Self (1)
 #2 (id=300914)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.875 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Demon Spikes (203819)
                    Family Flags: 7
 #3 (id=1031403)  : Apply Aura (6) | Modify Armor by Primary Stat% (268)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.875 | Misc Value: 1
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25 | Misc Value: 1
 Description      : Increases Armor by ${$s1}.1% of your Agility. Armor bonus is doubled while Demon Spikes is active.$?s321299[
 
 Also increases your attack power by ${$321299s1}.1%.][]
@@ -3399,6 +3401,7 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
+                 : 6737
 Triggered By     : Spectral Sight (188501), Spectral Sight (1251417)
 Attributes       : Do Not Log (8), No Aura Icon (60), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19)
@@ -4321,7 +4324,7 @@ Effects          :
 #2 (id=377042)   : Trigger Spell (64): Frailty
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 391123 | Target: Self (1)
 #3 (id=1028369)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -4 | Scaled Value: -4 | Misc Value: 0x7f | Target: Targeted Enemy (6)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
                    Modified By: Soulcrush (389985 effect#3)
 #4 (id=1028370)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -4713,7 +4716,7 @@ Effects          :
 #1 (id=715329)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1028405)  : Apply Aura (6) | Dummy (4)
-                   Base Value: -4 | Scaled Value: -4 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Target: Self (1)
 Description      : Frailty now also reduces all damage you take from afflicted targets by $s2%.
 
 Name             : Devour (id=272801) [Spell Family (107), Hidden] 
@@ -5567,7 +5570,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Riding Vehicle (204)
 Effects          :
 #1 (id=807419)   : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 50 | Scaled Value: 50 | Stat: Sta | Target: Self (1)
+                   Base Value: 55 | Scaled Value: 55 | Stat: Sta | Target: Self (1)
 #2 (id=807420)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 190 | Scaled Value: 190 | Misc Value: 1 | Target: Self (1)
 #3 (id=807421)   : Apply Aura (6) | Modify Expertise% (240)
@@ -15367,6 +15370,7 @@ Cooldown         : 30 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
+                 : 6737
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Spectral Sight (320379 effect#1), Lost in Darkness (389849 effects: #1, #2), Fodder to the Flame (391429 effect#2), Devourer Demon Hunter (1213636 effect#5)
@@ -15401,6 +15405,7 @@ School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 8 seconds
+Labels           : 6737
 Triggered By     : Spectral Sight (1251417)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Immunities (29), No Threat (42), Ignore Line of Sight (66), Aura Is Buff (140)
 Effects          :
