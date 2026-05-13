@@ -1,4 +1,4 @@
-// Spell text, wow build 12.0.7.67360
+// Spell text, wow build 12.0.7.67525
 static constexpr std::array<spelltext_data_t, 28752> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -28501,16 +28501,16 @@ static constexpr std::array<spelltext_data_t, 28752> __ptr_spelltext_data { {
   { 1279575, "Increases the damage of your Felguard's Felstorm by $s1% and its duration by ${$s2/1000}.1 sec.", 0, 0 },
   { 1279596, "|CFF88aaffCore Rune|R\r\n\r\nEvery $t sec you attract a void orb to you up to a max of $1287425u. Your attacks send these orbs at your enemy dealing |CFFffffff${$<dmgvalue>*$1286716s2}|R Cosmic damage for each. Your heal spells send the orbs to the lowest health ally nearby restoring |CFFffffff${$<dmgvalue>*$1286721s2}|R health for each orb.", 0, "Core Rune" },
   { 1279599, "|CFF88aaffCore Rune|R\r\n\r\nYour spells and abilities have a chance to call down a pillar of fire dealing |CFFffffff${$<dmgvalue>*$1286970s2}|R Fire damage to an enemy or cauterizing the wounds of a nearby ally restoring |CFFffffff${$<dmgvalue>*$1263002s2}|R health.", 0, "Core Rune" },
-  { 1279603, "When below $s1% health your Core Rune also heals you for |CFFffffff${$<dmgvalue>*$1287908s2}|R health.", 0, 0 },
+  { 1279603, "When below $s1% health your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R also heals you for |CFFffffff${$<dmgvalue>*$1287908s2}|R health.", 0, 0 },
   { 1279604, "When struck for more than $s1% of your max health gain an absorb shield that will absorb up to |CFFffffff${$<dmgvalue>*$1287955s2}|R damage but ${($1287955s4/$1287955s2)*100}% of the absorbed amount will linger dealing its damage over $1287955d.\r\n\r\nThis effect can only occur once every $proccooldown sec.", 0, 0 },
   { 1279605, "When struck in combat increase your speed by |CFFffffff${$<statsvalue>*$1287978s2}|R for $1287978d.\r\n\r\nCannot occur more than once every $proccooldown sec.", 0, 0 },
-  { 1279609, "The effects of your Core Rune increase your Critical Strike rating by |CFFffffff${$<statsvalue>*$1287772s2}|R. This effect may overlap.", 0, 0 },
-  { 1279610, "The effects of your Core Rune increase your Haste rating by |CFFffffff${$<statsvalue>*$1287774s2}|R. This effect may overlap.", 0, 0 },
-  { 1279612, "The effects of your Core Rune increase your Mastery rating by |CFFffffff${$<statsvalue>*$1287771s2}|R. This effect may overlap.", 0, 0 },
-  { 1279613, "The effects of your Core Rune increase your Versatility rating by |CFFffffff${$<statsvalue>*$1287770s2}|R. This effect may overlap.", 0, 0 },
-  { 1279614, "Increase the effectiveness of your Core Rune ability by $s1%.", 0, 0 },
-  { 1279615, "Increase the effectiveness of your Rune of Lingering by $s1%. ", 0, 0 },
-  { 1279616, "The effects of your Core Rune leave an echoing curse on your target. After $1289063d, an echo of all the damage and healing done by your Core and Lingering Runes is repeated at $s1% effectiveness.", 0, 0 },
+  { 1279609, "The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R increase your Critical Strike rating by |CFFffffff${$<statsvalue>*$1287772s2}|R. This effect may overlap.", 0, 0 },
+  { 1279610, "The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R increase your Haste rating by |CFFffffff${$<statsvalue>*$1287774s2}|R. This effect may overlap.", 0, 0 },
+  { 1279612, "The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R increase your Mastery rating by |CFFffffff${$<statsvalue>*$1287771s2}|R. This effect may overlap.", 0, 0 },
+  { 1279613, "The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R increase your Versatility rating by |CFFffffff${$<statsvalue>*$1287770s2}|R. This effect may overlap.", 0, 0 },
+  { 1279614, "Increase the effectiveness of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R ability by $s1%.", 0, 0 },
+  { 1279615, "Increase the effectiveness of your |CFF88aaffRune of Lingering|R by $s1%. ", 0, 0 },
+  { 1279616, "The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R leave an echoing curse on your target. After $1289063d, an echo of all the damage and healing done by your |CFF88aaffCore and Lingering Runes|R is repeated at $s1% effectiveness.", 0, 0 },
   { 1279633, "While Blood Shield is active, taking direct damage reflects $1279656s1 Shadow damage back to the attacker. Blood Shield can now absorb up to $s1% of your maximum health.", 0, 0 },
   { 1279656, "$@spelldesc1279633", 0, 0 },
   { 1279659, "$@spelldesc1261149", 0, 0 },
@@ -28657,7 +28657,7 @@ static constexpr std::array<spelltext_data_t, 28752> __ptr_spelltext_data { {
   { 1287257, "$@spelldesc1279596", "Stored void orbs.", "Core Rune" },
   { 1287258, "$@spelldesc1279596", "Stored void orbs.", "Core Rune" },
   { 1287425, "$@spelldesc1279596", "Dealing damage or healing will send void orbs out equal to the number of stacks this aura has, dealing Cosmic damage or healing based on whether the target is an enemy or ally.", "Core Rune" },
-  { 1287555, "The effects of your Core Rune leave behind a periodic effect that deals |CFFffffff${$<dmgvalue>*$1286970s2}|R Cosmic damage or restores |CFFffffff${$<dmgvalue>*$1287665s2}|R health over $1287663d based on whether the target is an enemy or ally.\r\n\r\nYour Core Rune favors hitting targets that are unaffected by Rune of Lingering.", 0, 0 },
+  { 1287555, "|CFF88aaffLingering Rune|R\r\n\r\nThe effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R leave behind a periodic effect that deals |CFFffffff${$<dmgvalue>*$1286970s2}|R Cosmic damage or restores |CFFffffff${$<dmgvalue>*$1287665s2}|R health over $1287663d based on whether the target is an enemy or ally.\r\n\r\nYour |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R favors hitting targets that are unaffected by |CFF88aaffRune of Lingering|R.", 0, 0 },
   { 1287613, "$@spelldesc375888", "Your next Mind Blast is instant cast.", 0 },
   { 1287663, "$@spelldesc1287555", "Suffering $w1 Cosmic damage every sec.", "Core Rune" },
   { 1287665, "$@spelldesc1287555", "Restoring $w1 health every sec.", "Core Rune" },
@@ -28754,11 +28754,11 @@ static constexpr std::array<spelltext_data_t, 28752> __ptr_spelltext_data { {
   { 1298542, "Defeat rare foes to have a chance at gear for your current specialization.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.7.67360
+// spelltext hotfix entries, wow build 12.0.7.67525
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.7.67360
+// Spell description variables, wow build 12.0.7.67525
 static constexpr std::array<spelldesc_vars_data_t, 709> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29471,7 +29471,7 @@ static constexpr std::array<spelldesc_vars_data_t, 709> __ptr_spelldesc_vars_dat
   { 1293610, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.7.67360
+// spelldesc_vars hotfix entries, wow build 12.0.7.67525
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

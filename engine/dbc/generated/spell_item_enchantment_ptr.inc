@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 12.0.7.67360
-static constexpr std::array<item_enchantment_data_t, 5335> __ptr_spell_item_ench_data { {
+// Item enchantment data, wow build 12.0.7.67525
+static constexpr std::array<item_enchantment_data_t, 5336> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },       0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },       0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 10, 120,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },    2831, "Reinforced (+$k1 Armor)"           },
@@ -5335,5 +5335,6 @@ static constexpr std::array<item_enchantment_data_t, 5335> __ptr_spell_item_ench
   { 8684, 241143, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 377360,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and opponent's failed interrupt attempts grant Precognition" },
   { 8685, 241144, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 435550,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and +$435550s1% Damage Reduction when affected by Crowd Control" },
   { 8686, 241142, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 411126,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and getting snared increases damage of your next attack by $411132s1 per stack" },
+  { 8704,      0,  0,   0,  60, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Summer Sun Blossom"                },
 } };
 
