@@ -17227,30 +17227,30 @@ struct death_knight_module_t : public module_t
     //     .operation( hotfix::HOTFIX_SET )
     //     .modifier( 10 )
     //     .verification_value( 5 );
-    hotfix::register_effect( "Death Knight", "2026-05-11", "Dancing Rune Weapon grants 25% Parry", 68684,
-                              hotfix::HOTFIX_FLAG_LIVE )
-          .field( "base_value" )
-          .operation( hotfix::HOTFIX_SET )
-          .modifier( 25 )
-          .verification_value( 20 );
-    hotfix::register_effect( "Death Knight", "2026-05-11", "Blood Fortification increased to 40%", 1000722,
-                              hotfix::HOTFIX_FLAG_LIVE )
-          .field( "base_value" )
-          .operation( hotfix::HOTFIX_SET )
-          .modifier( 40 )
-          .verification_value( 35 );
-    hotfix::register_effect( "Death Knight", "2026-05-11", "Improved Death Strike healing increased to 15%", 1000063,
-                              hotfix::HOTFIX_FLAG_LIVE )
-          .field( "base_value" )
-          .operation( hotfix::HOTFIX_SET )
-          .modifier( 15 )
-          .verification_value( 5 );
-    hotfix::register_spell( "Death Knight", "2026-05-11", "Dance of Midnight grants DRW for 8 seconds", 1264353,
-                              hotfix::HOTFIX_FLAG_LIVE )
-          .field( "duration" )
-          .operation( hotfix::HOTFIX_SET )
-          .modifier( 8000 )
-          .verification_value( 6000 );
+    // hotfix::register_effect( "Death Knight", "2026-05-11", "Dancing Rune Weapon grants 25% Parry", 68684,
+    //                           hotfix::HOTFIX_FLAG_LIVE )
+    //       .field( "base_value" )
+    //       .operation( hotfix::HOTFIX_SET )
+    //       .modifier( 25 )
+    //       .verification_value( 20 );
+    // hotfix::register_effect( "Death Knight", "2026-05-11", "Blood Fortification increased to 40%", 1000722,
+    //                           hotfix::HOTFIX_FLAG_LIVE )
+    //       .field( "base_value" )
+    //       .operation( hotfix::HOTFIX_SET )
+    //       .modifier( 40 )
+    //       .verification_value( 35 );
+    // hotfix::register_effect( "Death Knight", "2026-05-11", "Improved Death Strike healing increased to 15%", 1000063,
+    //                           hotfix::HOTFIX_FLAG_LIVE )
+    //       .field( "base_value" )
+    //       .operation( hotfix::HOTFIX_SET )
+    //       .modifier( 15 )
+    //       .verification_value( 5 );
+    // hotfix::register_spell( "Death Knight", "2026-05-11", "Dance of Midnight grants DRW for 8 seconds", 1264353,
+    //                           hotfix::HOTFIX_FLAG_LIVE )
+    //       .field( "duration" )
+    //       .operation( hotfix::HOTFIX_SET )
+    //       .modifier( 8000 )
+    //       .verification_value( 6000 );
   }
 
   void init( player_t* ) const override
