@@ -15699,6 +15699,7 @@ Description      : $@spelldesc1265361
 Tooltip          : You have recently benefited from Kill or be Killed and cannot benefit from it again.
 
 Name             : Kill or Be Killed (id=1265600) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -15706,7 +15707,7 @@ Duration         : 8 seconds
 Labels           : 25: Warrior Spells
                  : 117
                  : 292
-Attributes       : Aura Is Debuff (26), No Immunities (29), No Cast Log (128), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : No Immunities (29), No Cast Log (128), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426), Important Spell (491)
 Effects          :
 #2 (id=1277552)  : Apply Aura (6) | Creature Immunities (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2421 | Target: Self (1)
