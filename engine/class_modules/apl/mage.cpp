@@ -7,7 +7,17 @@ namespace mage_apl {
 
 std::string potion( const player_t* p )
 {
-  return p->true_level >= 90 ? "lights_potential_2"
+  std::string lvl90_potion = "disabled";
+
+  switch ( p->specialization() )
+  {
+    case MAGE_ARCANE: lvl90_potion = "lights_potential_2"; break;
+    case MAGE_FIRE: lvl90_potion = "lights_potential_2"; break;
+    case MAGE_FROST: lvl90_potion = "potion_of_recklessness_2"; break;
+    default: break;
+  }
+  
+  return p->true_level >= 90 ? lvl90_potion
        : p->true_level >= 80 ? "tempered_potion_3"    
        : p->true_level >= 70 ? "elemental_potion_of_ultimate_power_3"
        : p->true_level >= 60 ? "spectral_intellect"
