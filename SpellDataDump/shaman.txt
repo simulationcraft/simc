@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67451 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.5.67602 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -10294,12 +10294,10 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Tempest (452201)
                    Family Flags: 7, 8, 51, 80, 84, 98, 107
-Hotfixed         : Affects Spells
 #2 (id=1006347)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201)
                    Family Flags: 0, 1, 7, 8, 51, 80, 84, 98, 107
-Hotfixed         : Affects Spells
 #3 (id=1038703)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816)
@@ -13370,12 +13368,10 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Lava Burst (51505), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Lava Burst (285452)
                    Family Flags: 7, 8, 44, 51, 80, 84, 98
-Hotfixed         : Affects Spells
 #2 (id=1144546)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Lava Burst (51505), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lava Burst (285452)
                    Family Flags: 0, 1, 7, 8, 44, 51, 80, 84, 98
-Hotfixed         : Affects Spells
 #3 (id=1144547)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816)
@@ -13392,7 +13388,6 @@ Hotfixed         : Affects Spells
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472)
                    Family Flags: 7, 8, 80
-Hotfixed         : Affects Spells
 #7 (id=1175565)  : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 #8 (id=1247584)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)

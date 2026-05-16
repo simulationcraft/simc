@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67451 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.5.67602 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -575,7 +575,6 @@ Description      : Slows target enemy's casting speed and increases the time bet
 Tooltip          : Decreased attack speed and casting speed.
 
 Name             : Bestial Wrath (id=19574) [Spell Family (9)] 
-Hotfixed         : Attributes
 Talent Entry     : Beast Mastery [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
@@ -15723,7 +15722,6 @@ Effects          :
 Description      : Rapid Fire grants Precise Shots.
 
 Name             : Shrapnel Shot (id=473520) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : Internal Cooldown (0 -> 500), Attributes
 Talent Entry     : Marksmanship [tree=spec, row=7, col=7, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
