@@ -114,7 +114,7 @@ race=Dwarf
 role=spell
 position=ranged_back
 warlock.default_pet=sayaad
-talents=CoQAAAAAAAAAAAAAAAAAAAAAAYmxMzoZjZ2mZGzyAAAAAAAAGzYYBGYb0CNsYMGLzyMzMmBAmZMzMzMDgZGzAAAYMzMjhhlZMgB
+talents=CsQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmZmlZxMzMLGjFzAAgZmxMzsYBzMjZWWGNzMsNsNbNWYAAgxAjNAMzMzAzMGDAAAzMzMAAGDD
 
 head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=13575/13575/1808/13575/13575/13575/13575/13575/13575/13575,enchant_id=7961,gem_id=240983,ilevel=289
 neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240906
