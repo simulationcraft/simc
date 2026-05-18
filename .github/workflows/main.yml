@@ -12,7 +12,6 @@ on:
       - "casc_extract/**"
 
 env:
-  SIMC_PROFILE: profiles/CI.simc
   CCACHE_GENERATION: 0 # bump if you need to "clean" ccache
 
 # Most CI jobs only run if you are either:
@@ -110,43 +109,43 @@ jobs:
             local file="$1"
 
             case "$file" in
-              engine/class_modules/sc_death_knight.cpp|engine/class_modules/apl/apl_death_knight.*|profiles/generators/*/*_Generate_Deathknight.simc)
+              engine/class_modules/sc_death_knight.cpp|engine/class_modules/apl/apl_death_knight.*)
                 mark_class_changed deathknight
                 ;;
-              engine/class_modules/sc_demon_hunter.cpp|engine/class_modules/apl/apl_demon_hunter.*|engine/class_modules/apl/demon_hunter/*|profiles/generators/*/*_Generate_Demonhunter.simc)
+              engine/class_modules/sc_demon_hunter.cpp|engine/class_modules/apl/apl_demon_hunter.*|engine/class_modules/apl/demon_hunter/*)
                 mark_class_changed demonhunter
                 ;;
-              engine/class_modules/sc_druid.cpp|engine/class_modules/apl/druid/*|profiles/generators/*/*_Generate_Druid.simc)
+              engine/class_modules/sc_druid.cpp|engine/class_modules/apl/druid/*)
                 mark_class_changed druid
                 ;;
-              engine/class_modules/sc_evoker.cpp|engine/class_modules/apl/apl_evoker.*|profiles/generators/*/*_Generate_Evoker.simc)
+              engine/class_modules/sc_evoker.cpp|engine/class_modules/apl/apl_evoker.*)
                 mark_class_changed evoker
                 ;;
-              engine/class_modules/sc_hunter.cpp|engine/class_modules/apl/hunter/*|engine/class_modules/apl/apl_hunter.*|profiles/generators/*/*_Generate_Hunter.simc)
+              engine/class_modules/sc_hunter.cpp|engine/class_modules/apl/hunter/*|engine/class_modules/apl/apl_hunter.*)
                 mark_class_changed hunter
                 ;;
-              engine/class_modules/sc_mage.cpp|engine/class_modules/apl/mage.*|profiles/generators/*/*_Generate_Mage.simc)
+              engine/class_modules/sc_mage.cpp|engine/class_modules/apl/mage.*)
                 mark_class_changed mage
                 ;;
-              engine/class_modules/monk/*|engine/class_modules/apl/apl_monk.*|profiles/generators/*/*_Generate_Monk.simc)
+              engine/class_modules/monk/*|engine/class_modules/apl/apl_monk.*)
                 mark_class_changed monk
                 ;;
-              engine/class_modules/paladin/*|engine/class_modules/apl/apl_paladin.*|profiles/generators/*/*_Generate_Paladin.simc)
+              engine/class_modules/paladin/*|engine/class_modules/apl/apl_paladin.*)
                 mark_class_changed paladin
                 ;;
-              engine/class_modules/priest/*|engine/class_modules/apl/apl_priest.*|profiles/generators/*/*_Generate_Priest.simc)
+              engine/class_modules/priest/*|engine/class_modules/apl/apl_priest.*)
                 mark_class_changed priest
                 ;;
-              engine/class_modules/sc_rogue.cpp|engine/class_modules/apl/rogue/*|engine/class_modules/apl/apl_rogue.*|profiles/generators/*/*_Generate_Rogue.simc)
+              engine/class_modules/sc_rogue.cpp|engine/class_modules/apl/rogue/*|engine/class_modules/apl/apl_rogue.*)
                 mark_class_changed rogue
                 ;;
-              engine/class_modules/sc_shaman.cpp|engine/class_modules/apl/apl_shaman.*|engine/class_modules/apl/shaman/*|profiles/generators/*/*_Generate_Shaman.simc)
+              engine/class_modules/sc_shaman.cpp|engine/class_modules/apl/apl_shaman.*|engine/class_modules/apl/shaman/*)
                 mark_class_changed shaman
                 ;;
-              engine/class_modules/warlock/*|engine/class_modules/apl/warlock.*|profiles/generators/*/*_Generate_Warlock.simc)
+              engine/class_modules/warlock/*|engine/class_modules/apl/warlock.*)
                 mark_class_changed warlock
                 ;;
-              engine/class_modules/sc_warrior.cpp|engine/class_modules/apl/apl_warrior.*|profiles/generators/*/*_Generate_Warrior.simc)
+              engine/class_modules/sc_warrior.cpp|engine/class_modules/apl/apl_warrior.*)
                 mark_class_changed warrior
                 ;;
               *)

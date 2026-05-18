@@ -6,7 +6,6 @@ sc_AddonImportTab.hpp
 sc_importWidget.hpp
 sc_importWindow.hpp
 sc_OptionsTab.hpp
-sc_SampleProfilesTab.hpp
 sc_SimulateTab.hpp
 sc_SimulationThread.hpp
 sc_SpellQueryTab.hpp
@@ -33,7 +32,6 @@ sc_ImportThread.cpp
 sc_importWidget.cpp
 sc_importWindow.cpp
 sc_OptionsTab.cpp
-sc_SampleProfilesTab.cpp
 sc_SimulateTab.cpp
 sc_SimulationThread.cpp
 sc_SpellQueryTab.cpp

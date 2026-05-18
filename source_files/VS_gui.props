@@ -12,7 +12,6 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="$(IntDir)moc_sc_importWidget.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_importWindow.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_OptionsTab.cpp" />
-		<ClCompile Include="$(IntDir)moc_sc_SampleProfilesTab.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_SimulateTab.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_SimulationThread.cpp" />
 		<ClCompile Include="$(IntDir)moc_sc_SpellQueryTab.cpp" />
@@ -39,7 +38,6 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\qt\sc_importWidget.cpp" />
 		<ClCompile Include="..\qt\sc_importWindow.cpp" />
 		<ClCompile Include="..\qt\sc_OptionsTab.cpp" />
-		<ClCompile Include="..\qt\sc_SampleProfilesTab.cpp" />
 		<ClCompile Include="..\qt\sc_SimulateTab.cpp" />
 		<ClCompile Include="..\qt\sc_SimulationThread.cpp" />
 		<ClCompile Include="..\qt\sc_SpellQueryTab.cpp" />
@@ -119,13 +117,6 @@ To change the list of source files run synchronize.py
 			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\sc_OptionsTab.hpp;%(AdditionalInputs)</AdditionalInputs>
-			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
-		</CustomBuild>
-		<CustomBuild Include="..\qt\sc_SampleProfilesTab.hpp">
-			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
-			<Message>Moc%27ing %(Identity)... ( with $(QTDIR)\bin\moc.exe )</Message>
-			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
-			<AdditionalInputs>Rem;..\qt\sc_SampleProfilesTab.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
 		<CustomBuild Include="..\qt\sc_SimulateTab.hpp">

@@ -33,8 +33,6 @@ CONFIG(debug, debug|release): LIBS += -L../lib/debug -lsimcengine
 
 Resources.files = ../qt/Welcome.html ../qt/Welcome.png ../qt/Error.html ../qt/jquery.js
 Localization.files = $$files(../qt/locale/*.qm)
-Profiles.files = $$files(../profiles/*, recursive=true)
-
 
 macx {
   ICON              = ../qt/icon/Simcraft2.icns
@@ -47,10 +45,9 @@ macx {
   }
 
   Resources.path = Contents/Resources
-  Profiles.path = Contents/Resources/profiles
   Localization.path = Contents/Resources/locale
 
-  QMAKE_BUNDLE_DATA += Profiles Resources Localization
+  QMAKE_BUNDLE_DATA += Resources Localization
 }
 
 win32 {
@@ -62,18 +59,15 @@ win32 {
   }
 }
 
-# Deplopyment for Linux, note, the cli project also copies profiles
+# Deplopyment for Linux, note
 unix:!macx {
 
   DISTFILES  += CHANGES COPYING
-  INSTALLS   += target Profiles Resources icon Localization
+  INSTALLS   += target Resources icon Localization
   # Disable strip
   QMAKE_STRIP = echo
 
   target.path = $$DESTDIR$$PREFIX/bin/
-
-  Profiles.path = $$SHAREPATH/profiles
-  profiles.commands = @echo Installing profiles to $$SHAREPATH/profiles
 
   Resources.path = $$SHAREPATH
   data.commands = @echo Installing global files to $$SHAREPATH

@@ -10,7 +10,6 @@
 #include "util/git_info.hpp"
 #include "sc_AddonImportTab.hpp"
 #include "sc_OptionsTab.hpp"
-#include "sc_SampleProfilesTab.hpp"
 #include "sc_SimulateTab.hpp"
 #include "sc_SimulationThread.hpp"
 #include "sc_SpellQueryTab.hpp"

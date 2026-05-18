@@ -15,7 +15,6 @@
 #include "report/reports.hpp"
 #include "sc_AddonImportTab.hpp"
 #include "sc_OptionsTab.hpp"
-#include "sc_SampleProfilesTab.hpp"
 #include "sc_SimulateTab.hpp"
 #include "sc_SimulationThread.hpp"
 #include "sc_SpellQueryTab.hpp"
@@ -334,11 +333,6 @@ void SC_MainWindow::createImportTab()
   importTab->addTab( newBattleNetView, tr( "Battle.net" ) );
 
   importTab->addTab( importTab->addonTab, tr( "Simc Addon" ) );
-
-  SC_SampleProfilesTab* bisTab = new SC_SampleProfilesTab( this );
-  connect( bisTab->tree, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this,
-           SLOT( bisDoubleClicked( QTreeWidgetItem*, int ) ) );
-  importTab->addTab( bisTab, tr( "Sample Profiles" ) );
 
   recentlyClosedTabImport = new SC_RecentlyClosedTabWidget( this, QBoxLayout::LeftToRight );
   recentlyClosedTabModel  = recentlyClosedTabImport->getModel();

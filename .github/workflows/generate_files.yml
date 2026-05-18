@@ -14,7 +14,6 @@ jobs:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             ActionPriorityLists
-            profiles
             .git
           key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
 
@@ -34,13 +33,6 @@ jobs:
         with:
           path: ActionPriorityLists
           pattern: apl-${{ github.sha }}-*
-          merge-multiple: true
-
-      - name: Download Profiles
-        uses: actions/download-artifact@v8
-        with:
-          path: profiles
-          pattern: profiles-${{ github.sha }}-*
           merge-multiple: true
 
       - name: Dump Spell Data
@@ -72,4 +64,3 @@ jobs:
         with:
           name: |
             apl-${{ github.sha }}-*
-            profiles-${{ github.sha }}-*

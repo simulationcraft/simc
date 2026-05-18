@@ -38,7 +38,6 @@ jobs:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             ActionPriorityLists
-            profiles
             .git
           key: ${{ inputs.cache-key }}
 
@@ -367,53 +366,4 @@ jobs:
           name: apl-${{ github.sha }}-${{ matrix.spec }}
           path: |
             ActionPriorityLists/*/${{ matrix.spec }}.simc
-          retention-days: 1
-
-      - name: Generate Profiles
-        id: generate_profiles
-        if: github.event_name == 'push' && !failure() && !inputs.is-ptr
-        continue-on-error: true
-        shell: bash
-        run: |
-          cd profiles
-          for dir in generators/*; do
-            if [ -d $dir ]; then
-              SEASON=${dir##*/}
-              GENERATOR=${SEASON}_Generate_${{ env.CLASS_STR_CAP }}.simc
-              if [ -f $dir/$GENERATOR ]; then
-                cd $SEASON
-                echo "---$SEASON---${{ env.CLASS_STR_CAP }}---$GENERATOR---"
-                ${{ runner.workspace }}/b/ninja/simc $dir/$GENERATOR
-                cd ..
-              fi
-            fi
-          done
-
-      - name: Check Profile Changes
-        id: check_profile_changes
-        if: steps.generate_profiles.outcome == 'success'
-        continue-on-error: true
-        shell: bash
-        run: |
-          CHANGED=$(git status --porcelain -- profiles/*/*.simc | sed 's/^...//')
-          if [ -n "$CHANGED" ]; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-            echo "Changed profile files:"
-            echo "$CHANGED"
-            mkdir -p /tmp/changed_profiles
-            echo "$CHANGED" | while read -r f; do
-              cp --parents "$f" /tmp/changed_profiles/
-            done
-          else
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "No profile files changed"
-          fi
-
-      - name: Upload Profiles
-        if: steps.check_profile_changes.outputs.changed == 'true'
-        continue-on-error: true
-        uses: actions/upload-artifact@v6
-        with:
-          name: profiles-${{ github.sha }}-${{ matrix.spec }}
-          path: /tmp/changed_profiles/profiles/
           retention-days: 1

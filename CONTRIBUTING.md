@@ -11,12 +11,6 @@ initiative and help out wherever needed. GitHub provides considerable utilities 
 The mantra is: Just check it in. Don't ask for permission. If the code needs to be changed for functional (or artistic!) reasons,
 someone will revert/modify as needed.
 
-## Profiles
-SimulationCraft includes a set of sample profiles for the current raiding tier, which are located in /profiles.
-If you want to improve those profiles, please note to the following:
- * Change character profile settings like talents & gear in the files you can find at /profiles/generators.
-   The files in /profiles are auto-generated and will be overriden.
-
 ## Action Priority List (APL)
 SimulationCraft includes a set of default action priority lists for each specialization, to offer users a ready-to-use 
 simulation experience once they import their character. This APL is the main factor defining if a character performs just ok 

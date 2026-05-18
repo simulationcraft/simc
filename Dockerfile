@@ -18,7 +18,6 @@
 #   To reduce the footprint of this image all SimulationCraft files are
 #   removed except:
 #   - ./simc
-#   - ./profiles/*
 #
 
 # build image
@@ -75,9 +74,8 @@ RUN \
         libgcc \
         libstdc++
 
-# get compiled simc and profiles
+# get compiled simc
 COPY --from=build /app/SimulationCraft/engine/simc /app/SimulationCraft/
-COPY --from=build /app/SimulationCraft/profiles/ /app/SimulationCraft/profiles/
 
 WORKDIR /app/SimulationCraft
 
