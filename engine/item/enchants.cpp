@@ -304,87 +304,11 @@ bool enchant::passive_enchant( item_t& item, unsigned spell_id )
 }
 
 /**
- * Find the spell item enchantment data entry for an user given gem encoding
- * string, that may, or may not contain a meta gem name. The encoding is
- * checked against all full meta gem names in a tokenized form
- * (capacitive_primal_diamond), and the "short" form of the tokenized name
- * (capacitive_primal).
- */
-const item_enchantment_data_t& enchant::find_meta_gem( const dbc_t& dbc, util::string_view encoding )
-{
-  for ( const auto& gem_property : gem_property_data_t::data( dbc.ptr ) )
-  {
-    if ( gem_property.color != SOCKET_COLOR_META )
-      continue;
-
-    const item_enchantment_data_t& data = dbc.item_enchantment( gem_property.enchant_id );
-    if ( data.id == 0 )
-      continue;
-
-    if ( data.id_gem == 0 )
-      continue;
-
-    const auto& gem = dbc.item( data.id_gem );
-    // A lot of the old meta gems no longer exist in game
-    if ( gem.id == 0 )
-      continue;
-
-    if ( gem.id != data.id_gem )
-      continue;
-
-    std::string tokenized_name = gem.name;
-    util::tokenize( tokenized_name );
-    util::string_view shortname;
-    std::string::size_type offset = tokenized_name.find( "_diamond" );
-    if ( offset != std::string::npos )
-      shortname = util::string_view( tokenized_name ).substr( 0, offset );
-
-    if ( util::str_in_str_ci( encoding, tokenized_name ) ||
-         ( !shortname.empty() && util::str_in_str_ci( encoding, shortname ) ) )
-    {
-      return data;
-    }
-  }
-
-  return dbc.item_enchantment( 0 );
-}
-
-/**
- * Translate meta gem item enchantment data entry into a meta_gem_e type for
- * simc.
- */
-meta_gem_e enchant::meta_gem_type( const dbc_t& dbc, const item_enchantment_data_t& data )
-{
-  if ( data.id == 0 )
-    return META_GEM_NONE;
-
-  const auto& gem = dbc.item( data.id_gem );
-  if ( gem.id == 0 )
-    return META_GEM_NONE;
-
-  std::string tokenized_name = gem.name;
-  util::tokenize( tokenized_name );
-  std::string shortname;
-  std::string::size_type offset = tokenized_name.find( "_diamond" );
-  if ( offset != std::string::npos )
-    shortname = tokenized_name.substr( 0, offset );
-
-  return util::parse_meta_gem_type( shortname );
-}
-
-/**
  * Intialize gem, based on game client data.
  *
  * Gem stats will be set to item_t::parsed.gem_stats, and the gem color
  * returned. Actual initialization is performed through the unified
- * initialize_item_enchant() function. Additionally, for backwards
- * compatibility, the meta gem type is translated from the gem (item) name.
- *
- * Note that meta gem stats are separateed form normal gem stats, as the meta
- * gem initialization is now fully DBC aware, and will initialize correct stats
- * for the actors purely based on the meta gem name. Thus, hardcoding meta gem
- * stats in a separate place (such as player_t::init_meta_gem()) is no longer
- * necessary.
+ * initialize_item_enchant() function.
  */
 item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
 {
@@ -415,13 +339,7 @@ item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
 
   const item_enchantment_data_t& data = item.player->dbc->item_enchantment( gem_prop.enchant_id );
 
-  enchant::initialize_item_enchant(
-      item, gem_prop.color != SOCKET_COLOR_META ? item.parsed.gem_stats : item.parsed.meta_gem_stats,
-      SPECIAL_EFFECT_SOURCE_GEM, data );
-
-  // TODO: This should really be removed, as should player -> meta_gem
-  if ( gem_prop.color == SOCKET_COLOR_META )
-    item.player->meta_gem = enchant::meta_gem_type( *( item.player->dbc ), data );
+  enchant::initialize_item_enchant( item, item.parsed.gem_stats, SPECIAL_EFFECT_SOURCE_GEM, data );
 
   if ( !dbc::valid_gem_color( gem_prop.color ) )
   {

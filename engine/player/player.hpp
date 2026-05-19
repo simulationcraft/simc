@@ -446,14 +446,13 @@ struct player_t : public actor_t
   void sequence_add( const action_t* a, const player_t* target );
 
   // Gear
-  std::string meta_gem_str, potion_str, flask_str, food_str, rune_str;
+  std::string potion_str, flask_str, food_str, rune_str;
   std::string temporary_enchant_str;
   std::vector<item_t> items;
   gear_stats_t gear, enchant; // Option based stats
   gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
   std::unique_ptr<set_bonus_t> sets;
   std::string set_bonus_str;
-  meta_gem_e meta_gem;
   bool matching_gear;
   std::unique_ptr<cooldown_t> item_cooldown;
   timespan_t default_item_group_cooldown;
@@ -1176,7 +1175,6 @@ public:
   { return true; }
   virtual bool validate_actor()
   { return true; }
-  virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
   virtual std::vector<std::string> get_item_actions();
   virtual std::vector<std::string> get_profession_actions();

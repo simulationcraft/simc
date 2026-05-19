@@ -107,7 +107,7 @@ struct item_t
     std::array<int, MAX_GEM_SLOTS>                   gem_actual_ilevel;
     std::array<int, MAX_GEM_SLOTS>                   gem_color;
     std::vector<int>                                 bonus_id;
-    std::vector<stat_pair_t>                         gem_stats, meta_gem_stats, socket_bonus_stats;
+    std::vector<stat_pair_t>                         gem_stats, socket_bonus_stats;
     std::string                                      encoded_enchant;
     std::vector<stat_pair_t>                         enchant_stats;
     std::vector<stat_pair_t>                         temp_enchant_stats;

@@ -1108,7 +1108,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     report_information(),
     // Gear
     sets( ( !is_pet() && !is_enemy() ) ? new set_bonus_t( this ) : nullptr ),
-    meta_gem( META_GEM_NONE ),
     matching_gear( false ),
     item_cooldown( new cooldown_t("item_cd", *this) ),
     default_item_group_cooldown( 20_s ),
@@ -1720,12 +1719,6 @@ void player_t::init_base_stats()
   def_dr.miss_factor            = dbc->miss_factor( type );
   def_dr.block_factor           = dbc->block_factor( type );
 
-  if ( ( meta_gem == META_EMBER_PRIMAL ) || ( meta_gem == META_EMBER_SHADOWSPIRIT ) ||
-       ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
-  {
-    resources.base_multiplier[ RESOURCE_MANA ] *= 1.02;
-  }
-
   if ( primary_role() == ROLE_TANK )
   {
     // Collect DTPS data for tanks even for statistics_level == 1
@@ -1787,10 +1780,6 @@ void player_t::init_initial_stats()
 
     initial.stats += enchant;
     initial.stats += sim->enchant;
-
-    // crit damage multiplier meta gems
-    for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; ++school )
-      initial.crit_damage_multiplier[ school ] *= util::crit_multiplier( meta_gem );
   }
 
   initial.stats += total_gear;
@@ -2049,8 +2038,6 @@ void player_t::init_items()
     }
   }
 
-  init_meta_gem();
-
   // Needs to be initialized after old set bonus system
   if ( sets != nullptr )
   {
@@ -2083,25 +2070,6 @@ void player_t::init_azerite()
   sim->print_debug( "Initializing Azerite sub-system for {}.", *this );
 
   azerite->initialize();
-}
-
-void player_t::init_meta_gem()
-{
-  sim->print_debug( "Initializing meta-gem for {}.", *this );
-
-  if ( !meta_gem_str.empty() )
-  {
-    meta_gem = util::parse_meta_gem_type( meta_gem_str );
-    if ( meta_gem == META_GEM_NONE )
-    {
-      throw sc_invalid_player_argument( fmt::format( "Invalid meta gem '{}'.", meta_gem_str ) );
-    }
-  }
-
-  if ( ( meta_gem == META_AUSTERE_EARTHSIEGE ) || ( meta_gem == META_AUSTERE_SHADOWSPIRIT ) )
-  {
-    initial.base_armor_multiplier *= 1.02;
-  }
 }
 
 void player_t::init_position()
@@ -5448,11 +5416,6 @@ double player_t::composite_armor() const
 double player_t::composite_base_armor_multiplier() const
 {
   double a = current.base_armor_multiplier;
-
-  if ( meta_gem == META_AUSTERE_PRIMAL )
-  {
-    a += 0.02;
-  }
 
   return a;
 }
@@ -13320,12 +13283,6 @@ std::string player_t::create_profile( save_e stype )
         profile_str += "=" + util::to_string( gear.get_stat( i ), 0 ) + term;
       }
     }
-    if ( meta_gem != META_GEM_NONE )
-    {
-      profile_str += "# meta_gem=";
-      profile_str += util::meta_gem_type_string( meta_gem );
-      profile_str += term;
-    }
 
     // Set Bonus
     if ( sets != nullptr )
@@ -13455,7 +13412,6 @@ void player_t::copy_from( player_t* source )
   precombat_state_map  = source->precombat_state_map;
   custom_stat_buffs    = source->custom_stat_buffs;
 
-  meta_gem = source->meta_gem;
   for ( size_t i = 0; i < items.size(); i++ )
   {
     items[ i ]        = source->items[ i ];
@@ -13558,7 +13514,6 @@ void player_t::create_options()
   add_option( opt_float( "y_pos", default_y_position ) );
 
   // Items
-  add_option( opt_string( "meta_gem", meta_gem_str ) );
   add_option( opt_deprecated( "items", "use individual slot options" ) );
   add_option( opt_deprecated( "items+", "use individual slot options" ) );
   add_option( opt_string( "head", items[ SLOT_HEAD ].options_str ) );

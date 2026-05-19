@@ -36,6 +36,7 @@ namespace enchants
   /* Legacy Enchants */
   void executioner( special_effect_t& );
   void hurricane_spell( special_effect_t& );
+  void meta_gem_effect( special_effect_t& );
 
   /* Mists of Pandaria */
   void dancing_steel( special_effect_t& );
@@ -626,6 +627,11 @@ void enchants::executioner( special_effect_t& effect )
   effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.item, effect );
+}
+
+void enchants::meta_gem_effect( special_effect_t& effect )
+{
+  effect.player->parse_passive_item_effect( effect.driver () );
 }
 
 // Profession perks =========================================================
@@ -4763,6 +4769,7 @@ void unique_gear::register_special_effects()
   /**
    * Enchants
    */
+  register_special_effect( { 44797, 55275, 55344 }, enchants::meta_gem_effect, false, true );
 
   /* The Burning Crusade */
   register_special_effect(  28093, "1PPM"                               ); /* Mongoose */

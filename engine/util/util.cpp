@@ -825,98 +825,6 @@ attribute_e util::parse_attribute_type( util::string_view name )
   return parse_enum<attribute_e, ATTRIBUTE_NONE, ATTRIBUTE_MAX, attribute_type_string>( name );
 }
 
-// meta_gem_type_string =====================================================
-
-const char* util::meta_gem_type_string( meta_gem_e type )
-{
-  switch ( type )
-  {
-    case META_AGILE_SHADOWSPIRIT:         return "agile_shadowspirit";
-    case META_AGILE_PRIMAL:               return "agile_primal";
-    case META_AUSTERE_EARTHSIEGE:         return "austere_earthsiege";
-    case META_AUSTERE_SHADOWSPIRIT:       return "austere_shadowspirit";
-    case META_AUSTERE_PRIMAL:             return "austere_primal";
-    case META_BEAMING_EARTHSIEGE:         return "beaming_earthsiege";
-    case META_BRACING_EARTHSIEGE:         return "bracing_earthsiege";
-    case META_BRACING_EARTHSTORM:         return "bracing_earthstorm";
-    case META_BRACING_SHADOWSPIRIT:       return "bracing_shadowspirit";
-    case META_BURNING_SHADOWSPIRIT:       return "burning_shadowspirit";
-    case META_BURNING_PRIMAL:             return "burning_primal";
-    case META_CHAOTIC_SHADOWSPIRIT:       return "chaotic_shadowspirit";
-    case META_CHAOTIC_SKYFIRE:            return "chaotic_skyfire";
-    case META_CHAOTIC_SKYFLARE:           return "chaotic_skyflare";
-    case META_DESTRUCTIVE_SHADOWSPIRIT:   return "destructive_shadowspirit";
-    case META_DESTRUCTIVE_PRIMAL:         return "destructive_primal";
-    case META_DESTRUCTIVE_SKYFIRE:        return "destructive_skyfire";
-    case META_DESTRUCTIVE_SKYFLARE:       return "destructive_skyflare";
-    case META_EFFULGENT_SHADOWSPIRIT:     return "effulgent_shadowspirit";
-    case META_EFFULGENT_PRIMAL:           return "effulgent_primal";
-    case META_EMBER_SHADOWSPIRIT:         return "ember_shadowspirit";
-    case META_EMBER_PRIMAL:               return "ember_primal";
-    case META_EMBER_SKYFIRE:              return "ember_skyfire";
-    case META_EMBER_SKYFLARE:             return "ember_skyflare";
-    case META_ENIGMATIC_SHADOWSPIRIT:     return "enigmatic_shadowspirit";
-    case META_ENIGMATIC_PRIMAL:           return "enigmatic_primal";
-    case META_ENIGMATIC_SKYFLARE:         return "enigmatic_skyflare";
-    case META_ENIGMATIC_STARFLARE:        return "enigmatic_starflare";
-    case META_ENIGMATIC_SKYFIRE:          return "enigmatic_skyfire";
-    case META_ETERNAL_EARTHSIEGE:         return "eternal_earthsiege";
-    case META_ETERNAL_EARTHSTORM:         return "eternal_earthstorm";
-    case META_ETERNAL_SHADOWSPIRIT:       return "eternal_shadowspirit";
-    case META_ETERNAL_PRIMAL:             return "eternal_primal";
-    case META_FLEET_SHADOWSPIRIT:         return "fleet_shadowspirit";
-    case META_FLEET_PRIMAL:               return "fleet_primal";
-    case META_FORLORN_SHADOWSPIRIT:       return "forlorn_shadowspirit";
-    case META_FORLORN_PRIMAL:             return "forlorn_primal";
-    case META_FORLORN_SKYFLARE:           return "forlorn_skyflare";
-    case META_FORLORN_STARFLARE:          return "forlorn_starflare";
-    case META_IMPASSIVE_SHADOWSPIRIT:     return "impassive_shadowspirit";
-    case META_IMPASSIVE_PRIMAL:           return "impassive_primal";
-    case META_IMPASSIVE_SKYFLARE:         return "impassive_skyflare";
-    case META_IMPASSIVE_STARFLARE:        return "impassive_starflare";
-    case META_INSIGHTFUL_EARTHSIEGE:      return "insightful_earthsiege";
-    case META_INSIGHTFUL_EARTHSTORM:      return "insightful_earthstorm";
-    case META_INVIGORATING_EARTHSIEGE:    return "invigorating_earthsiege";
-    case META_MYSTICAL_SKYFIRE:           return "mystical_skyfire";
-    case META_PERSISTENT_EARTHSHATTER:    return "persistent_earthshatter";
-    case META_PERSISTENT_EARTHSIEGE:      return "persistent_earthsiege";
-    case META_POWERFUL_EARTHSHATTER:      return "powerful_earthshatter";
-    case META_POWERFUL_EARTHSIEGE:        return "powerful_earthsiege";
-    case META_POWERFUL_EARTHSTORM:        return "powerful_earthstorm";
-    case META_POWERFUL_SHADOWSPIRIT:      return "powerful_shadowspirit";
-    case META_POWERFUL_PRIMAL:            return "powerful_primal";
-    case META_RELENTLESS_EARTHSIEGE:      return "relentless_earthsiege";
-    case META_RELENTLESS_EARTHSTORM:      return "relentless_earthstorm";
-    case META_REVERBERATING_SHADOWSPIRIT: return "reverberating_shadowspirit";
-    case META_REVERBERATING_PRIMAL:       return "reverberating_primal";
-    case META_REVITALIZING_SHADOWSPIRIT:  return "revitalizing_shadowspirit";
-    case META_REVITALIZING_PRIMAL:        return "revitalizing_primal";
-    case META_REVITALIZING_SKYFLARE:      return "revitalizing_skyflare";
-    case META_SWIFT_SKYFIRE:              return "swift_skyfire";
-    case META_SWIFT_SKYFLARE:             return "swift_skyflare";
-    case META_SWIFT_STARFIRE:             return "swift_starfire";
-    case META_SWIFT_STARFLARE:            return "swift_starflare";
-    case META_THUNDERING_SKYFIRE:         return "thundering_skyfire";
-    case META_THUNDERING_SKYFLARE:        return "thundering_skyflare";
-    case META_TIRELESS_STARFLARE:         return "tireless_starflare";
-    case META_TIRELESS_SKYFLARE:          return "tireless_skyflare";
-    case META_TRENCHANT_EARTHSHATTER:     return "trenchant_earthshatter";
-    case META_TRENCHANT_EARTHSIEGE:       return "trenchant_earthsiege";
-    case META_SINISTER_PRIMAL:            return "sinister_primal";
-    case META_CAPACITIVE_PRIMAL:          return "capacitive_primal";
-    case META_INDOMITABLE_PRIMAL:         return "indomitable_primal";
-    case META_COURAGEOUS_PRIMAL:          return "courageous_primal";
-    default:                              return "unknown";
-  }
-}
-
-// parse_meta_gem_type ======================================================
-
-meta_gem_e util::parse_meta_gem_type( util::string_view name )
-{
-  return parse_enum<meta_gem_e, META_GEM_NONE, META_GEM_MAX, meta_gem_type_string>( name );
-}
-
 // result_type_string =======================================================
 
 const char* util::result_type_string( result_e type )
@@ -3613,30 +3521,6 @@ int numDigits( int32_t number )
   if ( number >= 10 )
     return 2;
   return 1;
-}
-
-double crit_multiplier( meta_gem_e gem )
-{
-  switch ( gem )
-  {
-    case META_AGILE_SHADOWSPIRIT:
-    case META_AGILE_PRIMAL:
-    case META_BURNING_SHADOWSPIRIT:
-    case META_BURNING_PRIMAL:
-    case META_CHAOTIC_SKYFIRE:
-    case META_CHAOTIC_SKYFLARE:
-    case META_CHAOTIC_SHADOWSPIRIT:
-    case META_RELENTLESS_EARTHSIEGE:
-    case META_RELENTLESS_EARTHSTORM:
-    case META_REVERBERATING_SHADOWSPIRIT:
-    case META_REVERBERATING_PRIMAL:
-    case META_REVITALIZING_SKYFLARE:
-    case META_REVITALIZING_SHADOWSPIRIT:
-    case META_REVITALIZING_PRIMAL:
-      return 1.03;
-    default:
-      return 1.0;
-  }
 }
 
 bool is_alliance( race_e race )
