@@ -1139,7 +1139,13 @@ std::string item_t::encoded_item() const
     s << ",weapon=" << encoded_weapon();
 
   // If gems= is given, always print it out
-  if ( !option_gems_str.empty() || !parsed.gem_stats.empty() )
+  if ( !option_gems_str.empty() )
+    s << ",gems=" << encoded_gems();
+  // Print out gems= string to profiles, if there is no gem_id= given, and
+  // there are gems to spit out.  Note that gem_id= option is also always
+  // printed below, and if present, the gems= string will be found in "gear
+  // comments" (enabled by save_gear_comments=1 option).
+  else if ( option_gem_id_str.empty() && !parsed.gem_stats.empty() )
     s << ",gems=" << encoded_gems();
 
   auto gem_bonus_it = range::find_if( parsed.gem_bonus_id, []( const std::vector<unsigned>& v ) {
