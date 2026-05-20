@@ -5645,7 +5645,6 @@ School           : Holy
 Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 10 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 2424 (Type 0x1): Empyrean Authority (1246481 effect#1)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
@@ -5657,13 +5656,16 @@ Affecting Spells : Royal Decree (340030 effect#1)
 Family Flags     : 110
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), No Aura Icon (60), No Caster Aura Icon (187), No Target Aura Icon (188), Taps immediately (215), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=343139)   : Apply Aura (6) | Dummy (4)
+#1 (id=343139)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
+Hotfixed         : Type (6 -> 3), Sub Type (4 -> 0)
 #2 (id=343140)   : Trigger Spell (64): Guardian of the Forgotten Queen
-                   Base Value: 0 | Scaled Value: 0 | Delay: 10_ms | Trigger Spell: 228048 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 228048 | Target: Self (1)
+Hotfixed         : Misc Value (10 -> 0)
 Description      : Empowers the friendly target with the spirit of the forgotten queen, causing the target to be immune to all damage for $d.
 
 Name             : Divine Shield (desc=PvP Talent) (id=228050) 
+Hotfixed         : Attributes
 School           : Holy
 Spell Type       : Magic
 Range            : 50000 yards
@@ -5674,7 +5676,7 @@ Labels           : 16: Class Spells
                  : 118
                  : 292
 Mechanic         : Invulnerable
-Attributes       : Track Target in Channel (46), Name in Channel Bar (61), Do Not Display Range (126), Spell Haste Affects Periodic (173), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Attributes       : Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Do Not Display Range (126), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=343141)   : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -22015,7 +22017,8 @@ Effects          :
                    Base Value: 432472 | Scaled Value: 432472 | Misc Value: 114165 | Target: Self (1)
 Description      : $@spelldesc432472
 
-Name             : Divine Shield (desc=PvP Talent) (id=1293918) [Hidden] 
+Name             : Divine Shield (desc=PvP Talent) (id=1293918) 
+Hotfixed         : Attributes
 School           : Holy
 Spell Type       : Magic
 Range            : 50000 yards
@@ -22026,7 +22029,7 @@ Labels           : 16: Class Spells
                  : 118
                  : 292
 Mechanic         : Invulnerable
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Do Not Display Range (126), Spell Haste Affects Periodic (173), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Attributes       : Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Do Not Display Range (126), Spell Haste Affects Periodic (173), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1314980)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
