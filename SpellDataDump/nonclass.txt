@@ -218723,18 +218723,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 233150 | Misc Value 2: 64 | Radius: 2 yards | Target: Front of Self (47)
 Description      : Plant a banner representing your victories within the Astral arenas.
 
-Name             : [Season] Champion's Prestigious Banner (id=469619) 
-School           : Physical
-Spell Type       : None
-Duration         : 60 seconds
-Cooldown         : 600 seconds
-Labels           : 4089
-                 : 4091
-Effects          :
-#1 (id=1184070)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 233151 | Misc Value 2: 64 | Radius: 2 yards | Target: Front of Self (47)
-Description      : Plant a banner representing your victories within the [Season] arenas.
-
 Name             : Living Magma (id=469762) [Passive] 
 School           : Physical
 Spell Type       : None
@@ -253945,6 +253933,18 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Restores $s1% of your maximum mana every second over $d. Must remain seated while drinking.
 Tooltip          : Restoring $w1% mana every sec.
+
+Name             : Umbral Champion's Illustrious Banner (id=1290957) 
+School           : Physical
+Spell Type       : None
+Duration         : 60 seconds
+Cooldown         : 600 seconds
+Labels           : 4089
+                 : 4091
+Effects          :
+#1 (id=1310108)  : Summon Guardian (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 263908 | Misc Value 2: 64 | Radius: 2 yards | Target: Front of Self (47)
+Description      : Plant a banner representing your victories within the Umbral arenas.
 
 Name             : Illusory Adornment - Blooming Light (id=1291455) 
 School           : Physical
