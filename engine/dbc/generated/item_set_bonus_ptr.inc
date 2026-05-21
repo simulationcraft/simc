@@ -1,4 +1,4 @@
-// Set bonus data, wow build 12.0.7.67525
+// Set bonus data, wow build 12.0.7.67669
 static constexpr std::array<item_set_bonus_t, 1090> __ptr_set_bonus_data { {
   // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
   { "Armaments of the Infinite Infantry"        , "shadowlands_season_3"        ,        "SL3",      0,  1506,   2,   1,   73,        -1,  364002, { 188942, 188941, 188940, 188938, 188937,  0 } },
