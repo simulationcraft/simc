@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67525 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67669 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -591,7 +591,7 @@ Labels           : 16: Class Spells
                  : 1071
 Affecting Spells : Hunter (137014 effect#3), Beastlord (184900 effect#1), Scent of Blood (193532 effect#1), The Beast Within (231548 effect#1), Hunter Beast Mastery 12.0 Class Set 2pc (1264825 effects: #1, #2)
 Family Flags     : 1, 57
-Attributes       : Not Shapeshifted (16), No Immunities (29), No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Absorb Cannot Be Ignore (214), Allow While Charmed (261), Aura Points On Client (268), Do Not Log Absorb (348), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Not Shapeshifted (16), No Immunities (29), No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Absorb Cannot Be Ignore (214), Allow While Charmed (261), Aura Points On Client (268), Do Not Log Absorb (348), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (491)
 Effects          :
 #1 (id=10779)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)

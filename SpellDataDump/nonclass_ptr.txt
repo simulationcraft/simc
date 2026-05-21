@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67525 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67669 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -236574,7 +236574,7 @@ Name             : Hunted (id=1235030) [Hidden]
 School           : Physical
 Spell Type       : None
 Range            : 25 yards
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Aura Is Debuff (26), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Visible only to caster (conversations only) (343)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Aura Is Debuff (26), Allow While Sitting (27), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1229783)  : Trigger Spell (64): Hunted
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Trigger Spell: 1235035 | Target: Self (1)
@@ -254045,7 +254045,7 @@ Effects          :
 #2 (id=1300996)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 14071.79 (coefficient=110.1049) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1300997)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4343.896 (coefficient=33.98888) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1941.618 (coefficient=15.19222) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your healing has a chance to spawn protective toadstools absorbing $s2 damage for up to $1285161d. If broken, the toadstools burst to deal ${$s3*$<rolemult>} Nature damage to nearby enemies.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -255134,7 +255134,7 @@ Spell Type       : None
 Effects          :
 #1 (id=1322242)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Defeat rare foes to have a chance at Adventurer Gear for your warband.
+Description      : Defeat rare foes to have a chance at Veteran Gear for your warband.
 
 Name             : World Boss (id=1298539) 
 School           : None
@@ -255150,7 +255150,7 @@ Spell Type       : None
 Effects          :
 #1 (id=1322244)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Defeat rare foes to have a chance at Veteran Gear for your warband.
+Description      : Defeat rare foes to have a chance at Champion Gear for your warband.
 
 Name             : World Boss (id=1298541) 
 School           : None

@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67525 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67669 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -15702,7 +15702,7 @@ Duration         : 8 seconds
 Labels           : 25: Warrior Spells
                  : 117
                  : 292
-Attributes       : Aura Is Debuff (26), No Immunities (29), No Cast Log (128), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : No Immunities (29), No Cast Log (128), Aura Points On Client (268), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426), Important Spell (491)
 Effects          :
 #2 (id=1277552)  : Apply Aura (6) | Creature Immunities (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2421 | Target: Self (1)

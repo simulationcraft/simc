@@ -1,1 +1,1 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67525 PTR (hotfix 2026-05-13/67525)
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67669 PTR (hotfix 2026-05-21/67669)
