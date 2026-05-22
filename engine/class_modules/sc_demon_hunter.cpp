@@ -10072,24 +10072,43 @@ void demon_hunter_t::create_options()
 {
   player_t::create_options();
 
-  add_option( opt_float( "target_reach", options.target_reach ) );
-  add_option( opt_float( "movement_direction_factor", options.movement_direction_factor, 1.0, 2.0 ) );
-  add_option( opt_float( "initial_fury", options.initial_fury, 0.0, 120 ) );
-  add_option( opt_bool( "reset_fury_on_pull", options.reset_fury_on_pull ) );
+  add_option( opt_float( "demonhunter.target_reach", options.target_reach ) );
+  add_option( opt_deprecated( "target_reach", "demonhunter.target_reach" ) );
+  add_option( opt_float( "demonhunter.movement_direction_factor", options.movement_direction_factor, 1.0, 2.0 ) );
+  add_option( opt_deprecated( "movement_direction_factor", "demonhunter.movement_direction_factor" ) );
+  add_option( opt_float( "demonhunter.initial_fury", options.initial_fury, 0.0, 120 ) );
+  add_option( opt_deprecated( "initial_fury", "demonhunter.initial_fury" ) );
+  add_option( opt_bool( "demonhunter.reset_fury_on_pull", options.reset_fury_on_pull ) );
+  add_option( opt_deprecated( "reset_fury_on_pull", "demonhunter.reset_fury_on_pull" ) );
+  add_option( opt_float( "demonhunter.soul_fragment_movement_consume_chance",
+                         options.soul_fragment_movement_consume_chance, 0, 1 ) );
   add_option(
-      opt_float( "soul_fragment_movement_consume_chance", options.soul_fragment_movement_consume_chance, 0, 1 ) );
-  add_option( opt_float( "wounded_quarry_chance_vengeance", options.wounded_quarry_chance_vengeance, 0, 1 ) );
-  add_option( opt_float( "wounded_quarry_chance_havoc", options.wounded_quarry_chance_havoc, 0, 1 ) );
+      opt_deprecated( "soul_fragment_movement_consume_chance", "demonhunter.soul_fragment_movement_consume_chance" ) );
   add_option(
-      opt_float( "felblade_lockout_from_vengeful_retreat", options.felblade_lockout_from_vengeful_retreat, 0, 1 ) );
-  add_option( opt_bool( "enable_dungeon_slice", options.enable_dungeon_slice ) );
-  add_option( opt_float( "proc_from_killing_blow_chance", options.proc_from_killing_blow_chance, 0.0, 1.0 ) );
-  add_option( opt_int( "entropy_starting_souls", options.entropy_starting_souls, -1, 50 ) );
-  add_option( opt_int( "channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
+      opt_float( "demonhunter.wounded_quarry_chance_vengeance", options.wounded_quarry_chance_vengeance, 0, 1 ) );
+  add_option( opt_deprecated( "wounded_quarry_chance_vengeance", "demonhunter.wounded_quarry_chance_vengeance" ) );
+  add_option( opt_float( "demonhunter.wounded_quarry_chance_havoc", options.wounded_quarry_chance_havoc, 0, 1 ) );
+  add_option( opt_deprecated( "wounded_quarry_chance_havoc", "demonhunter.wounded_quarry_chance_havoc" ) );
+  add_option( opt_float( "demonhunter.felblade_lockout_from_vengeful_retreat",
+                         options.felblade_lockout_from_vengeful_retreat, 0, 1 ) );
+  add_option( opt_deprecated( "felblade_lockout_from_vengeful_retreat",
+                              "demonhunter.felblade_lockout_from_vengeful_retreat" ) );
+  add_option( opt_bool( "demonhunter.enable_dungeon_slice", options.enable_dungeon_slice ) );
+  add_option( opt_deprecated( "enable_dungeon_slice", "demonhunter.enable_dungeon_slice" ) );
+  add_option(
+      opt_float( "demonhunter.proc_from_killing_blow_chance", options.proc_from_killing_blow_chance, 0.0, 1.0 ) );
+  add_option( opt_deprecated( "proc_from_killing_blow_chance", "demonhunter.proc_from_killing_blow_chance" ) );
+  add_option( opt_int( "demonhunter.entropy_starting_souls", options.entropy_starting_souls, -1, 50 ) );
+  add_option( opt_deprecated( "entropy_starting_souls", "demonhunter.entropy_starting_souls" ) );
+  add_option( opt_int( "demonhunter.channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
+  add_option( opt_deprecated( "channel_tick_cutoff_benefit", "demonhunter.channel_tick_cutoff_benefit" ) );
 
-  add_option( opt_float( "void_metamorphosis_initial_drain", devourer_fury_state.initial_drain, 0, 100 ) );
-  add_option( opt_float( "void_metamorphosis_exp_factor", devourer_fury_state.exp_factor, 0, 100 ) );
-  add_option( opt_float( "void_metamorphosis_exp_power", devourer_fury_state.exp_power, 0, 100 ) );
+  add_option( opt_float( "demonhunter.void_metamorphosis_initial_drain", devourer_fury_state.initial_drain, 0, 100 ) );
+  add_option( opt_deprecated( "void_metamorphosis_initial_drain", "demonhunter.void_metamorphosis_initial_drain" ) );
+  add_option( opt_float( "demonhunter.void_metamorphosis_exp_factor", devourer_fury_state.exp_factor, 0, 100 ) );
+  add_option( opt_deprecated( "void_metamorphosis_exp_factor", "demonhunter.void_metamorphosis_exp_factor" ) );
+  add_option( opt_float( "demonhunter.void_metamorphosis_exp_power", devourer_fury_state.exp_power, 0, 100 ) );
+  add_option( opt_deprecated( "void_metamorphosis_exp_power", "demonhunter.void_metamorphosis_exp_power" ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
