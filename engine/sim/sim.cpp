@@ -2593,7 +2593,9 @@ void sim_t::init_actors()
   register_actor_initializer( INIT_ACTOR_ASSESSORS, &player_t::init_assessors );
 
   // sort initializers by priority
-  range::sort( actor_initializer, []( const auto& a, const auto& b ) { return a.first < b.first; } );
+  range::sort( actor_initializer, []( const auto& a, const auto& b ) {
+    return std::get<int>( a ) < std::get<int>( b );
+  } );
 
   print_debug( "Initializing actors." );
 
@@ -2662,7 +2664,7 @@ void sim_t::init_actor( player_t* p )
   {
     for ( const auto& initializer : actor_initializer )
     {
-      initializer.second( p );
+      std::get<1>( initializer )( p );
     }
   }
   catch ( const std::exception& )
@@ -4775,14 +4777,21 @@ void sim_t::register_target_data_initializer( std::function<void( actor_target_d
   target_data_initializer.emplace_back( std::move( fn ) );
 }
 
-void sim_t::register_actor_initializer( int priority, std::function<void( player_t* )> fn )
+void sim_t::register_actor_initializer( int priority, std::function<void( player_t* )> fn, std::string name )
 {
-  actor_initializer.emplace_back( priority, std::move( fn ) );
+  if ( !name.empty() && range::contains( actor_initializer, name, []( const auto& e ) {
+         return std::get<std::string>( e );
+       } ) )
+  {
+    return;
+  }
+
+  actor_initializer.emplace_back( priority, std::move( fn ), std::move( name ) );
 }
 
 void sim_t::register_actor_initializer( int priority, void ( player_t::*fn)() )
 {
-  actor_initializer.emplace_back( priority, [ fn ]( player_t* p ) { std::invoke( fn, p ); } );
+  actor_initializer.emplace_back( priority, [ fn ]( player_t* p ) { std::invoke( fn, p ); }, "" );
 }
 
 bool sim_t::rethrow_exception_queue()

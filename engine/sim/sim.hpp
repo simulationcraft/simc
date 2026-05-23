@@ -630,7 +630,7 @@ struct sim_t : private sc_thread_t
 
   // Priority-based actor initialization callbacks. Each callback is run on the player object during init_actor() in
   // priority order, and additional callbacks can be inserted at any point from external modules.
-  std::vector<std::pair<int, std::function<void( player_t* )>>> actor_initializer;
+  std::vector<std::tuple<int, std::function<void( player_t* )>, std::string>> actor_initializer;
 
   bool display_hotfixes, disable_hotfixes;
   bool display_bonus_ids;
@@ -760,7 +760,7 @@ struct sim_t : private sc_thread_t
   void register_heartbeat_event_callback( std::function<void( sim_t*)> fn );
 
   void register_target_data_initializer( std::function<void( actor_target_data_t* )> fn );
-  void register_actor_initializer( int priority, std::function<void( player_t* )> fn );
+  void register_actor_initializer( int priority, std::function<void( player_t* )> fn, std::string name = "" );
   void register_actor_initializer( int priority, void ( player_t::*fn )() );
 
   timespan_t current_time() const
