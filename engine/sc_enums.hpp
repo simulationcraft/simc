@@ -1452,3 +1452,22 @@ enum proc_trigger_type_e : unsigned short
   TRIGGER_AURA_APPLIED,
   TRIGGER_HEARTBEAT,
 };
+
+enum init_actor_e
+{
+  INIT_ACTOR_INIT             = 100,
+  INIT_ACTOR_PROPERTIES       = 200,
+  INIT_ACTOR_TALENTS          = 300,
+  INIT_ACTOR_ITEMS            = 400,
+  INIT_ACTOR_SPELLS           = 500,
+  INIT_ACTOR_CREATE_EFFECTS   = 600,
+  INIT_ACTOR_BASE_STATS       = 700,
+  INIT_ACTOR_CREATE_BUFFS     = 800,
+  INIT_ACTOR_CREATE_ACTIONS   = 900,
+  INIT_ACTOR_PETS             = 1000,
+  INIT_ACTOR_INIT_EFFECTS     = 1100,
+  INIT_ACTOR_INIT_ACTIONS     = 1200,
+  INIT_ACTOR_INITIAL_STATS    = 1300,
+  INIT_ACTOR_MISC             = 1400,
+  INIT_ACTOR_ASSESSORS        = 1600,
+};

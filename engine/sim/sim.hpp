@@ -626,7 +626,11 @@ struct sim_t : private sc_thread_t
 
   // List of callbacks to call when an actor_target_data_t object is created. Currently used to
   // initialize the generic targetdata debuffs/dots we have.
-  std::vector<std::function<void(actor_target_data_t*)> > target_data_initializer;
+  std::vector<std::function<void( actor_target_data_t* )>> target_data_initializer;
+
+  // Priority-based actor initialization callbacks. Each callback is run on the player object during init_actor() in
+  // priority order, and additional callbacks can be inserted at any point from external modules.
+  std::vector<std::pair<int, std::function<void( player_t* )>>> actor_initializer;
 
   bool display_hotfixes, disable_hotfixes;
   bool display_bonus_ids;
@@ -752,15 +756,17 @@ struct sim_t : private sc_thread_t
   void activate_actors();
 
   void heartbeat_event_callback();
-  std::vector<std::function<void(sim_t*)>> heartbeat_event_callback_function;
+  std::vector<std::function<void( sim_t* )>> heartbeat_event_callback_function;
   void register_heartbeat_event_callback( std::function<void( sim_t*)> fn );
+
+  void register_target_data_initializer( std::function<void( actor_target_data_t* )> fn );
+  void register_actor_initializer( int priority, std::function<void( player_t* )> fn );
+  void register_actor_initializer( int priority, void ( player_t::*fn )() );
 
   timespan_t current_time() const
   { return event_mgr.current_time; }
   static double distribution_mean_error( const sim_t& s, const extended_sample_data_t& sd )
   { return s.confidence_estimator * sd.mean_std_dev; }
-  void register_target_data_initializer(std::function<void(actor_target_data_t*)> cb)
-  { target_data_initializer.push_back( cb ); }
   const rng::rng_t& rng() const
   { return _rng; }
   rng::rng_t& rng()
