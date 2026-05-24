@@ -454,7 +454,7 @@ static void test_uniform_int( rng::basic_rng_t<Engine>& rng, uint64_t n, unsigne
   {
     double pct = static_cast<double>(histogram[ i ]) / n;
     double diff = static_cast<double>(histogram[ i ]) / expected_bucket_size - 1.0;
-    fmt::print("  bucket {:2n}: {:5.2f}% ({}) difference to expected: {:9.6f}%\n", i, pct, histogram[ i ], diff);
+    fmt::print("  bucket {:2}: {:5.2f}% ({}) difference to expected: {:9.6f}%\n", i, pct, histogram[ i ], diff);
   }
   fmt::print("time = {} s\n\n", elapsed_cpu);
 }
