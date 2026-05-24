@@ -4995,22 +4995,6 @@ void player_t::create_buffs()
           buffs.tome_of_unstable_power = buff;
       }
 
-      // Potion Bomb of Power Primary Stat
-      // Buff cannot stack
-      // Does not take into account the fire damage on enemies
-      if ( !external_buffs.potion_bomb_of_power.empty() )
-      {
-        auto driver_spell = find_spell( 453205 );
-        auto buff_spell   = find_spell( 453245 );
-
-        // Value in buff data is for 5 people, need to split based on targets for a single player
-        auto main_stat_amount = buff_spell->effectN( 1 ).average( this ) / driver_spell->effectN( 4 ).base_value();
-
-        auto buff = make_buff<stat_buff_t>( this, "potion_bomb_of_power_external", buff_spell )
-                        ->add_stat_from_effect_type( A_MOD_STAT, main_stat_amount );
-        buffs.potion_bomb_of_power = buff;
-      }
-
       // 9.2 Jailer raid buff
       // Values are hard-coded because difficulty-specific spell data is not fully extracted.
       buffs.boon_of_azeroth = make_buff<stat_buff_t>( this, "boon_of_azeroth", find_spell( 363338 ) )
@@ -6428,7 +6412,6 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.boon_of_azeroth, buffs.boon_of_azeroth );
   add_timed_buff_triggers( external_buffs.boon_of_azeroth_mythic, buffs.boon_of_azeroth_mythic );
   add_timed_buff_triggers( external_buffs.tome_of_unstable_power, buffs.tome_of_unstable_power );
-  add_timed_buff_triggers( external_buffs.potion_bomb_of_power, buffs.potion_bomb_of_power );
 
   // Trigger registered combat-begin functions
   for ( const auto& f : combat_begin_functions)

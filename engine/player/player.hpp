@@ -576,7 +576,6 @@ struct player_t : public actor_t
     buff_t* quickwicks_quick_trick_wick_walk;  // quickwick candlestick movement speed buff
     buff_t* building_momentum;  // scroll of momentum counter buff
     buff_t* full_momentum;      // scroll of momentum max buff
-    buff_t* potion_bomb_of_power; // potion bomb of power primary stat
   } buffs;
 
   struct debuffs_t
