@@ -2584,7 +2584,7 @@ void sim_t::init_actors()
   register_actor_initializer( INIT_ACTOR_MISC + 20, &player_t::init_uptimes, "uptimes" );
   register_actor_initializer( INIT_ACTOR_MISC + 25, &player_t::init_benefits, "benefits" );
   register_actor_initializer( INIT_ACTOR_MISC + 30, &player_t::init_rng, "rng" );
-  register_actor_initializer( INIT_ACTOR_MISC + 35, &player_t::init_stats, "stats" );
+  register_actor_initializer( INIT_ACTOR_MISC + 35, &player_t::init_stat_data, "stat_data" );
   register_actor_initializer( INIT_ACTOR_MISC + 40, &player_t::init_distance_targeting, "distance_targeting" );
   register_actor_initializer( INIT_ACTOR_MISC + 45, &player_t::init_absorb_priority, "absorb_priority" );
 

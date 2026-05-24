@@ -3476,9 +3476,9 @@ void player_t::init_rng()
   sim->print_debug( "Initializing random number generators for {}.", *this );
 }
 
-void player_t::init_stats()
+void player_t::init_stat_data()
 {
-  sim->print_debug( "Initializing stats for {}.", *this );
+  sim->print_debug( "Initializing stat data for {}.", *this );
 
   if ( sim->maximize_reporting )
   {
