@@ -70,6 +70,8 @@ void register_target_data_initializers( sim_t* );
 void register_target_data_initializers_legion( sim_t* );  // Legion targetdata initializers
 void register_target_data_initializers_bfa( sim_t* );     // Battle for Azeroth targetdata initializers
 
+void register_actor_initializers( sim_t& );
+
 void init( player_t* );
 
 std::vector<special_effect_t*> find_special_effects( player_t*, unsigned, special_effect_e = SPECIAL_EFFECT_NONE );

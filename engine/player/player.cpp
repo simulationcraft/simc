@@ -2203,40 +2203,6 @@ void player_t::create_special_effects()
     }
   }
 
-  if ( dragonflight_opts.emerald_coachs_whistle_ally_ilvl > 0 )
-  {
-    struct emerald_coachs_whistle_ally_t : public special_effect_t
-    {
-      std::unique_ptr<item_t> _item;
-
-      emerald_coachs_whistle_ally_t( player_t* p ) : special_effect_t( p )
-      {
-        // make a fake
-        _item = std::make_unique<item_t>(
-          p, fmt::format( ",id=193718,ilevel={}", p->dragonflight_opts.emerald_coachs_whistle_ally_ilvl ) );
-        _item->parse_options();
-        _item->initialize_data();
-        _item->init();
-
-        // validate data
-        auto it = range::find( _item->parsed.data.effects, ITEM_SPELLTRIGGER_ON_EQUIP, &item_effect_t::type );
-        if ( it == _item->parsed.data.effects.end() )
-        {
-          throw sc_invalid_player_argument(
-            "Cannot find on-equip effect on item id=193718 for 'dragonflight.emerald_coachs_whistle_ally_ilvl'." );
-        }
-
-        spell_id = p->dragonflight_opts.emerald_coachs_whistle_ally_is_healer ? 386578 : it->spell_id;
-        name_str = "emerald_coachs_whistle_ally";
-        item = _item.get();
-
-        unique_gear::initialize_special_effect( *this, spell_id );
-      }
-    };
-
-    special_effects.push_back( new emerald_coachs_whistle_ally_t( this ) );
-  }
-
   unique_gear::initialize_racial_effects( this );
 
   if ( sim->overrides.skyfury && may_benefit_from_skyfury() )
