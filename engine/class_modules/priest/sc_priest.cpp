@@ -859,7 +859,7 @@ struct power_infusion_t final : public priest_spell_t
   double power_infusion_magnitude;
   power_infusion_t( priest_t& p, util::string_view options_str, util::string_view name )
     : priest_spell_t( name, p, p.talents.power_infusion ),
-      power_infusion_magnitude( player->buffs.power_infusion->default_value )
+      power_infusion_magnitude( p.buffs.power_infusion->default_value )
   {
     parse_options( options_str );
     harmful = false;
@@ -872,8 +872,8 @@ struct power_infusion_t final : public priest_spell_t
     // Trigger PI on the actor only if casting on itself
     if ( priest().options.self_power_infusion || priest().talents.twins_of_the_sun_priestess.enabled() )
     {
-      player->buffs.power_infusion->trigger( 1, power_infusion_magnitude, -1,
-                                             player->buffs.power_infusion->buff_duration() );
+      priest().buffs.power_infusion->trigger( 1, power_infusion_magnitude, -1,
+                                              priest().buffs.power_infusion->buff_duration() );
     }
   }
 };
@@ -4245,14 +4245,35 @@ struct priest_module_t final : public module_t
   }
   void init( player_t* p ) const override
   {
-    p->buffs.body_and_soul    = make_buff( p, "body_and_soul", p->find_spell( 65081 ) );
-    p->buffs.angelic_feather  = make_buff( p, "angelic_feather", p->find_spell( 121557 ) );
-    p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit", p->find_spell( 47788 ) )
-                                  ->set_default_value_from_effect_type( A_MOD_HEALING_RECEIVED_PCT )
-                                  ->set_cooldown( 0_ms );  // Let the ability handle the CD
-    p->buffs.pain_suppression = make_buff( p, "pain_suppression", p->find_spell( 33206 ) )
-                                  ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
-                                  ->set_cooldown( 0_ms );  // Let the ability handle the CD
+    if ( !p->is_pet() )
+    {
+      p->buffs.body_and_soul = make_buff( p, "body_and_soul", p->find_spell( 65081 ) );
+      p->buffs.angelic_feather = make_buff( p, "angelic_feather", p->find_spell( 121557 ) );
+      p->buffs.guardian_spirit = make_buff( p, "guardian_spirit", p->find_spell( 47788 ) )
+                                    ->set_default_value_from_effect_type( A_MOD_HEALING_RECEIVED_PCT )
+                                    ->set_cooldown( 0_ms );  // Let the ability handle the CD
+      p->buffs.pain_suppression = make_buff( p, "pain_suppression", p->find_spell( 33206 ) )
+                                      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
+                                      ->set_cooldown( 0_ms );  // Let the ability handle the CD
+
+      auto pi_buff = make_buff( p, "power_infusion", p->find_spell( 10060 ) )
+                        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                        ->set_default_value_from_effect_type( A_HASTE_ALL )
+                        ->set_cooldown( 0_ms );
+
+      if ( p->type == PRIEST )
+      {
+        debug_cast<priest_t*>( p )->buffs.power_infusion = pi_buff;
+      }
+
+      if ( !p->external_buffs.power_infusion.empty() )
+      {
+        p->register_combat_begin( [ pi_buff ]( player_t* p ) {
+          for ( auto t : p->external_buffs.power_infusion )
+            make_event( *p->sim, t, [ pi_buff ] { pi_buff->trigger(); } );
+        } );
+      }
+    }
   }
   void static_init() const override
   {

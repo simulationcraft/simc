@@ -9406,24 +9406,27 @@ struct warrior_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-    bool has_external_rallying = !p->external_buffs.rallying_cry.empty();
-    bool has_talent_rallying = p->type == WARRIOR && debug_cast<warrior_t*>( p )->talents.warrior.rallying_cry.ok();
-
-    if ( has_external_rallying || has_talent_rallying )
+    if ( !p->is_pet() )
     {
-      auto buff = make_buff<buffs::rallying_cry_t>( p );
+      bool has_external_rallying = !p->external_buffs.rallying_cry.empty();
+      bool has_talent_rallying = p->type == WARRIOR && debug_cast<warrior_t*>( p )->talents.warrior.rallying_cry.ok();
 
-      if ( has_external_rallying )
+      if ( has_external_rallying || has_talent_rallying )
       {
-        p->register_combat_begin( [ buff ]( player_t* p ) {
-          for ( auto t : p->external_buffs.rallying_cry )
-            make_event( *p->sim, t, [ buff ] { buff->trigger(); } );
-        } );
-      }
+        auto buff = make_buff<buffs::rallying_cry_t>( p );
 
-      if ( has_talent_rallying )
-      {
-        debug_cast<warrior_t*>( p )->buff.rallying_cry = buff;
+        if ( has_external_rallying )
+        {
+          p->register_combat_begin( [ buff ]( player_t* p ) {
+            for ( auto t : p->external_buffs.rallying_cry )
+              make_event( *p->sim, t, [ buff ] { buff->trigger(); } );
+          } );
+        }
+
+        if ( has_talent_rallying )
+        {
+          debug_cast<warrior_t*>( p )->buff.rallying_cry = buff;
+        }
       }
     }
   }

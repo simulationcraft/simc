@@ -544,7 +544,6 @@ struct player_t : public actor_t
 
     // 9.0 class buffs
     buff_t* focus_magic; // Mage talent
-    buff_t* power_infusion; // Priest spell
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
