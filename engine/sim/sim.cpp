@@ -2654,15 +2654,14 @@ void sim_t::init_actors()
 
 // sim_t::init_actor ========================================================
 
-// This method handles the bulk of player initialization. Order is pretty
-// critical here. Called in sim_t::init()
 void sim_t::init_actor( player_t* p )
 {
   try
   {
-    for ( const auto& initializer : actor_initializer )
+    // Use index loop to allow initializers to add more initializers
+    for ( size_t i = 0; i < actor_initializer.size(); ++i )
     {
-      std::get<1>( initializer )( p );
+      std::get<1>( actor_initializer[ i ] )( p );
     }
   }
   catch ( const std::exception& )
