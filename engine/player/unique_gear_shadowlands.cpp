@@ -1229,7 +1229,6 @@ void infinitely_divisible_ooze( special_effect_t& effect )
  */
 void inscrutable_quantum_device ( special_effect_t& effect )
 {
-  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
   static constexpr std::array<int, 4> buff_ids = { 330367, 330380, 330368, 330366 };
 
   struct inscrutable_quantum_device_execute_t : public proc_spell_t
@@ -1258,16 +1257,16 @@ void inscrutable_quantum_device ( special_effect_t& effect )
       proc_spell_t( "inscrutable_quantum_device", e.player, e.player->find_spell( 330323 ) )
     {
       buffs[ STAT_NONE ] = nullptr;
-      for ( unsigned i = 0; i < ratings.size(); i++ )
+      for ( unsigned i = 0; i < secondary_ratings.size(); i++ )
       {
-        auto name = std::string( "inscrutable_quantum_device_" ) + util::stat_type_string( ratings[ i ] );
+        auto name = std::string( "inscrutable_quantum_device_" ) + util::stat_type_string( secondary_ratings[ i ] );
         stat_buff_t* buff = debug_cast<stat_buff_t*>( buff_t::find( e.player, name ) );
         if ( !buff )
         {
           buff = make_buff<stat_buff_t>( e.player, name, e.player->find_spell( buff_ids[ i ] ), e.item );
           buff->set_cooldown( 0_ms );
         }
-        buffs[ ratings[ i ] ] = buff;
+        buffs[ secondary_ratings[ i ] ] = buff;
       }
       execute_damage = create_proc_action<inscrutable_quantum_device_execute_t>( "inscrutable_quantum_device_execute", e );
     }
@@ -1310,7 +1309,7 @@ void inscrutable_quantum_device ( special_effect_t& effect )
         buff_t* buff;
         timespan_t duration_adjustment;
 
-        s1 = util::highest_stat( player, ratings );
+        s1 = util::highest_stat( player, secondary_ratings );
 
         if ( is_buff_extended() )
         {
@@ -1321,7 +1320,7 @@ void inscrutable_quantum_device ( special_effect_t& effect )
         {
           if ( rng().roll( sim->shadowlands_opts.iqd_stat_fail_chance ) )
             return;
-          for ( auto s : ratings )
+          for ( auto s : secondary_ratings )
           {
             auto v = util::stat_value( player, s );
             if ( ( s2 == STAT_NONE || v > util::stat_value( player, s2 ) ) &&
@@ -2185,16 +2184,13 @@ void miniscule_mailemental_in_an_envelope( special_effect_t& effect )
  */
 void titanic_ocular_gland( special_effect_t& effect )
 {
-  // When selecting the highest stat, the priority of equal secondary stats is Vers > Mastery > Haste > Crit.
-  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
-
   // Use a separate buff for each rating type so that individual uptimes are reported nicely and APLs can easily reference them.
   // Store these in pointers to reduce the size of the events that use them.
   auto worthy_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
   auto unworthy_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
   double amount = effect.driver()->effectN( 1 ).average( effect.item );
 
-  for ( auto stat : ratings )
+  for ( auto stat : secondary_ratings )
   {
     auto name = std::string( "worthy_" ) + util::stat_type_string( stat );
     buff_t* buff = buff_t::find( effect.player, name );
@@ -2223,11 +2219,11 @@ void titanic_ocular_gland( special_effect_t& effect )
   {
     bool worthy = p->rng().roll( p->sim->shadowlands_opts.titanic_ocular_gland_worthy_chance );
     bool buff_active = false;
-    stat_e max_stat = util::highest_stat( p, ratings );
+    stat_e max_stat = util::highest_stat( p, secondary_ratings );
 
     // Iterate over all of the buffs and expire any that should not be active. Only one buff is
     // active at a time, so this process only needs to continue until a single active buff is found.
-    for ( auto stat : ratings )
+    for ( auto stat : secondary_ratings )
     {
       if ( ( *worthy_buffs )[ stat ]->check() )
       {
@@ -2236,7 +2232,7 @@ void titanic_ocular_gland( special_effect_t& effect )
         if ( max_stat != stat || !worthy )
         {
           ( *worthy_buffs )[ stat ]->expire();
-          max_stat = util::highest_stat( p, ratings );
+          max_stat = util::highest_stat( p, secondary_ratings );
         }
         else
         {
@@ -2250,7 +2246,7 @@ void titanic_ocular_gland( special_effect_t& effect )
         if ( worthy )
         {
           ( *unworthy_buffs )[ stat ]->expire();
-          max_stat = util::highest_stat( p, ratings );
+          max_stat = util::highest_stat( p, secondary_ratings );
         }
         else
         {
@@ -3283,17 +3279,13 @@ void cosmic_gladiators_resonator( special_effect_t& effect )
 
 void elegy_of_the_eternals( special_effect_t& effect )
 {
-  // TODO: confirm stat priority when stats are equal. for now assuming same as titanic ocular gland
-  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
-                                                     STAT_CRIT_RATING };
-
   auto buff_list = std::make_shared<std::map<stat_e, buff_t*>>();
 
   // TODO: 369544 has same data as the driver, but with the presumably correct -7 scaling effect. Confirm that the
   // driver really is 367246 and that 369544 is an unreferenced placeholder spell for the correct scaling effect.
   double amount = effect.player->find_spell( 369544 )->effectN( 1 ).average( effect.item );
 
-  for ( auto stat : ratings )
+  for ( auto stat : secondary_ratings )
   {
     auto name = fmt::format( "elegy_of_the_eternals_{}", util::stat_type_abbrev( stat ) );
     auto buff = buff_t::find( effect.player, name );
@@ -3308,16 +3300,16 @@ void elegy_of_the_eternals( special_effect_t& effect )
   }
 
   auto update_buffs = [ p = effect.player, buff_list ]() mutable {
-    auto max_stat = util::highest_stat( p, ratings );
+    auto max_stat = util::highest_stat( p, secondary_ratings );
 
-    for ( auto stat : ratings )
+    for ( auto stat : secondary_ratings )
     {
       if ( ( *buff_list )[ stat ]->check() )
       {
         if ( max_stat != stat )
         {
           ( *buff_list )[ stat ]->expire();
-          max_stat = util::highest_stat( p, ratings );
+          max_stat = util::highest_stat( p, secondary_ratings );
         }
 
         break;
@@ -5236,4 +5228,29 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( remnants_despair_init_t() );
 }
 
+void register_actor_initializers( sim_t& sim )
+{
+  // +9 for wow version 9.x
+  sim.register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + 9, []( player_t* p ) {
+    if ( p->external_buffs.soleahs_secret_technique )
+    {
+      struct soleahs_secret_technique_external_t : public external_special_effect_t
+      {
+        soleahs_secret_technique_external_t( player_t* p )
+          : external_special_effect_t( p, "soleahs_secret_technique_external", 190958,
+                                       p->external_buffs.soleahs_secret_technique )
+        {
+          auto stat = util::highest_stat( p, secondary_ratings );
+          auto buff = make_buff<stat_buff_t>( p, "soleahs_secret_technique_external", p->find_spell( 368510 ) )
+            ->add_stat( stat, driver()->effectN( 2 ).average( *this ) )
+            ->set_name_reporting( fmt::format( "External {}", util::stat_type_abbrev( stat ) ) );
+
+          p->register_on_arise_callback( p, [ buff ] { buff->trigger(); } );
+        }
+      };
+
+      p->special_effects.push_back( new soleahs_secret_technique_external_t( p ) );
+    }
+  }, "create_buffs_shadowlands" );
+}
 }  // namespace unique_gear

@@ -4882,6 +4882,7 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
 
 void unique_gear::register_actor_initializers( sim_t& sim )
 {
+  shadowlands::register_actor_initializers( sim );
   dragonflight::register_actor_initializers( sim );
 }
 

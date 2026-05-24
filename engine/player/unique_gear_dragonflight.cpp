@@ -622,9 +622,8 @@ void projectile_propulsion_pinion( special_effect_t& effect )
   };
 
   effect.player->register_combat_begin( [ buffs ]( player_t* p ) {
-    static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
-    buffs.find( util::highest_stat( p, ratings ) ) -> second -> trigger();
-    buffs.find( util::lowest_stat( p, ratings ) ) -> second -> trigger();
+    buffs.find( util::highest_stat( p, secondary_ratings ) )->second->trigger();
+    buffs.find( util::lowest_stat( p, secondary_ratings ) )->second->trigger();
   } );
 }
 
@@ -3275,8 +3274,6 @@ void frenzying_signoll_flare(special_effect_t& effect)
     action_t* smorfs;
     action_t* barfs;
     std::shared_ptr<std::map<stat_e, buff_t*>> siki_buffs;
-    // When selecting the highest stat, the priority of equal secondary stats is Vers > Mastery > Haste > Crit.
-    std::array<stat_e, 4> ratings;
 
     frenzying_signoll_flare_t(const special_effect_t& e) :
         proc_spell_t("frenzying_signoll_flare", e.player, e.player -> find_spell(382119), e.item)
@@ -3291,9 +3288,7 @@ void frenzying_signoll_flare(special_effect_t& effect)
       siki_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
       double amount = e.driver()->effectN( 1 ).average( e.item );
 
-      ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
-                                                     STAT_CRIT_RATING };
-      for ( auto stat : ratings )
+      for ( auto stat : secondary_ratings )
       {
         auto name = std::string( "sikis_ambush_" ) + util::stat_type_string( stat );
         buff_t* buff = buff_t::find( e.player, name );
@@ -3328,7 +3323,7 @@ void frenzying_signoll_flare(special_effect_t& effect)
 
       else if (selected_effect == 2 )
       {
-        stat_e max_stat = util::highest_stat( player, ratings );
+        stat_e max_stat = util::highest_stat( player, secondary_ratings );
         ( *siki_buffs )[ max_stat ]->trigger();
       }
     }
@@ -5554,9 +5549,6 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
     }
   };
 
-  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
-                                                     STAT_CRIT_RATING };
-
   struct mirror_of_fractured_tomorrows_t : public spell_t
   {
     spawner::pet_spawner_t<future_self_pet_t> spawner;
@@ -5571,7 +5563,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       dual = false;
 
       auto amount = e.driver()->effectN( 1 ).average( e.item );
-      for ( auto stat : ratings )
+      for ( auto stat : secondary_ratings )
       {
         auto name = std::string( "mirror_of_fractured_tomorrows_" ) + util::stat_type_string( stat );
         auto buff = create_buff<stat_buff_t>( e.player, name, e.player->find_spell( 418527 ) )
@@ -5643,7 +5635,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       spell_t::execute();
       spawner.spawn();
 
-      stat_e max_stat = util::highest_stat( effect.player, ratings );
+      stat_e max_stat = util::highest_stat( effect.player, secondary_ratings );
       buffs[ max_stat ]->trigger();
     }
   };
@@ -8860,11 +8852,10 @@ void potent_venom( special_effect_t& effect )
   auto buff = create_buff<potent_venom_t>(effect.player, effect.driver()->effectN(3).trigger(), effect);
   buff->set_stack_change_callback( [effect, buff, gain, loss] ( buff_t*, int, int new_ )
     {
-      static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
       if ( new_ )
       {
-        buff->gain = util::highest_stat(effect.player, ratings);
-        buff->loss = util::lowest_stat(effect.player, ratings);
+        buff->gain = util::highest_stat(effect.player, secondary_ratings);
+        buff->loss = util::lowest_stat(effect.player, secondary_ratings);
 
         buff->player->stat_gain(buff->gain, gain);
         buff->player->stat_loss(buff->loss, loss);
@@ -9103,14 +9094,11 @@ void voice_of_the_silent_star( special_effect_t& effect )
                      "power_beyond_imagination_haste_rating", "power_beyond_imagination_versatility_rating" } ) )
     return;
 
-  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
-                                                     STAT_CRIT_RATING };
-
   auto buffs = std::make_shared<std::map<stat_e, buff_t*>>();
   double amount = effect.driver()->effectN( 1 ).average( effect.item ) +
                   ( effect.driver()->effectN( 3 ).average( effect.item ) * effect.driver()->effectN( 4 ).base_value() );
 
-  for ( auto stat : ratings )
+  for ( auto stat : secondary_ratings )
   {
     auto name = std::string( "power_beyond_imagination_" ) + util::stat_type_string( stat );
     auto buff = create_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 409447 ), effect.item )
@@ -9125,7 +9113,7 @@ void voice_of_the_silent_star( special_effect_t& effect )
     ->set_stack_change_callback( [ buffs, effect ]( buff_t*, int, int new_ ) {
       if ( !new_ )
       {
-        stat_e max_stat = util::highest_stat( effect.player, ratings );
+        stat_e max_stat = util::highest_stat( effect.player, secondary_ratings );
         ( *buffs )[ max_stat ]->trigger();
       }
     } );
@@ -9732,9 +9720,6 @@ void raging_tempests( special_effect_t& effect )
 
   if ( check_set( B2 ) )
   {
-    static constexpr std::array<stat_e, 4> ratings =
-        { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
-
     auto buff = create_buff<stat_buff_t>( effect.player, effect.driver() );
     buff->set_constant_behavior( buff_constant_behavior::ALWAYS_CONSTANT );
 
@@ -9744,7 +9729,7 @@ void raging_tempests( special_effect_t& effect )
     // temporary buffs during equip, instead of implementing as a passive stat bonus we create a buff to trigger on
     // combat start, accounting for anything in the precombat apl.
     effect.player->register_combat_begin( [ buff, effect, val ]( player_t* p ) {
-      buff->set_stat( util::highest_stat( p, ratings ), val );
+      buff->set_stat( util::highest_stat( p, secondary_ratings ), val );
       buff->trigger();
     } );
   }
@@ -11738,33 +11723,18 @@ void register_hotfixes()
 
 void register_actor_initializers( sim_t& sim )
 {
+  // +10 for wow version 10.x
   sim.register_actor_initializer( INIT_ACTOR_CREATE_EFFECTS + 10, []( player_t* p ) {
     if ( p->dragonflight_opts.emerald_coachs_whistle_ally_ilvl > 0 )
     {
-      struct emerald_coachs_whistle_ally_t : public special_effect_t
+      struct emerald_coachs_whistle_ally_t : public external_special_effect_t
       {
-        std::unique_ptr<item_t> _item;
-
-        emerald_coachs_whistle_ally_t( player_t* p ) : special_effect_t( p )
+        emerald_coachs_whistle_ally_t( player_t* p )
+          : external_special_effect_t( p, "emerald_coachs_whistle_ally", 193718,
+                                        p->dragonflight_opts.emerald_coachs_whistle_ally_ilvl )
         {
-          // make a fake
-          _item = std::make_unique<item_t>(
-            p, fmt::format( ",id=193718,ilevel={}", p->dragonflight_opts.emerald_coachs_whistle_ally_ilvl ) );
-          _item->parse_options();
-          _item->initialize_data();
-          _item->init();
-
-          // validate data
-          auto it = range::find( _item->parsed.data.effects, ITEM_SPELLTRIGGER_ON_EQUIP, &item_effect_t::type );
-          if ( it == _item->parsed.data.effects.end() )
-          {
-            throw sc_invalid_player_argument(
-              "Cannot find on-equip effect on item id=193718 for 'dragonflight.emerald_coachs_whistle_ally_ilvl'." );
-          }
-
-          spell_id = p->dragonflight_opts.emerald_coachs_whistle_ally_is_healer ? 386578 : it->spell_id;
-          name_str = "emerald_coachs_whistle_ally";
-          item     = _item.get();
+          if ( p->dragonflight_opts.emerald_coachs_whistle_ally_is_healer )
+            spell_id = 386578;
 
           custom_init = &items::emerald_coachs_whistle;
         }
@@ -11772,7 +11742,8 @@ void register_actor_initializers( sim_t& sim )
 
       p->special_effects.push_back( new emerald_coachs_whistle_ally_t( p ) );
     }
-  }, "create_buffs_dragonflight" );
+  },
+  "create_buffs_dragonflight" );
 }
 
 // check and return multiplier for toxified armor patch

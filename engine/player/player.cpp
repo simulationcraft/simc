@@ -4936,22 +4936,6 @@ void player_t::create_buffs()
         ->add_invalidate( CACHE_HASTE );
 
       // External trinkets
-      if ( external_buffs.soleahs_secret_technique )
-      {
-        // TODO: confirm what happens if ratings are the same. For now assuming it follows same priority as IQD.
-        static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING,
-                                                           STAT_HASTE_RATING, STAT_CRIT_RATING };
-
-        auto ilevel = external_buffs.soleahs_secret_technique;
-        auto coeff  = find_spell( 368513 )->effectN( 2 ).m_coefficient();
-        auto points = dbc->random_property( ilevel ).p_epic[ 0 ];
-        auto mult   = dbc->combat_rating_multiplier( ilevel, CR_MULTIPLIER_TRINKET );
-
-        buffs.soleahs_secret_technique_external =
-            make_buff<stat_buff_t>( this, "soleahs_secret_technique_external", find_spell( 368510 ) )
-                ->add_stat( util::highest_stat( this, ratings ), coeff * points * mult );
-      }
-
       if ( !external_buffs.elegy_of_the_eternals.empty() )
       {
         buffs.elegy_of_the_eternals_external =
@@ -7302,9 +7286,6 @@ void player_t::arise()
 
   if ( buffs.focus_magic && external_buffs.focus_magic )
     buffs.focus_magic->override_buff();
-
-  if ( buffs.soleahs_secret_technique_external )
-    buffs.soleahs_secret_technique_external->trigger();
 
   if ( buffs.elegy_of_the_eternals_external )
     buffs.elegy_of_the_eternals_external->trigger();

@@ -552,7 +552,6 @@ struct player_t : public actor_t
     buff_t* echo_of_eonar;               // passive self buff
 
     // Trinkets
-    buff_t* soleahs_secret_technique_external;
     buff_t* elegy_of_the_eternals_external;
 
     // 9.2 Sepulcher of the First Ones

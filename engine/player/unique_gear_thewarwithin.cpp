@@ -41,10 +41,6 @@ void set_min_version( wowv_t build )
 void set_max_version( wowv_t build )
 { version_max = build; }
 
-// assuming priority for highest/lowest secondary is vers > mastery > haste > crit
-static constexpr std::array<stat_e, 4> secondary_ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING,
-                                                             STAT_HASTE_RATING, STAT_CRIT_RATING };
-
 // from item_naming.inc
 enum gem_color_e : unsigned
 {
