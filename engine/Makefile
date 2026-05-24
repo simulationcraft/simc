@@ -292,10 +292,6 @@ rng$(MODULE_EXT): util$(PATHSEP)rng.cpp lib$(PATHSEP)fmt$(PATHSEP)format.cpp uti
 	-@echo [$@] Linking
 	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ -o $@ $(LINK_LIBS)
 
-sample_data$(MODULE_EXT): util$(PATHSEP)sample_data.hpp util$(PATHSEP)sample_data.cpp
-	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ -o $@ $(LINK_LIBS)
-
 sc_expressions$(MODULE_EXT): sim$(PATHSEP)sc_expressions.cpp sc_util.cpp
 	-@echo [$@] Linking
 	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ -o $@ $(LINK_LIBS)
