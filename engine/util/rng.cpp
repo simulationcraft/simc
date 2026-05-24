@@ -477,11 +477,11 @@ void for_each(Tuple&& t, F&& f)
 
 int main( int /*argc*/, char** /*argv*/ )
 {
-  auto generators = std::make_tuple(
-    rng::basic_rng_t<rng::xoshiro256plus_t>{},
-    rng::basic_rng_t<rng::xorshift128_t>{},
-    rng::basic_rng_t<rng::xorshift1024_t>{}
-  );
+  std::tuple<
+    rng::basic_rng_t<rng::xoshiro256plus_t>,
+    rng::basic_rng_t<rng::xorshift128_t>,
+    rng::basic_rng_t<rng::xorshift1024_t>
+  > generators;
 
   std::random_device rd;
   uint64_t seed  = uint64_t(rd()) | (uint64_t(rd()) << 32);
