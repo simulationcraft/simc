@@ -287,11 +287,6 @@ clean: mostlyclean
 	-@echo [$(MODULE)] Cleaning target files
 	@$(REMOVE) $(MODULE) sc_http$(MODULE_EXT)
 
-# Unit Tests
-rng$(MODULE_EXT): util$(PATHSEP)rng.cpp lib$(PATHSEP)fmt$(PATHSEP)format.cpp util$(PATHSEP)chrono.cpp
-	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ -o $@ $(LINK_LIBS)
-
 # Deprecated targets
 
 unix windows mac:
