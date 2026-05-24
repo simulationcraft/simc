@@ -2592,7 +2592,9 @@ void sim_t::init_actors()
 
   // sort initializers by priority
   range::sort( actor_initializer, []( const auto& a, const auto& b ) {
-    return std::get<int>( a ) < std::get<int>( b );
+    auto a_prio = std::get<int>( a );
+    auto b_prio = std::get<int>( b );
+    return a_prio == b_prio ? std::get<std::string>( a ) < std::get<std::string>( b ) : a_prio < b_prio;
   } );
 
   print_debug( "Initializing actors." );
