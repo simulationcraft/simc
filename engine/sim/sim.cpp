@@ -4792,41 +4792,55 @@ int sim_t::get_actor_initializer_priority( std::string_view name ) const
 
 void sim_t::register_actor_initializer( int priority, void ( player_t::*fn)(), std::string name )
 {
+  if ( get_actor_initializer_priority( name ) != 0 )
+    return;
+
   if ( priority == 0 )
     throw sc_initialization_error( fmt::format( "Actor initializer '{}' priority cannot be 0.", name ) );
 
-  if ( get_actor_initializer_priority( name ) == 0 )
-    actor_initializer.emplace_back( priority, [ fn ]( player_t* p ) { std::invoke( fn, p ); }, std::move( name ) );
+  actor_initializer.emplace_back( priority, [ fn ]( player_t* p ) {
+    std::invoke( fn, p );
+  }, std::move( name ) );
 }
 
 void sim_t::register_actor_initializer( int priority, std::function<void( player_t* )> fn, std::string name )
 {
+  if ( get_actor_initializer_priority( name ) != 0 )
+    return;
+
   if ( priority == 0 )
     throw sc_initialization_error( fmt::format( "Actor initializer '{}' priority cannot be 0.", name ) );
 
-  if ( get_actor_initializer_priority( name ) == 0 )
-    actor_initializer.emplace_back( priority, std::move( fn ), std::move( name ) );
+  actor_initializer.emplace_back( priority, std::move( fn ), std::move( name ) );
 }
 
 void sim_t::register_actor_initializer( std::string_view base, int offset, void ( player_t::*fn )(), std::string name )
 {
+  if ( get_actor_initializer_priority( name ) != 0 )
+    return;
+
   auto priority = get_actor_initializer_priority( base );
 
   if ( priority == 0 )
     throw sc_initialization_error( fmt::format( "Actor initializer '{}' not found as base for '{}'.", base, name ) );
 
-  register_actor_initializer( priority + offset, fn, std::move( name ) );
+  actor_initializer.emplace_back( priority + offset, [ fn ]( player_t* p ) {
+    std::invoke( fn, p );
+  }, std::move( name ) );
 }
 
 void sim_t::register_actor_initializer( std::string_view base, int offset, std::function<void( player_t* )> fn,
                                         std::string name )
 {
+  if ( get_actor_initializer_priority( name ) != 0 )
+    return;
+
   auto priority = get_actor_initializer_priority( base );
 
   if ( priority == 0 )
     throw sc_initialization_error( fmt::format( "Actor initializer '{}' not found as base for '{}'.", base, name ) );
 
-  register_actor_initializer( priority + offset, std::move( fn ), std::move( name ) );
+  actor_initializer.emplace_back( priority + offset, std::move( fn ), std::move( name ) );
 }
 
 bool sim_t::rethrow_exception_queue()

@@ -58,7 +58,6 @@
 #include "sim/plot.hpp"
 #include "sim/proc.hpp"
 #include "sim/proc_rng.hpp"
-#include "sim/raid_event.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sim.hpp"
 #include "util/io.hpp"
@@ -3545,13 +3544,11 @@ void player_t::init_scaling()
     scaling->enable( STAT_MASTERY_RATING );
     scaling->enable( STAT_VERSATILITY_RATING );
 
-    scaling->set( STAT_SPEED_RATING, sim->has_raid_event( "movement" ) );
-    // scaling -> set( STAT_AVOIDANCE_RATING          ] = tank; // Waste of sim time vast majority of the time. Can be
-    // enabled manually.
-    scaling->set( STAT_LEECH_RATING, tank );
+    // scaling->enable( STAT_SPEED_RATING );  // handled in raid_events movement_event_t
+    // scaling->set( STAT_AVOIDANCE_RATING, tank ); // can be enabled manually if need be
+    scaling->set( STAT_LEECH_RATING, heal );
 
     scaling->set( STAT_WEAPON_DPS, attack );
-
     scaling->set( STAT_ARMOR, tank );
 
     auto add_stat = []( double& to, double value, double lower_limit )
@@ -4487,21 +4484,6 @@ void player_t::init_assessors()
     return assessor::CONTINUE;
   } );
 
-  // Credit absorbed-on-enemy damage back to attacker stats when an absorb raid event is configured.
-  if ( !is_enemy() && range::any_of( sim->raid_events,
-                                     []( const auto& e ) { return e->type == "absorb"; } ) )
-  {
-    assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, []( result_amount_type, action_state_t* s ) {
-      if ( s->target && s->target->is_enemy() )
-      {
-        double absorbed = s->result_mitigated - s->result_absorbed;
-        if ( absorbed > 0 )
-          s->result_amount += absorbed;
-      }
-      return assessor::CONTINUE;
-    } );
-  }
-
   // Logging and debug .. Technically, this should probably be in action_t::assess_damage, but we
   // don't need this piece of code for the vast majority of sims, so it makes sense to yank it out
   // completely from there, and only conditionally include it if logging/debugging is enabled.
@@ -5124,13 +5106,6 @@ void player_t::create_buffs()
   debuffs.damage_taken = make_buff( this, "damage_taken" )
     ->set_duration( timespan_t::from_seconds( 20.0 ) )
     ->set_max_stack( 999 );
-
-  if ( sim->has_raid_event( "damage_done" ) )
-  {
-    buffs.damage_done = make_buff( this, "damage_done" )
-      ->set_max_stack( 1 )
-      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
 }
 
 item_t* player_t::find_item_by_name( util::string_view item_name )

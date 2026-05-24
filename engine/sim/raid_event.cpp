@@ -12,6 +12,7 @@
 #include "player/pet.hpp"
 #include "player/player.hpp"
 #include "player/player_demise_event.hpp"
+#include "player/player_scaling.hpp"
 #include "player/pet_spawner.hpp"
 #include "raid_event.hpp"
 #include "sim/event.hpp"
@@ -1210,6 +1211,11 @@ struct movement_event_t final : public raid_event_t
     {
       direction = util::parse_movement_direction( move_direction );
     }
+
+    sim->register_actor_initializer( "scaling", 1, []( player_t* p ) {
+      if ( !p->is_pet() && !p->is_enemy() )
+        p->scaling->enable( STAT_SPEED_RATING );
+    }, "scaling_speed_rating" );
   }
 
   bool parse_target( std::string_view value )
@@ -1531,6 +1537,12 @@ struct damage_done_buff_event_t final : public raid_event_t
   {
     add_option( opt_float( "multiplier", multiplier ) );
     parse_options( options_str );
+
+    sim->register_actor_initializer( "create_buffs", 1, []( player_t* p ) {
+      p->buffs.damage_done = make_buff( p, "damage_done" )
+        ->set_max_stack( 1 )
+        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    }, "create_buffs_damage_done" );
   }
 
   void _start() override
@@ -1696,6 +1708,22 @@ struct absorb_event_t final : public raid_event_t
       if ( school == SCHOOL_NONE )
         throw std::invalid_argument( fmt::format( "Unknown absorb raid event school '{}'", school_str ) );
     }
+
+    // Credit absorbed-on-enemy damage back to attacker stats
+    sim->register_actor_initializer( INIT_ACTOR_ASSESSORS + 10, []( player_t* p ) {
+      if ( p->is_enemy() )
+        return;
+
+      p->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, []( auto, action_state_t* s ) {
+        if ( s->target && s->target->is_enemy() )
+        {
+          if ( auto absorbed = s->result_mitigated - s->result_absorbed; absorbed > 0 )
+            s->result_amount += absorbed;
+        }
+
+        return assessor::CONTINUE;
+      } );
+    }, "assessors_absorb_event" );
   }
 
   player_t* resolve_target() const
