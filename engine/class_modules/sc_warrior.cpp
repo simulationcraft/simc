@@ -252,6 +252,7 @@ public:
     buff_t* into_the_fray;
     buff_t* last_stand;
     buff_t* martial_prowess;
+    buff_t* rallying_cry;
     buff_t* ravager;
     buff_t* recklessness;
     buff_t* revenge;
@@ -6824,7 +6825,9 @@ struct rallying_cry_t : public warrior_spell_t
   void execute() override
   {
     warrior_spell_t::execute();
-    player->buffs.rallying_cry->trigger();
+
+    assert( p()->buff.rallying_cry );
+    p()->buff.rallying_cry->trigger();
   }
 };
 
@@ -9403,7 +9406,26 @@ struct warrior_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-    p->buffs.rallying_cry = make_buff<buffs::rallying_cry_t>( p );
+    bool has_external_rallying = !p->external_buffs.rallying_cry.empty();
+    bool has_talent_rallying = p->type == WARRIOR && debug_cast<warrior_t*>( p )->talents.warrior.rallying_cry.ok();
+
+    if ( has_external_rallying || has_talent_rallying )
+    {
+      auto buff = make_buff<buffs::rallying_cry_t>( p );
+
+      if ( has_external_rallying )
+      {
+        p->register_combat_begin( [ buff ]( player_t* p ) {
+          for ( auto t : p->external_buffs.rallying_cry )
+            make_event( *p->sim, t, [ buff ] { buff->trigger(); } );
+        } );
+      }
+
+      if ( has_talent_rallying )
+      {
+        debug_cast<warrior_t*>( p )->buff.rallying_cry = buff;
+      }
+    }
   }
   void combat_begin( sim_t* ) const override
   {
