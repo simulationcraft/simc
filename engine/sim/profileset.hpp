@@ -146,7 +146,7 @@ public:
   { }
 
   profile_output_data_item_t( const char* slot_str, unsigned id, unsigned item_level ) :
-    m_slot_name( slot_str ), m_item_id( id ), m_item_level( item_level )
+    m_slot_name( slot_str ), m_item_id( id ), m_item_level( item_level ), m_enchant_id( 0 )
   { }
 
   const char* slot_name() const

@@ -40,10 +40,6 @@ void set_min_version( wowv_t build )
 void set_max_version( wowv_t build )
 { version_max = build; }
 
-// assuming priority for highest/lowest secondary is vers > mastery > haste > crit
-static constexpr std::array<stat_e, 4> secondary_ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING,
-                                                             STAT_HASTE_RATING, STAT_CRIT_RATING };
-
 // from item_naming.inc
 enum gem_color_e : unsigned
 {
@@ -1424,7 +1420,7 @@ void solarflare_prism( special_effect_t& effect )
       add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
     }
 
-    double buff_stat_stack_amount( const buff_stat_t& stat, int stack ) const override
+    double buff_stat_stack_amount( const buff_stat_t& stat, int ) const override
     {
       return std::min( stat.amount + hp_inc * check_value(), max_val );
     }
@@ -4050,6 +4046,9 @@ void register_special_effects()
 }
 
 void register_target_data_initializers( sim_t& )
+{}
+
+void register_actor_initializers( sim_t& )
 {}
 
 void register_hotfixes()

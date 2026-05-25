@@ -2082,7 +2082,7 @@ void sim_t::datacollection_end()
   total_absorb.add( iteration_absorb );
   raid_aps.add( current_time() != timespan_t::zero() ? iteration_absorb / current_time().total_seconds() : 0 );
 
-  if ( deterministic && report_iteration_data > 0 && current_iteration > 0 &&
+  if ( deterministic && report_iteration_data > 0 && ( iterations == 1 || current_iteration > 0 ) &&
        current_time() > timespan_t::zero() )
   {
     // TODO: Metric should be selectable
@@ -2485,10 +2485,14 @@ void sim_t::init_parties()
 /// Initialize actors
 void sim_t::init_actors()
 {
-  if ( debug )
-  {
-    out_debug.printf( "Initializing actors." );
-  }
+  // sort initializers by priority
+  range::sort( actor_initializer, []( const auto& a, const auto& b ) {
+    auto a_prio = std::get<int>( a );
+    auto b_prio = std::get<int>( b );
+    return a_prio == b_prio ? std::get<std::string>( a ) < std::get<std::string>( b ) : a_prio < b_prio;
+  } );
+
+  print_debug( "Initializing actors." );
 
   for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
   {
@@ -2505,8 +2509,7 @@ void sim_t::init_actors()
     init_actor( target_list[ i ] );
   }
 
-  if ( debug )
-    out_debug.printf( "Initializing Players." );
+  print_debug( "Initializing Players." );
 
   if ( decorated_tooltips == -1 )
     decorated_tooltips = 1;
@@ -2548,121 +2551,27 @@ void sim_t::init_actors()
 
 // sim_t::init_actor ========================================================
 
-// This method handles the bulk of player initialization. Order is pretty
-// critical here. Called in sim_t::init()
 void sim_t::init_actor( player_t* p )
 {
   try
   {
-    // initialize class/enemy modules
+    // Initialize class/enemy modules
     for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
-    {
-      const module_t* m = module_t::get( i );
-      if ( m )
-        m->init( p );
-    }
+      if ( auto m = module_t::get( i ) )
+       m->init( p );
 
+    // Clear APL for default actions
     if ( default_actions && !p->is_pet() )
     {
       p->clear_action_priority_lists();
       p->action_list_str.clear();
     }
 
-    p->init();
-    p->initialized = true;
-
-    // This next section handles all the ugly details of initialization. Ideally, each of these
-    // init_* methods will eventually return a bool to indicate success or failure, from which
-    // we can either continue or halt initialization.
-
-    p->init_target();
-
-    // Initialize player characteristics
-    p->init_race();
-    p->init_talents();
-
-    p->replace_spells();
-    p->init_position();
-    p->init_professions();
-
-    // Initialize each actor's items, construct gear information & stats
-    p->init_items();
-
-    // Must be done after init_items (processes item options, so we know selected azerite powers in
-    // each item), and before init_spells (class modules "find_azerite_spell" in these).
-    p->init_azerite();
-
-    // Main spell looksup. Populate class/spec/hero talents & spells.
-    p->init_spells();
-
-    // First-phase creation of special effects from various sources. Needed to be able to create actions (APLs, really)
-    // based on the presence of special effects on items. Certain effects, such as effects that modify base stats, may
-    // be flagged to have their custom initialization run on creation.
-    p->create_special_effects();
-
-    // Initialize stats from DBC. Base stats can be modified until init_initial_stats().
-    p->init_base_stats();
-
-    // Buffs are created before actions, as typically action constructors tends to be more customized than buff
-    // constructors. This allow actions to reference buff validity during instantiation, but the vice versa is not
-    // possible.
-    p->create_buffs();
-
-    // Currently this only holds leech_t.
-    p->init_background_actions();
-
-    // First, validate the actor and create all the action objects and set up action lists properly.
-    // If actor is not valid, set quiet and skip action creation.
-    if ( p->validate_actor() )
+    // Use index loop to allow initializers to add more initializers
+    for ( size_t i = 0; i < actor_initializer.size(); ++i )
     {
-      p->create_actions();
+      std::get<1>( actor_initializer[ i ] )( p );
     }
-#ifdef NDBEBUG
-    else
-    {
-      quiet = true;
-    }
-  #endif
-
-    // More initilization of class modules. Needed to create shared actions provided by a class.
-    for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
-    {
-      const module_t* m = module_t::get( i );
-      if ( m )
-        m->create_actions( p );
-    }
-
-    // Create persistent actors from dynamic spawners
-    spawner::create_persistent_actors( *p );
-
-    // Create all actor pets before special effects get initialized. This ensures that we can use
-    // stuff like the presence of an action (created with create_actions()) to determine if a pet
-    // needs to be created or not. Similarly, talent, spec, and item based qualifiers would work.
-    p->create_pets();
-
-    // Second-phase initialize all special effects and register them to actors
-    p->init_special_effects();
-
-    // Finally, initialize all action objects
-    p->init_actions();
-
-    // Once all transient properties are initialized (e.g., base stats, spells, special effects,
-    // items), initialize the initial stats of the actor. Do not modify base stats after this call.
-    p->init_initial_stats();
-
-    // And once initial stats are initialized, derive the passive defensive properties of the actor.
-    p->init_defense();
-
-    p->init_scaling();
-    p->init_gains();
-    p->init_procs();
-    p->init_uptimes();
-    p->init_benefits();
-    p->init_rng();
-    p->init_stats();
-    p->init_distance_targeting();
-    p->init_absorb_priority();
-    p->init_assessors();
   }
   catch ( const std::exception& )
   {
@@ -2710,6 +2619,7 @@ void sim_t::init()
   event_mgr.init();
 
   unique_gear::register_target_data_initializers( this );
+  register_actor_initializers();
 
   // Seed RNG
   if ( seed == 0 )
@@ -2985,6 +2895,100 @@ void sim_t::init()
   }
 }
 
+// sim_t::register_actor_initializers() =====================================
+
+void sim_t::register_actor_initializers()
+{
+  // add default initializers
+  print_debug( "Registering actor initializers." );
+
+  register_actor_initializer( INIT_ACTOR_INIT, &player_t::init, "init" );
+  register_actor_initializer( "init", 10, []( player_t* p ) { p->initialized = true; } );
+
+  // Initialize player properties
+  register_actor_initializer( INIT_ACTOR_PROPERTIES + 5, &player_t::init_race, "race" );
+  register_actor_initializer( INIT_ACTOR_PROPERTIES + 10, &player_t::init_position, "position" );
+  register_actor_initializer( INIT_ACTOR_PROPERTIES + 15, &player_t::init_target, "target" );
+  register_actor_initializer( INIT_ACTOR_PROPERTIES + 20, &player_t::init_professions, "professions" );
+
+  // Initialize talents before items, as some item options like temporary enchant can utilize expressions
+  register_actor_initializer( INIT_ACTOR_TALENTS, &player_t::init_talents, "talents" );
+
+  // Initialize each actor's items, construct gear information & stats
+  register_actor_initializer( INIT_ACTOR_ITEMS, &player_t::init_items, "items" );
+  register_actor_initializer( "items", 10, &player_t::init_azerite );
+
+  // Main spell looksup. Populate class/spec/hero talents & spells.
+  register_actor_initializer( INIT_ACTOR_SPELLS, &player_t::init_spells, "spells" );
+  // Apply spec spell overrides to the DBC, must be done before spell lookups
+  register_actor_initializer( "spells", -10, &player_t::replace_spells );
+
+  // First-phase creation of special effects from various sources. Needed to be able to create actions (APLs, really)
+  // based on the presence of special effects on items. Certain effects, such as effects that modify base stats, may be
+  // flagged to have their custom initialization run on creation.
+  register_actor_initializer( INIT_ACTOR_CREATE_EFFECTS, &player_t::create_special_effects, "create_effects" );
+
+  // Initialize stats from DBC. Base stats can be modified until init_initial_stats()
+  register_actor_initializer( INIT_ACTOR_BASE_STATS, &player_t::init_base_stats, "base_stats" );
+
+  // Buffs are created before actions, as typically action constructors tends to be more customized than buff
+  // constructors. This allow actions to reference buff validity during instantiation, but the vice versa is not
+  // possible.
+  register_actor_initializer( INIT_ACTOR_CREATE_BUFFS, &player_t::create_buffs, "create_buffs" );
+
+  // Validate the actor and create all the action objects and set up action lists properly. If actor is not valid, set
+  // quiet and skip action creation.
+  register_actor_initializer( INIT_ACTOR_CREATE_ACTIONS, []( player_t* p ) {
+    if ( p->validate_actor() )
+      p->create_actions();
+#ifdef NDEBUG
+    else
+      p->quiet = true;
+#endif
+  }, "create_actions" );
+  // Create shared actions provided by modules
+  register_actor_initializer( "create_actions", 10, []( player_t* p ) {
+    for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
+      if ( auto m = module_t::get( i ) )
+        m->create_actions( p );
+  } );
+  // Background actions must be created before actions as some actions can reference them in their constructors
+  register_actor_initializer( "create_actions", -10, &player_t::init_background_actions );
+
+  // Create all actor pets before special effects get initialized. This ensures that we can use stuff like the presence
+  // of an action (created with create_actions()) to determine if a pet needs to be created or not. Similarly, talent,
+  // spec, and item based qualifiers would work.
+  register_actor_initializer( INIT_ACTOR_PETS, &player_t::create_pets, "pets" );
+  // Create persistent actors from dynamic spawners
+  register_actor_initializer( "pets", 10, []( player_t* p ) { spawner::create_persistent_actors( *p ); } );
+
+  // Second-phase initialize all special effects and register them to actors
+  register_actor_initializer( INIT_ACTOR_INIT_EFFECTS, &player_t::init_special_effects, "init_effects" );
+
+  // Finally, initialize all action objects
+  register_actor_initializer( INIT_ACTOR_INIT_ACTIONS, &player_t::init_actions, "init_actions" );
+
+  // Once all transient properties are initialized (e.g., base stats, spells, special effects, items), initialize the
+  // initial stats of the actor. Do not modify base stats after this call.
+  register_actor_initializer( INIT_ACTOR_INITIAL_STATS, &player_t::init_initial_stats, "initial_stats" );
+  // And once initial stats are initialized, derive the passive defensive properties of the actor
+  register_actor_initializer( "initial_stats", 10, &player_t::init_defense );
+
+  register_actor_initializer( INIT_ACTOR_MISC + 5, &player_t::init_scaling, "scaling" );
+  register_actor_initializer( INIT_ACTOR_MISC + 10, &player_t::init_gains, "gains" );
+  register_actor_initializer( INIT_ACTOR_MISC + 15, &player_t::init_procs, "procs" );
+  register_actor_initializer( INIT_ACTOR_MISC + 20, &player_t::init_uptimes, "uptimes" );
+  register_actor_initializer( INIT_ACTOR_MISC + 25, &player_t::init_benefits, "benefits" );
+  register_actor_initializer( INIT_ACTOR_MISC + 30, &player_t::init_rng, "rng" );
+  register_actor_initializer( INIT_ACTOR_MISC + 35, &player_t::init_stat_data, "stat_data" );
+  register_actor_initializer( INIT_ACTOR_MISC + 40, &player_t::init_distance_targeting, "distance_targeting" );
+  register_actor_initializer( INIT_ACTOR_MISC + 45, &player_t::init_absorb_priority, "absorb_priority" );
+
+  register_actor_initializer( INIT_ACTOR_ASSESSORS, &player_t::init_assessors, "assessors" );
+
+  unique_gear::register_actor_initializers( *this );
+}
+
 // sim_t::analyze ===========================================================
 
 void sim_t::analyze()
@@ -3005,7 +3009,6 @@ void sim_t::analyze()
     fmt::print( "Analyzing actor data ...\n" );
     std::fflush( stdout );
   }
-
 
   assert( iterations > 0 );
 
@@ -4764,9 +4767,82 @@ void sim_t::heartbeat_event_callback()
     heartbeat_event_callback_function[ i ]( this );
 }
 
-void sim_t::register_heartbeat_event_callback(std::function<void(sim_t*)> fn)
+void sim_t::register_heartbeat_event_callback( std::function<void( sim_t* )> fn )
 {
   heartbeat_event_callback_function.emplace_back( std::move( fn ) );
+}
+
+void sim_t::register_target_data_initializer( std::function<void( actor_target_data_t* )> fn )
+{
+  target_data_initializer.emplace_back( std::move( fn ) );
+}
+
+int sim_t::get_actor_initializer_priority( std::string_view name ) const
+{
+  if ( name.empty() )
+    return 0;
+
+  auto it = range::find_if( actor_initializer, [ name ]( const auto& e ) {
+    return std::get<std::string>( e ) == name;
+  } );
+
+  if ( it != actor_initializer.end() )
+    return std::get<int>( *it );
+
+  return 0;
+}
+
+void sim_t::register_actor_initializer( int priority, void ( player_t::*fn)(), std::string name )
+{
+  if ( get_actor_initializer_priority( name ) != 0 )
+    return;
+
+  if ( priority == 0 )
+    throw sc_initialization_error( fmt::format( "Actor initializer '{}' priority cannot be 0.", name ) );
+
+  actor_initializer.emplace_back( priority, [ fn ]( player_t* p ) {
+    std::invoke( fn, p );
+  }, std::move( name ) );
+}
+
+void sim_t::register_actor_initializer( int priority, std::function<void( player_t* )> fn, std::string name )
+{
+  if ( get_actor_initializer_priority( name ) != 0 )
+    return;
+
+  if ( priority == 0 )
+    throw sc_initialization_error( fmt::format( "Actor initializer '{}' priority cannot be 0.", name ) );
+
+  actor_initializer.emplace_back( priority, std::move( fn ), std::move( name ) );
+}
+
+void sim_t::register_actor_initializer( std::string_view base, int offset, void ( player_t::*fn )(), std::string name )
+{
+  if ( get_actor_initializer_priority( name ) != 0 )
+    return;
+
+  auto priority = get_actor_initializer_priority( base );
+
+  if ( priority == 0 )
+    throw sc_initialization_error( fmt::format( "Actor initializer '{}' not found as base for '{}'.", base, name ) );
+
+  actor_initializer.emplace_back( priority + offset, [ fn ]( player_t* p ) {
+    std::invoke( fn, p );
+  }, std::move( name ) );
+}
+
+void sim_t::register_actor_initializer( std::string_view base, int offset, std::function<void( player_t* )> fn,
+                                        std::string name )
+{
+  if ( get_actor_initializer_priority( name ) != 0 )
+    return;
+
+  auto priority = get_actor_initializer_priority( base );
+
+  if ( priority == 0 )
+    throw sc_initialization_error( fmt::format( "Actor initializer '{}' not found as base for '{}'.", base, name ) );
+
+  actor_initializer.emplace_back( priority + offset, std::move( fn ), std::move( name ) );
 }
 
 bool sim_t::rethrow_exception_queue()

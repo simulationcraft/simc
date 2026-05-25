@@ -72,8 +72,10 @@ namespace actions
  */
 struct priest_pet_t : public pet_t
 {
+  buff_t* power_infusion_buff;
+
   priest_pet_t( sim_t* sim, priest_t& owner, util::string_view pet_name, bool guardian = false )
-    : pet_t( sim, &owner, pet_name, PET_NONE, guardian )
+    : pet_t( sim, &owner, pet_name, PET_NONE, guardian ), power_infusion_buff( nullptr )
   {
   }
 
@@ -114,18 +116,18 @@ struct priest_pet_t : public pet_t
   {
     pet_t::create_buffs();
 
-    buffs.power_infusion = make_buff( this, "power_infusion", find_spell( 10060 ) )
-                               ->set_default_value_from_effect( 1 )
-                               ->set_cooldown( 0_ms )
-                               ->add_invalidate( CACHE_HASTE );
+    power_infusion_buff = make_buff( this, "power_infusion", find_spell( 10060 ) )
+                              ->set_default_value_from_effect_type( A_HASTE_ALL )
+                              ->set_cooldown( 0_ms )
+                              ->add_invalidate( CACHE_HASTE );
   }
 
   double composite_melee_haste() const override
   {
     double h = pet_t::composite_melee_haste();
 
-    if ( buffs.power_infusion )
-      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
+    if ( power_infusion_buff )
+      h *= 1.0 / ( 1.0 + power_infusion_buff->check_value() );
 
     return h;
   }
@@ -134,8 +136,8 @@ struct priest_pet_t : public pet_t
   {
     double h = pet_t::composite_spell_haste();
 
-    if ( buffs.power_infusion )
-      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
+    if ( power_infusion_buff )
+      h *= 1.0 / ( 1.0 + power_infusion_buff->check_value() );
 
     return h;
   }
@@ -144,8 +146,8 @@ struct priest_pet_t : public pet_t
   {
     double h = pet_t::composite_melee_auto_attack_speed();
 
-    if ( buffs.power_infusion )
-      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
+    if ( power_infusion_buff )
+      h *= 1.0 / ( 1.0 + power_infusion_buff->check_value() );
 
     return h;
   }
@@ -154,8 +156,8 @@ struct priest_pet_t : public pet_t
   {
     double h = pet_t::composite_spell_cast_speed();
 
-    if ( buffs.power_infusion )
-      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
+    if ( power_infusion_buff )
+      h *= 1.0 / ( 1.0 + power_infusion_buff->check_value() );
 
     return h;
   }

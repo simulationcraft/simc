@@ -81,5 +81,6 @@ void register_hotfixes();
 void register_special_effects();
 action_t* create_action( player_t* player, util::string_view name, util::string_view options );
 void register_target_data_initializers( sim_t& );
+void register_actor_initializers( sim_t& );
 
 }  // namespace unique_gear::shadowlands

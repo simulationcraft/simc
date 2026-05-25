@@ -4880,6 +4880,14 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   midnight::register_target_data_initializers( *sim );
 }
 
+void unique_gear::register_actor_initializers( sim_t& sim )
+{
+  shadowlands::register_actor_initializers( sim );
+  dragonflight::register_actor_initializers( sim );
+  thewarwithin::register_actor_initializers( sim );
+  midnight::register_actor_initializers( sim );
+}
+
 std::vector<special_effect_t*> unique_gear::find_special_effects( player_t* p, unsigned id, special_effect_e type )
 {
   std::vector<special_effect_t*> effects;

@@ -26,6 +26,8 @@
 #include <type_traits>
 #include <utility>
 
+struct item_t;
+
 namespace unique_gear
 {
 // Old-style special effect registering functions
@@ -802,5 +804,15 @@ public:
 
     pet_t::init_action_list();
   }
+};
+
+// proxy to be used for external effects coming from items on other sources
+struct external_special_effect_t : public special_effect_t
+{
+private:
+  std::unique_ptr<item_t> _item;
+
+public:
+  external_special_effect_t( player_t* p, std::string_view name, unsigned item_id, unsigned ilevel );
 };
 } // unique_gear

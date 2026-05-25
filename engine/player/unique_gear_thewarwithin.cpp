@@ -41,10 +41,6 @@ void set_min_version( wowv_t build )
 void set_max_version( wowv_t build )
 { version_max = build; }
 
-// assuming priority for highest/lowest secondary is vers > mastery > haste > crit
-static constexpr std::array<stat_e, 4> secondary_ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING,
-                                                             STAT_HASTE_RATING, STAT_CRIT_RATING };
-
 // from item_naming.inc
 enum gem_color_e : unsigned
 {
@@ -1877,7 +1873,7 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
     {
       double stack = s <= cap ? s : cap + ( s - cap ) * cap_mul;
 
-      return buff_stat_stack_amount( stat, stack );
+      return stat_buff_t::buff_stat_stack_amount( stat, stack );
     }
   };
 
@@ -12628,12 +12624,33 @@ void register_special_effects()
 }
 
 void register_target_data_initializers( sim_t& )
+{}
+
+void register_actor_initializers( sim_t& sim )
 {
+  // 20+11 for wow version 11.x
+  sim.register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + 31, []( player_t* p ) {
+    // Potion Bomb of Power Primary Stat
+    // Buff cannot stack
+    // Does not take into account the fire damage on enemies
+    if ( !p->external_buffs.potion_bomb_of_power.empty() )
+    {
+      auto driver_spell = p->find_spell( 453205 );
+      auto buff_spell = p->find_spell( 453245 );
+
+      // Value in buff data is for 5 people, need to split based on targets for a single player
+      auto main_stat_amount = buff_spell->effectN( 1 ).average( p ) / driver_spell->effectN( 4 ).base_value();
+
+      auto buff = make_buff<stat_buff_t>( p, "potion_bomb_of_power_external", buff_spell )
+        ->add_stat_from_effect_type( A_MOD_STAT, main_stat_amount );
+
+      p->register_timed_buff_triggers( buff, p->external_buffs.potion_bomb_of_power );
+    }
+  }, "create_buffs_thewarwithin" );
 }
 
 void register_hotfixes()
-{
-}
+{}
 
 action_t* create_action( player_t* p, std::string_view n, std::string_view options )
 {

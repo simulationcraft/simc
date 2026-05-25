@@ -1322,7 +1322,7 @@ struct druid_t final : public parse_player_effects_t
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t&,
                                                             const assisted_combat_step_data_t& ) const override;
   void init_base_stats() override;
-  void init_stats() override;
+  void init_initial_stats() override;
   void init_rng() override;
   void init_gains() override;
   void init_procs() override;
@@ -6646,7 +6646,7 @@ struct frenzied_regeneration_t final : public trigger_wild_guardian_echo_base_t<
       base_td_multiplier *= p->talent.wild_guardian_1->effectN( 1 ).percent();
     }
 
-    dot_t* get_dot( player_t* t ) override
+    dot_t* get_dot( [[maybe_unused]] player_t* t ) override
     {
       assert( t == player );
       return p()->hots.echo_of_frenzied_regeneration;
@@ -6703,7 +6703,7 @@ struct frenzied_regeneration_t final : public trigger_wild_guardian_echo_base_t<
     return a;
   }
 
-  dot_t* get_dot( player_t* t ) override
+  dot_t* get_dot( [[maybe_unused]] player_t* t ) override
   {
     assert( t == player );
     return p()->hots.frenzied_regeneration;
@@ -10711,9 +10711,9 @@ void druid_t::init_base_stats()
     ready_type = ready_e::READY_TRIGGER;
 }
 
-void druid_t::init_stats()
+void druid_t::init_initial_stats()
 {
-  player_t::init_stats();
+  player_t::init_initial_stats();
 
   // enable CP & energy for cat form
   if ( uses_cat_form() )

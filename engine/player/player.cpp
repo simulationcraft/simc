@@ -58,7 +58,6 @@
 #include "sim/plot.hpp"
 #include "sim/proc.hpp"
 #include "sim/proc_rng.hpp"
-#include "sim/raid_event.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sim.hpp"
 #include "util/io.hpp"
@@ -2204,40 +2203,6 @@ void player_t::create_special_effects()
     }
   }
 
-  if ( dragonflight_opts.emerald_coachs_whistle_ally_ilvl > 0 )
-  {
-    struct emerald_coachs_whistle_ally_t : public special_effect_t
-    {
-      std::unique_ptr<item_t> _item;
-
-      emerald_coachs_whistle_ally_t( player_t* p ) : special_effect_t( p )
-      {
-        // make a fake
-        _item = std::make_unique<item_t>(
-          p, fmt::format( ",id=193718,ilevel={}", p->dragonflight_opts.emerald_coachs_whistle_ally_ilvl ) );
-        _item->parse_options();
-        _item->initialize_data();
-        _item->init();
-
-        // validate data
-        auto it = range::find( _item->parsed.data.effects, ITEM_SPELLTRIGGER_ON_EQUIP, &item_effect_t::type );
-        if ( it == _item->parsed.data.effects.end() )
-        {
-          throw sc_invalid_player_argument(
-            "Cannot find on-equip effect on item id=193718 for 'dragonflight.emerald_coachs_whistle_ally_ilvl'." );
-        }
-
-        spell_id = p->dragonflight_opts.emerald_coachs_whistle_ally_is_healer ? 386578 : it->spell_id;
-        name_str = "emerald_coachs_whistle_ally";
-        item = _item.get();
-
-        unique_gear::initialize_special_effect( *this, spell_id );
-      }
-    };
-
-    special_effects.push_back( new emerald_coachs_whistle_ally_t( this ) );
-  }
-
   unique_gear::initialize_racial_effects( this );
 
   if ( sim->overrides.skyfury && may_benefit_from_skyfury() )
@@ -3476,9 +3441,9 @@ void player_t::init_rng()
   sim->print_debug( "Initializing random number generators for {}.", *this );
 }
 
-void player_t::init_stats()
+void player_t::init_stat_data()
 {
-  sim->print_debug( "Initializing stats for {}.", *this );
+  sim->print_debug( "Initializing stat data for {}.", *this );
 
   if ( sim->maximize_reporting )
   {
@@ -3545,13 +3510,11 @@ void player_t::init_scaling()
     scaling->enable( STAT_MASTERY_RATING );
     scaling->enable( STAT_VERSATILITY_RATING );
 
-    scaling->set( STAT_SPEED_RATING, sim->has_raid_event( "movement" ) );
-    // scaling -> set( STAT_AVOIDANCE_RATING          ] = tank; // Waste of sim time vast majority of the time. Can be
-    // enabled manually.
-    scaling->set( STAT_LEECH_RATING, tank );
+    // scaling->enable( STAT_SPEED_RATING );  // handled in raid_events movement_event_t
+    // scaling->set( STAT_AVOIDANCE_RATING, tank ); // can be enabled manually if need be
+    scaling->set( STAT_LEECH_RATING, heal );
 
     scaling->set( STAT_WEAPON_DPS, attack );
-
     scaling->set( STAT_ARMOR, tank );
 
     auto add_stat = []( double& to, double value, double lower_limit )
@@ -4487,21 +4450,6 @@ void player_t::init_assessors()
     return assessor::CONTINUE;
   } );
 
-  // Credit absorbed-on-enemy damage back to attacker stats when an absorb raid event is configured.
-  if ( !is_enemy() && range::any_of( sim->raid_events,
-                                     []( const auto& e ) { return e->type == "absorb"; } ) )
-  {
-    assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, []( result_amount_type, action_state_t* s ) {
-      if ( s->target && s->target->is_enemy() )
-      {
-        double absorbed = s->result_mitigated - s->result_absorbed;
-        if ( absorbed > 0 )
-          s->result_amount += absorbed;
-      }
-      return assessor::CONTINUE;
-    } );
-  }
-
   // Logging and debug .. Technically, this should probably be in action_t::assess_damage, but we
   // don't need this piece of code for the vast majority of sims, so it makes sense to yank it out
   // completely from there, and only conditionally include it if logging/debugging is enabled.
@@ -4974,127 +4922,6 @@ void player_t::create_buffs()
     }
 
     buffs.movement = new movement_buff_t( this );
-
-    if ( !is_pet() )
-    {
-      // 9.0 class buffs
-      buffs.focus_magic = make_buff( this, "focus_magic", find_spell( 321358 ) )
-        ->set_default_value_from_effect( 1 )
-        ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
-
-      buffs.power_infusion = make_buff( this, "power_infusion", find_spell( 10060 ) )
-        ->set_default_value_from_effect( 1 )
-        ->set_cooldown( 0_ms )
-        ->add_invalidate( CACHE_HASTE );
-
-      // External trinkets
-      if ( external_buffs.soleahs_secret_technique )
-      {
-        // TODO: confirm what happens if ratings are the same. For now assuming it follows same priority as IQD.
-        static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING,
-                                                           STAT_HASTE_RATING, STAT_CRIT_RATING };
-
-        auto ilevel = external_buffs.soleahs_secret_technique;
-        auto coeff  = find_spell( 368513 )->effectN( 2 ).m_coefficient();
-        auto points = dbc->random_property( ilevel ).p_epic[ 0 ];
-        auto mult   = dbc->combat_rating_multiplier( ilevel, CR_MULTIPLIER_TRINKET );
-
-        buffs.soleahs_secret_technique_external =
-            make_buff<stat_buff_t>( this, "soleahs_secret_technique_external", find_spell( 368510 ) )
-                ->add_stat( util::highest_stat( this, ratings ), coeff * points * mult );
-      }
-
-      if ( !external_buffs.elegy_of_the_eternals.empty() )
-      {
-        buffs.elegy_of_the_eternals_external =
-            make_buff<stat_buff_t>( this, "elegy_of_the_eternals_external", find_spell( 369439 ) )
-                ->set_duration( 0_ms );
-
-        auto s_data  = find_spell( 367246 );
-        auto coeff   = s_data->effectN( 1 ).m_coefficient() * s_data->effectN( 2 ).percent();
-        auto entries = util::string_split<std::string_view>( external_buffs.elegy_of_the_eternals, "/" );
-
-        for ( auto entry : entries )
-        {
-          auto values = util::string_split<std::string_view>( entry, ":" );
-
-          try
-          {
-            if ( values.size() != 2 )
-              throw std::invalid_argument( "Missing value." );
-
-            auto stat = util::parse_stat_type( values[ 1 ] );
-            if ( stat < STAT_CRIT_RATING || stat > STAT_VERSATILITY_RATING )
-              throw std::invalid_argument( "Invalid stat." );
-
-            auto ilevel = std::clamp( util::to_int( values[ 0 ] ), 0, MAX_ILEVEL );
-            auto points = dbc->random_property( ilevel ).p_epic[ 0 ];
-            auto mult   = dbc->combat_rating_multiplier( ilevel, CR_MULTIPLIER_TRINKET );
-
-            debug_cast<stat_buff_t*>( buffs.elegy_of_the_eternals_external )->add_stat( stat, coeff * points * mult );
-          }
-          catch ( const std::exception& )
-          {
-            std::throw_with_nested( sc_invalid_player_argument(
-              fmt::format( "Invalid 'external_buffs.elegy_of_the_eternals', format is '<ilevel>:<stat:/...'" ) ) );
-          }
-        }
-      }
-
-      if (!external_buffs.tome_of_unstable_power.empty() && external_buffs.tome_of_unstable_power_ilevel)
-      {
-          auto buff_spell = find_spell(388583);
-          auto data_spell = find_spell(391290);
-
-          auto buff = make_buff<stat_buff_t>(this, "tome_of_unstable_power_external", buff_spell);
-
-          auto ilevel = external_buffs.tome_of_unstable_power_ilevel;
-          auto coeff_main_stat = data_spell->effectN(1).m_coefficient();
-          auto coeff_crit = data_spell->effectN(2).m_coefficient();
-          auto points = dbc->random_property(ilevel).p_epic[0];
-          auto mult = dbc->combat_rating_multiplier(ilevel, CR_MULTIPLIER_TRINKET);
-
-          buff->set_duration(find_spell(388559)->duration());
-          buff->manual_stats_added = false;
-          // This is currently scaling class -1, change if this ever changes
-          buff->add_stat(convert_hybrid_stat(STAT_STR_AGI_INT), coeff_main_stat * points);
-          buff->add_stat(STAT_CRIT_RATING, coeff_crit * points * mult);
-
-          buffs.tome_of_unstable_power = buff;
-      }
-
-      // Potion Bomb of Power Primary Stat
-      // Buff cannot stack
-      // Does not take into account the fire damage on enemies
-      if ( !external_buffs.potion_bomb_of_power.empty() )
-      {
-        auto driver_spell = find_spell( 453205 );
-        auto buff_spell   = find_spell( 453245 );
-
-        // Value in buff data is for 5 people, need to split based on targets for a single player
-        auto main_stat_amount = buff_spell->effectN( 1 ).average( this ) / driver_spell->effectN( 4 ).base_value();
-
-        auto buff = make_buff<stat_buff_t>( this, "potion_bomb_of_power_external", buff_spell )
-                        ->add_stat_from_effect_type( A_MOD_STAT, main_stat_amount );
-        buffs.potion_bomb_of_power = buff;
-      }
-
-      // 9.2 Jailer raid buff
-      // Values are hard-coded because difficulty-specific spell data is not fully extracted.
-      buffs.boon_of_azeroth = make_buff<stat_buff_t>( this, "boon_of_azeroth", find_spell( 363338 ) )
-        ->add_stat( STAT_MASTERY_RATING, 350 )
-        ->set_default_value( 0.1 )
-        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-
-      buffs.boon_of_azeroth_mythic = make_buff<stat_buff_t>( this, "boon_of_azeroth_mythic", find_spell( 363338 ) )
-        ->add_stat( STAT_MASTERY_RATING, 418 )
-        ->set_default_value( 0.12 )
-        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-    }
   }
   // .. for enemies
   else
@@ -5124,13 +4951,6 @@ void player_t::create_buffs()
   debuffs.damage_taken = make_buff( this, "damage_taken" )
     ->set_duration( timespan_t::from_seconds( 20.0 ) )
     ->set_max_stack( 999 );
-
-  if ( sim->has_raid_event( "damage_done" ) )
-  {
-    buffs.damage_done = make_buff( this, "damage_done" )
-      ->set_max_stack( 1 )
-      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
 }
 
 item_t* player_t::find_item_by_name( util::string_view item_name )
@@ -5236,9 +5056,6 @@ double player_t::composite_melee_haste() const
 
     if ( timeofday == NIGHT_TIME )
       h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
-
-    if ( buffs.power_infusion )
-      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
   }
 
   return h;
@@ -5583,9 +5400,6 @@ double player_t::composite_spell_haste() const
 
     if ( timeofday == NIGHT_TIME )
       h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
-
-    if ( buffs.power_infusion )
-      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
   }
 
   return h;
@@ -5665,9 +5479,6 @@ double player_t::composite_spell_crit_chance() const
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     sc += b->check_stack_value();
-
-  if ( buffs.focus_magic )
-    sc += buffs.focus_magic->check_value();
 
   return sc;
 }
@@ -6490,20 +6301,6 @@ void player_t::combat_begin()
   {
     collected_data.combat_start_resource[ i ].add( resources.current[ i ] );
   }
-
-  auto add_timed_buff_triggers = [ this ]( const std::vector<timespan_t>& times, buff_t* buff,
-                                           timespan_t duration = timespan_t::min() ) {
-    if ( buff )
-      for ( auto t : times )
-        make_event( *sim, t, [ buff, duration ] { buff->trigger( duration ); } );
-  };
-
-  add_timed_buff_triggers( external_buffs.power_infusion, buffs.power_infusion );
-  add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
-  add_timed_buff_triggers( external_buffs.boon_of_azeroth, buffs.boon_of_azeroth );
-  add_timed_buff_triggers( external_buffs.boon_of_azeroth_mythic, buffs.boon_of_azeroth_mythic );
-  add_timed_buff_triggers( external_buffs.tome_of_unstable_power, buffs.tome_of_unstable_power );
-  add_timed_buff_triggers( external_buffs.potion_bomb_of_power, buffs.potion_bomb_of_power );
 
   // Trigger registered combat-begin functions
   for ( const auto& f : combat_begin_functions)
@@ -7358,15 +7155,6 @@ void player_t::arise()
 
   arise_time = sim->current_time();
   last_regen = sim->current_time();
-
-  if ( buffs.focus_magic && external_buffs.focus_magic )
-    buffs.focus_magic->override_buff();
-
-  if ( buffs.soleahs_secret_technique_external )
-    buffs.soleahs_secret_technique_external->trigger();
-
-  if ( buffs.elegy_of_the_eternals_external )
-    buffs.elegy_of_the_eternals_external->trigger();
 
   if ( buffs.ingest_mineral )
     buffs.ingest_mineral->trigger();
@@ -13719,9 +13507,7 @@ void player_t::create_options()
   add_option( opt_string( "external_buffs.pool", external_buffs.pool ) );
 
   // Permanent External Buffs
-  add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );
   add_option( opt_int( "external_buffs.soleahs_secret_technique_ilevel", external_buffs.soleahs_secret_technique, 1, MAX_ILEVEL ) );
-  add_option( opt_string( "external_buffs.elegy_of_the_eternals", external_buffs.elegy_of_the_eternals ) );
 
   // Timed External Buffs
   auto opt_external_buff_times = [] ( std::string_view name, std::vector<timespan_t>& times )
@@ -13743,16 +13529,11 @@ void player_t::create_options()
   };
 
   add_option( opt_external_buff_times( "external_buffs.power_infusion", external_buffs.power_infusion ) );
-  add_option( opt_external_buff_times( "external_buffs.conquerors_banner", external_buffs.conquerors_banner ) );
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
-  add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth", external_buffs.boon_of_azeroth ) );
-  add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth_mythic", external_buffs.boon_of_azeroth_mythic ) );
-  add_option( opt_external_buff_times( "external_buffs.tome_of_unstable_power", external_buffs.tome_of_unstable_power) );
   add_option( opt_external_buff_times( "external_buffs.potion_bomb_of_power", external_buffs.potion_bomb_of_power ) );
 
   // Additional Options for Timed External Buffs
   add_option( opt_obsoleted( "external_buffs.the_long_summer_rank" ) );
-  add_option(opt_int("external_buffs.tome_of_unstable_power_ilevel", external_buffs.tome_of_unstable_power_ilevel, 1, MAX_ILEVEL));
 
   // Player only options
   if ( !is_enemy() && !is_pet() )
@@ -15137,6 +14918,17 @@ void player_t::register_creature_type_buff( buff_t* buff, const spell_data_t* s_
                     fmt::join( _strs, ", " ) );
 
   buffs.creature_type_buffs.emplace_back( buff, effect.misc_value1(), effect.percent() );
+}
+
+void player_t::register_timed_buff_triggers( buff_t* buff, const std::vector<timespan_t>& times, timespan_t duration )
+{
+  if ( !buff || times.empty() )
+    return;
+
+  register_combat_begin( [ buff, &times, duration ]( player_t* p ) {
+    for ( auto t : times )
+      make_event( *p->sim, t, [ buff, duration ] { buff->trigger( duration ); } );
+  } );
 }
 
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const

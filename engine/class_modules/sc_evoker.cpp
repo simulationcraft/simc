@@ -9264,7 +9264,7 @@ void evoker_t::init_finished()
       {
         if ( CT( p, "Power Infusion" ).ok() )
         {
-          allied_major_cds[ p ] = p->buffs.power_infusion;
+          allied_major_cds[ p ] = buff_t::find( p, "power_infusion" );
         }
         else if ( ST( p, "Void Eruption" ).ok() )
         {

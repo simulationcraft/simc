@@ -79,7 +79,7 @@ struct enemy_t : public player_t
   virtual std::string generate_action_list();
   virtual void generate_heal_raid_event();
   void init_action_list() override;
-  void init_stats() override;
+  void init_actions() override;
   double resource_loss( resource_e, double, gain_t*, action_t* ) override;
   void create_options() override;
   pet_t* create_pet( util::string_view add_name, util::string_view pet_type = {} ) override;
@@ -1293,9 +1293,7 @@ void enemy_t::init_base_stats()
     true_level = sim->max_player_level + 3;
 
   // waiting_time override
-  waiting_time = timespan_t::from_seconds( 5.0 );
-  if ( waiting_time < timespan_t::from_seconds( 1.0 ) )
-    waiting_time = timespan_t::from_seconds( 1.0 );
+  waiting_time = 5_s;
 
   base.attack_crit_chance = 0.05;
 
@@ -1645,13 +1643,13 @@ void enemy_t::init_action_list()
       action_list_str = new_action_list_str;
     }
   }
+
   player_t::init_action_list();
 }
 
-// Hack to get this executed after player_t::init_action_list.
-void enemy_t::init_stats()
+void enemy_t::init_actions()
 {
-  player_t::init_stats();
+  player_t::init_actions();
 
   // Small hack to increase waiting time for target without any actions
   for ( size_t i = 0; i < action_list.size(); ++i )
@@ -1663,7 +1661,7 @@ void enemy_t::init_stats()
       continue;
     if ( action->name_str.find( "auto_attack" ) != std::string::npos )
       continue;
-    waiting_time = timespan_t::from_seconds( 1.0 );
+    waiting_time = 1_s;
     break;
   }
 }

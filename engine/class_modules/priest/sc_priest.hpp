@@ -173,6 +173,7 @@ public:
     absorb_buff_t* power_word_shield;
     propagate_const<buff_t*> fade;
     propagate_const<buff_t*> levitate;
+    propagate_const<buff_t*> power_infusion;
 
     // Talents
     propagate_const<buff_t*> twist_of_fate_heal_self_fake;

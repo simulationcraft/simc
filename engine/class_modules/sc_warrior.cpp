@@ -252,6 +252,7 @@ public:
     buff_t* into_the_fray;
     buff_t* last_stand;
     buff_t* martial_prowess;
+    buff_t* rallying_cry;
     buff_t* ravager;
     buff_t* recklessness;
     buff_t* revenge;
@@ -2114,7 +2115,7 @@ struct melee_t : public warrior_attack_t
 struct auto_attack_t : public warrior_attack_t
 {
   int sync_weapons;
-  auto_attack_t( warrior_t* p, util::string_view options_str ) : warrior_attack_t( "auto_attack", p )
+  auto_attack_t( warrior_t* p, util::string_view options_str ) : warrior_attack_t( "auto_attack", p ), sync_weapons( 0 )
   {
     add_option( opt_bool( "sync_weapons", sync_weapons ) );
     parse_options( options_str );
@@ -6824,7 +6825,9 @@ struct rallying_cry_t : public warrior_spell_t
   void execute() override
   {
     warrior_spell_t::execute();
-    player->buffs.rallying_cry->trigger();
+
+    assert( p()->buff.rallying_cry );
+    p()->buff.rallying_cry->trigger();
   }
 };
 
@@ -9403,7 +9406,26 @@ struct warrior_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-    p->buffs.rallying_cry = make_buff<buffs::rallying_cry_t>( p );
+    if ( !p->is_pet() )
+    {
+      bool has_external_rallying = !p->external_buffs.rallying_cry.empty();
+      bool has_talent_rallying = p->type == WARRIOR && debug_cast<warrior_t*>( p )->talents.warrior.rallying_cry.ok();
+
+      if ( has_external_rallying || has_talent_rallying )
+      {
+        auto buff = make_buff<buffs::rallying_cry_t>( p );
+
+        if ( has_external_rallying )
+        {
+          p->register_timed_buff_triggers( buff, p->external_buffs.rallying_cry );
+        }
+
+        if ( has_talent_rallying )
+        {
+          debug_cast<warrior_t*>( p )->buff.rallying_cry = buff;
+        }
+      }
+    }
   }
   void combat_begin( sim_t* ) const override
   {

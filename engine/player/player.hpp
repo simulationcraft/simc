@@ -542,22 +542,9 @@ struct player_t : public actor_t
     buff_t* fathom_hunter; // Follower themed Benthic boots special effect
     buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
 
-    // 9.0 class buffs
-    buff_t* focus_magic; // Mage talent
-    buff_t* power_infusion; // Priest spell
-    buff_t* rallying_cry; // Warrior spell
-
     // 9.0 Runecarves
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
-
-    // Trinkets
-    buff_t* soleahs_secret_technique_external;
-    buff_t* elegy_of_the_eternals_external;
-
-    // 9.2 Sepulcher of the First Ones
-    buff_t* boon_of_azeroth; // Jailer fight buff
-    buff_t* boon_of_azeroth_mythic; // Jailer fight buff (Mythic)
 
     // 10.0 Buffs
     buff_t* chilled_clarity;  // potion of chilled clarity
@@ -565,7 +552,6 @@ struct player_t : public actor_t
     buff_t* elemental_chaos_air;
     buff_t* elemental_chaos_earth;
     buff_t* elemental_chaos_frost;
-    buff_t* tome_of_unstable_power;
     buff_t* way_of_controlled_currents;
     buff_t* stormeaters_boon;
     buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
@@ -577,7 +563,6 @@ struct player_t : public actor_t
     buff_t* quickwicks_quick_trick_wick_walk;  // quickwick candlestick movement speed buff
     buff_t* building_momentum;  // scroll of momentum counter buff
     buff_t* full_momentum;      // scroll of momentum max buff
-    buff_t* potion_bomb_of_power; // potion bomb of power primary stat
   } buffs;
 
   struct debuffs_t
@@ -606,22 +591,15 @@ struct player_t : public actor_t
   {
     std::string pool;
     std::unordered_map<buff_t*, std::vector<cooldown_t*>> invoke_cds;
-    bool focus_magic;
     double blessing_of_summer_duration_multiplier;
     std::vector<timespan_t> power_infusion;
     std::vector<timespan_t> blessing_of_summer;
     std::vector<timespan_t> blessing_of_autumn;
     std::vector<timespan_t> blessing_of_winter;
     std::vector<timespan_t> blessing_of_spring;
-    std::vector<timespan_t> conquerors_banner;
     std::vector<timespan_t> rallying_cry;
-    std::vector<timespan_t> boon_of_azeroth;
-    std::vector<timespan_t> boon_of_azeroth_mythic;
-    std::vector<timespan_t> tome_of_unstable_power;
     std::vector<timespan_t> potion_bomb_of_power;
-    int tome_of_unstable_power_ilevel;
     int soleahs_secret_technique;
-    std::string elegy_of_the_eternals;
   } external_buffs;
 
 
@@ -1217,7 +1195,7 @@ public:
   virtual void init_uptimes();
   virtual void init_benefits();
   virtual void init_rng();
-  virtual void init_stats();
+  virtual void init_stat_data();
   virtual void init_distance_targeting();
   virtual void init_absorb_priority();
   virtual void init_assessors();
@@ -1570,7 +1548,7 @@ public:
   assessor::state_assessor_pipeline_t assessor_out_damage;
 
   /// Start-of-combat effects
-  using combat_begin_fn_t = std::function<void(player_t*)>;
+  using combat_begin_fn_t = std::function<void( player_t* )>;
   std::vector<combat_begin_fn_t> combat_begin_functions;
   std::vector<combat_begin_fn_t> precombat_begin_functions;
 
@@ -1596,6 +1574,9 @@ public:
 
   // buffs that grant increased damage based on target creature type
   void register_creature_type_buff( buff_t*, const spell_data_t* = spell_data_t::nil() );
+
+  // trigger buff at a list of timestamps starting from beginning of combat
+  void register_timed_buff_triggers( buff_t*, const std::vector<timespan_t>&, timespan_t duration = timespan_t::min() );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

@@ -3114,7 +3114,7 @@ public:
     ab::impact( s );
     
     if ( ( this->execute_state->action->id == 188389 ) ||
-      ( this->is_variant( spell_variant::NORMAL ) && !this->background) )
+         ( this->is_variant( spell_variant::NORMAL ) && !this->background && s->chain_target == 0 ) )
     {
       if ( this->sim->debug )
       {
@@ -6880,6 +6880,7 @@ struct lava_burst_t : public shaman_spell_t
       background = true;
       base_execute_time = 0_s;
       cooldown->duration = 0_s;
+      ancestor_trigger = ancestor_cast::DISABLED;
 
       if ( is_variant( spell_variant::ASCENDANCE ) )
       {
@@ -12044,7 +12045,7 @@ void shaman_t::trigger_thunderstrike_ward( const action_state_t* state )
     return;
   }
 
-  if ( !rng().roll( options.thunderstrike_ward_proc_chance ) )
+  if ( !rng().roll( options.thunderstrike_ward_proc_chance * ( 1.0 + talent.storm_infusion->effectN( 2 ).percent()) ) )
   {
     return;
   }
