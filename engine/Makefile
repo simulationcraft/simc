@@ -123,8 +123,11 @@ ifneq (${LTO_THIN},)
   OPTS_INTERNAL += -flto=thin
   -fuse-ld=lld
 endif
-ifneq (${MARCH_NATIVE},)
-  OPTS_INTERNAL += -march=native
+ifneq (${MARCH},)
+  OPTS_INTERNAL += -march=${MARCH}
+endif
+ifneq (${MCPU},)
+  OPTS_INTERNAL += -mcpu=${MCPU}
 endif
 
 ifeq (32,${BITS})
@@ -225,30 +228,6 @@ release: $(MODULE)
 
 optimized:CPP_FLAGS += -DNDEBUG
 optimized:OPTS_INTERNAL += -fomit-frame-pointer
-
-# MacOS's default compiler, `clang`, does not support `-march=native` on Apple
-# Silicon chips, and as of 2021-11-22 will return an error like the following
-# at compile time:
-#
-#     clang: error: the clang compiler does not support '-march=native'
-#
-# This conditional preserves the existing default `-march=native` flag on all
-# non-Apple systems, and also on Apple Intel systems, while instead setting
-# `-mcpu=apple-m1` on Apple Silicon systems to enable any M1-specific
-# optimizations that clang supports.
-#
-# In a future release, presumably when there are M2 chips, M3 chips, and so on,
-# hopefully clang will support `-march=native` on these platforms and we can
-# eliminate this block.
-ifeq (${FLAVOR},Darwin)
-  ifeq (${ARCH},arm64)
-    optimized:OPTS_INTERNAL += -mcpu=apple-m1
-  else
-    optimized:OPTS_INTERNAL += -march=native
-  endif
-else
-  optimized:OPTS_INTERNAL += -march=native
-endif
 
 optimized: $(MODULE)
 
