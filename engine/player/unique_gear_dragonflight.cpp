@@ -11741,7 +11741,7 @@ void register_actor_initializers( sim_t& sim )
       p->special_effects.push_back( new emerald_coachs_whistle_ally_t( p ) );
     }
   },
-  "create_buffs_dragonflight" );
+  "create_effects_dragonflight" );
 }
 
 // check and return multiplier for toxified armor patch
