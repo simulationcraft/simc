@@ -105,6 +105,21 @@ endif
 ifneq (${NO_DEBUG},)
   CPP_FLAGS += -DNDEBUG
 endif
+
+# Variant builds: 'make debug|release|optimized' recurse with VARIANT set and
+# OBJ_DIR redirected to build/<variant>, so the three configurations get their
+# own object/binary directories and never share (and corrupt) each other's
+# objects.
+ifeq (debug,${VARIANT})
+  OPTS_INTERNAL += -g -fno-omit-frame-pointer -O0 -fno-optimize-sibling-calls
+endif
+ifeq (release,${VARIANT})
+  CPP_FLAGS += -DNDEBUG
+endif
+ifeq (optimized,${VARIANT})
+  CPP_FLAGS += -DNDEBUG
+  OPTS_INTERNAL += -fomit-frame-pointer
+endif
 ifneq (${C++20},)
   CPP_FLAGS += --std=c++20
 endif
@@ -201,29 +216,29 @@ endif
 
 SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC)) $(filter %.hpp, $(SRC)) $(filter %.inc, $(SRC))
 SRC_CPP := $(filter %.cpp, $(SRC))
+# Variant builds land under build/<variant>; the default build still goes
+# in-tree (OBJ_DIR = .). The binary follows OBJ_DIR via TARGET_BIN.
+BUILD_DIR = build
 OBJ_DIR = .
 OBJ_EXT = o
 DEP_EXT = d
 SRC_OBJ := $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT))
 SRC_DEPS := $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(DEP_EXT))
+TARGET_BIN = $(OBJ_DIR)$(PATHSEP)$(MODULE)
 
 .PHONY: .FORCE all mostlyclean clean
 .FORCE:
 
-all: $(MODULE)
+all: $(TARGET_BIN)
 
 -include $(SRC_DEPS)
 
-debug:OPTS_INTERNAL += -g -fno-omit-frame-pointer -O0 -fno-optimize-sibling-calls
-debug: $(MODULE)
-
-release:CPP_FLAGS += -DNDEBUG
-release: $(MODULE)
-
-optimized:CPP_FLAGS += -DNDEBUG
-optimized:OPTS_INTERNAL += -fomit-frame-pointer
-
-optimized: $(MODULE)
+# Build each variant in its own directory by recursing with OBJ_DIR redirected;
+# VARIANT (read in the flags section above) selects the extra compile flags.
+# 'make debug && make release' leaves both binaries side by side under build/.
+.PHONY: debug release optimized
+debug release optimized:
+	@$(MAKE) all OBJ_DIR=$(BUILD_DIR)$(PATHSEP)$@ VARIANT=$@
 
 install: all
 ifneq (${PREFIX},..)
@@ -235,12 +250,14 @@ ifneq (${PREFIX},..)
 	$(COPY) -r $(wildcard ../profiles/*) $(SHARE_INSTALL_PATH)
 endif
 
-$(MODULE): $(SRC_OBJ)
+$(TARGET_BIN): $(SRC_OBJ)
 	-@echo [$(MODULE)] Linking $@
+	@$(MKDIR) -p $(dir $@)
 	@$(CXX) $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ -o $@ $(LINK_LIBS)
 
 $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $<
+	@$(MKDIR) -p $(dir $@)
 	@$(CXX) $(CPP_FLAGS) $(OPTS_INTERNAL) $(OPTS) -c $< -o $@
 
 %.s: %.cpp $(SRC_H)
@@ -249,7 +266,7 @@ $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 
 # Force regeneration of git_info.o on every recompilation to potntially get the
 # changed GIT shorthash into the binary
-util/git_info.o: .FORCE
+$(OBJ_DIR)$(PATHSEP)util/git_info.$(OBJ_EXT): .FORCE
 
 # cleanup targets
 mostlyclean:
@@ -259,6 +276,7 @@ mostlyclean:
 clean: mostlyclean
 	-@echo [$(MODULE)] Cleaning target files
 	@$(REMOVE) $(MODULE) sc_http$(MODULE_EXT)
+	-@$(REMOVE) -r $(BUILD_DIR)
 
 # Unit Tests
 sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp util$(PATHSEP)sc_io.cpp sc_thread.cpp sc_util.cpp
