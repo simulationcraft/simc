@@ -3116,6 +3116,11 @@ public:
     if ( ( this->execute_state->action->id == 188389 ) ||
       ( this->is_variant( spell_variant::NORMAL ) && !this->background) )
     {
+      if ( this->sim->debug )
+      {
+        this->sim->out_debug.print( "LOOK {} ancestor triggers", this->name() );
+      }
+      
       this->p()->trigger_ancestor( ancestor_trigger, this->execute_state );
     }
   }
@@ -8189,8 +8194,8 @@ public:
       p()->lava_surge_attempts_normalized += 1.0/active_flame_shocks;
       double proc_chance =
           std::max( 0.0, 0.6-std::pow(1.16, -2*(p()->lava_surge_attempts_normalized-5)));
-
-      proc_chance *= 1.0 + p()->talent.mystic_knowledge->effectN( 1 ).percent();
+      auto test          = p()->talent.mystic_knowledge->effectN( 1 ).percent();
+      proc_chance *= 1.0 + test;
 
       if ( p()->spec.restoration_shaman->ok() )
       {
@@ -8236,9 +8241,12 @@ public:
   void execute() override
   {
     shaman_spell_t::execute();
-    if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
+    if ( is_variant( spell_variant::NORMAL ) )
     {
-      p()->summon_ancestor();
+      if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
+      {
+         p()->summon_ancestor();
+      }
     }
   }
 };
@@ -8406,6 +8414,13 @@ struct ascendance_t : public shaman_spell_t
       // Apparently the Flame Shock durations get set to current Flame Shock max duration,
       // bypassing normal dot refresh behavior.
       auto tl = target_list();
+      for ( size_t i = 0; i < std::min( tl.size(), as<size_t>( data().effectN( 7 ).base_value() ) ); ++i )
+      {
+        if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
+        {
+         p()->summon_ancestor(); //not pretty but we need to trigger rolls for all hits before the hits happen
+        }
+      }
       for ( size_t i = 0; i < std::min( tl.size(), as<size_t>( data().effectN( 7 ).base_value() ) ); ++i )
       {
         p()->trigger_secondary_flame_shock( tl[ i ], spell_variant::ASCENDANCE );
@@ -9830,7 +9845,11 @@ struct voltaic_blaze_t : public shaman_spell_t
     {
       shaman_spell_t::impact( state );
 
-      p()->trigger_secondary_flame_shock( state->target, spell_variant::VOLTAIC_BLAZE );
+      make_event( sim, rng().gauss( 500_ms, 25_ms ), [ this, state ]() {
+        p()->trigger_secondary_flame_shock( state->target, spell_variant::VOLTAIC_BLAZE );
+      } );
+
+      
     }
   };
 
@@ -9853,10 +9872,13 @@ struct voltaic_blaze_t : public shaman_spell_t
     {
       p()->action.fire_nova->execute_on_target( execute_state->target );
     }
-
-    if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
+    auto tl = target_list();
+    for ( size_t i = 0; i < tl.size(); ++i )
     {
-      p()->summon_ancestor();
+      if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
+      {
+        p()->summon_ancestor();
+      }
     }
 
     if ( p() ->talent.purging_flames.ok() )
