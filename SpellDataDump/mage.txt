@@ -2668,10 +2668,11 @@ Effects          :
                    Affected Spells (Label): Splintering Orbs (444256)
 
 Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden] 
-Hotfixed         : Learn Level (10 -> 0), Max Spell Level (30 -> 0)
+Hotfixed         : Learn Level (0 -> 10), Max Spell Level (0 -> 30)
 Class            : Arcane Mage
 School           : Physical
 Spell Type       : None
+Spell Level      : 10 (max 30)
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -2694,7 +2695,7 @@ Hotfixed         : Base Value (0 -> 5)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Hotfixed         : Base Value (0 -> 5)
 #5 (id=191119)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 60 | Scaled Value: -210 | Points Per Level: -3 | Resource: mana | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 0 | Points Per Level: -3 | Resource: mana | Target: Self (1)
 #6 (id=1032357)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -67 | Scaled Value: -67 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Spellsteal (30449)
