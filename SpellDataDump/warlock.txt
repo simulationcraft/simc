@@ -871,7 +871,8 @@ Family Flags     : 49, 55, 118
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Show Mechanic as Combat Text (213), Missile Speed is Delay (in sec) (292), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.59309 | PvP Coefficient: 0.440266 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.59309 | PvP Coefficient: 0.704 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (0.440266 -> 0.704)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
 Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
@@ -1181,7 +1182,8 @@ Effects          :
 #1 (id=19297)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #2 (id=288276)   : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.38084 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.38084 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : PvP Coefficient (1 -> 1.3)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -1780,7 +1782,8 @@ Family Flags     : 49, 86
 Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not an Action (92), PvP Enabling (96), Not a Proc (105), Do Not Display Range (126), Owner Power Scaling (153), Do Not Display Duration (170), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=87492)    : School Damage (2): shadowflame | Attributes: Is Harmful (12), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.501188 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.501188 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : PvP Coefficient (1 -> 1.3)
 Description      : $@spelldesc105174
 
 Name             : Nethermancy (desc=Passive) (id=86091) [Passive, Hidden] 
@@ -12928,7 +12931,8 @@ Triggered By     : Ruination (434635)
 Family Flags     : 49
 Effects          :
 #1 (id=1124757)  : School Damage (2): chaos | Attributes: Is Harmful (12), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 25.3791 | PvP Coefficient: 0.255555 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 25.3791 | PvP Coefficient: 0.5111 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : PvP Coefficient (0.255555 -> 0.5111)
 Description      : $@spelldesc434635
 
 Name             : Diabolic Imp (id=438822) [Spell Family (5)] 
@@ -16099,9 +16103,11 @@ Effects          :
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506), Malefic Grasp (1261153)
                    Family Flags: 0
 #4 (id=1264887)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
-                   Base Value: -13 | Scaled Value: -13 | Misc Value 2: 3444 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 3444 (Label) | Target: Self (1)
+Hotfixed         : Base Value (-13 -> 0)
 #5 (id=1264888)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Periodic Amount (1)
-                   Base Value: -13 | Scaled Value: -13 | Misc Value: 1 | Misc Value 2: 3445 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Misc Value 2: 3445 (Label) | Target: Self (1)
+Hotfixed         : Base Value (-13 -> 0)
 #6 (id=1264889)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: -17 | Scaled Value: -17 | Misc Value 2: 3545 (Label) | Target: Self (1)
 #7 (id=1264890)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
@@ -16109,7 +16115,8 @@ Effects          :
 #8 (id=1264891)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 5 | Misc Value 2: 4340 (Label) | Target: Self (1)
 #9 (id=1264892)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
-                   Base Value: -26 | Scaled Value: -26 | Misc Value 2: 3456 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 3456 (Label) | Target: Self (1)
+Hotfixed         : Base Value (-26 -> 0)
 #10 (id=1264893) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: -43 | Scaled Value: -43 | Misc Value 2: 5185 (Label) | Target: Self (1)
 #11 (id=1264894) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
@@ -16126,6 +16133,9 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Agony (980), Agony (1261166)
                    Family Flags: 10
+#15 (id=1329606) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 3 (7)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 7 | Misc Value 2: 5181 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Demonology Warlock (id=1256907) [Spell Family (5), Passive, Hidden] 
 Class            : Demonology Warlock

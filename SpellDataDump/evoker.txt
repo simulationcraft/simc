@@ -400,7 +400,8 @@ Effects          :
 #2 (id=983057)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 #3 (id=1037451)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.8432 | PvP Coefficient: 1.2 | Radius: 41 yards | Target: Allies in Cone (59) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.8432 | Radius: 41 yards | Target: Allies in Cone (59) -> At Ally in Area (31)
+Hotfixed         : PvP Coefficient (1.2 -> 1)
 Description      : $@spelldesc355936
 Tooltip          : Healing $w1 every $t1 sec.
 
@@ -502,13 +503,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=890886)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.8 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Verdant Embrace (409895), Molten Blood (410651), Insurance! (1215550), Insurance! (1215553), Merithra's Blessing (1256581), Twin Flame (1265991)
                    Family Flags: 1
+Hotfixed         : PvP Coefficient (0.8 -> 1)
 #2 (id=896453)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.8 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Spiritbloom (367231), Reversion (367364), Lifebind (373267), Lifebind (373268), Emerald Blossom (373766), Temporal Anomaly (373862), Dream Breath (376788), Panacea (387763), Defy Fate (404381), Spiritbloom (409894), Verdant Embrace (409895), Molten Blood (410651), Insurance! (1215550), Insurance! (1215553), Merithra's Blessing (1256581), Twin Flame (1265991)
                    Family Flags: 1
+Hotfixed         : PvP Coefficient (0.8 -> 1)
 #3 (id=900193)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Firestorm (369374), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), Melt Armor (441172), Fire Breath (444249), Firestorm (456657), Disintegrate (1236949), Pyre (1236970), Eruption (1259172), Unravel (1264379), Shattering Star (1265804), Azure Sweep (1265872), Twin Flame (1265980)
@@ -4936,7 +4939,8 @@ Effects          :
 #2 (id=1037759)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1037768)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.8432 | PvP Coefficient: 1.2 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.8432 | Target: Targeted Ally (21)
+Hotfixed         : PvP Coefficient (1.2 -> 1)
 Description      : $@spelldesc355936
 Tooltip          : Healing $w1 every $t1 sec.
 

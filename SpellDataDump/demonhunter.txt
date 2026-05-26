@@ -2798,7 +2798,8 @@ Effects          :
 #1 (id=311156)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=311157)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.275614 | PvP Coefficient: 1.1 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.30355 | PvP Coefficient: 1.1 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
+Hotfixed         : AP Coefficient (0.275614 -> 0.30355)
 Description      : $@spelldesc210152
 
 Name             : Death Sweep (id=210155) [Spell Family (107)] 
@@ -2817,7 +2818,8 @@ Effects          :
 #1 (id=311159)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=311160)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.828 | PvP Coefficient: 1.1 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.91 | PvP Coefficient: 1.1 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
+Hotfixed         : AP Coefficient (0.828 -> 0.91)
 Description      : $@spelldesc210152
 
 Name             : Soul Fragments (id=210788) [Spell Family (107), Hidden] 
@@ -9303,7 +9305,8 @@ Effects          :
 #1 (id=1031724)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1031725)  : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.828041 | PvP Coefficient: 1.1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.91 | PvP Coefficient: 1.1 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (0.828041 -> 0.91)
 Description      : $@spelldesc210152
 
 Name             : Death Sweep (id=393055) [Spell Family (107)] 
@@ -9322,7 +9325,8 @@ Effects          :
 #1 (id=1031726)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
 #2 (id=1031727)  : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.275614 | PvP Coefficient: 1.1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.30355 | PvP Coefficient: 1.1 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (0.275614 -> 0.30355)
 Description      : $@spelldesc210152
 
 Name             : Demon Hunter Havoc Class Set 2pc (id=393628) [Spell Family (107), Passive, Hidden] 
@@ -10967,7 +10971,8 @@ Family Flags     : 5, 16, 32, 58, 70
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Bouncy Chain Missiles (146), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Do Not Auto Select Target with Initiates Combat (220), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Interrupts Current Cast (419)
 Effects          :
 #1 (id=1137380)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.35 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.85 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (3.35 -> 3.85)
 #2 (id=1137756)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: fury | Target: Self (1)
                    Modified By: Keen Engagement (442497 effect#1)
@@ -11100,7 +11105,8 @@ Family Flags     : 16, 58
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1137775)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.4 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.62 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (0.4 -> 0.62)
 Description      : $@spelldesc442502
 
 Name             : Reaver's Mark (id=442624) [Spell Family (107)] 
@@ -11321,7 +11327,8 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1138289)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 30)
                    Modified By: Vengeance Demon Hunter (212613 effect#21)
 Description      : Expose weaknesses in the target of your $@spellname442624, causing your Physical damage to any enemy to also deal $s1% of the damage dealt to your marked target as Chaos, and sometimes shatter a Soul Fragment.
 
@@ -17483,7 +17490,8 @@ Family Flags     : 5, 16, 32, 58, 70
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Bouncy Chain Missiles (146), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Do Not Auto Select Target with Initiates Combat (220), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Interrupts Current Cast (419)
 Effects          :
 #1 (id=1297557)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.13 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.07 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (3.13 -> 4.07)
 #2 (id=1297558)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: fury | Target: Self (1)
                    Modified By: Keen Engagement (442497 effect#1)

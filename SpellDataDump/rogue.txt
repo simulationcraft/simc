@@ -2560,8 +2560,9 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value 2: 6279 (Label) | Target: Self (1)
                    Affected Spells (Label): Hunt Them Down (457193)
 #13 (id=1297316) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Misc Value 2: 6280 (Label) | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Misc Value 2: 6280 (Label) | Target: Self (1)
                    Affected Spells (Label): Darkest Night (457280)
+Hotfixed         : Base Value (20 -> 15)
 #14 (id=1305289) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Misc Value 2: 6419 (Label) | Target: Self (1)
                    Affected Spells (Label): Momentum of Despair (457115)
@@ -2689,6 +2690,10 @@ Effects          :
                    Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 0 | Target: Self (1)
 #13 (id=1312955) : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 0 | Target: Self (1)
+#14 (id=1329383) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value 2: 6279 (Label) | Target: Self (1)
+                   Affected Spells (Label): Hunt Them Down (457193)
+Hotfixed         : NEW EFFECT
 
 Name             : Fortitude (id=137593) [Spell Family (8)] 
 School           : Physical
@@ -13686,7 +13691,8 @@ Family Flags     : 54, 123
 Attributes       : No Active Defense (21), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1161932)  : School Damage (2): shadowstorm
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.2 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.56 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (1.2 -> 1.56)
 Description      : $@spelldesc457052
 
 Name             : Symbolic Victory (id=457167) [Spell Family (8)] 
@@ -13727,7 +13733,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3936: Mastery: Potent Assassin (76803 effect#4), Subtlety Rogue (137035 effect#7), Subtlety Rogue (137035 effect#8), Shiv (319504 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (382517 effect#5), Deeper Daggers (382517 effect#6), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6), Caustic Spatter (421976 effect#4), Vile Tincture (458475 effect#4), Winning Streak! (1218143 effect#6), Winning Streak! (1218143 effect#7), Implacable (1265386 effect#4)
-                 : 6279: Subtlety Rogue (137035 effect#12)
+                 : 6279: Subtlety Rogue (137035 effect#12), Assassination Rogue (137037 effect#14)
 Proc Chance      : 101%
 Proc Flags       : White Melee
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2, #16, #17), Outlaw Rogue (137036 effects: #1, #2, #9, #10), Assassination Rogue (137037 effects: #1, #2, #10, #11), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Ancient Arts (1268936 effects: #2, #3), Whirl of Blades (1275176 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
@@ -13793,7 +13799,8 @@ Effects          :
 #1 (id=1162176)  : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | Resource: energy | Target: Self (1)
 #2 (id=1162177)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 35)
                    Modified By: Subtlety Rogue (137035 effect#13)
 #3 (id=1162178)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -15431,9 +15438,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1251944)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Rupture (360826), Rupture (394031), Rupture (1270203)
                    Family Flags: 20
+Hotfixed         : Base Value (10 -> 20)
 #2 (id=1294570)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Misc Value 2: 6113 (Label) | Target: Self (1)
                    Affected Spells (Label): Deathstalker's Mark (457157), Deathstalker's Mark (1273061)
@@ -15451,9 +15459,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1251953)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
                    Affected Spells: Fan of Knives (51723), Shuriken Storm (197835), Shuriken Storm (1269340)
                    Family Flags: 50, 127
+Hotfixed         : Base Value (40 -> 60)
 Description      : $?c1[Fan of Knives][Shuriken Storm] damage increased by $s1%.
 
 Name             : Lucky Coin (id=1248970) [Spell Family (8), Passive] 
@@ -17384,7 +17393,8 @@ Family Flags     : 54, 123
 Attributes       : No Active Defense (21), Always Line of Sight (185), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1286429)  : School Damage (2): shadowstorm
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.2 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.56 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
+Hotfixed         : AP Coefficient (1.2 -> 1.56)
 #2 (id=1286438)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
 Description      : $@spelldesc457052
