@@ -12734,13 +12734,8 @@ public:
     return true;
   }
 
-  void init( player_t* ) const override
+  void register_actor_initializers( sim_t* ) const override
   {
-  }
-
-  void static_init() const override
-  {
-    using namespace items;
   }
 
   void register_hotfixes() const override
@@ -12763,14 +12758,6 @@ public:
         .operation( hotfix::HOTFIX_SET )
         .modifier( 50.0 )
         .verification_value( 75.0 );
-  }
-
-  void combat_begin( sim_t* ) const override
-  {
-  }
-
-  void combat_end( sim_t* ) const override
-  {
   }
 };
 

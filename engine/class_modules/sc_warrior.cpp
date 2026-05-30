@@ -9404,10 +9404,12 @@ struct warrior_module_t : public module_t
   {
   }
 
-  void init( player_t* p ) const override
+  void register_actor_initializers( sim_t* sim ) const override
   {
-    if ( !p->is_pet() )
-    {
+    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + offset(), []( player_t* p ) {
+      if ( !p->is_player() )
+        return;
+
       bool has_external_rallying = !p->external_buffs.rallying_cry.empty();
       bool has_talent_rallying = p->type == WARRIOR && debug_cast<warrior_t*>( p )->talents.warrior.rallying_cry.ok();
 
@@ -9425,13 +9427,7 @@ struct warrior_module_t : public module_t
           debug_cast<warrior_t*>( p )->buff.rallying_cry = buff;
         }
       }
-    }
-  }
-  void combat_begin( sim_t* ) const override
-  {
-  }
-  void combat_end( sim_t* ) const override
-  {
+    }, "create_buffs_warrior" );
   }
 };
 }  // UNNAMED NAMESPACE

@@ -140,13 +140,22 @@ struct pain_suppression_t final : public priest_spell_t
     }
 
     harmful = false;
+
+    target_debuff = p.talents.discipline.pain_suppression;
+  }
+
+  buff_t* create_debuff( player_t* t ) override
+  {
+    return priest_spell_t::create_debuff( t )
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
+      ->set_cooldown( 0_ms );  // Let the ability handle the CD
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    target->buffs.pain_suppression->trigger();
+    get_debuff( target )->trigger();
   }
 };
 

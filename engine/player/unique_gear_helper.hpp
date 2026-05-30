@@ -715,12 +715,7 @@ public:
   const special_effect_t& effect;
   action_t* parent_action;
 
-  unique_gear_pet_t( std::string_view name, const special_effect_t& e, const spell_data_t* summon_spell = nullptr )
-    : pet_t( e.player->sim, e.player, name, true, true ), use_auto_attack( false ), effect( e ), parent_action( nullptr )
-  {
-    if ( summon_spell )
-      npc_id = summon_spell->effectN( 1 ).misc_value1();
-  }
+  unique_gear_pet_t( std::string_view name, const special_effect_t& e, const spell_data_t* summon_spell = nullptr );
 
   resource_e primary_resource() const override
   { return RESOURCE_NONE; }
@@ -729,81 +724,16 @@ public:
   { return nullptr; }
 
   double composite_owner_pet_damage_multiplier( const action_state_t* ) const override
-  {
-    return 1.0;
-  }
+  { return 1.0; }
 
   double composite_owner_pet_target_damage_multiplier( player_t* ) const override
-  {
-    return 1.0;
-  }
+  { return 1.0; }
 
-  struct auto_attack_t final : public melee_attack_t
-  {
-    auto_attack_t( unique_gear_pet_t* p ) : melee_attack_t( "main_hand", p )
-    {
-      assert( p->main_hand_weapon.type != WEAPON_NONE );
-      p->main_hand_attack                    = p->create_auto_attack();
-      p->main_hand_attack->weapon            = &( p->main_hand_weapon );
-      p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
-
-      ignore_false_positive = true;
-      trigger_gcd           = 0_ms;
-      school                = SCHOOL_PHYSICAL;
-    }
-
-    void execute() override
-    {
-      player->main_hand_attack->schedule_execute();
-    }
-
-    bool ready() override
-    {
-      if ( player->is_moving() )
-        return false;
-
-      return ( player->main_hand_attack->execute_event == nullptr );
-    }
-  };
-
-  void create_buffs() override
-  {
-    pet_t::create_buffs();
-
-    buffs.movement->set_quiet( true );
-  }
-
-  void arise() override
-  {
-    pet_t::arise();
-
-    if ( parent_action )
-      parent_action->stats->add_execute( 0_ms, owner );
-
-    if ( use_auto_attack && owner->base.distance > 8 )
-    {
-      trigger_movement( owner->base.distance, movement_direction_type::TOWARDS );
-      auto dur = time_to_move();
-      make_event( *sim, dur, [ this, dur ] { update_movement( dur ); } );
-    }
-  }
-
-  action_t* create_action( std::string_view name, std::string_view options_str ) override
-  {
-    if ( name == "auto_attack" )
-      return new auto_attack_t( this );
-
-    return pet_t::create_action( name, options_str );
-  }
-
-  void init_action_list() override
-  {
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( use_auto_attack )
-      def->add_action( "auto_attack" );
-
-    pet_t::init_action_list();
-  }
+  void create_buffs() override;
+  void arise() override;
+  action_t* create_action( std::string_view name, std::string_view options_str ) override;
+  void init_action_list() override;
+  void add_default_action( std::string_view );
 };
 
 // proxy to be used for external effects coming from items on other sources

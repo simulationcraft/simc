@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67602 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.5.67823 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -46598,6 +46598,34 @@ Effects          :
 #1 (id=213295)   : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Combine ten nuggets into ore.
+
+Name             : Touch of Elune - Day (desc=Racial Passive) (id=154796) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Triggered By     : Touch of Elune - Night (154797)
+Attributes       : Is Ability (4), Allow Cast While Dead (23), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=214832)   : Apply Aura (6) | Modify Critical Strike% (290)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+#2 (id=214848)   : Remove Aura (203): Touch of Elune - Night
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 154797 | Target: Self (1)
+Description      : Increases your Critical Strike by 1% during the day.
+Tooltip          : Critical Strike chance increased by 1%.
+
+Name             : Touch of Elune - Night (desc=Racial Passive) (id=154797) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Triggered By     : Touch of Elune - Day (154796)
+Attributes       : Is Ability (4), Allow Cast While Dead (23), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=214833)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+#2 (id=214847)   : Remove Aura (203): Touch of Elune - Day
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 154796 | Target: Self (1)
+Description      : Increases your Haste by 1% during the night.
+Tooltip          : Haste increased by 1%.
 
 Name             : Summon Mini Dark Portal (id=154919) 
 School           : Physical
@@ -97330,6 +97358,19 @@ Effects          :
 #1 (id=724256)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 1379.964 (coefficient=10.79755) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your Chain Heal heals its primary target for an additional $s1 healing.
+
+Name             : Fireblood (desc=Racial) (id=273104) 
+School           : Physical
+Spell Type       : None
+Duration         : 8 seconds
+Attributes       : Is Ability (4), Do Not Sheath (18), Aura Points On Client (268)
+Effects          :
+#1 (id=724453)   : Apply Aura (6) | Scale% (Stacking) (61)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+#2 (id=1033209)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Target: Self (1)
+Description      : Increases primary stat by $s1.
+Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $265226w2.
 
 Name             : Ruinous Bolt (id=273150) [Passive] 
 School           : Physical
@@ -218723,18 +218764,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 233150 | Misc Value 2: 64 | Radius: 2 yards | Target: Front of Self (47)
 Description      : Plant a banner representing your victories within the Astral arenas.
 
-Name             : [Season] Champion's Prestigious Banner (id=469619) 
-School           : Physical
-Spell Type       : None
-Duration         : 60 seconds
-Cooldown         : 600 seconds
-Labels           : 4089
-                 : 4091
-Effects          :
-#1 (id=1184070)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 233151 | Misc Value 2: 64 | Radius: 2 yards | Target: Front of Self (47)
-Description      : Plant a banner representing your victories within the [Season] arenas.
-
 Name             : Living Magma (id=469762) [Passive] 
 School           : Physical
 Spell Type       : None
@@ -253945,6 +253974,18 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Restores $s1% of your maximum mana every second over $d. Must remain seated while drinking.
 Tooltip          : Restoring $w1% mana every sec.
+
+Name             : Umbral Champion's Illustrious Banner (id=1290957) 
+School           : Physical
+Spell Type       : None
+Duration         : 60 seconds
+Cooldown         : 600 seconds
+Labels           : 4089
+                 : 4091
+Effects          :
+#1 (id=1310108)  : Summon Guardian (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 263908 | Misc Value 2: 64 | Radius: 2 yards | Target: Front of Self (47)
+Description      : Plant a banner representing your victories within the Umbral arenas.
 
 Name             : Illusory Adornment - Blooming Light (id=1291455) 
 School           : Physical

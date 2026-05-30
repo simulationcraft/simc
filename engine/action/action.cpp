@@ -154,8 +154,8 @@ struct queued_action_execute_event_t : public event_t
 
         // If it's the first iteration (where we capture sample sequence) adjust the captured sequence to indicate the
         // queue failed
-        if ( ( sim().iterations <= 1 && sim().current_iteration == 0 ) ||
-             ( sim().iterations > 1 && actor->nth_iteration() == 1 ) )
+        if ( sim().collect_action_sequence && ( ( sim().iterations <= 1 && sim().current_iteration == 0 ) ||
+                                                ( sim().iterations > 1 && actor->nth_iteration() == 1 ) ) )
         {
           // Find the last action sequence entry that matches the current action
           auto& seq = actor->collected_data.action_sequence;
@@ -381,6 +381,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     action_skill( p->base.skill ),
     direct_tick(),
     treat_as_periodic(),
+    treat_as_area_effect(),
     ignores_armor(),
     repeating(),
     harmful( true ),
@@ -673,6 +674,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   hasted_dot_duration         = spell_data.flags( spell_attribute::SX_DURATION_HASTED );
   rolling_periodic            = spell_data.flags( spell_attribute::SX_ROLLING_PERIODIC );
   treat_as_periodic           = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
+  treat_as_area_effect        = spell_data.flags( spell_attribute::SX_TREAT_AS_AREA_EFFECT );
   ignores_armor               = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );  // TODO: better way to parse this?
   may_miss                    = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
   may_block                   = !spell_data.flags( spell_attribute::SX_NO_BLOCK ) &&

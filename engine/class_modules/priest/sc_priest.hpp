@@ -1646,11 +1646,12 @@ struct priest_spell_t : public priest_action_t<spell_t>
       {
         continue;
       }
-      ally->resource_gain( RESOURCE_HEALTH, amount, ally->gains.vampiric_embrace );
+      // TODO: re-write as a proper heal (15290 or 199397)
+      ally->resource_gain( RESOURCE_HEALTH, amount );
 
       for ( pet_t* pet : ally->pet_list )
       {
-        pet->resource_gain( RESOURCE_HEALTH, amount, pet->gains.vampiric_embrace );
+        pet->resource_gain( RESOURCE_HEALTH, amount );
       }
     }
   }

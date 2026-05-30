@@ -150,8 +150,13 @@ void enchant::initialize_item_enchant( item_t& item, std::vector<stat_pair_t>& s
       case ITEM_ENCHANTMENT_DAMAGE:
       {
         double value = 0;
-        if ( enchant.id_scaling == 0 )
+
+        // It's possible this enchant type ignores scaling entirely, but as only a single case has been tested so far
+        // (adamantite sharpening stone, item id 23529, enchant id 2713) further verification is required
+        if ( enchant.id_scaling == 0 || enchant.id_scaling == -1 )
+        {
           value = enchant.ench_amount[ i ];
+        }
         else
         {
           unsigned level = item.player->level();

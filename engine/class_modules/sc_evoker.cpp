@@ -804,7 +804,7 @@ struct simplified_player_t : public player_t
 
   double composite_mastery_value() const override
   {
-    return composite_mastery() * 0.0125;
+    return cache.mastery() * 0.0125;
   }
 
   void init_base_stats() override
@@ -7440,8 +7440,8 @@ public:
         sim->print_debug( "{} had action {} execute on a invalid target. Retargeting action.", *p(), name() );
 
         // Update the sequence datas last executed spell to the new target
-        if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) ||
-             ( sim->iterations > 1 && player->nth_iteration() == 1 ) )
+        if ( sim->collect_action_sequence && ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) ||
+                                               ( sim->iterations > 1 && player->nth_iteration() == 1 ) ) )
         {
           // Find the last action sequence entry that matches the current action
           auto& seq = player->collected_data.action_sequence;
@@ -11065,10 +11065,6 @@ struct evoker_module_t : public module_t
     return true;
   }
 
-  void init( player_t* /* p */ ) const override
-  {
-  }
-
   void static_init() const override
   {
     unique_gear::register_special_effect( 394927, karnalex_the_first_light );
@@ -11079,25 +11075,23 @@ struct evoker_module_t : public module_t
   {
   }
 
-  void combat_begin( sim_t* ) const override
+  void register_actor_initializers( sim_t* sim ) const override
   {
-  }
+    sim->register_actor_initializer( INIT_ACTOR_CREATE_ACTIONS + offset(), [ sim ]( player_t* p ) {
+      if ( !p->is_player() )
+        return;
 
-  void create_actions( player_t* p ) const override
-  {
-    if ( p->is_enemy() || p->type == HEALING_ENEMY || p->is_pet() )
-      return;
+      // Only create if an evoker is in the sim
+      if ( !range::count_if( sim->player_no_pet_list, []( player_t* p ) { return p->type == EVOKER; } ) )
+        return;
 
-    new spells::infernos_blessing_t( p );
-    new spells::blistering_scales_damage_t( p );
-    new spells::fate_mirror_damage_t( p );
-    new spells::fate_mirror_heal_t( p );
-    new spells::breath_of_eons_damage_t( p );
-    new spells::bombardments_damage_t( p );
-  }
-
-  void combat_end( sim_t* ) const override
-  {
+      new spells::infernos_blessing_t( p );
+      new spells::blistering_scales_damage_t( p );
+      new spells::fate_mirror_damage_t( p );
+      new spells::fate_mirror_heal_t( p );
+      new spells::breath_of_eons_damage_t( p );
+      new spells::bombardments_damage_t( p );
+    }, "create_actions_evoker" );
   }
 };
 
@@ -11120,27 +11114,11 @@ struct player_simplified_module_t : public module_t
     return true;
   }
 
-  void init( player_t* /* p */ ) const override
-  {
-  }
-
-  void static_init() const override
-  {
-  }
-
   void register_hotfixes() const override
   {
   }
 
-  void combat_begin( sim_t* ) const override
-  {
-  }
-
-  void create_actions( player_t* ) const override
-  {
-  }
-
-  void combat_end( sim_t* ) const override
+  void register_actor_initializers( sim_t* ) const override
   {
   }
 };

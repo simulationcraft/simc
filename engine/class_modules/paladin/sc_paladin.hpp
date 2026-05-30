@@ -1346,7 +1346,10 @@ struct paladin_spell_t : public paladin_spell_base_t<spell_t>
 
 struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 {
-  paladin_heal_t( util::string_view n, paladin_t* p, const spell_data_t* s = spell_data_t::nil() ) : base_t( n, p, s )
+  double beacon_pct;
+
+  paladin_heal_t( util::string_view n, paladin_t* p, const spell_data_t* s = spell_data_t::nil() )
+    : base_t( n, p, s ), beacon_pct( p->find_spell( 53563 )->effectN( 1 ).percent() )
   {
     may_crit      = true;
     tick_may_crit = true;
@@ -1370,9 +1373,6 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
     if ( !p()->beacon_target )
       return;
 
-    if ( !p()->beacon_target->buffs.beacon_of_light->up() )
-      return;
-
     if ( proc )
       return;
 
@@ -1380,8 +1380,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
     p()->active.beacon_of_light->target = p()->beacon_target;
 
-    double amount = s->result_amount;
-    amount *= p()->beacon_target->buffs.beacon_of_light->data().effectN( 1 ).percent();
+    double amount = s->result_amount * beacon_pct;
 
     p()->active.beacon_of_light->base_dd_min = amount;
     p()->active.beacon_of_light->base_dd_max = amount;

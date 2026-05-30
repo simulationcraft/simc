@@ -1004,6 +1004,7 @@ class SpellDataGenerator(DataGenerator):
     _spell_id_list = [
         (
          134735,                    # PvP Rules Enabled
+         154797, 154797,            # Touch of Elune (Night Elf racial) day/night spell
          109871, 109869,            # No'Kaled the Elements of Death - LFR
          107785, 107789,            # No'Kaled the Elements of Death - Normal
          109872, 109870,            # No'Kaled the Elements of Death - Heroic
@@ -1081,6 +1082,8 @@ class SpellDataGenerator(DataGenerator):
          268954, 268955, 268953,
          # Mag'har Orc Ancestral Call buffs
          274739, 274740, 274741, 274742,
+         # Dark Iron Dwarf Fireblood buff display spell
+         273104,
          # 8.0 Galley Banquet food buffs
          259448, 259449, 259452, 259453,
          # 8.0 Bountiful Captain's Feast food buffs

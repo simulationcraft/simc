@@ -535,6 +535,7 @@ inline modified_spell_data_t* modified_spell_data_t::nil() { return &modified_sp
 struct parse_effects_t : public parse_base_t
 {
 protected:
+  // Internal player pointer used to access target data and mastery, can differ from the player of the action
   player_t* _player;
   std::array<std::vector<parse_cb_t>, PARSE_CALLBACK_MAX> callback_list;
   std::array<uint32_t, PARSE_CALLBACK_MAX> callback_mask{};

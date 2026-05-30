@@ -486,33 +486,21 @@ struct player_t : public actor_t
   struct buffs_t
   {
     std::array<std::vector<buff_t*>, STAT_PCT_BUFF_MAX> stat_pct_buffs;
+    // 0 == stacking, 1 == non-stacking, 2 == non-stacking with multiple buff stacks
+    std::array<std::vector<std::pair<double, buff_t*>>, 3> movement_speed_buffs;
     std::vector<std::tuple<buff_t*, unsigned, double>> creature_type_buffs;
-    buff_t* angelic_feather;
-    buff_t* beacon_of_light;
-    buff_t* blood_fury;
-    buff_t* body_and_soul;
     buff_t* damage_done;
-    buff_t* darkflight;
     buff_t* devotion_aura;
     buff_t* entropic_embrace;
     buff_t* exhaustion;
     buff_t* guardian_spirit;
     buff_t* blessing_of_sacrifice;
-    buff_t* nitro_boosts;
     buff_t* pain_suppression;
     buff_t* movement;
-    buff_t* stampeding_roar;
     buff_t* shadowmeld;
-    buff_t* close_to_heart_aura;
-    buff_t* generous_pour_aura;
-    buff_t* windwalking_movement_aura;
     buff_t* stoneform;
     buff_t* stunned;
     buff_t* rooted;
-    std::array<buff_t*, 4> ancestral_call;
-    buff_t* fireblood;
-
-    buff_t* berserking;
     buff_t* bloodlust;
 
     // 7.0 trinket proxy buffs
@@ -530,16 +518,12 @@ struct player_t : public actor_t
     buff_t* galeforce_striking; // Gale-Force Striking weapon enchant
     buff_t* torrent_of_elements; // Torrent of Elements weapon enchant
 
-    // Azerite power
-    buff_t* normalization_increase;
-
     /// 8.2 Azerite Essences
     buff_t* memory_of_lucid_dreams;
     buff_t* lucid_dreams; // Versatility Buff from Rank 3
     buff_t* seething_rage_essence; // Blood of the Enemy major - 25% crit dam
 
     // 8.2 misc
-    buff_t* fathom_hunter; // Follower themed Benthic boots special effect
     buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
 
     // 9.0 Runecarves
@@ -549,20 +533,11 @@ struct player_t : public actor_t
     // 10.0 Buffs
     buff_t* chilled_clarity;  // potion of chilled clarity
     buff_t* elemental_chaos_fire;  // phial of elemental chaos
-    buff_t* elemental_chaos_air;
     buff_t* elemental_chaos_earth;
     buff_t* elemental_chaos_frost;
     buff_t* way_of_controlled_currents;
     buff_t* stormeaters_boon;
     buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
-
-    // 11.0 The War Within
-    buff_t* ingest_mineral;  // earthen well fed racial
-    buff_t* surekian_grace;  // sik'ran's shadow arsenal barrage movement speed buff
-    buff_t* earthen_ire;     // sigil of algari concordance tank buff
-    buff_t* quickwicks_quick_trick_wick_walk;  // quickwick candlestick movement speed buff
-    buff_t* building_momentum;  // scroll of momentum counter buff
-    buff_t* full_momentum;      // scroll of momentum max buff
   } buffs;
 
   struct debuffs_t
@@ -584,30 +559,22 @@ struct player_t : public actor_t
 
     // Dragonflight Raid Damage Modifier Debuffs
     buff_t* hunters_mark;
-
   } debuffs;
 
   struct external_buffs_t
   {
     std::string pool;
     std::unordered_map<buff_t*, std::vector<cooldown_t*>> invoke_cds;
-    double blessing_of_summer_duration_multiplier;
     std::vector<timespan_t> power_infusion;
-    std::vector<timespan_t> blessing_of_summer;
-    std::vector<timespan_t> blessing_of_autumn;
-    std::vector<timespan_t> blessing_of_winter;
-    std::vector<timespan_t> blessing_of_spring;
     std::vector<timespan_t> rallying_cry;
     std::vector<timespan_t> potion_bomb_of_power;
     int soleahs_secret_technique;
   } external_buffs;
 
-
   struct gains_t
   {
     std::array<gain_t*, RESOURCE_MAX> resource_regen;
     gain_t* health;
-    gain_t* vampiric_embrace;
   } gains;
 
   struct spells_t
@@ -631,36 +598,9 @@ struct player_t : public actor_t
 
   struct racials_t
   {
-    const spell_data_t* quickness;
-    const spell_data_t* elusiveness;
-    const spell_data_t* command;
-    const spell_data_t* arcane_acuity;
-    const spell_data_t* heroic_presence;
     const spell_data_t* might_of_the_mountain;
-    const spell_data_t* expansive_mind;
-    const spell_data_t* nimble_fingers;
-    const spell_data_t* time_is_money;
-    const spell_data_t* the_human_spirit;
-    const spell_data_t* touch_of_elune;
     const spell_data_t* brawn;
-    const spell_data_t* endurance;
-    const spell_data_t* viciousness;
-    const spell_data_t* magical_affinity;
-    const spell_data_t* mountaineer;
-    const spell_data_t* brush_it_off;
-    const spell_data_t* awakened;
-    const spell_data_t* azerite_surge;
-    const spell_data_t* titanwrought_frame;
-    const spell_data_t* holy_providence;
-    const spell_data_t* lash_out;
-    const spell_data_t* subterranean_predator;
   } racials;
-
-  struct passives_t
-  {
-    double amplification_1;
-    double amplification_2;
-  } passive_values;
 
   bool active_during_iteration;
   const spell_data_t* spec_spell;

@@ -553,6 +553,7 @@ struct sim_t : private sc_thread_t
   std::string report_merged_stats;
   bool full_damage_sources_chart;
   bool report_all_variables;
+  bool collect_action_sequence;
   int report_rng;
   int hosted_html;
   int offline;
@@ -762,14 +763,15 @@ struct sim_t : private sc_thread_t
   void register_target_data_initializer( std::function<void( actor_target_data_t* )> fn );
 
   void register_actor_initializers();
-  // Check if named initializer exists. Return 0 if not found or name is empty.
-  int get_actor_initializer_priority( std::string_view name ) const;
-  void register_actor_initializer( int priority, void ( player_t::*fn )(), std::string name = "" );
+  // Register a callback
   void register_actor_initializer( int priority, std::function<void( player_t* )> fn, std::string name = "" );
+  // Register a player_t member function
+  void register_actor_initializer( int priority, void ( player_t::*fn )(), std::string name = "" );
   // Register with an offset from another named initializer
-  void register_actor_initializer( std::string_view base, int offset, void ( player_t::*fn )(), std::string name = "" );
   void register_actor_initializer( std::string_view base, int offset, std::function<void( player_t* )> fn,
                                    std::string name = "" );
+  // Register a player_t member function with an offset
+  void register_actor_initializer( std::string_view base, int offset, void ( player_t::*fn )(), std::string name = "" );
 
   timespan_t current_time() const
   { return event_mgr.current_time; }

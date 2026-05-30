@@ -7450,23 +7450,11 @@ struct monk_module_t : public module_t
     return true;
   }
 
-  void static_init() const override
+  void register_actor_initializers( sim_t* ) const override
   {
   }
 
   void register_hotfixes() const override
-  {
-  }
-
-  void combat_begin( sim_t * ) const override
-  {
-  }
-
-  void combat_end( sim_t * ) const override
-  {
-  }
-
-  void init( player_t * ) const override
   {
   }
 };

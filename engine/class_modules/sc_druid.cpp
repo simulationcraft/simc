@@ -3196,12 +3196,6 @@ struct celestial_alignment_buff_t final : public druid_buff_t
   celestial_alignment_buff_t( druid_t* p, std::string_view n, const spell_data_t* s ) : base_t( p, n, s )
   {
     set_cooldown( 0_ms );
-
-    if ( p->talent.celestial_alignment.ok() )
-    {
-      set_default_value_from_effect_type( A_HASTE_ALL );
-      set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-    }
   }
 
   bool trigger( int s, double v, double c, timespan_t d ) override
@@ -8172,6 +8166,15 @@ struct stampeding_roar_t final : public druid_spell_t
 
     form_mask = BEAR_FORM | CAT_FORM;
     autoshift = p->active.shift_to_bear;
+
+    target_debuff = p->talent.stampeding_roar;
+  }
+
+  buff_t* create_debuff( player_t* t ) override
+  {
+    return druid_spell_t::create_debuff( t )
+      ->set_movement_speed_buff_from_data()
+      ->set_cooldown( 0_ms );
   }
 
   void execute() override
@@ -8179,8 +8182,8 @@ struct stampeding_roar_t final : public druid_spell_t
     druid_spell_t::execute();
 
     // TODO: add target eligibility via radius
-    for ( const auto& actor : sim->player_non_sleeping_list )
-      actor->buffs.stampeding_roar->trigger();
+    for ( auto& t : sim->player_non_sleeping_list )
+      get_debuff( t )->trigger();
   }
 };
 
@@ -10630,7 +10633,12 @@ void druid_t::init_spells()
   // Appears to be some kind of normalization factor but in reverse, disabled via script
   deregister_passive_effect( talent.rattle_the_stars->effectN( 3 ) );
 
-  if ( !bugs )
+  if ( bugs )
+  {
+    // redirects to modify mastery% (318), which seems to round
+    register_passive_effect_override( talent.the_eternal_moon->effectN( 5 ), 15.0 );
+  }
+  else
   {
     // Bask in Moonlight is bugged and doesn't disable other spec's effects
     register_passive_effect_mask( talent.bask_in_moonlight, specialization() == DRUID_BALANCE
@@ -10869,26 +10877,18 @@ void druid_t::create_buffs()
 
   buff.lycaras_teachings_haste =
     make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings_haste", find_spell( 378989 ) )
-      ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
-      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
       ->set_name_reporting( "Haste" );
 
   buff.lycaras_teachings_crit =
     make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings_crit", find_spell( 378990 ) )
-      ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
-      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
       ->set_name_reporting( "Crit" );
 
   buff.lycaras_teachings_vers =
     make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings_vers", find_spell( 378991 ) )
-      ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
-      ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
       ->set_name_reporting( "Vers" );
 
   buff.lycaras_teachings_mast =
     make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings_mast", find_spell( 378992 ) )
-      ->set_default_value( talent.lycaras_teachings->effectN( 1 ).base_value() )
-      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
       ->set_name_reporting( "Mastery" );
 
   buff.matted_fur = make_fallback<matted_fur_buff_t>( talent.matted_fur.ok(), this, "matted_fur" );
@@ -11048,9 +11048,7 @@ void druid_t::create_buffs()
       ->set_tick_behavior( buff_tick_behavior::REFRESH );  // TODO: confirm true?
 
   buff.starlord = make_fallback( talent.starlord.ok(), this, "starlord", find_spell( 279709 ) )
-    ->set_default_value( talent.starlord->effectN( 1 ).percent() )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
     ->set_trigger_spell( talent.starlord );
 
   buff.starweaver_starfall = make_fallback( talent.starweaver.ok(), this, "starweavers_warp", find_spell( 393942 ) )
@@ -11121,17 +11119,13 @@ void druid_t::create_buffs()
   buff.coiled_to_spring = make_fallback( talent.coiled_to_spring.ok(), this, "coiled_to_spring", find_spell( 449538 ) );
 
   buff.flash_of_clarity =
-    make_fallback( sets->has_set_bonus( DRUID_FERAL, MID1, B2 ), this, "flash_of_clarity", find_spell( 1272262 ) )
-      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    make_fallback( sets->has_set_bonus( DRUID_FERAL, MID1, B2 ), this, "flash_of_clarity", find_spell( 1272262 ) );
 
   buff.frantic_momentum = make_fallback( talent.frantic_momentum.ok(),
     this, "frantic_momentum", find_trigger( talent.frantic_momentum ).trigger() )
       ->set_cooldown( talent.frantic_momentum->internal_cooldown() )
       ->set_chance( find_trigger( talent.frantic_momentum ).percent() )
-      ->set_trigger_spell( talent.frantic_momentum )
-      ->set_default_value_from_effect_type( A_HASTE_ALL )
-      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+      ->set_trigger_spell( talent.frantic_momentum );
 
   buff.incarnation_cat_prowl = make_fallback( talent.incarnation_cat.ok(),
     this, "incarnation_avatar_of_ashamane_prowl", find_effect( talent.incarnation_cat, E_TRIGGER_SPELL ).trigger() )
@@ -11160,8 +11154,7 @@ void druid_t::create_buffs()
 
   buff.savage_fury =
     make_fallback( talent.savage_fury.ok(), this, "savage_fury", find_trigger( talent.savage_fury ).trigger() )
-      ->set_default_value_from_effect_type( A_HASTE_ALL )
-      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+      ->set_default_value_from_effect_type( A_MOD_POWER_REGEN_PERCENT );
 
   buff.stalking_predator = make_fallback( talent.unseen_predator_3.ok(),
     this, "stalking_predator", find_trigger( talent.unseen_predator_3 ).trigger() )
@@ -11272,10 +11265,8 @@ void druid_t::create_buffs()
   buff.galactic_guardian = make_fallback( talent.galactic_guardian.ok() && !talent.red_moon.ok(),
     this, "galactic_guardian", find_spell( 213708 ) );
 
-  buff.gift_of_an_ancient_guardian =
-    make_fallback( talent.gift_of_an_ancient_guardian.ok(), this, "gift_of_an_ancient_guardian", find_spell( 1251877 ) )
-      ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
-      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+  buff.gift_of_an_ancient_guardian = make_fallback( talent.gift_of_an_ancient_guardian.ok(),
+    this, "gift_of_an_ancient_guardian", find_spell( 1251877 ) );
   if ( talent.gift_of_an_ancient_guardian.ok() )
   {
     buff.ironfur->set_stack_change_callback( [ this ]( auto, int old_, int new_ ) {
@@ -11315,11 +11306,7 @@ void druid_t::create_buffs()
       ->set_trigger_spell( talent.guardian_of_elune );
 
   buff.lunar_beam = make_fallback( talent.lunar_beam.ok(), this, "lunar_beam", talent.lunar_beam )
-    ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
-    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
-  if ( bugs && talent.lunar_beam.ok() && talent.the_eternal_moon.ok() )
-    buff.lunar_beam->modify_default_value( 0.5 );  // modify mastery% (318) seems to round
+    ->set_cooldown( 0_ms );
 
   buff.lunar_wrath =
     make_fallback( talent.galactic_guardian.ok() && talent.red_moon.ok(), this, "lunar_wrath", find_spell( 1253600 ) )
@@ -11447,10 +11434,8 @@ void druid_t::create_buffs()
         }
       } );
 
-  buff.cenarius_might =
-    make_fallback( talent.cenarius_might.ok(), this, "cenarius_might", find_trigger( talent.cenarius_might ).trigger() )
-      ->set_default_value_from_effect_type( A_HASTE_ALL )
-      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  buff.cenarius_might = make_fallback( talent.cenarius_might.ok(),
+    this, "cenarius_might", find_trigger( talent.cenarius_might ).trigger() );
 
   buff.dream_burst = make_fallback( talent.dream_surge.ok(), this, "dream_burst", find_spell( 433832 ) )
     ->set_consume_all_stacks( false );
@@ -12685,13 +12670,14 @@ void druid_t::init_special_effects()
         {
           case 164812:  // moonfire
           case 164815:  // sunfire
+          case 274838:  // feral frenzy
           case 400360:  // moonless night
             return;     // end
           case 400254:  // raze
           case 441605:  // ravage
             break;      // continue
           default:
-            if ( s->action->aoe < 0 || s->action->aoe > 1 )
+            if ( s->action->aoe < 0 || s->action->aoe > 1 || s->action->treat_as_area_effect )
               return;   // end
             else
               break;    // continue
@@ -13001,7 +12987,7 @@ double druid_t::resource_regen_per_second( resource_e r ) const
   double reg = player_t::resource_regen_per_second( r );
 
   if ( r == RESOURCE_ENERGY && buff.savage_fury->check() )
-    reg *= 1.0 + buff.savage_fury->data().effectN( 2 ).percent();
+    reg *= 1.0 + buff.savage_fury->check_value();
 
   return reg;
 }
@@ -14194,15 +14180,30 @@ void druid_t::parse_player_effects()
   }
 
   parse_effects( buff.barkskin );
+  parse_effects( buff.celestial_alignment );
+  parse_effects( buff.cenarius_might );
+  parse_effects( buff.incarnation_moonkin );
   parse_effects( buff.dash, [ this ] { return form == CAT_FORM; } );
   parse_effects( buff.tiger_dash, [ this ] { return form == CAT_FORM; } );
+  parse_effects( buff.flash_of_clarity );
   parse_effects( buff.forestwalk );
+  parse_effects( buff.frantic_momentum );
+  parse_effects( buff.gift_of_an_ancient_guardian );
   parse_effects( buff.killing_strikes );
+  parse_effects( buff.lunar_beam );
+
+  auto lycaras_value = talent.lycaras_teachings->effectN( 1 ).percent();
+  parse_effects( buff.lycaras_teachings_haste, effect_mask_t( false ).enable( 1 ), lycaras_value );
+  parse_effects( buff.lycaras_teachings_crit, effect_mask_t( false ).enable( 1 ), lycaras_value );
+  parse_effects( buff.lycaras_teachings_vers, effect_mask_t( false ).enable( 1 ), lycaras_value );
+  parse_effects( buff.lycaras_teachings_mast, effect_mask_t( false ).enable( 1 ), lycaras_value * 100 );
 
   if ( talent.lycaras_inspiration.ok() )
   {
-    parse_effects( buff.lycaras_teachings_crit );
-    parse_effects( buff.lycaras_teachings_vers );
+    parse_effects( buff.lycaras_teachings_haste, effect_mask_t( true ).disable( 1 ) );
+    parse_effects( buff.lycaras_teachings_crit, effect_mask_t( true ).disable( 1 ) );
+    parse_effects( buff.lycaras_teachings_vers, effect_mask_t( true ).disable( 1 ) );
+    parse_effects( buff.lycaras_teachings_mast, effect_mask_t( true ).disable( 1 ) );
   }
 
   parse_effects( buff.persistence, effect_mask_t( false ).enable( 1 ),  // stamina
@@ -14211,8 +14212,11 @@ void druid_t::parse_player_effects()
   parse_effects( buff.persistence, effect_mask_t( false ).enable( 2 ),  // armor
                  find_effect( buff.bear_form, A_MOD_BASE_RESISTANCE_PCT ).percent() /
                    buff.persistence->max_stack() );
-  parse_effects( buff.prowl, effect_mask_t( false ).enable( 3 ), racials.elusiveness->effectN( 1 ).percent() );
+  parse_effects( buff.prowl, effect_mask_t( false ).enable( 3 ),
+                 find_racial_spell( "Elusiveness" )->effectN( 1 ).percent() );
   parse_effects( buff.ruthless_aggression );
+  parse_effects( buff.savage_fury );
+  parse_effects( buff.starlord, talent.starlord->effectN( 1 ).percent() );
   parse_effects( buff.survival_instincts );
   parse_effects( buff.ursine_vigor, talent.ursine_vigor );
   parse_effects( buff.wildshape_mastery, effect_mask_t( false ).enable( 2 ),  // base armor
@@ -14277,21 +14281,12 @@ struct druid_module_t final : public module_t
     p->report_extension = std::make_unique<druid_report_t>( *p );
     return p;
   }
+
   bool valid() const override { return true; }
-
-  void init( player_t* p ) const override
-  {
-    p->buffs.stampeding_roar = make_buff( p, "stampeding_roar", p->find_spell( 106898 ) )
-      ->set_cooldown( 0_ms )
-      ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
-  }
-
-  void static_init() const override {}
 
   void register_hotfixes() const override {}
 
-  void combat_begin( sim_t* ) const override {}
-  void combat_end( sim_t* ) const override {}
+  void register_actor_initializers( sim_t* ) const override {}
 };
 }  // UNNAMED NAMESPACE
 

@@ -3704,28 +3704,125 @@ void sunfire_silk_trappings( special_effect_t& effect )
 
 namespace omnium
 {
+// Item level used for omnium coeff scaling spell 1288183
+static constexpr unsigned OMNIUM_ITEM_LEVEL = 289;
+
+struct rune_of_echoes_debuff_t : public buff_t
+{
+  double accumulator;
+  action_t* echo;
+
+  rune_of_echoes_debuff_t( actor_pair_t pair, std::string_view n, const spell_data_t* s,
+                           action_t* d )
+    : buff_t( pair, n, s ), accumulator( 0 ), echo( d )
+  {
+  }
+
+  void reset() override
+  {
+    buff_t::reset();
+    accumulator = 0;
+  }
+
+  void start( int s, double v, timespan_t d ) override
+  {
+    buff_t::start( s, v, d );
+    accumulator = 0;
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    buff_t::expire_override( s, d );
+    if ( accumulator > 0 )
+    {
+      echo->execute_on_target( player, accumulator );
+      accumulator = 0;
+    }
+  }
+};
+
+template <typename BASE>
+struct lingering_rune_t : public BASE
+{
+  bool has_echoes;
+  double echo_coeff;
+  action_t* echo;
+
+  lingering_rune_t( const special_effect_t& e, std::string_view n, const spell_data_t* s, bool ech, double coef, action_t* d )
+    : BASE( e, n, s ), has_echoes( ech ), echo_coeff( coef ), echo( d )
+  {
+  }
+
+  buff_t* create_debuff( player_t* t ) override
+  {
+    auto debuff = buff_t::find( t, "rune_of_echoes_debuff" );
+
+    if ( !debuff )
+      debuff = make_buff<rune_of_echoes_debuff_t>( actor_pair_t( t, BASE::player ), "rune_of_echoes_debuff",
+                                                   BASE::player->find_spell( 1289063 ), echo );
+
+    return debuff;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    BASE::tick( d );
+    if ( !has_echoes )
+      return;
+
+    rune_of_echoes_debuff_t* debuff = debug_cast<rune_of_echoes_debuff_t*>( BASE::get_debuff( d->target ) );
+    if ( debuff->check() )
+      debuff->accumulator += d->state->result_amount * echo_coeff;
+  }
+};
+
 template <typename BASE>
 struct omnium_core_rune_t : public BASE
 {
   stat_buff_t* buff = nullptr;
   const spell_data_t* coeff;
+  double dmg_coeff;
+  double stat_coeff;
+  bool has_echoes;
+  double echo_coeff;
+  action_t* echo;
 
   omnium_core_rune_t( const special_effect_t& e, std::string_view n, unsigned id )
-    : BASE( e, n, id ), coeff( e.driver()->effectN( 2 ).trigger() )
+    : BASE( e, n, id ),
+      coeff( e.driver()->effectN( 2 ).trigger() ),
+      dmg_coeff( std::floor( coeff->effectN( 1 ).average_no_item( BASE::player, OMNIUM_ITEM_LEVEL ) ) * 0.01 ),
+      stat_coeff( std::floor( coeff->effectN( 3 ).average_no_item( BASE::player, OMNIUM_ITEM_LEVEL ) ) * 0.01 ),
+      has_echoes( false ),
+      echo_coeff( 0 ),
+      echo( nullptr )
   {
     constexpr bool heal = std::is_base_of_v<heal_t, BASE>;
 
     if ( heal )
       BASE::name_str_reporting = "Heal";
 
-    // using placeholder values
-    BASE::base_dd_min = BASE::base_dd_max = BASE::data().effectN( 2 ).base_value();
+    BASE::base_dd_min = BASE::base_dd_max = dmg_coeff * BASE::data().effectN( 2 ).base_value();
+
+    has_echoes = find_special_effect( e.player, 1279616 ) != nullptr;
+    if ( has_echoes )
+    {
+      echo              = create_proc_action<BASE>( fmt::format( "{}_echo", n ), e, heal ? 1303071 : 1303048 );
+      echo->base_dd_min = echo->base_dd_max = 1.0;  // actual value is determined by accumulator
+      echo->name_str_reporting               = "rune_of_echoes";
+      echo_coeff                            = e.player->find_spell( 1279616 )->effectN( 1 ).percent();
+      if( !echo->stats->parent )
+        BASE::add_child( echo );
+    }
 
     // Rune of Lingering: 1287555 driver, 1287663 dot, 1287665 hot
     if ( find_special_effect( e.player, 1287555 ) )
     {
-      auto dot = create_proc_action<BASE>( fmt::format( "{}_lingering", n ), e, heal ? 1287665 : 1287663 );
-      dot->base_td = dot->data().effectN( 2 ).base_value() / dot->dot_duration.value().total_seconds();
+      auto name = fmt::format( "{}_lingering", n );
+      auto dot  = create_proc_action<lingering_rune_t<BASE>>(
+          name, e, name, heal ? e.player->find_spell( 1287665 ) : e.player->find_spell( 1287663 ), has_echoes,
+          echo_coeff, echo );
+
+      dot->base_td = dmg_coeff * dot->data().effectN( 2 ).base_value() / dot->dot_duration.value().total_seconds();
       dot->name_str_reporting = "rune_of_lingering";
       if ( !dot->stats->parent )
         BASE::add_child( dot );
@@ -3753,8 +3850,7 @@ struct omnium_core_rune_t : public BASE
       return;
 
     buff = create_buff<stat_buff_t>( BASE::player, BASE::player->find_spell( buff_id ) );
-    // using placeholder values
-    buff->set_stat_from_effect_type( A_MOD_RATING, buff->data().effectN( 2 ).base_value() );
+    buff->set_stat_from_effect_type( A_MOD_RATING, stat_coeff * buff->data().effectN( 2 ).base_value() );
   }
 
   void execute() override
@@ -3763,6 +3859,31 @@ struct omnium_core_rune_t : public BASE
 
     if ( buff )
       buff->trigger();
+  }
+
+  buff_t* create_debuff( player_t* t ) override
+  {
+    auto debuff = buff_t::find( t, "rune_of_echoes_debuff" );
+
+    if ( !debuff )
+      debuff = make_buff<rune_of_echoes_debuff_t>( actor_pair_t( t, BASE::player ), "rune_of_echoes_debuff",
+                                                   BASE::player->find_spell( 1289063 ), echo );
+
+    return debuff;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+    if ( !has_echoes )
+      return;
+
+    rune_of_echoes_debuff_t* debuff = debug_cast<rune_of_echoes_debuff_t*>( BASE::get_debuff( s->target ) );
+    // TODO: is the accumulator value increased on the initial hit?
+    if ( !debuff->check() )
+      debuff->trigger();
+    else
+      debuff->accumulator += s->result_amount * echo_coeff;
   }
 };
 
@@ -3775,12 +3896,7 @@ void rune_of_unleashed_fire( special_effect_t& effect )
     "Rune of Unleashed Fire: Procs are assumed to target the same unit that triggered them. "
     "Procs triggered by damage are assumed to proc damage. "
     "Procs triggered by healing/aura are assumed to proc heal." );
-  effect.player->sim->error( UNVERIFIED_VALUE,
-    "Rune of Unleashed Fire: Damage using placeholder value of 977. Heal using placeholder value of 1465." );
 
-  auto coeff = effect.driver()->effectN( 2 ).trigger();
-
-  // using placeholder values, presumably should be based on coeff->effectN( 1 )
   auto damage =
     create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_unleashed_fire", effect, 1286970 );
 
@@ -3814,12 +3930,7 @@ void rune_of_voidtouched_orbs( special_effect_t& effect )
     "Procs are assumed to target the same unit that triggered them. "
     "All procs are assumed to fire individually at the same time when triggered. "
     "Orbs are assumed to stack while out of combat." );
-  effect.player->sim->error( UNVERIFIED_VALUE,
-    "Rune of Voidtouched Orbs: Damage using placeholder value of 977. Heal using placeholder value of 1465." );
 
-  auto coeff = effect.driver()->effectN( 2 ).trigger();
-
-  // using placeholder values, presumably should be based on coeff->effectN( 1 )
   auto damage =
     create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_voidtouched_orbs", effect, 1286716 );
 
@@ -4042,6 +4153,7 @@ void register_special_effects()
   register_special_effect( 1279613, DISABLED_EFFECT );  // rune of the versatile warrior
   register_special_effect( 1279614, DISABLED_EFFECT );  // rune of overload
   register_special_effect( 1279615, DISABLED_EFFECT );  // rune of residual energy
+  register_special_effect( 1279616, DISABLED_EFFECT );  // rune of echoes
   reset_version_check();
 }
 

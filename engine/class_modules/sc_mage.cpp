@@ -7490,9 +7490,8 @@ public:
   }
 
   bool valid() const override { return true; }
-  void init( player_t* ) const override {}
-  void combat_begin( sim_t* ) const override {}
-  void combat_end( sim_t* ) const override {}
+
+  void register_actor_initializers( sim_t* ) const override {}
 };
 
 }  // UNNAMED NAMESPACE

@@ -286,6 +286,7 @@ void frost( player_t* p )
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
   action_priority_list_t* ff_aoe = p->get_action_priority_list( "ff_aoe" );
   action_priority_list_t* ff_st = p->get_action_priority_list( "ff_st" );
+  action_priority_list_t* ff_tarswap = p->get_action_priority_list( "ff_tarswap" );
   action_priority_list_t* movement = p->get_action_priority_list( "movement" );
   action_priority_list_t* ss_aoe = p->get_action_priority_list( "ss_aoe" );
   action_priority_list_t* ss_st = p->get_action_priority_list( "ss_st" );
@@ -295,15 +296,16 @@ void frost( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=target_swapping,op=reset,default=0" );
   precombat->add_action( "summon_water_elemental" );
-  precombat->add_action( "blizzard,if=active_enemies>=(4-talent.frostfire_bolt)|talent.freezing_rain|talent.freezing_winds", "Precast Blizzard against all targets if you have any of the Blizzard talents. In AoE (3+ for FF, 4+ for SS) Blizzard is always the precast." );
+  precombat->add_action( "blizzard,if=active_enemies>=3&talent.frostfire_bolt|active_enemies>=4&talent.splinterstorm", "Precast Blizzard in AoE, at 3+ for Frostfire and 4+ for Spellslinger." );
   precombat->add_action( "glacial_spike" );
   precombat->add_action( "frostbolt" );
 
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "run_action_list,name=ff_aoe,if=talent.frostfire_bolt&active_enemies>=3", "Frostfire AoE starts at 3+ targets." );
+  default_->add_action( "run_action_list,name=ff_tarswap,if=talent.frostfire_bolt&variable.target_swapping" );
+  default_->add_action( "run_action_list,name=ff_aoe,if=talent.frostfire_bolt&active_enemies>=3" );
   default_->add_action( "run_action_list,name=ff_st,if=talent.frostfire_bolt" );
   default_->add_action( "run_action_list,name=ss_tarswap,if=variable.target_swapping" );
-  default_->add_action( "run_action_list,name=ss_aoe,if=active_enemies>=4", "Spellslinger AoE starts at 4+ targets" );
+  default_->add_action( "run_action_list,name=ss_aoe,if=active_enemies>=4" );
   default_->add_action( "run_action_list,name=ss_st" );
 
   cds->add_action( "variable,name=ff_trinket_timing,value=talent.frostfire_bolt", "Potion, Items and Racials are used on cd for Frostfire and paired with either Orb or Ray as Spellslinger." );
@@ -318,23 +320,24 @@ void frost( player_t* p )
   cds->add_action( "berserking,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
   cds->add_action( "fireblood,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
   cds->add_action( "ancestral_call,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
-  cds->add_action( "flurry,if=active_enemies>=3&talent.wintertide&talent.frostfire_bolt,line_cd=9999", "Opener Frostfire" );
-  cds->add_action( "ray_of_frost,if=talent.frostfire_bolt,line_cd=9999" );
+  cds->add_action( "flurry,if=active_enemies>=3&talent.wintertide&talent.frostfire_bolt&!variable.target_swapping,line_cd=9999", "Opener Frostfire" );
+  cds->add_action( "flurry,target_if=min:debuff.freezing.stack,if=active_enemies>=3&talent.wintertide&talent.frostfire_bolt&variable.target_swapping,line_cd=9999" );
+  cds->add_action( "ray_of_frost,if=talent.frostfire_bolt&!variable.target_swapping,line_cd=9999" );
+  cds->add_action( "ray_of_frost,target_if=min:debuff.freezing.stack,if=talent.frostfire_bolt&variable.target_swapping,line_cd=9999" );
   cds->add_action( "flurry,if=active_enemies>=4&talent.wintertide&talent.splinterstorm&!variable.target_swapping,line_cd=9999", "Opener Spellslinger" );
   cds->add_action( "flurry,target_if=min:debuff.freezing.react,if=active_enemies>=4&talent.wintertide&talent.splinterstorm&variable.target_swapping,line_cd=9999" );
   cds->add_action( "frozen_orb,if=active_enemies>=4&talent.splinterstorm,line_cd=9999" );
   cds->add_action( "ray_of_frost,if=talent.splinterstorm&!variable.target_swapping,line_cd=9999" );
   cds->add_action( "ray_of_frost,target_if=min:debuff.freezing.react,if=talent.splinterstorm&variable.target_swapping,line_cd=9999" );
-  cds->add_action( "ray_of_frost,if=fight_remains<12&(!variable.target_swapping|talent.frostfire_bolt)", "End-Of-Fight Actions" );
-  cds->add_action( "ray_of_frost,target_if=min:debuff.freezing.react,if=fight_remains<12&variable.target_swapping" );
+  cds->add_action( "ray_of_frost,if=!variable.target_swapping&fight_remains<12", "End-Of-Fight Actions" );
+  cds->add_action( "ray_of_frost,target_if=min:debuff.freezing.react,if=variable.target_swapping&fight_remains<12" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down", "Externals" );
 
-  ff_aoe->add_action( "blizzard,if=buff.freezing_rain.up" );
   ff_aoe->add_action( "flurry,if=buff.brain_freeze.react&buff.thermal_void.down" );
   ff_aoe->add_action( "frozen_orb" );
-  ff_aoe->add_action( "glacial_spike" );
   ff_aoe->add_action( "comet_storm" );
-  ff_aoe->add_action( "blizzard,if=active_enemies>=(5-talent.freezing_rain-talent.freezing_winds)" );
+  ff_aoe->add_action( "glacial_spike" );
+  ff_aoe->add_action( "blizzard,if=active_enemies>=6|active_enemies>=4&talent.freezing_rain|talent.freezing_winds" );
   ff_aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
   ff_aoe->add_action( "ice_lance,if=debuff.freezing.stack>=10" );
   ff_aoe->add_action( "flurry,if=cooldown_react" );
@@ -344,14 +347,28 @@ void frost( player_t* p )
 
   ff_st->add_action( "flurry,if=buff.brain_freeze.react&buff.thermal_void.down" );
   ff_st->add_action( "frozen_orb" );
-  ff_st->add_action( "glacial_spike" );
   ff_st->add_action( "comet_storm" );
+  ff_st->add_action( "glacial_spike" );
   ff_st->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
   ff_st->add_action( "ice_lance,if=debuff.freezing.stack>=10" );
   ff_st->add_action( "flurry,if=cooldown_react" );
-  ff_st->add_action( "ray_of_frost,if=active_enemies=1|!buff.frostfire_empowerment.react" );
+  ff_st->add_action( "ray_of_frost" );
   ff_st->add_action( "frostbolt" );
   ff_st->add_action( "call_action_list,name=movement" );
+
+  ff_tarswap->add_action( "flurry,target_if=min:debuff.freezing.stack,if=buff.brain_freeze.react&buff.thermal_void.down", "Played when the variable target_swapping=1. It's the ST/AoE rotation but always targets the enemy with the lowest Freezing stacks when casting a spell that generates Freezing." );
+  ff_tarswap->add_action( "frozen_orb" );
+  ff_tarswap->add_action( "comet_storm,target_if=max:debuff.freezing.stack" );
+  ff_tarswap->add_action( "glacial_spike,target_if=min:debuff.freezing.stack,if=!talent.glacial_shatter" );
+  ff_tarswap->add_action( "glacial_spike,target_if=max:debuff.freezing.stack,if=talent.glacial_shatter" );
+  ff_tarswap->add_action( "blizzard,if=active_enemies>=6|active_enemies>=4&talent.freezing_rain|active_enemies>=3&talent.freezing_winds" );
+  ff_tarswap->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
+  ff_tarswap->add_action( "ice_lance,target_if=min:debuff.freezing.stack,if=active_enemies<=2&debuff.freezing.stack>=10", "Against 2 targets, wait for both to have 10+ freezing stacks before casting IL. Against 3+ targets cast IL as usual, as soon as your main target has 10+ stacks." );
+  ff_tarswap->add_action( "ice_lance,if=active_enemies>=3&debuff.freezing.stack>=10" );
+  ff_tarswap->add_action( "flurry,target_if=min:debuff.freezing.stack,if=cooldown_react" );
+  ff_tarswap->add_action( "ray_of_frost,target_if=min:debuff.freezing.stack,if=active_enemies<=2|!buff.frostfire_empowerment.react" );
+  ff_tarswap->add_action( "frostbolt,target_if=min:debuff.freezing.stack" );
+  ff_tarswap->add_action( "call_action_list,name=movement" );
 
   movement->add_action( "any_blink,if=movement.distance>5" );
   movement->add_action( "blizzard,if=buff.freezing_rain.up" );
@@ -392,10 +409,11 @@ void frost( player_t* p )
   ss_tarswap->add_action( "flurry,target_if=min:debuff.freezing.react,if=buff.brain_freeze.react&buff.thermal_void.down" );
   ss_tarswap->add_action( "ice_lance,if=buff.fingers_of_frost.react=2" );
   ss_tarswap->add_action( "frozen_orb" );
-  ss_tarswap->add_action( "glacial_spike,target_if=min:debuff.freezing.react" );
+  ss_tarswap->add_action( "glacial_spike,target_if=min:debuff.freezing.react,if=!talent.glacial_shatter" );
+  ss_tarswap->add_action( "glacial_spike,target_if=max:debuff.freezing.react,if=talent.glacial_shatter" );
   ss_tarswap->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
-  ss_tarswap->add_action( "ice_lance,target_if=min:debuff.freezing.react>=6,if=active_enemies<=2&debuff.freezing.react>=6", "Against 2 targets, wait for both to have 6+ freezing stacks before casting IL. Against 3+ targets cast IL as soon as any one target has 6+ stacks." );
-  ss_tarswap->add_action( "ice_lance,target_if=debuff.freezing.react>=6,if=active_enemies>=3" );
+  ss_tarswap->add_action( "ice_lance,target_if=min:debuff.freezing.react,if=active_enemies<=2&debuff.freezing.react>=6", "Against 2 targets, wait for both to have 6+ freezing stacks before casting IL. Against 3+ targets cast IL as usual, as soon as your main target has 6+ stacks." );
+  ss_tarswap->add_action( "ice_lance,if=active_enemies>=3&debuff.freezing.react>=6" );
   ss_tarswap->add_action( "ice_nova,if=active_enemies>=4&talent.cone_of_frost" );
   ss_tarswap->add_action( "cone_of_cold,if=active_enemies>=4&talent.cone_of_frost" );
   ss_tarswap->add_action( "blizzard,if=active_enemies>=4&talent.freezing_winds" );

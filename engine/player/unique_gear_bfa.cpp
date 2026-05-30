@@ -3064,18 +3064,7 @@ void items::fathom_hunter( special_effect_t& effect )
   if ( !effect.player->sim->bfa_opts.nazjatar )
     return;
 
-  auto buff = buff_t::find( effect.player, "fathom_hunter" );
-  if ( !buff )
-  {
-    buff = make_buff( effect.player, "fathom_hunter", effect.driver() );
-    buff->set_default_value( effect.driver()->effectN( 1 ).percent() );
-    buff->set_quiet( true );
-
-    effect.player->buffs.fathom_hunter = buff;
-    effect.player->register_combat_begin( buff );
-  }
-
-  effect.type = SPECIAL_EFFECT_NONE;
+  effect.player->parse_passive_item_effect( effect.driver() );
 }
 
 // Nazjatar/Eternal Palace check ==========================================
@@ -6256,7 +6245,7 @@ void unique_gear::register_special_effects_bfa()
   // Nazjatar & Eternal Palace only effects
   register_special_effect( 302382, items::damage_to_aberrations );
   register_special_effect( 303133, items::exploding_pufferfish );
-  register_special_effect( 304637, items::fathom_hunter );
+  register_special_effect( 304637, items::fathom_hunter, false, true );
   register_special_effect( 304697, items::nazjatar_proc_check );  // Conch Strike
   register_special_effect( 304640, items::nazjatar_proc_check );  // Frost Blast
   register_special_effect( 304711, items::nazjatar_proc_check );  // Sharp Fins

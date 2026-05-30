@@ -2156,83 +2156,48 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
 
 struct enemy_module_t : public module_t
 {
-  enemy_module_t() : module_t( ENEMY )
-  {
-  }
+  enemy_module_t() : module_t( ENEMY ) {}
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
   {
     return new enemy_t( sim, name );
   }
-  bool valid() const override
-  {
-    return true;
-  }
-  void init( player_t* ) const override
-  {
-  }
-  void combat_begin( sim_t* ) const override
-  {
-  }
-  void combat_end( sim_t* ) const override
-  {
-  }
+
+  bool valid() const override { return true; }
+  void register_hotfixes() const override {}
+  void register_actor_initializers( sim_t* ) const override {}
 };
 
 // HEAL ENEMY MODULE INTERFACE ==============================================
 
 struct heal_enemy_module_t : public module_t
 {
-  heal_enemy_module_t() : module_t( HEALING_ENEMY )
-  {
-  }
+  heal_enemy_module_t() : module_t( HEALING_ENEMY ) {}
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
   {
-    auto p = new heal_enemy_t( sim, name );
-    return p;
+    return new heal_enemy_t( sim, name );
   }
-  bool valid() const override
-  {
-    return true;
-  }
-  void init( player_t* ) const override
-  {
-  }
-  void combat_begin( sim_t* ) const override
-  {
-  }
-  void combat_end( sim_t* ) const override
-  {
-  }
+
+  bool valid() const override { return true; }
+  void register_hotfixes() const override {}
+  void register_actor_initializers( sim_t* ) const override {}
 };
 
 // TANK DUMMY ENEMY MODULE INTERFACE ==============================================
 
 struct tank_dummy_enemy_module_t : public module_t
 {
-  tank_dummy_enemy_module_t() : module_t( TANK_DUMMY )
-  {
-  }
+  tank_dummy_enemy_module_t() : module_t( TANK_DUMMY ) {}
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
   {
-    auto p = new tank_dummy_enemy_t( sim, name );
-    return p;
+    return new tank_dummy_enemy_t( sim, name );
   }
-  bool valid() const override
-  {
-    return true;
-  }
-  void init( player_t* ) const override
-  {
-  }
-  void combat_begin( sim_t* ) const override
-  {
-  }
-  void combat_end( sim_t* ) const override
-  {
-  }
+
+  bool valid() const override { return true; }
+  void register_hotfixes() const override {}
+  void register_actor_initializers( sim_t* ) const override {}
 };
 
 }  // END UNNAMED NAMESPACE

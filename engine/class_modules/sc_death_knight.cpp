@@ -2634,7 +2634,7 @@ struct death_knight_pet_t : public pet_t
     double value() override
     {
       double v = ( pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
-                   ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() ) );
+                   ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->dk()->composite_mastery_value() ) );
 
       return v;
     }
@@ -2642,7 +2642,7 @@ struct death_knight_pet_t : public pet_t
     double check_value() const override
     {
       double v = ( pet()->dk()->mastery.dreadblade->effectN( 6 ).percent() +
-                   ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->composite_mastery_value() ) );
+                   ( pet()->dk()->mastery.dreadblade->effectN( 6 ).sp_coeff() * pet()->dk()->composite_mastery_value() ) );
 
       return v;
     }
@@ -2695,16 +2695,6 @@ struct death_knight_pet_t : public pet_t
   double composite_mitigation_versatility() const override
   {
     return 0;
-  }
-
-  double composite_mastery_value() const override
-  {
-    return dk()->cache.mastery_value();
-  }
-
-  double composite_mastery() const override
-  {
-    return dk()->cache.mastery();
   }
 
   double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override
@@ -17253,18 +17243,12 @@ struct death_knight_module_t : public module_t
     //       .verification_value( 6000 );
   }
 
-  void init( player_t* ) const override
+  void register_actor_initializers( sim_t* ) const override
   {
   }
   bool valid() const override
   {
     return true;
-  }
-  void combat_begin( sim_t* ) const override
-  {
-  }
-  void combat_end( sim_t* ) const override
-  {
   }
 };
 

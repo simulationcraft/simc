@@ -36,7 +36,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     random_weapon_target( nullptr ),
     random_bulwark_target( nullptr ),
     divine_inspiration_next( -1 ),
-    reflection_of_radiance_proc_chance( .2 ) // ToDo Fluttershy: Find out real proc chance
+    reflection_of_radiance_proc_chance( .05 ) // ToDo Fluttershy: Find out real proc chance - Please Blizz bring back the log event for Grand Crusader
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
@@ -5251,34 +5251,25 @@ struct paladin_module_t : public module_t
     return true;
   }
 
-  void static_init() const override
+  void register_actor_initializers( sim_t* sim ) const override
   {
-  }
+    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + offset(), [ sim ]( player_t* p ) {
+      if ( !p->is_player() )
+        return;
 
-  void init( player_t* p ) const override
-  {
-    p->buffs.beacon_of_light       = make_buff( p, "beacon_of_light", p->find_spell( 53563 ) );
-    p->buffs.blessing_of_sacrifice = new buffs::blessing_of_sacrifice_t( p );
-    p->debuffs.forbearance         = new buffs::forbearance_t( p, "forbearance" );
-  }
+      // Only create if a paladin is in the sim
+      if ( !range::count_if( sim->player_no_pet_list, []( player_t* p ) { return p->type == PALADIN; } ) )
+        return;
 
-  void create_actions(player_t* /* p */) const override
-  {
+      p->buffs.blessing_of_sacrifice = new buffs::blessing_of_sacrifice_t( p );
+      p->debuffs.forbearance         = new buffs::forbearance_t( p, "forbearance" );
+    }, "create_buffs_paladin" );
   }
 
   void register_hotfixes() const override
   {
   }
-
-  void combat_begin( sim_t* ) const override
-  {
-  }
-
-  void combat_end( sim_t* ) const override
-  {
-  }
 };
-
 }  // end namespace paladin
 
 const module_t* module_t::paladin()

@@ -159,11 +159,10 @@ void phial_of_elemental_chaos( special_effect_t& effect )
             ->add_stat( STAT_CRIT_RATING, amount )
             ->set_default_value_from_effect_type( A_MOD_CRIT_DAMAGE_MULTIPLIER )
             ->set_duration( duration ) );
-    effect.player->buffs.elemental_chaos_air = buff_list.emplace_back(
+    buff_list.emplace_back(  // no need for hardcoded player buff pointer
         make_buff<stat_buff_t>( effect.player, "elemental_chaos_air", effect.player->find_spell( 371350 ) )
             ->add_stat( STAT_HASTE_RATING, amount )
-            ->set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS )
-            ->add_invalidate( CACHE_RUN_SPEED )
+            ->set_movement_speed_buff_from_data()
             ->set_duration( duration ) );
     effect.player->buffs.elemental_chaos_earth = buff_list.emplace_back(
         make_buff<stat_buff_t>( effect.player, "elemental_chaos_earth", effect.player->find_spell( 371351 ) )

@@ -237,10 +237,7 @@ void celestial_guidance( special_effect_t& effect )
   if ( !effect.custom_buff )
   {
     effect.custom_buff = make_buff<SL_buff_t>( effect.player, "celestial_guidance", effect.player->find_spell( 324748 ) )
-      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-      ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-      ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-      ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+      ->set_pct_buff_type_from_data( true );
   }
 
   new dbc_proc_callback_t( effect.player, effect );

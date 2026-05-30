@@ -1271,6 +1271,130 @@ buff_t* buff_t::set_pct_buff_type( stat_pct_buff_type type )
   return this;
 }
 
+buff_t* buff_t::set_pct_buff_type_from_effect( size_t effect_idx, bool set_default )
+{
+  if ( !data().ok() )
+    return this;
+
+  if ( set_default )
+    set_default_value_from_effect( effect_idx );
+
+  const auto& _eff = data().effectN( effect_idx );
+
+  switch ( _eff.subtype() )
+  {
+    case A_MOD_ALL_CRIT_CHANCE: return set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    case A_HASTE_ALL:           return set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    case A_MOD_VERSATILITY_PCT: return set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+    case A_MOD_MASTERY_PCT:     return set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+    case A_MOD_TOTAL_STAT_PERCENTAGE:
+    {
+      auto _misc = _eff.misc_value2();
+
+      for ( auto i = STAT_PCT_BUFF_STRENGTH; i < STAT_PCT_BUFF_MAX; ++i )
+        if ( _misc & ( 0b1 << ( i - STAT_PCT_BUFF_STRENGTH ) ) )
+          set_pct_buff_type( i );
+
+      break;
+    }
+    default: break;
+  }
+
+  return this;
+}
+
+buff_t* buff_t::set_pct_buff_type_from_data( bool set_default )
+{
+  std::vector<double> validation;
+
+  for ( const auto& _eff : data().effects() )
+  {
+    switch ( _eff.subtype() )
+    {
+      case A_MOD_ALL_CRIT_CHANCE:
+      case A_HASTE_ALL:
+      case A_MOD_VERSATILITY_PCT:
+      case A_MOD_MASTERY_PCT:
+      case A_MOD_TOTAL_STAT_PERCENTAGE:
+        set_pct_buff_type_from_effect( _eff.index() + 1, set_default );
+        if ( set_default )
+          validation.push_back( default_value );
+      default: break;
+    }
+  }
+
+  if ( set_default && !validation.empty() && !range::all_of( validation, [ v = validation.front() ]( auto i ) {
+         return i == v;
+       } ) )
+  {
+    throw sc_initialization_error( fmt::format(
+      "set_pct_buff_type_from_data() used on '{}' with applicable effects that have different default values.",
+      *this ) );
+  }
+
+  return this;
+}
+
+buff_t* buff_t::set_movement_speed_buff( bool stacking, double percent )
+{
+  if ( !player || is_fallback )
+    return this;
+
+  if ( stacking )
+  {
+    player->buffs.movement_speed_buffs[ 0 ].emplace_back( percent, this );
+  }
+  else
+  {
+    // non-stacking buffs with a single stack need to be sorted
+    if ( max_stack() <= 1 )
+    {
+      auto& _vec = player->buffs.movement_speed_buffs[ 1 ];
+      auto it = range::upper_bound( _vec, percent, {}, &std::pair<double, buff_t*>::first );
+
+      assert( it == _vec.end() || it->first <= percent );
+
+      _vec.insert( it, { percent, this } );
+    }
+    // non-stacking buffs with multiple stacks will always get checked and don't need sorting
+    else
+    {
+      player->buffs.movement_speed_buffs[ 2 ].emplace_back( percent, this );
+    }
+  }
+
+  add_invalidate( CACHE_RUN_SPEED );
+
+  return this;
+}
+
+buff_t* buff_t::set_movement_speed_buff_from_effect( size_t effect_idx, double percent )
+{
+  if ( !data().ok() )
+    return this;
+
+  const auto& _eff = data().effectN( effect_idx );
+
+  if ( !percent )
+    percent = _eff.percent();
+
+  switch ( _eff.subtype() )
+  {
+    case A_MOD_INCREASE_SPEED: return set_movement_speed_buff( false, percent );
+    case A_MOD_SPEED_ALWAYS:   return set_movement_speed_buff( true, percent );
+    default:                   return this;
+  }
+}
+
+buff_t* buff_t::set_movement_speed_buff_from_data( double percent )
+{
+  for ( const auto& _eff : data().effects() )
+    if ( _eff.subtype() == A_MOD_INCREASE_SPEED || _eff.subtype() == A_MOD_SPEED_ALWAYS )
+      return set_movement_speed_buff_from_effect( _eff.index() + 1, percent );
+
+  return this;
+}
+
 buff_t* buff_t::set_default_value( double value, size_t effect_idx )
 {
   // Ensure we are not errantly overwriting a value that is already set to a given effect
@@ -2035,7 +2159,7 @@ void buff_t::decrement( int stacks, double value )
 
     if ( old_stack != current_stack )
     {
-      if ( sim->buff_stack_uptime_timeline )
+      if ( sim->buff_stack_uptime_timeline && !quiet )
         update_stack_uptime_array( sim->current_time(), old_stack );
 
       last_stack_change = sim->current_time();
@@ -2463,7 +2587,7 @@ void buff_t::bump( int stacks, double value )
 
   if ( old_stack != current_stack )
   {
-    if ( sim->buff_stack_uptime_timeline )
+    if ( sim->buff_stack_uptime_timeline && !quiet )
       update_stack_uptime_array( sim->current_time(), old_stack );
 
     last_stack_change = sim->current_time();
@@ -2796,7 +2920,7 @@ void buff_t::merge( const buff_t& other )
   avg_expire.merge( other.avg_expire );
   avg_overflow_count.merge( other.avg_overflow_count );
   avg_overflow_total.merge( other.avg_overflow_total );
-  if ( sim->buff_uptime_timeline )
+  if ( sim->buff_uptime_timeline && !quiet )
     uptime_array.merge( other.uptime_array );
 
 #ifndef NDEBUG
@@ -3064,7 +3188,7 @@ void buff_t::init_haste_type()
 
 void buff_t::update_stack_uptime_array( timespan_t current_time, int old_stacks )
 {
-  if ( !sim->buff_uptime_timeline )
+  if ( !sim->buff_uptime_timeline || quiet )
     return;
 
   // No data collection done on first iteration of multi-iteration sim, as per sim_t::combat_end()
@@ -3373,7 +3497,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
     if ( old_stack != current_stack )
     {
-      if ( sim->buff_stack_uptime_timeline )
+      if ( sim->buff_stack_uptime_timeline && !quiet )
         update_stack_uptime_array( sim->current_time(), old_stack );
 
       last_stack_change = sim->current_time();

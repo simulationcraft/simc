@@ -1247,17 +1247,11 @@ struct warlock_module_t : public module_t
   void register_hotfixes() const override
   { }
 
+  void register_actor_initializers( sim_t* ) const override
+  { }
+
   bool valid() const override
   { return true; }
-
-  void init( player_t* ) const override
-  { }
-
-  void combat_begin( sim_t* ) const override
-  { }
-
-  void combat_end( sim_t* ) const override
-  { }
 };
 
 warlock::warlock_t::pets_t::pets_t( warlock_t* w )

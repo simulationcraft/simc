@@ -1610,16 +1610,15 @@ void sikrans_endless_arsenal( special_effect_t& effect )
       b_dam->base_multiplier *= role_mult( e.player, e.player->find_spell( 445475 ) );
       add_child( b_dam );
 
-      auto b_speed = create_buff<buff_t>( e.player, e.player->find_spell( 448436 ) )
-        ->add_invalidate( CACHE_RUN_SPEED );
-
-      e.player->buffs.surekian_grace = b_speed;
-
       auto b_stack = create_buff<buff_t>( e.player, e.player->find_spell( 448433 ) );
-      b_stack->set_default_value( data->effectN( 7 ).percent() / b_stack->max_stack() )
-        ->set_expire_callback( [ b_speed ]( buff_t* b, int s, timespan_t ) {
-          b_speed->trigger( 1, b->default_value * s );
-        } );
+
+      auto b_speed = create_buff<buff_t>( e.player, e.player->find_spell( 448436 ) )
+        ->set_max_stack( b_stack->max_stack() )
+        ->set_movement_speed_buff_from_data( data->effectN( 7 ).percent() / b_stack->max_stack() );
+
+      b_stack->set_expire_callback( [ b_speed ]( buff_t*, int, timespan_t ) {
+        b_speed->trigger();
+      } );
 
       e.player->register_movement_callback( [ b_stack ]( bool start ) {
         if ( start )
@@ -2519,16 +2518,28 @@ struct mighty_smash_t : public algari_concodance_pet_spell_t
 
 struct earthen_ire_buff_t : public algari_concodance_pet_spell_t
 {
+  buff_t* ire_buff;
+
   earthen_ire_buff_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
     : algari_concodance_pet_spell_t( name, p, e.player->find_spell( 452518 ), a )
   {
     background = true;
+
+    auto ire_damage = create_proc_action<generic_aoe_proc_t>( "earthen_ire_aoe", e, 452890 );
+    ire_damage->base_dd_min = ire_damage->base_dd_max = e.driver()->effectN( 10 ).average( e );
+    ire_damage->stats = stats;
+    stats->action_list.push_back( ire_damage );
+    // manual init since this is created when the pet is dynamically created during runtime
+    ire_damage->init();
+
+    ire_buff = create_buff<buff_t>( e.player, e.player->find_spell( 452514 ) )
+      ->set_tick_callback( [ ire_damage ]( buff_t*, int, timespan_t ) { ire_damage->execute(); } );
   }
 
   void execute() override
   {
     algari_concodance_pet_spell_t::execute();
-    p()->buffs.earthen_ire->trigger();
+    ire_buff->trigger();
   }
 };
 
@@ -2644,7 +2655,7 @@ struct boulderbane_pet_t : public sigil_of_algari_concordance_pet_t
   {
     sigil_of_algari_concordance_pet_t::create_actions();
     st_action       = new mighty_smash_t( "mighty_smash", this, effect, action );
-    one_time_action = new earthen_ire_buff_t( "earthen_ire_buff", this, effect, action );
+    one_time_action = new earthen_ire_buff_t( "earthen_ire", this, effect, action );
   }
 };
 
@@ -2660,7 +2671,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
     bool boulderbane;
     bool brightstone;
 
-    sigil_of_algari_concordance_t( const special_effect_t& e, action_t* earthen_ire_damage )
+    sigil_of_algari_concordance_t( const special_effect_t& e )
       : generic_proc_t( e, "sigil_of_algari_concordance", e.driver() ),
         summon_spell( nullptr ),
         silvervein_spawner( "silvervein", e.player ),
@@ -2735,7 +2746,6 @@ void sigil_of_algari_concordance( special_effect_t& e )
         boulderbane_spawner.set_creation_callback(
             [ & ]( player_t* ) { return new boulderbane_pet_t( e, this, summon_spell ); } );
         boulderbane_spawner.set_default_duration( summon_spell->duration() );
-        add_child( earthen_ire_damage );
       }
       if ( brightstone )
       {
@@ -2766,18 +2776,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
     }
   };
 
-  auto earthen_ire_damage =
-      create_proc_action<generic_aoe_proc_t>( "earthen_ire", e, e.player->find_spell( 452890 ), true );
-
-  earthen_ire_damage->base_dd_min = earthen_ire_damage->base_dd_max = e.driver()->effectN( 10 ).average( e );
-
-  auto earthen_ire_buff_spell = e.player->find_spell( 452514 );
-  e.player->buffs.earthen_ire =
-      create_buff<buff_t>( e.player, earthen_ire_buff_spell )
-          ->set_tick_callback( [ earthen_ire_damage ]( buff_t*, int, timespan_t ) { earthen_ire_damage->execute(); } );
-
-  e.execute_action =
-      create_proc_action<sigil_of_algari_concordance_t>( "sigil_of_algari_concordance", e, earthen_ire_damage );
+  e.execute_action = create_proc_action<sigil_of_algari_concordance_t>( "sigil_of_algari_concordance", e );
   new dbc_proc_callback_t( e.player, e );
 }
 }  // namespace sigil_of_algari_concordance
@@ -4576,12 +4575,8 @@ void shining_arathor_insignia( special_effect_t& effect )
 //  e2: haste
 void quickwick_candlestick( special_effect_t& effect )
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.driver(), effect.item )
-    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
-    ->add_invalidate( CACHE_RUN_SPEED );
-
-  effect.player->buffs.quickwicks_quick_trick_wick_walk = buff;
-  effect.custom_buff = buff;
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.driver(), effect.item )
+    ->set_movement_speed_buff_from_data();
 }
 
 // 455435 driver
@@ -5112,27 +5107,22 @@ void scroll_of_momentum( special_effect_t& effect )
 
   // setup stacking buff + driver
   auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 459224 ) )
-    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
-    ->add_invalidate( CACHE_RUN_SPEED )
+    ->set_movement_speed_buff_from_data()
     ->set_expire_at_max_stack( true );
 
-  effect.player->buffs.building_momentum = counter;
   effect.custom_buff = counter;
 
   auto cb = new dbc_proc_callback_t( effect.player, effect );
 
   // setup max buff
   auto max = create_buff<buff_t>( effect.player, effect.player->find_spell( 459228 ) )
-    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
-    ->add_invalidate( CACHE_RUN_SPEED )
+    ->set_movement_speed_buff_from_data()
     ->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
       if ( new_ )
         cb->deactivate();
       else
         cb->activate();
     } );
-
-  effect.player->buffs.full_momentum = max;
 
   counter->set_expire_callback( [ max ]( buff_t*, int, timespan_t ) {
     max->trigger();

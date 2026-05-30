@@ -25,18 +25,17 @@ actions.precombat=arcane_intellect
 actions.precombat+=/snapshot_stats
 actions.precombat+=/variable,name=target_swapping,op=reset,default=0
 actions.precombat+=/summon_water_elemental
-# Precast Blizzard against all targets if you have any of the Blizzard talents. In AoE (3+ for FF, 4+ for SS) Blizzard is always the precast.
-actions.precombat+=/blizzard,if=active_enemies>=(4-talent.frostfire_bolt)|talent.freezing_rain|talent.freezing_winds
+# Precast Blizzard in AoE, at 3+ for Frostfire and 4+ for Spellslinger.
+actions.precombat+=/blizzard,if=active_enemies>=3&talent.frostfire_bolt|active_enemies>=4&talent.splinterstorm
 actions.precombat+=/glacial_spike
 actions.precombat+=/frostbolt
 
 # Executed every time the actor is available.
 actions=call_action_list,name=cds
-# Frostfire AoE starts at 3+ targets.
+actions+=/run_action_list,name=ff_tarswap,if=talent.frostfire_bolt&variable.target_swapping
 actions+=/run_action_list,name=ff_aoe,if=talent.frostfire_bolt&active_enemies>=3
 actions+=/run_action_list,name=ff_st,if=talent.frostfire_bolt
 actions+=/run_action_list,name=ss_tarswap,if=variable.target_swapping
-# Spellslinger AoE starts at 4+ targets
 actions+=/run_action_list,name=ss_aoe,if=active_enemies>=4
 actions+=/run_action_list,name=ss_st
 
@@ -55,8 +54,10 @@ actions.cds+=/berserking,if=variable.ff_trinket_timing|variable.ss_trinket_timin
 actions.cds+=/fireblood,if=variable.ff_trinket_timing|variable.ss_trinket_timing
 actions.cds+=/ancestral_call,if=variable.ff_trinket_timing|variable.ss_trinket_timing
 # Opener Frostfire
-actions.cds+=/flurry,if=active_enemies>=3&talent.wintertide&talent.frostfire_bolt,line_cd=9999
-actions.cds+=/ray_of_frost,if=talent.frostfire_bolt,line_cd=9999
+actions.cds+=/flurry,if=active_enemies>=3&talent.wintertide&talent.frostfire_bolt&!variable.target_swapping,line_cd=9999
+actions.cds+=/flurry,target_if=min:debuff.freezing.stack,if=active_enemies>=3&talent.wintertide&talent.frostfire_bolt&variable.target_swapping,line_cd=9999
+actions.cds+=/ray_of_frost,if=talent.frostfire_bolt&!variable.target_swapping,line_cd=9999
+actions.cds+=/ray_of_frost,target_if=min:debuff.freezing.stack,if=talent.frostfire_bolt&variable.target_swapping,line_cd=9999
 # Opener Spellslinger
 actions.cds+=/flurry,if=active_enemies>=4&talent.wintertide&talent.splinterstorm&!variable.target_swapping,line_cd=9999
 actions.cds+=/flurry,target_if=min:debuff.freezing.react,if=active_enemies>=4&talent.wintertide&talent.splinterstorm&variable.target_swapping,line_cd=9999
@@ -64,17 +65,16 @@ actions.cds+=/frozen_orb,if=active_enemies>=4&talent.splinterstorm,line_cd=9999
 actions.cds+=/ray_of_frost,if=talent.splinterstorm&!variable.target_swapping,line_cd=9999
 actions.cds+=/ray_of_frost,target_if=min:debuff.freezing.react,if=talent.splinterstorm&variable.target_swapping,line_cd=9999
 # End-Of-Fight Actions
-actions.cds+=/ray_of_frost,if=fight_remains<12&(!variable.target_swapping|talent.frostfire_bolt)
-actions.cds+=/ray_of_frost,target_if=min:debuff.freezing.react,if=fight_remains<12&variable.target_swapping
+actions.cds+=/ray_of_frost,if=!variable.target_swapping&fight_remains<12
+actions.cds+=/ray_of_frost,target_if=min:debuff.freezing.react,if=variable.target_swapping&fight_remains<12
 # Externals
 actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.power_infusion.down
 
-actions.ff_aoe=blizzard,if=buff.freezing_rain.up
-actions.ff_aoe+=/flurry,if=buff.brain_freeze.react&buff.thermal_void.down
+actions.ff_aoe=flurry,if=buff.brain_freeze.react&buff.thermal_void.down
 actions.ff_aoe+=/frozen_orb
-actions.ff_aoe+=/glacial_spike
 actions.ff_aoe+=/comet_storm
-actions.ff_aoe+=/blizzard,if=active_enemies>=(5-talent.freezing_rain-talent.freezing_winds)
+actions.ff_aoe+=/glacial_spike
+actions.ff_aoe+=/blizzard,if=active_enemies>=6|active_enemies>=4&talent.freezing_rain|talent.freezing_winds
 actions.ff_aoe+=/ice_lance,if=buff.fingers_of_frost.react
 actions.ff_aoe+=/ice_lance,if=debuff.freezing.stack>=10
 actions.ff_aoe+=/flurry,if=cooldown_react
@@ -84,14 +84,30 @@ actions.ff_aoe+=/call_action_list,name=movement
 
 actions.ff_st=flurry,if=buff.brain_freeze.react&buff.thermal_void.down
 actions.ff_st+=/frozen_orb
-actions.ff_st+=/glacial_spike
 actions.ff_st+=/comet_storm
+actions.ff_st+=/glacial_spike
 actions.ff_st+=/ice_lance,if=buff.fingers_of_frost.react
 actions.ff_st+=/ice_lance,if=debuff.freezing.stack>=10
 actions.ff_st+=/flurry,if=cooldown_react
-actions.ff_st+=/ray_of_frost,if=active_enemies=1|!buff.frostfire_empowerment.react
+actions.ff_st+=/ray_of_frost
 actions.ff_st+=/frostbolt
 actions.ff_st+=/call_action_list,name=movement
+
+# Played when the variable target_swapping=1. It's the ST/AoE rotation but always targets the enemy with the lowest Freezing stacks when casting a spell that generates Freezing.
+actions.ff_tarswap=flurry,target_if=min:debuff.freezing.stack,if=buff.brain_freeze.react&buff.thermal_void.down
+actions.ff_tarswap+=/frozen_orb
+actions.ff_tarswap+=/comet_storm,target_if=max:debuff.freezing.stack
+actions.ff_tarswap+=/glacial_spike,target_if=min:debuff.freezing.stack,if=!talent.glacial_shatter
+actions.ff_tarswap+=/glacial_spike,target_if=max:debuff.freezing.stack,if=talent.glacial_shatter
+actions.ff_tarswap+=/blizzard,if=active_enemies>=6|active_enemies>=4&talent.freezing_rain|active_enemies>=3&talent.freezing_winds
+actions.ff_tarswap+=/ice_lance,if=buff.fingers_of_frost.react
+# Against 2 targets, wait for both to have 10+ freezing stacks before casting IL. Against 3+ targets cast IL as usual, as soon as your main target has 10+ stacks.
+actions.ff_tarswap+=/ice_lance,target_if=min:debuff.freezing.stack,if=active_enemies<=2&debuff.freezing.stack>=10
+actions.ff_tarswap+=/ice_lance,if=active_enemies>=3&debuff.freezing.stack>=10
+actions.ff_tarswap+=/flurry,target_if=min:debuff.freezing.stack,if=cooldown_react
+actions.ff_tarswap+=/ray_of_frost,target_if=min:debuff.freezing.stack,if=active_enemies<=2|!buff.frostfire_empowerment.react
+actions.ff_tarswap+=/frostbolt,target_if=min:debuff.freezing.stack
+actions.ff_tarswap+=/call_action_list,name=movement
 
 actions.movement=any_blink,if=movement.distance>5
 actions.movement+=/blizzard,if=buff.freezing_rain.up
@@ -133,11 +149,12 @@ actions.ss_tarswap+=/blizzard,target_if=active_enemies>=4&buff.freezing_rain.up
 actions.ss_tarswap+=/flurry,target_if=min:debuff.freezing.react,if=buff.brain_freeze.react&buff.thermal_void.down
 actions.ss_tarswap+=/ice_lance,if=buff.fingers_of_frost.react=2
 actions.ss_tarswap+=/frozen_orb
-actions.ss_tarswap+=/glacial_spike,target_if=min:debuff.freezing.react
+actions.ss_tarswap+=/glacial_spike,target_if=min:debuff.freezing.react,if=!talent.glacial_shatter
+actions.ss_tarswap+=/glacial_spike,target_if=max:debuff.freezing.react,if=talent.glacial_shatter
 actions.ss_tarswap+=/ice_lance,if=buff.fingers_of_frost.react
-# Against 2 targets, wait for both to have 6+ freezing stacks before casting IL. Against 3+ targets cast IL as soon as any one target has 6+ stacks.
-actions.ss_tarswap+=/ice_lance,target_if=min:debuff.freezing.react>=6,if=active_enemies<=2&debuff.freezing.react>=6
-actions.ss_tarswap+=/ice_lance,target_if=debuff.freezing.react>=6,if=active_enemies>=3
+# Against 2 targets, wait for both to have 6+ freezing stacks before casting IL. Against 3+ targets cast IL as usual, as soon as your main target has 6+ stacks.
+actions.ss_tarswap+=/ice_lance,target_if=min:debuff.freezing.react,if=active_enemies<=2&debuff.freezing.react>=6
+actions.ss_tarswap+=/ice_lance,if=active_enemies>=3&debuff.freezing.react>=6
 actions.ss_tarswap+=/ice_nova,if=active_enemies>=4&talent.cone_of_frost
 actions.ss_tarswap+=/cone_of_cold,if=active_enemies>=4&talent.cone_of_frost
 actions.ss_tarswap+=/blizzard,if=active_enemies>=4&talent.freezing_winds

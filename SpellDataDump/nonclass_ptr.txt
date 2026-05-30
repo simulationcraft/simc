@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67525 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.67808 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -46598,6 +46598,34 @@ Effects          :
 #1 (id=213295)   : Create Item (24)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Combine ten nuggets into ore.
+
+Name             : Touch of Elune - Day (desc=Racial Passive) (id=154796) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Triggered By     : Touch of Elune - Night (154797)
+Attributes       : Is Ability (4), Allow Cast While Dead (23), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=214832)   : Apply Aura (6) | Modify Critical Strike% (290)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+#2 (id=214848)   : Remove Aura (203): Touch of Elune - Night
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 154797 | Target: Self (1)
+Description      : Increases your Critical Strike by 1% during the day.
+Tooltip          : Critical Strike chance increased by 1%.
+
+Name             : Touch of Elune - Night (desc=Racial Passive) (id=154797) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Triggered By     : Touch of Elune - Day (154796)
+Attributes       : Is Ability (4), Allow Cast While Dead (23), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=214833)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+#2 (id=214847)   : Remove Aura (203): Touch of Elune - Day
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 154796 | Target: Self (1)
+Description      : Increases your Haste by 1% during the night.
+Tooltip          : Haste increased by 1%.
 
 Name             : Summon Mini Dark Portal (id=154919) 
 School           : Physical
@@ -97330,6 +97358,19 @@ Effects          :
 #1 (id=724256)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 1379.964 (coefficient=10.79755) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your Chain Heal heals its primary target for an additional $s1 healing.
+
+Name             : Fireblood (desc=Racial) (id=273104) 
+School           : Physical
+Spell Type       : None
+Duration         : 8 seconds
+Attributes       : Is Ability (4), Do Not Sheath (18), Aura Points On Client (268)
+Effects          :
+#1 (id=724453)   : Apply Aura (6) | Scale% (Stacking) (61)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+#2 (id=1033209)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 84.29616 (coefficient=0.643087) | Target: Self (1)
+Description      : Increases primary stat by $s1.
+Tooltip          : Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $265226w2.
 
 Name             : Ruinous Bolt (id=273150) [Passive] 
 School           : Physical
@@ -218723,18 +218764,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 233150 | Misc Value 2: 64 | Radius: 2 yards | Target: Front of Self (47)
 Description      : Plant a banner representing your victories within the Astral arenas.
 
-Name             : [Season] Champion's Prestigious Banner (id=469619) 
-School           : Physical
-Spell Type       : None
-Duration         : 60 seconds
-Cooldown         : 600 seconds
-Labels           : 4089
-                 : 4091
-Effects          :
-#1 (id=1184070)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 233151 | Misc Value 2: 64 | Radius: 2 yards | Target: Front of Self (47)
-Description      : Plant a banner representing your victories within the [Season] arenas.
-
 Name             : Living Magma (id=469762) [Passive] 
 School           : Physical
 Spell Type       : None
@@ -236574,7 +236603,7 @@ Name             : Hunted (id=1235030) [Hidden]
 School           : Physical
 Spell Type       : None
 Range            : 25 yards
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Aura Is Debuff (26), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Visible only to caster (conversations only) (343)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Aura Is Debuff (26), Allow While Sitting (27), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1229783)  : Trigger Spell (64): Hunted
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Trigger Spell: 1235035 | Target: Self (1)
@@ -250775,6 +250804,8 @@ Name             : Rune of Unleashed Fire (id=1263002)
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 6782
+Attributes       : Can't Crit (93)
 Effects          :
 #1 (id=1273548)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -250782,8 +250813,6 @@ Effects          :
                    Base Value: 1465 | Scaled Value: 1465 | Target: Targeted Ally (21)
 #3 (id=1307063)  : Trigger Spell (64): Rune of Lingering
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287665 | Target: Targeted Ally (21)
-#4 (id=1307774)  : Trigger Spell (64): Rune of Echoes
-                   Base Value: 0 | Scaled Value: 0 | Delay: 100_ms | Trigger Spell: 1289063 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279599
 
 Name             : Amani Extract (id=1263074) 
@@ -253464,7 +253493,7 @@ School           : Cosmic
 Spell Type       : None
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Aura Icon (60), Hide Passive From Tooltip (451)
 Effects          :
-#1 (id=1292087)  : Apply Aura (6) | Periodic Trigger Spell (23): Rune of Void-Touched Orbs every 10 seconds
+#1 (id=1292087)  : Apply Aura (6) | Periodic Trigger Spell (23): Void-Touched Orbs every 10 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287425 | Target: Self (1)
 #2 (id=1307029)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): [DNT] Generic Spell
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1288183 | Target: Self (1)
@@ -253472,8 +253501,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 265203 | Target: Self (1)
 Description      : |CFF88aaffCore Rune|R
 
-Every $t sec you attract a void orb to you up to a max of $1287425u. Your attacks send these orbs at your enemy dealing |CFFffffff${$<dmgvalue>*$1286716s2}|R Cosmic damage for each. Your heal spells send the orbs to the lowest health ally nearby restoring |CFFffffff${$<dmgvalue>*$1286721s2}|R health for each orb.
-Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+Every $t1 sec you attract a Void-Touched Orb, up to $1287425u.
+
+Damaging an enemy sends all of the Orbs at them, dealing $<voidDmg> Cosmic damage per Orb.
+
+Your healing spells send all of the Orbs to the most injured nearby ally, healing them for $<voidHealing> per Orb.
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
 Name             : Rune of Unleashed Fire (desc=Core Rune) (id=1279599) [Passive, Hidden] 
@@ -253483,7 +253520,7 @@ Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 9
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Aura Icon (60), Hide Passive From Tooltip (451)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Aura Icon (60), Only Proc From Class Abilities (415), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1292089)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -253493,8 +253530,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 265203 | Target: Self (1)
 Description      : |CFF88aaffCore Rune|R
 
-Your spells and abilities have a chance to call down a pillar of fire dealing |CFFffffff${$<dmgvalue>*$1286970s2}|R Fire damage to an enemy or cauterizing the wounds of a nearby ally restoring |CFFffffff${$<dmgvalue>*$1263002s2}|R health.
-Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+Your spells and abilities have a very high chance to unleash the power of flame, dealing $<fireDmg> Fire damage to an enemy or restoring $<fireHealing> health to the most injured nearby ally.
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
 Name             : Rune of Self-Mending (id=1279603) [Passive, Hidden] 
@@ -253505,8 +253546,12 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292092)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
-Description      : When below $s1% health your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R also heals you for |CFFffffff${$<dmgvalue>*$1287908s2}|R health.
-Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+Description      : When your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) deals damage or healing, you are healed for ${$<basePoints>*$1287908s2} if you are below 75% health.
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
 Name             : Rune of Void-Tainted Shell (id=1279604) [Passive, Hidden] 
@@ -253520,10 +253565,14 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292093)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : When struck for more than $s1% of your max health gain an absorb shield that will absorb up to |CFFffffff${$<dmgvalue>*$1287955s2}|R damage but ${($1287955s4/$1287955s2)*100}% of the absorbed amount will linger dealing its damage over $1287955d.
+Description      : Suffering more than $s1% of your maximum health in a single hit grants you a shield that absorbs ${$<basePoints>*$1287955s2} damage for $1287955d, but also inflicts $1287955s4 damage to you every $1287955t3 sec.
 
-This effect can only occur once every $proccooldown sec.
-Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+This can only occur every $proccooldown sec.
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
 Name             : Rune of Lynxlike Reflexes (id=1279605) [Passive, Hidden] 
@@ -253531,16 +253580,20 @@ Talent Entry     : Generic [tree=expansion, row=2, col=1, max_rank=1, req_points
 School           : Physical
 Spell Type       : None
 Internal Cooldown: 30 seconds
-Proc Chance      : 101%
+Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1292094)  : Apply Aura (6) | Proc Trigger Spell (42): Rune of Lynxlike Reflexes
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287978 | Target: Self (1)
-Description      : When struck in combat increase your speed by |CFFffffff${$<statsvalue>*$1287978s2}|R for $1287978d.
+Description      : Taking damage grants ${$<statsvalue>*$1287978s2} Speed for $1287978d.
 
-Cannot occur more than once every $proccooldown sec.
-Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+This can only occur every $proccooldown sec.
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
 Name             : Rune of Critical Power (id=1279609) [Passive, Hidden] 
@@ -253551,8 +253604,12 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292098)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R increase your Critical Strike rating by |CFFffffff${$<statsvalue>*$1287772s2}|R. This effect may overlap.
-Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+Description      : When your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) activates, gain ${$<statsvalue>*$1287772s2} Critical Strike for $1287772d. Multiple applications may overlap.
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
 Name             : Rune of Burning Haste (id=1279610) [Passive, Hidden] 
@@ -253563,8 +253620,12 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292099)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R increase your Haste rating by |CFFffffff${$<statsvalue>*$1287774s2}|R. This effect may overlap.
-Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+Description      : When your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) activates, gain ${$<statsvalue>*$1287774s2} Haste for $1287774d. Multiple applications may overlap.
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
 Name             : Rune of Masterful Cunning (id=1279612) [Passive, Hidden] 
@@ -253575,8 +253636,12 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292101)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R increase your Mastery rating by |CFFffffff${$<statsvalue>*$1287771s2}|R. This effect may overlap.
-Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+Description      : When your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) activates, gain ${$<statsvalue>*$1287771s2} Mastery for $1287771d. Multiple applications may overlap.
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
 Name             : Rune of the Versatile Warrior (id=1279613) [Passive, Hidden] 
@@ -253587,8 +253652,12 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292102)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R increase your Versatility rating by |CFFffffff${$<statsvalue>*$1287770s2}|R. This effect may overlap.
-Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+Description      : When your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) activates, gain ${$<statsvalue>*$1287770s2} Versatility for $1287770d. Multiple applications may overlap.
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
 Name             : Rune of Overload (id=1279614) [Passive, Hidden] 
@@ -253599,7 +253668,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292103)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Increase the effectiveness of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R ability by $s1%.
+Description      : The damage and healing of your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) is increased by $s1%.
 
 Name             : Rune of Residual Energy (id=1279615) [Passive, Hidden] 
 Talent Entry     : Generic [tree=expansion, row=5, col=1, max_rank=1, req_points=0, select_idx=200]
@@ -253609,17 +253678,21 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292104)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Increase the effectiveness of your |CFF88aaffRune of Lingering|R by $s1%. 
+Description      : The damage and healing of your Rune of Lingering is increased by $s1%.
 
 Name             : Rune of Echoes (id=1279616) [Passive, Hidden] 
 Talent Entry     : Generic [tree=expansion, row=5, col=1, max_rank=1, req_points=0, select_idx=300]
 School           : Physical
 Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Cast Time (441), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1292105)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R leave an echoing curse on your target. After $1289063d, an echo of all the damage and healing done by your |CFF88aaffCore and Lingering Runes|R is repeated at $s1% effectiveness.
+Description      : Your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) leaves an echoing curse on the target for $1289063d that accumulates $s1% of all damage or healing done to the target by your Core Rune and your Rune of Lingering.
+
+When the curse expires, all accumulated damage or healing is dealt to the target.
 
 Name             : Hydrated (id=1279691) 
 School           : Physical
@@ -254045,7 +254118,7 @@ Effects          :
 #2 (id=1300996)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 14071.79 (coefficient=110.1049) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1300997)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4343.896 (coefficient=33.98888) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1941.618 (coefficient=15.19222) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your healing has a chance to spawn protective toadstools absorbing $s2 damage for up to $1285161d. If broken, the toadstools burst to deal ${$s3*$<rolemult>} Nature damage to nearby enemies.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -254194,6 +254267,8 @@ Name             : Rune of Void-Touched Orbs (desc=Core Rune) (id=1286716)
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 6782
+Attributes       : Can't Crit (93), Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1303736)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -254201,14 +254276,14 @@ Effects          :
                    Base Value: 977 | Scaled Value: 977 | Target: Self (1)
 #3 (id=1305330)  : Trigger Spell (64): Rune of Lingering
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287663 | Target: Targeted Enemy (6)
-#4 (id=1307773)  : Trigger Spell (64): Rune of Echoes
-                   Base Value: 0 | Scaled Value: 0 | Delay: 100_ms | Trigger Spell: 1289063 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1279596
 
 Name             : Rune of Void-Touched Orbs (desc=Core Rune) (id=1286721) 
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 6782
+Attributes       : Can't Crit (93)
 Effects          :
 #1 (id=1303742)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -254216,14 +254291,14 @@ Effects          :
                    Base Value: 1465 | Scaled Value: 1465 | Target: Self (1)
 #3 (id=1305331)  : Trigger Spell (64): Rune of Lingering
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287665 | Target: Targeted Ally (21)
-#4 (id=1307772)  : Trigger Spell (64): Rune of Echoes
-                   Base Value: 0 | Scaled Value: 0 | Delay: 100_ms | Trigger Spell: 1289063 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279596
 
 Name             : Rune of Unleashed Fire (id=1286970) 
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Labels           : 6782
+Attributes       : Can't Crit (93), Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1304141)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -254231,8 +254306,6 @@ Effects          :
                    Base Value: 977 | Scaled Value: 977 | Target: Targeted Enemy (6)
 #3 (id=1307066)  : Trigger Spell (64): Rune of Lingering
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287663 | Target: Targeted Enemy (6)
-#4 (id=1307771)  : Trigger Spell (64): Rune of Echoes
-                   Base Value: 0 | Scaled Value: 0 | Delay: 100_ms | Trigger Spell: 1289063 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1279599
 
 Name             : Rune of Void-Touched Orbs (desc=Core Rune) (id=1287255) [Hidden] 
@@ -254279,20 +254352,21 @@ Effects          :
 Description      : $@spelldesc1279596
 Tooltip          : Stored void orbs.
 
-Name             : Rune of Void-Touched Orbs (desc=Core Rune) (id=1287425) 
+Name             : Void-Touched Orbs (desc=Core Rune) (id=1287425) 
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
+Internal Cooldown: 1 seconds
 Stacks           : 5 maximum
-Proc Chance      : 101%
+Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Rune of Void-Touched Orbs (1279596)
-Attributes       : Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Aura Points On Client (268), Only Proc From Class Abilities (415), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1304874)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc1279596
-Tooltip          : Dealing damage or healing will send void orbs out equal to the number of stacks this aura has, dealing Cosmic damage or healing based on whether the target is an enemy or ally.
+Tooltip          : Dealing damage or healing will send $?$w1=1[the Orb][all $w1 Orbs] towards your target, inflicting Cosmic damage or restoring health depending on the target.
 
 Name             : Rune of Lingering (id=1287555) [Passive, Hidden] 
 Talent Entry     : Generic [tree=expansion, row=3, col=1, max_rank=1, req_points=0]
@@ -254302,12 +254376,14 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1305151)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : |CFF88aaffLingering Rune|R
+Description      : Your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) deals an additional ${$<basePoints>*$1286970s2} Cosmic damage to enemies, or an additional ${$<basePoints>*$1287665s2} healing to allies, over $1287663d.
 
-The effects of your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R leave behind a periodic effect that deals |CFFffffff${$<dmgvalue>*$1286970s2}|R Cosmic damage or restores |CFFffffff${$<dmgvalue>*$1287665s2}|R health over $1287663d based on whether the target is an enemy or ally.
-
-Your |CFF88aaffCore Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs])|R favors hitting targets that are unaffected by |CFF88aaffRune of Lingering|R.
-Variables        : $dmgvalue=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+Your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) now favors targets that are unaffected by your Rune of Lingering.
+Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
+$voidDmg=${$<basePoints>*$1286716s2}
+$voidHealing=${$<basePoints>*$1286721s2}
+$fireDmg=${$<basePoints>*$1286970s2}
+$fireHealing=${$<basePoints>*$1263002s2}
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
 Name             : Rune of Lingering (desc=Core Rune) (id=1287663) 
@@ -254315,30 +254391,32 @@ School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
+Labels           : 6782
 Triggered By     : Rune of Void-Touched Orbs (1286716), Rune of Unleashed Fire (1286970)
-Attributes       : Suppress Caster Procs (112), Aura Points On Client (268)
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1305315)  : Apply Aura (6) | Periodic Damage (3): cosmic every 1 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1305316)  : Dummy (3)
                    Base Value: 977 | Scaled Value: 977 | Target: Self (1)
 Description      : $@spelldesc1287555
-Tooltip          : Suffering $w1 Cosmic damage every sec.
+Tooltip          : Suffering $w1 Cosmic damage every $t1 sec.
 
 Name             : Rune of Lingering (desc=Core Rune) (id=1287665) 
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
+Labels           : 6782
 Triggered By     : Rune of Unleashed Fire (1263002), Rune of Void-Touched Orbs (1286721)
-Attributes       : Suppress Caster Procs (112), Aura Points On Client (268)
+Attributes       : Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1305319)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=1305320)  : Dummy (3)
                    Base Value: 1465 | Scaled Value: 1465 | Target: Self (1)
 Description      : $@spelldesc1287555
-Tooltip          : Restoring $w1 health every sec.
+Tooltip          : Healing $w1 every $t1 sec.
 
 Name             : Rune of the Versatile Warrior (id=1287770) 
 School           : Physical
@@ -254404,6 +254482,7 @@ Name             : Rune of Self-Mending (desc=Core Rune) (id=1287908)
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
+Attributes       : Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1305705)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -254416,7 +254495,7 @@ School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 10 seconds
-Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Attributes       : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1305779)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -254428,7 +254507,8 @@ Effects          :
 #4 (id=1305790)  : Dummy (3)
                    Base Value: 3296 | Scaled Value: 3296 | Target: Self (1)
 Description      : $@spelldesc1279604
-Tooltip          : $?$w1>1[Absorbs the next $w1 damage. ][]Taking $w3 Cosmic damage every sec.
+Tooltip          : $?$w1>1[Absorbs $w1 damage.
+][]Suffering $w3 Cosmic damage every $t3 sec.
 
 Name             : Rune of Lynxlike Reflexes (id=1287978) 
 School           : Physical
@@ -254464,15 +254544,14 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
-Stacks           : 20 maximum
-Proc Chance      : 101%
-Triggered By     : Rune of Unleashed Fire (1263002), Rune of Void-Touched Orbs (1286716), Rune of Void-Touched Orbs (1286721), Rune of Unleashed Fire (1286970)
-Attributes       : No Aura Cancel (31), Do Not Display Cast Time (441), Unknown (489)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Do Not Display Cast Time (441), Unknown (489)
 Effects          :
-#1 (id=1307259)  : Apply Aura (6) | Dummy (4)
+#1 (id=1307259)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6), Aura Points Stack (9)
+                   Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
+#2 (id=1328872)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6), Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
 Description      : $@spelldesc1279616
-Tooltip          : Echoing the effects of $@auracaster's Core and Lingering Runes upon expiration.
+Tooltip          : Accumulating damage or healing from $@auracaster's Core Rune and Rune of Lingering. The accumulated amount will be dealt on expiration.
 
 Name             : Add Keystone Affix: Lindormi's Guidance (id=1289155) 
 School           : Physical
@@ -254560,6 +254639,18 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Restores $s1% of your maximum mana every second over $d. Must remain seated while drinking.
 Tooltip          : Restoring $w1% mana every sec.
+
+Name             : Umbral Champion's Illustrious Banner (id=1290957) 
+School           : Physical
+Spell Type       : None
+Duration         : 60 seconds
+Cooldown         : 600 seconds
+Labels           : 4089
+                 : 4091
+Effects          :
+#1 (id=1310108)  : Summon Guardian (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 263908 | Misc Value 2: 64 | Radius: 2 yards | Target: Front of Self (47)
+Description      : Plant a banner representing your victories within the Umbral arenas.
 
 Name             : Illusory Adornment - Blooming Light (id=1291455) 
 School           : Physical
@@ -255134,7 +255225,7 @@ Spell Type       : None
 Effects          :
 #1 (id=1322242)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Defeat rare foes to have a chance at Adventurer Gear for your warband.
+Description      : Defeat rare foes to have a chance at Champion 1/6 Gear for your warband.
 
 Name             : World Boss (id=1298539) 
 School           : None
@@ -255150,7 +255241,7 @@ Spell Type       : None
 Effects          :
 #1 (id=1322244)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Defeat rare foes to have a chance at Veteran Gear for your warband.
+Description      : Defeat rare foes to have a chance at Champion 4/6 Gear for your warband.
 
 Name             : World Boss (id=1298541) 
 School           : None
@@ -255167,4 +255258,24 @@ Effects          :
 #1 (id=1322246)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Defeat rare foes to have a chance at gear for your current specialization.
+
+Name             : Rune of Echoes (id=1303048) 
+School           : Cosmic
+Spell Type       : Magic
+Range            : 100 yards
+Attributes       : Can't Crit (93), Do Not Display Range (126), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1328843)  : School Damage (2): cosmic
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+Description      : $@spelldesc1279616
+
+Name             : Rune of Echoes (id=1303071) 
+School           : Cosmic
+Spell Type       : Magic
+Range            : 100 yards
+Attributes       : Can't Crit (93), Do Not Display Range (126), Ignore Healing Modifiers (219), Do Not Display Cast Time (441), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=1328878)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+Description      : $@spelldesc1279616
 

@@ -8979,14 +8979,6 @@ struct hunter_module_t: public module_t
 
   bool valid() const override { return true; }
 
-  void static_init() const override
-  {
-  }
-
-  void init( player_t* ) const override
-  {
-  }
-
   void register_hotfixes() const override
   {
     // 2026-02-02: Radiant Edge is missing 10% from its base value
@@ -8997,8 +8989,7 @@ struct hunter_module_t: public module_t
         .verification_value( 15 );
   }
 
-  void combat_begin( sim_t* ) const override {}
-  void combat_end( sim_t* ) const override {}
+  void register_actor_initializers( sim_t* ) const override {}
 };
 
 } // UNNAMED NAMESPACE

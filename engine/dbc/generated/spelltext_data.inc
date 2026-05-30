@@ -1,5 +1,5 @@
-// Spell text, wow build 12.0.5.67602
-static constexpr std::array<spelltext_data_t, 28696> __spelltext_data { {
+// Spell text, wow build 12.0.5.67823
+static constexpr std::array<spelltext_data_t, 28699> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -4741,6 +4741,8 @@ static constexpr std::array<spelltext_data_t, 28696> __spelltext_data { {
   {  154746, "Maximum rage increased by $s1%.", 0, "Racial Passive" },
   {  154747, "Maximum runic power increased by $s1%.", 0, "Racial Passive" },
   {  154748, "Increases your Haste by 1% during the night.\r\n\r\nIncreases your Critical Strike by 1% during the day.", 0, "Racial Passive" },
+  {  154796, "Increases your Critical Strike by 1% during the day.", "Critical Strike chance increased by 1%.", "Racial Passive" },
+  {  154797, "Increases your Haste by 1% during the night.", "Haste increased by 1%.", "Racial Passive" },
   {  154919, "Summon a Miniature Dark Portal for $d to remind those nearby of the Iron Horde's first invasion of Azeroth.", 0, 0 },
   {  155145, "Remove $s1 beneficial effect from all enemies within $A1 yards and restore $s2 Holy Power.", 0, "Racial" },
   {  155158, "$@spelldesc153561", "Burning for $w1 Fire damage every $t1 sec.", 0 },
@@ -10364,6 +10366,7 @@ static constexpr std::array<spelltext_data_t, 28696> __spelltext_data { {
   {  273093, "Frost Strike deals an additional ${$s1+($s1/2)} damage if you have at least $s2 empty runes.", 0, 0 },
   {  273095, "When Dark Transformation expires, the unholy energy in your ghoul is expelled, dealing $s1 Shadow damage to all nearby enemies.", 0, 0 },
   {  273096, "$@spelldesc273095", 0, 0 },
+  {  273104, "Increases primary stat by $s1.", "Increases $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $265226w2.", "Racial" },
   {  273130, "Flash of Light on your Beacon of Light target is increased by $s1.", 0, 0 },
   {  273131, "Your Holy Light critical strikes refund $s1 mana during Avenging Wrath.", 0, 0 },
   {  273134, "Aura Mastery also grants your allies $s1 Max Health for its duration.", 0, 0 },
@@ -24339,7 +24342,6 @@ static constexpr std::array<spelltext_data_t, 28696> __spelltext_data { {
   {  469616, "Plant a banner representing your victories within the Forged arenas.", 0, 0 },
   {  469617, "Plant a banner representing your victories within the Prized arenas.", 0, 0 },
   {  469618, "Plant a banner representing your victories within the Astral arenas.", 0, 0 },
-  {  469619, "Plant a banner representing your victories within the [Season] arenas.", 0, 0 },
   {  469637, "$@spelldesc457058", "Your next $?c1[Envenom][Eviscerate] cast with 5 or more combo points is guaranteed to critically strike, deal $w2% additional damage, and apply $w3 stacks of Deathstalker's Mark to the target.\r\n\r\n$?c1[Garrote][Shadowstrike] does not apply Deathstalker's Mark while you have Darkest Night.", 0 },
   {  469638, "$?c1[Kill Command has a $s1% chance and Barbed Shot has a $s2% chance to grant Deathblow.\r\n][Aimed Shot's chance to grant Deathblow is increased by $s3%. Rapid Fire has a $s4% chance to grant Deathblow.]\r\n$@spellicon378770 $@spellname378770\r\nThe cooldown of $?a137015[Black Arrow]?a466932[Black Arrow][Kill Shot] is reset. Your next $?a137015[Black Arrow]?a466932[Black Arrow][Kill Shot] can be used on any target, regardless of their current health.", 0, 0 },
   {  469642, "Find Weakness increases the damage of finishing moves by $s1%.\r\n\r\nShadow Dance increases the damage of finishing moves by $s2%.\r\n\r\nShadow Blades increases the damage of finishing moves by $s3%.", 0, 0 },
@@ -28641,6 +28643,7 @@ static constexpr std::array<spelltext_data_t, 28696> __spelltext_data { {
   { 1290926, "Restores $s1% of your maximum health every second over $d. Must remain seated while eating.", "Restoring $s1% health every sec.", 0 },
   { 1290928, "Restores up to $s1% of your maximum health and mana every second over $d. Must remain seated while eating.", "Restoring $s1% health and $1291791w1% mana every second.", 0 },
   { 1290929, "Restores $s1% of your maximum mana every second over $d. Must remain seated while drinking.", "Restoring $w1% mana every sec.", 0 },
+  { 1290957, "Plant a banner representing your victories within the Umbral arenas.", 0, 0 },
   { 1291455, "Temporarily grants your shoulders a magical illusion of the Lightbloom for $M2 min.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
   { 1291457, "Inferno's Blessing's damage is increased by $s1%, and your effects that extend Ebon Might also extend Inferno's Blessing.", 0, 0 },
   { 1291459, "Temporarily grants your shoulders a magical illusion of the Lightbloom for $M2 min.\r\n\r\n|cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R ", 0, 0 },
@@ -28698,11 +28701,11 @@ static constexpr std::array<spelltext_data_t, 28696> __spelltext_data { {
   { 1293918, "$@spelldesc228049", "Immune to all attacks and spells.", "PvP Talent" },
 } };
 
-// spelltext hotfix entries, wow build 12.0.5.67602
+// spelltext hotfix entries, wow build 12.0.5.67823
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.5.67602
+// Spell description variables, wow build 12.0.5.67823
 static constexpr std::array<spelldesc_vars_data_t, 697> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29403,7 +29406,7 @@ static constexpr std::array<spelldesc_vars_data_t, 697> __spelldesc_vars_data { 
   { 1293610, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.5.67602
+// spelldesc_vars hotfix entries, wow build 12.0.5.67823
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

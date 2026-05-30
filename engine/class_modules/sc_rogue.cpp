@@ -6322,7 +6322,7 @@ struct mass_casualty_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spell.mass_casualty_damage )
   {
     aoe = -1;
-    reduced_aoe_targets = 5; // MIDNIGHT TOCHECK -- Only in patch notes
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
 
     if ( p->specialization() == ROGUE_ASSASSINATION )
     {
@@ -6333,6 +6333,17 @@ struct mass_casualty_t : public rogue_attack_t
     {
       base_multiplier *= p->talent.deathstalker.mass_casualty->effectN( 2 ).percent();
     }
+  }
+
+  void execute() override
+  {
+    // Always invalidate the target cache when using the Rupture callback filter
+    if ( target_filter_callback )
+    {
+      target_cache.is_valid = false;
+    }
+
+    rogue_attack_t::execute();
   }
 };
 
@@ -11616,10 +11627,6 @@ public:
   bool valid() const override
   { return true; }
 
-  void static_init() const override
-  {
-  }
-
   void register_hotfixes() const override
   {
     // 2025-07-29 -- Fatebound Lucky Coin expires 15s after leaving combat
@@ -11630,9 +11637,7 @@ public:
         .verification_value( 10 );
   }
 
-  void init( player_t* ) const override {}
-  void combat_begin( sim_t* ) const override {}
-  void combat_end( sim_t* ) const override {}
+  void register_actor_initializers( sim_t* ) const override {}
 };
 
 } // UNNAMED NAMESPACE

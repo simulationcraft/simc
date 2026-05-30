@@ -1130,7 +1130,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     procs(),
     uptimes(),
     racials(),
-    passive_values(),
     active_during_iteration( false ),
     spec_spell( spell_data_t::nil() ),
     single_button_assistant( spell_data_t::nil() ),
@@ -1528,11 +1527,6 @@ void player_t::init_base_stats()
     base.all_crit           = get_passive_player_value( dbc->all_crit_base( type, level() ), "all_crit" );
     base.spell_crit_chance  = get_passive_player_value( base.all_crit, "spell_crit" );
     base.attack_crit_chance = base.all_crit;
-    if ( timeofday == DAY_TIME )
-    {
-      base.spell_crit_chance += racials.touch_of_elune->effectN( 1 ).percent();
-      base.attack_crit_chance += racials.touch_of_elune->effectN( 1 ).percent();
-    }
 
     base.mastery     = get_passive_player_value( 8.0, "mastery" );
     base.versatility = get_passive_player_value( base.versatility, "versatility" );
@@ -3355,29 +3349,8 @@ void player_t::init_spells()
   sim->print_debug( "Initializing spells for {}.", *this );
 
   // Racials
-  racials.quickness             = find_racial_spell( "Quickness" );
-  racials.elusiveness           = find_racial_spell( "Elusiveness" );
-  racials.command               = find_racial_spell( "Command" );
-  racials.arcane_acuity         = find_racial_spell( "Arcane Acuity" );
-  racials.heroic_presence       = find_racial_spell( "Heroic Presence" );
   racials.might_of_the_mountain = find_racial_spell( "Might of the Mountain" );
-  racials.expansive_mind        = find_racial_spell( "Expansive Mind" );
-  racials.nimble_fingers        = find_racial_spell( "Nimble Fingers" );
-  racials.time_is_money         = find_racial_spell( "Time is Money" );
-  racials.the_human_spirit      = find_racial_spell( "The Human Spirit" );
-  racials.touch_of_elune        = find_racial_spell( "Touch of Elune" );
   racials.brawn                 = find_racial_spell( "Brawn" );
-  racials.endurance             = find_racial_spell( "Endurance" );
-  racials.viciousness           = find_racial_spell( "Viciousness" );
-  racials.magical_affinity      = find_racial_spell( "Magical Affinity" );
-  racials.mountaineer           = find_racial_spell( "Mountaineer" );
-  racials.brush_it_off          = find_racial_spell( "Brush It Off" );
-  racials.awakened              = find_racial_spell( "Awakened" );
-  racials.azerite_surge         = find_racial_spell( "Azerite Surge" );
-  racials.titanwrought_frame    = find_racial_spell( "Titan-Wrought Frame" );
-  racials.holy_providence       = find_racial_spell( "Holy Providence" );
-  racials.lash_out              = find_racial_spell( "Lash Out" );
-  racials.subterranean_predator = find_racial_spell( "Subterranean Predator" );
 
   if ( is_player() )
   {
@@ -3405,8 +3378,6 @@ void player_t::init_gains()
 
   if ( !is_pet() )
     gains.health = get_gain( "external_healing" );
-
-  gains.vampiric_embrace = get_gain( "vampiric_embrace" );
 }
 
 void player_t::init_procs()
@@ -4324,7 +4295,7 @@ void player_t::create_actions()
     }
   }
 
-  if ( !is_add() && ( !is_pet() || sim->report_pets_separately ) )
+  if ( sim->collect_action_sequence && !is_add() && ( !is_pet() || sim->report_pets_separately ) )
   {
     int capacity = std::max( 3000, static_cast<int>( sim->max_time.total_seconds() ) );
     collected_data.action_sequence.reserve( capacity );
@@ -4866,42 +4837,11 @@ void player_t::create_buffs()
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
     // Racials
-    buffs.berserking = make_buff_fallback( race == RACE_TROLL, this, "berserking", find_spell( 26297 ) )
-      ->add_invalidate( CACHE_HASTE );
-
     buffs.stoneform = make_buff_fallback( race == RACE_DWARF, this, "stoneform", find_spell( 65116 ) )
       ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
-    buffs.blood_fury =
-      make_buff_fallback<stat_buff_t>( race == RACE_ORC, this, "blood_fury", find_racial_spell( "Blood Fury" ) )
-        ->add_invalidate( CACHE_SPELL_POWER )
-        ->add_invalidate( CACHE_ATTACK_POWER );
-
     buffs.shadowmeld = make_buff_fallback( race == RACE_NIGHT_ELF, this, "shadowmeld", find_spell( 58984 ) )
       ->set_cooldown( 0_ms );
-
-    buffs.ancestral_call[ 0 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC,
-      this, "rictus_of_the_laughing_skull", find_spell( 274739 ) );
-    buffs.ancestral_call[ 1 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC,
-      this, "zeal_of_the_burning_blade", find_spell( 274740 ) );
-    buffs.ancestral_call[ 2 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC,
-      this, "ferocity_of_the_frostwolf", find_spell( 274741 ) );
-    buffs.ancestral_call[ 3 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC,
-      this, "might_of_the_blackrock", find_spell( 274742 ) );
-
-    if ( race == RACE_DARK_IRON_DWARF )
-    {
-      buffs.fireblood =
-          make_buff<stat_buff_t>( this, "fireblood", find_spell( 265226 ) )
-              ->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
-                          util::round( find_spell( 265226 )->effectN( 1 ).average( this, level() ) ) * 3 );
-    }
-    else
-    {
-      buffs.fireblood = buff_t::make_fallback( this, "fireblood", this );
-    }
-
-    buffs.darkflight = make_buff_fallback( race == RACE_WORGEN, this, "darkflight", find_racial_spell( "darkflight" ) );
 
     // fallback for ingest mineral isn't necessary as it's a passive effect that should not have any apl interaction
     if ( race == RACE_EARTHEN_HORDE || race == RACE_EARTHEN_ALLIANCE )
@@ -4917,8 +4857,10 @@ void player_t::create_buffs()
         default:                 break;
       }
 
-      buffs.ingest_mineral = make_buff<stat_buff_t>( this, "ingest_mineral", find_spell( _id ) )
+      auto ingest_buff = make_buff<stat_buff_t>( this, "ingest_mineral", find_spell( _id ) )
         ->set_name_reporting( "Ingest Mineral" );
+
+      register_on_arise_callback( this, [ ingest_buff ] { ingest_buff->trigger(); } );
     }
 
     buffs.movement = new movement_buff_t( this );
@@ -5050,12 +4992,6 @@ double player_t::composite_melee_haste() const
 
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
-
-    if ( buffs.berserking->check() )
-      h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
-
-    if ( timeofday == NIGHT_TIME )
-      h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
   }
 
   return h;
@@ -5394,12 +5330,6 @@ double player_t::composite_spell_haste() const
 
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
-
-    if ( buffs.berserking->check() )
-      h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
-
-    if ( timeofday == NIGHT_TIME )
-      h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
   }
 
   return h;
@@ -5740,10 +5670,6 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
   if ( buffs.seething_rage_essence && buffs.seething_rage_essence->data().effectN( 1 ).has_common_school( school ) )
     m *= 1.0 + buffs.seething_rage_essence->check_value();
 
-  // Critical hit damage buff from follower themed Benthic boots
-  if ( buffs.fathom_hunter && buffs.fathom_hunter->data().effectN( 1 ).has_common_school( school ) )
-    m *= 1.0 + buffs.fathom_hunter->check_value();
-
   return m;
 }
 
@@ -5765,38 +5691,22 @@ double player_t::non_stacking_movement_modifier() const
 {
   double speed = current.non_stacking_movement_speed_modifier;
 
-  if ( !is_enemy() && type != HEALING_ENEMY )
+  // check non-stacking buffs with only a single stack
+  for ( auto [ v, b ] : buffs.movement_speed_buffs[ 1 ] )
   {
-    if ( buffs.stampeding_roar && buffs.stampeding_roar->check() )
-      speed = std::max( buffs.stampeding_roar->check_value(), speed );
+    if ( speed >= v )
+      break;  // no need to check further as buffs should be sorted
+
+    if ( b->check() )
+    {
+      speed = v;
+      break;  // save a cycle
+    }
   }
 
-  if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY )
-  {
-    if ( buffs.nitro_boosts && buffs.nitro_boosts->check() )
-      speed = std::max( buffs.nitro_boosts->data().effectN( 1 ).percent(), speed );
-
-    if ( buffs.body_and_soul && buffs.body_and_soul->check() )
-      speed = std::max( buffs.body_and_soul->data().effectN( 1 ).percent(), speed );
-
-    if ( buffs.angelic_feather && buffs.angelic_feather->check() )
-      speed = std::max( buffs.angelic_feather->data().effectN( 1 ).percent(), speed );
-
-    if ( buffs.normalization_increase && buffs.normalization_increase->check() )
-      speed = std::max( buffs.normalization_increase->data().effectN( 3 ).percent(), speed );
-
-    if ( buffs.surekian_grace && buffs.surekian_grace->check() )
-      speed = std::max( buffs.surekian_grace->check_value(), speed );
-
-    if ( buffs.quickwicks_quick_trick_wick_walk && buffs.quickwicks_quick_trick_wick_walk->check() )
-      speed = std::max( buffs.quickwicks_quick_trick_wick_walk->check_value(), speed );
-
-    if ( buffs.building_momentum && buffs.building_momentum->check() )
-      speed = std::max( buffs.building_momentum->check_stack_value(), speed );
-
-    if ( buffs.full_momentum && buffs.full_momentum->check() )
-      speed = std::max( buffs.full_momentum->check_value(), speed );
-  }
+  // check non-stacking buffs with multiple buff stacks
+  for ( auto [ v, b ] : buffs.movement_speed_buffs[ 2 ] )
+    speed = std::max( v * b->check(), speed );
 
   return speed;
 }
@@ -5811,14 +5721,9 @@ double player_t::stacking_movement_modifier() const
   // speed tertiary rating
   speed += composite_run_speed();
 
-  if ( buffs.windwalking_movement_aura )
-    speed += buffs.windwalking_movement_aura->check_value();
-
-  if ( buffs.elemental_chaos_air )
-    speed += buffs.elemental_chaos_air->check_value();
-
-  if ( buffs.darkflight && buffs.darkflight->check() )
-    speed += buffs.darkflight->data().effectN( 1 ).percent();
+  for ( auto [ v, b ] : buffs.movement_speed_buffs[ 0 ] )
+    if ( b->check() )
+      speed += v;
 
   return speed;
 }
@@ -5890,31 +5795,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
 
 double player_t::composite_rating_multiplier( rating_e rating ) const
 {
-  double v = current.rating_multiplier[ rating ];
-
-  switch ( rating )
-  {
-    case RATING_SPELL_HASTE:
-    case RATING_MELEE_HASTE:
-    case RATING_RANGED_HASTE:
-      v *= 1.0 + passive_values.amplification_1;
-      v *= 1.0 + passive_values.amplification_2;
-      break;
-    case RATING_MASTERY:
-      v *= 1.0 + passive_values.amplification_1;
-      v *= 1.0 + passive_values.amplification_2;
-      break;
-    case RATING_DAMAGE_VERSATILITY:
-    case RATING_HEAL_VERSATILITY:
-    case RATING_MITIGATION_VERSATILITY:
-      v *= 1.0 + passive_values.amplification_1;
-      v *= 1.0 + passive_values.amplification_2;
-      break;
-    default:
-      break;
-  }
-
-  return v;
+  return current.rating_multiplier[ rating ];
 }
 
 double player_t::composite_rating( rating_e rating ) const
@@ -6056,7 +5937,9 @@ double player_t::composite_mitigation_from_player_multiplier( player_t*, const a
 
 double player_t::composite_mastery_value() const
 {
-  return composite_mastery() * mastery_coefficient();
+  assert( cache.active && "Infinite recursion if base composite_mastery_value() is called without stat cache active." );
+
+  return cache.mastery() * mastery_coefficient();
 }
 
 #if defined( SC_USE_STAT_CACHE )
@@ -6174,6 +6057,9 @@ void invalidate_cache( cache_e ) {}
 
 void player_t::sequence_add_wait( timespan_t wait )
 {
+  if ( !sim->collect_action_sequence )
+    return;
+
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
   if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) || ( sim->iterations > 1 && nth_iteration() == 1 ) )
   {
@@ -6199,6 +6085,9 @@ void player_t::sequence_add_wait( timespan_t wait )
 
 void player_t::sequence_add( const action_t* a, const player_t* t )
 {
+  if ( !sim->collect_action_sequence )
+    return;
+
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
   if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) || ( sim->iterations > 1 && nth_iteration() == 1 ) )
   {
@@ -7155,9 +7044,6 @@ void player_t::arise()
 
   arise_time = sim->current_time();
   last_regen = sim->current_time();
-
-  if ( buffs.ingest_mineral )
-    buffs.ingest_mineral->trigger();
 
   if ( is_enemy() )
   {
@@ -9203,19 +9089,26 @@ struct arcane_torrent_t : public racial_spell_t
 
 struct berserking_t : public racial_spell_t
 {
+  buff_t* buff;
+
   berserking_t( player_t* p, util::string_view options_str ) :
     racial_spell_t( p, "berserking", p->find_racial_spell( "Berserking" ) )
   {
     parse_options( options_str );
     harmful = false;
     target = p;
+
+    // Make a fallback since it's possible some APLs may want to use haste buffs like this as a conditional
+    buff = make_buff_fallback( data().ok(), p, "berserking", &data() )
+      ->set_cooldown( 0_ms )
+      ->set_pct_buff_type_from_data( true );
   }
 
   void execute() override
   {
     racial_spell_t::execute();
 
-    player->buffs.berserking->trigger();
+    buff->trigger();
   }
 };
 
@@ -9223,19 +9116,29 @@ struct berserking_t : public racial_spell_t
 
 struct blood_fury_t : public racial_spell_t
 {
-  blood_fury_t( player_t* p, util::string_view options_str ) :
-    racial_spell_t( p, "blood_fury", p->find_racial_spell( "Blood Fury" ) )
+  buff_t* buff;
+
+  blood_fury_t( player_t* p, util::string_view options_str )
+    : racial_spell_t( p, "blood_fury", p->find_racial_spell( "Blood Fury" ) )
   {
     parse_options( options_str );
     harmful = false;
     target = p;
+
+    if ( data().ok() )
+    {
+      buff = make_buff<stat_buff_t>( p, "blood_fury", &data() )
+        ->add_invalidate( CACHE_SPELL_POWER )
+        ->add_invalidate( CACHE_ATTACK_POWER )
+        ->set_cooldown( 0_ms );
+    }
   }
 
   void execute() override
   {
     racial_spell_t::execute();
 
-    player->buffs.blood_fury->trigger();
+    buff->trigger();
   }
 };
 
@@ -9243,18 +9146,23 @@ struct blood_fury_t : public racial_spell_t
 
 struct darkflight_t : public racial_spell_t
 {
+  buff_t* buff;
+
   darkflight_t( player_t* p, util::string_view options_str ) :
     racial_spell_t( p, "darkflight", p->find_racial_spell( "Darkflight" ) )
   {
     parse_options( options_str );
     target = p;
+
+    if ( data().ok() )
+      buff = make_buff( p, "darkflight", &data() )->set_movement_speed_buff_from_data();
   }
 
   void execute() override
   {
     racial_spell_t::execute();
 
-    player->buffs.darkflight->trigger();
+    buff->trigger();
   }
 };
 
@@ -9434,6 +9342,8 @@ struct gift_of_the_naaru : public racial_heal_t
 
 struct ancestral_call_t : public racial_spell_t
 {
+  static constexpr std::array<unsigned, 4> spell_ids = { 274739, 274740, 274741, 274742 };
+
   std::vector<std::tuple<buff_t*, stat_e, double>> stat_values;
 
   ancestral_call_t( player_t* p, util::string_view options_str ) :
@@ -9443,9 +9353,17 @@ struct ancestral_call_t : public racial_spell_t
     harmful = false;
     target = p;
 
-    for ( auto b : p->buffs.ancestral_call )
-      if ( !b->is_fallback )
-        stat_values.emplace_back( b, debug_cast<stat_buff_t*>( b )->stats.front().stat, 0.0 );
+    if ( data().ok() )
+    {
+      for ( auto id : spell_ids )
+      {
+        auto data_ = p->find_spell( id );
+        auto stat_ = util::translate_all_rating_mod( data_->effectN( 1 ).misc_value1() ).front();
+        auto name_ = util::tokenize_fn( data_->name_cstr() );
+
+        stat_values.emplace_back( make_buff<stat_buff_t>( p, name_, data_ ), stat_, 0.0 );
+      }
+    }
   }
 
   void execute() override
@@ -9453,13 +9371,13 @@ struct ancestral_call_t : public racial_spell_t
     racial_spell_t::execute();
 
     for ( auto& stat : stat_values )
-      std::get<2>( stat ) = util::stat_value( player, std::get<1>( stat ) );
+      std::get<double>( stat ) = util::stat_value( player, std::get<stat_e>( stat ) );
 
-    std::sort( stat_values.begin(), stat_values.end(), []( const auto& a, const auto& b ) {
-      return std::get<2>( a ) > std::get<2>( b );
+    range::sort( stat_values, []( const auto& a, const auto& b ) {
+      return std::get<double>( a ) > std::get<double>( b );
     } );
 
-    std::get<0>( stat_values[ rng().range( 2 ) ] )->trigger();
+    std::get<buff_t*>( stat_values[ rng().range( 2 ) ] )->trigger();
   }
 };
 
@@ -9467,19 +9385,29 @@ struct ancestral_call_t : public racial_spell_t
 
 struct fireblood_t : public racial_spell_t
 {
+  buff_t* buff;
+
   fireblood_t( player_t* p, util::string_view options_str ) :
     racial_spell_t( p, "fireblood", p->find_racial_spell( "Fireblood" ) )
   {
     parse_options( options_str );
     harmful = false;
     target = p;
+
+    if ( data().ok() )
+    {
+      auto stat_amount = p->find_spell( 265226 )->effectN( 1 ).average( p ) * 3.0;
+
+      buff = make_buff<stat_buff_t>( p, "fireblood", p->find_spell( 273104 ) )
+        ->add_stat( p->convert_hybrid_stat( STAT_STR_AGI_INT ), stat_amount );
+    }
   }
 
   void execute() override
   {
     racial_spell_t::execute();
 
-    player->buffs.fireblood -> trigger();
+    buff->trigger();
   }
 };
 
@@ -16405,9 +16333,13 @@ void player_t::parse_all_class_passives()
     }
   }
 
+  // handle touch of elune day/night buff
+  if ( find_racial_spell( "Touch of Elune" )->ok() )
+    parse_passive_effects( find_spell( timeofday == DAY_TIME ? 154796 : 154797 ), true, PARSE_SOURCE_RACIAL );
+
   // may as well handle this here
-  if ( racials.subterranean_predator->ok() )
-    register_creature_type_buff( nullptr, racials.subterranean_predator );
+  if ( auto sub_pred = find_racial_spell( "Subterranean Predator" ); sub_pred->ok() )
+    register_creature_type_buff( nullptr, sub_pred );
 }
 
 void player_t::parse_all_passive_talents()
@@ -16459,17 +16391,20 @@ void player_t::parse_raid_buffs()
 
 void player_t::register_passive_spell_override( const spell_data_t& spell, double value, std::string_view field )
 {
-  dbc_override_->register_spell( *dbc, spell.id(), field, value );
+  if ( spell.ok() )
+    dbc_override_->register_spell( *dbc, spell.id(), field, value );
 }
 
 void player_t::register_passive_power_override( const spellpower_data_t& power, double value, std::string_view field )
 {
+  if ( power.id() != 0 )
   dbc_override_->register_power( *dbc, power.id(), field, value );
 }
 
 void player_t::register_passive_effect_override( const spelleffect_data_t& effect, double value, std::string_view field )
 {
-  dbc_override_->register_effect( *dbc, effect.id(), field, value );
+  if ( effect.ok() )
+    dbc_override_->register_effect( *dbc, effect.id(), field, value );
 }
 
 const spell_data_t* player_t::clone_dbc_override_spell( const player_t* p, const spell_data_t* s )

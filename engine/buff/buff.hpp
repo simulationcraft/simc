@@ -345,7 +345,7 @@ public:
   static buff_t* make_buff_fallback( bool true_buff, Player&& player, std::string_view name, Args&&... args )
   {
     static_assert( std::is_base_of_v<buff_t, Buff>, "Buff must be derived from buff_t" );
-    static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<Player>> ||
+    static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<std::remove_reference_t<Player>>> ||
                    std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>>,
                    "Player must be derived from player_t or actor_pair_t" );
 
@@ -405,9 +405,14 @@ public:
   buff_t* set_schools( unsigned );
   buff_t* set_schools_from_effect( size_t );
   buff_t* add_school( school_e );
-  // Treat the buff's value as stat % increase and apply it automatically
-  // in the relevant player_t functions.
+  // Treat the buff's value as stat % increase and apply it automatically in the relevant player_t functions.
   buff_t* set_pct_buff_type( stat_pct_buff_type );
+  buff_t* set_pct_buff_type_from_effect( size_t, bool set_default = false );
+  buff_t* set_pct_buff_type_from_data( bool set_default = false );
+  // Movement buffs to calculate automatically in the relevant player_t functions.
+  buff_t* set_movement_speed_buff( bool stacking, double );
+  buff_t* set_movement_speed_buff_from_effect( size_t, double = 0.0 );
+  buff_t* set_movement_speed_buff_from_data( double = 0.0 );
   buff_t* set_default_value( double, size_t = 0 );
   virtual buff_t* set_default_value_from_effect( size_t, double = 0.0 );
   virtual buff_t* set_default_value_from_effect_type( effect_subtype_t a_type,
