@@ -101,9 +101,11 @@ void assassination( player_t* p )
 
   generate->add_action( "crimson_tempest,target_if=max:dot.rupture.remains,if=!variable.single_target&(active_dot.garrote<spell_targets.fan_of_knives|active_dot.rupture<spell_targets.fan_of_knives)&(dot.rupture.remains>5|energy.regen_combined>40)", "Generator List Crimson Tempest to spread bleeds to everything in AoE" );
   generate->add_action( "shiv,if=buff.darkest_night.up&combo_points.deficit=1&spell_targets.fan_of_knives<=3&talent.toxic_stiletto", "Special Edge Case to use Shiv for Darkest Night in low target cleave as Toxic Stiletto makes it very efficient" );
-  generate->add_action( "ambush,if=spell_targets.fan_of_knives<=1+talent.blindside", "Ambush on low target counts when available" );
-  generate->add_action( "mutilate,if=spell_targets.fan_of_knives<=1+talent.blindside", "Mutilate on low target counts" );
-  generate->add_action( "fan_of_knives,if=spell_targets.fan_of_knives>1+talent.blindside", "Fan of Knives in AoE to fill if nothing else" );
+  generate->add_action( "fan_of_knives,if=spell_targets.fan_of_knives>1+talent.blindside", "Fan of Knives in AoE" );
+  generate->add_action( "ambush,if=spell_targets.fan_of_knives<=1+talent.blindside&(buff.unshakeable_drive.stack>2|buff.bloodlust.up|!talent.deathstalkers_mark)", "Ambush on low target counts when available" );
+  generate->add_action( "mutilate,if=spell_targets.fan_of_knives<=1+talent.blindside&(buff.unshakeable_drive.stack>2|buff.bloodlust.up|!talent.deathstalkers_mark)", "Mutilate on low target counts" );
+  generate->add_action( "fan_of_knives,if=spell_targets.fan_of_knives<=1+talent.blindside&!talent.blindside&(buff.unshakeable_drive.stack<3&!buff.bloodlust.up&talent.deathstalkers_mark)", "Fan of Knives and Shiv in ST with Deathstalker builds" );
+  generate->add_action( "shiv,if=spell_targets.fan_of_knives<=1&talent.toxic_stiletto&(buff.unshakeable_drive.stack<3&!buff.bloodlust.up&talent.deathstalkers_mark)" );
 
   items->add_action( "variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2|dot.deathmark.ticking|fight_remains<=22", "Special Case Trinkets" );
   items->add_action( "use_item,name=astral_gladiators_badge_of_ferocity,use_off_gcd=1,if=dot.kingsbane.ticking|dot.deathmark.ticking|(cooldown.kingsbane.remains>60|cooldown.deathmark.remains>60)" );
@@ -117,7 +119,9 @@ void assassination( player_t* p )
   misc_cds->add_action( "fireblood,use_off_gcd=1,if=debuff.deathmark.up" );
   misc_cds->add_action( "ancestral_call,use_off_gcd=1,if=debuff.deathmark.up" );
 
-  spend->add_action( "envenom,if=buff.implacable_tracker.stack<4", "Spend List Envenom if we are not at max stacks of the Apex talent" );
+  spend->add_action( "cancel_buff,name=envenom,if=buff.implacable_tracker.stack>4&(!talent.rapid_injection|spell_targets.fan_of_knives>=5)", "Spend List   Cancelaura Envenom in situations where we can make use of the energy but don't have time to AFK" );
+  spend->add_action( "cancel_buff,name=envenom,if=buff.implacable_tracker.stack>3&talent.rapid_injection&debuff.deathstalkers_mark.stack=1", "Special edgecase Cancelaura for Darkest Night handling" );
+  spend->add_action( "envenom,if=buff.implacable_tracker.stack<4", "Spend with envenom as per normal" );
   spend->add_action( "envenom,if=energy.pct>70|fight_remains<15", "Envenom if we are going to overcap on energy" );
 
   vanish->add_action( "vanish,if=variable.single_target&talent.improved_garrote&dot.garrote.pmultiplier<=1&(dot.deathmark.ticking|cooldown.deathmark.remains>target.time_to_die-10)&!raid_event.adds.in<=30", "Vanish list Single Target vanish check to line up improved garrote with Deathmark, making sure there are no adds soon. TODO Check after ImpGar fixes" );
