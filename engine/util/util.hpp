@@ -80,7 +80,9 @@ namespace util
 {
 double stat_value( const player_t* p, stat_e stat );
 stat_e highest_stat( const player_t* p, util::span<const stat_e> stat );
+std::vector<stat_e> highest_stats( const player_t* p, util::span<const stat_e> stat );
 stat_e lowest_stat( const player_t* p, util::span<const stat_e> stat );
+std::vector<stat_e> lowest_stats( const player_t* p, util::span<const stat_e> stat );
 
 std::string version_info_str( const dbc_t* dbc );
 std::string build_info_str( const dbc_t* dbc, int display_level );

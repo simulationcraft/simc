@@ -1039,10 +1039,10 @@ void blood( special_effect_t& effect )
 
     void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
-      auto stat = util::lowest_stat( listener, secondary_ratings );
+      auto stats = util::lowest_stats( listener, secondary_ratings );
       for ( auto [ s, b ] : buffs )
       {
-        if ( s == stat )
+        if ( std::find( stats.begin(), stats.end(), s ) != stats.end() )
           b->trigger();
         else
           b->expire();
@@ -2452,7 +2452,7 @@ void wraps_of_cosmic_madness( special_effect_t& effect )
       player->reset_auto_attacks( composite_dot_duration( execute_state ) );
     }
 
-    void last_tick( dot_t* d ) override 
+    void last_tick( dot_t* d ) override
     {
       // cache first since last_tick() will null out player->channeling
       bool was_channeling = player->channeling == this;
@@ -2681,7 +2681,7 @@ void volatile_void_suffuser( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1258534 ) );
   buff->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
     buff->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-    
+
   effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
     "Volatile Void Suffuser: Implementation may incorrectly over trigger on some DPS specs. Flags are Yellow Melee, Heal, Helpful Periodic." );
 
@@ -2945,7 +2945,7 @@ void sylvan_wakrapuku( special_effect_t& effect )
 void crucible_of_erratic_energies( special_effect_t& effect )
 {
   double stat_value = effect.driver()->effectN( 1 ).average( effect );
-  // Predation increases the crit rating provided by 20%. 
+  // Predation increases the crit rating provided by 20%.
   if ( effect.player->midnight_opts.crucible_of_erratic_energies_predation )
     stat_value *= 1.0 + effect.driver()->effectN( 4 ).percent();
 
@@ -4109,7 +4109,7 @@ void register_special_effects()
   register_special_effect( 1272693, trinkets::astalors_anguish_agitator );
   register_special_effect( 1272690, DISABLED_EFFECT ); // Astalors Anguish Agitator Passive Driver
   register_special_effect( 1247311, DISABLED_EFFECT ); // Drum of Renewed Bonds on use
-  register_special_effect( 1253120, trinkets::glorious_crusaders_keepsake ); 
+  register_special_effect( 1253120, trinkets::glorious_crusaders_keepsake );
   register_special_effect( 1253112, trinkets::sylvan_wakrapuku );
   register_special_effect( 1260633, trinkets::gloomspattered_dreadscale );
   register_special_effect( 1260627, DISABLED_EFFECT );  // Gloom-Spattered Dreadscale Passive Driver

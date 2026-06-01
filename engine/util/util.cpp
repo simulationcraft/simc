@@ -332,6 +332,19 @@ stat_e util::highest_stat( const player_t* p, util::span<const stat_e> stats )
   return stat;
 }
 
+std::vector<stat_e> util::highest_stats( const player_t* p, util::span<const stat_e> stats )
+{
+  double value = stat_value( p, highest_stat( p, stats ) );
+
+  std::vector<stat_e> vec;
+  vec.reserve( stats.size() );
+  for ( const stat_e stat : stats )
+    if ( value == stat_value( p, stat ) )
+      vec.emplace_back( stat );
+
+  return vec;
+}
+
 stat_e util::lowest_stat( const player_t* p, util::span<const stat_e> stats )
 {
   assert( !stats.empty() );
@@ -349,6 +362,19 @@ stat_e util::lowest_stat( const player_t* p, util::span<const stat_e> stats )
   }
 
   return stat;
+}
+
+std::vector<stat_e> util::lowest_stats( const player_t* p, util::span<const stat_e> stats )
+{
+  double value = stat_value( p, lowest_stat( p, stats ) );
+
+  std::vector<stat_e> vec;
+  vec.reserve( stats.size() );
+  for ( const stat_e stat : stats )
+    if ( value == stat_value( p, stat ) )
+      vec.emplace_back( stat );
+
+  return vec;
 }
 
 /// case-insensitive string comparison
