@@ -1039,10 +1039,11 @@ void blood( special_effect_t& effect )
 
     void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
-      auto stat = util::lowest_stat( listener, secondary_ratings );
+      double lowest = util::stat_value( listener, util::lowest_stat( listener, secondary_ratings ) );
+
       for ( auto [ s, b ] : buffs )
       {
-        if ( s == stat )
+        if ( util::stat_value( listener, s ) == lowest )
           b->trigger();
         else
           b->expire();
