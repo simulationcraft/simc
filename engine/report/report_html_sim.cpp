@@ -377,16 +377,18 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
   {
     raid_dps.width_ += raid_dps.width_ + 12;
     raid_dps.set( "chart.marginLeft", margin );
+    raid_dps.set( "plotOptions.series.animation", false );  // no initial draw animation on the main DPS chart
     os << raid_dps.to_target_div();
-    sim.add_chart_data( raid_dps );
+    os << "<script type=\"text/javascript\">\n" << raid_dps.to_aggregate_string( false ) << "</script>\n";
   }
 
   if ( has_priority )
   {
     priority_dps.width_ += priority_dps.width_ + 12;
     priority_dps.set( "chart.marginLeft", margin );
+    priority_dps.set( "plotOptions.series.animation", false );
     os << priority_dps.to_target_div();
-    sim.add_chart_data( priority_dps );
+    os << "<script type=\"text/javascript\">\n" << priority_dps.to_aggregate_string( false ) << "</script>\n";
   }
 
   if ( !sim.raid_events_str.empty() )
