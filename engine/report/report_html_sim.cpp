@@ -58,7 +58,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
     }
   }
 
-  os << "<div id=\"table-of-contents\" class=\"section\">\n"
+  os << "<div id=\"table-of-contents\" class=\"section grouped-last\">\n"
      << "<h2 class=\"toggle\">Table of Contents</h2>\n"
      << "<div class=\"toggle-content hide\">\n";
 
@@ -349,7 +349,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
 
 void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
 {
-  os << "<div id=\"raid-summary\" class=\"section\">\n\n"
+  os << "<div id=\"raid-summary\" class=\"section section-open\">\n\n"
      << "<h2 class=\"toggle open\">Raid Summary</h2>\n"
      << "<div class=\"toggle-content\">\n";
 
@@ -890,7 +890,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
 {
   std::vector<const hotfix::hotfix_entry_t*> entries = hotfix::hotfix_entries();
 
-  os << "<div class=\"section\">\n";
+  os << "<div class=\"section grouped-first\">\n";
   os << "<h2 class=\"toggle\">Current simulator hotfixes</h2>\n";
   os << "<div class=\"toggle-content hide\">\n";
 
@@ -1158,7 +1158,7 @@ void print_profilesets( std::ostream& out, const profileset::profilesets_t& prof
     return;
   }
 
-  out << "<div class=\"section\">\n";
+  out << "<div class=\"section section-open\">\n";
   out << "<h2 class=\"toggle open\">Profile sets</h2>\n";
   out << "<div class=\"toggle-content\">\n";
 
