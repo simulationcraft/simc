@@ -79,6 +79,41 @@ SC_EXCEPTION( sc_invalid_item_string, 82, "Invalid item string" );
 namespace util
 {
 double stat_value( const player_t* p, stat_e stat );
+
+template <typename Cmp>
+stat_e find_stat( const player_t* p, util::span<const stat_e> stats, Cmp cmp )
+{
+  assert( !stats.empty() );
+
+  stat_e stat = stats.front();
+  double value = stat_value( p, stat );
+  for ( const stat_e s : stats.subspan( 1 ) )
+  {
+    const double v = stat_value( p, s );
+    if ( cmp( v, value ) )
+    {
+      stat = s;
+      value = v;
+    }
+  }
+
+  return stat;
+}
+
+template <typename Cmp>
+std::vector<stat_e> find_stats( const player_t* p, util::span<const stat_e> stats, Cmp cmp )
+{
+  double value = stat_value( p, find_stat( p, stats, cmp ) );
+
+  std::vector<stat_e> vec;
+  vec.reserve( stats.size() );
+  for ( const stat_e stat : stats )
+    if ( value == stat_value( p, stat ) )
+      vec.emplace_back( stat );
+
+  return vec;
+}
+
 stat_e highest_stat( const player_t* p, util::span<const stat_e> stat );
 std::vector<stat_e> highest_stats( const player_t* p, util::span<const stat_e> stat );
 stat_e lowest_stat( const player_t* p, util::span<const stat_e> stat );
