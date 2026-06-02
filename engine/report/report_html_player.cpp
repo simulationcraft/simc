@@ -1181,10 +1181,11 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
   if ( p.items.empty() )
     return;
 
+  os << "<div class=\"player-section gear\">\n";
+  os.printf( "<h3 class=\"toggle\" id=\"player%d_gear_toggle\">Gear</h3>\n", p.index );
+  os << "<div class=\"toggle-content hide\">\n";
+  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_gear_toggle\">\n", p.index );
   os.printf(
-      "<div class=\"player-section gear\">\n"
-      "<h3 class=\"toggle\">Gear</h3>\n"
-      "<div class=\"toggle-content hide\">\n"
       "<table class=\"sc odd\">\n"
       "<thead>\n"
       "<tr>\n"
@@ -1422,6 +1423,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
   }
   os << "</tbody>\n"
      << "</table>\n"
+     << "</script>\n"
      << "</div>\n"
      << "</div>\n";
 }
@@ -1437,12 +1439,14 @@ void print_html_profile( report::sc_html_stream& os, const player_t& p,
     profile_str             = util::encode_html( profile_str );
     util::replace_all( profile_str, "\n", "<br>" );
 
-    os << "<div class=\"player-section profile\">\n"
-       << "<h3 class=\"toggle\">Profile</h3>\n"
-       << "<div class=\"toggle-content hide\">\n"
-       << "<div class=\"subsection force-wrap\">\n"
+    os << "<div class=\"player-section profile\">\n";
+    os.printf( "<h3 class=\"toggle\" id=\"player%d_profile_toggle\">Profile</h3>\n", p.index );
+    os << "<div class=\"toggle-content hide\">\n";
+    os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_profile_toggle\">\n", p.index );
+    os << "<div class=\"subsection force-wrap\">\n"
        << "<p>" << profile_str << "</p>\n"
        << "</div>\n"
+       << "</script>\n"
        << "</div>\n"
        << "</div>\n";
   }
@@ -1475,10 +1479,11 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
 
   if ( p.collected_data.fight_length.mean() > 0 )
   {
-    os << "<div class=\"player-section stats\">\n"
-       << "<h3 class=\"toggle\">Stats</h3>\n"
-       << "<div class=\"toggle-content hide\">\n"
-       << "<table class=\"sc even\">\n"
+    os << "<div class=\"player-section stats\">\n";
+    os.printf( "<h3 class=\"toggle\" id=\"player%d_charstats_toggle\">Stats</h3>\n", p.index );
+    os << "<div class=\"toggle-content hide\">\n";
+    os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_charstats_toggle\">\n", p.index );
+    os << "<table class=\"sc even\">\n"
        << "<thead>\n"
        << "<tr>\n"
        << "<th></th>\n"
@@ -1838,6 +1843,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     }
     os << "</tbody>\n"
        << "</table>\n"
+       << "</script>\n"
        << "</div>\n"
        << "</div>\n";
   }
@@ -2042,11 +2048,14 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
       *points_ptr += _rank;
   }
 
-  os << "<div class=\"player-section talents\">\n"
-     << "<h3 class=\"toggle\">Talents</h3>\n"
-     << "<div class=\"toggle-content hide\">\n";
-
   auto num_players = p.sim->players_by_name.size();
+
+  os << "<div class=\"player-section talents\">\n";
+  os.printf( "<h3 class=\"toggle\" id=\"player%d_talents_toggle\">Talents</h3>\n", p.index );
+  os << "<div class=\"toggle-content hide\">\n";
+  if ( num_players > 1 )
+    os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_talents_toggle\">\n", p.index );
+
   if ( num_players == 1 )
   {
     auto max_col = class_columns( p.specialization(), p.is_ptr() ) + spec_columns( p.specialization(), p.is_ptr() );
@@ -2090,6 +2099,9 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   // Close the talent table div only if it exists.
   if ( num_players == 1 )
     os << "</div>\n";
+
+  if ( num_players > 1 )
+    os << "</script>\n";
 
   os << "</div>\n"
      << "</div>\n";
@@ -2475,9 +2487,10 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
 void print_html_player_action_priority_list( report::sc_html_stream& os, const player_t& p )
 {
   const sim_t& sim = *( p.sim );
-  os << "<div class=\"player-section action-priority-list\">\n"
-     << "<h3 class=\"toggle\">Action Priority List</h3>\n"
-     << "<div class=\"toggle-content hide\">\n";
+  os << "<div class=\"player-section action-priority-list\">\n";
+  os.printf( "<h3 class=\"toggle\" id=\"player%d_apl_toggle\">Action Priority List</h3>\n", p.index );
+  os << "<div class=\"toggle-content hide\">\n";
+  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_apl_toggle\">\n", p.index );
 
   action_priority_list_t* alist = nullptr;
 
@@ -2641,6 +2654,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
   }
 
   // End Action Priority List section
+  os << "\n</script>\n";
   os << "</div>\n"
      << "</div>\n";
 }
@@ -2652,10 +2666,11 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
 {
   // Statistics & Data Analysis
 
-  os << "<div class=\"player-section analysis\">\n"
-        "<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n"
-        "<div class=\"toggle-content hide\">\n"
-        "<table class=\"sc stripebody\">\n";
+  os << "<div class=\"player-section analysis\">\n";
+  os.printf( "<h3 class=\"toggle\" id=\"player%d_stats_toggle\">Statistics & Data Analysis</h3>\n", p.index );
+  os << "<div class=\"toggle-content hide\">\n";
+  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_stats_toggle\">\n", p.index );
+  os << "<table class=\"sc stripebody\">\n";
 
   report_helper::print_html_sample_data( os, p, p.collected_data.fight_length, "Fight Length" );
   report_helper::print_html_sample_data( os, p, p.collected_data.dps, "DPS" );
@@ -2673,8 +2688,9 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
     report_helper::print_html_sample_data( os, p, *sample_data, util::encode_html( sample_data->name_str ) );
   }
 
-  os << "</table>\n"
-        "</div>\n"
+  os << "</table>\n";
+  os << "\n</script>\n";
+  os << "</div>\n"
         "</div>\n";
 }
 
@@ -2945,6 +2961,7 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p 
   os << "<div class=\"player-section gains\">\n"
      << "<h3 class=\"toggle open\">Resources</h3>\n"
      << "<div class=\"toggle-content flexwrap\">\n";
+  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%dtoggle\">\n", p.index );
 
   int count_gains   = 0;
   int count_usage   = 0;
@@ -2994,7 +3011,9 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p 
       print_html_resource_changes_table( os, p );
   }
 
-  os << "</div><div class=\"column-charts\">\n"; // Open DIV for charts
+  os << "</div>\n";
+  os << "\n</script>\n";
+  os << "<div class=\"column-charts\">\n"; // Open DIV for charts
 
   for ( resource_e r = RESOURCE_MAX; --r > RESOURCE_NONE; )
   {
@@ -3638,6 +3657,8 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
      << "<h3 class=\"toggle open\">Buffs</h3>\n"
      << "<div class=\"toggle-content\">\n";
 
+  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%dtoggle\">\n", p.index );
+
   // Dynamic Buffs table
   os << "<table class=\"sc sort stripebody\">\n"
      << "<thead>\n";
@@ -3685,6 +3706,8 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
     }
     os << "</table>\n";
   }
+
+  os << "\n</script>\n";
 
   os << "</div>\n"
      << "</div>\n";
@@ -4429,9 +4452,11 @@ void print_html_player_abilities( report::sc_html_stream& os, const player_t& p 
      << "<h3 class=\"toggle open\">Abilities</h3>\n"
      << "<div class=\"toggle-content\">\n";
 
+  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%dtoggle\">\n", p.index );
   output_player_damage_summary( os, p );
   output_player_heal_summary( os, p );
   output_player_simple_ability_summary( os, p );
+  os << "\n</script>\n";
 
   // close section
   os << "</div>\n"
@@ -4743,6 +4768,8 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
      << "<h3 class=\"toggle open\">Procs, Uptimes & Benefits</h3>\n"
      << "<div class=\"toggle-content flexwrap\">\n"; // Can't use columns as detail toggle will change widths
 
+  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%dtoggle\">\n", p.index );
+
   bool new_div = false;
 
   os << "<div>\n"; // Open DIV#1
@@ -4782,6 +4809,8 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
   }
 
   os << "</div>\n"; // Close DIV for all
+
+  os << "\n</script>\n";
 
   os << "</div>\n"
      << "</div>\n";

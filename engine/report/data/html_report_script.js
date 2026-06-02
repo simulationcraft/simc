@@ -86,7 +86,7 @@ jQuery(document).ready(function ($) {
             }
         }
     });
-    $('.toggle-details').click(function (e) {
+    $(document).on('click', '.toggle-details', function (e) {
         e.preventDefault();
         e.stopPropagation();
         var $me = $(this);
@@ -99,16 +99,37 @@ jQuery(document).ready(function ($) {
             $row.fadeToggle(150);
         }
     });
-    $('.toggle, .toggle-details').each(function() {
-        if ( __chartData[this.id] === undefined ) return;
-        $(this).one('click', function() {
-            var d = __chartData[this.id];
-            for (var idx in d) {
-                $('#' + d[idx]['target']).highcharts(d[idx]['data']);
-            }
+    function bindChartLoaders($scope) {
+        $scope.find('.toggle, .toggle-details').each(function() {
+            if ( __chartData[this.id] === undefined ) return;
+            $(this).one('click', function() {
+                var d = __chartData[this.id];
+                for (var idx in d) {
+                    $('#' + d[idx]['target']).highcharts(d[idx]['data']);
+                }
+            });
         });
+    }
+    bindChartLoaders($(document));
+    $('.toggle').each(function() {
+        if ( !this.id ) return;
+        var $deferred = $('script[type="text/x-deferred-html"][data-toggle="' + this.id + '"]');
+        if ( !$deferred.length ) return;
+        var inject = function() {
+            $deferred.each(function() {
+                var $injected = $($.parseHTML(this.textContent));
+                $(this).replaceWith($injected);
+                bindChartLoaders($injected);
+            });
+            $('.stripetoprow').oddstripe();
+        };
+        if ( $(this).hasClass('open') ) {
+            inject();
+        } else {
+            $(this).one('click', inject);
+        }
     });
-    $('table.stripetoprow .toprow td:first-of-type, table.stripebody tbody td:first-of-type').click(function (e) {
+    $(document).on('click', 'table.stripetoprow .toprow td:first-of-type, table.stripebody tbody td:first-of-type', function (e) {
         e.preventDefault();
         $(this).children('.toggle-details').first().click();
     });
@@ -202,7 +223,7 @@ jQuery(document).ready(function ($) {
             $cells.removeClass('pulse');
         }, 150);
     }
-    $('.sort').on('click', 'th.toggle-sort', function (e) {
+    $(document).on('click', '.sort th.toggle-sort', function (e) {
         e.preventDefault();
         var $me = $(this);
         var $col = $me.closest('th');
