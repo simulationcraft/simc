@@ -56,9 +56,9 @@ actions.generate+=/shiv,if=buff.darkest_night.up&combo_points.deficit=1&spell_ta
 # Fan of Knives in AoE
 actions.generate+=/fan_of_knives,if=spell_targets.fan_of_knives>1+talent.blindside
 # Ambush on low target counts when available
-actions.generate+=/ambush,if=spell_targets.fan_of_knives<=1+talent.blindside&(buff.unshakeable_drive.stack>2|buff.bloodlust.up|!talent.deathstalkers_mark)
+actions.generate+=/ambush,if=spell_targets.fan_of_knives<=1+talent.blindside&(buff.unshakeable_drive.stack>2|buff.bloodlust.up|!talent.deathstalkers_mark|talent.blindside)
 # Mutilate on low target counts
-actions.generate+=/mutilate,if=spell_targets.fan_of_knives<=1+talent.blindside&(buff.unshakeable_drive.stack>2|buff.bloodlust.up|!talent.deathstalkers_mark)
+actions.generate+=/mutilate,if=spell_targets.fan_of_knives<=1+talent.blindside&(buff.unshakeable_drive.stack>2|buff.bloodlust.up|!talent.deathstalkers_mark|talent.blindside)
 # Fan of Knives and Shiv in ST with Deathstalker builds
 actions.generate+=/fan_of_knives,if=spell_targets.fan_of_knives<=1+talent.blindside&!talent.blindside&(buff.unshakeable_drive.stack<3&!buff.bloodlust.up&talent.deathstalkers_mark)
 actions.generate+=/shiv,if=spell_targets.fan_of_knives<=1&talent.toxic_stiletto&(buff.unshakeable_drive.stack<3&!buff.bloodlust.up&talent.deathstalkers_mark)
