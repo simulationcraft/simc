@@ -2057,10 +2057,12 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   auto h_ = static_cast<int>( 1165 - max_col * 28 );
   os.format( R"(<iframe src="{}" width="1165" height="{}" style="background:#160f0b"></iframe>)",
               raidbots_talent_render_src( p.talents_str, p.true_level, 1165, false, p.dbc->ptr ), h_ );
+  os << "</script>\n";
 
   // Hide the talent table only if the Raidbots talent iframe is present.
-  os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
-      << "<div class=\"toggle-content hide\">\n";
+  os.printf( "<h3 class=\"toggle\" id=\"player%d_talent_tables_toggle\">Talent Tables</h3>\n", p.index );
+  os << "<div class=\"toggle-content hide\">\n";
+  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_talent_tables_toggle\">\n", p.index );
 
   if ( range::accumulate( class_traits, 0, &std::vector<talentrank_t>::size ) )
   {
@@ -2090,8 +2092,8 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
     os << "</div>\n";
   }
 
-  os << "</div>\n";
   os << "</script>\n";
+  os << "</div>\n";
 
   os << "</div>\n"
      << "</div>\n";
