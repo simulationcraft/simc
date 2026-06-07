@@ -1278,15 +1278,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
 
   if ( sim.decorated_tooltips )
   {
-    //Apply the prettification stuff only if its a single report
-    if ( num_players > 1 )
-    {
-      os << R"(<script>var whTooltips = {colorLinks: false, iconizeLinks: false, renameLinks: false};</script>)";
-    }
-    else
-    {
-      os << R"(<script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>)";
-    }
+    os << R"(<script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>)";
 
     if ( !sim.offline )
       os << std::endl << R"(<script type="text/javascript" src="https://wow.zamimg.com/widgets/power.js"></script>)";

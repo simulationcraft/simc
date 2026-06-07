@@ -2048,25 +2048,19 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
       *points_ptr += _rank;
   }
 
-  auto num_players = p.sim->players_by_name.size();
-
   os << "<div class=\"player-section talents\">\n";
   os.printf( "<h3 class=\"toggle\" id=\"player%d_talents_toggle\">Talents</h3>\n", p.index );
   os << "<div class=\"toggle-content hide\">\n";
-  if ( num_players > 1 )
-    os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_talents_toggle\">\n", p.index );
+  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_talents_toggle\">\n", p.index );
 
-  if ( num_players == 1 )
-  {
-    auto max_col = class_columns( p.specialization(), p.is_ptr() ) + spec_columns( p.specialization(), p.is_ptr() );
-    auto h_ = static_cast<int>( 1165 - max_col * 28 );
-    os.format( R"(<iframe src="{}" width="1165" height="{}"></iframe>)",
-               raidbots_talent_render_src( p.talents_str, p.true_level, 1165, false, p.dbc->ptr ), h_ );
+  auto max_col = class_columns( p.specialization(), p.is_ptr() ) + spec_columns( p.specialization(), p.is_ptr() );
+  auto h_ = static_cast<int>( 1165 - max_col * 28 );
+  os.format( R"(<iframe src="{}" width="1165" height="{}" style="background:#160f0b"></iframe>)",
+              raidbots_talent_render_src( p.talents_str, p.true_level, 1165, false, p.dbc->ptr ), h_ );
 
-    // Hide the talent table only if the Raidbots talent iframe is present.
-    os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
-       << "<div class=\"toggle-content hide\">\n";
-  }
+  // Hide the talent table only if the Raidbots talent iframe is present.
+  os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
+      << "<div class=\"toggle-content hide\">\n";
 
   if ( range::accumulate( class_traits, 0, &std::vector<talentrank_t>::size ) )
   {
@@ -2096,12 +2090,8 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
     os << "</div>\n";
   }
 
-  // Close the talent table div only if it exists.
-  if ( num_players == 1 )
-    os << "</div>\n";
-
-  if ( num_players > 1 )
-    os << "</script>\n";
+  os << "</div>\n";
+  os << "</script>\n";
 
   os << "</div>\n"
      << "</div>\n";
