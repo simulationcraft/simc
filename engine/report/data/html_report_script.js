@@ -70,6 +70,7 @@ jQuery(document).ready(function ($) {
     $(document).on('click', '.toggle', function (e) {
         e.preventDefault();
         var $me = $(this);
+        revealSection(this.id);
         $me.toggleClass('open');
         $me.next('.toggle-content').slideToggle(150);
         var section = $me.parent('.section');
@@ -90,6 +91,7 @@ jQuery(document).ready(function ($) {
         e.preventDefault();
         e.stopPropagation();
         var $me = $(this);
+        if ( this.id ) renderCharts(this.id);
         var $row = $me.closest('tr').nextAll('.details').first();
         if ($me.hasClass('open')) {
             $me.removeClass('open');
@@ -99,41 +101,29 @@ jQuery(document).ready(function ($) {
             $row.fadeToggle(150);
         }
     });
-    function renderCharts(id) {
-        var d = __chartData[id];
-        if ( d === undefined ) return;
-        for (var idx in d) {
-            $('#' + d[idx]['target']).highcharts(d[idx]['data']);
-        }
-    }
-    function bindChartLoaders($scope) {
-        $scope.find('.toggle, .toggle-details').each(function() {
-            if ( __chartData[this.id] === undefined ) return;
-            var id = this.id;
-            $(this).one('click', function() { renderCharts(id); });
+    function renderCharts(key) {
+        var items = __chartData[key];
+        if ( items === undefined ) return;
+        items.forEach(function(chart) {
+            var $el = $('#' + chart.target);
+            if ( $el.length && !$el.highcharts() ) {
+                $el.highcharts(chart.data);
+            }
         });
     }
-    bindChartLoaders($(document));
-    $('.toggle').each(function() {
-        if ( !this.id ) return;
-        var id = this.id;
-        var $deferred = $('script[type="text/x-deferred-html"][data-toggle="' + id + '"]');
-        if ( !$deferred.length ) return;
-        var inject = function() {
+    function revealSection(id) {
+        var $deferred = id ? $('script[type="text/x-deferred-html"][data-toggle="' + id + '"]') : $();
+        if ( $deferred.length ) {
             $deferred.each(function() {
-                var $injected = $($.parseHTML(this.textContent));
-                $(this).replaceWith($injected);
-                bindChartLoaders($injected);
+                $(this).replaceWith($($.parseHTML(this.textContent)));
             });
             $('.stripetoprow').oddstripe();
-            renderCharts(id);
-        };
-        if ( $(this).hasClass('open') ) {
-            inject();
-        } else {
-            $(this).one('click', inject);
+            renderCharts('');
         }
-    });
+        if ( id ) renderCharts(id);
+    }
+    $('.toggle.open').each(function() { revealSection(this.id); });
+    renderCharts('');
     $(document).on('click', 'table.stripetoprow .toprow td:first-of-type, table.stripebody tbody td:first-of-type', function (e) {
         e.preventDefault();
         $(this).children('.toggle-details').first().click();

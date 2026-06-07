@@ -1295,14 +1295,6 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   os << "\n</script>\n";
 
   os << "<script type=\"text/javascript\">\n";
-  os << "jQuery( document ).ready( function( $ ) {\n";
-  for ( const auto& data : sim.on_ready_chart_data )
-  {
-    os << data << std::endl;
-  }
-  os << "});\n";
-  os << "</script>\n";
-  os << "<script type=\"text/javascript\">\n";
   os << "__chartData = {\n";
   for ( const auto& entry : sim.chart_data )
   {

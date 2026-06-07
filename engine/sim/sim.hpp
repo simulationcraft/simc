@@ -609,12 +609,9 @@ struct sim_t : private sc_thread_t
 
   // Highcharts stuff
 
-  // Vector of on-ready charts. These receive individual jQuery handlers in the HTML report (at the
-  // end of the report) to load the highcharts into the target div.
-  std::vector<std::string> on_ready_chart_data;
-
   // A map of highcharts data, added as a json object into the HTML report. JQuery installs handlers
-  // to correct elements (toggled elements in the HTML report) based on the data.
+  // to correct elements (toggled elements in the HTML report) based on the data. Charts with no toggle
+  // are grouped under the empty-string key and rendered as soon as their target div is in the DOM.
   std::map<std::string, std::vector<std::string> > chart_data;
 
   bool chart_show_relative_difference;
