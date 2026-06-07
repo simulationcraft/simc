@@ -67,7 +67,7 @@ jQuery(document).ready(function ($) {
             scrollTop: $anchor.parent().offset().top - $anchor.height()
         }, 300);
     });
-    $('.toggle').click(function (e) {
+    $(document).on('click', '.toggle', function (e) {
         e.preventDefault();
         var $me = $(this);
         $me.toggleClass('open');
