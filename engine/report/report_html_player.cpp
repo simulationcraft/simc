@@ -2089,10 +2089,9 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
     os << "</div>\n";
   }
 
-  os << "</script>\n";
-  os << "</div>\n";
-
-  os << "</div>\n"
+  os << "</script>\n"
+     << "</div>\n"
+     << "</div>\n"
      << "</div>\n";
 }
 
@@ -2950,7 +2949,6 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p 
   os << "<div class=\"player-section gains\">\n"
      << "<h3 class=\"toggle open\">Resources</h3>\n"
      << "<div class=\"toggle-content flexwrap\">\n";
-  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%dtoggle\">\n", p.index );
 
   int count_gains   = 0;
   int count_usage   = 0;
@@ -3001,7 +2999,6 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p 
   }
 
   os << "</div>\n";
-  os << "\n</script>\n";
   os << "<div class=\"column-charts\">\n"; // Open DIV for charts
 
   for ( resource_e r = RESOURCE_MAX; --r > RESOURCE_NONE; )
@@ -3646,8 +3643,6 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
      << "<h3 class=\"toggle open\">Buffs</h3>\n"
      << "<div class=\"toggle-content\">\n";
 
-  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%dtoggle\">\n", p.index );
-
   // Dynamic Buffs table
   os << "<table class=\"sc sort stripebody\">\n"
      << "<thead>\n";
@@ -3695,8 +3690,6 @@ void print_html_player_buffs( report::sc_html_stream& os, const player_t& p,
     }
     os << "</table>\n";
   }
-
-  os << "\n</script>\n";
 
   os << "</div>\n"
      << "</div>\n";
@@ -4441,11 +4434,9 @@ void print_html_player_abilities( report::sc_html_stream& os, const player_t& p 
      << "<h3 class=\"toggle open\">Abilities</h3>\n"
      << "<div class=\"toggle-content\">\n";
 
-  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%dtoggle\">\n", p.index );
   output_player_damage_summary( os, p );
   output_player_heal_summary( os, p );
   output_player_simple_ability_summary( os, p );
-  os << "\n</script>\n";
 
   // close section
   os << "</div>\n"
@@ -4757,8 +4748,6 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
      << "<h3 class=\"toggle open\">Procs, Uptimes & Benefits</h3>\n"
      << "<div class=\"toggle-content flexwrap\">\n"; // Can't use columns as detail toggle will change widths
 
-  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%dtoggle\">\n", p.index );
-
   bool new_div = false;
 
   os << "<div>\n"; // Open DIV#1
@@ -4798,8 +4787,6 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
   }
 
   os << "</div>\n"; // Close DIV for all
-
-  os << "\n</script>\n";
 
   os << "</div>\n"
      << "</div>\n";
