@@ -99,21 +99,25 @@ jQuery(document).ready(function ($) {
             $row.fadeToggle(150);
         }
     });
+    function renderCharts(id) {
+        var d = __chartData[id];
+        if ( d === undefined ) return;
+        for (var idx in d) {
+            $('#' + d[idx]['target']).highcharts(d[idx]['data']);
+        }
+    }
     function bindChartLoaders($scope) {
         $scope.find('.toggle, .toggle-details').each(function() {
             if ( __chartData[this.id] === undefined ) return;
-            $(this).one('click', function() {
-                var d = __chartData[this.id];
-                for (var idx in d) {
-                    $('#' + d[idx]['target']).highcharts(d[idx]['data']);
-                }
-            });
+            var id = this.id;
+            $(this).one('click', function() { renderCharts(id); });
         });
     }
     bindChartLoaders($(document));
     $('.toggle').each(function() {
         if ( !this.id ) return;
-        var $deferred = $('script[type="text/x-deferred-html"][data-toggle="' + this.id + '"]');
+        var id = this.id;
+        var $deferred = $('script[type="text/x-deferred-html"][data-toggle="' + id + '"]');
         if ( !$deferred.length ) return;
         var inject = function() {
             $deferred.each(function() {
@@ -122,6 +126,7 @@ jQuery(document).ready(function ($) {
                 bindChartLoaders($injected);
             });
             $('.stripetoprow').oddstripe();
+            renderCharts(id);
         };
         if ( $(this).hasClass('open') ) {
             inject();
