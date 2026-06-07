@@ -16441,9 +16441,8 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
     return;
 
   os << R"(<div class="player-section parsed_effects">)";
-  os.format( R"(<h3 class="toggle" id="player{}_parsed_effects_toggle">Parsed Player Effects</h3>)", index );
+  os.format( R"(<h3 class="toggle">Parsed Player Effects</h3>)", index );
   os << R"(<div class="toggle-content hide">)";
-  os.format( R"(<script type="text/x-deferred-html" data-toggle="player{}_parsed_effects_toggle">)", index );
 
   os << R"(<table class="sc left even"><thead><tr><th colspan="2" class="left">Passive Effects</th>)"
      << R"(<th>Spell</th><th colspan="2">ID</th><th>Value</th><th>Source</th></tr></thead>)";
@@ -16572,7 +16571,6 @@ void player_t::print_parsed_effects( report::sc_html_stream& os ) const
 
   print_custom_parsed_effects( os );
 
-  os << "\n</script>\n";
   os << "</div></div>\n";
 }
 

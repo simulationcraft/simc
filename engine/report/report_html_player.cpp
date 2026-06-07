@@ -1182,9 +1182,8 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
     return;
 
   os << "<div class=\"player-section gear\">\n";
-  os.printf( "<h3 class=\"toggle\" id=\"player%d_gear_toggle\">Gear</h3>\n", p.index );
+  os.printf( "<h3 class=\"toggle\">Gear</h3>\n", p.index );
   os << "<div class=\"toggle-content hide\">\n";
-  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_gear_toggle\">\n", p.index );
   os.printf(
       "<table class=\"sc odd\">\n"
       "<thead>\n"
@@ -1423,7 +1422,6 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
   }
   os << "</tbody>\n"
      << "</table>\n"
-     << "</script>\n"
      << "</div>\n"
      << "</div>\n";
 }
@@ -1440,13 +1438,11 @@ void print_html_profile( report::sc_html_stream& os, const player_t& p,
     util::replace_all( profile_str, "\n", "<br>" );
 
     os << "<div class=\"player-section profile\">\n";
-    os.printf( "<h3 class=\"toggle\" id=\"player%d_profile_toggle\">Profile</h3>\n", p.index );
+    os.printf( "<h3 class=\"toggle\">Profile</h3>\n", p.index );
     os << "<div class=\"toggle-content hide\">\n";
-    os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_profile_toggle\">\n", p.index );
     os << "<div class=\"subsection force-wrap\">\n"
        << "<p>" << profile_str << "</p>\n"
        << "</div>\n"
-       << "</script>\n"
        << "</div>\n"
        << "</div>\n";
   }
@@ -1480,9 +1476,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
   if ( p.collected_data.fight_length.mean() > 0 )
   {
     os << "<div class=\"player-section stats\">\n";
-    os.printf( "<h3 class=\"toggle\" id=\"player%d_charstats_toggle\">Stats</h3>\n", p.index );
+    os.printf( "<h3 class=\"toggle\">Stats</h3>\n", p.index );
     os << "<div class=\"toggle-content hide\">\n";
-    os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_charstats_toggle\">\n", p.index );
     os << "<table class=\"sc even\">\n"
        << "<thead>\n"
        << "<tr>\n"
@@ -1843,7 +1838,6 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     }
     os << "</tbody>\n"
        << "</table>\n"
-       << "</script>\n"
        << "</div>\n"
        << "</div>\n";
   }
@@ -2057,9 +2051,8 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   os.format( R"(<iframe src="{}" width="1165" height="{}" style="background:#160f0b"></iframe>)",
               raidbots_talent_render_src( p.talents_str, p.true_level, 1165, false, p.dbc->ptr ), h_ );
 
-  os.printf( "<h3 class=\"toggle\" id=\"player%d_talent_tables_toggle\">Talent Tables</h3>\n", p.index );
+  os.printf( "<h3 class=\"toggle\">Talent Tables</h3>\n", p.index );
   os << "<div class=\"toggle-content hide\">\n";
-  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_talent_tables_toggle\">\n", p.index );
 
   if ( range::accumulate( class_traits, 0, &std::vector<talentrank_t>::size ) )
   {
@@ -2089,8 +2082,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
     os << "</div>\n";
   }
 
-  os << "</script>\n"
-     << "</div>\n"
+  os << "</div>\n"
      << "</div>\n"
      << "</div>\n";
 }
@@ -2476,9 +2468,8 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
 {
   const sim_t& sim = *( p.sim );
   os << "<div class=\"player-section action-priority-list\">\n";
-  os.printf( "<h3 class=\"toggle\" id=\"player%d_apl_toggle\">Action Priority List</h3>\n", p.index );
+  os.printf( "<h3 class=\"toggle\">Action Priority List</h3>\n", p.index );
   os << "<div class=\"toggle-content hide\">\n";
-  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_apl_toggle\">\n", p.index );
 
   action_priority_list_t* alist = nullptr;
 
@@ -2642,7 +2633,6 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, const p
   }
 
   // End Action Priority List section
-  os << "\n</script>\n";
   os << "</div>\n"
      << "</div>\n";
 }
@@ -2655,9 +2645,8 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
   // Statistics & Data Analysis
 
   os << "<div class=\"player-section analysis\">\n";
-  os.printf( "<h3 class=\"toggle\" id=\"player%d_stats_toggle\">Statistics & Data Analysis</h3>\n", p.index );
+  os.printf( "<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n", p.index );
   os << "<div class=\"toggle-content hide\">\n";
-  os.printf( "<script type=\"text/x-deferred-html\" data-toggle=\"player%d_stats_toggle\">\n", p.index );
   os << "<table class=\"sc stripebody\">\n";
 
   report_helper::print_html_sample_data( os, p, p.collected_data.fight_length, "Fight Length" );
@@ -2677,7 +2666,6 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
   }
 
   os << "</table>\n";
-  os << "\n</script>\n";
   os << "</div>\n"
         "</div>\n";
 }
@@ -3770,6 +3758,8 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
     os << " hide";
   }
   os << "\">\n";
+
+  os.printf( R"(<script type="text/x-deferred-html" data-toggle="player%dtoggle">)", p.index );
 
   os << "<ul class=\"params\">\n";
 #if SC_BETA
@@ -4992,6 +4982,7 @@ void print_html_player_( report::sc_html_stream& os, const player_t& p )
 
   // print_html_player_gear_weights( os, p, p.report_information );
 
+  os << "</script>\n";
   os << "</div>\n"
      << "</div>\n\n";
 }
