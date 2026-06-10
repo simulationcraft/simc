@@ -18381,11 +18381,12 @@ Effects          :
 Description      : You release a Jadefire Stomp, dealing $1248815s1 damage to $s2 enemies in front of you.
 
 Name             : Jadefire Stomp (id=1248815) [Spell Family (53)] 
+Hotfixed         : Unknown(59) (0 -> 50), Unknown(60) (20 -> 0)
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
-Line Width       : 20 yards
+Cone Angle       : 50 degrees
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -18395,7 +18396,8 @@ Family Flags     : 14, 103
 Attributes       : Is Ability (4), Do Not Sheath (18), Discount Power On Miss (59), No Aura Icon (60), No Helpful Threat (131), Treat as Area Effect (175), Always Line of Sight (185), Always AOE Line of Sight (186), No Aura Log (202), Treat as NPC AoE (250), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1251991)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1 | PvP Coefficient: 0.5 | Radius: 30 yards | Target: Front of Self (47) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1 | PvP Coefficient: 0.5 | Radius: 30 yards | Target: Enemies in Cone (24)
+Hotfixed         : Target 1 (47 -> 24), Target 2 (134 -> 0)
 Description      : $@spelldesc457974
 
 Name             : Airborne Rhythm (id=1248833) [Spell Family (53), Passive] 
