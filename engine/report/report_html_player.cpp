@@ -3831,7 +3831,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
 
   os << "<div class=\"toggle-content\">\n";
 
-  if ( p.sim->players_by_name.size() == 1 && p.is_player() )
+  if ( p.is_player() )
   {
     auto max_col = class_columns( p.specialization(), p.is_ptr() ) + spec_columns( p.specialization(), p.is_ptr() );
     auto w_ = static_cast<int>( max_col * 12.5 - 25 );
