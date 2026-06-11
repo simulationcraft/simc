@@ -9156,6 +9156,9 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
     parse_options( options_str );
 
     p->pets.dancing_rune_weapon_pet.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
+
+    if ( p->talent.deathbringer.echoing_fury.ok() )
+      exterm_stacks = as<int>( p->talent.deathbringer.echoing_fury->effectN( 4 ).base_value() );
   }
 
   void execute() override
@@ -9182,11 +9185,16 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
       p()->buffs.gift_of_the_sanlayn->trigger( p()->talent.blood.dancing_rune_weapon->duration() );
 
     if ( p()->talent.deathbringer.echoing_fury.ok() )
+    {
       p()->buffs.exterminate->trigger();
+      debug_cast<exterminate_t*>( p()->background_actions.exterminate )->empowered         = exterm_stacks;
+      debug_cast<exterminate_aoe_t*>( p()->background_actions.exterminate_aoe )->empowered = exterm_stacks;
+    }
   }
 
 private:
   int bone_shield_stack_gain;
+  int exterm_stacks;
 };
 
 // Dark Command =============================================================
