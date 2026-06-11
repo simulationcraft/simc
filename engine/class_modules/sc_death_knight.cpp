@@ -8246,6 +8246,14 @@ struct reapers_mark_t final : public death_knight_spell_t
       p()->buffs.exterminate->trigger( exterm_stacks );
       debug_cast<exterminate_t*>( p()->background_actions.exterminate )->empowered         = exterm_stacks;
       debug_cast<exterminate_aoe_t*>( p()->background_actions.exterminate_aoe )->empowered = exterm_stacks;
+    }
+
+    // Tested and confirmed June 11th 2026.  Casting reapers mark gives 1 stack on blood, but should only apply to Frost
+    if ( p()->bugs && p()->specialization() == DEATH_KNIGHT_BLOOD && p()->talent.deathbringer.echoing_fury.ok() )
+    {
+      p()->buffs.exterminate->trigger( exterm_stacks );
+      debug_cast<exterminate_t*>( p()->background_actions.exterminate )->empowered         = exterm_stacks;
+      debug_cast<exterminate_aoe_t*>( p()->background_actions.exterminate_aoe )->empowered = exterm_stacks;
     }  
   }
 
