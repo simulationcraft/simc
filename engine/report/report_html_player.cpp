@@ -3714,7 +3714,7 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
   bool one_player = sim.players_by_name.size() == 1 && !p.is_enemy() && sim.profilesets->n_profilesets() == 0;
 
   // Player Description
-  os.printf( R"(<div id="player%d" class="player section%s">)", p.index, (one_player ? " section-open" : "" ) );
+  os.printf( R"(<div id="player%d" class="player section%s">)""\n", p.index, (one_player ? " section-open" : "" ) );
   os.printf( R"(<h2 id="player%dtoggle" class="toggle%s")", p.index, (one_player ? " open" : "" ) );
 
   const std::string n = util::encode_html( p.name() );
