@@ -5,6 +5,7 @@ race=troll
 role=spell
 position=back
 talents=C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMzQzMzAAAwAAgAmZmZZZmZYBAgtxMzMmtFLzMzYmxYMzMGLMzMjZAAGAAAzsAAmBADD
+omnium_talents=136822:1/136817:1/136815:1/136814:1
 
 potion=lights_potential_2
 flask=flask_of_thalassian_resistance_2
@@ -13,21 +14,21 @@ augmentation=void_touched_augment_rune
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
 head=voidbreakers_veil,id=250060,ilevel=289,bonus_id=13534,gem_id=240983,enchant_id=8017
-neck=amulet_of_the_abyssal_hymn,id=250247,ilevel=289,bonus_id=13534,gem_id=240902/240902
+neck=rotmires_sporeheart,id=268291,bonus_id=13786/13577/13668,gem_id=240918
 shoulder=voidbreakers_leyline_nexi,id=250058,ilevel=289,enchant_id=8031
 back=arcanoweave_cloak,id=239661,ilevel=285,bonus_id=8794
-chest=voidbreakers_robe,id=250063,ilevel=289,enchant_id=7987
-wrists=arcanoweave_bracers,id=239660,ilevel=285,bonus_id=8794/13534,gem_id=240902
+chest=voidbreakers_robe,id=250063,bonus_id=13575/13786,enchant_id=7987
+wrists=arcanoweave_bracers,id=239660,ilevel=285,bonus_id=8794/13534,gem_id=240918
 hands=voidbreakers_gloves,id=250061,ilevel=289
-waist=whisperinscribed_sash,id=249376,ilevel=289,bonus_id=13534,gem_id=240902
+waist=whisperinscribed_sash,id=249376,ilevel=289,bonus_id=13534,gem_id=240918
 legs=commanders_faded_breeches,id=251090,ilevel=289,enchant_id=7937
-feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
-finger1=sindorei_band_of_hope,id=249919,ilevel=289,bonus_id=13534,gem_id=240902,enchant_id=7967
-finger2=eye_of_midnight,id=249920,ilevel=289,bonus_id=13534,gem_id=240902/240902,enchant_id=7967
+feet=luxurious_loamstriders,id=268282,bonus_id=13786/13577,enchant_id=7993
+finger1=sindorei_band_of_hope,id=249919,ilevel=289,bonus_id=13534,gem_id=240918,enchant_id=7967
+finger2=sporecallers_blooming_loop,id=268290,bonus_id=13786/13577/13668,enchant_id=7967,gem_id=240918
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=298
 trinket2=vaelgors_final_stare,id=249346,ilevel=298
-main_hand=,id=258218,ilevel=298,enchant_id=8039
-off_hand=,id=251094,ilevel=298
+main_hand=skybreakers_blade,id=258218,ilevel=298,enchant_id=8039
+off_hand=sigil_of_the_restless_heart,id=251094,ilevel=298
 
 save=MID1_Mage_Arcane.simc
 
@@ -38,6 +39,7 @@ race=void_elf
 role=spell
 position=back
 talents=C4DAAAAAAAAAAAAAAAAAAAAAAYGmZZmZmFmZGamxAAAwAAmZmmlltZAgYDAgNmZmxYzyMzMLzMGjZmxYhZmZMDAwAAAMAzMgZAwwA
+omnium_talents=136822:1/136817:1/136815:1/136814:1
 
 potion=lights_potential_2
 flask=flask_of_thalassian_resistance_2
@@ -46,21 +48,21 @@ augmentation=void_touched_augment_rune
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
 head=voidbreakers_veil,id=250060,ilevel=289,bonus_id=13534,gem_id=240983,enchant_id=8017
-neck=amulet_of_the_abyssal_hymn,id=250247,ilevel=289,bonus_id=13534,gem_id=240902/240902
+neck=rotmires_sporeheart,id=268291,bonus_id=13786/13577/13668,gem_id=240918
 shoulder=voidbreakers_leyline_nexi,id=250058,ilevel=289,enchant_id=8031
 back=arcanoweave_cloak,id=239661,ilevel=285,bonus_id=8794
-chest=voidbreakers_robe,id=250063,ilevel=289,enchant_id=7987
-wrists=arcanoweave_bracers,id=239660,ilevel=285,bonus_id=8794/13534,gem_id=240902
+chest=voidbreakers_robe,id=250063,bonus_id=13575/13786,enchant_id=7987
+wrists=arcanoweave_bracers,id=239660,ilevel=285,bonus_id=8794/13534,gem_id=240918
 hands=voidbreakers_gloves,id=250061,ilevel=289
-waist=whisperinscribed_sash,id=249376,ilevel=289,bonus_id=13534,gem_id=240902
+waist=whisperinscribed_sash,id=249376,ilevel=289,bonus_id=13534,gem_id=240918
 legs=commanders_faded_breeches,id=251090,ilevel=289,enchant_id=7937
-feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
-finger1=sindorei_band_of_hope,id=249919,ilevel=289,bonus_id=13534,gem_id=240902,enchant_id=7967
-finger2=eye_of_midnight,id=249920,ilevel=289,bonus_id=13534,gem_id=240902/240902,enchant_id=7967
+feet=luxurious_loamstriders,id=268282,bonus_id=13786/13577,enchant_id=7993
+finger1=sindorei_band_of_hope,id=249919,ilevel=289,bonus_id=13534,gem_id=240918,enchant_id=7967
+finger2=sporecallers_blooming_loop,id=268290,bonus_id=13786/13577/13668,enchant_id=7967,gem_id=240918
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=298
 trinket2=vaelgors_final_stare,id=249346,ilevel=298
-main_hand=,id=258218,ilevel=298,enchant_id=8039
-off_hand=,id=251094,ilevel=298
+main_hand=skybreakers_blade,id=258218,ilevel=298,enchant_id=8039
+off_hand=sigil_of_the_restless_heart,id=251094,ilevel=298
 
 save=MID1_Mage_Arcane_Sunfury.simc
 
