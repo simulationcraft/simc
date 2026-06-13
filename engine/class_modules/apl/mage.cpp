@@ -32,7 +32,7 @@ std::string flask( const player_t* p )
   switch ( p->specialization() )
   {
     case MAGE_ARCANE: lvl90_flask = "flask_of_thalassian_resistance_2"; break;
-    case MAGE_FIRE: lvl90_flask = "flask_of_the_magisters_2"; break;
+    case MAGE_FIRE: lvl90_flask = "flask_of_the_blood_knights_2"; break;
     case MAGE_FROST: lvl90_flask = "flask_of_the_shattered_sun_2"; break;
     default: break;
   }
