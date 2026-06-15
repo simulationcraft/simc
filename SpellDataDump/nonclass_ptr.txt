@@ -250811,7 +250811,8 @@ Effects          :
 #1 (id=1273548)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=1305384)  : Dummy (3)
-                   Base Value: 1465 | Scaled Value: 1465 | Target: Targeted Ally (21)
+                   Base Value: 2051 | Scaled Value: 2051 | Target: Targeted Ally (21)
+Hotfixed         : Base Value (1465 -> 2051)
 #3 (id=1307063)  : Trigger Spell (64): Rune of Lingering
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287665 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279599
@@ -254290,7 +254291,8 @@ Effects          :
 #1 (id=1303742)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=1303771)  : Dummy (3)
-                   Base Value: 1465 | Scaled Value: 1465 | Target: Self (1)
+                   Base Value: 2051 | Scaled Value: 2051 | Target: Self (1)
+Hotfixed         : Base Value (1465 -> 2051)
 #3 (id=1305331)  : Trigger Spell (64): Rune of Lingering
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287665 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279596
@@ -254416,7 +254418,8 @@ Effects          :
 #1 (id=1305319)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=1305320)  : Dummy (3)
-                   Base Value: 1465 | Scaled Value: 1465 | Target: Self (1)
+                   Base Value: 2051 | Scaled Value: 2051 | Target: Self (1)
+Hotfixed         : Base Value (1465 -> 2051)
 Description      : $@spelldesc1287555
 Tooltip          : Healing $w1 every $t1 sec.
 
@@ -254489,7 +254492,8 @@ Effects          :
 #1 (id=1305705)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1305706)  : Dummy (3)
-                   Base Value: 1465 | Scaled Value: 1465 | Target: Self (1)
+                   Base Value: 2051 | Scaled Value: 2051 | Target: Self (1)
+Hotfixed         : Base Value (1465 -> 2051)
 Description      : $@spelldesc1279603
 
 Name             : Rune of Void-Tainted Shell (desc=Core Rune) (id=1287955) 
