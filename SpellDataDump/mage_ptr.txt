@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67808 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68182 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -2664,7 +2664,6 @@ Effects          :
                    Affected Spells (Label): Splintering Orbs (444256)
 
 Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden] 
-Hotfixed         : Learn Level (0 -> 10), Max Spell Level (0 -> 30)
 Class            : Arcane Mage
 School           : Physical
 Spell Type       : None

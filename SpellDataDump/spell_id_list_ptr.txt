@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.7.67808
+Class Spell ID List, wow build 12.0.7.68182
 
 Death Knight
 3714     Path of Frost

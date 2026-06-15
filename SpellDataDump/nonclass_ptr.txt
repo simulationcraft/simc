@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67808 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68182 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -57448,7 +57448,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Well Fed (id=177931) 
-Hotfixed         : Max Scaling Level (80 -> 90)
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
@@ -250812,7 +250811,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=1305384)  : Dummy (3)
                    Base Value: 2051 | Scaled Value: 2051 | Target: Targeted Ally (21)
-Hotfixed         : Base Value (1465 -> 2051)
 #3 (id=1307063)  : Trigger Spell (64): Rune of Lingering
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287665 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279599
@@ -250977,7 +250975,6 @@ Effects          :
 Description      : $@spelldesc1250596
 
 Name             : Duskwraith's Infusion (id=1263446) 
-Hotfixed         : School (1 -> 2)
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
@@ -254292,7 +254289,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=1303771)  : Dummy (3)
                    Base Value: 2051 | Scaled Value: 2051 | Target: Self (1)
-Hotfixed         : Base Value (1465 -> 2051)
 #3 (id=1305331)  : Trigger Spell (64): Rune of Lingering
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287665 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279596
@@ -254419,7 +254415,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=1305320)  : Dummy (3)
                    Base Value: 2051 | Scaled Value: 2051 | Target: Self (1)
-Hotfixed         : Base Value (1465 -> 2051)
 Description      : $@spelldesc1287555
 Tooltip          : Healing $w1 every $t1 sec.
 
@@ -254493,7 +254488,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1305706)  : Dummy (3)
                    Base Value: 2051 | Scaled Value: 2051 | Target: Self (1)
-Hotfixed         : Base Value (1465 -> 2051)
 Description      : $@spelldesc1279603
 
 Name             : Rune of Void-Tainted Shell (desc=Core Rune) (id=1287955) 
