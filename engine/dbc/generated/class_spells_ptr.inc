@@ -1,4 +1,4 @@
-// Active class spells, wow build 12.0.7.67808
+// Active class spells, wow build 12.0.7.68182
 static constexpr std::array<active_class_spell_t, 352> __ptr_active_spells_data { {
   {  1,    0,     100,       0, "Charge"                             },
   {  1,    0,     355,       0, "Taunt"                              },
@@ -354,7 +354,7 @@ static constexpr std::array<active_class_spell_t, 352> __ptr_active_spells_data 
   { 13, 1473, 1229376,       0, "Single-Button Assistant"            },
 } };
 
-// Pet active spells, wow build 12.0.7.67808
+// Pet active spells, wow build 12.0.7.68182
 static constexpr std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_data { {
   {  3,    2649, "Growl"                              },
   {  3,   16827, "Claw"                               },
@@ -491,7 +491,7 @@ static constexpr std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_dat
   {  9,  171138, "Shadow Lock"                        },
 } };
 
-// Passive class spells, wow build 12.0.7.67808
+// Passive class spells, wow build 12.0.7.68182
 static constexpr std::array<passive_class_spell_t, 63> __ptr_passive_spells_data { {
   {  1,    3127, "Parry"                              },
   {  1,  123829, "Block"                              },

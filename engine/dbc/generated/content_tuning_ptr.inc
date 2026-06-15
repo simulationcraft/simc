@@ -1,4 +1,4 @@
-// Content Tuning data, wow build 12.0.7.67808
+// Content Tuning data, wow build 12.0.7.68182
 static constexpr std::array<content_tuning_data_t, 2903> __ptr_content_tuning_data { {
   {    1, 0, -3, 1, 0, 0 },
   {    2, 0, 0, 5, 30, 0 },
