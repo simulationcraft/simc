@@ -9,11 +9,6 @@
 #include <functional>
 #include <mutex>
 
-/*
- * TODO:
- *  - implement profileset culling specialization
- */
-
 struct sim_t;
 
 enum call_point_e
