@@ -2,6 +2,7 @@
 
 #include "dbc/dbc.hpp"
 #include "dbc/item_set_bonus.hpp"
+#include "interfaces/sc_js.hpp"
 #include "player/set_bonus.hpp"
 #include "profileset.hpp"
 #include "sc_enums.hpp"

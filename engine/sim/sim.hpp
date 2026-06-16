@@ -7,7 +7,6 @@
 
 #include "config.hpp"
 #include "event_manager.hpp"
-#include "interfaces/sc_js.hpp"
 #include "player/gear_stats.hpp"
 #include "progress_bar.hpp"
 #include "profileset_control.hpp"
