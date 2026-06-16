@@ -121,6 +121,7 @@ struct item_t
     std::vector<unsigned>                            azerite_ids;
     std::vector<int>                                 crafted_stat_mod;
     unsigned                                         titan_disc_driver_id;
+    unsigned                                         content_tuning_id;
     bool                                             has_midnight_scaling;
 
     // Priority state tracking for item bonuses
@@ -167,6 +168,7 @@ struct item_t
   std::string option_azerite_level_str;
   std::string option_crafted_stat_str;
   std::string option_titan_disc_driver_id;
+  std::string option_content_tuning_id;
   double option_initial_cd;
 
   // Extracted data

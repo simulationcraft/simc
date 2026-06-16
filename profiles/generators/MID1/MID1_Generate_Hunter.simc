@@ -24,89 +24,90 @@
 
 # save=MID1_Hunter_Beast_Mastery.simc
 
-# hunter="MID1_Hunter_Beast_Mastery"
-# spec=beast_mastery
-# level=90
-# race=orc
-# role=attack
-# position=ranged_back
-# talents=C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwCsBzwQDbAAYG2GzsMzwMmZYYmxYmxMzYGzwMzYGzghmBAAAAAMDAAAzMzMAzshwwsA2MA
-# 
-# head=primal_sentrys_maw,id=249988,bonus_id=40/1808/12676/12806/13335/13338/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=8017
-# neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240918/240898
-# shoulders=pauldrons_of_the_void_hunter,id=151323,ilevel=289,enchant_id=8001
-# back=imperators_banner,id=249335,ilevel=289
-# chest=primal_sentrys_scaleplate,id=249991,bonus_id=40/12676/12806/13335/13336/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
-# wrists=fallen_kings_cuffs,id=249304,bonus_id=1808,ilevel=289,gem_id=240898
-# hands=primal_sentrys_talonguards,id=249989,bonus_id=40/12675/12806/13335/13337/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
-# waist=world_tenders_barkclasp,id=244611,bonus_id=1808/8960/8960/8960/8960/8960/8960/12066/12214/12214/12214/12214/12214/13622/13667/9627,gem_id=240898
-# legs=primal_sentrys_legguards,id=249987,bonus_id=13575/13575/13575,ilevel=289,enchant_id=8159
-# feet=world_tenders_rootslippers,id=244610,bonus_id=8960/8960/8960/8960/8960/8960/12066/12214/12214/12214/12214/12214/13622/13667/9627,enchant_id=7963
-# finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240898/240908,enchant_id=7967
-# finger2=bond_of_light,id=249369,bonus_id=1808,ilevel=289,gem_id=240892,enchant_id=7967
-# trinket1=radiant_plume,id=249806,ilevel=289
-# trinket2=algethar_puzzle_box,id=193701,ilevel=289
-# main_hand=sunstrike_rifle,id=249279,ilevel=289,enchant_id=8039
+hunter="MID1_Hunter_Beast_Mastery"
+spec=beast_mastery
+level=90
+race=orc
+role=attack
+position=ranged_back
+talents=C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwCsBzwQDbAAYG2GzsNzwMmZYYmxYmxMzYGzwMzYGzgx0MAAAAAmBAAgxMzMgZ2AbwsA2GA
+
+head=,id=249988,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/40/12676/12806/13335/13338/1808,enchant_id=8017,gem_id=240983,ilevel=289
+neck=,id=250247,bonus_id=12806/13577/13668,gem_id=240898/240898
+shoulder=,id=151323,enchant_id=8001,ilevel=289
+back=,id=249335,ilevel=289
+chest=,id=249991,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/40/12676/12806/13335/13336,enchant_id=7987,ilevel=289
+wrist=,id=249304,bonus_id=1808,gem_id=240898,ilevel=289
+hands=,id=249989,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/40/12675/12806/13335/13337,ilevel=289
+waist=,id=244611,bonus_id=8960/12214/8960/12214/8960/12214/8960/12214/8960/12214/8960/12214/8960/12214/8960/13622/13667/12066/9627/1808,gem_id=240898
+legs=,id=249987,bonus_id=13575/13575/13575/13575/13575,enchant_id=8159,ilevel=289
+feet=,id=244610,bonus_id=8960/12214/8960/12214/8960/12214/8960/12214/8960/12214/8960/12214/8960/12214/8960/13622/13667/12066/9627,enchant_id=7963
+finger1=,id=249920,bonus_id=12806/13577/13668,enchant_id=7969,gem_id=240898/240898
+finger2=,id=249369,bonus_id=1808,enchant_id=7969,gem_id=240898,ilevel=289
+trinket1=,id=249806,ilevel=298
+trinket2=,id=193701,ilevel=298
+main_hand=,id=249279,enchant_id=8039,ilevel=298
 
 # save=MID1_Hunter_Beast_Mastery_Pack_Leader.simc
-# save=MID1_Hunter_Beast_Mastery.simc
+save=MID1_Hunter_Beast_Mastery.simc
 
 
-# hunter="MID1_Hunter_Marksmanship"
-# source=default
-# spec=marksmanship
-# level=90
-# race=orc
-# role=attack
-# position=ranged_back
-# talents=C4PAAAAAAAAAAAAAAAAAAAAAAwCMwMGNWGQmBbAAAAAAAAAzYGzwMmZGzgx0MmZmZ222MzMDzMYmZbwsMYGAAwMzMAwMjNmFDwGG
-# 
-# head=primal_sentrys_maw,id=249988,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240967
-# neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=1808,ilevel=289,gem_id=240914/240914
-# shoulders=pauldrons_of_the_void_hunter,id=151323,ilevel=289
-# back=imperators_banner,id=249335,ilevel=289
-# chest=primal_sentrys_scaleplate,id=249991,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
-# wrists=fallen_kings_cuffs,id=249304,bonus_id=1808,ilevel=289,gem_id=240914
-# hands=primal_sentrys_talonguards,id=249989,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
-# waist=world_tenders_barkclasp,id=244611,bonus_id=1808/8960/8960/8960/8960/12214/12214/12214,ilevel=285,gem_id=240898
-# legs=primal_sentrys_legguards,id=249987,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=8159
-# feet=world_tenders_rootslippers,id=244610,bonus_id=8960/8960/8960/8960/12214/12214/12214,ilevel=285
-# finger1=signet_of_the_starved_beast,id=249336,bonus_id=1808,ilevel=289,gem_id=240890,enchant_id=7967
-# finger2=sindorei_band_of_hope,id=249919,bonus_id=1808,ilevel=289,gem_id=240908,enchant_id=7967
-# trinket1=umbral_plume,id=260235,ilevel=289
-# trinket2=algethar_puzzle_box,id=193701,ilevel=289
-# main_hand=rangercaptains_lethal_recurve,id=249288,ilevel=289,enchant_id=8039
-# 
-# save=MID1_Hunter_Marksmanship.simc
+hunter="MID1_Hunter_Marksmanship"
+source=default
+spec=marksmanship
+level=90
+race=orc
+role=attack
+position=ranged_back
+talents=C4PAAAAAAAAAAAAAAAAAAAAAAYzsMwAGwMsFYWAAAAAAAAAmxMmhZMzMmBjpZMzM22YMzyMzMzMzyYmlBDAAwYmZmZmZAyGMAbMDA
+
+head=primal_sentrys_maw,id=249988,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240967
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=1808,ilevel=289,gem_id=240914/240914
+shoulder=pauldrons_of_the_void_hunter,id=151323,ilevel=289
+back=imperators_banner,id=249335,ilevel=289
+chest=primal_sentrys_scaleplate,id=249991,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrist=fallen_kings_cuffs,id=249304,bonus_id=1808,ilevel=289,gem_id=240914
+hands=primal_sentrys_talonguards,id=249989,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+waist=world_tenders_barkclasp,id=244611,bonus_id=1808/8960/8960/8960/8960/12214/12214/12214,ilevel=285,gem_id=240898
+legs=primal_sentrys_legguards,id=249987,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=8159
+feet=world_tenders_rootslippers,id=244610,bonus_id=8960/8960/8960/8960/12214/12214/12214,ilevel=285
+finger1=signet_of_the_starved_beast,id=249336,bonus_id=1808,ilevel=289,gem_id=240890,enchant_id=7967
+finger2=sindorei_band_of_hope,id=249919,bonus_id=1808,ilevel=289,gem_id=240908,enchant_id=7967
+trinket1=umbral_plume,id=260235,ilevel=298
+trinket2=algethar_puzzle_box,id=193701,ilevel=298
+main_hand=rangercaptains_lethal_recurve,id=249288,ilevel=298,enchant_id=8039
+
+save=MID1_Hunter_Marksmanship.simc
 
 
-# hunter="MID1_Hunter_Survival_PL_DW"
-# source=default
-# spec=survival
-# level=90
-# race=pandaren
-# role=attack
-# position=back
-# talents=C8PAAAAAAAAAAAAAAAAAAAAAAMgxMGWILwMM0gFjZmZmxyAAAAAAgZMzMDzYYMDGTzAAAAAAAGLLzMziZmZmZGjBMzGgZxYMjNG
-# 
-# head=primal_sentrys_maw,id=249988,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983
-# neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=1808,ilevel=289,gem_id=240914/240890
-# shoulders=pauldrons_of_the_void_hunter,id=151323,ilevel=289
-# back=draconic_nullcape,id=249370,ilevel=289
-# chest=primal_sentrys_scaleplate,id=249991,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
-# wrists=farstriders_plated_bracers,id=244584,bonus_id=1808/8790/8960/12214/12214/12214/12214/12214/12384,ilevel=285,gem_id=240908
-# hands=primal_sentrys_talonguards,id=249989,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
-# waist=scornbane_waistguard,id=249371,bonus_id=1808,ilevel=289,gem_id=240898
-# legs=primal_sentrys_legguards,id=249987,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=8159
-# feet=darkstrider_treads,id=249377,ilevel=289
-# finger1=occlusion_of_void,id=251217,bonus_id=1808,ilevel=289,gem_id=240898,enchant_id=7967
-# finger2=omission_of_light,id=251093,bonus_id=1808,ilevel=289,gem_id=240898,enchant_id=7967
-# trinket1=radiant_plume,id=249806,ilevel=289
-# trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
-# main_hand=hungering_victory,id=249925,ilevel=289,enchant_id=8039
-# off_hand=farstriders_mercy,id=237837,bonus_id=8791/8960/12214/12693,ilevel=285,enchant_id=8039
-# 
+hunter="MID1_Hunter_Survival_PL_DW"
+source=default
+spec=survival
+level=90
+race=pandaren
+role=attack
+position=back
+talents=C8PAAAAAAAAAAAAAAAAAAAAAAMgxMGWgNYGGawiZmZmZYZAAAAAAwMmZmx2MGzYGWGTzAAAAwAAjllZmZxMzMYMGwMbAGGjZmNDA
+
+head=,id=249988,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/1808,enchant_id=7961,gem_id=240983,ilevel=289
+neck=,id=250247,bonus_id=1808,gem_id=240892/240892,ilevel=289
+shoulder=,id=151323,enchant_id=8031,ilevel=289
+back=,id=258575,ilevel=289
+chest=,id=249991,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/12806/13335/13336/40/12676,enchant_id=7987
+wrist=,id=249984,bonus_id=1808,gem_id=240892,ilevel=289
+hands=,id=249989,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/12806/13335/13337/40/12675
+waist=,id=244611,bonus_id=8960/12214/1808/8960,gem_id=240892,ilevel=285
+legs=,id=249987,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/12806/13335/13339/40/12676,enchant_id=8159
+feet=,id=244610,bonus_id=8960/12214/8960,enchant_id=8019,ilevel=285
+finger1=,id=249920,bonus_id=1808,enchant_id=7967,gem_id=240892/240892,ilevel=289
+finger2=,id=251093,bonus_id=523,enchant_id=7967,gem_id=240892,ilevel=289
+trinket1=,id=193701,ilevel=298
+trinket2=,id=249343,ilevel=298
+main_hand=,id=251128,enchant_id=7983,ilevel=298
+off_hand=,id=249284,enchant_id=7983,ilevel=298
+
 # save=MID1_Hunter_Survival_PL_DW.simc
+save=MID1_Hunter_Survival.simc
 
 
 # hunter="MID1_Hunter_Survival_Sentinel_2H"
@@ -116,23 +117,24 @@
 # race=pandaren
 # role=attack
 # position=back
-# talents=C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgNjZmxMPwy8AAAAAAAMjZmZYGDjZwYaGAAAAwAAYZbmZWMzMzYmZMAMDbMMGzYjB
-# 
-# head=primal_sentrys_maw,id=249988,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983
-# neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=1808,ilevel=289,gem_id=240914/240890
-# shoulders=pauldrons_of_the_void_hunter,id=151323,ilevel=289
-# back=draconic_nullcape,id=249370,ilevel=289
-# chest=primal_sentrys_scaleplate,id=249991,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
-# wrists=fallen_kings_cuffs,id=249304,bonus_id=1808,ilevel=289,gem_id=240908
-# hands=primal_sentrys_talonguards,id=249989,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
-# waist=world_tenders_barkclasp,id=244611,bonus_id=1808/8960/8960/8960/8960/12214/12214/12214,ilevel=285,gem_id=240898
-# legs=primal_sentrys_legguards,id=249987,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=8159
-# feet=world_tenders_rootslippers,id=244610,bonus_id=8960/8960/8960/8960/12214/12214/12214,ilevel=285
-# finger1=occlusion_of_void,id=251217,bonus_id=1808,ilevel=289,gem_id=240898,enchant_id=7967
-# finger2=omission_of_light,id=251093,bonus_id=1808,ilevel=289,gem_id=240898,enchant_id=7967
-# trinket1=radiant_plume,id=249806,ilevel=289
-# trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
-# main_hand=inescapable_reach,id=249302,ilevel=289,enchant_id=8039
+# talents=C8PAAAAAAAAAAAAAAAAAAAAAAMgxMGWgNYGGawiZmZmZYZAAAAAAwMmZmx2MGzYGWGTzAAAAwAAjllZmZxMzMYMGwMbAGGjZmNDA
 
-# save=MID1_Hunter_Survival_Sentinel_2H.simc
+# head=,id=249988,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/1808,enchant_id=7961,gem_id=240983,ilevel=289
+# neck=,id=250247,bonus_id=1808,gem_id=240892/240892,ilevel=289
+# shoulder=,id=151323,enchant_id=8031,ilevel=289
+# back=,id=258575,ilevel=289
+# chest=,id=249991,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/12806/13335/13336/40/12676,enchant_id=7987
+# wrist=,id=249984,bonus_id=1808,gem_id=240892,ilevel=289
+# hands=,id=249989,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/12806/13335/13337/40/12675
+# waist=,id=244611,bonus_id=8960/12214/1808/8960,gem_id=240892,ilevel=285
+# legs=,id=249987,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/12806/13335/13339/40/12676,enchant_id=8159
+# feet=,id=244610,bonus_id=8960/12214/8960,enchant_id=8019,ilevel=285
+# finger1=,id=249920,bonus_id=1808,enchant_id=7967,gem_id=240892/240892,ilevel=289
+# finger2=,id=251093,bonus_id=523,enchant_id=7967,gem_id=240892,ilevel=289
+# trinket1=,id=193701,ilevel=298
+# trinket2=,id=249343,ilevel=298
+# main_hand=,id=251128,enchant_id=7983,ilevel=298
+# off_hand=,id=249284,enchant_id=7983,ilevel=298
+
+# # save=MID1_Hunter_Survival_Sentinel_2H.simc
 # save=MID1_Hunter_Survival.simc

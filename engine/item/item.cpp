@@ -819,7 +819,7 @@ void item_t::parse_options()
     option_name_str = options_str.substr( 0, cut_pt );
   }
 
-  std::array<std::unique_ptr<option_t>, 34> options { {
+  std::array<std::unique_ptr<option_t>, 35> options { {
     opt_uint("id", parsed.data.id),
     opt_string("stats", option_stats_str),
     opt_string("gems", option_gems_str),
@@ -853,7 +853,8 @@ void item_t::parse_options()
     opt_string("context", DUMMY_CONTEXT),
     opt_string("crafted_stats", option_crafted_stat_str),
     opt_string("crafting_quality", DUMMY_CRAFTING_QUALITY),
-    opt_string("titan_disc_id", option_titan_disc_driver_id )
+    opt_string("titan_disc_id", option_titan_disc_driver_id ),
+    opt_string("content_tuning", option_content_tuning_id )
   } };
 
   try
@@ -1059,6 +1060,9 @@ void item_t::parse_options()
 
   if ( !option_titan_disc_driver_id.empty() )
     parsed.titan_disc_driver_id = util::to_unsigned( option_titan_disc_driver_id );
+
+  if ( !option_content_tuning_id.empty() )
+    parsed.content_tuning_id = util::to_unsigned( option_content_tuning_id );
 }
 
 // item_t::initialize_data ==================================================
@@ -1285,6 +1289,9 @@ std::string item_t::encoded_item() const
 
   if ( !option_titan_disc_driver_id.empty() )
     s << ",titan_disc_id=" << option_titan_disc_driver_id;
+
+  if ( !option_content_tuning_id.empty() )
+    s << ",content_tuning=" << option_content_tuning_id;
 
   return s.str();
 }

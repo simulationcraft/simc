@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67808 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68182 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -2667,6 +2667,7 @@ Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden]
 Class            : Arcane Mage
 School           : Physical
 Spell Type       : None
+Spell Level      : 10 (max 30)
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -2685,7 +2686,7 @@ Effects          :
 #4 (id=191118)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #5 (id=191119)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 60 | Scaled Value: -210 | Points Per Level: -3 | Resource: mana | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 0 | Points Per Level: -3 | Resource: mana | Target: Self (1)
 #6 (id=1032357)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -67 | Scaled Value: -67 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Spellsteal (30449)

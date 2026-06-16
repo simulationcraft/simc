@@ -11,6 +11,7 @@
 #include "data_definitions.hh"
 #include "data_enums.hh"
 #include "dbc/azerite.hpp"
+#include "dbc/content_tuning.hpp"
 #include "dbc/expected_stat.hpp"
 #include "dbc/embellishment_data.hpp"
 #include "dbc/gem_data.hpp"
@@ -456,6 +457,9 @@ public:
 
   const expected_stat_t& expected_stat( unsigned level ) const
   { return expected_stat_t::find( level, ptr ); }
+
+  const content_tuning_data_t& content_tuning( unsigned id ) const
+  { return content_tuning_data_t::find( id, ptr ); }
 
   template <typename T, typename = std::enable_if_t<std::is_invocable_v<T, expected_stat_mod_t>>>
   double expected_stat_mod( difficulty_e difficulty, T field ) const

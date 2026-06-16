@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67808 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68182 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -57450,13 +57450,13 @@ Effects          :
 Name             : Well Fed (id=177931) 
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 80
+Max Scaling Level: 90
 Duration         : 3600 seconds
 Triggered By     : Refreshment (177934)
 Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), Allow While Stealthed (37), Retain Item Cast (95), Ignore Default Arena Restrictions (145), Allow Entering Arena (149), Aura Points On Client (268), Ignore Default Rated Battleground Restrictions (302)
 Effects          :
 #1 (id=255027)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: Food/Gems Attribute (-3)
-                   Base Value: 0 | Scaled Value: 6.986564 (coefficient=1.75) | Rating: Vers | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 26.83372 (coefficient=1.75) | Rating: Vers | Target: Self (1)
 Description      : Versatility increased by $s1. Lasts $d.
 Tooltip          : Versatility increased by $w1.
 
@@ -250810,7 +250810,7 @@ Effects          :
 #1 (id=1273548)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=1305384)  : Dummy (3)
-                   Base Value: 1465 | Scaled Value: 1465 | Target: Targeted Ally (21)
+                   Base Value: 2051 | Scaled Value: 2051 | Target: Targeted Ally (21)
 #3 (id=1307063)  : Trigger Spell (64): Rune of Lingering
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287665 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279599
@@ -250975,7 +250975,7 @@ Effects          :
 Description      : $@spelldesc1250596
 
 Name             : Duskwraith's Infusion (id=1263446) 
-School           : Physical
+School           : Holy
 Spell Type       : None
 Range            : 100 yards
 Triggered By     : Whisper of the Duskwraith (1263445)
@@ -254288,7 +254288,7 @@ Effects          :
 #1 (id=1303742)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=1303771)  : Dummy (3)
-                   Base Value: 1465 | Scaled Value: 1465 | Target: Self (1)
+                   Base Value: 2051 | Scaled Value: 2051 | Target: Self (1)
 #3 (id=1305331)  : Trigger Spell (64): Rune of Lingering
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287665 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279596
@@ -254414,7 +254414,7 @@ Effects          :
 #1 (id=1305319)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=1305320)  : Dummy (3)
-                   Base Value: 1465 | Scaled Value: 1465 | Target: Self (1)
+                   Base Value: 2051 | Scaled Value: 2051 | Target: Self (1)
 Description      : $@spelldesc1287555
 Tooltip          : Healing $w1 every $t1 sec.
 
@@ -254487,7 +254487,7 @@ Effects          :
 #1 (id=1305705)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1305706)  : Dummy (3)
-                   Base Value: 1465 | Scaled Value: 1465 | Target: Self (1)
+                   Base Value: 2051 | Scaled Value: 2051 | Target: Self (1)
 Description      : $@spelldesc1279603
 
 Name             : Rune of Void-Tainted Shell (desc=Core Rune) (id=1287955) 

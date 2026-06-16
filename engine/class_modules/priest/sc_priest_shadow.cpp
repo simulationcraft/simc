@@ -880,29 +880,38 @@ struct shadow_word_madness_t final : public priest_spell_t
     if ( dot->is_ticking() )
     {
       double old_persistent = dot->state->persistent_multiplier;
+      double old_ticks_left = dot->ticks_left_fractional();
+
       // copy new state first to capture snapshot values from this cast
       dot->state->copy_state( s );
 
-      // compute weights in ticks
-      double ticks_left       = dot->ticks_left_fractional();
+      // Compute weights in ticks against the refreshed total tick budget.
+      // This mirrors rolling refresh semantics: old remaining value + new base
+      // value, distributed over the refreshed DoT's total ticks.
       timespan_t new_tick     = tick_time( s );
       timespan_t new_duration = composite_dot_duration( s );
-      double new_base_ticks   = new_duration / new_tick;
+      double new_base_ticks   = ( new_tick > 0_ms ) ? ( new_duration / new_tick ) : 0.0;
 
-      // Protect against divide-by-zero: use sum of weighted ticks to preserve total damage.
-      double ticks_sum = ticks_left + new_base_ticks;
-      if ( ticks_sum > 0.0 )
+      timespan_t refreshed_duration = calculate_dot_refresh_duration( dot, new_duration );
+      double new_ticks_left =
+          ( new_tick > 0_ms ) ? ( 1.0 + ( refreshed_duration - dot->time_to_next_full_tick() ) / new_tick ) : 0.0;
+
+      if ( new_ticks_left > 0.0 )
       {
-        double combined = ( ticks_left * old_persistent + new_base_ticks * s->persistent_multiplier ) / ticks_sum;
+        double combined =
+            ( old_ticks_left * old_persistent + new_base_ticks * s->persistent_multiplier ) / new_ticks_left;
+
         sim->print_debug(
-            "shadow_word_madness refresh: old_persistent={} new_persistent={} ticks_left={} new_base_ticks={} "
-            "ticks_sum={} combined={}",
-            old_persistent, s->persistent_multiplier, ticks_left, new_base_ticks, ticks_sum, combined );
+            "shadow_word_madness refresh: old_persistent={} new_persistent={} old_ticks_left={} "
+            "new_base_ticks={} new_ticks_left={} combined={}",
+            old_persistent, s->persistent_multiplier, old_ticks_left, new_base_ticks, new_ticks_left,
+            combined );
         dot->state->persistent_multiplier = combined;
       }
       else
       {
-        sim->print_debug( "shadow_word_madness refresh: ticks_sum<=0, preserving old_persistent={}", old_persistent );
+        sim->print_debug( "shadow_word_madness refresh: new_ticks_left<=0, preserving old_persistent={}",
+                          old_persistent );
         dot->state->persistent_multiplier = old_persistent;
       }
     }

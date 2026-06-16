@@ -17,7 +17,7 @@ MID1_Demon_Hunter_Havoc.simc
 MID1_Demon_Hunter_Vengeance.simc
 MID1_Demon_Hunter_Vengeance_Aldrachi_Reaver.simc
 
-# MID1_Druid_Balance.simc
+MID1_Druid_Balance.simc
 MID1_Druid_Feral.simc
 # MID1_Druid_Feral_DOTC.simc
 MID1_Druid_Guardian.simc
@@ -28,7 +28,7 @@ MID1_Evoker_Devastation_FS.simc
 
 MID1_Hunter_Beast_Mastery.simc
 MID1_Hunter_Marksmanship.simc
-MID1_Hunter_Survival_PL_DW.simc
+# MID1_Hunter_Survival_PL_DW.simc
 MID1_Hunter_Survival.simc
 
 MID1_Mage_Arcane.simc

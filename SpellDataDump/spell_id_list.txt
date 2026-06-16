@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.5.67823
+Class Spell ID List, wow build 12.0.7.68182
 
 Death Knight
 3714     Path of Frost
@@ -625,7 +625,6 @@ Death Knight
 227591  *Death and Decay
 228322  *Hypothermia
 228645   Heart Strike
-231361  *Death Grip (test spell for Caroline)
 232048  *Splintering Bone
 232049  *Bone Shield
 232051  *Plagued Grip
@@ -2059,7 +2058,6 @@ Demon Hunter
 212105   Fel Devastation
 212106   Fel Devastation
 212548  *Holy Missile
-212576  *caroline test custom
 212611   Demon Hunter
 212612   Havoc Demon Hunter
 212613   Vengeance Demon Hunter
@@ -5392,7 +5390,6 @@ Evoker
 353167   Evoker
 353473  *Template [DNT]
 353759   Deep Breath
-354154  *Mount Auto-Shapeshift
 355627   Azure Strike
 355689   Landslide
 355913   Emerald Blossom
@@ -5459,7 +5456,6 @@ Evoker
 363558  *Rewind
 363800   Landslide
 363898  *Fire Breath
-363906  *Disintegrate
 363916   Obsidian Scales
 363922  *Dream Breath
 363940  *Past Self
@@ -5647,7 +5643,6 @@ Evoker
 373861   Temporal Anomaly
 373862   Temporal Anomaly
 374227   Zephyr
-374229   Zephyr
 374251   Cauterizing Flame
 374286  *Rescue
 374346   Overawe
@@ -5725,7 +5720,6 @@ Evoker
 378441  *Time Stop
 378444  *Obsidian Mettle
 378464  *Nullifying Shroud
-379996  *Mount Auto-Shapeshift
 381414  *Dream Projection
 381437   Soar
 381451   Principles of Soaring
@@ -5752,7 +5746,6 @@ Evoker
 382614   Dream Breath
 382731   Spiritbloom
 383005  *Chrono Loop
-383108  *Visage Mount Tracker [DNT]
 383332  *Time Stop
 383340  *Time Stop
 383610  *Nullifying Shroud
@@ -5766,7 +5759,6 @@ Evoker
 384689  *Divide and Conquer
 384691   Divide and Conquer
 385696   Flow State
-385871  *Test Disintegrate Aura [DNT]
 386272   Titanic Wrath
 386283   Catalyze
 386348   Onyx Legacy
@@ -6117,7 +6109,6 @@ Evoker
 462075   Evoker
 462076   Devastation Evoker
 462078   Preservation Evoker
-469347   Hover
 470785  *Past Self
 474535  *Super Fly
 1215549  Evoker Preservation 11.1 Class Set 2pc
@@ -6137,7 +6128,6 @@ Evoker
 1219255  Upheaval
 1219257  Upheaval
 1219723  Azure Celerity
-1235842 *Command Squadron
 1235843 *Command Squadron
 1236364 *Evoker Flameshaper 11.2 Class Set 2pc
 1236365 *Evoker Flameshaper 11.2 Class Set 4pc

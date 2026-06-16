@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67823 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68182 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -2281,9 +2281,9 @@ Effects          :
                    Family Flags: 41
                    Modified By: Phalanx (1269313 effect#2)
 Description      : $@spelldesc2565
-Tooltip          : Block chance increased by $w1%.$?$w4>0[
+Tooltip          : Block chance increased by $w1%.$?e1[
 
-Shield Slam damage increased by $w4%][]
+Shield Slam damage increased by $w2%][]
 
 Name             : Rope Swing Smawh (id=132824) [Hidden] 
 Class            : Warrior

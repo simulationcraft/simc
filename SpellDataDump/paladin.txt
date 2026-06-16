@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67823 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68182 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -11590,7 +11590,7 @@ Effects          :
 #1 (id=1022822)  : Apply Aura (6) | Proc Trigger Spell (42): Empyreal Ward
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 387792 | Target: Self (1)
 #2 (id=1187299)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
-                   Base Value: 471195 | Scaled Value: 471195 | Target: Self (1)
+                   Base Value: 471195 | Scaled Value: 471195 | Misc Value 2: 3 | Target: Self (1)
                    Affected Spells: Lay on Hands (633), Lay on Hands (471195)
                    Family Flags: 15
 Description      : Lay on Hands grants the target $387792s1% increased armor for $387792d and now ignores healing reduction effects.

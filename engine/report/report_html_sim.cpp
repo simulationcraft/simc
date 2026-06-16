@@ -58,7 +58,7 @@ void print_html_contents( report::sc_html_stream& os, const sim_t& sim )
     }
   }
 
-  os << "<div id=\"table-of-contents\" class=\"section\">\n"
+  os << "<div id=\"table-of-contents\" class=\"section grouped-last\">\n"
      << "<h2 class=\"toggle\">Table of Contents</h2>\n"
      << "<div class=\"toggle-content hide\">\n";
 
@@ -349,7 +349,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t& sim )
 
 void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
 {
-  os << "<div id=\"raid-summary\" class=\"section\">\n\n"
+  os << "<div id=\"raid-summary\" class=\"section section-open\">\n\n"
      << "<h2 class=\"toggle open\">Raid Summary</h2>\n"
      << "<div class=\"toggle-content\">\n";
 
@@ -377,16 +377,18 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
   {
     raid_dps.width_ += raid_dps.width_ + 12;
     raid_dps.set( "chart.marginLeft", margin );
+    raid_dps.set( "plotOptions.series.animation", false );  // no initial draw animation on the main DPS chart
     os << raid_dps.to_target_div();
-    sim.add_chart_data( raid_dps );
+    os << "<script type=\"text/javascript\">\n" << raid_dps.to_aggregate_string( false ) << "</script>\n";
   }
 
   if ( has_priority )
   {
     priority_dps.width_ += priority_dps.width_ + 12;
     priority_dps.set( "chart.marginLeft", margin );
+    priority_dps.set( "plotOptions.series.animation", false );
     os << priority_dps.to_target_div();
-    sim.add_chart_data( priority_dps );
+    os << "<script type=\"text/javascript\">\n" << priority_dps.to_aggregate_string( false ) << "</script>\n";
   }
 
   if ( !sim.raid_events_str.empty() )
@@ -888,7 +890,7 @@ void print_html_hotfixes( report::sc_html_stream& os, const sim_t& sim )
 {
   std::vector<const hotfix::hotfix_entry_t*> entries = hotfix::hotfix_entries();
 
-  os << "<div class=\"section\">\n";
+  os << "<div class=\"section grouped-first\">\n";
   os << "<h2 class=\"toggle\">Current simulator hotfixes</h2>\n";
   os << "<div class=\"toggle-content hide\">\n";
 
@@ -1156,7 +1158,7 @@ void print_profilesets( std::ostream& out, const profileset::profilesets_t& prof
     return;
   }
 
-  out << "<div class=\"section\">\n";
+  out << "<div class=\"section section-open\">\n";
   out << "<h2 class=\"toggle open\">Profile sets</h2>\n";
   out << "<div class=\"toggle-content\">\n";
 
@@ -1276,15 +1278,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
 
   if ( sim.decorated_tooltips )
   {
-    //Apply the prettification stuff only if its a single report
-    if ( num_players > 1 )
-    {
-      os << R"(<script>var whTooltips = {colorLinks: false, iconizeLinks: false, renameLinks: false};</script>)";
-    }
-    else
-    {
-      os << R"(<script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>)";
-    }
+    os << R"(<script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>)";
 
     if ( !sim.offline )
       os << std::endl << R"(<script type="text/javascript" src="https://wow.zamimg.com/widgets/power.js"></script>)";
@@ -1300,14 +1294,6 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   print_html_report_scripts( os );
   os << "\n</script>\n";
 
-  os << "<script type=\"text/javascript\">\n";
-  os << "jQuery( document ).ready( function( $ ) {\n";
-  for ( const auto& data : sim.on_ready_chart_data )
-  {
-    os << data << std::endl;
-  }
-  os << "});\n";
-  os << "</script>\n";
   os << "<script type=\"text/javascript\">\n";
   os << "__chartData = {\n";
   for ( const auto& entry : sim.chart_data )

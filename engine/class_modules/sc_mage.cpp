@@ -1668,7 +1668,7 @@ public:
       std::swap( snapshot_flags, impact_flags );
 
     if ( !harmful )
-      target = player;
+      default_target = target = player;
   }
 
   void init_finished() override

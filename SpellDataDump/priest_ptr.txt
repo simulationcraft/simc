@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.67808 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68182 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy

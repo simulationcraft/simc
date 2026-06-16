@@ -40,6 +40,7 @@ dbc/character_loadout.hpp
 dbc/class_spells.hpp
 dbc/client_data.hpp
 dbc/client_hotfix_entry.hpp
+dbc/content_tuning.hpp
 dbc/data_definitions.hh
 dbc/data_enums.hh
 dbc/dbc.hpp
@@ -250,6 +251,7 @@ dbc/character_loadout.cpp
 dbc/class_spells.cpp
 dbc/client_data.cpp
 dbc/client_hotfix_entry.cpp
+dbc/content_tuning.cpp
 dbc/embellishment_data.cpp
 dbc/expected_stat.cpp
 dbc/gem_data.cpp

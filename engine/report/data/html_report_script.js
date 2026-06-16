@@ -67,9 +67,10 @@ jQuery(document).ready(function ($) {
             scrollTop: $anchor.parent().offset().top - $anchor.height()
         }, 300);
     });
-    $('.toggle').click(function (e) {
+    $(document).on('click', '.toggle', function (e) {
         e.preventDefault();
         var $me = $(this);
+        revealSection(this.id);
         $me.toggleClass('open');
         $me.next('.toggle-content').slideToggle(150);
         var section = $me.parent('.section');
@@ -86,10 +87,11 @@ jQuery(document).ready(function ($) {
             }
         }
     });
-    $('.toggle-details').click(function (e) {
+    $(document).on('click', '.toggle-details', function (e) {
         e.preventDefault();
         e.stopPropagation();
         var $me = $(this);
+        if ( this.id ) renderCharts(this.id);
         var $row = $me.closest('tr').nextAll('.details').first();
         if ($me.hasClass('open')) {
             $me.removeClass('open');
@@ -99,16 +101,30 @@ jQuery(document).ready(function ($) {
             $row.fadeToggle(150);
         }
     });
-    $('.toggle, .toggle-details').each(function() {
-        if ( __chartData[this.id] === undefined ) return;
-        $(this).one('click', function() {
-            var d = __chartData[this.id];
-            for (var idx in d) {
-                $('#' + d[idx]['target']).highcharts(d[idx]['data']);
+    function renderCharts(key) {
+        var items = __chartData[key];
+        if ( items === undefined ) return;
+        items.forEach(function(chart) {
+            var $el = $('#' + chart.target);
+            if ( $el.length && !$el.highcharts() ) {
+                $el.highcharts(chart.data);
             }
         });
-    });
-    $('table.stripetoprow .toprow td:first-of-type, table.stripebody tbody td:first-of-type').click(function (e) {
+    }
+    function revealSection(id) {
+        var $deferred = id ? $('script[type="text/x-deferred-html"][data-toggle="' + id + '"]') : $();
+        if ( $deferred.length ) {
+            $deferred.each(function() {
+                $(this).replaceWith($($.parseHTML(this.textContent)));
+            });
+            $('.stripetoprow').oddstripe();
+            renderCharts('');
+        }
+        if ( id ) renderCharts(id);
+    }
+    $('.toggle.open').each(function() { revealSection(this.id); });
+    renderCharts('');
+    $(document).on('click', 'table.stripetoprow .toprow td:first-of-type, table.stripebody tbody td:first-of-type', function (e) {
         e.preventDefault();
         $(this).children('.toggle-details').first().click();
     });
@@ -202,7 +218,7 @@ jQuery(document).ready(function ($) {
             $cells.removeClass('pulse');
         }, 150);
     }
-    $('.sort').on('click', 'th.toggle-sort', function (e) {
+    $(document).on('click', '.sort th.toggle-sort', function (e) {
         e.preventDefault();
         var $me = $(this);
         var $col = $me.closest('th');

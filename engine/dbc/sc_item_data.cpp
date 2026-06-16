@@ -226,8 +226,18 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       if ( offset_entries.size() == 0 )
         break;
       const auto& offset_entry = offset_entries[ 0 ];
-      if ( item.parsed.drop_level > 0 )
-        item.parsed.data.level = as<int>( util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, item.parsed.drop_level ) ) );
+      if ( auto level = item.parsed.drop_level; level > 0 )
+      {
+        if ( item.parsed.content_tuning_id != 0 )
+        {
+          const auto& content_tuning = item.player->dbc->content_tuning( item.parsed.content_tuning_id );
+          if ( content_tuning.id != 0 && level > as<unsigned>( content_tuning.max_level_squish ) )
+            level = content_tuning.max_level_squish;
+        }
+
+        item.parsed.data.level = as<int>(
+            util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, level ) ) );
+      }
       else
         item.parsed.data.level = as<int>(
             util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );

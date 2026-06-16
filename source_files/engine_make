@@ -62,6 +62,7 @@ SRC += \
     dbc$(PATHSEP)class_spells.cpp \
     dbc$(PATHSEP)client_data.cpp \
     dbc$(PATHSEP)client_hotfix_entry.cpp \
+    dbc$(PATHSEP)content_tuning.cpp \
     dbc$(PATHSEP)embellishment_data.cpp \
     dbc$(PATHSEP)expected_stat.cpp \
     dbc$(PATHSEP)gem_data.cpp \

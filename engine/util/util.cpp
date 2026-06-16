@@ -315,40 +315,22 @@ double util::stat_value( const player_t* p, stat_e stat )
 // "normal" player-driven stuff.
 stat_e util::highest_stat( const player_t* p, util::span<const stat_e> stats )
 {
-  assert( !stats.empty() );
+  return util::find_stat( p, stats, std::greater() );
+}
 
-  stat_e stat = stats.front();
-  double value = stat_value( p, stat );
-  for ( stat_e s : stats.subspan( 1 ) )
-  {
-    const double v = stat_value( p, s );
-    if ( value < v )
-    {
-      stat = s;
-      value = v;
-    }
-  }
-
-  return stat;
+std::vector<stat_e> util::highest_stats( const player_t* p, util::span<const stat_e> stats )
+{
+  return util::find_stats( p, stats, std::greater() );
 }
 
 stat_e util::lowest_stat( const player_t* p, util::span<const stat_e> stats )
 {
-  assert( !stats.empty() );
+  return util::find_stat( p, stats, std::less() );
+}
 
-  stat_e stat = stats.front();
-  double value = stat_value( p, stat );
-  for ( stat_e s : stats.subspan( 1 ) )
-  {
-    const double v = stat_value( p, s );
-    if ( value > v )
-    {
-      stat = s;
-      value = v;
-    }
-  }
-
-  return stat;
+std::vector<stat_e> util::lowest_stats( const player_t* p, util::span<const stat_e> stats )
+{
+  return util::find_stats( p, stats, std::less() );
 }
 
 /// case-insensitive string comparison

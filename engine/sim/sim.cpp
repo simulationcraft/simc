@@ -4492,14 +4492,8 @@ void sim_t::abort()
 /// add chart to sim for end of report processing
 void sim_t::add_chart_data( const highchart::chart_t& chart )
 {
-  if ( chart.toggle_id_str_.empty() )
-  {
-    on_ready_chart_data.push_back( chart.to_aggregate_string( false ) );
-  }
-  else
-  {
-    chart_data[ chart.toggle_id_str_ ].push_back( chart.to_data() );
-  }
+  // the report script renders charts with an empty toggle id once their target div is in the DOM.
+  chart_data[ chart.toggle_id_str_ ].push_back( chart.to_data() );
 }
 
 void sim_t::print_spell_query()

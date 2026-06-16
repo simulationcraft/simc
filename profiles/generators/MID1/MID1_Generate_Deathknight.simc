@@ -57,22 +57,23 @@ race=pandaren
 role=attack
 position=back
 talents=CsPAAAAAAAAAAAAAAAAAAAAAAMDwMjZMDY2mZmZmZZmZkZMmZYGGPgZGMzMzMDAAAAAAAAAjZbgBsAWGmQGLYmxMzAzAYYmBYmBD
+omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_critical_power/rune_of_overload
 
 head=relentless_riders_crown,id=249970,bonus_id=40/6935/12676/12806/13335/13338/13575,gem_id=240983
-neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=6935/13355/13468/13469,gem_id=240908/240908
-shoulders=shoulderplates_of_frozen_blood,id=50234,bonus_id=12806/13577
+neck=rotmires_sporeheart,id=268291,bonus_id=13786,gem_id=240908
+shoulder=shoulderplates_of_frozen_blood,id=50234,bonus_id=12806/13577
 back=adherents_silken_shroud,id=239656,bonus_id=8791/8960/12066/12214/12384/13622/13667/9627
-chest=relentless_riders_cuirass,id=249973,bonus_id=40/12676/12806/13335/13336/13575,enchant_id=7987
-wrists=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12066/12384/13622/12497,gem_id=240908
+chest=relentless_riders_cuirass,id=249973,bonus_id=13786,enchant_id=7987
+wrist=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12066/12384/13622/12497,gem_id=240908
 hands=relentless_riders_bonegrasps,id=249971,bonus_id=40/12675/12806/13335/13337/13574
-waist=relentless_riders_chain,id=249967,bonus_id=6935/13355/13468/13469,gem_id=240908
+waist=girdle_of_devouring_rot,id=268289,bonus_id=13786,gem_id=240908
 legs=relentless_riders_legguards,id=249969,bonus_id=40/12676/12806/13335/13339/13575,enchant_id=8159
 feet=greaves_of_the_unformed,id=249381,bonus_id=13355/13468/13469
-finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant_id=7967
-finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant_id=7967
-trinket1=gaze_of_the_alnseer,id=249343,bonus_id=13355/13468/13469
-trinket2=light_company_guidon,id=249344,bonus_id=13355/13468/13469
-main_hand=bellamys_final_judgement,id=249277,bonus_id=12806/13577,enchant_id=3368
+finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant=eyes_of_the_eagle_2
+finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant=eyes_of_the_eagle_2
+trinket1=gaze_of_the_alnseer,id=249343,bonus_id=13654
+trinket2=light_company_guidon,id=249344,bonus_id=13654
+main_hand=bellamys_final_judgement,id=249277,bonus_id=13654,enchant_id=3368
 
 save="MID1_Death_Knight_Frost.simc"
 
@@ -83,22 +84,23 @@ race=pandaren
 role=attack
 position=back
 talents=CsPAAAAAAAAAAAAAAAAAAAAAAMDYmZMzMDY2mZmZmZxMjMjxMDzw4BMzgZmZmZAAAAAAAAAAsZ2MMwAzmGaYDzMmZGYGADAzMzAD
+omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_critical_power/rune_of_overload
 
 head=relentless_riders_crown,id=249970,bonus_id=40/6935/12676/12806/13335/13338/13575,gem_id=240983
-neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=6935/13355/13468/13469,gem_id=240890/240890
-shoulders=shoulderplates_of_frozen_blood,id=50234,bonus_id=12806/13577
+neck=rotmires_sporeheart,id=268291,bonus_id=13786,gem_id=240908
+shoulder=shoulderplates_of_frozen_blood,id=50234,bonus_id=12806/13577
 back=adherents_silken_shroud,id=239656,bonus_id=8791/8960/12066/12214/12384/13622/13667/9627
-chest=relentless_riders_cuirass,id=249973,bonus_id=40/12676/12806/13335/13336/13575,enchant_id=7987
-wrists=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12066/12384/13622/12497,gem_id=240890
+chest=relentless_riders_cuirass,id=249973,bonus_id=13786,enchant_id=7987
+wrist=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12066/12384/13622/12497,gem_id=240908
 hands=relentless_riders_bonegrasps,id=249971,bonus_id=40/12675/12806/13335/13337/13574
-waist=relentless_riders_chain,id=249967,bonus_id=6935/13355/13468/13469,gem_id=240890
+waist=girdle_of_devouring_rot,id=268289,bonus_id=13786,gem_id=240908
 legs=relentless_riders_legguards,id=249969,bonus_id=40/12676/12806/13335/13339/13575,enchant_id=8159
 feet=greaves_of_the_unformed,id=249381,bonus_id=13355/13468/13469
-finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240890,enchant_id=7967
-finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240890,enchant_id=7967
-trinket1=gaze_of_the_alnseer,id=249343,bonus_id=13355/13468/13469
-trinket2=light_company_guidon,id=249344,bonus_id=13355/13468/13469
-main_hand=bellamys_final_judgement,id=249277,bonus_id=12806/13577,enchant_id=3368
+finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant=eyes_of_the_eagle_2
+finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant=eyes_of_the_eagle_2
+trinket1=gaze_of_the_alnseer,id=249343,bonus_id=13654
+trinket2=light_company_guidon,id=249344,bonus_id=13654
+main_hand=bellamys_final_judgement,id=249277,bonus_id=13654,enchant_id=3368
 
 save="MID1_Death_Knight_Frost_Rider.simc"
 
@@ -109,22 +111,23 @@ race=troll
 role=attack
 position=back
 talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAw2MmZ2mZGjZAbmFDDZgZjhGLAYGAGzMjZAmZmxYA
+omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_critical_power/rune_of_overload
 
 head=relentless_riders_crown,id=249970,bonus_id=40/6935/12676/12806/13335/13338/13575,gem_id=240983
-neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=6935/13355/13468/13469,gem_id=240898/240898
-shoulders=shoulderplates_of_frozen_blood,id=50234,bonus_id=12806/13577
+neck=rotmires_sporeheart,id=268291,bonus_id=13786,gem_id=240908
+shoulder=shoulderplates_of_frozen_blood,id=50234,bonus_id=12806/13577
 back=adherents_silken_shroud,id=239656,bonus_id=8791/8960/12066/12214/12384/13622/13667/9627
-chest=relentless_riders_cuirass,id=249973,bonus_id=40/12676/12806/13335/13336/13575,enchant_id=7987
-wrists=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12066/12384/13622/12497,gem_id=240898
+chest=relentless_riders_cuirass,id=249973,bonus_id=13786,enchant_id=7987
+wrist=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12066/12384/13622/12497,gem_id=240908
 hands=relentless_riders_bonegrasps,id=249971,bonus_id=40/12675/12806/13335/13337/13574
-waist=relentless_riders_chain,id=249967,bonus_id=6935/13355/13468/13469,gem_id=240898
+waist=girdle_of_devouring_rot,id=268289,bonus_id=13786,gem_id=240908
 legs=relentless_riders_legguards,id=249969,bonus_id=40/12676/12806/13335/13339/13575,enchant_id=8159
 feet=greaves_of_the_unformed,id=249381,bonus_id=13355/13468/13469
-finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240898,enchant_id=7969
-finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240898,enchant_id=7997
-trinket1=gaze_of_the_alnseer,id=249343,bonus_id=13355/13468/13469
-trinket2=light_company_guidon,id=249344,bonus_id=13355/13468/13469
-main_hand=bellamys_final_judgement,id=249277,bonus_id=12806/13577,enchant_id=6245
+finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant=eyes_of_the_eagle_2
+finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant=eyes_of_the_eagle_2
+trinket1=gaze_of_the_alnseer,id=249343,bonus_id=13654
+trinket2=light_company_guidon,id=249344,bonus_id=13654
+main_hand=bellamys_final_judgement,id=249277,bonus_id=13654,enchant_id=6245
 
 save=MID1_Death_Knight_Unholy.simc
 
@@ -135,22 +138,23 @@ race=troll
 role=attack
 position=back
 talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAw2MmZ2mZGjZMwAzYRjlFAbTsBgZAYMzMmBzMYGjB
+omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_critical_power/rune_of_overload
 
 head=relentless_riders_crown,id=249970,bonus_id=40/6935/12676/12806/13335/13338/13575,gem_id=240983
-neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=6935/13355/13468/13469,gem_id=240898/240898
-shoulders=shoulderplates_of_frozen_blood,id=50234,bonus_id=12806/13577
+neck=rotmires_sporeheart,id=268291,bonus_id=13786,gem_id=240908
+shoulder=shoulderplates_of_frozen_blood,id=50234,bonus_id=12806/13577
 back=adherents_silken_shroud,id=239656,bonus_id=8791/8960/12066/12214/12384/13622/13667/9627
-chest=relentless_riders_cuirass,id=249973,bonus_id=40/12676/12806/13335/13336/13575,enchant_id=7987
-wrists=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12066/12384/13622/12497,gem_id=240898
+chest=relentless_riders_cuirass,id=249973,bonus_id=13786,enchant_id=7987
+wrist=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12066/12384/13622/12497,gem_id=240908
 hands=relentless_riders_bonegrasps,id=249971,bonus_id=40/12675/12806/13335/13337/13574
-waist=relentless_riders_chain,id=249967,bonus_id=6935/13355/13468/13469,gem_id=240898
+waist=girdle_of_devouring_rot,id=268289,bonus_id=13786,gem_id=240908
 legs=relentless_riders_legguards,id=249969,bonus_id=40/12676/12806/13335/13339/13575,enchant_id=8159
 feet=greaves_of_the_unformed,id=249381,bonus_id=13355/13468/13469
-finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240898,enchant_id=7969
-finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240898,enchant_id=7997
-trinket1=gaze_of_the_alnseer,id=249343,bonus_id=13355/13468/13469
-trinket2=light_company_guidon,id=249344,bonus_id=13355/13468/13469
-main_hand=bellamys_final_judgement,id=249277,bonus_id=12806/13577,enchant_id=6245
+finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant=eyes_of_the_eagle_2
+finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant=eyes_of_the_eagle_2
+trinket1=gaze_of_the_alnseer,id=249343,bonus_id=13654
+trinket2=light_company_guidon,id=249344,bonus_id=13654
+main_hand=bellamys_final_judgement,id=249277,bonus_id=13654,enchant_id=6245
 
 
 save=MID1_Death_Knight_Unholy_San'layn.simc

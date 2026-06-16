@@ -5229,6 +5229,26 @@ class ItemOffsetCurveGenerator(DataGenerator):
 
         self.output_footer()
 
+class ContentTuningGenerator(DataGenerator):
+    def generate(self, data = None):
+        content_tuning_db = self.db('ContentTuning')
+        data = sorted(content_tuning_db.values(), key=lambda e: e.id)
+
+        self.output_header(
+            header = 'Content Tuning data',
+            type = 'content_tuning_data_t',
+            array = 'content_tuning',
+            length = len(data) if data else 1)
+
+        for entry in data:
+            record = entry.field('id', 'flags', 'id_expansion', 'min_level_squish', 'max_level_squish', 'i_level')
+            self.output_record(record)
+
+        if not data:
+            self.output_record('')
+
+        self.output_footer()
+
 class PassiveClassSpellGenerator(DataGenerator):
     def filter(self):
         _data = []

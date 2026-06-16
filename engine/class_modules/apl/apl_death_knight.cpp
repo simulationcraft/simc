@@ -31,7 +31,7 @@ std::string flask( const player_t* p )
 {
   std::string frost_flask = ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
 
-  std::string unholy_flask = ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
+  std::string unholy_flask = ( p->true_level >= 81 ) ? "flask_of_the_magisters_2" : "flask_of_alchemical_chaos_3";
 
   std::string blood_flask = ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
 
@@ -360,7 +360,7 @@ void unholy( player_t* p )
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown)" );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown)" );
 
-  variables->add_action( "variable,name=spending_rp,value=rune<2|buff.forbidden_knowledge.up&(rune<4|pet.gargoyle.active)|buff.sudden_doom.react|active_enemies>=3", "Variables" );
+  variables->add_action( "variable,name=spending_rp,value=rune<2|buff.forbidden_knowledge.up&(rune<4|pet.gargoyle.active)|buff.sudden_doom.react", "Variables" );
   variables->add_action( "variable,name=st_planning,op=setif,value=1,value_else=0,condition=active_enemies=1&(!raid_event.adds.exists|!raid_event.adds.in|raid_event.adds.in>15|!raid_event.pull.exists|raid_event.pull.exists&raid_event.pull.in>15)" );
   variables->add_action( "variable,name=adds_remain,value=active_enemies>=2&((!raid_event.adds.exists|!raid_event.pull.exists)|raid_event.adds.remains>5|raid_event.pull.remains>5)" );
   variables->add_action( "variable,name=cds_active,value=pet.lesser_ghoul_army.active|buff.forbidden_knowledge.up|buff.dark_transformation.up&buff.dark_transformation.remains>5" );

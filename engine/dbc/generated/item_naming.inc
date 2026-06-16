@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 12.0.5.67823
-static constexpr std::array<item_name_description_t, 1040> __item_name_description_data { {
+// Item name descriptions, wow build 12.0.7.68182
+static constexpr std::array<item_name_description_t, 1044> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -1040,5 +1040,9 @@ static constexpr std::array<item_name_description_t, 1040> __item_name_descripti
   { 14446, "Galactic Void-Charged"                       },
   { 14448, "Housing Fixture"                             },
   { 14449, "Artisanal House"                             },
+  { 14459, "Sporefused: Myth"                            },
+  { 14460, "Sporefused: Hero"                            },
+  { 14461, "Sporefused: Champion"                        },
+  { 14462, "Sporefused: Veteran"                         },
 } };
 
