@@ -16,7 +16,6 @@
 #include "sc_enums.hpp"
 #include "sc_stagger.hpp"
 #include "sim/proc.hpp"
-#include "sim/profileset_control.hpp"
 #include "util/timeline.hpp"
 
 #include <array>
