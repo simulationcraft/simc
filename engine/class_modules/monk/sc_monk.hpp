@@ -1158,7 +1158,6 @@ public:
   bool validate_fight_style( fight_style_e style ) const override;
 
   // Init / Reset
-  void create_pets() override;
   void init_spells() override;
   void init_background_actions() override;
   void init_base_stats() override;

@@ -41,7 +41,6 @@ WINDWALKER:
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
 #include "sc_enums.hpp"
-#include "sim/profileset_control.hpp"
 
 #include <deque>
 
@@ -5550,7 +5549,6 @@ bool monk_t::validate_fight_style( fight_style_e style ) const
   return true;
 }
 
-// monk_t::init_spells ======================================================
 void monk_t::init_spells()
 {
   base_t::init_spells();
@@ -7452,7 +7450,7 @@ struct monk_module_t : public module_t
     return true;
   }
 
-  void register_actor_initializers( sim_t* ) const override
+  void register_actor_initializers( sim_t * ) const override
   {
   }
 
