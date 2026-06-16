@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67823 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68182 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -14118,9 +14118,9 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
 #2 (id=1181323)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Description      : Creating a Halo extends the duration of $?a137031[Apotheosis]?a228264[Voidform][Dark Ascension] by ${$s1/1000} sec. If $?a137031[Apotheosis]?a228264[Voidform][Dark Ascension] is not active, up to $454002U seconds is stored.
+Description      : Creating a Halo extends the duration of $?a137031[Apotheosis][Voidform] by ${$s1/1000} sec. If $?a137031[Apotheosis][Voidform] is not active, up to $454002U seconds is stored.
 
-While out of combat or affected by a loss of control effect, the duration of $?a137031[Apotheosis]?a228264[Voidform][Dark Ascension] is paused for up to $s2 sec.
+While out of combat or affected by a loss of control effect, the duration of $?a137031[Apotheosis][Voidform] is paused for up to $s2 sec.
 
 Name             : Sustained Potency (id=454002) [Spell Family (6)] 
 Class            : Priest
@@ -14408,7 +14408,7 @@ Description      : Holy Word: Serenity applies ${$s1/1000} sec of Renew to its t
 $?a1246517[Ultimate Serenity][Holy Word: Sanctify] applies $?a440671[${$s2/1000}.1][${$s2/1000}] sec of Renew to allies it heals.
 
 $@spellicon139 $@spellname139
-Fill the target with faith in the light, healing for $?a440671[${$139o1*$s1/15000/(1+$440671s2/100)}][${$139o1*$s1/15000}] over ${$s1/1000} sec.
+Fill the target with faith in the light, healing for $?a440671[${$139o1*$s1/15000/(1+$440671s2/100)}.1][${$139o1*$s1/15000}] over ${$s1/1000} sec.
 
 Name             : Light in the Darkness (id=471668) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Holy [tree=spec, row=9, col=3, max_rank=2, req_points=20]

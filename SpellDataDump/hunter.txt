@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67823 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68182 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -193,7 +193,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
 Family Flags     : 97
-Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), No AutoCast (AI) (49), Require All Targets (58), Name in Channel Bar (61), Special Taming Flag (74), No Active Pets (80), No School Immunities (90), Suppress Caster Procs (112), Spell Haste Affects Periodic (173), Haste Affects Duration (273), No Level Up Toast (281), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), No AutoCast (AI) (49), Require All Targets (58), Name in Channel Bar (61), Special Taming Flag (74), No Active Pets (80), No School Immunities (90), Suppress Caster Procs (112), Spell Haste Affects Periodic (173), Haste Affects Duration (273), No Level Up Toast (281), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (500)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Damage Channel Duration (15)
 Effects          :
 #1 (id=480)      : Apply Aura (6) | Dummy (4)

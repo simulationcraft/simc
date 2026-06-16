@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.5.67823 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68182 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -9435,7 +9435,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1013852)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Increases Critical Strike chance by $s1%.
+Description      : Increases critical strike chance by $s1%.
 
 Name             : Arcane Warding (id=383092) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=2, req_points=0]
@@ -12586,7 +12586,7 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8
 #6 (id=1289173)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
-Description      : $?c2[Generating a Spellfire Sphere causes your next cast of Fire Blast to call down a storm of $s1 Meteorites on its target.][Arcane Barrage summons $s6 $LMeteor:Meteors; for every $s4 Arcane Salvo stacks consumed.]
+Description      : $?c2[Generating a Spellfire Sphere causes your next cast of Fire Blast to call down a storm of $s1 Meteorites on its target.][Arcane Barrage summons $s6 $LMeteorite:Meteorites; for every $s4 Arcane Salvo stacks consumed.]
 
 $@spellicon449559 $@spellname449559
 $@spelldesc449559
@@ -15320,7 +15320,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Waterbolt (31707), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Water Jet (135029), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Arcane Splinter (443763), Volatile Magic (444966), Volatile Magic (444967), Archmage's Wrath (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Arcane Pulse (1241462), Arcane Pulse (1243460), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863), Conflagration (1271173), Burnout (1271335), Winter's End (1280757)
                    Family Flags: 3, 91, 111
-Description      : The critical strike damage of your spells is  increased by $s1%.
+Description      : The critical strike damage of your spells is increased by $s1%.
 
 Name             : Charm of Medivh (id=1244107) [Spell Family (3), Passive] 
 Talent Entry     : Generic [tree=class, row=8, col=6, max_rank=1, req_points=20]
@@ -15818,7 +15818,7 @@ Effects          :
                    Affected Spells: Ray of Frost (205021)
                    Family Flags: 56
 Description      : $@spelldesc1247777
-Tooltip          : Your Blizzard is replaced with Comet Storm.
+Tooltip          : Your Ray of Frost is replaced with Comet Storm.
 
 Name             : Glaciate (id=1247798) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Frost [tree=spec, row=10, col=4, max_rank=1, req_points=20]
