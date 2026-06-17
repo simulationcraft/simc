@@ -3415,8 +3415,7 @@ bool sim_t::execute()
 
     ~finally_t()
     {
-      if ( fn )
-        fn();
+      fn();
     }
   };
 
