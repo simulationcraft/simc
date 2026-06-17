@@ -90,7 +90,6 @@ HEADERS += engine/lib/cpp-semver/base/util.hpp
 HEADERS += engine/lib/cpp-semver/cpp-semver.hpp
 HEADERS += engine/lib/cpp-semver/parser/parser.hpp
 HEADERS += engine/lib/cpp-semver/parser/peg.hpp
-HEADERS += engine/lib/gsl-lite/gsl-lite.hpp
 HEADERS += engine/lib/rapidxml/rapidxml.hpp
 HEADERS += engine/lib/rapidxml/rapidxml_print.hpp
 HEADERS += engine/lib/tcb/span.hpp

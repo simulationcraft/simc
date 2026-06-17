@@ -88,7 +88,6 @@ lib/cpp-semver/base/util.hpp
 lib/cpp-semver/cpp-semver.hpp
 lib/cpp-semver/parser/parser.hpp
 lib/cpp-semver/parser/peg.hpp
-lib/gsl-lite/gsl-lite.hpp
 lib/rapidxml/rapidxml.hpp
 lib/rapidxml/rapidxml_print.hpp
 lib/tcb/span.hpp

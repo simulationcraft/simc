@@ -94,7 +94,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\lib\cpp-semver\cpp-semver.hpp" />
 		<ClInclude Include="..\engine\lib\cpp-semver\parser\parser.hpp" />
 		<ClInclude Include="..\engine\lib\cpp-semver\parser\peg.hpp" />
-		<ClInclude Include="..\engine\lib\gsl-lite\gsl-lite.hpp" />
 		<ClInclude Include="..\engine\lib\rapidxml\rapidxml.hpp" />
 		<ClInclude Include="..\engine\lib\rapidxml\rapidxml_print.hpp" />
 		<ClInclude Include="..\engine\lib\tcb\span.hpp" />
