@@ -1,4 +1,4 @@
-// Spell text, wow build 12.0.7.68232
+// Spell text, wow build 12.0.7.68235
 static constexpr std::array<spelltext_data_t, 28757> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -28759,11 +28759,11 @@ static constexpr std::array<spelltext_data_t, 28757> __spelltext_data { {
   { 1303071, "$@spelldesc1279616", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.0.7.68232
+// spelltext hotfix entries, wow build 12.0.7.68235
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.0.7.68232
+// Spell description variables, wow build 12.0.7.68235
 static constexpr std::array<spelldesc_vars_data_t, 709> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29476,7 +29476,7 @@ static constexpr std::array<spelldesc_vars_data_t, 709> __spelldesc_vars_data { 
   { 1293610, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.0.7.68232
+// spelldesc_vars hotfix entries, wow build 12.0.7.68235
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
