@@ -141,6 +141,7 @@ race=pandaren
 role=spell
 position=ranged_back
 talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsMmZmYmZmZMjZWMzMzMjZAAAgZmZWWmZaDAAAAAAsBw2yYmZGMLzDYMDLAAAMzCwMhBMDGA
+omnium_talents=136822:1/136817:1/136815:1/136814:1
 
 potion=potion_of_recklessness_2
 flask=flask_of_the_shattered_sun_2
@@ -148,22 +149,21 @@ food=harandar_celebration
 augmentation=void_touched_augment_rune
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
-head=voidbreakers_veil,id=250060,bonus_id=1808/13575,ilevel=289,gem_id=240983
-neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240908/240908
-shoulder=mantle_of_dark_devotion,id=251085,ilevel=289
+head=voidbreakers_veil,id=250060,bonus_id=1808/13575,ilevel=289,gem_id=240983,enchant_id=8017
+neck=rotmires_sporeheart,id=268291,bonus_id=4786/4800/13668/13786,gem_id=240908
+shoulder=mantle_of_dark_devotion,id=251085,ilevel=289,enchant_id=8001
 back=rigid_scale_greatcloak,id=258575,ilevel=289
-chest=voidbreakers_robe,id=250063,bonus_id=13575,ilevel=289,enchant_id=7987
+chest=voidbreakers_robe,id=250063,bonus_id=4786/4800/13786,enchant_id=7987
 wrist=martyrs_bindings,id=239648,bonus_id=1808/8960/12214/12384,ilevel=285,gem_id=240908,crafted_stats=32/49
 hands=voidbreakers_gloves,id=250061,bonus_id=12806/13574
-waist=voidbreakers_sage_cord,id=250057,bonus_id=1808,ilevel=289,gem_id=240908
+waist=arcanoweave_cord,id=239664,bonus_id=8960/12066/12214/13622/13668/9627,gem_id=240908
 legs=voidbreakers_britches,id=250059,bonus_id=13575,ilevel=289,enchant_id=7935
-feet=dreamscorched_striders,id=249373,ilevel=289
-finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240908/240908,enchant_id=7967
-finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240908,enchant_id=7967
+feet=luxurious_loamstriders,id=268282,bonus_id=4786/4800/13786,enchant_id=7993
+finger1=sindorei_band_of_hope,id=249919,bonus_id=4786/4800/12806/13668,gem_id=240908,enchant_id=7967
+finger2=sporecallers_blooming_loop,id=268290,bonus_id=4786/4800/13668/13786,gem_id=240908,enchant_id=7967
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=298
 trinket2=vaelgors_final_stare,id=249346,ilevel=298
-main_hand=skybreakers_blade,id=258218,ilevel=298,enchant_id=7981
-off_hand=alnhara_lantern,id=245769,bonus_id=8791/8960/12214/12693,ilevel=295,crafted_stats=36/32
+main_hand=umbral_spire_of_zuraal,id=258514,bonus_id=13577/13654,enchant_id=7981
 
 save=MID1_Mage_Frost.simc
 
@@ -174,6 +174,7 @@ race=pandaren
 role=spell
 position=ranged_back
 talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsMmZmYmZmZMjZWMzMzMmZmlZamZZWAAAQLAAAAAAgNA2WGzMzALzYMjtFAAAwMDmJMgBGA
+omnium_talents=136822:1/136817:1/136815:1/136814:1
 
 potion=potion_of_recklessness_2
 flask=flask_of_the_shattered_sun_2
@@ -181,21 +182,20 @@ food=harandar_celebration
 augmentation=void_touched_augment_rune
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
-head=voidbreakers_veil,id=250060,bonus_id=1808/13575,ilevel=289,gem_id=240983
-neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240908/240908
-shoulder=mantle_of_dark_devotion,id=251085,ilevel=289
+head=voidbreakers_veil,id=250060,bonus_id=1808/13575,ilevel=289,gem_id=240983,enchant_id=8017
+neck=rotmires_sporeheart,id=268291,bonus_id=4786/4800/13668/13786,gem_id=240908
+shoulder=mantle_of_dark_devotion,id=251085,ilevel=289,enchant_id=8001
 back=rigid_scale_greatcloak,id=258575,ilevel=289
-chest=voidbreakers_robe,id=250063,bonus_id=13575,ilevel=289,enchant_id=7987
+chest=voidbreakers_robe,id=250063,bonus_id=4786/4800/13786,enchant_id=7987
 wrist=martyrs_bindings,id=239648,bonus_id=1808/8960/12214/12384,ilevel=285,gem_id=240908,crafted_stats=32/49
 hands=voidbreakers_gloves,id=250061,bonus_id=12806/13574
-waist=voidbreakers_sage_cord,id=250057,bonus_id=1808,ilevel=289,gem_id=240908
+waist=arcanoweave_cord,id=239664,bonus_id=8960/12066/12214/13622/13668/9627,gem_id=240908
 legs=voidbreakers_britches,id=250059,bonus_id=13575,ilevel=289,enchant_id=7935
-feet=dreamscorched_striders,id=249373,ilevel=289
-finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240908/240908,enchant_id=7967
-finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240908,enchant_id=7967
+feet=luxurious_loamstriders,id=268282,bonus_id=4786/4800/13786,enchant_id=7993
+finger1=sindorei_band_of_hope,id=249919,bonus_id=4786/4800/12806/13668,gem_id=240908,enchant_id=7967
+finger2=sporecallers_blooming_loop,id=268290,bonus_id=4786/4800/13668/13786,gem_id=240908,enchant_id=7967
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=298
 trinket2=vaelgors_final_stare,id=249346,ilevel=298
-main_hand=skybreakers_blade,id=258218,ilevel=298,enchant_id=7981
-off_hand=alnhara_lantern,id=245769,bonus_id=8791/8960/12214/12693,ilevel=295,crafted_stats=36/32
+main_hand=umbral_spire_of_zuraal,id=258514,bonus_id=13577/13654,enchant_id=7981
 
 save=MID1_Mage_Frost_Frostfire.simc
