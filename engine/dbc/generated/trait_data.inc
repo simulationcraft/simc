@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 12.0.7.68235
+// Player trait definitions, wow build 12.0.7.68256
 static constexpr std::array<trait_data_t, 3431> __trait_data_data { {
   { 1,  1, 112112,  90261, 1,  0, 117117,  386164,      0,      0,  1,  2, 200,                          "Battle Stance", {   73,    0,    0,    0 }, {   73,    0,    0,    0 },   0, 0 },
   { 1,  1, 112179,  90322, 2, 23, 117184,  382896,      0,      0,  9,  4,   0,       "Two-Handed Weapon Specialization", {   71,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 0 },
@@ -3433,7 +3433,7 @@ static constexpr std::array<trait_data_t, 3431> __trait_data_data { {
   { 6,  0, 136822, 110275, 1,  0, 141585, 1279599,      0,      0,  1,  1, 200,                 "Rune of Unleashed Fire", {    0,    0,    0,    0 }, {    0,    0,    0,    0 },   0, 2 },
 } };
 
-// Player trait definition effect entries, wow build 12.0.7.68235
+// Player trait definition effect entries, wow build 12.0.7.68256
 static constexpr std::array<trait_definition_effect_entry_t, 507> __trait_definition_effect_data { {
   { 85158, 0, 1, 88312 },
   { 85162, 0, 1, 94588 },
@@ -4378,7 +4378,7 @@ static const std::array<uint16_t, 3431> __trait_spell_id_index { {
 
 #define MAX_HERO_TREES_PER_CLASS (4)
 
-// Hero trees, wow build 12.0.7.68235
+// Hero trees, wow build 12.0.7.68256
 static constexpr std::array<std::tuple<unsigned, const char*, unsigned>, 41> __trait_sub_tree_data { {
   { 18, "Voidweaver", 5 },
   { 19, "Archon", 5 },
