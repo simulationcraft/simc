@@ -2387,7 +2387,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     timespan_t t = custom_state_spell_t::execute_time();
 
     // Fire Mage 12.1 Set Bonus 4pc
-    if ( p()->buffs.pyroclasm->check() )
+    if ( p()->sets->has_set_bonus( MAGE_FIRE, MID2, B4 ) && p()->buffs.pyroclasm->check() )
       t *= 1.0 + p()->buffs.pyroclasm->data().effectN( 3 ).percent();
 
     return t;
@@ -2406,7 +2406,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     c += p()->buffs.hyperthermia->check_value();
 
     // Fire Mage 12.1 Set Bonus 2pc
-    if ( p()->buffs.pyroclasm->check() )
+    if ( p()->sets->has_set_bonus( MAGE_FIRE, MID2, B2 ) && p()->buffs.pyroclasm->check() )
       c += p()->buffs.pyroclasm->data().effectN( 2 ).percent();
 
     return c;
