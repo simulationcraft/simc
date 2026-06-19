@@ -2384,7 +2384,13 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     if ( p()->buffs.hot_streak->check() || p()->buffs.hyperthermia->check() )
       return 0_ms;
 
-    return custom_state_spell_t::execute_time();
+    timespan_t t = custom_state_spell_t::execute_time();
+
+    // Fire Mage 12.1 Set Bonus 4pc
+    if ( p()->buffs.pyroclasm->check() )
+      t *= 1.0 + p()->buffs.pyroclasm->data().effectN( 3 ).percent();
+
+    return t;
   }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
@@ -2398,6 +2404,10 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     double c = custom_state_spell_t::composite_crit_chance();
 
     c += p()->buffs.hyperthermia->check_value();
+
+    // Fire Mage 12.1 Set Bonus 2pc
+    if ( p()->buffs.pyroclasm->check() )
+      c += p()->buffs.pyroclasm->data().effectN( 2 ).percent();
 
     return c;
   }
