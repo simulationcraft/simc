@@ -1270,45 +1270,37 @@ using namespace helpers;
 
       player_t* tar = s->target;
 
-      assert( td( tar )->debuffs.blackened_soul->check() );
-      make_event( *sim, 0_ms, [ this, tar ] {
-        if ( tar->is_sleeping() )
-          return;
+      // Blackened Soul damage impact runs during blackened_soul_debuff tick callback.
+      // Its frozen stacks make direct expire/decrement safe here without deferring to a follow-up event.
+      auto& blackened_soul_debuff = td( tar )->debuffs.blackened_soul;
+      assert( blackened_soul_debuff->check() );
+      assert( blackened_soul_debuff->freeze_stacks );
+      assert( blackened_soul_debuff->buff_duration() == 0_ms );
+      assert( blackened_soul_debuff->expiration.empty() );
+      assert( blackened_soul_debuff->tick_event == nullptr );
+      if ( td( tar )->dots.wither->current_stack() <= 1 )
+      {
+        blackened_soul_debuff->expire();
+        p()->sim->print_debug( "{} wither stack collapse in {} ended (wither stacks reach 1). wither_current_stack={}", p()->name(), tar->name(), td( tar )->dots.wither->current_stack() );
+      }
+      else
+      {
+        blackened_soul_debuff->decrement();
+        if ( !blackened_soul_debuff->check() )
+          p()->sim->print_debug( "{} wither stack collapse in {} ended (collapse consumed its stacks). wither_current_stack={}", p()->name(), tar->name(), td( tar )->dots.wither->current_stack() );
+      }
 
-        auto blackened_soul_debuff = td( tar )->debuffs.blackened_soul;
-        assert( blackened_soul_debuff->check() );
-
-        if ( td( tar )->dots.wither->current_stack() <= 1 )
-        {
-          blackened_soul_debuff->expire();
-          p()->sim->print_debug( "{} wither stack collapse in {} ended (wither stacks reach 1). wither_current_stack={}", p()->name(), tar->name(), td( tar )->dots.wither->current_stack() );
-        }
-        else
-        {
-          blackened_soul_debuff->decrement();
-          if ( !blackened_soul_debuff->check() )
-            p()->sim->print_debug( "{} wither stack collapse in {} ended (collapse consumed its stacks). wither_current_stack={}", p()->name(), tar->name(), td( tar )->dots.wither->current_stack() );
-        }
-      } );
-
-      bool seeds_triggered = false;
-
-      if ( affliction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && p()->flat_rng.seeds_of_their_demise->trigger() )
+      if ( affliction() && p()->hero.seeds_of_their_demise.ok() && p()->progress_rng.seeds_of_their_demise->trigger( s ) )
       {
         p()->buffs.shard_instability->trigger();
         p()->procs.seeds_of_their_demise->occur();
-        seeds_triggered = true;
       }
 
-      if ( destruction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && p()->flat_rng.seeds_of_their_demise->trigger() )
+      if ( destruction() && p()->hero.seeds_of_their_demise.ok() && p()->progress_rng.seeds_of_their_demise->trigger( s ) )
       {
         p()->buffs.flashpoint->trigger( as<int>( p()->hero.seeds_of_their_demise->effectN( 3 ).base_value() ) );
         p()->procs.seeds_of_their_demise->occur();
-        seeds_triggered = true;
       }
-
-      if ( seeds_triggered )
-        p()->cooldowns.seeds_of_their_demise->start();
     }
   };
 

@@ -631,7 +631,6 @@ namespace warlock
     hero.malevolence_dmg = conditional_spell_lookup( hero.malevolence.ok(), 446285 );
 
     cooldowns.blackened_soul->duration = hero.blackened_soul->internal_cooldown();
-    cooldowns.seeds_of_their_demise->duration = 15_s;
   }
 
   void warlock_t::init_spells_soul_harvester()
@@ -1413,7 +1412,26 @@ namespace warlock
       prd_rng.bleakheart_tactics = get_accumulated_rng( "bleakheart_tactics", c_bt );
     }
 
-    flat_rng.seeds_of_their_demise = get_simple_proc_rng( "seeds_of_their_demise", rng_settings.seeds_of_their_demise.setting_value );
+    // Seeds of their Demise proc
+    if ( hero.seeds_of_their_demise.ok() )
+    {
+      double base_inc_max = rng_settings.seeds_of_their_demise.setting_value;
+
+      progress_rng.seeds_of_their_demise = get_threshold_rng( "seeds_of_their_demise", base_inc_max,
+        [ this ]( double increment_max, action_state_t* s ) {
+          assert( hero.wither.ok() );
+          assert( s );
+          auto tdata = get_target_data( s->target );
+          assert( tdata );
+          dot_t* wither_dot = tdata->dots.wither;
+          assert( wither_dot && wither_dot->is_ticking() );
+          const double stacks_before = wither_dot->current_stack() + 1.0;
+          unsigned active_withers = get_active_dots( wither_dot );
+          assert( active_withers > 0 );
+          const double weight = std::pow( stacks_before, -2.0 / 3.0 ) * std::pow( active_withers, -3.0 / 4.0 );
+          return rng().range( increment_max * weight );
+        }, true, true );
+    }
 
     // Modeling Mark of Perotharn as a shared pseudo-random distribution (PRD) with a nominal
     // rate of 15%, which corresponds to PRD constant C = 0.032220914373087675.
@@ -1422,7 +1440,6 @@ namespace warlock
       double c_mop = prd::find_constant( rng_settings.mark_of_perotharn.setting_value );
       prd_rng.mark_of_perotharn = get_accumulated_rng( "mark_of_perotharn", c_mop );
     }
-    
 
     rppm_rng.devil_fruit = get_rppm( "devil_fruit", hero.devil_fruit );
   }

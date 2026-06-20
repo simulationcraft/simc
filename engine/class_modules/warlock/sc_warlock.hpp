@@ -817,7 +817,6 @@ public:
     propagate_const<cooldown_t*> felstorm_icd;
     propagate_const<cooldown_t*> echo_of_sargeras; // ICD for Embers of Nihilam rank 4 procs
     propagate_const<cooldown_t*> blackened_soul; // Internal cooldown on triggering stack increase to Wither
-    propagate_const<cooldown_t*> seeds_of_their_demise; // Estimated internal cooldown, a guess at how Blizzard is minimizing lucky streaks
   } cooldowns;
 
   // Buffs
@@ -994,6 +993,7 @@ public:
   {
     threshold_rng_t* agony_energize;
     threshold_rng_t* nightfall;
+    threshold_rng_t* seeds_of_their_demise;
   } progress_rng;
 
   struct prd_rng_t
@@ -1026,7 +1026,6 @@ public:
     simple_proc_t* alythesss_ire_shift;
     simple_proc_t* wither_crit_energize;   // TODO: Need to check the type of rng
     simple_proc_t* blackened_soul;
-    simple_proc_t* seeds_of_their_demise;  // TODO: Need to check the type of rng and chance value
   } flat_rng;
 
   struct rng_settings_t
@@ -1065,7 +1064,7 @@ public:
     // Hellcaller
     rng_setting_t blackened_soul = { 0.23, 0.23, "blackened_soul", 0.0 };
     rng_setting_t bleakheart_tactics = { 0.15, 0.15, "bleakheart_tactics", 0.0 };
-    rng_setting_t seeds_of_their_demise = { 0.15, 0.15, "seeds_of_their_demise", 0.0 };
+    rng_setting_t seeds_of_their_demise = { 0.240, 0.240, "seeds_of_their_demise", 0.0 };
     rng_setting_t mark_of_perotharn = { 0.15, 0.15, "mark_of_perotharn", 0.0 };
 
     // Soul Harvester
