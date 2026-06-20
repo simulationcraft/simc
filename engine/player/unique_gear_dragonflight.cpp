@@ -3844,11 +3844,11 @@ void ruby_whelp_shell( special_effect_t& effect )
     stat_buff_t* haste;
     stat_buff_t* crit;
 
-    ruby_whelp_assist_cb_t( const special_effect_t& e, std::vector<int> t, std::vector<ruby_whelp_type_e> c ) :
-      dbc_proc_callback_t( e.player, e ), training_levels( t ), context_aware_procs( c )
+    ruby_whelp_assist_cb_t( const special_effect_t& e, std::vector<int> t, std::vector<ruby_whelp_type_e> c )
+      : dbc_proc_callback_t( e.player, e ), training_levels( t ), context_aware_procs( c )
     {
       ruby_whelp_type_e whelp_type = RUBY_WHELP_TYPE_NONE;
-      untrained_levels = 6;
+      untrained_levels             = 6;
       for ( auto level : training_levels )
       {
         whelp_type++;
@@ -3858,7 +3858,7 @@ void ruby_whelp_shell( special_effect_t& effect )
           untrained_levels -= level;
       }
 
-      shot = create_proc_action<generic_proc_t>( "fire_shot", e, "fire_shot", 389839 );
+      shot              = create_proc_action<generic_proc_t>( "fire_shot", e, "fire_shot", 389839 );
       shot->base_dd_min = shot->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
 
       nova = create_proc_action<generic_aoe_proc_t>( "lobbing_fire_nova", e, "lobbing_fire_nova", 390234, true );
@@ -3871,15 +3871,15 @@ void ruby_whelp_shell( special_effect_t& effect )
       crit->set_stat( STAT_CRIT_RATING, e.driver()->effectN( 5 ).average( e.item ) );
     }
 
-    void trigger_whelp_proc( ruby_whelp_type_e whelp_type, action_state_t* s )
+    void trigger_whelp_proc( ruby_whelp_type_e whelp_type, player_t* t )
     {
       switch ( whelp_type )
       {
         case FIRE_SHOT:
-          shot->execute_on_target( s->target );
+          shot->execute_on_target( t );
           break;
         case LOBBING_FIRE_NOVA:
-          nova->execute_on_target( s->target );
+          nova->execute_on_target( t );
           break;
         case SLEEPY_RUBY_WARMTH:
           crit->trigger();
@@ -3893,33 +3893,32 @@ void ruby_whelp_shell( special_effect_t& effect )
       }
     }
 
-    void trigger_random_whelp_proc( action_state_t* s )
+    void trigger_random_whelp_proc( player_t* t )
     {
       int choice = rng().range( static_cast<int>( RUBY_WHELP_TYPE_MAX ) );
-      trigger_whelp_proc( static_cast<ruby_whelp_type_e>( choice ), s );
+      trigger_whelp_proc( static_cast<ruby_whelp_type_e>( choice ), t );
     }
 
-    void trigger_random_whelp_proc( std::vector<ruby_whelp_type_e>& whelp_types, action_state_t* s )
+    void trigger_random_whelp_proc( std::vector<ruby_whelp_type_e>& whelp_types, player_t* t )
     {
       if ( whelp_types.empty() )
       {
         // If no types are available, fallback to fully random.
-        trigger_random_whelp_proc( s );
+        trigger_random_whelp_proc( t );
       }
       else
       {
-        trigger_whelp_proc( rng().range( whelp_types ), s );
+        trigger_whelp_proc( rng().range( whelp_types ), t );
       }
     }
 
-    void execute( const spell_data_t*, player_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       double r = rng().real();
 
       // Helper function for checking if each chance is
       // successful using the random number generated above.
-      auto whelp_roll = [ &r ] ( double chance )
-      {
+      auto whelp_roll = [ &r ]( double chance ) {
         r -= chance;
         return r < 0.0;
       };
@@ -3931,7 +3930,7 @@ void ruby_whelp_shell( special_effect_t& effect )
         whelp_type++;
         if ( whelp_roll( level / 8.0 ) )
         {
-          trigger_whelp_proc( whelp_type, s );
+          trigger_whelp_proc( whelp_type, t );
           return;
         }
       }
@@ -3939,19 +3938,19 @@ void ruby_whelp_shell( special_effect_t& effect )
       // Try the untrained levels.
       if ( whelp_roll( untrained_levels / 8.0 ) )
       {
-        trigger_random_whelp_proc( s );
+        trigger_random_whelp_proc( t );
         return;
       }
 
       // Try the context-aware procs.
       if ( whelp_roll( 1.0 / 8.0 ) )
       {
-        trigger_random_whelp_proc( context_aware_procs, s );
+        trigger_random_whelp_proc( context_aware_procs, t );
         return;
       }
 
       // If nothing else succeeded, trigger a random untrained proc.
-      trigger_random_whelp_proc( untrained_procs, s );
+      trigger_random_whelp_proc( untrained_procs, t );
     }
   };
 
