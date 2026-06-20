@@ -946,6 +946,8 @@ struct rising_sun_kick_t : monk_melee_attack_t
             .set_value( effect.percent() )
             .set_note( "Applies when buffed by Mastery" )
             .set_eff( &effect );
+
+      parse_effects( player->buff.mid2_ww_4pc, CONSUME_BUFF );
     }
 
     void impact( action_state_t *state ) override
@@ -1559,6 +1561,16 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
             .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE, [ & ]( action_state_t * ) {
               p()->buff.balanced_stratagem_physical->consume( this );
             } );
+
+      if ( const auto &effect = player->sets->set( MONK_WINDWALKER, MID2, B4 )->effectN( 1 ).trigger()->effectN( 2 );
+           effect.ok() )
+        add_parse_entry( persistent_multiplier_effects )
+            .set_buff( player->buff.mid2_ww_4pc )
+            .set_value( effect.percent() )
+            .set_use_stacks( true )
+            .set_eff( &effect )
+            .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE,
+                                 [ & ]( action_state_t * ) { p()->buff.mid2_ww_4pc->consume( this ); } );
     }
 
     result_amount_type report_amount_type( const action_state_t * ) const override
@@ -1721,9 +1733,8 @@ struct fists_of_fury_t : monk_melee_attack_t
 {
   struct tick_t : monk_melee_attack_t
   {
-    tick_t( monk_t *player )
-      : monk_melee_attack_t( player, "fists_of_fury_damage",
-                             player->talent.windwalker.fists_of_fury->effectN( 3 ).trigger() )
+    tick_t( monk_t *player, std::string_view name = "fists_of_fury_damage" )
+      : monk_melee_attack_t( player, name, player->talent.windwalker.fists_of_fury->effectN( 3 ).trigger() )
     {
       background = dual   = true;
       aoe                 = -1;
@@ -1760,6 +1771,7 @@ struct fists_of_fury_t : monk_melee_attack_t
       monk_melee_attack_t::impact( state );
 
       p()->buff.momentum_boost_damage->trigger();
+      p()->buff.mid2_ww_4pc->trigger();
     }
   };
 
@@ -1805,9 +1817,12 @@ struct fists_of_fury_t : monk_melee_attack_t
   };
 
   action_t *jadefire_stomp;
+  action_t *mid2_ww_tier;
 
   fists_of_fury_t( monk_t *player, std::string_view options_str )
-    : monk_melee_attack_t( player, "fists_of_fury", player->talent.windwalker.fists_of_fury ), jadefire_stomp( nullptr )
+    : monk_melee_attack_t( player, "fists_of_fury", player->talent.windwalker.fists_of_fury ),
+      jadefire_stomp( nullptr ),
+      mid2_ww_tier( nullptr )
   {
     parse_options( options_str );
 
@@ -1826,6 +1841,13 @@ struct fists_of_fury_t : monk_melee_attack_t
       jadefire_stomp = new jadefire_stomp_t( player );
       add_child( jadefire_stomp );
     }
+
+    if ( player->sets->has_set_bonus( MONK_WINDWALKER, MID2, B2 ) )
+    {
+      mid2_ww_tier = new tick_t( player, "fists_of_fury_damage_mid2_2pc" );
+      mid2_ww_tier->base_multiplier *= player->sets->set( MONK_WINDWALKER, MID2, B2 )->effectN( 1 ).percent();
+      add_child( mid2_ww_tier );
+    }
   }
 
   bool usable_moving() const override
@@ -1836,6 +1858,9 @@ struct fists_of_fury_t : monk_melee_attack_t
   void execute() override
   {
     monk_melee_attack_t::execute();
+
+    if ( mid2_ww_tier )
+      mid2_ww_tier->execute_on_target( target );
 
     p()->action.flurry_strikes->execute( flurry_strikes_t::FLURRY_STRIKES );
     p()->buff.whirling_dragon_punch->trigger();
@@ -6000,6 +6025,8 @@ void monk_t::init_spells()
     tier.mid1.brm_2pc            = sets->set( MONK_BREWMASTER, MID1, B2 );
     tier.mid1.brm_4pc            = sets->set( MONK_BREWMASTER, MID1, B4 );
     tier.mid1.brm_4pc_extra_kick = find_spell( 1272464 );
+
+    tier.mid2.ww_4pc_buff = sets->set( MONK_WINDWALKER, MID2, B4 )->effectN( 1 ).trigger();
   }
 
   // Register passives
@@ -6448,6 +6475,9 @@ void monk_t::create_buffs()
   buff.tigereye_brew_3 = make_buff_fallback( talent.windwalker.tigereye_brew_3->ok(), this, "tigereye_brew_3",
                                              talent.windwalker.tigereye_brew_3_buff )
                              ->set_cooldown( talent.windwalker.tigereye_brew_3->internal_cooldown() );
+
+  buff.mid2_ww_4pc = make_buff_fallback( sets->has_set_bonus( MONK_WINDWALKER, MID2, B4 ), this, "unbroken_rhythm",
+                                         tier.mid2.ww_4pc_buff );
 
   // Conduit of the Celestials
   buff.celestial_conduit =
@@ -7450,7 +7480,7 @@ struct monk_module_t : public module_t
     return true;
   }
 
-  void register_actor_initializers( sim_t* ) const override
+  void register_actor_initializers( sim_t * ) const override
   {
   }
 
