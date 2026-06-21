@@ -3099,9 +3099,8 @@ void vile_vial_of_volatile_venom( special_effect_t& effect )
 
       create_all_stat_buffs( e, e.driver(), 0, [ this ]( stat_e s, buff_t* b ) {
         // The debuff rolls a stat independently of the stat granted by the buff
-        b->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
-          if ( old_ > 0 && new_ == 0 )
-            debuffs.at( player->rng().range( secondary_ratings ) )->trigger();
+        b->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+          debuffs.at( player->rng().range( secondary_ratings ) )->trigger();
         } );
         buffs[ s ] = b;
       } );
@@ -4156,8 +4155,10 @@ void register_special_effects()
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1284696, trinkets::sporelords_mycelium );
   reset_version_check();
+  set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( 1293316, trinkets::vile_vial_of_volatile_venom );
   register_special_effect( 1295179, DISABLED_EFFECT );  // Vile Vial of Volatile Venom equip driver
+  reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
