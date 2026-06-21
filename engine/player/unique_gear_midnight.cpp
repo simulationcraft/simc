@@ -3079,6 +3079,46 @@ void sporelords_mycelium( special_effect_t& effect )
       }
     } );
 }
+
+// Vile Vial of Volatile Venom
+// 1293316 on-use buff (Empowering Venom)
+// 1295123 debuff (Debilitating Venom), applies once the buff fades
+// 1295179 equip
+void vile_vial_of_volatile_venom( special_effect_t& effect )
+{
+  struct vile_vial_of_volatile_venom_t : public spell_t
+  {
+    std::unordered_map<stat_e, buff_t*> buffs;
+    std::unordered_map<stat_e, buff_t*> debuffs;
+
+    vile_vial_of_volatile_venom_t( const special_effect_t& e ) : spell_t( "empowering_venom", e.player, e.driver() )
+    {
+      auto debuff_data = e.player->find_spell( 1295123 );
+
+      create_all_stat_buffs( e, debuff_data, 0, [ this ]( stat_e s, buff_t* b ) { debuffs[ s ] = b; } );
+
+      create_all_stat_buffs( e, e.driver(), 0, [ this ]( stat_e s, buff_t* b ) {
+        // The debuff rolls a stat independently of the stat granted by the buff
+        b->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+          if ( old_ > 0 && new_ == 0 )
+            debuffs.at( player->rng().range( secondary_ratings ) )->trigger();
+        } );
+        buffs[ s ] = b;
+      } );
+    }
+
+    void execute() override
+    {
+      spell_t::execute();
+
+      buffs.at( player->rng().range( secondary_ratings ) )->trigger();
+    }
+  };
+
+  effect.disable_buff();
+  effect.has_use_buff_override = true;
+  effect.execute_action = create_proc_action<vile_vial_of_volatile_venom_t>( "empowering_venom", effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -4116,6 +4156,8 @@ void register_special_effects()
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1284696, trinkets::sporelords_mycelium );
   reset_version_check();
+  register_special_effect( 1293316, trinkets::vile_vial_of_volatile_venom );
+  register_special_effect( 1295179, DISABLED_EFFECT );  // Vile Vial of Volatile Venom equip driver
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
