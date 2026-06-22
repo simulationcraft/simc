@@ -28504,7 +28504,7 @@ static constexpr std::array<spelltext_data_t, 28757> __spelltext_data { {
   { 1279596, "|CFF88aaffCore Rune|R\r\n\r\nEvery $t1 sec you attract a Void-Touched Orb, up to $1287425u.\r\n\r\nDamaging an enemy sends all of the Orbs at them, dealing $<voidDmg> Cosmic damage per Orb.\r\n\r\nYour healing spells send all of the Orbs to the most injured nearby ally, healing them for $<voidHealing> per Orb.", 0, "Core Rune" },
   { 1279599, "|CFF88aaffCore Rune|R\r\n\r\nYour spells and abilities have a very high chance to unleash the power of flame, dealing $<fireDmg> Fire damage to an enemy or restoring $<fireHealing> health to the most injured nearby ally.", 0, "Core Rune" },
   { 1279603, "When your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) deals damage or healing, you are healed for ${$<basePoints>*$1287908s2} if you are below 75% health.", 0, 0 },
-  { 1279604, "Suffering more than $s1% of your maximum health in a single hit grants you a shield that absorbs ${$<basePoints>*$1287955s2} damage for $1287955d, but also inflicts $1287955s4 damage to you every $1287955t3 sec.\r\n\r\nThis can only occur every $proccooldown sec.", 0, 0 },
+  { 1279604, "Suffering more than $s1% of your maximum health in a single hit grants you a shield that absorbs ${$<basePoints>*$1287955s2} damage for $1287955d, but also inflicts ${$<basePoints>*$1287955s4} damage to you over $1287955d.\r\n\r\nThis can only occur every $proccooldown sec.", 0, 0 },
   { 1279605, "Taking damage grants ${$<statsvalue>*$1287978s2} Speed for $1287978d.\r\n\r\nThis can only occur every $proccooldown sec.", 0, 0 },
   { 1279609, "When your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) activates, gain ${$<statsvalue>*$1287772s2} Critical Strike for $1287772d. Multiple applications may overlap.", 0, 0 },
   { 1279610, "When your Core Rune ($?a1279599[Unleashed Fire][Void-Touched Orbs]) activates, gain ${$<statsvalue>*$1287774s2} Haste for $1287774d. Multiple applications may overlap.", 0, 0 },
@@ -28760,7 +28760,8 @@ static constexpr std::array<spelltext_data_t, 28757> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.0.7.68256
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  { 1279604,  0, "Suffering more than $s1% of your maximum health in a single hit grants you a shield that absorbs ${$<basePoints>*$1287955s2} damage for $1287955d, but also inflicts $1287955s4 damage to you every $1287955t3 sec.\r\n\r\nThis can only occur every $proccooldown sec.", "Suffering more than $s1% of your maximum health in a single hit grants you a shield that absorbs ${$<basePoints>*$1287955s2} damage for $1287955d, but also inflicts ${$<basePoints>*$1287955s4} damage to you over $1287955d.\r\n\r\nThis can only occur every $proccooldown sec." },
 } };
 
 // Spell description variables, wow build 12.0.7.68256
