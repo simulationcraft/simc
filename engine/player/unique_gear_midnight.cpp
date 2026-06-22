@@ -3079,6 +3079,96 @@ void sporelords_mycelium( special_effect_t& effect )
       }
     } );
 }
+
+
+// Gebbo's Bottomless Bag
+// 1292291 driver
+//  e1 seashell: crit, ramps up over duration (also a self-dot via e5, ignored)
+//  e2 scroll: mastery, peak decaying to 0 over duration
+//  e3 totem: vers, starting bank
+//  e4 gralstone: haste
+//  e6 salmon: all 4 secondaries
+//  e7 voidfin: all 4 secondaries, debuff
+//  e8 totem: vers, per-cast decrement
+void gebbos_bottomless_bag( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_VALUE,
+    "Gebbo's Bottomless Bag: Implementation based on ingame testing, not spell data" );
+
+  constexpr timespan_t default_duration = 12_s;
+  constexpr int default_ticks = 12;
+
+  auto salmon = create_buff<stat_buff_t>( effect.player, "fifty_lb_midnight_salmon" );
+  for ( auto s : secondary_ratings )
+    salmon->add_stat( s, effect.driver()->effectN( 6 ).average( effect ) );
+  salmon->set_duration( default_duration );
+
+  auto gralstone = create_buff<stat_buff_t>( effect.player, "slick_and_slimy_gralstone" )
+    ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 4 ).average( effect ) )
+    ->set_duration( default_duration );
+
+  auto voidfin = create_buff<stat_buff_t>( effect.player, "rotting_voidfin" );
+  for ( auto s : secondary_ratings )
+    voidfin->add_stat( s, -effect.driver()->effectN( 7 ).average( effect ) );
+  voidfin->set_duration( default_duration );
+
+  // reverse + period ticks the stacks down 1/sec, draining to 0 by the time it expires
+  auto scroll = create_buff<stat_buff_t>( effect.player, "tattered_tortollan_scroll" )
+    ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 2 ).average( effect ) / default_ticks )
+    ->set_max_stack( default_ticks )
+    ->set_reverse( true )
+    ->set_period( 1_s )
+    ->set_duration( default_duration );
+
+  // non-reverse + period ramps the stacks up 1/sec instead
+  auto seashell = create_buff<stat_buff_t>( effect.player, "seriously_shard_seashell" )
+    ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect ) )
+    ->set_max_stack( default_ticks )
+    ->set_period( 1_s )
+    ->set_duration( default_duration );
+
+  // drains per cast rather than over time, until the bank is empty
+  auto totem_decrement = effect.driver()->effectN( 8 ).average( effect );
+  auto totem_stacks = std::max(
+      1, as<int>( std::lround( effect.driver()->effectN( 3 ).average( effect ) / totem_decrement ) ) );
+  auto totem = create_buff<stat_buff_t>( effect.player, "brittle_torga_totem" )
+    ->add_stat( STAT_VERSATILITY_RATING, totem_decrement )
+    ->set_max_stack( totem_stacks )
+    ->set_reverse( true );
+
+  struct totem_drain_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* totem;
+
+    totem_drain_cb_t( const special_effect_t& e, buff_t* t ) : dbc_proc_callback_t( e.player, e ), totem( t )
+    {}
+
+    void execute( const spell_data_t*, player_t*, action_state_t* s ) override
+    {
+      if ( s && s->action && !s->action->background )
+        totem->decrement();
+    }
+  };
+
+  auto totem_drain = new special_effect_t( effect.player );
+  totem_drain->name_str = "brittle_torga_totem_drain";
+  totem_drain->proc_flags_ = effect.driver()->proc_flags();
+  totem_drain->proc_chance_ = 1.0;
+  totem_drain->set_can_proc_from_procs( false );
+  effect.player->special_effects.push_back( totem_drain );
+
+  auto totem_drain_cb = new totem_drain_cb_t( *totem_drain, totem );
+  totem_drain_cb->activate_with_buff( totem, true );
+
+  std::array<buff_t*, 6> artifacts{ { salmon, gralstone, voidfin, scroll, seashell, totem } };
+
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ artifacts ]( dbc_proc_callback_t*, const spell_data_t*, player_t* p, action_state_t* ) {
+      p->rng().range( artifacts )->trigger();
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -4115,6 +4205,9 @@ void register_special_effects()
   register_special_effect( 1260627, DISABLED_EFFECT );  // Gloom-Spattered Dreadscale Passive Driver
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1284696, trinkets::sporelords_mycelium );
+  reset_version_check();
+  set_min_version( wowv_t( 12, 1, 0 ) );
+  register_special_effect( 1292291, trinkets::gebbos_bottomless_bag );
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
