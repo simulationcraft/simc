@@ -3079,6 +3079,49 @@ void sporelords_mycelium( special_effect_t& effect )
       }
     } );
 }
+
+// Wavecaller's Seastone
+// 1295058 Driver
+// 1295057 Tidal Insight Buff
+void wavecallers_seastone( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1295057 ) )
+                ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
+
+  struct wavecallers_seastone_cb_t : public dbc_proc_callback_t
+  {
+    stat_buff_t* tidal_insight;
+    bool going_up;
+
+    wavecallers_seastone_cb_t( const special_effect_t& e, stat_buff_t* b )
+      : dbc_proc_callback_t( e.player, e ), tidal_insight( b ), going_up( true )
+    {}
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      going_up = true;
+    }
+
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
+    {
+      if ( going_up )
+      {
+        tidal_insight->trigger();
+        if ( tidal_insight->at_max_stacks() )
+          going_up = false;
+      }
+      else
+      {
+        tidal_insight->decrement();
+        if ( !tidal_insight->check() )
+          going_up = true;
+      }
+    }
+  };
+
+  new wavecallers_seastone_cb_t( effect, buff );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -4115,6 +4158,9 @@ void register_special_effects()
   register_special_effect( 1260627, DISABLED_EFFECT );  // Gloom-Spattered Dreadscale Passive Driver
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1284696, trinkets::sporelords_mycelium );
+  reset_version_check();
+  set_min_version( wowv_t( 12, 1, 0 ) );
+  register_special_effect( 1295058, trinkets::wavecallers_seastone );
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
