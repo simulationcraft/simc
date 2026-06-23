@@ -13295,6 +13295,7 @@ You ascend to a higher state of being, substantially empowering your abilities.
 While in Void Metamorphosis, your Consume and Reap are enhanced and your Fury will slowly drain. Additionally, Void Ray reduces your Fury drain, deals increased damage, and no longer consumes Fury.
 
 Name             : Void Metamorphosis (id=1217607) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Chaos
 Spell Type       : None
@@ -13312,7 +13313,7 @@ Proc Flags       : Magic Hostile Spell
 Affecting Spells : Soul Rending (204909 effect#2)
 Triggered By     : Void Metamorphosis (1217605)
 Family Flags     : 84
-Attributes       : No Aura Cancel (31), Aura Expires Offline (130), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Non-secret Aura (506)
+Attributes       : No Aura Cancel (31), Aura Expires Offline (130), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (491), Non-secret Aura (506)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1201777)  : Apply Aura (6) | Modify All Haste% (193)

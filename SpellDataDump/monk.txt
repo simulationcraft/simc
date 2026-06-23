@@ -1891,6 +1891,7 @@ Effects          :
 Description      : Increases your Agility by $s1% while wearing only Leather armor.
 
 Name             : Fortifying Brew (id=120954) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -1900,7 +1901,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2355: Fortifying Brew: Determination (322960 effect#3), Fortifying Brew (388917 effect#1), Fortifying Brew (388917 effect#2)
 Family Flags     : 51
-Attributes       : No Threat (42), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416), Big Defensive (512)
+Attributes       : No Threat (42), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416), Important Spell (491), Big Defensive (512)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=141067)   : Apply Aura (6) | Increase Health (34)
@@ -8445,6 +8446,7 @@ Description      : $@spelldesc322118
 Tooltip          : Healing for $w1 every $t1 sec.
 
 Name             : Invoke Chi-Ji, the Red Crane (id=343818) [Spell Family (53), Passive] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : Magic
@@ -8454,7 +8456,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Magic Hostile Spell
-Attributes       : Passive (6), Immunity Purges Effect (47), No Aura Icon (60), Can Proc From Procs (122), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Immunity Purges Effect (47), Can Proc From Procs (122), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Important Spell (491)
 Effects          :
 #1 (id=867653)   : Apply Aura Pet in Area (119) | Mechanic Immunity (77)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 11 | Radius: 60 yards | Target: Self (1)

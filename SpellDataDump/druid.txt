@@ -2927,6 +2927,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 99245 | Target: Self (1)
 
 Name             : Ironbark (id=102342) [Spell Family (7)] 
+Hotfixed         : Attributes
 Talent Entry     : Restoration [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
@@ -2942,7 +2943,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting Spells : Starfall (191034 effect#2), Stonebark (197061 effect#1), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), X'oni's Caress (235039 effect#2), Improved Ironbark (382552 effect#1), Regenerative Heartwood (392116 effect#2)
 Family Flags     : 104
-Attributes       : Include In Advanced Combat Log (72), PvP Enabling (96), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416), External Defensive (499), Big Defensive (512)
+Attributes       : Include In Advanced Combat Log (72), PvP Enabling (96), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Class Ability Procs (416), Important Spell (491), External Defensive (499), Big Defensive (512)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=111070)   : Apply Aura (6) | Modify Damage Taken% (87)
