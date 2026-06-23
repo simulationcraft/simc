@@ -115,7 +115,7 @@ bool profileset_controller_t::controller_exists( std::string key )
 
 void profileset_controller_t::evaluate( sim_t* sim, call_point_e call_point )
 {
-  if ( !sim->profileset_enabled || !sim->parent )
+  if ( !sim->profileset_enabled || !sim->parent || sim->profileset_controller.empty() )
     return;
 
   std::function<bool( std::unique_ptr<profileset_controller_t>& )> cb;
@@ -183,7 +183,6 @@ void profileset_controller_t::set_exit_reason( exit_reason_t&& exit_reason )
 
 namespace
 {
-// how to do this with reference wrapper instead of template?
 template <typename T>
 void report_html_table(
     std::ostream& out, std::vector<std::string> keys, const std::deque<profileset_controller_data_wrapper_t>& data,

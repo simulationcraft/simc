@@ -2889,7 +2889,6 @@ void sim_t::init()
 
   init_mutex.lock();
 
-  // TODO: convert to new init registry system
   if ( !parent && !profileset_controller_options.empty() && !profileset_map.empty() )
   {
     for ( const auto& [ key, values ] : profileset_controller_options )
