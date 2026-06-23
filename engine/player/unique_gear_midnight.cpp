@@ -3118,6 +3118,58 @@ void vile_vial_of_volatile_venom( special_effect_t& effect )
   effect.has_use_buff_override = true;
   effect.execute_action = create_proc_action<vile_vial_of_volatile_venom_t>( "empowering_venom", effect );
 }
+
+// 1297908 driver
+// 1297911 equip driver
+// 1307222 Venom Splatter
+void font_of_venomous_rage( special_effect_t& effect )
+{
+  struct font_channel_t : public proc_spell_t
+  {
+    action_t* venom_splatter;
+
+    font_channel_t( const special_effect_t& e ) :
+      proc_spell_t( "font_of_venemous_rage", e.player, e.driver() )
+    {
+      unsigned equip_id = 1297911;
+      auto equip = find_special_effect( e.player, equip_id );
+      assert( equip && "Font of Venomous Rage missing equip effect" );
+
+      channeled = true;
+
+      base_td = equip->driver()->effectN( 1 ).average( e );
+      base_td_multiplier *= role_mult( e );
+
+      venom_splatter = create_proc_action<generic_aoe_proc_t>( "venom_splatter", e, e.player->find_spell( 1307222 ) );
+      venom_splatter->base_dd_min = venom_splatter->base_dd_max = equip->driver()->effectN( 2 ).average( e );
+      venom_splatter->base_multiplier *= role_mult( e );
+      venom_splatter->dual = true;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      event_t::cancel( player->readying );
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_spell_t::tick( d );
+      venom_splatter->execute_on_target( d->target );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+      proc_spell_t::last_tick( d );
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
+    }
+  };
+
+  effect.execute_action = create_proc_action<font_channel_t>( "font_of_venemous_rage", effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -4158,6 +4210,8 @@ void register_special_effects()
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( 1293316, trinkets::vile_vial_of_volatile_venom );
   register_special_effect( 1295179, DISABLED_EFFECT );  // Vile Vial of Volatile Venom equip driver
+  register_special_effect( 1297908, trinkets::font_of_venomous_rage );
+  register_special_effect( 1297911, DISABLED_EFFECT );  // Font of Venomous Rage equip driver
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
