@@ -2972,23 +2972,32 @@ struct arcane_blast_t final : public arcane_mage_spell_t
   }
 };
 
+// The aoe part of Prismatic Bolt is its own spell (1295939)
+struct prismatic_bolt_aoe_t final : public arcane_mage_spell_t
+{
+  prismatic_bolt_aoe_t( std::string_view n, mage_t* p ) :
+    arcane_mage_spell_t( n, p, p->find_spell( 1295939 ) )
+  {
+    background = true;
+    aoe = -1;
+    radius = 8;
+    reduced_aoe_targets = p->find_spell( 1295924 )->effectN( 4 ).base_value();
+    target_filter_callback = secondary_targets_only();
+  }
+};
+
 struct prismatic_bolt_t final : public arcane_mage_spell_t
 {
+  action_t* aoe_damage;
+
   prismatic_bolt_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->find_spell( 1295924 ) )
   {
     parse_options( options_str );
     triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = true;
 
-    aoe = -1;
-    radius = 8;
-    reduced_aoe_targets = data().effectN( 4 ).base_value();
-
-    // The cleave damage is from a separate triggered spell (1295939).
-    double primary_coef = data().effectN( 1 ).sp_coeff();
-    double secondary_coef = p->find_spell( 1295939 )->effectN( 2 ).sp_coeff();
-    spell_power_mod.direct = primary_coef;
-    base_aoe_multiplier = secondary_coef / primary_coef;
+    aoe_damage = get_action<prismatic_bolt_aoe_t>( "prismatic_bolt_aoe", p );
+    add_child( aoe_damage );
   }
 
   bool ready() override
@@ -3011,6 +3020,14 @@ struct prismatic_bolt_t final : public arcane_mage_spell_t
 
     if ( p()->talents.prismatic_bolt_2.ok() )
       p()->trigger_clearcasting( p()->talents.prismatic_bolt_2->effectN( 1 ).percent() );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+      aoe_damage->execute_on_target( s->target );
   }
 
   double action_multiplier() const override
@@ -6435,6 +6452,9 @@ void mage_t::create_buffs()
   buffs.clearcasting              = make_buff( this, "clearcasting", find_spell( 263725 ) )
                                       ->set_default_value_from_effect( 1 )
                                       ->set_chance( spec.clearcasting->ok() ) ;
+  buffs.cumulative_power          = make_buff( this, "cumulative_power", find_spell( 1296930 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_chance( sets->has_set_bonus( MAGE_ARCANE, MID2, B4 ) );                                      
   buffs.enlightened               = make_buff( this, "enlightened", find_spell( 1217242 ) )
                                       ->set_schools_from_effect( 4 )
                                       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -6459,9 +6479,6 @@ void mage_t::create_buffs()
                                         { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } );
   buffs.prismatic_bolt            = make_buff( this, "prismatic_bolt", find_spell( 1295942 ) )
                                       ->set_chance( talents.prismatic_bolt_1.ok() );
-  buffs.cumulative_power          = make_buff( this, "cumulative_power", find_spell( 1296930 ) )
-                                      ->set_default_value_from_effect( 1 )
-                                      ->set_chance( sets->has_set_bonus( MAGE_ARCANE, MID2, B4 ) );
 
 
   // Fire
