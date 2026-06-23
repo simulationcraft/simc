@@ -276,11 +276,13 @@ public:
     buff_t* arcane_salvo;
     buff_t* arcane_surge;
     buff_t* clearcasting;
+    buff_t* cumulative_power;
     buff_t* enlightened;
     buff_t* evocation;
     buff_t* intuition;
     buff_t* overpowered_missiles;
     buff_t* presence_of_mind;
+    buff_t* prismatic_bolt;
 
 
     // Fire
@@ -581,6 +583,7 @@ public:
 
     // Row 8
     player_talent_t touch_of_the_archmage_1;
+    player_talent_t prismatic_bolt_1;
     player_talent_t evocation;
     player_talent_t mana_adept;
     player_talent_t enlightened;
@@ -589,12 +592,14 @@ public:
 
     // Row 9
     player_talent_t touch_of_the_archmage_2;
+    player_talent_t prismatic_bolt_2;
     player_talent_t prodigious_savant;
     player_talent_t eureka;
     player_talent_t arcane_singularity;
 
     // Row 10
     player_talent_t touch_of_the_archmage_3;
+    player_talent_t prismatic_bolt_3;
     player_talent_t charged_missiles;
     player_talent_t high_voltage;
     player_talent_t overflowing_insight;
@@ -2811,6 +2816,14 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->buffs.intuition->expire();
 
     int salvo = p()->buffs.arcane_salvo->check();
+
+    if ( p()->talents.prismatic_bolt_1.ok() && salvo > 0 )
+    {
+      double chance = salvo * p()->talents.prismatic_bolt_1->effectN( 1 ).percent();
+      if ( rng().roll( chance ) )
+        p()->buffs.prismatic_bolt->trigger();
+    }
+
     if ( p()->buffs.arcane_soul->check() )
     {
       p()->trigger_clearcasting( 1.0, true, true );
@@ -2927,6 +2940,8 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
+
+    p()->buffs.cumulative_power->expire();
   }
 
   double action_multiplier() const override
@@ -2934,6 +2949,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     double am = arcane_mage_spell_t::action_multiplier();
 
     am *= arcane_charge_multiplier();
+    am *= 1.0 + p()->buffs.cumulative_power->check_stack_value();
 
     return am;
   }
@@ -2944,6 +2960,66 @@ struct arcane_blast_t final : public arcane_mage_spell_t
       return 0_ms;
 
     return arcane_mage_spell_t::execute_time();
+  }
+
+  bool ready() override
+  {
+    // Arcane Blast is upgraded into Prismatic Bolt while the buff is up.
+    if ( p()->buffs.prismatic_bolt->check() )
+      return false;
+
+    return arcane_mage_spell_t::ready();
+  }
+};
+
+struct prismatic_bolt_t final : public arcane_mage_spell_t
+{
+  prismatic_bolt_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+    arcane_mage_spell_t( n, p, p->find_spell( 1295924 ) )
+  {
+    parse_options( options_str );
+    triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = true;
+
+    aoe = -1;
+    radius = 8;
+    reduced_aoe_targets = data().effectN( 4 ).base_value();
+
+    // The cleave damage is from a separate triggered spell (1295939).
+    double primary_coef = data().effectN( 1 ).sp_coeff();
+    double secondary_coef = p->find_spell( 1295939 )->effectN( 2 ).sp_coeff();
+    spell_power_mod.direct = primary_coef;
+    base_aoe_multiplier = secondary_coef / primary_coef;
+  }
+
+  bool ready() override
+  {
+    if ( !p()->buffs.prismatic_bolt->check() )
+      return false;
+
+    return arcane_mage_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    arcane_mage_spell_t::execute();
+
+    p()->buffs.prismatic_bolt->expire();
+    p()->buffs.cumulative_power->expire();
+
+    p()->trigger_arcane_charge( as<int>( data().effectN( 3 ).base_value() ) );
+    p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 3 ).base_value() ) );
+
+    if ( p()->talents.prismatic_bolt_2.ok() )
+      p()->trigger_clearcasting( p()->talents.prismatic_bolt_2->effectN( 1 ).percent() );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = arcane_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.cumulative_power->check_stack_value();
+
+    return am;
   }
 };
 
@@ -2976,7 +3052,10 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = !echo;
-    reduced_aoe_targets = data().effectN( 3 ).base_value();
+    // With the 12.1 PTR, pulse went from having 3 effects to 2, removing 'energize (1240466)'
+    // The reduced-AoE-targets threshold effect went from effect #3 (live 12.0.7) to effect #2 (12.1 PTR)
+    // TODO: Remove check when 12.1 goes live
+    reduced_aoe_targets = data().effectN( p->dbc->wowv() >= wowv_t{ 12, 1, 0 } ? 2 : 3 ).base_value();
 
     if ( echo )
     {
@@ -2997,19 +3076,31 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
   {
     double c = arcane_mage_spell_t::cost_pct_multiplier();
 
-    c *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 5 ).percent();
+    // TODO: Remove when 12.1 goes live
+    if ( p()->dbc->wowv() < wowv_t{ 12, 1, 0 } )
+    {
+      c *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 5 ).percent();
+    }
 
     return c;
   }
 
   void execute() override
   {
-    p()->benefits.arcane_charge.arcane_pulse->update();
+    // TODO: Remove check when 12.1 goes live
+    if ( p()->dbc->wowv() < wowv_t{ 12, 1, 0 } )
+    {
+      p()->benefits.arcane_charge.arcane_pulse->update();
+    }
 
     // TODO: radius increase?
     arcane_mage_spell_t::execute();
 
-    p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
+    // TODO: Remove check when 12.1 goes live -- in 12.1, pulse generates charges per enemy hit in impact() instead.
+    if ( p()->dbc->wowv() < wowv_t{ 12, 1, 0 } )
+    {
+      p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
+    }
 
     // In-game, Arcane Pulse internally sets a target it hits as a "Background Target",
     // resulting in all of Pulse's background effects to be directed towards them.
@@ -3020,18 +3111,39 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
       p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
       effect_target = rng().range( target_list() );
       p()->trigger_splinter( effect_target );
+      p()->buffs.cumulative_power->expire();  // does not affect the reverb
     }
 
     if ( arcane_pulse_echo && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
       make_event( *sim, 500_ms, [ this, t = effect_target ] { arcane_pulse_echo->execute_on_target( t ); } );
   }
 
+  void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    // 12.1: Arcane Pulse now generates 1 arcane charge per enemy hit
+    // TODO: Remove check when 12.1 goes live
+    if ( p()->dbc->wowv() >= wowv_t{ 12, 1, 0 } && result_is_hit( s->result ) )
+      p()->trigger_arcane_charge( 1 );
+  }
+
   double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    am *= arcane_charge_multiplier();
+    // TODO: Remove check when 12.1 goes live
+    if ( p()->dbc->wowv() < wowv_t{ 12, 1, 0 } )
+    {
+      am *= arcane_charge_multiplier();
+    }
 
+    // TODO: Remove check when 12.1 goes live
+    if ( p()->dbc->wowv() >= wowv_t{ 12, 1, 0 } )
+    {
+      am *= 1.0 + p()->buffs.cumulative_power->check_stack_value();
+    }
+    
     return am;
   }
 };
@@ -3145,6 +3257,9 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
   void execute() override
   {
     custom_state_spell_t::execute();
+
+    if ( p()->sets->has_set_bonus( MAGE_ARCANE, MID2, B4 ) )
+      p()->buffs.cumulative_power->trigger();
 
     p()->trigger_arcane_salvo( salvo_source );
     p()->trigger_arcane_salvo( crystal_source, as<int>( p()->talents.focusing_crystal->effectN( 2 ).base_value() ),
@@ -5653,6 +5768,7 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "arcane_surge"      ) return new      arcane_surge_t( name, this, options_str );
   if ( name == "evocation"         ) return new         evocation_t( name, this, options_str );
   if ( name == "presence_of_mind"  ) return new  presence_of_mind_t( name, this, options_str );
+  if ( name == "prismatic_bolt"    ) return new    prismatic_bolt_t( name, this, options_str );
   if ( name == "touch_of_the_magi" ) return new touch_of_the_magi_t( name, this, options_str );
 
   // Fire
@@ -6020,6 +6136,7 @@ void mage_t::init_spells()
   talents.impetus                 = find_talent_spell( talent_tree::SPECIALIZATION, "Impetus"               );
   // Row 8
   talents.touch_of_the_archmage_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1257942                 );
+  talents.prismatic_bolt_1        = find_talent_spell( talent_tree::SPECIALIZATION, 1295923                 );
   talents.evocation               = find_talent_spell( talent_tree::SPECIALIZATION, "Evocation"             );
   talents.mana_adept              = find_talent_spell( talent_tree::SPECIALIZATION, "Mana Adept"            );
   talents.enlightened             = find_talent_spell( talent_tree::SPECIALIZATION, "Enlightened"           );
@@ -6027,11 +6144,13 @@ void mage_t::init_spells()
   talents.illuminated_thoughts    = find_talent_spell( talent_tree::SPECIALIZATION, "Illuminated Thoughts"  );
   // Row 9
   talents.touch_of_the_archmage_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1257947                 );
+  talents.prismatic_bolt_2        = find_talent_spell( talent_tree::SPECIALIZATION, 1295944                 );
   talents.prodigious_savant       = find_talent_spell( talent_tree::SPECIALIZATION, "Prodigious Savant"     );
   talents.eureka                  = find_talent_spell( talent_tree::SPECIALIZATION, "Eureka"                );
   talents.arcane_singularity      = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Singularity"    );
   // Row 10
   talents.touch_of_the_archmage_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1257950                 );
+  talents.prismatic_bolt_3        = find_talent_spell( talent_tree::SPECIALIZATION, 1295946                 );
   talents.charged_missiles        = find_talent_spell( talent_tree::SPECIALIZATION, "Charged Missiles"      );
   talents.high_voltage            = find_talent_spell( talent_tree::SPECIALIZATION, "High Voltage"          );
   talents.overflowing_insight     = find_talent_spell( talent_tree::SPECIALIZATION, "Overflowing Insight"   );
@@ -6338,6 +6457,11 @@ void mage_t::create_buffs()
                                       ->set_cooldown( 0_ms )
                                       ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                         { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } );
+  buffs.prismatic_bolt            = make_buff( this, "prismatic_bolt", find_spell( 1295942 ) )
+                                      ->set_chance( talents.prismatic_bolt_1.ok() );
+  buffs.cumulative_power          = make_buff( this, "cumulative_power", find_spell( 1296930 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_chance( sets->has_set_bonus( MAGE_ARCANE, MID2, B4 ) );
 
 
   // Fire
