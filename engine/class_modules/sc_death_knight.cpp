@@ -9250,6 +9250,22 @@ struct death_and_decay_damage_t final : public death_and_decay_damage_base_t
   }
 };
 
+// Blood MID2 4pc Empowered DnD damage (2x multiplier) when triggered by Crimson Scourge
+struct death_and_decay_damage_empowered_t final : public death_and_decay_damage_base_t
+{
+  death_and_decay_damage_empowered_t( std::string_view name, death_knight_t* p )
+    : death_and_decay_damage_base_t( name, p, p->spell.death_and_decay_damage )
+  {
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = death_and_decay_damage_base_t::composite_da_multiplier( s );
+    m *= 2.0;
+    return m;
+  }
+};
+
 // Relish in Blood healing and RP generation
 struct relish_in_blood_t final : public death_knight_heal_t
 {
@@ -9275,7 +9291,7 @@ struct relish_in_blood_t final : public death_knight_heal_t
 struct death_and_decay_base_t : public death_knight_spell_t
 {
   death_and_decay_base_t( death_knight_t* p, std::string_view name, const spell_data_t* spell )
-    : death_knight_spell_t( name, p, spell ), params(), damage( nullptr )
+    : death_knight_spell_t( name, p, spell ), params(), damage( nullptr ), damage_empowered( nullptr )
   {
     base_tick_time = dot_duration = 0_ms;  // Handled by event
     ignore_false_positive         = true;  // TODO: Is this necessary?
@@ -9338,6 +9354,8 @@ struct death_and_decay_base_t : public death_knight_spell_t
   {
     death_knight_spell_t::init_finished();
     add_child( damage );
+    if ( damage_empowered )
+      add_child( damage_empowered );
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -9356,15 +9374,17 @@ struct death_and_decay_base_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    // Capture Crimson Scourge state before consumption for MID2 4pc empowered DnD
+    bool cs_was_up = p()->specialization() == DEATH_KNIGHT_BLOOD && p()->buffs.crimson_scourge->up();
+
     // If bone shield isn't up, Relish in Blood doesn't heal or generate any RP
-    if ( p()->specialization() == DEATH_KNIGHT_BLOOD && p()->buffs.crimson_scourge->up() &&
-         p()->talent.blood.relish_in_blood.ok() && p()->buffs.bone_shield->up() )
+    if ( cs_was_up && p()->talent.blood.relish_in_blood.ok() && p()->buffs.bone_shield->up() )
     {
       // The heal's energize data automatically handles RP generation
       relish_in_blood->execute();
     }
 
-    if ( p()->specialization() == DEATH_KNIGHT_BLOOD && p()->buffs.crimson_scourge->up() )
+    if ( cs_was_up )
     {
       p()->buffs.crimson_scourge->decrement();
 
@@ -9379,6 +9399,8 @@ struct death_and_decay_base_t : public death_knight_spell_t
     }
 
     init_params( target );
+    if ( cs_was_up && damage_empowered && p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B4 ) )
+      params.action( damage_empowered );
     make_event<ground_aoe_event_t>( *sim, p(), params, true /* Immediate pulse */ );
   }
 
@@ -9394,6 +9416,7 @@ private:
 
 public:
   action_t* damage;
+  action_t* damage_empowered;
 };
 
 struct death_and_decay_t final : public death_and_decay_base_t
@@ -9402,6 +9425,7 @@ struct death_and_decay_t final : public death_and_decay_base_t
     : death_and_decay_base_t( p, "death_and_decay", p->spec.death_and_decay )
   {
     damage = get_action<death_and_decay_damage_t>( "death_and_decay_damage", p );
+    damage_empowered = get_action<death_and_decay_damage_empowered_t>( "death_and_decay_damage_empowered", p );
     parse_options( options_str );
   }
 };
