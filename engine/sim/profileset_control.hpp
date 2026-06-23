@@ -132,9 +132,10 @@ void report_json( const sim_t&, js::JsonOutput& output );
 template <typename T>
 profileset_controller_t::factory_fn_pair_t create_fn_pair()
 {
-  return {
-      []( sim_t* sim, unsigned int id ) { return std::make_unique<T>( sim, id ); },
-      []( std::string_view key, std::string_view options ) { return std::make_unique<typename T::data_t>( key, options ); } };
+  return { []( sim_t* sim, unsigned int id ) { return std::make_unique<T>( sim, id ); },
+           []( std::string_view key, std::string_view options ) {
+             return std::make_unique<typename T::data_t>( key, options );
+           } };
 }
 };  // namespace profileset_controller
 
