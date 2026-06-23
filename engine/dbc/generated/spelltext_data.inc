@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.7.68275
-static constexpr std::array<spelltext_data_t, 28757> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28758> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28757,6 +28757,7 @@ static constexpr std::array<spelltext_data_t, 28757> __spelltext_data { {
   { 1298542, "Defeat rare foes to have a chance at gear for your current specialization.", 0, 0 },
   { 1303048, "$@spelldesc1279616", 0, 0 },
   { 1303071, "$@spelldesc1279616", 0, 0 },
+  { 1309012, "$@spelldesc1285139", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 12.0.7.68275
