@@ -2988,16 +2988,14 @@ struct prismatic_bolt_aoe_t final : public arcane_mage_spell_t
 
 struct prismatic_bolt_t final : public arcane_mage_spell_t
 {
-  action_t* aoe_damage;
-
   prismatic_bolt_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     arcane_mage_spell_t( n, p, p->find_spell( 1295924 ) )
   {
     parse_options( options_str );
     triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = true;
 
-    aoe_damage = get_action<prismatic_bolt_aoe_t>( "prismatic_bolt_aoe", p );
-    add_child( aoe_damage );
+    impact_action = get_action<prismatic_bolt_aoe_t>( "prismatic_bolt_aoe", p );
+    add_child( impact_action );
   }
 
   bool ready() override
@@ -3020,14 +3018,6 @@ struct prismatic_bolt_t final : public arcane_mage_spell_t
 
     if ( p()->talents.prismatic_bolt_2.ok() )
       p()->trigger_clearcasting( p()->talents.prismatic_bolt_2->effectN( 1 ).percent() );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    arcane_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-      aoe_damage->execute_on_target( s->target );
   }
 
   double action_multiplier() const override
