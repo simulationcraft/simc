@@ -43772,6 +43772,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 292
+                 : 6948
 Attributes       : No Threat (42), Include In Advanced Combat Log (72), Do Not Log Full Overheal (323), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=193035)   : Direct Heal (10)
@@ -254105,20 +254106,21 @@ Description      : Dealing Nature damage has a chance to inflict Rotbloom, deali
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Rotmire's Sporeheart (id=1285139) [Passive] 
-Hotfixed         : Attributes
+Hotfixed         : Proc Flags 1 (2114832 -> 2147600), Attributes
 School           : Physical
 Spell Type       : None
 Labels           : 292
                  : 3959: Item Effects
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Magic Heal, Helpful Periodic
-Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Can Proc from Suppressed Caster Procs (385), Can Proc From Lifesteal (422)
+Real PPM         : 1 (Haste multiplier)
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Magic Heal, Magic Heal Taken, Helpful Periodic
+Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1300954)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
-#2 (id=1300996)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 14071.79 (coefficient=110.1049) | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=1300996)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Rotmire's Sporeheart | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 14071.79 (coefficient=110.1049) | PvP Coefficient: 0.5 | Trigger Spell: 1309012 | Target: Self (1)
+Hotfixed         : Sub Type (4 -> 285), Trigger Spell (0 -> 1309012)
 #3 (id=1300997)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1941.618 (coefficient=15.19222) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your healing has a chance to spawn protective toadstools absorbing $s2 damage for up to $1285161d. If broken, the toadstools burst to deal ${$s3*$<rolemult>} Nature damage to nearby enemies.
@@ -255280,4 +255282,20 @@ Effects          :
 #1 (id=1328878)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279616
+
+Name             : Rotmire's Sporeheart (id=1309012) 
+Hotfixed         : NEW SPELL
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Real PPM         : 1 (Haste multiplier)
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Magic Heal, Helpful Periodic
+Triggered By     : Rotmire's Sporeheart (1285139)
+Attributes       : No Aura Cancel (31), No Aura Icon (60), Instant Target Procs (115), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Can Proc from Suppressed Caster Procs (385), Can Proc From Lifesteal (422)
+Effects          :
+#1 (id=1337873)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+Description      : $@spelldesc1285139
 
