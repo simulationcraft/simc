@@ -271,17 +271,6 @@ void report_json( const sim_t& sim, js::JsonOutput& output )
 }
 }  // namespace profileset_controller
 
-bool min_player_stat_t::evaluate_post_init()
-{
-  return true;
-}
-
-const std::string min_player_stat_t::reason() const
-{
-  return fmt::format( "player {} does not exceed {} rating for {}", target_player->name(), min_rating,
-                      util::stat_type_string( rating ) );
-}
-
 bool set_bonus_enabled_t::evaluate_post_init()
 {
   if ( target_player )

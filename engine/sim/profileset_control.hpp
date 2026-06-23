@@ -138,28 +138,6 @@ profileset_controller_t::factory_fn_pair_t create_fn_pair()
 }
 };  // namespace profileset_controller
 
-struct min_player_stat_t : profileset_controller_t
-{
-  /*
-   * This sim controller doesn't work, as at all controller evaluation points
-   * only have base rating provided by the class/spec. If gear stats were to
-   * be set once on actor init and preserved between iterations, this would be
-   * fixed.
-   */
-  using data_t = profileset_controller_data_t;
-
-  player_t* target_player;
-  stat_e rating;
-  double min_rating;
-
-  const std::string name() const override
-  {
-    return "min_player_stat";
-  }
-  bool evaluate_post_init() override;
-  const std::string reason() const override;
-};
-
 struct set_bonus_enabled_t : profileset_controller_t
 {
   using data_t = profileset_controller_data_t;
