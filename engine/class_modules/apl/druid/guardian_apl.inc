@@ -54,6 +54,6 @@ cooldowns->add_action( "barkskin,if=buff.bear_form.up" );
 cooldowns->add_action( "lunar_beam,if=(cooldown.incarnation_guardian_of_ursoc.up|cooldown.berserk.up)|((cooldown.incarnation_guardian_of_ursoc.remains>60|cooldown.berserk.remains>60)&!talent.lunation.enabled|(cooldown.incarnation_guardian_of_ursoc.remains>30|cooldown.berserk.remains>30)&talent.lunation.enabled)" );
 cooldowns->add_action( "heart_of_the_wild,if=(active_enemies<=5&talent.moonkin_form.enabled&buff.cat_form.up|!talent.moonkin_form.enabled&buff.cat_form.up)|buff.moonkin_form.up&active_enemies>=6&talent.moonkin_form.enabled" );
 cooldowns->add_action( "convoke_the_spirits,if=buff.bear_form.up&(((buff.lunar_beam.up|cooldown.lunar_beam.remains>15)&talent.lunation.enabled)|!talent.lunation.enabled)" );
-cooldowns->add_action( "sundering_roar,if=(dot.thrash_bear.stack<5&talent.flashing_claws.rank=2|dot.thrash_bear.stack<4&talent.flashing_claws.rank=1|dot.thrash_bear.stack<3&!talent.flashing_claws.enabled)" );
+cooldowns->add_action( "sundering_roar,if=(dot.thrash.stack>4&talent.flashing_claws.rank=2|dot.thrash.stack>3&talent.flashing_claws.rank=1|dot.thrash.stack>2&!talent.flashing_claws.enabled)" );
 cooldowns->add_action( "berserk,if=!cooldown.heart_of_the_wild.up&(talent.heart_of_the_wild.enabled)|!talent.ravage.enabled|!talent.heart_of_the_wild.enabled" );
 cooldowns->add_action( "wild_guardian,if=(buff.ravage.up&talent.ravage.enabled)|!talent.ravage.enabled&buff.lunar_beam.up" );

@@ -165,7 +165,7 @@ public:
   fixed_cycle_proc_t( std::string_view n, player_t* p, unsigned trigger_count_,
                       bool random_initial_state_ = false, proc_reset_counter_fn proc_reset_fn_ = nullptr )
     : proc_rng_t( rng_type, n, p ),
-      proc_reset_fn( proc_reset_fn_ ),
+      proc_reset_fn( std::move( proc_reset_fn_ ) ),
       counter( 0u ),
       trigger_count( trigger_count_ ),
       random_initial_state( random_initial_state_ )
@@ -817,7 +817,6 @@ public:
     propagate_const<cooldown_t*> felstorm_icd;
     propagate_const<cooldown_t*> echo_of_sargeras; // ICD for Embers of Nihilam rank 4 procs
     propagate_const<cooldown_t*> blackened_soul; // Internal cooldown on triggering stack increase to Wither
-    propagate_const<cooldown_t*> seeds_of_their_demise; // Estimated internal cooldown, a guess at how Blizzard is minimizing lucky streaks
   } cooldowns;
 
   // Buffs
@@ -994,6 +993,7 @@ public:
   {
     threshold_rng_t* agony_energize;
     threshold_rng_t* nightfall;
+    threshold_rng_t* seeds_of_their_demise;
   } progress_rng;
 
   struct prd_rng_t
@@ -1011,6 +1011,8 @@ public:
     accumulated_rng_t* feast_of_souls;
     accumulated_rng_t* demoniac_imp_fade;
     accumulated_rng_t* spiteful_reconstitution;
+    accumulated_rng_t* bleakheart_tactics;
+    accumulated_rng_t* mark_of_perotharn;
     double infernal_rapidity_prd_c_value;
   } prd_rng;
 
@@ -1023,13 +1025,9 @@ public:
     simple_proc_t* demonfire_infusion_inc; // TODO: Need to check the type of rng
     simple_proc_t* alythesss_ire_shift;
     simple_proc_t* wither_crit_energize;   // TODO: Need to check the type of rng
-    simple_proc_t* blackened_soul;         // TODO: Need to check the type of rng and chance value
-    simple_proc_t* bleakheart_tactics;     // TODO: Need to check the type of rng and chance value
-    simple_proc_t* seeds_of_their_demise;  // TODO: Need to check the type of rng and chance value
-    simple_proc_t* mark_of_perotharn;      // TODO: Need to check the type of rng and chance value
+    simple_proc_t* blackened_soul;
   } flat_rng;
 
-  // TODO: Need to check that these RNG values ​​are still correct in Midnight
   struct rng_settings_t
   {
     struct rng_setting_t
@@ -1037,44 +1035,47 @@ public:
       double setting_value;
       double default_value;
       std::string option_name;
+      double min = std::numeric_limits<double>::lowest();
+      double max = std::numeric_limits<double>::max();
     };
 
     // Affliction
-    rng_setting_t agony_energize = { 0.370, 0.370, "agony_energize" };
-    rng_setting_t nightfall = { 0.130, 0.130, "nightfall" };
-    rng_setting_t cunning_cruelty_sb = { 0.50, 0.50, "cunning_cruelty_sb" };
-    rng_setting_t cunning_cruelty_ds = { 0.25, 0.25, "cunning_cruelty_ds" };
+    rng_setting_t agony_energize = { 0.370, 0.370, "agony_energize", 0.0 };
+    rng_setting_t nightfall = { 0.130, 0.130, "nightfall", 0.0 };
+    rng_setting_t cunning_cruelty_sb = { 0.50, 0.50, "cunning_cruelty_sb", 0.0 };
+    rng_setting_t cunning_cruelty_ds = { 0.25, 0.25, "cunning_cruelty_ds", 0.0 };
 
     // Demonology
-    rng_setting_t demoniac_imp_fade_hard_cap = { 21.0, 21.0, "demoniac_imp_fade_hard_cap" };
-    rng_setting_t spiteful_reconstitution = { 0.10, 0.10, "spiteful_reconstitution" };
-    rng_setting_t spiteful_reconstitution_hard_cap = { 21.0, 21.0, "spiteful_reconstitution_hard_cap" };
-    rng_setting_t demonic_knowledge_rank1_cards = { 6.0, 6.0, "demonic_knowledge_rank1_cards" };
-    rng_setting_t demonic_knowledge_rank2_cards = { 12.0, 12.0, "demonic_knowledge_rank2_cards" };
-    rng_setting_t demonic_knowledge_deck_size = { 80.0, 80.0, "demonic_knowledge_deck_size" };
+    rng_setting_t demoniac_imp_fade_hard_cap = { 21.0, 21.0, "demoniac_imp_fade_hard_cap", 0.0 };
+    rng_setting_t spiteful_reconstitution = { 0.10, 0.10, "spiteful_reconstitution", 0.0 };
+    rng_setting_t spiteful_reconstitution_hard_cap = { 21.0, 21.0, "spiteful_reconstitution_hard_cap", 0.0 };
+    rng_setting_t demonic_knowledge_rank1_cards = { 6.0, 6.0, "demonic_knowledge_rank1_cards", 0.0 };
+    rng_setting_t demonic_knowledge_rank2_cards = { 12.0, 12.0, "demonic_knowledge_rank2_cards", 0.0 };
+    rng_setting_t demonic_knowledge_deck_size = { 80.0, 80.0, "demonic_knowledge_deck_size", 0.0 };
 
     // Destruction
-    rng_setting_t rain_of_chaos_cards = { 3.0, 3.0, "rain_of_chaos_cards" };
-    rng_setting_t rain_of_chaos_deck_size = { 20.0, 20.0, "rain_of_chaos_deck_size" };
-    rng_setting_t alythesss_ire_shift = { 0.01, 0.01, "alythesss_ire_shift" };
-    rng_setting_t echo_of_sargeras = { 0.10, 0.10, "echo_of_sargeras" };
+    rng_setting_t rain_of_chaos_cards = { 3.0, 3.0, "rain_of_chaos_cards", 0.0 };
+    rng_setting_t rain_of_chaos_deck_size = { 20.0, 20.0, "rain_of_chaos_deck_size", 0.0 };
+    rng_setting_t alythesss_ire_shift = { 0.01, 0.01, "alythesss_ire_shift", 0.0 };
+    rng_setting_t echo_of_sargeras = { 0.10, 0.10, "echo_of_sargeras", 0.0 };
 
     // Diabolist
 
     // Hellcaller
-    rng_setting_t blackened_soul = { 0.10, 0.10, "blackened_soul" };
-    rng_setting_t bleakheart_tactics = { 0.15, 0.15, "bleakheart_tactics" };
-    rng_setting_t seeds_of_their_demise = { 0.15, 0.15, "seeds_of_their_demise" };
-    rng_setting_t mark_of_perotharn = { 0.15, 0.15, "mark_of_perotharn" };
+    rng_setting_t blackened_soul = { 0.23, 0.23, "blackened_soul", 0.0 };
+    rng_setting_t bleakheart_tactics = { 0.15, 0.15, "bleakheart_tactics", 0.0 };
+    rng_setting_t seeds_of_their_demise = { 0.240, 0.240, "seeds_of_their_demise", 0.0 };
+    rng_setting_t mark_of_perotharn = { 0.15, 0.15, "mark_of_perotharn", 0.0 };
 
     // Soul Harvester
-    rng_setting_t succulent_soul_aff = { 0.225, 0.225, "succulent_soul_aff" };
-    rng_setting_t succulent_soul_demo = { 0.15, 0.15, "succulent_soul_demo" };
-    rng_setting_t feast_of_souls_aff = { 0.04, 0.04, "feast_of_souls_aff" };
-    rng_setting_t feast_of_souls_demo = { 0.10, 0.10, "feast_of_souls_demo" };
-    rng_setting_t feast_of_souls_hard_cap_aff = { 26.0, 26.0, "feast_of_souls_hard_cap_aff" };
-    rng_setting_t feast_of_souls_hard_cap_demo = { 26.0, 26.0, "feast_of_souls_hard_cap_demo" };
-    rng_setting_t manifested_avarice = { 0.10, 0.10, "manifested_avarice" };
+    rng_setting_t succulent_soul_aff = { 0.225, 0.225, "succulent_soul_aff", 0.0 };
+    rng_setting_t succulent_soul_demo = { 0.15, 0.15, "succulent_soul_demo", 0.0 };
+    rng_setting_t feast_of_souls_aff = { 0.12, 0.12, "feast_of_souls_aff", 0.0 };
+    rng_setting_t feast_of_souls_aff_quietus = { 0.04, 0.04, "feast_of_souls_aff_quietus", 0.0 };
+    rng_setting_t feast_of_souls_demo = { 0.10, 0.10, "feast_of_souls_demo", 0.0 };
+    rng_setting_t feast_of_souls_hard_cap_aff = { 26.0, 26.0, "feast_of_souls_hard_cap_aff", 0.0 };
+    rng_setting_t feast_of_souls_hard_cap_demo = { 26.0, 26.0, "feast_of_souls_hard_cap_demo", 0.0 };
+    rng_setting_t manifested_avarice = { 0.10, 0.10, "manifested_avarice", 0.0 };
 
     template <typename F>
     void for_each( F&& f )
@@ -1100,6 +1101,7 @@ public:
       f( succulent_soul_aff );
       f( succulent_soul_demo );
       f( feast_of_souls_aff );
+      f( feast_of_souls_aff_quietus );
       f( feast_of_souls_demo );
       f( feast_of_souls_hard_cap_aff );
       f( feast_of_souls_hard_cap_demo );

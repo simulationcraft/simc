@@ -158,6 +158,7 @@ SRC += \
     sim$(PATHSEP)proc.cpp \
     sim$(PATHSEP)proc_rng.cpp \
     sim$(PATHSEP)profileset.cpp \
+    sim$(PATHSEP)profileset_control.cpp \
     sim$(PATHSEP)progress_bar.cpp \
     sim$(PATHSEP)raid_event.cpp \
     sim$(PATHSEP)reforge_plot.cpp \

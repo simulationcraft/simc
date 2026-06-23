@@ -9,6 +9,7 @@
 #include "event_manager.hpp"
 #include "player/gear_stats.hpp"
 #include "progress_bar.hpp"
+#include "profileset_control.hpp"
 #include "sim_ostream.hpp"
 #include "sim/option.hpp"
 #include "util/concurrency.hpp"
@@ -17,8 +18,10 @@
 #include "util/util.hpp"
 #include "util/vector_with_callback.hpp"
 
+#include <deque>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <unordered_set>
 
 struct actor_target_data_t;
@@ -581,6 +584,11 @@ struct sim_t : private sc_thread_t
   double scaling_normalized;
   bool merge_enemy_priority_dmg;
 
+  // sim control
+  std::vector<std::unique_ptr<profileset_controller_t>> profileset_controller;
+  std::deque<profileset_controller_data_wrapper_t> profileset_controller_data;
+  opts::map_list_t profileset_controller_options;
+
   // Multi-Threading
   mutex_t merge_mutex;
   int threads;
@@ -833,3 +841,20 @@ private:
   void disable_debug_seed();
   bool requires_cleanup() const;
 };
+
+template <typename T>
+data_wrapper_t<T> profileset_controller_t::get_data()
+{
+  auto& pcd = parent->profileset_controller_data;
+  assert( pcd.size() > id );
+  auto& data = pcd[ id ];
+  return { *data.data.get(), data.mutex };
+}
+
+template <typename T>
+void profileset_controller_t::set_data( T&& data )
+{
+  auto& pcd = parent->profileset_controller_data;
+  assert( pcd.size() > id );
+  pcd[ id ].data = std::make_unique<T>( data );
+}

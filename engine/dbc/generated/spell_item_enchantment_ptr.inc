@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 12.0.7.68182
-static constexpr std::array<item_enchantment_data_t, 5336> __ptr_spell_item_ench_data { {
+// Item enchantment data, wow build 12.1.0.68209
+static constexpr std::array<item_enchantment_data_t, 5342> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },       0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },       0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 10, 120,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },    2831, "Reinforced (+$k1 Armor)"           },
@@ -5326,6 +5326,7 @@ static constexpr std::array<item_enchantment_data_t, 5336> __ptr_spell_item_ench
   { 8614,      0,  0,   0,  80, 120, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1262337,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1262341, "Farstrider's Hawkeye |A:Professions-ChatIcon-Quality-12-Tier1:20:20|a" },
   { 8615,      0,  0,   0,  80, 120, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1262339,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1262344, "Farstrider's Hawkeye |A:Professions-ChatIcon-Quality-12-Tier2:20:20|a" },
   { 8638,      0,  0,   0,  50, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1269475,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1269474, "Grand Line"                        },
+  { 8646,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1272695, "JWA - Enchant - Test"              },
   { 8649,      0,  0,   0,  80, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1236743,      0,      0 }, {  0.2868f,  0.0000f,  0.0000f },       0, "Conjured Illusory Adornment - Blooming Light" },
   { 8650,      0,  0,   0,  80, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1236744,      0,      0 }, {  0.2868f,  0.0000f,  0.0000f },       0, "Conjured Illusory Adornment - Nature's Embrace" },
   { 8651,      0,  0,   0,  80, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1236745,      0,      0 }, {  0.2868f,  0.0000f,  0.0000f },       0, "Conjured Illusory Adornment - Voidtouched" },
@@ -5335,6 +5336,11 @@ static constexpr std::array<item_enchantment_data_t, 5336> __ptr_spell_item_ench
   { 8684, 241143, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 377360,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and opponent's failed interrupt attempts grant Precognition" },
   { 8685, 241144, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 435550,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and +$435550s1% Damage Reduction when affected by Crowd Control" },
   { 8686, 241142, -7,   0,  80, 80, 0,   0,   0, {   5,   3,   0 }, {    0,    0,    0 }, {     71, 411126,      0 }, {  0.6839f,  0.0000f,  0.0000f },       0, "+$k1 Primary Stat and getting snared increases damage of your next attack by $411132s1 per stack" },
+  { 8688,      0,  0,   0,  80, 120, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1297651,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Rite of the Hash'ey |A:Professions-ChatIcon-Quality-12-Tier1:20:20|a" },
+  { 8689,      0,  0,   0,  80, 120, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1297652,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Rite of the Hash'ey |A:Professions-ChatIcon-Quality-12-Tier2:20:20|a" },
+  { 8697,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Venomcoil"                         },
+  { 8702,      0,  0,   0,  90, 10, 500, 2910,   1, {   7,   0,   0 }, {    0,   23,    0 }, { 1297523,      3,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1297585, "R0CKY"                             },
   { 8704,      0,  0,   0,  60, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Summer Sun Blossom"                },
+  { 8705,      0,  0,   0,  60, 0, 0,   0,   0, {   7,   0,   0 }, {    0,    0,    0 }, { 1301266,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "[DNT] 12.1 Delves - Corrosive - ZGS TEST" },
 } };
 

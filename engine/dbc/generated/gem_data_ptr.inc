@@ -1,5 +1,5 @@
-// Gem properties, wow build 12.0.7.68182
-static constexpr std::array<gem_property_data_t, 2408> __ptr_gem_property_data { {
+// Gem properties, wow build 12.1.0.68209
+static constexpr std::array<gem_property_data_t, 2409> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002, 0 }, // +$k1 Strength
   {    3,  2687, 0x00000008, 0 }, // +$k1 Agility
   {    4,  2688, 0x00000004, 0 }, // +$k1 Stamina
@@ -2408,5 +2408,6 @@ static constexpr std::array<gem_property_data_t, 2408> __ptr_gem_property_data {
   { 4423,  8685, 0x0000000e, 14118 }, // +$k1 Primary Stat and +$435550s1% Damage Reduction when affected by Crowd Control
   { 4424,  8686, 0x0000000e, 14118 }, // +$k1 Primary Stat and getting snared increases damage of your next attack by $411132s1 per stack
   { 4425,  8684, 0x0000000e, 14118 }, // +$k1 Primary Stat and opponent's failed interrupt attempts grant Precognition
+  { 4431,  8705, 0x02000000, 0 }, // [DNT] 12.1 Delves - Corrosive - ZGS TEST
 } };
 

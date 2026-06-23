@@ -838,6 +838,7 @@ public:
     // Tier Sets
     propagate_const<buff_t*> frost_mid1_4pc_buff;
     propagate_const<buff_t*> empowered_strikes;
+    propagate_const<buff_t*> freezing_tempest;
 
     // Unholy
     propagate_const<buff_t*> dark_transformation;
@@ -11953,6 +11954,15 @@ struct remorseless_winter_damage_t final : public death_knight_spell_t
     return true;
   }
 
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    if ( hit_any_target && p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, MID2, B2 ) )
+    {
+      p()->buffs.freezing_tempest->trigger();
+    }
+  }
+
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
@@ -12009,6 +12019,10 @@ struct remorseless_winter_base_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
     debug_cast<remorseless_winter_damage_t*>( damage )->clear_state();
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, MID2, B2 ) )
+    {
+      p()->buffs.freezing_tempest->expire();
+    }
     remorseless_winter_buff->trigger();
 
     if ( p()->talent.frost.cryogenic_chamber.ok() && p()->buffs.cryogenic_chamber->check() )
@@ -15737,6 +15751,9 @@ void death_knight_t::create_buffs()
   buffs.frost_mid1_4pc_buff = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, MID1, B4 ), this, "mid1_4pc_buff",
                                              sets->set( DEATH_KNIGHT_FROST, MID1, B4 )->effectN( 2 ).trigger() );
 
+  buffs.freezing_tempest = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, MID2, B2 ), this, "freezing_tempest",
+                                          sets->set( DEATH_KNIGHT_FROST, MID2, B2 )->effectN( 1 ).trigger() );
+
 
   // Unholy
   buffs.dark_transformation = make_fallback<dark_transformation_buff_t>(
@@ -16464,6 +16481,7 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
         action->parse_effects( buffs.icy_talons );
       action->parse_effects( buffs.empowered_strikes );
       action->parse_effects( buffs.frost_mid1_4pc_buff );
+      action->parse_effects( buffs.freezing_tempest );
       break;
     case DEATH_KNIGHT_UNHOLY:
       action->parse_effects( buffs.sudden_doom );
@@ -16615,6 +16633,7 @@ void death_knight_t::parse_player_effects()
       parse_effects( buffs.frozen_dominion );
       parse_effects( buffs.enduring_strength );
       parse_effects( buffs.swift_and_painful );
+      parse_effects( buffs.freezing_tempest );
       break;
     case DEATH_KNIGHT_UNHOLY:
       parse_effects( mastery.dreadblade );

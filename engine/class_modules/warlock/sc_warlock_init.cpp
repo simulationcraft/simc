@@ -631,7 +631,6 @@ namespace warlock
     hero.malevolence_dmg = conditional_spell_lookup( hero.malevolence.ok(), 446285 );
 
     cooldowns.blackened_soul->duration = hero.blackened_soul->internal_cooldown();
-    cooldowns.seeds_of_their_demise->duration = 15_s;
   }
 
   void warlock_t::init_spells_soul_harvester()
@@ -1180,8 +1179,9 @@ namespace warlock
           auto tdata = get_target_data( s->target );
           assert( tdata );
           dot_t* agony_dot = tdata->dots.agony;
+          assert( agony_dot && agony_dot->is_ticking() );
           unsigned active_agonies = get_active_dots( agony_dot );
-          assert( agony_dot && agony_dot->is_ticking() && active_agonies > 0 );
+          assert( active_agonies > 0 );
           increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
           return rng().range( 0.0, increment_max );
         }, true, true );
@@ -1217,8 +1217,9 @@ namespace warlock
           auto tdata = get_target_data( s->target );
           assert( tdata );
           dot_t* corruption_dot = hero.wither.ok() ? tdata->dots.wither : tdata->dots.corruption;
+          assert( corruption_dot && corruption_dot->is_ticking() );
           unsigned active_corruptions = get_active_dots( corruption_dot );
-          assert( corruption_dot && corruption_dot->is_ticking() && active_corruptions > 0 );
+          assert( active_corruptions > 0 );
           increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
           return rng().range( 0.0, increment_max );
         }, true, true );
@@ -1260,7 +1261,7 @@ namespace warlock
     {
       // Modeling Demoniac (Wild Imp fade) as a pseudo-random distribution (PRD) with a nominal rate of 10% and a hard cap of 21 attempts.
       // The corresponding PRD constant, calculated with that cap included, is C = 0.014559015812945588.
-      int demoniac_imp_fade_hardcap = static_cast<int>( rng_settings.demoniac_imp_fade_hard_cap.setting_value );
+      unsigned demoniac_imp_fade_hardcap = static_cast<unsigned>( rng_settings.demoniac_imp_fade_hard_cap.setting_value );
       double c_dwif = prd::find_constant( talents.demonic_core_spell->effectN( 1 ).percent(), demoniac_imp_fade_hardcap );
       prd_rng.demoniac_imp_fade = get_accumulated_rng( "demoniac_imp_fade", c_dwif, demoniac_imp_fade_hardcap );
 
@@ -1287,7 +1288,7 @@ namespace warlock
     if ( talents.spiteful_reconstitution.ok() )
     {
       double c_sr = prd::find_constant( rng_settings.spiteful_reconstitution.setting_value );
-      int spiteful_reconstitution_hardcap = static_cast<int>( rng_settings.spiteful_reconstitution_hard_cap.setting_value );
+      unsigned spiteful_reconstitution_hardcap = static_cast<unsigned>( rng_settings.spiteful_reconstitution_hard_cap.setting_value );
       prd_rng.spiteful_reconstitution = get_accumulated_rng( "spiteful_reconstitution", c_sr, spiteful_reconstitution_hardcap );
     }
 
@@ -1402,9 +1403,43 @@ namespace warlock
   {
     flat_rng.wither_crit_energize = get_simple_proc_rng( "wither_crit_energize", hero.wither_direct->effectN( 2 ).percent() );
     flat_rng.blackened_soul = get_simple_proc_rng( "blackened_soul", rng_settings.blackened_soul.setting_value );
-    flat_rng.bleakheart_tactics = get_simple_proc_rng( "bleakheart_tactics", rng_settings.bleakheart_tactics.setting_value );
-    flat_rng.seeds_of_their_demise = get_simple_proc_rng( "seeds_of_their_demise", rng_settings.seeds_of_their_demise.setting_value );
-    flat_rng.mark_of_perotharn = get_simple_proc_rng( "mark_of_perotharn", rng_settings.mark_of_perotharn.setting_value );
+
+    // Modeling Bleakheart Tactics as a shared pseudo-random distribution (PRD) with a nominal
+    // rate of 15%, which corresponds to PRD constant C = 0.032220914373087675.
+    if ( hero.bleakheart_tactics.ok() )
+    {
+      double c_bt = prd::find_constant( rng_settings.bleakheart_tactics.setting_value );
+      prd_rng.bleakheart_tactics = get_accumulated_rng( "bleakheart_tactics", c_bt );
+    }
+
+    // Seeds of their Demise proc
+    if ( hero.seeds_of_their_demise.ok() )
+    {
+      double base_inc_max = rng_settings.seeds_of_their_demise.setting_value;
+
+      progress_rng.seeds_of_their_demise = get_threshold_rng( "seeds_of_their_demise", base_inc_max,
+        [ this ]( double increment_max, action_state_t* s ) {
+          assert( hero.wither.ok() );
+          assert( s );
+          auto tdata = get_target_data( s->target );
+          assert( tdata );
+          dot_t* wither_dot = tdata->dots.wither;
+          assert( wither_dot && wither_dot->is_ticking() );
+          const double stacks_before = wither_dot->current_stack() + 1.0;
+          unsigned active_withers = get_active_dots( wither_dot );
+          assert( active_withers > 0 );
+          const double weight = std::pow( stacks_before, -2.0 / 3.0 ) * std::pow( active_withers, -3.0 / 4.0 );
+          return rng().range( increment_max * weight );
+        }, true, true );
+    }
+
+    // Modeling Mark of Perotharn as a shared pseudo-random distribution (PRD) with a nominal
+    // rate of 15%, which corresponds to PRD constant C = 0.032220914373087675.
+    if ( hero.mark_of_perotharn.ok() )
+    {
+      double c_mop = prd::find_constant( rng_settings.mark_of_perotharn.setting_value );
+      prd_rng.mark_of_perotharn = get_accumulated_rng( "mark_of_perotharn", c_mop );
+    }
 
     rppm_rng.devil_fruit = get_rppm( "devil_fruit", hero.devil_fruit );
   }
@@ -1433,26 +1468,34 @@ namespace warlock
       prd_rng.manifested_avarice = get_accumulated_rng( "manifested_avarice", c_ma );
     }
 
-    // Modeling Feast of Souls as a pseudo-random distribution (PRD) with an uncapped nominal rate of 4% (aff) / 10% (demo). Those
-    // nominal rates correspond to PRD constants C = 0.002448555471647706 (aff) / C = 0.014745844781072676 (demo). A separate hard
+    // Modeling Feast of Souls (Kill) as a pseudo-random distribution (PRD) with an uncapped nominal rate of 12% (aff) / 10% (demo), which
+    // corresponds to PRD constants C = 0.020983228162532177 (aff) / C = 0.014745844781072676 (demo). Due to a possible bug, Affliction FoS
+    // from Quietus shares the same PRD, but with a lower activation chance.
+    // Modeling Feast of Souls (Quietus) as a pseudo-random distribution (PRD) with an uncapped nominal rate of 4% (aff) / 10% (demo).
+    // Those nominal rates correspond to PRD constants C = 0.002448555471647706 (aff) / C = 0.014745844781072676 (demo). A separate hard
     // cap of 26 attempts is then applied on top of the PRD, raising the effective average proc chance to ~4.94% (aff) / ~10.01% (demo).
     if ( hero.feast_of_souls.ok() )
     {
       assert( affliction() || demonology() );
-      double c_fs = 0.0;
-      int feast_of_souls_hardcap = 0;
       if ( affliction() )
       {
-        c_fs = prd::find_constant( rng_settings.feast_of_souls_aff.setting_value );
-        feast_of_souls_hardcap = static_cast<int>( rng_settings.feast_of_souls_hard_cap_aff.setting_value );
+        double c_fs = prd::find_constant( rng_settings.feast_of_souls_aff.setting_value );
+        double c_fsq = prd::find_constant( rng_settings.feast_of_souls_aff_quietus.setting_value );
+        unsigned feast_of_souls_hardcap = static_cast<unsigned>( rng_settings.feast_of_souls_hard_cap_aff.setting_value );
+        prd_rng.feast_of_souls = get_accumulated_rng( "feast_of_souls", c_fs, feast_of_souls_hardcap,
+          !bugs ? accumulated_rng_fn{} :
+          [ c_fsq, cap = feast_of_souls_hardcap ]( double c_fs, unsigned trigger_count, action_state_t* s ) -> double
+          {
+            return ( cap > 0 && trigger_count >= cap ) ? 1.0 : ( s ? c_fsq : c_fs ) * trigger_count;
+          }
+        );
       }
       else if ( demonology() )
       {
-        c_fs = prd::find_constant( rng_settings.feast_of_souls_demo.setting_value );
-        feast_of_souls_hardcap = static_cast<int>( rng_settings.feast_of_souls_hard_cap_demo.setting_value );
+        double c_fs = prd::find_constant( rng_settings.feast_of_souls_demo.setting_value );
+        unsigned feast_of_souls_hardcap = static_cast<unsigned>( rng_settings.feast_of_souls_hard_cap_demo.setting_value );
+        prd_rng.feast_of_souls = get_accumulated_rng( "feast_of_souls", c_fs, feast_of_souls_hardcap );
       }
-
-      prd_rng.feast_of_souls = get_accumulated_rng( "feast_of_souls", c_fs, feast_of_souls_hardcap );
     }
   }
 
@@ -1608,7 +1651,11 @@ namespace warlock
 
   void warlock_t::add_rng_option( warlock_t::rng_settings_t::rng_setting_t& setting )
   {
-    add_option( opt_float( "warlock.rng_" + setting.option_name, setting.setting_value ) );
+    if ( setting.min != std::numeric_limits<double>::lowest() || setting.max != std::numeric_limits<double>::max() )
+      add_option( opt_float( "warlock.rng_" + setting.option_name, setting.setting_value, setting.min, setting.max ) );
+    else
+      add_option( opt_float( "warlock.rng_" + setting.option_name, setting.setting_value ) );
+
     add_option( opt_deprecated( "rng_" + setting.option_name,  "warlock.rng_" + setting.option_name ) );
   }
 

@@ -819,7 +819,7 @@ struct wake_of_ashes_t : public paladin_spell_t
         make_event<seething_flames_event_t>( *sim, p(), execute_state->target, seething_flames[i], timespan_t::from_millis( 500 * (i + 1) ) );
       }
     }
-    if ( p()->talents.templar.lights_guidance->ok() )
+    if ( p()->templar() )
     {
       p()->buffs.templar.hammer_of_light_ready->trigger();
     }
@@ -829,7 +829,7 @@ struct wake_of_ashes_t : public paladin_spell_t
       p()->buffs.templar.sacrosanct_crusade->trigger();
     }
 
-    if ( p()->talents.herald_of_the_sun.dawnlight->ok() )
+    if ( p()->herald_of_the_sun() )
     {
       p()->buffs.herald_of_the_sun.dawnlight->trigger(
           as<int>( p()->talents.herald_of_the_sun.dawnlight->effectN( 1 ).base_value() ) );

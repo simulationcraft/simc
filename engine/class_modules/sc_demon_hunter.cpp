@@ -414,6 +414,7 @@ public:
     buff_t* volatile_instinct;
 
     // Set Bonuses
+    buff_t* soulburst;  // MID2 Devourer 2p
   } buff;
 
   // Talents
@@ -545,6 +546,7 @@ public:
       player_talent_t burning_hatred;
 
       player_talent_t dash_of_chaos;  // NYI
+      player_talent_t never_say_die;  // NYI
       player_talent_t improved_chaos_strike;
       player_talent_t first_blood;
       player_talent_t accelerated_blade;
@@ -961,12 +963,18 @@ public:
   {
     // Devourer
     const spell_data_t* stars_fury;  // MID1 Devourer 4pc Energize
+    const spell_data_t* mid2_devourer_2pc;
+    const spell_data_t* mid2_devourer_4pc;
+    const spell_data_t* soulburst_buff;    // MID2 Devourer 2pc buff
+    const spell_data_t* soulburst_damage;  // MID2 Devourer 2pc damage
 
     // Havoc
 
     // Vengeance
     const spell_data_t* mid1_vengeance_4pc;
     const spell_data_t* explosion_of_the_soul;
+    const spell_data_t* mid2_vengeance_2pc;
+    const spell_data_t* mid2_vengeance_4pc;
     // Auxilliary
   } set_bonuses;
 
@@ -1136,6 +1144,7 @@ public:
     proc_t* undying_embers;
 
     // Set Bonuses
+    proc_t* soul_fragment_from_soulburst;
   } proc;
 
   // RPPM objects
@@ -2217,6 +2226,7 @@ public:
     } );
 
     // Tier sets
+    ab::parse_effects( dh()->buff.soulburst );
   }
 
   void apply_debuff_effects()
@@ -2249,6 +2259,8 @@ public:
     // Aldrachi Reaver
 
     // Scarred
+
+    // Tier Sets
   }
 
   void init_finished() override
@@ -4613,6 +4625,16 @@ struct immolation_aura_t : public demon_hunter_spell_t
             break;
         }
       }
+
+      if ( p->set_bonuses.mid2_vengeance_4pc->ok() )
+      {
+        const auto& effect = p->set_bonuses.mid2_vengeance_4pc->effectN( 1 );
+
+        auto target_eff = add_parse_entry( target_multiplier_effects )
+                              .set_func( d_fn( &demon_hunter_td_t::dots_t::sigil_of_flame ) )
+                              .set_eff( &effect )
+                              .set_value( effect.percent() );
+      }
     }
 
     action_state_t* new_state() override
@@ -5327,6 +5349,16 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
         soul_fragments_to_spawn( as<unsigned>( p->talent.vengeance.sigil_of_spite->effectN( 3 ).base_value() ) )
     {
       reduced_aoe_targets = p->talent.vengeance.sigil_of_spite->effectN( 1 ).base_value();
+
+      if ( p->set_bonuses.mid2_vengeance_4pc->ok() )
+      {
+        const auto& effect = p->set_bonuses.mid2_vengeance_4pc->effectN( 1 );
+
+        auto target_eff = add_parse_entry( target_multiplier_effects )
+                              .set_func( d_fn( &demon_hunter_td_t::dots_t::sigil_of_flame ) )
+                              .set_eff( &effect )
+                              .set_value( effect.percent() );
+      }
     }
 
     void execute() override
@@ -5540,12 +5572,41 @@ struct voidsurge_t : public surge_base_t
 
 struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigger_t<demon_hunter_spell_t>>
 {
+  struct soulburst_t : public demon_hunter_spell_t
+  {
+    soulburst_t( util::string_view n, demon_hunter_t* p ) : demon_hunter_spell_t( n, p, p->set_bonuses.soulburst_damage )
+    {
+      background = dual = true;
+      aoe               = -1;
+    }
+
+    void execute() override
+    {
+      demon_hunter_spell_t::execute();
+
+      if ( dh()->set_bonuses.mid2_devourer_4pc->ok() )
+      {
+        dh()->buff.moment_of_craving->trigger();
+        dh()->cooldown.reap->reset( true );
+        dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_soulburst, soul_fragment::LESSER,
+                                   as<unsigned int>( dh()->set_bonuses.mid2_devourer_4pc->effectN( 1 ).base_value() ) );
+      }
+    }
+  };
+
   proc_t* soul_fragment_generation_proc;
+  soulburst_t* soulburst;
 
   consume_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
-    : base_t( n, p, s, o ), soul_fragment_generation_proc( nullptr )
+    : base_t( n, p, s, o ), soul_fragment_generation_proc( nullptr ), soulburst( nullptr )
   {
     cooldown = p->cooldown.consume;
+
+    if ( p->set_bonuses.mid2_devourer_2pc->ok() )
+    {
+      soulburst = new soulburst_t( fmt::format( "soulburst_{}", n ), p );
+      add_child( soulburst );
+    }
   }
 
   void execute() override
@@ -5556,6 +5617,12 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
     {
       dh()->spawn_soul_fragment( soul_fragment_generation_proc, soul_fragment::LESSER,
                                  as<unsigned int>( dh()->spec.shattered_souls->effectN( 3 ).base_value() ) );
+    }
+
+    if ( dh()->buff.soulburst->up() && soulburst )
+    {
+      soulburst->execute_on_target( target );
+      dh()->buff.soulburst->expire();
     }
   }
 };
@@ -5828,6 +5895,14 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
 
     base_t::execute();
     unsigned fragments_consumed = dh()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
+
+    // TOCHECK: Is this instant?
+    if ( dh()->set_bonuses.mid2_devourer_2pc->ok() &&
+         fragments_consumed >= dh()->set_bonuses.mid2_devourer_2pc->effectN( 1 ).base_value() &&
+         rng().roll( dh()->set_bonuses.mid2_devourer_2pc->effectN( 2 ).percent() ) )
+    {
+      dh()->buff.soulburst->trigger();
+    }
 
     // TOCHECK: This delay is a guess based on averages in logs as there is no spelldata
     make_event( *dh()->sim, 220_ms, [ this, fragments_consumed ] {
@@ -7804,7 +7879,10 @@ struct soul_cleave_t
   struct soul_cleave_damage_t
     : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<burning_blades_trigger_t<demon_hunter_attack_t>>>
   {
-    soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s ) : base_t( name, p, s )
+    bool extends_sigil_of_flame;
+
+    soul_cleave_damage_t( util::string_view name, demon_hunter_t* p, const spell_data_t* s )
+      : base_t( name, p, s ), extends_sigil_of_flame( p->set_bonuses.mid2_vengeance_2pc->ok() )
     {
       background = dual = true;
     }
@@ -7813,10 +7891,22 @@ struct soul_cleave_t
     {
       base_t::impact( s );
 
+      demon_hunter_td_t* target_data = td( s->target );
+
       // Soul Cleave can apply Frailty if Frailty is talented
       if ( result_is_hit( s->result ) && dh()->talent.vengeance.frailty->ok() )
       {
-        td( s->target )->debuffs.frailty->trigger();
+        target_data->debuffs.frailty->trigger();
+      }
+
+      if ( result_is_hit( s->result ) && extends_sigil_of_flame )
+      {
+        timespan_t duration_extension = dh()->set_bonuses.mid2_vengeance_2pc->effectN( 2 ).time_value();
+
+        if ( target_data->dots.sigil_of_flame->is_ticking() )
+        {
+          target_data->dots.sigil_of_flame->adjust_duration( duration_extension );
+        }
       }
     }
 
@@ -9887,6 +9977,7 @@ void demon_hunter_t::create_buffs()
   buff.volatile_instinct = make_buff( this, "volatile_instinct", hero_spec.volatile_instinct );
 
   // Set Bonus Items ========================================================
+  buff.soulburst = make_buff( this, "soulburst", set_bonuses.soulburst_buff );
 }
 
 // demon_hunter_t::create_expression ========================================
@@ -10288,6 +10379,7 @@ void demon_hunter_t::init_procs()
   proc.undying_embers = get_proc( "Undying Embers" );
 
   // Set Bonuses
+  proc.soul_fragment_from_soulburst = get_proc( "Soul Fragment from Soulburst (MID2)" );
 }
 
 // demon_hunter_t::init_uptimes =============================================
@@ -10610,6 +10702,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.burning_hatred = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Hatred" );
 
   talent.havoc.dash_of_chaos         = find_talent_spell( talent_tree::SPECIALIZATION, "Dash of Chaos" );
+  talent.havoc.never_say_die         = find_talent_spell( talent_tree::SPECIALIZATION, "Never Say Die" );
   talent.havoc.improved_chaos_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Chaos Strike" );
   talent.havoc.first_blood           = find_talent_spell( talent_tree::SPECIALIZATION, "First Blood" );
   talent.havoc.accelerated_blade     = find_talent_spell( talent_tree::SPECIALIZATION, "Accelerated Blade" );
@@ -11029,11 +11122,19 @@ void demon_hunter_t::init_spells()
 
   // Set Bonus Items ========================================================
 
+  set_bonuses.mid2_devourer_2pc  = sets->set( DEMON_HUNTER_DEVOURER, MID2, B2 );
+  set_bonuses.mid2_devourer_4pc  = sets->set( DEMON_HUNTER_DEVOURER, MID2, B4 );
   set_bonuses.mid1_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, MID1, B4 );
+  set_bonuses.mid2_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, MID2, B2 );
+  set_bonuses.mid2_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, MID2, B4 );
 
   // Set Bonus Auxilliary ===================================================
-  set_bonuses.stars_fury            = conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID1, B4 ),
-                                                                1271663 );  // Stars' Fury (set bonus)
+  set_bonuses.stars_fury = conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID1, B4 ),
+                                                     1271663 );  // Stars' Fury (set bonus)
+  set_bonuses.soulburst_buff =
+      conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID2, B2 ), 1297433 );
+  set_bonuses.soulburst_damage =
+      conditional_spell_lookup( sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID2, B2 ), 1297432 );
   set_bonuses.explosion_of_the_soul = conditional_spell_lookup( set_bonuses.mid1_vengeance_4pc->ok(), 1276488 );
 
   // Wounded Quarry (442808) is affected by Demon Hide.
@@ -11074,6 +11175,9 @@ void demon_hunter_t::init_spells()
   // TODO: Check if this still behaves as described in `composite_player_critical_damage_multiplier`
   deregister_passive_spell( talent.havoc.know_your_enemy );
   deregister_passive_spell( talent.havoc.tactical_retreat );
+
+  // conditional passive, yippee
+  deregister_passive_spell( talent.havoc.never_say_die );
 
   parse_all_class_passives();
   parse_all_passive_talents();
@@ -12347,7 +12451,6 @@ void demon_hunter_t::parse_player_effects()
     {
       parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::frailty ), spec.frailty_debuff );
     }
-
   }
 
   // Aldrachi Reaver

@@ -84,6 +84,8 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* sanctify;
     buff_t* crusaders_resolve;
     buff_t* empyrean_hammer;
+    buff_t* consecration;
+    buff_t* seal_of_reprisal;
   } debuff;
 
   struct
@@ -393,6 +395,8 @@ public:
     const spell_data_t* divine_purpose_buff;
     const spell_data_t* judgment_debuff;
     const spell_data_t* sanctify;
+    const spell_data_t* consecration;
+    const spell_data_t* seal_of_reprisal;
 
     const spell_data_t* sotr_buff;
     const spell_data_t* standing_in_consecration_buff;
@@ -439,6 +443,9 @@ public:
     const spell_data_t* judgment_ret_dt;
     const spell_data_t* hammer_of_wrath_ret;
     const spell_data_t* hammer_of_wrath_ret_dt;
+
+    // Tier stuff
+    const spell_data_t* unrelenting_edict;
   } spells;
 
   struct rppms_t {
@@ -849,6 +856,9 @@ public:
   void trigger_greater_judgment( paladin_td_t* targetdata );
   bool get_how_availability() const;
   bool wings_up() const;
+  bool templar() const;
+  bool lightsmith() const;
+  bool herald_of_the_sun() const;
 
   std::unique_ptr<expr_t> create_consecration_expression( util::string_view expr_str );
   std::unique_ptr<expr_t> create_aw_expression( util::string_view expr_str );
@@ -1218,15 +1228,18 @@ public:
         if ( td->debuff.judgment->up() )
           td->debuff.judgment->decrement();
       }
-      if ( p()->buffs.lightsmith.masterwork_weapon->up() )
+      if ( !p()->is_ptr() )
       {
-        p()->buffs.lightsmith.masterwork_weapon->decrement();
-        p()->cast_lesser_armament( 1, LESSER_WEAPON );
-      }
-      if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
-      {
-        p()->buffs.lightsmith.masterwork_bulwark->decrement();
-        p()->cast_lesser_armament( 1, LESSER_BULWARK );
+        if ( p()->buffs.lightsmith.masterwork_weapon->up() )
+        {
+          p()->buffs.lightsmith.masterwork_weapon->decrement();
+          p()->cast_lesser_armament( 1, LESSER_WEAPON );
+        }
+        if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
+        {
+          p()->buffs.lightsmith.masterwork_bulwark->decrement();
+          p()->cast_lesser_armament( 1, LESSER_BULWARK );
+        }
       }
     }
 
@@ -1711,12 +1724,42 @@ struct delayed_execute_event_t : public event_t
   }
 };
 
+struct delayed_execute_on_target_event_t : public event_t
+{
+  action_t* action;
+  player_t* target;
+  double amount;
+
+  delayed_execute_on_target_event_t(paladin_t* p, action_t* a, player_t* t, double amount, timespan_t delay)
+    : event_t( *p->sim, delay ), action(a), target(t), amount(amount)
+  {
+    assert( action->background );
+  }
+  const char* name() const override
+  {
+    return action->name();
+  }
+
+  void execute() override
+  {
+    if (!target->is_sleeping())
+    {
+      action->execute_on_target( target, amount );
+    }
+  }
+};
+
 struct avenging_wrath_t : public paladin_spell_t
 {
   avenging_wrath_t( paladin_t* p );
   avenging_wrath_t( paladin_t* p, util::string_view options_str );
   void execute() override;
   action_state_t* new_state() override;
+};
+struct unrelenting_edict_t : public paladin_spell_t
+{
+  unrelenting_edict_t( paladin_t* p, util::string_view name );
+  void do_execute( action_state_t* s );
 };
 struct hammer_and_anvil_t : public paladin_spell_t
 {
@@ -1742,6 +1785,7 @@ private:
 public:
   bool triggers_second_sunrise   = false;
   bool triggers_divine_resonance = false;
+  unrelenting_edict_t* ue;
   hammer_of_wrath_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str,
                      const spell_data_t* s = spell_data_t::nil() );
@@ -1754,6 +1798,7 @@ public:
 struct judgment_t : public judgment_base_t
 {
   bool triggered_hammer_and_anvil;
+  unrelenting_edict_t* ue;
 
   judgment_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   judgment_t( paladin_t* p, util::string_view name, util::string_view options_str,
@@ -1761,6 +1806,7 @@ struct judgment_t : public judgment_base_t
 
   proc_types proc_type() const override;
   void execute() override;
+  void impact(action_state_t* s) override;
   bool action_ready() override;
 };
 

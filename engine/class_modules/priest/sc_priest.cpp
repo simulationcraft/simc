@@ -349,8 +349,7 @@ struct angelic_feather_t final : public priest_spell_t
 
   buff_t* create_debuff( player_t* t ) override
   {
-    return priest_spell_t::create_debuff( t )
-      ->set_movement_speed_buff_from_data();
+    return priest_spell_t::create_debuff( t )->set_movement_speed_buff_from_data();
   }
 
   void impact( action_state_t* s ) override
@@ -429,7 +428,7 @@ struct halo_spell_t final : public priest_spell_t
 
     priest_spell_t::impact( s );
 
-    if ( p().talents.archon.resonant_energy.enabled() )
+    if ( p().talents.archon.resonant_energy.enabled() && !p().is_ptr() )
     {
       auto td = p().get_target_data( s->target );
       if ( td )
@@ -638,6 +637,15 @@ struct halo_t final : public priest_spell_t
         default:
           break;
       }
+    }
+
+    // PTR version: Resonant Energy is a self-buff and should trigger once per Halo creation.
+    if ( priest().talents.archon.resonant_energy.enabled() && priest().is_ptr() )
+    {
+      if ( priest().specialization() == PRIEST_SHADOW )
+        priest().buffs.resonant_energy_damage->trigger();
+      else if ( priest().specialization() == PRIEST_HOLY )
+        priest().buffs.resonant_energy_healing->trigger();
     }
   }
 
@@ -1343,12 +1351,12 @@ public:
           shadow_word_death_t* child_death          = priest().background_actions.shadow_word_death.get();
           child_death->idol_of_nzoth_execute_stacks = 1;
           state_t* state                            = child_death->cast_state( child_death->get_state() );
-          
+
           child_death->set_target( s->target );
 
-          state->target                             = s->target;
-          state->chain_number                       = curr_state->chain_number + 1;
-          state->max_chain                          = number_of_chains;
+          state->target       = s->target;
+          state->chain_number = curr_state->chain_number + 1;
+          state->max_chain    = number_of_chains;
 
           child_death->snapshot_state( state, child_death->amount_type( state ) );
 
@@ -1882,7 +1890,7 @@ struct power_word_shield_t final : public priest_absorb_t
     if ( bns_data )
     {
       auto bns = make_buff( actor_pair_t( s->target, &priest() ), "body_and_soul", bns_data )
-        ->set_movement_speed_buff_from_data();
+                     ->set_movement_speed_buff_from_data();
 
       buff->add_stack_change_callback( [ bns ]( buff_t*, int old_, int new_ ) {
         if ( !old_ && new_ )
@@ -2261,8 +2269,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
                           // size_t idx = std::clamp( as<int>( p.allies_with_atonement.size() ) - 1, 0, 19 );
                         } );
 
-  buffs.resonant_energy = make_buff_fallback( p.talents.archon.resonant_energy.enabled(), *this, "resonant_energy",
-                                              p.talents.archon.resonant_energy_shadow );
+  buffs.resonant_energy = make_buff_fallback( p.talents.archon.resonant_energy.enabled() && !p.is_ptr(), *this,
+                                              "resonant_energy", p.talents.archon.resonant_energy_shadow );
 
   buffs.horrific_visions = make_buff( *this, "horrific_visions", p.talents.shadow.horrific_visions );
 }
@@ -2329,19 +2337,20 @@ void priest_t::create_cooldowns()
 /** Construct priest gains */
 void priest_t::create_gains()
 {
-  gains.insanity_auspicious_spirits      = get_gain( "Auspicious Spirits" );
-  gains.insanity_death_and_madness       = get_gain( "Death and Madness" );
-  gains.shadowfiend                      = get_gain( "Shadowfiend" );
-  gains.mindbender                       = get_gain( "Mindbender" );
-  gains.voidwraith                       = get_gain( "Voidwraith" );
-  gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
-  gains.insanity_idol_of_cthun_mind_sear = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
-  gains.hallucinations_power_word_shield = get_gain( "Insanity Gained from Power Word: Shield with Hallucinations" );
-  gains.insanity_maddening_touch         = get_gain( "Maddening Touch" );
-  gains.shield_discipline                = get_gain( "Shield Discipline" );
-  gains.insanity_dark_thoughts           = get_gain( "Dark Thoughts" );
-  gains.insanity_horrific_vision         = get_gain( "Horrific Vision" );
-  gains.insanity_vision_of_nzoth         = get_gain( "Vision of N'Zoth" );
+  gains.insanity_auspicious_spirits        = get_gain( "Auspicious Spirits" );
+  gains.insanity_death_and_madness         = get_gain( "Death and Madness" );
+  gains.shadowfiend                        = get_gain( "Shadowfiend" );
+  gains.mindbender                         = get_gain( "Mindbender" );
+  gains.voidwraith                         = get_gain( "Voidwraith" );
+  gains.insanity_idol_of_cthun_mind_flay   = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
+  gains.insanity_idol_of_cthun_mind_sear   = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
+  gains.hallucinations_power_word_shield   = get_gain( "Insanity Gained from Power Word: Shield with Hallucinations" );
+  gains.insanity_maddening_touch           = get_gain( "Maddening Touch" );
+  gains.shield_discipline                  = get_gain( "Shield Discipline" );
+  gains.insanity_dark_thoughts             = get_gain( "Dark Thoughts" );
+  gains.insanity_horrific_vision           = get_gain( "Horrific Vision" );
+  gains.insanity_vision_of_nzoth           = get_gain( "Vision of N'Zoth" );
+  gains.insanity_mid_s2_4pc_vampiric_touch = get_gain( "Midnight S2 4pc Vampiric Touch" );
 }
 
 /** Construct priest procs */
@@ -2354,34 +2363,35 @@ void priest_t::create_procs()
       get_proc( "Power of the Dark Side from Dark Indulgence lost to overflow" );
   procs.expiation_lost_no_dot = get_proc( "Missed chance for expiation to consume a DoT" );
   // Shadow - Talents
-  procs.shadowy_apparition_swp          = get_proc( "Shadowy Apparition from Tormented Spirits" );
-  procs.shadowy_apparition_swm          = get_proc( "Shadowy Apparition from Shadow Word: Madness" );
-  procs.shadowy_apparition_mb           = get_proc( "Shadowy Apparition from Mind Blast" );
-  procs.shadowy_apparition_mfi          = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
-  procs.shadowy_apparition_yshaarj      = get_proc( "Shadowy Apparition from Idol of Y'Shaarj" );
-  procs.shadowy_apparition_nzoth        = get_proc( "Shadowy Apparition from Idol of N'Zoth" );
-  procs.shadowy_apparition_yogg         = get_proc( "Shadowy Apparition from Idol of Yogg-Saron" );
-  procs.shadowy_apparition_cthun        = get_proc( "Shadowy Apparition from Idol of C'Thun" );
-  procs.mind_devourer                   = get_proc( "Mind Devourer free Shadow Word: Madness proc" );
-  procs.void_tendril                    = get_proc( "Void Tendril proc from Idol of C'Thun" );
-  procs.void_lasher                     = get_proc( "Void Lasher proc from Idol of C'Thun" );
-  procs.shadowy_insight                 = get_proc( "Shadowy Insight procs" );
-  procs.shadowy_insight_overflow        = get_proc( "Shadowy Insight procs lost to overflow" );
-  procs.shadowy_insight_missed          = get_proc( "Shadowy Insight procs not consumed" );
-  procs.thing_from_beyond               = get_proc( "Thing from Beyond procs" );
-  procs.mind_flay_insanity_wasted       = get_proc( "Mind Flay: Insanity casts that did not channel for full ticks" );
-  procs.void_torrent_ticks_no_mastery   = get_proc( "Void Torrent ticks without full Mastery value" );
-  procs.mindgames_casts_no_mastery      = get_proc( "Mindgames casts without full Mastery value" );
-  procs.inescapable_torment_missed_mb   = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
-  procs.inescapable_torment_missed_swd  = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
-  procs.shadowfiend                     = get_proc( "Shadowfiend procs from Shadow Word: Death casts" );
-  procs.void_apparition                 = get_proc( "Void Apparition procs" );
-  procs.void_apparition_yshaarj         = get_proc( "Idol of Y'Shaarj from Tentacle Slam" );
-  procs.void_apparition_horrific_vision = get_proc( "Horrific Vision from Tentacle Slam" );
-  procs.void_apparition_vision_of_nzoth = get_proc( "Vision of N'Zoth from Tentacle Slam" );
-  procs.void_apparition_yogg            = get_proc( "Idol of Yogg-Saron from Tentacle Slam" );
-  procs.void_apparition_cthun           = get_proc( "Idol of C'Thun from Tentacle Slam" );
-  procs.tentacle_slam_idol              = get_proc( "Idol spell from Tentacle Slam" );
+  procs.shadowy_apparition_swp           = get_proc( "Shadowy Apparition from Tormented Spirits" );
+  procs.shadowy_apparition_swm           = get_proc( "Shadowy Apparition from Shadow Word: Madness" );
+  procs.shadowy_apparition_mb            = get_proc( "Shadowy Apparition from Mind Blast" );
+  procs.shadowy_apparition_mfi           = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
+  procs.shadowy_apparition_yshaarj       = get_proc( "Shadowy Apparition from Idol of Y'Shaarj" );
+  procs.shadowy_apparition_nzoth         = get_proc( "Shadowy Apparition from Idol of N'Zoth" );
+  procs.shadowy_apparition_yogg          = get_proc( "Shadowy Apparition from Idol of Yogg-Saron" );
+  procs.shadowy_apparition_cthun         = get_proc( "Shadowy Apparition from Idol of C'Thun" );
+  procs.shadowy_apparition_mid_s2_4pc_vt = get_proc( "Shadowy Apparition from Midnight S2 4pc Vampiric Touch" );
+  procs.mind_devourer                    = get_proc( "Mind Devourer free Shadow Word: Madness proc" );
+  procs.void_tendril                     = get_proc( "Void Tendril proc from Idol of C'Thun" );
+  procs.void_lasher                      = get_proc( "Void Lasher proc from Idol of C'Thun" );
+  procs.shadowy_insight                  = get_proc( "Shadowy Insight procs" );
+  procs.shadowy_insight_overflow         = get_proc( "Shadowy Insight procs lost to overflow" );
+  procs.shadowy_insight_missed           = get_proc( "Shadowy Insight procs not consumed" );
+  procs.thing_from_beyond                = get_proc( "Thing from Beyond procs" );
+  procs.mind_flay_insanity_wasted        = get_proc( "Mind Flay: Insanity casts that did not channel for full ticks" );
+  procs.void_torrent_ticks_no_mastery    = get_proc( "Void Torrent ticks without full Mastery value" );
+  procs.mindgames_casts_no_mastery       = get_proc( "Mindgames casts without full Mastery value" );
+  procs.inescapable_torment_missed_mb    = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
+  procs.inescapable_torment_missed_swd   = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
+  procs.shadowfiend                      = get_proc( "Shadowfiend procs from Shadow Word: Death casts" );
+  procs.void_apparition                  = get_proc( "Void Apparition procs" );
+  procs.void_apparition_yshaarj          = get_proc( "Idol of Y'Shaarj from Tentacle Slam" );
+  procs.void_apparition_horrific_vision  = get_proc( "Horrific Vision from Tentacle Slam" );
+  procs.void_apparition_vision_of_nzoth  = get_proc( "Vision of N'Zoth from Tentacle Slam" );
+  procs.void_apparition_yogg             = get_proc( "Idol of Yogg-Saron from Tentacle Slam" );
+  procs.void_apparition_cthun            = get_proc( "Idol of C'Thun from Tentacle Slam" );
+  procs.tentacle_slam_idol               = get_proc( "Idol spell from Tentacle Slam" );
   // Holy
   procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
   procs.divine_image          = get_proc( "Divine Image from Holy Words" );
@@ -3159,6 +3169,8 @@ void priest_t::init_spells()
   talents.archon.sustained_potency_buff   = find_spell( 454002 );
   talents.archon.resonant_energy          = HT( "Resonant Energy" );
   talents.archon.resonant_energy_shadow   = find_spell( 453850 );
+  talents.archon.resonant_energy_healing  = find_spell( 453846 );
+  talents.archon.resonant_energy_damage   = find_spell( 453850 );
   talents.archon.energy_cycle             = HT( "Energy Cycle" );
   talents.archon.focused_outburst         = HT( "Focused Outburst" );
   talents.archon.divine_halo              = HT( "Divine Halo" );
@@ -3331,6 +3343,13 @@ void priest_t::create_buffs()
 
   buffs.sustained_potency = make_buff_fallback( talents.archon.sustained_potency.enabled(), this, "sustained_potency",
                                                 talents.archon.sustained_potency_buff );
+
+  buffs.resonant_energy_healing =
+      make_buff_fallback( talents.archon.resonant_energy.enabled() && is_ptr(), this, "resonant_energy_healing",
+                          talents.archon.resonant_energy_healing );
+
+  buffs.resonant_energy_damage = make_buff_fallback( talents.archon.resonant_energy.enabled() && is_ptr(), this,
+                                                     "resonant_energy_damage", talents.archon.resonant_energy_damage );
 
   buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", talents.archon.mind_flay_insanity_buff );
 
@@ -3880,6 +3899,8 @@ void priest_t::create_options()
   add_option(
       opt_float( "priest.archon_halo_outgoing_hit_chance", options.archon_halo_outgoing_hit_chance, 0.0, 1.0 ) );
   add_option( opt_float( "priest.archon_halo_return_hit_chance", options.archon_halo_return_hit_chance, 0.0, 1.0 ) );
+  add_option( opt_bool( "priest.mid_s2_2pc", options.mid_s2_2pc ) );
+  add_option( opt_bool( "priest.mid_s2_4pc", options.mid_s2_4pc ) );
 }
 
 std::string priest_t::create_profile( save_e type )
@@ -3981,7 +4002,8 @@ void priest_t::spawn_idol_of_cthun( action_state_t* s )
 
   if ( talents.shadow.void_apparitions_1.enabled() )
   {
-    trigger_shadowy_apparitions( procs.shadowy_apparition_cthun );
+    // BUG: This does not pass through target for Shadeburst currently
+    trigger_shadowy_apparitions( procs.shadowy_apparition_cthun, nullptr );
   }
 }
 
@@ -4107,7 +4129,7 @@ public:
     std::vector<proc_t*> sa_source_list = {
         p.procs.shadowy_apparition_swp,  p.procs.shadowy_apparition_swm,     p.procs.shadowy_apparition_mb,
         p.procs.shadowy_apparition_mfi,  p.procs.shadowy_apparition_yshaarj, p.procs.shadowy_apparition_nzoth,
-        p.procs.shadowy_apparition_yogg, p.procs.shadowy_apparition_cthun,
+        p.procs.shadowy_apparition_yogg, p.procs.shadowy_apparition_cthun,   p.procs.shadowy_apparition_mid_s2_4pc_vt,
     };
 
     double sum = 0.0;
@@ -4215,7 +4237,7 @@ public:
       return;
 
     // Only show this when you are able to extend Voidform
-    if ( p.talents.shadow.ancient_madness.enabled() )
+    if ( p.talents.shadow.ancient_madness.enabled() || p.talents.archon.sustained_potency.enabled() )
     {
       html_customsection_voidform( os );
     }
@@ -4248,26 +4270,29 @@ struct priest_module_t final : public module_t
   }
   void register_actor_initializers( sim_t* sim ) const override
   {
-    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + offset(), []( player_t* p ) {
-      if ( !p->is_player() )
-        return;
+    sim->register_actor_initializer(
+        INIT_ACTOR_CREATE_BUFFS + offset(),
+        []( player_t* p ) {
+          if ( !p->is_player() )
+            return;
 
-      // Always create PI as it's a commonly simmed external
-      auto pi_buff = make_buff( p, "power_infusion", p->find_spell( 10060 ) )
-                        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                        ->set_default_value_from_effect_type( A_HASTE_ALL )
-                        ->set_cooldown( 0_ms );
+          // Always create PI as it's a commonly simmed external
+          auto pi_buff = make_buff( p, "power_infusion", p->find_spell( 10060 ) )
+                             ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                             ->set_default_value_from_effect_type( A_HASTE_ALL )
+                             ->set_cooldown( 0_ms );
 
-      if ( p->type == PRIEST )
-      {
-        debug_cast<priest_t*>( p )->buffs.power_infusion = pi_buff;
-      }
+          if ( p->type == PRIEST )
+          {
+            debug_cast<priest_t*>( p )->buffs.power_infusion = pi_buff;
+          }
 
-      if ( !p->external_buffs.power_infusion.empty() )
-      {
-        p->register_timed_buff_triggers( pi_buff, p->external_buffs.power_infusion );
-      }
-    }, "create_buffs_priest" );
+          if ( !p->external_buffs.power_infusion.empty() )
+          {
+            p->register_timed_buff_triggers( pi_buff, p->external_buffs.power_infusion );
+          }
+        },
+        "create_buffs_priest" );
   }
   void static_init() const override
   {

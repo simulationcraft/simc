@@ -868,7 +868,7 @@ using namespace helpers;
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
           p()->proc_actions.shared_fate->execute_on_target( target );
 
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger() )
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger( execute_state ) )
           p()->feast_of_souls_gain();
       }
 
@@ -1120,20 +1120,30 @@ using namespace helpers;
         }
 
         // Seeds of their Demise collapse conditions must be checked periodically for every Wither tick
-        if ( !td( d->target )->debuffs.blackened_soul->check() )
+        bool collapse = false;
+        collapse = collapse || ( p()->hero.seeds_of_their_demise.ok() && d->current_stack() > 1 && d->target->health_percentage() <= p()->hero.seeds_of_their_demise->effectN( 2 ).base_value() );
+        collapse = collapse || ( p()->hero.seeds_of_their_demise.ok() && d->current_stack() >= as<int>( p()->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
+        if ( collapse )
         {
-          bool collapse = false;
-          collapse = collapse || ( p()->hero.seeds_of_their_demise.ok() && d->current_stack() > 1 && d->target->health_percentage() <= p()->hero.seeds_of_their_demise->effectN( 2 ).base_value() );
-          collapse = collapse || ( p()->hero.seeds_of_their_demise.ok() && d->current_stack() >= as<int>( p()->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
-          if ( collapse )
+          const int prev_collapse_stacks = td( d->target )->debuffs.blackened_soul->check();
+          assert( prev_collapse_stacks >= 0 );
+          const int diff_stacks = d->current_stack() - prev_collapse_stacks;
+
+          assert( d->current_stack() >= 1 );
+          if ( diff_stacks > 0 )
+            td( d->target )->debuffs.blackened_soul->trigger( diff_stacks );
+          else if ( diff_stacks < 0 )
+            td( d->target )->debuffs.blackened_soul->decrement( -diff_stacks );
+
+          assert( td( d->target )->debuffs.blackened_soul->check() );
+          if ( !prev_collapse_stacks )
           {
-            td( d->target )->debuffs.blackened_soul->trigger();
             p()->sim->print_debug( "{} wither stack collapse in {} started (seeds of their demise) (wither tick check). wither_current_stack={}, wither_target_health_percentage={:.2f}%",
                                    p()->name(), d->target->name(), d->current_stack(), d->target->health_percentage() );
           }
         }
 
-        if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && p()->flat_rng.mark_of_perotharn->trigger() )
+        if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && p()->prd_rng.mark_of_perotharn->trigger() )
         {
           // Wither stack gain by Mark of Perotharn does not directly trigger collapse in that tick (it will be trigged on the next tick)
           // Wither stack gain by Mark of Perotharn does not benefit from Bleakheart Tactics
@@ -1200,7 +1210,7 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( s->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && p()->flat_rng.mark_of_perotharn->trigger() )
+      if ( s->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && p()->prd_rng.mark_of_perotharn->trigger() )
       {
         auto& wither_dot = td( s->target )->dots.wither;
         auto& wither_debuff = td( s->target )->debuffs.wither;
@@ -1260,35 +1270,37 @@ using namespace helpers;
 
       player_t* tar = s->target;
 
+      // Blackened Soul damage impact runs during blackened_soul_debuff tick callback.
+      // Its frozen stacks make direct expire/decrement safe here without deferring to a follow-up event.
+      auto& blackened_soul_debuff = td( tar )->debuffs.blackened_soul;
+      assert( blackened_soul_debuff->check() );
+      assert( blackened_soul_debuff->freeze_stacks );
+      assert( blackened_soul_debuff->buff_duration() == 0_ms );
+      assert( blackened_soul_debuff->expiration.empty() );
+      assert( blackened_soul_debuff->tick_event == nullptr );
       if ( td( tar )->dots.wither->current_stack() <= 1 )
       {
-        make_event( *sim, 0_ms, [ this, tar ] {
-          if ( td( tar )->debuffs.blackened_soul->check() )
-          {
-            td( tar )->debuffs.blackened_soul->expire();
-            p()->sim->print_debug( "{} wither stack collapse in {} ended. wither_current_stack={}", p()->name(), tar->name(), td( tar )->dots.wither->current_stack() );
-          }
-        } );
+        blackened_soul_debuff->expire();
+        p()->sim->print_debug( "{} wither stack collapse in {} ended (wither stacks reach 1). wither_current_stack={}", p()->name(), tar->name(), td( tar )->dots.wither->current_stack() );
+      }
+      else
+      {
+        blackened_soul_debuff->decrement();
+        if ( !blackened_soul_debuff->check() )
+          p()->sim->print_debug( "{} wither stack collapse in {} ended (collapse consumed its stacks). wither_current_stack={}", p()->name(), tar->name(), td( tar )->dots.wither->current_stack() );
       }
 
-      bool seeds_triggered = false;
-
-      if ( affliction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && p()->flat_rng.seeds_of_their_demise->trigger() )
+      if ( affliction() && p()->hero.seeds_of_their_demise.ok() && p()->progress_rng.seeds_of_their_demise->trigger( s ) )
       {
         p()->buffs.shard_instability->trigger();
         p()->procs.seeds_of_their_demise->occur();
-        seeds_triggered = true;
       }
 
-      if ( destruction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && p()->flat_rng.seeds_of_their_demise->trigger() )
+      if ( destruction() && p()->hero.seeds_of_their_demise.ok() && p()->progress_rng.seeds_of_their_demise->trigger( s ) )
       {
-        p()->buffs.flashpoint->trigger( 2 );
+        p()->buffs.flashpoint->trigger( as<int>( p()->hero.seeds_of_their_demise->effectN( 3 ).base_value() ) );
         p()->procs.seeds_of_their_demise->occur();
-        seeds_triggered = true;
       }
-
-      if ( seeds_triggered )
-        p()->cooldowns.seeds_of_their_demise->start();
     }
   };
 
@@ -1540,7 +1552,6 @@ using namespace helpers;
       if ( p()->talents.cascading_calamity.ok() && dot->is_ticking() )
         p()->buffs.cascading_calamity->trigger();
 
-      // timespan_t dot_new_last_duration = dot->time_to_next_full_tick() + composite_dot_duration( s ); // TODO: Alternative that takes into account the extra tick on refresh; which is more appropriate?
       timespan_t dot_new_last_duration = composite_dot_duration( s );
       // NOTE: If Blizzard change the UA DoT Behavior, this need to be redesigned
       assert( dot_behavior == DOT_REFRESH_DURATION && "UA DoT Behavior has changed" );
@@ -1871,7 +1882,7 @@ using namespace helpers;
           p()->proc_actions.shared_fate->execute_on_target( main_seed_target );
 
         // Feast of Souls is processed before the decrement of Succulent Soul, causing the same SoC cast that gains the Succulent Soul stack to consume it
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger() )
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger( execute_state ) )
           p()->feast_of_souls_gain( true );
       }
 
@@ -2147,7 +2158,7 @@ using namespace helpers;
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
           p()->proc_actions.shared_fate->execute_on_target( target );
 
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger() )
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger( execute_state ) )
           p()->feast_of_souls_gain();
       }
       p()->buffs.nightfall->decrement();
@@ -2286,7 +2297,7 @@ using namespace helpers;
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
           p()->proc_actions.shared_fate->execute_on_target( target );
 
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger() )
+        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger( execute_state ) )
           p()->feast_of_souls_gain();
       }
       p()->buffs.nightfall->decrement();
@@ -5195,48 +5206,56 @@ using namespace helpers;
         stacks = as<int>( p->hero.malevolence->effectN( 1 ).base_value() );
       }
 
+      // Wither extra stack from Malevolence Effect #2 does not benefit from Bleakheart Tactics
+      if ( p->buffs.malevolence->check() && !malevolence )
+      {
+        stacks += as<int>( p->hero.malevolence->effectN( 2 ).base_value() );
+      }
+
+      // Bleakheart Tactics proc uses a global BLP (PRD-accumulator)
+      // Malevolence stack gains do not benefit from Bleakheart Tactics
+      if ( p->hero.bleakheart_tactics.ok() && !malevolence && p->prd_rng.bleakheart_tactics->trigger() )
+      {
+        stacks += as<int>( p->hero.bleakheart_tactics->effectN( 3 ).base_value() );
+        p->procs.bleakheart_tactics->occur();
+      }
+
+      assert( stacks >= 1 );
       tdata->dots.wither->increment( stacks );
       tdata->debuffs.wither->bump( stacks );
       assert( tdata->dots.wither->current_stack() == tdata->debuffs.wither->check() && tdata->dots.wither->remains() == tdata->debuffs.wither->remains() );
       stack_gained = true;
 
-      // Wither extra stack from Malevolence Effect #2 does not benefit from Bleakheart Tactics
-      if ( p->buffs.malevolence->check() && !malevolence )
-      {
-        const int inc = as<int>( p->hero.malevolence->effectN( 2 ).base_value() );
-        tdata->dots.wither->increment( inc );
-        tdata->debuffs.wither->bump( inc );
-        assert( tdata->dots.wither->current_stack() == tdata->debuffs.wither->check() && tdata->dots.wither->remains() == tdata->debuffs.wither->remains() );
-      }
+      const int prev_collapse_stacks = tdata->debuffs.blackened_soul->check();
+      assert( prev_collapse_stacks >= 0 );
+      bool collapse = false; // Malevolence no longer initiates collapse automatically. Last tested 2026-03-17
+      collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots.wither->current_stack() > 1 && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() );
+      collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots.wither->current_stack() >= as<int>( p->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
 
-      // Malevolence stack gains do not benefit from Bleakheart Tactics
-      if ( p->hero.bleakheart_tactics.ok() && !malevolence && p->flat_rng.bleakheart_tactics->trigger() )
+      if ( collapse )
       {
-        const int inc = as<int>( p->hero.bleakheart_tactics->effectN( 3 ).base_value() );
-        tdata->dots.wither->increment( inc );
-        tdata->debuffs.wither->bump( inc );
-        assert( tdata->dots.wither->current_stack() == tdata->debuffs.wither->check() && tdata->dots.wither->remains() == tdata->debuffs.wither->remains() );
-        p->procs.bleakheart_tactics->occur();
-      }
+        const int diff_stacks = tdata->dots.wither->current_stack() - prev_collapse_stacks;
 
-      if ( !tdata->debuffs.blackened_soul->check() )
-      {
-        bool collapse = false; // Malevolence no longer initiates collapse automatically. Last tested 2026-03-17
-        collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots.wither->current_stack() > 1 && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() );
-        collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots.wither->current_stack() >= as<int>( p->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
+        assert( tdata->dots.wither->current_stack() >= 1 );
+        if ( diff_stacks > 0 )
+          tdata->debuffs.blackened_soul->trigger( diff_stacks );
+        else if ( diff_stacks < 0 )
+          tdata->debuffs.blackened_soul->decrement( -diff_stacks );
 
-        if ( collapse )
+        assert( tdata->debuffs.blackened_soul->check() );
+        if ( !prev_collapse_stacks )
         {
-          tdata->debuffs.blackened_soul->trigger();
           p->sim->print_debug( "{} wither stack collapse in {} started (seeds of their demise) (stack gain check). wither_current_stack={}, wither_target_health_percentage={:.2f}%",
                       p->name(), target->name(), tdata->dots.wither->current_stack(), target->health_percentage() );
         }
-        else if ( p->flat_rng.blackened_soul->trigger() && !malevolence ) // Malevolence stack gains do not trigger Blackened Soul collapse proc
-        {
-          tdata->debuffs.blackened_soul->trigger();
-          p->procs.blackened_soul->occur();
-          p->sim->print_debug( "{} wither stack collapse in {} started (blackened soul proc). wither_current_stack={}", p->name(), target->name(), tdata->dots.wither->current_stack() );
-        }
+      }
+      else if ( !prev_collapse_stacks && !malevolence && p->flat_rng.blackened_soul->trigger() ) // Malevolence stack gains do not trigger Blackened Soul collapse proc
+      {
+        const int new_collapse_stacks = tdata->dots.wither->current_stack();
+        assert( new_collapse_stacks >= 1 && !tdata->debuffs.blackened_soul->check() );
+        tdata->debuffs.blackened_soul->trigger( new_collapse_stacks );
+        p->procs.blackened_soul->occur();
+        p->sim->print_debug( "{} wither stack collapse in {} started (blackened soul proc). wither_current_stack={}", p->name(), target->name(), tdata->dots.wither->current_stack() );
       }
 
       if ( malevolence )
@@ -5344,8 +5363,6 @@ using namespace helpers;
   {
     warlock_t* p = static_cast<warlock_t*>( player() );
 
-    // if ( dot->is_ticking() && dot->tick_event && dot->current_action && dot->remains() > 0_ms ) // TODO: Alternative that takes into account the extra tick on refresh; which is more appropriate?
-    // if ( dot->is_ticking() && dot->tick_event && dot->current_action && dot->remains() > 0_ms && dot->current_stack() > 1 )
     if ( dot->is_ticking() && dot->tick_event && dot->current_action && dot->remains() > 0_ms )
     {
       player_t* target = dot->target;

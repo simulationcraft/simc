@@ -427,6 +427,7 @@ struct consecration_t : public paladin_spell_t
 
     dot_duration = 0_ms;  // the periodic event is handled by ground_aoe_event_t
     may_miss = harmful = false;
+    aoe                = -1;
 
     // technically this doesn't work for characters under level 11?
     if ( p->specialization() == PALADIN_RETRIBUTION )
@@ -454,6 +455,7 @@ struct consecration_t : public paladin_spell_t
     may_miss = harmful = false;
     background = true;
     cooldown->duration = 0_ms;
+    aoe                = -1;
 
     add_child( damage_tick );
   }
@@ -636,6 +638,11 @@ struct consecration_t : public paladin_spell_t
       make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
       damage_tick->execute();
     }
+  }
+  void impact(action_state_t* s) override
+  {
+    paladin_spell_t::impact( s );
+    p()->get_target_data( s->target )->debuff.consecration->execute();
   }
 };
 
@@ -1370,6 +1377,28 @@ bool trigger_hammer_and_anvil( paladin_t* p, player_t* target, hammer_and_anvil_
   return false;
 }
 
+
+
+unrelenting_edict_t::unrelenting_edict_t( paladin_t* p, util::string_view name ) : paladin_spell_t( std::string(name) + "_ue", p, p->spells.unrelenting_edict )
+{
+
+}
+
+void unrelenting_edict_t::do_execute(action_state_t* s)
+{
+  if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+  {
+    auto b      = p()->sets->set( PALADIN_PROTECTION, MID2, B4 );
+    double perc = b->effectN( 1 ).percent();
+    if ( s->result == result_e::RESULT_CRIT )
+      perc *= 1 + b->effectN( 2 ).percent();
+    base_dd_min = base_dd_max = s->result_amount * perc;
+
+    execute();
+  }
+}
+
+
 // Base Judgment spell ======================================================
 
 judgment_base_t::judgment_base_t( paladin_t* p, util::string_view name, const spell_data_t* s )
@@ -1456,6 +1485,11 @@ judgment_t::judgment_t( paladin_t* p, util::string_view name, const spell_data_t
   may_block = may_parry = may_dodge = false;
   // force effect 1 to be used for direct ratios
   parse_effect_data( data().effectN( 1 ) );
+  if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+  {
+    ue = new unrelenting_edict_t( p, "judgment" );
+    add_child( ue );
+  }
 }
 
 judgment_t::judgment_t( paladin_t* p, util::string_view name, util::string_view options_str, const spell_data_t* s )
@@ -1466,6 +1500,11 @@ judgment_t::judgment_t( paladin_t* p, util::string_view name, util::string_view 
   may_block = may_parry = may_dodge = false;
   // force effect 1 to be used for direct ratios
   parse_effect_data( data().effectN( 1 ) );
+  if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+  {
+    ue = new unrelenting_edict_t( p, "judgment" );
+    add_child( ue );
+  }
 
   if ( p->cooldowns.judgment == nullptr )
     p->cooldowns.judgment = cooldown;
@@ -1506,6 +1545,13 @@ void judgment_t::execute()
   {
     trigger_hammer_and_anvil( p(), execute_state->target, hammer_and_anvil, HAA_JUDGMENT );
   }
+}
+
+void judgment_t::impact(action_state_t* s)
+{
+  judgment_base_t::impact( s );
+  if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+    ue->do_execute( s );
 }
 
 bool judgment_t::action_ready()
@@ -1687,6 +1733,11 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
   {
     p->cooldowns.hammer_of_wrath = cooldown;
   }
+  if ( !p->bugs && p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+  {
+    ue = new unrelenting_edict_t( p, "judgment" );
+    add_child( ue );
+  }
 }
 
 void hammer_of_wrath_t::execute()
@@ -1741,6 +1792,8 @@ void hammer_of_wrath_t::impact( action_state_t* s )
       echo->start_action_execute_event( 200_ms );
     }
   }
+  if ( !p()->bugs && p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+    ue->do_execute( s );
 }
 
 double hammer_of_wrath_t::composite_target_multiplier( player_t* target ) const
@@ -1864,7 +1917,7 @@ struct divine_toll_t : public paladin_spell_t
     {
       p()->buffs.templar.divine_hammer->trigger();
     }
-    if (p()->specialization() == PALADIN_PROTECTION && p()->talents.templar.lights_guidance->ok())
+    if (p()->specialization() == PALADIN_PROTECTION && p()->templar())
     {
       p()->buffs.templar.hammer_of_light_ready->trigger();
     }
@@ -2104,7 +2157,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     is_hammer_of_light_main = true;
     is_hammer_of_light_cleave        = true;
     cleave_hammer             = new hammer_of_light_cleave_t( p, options_str );
-    background                = !p->talents.templar.lights_guidance->ok();
+    background                = !p->templar();
     // This is not set by definition, since cost changes by spec
     resource_current = RESOURCE_HOLY_POWER;
     ret_cost         = data().powerN( 1 ).cost();
@@ -2577,7 +2630,7 @@ struct holy_armaments_t : public paladin_spell_t
     parse_options( options_str );
     harmful            = false;
     name_str_reporting = "Holy Armaments";
-    background = !p->talents.lightsmith.holy_armaments->ok();
+    background = !p->lightsmith();
   }
 
   timespan_t execute_time() const override
@@ -3189,10 +3242,13 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.sanctify          = make_buff( *this, "sanctify", paladin->spells.sanctify );
   debuff.crusaders_resolve     = make_buff( *this, "crusaders_resolve", paladin->find_spell( 383843 ) );
   debuff.empyrean_hammer = make_buff( *this, "empyrean_hammer", paladin->find_spell( 431625 ) );
+  debuff.consecration          = make_buff( *this, "consecration", paladin->spells.consecration );
+  debuff.seal_of_reprisal      = make_buff( *this, "seal_of_reprisal", paladin->spells.seal_of_reprisal );
 
   buffs.holy_bulwark = make_buff<buffs::holy_bulwark_buff_t>( this )
     ->set_cooldown( 0_s );
   buffs.sacred_weapon = make_buff( *this, "sacred_weapon_" + paladin->name_str + "_" + target->name_str, paladin->find_spell( 432502 ) );
+  
 
   if ( !target->is_enemy() && target != paladin )
   {
@@ -3268,7 +3324,7 @@ void paladin_t::create_actions()
 
   // Hero Talents
   //Lightsmith
-  if ( talents.lightsmith.holy_armaments->ok() )
+  if ( lightsmith() )
   {
     auto cb = create_sacred_weapon_callback(this, this);
     cb->activate_with_buff( buffs.lightsmith.sacred_weapon, true );
@@ -3283,7 +3339,7 @@ void paladin_t::create_actions()
     }
   }
   //Templar
-  if (talents.templar.lights_guidance->ok())
+  if (templar())
   {
     active.empyrean_hammer = new empyrean_hammer_t(this);
   }
@@ -3296,7 +3352,7 @@ void paladin_t::create_actions()
     active.divine_hammer_tick = new divine_hammer_tick_t( this );
   }
 
-  if ( talents.herald_of_the_sun.dawnlight->ok() )
+  if ( herald_of_the_sun() )
   {
     active.dawnlight = new dawnlight_t( this );
   }
@@ -3631,27 +3687,45 @@ void paladin_t::create_buffs()
 
   buffs.hammer_of_wrath = make_buff( this, "hammer_of_wrath", find_spell( 1277026 ) );
 
-  buffs.lightsmith.holy_bulwark = make_buff<buffs::holy_bulwark_buff_t>( this )
-                                      ->set_cooldown( 0_s )
-                                      ->set_refresh_duration_callback( [ this ]( const buff_t* b, timespan_t d ) {
-                                        if ( b->remains().total_millis() > 0 )
-                                          trigger_laying_down_arms();
-                                        timespan_t residual = std::min( d * 0.3, b->remains() );
-                                        return residual + d;
-                                      } )
-                                      ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
-                                        trigger_laying_down_arms();
-                                      } );
-  buffs.lightsmith.sacred_weapon = make_buff( this, "sacred_weapon", find_spell( 432502 ) )
-                                       ->set_refresh_duration_callback( [ this ]( const buff_t* b, timespan_t d ) {
-                                         if ( b->remains().total_millis() > 0 )
-                                           trigger_laying_down_arms();
-                                         timespan_t residual = std::min( d * 0.3, b->remains() );
-                                         return residual + d;
-                                       } )
-                                       ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) {
-                                         trigger_laying_down_arms();
-                                       } );
+  buffs.lightsmith.holy_bulwark =
+      make_buff<buffs::holy_bulwark_buff_t>( this )
+          ->set_cooldown( 0_s )
+          ->set_refresh_duration_callback( [ this ]( const buff_t* b, timespan_t d ) {
+            if ( b->remains().total_millis() > 0 )
+              trigger_laying_down_arms();
+            if ( is_ptr() )
+            {
+              if ( bugs )
+                return d * 2;
+              else
+                return std::min( b->remains() + d, d * 2 );
+            }
+            else
+            {
+              timespan_t residual = std::min( d * 0.3, b->remains() );
+              return residual + d;
+            }
+          } )
+          ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) { trigger_laying_down_arms(); } );
+  buffs.lightsmith.sacred_weapon =
+      make_buff( this, "sacred_weapon", find_spell( 432502 ) )
+          ->set_refresh_duration_callback( [ this ]( const buff_t* b, timespan_t d ) {
+            if ( b->remains().total_millis() > 0 )
+              trigger_laying_down_arms();
+            if ( is_ptr() )
+            {
+              if ( bugs )
+                return d * 2;
+              else
+                return std::min( b->remains() + d, d * 2 );
+            }
+            else
+            {
+              timespan_t residual = std::min( d * 0.3, b->remains() );
+              return residual + d;
+            }
+          } )
+          ->set_expire_callback( [ this ]( buff_t*, double, timespan_t ) { trigger_laying_down_arms(); } );
   buffs.lightsmith.masterwork_weapon = make_buff( this, "masterwork_weapon", find_spell( 1271436 ) );
   buffs.lightsmith.masterwork_bulwark = make_buff( this, "masterwork_bulwark", find_spell( 1271383 ) );
   // Not going to implement this "correctly", too much overhead for too little informational gain
@@ -3879,6 +3953,8 @@ void paladin_t::apply_target_action_effects(action_t* a)
 
   action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::judgment, false ), spells.judgment_debuff );
   action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::sanctify ), spells.sanctify );
+  action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::consecration ), spells.consecration );
+  action->parse_target_effects( d_fn( &paladin_td_t::buffs_t::seal_of_reprisal ), spells.seal_of_reprisal );
 
   action->parse_target_effects( d_fn( &paladin_td_t::dots_t::expurgation ), spells.expurgation );
 }
@@ -4268,6 +4344,8 @@ void paladin_t::init_spells()
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( specialization() == PALADIN_RETRIBUTION ? 408458 : 223819 );
   spells.sanctify               = find_spell( 382538 );
+  spells.consecration           = find_spell( 204242 );
+  spells.seal_of_reprisal       = find_spell( 1302139 );
 
   // Hero Talent Spells
   spells.lightsmith.holy_bulwark        = find_spell( 432496 );
@@ -4282,6 +4360,10 @@ void paladin_t::init_spells()
   spells.templar.empyrean_hammer_wd     = find_spell( 431625 );
 
   spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
+
+  // Tier stuff
+  spells.unrelenting_edict = find_spell( 1300662 );
+
 
   // Add Judgment AoE. Damage still handled manually. Hammer of Wrath also handled manually, since that AoE is 1, instead of 0
   register_passive_affect_list( talents.blessed_champion,
@@ -4930,6 +5012,19 @@ bool paladin_t::wings_up() const
   return buffs.avenging_wrath->up() || buffs.sentinel->up();
 }
 
+bool paladin_t::templar() const
+{
+  return has_hero_tree( hero_tree_e::HERO_TEMPLAR );
+}
+bool paladin_t::lightsmith() const
+{
+  return has_hero_tree( hero_tree_e::HERO_LIGHTSMITH );
+}
+bool paladin_t::herald_of_the_sun() const
+{
+  return has_hero_tree( hero_tree_e::HERO_HERALD_OF_THE_SUN );
+}
+
 // player_t::create_expression ==============================================
 
 std::unique_ptr<expr_t> paladin_t::create_consecration_expression( util::string_view expr_str )
@@ -5115,7 +5210,7 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
     }
     double evaluate() override
     {
-      if ( paladin.talents.lightsmith.holy_armaments->ok() )
+      if ( paladin.lightsmith() )
         return paladin.next_armament;
       else
         return -1.0;

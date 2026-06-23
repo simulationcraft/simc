@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 12.0.7.68182
-static constexpr std::array<specialization_spell_entry_t, 611> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 12.1.0.68209
+static constexpr std::array<specialization_spell_entry_t, 613> __ptr_specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -96,6 +96,7 @@ static constexpr std::array<specialization_spell_entry_t, 611> __ptr_specializat
   {  2,   66,  462095,      0, "Protection Paladin"                , 0 },
   {  2,   66, 1229376,      0, "Single-Button Assistant"           , 0 },
   {  2,   66, 1256936,      0, "Protection Paladin"                , 0 },
+  {  2,   66, 1305063,      0, "Protection Paladin"                , 0 },
   {  2,   70,   85256,      0, "Templar's Verdict"                 , 0 },
   {  2,   70,   86539,      0, "Plate Specialization"              , 0 },
   {  2,   70,  137027,      0, "Retribution Paladin"               , 0 },
@@ -464,6 +465,7 @@ static constexpr std::array<specialization_spell_entry_t, 611> __ptr_specializat
   { 11,  102,  462069,      0, "Druid"                             , 0 },
   { 11,  102, 1229376,      0, "Single-Button Assistant"           , 0 },
   { 11,  102, 1256996,      0, "Balance Druid"                     , 0 },
+  { 11,  102, 1297521,      0, "Stellar Protection"                , 0 },
   { 11,  103,   16949,      0, "Feral Instinct"                    , 0 },
   { 11,  103,   16974,      0, "Predatory Swiftness"               , 0 },
   { 11,  103,   77493,      0, "Mastery: Razor Claws"              , 0 },

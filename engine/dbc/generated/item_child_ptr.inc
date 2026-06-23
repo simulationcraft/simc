@@ -1,4 +1,4 @@
-// Item child equipment, wow build 12.0.7.68182
+// Item child equipment, wow build 12.1.0.68209
 static constexpr std::array<item_child_equipment_t, 44> __ptr_item_child_equipment_data { {
   {   2, 127417,   1728 }, // parent=0, child=Teebu's Blazing Longsword
   {   3, 127829, 127830 }, // parent=Twinblades of the Deceiver, child=Twinblades of the Deceiver

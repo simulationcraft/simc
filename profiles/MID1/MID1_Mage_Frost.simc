@@ -6,6 +6,7 @@ race=pandaren
 role=spell
 position=ranged_back
 talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsMmZmYmZmZMjZWMzMzMjZAAAgZmZWWmZaDAAAAAAsBw2yYmZGMLzDYMDLAAAMzCwMhBMDGA
+omnium_talents=136822:1/136817:1/136815:1/136814:1
 
 # Default consumables
 potion=potion_of_recklessness_2
@@ -39,8 +40,8 @@ actions+=/run_action_list,name=ss_tarswap,if=variable.target_swapping
 actions+=/run_action_list,name=ss_aoe,if=active_enemies>=4
 actions+=/run_action_list,name=ss_st
 
-# Potion, Items and Racials are used on cd for Frostfire and paired with either Orb or Ray as Spellslinger.
-actions.cds=variable,name=ff_trinket_timing,value=talent.frostfire_bolt
+# Potion, Items and Racials are paired with either Orb or Ray as Spellslinger. Frostfire uses them on cd, unless you have Vaelgor equipped - then use them directly after casting Comet Storm.
+actions.cds=variable,name=ff_trinket_timing,value=talent.frostfire_bolt&(fight_remains<15|!equipped.vaelgors_final_stare|prev_gcd.1.comet_storm)
 actions.cds+=/variable,name=ss_trinket_timing,value=talent.splinterstorm&(time=0|fight_remains<15|prev_gcd.1.frozen_orb|cooldown.ray_of_frost.charges>=1&debuff.freezing.react<6&!buff.fingers_of_frost.react&(icicles<3|time-action.potion.last_used<25))
 # Use Haste trinkets always after pot, Crit trinkets always before pot, and Mastery trinkets after pot if Crit is your highest stat and before pot otherwise.
 actions.cds+=/use_item,name=nevermelting_ice_crystal,if=variable.ff_trinket_timing|variable.ss_trinket_timing
@@ -163,30 +164,31 @@ actions.ss_tarswap+=/flurry,target_if=min:debuff.freezing.react,if=cooldown_reac
 actions.ss_tarswap+=/frostbolt,target_if=min:debuff.freezing.react
 actions.ss_tarswap+=/call_action_list,name=movement
 
-head=voidbreakers_veil,id=250060,bonus_id=1808/13575,ilevel=289,gem_id=240983
-neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240908/240908
-shoulders=mantle_of_dark_devotion,id=251085,ilevel=289
+head=voidbreakers_veil,id=250060,bonus_id=1808/13575,ilevel=289,gem_id=240983,enchant_id=8017
+neck=rotmires_sporeheart,id=268291,bonus_id=4786/4800/13668/13786,gem_id=240908
+shoulders=mantle_of_dark_devotion,id=251085,ilevel=289,enchant_id=8001
 back=rigid_scale_greatcloak,id=258575,ilevel=289
-chest=voidbreakers_robe,id=250063,bonus_id=13575,ilevel=289,enchant_id=7987
+chest=voidbreakers_robe,id=250063,bonus_id=4786/4800/13786,enchant_id=7987
 wrists=martyrs_bindings,id=239648,bonus_id=1808/8960/12214/12384,ilevel=285,gem_id=240908,crafted_stats=32/49
 hands=voidbreakers_gloves,id=250061,bonus_id=12806/13574
-waist=voidbreakers_sage_cord,id=250057,bonus_id=1808,ilevel=289,gem_id=240908
+waist=arcanoweave_cord,id=239664,bonus_id=8960/12066/12214/13622/13668/9627,gem_id=240908
 legs=voidbreakers_britches,id=250059,bonus_id=13575,ilevel=289,enchant_id=7935
-feet=dreamscorched_striders,id=249373,ilevel=289
-finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240908/240908,enchant_id=7967
-finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240908,enchant_id=7967
+feet=luxurious_loamstriders,id=268282,bonus_id=4786/4800/13786,enchant_id=7993
+finger1=sindorei_band_of_hope,id=249919,bonus_id=4786/4800/12806/13668,gem_id=240908,enchant_id=7967
+finger2=sporecallers_blooming_loop,id=268290,bonus_id=4786/4800/13668/13786,gem_id=240908,enchant_id=7967
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=298
 trinket2=vaelgors_final_stare,id=249346,ilevel=298
-main_hand=skybreakers_blade,id=258218,ilevel=298,enchant_id=7981
-off_hand=alnhara_lantern,id=245769,bonus_id=8791/8960/12214/12693,ilevel=295,crafted_stats=36/32
+main_hand=umbral_spire_of_zuraal,id=258514,bonus_id=13577/13654,enchant_id=7981
 
 # Gear Summary
-# gear_ilvl=290.81
-# gear_stamina=17590
-# gear_intellect=1725
-# gear_crit_rating=890
-# gear_haste_rating=712
-# gear_mastery_rating=961
-# gear_armor=533
+# gear_ilvl=292.67
+# gear_stamina=18385
+# gear_intellect=1748
+# gear_crit_rating=873
+# gear_haste_rating=659
+# gear_mastery_rating=1037
+# gear_leech_rating=28
+# gear_avoidance_rating=148
+# gear_armor=540
 # set_bonus=midnight_season_1_2pc=1
 # set_bonus=midnight_season_1_4pc=1

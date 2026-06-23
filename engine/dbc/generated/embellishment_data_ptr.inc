@@ -1,5 +1,5 @@
-// Embellishment data, wow build 12.0.7.68182
-static constexpr std::array<embellishment_data_t, 49> __ptr_embellishment_data { {
+// Embellishment data, wow build 12.1.0.68209
+static constexpr std::array<embellishment_data_t, 54> __ptr_embellishment_data { {
   { "Armor Spikes"                               ,    8188,  147859,  396581 },
   { "Potion Absorption Inhibitor"                ,    8175,  147812,  371700 },
   { "Alchemical Flavor Pocket"                   ,    8174,  147811,  372120 },
@@ -36,7 +36,7 @@ static constexpr std::array<embellishment_data_t, 49> __ptr_embellishment_data {
   { "Sunfire Silk Lining"                        ,   12385,  208662, 1241711 },
   { "Darkmoon Sigil: Blood"                      ,   12705,  213245, 1245053 },
   { "Darkmoon Sigil: Void"                       ,   13640,  213244, 1245052 },
-  { "Darkmoon Sigil: Rot"                        ,   12692,  213044, 1245055 },
+  { "[PH] 12.1 Darkmoon Sigil"                   ,   12692,  213044, 1245055 },
   { "Darkmoon Sigil: Hunt"                       ,   12693,  213045, 1245054 },
   { "Devouring Banding"                          ,   12685,  212929, 1244238 },
   { "Blessed Pango Charm"                        ,   12686,  212930, 1259060 },
@@ -49,5 +49,10 @@ static constexpr std::array<embellishment_data_t, 49> __ptr_embellishment_data {
   { "Stabilizing Gemstone Bandolier"             ,   13454,  215078, 1251905 },
   { "HU5H, Nonchalant Pup"                       ,   13556,  224964, 1259648 },
   { "B0P, Curator of Booms"                      ,   13588,  225886, 1261968 },
+  { "Snakeskin Lining"                           ,   13764,  234348, 1296550 },
+  { "Adorned Fang"                               ,   13767,  234413, 1296870 },
+  { "Polished Ammolite"                          ,   13768,  234416, 1296982 },
+  { "Coiled Snake-Eye"                           ,   13769,  234558, 1297384 },
+  { "Hunter's Ritual Stone"                      ,   13771,  234561, 1297382 },
 } };
 

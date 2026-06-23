@@ -96,11 +96,26 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                ->set_duration( 0_ms )
                                ->set_tick_zero( false )
                                ->set_period( p.hero.blackened_soul_trigger->effectN( 1 ).period() )
-                               ->set_tick_callback( [ this, target ]( buff_t*, int, timespan_t ) {
-                                 warlock.proc_actions.blackened_soul->execute_on_target( target );
+                               ->set_tick_callback( [ &p, target ]( buff_t* blackened_soul_debuff, int, timespan_t ) {
+                                  auto tdata = p.get_target_data( target );
+                                  if ( tdata->dots.wither->is_ticking() )
+                                  {
+                                    p.proc_actions.blackened_soul->execute_on_target( target );
+                                  }
+                                  else
+                                  {
+                                    // blackened_soul is a 0-duration frozen-stack debuff, so expiring it from its
+                                    // tick callback is safe; tick_t will not apply post-callback stack changes.
+                                    assert( blackened_soul_debuff->freeze_stacks );
+                                    assert( blackened_soul_debuff->buff_duration() == 0_ms );
+                                    assert( blackened_soul_debuff->expiration.empty() );
+                                    assert( blackened_soul_debuff->tick_event == nullptr );
+                                    blackened_soul_debuff->expire();
+                                  }
                                } )
                                ->set_tick_behavior( buff_tick_behavior::REFRESH )
-                               ->set_freeze_stacks( true );
+                               ->set_freeze_stacks( true )
+                               ->set_max_stack( 99 );
 
   debuffs.wither = make_buff( *this, "wither", p.hero.wither_dot )
                        ->set_refresh_behavior( buff_refresh_behavior::DURATION )
@@ -225,7 +240,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
   cooldowns.echo_of_sargeras = get_cooldown( "echo_of_sargeras_icd" );
   cooldowns.blackened_soul = get_cooldown( "blackened_soul_icd" );
-  cooldowns.seeds_of_their_demise = get_cooldown( "seeds_of_their_demise_icd" );
 
   resource_regeneration = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ] = true;

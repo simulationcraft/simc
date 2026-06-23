@@ -94,7 +94,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\lib\cpp-semver\cpp-semver.hpp" />
 		<ClInclude Include="..\engine\lib\cpp-semver\parser\parser.hpp" />
 		<ClInclude Include="..\engine\lib\cpp-semver\parser\peg.hpp" />
-		<ClInclude Include="..\engine\lib\gsl-lite\gsl-lite.hpp" />
 		<ClInclude Include="..\engine\lib\rapidxml\rapidxml.hpp" />
 		<ClInclude Include="..\engine\lib\rapidxml\rapidxml_print.hpp" />
 		<ClInclude Include="..\engine\lib\tcb\span.hpp" />
@@ -163,6 +162,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\sim\proc.hpp" />
 		<ClInclude Include="..\engine\sim\proc_rng.hpp" />
 		<ClInclude Include="..\engine\sim\profileset.hpp" />
+		<ClInclude Include="..\engine\sim\profileset_control.hpp" />
 		<ClInclude Include="..\engine\sim\progress_bar.hpp" />
 		<ClInclude Include="..\engine\sim\raid_event.hpp" />
 		<ClInclude Include="..\engine\sim\reforge_plot.hpp" />
@@ -353,6 +353,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\sim\proc.cpp" />
 		<ClCompile Include="..\engine\sim\proc_rng.cpp" />
 		<ClCompile Include="..\engine\sim\profileset.cpp" />
+		<ClCompile Include="..\engine\sim\profileset_control.cpp" />
 		<ClCompile Include="..\engine\sim\progress_bar.cpp" />
 		<ClCompile Include="..\engine\sim\raid_event.cpp" />
 		<ClCompile Include="..\engine\sim\reforge_plot.cpp" />

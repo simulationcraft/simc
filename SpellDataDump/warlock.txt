@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68182 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68256 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -489,7 +489,7 @@ Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Loo
 Effects          :
 #1 (id=2039)     : Apply Aura in Area (27) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Radius: 8 yards | Target: at Area (87) -> at Dynamic Enemy in Area (28)
-#2 (id=2040)     : Unknown(353)
+#2 (id=2040)     : Create Area Trigger (353)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5420 | Target: at Area (87)
 #3 (id=291291)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -15128,7 +15128,7 @@ Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Loo
 Effects          :
 #1 (id=1196681)  : Apply Aura in Area (27) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Radius: 8 yards | Target: at Area (87) -> at Dynamic Enemy in Area (28)
-#2 (id=1196682)  : Unknown(353)
+#2 (id=1196682)  : Create Area Trigger (353)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5420 | Target: At Enemy (53)
 #3 (id=1196683)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)

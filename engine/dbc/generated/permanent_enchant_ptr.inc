@@ -1,5 +1,5 @@
-// Permanent item enchants, wow build 12.0.7.68182
-static constexpr std::array<permanent_enchant_entry_t, 1059> __ptr_permanent_enchant_data { {
+// Permanent item enchants, wow build 12.1.0.68209
+static constexpr std::array<permanent_enchant_entry_t, 1062> __ptr_permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6616,  3,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -337,6 +337,8 @@ static constexpr std::array<permanent_enchant_entry_t, 1059> __ptr_permanent_enc
   { 8037,  2,  2, 0x00000000, 0x000ebfff, "enchant_weapon__flames_of_the_sindorei" },
   { 7980,  1,  2, 0x00000000, 0x000ebfff, "enchant_weapon__janalais_precision" },
   { 7981,  2,  2, 0x00000000, 0x000ebfff, "enchant_weapon__janalais_precision" },
+  { 8688,  1,  2, 0x00000000, 0x000ebfff, "enchant_weapon__rite_of_the_hashey" },
+  { 8689,  2,  2, 0x00000000, 0x000ebfff, "enchant_weapon__rite_of_the_hashey" },
   { 7978,  1,  2, 0x00000000, 0x000ebfff, "enchant_weapon__strength_of_halazzi" },
   { 7979,  2,  2, 0x00000000, 0x000ebfff, "enchant_weapon__strength_of_halazzi" },
   { 8008,  1,  2, 0x00000000, 0x000ebfff, "enchant_weapon__worldsoul_aegis"   },
@@ -773,6 +775,7 @@ static constexpr std::array<permanent_enchant_entry_t, 1059> __ptr_permanent_enc
   { 4216,  0,  4, 0x00000000, 0x00000060, "pyrium_shield_spike"               },
   { 4217,  0,  2, 0x00000000, 0x000ea7ff, "pyrium_weapon_chain"               },
   { 5963,  0,  2, 0x00000000, 0x000ebfff, "quick_navigation"                  },
+  { 8702,  0,  4, 0x00000002, 0x0000001e, "r0cky"                             },
   { 4176,  0,  2, 0x00000000, 0x0004000c, "r19_threatfinder"                  },
   { 7332,  1,  4, 0x00000800, 0x0000001f, "radiant_critical_strike"           },
   { 7333,  2,  4, 0x00000800, 0x0000001f, "radiant_critical_strike"           },

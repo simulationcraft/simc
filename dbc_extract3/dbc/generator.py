@@ -4068,6 +4068,16 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'midnight_season_1',
             'bonuses': [ 1978, 1979, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990 ],
             'tier'   : 'MID1'
+        },
+        {
+            'name'   : 'midnight_season_2',
+            'bonuses': [ 2055, 2056, 2057, 2058, 2059, 2060, 2061, 2062, 2063, 2064, 2065, 2066, 2067 ],
+            'tier'   : 'MID2'
+        },
+        {
+            'name'   : 'bite_of_zuljan',
+            'bonuses': [ 2070 ],
+            'tier'   : 'MID_BOZ'
         }
     ]
 
@@ -5208,7 +5218,7 @@ class ItemScalingConfigGenerator(DataGenerator):
             length = len(data) if data else 1)
 
         for entry in data:
-            fields = entry.field('id', 'item_offset_curve_id', 'item_level', 'player_level')
+            fields = entry.field('id', 'item_offset_curve_id', 'item_level', 'player_level', 'squish_era_id')
             self.output_record(fields)
 
         self.output_footer()

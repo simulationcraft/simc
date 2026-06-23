@@ -588,6 +588,9 @@ public:
     propagate_const<buff_t *> predictive_training;
     propagate_const<buff_t *> stand_ready;
     propagate_const<buff_t *> whirling_steel;
+
+    // Tier
+    propagate_const<buff_t *> mid2_ww_4pc;
   } buff;
 
   struct
@@ -1112,6 +1115,7 @@ public:
 
     struct
     {
+      const spell_data_t *ww_4pc_buff;
     } mid2;
 
     struct

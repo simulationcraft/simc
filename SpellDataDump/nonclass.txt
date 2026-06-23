@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68182 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68256 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -254104,6 +254104,7 @@ Description      : Dealing Nature damage has a chance to inflict Rotbloom, deali
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Rotmire's Sporeheart (id=1285139) [Passive] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -254111,7 +254112,7 @@ Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Magic Heal, Helpful Periodic
-Attributes       : Passive (6), No Aura Icon (60), Instant Target Procs (115), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Can Proc from Suppressed Caster Procs (385), Can Proc From Lifesteal (422)
+Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Can Proc from Suppressed Caster Procs (385), Can Proc From Lifesteal (422)
 Effects          :
 #1 (id=1300954)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
