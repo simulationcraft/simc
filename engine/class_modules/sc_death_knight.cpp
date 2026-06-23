@@ -861,6 +861,7 @@ public:
     propagate_const<buff_t*> blightfall;
     // Tier Sets
     propagate_const<buff_t*> blighted;
+    propagate_const<buff_t*> relentless_riders_precision;  // Blood MID2 4pc
 
     // Rider of the Apocalypse
     propagate_const<buff_t*> a_feast_of_souls;
@@ -1471,6 +1472,7 @@ public:
 
     // Blood Tier Set Spells
     const spell_data_t* rejuvenating_blood; // 2pc rp gain
+    const spell_data_t* relentless_riders_precision_buff;  // MID2 4pc
 
     // Frost
     const spell_data_t* runic_empowerment_gain;
@@ -9366,6 +9368,9 @@ struct death_and_decay_base_t : public death_knight_spell_t
     {
       p()->buffs.crimson_scourge->decrement();
 
+      if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B4 ) )
+        p()->buffs.relentless_riders_precision->trigger();
+
       if ( p()->talent.blood.perseverance_of_the_ebon_blade.ok() )
         p()->buffs.perseverance_of_the_ebon_blade->trigger();
 
@@ -14833,6 +14838,7 @@ void death_knight_t::spell_lookups()
 
   // Blood Tier set spells
   spell.rejuvenating_blood       = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID1, B2 ), 1271198 );
+  spell.relentless_riders_precision_buff = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B4 ), 1300369 );
 
   // Frost
   spell.murderous_efficiency_gain   = conditional_spell_lookup( talent.frost.murderous_efficiency.ok(), 207062 );
@@ -15824,6 +15830,9 @@ void death_knight_t::create_buffs()
   // Tier Sets
   buffs.blighted =
       make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ), this, "blighted", spell.blighted_buff );
+
+  buffs.relentless_riders_precision =
+      make_fallback( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B4 ), this, "relentless_riders_precision", spell.relentless_riders_precision_buff );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -16467,6 +16476,7 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
       action->parse_effects( buffs.sanguinary_burst );
       action->parse_effects( buffs.hemostasis );
       action->parse_effects( buffs.ossuary );
+      action->parse_effects( buffs.relentless_riders_precision );
       break;
     case DEATH_KNIGHT_FROST:
       action->parse_effects( buffs.rime );
