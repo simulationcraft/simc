@@ -3167,7 +3167,7 @@ void gebbos_bottomless_bag( special_effect_t& effect )
       1, as<int>( std::lround( effect.driver()->effectN( 3 ).average( effect ) / totem_decrement ) ) );
   auto totem = create_buff<stat_buff_t>( effect.player, "brittle_torga_totem",
                                           effect.player->find_spell( 1292300 ) )
-    ->add_stat( STAT_VERSATILITY_RATING, totem_decrement )
+    ->add_stat_from_effect_type( A_MOD_RATING, totem_decrement )
     ->set_max_stack( totem_stacks )
     ->set_reverse( true );
 
