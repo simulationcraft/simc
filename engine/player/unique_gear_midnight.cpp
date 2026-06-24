@@ -3121,61 +3121,55 @@ void vile_vial_of_volatile_venom( special_effect_t& effect )
 
 // Gebbo's Bottomless Bag
 // 1292291 driver
-//  e1 seashell: crit, ramps up over duration (also a small self-dot via e5, ignored)
-//  e2 scroll: mastery, decaying to 0 over duration
-//  e3 totem: vers, starting bank
-//  e4 gralstone: haste
-//  e6 salmon: all 4 secondaries
-//  e7 voidfin: all 4 secondaries, debuff
-//  e8 totem: vers, per-cast decrement
+//  e1 seashell (1292299)   : crit, ramps up over duration (also a self-dot via e5, ignored)
+//  e2 scroll (1306870)     : mastery, decaying to 0 over duration
+//  e3 totem (1292300)      : vers, starting bank
+//  e4 gralstone (1308012)  : haste
+//  e6 salmon (1308013)     : all 4 secondaries
+//  e7 voidfin (1308014)    : all 4 secondaries, debuff
+//  e8 totem (1292300)      : vers, per-cast decrement
 void gebbos_bottomless_bag( special_effect_t& effect )
 {
-  constexpr timespan_t default_duration = 12_s;
   constexpr int default_ticks = 12;
 
-  auto salmon = create_buff<stat_buff_t>( effect.player, "fifty_lb_midnight_salmon" );
+  auto salmon = create_buff<stat_buff_t>( effect.player, "50lb_midnight_salmon",
+                                          effect.player->find_spell( 1308013 ) );
   for ( auto s : secondary_ratings )
     salmon->add_stat( s, effect.driver()->effectN( 6 ).average( effect ) );
-  salmon->set_duration( default_duration )
-        ->set_name_reporting( "Gebbo - 50-lb Midnight Salmon" );
 
-  auto gralstone = create_buff<stat_buff_t>( effect.player, "slick_and_slimy_gralstone" )
-    ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 4 ).average( effect ) )
-    ->set_duration( default_duration )
-    ->set_name_reporting( "Gebbo - Slick and Slimy Gralstone" );
+  auto gralstone = create_buff<stat_buff_t>( effect.player, "slick_and_slimy_gralstone",
+                                              effect.player->find_spell( 1308012 ) )
+    ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 4 ).average( effect ) );
 
-  auto voidfin = create_buff<stat_buff_t>( effect.player, "rotting_voidfin" );
+  auto voidfin = create_buff<stat_buff_t>( effect.player, "rotting_voidfin",
+                                            effect.player->find_spell( 1308014 ) );
   for ( auto s : secondary_ratings )
     voidfin->add_stat( s, -effect.driver()->effectN( 7 ).average( effect ) );
-  voidfin->set_duration( default_duration )
-         ->set_name_reporting( "Gebbo - Rotting Voidfin" );
 
   // reverse + period ticks the stacks down 1/sec, draining to 0 by the time it expires
-  auto scroll = create_buff<stat_buff_t>( effect.player, "tattered_tortollan_scroll" )
+  auto scroll = create_buff<stat_buff_t>( effect.player, "tattered_tortollan_scroll",
+                                           effect.player->find_spell( 1306870 ) )
     ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 2 ).average( effect ) / default_ticks )
     ->set_max_stack( default_ticks )
     ->set_reverse( true )
-    ->set_period( 1_s )
-    ->set_duration( default_duration )
-    ->set_name_reporting( "Gebbo - Tattered Tortollan Scroll" );
+    ->set_period( 1_s );
 
   // non-reverse + period ramps the stacks up 1/sec instead
-  auto seashell = create_buff<stat_buff_t>( effect.player, "seriously_shard_seashell" )
+  auto seashell = create_buff<stat_buff_t>( effect.player, "seriously_sharp_seashell",
+                                             effect.player->find_spell( 1292299 ) )
     ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect ) )
     ->set_max_stack( default_ticks )
-    ->set_period( 1_s )
-    ->set_duration( default_duration )
-    ->set_name_reporting( "Gebbo - Seriously Sharp Seashell" );
+    ->set_period( 1_s );
 
   // drains per cast, until the bank is empty
   auto totem_decrement = effect.driver()->effectN( 8 ).average( effect );
   auto totem_stacks = std::max(
       1, as<int>( std::lround( effect.driver()->effectN( 3 ).average( effect ) / totem_decrement ) ) );
-  auto totem = create_buff<stat_buff_t>( effect.player, "brittle_torga_totem" )
+  auto totem = create_buff<stat_buff_t>( effect.player, "brittle_torga_totem",
+                                          effect.player->find_spell( 1292300 ) )
     ->add_stat( STAT_VERSATILITY_RATING, totem_decrement )
     ->set_max_stack( totem_stacks )
-    ->set_reverse( true )
-    ->set_name_reporting( "Gebbo - Brittle Torga Totem" );
+    ->set_reverse( true );
 
   struct totem_drain_cb_t : public dbc_proc_callback_t
   {
