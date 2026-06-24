@@ -256183,6 +256183,7 @@ Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 3
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Triggered By     : Slick and Slimy Gralstone (1308012)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1312240)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
@@ -256202,6 +256203,41 @@ Effects          :
 #8 (id=1336281)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 23.29641 (coefficient=0.177726) | Target: Self (1)
 Description      : You have a chance to pull an artifact of questionable value out of the bag when casting spells and abilities, enhancing your secondary stats in various ways. There are probably no fish left in the bag, but it's hard to be sure.
+
+Name             : Seriously Sharp Seashell (id=1292299) 
+School           : Physical
+Spell Type       : Melee
+Duration         : 12 seconds
+Labels           : 292
+                 : 3959: Item Effects
+Mechanic         : Bleed
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1312250)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
+#2 (id=1312254)  : Apply Aura (6) | Periodic Trigger Spell (23): Seriously Sharp Seashell every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1308341 | Target: Self (1)
+#3 (id=1336277)  : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Bleed | Target: Self (1)
+Description      : Bleed for $1292291s5 damage over $d. The pain sharpens your focus, increasing your Critical Strike by $1292291s1 every sec.
+
+Tooltip          : Bleeding for $w3 damage every sec. Critical Strike increased by $w1.
+
+Name             : Brittle Torga Totem (id=1292300) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 3959: Item Effects
+Internal Cooldown: 0.75 seconds
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Effects          :
+#1 (id=1312251)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
+Description      : The totem increases your Versatility by $1292291s2. Your spells and abilities chip away at the totem, decreasing this bonus by $1292291s8 until it crumbles away.
+Tooltip          : Versatility increased by $w1.
 
 Name             : Holy Bounding Hand Grenade (id=1292874) [Hidden] 
 School           : Physical
@@ -260402,6 +260438,21 @@ Effects          :
 Description      : $@spelldesc1295643
 Tooltip          : The Idol of the Howling Nexus is recovering its power and cannot benefit from $@spellname1306822.
 
+Name             : Tattered Tortollan Scroll (id=1306870) 
+School           : Physical
+Spell Type       : None
+Duration         : 12 seconds
+Labels           : 292
+                 : 3959: Item Effects
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1334483)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+#2 (id=1336276)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : The scroll increases your Mastery by $1292291s3, diminishing over $d as it falls to pieces as your indelicate hands destroy history.
+Tooltip          : Mastery increased by $w1.
+
 Name             : Venomous Champion's Illustrious Banner (id=1306978) 
 School           : Physical
 Spell Type       : None
@@ -260743,6 +260794,70 @@ Effects          :
 #2 (id=1336207)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 27.6315 (coefficient=0.210798) | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Haste by $s1 but reduce your other secondary stats by $s2 for $1307927d.
+
+Name             : Slick and Slimy Gralstone (id=1308012) 
+School           : Physical
+Spell Type       : None
+Duration         : 12 seconds
+Labels           : 292
+                 : 3959: Item Effects
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1336273)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+#2 (id=1336274)  : Apply Aura (6) | Increase Movement Speed% (171)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+#3 (id=1336275)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1292291 | Target: Self (1)
+Description      : Increases your Haste and Speed by $1292291s4 for $d.
+Tooltip          : Haste increased by $w1.
+
+Name             : 50-lb Midnight Salmon (id=1308013) 
+School           : Physical
+Spell Type       : None
+Duration         : 12 seconds
+Labels           : 292
+                 : 3959: Item Effects
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1336282)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
+#2 (id=1336283)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
+#3 (id=1336284)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+#4 (id=1336285)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+Description      : What a treat! And you thought you had gotten all the fish out. Your Critical Strike, Versatility, Mastery, and Haste are increased by $1292291s6 for $d.
+Tooltip          : Critical Strike, Versatility, Mastery, and Haste increased by $w1.
+
+Name             : Rotting Voidfin (id=1308014) 
+School           : Physical
+Spell Type       : None
+Duration         : 12 seconds
+Labels           : 292
+                 : 3959: Item Effects
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1336286)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
+#2 (id=1336287)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
+#3 (id=1336288)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+#4 (id=1336289)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+Description      : So THAT'S where the smell was coming from. Your Critical Strike, Versatility, Mastery, and Haste are decreased by $1292291s7 for $d.
+Tooltip          : Critical Strike, Versatility, Mastery, and Haste decreased by $w1.
+
+Name             : Seriously Sharp Seashell (id=1308341) [Hidden] 
+School           : Physical
+Spell Type       : None
+Triggered By     : Seriously Sharp Seashell (1292299)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8)
+Effects          :
+#1 (id=1336792)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Shadow Shard Sliver (id=1308559) 
 School           : Physical

@@ -1538,6 +1538,7 @@ class SpellDataGenerator(DataGenerator):
          1263768, # Lightspire Core
          1263614, # Wraps of Cosmic Madness
          1255685, 1255687, 1255688, # crucible of erratic energies
+         1292299, 1292300, 1306870, 1308012, 1308013, 1308014, # Gebbo's Bottomless Bag
         ),
 
         # Warrior:

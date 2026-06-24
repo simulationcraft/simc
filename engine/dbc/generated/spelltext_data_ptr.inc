@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.0.68301
-static constexpr std::array<spelltext_data_t, 29199> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29205> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28752,6 +28752,8 @@ static constexpr std::array<spelltext_data_t, 29199> __ptr_spelltext_data { {
   { 1292247, "$?pc150463[Chance to begin an Ouroboric Cycle, increasing all statistics in sequence. Slaying an enemy extends the Cycle. While you are Poisoned, Cycle durations are extended.][|cnITEM_POOR_COLOR:Chance to begin an Ouroboric Cycle, increasing all statistics in sequence. Slaying an enemy extends the Cycle. While you are Poisoned, Cycle durations are extended.]", 0, 0 },
   { 1292249, "$@spelldesc1292247", "$@spelldesc1292247", 0 },
   { 1292291, "You have a chance to pull an artifact of questionable value out of the bag when casting spells and abilities, enhancing your secondary stats in various ways. There are probably no fish left in the bag, but it's hard to be sure.", 0, 0 },
+  { 1292299, "Bleed for $1292291s5 damage over $d. The pain sharpens your focus, increasing your Critical Strike by $1292291s1 every sec.\r\n", "Bleeding for $w3 damage every sec. Critical Strike increased by $w1.", 0 },
+  { 1292300, "The totem increases your Versatility by $1292291s2. Your spells and abilities chip away at the totem, decreasing this bonus by $1292291s8 until it crumbles away.", "Versatility increased by $w1.", 0 },
   { 1292321, "Exhale destructive flame, critically striking for $<dmg> Fire damage to your target and nearby enemies, reduced beyond $<splashCap> targets.\r\n\r\n|cFFFFFFFFCauses $s2 Essence $LBurst:Bursts;.|r", 0, "Red" },
   { 1292322, "$@spelldesc1292321", 0, "Red" },
   { 1292323, "$@spelldesc1271788", "Dragonrage changed to Unbound Flame. Unbound Flame may be cast $m2 more $Ltime:times;.", 0 },
@@ -29157,6 +29159,7 @@ static constexpr std::array<spelltext_data_t, 29199> __ptr_spelltext_data { {
   { 1306785, "$@spelldesc1295833", 0, 0 },
   { 1306822, "$@spelldesc466671", "Gain $@spellname1295649 upon expiration while in combat. Blocking, dodging, or parrying resets this duration to $d.", 0 },
   { 1306823, "$@spelldesc1295643", "The Idol of the Howling Nexus is recovering its power and cannot benefit from $@spellname1306822.", 0 },
+  { 1306870, "The scroll increases your Mastery by $1292291s3, diminishing over $d as it falls to pieces as your indelicate hands destroy history.", "Mastery increased by $w1.", 0 },
   { 1306923, "$@spelldesc1296661", 0, 0 },
   { 1306978, "Plant a banner representing your victories within the Venomous arenas.", 0, 0 },
   { 1307222, "$@spelldesc1297908", 0, 0 },
@@ -29180,6 +29183,9 @@ static constexpr std::array<spelltext_data_t, 29199> __ptr_spelltext_data { {
   { 1307923, "Your spells and abilities have a chance to increase your Mastery by $s1 but reduce your other secondary stats by $s2 for $1307922d.", 0, 0 },
   { 1307927, "$@spelldesc1307928", "Haste increased by $w1. Mastery, Critical Strike, and Versatility decreased by $w2.", 0 },
   { 1307928, "Your spells and abilities have a chance to increase your Haste by $s1 but reduce your other secondary stats by $s2 for $1307927d.", 0, 0 },
+  { 1308012, "Increases your Haste and Speed by $1292291s4 for $d.", "Haste increased by $w1.", 0 },
+  { 1308013, "What a treat! And you thought you had gotten all the fish out. Your Critical Strike, Versatility, Mastery, and Haste are increased by $1292291s6 for $d.", "Critical Strike, Versatility, Mastery, and Haste increased by $w1.", 0 },
+  { 1308014, "So THAT'S where the smell was coming from. Your Critical Strike, Versatility, Mastery, and Haste are decreased by $1292291s7 for $d.", "Critical Strike, Versatility, Mastery, and Haste decreased by $w1.", 0 },
   { 1308093, "$@spelldesc1269619", 0, 0 },
   { 1308125, "$@spelldesc1269619", 0, 0 },
   { 1308176, "Your next cast of $?400254][Raze][Maul] or Ravage will awaken a guardian spirit.", "Your next cast of $?400254][Raze][Maul] or Ravage will awaken a guardian spirit.", 0 },
