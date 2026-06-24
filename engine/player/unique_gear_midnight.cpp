@@ -3165,7 +3165,7 @@ void gebbos_bottomless_bag( special_effect_t& effect )
     ->set_max_stack( default_ticks )
     ->set_period( 1_s )
     ->set_duration( default_duration )
-    ->set_name_reporting( "Gebbo - Seriously Shard Seashell" );
+    ->set_name_reporting( "Gebbo - Seriously Sharp Seashell" );
 
   // drains per cast, until the bank is empty
   auto totem_decrement = effect.driver()->effectN( 8 ).average( effect );
