@@ -3139,7 +3139,7 @@ void gebbos_bottomless_bag( special_effect_t& effect )
 
   auto gralstone = create_buff<stat_buff_t>( effect.player, "slick_and_slimy_gralstone",
                                               effect.player->find_spell( 1308012 ) )
-    ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 4 ).average( effect ) );
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 4 ).average( effect ) );
 
   auto voidfin = create_buff<stat_buff_t>( effect.player, "rotting_voidfin",
                                             effect.player->find_spell( 1308014 ) );
@@ -3149,7 +3149,7 @@ void gebbos_bottomless_bag( special_effect_t& effect )
   // reverse + period ticks the stacks down 1/sec, draining to 0 by the time it expires
   auto scroll = create_buff<stat_buff_t>( effect.player, "tattered_tortollan_scroll",
                                            effect.player->find_spell( 1306870 ) )
-    ->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 2 ).average( effect ) / default_ticks )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) / default_ticks )
     ->set_max_stack( default_ticks )
     ->set_reverse( true )
     ->set_period( 1_s );
@@ -3157,7 +3157,7 @@ void gebbos_bottomless_bag( special_effect_t& effect )
   // non-reverse + period ramps the stacks up 1/sec instead
   auto seashell = create_buff<stat_buff_t>( effect.player, "seriously_sharp_seashell",
                                              effect.player->find_spell( 1292299 ) )
-    ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect ) )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
     ->set_max_stack( default_ticks )
     ->set_period( 1_s );
 
@@ -3187,8 +3187,7 @@ void gebbos_bottomless_bag( special_effect_t& effect )
 
   auto totem_drain = new special_effect_t( effect.player );
   totem_drain->name_str = "brittle_torga_totem_drain";
-  totem_drain->proc_flags_ = effect.driver()->proc_flags();
-  totem_drain->proc_chance_ = 1.0;
+  totem_drain->spell_id = 1292300;
   totem_drain->set_can_proc_from_procs( false );
   effect.player->special_effects.push_back( totem_drain );
 
