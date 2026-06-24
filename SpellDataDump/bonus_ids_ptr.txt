@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68209 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68301 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
@@ -8197,15 +8197,15 @@ bonus_id={ 13687 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=12
 bonus_id={ 13688 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=1288618, index=0, type=use) }
 bonus_id={ 13689 }, base_ilevel={ 49 }, req_ilevel={ 40 }, quality={ rare }
 bonus_id={ 13695 }, socket={ 1 }
-bonus_id={ 13699 }, base_ilevel={ 233 }, req_ilevel={ 90 }
-bonus_id={ 13700 }, base_ilevel={ 237 }, req_ilevel={ 90 }
-bonus_id={ 13701 }, base_ilevel={ 237 }, req_ilevel={ 90 }
-bonus_id={ 13702 }, base_ilevel={ 250 }, req_ilevel={ 90 }
-bonus_id={ 13703 }, base_ilevel={ 253 }, req_ilevel={ 90 }
-bonus_id={ 13704 }, base_ilevel={ 263 }, req_ilevel={ 90 }
-bonus_id={ 13705 }, base_ilevel={ 266 }, req_ilevel={ 90 }
-bonus_id={ 13706 }, base_ilevel={ 276 }, req_ilevel={ 90 }
-bonus_id={ 13707 }, base_ilevel={ 279 }, req_ilevel={ 90 }
+bonus_id={ 13699 }, base_ilevel={ 272 }, req_ilevel={ 90 }
+bonus_id={ 13700 }, base_ilevel={ 276 }, req_ilevel={ 90 }
+bonus_id={ 13701 }, base_ilevel={ 279 }, req_ilevel={ 90 }
+bonus_id={ 13702 }, base_ilevel={ 289 }, req_ilevel={ 90 }
+bonus_id={ 13703 }, base_ilevel={ 292 }, req_ilevel={ 90 }
+bonus_id={ 13704 }, base_ilevel={ 302 }, req_ilevel={ 90 }
+bonus_id={ 13705 }, base_ilevel={ 305 }, req_ilevel={ 90 }
+bonus_id={ 13706 }, base_ilevel={ 315 }, req_ilevel={ 90 }
+bonus_id={ 13707 }, base_ilevel={ 318 }, req_ilevel={ 90 }
 bonus_id={ 13708 }, desc={ Venomcursed }, effects={ Venomcursed Critical Strike (id=1307906, index=0, type=equip) }
 bonus_id={ 13729 }, base_ilevel={ 133 }
 bonus_id={ 13730 }, base_ilevel={ 139 }, quality={ rare }
@@ -8293,3 +8293,5 @@ bonus_id={ 13845 }, base_ilevel={ 256 }, quality={ rare }
 bonus_id={ 13846 }, desc={ Venomcursed }, effects={ Venomcursed Mastery (id=1307923, index=0, type=equip) }
 bonus_id={ 13847 }, desc={ Venomcursed }, effects={ Venomcursed Haste (id=1307928, index=0, type=equip) }
 bonus_id={ 13848 }, base_ilevel={ 337 }, req_ilevel={ 90 }, quality={ epic }
+bonus_id={ 13849 }, base_ilevel={ 259 }, req_ilevel={ 90 }
+bonus_id={ 13850 }, base_ilevel={ 272 }, req_ilevel={ 90 }, quality={ epic }

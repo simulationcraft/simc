@@ -1551,6 +1551,8 @@ sim_t::sim_t()
     count_overheal_as_heal( false ),
     scaling_normalized( 1.0 ),
     merge_enemy_priority_dmg( false ),
+    profileset_controller(),
+    profileset_controller_data(),
     // Multi-Threading
     threads( 0 ),
     thread_index( 0 ),
@@ -2885,6 +2887,22 @@ void sim_t::init()
   }
 
   init_mutex.lock();
+
+  if ( !parent && !profileset_controller_options.empty() && !profileset_map.empty() )
+  {
+    for ( const auto& [ key, values ] : profileset_controller_options )
+    {
+      if ( profileset_controller_t::controller_exists( key ) )
+        for ( const auto& value : values )
+          profileset_controller_data.emplace_back( key, value );
+      else
+        throw sc_invalid_sim_argument( fmt::format( "Unknown profileset controller option with name '{}'.", key ) );
+    }
+  }
+  if ( parent && profileset_enabled )
+    for ( auto& profileset_controller_datum : parent->profileset_controller_data )
+      profileset_controller_datum.construct_controller( this );
+
   initialized = true;
   init_mutex.unlock();
 
@@ -3109,6 +3127,8 @@ bool sim_t::iterate()
 
   progress_bar.init();
 
+  profileset_controller_t::evaluate( this, POST_INIT );
+
   try
   {
     activate_actors();
@@ -3125,6 +3145,8 @@ bool sim_t::iterate()
       {
         progress_bar.output( false );
       }
+
+      profileset_controller_t::evaluate( this, POST_ITER );
 
       do_pause();
       auto old_active = current_index;
@@ -3960,6 +3982,8 @@ void sim_t::create_options()
   add_option( opt_bool( "merge_enemy_priority_dmg", merge_enemy_priority_dmg ) );
   add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );
   add_option( opt_uint( "spell_query_wrap", spell_query_wrap, 50, UINT_MAX ) );
+  // Sim Controller Options
+  add_option( opt_map_list( "profileset_controller.", profileset_controller_options ) );
   // Charts
   add_option( opt_bool( "chart_show_relative_difference", chart_show_relative_difference ) );
   add_option( opt_bool( "chart_show_relative_difference_percent", chart_show_relative_difference_percent ) );

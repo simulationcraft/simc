@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68209 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68301 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -205046,7 +205046,7 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152709)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 110.763 (coefficient=0.845) | Rating: Haste | Target: Self (1)
 Description      : Increases Haste by $s1.
 Tooltip          : Haste increased by $w1.
 
@@ -205062,7 +205062,7 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152710)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Vers | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 110.763 (coefficient=0.845) | Rating: Vers | Target: Self (1)
 Description      : Increases Versatility by $s1.
 Tooltip          : Versatility increased by $w1.
 
@@ -205078,7 +205078,7 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152711)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 110.763 (coefficient=0.845) | Rating: Crit | Target: Self (1)
 Description      : Increases Critical Strike by $s1.
 Tooltip          : Critical strike increased by $w1.
 
@@ -205094,7 +205094,7 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152713)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 110.763 (coefficient=0.845) | Rating: Mastery | Target: Self (1)
 Description      : Increases Mastery by $s1.
 Tooltip          : Mastery increased by $w1.
 
@@ -205109,7 +205109,7 @@ Proc Flags       : Death
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1152714)  : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 85.20232 (coefficient=0.65) | Stat: Sta | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 110.763 (coefficient=0.845) | Stat: Sta | Target: Self (1)
 Description      : Increases Stamina by $s1.
 Tooltip          : Stamina increased by $w1.
 
@@ -241066,7 +241066,7 @@ Labels           : 969
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1241362)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Target: Summoner in Area (32) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Target: at Self (18) -> at Enemy in Area (16)
 #2 (id=1241380)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1236737
 #3 (id=1241381)  : Dummy (3)
@@ -253357,7 +253357,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292093)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Suffering more than $s1% of your maximum health in a single hit grants you a shield that absorbs ${$<basePoints>*$1287955s2} damage for $1287955d, but also inflicts $1287955s4 damage to you every $1287955t3 sec.
+Description      : Suffering more than $s1% of your maximum health in a single hit grants you a shield that absorbs ${$<basePoints>*$1287955s2} damage for $1287955d, but also inflicts ${$<basePoints>*$1287955s4} damage to you over $1287955d.
 
 This can only occur every $proccooldown sec.
 Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
@@ -253905,7 +253905,7 @@ Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Magic Heal, Helpful Periodic
-Attributes       : Passive (6), No Aura Icon (60), Instant Target Procs (115), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Can Proc from Suppressed Caster Procs (385), Can Proc From Lifesteal (422)
+Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Can Proc from Suppressed Caster Procs (385), Can Proc From Lifesteal (422)
 Effects          :
 #1 (id=1300954)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -255996,7 +255996,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 57.97035 (coefficient=0.44225) | PvP Coefficient: 0.5 | Trigger Spell: 1295582 | Target: Self (1)
 #2 (id=1317727)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
-Description      : Your attacks have a high chance to grant you Focus of Ula'tek, increasing your $s1 Haste for $1295582d. Multiple applications may overlap.
+Description      : Your attacks have a high chance to grant you Focus of Ula'tek, increasing your Haste by $s1 for $1295582d. Multiple applications may overlap.
 
 When two or more applications are active, your focus sharpens further to increase the effect by $s2%.
 
@@ -256186,21 +256186,21 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1312240)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 5.417819 (coefficient=0.041332) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 27.08896 (coefficient=0.206659) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1334480)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 325.067 (coefficient=2.479904) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 323.9834 (coefficient=2.471637) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1334481)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 316.9404 (coefficient=2.417907) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 323.9834 (coefficient=2.471637) | PvP Coefficient: 0.5 | Target: Self (1)
 #4 (id=1334482)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 161.9918 (coefficient=1.235819) | PvP Coefficient: 0.5 | Target: Self (1)
-#5 (id=1336278)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3000 | Scaled Value: 3000 | Target: Self (1)
+#5 (id=1336278)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 320.2282 (coefficient=2.50563) | Target: Self (1)
 #6 (id=1336279)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 101.3125 (coefficient=0.772903) | Target: Self (1)
 #7 (id=1336280)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 20.04575 (coefficient=0.152927) | Target: Self (1)
 #8 (id=1336281)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 27.08896 (coefficient=0.206659) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 23.29641 (coefficient=0.177726) | Target: Self (1)
 Description      : You have a chance to pull an artifact of questionable value out of the bag when casting spells and abilities, enhancing your secondary stats in various ways. There are probably no fish left in the bag, but it's hard to be sure.
 
 Name             : Holy Bounding Hand Grenade (id=1292874) [Hidden] 
@@ -257000,6 +257000,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Triggered By     : Coiled Fangstone (1293311)
+Attributes       : Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1317622)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -257051,18 +257052,18 @@ Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 4 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, Generic Hostile Spell, Unknown 38
-Triggered By     : Tempest (1307324), Sever (1307332), Rake (1307333)
+Triggered By     : Ravage (1307332), Mutilate (1307333)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1317797)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4826.481 (coefficient=37.76486) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6894.835 (coefficient=53.94873) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1335266)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 4022.067 (coefficient=31.47072) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1335267)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 2011.033 (coefficient=15.73536) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1828.183 (coefficient=14.30464) | PvP Coefficient: 0.5 | Target: Self (1)
 #4 (id=1336295)  : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5
-Description      : You have a high chance to follow up your attacks with Sever, Rake, or Tempest based on the number of nearby enemies.
+                   Base Value: 10 | Scaled Value: 10
+Description      : You have a high chance to follow up your attacks with Ravage, Mutilate, or Tempest based on the number of nearby enemies.
 
 Your killer instincts are honed, triggering this effect on your next attack upon defeating an enemy. May only occur once per $s4 sec.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
@@ -257072,10 +257073,13 @@ School           : Physical
 Spell Type       : None
 Labels           : 292
                  : 3959: Item Effects
+Proc Chance      : 101%
+Real PPM         : 2
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1317836)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 190.3261 (coefficient=1.451979) | PvP Coefficient: 0.5 | Target: Self (1)
+#1 (id=1317836)  : Apply Aura (6) | Proc Trigger Spell (42): Bolstering Gale | Scaling Class: Primary Attribute (-1)
+                   Base Value: 0 | Scaled Value: 190.3261 (coefficient=1.451979) | PvP Coefficient: 0.5 | Trigger Spell: 1295649 | Target: Self (1)
 #2 (id=1317851)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 65.01343 (coefficient=0.495981) | Target: Self (1)
 Description      : Dodging, parrying, or blocking has a high chance to call bolstering winds, increasing your $?(a137047|a137005|a137026)[Strength]?(a212611|a137009|a137014|a137022|a137034|a137038)[Agility][Strength or Agility] by $s1 and Speed by $s2 for $1295649d.
@@ -257088,6 +257092,7 @@ Spell Type       : None
 Duration         : 12 seconds
 Labels           : 292
                  : 3959: Item Effects
+Triggered By     : Idol of the Howling Nexus (1295643)
 Attributes       : Aura Points On Client (268), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1317842)  : Apply Aura (6) | Attribute (29)
@@ -257104,6 +257109,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Triggered By     : Writhing Venom (1295690)
+Attributes       : Always AOE Line of Sight (186), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1317874)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -258779,7 +258785,7 @@ Spell Type       : None
 Requires armor   : Waist, Feet, Wrists, Cloak
 Attributes       : Do Not Log (8), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
-#1 (id=1327652)  : Unknown(357)
+#1 (id=1327652)  : Apply Item Bonus (357)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 13829
 Description      : $@spelldesc1302568
 
@@ -258789,7 +258795,7 @@ Spell Type       : None
 Requires armor   : Waist, Feet, Wrists, Cloak
 Attributes       : Do Not Log (8), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
-#1 (id=1327654)  : Unknown(357)
+#1 (id=1327654)  : Apply Item Bonus (357)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 13830
 Description      : $@spelldesc1302577
 
@@ -258799,7 +258805,7 @@ Spell Type       : None
 Requires armor   : Waist, Feet, Wrists, Cloak
 Attributes       : Do Not Log (8), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
-#1 (id=1327658)  : Unknown(357)
+#1 (id=1327658)  : Apply Item Bonus (357)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 13831
 Description      : $@spelldesc1302580
 
@@ -258809,7 +258815,7 @@ Spell Type       : None
 Requires armor   : Waist, Feet, Wrists, Cloak
 Attributes       : Do Not Log (8), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
-#1 (id=1327660)  : Unknown(357)
+#1 (id=1327660)  : Apply Item Bonus (357)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 13832
 Description      : $@spelldesc1302602
 
@@ -258819,7 +258825,7 @@ Spell Type       : None
 Requires armor   : Waist, Feet, Wrists, Cloak
 Attributes       : Do Not Log (8), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
-#1 (id=1327661)  : Unknown(357)
+#1 (id=1327661)  : Apply Item Bonus (357)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 13833
 Description      : $@spelldesc1302600
 
@@ -258829,7 +258835,7 @@ Spell Type       : None
 Requires armor   : Waist, Feet, Wrists, Cloak
 Attributes       : Do Not Log (8), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
-#1 (id=1327662)  : Unknown(357)
+#1 (id=1327662)  : Apply Item Bonus (357)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 13834
 Description      : $@spelldesc1291581
 
@@ -258839,7 +258845,7 @@ Spell Type       : None
 Requires armor   : Waist, Feet, Wrists, Cloak
 Attributes       : Do Not Log (8), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
-#1 (id=1327664)  : Unknown(357)
+#1 (id=1327664)  : Apply Item Bonus (357)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 13736
 Description      : $@spelldesc1291580
 
@@ -258849,7 +258855,7 @@ Spell Type       : None
 Requires armor   : Waist, Feet, Wrists, Cloak
 Attributes       : Do Not Log (8), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
-#1 (id=1327666)  : Unknown(357)
+#1 (id=1327666)  : Apply Item Bonus (357)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 13746
 Description      : $@spelldesc1292247
 
@@ -258859,7 +258865,7 @@ Spell Type       : None
 Requires armor   : Waist, Feet, Wrists, Cloak
 Attributes       : Do Not Log (8), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
-#1 (id=1327667)  : Unknown(357)
+#1 (id=1327667)  : Apply Item Bonus (357)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 13744
 Description      : $@spelldesc1292159
 
@@ -258869,7 +258875,7 @@ Spell Type       : None
 Requires armor   : Waist, Feet, Wrists, Cloak
 Attributes       : Do Not Log (8), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
-#1 (id=1327668)  : Unknown(357)
+#1 (id=1327668)  : Apply Item Bonus (357)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 13739
 Description      : $@spelldesc1291725
 
@@ -258879,7 +258885,7 @@ Spell Type       : None
 Requires armor   : Waist, Feet, Wrists, Cloak
 Attributes       : Do Not Log (8), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
-#1 (id=1327669)  : Unknown(357)
+#1 (id=1327669)  : Apply Item Bonus (357)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 13738
 Description      : $@spelldesc1291724
 
@@ -258889,7 +258895,7 @@ Spell Type       : None
 Requires armor   : Waist, Feet, Wrists, Cloak
 Attributes       : Do Not Log (8), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
-#1 (id=1327670)  : Unknown(357)
+#1 (id=1327670)  : Apply Item Bonus (357)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 13737
 Description      : $@spelldesc1291723
 
@@ -259278,8 +259284,8 @@ Triggered By     : Vashnik's Sanguine Rancor (1295553)
 Attributes       : Not an Action (92)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40), Enter Instance (43)
 Effects          :
-#1 (id=1329600)  : Apply Aura (6) | Trigger Spell on Aura Stack Count (542): Crimson Bile
-                   Base Value: 0 | Scaled Value: 0 | Min Stack Count: 15 | Max Stack Count: 15 | Trigger Spell: 1303483 | Target: Self (1)
+#1 (id=1329600)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 15 | Misc Value 2: 15 | Target: Self (1)
 Description      : $@spelldesc1295553
 Tooltip          : Unleashing the $@spellname1303479 upon reaching $u stacks.
 
@@ -259290,8 +259296,7 @@ Range            : 100 yards
 Velocity         : 30 yards/sec
 Labels           : 292
                  : 3959: Item Effects
-Triggered By     : Sanguine Rancor (1303479)
-Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1329604)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -259304,12 +259309,12 @@ Range            : 100 yards
 Duration         : 3 seconds
 Labels           : 292
                  : 3959: Item Effects
-Attributes       : DoT Stacking Rule (103), Periodic Can Crit (265)
+Attributes       : DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268)
 Effects          :
 #1 (id=1329605)  : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1295553
-Tooltip          : Suffering $w1 Shadow damage every $t1.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
 Name             : Gorgoneion Gaze (id=1303487) 
 School           : Nature
@@ -260097,7 +260102,7 @@ Labels           : 292
 Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow While Invisible (78), Not an Action (92), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1332926)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Ward of the Uncoiled
-                   Base Value: -5 | Scaled Value: -5 | Trigger Spell: 1305773 | Target: Self (1)
+                   Base Value: -7 | Scaled Value: -7 | Trigger Spell: 1305773 | Target: Self (1)
 Description      : $@spelldesc1305830
 
 
@@ -260124,8 +260129,8 @@ Labels           : 292
 Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow While Invisible (78), Not an Action (92), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1333025)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Ward of the Uncoiled
-                   Base Value: -5 | Scaled Value: -5 | Trigger Spell: 1305773 | Target: Self (1)
-Description      : Damage taken from Deadly Venom on the Coiled Isle and within the Venomous Abyss reduced by 5%.
+                   Base Value: -7 | Scaled Value: -7 | Trigger Spell: 1305773 | Target: Self (1)
+Description      : Damage taken from Deadly Venom on the Coiled Isle and within the Venomous Abyss reduced by ${$s1*-1}%.
 
 Name             : Ward of the Uncoiled (id=1305837) [Passive] 
 School           : Nature
@@ -260135,7 +260140,7 @@ Labels           : 292
 Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow While Invisible (78), Not an Action (92), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1333033)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Ward of the Uncoiled
-                   Base Value: -5 | Scaled Value: -5 | Trigger Spell: 1305773 | Target: Self (1)
+                   Base Value: -7 | Scaled Value: -7 | Trigger Spell: 1305773 | Target: Self (1)
 Description      : $@spelldesc1305830
 
 Name             : Ward of the Uncoiled (id=1305838) [Passive] 
@@ -260146,7 +260151,7 @@ Labels           : 292
 Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow While Invisible (78), Not an Action (92), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1333034)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Ward of the Uncoiled
-                   Base Value: -5 | Scaled Value: -5 | Trigger Spell: 1305773 | Target: Self (1)
+                   Base Value: -7 | Scaled Value: -7 | Trigger Spell: 1305773 | Target: Self (1)
 Description      : $@spelldesc1305830
 
 
@@ -260193,7 +260198,7 @@ Labels           : 292
                  : 3959: Item Effects
 Stacks           : 30 maximum
 Proc Chance      : 101%
-Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1333060)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
@@ -260415,7 +260420,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Labels           : 292
                  : 3959: Item Effects
-Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1335018)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -260427,40 +260432,41 @@ Name             : Tempest (id=1307324)
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
+Duration         : 2 seconds
 Labels           : 292
                  : 3959: Item Effects
-Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
+Attributes       : DoT Stacking Rule (103), Extra Initial Period (169), Always Line of Sight (185), Always AOE Line of Sight (186), Periodic Can Crit (265), Area Effects Use Target Radius (328), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=1335258)  : School Damage (2): nature
+#1 (id=1335258)  : Apply Aura (6) | Periodic Damage (3): nature every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-#2 (id=1335259)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1295617
 Description      : $@spelldesc1295617
 
-Name             : Sever (id=1307332) 
-School           : Nature
+Name             : Ravage (id=1307332) 
+School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 292
                  : 3959: Item Effects
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
-#1 (id=1335270)  : School Damage (2): nature
+#1 (id=1335270)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1335271)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1295617
 Description      : $@spelldesc1295617
 
-Name             : Rake (id=1307333) 
+Name             : Mutilate (id=1307333) 
 School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
+Cone Angle       : 90 degrees
+Line Width       : 4 yards
 Labels           : 292
                  : 3959: Item Effects
-Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1335272)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 15 yards | Target: Enemies in Cone to Targeted Enemy (104) -> Target Reticule: Enemy (129)
 #2 (id=1335273)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1295617
 Description      : $@spelldesc1295617
@@ -260470,7 +260476,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 292
                  : 3959: Item Effects
-Internal Cooldown: 5 seconds
+Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Proc Flags       : Killing Blow, Target Dies
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -260484,16 +260490,17 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 292
                  : 3959: Item Effects
-Stacks           : 1 initial, 99 maximum
+Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : White Melee, Yellow Melee, Generic Hostile Spell, Unknown 38
 Triggered By     : Sszorak's Ferocity (1307356)
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40), Enter Instance (43), Encounter End (56)
 Effects          :
 #1 (id=1335316)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Target: Self (1)
 Description      : $@spelldesc1295617
-Tooltip          : Follow up your next attack with Sever, Rake, or Tempest based on the number of nearby enemies.
+Tooltip          : Follow up your next attack with $@spellname1307332, $@spellname1307333, or $@spellname1307324 based on the number of nearby enemies.
 
 Name             : Hex Lord's Doom (id=1307470) 
 School           : Shadow
@@ -260658,7 +260665,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Target: Self (1)
 #2 (id=1336170)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 27.6315 (coefficient=0.210798) | Target: Self (1)
-Description      : Your spells and abilities have a chance to trigger the Venomcurse, increasing your Critical Strike by $s1 but reducing your Haste, Mastery, and Versatility by $s2 for $1307910d.
+Description      : Your spells and abilities have a chance to increase your Critical Strike by $s1 but reduce your other secondary stats by $s2 for $1307910d.
 
 Name             : Venomcursed Critical Strike (id=1307910) 
 School           : Nature
@@ -260704,7 +260711,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Target: Self (1)
 #2 (id=1336196)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 27.6315 (coefficient=0.210798) | Target: Self (1)
-Description      : Your spells and abilities have a chance to trigger the Venomcurse, increasing your Mastery by $s1 but reducing your Haste, Critical Strike, and Versatility by $s2 for $1307922d.
+Description      : Your spells and abilities have a chance to increase your Mastery by $s1 but reduce your other secondary stats by $s2 for $1307922d.
 
 Name             : Venomcursed Haste (id=1307927) 
 School           : Nature
@@ -260735,5 +260742,128 @@ Effects          :
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Target: Self (1)
 #2 (id=1336207)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 27.6315 (coefficient=0.210798) | Target: Self (1)
-Description      : Your spells and abilities have a chance to trigger the Venomcurse, increasing your Haste by $s1 but reducing your Mastery, Critical Strike, and Versatility by $s2 for $1307927d.
+Description      : Your spells and abilities have a chance to increase your Haste by $s1 but reduce your other secondary stats by $s2 for $1307927d.
+
+Name             : Shadow Shard Sliver (id=1308559) 
+School           : Physical
+Spell Type       : None
+Duration         : 12 seconds
+Cooldown         : 120 seconds
+Category         : 1141 (Type 0x0)
+Category Cooldown: 20 seconds
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1337118)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 524.4415 (coefficient=4.000912) | Rating: Haste | Target: Self (1)
+#2 (id=1337439)  : Create Area Trigger (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 44126 | Radius: 0 - 3 yards | Target: at Self (18) -> Back of Self (48)
+Description      : Raise the crystal, granting you $s1 Haste for $d.
+Tooltip          : Haste increased by $w1.
+
+Name             : Potion of Liquid Undeath (id=1308590) 
+School           : Physical
+Spell Type       : None
+Duration         : 120 seconds
+Attributes       : Do Not Sheath (18), Allow Cast While Dead (23), Allow Low Level Buff (67), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Aura Points On Client (268), Not In Arena (297), Scales with Casting Item's Level (354), Not in Instances (363), Recompute Aura On Level Scale (446), Unknown (508)
+Effects          :
+#1 (id=1337170)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+#2 (id=1337171)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1337181)  : Apply Aura (6) | Increase Mount Speed% (Stacking) (130)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+Description      : $@spelldesc1308593
+Tooltip          : Move speed increased by $w1%.
+
+Name             : Potion of Liquid Undeath (id=1308593) 
+School           : Physical
+Spell Type       : None
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow Dead Target (64), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not in Instances (363), Unknown (508)
+Effects          :
+#1 (id=1337175)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Drink a lethal concoction, increasing your movement speed while dead by $1308590s1%. Only usable outdoors. Lasts $1308590d.
+
+Name             : Potion of Liquid Undeath (id=1308594) 
+School           : Physical
+Spell Type       : None
+Attributes       : Not In Arena or Rated Battleground (144), Not in Battleground (284), Not in Instances (363), Unknown (508)
+Effects          :
+#1 (id=1337176)  : Instant Kill (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc1308593
+
+Name             : Spirit Sprouts (id=1308717) 
+School           : Physical
+Spell Type       : None
+Duration         : 20 seconds
+Attributes       : Allow Item Spell In PvP (13), Allow Cast While Dead (23), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow Dead Target (64), Allow Aura While Dead (116), Aura Points On Client (268)
+Aura Interrupt   : Standing (18), Swimming (33)
+Effects          :
+#1 (id=1337399)  : Apply Aura (6) | Periodic Trigger Spell (23): Well Resting every 10 seconds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1308719 | Target: Self (1)
+Description      : Restores some of your spirit every second over $d. Must remain dead while eating.
+
+If you spend at least 10 seconds eating, you will become Well Resting, gaining full health when reviving.
+Tooltip          : Restoring spirit every sec.
+
+Name             : Well Resting (id=1308719) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Triggered By     : Spirit Sprouts (1308717)
+Attributes       : Allow Cast While Dead (23), Allow Dead Target (64), Allow Aura While Dead (116)
+Effects          :
+#1 (id=1337404)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+Description      : $@spelldesc1308717
+Tooltip          : Recovering additional health when reviving.
+
+Name             : Breath of Jan'alai (id=1308728) 
+School           : Physical
+Spell Type       : None
+Duration         : 4 seconds
+Cooldown         : 120 seconds
+Category         : 1141 (Type 0x0)
+Category Cooldown: 20 seconds
+Attributes       : Is Channelled (34), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), No Caster Aura Icon (187), No Aura Log (202), Scales with Casting Item's Level (354)
+Channel Interrupt: Damage (2)
+Effects          :
+#1 (id=1337415)  : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+#2 (id=1337559)  : Apply Aura (6) | Periodic Trigger Spell (23): Breath of Jan'alai every 0.5 seconds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1308824 | Target: Self (1)
+#3 (id=1337568)  : Apply Aura (6) | Replace Animation (Set) (312)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 175
+Description      : Wield the flames of Jan'alai, dealing $1308824s1 fire damage to targets in a cone in front of the caster every $t2 sec for $d.
+
+May walk while casting.
+
+Name             : Afterlife Ale (id=1308734) 
+School           : Physical
+Spell Type       : Magic
+Duration         : 3600 seconds
+Category         : 59 (Type 0x0)
+Labels           : 621: Brush It Off (291628 effect#3)
+Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow Dead Target (64), Allow Aura While Dead (116), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446), Unknown (508)
+Effects          :
+#1 (id=1337426)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Modified By: Brush It Off (291628 effect#3)
+#2 (id=1337428)  : Inebriate (100)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Description      : An alcoholic beverage for the dead, strong enough to make you feel alive again.
+Tooltip          : Dead drunk.
+
+Name             : Breath of Jan'alai (id=1308824) 
+School           : Fire
+Spell Type       : Magic
+Cone Angle       : 60 degrees
+Triggered By     : Breath of Jan'alai (1308728)
+Attributes       : No Redirection (35), No Reflection (39), Active Threat (94), No Aura Log (202), Allow Cast While Channeling (308), Scales with Casting Item's Level (354)
+Channel Interrupt: Damage (2)
+Effects          :
+#1 (id=1337566)  : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 10714.52 (coefficient=83.83588) | Radius: 10 yards | Target: Enemies in Cone to Targeted Enemy (104)
+Description      : $@spelldesc1308728
 

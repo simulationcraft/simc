@@ -162,6 +162,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\sim\proc.hpp" />
 		<ClInclude Include="..\engine\sim\proc_rng.hpp" />
 		<ClInclude Include="..\engine\sim\profileset.hpp" />
+		<ClInclude Include="..\engine\sim\profileset_control.hpp" />
 		<ClInclude Include="..\engine\sim\progress_bar.hpp" />
 		<ClInclude Include="..\engine\sim\raid_event.hpp" />
 		<ClInclude Include="..\engine\sim\reforge_plot.hpp" />
@@ -352,6 +353,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\sim\proc.cpp" />
 		<ClCompile Include="..\engine\sim\proc_rng.cpp" />
 		<ClCompile Include="..\engine\sim\profileset.cpp" />
+		<ClCompile Include="..\engine\sim\profileset_control.cpp" />
 		<ClCompile Include="..\engine\sim\progress_bar.cpp" />
 		<ClCompile Include="..\engine\sim\raid_event.cpp" />
 		<ClCompile Include="..\engine\sim\reforge_plot.cpp" />

@@ -1,5 +1,5 @@
-// Active class spells, wow build 12.1.0.68209
-static constexpr std::array<active_class_spell_t, 351> __ptr_active_spells_data { {
+// Active class spells, wow build 12.1.0.68301
+static constexpr std::array<active_class_spell_t, 352> __ptr_active_spells_data { {
   {  1,    0,     100,       0, "Charge"                             },
   {  1,    0,     355,       0, "Taunt"                              },
   {  1,    0,    1464,       0, "Slam"                               },
@@ -321,6 +321,7 @@ static constexpr std::array<active_class_spell_t, 351> __ptr_active_spells_data 
   { 12,  577, 1229376,       0, "Single-Button Assistant"            },
   { 12,  581,  187827,  191427, "Metamorphosis"                      },
   { 12,  581,  189110,  344865, "Infernal Strike"                    },
+  { 12,  581,  202138,       0, "Sigil of Chains"                    },
   { 12,  581,  203720,       0, "Demon Spikes"                       },
   { 12,  581,  204157,  185123, "Throw Glaive"                       },
   { 12,  581,  204596,       0, "Sigil of Flame"                     },
@@ -353,7 +354,7 @@ static constexpr std::array<active_class_spell_t, 351> __ptr_active_spells_data 
   { 13, 1473, 1229376,       0, "Single-Button Assistant"            },
 } };
 
-// Pet active spells, wow build 12.1.0.68209
+// Pet active spells, wow build 12.1.0.68301
 static constexpr std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_data { {
   {  3,    2649, "Growl"                              },
   {  3,   16827, "Claw"                               },
@@ -490,7 +491,7 @@ static constexpr std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_dat
   {  9,  171138, "Shadow Lock"                        },
 } };
 
-// Passive class spells, wow build 12.1.0.68209
+// Passive class spells, wow build 12.1.0.68301
 static constexpr std::array<passive_class_spell_t, 63> __ptr_passive_spells_data { {
   {  1,    3127, "Parry"                              },
   {  1,  123829, "Block"                              },

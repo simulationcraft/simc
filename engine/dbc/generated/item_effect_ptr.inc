@@ -1,5 +1,5 @@
-// Item effects, wow build 12.1.0.68209
-static constexpr std::array<item_effect_t, 11034> __ptr_item_effect_data { {
+// Item effects, wow build 12.1.0.68301
+static constexpr std::array<item_effect_t, 11037> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -10945,7 +10945,7 @@ static constexpr std::array<item_effect_t, 11034> __ptr_item_effect_data { {
   { 232800, 1291718, 268213,   0,   1,    0,      -1,      -1 }, // Venomfang
   { 235882, 1305830, 268249,   0,   1,    0,      -1,      -1 }, // Ward of the Uncoiled
   { 235883, 1305838, 268250,   0,   1,    0,      -1,      -1 }, // Ward of the Uncoiled
-  { 235855, 1305753, 268251,   0,   1,    0,      -1,      -1 }, // Ward of the Uncoiled
+  { 235855, 1305838, 268251,   0,   1,    0,      -1,      -1 }, // Ward of the Uncoiled
   { 235856, 1305837, 268252,   0,   1,    0,      -1,      -1 }, // Ward of the Uncoiled
   { 235854, 1305838, 268265,   0,   1,    0,      -1,      -1 }, // Ward of the Uncoiled
   { 230391, 1282029, 268274,   0,   1,    0,      -1,      -1 }, // Blinky's Collar
@@ -11034,9 +11034,12 @@ static constexpr std::array<item_effect_t, 11034> __ptr_item_effect_data { {
   { 236223, 345229, 280097,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
   { 236235, 336126, 280118,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
   { 236238, 1307781, 280123,   0,   1,    0,      -1,      -1 }, // Sharp Axe Holster
+  { 236428, 1308559, 280376,   0,   0,    0,      -1,      -1 }, // Shadow Shard Sliver
+  { 236438, 1308728, 280377,   0,   0,    0,      -1,      -1 }, // Breath of Jan'alai
+  { 236437, 1308717, 280422,   0,   0,   11,       0,    1000 }, // Spirit Sprouts
 } };
 
-static const std::array<uint16_t, 11034> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 11037> __ptr_item_effect_id_index { {
    1132,  1133,  1134,  1135,  1136,  1137,  1138,  1141,
    1142,  1143,  1144,  1145,  1146,  1147,  1148,  1149,
    1150,  1151,  1152,  1153,  1156,  1157,  1158,  1159,
@@ -12416,6 +12419,6 @@ static const std::array<uint16_t, 11034> __ptr_item_effect_id_index { {
    1046,  1047,  1048,  1049,  1050,  1051,  8818, 10629,
   10630, 10631, 10947, 10945, 10946, 10943, 10944, 10961,
   11027, 11028, 11029, 11030, 11031, 11032, 11033,  1052,
-   1053,  1054,
+   1053,  1054, 11034, 11036, 11035,
 } };
 

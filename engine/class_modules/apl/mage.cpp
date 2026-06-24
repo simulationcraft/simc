@@ -309,7 +309,7 @@ void frost( player_t* p )
   default_->add_action( "run_action_list,name=ss_aoe,if=active_enemies>=4" );
   default_->add_action( "run_action_list,name=ss_st" );
 
-  cds->add_action( "variable,name=ff_trinket_timing,value=talent.frostfire_bolt", "Potion, Items and Racials are used on cd for Frostfire and paired with either Orb or Ray as Spellslinger." );
+  cds->add_action( "variable,name=ff_trinket_timing,value=talent.frostfire_bolt&(fight_remains<15|!equipped.vaelgors_final_stare|prev_gcd.1.comet_storm)", "Potion, Items and Racials are paired with either Orb or Ray as Spellslinger. Frostfire uses them on cd, unless you have Vaelgor equipped - then use them directly after casting Comet Storm." );
   cds->add_action( "variable,name=ss_trinket_timing,value=talent.splinterstorm&(time=0|fight_remains<15|prev_gcd.1.frozen_orb|cooldown.ray_of_frost.charges>=1&debuff.freezing.react<6&!buff.fingers_of_frost.react&(icicles<3|time-action.potion.last_used<25))" );
   cds->add_action( "use_item,name=nevermelting_ice_crystal,if=variable.ff_trinket_timing|variable.ss_trinket_timing", "Use Haste trinkets always after pot, Crit trinkets always before pot, and Mastery trinkets after pot if Crit is your highest stat and before pot otherwise." );
   cds->add_action( "use_item,name=freightrunners_flask,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );

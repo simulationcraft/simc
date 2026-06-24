@@ -5218,7 +5218,7 @@ class ItemScalingConfigGenerator(DataGenerator):
             length = len(data) if data else 1)
 
         for entry in data:
-            fields = entry.field('id', 'item_offset_curve_id', 'item_level', 'player_level')
+            fields = entry.field('id', 'item_offset_curve_id', 'item_level', 'player_level', 'squish_era_id')
             self.output_record(fields)
 
         self.output_footer()

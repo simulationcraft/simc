@@ -2337,20 +2337,20 @@ void priest_t::create_cooldowns()
 /** Construct priest gains */
 void priest_t::create_gains()
 {
-  gains.insanity_auspicious_spirits        = get_gain( "Auspicious Spirits" );
-  gains.insanity_death_and_madness         = get_gain( "Death and Madness" );
-  gains.shadowfiend                        = get_gain( "Shadowfiend" );
-  gains.mindbender                         = get_gain( "Mindbender" );
-  gains.voidwraith                         = get_gain( "Voidwraith" );
-  gains.insanity_idol_of_cthun_mind_flay   = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
-  gains.insanity_idol_of_cthun_mind_sear   = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
-  gains.hallucinations_power_word_shield   = get_gain( "Insanity Gained from Power Word: Shield with Hallucinations" );
-  gains.insanity_maddening_touch           = get_gain( "Maddening Touch" );
-  gains.shield_discipline                  = get_gain( "Shield Discipline" );
-  gains.insanity_dark_thoughts             = get_gain( "Dark Thoughts" );
-  gains.insanity_horrific_vision           = get_gain( "Horrific Vision" );
-  gains.insanity_vision_of_nzoth           = get_gain( "Vision of N'Zoth" );
-  gains.insanity_mid_s2_4pc_vampiric_touch = get_gain( "Midnight S2 4pc Vampiric Touch" );
+  gains.insanity_auspicious_spirits      = get_gain( "Auspicious Spirits" );
+  gains.insanity_death_and_madness       = get_gain( "Death and Madness" );
+  gains.shadowfiend                      = get_gain( "Shadowfiend" );
+  gains.mindbender                       = get_gain( "Mindbender" );
+  gains.voidwraith                       = get_gain( "Voidwraith" );
+  gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
+  gains.insanity_idol_of_cthun_mind_sear = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
+  gains.hallucinations_power_word_shield = get_gain( "Insanity Gained from Power Word: Shield with Hallucinations" );
+  gains.insanity_maddening_touch         = get_gain( "Maddening Touch" );
+  gains.shield_discipline                = get_gain( "Shield Discipline" );
+  gains.insanity_dark_thoughts           = get_gain( "Dark Thoughts" );
+  gains.insanity_horrific_vision         = get_gain( "Horrific Vision" );
+  gains.insanity_vision_of_nzoth         = get_gain( "Vision of N'Zoth" );
+  gains.insanity_vampiric_insight        = get_gain( "Vampiric Insight" );
 }
 
 /** Construct priest procs */
@@ -2363,35 +2363,36 @@ void priest_t::create_procs()
       get_proc( "Power of the Dark Side from Dark Indulgence lost to overflow" );
   procs.expiation_lost_no_dot = get_proc( "Missed chance for expiation to consume a DoT" );
   // Shadow - Talents
-  procs.shadowy_apparition_swp           = get_proc( "Shadowy Apparition from Tormented Spirits" );
-  procs.shadowy_apparition_swm           = get_proc( "Shadowy Apparition from Shadow Word: Madness" );
-  procs.shadowy_apparition_mb            = get_proc( "Shadowy Apparition from Mind Blast" );
-  procs.shadowy_apparition_mfi           = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
-  procs.shadowy_apparition_yshaarj       = get_proc( "Shadowy Apparition from Idol of Y'Shaarj" );
-  procs.shadowy_apparition_nzoth         = get_proc( "Shadowy Apparition from Idol of N'Zoth" );
-  procs.shadowy_apparition_yogg          = get_proc( "Shadowy Apparition from Idol of Yogg-Saron" );
-  procs.shadowy_apparition_cthun         = get_proc( "Shadowy Apparition from Idol of C'Thun" );
-  procs.shadowy_apparition_mid_s2_4pc_vt = get_proc( "Shadowy Apparition from Midnight S2 4pc Vampiric Touch" );
-  procs.mind_devourer                    = get_proc( "Mind Devourer free Shadow Word: Madness proc" );
-  procs.void_tendril                     = get_proc( "Void Tendril proc from Idol of C'Thun" );
-  procs.void_lasher                      = get_proc( "Void Lasher proc from Idol of C'Thun" );
-  procs.shadowy_insight                  = get_proc( "Shadowy Insight procs" );
-  procs.shadowy_insight_overflow         = get_proc( "Shadowy Insight procs lost to overflow" );
-  procs.shadowy_insight_missed           = get_proc( "Shadowy Insight procs not consumed" );
-  procs.thing_from_beyond                = get_proc( "Thing from Beyond procs" );
-  procs.mind_flay_insanity_wasted        = get_proc( "Mind Flay: Insanity casts that did not channel for full ticks" );
-  procs.void_torrent_ticks_no_mastery    = get_proc( "Void Torrent ticks without full Mastery value" );
-  procs.mindgames_casts_no_mastery       = get_proc( "Mindgames casts without full Mastery value" );
-  procs.inescapable_torment_missed_mb    = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
-  procs.inescapable_torment_missed_swd   = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
-  procs.shadowfiend                      = get_proc( "Shadowfiend procs from Shadow Word: Death casts" );
-  procs.void_apparition                  = get_proc( "Void Apparition procs" );
-  procs.void_apparition_yshaarj          = get_proc( "Idol of Y'Shaarj from Tentacle Slam" );
-  procs.void_apparition_horrific_vision  = get_proc( "Horrific Vision from Tentacle Slam" );
-  procs.void_apparition_vision_of_nzoth  = get_proc( "Vision of N'Zoth from Tentacle Slam" );
-  procs.void_apparition_yogg             = get_proc( "Idol of Yogg-Saron from Tentacle Slam" );
-  procs.void_apparition_cthun            = get_proc( "Idol of C'Thun from Tentacle Slam" );
-  procs.tentacle_slam_idol               = get_proc( "Idol spell from Tentacle Slam" );
+  procs.shadowy_apparition_swp     = get_proc( "Shadowy Apparition from Tormented Spirits" );
+  procs.shadowy_apparition_swm     = get_proc( "Shadowy Apparition from Shadow Word: Madness" );
+  procs.shadowy_apparition_mb      = get_proc( "Shadowy Apparition from Mind Blast" );
+  procs.shadowy_apparition_mfi     = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
+  procs.shadowy_apparition_yshaarj = get_proc( "Shadowy Apparition from Idol of Y'Shaarj" );
+  procs.shadowy_apparition_nzoth   = get_proc( "Shadowy Apparition from Idol of N'Zoth" );
+  procs.shadowy_apparition_yogg    = get_proc( "Shadowy Apparition from Idol of Yogg-Saron" );
+  procs.shadowy_apparition_cthun   = get_proc( "Shadowy Apparition from Idol of C'Thun" );
+  procs.shadowy_apparition_vampiric_insight =
+      get_proc( "Shadowy Apparition from Vampiric Insight (Midnight Season 2 4pc)" );
+  procs.mind_devourer                   = get_proc( "Mind Devourer free Shadow Word: Madness proc" );
+  procs.void_tendril                    = get_proc( "Void Tendril proc from Idol of C'Thun" );
+  procs.void_lasher                     = get_proc( "Void Lasher proc from Idol of C'Thun" );
+  procs.shadowy_insight                 = get_proc( "Shadowy Insight procs" );
+  procs.shadowy_insight_overflow        = get_proc( "Shadowy Insight procs lost to overflow" );
+  procs.shadowy_insight_missed          = get_proc( "Shadowy Insight procs not consumed" );
+  procs.thing_from_beyond               = get_proc( "Thing from Beyond procs" );
+  procs.mind_flay_insanity_wasted       = get_proc( "Mind Flay: Insanity casts that did not channel for full ticks" );
+  procs.void_torrent_ticks_no_mastery   = get_proc( "Void Torrent ticks without full Mastery value" );
+  procs.mindgames_casts_no_mastery      = get_proc( "Mindgames casts without full Mastery value" );
+  procs.inescapable_torment_missed_mb   = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
+  procs.inescapable_torment_missed_swd  = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
+  procs.shadowfiend                     = get_proc( "Shadowfiend procs from Shadow Word: Death casts" );
+  procs.void_apparition                 = get_proc( "Void Apparition procs" );
+  procs.void_apparition_yshaarj         = get_proc( "Idol of Y'Shaarj from Tentacle Slam" );
+  procs.void_apparition_horrific_vision = get_proc( "Horrific Vision from Tentacle Slam" );
+  procs.void_apparition_vision_of_nzoth = get_proc( "Vision of N'Zoth from Tentacle Slam" );
+  procs.void_apparition_yogg            = get_proc( "Idol of Yogg-Saron from Tentacle Slam" );
+  procs.void_apparition_cthun           = get_proc( "Idol of C'Thun from Tentacle Slam" );
+  procs.tentacle_slam_idol              = get_proc( "Idol spell from Tentacle Slam" );
   // Holy
   procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
   procs.divine_image          = get_proc( "Divine Image from Holy Words" );
@@ -3899,8 +3900,6 @@ void priest_t::create_options()
   add_option(
       opt_float( "priest.archon_halo_outgoing_hit_chance", options.archon_halo_outgoing_hit_chance, 0.0, 1.0 ) );
   add_option( opt_float( "priest.archon_halo_return_hit_chance", options.archon_halo_return_hit_chance, 0.0, 1.0 ) );
-  add_option( opt_bool( "priest.mid_s2_2pc", options.mid_s2_2pc ) );
-  add_option( opt_bool( "priest.mid_s2_4pc", options.mid_s2_4pc ) );
 }
 
 std::string priest_t::create_profile( save_e type )
@@ -4127,9 +4126,15 @@ public:
     shadowy_apparition_sources.set( "plotOptions.pie.dataLabels.format", "{point.name}: {point.percentage:.1f}%" );
 
     std::vector<proc_t*> sa_source_list = {
-        p.procs.shadowy_apparition_swp,  p.procs.shadowy_apparition_swm,     p.procs.shadowy_apparition_mb,
-        p.procs.shadowy_apparition_mfi,  p.procs.shadowy_apparition_yshaarj, p.procs.shadowy_apparition_nzoth,
-        p.procs.shadowy_apparition_yogg, p.procs.shadowy_apparition_cthun,   p.procs.shadowy_apparition_mid_s2_4pc_vt,
+        p.procs.shadowy_apparition_swp,
+        p.procs.shadowy_apparition_swm,
+        p.procs.shadowy_apparition_mb,
+        p.procs.shadowy_apparition_mfi,
+        p.procs.shadowy_apparition_yshaarj,
+        p.procs.shadowy_apparition_nzoth,
+        p.procs.shadowy_apparition_yogg,
+        p.procs.shadowy_apparition_cthun,
+        p.procs.shadowy_apparition_vampiric_insight,
     };
 
     double sum = 0.0;

@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 12.1.0.68209
-static constexpr std::array<specialization_spell_entry_t, 613> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 12.1.0.68301
+static constexpr std::array<specialization_spell_entry_t, 614> __ptr_specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -537,6 +537,7 @@ static constexpr std::array<specialization_spell_entry_t, 613> __ptr_specializat
   { 12,  581,  187827, 191427, "Metamorphosis"                     , 0 },
   { 12,  581,  189110, 344865, "Infernal Strike"                   , 0 },
   { 12,  581,  189926,      0, "Increased Threat"                  , 0 },
+  { 12,  581,  202138,      0, "Sigil of Chains"                   , 0 },
   { 12,  581,  203513,      0, "Demonic Wards"                     , 0 },
   { 12,  581,  203720,      0, "Demon Spikes"                      , 0 },
   { 12,  581,  203747,      0, "Mastery: Fel Blood"                , 0 },

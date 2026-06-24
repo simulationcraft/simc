@@ -1389,6 +1389,17 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, std
   { E_UI_ACTION,                                       "UI Action"                                         },  // 339
   { E_LEARN_WARBAND_SCENE,                             "Learn Warband Scene"                               },  // 341
   { E_ASSIST_ACTION,                                   "Assist Action"                                     },  // 345
+  { E_EQUIP_TRANSMOG_OUTFIT,                           "Equip Transmog Outfit"                             },  // 347
+  { E_GIVE_HOUSE_LEVEL,                                "Give House Level"                                  },  // 348
+  { E_LEARN_HOUSING_INTERIOR,                          "Learn Housing Interior"                            },  // 349
+  { E_LEARN_HOUSING_EXTERIOR,                          "Learn Housing Exterior"                            },  // 350
+  { E_LEARN_HOUSE_THEME,                               "Learn House Theme"                                 },  // 351
+  { E_LEARN_HOUSING_COMPONENT_TEXTURE,                 "Learn Housing Component Texture"                   },  // 352
+  { E_CREATE_AREA_TRIGGER_2,                           "Create Area Trigger"                               },  // 353
+  { E_SET_NEIGHBORHOOD_INITIATIVE,                     "Set Neighborhood Initiative"                       },  // 354
+  { E_APPLY_ITEM_BONUS,                                "Apply Item Bonus"                                  },  // 357
+  { E_REMOVE_ITEM_BONUS,                               "Remove Item Bonus"                                 },  // 358
+  { E_APPLY_ITEM_CONDITION,                            "Apply Item Condition"                              },  // 359
 } );
 
 static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, std::string_view>( {

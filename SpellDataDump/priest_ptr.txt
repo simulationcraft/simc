@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68209 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68301 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1134,7 +1134,8 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Maddening Touch (391228 effect#1), Screams of the Void (393919 effect#1), Initial Priest (417191 effects: #1, #2), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Instilled Doubt (1242862 effects: #1, #2), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Maddening Touch (391228 effect#1), Screams of the Void (393919 effect#1), Initial Priest (417191 effects: #1, #2), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Instilled Doubt (1242862 effects: #1, #2), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2), Vampiric Insight (1308649 effects: #1, #4)
+Triggered By     : Vampiric Insight (1308649)
 Family Flags     : 42, 72
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -1144,6 +1145,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.6667 | Target: Targeted Enemy (6)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Resource: insanity | Target: Self (1)
+                   Modified By: Vampiric Insight (1308649 effect#1)
 #4 (id=841601)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.04343 | PvP Coefficient: 0.75 | Target: Targeted Enemy (6)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals you for ${$e2*100}% of damage dealt. If Vampiric Touch is dispelled, the dispeller flees in Horror for $87204d.
@@ -11744,7 +11746,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 2560: Auspicious Spirits (155271 effect#2)
-Triggered By     : Shadowy Apparition (148859), Void Apparition (1264175)
+Triggered By     : Shadowy Apparition (148859), Void Apparition (1264175), Shadowtouched Apparitions (1308779)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1054184)  : Energize Power (30)
@@ -12011,7 +12013,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1218
 Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Auspicious Spirits (155271 effect#1), Voidform (194249 effects: #1, #2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Subservient Shadows (1228516 effect#6), Holy Priest (1238052 effects: #4, #5), Spiritwell (1247178 effect#1), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest Shadow 12.0 Class Set 4pc (1264855 effect#1), Haunting Shadows (1279355 effect#1), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
-Triggered By     : Shadowy Apparition (148859)
+Triggered By     : Shadowy Apparition (148859), Shadowtouched Apparitions (1308779)
 Family Flags     : 72, 90
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
@@ -14876,13 +14878,13 @@ Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 2 (15 seconds cooldown)
-Category         : 1907 (Type 0x1)
+Category         : 1907 (Type 0x1): Priest Shadow 12.1 Class Set 2pc (1296579 effect#2)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 117
                  : 292
-Affecting Spells : Dark Ascension (391109 effect#1), Descending Darkness (1242666 effect#1), Crushing Void (1279354 effect#2)
+Affecting Spells : Dark Ascension (391109 effect#1), Descending Darkness (1242666 effect#1), Crushing Void (1279354 effect#2), Priest Shadow 12.1 Class Set 2pc (1296579 effect#1)
 Family Flags     : 31
 Attributes       : No Threat (42), Allow Class Ability Procs (416)
 Effects          :
@@ -14909,7 +14911,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 117
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Descending Darkness (1242666 effect#1), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Crushing Void (1279354 effect#2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Descending Darkness (1242666 effect#1), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Crushing Void (1279354 effect#2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2), Priest Shadow 12.1 Class Set 2pc (1296579 effect#1)
 Family Flags     : 31, 72
 Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
@@ -15048,7 +15050,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Inner Shadow (355898 effects: #1, #4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effects: #1, #2), Devouring Chorus (454638 effects: #1, #2), Holy Priest (1238052 effects: #4, #5), Focused Power (1249230 effects: #1, #2), Twin Disciplines (1251077 effects: #1, #2), Discipline Priest (1256903 effects: #4, #5), Shadow Priest (1256905 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 2pc (1283668 effects: #1, #2), Priest - Midnight PrePatch - 11.2 Class Set 4pc (1283669 effects: #1, #2)
-Triggered By     : Shadowy Apparition (148859), Void Apparition (1264175)
+Triggered By     : Shadowy Apparition (148859), Void Apparition (1264175), Shadowtouched Apparitions (1308779)
 Family Flags     : 72
 Attributes       : Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
@@ -17342,8 +17344,14 @@ Labels           : 16: Class Spells
                  : 6656
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1319240)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+#1 (id=1319240)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Tentacle Slam (1227280), Tentacle Slam (1227621)
+                   Family Flags: 31
+#2 (id=1337251)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1907 (Category) | Target: Self (1)
+                   Affected Spells (Category): Tentacle Slam (1227280)
+Description      : Tentacle Slam's cooldown is reduced by ${$s2/-1000} sec and its damage is increased by $s1%.
 
 Name             : Priest Shadow 12.1 Class Set 4pc (id=1296580) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -17353,10 +17361,13 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 6656
+Proc Chance      : 101%
+Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1319241)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : After casting Tentacle Slam, your next Vampiric Touch is instant, generates ${$1308649s1/100} additional Insanity, and conjures Shadowy Apparitions that deal $1308649s2% of normal damage.
 
 Name             : Drain Life (id=1297678) [Hidden] 
 Class            : Priest
@@ -17516,4 +17527,55 @@ Effects          :
                    Family Flags: 0
 Description      : $@spelldesc1297678
 Tooltip          : Your next Power Word: Shield or Void Shield absorbs $W1% more damage.
+
+Name             : Vampiric Insight (id=1308649) [Spell Family (6)] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+                 : 6656
+Stacks           : 1 initial, 2 maximum
+Proc Chance      : 101%
+Proc Flags       : Magic Hostile Spell
+Attributes       : No Cooldown On Tooltip (192), Aura Points On Client (268), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1337264)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Vampiric Touch (34914)
+                   Family Flags: 42
+#2 (id=1337265)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.75 | Target: Self (1)
+#3 (id=1337266)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
+#4 (id=1337271)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Vampiric Touch (34914)
+                   Family Flags: 42
+#5 (id=1337276)  : Apply Aura (6) | Set Action Button Spell Count (408): Vampiric Touch
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 34914 | Target: Self (1)
+Description      : $@spelldesc1296580
+Tooltip          : Your next Vampiric Touch is instant, generates ${$w1/100} additional Insanity, and conjures Shadowy Apparitions that deal $w2% of normal damage.
+
+Name             : Shadowtouched Apparitions (id=1308779) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 100 yards
+Velocity         : 12 yards/sec
+Labels           : 16: Class Spells
+                 : 18: Priest Spells
+                 : 292
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=1337502)  : Trigger Missiles (32): Shadowy Apparition
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 413231 | Target: Targeted Enemy (6)
+#2 (id=1337503)  : Trigger Missiles (32): Shadowy Apparition
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Trigger Spell: 405746 | Target: Self (1)
+#3 (id=1337504)  : Trigger Missiles (32): Shadeburst
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1231479 | Target: Targeted Enemy (6)
+Description      : $@spelldesc341491
 

@@ -156,6 +156,7 @@ sim/plot.hpp
 sim/proc.hpp
 sim/proc_rng.hpp
 sim/profileset.hpp
+sim/profileset_control.hpp
 sim/progress_bar.hpp
 sim/raid_event.hpp
 sim/reforge_plot.hpp
@@ -346,6 +347,7 @@ sim/plot.cpp
 sim/proc.cpp
 sim/proc_rng.cpp
 sim/profileset.cpp
+sim/profileset_control.cpp
 sim/progress_bar.cpp
 sim/raid_event.cpp
 sim/reforge_plot.cpp

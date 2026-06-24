@@ -922,8 +922,8 @@
       { "data_type": "i", "field": "item_offset_curve_id", "ref": "ItemOffsetCurve", "format": { "cpp": "%4d" }  },
       { "data_type": "i", "field": "item_level" },
       { "data_type": "i", "field": "player_level" },
-      { "data_type": "i", "field": "unk_3" },
-      { "data_type": "i", "field": "unk_4" }
+      { "data_type": "i", "field": "squish_era_id" },
+      { "data_type": "i", "field": "flags" }
     ]
   },
   "ItemSet": {

@@ -1269,6 +1269,7 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   {
     auto profileset_root = root[ "profilesets" ];
     profileset_json( report_configuration, *sim.profilesets, sim, profileset_root );
+    profileset_controller::report_json( sim, root );
   }
 
   if ( !sim.plot->dps_plot_stats.empty() )

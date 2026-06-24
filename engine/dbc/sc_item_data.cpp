@@ -204,7 +204,17 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       if ( offset_entries.size() == 0 )
         break;
       const auto& offset_entry = offset_entries[ 0 ];
-      if ( entry.value_2 != 0 && scaling_entries[ 0 ].player_level <= 80 )
+      auto level               = scaling_entry.player_level;
+      if ( item.parsed.drop_level != 0 && item.parsed.drop_level <= 80 &&
+           ( level > item.parsed.drop_level || level == 0 ) )
+        level = item.parsed.drop_level;
+      if ( item.parsed.content_tuning_id != 0 )
+      {
+        const auto& content_tuning = item.player->dbc->content_tuning( item.parsed.content_tuning_id );
+        if ( content_tuning.id != 0 && ( level > as<unsigned>( content_tuning.max_level_squish ) || level == 0 ) )
+          level = content_tuning.max_level_squish;
+      }
+      if ( scaling_entry.squish_era_id < 2 )
         item.parsed.data.level = as<int>(
             util::round( curve_point_value( *item.player->dbc, SQUISH_CURVE_MIDNIGHT, scaling_entry.item_level ) ) );
       else
@@ -212,7 +222,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
             util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
       item.parsed.data.level += offset_entry.offset;
       item.parsed.has_midnight_scaling = true;
-      item.parsed.data.req_level       = scaling_entry.player_level;
+      item.parsed.data.req_level       = level;
       break;
     }
     case ITEM_BONUS_SCALE_CONFIG_2:

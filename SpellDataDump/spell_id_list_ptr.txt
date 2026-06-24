@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.0.68209
+Class Spell ID List, wow build 12.1.0.68301
 
 Death Knight
 3714     Path of Frost
@@ -5363,21 +5363,13 @@ Druid
 1264905  Spirit of the Thicket
 1264911  Spirit of the Thicket
 1269186  Unshapeshifted
-1269614  Wild Guardian [NYI]
-1269616  Wild Guardian
-1269617  Wild Guardian [NYI]
-1269619  Wild Guardian [NYI]
-1269633  Echo of Ironfur
-1269645  Echo of Frenzied Regeneration
-1269648  Echo of Maul
+1269614  Wild Guardian
+1269616 *Wild Guardian
+1269617  Wild Guardian
+1269619  Wild Guardian
 1269658  Wild Guardian
-1269659  Gift of Ironfur
-1269660  Gift of Maul
-1269661  Gift of Frenzied Regeneration
-1269972  Echo of Raze
-1269973  Echo of Ravage
 1270065  Vicious Brambles
-1270277  Wild Guardian
+1270277 *Wild Guardian
 1270292  Lunar Beam
 1270565  Green Thumb
 1270586  Rampancy
@@ -5434,7 +5426,17 @@ Druid
 1302255  Genesis
 1303480  Orbit Breaker
 1307881 *Gory Fur
-1307916  Wild Guardian
+1308093  Spirit's Wrath
+1308125  Spirit's Wrath
+1308176  Dream Conduit
+1308399  Answered Calling
+1308437  Spirit's Wrath
+1308448 *Listener
+1308479  Spirit's Wrath
+1308522 *Wild Guardian Spirit
+1308639  Spirit's Wrath
+1308647  Answered Calling
+1308653 *Listener
 
 Evoker
 351338   Quell
@@ -8867,6 +8869,7 @@ Hunter
 1306018 *test proc spell
 1306960 *Dire Beast
 1306990 *Dark Summon
+1308188 *Dire Beast
 
 Mage
 66       Invisibility
@@ -15289,7 +15292,7 @@ Paladin
 1305230  Divine Power
 1306159  Divine Power: Storm
 1306161  Divine Power: Storm
-1306162  Divine Power: Verdict
+1306162  Divine Arbiter
 1306923  Divine Arbiter
 1307499  Crusading Strikes
 1307639 *Glory of the Vanguard
@@ -17278,6 +17281,8 @@ Priest
 1304485  Ancient Madness
 1306118  Renewed Haste
 1307795  Dark Transference
+1308649  Vampiric Insight
+1308779  Shadowtouched Apparitions
 
 Rogue
 53       Backstab
@@ -20691,7 +20696,7 @@ Shaman
 462864  *Echo of the Elementals
 462866   Elemental Unity
 462867   Everlasting Elements
-462990   Lesser Storm Elemental
+462990   Lesser Primal Storm Elemental
 462991  *Lesser Primal Fire Elemental
 462992   Lesser Fire Elemental
 462993   Lesser Storm Elemental
@@ -22210,7 +22215,6 @@ Warlock
 387096   Pyrogenics
 387103   Ruin
 387108   Conflagration of Chaos
-387109   Conflagration of Chaos
 387118  *Soul Tap
 387153  *Burn to Ashes
 387154  *Burn to Ashes

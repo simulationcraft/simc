@@ -797,8 +797,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
   timespan_t execute_time() const override
   {
-    if ( casted && !background && priest().options.mid_s2_4pc && priest().buffs.mid_s2_4pc_vampiric_touch &&
-         priest().buffs.mid_s2_4pc_vampiric_touch->check() )
+    if ( casted && !background && priest().buffs.vampiric_insight->check() )
     {
       return timespan_t::zero();
     }
@@ -808,12 +807,13 @@ struct vampiric_touch_t final : public priest_spell_t
 
   void execute() override
   {
-    if ( casted && !background && priest().options.mid_s2_4pc && priest().buffs.mid_s2_4pc_vampiric_touch &&
-         priest().buffs.mid_s2_4pc_vampiric_touch->check() )
+    if ( casted && !background && priest().buffs.vampiric_insight->check() )
     {
-      priest().buffs.mid_s2_4pc_vampiric_touch->expire();
-      priest().generate_insanity( 4.0, priest().gains.insanity_mid_s2_4pc_vampiric_touch, this );
-      priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_mid_s2_4pc_vt, target, 2.0 );
+      priest().buffs.vampiric_insight->decrement();
+      priest().generate_insanity( priest().specs.vampiric_insight_buff->effectN( 1 ).resource( RESOURCE_INSANITY ),
+                                  priest().gains.insanity_vampiric_insight, this );
+      // BUG: Does not trigger Shadeburst, do not pass target
+      priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_vampiric_insight, nullptr, 2.0 );
     }
 
     priest_spell_t::execute();
@@ -1717,12 +1717,6 @@ struct tentacle_slam_t final : public priest_spell_t
 
     idol_of_nzoth_impact_stacks = 6;
     radius                      = priest().talents.shadow.tentacle_slam_damage->effectN( 1 ).radius_max();
-
-    if ( priest().options.mid_s2_2pc )
-    {
-      cooldown->duration -= timespan_t::from_seconds( 3 );
-      tentacle_slam_damage->base_dd_multiplier *= 2.0;
-    }
   }
 
   // TODO: Not found in spelldata, manually tested
@@ -1737,9 +1731,9 @@ struct tentacle_slam_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    if ( priest().options.mid_s2_4pc && priest().buffs.mid_s2_4pc_vampiric_touch )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, MID2, B4 ) && priest().buffs.vampiric_insight )
     {
-      priest().buffs.mid_s2_4pc_vampiric_touch->trigger();
+      priest().buffs.vampiric_insight->trigger();
     }
   }
 
@@ -2130,10 +2124,7 @@ void priest_t::create_buffs_shadow()
           ->set_duration( timespan_t::zero() )
           ->set_max_stack( is_ptr() ? as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) : 99 );
 
-  buffs.mid_s2_4pc_vampiric_touch = make_buff( this, "mid_s2_4pc_vampiric_touch" )
-                                        ->set_duration( timespan_t::zero() )
-                                        ->set_max_stack( 1 )
-                                        ->set_proc_callbacks( false );
+  buffs.vampiric_insight = make_buff( this, "vampiric_insight", specs.vampiric_insight_buff );
 
   if ( is_ptr() )
   {
@@ -2342,6 +2333,9 @@ void priest_t::init_spells_shadow()
   specs.hallucinations = find_spell( 199579 );
   specs.dispersion     = find_specialization_spell( "Dispersion" );
   specs.silence        = find_specialization_spell( "Silence" );
+
+  // Tier Set Spells
+  specs.vampiric_insight_buff = find_spell( 1308649 );
 }
 
 void priest_t::init_special_effects_shadow()

@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68209 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68301 PTR
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -5985,7 +5985,7 @@ Family Flags     : 1
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1022768)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.5 | Target: Self (1)
 Description      : $@spelldesc387761
 
 Name             : Regenerative Magic (id=387787) [Spell Family (224), Passive] 
@@ -7013,7 +7013,7 @@ Family Flags     : 1, 86
 Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1051877)  : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.5 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
 #2 (id=1051878)  : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 Description      : $@spelldesc404195
@@ -8429,7 +8429,7 @@ Effects          :
 #1 (id=1076504)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : When cast, Blistering Scales grants the target a shield that absorbs up to $<shield> damage for $410651d based on their missing health. Lower health targets gain a larger shield.
-Variables        : $shield=${$SP*12*(1+$@versadmg)}
+Variables        : $shield=${$SP*15*(1+$@versadmg)}
 
 Name             : Molten Blood (id=410651) [Spell Family (224)] 
 Class            : Evoker
