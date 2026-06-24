@@ -15,9 +15,12 @@ lessThan( QT_MAJOR_VERSION, 5 ) {
 
 # OS X release target
 macx {
-  create_release.target   = create_release
-  create_release.depends  = all
-  create_release.commands = $$dirname(QMAKE_QMAKE)/macdeployqt Simulationcraft.app && qt/osx_release.sh
+  create_release.target    = create_release
+  create_release.depends   = all
+  create_release.commands  = $$dirname(QMAKE_QMAKE)/macdeployqt "SimulationCraft.app" &&
+  create_release.commands += FIX_IDS=1 qt/fix-macqtdeploy-paths.sh "SimulationCraft.app" &&
+  create_release.commands += codesign --force --deep --sign - "SimulationCraft.app" &&
+  create_release.commands += qt/osx_release.sh
 
   QMAKE_EXTRA_TARGETS += create_release
 }

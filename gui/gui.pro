@@ -31,7 +31,7 @@ win32|macx {
 CONFIG(release, debug|release): LIBS += -L../lib/release -lsimcengine
 CONFIG(debug, debug|release): LIBS += -L../lib/debug -lsimcengine
 
-Resources.files = ../qt/Welcome.html ../qt/Welcome.png ../qt/Error.html
+Resources.files = ../qt/Welcome.html ../qt/Welcome.png ../qt/Error.html ../qt/jquery.js
 Localization.files = $$files(../locale/*.qm)
 Profiles.files = $$files(../profiles/*, recursive=true)
 
