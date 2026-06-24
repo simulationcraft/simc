@@ -3094,7 +3094,47 @@ void wavecallers_seastone( special_effect_t& effect )
                   ->set_expire_callback( [ effect ]( buff_t* b, int, timespan_t ) {
                     make_event( *effect.player->sim, 0_ms, [ b ] { b->set_reverse( false ); } );
                   } );
+
   new dbc_proc_callback_t( effect.player, effect );
+}
+// Vile Vial of Volatile Venom
+// 1293316 on-use buff (Empowering Venom)
+// 1295123 debuff (Debilitating Venom), applies once the buff fades
+// 1295179 equip
+void vile_vial_of_volatile_venom( special_effect_t& effect )
+{
+  struct vile_vial_of_volatile_venom_t : public spell_t
+  {
+    std::unordered_map<stat_e, buff_t*> buffs;
+    std::unordered_map<stat_e, buff_t*> debuffs;
+
+    vile_vial_of_volatile_venom_t( const special_effect_t& e ) : spell_t( "empowering_venom", e.player, e.driver() )
+    {
+      auto debuff_data = e.player->find_spell( 1295123 );
+
+      create_all_stat_buffs( e, debuff_data, 0, [ this ]( stat_e s, buff_t* b ) { debuffs[ s ] = b; } );
+
+      create_all_stat_buffs( e, e.driver(), 0, [ this ]( stat_e s, buff_t* b ) {
+        // The debuff rolls a stat independently of the stat granted by the buff
+        b->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
+          debuffs.at( player->rng().range( secondary_ratings ) )->trigger();
+        } );
+        buffs[ s ] = b;
+      } );
+    }
+
+    void execute() override
+    {
+      spell_t::execute();
+
+      buffs.at( player->rng().range( secondary_ratings ) )->trigger();
+    }
+  };
+
+  effect.disable_buff();
+  effect.has_use_buff_override = true;
+  effect.execute_action = create_proc_action<vile_vial_of_volatile_venom_t>( "empowering_venom", effect );
+
 }
 }  // namespace trinkets
 
@@ -4135,6 +4175,8 @@ void register_special_effects()
   reset_version_check();
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( 1295058, trinkets::wavecallers_seastone );
+  register_special_effect( 1293316, trinkets::vile_vial_of_volatile_venom );
+  register_special_effect( 1295179, DISABLED_EFFECT );  // Vile Vial of Volatile Venom equip driver
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil

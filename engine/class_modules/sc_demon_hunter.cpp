@@ -6003,7 +6003,7 @@ struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
 
     base_t::execute();
 
-    auto damage                 = dh()->buff.metamorphosis->up() ? damage_action_meta : damage_action;
+    auto damage = dh()->buff.metamorphosis->up() ? damage_action_meta : damage_action;
 
     // TOCHECK: This delay is a guess based on averages in logs as there is no spelldata
     make_event( *dh()->sim, 220_ms, [ this, fragments_consumed, damage ] {
@@ -10952,9 +10952,10 @@ void demon_hunter_t::init_spells()
   spec.eradicate_buff           = talent_spell_lookup( talent.devourer.eradicate, 1239524 );
   spec.void_ray_tick            = talent_spell_lookup( talent.devourer.void_ray, 1213649 );
   spec.void_ray_tick_meta       = talent_spell_lookup( talent.devourer.void_ray, 1214595 );
-  spec.moment_of_craving_buff   = talent_spell_lookup( talent.devourer.moment_of_craving, 1238495 );
-  spec.void_buildup             = talent_spell_lookup( talent.devourer.void_metamorphosis, 473671 );
-  spec.voidglare_boon_energize  = talent_spell_lookup( talent.devourer.voidglare_boon, 1241922 );
+  spec.moment_of_craving_buff   = conditional_spell_lookup(
+      talent.devourer.moment_of_craving->ok() || sets->has_set_bonus( DEMON_HUNTER_DEVOURER, MID2, B4 ), 1238495 );
+  spec.void_buildup            = talent_spell_lookup( talent.devourer.void_metamorphosis, 473671 );
+  spec.voidglare_boon_energize = talent_spell_lookup( talent.devourer.voidglare_boon, 1241922 );
   spec.collapsing_star_damage =
       conditional_spell_lookup( talent.devourer.collapsing_star->ok() || talent.devourer.midnight3->ok(), 1221162 );
   spec.collapsing_star_spell =
