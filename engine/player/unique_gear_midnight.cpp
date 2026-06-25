@@ -3135,62 +3135,56 @@ void vile_vial_of_volatile_venom( special_effect_t& effect )
   effect.has_use_buff_override = true;
   effect.execute_action = create_proc_action<vile_vial_of_volatile_venom_t>( "empowering_venom", effect );
 }
+
 // Fang of Umbral Malignance
 // 1295219 Driver
 // 1305853 Umbral Malignance DoT
 // 1305854 Bursting Malignance AoE
 void fang_of_umbral_malignance( special_effect_t& effect )
 {
-  // Bugged on ptr, doesn't seem to ever proc
-  bool bugged = true;
+  auto burst = create_proc_action<generic_aoe_proc_t>( "bursting_malignance", effect, 1305854 );
+  burst->base_multiplier *= role_mult( effect );
 
-  if ( !bugged )
+  struct fang_cb_t : public dbc_proc_callback_t
   {
-    auto burst = create_proc_action<generic_aoe_proc_t>( "bursting_malignance", effect, 1305854 );
-    burst->base_multiplier *= role_mult( effect );
+    action_t* dot;
 
-    struct fang_cb_t : public dbc_proc_callback_t
+    fang_cb_t( const special_effect_t& e, action_t* burst_action ) : dbc_proc_callback_t( e.player, e )
     {
-      action_t* dot;
+      dot                      = create_proc_action<generic_proc_t>( "umbral_malignance", e, 1305853 );
+      dot->dot_max_stack       = dot->data().max_stacks();
+      dot->base_td             = e.driver()->effectN( 1 ).average( e );
+      dot->base_td_multiplier *= role_mult( e );
+      dot->add_child( burst_action );
+      target_debuff            = e.player->find_spell( 1305853 );
+    }
 
-      fang_cb_t( const special_effect_t& e, action_t* burst_action ) : dbc_proc_callback_t( e.player, e )
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
+    {
+      dot->execute_on_target( t );
+      get_debuff( t )->trigger();
+    }
+  };
+
+  auto cb        = new fang_cb_t( effect, burst );
+  auto burst_pct = effect.driver()->effectN( 2 ).percent();
+
+  effect.player->register_on_kill_callback( [ cb, burst, burst_pct ]( player_t* t ) {
+    if ( t->sim->event_mgr.canceled )
+      return;
+
+    if ( auto d = cb->dot->find_dot( t ); d && d->is_ticking() )
+    {
+      burst->base_dd_min = burst->base_dd_max = d->tick_damage_over_remaining_time() * burst_pct;
+      burst->execute();
+
+      for ( auto new_target : cb->dot->target_list() )
       {
-        dot                   = create_proc_action<generic_proc_t>( "umbral_malignance", e, 1305853 );
-        dot->dot_max_stack    = dot->data().max_stacks();
-        dot->base_td          = e.driver()->effectN( 1 ).average( e );
-        dot->base_td_multiplier *= role_mult( e );
-        dot->add_child( burst_action );
-
-        target_debuff = e.player->find_spell( 1305853 );
+        cb->dot->execute_on_target( new_target );
+        cb->get_debuff( new_target )->trigger();
       }
-
-      void execute( const spell_data_t*, player_t* t, action_state_t* ) override
-      {
-        dot->execute_on_target( t );
-        get_debuff( t )->trigger();
-      }
-    };
-
-    auto cb        = new fang_cb_t( effect, burst );
-    auto burst_pct = effect.driver()->effectN( 2 ).percent();
-
-    effect.player->register_on_kill_callback( [ cb, burst, burst_pct ]( player_t* t ) {
-      if ( t->sim->event_mgr.canceled )
-        return;
-
-      if ( auto d = cb->dot->find_dot( t ); d && d->is_ticking() )
-      {
-        burst->base_dd_min = burst->base_dd_max = d->tick_damage_over_remaining_time() * burst_pct;
-        burst->execute();
-
-        for ( auto new_target : cb->dot->target_list() )
-        {
-          cb->dot->execute_on_target( new_target );
-          cb->get_debuff( new_target )->trigger();
-        }
-      }
-    } );
-  }
+    }
+  } );
 }
 }  // namespace trinkets
 
