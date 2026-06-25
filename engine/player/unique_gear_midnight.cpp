@@ -3156,13 +3156,11 @@ void fang_of_umbral_malignance( special_effect_t& effect )
       dot->base_td             = e.driver()->effectN( 1 ).average( e );
       dot->base_td_multiplier *= role_mult( e );
       dot->add_child( burst_action );
-      target_debuff            = e.player->find_spell( 1305853 );
     }
 
     void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       dot->execute_on_target( t );
-      get_debuff( t )->trigger();
     }
   };
 
@@ -3181,7 +3179,6 @@ void fang_of_umbral_malignance( special_effect_t& effect )
       for ( auto new_target : cb->dot->target_list() )
       {
         cb->dot->execute_on_target( new_target );
-        cb->get_debuff( new_target )->trigger();
       }
     }
   } );
