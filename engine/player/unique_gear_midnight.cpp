@@ -3387,6 +3387,38 @@ void murder_row_fishhook( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Jan'thrazet, the Soul Fang
+// 1298085 driver
+// 1305360 Soul Fang Alacrity (haste buff)
+void janthrazet_the_soul_fang( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, "soul_fang_alacrity", effect.player->find_spell( 1305360 ) )
+    ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 2 ).average( effect ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Jan'thrazet, the Soul Fang - Venomcursed Haste
+// 1307928 driver
+// 1307927 buff (haste gain, crit/mastery/vers loss)
+void venomcursed_haste( special_effect_t& effect )
+{
+  auto haste_amt = effect.driver()->effectN( 1 ).average( effect );
+  auto loss_amt  = effect.driver()->effectN( 2 ).average( effect );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "venomcursed_haste", effect.player->find_spell( 1307927 ) )
+    ->add_stat( STAT_HASTE_RATING, haste_amt )
+    ->add_stat( STAT_CRIT_RATING, -loss_amt )
+    ->add_stat( STAT_MASTERY_RATING, -loss_amt )
+    ->add_stat( STAT_VERSATILITY_RATING, -loss_amt );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace weapons
 
 namespace armors
@@ -4325,6 +4357,8 @@ void register_special_effects()
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
   register_special_effect( 1250529, weapons::murder_row_fishhook );
+  register_special_effect( 1298085, weapons::janthrazet_the_soul_fang );
+  // register_special_effect( 1307928, weapons::venomcursed_haste );  // not yet attached to an item in PTR data
   // Armor
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
   register_special_effect( 1243883, armors::necrotic_hexweave );
