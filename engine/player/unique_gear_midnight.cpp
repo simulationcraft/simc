@@ -4357,7 +4357,10 @@ void register_special_effects()
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
   register_special_effect( 1250529, weapons::murder_row_fishhook );
+  reset_version_check();
+  set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( 1298085, weapons::janthrazet_the_soul_fang );
+  reset_version_check();
   // register_special_effect( 1307928, weapons::venomcursed_haste );  // not yet attached to an item in PTR data
   // Armor
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
