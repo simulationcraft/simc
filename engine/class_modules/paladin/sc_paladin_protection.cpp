@@ -357,7 +357,10 @@ struct avengers_shield_divine_exaction_t :public avengers_shield_base_t
                               p->talents.templar.divine_exaction->effectN( 2 ).percent() )
   {
     background = true;
-    base_multiplier += 1.0;
+    if ( p->is_ptr() )
+      base_multiplier = 1.5;  // Not sure where this comes from
+    else
+      base_multiplier += 1.0;
   }
 };
 
@@ -372,6 +375,7 @@ struct blessed_hammer_t : public paladin_spell_t
   // Blessed Hammer (Protection) ================================================
   struct blessed_hammer_tick_t : public paladin_spell_t
   {
+    unrelenting_edict_t* ue;
     blessed_hammer_tick_t( paladin_t* p ) : paladin_spell_t( "blessed_hammer_tick", p, p->find_spell( 204301 ) )
     {
       aoe        = -1;
@@ -379,6 +383,11 @@ struct blessed_hammer_t : public paladin_spell_t
       callbacks                       = false;
       radius                          = 9.0;  // Guess, must be > 8 (cons) but < 10 (HoJ)
       may_crit                        = true;
+      if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+      {
+        ue = new unrelenting_edict_t( p, "blessed_hammer" );
+        add_child( ue );
+      }
     }
     action_state_t* new_state() override
     {
@@ -404,11 +413,12 @@ struct blessed_hammer_t : public paladin_spell_t
           ->debuff.blessed_hammer->trigger( 1, s->attack_power * p()->talents.blessed_hammer->effectN( 1 ).percent() );
       if ( p()->is_ptr() && p()->talents.seal_of_reprisal->ok() )
         p()->get_target_data( s->target )->debuff.seal_of_reprisal->execute();
+      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+        ue->do_execute( s );
     }
   };
 
   blessed_hammer_tick_t* hammer;
-  unrelenting_edict_t* ue;
   double num_strikes;
 
   blessed_hammer_t( paladin_t* p, util::string_view options_str ) :
@@ -437,11 +447,6 @@ struct blessed_hammer_t : public paladin_spell_t
     add_child( hammer );
 
     triggers_higher_calling = true;
-    if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
-    {
-      ue = new unrelenting_edict_t( p, "blessed_hammer" );
-      add_child( ue );
-    }
   }
 
   action_state_t* new_state() override
@@ -503,8 +508,6 @@ struct blessed_hammer_t : public paladin_spell_t
                                       state, true );
     }
     p()->buffs.lightsmith.blessed_assurance->expire();
-    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
-      ue->do_execute( s );
   }
 };
 
@@ -1086,6 +1089,7 @@ void paladin_t::init_spells_protection()
 
   // Spec passives and useful spells
   spec.protection_paladin = find_specialization_spell( "Protection Paladin" );
+  spec.protection_paladin_2 = find_spell( 1305063 );
   mastery.divine_bulwark = find_mastery_spell( PALADIN_PROTECTION );
   mastery.divine_bulwark_2 = find_specialization_spell( "Mastery: Divine Bulwark", "Rank 2" );
 
