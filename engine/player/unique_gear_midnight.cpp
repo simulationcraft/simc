@@ -3124,19 +3124,6 @@ void vile_vial_of_volatile_venom( special_effect_t& effect )
 // 1307222 Venom Splatter
 void font_of_venomous_rage( special_effect_t& effect )
 {
-  struct venom_splatter_t : public generic_aoe_proc_t
-  {
-    venom_splatter_t( const special_effect_t& e ) :
-      generic_aoe_proc_t( e, "venom_splatter", e.player->find_spell( 1307222 ) )
-    {}
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      generic_aoe_proc_t::available_targets( tl );
-      range::erase_remove( tl, target );
-      return tl.size();
-    }
-  };
 
   struct font_channel_t : public proc_spell_t
   {
@@ -3154,10 +3141,11 @@ void font_of_venomous_rage( special_effect_t& effect )
       base_td = equip->driver()->effectN( 1 ).average( e );
       base_td_multiplier *= role_mult( e );
 
-      venom_splatter = create_proc_action<venom_splatter_t>( "venom_splatter", e );
+      venom_splatter = create_proc_action<generic_aoe_proc_t>( "venom_splatter", e, e.player->find_spell( 1307222 ) );
       venom_splatter->base_dd_min = venom_splatter->base_dd_max = equip->driver()->effectN( 2 ).average( e );
       venom_splatter->base_multiplier *= role_mult( e );
       venom_splatter->dual = true;
+      venom_splatter->target_filter_callback = secondary_targets_only();
       add_child( venom_splatter );
     }
 
