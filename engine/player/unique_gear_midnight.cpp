@@ -4378,6 +4378,8 @@ void register_special_effects()
   register_special_effect( 1297908, trinkets::font_of_venomous_rage );
   register_special_effect( 1297911, DISABLED_EFFECT );  // Font of Venomous Rage equip driver
   register_special_effect( 1292291, trinkets::gebbos_bottomless_bag );
+  register_special_effect( 1295275, trinkets::stormbound_emblem_of_dazar );
+  register_special_effect( 1294744, DISABLED_EFFECT );  // Stormbound Emblem of Dazar equip driver
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
