@@ -41,6 +41,7 @@ WINDWALKER:
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
 #include "sc_enums.hpp"
+#include "sim/profileset_control.hpp"
 
 #include <deque>
 
@@ -5509,28 +5510,28 @@ bool monk_t::validate_actor()
     return false;
   }
 
-  int expected = 13;
-  for ( const auto &hero_tree : player_sub_trees )
-  {
-    int count = as<int>( range::count_if(
-        player_traits, [ is_ptr = is_ptr(), hero_tree ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
-          if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
-            return false;
-          const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
-          if ( !trait )
-            return false;
-          return static_cast<hero_tree_e>( trait->id_sub_tree ) == hero_tree;
-        } ) );
+  // int expected = 13;
+  // for ( const auto &hero_tree : player_sub_trees )
+  // {
+  //   int count = as<int>( range::count_if(
+  //       player_traits, [ is_ptr = is_ptr(), hero_tree ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
+  //         if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
+  //           return false;
+  //         const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
+  //         if ( !trait )
+  //           return false;
+  //         return static_cast<hero_tree_e>( trait->id_sub_tree ) == hero_tree;
+  //       } ) );
 
-    // Report without counting the hidden talent that activates the subtree
-    count -= 1;
-    if ( count < expected )
-    {
-      sim->error( SEVERE, "Invalid Hero Talent tree, possibly low level. Found {} talents, expected {}.", count,
-                  expected );
-      return false;
-    }
-  }
+  //   // Report without counting the hidden talent that activates the subtree
+  //   count -= 1;
+  //   if ( count < expected )
+  //   {
+  //     sim->error( SEVERE, "Invalid Hero Talent tree, possibly low level. Found {} talents, expected {}.", count,
+  //                 expected );
+  //     return false;
+  //   }
+  // }
 
   switch ( specialization() )
   {
@@ -7018,6 +7019,12 @@ void monk_t::init_finished()
 {
   base_t::init_finished();
   parse_player_effects();
+
+  profileset_controller_t::register_controller(
+      "valid_talents", profileset_controller::create_fn_pair<profileset_control::valid_talents_t>() );
+  std::vector<std::string> rhs;
+  rhs.push_back( fmt::format( "player={},count=13", name() ) );
+  sim->profileset_controller_options.emplace( "valid_talents", rhs );
 }
 
 void monk_t::reset()
@@ -7344,6 +7351,76 @@ void monk_t::create_actions()
   base_t::create_actions();
   buff.aspect_of_harmony.construct_actions( this );
 }
+
+namespace profileset_control
+{
+valid_talents_t::valid_talents_t( sim_t *sim, unsigned int id ) : profileset_controller_t( sim, id )
+{
+}
+
+const std::string valid_talents_t::name() const
+{
+  return "valid_talents";
+}
+
+bool valid_talents_t::evaluate_post_init()
+{
+  if ( !player )
+    return true;
+
+  switch ( player->specialization() )
+  {
+    case MONK_BREWMASTER:
+    case MONK_WINDWALKER:
+      for ( const auto &hero_tree : player->player_sub_trees )
+      {
+        auto count = as<unsigned int>( range::count_if(
+            player->player_traits,
+            [ is_ptr = player->is_ptr(), hero_tree ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
+              if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
+                return false;
+              const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
+              if ( !trait )
+                return false;
+              return static_cast<hero_tree_e>( trait->id_sub_tree ) == hero_tree;
+            } ) );
+        // Report without counting the hidden talent that activates the subtree
+        count -= 1;
+        if ( count == this->count )
+          return true;
+        return false;
+      }
+    default:
+      break;
+  }
+
+  return true;
+}
+
+const std::string valid_talents_t::reason() const
+{
+  return fmt::format( "player {} does not have {} talents selected in hero tree", player->name(), count );
+}
+
+void valid_talents_t::create_options()
+{
+  add_option( opt_func( "count", [ this ]( sim_t *, util::string_view, util::string_view value ) {
+    this->count = util::to_unsigned( value );
+    return true;
+  } ) );
+  add_option( opt_func( "player", [ this ]( sim_t *sim, util::string_view, util::string_view value ) {
+    for ( auto &player : sim->player_list )
+    {
+      if ( util::str_compare_ci( player->name(), value ) )
+      {
+        this->player = player;
+        return true;
+      }
+    }
+    return false;
+  } ) );
+}
+}  // namespace profileset_control
 
 std::unique_ptr<expr_t> monk_t::create_expression( std::string_view name_str )
 {
