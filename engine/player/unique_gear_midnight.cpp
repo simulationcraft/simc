@@ -3276,6 +3276,64 @@ void font_of_venomous_rage( special_effect_t& effect )
 
   effect.execute_action = create_proc_action<font_channel_t>( "font_of_venemous_rage", effect );
 }
+
+// Stormbound Emblem of Dazar
+// 1295275 on-use driver (The King's Unyielding Wind), 2 sec channel ticking every 0.5 sec
+// 1294744 equip
+// 1294745 Haste buff
+void stormbound_emblem_of_dazar( special_effect_t& effect )
+{
+  // Each completed channel tick extends the Haste buff duration by 5sec,
+  // rather than the buff only being granted on full channel completion. 
+  // Interrupting the channel early keeps whatever duration has accumulated so far.
+  auto buff_spell = effect.player->find_spell( 1294745 );
+  auto value_spell = effect.player->find_spell( 1294744 );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, buff_spell )
+    ->set_stat_from_effect_type( A_MOD_RATING, value_spell->effectN( 1 ).average( effect ) );
+
+  struct stormbound_emblem_of_dazar_t : public proc_spell_t
+  {
+    buff_t* buff;
+
+    stormbound_emblem_of_dazar_t( const special_effect_t& e, buff_t* b )
+      : proc_spell_t( "the_kings_unyielding_wind", e.player, e.driver() ), buff( b )
+    {
+      channeled = true;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // cancel the player-ready event triggered by use_item_t
+      event_t::cancel( player->readying );
+
+      // prevent auto attacks while channeling
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_spell_t::tick( d );
+
+      buff->extend_duration_or_trigger();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
+    }
+  };
+
+  effect.execute_action =
+      create_proc_action<stormbound_emblem_of_dazar_t>( "the_kings_unyielding_wind", effect, buff );
+}
 }  // namespace trinkets
 
 namespace weapons
