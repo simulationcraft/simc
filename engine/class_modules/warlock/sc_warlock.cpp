@@ -1138,16 +1138,19 @@ void warlock_t::feast_of_souls_gain( bool from_quietus_seed )
 void warlock_t::summon_dominion_of_argus_pet( dominion_of_argus_pet_e pet )
 {
   dominion_of_argus_pet_e actual_pet = pet;
-  // Odds for each pet currently seem to be
-  // Jailer: 30%, Sacrolash: 20%, Grand Warlock Alythess: 20%, Inquisitor: 30% (last tested 2026-02-19)
-  // More testing required for more accurate rates.
-  // Probably better to do a better weighted random selection than this.
+  // Current evidence suggests a uniform flat 25% base roll among the 4 pets
+  // Grand Warlock and Sacrolash cannot be summoned while another of the same type is already active:
+  // - rolling Grand Warlock while one Grand Warlock is active redirects to Jailer
+  // - rolling Sacrolash while one Sacrolash is active redirects to Inquisitor
   if ( pet == DOA_PET_RANDOM )
   {
-    const std::array<dominion_of_argus_pet_e, 10> pets = {
-        DOA_PET_JAILER,        DOA_PET_JAILER,        DOA_PET_JAILER,     DOA_PET_SACROLASH,  DOA_PET_SACROLASH,
-        DOA_PET_GRAND_WARLOCK, DOA_PET_GRAND_WARLOCK, DOA_PET_INQUISITOR, DOA_PET_INQUISITOR, DOA_PET_INQUISITOR };
+    static constexpr std::array<dominion_of_argus_pet_e, 4> pets = { DOA_PET_JAILER, DOA_PET_INQUISITOR, DOA_PET_GRAND_WARLOCK, DOA_PET_SACROLASH };
     actual_pet = rng().range( pets );
+
+    if ( actual_pet == DOA_PET_GRAND_WARLOCK && warlock_pet_list.grand_warlock_alythess.n_active_pets() > 0 )
+      actual_pet = DOA_PET_JAILER;
+    else if ( actual_pet == DOA_PET_SACROLASH && warlock_pet_list.lady_sacrolash.n_active_pets() > 0 )
+      actual_pet = DOA_PET_INQUISITOR;
   }
 
   switch ( actual_pet )
@@ -1155,16 +1158,17 @@ void warlock_t::summon_dominion_of_argus_pet( dominion_of_argus_pet_e pet )
     case DOA_PET_JAILER:
       summons.antoran_jailer->execute();
       break;
-    case DOA_PET_SACROLASH:
-      summons.lady_sacrolash->execute();
+    case DOA_PET_INQUISITOR:
+      summons.antoran_inquisitor->execute();
       break;
     case DOA_PET_GRAND_WARLOCK:
       summons.grand_warlock_alythess->execute();
       break;
-    case DOA_PET_INQUISITOR:
-      summons.antoran_inquisitor->execute();
+    case DOA_PET_SACROLASH:
+      summons.lady_sacrolash->execute();
       break;
     default:
+      assert( false && "Unhandled dominion_of_argus_pet_e value" );
       break;
   }
 }

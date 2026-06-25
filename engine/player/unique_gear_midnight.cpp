@@ -3183,6 +3183,146 @@ void fang_of_umbral_malignance( special_effect_t& effect )
     }
   } );
 }
+
+// Gebbo's Bottomless Bag
+// 1292291 driver
+//  e1 seashell (1292299)   : crit, ramps up over duration (also a self-dot via e5, ignored)
+//  e2 scroll (1306870)     : mastery, decaying to 0 over duration
+//  e3 totem (1292300)      : vers, starting bank
+//  e4 gralstone (1308012)  : haste
+//  e6 salmon (1308013)     : all 4 secondaries
+//  e7 voidfin (1308014)    : all 4 secondaries, debuff
+//  e8 totem (1292300)      : vers, per-cast decrement
+void gebbos_bottomless_bag( special_effect_t& effect )
+{
+  constexpr int default_ticks = 12;
+
+  auto salmon = create_buff<stat_buff_t>( effect.player, "50lb_midnight_salmon",
+                                          effect.player->find_spell( 1308013 ) );
+  for ( auto s : secondary_ratings )
+    salmon->add_stat( s, effect.driver()->effectN( 6 ).average( effect ) );
+
+  auto gralstone = create_buff<stat_buff_t>( effect.player, "slick_and_slimy_gralstone",
+                                              effect.player->find_spell( 1308012 ) )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 4 ).average( effect ) );
+
+  auto voidfin = create_buff<stat_buff_t>( effect.player, "rotting_voidfin",
+                                            effect.player->find_spell( 1308014 ) );
+  for ( auto s : secondary_ratings )
+    voidfin->add_stat( s, -effect.driver()->effectN( 7 ).average( effect ) );
+
+  // reverse + period ticks the stacks down 1/sec, draining to 0 by the time it expires
+  auto scroll = create_buff<stat_buff_t>( effect.player, "tattered_tortollan_scroll",
+                                           effect.player->find_spell( 1306870 ) )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) / default_ticks )
+    ->set_max_stack( default_ticks )
+    ->set_reverse( true )
+    ->set_period( 1_s );
+
+  // non-reverse + period ramps the stacks up 1/sec instead
+  auto seashell = create_buff<stat_buff_t>( effect.player, "seriously_sharp_seashell",
+                                             effect.player->find_spell( 1292299 ) )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
+    ->set_max_stack( default_ticks )
+    ->set_period( 1_s );
+
+  // drains per cast, until the bank is empty
+  auto totem_decrement = effect.driver()->effectN( 8 ).average( effect );
+  auto totem_stacks = std::max(
+      1, as<int>( std::lround( effect.driver()->effectN( 3 ).average( effect ) / totem_decrement ) ) );
+  auto totem = create_buff<stat_buff_t>( effect.player, "brittle_torga_totem",
+                                          effect.player->find_spell( 1292300 ) )
+    ->add_stat_from_effect_type( A_MOD_RATING, totem_decrement )
+    ->set_max_stack( totem_stacks )
+    ->set_reverse( true );
+
+  struct totem_drain_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* totem;
+
+    totem_drain_cb_t( const special_effect_t& e, buff_t* t ) : dbc_proc_callback_t( e.player, e ), totem( t )
+    {}
+
+    void execute( const spell_data_t*, player_t*, action_state_t* s ) override
+    {
+      if ( s && s->action && !s->action->background )
+        totem->decrement();
+    }
+  };
+
+  auto totem_drain = new special_effect_t( effect.player );
+  totem_drain->name_str = "brittle_torga_totem_drain";
+  totem_drain->spell_id = 1292300;
+  totem_drain->set_can_proc_from_procs( false );
+  effect.player->special_effects.push_back( totem_drain );
+
+  auto totem_drain_cb = new totem_drain_cb_t( *totem_drain, totem );
+  totem_drain_cb->activate_with_buff( totem, true );
+
+  std::array<buff_t*, 6> artifacts{ { salmon, gralstone, voidfin, scroll, seashell, totem } };
+
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ artifacts ]( dbc_proc_callback_t*, const spell_data_t*, player_t* p, action_state_t* ) {
+      p->rng().range( artifacts )->trigger();
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1297908 driver
+// 1297911 equip driver
+// 1307222 Venom Splatter
+void font_of_venomous_rage( special_effect_t& effect )
+{
+
+  struct font_channel_t : public proc_spell_t
+  {
+    action_t* venom_splatter;
+
+    font_channel_t( const special_effect_t& e ) :
+      proc_spell_t( "font_of_venemous_rage", e.player, e.driver() )
+    {
+      unsigned equip_id = 1297911;
+      auto equip = find_special_effect( e.player, equip_id );
+      assert( equip && "Font of Venomous Rage missing equip effect" );
+
+      channeled = true;
+
+      base_td = equip->driver()->effectN( 1 ).average( e );
+      base_td_multiplier *= role_mult( e );
+
+      venom_splatter = create_proc_action<generic_aoe_proc_t>( "venom_splatter", e, e.player->find_spell( 1307222 ) );
+      venom_splatter->base_dd_min = venom_splatter->base_dd_max = equip->driver()->effectN( 2 ).average( e );
+      venom_splatter->base_multiplier *= role_mult( e );
+      venom_splatter->dual = true;
+      venom_splatter->target_filter_callback = secondary_targets_only();
+      add_child( venom_splatter );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      event_t::cancel( player->readying );
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_spell_t::tick( d );
+      venom_splatter->execute_on_target( d->target );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+      proc_spell_t::last_tick( d );
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
+    }
+  };
+
+  effect.execute_action = create_proc_action<font_channel_t>( "font_of_venemous_rage", effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -4224,6 +4364,9 @@ void register_special_effects()
   register_special_effect( 1295058, trinkets::wavecallers_seastone );
   register_special_effect( 1293316, trinkets::vile_vial_of_volatile_venom );
   register_special_effect( 1295179, DISABLED_EFFECT );  // Vile Vial of Volatile Venom equip driver
+  register_special_effect( 1297908, trinkets::font_of_venomous_rage );
+  register_special_effect( 1297911, DISABLED_EFFECT );  // Font of Venomous Rage equip driver
+  register_special_effect( 1292291, trinkets::gebbos_bottomless_bag );
   register_special_effect( 1295219, trinkets::fang_of_umbral_malignance );
   reset_version_check();
   // Weapons
