@@ -3287,7 +3287,9 @@ void stormbound_emblem_of_dazar( special_effect_t& effect )
   // rather than the buff only being granted on full channel completion. 
   // Interrupting the channel early keeps whatever duration has accumulated so far.
   auto buff_spell = effect.player->find_spell( 1294745 );
+  assert( buff_spell->ok() && "Stormbound Emblem of Dazar buff spell not found" );
   auto value_spell = effect.player->find_spell( 1294744 );
+  assert( value_spell->ok() && "Stormbound Emblem of Dazar value spell not found" );
 
   auto buff = create_buff<stat_buff_t>( effect.player, buff_spell )
     ->set_stat_from_effect_type( A_MOD_RATING, value_spell->effectN( 1 ).average( effect ) );
