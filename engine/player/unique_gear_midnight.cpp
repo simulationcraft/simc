@@ -3675,6 +3675,32 @@ void rotmires_sporeheart( special_effect_t& effect )
 }
 }  // namespace armors
 
+namespace items
+{
+// Venomcursed <stat>, shared effect appearing on weapons, armor, and jewelry
+// Crit    : driver 1307906 / buff 1307910
+// Mastery : driver 1307923 / buff 1307922
+// Haste   : driver 1307928 / buff 1307927
+// <stat> increased, other 3 secondaries decreased
+custom_cb_t venomcursed( unsigned buff_id, stat_e primary )
+{
+  return [ = ]( special_effect_t& effect ) {
+    auto main_value    = effect.driver()->effectN( 1 ).average( effect );
+    auto penalty_value = effect.driver()->effectN( 2 ).average( effect );
+
+    auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( buff_id ) )
+      ->add_stat( primary, main_value );
+
+    for ( auto s : secondary_ratings )
+      if ( s != primary )
+        buff->add_stat( s, -penalty_value );
+
+    effect.custom_buff = buff;
+    new dbc_proc_callback_t( effect.player, effect );
+  };
+}
+}  // namespace items
+
 namespace sets
 {
 // 1244005 driver
