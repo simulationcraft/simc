@@ -1159,6 +1159,13 @@ public:
   {
   } shuffled_rng;
 
+  // Accumulated proc objects
+  struct accumulated_rngs_t
+  {
+    // Annihilator
+    accumulated_rng_t* voidfall = nullptr;
+  } accumulated_rng;
+
   // Special
   struct actives_t
   {
@@ -2959,14 +2966,12 @@ struct voidfall_building_trigger_t : public BASE
     if ( !BASE::dh()->talent.annihilator.voidfall->ok() )
       return;
 
-    if ( !BASE::rng().roll( BASE::dh()->talent.annihilator.voidfall->effectN( 3 ).percent() ) )
+    // can't build (or roll) while spending is up
+    if ( BASE::dh()->buff.voidfall_spending->up() )
       return;
 
-    // can't gain building while spending is up
-    if ( BASE::dh()->buff.voidfall_spending->up() )
-    {
+    if ( !BASE::dh()->accumulated_rng.voidfall->trigger() )
       return;
-    }
 
     BASE::dh()->proc.voidfall_from_builder->occur();
     BASE::dh()->buff.voidfall_building->trigger(
@@ -10441,6 +10446,10 @@ void demon_hunter_t::init_rng()
     default:
       break;
   }
+
+  // Accumulated proc objects
+  accumulated_rng.voidfall = get_accumulated_rng(
+      "voidfall", prd::find_constant( talent.annihilator.voidfall->effectN( 3 ).percent() ) );
 
   player_t::init_rng();
 }
