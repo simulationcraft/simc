@@ -4362,6 +4362,12 @@ void register_special_effects()
   register_special_effect( 1285138, armors::sporecallers_blooming_loop );
   register_special_effect( 1285139, armors::rotmires_sporeheart );
   reset_version_check();
+  // Items
+  set_min_version( wowv_t( 12, 1, 0 ) );
+  register_special_effect( 1307906, items::venomcursed( 1307910, STAT_CRIT_RATING ) );    // venomcursed critical strike
+  register_special_effect( 1307923, items::venomcursed( 1307922, STAT_MASTERY_RATING ) );  // venomcursed mastery
+  register_special_effect( 1307928, items::venomcursed( 1307927, STAT_HASTE_RATING ) );    // venomcursed haste
+  reset_version_check();
   // Sets
   register_special_effect( 1281574, sets::voidlight_bindings );
   register_special_effect( 1281581, DISABLED_EFFECT );  // voidlight bindings equip effect
