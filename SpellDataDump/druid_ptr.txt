@@ -19247,8 +19247,9 @@ Effects          :
 #1 (id=1193144)  : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 63 | Misc Value 2: 9 | Target: Self (1)
                    Modified By: Berserk (343223 effect#1), Whirling Stars (468743 effect#4)
-#2 (id=1193145)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Mass Blooming overrides Regrowth
-                   Base Value: 474149 | Scaled Value: 474149 | Misc Value: 8936 | Target: Self (1)
+#2 (id=1193145)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Mass Blooming overrides Wild Growth
+                   Base Value: 474149 | Scaled Value: 474149 | Misc Value: 48438 | Target: Self (1)
+Hotfixed         : Misc Value (8936 -> 48438)
 #3 (id=1193146)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
