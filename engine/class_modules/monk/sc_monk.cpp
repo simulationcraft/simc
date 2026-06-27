@@ -1548,19 +1548,14 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         add_parse_entry( persistent_multiplier_effects )
             .set_buff( player->buff.counterstrike )
             .set_value( effect.percent() )
-            .set_eff( &effect )
-            .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE,
-                                 [ & ]( action_state_t * ) { p()->buff.counterstrike->expire(); } );
+            .set_eff( &effect );
 
       if ( const auto &effect = player->talent.master_of_harmony.balanced_stratagem_physical->effectN( 1 );
            player->talent.master_of_harmony.balanced_stratagem->ok() )
         add_parse_entry( persistent_multiplier_effects )
             .set_buff( player->buff.balanced_stratagem_physical )
             .set_value( effect.percent() )
-            .set_eff( &effect )
-            .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE, [ & ]( action_state_t * ) {
-              p()->buff.balanced_stratagem_physical->consume( this );
-            } );
+            .set_eff( &effect );
 
       if ( const auto &effect = player->sets->set( MONK_WINDWALKER, MID2, B4 )->effectN( 1 ).trigger()->effectN( 2 );
            effect.ok() )
@@ -1568,9 +1563,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
             .set_buff( player->buff.mid2_ww_4pc )
             .set_value( effect.percent() )
             .set_use_stacks( true )
-            .set_eff( &effect )
-            .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE,
-                                 [ & ]( action_state_t * ) { p()->buff.mid2_ww_4pc->consume( this ); } );
+            .set_eff( &effect );
     }
 
     result_amount_type report_amount_type( const action_state_t * ) const override
@@ -1599,6 +1592,11 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
       p()->buff.shuffle->trigger(
           timespan_t::from_seconds( p()->baseline.brewmaster.spinning_crane_kick_rank_2->effectN( 1 ).base_value() ) );
+
+      p()->buff.counterstrike->expire();
+      if ( p()->buff.balanced_stratagem_physical )
+        p()->buff.balanced_stratagem_physical->expire();
+      p()->buff.mid2_ww_4pc->expire();
     }
 
     void reset() override
