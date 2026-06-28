@@ -256,7 +256,7 @@ struct avengers_shield_base_t : public paladin_spell_t
     }
 
     // Technically this should be in execute(), but we only know on impact if Avenger's Shield critted.
-    if ( s->chain_target == 0 )
+    if ( triggers_apex && s->chain_target == 0 )
     {
       if ( p()->is_ptr() )
         make_event<delayed_execute_on_target_event_t>(
