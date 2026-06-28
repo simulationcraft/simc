@@ -35,7 +35,8 @@ struct sequence_t : public action_t
   bool ready() override;
   bool target_ready( player_t* target ) override;
   void init_finished() override;
-  
+  void sequence_add_fn( std::string& a_str, std::string& t_str ) const override;
+
   void restart();
   bool can_restart();
 };

@@ -691,15 +691,22 @@ class deck_rng_wrapper_t
   { return m_actor; }
 
   bool trigger() const
-  { assert( m_rng ); return m_rng->trigger(); }
+  {
+      if ( m_rng == nullptr )
+      {
+          return false;
+      }
+
+      return m_rng->trigger();
+  }
 
   void create_options()
   {
     std::string success_str = fmt::format( "shaman.{}_deck_success", m_name );
     std::string total_str = fmt::format( "shaman.{}_deck_total", m_name );
 
-    m_actor->add_option( opt_uint( success_str, m_total, 0U, 10000U ) );
-    m_actor->add_option( opt_int( total_str, m_success, 1U, 10000U ) );
+    m_actor->add_option( opt_uint( total_str, m_total, 0U, 10000U ) );
+    m_actor->add_option( opt_int( success_str, m_success, 0U, 10000U ) );
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) const
@@ -732,6 +739,11 @@ class deck_rng_wrapper_t
   void build()
   {
     auto params = m_param_fn( *this );
+
+    if ( std::get<1>( params ) == 0 )
+    {
+        return;
+    }
 
     if ( std::get<0>( params ) < std::get<1>( params ) * ( std::get<2>( params ) + 1 ) )
     {
@@ -1381,7 +1393,6 @@ public:
     buff_t* feral_spirit_maelstrom;
 
     buff_t* crash_lightning;     // Buffs stormstrike and lava lash after using crash lightning
-    buff_t* cl_crash_lightning;  // Buffs crash lightning with extra damage, after using chain lightning
     buff_t* hot_hand;
     buff_t* lightning_shield;
     buff_t* stormsurge;
@@ -1887,6 +1898,8 @@ public:
     rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> deeply_rooted_elements;
     rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> tempest_enh;
     rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> tempest_ele;
+    rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> storm_unleashed;
+    rng::deck_rng_wrapper_t<rng::dre_deck_rng_t> asc_dw;
 
     rng_obj_t( shaman_t* s ) :
       awakening_storms( nullptr ), lively_totems( nullptr ), totemic_rebound( nullptr ),
@@ -1894,7 +1907,9 @@ public:
       lively_totems_ptr( nullptr ),
         deeply_rooted_elements( "dre", s ),
         tempest_enh( "tempest", s ),
-        tempest_ele( "tempest_ele", s )
+        tempest_ele( "tempest_ele", s ),
+        storm_unleashed( "storm_unleashed", s ),
+        asc_dw( "asc_dw", s )
     { }
   } rng_obj;
 
@@ -2121,8 +2136,6 @@ public:
 
   void moving() override;
   void invalidate_cache( cache_e c ) override;
-  double non_stacking_movement_modifier() const override;
-  double stacking_movement_modifier() const override;
   double composite_attribute( attribute_e ) const override;
   double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
@@ -2200,16 +2213,6 @@ struct ascendance_buff_t : public buff_t
   void ascendance( attack_t* mh, attack_t* oh );
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
-};
-
-struct cl_crash_lightning_buff_t : public buff_t
-{
-  shaman_t* shaman;
-  cl_crash_lightning_buff_t( shaman_t* p ) : buff_t( p, "cl_crash_lightning", p->find_spell(333964) ),
-      shaman( p )
-  {
-    set_default_value_from_effect_type( A_ADD_PCT_LABEL_MODIFIER, P_GENERIC );
-  }
 };
 
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t( target, p )
@@ -3104,9 +3107,14 @@ public:
           this->p()->gain.aftershock );
       this->p()->proc.aftershock->occur();
     }
-
+  }
+  
+  void impact( action_state_t* s ) override
+  {
+    ab::impact( s );
+    
     if ( ( this->execute_state->action->id == 188389 ) ||
-      ( this->is_variant( spell_variant::NORMAL ) && !this->background) )
+         ( this->is_variant( spell_variant::NORMAL ) && !this->background && s->chain_target == 0 ) )
     {
       this->p()->trigger_ancestor( ancestor_trigger, this->execute_state );
     }
@@ -4615,11 +4623,8 @@ struct windstrike_attack_t : public stormstrike_attack_t
   windstrike_attack_t( util::string_view n, shaman_t* player, const spell_data_t* s, weapon_t* w,
                        strike_variant sf = strike_variant::NORMAL )
     : stormstrike_attack_t( n, player, s, w, sf )
-  { }
-
-  double composite_target_armor( player_t* ) const override
   {
-    return 0.0;
+    ignores_armor = true;
   }
 };
 
@@ -4630,7 +4635,7 @@ struct windlash_t : public shaman_attack_t
   windlash_t( util::string_view n, const spell_data_t* s, shaman_t* player, weapon_t* w, double stv )
     : shaman_attack_t( n, player, s ), swing_timer_variance( stv )
   {
-    background = repeating = may_miss = may_dodge = may_parry = true;
+    background = repeating = may_miss = may_dodge = may_parry = ignores_armor = true;
     may_proc_ability_procs = may_glance = special = false;
     weapon                                        = w;
     weapon_multiplier                             = 1.0;
@@ -4642,11 +4647,6 @@ struct windlash_t : public shaman_attack_t
   proc_types proc_type() const override
   {
     return PROC1_MELEE;
-  }
-
-  double composite_target_armor( player_t* ) const override
-  {
-    return 0.0;
   }
 
   timespan_t execute_time() const override
@@ -5884,15 +5884,6 @@ struct crash_lightning_t : public shaman_attack_t
     return shaman_attack_t::create_expression( expression_str );
   }
 
-  double action_multiplier() const override
-  {
-    double m = shaman_attack_t::action_multiplier();
-
-    m *= 1.0 + p()->buff.cl_crash_lightning->stack_value();
-
-    return m;
-  }
-
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = shaman_attack_t::composite_da_multiplier( state );
@@ -5919,8 +5910,6 @@ struct crash_lightning_t : public shaman_attack_t
         p()->buff.converging_storms->trigger( num_targets_hit );
       }
     }
-
-    p()->buff.cl_crash_lightning->expire();
 
     p()->buff.tww2_enh_4pc->decrement( p()->buff.tww2_enh_4pc_damage->check() );
     p()->buff.tww2_enh_4pc_damage->expire();
@@ -6466,11 +6455,6 @@ struct chain_lightning_t : public chained_base_t
       p()->buff.wind_gust->trigger();
     }
 
-    if ( num_targets_hit - 1 > 0 && p()->specialization() == SHAMAN_ENHANCEMENT )
-    {
-      p()->buff.cl_crash_lightning->trigger( num_targets_hit );
-    }
-
     // Track last cast for LB / CL because of Thorim's Invocation
     if ( p()->talent.thorims_invocation.ok() && ( is_variant( spell_variant::NORMAL ) || is_variant( spell_variant::PRIMORDIAL_STORM ) ) )
     {
@@ -6888,13 +6872,14 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( !is_variant( spell_variant::NORMAL ) )
     {
-      aoe = -1;
       background = true;
       base_execute_time = 0_s;
       cooldown->duration = 0_s;
+      ancestor_trigger = ancestor_cast::DISABLED;
 
       if ( is_variant( spell_variant::ASCENDANCE ) )
       {
+        aoe = 6;
         auto asc_action = p()->find_action( "ascendance" );
         if ( p()->talent.ascendance->ok() && asc_action )
         {
@@ -6904,7 +6889,13 @@ struct lava_burst_t : public shaman_spell_t
 
       if ( is_variant( spell_variant::PURGING_FLAMES ) )
       {
-        aoe = 5;
+        // If anyone knows which spelldata to use here, that would be great.
+        // Currently there exists a stackable ingame bug to apply this ms gain
+        // to the base lvb cast AND ALSO with additional stacks decrease ms
+        // gain further to 1 and 0. Which makes me believe this would need to
+        // be an ms gain multiplier instead of a fixed value. But this is now
+        // still better than not lowering ms gain.
+        maelstrom_gain = 2;
         if ( auto vb = p()->find_action( "voltaic_blaze" ) )
         {
           vb->add_child( this );
@@ -7569,7 +7560,7 @@ struct earthquake_damage_base_t : public shaman_spell_t
     shaman_spell_t( name, player, spell ), mote_buffed( false ), parent( p )
   {
     aoe        = -1;
-    ground_aoe = background = true;
+    ground_aoe = background = ignores_armor = true;
   }
 
   // Snapshot base state from the parent to grab proper persistent multiplier for all damage
@@ -7586,9 +7577,6 @@ struct earthquake_damage_base_t : public shaman_spell_t
       shaman_spell_t::snapshot_state( s, rt );
     }
   }
-
-  double composite_target_armor( player_t* ) const override
-  { return 0; }
 
   double composite_target_multiplier( player_t* t ) const override
   {
@@ -8203,6 +8191,8 @@ public:
       double proc_chance =
           std::max( 0.0, 0.6-std::pow(1.16, -2*(p()->lava_surge_attempts_normalized-5)));
 
+      proc_chance *= 1.0 + p()->talent.mystic_knowledge->effectN( 1 ).percent();
+
       if ( p()->spec.restoration_shaman->ok() )
       {
         proc_chance += p()->spec.restoration_shaman->effectN( 7 ).percent();
@@ -8247,12 +8237,9 @@ public:
   void execute() override
   {
     shaman_spell_t::execute();
-    if ( is_variant( spell_variant::NORMAL ) )
+    if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
     {
-      if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
-      {
-        p()->summon_ancestor();
-      }
+      p()->summon_ancestor();
     }
   }
 };
@@ -10568,6 +10555,8 @@ void shaman_t::create_options()
   rng_obj.tempest_enh.create_options();
   rng_obj.tempest_ele.create_options();
   rng_obj.deeply_rooted_elements.create_options();
+  rng_obj.asc_dw.create_options();
+  rng_obj.storm_unleashed.create_options();
 }
 
 // shaman_t::create_profile ================================================
@@ -11113,7 +11102,7 @@ void shaman_t::init_spells()
 
   talent.maelstrom_supremacy    = find_talent_spell( talent_tree::HERO, "Maelstrom Supremacy" );
   talent.final_calling          = find_talent_spell( talent_tree::HERO, "Final Calling" );
-  talent.mystic_knowledge       = find_talent_spell( talent_tree::HERO, "Mystic Calling" );
+  talent.mystic_knowledge       = find_talent_spell( talent_tree::HERO, "Mystic Knowledge" );
 
   talent.ancestral_swiftness    = find_talent_spell( talent_tree::HERO, "Ancestral Swiftness" );
 
@@ -11169,6 +11158,11 @@ void shaman_t::init_spells()
 
   deregister_passive_spell( talent.overcharge );
 
+  // custom overrides
+  // Ancestor Lava Burst, Chain Lightning, Elemental Blast are now affected by Elemental Fury, but spelldata does not reflect this.
+  register_passive_affect_list( talent.elemental_fury, affect_list_t( 1 ).add_spell( 447419, 447425, 465717 ) );
+
+  // general parsing
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
@@ -11517,22 +11511,43 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
     }
   }
 
-  // TODO-midnight-talent: What RNG process to use here?
   if ( talent.ascendance.ok() && !buff.ascendance->check() && stacks > 0 )
   {
-    double proc_chance = spell.ascendance_mw_passive->effectN( 1 ).base_value() * 0.1 * 0.01 * stacks;
-    sim->print_debug(" {} attempts to proc doom_winds on {}, mw_stacks={}, proc_chance={}%",
-      name(), state->action->name(), stacks, proc_chance * 100.0 );
-    if ( rng().roll( proc_chance ) )
+    auto success = false;
+    for ( auto draw = 0U; draw < as<unsigned>( stacks ); ++draw )
+    {
+      if ( rng_obj.asc_dw.trigger() )
+      {
+        assert( !success );
+        success = true;
+      }
+    }
+
+    sim->print_debug("{} attempts to proc doom_winds on {}, mw_stacks={}, success={}",
+      name(), state->action->name(), stacks, success );
+
+    if ( success )
     {
       action.doom_winds_asc->execute_on_target( state->target );
     }
   }
 
-  if ( talent.storm_unleashed_1.ok() &&
-    rng().roll( talent.storm_unleashed_1->effectN( 1 ).base_value() * 0.1 * 0.01 * stacks ) )
+  if ( talent.storm_unleashed_1.ok() && stacks > 0 )
   {
-    buff.storm_unleashed->trigger();
+    auto success = false;
+    for ( auto draw = 0U; draw < as<unsigned>( stacks ); ++draw )
+    {
+      if ( rng_obj.storm_unleashed.trigger() )
+      {
+        assert( !success );
+        success = true;
+      }
+    }
+
+    if ( success )
+    {
+      buff.storm_unleashed->trigger();
+    }
   }
 
   if ( talent.totemic_momentum.ok() && stacks > 0 && buff.hot_hand->check() )
@@ -12013,7 +12028,7 @@ void shaman_t::trigger_thunderstrike_ward( const action_state_t* state )
     return;
   }
 
-  if ( !rng().roll( options.thunderstrike_ward_proc_chance ) )
+  if ( !rng().roll( options.thunderstrike_ward_proc_chance * ( 1.0 + talent.storm_infusion->effectN( 2 ).percent()) ) )
   {
     return;
   }
@@ -12424,8 +12439,6 @@ void shaman_t::create_buffs()
       : buff_stack_behavior::DEFAULT
     )
     ->set_chance( talent.crash_lightning.ok() ? 1.0 : 0.0 );
-  // Buffs crash lightning with extra damage, after using chain lightning
-  buff.cl_crash_lightning = new cl_crash_lightning_buff_t( this );
 
   buff.hot_hand = make_buff( this, "hot_hand", find_spell( 215785 ) )
     ->set_chance( talent.hot_hand.ok()
@@ -12655,7 +12668,7 @@ void shaman_t::init_rng()
         .build();
   }
 
-    if ( talent.tempest.ok() && specialization() == SHAMAN_ELEMENTAL )
+  if ( talent.tempest.ok() && specialization() == SHAMAN_ELEMENTAL )
   {
       unsigned int successes_per_deck = 2;
       double tempest_chance           = talent.tempest->effectN( 1 ).percent() * 0.01;
@@ -12667,6 +12680,32 @@ void shaman_t::init_rng()
           // Default: 333 total cards
             auto n_total = obj.opt_total() > 0 ? obj.opt_total() : deck_size;
           return std::make_tuple( n_total, n_draws, 90U );
+        } )
+        .build();
+  }
+
+  if ( talent.storm_unleashed_1.ok() )
+  {
+    rng_obj.storm_unleashed
+        .set_param_fn( []( rng::deck_rng_wrapper_t<rng::dre_deck_rng_t>& obj ) {
+          // Default: 5 successful procs per deck
+          auto n_draws = obj.opt_success() != -1 ? as<unsigned>( obj.opt_success() ) : 5U;
+          // Default: 250 total cards
+          auto n_total = obj.opt_total() > 0 ? obj.opt_total() : 250U;
+          return std::make_tuple( n_total, n_draws, 10U );
+        } )
+        .build();
+  }
+
+  if ( talent.ascendance.ok() )
+  {
+    rng_obj.asc_dw
+        .set_param_fn( []( rng::deck_rng_wrapper_t<rng::dre_deck_rng_t>& obj ) {
+          // Default: 3 successful procs per deck
+          auto n_draws = obj.opt_success() != -1 ? as<unsigned>( obj.opt_success() ) : 3U;
+          // Default: 600 total cards
+          auto n_total = obj.opt_total() > 0 ? obj.opt_total() : 600U;
+          return std::make_tuple( n_total, n_draws, 10U );
         } )
         .build();
   }
@@ -12725,6 +12764,8 @@ bool shaman_t::validate_actor()
 void shaman_t::apply_player_effects()
 {
   // Shared
+  eff::source_eff_builder_t( buff.ghost_wolf ).build( this );
+  eff::source_eff_builder_t( buff.spirit_walk ).build( this );
 
   // Enhancement
   eff::source_eff_builder_t( buff.flurry ).set_flag( IGNORE_STACKS ).build( this );
@@ -13308,32 +13349,6 @@ void shaman_t::moving()
   }
 }
 
-// shaman_t::non_stacking_movement_modifier ========================================
-
-double shaman_t::non_stacking_movement_modifier() const
-{
-  double ms = parse_player_effects_t::non_stacking_movement_modifier();
-
-  if ( buff.spirit_walk->up() )
-    ms = std::max( buff.spirit_walk->data().effectN( 1 ).percent(), ms );
-
-  return ms;
-}
-
-// shaman_t::stacking_movement_modifier ============================================
-
-double shaman_t::stacking_movement_modifier() const
-{
-  double ms = parse_player_effects_t::stacking_movement_modifier();
-
-  if ( buff.ghost_wolf->up() )
-  {
-    ms *= 1.0 + buff.ghost_wolf->data().effectN( 2 ).percent();
-  }
-
-  return ms;
-}
-
 double shaman_t::composite_attribute( attribute_e attr ) const
 {
   auto a = player_t::composite_attribute( attr );
@@ -13565,7 +13580,7 @@ public:
   void mw_consumer_stack_header( report::sc_html_stream& os )
   {
     auto columns = std::max( p.buff.maelstrom_weapon->data().max_stacks(),
-      as<unsigned>( p.talent.overflowing_maelstrom->effectN( 1 ).base_value() ) ) + 1;
+      as<unsigned>( p.talent.raging_maelstrom->effectN( 1 ).base_value() ) ) + 1;
 
     os << "<table class=\"sc sort\" style=\"float: left;margin-right: 10px;\">\n"
        << "<thead>\n"
@@ -13584,7 +13599,7 @@ public:
   void mw_consumer_stack_contents( report::sc_html_stream& os )
   {
     auto columns = std::max( p.buff.maelstrom_weapon->data().max_stacks(),
-      as<unsigned>( p.talent.overflowing_maelstrom->effectN( 1 ).base_value() ) ) + 1;
+      as<unsigned>( p.talent.raging_maelstrom->effectN( 1 ).base_value() ) ) + 1;
 
     int row = 0;
     std::vector<double> row_totals( columns, 0.0 );
@@ -14055,18 +14070,20 @@ struct shaman_module_t : public module_t
     return true;
   }
 
-  void init( player_t* p ) const override
+  void register_actor_initializers( sim_t* sim ) const override
   {
-    p->buffs.bloodlust = make_buff( p, "bloodlust", p->find_spell( 2825 ) )
+    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + offset(), []( player_t* p ) {
+      p->buffs.bloodlust = make_buff( p, "bloodlust", p->find_spell( 2825 ) )
+          ->set_cooldown( 0_ms )
           ->set_max_stack( 1 )
           ->set_default_value_from_effect_type( A_HASTE_ALL )
           ->add_invalidate( CACHE_HASTE );
 
-    p->buffs.exhaustion = make_buff( p, "exhaustion", p->find_spell( 57723 ) )->set_max_stack( 1 )->set_quiet( true );
+      p->buffs.exhaustion = make_buff( p, "exhaustion", p->find_spell( 57723 ) )
+          ->set_max_stack( 1 )
+          ->set_quiet( true );
+    }, "create_buffs_shaman" );
   }
-
-  void static_init() const override
-  { }
 
   void register_hotfixes() const override
   {
@@ -14077,12 +14094,6 @@ struct shaman_module_t : public module_t
       .modifier( 5779 )
       .verification_value( 0 );
   }
-
-  void combat_begin( sim_t* ) const override
-  { }
-
-  void combat_end( sim_t* ) const override
-  { }
 };
 
 shaman_t::pets_t::pets_t( shaman_t* s ) :

@@ -104,13 +104,35 @@ struct avengers_shield_base_t : public paladin_spell_t
 
   struct glory_of_the_vanguard_t : public paladin_spell_t
   {
+    struct glory_of_the_vanguard_aoe_t : public paladin_spell_t
+    {
+      glory_of_the_vanguard_aoe_t(util::string_view n, paladin_t* p)
+        : paladin_spell_t(n, p, p->spells.glory_of_the_vanguard)
+      {
+        background             = true;
+        aoe                    = -1;
+        target_filter_callback = secondary_targets_only();
+        base_multiplier        = .5;  // Doesn't seem to be in spell data
+      }
+
+    };
+    glory_of_the_vanguard_aoe_t* gotv_aoe;
     glory_of_the_vanguard_t( util::string_view n, paladin_t* p )
       : paladin_spell_t( n, p, p->spells.glory_of_the_vanguard )
     {
       background = true;
       // Glory of the Vanguard hits every enemy in a line. For now, just assume it hits everything
       // Theoretically, it also has a chance to miss completely, for whatever reasons. Drunk Paladins.
-      aoe = -1;
+      if ( p->is_ptr() )
+      {
+        aoe      = 1;
+        gotv_aoe = new glory_of_the_vanguard_aoe_t( std::string( n ) + "_aoe", p );
+        add_child( gotv_aoe );
+      }
+      else
+      {
+        aoe = -1;
+      }
     }
     void execute() override
     {
@@ -122,6 +144,12 @@ struct avengers_shield_base_t : public paladin_spell_t
       }
       if ( p()->talents.glory_of_the_vanguard_3->ok() )
         p()->buffs.valor->trigger();
+    }
+    void impact(action_state_t* s) override
+    {
+      paladin_spell_t::impact( s );
+      if ( p()->is_ptr() )
+        gotv_aoe->execute_on_target( s->target, s->result_amount );
     }
   };
 
@@ -141,7 +169,6 @@ struct avengers_shield_base_t : public paladin_spell_t
       base_t::init();
       // disable the snapshot_flags for all multipliers
       snapshot_flags = update_flags = 0;
-      snapshot_flags |= STATE_VERSATILITY;
     }
   };
 
@@ -227,6 +254,17 @@ struct avengers_shield_base_t : public paladin_spell_t
       damage *= p()->talents.refining_fire->effectN( 1 ).percent();
       residual_action::trigger( refining_fire_dot, s->target, damage );
     }
+
+    // Technically this should be in execute(), but we only know on impact if Avenger's Shield critted.
+    if ( s->chain_target == 0 )
+    {
+      if ( p()->is_ptr() )
+        make_event<delayed_execute_on_target_event_t>(
+            *sim, p(), glory_of_the_vanguard, s->target,
+            s->result_amount * p()->talents.glory_of_the_vanguard_1->effectN( 1 ).percent(), 300_ms );
+      else
+        make_event<delayed_execute_event_t>( *sim, p(), glory_of_the_vanguard, s->target, 300_ms );
+    }
   }
 
   double action_multiplier() const override
@@ -254,7 +292,7 @@ struct avengers_shield_base_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    if ( p()->talents.strength_in_adversity->ok() )
+     if ( p()->talents.strength_in_adversity->ok() )
     {
       // Buff overwrites previous buff, even if it was stronger
       p()->buffs.strength_in_adversity->expire();
@@ -269,8 +307,6 @@ struct avengers_shield_base_t : public paladin_spell_t
     {
       if (!isApex3)
         p()->buffs.vanguard->decrement();
-
-      make_event<delayed_execute_event_t>( *sim, p(), glory_of_the_vanguard, execute_state->target, 300_ms );
     }
   }
 };
@@ -321,7 +357,10 @@ struct avengers_shield_divine_exaction_t :public avengers_shield_base_t
                               p->talents.templar.divine_exaction->effectN( 2 ).percent() )
   {
     background = true;
-    base_multiplier += 1.0;
+    if ( p->is_ptr() )
+      base_multiplier = 1.5;  // Not sure where this comes from
+    else
+      base_multiplier += 1.0;
   }
 };
 
@@ -336,6 +375,7 @@ struct blessed_hammer_t : public paladin_spell_t
   // Blessed Hammer (Protection) ================================================
   struct blessed_hammer_tick_t : public paladin_spell_t
   {
+    unrelenting_edict_t* ue;
     blessed_hammer_tick_t( paladin_t* p ) : paladin_spell_t( "blessed_hammer_tick", p, p->find_spell( 204301 ) )
     {
       aoe        = -1;
@@ -343,6 +383,11 @@ struct blessed_hammer_t : public paladin_spell_t
       callbacks                       = false;
       radius                          = 9.0;  // Guess, must be > 8 (cons) but < 10 (HoJ)
       may_crit                        = true;
+      if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+      {
+        ue = new unrelenting_edict_t( p, "blessed_hammer" );
+        add_child( ue );
+      }
     }
     action_state_t* new_state() override
     {
@@ -366,6 +411,10 @@ struct blessed_hammer_t : public paladin_spell_t
       // To Do: Investigate refresh behaviour
       td( s->target )
           ->debuff.blessed_hammer->trigger( 1, s->attack_power * p()->talents.blessed_hammer->effectN( 1 ).percent() );
+      if ( p()->is_ptr() && p()->talents.seal_of_reprisal->ok() )
+        p()->get_target_data( s->target )->debuff.seal_of_reprisal->execute();
+      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+        ue->do_execute( s );
     }
   };
 
@@ -419,6 +468,19 @@ struct blessed_hammer_t : public paladin_spell_t
     paladin_spell_t::execute();
     // Grand Crusader can proc on cast, but not on impact
     p()->trigger_grand_crusader();
+    if ( p()->is_ptr() )
+    {
+      if ( p()->buffs.lightsmith.masterwork_weapon->up() )
+      {
+        p()->buffs.lightsmith.masterwork_weapon->decrement();
+        p()->cast_lesser_armament( 1, LESSER_WEAPON );
+      }
+      if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
+      {
+        p()->buffs.lightsmith.masterwork_bulwark->decrement();
+        p()->cast_lesser_armament( 1, LESSER_BULWARK );
+      }
+    }
   }
   void impact( action_state_t* s ) override
   {
@@ -520,6 +582,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   using state_t = paladin_action_state_t<hammer_of_the_righteous_data_t>;
   struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
   {
+    unrelenting_edict_t* ue;
     hammer_of_the_righteous_aoe_t( paladin_t* p )
       : paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p->find_spell( 88263 ) )
     {
@@ -530,6 +593,11 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       aoe                              = -1;
       trigger_gcd                      = 0_ms;  // doesn't incur GCD (HotR does that already)
       target_filter_callback           = secondary_targets_only();
+      if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+      {
+        ue = new unrelenting_edict_t( p, "hammer_of_the_righteous_aoe" );
+        add_child( ue );
+      }
     }
 
     action_state_t* new_state() override
@@ -545,9 +613,18 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       da *= 1.0 + s_->blessed_assurance_mult;
       return da;
     }
+    void impact(action_state_t* s) override
+    {
+      paladin_melee_attack_t::impact( s );
+      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+        ue->do_execute( s );
+      if ( p()->is_ptr() && p()->talents.seal_of_reprisal->ok() )
+        p()->get_target_data( s->target )->debuff.seal_of_reprisal->execute();
+    }
   };
 
   hammer_of_the_righteous_aoe_t* hotr_aoe;
+  unrelenting_edict_t* ue;
   hammer_of_the_righteous_t( paladin_t* p, util::string_view options_str )
       : paladin_melee_attack_t( "hammer_of_the_righteous", p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Hammer of the Righteous" ) )
   {
@@ -563,6 +640,11 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     cooldown->charges = 2;
     cooldown->hasted        = true;
     triggers_higher_calling = true;
+    if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+    {
+      ue = new unrelenting_edict_t( p, "hammer_of_the_righteous" );
+      add_child( ue );
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -585,6 +667,19 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       if ( hotr_aoe->target != execute_state->target )
         hotr_aoe->target_cache.is_valid = false;
     }
+    if ( p()->is_ptr() )
+    {
+      if ( p()->buffs.lightsmith.masterwork_weapon->up() )
+      {
+        p()->buffs.lightsmith.masterwork_weapon->decrement();
+        p()->cast_lesser_armament( 1, LESSER_WEAPON );
+      }
+      if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
+      {
+        p()->buffs.lightsmith.masterwork_bulwark->decrement();
+        p()->cast_lesser_armament( 1, LESSER_BULWARK );
+      }
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -599,6 +694,10 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       hotr_aoe->schedule_execute( state );
     }
     p()->buffs.lightsmith.blessed_assurance->expire();
+    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+      ue->do_execute( s );
+    if ( p()->is_ptr() && p()->talents.seal_of_reprisal->ok() )
+      p()->get_target_data( s->target )->debuff.seal_of_reprisal->execute();
   }
 
   action_state_t* new_state() override
@@ -715,83 +814,27 @@ void buffs::sentinel_decay_buff_t::expire_override( int expiration_stacks, times
 
 // paladin_t::target_mitigation ===============================================
 
-void paladin_t::target_mitigation( school_e school,
-                                   result_amount_type    dt,
-                                   action_state_t* s )
+void paladin_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
 {
   player_t::target_mitigation( school, dt, s );
 
-  // various mitigation effects, Ardent Defender goes last due to absorb/heal mechanics
-
-  // Passive sources (Sanctuary)
-  s->result_amount *= 1.0 + passives.sanctuary->effectN( 1 ).percent();
-
-  if ( passives.aegis_of_light_2->ok() )
-    s->result_amount *= 1.0 + passives.aegis_of_light_2->effectN( 1 ).percent();
-
-  if ( sim->debug && s->action && ! s->target->is_enemy() && ! s->target->is_add() )
-    sim->print_debug( "Damage to {} after passive mitigation is {}", s->target->name(), s->result_amount );
-
-  // Damage Reduction Cooldowns
-
-  // Sentinel
-  if (buffs.sentinel->up())
+  // Mastery 'block' of periodic damage (absorbed)
+  if ( s->block_result == BLOCK_RESULT_BLOCKED && dt == result_amount_type::DMG_OVER_TIME )
   {
-    s->result_amount *= 1.0 + buffs.sentinel->get_damage_reduction_mod();
-  }
+    auto block_value = s->target_block_value;
+    auto block_resist = util::calculate_armor_resist( block_value, s->action->player->current.armor_coeff );
+    auto block_amount = s->result_amount * block_resist;
 
-  // Guardian of Ancient Kings
-  if ( buffs.guardian_of_ancient_kings->up() )
-  {
-    s->result_amount *= 1.0 + buffs.guardian_of_ancient_kings->data().effectN( 3 ).percent();
-  }
+    // update the relevant counters
+    iteration_absorb_taken += block_amount;
+    s->self_absorb_amount += block_amount;
+    s->result_amount -= block_amount;
+    s->result_absorbed = s->result_amount;
 
-  // Divine Protection
-  if ( buffs.divine_protection->up() )
-  {
-    s->result_amount *= 1.0 + buffs.divine_protection->data().effectN( 1 ).percent();
-  }
-
-  if ( buffs.ardent_defender->up() )
-  {
-    double adReduce = buffs.ardent_defender->data().effectN( 1 ).percent();
-    s->result_amount *= 1.0 + adReduce;
-  }
-
-  if ( talents.blessing_of_dusk->ok() )
-  {
-    // ToDo Fluttershy: Fix or remove
-    s->result_amount *= 1.0 - talents.blessing_of_dusk->effectN( 1 ).percent();
-  }
-
-  if ( buffs.devotion_aura->up() )
-  { 
-    double devoRed = buffs.devotion_aura->value();
-    if ( talents.lightsmith.shared_resolve->ok() && ( buffs.lightsmith.sacred_weapon->up() || buffs.lightsmith.holy_bulwark->up() ) )
+    if ( sim->debug )
     {
-      devoRed *= 1 + buffs.lightsmith.holy_bulwark->data().effectN( 1 ).percent(); // Not sure why this is in Holy Bulwark's spell data
+      sim->print_debug( "{} Divine Bulwark absorbs {} damage from block on DOT {}.", *this, block_amount, *s->action );
     }
-    s->result_amount *= 1.0 + devoRed;
-  }
-
-  if (buffs.shield_of_the_righteous->up())
-  {
-    s->result_amount *= 1.0 + buffs.shield_of_the_righteous->default_value;
-  }
-
-  paladin_td_t* td = get_target_data( s->action->player );
-
-  if (td->debuff.empyrean_hammer->up())
-  {
-    s->result_amount *= 1.0 + td->debuff.empyrean_hammer->data().effectN( 3 ).percent();
-  }
-
-  // Divine Bulwark and consecration reduction
-  if ( standing_in_consecration() && specialization() == PALADIN_PROTECTION )
-  {
-    // ToDo Fluttershy: Get the 0.0 from 188370 effect 3
-    double reduction = 0.0 + talents.sanctuary->effectN( 2 ).percent();
-    s->result_amount *= 1.0 + reduction;
   }
 
   // Blessed Hammer
@@ -825,11 +868,6 @@ void paladin_t::target_mitigation( school_e school,
     }
   }
 
-  // Other stuff
-  if ( sim->debug && s->action && ! s->target->is_enemy() && ! s->target->is_add() )
-    sim->print_debug( "Damage to {} after mitigation effects is {}", s->target->name(), s->result_amount );
-
-
   // Ardent Defender
   if ( buffs.ardent_defender->check() )
   {
@@ -862,6 +900,28 @@ void paladin_t::target_mitigation( school_e school,
     if ( sim->debug && s->action && ! s->target->is_enemy() && ! s->target->is_add() )
       sim->print_debug( "Damage to {} after Ardent Defender (death-save) is {}", s->target->name(), s->result_amount );
   }
+}
+
+block_result_e paladin_t::target_block_resolution( const action_state_t* s ) const
+{
+  double block_chance = 0.0;
+
+  // Normal block for direct physical attacks
+  if ( s->result_type == result_amount_type::DMG_DIRECT && s->action->get_school() == SCHOOL_PHYSICAL &&
+       s->action->type == ACTION_ATTACK )
+  {
+    block_chance = cache.block();
+  }
+  // Spell block
+  else if ( s->action->get_school() != SCHOOL_PHYSICAL && s->action->type == ACTION_SPELL )
+  {
+    block_chance = cache.mastery() * mastery.divine_bulwark_2->effectN( 1 ).mastery_value();
+  }
+
+  if ( rng().roll( block_chance ) )
+    return BLOCK_RESULT_BLOCKED;
+  else
+    return BLOCK_RESULT_UNBLOCKED;
 }
 
 void paladin_t::trigger_grand_crusader( grand_crusader_source /* source */ )
@@ -927,10 +987,11 @@ action_t* paladin_t::create_action_protection( util::string_view name, util::str
 
 void paladin_t::create_buffs_protection()
 {
-  buffs.ardent_defender =
-      make_buff( this, "ardent_defender", find_spell( 31850 ) )
-        ->set_cooldown( 0_ms ); // handled by the ability
+  buffs.ardent_defender = make_buff( this, "ardent_defender", find_spell( 31850 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
+        ->set_cooldown( 0_ms );  // handled by the ability
   buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_spell( 86659 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
         ->set_cooldown( 0_ms );
 //HS and BH fake absorbs
   buffs.divine_bulwark_absorb = make_buff<absorb_buff_t>( this, "divine_bulwark", mastery.divine_bulwark );
@@ -1028,6 +1089,7 @@ void paladin_t::init_spells_protection()
 
   // Spec passives and useful spells
   spec.protection_paladin = find_specialization_spell( "Protection Paladin" );
+  spec.protection_paladin_2 = find_spell( 1305063 );
   mastery.divine_bulwark = find_mastery_spell( PALADIN_PROTECTION );
   mastery.divine_bulwark_2 = find_specialization_spell( "Mastery: Divine Bulwark", "Rank 2" );
 
@@ -1040,6 +1102,7 @@ void paladin_t::init_spells_protection()
     spec.judgment_4 = find_rank_spell( "Judgment", "Rank 4" );
 
     spells.judgment_debuff = find_spell( 197277 );
+    spells.standing_in_consecration_buff = find_spell( 188370 );
   }
 
   spec.shield_of_the_righteous = find_class_spell( "Shield of the Righteous" );
@@ -1047,9 +1110,7 @@ void paladin_t::init_spells_protection()
 
   passives.riposte             = find_specialization_spell( "Riposte" );
   passives.sanctuary           = find_specialization_spell( "Sanctuary" );
-
   passives.aegis_of_light      = find_specialization_spell( "Aegis of Light" );
-  passives.aegis_of_light_2    = find_rank_spell( "Aegis of Light", "Rank 2" );
 
   spells.sentinel = find_spell( 389539 );
   spells.refining_fire_tick = find_spell( 469882 );

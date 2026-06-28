@@ -275,11 +275,11 @@ void dot_t::copy( player_t* destination, dot_copy_e copy_type, action_t* copy_ac
 
   other_dot->current_action = copy_action;
 
-  // Default behavior simply copies the current stat of the source dot
+  // Default behavior simply copies the current state of the source dot
   // (including duration) to the target and starts it
   if ( copy_type == DOT_COPY_START )
   {
-    other_dot->trigger( current_duration );
+    other_dot->trigger( remains() );
   }
   // If we don't start the copied dot from the beginning, we need to bypass a
   // lot of the dot scheduling logic, and simply do the minimum amount possible
@@ -295,11 +295,19 @@ void dot_t::copy( player_t* destination, dot_copy_e copy_type, action_t* copy_ac
     {
       old_remains = other_dot->remains();
 
-      // The new duration is computed through our normal refresh duration
-      // method. End result (by default) will be source_remains + min(
-      // target_remains, 0.3 * source_remains )
-      new_duration = copy_action->calculate_dot_refresh_duration(
+      if ( copy_type == DOT_COPY_CLONE_NO_REFRESH )
+      {
+        // No additional duration granted from the normal refresh process
+        new_duration = remains();
+      }
+      else
+      {
+        // The new duration is computed through our normal refresh duration
+        // method. End result (by default) will be source_remains + min(
+        // target_remains, 0.3 * source_remains )
+        new_duration = copy_action->calculate_dot_refresh_duration(
           other_dot, remains() );
+      }
 
       assert( other_dot->end_event && other_dot->tick_event );
 
@@ -615,7 +623,16 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         return dot->max_stack;
       } );
   }
+  else if ( name_str == "active_dots" )
+  {
+    return make_dot_expr( "dot_active_dots", 
+      []( dot_t* dot ) {
+      if ( !dot || !dot->current_action )
+        return 0u;
 
+      return dot->source->get_active_dots( dot->current_action->get_dot( nullptr ) );
+    } );
+  }
 
   return nullptr;
 }
@@ -830,24 +847,23 @@ void dot_t::schedule_tick()
       // FIXME: We can probably use "source" instead of "action->player"
 
       current_action->player->channeling = nullptr;
-      current_action->player->gcd_ready =
-          sim.current_time() + current_action->gcd();
+      current_action->player->gcd_ready = sim.current_time() + current_action->gcd();
       current_action->set_target( target );
+
       if ( !current_action->quiet )
-      {
-        current_action->player->sequence_add( current_action, target, [ this ]( std::string&, std::string& t_str ) {
-          t_str = current_action->target->name_str;
-        } );
-      }
+        current_action->player->sequence_add( current_action, target );
+
       current_action->execute();
-      if ( current_action->result_is_hit(
-               current_action->execute_state->result ) )
+
+      if ( current_action->result_is_hit( current_action->execute_state->result ) )
       {
         current_action->player->channeling = current_action;
         current_action->player->schedule_cwc_ready( 0_ms );
       }
       else
+      {
         cancel();
+      }
     }
     else
     {

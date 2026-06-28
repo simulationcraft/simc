@@ -857,7 +857,8 @@ class ItemDataGenerator(DataGenerator):
                 fields += item2.field('classs', 'subclass')
                 fields += item.field('bonding', 'delay', 'dmg_range', 'item_damage_modifier')
                 fields += item_stats_fields(item.id)
-                fields += item.field('class_mask', 'race_mask')
+                fields += item.field('class_mask')
+                fields += [ '%#.16x' % (item.race_mask_1 + (item.race_mask_2 << 32)) ]
                 fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
                 fields += item.field('gem_props', 'socket_bonus', 'item_set', 'id_curve', 'id_artifact' )
                 fields += item2.ref('id_crafting_quality').field('tier')
@@ -1003,6 +1004,7 @@ class SpellDataGenerator(DataGenerator):
     _spell_id_list = [
         (
          134735,                    # PvP Rules Enabled
+         154797, 154797,            # Touch of Elune (Night Elf racial) day/night spell
          109871, 109869,            # No'Kaled the Elements of Death - LFR
          107785, 107789,            # No'Kaled the Elements of Death - Normal
          109872, 109870,            # No'Kaled the Elements of Death - Heroic
@@ -1080,6 +1082,8 @@ class SpellDataGenerator(DataGenerator):
          268954, 268955, 268953,
          # Mag'har Orc Ancestral Call buffs
          274739, 274740, 274741, 274742,
+         # Dark Iron Dwarf Fireblood buff display spell
+         273104,
          # 8.0 Galley Banquet food buffs
          259448, 259449, 259452, 259453,
          # 8.0 Bountiful Captain's Feast food buffs
@@ -1534,6 +1538,7 @@ class SpellDataGenerator(DataGenerator):
          1263768, # Lightspire Core
          1263614, # Wraps of Cosmic Madness
          1255685, 1255687, 1255688, # crucible of erratic energies
+         1292299, 1292300, 1306870, 1308012, 1308013, 1308014, # Gebbo's Bottomless Bag
         ),
 
         # Warrior:
@@ -1801,7 +1806,7 @@ class SpellDataGenerator(DataGenerator):
             ( 459002, 0 ),          # Outlaw 11.0 Set Bonus damage spell
             ( 467059, 0 ),          # Outlaw Crackshot Dispatch clone damage spell
             ( 1219264, 0 ),         # Assassination TWW2 4pc set bonus buff spell
-            
+
             # Midnight
             ( 1214933, 0 ),         # Roll the Bones - One of a Kind
             ( 1214934, 0 ),         # Roll the Bones - Double Trouble
@@ -2273,6 +2278,8 @@ class SpellDataGenerator(DataGenerator):
           ( 1276283, 0 ),   # Dominion of Argus: Antoran Inquisitor
           ( 1276182, 0 ),   # Dominion of Argus: Antoran Jailer
           ( 1276282, 0 ),   # Dominion of Argus: Doommaiden (Maybe Unused?)
+          ( 1292384, 0 ),   # Dominion of Argus: Antoran Jailer soul barrage
+          ( 1292391, 0 ),   # Dominion of Argus: Antoran Jailer soul barrage
         ),
 
         # Monk:
@@ -2399,7 +2406,7 @@ class SpellDataGenerator(DataGenerator):
 
           # Master of Harmony
           ( 451299, 0 ), # Mantra of Tenacity Chi Cocoon
-
+          ( 1270990, 0 ), # Potential Energy Buff
         ),
 
         # Druid:
@@ -2487,6 +2494,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1245455, 2 ), # Cull Damage
           ( 1266301, 2 ), # Consume Soul Heal
           ( 1223423, 2 ), # Consume Soul Missile
+          ( 1292047, 2 ), # Spontaneous Immolation
 
           # Annihilator
 
@@ -2975,14 +2983,15 @@ class SpellDataGenerator(DataGenerator):
             mask_race_category = self.race_mask_by_skill(skill_id)
 
             # Make sure there's a class or a race for an ability we are using
-            if not ability.mask_class and not ability.mask_race and not mask_class_category and not mask_race_category:
+            _mask_race = ability.mask_race_1 + (ability.mask_race_2 << 32)
+            if not ability.mask_class and not _mask_race and not mask_class_category and not mask_race_category:
                 continue
 
             spell = ability.ref('id_spell')
             if not spell.id:
                 continue
 
-            self.process_spell(spell.id, ids, ability.mask_class or mask_class_category, ability.mask_race or mask_race_category)
+            self.process_spell(spell.id, ids, ability.mask_class or mask_class_category, _mask_race or mask_race_category)
 
         # Get specialization skills from SpecializationSpells and masteries from ChrSpecializations
         for spec_spell in self.db('SpecializationSpells').values():
@@ -3400,7 +3409,7 @@ class SpellDataGenerator(DataGenerator):
             spell = self.db('SpellName')[id]
 
             # Unused hotfix IDs: 1, 2, 5, 6, 7, 54
-            # MAX hotfix id: 58
+            # MAX hotfix id: 60
             hotfix = HotfixDataRecord()
             power_count = 0
 
@@ -3470,8 +3479,10 @@ class SpellDataGenerator(DataGenerator):
             fields += category.field('dmg_class')
             hotfix.add(category, ('dmg_class', 47))
 
-            fields += spell.child('SpellTargetRestrictions').field('max_affected_targets')
+            fields += spell.child('SpellTargetRestrictions').field('max_affected_targets', 'cone', 'width')
             hotfix.add(spell.child('SpellTargetRestrictions'), ('max_affected_targets', 48))
+            hotfix.add(spell.child('SpellTargetRestrictions'), ('cone', 59))
+            hotfix.add(spell.child('SpellTargetRestrictions'), ('width', 60))
 
             duration_entry = misc.ref('id_duration')
             fields += duration_entry.field('duration_1')
@@ -3853,11 +3864,10 @@ class RacialSpellGenerator(DataGenerator):
         for v in data:
             # Ensure that all racial spells have a race mask associated with
             # them. Currently, pandaren racial spells lack one.
-            _mask = v.mask_race
-            if _mask == 0:
-                _mask = util.race_mask(skill = v.id_skill)
-
-            fields = [v.field_format('mask_race')[0] % _mask]
+            if v.mask_race_1 == 0 and v.mask_race_2 == 0:
+                fields = [ '%#.16x' % util.race_mask(skill = v.id_skill) ]
+            else:
+                fields = [ '%#.16x' % (v.mask_race_1 + (v.mask_race_2 << 32)) ]
             fields += v.field('mask_class')
             fields += v.ref('id_spell').field('id', 'name')
             self.output_record(fields)
@@ -4051,9 +4061,24 @@ class SetBonusListGenerator(DataGenerator):
             'tier'   : 'MID_VB'
         },
         {
+            'name'   : 'umbra_weavers_portent',
+            'bonuses': [ 1332 ],
+            'tier'   : 'MID_UWP'
+        },
+        {
             'name'   : 'midnight_season_1',
             'bonuses': [ 1978, 1979, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990 ],
             'tier'   : 'MID1'
+        },
+        {
+            'name'   : 'midnight_season_2',
+            'bonuses': [ 2055, 2056, 2057, 2058, 2059, 2060, 2061, 2062, 2063, 2064, 2065, 2066, 2067 ],
+            'tier'   : 'MID2'
+        },
+        {
+            'name'   : 'bite_of_zuljan',
+            'bonuses': [ 2070 ],
+            'tier'   : 'MID_BOZ'
         }
     ]
 
@@ -4373,7 +4398,7 @@ class PowerTypeGenerator(DataGenerator):
 
             cls_mask = 0
             for _cls in self.db('ChrClassesXPowerTypes').values():
-                if _cls.type == entry.type:
+                if _cls.type == entry.type and _cls.id_parent < len(self._class_masks):
                     cls_mask |= self._class_masks[ _cls.id_parent ]
 
             fields += ['{:#06x}'.format(cls_mask)]
@@ -5024,7 +5049,7 @@ class ExpectedStatGenerator(DataGenerator):
             length = len(data))
 
         for es in sorted(data, key = lambda e: e.id_parent):
-            fields = es.field('id_parent', 'creature_auto_attack_dps', 'creature_armor',
+            fields = es.field('id_parent', 'creature_health', 'creature_auto_attack_dps', 'creature_armor',
                               'player_primary_stat', 'player_secondary_stat',
                               'armor_constant', 'creature_spell_damage')
             self.output_record(fields)
@@ -5043,7 +5068,7 @@ class ExpectedStatModGenerator(DataGenerator):
             length = len(data))
 
         for esm in sorted(data, key = lambda e: (e[1], e[0].id)):
-            fields = esm[0].field('id', 'mod_creature_auto_attack_dps', 'mod_creature_armor',
+            fields = esm[0].field('id', 'mod_creature_health', 'mod_creature_auto_attack_dps', 'mod_creature_armor',
                                   'mod_player_primary_stat', 'mod_player_secondary_stat',
                                   'mod_armor_constant', 'mod_creature_spell_damage')
             fields += [str(esm[1])]
@@ -5194,7 +5219,7 @@ class ItemScalingConfigGenerator(DataGenerator):
             length = len(data) if data else 1)
 
         for entry in data:
-            fields = entry.field('id', 'item_offset_curve_id', 'item_level', 'player_level')
+            fields = entry.field('id', 'item_offset_curve_id', 'item_level', 'player_level', 'squish_era_id')
             self.output_record(fields)
 
         self.output_footer()
@@ -5212,6 +5237,26 @@ class ItemOffsetCurveGenerator(DataGenerator):
         for entry in data:
             fields = entry.field('id', 'id_curve', 'offset')
             self.output_record(fields)
+
+        self.output_footer()
+
+class ContentTuningGenerator(DataGenerator):
+    def generate(self, data = None):
+        content_tuning_db = self.db('ContentTuning')
+        data = sorted(content_tuning_db.values(), key=lambda e: e.id)
+
+        self.output_header(
+            header = 'Content Tuning data',
+            type = 'content_tuning_data_t',
+            array = 'content_tuning',
+            length = len(data) if data else 1)
+
+        for entry in data:
+            record = entry.field('id', 'flags', 'id_expansion', 'min_level_squish', 'max_level_squish', 'i_level')
+            self.output_record(record)
+
+        if not data:
+            self.output_record('')
 
         self.output_footer()
 

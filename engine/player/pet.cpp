@@ -368,7 +368,7 @@ void pet_t::trigger_callbacks( proc_types pt, proc_types2 pt2, action_t* action,
   // currently only works for pets and guardians.
   if ( type == PLAYER_GUARDIAN || type == PLAYER_PET )
   {
-    action_callback_t::trigger( owner->callbacks.pet_procs[ pt ][ pt2 ], action->proc_data, state->target, state,
+    action_callback_t::trigger( owner->callbacks.pet_procs[ pt ][ pt2 ], action->proc_data, this, state->target, state,
                                 pt_type );
   }
 }

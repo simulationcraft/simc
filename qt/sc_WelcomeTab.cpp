@@ -10,6 +10,10 @@
 
 #include <QTimer>
 
+#if ( QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 ) )
+#include <QWebEngineSettings>
+#endif
+
 SC_WelcomeTabWidget_WebEngine::SC_WelcomeTabWidget_WebEngine( SC_MainWindow* parent )
   : SC_WebEngineView( parent ), welcome_uri(), welcome_timer( new QTimer( this ) )
 {
@@ -25,6 +29,10 @@ SC_WelcomeTabWidget_WebEngine::SC_WelcomeTabWidget_WebEngine( SC_MainWindow* par
   }
   welcome_uri = "file:///" + welcomeFile;
   qDebug() << "welcome_uri: " << welcome_uri << "\n";
+
+#if ( QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 ) )
+  settings()->setAttribute( QWebEngineSettings::LocalContentCanAccessRemoteUrls, true );
+#endif
 
   welcome_timer->setSingleShot( true );
   welcome_timer->setInterval( 500 );

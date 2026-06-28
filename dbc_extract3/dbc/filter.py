@@ -1,5 +1,6 @@
 from collections import defaultdict
 import logging
+import math
 
 from dbc import db, util, constants
 
@@ -47,13 +48,13 @@ class RacialSpellSet(DataSet):
         return list(set(v.id_spell for v in self.get()))
 
 class ActiveClassSpellSet(DataSet):
-    def get_trigger_spells(self, effect, set_):
+    def get_trigger_spells(self, spell_id, effect, set_):
         if effect.trigger_spell == 0:
             return set_
 
         for e in effect.ref('trigger_spell').children('SpellEffect'):
-            if e.trigger_spell not in set_:
-                set_ = self.get_trigger_spells(e, set_)
+            if e.trigger_spell != spell_id and e.trigger_spell not in set_:
+                set_ = self.get_trigger_spells(e.trigger_spell, e, set_)
 
         set_.add(effect.trigger_spell)
         return set_
@@ -94,7 +95,7 @@ class ActiveClassSpellSet(DataSet):
                 continue
 
             for effect in data.ref('spell_id').children('SpellEffect'):
-                trigger_spells = self.get_trigger_spells(effect, trigger_spells)
+                trigger_spells = self.get_trigger_spells(data.spell_id, effect, trigger_spells)
 
             if data.spell_id in trigger_spells:
                 continue
@@ -112,7 +113,7 @@ class ActiveClassSpellSet(DataSet):
                 continue
 
             for effect in data.ref('id_spell').children('SpellEffect'):
-                trigger_spells = self.get_trigger_spells(effect, trigger_spells)
+                trigger_spells = self.get_trigger_spells(data.id_spell, effect, trigger_spells)
 
             if data.id_spell in trigger_spells:
                 continue
@@ -179,7 +180,7 @@ class PetActiveSpellSet(ActiveClassSpellSet):
                 continue
 
             for effect in data.ref('id_spell').children('SpellEffect'):
-                trigger_spells = self.get_trigger_spells(effect, trigger_spells)
+                trigger_spells = self.get_trigger_spells(data.id_spell, effect, trigger_spells)
 
             entry = (class_id, data.id_spell)
 
@@ -325,6 +326,10 @@ class TraitSet(DataSet):
                 for data in _trait_skills
         )
 
+        # 12.0.7 omnium folio
+        if 1186 in self.db('TraitTree'):
+            _trait_trees[1186] = (self.db('TraitTree')[1186], 0)
+
         # Map TraitTreeNodeGroups to "tree indices" based on the trait tree currency used
         _trait_node_group_map = dict()
         for entry in self.db('TraitTreeXTraitCurrency').values():
@@ -458,7 +463,7 @@ class TraitSet(DataSet):
             )
 
             for node in group['nodes'].values():
-                node_class_id = util.class_id(player_skill=_trait_trees[node['node'].id_parent][1])
+                node_class_id = class_id if class_id else util.class_id(player_skill=_trait_trees[node['node'].id_parent][1])
 
                 node_specs = set(_spec_map.get(cond.id_spec_set, 0)
                     for cond in node['cond'] if cond.type == 1
@@ -468,12 +473,17 @@ class TraitSet(DataSet):
                     for cond in node['cond'] if cond.type == 2
                 )
 
+                # tree type enum: 0 = invald, 1 = class, 2 = spec, 3 = hero, 4 = selection, 5 = max, 6 = expansion
                 # tree selection nodes are type 3
                 if node['node'].type == 3:
                     tree_index = 4
                 # hero tree nodes have a non-zero TraitNode.id_trait_sub_tree
                 elif node['node'].id_trait_sub_tree != 0:
                     tree_index = 3
+                # 12.0.7 omnium folio traits
+                elif node['node'].id_trait_tree == 1186:
+                    tree_index = 6
+                    node_class_id = 0
 
                 for entry, db2_id in node['entries']:
                     key = entry.id
@@ -485,7 +495,7 @@ class TraitSet(DataSet):
                     _traits[key]['entry'] = entry
                     _traits[key]['definition'] = definition
                     _traits[key]['spell'] = definition.ref('id_spell')
-                    _traits[key]['class_'] = class_id if class_id else node_class_id
+                    _traits[key]['class_'] = node_class_id
                     _traits[key]['specs'] |= group_specs | node_specs
                     _traits[key]['specs'].discard(0)
                     _traits[key]['starter'] |= group_starter | node_starter
@@ -770,6 +780,11 @@ class ExpectedStatModSet(DataSet):
         xpac = maps[0].id_expansion
         maps = [m for m in maps if m.id_expansion == xpac]
 
+        # blizzard added The Dummy Dome in the 12.1 PTR, which is a raid instance without an associated journal
+        # so we'll filter that one out for the moment
+        # TODO: make this more elegant
+        maps = [m for m in maps if m.id != 3105]
+
         # assume the latest raid has the highest order index in JournalTierXInstance for the map's JournalInstan ce
         maps.sort(key = lambda e: e.child_ref('JournalInstance').child_refs('JournalTierXInstance')[0].order, reverse = True)
         map_id = maps[0].id
@@ -805,18 +820,17 @@ class ExpectedStatModSet(DataSet):
                     mod_ids.append([e, c[1]])
                     break
             else:
-                # check if it's m+ season for the current expansion
-                if e.id_parent == dungeon_id[0] and e.ref('id_mythic_plus_season').id_expansion == xpac:
+                if e.id_parent == dungeon_id[0]:
                     mod_d_ids.append([e, dungeon_id[1]])
 
         # assume highest mythic plus season id is the current season
-        mod_d_ids.sort(key = lambda e: e[0].id_mythic_plus_season, reverse = True)
-        mod_d_ids = [
-            e for e in mod_d_ids
-                if e[0].id_mythic_plus_season == mod_d_ids[0][0].id_mythic_plus_season
-        ]
+        season = max(max(e[0].id_mythic_plus_season_min, e[0].id_mythic_plus_season_max) for e in mod_d_ids)
+        def in_bounds(e):
+            min_season = e[0].id_mythic_plus_season_min or -math.inf
+            max_season = e[0].id_mythic_plus_season_max or  math.inf
+            return min_season <= season < max_season
 
-        mod_ids += mod_d_ids
+        mod_ids += [e for e in mod_d_ids if in_bounds(e)]
 
         # fill in results
         for entry in self.db('ExpectedStatMod').values():

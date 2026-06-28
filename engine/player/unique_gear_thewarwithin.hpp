@@ -18,6 +18,7 @@ namespace unique_gear::thewarwithin
 {
 void register_special_effects();
 void register_target_data_initializers( sim_t& );
+void register_actor_initializers( sim_t& );
 void register_hotfixes();
 action_t* create_action( player_t*, std::string_view, std::string_view );
 double writhing_mul( player_t* );

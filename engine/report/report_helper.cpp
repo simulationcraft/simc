@@ -264,11 +264,7 @@ std::string tooltip_parser_t::parse()
               if ( !has_spell )
                 has_spell = player->find_specialization_spell( n )->ok();
               if ( !has_spell )
-                has_spell = player->find_talent_spell( talent_tree::CLASS, n )->ok();
-              if ( !has_spell )
-                has_spell = player->find_talent_spell( talent_tree::SPECIALIZATION, n )->ok();
-              if ( !has_spell )
-                has_spell = player->find_talent_spell( talent_tree::HERO, n )->ok();
+                has_spell = report_helper::find_talent_spell( spell->id(), *player )->ok();
             }
             replacement_text = has_spell ? "true" : "false";
           }
@@ -746,4 +742,32 @@ void report_helper::collect_aps( const stats_t* stats, double& amount, double& a
   for ( const auto& s : stats->children )
     if ( stats->type == s->type )
       collect_aps( s, amount, amount_pct );
+}
+
+const spell_data_t* report_helper::find_talent_spell( std::string_view name, const player_t& p )
+{
+  auto class_id = util::class_id( p.type );
+  auto spec = p.specialization();
+
+  auto _trait = trait_data_t::find( talent_tree::CLASS, name, class_id, spec, p.is_ptr(), true );
+  if ( _trait == &trait_data_t::nil() )
+    _trait = trait_data_t::find( talent_tree::SPECIALIZATION, name, class_id, spec, p.is_ptr(), true );
+  if ( _trait == &trait_data_t::nil() )
+    _trait = trait_data_t::find( talent_tree::HERO, name, class_id, spec, p.is_ptr(), true );
+
+  if ( _trait->id_spell )
+    return p.find_spell( _trait->id_spell );
+  else
+    return spell_data_t::not_found();
+}
+
+const spell_data_t* report_helper::find_talent_spell( unsigned spell_id, const player_t& p )
+{
+  auto _traits = trait_data_t::find_by_spell( talent_tree::INVALID, spell_id, util::class_id( p.type ),
+                                              p.specialization(), p.is_ptr() );
+
+  if ( !_traits.empty() && _traits.front()->id_spell )
+    return p.find_spell( _traits.front()->id_spell );
+  else
+    return spell_data_t::not_found();
 }

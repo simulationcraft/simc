@@ -67,6 +67,8 @@ struct variable_t : public action_t
 
   bool action_ready() override;
 
+  void sequence_add_fn( std::string& a_str, std::string& t_str ) const override;
+
   static constexpr std::pair<action_var_e, std::string_view> operations[] = {
     { OPERATION_SET,    "set"    },
     { OPERATION_PRINT,  "print"  },

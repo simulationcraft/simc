@@ -31,7 +31,7 @@ struct proc_event_t : public event_t
 #endif
 
   proc_event_t( dbc_proc_callback_t* c, const spell_data_t* spell, player_t* target, action_state_t* state,
-                proc_trigger_type_e type )
+                [[maybe_unused]] proc_trigger_type_e type )
     : event_t( *c->listener->sim ),
       cb( c ),
       spell( spell ),

@@ -5,7 +5,7 @@ level=90
 race=mechagnome
 role=tank
 position=front
-talents=CoPAAAAAAAAAAAAAAAAAAAAAAwYWGzMmZmZmhZbmZmmZxMjhxAAAAAzMzMzwMzYmZMDAMzMzAAAwADMjNNW2AZZAbAmhBAAMzgBGA
+talents=CoPAAAAAAAAAAAAAAAAAAAAAAwYWmZmxMmZmhZZmZmmZxMjxMAAAAAzMzMzwMDzYMDAjZmZGAAADMwM20YZDklBsBYGzAAAmZwgB
 
 # Default consumables
 potion=draught_of_rampant_abandon_2
@@ -92,8 +92,8 @@ hands=voidclaw_gauntlets,id=151332,ilevel=289
 waist=ezzoraks_gloombind,id=249331,ilevel=289,gem_id=240908
 legs=relentless_riders_legguards,id=249969,ilevel=289,enchant=forest_hunters_armor_kit_2
 feet=greaves_of_the_unformed,id=249381,ilevel=289,enchant=enchant_boots__farstriders_hunt_2
-finger1=occlusion_of_void,id=251217,ilevel=289,gem_id=240910/240908,enchant=enchant_ring__natures_fury_2
-finger2=omission_of_light,id=251093,ilevel=289,gem_id=240910/240908,enchant=enchant_ring__natures_fury_2
+finger1=occlusion_of_void,id=251217,ilevel=289,gem_id=240910/240908,enchant=enchant_ring__eyes_of_the_eagle_2
+finger2=omission_of_light,id=251093,ilevel=289,gem_id=240910/240908,enchant=enchant_ring__eyes_of_the_eagle_2
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
 trinket2=algethar_puzzle_box,id=193701,ilevel=289
 main_hand=alahendal_the_dawnsong,id=249296,ilevel=289,enchant=rune_of_sanguination
@@ -102,7 +102,7 @@ main_hand=alahendal_the_dawnsong,id=249296,ilevel=289,enchant=rune_of_sanguinati
 # gear_ilvl=288.47
 # gear_strength=1243
 # gear_stamina=17604
-# gear_crit_rating=728
+# gear_crit_rating=670
 # gear_haste_rating=1290
 # gear_mastery_rating=501
 # gear_versatility_rating=114

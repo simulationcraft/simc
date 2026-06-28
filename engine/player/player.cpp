@@ -1,4 +1,4 @@
-// ==========================================================================
+﻿// ==========================================================================
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -63,6 +63,7 @@
 #include "util/io.hpp"
 #include "util/plot_data.hpp"
 #include "util/util.hpp"
+#include "class_modules/class_module.hpp"
 
 #include <cctype>
 #include <cerrno>
@@ -313,7 +314,7 @@ struct player_ready_event_t : public player_event_t
   player_ready_event_t( player_t& p, timespan_t delta_time ) : player_event_t( p, delta_time )
   {
     if ( sim().debug )
-      sim().out_debug.printf( "New Player-Ready Event: %s", p.name() );
+      sim().print_debug( "New Player-Ready Event: {}", p.name() );
   }
   const char* name() const override
   {
@@ -1091,6 +1092,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     rps_gain( 0 ),
     rps_loss( 0 ),
     collected_data( this ),
+    collect_pet_sequence_data( false ),
     // Damage
     iteration_dmg( 0 ),
     priority_iteration_dmg( 0 ),
@@ -1105,7 +1107,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     report_information(),
     // Gear
     sets( ( !is_pet() && !is_enemy() ) ? new set_bonus_t( this ) : nullptr ),
-    meta_gem( META_GEM_NONE ),
     matching_gear( false ),
     item_cooldown( new cooldown_t("item_cd", *this) ),
     default_item_group_cooldown( 20_s ),
@@ -1129,7 +1130,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     procs(),
     uptimes(),
     racials(),
-    passive_values(),
     active_during_iteration( false ),
     spec_spell( spell_data_t::nil() ),
     single_button_assistant( spell_data_t::nil() ),
@@ -1254,10 +1254,8 @@ player_t::base_initial_current_t::base_initial_current_t() :
   stats(),
   spell_power_per_intellect( 0 ),
   spell_power_per_attack_power( 0 ),
-  spell_crit_per_intellect( 0 ),
   attack_power_per_strength( 0 ),
   attack_power_per_agility( 0 ),
-  attack_crit_per_agility( 0 ),
   attack_power_per_spell_power( 0 ),
   dodge_per_agility( 0 ),
   parry_per_strength( 0 ),
@@ -1275,7 +1273,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   crit_avoidance( 0 ),
   spell_crit_chance(),
   attack_crit_chance(),
-  block_reduction(),
+  block_value(),
   mastery( 0 ),
   versatility( 0 ),
   all_crit( 0 ),
@@ -1325,70 +1323,68 @@ player_t::base_initial_current_t::base_initial_current_t() :
 void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_context::iterator out )
 {
   fmt::format_to( out, "{}", s.stats );
-  fmt::format_to( out, " spell_power_per_intellect={}", s.spell_power_per_intellect );
-  fmt::format_to( out, " spell_power_per_attack_power={}", s.spell_power_per_attack_power );
-  fmt::format_to( out, " spell_crit_per_intellect={}", s.spell_crit_per_intellect );
-  fmt::format_to( out, " attack_power_per_strength={}", s.attack_power_per_strength );
-  fmt::format_to( out, " attack_power_per_agility={}", s.attack_power_per_agility );
-  fmt::format_to( out, " attack_power_per_spell_power={}", s.attack_power_per_spell_power );
-  fmt::format_to( out, " attack_crit_per_agility={}", s.attack_crit_per_agility );
-  fmt::format_to( out, " dodge_per_agility={}", s.dodge_per_agility );
-  fmt::format_to( out, " parry_per_strength={}", s.parry_per_strength );
-  fmt::format_to( out, " parry_rating_per_crit_rating={}", s.parry_rating_per_crit_rating );
-  fmt::format_to( out, " health_per_stamina={}", s.health_per_stamina );
+  fmt::format_to( out, " spell_power_per_intellect={:.6g}", s.spell_power_per_intellect );
+  fmt::format_to( out, " spell_power_per_attack_power={:.6g}", s.spell_power_per_attack_power );
+  fmt::format_to( out, " attack_power_per_strength={:.6g}", s.attack_power_per_strength );
+  fmt::format_to( out, " attack_power_per_agility={:.6g}", s.attack_power_per_agility );
+  fmt::format_to( out, " attack_power_per_spell_power={:.6g}", s.attack_power_per_spell_power );
+  fmt::format_to( out, " dodge_per_agility={:.6g}", s.dodge_per_agility );
+  fmt::format_to( out, " parry_per_strength={:.6g}", s.parry_per_strength );
+  fmt::format_to( out, " parry_rating_per_crit_rating={:.6g}", s.parry_rating_per_crit_rating );
+  fmt::format_to( out, " health_per_stamina={:.6g}", s.health_per_stamina );
   // resource_reduction
-  fmt::format_to( out, " miss={}", s.miss );
-  fmt::format_to( out, " dodge={}", s.dodge );
-  fmt::format_to( out, " parry={}", s.parry );
-  fmt::format_to( out, " block={}", s.block );
-  fmt::format_to( out, " spell_crit_chance={}", s.spell_crit_chance );
-  fmt::format_to( out, " attack_crit_chance={}", s.attack_crit_chance );
-  fmt::format_to( out, " block_reduction={}", s.block_reduction );
-  fmt::format_to( out, " mastery={}", s.mastery );
-  fmt::format_to( out, " versatility={}", s.versatility );
-  fmt::format_to( out, " all_haste={}", s.all_haste );
-  fmt::format_to( out, " melee_haste={}", s.melee_haste );
-  fmt::format_to( out, " spell_haste={}", s.spell_haste );
-  fmt::format_to( out, " ranged_haste={}", s.ranged_haste );
-  fmt::format_to( out, " leech={}", s.leech );
-  fmt::format_to( out, " expertise={}", s.expertise );
-  fmt::format_to( out, " skill={}", s.skill );
-  fmt::format_to( out, " distance={}", s.distance );
-  fmt::format_to( out, " armor_coeff={}", s.armor_coeff );
+  fmt::format_to( out, " miss={:.6g}", s.miss );
+  fmt::format_to( out, " dodge={:.6g}", s.dodge );
+  fmt::format_to( out, " parry={:.6g}", s.parry );
+  fmt::format_to( out, " block={:.6g}", s.block );
+  fmt::format_to( out, " spell_crit_chance={:.6g}", s.spell_crit_chance );
+  fmt::format_to( out, " attack_crit_chance={:.6g}", s.attack_crit_chance );
+  fmt::format_to( out, " block_value={:.6g}", s.block_value );
+  fmt::format_to( out, " mastery={:.6g}", s.mastery );
+  fmt::format_to( out, " versatility={:.6g}", s.versatility );
+  fmt::format_to( out, " all_haste={:.6g}", s.all_haste );
+  fmt::format_to( out, " melee_haste={:.6g}", s.melee_haste );
+  fmt::format_to( out, " spell_haste={:.6g}", s.spell_haste );
+  fmt::format_to( out, " ranged_haste={:.6g}", s.ranged_haste );
+  fmt::format_to( out, " leech={:.6g}", s.leech );
+  fmt::format_to( out, " expertise={:.6g}", s.expertise );
+  fmt::format_to( out, " skill={:.6g}", s.skill );
+  fmt::format_to( out, " distance={:.6g}", s.distance );
+  fmt::format_to( out, " armor_coeff={:.6g}", s.armor_coeff );
   fmt::format_to( out, " sleeping={}", s.sleeping );
   // attribute_multiplier
   for ( auto i : { ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT } )
   {
-    fmt::format_to( out, " {}_multiplier={}", util::attribute_type_string( i ), s.attribute_multiplier[ i ] );
-    fmt::format_to( out, " matching_armor_{}_multiplier={}", util::attribute_type_string( i ),
+    fmt::format_to( out, " {}_multiplier={:.6g}", util::attribute_type_string( i ), s.attribute_multiplier[ i ] );
+    fmt::format_to( out, " matching_armor_{}_multiplier={:.6g}", util::attribute_type_string( i ),
                     s.matching_armor_multiplier[ i ] );
   }
   // rating_multiplier
   for ( auto i = RATING_BLOCK; i < RATING_MAX; i++ )
-    fmt::format_to( out, " {}_multiplier={}", util::rating_type_string( i ), s.rating_multiplier[ i ] );
+    fmt::format_to( out, " {}_multiplier={:.6g}", util::rating_type_string( i ), s.rating_multiplier[ i ] );
 
-  fmt::format_to( out, " spell_power_multiplier={}", s.spell_power_multiplier );
-  fmt::format_to( out, " attack_power_multiplier={}", s.attack_power_multiplier );
-  fmt::format_to( out, " base_armor_multiplier={}", s.base_armor_multiplier );
-  fmt::format_to( out, " armor_multiplier={}", s.armor_multiplier );
+  fmt::format_to( out, " spell_power_multiplier={:.6g}", s.spell_power_multiplier );
+  fmt::format_to( out, " attack_power_multiplier={:.6g}", s.attack_power_multiplier );
+  fmt::format_to( out, " base_armor_multiplier={:.6g}", s.base_armor_multiplier );
+  fmt::format_to( out, " armor_multiplier={:.6g}", s.armor_multiplier );
   for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; ++school )
   {
-    fmt::format_to( out, " {}_damage_multiplier={}", util::school_type_string( school ),
+    fmt::format_to( out, " {}_damage_multiplier={:.6g}", util::school_type_string( school ),
                     s.damage_multiplier[ school ] );
-    fmt::format_to( out, " {}_crit_damage_multiplier={}", util::school_type_string( school ),
+    fmt::format_to( out, " {}_crit_damage_multiplier={:.6g}", util::school_type_string( school ),
                     s.crit_damage_multiplier[ school ] );
   }
-  fmt::format_to( out, " healing_multiplier={}", s.healing_multiplier );
-  fmt::format_to( out, " crit_healing_multiplier={}", s.crit_healing_multiplier );
-  fmt::format_to( out, " attack_speed_multiplier={}", s.attack_speed_multiplier );
-  fmt::format_to( out, " pet_damage_multiplier={}", s.pet_damage_multiplier );
-  fmt::format_to( out, " guardian_damage_multiplier={}", s.guardian_damage_multiplier );
-  fmt::format_to( out, " absorb_multiplier={}", s.absorb_multiplier );
-  fmt::format_to( out, " absorb_received_multiplier={}", s.absorb_received_multiplier );
-  fmt::format_to( out, " healing_received_multiplier={}", s.healing_received_multiplier );
-  fmt::format_to( out, " movement_speed={}_yards/s", s.movement_speed );
-  fmt::format_to( out, " stacking_movement_speed_modifier={}", s.stacking_movement_speed_modifier );
-  fmt::format_to( out, " non_stacking_movement_speed_modifier={}", s.non_stacking_movement_speed_modifier );
+  fmt::format_to( out, " healing_multiplier={:.6g}", s.healing_multiplier );
+  fmt::format_to( out, " crit_healing_multiplier={:.6g}", s.crit_healing_multiplier );
+  fmt::format_to( out, " attack_speed_multiplier={:.6g}", s.attack_speed_multiplier );
+  fmt::format_to( out, " pet_damage_multiplier={:.6g}", s.pet_damage_multiplier );
+  fmt::format_to( out, " guardian_damage_multiplier={:.6g}", s.guardian_damage_multiplier );
+  fmt::format_to( out, " absorb_multiplier={:.6g}", s.absorb_multiplier );
+  fmt::format_to( out, " absorb_received_multiplier={:.6g}", s.absorb_received_multiplier );
+  fmt::format_to( out, " healing_received_multiplier={:.6g}", s.healing_received_multiplier );
+  fmt::format_to( out, " movement_speed={:.6g}_yards/s", s.movement_speed );
+  fmt::format_to( out, " stacking_movement_speed_modifier={:.6g}", s.stacking_movement_speed_modifier );
+  fmt::format_to( out, " non_stacking_movement_speed_modifier={:.6g}", s.non_stacking_movement_speed_modifier );
   fmt::format_to( out, " position={}", s.position );
 }
 
@@ -1531,14 +1527,6 @@ void player_t::init_base_stats()
     base.all_crit           = get_passive_player_value( dbc->all_crit_base( type, level() ), "all_crit" );
     base.spell_crit_chance  = get_passive_player_value( base.all_crit, "spell_crit" );
     base.attack_crit_chance = base.all_crit;
-    if ( timeofday == DAY_TIME )
-    {
-      base.spell_crit_chance += racials.touch_of_elune->effectN( 1 ).percent();
-      base.attack_crit_chance += racials.touch_of_elune->effectN( 1 ).percent();
-    }
-
-    base.spell_crit_per_intellect = dbc->spell_crit_scaling( type, level() );
-    base.attack_crit_per_agility  = dbc->melee_crit_scaling( type, level() );
 
     base.mastery     = get_passive_player_value( 8.0, "mastery" );
     base.versatility = get_passive_player_value( base.versatility, "versatility" );
@@ -1602,7 +1590,6 @@ void player_t::init_base_stats()
       switch ( rt )
       {
         case RESOURCE_HEALTH:
-          rt_base = dbc->health_base( type, level() );
           break;
         case RESOURCE_MANA:  // 1% of base mana as mana regen per second for all classes.
           rt_base = dbc->resource_base( type, level() );
@@ -1671,53 +1658,50 @@ void player_t::init_base_stats()
 
   base.dodge = get_passive_player_value( base.dodge, "dodge" );
 
-  // Only Warriors and Paladins (and enemies) can block, defaults to 0
-  if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TANK_DUMMY )
+  switch ( type )
   {
-    // Base block chance is 3%, increased in warriors' and paladins' class aura and protection warrior's spec aura
-    // Further increased by mastery for both Protection specs
-    base.block = 0.03;
-    base.block = get_passive_player_value( base.block, "block" );
+    // Only Warriors and Paladins can block, defaults to 0
+    case PALADIN:
+    case WARRIOR:
+      // Base block chance is 3%, increased in warriors' and paladins' class aura and protection warrior's spec aura
+      // Further increased by mastery for both Protection specs
+      base.block = 0.03;
+      base.block = get_passive_player_value( base.block, "block" );
 
-    switch ( type )
-    {
-      case WARRIOR:
-      case PALADIN:
-        // Currently block reduction is 2.5x the armor value of the shield
-        if ( items[ SLOT_OFF_HAND ].dbc_inventory_type() == INVTYPE_SHIELD )
-          base.block_reduction = items[ SLOT_OFF_HAND ].stats.armor * 2.5;
-        else
-          base.block_reduction = 0;
-        break;
-      default:
-        base.block_reduction = 0.30;
-        break;
-    }
+      // Currently block reduction is 2.5x the armor value of the shield
+      if ( items[ SLOT_OFF_HAND ].dbc_inventory_type() == INVTYPE_SHIELD )
+        base.block_value = items[ SLOT_OFF_HAND ].stats.armor * 2.5;
+      else
+        base.block_value = 0;
+
+      base.block_value = get_passive_player_value( base.block_value, "block_value" );
+      SC_FALLTHROUGH;
+    // Only certain classes can parry, and get 3% base parry, default is 0
+    case DEATH_KNIGHT:
+      // Parry from base strength isn't affected by diminishing returns and is added here
+      base.parry = ( dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength ) * base.parry_per_strength;
+      SC_FALLTHROUGH;
+    case DEMON_HUNTER:
+    case MONK:
+    case ROGUE:
+      base.parry += 0.03;
+      base.parry = get_passive_player_value( base.parry, "parry" );
+      base.parry_rating_per_crit_rating = get_passive_player_value( base.parry_rating_per_crit_rating, "parry_from_crit_rating" );
+      break;
+    case ENEMY:
+    case TANK_DUMMY:
+      base.parry = 0.03;
+      break;
+    default:
+      break;
   }
-
-  base.block_reduction = get_passive_player_value( base.block_reduction, "block_reduction" );
-
-  // Only certain classes can parry, and get 3% base parry, default is 0
-  // Parry from base strength isn't affected by diminishing returns and is added here
-  if ( type == WARRIOR || type == PALADIN || type == ROGUE || type == DEATH_KNIGHT || type == MONK ||
-       type == DEMON_HUNTER )
-  {
-    base.parry = 0.03 + ( dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength ) * base.parry_per_strength;
-    base.parry = get_passive_player_value( base.parry, "parry" );
-  }
-  else if ( type == ENEMY || type == TANK_DUMMY )
-  {
-    base.parry = 0.03;
-  }
-
-  base.parry_rating_per_crit_rating = get_passive_player_value( base.parry_rating_per_crit_rating, "parry_from_crit_rating" );
 
   // Movement Speed
   base.movement_speed = 7.0;  // yards per second
   base.stacking_movement_speed_modifier =
-    get_passive_player_value( base.stacking_movement_speed_modifier, "stacking_move_speed_modifier" );
+    get_passive_player_value( base.stacking_movement_speed_modifier, "move_speed_modifier_-_stacking" );
   base.non_stacking_movement_speed_modifier =
-    get_passive_player_value( base.non_stacking_movement_speed_modifier, "non_stacking_move_speed_modifier" );
+    get_passive_player_value( base.non_stacking_movement_speed_modifier, "move_speed_modifier_-_exclusive" );
 
   // Extract avoidance DR values from table in sc_extra_data.inc
   def_dr.horizontal_shift       = dbc->horizontal_shift( type );
@@ -1727,12 +1711,6 @@ void player_t::init_base_stats()
   def_dr.parry_factor           = dbc->parry_factor( type );
   def_dr.miss_factor            = dbc->miss_factor( type );
   def_dr.block_factor           = dbc->block_factor( type );
-
-  if ( ( meta_gem == META_EMBER_PRIMAL ) || ( meta_gem == META_EMBER_SHADOWSPIRIT ) ||
-       ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
-  {
-    resources.base_multiplier[ RESOURCE_MANA ] *= 1.02;
-  }
 
   if ( primary_role() == ROLE_TANK )
   {
@@ -1795,10 +1773,6 @@ void player_t::init_initial_stats()
 
     initial.stats += enchant;
     initial.stats += sim->enchant;
-
-    // crit damage multiplier meta gems
-    for ( auto school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; ++school )
-      initial.crit_damage_multiplier[ school ] *= util::crit_multiplier( meta_gem );
   }
 
   initial.stats += total_gear;
@@ -2057,8 +2031,6 @@ void player_t::init_items()
     }
   }
 
-  init_meta_gem();
-
   // Needs to be initialized after old set bonus system
   if ( sets != nullptr )
   {
@@ -2091,25 +2063,6 @@ void player_t::init_azerite()
   sim->print_debug( "Initializing Azerite sub-system for {}.", *this );
 
   azerite->initialize();
-}
-
-void player_t::init_meta_gem()
-{
-  sim->print_debug( "Initializing meta-gem for {}.", *this );
-
-  if ( !meta_gem_str.empty() )
-  {
-    meta_gem = util::parse_meta_gem_type( meta_gem_str );
-    if ( meta_gem == META_GEM_NONE )
-    {
-      throw sc_invalid_player_argument( fmt::format( "Invalid meta gem '{}'.", meta_gem_str ) );
-    }
-  }
-
-  if ( ( meta_gem == META_AUSTERE_EARTHSIEGE ) || ( meta_gem == META_AUSTERE_SHADOWSPIRIT ) )
-  {
-    initial.base_armor_multiplier *= 1.02;
-  }
 }
 
 void player_t::init_position()
@@ -2244,40 +2197,6 @@ void player_t::create_special_effects()
     }
   }
 
-  if ( dragonflight_opts.emerald_coachs_whistle_ally_ilvl > 0 )
-  {
-    struct emerald_coachs_whistle_ally_t : public special_effect_t
-    {
-      std::unique_ptr<item_t> _item;
-
-      emerald_coachs_whistle_ally_t( player_t* p ) : special_effect_t( p )
-      {
-        // make a fake
-        _item = std::make_unique<item_t>(
-          p, fmt::format( ",id=193718,ilevel={}", p->dragonflight_opts.emerald_coachs_whistle_ally_ilvl ) );
-        _item->parse_options();
-        _item->initialize_data();
-        _item->init();
-
-        // validate data
-        auto it = range::find( _item->parsed.data.effects, ITEM_SPELLTRIGGER_ON_EQUIP, &item_effect_t::type );
-        if ( it == _item->parsed.data.effects.end() )
-        {
-          throw sc_invalid_player_argument(
-            "Cannot find on-equip effect on item id=193718 for 'dragonflight.emerald_coachs_whistle_ally_ilvl'." );
-        }
-
-        spell_id = p->dragonflight_opts.emerald_coachs_whistle_ally_is_healer ? 386578 : it->spell_id;
-        name_str = "emerald_coachs_whistle_ally";
-        item = _item.get();
-
-        unique_gear::initialize_special_effect( *this, spell_id );
-      }
-    };
-
-    special_effects.push_back( new emerald_coachs_whistle_ally_t( this ) );
-  }
-
   unique_gear::initialize_racial_effects( this );
 
   if ( sim->overrides.skyfury && may_benefit_from_skyfury() )
@@ -2297,6 +2216,9 @@ void player_t::create_special_effects()
   // This means that any enabled azerite power that is not referenced in a class module will be
   // initialized here.
   azerite::initialize_azerite_powers( this );
+
+  // 12.0.7 omnium folio talents
+  unique_gear::initialize_expansion_trait_effects( this, omnium_talents_str );
 
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
   // potential fallback special effects for the actor.
@@ -2591,107 +2513,6 @@ static void allocate_trait( player_t* player, const trait_data_t* trait, talent_
         player->sim->print_debug( "{} activating sub tree {} ({})", *player,
                                   trait_data_t::get_hero_tree_name( trait->id_sub_tree, player->is_ptr() ),
                                   trait->id_sub_tree );
-      }
-    }
-  }
-}
-
-static void parse_traits( talent_tree tree, const std::string& opt_str, player_t* player )
-{
-  auto talents = util::string_split<std::string_view>( opt_str, "/" );
-  for ( const auto talent : talents )
-  {
-    auto talent_split = util::string_split<std::string_view>( talent, ":" );
-    if ( talent_split.size() != 2 )
-    {
-      throw std::invalid_argument( fmt::format( "'{}' is invalid, format must be '<talent>:<rank>'.", talent ) );
-    }
-
-    bool is_spell_id = false;
-    auto entry_id = 0U;
-    if ( !talent_split[ 0 ].empty() && ( talent_split[ 0 ][ 0 ] == 's' || talent_split[ 0 ][ 0 ] == 'S' ) )
-    {
-      entry_id = util::to_unsigned_ignore_error( talent_split[ 0 ].substr( 1 ), 0 );
-      is_spell_id = true;
-    }
-    else
-    {
-      entry_id = util::to_unsigned_ignore_error( talent_split[ 0 ], 0 );
-    }
-
-    auto ranks = util::to_unsigned( talent_split[ 1 ] );
-    const trait_data_t* trait_obj = nullptr;
-    if ( entry_id != 0 )
-    {
-      if ( is_spell_id )
-      {
-        auto objs = trait_data_t::find_by_spell( tree, entry_id, util::class_id( player->type ),
-                                                 player->specialization(), player->is_ptr() );
-        if ( objs.empty() )
-        {
-          trait_obj = &( trait_data_t::nil() );
-        }
-        else if ( objs.size() > 1U )
-        {
-          throw std::invalid_argument(
-            fmt::format( "Multiple talents for spell id '{}' found.", talent_split[ 0 ].substr( 1 ) ) );
-        }
-        else
-        {
-          trait_obj = objs[ 0 ];
-        }
-      }
-      else
-      {
-        trait_obj = trait_data_t::find( entry_id, player->is_ptr() );
-      }
-    }
-    else
-    {
-      trait_obj = trait_data_t::find( tree, talent_split[ 0 ], util::class_id( player->type ), player->specialization(),
-                                      player->is_ptr(), true );
-    }
-
-    if ( trait_obj->id_spell == 0 )
-    {
-      throw std::invalid_argument( fmt::format( "Unable to find talent '{}'.", talent_split[ 0 ] ) );
-    }
-    else
-    {
-      if ( !entry_id && trait_obj->node_type == NODE_TIERED )
-      {
-        auto _entries = trait_data_t::data( trait_obj->id_node, util::class_id( player->type ), tree, player->is_ptr() );
-        for ( const auto& trait : _entries )
-        {
-          auto allocated = std::min( ranks, trait.max_ranks );
-          allocate_trait( player, &trait, tree, allocated );
-
-          ranks -= allocated;
-          if ( !ranks )
-            break;
-        }
-      }
-      else
-      {
-        allocate_trait( player, trait_obj, tree, ranks );
-      }
-    }
-  }
-
-  // add any freely granted traits
-  for ( const auto& trait : trait_data_t::data( util::class_id( player->type ), tree, player->is_ptr() ) )
-  {
-    if ( trait_data_t::is_granted( &trait, player->type, player->specialization(), player->is_ptr() ) )
-    {
-      auto id = trait.id_trait_node_entry;
-      auto it = range::find_if( player->player_traits, [ id ]( const auto& e ) { return std::get<1>( e ) == id; } );
-      if ( it == player->player_traits.end() )
-      {
-        player->player_traits.emplace_back( tree, id, 1 );
-
-        player->sim->print_debug( "{} granted free {} talent {} (node={} entry={})", *player,
-                                  util::talent_tree_string( tree ), trait.name, trait.id_node,
-                                  trait.id_trait_node_entry );
       }
     }
   }
@@ -3054,7 +2875,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   }
 }
 
-static void enable_all_talents( player_t* player )
+static void enable_all_talents( player_t* player, std::function<bool( const trait_data_t* )> fn = nullptr )
 {
   std::map<unsigned, std::vector<std::pair<const trait_data_t*, unsigned>>> tree_nodes;
 
@@ -3068,6 +2889,9 @@ static void enable_all_talents( player_t* player )
 
       // assume 'off-screen' nodes are invalid
       if ( trait->row <= 0 || trait->col <= 0 || trait->max_ranks <= 0 )
+        continue;
+
+      if ( fn && !fn( trait ) )
         continue;
 
       if ( std::all_of( trait->id_spec.begin(), trait->id_spec.end(), []( unsigned i ) { return i == 0; } ) ||
@@ -3096,7 +2920,7 @@ static void enable_all_talents( player_t* player )
   }
 }
 
-static void enable_default_talents( player_t* player )
+static void enable_default_talents( player_t* player, std::function<bool( const trait_data_t* )> fn = nullptr )
 {
   player->sim->print_debug( "Loading default talents for {}.", *player );
 
@@ -3108,6 +2932,9 @@ static void enable_default_talents( player_t* player )
       i++;
 
     auto trait = trait_data_t::find( traits[ i ].id_trait_node_entry, player->is_ptr() );
+
+    if ( fn && !fn( trait ) )
+      continue;
 
     if ( !trait->id_node )
     {
@@ -3156,6 +2983,124 @@ static void enable_hero_tree( player_t* player, unsigned hero_tree_id )
   }
 }
 
+static void parse_traits( talent_tree tree, const std::string& opt_str, player_t* player )
+{
+  auto talents = util::string_split<std::string_view>( opt_str, "/" );
+  for ( const auto talent : talents )
+  {
+    // handle special tokens
+    if ( util::str_compare_ci( talent, "all" ) )
+    {
+      enable_all_talents( player, [ tree ]( const trait_data_t* t ) {
+        return static_cast<talent_tree>( t->tree_index ) == tree;
+      } );
+
+      continue;
+    }
+    else if ( util::str_compare_ci( talent, "default" ) )
+    {
+      enable_default_talents( player, [ tree ]( const trait_data_t* t ) {
+        return static_cast<talent_tree>( t->tree_index ) == tree;
+      } );
+
+      continue;
+    }
+
+    auto talent_split = util::string_split<std::string_view>( talent, ":" );
+    if ( talent_split.size() != 2 )
+    {
+      throw std::invalid_argument( fmt::format( "'{}' is invalid, format must be '<talent>:<rank>'.", talent ) );
+    }
+
+    bool is_spell_id = false;
+    auto entry_id = 0U;
+    if ( !talent_split[ 0 ].empty() && ( talent_split[ 0 ][ 0 ] == 's' || talent_split[ 0 ][ 0 ] == 'S' ) )
+    {
+      entry_id = util::to_unsigned_ignore_error( talent_split[ 0 ].substr( 1 ), 0 );
+      is_spell_id = true;
+    }
+    else
+    {
+      entry_id = util::to_unsigned_ignore_error( talent_split[ 0 ], 0 );
+    }
+
+    auto ranks = util::to_unsigned( talent_split[ 1 ] );
+    const trait_data_t* trait_obj = nullptr;
+    if ( entry_id != 0 )
+    {
+      if ( is_spell_id )
+      {
+        auto objs = trait_data_t::find_by_spell( tree, entry_id, util::class_id( player->type ),
+                                                 player->specialization(), player->is_ptr() );
+        if ( objs.empty() )
+        {
+          trait_obj = &( trait_data_t::nil() );
+        }
+        else if ( objs.size() > 1U )
+        {
+          throw std::invalid_argument(
+            fmt::format( "Multiple talents for spell id '{}' found.", talent_split[ 0 ].substr( 1 ) ) );
+        }
+        else
+        {
+          trait_obj = objs[ 0 ];
+        }
+      }
+      else
+      {
+        trait_obj = trait_data_t::find( entry_id, player->is_ptr() );
+      }
+    }
+    else
+    {
+      trait_obj = trait_data_t::find( tree, talent_split[ 0 ], util::class_id( player->type ), player->specialization(),
+                                      player->is_ptr(), true );
+    }
+
+    if ( trait_obj->id_spell == 0 )
+    {
+      throw std::invalid_argument(
+        fmt::format( "Unable to find {} talent '{}'.", util::talent_tree_string( tree ), talent_split[ 0 ] ) );
+    }
+    else
+    {
+      if ( !entry_id && trait_obj->node_type == NODE_TIERED )
+      {
+        auto _entries = trait_data_t::data( trait_obj->id_node, util::class_id( player->type ), tree, player->is_ptr() );
+        for ( const auto& trait : _entries )
+        {
+          auto allocated = !ranks ? ranks : std::min( ranks, trait.max_ranks );
+          allocate_trait( player, &trait, tree, allocated );
+
+          ranks -= allocated;
+        }
+      }
+      else
+      {
+        allocate_trait( player, trait_obj, tree, ranks );
+      }
+    }
+  }
+
+  // add any freely granted traits
+  for ( const auto& trait : trait_data_t::data( util::class_id( player->type ), tree, player->is_ptr() ) )
+  {
+    if ( trait_data_t::is_granted( &trait, player->type, player->specialization(), player->is_ptr() ) )
+    {
+      auto id = trait.id_trait_node_entry;
+      auto it = range::find_if( player->player_traits, [ id ]( const auto& e ) { return std::get<1>( e ) == id; } );
+      if ( it == player->player_traits.end() )
+      {
+        player->player_traits.emplace_back( tree, id, 1 );
+
+        player->sim->print_debug( "{} granted free {} talent {} (node={} entry={})", *player,
+                                  util::talent_tree_string( tree ), trait.name, trait.id_node,
+                                  trait.id_trait_node_entry );
+      }
+    }
+  }
+}
+
 void player_t::init_talents()
 {
   sim->print_debug( "Initializing talents for {}.", *this );
@@ -3176,13 +3121,43 @@ void player_t::init_talents()
   }
   else if ( !talents_str.empty() )
   {
-    try
+    // check for special tokens, clear talents_str if found to force reconstitution of hash for html talent render
+    auto splits = util::string_split( talents_str, "/" );
+
+    for ( auto split : splits )
     {
-      parse_traits_hash( talents_str, this );
-    }
-    catch ( const std::exception& )
-    {
-      std::throw_with_nested( sc_invalid_talent_string( fmt::format( "Hash '{}'", talents_str ) ) );
+      if ( util::str_compare_ci( split, "class" ) )
+      {
+        talents_str.clear();
+        enable_all_talents( this, []( const trait_data_t* t ) {
+          return static_cast<talent_tree>( t->tree_index ) == talent_tree::CLASS;
+        } );
+      }
+      else if ( util::str_compare_ci( split, "spec" ) )
+      {
+        talents_str.clear();
+        enable_all_talents( this, []( const trait_data_t* t ) {
+          return static_cast<talent_tree>( t->tree_index ) == talent_tree::SPECIALIZATION;
+        } );
+      }
+      else if ( auto _id = trait_data_t::get_hero_tree_id( split, is_ptr() );
+                trait_data_t::is_hero_tree_valid( static_cast<hero_tree_e>( _id ), specialization(), is_ptr() ) )
+      {
+        talents_str.clear();
+        enable_hero_tree( this, _id );
+      }
+      else
+      {
+        // if no special tokens are found, parse as hash string
+        try
+        {
+          parse_traits_hash( talents_str, this );
+        }
+        catch ( const std::exception& )
+        {
+          std::throw_with_nested( sc_invalid_talent_string( fmt::format( "Hash '{}'", talents_str ) ) );
+        }
+      }
     }
   }
 
@@ -3374,29 +3349,8 @@ void player_t::init_spells()
   sim->print_debug( "Initializing spells for {}.", *this );
 
   // Racials
-  racials.quickness             = find_racial_spell( "Quickness" );
-  racials.elusiveness           = find_racial_spell( "Elusiveness" );
-  racials.command               = find_racial_spell( "Command" );
-  racials.arcane_acuity         = find_racial_spell( "Arcane Acuity" );
-  racials.heroic_presence       = find_racial_spell( "Heroic Presence" );
   racials.might_of_the_mountain = find_racial_spell( "Might of the Mountain" );
-  racials.expansive_mind        = find_racial_spell( "Expansive Mind" );
-  racials.nimble_fingers        = find_racial_spell( "Nimble Fingers" );
-  racials.time_is_money         = find_racial_spell( "Time is Money" );
-  racials.the_human_spirit      = find_racial_spell( "The Human Spirit" );
-  racials.touch_of_elune        = find_racial_spell( "Touch of Elune" );
   racials.brawn                 = find_racial_spell( "Brawn" );
-  racials.endurance             = find_racial_spell( "Endurance" );
-  racials.viciousness           = find_racial_spell( "Viciousness" );
-  racials.magical_affinity      = find_racial_spell( "Magical Affinity" );
-  racials.mountaineer           = find_racial_spell( "Mountaineer" );
-  racials.brush_it_off          = find_racial_spell( "Brush It Off" );
-  racials.awakened              = find_racial_spell( "Awakened" );
-  racials.azerite_surge         = find_racial_spell( "Azerite Surge" );
-  racials.titanwrought_frame    = find_racial_spell( "Titan-Wrought Frame" );
-  racials.holy_providence       = find_racial_spell( "Holy Providence" );
-  racials.lash_out              = find_racial_spell( "Lash Out" );
-  racials.subterranean_predator = find_racial_spell( "Subterranean Predator" );
 
   if ( is_player() )
   {
@@ -3424,8 +3378,6 @@ void player_t::init_gains()
 
   if ( !is_pet() )
     gains.health = get_gain( "external_healing" );
-
-  gains.vampiric_embrace = get_gain( "vampiric_embrace" );
 }
 
 void player_t::init_procs()
@@ -3460,9 +3412,9 @@ void player_t::init_rng()
   sim->print_debug( "Initializing random number generators for {}.", *this );
 }
 
-void player_t::init_stats()
+void player_t::init_stat_data()
 {
-  sim->print_debug( "Initializing stats for {}.", *this );
+  sim->print_debug( "Initializing stat data for {}.", *this );
 
   if ( sim->maximize_reporting )
   {
@@ -3529,13 +3481,11 @@ void player_t::init_scaling()
     scaling->enable( STAT_MASTERY_RATING );
     scaling->enable( STAT_VERSATILITY_RATING );
 
-    scaling->set( STAT_SPEED_RATING, sim->has_raid_event( "movement" ) );
-    // scaling -> set( STAT_AVOIDANCE_RATING          ] = tank; // Waste of sim time vast majority of the time. Can be
-    // enabled manually.
-    scaling->set( STAT_LEECH_RATING, tank );
+    // scaling->enable( STAT_SPEED_RATING );  // handled in raid_events movement_event_t
+    // scaling->set( STAT_AVOIDANCE_RATING, tank ); // can be enabled manually if need be
+    scaling->set( STAT_LEECH_RATING, heal );
 
     scaling->set( STAT_WEAPON_DPS, attack );
-
     scaling->set( STAT_ARMOR, tank );
 
     auto add_stat = []( double& to, double value, double lower_limit )
@@ -4345,9 +4295,9 @@ void player_t::create_actions()
     }
   }
 
-  if ( !is_add() && ( !is_pet() || sim->report_pets_separately ) )
+  if ( sim->collect_action_sequence && !is_add() && ( !is_pet() || sim->report_pets_separately ) )
   {
-    int capacity = std::max( 1200, static_cast<int>( sim->max_time.total_seconds() / 2.0 ) );
+    int capacity = std::max( 3000, static_cast<int>( sim->max_time.total_seconds() ) );
     collected_data.action_sequence.reserve( capacity );
     collected_data.action_sequence.clear();
   }
@@ -4697,12 +4647,14 @@ void player_t::init_finished()
     if ( c.is_percentage )
     {
       stat_pct_buff_type stat_pct;
+      double stat_amount = c.amount * 0.01;
+
       switch ( convert_hybrid_stat( c.stat ) )
       {
         case STAT_CRIT_RATING:        stat_pct = STAT_PCT_BUFF_CRIT; break;
         case STAT_HASTE_RATING:       stat_pct = STAT_PCT_BUFF_HASTE; break;
         case STAT_VERSATILITY_RATING: stat_pct = STAT_PCT_BUFF_VERSATILITY; break;
-        case STAT_MASTERY_RATING:     stat_pct = STAT_PCT_BUFF_MASTERY; break;
+        case STAT_MASTERY_RATING:     stat_pct = STAT_PCT_BUFF_MASTERY; stat_amount = c.amount; break;
         case STAT_STRENGTH:           stat_pct = STAT_PCT_BUFF_STRENGTH; break;
         case STAT_AGILITY:            stat_pct = STAT_PCT_BUFF_AGILITY; break;
         case STAT_STAMINA:            stat_pct = STAT_PCT_BUFF_STAMINA; break;
@@ -4714,7 +4666,7 @@ void player_t::init_finished()
       }
 
       custom_buff = make_buff( this, buff_name )
-                      ->set_default_value( c.amount * 0.01 )
+                      ->set_default_value( stat_amount )
                       ->set_pct_buff_type( stat_pct )
                       ->set_duration( c.duration );
     }
@@ -4885,40 +4837,11 @@ void player_t::create_buffs()
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
     // Racials
-    buffs.berserking = make_buff_fallback( race == RACE_TROLL, this, "berserking", find_spell( 26297 ) )
-                           ->add_invalidate( CACHE_HASTE );
-
-    buffs.stoneform = make_buff_fallback( race == RACE_DWARF, this, "stoneform", find_spell( 65116 ) );
-
-    buffs.blood_fury = make_buff_fallback<stat_buff_t>( race == RACE_ORC, this, "blood_fury", find_racial_spell( "Blood Fury" ) )
-                           ->add_invalidate( CACHE_SPELL_POWER )
-                           ->add_invalidate( CACHE_ATTACK_POWER );
+    buffs.stoneform = make_buff_fallback( race == RACE_DWARF, this, "stoneform", find_spell( 65116 ) )
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
     buffs.shadowmeld = make_buff_fallback( race == RACE_NIGHT_ELF, this, "shadowmeld", find_spell( 58984 ) )
-                           ->set_cooldown( 0_ms );
-
-    buffs.ancestral_call[ 0 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
-                                                                 "rictus_of_the_laughing_skull", find_spell( 274739 ) );
-    buffs.ancestral_call[ 1 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
-                                                                 "zeal_of_the_burning_blade", find_spell( 274740 ) );
-    buffs.ancestral_call[ 2 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
-                                                                 "ferocity_of_the_frostwolf", find_spell( 274741 ) );
-    buffs.ancestral_call[ 3 ] = make_buff_fallback<stat_buff_t>( race == RACE_MAGHAR_ORC, this,
-                                                                 "might_of_the_blackrock", find_spell( 274742 ) );
-
-    if ( race == RACE_DARK_IRON_DWARF )
-    {
-      buffs.fireblood =
-          make_buff<stat_buff_t>( this, "fireblood", find_spell( 265226 ) )
-              ->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
-                          util::round( find_spell( 265226 )->effectN( 1 ).average( this, level() ) ) * 3 );
-    }
-    else
-    {
-      buffs.fireblood = buff_t::make_fallback( this, "fireblood", this );
-    }
-
-    buffs.darkflight = make_buff_fallback( race == RACE_WORGEN, this, "darkflight", find_racial_spell( "darkflight" ) );
+      ->set_cooldown( 0_ms );
 
     // fallback for ingest mineral isn't necessary as it's a passive effect that should not have any apl interaction
     if ( race == RACE_EARTHEN_HORDE || race == RACE_EARTHEN_ALLIANCE )
@@ -4934,132 +4857,13 @@ void player_t::create_buffs()
         default:                 break;
       }
 
-      buffs.ingest_mineral = make_buff<stat_buff_t>( this, "ingest_mineral", find_spell( _id ) )
+      auto ingest_buff = make_buff<stat_buff_t>( this, "ingest_mineral", find_spell( _id ) )
         ->set_name_reporting( "Ingest Mineral" );
+
+      register_on_arise_callback( this, [ ingest_buff ] { ingest_buff->trigger(); } );
     }
 
     buffs.movement = new movement_buff_t( this );
-
-    if ( !is_pet() )
-    {
-      // 9.0 class buffs
-      buffs.focus_magic = make_buff( this, "focus_magic", find_spell( 321358 ) )
-        ->set_default_value_from_effect( 1 )
-        ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
-
-      buffs.power_infusion = make_buff( this, "power_infusion", find_spell( 10060 ) )
-        ->set_default_value_from_effect( 1 )
-        ->set_cooldown( 0_ms )
-        ->add_invalidate( CACHE_HASTE );
-
-      // External trinkets
-      if ( external_buffs.soleahs_secret_technique )
-      {
-        // TODO: confirm what happens if ratings are the same. For now assuming it follows same priority as IQD.
-        static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING,
-                                                           STAT_HASTE_RATING, STAT_CRIT_RATING };
-
-        auto ilevel = external_buffs.soleahs_secret_technique;
-        auto coeff  = find_spell( 368513 )->effectN( 2 ).m_coefficient();
-        auto points = dbc->random_property( ilevel ).p_epic[ 0 ];
-        auto mult   = dbc->combat_rating_multiplier( ilevel, CR_MULTIPLIER_TRINKET );
-
-        buffs.soleahs_secret_technique_external =
-            make_buff<stat_buff_t>( this, "soleahs_secret_technique_external", find_spell( 368510 ) )
-                ->add_stat( util::highest_stat( this, ratings ), coeff * points * mult );
-      }
-
-      if ( !external_buffs.elegy_of_the_eternals.empty() )
-      {
-        buffs.elegy_of_the_eternals_external =
-            make_buff<stat_buff_t>( this, "elegy_of_the_eternals_external", find_spell( 369439 ) )
-                ->set_duration( 0_ms );
-
-        auto s_data  = find_spell( 367246 );
-        auto coeff   = s_data->effectN( 1 ).m_coefficient() * s_data->effectN( 2 ).percent();
-        auto entries = util::string_split<std::string_view>( external_buffs.elegy_of_the_eternals, "/" );
-
-        for ( auto entry : entries )
-        {
-          auto values = util::string_split<std::string_view>( entry, ":" );
-
-          try
-          {
-            if ( values.size() != 2 )
-              throw std::invalid_argument( "Missing value." );
-
-            auto stat = util::parse_stat_type( values[ 1 ] );
-            if ( stat < STAT_CRIT_RATING || stat > STAT_VERSATILITY_RATING )
-              throw std::invalid_argument( "Invalid stat." );
-
-            auto ilevel = std::clamp( util::to_int( values[ 0 ] ), 0, MAX_ILEVEL );
-            auto points = dbc->random_property( ilevel ).p_epic[ 0 ];
-            auto mult   = dbc->combat_rating_multiplier( ilevel, CR_MULTIPLIER_TRINKET );
-
-            debug_cast<stat_buff_t*>( buffs.elegy_of_the_eternals_external )->add_stat( stat, coeff * points * mult );
-          }
-          catch ( const std::exception& )
-          {
-            std::throw_with_nested( sc_invalid_player_argument(
-              fmt::format( "Invalid 'external_buffs.elegy_of_the_eternals', format is '<ilevel>:<stat:/...'" ) ) );
-          }
-        }
-      }
-
-      if (!external_buffs.tome_of_unstable_power.empty() && external_buffs.tome_of_unstable_power_ilevel)
-      {
-          auto buff_spell = find_spell(388583);
-          auto data_spell = find_spell(391290);
-
-          auto buff = make_buff<stat_buff_t>(this, "tome_of_unstable_power_external", buff_spell);
-
-          auto ilevel = external_buffs.tome_of_unstable_power_ilevel;
-          auto coeff_main_stat = data_spell->effectN(1).m_coefficient();
-          auto coeff_crit = data_spell->effectN(2).m_coefficient();
-          auto points = dbc->random_property(ilevel).p_epic[0];
-          auto mult = dbc->combat_rating_multiplier(ilevel, CR_MULTIPLIER_TRINKET);
-
-          buff->set_duration(find_spell(388559)->duration());
-          buff->manual_stats_added = false;
-          // This is currently scaling class -1, change if this ever changes
-          buff->add_stat(convert_hybrid_stat(STAT_STR_AGI_INT), coeff_main_stat * points);
-          buff->add_stat(STAT_CRIT_RATING, coeff_crit * points * mult);
-
-          buffs.tome_of_unstable_power = buff;
-      }
-
-      // Potion Bomb of Power Primary Stat
-      // Buff cannot stack
-      // Does not take into account the fire damage on enemies
-      if ( !external_buffs.potion_bomb_of_power.empty() )
-      {
-        auto driver_spell = find_spell( 453205 );
-        auto buff_spell   = find_spell( 453245 );
-
-        // Value in buff data is for 5 people, need to split based on targets for a single player
-        auto main_stat_amount = buff_spell->effectN( 1 ).average( this ) / driver_spell->effectN( 4 ).base_value();
-
-        auto buff = make_buff<stat_buff_t>( this, "potion_bomb_of_power_external", buff_spell )
-                        ->add_stat_from_effect_type( A_MOD_STAT, main_stat_amount );
-        buffs.potion_bomb_of_power = buff;
-      }
-
-      // 9.2 Jailer raid buff
-      // Values are hard-coded because difficulty-specific spell data is not fully extracted.
-      buffs.boon_of_azeroth = make_buff<stat_buff_t>( this, "boon_of_azeroth", find_spell( 363338 ) )
-        ->add_stat( STAT_MASTERY_RATING, 350 )
-        ->set_default_value( 0.1 )
-        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-
-      buffs.boon_of_azeroth_mythic = make_buff<stat_buff_t>( this, "boon_of_azeroth_mythic", find_spell( 363338 ) )
-        ->add_stat( STAT_MASTERY_RATING, 418 )
-        ->set_default_value( 0.12 )
-        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-    }
   }
   // .. for enemies
   else
@@ -5089,13 +4893,6 @@ void player_t::create_buffs()
   debuffs.damage_taken = make_buff( this, "damage_taken" )
     ->set_duration( timespan_t::from_seconds( 20.0 ) )
     ->set_max_stack( 999 );
-
-  if ( sim->has_raid_event( "damage_done" ) )
-  {
-    buffs.damage_done = make_buff( this, "damage_done" )
-      ->set_max_stack( 1 )
-      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
 }
 
 item_t* player_t::find_item_by_name( util::string_view item_name )
@@ -5134,12 +4931,6 @@ item_t* player_t::find_item_by_use_effect_name( util::string_view effect_name )
   }
 
   return nullptr;
-}
-
-bool player_t::has_t18_class_trinket() const
-{
-  // Class modules should override this with their individual trinket detection
-  return false;
 }
 
 /**
@@ -5201,15 +4992,6 @@ double player_t::composite_melee_haste() const
 
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
-
-    if ( buffs.berserking->check() )
-      h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
-
-    if ( timeofday == NIGHT_TIME )
-      h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
-
-    if ( buffs.power_infusion )
-      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
   }
 
   return h;
@@ -5345,9 +5127,6 @@ double player_t::composite_melee_crit_chance() const
 
   ac += apply_combat_rating_dr( RATING_MELEE_CRIT, composite_melee_crit_rating() / current.rating.attack_crit );
 
-  if ( current.attack_crit_per_agility )
-    ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
-
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     ac += b->check_stack_value();
 
@@ -5390,11 +5169,6 @@ double player_t::composite_armor() const
 double player_t::composite_base_armor_multiplier() const
 {
   double a = current.base_armor_multiplier;
-
-  if ( meta_gem == META_AUSTERE_PRIMAL )
-  {
-    a += 0.02;
-  }
 
   return a;
 }
@@ -5525,16 +5299,9 @@ double player_t::composite_parry() const
   return total_parry;
 }
 
-double player_t::composite_block_reduction( action_state_t* ) const
+double player_t::composite_block_value( const action_state_t* ) const
 {
-  double b = current.block_reduction;
-
-  return b;
-}
-
-double player_t::composite_crit_block() const
-{
-  return 0;
+  return current.block_value;
 }
 
 double player_t::composite_crit_avoidance() const
@@ -5563,15 +5330,6 @@ double player_t::composite_spell_haste() const
 
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
-
-    if ( buffs.berserking->check() )
-      h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
-
-    if ( timeofday == NIGHT_TIME )
-      h *= 1.0 / ( 1.0 + racials.touch_of_elune->effectN( 1 ).percent() );
-
-    if ( buffs.power_infusion )
-      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
   }
 
   return h;
@@ -5649,16 +5407,8 @@ double player_t::composite_spell_crit_chance() const
 
   sc += apply_combat_rating_dr( RATING_SPELL_CRIT, composite_spell_crit_rating() / current.rating.spell_crit );
 
-  if ( current.spell_crit_per_intellect > 0 )
-  {
-    sc += ( cache.intellect() / current.spell_crit_per_intellect / 100.0 );
-  }
-
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     sc += b->check_stack_value();
-
-  if ( buffs.focus_magic )
-    sc += buffs.focus_magic->check_value();
 
   return sc;
 }
@@ -5874,7 +5624,12 @@ double player_t::composite_player_absorb_multiplier( const action_state_t* ) con
 
 double player_t::composite_player_healing_received_multiplier() const
 {
-  return current.healing_received_multiplier;
+  auto m = current.healing_received_multiplier;
+
+  if ( buffs.guardian_spirit && buffs.guardian_spirit->up() )
+    m *= 1.0 + buffs.guardian_spirit->check_value();
+
+  return m;
 }
 
 double player_t::composite_player_absorb_received_multiplier() const
@@ -5915,10 +5670,6 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
   if ( buffs.seething_rage_essence && buffs.seething_rage_essence->data().effectN( 1 ).has_common_school( school ) )
     m *= 1.0 + buffs.seething_rage_essence->check_value();
 
-  // Critical hit damage buff from follower themed Benthic boots
-  if ( buffs.fathom_hunter && buffs.fathom_hunter->data().effectN( 1 ).has_common_school( school ) )
-    m *= 1.0 + buffs.fathom_hunter->check_value();
-
   return m;
 }
 
@@ -5940,38 +5691,22 @@ double player_t::non_stacking_movement_modifier() const
 {
   double speed = current.non_stacking_movement_speed_modifier;
 
-  if ( !is_enemy() && type != HEALING_ENEMY )
+  // check non-stacking buffs with only a single stack
+  for ( auto [ v, b ] : buffs.movement_speed_buffs[ 1 ] )
   {
-    if ( buffs.stampeding_roar && buffs.stampeding_roar->check() )
-      speed = std::max( buffs.stampeding_roar->check_value(), speed );
+    if ( speed >= v )
+      break;  // no need to check further as buffs should be sorted
+
+    if ( b->check() )
+    {
+      speed = v;
+      break;  // save a cycle
+    }
   }
 
-  if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY )
-  {
-    if ( buffs.nitro_boosts && buffs.nitro_boosts->check() )
-      speed = std::max( buffs.nitro_boosts->data().effectN( 1 ).percent(), speed );
-
-    if ( buffs.body_and_soul && buffs.body_and_soul->check() )
-      speed = std::max( buffs.body_and_soul->data().effectN( 1 ).percent(), speed );
-
-    if ( buffs.angelic_feather && buffs.angelic_feather->check() )
-      speed = std::max( buffs.angelic_feather->data().effectN( 1 ).percent(), speed );
-
-    if ( buffs.normalization_increase && buffs.normalization_increase->check() )
-      speed = std::max( buffs.normalization_increase->data().effectN( 3 ).percent(), speed );
-
-    if ( buffs.surekian_grace && buffs.surekian_grace->check() )
-      speed = std::max( buffs.surekian_grace->check_value(), speed );
-
-    if ( buffs.quickwicks_quick_trick_wick_walk && buffs.quickwicks_quick_trick_wick_walk->check() )
-      speed = std::max( buffs.quickwicks_quick_trick_wick_walk->check_value(), speed );
-
-    if ( buffs.building_momentum && buffs.building_momentum->check() )
-      speed = std::max( buffs.building_momentum->check_stack_value(), speed );
-
-    if ( buffs.full_momentum && buffs.full_momentum->check() )
-      speed = std::max( buffs.full_momentum->check_value(), speed );
-  }
+  // check non-stacking buffs with multiple buff stacks
+  for ( auto [ v, b ] : buffs.movement_speed_buffs[ 2 ] )
+    speed = std::max( v * b->check(), speed );
 
   return speed;
 }
@@ -5986,14 +5721,9 @@ double player_t::stacking_movement_modifier() const
   // speed tertiary rating
   speed += composite_run_speed();
 
-  if ( buffs.windwalking_movement_aura )
-    speed += buffs.windwalking_movement_aura->check_value();
-
-  if ( buffs.elemental_chaos_air )
-    speed += buffs.elemental_chaos_air->check_value();
-
-  if ( buffs.darkflight && buffs.darkflight->check() )
-    speed += buffs.darkflight->data().effectN( 1 ).percent();
+  for ( auto [ v, b ] : buffs.movement_speed_buffs[ 0 ] )
+    if ( b->check() )
+      speed += v;
 
   return speed;
 }
@@ -6065,31 +5795,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
 
 double player_t::composite_rating_multiplier( rating_e rating ) const
 {
-  double v = current.rating_multiplier[ rating ];
-
-  switch ( rating )
-  {
-    case RATING_SPELL_HASTE:
-    case RATING_MELEE_HASTE:
-    case RATING_RANGED_HASTE:
-      v *= 1.0 + passive_values.amplification_1;
-      v *= 1.0 + passive_values.amplification_2;
-      break;
-    case RATING_MASTERY:
-      v *= 1.0 + passive_values.amplification_1;
-      v *= 1.0 + passive_values.amplification_2;
-      break;
-    case RATING_DAMAGE_VERSATILITY:
-    case RATING_HEAL_VERSATILITY:
-    case RATING_MITIGATION_VERSATILITY:
-      v *= 1.0 + passive_values.amplification_1;
-      v *= 1.0 + passive_values.amplification_2;
-      break;
-    default:
-      break;
-  }
-
-  return v;
+  return current.rating_multiplier[ rating ];
 }
 
 double player_t::composite_rating( rating_e rating ) const
@@ -6189,14 +5895,51 @@ double player_t::composite_player_target_armor( player_t* t ) const
   return a;
 }
 
-double player_t::composite_mitigation_multiplier( school_e /* school */ ) const
+double player_t::composite_mitigation_multiplier( const action_state_t* s, school_e school, bool ) const
 {
-  return 1.0;
+  double m = 1.0;
+
+  if ( !is_enemy() && type != HEALING_ENEMY )
+  {
+    if ( !is_pet() )
+    {
+      if ( buffs.stoneform && buffs.stoneform->up() && school == SCHOOL_PHYSICAL )
+        m *= 1.0 + buffs.stoneform->check_value();
+
+      if ( buffs.elemental_chaos_earth && buffs.elemental_chaos_earth->up() )
+        m *= 1.0 + buffs.elemental_chaos_earth->check_value();
+
+      if ( buffs.pain_suppression && buffs.pain_suppression->up() )
+        m *= 1.0 + buffs.pain_suppression->check_value();
+    }
+
+    m *= 1.0 - cache.mitigation_versatility();
+
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} {} damage to {} reduced by {:.7g}% from versatility.", *s->action->player, *s->action,
+                        *s->target, cache.mitigation_versatility() * 100 );
+    }
+
+    if ( s->action->is_aoe() )
+      m *= 1.0 - cache.avoidance();
+  }
+
+  return m;
+}
+
+double player_t::composite_mitigation_from_player_multiplier( player_t*, const action_state_t*, school_e, bool ) const
+{
+  double m = 1.0;
+
+  return m;
 }
 
 double player_t::composite_mastery_value() const
 {
-  return composite_mastery() * mastery_coefficient();
+  assert( cache.active && "Infinite recursion if base composite_mastery_value() is called without stat cache active." );
+
+  return cache.mastery() * mastery_coefficient();
 }
 
 #if defined( SC_USE_STAT_CACHE )
@@ -6226,15 +5969,11 @@ void player_t::invalidate_cache( cache_e c )
         invalidate_cache( CACHE_ATTACK_POWER );
       if ( current.dodge_per_agility > 0 )
         invalidate_cache( CACHE_DODGE );
-      if ( current.attack_crit_per_agility > 0 )
-        invalidate_cache( CACHE_ATTACK_CRIT_CHANCE );
       break;
 
     case CACHE_INTELLECT:
       if ( current.spell_power_per_intellect > 0 )
         invalidate_cache( CACHE_SPELL_POWER );
-      if ( current.spell_crit_per_intellect > 0 )
-        invalidate_cache( CACHE_SPELL_CRIT_CHANCE );
       break;
 
     case CACHE_SPELL_POWER:
@@ -6318,6 +6057,9 @@ void invalidate_cache( cache_e ) {}
 
 void player_t::sequence_add_wait( timespan_t wait )
 {
+  if ( !sim->collect_action_sequence )
+    return;
+
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
   if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) || ( sim->iterations > 1 && nth_iteration() == 1 ) )
   {
@@ -6341,9 +6083,11 @@ void player_t::sequence_add_wait( timespan_t wait )
   }
 }
 
-void player_t::sequence_add( const action_t* a, const player_t* t,
-                             std::function<void( std::string&, std::string& )> fn )
+void player_t::sequence_add( const action_t* a, const player_t* t )
 {
+  if ( !sim->collect_action_sequence )
+    return;
+
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
   if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) || ( sim->iterations > 1 && nth_iteration() == 1 ) )
   {
@@ -6352,14 +6096,12 @@ void player_t::sequence_add( const action_t* a, const player_t* t,
       if ( a->is_precombat )
       {
         auto& data = collected_data.action_sequence_precombat.emplace_back( a, t, sim->current_time(), this );
-        if ( fn )
-          fn( data.action_reporting, data.target_reporting );
+        a->sequence_add_fn( data.action_reporting, data.target_reporting );
       }
       else
       {
         auto& data = collected_data.action_sequence.emplace_back( a, t, sim->current_time(), this );
-        if ( fn )
-          fn( data.action_reporting, data.target_reporting );
+        a->sequence_add_fn( data.action_reporting, data.target_reporting );
       }
     }
     else
@@ -6408,9 +6150,7 @@ void player_t::combat_begin()
           if ( first_cast )
           {
             if ( !is_enemy() )
-              sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
-                t_str = action->target->name_str;
-              } );
+              sequence_add( action, action->target );
 
             action->execute();
             first_cast = false;
@@ -6423,9 +6163,7 @@ void player_t::combat_begin()
         else
         {
           if ( !is_enemy() )
-            sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
-              t_str = action->target->name_str; 
-            } );
+            sequence_add( action, action->target );
 
           action->execute();
         }
@@ -6452,20 +6190,6 @@ void player_t::combat_begin()
   {
     collected_data.combat_start_resource[ i ].add( resources.current[ i ] );
   }
-
-  auto add_timed_buff_triggers = [ this ]( const std::vector<timespan_t>& times, buff_t* buff,
-                                           timespan_t duration = timespan_t::min() ) {
-    if ( buff )
-      for ( auto t : times )
-        make_event( *sim, t, [ buff, duration ] { buff->trigger( duration ); } );
-  };
-
-  add_timed_buff_triggers( external_buffs.power_infusion, buffs.power_infusion );
-  add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
-  add_timed_buff_triggers( external_buffs.boon_of_azeroth, buffs.boon_of_azeroth );
-  add_timed_buff_triggers( external_buffs.boon_of_azeroth_mythic, buffs.boon_of_azeroth_mythic );
-  add_timed_buff_triggers( external_buffs.tome_of_unstable_power, buffs.tome_of_unstable_power );
-  add_timed_buff_triggers( external_buffs.potion_bomb_of_power, buffs.potion_bomb_of_power );
 
   // Trigger registered combat-begin functions
   for ( const auto& f : combat_begin_functions)
@@ -7232,7 +6956,7 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
       {
         lag = rng().gauss( sim->channel_lag );
       }
-      else if ( last_foreground_action->gcd() == 0_ms )
+      else if ( last_foreground_action->gcd() == 0_ms && !last_foreground_action->add_queue_lag )
       {
         lag = 0_ms;
       }
@@ -7320,18 +7044,6 @@ void player_t::arise()
 
   arise_time = sim->current_time();
   last_regen = sim->current_time();
-
-  if ( buffs.focus_magic && external_buffs.focus_magic )
-    buffs.focus_magic->override_buff();
-
-  if ( buffs.soleahs_secret_technique_external )
-    buffs.soleahs_secret_technique_external->trigger();
-
-  if ( buffs.elegy_of_the_eternals_external )
-    buffs.elegy_of_the_eternals_external->trigger();
-
-  if ( buffs.ingest_mineral )
-    buffs.ingest_mineral->trigger();
 
   if ( is_enemy() )
   {
@@ -7672,17 +7384,14 @@ action_t* player_t::execute_action()
     {
       iteration_executed_foreground_actions++;
       action->total_executions++;
+
       if ( action->trigger_gcd > timespan_t::zero() )
-      {
         prev_gcd_actions.push_back( action );
-      }
       else
         off_gcdactions.push_back( action );
 
-      if ( !is_enemy() )
-        sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
-          t_str = action->target->name_str;
-        } );
+      if ( !is_add() && ( !is_pet() || collect_pet_sequence_data ) )
+        sequence_add( action, action->target );
     }
   }
 
@@ -8433,33 +8142,10 @@ void account_parry_haste( player_t& p, action_state_t* s )
   }
 }
 
-void account_blessing_of_sacrifice( player_t& p, action_state_t* s )
-{
-  if ( p.buffs.blessing_of_sacrifice->check() )
-  {
-    // figure out how much damage gets redirected
-    double redirected_damage = s->result_amount * ( p.buffs.blessing_of_sacrifice->data().effectN( 1 ).percent() );
-
-    // apply that damage to the source paladin
-    double chance = p.buffs.blessing_of_sacrifice->default_chance;
-    if ( chance < 0 )
-      chance = s->action->ppm_proc_chance( -chance );
-
-    p.buffs.blessing_of_sacrifice->trigger( 0, redirected_damage, chance, 0_ms );
-
-    // mitigate that amount from the target.
-    // Slight inaccuracy: We do not get a feedback of paladin health buffer expiration here.
-    s->result_amount -= redirected_damage;
-
-    if ( p.sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
-      p.sim->out_debug.printf( "Damage to %s after Blessing of Sacrifice is %f", s->target->name(), s->result_amount );
-  }
-}
-
 bool absorb_sort( absorb_buff_t* a, absorb_buff_t* b )
 {
   double lv = a->current_value;
-  double rv = a->current_value;
+  double rv = b->current_value;
   if ( lv == rv )
   {
     return a->name_str < b->name_str;
@@ -8635,29 +8321,6 @@ void collect_dmg_taken_data( player_t& p, const action_state_t* s, double /* res
     p.incoming_damage.push_back( {p.sim->current_time(), s->result_amount, s->action->get_school()} );
   }
 }
-
-/**
- * Check if Guardian spirit saves the life of the player.
- */
-bool try_guardian_spirit( player_t& p, double actual_amount )
-{
-  // This can only save the target, if the damage is less than 200% of the target's health as of 4.0.6
-  if ( !p.is_enemy() && p.buffs.guardian_spirit->check() &&
-       actual_amount <= ( p.resources.max[ RESOURCE_HEALTH ] * 2 ) )
-  {
-    // Just assume that this is used so rarely that a strcmp hack will do
-    // stats_t* stat = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats(
-    // "guardian_spirit" ) : 0; double gs_amount = resources.max[ RESOURCE_HEALTH ] * buffs.guardian_spirit ->
-    // data().effectN( 2
-    // ).percent(); resource_gain( RESOURCE_HEALTH, s -> result_amount ); if ( stat ) stat -> add_result( gs_amount,
-    // gs_amount, result_amount_type::HEAL_DIRECT, RESULT_HIT );
-    p.buffs.guardian_spirit->expire();
-    return true;
-  }
-
-  return false;
-}
-
 }  // namespace assess_dmg_helper_functions
 
 }
@@ -8677,9 +8340,10 @@ void player_t::assess_damage( school_e school, result_amount_type rt, action_sta
   s->result_mitigated = s->result_amount;
 
   if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
-    sim->out_debug.printf( "Damage to %s after all mitigation is %f", s->target->name(), s->result_amount );
-
-  account_blessing_of_sacrifice( *this, s );
+  {
+    sim->print_debug( "{} {} damage to {} after mitigation is {}.", *s->action->player, *s->action, *this,
+                      s->result_amount );
+  }
 
   assess_damage_imminent_pre_absorb( school, rt, s );
 
@@ -8693,15 +8357,12 @@ void player_t::do_damage( action_state_t* incoming_state )
   using namespace assess_dmg_helper_functions;
 
   action_t* incoming_action = incoming_state->action;
-  double actual_amount = 0.0;
 
   collect_dmg_taken_data( *this, incoming_state,
                           incoming_state->result_mitigated - incoming_state->self_absorb_amount );
 
   if ( incoming_state->result_amount > 0.0 )
-  {
-    actual_amount = resource_loss( RESOURCE_HEALTH, incoming_state->result_amount, nullptr, incoming_action );
-  }
+    resource_loss( RESOURCE_HEALTH, incoming_state->result_amount, nullptr, incoming_action );
 
   // New callback system; proc abilities on incoming events.
   if ( incoming_action && incoming_action->callbacks && incoming_action->target_callbacks &&
@@ -8737,16 +8398,13 @@ void player_t::do_damage( action_state_t* incoming_state )
   // Check if target is dying
   if ( !demise_event && health_percentage() <= death_pct && !resources.is_infinite( RESOURCE_HEALTH ) )
   {
-    if ( !try_guardian_spirit( *this, actual_amount ) )
-    {  // Player was not saved by guardian spirit, kill him
-      if ( !current.sleeping )
-      {
-        collected_data.deaths.add( sim->current_time().total_seconds() );
-      }
-      if ( sim->log )
-        sim->out_log.printf( "%s has died.", name() );
-      make_event<player_demise_event_t>( *sim, *this );
-    }
+    if ( !current.sleeping )
+      collected_data.deaths.add( sim->current_time().total_seconds() );
+
+    if ( sim->log )
+      sim->out_log.printf( "%s has died.", name() );
+
+    make_event<player_demise_event_t>( *sim, *this );
   }
 }
 
@@ -8758,92 +8416,63 @@ void player_t::assess_damage_imminent( school_e, result_amount_type, action_stat
 {
 }
 
-void player_t::target_mitigation( school_e school, result_amount_type dmg_type, action_state_t* s )
+void player_t::target_mitigation( school_e, result_amount_type dmg_type, action_state_t* s )
 {
   if ( s->result_amount == 0 )
     return;
 
-  if ( buffs.pain_suppression && buffs.pain_suppression->up() )
-    s->result_amount *= 1.0 + buffs.pain_suppression->data().effectN( 1 ).percent();
-
-  if ( buffs.stoneform && buffs.stoneform->up() )
-    s->result_amount *= 1.0 + buffs.stoneform->data().effectN( 1 ).percent();
-
-  if ( buffs.elemental_chaos_earth && buffs.elemental_chaos_earth->check() )
-    s->result_amount *= 1.0 + buffs.elemental_chaos_earth->check_value();
-
-  if ( s->action->is_aoe() )
-    s->result_amount *= 1.0 - cache.avoidance();
-
-  // TODO-WOD: Where should this be? Or does it matter?
-  s->result_amount *= 1.0 - cache.mitigation_versatility();
-
   if ( debuffs.invulnerable && debuffs.invulnerable->check() )
   {
     s->result_amount = 0;
+    return;
   }
 
-  if ( school == SCHOOL_PHYSICAL && dmg_type == result_amount_type::DMG_DIRECT )
+  if ( dmg_type == result_amount_type::DMG_OVER_TIME )
   {
-    if ( s->action && !s->target->is_enemy() && !s->target->is_add() )
-      sim->print_debug( "Damage to {} before armor mitigation is {:.6f}", s->target->name(), s->result_amount );
+    s->result_amount *= s->target_mitigation_ta_multiplier;
+  }
+  else if ( dmg_type == result_amount_type::DMG_DIRECT )
+  {
+    s->result_amount *= s->target_mitigation_da_multiplier;
 
-    // Maximum amount of damage reduced by armor
-    double armor_cap = 0.85;
+    if ( !s->action )
+      return;
 
     // Armor
-    if ( s->action && !s->action->ignores_armor )
+    if ( auto armor = s->target_armor )
     {
-      double armor  = s -> target_armor;
-      double resist = armor / ( armor + s -> action -> player -> base.armor_coeff );
-      resist        = clamp( resist, 0.0, armor_cap );
-      s -> result_amount *= 1.0 - resist;
+      double resist = util::calculate_armor_resist( armor, s->action->player->current.armor_coeff );
+      s->result_amount *= 1.0 - resist;
+
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} {} damage to {} reduced by {:.7g}% from armor (armor={:.7g}, armor coeff={:.7g}).",
+                          *s->action->player, *s->action, *s->target, resist * 100, armor,
+                          s->action->player->current.armor_coeff );
+      }
     }
 
-    if ( s->action && !s->target->is_enemy() && !s->target->is_add() )
+    // Block and Crit Block work in the same manner as armor and are affected by the same cap
+    if ( s->block_result == BLOCK_RESULT_BLOCKED )
     {
-      if ( s->action->ignores_armor )
-        sim->print_debug( "Damage to {} after armor mitigation is {:.6f} (ignores armor)", s->target->name(), s->result_amount );
-      else
-        sim->print_debug( "Damage to {} after armor mitigation is {:.6f} ({:.7g} armor, {:.7g} armor coeff)",
-                          s->target->name(), s->result_amount, s->target_armor, s->action->player->current.armor_coeff );
+      double block_value = s->target_block_value;
+      double block_resist = util::calculate_armor_resist( block_value, s->action->player->current.armor_coeff );
+
+      block_resist = clamp( block_resist, 0.0, MAX_ARMOR_DAMAGE_REDUCTION );
+      s->result_amount *= 1.0 - block_resist;
+
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} {} damage to {} reduced by {:.7g}% from block (block value={:.7g}, armor coeff={:.7g}).",
+                          *s->action->player, *s->action, *s->target, block_resist * 100, block_value,
+                          s->action->player->current.armor_coeff );
+      }
     }
-
-    double pre_block_amount = s->result_amount;
-
-    // In BfA, Block and Crit Block work in the same manner as armor and are affected by the same cap
-    if ( s ->action && (s -> block_result == BLOCK_RESULT_BLOCKED || s -> block_result == BLOCK_RESULT_CRIT_BLOCKED ))
-    {
-      double block_reduction = composite_block_reduction( s );
-
-      double block_resist = block_reduction / ( block_reduction + s -> action -> player -> current.armor_coeff );
-
-      if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
-        block_resist *= 2.0;
-
-      block_resist = clamp( block_resist, 0.0, armor_cap );
-      s -> result_amount *= 1.0 - block_resist;
-
-      if ( s -> result_amount <= 0 )
-        return;
-    }
-
-    s->blocked_amount = pre_block_amount - s->result_amount;
-
-    if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() && s->blocked_amount > 0.0 )
-      sim->print_debug( "Damage to {} after blocking is {:.6f}", s->target->name(), s->result_amount );
   }
 }
 
 void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
 {
-  // Increases to healing taken should modify result_total in order to correctly calculate overhealing
-  // and other effects based on raw healing.
-  if ( buffs.guardian_spirit->up() )
-    s->result_total *= 1.0 + buffs.guardian_spirit->data().effectN( 1 ).percent();
-
-  s->result_total *= composite_player_healing_received_multiplier();
-
   // process heal
   s->result_amount = resource_gain( RESOURCE_HEALTH, s->result_total, nullptr, s->action );
 
@@ -8866,26 +8495,26 @@ void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, action_t* acti
                                   proc_trigger_type_e pt_type )
 {
   assert( action && state && state->target );
-  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], action->proc_data, state->target, state, pt_type );
+  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], action->proc_data, this, state->target, state, pt_type );
 }
 
 void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, buff_t* buff, proc_trigger_type_e pt_type )
 {
   assert( buff && buff->player );
-  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], buff->proc_data, buff->player, nullptr, pt_type );
+  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], buff->proc_data, this, buff->player, nullptr, pt_type );
 }
 
 void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, const proc_data_t& data, player_t* t,
                                   proc_trigger_type_e pt_type )
 {
   assert( t );
-  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], data, t, nullptr, pt_type );
+  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], data, this, t, nullptr, pt_type );
 }
 
 void player_t::trigger_aura_applied_callbacks( const proc_data_t& data, player_t* t )
 {
   assert( t );
-  trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, data, t, TRIGGER_AURA_APPLIED );
+  trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_LANDED, data, t, TRIGGER_AURA_APPLIED );
 }
 
 void player_t::summon_pet( util::string_view pet_name, const timespan_t duration )
@@ -9396,7 +9025,7 @@ struct shadowmeld_t : public racial_spell_t
     // Shadowmeld stops autoattacks
     player->cancel_auto_attacks();
 
-    if ( !player->in_boss_encounter )
+    if ( !player->in_boss_encounter || sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
       player->leave_combat();
   }
 };
@@ -9460,19 +9089,26 @@ struct arcane_torrent_t : public racial_spell_t
 
 struct berserking_t : public racial_spell_t
 {
+  buff_t* buff;
+
   berserking_t( player_t* p, util::string_view options_str ) :
     racial_spell_t( p, "berserking", p->find_racial_spell( "Berserking" ) )
   {
     parse_options( options_str );
     harmful = false;
     target = p;
+
+    // Make a fallback since it's possible some APLs may want to use haste buffs like this as a conditional
+    buff = make_buff_fallback( data().ok(), p, "berserking", &data() )
+      ->set_cooldown( 0_ms )
+      ->set_pct_buff_type_from_data( true );
   }
 
   void execute() override
   {
     racial_spell_t::execute();
 
-    player->buffs.berserking->trigger();
+    buff->trigger();
   }
 };
 
@@ -9480,19 +9116,29 @@ struct berserking_t : public racial_spell_t
 
 struct blood_fury_t : public racial_spell_t
 {
-  blood_fury_t( player_t* p, util::string_view options_str ) :
-    racial_spell_t( p, "blood_fury", p->find_racial_spell( "Blood Fury" ) )
+  buff_t* buff;
+
+  blood_fury_t( player_t* p, util::string_view options_str )
+    : racial_spell_t( p, "blood_fury", p->find_racial_spell( "Blood Fury" ) )
   {
     parse_options( options_str );
     harmful = false;
     target = p;
+
+    if ( data().ok() )
+    {
+      buff = make_buff<stat_buff_t>( p, "blood_fury", &data() )
+        ->add_invalidate( CACHE_SPELL_POWER )
+        ->add_invalidate( CACHE_ATTACK_POWER )
+        ->set_cooldown( 0_ms );
+    }
   }
 
   void execute() override
   {
     racial_spell_t::execute();
 
-    player->buffs.blood_fury->trigger();
+    buff->trigger();
   }
 };
 
@@ -9500,18 +9146,23 @@ struct blood_fury_t : public racial_spell_t
 
 struct darkflight_t : public racial_spell_t
 {
+  buff_t* buff;
+
   darkflight_t( player_t* p, util::string_view options_str ) :
     racial_spell_t( p, "darkflight", p->find_racial_spell( "Darkflight" ) )
   {
     parse_options( options_str );
     target = p;
+
+    if ( data().ok() )
+      buff = make_buff( p, "darkflight", &data() )->set_movement_speed_buff_from_data();
   }
 
   void execute() override
   {
     racial_spell_t::execute();
 
-    player->buffs.darkflight->trigger();
+    buff->trigger();
   }
 };
 
@@ -9691,6 +9342,8 @@ struct gift_of_the_naaru : public racial_heal_t
 
 struct ancestral_call_t : public racial_spell_t
 {
+  static constexpr std::array<unsigned, 4> spell_ids = { 274739, 274740, 274741, 274742 };
+
   std::vector<std::tuple<buff_t*, stat_e, double>> stat_values;
 
   ancestral_call_t( player_t* p, util::string_view options_str ) :
@@ -9700,9 +9353,17 @@ struct ancestral_call_t : public racial_spell_t
     harmful = false;
     target = p;
 
-    for ( auto b : p->buffs.ancestral_call )
-      if ( !b->is_fallback )
-        stat_values.emplace_back( b, debug_cast<stat_buff_t*>( b )->stats.front().stat, 0.0 );
+    if ( data().ok() )
+    {
+      for ( auto id : spell_ids )
+      {
+        auto data_ = p->find_spell( id );
+        auto stat_ = util::translate_all_rating_mod( data_->effectN( 1 ).misc_value1() ).front();
+        auto name_ = util::tokenize_fn( data_->name_cstr() );
+
+        stat_values.emplace_back( make_buff<stat_buff_t>( p, name_, data_ ), stat_, 0.0 );
+      }
+    }
   }
 
   void execute() override
@@ -9710,13 +9371,13 @@ struct ancestral_call_t : public racial_spell_t
     racial_spell_t::execute();
 
     for ( auto& stat : stat_values )
-      std::get<2>( stat ) = util::stat_value( player, std::get<1>( stat ) );
+      std::get<double>( stat ) = util::stat_value( player, std::get<stat_e>( stat ) );
 
-    std::sort( stat_values.begin(), stat_values.end(), []( const auto& a, const auto& b ) {
-      return std::get<2>( a ) > std::get<2>( b );
+    range::sort( stat_values, []( const auto& a, const auto& b ) {
+      return std::get<double>( a ) > std::get<double>( b );
     } );
 
-    std::get<0>( stat_values[ rng().range( 2 ) ] )->trigger();
+    std::get<buff_t*>( stat_values[ rng().range( 2 ) ] )->trigger();
   }
 };
 
@@ -9724,19 +9385,29 @@ struct ancestral_call_t : public racial_spell_t
 
 struct fireblood_t : public racial_spell_t
 {
+  buff_t* buff;
+
   fireblood_t( player_t* p, util::string_view options_str ) :
     racial_spell_t( p, "fireblood", p->find_racial_spell( "Fireblood" ) )
   {
     parse_options( options_str );
     harmful = false;
     target = p;
+
+    if ( data().ok() )
+    {
+      auto stat_amount = p->find_spell( 265226 )->effectN( 1 ).average( p ) * 3.0;
+
+      buff = make_buff<stat_buff_t>( p, "fireblood", p->find_spell( 273104 ) )
+        ->add_stat( p->convert_hybrid_stat( STAT_STR_AGI_INT ), stat_amount );
+    }
   }
 
   void execute() override
   {
     racial_spell_t::execute();
 
-    player->buffs.fireblood -> trigger();
+    buff->trigger();
   }
 };
 
@@ -10790,8 +10461,8 @@ struct use_items_t : public action_t
 
       if ( sim->debug )
       {
-        sim->out_debug.printf( "%s use_items creating proxy action for %s (slot=%s)", player->name(),
-                               item.full_name().c_str(), item.slot_name() );
+        sim->print_debug( "{} use_items in action list '{}' creating proxy action for {} (slot={})", *player,
+                          action_list->name_str, item.full_name(), item.slot_name() );
       }
 
       auto use_action = new use_item_t( player, std::string( "slot=" ) + item.slot_name() );
@@ -11428,6 +11099,53 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
   return consumable::create_action( this, name, options_str );
 }
 
+void player_t::create_permanent_actors()
+{
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && sim->dungeon_route_simple_dps_members > 0 && is_player() && type != PLAYER_SIMPLIFIED )
+  {
+    // keep it simple and require one input player
+    int players = 0;
+    for ( player_t* p : sim->player_no_pet_list )
+    {
+      if ( p->is_player() && type != PLAYER_SIMPLIFIED )
+      {
+        players++;
+      }
+    }
+
+    if ( players > 1 )
+    {
+      sim->error( "Warning: ignoring dungeon_route_simple_dps_members since more than one player was defined" );
+      sim->dungeon_route_simple_dps_members = 0;
+      return;
+    }
+
+    // make sure we are actually simming the whole party together
+    if ( sim->single_actor_batch )
+    {
+      sim->error( "Warning: ignoring dungeon_route_simple_dps_members since single_actor_batch was enabed" );
+      sim->dungeon_route_simple_dps_members = 0;
+      return;
+    }
+
+    const module_t* module = module_t::get( PLAYER_SIMPLIFIED );
+
+    bool dps_role = primary_role() != ROLE_TANK && primary_role() != ROLE_HEAL && primary_role() != ROLE_HYBRID;
+
+    if ( dps_role && sim->dungeon_route_simple_dps_members > 2 )
+    {
+      sim->error( "Warning: clamping dungeon_route_simple_dps_members to 2 since player is dps" );
+      sim->dungeon_route_simple_dps_members = 2;
+    }
+
+    for ( int i = 1; i <= sim->dungeon_route_simple_dps_members; i++ )
+    {
+      player_t* p = module->create_player( sim, "Dungeon Buddy " + util::to_string( i ) );
+      p->true_level = level();
+    }
+  }
+}
+
 pet_t* player_t::create_pet( util::string_view, util::string_view )
 {
   return nullptr;
@@ -11621,8 +11339,8 @@ player_talent_t player_t::find_talent_spell( talent_tree tree, std::string_view 
 
   if ( trait == &trait_data_t::nil() )
   {
-    sim->print_debug( "Player {}: Can't find {} talent with name '{}'.", this->name(),
-        util::talent_tree_string( tree ), name );
+    sim->print_debug( "{} can't find {} talent with name '{}'.", *this, util::talent_tree_string( tree ), name );
+
     return {};  // Invalid trait
   }
 
@@ -11639,10 +11357,11 @@ player_talent_t player_t::find_talent_spell( talent_tree tree, unsigned spell_id
   auto traits =
     trait_data_t::find_by_spell( tree, spell_id, util::class_id( type ), s == SPEC_NONE ? _spec : s, dbc->ptr );
 
-    if ( traits.size() == 0 )
+  if ( traits.empty() )
   {
-    sim->print_debug( "Player {}: Can't find {} talent with spell_id '{}'.", this->name(),
-        util::talent_tree_string( tree ), spell_id );
+    sim->print_debug( "{} can't find {} talent with spell_id '{}'.", *this, util::talent_tree_string( tree ),
+                      spell_id );
+
     return {};  // Invalid trait
   }
 
@@ -11652,10 +11371,11 @@ player_talent_t player_t::find_talent_spell( talent_tree tree, unsigned spell_id
 player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id ) const
 {
   const trait_data_t* trait = trait_data_t::find( trait_node_entry_id, dbc->ptr );
+
   if ( trait == &trait_data_t::nil() )
   {
-    sim->print_debug( "Player {}: Can't find talent with node_entry_id '{}'.", this->name(),
-        trait_node_entry_id );
+    sim->print_debug( "{} can't find talent with node_entry_id '{}'.", *this, trait_node_entry_id );
+
     return {};  // Invalid trait
   }
 
@@ -12047,6 +11767,9 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( expression_str == "is_enemy" )
     return expr_t::create_constant( "is_enemy", is_enemy() );
 
+  if ( expression_str == "has_absorb" )
+    return make_fn_expr( expression_str, [ this ] { return has_absorb() ? 1.0 : 0.0; } );
+
   if ( expression_str == "attack_haste" )
     return make_fn_expr( expression_str, [this] { return cache.attack_haste(); } );
 
@@ -12343,7 +12066,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     if ( splits[ 0 ] == "set_bonus" )
       return sets->create_expression( this, splits[ 1 ] );
 
-    if ( splits[ 0 ] == "active_dot" )
+    if ( splits[ 0 ] == "active_dot" || splits[ 0 ] == "active_dots" )
     {
       action_t* action = find_action( splits[ 1 ] );
       if ( action )
@@ -12487,6 +12210,8 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       {
         sim->print_debug( "{} cooldown '{}' not found, creating placeholder.", *this, splits[ 1 ] );
         _cooldown = get_cooldown( splits[ 1 ] );
+        _cooldown->duration = timespan_t::min();
+        _cooldown->base_duration = timespan_t::min();
       }
 
       return _cooldown->create_expression( splits[ 2 ] );
@@ -12593,6 +12318,41 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     }
 
     throw sc_invalid_apl_argument( fmt::format( "Invalid talent expression '{}'.", splits[ 2 ] ) );
+  }
+
+  if ( splits.size() == 2 && splits[ 0 ] == "potion" )
+  {
+    std::string_view potion_view;
+
+    if ( !potion_str.empty() )
+    {
+      potion_view = potion_str;
+    }
+    else if ( default_potion().empty() )
+    {
+      potion_view = default_potion();
+    }
+    else
+    {
+      return expr_t::create_constant( expression_str, false );
+    }
+
+    if ( util::str_compare_ci( potion_view, splits[ 1 ] ) )
+      return expr_t::create_constant( expression_str, true );
+
+    if ( potion_view.size() < 2 )
+      return expr_t::create_constant( expression_str, false );
+
+    auto last_char = std::prev( potion_view.end() );
+    if ( std::isdigit( *last_char ) && *std::prev( last_char ) == '_' )
+    {
+      potion_view.remove_suffix( 2 );
+
+      if ( util::str_compare_ci( potion_view, splits[ 1 ] ) )
+        return expr_t::create_constant( expression_str, true );
+    }
+
+    return expr_t::create_constant( expression_str, false );
   }
 
   // trinkets
@@ -13045,6 +12805,11 @@ std::string player_t::create_profile( save_e stype )
       profile_str += "hero_talents=" + hero_talents_str + term;
     }
 
+    if ( !omnium_talents_str.empty() )
+    {
+      profile_str += "omnium_talents=" + omnium_talents_str + term;
+    }
+
     if ( azerite )
     {
       std::string azerite_overrides = azerite -> overrides_str();
@@ -13234,12 +12999,6 @@ std::string player_t::create_profile( save_e stype )
         profile_str += "=" + util::to_string( gear.get_stat( i ), 0 ) + term;
       }
     }
-    if ( meta_gem != META_GEM_NONE )
-    {
-      profile_str += "# meta_gem=";
-      profile_str += util::meta_gem_type_string( meta_gem );
-      profile_str += term;
-    }
 
     // Set Bonus
     if ( sets != nullptr )
@@ -13330,6 +13089,7 @@ void player_t::copy_from( player_t* source )
   class_talents_str                 = source->class_talents_str;
   spec_talents_str                  = source->spec_talents_str;
   hero_talents_str                  = source->hero_talents_str;
+  omnium_talents_str                = source->omnium_talents_str;
   set_bonus_str                     = source->set_bonus_str;
   player_traits                     = source->player_traits;
   player_sub_trees                  = source->player_sub_trees;
@@ -13368,7 +13128,6 @@ void player_t::copy_from( player_t* source )
   precombat_state_map  = source->precombat_state_map;
   custom_stat_buffs    = source->custom_stat_buffs;
 
-  meta_gem = source->meta_gem;
   for ( size_t i = 0; i < items.size(); i++ )
   {
     items[ i ]        = source->items[ i ];
@@ -13445,6 +13204,7 @@ void player_t::create_options()
   add_option( opt_bool( "disable_hotfixes", disable_hotfixes ) );
   add_option( opt_func( "min_gcd", parse_min_gcd ) );
   add_option( opt_bool( "load_default_gear", load_default_gear ) );
+  add_option( opt_bool( "collect_pet_sequence_data", collect_pet_sequence_data ) );
 
   // Talents
   add_option( opt_string( "class_talents", class_talents_str ) );
@@ -13453,6 +13213,8 @@ void player_t::create_options()
   add_option( opt_append( "spec_talents+", spec_talents_str ) );
   add_option( opt_string( "hero_talents", hero_talents_str ) );
   add_option( opt_append( "hero_talents+", hero_talents_str ) );
+  add_option( opt_string( "omnium_talents", omnium_talents_str ) );
+  add_option( opt_append( "omnium_talents+", omnium_talents_str ) );
   add_option( opt_bool( "load_default_talents", load_default_talents ) );
 
   // Consumables
@@ -13468,7 +13230,6 @@ void player_t::create_options()
   add_option( opt_float( "y_pos", default_y_position ) );
 
   // Items
-  add_option( opt_string( "meta_gem", meta_gem_str ) );
   add_option( opt_deprecated( "items", "use individual slot options" ) );
   add_option( opt_deprecated( "items+", "use individual slot options" ) );
   add_option( opt_string( "head", items[ SLOT_HEAD ].options_str ) );
@@ -13674,9 +13435,7 @@ void player_t::create_options()
   add_option( opt_string( "external_buffs.pool", external_buffs.pool ) );
 
   // Permanent External Buffs
-  add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );
   add_option( opt_int( "external_buffs.soleahs_secret_technique_ilevel", external_buffs.soleahs_secret_technique, 1, MAX_ILEVEL ) );
-  add_option( opt_string( "external_buffs.elegy_of_the_eternals", external_buffs.elegy_of_the_eternals ) );
 
   // Timed External Buffs
   auto opt_external_buff_times = [] ( std::string_view name, std::vector<timespan_t>& times )
@@ -13698,16 +13457,11 @@ void player_t::create_options()
   };
 
   add_option( opt_external_buff_times( "external_buffs.power_infusion", external_buffs.power_infusion ) );
-  add_option( opt_external_buff_times( "external_buffs.conquerors_banner", external_buffs.conquerors_banner ) );
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
-  add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth", external_buffs.boon_of_azeroth ) );
-  add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth_mythic", external_buffs.boon_of_azeroth_mythic ) );
-  add_option( opt_external_buff_times( "external_buffs.tome_of_unstable_power", external_buffs.tome_of_unstable_power) );
   add_option( opt_external_buff_times( "external_buffs.potion_bomb_of_power", external_buffs.potion_bomb_of_power ) );
 
   // Additional Options for Timed External Buffs
   add_option( opt_obsoleted( "external_buffs.the_long_summer_rank" ) );
-  add_option(opt_int("external_buffs.tome_of_unstable_power_ilevel", external_buffs.tome_of_unstable_power_ilevel, 1, MAX_ILEVEL));
 
   // Player only options
   if ( !is_enemy() && !is_pet() )
@@ -15094,6 +14848,17 @@ void player_t::register_creature_type_buff( buff_t* buff, const spell_data_t* s_
   buffs.creature_type_buffs.emplace_back( buff, effect.misc_value1(), effect.percent() );
 }
 
+void player_t::register_timed_buff_triggers( buff_t* buff, const std::vector<timespan_t>& times, timespan_t duration )
+{
+  if ( !buff || times.empty() )
+    return;
+
+  register_combat_begin( [ buff, &times, duration ]( player_t* p ) {
+    for ( auto t : times )
+      make_event( *p->sim, t, [ buff, duration ] { buff->trigger( duration ); } );
+  } );
+}
+
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const
 {
   auto it = range::find_if( spawners, [ id ]( spawner::base_actor_spawner_t* o ) {
@@ -15290,6 +15055,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { P_TICK_DAMAGE,                            "periodic_damage"                  },  // 22
   { A_MOD_STAT,                               "attribute_value"                  },  // 29
   { P_DOSES,                                  "proc_charges"                     },  // 31
+  { A_MOD_INCREASE_SPEED,                     "move_speed_modifier_-_exclusive"  },  // 31
   { A_MOD_INCREASE_RESOURCE,                  "resource_max"                     },  // 35
   { P_MAX_STACKS,                             "max_stack"                        },  // 37
   { P_PROC_COOLDOWN,                          "internal_cooldown"                },  // 38
@@ -15305,7 +15071,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_POWER_REGEN_PERCENT,                "resource_regen"                   },  // 110
   { A_MOD_HEALING_RECEIVED_PCT,               "healing_received_multiplier"      },  // 118
   { A_INCREASE_RESOURCE_PCT,                  "resource_multiplier"              },  // 119
-  { A_MOD_SPEED_ALWAYS,                       "stacking_move_speed_modifier"     },  // 129
+  { A_MOD_SPEED_ALWAYS,                       "move_speed_modifier_-_stacking"   },  // 129
   { A_INCREASE_RESOURCE_PCT,                  "resource_multiplier"              },  // 132
   { A_MOD_HEALING_DONE_PERCENT,               "healing_multiplier"               },  // 136
   { A_MOD_TOTAL_STAT_PERCENTAGE,              "attribute_multiplier"             },  // 137
@@ -15313,7 +15079,6 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_BASE_RESISTANCE_PCT,                "base_armor_multiplier"            },  // 142
   { A_MOD_CRIT_DAMAGE_MULTIPLIER,             "crit_damage_multiplier"           },  // 163
   { A_MOD_ATTACK_POWER_PCT,                   "attack_power_multiplier",         },  // 166
-  { A_MOD_SPEED_NOT_STACK,                    "non_stacking_move_speed_modifier" },  // 171
   { A_MOD_RECHARGE_TIME_PCT_CATEGORY_MASK,    "charge_cooldown"                  },  // 173
   { A_MOD_MAX_MANA_PCT,                       "resource_multiplier"              },  // 178
   { A_MOD_ATTACKER_MELEE_CRIT_CHANCE,         "crit_avoidance"                   },  // 187
@@ -15321,7 +15086,7 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_RECHARGE_TIME_CATEGORY_MASK,        "charge_cooldown"                  },  // 205
   { A_MODIFY_SCHOOL,                          "school"                           },  // 220
   { A_MOD_EXPERTISE,                          "expertise"                        },  // 240
-  { A_MOD_BLOCK_PCT,                          "block_reduction"                  },  // 272
+  { A_MOD_BLOCK_PCT,                          "block_value"                      },  // 272
   { A_MOD_MECHANIC_DAMAGE_DONE_PERCENT,       "mechanic_damage_done"             },  // 276
   { A_MOD_TARGET_ARMOR_PCT,                   "armor_penetration"                },  // 280
   { A_MOD_ALL_CRIT_CHANCE,                    "all_crit"                         },  // 290
@@ -15619,6 +15384,10 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
         // parse scaling value if necessary
         flat_val = modifying_eff.average( this );
         break;
+      case A_MOD_INCREASE_SPEED:  // 31
+        id_field = "move_speed_modifier_-_exclusive";
+        flat_val = modifying_eff.average( this ) * 0.01;
+        break;
       case A_MOD_INCREASE_RESOURCE: // 35
       case A_MOD_MAX_RESOURCE:  // 418
         misc_type = util::power_type_to_resource( static_cast<power_e>( modifying_eff.misc_value1() ) );
@@ -15686,7 +15455,6 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_BLOCK_PERCENT:  // 51
       case A_MOD_SPELL_CRIT_CHANCE:  // 57
       case A_MOD_SPEED_ALWAYS:  // 129
-      case A_MOD_SPEED_NOT_STACK:  // 171
       case A_MOD_ATTACKER_MELEE_CRIT_CHANCE:  // 187
       case A_MOD_EXPERTISE:  // 240
       case A_MOD_BLOCK_PCT:  // 272
@@ -15760,6 +15528,31 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
     auto m_it = range::find( misc_expansion_map, id_field, &misc_expansion_t::field );
     if ( m_it == misc_expansion_map.end() )
     {
+      // special handling for A_MOD_INCREASE_SPEED (non_stacking_movement_modifier)
+      if ( sub_type == A_MOD_INCREASE_SPEED )
+      {
+        auto _it = range::find_if( passive_player_modifiers_, []( const auto& mod ) {
+          return mod.id == A_MOD_INCREASE_SPEED;
+        } );
+        if ( _it == passive_player_modifiers_.end() )
+        {
+          passive_player_modifiers_.emplace_back( A_MOD_INCREASE_SPEED, 0, 0 );
+          _it = std::prev( passive_player_modifiers_.end() );
+        }
+
+        auto prev = *_it;  // make a copy
+
+        if ( _it->flat < flat_val )
+          _it->flat = flat_val;
+        else
+          flat_val = 0.0;
+
+        do_debug( "", prev, *_it );
+        add_reporting( 0 );
+
+        return true;
+      }
+
       // no expansion needed, default handling
       auto [ prev, now ] = add_passive_effect_modifier( passive_player_modifiers_, id_type, 0, 0, flat_val, pct_val );
 
@@ -16540,9 +16333,13 @@ void player_t::parse_all_class_passives()
     }
   }
 
+  // handle touch of elune day/night buff
+  if ( find_racial_spell( "Touch of Elune" )->ok() )
+    parse_passive_effects( find_spell( timeofday == DAY_TIME ? 154796 : 154797 ), true, PARSE_SOURCE_RACIAL );
+
   // may as well handle this here
-  if ( racials.subterranean_predator->ok() )
-    register_creature_type_buff( nullptr, racials.subterranean_predator );
+  if ( auto sub_pred = find_racial_spell( "Subterranean Predator" ); sub_pred->ok() )
+    register_creature_type_buff( nullptr, sub_pred );
 }
 
 void player_t::parse_all_passive_talents()
@@ -16594,17 +16391,20 @@ void player_t::parse_raid_buffs()
 
 void player_t::register_passive_spell_override( const spell_data_t& spell, double value, std::string_view field )
 {
-  dbc_override_->register_spell( *dbc, spell.id(), field, value );
+  if ( spell.ok() )
+    dbc_override_->register_spell( *dbc, spell.id(), field, value );
 }
 
 void player_t::register_passive_power_override( const spellpower_data_t& power, double value, std::string_view field )
 {
+  if ( power.id() != 0 )
   dbc_override_->register_power( *dbc, power.id(), field, value );
 }
 
 void player_t::register_passive_effect_override( const spelleffect_data_t& effect, double value, std::string_view field )
 {
-  dbc_override_->register_effect( *dbc, effect.id(), field, value );
+  if ( effect.ok() )
+    dbc_override_->register_effect( *dbc, effect.id(), field, value );
 }
 
 const spell_data_t* player_t::clone_dbc_override_spell( const player_t* p, const spell_data_t* s )

@@ -68,12 +68,19 @@ void do_execute( action_t* action, execute_type type )
   {
     if ( !action->quiet )
     {
+      action->player->last_foreground_action = action;
+
       action->player->iteration_executed_foreground_actions++;
       action->total_executions++;
-      action->player->sequence_add( action, action->target, [ action ]( std::string&, std::string& t_str ) {
-        t_str = action->target->name_str;
-      } );
+
+      if ( action->trigger_gcd > timespan_t::zero() )
+        action->player->prev_gcd_actions.push_back( action );
+      else
+        action->player->off_gcdactions.push_back( action );
+
+      action->player->sequence_add( action, action->target );
     }
+
     action->execute();
     action->line_cooldown->start();
 
@@ -147,8 +154,8 @@ struct queued_action_execute_event_t : public event_t
 
         // If it's the first iteration (where we capture sample sequence) adjust the captured sequence to indicate the
         // queue failed
-        if ( ( sim().iterations <= 1 && sim().current_iteration == 0 ) ||
-             ( sim().iterations > 1 && actor->nth_iteration() == 1 ) )
+        if ( sim().collect_action_sequence && ( ( sim().iterations <= 1 && sim().current_iteration == 0 ) ||
+                                                ( sim().iterations > 1 && actor->nth_iteration() == 1 ) ) )
         {
           // Find the last action sequence entry that matches the current action
           auto& seq = actor->collected_data.action_sequence;
@@ -365,6 +372,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     use_off_gcd(),
     use_while_casting(),
     usable_while_casting(),
+    add_queue_lag(),
     can_have_one_button_penalty(),
     cooldown_allow_casting_success( true ),
     interrupt_auto_attack( true ),
@@ -373,6 +381,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     action_skill( p->base.skill ),
     direct_tick(),
     treat_as_periodic(),
+    treat_as_area_effect(),
     ignores_armor(),
     repeating(),
     harmful( true ),
@@ -385,7 +394,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     may_dodge(),
     may_parry(),
     may_glance(),
-    may_block(),
+    may_block( true ),
     may_crit(),
     tick_may_crit(),
     tick_zero(),
@@ -399,8 +408,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     normalize_weapon_speed(),
     ground_aoe(),
     round_base_dmg( true ),
-    dynamic_tick_action( true ),  // WoD updates everything on tick by default. If you need snapshotted values for a
-                                  // periodic effect, use persistent multipliers.
+    dynamic_tick_action( TICK_ACTION_UPDATE ),
     track_cd_waste(),
     cd_waste_data(),
     interrupt_immediate_occurred(),
@@ -563,6 +571,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
   add_option( opt_bool( "interrupt_immediate", option.interrupt_immediate ) );
   add_option( opt_bool( "use_off_gcd", use_off_gcd ) );
   add_option( opt_bool( "use_while_casting", use_while_casting ) );
+  add_option( opt_bool( "add_queue_lag", add_queue_lag ) );
   add_option( opt_string( "can_have_one_button_penalty", option.can_have_one_button_penalty_str ) );
   add_option( opt_string( "cooldown_allow_casting_success", option.cooldown_allow_casting_success_str ) );
 }
@@ -665,8 +674,11 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   hasted_dot_duration         = spell_data.flags( spell_attribute::SX_DURATION_HASTED );
   rolling_periodic            = spell_data.flags( spell_attribute::SX_ROLLING_PERIODIC );
   treat_as_periodic           = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );
+  treat_as_area_effect        = spell_data.flags( spell_attribute::SX_TREAT_AS_AREA_EFFECT );
   ignores_armor               = spell_data.flags( spell_attribute::SX_TREAT_AS_PERIODIC );  // TODO: better way to parse this?
   may_miss                    = !spell_data.flags( spell_attribute::SX_ALWAYS_HIT );
+  may_block                   = !spell_data.flags( spell_attribute::SX_NO_BLOCK ) &&
+                                !spell_data.flags( spell_attribute::SX_NO_D_P_B );
   not_a_proc                  = spell_data.flags( spell_attribute::SX_NOT_A_PROC );
 
   if ( spell_data.flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
@@ -1662,9 +1674,12 @@ double action_t::composite_total_spell_power() const
   return spell_power;
 }
 
-double action_t::composite_target_armor( player_t* t ) const
+double action_t::composite_target_armor( const action_state_t* s ) const
 {
-  return player->composite_player_target_armor( t );
+  if ( get_school() == SCHOOL_PHYSICAL )
+    return player->composite_player_target_armor( s->target );
+  else
+    return 0.0;
 }
 
 double action_t::composite_target_crit_chance( player_t* t ) const
@@ -1773,46 +1788,23 @@ player_t* action_t::find_target_by_number( int number ) const
 }
 
 // action_t::calculate_block_result =========================================
-// moved here now that we found out that spells can be blocked (Holy Shield)
-// block_chance() and crit_block_chance() govern whether any given attack can
-// be blocked or not (zero return if not)
 
 block_result_e action_t::calculate_block_result( action_state_t* s ) const
 {
-  block_result_e block_result = BLOCK_RESULT_UNBLOCKED;
-
-  // 2019-06-02: Looking at logs from Uldir, Battle of Dazar'alor and Crucible of Storms,
-  // It appears that non players can't block attacks or abilities anymore
-  // Non-player Parry and Miss seem unchanged
-  if ( s -> target -> is_enemy() )
+  // target_block_value is only set by enemy actions that damage players
+  if ( may_block && s->target_block_value && result_is_hit( s->result ) && player->position() == POSITION_FRONT &&
+       s->result != RESULT_NONE )
   {
-    return BLOCK_RESULT_UNBLOCKED;
+    // Blocks also get a their own roll, and glances/crits can be blocked.
+    auto block_result = s->target->target_block_resolution( s );
+
+    if ( sim->debug )
+      sim->print_debug( "{} block result for {} is {}", *player, *this, block_result );
+
+    return block_result;
   }
 
-  // Blocks also get a their own roll, and glances/crits can be blocked.
-  if ( result_is_hit( s->result ) && may_block && ( player->position() == POSITION_FRONT ) &&
-       !( s->result == RESULT_NONE ) )
-  {
-    double block_total = block_chance( s );
-
-    if ( block_total > 0 )
-    {
-      double crit_block = crit_block_chance( s );
-
-      // Roll once for block, then again for crit block if the block succeeds
-      if ( rng().roll( block_total ) )
-      {
-        if ( rng().roll( crit_block ) )
-          block_result = BLOCK_RESULT_CRIT_BLOCKED;
-        else
-          block_result = BLOCK_RESULT_BLOCKED;
-      }
-    }
-  }
-
-  sim->print_debug("{} result for {} is {}", *player, *this, block_result );
-
-  return block_result;
+  return BLOCK_RESULT_UNBLOCKED;
 }
 
 // action_t::execute ========================================================
@@ -2054,8 +2046,17 @@ void action_t::tick( dot_t* d )
     tick_state->target = d->target;
     tick_action->set_target( d->target );
 
-    if ( dynamic_tick_action )
-      tick_action->update_state( tick_state, amount_type( tick_state, tick_action->direct_tick ) );
+    switch ( dynamic_tick_action )
+    {
+      case TICK_ACTION_UPDATE:
+        tick_action->update_state( tick_state, amount_type( tick_state, tick_action->direct_tick ) );
+        break;
+      case TICK_ACTION_SNAPSHOT:
+        tick_action->snapshot_state( tick_state, amount_type( tick_state, tick_action->direct_tick ) );
+        break;
+      default:
+        break;
+    }
 
     tick_action->schedule_execute( tick_state );
 
@@ -2730,12 +2731,16 @@ void action_t::init()
 
   if ( does_periodic_damage() )
   {
-    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_TGT_MITG_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
   }
 
   if ( does_direct_damage() )
   {
-    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_TGT_MITG_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+
+    // Because schools can change during runtime, armor is flagged and not snapshot if determined to be non-physical
+    if ( !ignores_armor )
+      snapshot_flags |= STATE_TGT_ARMOR;
   }
 
   if ( player->is_pet() && ( snapshot_flags & ( STATE_MUL_DA | STATE_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA |
@@ -2743,9 +2748,6 @@ void action_t::init()
   {
     snapshot_flags |= STATE_MUL_PET | STATE_TGT_MUL_PET;
   }
-
-  if ( school == SCHOOL_PHYSICAL )
-    snapshot_flags |= STATE_TGT_ARMOR;
 
   if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) ||
        data().flags( spell_attribute::SX_DISABLE_PLAYER_HEALING_MULT ) )
@@ -3615,6 +3617,18 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
     } );
   }
 
+  else if ( name == "active_dots" )
+  {
+    return make_fn_expr( name, [ this ]() {
+      auto dot = find_dot( nullptr );
+
+      if ( dot )
+        return player->get_active_dots( dot );
+
+      return 0u;
+    } );
+  }
+
   if ( name == "last_used" )
   {
     std::vector<action_t*> last_used_list;
@@ -4347,13 +4361,13 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->target_crit_chance = composite_target_crit_chance( state->target ) * composite_crit_chance_multiplier();
 
   if ( flags & STATE_TGT_MITG_DA )
-    state->target_mitigation_da_multiplier = composite_target_mitigation( state->target, get_school() );
+    state->target_mitigation_da_multiplier = composite_target_mitigation( state, true );
 
   if ( flags & STATE_TGT_MITG_TA )
-    state->target_mitigation_ta_multiplier = composite_target_mitigation( state->target, get_school() );
+    state->target_mitigation_ta_multiplier = composite_target_mitigation( state, false );
 
   if ( flags & STATE_TGT_ARMOR )
-    state->target_armor = composite_target_armor( state->target );
+    state->target_armor = composite_target_armor( state );
 }
 
 // action_t::composite_dot_duration =========================================
@@ -4524,10 +4538,9 @@ void action_t::trigger_dot( action_state_t* s )
   // TODO: does proc suppression matter for aura applied triggers?
   if ( callbacks && caster_callbacks && ( !suppress_caster_procs || enable_proc_from_suppressed ) )
   {
-    // Current implementation splits helpful PF2_LANDED into PF1_HIT and PF1_CRIT so we need to adjust here
     // TODO: assumption is that PROC1_NONE_HELPFUL actually applies to all aura application, whether hostile or not
     // NOTE: we don't pass state since this is an aura_applied trigger
-    player->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, proc_data, dot->target, TRIGGER_AURA_APPLIED );
+    player->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_LANDED, proc_data, dot->target, TRIGGER_AURA_APPLIED );
   }
 }
 
@@ -4992,14 +5005,15 @@ double action_t::composite_rolling_ta_multiplier( const action_state_t* s ) cons
 
 /// Persistent modifiers that are snapshot at the start of the spell cast
 
-double action_t::composite_persistent_multiplier(const action_state_t*) const
+double action_t::composite_persistent_multiplier( const action_state_t* ) const
 {
-  return player->composite_persistent_multiplier(get_school());
+  return player->composite_persistent_multiplier( get_school() );
 }
 
-double action_t::composite_target_mitigation(player_t* t, school_e s) const
+double action_t::composite_target_mitigation( const action_state_t* s, bool direct ) const
 {
-  return t->composite_mitigation_multiplier(s);
+  return s->target->composite_mitigation_multiplier( s, get_school(), direct ) *
+         s->target->composite_mitigation_from_player_multiplier( s->action->player, s, get_school(), direct );
 }
 
 double action_t::composite_player_critical_multiplier( const action_state_t* s ) const
@@ -5526,4 +5540,9 @@ void action_t::print_parsed_effects( report::sc_html_stream& os ) const
   }
 
   print_custom_parsed_effects( os );
+}
+
+void action_t::sequence_add_fn( std::string&, std::string& t_str ) const
+{
+  t_str = target->name_str;
 }

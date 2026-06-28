@@ -38,7 +38,7 @@ public:
   {
     if ( started )
     {
-      fmt::print( out, "{} took {}seconds.\n", title, chrono::elapsed_fp_seconds( start_time ) );
+      fmt::print( out, "{} took {} seconds.\n", title, chrono::elapsed_fp_seconds( start_time ) );
     }
   }
 };

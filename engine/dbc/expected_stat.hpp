@@ -12,6 +12,7 @@
 struct expected_stat_t
 {
   unsigned level;
+  float creature_health;
   float creature_auto_attack_dps;
   float creature_armor;
   float player_primary_stat;
@@ -31,6 +32,7 @@ struct expected_stat_t
 struct expected_stat_mod_t
 {
   unsigned id;
+  float creature_health;
   float creature_auto_attack_dps;
   float creature_armor;
   float player_primary_stat;

@@ -74,10 +74,10 @@ action_callback_t::action_callback_t( player_t* l )
     l->callbacks.all_callbacks.push_back( this );
 }
 
-void action_callback_t::trigger( const std::vector<action_callback_t*>& v, const proc_data_t& data, player_t* target,
-                                 action_state_t* state, proc_trigger_type_e type )
+void action_callback_t::trigger( const std::vector<action_callback_t*>& v, const proc_data_t& data, player_t* player,
+                                 player_t* target, action_state_t* state, proc_trigger_type_e type )
 {
-  if ( !target->in_combat )
+  if ( !player->in_combat )
     return;
 
   for ( auto cb : v )

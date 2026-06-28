@@ -53,7 +53,7 @@ void shadow( player_t* p )
   precombat->add_action( "variable,name=trinket_1_buffs,value=(trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.signet_of_the_priory)&(trinket.1.cooldown.duration>=20)" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=(trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.signet_of_the_priory)&(trinket.2.cooldown.duration>=20)" );
   precombat->add_action( "variable,name=dr_force_prio,default=0,op=reset" );
-  precombat->add_action( "variable,name=me_force_prio,default=1,op=reset" );
+  precombat->add_action( "variable,name=me_force_prio,default=0,op=reset" );
   precombat->add_action( "variable,name=max_vts,default=12,op=reset" );
   precombat->add_action( "variable,name=is_vt_possible,default=0,op=reset" );
   precombat->add_action( "arcane_torrent" );
@@ -90,12 +90,11 @@ void shadow( player_t* p )
 
   main->add_action( "variable,name=dots_up,op=set,value=active_dot.vampiric_touch=active_enemies&active_dot.shadow_word_pain>=active_dot.vampiric_touch,if=active_enemies<3" );
   main->add_action( "call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_tentacle_slam|active_enemies>2)&variable.dots_up" );
-  main->add_action( "shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.shadow_word_madness.ticking,if=priest.force_devour_matter&talent.devour_matter", "High Priority Shadow Word: Death when you are forcing the bonus from Devour Matter" );
+  main->add_action( "shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.shadow_word_madness.ticking,if=(priest.force_devour_matter|target.has_absorb)&talent.devour_matter", "High Priority Shadow Word: Death when Devour Matter is active (target shielded or forced)" );
   main->add_action( "shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35|buff.mind_devourer.react|!raid_event.adds.exists&target.time_to_die<=10|buff.entropic_rift.up&action.shadow_word_madness.cost>0", "Do not overcap on insanity" );
   main->add_action( "void_volley" );
   main->add_action( "void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)", "Blast more burst :wicked:" );
   main->add_action( "tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=dot.vampiric_touch.refreshable|cooldown.tentacle_slam.full_recharge_time<=gcd.max*2", "Use Tentacle Slam to prevent capping charges or to refresh Vampiric Touch" );
-  main->add_action( "shadow_word_madness,target_if=max:dot.shadow_word_madness.remains,if=dot.shadow_word_madness.pmultiplier<1&dot.shadow_word_madness.ticking" );
   main->add_action( "void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&variable.dots_up", "Use Void Torrent if it will get near full Mastery Value" );
   main->add_action( "shadow_word_pain,target_if=max:(refreshable*100000+target.time_to_die+dot.vampiric_touch.ticking*10000),if=talent.invoked_nightmare&refreshable&target.time_to_die>12&dot.vampiric_touch.ticking", "Put out Shadow Word: Pain on enemies that will live at least 12s as a filler when talented into Invoked Nightmare." );
   main->add_action( "mind_blast,target_if=max:dot.shadow_word_madness.remains,if=(!buff.mind_devourer.react|!talent.mind_devourer)", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
@@ -133,7 +132,7 @@ void shadow_ptr( player_t* p )
   precombat->add_action( "variable,name=trinket_1_buffs,value=(trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.signet_of_the_priory)&(trinket.1.cooldown.duration>=20)" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=(trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.signet_of_the_priory)&(trinket.2.cooldown.duration>=20)" );
   precombat->add_action( "variable,name=dr_force_prio,default=0,op=reset" );
-  precombat->add_action( "variable,name=me_force_prio,default=1,op=reset" );
+  precombat->add_action( "variable,name=me_force_prio,default=0,op=reset" );
   precombat->add_action( "variable,name=max_vts,default=12,op=reset" );
   precombat->add_action( "variable,name=is_vt_possible,default=0,op=reset" );
   precombat->add_action( "arcane_torrent" );
@@ -170,22 +169,23 @@ void shadow_ptr( player_t* p )
 
   main->add_action( "variable,name=dots_up,op=set,value=active_dot.vampiric_touch=active_enemies&active_dot.shadow_word_pain>=active_dot.vampiric_touch,if=active_enemies<3" );
   main->add_action( "call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_tentacle_slam|active_enemies>2)&variable.dots_up" );
-  main->add_action( "shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.shadow_word_madness.ticking,if=priest.force_devour_matter&talent.devour_matter", "High Priority Shadow Word: Death when you are forcing the bonus from Devour Matter" );
+  main->add_action( "shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.shadow_word_madness.ticking,if=(priest.force_devour_matter|target.has_absorb)&talent.devour_matter", "High Priority Shadow Word: Death when Devour Matter is active (target shielded or forced)" );
   main->add_action( "shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35|buff.mind_devourer.react|!raid_event.adds.exists&target.time_to_die<=10|buff.entropic_rift.up&action.shadow_word_madness.cost>0", "Do not overcap on insanity" );
-  main->add_action( "void_volley" );
   main->add_action( "void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)", "Blast more burst :wicked:" );
   main->add_action( "tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=dot.vampiric_touch.refreshable|cooldown.tentacle_slam.full_recharge_time<=gcd.max*2", "Use Tentacle Slam to prevent capping charges or to refresh Vampiric Touch" );
-  main->add_action( "shadow_word_madness,target_if=max:dot.shadow_word_madness.remains,if=dot.shadow_word_madness.pmultiplier<1&dot.shadow_word_madness.ticking" );
   main->add_action( "void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&variable.dots_up", "Use Void Torrent if it will get near full Mastery Value" );
   main->add_action( "shadow_word_pain,target_if=max:(refreshable*100000+target.time_to_die+dot.vampiric_touch.ticking*10000),if=talent.invoked_nightmare&refreshable&target.time_to_die>12&dot.vampiric_touch.ticking", "Put out Shadow Word: Pain on enemies that will live at least 12s as a filler when talented into Invoked Nightmare." );
   main->add_action( "mind_blast,target_if=max:dot.shadow_word_madness.remains,if=(!buff.mind_devourer.react|!talent.mind_devourer)", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
-  main->add_action( "mind_flay_insanity,target_if=max:dot.shadow_word_madness.remains", "MFI is a good button" );
+  main->add_action( "vampiric_touch,if=(buff.vampiric_insight.up&buff.vampiric_insight.remains<3)|buff.vampiric_insight.at_max_stacks" );
+  main->add_action( "mind_flay_insanity,target_if=max:dot.shadow_word_madness.remains" );
+  main->add_action( "void_volley", "TODO: optimize this" );
   main->add_action( "tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=(talent.void_apparitions|talent.maddening_tentacles)&(raid_event.adds.in>30|raid_event.adds.in>5&cooldown.tentacle_slam.full_recharge_time<=gcd.max*2)", "Use Tentacle Slam for Void Apparitions or Maddening Tentacles value, holding for adds if needed" );
   main->add_action( "vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die)*(dot.vampiric_touch.ticking|!variable.dots_up),if=refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|!variable.dots_up)&(variable.max_vts>0|active_enemies=1)&(action.tentacle_slam.usable_in>=dot.vampiric_touch.remains|variable.holding_tentacle_slam|!action.tentacle_slam.enabled)", "Put out Vampiric Touch on enemies that will live at least 12s and Tentacle Slam is not available soon" );
   main->add_action( "call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&talent.halo", "Healing spell action list for proccing Twist of Fate. Set priest.twist_of_fate_heal_rppm=<rppm> to make this be used." );
   main->add_action( "vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die),if=refreshable&target.time_to_die>12", "Put out Vampiric Touch on enemies that will live at least 12s as a filler action." );
   main->add_action( "shadow_word_death,target_if=min:target.health.pct,if=(pet.mindbender.active|pet.voidwraith.active|pet.shadowfiend.active)&talent.inescapable_torment|target.health.pct<(20+15*talent.deathspeaker)&talent.shadowfiend&talent.idol_of_yshaarj" );
   main->add_action( "shadow_word_death,target_if=min:target.health.pct,if=(target.health.pct<(20+15*talent.deathspeaker))" );
+  main->add_action( "vampiric_touch,if=buff.vampiric_insight.up" );
   main->add_action( "mind_flay,target_if=max:dot.shadow_word_madness.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=3,interrupt_global=1" );
   main->add_action( "tentacle_slam,if=raid_event.adds.in>20", "Use Tentacle Slam while moving as a low-priority action when adds will not spawn in 20 seconds." );
   main->add_action( "shadow_word_death,target_if=target.health.pct<20", "Use Shadow Word: Death while moving as a low-priority action in execute" );

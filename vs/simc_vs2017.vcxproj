@@ -185,7 +185,7 @@
       <EnablePREfast>false</EnablePREfast>
       <StringPooling>true</StringPooling>
       <AdditionalIncludeDirectories>$(ProjectDir)..\engine;$(ProjectDir)..\engine/util;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointModel>Precise</FloatingPointModel>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <BrowseInformation>false</BrowseInformation>

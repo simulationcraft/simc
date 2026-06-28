@@ -991,7 +991,7 @@ enum effect_type_t : unsigned {
   E_312 = 312,
   E_CHANGE_ITEM_BONUSES_2 = 313,
   E_ADD_SOCKET_BONUS = 314,
-  E_LEARN_TRANSMOG_APPEARANCE_FROM_ITEM_MOD_APPEARANCE_GROUP = 315,
+  E_LEARN_APPEARANCE_FROM_GROUP = 315,
   E_KILL_CREDIT_LABEL_1 = 316,
   E_KILL_CREDIT_LABEL_2 = 317,
   E_318 = 318,
@@ -1022,9 +1022,19 @@ enum effect_type_t : unsigned {
   E_343 = 343,
   E_344 = 344,
   E_ASSIST_ACTION = 345,
+  E_EQUIP_TRANSMOG_OUTFIT = 347,
+  E_GIVE_HOUSE_LEVEL = 348,
+  E_LEARN_HOUSING_INTERIOR = 349,
+  E_LEARN_HOUSING_EXTERIOR = 350,
+  E_LEARN_HOUSE_THEME = 351,
+  E_LEARN_HOUSING_COMPONENT_TEXTURE = 352,
+  E_CREATE_AREA_TRIGGER_2 = 353,
+  E_SET_NEIGHBORHOOD_INITIATIVE = 354,
+  E_APPLY_ITEM_BONUS = 357, // Misc2 contains the bonus id
+  E_REMOVE_ITEM_BONUS = 358, // Misc2 contains the bonus id
+  E_APPLY_ITEM_CONDITION = 359, // Maybe incorrect, but seems most likely based on the misc value used.
   E_MAX
 };
-
 
 enum effect_subtype_t : unsigned {
   A_NONE = 0,
@@ -2111,6 +2121,14 @@ enum assisted_combat_rule_e : unsigned
   AC_PLAYER_HEALTH_PCT_GREATER        = 68,
   AC_PLAYER_HEALTH_PCT_LESS           = 69,
   AC_AUTOMATION_ONLY                  = 70,
+};
+
+enum pet_stat_mod_e
+{
+  PET_STAT_MOD_HEALTH = 1,
+  PET_STAT_MOD_ATTACK_POWER_INHERITENCE = 2,
+  PET_STAT_MOD_SPELL_POWER_INHERITENCE = 3,
+  PET_STAT_MOD_HEALTH_REGEN_RATE = 28
 };
 
 #endif

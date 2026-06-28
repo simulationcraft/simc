@@ -154,7 +154,7 @@ static const char* spell_desc_vars( const dbc_t& dbc, const spell_data_t& data )
   return dbc.spell_desc_vars( data.id() ).desc_vars();
 }
 
-static constexpr std::array<sdata_field_t, 41> _spell_data_fields { {
+static constexpr std::array<sdata_field_t, 43> _spell_data_fields { {
   { "name",              nontype< &spell_data_t::_name > },
   { "id",                nontype< &spell_data_t::_id > },
   { "speed",             nontype< &spell_data_t::_prj_speed > },
@@ -196,6 +196,8 @@ static constexpr std::array<sdata_field_t, 41> _spell_data_fields { {
   { "max_aura_level",    nontype< &spell_data_t::_max_aura_level > },
   { "dmg_class",         nontype< &spell_data_t::_dmg_class > },
   { "max_targets",       nontype< &spell_data_t::_max_targets > },
+  { "cone_degrees",      nontype< &spell_data_t::_cone_degrees > },
+  { "line_width",        nontype< &spell_data_t::_line_width > },
 } };
 
 struct class_info_t {

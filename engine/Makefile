@@ -126,9 +126,6 @@ endif
 ifneq (${MARCH_NATIVE},)
   OPTS_INTERNAL += -march=native
 endif
-ifneq (${FFAST-MATH},)
-  OPTS_INTERNAL += -ffast-math
-endif
 
 ifeq (32,${BITS})
   OPTS_INTERNAL += -m32
@@ -227,7 +224,7 @@ release:CPP_FLAGS += -DNDEBUG
 release: $(MODULE)
 
 optimized:CPP_FLAGS += -DNDEBUG
-optimized:OPTS_INTERNAL += -ffast-math -fomit-frame-pointer
+optimized:OPTS_INTERNAL += -fomit-frame-pointer
 
 # MacOS's default compiler, `clang`, does not support `-march=native` on Apple
 # Silicon chips, and as of 2021-11-22 will return an error like the following

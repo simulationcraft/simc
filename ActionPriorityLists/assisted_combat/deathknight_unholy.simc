@@ -11,7 +11,7 @@ actions+=/call_action_list,name=assisted_combat
 # This is the default action priority list from the game's Assisted Combat system.
 actions.assisted_combat=raise_dead,if=!pet.any.active
 actions.assisted_combat+=/outbreak,if=!dot.virulent_plague.ticking
-actions.assisted_combat+=/outbreak,if=buff.pestilence.up
+actions.assisted_combat+=/outbreak,if=buff.blightfall.up
 actions.assisted_combat+=/army_of_the_dead
 actions.assisted_combat+=/dark_transformation,if=pet.any.active
 actions.assisted_combat+=/death_coil,if=runic_power>=50&active_enemies<=3&buff.forbidden_knowledge.up
@@ -19,7 +19,7 @@ actions.assisted_combat+=/epidemic,if=runic_power>=50&active_enemies>4&dot.virul
 actions.assisted_combat+=/scourge_strike,if=buff.lesser_ghoul_ready.stack>=3
 actions.assisted_combat+=/soul_reaper,if=buff.reaping.up
 actions.assisted_combat+=/soul_reaper,if=target.health.pct<=35
-actions.assisted_combat+=/festering_strike,if=buff.festering_scythe.up&debuff.festering_scythe_debuff.down
+actions.assisted_combat+=/festering_strike,if=buff.festering_scythe.up&buff.festering_scythe_tt.down
 actions.assisted_combat+=/putrefy,if=buff.lesser_ghoul_counter.up
 actions.assisted_combat+=/death_coil,if=buff.sudden_doom.up&active_enemies<=3
 actions.assisted_combat+=/epidemic,if=dot.virulent_plague.ticking&active_enemies>4&buff.sudden_doom.up

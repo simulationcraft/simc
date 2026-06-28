@@ -63,8 +63,8 @@ struct action_callback_t : private noncopyable
   virtual void activate() { active = true; }
   virtual void deactivate() { active = false; }
 
-  static void trigger( const std::vector<action_callback_t*>& v, const proc_data_t& data, player_t* target,
-                       action_state_t* state, proc_trigger_type_e type );
+  static void trigger( const std::vector<action_callback_t*>& v, const proc_data_t& data, player_t* player,
+                       player_t* target, action_state_t* state, proc_trigger_type_e type );
 
   static void reset( const std::vector<action_callback_t*>& v );
 };

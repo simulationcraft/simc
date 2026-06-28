@@ -7,6 +7,7 @@
 
 #include <QWebEnginePage>
 #include <QWebEngineView>
+#include <QWebEngineSettings>
 
 using SC_WebEngineView = QWebEngineView;
 using SC_WebEnginePage = QWebEnginePage;

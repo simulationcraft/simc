@@ -66,14 +66,13 @@ void elemental( player_t* p )
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.chain_lightning>=3" );
   default_->add_action( "run_action_list,name=single_target" );
 
-  aoe->add_action( "stormkeeper,if=cooldown.ascendance.remains>10|cooldown.ascendance.remains<gcd|fight_remains<20", "Stormkeeper on CD, unless sub 10s hold for Asc or the fight is about to end." );
-  aoe->add_action( "voltaic_blaze,if=time<3&talent.purging_flames" );
+  aoe->add_action( "stormkeeper,if=cooldown.ascendance.remains>10|cooldown.ascendance.remains<gcd|fight_remains<20", "--- 3+ TARGET ROTATION ---  Stormkeeper on CD, unless sub 10s hold for Asc or the fight is about to end." );
   aoe->add_action( "ancestral_swiftness" );
-  aoe->add_action( "ascendance,if=cooldown.stormkeeper.remains>15|fight_remains<20", "Ascendance on CD, unless SK can be sync'd with it." );
   aoe->add_action( "flame_shock,if=!buff.master_of_the_elements.up&((dot.flame_shock.refreshable&cooldown.ascendance.remains>5)|(buff.fire_elemental.up&buff.fire_elemental.remains<2))&talent.master_of_the_elements&talent.inferno_arc&spell_targets.chain_lightning=3", "[3t] Apply Flame shock on 3t for MotE and Inferno arc." );
-  aoe->add_action( "voltaic_blaze,if=!buff.master_of_the_elements.up&((dot.flame_shock.refreshable&cooldown.ascendance.remains>5)|(buff.fire_elemental.up&buff.fire_elemental.remains<2)|talent.purging_flames&!buff.ascendance.up)", "Apply Voltaic blaze for Inferno arc or Purging flames." );
+  aoe->add_action( "voltaic_blaze,if=!buff.master_of_the_elements.up&((dot.flame_shock.refreshable&cooldown.ascendance.remains>5)|(buff.fire_elemental.up&buff.fire_elemental.remains<2)|talent.purging_flames)", "Apply Voltaic blaze for Inferno arc or Purging flames." );
+  aoe->add_action( "ascendance,if=cooldown.stormkeeper.remains>15|fight_remains<20", "Ascendance on CD, unless SK can be sync'd with it." );
   aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack<2&(buff.elemental_blast_critical_strike.up+buff.elemental_blast_haste.up+buff.elemental_blast_mastery.up=0)", "Elemental Blast if no buffs or at 3t, Earthquake to spread Lightning Rod otherwise" );
-  aoe->add_action( "earthquake,if=buff.tempest.stack<2&lightning_rod<active_enemies&spell_targets.chain_lightning>=3+talent.elemental_blast&(buff.elemental_blast_critical_strike.up+buff.elemental_blast_haste.up+buff.elemental_blast_mastery.up>0)" );
+  aoe->add_action( "earthquake,if=buff.tempest.stack<2&lightning_rod<active_enemies&spell_targets.chain_lightning>=3+talent.elemental_blast&(buff.elemental_blast_critical_strike.up+buff.elemental_blast_haste.up+buff.elemental_blast_mastery.up>0|!talent.elemental_blast)" );
   aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack<2&spell_targets.chain_lightning=3" );
   aoe->add_action( "lava_burst,if=buff.purging_flames.up&(buff.lava_surge.up|cooldown.voltaic_blaze.remains<2)", "Spend Purging flames." );
   aoe->add_action( "lava_burst,if=buff.tempest.up&buff.lava_surge.up&talent.master_of_the_elements&spell_targets.chain_lightning=3", "[3t] Spend Lava Surge procs to buff Tempest with MotE." );
@@ -88,12 +87,12 @@ void elemental( player_t* p )
   aoe->add_action( "voltaic_blaze,moving=1" );
   aoe->add_action( "frost_shock,moving=1" );
 
-  single_target->add_action( "stormkeeper,if=cooldown.ascendance.remains>10|cooldown.ascendance.remains<gcd|fight_remains<20", "Stormkeeper on CD, unless sub 10s hold for Asc or the fight is about to end." );
+  single_target->add_action( "stormkeeper,if=cooldown.ascendance.remains>10|cooldown.ascendance.remains<gcd|fight_remains<20", "--- 1 and 2 TARGET ROTATION ---  Stormkeeper on CD, unless sub 10s hold for Asc or the fight is about to end." );
   single_target->add_action( "ancestral_swiftness" );
-  single_target->add_action( "ascendance,if=cooldown.stormkeeper.remains>15|fight_remains<20", "Ascendance on CD, unless SK can be sync'd with it." );
   single_target->add_action( "flame_shock,if=!buff.master_of_the_elements.up&((dot.flame_shock.refreshable&cooldown.ascendance.remains>5)|(buff.fire_elemental.up&buff.fire_elemental.remains<2))", "Maintain Flame shock, minor gain to refresh it when FE is about to fade." );
   single_target->add_action( "voltaic_blaze,if=!buff.master_of_the_elements.up&((dot.flame_shock.refreshable&cooldown.ascendance.remains>5)|(buff.fire_elemental.up&buff.fire_elemental.remains<2)|talent.purging_flames&spell_targets.chain_lightning=2)" );
-  single_target->add_action( "lava_burst,if=!buff.master_of_the_elements.up&maelstrom.deficit>15&(talent.master_of_the_elements|talent.molten_wrath|talent.call_of_the_ancestors|buff.lava_surge.up|talent.fusion_of_elements&(!buff.storm_elemental.up|buff.wind_gust.stack=4)|buff.purging_flames.up&(buff.lava_surge.up|cooldown.voltaic_blaze.remains<2))", "Lava Burst if any empowering it talent chosen OR to consume surge procs." );
+  single_target->add_action( "ascendance,if=cooldown.stormkeeper.remains>15|fight_remains<20", "Ascendance on CD, unless SK can be sync'd with it." );
+  single_target->add_action( "lava_burst,if=!buff.master_of_the_elements.up&maelstrom.deficit>15&(cooldown.lava_burst.charges_fractional>1.8|!buff.call_of_the_ancestors.up|spell_targets.chain_lightning=1)&(talent.master_of_the_elements|(talent.molten_wrath&cooldown.lava_burst.charges_fractional>0.8+talent.elemental_reverb)|buff.lava_surge.up|(talent.fusion_of_elements|talent.call_of_the_ancestors)&(!buff.storm_elemental.up|buff.wind_gust.stack=4)|buff.purging_flames.up&spell_targets.chain_lightning=2&(buff.lava_surge.up|cooldown.voltaic_blaze.remains<2))", "Lava Burst if any empowering it talent chosen OR to consume surge procs." );
   single_target->add_action( "tempest,if=buff.master_of_the_elements.up|!talent.master_of_the_elements", "Tempest and Lightning Bolt with SK if you have MotE." );
   single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&(buff.master_of_the_elements.up|!talent.master_of_the_elements)" );
   single_target->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains" );
@@ -141,14 +140,13 @@ void elemental_ptr( player_t* p )
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.chain_lightning>=3" );
   default_->add_action( "run_action_list,name=single_target" );
 
-  aoe->add_action( "stormkeeper,if=cooldown.ascendance.remains>10|cooldown.ascendance.remains<gcd|fight_remains<20", "Stormkeeper on CD, unless sub 10s hold for Asc or the fight is about to end." );
-  aoe->add_action( "voltaic_blaze,if=time<3&talent.purging_flames" );
+  aoe->add_action( "stormkeeper,if=cooldown.ascendance.remains>10|cooldown.ascendance.remains<gcd|fight_remains<20", "--- 3+ TARGET ROTATION ---  Stormkeeper on CD, unless sub 10s hold for Asc or the fight is about to end." );
   aoe->add_action( "ancestral_swiftness" );
-  aoe->add_action( "ascendance,if=cooldown.stormkeeper.remains>15|fight_remains<20", "Ascendance on CD, unless SK can be sync'd with it." );
   aoe->add_action( "flame_shock,if=!buff.master_of_the_elements.up&((dot.flame_shock.refreshable&cooldown.ascendance.remains>5)|(buff.fire_elemental.up&buff.fire_elemental.remains<2))&talent.master_of_the_elements&talent.inferno_arc&spell_targets.chain_lightning=3", "[3t] Apply Flame shock on 3t for MotE and Inferno arc." );
-  aoe->add_action( "voltaic_blaze,if=!buff.master_of_the_elements.up&((dot.flame_shock.refreshable&cooldown.ascendance.remains>5)|(buff.fire_elemental.up&buff.fire_elemental.remains<2)|talent.purging_flames&!buff.ascendance.up)", "Apply Voltaic blaze for Inferno arc or Purging flames." );
+  aoe->add_action( "voltaic_blaze,if=!buff.master_of_the_elements.up&((dot.flame_shock.refreshable&cooldown.ascendance.remains>5)|(buff.fire_elemental.up&buff.fire_elemental.remains<2)|talent.purging_flames)", "Apply Voltaic blaze for Inferno arc or Purging flames." );
+  aoe->add_action( "ascendance,if=cooldown.stormkeeper.remains>15|fight_remains<20", "Ascendance on CD, unless SK can be sync'd with it." );
   aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack<2&(buff.elemental_blast_critical_strike.up+buff.elemental_blast_haste.up+buff.elemental_blast_mastery.up=0)", "Elemental Blast if no buffs or at 3t, Earthquake to spread Lightning Rod otherwise" );
-  aoe->add_action( "earthquake,if=buff.tempest.stack<2&lightning_rod<active_enemies&spell_targets.chain_lightning>=3+talent.elemental_blast&(buff.elemental_blast_critical_strike.up+buff.elemental_blast_haste.up+buff.elemental_blast_mastery.up>0)" );
+  aoe->add_action( "earthquake,if=buff.tempest.stack<2&lightning_rod<active_enemies&spell_targets.chain_lightning>=3+talent.elemental_blast&(buff.elemental_blast_critical_strike.up+buff.elemental_blast_haste.up+buff.elemental_blast_mastery.up>0|!talent.elemental_blast)" );
   aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack<2&spell_targets.chain_lightning=3" );
   aoe->add_action( "lava_burst,if=buff.purging_flames.up&(buff.lava_surge.up|cooldown.voltaic_blaze.remains<2)", "Spend Purging flames." );
   aoe->add_action( "lava_burst,if=buff.tempest.up&buff.lava_surge.up&talent.master_of_the_elements&spell_targets.chain_lightning=3", "[3t] Spend Lava Surge procs to buff Tempest with MotE." );
@@ -163,12 +161,12 @@ void elemental_ptr( player_t* p )
   aoe->add_action( "voltaic_blaze,moving=1" );
   aoe->add_action( "frost_shock,moving=1" );
 
-  single_target->add_action( "stormkeeper,if=cooldown.ascendance.remains>10|cooldown.ascendance.remains<gcd|fight_remains<20", "Stormkeeper on CD, unless sub 10s hold for Asc or the fight is about to end." );
+  single_target->add_action( "stormkeeper,if=cooldown.ascendance.remains>10|cooldown.ascendance.remains<gcd|fight_remains<20", "--- 1 and 2 TARGET ROTATION ---  Stormkeeper on CD, unless sub 10s hold for Asc or the fight is about to end." );
   single_target->add_action( "ancestral_swiftness" );
-  single_target->add_action( "ascendance,if=cooldown.stormkeeper.remains>15|fight_remains<20", "Ascendance on CD, unless SK can be sync'd with it." );
   single_target->add_action( "flame_shock,if=!buff.master_of_the_elements.up&((dot.flame_shock.refreshable&cooldown.ascendance.remains>5)|(buff.fire_elemental.up&buff.fire_elemental.remains<2))", "Maintain Flame shock, minor gain to refresh it when FE is about to fade." );
   single_target->add_action( "voltaic_blaze,if=!buff.master_of_the_elements.up&((dot.flame_shock.refreshable&cooldown.ascendance.remains>5)|(buff.fire_elemental.up&buff.fire_elemental.remains<2)|talent.purging_flames&spell_targets.chain_lightning=2)" );
-  single_target->add_action( "lava_burst,if=!buff.master_of_the_elements.up&maelstrom.deficit>15&(talent.master_of_the_elements|talent.molten_wrath|talent.call_of_the_ancestors|buff.lava_surge.up|talent.fusion_of_elements&(!buff.storm_elemental.up|buff.wind_gust.stack=4)|buff.purging_flames.up&(buff.lava_surge.up|cooldown.voltaic_blaze.remains<2))", "Lava Burst if any empowering it talent chosen OR to consume surge procs." );
+  single_target->add_action( "ascendance,if=cooldown.stormkeeper.remains>15|fight_remains<20", "Ascendance on CD, unless SK can be sync'd with it." );
+  single_target->add_action( "lava_burst,if=!buff.master_of_the_elements.up&maelstrom.deficit>15&(cooldown.lava_burst.charges_fractional>1.8|!buff.call_of_the_ancestors.up|spell_targets.chain_lightning=1)&(talent.master_of_the_elements|(talent.molten_wrath&cooldown.lava_burst.charges_fractional>0.8+talent.elemental_reverb)|buff.lava_surge.up|(talent.fusion_of_elements|talent.call_of_the_ancestors)&(!buff.storm_elemental.up|buff.wind_gust.stack=4)|buff.purging_flames.up&spell_targets.chain_lightning=2&(buff.lava_surge.up|cooldown.voltaic_blaze.remains<2))", "Lava Burst if any empowering it talent chosen OR to consume surge procs." );
   single_target->add_action( "tempest,if=buff.master_of_the_elements.up|!talent.master_of_the_elements", "Tempest and Lightning Bolt with SK if you have MotE." );
   single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&(buff.master_of_the_elements.up|!talent.master_of_the_elements)" );
   single_target->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains" );

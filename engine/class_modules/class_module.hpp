@@ -21,25 +21,20 @@ struct module_t
 {
   player_e type;
 
-  module_t( player_e t ) : type( t )
-  {
-  }
+  module_t( player_e t ) : type( t ) {}
 
-  virtual ~module_t()                                                                               = default;
+  virtual ~module_t() = default;
   virtual player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const = 0;
-  virtual bool valid() const                                                                        = 0;
-  virtual void init( player_t* ) const                                                              = 0;
-  virtual void static_init() const
-  {
-  }
-  virtual void register_hotfixes() const
-  {
-  }
-  virtual void create_actions( player_t* ) const
-  {
-  }
-  virtual void combat_begin( sim_t* ) const = 0;
-  virtual void combat_end( sim_t* ) const   = 0;
+  virtual bool valid() const = 0;
+  virtual void register_hotfixes() const = 0;
+  virtual void register_actor_initializers( sim_t* ) const = 0;
+
+  virtual void static_init() const {}
+  virtual void init( player_t* ) const {}
+  virtual void combat_begin( sim_t* ) const {}
+  virtual void combat_end( sim_t* ) const {}
+
+  int offset() const { return static_cast<int>( type ); }
 
   static const module_t* death_knight();
   static const module_t* demon_hunter();
@@ -63,53 +58,34 @@ struct module_t
   {
     switch ( t )
     {
-      case DEATH_KNIGHT:
-        return death_knight();
-      case DEMON_HUNTER:
-        return demon_hunter();
-      case DRUID:
-        return druid();
-      case EVOKER:
-        return evoker();
-      case HUNTER:
-        return hunter();
-      case MAGE:
-        return mage();
-      case MONK:
-        return monk();
-      case PALADIN:
-        return paladin();
-      case PRIEST:
-        return priest();
-      case ROGUE:
-        return rogue();
-      case SHAMAN:
-        return shaman();
-      case WARLOCK:
-        return warlock();
-      case WARRIOR:
-        return warrior();
-      case PLAYER_SIMPLIFIED:
-        return player_simplified();
-      case ENEMY:
-        return enemy();
-      case TANK_DUMMY:
-        return tank_dummy_enemy();
-      default:
-        break;
+      case DEATH_KNIGHT:      return death_knight();
+      case DEMON_HUNTER:      return demon_hunter();
+      case DRUID:             return druid();
+      case EVOKER:            return evoker();
+      case HUNTER:            return hunter();
+      case MAGE:              return mage();
+      case MONK:              return monk();
+      case PALADIN:           return paladin();
+      case PRIEST:            return priest();
+      case ROGUE:             return rogue();
+      case SHAMAN:            return shaman();
+      case WARLOCK:           return warlock();
+      case WARRIOR:           return warrior();
+      case PLAYER_SIMPLIFIED: return player_simplified();
+      case ENEMY:             return enemy();
+      case TANK_DUMMY:        return tank_dummy_enemy();
+      default:                return nullptr;
     }
-    return nullptr;
   }
 
   static void init()
   {
     for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; i++ )
     {
-      const module_t* m = get( i );
-      if ( m )
+      if ( auto m = get( i ) )
       {
-        m->static_init();
         m->register_hotfixes();
+        m->static_init();
       }
     }
   }

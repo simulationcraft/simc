@@ -635,6 +635,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, std::string_view
     consume_all_stacks( true ),
     ignore_time_modifier( false ),
     reverse_stack_reduction( 1 ),
+    proc_callbacks( true ),
     proc_data( s_data ),
     can_only_proc_from_class_abilities( proc_data.can_only_proc_from_class_abilities ),
     can_proc_from_procs( proc_data.can_proc_from_procs ),
@@ -1156,11 +1157,7 @@ buff_t* buff_t::modify_cooldown( timespan_t duration )
 
 buff_t* buff_t::set_period( timespan_t period )
 {
-  if ( period > timespan_t::zero() )
-  {
-    buff_period = period;
-  }
-  else
+  if ( period == timespan_t::min() )
   {
     for ( size_t i = 1; i <= s_data->effect_count(); i++ )
     {
@@ -1195,6 +1192,10 @@ buff_t* buff_t::set_period( timespan_t period )
           break;
       }
     }
+  }
+  else
+  {
+    buff_period = period;
   }
 
   // Recheck tick behaviour, which is dependent on buff_period.
@@ -1266,6 +1267,130 @@ buff_t* buff_t::set_pct_buff_type( stat_pct_buff_type type )
   if ( range::find( buffs, this ) == buffs.end() )
     buffs.push_back( this );
   add_invalidate( cache_from_stat_pct_buff( type ) );
+
+  return this;
+}
+
+buff_t* buff_t::set_pct_buff_type_from_effect( size_t effect_idx, bool set_default )
+{
+  if ( !data().ok() )
+    return this;
+
+  if ( set_default )
+    set_default_value_from_effect( effect_idx );
+
+  const auto& _eff = data().effectN( effect_idx );
+
+  switch ( _eff.subtype() )
+  {
+    case A_MOD_ALL_CRIT_CHANCE: return set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    case A_HASTE_ALL:           return set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    case A_MOD_VERSATILITY_PCT: return set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+    case A_MOD_MASTERY_PCT:     return set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+    case A_MOD_TOTAL_STAT_PERCENTAGE:
+    {
+      auto _misc = _eff.misc_value2();
+
+      for ( auto i = STAT_PCT_BUFF_STRENGTH; i < STAT_PCT_BUFF_MAX; ++i )
+        if ( _misc & ( 0b1 << ( i - STAT_PCT_BUFF_STRENGTH ) ) )
+          set_pct_buff_type( i );
+
+      break;
+    }
+    default: break;
+  }
+
+  return this;
+}
+
+buff_t* buff_t::set_pct_buff_type_from_data( bool set_default )
+{
+  std::vector<double> validation;
+
+  for ( const auto& _eff : data().effects() )
+  {
+    switch ( _eff.subtype() )
+    {
+      case A_MOD_ALL_CRIT_CHANCE:
+      case A_HASTE_ALL:
+      case A_MOD_VERSATILITY_PCT:
+      case A_MOD_MASTERY_PCT:
+      case A_MOD_TOTAL_STAT_PERCENTAGE:
+        set_pct_buff_type_from_effect( _eff.index() + 1, set_default );
+        if ( set_default )
+          validation.push_back( default_value );
+      default: break;
+    }
+  }
+
+  if ( set_default && !validation.empty() && !range::all_of( validation, [ v = validation.front() ]( auto i ) {
+         return i == v;
+       } ) )
+  {
+    throw sc_initialization_error( fmt::format(
+      "set_pct_buff_type_from_data() used on '{}' with applicable effects that have different default values.",
+      *this ) );
+  }
+
+  return this;
+}
+
+buff_t* buff_t::set_movement_speed_buff( bool stacking, double percent )
+{
+  if ( !player || is_fallback )
+    return this;
+
+  if ( stacking )
+  {
+    player->buffs.movement_speed_buffs[ 0 ].emplace_back( percent, this );
+  }
+  else
+  {
+    // non-stacking buffs with a single stack need to be sorted
+    if ( max_stack() <= 1 )
+    {
+      auto& _vec = player->buffs.movement_speed_buffs[ 1 ];
+      auto it = range::upper_bound( _vec, percent, {}, &std::pair<double, buff_t*>::first );
+
+      assert( it == _vec.end() || it->first <= percent );
+
+      _vec.insert( it, { percent, this } );
+    }
+    // non-stacking buffs with multiple stacks will always get checked and don't need sorting
+    else
+    {
+      player->buffs.movement_speed_buffs[ 2 ].emplace_back( percent, this );
+    }
+  }
+
+  add_invalidate( CACHE_RUN_SPEED );
+
+  return this;
+}
+
+buff_t* buff_t::set_movement_speed_buff_from_effect( size_t effect_idx, double percent )
+{
+  if ( !data().ok() )
+    return this;
+
+  const auto& _eff = data().effectN( effect_idx );
+
+  if ( !percent )
+    percent = _eff.percent();
+
+  switch ( _eff.subtype() )
+  {
+    case A_MOD_INCREASE_SPEED: return set_movement_speed_buff( false, percent );
+    case A_MOD_SPEED_ALWAYS:   return set_movement_speed_buff( true, percent );
+    default:                   return this;
+  }
+}
+
+buff_t* buff_t::set_movement_speed_buff_from_data( double percent )
+{
+  for ( const auto& _eff : data().effects() )
+    if ( _eff.subtype() == A_MOD_INCREASE_SPEED || _eff.subtype() == A_MOD_SPEED_ALWAYS )
+      return set_movement_speed_buff_from_effect( _eff.index() + 1, percent );
 
   return this;
 }
@@ -1665,20 +1790,22 @@ timespan_t buff_t::refresh_duration( timespan_t new_duration ) const
     {
       assert( tick_event );
       timespan_t residual = remains() % static_cast<tick_t*>( tick_event )->tick_time;
-      sim->print_debug(
-            "{} {} carryover duration from ongoing tick: {}, refresh_duration={} new_duration={}",
-            *player, *this,
-            residual, new_duration, ( new_duration + residual ) );
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} {} carryover duration from ongoing tick: {}, refresh_duration={} new_duration={}",
+                          *player, *this, residual, new_duration, ( new_duration + residual ) );
+      }
 
       return new_duration + residual;
     }
     case buff_refresh_behavior::PANDEMIC:
     {
       timespan_t residual = std::min( new_duration * 0.3, remains() );
-      sim->print_debug(
-            "{} {} carryover duration from ongoing tick: {}, refresh_duration={} new_duration={}",
-            *player, *this,
-            residual, new_duration, ( new_duration + residual ) );
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} {} carryover from ongoing buff: {}, refresh_duration={} new_duration={}",
+                          *player, *this, residual, new_duration, ( new_duration + residual ) );
+      }
 
       return new_duration + residual;
     }
@@ -2032,7 +2159,7 @@ void buff_t::decrement( int stacks, double value )
 
     if ( old_stack != current_stack )
     {
-      if ( sim->buff_stack_uptime_timeline )
+      if ( sim->buff_stack_uptime_timeline && !quiet )
         update_stack_uptime_array( sim->current_time(), old_stack );
 
       last_stack_change = sim->current_time();
@@ -2460,7 +2587,7 @@ void buff_t::bump( int stacks, double value )
 
   if ( old_stack != current_stack )
   {
-    if ( sim->buff_stack_uptime_timeline )
+    if ( sim->buff_stack_uptime_timeline && !quiet )
       update_stack_uptime_array( sim->current_time(), old_stack );
 
     last_stack_change = sim->current_time();
@@ -2475,13 +2602,12 @@ void buff_t::bump( int stacks, double value )
   if ( player )
     player->trigger_ready();
 
-  // Current implementation splits helpful PF2_LANDED into PF1_HIT and PF1_CRIT so we only need to trigger PF1_HIT
   // TODO: assumption is that PROC1_NONE_HELPFUL actually applies to all aura application, whether hostile or not
   // NOTE: scheduled as event to ensure buff is fully processed
-  if ( !constant && ( !suppress_caster_procs || enable_proc_from_suppressed ) && source &&
-       !source->callbacks.procs[ PROC1_NONE_HELPFUL ][ PROC2_HIT ].empty() )
+  if ( proc_callbacks && !constant && ( !suppress_caster_procs || enable_proc_from_suppressed ) && source &&
+       !source->callbacks.procs[ PROC1_NONE_HELPFUL ][ PROC2_LANDED ].empty() )
   {
-    make_event( *sim, [ this ] { source->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_HIT, this ); } );
+    make_event( *sim, [ this ] { source->trigger_callbacks( PROC1_NONE_HELPFUL, PROC2_LANDED, this ); } );
   }
 }
 
@@ -2794,7 +2920,7 @@ void buff_t::merge( const buff_t& other )
   avg_expire.merge( other.avg_expire );
   avg_overflow_count.merge( other.avg_overflow_count );
   avg_overflow_total.merge( other.avg_overflow_total );
-  if ( sim->buff_uptime_timeline )
+  if ( sim->buff_uptime_timeline && !quiet )
     uptime_array.merge( other.uptime_array );
 
 #ifndef NDEBUG
@@ -3062,7 +3188,7 @@ void buff_t::init_haste_type()
 
 void buff_t::update_stack_uptime_array( timespan_t current_time, int old_stacks )
 {
-  if ( !sim->buff_uptime_timeline )
+  if ( !sim->buff_uptime_timeline || quiet )
     return;
 
   // No data collection done on first iteration of multi-iteration sim, as per sim_t::combat_end()
@@ -3301,31 +3427,43 @@ stat_buff_t* stat_buff_t::set_stat_from_effect_type( effect_subtype_t type, doub
   return add_stat_from_effect_type( type, a, c );
 }
 
-double stat_buff_t::buff_stat_stack_amount( const buff_stat_t& buff_stat, int s ) const
+double stat_buff_t::buff_stat_stack_amount( const buff_stat_t& buff_stat, int stacks ) const
 {
-  return buff_stat.stack_amount( s );
+  return std::max( 1.0, std::fabs( buff_stat.amount ) ) * stacks;
 }
 
-void stat_buff_t::bump( int stacks, double /* value */ )
+void stat_buff_t::update_player_buff_stat( buff_stat_t& buff_stat, int stacks )
 {
-  buff_t::bump( stacks );
+  // Blizzard likes to use effect coefficients that give (almost) exact values at the
+  // intended level. Small floating point conversion errors can add up to give the wrong
+  // value. We compensate by increasing the absolute value by a tiny bit before truncating.
+  double _val = buff_stat_stack_amount( buff_stat, stacks );
+  _val = std::copysign( std::trunc( _val + stat_fp_epsilon ), buff_stat.amount );
+
+  double delta = _val - buff_stat.current_value;
+
+  if ( delta > 0 )
+  {
+    player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > 0_ms );
+  }
+  else if ( delta < 0 )
+  {
+    player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > 0_ms );
+  }
+
+  buff_stat.current_value += delta;
+}
+
+void stat_buff_t::bump( int stacks, double value )
+{
+  buff_t::bump( stacks, value );
 
   for ( auto& buff_stat : stats )
   {
     if ( buff_stat.check_func && !buff_stat.check_func( *this ) )
       continue;
 
-    double delta = buff_stat_stack_amount( buff_stat, current_stack ) - buff_stat.current_value;
-    if ( delta > 0 )
-    {
-      player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-    }
-    else if ( delta < 0 )
-    {
-      player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-    }
-
-    buff_stat.current_value += delta;
+    update_player_buff_stat( buff_stat, current_stack );
   }
 }
 
@@ -3345,17 +3483,9 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
     for ( auto& buff_stat : stats )
     {
-      double delta = buff_stat.current_value - buff_stat_stack_amount( buff_stat, new_stack );
-      if ( delta > 0 )
-      {
-        player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-      }
-      else if ( delta < 0 )
-      {
-        player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-      }
-      buff_stat.current_value -= delta;
+      update_player_buff_stat( buff_stat, new_stack );
     }
+
     current_stack -= stacks;
 
     invalidate_cache();
@@ -3367,7 +3497,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
     if ( old_stack != current_stack )
     {
-      if ( sim->buff_stack_uptime_timeline )
+      if ( sim->buff_stack_uptime_timeline && !quiet )
         update_stack_uptime_array( sim->current_time(), old_stack );
 
       last_stack_change = sim->current_time();

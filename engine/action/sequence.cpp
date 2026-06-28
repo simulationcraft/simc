@@ -173,10 +173,20 @@ bool sequence_t::ready()
          sub_actions[ current_action ]->ready();
 }
 
-bool sequence_t::target_ready( player_t* target )
+bool sequence_t::target_ready( player_t* t )
 {
-  return !sub_actions.empty() && current_action < as<int>( sub_actions.size() ) && action_t::target_ready( target ) &&
-         sub_actions[ current_action ]->target_ready( target );
+  return !sub_actions.empty() && current_action < as<int>( sub_actions.size() ) && action_t::target_ready( t ) &&
+         sub_actions[ current_action ]->target_ready( t );
+}
+
+// sequence_t::sequence_add_fn ==============================================
+
+void sequence_t::sequence_add_fn( std::string& a_str, std::string& t_str ) const
+{
+  // current_action is advanced in schedule_execute so we need to use current_action - 1
+  auto _idx = current_action - 1;
+  a_str = fmt::format( "</b>SEQ {}[{}]<br><b>{}", name_str, _idx, sub_actions[ _idx ]->name_str );
+  t_str = target->name_str;
 }
 
 // ==========================================================================
