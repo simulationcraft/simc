@@ -64,6 +64,7 @@ install(FILES
   Error.html
   Welcome.html
   Welcome.png
+  jquery.js
 DESTINATION ${SIMC_INSTALL_SHARED})
 install(FILES 
   locale/sc_de.qm
