@@ -3394,26 +3394,7 @@ void murder_row_fishhook( special_effect_t& effect )
 void janthrazet_the_soul_fang( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, "soul_fang_alacrity", effect.player->find_spell( 1305360 ) )
-    ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 2 ).average( effect ) );
-
-  effect.custom_buff = buff;
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-// Jan'thrazet, the Soul Fang - Venomcursed Haste
-// 1307928 driver
-// 1307927 buff (haste gain, crit/mastery/vers loss)
-void venomcursed_haste( special_effect_t& effect )
-{
-  auto haste_amt = effect.driver()->effectN( 1 ).average( effect );
-  auto loss_amt  = effect.driver()->effectN( 2 ).average( effect );
-
-  auto buff = create_buff<stat_buff_t>( effect.player, "venomcursed_haste", effect.player->find_spell( 1307927 ) )
-    ->add_stat( STAT_HASTE_RATING, haste_amt )
-    ->add_stat( STAT_CRIT_RATING, -loss_amt )
-    ->add_stat( STAT_MASTERY_RATING, -loss_amt )
-    ->add_stat( STAT_VERSATILITY_RATING, -loss_amt );
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
 
   effect.custom_buff = buff;
 
