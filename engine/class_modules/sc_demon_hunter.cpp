@@ -1163,7 +1163,7 @@ public:
   struct accumulated_rngs_t
   {
     // Annihilator
-    accumulated_rng_t* voidfall = nullptr;
+    accumulated_rng_t* voidfall;
   } accumulated_rng;
 
   // Special
