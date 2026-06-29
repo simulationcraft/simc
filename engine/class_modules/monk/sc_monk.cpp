@@ -1592,11 +1592,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
       p()->buff.shuffle->trigger(
           timespan_t::from_seconds( p()->baseline.brewmaster.spinning_crane_kick_rank_2->effectN( 1 ).base_value() ) );
-
-      p()->buff.counterstrike->expire();
-      if ( p()->buff.balanced_stratagem_physical )
-        p()->buff.balanced_stratagem_physical->expire();
-      p()->buff.mid2_ww_4pc->expire();
     }
 
     void reset() override
@@ -1707,6 +1702,11 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     tick->snapshot_state( tick->execute_state, amount_type( tick->execute_state, tick->direct_tick ) );
 
     monk_melee_attack_t::execute();
+
+    p()->buff.counterstrike->expire();
+    if ( p()->buff.balanced_stratagem_physical )
+      p()->buff.balanced_stratagem_physical->expire();
+    p()->buff.mid2_ww_4pc->expire();
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
