@@ -12226,14 +12226,14 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
 
   if ( has_reduced_drain )
   {
-    // Guess
-    drain *= 0.15;
+    // Reduced while casting Collapsing Star / channeling Void Ray. Measured ~0.127 from logs.
+    drain *= 0.127;
   }
 
   if ( drain_stacks < 1 )
   {
-    // Slow after meta cast
-    drain = 15;
+    // Slow first second after meta cast. Measured ~10/s from logs.
+    drain = 10;
   }
 
   return drain;
