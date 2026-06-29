@@ -449,6 +449,7 @@ public:
 
     // Set Bonuses
     damage_buff_t* mid1_outlaw_4pc;
+    buff_t* mid2_outlaw_4pc;
 
   } buffs;
 
@@ -724,6 +725,8 @@ public:
     const spell_data_t* rupture;      // Assassination + Subtlety
     const spell_data_t* shadowstep;   // Assassination + Subtlety, baseline charge increase passive
 
+    // Set Bonuses
+    const spell_data_t* mid2_outlaw_4pc_buff;
   } spec;
 
   // Talents
@@ -1103,6 +1106,8 @@ public:
     const spell_data_t* mid1_subtlety_2pc;
     const spell_data_t* mid1_subtlety_4pc;
 
+    const spell_data_t* mid2_outlaw_2pc;
+    const spell_data_t* mid2_outlaw_4pc;
   } set_bonuses;
 
   // Options
@@ -1626,6 +1631,8 @@ public:
     bool mid1_assassination_4pc = false;
     bool mid1_subtlety_2pc = false;
 
+    bool mid2_outlaw_4pc = false;
+
     damage_affect_data follow_the_blood;
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1785,6 +1792,11 @@ public:
     {
       affected_by.mid1_subtlety_2pc = consumes_combo_points();
     }
+
+    if ( p->set_bonuses.mid2_outlaw_4pc->ok() )
+    {
+      affected_by.mid2_outlaw_4pc = ab::data().affected_by( p->spec.mid2_outlaw_4pc_buff->effectN( 1 ) );
+    }
   }
 
   void init() override
@@ -1895,6 +1907,7 @@ public:
     register_consume_buff( p()->buffs.symbolic_victory, p()->buffs.symbolic_victory->is_affecting( &ab::data() ),
                            nullptr, p()->bugs ? 0_ms : 1_ms, false, true ); // 2024-08-12 -- Consumed immediatey, does not work with Shadowy Finishers
     register_consume_buff( p()->buffs.the_rotten, p()->buffs.the_rotten->is_affecting_direct( &ab::data() ), nullptr, 1_ms, false, true );
+    register_consume_buff( p()->buffs.mid2_outlaw_4pc, affected_by.mid2_outlaw_4pc );
   }
 
   // Type Wrappers ============================================================
@@ -1991,6 +2004,11 @@ public:
   {
     int consume_cp = consumes_combo_points() ? as<int>( std::min( p()->current_cp(), p()->consume_cp_max() ) ) : 0;
     int effective_cp = consume_cp;
+
+    if ( affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
+    {
+      effective_cp = p()->consume_cp_max();
+    }
 
     // Apply and Snapshot Supercharger Buffs
     if ( p()->talent.rogue.supercharger->ok() && consumes_supercharger() )
@@ -2222,6 +2240,7 @@ public:
   bool trigger_deathstalkers_mark_debuff( const action_state_t* state, bool from_darkest_night = false );
   void trigger_doomblade( const action_state_t* );
   void trigger_echoing_reprimand( const action_state_t* state );
+  void trigger_mid2_outlaw_4pc( const action_state_t* state );
   void trigger_fatal_flourish( const action_state_t* );
   void trigger_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay = timespan_t::zero() );
   void trigger_fatebound_edge_case( const action_state_t* state );
@@ -2606,6 +2625,11 @@ public:
     if ( affected_by.goremaws_bite )
     {
       c *= 1.0 + p()->buffs.goremaws_bite->check_value();
+    }
+
+    if ( affected_by.mid2_outlaw_4pc )
+    {
+      c *= 1.0 + p()->buffs.mid2_outlaw_4pc->check_value();
     }
 
     return c;
@@ -3381,6 +3405,12 @@ struct melee_t : public rogue_attack_t
 
     if ( p()->talent.outlaw.zero_in->ok() && state->result == RESULT_CRIT )
     {
+      if ( p()->is_ptr() && state->action->weapon->type == WEAPON_DAGGER )
+      {
+        double chance = p()->talent.outlaw.zero_in->effectN( 2 ).percent();
+        if ( p()->rng().roll( chance ) )
+          return;
+      }
       p()->buffs.zero_in->trigger();
     }
   }
@@ -5766,6 +5796,13 @@ struct sinister_strike_t : public rogue_attack_t
       return ( secondary_trigger_type == secondary_trigger::SINISTER_STRIKE ) ? 1 : 0;
     }
 
+    void execute() override
+    {
+      rogue_attack_t::execute();
+      // 2026-06-29 -- PTR TOCHECK: Sinister Strike can proc MID2 Outlaw 4pc on both hits
+      trigger_mid2_outlaw_4pc( execute_state );
+    }
+
     bool procs_main_gauche() const override
     { return true; }
 
@@ -5798,6 +5835,7 @@ struct sinister_strike_t : public rogue_attack_t
     rogue_attack_t::execute();
     trigger_unseen_blade( execute_state );
     trigger_opportunity( execute_state, extra_attack );
+    trigger_mid2_outlaw_4pc( execute_state );
   }
 
   void impact( action_state_t* state ) override
@@ -7547,8 +7585,13 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
 
   const auto rs = cast_state( state );
   double max_spend = std::min( p()->current_cp(), p()->consume_cp_max() );
+  double cp_loss = max_spend;
+
+  if ( affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
+    cp_loss = 0;
+
   ab::stats->consume_resource( RESOURCE_COMBO_POINT, max_spend );
-  p()->resource_loss( RESOURCE_COMBO_POINT, max_spend );
+  p()->resource_loss( RESOURCE_COMBO_POINT, cp_loss );
 
   p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), max_spend, util::resource_type_string( RESOURCE_COMBO_POINT ),
                        *this, p()->current_cp() );
@@ -7806,6 +7849,10 @@ void actions::rogue_action_t<Base>::trigger_ruthlessness_cp( const action_state_
   if ( !p()->talent.outlaw.ruthlessness->ok() || !affected_by.ruthlessness || is_secondary_action() )
     return;
 
+  // 2026-06-29 -- PTR TOCHECK: MID2 Outlaw 4pc does not trigger Ruthlessness
+  if ( p()->bugs && affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
+    return;
+
   if ( !ab::result_is_hit( state->result ) )
     return;
 
@@ -8012,12 +8059,18 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
   p()->cooldowns.killing_spree->adjust( v, false );
   p()->cooldowns.roll_the_bones->adjust( v, false );
   p()->cooldowns.sprint->adjust( v, false );
+
+  p()->sim->print_log( "{} triggered Restless Blades with {}s total cooldown reduction", *p(), v *= -1 );
 }
 
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* state, bool biased, timespan_t current_delay )
 {
   if ( !p()->talent.fatebound.hand_of_fate->ok() )
+    return;
+
+  // 2026-06-29 -- PTR TOCHECK: MID2 Outlaw 4pc does not trigger Fatebound Coins
+  if ( p()->bugs && affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
     return;
 
   if ( is_secondary_action() )
@@ -8600,6 +8653,10 @@ void actions::rogue_action_t<Base>::trigger_scoundrel_strike( const action_state
   if ( !p()->talent.outlaw.gravedigger_2->ok() )
     return;
 
+  // 2026-06-29 -- PTR TOCHECK: MID2 Outlaw 4pc does not trigger Scoundrel Strike
+  if ( p()->bugs && affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
+    return;
+
   if ( !ab::result_is_hit( state->result ) )
     return;
 
@@ -8687,6 +8744,20 @@ void actions::rogue_action_t<Base>::trigger_echoing_reprimand( const action_stat
     return;
 
   p()->active.echoing_reprimand->execute_on_target( state->target );
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_mid2_outlaw_4pc( const action_state_t* state )
+{
+  if ( !p()->is_ptr() )
+    return;
+
+  double chance = p()->set_bonuses.mid2_outlaw_4pc->effectN( 1 ).percent();
+
+  if ( !p()->rng().roll( chance ) )
+    return;
+
+  p()->buffs.mid2_outlaw_4pc->trigger();
 }
 
 template <typename Base>
@@ -10125,6 +10196,11 @@ void rogue_t::init_spells()
   set_bonuses.mid1_outlaw_4pc = sets->set( ROGUE_OUTLAW, MID1, B4 );
   set_bonuses.mid1_subtlety_2pc = sets->set( ROGUE_SUBTLETY, MID1, B2 );
   set_bonuses.mid1_subtlety_4pc = sets->set( ROGUE_SUBTLETY, MID1, B4 );
+  
+  set_bonuses.mid2_outlaw_2pc = sets->set( ROGUE_OUTLAW, MID2, B2 );
+  set_bonuses.mid2_outlaw_4pc = sets->set( ROGUE_OUTLAW, MID2, B4 );
+
+  spec.mid2_outlaw_4pc_buff = set_bonuses.mid2_outlaw_4pc->ok() ? set_bonuses.mid2_outlaw_4pc->effectN( 1 ).trigger() : spell_data_t::not_found();
 
   // Register passives ======================================================
 
@@ -10922,7 +10998,10 @@ void rogue_t::create_buffs()
 
   // Set Bonus Items ========================================================
 
-  buffs.mid1_outlaw_4pc = make_buff<damage_buff_t>( this, "whirl_of_blades", set_bonuses.mid1_outlaw_4pc->effectN(2).trigger() );
+  buffs.mid1_outlaw_4pc = make_buff<damage_buff_t>( this, "whirl_of_blades", set_bonuses.mid1_outlaw_4pc->effectN( 2 ).trigger() );
+
+  buffs.mid2_outlaw_4pc = make_buff( this, "fang_strike", spec.mid2_outlaw_4pc_buff )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 );
 }
 
 // rogue_t::invalidate_cache =========================================
