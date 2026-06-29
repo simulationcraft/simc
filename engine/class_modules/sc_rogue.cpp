@@ -3573,6 +3573,7 @@ struct ambush_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
     trigger_blindside( execute_state );
+    trigger_mid2_outlaw_4pc( execute_state );
   }
 
   void impact( action_state_t* state ) override
