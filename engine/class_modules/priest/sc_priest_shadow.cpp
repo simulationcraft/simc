@@ -2143,7 +2143,7 @@ void priest_t::create_buffs_shadow()
     const double ancient_madness_tick_count = as<double>( talents.shadow.ancient_madness_buff->duration() /
                                                           talents.shadow.ancient_madness_buff->effectN( 2 ).period() );
 
-    buffs.ancient_madness->set_tick_callback( [ this, ancient_madness_tick_count ]( buff_t* buff, int, timespan_t ) {
+    buffs.ancient_madness->set_tick_callback( [ ancient_madness_tick_count ]( buff_t* buff, int, timespan_t ) {
       if ( buff->default_value <= 0.0 )
       {
         return;

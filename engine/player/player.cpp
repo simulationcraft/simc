@@ -12323,14 +12323,15 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( splits.size() == 2 && splits[ 0 ] == "potion" )
   {
     std::string_view potion_view;
+    std::string default_potion = this->default_potion();
 
     if ( !potion_str.empty() )
     {
       potion_view = potion_str;
     }
-    else if ( default_potion().empty() )
+    else if ( !default_potion.empty() )
     {
-      potion_view = default_potion();
+      potion_view = default_potion;
     }
     else
     {
