@@ -3310,8 +3310,10 @@ void voracious_heart_of_ulatek( special_effect_t& effect )
       : generic_proc_t( e, "voracious_heart_of_ulatek_damage", e.driver() ), buff( buff )
     {
       // for some reason this spell doesnt have a direct damage effect, instead its a dummy effect.
-      // This means theres a lot of manual setup that probably shouldnt need to exist. 
-      school      = SCHOOL_PHYSICAL; 
+      // This means theres a lot of manual setup that probably shouldnt need to exist.
+      school             = SCHOOL_PHYSICAL;
+      cooldown->duration = 0_ms;
+      cooldown->category = 0;
       base_dd_min = base_dd_max = equip->effectN( 2 ).average( e );
     }
 
@@ -3330,7 +3332,7 @@ void voracious_heart_of_ulatek( special_effect_t& effect )
   equip_se->name_str = "voracious_heart_of_ulatek_driver";
   equip_se->spell_id = effect.driver()->id();
   equip_se->execute_action = damage;
-  equip_se->proc_flags2_ = PF2_ALL_HIT;  // TODO: confirm
+  equip_se->proc_flags2_   = PF2_ALL_HIT;  // TODO: confirm
   equip_se->cooldown_      = 0_ms;
   equip_se->cooldown_category_ = 0;
   effect.player->special_effects.push_back( equip_se );
