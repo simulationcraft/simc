@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.0.68301
+Class Spell ID List, wow build 12.1.0.68412
 
 Death Knight
 3714     Path of Frost
@@ -1774,7 +1774,7 @@ Death Knight
 1297063  Death Knight Unholy 12.1 Class Set 2pc
 1297086  Necrotic Bolt
 1297087  Death Knight Unholy 12.1 Class Set 2pc
-1297091  Writhing Grasp
+1297091  Withering Grasp
 1297365  Freezing Tempest
 1300330  Epidemic Order
 1300369  Relentless Rider's Precision
@@ -11222,6 +11222,10 @@ Mage
 1296930  Cumulative Power
 1297073  Improved Warding
 1299546 *Ice Armor
+1309497  Refractive Images
+1309786  Refraction
+1309787  Refraction
+1309793  Amplified Refraction
 
 Monk
 8647     Mystic Touch
@@ -15228,7 +15232,7 @@ Paladin
 1267211  Glory of the Vanguard
 1267215  Glory of the Vanguard
 1267228  Glory of the Vanguard
-1268810  Vanguard
+1268810 *Vanguard
 1269142  Glory of the Vanguard
 1269175  Glory of the Vanguard
 1269179  Valor
@@ -17282,7 +17286,6 @@ Priest
 1306118  Renewed Haste
 1307795  Dark Transference
 1308649  Vampiric Insight
-1308779  Shadowtouched Apparitions
 
 Rogue
 53       Backstab
@@ -18923,6 +18926,8 @@ Rogue
 1298870  Implacable
 1301405  Fang Strike
 1305994  Secret Technique
+1309274  Goremaw's Bite
+1309309  Goremaw's Bite
 
 Shaman
 370      Purge

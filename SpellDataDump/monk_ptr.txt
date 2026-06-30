@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68301 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68412 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1904,7 +1904,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2355: Fortifying Brew: Determination (322960 effect#3), Fortifying Brew (388917 effect#1), Fortifying Brew (388917 effect#2)
 Family Flags     : 51
-Attributes       : No Threat (42), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416), Big Defensive (512)
+Attributes       : No Threat (42), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416), Important Spell (491), Big Defensive (512)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=141067)   : Apply Aura (6) | Increase Health (34)
@@ -5896,7 +5896,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Internal Cooldown: 1 seconds
+Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
@@ -6931,7 +6931,7 @@ School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 8 seconds
-Charges          : 1 (45 seconds cooldown)
+Charges          : 1 (90 seconds cooldown)
 Category         : 2293 (Type 0x0): Light Brewing (325093 effect#2), Endless Draught (450892 effect#2)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
@@ -6942,7 +6942,7 @@ Family Flags     : 53, 75
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=810869)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 28.35 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 56.7 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=834949)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -8461,7 +8461,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Magic Hostile Spell
-Attributes       : Passive (6), Immunity Purges Effect (47), No Aura Icon (60), Can Proc From Procs (122), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Immunity Purges Effect (47), Can Proc From Procs (122), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Important Spell (491)
 Effects          :
 #1 (id=867653)   : Apply Aura Pet in Area (119) | Mechanic Immunity (77)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 11 | Radius: 60 yards | Target: Self (1)
@@ -8478,7 +8478,7 @@ Effects          :
 #6 (id=1257146)  : Apply Aura (6) | Resist Forced Movement% (485)
                    Base Value: -100 | Scaled Value: -100 | Target: Self (1)
 Description      : $@spelldesc325197
-Tooltip          : Blackout Kick, Rising Sun Kick, or Spinning Crane Kick cause Chi-ji to heal the $s3 nearest allies with $325197s1 Gust of Mists for $343819s1.
+Tooltip          : Blackout Kick, Rising Sun Kick, or Spinning Crane Kick cause Chi-ji to heal the $s3 nearest allies with $325197s2 Gust of Mists for $343819s1.
 
 Immune to movement-impairing effects.
 
@@ -13082,7 +13082,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: -11 | Target: Self (1)
 Description      : $@spelldesc422887
 Tooltip          : The next $w1 damage you Stagger will be prevented instead.
-Variables        : $absorb=${($AP*22.68)*(1+$@versadmg)}
+Variables        : $absorb=${($AP*45.36)*(1+$@versadmg)}
 
 
 Name             : Healing Elixir (id=427296) [Spell Family (53)] 
@@ -15738,7 +15738,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: -11 | Target: Self (1)
 Description      : $@spelldesc451036
 Tooltip          : The next $w1 damage you Stagger will be prevented instead.
-Variables        : $absorb=${($AP*22.68)*(1+$@versadmg)}
+Variables        : $absorb=${($AP*45.36)*(1+$@versadmg)}
 
 
 Name             : Momentum Boost (id=451294) [Spell Family (53), Passive] 
@@ -18093,7 +18093,7 @@ School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 16 seconds
-Charges          : 1 (45 seconds cooldown)
+Charges          : 1 (90 seconds cooldown)
 Category         : 2293 (Type 0x0): Light Brewing (325093 effect#2), Endless Draught (450892 effect#2)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
@@ -18104,13 +18104,13 @@ Family Flags     : 53, 75
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1239822)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 28.35 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 56.7 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=1239823)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : A strong herbal brew that coalesces purified chi escaping your body into a celestial guard, absorbing $s2% of incoming damage, up to $<absorb> total.
+Description      : A strong herbal brew that coalesces purified chi escaping your body into a celestial guard, absorbing $s2% of incoming damage, up to $s1 total.
 Tooltip          : Absorbs $s2~% of incoming damage, up to $w1 total.
-Variables        : $absorb=${($AP*22.68)*(1+$@versadmg)}
+Variables        : $absorb=${($AP*45.36)*(1+$@versadmg)}
 
 
 Name             : Niuzao's Resolve (id=1241097) [Spell Family (53), Passive] 
@@ -21138,7 +21138,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 0.25 seconds
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1319289)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)

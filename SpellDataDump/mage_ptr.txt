@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68301 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68412 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -436,14 +436,14 @@ Spell Level      : 11
 GCD              : 0.75 seconds
 Duration         : 60 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 471 (Type 0x1)
+Category         : 471 (Type 0x1): Improved Ice Barrier (1244069 effect#2)
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 932
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken
-Affecting Spells : Glacial Insulation (235297 effect#1), Eldritch Warding (274379 effect#1), Improved Ice Barrier (1244069 effects: #1, #2)
+Affecting Spells : Glacial Insulation (235297 effect#1), Eldritch Warding (274379 effect#1), Improved Ice Barrier (1244069 effect#1)
 Family Flags     : 32, 67
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Never Bounces (148), Ignore Healing Modifiers (219), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Aura Interrupt   : Change Talent (46)
@@ -454,7 +454,6 @@ Effects          :
                    Modified By: Eldritch Warding (274379 effect#1)
 #2 (id=343726)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.6 | Misc Value: 127 | Target: Self (1)
-                   Modified By: Improved Ice Barrier (1244069 effect#2)
 #3 (id=355654)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
@@ -2673,17 +2672,17 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179704)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Arcane Splinter (443763), Volatile Magic (444966), Volatile Magic (444967), Archmage's Wrath (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Arcane Pulse (1241462), Arcane Pulse (1243460), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863), Conflagration (1271173), Burnout (1271335), Winter's End (1280757), Prismatic Bolt (1295924), Prismatic Bolt (1295939)
                    Family Flags: 3
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Arcane Splinter (443763), Volatile Magic (444966), Volatile Magic (444967), Archmage's Wrath (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Arcane Pulse (1241462), Arcane Pulse (1243460), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863), Conflagration (1271173), Burnout (1271335), Winter's End (1280757), Prismatic Bolt (1295924), Prismatic Bolt (1295939)
                    Family Flags: 3
 #3 (id=191117)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 #4 (id=191118)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 #5 (id=191119)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 60 | Scaled Value: 0 | Points Per Level: -3 | Resource: mana | Target: Self (1)
 #6 (id=1032357)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
@@ -5394,7 +5393,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 897: Improved Blazing Barrier (321708 effect#1)
+                 : 897
 Affecting Spells : Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #3, #4), Lonely Winter (205024 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Spellfire Sphere (448604 effects: #1, #2), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Clarity (1216178 effects: #1, #2), Rollin' Hot (1219035 effects: #1, #2), Charm of Aegwynn (1244105 effect#1), Arcane Mage (1256909 effects: #1, #2), Fire Mage (1256911 effects: #1, #2), Frost Mage (1256913 effects: #1, #2), Hand of Frost (1263263 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 2pc (1283634 effects: #1, #2), Mage - Midnight PrePatch - 11.2 Class Set 4pc (1283635 effects: #1, #2)
 Family Flags     : 3
 Attributes       : No Reflection (39), Allow Class Ability Procs (416)
@@ -5414,14 +5413,14 @@ Spell Level      : 11
 GCD              : 0.75 seconds
 Duration         : 60 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 2547 (Type 0x1): Improved Prismatic Barrier (321745 effect#5)
+Category         : 2547 (Type 0x1): Improved Blazing Barrier (321708 effect#2), Improved Prismatic Barrier (321745 effect#3)
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 932
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken
-Affecting Spells : Eldritch Warding (274379 effect#1), Improved Prismatic Barrier (321745 effects: #1, #2)
+Affecting Spells : Eldritch Warding (274379 effect#1), Improved Prismatic Barrier (321745 effect#1)
 Family Flags     : 68
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Never Bounces (148), Ignore Healing Modifiers (219), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38)
@@ -5438,7 +5437,6 @@ Effects          :
                    Modified By: Improved Prismatic Barrier (321745 effect#1)
 #4 (id=355854)   : Apply Aura (6) | Modify Debuff Duration% (245)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.6 | Misc Value: 1 | Target: Self (1)
-                   Modified By: Improved Prismatic Barrier (321745 effect#2)
 #5 (id=731326)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Prismatic Barrier (235450)
@@ -5521,7 +5519,7 @@ Effects          :
 Description      : Arcane Missiles and Evocation can now be channeled while moving.
 
 Name             : Amplification (id=236628) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -7346,7 +7344,7 @@ Description      : $@spelldesc321387
 Tooltip          : Mana regen increased by $s1%.
 
 Name             : Improved Clearcasting (id=321420) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -7454,12 +7452,12 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
-#1 (id=809588)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value 2: 897 (Label) | Target: Self (1)
-                   Affected Spells (Label): Blazing Barrier (235314)
-#2 (id=1244667)  : Apply Aura (6) | Dummy (4)
+#1 (id=809588)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Description      : Blazing Barrier's damage is increased by $s1% and it now cauterizes your wounds, healing you for $s2% of the damage it absorbs.
+#2 (id=1244667)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2547 (Category) | Target: Self (1)
+                   Affected Spells (Category): Prismatic Barrier (235450)
+Description      : Blazing Barrier gains an additional charge and cauterizes your wounds, healing you for $s1% of the damage it absorbs.
 
 Name             : Pyroblast (desc=Rank 2) (id=321711) [Spell Family (3), Passive] 
 Class            : Mage
@@ -7508,25 +7506,16 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=809641)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 23 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Prismatic Barrier (235450)
                    Family Flags: 68
-#2 (id=809642)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 32 | Target: Self (1)
-                   Affected Spells: Prismatic Barrier (235450)
-                   Family Flags: 68
-#3 (id=1300826)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 23 | Misc Value 2: 6344 (Label) | Target: Self (1)
+#2 (id=809642)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 23 | Misc Value 2: 6344 (Label) | Target: Self (1)
                    Affected Spells (Label): Merely a Setback (449336)
-#4 (id=1300827)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 32 | Misc Value 2: 6344 (Label) | Target: Self (1)
-                   Affected Spells (Label): Merely a Setback (449336)
-#5 (id=1319979)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+#3 (id=1300826)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2547 (Category) | Target: Self (1)
                    Affected Spells (Category): Prismatic Barrier (235450)
-Description      : Prismatic Barrier gains an additional charge.
-
-Prismatic Barrier further reduces magical damage taken by $s1% and duration of harmful Magic effects by $s2%.
+Description      : Prismatic Barrier gains an additional charge and further reduces magic damage taken by $s1%.
 
 Name             : Deathborne (desc=Necrolord) (id=324220) [Spell Family (3)] 
 Class            : Mage
@@ -12528,7 +12517,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 6344: Improved Prismatic Barrier (321745 effect#3), Improved Prismatic Barrier (321745 effect#4)
+                 : 6344: Improved Prismatic Barrier (321745 effect#2)
 Attributes       : Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
@@ -12539,10 +12528,9 @@ Effects          :
 #3 (id=1247361)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -15 | Scaled Value: -15 | Value Multiplier: 1 | PvP Coefficient: 0.67 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-                   Modified By: Improved Prismatic Barrier (321745 effect#3)
+                   Modified By: Improved Prismatic Barrier (321745 effect#2)
 #4 (id=1247362)  : Apply Aura (6) | Modify Debuff Duration% (245)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.6 | Misc Value: 1 | Target: Self (1)
-                   Modified By: Improved Prismatic Barrier (321745 effect#4)
 #5 (id=1247363)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc449330
@@ -15072,10 +15060,8 @@ Effects          :
 #1 (id=1243629)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #2 (id=1243631)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Casting Arcane Orb while you have Clearcasting causes you to fire $s1 additional Arcane $lOrb:Orbs; at $s2% effectiveness.
-
-Casting Arcane Orb now consumes Clearcasting.
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+Description      : Casting Arcane Orb fires $s1 additional Arcane $lOrb:Orbs; at $s2% effectiveness.
 
 Name             : Arcane Pulse (id=1243460) [Spell Family (3)] 
 Class            : Mage
@@ -15151,7 +15137,7 @@ Effects          :
 #1 (id=1243832)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #2 (id=1302686)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=1324393)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : Casting Arcane Blast or Arcane Pulse grants $s1 $Lstack:stacks; of Arcane Salvo.
@@ -15245,11 +15231,10 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Ice Barrier (11426)
                    Family Flags: 32
-#2 (id=1244693)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Ice Barrier (11426)
-                   Family Flags: 32
-Description      : Ice Barrier reduces your physical damage taken by ${-$s1}% and absorbs an additional $s2% of your maximum health.
+#2 (id=1244693)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 471 (Category) | Target: Self (1)
+                   Affected Spells (Category): Ice Barrier (11426)
+Description      : Ice Barrier gains an additional charge and reduces your physical damage taken by ${-$s1}%.
 
 Name             : Time Walk (id=1244087) [Spell Family (3), Passive] 
 Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
@@ -16797,7 +16782,7 @@ Effects          :
 #1 (id=1270704)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=1270705)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #3 (id=1270706)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 32 | Misc Value 2: 5382 (Label) | Target: Self (1)
                    Affected Spells (Label): Shatter (1246769)
@@ -18042,4 +18027,80 @@ Effects          :
 #1 (id=1319970)  : Apply Aura (6) | Modify AoE Damage Taken% (229)
                    Base Value: -4 | Scaled Value: -4 | Misc Value: 127 | Target: Self (1)
 Description      : Damage taken from area of effect attacks reduced by $s1%.
+
+Name             : Refractive Images (id=1309497) [Spell Family (3), Passive] 
+Talent Entry     : Arcane [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 6957: Amplified Refraction (1309793 effect#1)
+Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Spellbook (143), Do Not Display Duration (170), Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=1338490)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Modified By: Amplified Refraction (1309793 effect#1)
+#2 (id=1338865)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#3 (id=1338866)  : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Misc Value 2: -10
+                   Affected School(s): All
+Description      : $<base>% of damage you would take is instead dealt over $1309787d. Casting Mirror Image increases this effect to ${$<base>+$1309793s1}% for $1309793d.
+Variables        : $base=${10}
+
+Name             : Refraction (id=1309786) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Aura Cancel (31), No Threat (42), No Aura Icon (60), DoT Stacking Rule (103), Suppress Caster Procs (112), Ignore Caster Modifiers (125), Do Not Display Range (126), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), No Aura Log (202), Ignore Caster Damage Modifiers (221), Can Be Multi Cast (229), Aura Points On Client (268), Cannot Kill Target (316), Ignore Positive Damage Taken Modifiers (321), Ignore Damage Cancels Aura Interrupt (394), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1338870)  : Apply Aura (6) | Periodic Damage (3): arcane every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=1338871)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc1309497
+
+Name             : Refraction (id=1309787) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+Attributes       : Do Not Log (8), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Aura Cancel (31), No Threat (42), Suppress Caster Procs (112), Ignore Caster Modifiers (125), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Cannot Kill Target (316), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1338877)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=1338878)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc1309497
+Tooltip          : $w1 refracted damage is being dealt every $1309786t1 sec.
+
+Damage Remaining: $w2
+
+Name             : Amplified Refraction (id=1309793) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Duration         : 15 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+Attributes       : Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1338889)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 6957 (Label) | Target: Self (1)
+                   Affected Spells (Label): Refractive Images (1309497)
+Description      : $@spelldesc1309497
+Tooltip          : Refractive Images is delaying ${$s1+$<base>}% of damage taken.
+Variables        : $base=${10}
 
