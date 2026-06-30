@@ -16155,6 +16155,9 @@ Effects          :
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506), Malefic Grasp (1261153)
                    Family Flags: 0
 Hotfixed         : NEW EFFECT
+#4 (id=1339596)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
+                   Base Value: -67 | Scaled Value: -67 | Misc Value 2: 4045 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Destruction Warlock (id=1256908) [Spell Family (5), Passive, Hidden] 
 Class            : Destruction Warlock
