@@ -12018,8 +12018,9 @@ Effects          :
 #3 (id=1135813)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #4 (id=1135814)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.6 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 #5 (id=1135815)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : You deal $s1% more damage and take $s4% less damage.
