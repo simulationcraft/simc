@@ -4610,7 +4610,8 @@ struct lord_of_the_dead_pet_t : public magus_base_pet_t
 
     assert( magus_dur > 0_s && "Magus duration must be positive" );
 
-    m *= 1.0 + ( dk()->talent.unholy.lord_of_the_dead->effectN( 1 ).percent() *
+    m *= 1.0 + ( dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value() *
+                 dk()->talent.unholy.lord_of_the_dead->effectN( 1 ).percent() *
                  ( magus_dur / ( dk()->talent.unholy.lord_of_the_dead->effectN( 6 ).time_value() *
                                  dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value() ) ) );
 
