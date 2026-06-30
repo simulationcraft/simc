@@ -1678,7 +1678,7 @@ public:
     const spell_data_t* frostbolt;
     const spell_data_t* shadow_bolt;
     const spell_data_t* necrotic_bolt;
-    const spell_data_t* writhing_grasp;
+    const spell_data_t* withering_grasp;
     // Lord of the Dead
     const spell_data_t* lotd_frostbolt;
     const spell_data_t* lotd_necrotic_bolt;
@@ -4478,10 +4478,10 @@ struct magus_pet_t : public magus_base_pet_t
     }
   };
 
-  struct writhing_grasp_t final : public magus_spell_t
+  struct withering_grasp_t final : public magus_spell_t
   {
-    writhing_grasp_t( magus_pet_t* p, std::string_view options_str )
-      : magus_spell_t( p, "writhing_grasp", p->dk()->pet_spell.writhing_grasp, options_str )
+    withering_grasp_t( magus_pet_t* p, std::string_view options_str )
+      : magus_spell_t( p, "withering_grasp", p->dk()->pet_spell.withering_grasp, options_str )
     {
     }
 
@@ -4580,7 +4580,7 @@ struct magus_pet_t : public magus_base_pet_t
     if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID2, B2 ) )
     {
       def->add_action( "necrotic_bolt" );
-      def->add_action( "writhing_grasp" );
+      def->add_action( "withering_grasp" );
     }
     else
     {
@@ -4597,8 +4597,8 @@ struct magus_pet_t : public magus_base_pet_t
       return new shadow_bolt_magus_t( this, options_str );
     if ( name == "necrotic_bolt" )
       return new magi_necrotic_bolt_t( this, "necrotic_bolt", dk()->pet_spell.necrotic_bolt, options_str );
-    if ( name == "writhing_grasp" )
-      return new writhing_grasp_t( this, options_str );
+    if ( name == "withering_grasp" )
+      return new withering_grasp_t( this, options_str );
 
     return magus_base_pet_t::create_action( name, options_str );
   }
@@ -15390,7 +15390,7 @@ void death_knight_t::spell_lookups()
   pet_spell.shadow_bolt =
       conditional_spell_lookup( talent.unholy.magus_of_the_dead.ok() || talent.unholy.doomed_bidding.ok(), 317791 );
   pet_spell.necrotic_bolt  = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID2, B2 ), 1297055 );
-  pet_spell.writhing_grasp = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID2, B2 ), 1297091 );
+  pet_spell.withering_grasp = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID2, B2 ), 1297091 );
   // Lord of the Dead
   pet_spell.lotd_frostbolt     = conditional_spell_lookup( talent.unholy.lord_of_the_dead.ok(), 1292107 );
   pet_spell.lotd_necrotic_bolt = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID2, B2 ), 1297086 );
