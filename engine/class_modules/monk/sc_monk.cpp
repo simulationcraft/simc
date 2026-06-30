@@ -7365,7 +7365,7 @@ const std::string valid_talents_t::name() const
 
 bool valid_talents_t::evaluate_post_init()
 {
-  if ( !player )
+  if ( !player || sim->enable_all_talents )
     return true;
 
   switch ( player->specialization() )
@@ -7388,8 +7388,8 @@ bool valid_talents_t::evaluate_post_init()
         count -= 1;
         if ( count == this->count )
           return true;
-        return false;
       }
+      return false;
     default:
       break;
   }
