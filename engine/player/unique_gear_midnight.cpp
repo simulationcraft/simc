@@ -3225,6 +3225,121 @@ void gebbos_bottomless_bag( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Voracious Heart of Ula'tek
+// 1297760 values
+// 1297761 Everything Else???
+void voracious_heart_of_ulatek( special_effect_t& effect )
+{
+  auto equip = effect.player->find_spell( 1297760 );
+  assert( equip && "Voracious Heart of Ula'tek missing equip effect" );
+
+  struct voracious_heart_of_ulatek_buff_t : public stat_buff_t
+  {
+    double increase_value;
+    voracious_heart_of_ulatek_buff_t( player_t* p, std::string_view n, const spell_data_t* s, const special_effect_t& e,
+                                      const spell_data_t* equip )
+      : stat_buff_t( p, n, s ), increase_value( 0 )
+    {
+      double stat_value = equip->effectN( 1 ).average( e );
+      increase_value    = equip->effectN( 3 ).average( e );
+
+      set_default_value( stat_value );
+      set_rppm( RPPM_DISABLE );
+      set_cooldown( 0_ms );
+
+      switch ( p->convert_hybrid_stat( STAT_STR_AGI_INT ) )
+      {
+        case STAT_STRENGTH:
+          set_stat_from_effect( 1, stat_value );
+          break;
+        case STAT_AGILITY:
+          set_stat_from_effect( 2, stat_value );
+          break;
+        case STAT_INTELLECT:
+        default:
+          break;
+      }
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      stat_buff_t::expire_override( s, d );
+      for ( auto& buff_stat : stats )
+      {
+        buff_stat.amount = default_value;
+      }
+    }
+
+    void reset() override
+    {
+      stat_buff_t::reset();
+      for ( auto& buff_stat : stats )
+      {
+        buff_stat.amount = default_value;
+      }
+    }
+
+    void increase_stat()
+    {
+      for ( auto& buff_stat : stats )
+      {
+        double val              = buff_stat.current_value + increase_value;
+        double delta            = increase_value;
+        buff_stat.current_value = val;
+        buff_stat.amount        = val;
+        if ( delta > 0 )
+        {
+          player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        else if ( delta < 0 )
+        {
+          player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr,
+                             buff_duration() > timespan_t::zero() );
+        }
+      }
+    }
+  };
+
+  auto buff = create_buff<voracious_heart_of_ulatek_buff_t>( effect.player, "voracious_heart_of_ulatek",
+                                                             effect.driver(), effect, equip );
+
+  struct voracious_heart_of_ulatek_damage_t : public generic_proc_t
+  {
+    buff_t* buff;
+    voracious_heart_of_ulatek_damage_t( const special_effect_t& e, const spell_data_t* equip, buff_t* buff )
+      : generic_proc_t( e, "voracious_heart_of_ulatek_damage", e.driver() ), buff( buff )
+    {
+      // for some reason this spell doesnt have a direct damage effect, instead its a dummy effect.
+      // This means theres a lot of manual setup that probably shouldnt need to exist. 
+      school      = SCHOOL_PHYSICAL; 
+      base_dd_min = base_dd_max = equip->effectN( 2 ).average( e );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      if ( buff )
+        debug_cast<voracious_heart_of_ulatek_buff_t*>( buff )->increase_stat();
+    }
+  };
+
+  auto damage =
+      create_proc_action<voracious_heart_of_ulatek_damage_t>( "voracious_heart_of_ulatek_damage", effect, equip, buff );
+
+  auto equip_se = new special_effect_t( effect.player );
+  equip_se->name_str = "voracious_heart_of_ulatek_driver";
+  equip_se->spell_id = effect.driver()->id();
+  equip_se->execute_action = damage;
+  equip_se->proc_flags2_ = PF2_ALL_HIT;  // TODO: confirm
+  equip_se->cooldown_      = 0_ms;
+  equip_se->cooldown_category_ = 0;
+  effect.player->special_effects.push_back( equip_se );
+  auto cb = new dbc_proc_callback_t( effect.player, *equip_se );
+  cb->activate_with_buff( buff );
+
+  effect.custom_buff = buff;
+}
+
 // 1297908 driver
 // 1297911 equip driver
 // 1307222 Venom Splatter
@@ -4323,6 +4438,8 @@ void register_special_effects()
   register_special_effect( 1297908, trinkets::font_of_venomous_rage );
   register_special_effect( 1297911, DISABLED_EFFECT );  // Font of Venomous Rage equip driver
   register_special_effect( 1292291, trinkets::gebbos_bottomless_bag );
+  register_special_effect( 1297761, trinkets::voracious_heart_of_ulatek );
+  register_special_effect( 1297760, DISABLED_EFFECT ); // Voracious Heart of Ula'tek equip driver
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
