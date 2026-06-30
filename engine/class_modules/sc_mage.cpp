@@ -5626,6 +5626,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   pets(),
   procs(),
   accumulated_rng(),
+  rppm(),
   sample_data(),
   spec(),
   state(),
