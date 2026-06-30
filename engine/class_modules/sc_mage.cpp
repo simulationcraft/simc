@@ -2392,7 +2392,8 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     double m = custom_state_spell_t::execute_time_pct_multiplier();
 
     // Fire Mage 12.1 Set Bonus 4pc
-    if ( p()->buffs.pyroclasm->check() )
+    // TODO: Remove version check when 12.1 goes live
+    if ( p()->dbc->wowv() >= wowv_t{ 12, 1, 0 } && p()->buffs.pyroclasm->check() )
       m *= 1.0 + p()->buffs.pyroclasm->data().effectN( 3 ).percent();
 
     return m;
@@ -2411,7 +2412,8 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     c += p()->buffs.hyperthermia->check_value();
 
     // Fire Mage 12.1 Set Bonus 2pc
-    if ( p()->buffs.pyroclasm->check() )
+    // TODO: Remove version check when 12.1 goes live
+    if ( p()->dbc->wowv() >= wowv_t{ 12, 1, 0 } && p()->buffs.pyroclasm->check() )
       // Spelldata suggests this is a percent modifier, meaning it should
       // double the crit chance, but in actuality, it makes it guaranteed.
       c += p()->buffs.pyroclasm->data().effectN( 2 ).percent();
