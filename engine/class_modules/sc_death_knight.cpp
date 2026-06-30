@@ -4610,7 +4610,7 @@ struct lord_of_the_dead_pet_t : public magus_base_pet_t
 
     assert( magus_dur > 0_s && "Magus duration must be positive" );
 
-    m *= 1.0 + ( dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value() *
+    m *= ( dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value() *
                  dk()->talent.unholy.lord_of_the_dead->effectN( 1 ).percent() *
                  ( magus_dur / ( dk()->talent.unholy.lord_of_the_dead->effectN( 6 ).time_value() *
                                  dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value() ) ) );
@@ -6624,6 +6624,8 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
     set_duration( data().duration() );
     putrefy_instantly = s == p->spell.summon_putrefy_ghoul;
     ap_mult           = s == p->spell.summon_army_ghoul ? 1.75 : 1.0;
+    if ( p->sim->dbc->wowv() >= ( 12, 1, 0 ) && s == p->spell.summon_army_ghoul )
+      ap_mult *= 0.8;
     switch ( source )
     {
       case lesser_ghoul_e::LESSER_SOUL_REAPER:
