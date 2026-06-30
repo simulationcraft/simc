@@ -1579,7 +1579,8 @@ sim_t::sim_t()
     profileset_enabled( false ),
     profileset_work_threads( 0 ),
     profileset_init_threads( 1 ),
-    profilesets( std::make_unique<profileset::profilesets_t>() )
+    profilesets( std::make_unique<profileset::profilesets_t>() ),
+    profileset_name()
 {
   item_db_sources.assign( std::begin( default_item_db_sources ), std::end( default_item_db_sources ) );
 
@@ -1592,9 +1593,12 @@ sim_t::sim_t()
   profileset::create_options( this );
 }
 
-sim_t::sim_t( sim_t* p, int index ) : sim_t()
+sim_t::sim_t( sim_t* p, int index, std::string_view profileset_name )
+  : sim_t()
 {
   assert( p );
+
+  this->profileset_name = profileset_name;
 
   parent = p;
   thread_index = index;
@@ -1619,9 +1623,12 @@ sim_t::sim_t( sim_t* p, int index ) : sim_t()
   parent -> add_relative( this );
 }
 
-sim_t::sim_t( sim_t* p, int index, sim_control_t* control ) : sim_t()
+sim_t::sim_t( sim_t* p, int index, sim_control_t* control, std::string_view profileset_name )
+  : sim_t()
 {
   assert( p && control );
+
+  this->profileset_name = profileset_name;
 
   parent = p;
   thread_index = index;
@@ -3387,7 +3394,7 @@ void sim_t::partition()
 
   for ( int i = 0; i < num_children; i++ )
   {
-    auto  child = new sim_t( this, i + 1, child_control );
+    auto  child = new sim_t( this, i + 1, child_control, child_control->combat.name );
 
     assert( child );
     children.push_back( child );

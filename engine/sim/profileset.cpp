@@ -403,7 +403,7 @@ void worker_t::execute()
 {
   try
   {
-    m_sim = new sim_t( m_parent, 0, m_profileset->options() );
+    m_sim = new sim_t( m_parent, 0, m_profileset->options(), m_profileset->name() );
 
     simulate_profileset( m_parent, *m_profileset, m_sim );
   }
@@ -501,7 +501,7 @@ void profilesets_t::generate_work( sim_t* parent, std::unique_ptr<profile_set_t>
 
     try
     {
-      sim_t* profile_sim = new sim_t( parent );
+      sim_t* profile_sim = new sim_t( parent, 0, ptr_set->name() );
 
       parent->control = original_opts;
       simulate_profileset( parent, *ptr_set, profile_sim );

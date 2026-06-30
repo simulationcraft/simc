@@ -651,10 +651,11 @@ struct sim_t : private sc_thread_t
   bool profileset_enabled;
   int profileset_work_threads, profileset_init_threads;
   std::unique_ptr<profileset::profilesets_t> profilesets;
+  std::string_view profileset_name;
 
   sim_t();
-  explicit sim_t( sim_t* parent, int thread_index = 0 );
-  sim_t( sim_t* parent, int thread_index, sim_control_t* control );
+  explicit sim_t( sim_t* parent, int thread_index = 0, std::string_view profileset_name = {} );
+  sim_t( sim_t* parent, int thread_index, sim_control_t* control, std::string_view profileset_name = {} );
   ~sim_t() override;
 
   void run() override;

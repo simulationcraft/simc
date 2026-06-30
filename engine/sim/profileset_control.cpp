@@ -140,7 +140,7 @@ void profileset_controller_t::evaluate( sim_t* sim, call_point_e call_point )
   assert( controller->parent == sim->parent );
 
   controller->set_exit_reason(
-      { sim->parent->profilesets->current_profileset_name(), call_point, controller->reason() } );
+      { sim->profileset_name, call_point, controller->reason() } );
 
   sim->canceled = true;
   sim->error( error_level_e::TRIVIAL, "{}", controller->message( call_point ) );
@@ -161,7 +161,7 @@ profileset_controller_t::profileset_controller_t( sim_t* sim, unsigned int id )
 const std::string profileset_controller_t::message( call_point_e call_point )
 {
   std::string msg = fmt::format( "Profileset {} was canceled by Profileset Controller {} after {}",
-                                 parent->profilesets->current_profileset_name(), name(),
+                                 sim->profileset_name, name(),
                                  profileset_controller::call_point_string( call_point ) );
   if ( call_point == POST_ITER )
     msg += std::to_string( sim->current_iteration );

@@ -34,7 +34,7 @@ public:
 
 struct exit_reason_t
 {
-  const std::string profileset_name;
+  const std::string_view profileset_name;
   const call_point_e exit_point;
   const std::string exit_reason;
 };
