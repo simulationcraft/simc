@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.0.68301
-static constexpr std::array<spelltext_data_t, 29205> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29207> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28740,6 +28740,7 @@ static constexpr std::array<spelltext_data_t, 29205> __ptr_spelltext_data { {
   { 1292064, "$@spelldesc1291724", "Your harmful spells and abilities additionally Poison the target for $1291724w1 every $1302015t sec.", 0 },
   { 1292065, "Your attacks have a high chance to grant you Focus of Ula'tek, increasing your Haste by $s1 for $1295582d. Multiple applications may overlap.\r\n\r\nWhen two or more applications are active, your focus sharpens further to increase the effect by $s2%.", 0, 0 },
   { 1292071, "Enemies damaged by Phalanx's wave of force deal ${$s1/-1}.1% reduced damage to you for $d.\r\n", "Dealing ${$W1/-1}.1% reduced damage to $@auracaster.", 0 },
+  { 1292072, "$@spelldesc1292040", 0, 0 },
   { 1292107, "Deals $s1 Frost damage and reduces their movement speed by $s2% for $d.", "Movement speed reduced by $w2%.", 0 },
   { 1292112, "$@spelldesc1292114", 0, 0 },
   { 1292114, "While not in a Raid or Dungeon your spells and abilities have a chance to afflict the highest and lowest health enemies with $s1 stacks of Ula'Tek's Gift.\r\n\r\n$@spellicon1289148$@spellname1289148\r\n$@spelldesc1289148", "Your spells and abilities have a chance to afflict the highest and lowest health enemies with $s1 stacks of Ula'Tek's Gift.\r\n\r\n$@spellicon1289148$@spellname1289148\r\n$@spelldesc1289148", 0 },
@@ -28786,6 +28787,7 @@ static constexpr std::array<spelltext_data_t, 29205> __ptr_spelltext_data { {
   { 1293799, "At any time, decipher the map and guarantee that you'll find a Hidden Trove at the end of the next Tier 4+ Delve you complete.\r\n\r\nHidden Trove's contents depend on the completed Delve Tier.", "You'll find a Hidden Trove at the end of the next Tier 4+ Delve you complete.\r\n\r\nHidden Trove's contents depend on the completed Delve Tier.\r\n\r\nYou are able to unlock a Hidden Trove.", 0 },
   { 1293835, "Creates a void-touched sphere.", 0, 0 },
   { 1293918, "$@spelldesc228049", "Immune to all attacks and spells.", "PvP Talent" },
+  { 1294026, "A mindless servant of the Scourge, raised to obey its master's commands for $d.", 0, 0 },
   { 1294180, "$@spelldesc42650", "$w1%", 0 },
   { 1294264, "$@spelldesc42650", 0, 0 },
   { 1294323, "Heal a target ally for $s1. Any overhealing passes to the next most injured party member until all healing has been applied.", 0, 0 },

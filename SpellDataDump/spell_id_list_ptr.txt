@@ -1755,10 +1755,10 @@ Death Knight
 1283622  Death Knight - Midnight PrePatch - 11.2 Class Set 4pc
 1286168 *Frenzied Decay
 1290864  Cycle of Death
-1292072 *Lord of the Dead
+1292072  Lord of the Dead
 1292107  Frostbolt
 1293166 *Lord of the Dead
-1294026 *Lesser Ghoul
+1294026  Lesser Ghoul
 1294029 *Lesser Ghoul
 1294180  Lesser Ghoul
 1294261 *Death Order
