@@ -3238,17 +3238,17 @@ void voracious_heart_of_ulatek( special_effect_t& effect )
   double stat_value = equip->effectN( 1 ).average( effect );
   double stack_value = equip->effectN( 3 ).average( effect );
 
+  auto stacking =
+      create_buff<stat_buff_t>( effect.player, "devoured_strength", effect.player->find_spell( 1305376 ) )
+          ->set_stat_from_effect( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_STRENGTH ? 1 : 2,
+                                  stack_value );
+
   auto buff = create_buff<stat_buff_t>( effect.player, "voracious_heart_of_ulatek", effect.driver() )
                   ->set_stat_from_effect(
                       effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_STRENGTH ? 1 : 2, stat_value )
                   ->set_rppm( RPPM_DISABLE )
-                  ->set_cooldown( 0_ms );
-
-  auto stacking =
-      create_buff<stat_buff_t>( effect.player, "devoured_strength",
-                                effect.player->find_spell( 1305376 ) )
-          ->set_stat_from_effect( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_STRENGTH ? 1 : 2,
-                                  stack_value );
+                  ->set_cooldown( 0_ms )
+                  ->set_expire_callback( [ stacking ]( buff_t*, int, timespan_t ) { stacking->expire(); } );
 
   struct devour_morsel_t : public generic_proc_t
   {
