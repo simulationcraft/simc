@@ -1161,17 +1161,17 @@ void hunt( special_effect_t& effect )
     buffs[ buff->stats.front().stat ] = buff;
   }
 
-  // L'ura emulated as Undead, as we dont classify using CreatureType.db2 data. Not Specified triggers the vers buff
-  // like Undead and Giant.
-  static constexpr std::array<race_e, 9> raid_races = {
-    RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,  RACE_DRAGONKIN, RACE_HUMANOID,
-    RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL, RACE_NOT_SPECIFIED
-  };
+  static constexpr std::array<race_e, 9> raid_races_12_0 = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,
+                                                             RACE_DRAGONKIN,  RACE_HUMANOID,   RACE_HUMANOID,
+                                                             RACE_ABERRATION, RACE_ELEMENTAL,  RACE_NOT_SPECIFIED };
+
+  static constexpr std::array<race_e, 8> raid_races_12_1 = { RACE_HUMANOID, RACE_HUMANOID, RACE_MECHANICAL,
+                                                             RACE_HUMANOID, RACE_BEAST,    RACE_HUMANOID,
+                                                             RACE_HUMANOID, RACE_BEAST };
 
   static constexpr std::array<race_e, 10> valid_races = {
-    RACE_ABERRATION, RACE_BEAST,    RACE_DEMON,      RACE_DRAGONKIN, RACE_ELEMENTAL,
-    RACE_GIANT,      RACE_HUMANOID, RACE_MECHANICAL, RACE_UNDEAD,    RACE_NOT_SPECIFIED
-  };
+      RACE_ABERRATION, RACE_BEAST,    RACE_DEMON,      RACE_DRAGONKIN, RACE_ELEMENTAL,
+      RACE_GIANT,      RACE_HUMANOID, RACE_MECHANICAL, RACE_UNDEAD,    RACE_NOT_SPECIFIED };
 
   struct hunt_cb_t : public dbc_proc_callback_t
   {
@@ -1235,7 +1235,10 @@ void hunt( special_effect_t& effect )
 
     void pick_random_raid_race()
     {
-      race = rng().range( raid_races );
+      if ( listener->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+        race = rng().range( raid_races_12_1 );
+      else
+        race = rng().range( raid_races_12_0 );
     }
 
     void reset() override
