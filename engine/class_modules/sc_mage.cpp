@@ -406,6 +406,7 @@ public:
     proc_t* freezing_applied;
     proc_t* freezing_expired;
     proc_t* freezing_overflow;
+    proc_t* icicle_from_set_bonus;
   } procs;
 
   struct accumulated_rngs_t
@@ -415,6 +416,11 @@ public:
     accumulated_rng_t* spellfire_spheres;
     accumulated_rng_t* augury_abounds;
   } accumulated_rng;
+
+  struct rppms_t
+  {
+    real_ppm_t* glacial_spike_set_bonus = nullptr;
+  } rppm;
 
   // Sample data
   struct sample_data_t
@@ -4268,7 +4274,16 @@ struct glacial_spike_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
     p()->buffs.glacial_spike->decrement();
-    p()->state.icicles = 0;
+
+    // The buff can be up without actually having a full stack of Icicles (e.g., granted directly
+    // by the 12.1 set bonus), in which case casting Glacial Spike does not consume any icicles below 5,
+    // but does actually consume them at exactly 5 icicles, thus munching the one you would've gotten.
+    int max_icicles = as<int>( p()->talents.icicles->effectN( 2 ).base_value() );
+    if ( p()->state.icicles == max_icicles )
+      p()->state.icicles = 0;
+
+    if ( p()->rppm.glacial_spike_set_bonus && p()->rppm.glacial_spike_set_bonus->trigger() )
+      p()->buffs.glacial_spike->trigger();
 
     p()->trigger_brain_freeze( bf_chance, proc_brain_freeze, 150_ms );
     p()->trigger_fof( fof_chance, proc_fof );
@@ -5630,6 +5645,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   pets(),
   procs(),
   accumulated_rng(),
+  rppm(),
   sample_data(),
   spec(),
   state(),
@@ -6507,6 +6523,7 @@ void mage_t::init_procs()
       procs.freezing_applied  = get_proc( "Freezing applied" );
       procs.freezing_expired  = get_proc( "Freezing expired" );
       procs.freezing_overflow = get_proc( "Freezing overflow" );
+      procs.icicle_from_set_bonus = get_proc( "Icicle from 12.1 2pc Set Bonus" );
       break;
     default:
       break;
@@ -6558,6 +6575,9 @@ void mage_t::init_uptimes()
 void mage_t::init_rng()
 {
   player_t::init_rng();
+
+  if ( sets->has_set_bonus( MAGE_FROST, MID2, B4 ) )
+    rppm.glacial_spike_set_bonus = get_rppm( "glacial_spike_set_bonus", sets->set( MAGE_FROST, MID2, B4 ) );
 
   // Accumulated RNG is also not present in the game data.
   // TODO: Double check that this RNG is the same in Midnight.
@@ -7078,6 +7098,22 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
       debuff->decrement( consume_stacks );
     if ( debuff->check() )
       debuff->refresh();
+  }
+
+  if ( shatter_stacks > 0 && sets->has_set_bonus( MAGE_FROST, MID2, B2 ) )
+  {
+    double chance = sets->set( MAGE_FROST, MID2, B2 )->effectN( 2 ).percent();
+    for ( int i = 0; i < shatter_stacks; i++ )
+    {
+      if ( rng().roll( chance ) )
+      {
+        procs.icicle_from_set_bonus->occur();
+        // Icicles generated this way cannot grant the Glacial Spike buff on their own,
+        // the player still has to wait for the cyclic icicles proc to gain the buff.
+        // This is likely a bug.
+        trigger_icicle( 1, !bugs );
+      }
+    }
   }
 
   return shatter_stacks;
