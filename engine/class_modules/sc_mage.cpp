@@ -3051,11 +3051,9 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 struct arcane_pulse_t final : public arcane_mage_spell_t
 {
   action_t* arcane_pulse_echo = nullptr;
-  bool is_echo;
 
   arcane_pulse_t( std::string_view n, mage_t* p, std::string_view options_str, bool echo = false ) :
-    arcane_mage_spell_t( n, p, echo ? p->find_spell( 1243460 ) : p->talents.arcane_pulse ),
-    is_echo( echo )
+    arcane_mage_spell_t( n, p, echo ? p->find_spell( 1243460 ) : p->talents.arcane_pulse )
   {
     parse_options( options_str );
     aoe = -1;
@@ -3115,7 +3113,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
       int charges_per_hit = 1;
 
       // Bug: with Impetus talented, the Reverberate echo generates double the arcane charges of the main cast
-      if ( is_echo && p()->bugs && p()->talents.impetus.ok() )
+      if ( background && p()->bugs && p()->talents.impetus.ok() )
         charges_per_hit = 2;
 
       p()->trigger_arcane_charge( num_targets_hit * charges_per_hit );
@@ -3148,7 +3146,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     }
     // On 12.1, the main cast no longer benefits from Impetus's arcane charge multiplier,
     // but the Reverberate echo still does. This is likely a bug.
-    else if ( is_echo && p()->bugs && p()->talents.impetus.ok() )
+    else if ( background && p()->bugs && p()->talents.impetus.ok() )
     {
       am *= arcane_charge_multiplier();
     }
