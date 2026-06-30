@@ -4394,8 +4394,11 @@ struct magus_base_pet_t : public death_knight_pet_t
     magi_frostbolt_t( magus_base_pet_t* p, std::string_view n, const spell_data_t* s, std::string_view options_str )
       : magus_spell_t( p, n, s, options_str )
     {
-      // If the target is immune to slows, frostbolt seems to be used at most every 6 seconds
-      cooldown->duration = s->duration();
+      if ( p->pet_type == PET_MAGUS_OF_THE_DEAD )
+      {
+        // If the target is immune to slows, frostbolt seems to be used at most every 6 seconds
+        cooldown->duration = s->duration();
+      }
     }
 
     // Frostbolt applies a slowing debuff on non-boss targets
@@ -4610,10 +4613,8 @@ struct lord_of_the_dead_pet_t : public magus_base_pet_t
 
     assert( magus_dur > 0_s && "Magus duration must be positive" );
 
-    m *= ( dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value() *
-                 dk()->talent.unholy.lord_of_the_dead->effectN( 1 ).percent() *
-                 ( magus_dur / ( dk()->talent.unholy.lord_of_the_dead->effectN( 6 ).time_value() *
-                                 dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value() ) ) );
+    m *= 1.0 + ( magus_dur / ( dk()->talent.unholy.lord_of_the_dead->effectN( 6 ).time_value() *
+                                 dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value() ) );
 
     return m;
   }
