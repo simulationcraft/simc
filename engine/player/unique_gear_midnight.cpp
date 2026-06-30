@@ -3227,93 +3227,35 @@ void gebbos_bottomless_bag( special_effect_t& effect )
 
 // Voracious Heart of Ula'tek
 // 1297760 values
-// 1297761 Everything Else???
+// 1297761 Buff
+// 1305376 Stacking Buff
+// 1305374 Damage
 void voracious_heart_of_ulatek( special_effect_t& effect )
 {
   auto equip = effect.player->find_spell( 1297760 );
   assert( equip && "Voracious Heart of Ula'tek missing equip effect" );
 
-  struct voracious_heart_of_ulatek_buff_t : public stat_buff_t
-  {
-    double increase_value;
-    voracious_heart_of_ulatek_buff_t( player_t* p, std::string_view n, const spell_data_t* s, const special_effect_t& e,
-                                      const spell_data_t* equip )
-      : stat_buff_t( p, n, s ), increase_value( 0 )
-    {
-      double stat_value = equip->effectN( 1 ).average( e );
-      increase_value    = equip->effectN( 3 ).average( e );
+  double stat_value = equip->effectN( 1 ).average( effect );
+  double stack_value = equip->effectN( 3 ).average( effect );
 
-      set_default_value( stat_value );
-      set_rppm( RPPM_DISABLE );
-      set_cooldown( 0_ms );
+  auto buff = create_buff<stat_buff_t>( effect.player, "voracious_heart_of_ulatek", effect.driver() )
+                  ->set_stat_from_effect(
+                      effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_STRENGTH ? 1 : 2, stat_value )
+                  ->set_rppm( RPPM_DISABLE )
+                  ->set_cooldown( 0_ms );
 
-      switch ( p->convert_hybrid_stat( STAT_STR_AGI_INT ) )
-      {
-        case STAT_STRENGTH:
-          set_stat_from_effect( 1, stat_value );
-          break;
-        case STAT_AGILITY:
-          set_stat_from_effect( 2, stat_value );
-          break;
-        case STAT_INTELLECT:
-        default:
-          break;
-      }
-    }
+  auto stacking =
+      create_buff<stat_buff_t>( effect.player, "devoured_strength",
+                                effect.player->find_spell( 1305376 ) )
+          ->set_stat_from_effect( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_STRENGTH ? 1 : 2,
+                                  stack_value );
 
-    void expire_override( int s, timespan_t d ) override
-    {
-      stat_buff_t::expire_override( s, d );
-      for ( auto& buff_stat : stats )
-      {
-        buff_stat.amount = default_value;
-      }
-    }
-
-    void reset() override
-    {
-      stat_buff_t::reset();
-      for ( auto& buff_stat : stats )
-      {
-        buff_stat.amount = default_value;
-      }
-    }
-
-    void increase_stat()
-    {
-      for ( auto& buff_stat : stats )
-      {
-        double val              = buff_stat.current_value + increase_value;
-        double delta            = increase_value;
-        buff_stat.current_value = val;
-        buff_stat.amount        = val;
-        if ( delta > 0 )
-        {
-          player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-        }
-        else if ( delta < 0 )
-        {
-          player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr,
-                             buff_duration() > timespan_t::zero() );
-        }
-      }
-    }
-  };
-
-  auto buff = create_buff<voracious_heart_of_ulatek_buff_t>( effect.player, "voracious_heart_of_ulatek",
-                                                             effect.driver(), effect, equip );
-
-  struct voracious_heart_of_ulatek_damage_t : public generic_proc_t
+  struct devour_morsel_t : public generic_proc_t
   {
     buff_t* buff;
-    voracious_heart_of_ulatek_damage_t( const special_effect_t& e, const spell_data_t* equip, buff_t* buff )
-      : generic_proc_t( e, "voracious_heart_of_ulatek_damage", e.driver() ), buff( buff )
+    devour_morsel_t( const special_effect_t& e, const spell_data_t* equip, buff_t* buff )
+      : generic_proc_t( e, "devour_morsel", e.player->find_spell( 1305374 ) ), buff( buff )
     {
-      // for some reason this spell doesnt have a direct damage effect, instead its a dummy effect.
-      // This means theres a lot of manual setup that probably shouldnt need to exist.
-      school             = SCHOOL_PHYSICAL;
-      cooldown->duration = 0_ms;
-      cooldown->category = 0;
       base_dd_min = base_dd_max = equip->effectN( 2 ).average( e );
     }
 
@@ -3321,12 +3263,11 @@ void voracious_heart_of_ulatek( special_effect_t& effect )
     {
       generic_proc_t::execute();
       if ( buff )
-        debug_cast<voracious_heart_of_ulatek_buff_t*>( buff )->increase_stat();
+        buff->trigger();
     }
   };
 
-  auto damage =
-      create_proc_action<voracious_heart_of_ulatek_damage_t>( "voracious_heart_of_ulatek_damage", effect, equip, buff );
+  auto damage = create_proc_action<devour_morsel_t>( "devour_morsel", effect, equip, stacking );
 
   auto equip_se = new special_effect_t( effect.player );
   equip_se->name_str = "voracious_heart_of_ulatek_driver";
