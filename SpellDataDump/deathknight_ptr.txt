@@ -21492,6 +21492,22 @@ Description      : Putrefy reduces the cooldown of Death and Decay by ${$s1/1000
 
 Death and Decay reduces the cooldown of Putrefy by ${$s2/1000}.1 sec for each enemy it damages, up to ${$s3/1000}.1 sec.
 
+Name             : Lord of the Dead (id=1292072) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : None
+Range            : 100 yards
+Duration         : 20 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+Family Flags     : 96
+Attributes       : No Threat (42), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1311876)  : Summon Guardian (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 264321 | Misc Value 2: 6683 | Target: at Area (87)
+Description      : $@spelldesc1292040
+
 Name             : Frostbolt (id=1292107) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
@@ -21516,6 +21532,24 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Mechanic: Snare | Target: Targeted Enemy (6)
 Description      : Deals $s1 Frost damage and reduces their movement speed by $s2% for $d.
 Tooltip          : Movement speed reduced by $w2%.
+
+Name             : Lesser Ghoul (id=1294026) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : None
+Duration         : 30 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 6041
+Family Flags     : 96
+Attributes       : No Threat (42), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1315164)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8.5 yards | Target: at Random (72)
+#2 (id=1315165)  : Summon Guardian (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 237409 | Misc Value 2: 6706 | Target: Random in Area (86)
+Description      : A mindless servant of the Scourge, raised to obey its master's commands for $d.
 
 Name             : Lesser Ghoul (id=1294180) [Spell Family (15)] 
 Class            : Death Knight
