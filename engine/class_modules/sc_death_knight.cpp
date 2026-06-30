@@ -4474,9 +4474,9 @@ struct magus_pet_t : public magus_base_pet_t
     {
     }
 
-    double composite_da_multiplier( const action_state_t* state ) const override
+    double composite_ta_multiplier( const action_state_t* state ) const override
     {
-      double m = magus_spell_t::composite_da_multiplier( state );
+      double m = magus_spell_t::composite_ta_multiplier( state );
 
       if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID2, B4 ) &&
            state->target->health_percentage() <= dk()->sets->set( DEATH_KNIGHT_UNHOLY, MID2, B4 )->effectN( 3 ).base_value() )
