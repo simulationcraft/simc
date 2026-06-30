@@ -2384,13 +2384,18 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     if ( p()->buffs.hot_streak->check() || p()->buffs.hyperthermia->check() )
       return 0_ms;
 
-    timespan_t t = custom_state_spell_t::execute_time();
+    return custom_state_spell_t::execute_time();
+  }
+
+  double execute_time_pct_multiplier() const override
+  {
+    double m = custom_state_spell_t::execute_time_pct_multiplier();
 
     // Fire Mage 12.1 Set Bonus 4pc
-    if ( p()->sets->has_set_bonus( MAGE_FIRE, MID2, B4 ) && p()->buffs.pyroclasm->check() )
-      t *= 1.0 + p()->buffs.pyroclasm->data().effectN( 3 ).percent();
+    if ( p()->buffs.pyroclasm->check() )
+      m *= 1.0 + p()->buffs.pyroclasm->data().effectN( 3 ).percent();
 
-    return t;
+    return m;
   }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
@@ -2406,7 +2411,9 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     c += p()->buffs.hyperthermia->check_value();
 
     // Fire Mage 12.1 Set Bonus 2pc
-    if ( p()->sets->has_set_bonus( MAGE_FIRE, MID2, B2 ) && p()->buffs.pyroclasm->check() )
+    if ( p()->buffs.pyroclasm->check() )
+      // Spelldata suggests this is a percent modifier, meaning it should
+      // double the crit chance, but in actuality, it makes it guaranteed.
       c += p()->buffs.pyroclasm->data().effectN( 2 ).percent();
 
     return c;
