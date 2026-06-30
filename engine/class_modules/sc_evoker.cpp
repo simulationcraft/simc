@@ -7715,7 +7715,7 @@ struct breath_of_eons_t : public evoker_spell_t
 
     if ( !channeled )
     {
-      make_event( p()->sim, p()->gcd_ready - 1_ms, [ this ] { eons_finished_effects(); } );
+      make_event( p()->sim, p()->gcd_ready - 1_ms - sim->current_time(), [ this ] { eons_finished_effects(); } );
     }
 
     if ( is_precombat )
