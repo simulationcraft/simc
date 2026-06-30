@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68275 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68367 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -2927,7 +2927,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 99245 | Target: Self (1)
 
 Name             : Ironbark (id=102342) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Restoration [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
