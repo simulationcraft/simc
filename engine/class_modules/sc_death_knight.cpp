@@ -4401,6 +4401,14 @@ struct magus_base_pet_t : public death_knight_pet_t
       }
     }
 
+    void execute() override
+    {
+      if ( pet()->pet_type == PET_LORD_OF_THE_DEAD )
+        trigger_gcd = execute_time() + rng().range( 100_ms, 1_s );
+
+      magus_spell_t::execute();
+    }
+
     // Frostbolt applies a slowing debuff on non-boss targets
     // This is needed because Frostbolt won't ever target an enemy affected by the debuff
     void impact( action_state_t* state ) override
@@ -4613,8 +4621,7 @@ struct lord_of_the_dead_pet_t : public magus_base_pet_t
 
     assert( magus_dur > 0_s && "Magus duration must be positive" );
 
-    m *= 1.0 + ( magus_dur / ( dk()->talent.unholy.lord_of_the_dead->effectN( 6 ).time_value() *
-                                 dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value() ) );
+    m *= 1.0 + ( 0.005 * magus_dur.total_seconds() );
 
     return m;
   }
@@ -6655,7 +6662,7 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
         ordered = true;
     }
 
-    if ( p()->talent.unholy.commander_of_the_dead.ok() )
+    if ( p()->talent.unholy.commander_of_the_dead.ok() && p()->sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
       duration *=
           1.0 + ( p()->cache.mastery() / 100 ) * p()->talent.unholy.commander_of_the_dead->effectN( 1 ).percent();
 
@@ -13476,7 +13483,11 @@ void death_knight_t::unholy_rp_impact_effects( action_state_t* state, bool sd, b
     return;
 
   death_knight_td_t* td     = get_target_data( state->target );
-  timespan_t extension_time = spec.unholy_death_knight->effectN( 11 ).time_value();
+  timespan_t extension_time = 0_s;
+  if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+    extension_time = spec.unholy_death_knight->effectN( 11 ).time_value();
+  else
+    extension_time = talent.unholy.outbreak->effectN( 3 ).time_value();
 
   if ( td->dot.dread_plague->is_ticking() )
     td->dot.dread_plague->adjust_duration( extension_time );
