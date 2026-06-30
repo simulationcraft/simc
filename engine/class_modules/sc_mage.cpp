@@ -582,7 +582,7 @@ public:
     player_talent_t impetus;
 
     // Row 8
-    player_talent_t touch_of_the_archmage_1;
+    player_talent_t touch_of_the_archmage_1; // TODO: Remove everything related to Touch of the Archmage when 12.1 goes live
     player_talent_t prismatic_bolt_1;
     player_talent_t evocation;
     player_talent_t mana_adept;
@@ -2980,7 +2980,6 @@ struct prismatic_bolt_aoe_t final : public arcane_mage_spell_t
   {
     background = true;
     aoe = -1;
-    radius = 8;
     reduced_aoe_targets = p->find_spell( 1295924 )->effectN( 4 ).base_value();
     target_filter_callback = secondary_targets_only();
   }
@@ -3052,9 +3051,11 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 struct arcane_pulse_t final : public arcane_mage_spell_t
 {
   action_t* arcane_pulse_echo = nullptr;
+  bool is_echo;
 
   arcane_pulse_t( std::string_view n, mage_t* p, std::string_view options_str, bool echo = false ) :
-    arcane_mage_spell_t( n, p, echo ? p->find_spell( 1243460 ) : p->talents.arcane_pulse )
+    arcane_mage_spell_t( n, p, echo ? p->find_spell( 1243460 ) : p->talents.arcane_pulse ),
+    is_echo( echo )
   {
     parse_options( options_str );
     aoe = -1;
@@ -3103,10 +3104,21 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     // TODO: radius increase?
     arcane_mage_spell_t::execute();
 
-    // TODO: Remove check when 12.1 goes live -- in 12.1, pulse generates charges per enemy hit in impact() instead.
+    // TODO: Remove check when 12.1 goes live.
     if ( p()->dbc->wowv() < wowv_t{ 12, 1, 0 } )
     {
       p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
+    }
+    else
+    {
+      // 12.1: Arcane Pulse generates 1 arcane charge per enemy hit.
+      int charges_per_hit = 1;
+
+      // Bug: with Impetus talented, the Reverberate echo generates double the arcane charges of the main cast
+      if ( is_echo && p()->bugs && p()->talents.impetus.ok() )
+        charges_per_hit = 2;
+
+      p()->trigger_arcane_charge( num_targets_hit * charges_per_hit );
     }
 
     // In-game, Arcane Pulse internally sets a target it hits as a "Background Target",
@@ -3125,16 +3137,6 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
       make_event( *sim, 500_ms, [ this, t = effect_target ] { arcane_pulse_echo->execute_on_target( t ); } );
   }
 
-  void impact( action_state_t* s ) override
-  {
-    arcane_mage_spell_t::impact( s );
-
-    // 12.1: Arcane Pulse now generates 1 arcane charge per enemy hit
-    // TODO: Remove check when 12.1 goes live
-    if ( p()->dbc->wowv() >= wowv_t{ 12, 1, 0 } && result_is_hit( s->result ) )
-      p()->trigger_arcane_charge( 1 );
-  }
-
   double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
@@ -3144,13 +3146,15 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     {
       am *= arcane_charge_multiplier();
     }
-
-    // TODO: Remove check when 12.1 goes live
-    if ( p()->dbc->wowv() >= wowv_t{ 12, 1, 0 } )
+    // On 12.1, the main cast no longer benefits from Impetus's arcane charge multiplier,
+    // but the Reverberate echo still does. This is likely a bug.
+    else if ( is_echo && p()->bugs && p()->talents.impetus.ok() )
     {
-      am *= 1.0 + p()->buffs.cumulative_power->check_stack_value();
+      am *= arcane_charge_multiplier();
     }
-    
+
+    am *= 1.0 + p()->buffs.cumulative_power->check_stack_value();
+
     return am;
   }
 };
@@ -3265,8 +3269,7 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
   {
     custom_state_spell_t::execute();
 
-    if ( p()->sets->has_set_bonus( MAGE_ARCANE, MID2, B4 ) )
-      p()->buffs.cumulative_power->trigger();
+    p()->buffs.cumulative_power->trigger();
 
     p()->trigger_arcane_salvo( salvo_source );
     p()->trigger_arcane_salvo( crystal_source, as<int>( p()->talents.focusing_crystal->effectN( 2 ).base_value() ),
