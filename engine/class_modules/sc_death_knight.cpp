@@ -13759,7 +13759,7 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric, bool sum
 
   if ( talent.sanlayn.transfusion.ok() )
   {
-    if ( specialization() == DEATH_KNIGHT_UNHOLY && summoned_ghoul )
+    if ( specialization() == DEATH_KNIGHT_UNHOLY && summoned_ghoul && !buffs.army_of_the_dead->check() )
       active_lesser_ghouls.back()->transfusion->trigger();
 
     else if ( specialization() == DEATH_KNIGHT_BLOOD )
