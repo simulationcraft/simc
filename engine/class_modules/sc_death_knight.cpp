@@ -11018,13 +11018,12 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
 struct heart_strike_t : public heart_strike_base_t
 {
   heart_strike_t( std::string_view n, death_knight_t* p, std::string_view options_str )
-    : heart_strike_base_t( n, p, p->talent.blood.heart_strike ), vampiric_strike( nullptr ), vampiric_strike_cost( 0 )
+    : heart_strike_base_t( n, p, p->talent.blood.heart_strike ), vampiric_strike( nullptr )
   {
     parse_options( options_str );
     if ( p->talent.sanlayn.vampiric_strike.ok() )
     {
       vampiric_strike      = new vampiric_strike_blood_t( "vampiric_strike", p, false );
-      vampiric_strike_cost = p->spell.vampiric_strike->cost( POWER_RUNE );
       add_child( vampiric_strike );
     }
   }
@@ -11033,11 +11032,11 @@ struct heart_strike_t : public heart_strike_base_t
   {
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
-      return vampiric_strike_cost;
+      return vampiric_strike->cost();
     }
     else
     {
-      return base_costs[ RESOURCE_RUNE ];
+      return heart_strike_base_t::cost();
     }
   }
 
@@ -11056,7 +11055,6 @@ struct heart_strike_t : public heart_strike_base_t
 
 private:
   vampiric_strike_blood_t* vampiric_strike;
-  double vampiric_strike_cost;
 };
 
 struct heart_strike_bloodied_blade_t : public death_knight_melee_attack_t
