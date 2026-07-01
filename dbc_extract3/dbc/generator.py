@@ -2018,6 +2018,8 @@ class SpellDataGenerator(DataGenerator):
           ( 1278150, 0 ), # Lesser Ghoul Sweeping Claws
           ( 1277098, 0 ), # Lesser Ghoul
           ( 1282570, 0 ), # Forbidden Ritual
+          ( 1292072, 0 ), # Lord of the Dead Summon
+          ( 1294026, 0 ), # Summon Army Ghoul
         ),
 
         # Shaman:

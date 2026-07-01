@@ -1161,17 +1161,17 @@ void hunt( special_effect_t& effect )
     buffs[ buff->stats.front().stat ] = buff;
   }
 
-  // L'ura emulated as Undead, as we dont classify using CreatureType.db2 data. Not Specified triggers the vers buff
-  // like Undead and Giant.
-  static constexpr std::array<race_e, 9> raid_races = {
-    RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,  RACE_DRAGONKIN, RACE_HUMANOID,
-    RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL, RACE_NOT_SPECIFIED
-  };
+  static constexpr std::array<race_e, 9> raid_races_12_0 = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,
+                                                             RACE_DRAGONKIN,  RACE_HUMANOID,   RACE_HUMANOID,
+                                                             RACE_ABERRATION, RACE_ELEMENTAL,  RACE_NOT_SPECIFIED };
+
+  static constexpr std::array<race_e, 8> raid_races_12_1 = { RACE_HUMANOID, RACE_HUMANOID, RACE_MECHANICAL,
+                                                             RACE_HUMANOID, RACE_BEAST,    RACE_HUMANOID,
+                                                             RACE_HUMANOID, RACE_BEAST };
 
   static constexpr std::array<race_e, 10> valid_races = {
-    RACE_ABERRATION, RACE_BEAST,    RACE_DEMON,      RACE_DRAGONKIN, RACE_ELEMENTAL,
-    RACE_GIANT,      RACE_HUMANOID, RACE_MECHANICAL, RACE_UNDEAD,    RACE_NOT_SPECIFIED
-  };
+      RACE_ABERRATION, RACE_BEAST,    RACE_DEMON,      RACE_DRAGONKIN, RACE_ELEMENTAL,
+      RACE_GIANT,      RACE_HUMANOID, RACE_MECHANICAL, RACE_UNDEAD,    RACE_NOT_SPECIFIED };
 
   struct hunt_cb_t : public dbc_proc_callback_t
   {
@@ -1235,7 +1235,10 @@ void hunt( special_effect_t& effect )
 
     void pick_random_raid_race()
     {
-      race = rng().range( raid_races );
+      if ( listener->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+        race = rng().range( raid_races_12_1 );
+      else
+        race = rng().range( raid_races_12_0 );
     }
 
     void reset() override
@@ -3222,6 +3225,64 @@ void gebbos_bottomless_bag( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Voracious Heart of Ula'tek
+// 1297760 values
+// 1297761 Buff
+// 1305376 Stacking Buff
+// 1305374 Damage
+void voracious_heart_of_ulatek( special_effect_t& effect )
+{
+  auto equip = effect.player->find_spell( 1297760 );
+  assert( equip && "Voracious Heart of Ula'tek missing equip effect" );
+
+  double stat_value = equip->effectN( 1 ).average( effect );
+  double stack_value = equip->effectN( 3 ).average( effect );
+
+  auto stacking =
+      create_buff<stat_buff_t>( effect.player, "devoured_strength", effect.player->find_spell( 1305376 ) )
+          ->set_stat_from_effect( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_STRENGTH ? 2 : 1,
+                                  stack_value );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "voracious_heart_of_ulatek", effect.driver() )
+                  ->set_stat_from_effect(
+                      effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_STRENGTH ? 1 : 2, stat_value )
+                  ->set_rppm( RPPM_DISABLE )
+                  ->set_cooldown( 0_ms )
+                  ->set_expire_callback( [ stacking ]( buff_t*, int, timespan_t ) { stacking->expire(); } );
+
+  struct devour_morsel_t : public generic_proc_t
+  {
+    buff_t* buff;
+    devour_morsel_t( const special_effect_t& e, const spell_data_t* equip, buff_t* buff )
+      : generic_proc_t( e, "devour_morsel", e.player->find_spell( 1305374 ) ), buff( buff )
+    {
+      base_dd_min = base_dd_max = equip->effectN( 2 ).average( e );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      if ( buff )
+        buff->trigger();
+    }
+  };
+
+  auto damage = create_proc_action<devour_morsel_t>( "devour_morsel", effect, equip, stacking );
+
+  auto equip_se = new special_effect_t( effect.player );
+  equip_se->name_str = "voracious_heart_of_ulatek_driver";
+  equip_se->spell_id = effect.driver()->id();
+  equip_se->execute_action = damage;
+  equip_se->proc_flags2_   = PF2_ALL_HIT;  // TODO: confirm
+  equip_se->cooldown_      = 0_ms;
+  equip_se->cooldown_category_ = 0;
+  effect.player->special_effects.push_back( equip_se );
+  auto cb = new dbc_proc_callback_t( effect.player, *equip_se );
+  cb->activate_with_buff( buff );
+
+  effect.custom_buff = buff;
+}
+
 // 1297908 driver
 // 1297911 equip driver
 // 1307222 Venom Splatter
@@ -4320,6 +4381,8 @@ void register_special_effects()
   register_special_effect( 1297908, trinkets::font_of_venomous_rage );
   register_special_effect( 1297911, DISABLED_EFFECT );  // Font of Venomous Rage equip driver
   register_special_effect( 1292291, trinkets::gebbos_bottomless_bag );
+  register_special_effect( 1297761, trinkets::voracious_heart_of_ulatek );
+  register_special_effect( 1297760, DISABLED_EFFECT ); // Voracious Heart of Ula'tek equip driver
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil

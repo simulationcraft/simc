@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68301 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68412 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -120,8 +120,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=310)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.24581 | PvP Coefficient: 1.15 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-#2 (id=357783)   : Trigger Spell (64): Rend
-                   Base Value: 0 | Scaled Value: 0 | Delay: 100_ms | Trigger Spell: 388539 | Target: Targeted Enemy (6)
 Description      : Wounds the target, causing $s1 Physical damage instantly and an additional $388539o1 Bleed damage over $388539d.$?s6343[
 
 |cFFFFFFFFThunder Clap affects $6343s5 nearby targets with Rend.
@@ -502,8 +500,8 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 3 seconds
 Proc Chance      : 101%
-Real PPM         : 3 (Haste multiplier, /w Best Served Cold (id=202560): 3.5999999999999996)
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken
+Real PPM         : 3 (/w Best Served Cold (id=202560): 3.5999999999999996)
+Proc Flags       : White Melee, White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1897)     : Apply Aura (6) | Proc Trigger Spell (42): Revenge!
@@ -676,7 +674,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.3472 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
 Description      : Swing in a wide arc, dealing $s1 Physical damage to all enemies in front of you. Deals reduced damage beyond $<cap> targets.
 
-Your successful dodges and parries have a chance to make your next Revenge cost no Rage.
+Your successful dodges, parries, and auto-attacks have a chance to make your next Revenge cost no Rage.
 Variables        : $cap=${5}
 
 Name             : Battle Shout (id=6673) [Spell Family (4)] 
@@ -3511,7 +3509,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1234772 | Target: Self (1)
 #3 (id=1275695)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Description      : Your dodges and parries make your Revenge cost no Rage $s3% more frequently and increase the damage your free Revenges deal by $s1%. 
+Description      : Your dodges, parries, and auto-attacks make your Revenge cost no Rage $s3% more frequently and increase the damage your free Revenges deal by $s1%. 
 
 Revenge increases the damage of your next Thunder Clap by $1234772s1%.
 
@@ -4603,7 +4601,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=1323639)  : Trigger Missiles (32): Ravaged
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1299405 | Target: Targeted Enemy (6)
-Description      : Throws a whirling weapon at your target dealing $s1 Physical damage immediately and chasing nearby enemies, inflicting $<damage> Physical damage to all enemies over $d. Deals reduced damage beyond $156287s2 targets.
+Description      : Throws a whirling weapon at your target that chases nearby enemies, inflicting $<damage> Physical damage to all enemies over $d. Deals reduced damage beyond $156287s2 targets.
 
 Enemies damaged by Ravager take $1299405s1% additional damage from your Bleeds for $1299405d.$?c3[
 
@@ -10633,7 +10631,6 @@ Labels           : 16: Class Spells
                  : 6712: Bloodletting (383154 effect#2)
 Mechanic         : Bleed
 Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2, #14), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2, #9), Colossus Smash (208086 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Bloodborne (383287 effects: #1, #2), Impale (383430 effect#1), Bloodborne (385704 effect#1), Battle Stance (386164 effect#4), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Warrior Arms 10.2 Class Set 2pc (422923 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Colossal Might (440989 effect#2), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Luck of the Draw! (1218163 effects: #1, #4), Arms Warrior (1256919 effects: #1, #2, #6), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Mastery: Master of Arms (1258398 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Bloodborne (1265406 effect#1), Cut to the Bone (1270840 effect#1), Warrior - Midnight PrePatch - 11.2 Class Set 2pc (1283642 effects: #1, #2), Warrior - Midnight PrePatch - 11.2 Class Set 4pc (1283643 effects: #1, #2), Ravaged (1299405 effect#1)
-Triggered By     : Rend (772)
 Family Flags     : 5, 9, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -11301,7 +11298,7 @@ Labels           : 16: Class Spells
                  : 3460
 Proc Chance      : 101%
 Proc Flags       : Periodic Taken
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2, #11, #12), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #3, #4), Consecration (204242 effect#3), Avenging Wrath (231895 effects: #1, #2), Ashes to Dust (236106 effect#1), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Radiant Decree (384052 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1), Retribution Paladin (412314 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Hammer of Light (427441 effect#1), Holy Paladin (428076 effects: #3, #4), Paladin Retribution 11.0 Class Set 2pc (453655 effects: #2, #3), Avenging Wrath (454351 effects: #1, #2), Avenging Wrath (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2), Protection Paladin (1256936 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 2pc (1283659 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc (1283660 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2, #11, #12), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #3, #4), Consecration (204242 effect#3), Avenging Wrath (231895 effects: #1, #2), Ashes to Dust (236106 effect#1), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Radiant Decree (384052 effect#1), Sentinel (389539 effects: #1, #2), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1), Retribution Paladin (412314 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Hammer of Light (427441 effect#1), Holy Paladin (428076 effects: #3, #4), Paladin Retribution 11.0 Class Set 2pc (453655 effects: #2, #3), Avenging Wrath (454351 effects: #1, #2), Avenging Wrath (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2), Protection Paladin (1256936 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 2pc (1283659 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc (1283660 effects: #1, #2)
 Triggered By     : Wake of Ashes (255937)
 Family Flags     : 27, 65, 68
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Unknown (465)
@@ -12037,7 +12034,7 @@ Effects          :
 #3 (id=1135813)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #4 (id=1135814)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.6 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #5 (id=1135815)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -15103,9 +15100,9 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1270650)  : Apply Aura (6) | Proc Trigger Spell (42): Tactical Edge
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1261185 | Target: Self (1)
-Description      : Colossus Smash causes your next $1261185u Mortal Strikes to have a $1261185s1% chance to trigger Tactician.
+#1 (id=1270650)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : Colossus Smash immediately grants $s1 use of Sudden Death.
 
 Name             : Crushing Combo (id=1261056) [Spell Family (4), Passive] 
 Talent Entry     : Arms [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=200]
@@ -15208,7 +15205,6 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Triggered By     : Tactical Edge (1261051)
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
@@ -16787,7 +16783,7 @@ Family Flags     : 76
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1323632)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 25 | Scaled Value: 25 | Target: Targeted Enemy (6)
+                   Base Value: 50 | Scaled Value: 50 | Target: Targeted Enemy (6)
                    Affected Spells: Bloodbath (113344), Deep Wounds (262115), Gushing Wound (385042), Odyn's Fury (385060), Rend (388539), Bloody Rebuke (1300690)
                    Family Flags: 120
                    Modified By: Recklessness (1719 effect#5)
