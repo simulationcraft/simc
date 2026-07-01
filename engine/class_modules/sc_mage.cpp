@@ -2637,6 +2637,9 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
     if ( p()->state.eureka || type == ao_type::ORB_MASTERY )
       am *= 1.0 + p()->talents.eureka->effectN( 1 ).percent();
 
+    if ( type == ao_type::ORB_MASTERY )
+      am *= p()->talents.orb_mastery->effectN( 2 ).percent();
+
     return am;
   }
 };
@@ -2660,7 +2663,9 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
     parse_options( options_str );
     may_miss = false;
     aoe = -1;
-    triggers.clearcasting = type == ao_type::NORMAL;
+    // TODO: Remove version check when 12.1 goes live (ORB_MASTERY part only)
+    triggers.clearcasting = type == ao_type::NORMAL ||
+                            ( type == ao_type::ORB_MASTERY && p->dbc->wowv() >= wowv_t{ 12, 1, 0 } );
 
     std::string_view bolt_name;
     switch ( type )
@@ -2692,7 +2697,9 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
 
     if ( p->talents.orb_mastery.ok() )
     {
-      cost_reductions = { p->buffs.clearcasting };
+      // TODO: Remove version check when 12.1 goes live
+      if ( p->dbc->wowv() < wowv_t{ 12, 1, 0 } )
+        cost_reductions = { p->buffs.clearcasting };
       orb_mastery = get_action<arcane_orb_t>( "orb_mastery_arcane_orb", p, "", ao_type::ORB_MASTERY );
       add_child( orb_mastery );
     }
@@ -2700,20 +2707,29 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    cast_state( s )->data.eureka = p()->talents.orb_mastery.ok() && p()->talents.eureka.ok() && clearcasting_snapshot;
+    // TODO: Remove version check when 12.1 goes live
+    cast_state( s )->data.eureka = p()->talents.orb_mastery.ok() && p()->talents.eureka.ok() &&
+                                   ( p()->dbc->wowv() >= wowv_t{ 12, 1, 0 } || clearcasting_snapshot );
     custom_state_spell_t::snapshot_state( s, rt );
   }
 
   void execute() override
   {
-    triggers.clearcasting = !background;
-    if ( orb_mastery && p()->buffs.clearcasting->check() )
+    // TODO: Remove version check when 12.1 goes live
+    if ( p()->dbc->wowv() < wowv_t{ 12, 1, 0 } )
+      triggers.clearcasting = !background;
+
+    // TODO: Remove version check when 12.1 goes live (pre-12.1 requires CC to fire)
+    if ( orb_mastery && ( p()->dbc->wowv() >= wowv_t{ 12, 1, 0 } || p()->buffs.clearcasting->check() ) )
     {
       int count = as<int>( p()->talents.orb_mastery->effectN( 1 ).base_value() );
       make_repeating_event( *sim, 150_ms, [ this, t = target ] { orb_mastery->execute_on_target( t ); }, count );
-      clearcasting_snapshot = true;
-      // Orb Mastery's execution prevents Clearcasting from being triggered with the initial Orb cast -- behaves identically to Barrage with Orb Barrage.
-      triggers.clearcasting = false;
+      if ( p()->dbc->wowv() < wowv_t{ 12, 1, 0 } )
+      {
+        clearcasting_snapshot = true;
+        // Orb Mastery's execution prevents Clearcasting from being triggered with the initial Orb cast.
+        triggers.clearcasting = false;
+      }
     }
 
     custom_state_spell_t::execute();
