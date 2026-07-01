@@ -353,10 +353,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* outland_venom;
 
     buff_t* spotters_mark;
-
     buff_t* sentinels_mark;
-
-    buff_t* headshot;
   } debuffs;
 
   struct dots_t
@@ -758,8 +755,6 @@ public:
     spell_data_ptr_t critical_precision;
     spell_data_ptr_t no_scope;
     spell_data_ptr_t feathered_frenzy;
-    spell_data_ptr_t headshot;
-    spell_data_ptr_t headshot_debuff;
     spell_data_ptr_t deadeye;
     spell_data_ptr_t deathblow;
 
@@ -1223,7 +1218,6 @@ public:
     bool bullseye_crit_chance = false;
     damage_affected_by lone_wolf;
     damage_affected_by sniper_training;
-    damage_affected_by headshot;
 
     // Survival
     bool outland_venom = false;
@@ -1255,7 +1249,6 @@ public:
     affected_by.unnatural_causes = parse_damage_affecting_aura( this, p->talents.unnatural_causes_debuff );
     
     affected_by.sniper_training = parse_damage_affecting_aura( this, p->mastery.sniper_training );
-    affected_by.headshot = parse_damage_affecting_aura( this, p->talents.headshot_debuff );
     affected_by.trueshot_crit_damage_bonus = check_affected_by( this, p->talents.trueshot->effectN( 4 ) );
     affected_by.bullseye_crit_chance = check_affected_by( this, p->talents.bullseye->effectN( 1 ).trigger()->effectN( 1 ) );
 
@@ -1487,9 +1480,6 @@ public:
     if ( affected_by.sentinels_mark.direct )
       da *= 1 + td( target )->debuffs.sentinels_mark->check_value();
 
-    if ( affected_by.headshot.direct && td( target )->debuffs.headshot->check() )
-      da *= 1 + td( target )->debuffs.headshot->stack_value();
-
     if ( p()->specialization() == HUNTER_BEAST_MASTERY 
       && affected_by.through_the_eyes.direct 
       && td( target )->dots.black_arrow->is_ticking() )
@@ -1509,9 +1499,6 @@ public:
       if ( target->health_percentage() < p()->talents.unnatural_causes->effectN( 3 ).base_value() )
         ta *= 1.0476;
     }
-
-    if ( affected_by.headshot.tick && td( target )->debuffs.headshot->check() )
-      ta *= 1 + td( target )->debuffs.headshot->stack_value();
 
     if ( p()->specialization() == HUNTER_BEAST_MASTERY 
       && affected_by.through_the_eyes.tick 
@@ -4504,9 +4491,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
 
     if ( debug_cast<state_t*>( s )->empowered_by_precise_shots )
       p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok() );
-
-    if ( p()->talents.headshot.ok() )
-      td( s->target )->debuffs.headshot->trigger();
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -7267,9 +7251,6 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
   debuffs.sentinels_mark = make_buff( *this, "sentinels_mark", p->talents.sentinels_mark )
     ->set_default_value_from_effect( p->specialization() == HUNTER_MARKSMANSHIP ? 1 : 2 );
 
-  debuffs.headshot = make_buff( *this, "headshot", p->talents.headshot_debuff )
-    -> set_default_value_from_effect( 1 );
-
   dots.wildfire_bomb = t->get_dot( p->talents.shrapnel_bomb ? "wildfire_bomb_bleed" : "wildfire_bomb_dot", p );
   dots.sanctified_armaments = t->get_dot( "sanctified_armaments", p );
   dots.black_arrow = t -> get_dot( "black_arrow_dot", p );
@@ -7633,8 +7614,6 @@ void hunter_t::init_spells()
     talents.critical_precision                = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Precision", HUNTER_MARKSMANSHIP );
     talents.no_scope                          = find_talent_spell( talent_tree::SPECIALIZATION, "No Scope", HUNTER_MARKSMANSHIP );
     talents.feathered_frenzy                  = find_talent_spell( talent_tree::SPECIALIZATION, "Feathered Frenzy", HUNTER_MARKSMANSHIP );
-    talents.headshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Headshot", HUNTER_MARKSMANSHIP );
-    talents.headshot_debuff                   = talents.headshot.ok() ? find_spell( 1277558 ) : spell_data_t::not_found();
     talents.deadeye                           = find_talent_spell( talent_tree::SPECIALIZATION, "Deadeye", HUNTER_MARKSMANSHIP );
     talents.deathblow                         = find_talent_spell( talent_tree::SPECIALIZATION, "Deathblow", HUNTER_MARKSMANSHIP );
 
