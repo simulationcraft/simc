@@ -3240,7 +3240,7 @@ void voracious_heart_of_ulatek( special_effect_t& effect )
 
   auto stacking =
       create_buff<stat_buff_t>( effect.player, "devoured_strength", effect.player->find_spell( 1305376 ) )
-          ->set_stat_from_effect( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_STRENGTH ? 1 : 2,
+          ->set_stat_from_effect( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_STRENGTH ? 2 : 1,
                                   stack_value );
 
   auto buff = create_buff<stat_buff_t>( effect.player, "voracious_heart_of_ulatek", effect.driver() )
