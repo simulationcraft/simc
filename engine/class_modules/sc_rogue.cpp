@@ -7589,7 +7589,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   double cp_loss = max_spend;
 
   if ( affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
-    cp_loss = 0;
+    cp_loss *= 1.0 + p()->spec.mid2_outlaw_4pc_buff->effectN( 2 ).percent();
 
   ab::stats->consume_resource( RESOURCE_COMBO_POINT, max_spend );
   p()->resource_loss( RESOURCE_COMBO_POINT, cp_loss );
@@ -7613,7 +7613,8 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     else if ( p()->buffs.deadly_pursuit->check() )
       p()->buffs.deadly_pursuit->refresh();
     else
-      p()->buffs.deadly_pursuit_tracker->trigger( as<int>( max_spend ) );
+      // 2026-06-30 -- PTR TOCHECK: MID2 Outlaw 4pc does not contribute towards Deadly Pursuit
+      p()->buffs.deadly_pursuit_tracker->trigger( as<int>( cp_loss ) );
   }
 }
 
