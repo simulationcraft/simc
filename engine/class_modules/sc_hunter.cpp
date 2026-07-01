@@ -448,7 +448,6 @@ public:
     buff_t* bullseye;
     buff_t* bulletstorm;
     buff_t* volley;
-    buff_t* double_tap;
     buff_t* focus_fire;
     buff_t* precision_detonation_hidden;
 
@@ -787,8 +786,6 @@ public:
     spell_data_ptr_t take_aim_3;
     spell_data_ptr_t windrunner_quiver;
     spell_data_ptr_t accuracy_by_volume;
-    spell_data_ptr_t double_tap;
-    spell_data_ptr_t double_tap_buff;
     spell_data_ptr_t salvo;
     spell_data_ptr_t shrapnel_shot;
     spell_data_ptr_t unload;
@@ -5535,32 +5532,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
   };
 
-  struct aimed_shot_double_tap_t : aimed_shot_base_t
-  {
-    aimed_shot_double_tap_t( util::string_view n, hunter_t* p ) : aimed_shot_base_t( n, p, p->talents.aimed_shot )
-    {
-      background = dual = true;
-      base_costs[ RESOURCE_FOCUS ] = 0;
-      base_multiplier *= p->talents.double_tap->effectN( 3 ).percent();
-    }
-
-    void execute() override
-    {
-      aimed_shot_base_t::execute();
-
-      // Consumes Lock and Load without a benefit
-      if ( p()->buffs.lock_and_load->check() )
-      {
-        p()->buffs.lock_and_load->decrement();
-      }
-
-      // 2026-04-21: Double Tap Aimed Shots can trigger Blighted Arrow casts
-      if ( p()->talents.pact_of_the_hollow.ok() )
-        for ( auto pet : p()->pets.dark_minion.active_pets() )
-          pet->actions.blighted_arrow->execute();
-    }
-  };
-
   struct {
     double chance = 0;
     proc_t* proc;
@@ -5571,7 +5542,6 @@ struct aimed_shot_t : public aimed_shot_base_t
   } deathblow;
 
   aimed_shot_aspect_of_the_hydra_t* aspect_of_the_hydra = nullptr;
-  aimed_shot_double_tap_t* double_tap = nullptr;
   bool lock_and_loaded = false;
 
   aimed_shot_t( hunter_t* p, util::string_view options_str ) : 
@@ -5583,12 +5553,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     {
       aspect_of_the_hydra = p->get_background_action<aimed_shot_aspect_of_the_hydra_t>( "aimed_shot_aspect_of_the_hydra" );
       add_child( aspect_of_the_hydra );
-    }
-
-    if ( p->talents.double_tap.ok() )
-    {
-      double_tap = p->get_background_action<aimed_shot_double_tap_t>( "aimed_shot_double_tap" );
-      add_child( double_tap );
     }
 
     if ( p->talents.surging_shots.ok() )
@@ -5666,15 +5630,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     // Delay these secondary shots since they can consume Moving Target or Lock and Load if either trigger off a queued cast.
     if ( aspect_of_the_hydra && tl.size() > 1 )
       make_event( p()->sim, 10_ms, [ this, tl ]() { aspect_of_the_hydra->execute_on_target( tl[ 1 ] ); } );
-
-    if ( double_tap && p()->buffs.double_tap->up() )
-    {
-      make_event( p()->sim, 10_ms, [ this ]() { double_tap->execute_on_target( target ); } );
-      if ( aspect_of_the_hydra && tl.size() > 1 )
-        make_event( p()->sim, 10_ms, [ this, tl ]() { aspect_of_the_hydra->execute_on_target( tl[ 1 ] ); } );
-
-      p()->buffs.double_tap->expire();
-    }
 
     if ( p()->talents.pact_of_the_hollow.ok() )
       for ( auto pet : p()->pets.dark_minion.active_pets() )
@@ -5951,7 +5906,6 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::last_tick( d );
 
     p()->consume_trick_shots();
-    p()->buffs.double_tap->expire();
     p()->buffs.focus_fire->expire();
 
     execute_unload();
@@ -5962,21 +5916,9 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     // substract 1 here because RF has a tick at zero
     double num_ticks = base_num_ticks - 1;
 
-    if ( p()->buffs.double_tap->check() )
-      num_ticks *= 1 + p()->talents.double_tap_buff->effectN( 3 ).percent();
-
     timespan_t base_duration = num_ticks * tick_time( s );
     
     return base_duration; 
-  }
-
-  double tick_time_pct_multiplier( const action_state_t* s ) const override
-  {
-    double m = hunter_ranged_attack_t::tick_time_pct_multiplier( s );
-
-    m *= 1 + p()->buffs.double_tap->check_value();
-
-    return m;
   }
 
   double energize_cast_regen( const action_state_t* ) const override
@@ -6972,8 +6914,6 @@ struct trueshot_t : public hunter_spell_t
 
     if ( p()->talents.moonlight_chakram.ok() )
       p()->buffs.moonlight_chakram->trigger();
-
-    p()->buffs.double_tap->trigger();
   }
 };
 
@@ -7064,8 +7004,6 @@ struct volley_t : public hunter_spell_t
             }
         } )
       );
-
-    p()->buffs.double_tap->trigger();
   }
 };
 
@@ -7720,8 +7658,6 @@ void hunter_t::init_spells()
 
     talents.windrunner_quiver                 = find_talent_spell( talent_tree::SPECIALIZATION, "Windrunner Quiver", HUNTER_MARKSMANSHIP );
     talents.accuracy_by_volume                = find_talent_spell( talent_tree::SPECIALIZATION, "Accuracy By Volume", HUNTER_MARKSMANSHIP );
-    talents.double_tap                        = find_talent_spell( talent_tree::SPECIALIZATION, "Double Tap", HUNTER_MARKSMANSHIP );
-    talents.double_tap_buff                   = talents.double_tap.ok() ? find_spell( 260402 ) : spell_data_t::not_found();
     talents.salvo                             = find_talent_spell( talent_tree::SPECIALIZATION, "Salvo", HUNTER_MARKSMANSHIP );
     talents.shrapnel_shot                     = find_talent_spell( talent_tree::SPECIALIZATION, "Shrapnel Shot", HUNTER_MARKSMANSHIP );
     talents.unload                            = find_talent_spell( talent_tree::SPECIALIZATION, "Unload", HUNTER_MARKSMANSHIP );
@@ -8105,10 +8041,6 @@ void hunter_t::create_buffs()
     make_buff( this, "bulletstorm", talents.bulletstorm_buff )
       ->set_default_value_from_effect( 1 )
       ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-
-  buffs.double_tap =
-    make_buff( this, "double_tap", talents.double_tap_buff )
-      ->set_default_value_from_effect( 1 );
 
   buffs.volley =
     make_buff( this, "volley", talents.volley_data )
