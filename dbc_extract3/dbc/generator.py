@@ -1648,6 +1648,7 @@ class SpellDataGenerator(DataGenerator):
             ( 431522, 0),           # Dawnlight Buff
             ( 406957, 0),           # Divine Toll Judgment
             ( 402916, 0),           # Righteous Cause Buff
+            ( 1268810, 0),          # Vanguard
         ),
 
         # Hunter:
