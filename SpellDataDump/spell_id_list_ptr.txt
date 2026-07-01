@@ -5437,6 +5437,8 @@ Druid
 1308639  Spirit's Wrath
 1308647  Answered Calling
 1308653 *Listener
+1310150 *Rampant Thorn
+1310213 *Rampant Thorn
 
 Evoker
 351338   Quell
@@ -15232,7 +15234,7 @@ Paladin
 1267211  Glory of the Vanguard
 1267215  Glory of the Vanguard
 1267228  Glory of the Vanguard
-1268810 *Vanguard
+1268810  Vanguard
 1269142  Glory of the Vanguard
 1269175  Glory of the Vanguard
 1269179  Valor
