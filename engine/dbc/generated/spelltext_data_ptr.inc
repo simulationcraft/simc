@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.0.68412
-static constexpr std::array<spelltext_data_t, 29220> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29221> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28023,6 +28023,7 @@ static constexpr std::array<spelltext_data_t, 29220> __ptr_spelltext_data { {
   { 1268716, "Your Diabolic Oculi observe the battlefield and collect information that is imparted to you upon being exploded, each Diabolic Oculi increasing your Intellect by $1269879s1% for $1269879d.", 0, 0 },
   { 1268775, "$@spelldesc1259518", 0, 0 },
   { 1268807, "Thunder Focus Tea now empowers Enveloping Mist and Rising Sun Kick further.\r\n\r\n$@spellicon124682 $@spellname124682:\r\nBegins a channel of Soothing Mist onto your target.\r\n\r\n$@spellicon107428 $@spellname107428:\r\nReleases a Jadefire Stomp infront of you that transfers damage into Ancient Teachings at $s2% effectiveness.\r\n\r\n$@spellicon1248812 $@spellname1248812:\r\n$@spelldesc1248812\r\n", 0, 0 },
+  { 1268810, "Your next Avenger's Shield will leave an echoing bolt of light.", "Your next Avenger's Shield will leave an echoing bolt of light.", 0 },
   { 1268817, "Renewing Mist healing is increased by up to $s1% in proportion to its coverage on yourself and your allies.", 0, 0 },
   { 1268868, "Wing Clip slows an additional ${-$s1}%.\r\n\r\nConcussive Shot slows an additional ${-$s2}%.", 0, 0 },
   { 1268871, "Your Agility is increased by $s1%.", 0, 0 },
