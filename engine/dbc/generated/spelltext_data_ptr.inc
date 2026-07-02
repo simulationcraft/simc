@@ -29011,7 +29011,7 @@ static constexpr std::array<spelltext_data_t, 29221> __ptr_spelltext_data { {
   { 1299572, "Soothing Mist healing increased by $s1%, but its mana cost is increased by $s2%.", 0, 0 },
   { 1299944, "$@spelldesc184367", 0, 0 },
   { 1299975, "$@spelldesc1296627", "Erupting with a Fire Nova every $t1 sec.", 0 },
-  { 1299991, "$@spelldesc1296628", "Your next Crash Lightning will deal $s1% increased damage.", 0 },
+  { 1299991, "$@spelldesc1296628", "Your next Crash Lightning will deal $w1% increased damage.", 0 },
   { 1300008, "$@spelldesc1272363", "Absorbs $w1 damage.", 0 },
   { 1300009, "$@spelldesc1272363", "Absorbs $w1 damage.", 0 },
   { 1300021, "An alcoholic free beverage.", "You're just here for the vibes, man.", 0 },
@@ -29224,7 +29224,8 @@ static constexpr std::array<spelltext_data_t, 29221> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.1.0.68412
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  { 1299991,  1, "Your next Crash Lightning will deal $s1% increased damage.", "Your next Crash Lightning will deal $w1% increased damage." },
 } };
 
 // Spell description variables, wow build 12.1.0.68412
