@@ -9649,9 +9649,8 @@ struct death_and_decay_base_t : public death_knight_spell_t
         } );
 
     params.expiration_callback( [ & ]( const action_state_t* ) {
-      // Need to expire the buff before we set it with an expiration time, as it does not seem to extend
-      p()->buffs.death_and_decay->expire();
-      p()->buffs.death_and_decay->expire( 4_s );
+      if ( !p()->in_death_and_decay() )
+        p()->buffs.death_and_decay->trigger( 4_s );
     } );
   }
 
