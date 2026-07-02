@@ -3693,7 +3693,7 @@ custom_cb_t venomcursed( unsigned buff_id, stat_e primary )
 
     for ( auto s : secondary_ratings )
       if ( s != primary )
-        buff->add_stat( s, -penalty_value );
+        buff->add_stat( s, penalty_value );
 
     effect.custom_buff = buff;
     new dbc_proc_callback_t( effect.player, effect );
