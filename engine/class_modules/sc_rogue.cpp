@@ -8066,10 +8066,6 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
   if ( !p()->talent.fatebound.hand_of_fate->ok() )
     return;
 
-  // 2026-06-29 -- PTR TOCHECK: MID2 Outlaw 4pc does not trigger Fatebound Coins
-  if ( p()->bugs && affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
-    return;
-
   if ( is_secondary_action() )
     return; // You have to actually spend the CP to get the coin - no secondary action finishers grant flips
 
