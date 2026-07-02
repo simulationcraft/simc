@@ -7850,8 +7850,7 @@ void actions::rogue_action_t<Base>::trigger_ruthlessness_cp( const action_state_
   int cp = cast_state( state )->get_combo_points();
   
   // 2026-06-29 -- PTR TOCHECK: MID2 Outlaw 4pc can only trigger Ruthlessness if its effective CPs are
-  //               boosted by Supercharger or Coup de Grace. For these cases the max CPs that can be
-  //               consumed are subtracted out.
+  //               boosted by Supercharger or Coup de Grace
   if ( p()->bugs && affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
     cp = std::max( 0, cp - as<int>( p()->consume_cp_max() ) );
 
