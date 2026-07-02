@@ -2007,7 +2007,7 @@ public:
 
     if ( affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
     {
-      effective_cp = p()->consume_cp_max();
+      effective_cp = as<int>( p()->consume_cp_max() );
     }
 
     // Apply and Snapshot Supercharger Buffs
@@ -2214,7 +2214,7 @@ public:
       return 0.0;
 
     auto chance = ab::parry_chance(exp, target);
-    return std::max(0.0, chance);
+    return std::max( 0.0, chance );
   }
 
 public:
@@ -5797,13 +5797,6 @@ struct sinister_strike_t : public rogue_attack_t
       return ( secondary_trigger_type == secondary_trigger::SINISTER_STRIKE ) ? 1 : 0;
     }
 
-    void execute() override
-    {
-      rogue_attack_t::execute();
-      // 2026-06-29 -- PTR TOCHECK: Sinister Strike can proc MID2 Outlaw 4pc on both hits
-      trigger_mid2_outlaw_4pc( execute_state );
-    }
-
     bool procs_main_gauche() const override
     { return true; }
 
@@ -7851,14 +7844,17 @@ void actions::rogue_action_t<Base>::trigger_ruthlessness_cp( const action_state_
   if ( !p()->talent.outlaw.ruthlessness->ok() || !affected_by.ruthlessness || is_secondary_action() )
     return;
 
-  // 2026-06-29 -- PTR TOCHECK: MID2 Outlaw 4pc does not trigger Ruthlessness
-  if ( p()->bugs && affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
-    return;
-
   if ( !ab::result_is_hit( state->result ) )
     return;
 
   int cp = cast_state( state )->get_combo_points();
+  
+  // 2026-06-29 -- PTR TOCHECK: MID2 Outlaw 4pc can only trigger Ruthlessness if its effective CPs are
+  //               boosted by Supercharger or Coup de Grace. For these cases the max CPs that can be
+  //               consumed are subtracted out.
+  if ( p()->bugs && affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
+    cp = std::max( 0, cp - as<int>( p()->consume_cp_max() ) );
+
   if ( cp == 0 )
     return;
 
@@ -8653,10 +8649,6 @@ template <typename Base>
 void actions::rogue_action_t<Base>::trigger_scoundrel_strike( const action_state_t* state, actions::rogue_attack_t* action )
 {
   if ( !p()->talent.outlaw.gravedigger_2->ok() )
-    return;
-
-  // 2026-06-29 -- PTR TOCHECK: MID2 Outlaw 4pc does not trigger Scoundrel Strike
-  if ( p()->bugs && affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
     return;
 
   if ( !ab::result_is_hit( state->result ) )
