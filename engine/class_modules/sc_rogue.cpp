@@ -8057,7 +8057,7 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
   p()->cooldowns.roll_the_bones->adjust( v, false );
   p()->cooldowns.sprint->adjust( v, false );
 
-  p()->sim->print_log( "{} triggered Restless Blades with {}s total cooldown reduction", *p(), v *= -1 );
+  p()->sim->print_log( "{} triggered Restless Blades with {}s total cooldown reduction", *p(), v );
 }
 
 template <typename Base>
