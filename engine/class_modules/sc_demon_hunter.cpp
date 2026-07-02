@@ -1415,9 +1415,11 @@ public:
     int drain_stacks;
     demon_hunter_t* actor;
     double meta_drain_multiplier = 1.0;
+    // Fit against per-tick drain event schedules from logs (matches cumulative drain
+    // timing through end of meta, not just instantaneous rates); see PR #11549.
     double initial_drain         = 15.0;
-    double exp_factor            = 1.455;
-    double exp_power             = 0.075;
+    double exp_factor            = 1.40;
+    double exp_power             = 0.0775;
 
     fury_state_t( demon_hunter_t* a )
       : start_time( timespan_t::min() ), next_drain_event( nullptr ), drain_stacks( 0 ), actor( a )
