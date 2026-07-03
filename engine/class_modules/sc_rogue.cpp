@@ -7582,7 +7582,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   double cp_loss = max_spend;
 
   if ( affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
-    cp_loss = 0;
+    cp_loss *= 1.0 + p()->spec.mid2_outlaw_4pc_buff->effectN( 2 ).percent();
 
   ab::stats->consume_resource( RESOURCE_COMBO_POINT, max_spend );
   p()->resource_loss( RESOURCE_COMBO_POINT, cp_loss );
