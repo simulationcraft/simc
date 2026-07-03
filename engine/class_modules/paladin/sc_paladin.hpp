@@ -1554,6 +1554,7 @@ public:
     }
 
     // For Holy Power spending stuff, SotR with Instrument always counts as 3 Holy Power spent
+    // Probably not a bug, since it now doesn't munch 2 HP
     if (p->bugs && is_sotr && p->talents.instrument_of_the_divine->ok() && cost() > 3.0)
     {
       num_hopo_spent = 3.0;
@@ -1650,7 +1651,8 @@ public:
         p->buffs.sentinel_decay->extend_duration( timespan_t::from_seconds( 1 ) );
       }
       // 2025-12-18 Instrument of the Divine talented extends Sentinel's decay by double the time, regardless of Holy Power spent.
-      if (p->bugs && p->talents.instrument_of_the_divine->ok())
+      // Bug is fixed on PTR
+      if (p->bugs && p->talents.instrument_of_the_divine->ok() && !p->is_ptr() )
       {
         p->buffs.sentinel_decay->extend_duration( timespan_t::from_seconds( 1 ) );
       }

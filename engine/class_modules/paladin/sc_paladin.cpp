@@ -1733,7 +1733,7 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
   {
     p->cooldowns.hammer_of_wrath = cooldown;
   }
-  if ( !p->bugs && p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+  if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
   {
     ue = new unrelenting_edict_t( p, "judgment" );
     add_child( ue );
@@ -1792,7 +1792,7 @@ void hammer_of_wrath_t::impact( action_state_t* s )
       echo->start_action_execute_event( 200_ms );
     }
   }
-  if ( !p()->bugs && p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+  if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
     ue->do_execute( s );
 }
 
@@ -2972,7 +2972,8 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
 
     // You will lose 2 Holy Power when using SotR with IotD talented when DP is up
-    if (p()->bugs && p()->talents.instrument_of_the_divine->ok() && hasDpUp)
+    // Fixed on PTR
+    if ( p()->bugs && p()->talents.instrument_of_the_divine->ok() && hasDpUp && !p()->is_ptr() )
     {
       p()->resources.current[ RESOURCE_HOLY_POWER ] =
           std::max( p()->resources.current[ RESOURCE_HOLY_POWER ] - 2.0, 0.0 );
@@ -3695,10 +3696,7 @@ void paladin_t::create_buffs()
               trigger_laying_down_arms();
             if ( is_ptr() )
             {
-              if ( bugs )
-                return d * 2;
-              else
-                return std::min( b->remains() + d, d * 2 );
+              return std::min( b->remains() + d, d * 2 );
             }
             else
             {
@@ -3714,10 +3712,7 @@ void paladin_t::create_buffs()
               trigger_laying_down_arms();
             if ( is_ptr() )
             {
-              if ( bugs )
-                return d * 2;
-              else
-                return std::min( b->remains() + d, d * 2 );
+              return std::min( b->remains() + d, d * 2 );
             }
             else
             {
