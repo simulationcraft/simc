@@ -534,6 +534,7 @@ public:
       player_talent_t pain_and_gain;
       player_talent_t intervene;
       player_talent_t interpose;  // NYI
+      player_talent_t blood_and_thunder;
       // Row 5
       player_talent_t shockwave;
       player_talent_t overwhelming_rage;
@@ -2203,16 +2204,23 @@ struct rend_t : public warrior_attack_t
     tick_may_crit = true;
     hasted_ticks  = true;
     rend_dot      = new rend_dot_t( p );
-    radius = 8;
-    aoe = -1;
-    reduced_aoe_targets = data().effectN( 2 ).base_value();
+    radius = 5;
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+    {
+      radius = 8;
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 2 ).base_value();
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
 
-    rend_dot->execute_on_target( s->target );
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      make_event<delayed_execute_event_t>( *sim, p(), rend_dot,  s->target, timespan_t::from_millis(p()->talents.warrior.rend->effectN( 2 ).misc_value1() ) );
+    else
+      rend_dot->execute_on_target( s->target );
   }
 
   bool ready() override
@@ -3077,9 +3085,7 @@ struct mortal_strike_t : public warrior_attack_t
       td( s->target )->debuffs_fatal_mark->trigger();
 
     if ( p()->talents.arms.bloodletting.ok() && p()->talents.warrior.rend.ok() && ( target->health_percentage() < p()->talents.arms.bloodletting->effectN( 3 ).base_value() ) )
-    {
       rend_dot->execute_on_target( s->target );
-    }
 
     // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
     if ( p()->talents.slayer.fierce_followthrough->ok() && s->result == RESULT_CRIT && s->chain_target == 0 )
@@ -3552,12 +3558,14 @@ struct cleave_t : public warrior_attack_t
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
   action_t* reap_the_storm;
+  warrior_attack_t* rend;
   cleave_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "cleave", p, p->talents.arms.cleave ),
     fervor_slam( nullptr ),
     frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
     rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
-    reap_the_storm( nullptr )
+    reap_the_storm( nullptr ),
+    rend( nullptr )
   {
     parse_options( options_str );
     weapon = &( player->main_hand_weapon );
@@ -3575,6 +3583,9 @@ struct cleave_t : public warrior_attack_t
       reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_cleave", p );
       add_child( reap_the_storm );
     }
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p->talents.warrior.rend.ok() )
+      rend = new rend_dot_t( p );
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3611,6 +3622,9 @@ struct cleave_t : public warrior_attack_t
     {
       target_data->debuffs_colossus_smash->extend_duration_or_trigger( p()->sets->set( WARRIOR_ARMS, MID1, B4 )->effectN( 1 ).time_value() );
     }
+
+    if ( rend && p()->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.warrior.rend.ok() )
+      rend->execute_on_target( s->target );
   }
 
   void execute() override
@@ -3855,8 +3869,11 @@ struct thunder_blast_t : public warrior_attack_t
 
     energize_type = action_energize::NONE;
 
-    if ( p->talents.warrior.rend.ok() )
-        rend = new rend_dot_t( p );
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p->talents.warrior.rend.ok() )
+      rend = new rend_dot_t( p );
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p->talents.warrior.blood_and_thunder.ok() )
+      rend = new rend_dot_t( p );
 
     if ( p->talents.mountain_thane.lightning_strikes->ok() )
     {
@@ -3938,7 +3955,10 @@ struct thunder_blast_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if ( p()->talents.warrior.rend.ok() && rend )
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p()->talents.warrior.rend.ok() )
+      rend->execute_on_target( state->target );
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.warrior.blood_and_thunder.ok() )
       rend->execute_on_target( state->target );
   }
 
@@ -3974,8 +3994,11 @@ struct thunder_clap_t : public warrior_attack_t
 
     energize_type = action_energize::NONE;
 
-    if ( p->talents.warrior.rend.ok() )
-        rend = new rend_dot_t( p );
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p->talents.warrior.rend.ok() )
+      rend = new rend_dot_t( p );
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p->talents.warrior.blood_and_thunder.ok() )
+      rend = new rend_dot_t( p );
 
     if ( p->talents.mountain_thane.lightning_strikes->ok() )
     {
@@ -4047,7 +4070,10 @@ struct thunder_clap_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if ( p()->talents.warrior.rend.ok() && rend )
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p()->talents.warrior.rend.ok() )
+      rend->execute_on_target( state->target );
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.warrior.blood_and_thunder.ok() )
       rend->execute_on_target( state->target );
   }
 
@@ -6240,7 +6266,7 @@ struct whirlwind_fury_damage_t : public warrior_attack_t
     aoe = -1;
     reduced_aoe_targets = 5.0;
 
-    if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && p->talents.warrior.rend.ok() && p->talents.fury.improved_whirlwind.ok() )
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p->talents.warrior.rend.ok() && p->talents.fury.improved_whirlwind.ok() )
       rend = new rend_dot_t( p );
   }
 
@@ -6250,7 +6276,7 @@ struct whirlwind_fury_damage_t : public warrior_attack_t
 
     if ( p()->talents.warrior.rend.ok() && p()->talents.fury.improved_whirlwind.ok() &&
           rend && data().id() == p()->spec.whirlwind->effectN( 4 ).trigger()->id() &&
-          sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
+          sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
       rend->execute_on_target( state->target );
   }
 
@@ -7235,6 +7261,7 @@ void warrior_t::init_spells()
   talents.warrior.pain_and_gain                    = find_talent_spell( talent_tree::CLASS, "Pain and Gain" );
   talents.warrior.intervene                        = find_talent_spell( talent_tree::CLASS, "Intervene" );
   talents.warrior.interpose                        = find_talent_spell( talent_tree::CLASS, "Interpose" );
+  talents.warrior.blood_and_thunder                = find_talent_spell( talent_tree::CLASS, "Blood and Thunder", specialization() );
   // Row 5
   talents.warrior.shockwave                        = find_talent_spell( talent_tree::CLASS, "Shockwave" );
   talents.warrior.overwhelming_rage                = find_talent_spell( talent_tree::CLASS, "Overwhelming Rage" );
