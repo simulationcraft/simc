@@ -5527,7 +5527,7 @@ bool monk_t::validate_actor()
 
       // Report without counting the hidden talent that activates the subtree
       count -= 1;
-      if ( count < expected )
+      if ( count < expected && count != 0 )
       {
         sim->error( SEVERE, "Invalid Hero Talent tree, possibly low level. Found {} talents, expected {}.", count,
                     expected );
@@ -7365,6 +7365,27 @@ const std::string valid_talents_t::name() const
   return "valid_talents";
 }
 
+std::function<bool( std::tuple<talent_tree, unsigned, unsigned> )> matching_talent( player_t *player,
+                                                                                    unsigned hero_tree )
+{
+  return [ = ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
+    if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
+      return false;
+    const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), player->is_ptr() );
+    if ( !trait )
+      return false;
+    return static_cast<hero_tree_e>( trait->id_sub_tree ) == hero_tree;
+  };
+}
+
+std::function<unsigned( unsigned )> has_expected_count( player_t *player, unsigned expected_count )
+{
+  return [ = ]( unsigned hero_tree ) {
+    unsigned count = range::count_if( player->player_traits, matching_talent( player, hero_tree ) );
+    return count > expected_count;
+  };
+}
+
 bool valid_talents_t::evaluate_post_init()
 {
   if ( !player || sim->enable_all_talents )
@@ -7374,24 +7395,7 @@ bool valid_talents_t::evaluate_post_init()
   {
     case MONK_BREWMASTER:
     case MONK_WINDWALKER:
-      for ( const auto &hero_tree : player->player_sub_trees )
-      {
-        auto count = as<unsigned int>( range::count_if(
-            player->player_traits,
-            [ is_ptr = player->is_ptr(), hero_tree ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
-              if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
-                return false;
-              const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
-              if ( !trait )
-                return false;
-              return static_cast<hero_tree_e>( trait->id_sub_tree ) == hero_tree;
-            } ) );
-        // Report without counting the hidden talent that activates the subtree
-        count -= 1;
-        if ( count == this->count )
-          return true;
-      }
-      return false;
+      return range::all_of( player->player_sub_trees, has_expected_count( player, count ) );
     default:
       break;
   }
