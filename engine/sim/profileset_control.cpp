@@ -105,8 +105,10 @@ void profileset_controller_data_wrapper_t::construct_controller( sim_t* sim )
 
 bool profileset_controller_t::register_controller( std::string key, profileset_controller_t::factory_fn_pair_t&& value )
 {
-  const auto val = factory.try_emplace( key, std::move( value ) );
-  return val.second;
+  if ( factory.find( key ) == factory.end() )
+    return false;
+  factory.emplace( key, std::move( value ) );
+  return true;
 }
 
 bool profileset_controller_t::controller_exists( std::string key )
