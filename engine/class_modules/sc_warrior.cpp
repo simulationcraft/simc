@@ -528,13 +528,14 @@ public:
       player_talent_t storm_bolt;
       // Row 4
       player_talent_t rend;
+      player_talent_t storm_of_blood;
+      player_talent_t blood_and_thunder;
       player_talent_t second_wind;
       player_talent_t frothing_berserker;
       player_talent_t bounding_stride;
       player_talent_t pain_and_gain;
       player_talent_t intervene;
       player_talent_t interpose;  // NYI
-      player_talent_t blood_and_thunder;
       // Row 5
       player_talent_t shockwave;
       player_talent_t overwhelming_rage;
@@ -3872,7 +3873,12 @@ struct thunder_blast_t : public warrior_attack_t
     if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p->talents.warrior.rend.ok() )
       rend = new rend_dot_t( p );
 
+    // Protection
     if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p->talents.warrior.blood_and_thunder.ok() )
+      rend = new rend_dot_t( p );
+
+    // Fury
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p->talents.warrior.storm_of_blood.ok() && p->talents.mountain_thane.crashing_thunder.ok() )
       rend = new rend_dot_t( p );
 
     if ( p->talents.mountain_thane.lightning_strikes->ok() )
@@ -3891,7 +3897,7 @@ struct thunder_blast_t : public warrior_attack_t
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = warrior_attack_t::composite_da_multiplier( state );
-    if ( p()->talents.fury.meat_cleaver->ok() && p()->talents.mountain_thane.crashing_thunder->ok() &&
+    if ( p()->talents.fury.meat_cleaver->ok() && p()->talents.mountain_thane.crashing_thunder.ok() &&
           p()->sim->target_non_sleeping_list.size() >= p()->talents.fury.meat_cleaver->effectN( 2 ).base_value() )
       m *= 1.0 + p()->talents.fury.meat_cleaver->effectN( 1 ).percent();
     return m;
@@ -3918,7 +3924,7 @@ struct thunder_blast_t : public warrior_attack_t
 
     p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p()->gain.thunder_blast, this );
 
-    if ( p()->talents.mountain_thane.crashing_thunder->ok() )
+    if ( p()->talents.mountain_thane.crashing_thunder.ok() )
     {
       if ( p()->talents.fury.improved_whirlwind->ok() )
       {
@@ -3958,7 +3964,12 @@ struct thunder_blast_t : public warrior_attack_t
     if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p()->talents.warrior.rend.ok() && rend )
       rend->execute_on_target( state->target );
 
+    // Protection
     if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.warrior.blood_and_thunder.ok() && rend )
+      rend->execute_on_target( state->target );
+
+    // Fury Mountain Thane
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.warrior.storm_of_blood.ok() && p()->talents.mountain_thane.crashing_thunder.ok() && rend )
       rend->execute_on_target( state->target );
   }
 
@@ -3997,7 +4008,12 @@ struct thunder_clap_t : public warrior_attack_t
     if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p->talents.warrior.rend.ok() )
       rend = new rend_dot_t( p );
 
+    // Protection
     if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p->talents.warrior.blood_and_thunder.ok() )
+      rend = new rend_dot_t( p );
+
+    // Fury
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p->talents.warrior.storm_of_blood.ok() && p->talents.mountain_thane.crashing_thunder.ok() )
       rend = new rend_dot_t( p );
 
     if ( p->talents.mountain_thane.lightning_strikes->ok() )
@@ -4016,7 +4032,7 @@ struct thunder_clap_t : public warrior_attack_t
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = warrior_attack_t::composite_da_multiplier( state );
-    if ( p()->talents.fury.meat_cleaver->ok() && p()->talents.mountain_thane.crashing_thunder->ok() &&
+    if ( p()->talents.fury.meat_cleaver->ok() && p()->talents.mountain_thane.crashing_thunder.ok() &&
           p()->sim->target_non_sleeping_list.size() >= p()->talents.fury.meat_cleaver->effectN( 2 ).base_value() )
       m *= 1.0 + p()->talents.fury.meat_cleaver->effectN( 1 ).percent();
     return m;
@@ -4043,7 +4059,7 @@ struct thunder_clap_t : public warrior_attack_t
 
     p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p()->gain.thunder_clap, this );
 
-    if ( p()->talents.mountain_thane.crashing_thunder->ok() )
+    if ( p()->talents.mountain_thane.crashing_thunder.ok() )
     {
       if ( p()->talents.fury.improved_whirlwind->ok() )
       {
@@ -4073,7 +4089,12 @@ struct thunder_clap_t : public warrior_attack_t
     if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p()->talents.warrior.rend.ok() && rend )
       rend->execute_on_target( state->target );
 
+    // Protection
     if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.warrior.blood_and_thunder.ok() && rend )
+      rend->execute_on_target( state->target );
+
+    // Fury Mountain Thane
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.warrior.storm_of_blood.ok() && p()->talents.mountain_thane.crashing_thunder.ok() && rend )
       rend->execute_on_target( state->target );
   }
 
@@ -6268,6 +6289,8 @@ struct whirlwind_fury_damage_t : public warrior_attack_t
 
     if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p->talents.warrior.rend.ok() && p->talents.fury.improved_whirlwind.ok() )
       rend = new rend_dot_t( p );
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p->talents.warrior.storm_of_blood.ok() )
+      rend = new rend_dot_t( p );
   }
 
   void impact( action_state_t* state ) override
@@ -6277,6 +6300,9 @@ struct whirlwind_fury_damage_t : public warrior_attack_t
     if ( p()->talents.warrior.rend.ok() && p()->talents.fury.improved_whirlwind.ok() &&
           rend && data().id() == p()->spec.whirlwind->effectN( 4 ).trigger()->id() &&
           sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+      rend->execute_on_target( state->target );
+    else if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.warrior.storm_of_blood.ok() &&
+          rend && data().id() == p()->spec.whirlwind->effectN( 4 ).trigger()->id() )
       rend->execute_on_target( state->target );
   }
 
@@ -7255,13 +7281,14 @@ void warrior_t::init_spells()
   talents.warrior.storm_bolt                       = find_talent_spell( talent_tree::CLASS, "Storm Bolt" );
   // Row 4
   talents.warrior.rend                             = find_talent_spell( talent_tree::CLASS, "Rend" );
+  talents.warrior.storm_of_blood                   = find_talent_spell( talent_tree::CLASS, "Storm of Blood", specialization() );
+  talents.warrior.blood_and_thunder                = find_talent_spell( talent_tree::CLASS, "Blood and Thunder", specialization() );
   talents.warrior.second_wind                      = find_talent_spell( talent_tree::CLASS, "Second Wind" );
   talents.warrior.frothing_berserker               = find_talent_spell( talent_tree::CLASS, "Frothing Berserker", specialization() );
   talents.warrior.bounding_stride                  = find_talent_spell( talent_tree::CLASS, "Bounding Stride" );
   talents.warrior.pain_and_gain                    = find_talent_spell( talent_tree::CLASS, "Pain and Gain" );
   talents.warrior.intervene                        = find_talent_spell( talent_tree::CLASS, "Intervene" );
   talents.warrior.interpose                        = find_talent_spell( talent_tree::CLASS, "Interpose" );
-  talents.warrior.blood_and_thunder                = find_talent_spell( talent_tree::CLASS, "Blood and Thunder", specialization() );
   // Row 5
   talents.warrior.shockwave                        = find_talent_spell( talent_tree::CLASS, "Shockwave" );
   talents.warrior.overwhelming_rage                = find_talent_spell( talent_tree::CLASS, "Overwhelming Rage" );
