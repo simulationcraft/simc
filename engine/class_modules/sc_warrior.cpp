@@ -3710,7 +3710,12 @@ struct colossus_smash_t : public warrior_attack_t
       p()->buff.crushing_combo->trigger( p()->talents.arms.crushing_combo->effectN( 1 ).trigger()->max_stacks() );
 
     if ( p()->talents.arms.broad_strokes.ok() )
-      p()->buff.sweeping_strikes->trigger( p()->spec.sweeping_strikes->max_stacks() );
+    {
+      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+        p()->buff.sweeping_strikes->trigger( p()->spec.sweeping_strikes->max_stacks() );
+      else if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+        p()->buff.sweeping_strikes->trigger( as<int>( p()->talents.arms.broad_strokes->effectN( 1 ).base_value() ) );
+    }
 
     if ( p()->talents.arms.just_warming_up.ok() )
       p()->resource_gain(RESOURCE_RAGE, p()->talents.arms.just_warming_up->effectN( 1 ).resource( RESOURCE_RAGE ), p()->gain.just_warming_up );
