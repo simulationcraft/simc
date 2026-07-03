@@ -21200,6 +21200,24 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 40620 | Target: at Area (87)
 Description      : $@spelldesc1267203
 
+Name             : Vanguard (id=1268810) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Range            : 30 yards
+Duration         : 20 seconds
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Attributes       : Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1280331)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Your next Avenger's Shield will leave an echoing bolt of light.
+Tooltip          : Your next Avenger's Shield will leave an echoing bolt of light.
+
 Name             : Glory of the Vanguard (id=1269142) [Spell Family (10), Hidden] 
 Class            : Paladin
 School           : Holy
