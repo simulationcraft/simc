@@ -3955,10 +3955,10 @@ struct thunder_blast_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p()->talents.warrior.rend.ok() )
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p()->talents.warrior.rend.ok() && rend )
       rend->execute_on_target( state->target );
 
-    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.warrior.blood_and_thunder.ok() )
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.warrior.blood_and_thunder.ok() && rend )
       rend->execute_on_target( state->target );
   }
 
@@ -4070,10 +4070,10 @@ struct thunder_clap_t : public warrior_attack_t
   {
     warrior_attack_t::impact( state );
 
-    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p()->talents.warrior.rend.ok() )
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p()->talents.warrior.rend.ok() && rend )
       rend->execute_on_target( state->target );
 
-    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.warrior.blood_and_thunder.ok() )
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.warrior.blood_and_thunder.ok() && rend )
       rend->execute_on_target( state->target );
   }
 
