@@ -131,6 +131,7 @@ struct warrior_td_t : public actor_target_data_t
   buff_t* debuffs_honed_reflexes;
   buff_t* debuffs_taunt;
   buff_t* debuffs_punish;
+  buff_t* debuffs_ravaged;
   buff_t* debuffs_callous_reprisal;
   buff_t* debuffs_overwhelmed;
   buff_t* debuffs_wrecked;  // Dominance of the Colossus
@@ -414,6 +415,7 @@ public:
     const spell_data_t* taunt;
     const spell_data_t* victory_rush;
     const spell_data_t* whirlwind;
+    const spell_data_t* ravaged_debuff;
 
     // Arms
     const spell_data_t* heroic_strike;
@@ -2218,10 +2220,7 @@ struct rend_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      make_event<delayed_execute_event_t>( *sim, p(), rend_dot,  s->target, timespan_t::from_millis(p()->talents.warrior.rend->effectN( 2 ).misc_value1() ) );
-    else
-      rend_dot->execute_on_target( s->target );
+    rend_dot->execute_on_target( s->target );
   }
 
   bool ready() override
@@ -5681,13 +5680,24 @@ struct ravager_tick_t : public warrior_attack_t
     background = true;
   }
 
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      td( state->target )->debuffs_ravaged->trigger();
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
 
     if ( execute_state->n_targets > 0 )
     {
-      p()->resource_gain( RESOURCE_RAGE, rage_from_ravager, p()->gain.ravager, this );
+      if( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+        p()->resource_gain( RESOURCE_RAGE, rage_from_ravager, p()->gain.ravager, this );
+      else if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->specialization() == WARRIOR_PROTECTION )
+        p()->resource_gain( RESOURCE_RAGE, rage_from_ravager, p()->gain.ravager, this );
     }
   }
 };
@@ -5704,15 +5714,25 @@ struct ravager_t : public warrior_attack_t
       num_ticks( 0 )
   {
     parse_options( options_str );
-    ignore_false_positive   = true;
-    hasted_ticks            = true;
-    ground_aoe              = true;
-    base_tick_time = dot_duration = 0_ms;  // Handled by event
-    radius     = data().effectN( 2 ).radius_max();
-    internal_cooldown->duration = 0_s; // allow Anger Management to reduce the cd properly due to having both charges and cooldown entries
-    attack_power_mod.direct = attack_power_mod.tick = 0;
-    duration = p->buff.ravager->data().duration();
-    num_ticks = 6;  // Not in spelldata, can be found in the variables in 228920
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+    {
+      ignore_false_positive   = true;
+      hasted_ticks            = true;
+      ground_aoe              = true;
+      base_tick_time = dot_duration = 0_ms;  // Handled by event
+      radius     = data().effectN( 2 ).radius_max();
+      internal_cooldown->duration = 0_s; // allow Anger Management to reduce the cd properly due to having both charges and cooldown entries
+      attack_power_mod.direct = attack_power_mod.tick = 0;
+      duration = p->buff.ravager->data().duration();
+      num_ticks = 6;  // Not in spelldata, can be found in the variables in 228920
+    }
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+    {
+      ground_aoe = true;
+      internal_cooldown->duration = 0_s;
+      duration = p->spell.ravager->duration();
+      base_tick_time = dot_duration = 0_ms; // Handled by the event
+    }
 
     add_child( ravager );
   }
@@ -5722,16 +5742,28 @@ struct ravager_t : public warrior_attack_t
     : warrior_attack_t( name, p, p->spell.ravager ),
     ravager( new ravager_tick_t( p, "ravager_tick_whirling_blade" ) )
     {
-      ignore_false_positive = true;
-      hasted_ticks = true;
-      ground_aoe = true;
-      base_tick_time = dot_duration = 0_ms; // Handled by the event
-      radius = data().effectN( 2 ).radius_max();
-      internal_cooldown->duration = 0_s;
-      attack_power_mod.direct = attack_power_mod.tick = 0;
-      duration = p->talents.protection.whirling_blade->effectN( 1 ).time_value();
-      num_ticks = 2;  // Not in spelldata, but we get 2 ticks from the 4s buff.
-      cooldown->duration = 0_ms;  // No cooldown for whirling blade
+      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+      {
+        ignore_false_positive = true;
+        hasted_ticks = true;
+        ground_aoe = true;
+        base_tick_time = dot_duration = 0_ms; // Handled by the event
+        radius = data().effectN( 2 ).radius_max();
+        internal_cooldown->duration = 0_s;
+        attack_power_mod.direct = attack_power_mod.tick = 0;
+        duration = p->talents.protection.whirling_blade->effectN( 1 ).time_value();
+        num_ticks = 2;  // Not in spelldata, but we get 2 ticks from the 4s buff.
+        cooldown->duration = 0_ms;  // No cooldown for whirling blade
+      }
+
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        ground_aoe = true;
+        internal_cooldown->duration = 0_s;
+        cooldown->duration = 0_ms;  // No cooldown for whirling blade
+        duration = p->talents.protection.whirling_blade->effectN( 1 ).time_value();
+        base_tick_time = dot_duration = 0_ms; // Handled by the event
+      }
 
       add_child( ravager );
     }
@@ -5745,13 +5777,23 @@ struct ravager_t : public warrior_attack_t
     stats->action_list.push_back( ravager );
   }
 
+  void impact( action_state_t* state ) override
+  {
+    warrior_attack_t::impact( state );
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      td( state->target )->debuffs_ravaged->trigger();
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
 
-    p()->buff.ravager->trigger( duration * p()->cache.attack_haste() );
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+    {
+      p()->buff.ravager->trigger( duration * p()->cache.attack_haste() );
 
-    make_event<ground_aoe_event_t>(
+      make_event<ground_aoe_event_t>(
       *sim, p(),
       ground_aoe_params_t()
           .target( target )
@@ -5762,6 +5804,21 @@ struct ravager_t : public warrior_attack_t
           .x( target->x_position )
           .y( target->y_position ),
         false /* Immediate pulse */ );
+    }
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+    {
+      make_event<ground_aoe_event_t>(
+      *sim, p(),
+      ground_aoe_params_t()
+          .target( target )
+          .duration( duration )
+          .pulse_time( p()->spell.ravager->effectN( 2 ).period() )
+          .action( ravager )
+          .x( target->x_position )
+          .y( target->y_position ),
+        false /* Immediate pulse */ );
+    }
   }
 
   timespan_t compute_tick_time() const
@@ -7206,6 +7263,7 @@ void warrior_t::init_spells()
   spell.whirlwind               = find_class_spell( "Whirlwind" );
   spell.shield_block_buff       = find_spell( 132404 );
   spell.recklessness_buff       = find_spell( 1719 ); // lookup to allow Warlord to use Reck
+  spell.ravaged_debuff          = find_spell( 1299405 );
 
   // Class Passives
   spec.warrior                  = find_spell( 137047 );
@@ -8043,6 +8101,8 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this, &p );
 
   debuffs_punish = make_buff( *this, "punish", p.talents.protection.punish -> effectN( 2 ).trigger() );
+
+  debuffs_ravaged = make_buff( *this, "ravaged", p.spell.ravaged_debuff );
 
   debuffs_taunt = make_buff( *this, "taunt", p.find_class_spell( "Taunt" ) );
 
@@ -9291,6 +9351,10 @@ void warrior_t::parse_player_effects()
   parse_effects( buff.spell_reflection );
 
   parse_target_effects( d_fn( &warrior_td_t::debuffs_honed_reflexes ), talents.warrior.honed_reflexes->effectN( 5 ).trigger() );
+
+  // Arms and Prot both benefit from ravaged debuff
+  if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+    parse_target_effects( d_fn( &warrior_td_t::debuffs_ravaged ), spell.ravager->effectN( 3 ).trigger() );
 
   if ( specialization() == WARRIOR_ARMS )
   {
