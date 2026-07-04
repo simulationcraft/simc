@@ -7518,8 +7518,8 @@ public:
 
   player_t* create_player( sim_t* sim, std::string_view name, race_e r = RACE_NONE ) const override
   {
-    // TODO: Remove PTR check and the live mage file
-    if ( sim->dbc->ptr )
+    // TODO: Remove version check and the live mage file
+    if ( sim->dbc->wowv() >= wowv_t{ 12, 1, 0 } )
     {
       auto p = new mage_t( sim, name, r );
       p->report_extension = std::make_unique<mage_report_t>( *p );
