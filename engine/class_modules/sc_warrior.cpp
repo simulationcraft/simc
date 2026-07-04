@@ -3419,10 +3419,30 @@ struct charge_t : public warrior_attack_t
 };
 
 // Slam =====================================================================
+struct concussive_slam_t : public warrior_attack_t
+{
+  concussive_slam_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->find_spell( 1300660 ) )
+    {
+      background = true;
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 2 ).base_value();
+      target_filter_callback = secondary_targets_only();
+    }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+    if ( execute_state->result == RESULT_CRIT && p()->talents.arms.mortal_wounds->ok() )
+      p()->active.deep_wounds->execute_on_target( s->target );
+  }
+};
+
 struct slam_base_t : public warrior_attack_t
 {
   bool from_fervor;
   int aoe_targets;
+  action_t* concussive_slam;
   slam_base_t( std::string_view n, warrior_t* p, const spell_data_t* s )
     : warrior_attack_t( n, p, s ), from_fervor( false ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) )
@@ -3433,6 +3453,9 @@ struct slam_base_t : public warrior_attack_t
     {
       base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
     }
+
+    if ( p->sets->has_set_bonus( WARRIOR_ARMS, MID2, B2 ) )
+      concussive_slam = get_action<concussive_slam_t>( "concussive_slam", p );
   }
 
   slam_base_t( std::string_view n, warrior_t* p, const spell_data_t* s, std::string_view options_str )
@@ -3492,6 +3515,9 @@ struct slam_base_t : public warrior_attack_t
 
     if ( p()->talents.arms.martial_prowess.ok() )
       p()->buff.martial_prowess->trigger();
+
+    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, MID2, B2 ) )
+      concussive_slam->execute();
   }
 
   bool ready() override
