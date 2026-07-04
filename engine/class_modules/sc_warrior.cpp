@@ -1052,7 +1052,8 @@ public:
         parse_effects( p()->mastery.master_of_arms );
 
       parse_effects( p()->buff.collateral_damage );
-      parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 4 ) );
+      if ( ab::sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+        parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 4 ) );
       parse_effects( p()->buff.executioners_precision );
       parse_effects( p()->buff.martial_prowess );
       parse_effects( p()->buff.master_of_warfare );
@@ -1096,7 +1097,7 @@ public:
       parse_effects( p()->buff.revenge );
 
       parse_effects( p()->buff.best_served_cold );
-      if ( p()->talents.protection.ravager.ok() || p()->talents.protection.whirling_blade.ok() )
+      if ( ab::sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && ( p()->talents.protection.ravager.ok() || p()->talents.protection.whirling_blade.ok() ) )
         parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 5 ) );
 
       parse_effects( p()->buff.shield_block, effect_mask_t( false ).enable( 2, 4 ) );
@@ -1626,9 +1627,9 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
   {
     warrior_action_t::impact( s );
 
-    if ( p()->talents.protection.whirling_blade->ok() &&
-            s->target == p()->target && p()->rppm.whirling_blade->trigger() &&
-            sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && 
+            p()->talents.protection.whirling_blade->ok() &&
+            s->target == p()->target && p()->rppm.whirling_blade->trigger() )
     {
       p()->active.ravager_whirling_blade->execute_on_target( s->target );
     }
@@ -1637,10 +1638,10 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
       return;
 
     // Tested July 4th 2026 on ptr
-    if ( p()->talents.protection.whirling_blade->ok() &&
-            s->target == p()->target && p()->rppm.whirling_blade->trigger() &&
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) &&
             !background &&
-            sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+            p()->talents.protection.whirling_blade->ok() &&
+            s->target == p()->target && p()->rppm.whirling_blade->trigger() )
     {
       p()->active.ravager_whirling_blade->execute_on_target( s->target );
     }
@@ -5680,9 +5681,11 @@ struct rampage_parent_t : public warrior_attack_t
 struct ravager_tick_t : public warrior_attack_t
 {
   double rage_from_ravager;
-  ravager_tick_t( warrior_t* p, util::string_view name )
+  timespan_t ravaged_debuff_duration;
+  ravager_tick_t( warrior_t* p, util::string_view name, timespan_t ravaged_debuff_duration )
     : warrior_attack_t( name, p, p->find_spell( 156287 ) ),
-      rage_from_ravager( p->specialization() == WARRIOR_PROTECTION ? p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE ) : 0 )
+      rage_from_ravager( p->specialization() == WARRIOR_PROTECTION ? p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE ) : 0 ),
+      ravaged_debuff_duration( ravaged_debuff_duration )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
@@ -5695,7 +5698,7 @@ struct ravager_tick_t : public warrior_attack_t
     warrior_attack_t::impact( state );
 
     if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      td( state->target )->debuffs_ravaged->trigger();
+      td( state->target )->debuffs_ravaged->trigger( ravaged_debuff_duration );
   }
 
   void execute() override
@@ -5719,7 +5722,7 @@ struct ravager_t : public warrior_attack_t
   int num_ticks;
   ravager_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "ravager", p, p->talents.shared.ravager ),
-      ravager( new ravager_tick_t( p, "ravager_tick" ) ),
+      ravager( new ravager_tick_t( p, "ravager_tick", p->spell.ravager->duration() ) ),
       duration( 0_s ),
       num_ticks( 0 )
   {
@@ -5750,7 +5753,7 @@ struct ravager_t : public warrior_attack_t
   // This background version is strictly for use with whirling blade talent
   ravager_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, p->spell.ravager ),
-    ravager( new ravager_tick_t( p, "ravager_tick_whirling_blade" ) )
+    ravager( new ravager_tick_t( p, "ravager_tick_whirling_blade", p->talents.protection.whirling_blade->effectN( 1 ).time_value() ) )
     {
       if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
       {
@@ -5792,7 +5795,7 @@ struct ravager_t : public warrior_attack_t
     warrior_attack_t::impact( state );
 
     if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      td( state->target )->debuffs_ravaged->trigger();
+      td( state->target )->debuffs_ravaged->trigger( duration );
   }
 
   void execute() override
