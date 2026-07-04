@@ -1,17 +1,4 @@
 // ==========================================================================
-// Dedmonwakeen's DPS-DPM Simulator.
-// Send questions to natehieter@gmail.com
-// ==========================================================================
-
-#include "simulationcraft.hpp"
-#include "util/util.hpp"
-#include "class_modules/apl/mage.hpp"
-#include "report/charts.hpp"
-#include "report/highchart.hpp"
-
-namespace {
-
-// ==========================================================================
 // Mage
 // ==========================================================================
 
@@ -406,7 +393,6 @@ public:
     proc_t* freezing_applied;
     proc_t* freezing_expired;
     proc_t* freezing_overflow;
-    proc_t* icicle_from_set_bonus;
   } procs;
 
   struct accumulated_rngs_t
@@ -416,11 +402,6 @@ public:
     accumulated_rng_t* spellfire_spheres;
     accumulated_rng_t* augury_abounds;
   } accumulated_rng;
-
-  struct rppms_t
-  {
-    real_ppm_t* glacial_spike_set_bonus = nullptr;
-  } rppm;
 
   // Sample data
   struct sample_data_t
@@ -2393,16 +2374,6 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     return custom_state_spell_t::execute_time();
   }
 
-  double execute_time_pct_multiplier() const override
-  {
-    double m = custom_state_spell_t::execute_time_pct_multiplier();
-
-    if ( p()->buffs.pyroclasm->check() )
-      m *= 1.0 + p()->buffs.pyroclasm->data().effectN( 3 ).percent();
-
-    return m;
-  }
-
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     cast_state( s )->data.hot_streak = last_hot_streak;
@@ -2414,11 +2385,6 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     double c = custom_state_spell_t::composite_crit_chance();
 
     c += p()->buffs.hyperthermia->check_value();
-
-    if ( p()->buffs.pyroclasm->check() )
-      // Spelldata suggests this is a percent modifier, meaning it should
-      // double the crit chance, but in actuality, it makes it guaranteed.
-      c += p()->buffs.pyroclasm->data().effectN( 2 ).percent();
 
     return c;
   }
@@ -4270,16 +4236,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
     p()->buffs.glacial_spike->decrement();
-
-    // The buff can be up without actually having a full stack of Icicles (e.g., granted directly
-    // by the 12.1 set bonus), in which case casting Glacial Spike does not consume any icicles below 5,
-    // but does actually consume them at exactly 5 icicles, thus munching the one you would've gotten.
-    int max_icicles = as<int>( p()->talents.icicles->effectN( 2 ).base_value() );
-    if ( p()->state.icicles == max_icicles )
-      p()->state.icicles = 0;
-
-    if ( p()->rppm.glacial_spike_set_bonus && p()->rppm.glacial_spike_set_bonus->trigger() )
-      p()->buffs.glacial_spike->trigger();
+    p()->state.icicles = 0;
 
     p()->trigger_brain_freeze( bf_chance, proc_brain_freeze, 150_ms );
     p()->trigger_fof( fof_chance, proc_fof );
@@ -5641,7 +5598,6 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   pets(),
   procs(),
   accumulated_rng(),
-  rppm(),
   sample_data(),
   spec(),
   state(),
@@ -6519,7 +6475,6 @@ void mage_t::init_procs()
       procs.freezing_applied  = get_proc( "Freezing applied" );
       procs.freezing_expired  = get_proc( "Freezing expired" );
       procs.freezing_overflow = get_proc( "Freezing overflow" );
-      procs.icicle_from_set_bonus = get_proc( "Icicle from 12.1 2pc Set Bonus" );
       break;
     default:
       break;
@@ -6571,9 +6526,6 @@ void mage_t::init_uptimes()
 void mage_t::init_rng()
 {
   player_t::init_rng();
-
-  if ( sets->has_set_bonus( MAGE_FROST, MID2, B4 ) )
-    rppm.glacial_spike_set_bonus = get_rppm( "glacial_spike_set_bonus", sets->set( MAGE_FROST, MID2, B4 ) );
 
   // Accumulated RNG is also not present in the game data.
   // TODO: Double check that this RNG is the same in Midnight.
@@ -7096,22 +7048,6 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
       debuff->refresh();
   }
 
-  if ( shatter_stacks > 0 && sets->has_set_bonus( MAGE_FROST, MID2, B2 ) )
-  {
-    double chance = sets->set( MAGE_FROST, MID2, B2 )->effectN( 2 ).percent();
-    for ( int i = 0; i < shatter_stacks; i++ )
-    {
-      if ( rng().roll( chance ) )
-      {
-        procs.icicle_from_set_bonus->occur();
-        // Icicles generated this way cannot grant the Glacial Spike buff on their own,
-        // the player still has to wait for the cyclic icicles proc to gain the buff.
-        // This is likely a bug.
-        trigger_icicle( 1, !bugs );
-      }
-    }
-  }
-
   return shatter_stacks;
 }
 
@@ -7502,67 +7438,3 @@ public:
 private:
   mage_t& p;
 };
-
-namespace live_mage {
-#include "class_modules/sc_mage_live.inc"
-}
-
-// MAGE MODULE INTERFACE ====================================================
-
-struct mage_module_t final : public module_t
-{
-public:
-  mage_module_t() :
-    module_t( MAGE )
-  { }
-
-  player_t* create_player( sim_t* sim, std::string_view name, race_e r = RACE_NONE ) const override
-  {
-    // TODO: Remove PTR check and the live mage file
-    if ( sim->dbc->ptr )
-    {
-      auto p = new mage_t( sim, name, r );
-      p->report_extension = std::make_unique<mage_report_t>( *p );
-      return p;
-    }
-    else
-    {
-      auto p = new live_mage::mage_t( sim, name, r );
-      p->report_extension = std::make_unique<live_mage::mage_report_t>( *p );
-      return p;
-    }
-  }
-
-  void register_hotfixes() const override
-  {
-    hotfix::register_spell( "Mage", "2017-03-20", "Manually set Frozen Orb's travel speed.", 84714 )
-      .field( "prj_speed" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 20.0 )
-      .verification_value( 0.0 );
-
-    hotfix::register_spell( "Mage", "2017-06-21", "Ice Lance is slower than spell data suggests.", 30455 )
-      .field( "prj_speed" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 47.0 )
-      .verification_value( 50.0 );
-
-    hotfix::register_spell( "Mage", "2025-06-28", "Manually set Arcane Orb's travel speed.", 153626 )
-      .field( "prj_speed" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 30.0 )
-      .verification_value( 0.0 );
-  }
-
-  bool valid() const override { return true; }
-
-  void register_actor_initializers( sim_t* ) const override {}
-};
-
-}  // UNNAMED NAMESPACE
-
-const module_t* module_t::mage()
-{
-  static mage_module_t m;
-  return &m;
-}
