@@ -1627,13 +1627,23 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     warrior_action_t::impact( s );
 
     if ( p()->talents.protection.whirling_blade->ok() &&
-            s->target == p()->target && p()->rppm.whirling_blade->trigger() )
+            s->target == p()->target && p()->rppm.whirling_blade->trigger() &&
+            sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
     {
       p()->active.ravager_whirling_blade->execute_on_target( s->target );
     }
 
     if ( !special )  // Procs below only trigger on special attacks, not autos
       return;
+
+    // Tested July 4th 2026 on ptr
+    if ( p()->talents.protection.whirling_blade->ok() &&
+            s->target == p()->target && p()->rppm.whirling_blade->trigger() &&
+            !background &&
+            sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+    {
+      p()->active.ravager_whirling_blade->execute_on_target( s->target );
+    }
 
     // TODO confirm slayers strike proc rate, currently this is just reading 15% from effect 1
     // However, I am pretty sure this is using pseudo_random_c_from_p from dk module
