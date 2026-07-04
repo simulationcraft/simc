@@ -107,7 +107,7 @@ bool profileset_controller_t::register_controller( std::string key, profileset_c
 {
   if ( factory.find( key ) != factory.end() )
     return false;
-  factory.emplace( key, std::move( value ) );
+  factory.emplace( key, value );
   return true;
 }
 
