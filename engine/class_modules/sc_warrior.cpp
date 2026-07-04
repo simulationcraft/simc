@@ -421,6 +421,7 @@ public:
     const spell_data_t* heroic_strike;
     const spell_data_t* master_of_warfare_2_buff;
     const spell_data_t* battlelord_buff;
+    const spell_data_t* rend_dot;
 
     // Fury
 
@@ -1149,6 +1150,8 @@ public:
     // Shared
 
     // Arms
+    if ( ab::sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      parse_target_effects( d_fn( &warrior_td_t::dots_rend ), p()->spell.rend_dot );
 
     // Fury
 
@@ -1289,7 +1292,7 @@ public:
     ab::execute();
 
     // 388539 is the rend dot for arms.  Collateral damage is not procced from it, but is procced from other background actions like demolish
-    if ( affected_by.sweeping_strikes && p()->talents.arms.collateral_damage.ok() && p()->buff.sweeping_strikes->up() && ab::num_targets_hit >= 2 && !(ab::data().id() == 388539) )
+    if ( affected_by.sweeping_strikes && p()->talents.arms.collateral_damage.ok() && p()->buff.sweeping_strikes->up() && ab::num_targets_hit >= 2 && !( ab::data().id() == 388539 ) )
       p()->buff.collateral_damage->trigger();
 
     if ( affected_by.sweeping_strikes && p()->buff.sweeping_strikes->up() && ab::num_targets_hit >= 2 )
@@ -2197,7 +2200,7 @@ struct rend_dot_t : public warrior_attack_t
 {
   double bloodsurge_chance, rage_from_bloodsurge;
   rend_dot_t( warrior_t* p )
-    : warrior_attack_t( "rend_dot", p, p->find_spell( 388539 ) ),
+    : warrior_attack_t( "rend_dot", p, p->spell.rend_dot ),
       bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
       rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
   {
@@ -7294,6 +7297,7 @@ void warrior_t::init_spells()
   spell.heroic_strike           = find_spell( 1269383 );
   spell.master_of_warfare_2_buff= find_spell( 1269394 );
   spell.battlelord_buff         = find_spell( 386631 );
+  spell.rend_dot                = find_spell( 388539 );
 
   // Fury Spells
   mastery.unshackled_fury       = find_mastery_spell( WARRIOR_FURY );
