@@ -2388,6 +2388,18 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     return c;
   }
 
+  double composite_crit_chance_multiplier() const override
+  {
+    double m = custom_state_spell_t::composite_crit_chance_multiplier();
+
+    // While Pyroclasm is up, it doubles the crit chance of all instant Hot Streak spells.
+    // TODO: This is definitely a bug
+    if ( p()->bugs && p()->buffs.pyroclasm->check() && !pyroclasm_active() )
+      m *= 1.0 + p()->buffs.pyroclasm->data().effectN( 2 ).percent();
+
+    return m;
+  }
+
   result_e calculate_result( action_state_t* s ) const override
   {
     result_e r = custom_state_spell_t::calculate_result( s );
