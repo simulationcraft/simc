@@ -3067,7 +3067,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = !echo;
-    reduced_aoe_targets = data().effectN( 3 ).base_value();
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
 
     if ( echo )
     {
@@ -3084,27 +3084,16 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     }
   }
 
-  double cost_pct_multiplier() const override
-  {
-    double c = arcane_mage_spell_t::cost_pct_multiplier();
-
-    c *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 5 ).percent();
-
-    return c;
-  }
-
   void execute() override
   {
     p()->benefits.arcane_charge.arcane_pulse->update();
 
-    // TODO: radius increase?
     arcane_mage_spell_t::execute();
 
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
 
     // In-game, Arcane Pulse internally sets a target it hits as a "Background Target",
     // resulting in all of Pulse's background effects to be directed towards them.
-    // TODO: If we're implementing the radius, revise this to use the spell's target list instead.
     player_t* effect_target = target;
     if ( !background )
     {
@@ -3115,15 +3104,6 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
 
     if ( arcane_pulse_echo && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
       make_event( *sim, 500_ms, [ this, t = effect_target ] { arcane_pulse_echo->execute_on_target( t ); } );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = arcane_mage_spell_t::action_multiplier();
-
-    am *= arcane_charge_multiplier();
-
-    return am;
   }
 };
 
