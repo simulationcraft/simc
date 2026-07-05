@@ -261,7 +261,6 @@ public:
     {
       std::unique_ptr<buff_stack_benefit_t> arcane_barrage;
       std::unique_ptr<buff_stack_benefit_t> arcane_blast;
-      std::unique_ptr<buff_stack_benefit_t> arcane_pulse;
     } arcane_charge;
   } benefits;
 
@@ -2923,7 +2922,7 @@ struct prismatic_bolt_aoe_t final : public arcane_mage_spell_t
   prismatic_bolt_aoe_t( std::string_view n, mage_t* p ) :
     arcane_mage_spell_t( n, p, p->find_spell( 1295939 ) )
   {
-    background = true;
+    background = proc = true;
     aoe = -1;
     reduced_aoe_targets = p->find_spell( 1295924 )->effectN( 4 ).base_value();
     target_filter_callback = secondary_targets_only();
@@ -2996,9 +2995,11 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
 struct arcane_pulse_t final : public arcane_mage_spell_t
 {
   action_t* arcane_pulse_echo = nullptr;
+  const int energize_value;
 
   arcane_pulse_t( std::string_view n, mage_t* p, std::string_view options_str, bool echo = false ) :
-    arcane_mage_spell_t( n, p, echo ? p->find_spell( 1243460 ) : p->talents.arcane_pulse )
+    arcane_mage_spell_t( n, p, echo ? p->find_spell( 1243460 ) : p->talents.arcane_pulse ),
+    energize_value( as<int>( p->find_spell( 1295977 )->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
     aoe = -1;
@@ -3022,11 +3023,13 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
 
   void execute() override
   {
-    p()->benefits.arcane_charge.arcane_pulse->update();
-
     arcane_mage_spell_t::execute();
 
-    p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
+    int energize = energize_value;
+    // TODO: With Impetus, Echo triggers an additional AC per target
+    if ( background && p()->bugs && p()->talents.impetus )
+      energize += 1;
+    p()->trigger_arcane_charge( energize * num_targets_hit );
 
     // In-game, Arcane Pulse internally sets a target it hits as a "Background Target",
     // resulting in all of Pulse's background effects to be directed towards them.
@@ -3036,10 +3039,22 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
       p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
       effect_target = rng().range( target_list() );
       p()->trigger_splinter( effect_target );
+
+      // Echo benefits but does not consume Cumulative Power
+      p()->buffs.cumulative_power->expire();
     }
 
     if ( arcane_pulse_echo && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
       make_event( *sim, 500_ms, [ this, t = effect_target ] { arcane_pulse_echo->execute_on_target( t ); } );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = arcane_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.cumulative_power->check_stack_value();
+
+    return am;
   }
 };
 
@@ -6524,7 +6539,6 @@ void mage_t::init_benefits()
     case MAGE_ARCANE:
       benefits.arcane_charge.arcane_barrage = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Arcane Barrage" );
       benefits.arcane_charge.arcane_blast = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Arcane Blast" );
-      benefits.arcane_charge.arcane_pulse = std::make_unique<buff_stack_benefit_t>( buffs.arcane_charge, "Arcane Pulse" );
       break;
     default:
       break;
