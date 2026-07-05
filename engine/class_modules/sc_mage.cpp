@@ -866,6 +866,7 @@ public:
   double composite_player_multiplier( school_e ) const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_spell_crit_chance() const override;
+  double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double composite_attribute_multiplier( attribute_e ) const override;
   void arise() override;
   void combat_begin() override;
@@ -6390,7 +6391,7 @@ void mage_t::create_buffs()
   buffs.glacial_spike      = make_buff( this, "glacial_spike", find_spell( 1222865 ) )
                                ->set_chance( talents.icicles.ok() );
   buffs.hand_of_frost      = make_buff( this, "hand_of_frost", find_spell( 1263263 ) )
-                               ->set_default_value_from_effect( 1 )
+                               ->set_default_value( 0.1 * talents.hand_of_frost_2->effectN( 2 ).percent() )
                                ->set_chance( talents.hand_of_frost_2.ok() );
   buffs.permafrost_lances  = make_buff( this, "permafrost_lances", find_spell( 455122 ) )
                                ->set_default_value_from_effect( 1 )
@@ -6777,6 +6778,15 @@ double mage_t::composite_spell_crit_chance() const
   }
 
   return c;
+}
+
+double mage_t::composite_player_pet_damage_multiplier(const action_state_t* s, bool guardian) const
+{
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
+
+  m *= 1.0 + buffs.hand_of_frost->check_stack_value();
+
+  return m;
 }
 
 void mage_t::reset()
