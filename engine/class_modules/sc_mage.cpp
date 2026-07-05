@@ -6392,6 +6392,8 @@ void mage_t::create_buffs()
                                ->set_chance( talents.icicles.ok() );
   buffs.hand_of_frost      = make_buff( this, "hand_of_frost", find_spell( 1263263 ) )
                                ->set_default_value( 0.1 * talents.hand_of_frost_2->effectN( 2 ).percent() )
+                               ->add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
+                               ->add_invalidate( CACHE_GUARDIAN_DAMAGE_MULTIPLIER )
                                ->set_chance( talents.hand_of_frost_2.ok() );
   buffs.permafrost_lances  = make_buff( this, "permafrost_lances", find_spell( 455122 ) )
                                ->set_default_value_from_effect( 1 )
