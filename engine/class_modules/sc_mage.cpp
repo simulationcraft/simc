@@ -319,7 +319,6 @@ public:
     buff_t* glorious_incandescence;
     buff_t* hyperthermia;
     buff_t* hyperthermia_damage;
-    buff_t* lesser_time_warp;
     buff_t* mana_cascade;
     buff_t* spellfire_sphere;
 
@@ -911,7 +910,6 @@ public:
   bool trigger_crowd_control( const action_state_t* s, spell_mechanic type );
   bool trigger_clearcasting( double chance = 1.0, bool allow_predict = true, bool has_double_proc_delay = false );
   bool trigger_fof( double chance, proc_t* source, int stacks = 1 );
-  void trigger_mana_cascade();
   void trigger_fired_up();
   void trigger_cinderstorm( player_t* target );
   void trigger_merged_buff( buff_t* buff, bool trigger );
@@ -1113,12 +1111,18 @@ struct arcane_phoenix_spell_t : public mage_pet_spell_t
     base_costs[ RESOURCE_MANA ] = 0;
   }
 
-  void init() override
+  void execute() override
   {
-    if ( initialized )
-      return;
+    mage_pet_spell_t::execute();
 
-    mage_pet_spell_t::init();
+    const auto& aoi = o()->talents.ashes_of_inspiration;
+    if ( aoi.ok() )
+    {
+      int stacks = as<int>( aoi->effectN( 1 ).base_value() );
+      if ( exceptional )
+        stacks += as<int>( aoi->effectN( 2 ).base_value() );
+      o()->buffs.mana_cascade->trigger( stacks );
+    }
   }
 
   double action_multiplier() const override
@@ -1265,8 +1269,6 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
 
     // TODO: Move all of this to Arcane Surge/Combustion expire; these effects happen even when
     // not talented into Arcane Phoenix
-    o()->buffs.lesser_time_warp->trigger();
-
     if ( !o()->talents.memory_of_alar.ok() )
       return;
 
@@ -1876,7 +1878,7 @@ public:
       make_event( *sim, [ this ] { p()->buffs.frostfire_empowerment->trigger(); } );
 
     if ( triggers.mana_cascade && p()->specialization() == MAGE_ARCANE )
-      p()->trigger_mana_cascade();
+      p()->buffs.mana_cascade->trigger();
 
     if ( triggers.spellfire_sphere )
       p()->trigger_spellfire_sphere( MAGE_ARCANE, background );
@@ -2441,7 +2443,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
       p()->buffs.hot_streak->decrement();
       p()->buffs.pyroclasm->trigger();
 
-      p()->trigger_mana_cascade();
+      p()->buffs.mana_cascade->trigger();
     }
 
     // TODO: Pyromaniac seems to proc regardless of Hot Streak state
@@ -2451,7 +2453,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
       p()->trigger_fired_up();
       p()->trigger_spellfire_sphere( MAGE_FIRE );
-      p()->trigger_mana_cascade();
+      p()->buffs.mana_cascade->trigger();
 
       assert( pyromaniac_action );
       // Pyromaniac Pyroblast actually casts on the Mage's target, but that is probably a bug.
@@ -6418,10 +6420,6 @@ void mage_t::create_buffs()
                                      { if ( cur == 0 ) buffs.hyperthermia_damage->expire(); } );
   buffs.hyperthermia_damage    = make_buff( this, "hyperthermia_damage", find_spell( 1242220 ) )
                                    ->set_default_value_from_effect( 1 );
-  buffs.lesser_time_warp       = make_buff( this, "lesser_time_warp", find_spell( 1260277 ) )
-                                   ->set_default_value_from_effect( specialization() == MAGE_FIRE ? 2 : 1 )
-                                   ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                   ->set_chance( talents.ashes_of_inspiration.ok() );
   buffs.mana_cascade           = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
                                    ->set_default_value_from_effect( 2, 0.001 )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -7100,18 +7098,6 @@ void mage_t::trigger_icicle( int count, bool grant_buff )
   state.icicles = std::min( state.icicles + count, max_icicles );
   if ( grant_buff && state.icicles == max_icicles )
     buffs.glacial_spike->trigger();
-}
-
-// TODO: Does this still have bugs with Pyromaniac?
-void mage_t::trigger_mana_cascade()
-{
-  if ( !talents.mana_cascade.ok() )
-    return;
-
-  // This is still tied to the pet despite the other effects (Ashes of Inspiration,
-  // Memory of Al'ar) being moved to Arcane Surge/Combustion.
-  int stacks = pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() && talents.memory_of_alar.ok() ? 2 : 1;
-  buffs.mana_cascade->trigger( stacks );
 }
 
 void mage_t::trigger_fired_up()
