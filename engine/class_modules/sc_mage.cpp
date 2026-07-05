@@ -3238,7 +3238,7 @@ struct arcane_missiles_t final : public custom_state_spell_t<arcane_mage_spell_t
     may_miss = false;
     tick_zero = channeled = true;
     affected_by.clearcasting = true;
-    triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = true;
+    triggers.clearcasting = triggers.spellfire_sphere = true;
     tick_action = get_action<arcane_missiles_tick_t>( "arcane_missiles_tick", p );
   }
 
@@ -3359,7 +3359,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
-    triggers.spellfire_sphere = triggers.mana_cascade = true;
+    triggers.spellfire_sphere = true;
   }
 
   double action_multiplier() const override
