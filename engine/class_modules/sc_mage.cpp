@@ -109,7 +109,6 @@ struct mage_td_t final : public actor_target_data_t
     buff_t* freezing;
     buff_t* freezing_winds;
     buff_t* molten_fury;
-    buff_t* touch_of_the_archmage;
     buff_t* touch_of_the_magi;
   } debuffs;
 
@@ -243,7 +242,6 @@ public:
     action_t* pet_freeze;
     action_t* pet_water_jet;
     action_t* splinter;
-    action_t* touch_of_the_archmage;
     action_t* touch_of_the_magi_explosion;
     action_t* winters_end;
 
@@ -276,11 +274,13 @@ public:
     buff_t* arcane_salvo;
     buff_t* arcane_surge;
     buff_t* clearcasting;
+    buff_t* cumulative_power;
     buff_t* enlightened;
     buff_t* evocation;
     buff_t* intuition;
     buff_t* overpowered_missiles;
     buff_t* presence_of_mind;
+    buff_t* prismatic_bolt;
 
 
     // Fire
@@ -586,7 +586,7 @@ public:
     player_talent_t impetus;
 
     // Row 8
-    player_talent_t touch_of_the_archmage_1;
+    player_talent_t prismatic_bolt_1;
     player_talent_t evocation;
     player_talent_t mana_adept;
     player_talent_t enlightened;
@@ -594,13 +594,13 @@ public:
     player_talent_t illuminated_thoughts;
 
     // Row 9
-    player_talent_t touch_of_the_archmage_2;
+    player_talent_t prismatic_bolt_2;
     player_talent_t prodigious_savant;
     player_talent_t eureka;
     player_talent_t arcane_singularity;
 
     // Row 10
-    player_talent_t touch_of_the_archmage_3;
+    player_talent_t prismatic_bolt_3;
     player_talent_t charged_missiles;
     player_talent_t high_voltage;
     player_talent_t overflowing_insight;
@@ -1422,13 +1422,6 @@ struct touch_of_the_magi_t final : public buff_t
     auto p = debug_cast<mage_t*>( source );
     double damage = current_value * p->talents.touch_of_the_magi->effectN( 1 ).percent();
     p->action.touch_of_the_magi_explosion->execute_on_target( player, damage );
-    if ( p->talents.touch_of_the_archmage_3.ok() )
-    {
-      auto* debuff = p->get_target_data( player )->debuffs.touch_of_the_archmage;
-      double ticks = std::round( debuff->buff_duration() / debuff->buff_period );
-      double total = damage * p->talents.touch_of_the_archmage_3->effectN( 1 ).percent();
-      debuff->trigger( -1, total / ticks );
-    }
   }
 };
 
@@ -2832,6 +2825,14 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     p()->buffs.intuition->expire();
 
     int salvo = p()->buffs.arcane_salvo->check();
+
+    if ( p()->talents.prismatic_bolt_1.ok() && salvo > 0 )
+    {
+      double chance = salvo * p()->talents.prismatic_bolt_1->effectN( 1 ).percent();
+      if ( rng().roll( chance ) )
+        p()->buffs.prismatic_bolt->trigger();
+    }
+
     if ( p()->buffs.arcane_soul->check() )
     {
       p()->trigger_clearcasting( 1.0, true, true );
@@ -2948,6 +2949,8 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     if ( p()->buffs.presence_of_mind->up() )
       p()->buffs.presence_of_mind->decrement();
+
+    p()->buffs.cumulative_power->expire();
   }
 
   double action_multiplier() const override
@@ -2955,6 +2958,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     double am = arcane_mage_spell_t::action_multiplier();
 
     am *= arcane_charge_multiplier();
+    am *= 1.0 + p()->buffs.cumulative_power->check_stack_value();
 
     return am;
   }
@@ -2965,6 +2969,72 @@ struct arcane_blast_t final : public arcane_mage_spell_t
       return 0_ms;
 
     return arcane_mage_spell_t::execute_time();
+  }
+
+  bool ready() override
+  {
+    // Arcane Blast is upgraded into Prismatic Bolt while the buff is up.
+    if ( p()->buffs.prismatic_bolt->check() )
+      return false;
+
+    return arcane_mage_spell_t::ready();
+  }
+};
+
+// The aoe part of Prismatic Bolt is its own spell (1295939)
+struct prismatic_bolt_aoe_t final : public arcane_mage_spell_t
+{
+  prismatic_bolt_aoe_t( std::string_view n, mage_t* p ) :
+    arcane_mage_spell_t( n, p, p->find_spell( 1295939 ) )
+  {
+    background = true;
+    aoe = -1;
+    reduced_aoe_targets = p->find_spell( 1295924 )->effectN( 4 ).base_value();
+    target_filter_callback = secondary_targets_only();
+  }
+};
+
+struct prismatic_bolt_t final : public arcane_mage_spell_t
+{
+  prismatic_bolt_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+    arcane_mage_spell_t( n, p, p->find_spell( 1295924 ) )
+  {
+    parse_options( options_str );
+    triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = true;
+
+    impact_action = get_action<prismatic_bolt_aoe_t>( "prismatic_bolt_aoe", p );
+    add_child( impact_action );
+  }
+
+  bool ready() override
+  {
+    if ( !p()->buffs.prismatic_bolt->check() )
+      return false;
+
+    return arcane_mage_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    arcane_mage_spell_t::execute();
+
+    p()->buffs.prismatic_bolt->expire();
+    p()->buffs.cumulative_power->expire();
+
+    p()->trigger_arcane_charge( as<int>( data().effectN( 3 ).base_value() ) );
+    p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 3 ).base_value() ) );
+
+    if ( p()->talents.prismatic_bolt_2.ok() )
+      p()->trigger_clearcasting( p()->talents.prismatic_bolt_2->effectN( 1 ).percent() );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = arcane_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.cumulative_power->check_stack_value();
+
+    return am;
   }
 };
 
@@ -3166,6 +3236,8 @@ struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_sp
   void execute() override
   {
     custom_state_spell_t::execute();
+
+    p()->buffs.cumulative_power->trigger();
 
     p()->trigger_arcane_salvo( salvo_source );
     p()->trigger_arcane_salvo( crystal_source, as<int>( p()->talents.focusing_crystal->effectN( 2 ).base_value() ),
@@ -5138,9 +5210,6 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
 
     if ( data().ok() )
       add_child( p->action.touch_of_the_magi_explosion );
-
-    if ( p->talents.touch_of_the_archmage_3.ok() )
-      add_child( p->action.touch_of_the_archmage );
   }
 
   void execute() override
@@ -5197,20 +5266,6 @@ struct touch_of_the_magi_explosion_t final : public spell_t
 
     // For some reason, Touch of the Magi triple dips damage reductions.
     return m * std::min( m, 1.0 );
-  }
-};
-
-struct touch_of_the_archmage_t final : public spell_t
-{
-  touch_of_the_archmage_t( std::string_view n, mage_t* p ) :
-    spell_t( n, p, p->find_spell( 1258036 ) )
-  {
-    background = proc = true;
-    aoe = -1;
-    base_dd_min = base_dd_max = 1.0;
-    double m = 1.0 + p->talents.touch_of_the_archmage_3->effectN( 2 ).percent();
-    base_multiplier     *= m;
-    base_aoe_multiplier /= m;
   }
 };
 
@@ -5621,10 +5676,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.molten_fury            = make_buff( *this, "molten_fury", mage->find_spell( 458910 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( mage->talents.molten_fury.ok() );
-  debuffs.touch_of_the_archmage  = make_buff( *this, "touch_of_the_archmage", mage->find_spell( 1258134 ) )
-                                     ->set_tick_callback( [ mage ] ( buff_t* b, int, timespan_t )
-                                       { mage->action.touch_of_the_archmage->execute_on_target( b->player, b->check_value() ); } )
-                                     ->set_chance( mage->talents.touch_of_the_archmage_3.ok() );
   debuffs.touch_of_the_magi      = make_buff<buffs::touch_of_the_magi_t>( this );
 }
 
@@ -5684,6 +5735,7 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "arcane_surge"      ) return new      arcane_surge_t( name, this, options_str );
   if ( name == "evocation"         ) return new         evocation_t( name, this, options_str );
   if ( name == "presence_of_mind"  ) return new  presence_of_mind_t( name, this, options_str );
+  if ( name == "prismatic_bolt"    ) return new    prismatic_bolt_t( name, this, options_str );
   if ( name == "touch_of_the_magi" ) return new touch_of_the_magi_t( name, this, options_str );
 
   // Fire
@@ -5766,9 +5818,6 @@ void mage_t::create_actions()
 
   if ( talents.touch_of_the_magi.ok() )
     action.touch_of_the_magi_explosion = get_action<touch_of_the_magi_explosion_t>( "touch_of_the_magi_explosion", this );
-
-  if ( talents.touch_of_the_archmage_3.ok() )
-    action.touch_of_the_archmage = get_action<touch_of_the_archmage_t>( "touch_of_the_archmage", this );
 
   if ( talents.hand_of_frost_1.ok() )
     action.hand_of_frost = get_action<hand_of_frost_t>( "hand_of_frost", this );
@@ -6050,19 +6099,19 @@ void mage_t::init_spells()
   talents.resonance               = find_talent_spell( talent_tree::SPECIALIZATION, "Resonance"             );
   talents.impetus                 = find_talent_spell( talent_tree::SPECIALIZATION, "Impetus"               );
   // Row 8
-  talents.touch_of_the_archmage_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1257942                 );
+  talents.prismatic_bolt_1        = find_talent_spell( talent_tree::SPECIALIZATION, 1295923                 );
   talents.evocation               = find_talent_spell( talent_tree::SPECIALIZATION, "Evocation"             );
   talents.mana_adept              = find_talent_spell( talent_tree::SPECIALIZATION, "Mana Adept"            );
   talents.enlightened             = find_talent_spell( talent_tree::SPECIALIZATION, "Enlightened"           );
   talents.focusing_crystal        = find_talent_spell( talent_tree::SPECIALIZATION, "Focusing Crystal"      );
   talents.illuminated_thoughts    = find_talent_spell( talent_tree::SPECIALIZATION, "Illuminated Thoughts"  );
   // Row 9
-  talents.touch_of_the_archmage_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1257947                 );
+  talents.prismatic_bolt_2        = find_talent_spell( talent_tree::SPECIALIZATION, 1295944                 );
   talents.prodigious_savant       = find_talent_spell( talent_tree::SPECIALIZATION, "Prodigious Savant"     );
   talents.eureka                  = find_talent_spell( talent_tree::SPECIALIZATION, "Eureka"                );
   talents.arcane_singularity      = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Singularity"    );
   // Row 10
-  talents.touch_of_the_archmage_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1257950                 );
+  talents.prismatic_bolt_3        = find_talent_spell( talent_tree::SPECIALIZATION, 1295946                 );
   talents.charged_missiles        = find_talent_spell( talent_tree::SPECIALIZATION, "Charged Missiles"      );
   talents.high_voltage            = find_talent_spell( talent_tree::SPECIALIZATION, "High Voltage"          );
   talents.overflowing_insight     = find_talent_spell( talent_tree::SPECIALIZATION, "Overflowing Insight"   );
@@ -6347,6 +6396,9 @@ void mage_t::create_buffs()
   buffs.clearcasting              = make_buff( this, "clearcasting", find_spell( 263725 ) )
                                       ->set_default_value_from_effect( 1 )
                                       ->set_chance( spec.clearcasting->ok() ) ;
+  buffs.cumulative_power          = make_buff( this, "cumulative_power", find_spell( 1296930 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_chance( sets->has_set_bonus( MAGE_ARCANE, MID2, B4 ) );                                      
   buffs.enlightened               = make_buff( this, "enlightened", find_spell( 1217242 ) )
                                       ->set_schools_from_effect( 4 )
                                       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -6369,6 +6421,8 @@ void mage_t::create_buffs()
                                       ->set_cooldown( 0_ms )
                                       ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                         { if ( cur == 0 ) cooldowns.presence_of_mind->start( cooldowns.presence_of_mind->action ); } );
+  buffs.prismatic_bolt            = make_buff( this, "prismatic_bolt", find_spell( 1295942 ) )
+                                      ->set_chance( talents.prismatic_bolt_1.ok() );
 
 
   // Fire
