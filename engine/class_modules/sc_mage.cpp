@@ -367,7 +367,7 @@ public:
     unsigned initial_icicles = 0;
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
     unsigned clearcasting_blp_threshold = 0;
-    unsigned sphere_blp_threshold = 11;
+    unsigned sphere_blp_threshold = 11; // TODO: Needs update for 12.1
     unsigned augury_blp_threshold = 21;
     bool il_requires_freezing = false;
     bool il_sort_by_freezing = true;
@@ -6563,7 +6563,7 @@ void mage_t::init_rng()
     "clearcasting", prd::find_constant( cc_chance, bugs ? 13 : options.clearcasting_blp_threshold ),
     options.clearcasting_blp_threshold );
 
-  double sphere_chance = talents.spellfire_spheres->effectN( 1 ).percent();
+  double sphere_chance = talents.spellfire_spheres->effectN( specialization() == MAGE_FIRE ? 2 : 1 ).percent();
   accumulated_rng.spellfire_spheres = get_accumulated_rng(
     "spellfire_spheres", prd::find_constant( sphere_chance, options.sphere_blp_threshold ),
     options.sphere_blp_threshold );
