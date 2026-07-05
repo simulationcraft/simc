@@ -109,7 +109,6 @@ struct mage_td_t final : public actor_target_data_t
     buff_t* freezing;
     buff_t* freezing_winds;
     buff_t* molten_fury;
-    buff_t* touch_of_the_archmage;
     buff_t* touch_of_the_magi;
   } debuffs;
 
@@ -243,7 +242,6 @@ public:
     action_t* pet_freeze;
     action_t* pet_water_jet;
     action_t* splinter;
-    action_t* touch_of_the_archmage;
     action_t* touch_of_the_magi_explosion;
     action_t* winters_end;
 
@@ -582,7 +580,6 @@ public:
     player_talent_t impetus;
 
     // Row 8
-    player_talent_t touch_of_the_archmage_1; // TODO: Remove everything related to Touch of the Archmage when 12.1 goes live
     player_talent_t prismatic_bolt_1;
     player_talent_t evocation;
     player_talent_t mana_adept;
@@ -591,14 +588,12 @@ public:
     player_talent_t illuminated_thoughts;
 
     // Row 9
-    player_talent_t touch_of_the_archmage_2;
     player_talent_t prismatic_bolt_2;
     player_talent_t prodigious_savant;
     player_talent_t eureka;
     player_talent_t arcane_singularity;
 
     // Row 10
-    player_talent_t touch_of_the_archmage_3;
     player_talent_t prismatic_bolt_3;
     player_talent_t charged_missiles;
     player_talent_t high_voltage;
@@ -1421,13 +1416,6 @@ struct touch_of_the_magi_t final : public buff_t
     auto p = debug_cast<mage_t*>( source );
     double damage = current_value * p->talents.touch_of_the_magi->effectN( 1 ).percent();
     p->action.touch_of_the_magi_explosion->execute_on_target( player, damage );
-    if ( p->talents.touch_of_the_archmage_3.ok() )
-    {
-      auto* debuff = p->get_target_data( player )->debuffs.touch_of_the_archmage;
-      double ticks = std::round( debuff->buff_duration() / debuff->buff_period );
-      double total = damage * p->talents.touch_of_the_archmage_3->effectN( 1 ).percent();
-      debuff->trigger( -1, total / ticks );
-    }
   }
 };
 
@@ -2637,9 +2625,6 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
     if ( p()->state.eureka || type == ao_type::ORB_MASTERY )
       am *= 1.0 + p()->talents.eureka->effectN( 1 ).percent();
 
-    if ( type == ao_type::ORB_MASTERY )
-      am *= p()->talents.orb_mastery->effectN( 2 ).percent();
-
     return am;
   }
 };
@@ -2663,9 +2648,7 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
     parse_options( options_str );
     may_miss = false;
     aoe = -1;
-    // TODO: Remove version check when 12.1 goes live (ORB_MASTERY part only)
-    triggers.clearcasting = type == ao_type::NORMAL ||
-                            ( type == ao_type::ORB_MASTERY && p->dbc->wowv() >= wowv_t{ 12, 1, 0 } );
+    triggers.clearcasting = type == ao_type::NORMAL;
 
     std::string_view bolt_name;
     switch ( type )
@@ -2697,9 +2680,7 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
 
     if ( p->talents.orb_mastery.ok() )
     {
-      // TODO: Remove version check when 12.1 goes live
-      if ( p->dbc->wowv() < wowv_t{ 12, 1, 0 } )
-        cost_reductions = { p->buffs.clearcasting };
+      cost_reductions = { p->buffs.clearcasting };
       orb_mastery = get_action<arcane_orb_t>( "orb_mastery_arcane_orb", p, "", ao_type::ORB_MASTERY );
       add_child( orb_mastery );
     }
@@ -2707,29 +2688,20 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    // TODO: Remove version check when 12.1 goes live
-    cast_state( s )->data.eureka = p()->talents.orb_mastery.ok() && p()->talents.eureka.ok() &&
-                                   ( p()->dbc->wowv() >= wowv_t{ 12, 1, 0 } || clearcasting_snapshot );
+    cast_state( s )->data.eureka = p()->talents.orb_mastery.ok() && p()->talents.eureka.ok() && clearcasting_snapshot;
     custom_state_spell_t::snapshot_state( s, rt );
   }
 
   void execute() override
   {
-    // TODO: Remove version check when 12.1 goes live
-    if ( p()->dbc->wowv() < wowv_t{ 12, 1, 0 } )
-      triggers.clearcasting = !background;
-
-    // TODO: Remove version check when 12.1 goes live (pre-12.1 requires CC to fire)
-    if ( orb_mastery && ( p()->dbc->wowv() >= wowv_t{ 12, 1, 0 } || p()->buffs.clearcasting->check() ) )
+    triggers.clearcasting = !background;
+    if ( orb_mastery && p()->buffs.clearcasting->check() )
     {
       int count = as<int>( p()->talents.orb_mastery->effectN( 1 ).base_value() );
       make_repeating_event( *sim, 150_ms, [ this, t = target ] { orb_mastery->execute_on_target( t ); }, count );
-      if ( p()->dbc->wowv() < wowv_t{ 12, 1, 0 } )
-      {
-        clearcasting_snapshot = true;
-        // Orb Mastery's execution prevents Clearcasting from being triggered with the initial Orb cast.
-        triggers.clearcasting = false;
-      }
+      clearcasting_snapshot = true;
+      // Orb Mastery's execution prevents Clearcasting from being triggered with the initial Orb cast -- behaves identically to Barrage with Orb Barrage.
+      triggers.clearcasting = false;
     }
 
     custom_state_spell_t::execute();
@@ -3074,10 +3046,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = !echo;
-    // With the 12.1 PTR, pulse went from having 3 effects to 2, removing 'energize (1240466)'
-    // The reduced-AoE-targets threshold effect went from effect #3 (live 12.0.7) to effect #2 (12.1 PTR)
-    // TODO: Remove check when 12.1 goes live
-    reduced_aoe_targets = data().effectN( p->dbc->wowv() >= wowv_t{ 12, 1, 0 } ? 2 : 3 ).base_value();
+    reduced_aoe_targets = data().effectN( 3 ).base_value();
 
     if ( echo )
     {
@@ -3098,42 +3067,19 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
   {
     double c = arcane_mage_spell_t::cost_pct_multiplier();
 
-    // TODO: Remove when 12.1 goes live
-    if ( p()->dbc->wowv() < wowv_t{ 12, 1, 0 } )
-    {
-      c *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 5 ).percent();
-    }
+    c *= 1.0 + p()->buffs.arcane_charge->check() * p()->buffs.arcane_charge->data().effectN( 5 ).percent();
 
     return c;
   }
 
   void execute() override
   {
-    // TODO: Remove check when 12.1 goes live
-    if ( p()->dbc->wowv() < wowv_t{ 12, 1, 0 } )
-    {
-      p()->benefits.arcane_charge.arcane_pulse->update();
-    }
+    p()->benefits.arcane_charge.arcane_pulse->update();
 
     // TODO: radius increase?
     arcane_mage_spell_t::execute();
 
-    // TODO: Remove check when 12.1 goes live.
-    if ( p()->dbc->wowv() < wowv_t{ 12, 1, 0 } )
-    {
-      p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
-    }
-    else
-    {
-      // 12.1: Arcane Pulse generates 1 arcane charge per enemy hit.
-      int charges_per_hit = 1;
-
-      // Bug: with Impetus talented, the Reverberate echo generates double the arcane charges of the main cast
-      if ( background && p()->bugs && p()->talents.impetus.ok() )
-        charges_per_hit = 2;
-
-      p()->trigger_arcane_charge( num_targets_hit * charges_per_hit );
-    }
+    p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
 
     // In-game, Arcane Pulse internally sets a target it hits as a "Background Target",
     // resulting in all of Pulse's background effects to be directed towards them.
@@ -3144,7 +3090,6 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
       p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 1 ).base_value() ) );
       effect_target = rng().range( target_list() );
       p()->trigger_splinter( effect_target );
-      p()->buffs.cumulative_power->expire();  // does not affect the reverb
     }
 
     if ( arcane_pulse_echo && rng().roll( p()->talents.reverberate->effectN( 1 ).percent() ) )
@@ -3155,19 +3100,7 @@ struct arcane_pulse_t final : public arcane_mage_spell_t
   {
     double am = arcane_mage_spell_t::action_multiplier();
 
-    // TODO: Remove check when 12.1 goes live
-    if ( p()->dbc->wowv() < wowv_t{ 12, 1, 0 } )
-    {
-      am *= arcane_charge_multiplier();
-    }
-    // On 12.1, the main cast no longer benefits from Impetus's arcane charge multiplier,
-    // but the Reverberate echo still does. This is likely a bug.
-    else if ( background && p()->bugs && p()->talents.impetus.ok() )
-    {
-      am *= arcane_charge_multiplier();
-    }
-
-    am *= 1.0 + p()->buffs.cumulative_power->check_stack_value();
+    am *= arcane_charge_multiplier();
 
     return am;
   }
@@ -5247,9 +5180,6 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
 
     if ( data().ok() )
       add_child( p->action.touch_of_the_magi_explosion );
-
-    if ( p->talents.touch_of_the_archmage_3.ok() )
-      add_child( p->action.touch_of_the_archmage );
   }
 
   void execute() override
@@ -5306,20 +5236,6 @@ struct touch_of_the_magi_explosion_t final : public spell_t
 
     // For some reason, Touch of the Magi triple dips damage reductions.
     return m * std::min( m, 1.0 );
-  }
-};
-
-struct touch_of_the_archmage_t final : public spell_t
-{
-  touch_of_the_archmage_t( std::string_view n, mage_t* p ) :
-    spell_t( n, p, p->find_spell( 1258036 ) )
-  {
-    background = proc = true;
-    aoe = -1;
-    base_dd_min = base_dd_max = 1.0;
-    double m = 1.0 + p->talents.touch_of_the_archmage_3->effectN( 2 ).percent();
-    base_multiplier     *= m;
-    base_aoe_multiplier /= m;
   }
 };
 
@@ -5730,10 +5646,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.molten_fury            = make_buff( *this, "molten_fury", mage->find_spell( 458910 ) )
                                      ->set_default_value_from_effect( 1 )
                                      ->set_chance( mage->talents.molten_fury.ok() );
-  debuffs.touch_of_the_archmage  = make_buff( *this, "touch_of_the_archmage", mage->find_spell( 1258134 ) )
-                                     ->set_tick_callback( [ mage ] ( buff_t* b, int, timespan_t )
-                                       { mage->action.touch_of_the_archmage->execute_on_target( b->player, b->check_value() ); } )
-                                     ->set_chance( mage->talents.touch_of_the_archmage_3.ok() );
   debuffs.touch_of_the_magi      = make_buff<buffs::touch_of_the_magi_t>( this );
 }
 
@@ -5875,9 +5787,6 @@ void mage_t::create_actions()
 
   if ( talents.touch_of_the_magi.ok() )
     action.touch_of_the_magi_explosion = get_action<touch_of_the_magi_explosion_t>( "touch_of_the_magi_explosion", this );
-
-  if ( talents.touch_of_the_archmage_3.ok() )
-    action.touch_of_the_archmage = get_action<touch_of_the_archmage_t>( "touch_of_the_archmage", this );
 
   if ( talents.hand_of_frost_1.ok() )
     action.hand_of_frost = get_action<hand_of_frost_t>( "hand_of_frost", this );
@@ -6159,7 +6068,6 @@ void mage_t::init_spells()
   talents.resonance               = find_talent_spell( talent_tree::SPECIALIZATION, "Resonance"             );
   talents.impetus                 = find_talent_spell( talent_tree::SPECIALIZATION, "Impetus"               );
   // Row 8
-  talents.touch_of_the_archmage_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1257942                 );
   talents.prismatic_bolt_1        = find_talent_spell( talent_tree::SPECIALIZATION, 1295923                 );
   talents.evocation               = find_talent_spell( talent_tree::SPECIALIZATION, "Evocation"             );
   talents.mana_adept              = find_talent_spell( talent_tree::SPECIALIZATION, "Mana Adept"            );
@@ -6167,13 +6075,11 @@ void mage_t::init_spells()
   talents.focusing_crystal        = find_talent_spell( talent_tree::SPECIALIZATION, "Focusing Crystal"      );
   talents.illuminated_thoughts    = find_talent_spell( talent_tree::SPECIALIZATION, "Illuminated Thoughts"  );
   // Row 9
-  talents.touch_of_the_archmage_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1257947                 );
   talents.prismatic_bolt_2        = find_talent_spell( talent_tree::SPECIALIZATION, 1295944                 );
   talents.prodigious_savant       = find_talent_spell( talent_tree::SPECIALIZATION, "Prodigious Savant"     );
   talents.eureka                  = find_talent_spell( talent_tree::SPECIALIZATION, "Eureka"                );
   talents.arcane_singularity      = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Singularity"    );
   // Row 10
-  talents.touch_of_the_archmage_3 = find_talent_spell( talent_tree::SPECIALIZATION, 1257950                 );
   talents.prismatic_bolt_3        = find_talent_spell( talent_tree::SPECIALIZATION, 1295946                 );
   talents.charged_missiles        = find_talent_spell( talent_tree::SPECIALIZATION, "Charged Missiles"      );
   talents.high_voltage            = find_talent_spell( talent_tree::SPECIALIZATION, "High Voltage"          );
