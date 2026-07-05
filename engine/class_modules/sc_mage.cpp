@@ -2344,6 +2344,11 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     last_hot_streak()
   { }
 
+  bool pyroclasm_active() const
+  {
+    return time_to_execute > 0_ms && p()->buffs.pyroclasm->check() && ( !p()->bugs || !p()->buffs.hyperthermia->check() );
+  }
+
   void reset() override
   {
     custom_state_spell_t::reset();
@@ -2380,12 +2385,18 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
     c += p()->buffs.hyperthermia->check_value();
 
-    if ( p()->buffs.pyroclasm->check() )
-      // Spelldata suggests this is a percent modifier, meaning it should
-      // double the crit chance, but in actuality, it makes it guaranteed.
-      c += p()->buffs.pyroclasm->data().effectN( 2 ).percent();
-
     return c;
+  }
+
+  result_e calculate_result( action_state_t* s ) const override
+  {
+    result_e r = custom_state_spell_t::calculate_result( s );
+
+    // TODO: Pyroclasm 2pc is likely scripted. Fuel the Fire does not see the increased crit chance.
+    if ( r == RESULT_HIT && pyroclasm_active() && p()->sets->has_set_bonus( MAGE_FIRE, MID2, B2 ) )
+      r = RESULT_CRIT;
+
+    return r;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -2394,7 +2405,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
     m *= 1.0 + p()->buffs.hyperthermia_damage->check_stack_value();
 
-    if ( time_to_execute > 0_ms && ( !p()->bugs || !p()->buffs.hyperthermia->check() ) )
+    if ( pyroclasm_active() )
       m *= 1.0 + p()->buffs.pyroclasm->check_value();
 
     return m;
@@ -2435,7 +2446,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     if ( p()->sets->set( MAGE_FIRE, MID1, B4 )->ok() )
       p()->cooldowns.fire_blast->adjust( -p()->sets->set( MAGE_FIRE, MID1, B4 )->effectN( 1 ).time_value(), false, false );
 
-    if ( time_to_execute > 0_ms && ( !p()->bugs || !p()->buffs.hyperthermia->check() ) )
+    if ( pyroclasm_active() )
       p()->buffs.pyroclasm->decrement();
 
     if ( last_hot_streak )
