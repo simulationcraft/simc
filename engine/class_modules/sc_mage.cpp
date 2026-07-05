@@ -2599,6 +2599,9 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
     type( type_ )
   {
     background = proc = true;
+
+    if ( type == ao_type::ORB_MASTERY )
+      base_multiplier *= p->talents.orb_mastery->effectN( 2 ).percent();
   }
 
   void impact( action_state_t* s ) override
