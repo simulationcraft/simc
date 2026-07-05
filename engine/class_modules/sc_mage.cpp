@@ -1560,6 +1560,7 @@ struct mage_spell_t : public spell_t
     bool spellfire_sphere = true;
 
     // Misc
+    bool clearcasting = false;
     bool fires_ire = true;
     bool overflowing_energy = false;
   } affected_by;
@@ -1821,9 +1822,6 @@ public:
     crit_bonus_multiplier = crit_bonus_mod[ 2 ];
   }
 
-  virtual void consume_cost_reductions()
-  { }
-
   void consume_resource() override
   {
     spell_t::consume_resource();
@@ -1862,9 +1860,8 @@ public:
   {
     spell_t::execute();
 
-    // Make sure we remove all cost reduction buffs before we trigger new ones.
-    // This will prevent for example Arcane Missiles consuming its own Clearcasting proc.
-    consume_cost_reductions();
+    if ( affected_by.clearcasting )
+      p()->buffs.clearcasting->decrement();
 
     if ( p()->spec.clearcasting->ok() && triggers.clearcasting )
     {
@@ -2092,35 +2089,9 @@ struct custom_state_spell_t : public Base
 
 struct arcane_mage_spell_t : public mage_spell_t
 {
-  std::vector<buff_t*> cost_reductions;
-
   arcane_mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    mage_spell_t( n, p, s ),
-    cost_reductions()
+    mage_spell_t( n, p, s )
   { }
-
-  void consume_cost_reductions() override
-  {
-    // Consume first applicable buff and then stop.
-    for ( auto cr : cost_reductions )
-    {
-      if ( cr->check() )
-      {
-        cr->decrement();
-        break;
-      }
-    }
-  }
-
-  double cost_pct_multiplier() const override
-  {
-    double c = mage_spell_t::cost_pct_multiplier();
-
-    for ( auto cr : cost_reductions )
-      c *= 1.0 + cr->check_value();
-
-    return c;
-  }
 
   double arcane_charge_multiplier( bool arcane_barrage = false ) const
   {
@@ -2701,7 +2672,6 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
 
     if ( p->talents.orb_mastery.ok() )
     {
-      cost_reductions = { p->buffs.clearcasting };
       orb_mastery = get_action<arcane_orb_t>( "orb_mastery_arcane_orb", p, "", ao_type::ORB_MASTERY );
       add_child( orb_mastery );
     }
@@ -2747,14 +2717,6 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
       if ( s->chain_target < max_count / count )
         p()->trigger_splinter( s->target, count );
     }
-  }
-
-  double cost_pct_multiplier() const override
-  {
-    // TODO: Clearcasting is the only cost reduction now and it applies
-    // to a single spell. Perhaps we can remove the cost_reduction machinery
-    // and avoid this silly hack.
-    return mage_spell_t::cost_pct_multiplier();
   }
 };
 
@@ -3263,9 +3225,9 @@ struct arcane_missiles_t final : public custom_state_spell_t<arcane_mage_spell_t
     parse_options( options_str );
     may_miss = false;
     tick_zero = channeled = true;
+    affected_by.clearcasting = true;
     triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = true;
     tick_action = get_action<arcane_missiles_tick_t>( "arcane_missiles_tick", p );
-    cost_reductions = { p->buffs.clearcasting };
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -3295,6 +3257,15 @@ struct arcane_missiles_t final : public custom_state_spell_t<arcane_mage_spell_t
       return false;
 
     return custom_state_spell_t::ready();
+  }
+
+  double cost_pct_multiplier() const override
+  {
+    double c = custom_state_spell_t::cost_pct_multiplier();
+
+    c *= 1.0 + p()->buffs.clearcasting->check_value();
+
+    return c;
   }
 
   timespan_t execute_time() const override
