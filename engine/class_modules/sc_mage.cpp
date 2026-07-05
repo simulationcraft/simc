@@ -2628,7 +2628,7 @@ struct arcane_orb_t final : public arcane_mage_spell_t
     parse_options( options_str );
     may_miss = false;
     aoe = -1;
-    triggers.clearcasting = type != ao_type::ORB_BARRAGE; // TODO: double check
+    triggers.clearcasting = true;
 
     std::string_view bolt_name;
     switch ( type )
