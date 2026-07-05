@@ -459,7 +459,6 @@ public:
     bool trigger_overpowered_missiles;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     timespan_t last_random_clearcasting; // Brainstorm cannot be triggered twice if a singular spell/action triggers Clearcasting twice.
-    bool eureka;
     bool thermal_void_active;
     int glorious_incandescence_snapshot;
     int icicles;
@@ -2609,38 +2608,21 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
     // AC is triggered even if the spell misses.
     p()->trigger_arcane_charge();
   }
-
-  double action_multiplier() const override
-  {
-    double am = arcane_mage_spell_t::action_multiplier();
-
-    if ( p()->state.eureka || type == ao_type::ORB_MASTERY )
-      am *= 1.0 + p()->talents.eureka->effectN( 1 ).percent();
-
-    return am;
-  }
 };
 
-struct arcane_orb_data_t
-{
-  bool eureka = false;
-  void debug( std::ostringstream& s ) const { s << " eureka=" << eureka; }
-};
-
-struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arcane_orb_data_t>
+struct arcane_orb_t final : public arcane_mage_spell_t
 {
   const ao_type type;
-  bool clearcasting_snapshot = false;
   action_t* orb_mastery = nullptr;
 
   arcane_orb_t( std::string_view n, mage_t* p, std::string_view options_str, ao_type type_ = ao_type::NORMAL ) :
-    custom_state_spell_t( n, p, type_ == ao_type::NORMAL ? p->talents.arcane_orb : p->find_spell( 153626 ) ),
+    arcane_mage_spell_t( n, p, type_ == ao_type::NORMAL ? p->talents.arcane_orb : p->find_spell( 153626 ) ),
     type( type_ )
   {
     parse_options( options_str );
     may_miss = false;
     aoe = -1;
-    triggers.clearcasting = type == ao_type::NORMAL;
+    triggers.clearcasting = type != ao_type::ORB_BARRAGE; // TODO: double check
 
     std::string_view bolt_name;
     switch ( type )
@@ -2677,37 +2659,23 @@ struct arcane_orb_t final : public custom_state_spell_t<arcane_mage_spell_t, arc
     }
   }
 
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    cast_state( s )->data.eureka = p()->talents.orb_mastery.ok() && p()->talents.eureka.ok() && clearcasting_snapshot;
-    custom_state_spell_t::snapshot_state( s, rt );
-  }
-
   void execute() override
   {
-    triggers.clearcasting = !background;
-    if ( orb_mastery && p()->buffs.clearcasting->check() )
+    if ( orb_mastery )
     {
       int count = as<int>( p()->talents.orb_mastery->effectN( 1 ).base_value() );
       make_repeating_event( *sim, 150_ms, [ this, t = target ] { orb_mastery->execute_on_target( t ); }, count );
-      clearcasting_snapshot = true;
-      // Orb Mastery's execution prevents Clearcasting from being triggered with the initial Orb cast -- behaves identically to Barrage with Orb Barrage.
-      triggers.clearcasting = false;
     }
 
-    custom_state_spell_t::execute();
+    arcane_mage_spell_t::execute();
 
     p()->trigger_arcane_charge();
     p()->trigger_arcane_salvo( salvo_source, as<int>( p()->talents.expanded_mind->effectN( 2 ).base_value() ) );
-    clearcasting_snapshot = false;
   }
 
   void impact( action_state_t* s ) override
   {
-    // TODO: There's probably a nicer way to do this without having to give up on impact_spell
-    p()->state.eureka = cast_state( s )->data.eureka;
-    custom_state_spell_t::impact( s );
-    p()->state.eureka = false;
+    arcane_mage_spell_t::impact( s );
 
     if ( p()->talents.splintering_orbs.ok() )
     {
