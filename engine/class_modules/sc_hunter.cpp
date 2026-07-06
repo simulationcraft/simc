@@ -818,6 +818,8 @@ public:
     spell_data_ptr_t bloodseeker;
     spell_data_ptr_t quick_reload;
     spell_data_ptr_t flankers_advantage;
+    spell_data_ptr_t sic_em;
+    spell_data_ptr_t sic_em_bleed;
     spell_data_ptr_t two_against_many;
 
     spell_data_ptr_t mongoose_fury;
@@ -825,8 +827,7 @@ public:
     spell_data_ptr_t mongoose_rounds;
     spell_data_ptr_t wildfire_shells;
     spell_data_ptr_t shellshock;
-    spell_data_ptr_t sic_em;
-    spell_data_ptr_t sic_em_bleed;
+    spell_data_ptr_t primal_surge;
 
     spell_data_ptr_t bloody_claws;
     spell_data_ptr_t wallop;
@@ -860,7 +861,6 @@ public:
     spell_data_ptr_t wildfire_imbuement_buff;
     spell_data_ptr_t flanked;
     spell_data_ptr_t lethal_calibration;
-    spell_data_ptr_t primal_surge;
 
     // Dark Ranger
     spell_data_ptr_t black_arrow;
@@ -7764,6 +7764,8 @@ void hunter_t::init_spells()
     talents.bloodseeker                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodseeker", HUNTER_SURVIVAL );
     talents.quick_reload                      = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Reload", HUNTER_SURVIVAL );
     talents.flankers_advantage                = find_talent_spell( talent_tree::SPECIALIZATION, "Flanker's Advantage", HUNTER_SURVIVAL );
+    talents.sic_em                            = find_talent_spell( talent_tree::SPECIALIZATION, "Sic 'Em", HUNTER_SURVIVAL );
+    talents.sic_em_bleed                      = talents.sic_em.ok() ? find_spell( 1253138 ) : spell_data_t::not_found();
     talents.two_against_many                  = find_talent_spell( talent_tree::SPECIALIZATION, "Two Against Many", HUNTER_SURVIVAL );
 
     talents.mongoose_fury                     = find_talent_spell( talent_tree::SPECIALIZATION, "Mongoose Fury", HUNTER_SURVIVAL );
@@ -7771,8 +7773,7 @@ void hunter_t::init_spells()
     talents.mongoose_rounds                   = find_talent_spell( talent_tree::SPECIALIZATION, "Mongoose Rounds", HUNTER_SURVIVAL );
     talents.wildfire_shells                   = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Shells", HUNTER_SURVIVAL );
     talents.shellshock                        = find_talent_spell( talent_tree::SPECIALIZATION, "Shellshock", HUNTER_SURVIVAL );
-    talents.sic_em                            = find_talent_spell( talent_tree::SPECIALIZATION, "Sic 'Em", HUNTER_SURVIVAL );
-    talents.sic_em_bleed                      = talents.sic_em.ok() ? find_spell( 1253138 ) : spell_data_t::not_found();
+    talents.primal_surge                      = find_talent_spell( talent_tree::SPECIALIZATION, "Primal Surge", HUNTER_SURVIVAL );
 
     talents.bloody_claws                      = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Claws", HUNTER_SURVIVAL );
     talents.wallop                            = find_talent_spell( talent_tree::SPECIALIZATION, "Wallop", HUNTER_SURVIVAL );
@@ -7806,7 +7807,6 @@ void hunter_t::init_spells()
     talents.wildfire_imbuement_buff           = talents.wildfire_imbuement.ok() ? find_spell( 1252947 ) : spell_data_t::not_found();
     talents.flanked                           = find_talent_spell( talent_tree::SPECIALIZATION, "Flanked", HUNTER_SURVIVAL );
     talents.lethal_calibration                = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Calibration", HUNTER_SURVIVAL );
-    talents.primal_surge                      = find_talent_spell( talent_tree::SPECIALIZATION, "Primal Surge", HUNTER_SURVIVAL );
   }
 
   if ( specialization() == HUNTER_MARKSMANSHIP || specialization() == HUNTER_BEAST_MASTERY )
