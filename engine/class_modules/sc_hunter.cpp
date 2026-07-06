@@ -861,6 +861,7 @@ public:
     spell_data_ptr_t wildfire_imbuement_buff;
     spell_data_ptr_t flanked;
     spell_data_ptr_t lethal_calibration;
+    spell_data_ptr_t razor_edge;
 
     // Dark Ranger
     spell_data_ptr_t black_arrow;
@@ -7807,6 +7808,7 @@ void hunter_t::init_spells()
     talents.wildfire_imbuement_buff           = talents.wildfire_imbuement.ok() ? find_spell( 1252947 ) : spell_data_t::not_found();
     talents.flanked                           = find_talent_spell( talent_tree::SPECIALIZATION, "Flanked", HUNTER_SURVIVAL );
     talents.lethal_calibration                = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Calibration", HUNTER_SURVIVAL );
+    talents.razor_edge                        = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Edge", HUNTER_SURVIVAL );
   }
 
   if ( specialization() == HUNTER_MARKSMANSHIP || specialization() == HUNTER_BEAST_MASTERY )
