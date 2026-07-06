@@ -836,7 +836,6 @@ public:
     spell_data_ptr_t sweeping_spear;
     spell_data_ptr_t vulnerability;
     spell_data_ptr_t blackrock_munitions;
-    spell_data_ptr_t shower_of_blood;
     spell_data_ptr_t outland_venom;
     spell_data_ptr_t outland_venom_debuff;
 
@@ -7783,7 +7782,6 @@ void hunter_t::init_spells()
     talents.sweeping_spear                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sweeping Spear", HUNTER_SURVIVAL );
     talents.vulnerability                     = find_talent_spell( talent_tree::SPECIALIZATION, "Vulnerability", HUNTER_SURVIVAL );
     talents.blackrock_munitions               = find_talent_spell( talent_tree::SPECIALIZATION, "Blackrock Munitions", HUNTER_SURVIVAL );
-    talents.shower_of_blood                   = find_talent_spell( talent_tree::SPECIALIZATION, "Shower of Blood", HUNTER_SURVIVAL );
     talents.outland_venom                     = find_talent_spell( talent_tree::SPECIALIZATION, "Outland Venom", HUNTER_SURVIVAL );
     talents.outland_venom_debuff              = talents.outland_venom.ok() ? find_spell( 459941 ) : spell_data_t::not_found();
 
