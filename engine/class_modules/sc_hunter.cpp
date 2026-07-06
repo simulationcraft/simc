@@ -553,6 +553,8 @@ public:
 
   struct rppm_t
   {
+    real_ppm_t* lethal_barbs;
+
     real_ppm_t* corpsecaller;
     real_ppm_t* shadow_surge;
 
@@ -4040,7 +4042,7 @@ struct auto_shot_base_t : public auto_attack_base_t<ranged_attack_t>
       p()->buffs.lock_and_load->trigger();
     }
 
-    if ( p()->talents.lethal_barbs.ok() )
+    if ( p()->talents.lethal_barbs.ok() && p()->rppm.lethal_barbs->trigger() )
     {
       double amount = p()->talents.lethal_barbs_energize->effectN( 1 ).base_value();
 
@@ -6034,7 +6036,7 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
     if ( p()->buffs.wildfire_imbuement->up() && s->result == RESULT_HIT )
       wildfire_imbuement->execute_on_target( s->target );
 
-    if ( p()->talents.lethal_barbs.ok() )
+    if ( p()->talents.lethal_barbs.ok() && p()->rppm.lethal_barbs->trigger() )
     {
       double amount = p()->talents.lethal_barbs_energize->effectN( 1 ).base_value();
 
@@ -8387,6 +8389,8 @@ void hunter_t::init_procs()
 void hunter_t::init_rng()
 {
   player_t::init_rng();
+
+  rppm.lethal_barbs = get_rppm( "Lethal Barbs", talents.lethal_barbs );
   
   rppm.corpsecaller = get_rppm( "Corpsecaller", talents.corpsecaller );
   rppm.let_fly      = get_rppm( "Let Fly", tier_set.mid_s1_mm_4pc );
