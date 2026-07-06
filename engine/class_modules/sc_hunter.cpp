@@ -423,6 +423,16 @@ public:
 
     spell_data_ptr_t mid_s1_sv_2pc;
     spell_data_ptr_t mid_s1_sv_4pc;
+
+    // Midnight Season 2 - Curse of Ula’tek
+    spell_data_ptr_t mid_s2_bm_2pc;
+    spell_data_ptr_t mid_s2_bm_4pc;
+
+    spell_data_ptr_t mid_s2_mm_2pc;
+    spell_data_ptr_t mid_s2_mm_4pc;
+
+    spell_data_ptr_t mid_s2_sv_2pc;
+    spell_data_ptr_t mid_s2_sv_4pc;
   } tier_set;
 
   struct buffs_t
@@ -7950,6 +7960,15 @@ void hunter_t::init_spells()
 
   tier_set.mid_s1_sv_2pc        = sets->set( HUNTER_SURVIVAL, MID1, B2 );
   tier_set.mid_s1_sv_4pc        = sets->set( HUNTER_SURVIVAL, MID1, B4 );
+
+  tier_set.mid_s2_bm_2pc        = sets->set( HUNTER_BEAST_MASTERY, MID2, B2 );
+  tier_set.mid_s2_bm_4pc        = sets->set( HUNTER_BEAST_MASTERY, MID2, B4 );
+
+  tier_set.mid_s2_mm_2pc        = sets->set( HUNTER_MARKSMANSHIP, MID2, B2 );
+  tier_set.mid_s2_mm_4pc        = sets->set( HUNTER_MARKSMANSHIP, MID2, B4 );
+
+  tier_set.mid_s2_sv_2pc        = sets->set( HUNTER_SURVIVAL, MID2, B2 );
+  tier_set.mid_s2_sv_4pc        = sets->set( HUNTER_SURVIVAL, MID2, B4 );
 
   // Cooldowns
   cooldowns.salvo->duration = talents.volley->duration();
