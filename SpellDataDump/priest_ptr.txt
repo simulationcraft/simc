@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68412 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68569 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1857,7 +1857,7 @@ Family Flags     : 35
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416), Unknown (450)
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.67 | Target: Self (1)
+                   Base Value: 32 | Scaled Value: 32 | PvP Coefficient: 1.67 | Target: Self (1)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Power Word: Shield, Flash Heal, Shadow Mend, Plea, and Power Word: Radiance apply Atonement to your target for $194384d.
@@ -2814,15 +2814,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179715)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 29 | Scaled Value: 29 | Target: Self (1)
+                   Base Value: 42 | Scaled Value: 42 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Plea (200829), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #2 (id=191076)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 29 | Scaled Value: 29 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 42 | Scaled Value: 42 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Plea (200829), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #3 (id=191077)   : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
-                   Base Value: 29 | Scaled Value: 29 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 42 | Scaled Value: 42 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17), Power Word: Shield (1246768), Void Shield (1253593), Power Word: Shield (Unfolding Vision) (1300008), Void Shield (Unfolding Vision) (1300009)
                    Family Flags: 0
 #4 (id=191078)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -2884,15 +2884,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179716)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Plea (200829), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #2 (id=191072)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Plea (200829), Cosmic Ripple (243241), Penance (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Penance (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Ultimate Penitence (421544), Light Eruption (464047), Evangelism (472433), Insurance! (1215349), Insurance! (1215354), Insurance! (1215503), Insurance! (1217013), Penance (1232567), Dark Reprimand (1232615), Prompt Prognosis (1246798), Ultimate Serenity (1250581), Benediction (1262763)
                    Family Flags: 126
 #3 (id=191073)   : Apply Aura (6) | Add Percent Modifier (108): Spell Coefficient (24)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17), Power Word: Shield (1246768), Void Shield (1253593), Power Word: Shield (Unfolding Vision) (1300008), Void Shield (Unfolding Vision) (1300009)
                    Family Flags: 0, 99
 #4 (id=191074)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -2998,11 +2998,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179717)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -14 | Scaled Value: -14 | Target: Self (1)
+                   Base Value: -7 | Scaled Value: -7 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Shadeburst (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
 #2 (id=191068)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -14 | Scaled Value: -14 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -7 | Scaled Value: -7 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Shadeburst (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
 #3 (id=191069)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -4162,7 +4162,7 @@ Effects          :
                    Affected Spells: Prayer of Healing (596), Heal (2060)
                    Family Flags: 9, 12
 #6 (id=1156167)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -70 | Scaled Value: -70 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Holy Word: Serenity (2050), Holy Word: Sanctify (34861), Holy Word: Chastise (88625), Holy Word: Chastise (200196), Holy Word: Chastise (200200), Ultimate Serenity (1250581)
                    Family Flags: 10, 28, 69
 #7 (id=1181324)  : Apply Aura (6) | Modify Attack Power (104)
@@ -12246,7 +12246,7 @@ Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1095893)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.9 | Target: Current Target (25)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.47 | Target: Current Target (25)
 Description      : $@spelldesc421453
 
 Name             : Ultimate Penitence (id=421544) [Spell Family (6)] 
@@ -12263,7 +12263,7 @@ Family Flags     : 48, 126
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1095896)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.45 | PvP Coefficient: 1.25 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Current Target (25)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.785 | PvP Coefficient: 1.25 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Current Target (25)
 Description      : $@spelldesc421453
 
 Name             : Priest Discipline 10.2 Class Set 2pc (id=422899) [Spell Family (6), Passive, Hidden] 
@@ -12678,15 +12678,15 @@ Effects          :
                    Affected Spells: Power Word: Shield (17), Power Word: Shield (1246768), Void Shield (1253593), Power Word: Shield (Unfolding Vision) (1300008), Void Shield (Unfolding Vision) (1300009)
                    Family Flags: 0
 #3 (id=1170141)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.3334 | Target: Self (1)
                    Affected Spells: Smite (585), Penance (47666), Holy Nova (132157), Penance (186724), Dark Reprimand (373130), Ultimate Penitence (421543), Smite (425529), Void Blast (450215), Penance (1232571), Dark Reprimand (1232592)
                    Family Flags: 7, 47, 49
 #4 (id=1170142)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.375 | Target: Self (1)
                    Affected Spells: Smite (585), Holy Fire (14914), Holy Nova (132157), Encroaching Shadows (204215), Smite (425529), Void Blast (450215)
                    Family Flags: 7, 20, 49
 #5 (id=1170143)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.375 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Holy Fire (14914), Encroaching Shadows (204215)
                    Family Flags: 20
 Description      : $?a137032[Power Word: Shield absorbs $s2% additional damage.
@@ -16197,7 +16197,7 @@ Family Flags     : 0
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416), Chain by Most Hit (440), Non-secret Aura (506)
 Effects          :
 #1 (id=1259452)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7 | Misc Value: 0x7f | Radius: 0 - 30 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5 | Misc Value: 0x7f | Radius: 0 - 30 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
                    Affected School(s): All
                    Modified By: Improved Power Word: Shield (24191 effect#1)
 #2 (id=1285766)  : Dummy (3)
@@ -16230,7 +16230,7 @@ Name             : Greater Smite (id=1253725) [Spell Family (6)]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Duration         : 2 seconds
+Duration         : 4 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -16478,7 +16478,7 @@ Name             : Benediction (id=1262763) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 2.9% Base Mana (0) (id=312235) w/ Holy Priest (id=137031)
+Resource         : 2.03% Base Mana (0) (id=312235) w/ Holy Priest (id=137031)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds

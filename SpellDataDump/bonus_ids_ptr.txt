@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68412 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68569 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
@@ -8299,3 +8299,6 @@ bonus_id={ 13853 }, base_ilevel={ 217 }, req_ilevel={ 90 }
 bonus_id={ 13854 }, base_ilevel={ 256 }, req_ilevel={ 90 }
 bonus_id={ 13855 }, base_ilevel={ 201 }, req_ilevel={ 90 }
 bonus_id={ 13856 }, base_ilevel={ 240 }, req_ilevel={ 90 }
+bonus_id={ 13900 }, base_ilevel={ 133 }
+bonus_id={ 13901 }, base_ilevel={ 140 }, quality={ rare }
+bonus_id={ 13902 }, base_ilevel={ 126 }, quality={ rare }
