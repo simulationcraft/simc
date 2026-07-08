@@ -756,11 +756,14 @@ struct vampiric_touch_t final : public priest_spell_t
   propagate_const<shadow_word_pain_t*> child_swp;
   bool casted;
   bool insanity;
+  double vampiric_insight_apparition_mod;
 
   vampiric_touch_t( priest_t& p, bool _casted = false, bool _insanity = true )
     : priest_spell_t( "vampiric_touch", p, p.dot_spells.vampiric_touch ),
       vampiric_touch_heal( new vampiric_touch_heal_t( p ) ),
-      child_swp( nullptr )
+      child_swp( nullptr ),
+      vampiric_insight_apparition_mod(
+          p.specs.vampiric_insight_buff->ok() ? p.specs.vampiric_insight_buff->effectN( 2 ).percent() : 2.0 )
   {
     casted                     = _casted;
     insanity                   = _insanity;
@@ -810,7 +813,8 @@ struct vampiric_touch_t final : public priest_spell_t
       priest().buffs.vampiric_insight->decrement();
       priest().generate_insanity( priest().specs.vampiric_insight_buff->effectN( 1 ).resource( RESOURCE_INSANITY ),
                                   priest().gains.insanity_vampiric_insight, this );
-      priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_vampiric_insight, target, 2.0 );
+      priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_vampiric_insight, target,
+                                            vampiric_insight_apparition_mod );
     }
 
     priest_spell_t::execute();
