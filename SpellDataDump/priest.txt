@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68275 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68453 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -323,7 +323,6 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=611)      : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 21.4493 | PvP Coefficient: 1.512 | Target: Targeted Ally (21)
-Hotfixed         : SP Coefficient (17.874399 -> 21.449301)
 #2 (id=709474)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 Description      : Perform a miracle, healing an ally for $s1.
@@ -1035,7 +1034,6 @@ Effects          :
 Description      : $@spelldesc33076
 
 Name             : Pain Suppression (id=33206) [Spell Family (6)] 
-Hotfixed         : Attributes
 Talent Entry     : Discipline [tree=spec, row=2, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
@@ -1115,7 +1113,6 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=24949)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.01321 | PvP Coefficient: 1.512 | Radius: 10 yards | Target: At Ally in Area (31)
-Hotfixed         : SP Coefficient (5.01101 -> 6.01321)
 #2 (id=288932)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=709475)   : Dummy (3)
@@ -1447,7 +1444,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 47666 | Target: Self (1)
 
 Name             : Guardian Spirit (id=47788) [Spell Family (6)] 
-Hotfixed         : Attributes
 Talent Entry     : Holy [tree=spec, row=2, col=4, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
@@ -15942,7 +15938,6 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=1254711)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 3.2174 | PvP Coefficient: 1.512 | Radius: 0 - 40 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
-Hotfixed         : SP Coefficient (2.68116 -> 3.2174)
 #2 (id=1254712)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : $@spelldesc1246517
@@ -16397,17 +16392,14 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
-Hotfixed         : Base Value (-10 -> -6)
 #2 (id=1264737)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: -6 | Scaled Value: -6 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
-Hotfixed         : Base Value (-10 -> -6)
 #3 (id=1264738)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: -42 | Scaled Value: -42 | Target: Self (1)
                    Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
                    Family Flags: 33
-Hotfixed         : Base Value (-60 -> -42)
 #4 (id=1264744)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: -38 | Scaled Value: -38 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Blast (450983)

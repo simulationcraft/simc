@@ -1864,10 +1864,18 @@ using namespace helpers;
 
       const auto& tl = target_list();
       player_t* main_seed_target = !tl.empty() ? tl.front() : target;
+      warlock_td_t* mstdata = td( main_seed_target );
 
       // Patient Zero target is updated on SoC cast success, not on impact or debuff application
       if ( p()->talents.patient_zero.ok() )
         p()->patient_zero_target = main_seed_target;
+
+      // 2026-06-30 Hotfix: Nightfall SoC detonates existing SoC when smart targeting leaves the primary seed on an already seeded target
+      if ( p()->talents.nocturnal_yield.ok() && p()->buffs.nightfall->check() && mstdata->dots.seed_of_corruption->is_ticking() && mstdata->soc_threshold > 0 )
+      {
+        mstdata->soc_threshold = 0;
+        mstdata->dots.seed_of_corruption->cancel();
+      }
 
       warlock_spell_t::execute();
 

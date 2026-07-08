@@ -366,6 +366,9 @@ public:
     buff_t* empowered_eye_beam;
     buff_t* eternal_hunt;
     buff_t* serrated_glaive;
+    buff_t* never_say_die_driver;
+    buff_t* never_say_die_damage;
+    buff_t* never_say_die_leech;
 
     movement_buff_t* fel_rush_move;
     movement_buff_t* vengeful_retreat_move;
@@ -547,7 +550,7 @@ public:
       player_talent_t burning_hatred;
 
       player_talent_t dash_of_chaos;  // NYI
-      player_talent_t never_say_die;  // NYI
+      player_talent_t never_say_die;
       player_talent_t improved_chaos_strike;
       player_talent_t first_blood;
       player_talent_t accelerated_blade;
@@ -1415,9 +1418,11 @@ public:
     int drain_stacks;
     demon_hunter_t* actor;
     double meta_drain_multiplier = 1.0;
-    double initial_drain         = 15.0;
-    double exp_factor            = 1.455;
-    double exp_power             = 0.075;
+    // Fit against per-tick drain event schedules from logs (matches cumulative drain
+    // timing through end of meta, not just instantaneous rates); see PR #11549.
+    double initial_drain = 15.0;
+    double exp_factor    = 1.40;
+    double exp_power     = 0.0775;
 
     fury_state_t( demon_hunter_t* a )
       : start_time( timespan_t::min() ), next_drain_event( nullptr ), drain_stacks( 0 ), actor( a )
@@ -2174,6 +2179,9 @@ public:
     ab::parse_effects( dh()->buff.inertia );
     ab::parse_effects( dh()->buff.empowered_eye_beam );
     ab::parse_effects( dh()->buff.serrated_glaive, dh()->talent.havoc.serrated_glaive );
+    // Never Say Die damage uses effects 4 + 5 and uses the value from effect 1
+    ab::parse_effects( dh()->buff.never_say_die_damage, dh()->talent.havoc.never_say_die->effectN( 1 ).percent(),
+                       effect_mask_t( false ).enable( 4, 5 ) );
 
     // Vengeance
 
@@ -5958,7 +5966,7 @@ struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
 
     damage_action      = p->get_background_action<eradicate_damage_t>( "eradicate_reap", p->spec.eradicate_damage );
     damage_action->aoe = -1;
-    damage_action->reduced_aoe_targets = p->spec.eradicate->effectN( 1 ).base_value();
+    damage_action->reduced_aoe_targets = p->talent.devourer.eradicate->effectN( 1 ).base_value();
     add_child( damage_action );
 
     if ( p->talent.devourer.void_metamorphosis->ok() )
@@ -5966,7 +5974,7 @@ struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
       damage_action_meta =
           p->get_background_action<eradicate_damage_t>( "eradicate_cull", p->spec.eradicate_damage_meta );
       damage_action_meta->aoe                 = -1;
-      damage_action_meta->reduced_aoe_targets = p->spec.eradicate->effectN( 1 ).base_value();
+      damage_action_meta->reduced_aoe_targets = p->talent.devourer.eradicate->effectN( 1 ).base_value();
       add_child( damage_action_meta );
     }
 
@@ -9846,6 +9854,33 @@ void demon_hunter_t::create_buffs()
 
   buff.serrated_glaive = make_buff( this, "serrated_glaive", spec.serrated_glaive_buff );
 
+  buff.never_say_die_driver = make_buff( this, "never_say_die_driver", talent.havoc.never_say_die )
+                                  ->set_quiet( true )
+                                  ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                                    if ( health_percentage() >= talent.havoc.never_say_die->effectN( 3 ).percent() )
+                                    {
+                                      if ( !buff.never_say_die_damage->up() )
+                                      {
+                                        buff.never_say_die_leech->expire();
+                                        buff.never_say_die_damage->trigger();
+                                      }
+                                    }
+                                    else
+                                    {
+                                      if ( !buff.never_say_die_damage->up() )
+                                      {
+                                        buff.never_say_die_damage->expire();
+                                        buff.never_say_die_leech->trigger();
+                                      }
+                                    }
+                                  } );
+
+  buff.never_say_die_damage =
+      make_buff( this, "never_say_die_damage", talent.havoc.never_say_die )->disable_ticking( true );
+
+  buff.never_say_die_leech =
+      make_buff( this, "never_say_die_leech", talent.havoc.never_say_die )->disable_ticking( true );
+
   // Vengeance ==============================================================
 
   buff.demon_spikes = new buffs::demon_spikes_t( this );
@@ -10490,8 +10525,8 @@ void demon_hunter_t::init_rng()
   }
 
   // Accumulated proc objects
-  accumulated_rng.voidfall = get_accumulated_rng(
-      "voidfall", prd::find_constant( talent.annihilator.voidfall->effectN( 3 ).percent() ) );
+  accumulated_rng.voidfall =
+      get_accumulated_rng( "voidfall", prd::find_constant( talent.annihilator.voidfall->effectN( 3 ).percent() ) );
 
   player_t::init_rng();
 }
@@ -11903,6 +11938,12 @@ void demon_hunter_t::arise()
   {
     buff.pursuit_of_angryness->trigger();
   }
+
+  if ( talent.havoc.never_say_die->ok() )
+  {
+    buff.never_say_die_driver->trigger();
+    buff.never_say_die_damage->trigger();
+  }
 }
 
 // demon_hunter_t::regen ====================================================
@@ -12226,14 +12267,14 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
 
   if ( has_reduced_drain )
   {
-    // Guess
-    drain *= 0.15;
+    // Reduced while casting Collapsing Star / channeling Void Ray. Measured ~0.127 from logs.
+    drain *= 0.127;
   }
 
   if ( drain_stacks < 1 )
   {
-    // Slow after meta cast
-    drain = 15;
+    // Slow first second after meta cast. Measured ~10/s from logs.
+    drain = 10;
   }
 
   return drain;
@@ -12492,6 +12533,9 @@ void demon_hunter_t::parse_player_effects()
   {
     parse_effects( buff.metamorphosis );
     parse_effects( buff.blur );
+    // Never Say Die leech uses effect 6 and uses the value from effect 2
+    parse_effects( buff.never_say_die_leech, talent.havoc.never_say_die->effectN( 2 ).percent(),
+                   effect_mask_t( false ).enable( 6 ) );
   }
 
   // Vengeance

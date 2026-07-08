@@ -423,6 +423,16 @@ public:
 
     spell_data_ptr_t mid_s1_sv_2pc;
     spell_data_ptr_t mid_s1_sv_4pc;
+
+    // Midnight Season 2 - Curse of Ula’tek
+    spell_data_ptr_t mid_s2_bm_2pc;
+    spell_data_ptr_t mid_s2_bm_4pc;
+
+    spell_data_ptr_t mid_s2_mm_2pc;
+    spell_data_ptr_t mid_s2_mm_4pc;
+
+    spell_data_ptr_t mid_s2_sv_2pc;
+    spell_data_ptr_t mid_s2_sv_4pc;
   } tier_set;
 
   struct buffs_t
@@ -553,6 +563,8 @@ public:
 
   struct rppm_t
   {
+    real_ppm_t* lethal_barbs;
+
     real_ppm_t* corpsecaller;
     real_ppm_t* shadow_surge;
 
@@ -816,6 +828,8 @@ public:
     spell_data_ptr_t bloodseeker;
     spell_data_ptr_t quick_reload;
     spell_data_ptr_t flankers_advantage;
+    spell_data_ptr_t sic_em;
+    spell_data_ptr_t sic_em_bleed;
     spell_data_ptr_t two_against_many;
 
     spell_data_ptr_t mongoose_fury;
@@ -823,8 +837,7 @@ public:
     spell_data_ptr_t mongoose_rounds;
     spell_data_ptr_t wildfire_shells;
     spell_data_ptr_t shellshock;
-    spell_data_ptr_t sic_em;
-    spell_data_ptr_t sic_em_bleed;
+    spell_data_ptr_t primal_surge;
 
     spell_data_ptr_t bloody_claws;
     spell_data_ptr_t wallop;
@@ -834,7 +847,6 @@ public:
     spell_data_ptr_t sweeping_spear;
     spell_data_ptr_t vulnerability;
     spell_data_ptr_t blackrock_munitions;
-    spell_data_ptr_t shower_of_blood;
     spell_data_ptr_t outland_venom;
     spell_data_ptr_t outland_venom_debuff;
 
@@ -859,7 +871,7 @@ public:
     spell_data_ptr_t wildfire_imbuement_buff;
     spell_data_ptr_t flanked;
     spell_data_ptr_t lethal_calibration;
-    spell_data_ptr_t primal_surge;
+    spell_data_ptr_t razor_edge;
 
     // Dark Ranger
     spell_data_ptr_t black_arrow;
@@ -4040,7 +4052,7 @@ struct auto_shot_base_t : public auto_attack_base_t<ranged_attack_t>
       p()->buffs.lock_and_load->trigger();
     }
 
-    if ( p()->talents.lethal_barbs.ok() )
+    if ( p()->talents.lethal_barbs.ok() && p()->rppm.lethal_barbs->trigger() )
     {
       double amount = p()->talents.lethal_barbs_energize->effectN( 1 ).base_value();
 
@@ -6034,7 +6046,7 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
     if ( p()->buffs.wildfire_imbuement->up() && s->result == RESULT_HIT )
       wildfire_imbuement->execute_on_target( s->target );
 
-    if ( p()->talents.lethal_barbs.ok() )
+    if ( p()->talents.lethal_barbs.ok() && p()->rppm.lethal_barbs->trigger() )
     {
       double amount = p()->talents.lethal_barbs_energize->effectN( 1 ).base_value();
 
@@ -7763,6 +7775,8 @@ void hunter_t::init_spells()
     talents.bloodseeker                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodseeker", HUNTER_SURVIVAL );
     talents.quick_reload                      = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Reload", HUNTER_SURVIVAL );
     talents.flankers_advantage                = find_talent_spell( talent_tree::SPECIALIZATION, "Flanker's Advantage", HUNTER_SURVIVAL );
+    talents.sic_em                            = find_talent_spell( talent_tree::SPECIALIZATION, "Sic 'Em", HUNTER_SURVIVAL );
+    talents.sic_em_bleed                      = talents.sic_em.ok() ? find_spell( 1253138 ) : spell_data_t::not_found();
     talents.two_against_many                  = find_talent_spell( talent_tree::SPECIALIZATION, "Two Against Many", HUNTER_SURVIVAL );
 
     talents.mongoose_fury                     = find_talent_spell( talent_tree::SPECIALIZATION, "Mongoose Fury", HUNTER_SURVIVAL );
@@ -7770,8 +7784,7 @@ void hunter_t::init_spells()
     talents.mongoose_rounds                   = find_talent_spell( talent_tree::SPECIALIZATION, "Mongoose Rounds", HUNTER_SURVIVAL );
     talents.wildfire_shells                   = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Shells", HUNTER_SURVIVAL );
     talents.shellshock                        = find_talent_spell( talent_tree::SPECIALIZATION, "Shellshock", HUNTER_SURVIVAL );
-    talents.sic_em                            = find_talent_spell( talent_tree::SPECIALIZATION, "Sic 'Em", HUNTER_SURVIVAL );
-    talents.sic_em_bleed                      = talents.sic_em.ok() ? find_spell( 1253138 ) : spell_data_t::not_found();
+    talents.primal_surge                      = find_talent_spell( talent_tree::SPECIALIZATION, "Primal Surge", HUNTER_SURVIVAL );
 
     talents.bloody_claws                      = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Claws", HUNTER_SURVIVAL );
     talents.wallop                            = find_talent_spell( talent_tree::SPECIALIZATION, "Wallop", HUNTER_SURVIVAL );
@@ -7781,7 +7794,6 @@ void hunter_t::init_spells()
     talents.sweeping_spear                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sweeping Spear", HUNTER_SURVIVAL );
     talents.vulnerability                     = find_talent_spell( talent_tree::SPECIALIZATION, "Vulnerability", HUNTER_SURVIVAL );
     talents.blackrock_munitions               = find_talent_spell( talent_tree::SPECIALIZATION, "Blackrock Munitions", HUNTER_SURVIVAL );
-    talents.shower_of_blood                   = find_talent_spell( talent_tree::SPECIALIZATION, "Shower of Blood", HUNTER_SURVIVAL );
     talents.outland_venom                     = find_talent_spell( talent_tree::SPECIALIZATION, "Outland Venom", HUNTER_SURVIVAL );
     talents.outland_venom_debuff              = talents.outland_venom.ok() ? find_spell( 459941 ) : spell_data_t::not_found();
 
@@ -7806,7 +7818,7 @@ void hunter_t::init_spells()
     talents.wildfire_imbuement_buff           = talents.wildfire_imbuement.ok() ? find_spell( 1252947 ) : spell_data_t::not_found();
     talents.flanked                           = find_talent_spell( talent_tree::SPECIALIZATION, "Flanked", HUNTER_SURVIVAL );
     talents.lethal_calibration                = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Calibration", HUNTER_SURVIVAL );
-    talents.primal_surge                      = find_talent_spell( talent_tree::SPECIALIZATION, "Primal Surge", HUNTER_SURVIVAL );
+    talents.razor_edge                        = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Edge", HUNTER_SURVIVAL );
   }
 
   if ( specialization() == HUNTER_MARKSMANSHIP || specialization() == HUNTER_BEAST_MASTERY )
@@ -7948,6 +7960,15 @@ void hunter_t::init_spells()
 
   tier_set.mid_s1_sv_2pc        = sets->set( HUNTER_SURVIVAL, MID1, B2 );
   tier_set.mid_s1_sv_4pc        = sets->set( HUNTER_SURVIVAL, MID1, B4 );
+
+  tier_set.mid_s2_bm_2pc        = sets->set( HUNTER_BEAST_MASTERY, MID2, B2 );
+  tier_set.mid_s2_bm_4pc        = sets->set( HUNTER_BEAST_MASTERY, MID2, B4 );
+
+  tier_set.mid_s2_mm_2pc        = sets->set( HUNTER_MARKSMANSHIP, MID2, B2 );
+  tier_set.mid_s2_mm_4pc        = sets->set( HUNTER_MARKSMANSHIP, MID2, B4 );
+
+  tier_set.mid_s2_sv_2pc        = sets->set( HUNTER_SURVIVAL, MID2, B2 );
+  tier_set.mid_s2_sv_4pc        = sets->set( HUNTER_SURVIVAL, MID2, B4 );
 
   // Cooldowns
   cooldowns.salvo->duration = talents.volley->duration();
@@ -8387,6 +8408,8 @@ void hunter_t::init_procs()
 void hunter_t::init_rng()
 {
   player_t::init_rng();
+
+  rppm.lethal_barbs = get_rppm( "Lethal Barbs", talents.lethal_barbs );
   
   rppm.corpsecaller = get_rppm( "Corpsecaller", talents.corpsecaller );
   rppm.let_fly      = get_rppm( "Let Fly", tier_set.mid_s1_mm_4pc );
