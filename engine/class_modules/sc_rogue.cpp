@@ -2240,7 +2240,6 @@ public:
   bool trigger_deathstalkers_mark_debuff( const action_state_t* state, bool from_darkest_night = false );
   void trigger_doomblade( const action_state_t* );
   void trigger_echoing_reprimand( const action_state_t* state );
-  void trigger_mid2_outlaw_4pc( const action_state_t* state );
   void trigger_fatal_flourish( const action_state_t* );
   void trigger_fatebound_coinflip( const action_state_t* state, fatebound_t::coinflip_e result, timespan_t delay = timespan_t::zero() );
   void trigger_fatebound_edge_case( const action_state_t* state );
@@ -3573,7 +3572,7 @@ struct ambush_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
     trigger_blindside( execute_state );
-    trigger_mid2_outlaw_4pc( execute_state );
+    p()->buffs.mid2_outlaw_4pc->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -5829,7 +5828,7 @@ struct sinister_strike_t : public rogue_attack_t
     rogue_attack_t::execute();
     trigger_unseen_blade( execute_state );
     trigger_opportunity( execute_state, extra_attack );
-    trigger_mid2_outlaw_4pc( execute_state );
+    p()->buffs.mid2_outlaw_4pc->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -8736,20 +8735,6 @@ void actions::rogue_action_t<Base>::trigger_echoing_reprimand( const action_stat
 }
 
 template <typename Base>
-void actions::rogue_action_t<Base>::trigger_mid2_outlaw_4pc( const action_state_t* state )
-{
-  if ( !p()->is_ptr() )
-    return;
-
-  double chance = p()->set_bonuses.mid2_outlaw_4pc->effectN( 1 ).percent();
-
-  if ( !p()->rng().roll( chance ) )
-    return;
-
-  p()->buffs.mid2_outlaw_4pc->trigger();
-}
-
-template <typename Base>
 void actions::rogue_action_t<Base>::trigger_secondary_poisoning( const action_state_t* state )
 {
   if ( !p()->talent.assassination.secondary_poisoning->ok() )
@@ -10189,7 +10174,7 @@ void rogue_t::init_spells()
   set_bonuses.mid2_outlaw_2pc = sets->set( ROGUE_OUTLAW, MID2, B2 );
   set_bonuses.mid2_outlaw_4pc = sets->set( ROGUE_OUTLAW, MID2, B4 );
 
-  spec.mid2_outlaw_4pc_buff = set_bonuses.mid2_outlaw_4pc->ok() ? set_bonuses.mid2_outlaw_4pc->effectN( 1 ).trigger() : spell_data_t::not_found();
+  spec.mid2_outlaw_4pc_buff = set_bonuses.mid2_outlaw_4pc->effectN( 1 ).trigger();
 
   // Register passives ======================================================
 
@@ -10989,8 +10974,13 @@ void rogue_t::create_buffs()
 
   buffs.mid1_outlaw_4pc = make_buff<damage_buff_t>( this, "whirl_of_blades", set_bonuses.mid1_outlaw_4pc->effectN( 2 ).trigger() );
 
-  buffs.mid2_outlaw_4pc = make_buff( this, "fang_strike", spec.mid2_outlaw_4pc_buff )
+  buffs.mid2_outlaw_4pc = make_buff_fallback( set_bonuses.mid2_outlaw_4pc->ok(), this, "fang_strike", spec.mid2_outlaw_4pc_buff )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 );
+
+  if ( set_bonuses.mid2_outlaw_4pc->ok() )
+  {
+    buffs.mid2_outlaw_4pc->set_chance( set_bonuses.mid2_outlaw_4pc->effectN( 1 ).percent() );
+  }
 }
 
 // rogue_t::invalidate_cache =========================================
