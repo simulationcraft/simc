@@ -7587,7 +7587,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   ab::stats->consume_resource( RESOURCE_COMBO_POINT, max_spend );
   p()->resource_loss( RESOURCE_COMBO_POINT, cp_loss );
 
-  p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), max_spend, util::resource_type_string( RESOURCE_COMBO_POINT ),
+  p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), cp_loss, util::resource_type_string( RESOURCE_COMBO_POINT ),
                        *this, p()->current_cp() );
   // Remove Supercharger Buffs
   consume_supercharger( state );
