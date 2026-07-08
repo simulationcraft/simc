@@ -23706,4 +23706,59 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Reset Combat Timers (81), No Initial Threat (86), Not an Action (92), Do Not Display Range (126), No Harmful Threat (132), Allow Cast While Casting (135), Ignore Combat Timer (156), Not an Attack (194), No Jump Pathing (208), Face unit target upon completion of jump charge (300), Allow Cast While Channeling (308), Face Destination (395), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=133
+#1 (id=1337004)  : Charge (96)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1308639 | Target: Targeted Enemy (6)
+Description      : $@spelldesc1269619
+
+Name             : Spirit's Wrath (id=1308639) [Spell Family (7), Hidden] 
+Class            : Druid
+School           : Nature
+Spell Type       : Melee
+Range            : 40 yards
+Labels           : 16: Class Spells
+                 : 21: Druid Spells
+                 : 292
+Triggered By     : Spirit's Wrath (1308479)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Require All Targets (58), Always Line of Sight (185)
+Effects          :
+#1 (id=1337243)  : Server Side Script (77)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Target: Targeted Enemy (6)
+Description      : $@spelldesc1269619
+
+Name             : Answered Calling (id=1308647) [Spell Family (7)] 
+Class            : Druid
+School           : Nature
+Spell Type       : None
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 21: Druid Spells
+                 : 292
+Attributes       : Do Not Sheath (18), No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Aura Is Buff (140), No Attack Parry (248), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1337259)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Affected Spells: Mangle (33917), Thrash (77758), Dire Echo (1253489)
+                   Family Flags: 38, 91
+#2 (id=1337522)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Mangle (33917), Thrash (77758), Thrash (192090), Dire Echo (1253489)
+                   Family Flags: 38, 40, 91
+Description      : Accompanied by a guardian spirit.
+Tooltip          : Accompanied by a guardian spirit.
+
+Name             : Rampant Thorn (id=1310150) [Spell Family (7), Hidden] 
+Class            : Druid
+School           : Nature
+Spell Type       : Magic
+Range            : 40 yards
+Max Targets      : 1
+Labels           : 16: Class Spells
+                 : 21: Druid Spells
+                 : 292
+                 : 6656
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Always AOE Line of Sight (186)
+Effects          :
+#1 (id=1339431)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Target: at Self (18) -> at Enemy in Area (16)
+Description      : $@spelldesc1301157
+
