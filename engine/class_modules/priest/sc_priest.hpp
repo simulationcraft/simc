@@ -1026,7 +1026,7 @@ public:
   void trigger_ancient_madness( int stacks );
   void trigger_ancient_madness_extension();
   void refresh_insidious_ire_buff( action_state_t* s );
-  void spawn_thing_from_beyond();
+  void spawn_thing_from_beyond( player_t* target = nullptr );
   void trigger_idol_of_nzoth( player_t* target, int stacks );
   double shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
@@ -1039,7 +1039,7 @@ public:
   void trigger_horrific_vision( player_t* target );
   void trigger_vision_of_nzoth( player_t* target );
   void trigger_shadowy_insight( bool guaranteed = false, action_state_t* s = nullptr );
-  void trigger_idol_of_yshaarj();
+  void trigger_idol_of_yshaarj( player_t* target = nullptr );
 
   std::vector<action_t*> secondary_action_list;
 

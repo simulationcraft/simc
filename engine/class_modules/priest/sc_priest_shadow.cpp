@@ -445,7 +445,7 @@ public:
         player->sim->print_debug( "{} triggering shadeburst from {}. target={} parent={}", priest(),
                                   apparition_state->trigger_source_name, s->target->name(),
                                   apparition_state->parent_target->name() );
-        priest().background_actions.shadeburst->execute();
+        priest().background_actions.shadeburst->execute_on_target( apparition_state->parent_target );
       }
     }
   };
@@ -630,8 +630,7 @@ struct shadow_word_pain_t final : public priest_spell_t
       {
         if ( priest().threshold_rng.tormented_spirits->trigger( s ) )
         {
-          // BUG: This does not pass through target for Shadeburst currently
-          priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp, nullptr );
+          priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp, s->target );
         }
       }
     }
@@ -650,8 +649,7 @@ struct shadow_word_pain_t final : public priest_spell_t
       {
         if ( priest().threshold_rng.tormented_spirits->trigger( d->state ) )
         {
-          // BUG: This does not pass through target for Shadeburst currently
-          priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp, nullptr );
+          priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp, d->state->target );
         }
       }
     }
@@ -812,8 +810,7 @@ struct vampiric_touch_t final : public priest_spell_t
       priest().buffs.vampiric_insight->decrement();
       priest().generate_insanity( priest().specs.vampiric_insight_buff->effectN( 1 ).resource( RESOURCE_INSANITY ),
                                   priest().gains.insanity_vampiric_insight, this );
-      // BUG: Does not trigger Shadeburst, do not pass target
-      priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_vampiric_insight, nullptr, 2.0 );
+      priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_vampiric_insight, target, 2.0 );
     }
 
     priest_spell_t::execute();
@@ -2647,8 +2644,7 @@ void priest_t::trigger_horrific_vision( player_t* target )
   buffs.horrific_vision->trigger();
   if ( talents.shadow.void_apparitions_1.enabled() )
   {
-    // BUG: This does not pass through target for Shadeburst currently
-    trigger_shadowy_apparitions( procs.shadowy_apparition_nzoth, nullptr );
+    trigger_shadowy_apparitions( procs.shadowy_apparition_nzoth, target );
   }
 }
 
@@ -2664,8 +2660,7 @@ void priest_t::trigger_vision_of_nzoth( player_t* target )
 
   if ( talents.shadow.void_apparitions_1.enabled() )
   {
-    // BUG: This does not pass through target for Shadeburst currently
-    trigger_shadowy_apparitions( procs.shadowy_apparition_nzoth, nullptr );
+    trigger_shadowy_apparitions( procs.shadowy_apparition_nzoth, target );
   }
 }
 
@@ -2719,18 +2714,18 @@ void priest_t::trigger_idol_of_nzoth( player_t* target, int stacks )
   }
 }
 
-void priest_t::spawn_thing_from_beyond()
+void priest_t::spawn_thing_from_beyond( player_t* target )
 {
   pets.thing_from_beyond.spawn();
   procs.thing_from_beyond->occur();
 
   if ( talents.shadow.void_apparitions_1.enabled() )
   {
-    trigger_shadowy_apparitions( procs.shadowy_apparition_yogg, nullptr );
+    trigger_shadowy_apparitions( procs.shadowy_apparition_yogg, target );
   }
 }
 
-void priest_t::trigger_idol_of_yshaarj()
+void priest_t::trigger_idol_of_yshaarj( player_t* target )
 {
   pets.shadowfiend.spawn();
 
@@ -2743,7 +2738,7 @@ void priest_t::trigger_idol_of_yshaarj()
 
   if ( talents.shadow.void_apparitions_1.enabled() )
   {
-    trigger_shadowy_apparitions( procs.shadowy_apparition_yshaarj, nullptr );
+    trigger_shadowy_apparitions( procs.shadowy_apparition_yshaarj, target );
   }
 }
 
@@ -2771,7 +2766,7 @@ void priest_t::trigger_random_idol( action_state_t* s )
   {
     case random_idol_e::YSHAARJ:
       procs.void_apparition_yshaarj->occur();
-      trigger_idol_of_yshaarj();
+      trigger_idol_of_yshaarj( s->target );
       break;
     case random_idol_e::NZOTH_HORRIFIC_VISION:
       procs.void_apparition_horrific_vision->occur();
@@ -2783,7 +2778,7 @@ void priest_t::trigger_random_idol( action_state_t* s )
       break;
     case random_idol_e::YOGG:
       procs.void_apparition_yogg->occur();
-      spawn_thing_from_beyond();
+      spawn_thing_from_beyond( s->target );
       break;
     case random_idol_e::CTHUN:
       procs.void_apparition_cthun->occur();
