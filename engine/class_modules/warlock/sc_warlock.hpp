@@ -58,6 +58,7 @@ struct warlock_td_t : public actor_target_data_t
     propagate_const<buff_t*> lake_of_fire;
     propagate_const<buff_t*> shadowburn;
     propagate_const<buff_t*> havoc;
+    propagate_const<buff_t*> dark_titans_mark;
 
     // Diabolist
     propagate_const<buff_t*> cloven_soul;
@@ -93,15 +94,27 @@ struct warlock_td_t : public actor_target_data_t
 
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
+  // 12.1 Affliction 4pc
+  int ua_regular_stacks;
+  int ua_seed_stacks;
+  bool ua_seed_gap;
+
   warlock_t& warlock;
   warlock_td_t( player_t* target, warlock_t& p );
 
   void reset()
-  { soc_threshold = 0; }
+  {
+    soc_threshold = 0;
+    reset_ua_stack_tracking();
+  }
 
   void target_demise();
 
   int count_affliction_dots() const;
+  void ua_stack_applied( bool is_seed_ua );
+  void ua_stack_expired( bool is_seed_ua );
+  void reset_ua_stack_tracking();
+  int ua_calculate_damage_stacks() const;
 };
 
 // Shuffled Bag RNG (sampling without replacement)
@@ -754,6 +767,7 @@ public:
     action_t* diabolic_gaze_3;
     action_t* diabolic_oculi;
     action_t* blighted_maw;
+    action_t* isolated_implosion;
     action_t* echo_of_sargeras;
     action_t* echo_of_sargeras_cb;
     action_t* echo_of_sargeras_sb;
@@ -805,6 +819,16 @@ public:
     const spell_data_t* wl_demonology_12_0_class_set_4pc;
     const spell_data_t* wl_destruction_12_0_class_set_2pc;
     const spell_data_t* wl_destruction_12_0_class_set_4pc;
+    const spell_data_t* wl_affliction_12_1_class_set_2pc;
+    const spell_data_t* wl_affliction_12_1_class_set_4pc;
+    const spell_data_t* unstable_empowerment_buff;
+    const spell_data_t* wl_demonology_12_1_class_set_2pc;
+    const spell_data_t* wl_demonology_12_1_class_set_4pc;
+    const spell_data_t* isolated_implosion;
+    const spell_data_t* isolated_implosion_aoe;
+    const spell_data_t* wl_destruction_12_1_class_set_2pc;
+    const spell_data_t* wl_destruction_12_1_class_set_4pc;
+    const spell_data_t* dark_titans_mark_debuff;
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
@@ -816,7 +840,6 @@ public:
     propagate_const<cooldown_t*> summon_doomguard;
     propagate_const<cooldown_t*> felstorm_icd;
     propagate_const<cooldown_t*> echo_of_sargeras; // ICD for Embers of Nihilam rank 4 procs
-    propagate_const<cooldown_t*> blackened_soul; // Internal cooldown on triggering stack increase to Wither
   } cooldowns;
 
   // Buffs
@@ -833,6 +856,7 @@ public:
     propagate_const<buff_t*> shard_instability;
     propagate_const<buff_t*> cascading_calamity;
     propagate_const<buff_t*> seed_of_corruption_is_out_dnt;
+    propagate_const<buff_t*> unstable_empowerment;
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
@@ -1173,7 +1197,7 @@ public:
   std::vector<player_t*> get_smart_targets( const std::vector<player_t*>& tl, propagate_const<dot_t*> warlock_td_t::dots_t::* dot, int n_targets, player_t* exclude = nullptr, double range = 0.0, bool really_smart = false );
   player_t* get_smart_target( const std::vector<player_t*>& tl, propagate_const<dot_t*> warlock_td_t::dots_t::* dot, player_t* exclude = nullptr, double range = 0.0, bool really_smart = false );
   double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr, action_t* action = nullptr ) override;
-  void feast_of_souls_gain( bool from_quietus_seed = false );
+  void feast_of_souls_gain();
   void summon_dominion_of_argus_pet( dominion_of_argus_pet_e pet );
 
   bool affliction() const;
@@ -1291,16 +1315,23 @@ namespace helpers
 
   struct ua_stack_drop_event_t : public player_event_t
   {
-    ua_stack_drop_event_t( warlock_t*, dot_t*, timespan_t );
+    ua_stack_drop_event_t( warlock_t*, dot_t*, timespan_t, bool = false );
     dot_t* dot;
+    bool is_seed_applied;
     virtual const char* name() const override;
     virtual void execute() override;
   };
 
-  void trigger_blackened_soul( warlock_t* p, bool malevolence );
+  void consume_succulent_soul( warlock_t* p, player_t* target );
+
+  void trigger_blackened_soul( warlock_t* p, bool malevolence, player_t* bs_target = nullptr );
 
   void trigger_echo_of_sargeras( warlock_t* p, player_t* target, action_t* echo_action, proc_t* proc );
 
   void trigger_wrath_of_nathreza( warlock_t* p, player_t* target );
+
+  void trigger_isolated_implosion( warlock_t* p, pets::demonology::wild_imp_pet_t* imp, player_t* target );
+
+  void update_unstable_empowerment_buff( warlock_t* p );
 }
 }  // namespace warlock
