@@ -3705,7 +3705,6 @@ void sporecallers_blooming_loop( special_effect_t& effect )
 void rotmires_sporeheart( special_effect_t& effect )
 {
   effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Rotmire's Sporeheart: Damage is assumed to split and increase by 15% per target hit. "
     "Shield is assumed to apply immediately and will only burst when depleted by incoming damage. "
     "What types of triggers can proc the shield has not been verified." );
 
@@ -3716,9 +3715,10 @@ void rotmires_sporeheart( special_effect_t& effect )
     protective_toadstool_buff_t( const special_effect_t& e )
       : absorb_buff_t( e.player, "protective_toadstools", e.player->find_spell( 1285161 ) )
     {
-      damage = create_proc_action<generic_aoe_proc_t>( "bursting_toadstools", e, 1285163 );
+      damage = create_proc_action<generic_proc_t>( "bursting_toadstools", e, 1285163 );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 3 ).average( e );
       damage->base_multiplier *= role_mult( e );
+      damage->aoe = -1;
 
       set_default_value( e.driver()->effectN( 2 ).average( e ) );
     }
