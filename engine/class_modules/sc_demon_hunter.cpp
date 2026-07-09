@@ -86,6 +86,7 @@ constexpr unsigned MAX_SOUL_FRAGMENTS          = 6;
 constexpr unsigned HAVOC_MAX_SOUL_FRAGMENTS    = 5;
 constexpr unsigned DEVOURER_MAX_SOUL_FRAGMENTS = 10;
 constexpr double VENGEFUL_RETREAT_DISTANCE     = 20.0;
+constexpr double THE_HUNT_LEAP_SPEED           = 25.0;  // yd/s, approximate The Hunt charge speed (no velocity in spell data)
 
 enum class soul_fragment : unsigned
 {
@@ -5498,6 +5499,15 @@ struct the_hunt_base_t
 
   timespan_t travel_time() const override
   {
+    // The Hunt charges to its target, so the leap scales with distance. A Devourer that opens
+    // distance with Vengeful Retreat first stays airborne long enough to enter Metamorphosis
+    // mid-leap, so the impact lands during Meta and is empowered by Demonic Intensity just like
+    // Predator's Wake. In melee, and for other specs, the flat short travel is kept.
+    if ( dh()->specialization() == DEMON_HUNTER_DEVOURER && dh()->buff.vengeful_retreat_move->check() )
+    {
+      const double distance = dh()->buff.vengeful_retreat_move->distance_moved;
+      return std::max( 100_ms, timespan_t::from_seconds( distance / THE_HUNT_LEAP_SPEED ) );
+    }
     return 100_ms;
   }
 };
