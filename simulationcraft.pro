@@ -18,7 +18,7 @@ macx {
   create_release.target    = create_release
   create_release.depends   = all
   create_release.commands  = $$dirname(QMAKE_QMAKE)/macdeployqt "SimulationCraft.app" &&
-  create_release.commands += FIX_IDS=1 qt/fix-macqtdeploy-paths.sh "SimulationCraft.app" &&
+  create_release.commands += FIX_IDS=1 bash qt/fix-macqtdeploy-paths.sh "SimulationCraft.app" &&
   create_release.commands += codesign --force --deep --sign - "SimulationCraft.app" &&
   create_release.commands += qt/osx_release.sh
 
