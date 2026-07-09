@@ -3958,8 +3958,9 @@ struct zenith_stomp_t : monk_spell_t
 
     aoe                 = -1;
     reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
-    may_combo_strike    = false;
+    may_combo_strike    = player->wowv_ge( { 12, 1, 0 } );
     ww_mastery          = true;
+    cast_during_sck     = true;
   }
 
   void init() override
