@@ -23,7 +23,7 @@ FIX_IDS="${FIX_IDS:-0}"
 
 find_llvm_install_name_tool() {
     if [[ -n "${LLVM_INSTALL_NAME_TOOL:-}" && -x "${LLVM_INSTALL_NAME_TOOL:-}" ]]; then
-        printf '%s\n' "$LLVM_INSTALL_NAME_TOOL"
+        printf "%s\n" "$LLVM_INSTALL_NAME_TOOL"
         return 0
     fi
 
@@ -34,7 +34,7 @@ find_llvm_install_name_tool() {
         /usr/local/bin/llvm-install-name-tool
     do
         if [[ -x "$candidate" ]]; then
-            printf '%s\n' "$candidate"
+            printf "%s\n" "$candidate"
             return 0
         fi
     done
@@ -55,7 +55,7 @@ if [[ -z "$LLVM_INSTALL_NAME_TOOL" ]]; then
     echo "Install LLVM with:"
     echo "  brew install llvm"
     echo
-    echo "Or specify the tool explicitly:"
+    echo "Or specify it explicitly:"
     echo "  LLVM_INSTALL_NAME_TOOL=/path/to/llvm-install-name-tool $0 \"$APP\""
     exit 1
 fi
@@ -73,14 +73,7 @@ if [[ ! -d "$FRAMEWORK_DIR" ]]; then
 fi
 
 relpath() {
-    /usr/bin/python3 - "$1" "$2" <<'PY'
-import os
-import sys
-
-src = os.path.abspath(sys.argv[1])
-dst = os.path.abspath(sys.argv[2])
-print(os.path.relpath(dst, src))
-PY
+    /usr/bin/python3 -c "import os, sys; print(os.path.relpath(os.path.abspath(sys.argv[2]), os.path.abspath(sys.argv[1])))" "$1" "$2"
 }
 
 is_macho() {
@@ -93,9 +86,8 @@ is_direct_main_executable() {
     local dir
     dir="$(dirname "$file")"
 
-    # Binaries directly in Contents/MacOS are assumed to be the main executable
-    # or app-local helper tools. For the main executable,
-    # @executable_path/../Frameworks is normally correct.
+    # Binaries directly in Contents/MacOS are skipped.
+    # For the main executable, @executable_path/../Frameworks is correct.
     [[ "$dir" == "$MACOS_DIR" ]]
 }
 
@@ -103,23 +95,9 @@ get_install_id() {
     local file="$1"
 
     otool -D "$file" 2>/dev/null |
-        sed '1d' |
+        sed "1d" |
         head -n 1 |
-        sed 's/^[[:space:]]*//' || true
-}
-
-extract_framework_name() {
-    local path="$1"
-
-    printf '%s\n' "$path" |
-        sed -E 's#.*\/([^/]+)\.framework/Versions/[^/]+/.*#\1#'
-}
-
-extract_framework_version() {
-    local path="$1"
-
-    printf '%s\n' "$path" |
-        sed -E 's#.*\.framework/Versions/([^/]+)/.*#\1#'
+        sed "s/^[[:space:]]*//" || true
 }
 
 dependency_is_system() {
@@ -137,13 +115,45 @@ dependency_is_system() {
 dependency_points_to_framework() {
     local dep="$1"
 
-    printf '%s\n' "$dep" | grep -qE '\.framework/Versions/[^/]+/'
+    [[ "$dep" == *.framework/Versions/*/* ]]
 }
 
 dependency_points_to_dylib() {
     local dep="$1"
 
     [[ "$dep" == *.dylib ]]
+}
+
+extract_framework_name() {
+    local path="$1"
+    local prefix
+
+    case "$path" in
+        *.framework/Versions/*/*)
+            prefix="${path%%.framework/Versions/*}"
+            prefix="${prefix##*/}"
+            printf "%s\n" "$prefix"
+            return 0
+            ;;
+    esac
+
+    return 1
+}
+
+extract_framework_version() {
+    local path="$1"
+    local rest
+
+    case "$path" in
+        *.framework/Versions/*/*)
+            rest="${path#*.framework/Versions/}"
+            rest="${rest%%/*}"
+            printf "%s\n" "$rest"
+            return 0
+            ;;
+    esac
+
+    return 1
 }
 
 framework_exists_in_bundle() {
@@ -162,27 +172,29 @@ dylib_exists_in_bundle() {
 make_new_dependency() {
     local prefix="$1"
     local old="$2"
-    local fw version dylib
+    local fw
+    local version
+    local dylib
 
     if dependency_is_system "$old"; then
         return 1
     fi
 
     if dependency_points_to_framework "$old"; then
-        fw="$(extract_framework_name "$old")"
-        version="$(extract_framework_version "$old")"
+        fw="$(extract_framework_name "$old" || true)"
+        version="$(extract_framework_version "$old" || true)"
 
-        if [[ -z "$fw" || "$fw" == "$old" ]]; then
+        if [[ -z "$fw" ]]; then
             return 1
         fi
 
-        if [[ -z "$version" || "$version" == "$old" ]]; then
+        if [[ -z "$version" ]]; then
             version="A"
         fi
 
         # Rewrite only if the corresponding framework is actually bundled.
         if framework_exists_in_bundle "$fw" "$version"; then
-            printf '%s%s.framework/Versions/%s/%s\n' "$prefix" "$fw" "$version" "$fw"
+            printf "%s%s.framework/Versions/%s/%s\n" "$prefix" "$fw" "$version" "$fw"
             return 0
         fi
 
@@ -194,7 +206,7 @@ make_new_dependency() {
 
         # Rewrite only if the corresponding dylib is actually bundled.
         if dylib_exists_in_bundle "$dylib"; then
-            printf '%s%s\n' "$prefix" "$dylib"
+            printf "%s%s\n" "$prefix" "$dylib"
             return 0
         fi
 
@@ -211,38 +223,33 @@ should_try_rewrite_dependency() {
         return 1
     fi
 
-    # Bad in non-main executables.
-    if [[ "$dep" == @executable_path/../Frameworks/* ]]; then
-        return 0
-    fi
-
-    # Absolute framework/dylib path from Homebrew, install-qt-action,
-    # custom Qt install, etc.
-    if [[ "$dep" == /* ]]; then
-        if dependency_points_to_framework "$dep" || dependency_points_to_dylib "$dep"; then
+    case "$dep" in
+        @executable_path/../Frameworks/*)
             return 0
-        fi
-    fi
+            ;;
 
-    # Normalize Qt framework references in non-main binaries.
-    if printf '%s\n' "$dep" | grep -qE 'Qt[^/]*\.framework/Versions/[^/]+/'; then
-        return 0
-    fi
+        /*)
+            if dependency_points_to_framework "$dep" || dependency_points_to_dylib "$dep"; then
+                return 0
+            fi
+            ;;
 
-    # Normalize @rpath references if they correspond to bundled items.
-    if [[ "$dep" == @rpath/* ]]; then
-        if dependency_points_to_framework "$dep" || dependency_points_to_dylib "$dep"; then
+        *Qt*.framework/Versions/*/*)
             return 0
-        fi
-    fi
+            ;;
 
-    # Normalize @loader_path references too, but make_new_dependency will only
-    # emit a replacement if the target exists in Contents/Frameworks.
-    if [[ "$dep" == @loader_path/* ]]; then
-        if dependency_points_to_framework "$dep" || dependency_points_to_dylib "$dep"; then
-            return 0
-        fi
-    fi
+        @rpath/*)
+            if dependency_points_to_framework "$dep" || dependency_points_to_dylib "$dep"; then
+                return 0
+            fi
+            ;;
+
+        @loader_path/*)
+            if dependency_points_to_framework "$dep" || dependency_points_to_dylib "$dep"; then
+                return 0
+            fi
+            ;;
+    esac
 
     return 1
 }
@@ -258,7 +265,13 @@ patch_dependencies_for_file() {
         return 0
     fi
 
-    local bin_dir rel prefix id deps changed
+    local bin_dir
+    local rel
+    local prefix
+    local id
+    local deps
+    local changed
+
     bin_dir="$(dirname "$bin")"
     rel="$(relpath "$bin_dir" "$FRAMEWORK_DIR")"
 
@@ -272,18 +285,18 @@ patch_dependencies_for_file() {
 
     deps="$(
         otool -L "$bin" |
-            sed '1d' |
-            sed -E 's/^[[:space:]]*([^[:space:]]+).*/\1/' |
+            sed "1d" |
+            sed -E "s/^[[:space:]]*([^[:space:]]+).*/\1/" |
             while IFS= read -r dep; do
                 [[ -z "$dep" ]] && continue
 
-                # Skip the library's own LC_ID_DYLIB/self-ID line.
+                # Skip LC_ID_DYLIB / self-ID line.
                 if [[ -n "$id" && "$dep" == "$id" ]]; then
                     continue
                 fi
 
                 if should_try_rewrite_dependency "$dep"; then
-                    printf '%s\n' "$dep"
+                    printf "%s\n" "$dep"
                 fi
             done
     )"
@@ -342,7 +355,11 @@ patch_id_for_file() {
         return 0
     fi
 
-    local id new_id fw version base
+    local id
+    local new_id
+    local fw
+    local version
+    local base
 
     id="$(get_install_id "$bin")"
 
@@ -350,22 +367,15 @@ patch_id_for_file() {
         return 0
     fi
 
-    if printf '%s\n' "$bin" | grep -qE '\.framework/Versions/[^/]+/[^/]+$'; then
-        fw="$(
-            printf '%s\n' "$bin" |
-                sed -E 's#.*\/([^/]+)\.framework/Versions/[^/]+/[^/]+$#\1#'
-        )"
+    if [[ "$bin" == *.framework/Versions/*/* ]]; then
+        fw="$(extract_framework_name "$bin" || true)"
+        version="$(extract_framework_version "$bin" || true)"
 
-        version="$(
-            printf '%s\n' "$bin" |
-                sed -E 's#.*\.framework/Versions/([^/]+)/[^/]+$#\1#'
-        )"
-
-        if [[ -z "$fw" || "$fw" == "$bin" ]]; then
+        if [[ -z "$fw" ]]; then
             return 0
         fi
 
-        if [[ -z "$version" || "$version" == "$bin" ]]; then
+        if [[ -z "$version" ]]; then
             version="A"
         fi
 
@@ -383,14 +393,19 @@ patch_id_for_file() {
         return 0
     fi
 
-    # Only rewrite IDs that clearly point to a non-system/bundle-ish location.
-    if ! printf '%s\n' "$id" | grep -qE '@executable_path/../Frameworks/|@loader_path/|@rpath/|/'; then
-        return 0
-    fi
+    case "$id" in
+        /System/*|/usr/lib/*)
+            return 0
+            ;;
+    esac
 
-    if dependency_is_system "$id"; then
-        return 0
-    fi
+    case "$id" in
+        @executable_path/../Frameworks/*|@loader_path/*|@rpath/*|/*)
+            ;;
+        *)
+            return 0
+            ;;
+    esac
 
     echo "Patching install ID:"
     echo "  $bin"
@@ -422,7 +437,7 @@ done
 
 if [[ "$FIX_IDS" == "1" ]]; then
     find "$APP" -type f -print0 |
-    while IFS= read -r -d "" bin; do
+    while IFS= read -r -d '' bin; do
         patch_id_for_file "$bin"
     done
 fi
