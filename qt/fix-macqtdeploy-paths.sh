@@ -422,7 +422,7 @@ done
 
 if [[ "$FIX_IDS" == "1" ]]; then
     find "$APP" -type f -print0 |
-    while IFS= read -r -d '' bin; do
+    while IFS= read -r -d "" bin; do
         patch_id_for_file "$bin"
     done
 fi
@@ -431,4 +431,3 @@ echo "Done."
 echo
 echo "You must now codesign the bundle, for example:"
 echo "  codesign --force --deep --sign - \"$APP\""
-
