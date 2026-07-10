@@ -4037,7 +4037,6 @@ struct lingering_rune_t : public BASE
 template <typename BASE>
 struct omnium_core_rune_t : public BASE
 {
-  stat_buff_t* buff = nullptr;
   const spell_data_t* coeff;
   double dmg_coeff;
   double stat_coeff;
@@ -4092,31 +4091,9 @@ struct omnium_core_rune_t : public BASE
         dot->base_multiplier *= 1.0 + residual->driver()->effectN( 1 ).percent();
     }
 
-    apply_stat_rune( 1279609, 1287772 );  // Rune of Critical Power
-    apply_stat_rune( 1279610, 1287774 );  // Rune of Burning Haste
-    apply_stat_rune( 1279612, 1287771 );  // Rune of Masterful Cunning
-    apply_stat_rune( 1279613, 1287770 );  // Rune of the Versatile Warrior
-
     // Rune of Overload: 1279614 driver
     if ( auto overload = find_special_effect( e.player, 1279614 ) )
       BASE::base_multiplier *= 1.0 + overload->driver()->effectN( 1 ).percent();
-  }
-
-  void apply_stat_rune( unsigned driver_id, unsigned buff_id )
-  {
-    if ( !find_special_effect( BASE::player, driver_id ) )
-      return;
-
-    buff = create_buff<stat_buff_t>( BASE::player, BASE::player->find_spell( buff_id ) );
-    buff->set_stat_from_effect_type( A_MOD_RATING, stat_coeff * buff->data().effectN( 2 ).base_value() );
-  }
-
-  void execute() override
-  {
-    BASE::execute();
-
-    if ( buff )
-      buff->trigger();
   }
 
   buff_t* create_debuff( player_t* t ) override
@@ -4145,29 +4122,56 @@ struct omnium_core_rune_t : public BASE
   }
 };
 
+stat_buff_t* create_omnium_stat_buff( const special_effect_t& effect )
+{
+  const spelleffect_data_t& coeff_effect = effect.driver()->effectN( 2 ).trigger()->effectN( 3 );
+  const double stat_coefficient = std::floor( coeff_effect.average_no_item( effect.player, OMNIUM_ITEM_LEVEL ) ) * 0.01;
+
+  const std::array<std::pair<unsigned, unsigned>, 4> runes = { {
+      { 1279613, 1287770 },  // Rune of the Versatile Warrior
+      { 1279612, 1287771 },  // Rune of Masterful Cunning
+      { 1279610, 1287774 },  // Rune of Burning Haste
+      { 1279609, 1287772 },  // Rune of Critical Power
+  } };
+
+  for ( const auto& [ driver_id, buff_id ] : runes )
+  {
+    if ( !find_special_effect( effect.player, driver_id ) )
+      continue;
+
+    auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( buff_id ) );
+    buff->set_stat_from_effect_type( A_MOD_RATING, stat_coefficient * buff->data().effectN( 2 ).base_value() );
+    return buff;
+  }
+
+  assert( false );
+  return nullptr;
+}
+
 // 1279599 driver
 // 1286970 damage
 // 1263002 heal
 void rune_of_unleashed_fire( special_effect_t& effect )
 {
   effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Rune of Unleashed Fire: Procs are assumed to target the same unit that triggered them. "
-    "Procs triggered by damage are assumed to proc damage. "
-    "Procs triggered by healing/aura are assumed to proc heal." );
+                             "Rune of Unleashed Fire: Procs are assumed to target the same unit that triggered them. "
+                             "Procs triggered by damage are assumed to proc damage. "
+                             "Procs triggered by healing/aura are assumed to proc heal." );
 
-  auto damage =
-    create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_unleashed_fire", effect, 1286970 );
+  auto damage = create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_unleashed_fire", effect, 1286970 );
+  auto heal = create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_unleashed_fire_heal", effect, 1263002 );
+  auto buff = create_omnium_stat_buff( effect );
+  auto callback = [ damage, heal, buff ]( auto, auto, player_t* t, auto ) {
+    if ( buff )
+      buff->trigger();
 
-  auto heal =
-    create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_unleashed_fire_heal", effect, 1263002 );
+    if ( t->is_enemy() )
+      damage->execute_on_target( t );
+    else
+      heal->execute_on_target( t );
+  };
 
-  effect.player->callbacks.register_callback_execute_function(
-    effect.spell_id, [ damage, heal ]( auto, auto, player_t* t, auto ) {
-      if ( t->is_enemy() )
-        damage->execute_on_target( t );
-      else
-        heal->execute_on_target( t );
-    } );
+  effect.player->callbacks.register_callback_execute_function( effect.spell_id, callback );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -4183,21 +4187,23 @@ void rune_of_unleashed_fire( special_effect_t& effect )
 // 1287425 orb counter/driver
 void rune_of_voidtouched_orbs( special_effect_t& effect )
 {
-  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Rune of Voidtouched Orbs: Orbs are assumed to proc on hit and require a damage/healing amount. "
-    "Procs are assumed to target the same unit that triggered them. "
-    "All procs are assumed to fire individually at the same time when triggered. "
-    "Orbs are assumed to stack while out of combat." );
+  effect.player->sim->error(
+      UNVERIFIED_IMPLEMENTATION,
+      "Rune of Voidtouched Orbs: Orbs are assumed to proc on hit and require a damage/healing amount. "
+      "Procs are assumed to target the same unit that triggered them. "
+      "All procs are assumed to fire individually at the same time when triggered. "
+      "Orbs are assumed to stack while out of combat." );
 
-  auto damage =
-    create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_voidtouched_orbs", effect, 1286716 );
+  auto damage = create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_voidtouched_orbs", effect, 1286716 );
 
   auto heal =
-    create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_voidtouched_orbs_heal", effect, 1286721 );
+      create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_voidtouched_orbs_heal", effect, 1286721 );
+
+  auto buff = create_omnium_stat_buff( effect );
 
   // create orb buff & periodic trigger
   auto orb_buff = create_buff( effect.player, effect.trigger() );
-  auto period = effect.driver()->effectN( 1 ).period();
+  auto period   = effect.driver()->effectN( 1 ).period();
 
   effect.player->register_precombat_begin( [ orb_buff, period ]( player_t* p ) {
     orb_buff->trigger( orb_buff->max_stack() );
@@ -4208,31 +4214,34 @@ void rune_of_voidtouched_orbs( special_effect_t& effect )
   } );
 
   // create damage/heal callback
-  auto orb = new special_effect_t( effect.player );
-  orb->name_str = "rune_of_voidtouched_orbs";
-  orb->spell_id = effect.trigger()->id();
+  auto orb          = new special_effect_t( effect.player );
+  orb->name_str     = "rune_of_voidtouched_orbs";
+  orb->spell_id     = effect.trigger()->id();
   orb->proc_flags2_ = PF2_ALL_HIT;  // TODO: confirm
   effect.player->special_effects.push_back( orb );
 
   effect.player->callbacks.register_callback_trigger_function(
-    orb->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-    []( auto, const auto&, auto, action_state_t* s, auto ) {
-      return s && s->result_amount > 0.0;  // TODO: confirm only trigger on hits that do damage/healing
-    } );
+      orb->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( auto, const auto&, auto, action_state_t* s, auto ) {
+        return s && s->result_amount > 0.0;  // TODO: confirm only trigger on hits that do damage/healing
+      } );
 
   effect.player->callbacks.register_callback_execute_function(
-    orb->spell_id, [ orb_buff, damage, heal ]( auto, auto, player_t* t, auto ) {
-      auto stacks = orb_buff->check();
-      orb_buff->expire();
+      orb->spell_id, [ orb_buff, damage, heal, buff ]( auto, auto, player_t* t, auto ) {
+        auto stacks = orb_buff->check();
+        orb_buff->expire();
 
-      while ( stacks-- )
-      {
-        if ( t->is_enemy() )
-          damage->execute_on_target( t );
-        else
-          heal->execute_on_target( t );
-      }
-    } );
+        if ( buff )
+          buff->trigger();
+
+        while ( stacks-- )
+        {
+          if ( t->is_enemy() )
+            damage->execute_on_target( t );
+          else
+            heal->execute_on_target( t );
+        }
+      } );
 
   auto orb_cb = new dbc_proc_callback_t( effect.player, *orb );
   orb_cb->activate_with_buff( orb_buff );
