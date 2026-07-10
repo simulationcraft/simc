@@ -18124,7 +18124,6 @@ Labels           : 16: Class Spells
                  : 292
                  : 6656
 Proc Chance      : 101%
-Real PPM         : 5
 Proc Flags       : Magic Hostile Spell
 Triggered By     : Mage Frost 12.1 Class Set 4pc (1296586)
 Attributes       : No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Class Ability Procs (416)
