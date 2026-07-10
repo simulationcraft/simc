@@ -2147,7 +2147,6 @@ struct hunter_main_pet_base_t : public stable_pet_t
   struct buffs_t
   {
     buff_t* bestial_wrath = nullptr;
-    buff_t* piercing_fangs = nullptr;
   } buffs;
 
   target_specific_t<hunter_main_pet_base_td_t> target_data;
@@ -2161,21 +2160,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
     buffs.bestial_wrath =
       make_buff( this, "bestial_wrath", find_spell( 186254 ) )
         -> set_default_value_from_effect( 1 )
-        -> set_cooldown( 0_ms )
-        -> set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
-          if ( cur == 0 )
-          {
-            buffs.piercing_fangs -> expire();
-          }
-          else if (old == 0) {
-            buffs.piercing_fangs -> trigger();
-          }
-        } );
-
-    buffs.piercing_fangs =
-      make_buff( this, "piercing_fangs", o() -> find_spell( 392054 ) )
-        -> set_default_value_from_effect( 1 )
-        -> set_chance( o() -> talents.piercing_fangs.ok() );
+        -> set_cooldown( 0_ms );
   }
 
   double composite_melee_auto_attack_speed() const override
@@ -2195,16 +2180,6 @@ struct hunter_main_pet_base_t : public stable_pet_t
     if ( buffs.bestial_wrath -> has_common_school( school ) )
       m *= 1 + buffs.bestial_wrath -> check_value();
     
-    return m;
-  }
-
-  double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override
-  {
-    double m = stable_pet_t::composite_player_critical_damage_multiplier( s, school );
-
-    if ( buffs.piercing_fangs -> data().effectN( 1 ).has_common_school( school ) )
-      m *= 1 + buffs.piercing_fangs -> check_value();
-
     return m;
   }
 
@@ -2260,22 +2235,7 @@ struct natures_ally_pet_t final : public hunter_main_pet_base_t
     buffs.bestial_wrath =
       make_buff( this, "bestial_wrath_apex", find_spell( 1285912 ) )
         ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-        ->set_cooldown( 0_ms )
-        ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
-          if ( cur == 0 )
-          {
-            buffs.piercing_fangs->expire();
-          }
-          else if ( old == 0 )
-          {
-            buffs.piercing_fangs->trigger();
-          }
-        } );
-
-    buffs.piercing_fangs =
-      make_buff( this, "piercing_fangs", o()->find_spell( 392054 ) )
-        ->set_default_value_from_effect( 1 )
-        ->set_chance( o()->talents.piercing_fangs.ok() );
+        ->set_cooldown( 0_ms );
   }
 
   void summon( timespan_t duration = 0_ms ) override
