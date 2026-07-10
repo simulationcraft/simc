@@ -260286,8 +260286,9 @@ Attributes       : DoT Stacking Rule (103), Always Line of Sight (185), Periodic
 Effects          :
 #1 (id=1333058)  : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
-#2 (id=1333063)  : Apply Aura (6) | Dummy (4)
+#2 (id=1333063)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+Hotfixed         : Attribute (0 -> 64)
 Description      : $@spelldesc1295219
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec. Bursts upon the target's death to deal $w2% of its remaining damage split between nearby enemies and apply Umbral Malignance.
 
