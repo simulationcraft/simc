@@ -700,7 +700,6 @@ public:
     spell_data_ptr_t wildspeaker;
     spell_data_ptr_t wildspeaker_kill_command;
     spell_data_ptr_t wildspeaker_bestial_wrath;
-    spell_data_ptr_t wild_instincts;
     spell_data_ptr_t bloody_frenzy;
     spell_data_ptr_t bloody_frenzy_buff;
     spell_data_ptr_t piercing_fangs;
@@ -1016,7 +1015,6 @@ public:
     action_t* lunar_storm = nullptr;
 
     action_t* stampede = nullptr;
-    action_t* wild_instincts = nullptr;
 
     action_t* let_fly = nullptr;
   } actions;
@@ -3100,50 +3098,13 @@ struct takedown_t : public hunter_pet_attack_t<hunter_main_pet_t>
 
 struct stomp_t : public hunter_pet_attack_t<hunter_pet_t>
 {
-  bool thundering_hooves = false;
-
-  stomp_t( hunter_pet_t* p, util::string_view n = "stomp", bool is_thundering_hooves = false ) 
+  stomp_t( hunter_pet_t* p, util::string_view n = "stomp", double dd = 1.0 ) 
     : hunter_pet_attack_t( n, p, p->o()->talents.stomp_dmg )
   {
     background = true;
     aoe = -1;
-    thundering_hooves = is_thundering_hooves;
-    base_dd_multiplier *= thundering_hooves ? o()->talents.thundering_hooves->effectN( 1 ).percent() : 1.0;
+    base_dd_multiplier *= dd;
   };
-
-  void execute() override
-  {
-    hunter_pet_attack_t::execute();
-
-    if ( o()->talents.wild_instincts.ok() )
-    {
-      auto tl = target_list();
-
-      if ( p() == o()->pets.main )
-      {
-        // Prioritise targets without Barbed Shot ticking.
-        // Thundering Hooves stomps can trigger Wild Instincts on the primary target.
-        range::erase_remove( tl, [ this ]( player_t* t ) {
-          return ( !thundering_hooves && t == target ) || o()->get_target_data( t )->dots.barbed_shot->is_ticking();
-        } );
-        target_cache.is_valid = false;
-
-        if ( !tl.empty() )
-          o()->actions.wild_instincts->execute_on_target( tl.front() );
-      }
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_pet_attack_t::impact( s );
-
-    /* Wild Instincts edge case in ST where the target, if unaffected by 
-       Barbed Shot, can receive a double Barbed Shot. */
-    if ( o()->talents.wild_instincts.ok() && target_list().size() == 1 )
-      if ( p() == o()->pets.main && !o()->get_target_data( s->target )->dots.barbed_shot->is_ticking() )
-        o()->actions.wild_instincts->execute_on_target( s->target );
-  }
 };
 
 // Bloodshed ===============================================================
@@ -3358,7 +3319,7 @@ void stable_pet_t::init_spells()
   hunter_pet_t::init_spells();
 
   if ( o()->talents.thundering_hooves.ok() )
-    actions.thundering_hooves = new actions::stomp_t( this, "thundering_hooves", o()->talents.thundering_hooves.ok() );
+    actions.thundering_hooves = new actions::stomp_t( this, "thundering_hooves", o()->talents.thundering_hooves->effectN( 1 ).percent() );
 }
 
 void hunter_main_pet_base_t::init_spells()
@@ -5198,15 +5159,6 @@ struct barbed_shot_t : public barbed_shot_base_t
       if ( p()->rng().roll( deathblow.chance ) )
         p()->trigger_deathblow();
     }
-  }
-};
-
-struct barbed_shot_wild_instincts_t : public barbed_shot_base_t
-{
-  barbed_shot_wild_instincts_t( hunter_t* p )
-    : barbed_shot_base_t( p, "barbed_shot", p->talents.barbed_shot )
-  {
-    background = dual = true;
   }
 };
 
@@ -7501,7 +7453,6 @@ void hunter_t::init_spells()
     talents.wildspeaker                       = find_talent_spell( talent_tree::SPECIALIZATION, "Wildspeaker", HUNTER_BEAST_MASTERY );
     talents.wildspeaker_bestial_wrath         = talents.wildspeaker.ok() ? find_spell( 1235388 ) : spell_data_t::not_found();
     talents.wildspeaker_kill_command          = talents.wildspeaker.ok() ? find_spell( 1232922 ) : spell_data_t::not_found();
-    talents.wild_instincts                    = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Instincts", HUNTER_BEAST_MASTERY );
     talents.bloody_frenzy                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Frenzy", HUNTER_BEAST_MASTERY );
     talents.bloody_frenzy_buff                = talents.bloody_frenzy.ok() ? find_spell( 1265063 ) : spell_data_t::not_found();
     talents.piercing_fangs                    = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Fangs", HUNTER_BEAST_MASTERY );
@@ -7905,9 +7856,6 @@ void hunter_t::create_actions()
 
   if ( talents.stampede.ok() )
     actions.stampede = new attacks::stampede_t( this );
-
-  if ( talents.wild_instincts.ok() )
-    actions.wild_instincts = new attacks::barbed_shot_wild_instincts_t( this );
 
   if ( tier_set.mid_s1_mm_4pc.ok() )
     actions.let_fly = new attacks::let_fly_t( this );
