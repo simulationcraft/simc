@@ -4762,7 +4762,7 @@ struct meteor_t final : public fire_mage_spell_t
       p()->action.isothermic_comet_storm->execute_on_target( target );
 
     if ( p()->talents.pyroclasm.ok() && p()->talents.sunfury_execution.ok() )
-       p()->buffs.pyroclasm->execute();
+      p()->buffs.pyroclasm->execute();
   }
 };
 
@@ -7550,6 +7550,12 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 30.0 )
       .verification_value( 0.0 );
+
+    hotfix::register_spell( "Mage", "2026-07-10", "Remove unused RPPM from Frost's 4pc", 1310248 )
+      .field( "rppm" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.0 )
+      .verification_value( 5.0 );
   }
 
   bool valid() const override { return true; }
