@@ -2094,6 +2094,7 @@ struct stable_pet_t : public hunter_pet_t
   struct actions_t
   {
     action_t* stomp = nullptr;
+    action_t* stomp_2pc = nullptr;
     action_t* thundering_hooves = nullptr;
   } actions;
 
@@ -3320,6 +3321,9 @@ void stable_pet_t::init_spells()
 
   if ( o()->talents.thundering_hooves.ok() )
     actions.thundering_hooves = new actions::stomp_t( this, "thundering_hooves", o()->talents.thundering_hooves->effectN( 1 ).percent() );
+
+  if ( o()->tier_set.mid_s2_bm_2pc.ok() )
+    actions.stomp_2pc = new actions::stomp_t( this, "stomp_2pc", o()->tier_set.mid_s2_bm_2pc->effectN( 1 ).percent() );
 }
 
 void hunter_main_pet_base_t::init_spells()
@@ -5152,6 +5156,9 @@ struct barbed_shot_t : public barbed_shot_base_t
     {
       if ( p()->talents.stomp.ok() )
         pet->stable_pet_t::actions.stomp->execute_on_target( target );
+
+      if ( p()->tier_set.mid_s2_bm_2pc.ok() )
+        pet->stable_pet_t::actions.stomp_2pc->execute_on_target( target );
     }
 
     if ( p()->talents.soul_drinker.ok() )
