@@ -11693,6 +11693,13 @@ public:
         .operation( hotfix::HOTFIX_SET )
         .modifier( 15 )
         .verification_value( 10 );
+
+    // 2026-07-10 -- PTR TOCHECK: MID2 Outlaw 4pc has a scripted 20% proc rate while spell data is 12%
+    hotfix::register_effect( "Rogue", "2026-07-10", "MID2 Outlaw 4pc Proc Chance", 1319250 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 20 )
+        .verification_value( 12 );
   }
 
   void register_actor_initializers( sim_t* ) const override {}
