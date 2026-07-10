@@ -455,7 +455,6 @@ public:
     buff_t* huntmasters_call;
     buff_t* summon_fenryr;
     buff_t* summon_hati;
-    buff_t* heart_of_the_pack;
     buff_t* natures_ally_3;
     buff_t* bloody_frenzy;
 
@@ -691,8 +690,7 @@ public:
 
     spell_data_ptr_t brutal_companion;
     spell_data_ptr_t huntmasters_call;
-    spell_data_ptr_t heart_of_the_pack;
-    spell_data_ptr_t heart_of_the_pack_buff;
+    spell_data_ptr_t razor_sharp;
     spell_data_ptr_t bloodshed;
     spell_data_ptr_t bloodshed_dot;
     spell_data_ptr_t savagery_bm;
@@ -1830,8 +1828,6 @@ struct dire_critter_t : public hunter_pet_t
     action_t* kill_command = nullptr;
   } actions;
 
-  bool triggers_heart_of_the_pack = false;
-
   dire_critter_t( hunter_t* owner, util::string_view n = "dire_beast" )
     : hunter_pet_t( owner, n, PET_HUNTER, true /* GUARDIAN */, true /* dynamic */ )
   {
@@ -1864,9 +1860,6 @@ struct dire_critter_t : public hunter_pet_t
 
     if ( o()->talents.wildspeaker.ok() && o()->buffs.bestial_wrath->check() )
       buffs.bestial_wrath->trigger( o()->buffs.bestial_wrath->remains() );
-
-    if ( triggers_heart_of_the_pack && o()->talents.heart_of_the_pack.ok() )
-      o()->buffs.heart_of_the_pack->trigger();
 
     buffs.pet_damage->trigger();
     
@@ -1911,7 +1904,6 @@ struct dark_hound_t final : public dire_critter_t
     resource_regeneration  = regen_type::DISABLED;
     owner_coeff.ap_from_ap = 1.5;
     auto_attack_multiplier = 4;
-    triggers_heart_of_the_pack = true;
   }
 
   void summon( timespan_t duration = 0_ms ) override
@@ -1936,7 +1928,6 @@ struct dire_beast_t final : public dire_critter_t
     // 13-10-22 Dire Beast damage increased by 50%. (60% -> 90%)
     // 22-7-24 Dire Beast damage increased by 10% (90% -> 100%)
     owner_coeff.ap_from_ap = 1;
-    triggers_heart_of_the_pack = true;
   }
 
   void summon( timespan_t duration = 0_ms ) override
@@ -1975,7 +1966,6 @@ struct fenryr_t final : public dire_critter_t
   {
     // 9-7-25 Hati and Fenryr base damage increased to about 2x of a normal Dire Beast's damage.
     owner_coeff.ap_from_ap = 2;
-    triggers_heart_of_the_pack = true;
   }
 
   void summon( timespan_t duration = 0_ms ) override
@@ -2011,7 +2001,6 @@ struct hati_t final : public dire_critter_t
   {
    // 9-7-25 Hati and Fenryr base damage increased to about 2x of a normal Dire Beast's damage.
     owner_coeff.ap_from_ap = 2;
-    triggers_heart_of_the_pack = true;
   }
 };
 
@@ -2049,7 +2038,6 @@ struct bear_t final : public dire_critter_t
     owner_coeff.ap_from_ap = 0.6;
     auto_attack_multiplier = 7;
     main_hand_weapon.swing_time = 1.5_s;
-    triggers_heart_of_the_pack = true;
   }
 
   void additional_summon_behavior() override
@@ -7543,8 +7531,7 @@ void hunter_t::init_spells()
 
     talents.brutal_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Companion", HUNTER_BEAST_MASTERY );
     talents.huntmasters_call                  = find_talent_spell( talent_tree::SPECIALIZATION, "Huntmaster's Call", HUNTER_BEAST_MASTERY );
-    talents.heart_of_the_pack                 = find_talent_spell( talent_tree::SPECIALIZATION, "Heart of the Pack", HUNTER_BEAST_MASTERY );
-    talents.heart_of_the_pack_buff            = talents.heart_of_the_pack.ok() ? find_spell( 1282747 ) : spell_data_t::not_found();
+    talents.razor_sharp                       = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Sharp", HUNTER_BEAST_MASTERY );
     talents.bloodshed                         = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodshed", HUNTER_BEAST_MASTERY );
     talents.bloodshed_dot                     = talents.bloodshed.ok() ? find_spell( 321538 ) : spell_data_t::not_found();
     talents.savagery_bm                       = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_BEAST_MASTERY );
@@ -8063,12 +8050,6 @@ void hunter_t::create_buffs()
     make_buff( this, "summon_hati", find_spell( 459738 ) )
       -> add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
       -> set_default_value_from_effect( 2 );
-
-  buffs.heart_of_the_pack = 
-    make_buff( this, "heart_of_the_pack", talents.heart_of_the_pack_buff )
-      -> set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-      -> set_default_value( talents.heart_of_the_pack->effectN( 1 ).percent() / 10 ) // Spelldata is scuffed as of 2026-01-08
-      -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buffs.natures_ally_3 = 
     make_buff( this, "natures_ally", talents.natures_ally_3_buff )
