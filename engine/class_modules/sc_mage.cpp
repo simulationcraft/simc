@@ -6349,7 +6349,7 @@ void mage_t::create_buffs()
                                       ->set_chance( spec.clearcasting->ok() ) ;
   buffs.cumulative_power          = make_buff( this, "cumulative_power", find_spell( 1296930 ) )
                                       ->set_default_value_from_effect( 1 )
-                                      ->set_chance( sets->has_set_bonus( MAGE_ARCANE, MID2, B4 ) );                                      
+                                      ->set_chance( sets->has_set_bonus( MAGE_ARCANE, MID2, B4 ) );
   buffs.enlightened               = make_buff( this, "enlightened", find_spell( 1217242 ) )
                                       ->set_schools_from_effect( 4 )
                                       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -6809,7 +6809,7 @@ double mage_t::composite_spell_crit_chance() const
   return c;
 }
 
-double mage_t::composite_player_pet_damage_multiplier(const action_state_t* s, bool guardian) const
+double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
