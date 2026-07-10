@@ -6426,10 +6426,9 @@ void mage_t::create_buffs()
                                ->set_chance( talents.permafrost_lances.ok() );
   buffs.rapid_refreezing   = make_buff( this, "rapid_refreezing", find_spell( 1310248 ) )
                                ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
-                                 { trigger_icicle(); } );
-  // Rapid Refreezing's own spell data carries an RPPM of 5.0, 
-  // but the RPPM of the 12.1 4-set bonus's RPPM (2.0) is the one used.
-  buffs.rapid_refreezing->rppm = get_rppm( "glacial_spike_set_bonus", sets->set( MAGE_FROST, MID2, B4 ) );
+                                 { trigger_icicle(); } )
+                                // We collect RPPM data from parent spell
+                               ->set_trigger_spell( sets->set( MAGE_FROST, MID2, B4 ) );
   buffs.thermal_void       = make_buff( this, "thermal_void", find_spell( 1247730 ) )
                                ->set_chance( talents.thermal_void->effectN( 1 ).percent() );
 
