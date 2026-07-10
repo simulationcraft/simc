@@ -302,6 +302,7 @@ public:
     buff_t* glacial_spike;
     buff_t* hand_of_frost;
     buff_t* permafrost_lances;
+    buff_t* rapid_refreezing;
     buff_t* thermal_void;
 
 
@@ -414,11 +415,6 @@ public:
     accumulated_rng_t* spellfire_spheres;
     accumulated_rng_t* augury_abounds;
   } accumulated_rng;
-
-  struct rppms_t
-  {
-    real_ppm_t* glacial_spike_set_bonus = nullptr;
-  } rppm;
 
   // Sample data
   struct sample_data_t
@@ -4305,17 +4301,10 @@ struct glacial_spike_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
     p()->buffs.glacial_spike->decrement();
+    p()->state.icicles = 0;
 
-    // The buff can be up without actually having a full stack of Icicles (e.g., granted directly
-    // by the 12.1 set bonus), in which case casting Glacial Spike does not consume any icicles below 5,
-    // but does actually consume them at exactly 5 icicles, thus munching the one you would've gotten.
-    int max_icicles = as<int>( p()->talents.icicles->effectN( 2 ).base_value() );
-    if ( p()->state.icicles == max_icicles )
-      p()->state.icicles = 0;
-
-    if ( p()->rppm.glacial_spike_set_bonus && p()->rppm.glacial_spike_set_bonus->trigger() )
-      p()->buffs.glacial_spike->trigger();
-
+    // 12.1 4-set bonus
+    p()->buffs.rapid_refreezing->trigger();
     p()->trigger_brain_freeze( bf_chance, proc_brain_freeze, 150_ms );
     p()->trigger_fof( fof_chance, proc_fof );
     p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), proc_fof );
@@ -5655,7 +5644,6 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   pets(),
   procs(),
   accumulated_rng(),
-  rppm(),
   sample_data(),
   spec(),
   state(),
@@ -6436,6 +6424,11 @@ void mage_t::create_buffs()
   buffs.permafrost_lances  = make_buff( this, "permafrost_lances", find_spell( 455122 ) )
                                ->set_default_value_from_effect( 1 )
                                ->set_chance( talents.permafrost_lances.ok() );
+  buffs.rapid_refreezing   = make_buff( this, "rapid_refreezing", find_spell( 1310248 ) )
+                               ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
+                                 { trigger_icicle(); } )
+                                // We collect RPPM data from parent spell
+                               ->set_trigger_spell( sets->set( MAGE_FROST, MID2, B4 ) );
   buffs.thermal_void       = make_buff( this, "thermal_void", find_spell( 1247730 ) )
                                ->set_chance( talents.thermal_void->effectN( 1 ).percent() );
 
@@ -6585,9 +6578,6 @@ void mage_t::init_uptimes()
 void mage_t::init_rng()
 {
   player_t::init_rng();
-
-  if ( sets->has_set_bonus( MAGE_FROST, MID2, B4 ) )
-    rppm.glacial_spike_set_bonus = get_rppm( "glacial_spike_set_bonus", sets->set( MAGE_FROST, MID2, B4 ) );
 
   // Accumulated RNG is also not present in the game data.
   // TODO: Double check that this RNG is the same in Midnight.
@@ -7127,10 +7117,7 @@ int mage_t::trigger_shatter( player_t* target, action_t* action, int max_consump
       if ( rng().roll( chance ) )
       {
         procs.icicle_from_set_bonus->occur();
-        // Icicles generated this way cannot grant the Glacial Spike buff on their own,
-        // the player still has to wait for the cyclic icicles proc to gain the buff.
-        // This is likely a bug.
-        trigger_icicle( 1, !bugs );
+        trigger_icicle();
       }
     }
   }
