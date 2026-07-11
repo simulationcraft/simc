@@ -299,7 +299,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   regen_caches[ CACHE_SPELL_HASTE ] = true;
 
   sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
-    // NOTE (2026-04-24): Some pets are currently bugged when updating Hellbent Commander stacks on arise/demise.
+    // NOTE (2026-07-11): Some pets are currently bugged when updating Hellbent Commander stacks on arise/demise.
     // Hellbent Commander's stacks are refreshed on each heartbeat update, but not all pets are correctly accounted for.
     if ( bugs && talents.hellbent_commander.ok() )
     {
@@ -331,7 +331,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
         this->sim->print_debug( "{} heartbeat event update {} buff stack number from stacks_before={} to stacks_after={}",
                         this->name(), buffs.hellbent_commander->name(), current_stacks, expected_stacks );
       }
-      assert( ( buffs.hellbent_commander->check() == expected_stacks ) && "Incorrent Demon Count for Hellbent Commander" );
+      assert( ( buffs.hellbent_commander->check() == expected_stacks ) && "Incorrect Demon Count for Hellbent Commander" );
     }
 
     for ( auto pet : active_pets )
@@ -551,7 +551,7 @@ int warlock_t::active_demon_count( bool include_diabolist ) const
     if ( lock_pet->is_sleeping() )
       continue;
 
-    // NOTE: 2026-02-17 Dibolist guardians seems to not count for some effects/talents (Sacrificed Souls)
+    // NOTE: 2026-07-11 Diabolist guardians seem to not count for some effects/talents (Sacrificed Souls)
     if ( !include_diabolist && lock_pet->is_diabolist_guardian )
       continue;
 

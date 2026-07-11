@@ -531,7 +531,7 @@ using namespace helpers;
       if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < deaths_embrace_health )
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 1 ).percent() * ( 1 - s->target->health_percentage() / deaths_embrace_health );
 
-      // NOTE: 2026-02-17 Diabolist guardians do not count towards Sacrificed Souls talent (bug?)
+      // NOTE: 2026-07-11 Diabolist guardians do not count towards Sacrificed Souls talent (bug?)
       if ( demonology() && affected_by.sacrificed_souls )
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count( !p()->bugs );
 
@@ -3112,7 +3112,7 @@ using namespace helpers;
       // - The distance of the wild imps from the player can affect their selection.
       // - When there are many imps (more than 9), the selection of some of them seems to become somewhat random
       //   (maybe not random; in any case, their actual behavior in this situation has not been fully determined).
-      range::sort( imps, [ &bugs = p()->bugs ]( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
+      range::sort( imps, []( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
         double lv = imp1->resources.current[ RESOURCE_ENERGY ];
         double rv = imp2->resources.current[ RESOURCE_ENERGY ];
         if ( lv == rv )
@@ -3153,7 +3153,16 @@ using namespace helpers;
       }
       if ( p()->talents.to_hell_and_back.ok() )
       {
-        unsigned new_imps = ( launch_counter / as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() ) ) * as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
+        const unsigned imps_per_group = as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
+        const unsigned group_size = as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() );
+        unsigned groups;
+        // NOTE: 2026-07-11: PTR 12.1.0 Implosion rounds up To Hell and Back summons (bug?)
+        if ( p()->bugs && sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+          groups = ( launch_counter + group_size - 1 ) / group_size;
+        else
+          groups = launch_counter / group_size;
+
+        unsigned new_imps = groups * imps_per_group;
         if ( new_imps > 0 )
         {
           auto imps = debug_cast<summon_wild_imp_2_t*>( p()->summons.wild_imp_2 )->execute_spawn( new_imps );
@@ -3268,7 +3277,7 @@ using namespace helpers;
 
       imp->trigger_movement( dist, movement_direction_type::TOWARDS );
       imp->interrupt();
-      imp->imploded = true;
+      imp->isolated_imploded = true;
 
       make_event( sim, imp_travel_time, [ ex, tar, imp = imp ] {
         if ( imp && !imp->is_sleeping() )
@@ -3542,7 +3551,9 @@ using namespace helpers;
 
       if ( p()->talents.to_hell_and_back.ok() )
       {
-        unsigned new_imps = ( sac_counter / as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() ) ) * as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
+        const unsigned imps_per_group = as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
+        const unsigned group_size = as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() );
+        unsigned new_imps = ( sac_counter / group_size ) * imps_per_group;
         if ( new_imps > 0 )
         {
           auto imps = debug_cast<summon_wild_imp_2_t*>( p()->summons.wild_imp_2 )->execute_spawn( new_imps );
@@ -5619,6 +5630,7 @@ using namespace helpers;
     isolated_implosion->set_target( target );
     isolated_implosion->imp = imp;
     isolated_implosion->execute();
+    p->procs.isolated_implosion->occur();
   }
 
   void helpers::update_unstable_empowerment_buff( warlock_t* p )

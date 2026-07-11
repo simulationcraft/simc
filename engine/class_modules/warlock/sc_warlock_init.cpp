@@ -1119,6 +1119,8 @@ namespace warlock
     procs.infernal_rapidity = get_proc( "infernal_rapidity" );
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
     procs.demonic_knowledge = get_proc( "demonic_knowledge" );
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      procs.isolated_implosion = get_proc( "isolated_implosion" );
   }
 
   void warlock_t::init_procs_destruction()
@@ -1331,6 +1333,14 @@ namespace warlock
         cards = static_cast<int>( rng_settings.demonic_knowledge_rank1_cards.setting_value );
 
       deck_rng.demonic_knowledge = get_shuffled_rng( "demonic_knowledge", cards, deck_size );
+    }
+
+    // Modeling Isolated Implosion as a pseudo-random distribution (PRD) with a nominal
+    // rate of 20%, which corresponds to PRD constant C = 0.055704042949781852.
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && active_4pc<MID2>() )
+    {
+      double c_ii = prd::find_constant( tier.wl_demonology_12_1_class_set_4pc->effectN( 3 ).percent() );
+      prd_rng.isolated_implosion = get_accumulated_rng( "isolated_implosion", c_ii );
     }
   }
 

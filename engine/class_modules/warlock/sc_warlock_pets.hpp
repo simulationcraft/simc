@@ -435,6 +435,7 @@ struct wild_imp_pet_t : public warlock_pet_t
   bool is_hog_imp;
   bool power_siphon;
   bool imploded;
+  bool isolated_imploded;
   timespan_t infernal_command_ev_ts;
   timespan_t infernal_command_ev_offset;
   accumulated_rng_t* prd_rng_infernal_rapidity;
