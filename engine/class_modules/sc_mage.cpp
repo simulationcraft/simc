@@ -4786,7 +4786,7 @@ struct meteorite_impact_t final : public mage_spell_t
     if ( p()->specialization() == MAGE_FIRE )
       // TODO: Double check apply_recharge_rate
       p()->cooldowns.fire_blast->adjust( -p()->talents.pyrocosm->effectN( 4 ).time_value(), true, false );
-    else
+    else if ( !p()->bugs )
       // TODO: Interactions with CC proc chance increases?
       p()->trigger_clearcasting( p()->talents.pyrocosm->effectN( 5 ).percent() );
   }
