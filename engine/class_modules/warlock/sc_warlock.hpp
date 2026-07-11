@@ -961,6 +961,7 @@ public:
     proc_t* infernal_rapidity;
     proc_t* spiteful_reconstitution;
     proc_t* demonic_knowledge;
+    proc_t* isolated_implosion;
 
     // Destruction
     proc_t* reverse_entropy;
@@ -1037,6 +1038,7 @@ public:
     accumulated_rng_t* spiteful_reconstitution;
     accumulated_rng_t* bleakheart_tactics;
     accumulated_rng_t* mark_of_perotharn;
+    accumulated_rng_t* isolated_implosion;
     double infernal_rapidity_prd_c_value;
   } prd_rng;
 
