@@ -3873,6 +3873,15 @@ struct zenith_stomp_t : monk_spell_t
       zenith->add_child( this );
   }
 
+  bool usable_during_current_cast() const override
+  {
+    if ( p()->channeling &&
+         p()->channeling->id == p()->talent.conduit_of_the_celestials.celestial_conduit_action->id() )
+      return true;
+
+    return monk_spell_t::usable_during_current_cast();
+  }
+
   bool ready() override
   {
     if ( source == ZENITH_STOMP_TRIGGER )
