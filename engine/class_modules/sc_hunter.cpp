@@ -1235,7 +1235,6 @@ public:
     damage_affected_by wyverns_cry;
 
     // Dark Ranger
-    damage_affected_by through_the_eyes;
   } affected_by;
 
   cdwaste::action_data_t* cd_waste = nullptr;
@@ -1266,8 +1265,6 @@ public:
     affected_by.stargazer      = check_affected_by( this, p->talents.stargazer_buff->effectN( 1 ) );
 
     affected_by.wyverns_cry = parse_damage_affecting_aura( this, p->talents.howl_of_the_pack_leader_wyvern_buff );
-
-    affected_by.through_the_eyes = parse_damage_affecting_aura( this, p->talents.black_arrow_dot );
   }
 
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
@@ -1480,11 +1477,6 @@ public:
     if ( affected_by.sentinels_mark.direct )
       da *= 1 + td( target )->debuffs.sentinels_mark->check_value();
 
-    if ( p()->specialization() == HUNTER_BEAST_MASTERY 
-      && affected_by.through_the_eyes.direct 
-      && td( target )->dots.black_arrow->is_ticking() )
-      da *= 1 + p()->talents.black_arrow_dot->effectN( 2 ).percent();
-
     return da;
   }
 
@@ -1499,11 +1491,6 @@ public:
       if ( target->health_percentage() < p()->talents.unnatural_causes->effectN( 3 ).base_value() )
         ta *= 1.0476;
     }
-
-    if ( p()->specialization() == HUNTER_BEAST_MASTERY 
-      && affected_by.through_the_eyes.tick 
-      && td( target )->dots.black_arrow->is_ticking() )
-      ta *= 1 + p()->talents.black_arrow_dot->effectN( 2 ).percent();
 
     return ta;
   }
