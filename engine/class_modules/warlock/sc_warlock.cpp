@@ -12,7 +12,12 @@ namespace warlock
 {
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
-  : actor_target_data_t( target, &p ), soc_threshold( 0.0 ), warlock( p )
+  : actor_target_data_t( target, &p ),
+    soc_threshold( 0.0 ),
+    ua_regular_stacks( 0 ),
+    ua_seed_stacks( 0 ),
+    ua_seed_gap( false ),
+    warlock( p )
 {
   // Shared
   dots.drain_life = target->get_dot( "drain_life", &p );
@@ -64,6 +69,12 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs.shadowburn = make_buff( *this, "shadowburn", p.talents.shadowburn )
                            ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
+
+  if ( p.sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+  {
+    debuffs.dark_titans_mark = make_buff( *this, "dark_titans_mark", p.tier.dark_titans_mark_debuff )
+                                   ->set_default_value_from_effect( 1 );
+  }
 
   // Use havoc_debuff where we need the data but don't have the active talent
   // Mayhem proc chance follows a Flat % RNG model, but has ICD
@@ -127,6 +138,49 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots.shared_fate = target->get_dot( "shared_fate", &p );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
+}
+
+void warlock_td_t::ua_stack_applied( bool is_seed_ua )
+{
+  if ( is_seed_ua )
+  {
+    ua_seed_stacks++;
+    ua_seed_gap = true;
+  }
+  else
+  {
+    ua_regular_stacks++;
+  }
+}
+
+void warlock_td_t::ua_stack_expired( bool is_seed_ua )
+{
+  if ( is_seed_ua )
+  {
+    assert( ua_seed_stacks > 0 );
+    ua_seed_stacks--;
+    ua_seed_gap = false;
+  }
+  else
+  {
+    assert( ua_regular_stacks > 0 );
+    ua_regular_stacks--;
+  }
+}
+
+void warlock_td_t::reset_ua_stack_tracking()
+{
+  ua_regular_stacks = 0;
+  ua_seed_stacks = 0;
+  ua_seed_gap = false;
+}
+
+int warlock_td_t::ua_calculate_damage_stacks() const
+{
+  const int damage_effective_ua_seed_stacks = ua_seed_stacks - ( ua_seed_gap ? 1 : 0 );
+  assert( damage_effective_ua_seed_stacks >= 0 );
+
+  return ua_regular_stacks + damage_effective_ua_seed_stacks;
 }
 
 void warlock_td_t::target_demise()
@@ -239,14 +293,13 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.summon_doomguard = get_cooldown( "summon_doomguard" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
   cooldowns.echo_of_sargeras = get_cooldown( "echo_of_sargeras_icd" );
-  cooldowns.blackened_soul = get_cooldown( "blackened_soul_icd" );
 
   resource_regeneration = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ] = true;
   regen_caches[ CACHE_SPELL_HASTE ] = true;
 
   sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
-    // NOTE (2026-04-24): Some pets are currently bugged when updating Hellbent Commander stacks on arise/demise.
+    // NOTE (2026-07-11): Some pets are currently bugged when updating Hellbent Commander stacks on arise/demise.
     // Hellbent Commander's stacks are refreshed on each heartbeat update, but not all pets are correctly accounted for.
     if ( bugs && talents.hellbent_commander.ok() )
     {
@@ -278,7 +331,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
         this->sim->print_debug( "{} heartbeat event update {} buff stack number from stacks_before={} to stacks_after={}",
                         this->name(), buffs.hellbent_commander->name(), current_stacks, expected_stacks );
       }
-      assert( ( buffs.hellbent_commander->check() == expected_stacks ) && "Incorrent Demon Count for Hellbent Commander" );
+      assert( ( buffs.hellbent_commander->check() == expected_stacks ) && "Incorrect Demon Count for Hellbent Commander" );
     }
 
     for ( auto pet : active_pets )
@@ -498,7 +551,7 @@ int warlock_t::active_demon_count( bool include_diabolist ) const
     if ( lock_pet->is_sleeping() )
       continue;
 
-    // NOTE: 2026-02-17 Dibolist guardians seems to not count for some effects/talents (Sacrificed Souls)
+    // NOTE: 2026-07-11 Diabolist guardians seem to not count for some effects/talents (Sacrificed Souls)
     if ( !include_diabolist && lock_pet->is_diabolist_guardian )
       continue;
 
@@ -1069,6 +1122,8 @@ void warlock_t::parse_player_effects()
   // Destruction
   if ( destruction() )
   {
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      parse_target_effects( d_fn( &warlock_td_t::debuffs_t::dark_titans_mark ), tier.dark_titans_mark_debuff ); // 1305711
   }
 
   // Diabolist
@@ -1113,7 +1168,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
   return actual_amount;
 }
 
-void warlock_t::feast_of_souls_gain( bool from_quietus_seed )
+void warlock_t::feast_of_souls_gain()
 {
   // NOTE: 2026-03-17 The shard gained from Feast of Souls can also proc another Succulent Soul (bug?)
   if ( bugs )
@@ -1124,12 +1179,6 @@ void warlock_t::feast_of_souls_gain( bool from_quietus_seed )
   buffs.succulent_soul->trigger();
   procs.succulent_soul->occur();
   procs.feast_of_souls->occur();
-
-  // NOTE: 2026-03-06 If Feast of Souls is gained by consuming Nightfall with SoC (Quietus hero talent) and after
-  // the gain you only have one stack of Succulent Soul, it will be spent without producing its effects (bug)
-  // This behavior is modeled here simply by decrementing a stack of Succulent Soul without triggering its effects
-  if ( bugs && from_quietus_seed && buffs.succulent_soul->check() == 1 )
-    buffs.succulent_soul->decrement();
 }
 
 // Setup to allow taking specific pets from Dominion of Argus, or a random one if the random enum is passed in.

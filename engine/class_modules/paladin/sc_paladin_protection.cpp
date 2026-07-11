@@ -256,7 +256,7 @@ struct avengers_shield_base_t : public paladin_spell_t
     }
 
     // Technically this should be in execute(), but we only know on impact if Avenger's Shield critted.
-    if ( s->chain_target == 0 )
+    if ( triggers_apex && s->chain_target == 0 )
     {
       if ( p()->is_ptr() )
         make_event<delayed_execute_on_target_event_t>(
@@ -357,9 +357,7 @@ struct avengers_shield_divine_exaction_t :public avengers_shield_base_t
                               p->talents.templar.divine_exaction->effectN( 2 ).percent() )
   {
     background = true;
-    if ( p->is_ptr() )
-      base_multiplier = 1.5;  // Not sure where this comes from
-    else
+    if ( !p->is_ptr() )
       base_multiplier += 1.0;
   }
 };

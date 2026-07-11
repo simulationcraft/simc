@@ -103,7 +103,7 @@ if "%1" == "Release" (
   set WINDDEPLOYQTARGS="--debug"
 )
 
-robocopy %SIMCDIR%\qt\ %INSTALLDIR%\ Error.html Welcome.html Welcome.png  /NJH /NJS
+robocopy %SIMCDIR%\qt\ %INSTALLDIR%\ Error.html Welcome.html Welcome.png jquery.js /NJH /NJS
 robocopy %SIMCDIR%\locale\ %INSTALLDIR%\locale sc_de.qm sc_cn.qm sc_it.qm sc_ko.qm /NJH /NJS
 robocopy %SIMCDIR%\winreleasescripts\ %INSTALLDIR%\ qt.conf  /NJH /NJS
 robocopy %SIMCDIR%\ %INSTALLDIR%\ Simulationcraft.exe  /NJH /NJS

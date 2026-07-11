@@ -1161,17 +1161,17 @@ void hunt( special_effect_t& effect )
     buffs[ buff->stats.front().stat ] = buff;
   }
 
-  // L'ura emulated as Undead, as we dont classify using CreatureType.db2 data. Not Specified triggers the vers buff
-  // like Undead and Giant.
-  static constexpr std::array<race_e, 9> raid_races = {
-    RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,  RACE_DRAGONKIN, RACE_HUMANOID,
-    RACE_HUMANOID,   RACE_ABERRATION, RACE_ELEMENTAL, RACE_NOT_SPECIFIED
-  };
+  static constexpr std::array<race_e, 9> raid_races_12_0 = { RACE_ABERRATION, RACE_ABERRATION, RACE_HUMANOID,
+                                                             RACE_DRAGONKIN,  RACE_HUMANOID,   RACE_HUMANOID,
+                                                             RACE_ABERRATION, RACE_ELEMENTAL,  RACE_NOT_SPECIFIED };
+
+  static constexpr std::array<race_e, 8> raid_races_12_1 = { RACE_HUMANOID, RACE_HUMANOID, RACE_MECHANICAL,
+                                                             RACE_HUMANOID, RACE_BEAST,    RACE_HUMANOID,
+                                                             RACE_HUMANOID, RACE_BEAST };
 
   static constexpr std::array<race_e, 10> valid_races = {
-    RACE_ABERRATION, RACE_BEAST,    RACE_DEMON,      RACE_DRAGONKIN, RACE_ELEMENTAL,
-    RACE_GIANT,      RACE_HUMANOID, RACE_MECHANICAL, RACE_UNDEAD,    RACE_NOT_SPECIFIED
-  };
+      RACE_ABERRATION, RACE_BEAST,    RACE_DEMON,      RACE_DRAGONKIN, RACE_ELEMENTAL,
+      RACE_GIANT,      RACE_HUMANOID, RACE_MECHANICAL, RACE_UNDEAD,    RACE_NOT_SPECIFIED };
 
   struct hunt_cb_t : public dbc_proc_callback_t
   {
@@ -1235,7 +1235,10 @@ void hunt( special_effect_t& effect )
 
     void pick_random_raid_race()
     {
-      race = rng().range( raid_races );
+      if ( listener->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+        race = rng().range( raid_races_12_1 );
+      else
+        race = rng().range( raid_races_12_0 );
     }
 
     void reset() override
@@ -3134,7 +3137,54 @@ void vile_vial_of_volatile_venom( special_effect_t& effect )
   effect.disable_buff();
   effect.has_use_buff_override = true;
   effect.execute_action = create_proc_action<vile_vial_of_volatile_venom_t>( "empowering_venom", effect );
+}
 
+// Fang of Umbral Malignance
+// 1295219 Driver
+// 1305853 Umbral Malignance DoT
+// 1305854 Bursting Malignance AoE
+void fang_of_umbral_malignance( special_effect_t& effect )
+{
+  auto burst = create_proc_action<generic_aoe_proc_t>( "bursting_malignance", effect, 1305854 );
+  burst->base_multiplier *= role_mult( effect );
+
+  struct fang_cb_t : public dbc_proc_callback_t
+  {
+    action_t* dot;
+
+    fang_cb_t( const special_effect_t& e, action_t* burst_action ) : dbc_proc_callback_t( e.player, e )
+    {
+      dot                      = create_proc_action<generic_proc_t>( "umbral_malignance", e, 1305853 );
+      dot->dot_max_stack       = dot->data().max_stacks();
+      dot->base_td             = e.driver()->effectN( 1 ).average( e );
+      dot->base_td_multiplier *= role_mult( e );
+      dot->add_child( burst_action );
+    }
+
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
+    {
+      dot->execute_on_target( t );
+    }
+  };
+
+  auto cb        = new fang_cb_t( effect, burst );
+  auto burst_pct = effect.driver()->effectN( 2 ).percent();
+
+  effect.player->register_on_kill_callback( [ cb, burst, burst_pct ]( player_t* t ) {
+    if ( t->sim->event_mgr.canceled )
+      return;
+
+    if ( auto d = cb->dot->find_dot( t ); d && d->is_ticking() )
+    {
+      burst->base_dd_min = burst->base_dd_max = d->tick_damage_over_remaining_time() * burst_pct;
+      burst->execute();
+
+      for ( auto new_target : cb->dot->target_list() )
+      {
+        cb->dot->execute_on_target( new_target );
+      }
+    }
+  } );
 }
 
 // Gebbo's Bottomless Bag
@@ -3222,6 +3272,64 @@ void gebbos_bottomless_bag( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Voracious Heart of Ula'tek
+// 1297760 values
+// 1297761 Buff
+// 1305376 Stacking Buff
+// 1305374 Damage
+void voracious_heart_of_ulatek( special_effect_t& effect )
+{
+  auto equip = effect.player->find_spell( 1297760 );
+  assert( equip && "Voracious Heart of Ula'tek missing equip effect" );
+
+  double stat_value = equip->effectN( 1 ).average( effect );
+  double stack_value = equip->effectN( 3 ).average( effect );
+
+  auto stacking =
+      create_buff<stat_buff_t>( effect.player, "devoured_strength", effect.player->find_spell( 1305376 ) )
+          ->set_stat_from_effect( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_STRENGTH ? 2 : 1,
+                                  stack_value );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, "voracious_heart_of_ulatek", effect.driver() )
+                  ->set_stat_from_effect(
+                      effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ) == STAT_STRENGTH ? 1 : 2, stat_value )
+                  ->set_rppm( RPPM_DISABLE )
+                  ->set_cooldown( 0_ms )
+                  ->set_expire_callback( [ stacking ]( buff_t*, int, timespan_t ) { stacking->expire(); } );
+
+  struct devour_morsel_t : public generic_proc_t
+  {
+    buff_t* buff;
+    devour_morsel_t( const special_effect_t& e, const spell_data_t* equip, buff_t* buff )
+      : generic_proc_t( e, "devour_morsel", e.player->find_spell( 1305374 ) ), buff( buff )
+    {
+      base_dd_min = base_dd_max = equip->effectN( 2 ).average( e );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      if ( buff )
+        buff->trigger();
+    }
+  };
+
+  auto damage = create_proc_action<devour_morsel_t>( "devour_morsel", effect, equip, stacking );
+
+  auto equip_se = new special_effect_t( effect.player );
+  equip_se->name_str = "voracious_heart_of_ulatek_driver";
+  equip_se->spell_id = effect.driver()->id();
+  equip_se->execute_action = damage;
+  equip_se->proc_flags2_   = PF2_ALL_HIT;  // TODO: confirm
+  equip_se->cooldown_      = 0_ms;
+  equip_se->cooldown_category_ = 0;
+  effect.player->special_effects.push_back( equip_se );
+  auto cb = new dbc_proc_callback_t( effect.player, *equip_se );
+  cb->activate_with_buff( buff );
+
+  effect.custom_buff = buff;
+}
+
 // 1297908 driver
 // 1297911 equip driver
 // 1307222 Venom Splatter
@@ -3275,6 +3383,66 @@ void font_of_venomous_rage( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<font_channel_t>( "font_of_venemous_rage", effect );
+}
+
+// Stormbound Emblem of Dazar
+// 1295275 on-use driver (The King's Unyielding Wind), 2 sec channel ticking every 0.5 sec
+// 1294744 equip
+// 1294745 Haste buff
+void stormbound_emblem_of_dazar( special_effect_t& effect )
+{
+  // Each completed channel tick extends the Haste buff duration by 5sec,
+  // rather than the buff only being granted on full channel completion.
+  // Interrupting the channel early keeps whatever duration has accumulated so far.
+  auto buff_spell = effect.player->find_spell( 1294745 );
+  assert( buff_spell->ok() && "Stormbound Emblem of Dazar buff spell not found" );
+  auto value_spell = effect.player->find_spell( 1294744 );
+  assert( value_spell->ok() && "Stormbound Emblem of Dazar value spell not found" );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, buff_spell )
+    ->set_stat_from_effect_type( A_MOD_RATING, value_spell->effectN( 1 ).average( effect ) );
+
+  struct stormbound_emblem_of_dazar_t : public proc_spell_t
+  {
+    buff_t* buff;
+
+    stormbound_emblem_of_dazar_t( const special_effect_t& e, buff_t* b )
+      : proc_spell_t( "the_kings_unyielding_wind", e.player, e.driver() ), buff( b )
+    {
+      channeled = true;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // cancel the player-ready event triggered by use_item_t
+      event_t::cancel( player->readying );
+
+      // prevent auto attacks while channeling
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_spell_t::tick( d );
+
+      buff->extend_duration_or_trigger();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
+    }
+  };
+
+  effect.execute_action =
+      create_proc_action<stormbound_emblem_of_dazar_t>( "the_kings_unyielding_wind", effect, buff );
 }
 }  // namespace trinkets
 
@@ -3384,6 +3552,26 @@ void murder_row_fishhook( special_effect_t& effect )
   dot->base_multiplier *= role_mult( effect );
 
   effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Polished Lightwood Channeler
+// 1296874 driver
+// 1296979 missile
+// 1296876 Searing Lightblast (aoe)
+void polished_lightwood_channeler( special_effect_t& effect )
+{
+  auto missile = create_proc_action<generic_proc_t>( "searing_lightblast_missile", effect, 1296979 );
+  auto damage  = create_proc_action<generic_aoe_proc_t>( "searing_lightblast", effect,
+      missile->data().effectN( 1 ).trigger() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  missile->add_child( damage );
+  missile->impact_action = damage;
+
+  effect.execute_action = missile;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -3657,7 +3845,6 @@ void sporecallers_blooming_loop( special_effect_t& effect )
 void rotmires_sporeheart( special_effect_t& effect )
 {
   effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Rotmire's Sporeheart: Damage is assumed to split and increase by 15% per target hit. "
     "Shield is assumed to apply immediately and will only burst when depleted by incoming damage. "
     "What types of triggers can proc the shield has not been verified." );
 
@@ -3668,9 +3855,10 @@ void rotmires_sporeheart( special_effect_t& effect )
     protective_toadstool_buff_t( const special_effect_t& e )
       : absorb_buff_t( e.player, "protective_toadstools", e.player->find_spell( 1285161 ) )
     {
-      damage = create_proc_action<generic_aoe_proc_t>( "bursting_toadstools", e, 1285163 );
+      damage = create_proc_action<generic_proc_t>( "bursting_toadstools", e, 1285163 );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 3 ).average( e );
       damage->base_multiplier *= role_mult( e );
+      damage->aoe = -1;
 
       set_default_value( e.driver()->effectN( 2 ).average( e ) );
     }
@@ -3686,6 +3874,18 @@ void rotmires_sporeheart( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void venomcursed( special_effect_t& effect )
+{
+  auto buff       = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+    ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
+    ->add_stat_from_effect( 2, effect.driver()->effectN( 2 ).average( effect ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace armors
 
 namespace sets
@@ -3989,7 +4189,6 @@ struct lingering_rune_t : public BASE
 template <typename BASE>
 struct omnium_core_rune_t : public BASE
 {
-  stat_buff_t* buff = nullptr;
   const spell_data_t* coeff;
   double dmg_coeff;
   double stat_coeff;
@@ -4044,31 +4243,9 @@ struct omnium_core_rune_t : public BASE
         dot->base_multiplier *= 1.0 + residual->driver()->effectN( 1 ).percent();
     }
 
-    apply_stat_rune( 1279609, 1287772 );  // Rune of Critical Power
-    apply_stat_rune( 1279610, 1287774 );  // Rune of Burning Haste
-    apply_stat_rune( 1279612, 1287771 );  // Rune of Masterful Cunning
-    apply_stat_rune( 1279613, 1287770 );  // Rune of the Versatile Warrior
-
     // Rune of Overload: 1279614 driver
     if ( auto overload = find_special_effect( e.player, 1279614 ) )
       BASE::base_multiplier *= 1.0 + overload->driver()->effectN( 1 ).percent();
-  }
-
-  void apply_stat_rune( unsigned driver_id, unsigned buff_id )
-  {
-    if ( !find_special_effect( BASE::player, driver_id ) )
-      return;
-
-    buff = create_buff<stat_buff_t>( BASE::player, BASE::player->find_spell( buff_id ) );
-    buff->set_stat_from_effect_type( A_MOD_RATING, stat_coeff * buff->data().effectN( 2 ).base_value() );
-  }
-
-  void execute() override
-  {
-    BASE::execute();
-
-    if ( buff )
-      buff->trigger();
   }
 
   buff_t* create_debuff( player_t* t ) override
@@ -4097,29 +4274,55 @@ struct omnium_core_rune_t : public BASE
   }
 };
 
+stat_buff_t* create_omnium_stat_buff( const special_effect_t& effect )
+{
+  const spelleffect_data_t& coeff_effect = effect.driver()->effectN( 2 ).trigger()->effectN( 3 );
+  const double stat_coefficient = std::floor( coeff_effect.average_no_item( effect.player, OMNIUM_ITEM_LEVEL ) ) * 0.01;
+
+  const std::array<std::pair<unsigned, unsigned>, 4> runes = { {
+      { 1279613, 1287770 },  // Rune of the Versatile Warrior
+      { 1279612, 1287771 },  // Rune of Masterful Cunning
+      { 1279610, 1287774 },  // Rune of Burning Haste
+      { 1279609, 1287772 },  // Rune of Critical Power
+  } };
+
+  for ( const auto& [ driver_id, buff_id ] : runes )
+  {
+    if ( !find_special_effect( effect.player, driver_id ) )
+      continue;
+
+    auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( buff_id ) );
+    buff->set_stat_from_effect_type( A_MOD_RATING, stat_coefficient * buff->data().effectN( 2 ).base_value() );
+    return buff;
+  }
+
+  return nullptr;
+}
+
 // 1279599 driver
 // 1286970 damage
 // 1263002 heal
 void rune_of_unleashed_fire( special_effect_t& effect )
 {
   effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Rune of Unleashed Fire: Procs are assumed to target the same unit that triggered them. "
-    "Procs triggered by damage are assumed to proc damage. "
-    "Procs triggered by healing/aura are assumed to proc heal." );
+                             "Rune of Unleashed Fire: Procs are assumed to target the same unit that triggered them. "
+                             "Procs triggered by damage are assumed to proc damage. "
+                             "Procs triggered by healing/aura are assumed to proc heal." );
 
-  auto damage =
-    create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_unleashed_fire", effect, 1286970 );
+  auto damage = create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_unleashed_fire", effect, 1286970 );
+  auto heal = create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_unleashed_fire_heal", effect, 1263002 );
+  auto buff = create_omnium_stat_buff( effect );
+  auto callback = [ damage, heal, buff ]( auto, auto, player_t* t, auto ) {
+    if ( buff )
+      buff->trigger();
 
-  auto heal =
-    create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_unleashed_fire_heal", effect, 1263002 );
+    if ( t->is_enemy() )
+      damage->execute_on_target( t );
+    else
+      heal->execute_on_target( t );
+  };
 
-  effect.player->callbacks.register_callback_execute_function(
-    effect.spell_id, [ damage, heal ]( auto, auto, player_t* t, auto ) {
-      if ( t->is_enemy() )
-        damage->execute_on_target( t );
-      else
-        heal->execute_on_target( t );
-    } );
+  effect.player->callbacks.register_callback_execute_function( effect.spell_id, callback );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -4135,21 +4338,23 @@ void rune_of_unleashed_fire( special_effect_t& effect )
 // 1287425 orb counter/driver
 void rune_of_voidtouched_orbs( special_effect_t& effect )
 {
-  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Rune of Voidtouched Orbs: Orbs are assumed to proc on hit and require a damage/healing amount. "
-    "Procs are assumed to target the same unit that triggered them. "
-    "All procs are assumed to fire individually at the same time when triggered. "
-    "Orbs are assumed to stack while out of combat." );
+  effect.player->sim->error(
+      UNVERIFIED_IMPLEMENTATION,
+      "Rune of Voidtouched Orbs: Orbs are assumed to proc on hit and require a damage/healing amount. "
+      "Procs are assumed to target the same unit that triggered them. "
+      "All procs are assumed to fire individually at the same time when triggered. "
+      "Orbs are assumed to stack while out of combat." );
 
-  auto damage =
-    create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_voidtouched_orbs", effect, 1286716 );
+  auto damage = create_proc_action<omnium_core_rune_t<generic_proc_t>>( "rune_of_voidtouched_orbs", effect, 1286716 );
 
   auto heal =
-    create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_voidtouched_orbs_heal", effect, 1286721 );
+      create_proc_action<omnium_core_rune_t<generic_heal_t>>( "rune_of_voidtouched_orbs_heal", effect, 1286721 );
+
+  auto buff = create_omnium_stat_buff( effect );
 
   // create orb buff & periodic trigger
   auto orb_buff = create_buff( effect.player, effect.trigger() );
-  auto period = effect.driver()->effectN( 1 ).period();
+  auto period   = effect.driver()->effectN( 1 ).period();
 
   effect.player->register_precombat_begin( [ orb_buff, period ]( player_t* p ) {
     orb_buff->trigger( orb_buff->max_stack() );
@@ -4160,31 +4365,34 @@ void rune_of_voidtouched_orbs( special_effect_t& effect )
   } );
 
   // create damage/heal callback
-  auto orb = new special_effect_t( effect.player );
-  orb->name_str = "rune_of_voidtouched_orbs";
-  orb->spell_id = effect.trigger()->id();
+  auto orb          = new special_effect_t( effect.player );
+  orb->name_str     = "rune_of_voidtouched_orbs";
+  orb->spell_id     = effect.trigger()->id();
   orb->proc_flags2_ = PF2_ALL_HIT;  // TODO: confirm
   effect.player->special_effects.push_back( orb );
 
   effect.player->callbacks.register_callback_trigger_function(
-    orb->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-    []( auto, const auto&, auto, action_state_t* s, auto ) {
-      return s && s->result_amount > 0.0;  // TODO: confirm only trigger on hits that do damage/healing
-    } );
+      orb->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( auto, const auto&, auto, action_state_t* s, auto ) {
+        return s && s->result_amount > 0.0;  // TODO: confirm only trigger on hits that do damage/healing
+      } );
 
   effect.player->callbacks.register_callback_execute_function(
-    orb->spell_id, [ orb_buff, damage, heal ]( auto, auto, player_t* t, auto ) {
-      auto stacks = orb_buff->check();
-      orb_buff->expire();
+      orb->spell_id, [ orb_buff, damage, heal, buff ]( auto, auto, player_t* t, auto ) {
+        auto stacks = orb_buff->check();
+        orb_buff->expire();
 
-      while ( stacks-- )
-      {
-        if ( t->is_enemy() )
-          damage->execute_on_target( t );
-        else
-          heal->execute_on_target( t );
-      }
-    } );
+        if ( buff )
+          buff->trigger();
+
+        while ( stacks-- )
+        {
+          if ( t->is_enemy() )
+            damage->execute_on_target( t );
+          else
+            heal->execute_on_target( t );
+        }
+      } );
 
   auto orb_cb = new dbc_proc_callback_t( effect.player, *orb );
   orb_cb->activate_with_buff( orb_buff );
@@ -4333,6 +4541,11 @@ void register_special_effects()
   register_special_effect( 1297908, trinkets::font_of_venomous_rage );
   register_special_effect( 1297911, DISABLED_EFFECT );  // Font of Venomous Rage equip driver
   register_special_effect( 1292291, trinkets::gebbos_bottomless_bag );
+  register_special_effect( 1295219, trinkets::fang_of_umbral_malignance );
+  register_special_effect( 1297761, trinkets::voracious_heart_of_ulatek );
+  register_special_effect( 1297760, DISABLED_EFFECT ); // Voracious Heart of Ula'tek equip driver
+  register_special_effect( 1295275, trinkets::stormbound_emblem_of_dazar );
+  register_special_effect( 1294744, DISABLED_EFFECT );  // Stormbound Emblem of Dazar equip driver
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
@@ -4340,9 +4553,9 @@ void register_special_effects()
   register_special_effect( 1250529, weapons::murder_row_fishhook );
   reset_version_check();
   set_min_version( wowv_t( 12, 1, 0 ) );
+  register_special_effect( 1296874, weapons::polished_lightwood_channeler );
   register_special_effect( 1298085, weapons::janthrazet_the_soul_fang );
   reset_version_check();
-  // register_special_effect( 1307928, weapons::venomcursed_haste );  // not yet attached to an item in PTR data
   // Armor
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
   register_special_effect( 1243883, armors::necrotic_hexweave );
@@ -4353,6 +4566,9 @@ void register_special_effects()
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1285138, armors::sporecallers_blooming_loop );
   register_special_effect( 1285139, armors::rotmires_sporeheart );
+  reset_version_check();
+  set_min_version( wowv_t( 12, 1, 0 ) );
+  register_special_effect( { 1307906, 1307923, 1307928 }, armors::venomcursed );
   reset_version_check();
   // Sets
   register_special_effect( 1281574, sets::voidlight_bindings );
