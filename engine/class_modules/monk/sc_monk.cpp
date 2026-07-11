@@ -2799,60 +2799,6 @@ struct touch_of_karma_t : public monk_melee_attack_t
   }
 };
 
-struct provoke_t : public monk_melee_attack_t
-{
-  provoke_t( monk_t *p, std::string_view options_str ) : monk_melee_attack_t( p, "provoke", p->baseline.monk.provoke )
-  {
-    parse_options( options_str );
-    use_off_gcd           = true;
-    ignore_false_positive = true;
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    if ( s->target->is_enemy() )
-      target->taunt( player );
-
-    monk_melee_attack_t::impact( s );
-  }
-};
-
-struct spear_hand_strike_t : public monk_melee_attack_t
-{
-  spear_hand_strike_t( monk_t *p, std::string_view options_str )
-    : monk_melee_attack_t( p, "spear_hand_strike", p->talent.monk.spear_hand_strike )
-  {
-    parse_options( options_str );
-    ignore_false_positive = true;
-    is_interrupt          = true;
-    cast_during_sck       = player->specialization() != MONK_WINDWALKER;
-    may_miss = may_block = may_dodge = may_parry = false;
-  }
-};
-
-struct leg_sweep_t : public monk_melee_attack_t
-{
-  leg_sweep_t( monk_t *p, std::string_view options_str )
-    : monk_melee_attack_t( p, "leg_sweep", p->baseline.monk.leg_sweep )
-  {
-    parse_options( options_str );
-    ignore_false_positive = true;
-    may_miss = may_block = may_dodge = may_parry = false;
-    cast_during_sck                              = true;
-  }
-};
-
-struct paralysis_t : public monk_melee_attack_t
-{
-  paralysis_t( monk_t *p, std::string_view options_str )
-    : monk_melee_attack_t( p, "paralysis", p->talent.monk.paralysis )
-  {
-    parse_options( options_str );
-    ignore_false_positive = true;
-    may_miss = may_block = may_dodge = may_parry = false;
-  }
-};
-
 struct flying_serpent_kick_t : public monk_melee_attack_t
 {
   bool first_charge;
@@ -3136,31 +3082,6 @@ struct black_ox_brew_t : public brew_t<monk_spell_t>
 
     p()->resource_gain( RESOURCE_ENERGY, p()->talent.brewmaster.black_ox_brew->effectN( 1 ).base_value(),
                         p()->gain.black_ox_brew_energy );
-  }
-};
-
-struct roll_t : public monk_spell_t
-{
-  roll_t( monk_t *player, std::string_view options_str )
-    : monk_spell_t( player, "roll",
-                    ( player->talent.monk.chi_torpedo->ok() ? spell_data_t::not_found() : player->baseline.monk.roll ) )
-  {
-    cast_during_sck = true;
-
-    parse_options( options_str );
-  }
-};
-
-struct chi_torpedo_t : public monk_spell_t
-{
-  chi_torpedo_t( monk_t *player, std::string_view options_str )
-    : monk_spell_t(
-          player, "chi_torpedo",
-          ( player->talent.monk.chi_torpedo->ok() ? player->talent.monk.chi_torpedo : spell_data_t::not_found() ) )
-  {
-    parse_options( options_str );
-
-    cast_during_sck = true;
   }
 };
 
@@ -4010,26 +3931,6 @@ struct zenith_t : public monk_spell_t
 
     if ( zenith_stomp )
       zenith_stomp->execute_on_target( target );
-  }
-};
-
-struct vivify_t : public harmonic_surge_t<monk_heal_t>
-{
-  vivify_t( monk_t *player, std::string_view options_str ) : base_t( player, "vivify", player->baseline.monk.vivify )
-  {
-    parse_options( options_str );
-
-    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
-    base_execute_time += player->talent.monk.vivacious_vivification->effectN( 1 ).time_value();
-
-    cast_during_sck = false;
-  }
-
-  void execute() override
-  {
-    base_t::execute();
-
-    p()->action.chi_wave->execute();
   }
 };
 
@@ -5364,28 +5265,14 @@ action_t *monk_t::create_action( std::string_view name, std::string_view options
     return new blackout_kick_t( this, options_str );
   if ( name == "expel_harm" )
     return new expel_harm_t( this, options_str );
-  if ( name == "leg_sweep" )
-    return new leg_sweep_t( this, options_str );
-  if ( name == "paralysis" )
-    return new paralysis_t( this, options_str );
   if ( name == "rising_sun_kick" )
     return new rising_sun_kick_t( this, options_str );
   if ( name == "rushing_wind_kick" )
     return new rushing_wind_kick_t( this, options_str );
-  if ( name == "roll" )
-    return new roll_t( this, options_str );
-  if ( name == "spear_hand_strike" )
-    return new spear_hand_strike_t( this, options_str );
   if ( name == "spinning_crane_kick" )
     return new spinning_crane_kick_t( this, options_str );
-  if ( name == "vivify" )
-    return new vivify_t( this, options_str );
   if ( name == "fortifying_brew" )
     return new fortifying_brew_t( this, options_str );
-  if ( name == "provoke" )
-    return new provoke_t( this, options_str );
-  if ( name == "chi_torpedo" )
-    return new chi_torpedo_t( this, options_str );
   if ( name == "touch_of_death" )
     return new touch_of_death_t( this, options_str );
 
@@ -5418,6 +5305,8 @@ action_t *monk_t::create_action( std::string_view name, std::string_view options
   // Windwalker
   if ( name == "fists_of_fury" )
     return new fists_of_fury_t( this, options_str );
+  if ( name == "flying_serpent_kick" && talent.windwalker.slicing_winds->ok() )
+    return new slicing_winds_t( this, options_str );
   if ( name == "flying_serpent_kick" )
     return new flying_serpent_kick_t( this, options_str );
   if ( name == "slicing_winds" )
