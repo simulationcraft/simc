@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.0.68301
+Class Spell ID List, wow build 12.1.0.68629
 
 Death Knight
 3714     Path of Frost
@@ -1620,7 +1620,6 @@ Death Knight
 1242174  Necrotic Coil
 1242178  Necrotic Coil
 1242274 *Lesser Ghoul Despawn
-1242283 *Lord of the Dead
 1242289 *Lord of the Dead
 1242294  Army of the Damned
 1242561 *Scythe of Decay
@@ -1755,10 +1754,10 @@ Death Knight
 1283622  Death Knight - Midnight PrePatch - 11.2 Class Set 4pc
 1286168 *Frenzied Decay
 1290864  Cycle of Death
-1292072 *Lord of the Dead
+1292072  Lord of the Dead
 1292107  Frostbolt
 1293166 *Lord of the Dead
-1294026 *Lesser Ghoul
+1294026  Lesser Ghoul
 1294029 *Lesser Ghoul
 1294180  Lesser Ghoul
 1294261 *Death Order
@@ -1774,10 +1773,12 @@ Death Knight
 1297063  Death Knight Unholy 12.1 Class Set 2pc
 1297086  Necrotic Bolt
 1297087  Death Knight Unholy 12.1 Class Set 2pc
-1297091  Writhing Grasp
+1297091  Withering Grasp
 1297365  Freezing Tempest
 1300330  Epidemic Order
-1300369  Relentless Rider's Precision
+1300369  Relentless Rider's Strength
+1310372  Blood Debt
+1310571  Bloody Demise
 
 Demon Hunter
 1490     Chaos Brand
@@ -5437,6 +5438,8 @@ Druid
 1308639  Spirit's Wrath
 1308647  Answered Calling
 1308653 *Listener
+1310150  Rampant Thorn
+1310213 *Rampant Thorn
 
 Evoker
 351338   Quell
@@ -11222,6 +11225,11 @@ Mage
 1296930  Cumulative Power
 1297073  Improved Warding
 1299546 *Ice Armor
+1309497  Refractive Images
+1309786  Refraction
+1309787  Refraction
+1309793  Amplified Refraction
+1310248  Rapid Refreezing
 
 Monk
 8647     Mystic Touch
@@ -15291,11 +15299,14 @@ Paladin
 1305063  Protection Paladin
 1305230  Divine Power
 1306159  Divine Power: Storm
-1306161  Divine Power: Storm
+1306161  Divine Arbiter
 1306162  Divine Arbiter
 1306923  Divine Arbiter
 1307499  Crusading Strikes
 1307639 *Glory of the Vanguard
+1310389  Divine Guidance
+1310461  Divine Arbiter
+1310686  Ardent Defender
 
 Priest
 17       Power Word: Shield
@@ -17282,7 +17293,6 @@ Priest
 1306118  Renewed Haste
 1307795  Dark Transference
 1308649  Vampiric Insight
-1308779  Shadowtouched Apparitions
 
 Rogue
 53       Backstab
@@ -18923,6 +18933,8 @@ Rogue
 1298870  Implacable
 1301405  Fang Strike
 1305994  Secret Technique
+1309274  Goremaw's Bite
+1309309  Goremaw's Bite
 
 Shaman
 370      Purge

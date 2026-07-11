@@ -162,6 +162,15 @@
       { "data_type": "B", "field": "azerite_level" }
     ]
   },
+  "BonusRoll": {
+    "fields": [
+      { "data_type": "I", "field": "id_currency_types" },
+      { "data_type": "I", "field": "currency_cost" },
+      { "data_type": "I", "field": "id_journal_encounter" },
+      { "data_type": "I", "field": "id_journal_instance" },
+      { "data_type": "I", "field": "id_source_item" }
+    ]
+  },
   "CharacterLoadout": {
     "fields": [
       { "data_type": "b", "field": "id_class", "ref": "ChrClasses" },

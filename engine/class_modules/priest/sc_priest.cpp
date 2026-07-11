@@ -4001,8 +4001,7 @@ void priest_t::spawn_idol_of_cthun( action_state_t* s )
 
   if ( talents.shadow.void_apparitions_1.enabled() )
   {
-    // BUG: This does not pass through target for Shadeburst currently
-    trigger_shadowy_apparitions( procs.shadowy_apparition_cthun, nullptr );
+    trigger_shadowy_apparitions( procs.shadowy_apparition_cthun, s->target );
   }
 }
 

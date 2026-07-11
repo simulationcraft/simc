@@ -211,7 +211,7 @@ void warlock_pet_t::arise()
   if ( triggers.hellbent_commander_arise )
   {
     o()->buffs.hellbent_commander->trigger();
-    assert( ( bugs || o()->buffs.hellbent_commander->check() == o()->active_demon_count() ) && "Incorrent Demon Count for Hellbent Commander" );
+    assert( ( bugs || o()->buffs.hellbent_commander->check() == o()->active_demon_count() ) && "Incorrect Demon Count for Hellbent Commander" );
   }
 }
 
@@ -230,7 +230,7 @@ void warlock_pet_t::demise()
   if ( melee_attack )
     melee_attack->reset();
 
-  assert( ( bugs || !o()->talents.hellbent_commander.ok() || o()->buffs.hellbent_commander->check() == o()->active_demon_count() ) && "Incorrent Demon Count for Hellbent Commander" );
+  assert( ( bugs || !o()->talents.hellbent_commander.ok() || o()->buffs.hellbent_commander->check() == o()->active_demon_count() ) && "Incorrect Demon Count for Hellbent Commander" );
 }
 
  // TODO: Add all pet spells to base warlock data
@@ -267,8 +267,7 @@ warlock_pet_spell_t::warlock_pet_spell_t( util::string_view token, warlock_pet_t
     affected_by()
 {
   affected_by.xalans_cruelty_effect_6 = p->o()->hero.xalans_cruelty.ok() && data().affected_by_label( p->o()->hero.xalans_cruelty->effectN( 6 ) );
-  if ( sim->dbc->wowv() < wowv_t{ 12, 0, 7 } ) // TODO: Effect is missing from 12.0.7 PTR; remove this check once added
-    affected_by.xalans_cruelty_effect_9 = p->o()->hero.xalans_cruelty.ok() && data().affected_by_label( p->o()->hero.xalans_cruelty->effectN( 9 ) );
+  affected_by.xalans_cruelty_effect_9 = p->o()->hero.xalans_cruelty.ok() && data().affected_by_label( p->o()->hero.xalans_cruelty->effectN( 9 ) );
 
   affected_by.xalans_ferocity_effect_6 = p->o()->hero.xalans_ferocity.ok() && data().affected_by_label( p->o()->hero.xalans_ferocity->effectN( 6 ) );
   affected_by.xalans_ferocity_effect_7 = p->o()->hero.xalans_ferocity.ok() && data().affected_by_label( p->o()->hero.xalans_ferocity->effectN( 7 ) );
@@ -311,7 +310,8 @@ felhunter_pet_t::felhunter_pet_t( warlock_t* owner, util::string_view name )
 {
   npc_id = owner->find_spell( 691 )->effectN( 1 ).misc_value1();
 
-  // NOTE: 2026-04-24 Main pets do not trigger Hellbent Commander on demise (must wait to player heatbeat) (bug?)
+  // NOTE: 2026-07-11 Main pets do not trigger Hellbent Commander on arise/demise (must wait to player heartbeat) (bug?)
+  triggers.hellbent_commander_arise &= !bugs;
   triggers.hellbent_commander_demise &= !bugs;
 
   action_list_str = "travel/shadow_bite";
@@ -361,7 +361,8 @@ imp_pet_t::imp_pet_t( warlock_t* owner, util::string_view name )
 {
   npc_id = owner->find_spell( 688 )->effectN( 1 ).misc_value1();
 
-  // NOTE: 2026-04-24 Main pets do not trigger Hellbent Commander on demise (must wait to player heatbeat) (bug?)
+  // NOTE: 2026-07-11 Main pets do not trigger Hellbent Commander on arise/demise (must wait to player heartbeat) (bug?)
+  triggers.hellbent_commander_arise &= !bugs;
   triggers.hellbent_commander_demise &= !bugs;
 
   action_list_str = "firebolt";
@@ -406,7 +407,8 @@ sayaad_pet_t::sayaad_pet_t( warlock_t* owner, util::string_view name )
 {
   npc_id = owner->find_spell( 366222 )->effectN( 1 ).misc_value1();
 
-  // NOTE: 2026-04-24 Main pets do not trigger Hellbent Commander on demise (must wait to player heatbeat) (bug?)
+  // NOTE: 2026-07-11 Main pets do not trigger Hellbent Commander on arise/demise (must wait to player heartbeat) (bug?)
+  triggers.hellbent_commander_arise &= !bugs;
   triggers.hellbent_commander_demise &= !bugs;
 
   action_list_str = "travel/whiplash/lash_of_pain";
@@ -467,7 +469,8 @@ voidwalker_pet_t::voidwalker_pet_t( warlock_t* owner, util::string_view name )
 {
   npc_id = owner->find_spell( 697 )->effectN( 1 ).misc_value1();
 
-  // NOTE: 2026-04-24 Main pets do not trigger Hellbent Commander on demise (must wait to player heatbeat) (bug?)
+  // NOTE: 2026-07-11 Main pets do not trigger Hellbent Commander on arise/demise (must wait to player heartbeat) (bug?)
+  triggers.hellbent_commander_arise &= !bugs;
   triggers.hellbent_commander_demise &= !bugs;
 
   action_list_str = "travel/consuming_shadows";
@@ -520,7 +523,8 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
 {
   npc_id = owner->talents.summon_felguard->effectN( 1 ).misc_value1();
 
-  // NOTE: 2026-04-24 Main pets do not trigger Hellbent Commander on demise (must wait to player heatbeat) (bug?)
+  // NOTE: 2026-07-11 Main pets do not trigger Hellbent Commander on arise/demise (must wait to player heartbeat) (bug?)
+  triggers.hellbent_commander_arise &= !bugs;
   triggers.hellbent_commander_demise &= !bugs;
 
   action_list_str = "travel";
@@ -682,10 +686,12 @@ action_t* felguard_pet_t::create_action( util::string_view name, util::string_vi
 /// Wild Imp Begin
 
 wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
-  : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP, true ), firebolt( nullptr ), is_hog_imp( true ), power_siphon( false ), imploded( false )
+  : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP, true ), firebolt( nullptr ), is_hog_imp( true ), power_siphon( false ), imploded( false ), isolated_imploded( false )
 {
   npc_id = owner->warlock_base.wild_imp->effectN( 1 ).misc_value1();
 
+  // NOTE: 2026-07-11 Wild Imps do not trigger Hellbent Commander on arise (must wait to player heartbeat) (bug?)
+  triggers.hellbent_commander_arise &= !bugs;
   // Manually handle the Wild Imps contribution to Hellbent Commander on demise to replicate its bugged behavior
   triggers.hellbent_commander_demise &= !bugs;
 
@@ -805,23 +811,39 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
   void execute() override
   {
+    player_t* ffb_target = target;
+
     warlock_pet_spell_t::execute();
 
     // Extra Fel Firebolts from Infernal Rapidity cannot proc Infernal Rapidity again
     if ( ( twin != nullptr ) && ( p()->bugs ? debug_cast<wild_imp_pet_t*>( p() )->prd_rng_infernal_rapidity->trigger() : rng().roll( p()->o()->talents.infernal_rapidity->effectN( 1 ).percent() ) ) )
     {
       p()->o()->procs.infernal_rapidity->occur();
-      twin->execute_on_target( target );
+      twin->execute_on_target( ffb_target );
     }
   }
 
   void consume_resource() override
   {
+    player_t* ffb_target = target;
+
     warlock_pet_spell_t::consume_resource();
 
     // Imp dies if it cannot cast
     if ( player->resources.current[ RESOURCE_ENERGY ] < cost() )
-      make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
+      make_event( sim, 0_ms, [ this, imp = debug_cast<warlock::pets::demonology::wild_imp_pet_t*>( player ), imp_target = ffb_target ]() {
+        if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+        {
+          if ( imp->o()->active_4pc<MID2>() && imp->o()->prd_rng.isolated_implosion->trigger() )
+            helpers::trigger_isolated_implosion( imp->o(), imp, imp_target );
+          else
+            imp->cast_pet()->dismiss();
+        }
+        else
+        {
+          imp->cast_pet()->dismiss();
+        }
+      } );
   }
 };
 
@@ -877,6 +899,7 @@ void wild_imp_pet_t::arise()
   is_hog_imp = ( duration == o()->warlock_base.wild_imp->duration() ); // TODO: Only valid because duration diff, look for a safer way
   power_siphon = false;
   imploded = false;
+  isolated_imploded = false;
 
   // Each Wild Imp uses its own independent accumulator PRD, reset to 0 on arise
   if ( o()->talents.infernal_rapidity.ok() )
@@ -918,7 +941,7 @@ void wild_imp_pet_t::demise()
     {
       for ( auto t : o()->warlock_pet_list.demonic_tyrants )
       {
-        // NOTE: 2026-04-24: Imploded Wild Imps does not substract stacks from Demonic Power buff (bug?)
+        // NOTE: 2026-07-11: Imploded Wild Imps do not subtract stacks from Demonic Power buff (bug?)
         if ( t->is_active() && ( !bugs || !imploded ) )
           t->buffs.demonic_power->decrement();
       }
@@ -928,6 +951,7 @@ void wild_imp_pet_t::demise()
     {
       if ( !power_siphon )
       {
+        // NOTE: 2026-07-11: PTR 12.1.0 Isolated Imploded imps cannot trigger Demoniac (bug)
         if ( imploded )
         {
           if ( o()->flat_rng.demoniac_imp_implosion->trigger() )
@@ -936,7 +960,7 @@ void wild_imp_pet_t::demise()
             o()->procs.demonic_core_imps_implosion->occur();
           }
         }
-        else
+        else if ( !bugs || !isolated_imploded )
         {
           if ( o()->prd_rng.demoniac_imp_fade->trigger() )
           {
@@ -948,7 +972,7 @@ void wild_imp_pet_t::demise()
     }
 
     // Manual handling of Hellbent Commander buff for Wild Imps
-    // NOTE (2026-04-24): Wild Imps are currently bugged when updating Hellbent Commander stacks on demise:
+    // NOTE (2026-07-11): Wild Imps are currently bugged when updating Hellbent Commander stacks on demise:
     // If imploded, imps summoned via HoG decrease one stack each, while those summoned via Inner Demons,
     // Spiteful Reconstitution, or To Hell and Back do not decrease any stacks.
     // If the imps demise normally or are sacrificed with Power Siphon, HoG imps decrease two stacks each,
@@ -999,6 +1023,9 @@ dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "drea
   action_list_str = "leap/travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
 
+  // NOTE: 2026-07-11 Dreadstalkers do not trigger Hellbent Commander on arise (must wait to player heartbeat) (bug?)
+  triggers.hellbent_commander_arise &= !bugs;
+
   // 2026-02-17: Validated coefficient
   owner_coeff.ap_from_sp = 0.825;
 
@@ -1015,6 +1042,9 @@ dreadstalker_t::dreadstalker_t( warlock_t* owner, util::string_view pet_name, pe
 
   action_list_str = "leap/travel/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
+
+  // NOTE: 2026-07-11 Dreadstalkers do not trigger Hellbent Commander on arise (must wait to player heartbeat) (bug?)
+  triggers.hellbent_commander_arise &= !bugs;
 
   // 2026-02-17: Validated coefficient
   owner_coeff.ap_from_sp = 0.825;
@@ -1279,11 +1309,11 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
   else
   {
     npc_id = owner->talents.vilefiend->effectN( 1 ).misc_value1();
-    // NOTE: 2026-04-24 Regular Vilefiend do not trigger Hellbent Commander on heartbeat (bug?)
+    // NOTE: 2026-07-11 Regular Vilefiend do not trigger Hellbent Commander on heartbeat (bug?)
     triggers.hellbent_commander_heartbeat &= !bugs;
   }
 
-  // NOTE: 2026-04-24 Vilefiend do not trigger Hellbent Commander on demise (must wait to player heatbeat) (bug?)
+  // NOTE: 2026-07-11 Vilefiend do not trigger Hellbent Commander on demise (must wait to player heartbeat) (bug?)
   triggers.hellbent_commander_demise &= !bugs;
 
   action_list_str = "bile_spit";
@@ -1321,10 +1351,12 @@ struct vilefiend_melee_t : public warlock_pet_melee_t
 
   void execute() override
   {
+    player_t* vfm_target = target;
+
     warlock_pet_melee_t::execute();
 
     if ( debug_cast<vilefiend_t*>( p() )->mark_of_shatug->check() )
-      gloom->execute_on_target( target );
+      gloom->execute_on_target( vfm_target );
   }
 };
 
@@ -1369,10 +1401,12 @@ struct headbutt_t : public warlock_pet_melee_attack_t
 
   void execute() override
   {
+    player_t* hbtt_target = target;
+
     warlock_pet_melee_attack_t::execute();
 
     if ( debug_cast<vilefiend_t*>( p() )->mark_of_shatug->check() )
-      gloom->execute_on_target( target );
+      gloom->execute_on_target( hbtt_target );
   }
 };
 
@@ -1461,7 +1495,8 @@ demonic_tyrant_t::demonic_tyrant_t( warlock_t* owner, util::string_view name )
 {
   npc_id = owner->talents.summon_demonic_tyrant->effectN( owner->talents.antoran_armaments.ok() ? 4 : 1 ).misc_value1();
 
-  // NOTE: 2026-04-24 Demonic Tyrant do not trigger Hellbent Commander on demise (must wait to player heatbeat) (bug?)
+  // NOTE: 2026-07-11 Demonic Tyrant do not trigger Hellbent Commander on arise/demise (must wait to player heartbeat) (bug?)
+  triggers.hellbent_commander_arise &= !bugs;
   triggers.hellbent_commander_demise &= !bugs;
 
   resource_regeneration = regen_type::DISABLED;
@@ -1588,6 +1623,9 @@ doomguard_t::doomguard_t( warlock_t* owner )
 {
   npc_id = owner->talents.summon_doomguard->effectN( 1 ).misc_value1();
 
+  // NOTE: 2026-07-11 Doomguard do not trigger Hellbent Commander on arise (must wait to player heartbeat) (bug?)
+  triggers.hellbent_commander_arise &= !bugs;
+
   action_list_str = "doom_bolt_volley";
 
   // 2026-02-17: Validated coefficients
@@ -1643,7 +1681,8 @@ grimoire_imp_lord_t::grimoire_imp_lord_t( warlock_t* owner )
   npc_id = owner->talents.grimoire_imp_lord->effectN( 2 ).misc_value1();
   npc_suffix = "grimoire";
 
-  // NOTE: 2026-04-24 Grimoire: Imp Lord do not trigger Hellbent Commander on demise (must wait to player heatbeat) (bug?)
+  // NOTE: 2026-07-11 Grimoire: Imp Lord do not trigger Hellbent Commander on arise/demise (must wait to player heartbeat) (bug?)
+  triggers.hellbent_commander_arise &= !bugs;
   triggers.hellbent_commander_demise &= !bugs;
 
   action_list_str = "greater_felbolt,if=energy>=" + util::to_string( max_energy_threshold );
@@ -1719,7 +1758,8 @@ grimoire_fel_ravager_t::grimoire_fel_ravager_t( warlock_t* owner )
   npc_id = owner->talents.grimoire_fel_ravager->effectN( 2 ).misc_value1();
   npc_suffix = "grimoire";
 
-  // NOTE: 2026-04-24 Grimoire: Fel Ravager do not trigger Hellbent Commander on demise (must wait to player heatbeat) (bug?)
+  // NOTE: 2026-07-11 Grimoire: Fel Ravager do not trigger Hellbent Commander on arise/demise (must wait to player heartbeat) (bug?)
+  triggers.hellbent_commander_arise &= !bugs;
   triggers.hellbent_commander_demise &= !bugs;
 
   action_list_str = "travel/abyssal_bite,if=energy>=" + util::to_string( max_energy_threshold );
@@ -1796,7 +1836,7 @@ dominion_of_argus_pet_t::dominion_of_argus_pet_t( warlock_t* owner, std::string_
 {
   resource_regeneration = regen_type::DISABLED;
   affected_by.demonic_brutality = false;
-  // NOTE: 2026-04-24 DoA guardians do not trigger Hellbent Commander on arise/demise (must wait to player heatbeat) (bug?)
+  // NOTE: 2026-07-11 DoA guardians do not trigger Hellbent Commander on arise/demise (must wait to player heartbeat) (bug?)
   triggers.hellbent_commander_arise &= !bugs;
   triggers.hellbent_commander_demise &= !bugs;
 }
@@ -2052,7 +2092,8 @@ void infernal_t::create_buffs()
 
   immolation = make_buff<buff_t>( this, "immolation", o()->talents.immolation_buff )
                    ->set_tick_callback( [ damage, this ]( buff_t*, int, timespan_t ) {
-                     damage->execute_on_target( target );
+                     if ( target )
+                       damage->execute_on_target( target );
                    } );
 }
 
@@ -2063,7 +2104,7 @@ void infernal_t::arise()
   // 2024-07-18 Testing indicates there is a delay after spawn before first melee
   // Embers looks to trigger at around the same time as first melee swing, but Immolation takes longer to apply (and has no zero-tick)
   // Additionally, there is some unknown amount of movement adjustment the pet can take, so we model this with a distribution
-  timespan_t delay = rng().gauss<1000,100>();
+  timespan_t delay = rng().gauss<1000, 100>();
 
   make_event( *sim, delay, [ this ] {
     buffs.embers->trigger();
@@ -2499,7 +2540,7 @@ struct wrath_of_nathreza_t : public warlock_pet_spell_t
   void execute() override
   {
     if ( p()->o()->haunt_target && !p()->o()->haunt_target->is_sleeping() )
-      target = p()->o()->haunt_target;
+      set_target( p()->o()->haunt_target );
 
     warlock_pet_spell_t::execute();
 
@@ -2540,7 +2581,7 @@ namespace diabolist
 
     is_diabolist_guardian = true;
     affected_by.demonic_brutality = false;
-    // NOTE: 2026-04-24 Diabolist guardians do not trigger Hellbent Commander (bug?)
+    // NOTE: 2026-07-11 Diabolist guardians do not trigger Hellbent Commander (bug?)
     triggers.hellbent_commander_heartbeat &= !bugs;
     triggers.hellbent_commander_arise &= !bugs;
     triggers.hellbent_commander_demise &= !bugs;
@@ -2663,7 +2704,7 @@ namespace diabolist
 
     is_diabolist_guardian = true;
     affected_by.demonic_brutality = false;
-    // NOTE: 2026-04-24 Diabolist guardians do not trigger Hellbent Commander (bug?)
+    // NOTE: 2026-07-11 Diabolist guardians do not trigger Hellbent Commander (bug?)
     triggers.hellbent_commander_heartbeat &= !bugs;
     triggers.hellbent_commander_arise &= !bugs;
     triggers.hellbent_commander_demise &= !bugs;
@@ -2757,7 +2798,7 @@ namespace diabolist
 
     is_diabolist_guardian = true;
     affected_by.demonic_brutality = false;
-    // NOTE: 2026-04-24 Diabolist guardians do not trigger Hellbent Commander (bug?)
+    // NOTE: 2026-07-11 Diabolist guardians do not trigger Hellbent Commander (bug?)
     triggers.hellbent_commander_heartbeat &= !bugs;
     triggers.hellbent_commander_arise &= !bugs;
     triggers.hellbent_commander_demise &= !bugs;
@@ -2974,7 +3015,7 @@ rampaging_demonic_soul_t::rampaging_demonic_soul_t( warlock_t* owner, std::strin
   affected_by.demonic_brutality = false;
   action_list_str               = "soul_swipe";
   owner_coeff.sp_from_sp        = 1.0;
-  // NOTE: 2026-04-24 Demonic Soul do not trigger Hellbent Commander (bug?)
+  // NOTE: 2026-07-11 Demonic Soul does not trigger Hellbent Commander (bug?)
   triggers.hellbent_commander_heartbeat &= !bugs;
   triggers.hellbent_commander_arise  &= !bugs;
   triggers.hellbent_commander_demise &= !bugs;

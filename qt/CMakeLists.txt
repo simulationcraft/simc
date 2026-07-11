@@ -17,6 +17,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 FILE(COPY Welcome.png DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 FILE(COPY Welcome.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 FILE(COPY Error.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+FILE(COPY jquery.js DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 FILE(COPY locale/sc_de.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
 FILE(COPY locale/sc_cn.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
 FILE(COPY locale/sc_it.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
@@ -32,7 +33,7 @@ add_executable(SimulationCraft WIN32 ${source_files})
 
 if (${QT_VERSION_MAJOR} EQUAL 6)
   # std::filesystem (used indirectly with Qt6.5 on newer compilers) usage requires minimum osx target version of 10.15
-  set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15")
+  set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0")
 endif()
 
 sc_common_compiler_options(SimulationCraft)
@@ -63,6 +64,7 @@ install(FILES
   Error.html
   Welcome.html
   Welcome.png
+  jquery.js
 DESTINATION ${SIMC_INSTALL_SHARED})
 install(FILES 
   locale/sc_de.qm

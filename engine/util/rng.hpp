@@ -436,9 +436,11 @@ timespan_t basic_rng_t<Engine>::gauss( truncated_gauss_t& g )
   assert( g.stddev >= 0_ms && "Stddev must be non-negative." );
   if ( g.stddev == 0_ms )
     return g.mean;
+  if ( g.min == g.max )
+    return g.min;
 
   g.calculate_cdf();
-  
+
   double rescaled = g.min_cdf() + real() * ( g.max_cdf() - g.min_cdf() );
   return timespan_t::from_native( timespan_t::to_native( g.mean ) +
                                   timespan_t::to_native( g.stddev ) * stdnormal_inv( rescaled ) );

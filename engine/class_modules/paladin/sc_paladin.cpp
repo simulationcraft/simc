@@ -1038,7 +1038,7 @@ struct melee_t : public paladin_melee_attack_t
     {
       if ( p()->specialization() == PALADIN_RETRIBUTION )
       {
-        if ( p()->talents.art_of_war->ok() && p()->cooldowns.art_of_war->up() )
+        if ( p()->talents.art_of_war->ok() && p()->cooldowns.art_of_war->up() && ( !p()->is_ptr() || repeating ) )
         {
           // Check for BoW procs
           double aow_proc_chance = p()->talents.art_of_war->effectN( 1 ).percent();
@@ -1733,7 +1733,7 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
   {
     p->cooldowns.hammer_of_wrath = cooldown;
   }
-  if ( !p->bugs && p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+  if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
   {
     ue = new unrelenting_edict_t( p, "judgment" );
     add_child( ue );
@@ -1792,7 +1792,7 @@ void hammer_of_wrath_t::impact( action_state_t* s )
       echo->start_action_execute_event( 200_ms );
     }
   }
-  if ( !p()->bugs && p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
+  if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
     ue->do_execute( s );
 }
 
@@ -2972,7 +2972,8 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
 
     // You will lose 2 Holy Power when using SotR with IotD talented when DP is up
-    if (p()->bugs && p()->talents.instrument_of_the_divine->ok() && hasDpUp)
+    // Fixed on PTR
+    if ( p()->bugs && p()->talents.instrument_of_the_divine->ok() && hasDpUp && !p()->is_ptr() )
     {
       p()->resources.current[ RESOURCE_HOLY_POWER ] =
           std::max( p()->resources.current[ RESOURCE_HOLY_POWER ] - 2.0, 0.0 );
@@ -3654,6 +3655,12 @@ void paladin_t::create_buffs()
     buffs.avenging_wrath->add_invalidate( CACHE_HASTE );
   }
 
+  buffs.divine_arbiter_divine_storm =
+      make_buff( this, "divine_arbiter_divine_storm", spells.divine_arbiter_divine_storm );
+  buffs.divine_arbiter_hammer_of_light =
+      make_buff( this, "divine_arbiter_hammer_of_light", spells.divine_arbiter_hammer_of_light );
+  buffs.divine_arbiter_verdict = make_buff( this, "divine_arbiter_verdict", spells.divine_arbiter_verdict );
+  buffs.divine_power   = make_buff( this, "divine_power", spells.divine_power );
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
   buffs.divine_shield  = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                             ->set_cooldown( 0_ms );  // Let the ability handle the CD
@@ -3695,10 +3702,7 @@ void paladin_t::create_buffs()
               trigger_laying_down_arms();
             if ( is_ptr() )
             {
-              if ( bugs )
-                return d * 2;
-              else
-                return std::min( b->remains() + d, d * 2 );
+              return std::min( b->remains() + d, d * 2 );
             }
             else
             {
@@ -3714,10 +3718,7 @@ void paladin_t::create_buffs()
               trigger_laying_down_arms();
             if ( is_ptr() )
             {
-              if ( bugs )
-                return d * 2;
-              else
-                return std::min( b->remains() + d, d * 2 );
+              return std::min( b->remains() + d, d * 2 );
             }
             else
             {
@@ -3927,6 +3928,7 @@ void paladin_t::apply_action_effects( action_t* a ) {
     aw_effect_mask.disable( 11 );
 
   action->parse_effects( buffs.avenging_wrath, aw_effect_mask, IGNORE_STACKS );
+  action->parse_effects( buffs.divine_power );
   // TODO: add in Divine Purpose - logic here is going to be complex
 
   // Hero talents
@@ -4342,6 +4344,10 @@ void paladin_t::init_spells()
     spells.avenging_wrath = find_spell( 31884 );
 
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
+  spells.divine_arbiter_divine_storm   = find_spell( 1306162 );
+  spells.divine_arbiter_hammer_of_light = find_spell( 1310461 );
+  spells.divine_arbiter_verdict         = find_spell( 1306161 );
+  spells.divine_power           = find_spell( 1305230 );
   spells.divine_purpose_buff    = find_spell( specialization() == PALADIN_RETRIBUTION ? 408458 : 223819 );
   spells.sanctify               = find_spell( 382538 );
   spells.consecration           = find_spell( 204242 );

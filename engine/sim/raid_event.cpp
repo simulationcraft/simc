@@ -2462,15 +2462,35 @@ void raid_event_t::init( sim_t* sim )
       if ( raid_event->type == "pull" && sim->fight_style != FIGHT_STYLE_DUNGEON_ROUTE )
         throw std::invalid_argument( "DungeonRoute fight style is required for pull events." );
 
-      if ( raid_event->cooldown.min == 0_ms )
-        raid_event->cooldown.min = raid_event->cooldown.mean * 0.5;
-      if ( raid_event->cooldown.max == 0_ms )
-        raid_event->cooldown.max = raid_event->cooldown.mean * 1.5;
+      if ( raid_event->cooldown.mean == timespan_t::max() )
+      {
+        if ( raid_event->cooldown.min == 0_ms )
+          raid_event->cooldown.min = timespan_t::max();
+        if ( raid_event->cooldown.max == 0_ms )
+          raid_event->cooldown.max = timespan_t::max();
+      }
+      else
+      {
+        if ( raid_event->cooldown.min == 0_ms )
+          raid_event->cooldown.min = raid_event->cooldown.mean * 0.5;
+        if ( raid_event->cooldown.max == 0_ms )
+          raid_event->cooldown.max = raid_event->cooldown.mean * 1.5;
+      }
 
-      if ( raid_event->duration.min == 0_ms )
-        raid_event->duration.min = raid_event->duration.mean * 0.5;
-      if ( raid_event->duration.max == 0_ms )
-        raid_event->duration.max = raid_event->duration.mean * 1.5;
+      if ( raid_event->duration.mean == timespan_t::max() )
+      {
+        if ( raid_event->duration.min == 0_ms )
+          raid_event->duration.min = timespan_t::max();
+        if ( raid_event->duration.max == 0_ms )
+          raid_event->duration.max = timespan_t::max();
+      }
+      else
+      {
+        if ( raid_event->duration.min == 0_ms )
+          raid_event->duration.min = raid_event->duration.mean * 0.5;
+        if ( raid_event->duration.max == 0_ms )
+          raid_event->duration.max = raid_event->duration.mean * 1.5;
+      }
 
       // Collect other raid events assigned to a pull.
       if ( raid_event->pull > 0 && raid_event->type != "pull" )

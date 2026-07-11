@@ -7508,7 +7508,6 @@ struct breath_of_eons_t : public evoker_spell_t
   {
     action_t* ebon;
     eruption_t* eruption;
-    timespan_t plot_duration;
     action_t* melt_armor_dot;
     cooldown_t* virtual_cooldown;
     upheaval_t::upheaval_damage_t* upheaval_set;
@@ -7519,8 +7518,11 @@ struct breath_of_eons_t : public evoker_spell_t
         melt_armor_dot( nullptr ),
         upheaval_set( nullptr )
     {
-      travel_delay = 0.9;   // guesstimate, TODO: confirm
-      travel_speed = 19.5;  // guesstimate, TODO: confirm
+      //travel_delay = 0.9;   // guesstimate, TODO: confirm
+      //travel_speed = 19.5;  // guesstimate, TODO: confirm
+
+      travel_delay = 0;
+      travel_speed = 0;
 
       trigger_gcd = p->talent.scalecommander.maneuverability.ok() ? 1.5_s : 2_s;
       gcd_type    = p->talent.scalecommander.maneuverability.ok() ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
@@ -7539,6 +7541,7 @@ struct breath_of_eons_t : public evoker_spell_t
         if ( p->talent.overlord.ok() )
         {
           eruption               = p->get_secondary_action<eruption_t>( "eruption_overlord", "eruption_overlord" );
+          eruption->proc         = true;
           eruption->is_overlord  = true;
           eruption->motes_chance = p->talent.overlord->effectN( 2 ).percent();
           add_child( eruption );
@@ -7558,8 +7561,6 @@ struct breath_of_eons_t : public evoker_spell_t
           add_child( upheaval_set );
         }
       }
-
-      plot_duration = timespan_t::from_seconds( p->talent.plot_the_future->effectN( 1 ).base_value() );
     }
 
     void impact( action_state_t* s ) override
@@ -7570,7 +7571,12 @@ struct breath_of_eons_t : public evoker_spell_t
 
       if ( eruption && s->chain_target < p()->talent.overlord->effectN( 1 ).base_value() )
       {
-        make_event( sim, 200_ms, [ this, s ] { eruption->execute_on_target( s->target ); } );
+        // Hacky code to implement the overlord extending duplicate behaviour
+        auto targets  = std::min( s->n_targets, as<unsigned int>( p()->talent.overlord->effectN( 1 ).base_value() ) );
+        auto fraction = ( s->chain_target + 1.0 ) / targets;
+        auto delay    = ( p()->gcd_ready - p()->sim->current_time() ) * fraction + 200_ms;
+
+        make_event( sim, delay, [ this, s ] { eruption->execute_on_target( s->target ); } );
       }
 
       if ( p()->talent.scalecommander.melt_armor.ok() )
@@ -7596,24 +7602,12 @@ struct breath_of_eons_t : public evoker_spell_t
       {
         p()->extend_ebon( p()->talent.sands_of_time->effectN( 3 ).time_value() );
       }
-
-      if ( p()->talent.duplicate1.enabled() )
-      {
-        p()->pets.duplicate_pet.spawn();
-      }
       else if ( ebon )
       {
         ebon->execute();
       }
 
       evoker_spell_t::execute();
-
-      if ( !( p()->talent.scalecommander.maneuverability.ok() &&
-              p()->talent.scalecommander.command_squadron.enabled() ) &&
-           p()->talent.imminent_destruction.ok() )
-      {
-        p()->buff.imminent_destruction->trigger();
-      }
 
       if ( upheaval_set )
       {
@@ -7628,25 +7622,6 @@ struct breath_of_eons_t : public evoker_spell_t
       if ( p()->talent.chronowarden.time_convergence.enabled() )
       {
         p()->buff.time_convergence_intellect->trigger();
-      }
-
-      if ( p()->talent.plot_the_future.ok() )
-      {
-        make_event( sim, player->gcd_ready - sim->current_time() - 1_ms, [ this ] {
-          if ( p()->buffs.bloodlust->check() )
-            p()->buffs.bloodlust->extend_duration( plot_duration );
-          else if ( p()->buff.fury_of_the_aspects->check() )
-            p()->buff.fury_of_the_aspects->extend_duration( plot_duration );
-          else
-          {
-            p()->buff.fury_of_the_aspects->trigger( plot_duration );
-            // Plots bloodlust re-triggers the buff for some reason.
-            if ( p()->talent.chronowarden.time_convergence.enabled() )
-            {
-              p()->buff.time_convergence_intellect->trigger();
-            }
-          }
-        } );
       }
 
       if ( virtual_cooldown )
@@ -7687,10 +7662,8 @@ struct breath_of_eons_t : public evoker_spell_t
     }
   }
 
-  void last_tick( dot_t* d ) override
+  void eons_finished_effects()
   {
-    evoker_spell_t::last_tick( d );
-
     if ( p()->talent.imminent_destruction.ok() )
     {
       p()->buff.imminent_destruction->trigger();
@@ -7703,12 +7676,47 @@ struct breath_of_eons_t : public evoker_spell_t
         pet->finish_flying();
       }
     }
+
+    if ( p()->talent.duplicate1.enabled() )
+    {
+      p()->pets.duplicate_pet.spawn();
+    }
+
+    if ( p()->talent.plot_the_future.ok() )
+    {
+      auto plot_duration = timespan_t::from_seconds( p()->talent.plot_the_future->effectN( 1 ).base_value() );
+      if ( p()->buffs.bloodlust->check() )
+        p()->buffs.bloodlust->extend_duration( plot_duration );
+      else if ( p()->buff.fury_of_the_aspects->check() )
+        p()->buff.fury_of_the_aspects->extend_duration( plot_duration );
+      else
+      {
+        p()->buff.fury_of_the_aspects->trigger( plot_duration );
+        // Plots bloodlust re-triggers the buff for some reason.
+        if ( p()->talent.chronowarden.time_convergence.enabled() )
+        {
+          p()->buff.time_convergence_intellect->trigger();
+        }
+      }
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    evoker_spell_t::last_tick( d );
+
+    eons_finished_effects();
   }
 
   void execute() override
   {
     evoker_spell_t::execute();
     main_spell->execute();
+
+    if ( !channeled )
+    {
+      make_event( p()->sim, p()->gcd_ready - 1_ms - sim->current_time(), [ this ] { eons_finished_effects(); } );
+    }
 
     if ( is_precombat )
     {
