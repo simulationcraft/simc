@@ -17699,7 +17699,7 @@ Proc Flags       : Yellow Melee
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1319250)  : Apply Aura (6) | Proc Trigger Spell (42): Fang Strike
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.5 | Trigger Spell: 1301405 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Trigger Spell: 1301405 | Target: Self (1)
 Description      : Sinister Strike and Ambush have a $s1% chance to cause your next Dispatch to be free and deal damage as if you spent the maximum combo points.
 
 Name             : Rogue Assassination 12.1 Class Set 2pc (id=1296590) [Spell Family (8), Passive, Hidden] 
