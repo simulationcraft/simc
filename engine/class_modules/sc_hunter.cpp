@@ -424,6 +424,8 @@ public:
     // Midnight Season 2 - Curse of Ula’tek
     spell_data_ptr_t mid_s2_bm_2pc;
     spell_data_ptr_t mid_s2_bm_4pc;
+    spell_data_ptr_t mid_s2_bm_4pc_buff;
+    spell_data_ptr_t mid_s2_bm_4pc_damage;
 
     spell_data_ptr_t mid_s2_mm_2pc;
     spell_data_ptr_t mid_s2_mm_4pc;
@@ -477,6 +479,7 @@ public:
     buff_t* predators_thirst;
 
     // Tier Set Bonuses
+    buff_t* cobra_fang;
 
     // Hero Talents 
 
@@ -1017,6 +1020,7 @@ public:
     action_t* stampede = nullptr;
 
     action_t* let_fly = nullptr;
+    action_t* cobra_cleave = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -3106,6 +3110,16 @@ struct stomp_t : public hunter_pet_attack_t<hunter_pet_t>
     aoe = -1;
     base_dd_multiplier *= dd;
   };
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_pet_attack_t::impact( s );
+
+    if ( o()->tier_set.mid_s2_bm_4pc.ok() )
+    {
+      o()->buffs.cobra_fang->increment();
+    }
+  }
 };
 
 // Bloodshed ===============================================================
@@ -5036,6 +5050,8 @@ struct cobra_shot_base_t: public hunter_ranged_attack_t
 
     p()->buffs.hogstrider->expire();
 
+    p()->buffs.cobra_fang->expire();
+
     p()->trigger_natures_ally_3();
   }
 
@@ -5045,6 +5061,9 @@ struct cobra_shot_base_t: public hunter_ranged_attack_t
 
     if ( p()->buffs.hogstrider->up() )
       m *= 1 + p()->talents.hogstrider_buff->effectN( 1 ).percent();
+
+    if ( p()->buffs.cobra_fang->up() && !p()->buffs.beast_cleave->check() && s->chain_target == 0 )
+      m *= 1 + p()->tier_set.mid_s2_bm_4pc_buff->effectN( 2 ).percent() * p()->buffs.cobra_fang->check();
 
     return m;
   }
@@ -5059,6 +5078,16 @@ struct cobra_shot_base_t: public hunter_ranged_attack_t
   void impact( action_state_t* s ) override
   {
     hunter_ranged_attack_t::impact( s );
+
+    if ( p()->buffs.cobra_fang->up() && p()->buffs.beast_cleave->check() && s->chain_target == 0 )
+    {
+      // 2026-07-11: It seems like Cobra Cleave's target multipliers replicate to other targets, unlike all other Beast Cleaves
+      //             TODO fully confirm the above
+      const double effectiveness = p()->tier_set.mid_s2_bm_4pc_buff->effectN( 1 ).percent() * p()->buffs.cobra_fang->check();
+      const double amount = s->result_total * effectiveness;
+
+      p()->actions.cobra_cleave->execute_on_target( s->target, amount );
+    }
 
     if ( s->result == RESULT_CRIT && p()->talents.serpentine_strikes.ok() ) 
       p()->resource_gain( RESOURCE_FOCUS, serpentine_strikes_amount, p()->gains.serpentine_strikes, this );
@@ -5081,6 +5110,26 @@ struct cobra_shot_snakeskin_quiver_t : public cobra_shot_base_t
   {
     background = dual = true;
     base_costs[ RESOURCE_FOCUS ] = 0;
+  }
+};
+
+// Cobra Cleave (BM MID2 4pc) ================================================
+
+struct cobra_cleave_t final : hunter_ranged_attack_t
+{
+  cobra_cleave_t( hunter_t* p ) : hunter_ranged_attack_t( "cobra_cleave", p, p->tier_set.mid_s2_bm_4pc_damage )
+  {
+    background = dual = true;
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
+    target_filter_callback = secondary_targets_only();
+  }
+
+  void init() override
+  {
+    hunter_ranged_attack_t::init();
+
+    snapshot_flags |= STATE_TGT_MUL_DA;
   }
 };
 
@@ -7780,6 +7829,8 @@ void hunter_t::init_spells()
 
   tier_set.mid_s2_bm_2pc        = sets->set( HUNTER_BEAST_MASTERY, MID2, B2 );
   tier_set.mid_s2_bm_4pc        = sets->set( HUNTER_BEAST_MASTERY, MID2, B4 );
+  tier_set.mid_s2_bm_4pc_buff   = tier_set.mid_s2_bm_4pc.ok() ? find_spell( 1299389 ) : spell_data_t::not_found();
+  tier_set.mid_s2_bm_4pc_damage = tier_set.mid_s2_bm_4pc.ok() ? find_spell( 1299409 ) : spell_data_t::not_found();
 
   tier_set.mid_s2_mm_2pc        = sets->set( HUNTER_MARKSMANSHIP, MID2, B2 );
   tier_set.mid_s2_mm_4pc        = sets->set( HUNTER_MARKSMANSHIP, MID2, B4 );
@@ -7866,6 +7917,9 @@ void hunter_t::create_actions()
 
   if ( tier_set.mid_s1_mm_4pc.ok() )
     actions.let_fly = new attacks::let_fly_t( this );
+
+  if ( tier_set.mid_s2_bm_4pc.ok() )
+    actions.cobra_cleave = new attacks::cobra_cleave_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -8059,6 +8113,10 @@ void hunter_t::create_buffs()
       -> add_invalidate( CACHE_LEECH );
 
   // Tier Set Bonuses
+  
+  buffs.cobra_fang =
+    make_buff( this, "cobra_fang", tier_set.mid_s2_bm_4pc_buff )
+      ->set_chance( tier_set.mid_s2_bm_4pc.ok() );
 
   // Hero Talents
 
