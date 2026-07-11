@@ -1649,6 +1649,7 @@ class SpellDataGenerator(DataGenerator):
             ( 406957, 0),           # Divine Toll Judgment
             ( 402916, 0),           # Righteous Cause Buff
             ( 1268810, 0),          # Vanguard
+            ( 1305230, 0),          # Divine Power
         ),
 
         # Hunter:
