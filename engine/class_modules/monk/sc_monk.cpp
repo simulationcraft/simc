@@ -6344,10 +6344,8 @@ void monk_t::create_buffs()
   buff.zenith = make_buff_fallback<buffs::zenith_t>( talent.windwalker.zenith->ok(), this, "zenith" );
 
   buff.zenith_stomp =
-      make_buff_fallback( talent.monk.zenith_stomp->ok(), this, "zenith_stomp", talent.monk.zenith_stomp_buff )
-          ->modify_initial_stack( as<int>( talent.windwalker.tigereye_brew_3->ok()
-                                               ? talent.windwalker.tigereye_brew_3->effectN( 1 ).base_value()
-                                               : 0 ) );
+      make_buff_fallback( talent.windwalker.tigereye_brew_3->ok(), this, "zenith_stomp", talent.monk.zenith_stomp_buff )
+          ->set_initial_stack( as<int>( talent.windwalker.tigereye_brew_3->effectN( 1 ).base_value() ) );
 
   buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
                                                talent.windwalker.rushing_wind_kick_buff );
