@@ -3384,6 +3384,66 @@ void font_of_venomous_rage( special_effect_t& effect )
 
   effect.execute_action = create_proc_action<font_channel_t>( "font_of_venemous_rage", effect );
 }
+
+// Stormbound Emblem of Dazar
+// 1295275 on-use driver (The King's Unyielding Wind), 2 sec channel ticking every 0.5 sec
+// 1294744 equip
+// 1294745 Haste buff
+void stormbound_emblem_of_dazar( special_effect_t& effect )
+{
+  // Each completed channel tick extends the Haste buff duration by 5sec,
+  // rather than the buff only being granted on full channel completion.
+  // Interrupting the channel early keeps whatever duration has accumulated so far.
+  auto buff_spell = effect.player->find_spell( 1294745 );
+  assert( buff_spell->ok() && "Stormbound Emblem of Dazar buff spell not found" );
+  auto value_spell = effect.player->find_spell( 1294744 );
+  assert( value_spell->ok() && "Stormbound Emblem of Dazar value spell not found" );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, buff_spell )
+    ->set_stat_from_effect_type( A_MOD_RATING, value_spell->effectN( 1 ).average( effect ) );
+
+  struct stormbound_emblem_of_dazar_t : public proc_spell_t
+  {
+    buff_t* buff;
+
+    stormbound_emblem_of_dazar_t( const special_effect_t& e, buff_t* b )
+      : proc_spell_t( "the_kings_unyielding_wind", e.player, e.driver() ), buff( b )
+    {
+      channeled = true;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // cancel the player-ready event triggered by use_item_t
+      event_t::cancel( player->readying );
+
+      // prevent auto attacks while channeling
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_spell_t::tick( d );
+
+      buff->extend_duration_or_trigger();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
+    }
+  };
+
+  effect.execute_action =
+      create_proc_action<stormbound_emblem_of_dazar_t>( "the_kings_unyielding_wind", effect, buff );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -3507,7 +3567,7 @@ void polished_lightwood_channeler( special_effect_t& effect )
       missile->data().effectN( 1 ).trigger() );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
   damage->base_multiplier *= role_mult( effect );
-  
+
   missile->add_child( damage );
   missile->impact_action = damage;
 
@@ -4471,6 +4531,8 @@ void register_special_effects()
   register_special_effect( 1295219, trinkets::fang_of_umbral_malignance );
   register_special_effect( 1297761, trinkets::voracious_heart_of_ulatek );
   register_special_effect( 1297760, DISABLED_EFFECT ); // Voracious Heart of Ula'tek equip driver
+  register_special_effect( 1295275, trinkets::stormbound_emblem_of_dazar );
+  register_special_effect( 1294744, DISABLED_EFFECT );  // Stormbound Emblem of Dazar equip driver
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
