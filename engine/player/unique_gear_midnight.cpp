@@ -3575,6 +3575,19 @@ void polished_lightwood_channeler( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Jan'thrazet, the Soul Fang
+// 1298085 driver
+// 1305360 Soul Fang Alacrity (haste buff)
+void janthrazet_the_soul_fang( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, "soul_fang_alacrity", effect.player->find_spell( 1305360 ) )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace weapons
 
 namespace armors
@@ -4540,6 +4553,7 @@ void register_special_effects()
   register_special_effect( 1250529, weapons::murder_row_fishhook );
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( 1296874, weapons::polished_lightwood_channeler );
+  register_special_effect( 1298085, weapons::janthrazet_the_soul_fang );
   reset_version_check();
   // Armor
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
