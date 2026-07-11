@@ -3495,6 +3495,26 @@ void murder_row_fishhook( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Polished Lightwood Channeler
+// 1296874 driver
+// 1296979 missile
+// 1296876 Searing Lightblast (aoe)
+void polished_lightwood_channeler( special_effect_t& effect )
+{
+  auto missile = create_proc_action<generic_proc_t>( "searing_lightblast_missile", effect, 1296979 );
+  auto damage  = create_proc_action<generic_aoe_proc_t>( "searing_lightblast", effect,
+      missile->data().effectN( 1 ).trigger() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+  
+  missile->add_child( damage );
+  missile->impact_action = damage;
+
+  effect.execute_action = missile;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace weapons
 
 namespace armors
@@ -4436,6 +4456,9 @@ void register_special_effects()
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
   register_special_effect( 1266257, weapons::lightless_lament );
   register_special_effect( 1250529, weapons::murder_row_fishhook );
+  set_min_version( wowv_t( 12, 1, 0 ) );
+  register_special_effect( 1296874, weapons::polished_lightwood_channeler );
+  reset_version_check();
   // Armor
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
   register_special_effect( 1243883, armors::necrotic_hexweave );
