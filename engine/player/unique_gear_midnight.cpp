@@ -3801,6 +3801,18 @@ void rotmires_sporeheart( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void venomcursed( special_effect_t& effect )
+{
+  auto buff       = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+    ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
+    ->add_stat_from_effect( 2, effect.driver()->effectN( 2 ).average( effect ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace armors
 
 namespace sets
@@ -4469,6 +4481,9 @@ void register_special_effects()
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1285138, armors::sporecallers_blooming_loop );
   register_special_effect( 1285139, armors::rotmires_sporeheart );
+  reset_version_check();
+  set_min_version( wowv_t( 12, 1, 0 ) );
+  register_special_effect( { 1307906, 1307923, 1307928 }, armors::venomcursed );
   reset_version_check();
   // Sets
   register_special_effect( 1281574, sets::voidlight_bindings );
