@@ -377,7 +377,19 @@ struct blade_of_justice_t : public paladin_melee_attack_t
   void execute() override
   {
     bool buff_up = p()->buffs.art_of_war->up() || p()->buffs.righteous_cause->up();
+    bool light_within_stacking = p()->is_ptr() && p()->talents.light_within_1->ok();
+    int art_of_war_stacks = light_within_stacking ? p()->buffs.art_of_war->check() : 0;
+    int righteous_cause_stacks = light_within_stacking ? p()->buffs.righteous_cause->check() : 0;
+
     paladin_melee_attack_t::execute();
+
+    if ( light_within_stacking &&
+         ( ( art_of_war_stacks > p()->buffs.art_of_war->check() && p()->buffs.art_of_war->check() > 0 ) ||
+           ( righteous_cause_stacks > p()->buffs.righteous_cause->check() &&
+             p()->buffs.righteous_cause->check() > 0 ) ) )
+    {
+      p()->cooldowns.blade_of_justice->reset( true );
+    }
 
     if ( p()->spells.consecrated_blade->ok() && p()->cooldowns.consecrated_blade_icd->up() )
     {
@@ -387,7 +399,20 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     if ( p()->talents.light_within_3->ok() && buff_up )
     {
       make_event<delayed_execute_event_t>( *sim, p(), lw, execute_state->target, 350_ms );
-      p()->buffs.righteous_cause->expire();
+
+      if ( light_within_stacking )
+      {
+        if ( righteous_cause_stacks > 0 && righteous_cause_stacks == p()->buffs.righteous_cause->check() )
+        {
+          p()->buffs.righteous_cause->decrement();
+          if ( p()->buffs.righteous_cause->check() > 0 )
+            p()->cooldowns.blade_of_justice->reset( true );
+        }
+      }
+      else
+      {
+        p()->buffs.righteous_cause->expire();
+      }
     }
   }
 
@@ -1121,6 +1146,12 @@ void paladin_t::create_buffs_retribution()
 
   buffs.art_of_war = make_buff( this, "art_of_war", find_spell( 406086 ) );
   buffs.righteous_cause = make_buff( this, "righteous_cause", find_spell( 402916 ) )->set_chance( 1.0 );
+
+  if ( is_ptr() && talents.light_within_1->ok() )
+  {
+    buffs.art_of_war->set_consume_all_stacks( false );
+    buffs.righteous_cause->set_consume_all_stacks( false );
+  }
 
   buffs.execution_sentence = make_buff( this, "execution_sentence", find_spell( 1234189 ) )
     ->set_default_value( 0.0 )

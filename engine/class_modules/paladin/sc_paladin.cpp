@@ -1038,7 +1038,7 @@ struct melee_t : public paladin_melee_attack_t
     {
       if ( p()->specialization() == PALADIN_RETRIBUTION )
       {
-        if ( p()->talents.art_of_war->ok() && p()->cooldowns.art_of_war->up() )
+        if ( p()->talents.art_of_war->ok() && p()->cooldowns.art_of_war->up() && ( !p()->is_ptr() || repeating ) )
         {
           // Check for BoW procs
           double aow_proc_chance = p()->talents.art_of_war->effectN( 1 ).percent();
