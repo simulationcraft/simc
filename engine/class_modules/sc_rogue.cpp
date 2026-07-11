@@ -7605,8 +7605,11 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     else if ( p()->buffs.deadly_pursuit->check() )
       p()->buffs.deadly_pursuit->refresh();
     else
+    {
       // 2026-06-30 -- PTR TOCHECK: MID2 Outlaw 4pc does not contribute towards Deadly Pursuit
-      p()->buffs.deadly_pursuit_tracker->trigger( as<int>( cp_loss ) );
+      if ( cp_loss > 0 )
+        p()->buffs.deadly_pursuit_tracker->trigger( as<int>( cp_loss ) );
+    }
   }
 }
 
