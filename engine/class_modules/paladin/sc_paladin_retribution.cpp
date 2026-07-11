@@ -297,6 +297,19 @@ struct expurgation_t : public paladin_spell_t
     paladin_spell_t::execute();
   }
 };
+
+struct divine_arbiter_t : public paladin_spell_t
+{
+  divine_arbiter_t( paladin_t* p ) : paladin_spell_t( "divine_arbiter", p, p->find_spell( 1306923 ) )
+  {
+    background = proc = true;
+    aoe               = -1;
+
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+    base_aoe_multiplier     = data().effectN( 2 ).ap_coeff() / data().effectN( 1 ).ap_coeff();
+  }
+};
+
 void paladin_t::trigger_expurgation(player_t* target, double effectiveness = 1.0)
 {
   if ( talents.expurgation->ok() )
@@ -655,6 +668,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     is_fv( p->talents.final_verdict->ok() )
   {
     parse_options( options_str );
+    is_divine_arbiter_verdict = true;
 
     // spell is not usable without a 2hander
     if ( p->items[ SLOT_MAIN_HAND ].dbc_inventory_type() != INVTYPE_2HWEAPON )
@@ -1098,6 +1112,8 @@ void paladin_t::create_ret_actions()
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
+    if ( sets->has_set_bonus( PALADIN_RETRIBUTION, MID2, B4 ) )
+      active.divine_arbiter = new divine_arbiter_t( this );
     active.highlords_judgment = new highlords_judgment_t( this );
     if ( talents.herald_of_the_sun.sun_sear->ok() )
     {
