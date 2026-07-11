@@ -97,7 +97,7 @@ public:
   std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override;
 
   bool usable_moving() const override;
-  bool ready() override;
+  bool usable_during_current_cast() const override;
   void init() override;
   void init_finished() override;
   void reset_swing();

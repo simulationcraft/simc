@@ -221,18 +221,12 @@ bool monk_action_t<Base>::usable_moving() const
 }
 
 template <class Base>
-bool monk_action_t<Base>::ready()
+bool monk_action_t<Base>::usable_during_current_cast() const
 {
-  // Spell data nil or not_found
-  if ( base_t::data().id() == 0 )
-    return false;
+  if ( cast_during_sck && p()->channeling && p()->channeling->id == p()->baseline.monk.spinning_crane_kick->id() )
+    return true;
 
-  // These abilities are able to be used during Spinning Crane Kick
-  if ( cast_during_sck )
-    base_t::usable_while_casting = p()->channeling && p()->baseline.monk.spinning_crane_kick &&
-                                   ( p()->channeling->id == p()->baseline.monk.spinning_crane_kick->id() );
-
-  return base_t::ready();
+  return base_t::usable_during_current_cast();
 }
 
 template <class Base>
@@ -260,20 +254,8 @@ void monk_action_t<Base>::init()
     }
   }
 
-  // Allow this ability to be cast during SCK
-  if ( cast_during_sck && !base_t::background && !base_t::dual )
-  {
-    if ( base_t::usable_while_casting )
-    {
-      cast_during_sck = false;
-      p()->sim->print_debug( "{}: cast_during_sck ignored because usable_while_casting = true", full_name() );
-    }
-    else
-    {
-      base_t::usable_while_casting = true;
-      base_t::use_while_casting    = true;
-    }
-  }
+  if ( cast_during_sck )
+    base_t::usable_while_casting = base_t::use_while_casting = true;
 }
 
 template <class Base>
@@ -2502,7 +2484,6 @@ struct keg_smash_t : monk_melee_attack_t
       fuel_on_the_fire( nullptr )
   {
     parse_options( options_str );
-    // TODO: can cast_during_sck be automated?
     cast_during_sck = true;
 
     full_amount_targets = 1;
