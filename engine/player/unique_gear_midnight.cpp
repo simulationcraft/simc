@@ -4144,7 +4144,6 @@ stat_buff_t* create_omnium_stat_buff( const special_effect_t& effect )
     return buff;
   }
 
-  assert( false );
   return nullptr;
 }
 
