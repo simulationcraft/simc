@@ -301,6 +301,9 @@ public:
     buff_t* thunder_blast;
     buff_t* steadfast_as_the_peaks;
     buff_t* burst_of_power;
+
+    // 12.1 Tier Sets
+    buff_t* winding_up;
   } buff;
 
   struct rppm_t
@@ -1059,6 +1062,9 @@ public:
       parse_effects( p()->buff.martial_prowess );
       parse_effects( p()->buff.master_of_warfare );
       parse_effects( p()->buff.battlelord );
+
+      if ( p()->sets->has_set_bonus( WARRIOR_ARMS, MID2, B4 ) )
+        parse_effects( p()->buff.winding_up );
     }
     else if ( p()->specialization() == WARRIOR_FURY )
     {
@@ -3089,6 +3095,9 @@ struct mortal_strike_t : public warrior_attack_t
 
     if ( !background )
       p()->buff.battlelord->expire();
+
+    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, MID2, B4 ) )
+      p()->buff.winding_up->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3518,6 +3527,9 @@ struct slam_base_t : public warrior_attack_t
 
     if ( p()->sets->has_set_bonus( WARRIOR_ARMS, MID2, B2 ) )
       concussive_slam->execute();
+
+    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, MID2, B4 ) && p()->buff.winding_up->up() )
+      p()->buff.winding_up->expire();
   }
 
   bool ready() override
@@ -5403,6 +5415,9 @@ struct overpower_t : public warrior_attack_t
 
     if ( p()->talents.arms.martial_prowess.ok() )
       p()->buff.martial_prowess->trigger();
+
+    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, MID2, B4 ) )
+      p()->buff.winding_up->trigger();
   }
 
   bool ready() override
@@ -8379,6 +8394,10 @@ void warrior_t::create_buffs()
 
   // Protection Apex
   buff.phalanx = make_buff( this, "phalanx", spell.phalanx_buff );
+
+  // Tier MID2
+  // Arms
+  buff.winding_up = make_buff( this, "winding_up", find_spell( 1300670 ) );
 }
 
 // warrior_t::init_special_effects() ====================================
