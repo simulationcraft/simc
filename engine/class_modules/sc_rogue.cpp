@@ -449,6 +449,7 @@ public:
 
     // Set Bonuses
     damage_buff_t* mid1_outlaw_4pc;
+    buff_t* mid2_outlaw_4pc;
 
   } buffs;
 
@@ -724,6 +725,8 @@ public:
     const spell_data_t* rupture;      // Assassination + Subtlety
     const spell_data_t* shadowstep;   // Assassination + Subtlety, baseline charge increase passive
 
+    // Set Bonuses
+    const spell_data_t* mid2_outlaw_4pc_buff;
   } spec;
 
   // Talents
@@ -1103,6 +1106,8 @@ public:
     const spell_data_t* mid1_subtlety_2pc;
     const spell_data_t* mid1_subtlety_4pc;
 
+    const spell_data_t* mid2_outlaw_2pc;
+    const spell_data_t* mid2_outlaw_4pc;
   } set_bonuses;
 
   // Options
@@ -1626,6 +1631,8 @@ public:
     bool mid1_assassination_4pc = false;
     bool mid1_subtlety_2pc = false;
 
+    bool mid2_outlaw_4pc = false;
+
     damage_affect_data follow_the_blood;
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1785,6 +1792,11 @@ public:
     {
       affected_by.mid1_subtlety_2pc = consumes_combo_points();
     }
+
+    if ( p->set_bonuses.mid2_outlaw_4pc->ok() )
+    {
+      affected_by.mid2_outlaw_4pc = ab::data().affected_by( p->spec.mid2_outlaw_4pc_buff->effectN( 1 ) );
+    }
   }
 
   void init() override
@@ -1895,6 +1907,7 @@ public:
     register_consume_buff( p()->buffs.symbolic_victory, p()->buffs.symbolic_victory->is_affecting( &ab::data() ),
                            nullptr, p()->bugs ? 0_ms : 1_ms, false, true ); // 2024-08-12 -- Consumed immediatey, does not work with Shadowy Finishers
     register_consume_buff( p()->buffs.the_rotten, p()->buffs.the_rotten->is_affecting_direct( &ab::data() ), nullptr, 1_ms, false, true );
+    register_consume_buff( p()->buffs.mid2_outlaw_4pc, affected_by.mid2_outlaw_4pc );
   }
 
   // Type Wrappers ============================================================
@@ -1991,6 +2004,11 @@ public:
   {
     int consume_cp = consumes_combo_points() ? as<int>( std::min( p()->current_cp(), p()->consume_cp_max() ) ) : 0;
     int effective_cp = consume_cp;
+
+    if ( affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
+    {
+      effective_cp = as<int>( p()->consume_cp_max() );
+    }
 
     // Apply and Snapshot Supercharger Buffs
     if ( p()->talent.rogue.supercharger->ok() && consumes_supercharger() )
@@ -2196,7 +2214,7 @@ public:
       return 0.0;
 
     auto chance = ab::parry_chance(exp, target);
-    return std::max(0.0, chance);
+    return std::max( 0.0, chance );
   }
 
 public:
@@ -2606,6 +2624,11 @@ public:
     if ( affected_by.goremaws_bite )
     {
       c *= 1.0 + p()->buffs.goremaws_bite->check_value();
+    }
+
+    if ( affected_by.mid2_outlaw_4pc )
+    {
+      c *= 1.0 + p()->buffs.mid2_outlaw_4pc->check_value();
     }
 
     return c;
@@ -3381,6 +3404,12 @@ struct melee_t : public rogue_attack_t
 
     if ( p()->talent.outlaw.zero_in->ok() && state->result == RESULT_CRIT )
     {
+      if ( p()->is_ptr() && state->action->weapon->type == WEAPON_DAGGER )
+      {
+        double chance = p()->talent.outlaw.zero_in->effectN( 2 ).percent();
+        if ( p()->rng().roll( chance ) )
+          return;
+      }
       p()->buffs.zero_in->trigger();
     }
   }
@@ -3543,6 +3572,7 @@ struct ambush_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
     trigger_blindside( execute_state );
+    p()->buffs.mid2_outlaw_4pc->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -5791,6 +5821,7 @@ struct sinister_strike_t : public rogue_attack_t
     rogue_attack_t::execute();
     trigger_unseen_blade( execute_state );
     trigger_opportunity( execute_state, extra_attack );
+    p()->buffs.mid2_outlaw_4pc->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -7540,10 +7571,15 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
 
   const auto rs = cast_state( state );
   double max_spend = std::min( p()->current_cp(), p()->consume_cp_max() );
-  ab::stats->consume_resource( RESOURCE_COMBO_POINT, max_spend );
-  p()->resource_loss( RESOURCE_COMBO_POINT, max_spend );
+  double cp_loss = max_spend;
 
-  p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), max_spend, util::resource_type_string( RESOURCE_COMBO_POINT ),
+  if ( affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
+    cp_loss *= 1.0 + p()->spec.mid2_outlaw_4pc_buff->effectN( 2 ).percent();
+
+  ab::stats->consume_resource( RESOURCE_COMBO_POINT, max_spend );
+  p()->resource_loss( RESOURCE_COMBO_POINT, cp_loss );
+
+  p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), cp_loss, util::resource_type_string( RESOURCE_COMBO_POINT ),
                        *this, p()->current_cp() );
   // Remove Supercharger Buffs
   consume_supercharger( state );
@@ -7562,7 +7598,11 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     else if ( p()->buffs.deadly_pursuit->check() )
       p()->buffs.deadly_pursuit->refresh();
     else
-      p()->buffs.deadly_pursuit_tracker->trigger( as<int>( max_spend ) );
+    {
+      // 2026-06-30 -- PTR TOCHECK: MID2 Outlaw 4pc does not contribute towards Deadly Pursuit
+      if ( cp_loss > 0 )
+        p()->buffs.deadly_pursuit_tracker->trigger( as<int>( cp_loss ) );
+    }
   }
 }
 
@@ -7803,6 +7843,12 @@ void actions::rogue_action_t<Base>::trigger_ruthlessness_cp( const action_state_
     return;
 
   int cp = cast_state( state )->get_combo_points();
+  
+  // 2026-06-29 -- PTR TOCHECK: MID2 Outlaw 4pc can only trigger Ruthlessness if its effective CPs are
+  //               boosted by Supercharger or Coup de Grace
+  if ( p()->bugs && affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
+    cp = std::max( 0, cp - as<int>( p()->consume_cp_max() ) );
+
   if ( cp == 0 )
     return;
 
@@ -8005,6 +8051,8 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
   p()->cooldowns.killing_spree->adjust( v, false );
   p()->cooldowns.roll_the_bones->adjust( v, false );
   p()->cooldowns.sprint->adjust( v, false );
+
+  p()->sim->print_log( "{} triggered Restless Blades with {}s total cooldown reduction", *p(), v );
 }
 
 template <typename Base>
@@ -10118,6 +10166,11 @@ void rogue_t::init_spells()
   set_bonuses.mid1_outlaw_4pc = sets->set( ROGUE_OUTLAW, MID1, B4 );
   set_bonuses.mid1_subtlety_2pc = sets->set( ROGUE_SUBTLETY, MID1, B2 );
   set_bonuses.mid1_subtlety_4pc = sets->set( ROGUE_SUBTLETY, MID1, B4 );
+  
+  set_bonuses.mid2_outlaw_2pc = sets->set( ROGUE_OUTLAW, MID2, B2 );
+  set_bonuses.mid2_outlaw_4pc = sets->set( ROGUE_OUTLAW, MID2, B4 );
+
+  spec.mid2_outlaw_4pc_buff = set_bonuses.mid2_outlaw_4pc->effectN( 1 ).trigger();
 
   // Register passives ======================================================
 
@@ -10915,7 +10968,15 @@ void rogue_t::create_buffs()
 
   // Set Bonus Items ========================================================
 
-  buffs.mid1_outlaw_4pc = make_buff<damage_buff_t>( this, "whirl_of_blades", set_bonuses.mid1_outlaw_4pc->effectN(2).trigger() );
+  buffs.mid1_outlaw_4pc = make_buff<damage_buff_t>( this, "whirl_of_blades", set_bonuses.mid1_outlaw_4pc->effectN( 2 ).trigger() );
+
+  buffs.mid2_outlaw_4pc = make_buff_fallback( set_bonuses.mid2_outlaw_4pc->ok(), this, "fang_strike", spec.mid2_outlaw_4pc_buff )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 );
+
+  if ( set_bonuses.mid2_outlaw_4pc->ok() )
+  {
+    buffs.mid2_outlaw_4pc->set_chance( set_bonuses.mid2_outlaw_4pc->effectN( 1 ).percent() );
+  }
 }
 
 // rogue_t::invalidate_cache =========================================
@@ -11628,6 +11689,13 @@ public:
         .operation( hotfix::HOTFIX_SET )
         .modifier( 15 )
         .verification_value( 10 );
+
+    // 2026-07-10 -- PTR TOCHECK: MID2 Outlaw 4pc has a scripted 20% proc rate while spell data is 12%
+    hotfix::register_effect( "Rogue", "2026-07-10", "MID2 Outlaw 4pc Proc Chance", 1319250 )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 20 )
+        .verification_value( 12 );
   }
 
   void register_actor_initializers( sim_t* ) const override {}
