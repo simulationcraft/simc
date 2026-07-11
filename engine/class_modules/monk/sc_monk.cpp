@@ -3858,8 +3858,12 @@ struct zenith_stomp_t : monk_spell_t
       trigger_gcd       = 0_ms;
     }
 
-    aoe                 = -1;
-    reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
+    aoe = -1;
+    // 2026-07-11 Zenith Stomp is erroneously referencing effect 1 for sqrt scaling
+    // in tooltip, which instead is used to set up the Zenith Stomp buff that controls
+    // whether or not the action is available.
+    // reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
+    reduced_aoe_targets = 5.0;
     may_combo_strike    = player->wowv_ge( { 12, 1, 0 } );
     ww_mastery          = true;
     cast_during_sck     = true;
@@ -3897,7 +3901,8 @@ struct zenith_stomp_t : monk_spell_t
   {
     monk_spell_t::execute();
 
-    p()->buff.zenith_stomp->decrement();
+    if ( source == ZENITH_STOMP_CAST )
+      p()->buff.zenith_stomp->decrement();
   }
 };
 
@@ -6343,9 +6348,8 @@ void monk_t::create_buffs()
 
   buff.zenith = make_buff_fallback<buffs::zenith_t>( talent.windwalker.zenith->ok(), this, "zenith" );
 
-  buff.zenith_stomp =
-      make_buff_fallback( talent.windwalker.tigereye_brew_3->ok(), this, "zenith_stomp", talent.monk.zenith_stomp_buff )
-          ->set_initial_stack( as<int>( talent.windwalker.tigereye_brew_3->effectN( 1 ).base_value() ) );
+  buff.zenith_stomp = make_buff_fallback( talent.windwalker.tigereye_brew_3->ok(), this, "zenith_stomp",
+                                          talent.monk.zenith_stomp_buff );
 
   buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
                                                talent.windwalker.rushing_wind_kick_buff );
@@ -7285,6 +7289,10 @@ public:
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
     ReportIssue( "Press the Advantage Tiger Palm does not trigger Overwhelming Force", "2026-02-09", true );
     ReportIssue( "Dragonfire Brew causes Breath of Fire damage to scale with Stagger level", "2026-04-14", true );
+    ReportIssue(
+        "Zenith Stomp erroneously references effect 1 for sqrt scaling in tooltip, which is instead used to modify the "
+        "Zenith Stomp charge buff.",
+        "2026-07-11", true );
 
     os << "<div class=\"player-section\">\n";
     os << "<h3 class=\"toggle\">Known Bugs and Issues</h3>\n";
