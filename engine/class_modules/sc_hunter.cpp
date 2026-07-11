@@ -6646,13 +6646,23 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
     if ( p()->tier_set.mid_s1_bm_4pc->ok() ) 
       p()->spawn_dire_beast( p()->tier_set.mid_s1_bm_4pc->effectN( 1 ).time_value() );
 
-    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion, p()->pets.natures_ally_pet.active_pet() ) )
+    for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
     {
       trigger_buff( pet->buffs.bestial_wrath, precast_time );
 
       // Assume the pet is out of range / not engaged when precasting.
       if ( !is_precombat )
         pet -> actions.bestial_wrath -> execute_on_target( target );
+    }
+
+    // 2026-07-11: Apex pets have funky delays on Bestial Wrath's buff trigger and damage event
+    //             Using timings based on log data
+    if ( auto pet = p()->pets.natures_ally_pet.active_pet() )
+    {
+      make_event( sim, 450_ms, [ this, pet ]() { trigger_buff( pet->buffs.bestial_wrath, precast_time ); } );
+      
+      if ( !is_precombat )
+        make_event( sim, 1.5_s, [ this, pet ]() { pet->actions.bestial_wrath->execute_on_target( target ); } );
     }
 
     if ( p()->talents.wildspeaker.ok() )
