@@ -4702,13 +4702,6 @@ struct kingsbane_t : public rogue_attack_t
         rogue_attack_t( name, p, s )
       {
         dual = true;
-        aoe = -1;
-      }
-
-      double composite_poison_flat_modifier( const action_state_t* s ) const override
-      {
-        // Only triggers poisons on the primary target in AoE
-        return s->chain_target > 0 ? -1.0 : 1.0;
       }
 
       bool procs_poison() const override

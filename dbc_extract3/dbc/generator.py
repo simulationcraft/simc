@@ -1648,6 +1648,8 @@ class SpellDataGenerator(DataGenerator):
             ( 431522, 0),           # Dawnlight Buff
             ( 406957, 0),           # Divine Toll Judgment
             ( 402916, 0),           # Righteous Cause Buff
+            ( 1268810, 0),          # Vanguard
+            ( 1305230, 0),          # Divine Power
         ),
 
         # Hunter:
@@ -2018,6 +2020,8 @@ class SpellDataGenerator(DataGenerator):
           ( 1278150, 0 ), # Lesser Ghoul Sweeping Claws
           ( 1277098, 0 ), # Lesser Ghoul
           ( 1282570, 0 ), # Forbidden Ritual
+          ( 1292072, 0 ), # Lord of the Dead Summon
+          ( 1294026, 0 ), # Summon Army Ghoul
         ),
 
         # Shaman:

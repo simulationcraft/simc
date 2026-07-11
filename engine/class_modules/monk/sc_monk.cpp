@@ -1548,19 +1548,14 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         add_parse_entry( persistent_multiplier_effects )
             .set_buff( player->buff.counterstrike )
             .set_value( effect.percent() )
-            .set_eff( &effect )
-            .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE,
-                                 [ & ]( action_state_t * ) { p()->buff.counterstrike->expire(); } );
+            .set_eff( &effect );
 
       if ( const auto &effect = player->talent.master_of_harmony.balanced_stratagem_physical->effectN( 1 );
            player->talent.master_of_harmony.balanced_stratagem->ok() )
         add_parse_entry( persistent_multiplier_effects )
             .set_buff( player->buff.balanced_stratagem_physical )
             .set_value( effect.percent() )
-            .set_eff( &effect )
-            .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE, [ & ]( action_state_t * ) {
-              p()->buff.balanced_stratagem_physical->consume( this );
-            } );
+            .set_eff( &effect );
 
       if ( const auto &effect = player->sets->set( MONK_WINDWALKER, MID2, B4 )->effectN( 1 ).trigger()->effectN( 2 );
            effect.ok() )
@@ -1568,9 +1563,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
             .set_buff( player->buff.mid2_ww_4pc )
             .set_value( effect.percent() )
             .set_use_stacks( true )
-            .set_eff( &effect )
-            .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE,
-                                 [ & ]( action_state_t * ) { p()->buff.mid2_ww_4pc->consume( this ); } );
+            .set_eff( &effect );
     }
 
     result_amount_type report_amount_type( const action_state_t * ) const override
@@ -1586,11 +1579,11 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       parent_state->targets_hit.insert( state->target->actor_spawn_index );
     }
 
-    void execute_with_state( action_state_t *state )
+    void schedule_execute_with_state( action_state_t *state, action_state_t *p_state )
     {
-      parent_state = debug_cast<state_t *>( state );
+      parent_state = debug_cast<state_t *>( p_state );
 
-      execute();
+      schedule_execute( state );
     }
 
     void execute() override
@@ -1693,13 +1686,27 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::tick( dot );
 
-    assert( dot->state );
-    spinning_crane_kick_tick->execute_with_state( dot->state );
+    auto *tick            = spinning_crane_kick_tick;
+    action_state_t *state = tick->get_state( tick->execute_state );
+    tick->update_state( state, amount_type( state, tick->direct_tick ) );
+    tick->schedule_execute_with_state( state, dot->state );
   }
 
   void execute() override
   {
+    auto *tick = spinning_crane_kick_tick;
+    if ( !tick->execute_state )
+      tick->execute_state = tick->get_state();
+    else
+      tick->execute_state->initialize();
+    tick->snapshot_state( tick->execute_state, amount_type( tick->execute_state, tick->direct_tick ) );
+
     monk_melee_attack_t::execute();
+
+    p()->buff.counterstrike->expire();
+    if ( p()->buff.balanced_stratagem_physical )
+      p()->buff.balanced_stratagem_physical->expire();
+    p()->buff.mid2_ww_4pc->expire();
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
@@ -1710,13 +1717,11 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
           p()->buff.combo_breaker->increment();  // increment is used to directly trigger without rolling chance
       }
+
+      p()->action.flurry_strikes->execute( flurry_strikes_t::WISDOM_OF_THE_WALL );
     }
 
-    if ( p()->specialization() == MONK_WINDWALKER )
-      p()->action.flurry_strikes->execute( flurry_strikes_t::WISDOM_OF_THE_WALL );
-
     timespan_t buff_duration = composite_dot_duration( execute_state );
-
     p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
 
     if ( jade_ignition )
@@ -1766,12 +1771,18 @@ struct fists_of_fury_t : monk_melee_attack_t
       return cam;
     }
 
+    void execute() override
+    {
+      monk_melee_attack_t::execute();
+
+      p()->buff.mid2_ww_4pc->trigger();
+    }
+
     void impact( action_state_t *state ) override
     {
       monk_melee_attack_t::impact( state );
 
       p()->buff.momentum_boost_damage->trigger();
-      p()->buff.mid2_ww_4pc->trigger();
     }
   };
 

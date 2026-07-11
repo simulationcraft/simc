@@ -834,7 +834,6 @@ void sim_summary_performance( std::ostream& os, sim_t* sim )
       sim->event_mgr.events_added );
 
   fmt::print( os, "\nEvent Queue Allocation:\n" );
-  double total_a = 0;
   for ( size_t i = 0; i < sim->event_mgr.event_requested_size_count.size();
         ++i )
   {
@@ -849,8 +848,6 @@ void sim_summary_performance( std::ostream& os, sim_t* sim )
         i,
         count,
         p );
-
-    total_a += p;
   }
 
   fmt::print( os, "Total: {:.3f}% Alloc Samples: {}\n",

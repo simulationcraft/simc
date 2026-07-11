@@ -267,8 +267,7 @@ warlock_pet_spell_t::warlock_pet_spell_t( util::string_view token, warlock_pet_t
     affected_by()
 {
   affected_by.xalans_cruelty_effect_6 = p->o()->hero.xalans_cruelty.ok() && data().affected_by_label( p->o()->hero.xalans_cruelty->effectN( 6 ) );
-  if ( sim->dbc->wowv() < wowv_t{ 12, 0, 7 } ) // TODO: Effect is missing from 12.0.7 PTR; remove this check once added
-    affected_by.xalans_cruelty_effect_9 = p->o()->hero.xalans_cruelty.ok() && data().affected_by_label( p->o()->hero.xalans_cruelty->effectN( 9 ) );
+  affected_by.xalans_cruelty_effect_9 = p->o()->hero.xalans_cruelty.ok() && data().affected_by_label( p->o()->hero.xalans_cruelty->effectN( 9 ) );
 
   affected_by.xalans_ferocity_effect_6 = p->o()->hero.xalans_ferocity.ok() && data().affected_by_label( p->o()->hero.xalans_ferocity->effectN( 6 ) );
   affected_by.xalans_ferocity_effect_7 = p->o()->hero.xalans_ferocity.ok() && data().affected_by_label( p->o()->hero.xalans_ferocity->effectN( 7 ) );
@@ -805,23 +804,39 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
   void execute() override
   {
+    player_t* ffb_target = target;
+
     warlock_pet_spell_t::execute();
 
     // Extra Fel Firebolts from Infernal Rapidity cannot proc Infernal Rapidity again
     if ( ( twin != nullptr ) && ( p()->bugs ? debug_cast<wild_imp_pet_t*>( p() )->prd_rng_infernal_rapidity->trigger() : rng().roll( p()->o()->talents.infernal_rapidity->effectN( 1 ).percent() ) ) )
     {
       p()->o()->procs.infernal_rapidity->occur();
-      twin->execute_on_target( target );
+      twin->execute_on_target( ffb_target );
     }
   }
 
   void consume_resource() override
   {
+    player_t* ffb_target = target;
+
     warlock_pet_spell_t::consume_resource();
 
     // Imp dies if it cannot cast
     if ( player->resources.current[ RESOURCE_ENERGY ] < cost() )
-      make_event( sim, 0_ms, [ this ]() { player->cast_pet()->dismiss(); } );
+      make_event( sim, 0_ms, [ this, imp = debug_cast<warlock::pets::demonology::wild_imp_pet_t*>( player ), imp_target = ffb_target ]() {
+        if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+        {
+          if ( imp->o()->active_4pc<MID2>() && rng().roll( imp->o()->tier.wl_demonology_12_1_class_set_4pc->effectN( 3 ).percent() ) )
+            helpers::trigger_isolated_implosion( imp->o(), imp, imp_target );
+          else
+            imp->cast_pet()->dismiss();
+        }
+        else
+        {
+          imp->cast_pet()->dismiss();
+        }
+      } );
   }
 };
 
@@ -1321,10 +1336,12 @@ struct vilefiend_melee_t : public warlock_pet_melee_t
 
   void execute() override
   {
+    player_t* vfm_target = target;
+
     warlock_pet_melee_t::execute();
 
     if ( debug_cast<vilefiend_t*>( p() )->mark_of_shatug->check() )
-      gloom->execute_on_target( target );
+      gloom->execute_on_target( vfm_target );
   }
 };
 
@@ -1369,10 +1386,12 @@ struct headbutt_t : public warlock_pet_melee_attack_t
 
   void execute() override
   {
+    player_t* hbtt_target = target;
+
     warlock_pet_melee_attack_t::execute();
 
     if ( debug_cast<vilefiend_t*>( p() )->mark_of_shatug->check() )
-      gloom->execute_on_target( target );
+      gloom->execute_on_target( hbtt_target );
   }
 };
 
@@ -2052,7 +2071,8 @@ void infernal_t::create_buffs()
 
   immolation = make_buff<buff_t>( this, "immolation", o()->talents.immolation_buff )
                    ->set_tick_callback( [ damage, this ]( buff_t*, int, timespan_t ) {
-                     damage->execute_on_target( target );
+                     if ( target )
+                       damage->execute_on_target( target );
                    } );
 }
 
@@ -2063,7 +2083,7 @@ void infernal_t::arise()
   // 2024-07-18 Testing indicates there is a delay after spawn before first melee
   // Embers looks to trigger at around the same time as first melee swing, but Immolation takes longer to apply (and has no zero-tick)
   // Additionally, there is some unknown amount of movement adjustment the pet can take, so we model this with a distribution
-  timespan_t delay = rng().gauss<1000,100>();
+  timespan_t delay = rng().gauss<1000, 100>();
 
   make_event( *sim, delay, [ this ] {
     buffs.embers->trigger();
@@ -2499,7 +2519,7 @@ struct wrath_of_nathreza_t : public warlock_pet_spell_t
   void execute() override
   {
     if ( p()->o()->haunt_target && !p()->o()->haunt_target->is_sleeping() )
-      target = p()->o()->haunt_target;
+      set_target( p()->o()->haunt_target );
 
     warlock_pet_spell_t::execute();
 

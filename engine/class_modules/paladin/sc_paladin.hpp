@@ -130,6 +130,7 @@ public:
     action_t* hammer_of_light_cons;
 
     action_t* expurgation;
+    action_t* divine_arbiter;
 
     action_t* divine_hammer_tick;
 
@@ -154,6 +155,10 @@ public:
   {
     // Shared
     buff_t* avenging_wrath;
+    buff_t* divine_arbiter_divine_storm;
+    buff_t* divine_arbiter_hammer_of_light;
+    buff_t* divine_arbiter_verdict;
+    buff_t* divine_power;
     buff_t* divine_purpose;
     buff_t* divine_shield;
     buff_t* divine_steed;
@@ -393,6 +398,10 @@ public:
   struct spells_t
   {
     const spell_data_t* avenging_wrath;
+    const spell_data_t* divine_arbiter_divine_storm;
+    const spell_data_t* divine_arbiter_hammer_of_light;
+    const spell_data_t* divine_arbiter_verdict;
+    const spell_data_t* divine_power;
     const spell_data_t* divine_purpose_buff;
     const spell_data_t* judgment_debuff;
     const spell_data_t* sanctify;
@@ -1431,6 +1440,7 @@ private:
 public:
   using base_t = holy_power_consumer_t;
   bool is_divine_storm;
+  bool is_divine_arbiter_verdict;
   bool is_wog;
   bool is_sotr;
   bool doesnt_consume_dp;
@@ -1447,6 +1457,7 @@ public:
   holy_power_consumer_t( util::string_view n, paladin_t* player, const spell_data_t* s )
     : ab( n, player, s ),
       is_divine_storm( false ),
+      is_divine_arbiter_verdict( false ),
       is_wog( false ),
       is_sotr( false ),
       doesnt_consume_dp( false ),
@@ -1554,6 +1565,7 @@ public:
     }
 
     // For Holy Power spending stuff, SotR with Instrument always counts as 3 Holy Power spent
+    // Probably not a bug, since it now doesn't munch 2 HP
     if (p->bugs && is_sotr && p->talents.instrument_of_the_divine->ok() && cost() > 3.0)
     {
       num_hopo_spent = 3.0;
@@ -1650,7 +1662,8 @@ public:
         p->buffs.sentinel_decay->extend_duration( timespan_t::from_seconds( 1 ) );
       }
       // 2025-12-18 Instrument of the Divine talented extends Sentinel's decay by double the time, regardless of Holy Power spent.
-      if (p->bugs && p->talents.instrument_of_the_divine->ok())
+      // Bug is fixed on PTR
+      if (p->bugs && p->talents.instrument_of_the_divine->ok() && !p->is_ptr() )
       {
         p->buffs.sentinel_decay->extend_duration( timespan_t::from_seconds( 1 ) );
       }
@@ -1666,6 +1679,52 @@ public:
       if ( p->buffs.divine_purpose->up() && !doesnt_consume_dp )
       {
         p->buffs.divine_purpose->expire();
+        if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, MID2, B2 ) )
+          p->buffs.divine_power->trigger();
+        if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, MID2, B4 ) &&
+             !p->buffs.divine_arbiter_verdict->up() && !p->buffs.divine_arbiter_divine_storm->up() &&
+             !p->buffs.divine_arbiter_hammer_of_light->up() )
+        {
+          if ( is_hammer_of_light_main )
+            p->buffs.divine_arbiter_hammer_of_light->trigger();
+          else if ( is_divine_storm )
+            p->buffs.divine_arbiter_divine_storm->trigger();
+          else if ( is_divine_arbiter_verdict )
+            p->buffs.divine_arbiter_verdict->trigger();
+        }
+      }
+    }
+
+    if ( !ab::background && p->sets->has_set_bonus( PALADIN_RETRIBUTION, MID2, B4 ) )
+    {
+      buff_t* divine_arbiter = nullptr;
+
+      if ( is_hammer_of_light_main )
+      {
+        if ( p->buffs.divine_arbiter_divine_storm->up() )
+          divine_arbiter = p->buffs.divine_arbiter_divine_storm;
+        else if ( p->buffs.divine_arbiter_verdict->up() )
+          divine_arbiter = p->buffs.divine_arbiter_verdict;
+      }
+      else if ( is_divine_storm )
+      {
+        if ( p->buffs.divine_arbiter_hammer_of_light->up() )
+          divine_arbiter = p->buffs.divine_arbiter_hammer_of_light;
+        else if ( p->buffs.divine_arbiter_verdict->up() )
+          divine_arbiter = p->buffs.divine_arbiter_verdict;
+      }
+      else if ( is_divine_arbiter_verdict )
+      {
+        if ( p->buffs.divine_arbiter_divine_storm->up() )
+          divine_arbiter = p->buffs.divine_arbiter_divine_storm;
+        else if ( p->buffs.divine_arbiter_hammer_of_light->up() )
+          divine_arbiter = p->buffs.divine_arbiter_hammer_of_light;
+      }
+
+      if ( divine_arbiter )
+      {
+        divine_arbiter->expire();
+        p->active.divine_arbiter->execute_on_target( ab::execute_state->target );
       }
     }
 
