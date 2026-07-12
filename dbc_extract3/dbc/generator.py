@@ -1714,6 +1714,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1250068, 0 ), # Stampede (Pack Leader 4pc buff)
           ( 1258344, 0 ), # Stampede (Pack Leader)
           ( 1264357, 0 ), # Shoot (Dark Minion)
+          ( 1302277, 2 ), # Death Bringer Buff
         ),
 
         # Rogue:
