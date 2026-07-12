@@ -199,6 +199,8 @@ using namespace helpers;
         parse_effects( p()->buffs.nightfall, effect_mask_t( true ).disable( 3 ) ); // 264571/1260279 // Effect #3 is handled in a custom action_state
         parse_effects( p()->buffs.darkglare_presence ); // 1280663
         parse_effects( p()->buffs.shard_instability ); // 1260269
+        if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+          parse_effects( p()->buffs.unstable_empowerment ); // 1305774
       }
 
       // Demonology
@@ -215,8 +217,10 @@ using namespace helpers;
         parse_effects( p()->buffs.backdraft ); // 117828
         parse_effects( p()->buffs.fiendish_cruelty ); // 1245664
         parse_effects( p()->buffs.chaotic_inferno ); // 1244860
-        parse_effects( p()->buffs.conflagration_of_chaos ); // 387109
         parse_effects( p()->buffs.crashing_chaos ); // 417282 // RoF is dummy
+        if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+          parse_effects( p()->buffs.conflagration_of_chaos ); // 387109
+
         parse_effects( p()->buffs.alythesss_ire ); // 1244947
       }
 
@@ -357,15 +361,20 @@ using namespace helpers;
           }
         }
 
-        if ( hellcaller() && base_shards > 0 && harmful && p()->hero.blackened_soul.ok() )
+        if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
         {
-          helpers::trigger_blackened_soul( p(), false );
+          if ( hellcaller() && base_shards > 0 && harmful && p()->hero.blackened_soul.ok() )
+          {
+            helpers::trigger_blackened_soul( p(), false );
+          }
         }
       }
     }
 
     void execute() override
     {
+      player_t* execute_target = target;
+
       action_base_t::execute();
 
       // NOTE: Casted spells do not consume any Demonic Art buff if none were active at the start of the cast
@@ -373,7 +382,7 @@ using namespace helpers;
       {
         if ( p()->hero.diabolic_oculi.ok() )
         {
-          make_event( *sim, 0_ms, [ this ] {
+          make_event( *sim, 0_ms, [ this, execute_target ] {
             if ( p()->buffs.demonic_oculi->check() &&
                  ( p()->buffs.art_overlord->check() || p()->buffs.art_mother->check() ||
                    p()->buffs.art_pit_lord->check() ) )
@@ -394,7 +403,7 @@ using namespace helpers;
               }
               else
               {
-                p()->proc_actions.eye_explosion->execute_on_target( this->target );
+                p()->proc_actions.eye_explosion->execute_on_target( execute_target );
               }
             }
           } );
@@ -522,7 +531,7 @@ using namespace helpers;
       if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < deaths_embrace_health )
         m *= 1.0 + p()->talents.deaths_embrace->effectN( 1 ).percent() * ( 1 - s->target->health_percentage() / deaths_embrace_health );
 
-      // NOTE: 2026-02-17 Diabolist guardians do not count towards Sacrificed Souls talent (bug?)
+      // NOTE: 2026-07-11 Diabolist guardians do not count towards Sacrificed Souls talent (bug?)
       if ( demonology() && affected_by.sacrificed_souls )
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count( !p()->bugs );
 
@@ -858,15 +867,17 @@ using namespace helpers;
 
     void execute() override
     {
+      player_t* sb_target = target;
+
       warlock_spell_t::execute();
 
       if ( time_to_execute == 0_ms && soul_harvester() && p()->buffs.nightfall->check() )
       {
         if ( p()->hero.wicked_reaping.ok() )
-          p()->proc_actions.wicked_reaping->execute_on_target( target );
+          p()->proc_actions.wicked_reaping->execute_on_target( sb_target );
 
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
-          p()->proc_actions.shared_fate->execute_on_target( target );
+          p()->proc_actions.shared_fate->execute_on_target( sb_target );
 
         if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger( execute_state ) )
           p()->feast_of_souls_gain();
@@ -1143,14 +1154,17 @@ using namespace helpers;
           }
         }
 
-        if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && p()->prd_rng.mark_of_perotharn->trigger() )
+        if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
         {
-          // Wither stack gain by Mark of Perotharn does not directly trigger collapse in that tick (it will be trigged on the next tick)
-          // Wither stack gain by Mark of Perotharn does not benefit from Bleakheart Tactics
-          d->increment( 1 );
-          td( d->target )->debuffs.wither->bump( 1 );
-          assert( d->current_stack() == td( d->target )->debuffs.wither->check() && d->remains() == td( d->target )->debuffs.wither->remains() );
-          p()->procs.mark_of_perotharn->occur();
+          if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && p()->prd_rng.mark_of_perotharn->trigger() )
+          {
+            // Wither stack gain by Mark of Perotharn does not directly trigger collapse in that tick (it will be trigged on the next tick)
+            // Wither stack gain by Mark of Perotharn does not benefit from Bleakheart Tactics
+            d->increment( 1 );
+            td( d->target )->debuffs.wither->bump( 1 );
+            assert( d->current_stack() == td( d->target )->debuffs.wither->check() && d->remains() == td( d->target )->debuffs.wither->remains() );
+            p()->procs.mark_of_perotharn->occur();
+          }
         }
 
         if ( p()->hero.devil_fruit.ok() )
@@ -1210,16 +1224,19 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( s->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && p()->prd_rng.mark_of_perotharn->trigger() )
+      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
       {
-        auto& wither_dot = td( s->target )->dots.wither;
-        auto& wither_debuff = td( s->target )->debuffs.wither;
-        // Wither stack gain by Mark of Perotharn does not directly trigger collapse (it will be trigged on the next Wither tick)
-        // Wither stack gain by Mark of Perotharn does not benefit from Bleakheart Tactics
-        wither_dot->increment( 1 );
-        wither_debuff->bump( 1 );
-        assert( wither_dot->current_stack() == wither_debuff->check() && wither_dot->remains() == wither_debuff->remains() );
-        p()->procs.mark_of_perotharn->occur();
+        if ( s->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && p()->prd_rng.mark_of_perotharn->trigger() )
+        {
+          auto& wither_dot = td( s->target )->dots.wither;
+          auto& wither_debuff = td( s->target )->debuffs.wither;
+          // Wither stack gain by Mark of Perotharn does not directly trigger collapse (it will be trigged on the next Wither tick)
+          // Wither stack gain by Mark of Perotharn does not benefit from Bleakheart Tactics
+          wither_dot->increment( 1 );
+          wither_debuff->bump( 1 );
+          assert( wither_dot->current_stack() == wither_debuff->check() && wither_dot->remains() == wither_debuff->remains() );
+          p()->procs.mark_of_perotharn->occur();
+        }
       }
     }
   };
@@ -1462,25 +1479,33 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      if ( twin != nullptr )
+      if ( twin != nullptr && execute_state )
       {
         const auto& tl = target_list();
-        if ( auto twin_target = p()->get_smart_target( tl, &warlock_td_t::dots_t::agony, target, twin_range, true ) )
+        if ( auto twin_target = p()->get_smart_target( tl, &warlock_td_t::dots_t::agony, execute_state->target, twin_range, true ) )
           twin->execute_on_target( twin_target );
       }
+    }
 
-      int initial_stacks = 0;
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
 
-      if ( p()->talents.sudden_onset.ok() )
-        initial_stacks += ( int )( p()->talents.sudden_onset->effectN( 2 ).base_value() );
+      if ( result_is_hit( s->result ) )
+      {
+        int initial_stacks = 0;
 
-      if ( active_4pc<MID1>() )
-        initial_stacks += ( int )( p()->tier.wl_affliction_12_0_class_set_4pc->effectN( 1 ).base_value() );
+        if ( p()->talents.sudden_onset.ok() )
+          initial_stacks += ( int )( p()->talents.sudden_onset->effectN( 2 ).base_value() );
 
-      int delta_stacks = initial_stacks - td( execute_state->target )->dots.agony->current_stack();
+        if ( active_4pc<MID1>() )
+          initial_stacks += ( int )( p()->tier.wl_affliction_12_0_class_set_4pc->effectN( 1 ).base_value() );
 
-      if ( delta_stacks > 0 )
-          td( execute_state->target )->dots.agony->increment( delta_stacks );
+        int delta_stacks = initial_stacks - td( s->target )->dots.agony->current_stack();
+
+        if ( delta_stacks > 0 )
+            td( s->target )->dots.agony->increment( delta_stacks );
+      }
     }
 
     void tick( dot_t* d ) override
@@ -1502,17 +1527,24 @@ using namespace helpers;
   struct unstable_affliction_t : public warlock_spell_t
   {
     bool is_fatal_echoes_execute = false;
+    bool is_seed_applied = false;
 
-    unstable_affliction_t( warlock_t* p, util::string_view options_str )
-      : warlock_spell_t( "Unstable Affliction", p, p->talents.unstable_affliction, options_str )
+    unstable_affliction_t( warlock_t* p )
+      : warlock_spell_t( "Unstable Affliction", p, p->talents.unstable_affliction )
     {
       triggers.ravenous_afflictions = p->talents.ravenous_afflictions.ok();
 
       affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
     }
 
+    unstable_affliction_t( warlock_t* p, util::string_view options_str )
+      : unstable_affliction_t( p )
+    { parse_options( options_str ); }
+
     void execute() override
     {
+      player_t* ua_target = target;
+
       // NOTE: 2026-04-29 Currently ingame a UA applied by Fatal Echoes also processes/consumes some UA 'execute' effects:
       // - Succulent Soul: consumes a stack and triggers its effects (Demonic Soul dmg and Manifested Avarice rng proc)
       // - Cull the Weak: reduces the cooldown of Dark Harvest
@@ -1521,33 +1553,37 @@ using namespace helpers;
 
       warlock_spell_t::execute();
 
-      if ( p()->talents.cull_the_weak.ok() )
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        // NOTE: 2026-07-06 12.1 4pc seed-applied UA does not increment Wither stacks
+        if ( hellcaller() && p()->hero.blackened_soul.ok() && !is_seed_applied )
+          helpers::trigger_blackened_soul( p(), false, ua_target );
+      }
+
+      // NOTE: 2026-07-06 12.1 4pc seed-applied UA does not reduce the cooldown of Dark Harvest (Cull the Weak talent)
+      if ( p()->talents.cull_the_weak.ok() && !is_seed_applied )
         p()->cooldowns.dark_harvest->adjust( -p()->talents.cull_the_weak->effectN( 1 ).time_value() );
 
       // NOTE: 2026-04-29 If Shard Instability buff is gained during the casting of Unstable Affliction, that UA cast benefits from the cost
       // reduction but does not consume the effect (bug?). As expected, a Fatal Echoes UA proc does not consume it either.
       if ( time_to_execute == 0_ms && !is_fatal_echoes_execute )
       {
-        p()->buffs.shard_instability->decrement();
+        // NOTE: 2026-07-06 12.1 4pc seed-applied UA consumes shard instability (bug?)
+        if ( p()->bugs || !is_seed_applied )
+          p()->buffs.shard_instability->decrement();
       }
 
-      if ( soul_harvester() && p()->buffs.succulent_soul->check() )
+      if ( soul_harvester() )
       {
-        p()->buffs.succulent_soul->decrement();
-
-        if ( p()->hero.manifested_avarice.ok() && p()->prd_rng.manifested_avarice->trigger() )
-        {
-          p()->summons.manifested_demonic_soul->execute();
-          p()->procs.manifested_avarice->occur();
-        }
-
-        p()->proc_actions.demonic_soul->execute_on_target( target );
+        // NOTE: 2026-07-06 12.1 4pc seed-applied UA consumes a Succulent Soul stack and triggers its effects
+        helpers::consume_succulent_soul( p(), ua_target );
       }
     }
 
     void impact( action_state_t* s ) override
     {
-      auto dot = td( s->target )->dots.unstable_affliction;
+      auto tdata = td( s->target );
+      auto dot = tdata->dots.unstable_affliction;
 
       if ( p()->talents.cascading_calamity.ok() && dot->is_ticking() )
         p()->buffs.cascading_calamity->trigger();
@@ -1561,13 +1597,20 @@ using namespace helpers;
       // We need to handle the UA stacks/duration manually
       if ( result_is_hit( s->result ) )
       {
+        tdata->ua_stack_applied( is_seed_applied );
+
+        if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+        {
+          if ( active_4pc<MID2>() )
+            helpers::update_unstable_empowerment_buff( p() );
+        }
+
         // NOTE: The spell data is using DOT_REFRESH_DURATION, which should add the time-until-the-next-full-tick to the total duration
         // However, ingame, the duration does not add the last tick and only refresh the dot to the total duration (always 8 seconds)
-        dot_t* dot = td( s->target )->dots.unstable_affliction;
         if ( dot->duration() > dot_new_last_duration )
           dot->adjust_duration( dot_new_last_duration - dot->duration() );
 
-        make_event<ua_stack_drop_event_t>( *sim, p(), dot, dot_new_last_duration );
+        make_event<ua_stack_drop_event_t>( *sim, p(), dot, dot_new_last_duration, is_seed_applied );
       }
     }
 
@@ -1576,6 +1619,7 @@ using namespace helpers;
       int stacks = d->current_stack();
 
       warlock_spell_t::last_tick( d );
+      td( d->target )->reset_ua_stack_tracking();
 
       if ( p()->talents.fatal_echoes.ok() && !d->target->is_sleeping() )
       {
@@ -1586,16 +1630,30 @@ using namespace helpers;
             p()->procs.fatal_echoes->occur();
             make_event( sim, 1_ms, [ this, t = d->target ] {
               const bool prev_ua_ticking = td( t )->dots.unstable_affliction->is_ticking();
+              const bool prev_is_seed_applied = this->is_seed_applied;
               this->set_target( t );
               this->time_to_execute = 0_ms;
               this->is_fatal_echoes_execute = true;
+              this->is_seed_applied = false; // Fatal Echoes always applies a fully effective UA DoT stack
               this->execute();
+              this->is_seed_applied = prev_is_seed_applied;
               this->is_fatal_echoes_execute = false;
               // When UA is applied by Fatal Echoes, Cascading Calamity is also triggered
               if ( p()->talents.cascading_calamity.ok() && !prev_ua_ticking )
                 p()->buffs.cascading_calamity->trigger();
             } );
           }
+        }
+      }
+
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        if ( active_4pc<MID2>() )
+        {
+          // Delay to allow the dot to reset()
+          make_event( sim, 0_ms, [ this ] {
+            helpers::update_unstable_empowerment_buff( p() );
+          } );
         }
       }
     }
@@ -1628,6 +1686,23 @@ using namespace helpers;
       }
 
       return m;
+    }
+
+    double calculate_tick_amount( action_state_t* state, double dot_multiplier ) const override
+    {
+      // 12.1 4pc seed-applied UAs are visually full UA stacks, but one active seed-UA stack may not count
+      // toward UA periodic damage. Adjust the tick multiplier here because the core applies stack count through
+      // dot_multiplier after calculating the base tick, and the effective stack count can change between ticks.
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && active_4pc<MID2>() )
+      {
+        auto tdata = td( state->target );
+        const int current_stacks = tdata->dots.unstable_affliction->current_stack();
+
+        if ( current_stacks > 0 )
+          dot_multiplier *= as<double>( tdata->ua_calculate_damage_stacks() ) / current_stacks;
+      }
+
+      return warlock_spell_t::calculate_tick_amount( state, dot_multiplier );
     }
 
     double cost_pct_multiplier() const override
@@ -1763,10 +1838,12 @@ using namespace helpers;
     };
 
     seed_of_corruption_aoe_t* explosion;
+    unstable_affliction_t* ua_seed_tier;
 
     seed_of_corruption_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Seed of Corruption", p, p->talents.seed_of_corruption, options_str ),
-      explosion( new seed_of_corruption_aoe_t( p ) )
+      explosion( new seed_of_corruption_aoe_t( p ) ),
+      ua_seed_tier( nullptr )
     {
       may_crit = false;
       tick_zero = false;
@@ -1779,6 +1856,17 @@ using namespace helpers;
       aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
 
       add_child( explosion );
+
+      if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p->active_4pc<MID2>() && p->talents.unstable_affliction.ok() )
+      {
+        ua_seed_tier = new unstable_affliction_t( p );
+        ua_seed_tier->background = ua_seed_tier->dual = true;
+        ua_seed_tier->base_costs[ RESOURCE_MANA ] = 0;
+        ua_seed_tier->base_costs[ RESOURCE_SOUL_SHARD ] = 0;
+        ua_seed_tier->trigger_gcd = 0_ms;
+        ua_seed_tier->time_to_execute = 0_ms;
+        ua_seed_tier->is_seed_applied = true;
+      }
     }
 
     action_state_t* new_state() override
@@ -1881,6 +1969,8 @@ using namespace helpers;
 
       p()->buffs.seed_of_corruption_is_out_dnt->trigger();
 
+      const bool soc_had_prev_succulent_soul = p()->buffs.succulent_soul->check();
+
       if ( time_to_execute == 0_ms && soul_harvester() && p()->talents.nocturnal_yield.ok() && p()->buffs.nightfall->check() )
       {
         if ( p()->hero.wicked_reaping.ok() )
@@ -1889,9 +1979,33 @@ using namespace helpers;
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
           p()->proc_actions.shared_fate->execute_on_target( main_seed_target );
 
-        // Feast of Souls is processed before the decrement of Succulent Soul, causing the same SoC cast that gains the Succulent Soul stack to consume it
+        // Feast of Souls is processed after SoC captures its previous Succulent Soul state but before the delayed stack removal
         if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger( execute_state ) )
-          p()->feast_of_souls_gain( true );
+          p()->feast_of_souls_gain();
+      }
+
+      if ( soul_harvester() )
+      {
+        // NOTE: 2026-07-07 If Nightfall SoC gains Succulent Soul through Feast of Souls with no pre-existing stack,
+        // SoC removes one stack after a short delay without triggering Succulent Soul effects (bug)
+        if ( !p()->bugs || soc_had_prev_succulent_soul )
+        {
+          helpers::consume_succulent_soul( p(), main_seed_target );
+        }
+        else if ( p()->buffs.succulent_soul->check() )
+        {
+          make_event( sim, 10_ms, [ p = p() ] {
+            p->buffs.succulent_soul->decrement();
+          } );
+        }
+      }
+
+      if ( ua_seed_tier )
+      {
+        // 12.1 4pc seed UA is applied to the main_seed_target (could be redirected from the main SoC cast target)
+        ua_seed_tier->set_target( main_seed_target );
+        ua_seed_tier->time_to_execute = 0_ms;
+        ua_seed_tier->execute();
       }
 
       // NOTE: 2026-02-26 If Nightfall is obtained during the casting of Seed of Corruption, that SoC cast
@@ -1901,19 +2015,6 @@ using namespace helpers;
 
       if ( p()->talents.cull_the_weak.ok() )
         p()->cooldowns.dark_harvest->adjust( -p()->talents.cull_the_weak->effectN( 1 ).time_value() );
-
-      if ( soul_harvester() && p()->buffs.succulent_soul->check() )
-      {
-        p()->buffs.succulent_soul->decrement();
-
-        if ( p()->hero.manifested_avarice.ok() && p()->prd_rng.manifested_avarice->trigger() )
-        {
-          p()->summons.manifested_demonic_soul->execute();
-          p()->procs.manifested_avarice->occur();
-        }
-
-        p()->proc_actions.demonic_soul->execute_on_target( main_seed_target );
-      }
     }
 
     void impact( action_state_t* s ) override
@@ -2156,15 +2257,17 @@ using namespace helpers;
 
     void execute() override
     {
+      player_t* mg_target = target;
+
       warlock_spell_t::execute();
 
       if ( soul_harvester() && p()->buffs.nightfall->check() )
       {
         if ( p()->hero.wicked_reaping.ok() )
-          p()->proc_actions.wicked_reaping->execute_on_target( target );
+          p()->proc_actions.wicked_reaping->execute_on_target( mg_target );
 
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
-          p()->proc_actions.shared_fate->execute_on_target( target );
+          p()->proc_actions.shared_fate->execute_on_target( mg_target );
 
         if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger( execute_state ) )
           p()->feast_of_souls_gain();
@@ -2198,6 +2301,7 @@ using namespace helpers;
 
         // Trigger extra DoT Ticks
         trigger_extra_tick( tdata->dots.agony, extra_tick_mul, agony_mg );
+        // UA extra ticks use the DoT stack count, regardless of 12.1 4pc seed-applied UA effectiveness
         trigger_extra_tick( tdata->dots.unstable_affliction, extra_tick_mul, unstable_affliction_mg );
         trigger_extra_tick( tdata->dots.wither, extra_tick_mul, wither_mg, false );
         trigger_extra_tick( tdata->dots.corruption, extra_tick_mul, corruption_mg );
@@ -2295,15 +2399,17 @@ using namespace helpers;
 
     void execute() override
     {
+      player_t* ds_target = target;
+
       warlock_spell_t::execute();
 
       if ( soul_harvester() && p()->buffs.nightfall->check() )
       {
         if ( p()->hero.wicked_reaping.ok() )
-          p()->proc_actions.wicked_reaping->execute_on_target( target );
+          p()->proc_actions.wicked_reaping->execute_on_target( ds_target );
 
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
-          p()->proc_actions.shared_fate->execute_on_target( target );
+          p()->proc_actions.shared_fate->execute_on_target( ds_target );
 
         if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger( execute_state ) )
           p()->feast_of_souls_gain();
@@ -2799,6 +2905,8 @@ using namespace helpers;
       if ( p()->hero.diabolic_oculi.ok() )
         p()->buffs.demonic_oculi->trigger();
 
+      player_t* hog_target = target;
+
       warlock_spell_t::execute();
 
       if ( p()->talents.doom.ok() )
@@ -2816,18 +2924,8 @@ using namespace helpers;
         p()->procs.demonic_knowledge->occur();
       }
 
-      if ( soul_harvester() && p()->buffs.succulent_soul->check() )
-      {
-          p()->buffs.succulent_soul->decrement();
-
-          if ( p()->hero.manifested_avarice.ok() && p()->prd_rng.manifested_avarice->trigger() )
-          {
-            p()->summons.manifested_demonic_soul->execute();
-            p()->procs.manifested_avarice->occur();
-          }
-
-          p()->proc_actions.demonic_soul->execute_on_target( target );
-      }
+      if ( soul_harvester() )
+        helpers::consume_succulent_soul( p(), hog_target );
 
       // TODO: Are these execute, or impact? Check ingame timings to see when these effects are applied
       if ( p()->talents.dominion_of_argus_1.ok() && p()->buffs.dominion_of_argus->check() )
@@ -2897,6 +2995,8 @@ using namespace helpers;
 
     void execute() override
     {
+      player_t* db_target = target;
+
       warlock_spell_t::execute();
 
       p()->buffs.demonic_core->up(); // For benefit tracking
@@ -2913,10 +3013,10 @@ using namespace helpers;
       if ( soul_harvester() && p()->buffs.demonic_core->check() )
       {
         if ( p()->hero.wicked_reaping.ok() )
-          p()->proc_actions.wicked_reaping->execute_on_target( target );
+          p()->proc_actions.wicked_reaping->execute_on_target( db_target );
 
         if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
-          p()->proc_actions.shared_fate->execute_on_target( target );
+          p()->proc_actions.shared_fate->execute_on_target( db_target );
 
         if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger() )
           p()->feast_of_souls_gain();
@@ -3012,7 +3112,7 @@ using namespace helpers;
       // - The distance of the wild imps from the player can affect their selection.
       // - When there are many imps (more than 9), the selection of some of them seems to become somewhat random
       //   (maybe not random; in any case, their actual behavior in this situation has not been fully determined).
-      range::sort( imps, [ &bugs = p()->bugs ]( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
+      range::sort( imps, []( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
         double lv = imp1->resources.current[ RESOURCE_ENERGY ];
         double rv = imp2->resources.current[ RESOURCE_ENERGY ];
         if ( lv == rv )
@@ -3053,7 +3153,16 @@ using namespace helpers;
       }
       if ( p()->talents.to_hell_and_back.ok() )
       {
-        unsigned new_imps = ( launch_counter / as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() ) ) * as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
+        const unsigned imps_per_group = as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
+        const unsigned group_size = as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() );
+        unsigned groups;
+        // NOTE: 2026-07-11: PTR 12.1.0 Implosion rounds up To Hell and Back summons (bug?)
+        if ( p()->bugs && sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+          groups = ( launch_counter + group_size - 1 ) / group_size;
+        else
+          groups = launch_counter / group_size;
+
+        unsigned new_imps = groups * imps_per_group;
         if ( new_imps > 0 )
         {
           auto imps = debug_cast<summon_wild_imp_2_t*>( p()->summons.wild_imp_2 )->execute_spawn( new_imps );
@@ -3068,6 +3177,120 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       // Implosion cast triggers procs through some hidden trigger
+      p()->trigger_aura_applied_callbacks( proc_data, p() );
+    }
+
+    timespan_t calc_imp_travel_time( double speed )
+    {
+      double t = 0;
+
+      if ( speed > 0 )
+      {
+        double distance = player->get_player_distance( *target );
+
+        if ( distance > 0 )
+          t += distance / speed;
+      }
+
+      double v = sim->travel_variance;
+
+      if ( v )
+        t = rng().gauss( t, v );
+
+      t = std::max( t, min_travel_time );
+
+      return timespan_t::from_seconds( t );
+    }
+  };
+
+  struct isolated_implosion_t : public warlock_spell_t
+  {
+    struct isolated_implosion_aoe_base_t : public warlock_spell_t
+    {
+      isolated_implosion_aoe_base_t( std::string_view n, warlock_t* p, const spell_data_t* s )
+        : warlock_spell_t( n, p, s )
+      {
+        amount_delta = 0;
+        background = dual = true;
+      }
+    };
+
+    struct isolated_implosion_aoe_secondary_t : public isolated_implosion_aoe_base_t
+    {
+      isolated_implosion_aoe_secondary_t( warlock_t* p, std::string_view n = "Isolated Implosion (AoE) (Secondaries)" )
+        : isolated_implosion_aoe_base_t( n, p, p->tier.isolated_implosion_aoe )
+      {
+        spell_power_mod.direct = p->talents.implosion_aoe->effectN( 1 ).sp_coeff();
+        aoe = -1;
+        target_filter_callback = secondary_targets_only();
+        // NOTE: 2026-07-06: The spell description lists 125% effectiveness, but in-game damage behaves as +125% increased effectiveness (bug?)
+        base_dd_multiplier *= ( p->bugs ? 1.0 : 0.0 ) + p->tier.wl_demonology_12_1_class_set_4pc->effectN( 2 ).percent();
+      }
+    };
+
+    struct isolated_implosion_aoe_t : public isolated_implosion_aoe_base_t
+    {
+      warlock_pet_t* next_imp;
+
+      isolated_implosion_aoe_t( warlock_t* p, std::string_view n = "Isolated Implosion (AoE)" )
+        : isolated_implosion_aoe_base_t( n, p, p->tier.isolated_implosion_aoe )
+      {
+        spell_power_mod.direct = p->talents.implosion_aoe->effectN( 1 ).sp_coeff();
+        aoe = 0;
+        radius = 0;
+        // NOTE: 2026-07-06: The spell description lists 150% effectiveness, but in-game damage behaves as +150% increased effectiveness (bug?)
+        base_dd_multiplier *= ( p->bugs ? 1.0 : 0.0 ) + p->tier.wl_demonology_12_1_class_set_4pc->effectN( 1 ).percent();
+
+        impact_action = new isolated_implosion_aoe_secondary_t( p );
+        impact_action->stats = stats;
+        stats->action_list.push_back( impact_action );
+        add_child( impact_action );
+      }
+
+      void execute() override
+      {
+        warlock_spell_t::execute();
+        next_imp->dismiss();
+      }
+    };
+
+    warlock::pets::demonology::wild_imp_pet_t* imp = nullptr;
+    isolated_implosion_aoe_t* explosion;
+
+    isolated_implosion_t( warlock_t* p )
+      : warlock_spell_t( "Isolated Implosion", p, p->tier.isolated_implosion ),
+      explosion( new isolated_implosion_aoe_t( p ) )
+    {
+      background = true;
+
+      add_child( explosion );
+    }
+
+    void execute() override
+    {
+      // Travel speed is not in spell data, in game test appears to be 65 yds/sec
+      timespan_t imp_travel_time = calc_imp_travel_time( 65 );
+
+      isolated_implosion_aoe_t* ex = explosion;
+      player_t* tar = target;
+      double dist = p()->get_player_distance( *tar );
+
+      imp->trigger_movement( dist, movement_direction_type::TOWARDS );
+      imp->interrupt();
+      imp->isolated_imploded = true;
+
+      make_event( sim, imp_travel_time, [ ex, tar, imp = imp ] {
+        if ( imp && !imp->is_sleeping() )
+        {
+          ex->set_target( tar );
+          ex->next_imp = imp;
+          ex->execute();
+        }
+      } );
+
+      warlock_spell_t::execute();
+
+      // Isolated Implosion triggers procs through some hidden trigger
       p()->trigger_aura_applied_callbacks( proc_data, p() );
     }
 
@@ -3193,11 +3416,13 @@ using namespace helpers;
 
     void execute() override
     {
+      player_t* cast_target = target;
+
       warlock_spell_t::execute();
 
       unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
 
-      const auto delay_dur_adjusts = p()->dreadstalkers_delay_duration_adjustment_helper( *target );
+      const auto delay_dur_adjusts = p()->dreadstalkers_delay_duration_adjustment_helper( *cast_target );
       const timespan_t& delay = delay_dur_adjusts.first;
       const timespan_t& dur_adjust = delay_dur_adjusts.second;
 
@@ -3210,7 +3435,7 @@ using namespace helpers;
       }
 
       if ( p()->talents.summon_vilefiend.ok() )
-        p()->summons.vilefiend->execute_on_target( target );
+        p()->summons.vilefiend->execute_on_target( cast_target );
     }
   };
 
@@ -3326,7 +3551,9 @@ using namespace helpers;
 
       if ( p()->talents.to_hell_and_back.ok() )
       {
-        unsigned new_imps = ( sac_counter / as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() ) ) * as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
+        const unsigned imps_per_group = as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
+        const unsigned group_size = as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() );
+        unsigned new_imps = ( sac_counter / group_size ) * imps_per_group;
         if ( new_imps > 0 )
         {
           auto imps = debug_cast<summon_wild_imp_2_t*>( p()->summons.wild_imp_2 )->execute_spawn( new_imps );
@@ -3359,7 +3586,7 @@ using namespace helpers;
       // Last tested 2021-07-13
       // There is a chance for tyrant to get an extra cast off before reaching the required haste breakpoint.
       // In-game testing found this can be modelled fairly closely using a normal distribution.
-      timespan_t extraTyrantTime = rng().gauss<380,220>();
+      timespan_t extraTyrantTime = rng().gauss<380, 220>();
       auto tyrants = p()->warlock_pet_list.demonic_tyrants.spawn( data().duration() + extraTyrantTime );
 
       int demonic_power_counter = 0;
@@ -3691,14 +3918,16 @@ using namespace helpers;
 
     void execute() override
     {
+      player_t* cast_target = target;
+
       warlock_spell_t::execute();
 
       if ( p()->talents.fire_and_brimstone.ok() )
-        fnb_action->execute_on_target( target );
+        fnb_action->execute_on_target( cast_target );
 
       if ( p()->talents.demonfire_infusion.ok() && p()->flat_rng.demonfire_infusion_inc->trigger() )
       {
-        p()->proc_actions.demonfire_infusion->execute_on_target( target );
+        p()->proc_actions.demonfire_infusion->execute_on_target( cast_target );
         p()->procs.demonfire_infusion_inc->occur();
       }
 
@@ -3800,7 +4029,9 @@ using namespace helpers;
 
     void execute() override
     {
-      dot_t* dot = p()->hero.wither.ok() ? td( target )->dots.wither : td( target )->dots.immolate;
+      player_t* ic_target = target;
+
+      dot_t* dot = p()->hero.wither.ok() ? td( ic_target )->dots.wither : td( ic_target )->dots.immolate;
 
       assert( dot->current_action );
       action_state_t* state = dot->current_action->get_state( dot->state );
@@ -3821,7 +4052,7 @@ using namespace helpers;
       dot->adjust_duration( -remaining );
       if ( p()->hero.wither.ok() && remaining != 0_ms )
       {
-        auto& wither_debuff = td( target )->debuffs.wither;
+        auto& wither_debuff = td( ic_target )->debuffs.wither;
         if ( wither_debuff->remains() - remaining <= timespan_t::zero() )
           wither_debuff->expire();
         else
@@ -4070,7 +4301,15 @@ using namespace helpers;
       if ( p()->bugs && diabolist() && affected_by.touch_of_rancora && affected_by.havoc && rancora_empowered )
         base_aoe_multiplier *= havoc_rancora_mul_adjust;
 
+      player_t* cb_target = target;
+
       warlock_spell_t::execute();
+
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        if ( hellcaller() && p()->hero.blackened_soul.ok() )
+          helpers::trigger_blackened_soul( p(), false, cb_target );
+      }
 
       base_aoe_multiplier = prev_base_aoe_multiplier; // Restore original previous havoc aoe multiplier
 
@@ -4193,14 +4432,17 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      p()->buffs.conflagration_of_chaos->expire();
-
-      if ( p()->talents.conflagration_of_chaos.ok() )
+      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
       {
-        bool success = p()->buffs.conflagration_of_chaos->trigger();
+        p()->buffs.conflagration_of_chaos->expire();
 
-        if ( success )
-          p()->procs.conflagration_of_chaos->occur();
+        if ( p()->talents.conflagration_of_chaos.ok() )
+        {
+          bool success = p()->buffs.conflagration_of_chaos->trigger();
+
+          if ( success )
+            p()->procs.conflagration_of_chaos->occur();
+        }
       }
 
       if ( p()->talents.backdraft.ok() )
@@ -4211,7 +4453,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_da_multiplier( s );
 
-      if ( p()->buffs.conflagration_of_chaos->check() )
+      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) ? p()->buffs.conflagration_of_chaos->check() : p()->talents.conflagration_of_chaos.ok() )
         m *= 1.0 + player->cache.spell_crit_chance();
 
       return m;
@@ -4274,6 +4516,8 @@ using namespace helpers;
 
     void execute() override
     {
+      player_t* rof_target = target;
+
       if ( p()->hero.diabolic_oculi.ok() )
       {
         // NOTE: 2026-03-17 Demonic Oculi stack buff is obtained after the explosion for RoF (bug?)
@@ -4288,9 +4532,9 @@ using namespace helpers;
       // Rain of Fire has no expiration pulse (none, neither partial nor full) (NO_EXPIRATION_PULSE is already the default for ground_aoe_params_t)
       make_event<ground_aoe_event_t>( *sim, p(),
                                       ground_aoe_params_t()
-                                        .target( execute_state->target )
-                                        .x( execute_state->target->x_position )
-                                        .y( execute_state->target->y_position )
+                                        .target( rof_target )
+                                        .x( rof_target->x_position )
+                                        .y( rof_target->y_position )
                                         .pulse_time( base_tick_time * player->cache.spell_haste() * ( 1.0 + p()->talents.destructive_rapidity->effectN( 1 ).percent() ) )
                                         .duration( p()->talents.rain_of_fire->duration() * player->cache.spell_haste() )
                                         .start_time( sim->current_time() )
@@ -4300,7 +4544,7 @@ using namespace helpers;
       p()->trigger_aura_applied_callbacks( proc_data, p() );
 
       if ( p()->talents.embers_of_nihilam_3.ok() )
-        helpers::trigger_echo_of_sargeras( p(), execute_state->target, p()->proc_actions.echo_of_sargeras_rof, p()->procs.echo_of_sargeras_rof );
+        helpers::trigger_echo_of_sargeras( p(), rof_target, p()->proc_actions.echo_of_sargeras_rof, p()->procs.echo_of_sargeras_rof );
 
       p()->buffs.crashing_chaos->decrement();
 
@@ -4382,6 +4626,8 @@ using namespace helpers;
 
     void execute() override
     {
+      player_t* lof_target = target;
+
       pulse_time = base_tick_time * player->cache.spell_haste();
       const timespan_t duration = p()->talents.lake_of_fire_aoe->duration() * player->cache.spell_haste();
       const timespan_t start_time = sim->current_time();
@@ -4394,9 +4640,9 @@ using namespace helpers;
 
       make_event<ground_aoe_event_t>( *sim, p(),
                                       ground_aoe_params_t()
-                                        .target( execute_state->target )
-                                        .x( execute_state->target->x_position )
-                                        .y( execute_state->target->y_position )
+                                        .target( lof_target )
+                                        .x( lof_target->x_position )
+                                        .y( lof_target->y_position )
                                         .pulse_time( pulse_time )
                                         .duration( duration )
                                         .start_time( start_time )
@@ -4442,11 +4688,13 @@ using namespace helpers;
 
     void execute() override
     {
+      player_t* cata_target = target;
+
       warlock_spell_t::execute();
 
       if ( p()->talents.lake_of_fire.ok() )
       {
-        lake_of_fire->set_target( target );
+        lake_of_fire->set_target( cata_target );
         lake_of_fire->execute();
       }
     }
@@ -4518,18 +4766,29 @@ using namespace helpers;
       if ( p()->bugs && diabolist() && affected_by.touch_of_rancora && affected_by.havoc && rancora_empowered )
         base_aoe_multiplier *= havoc_rancora_mul_adjust;
 
+      player_t* sb_target = target;
+
       warlock_spell_t::execute();
+
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        if ( hellcaller() && p()->hero.blackened_soul.ok() )
+          helpers::trigger_blackened_soul( p(), false, sb_target );
+      }
 
       base_aoe_multiplier = prev_base_aoe_multiplier; // Restore original previous havoc aoe multiplier
 
-      p()->buffs.conflagration_of_chaos->expire();
-
-      if ( p()->talents.conflagration_of_chaos.ok() )
+      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
       {
-        bool success = p()->buffs.conflagration_of_chaos->trigger();
+        p()->buffs.conflagration_of_chaos->expire();
 
-        if ( success )
-          p()->procs.conflagration_of_chaos->occur();
+        if ( p()->talents.conflagration_of_chaos.ok() )
+        {
+          bool success = p()->buffs.conflagration_of_chaos->trigger();
+
+          if ( success )
+            p()->procs.conflagration_of_chaos->occur();
+        }
       }
 
       p()->buffs.fiendish_cruelty->decrement();
@@ -4539,7 +4798,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_da_multiplier( s );
 
-      if ( p()->buffs.conflagration_of_chaos->check() )
+      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) ? p()->buffs.conflagration_of_chaos->check() : p()->talents.conflagration_of_chaos.ok() )
         m *= 1.0 + player->cache.spell_crit_chance();
 
       return m;
@@ -4617,18 +4876,18 @@ using namespace helpers;
 
     void execute() override
     {
+      player_t* di_target = target;
+
       warlock_spell_t::execute();
 
-      auto t = execute_state->target;
-
-      demonfire_tick->execute_on_target( t );
+      demonfire_tick->execute_on_target( di_target );
 
       if ( p()->talents.raging_demonfire.ok() )
       {
         int extra_bolts = as<int>( p()->talents.raging_demonfire->effectN( 1 ).base_value() );
         for ( int i = 0; i < extra_bolts; i++ )
         {
-          demonfire_tick->execute_on_target( t );
+          demonfire_tick->execute_on_target( di_target );
         }
       }
     }
@@ -4822,9 +5081,11 @@ using namespace helpers;
 
     void execute() override
     {
+      player_t* sf_target = target;
+
       warlock_spell_t::execute();
 
-      applied_dot->execute_on_target( target );
+      applied_dot->execute_on_target( sf_target );
 
       p()->buffs.backdraft->decrement();
 
@@ -4860,6 +5121,19 @@ using namespace helpers;
         m *= p()->talents.echo_of_sargeras->effectN( 2 ).sp_coeff() / p()->talents.echo_of_sargeras->effectN( 1 ).sp_coeff();
 
       return m;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        if ( result_is_hit( s->result ) && active_4pc<MID2>() )
+        {
+          td( s->target )->debuffs.dark_titans_mark->trigger();
+        }
+      }
     }
   };
 
@@ -4923,12 +5197,14 @@ using namespace helpers;
 
     void execute() override
     {
+      player_t* ib_target = target;
+
       warlock_spell_t::execute();
 
       // 2026-02-18 Infernal Bolt can proc Demonfire Infusion
       if ( p()->talents.demonfire_infusion.ok() && p()->flat_rng.demonfire_infusion_inc->trigger() )
       {
-        p()->proc_actions.demonfire_infusion->execute_on_target( target );
+        p()->proc_actions.demonfire_infusion->execute_on_target( ib_target );
         p()->procs.demonfire_infusion_inc->occur();
       }
 
@@ -4978,7 +5254,7 @@ using namespace helpers;
           {
             // Ruination appears to trigger a HoG-like meteor after a certain delay, which summons the Wild Imps.
             // This delay can be modeled fairly closely using a normal distribution.
-            make_event( *sim, rng().gauss<395,35>(), [ this, t = target ] {
+            make_event( *sim, rng().gauss<395, 35>(), [ this, t = target ] {
               hog_impact_spell->execute_on_target( t );
             } );
           }
@@ -5191,14 +5467,42 @@ using namespace helpers;
   // Diabolist Actions End
   // Helper Functions Begin
 
-  void helpers::trigger_blackened_soul( warlock_t* p, bool malevolence )
+  void helpers::consume_succulent_soul( warlock_t* p, player_t* target )
   {
-    if ( !malevolence && p->cooldowns.blackened_soul->down() )
+    if ( !p->buffs.succulent_soul->check() )
       return;
 
-    bool stack_gained = false;
+    // Succulent Soul consume effects happen immediately, but the stack removal is delayed
+    make_event( p->sim, 10_ms, [ p ] {
+      p->buffs.succulent_soul->decrement();
+    } );
 
-    for ( const auto target : p->sim->target_non_sleeping_list )
+    if ( p->hero.manifested_avarice.ok() && p->prd_rng.manifested_avarice->trigger() )
+    {
+      p->summons.manifested_demonic_soul->execute();
+      p->procs.manifested_avarice->occur();
+    }
+
+    if ( target )
+      p->proc_actions.demonic_soul->execute_on_target( target );
+  }
+
+  void helpers::trigger_blackened_soul( warlock_t* p, bool malevolence, player_t* bs_target )
+  {
+    std::vector<player_t*> target_list;
+    if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+    {
+      if ( malevolence )
+        target_list = p->sim->target_non_sleeping_list.data();
+      else if ( bs_target != nullptr )
+        target_list.push_back( bs_target );
+    }
+    else
+    {
+      target_list = p->sim->target_non_sleeping_list.data();
+    }
+
+    for ( const auto target : target_list )
     {
       warlock_td_t* tdata = p->get_target_data( target );
       if ( !tdata )
@@ -5209,7 +5513,7 @@ using namespace helpers;
 
       int stacks = 1;
 
-      if( malevolence )
+      if ( malevolence )
       {
         stacks = as<int>( p->hero.malevolence->effectN( 1 ).base_value() );
       }
@@ -5232,7 +5536,6 @@ using namespace helpers;
       tdata->dots.wither->increment( stacks );
       tdata->debuffs.wither->bump( stacks );
       assert( tdata->dots.wither->current_stack() == tdata->debuffs.wither->check() && tdata->dots.wither->remains() == tdata->debuffs.wither->remains() );
-      stack_gained = true;
 
       const int prev_collapse_stacks = tdata->debuffs.blackened_soul->check();
       assert( prev_collapse_stacks >= 0 );
@@ -5269,9 +5572,6 @@ using namespace helpers;
       if ( malevolence )
         p->proc_actions.malevolence->execute_on_target( target );
     }
-
-    if ( stack_gained )
-      p->cooldowns.blackened_soul->start();
   }
 
   void helpers::trigger_echo_of_sargeras( warlock_t* p, player_t* target, action_t* echo_action, proc_t* proc )
@@ -5324,6 +5624,44 @@ using namespace helpers;
     p->procs.wrath_of_nathreza->occur();
   }
 
+  void helpers::trigger_isolated_implosion( warlock_t* p, pets::demonology::wild_imp_pet_t* imp, player_t* target )
+  {
+    isolated_implosion_t* isolated_implosion = debug_cast<isolated_implosion_t*>( p->proc_actions.isolated_implosion );
+    isolated_implosion->set_target( target );
+    isolated_implosion->imp = imp;
+    isolated_implosion->execute();
+    p->procs.isolated_implosion->occur();
+  }
+
+  void helpers::update_unstable_empowerment_buff( warlock_t* p )
+  {
+    const unsigned ue_max_stacks = as<unsigned>( p->buffs.unstable_empowerment->max_stack() );
+    unsigned active_uas = 0;
+    for ( const auto t : p->sim->target_non_sleeping_list )
+    {
+      warlock_td_t* tdata = p->get_target_data( t );
+      if ( !tdata )
+        continue;
+
+      active_uas += tdata->dots.unstable_affliction->current_stack();
+      if ( active_uas >= ue_max_stacks )
+        break;
+    }
+
+    int ue_effective_stacks = as<int>( std::min( ue_max_stacks, active_uas ) );
+    assert( ue_effective_stacks >= 0 && ue_effective_stacks <= static_cast<int>( ue_max_stacks ) );
+
+    const int prev_ue_stacks = p->buffs.unstable_empowerment->check();
+    assert( prev_ue_stacks >= 0 );
+
+    const int diff_stacks = ue_effective_stacks - prev_ue_stacks;
+
+    if ( diff_stacks > 0 )
+      p->buffs.unstable_empowerment->trigger( diff_stacks );
+    else if ( diff_stacks < 0 )
+      p->buffs.unstable_empowerment->decrement( -diff_stacks );
+  }
+
   // Event for spawning Wild Imps for Demonology
   imp_delay_event_t::imp_delay_event_t( warlock_t* p, double delay, double exp, int _index ) : player_event_t( *p, timespan_t::from_millis( delay ) )
   {
@@ -5359,9 +5697,10 @@ using namespace helpers;
   { return std::max( 0_ms, this->remains() + diff ); }
 
   // Event to handle UA stacks decreases
-  ua_stack_drop_event_t::ua_stack_drop_event_t( warlock_t* p, dot_t* _dot , timespan_t event_time )
+  ua_stack_drop_event_t::ua_stack_drop_event_t( warlock_t* p, dot_t* _dot, timespan_t event_time, bool _is_seed_applied )
     : player_event_t( *p, event_time ),
-    dot( _dot )
+    dot( _dot ),
+    is_seed_applied( _is_seed_applied )
   { }
 
   const char* ua_stack_drop_event_t::name() const
@@ -5374,18 +5713,30 @@ using namespace helpers;
     if ( dot->is_ticking() && dot->tick_event && dot->current_action && dot->remains() > 0_ms )
     {
       player_t* target = dot->target;
+      warlock_td_t* tdata = p->get_target_data( target );
 
       dot->decrement( 1 );
+      tdata->ua_stack_expired( is_seed_applied );
       assert( ( dot->is_ticking() && dot->current_stack() > 0 ) && "UA stack decrement event should not cancel the DoT" );
 
       if ( p->talents.fatal_echoes.ok() && !target->is_sleeping() && p->prd_rng.fatal_echoes->trigger() )
       {
         p->procs.fatal_echoes->occur();
-        dot->current_action->set_target( target );
-        dot->current_action->time_to_execute = 0_ms;
-        debug_cast<unstable_affliction_t*>( dot->current_action )->is_fatal_echoes_execute = true;
-        dot->current_action->execute();
-        debug_cast<unstable_affliction_t*>( dot->current_action )->is_fatal_echoes_execute = false;
+        unstable_affliction_t* ua_action = debug_cast<unstable_affliction_t*>( dot->current_action );
+        const bool prev_is_seed_applied = ua_action->is_seed_applied;
+        ua_action->set_target( target );
+        ua_action->time_to_execute = 0_ms;
+        ua_action->is_fatal_echoes_execute = true;
+        ua_action->is_seed_applied = false; // Fatal Echoes always applies a fully effective UA DoT stack
+        ua_action->execute();
+        ua_action->is_seed_applied = prev_is_seed_applied;
+        ua_action->is_fatal_echoes_execute = false;
+      }
+
+      if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        if ( p->active_4pc<MID2>() )
+          helpers::update_unstable_empowerment_buff( p );
       }
     }
   }
@@ -5613,6 +5964,9 @@ using namespace helpers;
   {
     proc_actions.doom_proc     = new doom_t( this );
     proc_actions.blighted_maw  = new blighted_maw_t( this );
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && active_4pc<MID2>() )
+      proc_actions.isolated_implosion = new isolated_implosion_t( this );
+
     summons.wild_imp           = new summon_wild_imp_t( this );
     summons.wild_imp_2         = new summon_wild_imp_2_t( this );
     summons.dreadstalker_1     = new summon_dreadstalker_1_t( this );

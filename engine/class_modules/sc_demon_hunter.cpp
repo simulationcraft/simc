@@ -3423,6 +3423,29 @@ struct shattered_souls_trigger_t : public BASE
   }
 };
 
+template <typename BASE>
+struct soulburst_trigger_t : public BASE
+{
+  using base_t = soulburst_trigger_t<BASE>;
+
+  soulburst_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                       util::string_view o = {} )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  void trigger_soulburst( unsigned fragments_consumed )
+  {
+    // TOCHECK: Is this instant?
+    if ( BASE::dh()->set_bonuses.mid2_devourer_2pc->ok() &&
+         fragments_consumed >= BASE::dh()->set_bonuses.mid2_devourer_2pc->effectN( 1 ).base_value() &&
+         BASE::rng().roll( BASE::dh()->set_bonuses.mid2_devourer_2pc->effectN( 2 ).percent() ) )
+    {
+      BASE::dh()->buff.soulburst->trigger();
+    }
+  }
+};
+
 struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
 {
   demon_hunter_heal_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -5860,7 +5883,8 @@ struct soul_immolation_heal_t : public demon_hunter_heal_t
   }
 };
 
-struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
+struct reap_base_t
+  : public soulburst_trigger_t<voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>>
 {
   struct reap_damage_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
@@ -5915,13 +5939,7 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
   {
     unsigned fragments_consumed = dh()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
 
-    // TOCHECK: Is this instant?
-    if ( dh()->set_bonuses.mid2_devourer_2pc->ok() &&
-         fragments_consumed >= dh()->set_bonuses.mid2_devourer_2pc->effectN( 1 ).base_value() &&
-         rng().roll( dh()->set_bonuses.mid2_devourer_2pc->effectN( 2 ).percent() ) )
-    {
-      dh()->buff.soulburst->trigger();
-    }
+    trigger_soulburst( fragments_consumed );
 
     dh()->buff.reap->trigger();
 
@@ -5946,7 +5964,8 @@ struct reap_base_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
   }
 };
 
-struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>
+struct eradicate_t
+  : public soulburst_trigger_t<voidfall_spending_trigger_t<meteoric_fall_trigger_t<demon_hunter_spell_t>>>
 {
   struct eradicate_damage_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
@@ -6011,6 +6030,8 @@ struct eradicate_t : public voidfall_spending_trigger_t<meteoric_fall_trigger_t<
   void execute() override
   {
     unsigned fragments_consumed = dh()->consume_soul_fragments( soul_fragment::LESSER, false, souls_to_consume() );
+
+    trigger_soulburst( fragments_consumed );
 
     dh()->buff.reap->trigger();
 

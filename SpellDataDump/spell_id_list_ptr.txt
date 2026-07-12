@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.0.68412
+Class Spell ID List, wow build 12.1.0.68629
 
 Death Knight
 3714     Path of Frost
@@ -1620,7 +1620,6 @@ Death Knight
 1242174  Necrotic Coil
 1242178  Necrotic Coil
 1242274 *Lesser Ghoul Despawn
-1242283 *Lord of the Dead
 1242289 *Lord of the Dead
 1242294  Army of the Damned
 1242561 *Scythe of Decay
@@ -1777,7 +1776,9 @@ Death Knight
 1297091  Withering Grasp
 1297365  Freezing Tempest
 1300330  Epidemic Order
-1300369  Relentless Rider's Precision
+1300369  Relentless Rider's Strength
+1310372  Blood Debt
+1310571  Bloody Demise
 
 Demon Hunter
 1490     Chaos Brand
@@ -5437,7 +5438,7 @@ Druid
 1308639  Spirit's Wrath
 1308647  Answered Calling
 1308653 *Listener
-1310150 *Rampant Thorn
+1310150  Rampant Thorn
 1310213 *Rampant Thorn
 
 Evoker
@@ -11228,6 +11229,7 @@ Mage
 1309786  Refraction
 1309787  Refraction
 1309793  Amplified Refraction
+1310248  Rapid Refreezing
 
 Monk
 8647     Mystic Touch
@@ -15297,11 +15299,14 @@ Paladin
 1305063  Protection Paladin
 1305230  Divine Power
 1306159  Divine Power: Storm
-1306161  Divine Power: Storm
+1306161  Divine Arbiter
 1306162  Divine Arbiter
 1306923  Divine Arbiter
 1307499  Crusading Strikes
 1307639 *Glory of the Vanguard
+1310389  Divine Guidance
+1310461  Divine Arbiter
+1310686  Ardent Defender
 
 Priest
 17       Power Word: Shield
