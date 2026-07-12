@@ -440,6 +440,7 @@ public:
     buff_t* deathblow;
 
     // Marksmanship Tree
+    buff_t* death_bringer;
     buff_t* precise_shots;
     buff_t* trick_shots;
     buff_t* lock_and_load;
@@ -757,6 +758,7 @@ public:
     spell_data_ptr_t feathered_frenzy;
     spell_data_ptr_t deadeye;
     spell_data_ptr_t deathblow;
+    spell_data_ptr_t death_bringer_buff;
 
     spell_data_ptr_t take_aim_1;
     spell_data_ptr_t unmatched_precision;
@@ -4690,7 +4692,21 @@ struct black_arrow_base_t : public kill_shot_base_t
     kill_shot_base_t::execute();
 
     if ( rng().roll( p()->talents.ebon_bowstring->effectN( 1 ).percent() ) )
-      p()->trigger_deathblow();
+    {
+      switch ( p()->specialization() )
+      {
+        case HUNTER_BEAST_MASTERY:
+          p()->trigger_deathblow();
+          break;
+
+        case HUNTER_MARKSMANSHIP:
+          p()->buffs.death_bringer->trigger();
+          break;
+
+        default:
+          break;
+      }
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -5446,6 +5462,14 @@ struct aimed_shot_t : public aimed_shot_base_t
       {
         p()->buffs.lock_and_load->decrement();
       }
+
+      // 2026-07-12: This check is duplicated from aimed_shot_t but made unreactable as Hydra can munch Death Bringers from the primary shot.
+      //             Should really be in aimed_shot_base_t but working on the assumption that this will be fixed so duplicating here for ease of cleanup.
+      if ( p()->buffs.death_bringer->up() )
+      {
+        p()->buffs.death_bringer->expire();
+        p()->trigger_deathblow();
+      }
     }
   };
 
@@ -5540,7 +5564,13 @@ struct aimed_shot_t : public aimed_shot_base_t
     p()->buffs.precise_shots->increment( precise_shot_stacks );
 
     if ( rng().roll( deathblow.chance ) )
-      p()->trigger_deathblow();
+      p()->buffs.death_bringer->trigger();
+
+    if ( p()->buffs.death_bringer->up() )
+    {
+      p()->buffs.death_bringer->expire();
+      p()->trigger_deathblow( true );
+    }
 
     auto tl = target_list();
 
@@ -5558,8 +5588,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
     lock_and_loaded = false;
 
-    if ( p()->buffs.bulletstorm->check() )
-      p()->buffs.bulletstorm->decrement();
+    p()->buffs.bulletstorm->decrement();
   }
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
@@ -5631,6 +5660,9 @@ struct rapid_fire_t: public hunter_ranged_attack_t
         double amount = state->result_amount * p()->talents.sanctified_armaments->effectN( 1 ).percent();
         residual_action::trigger( sanctified_armaments, state->target, amount );
       }
+
+      if ( p()->talents.bulletstorm.ok() )
+        p()->buffs.bulletstorm->trigger();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -5801,8 +5833,6 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
     if ( p()->talents.no_scope.ok() )
       p()->buffs.precise_shots->trigger();
-
-    p()->buffs.bulletstorm->trigger();
 
     execute_unload();
   }
@@ -7557,6 +7587,7 @@ void hunter_t::init_spells()
     talents.feathered_frenzy                  = find_talent_spell( talent_tree::SPECIALIZATION, "Feathered Frenzy", HUNTER_MARKSMANSHIP );
     talents.deadeye                           = find_talent_spell( talent_tree::SPECIALIZATION, "Deadeye", HUNTER_MARKSMANSHIP );
     talents.deathblow                         = find_talent_spell( talent_tree::SPECIALIZATION, "Deathblow", HUNTER_MARKSMANSHIP );
+    talents.death_bringer_buff                = talents.deathblow.ok() ? find_spell( 1302277 ) : spell_data_t::not_found();
 
     talents.unmatched_precision               = find_talent_spell( talent_tree::SPECIALIZATION, "Unmatched Precision", HUNTER_MARKSMANSHIP );
     talents.bullseye                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bullseye", HUNTER_MARKSMANSHIP );
@@ -7922,6 +7953,10 @@ void hunter_t::create_buffs()
   buffs.deathblow->reactable = true;
 
   // Marksmanship Tree
+
+  buffs.death_bringer =
+    make_buff( this, "death_bringer", talents.death_bringer_buff )
+      ->set_chance( talents.deathblow.ok() );
 
   buffs.precise_shots = 
     make_buff( this, "precise_shots", talents.precise_shots_buff )
