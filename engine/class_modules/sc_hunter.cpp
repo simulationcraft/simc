@@ -5365,15 +5365,18 @@ struct aimed_shot_t : public aimed_shot_base_t
     
     p()->buffs.precise_shots->increment( precise_shot_stacks );
 
-    if ( rng().roll( deathblow.chance ) )
-      p()->buffs.death_bringer->trigger();
-
+    // 2026-07-12: In my testing I have not seen Aimed Shot consume Death Bringer and then re-trigger it
+    //             TODO confirm if this is possible
     if ( p()->buffs.death_bringer->up() )
     {
       p()->buffs.death_bringer->expire();
       p()->trigger_deathblow( true );
     }
-
+    else if ( rng().roll( deathblow.chance ) )
+    {
+      p()->buffs.death_bringer->trigger();
+    }
+      
     auto tl = target_list();
 
     // Delay these secondary shots since they can consume Moving Target or Lock and Load if either trigger off a queued cast.
