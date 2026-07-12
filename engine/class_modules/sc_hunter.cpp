@@ -5355,7 +5355,7 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::composite_da_multiplier( s );
 
-    m *= 1 + p()->buffs.bulletstorm->check_stack_value();
+    m *= 1 + p()->buffs.bulletstorm->value();
 
     return m;
   }
@@ -5556,8 +5556,10 @@ struct aimed_shot_t : public aimed_shot_base_t
     {
       p()->buffs.lock_and_load->decrement();
     }
-
     lock_and_loaded = false;
+
+    if ( p()->buffs.bulletstorm->check() )
+      p()->buffs.bulletstorm->decrement();
   }
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
@@ -5623,8 +5625,6 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     void impact( action_state_t* state ) override
     {
       hunter_ranged_attack_t::impact( state );
-
-      p()->buffs.bulletstorm->trigger();
 
       if ( sanctified_armaments )
       {
@@ -5802,7 +5802,7 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     if ( p()->talents.no_scope.ok() )
       p()->buffs.precise_shots->trigger();
 
-    p()->buffs.bulletstorm->expire();
+    p()->buffs.bulletstorm->trigger();
 
     execute_unload();
   }
@@ -7962,7 +7962,7 @@ void hunter_t::create_buffs()
   buffs.bulletstorm =
     make_buff( this, "bulletstorm", talents.bulletstorm_buff )
       ->set_default_value_from_effect( 1 )
-      ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+      ->set_chance( talents.bulletstorm.ok() );
 
   buffs.volley =
     make_buff( this, "volley", talents.volley_data )
