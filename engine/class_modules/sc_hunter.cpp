@@ -4093,36 +4093,14 @@ struct arcane_shot_base_t: public hunter_ranged_attack_t
 
 struct arcane_shot_t : public arcane_shot_base_t
 {
-  struct arcane_shot_aspect_of_the_hydra_t : arcane_shot_base_t
-  {
-    arcane_shot_aspect_of_the_hydra_t( util::string_view n, hunter_t* p ) : arcane_shot_base_t( n, p )
-    {
-      background = dual = true;
-      base_costs[ RESOURCE_FOCUS ] = 0;
-      base_multiplier *= p->talents.aspect_of_the_hydra->effectN( 1 ).percent();
-    }
-  };
-
-  arcane_shot_aspect_of_the_hydra_t* aspect_of_the_hydra = nullptr;
-
   arcane_shot_t( hunter_t* p, util::string_view options_str ) : arcane_shot_base_t( "arcane_shot", p )
   {
     parse_options( options_str );
-
-    if ( p->talents.aspect_of_the_hydra.ok() )
-    {
-      aspect_of_the_hydra = p->get_background_action<arcane_shot_aspect_of_the_hydra_t>( "arcane_shot_aspect_of_the_hydra" );
-      add_child( aspect_of_the_hydra );
-    }
   }
 
   void execute() override
   {
     arcane_shot_base_t::execute();
-
-    auto tl = target_list();
-    if ( aspect_of_the_hydra && tl.size() > 1 )
-      aspect_of_the_hydra->execute_on_target( tl[ 1 ] );
 
     p()->consume_precise_shots();
   }
