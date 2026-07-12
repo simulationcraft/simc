@@ -230,9 +230,10 @@ bool monk_action_t<Base>::usable_moving() const
 template <class Base>
 bool monk_action_t<Base>::ready()
 {
-  if ( p()->channeling )
-    base_t::usable_while_casting = range::any_of(
-        cast_during_ids, [ this ]( const unsigned &id ) { return id != 0 && p()->channeling->id == id; } );
+  if ( cast_during_ids.size() )
+    base_t::usable_while_casting = range::any_of( cast_during_ids, [ this ]( const unsigned &id ) {
+      return id != 0 && p()->channeling && p()->channeling->id == id;
+    } );
 
   return base_t::ready();
 }
