@@ -5369,16 +5369,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     return m;
   }
 
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double cm = hunter_ranged_attack_t::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->talents.take_aim_2.ok() )
-      cm *= 1 + p()->talents.take_aim_2->effectN( 4 ).percent() * p()->cache.attack_crit_chance();
-
-    return cm;
-  }
-
   double composite_target_crit_chance( player_t* target ) const override
   {
     double c = hunter_ranged_attack_t::composite_target_crit_chance( target );
