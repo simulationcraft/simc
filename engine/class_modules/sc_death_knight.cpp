@@ -6632,7 +6632,7 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
     set_duration( data().duration() );
     putrefy_instantly = s == p->spell.summon_putrefy_ghoul;
     ap_mult           = s == p->spell.summon_army_ghoul ? 1.75 : 1.0;
-    if ( p->sim->dbc->wowv() >= ( 12, 1, 0 ) && s == p->spell.summon_army_ghoul )
+    if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && s == p->spell.summon_army_ghoul )
       ap_mult *= 0.8;
     switch ( source )
     {
