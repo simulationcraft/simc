@@ -3094,7 +3094,7 @@ struct mortal_strike_t : public warrior_attack_t
     p()->buff.executioners_precision->expire();
     p()->buff.martial_prowess->expire();
 
-    if( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) &&  !background )
+    if( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && !background )
       p()->buff.tactical_edge->decrement();
 
     if ( !background )
@@ -3271,7 +3271,7 @@ struct bladestorm_t : public warrior_attack_t
   {
     auto new_dot_duration = warrior_attack_t::composite_dot_duration( s );
 
-    if ( p() -> talents.slayer.imminent_demise -> ok() &&  p()->talents.shared.sudden_death->ok() )
+    if ( p() -> talents.slayer.imminent_demise -> ok() && p()->talents.shared.sudden_death->ok() )
     {
       new_dot_duration = tick_time( s ) * ( dot_duration.total_seconds() + p() -> buff.imminent_demise -> stack() );
     }
