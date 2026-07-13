@@ -1155,6 +1155,10 @@ public:
   {
     // Shared
 
+    // Arms and Prot both benefit from ravaged debuff
+    if ( ab::sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      parse_target_effects( d_fn( &warrior_td_t::debuffs_ravaged ), p()->spell.ravager->effectN( 3 ).trigger() );
+
     // Arms
     if ( ab::sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
       parse_target_effects( d_fn( &warrior_td_t::dots_rend ), p()->spell.rend_dot );
@@ -9413,10 +9417,6 @@ void warrior_t::parse_player_effects()
   parse_effects( buff.spell_reflection );
 
   parse_target_effects( d_fn( &warrior_td_t::debuffs_honed_reflexes ), talents.warrior.honed_reflexes->effectN( 5 ).trigger() );
-
-  // Arms and Prot both benefit from ravaged debuff
-  if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-    parse_target_effects( d_fn( &warrior_td_t::debuffs_ravaged ), spell.ravager->effectN( 3 ).trigger() );
 
   if ( specialization() == WARRIOR_ARMS )
   {
