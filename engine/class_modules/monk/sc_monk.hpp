@@ -63,7 +63,7 @@ struct monk_action_t : public parse_action_effects_t<Base>
 {
   bool ww_mastery;
   bool may_combo_strike;
-  bool cast_during_sck;
+  std::vector<unsigned> cast_during_ids;
   bool track_cd_waste;
   std::vector<player_effect_t> persistent_multiplier_effects;
 
@@ -96,8 +96,8 @@ public:
 
   std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override;
 
-  bool usable_moving() const override;
   bool ready() override;
+  bool usable_moving() const override;
   void init() override;
   void init_finished() override;
   void reset_swing();

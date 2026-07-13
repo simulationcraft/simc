@@ -46,6 +46,11 @@ WINDWALKER:
 
 #include "simulationcraft.hpp"
 
+#define CAST_DURING( ... ) cast_during_ids = { __VA_ARGS__ }
+#define SPINNING_CRANE_KICK_IDS \
+  player->baseline.brewmaster.spinning_crane_kick->id(), player->baseline.monk.spinning_crane_kick->id()
+#define CELESTIAL_CONDUIT_IDS player->talent.conduit_of_the_celestials.celestial_conduit_action->id()
+
 namespace monk
 {
 namespace functions
@@ -73,8 +78,10 @@ monk_action_t<Base>::monk_action_t( Args &&...args )
   : parse_action_effects_t<Base>( std::forward<Args>( args )... ),
     ww_mastery( false ),
     may_combo_strike( false ),
-    cast_during_sck( false ),
-    track_cd_waste( false )
+    cast_during_ids(),
+    track_cd_waste( false ),
+    persistent_multiplier_effects(),
+    _resource_by_stance()
 {
   range::fill( _resource_by_stance, RESOURCE_MAX );
 
@@ -223,14 +230,10 @@ bool monk_action_t<Base>::usable_moving() const
 template <class Base>
 bool monk_action_t<Base>::ready()
 {
-  // Spell data nil or not_found
-  if ( base_t::data().id() == 0 )
-    return false;
-
-  // These abilities are able to be used during Spinning Crane Kick
-  if ( cast_during_sck )
-    base_t::usable_while_casting = p()->channeling && p()->baseline.monk.spinning_crane_kick &&
-                                   ( p()->channeling->id == p()->baseline.monk.spinning_crane_kick->id() );
+  if ( cast_during_ids.size() )
+    base_t::usable_while_casting = range::any_of( cast_during_ids, [ this ]( const unsigned &id ) {
+      return id != 0 && p()->channeling && p()->channeling->id == id;
+    } );
 
   return base_t::ready();
 }
@@ -260,20 +263,8 @@ void monk_action_t<Base>::init()
     }
   }
 
-  // Allow this ability to be cast during SCK
-  if ( cast_during_sck && !base_t::background && !base_t::dual )
-  {
-    if ( base_t::usable_while_casting )
-    {
-      cast_during_sck = false;
-      p()->sim->print_debug( "{}: cast_during_sck ignored because usable_while_casting = true", full_name() );
-    }
-    else
-    {
-      base_t::usable_while_casting = true;
-      base_t::use_while_casting    = true;
-    }
-  }
+  if ( cast_during_ids.size() && !base_t::background && !base_t::dual )
+    base_t::usable_while_casting = base_t::use_while_casting = true;
 }
 
 template <class Base>
@@ -846,7 +837,7 @@ struct tiger_palm_t : public harmonic_surge_t<overwhelming_force_t<monk_melee_at
 
     ww_mastery       = true;
     may_combo_strike = true;
-    cast_during_sck  = true;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
 
     parse_effects( player->buff.combat_wisdom );
   }
@@ -1119,7 +1110,7 @@ struct rising_sun_kick_t : monk_melee_attack_t
     parse_options( options_str );
 
     may_combo_strike = true;
-    cast_during_sck  = true;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
 
     add_child( rising_sun_kick );
   }
@@ -1380,7 +1371,7 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<teachings_of_th
 
     ww_mastery       = true;
     may_combo_strike = true;
-    cast_during_sck  = true;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
   }
 
   void execute() override
@@ -1484,7 +1475,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    cast_during_sck = true;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
 
     tick_action = new tick_t( player, "rushing_jade_wind_tick",
                               player->talent.brewmaster.rushing_jade_wind->effectN( 1 ).trigger() );
@@ -1633,8 +1624,8 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     interrupt_auto_attack = player->specialization() != MONK_WINDWALKER;
     if ( player->specialization() == MONK_BREWMASTER )
     {
-      dot_behavior    = DOT_EXTEND;
-      cast_during_sck = true;
+      dot_behavior = DOT_EXTEND;
+      CAST_DURING( SPINNING_CRANE_KICK_IDS );
     }
 
     if ( player->specialization() == MONK_WINDWALKER )
@@ -1934,7 +1925,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     // action using `tick_action` is nonviable. ticks must be scheduled manually.
 
     may_combo_strike = true;
-    cast_during_sck  = true;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
 
     aoe                      = new damage_t( player, "aoe", player->talent.windwalker.whirling_dragon_punch_aoe_tick );
     aoe->aoe                 = -1;
@@ -2047,7 +2038,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       off_hand( nullptr )
   {
     may_combo_strike = true;
-    cast_during_sck  = true;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
     cooldown->hasted = false;
     trigger_gcd      = data().gcd();
 
@@ -2502,8 +2493,7 @@ struct keg_smash_t : monk_melee_attack_t
       fuel_on_the_fire( nullptr )
   {
     parse_options( options_str );
-    // TODO: can cast_during_sck be automated?
-    cast_during_sck = true;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
 
     full_amount_targets = 1;
     reduced_aoe_targets = data().effectN( 7 ).base_value();
@@ -2624,14 +2614,14 @@ struct stomp_t : monk_melee_attack_t
 
 struct touch_of_death_t : public monk_melee_attack_t
 {
-  touch_of_death_t( monk_t *p, std::string_view options_str )
-    : monk_melee_attack_t( p, "touch_of_death", p->baseline.monk.touch_of_death )
+  touch_of_death_t( monk_t *player, std::string_view options_str )
+    : monk_melee_attack_t( player, "touch_of_death", player->baseline.monk.touch_of_death )
   {
     ww_mastery = true;
     may_crit = hasted_ticks = false;
     may_combo_strike        = true;
-    cast_during_sck         = true;
-    ignores_armor           = true;  // instead use the trick to have no multipliers apply?
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
+    ignores_armor = true;  // instead use the trick to have no multipliers apply?
     parse_options( options_str );
 
     cooldown->duration = data().cooldown();
@@ -2707,7 +2697,8 @@ struct touch_of_death_t : public monk_melee_attack_t
 struct touch_of_karma_dot_t : public residual_action::residual_periodic_action_t<spell_t>
 {
   using base_t = residual_action::residual_periodic_action_t<spell_t>;
-  touch_of_karma_dot_t( monk_t *p ) : base_t( "touch_of_karma", p, p->baseline.windwalker.touch_of_karma_tick )
+  touch_of_karma_dot_t( monk_t *player )
+    : base_t( "touch_of_karma", player, player->baseline.windwalker.touch_of_karma_tick )
   {
     may_miss = may_crit = false;
     dual                = true;
@@ -2740,13 +2731,14 @@ struct touch_of_karma_t : public monk_melee_attack_t
   double interval_stddev_opt;
   double pct_health;
   touch_of_karma_dot_t *touch_of_karma_dot;
-  touch_of_karma_t( monk_t *p, std::string_view options_str )
-    : monk_melee_attack_t( p, "touch_of_karma", p->baseline.windwalker.touch_of_karma ),
+
+  touch_of_karma_t( monk_t *player, std::string_view options_str )
+    : monk_melee_attack_t( player, "touch_of_karma", player->baseline.windwalker.touch_of_karma ),
       interval( 100 ),
       interval_stddev( 0.05 ),
       interval_stddev_opt( 0 ),
       pct_health( 0.5 ),
-      touch_of_karma_dot( new touch_of_karma_dot_t( p ) )
+      touch_of_karma_dot( new touch_of_karma_dot_t( player ) )
   {
     add_option( opt_float( "interval", interval ) );
     add_option( opt_float( "interval_stddev", interval_stddev_opt ) );
@@ -2756,7 +2748,7 @@ struct touch_of_karma_t : public monk_melee_attack_t
     cooldown->duration = data().cooldown();
     base_dd_min = base_dd_max = 0;
     ap_type                   = attack_power_type::NO_WEAPON;
-    cast_during_sck           = true;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
 
     double max_pct = data().effectN( 3 ).percent();
 
@@ -2818,65 +2810,12 @@ struct touch_of_karma_t : public monk_melee_attack_t
   }
 };
 
-struct provoke_t : public monk_melee_attack_t
-{
-  provoke_t( monk_t *p, std::string_view options_str ) : monk_melee_attack_t( p, "provoke", p->baseline.monk.provoke )
-  {
-    parse_options( options_str );
-    use_off_gcd           = true;
-    ignore_false_positive = true;
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    if ( s->target->is_enemy() )
-      target->taunt( player );
-
-    monk_melee_attack_t::impact( s );
-  }
-};
-
-struct spear_hand_strike_t : public monk_melee_attack_t
-{
-  spear_hand_strike_t( monk_t *p, std::string_view options_str )
-    : monk_melee_attack_t( p, "spear_hand_strike", p->talent.monk.spear_hand_strike )
-  {
-    parse_options( options_str );
-    ignore_false_positive = true;
-    is_interrupt          = true;
-    cast_during_sck       = player->specialization() != MONK_WINDWALKER;
-    may_miss = may_block = may_dodge = may_parry = false;
-  }
-};
-
-struct leg_sweep_t : public monk_melee_attack_t
-{
-  leg_sweep_t( monk_t *p, std::string_view options_str )
-    : monk_melee_attack_t( p, "leg_sweep", p->baseline.monk.leg_sweep )
-  {
-    parse_options( options_str );
-    ignore_false_positive = true;
-    may_miss = may_block = may_dodge = may_parry = false;
-    cast_during_sck                              = true;
-  }
-};
-
-struct paralysis_t : public monk_melee_attack_t
-{
-  paralysis_t( monk_t *p, std::string_view options_str )
-    : monk_melee_attack_t( p, "paralysis", p->talent.monk.paralysis )
-  {
-    parse_options( options_str );
-    ignore_false_positive = true;
-    may_miss = may_block = may_dodge = may_parry = false;
-  }
-};
-
 struct flying_serpent_kick_t : public monk_melee_attack_t
 {
   bool first_charge;
-  flying_serpent_kick_t( monk_t *p, std::string_view options_str )
-    : monk_melee_attack_t( p, "flying_serpent_kick", p->baseline.windwalker.flying_serpent_kick ), first_charge( true )
+  flying_serpent_kick_t( monk_t *player, std::string_view options_str )
+    : monk_melee_attack_t( player, "flying_serpent_kick", player->baseline.windwalker.flying_serpent_kick ),
+      first_charge( true )
   {
     parse_options( options_str );
     may_crit              = true;
@@ -3158,31 +3097,6 @@ struct black_ox_brew_t : public brew_t<monk_spell_t>
   }
 };
 
-struct roll_t : public monk_spell_t
-{
-  roll_t( monk_t *player, std::string_view options_str )
-    : monk_spell_t( player, "roll",
-                    ( player->talent.monk.chi_torpedo->ok() ? spell_data_t::not_found() : player->baseline.monk.roll ) )
-  {
-    cast_during_sck = true;
-
-    parse_options( options_str );
-  }
-};
-
-struct chi_torpedo_t : public monk_spell_t
-{
-  chi_torpedo_t( monk_t *player, std::string_view options_str )
-    : monk_spell_t(
-          player, "chi_torpedo",
-          ( player->talent.monk.chi_torpedo->ok() ? player->talent.monk.chi_torpedo : spell_data_t::not_found() ) )
-  {
-    parse_options( options_str );
-
-    cast_during_sck = true;
-  }
-};
-
 struct crackling_jade_lightning_t : public monk_spell_t
 {
   struct aoe_dot_t : public monk_spell_t
@@ -3324,7 +3238,7 @@ struct breath_of_fire_t : public monk_spell_t
     aoe                 = -1;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
-    cast_during_sck     = true;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
 
     dot = new dot_t( player );
     add_child( dot );
@@ -3374,27 +3288,29 @@ struct fortifying_brew_t : brew_t<monk_spell_t>
 {
   struct niuzaos_protection_t : public monk_absorb_t
   {
-    niuzaos_protection_t( monk_t *p )
-      : monk_absorb_t( p, "niuzaos_protection", p->talent.conduit_of_the_celestials.niuzaos_protection )
+    niuzaos_protection_t( monk_t *player )
+      : monk_absorb_t( player, "niuzaos_protection", player->talent.conduit_of_the_celestials.niuzaos_protection )
     {
       background  = true;
-      target      = p;
-      base_dd_min = p->max_health() * data().effectN( 2 ).percent();
+      target      = player;
+      base_dd_min = player->max_health() * data().effectN( 2 ).percent();
       base_dd_max = base_dd_min;
     }
   };
 
   niuzaos_protection_t *absorb;
 
-  fortifying_brew_t( monk_t *p, std::string_view options_str )
-    : brew_t<monk_spell_t>( p, "fortifying_brew", p->talent.monk.fortifying_brew.find_override_spell() ),
-      absorb( p->talent.conduit_of_the_celestials.niuzaos_protection->ok() ? new niuzaos_protection_t( p ) : nullptr )
+  fortifying_brew_t( monk_t *player, std::string_view options_str )
+    : brew_t<monk_spell_t>( player, "fortifying_brew", player->talent.monk.fortifying_brew.find_override_spell() ),
+      absorb( nullptr )
   {
-    cast_during_sck = true;
-
     parse_options( options_str );
 
     harmful = may_crit = false;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
+
+    if ( player->talent.conduit_of_the_celestials.niuzaos_protection->ok() )
+      absorb = new niuzaos_protection_t( player );
   }
 
   void execute() override
@@ -3431,14 +3347,15 @@ struct exploding_keg_t : public monk_spell_t
 {
   cooldown_t *keg_smash;
 
-  exploding_keg_t( monk_t *p, std::string_view options_str )
-    : monk_spell_t( p, "exploding_keg", p->talent.brewmaster.exploding_keg )
+  exploding_keg_t( monk_t *player, std::string_view options_str )
+    : monk_spell_t( player, "exploding_keg", player->talent.brewmaster.exploding_keg )
   {
     parse_options( options_str );
-    cast_during_sck = true;
-    aoe             = -1;
-    add_child( p->action.exploding_keg );
 
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
+    aoe = -1;
+
+    add_child( player->action.exploding_keg );
     keg_smash = player->get_cooldown( "keg_smash" );
   }
 
@@ -3542,9 +3459,9 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
   {
     parse_options( options_str );
 
-    harmful         = false;
-    cast_during_sck = true;
-    use_off_gcd     = true;
+    harmful = false;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
+    use_off_gcd = true;
   }
 
   bool ready() override
@@ -3656,7 +3573,7 @@ struct xuen_summon_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    cast_during_sck = true;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
   }
 
   void execute() override
@@ -3783,12 +3700,12 @@ struct flight_of_the_red_crane_t : conduit_of_the_celestials_container_t
 
 struct niuzao_spell_t : public monk_spell_t
 {
-  niuzao_spell_t( monk_t *p, std::string_view options_str )
-    : monk_spell_t( p, "invoke_niuzao_the_black_ox", p->talent.brewmaster.invoke_niuzao_the_black_ox )
+  niuzao_spell_t( monk_t *player, std::string_view options_str )
+    : monk_spell_t( player, "invoke_niuzao_the_black_ox", player->talent.brewmaster.invoke_niuzao_the_black_ox )
   {
     parse_options( options_str );
 
-    cast_during_sck = true;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
     // Specifically set for 10.1 class trinket
     harmful = true;
     // Forcing the minimum GCD to 750 milliseconds
@@ -3807,8 +3724,8 @@ struct niuzao_spell_t : public monk_spell_t
 
 struct unity_within_t : public monk_spell_t
 {
-  unity_within_t( monk_t *p, std::string_view options_str )
-    : monk_spell_t( p, "unity_within", p->talent.conduit_of_the_celestials.unity_within )
+  unity_within_t( monk_t *player, std::string_view options_str )
+    : monk_spell_t( player, "unity_within", player->talent.conduit_of_the_celestials.unity_within )
   {
     parse_options( options_str );
 
@@ -3956,10 +3873,15 @@ struct zenith_stomp_t : monk_spell_t
       trigger_gcd       = 0_ms;
     }
 
-    aoe                 = -1;
-    reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
-    may_combo_strike    = false;
+    aoe = -1;
+    // 2026-07-11 Zenith Stomp is erroneously referencing effect 1 for sqrt scaling
+    // in tooltip, which instead is used to set up the Zenith Stomp buff that controls
+    // whether or not the action is available.
+    // reduced_aoe_targets = player->talent.monk.zenith_stomp->effectN( 1 ).base_value();
+    reduced_aoe_targets = 5.0;
+    may_combo_strike    = player->wowv_ge( { 12, 1, 0 } );
     ww_mastery          = true;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS, CELESTIAL_CONDUIT_IDS );
   }
 
   void init() override
@@ -3968,6 +3890,15 @@ struct zenith_stomp_t : monk_spell_t
 
     if ( auto *zenith = p()->find_action( "zenith" ); zenith )
       zenith->add_child( this );
+  }
+
+  bool usable_during_current_cast() const override
+  {
+    if ( p()->channeling &&
+         p()->channeling->id == p()->talent.conduit_of_the_celestials.celestial_conduit_action->id() )
+      return true;
+
+    return monk_spell_t::usable_during_current_cast();
   }
 
   bool ready() override
@@ -3985,7 +3916,8 @@ struct zenith_stomp_t : monk_spell_t
   {
     monk_spell_t::execute();
 
-    p()->buff.zenith_stomp->decrement();
+    if ( source == ZENITH_STOMP_CAST )
+      p()->buff.zenith_stomp->decrement();
   }
 };
 
@@ -4031,26 +3963,6 @@ struct zenith_t : public monk_spell_t
   }
 };
 
-struct vivify_t : public harmonic_surge_t<monk_heal_t>
-{
-  vivify_t( monk_t *player, std::string_view options_str ) : base_t( player, "vivify", player->baseline.monk.vivify )
-  {
-    parse_options( options_str );
-
-    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
-    base_execute_time += player->talent.monk.vivacious_vivification->effectN( 1 ).time_value();
-
-    cast_during_sck = false;
-  }
-
-  void execute() override
-  {
-    base_t::execute();
-
-    p()->action.chi_wave->execute();
-  }
-};
-
 struct expel_harm_t : monk_heal_t
 {
   struct damage_t : monk_spell_t
@@ -4071,7 +3983,7 @@ struct expel_harm_t : monk_heal_t
       damage( new damage_t( player ) )
   {
     parse_options( options_str );
-    cast_during_sck = true;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
     if ( player->talent.windwalker.combat_wisdom->ok() )
       background = true;
 
@@ -4121,15 +4033,15 @@ struct expel_harm_t : monk_heal_t
 
 struct celestial_fortune_t : public monk_heal_t
 {
-  celestial_fortune_t( monk_t *p )
-    : monk_heal_t( p, "celestial_fortune", p->baseline.brewmaster.celestial_fortune_heal )
+  celestial_fortune_t( monk_t *player )
+    : monk_heal_t( player, "celestial_fortune", player->baseline.brewmaster.celestial_fortune_heal )
   {
     background = true;
     proc       = true;
     target     = player;
     may_crit   = false;
 
-    base_multiplier = p->baseline.brewmaster.celestial_fortune->effectN( 1 ).percent();
+    base_multiplier = player->baseline.brewmaster.celestial_fortune->effectN( 1 ).percent();
   }
 
   void init() override
@@ -4148,8 +4060,8 @@ struct absorb_brew_t : public brew_t<monk_absorb_t>
     : brew_t<monk_absorb_t>( player, name, spell_data )
   {
     parse_options( options_str );
-    cast_during_sck = true;
-    harmful         = false;
+    CAST_DURING( SPINNING_CRANE_KICK_IDS );
+    harmful = false;
   }
 
   void execute() override
@@ -4577,13 +4489,14 @@ struct empty_barrel_buff_t : buffs::monk_buff_t<>
 
 struct touch_of_karma_buff_t : public monk_buff_t<>
 {
-  touch_of_karma_buff_t( monk_t *p, std::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+  touch_of_karma_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
+    : monk_buff_t( player, name, spell_data )
   {
     default_value = 0;
     set_cooldown( timespan_t::zero() );
-    set_trigger_spell( p->baseline.windwalker.touch_of_karma );
+    set_trigger_spell( player->baseline.windwalker.touch_of_karma );
 
-    set_duration( s->duration() );
+    set_duration( spell_data->duration() );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -5382,28 +5295,14 @@ action_t *monk_t::create_action( std::string_view name, std::string_view options
     return new blackout_kick_t( this, options_str );
   if ( name == "expel_harm" )
     return new expel_harm_t( this, options_str );
-  if ( name == "leg_sweep" )
-    return new leg_sweep_t( this, options_str );
-  if ( name == "paralysis" )
-    return new paralysis_t( this, options_str );
   if ( name == "rising_sun_kick" )
     return new rising_sun_kick_t( this, options_str );
   if ( name == "rushing_wind_kick" )
     return new rushing_wind_kick_t( this, options_str );
-  if ( name == "roll" )
-    return new roll_t( this, options_str );
-  if ( name == "spear_hand_strike" )
-    return new spear_hand_strike_t( this, options_str );
   if ( name == "spinning_crane_kick" )
     return new spinning_crane_kick_t( this, options_str );
-  if ( name == "vivify" )
-    return new vivify_t( this, options_str );
   if ( name == "fortifying_brew" )
     return new fortifying_brew_t( this, options_str );
-  if ( name == "provoke" )
-    return new provoke_t( this, options_str );
-  if ( name == "chi_torpedo" )
-    return new chi_torpedo_t( this, options_str );
   if ( name == "touch_of_death" )
     return new touch_of_death_t( this, options_str );
 
@@ -5436,6 +5335,8 @@ action_t *monk_t::create_action( std::string_view name, std::string_view options
   // Windwalker
   if ( name == "fists_of_fury" )
     return new fists_of_fury_t( this, options_str );
+  if ( name == "flying_serpent_kick" && talent.windwalker.slicing_winds->ok() )
+    return new slicing_winds_t( this, options_str );
   if ( name == "flying_serpent_kick" )
     return new flying_serpent_kick_t( this, options_str );
   if ( name == "slicing_winds" )
@@ -6463,11 +6364,8 @@ void monk_t::create_buffs()
 
   buff.zenith = make_buff_fallback<buffs::zenith_t>( talent.windwalker.zenith->ok(), this, "zenith" );
 
-  buff.zenith_stomp =
-      make_buff_fallback( talent.monk.zenith_stomp->ok(), this, "zenith_stomp", talent.monk.zenith_stomp_buff )
-          ->modify_initial_stack( as<int>( talent.windwalker.tigereye_brew_3->ok()
-                                               ? talent.windwalker.tigereye_brew_3->effectN( 1 ).base_value()
-                                               : 0 ) );
+  buff.zenith_stomp = make_buff_fallback( talent.windwalker.tigereye_brew_3->ok(), this, "zenith_stomp",
+                                          talent.monk.zenith_stomp_buff );
 
   buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
                                                talent.windwalker.rushing_wind_kick_buff );
@@ -7407,6 +7305,10 @@ public:
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
     ReportIssue( "Press the Advantage Tiger Palm does not trigger Overwhelming Force", "2026-02-09", true );
     ReportIssue( "Dragonfire Brew causes Breath of Fire damage to scale with Stagger level", "2026-04-14", true );
+    ReportIssue(
+        "Zenith Stomp erroneously references effect 1 for sqrt scaling in tooltip, which is instead used to modify the "
+        "Zenith Stomp charge buff.",
+        "2026-07-11", true );
 
     os << "<div class=\"player-section\">\n";
     os << "<h3 class=\"toggle\">Known Bugs and Issues</h3>\n";
