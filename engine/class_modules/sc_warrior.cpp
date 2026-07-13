@@ -1445,7 +1445,7 @@ public:
       // Brute forces causes Slam (1464) and heroic strike (1269383) to have a 10% increase proc rate
       if ( p()->talents.arms.brute_force.ok() && ( ab::id == 1464 || ab::id == 1269383 ) )
         proc_chance += 0.10;
-      if ( p()->talents.arms.tactical_edge.ok() && p()->buff.tactical_edge->check() && ab::id == p()->talents.arms.mortal_strike->id() )
+      if ( ab::sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p()->talents.arms.tactical_edge.ok() && p()->buff.tactical_edge->check() && ab::id == p()->talents.arms.mortal_strike->id() )
         proc_chance += p()->buff.tactical_edge->value();
       if ( ab::rng().roll( proc_chance ) )
       {
@@ -3094,7 +3094,7 @@ struct mortal_strike_t : public warrior_attack_t
     p()->buff.executioners_precision->expire();
     p()->buff.martial_prowess->expire();
 
-    if( !background )
+    if( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) &&  !background )
       p()->buff.tactical_edge->decrement();
 
     if ( !background )
@@ -3752,13 +3752,16 @@ struct colossus_smash_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.arms.tactical_edge.ok() )
+      p()->buff.sudden_death->trigger( as<int>( p()->talents.arms.tactical_edge->effectN( 1 ).base_value() ) );
+
     if ( p()->talents.arms.master_of_warfare_3.ok() && p()->buff.heroic_might_accumulator->up() )
     {
       p()->buff.heroic_might->trigger( p()->buff.heroic_might_accumulator->stack(), buff_t::DEFAULT_VALUE(), 1.0, p()->spell.colossus_smash_debuff->duration() );
       p()->buff.heroic_might_accumulator->expire();
     }
 
-    if ( p()->talents.arms.tactical_edge.ok() )
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p()->talents.arms.tactical_edge.ok() )
       p()->buff.tactical_edge->trigger();
 
     if ( p()->talents.arms.crushing_combo.ok() )
@@ -8291,7 +8294,8 @@ void warrior_t::create_buffs()
   buff.sweeping_strikes = make_buff( this, "sweeping_strikes", spec.sweeping_strikes)
                               ->set_cooldown( 0_s );  // Handled by the action
 
-  buff.tactical_edge = make_buff( this, "tactical_edge", talents.arms.tactical_edge->effectN( 1 ).trigger() )
+  if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+    buff.tactical_edge = make_buff( this, "tactical_edge", talents.arms.tactical_edge->effectN( 1 ).trigger() )
                           ->set_default_value_from_effect( 1 )
                           ->set_initial_stack( talents.arms.tactical_edge.ok() ? talents.arms.tactical_edge->effectN( 1 ).trigger()->max_stacks() : 1 );
 
