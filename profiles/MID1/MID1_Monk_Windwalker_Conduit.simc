@@ -30,11 +30,6 @@ actions.precombat+=/variable,name=patchwerk,value=fight_style.patchwerk|fight_st
 # Default List
 actions=auto_attack,target_if=max:target.time_to_die
 actions+=/touch_of_karma,target_if=max:target.time_to_die
-# Move to target
-actions+=/roll,if=movement.distance>5
-actions+=/chi_torpedo,if=movement.distance>5
-actions+=/flying_serpent_kick,if=movement.distance>5
-actions+=/spear_hand_strike,if=target.debuff.casting.react
 actions+=/potion,if=buff.invoke_xuen_the_white_tiger.remains>15|fight_remains<=30
 actions+=/potion,if=talent.flurry_strikes&chi>2&(time<5|cooldown.zenith.up&time<5|time>300&((trinket.1.is.algethar_puzzle_box&trinket.1.cooldown.remains>100|trinket.2.is.algethar_puzzle_box&trinket.2.cooldown.remains>100)|!trinket.1.has_use_buff&!trinket.2.has_use_buff)&talent.flurry_strikes|time>300&buff.zenith.up)
 # Enable PI if available
