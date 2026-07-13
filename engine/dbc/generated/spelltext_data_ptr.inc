@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.0.68629
-static constexpr std::array<spelltext_data_t, 29229> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29230> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -29069,6 +29069,7 @@ static constexpr std::array<spelltext_data_t, 29229> __ptr_spelltext_data { {
   { 1302183, "$@spelldesc1291724", 0, 0 },
   { 1302184, "$@spelldesc1291723", 0, 0 },
   { 1302255, "$@spelldesc1296609", "Heal over time effects are $s1% stronger.", 0 },
+  { 1302277, "Your next Aimed Shot will grant you Deathblow!", "Your next Aimed Shot will grant you Deathblow!", 0 },
   { 1302568, "$?pc150463[Chance to Poison yourself, greatly increasing your $pri and lowering all other statistics.][|cnITEM_POOR_COLOR:Chance to Poison yourself, greatly increasing your $pri and lowering all other statistics.]", 0, 0 },
   { 1302577, "$?pc150463[Upon entering combat, veil yourself in layers of Virulent Mucus that negate incoming damage. Damaging a Poisoned enemy has a chance to grant an additional layer.][|cnITEM_POOR_COLOR:Upon entering combat, veil yourself in layers of Virulent Mucus that negate incoming damage. Damaging a Poisoned enemy has a chance to grant an additional layer.]", 0, 0 },
   { 1302580, "$?pc150463[Chance to inflict Accursed Poison on an enemy, dealing Nature damage over time and preventing their next interruptible cast.][|cnITEM_POOR_COLOR:Chance to inflict Accursed Poison on an enemy, dealing Nature damage over time and preventing their next interruptible cast.]", 0, 0 },

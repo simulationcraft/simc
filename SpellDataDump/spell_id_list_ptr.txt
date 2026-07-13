@@ -8868,7 +8868,7 @@ Hunter
 1301098  Spotter's Mark: Rapid Fire
 1301406  Incendiary Ammunition
 1301778  Unstable Trigger
-1302277 *Death Bringer
+1302277  Death Bringer
 1306018 *test proc spell
 1306960 *Dire Beast
 1306990 *Dark Summon

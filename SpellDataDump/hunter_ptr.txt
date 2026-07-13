@@ -20269,3 +20269,22 @@ Effects          :
 Description      : $@spelldesc473520
 Tooltip          : Explosive Shot can be recast and consumes $m1% less Focus.
 
+Name             : Death Bringer (id=1302277) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Duration         : 12 seconds
+Labels           : 16: Class Spells
+                 : 23: Hunter Spells
+                 : 52
+                 : 292
+                 : 4056
+Attributes       : Can Proc From Procs (122), Floating Combat Text On Cast (198), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
+Aura Interrupt   : Leave World (19), Change Specialization (38)
+Effects          :
+#1 (id=1327818)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
+Description      : Your next Aimed Shot will grant you Deathblow!
+Tooltip          : Your next Aimed Shot will grant you Deathblow!
+
