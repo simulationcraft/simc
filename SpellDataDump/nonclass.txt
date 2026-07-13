@@ -254388,13 +254388,14 @@ $fireHealing=${$<basePoints>*$1263002s2}
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
 Name             : Rune of Lingering (desc=Core Rune) (id=1287663) 
+Hotfixed         : Attributes
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
 Labels           : 6782
 Triggered By     : Rune of Void-Touched Orbs (1286716), Rune of Unleashed Fire (1286970)
-Attributes       : Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
+Attributes       : Not an Action (92), Do Not Display Range (126), Not an Attack (194), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1305315)  : Apply Aura (6) | Periodic Damage (3): cosmic every 1 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
