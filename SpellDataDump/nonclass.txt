@@ -254541,11 +254541,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 13.1441 (coefficient=0.100275) | Target: Self (1)
 
 Name             : Rune of Echoes (id=1289063) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Do Not Display Cast Time (441), Unknown (489)
+Attributes       : No Aura Cancel (31), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Aura Points On Client (268), Do Not Display Cast Time (441), Unknown (489)
 Effects          :
 #1 (id=1307259)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6), Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -255261,10 +255262,11 @@ Effects          :
 Description      : Defeat rare foes to have a chance at gear for your current specialization.
 
 Name             : Rune of Echoes (id=1303048) 
+Hotfixed         : Attributes
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
-Attributes       : Can't Crit (93), Do Not Display Range (126), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Do Not Display Cast Time (441)
+Attributes       : Can't Crit (93), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Treat As Periodic (121), Do Not Display Range (126), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Ignore Damage Cancels Aura Interrupt (394), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1328843)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
