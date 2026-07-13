@@ -1453,8 +1453,6 @@ public:
 
     void stop();
 
-    void reschedule_drain();
-
     void reset();
 
     demon_hunter_t* dh()
@@ -1485,9 +1483,7 @@ public:
     struct drain_event_t : public event_t
     {
       demon_hunter_t* dh;
-      timespan_t delta;
-      drain_event_t( demon_hunter_t* p, timespan_t delta_time )
-        : event_t( *p, delta_time ), dh( p ), delta( delta_time )
+      drain_event_t( demon_hunter_t* p, timespan_t delta_time ) : event_t( *p, delta_time ), dh( p )
       {
       }
 
@@ -6223,8 +6219,6 @@ struct void_ray_t
         dh()->buff.voidfall_building->trigger();
       }
     }
-
-    dh()->devourer_fury_state.reschedule_drain();
   }
 
   void execute() override
@@ -6235,7 +6229,6 @@ struct void_ray_t
                                                         : dh()->talent.devourer.void_ray->cooldown();
 
     base_t::execute();
-    dh()->devourer_fury_state.reschedule_drain();
   }
 
   bool action_ready() override
@@ -9647,8 +9640,6 @@ void demon_hunter_t::activate()
   base_t::activate();
   if ( specialization() == DEMON_HUNTER_DEVOURER )
   {
-    register_on_combat_state_callback( [ this ]( player_t*, bool ) { devourer_fury_state.reschedule_drain(); } );
-
     if ( talent.devourer.entropy->ok() )
     {
       register_precombat_begin( [ this ]( player_t* ) {
@@ -9769,11 +9760,9 @@ void demon_hunter_t::create_buffs()
   buff.voidstep->reactable = true;
 
   // TODO: Measure this slow duration instead of guessing.
-  buff.voidrush =
-      make_buff( this, "voidrush", talent.devourer.voidrush )
-          ->set_duration( 0.5_s )
-          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-          ->add_stack_change_callback( [ this ]( buff_t*, int, int ) { devourer_fury_state.reschedule_drain(); } );
+  buff.voidrush = make_buff( this, "voidrush", talent.devourer.voidrush )
+                      ->set_duration( 0.5_s )
+                      ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buff.entropy_out_of_combat =
       make_buff( this, "entropy_out_of_combat" )
@@ -12303,29 +12292,13 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
 
 timespan_t demon_hunter_t::fury_state_t::time_to_next_tick( int stacks ) const
 {
+  // The drain is a periodic event. A tick schedules the next one at the rate in force when it fires,
+  // and a change to the reduced-drain state does not re-time the tick already pending: that tick runs
+  // to term at the interval it was scheduled with, and only the tick after it picks up the new rate.
+
   // 2 as it currently drains 2 per event.
   // TODO: Don't hardcode this.
   return 2.0_s / fury_drain_per_second( stacks );
-}
-
-void demon_hunter_t::fury_state_t::reschedule_drain()
-{
-  if ( !next_drain_event )
-    return;
-
-  double percent_remaining = 1.0 - next_drain_event->remains() / static_cast<drain_event_t*>( next_drain_event )->delta;
-
-  auto new_time = time_to_next_tick( drain_stacks ) * percent_remaining;
-
-  if ( new_time < next_drain_event->remains() )
-  {
-    event_t::cancel( next_drain_event );
-    next_drain_event = make_event<drain_event_t>( *actor->sim, actor, new_time );
-  }
-  else
-  {
-    next_drain_event->reschedule( new_time );
-  }
 }
 
 void demon_hunter_t::fury_state_t::clear_state()
