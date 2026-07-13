@@ -211,7 +211,8 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       if ( item.parsed.content_tuning_id != 0 )
       {
         const auto& content_tuning = item.player->dbc->content_tuning( item.parsed.content_tuning_id );
-        if ( content_tuning.id != 0 && ( level > content_tuning.max_level_squish || level == 0 ) )
+        if ( content_tuning.id != 0 && content_tuning.max_level_squish > 0 &&
+             ( level > content_tuning.max_level_squish || level == 0 ) )
           level = content_tuning.max_level_squish;
       }
       if ( scaling_entry.squish_era_id < 2 )
@@ -241,7 +242,8 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
         if ( item.parsed.content_tuning_id != 0 )
         {
           const auto& content_tuning = item.player->dbc->content_tuning( item.parsed.content_tuning_id );
-          if ( content_tuning.id != 0 && level > as<unsigned>( content_tuning.max_level_squish ) )
+          if ( content_tuning.id != 0 && content_tuning.max_level_squish > 0 &&
+               level > as<unsigned>( content_tuning.max_level_squish ) )
             level = content_tuning.max_level_squish;
         }
 
