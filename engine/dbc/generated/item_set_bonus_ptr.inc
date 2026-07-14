@@ -1,4 +1,4 @@
-// Set bonus data, wow build 12.1.0.68629
+// Set bonus data, wow build 12.1.0.68675
 static constexpr std::array<item_set_bonus_t, 1183> __ptr_set_bonus_data { {
   // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
   { "Armaments of the Infinite Infantry"        , "shadowlands_season_3"        ,        "SL3",      0,  1506,   2,   1,   73,        -1,  364002, { 188942, 188941, 188940, 188938, 188937,  0 } },
@@ -1147,12 +1147,12 @@ static constexpr std::array<item_set_bonus_t, 1183> __ptr_set_bonus_data { {
   // SetBonusName                               , OptName                       , Tier        , EnumID, SetID, Bns, Cls, Spec, TraitTree, SpellID, ItemIDs
   { "Radiance of the Consecrated Flame"         , "midnight_season_2"           ,       "MID2",     27,  2062,   4,   2,   66,        -1, 1296659, { 271468, 271466, 271465, 271464, 271463,  0 } },
   { "Radiance of the Consecrated Flame"         , "midnight_season_2"           ,       "MID2",     27,  2062,   4,   2,   65,        -1, 1296657, { 271468, 271466, 271465, 271464, 271463,  0 } },
-  { "Skulking Viper's Ambush"                   , "midnight_season_2"           ,       "MID2",     27,  2059,   2,   3,  255,        -1, 1296635, { 271495, 271493, 271492, 271491, 271490,  0 } },
   { "Skulking Viper's Ambush"                   , "midnight_season_2"           ,       "MID2",     27,  2059,   2,   3,  254,        -1, 1296633, { 271495, 271493, 271492, 271491, 271490,  0 } },
   { "Skulking Viper's Ambush"                   , "midnight_season_2"           ,       "MID2",     27,  2059,   2,   3,  253,        -1, 1296631, { 271495, 271493, 271492, 271491, 271490,  0 } },
-  { "Skulking Viper's Ambush"                   , "midnight_season_2"           ,       "MID2",     27,  2059,   4,   3,  255,        -1, 1296636, { 271495, 271493, 271492, 271491, 271490,  0 } },
+  { "Skulking Viper's Ambush"                   , "midnight_season_2"           ,       "MID2",     27,  2059,   2,   3,  255,        -1, 1296636, { 271495, 271493, 271492, 271491, 271490,  0 } },
   { "Skulking Viper's Ambush"                   , "midnight_season_2"           ,       "MID2",     27,  2059,   4,   3,  254,        -1, 1296634, { 271495, 271493, 271492, 271491, 271490,  0 } },
   { "Skulking Viper's Ambush"                   , "midnight_season_2"           ,       "MID2",     27,  2059,   4,   3,  253,        -1, 1296632, { 271495, 271493, 271492, 271491, 271490,  0 } },
+  { "Skulking Viper's Ambush"                   , "midnight_season_2"           ,       "MID2",     27,  2059,   4,   3,  255,        -1, 1296635, { 271495, 271493, 271492, 271491, 271490,  0 } },
   { "Chosen Bloodslayer's Hexweave"             , "midnight_season_2"           ,       "MID2",     27,  2064,   2,   4,  261,        -1, 1296592, { 271513, 271511, 271510, 271509, 271508,  0 } },
   { "Chosen Bloodslayer's Hexweave"             , "midnight_season_2"           ,       "MID2",     27,  2064,   2,   4,  259,        -1, 1296590, { 271513, 271511, 271510, 271509, 271508,  0 } },
   { "Chosen Bloodslayer's Hexweave"             , "midnight_season_2"           ,       "MID2",     27,  2064,   2,   4,  260,        -1, 1296588, { 271513, 271511, 271510, 271509, 271508,  0 } },
