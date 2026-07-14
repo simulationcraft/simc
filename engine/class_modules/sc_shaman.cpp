@@ -1170,7 +1170,7 @@ struct shaman_td_t : public actor_target_data_t
     buff_t* flametongue_attack;
 
     // Set bonus
-    buff_t* burning_core; // Enhancement MID2 2PC
+    buff_t* mid2_enh_2pc; // Enhancement MID2 2PC
   } debuff;
 
   struct heals
@@ -2262,7 +2262,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
 
   if ( p->dbc->ptr )
   {
-    debuff.burning_core = make_buff( *this, "burning_core", p->find_spell( 1299975 ) )
+    debuff.mid2_enh_2pc = make_buff( *this, "burning_core", p->find_spell( 1299975 ) )
         ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
         ->set_tick_callback( [ p, this ]( buff_t*, int, timespan_t ) {
           p->action.fire_nova->execute_on_target( this->target );
@@ -6825,7 +6825,7 @@ struct fire_nova_explosion_t : public shaman_spell_t
 
     if ( p()->dbc->ptr )
     {
-      m *= 1.0 + td( t )->debuff.burning_core->value();
+      m *= 1.0 + td( t )->debuff.mid2_enh_2pc->value();
     }
 
     return m;
@@ -9893,7 +9893,7 @@ struct voltaic_blaze_t : public shaman_spell_t
 
     if ( p()->dbc->ptr && p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B2 ) )
     {
-      td( execute_state->target )->debuff.burning_core->trigger();
+      td( execute_state->target )->debuff.mid2_enh_2pc->trigger();
     }
   }
 };
