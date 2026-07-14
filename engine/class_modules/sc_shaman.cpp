@@ -1205,6 +1205,9 @@ public:
   /// Lightning Strikes counter
   unsigned ls_counter;
 
+  /// MID2 Enhancement 4PC multiplier stack
+  std::deque<double> mid2_enh_4pc_mul;
+
   // Options
   bool raptor_glyph;
 
@@ -1419,6 +1422,8 @@ public:
     buff_t* tww2_enh_4pc; // Electrostatic Wager (visible buff)
     buff_t* tww2_enh_4pc_damage; // Electrostatic Wager (hidden damage to CL)
     buff_t* elemental_overflow; // Elemental Overflow
+
+    buff_t* mid2_enh_4pc; // Short Circuit
 
     // Shared talent stuff
     buff_t* tempest;
@@ -4452,6 +4457,13 @@ struct crash_lightning_unleashed_t : public shaman_attack_t
     weapon     = &( p->main_hand_weapon );
     background = true;
   }
+
+  void trigger( double mul, player_t* target )
+  {
+    base_multiplier *= 1.0 + mul;
+    execute_on_target( target );
+    base_multiplier /= 1.0 + mul;
+  }
 };
 
 struct crash_lightning_attack_t : public shaman_attack_t
@@ -4480,6 +4492,18 @@ struct crash_lightning_attack_t : public shaman_attack_t
     if ( strike_type == strike_variant::STORMFLURRY )
     {
       m *= p()->talent.stormflurry->effectN( 2 ).percent();
+    }
+
+    // MID2 enhancement 4 piece applies the average of the on-going snapshotted Static Charge
+    // value to the crash lightning attack
+    if ( p()->dbc->ptr && p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B4 ) )
+    {
+      auto mul = range::accumulate( p()->mid2_enh_4pc_mul, 0.0 ) /
+        ( p()->mid2_enh_4pc_mul.empty()
+          ? 1.0
+          : as<double>( p()->mid2_enh_4pc_mul.size() ) );
+
+      m *= 1.0 + mul;
     }
 
     return m;
@@ -5939,7 +5963,9 @@ struct crash_lightning_t : public shaman_attack_t
 
     if ( p()->talent.storm_unleashed_3.ok() )
     {
-      make_repeating_event( sim, 1_s, [ this ]() {
+      double mid2_4pc_mul = p()->dbc->ptr ? p()->buff.mid2_enh_4pc->check_stack_value() : 1.0;
+
+      make_repeating_event( sim, 1_s, [ this, mul = mid2_4pc_mul ]() {
         for ( auto t : target_list() )
         {
           if ( !rng().roll( p()->options.crash_lightning_su_hit_chance ) )
@@ -5947,9 +5973,15 @@ struct crash_lightning_t : public shaman_attack_t
             continue;
           }
 
-          p()->action.crash_lightning_unleashed->execute_on_target( t );
+          debug_cast<crash_lightning_unleashed_t*>(
+            p()->action.crash_lightning_unleashed )->trigger( mul, t );
         }
       }, as<int>( p()->talent.storm_unleashed_3->effectN( 2 ).base_value() ) );
+    }
+
+    if ( p()->dbc->ptr && p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B4 ) )
+    {
+      p()->buff.mid2_enh_4pc->expire();
     }
   }
 
@@ -6829,6 +6861,18 @@ struct fire_nova_explosion_t : public shaman_spell_t
     }
 
     return m;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    if ( p()->dbc->ptr && p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B4 ) )
+    {
+      p()->cooldown.crash_lightning->adjust(
+        -p()->sets->set( SHAMAN_ENHANCEMENT, MID2, B4 )->effectN( 1 ).time_value(), false );
+      p()->buff.mid2_enh_4pc->trigger();
+    }
   }
 };
 
@@ -12467,6 +12511,44 @@ void shaman_t::create_buffs()
       ? buff_stack_behavior::ASYNCHRONOUS
       : buff_stack_behavior::DEFAULT
     )
+    ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+      if ( !sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B4 ) )
+      {
+        return;
+      }
+
+      // Without the apex talent, this is just a simple "current value" thing without averaging
+      if ( !talent.storm_unleashed_3.ok() )
+      {
+        mid2_enh_4pc_mul.clear();
+        mid2_enh_4pc_mul.emplace_back( buff.mid2_enh_4pc->check_stack_value() );
+      }
+      // With apex talent, the async nature of the 4pc set bonus is enabled
+      else
+      {
+        // New stack, snapshot buff value
+        if ( old < cur )
+        {
+          mid2_enh_4pc_mul.emplace_back( buff.mid2_enh_4pc->check_stack_value() );
+        }
+        // Async stack expired, buff still up
+        else if ( cur > 0 && old > cur )
+        {
+          mid2_enh_4pc_mul.pop_front();
+        }
+        // Max stacks, destroy oldest (should not be hit in normal profiles)
+        else if ( cur > 0 && old == cur )
+        {
+          mid2_enh_4pc_mul.pop_front();
+          mid2_enh_4pc_mul.emplace_back( buff.mid2_enh_4pc->check_stack_value() );
+        }
+        // Buff gone, clear the stack
+        else
+        {
+          mid2_enh_4pc_mul.clear();
+        }
+      }
+    } )
     ->set_chance( talent.crash_lightning.ok() ? 1.0 : 0.0 );
 
   buff.hot_hand = make_buff( this, "hot_hand", find_spell( 215785 ) )
@@ -12557,6 +12639,13 @@ void shaman_t::create_buffs()
 
   buff.lively_totems = make_buff( this, "lively_totems", find_spell( 461242 ) )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+
+  if ( dbc->ptr )
+  {
+    buff.mid2_enh_4pc = make_buff( this, "short_circuit", find_spell( 1299991 ) )
+      ->set_default_value_from_effect( 1U )
+      ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, MID2, B4 ) );
+  }
   //
   // Restoration
   //
@@ -12856,11 +12945,18 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
     } )
     .build( a );
 
+  // Set bonuses
   eff::source_eff_builder_t( buff.tww2_enh_2pc ).build( a );
   eff::source_eff_builder_t( buff.tww2_enh_4pc_damage ).build( a );
+  if ( dbc->ptr )
+  {
+    eff::source_eff_builder_t( buff.mid2_enh_4pc ).build( a );
+  }
 
   // Elemental
   eff::source_eff_builder_t( mastery.elemental_overload ).build( a );
+
+
 }
 
 // shaman_t::generate_bloodlust_options =====================================
@@ -13488,6 +13584,8 @@ void shaman_t::reset()
     std::get<0>( it.second ) = timespan_t::min();
     std::get<1>( it.second ) = 0.0;
   }
+
+  assert( mid2_enh_4pc_mul.empty() );
 }
 
 // shaman_t::merge ==========================================================
