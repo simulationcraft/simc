@@ -5237,7 +5237,10 @@ struct sweeping_strikes_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    p()->buff.sweeping_strikes->trigger( p()->spec.sweeping_strikes->max_stacks() );
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      p()->buff.sweeping_strikes->trigger( as<int>( p()->spec.sweeping_strikes->effectN( 4 ).base_value() ) );
+    else if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+      p()->buff.sweeping_strikes->trigger( p()->spec.sweeping_strikes->max_stacks() );
   }
 };
 
