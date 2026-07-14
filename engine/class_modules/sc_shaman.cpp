@@ -1168,6 +1168,9 @@ struct shaman_td_t : public actor_target_data_t
     // Enhancement
     buff_t* lashing_flames;
     buff_t* flametongue_attack;
+
+    // Set bonus
+    buff_t* burning_core; // Enhancement MID2 2PC
   } debuff;
 
   struct heals
@@ -2138,7 +2141,6 @@ public:
   void invalidate_cache( cache_e c ) override;
   double composite_attribute( attribute_e ) const override;
   double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override;
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_maelstrom_gain_coefficient( const action_state_t* /* state */ = nullptr ) const
   { return 1.0; }
   action_t* create_action( util::string_view name, util::string_view options ) override;
@@ -2257,6 +2259,16 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
 
   debuff.flametongue_attack = make_buff( *this, "flametongue_attack", p->find_spell( 467390 ) )
     ->set_trigger_spell( p->talent.imbuement_mastery );
+
+  if ( p->dbc->ptr )
+  {
+    debuff.burning_core = make_buff( *this, "burning_core", p->find_spell( 1299975 ) )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
+        ->set_tick_callback( [ p, this ]( buff_t*, int, timespan_t ) {
+          p->action.fire_nova->execute_on_target( this->target );
+        } )
+        ->set_trigger_spell( p->sets->set( SHAMAN_ENHANCEMENT, MID2, B2 ) );
+  }
 }
 
 namespace expr
@@ -3108,11 +3120,11 @@ public:
       this->p()->proc.aftershock->occur();
     }
   }
-  
+
   void impact( action_state_t* s ) override
   {
     ab::impact( s );
-    
+
     if ( ( this->execute_state->action->id == 188389 ) ||
          ( this->is_variant( spell_variant::NORMAL ) && !this->background && s->chain_target == 0 ) )
     {
@@ -6806,6 +6818,18 @@ struct fire_nova_explosion_t : public shaman_spell_t
       base_multiplier *= player->sets->set( HERO_TOTEMIC, TWW3, B4 )->effectN( 2 ).percent();
     }
   }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = shaman_spell_t::composite_target_multiplier( t );
+
+    if ( p()->dbc->ptr )
+    {
+      m *= 1.0 + td( t )->debuff.burning_core->value();
+    }
+
+    return m;
+  }
 };
 
 struct fire_nova_t : public shaman_spell_t
@@ -9866,6 +9890,11 @@ struct voltaic_blaze_t : public shaman_spell_t
     }
 
     p()->trigger_lively_totems( execute_state );
+
+    if ( p()->dbc->ptr && p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B2 ) )
+    {
+      td( execute_state->target )->debuff.burning_core->trigger();
+    }
   }
 };
 
@@ -13369,14 +13398,6 @@ double shaman_t::composite_attribute( attribute_e attr ) const
   }
 
   return a;
-}
-
-// shaman_t::composite_player_target_multiplier ==============================
-
-double shaman_t::composite_player_target_multiplier( player_t* target, school_e school ) const
-{
-  double m = parse_player_effects_t::composite_player_target_multiplier( target, school );
-  return m;
 }
 
 double shaman_t::composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const
