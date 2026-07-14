@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68629 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68675 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -10410,7 +10410,7 @@ Description      : $?c2[Shield of the Righteous][Word of Glory] grants $s1% bonu
 Tooltip          : Armor increased by $w1%.
 
 Name             : Sanctuary (id=379021) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=7, col=6, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Protection [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -11351,7 +11351,7 @@ Proc Flags       : Yellow Melee
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1020878)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Denounce (2812), Shield of the Righteous (53600), Shield of the Righteous (415091)
                    Family Flags: 52
 #2 (id=1020879)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6) | Attributes: Suppress Points Stacking (6)
@@ -16921,7 +16921,7 @@ Family Flags     : 65
 Attributes       : Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1123220)  : School Damage (2): holy | Attributes: Add Target (Dest) Combat Reach to AOE (11)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.3 | Radius: 0 - 5 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.84 | Radius: 0 - 5 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc433718
 
 Name             : Hammer and Anvil (id=433718) [Spell Family (10), Passive] 
@@ -20209,7 +20209,7 @@ Tooltip          : Absorbs $w1 damage.
 Damage taken reduced by $w2%.
 
 Name             : Solace (id=1245891) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=5, col=6, max_rank=1, req_points=8]
+Talent Entry     : Protection [tree=spec, row=5, col=6, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -21719,7 +21719,7 @@ Description      : $@spelldesc1277038
 Tooltip          : Absorbing $w1 Physical damage.
 
 Name             : Instrument of the Divine (id=1277162) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=7, col=6, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Protection [tree=spec, row=5, col=6, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -22205,7 +22205,7 @@ Effects          :
 #1 (id=1319333)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1325331)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Enemies struck by Judgment or $?s204019[Blessed Hammer]?s53595[Hammer of the Righteous][Crusader Strike] take $s1% additional Holy damage. If they are struck by a critical strike the additional damage is increased by $s2%.
 
 Name             : Paladin Retribution 12.1 Class Set 2pc (id=1296660) [Spell Family (10), Passive, Hidden] 

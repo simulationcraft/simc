@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68629 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68675 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -1785,10 +1785,9 @@ Attributes       : Passive (6), Can Proc From Procs (122), Do Not Display Power 
 Effects          :
 #1 (id=68492)    : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-                   Modified By: Illuminated Thoughts (384060 effect#1)
 #2 (id=1164131)  : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Modified By: Archmage's Wrath (444968 effect#3)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+                   Modified By: Illuminated Thoughts (384060 effect#1), Archmage's Wrath (444968 effect#3)
 Description      : Casting Arcane spells has a $s2% chance to grant access to Arcane Missiles or make your next Arcane Explosion free.
 
 Name             : Time Warp (id=80353) [Spell Family (3)] 
@@ -2182,8 +2181,7 @@ Aura Interrupt   : Action (2), Interacting (10), Attacking (12), Mount (17), Lea
 Effects          :
 #1 (id=123208)   : Trigger Spell (64): Greater Invisibility
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 110960 | Target: Self (1)
-Description      : Makes you invisible and untargetable for $110960d, removing all threat. Any action taken cancels this effect.
-$?a382293[
+Description      : Makes you invisible and untargetable for $110960d, removing all threat. Any action taken cancels this effect.$?a382293[
 
 Increases your movement speed by ${$382293s1}% for $337278d.][]
 
@@ -2599,18 +2597,14 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Arcane Splinter (443763), Volatile Magic (444966), Volatile Magic (444967), Archmage's Wrath (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Arcane Pulse (1241462), Arcane Pulse (1243460), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863), Conflagration (1271173), Burnout (1271335), Winter's End (1280757), Prismatic Bolt (1295924), Prismatic Bolt (1295939)
                    Family Flags: 3
-Hotfixed         : Base Value (0 -> 12)
 #2 (id=191125)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Arcane Splinter (443763), Volatile Magic (444966), Volatile Magic (444967), Archmage's Wrath (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Arcane Pulse (1241462), Arcane Pulse (1243460), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863), Conflagration (1271173), Burnout (1271335), Winter's End (1280757), Prismatic Bolt (1295924), Prismatic Bolt (1295939)
                    Family Flags: 3
-Hotfixed         : Base Value (0 -> 12)
 #3 (id=191126)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 12)
 #4 (id=191127)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 12)
 #5 (id=191128)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 0.6769 | Target: Self (1)
                    Affected Spells: Frostfire Bolt (468655)
@@ -4504,22 +4498,6 @@ Effects          :
                    Family Flags: 50
 Description      : Reduces the cooldown of Invisibility by ${-$s1/1000} sec.
 
-Name             : Touch of the Magi (id=210725) [Spell Family (3), Passive] 
-Class            : Mage
-School           : Physical
-Spell Type       : None
-Labels           : 16: Class Spells
-                 : 17: Mage Spells
-                 : 292
-Internal Cooldown: 8.5 seconds
-Proc Chance      : 10%
-Proc Flags       : Magic Hostile Spell
-Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=312150)   : Apply Aura (6) | Proc Trigger Spell (42): Touch of the Magi
-                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 210824 | Target: Self (1)
-Description      : Arcane Blast has a $h% chance to apply Touch of the Magi, accumulating $s1% of the damage you deal to the target for $210824d, and then exploding for that amount of Arcane damage to the target and all nearby enemies.
-
 Name             : Mark of Aluneth (desc=Artifact) (id=210726) 
 Class            : Mage
 School           : Physical
@@ -4569,7 +4547,7 @@ Labels           : 16: Class Spells
                  : 6261
 Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Triggered By     : Touch of the Magi (210725), Touch of the Magi (321507)
+Triggered By     : Touch of the Magi (321507)
 Attributes       : DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Expires Offline (130), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
@@ -4580,7 +4558,7 @@ Effects          :
                    Affected School(s): Arcane
 #3 (id=1244528)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Enemy (6)
-Description      : $@spelldesc210725
+Description      : $@spelldesc321507
 Tooltip          : Will explode for $w1 Arcane damage upon expiration.
 
 Name             : Touch of the Magi (id=210833) [Spell Family (3)] 
@@ -6144,7 +6122,7 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 5947: Sunfury Execution (449349 effect#1), Mage Fire 12.1 Class Set 2pc (1296583 effect#1), Mage Fire 12.1 Class Set 4pc (1296584 effect#1), Mage Fire 12.1 Class Set 4pc (1296584 effect#2)
+                 : 5947: Sunfury Execution (449349 effect#1), Mage Fire 12.1 Class Set 4pc (1296584 effect#1), Mage Fire 12.1 Class Set 4pc (1296584 effect#2)
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423)
@@ -6156,7 +6134,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Flamestrike (2120), Pyroblast (11366), Pyroblast (460475), Flamestrike (460476), Flamestrike (1254851), Pyroblast (1262863)
                    Family Flags: 2, 22
-                   Modified By: Mage Fire 12.1 Class Set 2pc (1296583 effect#1)
 #3 (id=1319844)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Flamestrike (2120), Pyroblast (11366), Pyroblast (460475), Flamestrike (460476), Flamestrike (1254851), Pyroblast (1262863)
@@ -9898,8 +9875,8 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1016369)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 3 | Target: Self (1)
+#1 (id=1016369)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Clearcasting (79684)
                    Family Flags: 13
 Description      : Clearcasting has a $s1% increased chance to proc.
@@ -10210,7 +10187,7 @@ Effects          :
 #2 (id=1292698)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1588 (Category) | Target: Self (1)
                    Affected Spells (Category): Frost Nova (122)
-Description      : The cooldown of your loss of control spells are reduced by ${-$s1/1000} sec.
+Description      : The cooldowns of your loss of control spells are reduced by ${-$s1/1000} sec.
 
 Name             : Blast Wave (id=389631) [Spell Family (3)] 
 Class            : Mage
@@ -10973,7 +10950,7 @@ Effects          :
                    Base Value: -180000 | Scaled Value: -180000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Mass Invisibility (414664)
                    Family Flags: 103
-Description      : The cooldown of Mass Invisibility is reduced by ${$s1/-60000} min and can affect allies in combat.
+Description      : The cooldown of Mass Invisibility is reduced by ${$s1/-60000} min and it can affect allies in combat.
 
 Name             : Fuel the Fire (id=416094) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Fire [tree=spec, row=3, col=6, max_rank=1, req_points=0]
@@ -15294,7 +15271,7 @@ Effects          :
 #2 (id=1319996)  : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : $@spelldesc1244090
-Tooltip          : Healing $s2% of your maximum health every $o2.
+Tooltip          : Healing $s2% of your maximum health every $t2 sec.
 
 Name             : Temporal Realignment (id=1244093) [Spell Family (3)] 
 Class            : Mage
@@ -17939,9 +17916,8 @@ Labels           : 16: Class Spells
                  : 6656
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1319244)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Misc Value: 12 | Misc Value 2: 5947 (Label) | Target: Self (1)
-                   Affected Spells (Label): Pyroclasm (269651)
+#1 (id=1319244)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Pyroclasm causes Flamestrike and Pyroblast to always critically strike.
 
 Name             : Mage Fire 12.1 Class Set 4pc (id=1296584) [Spell Family (3), Passive, Hidden] 
@@ -18127,6 +18103,7 @@ Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Triggered By     : Mage Frost 12.1 Class Set 4pc (1296586)
 Attributes       : No Threat (42), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Class Ability Procs (416)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Disconnect (42), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1339615)  : Apply Aura (6) | Periodic Dummy (226): every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
