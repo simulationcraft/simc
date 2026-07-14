@@ -1179,6 +1179,7 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> strafing_run;
     propagate_const<buff_t*> rising_fury;
     propagate_const<buff_t*> risen_fury;
+    propagate_const<buff_t*> unbound_flame;
 
     // Preservation
 
@@ -1345,6 +1346,8 @@ struct evoker_t : public player_t
     player_talent_t rising_fury_2;
     player_talent_t rising_fury_3;
     const spell_data_t* risen_fury_buff;  // 1271799
+    const spell_data_t* unbound_flame_buff;  // 1292323
+    const spell_data_t* unbound_flame_spell;  // 1292321
 
     // Preservation Traits
 
@@ -4371,7 +4374,7 @@ struct empowered_release_spell_t : public empowered_release_t<evoker_spell_t>
 
     if ( background )
       return;
-
+        
     if ( p()->sets->has_set_bonus( EVOKER_DEVASTATION, TWW2, B4 ) )
     {
       p()->buff.jackpot->expire();
@@ -5262,8 +5265,10 @@ struct eternity_surge_t : public empowered_charge_spell_t
         damage_state->target         = s->target;
         shattering_star->snapshot_state( damage_state, result_amount_type::DMG_DIRECT );
 
-        damage_state->da_multiplier *=
-            1 + ( cast_state( s )->empower - 1 ) * p()->talent.shattering_stars->effectN( 1 ).percent();
+        auto empower_level =
+            p()->sets->has_set_bonus( EVOKER_DEVASTATION, MID2, B2 ) ? max_empower : cast_state( s )->empower;
+
+        damage_state->da_multiplier *= 1 + ( empower_level - 1 ) * p()->talent.shattering_stars->effectN( 1 ).percent();
 
         shattering_star->schedule_execute( damage_state );
       }
@@ -5493,6 +5498,7 @@ struct eruption_t : public essence_spell_t
     void execute() override
     {
       evoker_spell_t::execute();
+
       if ( p()->talent.accretion.ok() )
       {
         p()->cooldown.upheaval->adjust( upheaval_cdr );
@@ -5627,6 +5633,12 @@ struct eruption_t : public essence_spell_t
 
           if ( ++eruptions >= mass_eruption_max_targets )
             break;
+        }
+
+        if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+        {
+          timespan_t cdr = p()->talent.scalecommander.wingleader->effectN( 2 ).time_value() * mass_eruption_targets();
+          p()->cooldown.breath_of_eons->adjust( -cdr );
         }
       }
 
@@ -6233,6 +6245,12 @@ struct disintegrate_t : public essence_spell_t
       auto buff_size = ( max_targets_ - targets_ ) * mass_disint_mult;
       buff_size      = buff_size > 0 ? buff_size : 0;
       p()->buff.mass_disintegrate_ticks->trigger( num_ticks, buff_size, -1, buff_duration );
+
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        timespan_t cdr = p()->talent.scalecommander.wingleader->effectN( 1 ).time_value() * targets_;
+        p()->cooldown.deep_breath->adjust( -cdr );
+      }
     }
 
     essence_spell_t::execute();
@@ -7093,6 +7111,49 @@ struct dragonrage_t : public evoker_spell_t
   }
 };
 
+struct unbound_flame_t : public evoker_spell_t
+{
+  struct unbound_flame_damage_t : public evoker_spell_t
+  {
+    unbound_flame_damage_t( evoker_t* p )
+      : evoker_spell_t( "unbound_flame_damage", p, p->talent.unbound_flame_spell->effectN( 1 ).trigger() )
+    {
+      dual                = true;
+      aoe                 = -1;
+      reduced_aoe_targets = 5;
+      base_crit           = 1;
+    }
+
+    bool use_full_mastery() const override
+    {
+      return p()->talent.tyranny.ok();
+    }
+  };
+
+  unbound_flame_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "unbound_flame", p, p->talent.unbound_flame_spell, options_str )
+  {
+    impact_action = p->get_secondary_action<unbound_flame_damage_t>( "unbound_flame_damage" );
+    add_child( impact_action );
+  }
+
+  bool ready() override
+  {
+    if ( !p()->buff.unbound_flame->check() )
+      return false;
+
+    return evoker_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+
+    p()->buff.essence_burst->trigger();
+    p()->buff.unbound_flame->decrement();
+  }
+};
+
 struct fate_mirror_damage_t : public evoker_external_action_t<spell_t>
 {
 protected:
@@ -7910,7 +7971,8 @@ public:
   {
     base::impact( s );
 
-    if ( p( s )->talent.scalecommander.wingleader.ok() && s->chain_target == 0 )
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p( s )->talent.scalecommander.wingleader.ok() &&
+         s->chain_target == 0 )
     {
       cooldown_t* cd = get_cd_for_player( p( s ) );
       size_t idx     = p( s )->specialization() == EVOKER_AUGMENTATION ? 3 : 1;
@@ -9713,6 +9775,8 @@ void evoker_t::init_spells()
   talent.rising_fury_2                = find_talent_spell( talent_tree::SPECIALIZATION, 1271796 );
   talent.rising_fury_3                = find_talent_spell( talent_tree::SPECIALIZATION, 1271788 );
   talent.risen_fury_buff              = find_spell( 1271799 );
+  talent.unbound_flame_buff           = find_spell( 1292323 );
+  talent.unbound_flame_spell          = find_spell( 1292321 );
   // Preservation Traits
 
   // Augmentation Traits
@@ -10102,14 +10166,18 @@ void evoker_t::create_buffs()
   buff.rising_fury = MBF( talent.rising_fury_1.ok(), this, "rising_fury", talent.rising_fury_buff )
                          ->set_duration( 0_s )
                          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                         ->add_stack_change_callback( [ this ]( buff_t*, int old, int n ) {
-                           if ( old && !n && talent.rising_fury_3.ok() )
-                           {
-                             buff.risen_fury->trigger( old, old * buff.risen_fury->buff_duration() );
-                           }
-                         } )
                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                          ->set_default_value_from_effect( 1 );
+
+  if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+  {
+    buff.rising_fury->add_stack_change_callback( [ this ]( buff_t*, int old, int n ) {
+      if ( old && !n && talent.rising_fury_3.ok() )
+      {
+        buff.risen_fury->trigger( old, old * buff.risen_fury->buff_duration() );
+      }
+    } );
+  }
 
   buff.risen_fury = MBF( talent.rising_fury_3.ok(), this, "risen_fury", talent.risen_fury_buff )
                         ->set_freeze_stacks( false )
@@ -10117,18 +10185,49 @@ void evoker_t::create_buffs()
                         ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                         ->set_default_value_from_effect( 1 );
 
+  
+  buff.unbound_flame = MBF( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && talent.rising_fury_3.ok(), this, "unbound_flame",
+                            talent.unbound_flame_buff )
+                           ->set_reverse( true );
+
   if ( talent.rising_fury_1.enabled() )
   {
-    buff.dragonrage->add_stack_change_callback( [ this ]( buff_t*, int old, int n ) {
-      if ( n && !old )
-      {
-        buff.rising_fury->trigger();
-      }
-      else
-      {
-        buff.rising_fury->expire();
-      }
-    } );
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+    {
+      buff.dragonrage->add_stack_change_callback( [ this ]( buff_t*, int old, int n ) {
+        if ( n && !old )
+        {
+          buff.rising_fury->trigger();
+        }
+        else
+        {
+          buff.rising_fury->expire();
+        }
+      } );
+    }
+    else
+    {
+      buff.dragonrage->add_stack_change_callback( [ this ]( buff_t*, int old, int n ) {
+        if ( n && !old )
+        {
+          buff.rising_fury->set_freeze_stacks( false );
+          buff.rising_fury->trigger();
+        }
+        else
+        {
+          if ( talent.rising_fury_3.enabled() )
+          {
+            buff.unbound_flame->trigger();
+            buff.rising_fury->expire( buff.rising_fury->stack() * talent.rising_fury_3->effectN( 1 ).time_value() );
+            buff.rising_fury->set_freeze_stacks( true );
+          }
+          else
+          {
+            buff.rising_fury->expire();
+          }
+        }
+      } );
+    }
   }
 
   buff.fury_of_the_aspects = MB( this, "fury_of_the_aspects", find_class_spell( "Fury of the Aspects" ) )
@@ -10591,6 +10690,8 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
     return new oppressing_roar_t( this, options_str );
   if ( name == "fury_of_the_aspects" )
     return new fury_of_the_aspects_t( this, options_str );
+  if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && name == "unbound_flame" )
+    return new unbound_flame_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
