@@ -81,11 +81,10 @@ struct profileset_controller_t : private noncopyable
 
 protected:
   friend profileset_controller_data_wrapper_t;
-  static std::unordered_map<std::string, factory_fn_pair_t> factory;
 
 public:
-  static bool register_controller( std::string, factory_fn_pair_t&& );
-  static bool controller_exists( std::string );
+  static bool register_controller( sim_t* sim, std::string, factory_fn_pair_t&& );
+  static bool controller_exists( sim_t* sim, std::string );
 
   using data_t = profileset_controller_data_t;
   static void evaluate( sim_t* sim, call_point_e call_point );

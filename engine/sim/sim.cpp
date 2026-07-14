@@ -1551,6 +1551,8 @@ sim_t::sim_t()
     count_overheal_as_heal( false ),
     scaling_normalized( 1.0 ),
     merge_enemy_priority_dmg( false ),
+    profileset_controller_factory(
+        { { "set_bonus_enabled", profileset_controller::create_fn_pair<set_bonus_enabled_t>() } } ),
     profileset_controller(),
     profileset_controller_data(),
     // Multi-Threading
@@ -2899,7 +2901,7 @@ void sim_t::init()
   {
     for ( const auto& [ key, values ] : profileset_controller_options )
     {
-      if ( profileset_controller_t::controller_exists( key ) )
+      if ( profileset_controller_t::controller_exists( this, key ) )
         for ( const auto& value : values )
           profileset_controller_data.emplace_back( key, value );
       else

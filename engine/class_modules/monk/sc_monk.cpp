@@ -7024,7 +7024,7 @@ void monk_t::init_finished()
   parse_player_effects();
 
   profileset_controller_t::register_controller(
-      "valid_talents", profileset_controller::create_fn_pair<profileset_control::valid_talents_t>() );
+      sim, "valid_talents", profileset_controller::create_fn_pair<profileset_control::valid_talents_t>() );
   std::vector<std::string> rhs = { fmt::format( "player={},count=13", name() ) };
   sim->profileset_controller_options.emplace( "valid_talents", rhs );
 }

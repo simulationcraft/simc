@@ -585,6 +585,7 @@ struct sim_t : private sc_thread_t
   bool merge_enemy_priority_dmg;
 
   // sim control
+  std::unordered_map<std::string, profileset_controller_t::factory_fn_pair_t> profileset_controller_factory;
   std::vector<std::unique_ptr<profileset_controller_t>> profileset_controller;
   std::deque<profileset_controller_data_wrapper_t> profileset_controller_data;
   opts::map_list_t profileset_controller_options;

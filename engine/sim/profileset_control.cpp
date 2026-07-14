@@ -8,9 +8,6 @@
 #include "sc_enums.hpp"
 #include "sim.hpp"
 
-std::unordered_map<std::string, profileset_controller_t::factory_fn_pair_t> profileset_controller_t::factory = {
-    { "set_bonus_enabled", profileset_controller::create_fn_pair<set_bonus_enabled_t>() } };
-
 std::atomic_uint profileset_controller_data_wrapper_t::id_generator;
 
 profileset_controller_data_t::profileset_controller_data_t( std::string_view key, std::string_view options )
@@ -70,18 +67,14 @@ void profileset_controller_data_t::report_json_profileset( js::JsonOutput& root 
 }
 
 profileset_controller_data_wrapper_t::profileset_controller_data_wrapper_t( std::string key, std::string_view options )
-  : mutex(), id( id_generator++ ), key( key ), options( options )
+  : mutex(), id( id_generator++ ), key( key ), options( options ), data()
 {
-  if ( const auto& value = profileset_controller_t::factory.find( key );
-       value != profileset_controller_t::factory.end() )
-    data = value->second.second( key, options );
-  assert( data );
 }
 
 void profileset_controller_data_wrapper_t::construct_controller( sim_t* sim )
 {
-  if ( const auto& value = profileset_controller_t::factory.find( key );
-       value != profileset_controller_t::factory.end() )
+  if ( const auto& value = sim->profileset_controller_factory.find( key );
+       value != sim->profileset_controller_factory.end() )
   {
     auto controller = value->second.first( sim, id );
     controller->create_options();
@@ -97,23 +90,27 @@ void profileset_controller_data_wrapper_t::construct_controller( sim_t* sim )
                          key, name, value );
                    return status;
                  } );
+
+    data = value->second.second( key, options );
+
     sim->profileset_controller.emplace_back( std::move( controller ) );
     return;
   }
   assert( false && "No factory fn for key found." );
 }
 
-bool profileset_controller_t::register_controller( std::string key, profileset_controller_t::factory_fn_pair_t&& value )
+bool profileset_controller_t::register_controller( sim_t* sim, std::string key,
+                                                   profileset_controller_t::factory_fn_pair_t&& value )
 {
-  if ( factory.find( key ) != factory.end() )
+  if ( sim->profileset_controller_factory.find( key ) != sim->profileset_controller_factory.end() )
     return false;
-  factory.emplace( key, value );
+  sim->profileset_controller_factory.emplace( key, value );
   return true;
 }
 
-bool profileset_controller_t::controller_exists( std::string key )
+bool profileset_controller_t::controller_exists( sim_t* sim, std::string key )
 {
-  return factory.find( key ) != factory.end();
+  return sim->profileset_controller_factory.find( key ) != sim->profileset_controller_factory.end();
 }
 
 void profileset_controller_t::evaluate( sim_t* sim, call_point_e call_point )
@@ -142,8 +139,7 @@ void profileset_controller_t::evaluate( sim_t* sim, call_point_e call_point )
   assert( controller->sim == sim );
   assert( controller->parent == sim->parent );
 
-  controller->set_exit_reason(
-      { sim->profileset_name, call_point, controller->reason() } );
+  controller->set_exit_reason( { sim->profileset_name, call_point, controller->reason() } );
 
   sim->canceled = true;
   sim->error( error_level_e::TRIVIAL, "{}", controller->message( call_point ) );
@@ -164,8 +160,7 @@ profileset_controller_t::profileset_controller_t( sim_t* sim, unsigned int id )
 const std::string profileset_controller_t::message( call_point_e call_point )
 {
   std::string msg = fmt::format( "Profileset {} was canceled by Profileset Controller {} after {}",
-                                 sim->profileset_name, name(),
-                                 profileset_controller::call_point_string( call_point ) );
+                                 sim->profileset_name, name(), profileset_controller::call_point_string( call_point ) );
   if ( call_point == POST_ITER )
     msg += std::to_string( sim->current_iteration );
 
