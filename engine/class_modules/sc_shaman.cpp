@@ -5984,6 +5984,12 @@ struct crash_lightning_t : public shaman_attack_t
 
     if ( p()->dbc->ptr && p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B4 ) )
     {
+      if ( sim->debug )
+      {
+        sim->out_debug.print( "Player '{}' adding mid2_enh_4pc snapshot new_mul={} n_values={}",
+          p()->name(), p()->buff.mid2_enh_4pc->check_stack_value(), p()->mid2_enh_4pc_mul.size() );
+      }
+      p()->mid2_enh_4pc_mul.emplace_back( p()->buff.mid2_enh_4pc->check_stack_value() );
       p()->buff.mid2_enh_4pc->expire();
     }
   }
@@ -12535,25 +12541,38 @@ void shaman_t::create_buffs()
       // With apex talent, the async nature of the 4pc set bonus is enabled
       else
       {
-        // New stack, snapshot buff value
-        if ( old < cur )
-        {
-          mid2_enh_4pc_mul.emplace_back( buff.mid2_enh_4pc->check_stack_value() );
-        }
         // Async stack expired, buff still up
-        else if ( cur > 0 && old > cur )
+        if ( cur > 0 && old > cur )
         {
+          auto v = mid2_enh_4pc_mul.front();
           mid2_enh_4pc_mul.pop_front();
+          if ( sim->debug )
+          {
+            sim->out_debug.print(
+              "Player '{}' dropping oldest mid2_enh_4pc snapshot, old_mul={}, n_values={}",
+              name(), v, mid2_enh_4pc_mul.size() );
+          }
         }
         // Max stacks, destroy oldest (should not be hit in normal profiles)
         else if ( cur > 0 && old == cur )
         {
+          auto v = mid2_enh_4pc_mul.front();
           mid2_enh_4pc_mul.pop_front();
           mid2_enh_4pc_mul.emplace_back( buff.mid2_enh_4pc->check_stack_value() );
+          if ( sim->debug )
+          {
+            sim->out_debug.print(
+              "Player '{}' dropping&adding mid2_enh_4pc snapshot new_mul={} old_mul={}, n_values={}",
+              name(), mid2_enh_4pc_mul.size(), v, buff.mid2_enh_4pc->check_stack_value() );
+          }
         }
         // Buff gone, clear the stack
-        else
+        else if ( cur == 0 )
         {
+          if ( sim->debug )
+          {
+            sim->out_debug.print( "Player '{}' dropping all mid2_enh_4pc snapshots", name() );
+          }
           mid2_enh_4pc_mul.clear();
         }
       }
