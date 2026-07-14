@@ -1312,6 +1312,9 @@ public:
     // Fire Nova from Voltaic Blaze
     action_t* fire_nova;
 
+    // Fire Nova explosion (MID2 Enhancement 2 PC)
+    action_t* fire_nova_explosion;
+
     // Doom Winds triggred by Enhancement Ascendance
     action_t* doom_winds_asc;
 
@@ -2270,7 +2273,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
     debuff.mid2_enh_2pc = make_buff( *this, "burning_core", p->find_spell( 1299975 ) )
         ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
         ->set_tick_callback( [ p, this ]( buff_t*, int, timespan_t ) {
-          p->action.fire_nova->execute_on_target( this->target );
+          p->action.fire_nova_explosion->execute_on_target( this->target );
         } )
         ->set_trigger_spell( p->sets->set( SHAMAN_ENHANCEMENT, MID2, B2 ) );
   }
@@ -10572,6 +10575,12 @@ void shaman_t::create_actions()
   if ( specialization() == SHAMAN_ENHANCEMENT )
   {
     action.doom_winds = new doom_winds_damage_t( this, variant_flag( spell_variant::NORMAL ) );
+  }
+
+  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B2 ) )
+  {
+    action.fire_nova_explosion = new fire_nova_explosion_t( this,
+      variant_flag( spell_variant::NORMAL ) );
   }
 }
 
