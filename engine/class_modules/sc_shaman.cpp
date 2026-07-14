@@ -2791,7 +2791,7 @@ public:
     if ( ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
            p()->buff.storm_elemental->check() && p()->talent.primal_elementalist.ok() ) )
     {
-      m *= 1.0 + p()->talent.elemental_unity->effectN( 3 ).percent();
+      m *= 1.0 + p()->talent.elemental_unity->effectN( p()->dbc->ptr ? 1 : 3 ).percent();
     }
 
     if ( ( affected_by_flametongue_da && p()->talent.flametongue_weapon.ok() &&
@@ -2820,7 +2820,7 @@ public:
     if ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() &&
          p()->talent.primal_elementalist.ok() )
     {
-      m *= 1.0 + p()->talent.elemental_unity->effectN( 1 ).percent();
+      m *= 1.0 + p()->talent.elemental_unity->effectN( p()->dbc->ptr ? 2 : 1 ).percent();
     }
 
     if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
@@ -2832,7 +2832,7 @@ public:
     if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
         p()->talent.primal_elementalist.ok() )
     {
-      m *= 1.0 + p()->talent.elemental_unity->effectN( 3 ).percent();
+      m *= 1.0 + p()->talent.elemental_unity->effectN( p()->dbc->ptr ? 2 : 3 ).percent();
     }
 
     if ( ( affected_by_flametongue_ta && p()->talent.flametongue_weapon.ok() &&
@@ -12536,7 +12536,10 @@ void shaman_t::create_buffs()
       if ( !talent.storm_unleashed_3.ok() )
       {
         mid2_enh_4pc_mul.clear();
-        mid2_enh_4pc_mul.emplace_back( buff.mid2_enh_4pc->check_stack_value() );
+        if ( cur == 1 )
+        {
+          mid2_enh_4pc_mul.emplace_back( buff.mid2_enh_4pc->check_stack_value() );
+        }
       }
       // With apex talent, the async nature of the 4pc set bonus is enabled
       else
