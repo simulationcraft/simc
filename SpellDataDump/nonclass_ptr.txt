@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68629 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68675 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -189116,8 +189116,8 @@ Attributes       : Allow Aura While Dead (116), Not In Spellbook Until Learned (
 Effects          :
 #1 (id=1119654)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Embrace infinity, randomizing the look of your customizable skyriding mounts.
-Tooltip          : Each time you mount a customizable skyriding mount, the customizations will be randomized.
+Description      : Embrace infinity, randomizing the look of your customizable Dragonflight skyriding mounts.
+Tooltip          : Each time you mount a customizable Dragonflight skyriding mount, the customizations will be randomized.
 
 Name             : Cloak of Infinite Potential (id=431760) [Hidden] 
 School           : Physical
@@ -239559,6 +239559,7 @@ Spell Type       : None
 Range            : 40 yards
 GCD              : 0.5 seconds
 Cooldown         : 180 seconds
+Attributes       : Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=1234775)  : Trigger Spell (64): Thorn Bloom
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1238474 | Radius: 10 yards | Target: at Enemy in Area (16)
@@ -240602,7 +240603,8 @@ Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted 
 Effects          :
 #1 (id=1240514)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Sunfire Sash | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 2475.685 (coefficient=19.37103) | Trigger Spell: 1241522 | Target: Self (1)
-Description      : Your spells and abilities have a chance to deal $s0 Radiant damage to your current target.
+Description      : Your spells and abilities have a chance to deal ${$<rolemult>*$s0} Radiant damage to your current target.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Sunfire Sash (id=1241522) [Passive] 
 School           : Holyfire
@@ -244851,6 +244853,7 @@ Description      : You are embraced by the Light, increasing Mastery by $s2.
 
 Your damaging spells and abilities can call a beam of radiant light nearby. Standing in the light blesses you with $s3 Mastery while you stand in it.
 
+Tooltip          : You are embraced by the Light, increasing Mastery by $s2.
 
 Name             : Murder Row Fishhook (id=1250528) 
 School           : Physical
@@ -245552,7 +245555,8 @@ Description      : Your spells and abilities have a chance to call upon the Phoe
 If your target is friendly, they are healed for ${$<healingrolemult>*$s4*($1251908d/$1251908t)} over $1251908d. If your target is an enemy, they instead suffer ${$<rolemult>*$s3*($1251907d/$1251907t)} Fire damage over $1251907d.
 
 Every unique socketed gem color will strengthen the flames by $s2%.
-Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+$healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
 
 Name             : Light Company Guidon (id=1251817) [Passive] 
 School           : Physical
@@ -252255,7 +252259,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1279383)  : Trigger Spell (64): Alnscorned Manifestation
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1266701
-Description      : $@spelldesc1256896
+Description      : Casting spells and abilities manifests unstable Alnscorned and consumes their essence to grant you $1256896s1 $pri for $1266687d. Multiple applications may overlap
 Tooltip          : Casting spells and abilities grants $@spellname1266687.
 
 Name             : Alnscorned Essence (id=1266687) 
@@ -254284,7 +254288,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Labels           : 6782
 Triggered By     : Rune of Void-Touched Orbs (1286716), Rune of Unleashed Fire (1286970)
-Attributes       : Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
+Attributes       : Not an Action (92), Do Not Display Range (126), Not an Attack (194), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1305315)  : Apply Aura (6) | Periodic Damage (3): cosmic every 1 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -254962,7 +254966,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Do Not Display Cast Time (441), Unknown (489)
+Attributes       : No Aura Cancel (31), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Aura Points On Client (268), Do Not Display Cast Time (441), Unknown (489)
 Effects          :
 #1 (id=1307259)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6), Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -255257,41 +255261,61 @@ Description      : Temporarily grants your shoulders a magical illusion of natur
 
 |cnNORMAL_FONT_COLOR:Transitories, Tonics, and Tools - Mastering Mirages|R 
 
-Name             : Ophidian Maw (id=1291580) [Passive] 
+Name             : Ophidian Maw (id=1291580) 
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 90
+Duration         : Aura (infinite)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic, Unknown 38
 Triggered By     : Ophidian Maw (1291657)
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1311033)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 45050.31 (coefficient=352.4968) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 90776 (coefficient=710.278) | Target: Self (1)
 #2 (id=1327010)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #3 (id=1328578)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $?pc150463[Chance to call a giant snake that erupts from below, gnashing at the target's location, dealing Nature damage and executing low-health Poisoned enemies.][|cnITEM_POOR_COLOR:Chance to call a giant snake that erupts from below, gnashing at the target's location, dealing Nature damage and executing low-health Poisoned enemies.]
+Description      : Damaging an enemy has a chance to call a giant snake that erupts from below, gnashing at the target's location and dealing Nature damage split between nearby enemies.
+
+Any Poisoned non-boss creature damaged below $s2% health is executed.
+Tooltip          : Damaging an enemy has a chance to call a giant snake that erupts from below, gnashing at the target's location and dealing Nature damage split between nearby enemies.
+
+Any Poisoned non-boss creature damaged below $s2% health is executed.
 
-Name             : Ula'tek's Gift (id=1291581) [Passive] 
+Name             : Ula'tek's Gift (id=1291581) 
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 90
+Duration         : Aura (infinite)
 Internal Cooldown: 2 seconds
 Proc Chance      : 101%
 Real PPM         : 4 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic, Unknown 38
 Triggered By     : Corrosive Fang (1291832)
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1311034)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 543.4265 (coefficient=4.252048) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1095 (coefficient=8.567842) | Target: Self (1)
 #2 (id=1329130)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=1333885)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : $?pc150463[Chance to Poison your target with Ula'Tek's Gift. Applying enough stacks causes the Gift to deal its remaining damage before removing itself. While you are Poisoned, apply additional stacks.][|cnITEM_POOR_COLOR:Chance to Poison your target with Ula'Tek's Gift. Applying enough stacks causes the Gift to deal its remaining damage before removing itself. While you are Poisoned, apply additional stacks.]
+#4 (id=1341894)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Description      : Your harmful spells and abilities have a chance to afflict your target with $s2 stacks of Ula'Tek's Gift, dealing Nature damage per application every $1289148t sec for $1289148d.
+
+While you are Poisoned, apply $s3 additional stacks.
+
+Upon applying $s4 stacks to a target, the Gift Corrodes, dealing the remainder of its damage immediately before removing itself.
+Tooltip          : Your harmful spells and abilities have a chance to afflict your target with $s2 stacks of Ula'Tek's Gift, dealing Nature damage per application every $1289148t sec for $1289148d.
+
+While you are Poisoned, apply $s3 additional stacks.
+
+Upon applying $s4 stacks to a target, the Gift Corrodes, dealing the remainder of its damage immediately before removing itself.
 
 Name             : Ophidian Maw (id=1291657) 
 School           : Nature
@@ -255439,58 +255463,80 @@ Effects          :
 Description      : Your attacks have a high chance to apply Venomfang, dealing ${$s1*6*$<rolemult>} Nature damage over $1306635d before bursting to deal $s2 Nature damage to nearby enemies. Multiple applications may overlap.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
-Name             : Viperine Grasp (id=1291723) [Passive] 
+Name             : Viperine Grasp (id=1291723) 
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 90
+Duration         : Aura (infinite)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Unknown 38
 Triggered By     : Viperine Grasp (1291878)
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1311293)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 13515.08 (coefficient=105.7489) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 27233 (coefficient=213.085) | Target: Self (1)
 #2 (id=1311580)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #3 (id=1328160)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : $?pc150463[Chance to pull enemies to your current target's location, dealing Nature damage. Additionally pulls in Poisoned enemies.][|cnITEM_POOR_COLOR:Chance to pull enemies to your current target's location, dealing Nature damage. Additionally pulls in Poisoned enemies.]
+Description      : Your harmful spells and abilities have a chance to pull up to $s2 nearby enemies to your current target's location, dealing Nature damage to affected targets.
+
+Up to $s3 nearby Poisoned enemies are also pulled in.
+Tooltip          : Your harmful spells and abilities have a chance to pull up to $s2 nearby enemies to your current target's location, dealing Nature damage to affected targets.
+
+Up to $s3 nearby Poisoned enemies are also pulled in.
 
-Name             : Mephitic Cloud (id=1291724) [Passive] 
+Name             : Mephitic Cloud (id=1291724) 
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 90
+Duration         : Aura (infinite)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Mephitic Cloud (1302014), Mephitic Cloud (1302015)
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1311296)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 375.6273 (coefficient=2.939101) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 756.9999 (coefficient=5.923156) | Target: Self (1)
 #2 (id=1327014)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2704.615 (coefficient=21.1623) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5450 (coefficient=42.6436) | Target: Self (1)
 #3 (id=1329353)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : $?pc150463[Chance during combat to apply Mephitic Cloud to nearby units. Affected allies' attacks Poison their target, dealing additional Nature damage over time, while affected enemies' attacks additionally heal their target.][|cnITEM_POOR_COLOR:Chance during combat to apply Mephitic Cloud to nearby units. Affected allies' attacks Poison their target, dealing additional Nature damage over time, while affected enemies' attacks additionally heal their target.]
+Description      : Chance during combat to apply Mephitic Cloud to nearby party members and enemies for $1292064d.
+
+Afflicted allies' spells and abilities Poison their target, dealing Nature damage over $1302015d, while afflicted enemies' spells and abilities additionally heal their target.
 
-Name             : Gorgoneion Gaze (id=1291725) [Passive] 
+Tooltip          : Chance during combat to apply Mephitic Cloud to nearby party members and enemies for $1292064d.
+
+Afflicted allies' spells and abilities Poison their target, dealing Nature damage over $1302015d, while afflicted enemies' spells and abilities additionally heal their target.
+
+Name             : Gorgoneion Gaze (id=1291725) 
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 90
+Duration         : Aura (infinite)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Triggered By     : Gorgoneion Gaze (1302040)
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow during spell override (404)
 Effects          :
 #1 (id=1311302)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 7512.686 (coefficient=58.78312) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 15138 (coefficient=118.4475) | Target: Self (1)
 #2 (id=1311303)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #3 (id=1328155)  : Apply Aura (6) | Trigger Spell Based on Health% (468)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Target: Self (1)
-Description      : $?pc150463[Dropping to low health petrifies nearby enemies. When they break free, enemies become Poisoned and slowed.][|cnITEM_POOR_COLOR:Dropping to low health petrifies nearby enemies. When they break free, enemies become Poisoned and slowed.]
+Description      : Upon dropping below $s3% health, petrify all enemies within 10 yards for $1292117d. Petrified targets are stunned and invulnerable.
+
+When they break free, enemies are Poisoned, taking Nature damage every $1302040t sec and slowed by $s2% for $1302040d. ($1302873d Cooldown)
+Tooltip          : Upon dropping below $s3% health, petrify all enemies within 10 yards for $1292117d. Petrified targets are stunned and invulnerable.
+
+When they break free, enemies are Poisoned, taking Nature damage every $1302040t sec and slowed by $s2% for $1302040d. ($1302873d Cooldown)
 
 Name             : Bite of Zul'jan (id=1291726) [Passive] 
 School           : Physical
@@ -255866,7 +255912,7 @@ Effects          :
 #1 (id=1311588)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 64464.67 (coefficient=504.4047) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1335718)  : Dummy (3)
-                   Base Value: 60 | Scaled Value: 60
+                   Base Value: 30 | Scaled Value: 30
 #3 (id=1335902)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 50 yards | Target: Self (1)
 
@@ -256066,22 +256112,29 @@ Effects          :
 Description      : $@spelldesc1292114
 Tooltip          : $@spelldesc1292114
 
-Name             : Lithic Plumage (id=1292159) [Passive] 
+Name             : Lithic Plumage (id=1292159) 
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 90
+Duration         : Aura (infinite)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1312025)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 105179.6 (coefficient=822.9791) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 211936 (coefficient=1658.296) | Target: Self (1)
 #2 (id=1327017)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 5048.615 (coefficient=39.50296) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 10173 (coefficient=79.59877) | Target: Self (1)
 #3 (id=1327018)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
-Description      : $?pc150463[Taking damage has a chance to fortify you, reducing incoming damage. Nearby Poisoned enemies increase this effect.][|cnITEM_POOR_COLOR:Taking damage has a chance to fortify you, reducing incoming damage. Nearby Poisoned enemies increase this effect.]
+Description      : Taking damage has a chance to fortify you, reducing incoming damage by $s3% up to a cap.
+
+The damage cap is increased for each nearby Poisoned enemy.
+Tooltip          : Taking damage has a chance to fortify you, reducing incoming damage by $s3% up to a cap.
+
+The damage cap is increased for each nearby Poisoned enemy.
 
 Name             : Lithic Plumage (id=1292166) 
 School           : Physical
@@ -256136,21 +256189,24 @@ Tooltip          : When Ula'Tek's Gift erupts, apply $s1 stacks split between th
 $@spellicon1289148$@spellname1289148
 $@spelldesc1289148
 
-Name             : Ouroboric Cycle (id=1292247) [Passive] 
+Name             : Ouroboric Cycle (id=1292247) 
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 90
+Duration         : Aura (infinite)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
+Triggered By     : Tertius (1302055), Secundus (1302060), Primus (1302061)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1312138)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 96.97832 (coefficient=0.739838) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 117.888 (coefficient=0.899356) | Target: Self (1)
 #2 (id=1327027)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 72.59827 (coefficient=0.553845) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 88.25138 (coefficient=0.673261) | Target: Self (1)
 #3 (id=1327028)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 261.8299 (coefficient=1.997474) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 497.9999 (coefficient=3.799192) | Target: Self (1)
 #4 (id=1327029)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #5 (id=1327030)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
@@ -256159,7 +256215,16 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #7 (id=1329368)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : $?pc150463[Chance to begin an Ouroboric Cycle, increasing all statistics in sequence. Slaying an enemy extends the Cycle. While you are Poisoned, Cycle durations are extended.][|cnITEM_POOR_COLOR:Chance to begin an Ouroboric Cycle, increasing all statistics in sequence. Slaying an enemy extends the Cycle. While you are Poisoned, Cycle durations are extended.]
+Description      : Chance during combat to begin an Ouroboric Cycle, increasing all Tertiaries for $1302055d, then all Secondaries for $1302060d, then your $pri for $1302061d.
+
+In this state, slaying an enemy causes $s5 additional Cycle to occur after the last.
+
+While you are Poisoned, each Cycle's duration is extended by $s5 sec.
+Tooltip          : Chance during combat to begin an Ouroboric Cycle, increasing all Tertiaries for $1302055d, then all Secondaries for $1302060d, then your $pri for $1302061d.
+
+In this state, slaying an enemy causes $s5 additional Cycle to occur after the last.
+
+While you are Poisoned, each Cycle's duration is extended by $s5 sec.
 
 Name             : Ouroboric Cycle (id=1292249) 
 School           : Physical
@@ -256369,11 +256434,12 @@ Category Cooldown: 20 seconds
 Effects          :
 #1 (id=1313894)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 42986 | Radius: 4 yards | Target: at Random (72)
-#2 (id=1313895)  : Dummy (3)
+#2 (id=1313895)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=1313913)  : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 Description      : Plant the banner for $d! Fighting within $s3 yards of it fills you with Battle Fervor, granting $1295725s1 of your highest secondary stat. Defeating at least 1 enemy while the banner stands will extend Banner's duration by $s2 sec.
+Tooltip          : You have planted the Tattered Amani War Banner. Remain near it to gain $@spellname1295735, increasing your highest secondary stat.
 
 Name             : First Aid (id=1293411) [Hidden] 
 School           : Physical
@@ -256512,7 +256578,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
 #2 (id=1319641)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Trigger Spell: 1296883 | Target: Self (1)
-Description      : Send a spirit snake to your target's location, dealing $1296883s1 Nature damage split among nearby enemies. When this ability finishes cooling down, your next harmful spell or ability will send another spirit snake.
+Description      : $@spelldesc1306743
 
 Name             : Spirit-Rending Poison (id=1294328) 
 School           : Nature
@@ -256578,10 +256644,11 @@ Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 3 (Haste multiplier)
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
+Triggered By     : Toxiferous Transfusion (1296737)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1315649)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 44.34414 (coefficient=0.338297) | PvP Coefficient: 0 | Target: Self (1)
+#1 (id=1315649)  : Apply Aura (6) | Proc Trigger Spell (42): Toxiferous Transfusion | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 44.34414 (coefficient=0.338297) | PvP Coefficient: 0 | Trigger Spell: 1296737 | Target: Self (1)
 #2 (id=1319459)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 0 | Scaled Value: 1613.058 (coefficient=12.6214) | Target: Self (1)
 #3 (id=1319499)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
@@ -257122,9 +257189,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 190.3261 (coefficient=1.451979) | PvP Coefficient: 0.5 | Trigger Spell: 1295649 | Target: Self (1)
 #2 (id=1317851)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 65.01343 (coefficient=0.495981) | Target: Self (1)
-Description      : Dodging, parrying, or blocking has a high chance to call bolstering winds, increasing your $?(a137047|a137005|a137026)[Strength]?(a212611|a137009|a137014|a137022|a137034|a137038)[Agility][Strength or Agility] by $s1 and Speed by $s2 for $1295649d.
-
-If you have not dodged, parried, or blocked for 15 sec, this effect is triggered immediately. May only occur once per 1 min.
+Description      : Dodging, parrying, or blocking has a high chance to call bolstering winds, increasing your $?(a137047|a137005|a137026)[Strength]?(a212611|a137009|a137014|a137022|a137034|a137038)[Agility][Strength or Agility] by $s1 and Speed by $s2 for $1295649d.
+
+If you have not dodged, parried, or blocked for $1306822d, this effect is triggered immediately. May only occur once per $1306823d.
 
 Name             : Bolstering Gale (id=1295649) 
 School           : Physical
@@ -257348,7 +257415,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), DoT St
 Effects          :
 #1 (id=1318154)  : Apply Aura (6) | Periodic Dummy (226): every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-Description      : Unleash a deluge of caustic venom dealing ${$1295832s1*$<rolemult>*$d/$t1} Nature damage to your target. Damage increased by $1295832S2% for every 1% health the enemy has remaining.
+Description      : Unleash a deluge of caustic venom, dealing ${$1295832s1*$<rolemult>*$d/$t1} Nature damage to your target. Damage increased by $1295832S2% for every 1% health the enemy has remaining.
 
 Defeat enemies to catalyze their essential fluids into additional venom, reducing this cooldown by $1295832s3 sec.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
@@ -257391,7 +257458,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1.577291 (coefficient=0.012033) | PvP Coefficient: 0.5 | Trigger Spell: 1307470 | Target: Self (1)
 #2 (id=1318228)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 11.25129 (coefficient=0.085835) | PvP Coefficient: 0.5 | Target: Self (1)
-Description      : Your spells afflicts you with Hex Lord's Doom, draining your Intellect by $s1 up to $1307470u times. This effect may occur once every $proccooldown sec.
+Description      : Your spells afflict you with Hex Lord's Doom, draining your Intellect by $s1 up to $1307470u times. This effect may occur once every $proccooldown sec.
 
 
 
@@ -257418,7 +257485,7 @@ Max Targets      : 1
 Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 3
-Proc Flags       : White Melee, Yellow Melee, Generic Hostile Spell
+Proc Flags       : White Melee, Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Triggered By     : Hunter's Ritual Stone (1297382)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
@@ -257623,7 +257690,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 8948 | Target: Self (1)
 Description      : Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.
 
-Name             : Concocted Poisonous Residue (id=1296429) 
+Name             : Ersatz Venom Splatter (id=1296429) 
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -257803,7 +257870,7 @@ Effects          :
 #1 (id=1319127)  : Craft Item (288)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 8965 | Target: Self (1)
 
-Name             : Fine Captain's Bottle (id=1296502) 
+Name             : Proudmoore Ship-in-a-Bottle (id=1296502) 
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -257828,19 +257895,6 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1319129)  : Craft Item (288)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 8967 | Target: Self (1)
-
-Name             : Ferocious Feline Trinket (id=1296504) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2 seconds
-Labels           : 969
-                 : 975
-                 : 4126
-                 : 4369
-Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
-Effects          :
-#1 (id=1319130)  : Craft Item (288)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 8968 | Target: Self (1)
 
 Name             : "Cursed Gaze of Ula'tek" Mural (id=1296505) 
 School           : Physical
@@ -257944,8 +257998,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 2563.094 (coefficient=20.05496) | Trigger Spell: 1296561 | Target: Self (1)
 #2 (id=1319255)  : Dummy (3) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 13840.71 (coefficient=108.2968)
-Description      : Your direct damaging spells and abilities have a chance to apply $@spellname1296565 to your target, dealing $s1 Nature damage over $1296565d sec. 
-Further applications of $@spellname1296565 have a chance to cause a $@spellname1296567, dealing $s2 split between nearby enemies.
+Description      : Your direct damaging spells and abilities have a chance to apply $@spellname1296565 to your target, dealing ${$<rolemult>*$s1} Nature damage over $1296565d. 
+Further applications of $@spellname1296565 have a chance to cause a $@spellname1296567, dealing ${$<rolemult>*$s2} split between nearby enemies.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Snakeskin Lining (id=1296561) [Passive] 
 School           : Physical
@@ -258042,6 +258097,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1296732
 Description      : $@spelldesc1296732
 
+Name             : Toxiferous Transfusion (id=1296737) 
+School           : Nature
+Spell Type       : Magic
+Labels           : 292
+Triggered By     : Toxiferous Transfusion (1294333)
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268)
+Effects          :
+#1 (id=1319468)  : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Self (18) -> at Enemy in Area (16)
+#2 (id=1319469)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1294333
+Description      : Deal $s1 Nature damage to surrounding enemies.
+
 Name             : Toxiferous Transfusion (id=1296742) 
 School           : Nature
 Spell Type       : None
@@ -258117,7 +258185,7 @@ Effects          :
 Name             : Ophidian Bone Whistle (id=1296883) [Passive] 
 School           : Physical
 Spell Type       : None
-Triggered By     : Ophidian Bone Whistle (1294327)
+Triggered By     : Ophidian Bone Whistle (1294327), Ophidian Bone Whistle (1296888)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1319672)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
@@ -258139,6 +258207,36 @@ Effects          :
 Description      : $@spellname1296884 increases your Haste by $1296870s0. This effect can stack up to $u times.
 Tooltip          : Haste increased by $w1.
 
+Name             : Ophidian Bone Whistle (id=1296888) 
+School           : Nature
+Spell Type       : Magic
+Range            : 60 yards
+Labels           : 292
+Proc Chance      : 101%
+Triggered By     : Ophidian Bone Whistle (1306744)
+Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1319678)  : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: at Area (87) -> at Enemy in Area (16)
+#2 (id=1319679)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Trigger Spell: 1296883 | Target: Self (1)
+Description      : $@spelldesc1306743
+
+Name             : Ophidian Bone Whistle (id=1296890) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Aura Interrupt   : Leave World (19), Enter World (22)
+Effects          :
+#1 (id=1319681)  : Apply Aura (6) | Proc Trigger Spell (42): Ophidian Bone Whistle
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1306744 | Target: Self (1)
+Description      : $@spelldesc1306743
+Tooltip          : Your next harmful spell or ability will send a spirit snake to your target's location dealing $w1 Nature damage split between nearby enemies.
+
 Name             : Pulse Seeker's Oculus (id=1296971) 
 School           : Physical
 Spell Type       : None
@@ -258155,12 +258253,13 @@ Name             : Dilation (id=1296976)
 School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
-Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), No Aura Icon (60), Allow Dead Target (64), Allow Aura While Dead (116), No Aura Log (202)
+Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Allow Dead Target (64), Allow Aura While Dead (116), No Aura Log (202), Aura Points On Client (268)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1319830)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc1294326
+Tooltip          : Mastery granted by Pulse Seeker's Oculus increased by $w1%.
 
 Name             : Searing Lightblast (id=1296979) 
 School           : Holy
@@ -258523,7 +258622,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 292
                  : 3959: Item Effects
-Triggered By     : Voracious Heart of Ula'tek (1297761), Devour Morsel (1305374), Devoured Strength (1305376)
+Triggered By     : Voracious Heart of Ula'tek (1297761), Devour Morsel (1305374)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1321124)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
@@ -258636,7 +258735,7 @@ Spell Type       : None
 Effects          :
 #1 (id=1322242)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Defeat rare foes to have a chance at Champion 1/6 Gear for your Warband.
+Description      : Defeat rare foes to have a chance at Adventurer 1/6 Gear for your Warband.
 
 Name             : World Boss (id=1298539) 
 School           : None
@@ -258644,7 +258743,7 @@ Spell Type       : None
 Effects          :
 #1 (id=1322243)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Defeat the world boss of this world to receive a Champion item for your Warband.
+Description      : Defeat the world boss of this world to receive an item level 259 item for your Warband and a soulbound item level 256 item for your character.
 
 Name             : Rare Drops (id=1298540) 
 School           : None
@@ -258652,7 +258751,7 @@ Spell Type       : None
 Effects          :
 #1 (id=1322244)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Defeat rare foes to have a chance at Champion 4/6 Gear for your Warband.
+Description      : Defeat rare foes to have a chance at Adventurer 4/6 Gear for your Warband.
 
 Name             : World Boss (id=1298541) 
 School           : None
@@ -258660,7 +258759,8 @@ Spell Type       : None
 Effects          :
 #1 (id=1322245)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Defeat the world boss of this world to receive a Heroic item for your warband.
+Description      : Defeat the world boss of this world to receive an item level 269 item for your Warband and a soulbound item level 259 item for your character.
+
 
 Name             : Rare Drops (id=1298542) 
 School           : None
@@ -258727,12 +258827,11 @@ Effects          :
 Description      : Deals $1296982s1 Nature damage. Guaranteed to critically strike.
 
 Name             : Corrosive Gifts (id=1301266) 
-Hotfixed         : Name
 School           : None
 Spell Type       : None
 Effects          :
 #2 (id=1331702)  : Trigger Spell (64): Corrosive Gifts
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1304849
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1311162
 Description      : Inspect the palimpsest.
 
 Name             : Ophidian End (id=1301835) 
@@ -258808,6 +258907,54 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Mechanic: Snare | Target: Targeted Enemy (6)
 Description      : $@spelldesc1291725
 Tooltip          : Taking $w1 every $t second and slowed by $w3%
+
+Name             : Tertius (id=1302055) 
+School           : Physical
+Spell Type       : None
+Duration         : 5 seconds
+Labels           : 6764
+Internal Cooldown: 5 seconds
+Proc Chance      : 101%
+Proc Flags       : Killing Blow, Death, Target Dies
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Proc cooldown on a per target basis (330), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1327464)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed, Leech, Avoidance | Target: Self (1)
+#2 (id=1327610)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1292247
+Tooltip          : All Tertiary statistics increased by $w1.
+
+Name             : Secundus (id=1302060) 
+School           : Physical
+Spell Type       : None
+Duration         : 5 seconds
+Labels           : 6764
+Internal Cooldown: 5 seconds
+Proc Chance      : 101%
+Proc Flags       : Killing Blow, Death, Target Dies
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Proc cooldown on a per target basis (330), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1327474)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit, Haste, Mastery, Vers | Target: Self (1)
+#2 (id=1327613)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1292247
+Tooltip          : All Secondary statistics increased by $w1.
+
+Name             : Primus (id=1302061) 
+School           : Physical
+Spell Type       : None
+Duration         : 5 seconds
+Labels           : 6764
+Internal Cooldown: 5 seconds
+Proc Chance      : 101%
+Proc Flags       : Killing Blow, Death, Target Dies
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Proc cooldown on a per target basis (330), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1327475)  : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+#2 (id=1327614)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1292247
+Tooltip          : $pri increased by $w1.
 
 Name             : Corrosive Soul (id=1302170) 
 School           : Physical
@@ -258929,31 +259076,36 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 13737
 Description      : $@spelldesc1291723
 
-Name             : Insidious Venom (id=1302568) [Passive] 
+Name             : Insidious Venom (id=1302568) 
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 90
+Duration         : Aura (infinite)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
+Triggered By     : Insidious Venom (1302621), Insidious Venom (1302625)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1328180)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 1785.348 (coefficient=13.62024) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2170.061 (coefficient=16.55518) | Target: Self (1)
 #2 (id=1328181)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: -320.191 (coefficient=-2.442705) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: -389.2279 (coefficient=-2.969381) | Target: Self (1)
 #3 (id=1328182)  : Apply Aura (6) | Proc Trigger Spell (42): Insidious Venom
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1302662 | Target: Self (1)
-Description      : $?pc150463[Chance to Poison yourself, greatly increasing your $pri and lowering all other statistics.][|cnITEM_POOR_COLOR:Chance to Poison yourself, greatly increasing your $pri and lowering all other statistics.]
+Description      : Chance during combat to Poison yourself, lowering all of your Secondary and Tertiary Statistics while greatly increasing your $pri for $1302621d.
+Tooltip          : Chance during combat to Poison yourself, lowering all of your Secondary and Tertiary Statistics while greatly increasing your $pri for $1302621d.
 
-Name             : Virulent Mucus (id=1302577) [Passive] 
+Name             : Virulent Mucus (id=1302577) 
 School           : Physical
 Spell Type       : None
+Duration         : Aura (infinite)
 Internal Cooldown: 60 seconds
 Proc Chance      : 101%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1328189)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -258961,55 +259113,124 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=1328191)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : $?pc150463[Upon entering combat, veil yourself in layers of Virulent Mucus that negate incoming damage. Damaging a Poisoned enemy has a chance to grant an additional layer.][|cnITEM_POOR_COLOR:Upon entering combat, veil yourself in layers of Virulent Mucus that negate incoming damage. Damaging a Poisoned enemy has a chance to grant an additional layer.]
+Description      : Upon entering combat, veil yourself in $s1 layers of Virulent Mucus, each stack negating an instance of incoming damage that would exceed $s3% of your maximum health.
+
+Dealing damage to a Poisoned enemy has a very low chance to grant you $s2 additional layer of Mucus.
 
-Name             : Accursed Poison (id=1302580) [Passive] 
+Tooltip          : Upon entering combat, veil yourself in $s1 layers of Virulent Mucus, each stack negating an instance of incoming damage that would exceed $s3% of your maximum health.
+
+Dealing damage to a Poisoned enemy has a very low chance to grant you $s2 additional layer of Mucus.
+
+Name             : Accursed Poison (id=1302580) 
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 90
+Duration         : Aura (infinite)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Accursed Poison (1302758)
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1328196)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1710.677 (coefficient=13.38522) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3447 (coefficient=26.9711) | Target: Self (1)
 #2 (id=1329377)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : $?pc150463[Chance to inflict Accursed Poison on an enemy, dealing Nature damage over time and preventing their next interruptible cast.][|cnITEM_POOR_COLOR:Chance to inflict Accursed Poison on an enemy, dealing Nature damage over time and preventing their next interruptible cast.]
+Description      : Chance during combat to inflict Accursed Poison on the strongest enemy, dealing Nature damage every $1302758t sec for $1302758d.
+
+The next time the afflicted target would cast an interruptible spell or ability, the Accursed Poison triggers, interrupting it immediately before removing itself.
+Tooltip          : Chance during combat to inflict Accursed Poison on the strongest enemy, dealing Nature damage every $1302758t sec for $1302758d.
+
+The next time the afflicted target would cast an interruptible spell or ability, the Accursed Poison triggers, interrupting it immediately before removing itself.
 
-Name             : Miasma Geyser (id=1302600) [Passive] 
+Name             : Miasma Geyser (id=1302600) 
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 90
+Duration         : Aura (infinite)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Miasma Geyser (1302844), Miasma Geyser (1302845)
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1328226)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 22525.12 (coefficient=176.2481) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 45388 (coefficient=355.139) | Target: Self (1)
 #2 (id=1328227)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 33807.69 (coefficient=264.5287) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 68122.01 (coefficient=533.0215) | Target: Self (1)
 #3 (id=1328536)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $?pc150463[Chance to stir up a Miasma Geyser that erupts after a short duration, dealing Nature damage to enemies and healing allies. Poisoned units take increased damage and healing.][|cnITEM_POOR_COLOR:Chance to stir up a Miasma Geyser that erupts after a short duration, dealing Nature damage to enemies and healing allies. Poisoned units take increased damage and healing.]
+Description      : Chance during combat to stir up a Miasma Geyser under a nearby unit that erupts after $1302831d, dealing Nature damage split between enemy units while also healing all allies inside.
+
+ Poisoned units take increased damage and healing.ke increased damage and healing.]
+Tooltip          : Chance during combat to stir up a Miasma Geyser under a nearby unit that erupts after $1302831d, dealing Nature damage split between enemy units while also healing all allies inside.
+
+ Poisoned units take increased damage and healing.
 
-Name             : Plague of Corrosion (id=1302602) [Passive] 
+Name             : Plague of Corrosion (id=1302602) 
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 90
+Duration         : Aura (infinite)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Plague of Corrosion (1302776)
-Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354), Allow during spell override (404), Only Proc From Class Abilities (415)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1328229)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Primary (-8)
-                   Base Value: 1 | Scaled Value: 1900.256 (coefficient=14.86858) | Target: Self (1)
-Description      : $?pc150463[Chance to apply a stacking Poison to all nearby enemies, dealing Nature damage over time. On death, the Poison is transferred to a new target.][|cnITEM_POOR_COLOR:Chance to apply a stacking Poison to all nearby enemies, dealing Nature damage over time. On death, the Poison is transferred to a new target.]
+                   Base Value: 1 | Scaled Value: 3829 (coefficient=29.96006) | Target: Self (1)
+Description      : Chance during combat to apply a stacking Poison to all nearby enemies, dealing Nature damage every $1302776t sec for $1302776d.
+
+On death, the Poison and its remaining duration are transferred to a new target.
+Tooltip          : Chance during combat to apply a stacking Poison to all nearby enemies, dealing Nature damage every $1302776t sec for $1302776d.
+
+On death, the Poison and its remaining duration are transferred to a new target.
+
+Name             : Insidious Venom (id=1302621) 
+School           : Physical
+Spell Type       : Magic
+Duration         : 12 seconds
+Labels           : 6096
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Proc cooldown on a per target basis (330), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1328252)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
+#2 (id=1328253)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+#3 (id=1328254)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+#4 (id=1328255)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
+#5 (id=1328256)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1302568 | Target: Self (1)
+Tooltip          : $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $w5. All other statistics are decreased by $1302625w5.
+
+Name             : Insidious Venom (id=1302625) [Hidden] 
+School           : Physical
+Spell Type       : Magic
+Duration         : 12 seconds
+Labels           : 6096
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Proc cooldown on a per target basis (330), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1328264)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
+#2 (id=1328265)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+#3 (id=1328266)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+#4 (id=1328267)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
+#5 (id=1328268)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1302568 | Target: Self (1)
+#6 (id=1328269)  : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+#7 (id=1328271)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed, Leech, Avoidance | Target: Self (1)
+Tooltip          : $?e0[Critical Strike increased by $w1.]?e1[Haste increased by $w2.]?e2[Mastery increased by $w3.]?e3[Versatility increased by $w4.][Highest secondary stat increased by $w5.] All other statistics decreased by $w5.
 
 Name             : Insidious Venom (id=1302662) 
 School           : Physical
@@ -259138,11 +259359,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1302600
 Description      : $@spelldesc1302600
 
+Name             : Gorgoneion Gaze (id=1302873) [Hidden] 
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 60 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404)
+Aura Interrupt   : Enter Combat (28), Leave Combat (31)
+Effects          :
+#1 (id=1328583)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
 Name             : Rune of Echoes (id=1303048) 
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
-Attributes       : Can't Crit (93), Do Not Display Range (126), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Do Not Display Cast Time (441)
+Attributes       : Can't Crit (93), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Treat As Periodic (121), Do Not Display Range (126), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Ignore Damage Cancels Aura Interrupt (394), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1328843)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -259426,15 +259658,15 @@ Description      : Throw the catch back into the water to gain $s2 Midnight Perc
 Throwing multiple catches can extend this buff up to $M1 min.
 Tooltip          : Midnight Perception increased by $w2.
 
-Name             : Corrosive Gifts (id=1304849) [Hidden] 
-Hotfixed         : Name
+Name             : Call Three-Eyed Fish (id=1304786) 
 School           : Physical
 Spell Type       : None
-Triggered By     : Corrosive Gifts (1301266)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404)
+Duration         : 120 seconds
+Cooldown         : 120 seconds
+Attributes       : Do Not Log (8)
 Effects          :
-#1 (id=1331701)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#1 (id=1331605)  : Summon Guardian (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 269313 | Misc Value 2: 3485 | Radius: 3 yards | Target: Summoner in Area (32)
 
 Name             : Corrosive Bilespear (id=1305083) 
 School           : Nature
@@ -259591,25 +259823,6 @@ Effects          :
 #2 (id=1332570)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1297760 | Target: Self (1)
 Description      : $@spelldesc1297761
-
-Name             : Devoured Strength (id=1305376) 
-School           : Physical
-Spell Type       : None
-Duration         : 20 seconds
-Labels           : 292
-                 : 3959: Item Effects
-Stacks           : 99 maximum
-Proc Chance      : 101%
-Attributes       : Aura Points On Client (268)
-Effects          :
-#1 (id=1332572)  : Apply Aura (6) | Attribute (29)
-                   Base Value: 0 | Scaled Value: 0 | Stat: Agi | Target: Self (1)
-#2 (id=1332573)  : Apply Aura (6) | Attribute (29)
-                   Base Value: 0 | Scaled Value: 0 | Stat: Str | Target: Self (1)
-#3 (id=1332574)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1297760 | Target: Self (1)
-Description      : $@spelldesc1297761
-Tooltip          : Devouring a morsel of your prey has increased your $pri by $w1.
 
 Name             : Necrotic Tear (id=1305391) 
 School           : Shadow
@@ -260187,26 +260400,13 @@ Effects          :
 #1 (id=1332918)  : Apply Aura (6) | Area Trigger (395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 43855 | Target: Self (1)
 
-Name             : Ward of the Uncoiled (id=1305753) [Passive] 
-School           : Nature
-Spell Type       : None
-Labels           : 292
-                 : 3959: Item Effects
-Attributes       : Passive (6), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow While Invisible (78), Not an Action (92), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
-Effects          :
-#1 (id=1332926)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Ward of the Uncoiled
-                   Base Value: -7 | Scaled Value: -7 | Trigger Spell: 1305773 | Target: Self (1)
-Description      : $@spelldesc1305830
-
-
-
 Name             : Ward of the Uncoiled (id=1305773) 
 School           : Nature
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 292
                  : 3959: Item Effects
-Triggered By     : Ward of the Uncoiled (1305753), Ward of the Uncoiled (1305830), Ward of the Uncoiled (1305837), Ward of the Uncoiled (1305838)
+Triggered By     : Ward of the Uncoiled (1305830), Ward of the Uncoiled (1305837), Ward of the Uncoiled (1305838)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow While Invisible (78), Allow Aura While Dead (116), Aura Is Buff (140), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Unknown (452)
 Effects          :
 #1 (id=1332958)  : Apply Aura (6) | Modify Damage Taken% from Spells (Label) (507)
@@ -260280,7 +260480,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
 #2 (id=1333063)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
-Hotfixed         : Attribute (0 -> 64)
 Description      : $@spelldesc1295219
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec. Bursts upon the target's death to deal $w2% of its remaining damage split between nearby enemies and apply Umbral Malignance.
 
@@ -260455,7 +260654,21 @@ Attributes       : No Aura Cancel (31), No Aura Icon (60), Can Proc From Procs (
 Effects          :
 #1 (id=1334272)  : Trigger Spell (64): Ophidian Bone Whistle
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Delay: 650_ms | Trigger Spell: 1294327 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Description      : Send a spirit snake to your target's location, dealing $1296883s1 Nature damage split among nearby enemies. When this ability finishes cooling down, your next harmful spell or ability will send another spirit snake.
+Description      : Send a spirit snake to your target's location, dealing ${$1296883s1*$<rolemult>} Nature damage split among nearby enemies. When this ability finishes cooling down, your next harmful spell or ability will send another spirit snake.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+
+Name             : Ophidian Bone Whistle (id=1306744) 
+School           : Nature
+Spell Type       : Magic
+Range            : 60 yards
+Labels           : 292
+Proc Chance      : 101%
+Triggered By     : Ophidian Bone Whistle (1296890)
+Attributes       : No Aura Cancel (31), No Aura Icon (60), Can Proc From Procs (122), Always Line of Sight (185), Always AOE Line of Sight (186), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1334273)  : Trigger Spell (64): Ophidian Bone Whistle
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Delay: 650_ms | Trigger Spell: 1296888 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Description      : $@spelldesc1306743
 
 Name             : Vexhul's Everflowing Gland (id=1306785) 
 School           : Nature
@@ -260480,7 +260693,7 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1334391)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc1295643
+Description      : Gain $@spellname1295649 if you do not dodge, parry, or block for $d. May only occur once per $1306823d.
 Tooltip          : Gain $@spellname1295649 upon expiration while in combat. Blocking, dodging, or parrying resets this duration to $d.
 
 Name             : Recovering Winds (id=1306823) [Hidden] 
@@ -260493,7 +260706,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura I
 Effects          :
 #1 (id=1334395)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc1295643
+Description      : The Idol of the Howling Nexus is recovering its power and cannot benefit from $@spellname1306822.
 Tooltip          : The Idol of the Howling Nexus is recovering its power and cannot benefit from $@spellname1306822.
 
 Name             : Tattered Tortollan Scroll (id=1306870) 
@@ -260508,7 +260721,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
 #2 (id=1336276)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : The scroll increases your Mastery by $1292291s3, diminishing over $d as it falls to pieces as your indelicate hands destroy history.
+Description      : The scroll increases your Mastery by $1292291s3, diminishing over $d as it falls to pieces, your indelicate hands destroying history.
 Tooltip          : Mastery increased by $w1, diminishing every sec as the scroll falls to pieces in your indelicate hands.
 
 Name             : Venomous Champion's Illustrious Banner (id=1306978) 
@@ -260701,8 +260914,10 @@ Attributes       : Can't Crit (93), Aura Is Buff (140), Extra Initial Period (16
 Effects          :
 #1 (id=1335826)  : Apply Aura (6) | Periodic Trigger Spell (23): Latent Purifier every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1307767 | Target: Self (1)
-Description      : Concentrate the toxins in the air, erupting them in a purifying blast, healing nearby allies for $1307640s1 ${$d/$t+1} times.
-Tooltip          : Concentrate the toxins in the air, erupting them in a purifying blast, healing nearby allies for $1307640w1 ${$d/$t+1} times.
+Description      : Concentrate the toxins in the air, erupting them in a purifying blast, healing nearby allies for ${$<healingrolemult>*$1307640s1} ${$d/$t+1} times.
+Tooltip          : Concentrate the toxins in the air, erupting them in a purifying blast, healing nearby allies for ${$<healingrolemult>*$1307640w1} ${$d/$t+1} times.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+$healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
 
 Name             : Latent Purifier (id=1307767) 
 School           : Nature
@@ -260774,7 +260989,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Trigger Spell: 1307910 | Target: Self (1)
 #2 (id=1336170)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -27.63072 (coefficient=-0.210792) | Target: Self (1)
-Description      : Your spells and abilities have a chance to increase your Critical Strike by $s1 but reduce your other secondary stats by $s2 for $1307910d.
+Description      : Your spells and abilities have a chance to increase your Critical Strike by $s1, but reduce your other secondary stats by $s2 for $1307910d.
 
 Name             : Venomcursed Critical Strike (id=1307910) 
 School           : Nature
@@ -260822,7 +261037,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Trigger Spell: 1307922 | Target: Self (1)
 #2 (id=1336196)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -27.63072 (coefficient=-0.210792) | Target: Self (1)
-Description      : Your spells and abilities have a chance to increase your Mastery by $s1 but reduce your other secondary stats by $s2 for $1307922d.
+Description      : Your spells and abilities have a chance to increase your Mastery by $s1, but reduce your other secondary stats by $s2 for $1307922d.
 
 Name             : Venomcursed Haste (id=1307927) 
 School           : Nature
@@ -260854,7 +261069,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Trigger Spell: 1307927 | Target: Self (1)
 #2 (id=1336207)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -27.63072 (coefficient=-0.210792) | Target: Self (1)
-Description      : Your spells and abilities have a chance to increase your Haste by $s1 but reduce your other secondary stats by $s2 for $1307927d.
+Description      : Your spells and abilities have a chance to increase your Haste by $s1, but reduce your other secondary stats by $s2 for $1307927d.
 
 Name             : Slick and Slimy Gralstone (id=1308012) 
 School           : Physical
@@ -261130,4 +261345,23 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Self (1)
 Description      : Allows you to see unique fish on The Coiled Isle for $d.
 Tooltip          : Increased chance to catch unique fish on The Coiled Isle.
+
+Name             : Corrosive Gifts (id=1311162) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Triggered By     : Corrosive Gifts (1301266)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404)
+Aura Interrupt   : Moving (3)
+Effects          :
+#1 (id=1341293)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
+Name             : [DNT] Kill Credit (id=1311702) [Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404)
+Effects          :
+#1 (id=1342188)  : Summon Credit Creature (90)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 265919 | Target: Self (1)
 

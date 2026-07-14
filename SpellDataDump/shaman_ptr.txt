@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68629 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68675 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1662,7 +1662,7 @@ Family Flags     : 41, 87
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=67015)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.9 | PvP Coefficient: 1.38 | Radius: 0 - 11 yards | Target: at Area (87) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.08 | PvP Coefficient: 1.38 | Radius: 0 - 11 yards | Target: at Area (87) -> At Ally in Area (31)
 Description      : $@spelldesc73920
 
 Name             : Purify Spirit (id=77130) [Spell Family (11)] 
@@ -1781,7 +1781,7 @@ Family Flags     : 41, 80
 Attributes       : Not Shapeshifted (16), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 13.6458 | PvP Coefficient: 2 | Target: Chain Heal Ally (45)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 15.01 | PvP Coefficient: 2 | Target: Chain Heal Ally (45)
 Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
@@ -13646,7 +13646,7 @@ Effects          :
                    Base Value: 18 | Scaled Value: 18 | Misc Value 2: 3704 (Label) | Target: Self (1)
                    Affected Spells (Label): Tremor (455622)
 #2 (id=1161195)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Healing Rain (73921), Deluge (200075)
                    Family Flags: 87
 #3 (id=1164497)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -14743,7 +14743,7 @@ Effects          :
 #2 (id=1159242)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #3 (id=1159243)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Healing Rain (73921), Deluge (200075)
                    Family Flags: 87
 #4 (id=1159244)  : Apply Aura (6) | Dummy (4)
@@ -17141,38 +17141,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc1215611
 Tooltip          : Increases the healing of your next Healing Wave, Healing Surge, or Chain Heal will heal by $s1%
-
-Name             : Feral Lunge (id=1219343) [Spell Family (11)] 
-Class            : Shaman
-School           : Physical
-Spell Type       : Melee
-Spell Level      : 1
-Range            : 100 yards
-Labels           : 16: Class Spells
-                 : 24: Shaman Spells
-                 : 292
-Proc Chance      : 101%
-Attributes       : Do Not Sheath (18), Aura Points On Client (268), No PvP Battle Fatigue (387), Ignore Distance Check On Charge/Jump Charge Done Trigger Spell (398), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1205030)  : Directional Knockback (144)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 400 | Target: at Area (87) -> Self (1)
-Description      : $@spelldesc196884
-
-Name             : Feral Lunge (id=1219348) [Spell Family (11)] 
-Class            : Shaman
-School           : Physical
-Spell Type       : Melee
-Spell Level      : 1
-Range            : 100 yards
-Labels           : 16: Class Spells
-                 : 24: Shaman Spells
-                 : 292
-Proc Chance      : 101%
-Attributes       : Do Not Sheath (18), Aura Points On Client (268), No PvP Battle Fatigue (387), Ignore Distance Check On Charge/Jump Charge Done Trigger Spell (398), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1205039)  : Directional Knockback (144)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 200 | Target: at Area (87) -> Self (1)
-Description      : $@spelldesc196884
 
 Name             : Maelstrom Weapon (id=1219440) [Spell Family (11), Hidden] 
 Class            : Shaman

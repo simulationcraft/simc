@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68629 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68675 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
@@ -8289,7 +8289,7 @@ bonus_id={ 13835 }, base_ilevel={ 305 }, req_ilevel={ 90 }
 bonus_id={ 13836 }, base_ilevel={ 318 }, req_ilevel={ 90 }
 bonus_id={ 13843 }, base_ilevel={ 55 }, req_ilevel={ 78 }
 bonus_id={ 13844 }, base_ilevel={ 256 }, req_ilevel={ 90 }
-bonus_id={ 13845 }, base_ilevel={ 256 }, quality={ rare }
+bonus_id={ 13845 }, base_ilevel={ 263 }, quality={ rare }
 bonus_id={ 13846 }, desc={ Venomcursed }, effects={ Venomcursed Mastery (id=1307923, index=0, type=equip) }
 bonus_id={ 13847 }, desc={ Venomcursed }, effects={ Venomcursed Haste (id=1307928, index=0, type=equip) }
 bonus_id={ 13848 }, base_ilevel={ 344 }, req_ilevel={ 90 }, quality={ epic }

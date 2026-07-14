@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68629 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68675 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -1566,7 +1566,7 @@ Category Cooldown: 180 seconds
 Proc Chance      : 101%
 Affecting Spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Nature's Swiftness (132158 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Berserk (343223 effect#1), Orbital Strike (390378 effect#2), Berserk: Heart of the Lion (391174 effect#1), Whirling Stars (468743 effects: #1, #4), Ashamane's Guidance (1244546 effect#1), Druid Feral 12.1 Class Set 4pc (1296606 effect#1)
 Family Flags     : 43, 48
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity to Hostile & Friendly Effects (48), No shapeshift UI (65), Allow Entering Arena (149), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Allow Aura On Level Scale (444)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity to Hostile & Friendly Effects (48), No shapeshift UI (65), Allow Entering Arena (149), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=23806)    : Apply Aura (6) | Shapeshift (36)
@@ -15410,7 +15410,7 @@ Family Flags     : 77, 109
 Attributes       : Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1083866)  : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.4 | Radius: 0 - 5 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.4 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc204066
 
 Name             : Initial Druid (id=417382) [Spell Family (7), Passive, Hidden] 
@@ -22992,7 +22992,6 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Proc Flags       : Cast Successful
 Triggered By     : Dream Guide (1278886)
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Target Procs On Caster (270), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
@@ -23357,7 +23356,9 @@ Effects          :
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1326124)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Thrash calls up $s3 thorns, each impaling a target for $1301157s1 Nature damage and dealing $1301157s2 additional Nature damage to up to $1301157i nearby enemies, and extends the duration of $?s102558[Incarnation: Guardian of Ursoc][Berserk] by ${$s1/1000}.1 sec, up to ${$s2/1000}.1 sec.
+#4 (id=1341042)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Description      : Thrash calls up $s3 thorns, each impaling a target for $1301157s1 Nature damage and dealing $1301157s2 additional Nature damage to up to $s4 nearby enemies, and extends the duration of $?s102558[Incarnation: Guardian of Ursoc][Berserk] by ${$s1/1000}.1 sec, up to ${$s2/1000}.1 sec.
 
 Name             : Druid Restoration 12.1 Class Set 2pc (id=1296609) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -23393,7 +23394,7 @@ Effects          :
                    Affected Spells (Label): Genesis (1302255)
 #2 (id=1339852)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Nature's Swiftness, Tranquility, and Ironbark have a $s2% chance to grant Genesis, and Genesis duration is increased by ${$s1/1000} sec.
+Description      : Nature's Swiftness, Tranquility, and $?s33891[Incarnation: Tree of Life][Convoke the Spirits] have a $s2% chance to grant Genesis, and Genesis duration is increased by ${$s1/1000} sec.
 
 Name             : Stellar Protection (id=1297521) [Spell Family (7), Passive] 
 Class            : Balance Druid
@@ -23419,12 +23420,11 @@ Class            : Druid
 School           : Nature
 Spell Type       : Magic
 Range            : 40 yards
-Max Targets      : 5
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
                  : 6656
-Attributes       : Always AOE Line of Sight (186)
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1326128)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.5 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
@@ -23481,6 +23481,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1326770)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -23661,8 +23662,8 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1336529)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Your next cast of $?400254][Raze][Maul] or Ravage will awaken a guardian spirit.
-Tooltip          : Your next cast of $?400254][Raze][Maul] or Ravage will awaken a guardian spirit.
+Description      : Your next cast of $?s400254[Raze][Maul] or Ravage will awaken a guardian spirit.
+Tooltip          : Your next cast of $?s400254[Raze][Maul] or Ravage will awaken a guardian spirit.
 
 Name             : Answered Calling (id=1308399) [Spell Family (7), Hidden] 
 Class            : Druid

@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.0.68629
+Class Spell ID List, wow build 12.1.0.68675
 
 Death Knight
 3714     Path of Frost
@@ -1788,7 +1788,6 @@ Demon Hunter
 162794   Chaos Strike
 163073   Demon Soul
 178716  *Sweep
-178717  *Sweep
 178940   Shattered Souls
 178963   Consume Soul
 179057   Chaos Nova
@@ -8666,10 +8665,10 @@ Hunter
 1250476 *Kill Cleave
 1250646  Takedown
 1251091 *Hemorrhaging Strikes
-1251592  Flamefang Pitch
-1251595  Flamefang Pitch
-1251610  Flamefang Pitch
-1251614  Flamefang Pitch
+1251592 *Flamefang Pitch
+1251595 *Flamefang Pitch
+1251610 *Flamefang Pitch
+1251614 *Flamefang Pitch
 1251683  Hemorrhaging Strikes
 1251703 *Takedown
 1251717  Strike as One
@@ -8859,7 +8858,7 @@ Hunter
 1296632  Hunter Beast Mastery 12.1 Class Set 4pc
 1296633  Hunter Marksmanship 12.1 Class Set 2pc
 1296634  Hunter Marksmanship 12.1 Class Set 4pc
-1296635  Hunter Survival 12.1 Class Set 2pc
+1296635  Hunter Survival 12.1 Class Set 4pc
 1296636  Hunter Survival 12.1 Class Set 4pc
 1298446 *Unbreakable Bond
 1299389  Cobra Fang
@@ -8873,6 +8872,7 @@ Hunter
 1306960 *Dire Beast
 1306990 *Dark Summon
 1308188 *Dire Beast
+1311963  Bombardier
 
 Mage
 66       Invisibility
@@ -9940,7 +9940,7 @@ Mage
 210476   Master of Escape
 210478  *Arcane Barrage
 210716  *Force Barrier
-210725   Touch of the Magi
+210725  *Touch of the Magi
 210730  *Sloooow Down
 210732  *Sloooow Down
 210797   Crashing Storm
@@ -10517,7 +10517,6 @@ Mage
 355623  *Ice Wall
 356877   Heart of the Fae
 356881   Heart of the Fae
-363405  *Ring of Fire
 363500   Fiery Rush
 363508   Fiery Rush
 363535   Frost Storm
@@ -11025,7 +11024,6 @@ Mage
 1220739 *Overpowered Barrier
 1220755 *Overpowered Barrier
 1220758 *Overpowered Barrier
-1221106 *Overpowered Barrier
 1221107 *Overpowered Barrier
 1221389  Freezing
 1221415 *Norgannon's Foresight
@@ -17290,9 +17288,8 @@ Priest
 1300008  Power Word: Shield (Unfolding Vision)
 1300009  Void Shield (Unfolding Vision)
 1304485  Ancient Madness
-1306118  Renewed Haste
+1306118  Renewed Vigor
 1307795  Dark Transference
-1308649  Vampiric Insight
 
 Rogue
 53       Backstab
@@ -20809,8 +20806,6 @@ Shaman
 1218612  Jackpot!
 1218616  Winning Streak!
 1219323  Fate Reversal
-1219343  Feral Lunge
-1219348  Feral Lunge
 1219440  Maelstrom Weapon
 1219461  Thorim's Invocation
 1219480  Ascendance
@@ -22767,7 +22762,7 @@ Warlock
 1260269  Shard Instability
 1260271  Nocturnal Yield
 1260279  Nightfall
-1260285  Patient Zero
+1260285 *Patient Zero
 1261036 *Cloying Power
 1261124  Cascading Calamity
 1261147 *Soul Miser
@@ -22940,6 +22935,8 @@ Warlock
 1305774  Unstable Empowerment
 1305798  Refund Soul Shard
 1306077  Isolated Implosion
+1311653  Soul Leech
+1311969  Hedonic Gorging
 
 Warrior
 71       Vanguard
