@@ -25,6 +25,7 @@ enum class secondary_trigger
   FAN_THE_HAMMER,
   COUP_DE_GRACE,
   HAND_OF_FATE,
+  KILLING_SPREE,
   SCOUNDREL_STRIKE,
   SHADOW_CLONE,
   SHADOWED_FINISHERS,
@@ -4592,6 +4593,22 @@ struct killing_spree_tick_t : public rogue_attack_t
   {
   }
 
+  double combo_point_da_multiplier( const action_state_t* state ) const override
+  {
+    auto rs = cast_state( state );
+    int trigger_cp = rs->get_combo_points();
+    int max_cp = as<int>( p()->consume_cp_max() );
+
+    // 2026-07-15 -- As of 12.1, Supercharging Killing Spree beyond maximum CPs increases the damage
+    //               by 15% per excess combo point
+    if ( p()->is_ptr() && trigger_cp > max_cp )
+    {
+      return 1.0 + p()->talent.outlaw.killing_spree->effectN( 4 ).percent() * ( trigger_cp - max_cp );
+    }
+
+    return 1.0;
+  }
+
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
@@ -4619,8 +4636,8 @@ struct killing_spree_tick_t : public rogue_attack_t
 
 struct killing_spree_t : public rogue_attack_t
 {
-  melee_attack_t* attack_mh;
-  melee_attack_t* attack_oh;
+  rogue_attack_t* attack_mh;
+  rogue_attack_t* attack_oh;
 
   killing_spree_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->talent.outlaw.killing_spree, options_str ),
@@ -4634,8 +4651,11 @@ struct killing_spree_t : public rogue_attack_t
     // to cancel it early with another action
     ability_lag = p->world_lag;
 
-    attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->spec.killing_spree_mh_attack );
-    attack_oh = p->get_background_action<killing_spree_tick_t>( "killing_spree_oh", p->spec.killing_spree_oh_attack );
+    attack_mh = p->get_secondary_trigger_action<killing_spree_tick_t>( 
+        secondary_trigger::KILLING_SPREE, "killing_spree_mh", p->spec.killing_spree_mh_attack );
+    attack_oh = p->get_secondary_trigger_action<killing_spree_tick_t>( 
+        secondary_trigger::KILLING_SPREE, "killing_spree_oh", p->spec.killing_spree_oh_attack );
+
     add_child( attack_mh );
     add_child( attack_oh );
 
@@ -4670,20 +4690,9 @@ struct killing_spree_t : public rogue_attack_t
     int trigger_cp = rs->get_combo_points();
     int max_cp = as<int>( p()->consume_cp_max() );
 
-    // 2026-07-15 -- As of 12.1, Supercharging Killing Spree beyond maximum CPs no longer affects duration,
-    //               rather it increases the tick damage by 15% per excess combo point
-    if ( p()->is_ptr() )
-    {
-      double mult = 1.0;
-      if ( trigger_cp > max_cp )
-      {
-        mult *= 1.0 + p()->talent.outlaw.killing_spree->effectN( 4 ).percent() * ( trigger_cp - max_cp );
-        trigger_cp = max_cp;
-      }
-
-      attack_mh->base_multiplier = mult;
-      attack_oh->base_multiplier = mult;
-    }
+    // 2026-07-15 -- As of 12.1, Supercharging Killing Spree beyond maximum CPs no longer affects duration
+    if ( p()->is_ptr() && trigger_cp > max_cp )
+      trigger_cp = max_cp;
       
     // 2025-09-01 -- If Killing Spree consumes Supercharger, its duration loses an effective combo point
     //               So with Forced Induction, the duration is treated as +2 CPs as opposed to +3
@@ -4716,10 +4725,8 @@ struct killing_spree_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
 
-    // 06-28-2025 -- TOCHECK: On 11.2 PTR both hits target random enemies
-    // Additionally, the new damage spell 1248604 is not currently being used but contains the 0-9 yard cone
-    attack_mh->execute_on_target( rng().range( sim->target_non_sleeping_list ) );
-    attack_oh->execute_on_target( rng().range( sim->target_non_sleeping_list ) );
+    attack_mh->trigger_secondary_action( rng().range( sim->target_non_sleeping_list ), cast_state( execute_state )->get_combo_points() );
+    attack_oh->trigger_secondary_action( rng().range( sim->target_non_sleeping_list ), cast_state( execute_state )->get_combo_points() );
 
     if ( p()->spec.killing_spree_energize->ok() && d->current_tick > 0 )
     {
