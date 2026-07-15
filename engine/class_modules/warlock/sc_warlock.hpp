@@ -97,7 +97,6 @@ struct warlock_td_t : public actor_target_data_t
   // 12.1 Affliction 4pc
   int ua_regular_stacks;
   int ua_seed_stacks;
-  bool ua_seed_gap;
 
   warlock_t& warlock;
   warlock_td_t( player_t* target, warlock_t& p );
@@ -114,7 +113,7 @@ struct warlock_td_t : public actor_target_data_t
   void ua_stack_applied( bool is_seed_ua );
   void ua_stack_expired( bool is_seed_ua );
   void reset_ua_stack_tracking();
-  int ua_calculate_damage_stacks() const;
+  double ua_calculate_damage_stacks() const;
 };
 
 // Shuffled Bag RNG (sampling without replacement)
@@ -439,6 +438,7 @@ public:
     const spell_data_t* cascading_calamity_buff;
     player_talent_t deaths_embrace; // Volatile Agony and Perpetual Unstability are unaffected by this
     player_talent_t patient_zero;
+    player_talent_t hedonic_gorging;
     player_talent_t sow_the_seeds;
 
     // Affliction Apex
@@ -563,6 +563,7 @@ public:
 
     player_talent_t shadowburn;
     const spell_data_t* shadowburn_2; // Contains Soul Shard energize data
+    const spell_data_t* shadowburn_debuff; // Shadowburn Debuff
     player_talent_t backlash; // Crit chance increase. NOT IMPLEMENTED: Instant Incinerate proc when physically attacked
     player_talent_t improved_havoc;
     player_talent_t ashen_remains; // Increased Chaos Bolt and Incinerate damage to targets afflicted by Immolate
