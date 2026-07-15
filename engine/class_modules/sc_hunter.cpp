@@ -527,7 +527,6 @@ public:
     cooldown_t* boomstick;
     cooldown_t* strike_as_one;
     cooldown_t* takedown;
-    cooldown_t* flamefang_pitch;
 
     cooldown_t* black_arrow;
     cooldown_t* bleak_powder;
@@ -851,10 +850,6 @@ public:
     spell_data_ptr_t takedown_pet;
     spell_data_ptr_t killer_companion;
 
-    spell_data_ptr_t flamefang_pitch;
-    spell_data_ptr_t flamefang_pitch_data;
-    spell_data_ptr_t flamefang_pitch_dmg;
-    spell_data_ptr_t flamefang_pitch_aoe;
     spell_data_ptr_t twin_fangs;
     spell_data_ptr_t savagery_sv;
     spell_data_ptr_t wildfire_infusion;
@@ -1072,7 +1067,6 @@ public:
     cooldowns.boomstick           = get_cooldown( "boomstick" );
     cooldowns.strike_as_one       = get_cooldown( "strike_as_one" );
     cooldowns.takedown            = get_cooldown( "takedown" );
-    cooldowns.flamefang_pitch     = get_cooldown( "flamefang_pitch" );
 
     cooldowns.black_arrow = get_cooldown( "black_arrow" );
     cooldowns.bleak_powder = get_cooldown( "bleak_powder_icd" );
@@ -6317,65 +6311,6 @@ struct takedown_t : public hunter_spell_t
   }
 };
 
-// Flamefang Pitch ==========================================================
-
-struct flamefang_pitch_t : public hunter_spell_t
-{
-  struct damage_t final : hunter_ranged_attack_t
-  {
-    damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.flamefang_pitch_dmg )
-    {
-      background = dual = true;
-      aoe = -1;
-      reduced_aoe_targets = p->talents.flamefang_pitch->effectN( 3 ).base_value();
-    }
-  };
-
-  struct aoe_t final : hunter_ranged_attack_t
-  {
-    aoe_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.flamefang_pitch_aoe )
-    {
-      background = dual = ground_aoe = true;
-      aoe = -1;
-      decrements_tip_of_the_spear = false;
-    }
-  };
-
-  damage_t* damage = nullptr;
-  aoe_t* aoe = nullptr;
-
-  flamefang_pitch_t( hunter_t* p, util::string_view options_str )
-    : hunter_spell_t( "flamefang_pitch", p, p->talents.flamefang_pitch ),
-      damage( p->get_background_action<damage_t>( "flamefang_pitch_damage" ) ),
-      aoe( p->get_background_action<aoe_t>( "flamefang_pitch_aoe" ) )
-  {
-    parse_options( options_str );
-    add_child( damage );
-    add_child( aoe );
-  }
-
-  void execute() override
-  {
-    hunter_spell_t::execute();
-
-    p()->buffs.wildfire_imbuement->trigger();
-
-    damage->execute_on_target( target );
-    make_event<ground_aoe_event_t>( 
-        *sim, player,
-        ground_aoe_params_t()
-            .target( execute_state->target )
-            .duration( p()->talents.flamefang_pitch_data->duration() )
-            // No true pulse time exists in spell data for this spell
-            .pulse_time( timespan_t::from_seconds( p()->talents.flamefang_pitch_data->effectN( 1 ).base_value() ) )
-            .action( aoe ) );
-
-    // 2026-01-18: Grenade Juggler is refunding the unhasted cooldown of a bomb instead of a charge.
-    if ( p()->talents.grenade_juggler.ok() )
-      p()->cooldowns.wildfire_bomb->adjust( -p()->cooldowns.wildfire_bomb->base_duration );
-  }
-};
-
 } // end namespace attacks
 
 // ==========================================================================
@@ -7342,7 +7277,6 @@ action_t* hunter_t::create_action( util::string_view name, util::string_view opt
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "counter_shot"          ) return new           counter_shot_t( this, options_str );
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
-  if ( name == "flamefang_pitch"       ) return new        flamefang_pitch_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "boomstick"             ) return new              boomstick_t( this, options_str );
   if ( name == "harpoon"               ) return new                harpoon_t( this, options_str );
@@ -7688,10 +7622,6 @@ void hunter_t::init_spells()
     talents.takedown_pet                      = talents.takedown.ok() ? find_spell( 1253862 ) : spell_data_t::not_found();
     talents.killer_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Companion", HUNTER_SURVIVAL );
 
-    talents.flamefang_pitch                   = find_talent_spell( talent_tree::SPECIALIZATION, 1251592, HUNTER_SURVIVAL );
-    talents.flamefang_pitch_data              = talents.flamefang_pitch.ok() ? find_spell( 1251610 ) : spell_data_t::not_found();
-    talents.flamefang_pitch_dmg               = talents.flamefang_pitch.ok() ? find_spell( 1251595 ) : spell_data_t::not_found();
-    talents.flamefang_pitch_aoe               = talents.flamefang_pitch.ok() ? find_spell( 1251614 ) : spell_data_t::not_found();
     talents.twin_fangs                        = find_talent_spell( talent_tree::SPECIALIZATION, "Twin Fangs", HUNTER_SURVIVAL );
     talents.savagery_sv                       = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_SURVIVAL );
     talents.wildfire_infusion                 = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Infusion", HUNTER_SURVIVAL );
