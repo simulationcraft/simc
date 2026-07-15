@@ -3444,6 +3444,49 @@ void stormbound_emblem_of_dazar( special_effect_t& effect )
   effect.execute_action =
       create_proc_action<stormbound_emblem_of_dazar_t>( "the_kings_unyielding_wind", effect, buff );
 }
+
+// Keeper's Seething Core
+// 1292065 Driver
+// 1295582 Buff
+void keepers_seething_core( special_effect_t& effect )
+{
+  struct focus_of_ulatek_t : public stat_buff_t
+  {
+    double mult;
+    focus_of_ulatek_t( player_t* p, std::string_view name, const special_effect_t& e )
+      : stat_buff_t( p, name, e.trigger() ), mult ( 0 )
+    {
+      set_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
+      mult = e.driver()->effectN( 2 ).percent();
+    }
+
+    double check_value() const override
+    {
+      double v = stat_buff_t::check_value();
+      // Tooltip is only indicator for N stacks before the effect is increased
+      if ( check() >= 2 )
+        v *= 1.0 + mult;
+
+      return v;
+    }
+
+    double value() override
+    {
+      double v = stat_buff_t::value();
+      // Tooltip is only indicator for N stacks before the effect is increased
+      if ( check() >= 2 )
+        v *= 1.0 + mult;
+
+      return v;
+    }
+  };
+
+  auto buff = create_buff<focus_of_ulatek_t>( effect.player, "focus_of_ulatek", effect );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -4546,6 +4589,7 @@ void register_special_effects()
   register_special_effect( 1297760, DISABLED_EFFECT ); // Voracious Heart of Ula'tek equip driver
   register_special_effect( 1295275, trinkets::stormbound_emblem_of_dazar );
   register_special_effect( 1294744, DISABLED_EFFECT );  // Stormbound Emblem of Dazar equip driver
+  register_special_effect( 1292065, trinkets::keepers_seething_core );
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
