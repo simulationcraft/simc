@@ -4636,7 +4636,6 @@ struct killing_spree_t : public rogue_attack_t
 
     attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->spec.killing_spree_mh_attack );
     attack_oh = p->get_background_action<killing_spree_tick_t>( "killing_spree_oh", p->spec.killing_spree_oh_attack );
-
     add_child( attack_mh );
     add_child( attack_oh );
 
@@ -4658,7 +4657,7 @@ struct killing_spree_t : public rogue_attack_t
   { 
     timespan_t hasted_tick = data().effectN( 1 ).period() * s->haste;
 
-    // As of 12.1, Adrenaline Rush reduces the tick rate by 20%
+    // 2026-07-15 -- As of 12.1, Adrenaline Rush reduces the tick rate by 20%
     if ( p()-> is_ptr() && p()->buffs.adrenaline_rush->check() )
       hasted_tick *= 1.0 + p()->talent.outlaw.adrenaline_rush->effectN( 8 ).percent();
 
