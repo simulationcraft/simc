@@ -6146,15 +6146,14 @@ struct boomstick_t : public hunter_spell_t
 
     boomstick_tick->execute_on_target( dot->target );
 
+    if ( p()->tier_set.mid_s2_sv_4pc.ok() && p()->buffs.mongoose_fury->check() )
+      p()->buffs.mongoose_fury->extend_async_duration( p()->tier_set.mid_s2_sv_4pc->effectN( 1 ).time_value() );
+
     if ( p()->talents.mongoose_rounds.ok() )
       p()->buffs.mongoose_fury->trigger( as<int>( p()->talents.mongoose_rounds->effectN( 1 ).base_value() ) );
 
     if ( p()->talents.wildfire_shells.ok() )
       p()->cooldowns.wildfire_bomb->adjust( -p()->talents.wildfire_shells->effectN( 1 ).time_value() );
-    
-    if ( p()->tier_set.mid_s2_sv_4pc.ok() && p()->buffs.mongoose_fury->check() )
-      p()->buffs.mongoose_fury->extend_async_duration( p()->tier_set.mid_s2_sv_4pc->effectN( 1 ).time_value() );
-
   }
 
   void last_tick( dot_t* dot ) override
