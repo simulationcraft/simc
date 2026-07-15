@@ -6243,6 +6243,10 @@ struct boomstick_t : public hunter_spell_t
 
     if ( p()->talents.wildfire_shells.ok() )
       p()->cooldowns.wildfire_bomb->adjust( -p()->talents.wildfire_shells->effectN( 1 ).time_value() );
+    
+    if ( p()->tier_set.mid_s2_sv_4pc.ok() && p()->buffs.mongoose_fury->check() )
+      p()->buffs.mongoose_fury->extend_duration( p()->tier_set.mid_s2_sv_4pc->effectN( 1 ).time_value() );
+
   }
 
   void last_tick( dot_t* dot ) override
