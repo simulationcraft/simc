@@ -6153,7 +6153,7 @@ struct boomstick_t : public hunter_spell_t
       p()->cooldowns.wildfire_bomb->adjust( -p()->talents.wildfire_shells->effectN( 1 ).time_value() );
     
     if ( p()->tier_set.mid_s2_sv_4pc.ok() && p()->buffs.mongoose_fury->check() )
-      p()->buffs.mongoose_fury->extend_duration( p()->tier_set.mid_s2_sv_4pc->effectN( 1 ).time_value() );
+      p()->buffs.mongoose_fury->extend_async_duration( p()->tier_set.mid_s2_sv_4pc->effectN( 1 ).time_value() );
 
   }
 
@@ -7928,7 +7928,6 @@ void hunter_t::create_buffs()
   buffs.mongoose_fury =
     make_buff( this, "mongoose_fury", talents.mongoose_fury_buff )
       ->set_default_value_from_effect( 1 )
-      ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
       ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
         if ( cur > old && rng().roll( talents.wallop->effectN( 1 ).percent() ) )
           buffs.wallop->trigger();
