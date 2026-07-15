@@ -243,7 +243,7 @@ struct expiration_t : public buff_event_t
   void execute() override
   {
     assert( !buff->expiration.empty() );
-    assert( *buff->expiration.begin() == this );
+    assert( buff->expiration.front() == this );
 
     // For non-async buffs, this is always unconditionally the "last tick" since we expire the buff
     auto last_tick = buff->stack_behavior != buff_stack_behavior::ASYNCHRONOUS ||
@@ -2220,6 +2220,40 @@ void buff_t::extend_duration( timespan_t extra_seconds )
   }
 }
 
+void buff_t::extend_async_duration( timespan_t extra_seconds )
+{
+  if ( !check() )
+  {
+    return;
+  }
+
+  if ( stack_behavior != buff_stack_behavior::ASYNCHRONOUS )
+  {
+    throw sc_runtime_error( fmt::format( "{} attempts to extend non-asynchronous {}.", *source, *this ) );
+  }
+
+  if ( expiration.empty() )
+  {
+    return;
+  }
+
+  extra_seconds = extra_seconds * get_time_duration_multiplier();
+
+  if ( extra_seconds > timespan_t::zero() )
+  {
+    for ( event_t* exp : expiration )
+    {
+      exp->reschedule( exp->remains() + extra_seconds );
+      sim->print_log( "{} extends {} by {}. New expiration time: {}", *source, *this, extra_seconds,
+                    exp->occurs() );
+    }
+  }
+  else if ( extra_seconds < timespan_t::zero() )
+  {
+    throw sc_runtime_error( fmt::format( "{} attempts to decrease asynchronous {} - this is not yet implemented.", *source, *this ) );
+  }
+}
+
 // Trigger the buff with the specified duration or extend it by the same amount
 // Cannot be used for negative adjustments like buff_t::extend_duration() can
 void buff_t::extend_duration_or_trigger( timespan_t duration )
@@ -2345,7 +2379,6 @@ void buff_t::start( int stacks, double value, timespan_t duration )
         return a->remains() < b->remains();
       } );
     }
-
   }
 
   timespan_t period = tick_time();

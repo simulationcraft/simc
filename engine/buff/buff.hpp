@@ -273,6 +273,7 @@ public:
   virtual void increment( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual void decrement( int stacks = 1, double value = DEFAULT_VALUE() );
   virtual void extend_duration( timespan_t seconds );
+  virtual void extend_async_duration( timespan_t seconds );
   virtual void extend_duration_or_trigger( timespan_t duration = timespan_t::min() );
   virtual void reschedule_tick( timespan_t delta );
 
