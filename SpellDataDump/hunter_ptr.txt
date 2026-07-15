@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68675 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68745 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -4783,6 +4783,7 @@ Effects          :
 Description      : $@spelldesc212431
 
 Name             : Explosive Shot (id=212680) [Spell Family (9)] 
+Hotfixed         : Affecting Spells
 Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
@@ -4791,6 +4792,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
+Family Flags     : 97
 Attributes       : Is Ability (4), Not Shapeshifted (16), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Do Not Display Range (126), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Always AOE Line of Sight (186), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=315406)   : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
