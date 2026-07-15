@@ -1777,7 +1777,7 @@ public:
         dance_of_midnight_pet( "dance_of_midnight", p ),
         bloodworms( "bloodworm", p ),
         lesser_ghoul( "lesser_ghoul", p ),
-        lesser_ghoul_army( "lesser_ghoul_army", p ),
+        lesser_ghoul_army( "army_ghoul", p ),
         lesser_ghoul_db_coil( "lesser_ghoul_db_coil", p ),
         lesser_ghoul_db_epi( "lesser_ghoul_db_epi", p ),
         lesser_ghoul_fs( "lesser_ghoul_fs", p ),
@@ -3588,8 +3588,8 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     }
   };
 
-  lesser_ghoul_pet_t( death_knight_t* owner, std::string_view name = "army_ghoul" )
-    : base_ghoul_pet_t( owner, name, PET_LESSER_GHOUL, true ),
+  lesser_ghoul_pet_t( death_knight_t* owner, std::string_view name = "army_ghoul", pet_e type = PET_ARMY_GHOUL )
+    : base_ghoul_pet_t( owner, name, type, true ),
       ruptured_viscera( nullptr ),
       putrefied( false ),
       base_ap_from_ap( 0.192975 )
@@ -3598,7 +3598,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     affected_by.grave_mastery         = true;
 
     if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      base_ap_from_ap *= 1.10;
+      base_ap_from_ap *= 0.935;
 
     if ( dk()->talent.rider.unholy_armaments.ok() )
     {
@@ -3748,6 +3748,11 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   void set_ap_multiplier( double multiplier )
   {
     owner_coeff.ap_from_ap = base_ap_from_ap * multiplier;
+  }
+
+  void set_pet_type( pet_e type )
+  {
+    this->pet_type = type;
   }
 
   void init_action_list() override
@@ -4404,7 +4409,7 @@ struct magus_base_pet_t : public death_knight_pet_t
     void execute() override
     {
       if ( pet()->pet_type == PET_LORD_OF_THE_DEAD )
-        trigger_gcd = execute_time() + rng().range( 100_ms, 1_s );
+        trigger_gcd = execute_time() + rng().range( 50_ms, 650_ms );
 
       magus_spell_t::execute();
     }
@@ -4527,20 +4532,25 @@ struct magus_pet_t : public magus_base_pet_t
     if ( dk()->talent.unholy.lord_of_the_dead.ok() &&
          dk()->active_magi.size() >= dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value() )
     {
-      // Sort the active magi by remaining duration, so that the oldest magus is dismissed first
-      std::sort( dk()->active_magi.begin(), dk()->active_magi.end(), []( const magus_pet_t* a, const magus_pet_t* b ) {
-        return a->expiration->remains() < b->expiration->remains();
-      } );
-      make_event( *sim, 0_ms, [ & ] {
+      int magi_required = as<int>( dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value() );
+      make_event( *sim, 0_ms, [ this, magi_required ] {
+        if ( dk()->active_magi.size() < magi_required )
+          return;
+
+        // Sort the active magi by remaining duration, so that the oldest magus is dismissed first.
+        std::sort( dk()->active_magi.begin(), dk()->active_magi.end(),
+                   []( const magus_pet_t* a, const magus_pet_t* b ) {
+                     return a->expiration->remains() < b->expiration->remains();
+                   } );
+
+        // Dismissing a magus removes it from active_magi, so copy the selected magi before dismissing any of them.
+        std::vector<magus_pet_t*> consumed_magi( dk()->active_magi.begin(),
+                                                 dk()->active_magi.begin() + magi_required );
         timespan_t total_dur = 0_s;
-        // Dismiss the first N magi, where N is the number of magi required to summon a lord.
-        for ( int i = 0; i < dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value(); i++ )
+        for ( auto* magus : consumed_magi )
         {
-          if ( dk()->active_magi[ i ] != this )
-            total_dur += dk()->active_magi[ i ]->expiration->remains();
-          else
-            total_dur += dk()->talent.unholy.magus_of_the_dead->effectN( 1 ).time_value();
-          dk()->active_magi[ i ]->dismiss( false );
+          total_dur += magus->expiration->remains();
+          magus->dismiss( false );
         }
         dk()->lotd_magus_dur = total_dur;
 
@@ -6626,12 +6636,17 @@ struct blood_beast_summon_t : public death_knight_summon_spell_t
 struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
 {
   summon_lesser_ghoul_t( std::string_view n, death_knight_t* p, const spell_data_t* s, lesser_ghoul_e type )
-    : death_knight_summon_spell_t( n, p, s ), source( type ), putrefy_source( PUTREFY_SOURCE_NONE ), ap_mult( 1.0 )
+    : death_knight_summon_spell_t( n, p, s ),
+      source( type ),
+      putrefy_source( PUTREFY_SOURCE_NONE ),
+      ap_mult( 1.0 ),
+      pet_type( PET_LESSER_GHOUL )
   {
     background = true;
     set_duration( data().duration() );
     putrefy_instantly = s == p->spell.summon_putrefy_ghoul;
     ap_mult           = s == p->spell.summon_army_ghoul ? 1.75 : 1.0;
+    pet_type          = s == p->spell.summon_army_ghoul ? PET_ARMY_GHOUL : PET_LESSER_GHOUL;
     if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && s == p->spell.summon_army_ghoul )
       ap_mult *= 0.8;
     switch ( source )
@@ -6712,6 +6727,7 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
       {
         p()->pets.lesser_ghoul.spawn( duration );
         p()->active_lesser_ghouls.back()->set_ap_multiplier( ap_mult );
+        p()->active_lesser_ghouls.back()->set_pet_type( pet_type );
       }
     }
 
@@ -6720,7 +6736,10 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
 
     if ( ordered )
       for ( auto& ghoul : p()->active_lesser_ghouls )
-        ghoul->trigger_orders();
+      {
+        if ( ghoul->pet_type == PET_ARMY_GHOUL )
+          ghoul->trigger_orders();
+      }
   }
 
 private:
@@ -6728,6 +6747,7 @@ private:
   putrefy_source_e putrefy_source;
   bool putrefy_instantly;
   double ap_mult;
+  pet_e pet_type;
 };
 
 struct summon_magus_t : public death_knight_summon_spell_t
@@ -13439,6 +13459,10 @@ void death_knight_t::sudden_doom_execute_effects( bool coil )
 
   if ( talent.unholy.doomed_bidding.ok() )
   {
+    // Bugged currently and sudden doom with doomed bidding fizzles entirely when army is active.
+    if ( buffs.army_of_the_dead->check() && bugs )
+      return;
+
     if ( coil )
       pet_summon.db_ghoul_coil->execute();
     else
@@ -14565,21 +14589,21 @@ void death_knight_t::create_pets()
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
     pets.lesser_ghoul.set_creation_callback(
-        []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "lesser_ghoul" ); } );
+        []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "lesser_ghoul", PET_LESSER_GHOUL ); } );
     pets.magus_of_the_dead.set_creation_callback(
         []( death_knight_t* p ) { return new pets::magus_pet_t( p, "magus_of_the_dead" ); } );
 
     if ( spec.festering_strike->ok() )
     {
       pets.lesser_ghoul_fs.set_creation_callback(
-          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "fs_ghoul" ); } );
+          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "fs_ghoul", PET_LESSER_GHOUL ); } );
       pets.lesser_ghoul_fs.set_default_duration( spell.summon_lesser_ghoul->duration() );
     }
 
     if ( talent.unholy.putrefy.ok() )
     {
       pets.lesser_ghoul_putrefy.set_creation_callback(
-          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "putrefy_ghoul" ); } );
+          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "putrefy_ghoul", PET_LESSER_GHOUL ); } );
     }
 
     if ( talent.unholy.summon_gargoyle.ok() )
@@ -14600,7 +14624,7 @@ void death_knight_t::create_pets()
     if ( talent.unholy.army_of_the_dead.ok() )
     {
       pets.lesser_ghoul_army.set_creation_callback(
-          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "army_ghoul" ); } );
+          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "army_ghoul", PET_ARMY_GHOUL ); } );
       pets.lesser_ghoul_army.set_default_duration( spell.summon_army_ghoul->duration() );
       pets.lesser_ghoul_army.set_max_pets( 8 );
     }
@@ -14624,11 +14648,11 @@ void death_knight_t::create_pets()
       timespan_t doomed_bidding_duration = spell.summon_lesser_ghoul->duration();
 
       pets.lesser_ghoul_db_coil.set_creation_callback(
-          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "db_ghoul_coil" ); } );
+          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "db_ghoul_coil", PET_LESSER_GHOUL ); } );
       pets.lesser_ghoul_db_coil.set_default_duration( doomed_bidding_duration );
 
       pets.lesser_ghoul_db_epi.set_creation_callback(
-          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "db_ghoul_epi" ); } );
+          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "db_ghoul_epi", PET_LESSER_GHOUL ); } );
       pets.lesser_ghoul_db_epi.set_default_duration( doomed_bidding_duration );
     }
 
@@ -14656,7 +14680,7 @@ void death_knight_t::create_pets()
 
     if ( talent.unholy.forbidden_knowledge_2.ok() )
       pets.lesser_ghoul_fk.set_creation_callback(
-          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "fk_ghoul" ); } );
+          []( death_knight_t* p ) { return new pets::lesser_ghoul_pet_t( p, "fk_ghoul", PET_LESSER_GHOUL ); } );
   }
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
