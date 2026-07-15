@@ -8883,8 +8883,8 @@ struct hunter_module_t: public module_t
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
-    // TODO: Remove PTR check and the live hunter file
-    if ( sim->dbc->ptr )
+    // TODO: Remove version check and the live hunter file
+    if ( sim->dbc->wowv() >= wowv_t{ 12, 1, 0 } )
     {
       auto  p = new hunter_t( sim, name, r );
       p -> report_extension = std::unique_ptr<player_report_extension_t>( new hunter_report_t( *p ) );
