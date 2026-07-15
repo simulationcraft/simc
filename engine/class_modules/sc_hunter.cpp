@@ -470,6 +470,7 @@ public:
     buff_t* aspect_of_the_eagle;
     buff_t* wallop;
     buff_t* takedown;
+    buff_t* grenade_juggler;
     buff_t* wildfire_imbuement;
     buff_t* raptor_swipe;
     buff_t* shrapnel_bomb;
@@ -562,6 +563,7 @@ public:
   struct rppm_t
   {
     real_ppm_t* wildfire_imbuement;
+    real_ppm_t* grenade_juggler;
 
     real_ppm_t* lethal_barbs;
 
@@ -857,6 +859,7 @@ public:
     spell_data_ptr_t wildfire_infusion;
 
     spell_data_ptr_t grenade_juggler;
+    spell_data_ptr_t grenade_juggler_buff;
     spell_data_ptr_t wildfire_imbuement;
     spell_data_ptr_t wildfire_imbuement_dmg;
     spell_data_ptr_t wildfire_imbuement_buff;
@@ -7017,6 +7020,16 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
 
     impact_action = p->get_background_action<bomb_damage_t>( "wildfire_bomb_damage", this );
   }
+
+  double recharge_rate_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = hunter_ranged_attack_t::recharge_rate_multiplier( cd );
+
+    if ( p()->buffs.grenade_juggler->check() )
+      m /= 1.0 + p()->talents.grenade_juggler_buff->effectN( 1 ).percent();
+
+    return m;
+  }
 };
 
 struct wildfire_bomb_t: public wildfire_bomb_base_t
@@ -7635,6 +7648,7 @@ void hunter_t::init_spells()
     talents.wildfire_infusion                 = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Infusion", HUNTER_SURVIVAL );
 
     talents.grenade_juggler                   = find_talent_spell( talent_tree::SPECIALIZATION, "Grenade Juggler", HUNTER_SURVIVAL );
+    talents.grenade_juggler_buff              = talents.grenade_juggler.ok() ? find_spell( 470488 ) : spell_data_t::not_found();
     talents.wildfire_imbuement                = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Imbuement", HUNTER_SURVIVAL );
     talents.wildfire_imbuement_dmg            = talents.wildfire_imbuement.ok() ? find_spell( 1252966 ) : spell_data_t::not_found();
     talents.wildfire_imbuement_buff           = talents.wildfire_imbuement.ok() ? find_spell( 1252947 ) : spell_data_t::not_found();
@@ -8034,6 +8048,9 @@ void hunter_t::create_buffs()
     make_buff( this, "wallop", talents.wallop_buff )
       ->set_default_value_from_effect( 1 );
 
+  buffs.grenade_juggler = 
+    make_buff( this, "grenade_juggler", talents.grenade_juggler_buff );
+
   buffs.wildfire_imbuement = 
     make_buff( this, "wildfire_imbuement", talents.wildfire_imbuement_buff );
 
@@ -8232,6 +8249,7 @@ void hunter_t::init_rng()
   player_t::init_rng();
 
   rppm.wildfire_imbuement       = get_rppm( "Wildfire Imbuement", talents.wildfire_imbuement );
+  rppm.grenade_juggler          = get_rppm( "Grenade Juggler", talents.grenade_juggler );
 
   rppm.lethal_barbs             = get_rppm( "Lethal Barbs", talents.lethal_barbs );
   
