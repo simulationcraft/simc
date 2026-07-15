@@ -561,10 +561,11 @@ public:
 
   struct rppm_t
   {
+    real_ppm_t* wildfire_imbuement;
+
     real_ppm_t* lethal_barbs;
 
     real_ppm_t* corpsecaller;
-    real_ppm_t* shadow_surge;
 
     real_ppm_t* let_fly;
   } rppm;
@@ -6958,6 +6959,11 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
     {
       hunter_ranged_attack_t::execute();
 
+      if ( p()->talents.wildfire_imbuement.ok() && p()->rppm.wildfire_imbuement->trigger() )
+      {
+        p()->buffs.wildfire_imbuement->trigger();
+      }
+
       if ( num_targets_hit > 0 )
       {
         // Dot applies to all of the same targets hit by the main explosion
@@ -8225,12 +8231,14 @@ void hunter_t::init_rng()
 {
   player_t::init_rng();
 
-  rppm.lethal_barbs = get_rppm( "Lethal Barbs", talents.lethal_barbs );
-  
-  rppm.corpsecaller = get_rppm( "Corpsecaller", talents.corpsecaller );
-  rppm.let_fly      = get_rppm( "Let Fly", tier_set.mid_s1_mm_4pc );
+  rppm.wildfire_imbuement       = get_rppm( "Wildfire Imbuement", talents.wildfire_imbuement );
 
-  accumulated_rng.dire_command = get_accumulated_rng( "Dire Command", prd::find_constant( talents.dire_command->effectN( 1 ).percent() ) );
+  rppm.lethal_barbs             = get_rppm( "Lethal Barbs", talents.lethal_barbs );
+  
+  rppm.corpsecaller             = get_rppm( "Corpsecaller", talents.corpsecaller );
+  rppm.let_fly                  = get_rppm( "Let Fly", tier_set.mid_s1_mm_4pc );
+
+  accumulated_rng.dire_command  = get_accumulated_rng( "Dire Command", prd::find_constant( talents.dire_command->effectN( 1 ).percent() ) );
 }
 
 void hunter_t::init_scaling()
