@@ -2148,6 +2148,7 @@ public:
   void moving() override;
   void invalidate_cache( cache_e c ) override;
   double composite_attribute( attribute_e ) const override;
+  double composite_mastery() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* s, school_e school ) const override;
   double composite_maelstrom_gain_coefficient( const action_state_t* /* state */ = nullptr ) const
   { return 1.0; }
@@ -12581,6 +12582,13 @@ void shaman_t::create_buffs()
       }
     } )
     ->set_chance( talent.crash_lightning.ok() ? 1.0 : 0.0 );
+  // PTR modifies MID1 Enhancement 4PC spell data in such a way that the automagic parsing system
+  // can no longer cope. Explicitly add mastery invalidation to the crash lightning buff, and also
+  // implement the mastery gain in shaman_t::composite_mastery().
+  if ( dbc->ptr && sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID1, B4 ) )
+  {
+    buff.crash_lightning->add_invalidate( CACHE_MASTERY );
+  }
 
   buff.hot_hand = make_buff( this, "hot_hand", find_spell( 215785 ) )
     ->set_chance( talent.hot_hand.ok()
@@ -12923,12 +12931,18 @@ void shaman_t::apply_player_effects()
     .set_effect_mask( effect_mask_t( false ).enable( 2 ) )
     .build( this );
   // [20260328] BUG: Enhancement 12.0 4PC gives half as much mastery as is on the tin
-  eff::source_eff_builder_t( buff.crash_lightning )
-    .set_effect_mask( effect_mask_t( false ).enable( 3 ) )
-    .set_value( [ this ]( double value ) -> double {
-      return value * ( bugs ? 0.5 : 1.0 );
-    } )
-    .build( this );
+  // PTR modifies MID1 Enhancement 4PC spell data in such a way that the automagic parsing system
+  // can no longer cope. For PTR (12.1), mastery point gain is implemented in
+  // shaman_t::composite_mastery().
+  if ( !dbc->ptr )
+  {
+    eff::source_eff_builder_t( buff.crash_lightning )
+      .set_effect_mask( effect_mask_t( false ).enable( 3 ) )
+      .set_value( [ this ]( double value ) -> double {
+        return value * ( bugs ? 0.5 : 1.0 );
+      } )
+      .build( this );
+  }
 
   // Elemental
   eff::source_eff_builder_t( mastery.elemental_overload ).build( this );
@@ -13503,6 +13517,23 @@ void shaman_t::moving()
   {
     halt();
   }
+}
+
+double shaman_t::composite_mastery() const
+{
+  double m = parse_player_effects_t::composite_mastery();
+
+  // [20260328] BUG: Enhancement 12.0 4PC gives half as much mastery as is on the tin
+  if ( dbc->ptr && sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID1, B4 ) )
+  {
+    if ( buff.crash_lightning->up() )
+    {
+      m += sets->set( SHAMAN_ENHANCEMENT, MID1, B4 )->effectN( 1 ).base_value() *
+        ( bugs ? 0.5 : 1.0 );
+    }
+  }
+
+  return m;
 }
 
 double shaman_t::composite_attribute( attribute_e attr ) const
