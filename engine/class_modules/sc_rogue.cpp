@@ -4627,7 +4627,7 @@ struct killing_spree_t : public rogue_attack_t
     attack_mh( nullptr ), attack_oh( nullptr )
   {
     channeled = tick_zero = true;
-    interrupt_auto_attack = true; // 2025-06-28 -- TOCHECK: Auto attacks are now interrupted on PTR
+    interrupt_auto_attack = true;
 
     // Assume we can react to the ending of Killing Spree faster than the 250ms channel_lag setting
     // through the use of [nochannel] macros, or in some cases reacting to the combo point generation
@@ -4636,6 +4636,7 @@ struct killing_spree_t : public rogue_attack_t
 
     attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->spec.killing_spree_mh_attack );
     attack_oh = p->get_background_action<killing_spree_tick_t>( "killing_spree_oh", p->spec.killing_spree_oh_attack );
+
     add_child( attack_mh );
     add_child( attack_oh );
 
@@ -4654,16 +4655,40 @@ struct killing_spree_t : public rogue_attack_t
   }
 
   timespan_t tick_time( const action_state_t* s ) const override
-  { return data().effectN( 1 ).period() * s->haste; }
+  { 
+    timespan_t hasted_tick = data().effectN( 1 ).period() * s->haste;
+
+    // As of 12.1, Adrenaline Rush reduces the tick rate by 20%
+    if ( p()-> is_ptr() && p()->buffs.adrenaline_rush->check() )
+      hasted_tick *= 1.0 + p()->talent.outlaw.adrenaline_rush->effectN( 8 ).percent();
+
+    return hasted_tick;
+  }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     auto rs = cast_state( s );
     int trigger_cp = rs->get_combo_points();
+    int max_cp = as<int>( p()->consume_cp_max() );
 
+    // 2026-07-15 -- As of 12.1, Supercharging Killing Spree beyond maximum CPs no longer affects duration,
+    //               rather it increases the tick damage by 15% per excess combo point
+    if ( p()->is_ptr() )
+    {
+      double mult = 1.0;
+      if ( trigger_cp > max_cp )
+      {
+        mult *= 1.0 + p()->talent.outlaw.killing_spree->effectN( 4 ).percent() * ( trigger_cp - max_cp );
+        trigger_cp = max_cp;
+      }
+
+      attack_mh->base_multiplier = mult;
+      attack_oh->base_multiplier = mult;
+    }
+      
     // 2025-09-01 -- If Killing Spree consumes Supercharger, its duration loses an effective combo point
     //               So with Forced Induction, the duration is treated as +2 CPs as opposed to +3
-    if ( p()->bugs && trigger_cp > rs->get_combo_points( true ) )
+    if ( !p()->is_ptr() && p()->bugs && trigger_cp > rs->get_combo_points( true ) )
       trigger_cp -= 1;
 
     return tick_time( s ) * trigger_cp;
@@ -10109,7 +10134,6 @@ void rogue_t::init_spells()
   spec.gravedigger_buff = talent.outlaw.gravedigger_3->ok() ? find_spell( 1265935 ) : spell_data_t::not_found();
   spec.gravedigger_energize = talent.outlaw.gravedigger_3->ok() ? find_spell( 1279356 ) : spell_data_t::not_found();
   spec.improved_adrenaline_rush_energize = talent.outlaw.improved_adrenaline_rush->ok() ? find_spell( 395424 ) : spell_data_t::not_found();
-  // MIDNIGHT TOCHECK -- Killing Spree spell ids could change over 11.2 PTR, new spell 1248604 exists but not used in logs yet
   spec.killing_spree_mh_attack = talent.outlaw.killing_spree->ok() ? find_spell( 57841 ) : spell_data_t::not_found();
   spec.killing_spree_oh_attack = talent.outlaw.killing_spree->ok() ? find_spell( 57842 ) : spell_data_t::not_found();
   spec.killing_spree_energize = talent.outlaw.killing_spree->ok() ? find_spell( 1235074 ) : spell_data_t::not_found();
@@ -11681,22 +11705,7 @@ public:
   bool valid() const override
   { return true; }
 
-  void register_hotfixes() const override
-  {
-    // 2025-07-29 -- Fatebound Lucky Coin expires 15s after leaving combat
-    hotfix::register_effect( "Rogue", "2025-07-29", "Fatebound Lucky Coin Expiry", 1156957 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 15 )
-        .verification_value( 10 );
-
-    // 2026-07-10 -- PTR TOCHECK: MID2 Outlaw 4pc has a scripted 20% proc rate while spell data is 12%
-    hotfix::register_effect( "Rogue", "2026-07-10", "MID2 Outlaw 4pc Proc Chance", 1319250 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 20 )
-        .verification_value( 12 );
-  }
+  void register_hotfixes() const override {}
 
   void register_actor_initializers( sim_t* ) const override {}
 };
