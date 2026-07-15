@@ -445,6 +445,7 @@ public:
     buff_t* trick_shots;
     buff_t* lock_and_load;
     buff_t* trueshot;
+    buff_t* unstable_trigger;
     buff_t* bullseye;
     buff_t* bulletstorm;
     buff_t* volley;
@@ -748,6 +749,7 @@ public:
     spell_data_ptr_t trueshot;
     spell_data_ptr_t incendiary_ammunition;
     spell_data_ptr_t unstable_trigger;
+    spell_data_ptr_t unstable_trigger_buff;
     spell_data_ptr_t precision_detonation;
     spell_data_ptr_t critical_precision;
 
@@ -5738,6 +5740,53 @@ struct explosive_shot_t final : public explosive_shot_base_t
     if ( cleave )
       add_child( cleave );
   }
+
+  void execute() override
+  {
+    explosive_shot_base_t::execute();
+
+    if ( p()->buffs.unstable_trigger->check() )
+    {
+      p()->buffs.unstable_trigger->expire();
+    }
+    else if ( p()->talents.unstable_trigger.ok() )
+    {
+      p()->buffs.unstable_trigger->trigger();
+    }
+  }
+
+  void queue_execute( execute_type et )
+  {
+    // Should always be foreground but just incase...
+    if ( p()->buffs.unstable_trigger->check() && et == execute_type::FOREGROUND )
+    {
+      schedule_execute();
+    }
+    else
+    {
+      explosive_shot_base_t::queue_execute( et );
+    }
+  }
+
+  bool ready() override
+  {
+    if ( p()->buffs.unstable_trigger->check() )
+    {
+      return true;
+    }
+
+    return explosive_shot_base_t::ready();
+  }
+
+  double cost() const override
+  {
+    if ( p()->buffs.unstable_trigger->check() )
+    {
+      return 0;
+    }
+
+    return explosive_shot_base_t::cost();
+  }
 };
 
 //==============================
@@ -7390,6 +7439,7 @@ void hunter_t::init_spells()
     talents.trueshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Trueshot", HUNTER_MARKSMANSHIP );
     talents.incendiary_ammunition             = find_talent_spell( talent_tree::SPECIALIZATION, "Incendiary Ammunition", HUNTER_MARKSMANSHIP );
     talents.unstable_trigger                  = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Trigger", HUNTER_MARKSMANSHIP );
+    talents.unstable_trigger_buff             = talents.unstable_trigger.ok() ? find_spell( 1301778 ) : spell_data_t::not_found();
     talents.precision_detonation              = find_talent_spell( talent_tree::SPECIALIZATION, "Precision Detonation", HUNTER_MARKSMANSHIP );
     talents.critical_precision                = find_talent_spell( talent_tree::SPECIALIZATION, "Critical Precision", HUNTER_MARKSMANSHIP );
 
@@ -7790,6 +7840,10 @@ void hunter_t::create_buffs()
           cooldowns.aimed_shot->adjust_recharge_multiplier();
           cooldowns.rapid_fire->adjust_recharge_multiplier();
         } );
+
+  buffs.unstable_trigger =
+    make_buff( this, "unstable_trigger", talents.unstable_trigger_buff )
+      ->set_chance( talents.unstable_trigger.ok() );
 
   buffs.bullseye =
     make_buff( this, "bullseye", talents.bullseye_buff )
