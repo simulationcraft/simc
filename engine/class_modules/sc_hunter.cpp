@@ -850,6 +850,7 @@ public:
     spell_data_ptr_t takedown_pet;
     spell_data_ptr_t killer_companion;
 
+    spell_data_ptr_t bombardier;
     spell_data_ptr_t twin_fangs;
     spell_data_ptr_t savagery_sv;
     spell_data_ptr_t wildfire_infusion;
@@ -7622,6 +7623,7 @@ void hunter_t::init_spells()
     talents.takedown_pet                      = talents.takedown.ok() ? find_spell( 1253862 ) : spell_data_t::not_found();
     talents.killer_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Companion", HUNTER_SURVIVAL );
 
+    talents.bombardier                        = find_talent_spell( talent_tree::SPECIALIZATION, "Bombardier", HUNTER_SURVIVAL );
     talents.twin_fangs                        = find_talent_spell( talent_tree::SPECIALIZATION, "Twin Fangs", HUNTER_SURVIVAL );
     talents.savagery_sv                       = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_SURVIVAL );
     talents.wildfire_infusion                 = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Infusion", HUNTER_SURVIVAL );
@@ -8520,7 +8522,7 @@ double hunter_t::composite_attribute_multiplier( attribute_e attr ) const
     if ( talents.lunge.ok() && dual_wield() )
     {
       // TODO confirm if the dual-wield bonus is additive or multiplicative, assuming the latter for now.
-      m *= 1 + talents.lunge->effectN( 2 ).percent();
+      m *= 1 + talents.lunge->effectN( 3 ).percent();
     }
   }
 
