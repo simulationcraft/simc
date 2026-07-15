@@ -243,7 +243,7 @@ struct expiration_t : public buff_event_t
   void execute() override
   {
     assert( !buff->expiration.empty() );
-    assert( buff->expiration.front() == this );
+    assert( *buff->expiration.begin() == this );
 
     // For non-async buffs, this is always unconditionally the "last tick" since we expire the buff
     auto last_tick = buff->stack_behavior != buff_stack_behavior::ASYNCHRONOUS ||
@@ -2241,11 +2241,14 @@ void buff_t::extend_async_duration( timespan_t extra_seconds )
 
   if ( extra_seconds > timespan_t::zero() )
   {
-    for ( event_t* exp : expiration )
+    for ( size_t i = 0; i < expiration.size(); i++ )
     {
-      exp->reschedule( exp->remains() + extra_seconds );
+      // instead of rescheduling, cancel the events and create fresh ones to maintain expiration event ordering
+      expiration_t* exp = debug_cast<expiration_t*>( expiration[ i ] );
+      expiration[ i ] = make_event<expiration_t>( *sim, this, exp->stack, exp->remains() + extra_seconds );
+      event_t::cancel( exp );
       sim->print_log( "{} extends {} by {}. New expiration time: {}", *source, *this, extra_seconds,
-                    exp->occurs() );
+                     expiration[ i ]->occurs() );
     }
   }
   else if ( extra_seconds < timespan_t::zero() )
