@@ -16,7 +16,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
     soc_threshold( 0.0 ),
     ua_regular_stacks( 0 ),
     ua_seed_stacks( 0 ),
-    ua_seed_gap( false ),
     warlock( p )
 {
   // Shared
@@ -67,7 +66,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                              ->set_max_stack( 1 )
                              ->set_proc_callbacks( false );
 
-  debuffs.shadowburn = make_buff( *this, "shadowburn", p.talents.shadowburn )
+  debuffs.shadowburn = make_buff( *this, "shadowburn", ( p.sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) ) ? p.talents.shadowburn_debuff : p.talents.shadowburn )
                            ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
 
   if ( p.sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
@@ -143,14 +142,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 void warlock_td_t::ua_stack_applied( bool is_seed_ua )
 {
   if ( is_seed_ua )
-  {
     ua_seed_stacks++;
-    ua_seed_gap = true;
-  }
   else
-  {
     ua_regular_stacks++;
-  }
 }
 
 void warlock_td_t::ua_stack_expired( bool is_seed_ua )
@@ -159,7 +153,6 @@ void warlock_td_t::ua_stack_expired( bool is_seed_ua )
   {
     assert( ua_seed_stacks > 0 );
     ua_seed_stacks--;
-    ua_seed_gap = false;
   }
   else
   {
@@ -172,15 +165,11 @@ void warlock_td_t::reset_ua_stack_tracking()
 {
   ua_regular_stacks = 0;
   ua_seed_stacks = 0;
-  ua_seed_gap = false;
 }
 
-int warlock_td_t::ua_calculate_damage_stacks() const
+double warlock_td_t::ua_calculate_damage_stacks() const
 {
-  const int damage_effective_ua_seed_stacks = ua_seed_stacks - ( ua_seed_gap ? 1 : 0 );
-  assert( damage_effective_ua_seed_stacks >= 0 );
-
-  return ua_regular_stacks + damage_effective_ua_seed_stacks;
+  return as<double>( ua_regular_stacks ) + as<double>( ua_seed_stacks ) * warlock.tier.wl_affliction_12_1_class_set_4pc->effectN( 1 ).percent();
 }
 
 void warlock_td_t::target_demise()
@@ -1104,6 +1093,11 @@ void warlock_t::parse_player_effects()
   {
     // Affliction Mastery
     parse_effects( warlock_base.potent_afflictions ); // 77215
+
+    // Affliction Buffs
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      parse_effects( buffs.unstable_empowerment ); // 1305774
+
     // Affliction Debuffs/DoTs
     // NOTE: Shadow of Nathreza II (rank 2) only increases by 2% (as if it were rank 1) the
     // effect #2 and #3 (pet and guardian damage) of the Haunt debuff damage bonus (bug)
@@ -1115,6 +1109,7 @@ void warlock_t::parse_player_effects()
   {
     // Demonology Mastery
     parse_effects( warlock_base.master_demonologist ); // 77219
+
     // Demonology Buffs
     parse_effects( buffs.hellbent_commander ); // 1281559
   }

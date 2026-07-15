@@ -266,6 +266,8 @@ using namespace helpers;
       {
         parse_target_effects( d_fn( &warlock_td_t::dots_t::immolate ), p()->warlock_base.immolate_dot ); // 157736
         parse_target_effects( d_fn( &warlock_td_t::debuffs_t::lake_of_fire ), p()->talents.lake_of_fire_debuff ); // 1244918
+        if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+          parse_target_effects( d_fn( &warlock_td_t::debuffs_t::dark_titans_mark ), p()->tier.dark_titans_mark_debuff ); // 1305711
       }
 
       // Diabolist
@@ -1690,16 +1692,16 @@ using namespace helpers;
 
     double calculate_tick_amount( action_state_t* state, double dot_multiplier ) const override
     {
-      // 12.1 4pc seed-applied UAs are visually full UA stacks, but one active seed-UA stack may not count
-      // toward UA periodic damage. Adjust the tick multiplier here because the core applies stack count through
-      // dot_multiplier after calculating the base tick, and the effective stack count can change between ticks.
+      // 12.1 4pc seed-applied UAs are displayed as full UA stacks, but only contribute
+      // partial UA damage. The core applies the visible stack count through dot_multiplier,
+      // so rescale it to the effective damage stack count on each tick.
       if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && active_4pc<MID2>() )
       {
         auto tdata = td( state->target );
         const int current_stacks = tdata->dots.unstable_affliction->current_stack();
 
         if ( current_stacks > 0 )
-          dot_multiplier *= as<double>( tdata->ua_calculate_damage_stacks() ) / current_stacks;
+          dot_multiplier *= tdata->ua_calculate_damage_stacks() / current_stacks;
       }
 
       return warlock_spell_t::calculate_tick_amount( state, dot_multiplier );
@@ -1790,7 +1792,7 @@ using namespace helpers;
       {
         double m = warlock_spell_t::composite_target_da_multiplier( t );
 
-        if ( p()->talents.patient_zero.ok() )
+        if ( ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) ) && p()->talents.patient_zero.ok() )
         {
           // NOTE (2026-04-24): Patient Zero does not track seeds individually (bug?). Instead, it
           // uses a single per-caster target reference updated on cast success to the target of the
@@ -1955,7 +1957,7 @@ using namespace helpers;
       warlock_td_t* mstdata = td( main_seed_target );
 
       // Patient Zero target is updated on SoC cast success, not on impact or debuff application
-      if ( p()->talents.patient_zero.ok() )
+      if ( ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) ) && p()->talents.patient_zero.ok() )
         p()->patient_zero_target = main_seed_target;
 
       // 2026-06-30 Hotfix: Nightfall SoC detonates existing SoC when smart targeting leaves the primary seed on an already seeded target

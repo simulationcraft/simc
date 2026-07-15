@@ -223,7 +223,10 @@ namespace warlock
 
     talents.deaths_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Death's Embrace" ); // Should be ID 234876
 
-    talents.patient_zero = find_talent_spell( talent_tree::SPECIALIZATION, "Patient Zero" ); // Should be ID 1260285
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      talents.hedonic_gorging = find_talent_spell( talent_tree::SPECIALIZATION, "Hedonic Gorging" ); // Should be ID 1311969
+    else
+      talents.patient_zero = find_talent_spell( talent_tree::SPECIALIZATION, "Patient Zero" ); // Should be ID 1260285
 
     talents.sow_the_seeds = find_talent_spell( talent_tree::SPECIALIZATION, "Sow the Seeds" ); // Should be ID 196226
 
@@ -430,6 +433,9 @@ namespace warlock
 
     talents.shadowburn = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowburn" ); // Should be ID 17877
     talents.shadowburn_2 = conditional_spell_lookup( talents.shadowburn.ok(), 245731 );
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      talents.shadowburn_debuff = conditional_spell_lookup( talents.shadowburn.ok(), 1311913 );
 
     talents.backlash = find_talent_spell( talent_tree::SPECIALIZATION, "Backlash" ); // Should be ID 387384
 
