@@ -780,7 +780,7 @@ buff_t::~buff_t() = default;
 const spell_data_t& buff_t::data_reporting() const
 {
   if ( is_fallback )
-    return spell_data_t::nil();
+    return *spell_data_t::nil();
 
   if (s_data_reporting == spell_data_t::nil())
     return *s_data;
@@ -884,7 +884,7 @@ buff_t* buff_t::modify_duration( timespan_t duration )
 buff_t* buff_t::set_duration_multiplier( double multiplier )
 {
   if ( is_fallback )
-  return this;
+    return this;
 
   assert( multiplier >= 0.0 );
   buff_duration_multiplier = multiplier;
