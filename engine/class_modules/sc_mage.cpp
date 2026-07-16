@@ -2384,18 +2384,6 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
     return c;
   }
 
-  double composite_crit_chance_multiplier() const override
-  {
-    double m = custom_state_spell_t::composite_crit_chance_multiplier();
-
-    // While Pyroclasm is up, it doubles the crit chance of all instant Hot Streak spells.
-    // TODO: This is definitely a bug
-    if ( p()->bugs && p()->buffs.pyroclasm->check() && !pyroclasm_active() )
-      m *= 1.0 + p()->buffs.pyroclasm->data().effectN( 2 ).percent();
-
-    return m;
-  }
-
   result_e calculate_result( action_state_t* s ) const override
   {
     result_e r = custom_state_spell_t::calculate_result( s );
@@ -6583,8 +6571,7 @@ void mage_t::init_rng()
   // TODO: Double check that this RNG is the same in Midnight.
   accumulated_rng.pyromaniac = get_accumulated_rng( "pyromaniac", talents.pyromaniac.ok() ? 0.00605 : 0.0 );
 
-  // TODO: Seems to have an undocumented extra 2% proc chance.
-  double cc_chance = spec.clearcasting->effectN( 2 ).percent() + talents.illuminated_thoughts->effectN( 1 ).percent() + 0.02;
+  double cc_chance = spec.clearcasting->effectN( 2 ).percent();
   // TODO: There is no longer a cap on the BLP but the constant still assumes a BLP cap is present
   accumulated_rng.clearcasting = get_accumulated_rng(
     "clearcasting", prd::find_constant( cc_chance, bugs ? 13 : options.clearcasting_blp_threshold ),
