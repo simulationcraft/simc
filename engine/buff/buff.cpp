@@ -1262,13 +1262,8 @@ buff_t* buff_t::disable_ticking( bool v )
 
 buff_t* buff_t::add_invalidate( cache_e c )
 {
-  if ( is_fallback )
+  if ( is_fallback || c == CACHE_NONE )
     return this;
-
-  if ( c == CACHE_NONE || is_fallback )
-  {
-    return this;
-  }
 
   if ( range::find( invalidate_list, c ) == invalidate_list.end() )  // avoid duplication
   {
@@ -1393,7 +1388,7 @@ buff_t* buff_t::set_pct_buff_type_from_data( bool set_default )
 
 buff_t* buff_t::set_movement_speed_buff( bool stacking, double percent )
 {
-  if ( !player || is_fallback )
+  if ( is_fallback || !player )
     return this;
 
   if ( stacking )
@@ -4126,6 +4121,9 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
 
 damage_buff_t* damage_buff_t::apply_dynamic_buff_multiplier( buff_t* buff )
 {
+  if ( is_fallback )
+    return this;
+
   auto parse_dynamic_buff_multiplier_for_mod = [ this, buff ]( damage_buff_modifier_t& mod ) {
 
     if ( !mod.s_data || !mod.s_data->ok() )
