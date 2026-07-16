@@ -6370,6 +6370,8 @@ void monk_t::create_buffs()
 
   buff.zenith_stomp = make_buff_fallback( talent.windwalker.tigereye_brew_3->ok(), this, "zenith_stomp",
                                           talent.monk.zenith_stomp_buff );
+  if ( wowv_l( { 12, 1, 0 } ) && !buff.zenith_stomp->is_fallback )
+    buff.zenith_stomp->modify_initial_stack( 1 );
 
   buff.rushing_wind_kick = make_buff_fallback( talent.windwalker.rushing_wind_kick->ok(), this, "rushing_wind_kick",
                                                talent.windwalker.rushing_wind_kick_buff );
