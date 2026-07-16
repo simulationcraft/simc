@@ -142,8 +142,10 @@ void event_manager_t::add_event( event_t* e, timespan_t delta_time )
   unsigned traversed = 0;
 #endif
 
+  // Find the first event p (= *prev) for which (p->time, p->id) > (e->time, e->id)
   while ( ( *prev ) &&
-          ( *prev )->time <= e->time )  // Find position in the list
+          ( ( *prev )->time < e->time ||
+            ( ( *prev )->time == e->time && ( *prev )->id <= e->id ) ) )
   {
     prev = &( ( *prev )->next );
 #ifdef EVENT_QUEUE_DEBUG
