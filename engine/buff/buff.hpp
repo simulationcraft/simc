@@ -26,23 +26,15 @@
 #include <vector>
 
 struct buff_t;
-struct stat_buff_t;
-struct spelleffect_data_t;
-struct absorb_buff_t;
-struct cost_reduction_buff_t;
-struct actor_pair_t;
-struct sim_t;
-struct action_t;
-struct item_t;
-struct gain_t;
-struct action_state_t;
-struct stats_t;
-struct event_t;
 struct cooldown_t;
-struct real_ppm_t;
+struct event_t;
 struct expr_t;
-struct spell_data_t;
-namespace rng{
+struct gain_t;
+struct item_t;
+struct real_ppm_t;
+struct spelleffect_data_t;
+struct stats_t;
+namespace rng {
 struct rng_t;
 }
 
