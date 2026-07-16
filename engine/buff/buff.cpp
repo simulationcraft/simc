@@ -4233,6 +4233,15 @@ damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, const s
   return this;
 }
 
+damage_buff_t* damage_buff_t::set_is_stacking_mod( bool value )
+{
+  if ( is_fallback )
+    return this;
+
+  is_stacking = value;
+  return this;
+}
+
 damage_buff_t* damage_buff_t::set_direct_mod( double multiplier )
 {
   if ( is_fallback )

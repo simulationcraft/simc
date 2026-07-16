@@ -584,12 +584,7 @@ struct damage_buff_t : public buff_t
   damage_buff_t* apply_dynamic_buff_multiplier( buff_t* buff );
   damage_buff_t* apply_mod_affecting_effect( damage_buff_modifier_t&, const spelleffect_data_t& );
 
-  damage_buff_t* set_is_stacking_mod( bool value )
-  {
-    is_stacking = value;
-    return this;
-  };
-
+  damage_buff_t* set_is_stacking_mod( bool value );
   damage_buff_t* set_direct_mod( double );
   damage_buff_t* set_direct_mod( const spell_data_t*, size_t, double = 0.0, double = 1.0 );
   damage_buff_t* set_periodic_mod( double );
