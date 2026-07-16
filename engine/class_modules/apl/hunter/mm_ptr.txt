@@ -2,7 +2,7 @@
 actions.precombat=snapshot_stats
 actions.precombat+=/summon_pet,if=talent.unbreakable_bond
 actions.precombat+=/use_item,name=algethar_puzzle_box
-actions.precombat+=/aimed_shot,if=active_enemies<3|talent.black_arrow&talent.headshot
+actions.precombat+=/aimed_shot,if=active_enemies<3
 actions.precombat+=/steady_shot
 
 # Executed every time the actor is available.
@@ -26,11 +26,11 @@ actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|fight_remains<120-30
 
 actions.drst=black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
 actions.drst+=/aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time
-actions.drst+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
+actions.drst+=/trueshot,if=variable.trueshot_ready
 actions.drst+=/rapid_fire
 actions.drst+=/wailing_arrow,if=!cooldown.black_arrow.ready
 actions.drst+=/arcane_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
-actions.drst+=/volley,if=!buff.double_tap.up
+actions.drst+=/volley
 actions.drst+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage
 actions.drst+=/explosive_shot
 actions.drst+=/steady_shot
@@ -38,10 +38,10 @@ actions.drst+=/steady_shot
 actions.draoe=aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time&full_recharge_time<gcd+cast_time
 actions.draoe+=/black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
 actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down
-actions.draoe+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
+actions.draoe+=/trueshot,if=variable.trueshot_ready
 actions.draoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload)
 actions.draoe+=/wailing_arrow,if=!cooldown.black_arrow.ready
-actions.draoe+=/volley,if=!buff.double_tap.up
+actions.draoe+=/volley
 actions.draoe+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
 actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
 actions.draoe+=/explosive_shot
@@ -49,9 +49,9 @@ actions.draoe+=/steady_shot
 
 actions.sentaoe=multishot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down
 actions.sentaoe+=/rapid_fire,if=(buff.bulletstorm.remains<action.aimed_shot.execute_time|buff.bulletstorm.stack<18|talent.unload&target.health.pct<20)
-actions.sentaoe+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
-actions.sentaoe+=/volley,if=!buff.double_tap.up
-actions.sentaoe+=/explosive_shot,if=talent.shrapnel_shot&buff.trueshot.down&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1
+actions.sentaoe+=/trueshot,if=variable.trueshot_ready
+actions.sentaoe+=/volley
+actions.sentaoe+=/explosive_shot,if=buff.trueshot.down&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1
 actions.sentaoe+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
 actions.sentaoe+=/moonlight_chakram
 actions.sentaoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time
@@ -59,8 +59,8 @@ actions.sentaoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed
 actions.sentaoe+=/explosive_shot
 actions.sentaoe+=/steady_shot
 
-actions.sentst=volley,if=!buff.double_tap.up
-actions.sentst+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
+actions.sentst=volley
+actions.sentst+=/trueshot,if=variable.trueshot_ready
 actions.sentst+=/rapid_fire,if=buff.bulletstorm.stack<18
 actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=full_recharge_time<gcd+cast_time
 actions.sentst+=/arcane_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)
