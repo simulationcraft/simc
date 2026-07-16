@@ -337,7 +337,7 @@ void marksmanship_ptr( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "summon_pet,if=talent.unbreakable_bond" );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
-  precombat->add_action( "aimed_shot,if=active_enemies<3|talent.black_arrow&talent.headshot" );
+  precombat->add_action( "aimed_shot,if=active_enemies<3" );
   precombat->add_action( "steady_shot" );
 
   default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25|time<10" );
@@ -359,11 +359,11 @@ void marksmanship_ptr( player_t* p )
 
   drst->add_action( "black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
   drst->add_action( "aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time" );
-  drst->add_action( "trueshot,if=!buff.double_tap.up&variable.trueshot_ready" );
+  drst->add_action( "trueshot,if=variable.trueshot_ready" );
   drst->add_action( "rapid_fire" );
   drst->add_action( "wailing_arrow,if=!cooldown.black_arrow.ready" );
   drst->add_action( "arcane_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
-  drst->add_action( "volley,if=!buff.double_tap.up" );
+  drst->add_action( "volley" );
   drst->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage" );
   drst->add_action( "explosive_shot" );
   drst->add_action( "steady_shot" );
@@ -371,10 +371,10 @@ void marksmanship_ptr( player_t* p )
   draoe->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time&full_recharge_time<gcd+cast_time" );
   draoe->add_action( "black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
   draoe->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down" );
-  draoe->add_action( "trueshot,if=!buff.double_tap.up&variable.trueshot_ready" );
+  draoe->add_action( "trueshot,if=variable.trueshot_ready" );
   draoe->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload)" );
   draoe->add_action( "wailing_arrow,if=!cooldown.black_arrow.ready" );
-  draoe->add_action( "volley,if=!buff.double_tap.up" );
+  draoe->add_action( "volley" );
   draoe->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time" );
   draoe->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
   draoe->add_action( "explosive_shot" );
@@ -382,9 +382,9 @@ void marksmanship_ptr( player_t* p )
 
   sentaoe->add_action( "multishot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down" );
   sentaoe->add_action( "rapid_fire,if=(buff.bulletstorm.remains<action.aimed_shot.execute_time|buff.bulletstorm.stack<18|talent.unload&target.health.pct<20)" );
-  sentaoe->add_action( "trueshot,if=!buff.double_tap.up&variable.trueshot_ready" );
-  sentaoe->add_action( "volley,if=!buff.double_tap.up" );
-  sentaoe->add_action( "explosive_shot,if=talent.shrapnel_shot&buff.trueshot.down&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1" );
+  sentaoe->add_action( "trueshot,if=variable.trueshot_ready" );
+  sentaoe->add_action( "volley" );
+  sentaoe->add_action( "explosive_shot,if=buff.trueshot.down&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1" );
   sentaoe->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time" );
   sentaoe->add_action( "moonlight_chakram" );
   sentaoe->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time" );
@@ -392,8 +392,8 @@ void marksmanship_ptr( player_t* p )
   sentaoe->add_action( "explosive_shot" );
   sentaoe->add_action( "steady_shot" );
 
-  sentst->add_action( "volley,if=!buff.double_tap.up" );
-  sentst->add_action( "trueshot,if=!buff.double_tap.up&variable.trueshot_ready" );
+  sentst->add_action( "volley" );
+  sentst->add_action( "trueshot,if=variable.trueshot_ready" );
   sentst->add_action( "rapid_fire,if=buff.bulletstorm.stack<18" );
   sentst->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=full_recharge_time<gcd+cast_time" );
   sentst->add_action( "arcane_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
