@@ -5768,6 +5768,13 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     amount *= 1.0 - p()->talents.explosive_shot->effectN( 3 ).percent();
 
     cleave->execute_on_target( dot->target, amount );
+
+    if ( !p()->bugs && p()->tier_set.mid_s2_mm_4pc.ok() )
+    {
+      auto reduction = -p()->tier_set.mid_s2_mm_4pc->effectN( 2 ).time_value();
+      p()->cooldowns.aimed_shot->adjust( reduction );
+      p()->cooldowns.rapid_fire->adjust( reduction );
+    }
   }
 };
 
