@@ -1027,7 +1027,8 @@ Family Flags     : 117, 126
 Attributes       : Do Not Sheath (18), Allow While Sitting (27), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=22918)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.61 | PvP Coefficient: 1.65 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.732 | PvP Coefficient: 1.65 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (0.61 -> 0.732)
 Description      : $@spelldesc33076
 
 Name             : Pain Suppression (id=33206) [Spell Family (6)] 
@@ -1366,7 +1367,8 @@ Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=39897)    : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.8109 | PvP Coefficient: 1.059 | Target: Channel Target (77)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.932 | Target: Channel Target (77)
+Hotfixed         : SP Coefficient (0.8109 -> 0.932), PvP Coefficient (1.059 -> 1)
 Description      : $@spelldesc47540
 
 Name             : Penance (id=47750) [Spell Family (6)] 
@@ -1384,7 +1386,8 @@ Family Flags     : 48, 126
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=39995)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.4884 | PvP Coefficient: 1.059 | Target: Channel Target (77)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.011 | Target: Channel Target (77)
+Hotfixed         : SP Coefficient (3.4884 -> 4.011), PvP Coefficient (1.059 -> 1)
 Description      : $@spelldesc47540
 
 Name             : Divine Aegis (id=47753) [Spell Family (6)] 
@@ -15072,7 +15075,8 @@ Family Flags     : 48, 126
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1225389)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.4884 | PvP Coefficient: 1.059 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.011 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (3.4884 -> 4.011), PvP Coefficient (1.059 -> 1)
 Description      : $@spelldesc47540
 
 Name             : Penance (id=1232571) [Spell Family (6)] 
@@ -15090,7 +15094,8 @@ Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1225395)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.8109 | PvP Coefficient: 1.059 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.932 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (0.8109 -> 0.932), PvP Coefficient (1.059 -> 1)
 Description      : $@spelldesc47540
 
 Name             : Dark Reprimand (id=1232592) [Spell Family (6)] 
@@ -15107,7 +15112,8 @@ Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1225453)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.8109 | PvP Coefficient: 1.059 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.932 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (0.8109 -> 0.932), PvP Coefficient (1.059 -> 1)
 Description      : $@spelldesc373129
 
 Name             : Dark Reprimand (id=1232615) [Spell Family (6)] 
@@ -15125,7 +15131,8 @@ Family Flags     : 48, 126
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1225482)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.4884 | PvP Coefficient: 1.059 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.011 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (3.4884 -> 4.011), PvP Coefficient (1.059 -> 1)
 Description      : $@spelldesc400169
 
 Name             : Levitate (id=1233877) [Spell Family (6)] 
@@ -15629,7 +15636,8 @@ Family Flags     : 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1248558)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9.4 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 12.22 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (9.4 -> 12.22)
 Description      : Casting Prayer of Mending heals your target for $s1.
 
 Name             : Prompt Prognosis (id=1246799) [Spell Family (6), Passive, Hidden] 
@@ -16192,8 +16200,9 @@ Family Flags     : 0
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416), Chain by Most Hit (440), Non-secret Aura (506)
 Effects          :
 #1 (id=1259452)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5 | Misc Value: 0x7f | Radius: 0 - 30 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.5 | Misc Value: 0x7f | Radius: 0 - 30 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
                    Affected School(s): All
+Hotfixed         : SP Coefficient (5 -> 4.5)
                    Modified By: Improved Power Word: Shield (24191 effect#1)
 #2 (id=1285766)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
@@ -17405,13 +17414,15 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1322570)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10)
-                   Base Value: 500 | Scaled Value: 500 | Misc Value: 10 | Target: Self (1)
+                   Base Value: 300 | Scaled Value: 300 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
+Hotfixed         : Base Value (500 -> 300)
 #2 (id=1322571)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
+Hotfixed         : Base Value (30 -> 40)
 #3 (id=1322572)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 Description      : Shadow Mend heals for $s2% more and applies Atonement for an additional ${$s3/1000} sec, but its cast time is increased by ${$s1/1000}.1 sec.
