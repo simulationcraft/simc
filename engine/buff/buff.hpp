@@ -34,10 +34,10 @@ struct item_t;
 struct real_ppm_t;
 struct spelleffect_data_t;
 struct stats_t;
-namespace rng {
+namespace rng
+{
 struct rng_t;
 }
-
 
 using buff_tick_callback_t = std::function<void(buff_t* buff, int remaining_ticks, timespan_t tick_time)>;
 using buff_tick_time_callback_t = std::function<timespan_t(const buff_t*, unsigned)>;
