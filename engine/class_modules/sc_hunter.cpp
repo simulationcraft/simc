@@ -5470,6 +5470,13 @@ struct rapid_fire_t: public hunter_ranged_attack_t
         p()->cooldowns.aimed_shot->adjust( -p()->talents.take_aim_1->effectN( 2 ).time_value() );
     }
 
+    void schedule_travel( action_state_t* s ) override
+    {
+      td( s->target )->debuffs.spotters_mark_rapid_fire->expire();
+
+      hunter_ranged_attack_t::schedule_travel( s );
+    }
+
     void impact( action_state_t* state ) override
     {
       hunter_ranged_attack_t::impact( state );
@@ -5672,7 +5679,6 @@ struct rapid_fire_t: public hunter_ranged_attack_t
         if ( td( t )->debuffs.spotters_mark_rapid_fire->check() )
         {
           marked_targets.push_back( t );
-          td( t )->debuffs.spotters_mark_rapid_fire->expire();
         }
       }
     }
