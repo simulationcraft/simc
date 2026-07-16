@@ -405,7 +405,9 @@ public:
     proc_t* freezing_applied;
     proc_t* freezing_expired;
     proc_t* freezing_overflow;
+
     proc_t* icicle_from_set_bonus;
+    proc_t* icicle_overflow;
   } procs;
 
   struct accumulated_rngs_t
@@ -6515,7 +6517,9 @@ void mage_t::init_procs()
       procs.freezing_applied  = get_proc( "Freezing applied" );
       procs.freezing_expired  = get_proc( "Freezing expired" );
       procs.freezing_overflow = get_proc( "Freezing overflow" );
+
       procs.icicle_from_set_bonus = get_proc( "Icicle from 12.1 2pc Set Bonus" );
+      procs.icicle_overflow       = get_proc( "Icicle overflow" );
       break;
     default:
       break;
@@ -7118,9 +7122,13 @@ void mage_t::trigger_icicle( int count, bool grant_buff )
     return;
 
   int max_icicles = as<int>( talents.icicles->effectN( 2 ).base_value() );
+  int old_icicles = state.icicles;
   state.icicles = std::min( state.icicles + count, max_icicles );
   if ( grant_buff && state.icicles == max_icicles )
     buffs.glacial_spike->trigger();
+  int overflow = old_icicles + count - state.icicles;
+  for ( int i = 0; i < overflow; i++ )
+    procs.icicle_overflow->occur();
 }
 
 void mage_t::trigger_fired_up()
