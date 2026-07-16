@@ -353,6 +353,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* outland_venom;
 
     buff_t* spotters_mark;
+    buff_t* spotters_mark_rapid_fire;
     buff_t* sentinels_mark;
   } debuffs;
 
@@ -786,6 +787,7 @@ public:
     spell_data_ptr_t take_aim_1;
     spell_data_ptr_t take_aim_2;
     spell_data_ptr_t take_aim_3;
+    spell_data_ptr_t spotters_mark_rapid_fire_debuff;
 
     // Survival Tree
     spell_data_ptr_t kill_command_sv_player;
@@ -3636,6 +3638,10 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   {
     auto td = get_target_data( target );
     sentinel ? td->debuffs.sentinels_mark->trigger() : td->debuffs.spotters_mark->trigger();
+    if ( talents.spotters_mark_rapid_fire_debuff.ok() )
+    {
+      td->debuffs.spotters_mark_rapid_fire->trigger();
+    }
 
     procs.eagles_mark->occur();
 
@@ -3676,6 +3682,10 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force 
   {
     auto td = get_target_data( target );
     sentinel ? td->debuffs.sentinels_mark->trigger() : td->debuffs.spotters_mark->trigger();
+    if ( talents.spotters_mark_rapid_fire_debuff.ok() )
+    {
+      td->debuffs.spotters_mark_rapid_fire->trigger();
+    }
 
     procs.eagles_mark->occur();
 
@@ -5424,6 +5434,8 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
     sanctified_armaments_t* sanctified_armaments = nullptr;
 
+    rapid_fire_t* channel = nullptr;
+
     rapid_fire_tick_t( util::string_view n, hunter_t* p )
       : hunter_ranged_attack_t( n, p, p->talents.rapid_fire_tick ),
         trick_shots_targets( as<int>( p->talents.trick_shots_data->effectN( 3 ).base_value() ) )
@@ -5478,6 +5490,11 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
       if ( p()->buffs.focus_fire->up() )
         m *= 1 + p()->talents.focus_fire_buff->effectN( 1 ).percent();
+
+      if ( channel && range::find( channel->marked_targets, s->target ) != channel->marked_targets.end() )
+      {
+        m *= 1 + p()->talents.spotters_mark_rapid_fire_debuff->effectN( 1 ).percent();
+      }
 
       return m;
     }
@@ -5563,6 +5580,10 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     double chance = 0; 
   } deathblow;
 
+  player_t* hydra_target = nullptr;
+
+  std::vector<player_t*> marked_targets;
+
   rapid_fire_t( hunter_t* p, util::string_view options_str ) : hunter_ranged_attack_t( "rapid_fire", p, p -> talents.rapid_fire ),
     damage( p -> get_background_action<rapid_fire_tick_t>( "rapid_fire_tick" ) ),
     base_num_ticks( as<int>( data().effectN( 1 ).base_value() ) )
@@ -5633,6 +5654,29 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
   void execute() override
   {
+    hydra_target = nullptr;
+    if ( aspect_of_the_hydra && target_list().size() > 1 )
+    {
+      auto it = range::find_if( target_list(), [ this ]( const player_t* t ) { return t != target; } );
+      if ( it != target_list().end() )
+      {
+        hydra_target = *it;
+      }
+    }
+
+    marked_targets.clear();
+    if ( p()->talents.spotters_mark_rapid_fire_debuff.ok() )
+    {
+      for ( auto t : target_list() )
+      {
+        if ( td( t )->debuffs.spotters_mark_rapid_fire->check() )
+        {
+          marked_targets.push_back( t );
+          td( t )->debuffs.spotters_mark_rapid_fire->expire();
+        }
+      }
+    }
+
     hunter_ranged_attack_t::execute();
 
     if ( rng().roll( deathblow.chance ) )
@@ -5648,11 +5692,14 @@ struct rapid_fire_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::tick( d );
 
-    damage -> execute_on_target( d->target );
+    damage->channel = this;
+    damage->execute_on_target( d->target );
 
-    auto tl = target_list();
-    if ( aspect_of_the_hydra && tl.size() > 1 )
-      aspect_of_the_hydra->execute_on_target( tl[ 1 ] );
+    if ( aspect_of_the_hydra && hydra_target )
+    {
+      aspect_of_the_hydra->channel = this;
+      aspect_of_the_hydra->execute_on_target( hydra_target );
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -7084,6 +7131,11 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
   debuffs.spotters_mark = make_buff( *this, "spotters_mark", p->specs.spotters_mark_debuff )
     ->set_default_value( p->specs.spotters_mark_debuff->effectN( 1 ).percent() );
 
+  debuffs.spotters_mark_rapid_fire =
+    make_buff( *this, "spotters_mark_rapid_fire", p->talents.spotters_mark_rapid_fire_debuff )
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
+      ->set_chance( p->talents.spotters_mark_rapid_fire_debuff.ok() );
+
   debuffs.sentinels_mark = make_buff( *this, "sentinels_mark", p->talents.sentinels_mark )
     ->set_default_value_from_effect( p->specialization() == HUNTER_MARKSMANSHIP ? 1 : 2 );
 
@@ -7477,6 +7529,7 @@ void hunter_t::init_spells()
     talents.take_aim_1                        = find_talent_spell( talent_tree::SPECIALIZATION, "Take Aim", 1 );
     talents.take_aim_2                        = find_talent_spell( talent_tree::SPECIALIZATION, "Take Aim", 2 );
     talents.take_aim_3                        = find_talent_spell( talent_tree::SPECIALIZATION, "Take Aim", 3 );
+    talents.spotters_mark_rapid_fire_debuff   = talents.take_aim_3.ok() ? find_spell( 1301098 ) : spell_data_t::not_found();
   }
 
   // Survival Tree
