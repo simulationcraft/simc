@@ -430,7 +430,7 @@ Talent Entry     : Holy [tree=spec, row=1, col=5, max_rank=1, req_points=0, repl
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
-Resource         : 2.24% Base Mana (0) (id=836)
+Resource         : 2% Base Mana (0) (id=836)[Hotfixed: Percent Cost (2.24 -> 2)]
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -574,7 +574,8 @@ Family Flags     : 46, 48
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=15852)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.41125 | PvP Coefficient: 0.909 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 11.17 | PvP Coefficient: 0.909 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (7.41125 -> 11.17)
 Description      : $@spelldesc20473
 
 Name             : Consecration (id=26573) [Spell Family (10)] 

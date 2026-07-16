@@ -4366,13 +4366,15 @@ Effects          :
                    Affected Spells: Rip (1079)
                    Family Flags: 85
 #19 (id=1049861) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Regrowth (8936), Regrowth (1264664)
                    Family Flags: 6
+Hotfixed         : Base Value (0 -> 25)
 #20 (id=1080082) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936), Regrowth (1264664)
                    Family Flags: 6
+Hotfixed         : Base Value (0 -> 25)
 #21 (id=1081594) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Rejuvenation (Germination) (155777)
@@ -6590,13 +6592,15 @@ Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sit
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=307083)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14) | Attributes: Suppress Points Stacking (6)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -60 | Scaled Value: -60 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Regrowth (8936), Regrowth (1264664)
                    Family Flags: 6
+Hotfixed         : Base Value (-50 -> -60)
 #2 (id=307088)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Regrowth (8936), Regrowth (1264664)
                    Family Flags: 6
+Hotfixed         : Base Value (50 -> 60)
 Description      : $@spelldesc207383
 Tooltip          : Regrowth cost reduced by $s1% and critical chance increased by $s2%.
 
