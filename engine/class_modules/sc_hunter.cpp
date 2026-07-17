@@ -5760,14 +5760,16 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     cleave_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.explosive_shot_cleave )
     {
       aoe = -1;
-      reduced_aoe_targets = p->talents.explosive_shot->effectN( 2 ).base_value();
       target_filter_callback = secondary_targets_only();
+
+      // 2026-17-07: Salvo can trigger this action without the base (212431) being talented, so grab it here unconditionally.
+      reduced_aoe_targets = p->find_spell( 212431 )->effectN( 2 ).base_value();
     }
   };
 
   cleave_t* cleave = nullptr;
 
-  explosive_shot_base_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.explosive_shot )
+  explosive_shot_base_t( util::string_view n, hunter_t* p, const spell_data_t* s ) : hunter_ranged_attack_t( n, p, s )
   {
     cleave = p->get_background_action<cleave_t>( "explosive_shot_cleave" );
   }
@@ -5778,7 +5780,7 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
 
     // 2026-07-12: Explosive Shot's cleave damage can crit independently of the main tick, so grab the pre-crit amount
     double amount = dot->state->result_amount / ( 1.0 + dot->state->result_crit_bonus );
-    amount *= 1.0 - p()->talents.explosive_shot->effectN( 3 ).percent();
+    amount *= 1.0 - data().effectN( 3 ).percent();
 
     cleave->execute_on_target( dot->target, amount );
 
@@ -5793,7 +5795,8 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
 
 struct explosive_shot_background_t final : public explosive_shot_base_t
 {
-  explosive_shot_background_t( util::string_view n, hunter_t* p ) : explosive_shot_base_t( n, p )
+  // 2026-07-17: Passing find_spell() to the constructor as no background versions of Explosive Shot currently require the talent.
+  explosive_shot_background_t( util::string_view n, hunter_t* p ) : explosive_shot_base_t( n, p, p->find_spell( 212431 ) )
   {
     background = dual = true;
     base_costs[ RESOURCE_FOCUS ] = 0;
@@ -5802,7 +5805,7 @@ struct explosive_shot_background_t final : public explosive_shot_base_t
 
 struct explosive_shot_t final : public explosive_shot_base_t
 {
-  explosive_shot_t( hunter_t* p, util::string_view options_str ) : explosive_shot_base_t( "explosive_shot", p )
+  explosive_shot_t( hunter_t* p, util::string_view options_str ) : explosive_shot_base_t( "explosive_shot", p, p->talents.explosive_shot )
   {
     parse_options( options_str );
 
@@ -7505,7 +7508,7 @@ void hunter_t::init_spells()
     talents.on_target                         = find_talent_spell( talent_tree::SPECIALIZATION, "On Target", HUNTER_MARKSMANSHIP );
     talents.no_scope                          = find_talent_spell( talent_tree::SPECIALIZATION, "No Scope", HUNTER_MARKSMANSHIP );
     talents.explosive_shot                    = find_talent_spell( talent_tree::SPECIALIZATION, "Explosive Shot", HUNTER_MARKSMANSHIP );
-    talents.explosive_shot_cleave             = talents.explosive_shot.ok() ? find_spell( 212680 ) : spell_data_t::not_found();
+    talents.explosive_shot_cleave             = find_spell( 212680 );
     talents.light_ammo                        = find_talent_spell( talent_tree::SPECIALIZATION, "Light Ammo", HUNTER_MARKSMANSHIP );
 
     talents.kill_shot                         = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Shot", HUNTER_MARKSMANSHIP );
