@@ -392,10 +392,10 @@ void marksmanship_ptr( player_t* p )
   sentaoe->add_action( "explosive_shot" );
   sentaoe->add_action( "steady_shot" );
 
+  sentst->add_action( "explosive_shot" );
   sentst->add_action( "volley" );
   sentst->add_action( "trueshot,if=variable.trueshot_ready" );
-  sentst->add_action( "rapid_fire,if=buff.bulletstorm.stack<18" );
-  sentst->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=full_recharge_time<gcd+cast_time" );
+  sentst->add_action( "rapid_fire,if=debuff.spotters_mark_rapid_fire.up|!apex.3" );
   sentst->add_action( "arcane_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
   sentst->add_action( "rapid_fire,if=(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload&target.health.pct<20)" );
   sentst->add_action( "kill_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&active_enemies=1" );
@@ -403,7 +403,6 @@ void marksmanship_ptr( player_t* p )
   sentst->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage" );
   sentst->add_action( "moonlight_chakram" );
   sentst->add_action( "rapid_fire" );
-  sentst->add_action( "explosive_shot" );
   sentst->add_action( "steady_shot" );
 
   trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&this_trinket.cooldown.duration%%cooldown.trueshot.duration=0&(buff.trueshot.remains>14|this_trinket.is.algethar_puzzle_box&variable.trueshot_ready&cooldown.trueshot.remains<5)", "A buff trinket that lines up cleanly with Trueshot; use with Trueshot." );
