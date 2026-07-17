@@ -12469,7 +12469,7 @@ void shaman_t::create_buffs()
          }
          else
          {
-           buff.mid2_ele_4pc_builder->trigger();
+           buff.mid2_ele_4pc_builder->trigger(2);
          }
      }
    } );
