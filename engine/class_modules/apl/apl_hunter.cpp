@@ -337,8 +337,7 @@ void marksmanship_ptr( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "summon_pet,if=talent.unbreakable_bond" );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
-  precombat->add_action( "aimed_shot,if=active_enemies<3" );
-  precombat->add_action( "steady_shot" );
+  precombat->add_action( "aimed_shot" );
 
   default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25|time<10" );
   default_->add_action( "auto_shot" );
@@ -369,16 +368,17 @@ void marksmanship_ptr( player_t* p )
   drst->add_action( "black_arrow" );
   drst->add_action( "steady_shot" );
 
+  draoe->add_action( "explosive_shot" );
+  draoe->add_action( "volley" );
   draoe->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time&full_recharge_time<gcd+cast_time" );
   draoe->add_action( "black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
-  draoe->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down" );
+  draoe->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.trick_shots.down" );
   draoe->add_action( "trueshot,if=variable.trueshot_ready" );
   draoe->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload)" );
   draoe->add_action( "wailing_arrow,if=!cooldown.black_arrow.ready" );
-  draoe->add_action( "volley" );
   draoe->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time" );
   draoe->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
-  draoe->add_action( "explosive_shot" );
+  draoe->add_action( "black_arrow" );
   draoe->add_action( "steady_shot" );
 
   sentaoe->add_action( "explosive_shot" );

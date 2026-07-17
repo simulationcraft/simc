@@ -2,8 +2,7 @@
 actions.precombat=snapshot_stats
 actions.precombat+=/summon_pet,if=talent.unbreakable_bond
 actions.precombat+=/use_item,name=algethar_puzzle_box
-actions.precombat+=/aimed_shot,if=active_enemies<3
-actions.precombat+=/steady_shot
+actions.precombat+=/aimed_shot
 
 # Executed every time the actor is available.
 actions=variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25|time<10
@@ -36,16 +35,17 @@ actions.drst+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage
 actions.drst+=/black_arrow
 actions.drst+=/steady_shot
 
-actions.draoe=aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time&full_recharge_time<gcd+cast_time
+actions.draoe=explosive_shot
+actions.draoe+=/volley
+actions.draoe+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time&full_recharge_time<gcd+cast_time
 actions.draoe+=/black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
-actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down
+actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.trick_shots.down
 actions.draoe+=/trueshot,if=variable.trueshot_ready
 actions.draoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload)
 actions.draoe+=/wailing_arrow,if=!cooldown.black_arrow.ready
-actions.draoe+=/volley
 actions.draoe+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
 actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
-actions.draoe+=/explosive_shot
+actions.draoe+=/black_arrow
 actions.draoe+=/steady_shot
 
 actions.sentaoe=explosive_shot
