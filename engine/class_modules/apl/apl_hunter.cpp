@@ -396,9 +396,9 @@ void marksmanship_ptr( player_t* p )
   sentst->add_action( "volley" );
   sentst->add_action( "trueshot,if=variable.trueshot_ready" );
   sentst->add_action( "rapid_fire,if=debuff.spotters_mark_rapid_fire.up|!apex.3" );
+  sentst->add_action( "kill_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&active_enemies=1&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
   sentst->add_action( "arcane_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
   sentst->add_action( "rapid_fire,if=(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload&target.health.pct<20)" );
-  sentst->add_action( "kill_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&active_enemies=1" );
   sentst->add_action( "moonlight_chakram,if=buff.trueshot.remains<execute_time+gcd" );
   sentst->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage" );
   sentst->add_action( "moonlight_chakram" );
