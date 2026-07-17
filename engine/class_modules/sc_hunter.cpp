@@ -5481,6 +5481,13 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     {
       hunter_ranged_attack_t::impact( state );
 
+      // 2026-07-17: Spotter's Mark Rapid Fire also expires on impact, meaning a sequence of
+      //             Rapid Fire -> Precise Shots spender can munch a proc, depending on travel time & distance.
+      if ( p()->bugs )
+      {
+        td( state->target )->debuffs.spotters_mark_rapid_fire->expire();
+      }
+
       if ( sanctified_armaments )
       {
         double amount = state->result_amount * p()->talents.sanctified_armaments->effectN( 1 ).percent();
@@ -5775,7 +5782,7 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
 
     cleave->execute_on_target( dot->target, amount );
 
-    if ( !p()->bugs && p()->tier_set.mid_s2_mm_4pc.ok() )
+    if ( p()->tier_set.mid_s2_mm_4pc.ok() )
     {
       auto reduction = -p()->tier_set.mid_s2_mm_4pc->effectN( 2 ).time_value();
       p()->cooldowns.aimed_shot->adjust( reduction );
