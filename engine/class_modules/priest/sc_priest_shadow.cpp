@@ -1764,8 +1764,7 @@ struct tentacle_slam_t final : public priest_spell_t
 
     if ( const spell_data_t* set_bonus = priest().sets->set( PRIEST_SHADOW, MID2, B4 );
          priest().is_ptr() && priest().sets->has_set_bonus( PRIEST_SHADOW, MID2, B4 ) && set_bonus->ok() &&
-         set_bonus->effect_count() >= 1 &&
-         rng().roll( set_bonus->effectN( 1 ).percent() ) )
+         set_bonus->effect_count() >= 1 && rng().roll( set_bonus->effectN( 1 ).percent() ) )
     {
       priest().procs.midnight_s2_4pc_void_volley->occur();
       priest().buffs.void_volley->trigger();
@@ -2171,15 +2170,15 @@ void priest_t::create_buffs_shadow()
 
   buffs.crushing_void = make_buff( this, "crushing_void", talents.shadow.crushing_void_buff );
 
-  constexpr int fallback_void_volley_max_stacks = 10;
+  constexpr int fallback_void_volley_max_stacks    = 10;
   constexpr double fallback_mid2_4pc_effectiveness = 1.25;
 
-  const int void_volley_max_stacks = std::max( as<int>( talents.shadow.void_volley_buff->max_stacks() ),
-                                               fallback_void_volley_max_stacks );
-  const spell_data_t* shadow_mid2_4pc = sets->set( PRIEST_SHADOW, MID2, B4 );
-  const double shadow_mid2_4pc_effectiveness =
-      shadow_mid2_4pc->ok() && shadow_mid2_4pc->effect_count() >= 2 ? shadow_mid2_4pc->effectN( 2 ).percent()
-                                                                     : fallback_mid2_4pc_effectiveness;
+  const int void_volley_max_stacks =
+      std::max( as<int>( talents.shadow.void_volley_buff->max_stacks() ), fallback_void_volley_max_stacks );
+  const spell_data_t* shadow_mid2_4pc        = sets->set( PRIEST_SHADOW, MID2, B4 );
+  const double shadow_mid2_4pc_effectiveness = shadow_mid2_4pc->ok() && shadow_mid2_4pc->effect_count() >= 2
+                                                   ? shadow_mid2_4pc->effectN( 2 ).percent()
+                                                   : fallback_mid2_4pc_effectiveness;
 
   buffs.void_volley_voidform_charges =
       make_buff( this, "void_volley_voidform_charges" )->set_quiet( true )->set_max_stack( void_volley_max_stacks );
@@ -2187,11 +2186,10 @@ void priest_t::create_buffs_shadow()
   buffs.void_volley_set_bonus =
       make_buff( this, "void_volley_set_bonus" )->set_quiet( true )->set_max_stack( void_volley_max_stacks );
 
-  buffs.void_volley_set_bonus_effectiveness =
-      make_buff( this, "void_volley_set_bonus_effectiveness" )
-          ->set_quiet( true )
-          ->set_max_stack( void_volley_max_stacks )
-        ->set_default_value( shadow_mid2_4pc_effectiveness );
+  buffs.void_volley_set_bonus_effectiveness = make_buff( this, "void_volley_set_bonus_effectiveness" )
+                                                  ->set_quiet( true )
+                                                  ->set_max_stack( void_volley_max_stacks )
+                                                  ->set_default_value( shadow_mid2_4pc_effectiveness );
 
   buffs.ancient_madness_extension =
       make_buff( this, "ancient_madness_extension", talents.shadow.ancient_madness )
