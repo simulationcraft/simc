@@ -962,10 +962,13 @@ struct void_volley_base_t : public priest_spell_t
 
   bool ready() override
   {
-    const bool has_volley_source = priest().buffs.voidform->check() || priest().buffs.crushing_void->check() ||
-                                   priest().buffs.void_volley->check();
+    if ( !priest().is_ptr() && !priest().buffs.crushing_void->check() )
+    {
+      return false;
+    }
 
-    if ( !has_volley_source )
+    if ( priest().is_ptr() && !priest().buffs.voidform->check() && !priest().buffs.crushing_void->check() &&
+         !priest().buffs.void_volley->check() )
     {
       return false;
     }
@@ -1354,9 +1357,12 @@ struct voidform_t final : public priest_spell_t
 
     void_volley->execute();
 
-    int voidform_charges = as<int>( priest().talents.shadow.voidform->effectN( 3 ).base_value() );
-    priest().buffs.void_volley->trigger( voidform_charges );
-    priest().buffs.void_volley_voidform_charges->trigger( voidform_charges );
+    if ( priest().is_ptr() && priest().talents.shadow.voidform->effect_count() >= 3 )
+    {
+      int voidform_charges = as<int>( priest().talents.shadow.voidform->effectN( 3 ).base_value() );
+      priest().buffs.void_volley->trigger( voidform_charges );
+      priest().buffs.void_volley_voidform_charges->trigger( voidform_charges );
+    }
 
     if ( priest().buffs.sustained_potency->check() )
     {
