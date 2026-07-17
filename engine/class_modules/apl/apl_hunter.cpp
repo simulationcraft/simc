@@ -380,16 +380,14 @@ void marksmanship_ptr( player_t* p )
   draoe->add_action( "explosive_shot" );
   draoe->add_action( "steady_shot" );
 
-  sentaoe->add_action( "multishot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down" );
-  sentaoe->add_action( "rapid_fire,if=(buff.bulletstorm.remains<action.aimed_shot.execute_time|buff.bulletstorm.stack<18|talent.unload&target.health.pct<20)" );
-  sentaoe->add_action( "trueshot,if=variable.trueshot_ready" );
+  sentaoe->add_action( "explosive_shot" );
   sentaoe->add_action( "volley" );
-  sentaoe->add_action( "explosive_shot,if=buff.trueshot.down&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1" );
+  sentaoe->add_action( "trueshot,if=variable.trueshot_ready" );
+  sentaoe->add_action( "multishot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down" );
+  sentaoe->add_action( "rapid_fire" );
   sentaoe->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time" );
   sentaoe->add_action( "moonlight_chakram" );
-  sentaoe->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time" );
   sentaoe->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&talent.windrunner_quiver" );
-  sentaoe->add_action( "explosive_shot" );
   sentaoe->add_action( "steady_shot" );
 
   sentst->add_action( "explosive_shot" );

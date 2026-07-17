@@ -47,16 +47,14 @@ actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_s
 actions.draoe+=/explosive_shot
 actions.draoe+=/steady_shot
 
-actions.sentaoe=multishot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down
-actions.sentaoe+=/rapid_fire,if=(buff.bulletstorm.remains<action.aimed_shot.execute_time|buff.bulletstorm.stack<18|talent.unload&target.health.pct<20)
-actions.sentaoe+=/trueshot,if=variable.trueshot_ready
+actions.sentaoe=explosive_shot
 actions.sentaoe+=/volley
-actions.sentaoe+=/explosive_shot,if=buff.trueshot.down&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1
+actions.sentaoe+=/trueshot,if=variable.trueshot_ready
+actions.sentaoe+=/multishot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down
+actions.sentaoe+=/rapid_fire
 actions.sentaoe+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
 actions.sentaoe+=/moonlight_chakram
-actions.sentaoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time
 actions.sentaoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&talent.windrunner_quiver
-actions.sentaoe+=/explosive_shot
 actions.sentaoe+=/steady_shot
 
 actions.sentst=explosive_shot
