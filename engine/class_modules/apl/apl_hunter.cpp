@@ -358,14 +358,15 @@ void marksmanship_ptr( player_t* p )
   cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|fight_remains<120-30*talent.calling_the_shots)|fight_remains<31" );
 
   drst->add_action( "black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
+  drst->add_action( "explosive_shot" );
+  drst->add_action( "volley" );
   drst->add_action( "aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time" );
   drst->add_action( "trueshot,if=variable.trueshot_ready" );
   drst->add_action( "rapid_fire" );
-  drst->add_action( "wailing_arrow,if=!cooldown.black_arrow.ready" );
+  drst->add_action( "wailing_arrow" );
   drst->add_action( "arcane_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
-  drst->add_action( "volley" );
   drst->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage" );
-  drst->add_action( "explosive_shot" );
+  drst->add_action( "black_arrow" );
   drst->add_action( "steady_shot" );
 
   draoe->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time&full_recharge_time<gcd+cast_time" );
