@@ -756,14 +756,11 @@ struct vampiric_touch_t final : public priest_spell_t
   propagate_const<shadow_word_pain_t*> child_swp;
   bool casted;
   bool insanity;
-  double vampiric_insight_apparition_mod;
 
   vampiric_touch_t( priest_t& p, bool _casted = false, bool _insanity = true )
     : priest_spell_t( "vampiric_touch", p, p.dot_spells.vampiric_touch ),
       vampiric_touch_heal( new vampiric_touch_heal_t( p ) ),
-      child_swp( nullptr ),
-      vampiric_insight_apparition_mod(
-          p.specs.vampiric_insight_buff->ok() ? p.specs.vampiric_insight_buff->effectN( 2 ).percent() : 2.0 )
+      child_swp( nullptr )
   {
     casted                     = _casted;
     insanity                   = _insanity;
@@ -794,30 +791,6 @@ struct vampiric_touch_t final : public priest_spell_t
   vampiric_touch_t( priest_t& p, util::string_view options_str ) : vampiric_touch_t( p, true )
   {
     parse_options( options_str );
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( casted && !background && priest().buffs.vampiric_insight->check() )
-    {
-      return timespan_t::zero();
-    }
-
-    return priest_spell_t::execute_time();
-  }
-
-  void execute() override
-  {
-    if ( casted && !background && priest().buffs.vampiric_insight->check() )
-    {
-      priest().buffs.vampiric_insight->decrement();
-      priest().generate_insanity( priest().specs.vampiric_insight_buff->effectN( 1 ).resource( RESOURCE_INSANITY ),
-                                  priest().gains.insanity_vampiric_insight, this );
-      priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_vampiric_insight, target,
-                                            vampiric_insight_apparition_mod );
-    }
-
-    priest_spell_t::execute();
   }
 
   void impact( action_state_t* s ) override
@@ -883,6 +856,11 @@ struct void_volley_damage_t final : public priest_spell_t
   {
     double m = priest_spell_t::composite_ta_multiplier( s );
 
+    if ( priest().buffs.void_volley_set_bonus_effectiveness->check() )
+    {
+      m *= priest().buffs.void_volley_set_bonus_effectiveness->default_value;
+    }
+
     if ( insidious_ire_active() )
     {
       m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
@@ -940,6 +918,11 @@ struct void_volley_damage_aoe_t final : public priest_spell_t
   {
     double m = priest_spell_t::composite_ta_multiplier( s );
 
+    if ( priest().buffs.void_volley_set_bonus_effectiveness->check() )
+    {
+      m *= priest().buffs.void_volley_set_bonus_effectiveness->default_value;
+    }
+
     if ( insidious_ire_active() )
     {
       m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
@@ -976,12 +959,8 @@ struct void_volley_base_t : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest().buffs.voidform->check() && !priest().buffs.crushing_void->check() )
-    {
-      return false;
-    }
-
-    if ( priest().is_ptr() && !priest().buffs.crushing_void->check() && !priest().buffs.void_volley->check() )
+    if ( !priest().buffs.voidform->check() && !priest().buffs.crushing_void->check() &&
+         !priest().buffs.void_volley->check() )
     {
       return false;
     }
@@ -1020,16 +999,32 @@ struct void_volley_t final : public void_volley_base_t
 
   void execute() override
   {
+    bool set_bonus_cast             = priest().buffs.void_volley_set_bonus->check() > 0;
+    double original_energize_amount = energize_amount;
+
+    if ( set_bonus_cast )
+    {
+      energize_amount = original_energize_amount * priest().buffs.void_volley_set_bonus_effectiveness->default_value;
+    }
+
     void_volley_base_t::execute();
+
+    energize_amount = original_energize_amount;
 
     if ( priest().talents.shadow.crushing_void.enabled() && priest().buffs.crushing_void->check() )
     {
-      priest().buffs.crushing_void->expire();
+      priest().buffs.crushing_void->decrement();
     }
 
-    if ( priest().is_ptr() && priest().buffs.void_volley->check() )
+    if ( priest().buffs.void_volley->check() )
     {
       priest().buffs.void_volley->decrement();
+    }
+
+    if ( set_bonus_cast )
+    {
+      priest().buffs.void_volley_set_bonus->decrement();
+      priest().buffs.void_volley_set_bonus_effectiveness->decrement();
     }
   }
 };
@@ -1043,11 +1038,6 @@ struct void_volley_voidform_t final : public void_volley_base_t
     background         = true;
     track_cd_waste     = false;
     cooldown->duration = 0_s;
-
-    // 10/03/2025
-    // - Generates 10 Insanity
-    // - Does not give Idol of N'Zoth stacks
-    idol_of_nzoth_execute_stacks = 0;
   }
 };
 
@@ -1323,10 +1313,9 @@ struct voidform_t final : public priest_spell_t
 
     void_volley->execute();
 
-    if ( priest().is_ptr() )
-    {
-      priest().buffs.void_volley->trigger( as<int>( priest().talents.shadow.voidform->effectN( 3 ).base_value() ) );
-    }
+    int voidform_charges = as<int>( priest().talents.shadow.voidform->effectN( 3 ).base_value() );
+    priest().buffs.void_volley->trigger( voidform_charges );
+    priest().buffs.void_volley_voidform_charges->trigger( voidform_charges );
 
     if ( priest().buffs.sustained_potency->check() )
     {
@@ -1732,9 +1721,14 @@ struct tentacle_slam_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, MID2, B4 ) && priest().buffs.vampiric_insight )
+    if ( const spell_data_t* set_bonus = priest().sets->set( PRIEST_SHADOW, MID2, B4 );
+         priest().sets->has_set_bonus( PRIEST_SHADOW, MID2, B4 ) && set_bonus->ok() &&
+         rng().roll( set_bonus->effectN( 1 ).percent() ) )
     {
-      priest().buffs.vampiric_insight->trigger();
+      priest().procs.midnight_s2_4pc_void_volley->occur();
+      priest().buffs.void_volley->trigger();
+      priest().buffs.void_volley_set_bonus->trigger();
+      priest().buffs.void_volley_set_bonus_effectiveness->trigger();
     }
   }
 
@@ -1851,6 +1845,8 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
+    int voidform_granted_charges = priest().buffs.void_volley_voidform_charges->check();
+
     if ( priest().buffs.shadowform_state->check() )
     {
       priest().buffs.shadowform->trigger();
@@ -1867,6 +1863,19 @@ struct voidform_t final : public priest_buff_t<buff_t>
     {
       priest().cooldowns.void_volley->reset( true );
       priest().buffs.crushing_void->trigger();
+    }
+
+    if ( voidform_granted_charges > 0 )
+    {
+      int current_void_volley_charges = priest().buffs.void_volley->check();
+      int charges_to_remove           = std::min( current_void_volley_charges, voidform_granted_charges );
+
+      if ( charges_to_remove > 0 )
+      {
+        priest().buffs.void_volley->decrement( charges_to_remove );
+      }
+
+      priest().buffs.void_volley_voidform_charges->expire();
     }
 
     if ( priest().is_ptr() && priest().buffs.ancient_madness_extension->check() )
@@ -2120,12 +2129,26 @@ void priest_t::create_buffs_shadow()
 
   buffs.crushing_void = make_buff( this, "crushing_void", talents.shadow.crushing_void_buff );
 
+  const int void_volley_max_stacks    = as<int>( talents.shadow.void_volley_buff->max_stacks() );
+  const int crushing_void_max_stacks  = as<int>( talents.shadow.crushing_void_buff->max_stacks() );
+  const spell_data_t* shadow_mid2_4pc = sets->set( PRIEST_SHADOW, MID2, B4 );
+
+  buffs.void_volley_voidform_charges =
+      make_buff( this, "void_volley_voidform_charges" )->set_quiet( true )->set_max_stack( void_volley_max_stacks );
+
+  buffs.void_volley_set_bonus =
+      make_buff( this, "void_volley_set_bonus" )->set_quiet( true )->set_max_stack( void_volley_max_stacks );
+
+  buffs.void_volley_set_bonus_effectiveness =
+      make_buff( this, "void_volley_set_bonus_effectiveness" )
+          ->set_quiet( true )
+          ->set_max_stack( crushing_void_max_stacks )
+          ->set_default_value( shadow_mid2_4pc->ok() ? shadow_mid2_4pc->effectN( 2 ).percent() : 1.25 );
+
   buffs.ancient_madness_extension =
       make_buff( this, "ancient_madness_extension", talents.shadow.ancient_madness )
           ->set_duration( timespan_t::zero() )
           ->set_max_stack( is_ptr() ? as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) : 99 );
-
-  buffs.vampiric_insight = make_buff( this, "vampiric_insight", specs.vampiric_insight_buff );
 
   if ( is_ptr() )
   {
@@ -2262,7 +2285,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.shadowy_insight     = ST( "Shadowy Insight" );
   talents.shadow.voidtouched         = ST( "Voidtouched" );
   talents.shadow.voidform            = ST( "Voidform" );
-  talents.shadow.void_volley         = ST( "Void Volley" );
+  talents.shadow.void_volley         = find_spell( 1242173 );
   talents.shadow.void_volley_buff    = find_spell( 1242171 );
   talents.shadow.void_volley_missile = find_spell( 1242173 );
   talents.shadow.void_volley_damage  = find_spell( 1242189 );
@@ -2334,9 +2357,6 @@ void priest_t::init_spells_shadow()
   specs.hallucinations = find_spell( 199579 );
   specs.dispersion     = find_specialization_spell( "Dispersion" );
   specs.silence        = find_specialization_spell( "Silence" );
-
-  // Tier Set Spells
-  specs.vampiric_insight_buff = find_spell( 1308649 );
 }
 
 void priest_t::init_special_effects_shadow()
