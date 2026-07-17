@@ -45,10 +45,7 @@ struct mind_flay_base_t : public priest_spell_t
 
   bool insidious_ire_active() const
   {
-    if ( !priest().talents.shadow.insidious_ire.enabled() )
-      return false;
-
-    return priest().buffs.insidious_ire->check();
+    return priest().talents.shadow.insidious_ire.enabled() && priest().buffs.insidious_ire->check();
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
@@ -838,6 +835,8 @@ struct vampiric_touch_t final : public priest_spell_t
 // ==========================================================================
 struct void_volley_damage_t final : public priest_spell_t
 {
+  bool set_bonus_effectiveness_active = false;
+
   void_volley_damage_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     background                 = true;
@@ -846,17 +845,14 @@ struct void_volley_damage_t final : public priest_spell_t
 
   bool insidious_ire_active() const
   {
-    if ( !priest().talents.shadow.insidious_ire.enabled() )
-      return false;
-
-    return priest().buffs.insidious_ire->check();
+    return priest().talents.shadow.insidious_ire.enabled() && priest().buffs.insidious_ire->check();
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double m = priest_spell_t::composite_ta_multiplier( s );
 
-    if ( priest().buffs.void_volley_set_bonus_effectiveness->check() )
+    if ( set_bonus_effectiveness_active )
     {
       m *= priest().buffs.void_volley_set_bonus_effectiveness->default_value;
     }
@@ -872,6 +868,8 @@ struct void_volley_damage_t final : public priest_spell_t
 
 struct void_volley_damage_aoe_t final : public priest_spell_t
 {
+  bool set_bonus_effectiveness_active = false;
+
   void_volley_damage_aoe_t( util::string_view n, priest_t& p, const spell_data_t* s, double _radius )
     : priest_spell_t( n, p, s )
   {
@@ -918,7 +916,7 @@ struct void_volley_damage_aoe_t final : public priest_spell_t
   {
     double m = priest_spell_t::composite_ta_multiplier( s );
 
-    if ( priest().buffs.void_volley_set_bonus_effectiveness->check() )
+    if ( set_bonus_effectiveness_active )
     {
       m *= priest().buffs.void_volley_set_bonus_effectiveness->default_value;
     }
@@ -936,6 +934,11 @@ struct void_volley_base_t : public priest_spell_t
 {
   propagate_const<void_volley_damage_t*> void_volley_damage;
   propagate_const<void_volley_damage_aoe_t*> void_volley_damage_aoe;
+
+  virtual bool cast_has_set_bonus_effectiveness() const
+  {
+    return false;
+  }
 
   void_volley_base_t( priest_t& p, std::string name )
     : priest_spell_t( name, p, p.talents.shadow.void_volley_missile ), void_volley_damage( nullptr )
@@ -959,8 +962,10 @@ struct void_volley_base_t : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest().buffs.voidform->check() && !priest().buffs.crushing_void->check() &&
-         !priest().buffs.void_volley->check() )
+    const bool has_volley_source = priest().buffs.voidform->check() || priest().buffs.crushing_void->check() ||
+                                   priest().buffs.void_volley->check();
+
+    if ( !has_volley_source )
     {
       return false;
     }
@@ -970,8 +975,11 @@ struct void_volley_base_t : public priest_spell_t
 
   void impact( action_state_t* s ) override
   {
+    const bool set_bonus_effectiveness = cast_has_set_bonus_effectiveness();
+
     // fire s1 bolts at main target
-    void_volley_damage->target = s->target;
+    void_volley_damage->set_bonus_effectiveness_active = set_bonus_effectiveness;
+    void_volley_damage->target                         = s->target;
     make_repeating_event(
         sim, 50_ms, [ this ] { void_volley_damage->execute(); }, as<int>( data().effectN( 1 ).base_value() ) );
 
@@ -982,8 +990,9 @@ struct void_volley_base_t : public priest_spell_t
       void_volley_damage_aoe->target_cache.is_valid = false;
     }
     // fire s3 bolts at secondary targets with s1 radius
-    if ( void_volley_damage_aoe->target_list().size() > 0 )
+    if ( !void_volley_damage_aoe->target_list().empty() )
     {
+      void_volley_damage_aoe->set_bonus_effectiveness_active = set_bonus_effectiveness;
       make_repeating_event(
           sim, 50_ms, [ this ] { void_volley_damage_aoe->execute(); }, as<int>( data().effectN( 3 ).base_value() ) );
     }
@@ -993,23 +1002,55 @@ struct void_volley_base_t : public priest_spell_t
 // Base version you cast while in Voidform
 struct void_volley_t final : public void_volley_base_t
 {
+  bool set_bonus_effectiveness_for_cast = false;
+
   void_volley_t( priest_t& p, util::string_view options ) : void_volley_base_t( p, "void_volley", options )
   {
   }
 
-  void execute() override
+  bool cast_has_set_bonus_effectiveness() const override
   {
-    bool set_bonus_cast             = priest().buffs.void_volley_set_bonus->check() > 0;
-    double original_energize_amount = energize_amount;
+    return set_bonus_effectiveness_for_cast;
+  }
 
-    if ( set_bonus_cast )
+  bool consumes_set_bonus_charge() const
+  {
+    const int set_bonus_charges = priest().buffs.void_volley_set_bonus->check();
+
+    if ( set_bonus_charges <= 0 )
     {
-      energize_amount = original_energize_amount * priest().buffs.void_volley_set_bonus_effectiveness->default_value;
+      return false;
     }
 
-    void_volley_base_t::execute();
+    // Non-tier equivalents (e.g. Crushing Void) are consumed before set-bonus charges.
+    if ( priest().buffs.crushing_void->check() )
+    {
+      return false;
+    }
 
-    energize_amount = original_energize_amount;
+    const int total_void_volley_charges = priest().buffs.void_volley->check();
+    return total_void_volley_charges == set_bonus_charges;
+  }
+
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double ea = void_volley_base_t::composite_energize_amount( s );
+
+    if ( consumes_set_bonus_charge() )
+    {
+      ea *= priest().buffs.void_volley_set_bonus_effectiveness->default_value;
+    }
+
+    return ea;
+  }
+
+  void execute() override
+  {
+    bool set_bonus_cast              = consumes_set_bonus_charge();
+    set_bonus_effectiveness_for_cast = set_bonus_cast;
+
+    void_volley_base_t::execute();
+    set_bonus_effectiveness_for_cast = false;
 
     if ( priest().talents.shadow.crushing_void.enabled() && priest().buffs.crushing_void->check() )
     {
@@ -2130,7 +2171,6 @@ void priest_t::create_buffs_shadow()
   buffs.crushing_void = make_buff( this, "crushing_void", talents.shadow.crushing_void_buff );
 
   const int void_volley_max_stacks    = as<int>( talents.shadow.void_volley_buff->max_stacks() );
-  const int crushing_void_max_stacks  = as<int>( talents.shadow.crushing_void_buff->max_stacks() );
   const spell_data_t* shadow_mid2_4pc = sets->set( PRIEST_SHADOW, MID2, B4 );
 
   buffs.void_volley_voidform_charges =
@@ -2142,7 +2182,7 @@ void priest_t::create_buffs_shadow()
   buffs.void_volley_set_bonus_effectiveness =
       make_buff( this, "void_volley_set_bonus_effectiveness" )
           ->set_quiet( true )
-          ->set_max_stack( crushing_void_max_stacks )
+          ->set_max_stack( void_volley_max_stacks )
           ->set_default_value( shadow_mid2_4pc->ok() ? shadow_mid2_4pc->effectN( 2 ).percent() : 1.25 );
 
   buffs.ancient_madness_extension =
