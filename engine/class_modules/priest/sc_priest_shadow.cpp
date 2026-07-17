@@ -2631,7 +2631,8 @@ void priest_t::trigger_ancient_madness( int stacks )
   const timespan_t period      = talents.shadow.ancient_madness_buff->effectN( 2 ).period();
   const double decay_per_tick  = initial_haste / as<double>( duration / period );
 
-  buffs.ancient_madness->set_default_value( initial_haste );
+  // Ancient Madness default value is initialized from effect #1, so keep runtime updates on the same effect index.
+  buffs.ancient_madness->set_default_value( initial_haste, 1 );
   buffs.ancient_madness->trigger( 1, initial_haste, 1.0, duration );
 
   sim->print_debug( "ancient_madness: stacks={} initial_haste={} decay_per_tick={} duration_s={}", applied_stacks,
