@@ -64,6 +64,7 @@ jobs:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             ActionPriorityLists
+            profiles/CI.simc
             .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
@@ -129,6 +130,7 @@ jobs:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             ActionPriorityLists
+            profiles/CI.simc
             .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
