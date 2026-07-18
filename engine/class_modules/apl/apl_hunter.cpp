@@ -180,6 +180,7 @@ void beast_mastery_ptr( player_t* p )
   cds->add_action( "fireblood,if=cooldown.bestial_wrath.ready|fight_remains<9" );
   cds->add_action( "potion,if=cooldown.bestial_wrath.ready|fight_remains<31" );
 
+  cleave->add_action( "cancel_buff,name=beast_cleave,if=set_bonus.midnight_season_2_4pc" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=full_recharge_time<gcd" );
   cleave->add_action( "wild_thrash,if=talent.beast_cleave" );
   cleave->add_action( "bestial_wrath,if=!prev.wild_thrash" );
