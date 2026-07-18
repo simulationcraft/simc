@@ -3209,14 +3209,17 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
   bool affected_by_master_of_the_elements = false;
   proc_t* proc_moe;
+  proc_t* proc_potm;
 
   // Lightning Rod management
   double accumulated_lightning_rod_damage;
   event_t* lr_event;
 
   shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
-                 unsigned type_ = static_cast<unsigned>( spell_variant::NORMAL ) ) :
-    base_t( token, p, s, type_ ), overload( nullptr ), proc_moe( nullptr ),
+                 unsigned type_ = static_cast<unsigned>( spell_variant::NORMAL ) ) : base_t( token, p, s, type_ ),
+      overload( nullptr ),
+      proc_moe( nullptr ),
+      proc_potm( nullptr ),
     accumulated_lightning_rod_damage( 0.0 ), lr_event( nullptr )
   { }
 
@@ -3225,6 +3228,11 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( affected_by_master_of_the_elements && p()->talent.master_of_the_elements.ok() )
     {
       proc_moe = p()->get_proc( "Master of the Elements: " + full_name() );
+    }
+
+    if (affected_by_potm && p()->talent.power_of_the_maelstrom.ok() && p()->is_ptr())
+    {
+      proc_potm = p()->get_proc( "Power of the Maelstrom: " + full_name() );
     }
 
     base_t::init_finished();
@@ -3299,6 +3307,11 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if (affected_by_potm && !background && p()->buff.power_of_the_maelstrom->check() && p()->is_ptr())
     {
       p()->buff.power_of_the_maelstrom->decrement();
+      if ( p()->talent.fusion_of_elements->ok() )
+      {
+        p()->action.elemental_blast_foe->execute_on_target( target );
+      }
+      proc_potm->occur();
     }
 
     p()->trigger_earthen_rage( execute_state );
