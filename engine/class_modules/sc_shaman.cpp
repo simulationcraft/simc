@@ -4345,6 +4345,18 @@ struct ancestor_t : public shaman_pet_t
       background = true;
       base_crit = 1.0;
     }
+
+    double action_multiplier() const override
+    {
+      double m = pet_spell_t<ancestor_t>::action_multiplier();
+
+      if ( player->specialization() == SHAMAN_ELEMENTAL && p()->is_ptr())
+      {
+        m *= 1.0 + this->composite_crit_chance();
+      }
+
+      return m;
+    }
   };
 
   struct chain_lightning_t : public pet_spell_t<ancestor_t>
@@ -7341,14 +7353,7 @@ struct lightning_bolt_t : public shaman_spell_t
       {
         p()->summon_ancestor();
       }
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
->>>>>>> c08abd55f7 ([ele] potm rework)
-=======
-
->>>>>>> 6364ba13af ([ele] trigger potm)
       if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) && p()->is_ptr() &&
            p()->talent.power_of_the_maelstrom->ok() )
       {
