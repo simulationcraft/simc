@@ -2747,16 +2747,8 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     // Arcane Charge from the Orb cast increases Barrage damage, but does not change
     // how many targets it hits. Snapshot the buff stacks before executing the Orb.
     snapshot_charges = p()->buffs.arcane_charge->check();
-    if ( p()->talents.orb_barrage->ok() )
-    {
-      triggers.clearcasting = true;
-      if ( rng().roll( p()->buffs.arcane_salvo->check() * p()->talents.orb_barrage->effectN( 1 ).percent() ) )
-      {
-        orb_barrage->execute_on_target( target );
-        // Likely a bug: Arcane Orb procs from Orb Barrage uniquely prevent Barrage from rolling Clearcasting's proc chance, and incrementing its BLP.
-        triggers.clearcasting = false;
-      }
-    }
+    if ( rng().roll( p()->buffs.arcane_salvo->check() * p()->talents.orb_barrage->effectN( 1 ).percent() ) )
+      orb_barrage->execute_on_target( target );
 
     p()->benefits.arcane_charge.arcane_barrage->update();
 
