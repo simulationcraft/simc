@@ -1072,7 +1072,15 @@ bool item_database::load_item_from_data( item_t& item )
   const auto& data = item.player->dbc->item( item.parsed.data.id );
   if ( data.id == 0 ) return false;
 
-  item.parsed.data.init( data, *item.player->dbc );
+  const dbc_item_data_t* redirect_item = nullptr;
+  if ( item.parsed.redirect_item_id != 0 )
+  {
+    redirect_item = &item.player->dbc->item( item.parsed.redirect_item_id );
+    if ( redirect_item->id == 0 )
+      redirect_item = nullptr;
+  }
+
+  item.parsed.data.init( data, *item.player->dbc, redirect_item );
   item.name_str = data.name;
   item.parsed.data.name = item.name_str.c_str();
 

@@ -32,7 +32,7 @@ struct token_t
 
 } // end unnamed namespace
 
-void parsed_item_data_t::init( const dbc_item_data_t& raw, const dbc_t& dbc )
+void parsed_item_data_t::init( const dbc_item_data_t& raw, const dbc_t& dbc, const dbc_item_data_t* redirect_item )
 {
   *static_cast<dbc_item_data_t*>( this ) = raw;
   for ( size_t i = 0; i < stat_type_e.size(); i++ )
@@ -45,6 +45,15 @@ void parsed_item_data_t::init( const dbc_item_data_t& raw, const dbc_t& dbc )
   {
     assert( effect.index <= static_cast<int>( effects.size() ) );
     effects[ effect.index ] = effect;
+  }
+
+  if ( redirect_item )
+  {
+    for ( size_t i = 0; i < stat_type_e.size(); i++ )
+    {
+      stat_type_e[ i ] = i < redirect_item->_dbc_stats_count ? redirect_item->_dbc_stats[ i ].type_e : -1;
+      stat_alloc[ i ] = i < redirect_item->_dbc_stats_count ? redirect_item->_dbc_stats[ i ].alloc : 0;
+    }
   }
 }
 
@@ -81,6 +90,7 @@ item_t::parsed_input_t::parsed_input_t()
     initial_cd( timespan_t::zero() ),
     drop_level( 0 ),
     has_midnight_scaling( false ),
+    redirect_item_id( 0 ),
     base_level_priority( std::numeric_limits<int>::max() ),
     scaling_level_priority( std::numeric_limits<int>::max() )
 {
@@ -819,7 +829,7 @@ void item_t::parse_options()
     option_name_str = options_str.substr( 0, cut_pt );
   }
 
-  std::array<std::unique_ptr<option_t>, 35> options { {
+  std::array<std::unique_ptr<option_t>, 36> options { {
     opt_uint("id", parsed.data.id),
     opt_string("stats", option_stats_str),
     opt_string("gems", option_gems_str),
@@ -854,7 +864,8 @@ void item_t::parse_options()
     opt_string("crafted_stats", option_crafted_stat_str),
     opt_string("crafting_quality", DUMMY_CRAFTING_QUALITY),
     opt_string("titan_disc_id", option_titan_disc_driver_id ),
-    opt_string("content_tuning", option_content_tuning_id )
+    opt_string("content_tuning", option_content_tuning_id ),
+    opt_uint("redirected_base_stats", parsed.redirect_item_id )
   } };
 
   try
