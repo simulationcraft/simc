@@ -6549,6 +6549,12 @@ struct chain_lightning_t : public chained_base_t
       {
         p()->summon_ancestor();
       }
+      if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) && p()->is_ptr() &&
+           p()->talent.power_of_the_maelstrom->ok() )
+      {
+        p()->buff.power_of_the_maelstrom->trigger();
+      }
+
     }
 
     if ( p()->buff.storm_elemental->check() && p()->talent.primal_elementalist.ok() )
@@ -7334,6 +7340,11 @@ struct lightning_bolt_t : public shaman_spell_t
       if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
       {
         p()->summon_ancestor();
+      }
+      if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) && p()->is_ptr() &&
+           p()->talent.power_of_the_maelstrom->ok() )
+      {
+        p()->buff.power_of_the_maelstrom->trigger();
       }
     }
 
@@ -8325,8 +8336,8 @@ public:
       p()->lava_surge_attempts_normalized += 1.0/active_flame_shocks;
       double proc_chance =
           std::max( 0.0, 0.6-std::pow(1.16, -2*(p()->lava_surge_attempts_normalized-5)));
-      auto test          = p()->talent.mystic_knowledge->effectN( 1 ).percent();
-      proc_chance *= 1.0 + test;
+      proc_chance *= 1.0 + p()->talent.mystic_knowledge->effectN( 1 ).percent();
+      ;
 
       if ( p()->spec.restoration_shaman->ok() )
       {
@@ -9822,6 +9833,11 @@ struct tempest_t : public shaman_spell_t
     if ( p()->buff.storm_elemental->check() && p()->talent.primal_elementalist.ok() )
     {
       p()->buff.wind_gust->trigger();
+    }
+
+    if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) && p()->is_ptr() && p()->talent.power_of_the_maelstrom->ok())
+    {
+      p()->buff.power_of_the_maelstrom->trigger();
     }
 
     // Bug: If Tempest would apply a new Stormkeeper buff (so none was present beforehand), it'll generate Maelstrom
@@ -12565,10 +12581,17 @@ void shaman_t::create_buffs()
                        ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() )
                        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                        ->set_default_value_from_effect_type( A_HASTE_ALL );
-
-  buff.power_of_the_maelstrom =
-      make_buff( this, "power_of_the_maelstrom", talent.power_of_the_maelstrom )
-          ->set_default_value( talent.power_of_the_maelstrom->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
+  if (is_ptr())
+  {
+    buff.power_of_the_maelstrom = make_buff( this, "power_of_the_maelstrom", find_spell(191877))
+            ->set_default_value( find_spell( 191877 )->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
+  }
+  else
+  {
+    buff.power_of_the_maelstrom =
+        make_buff( this, "power_of_the_maelstrom", talent.power_of_the_maelstrom )
+            ->set_default_value( talent.power_of_the_maelstrom->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
+  }
 
   // PvP
   buff.thundercharge = make_buff( this, "thundercharge", find_spell( 204366 ) )
