@@ -4363,9 +4363,9 @@ struct ancestor_t : public shaman_pet_t
     {
       double m = pet_spell_t<ancestor_t>::action_multiplier();
 
-      if ( player->specialization() == SHAMAN_ELEMENTAL && p()->is_ptr())
+      if ( p()->is_ptr())
       {
-        m *= 1.0 + this->composite_crit_chance();
+        m *= this->composite_crit_chance();
       }
 
       return m;
