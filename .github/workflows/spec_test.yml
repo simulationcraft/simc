@@ -38,6 +38,7 @@ jobs:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             ActionPriorityLists
+            profiles/CI.simc
             .git
           key: ${{ inputs.cache-key }}
 
