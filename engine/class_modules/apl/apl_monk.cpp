@@ -186,10 +186,6 @@ void live_apl( monk_t* player )
   // Default List
   def->add_action( "auto_attack,target_if=max:target.time_to_die", "Default List" );
   def->add_action( "touch_of_karma,target_if=max:target.time_to_die" );
-  def->add_action( "roll,if=movement.distance>5", "Move to target" );
-  def->add_action( "chi_torpedo,if=movement.distance>5" );
-  def->add_action( "flying_serpent_kick,if=movement.distance>5" );
-  def->add_action( "spear_hand_strike,if=target.debuff.casting.react" );
   def->add_action( "potion,if=buff.invoke_xuen_the_white_tiger.remains>15|fight_remains<=30" );
   def->add_action( "potion,if=talent.flurry_strikes&chi>2&(time<5|cooldown.zenith.up&time<5|time>300&((trinket.1.is.algethar_puzzle_box&trinket.1.cooldown.remains>100|trinket.2.is.algethar_puzzle_box&trinket.2.cooldown.remains>100)|!trinket.1.has_use_buff&!trinket.2.has_use_buff)&talent.flurry_strikes|time>300&buff.zenith.up)" );
   def->add_action( "variable,name=has_external_pi,value=cooldown.invoke_power_infusion_0.duration>0", "Enable PI if available" );

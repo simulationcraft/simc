@@ -25,6 +25,7 @@ enum class secondary_trigger
   FAN_THE_HAMMER,
   COUP_DE_GRACE,
   HAND_OF_FATE,
+  KILLING_SPREE,
   SCOUNDREL_STRIKE,
   SHADOW_CLONE,
   SHADOWED_FINISHERS,
@@ -449,6 +450,7 @@ public:
 
     // Set Bonuses
     damage_buff_t* mid1_outlaw_4pc;
+    buff_t* mid2_outlaw_4pc;
 
   } buffs;
 
@@ -724,6 +726,8 @@ public:
     const spell_data_t* rupture;      // Assassination + Subtlety
     const spell_data_t* shadowstep;   // Assassination + Subtlety, baseline charge increase passive
 
+    // Set Bonuses
+    const spell_data_t* mid2_outlaw_4pc_buff;
   } spec;
 
   // Talents
@@ -1103,6 +1107,8 @@ public:
     const spell_data_t* mid1_subtlety_2pc;
     const spell_data_t* mid1_subtlety_4pc;
 
+    const spell_data_t* mid2_outlaw_2pc;
+    const spell_data_t* mid2_outlaw_4pc;
   } set_bonuses;
 
   // Options
@@ -1626,6 +1632,8 @@ public:
     bool mid1_assassination_4pc = false;
     bool mid1_subtlety_2pc = false;
 
+    bool mid2_outlaw_4pc = false;
+
     damage_affect_data follow_the_blood;
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1785,6 +1793,11 @@ public:
     {
       affected_by.mid1_subtlety_2pc = consumes_combo_points();
     }
+
+    if ( p->set_bonuses.mid2_outlaw_4pc->ok() )
+    {
+      affected_by.mid2_outlaw_4pc = ab::data().affected_by( p->spec.mid2_outlaw_4pc_buff->effectN( 1 ) );
+    }
   }
 
   void init() override
@@ -1895,6 +1908,7 @@ public:
     register_consume_buff( p()->buffs.symbolic_victory, p()->buffs.symbolic_victory->is_affecting( &ab::data() ),
                            nullptr, p()->bugs ? 0_ms : 1_ms, false, true ); // 2024-08-12 -- Consumed immediatey, does not work with Shadowy Finishers
     register_consume_buff( p()->buffs.the_rotten, p()->buffs.the_rotten->is_affecting_direct( &ab::data() ), nullptr, 1_ms, false, true );
+    register_consume_buff( p()->buffs.mid2_outlaw_4pc, affected_by.mid2_outlaw_4pc );
   }
 
   // Type Wrappers ============================================================
@@ -1991,6 +2005,11 @@ public:
   {
     int consume_cp = consumes_combo_points() ? as<int>( std::min( p()->current_cp(), p()->consume_cp_max() ) ) : 0;
     int effective_cp = consume_cp;
+
+    if ( affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
+    {
+      effective_cp = as<int>( p()->consume_cp_max() );
+    }
 
     // Apply and Snapshot Supercharger Buffs
     if ( p()->talent.rogue.supercharger->ok() && consumes_supercharger() )
@@ -2196,7 +2215,7 @@ public:
       return 0.0;
 
     auto chance = ab::parry_chance(exp, target);
-    return std::max(0.0, chance);
+    return std::max( 0.0, chance );
   }
 
 public:
@@ -2606,6 +2625,11 @@ public:
     if ( affected_by.goremaws_bite )
     {
       c *= 1.0 + p()->buffs.goremaws_bite->check_value();
+    }
+
+    if ( affected_by.mid2_outlaw_4pc )
+    {
+      c *= 1.0 + p()->buffs.mid2_outlaw_4pc->check_value();
     }
 
     return c;
@@ -3381,6 +3405,12 @@ struct melee_t : public rogue_attack_t
 
     if ( p()->talent.outlaw.zero_in->ok() && state->result == RESULT_CRIT )
     {
+      if ( p()->is_ptr() && state->action->weapon->type == WEAPON_DAGGER )
+      {
+        double chance = p()->talent.outlaw.zero_in->effectN( 2 ).percent();
+        if ( p()->rng().roll( chance ) )
+          return;
+      }
       p()->buffs.zero_in->trigger();
     }
   }
@@ -3543,6 +3573,7 @@ struct ambush_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
     trigger_blindside( execute_state );
+    p()->buffs.mid2_outlaw_4pc->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -4562,6 +4593,22 @@ struct killing_spree_tick_t : public rogue_attack_t
   {
   }
 
+  double combo_point_da_multiplier( const action_state_t* state ) const override
+  {
+    auto rs = cast_state( state );
+    int trigger_cp = rs->get_combo_points();
+    int max_cp = as<int>( p()->consume_cp_max() );
+
+    // 2026-07-15 -- As of 12.1, Supercharging Killing Spree beyond maximum CPs increases the damage
+    //               by 15% per excess combo point
+    if ( p()->is_ptr() && trigger_cp > max_cp )
+    {
+      return 1.0 + p()->talent.outlaw.killing_spree->effectN( 4 ).percent() * ( trigger_cp - max_cp );
+    }
+
+    return 1.0;
+  }
+
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
@@ -4589,23 +4636,26 @@ struct killing_spree_tick_t : public rogue_attack_t
 
 struct killing_spree_t : public rogue_attack_t
 {
-  melee_attack_t* attack_mh;
-  melee_attack_t* attack_oh;
+  rogue_attack_t* attack_mh;
+  rogue_attack_t* attack_oh;
 
   killing_spree_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->talent.outlaw.killing_spree, options_str ),
     attack_mh( nullptr ), attack_oh( nullptr )
   {
     channeled = tick_zero = true;
-    interrupt_auto_attack = true; // 2025-06-28 -- TOCHECK: Auto attacks are now interrupted on PTR
+    interrupt_auto_attack = true;
 
     // Assume we can react to the ending of Killing Spree faster than the 250ms channel_lag setting
     // through the use of [nochannel] macros, or in some cases reacting to the combo point generation
     // to cancel it early with another action
     ability_lag = p->world_lag;
 
-    attack_mh = p->get_background_action<killing_spree_tick_t>( "killing_spree_mh", p->spec.killing_spree_mh_attack );
-    attack_oh = p->get_background_action<killing_spree_tick_t>( "killing_spree_oh", p->spec.killing_spree_oh_attack );
+    attack_mh = p->get_secondary_trigger_action<killing_spree_tick_t>( 
+        secondary_trigger::KILLING_SPREE, "killing_spree_mh", p->spec.killing_spree_mh_attack );
+    attack_oh = p->get_secondary_trigger_action<killing_spree_tick_t>( 
+        secondary_trigger::KILLING_SPREE, "killing_spree_oh", p->spec.killing_spree_oh_attack );
+
     add_child( attack_mh );
     add_child( attack_oh );
 
@@ -4624,16 +4674,29 @@ struct killing_spree_t : public rogue_attack_t
   }
 
   timespan_t tick_time( const action_state_t* s ) const override
-  { return data().effectN( 1 ).period() * s->haste; }
+  { 
+    timespan_t hasted_tick = data().effectN( 1 ).period() * s->haste;
+
+    // 2026-07-15 -- As of 12.1, Adrenaline Rush reduces the tick rate by 20%
+    if ( p()-> is_ptr() && p()->buffs.adrenaline_rush->check() )
+      hasted_tick *= 1.0 + p()->talent.outlaw.adrenaline_rush->effectN( 8 ).percent();
+
+    return hasted_tick;
+  }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     auto rs = cast_state( s );
     int trigger_cp = rs->get_combo_points();
+    int max_cp = as<int>( p()->consume_cp_max() );
 
+    // 2026-07-15 -- As of 12.1, Supercharging Killing Spree beyond maximum CPs no longer affects duration
+    if ( p()->is_ptr() && trigger_cp > max_cp )
+      trigger_cp = max_cp;
+      
     // 2025-09-01 -- If Killing Spree consumes Supercharger, its duration loses an effective combo point
     //               So with Forced Induction, the duration is treated as +2 CPs as opposed to +3
-    if ( p()->bugs && trigger_cp > rs->get_combo_points( true ) )
+    if ( !p()->is_ptr() && p()->bugs && trigger_cp > rs->get_combo_points( true ) )
       trigger_cp -= 1;
 
     return tick_time( s ) * trigger_cp;
@@ -4662,10 +4725,8 @@ struct killing_spree_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
 
-    // 06-28-2025 -- TOCHECK: On 11.2 PTR both hits target random enemies
-    // Additionally, the new damage spell 1248604 is not currently being used but contains the 0-9 yard cone
-    attack_mh->execute_on_target( rng().range( sim->target_non_sleeping_list ) );
-    attack_oh->execute_on_target( rng().range( sim->target_non_sleeping_list ) );
+    attack_mh->trigger_secondary_action( rng().range( sim->target_non_sleeping_list ), cast_state( execute_state )->get_combo_points() );
+    attack_oh->trigger_secondary_action( rng().range( sim->target_non_sleeping_list ), cast_state( execute_state )->get_combo_points() );
 
     if ( p()->spec.killing_spree_energize->ok() && d->current_tick > 0 )
     {
@@ -4702,13 +4763,6 @@ struct kingsbane_t : public rogue_attack_t
         rogue_attack_t( name, p, s )
       {
         dual = true;
-        aoe = -1;
-      }
-
-      double composite_poison_flat_modifier( const action_state_t* s ) const override
-      {
-        // Only triggers poisons on the primary target in AoE
-        return s->chain_target > 0 ? -1.0 : 1.0;
       }
 
       bool procs_poison() const override
@@ -5798,6 +5852,7 @@ struct sinister_strike_t : public rogue_attack_t
     rogue_attack_t::execute();
     trigger_unseen_blade( execute_state );
     trigger_opportunity( execute_state, extra_attack );
+    p()->buffs.mid2_outlaw_4pc->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -7547,10 +7602,15 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
 
   const auto rs = cast_state( state );
   double max_spend = std::min( p()->current_cp(), p()->consume_cp_max() );
-  ab::stats->consume_resource( RESOURCE_COMBO_POINT, max_spend );
-  p()->resource_loss( RESOURCE_COMBO_POINT, max_spend );
+  double cp_loss = max_spend;
 
-  p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), max_spend, util::resource_type_string( RESOURCE_COMBO_POINT ),
+  if ( affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
+    cp_loss *= 1.0 + p()->spec.mid2_outlaw_4pc_buff->effectN( 2 ).percent();
+
+  ab::stats->consume_resource( RESOURCE_COMBO_POINT, max_spend );
+  p()->resource_loss( RESOURCE_COMBO_POINT, cp_loss );
+
+  p()->sim->print_log( "{} consumes {} {} for {} ({})", *p(), cp_loss, util::resource_type_string( RESOURCE_COMBO_POINT ),
                        *this, p()->current_cp() );
   // Remove Supercharger Buffs
   consume_supercharger( state );
@@ -7569,7 +7629,11 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     else if ( p()->buffs.deadly_pursuit->check() )
       p()->buffs.deadly_pursuit->refresh();
     else
-      p()->buffs.deadly_pursuit_tracker->trigger( as<int>( max_spend ) );
+    {
+      // 2026-06-30 -- PTR TOCHECK: MID2 Outlaw 4pc does not contribute towards Deadly Pursuit
+      if ( cp_loss > 0 )
+        p()->buffs.deadly_pursuit_tracker->trigger( as<int>( cp_loss ) );
+    }
   }
 }
 
@@ -7810,6 +7874,12 @@ void actions::rogue_action_t<Base>::trigger_ruthlessness_cp( const action_state_
     return;
 
   int cp = cast_state( state )->get_combo_points();
+  
+  // 2026-06-29 -- PTR TOCHECK: MID2 Outlaw 4pc can only trigger Ruthlessness if its effective CPs are
+  //               boosted by Supercharger or Coup de Grace
+  if ( p()->bugs && affected_by.mid2_outlaw_4pc && p()->buffs.mid2_outlaw_4pc->check() )
+    cp = std::max( 0, cp - as<int>( p()->consume_cp_max() ) );
+
   if ( cp == 0 )
     return;
 
@@ -8012,6 +8082,8 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
   p()->cooldowns.killing_spree->adjust( v, false );
   p()->cooldowns.roll_the_bones->adjust( v, false );
   p()->cooldowns.sprint->adjust( v, false );
+
+  p()->sim->print_log( "{} triggered Restless Blades with {}s total cooldown reduction", *p(), v );
 }
 
 template <typename Base>
@@ -10068,7 +10140,6 @@ void rogue_t::init_spells()
   spec.gravedigger_buff = talent.outlaw.gravedigger_3->ok() ? find_spell( 1265935 ) : spell_data_t::not_found();
   spec.gravedigger_energize = talent.outlaw.gravedigger_3->ok() ? find_spell( 1279356 ) : spell_data_t::not_found();
   spec.improved_adrenaline_rush_energize = talent.outlaw.improved_adrenaline_rush->ok() ? find_spell( 395424 ) : spell_data_t::not_found();
-  // MIDNIGHT TOCHECK -- Killing Spree spell ids could change over 11.2 PTR, new spell 1248604 exists but not used in logs yet
   spec.killing_spree_mh_attack = talent.outlaw.killing_spree->ok() ? find_spell( 57841 ) : spell_data_t::not_found();
   spec.killing_spree_oh_attack = talent.outlaw.killing_spree->ok() ? find_spell( 57842 ) : spell_data_t::not_found();
   spec.killing_spree_energize = talent.outlaw.killing_spree->ok() ? find_spell( 1235074 ) : spell_data_t::not_found();
@@ -10125,6 +10196,11 @@ void rogue_t::init_spells()
   set_bonuses.mid1_outlaw_4pc = sets->set( ROGUE_OUTLAW, MID1, B4 );
   set_bonuses.mid1_subtlety_2pc = sets->set( ROGUE_SUBTLETY, MID1, B2 );
   set_bonuses.mid1_subtlety_4pc = sets->set( ROGUE_SUBTLETY, MID1, B4 );
+  
+  set_bonuses.mid2_outlaw_2pc = sets->set( ROGUE_OUTLAW, MID2, B2 );
+  set_bonuses.mid2_outlaw_4pc = sets->set( ROGUE_OUTLAW, MID2, B4 );
+
+  spec.mid2_outlaw_4pc_buff = set_bonuses.mid2_outlaw_4pc->effectN( 1 ).trigger();
 
   // Register passives ======================================================
 
@@ -10922,7 +10998,15 @@ void rogue_t::create_buffs()
 
   // Set Bonus Items ========================================================
 
-  buffs.mid1_outlaw_4pc = make_buff<damage_buff_t>( this, "whirl_of_blades", set_bonuses.mid1_outlaw_4pc->effectN(2).trigger() );
+  buffs.mid1_outlaw_4pc = make_buff<damage_buff_t>( this, "whirl_of_blades", set_bonuses.mid1_outlaw_4pc->effectN( 2 ).trigger() );
+
+  buffs.mid2_outlaw_4pc = make_buff_fallback( set_bonuses.mid2_outlaw_4pc->ok(), this, "fang_strike", spec.mid2_outlaw_4pc_buff )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 );
+
+  if ( set_bonuses.mid2_outlaw_4pc->ok() )
+  {
+    buffs.mid2_outlaw_4pc->set_chance( set_bonuses.mid2_outlaw_4pc->effectN( 1 ).percent() );
+  }
 }
 
 // rogue_t::invalidate_cache =========================================
@@ -11627,15 +11711,7 @@ public:
   bool valid() const override
   { return true; }
 
-  void register_hotfixes() const override
-  {
-    // 2025-07-29 -- Fatebound Lucky Coin expires 15s after leaving combat
-    hotfix::register_effect( "Rogue", "2025-07-29", "Fatebound Lucky Coin Expiry", 1156957 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 15 )
-        .verification_value( 10 );
-  }
+  void register_hotfixes() const override {}
 
   void register_actor_initializers( sim_t* ) const override {}
 };

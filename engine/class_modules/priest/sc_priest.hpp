@@ -227,7 +227,9 @@ public:
     propagate_const<buff_t*> crushing_void;
     propagate_const<buff_t*> ancient_madness_extension;
     propagate_const<buff_t*> ancient_madness;
-    propagate_const<buff_t*> mid_s2_4pc_vampiric_touch;
+    propagate_const<buff_t*> void_volley_voidform_charges;
+    propagate_const<buff_t*> void_volley_set_bonus;
+    propagate_const<buff_t*> void_volley_set_bonus_effectiveness;
 
     // Archon
     propagate_const<buff_t*> power_surge;
@@ -658,6 +660,8 @@ public:
     const spell_data_t* contrition_heal;       // 270501
     const spell_data_t* contrition_heal_crit;  // 281469
     const spell_data_t* plea;                  // 200829
+    const spell_data_t* renew;
+    const spell_data_t* prayer_of_mending;
 
     // Holy
     const spell_data_t* holy_priest;  // General holy data
@@ -672,8 +676,6 @@ public:
     const spell_data_t* dispersion;
     const spell_data_t* silence;
     const spell_data_t* vampiric_embrace;
-    const spell_data_t* renew;
-    const spell_data_t* prayer_of_mending;
   } specs;
 
   // DoT Spells
@@ -752,7 +754,6 @@ public:
     propagate_const<gain_t*> insanity_dark_thoughts;
     propagate_const<gain_t*> insanity_horrific_vision;
     propagate_const<gain_t*> insanity_vision_of_nzoth;
-    propagate_const<gain_t*> insanity_mid_s2_4pc_vampiric_touch;
   } gains;
 
   // Benefits
@@ -777,7 +778,6 @@ public:
     propagate_const<proc_t*> shadowy_apparition_nzoth;
     propagate_const<proc_t*> shadowy_apparition_yogg;
     propagate_const<proc_t*> shadowy_apparition_cthun;
-    propagate_const<proc_t*> shadowy_apparition_mid_s2_4pc_vt;
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> void_tendril;
     propagate_const<proc_t*> void_lasher;
@@ -798,6 +798,7 @@ public:
     propagate_const<proc_t*> void_apparition_yogg;
     propagate_const<proc_t*> void_apparition_cthun;
     propagate_const<proc_t*> tentacle_slam_idol;
+    propagate_const<proc_t*> midnight_s2_4pc_void_volley;
     // Holy
     propagate_const<proc_t*> divine_favor_chastise;
     propagate_const<proc_t*> divine_image;
@@ -915,10 +916,6 @@ public:
     double archon_halo_outgoing_hit_chance = 0.5;
     // Chance for returning Halo damage pulses to hit (Divine Halo / Archon).
     double archon_halo_return_hit_chance = 0.5;
-
-    // Placeholder options until tier set spells exist
-    bool mid_s2_2pc = false;
-    bool mid_s2_4pc = false;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -1029,7 +1026,7 @@ public:
   void trigger_ancient_madness( int stacks );
   void trigger_ancient_madness_extension();
   void refresh_insidious_ire_buff( action_state_t* s );
-  void spawn_thing_from_beyond();
+  void spawn_thing_from_beyond( player_t* target = nullptr );
   void trigger_idol_of_nzoth( player_t* target, int stacks );
   double shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
@@ -1042,7 +1039,7 @@ public:
   void trigger_horrific_vision( player_t* target );
   void trigger_vision_of_nzoth( player_t* target );
   void trigger_shadowy_insight( bool guaranteed = false, action_state_t* s = nullptr );
-  void trigger_idol_of_yshaarj();
+  void trigger_idol_of_yshaarj( player_t* target = nullptr );
 
   std::vector<action_t*> secondary_action_list;
 
@@ -1230,10 +1227,8 @@ public:
       parse_effects( p().buffs.voidform, effect_mask_t( true ).disable( 3 ), IGNORE_STACKS );  // Skip E3 for AM
       parse_effects( p().buffs.shadowform );
       parse_effects( p().buffs.mind_devourer );
-      parse_effects( p().buffs.shattered_psyche );  // Mind Blast critical strike chance
-
-      // Buffs non-periodic spells
-      parse_effects( p().buffs.screams_of_the_void );
+      parse_effects( p().buffs.shattered_psyche );     // Mind Blast critical strike chance
+      parse_effects( p().buffs.screams_of_the_void );  // Buffs non-periodic spells
     }
 
     // DISCIPLINE BUFF EFFECTS

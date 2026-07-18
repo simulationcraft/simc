@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68256 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68453 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -322,7 +322,7 @@ Family Flags     : 10, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=611)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 17.8744 | PvP Coefficient: 1.512 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 21.4493 | PvP Coefficient: 1.512 | Target: Targeted Ally (21)
 #2 (id=709474)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 Description      : Perform a miracle, healing an ally for $s1.
@@ -1052,7 +1052,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Foreseen Circumstances (440738 effect#1)
 Family Flags     : 60
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), External Defensive (499), Big Defensive (512)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Vehicle Immunity Category (218), Reset cooldown upon ending an encounter (333), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Important Spell (491), External Defensive (499), Big Defensive (512)
 Effects          :
 #1 (id=23040)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -1112,7 +1112,7 @@ Family Flags     : 28, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=24949)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.01101 | PvP Coefficient: 1.512 | Radius: 10 yards | Target: At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.01321 | PvP Coefficient: 1.512 | Radius: 10 yards | Target: At Ally in Area (31)
 #2 (id=288932)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=709475)   : Dummy (3)
@@ -1458,7 +1458,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x80000000
 Affecting Spells : Phyrix's Embrace (234689 effects: #1, #2), Foreseen Circumstances (440738 effect#2)
 Family Flags     : 75
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Allow While Stunned by Stun Mechanic (378), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), External Defensive (499), Big Defensive (512)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Do Not Count For PvP Scoreboard (252), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Allow While Stunned by Stun Mechanic (378), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), Important Spell (491), External Defensive (499), Big Defensive (512)
 Effects          :
 #1 (id=40042)    : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -15937,7 +15937,7 @@ Family Flags     : 10, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1254711)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 2.68116 | PvP Coefficient: 1.512 | Radius: 0 - 40 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 3.2174 | PvP Coefficient: 1.512 | Radius: 0 - 40 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
 #2 (id=1254712)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : $@spelldesc1246517
@@ -16389,15 +16389,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264657)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -10 | Scaled Value: -10 | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
 #2 (id=1264737)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Corrupted Apparitions (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Corrupted Apparition (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
 #3 (id=1264738)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -60 | Scaled Value: -60 | Target: Self (1)
+                   Base Value: -42 | Scaled Value: -42 | Target: Self (1)
                    Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
                    Family Flags: 33
 #4 (id=1264744)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)

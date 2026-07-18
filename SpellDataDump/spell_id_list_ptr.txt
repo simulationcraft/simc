@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.0.68209
+Class Spell ID List, wow build 12.1.0.68745
 
 Death Knight
 3714     Path of Frost
@@ -1620,7 +1620,6 @@ Death Knight
 1242174  Necrotic Coil
 1242178  Necrotic Coil
 1242274 *Lesser Ghoul Despawn
-1242283 *Lord of the Dead
 1242289 *Lord of the Dead
 1242294  Army of the Damned
 1242561 *Scythe of Decay
@@ -1755,10 +1754,10 @@ Death Knight
 1283622  Death Knight - Midnight PrePatch - 11.2 Class Set 4pc
 1286168 *Frenzied Decay
 1290864  Cycle of Death
-1292072 *Lord of the Dead
+1292072  Lord of the Dead
 1292107  Frostbolt
 1293166 *Lord of the Dead
-1294026 *Lesser Ghoul
+1294026  Lesser Ghoul
 1294029 *Lesser Ghoul
 1294180  Lesser Ghoul
 1294261 *Death Order
@@ -1774,10 +1773,12 @@ Death Knight
 1297063  Death Knight Unholy 12.1 Class Set 2pc
 1297086  Necrotic Bolt
 1297087  Death Knight Unholy 12.1 Class Set 2pc
-1297091  Writhing Grasp
+1297091  Withering Grasp
 1297365  Freezing Tempest
 1300330  Epidemic Order
-1300369  Relentless Rider's Precision
+1300369  Relentless Rider's Strength
+1310372  Blood Debt
+1310571  Bloody Demise
 
 Demon Hunter
 1490     Chaos Brand
@@ -1787,7 +1788,6 @@ Demon Hunter
 162794   Chaos Strike
 163073   Demon Soul
 178716  *Sweep
-178717  *Sweep
 178940   Shattered Souls
 178963   Consume Soul
 179057   Chaos Nova
@@ -5363,21 +5363,13 @@ Druid
 1264905  Spirit of the Thicket
 1264911  Spirit of the Thicket
 1269186  Unshapeshifted
-1269614  Wild Guardian [NYI]
-1269616  Wild Guardian
-1269617  Wild Guardian [NYI]
-1269619  Wild Guardian [NYI]
-1269633  Echo of Ironfur
-1269645  Echo of Frenzied Regeneration
-1269648  Echo of Maul
+1269614  Wild Guardian
+1269616 *Wild Guardian
+1269617  Wild Guardian
+1269619  Wild Guardian
 1269658  Wild Guardian
-1269659  Gift of Ironfur
-1269660  Gift of Maul
-1269661  Gift of Frenzied Regeneration
-1269972  Echo of Raze
-1269973  Echo of Ravage
 1270065  Vicious Brambles
-1270277  Wild Guardian
+1270277 *Wild Guardian
 1270292  Lunar Beam
 1270565  Green Thumb
 1270586  Rampancy
@@ -5434,7 +5426,19 @@ Druid
 1302255  Genesis
 1303480  Orbit Breaker
 1307881 *Gory Fur
-1307916  Wild Guardian
+1308093  Spirit's Wrath
+1308125  Spirit's Wrath
+1308176  Dream Conduit
+1308399  Answered Calling
+1308437  Spirit's Wrath
+1308448 *Listener
+1308479  Spirit's Wrath
+1308522 *Wild Guardian Spirit
+1308639  Spirit's Wrath
+1308647  Answered Calling
+1308653 *Listener
+1310150  Rampant Thorn
+1310213 *Rampant Thorn
 
 Evoker
 351338   Quell
@@ -8661,10 +8665,10 @@ Hunter
 1250476 *Kill Cleave
 1250646  Takedown
 1251091 *Hemorrhaging Strikes
-1251592  Flamefang Pitch
-1251595  Flamefang Pitch
-1251610  Flamefang Pitch
-1251614  Flamefang Pitch
+1251592 *Flamefang Pitch
+1251595 *Flamefang Pitch
+1251610 *Flamefang Pitch
+1251614 *Flamefang Pitch
 1251683  Hemorrhaging Strikes
 1251703 *Takedown
 1251717  Strike as One
@@ -8854,7 +8858,7 @@ Hunter
 1296632  Hunter Beast Mastery 12.1 Class Set 4pc
 1296633  Hunter Marksmanship 12.1 Class Set 2pc
 1296634  Hunter Marksmanship 12.1 Class Set 4pc
-1296635  Hunter Survival 12.1 Class Set 2pc
+1296635  Hunter Survival 12.1 Class Set 4pc
 1296636  Hunter Survival 12.1 Class Set 4pc
 1298446 *Unbreakable Bond
 1299389  Cobra Fang
@@ -8863,10 +8867,12 @@ Hunter
 1301098  Spotter's Mark: Rapid Fire
 1301406  Incendiary Ammunition
 1301778  Unstable Trigger
-1302277 *Death Bringer
+1302277  Death Bringer
 1306018 *test proc spell
 1306960 *Dire Beast
 1306990 *Dark Summon
+1308188 *Dire Beast
+1311963  Bombardier
 
 Mage
 66       Invisibility
@@ -9934,7 +9940,7 @@ Mage
 210476   Master of Escape
 210478  *Arcane Barrage
 210716  *Force Barrier
-210725   Touch of the Magi
+210725  *Touch of the Magi
 210730  *Sloooow Down
 210732  *Sloooow Down
 210797   Crashing Storm
@@ -10511,7 +10517,6 @@ Mage
 355623  *Ice Wall
 356877   Heart of the Fae
 356881   Heart of the Fae
-363405  *Ring of Fire
 363500   Fiery Rush
 363508   Fiery Rush
 363535   Frost Storm
@@ -11019,7 +11024,6 @@ Mage
 1220739 *Overpowered Barrier
 1220755 *Overpowered Barrier
 1220758 *Overpowered Barrier
-1221106 *Overpowered Barrier
 1221107 *Overpowered Barrier
 1221389  Freezing
 1221415 *Norgannon's Foresight
@@ -11219,6 +11223,11 @@ Mage
 1296930  Cumulative Power
 1297073  Improved Warding
 1299546 *Ice Armor
+1309497  Refractive Images
+1309786  Refraction
+1309787  Refraction
+1309793  Amplified Refraction
+1310248  Rapid Refreezing
 
 Monk
 8647     Mystic Touch
@@ -15288,11 +15297,14 @@ Paladin
 1305063  Protection Paladin
 1305230  Divine Power
 1306159  Divine Power: Storm
-1306161  Divine Power: Storm
-1306162  Divine Power: Verdict
+1306161  Divine Arbiter
+1306162  Divine Arbiter
 1306923  Divine Arbiter
 1307499  Crusading Strikes
 1307639 *Glory of the Vanguard
+1310389  Divine Guidance
+1310461  Divine Arbiter
+1310686  Ardent Defender
 
 Priest
 17       Power Word: Shield
@@ -17276,7 +17288,7 @@ Priest
 1300008  Power Word: Shield (Unfolding Vision)
 1300009  Void Shield (Unfolding Vision)
 1304485  Ancient Madness
-1306118  Renewed Haste
+1306118  Renewed Vigor
 1307795  Dark Transference
 
 Rogue
@@ -18918,6 +18930,8 @@ Rogue
 1298870  Implacable
 1301405  Fang Strike
 1305994  Secret Technique
+1309274  Goremaw's Bite
+1309309  Goremaw's Bite
 
 Shaman
 370      Purge
@@ -20691,7 +20705,7 @@ Shaman
 462864  *Echo of the Elementals
 462866   Elemental Unity
 462867   Everlasting Elements
-462990   Lesser Storm Elemental
+462990   Lesser Primal Storm Elemental
 462991  *Lesser Primal Fire Elemental
 462992   Lesser Fire Elemental
 462993   Lesser Storm Elemental
@@ -20792,8 +20806,6 @@ Shaman
 1218612  Jackpot!
 1218616  Winning Streak!
 1219323  Fate Reversal
-1219343  Feral Lunge
-1219348  Feral Lunge
 1219440  Maelstrom Weapon
 1219461  Thorim's Invocation
 1219480  Ascendance
@@ -22210,7 +22222,6 @@ Warlock
 387096   Pyrogenics
 387103   Ruin
 387108   Conflagration of Chaos
-387109   Conflagration of Chaos
 387118  *Soul Tap
 387153  *Burn to Ashes
 387154  *Burn to Ashes
@@ -22751,7 +22762,7 @@ Warlock
 1260269  Shard Instability
 1260271  Nocturnal Yield
 1260279  Nightfall
-1260285  Patient Zero
+1260285 *Patient Zero
 1261036 *Cloying Power
 1261124  Cascading Calamity
 1261147 *Soul Miser
@@ -22924,6 +22935,8 @@ Warlock
 1305774  Unstable Empowerment
 1305798  Refund Soul Shard
 1306077  Isolated Implosion
+1311653  Soul Leech
+1311969  Hedonic Gorging
 
 Warrior
 71       Vanguard

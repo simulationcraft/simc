@@ -19,7 +19,8 @@ actions.cds+=/ancestral_call,if=cooldown.bestial_wrath.ready|fight_remains<16
 actions.cds+=/fireblood,if=cooldown.bestial_wrath.ready|fight_remains<9
 actions.cds+=/potion,if=cooldown.bestial_wrath.ready|fight_remains<31
 
-actions.cleave=barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=full_recharge_time<gcd
+actions.cleave=cancel_buff,name=beast_cleave,if=set_bonus.midnight_season_2_4pc
+actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=full_recharge_time<gcd
 actions.cleave+=/wild_thrash,if=talent.beast_cleave
 actions.cleave+=/bestial_wrath,if=!prev.wild_thrash
 actions.cleave+=/wild_thrash,if=!talent.beast_cleave
@@ -45,15 +46,18 @@ actions.drst+=/bestial_wrath
 actions.drst+=/black_arrow,if=buff.withering_fire.up&cooldown.kill_command.full_recharge_time>gcd
 actions.drst+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3
 actions.drst+=/wailing_arrow,if=buff.withering_fire.remains<execute_time+2*gcd|time_to_die.remains<execute_time+gcd
+actions.drst+=/cobra_shot,if=buff.cobra_fang.stack>3
 actions.drst+=/cobra_shot,if=talent.killer_cobra&buff.bestial_wrath.up&cooldown.barbed_shot.charges_fractional<1.4
 actions.drst+=/black_arrow
 actions.drst+=/barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage
-actions.drst+=/cobra_shot
+actions.drst+=/cobra_shot,if=cooldown.bestial_wrath.remains>gcd
 
-actions.st=barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd
+actions.st=barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd|full_recharge_time<gcd
 actions.st+=/bestial_wrath
 actions.st+=/wild_thrash,if=active_enemies>1
-actions.st+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.react|howl_summon.ready)|!apex.3
+actions.st+=/kill_command,if=howl_summon.ready
+actions.st+=/kill_command,if=(cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3)&(buff.howl_of_the_pack_leader_cooldown.remains>4|cooldown.kill_command.charges_fractional>1)
+actions.st+=/cobra_shot,if=buff.cobra_fang.stack>=3
 actions.st+=/barbed_shot,if=(focus<75|full_recharge_time<gcd)&!talent.serpentine_strikes|talent.serpentine_strikes
 actions.st+=/cobra_shot,if=cooldown.bestial_wrath.remains>gcd
 

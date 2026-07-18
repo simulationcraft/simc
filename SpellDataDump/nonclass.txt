@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68256 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68453 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -43772,6 +43772,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 292
+                 : 6948
 Attributes       : No Threat (42), Include In Advanced Combat Log (72), Do Not Log Full Overheal (323), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=193035)   : Direct Heal (10)
@@ -253565,7 +253566,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1292093)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Suffering more than $s1% of your maximum health in a single hit grants you a shield that absorbs ${$<basePoints>*$1287955s2} damage for $1287955d, but also inflicts $1287955s4 damage to you every $1287955t3 sec.
+Description      : Suffering more than $s1% of your maximum health in a single hit grants you a shield that absorbs ${$<basePoints>*$1287955s2} damage for $1287955d, but also inflicts ${$<basePoints>*$1287955s4} damage to you over $1287955d.
 
 This can only occur every $proccooldown sec.
 Variables        : $basePoints=$?a1288183[${((1/100*$1288183w1))}][${((1/100*$1288183s1))}]
@@ -254104,20 +254105,19 @@ Description      : Dealing Nature damage has a chance to inflict Rotbloom, deali
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Rotmire's Sporeheart (id=1285139) [Passive] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Labels           : 292
                  : 3959: Item Effects
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Magic Heal, Helpful Periodic
-Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Can Proc from Suppressed Caster Procs (385), Can Proc From Lifesteal (422)
+Real PPM         : 1 (Haste multiplier)
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Magic Heal, Magic Heal Taken, Helpful Periodic
+Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1300954)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
-#2 (id=1300996)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 14071.79 (coefficient=110.1049) | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=1300996)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Rotmire's Sporeheart | Scaling Class: Replace Secondary (-9)
+                   Base Value: 0 | Scaled Value: 14071.79 (coefficient=110.1049) | PvP Coefficient: 0.5 | Trigger Spell: 1309012 | Target: Self (1)
 #3 (id=1300997)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1941.618 (coefficient=15.19222) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Your healing has a chance to spawn protective toadstools absorbing $s2 damage for up to $1285161d. If broken, the toadstools burst to deal ${$s3*$<rolemult>} Nature damage to nearby enemies.
@@ -254388,13 +254388,14 @@ $fireHealing=${$<basePoints>*$1263002s2}
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
 Name             : Rune of Lingering (desc=Core Rune) (id=1287663) 
+Hotfixed         : Attributes
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
 Labels           : 6782
 Triggered By     : Rune of Void-Touched Orbs (1286716), Rune of Unleashed Fire (1286970)
-Attributes       : Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
+Attributes       : Not an Action (92), Do Not Display Range (126), Not an Attack (194), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1305315)  : Apply Aura (6) | Periodic Damage (3): cosmic every 1 seconds | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -254541,11 +254542,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 13.1441 (coefficient=0.100275) | Target: Self (1)
 
 Name             : Rune of Echoes (id=1289063) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 10 seconds
-Attributes       : No Aura Cancel (31), Aura Points On Client (268), Do Not Display Cast Time (441), Unknown (489)
+Attributes       : No Aura Cancel (31), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Aura Points On Client (268), Do Not Display Cast Time (441), Unknown (489)
 Effects          :
 #1 (id=1307259)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6), Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Current Target (25)
@@ -255261,10 +255263,11 @@ Effects          :
 Description      : Defeat rare foes to have a chance at gear for your current specialization.
 
 Name             : Rune of Echoes (id=1303048) 
+Hotfixed         : Attributes
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
-Attributes       : Can't Crit (93), Do Not Display Range (126), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Do Not Display Cast Time (441)
+Attributes       : Can't Crit (93), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Treat As Periodic (121), Do Not Display Range (126), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Ignore Damage Cancels Aura Interrupt (394), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1328843)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -255279,4 +255282,18 @@ Effects          :
 #1 (id=1328878)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279616
+
+Name             : Rotmire's Sporeheart (id=1309012) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Real PPM         : 1 (Haste multiplier)
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Magic Heal, Helpful Periodic
+Triggered By     : Rotmire's Sporeheart (1285139)
+Attributes       : No Aura Cancel (31), No Aura Icon (60), Instant Target Procs (115), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Can Proc from Suppressed Caster Procs (385), Can Proc From Lifesteal (422)
+Effects          :
+#1 (id=1337873)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc1285139
 

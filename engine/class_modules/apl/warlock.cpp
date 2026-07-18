@@ -146,8 +146,16 @@ void affliction( player_t* p )
   SH_cleave->add_action( "malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd" );
   SH_cleave->add_action( "drain_soul,if=buff.nightfall.react>1" );
   SH_cleave->add_action( "shadow_bolt,if=buff.nightfall.react>1" );
-  SH_cleave->add_action( "unstable_affliction,if=!talent.patient_zero&!talent.sow_the_seeds&(soul_shard|buff.shard_instability.react)" );
-  SH_cleave->add_action( "seed_of_corruption,if=talent.patient_zero&talent.sow_the_seeds" );
+  if ( p->sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+  {
+    SH_cleave->add_action( "unstable_affliction,if=!talent.patient_zero&!talent.sow_the_seeds&(soul_shard|buff.shard_instability.react)" );
+    SH_cleave->add_action( "seed_of_corruption,if=talent.patient_zero&talent.sow_the_seeds" );
+  }
+  else
+  {
+    SH_cleave->add_action( "unstable_affliction,if=!talent.sow_the_seeds&(soul_shard|buff.shard_instability.react)" );
+    SH_cleave->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
+  }
 
   HC_st->add_action( "haunt", "Haunt on CD for apex" );
   HC_st->add_action( "agony,if=refreshable" );
@@ -180,11 +188,27 @@ void affliction( player_t* p )
   HC_cleave->add_action( "summon_darkglare" );
   HC_cleave->add_action( "malevolence" );
   HC_cleave->add_action( "malefic_grasp,if=pet.darkglare.remains<gcd" );
-  HC_cleave->add_action( "unstable_affliction,if=!talent.sow_the_seeds&!talent.patient_zero&(pet.darkglare.remains|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react|(talent.cascading_calamity&buff.cascading_calamity.remains<gcd.max))" );
-  HC_cleave->add_action( "seed_of_corruption,if=talent.patient_zero&talent.sow_the_seeds" );
+  if ( p->sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+  {
+    HC_cleave->add_action( "unstable_affliction,if=!talent.sow_the_seeds&!talent.patient_zero&(pet.darkglare.remains|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react|(talent.cascading_calamity&buff.cascading_calamity.remains<gcd.max))" );
+    HC_cleave->add_action( "seed_of_corruption,if=talent.patient_zero&talent.sow_the_seeds" );
+  }
+  else
+  {
+    HC_cleave->add_action( "unstable_affliction,if=!talent.sow_the_seeds&(pet.darkglare.remains|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react|(talent.cascading_calamity&buff.cascading_calamity.remains<gcd.max))" );
+    HC_cleave->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
+  }
 
-  end_of_fight->add_action( "unstable_affliction,if=soul_shard&fight_remains<8&(!talent.patient_zero&!talent.sow_the_seeds)" );
-  end_of_fight->add_action( "seed_of_corruption,if=soul_shard&fight_remains<8&(talent.patient_zero&talent.sow_the_seeds)" );
+  if ( p->sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+  {
+    end_of_fight->add_action( "unstable_affliction,if=soul_shard&fight_remains<8&(!talent.patient_zero&!talent.sow_the_seeds)" );
+    end_of_fight->add_action( "seed_of_corruption,if=soul_shard&fight_remains<8&(talent.patient_zero&talent.sow_the_seeds)" );
+  }
+  else
+  {
+    end_of_fight->add_action( "unstable_affliction,if=soul_shard&fight_remains<8&(!talent.sow_the_seeds)" );
+    end_of_fight->add_action( "seed_of_corruption,if=soul_shard&fight_remains<8&(talent.sow_the_seeds)" );
+  }
   end_of_fight->add_action( "drain_soul,if=buff.nightfall.react&fight_remains<5" );
   end_of_fight->add_action( "shadow_bolt,if=buff.nightfall.react&fight_remains<5" );
 
@@ -244,7 +268,7 @@ void demonology( player_t* p )
   diabolist->add_action( "demonbolt,if=soul_shard<4&buff.demonic_core.react" );
   diabolist->add_action( "shadow_bolt" );
   diabolist->add_action( "infernal_bolt" );
-  
+
   soulharvest->add_action( "power_siphon,if=buff.demonic_core.stack<=1|fight_remains<10" );
   soulharvest->add_action( "hand_of_guldan,if=buff.dominion_of_argus.up" );
   soulharvest->add_action( "grimoire_imp_lord" );

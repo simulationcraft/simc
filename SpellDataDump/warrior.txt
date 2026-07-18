@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68256 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68453 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -12018,7 +12018,7 @@ Effects          :
 #3 (id=1135813)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #4 (id=1135814)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.6 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #5 (id=1135815)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)

@@ -585,6 +585,7 @@ struct sim_t : private sc_thread_t
   bool merge_enemy_priority_dmg;
 
   // sim control
+  std::unordered_map<std::string, profileset_controller_t::factory_fn_pair_t> profileset_controller_factory;
   std::vector<std::unique_ptr<profileset_controller_t>> profileset_controller;
   std::deque<profileset_controller_data_wrapper_t> profileset_controller_data;
   opts::map_list_t profileset_controller_options;
@@ -651,10 +652,11 @@ struct sim_t : private sc_thread_t
   bool profileset_enabled;
   int profileset_work_threads, profileset_init_threads;
   std::unique_ptr<profileset::profilesets_t> profilesets;
+  std::string_view profileset_name;
 
   sim_t();
-  explicit sim_t( sim_t* parent, int thread_index = 0 );
-  sim_t( sim_t* parent, int thread_index, sim_control_t* control );
+  explicit sim_t( sim_t* parent, int thread_index = 0, std::string_view profileset_name = {} );
+  sim_t( sim_t* parent, int thread_index, sim_control_t* control, std::string_view profileset_name = {} );
   ~sim_t() override;
 
   void run() override;

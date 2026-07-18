@@ -1,4 +1,4 @@
-// Embellishment data, wow build 12.1.0.68209
+// Embellishment data, wow build 12.1.0.68745
 static constexpr std::array<embellishment_data_t, 54> __ptr_embellishment_data { {
   { "Armor Spikes"                               ,    8188,  147859,  396581 },
   { "Potion Absorption Inhibitor"                ,    8175,  147812,  371700 },
@@ -36,7 +36,7 @@ static constexpr std::array<embellishment_data_t, 54> __ptr_embellishment_data {
   { "Sunfire Silk Lining"                        ,   12385,  208662, 1241711 },
   { "Darkmoon Sigil: Blood"                      ,   12705,  213245, 1245053 },
   { "Darkmoon Sigil: Void"                       ,   13640,  213244, 1245052 },
-  { "[PH] 12.1 Darkmoon Sigil"                   ,   12692,  213044, 1245055 },
+  { "Darkmoon Sigil: Rot"                        ,   12692,  213044, 1245055 },
   { "Darkmoon Sigil: Hunt"                       ,   12693,  213045, 1245054 },
   { "Devouring Banding"                          ,   12685,  212929, 1244238 },
   { "Blessed Pango Charm"                        ,   12686,  212930, 1259060 },

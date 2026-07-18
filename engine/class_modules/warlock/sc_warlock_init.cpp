@@ -122,9 +122,13 @@ namespace warlock
     parse_all_passive_sets();
     parse_raid_buffs();
 
-    // NOTE: 2026-02-17 Mark of Perotharn is being applied twice in what appears to be a bug
-    if ( bugs )
-      parse_passive_effects( hero.mark_of_perotharn, true );
+    // NOTE: 2026-07-05 The redesigned 12.1.0 Mark of Peroth'arn no longer double dips
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+    {
+      // NOTE: 2026-02-17 Mark of Perotharn is being applied twice in what appears to be a bug
+      if ( bugs )
+        parse_passive_effects( hero.mark_of_perotharn, true );
+    }
   }
 
   void warlock_t::init_spells_affliction()
@@ -219,7 +223,10 @@ namespace warlock
 
     talents.deaths_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Death's Embrace" ); // Should be ID 234876
 
-    talents.patient_zero = find_talent_spell( talent_tree::SPECIALIZATION, "Patient Zero" ); // Should be ID 1260285
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      talents.hedonic_gorging = find_talent_spell( talent_tree::SPECIALIZATION, "Hedonic Gorging" ); // Should be ID 1311969
+    else
+      talents.patient_zero = find_talent_spell( talent_tree::SPECIALIZATION, "Patient Zero" ); // Should be ID 1260285
 
     talents.sow_the_seeds = find_talent_spell( talent_tree::SPECIALIZATION, "Sow the Seeds" ); // Should be ID 196226
 
@@ -235,6 +242,12 @@ namespace warlock
     // Additional Tier Set spell data
     tier.wl_affliction_12_0_class_set_2pc = sets->set( WARLOCK_AFFLICTION, MID1, B2 ); // Should be ID 1264869
     tier.wl_affliction_12_0_class_set_4pc = sets->set( WARLOCK_AFFLICTION, MID1, B4 ); // Should be ID 1264870
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+    {
+      tier.wl_affliction_12_1_class_set_2pc = sets->set( WARLOCK_AFFLICTION, MID2, B2 ); // Should be ID 1296568
+      tier.wl_affliction_12_1_class_set_4pc = sets->set( WARLOCK_AFFLICTION, MID2, B4 ); // Should be ID 1296569
+      tier.unstable_empowerment_buff = conditional_spell_lookup( tier.wl_affliction_12_1_class_set_4pc->ok(), 1305774 );
+    }
 
     // Initialize some default values for pet spawners
     warlock_pet_list.darkglares.set_default_duration( talents.summon_darkglare->duration() );
@@ -269,7 +282,7 @@ namespace warlock
     talents.imperator = find_talent_spell( talent_tree::SPECIALIZATION, "Imp-erator" ); // Should be ID 416230
 
     talents.implosion = find_talent_spell( talent_tree::SPECIALIZATION, "Implosion" ); // Should be ID 196277
-    talents.implosion_aoe = conditional_spell_lookup( talents.implosion.ok(), 196278 );
+    talents.implosion_aoe = conditional_spell_lookup( warlock_base.demonology_warlock->ok(), 196278 );
 
     talents.power_siphon = find_talent_spell( talent_tree::SPECIALIZATION, "Power Siphon" ); // Should be ID 264130
     talents.power_siphon_buff = conditional_spell_lookup( talents.power_siphon.ok(), 334581 );
@@ -369,6 +382,13 @@ namespace warlock
     // Additional Tier Set spell data
     tier.wl_demonology_12_0_class_set_2pc = sets->set( WARLOCK_DEMONOLOGY, MID1, B2 ); // Should be ID 1264871
     tier.wl_demonology_12_0_class_set_4pc = sets->set( WARLOCK_DEMONOLOGY, MID1, B4 ); // Should be ID 1264872
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+    {
+      tier.wl_demonology_12_1_class_set_2pc = sets->set( WARLOCK_DEMONOLOGY, MID2, B2 ); // Should be ID 1296573
+      tier.wl_demonology_12_1_class_set_4pc = sets->set( WARLOCK_DEMONOLOGY, MID2, B4 ); // Should be ID 1296574
+      tier.isolated_implosion = conditional_spell_lookup( tier.wl_demonology_12_1_class_set_4pc->ok(), 1309535 );
+      tier.isolated_implosion_aoe = conditional_spell_lookup( tier.wl_demonology_12_1_class_set_4pc->ok(), 1306077 );
+    }
 
     // Initialize some default values for pet spawners
     warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
@@ -413,6 +433,9 @@ namespace warlock
 
     talents.shadowburn = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowburn" ); // Should be ID 17877
     talents.shadowburn_2 = conditional_spell_lookup( talents.shadowburn.ok(), 245731 );
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      talents.shadowburn_debuff = conditional_spell_lookup( talents.shadowburn.ok(), 1311913 );
 
     talents.backlash = find_talent_spell( talent_tree::SPECIALIZATION, "Backlash" ); // Should be ID 387384
 
@@ -485,7 +508,8 @@ namespace warlock
     talents.chaos_incarnate = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Incarnate" ); // Should be ID 387275
 
     talents.conflagration_of_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Conflagration of Chaos" ); // Should be ID 387108
-    talents.conflagration_of_chaos_buff = conditional_spell_lookup( talents.conflagration_of_chaos.ok(), 387109 );
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+      talents.conflagration_of_chaos_buff = conditional_spell_lookup( talents.conflagration_of_chaos.ok(), 387109 );
 
     talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
 
@@ -518,6 +542,12 @@ namespace warlock
     // Additional Tier Set spell data
     tier.wl_destruction_12_0_class_set_2pc = sets->set( WARLOCK_DESTRUCTION, MID1, B2 ); // Should be ID 1264873
     tier.wl_destruction_12_0_class_set_4pc = sets->set( WARLOCK_DESTRUCTION, MID1, B4 ); // Should be ID 1264874
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+    {
+      tier.wl_destruction_12_1_class_set_2pc = sets->set( WARLOCK_DESTRUCTION, MID2, B2 ); // Should be ID 1296571
+      tier.wl_destruction_12_1_class_set_4pc = sets->set( WARLOCK_DESTRUCTION, MID2, B4 ); // Should be ID 1296572
+      tier.dark_titans_mark_debuff = conditional_spell_lookup( tier.wl_destruction_12_1_class_set_4pc->ok(), 1305711 );
+    }
 
     // Initialize some default values for pet spawners
     warlock_pet_list.infernals.set_default_duration( talents.summon_infernal_main->duration() );
@@ -629,8 +659,6 @@ namespace warlock
     hero.malevolence = find_talent_spell( talent_tree::HERO, "Malevolence" ); // Should be ID 430014
     hero.malevolence_buff = conditional_spell_lookup( hero.malevolence.ok(), 442726 );
     hero.malevolence_dmg = conditional_spell_lookup( hero.malevolence.ok(), 446285 );
-
-    cooldowns.blackened_soul->duration = hero.blackened_soul->internal_cooldown();
   }
 
   void warlock_t::init_spells_soul_harvester()
@@ -749,6 +777,10 @@ namespace warlock
 
     buffs.seed_of_corruption_is_out_dnt = make_buff( this, "seed_of_corruption_is_out_dnt", talents.seed_of_corruption_is_out_dnt )
                                               ->set_quiet( true );
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      buffs.unstable_empowerment = make_buff( this, "unstable_empowerment", tier.unstable_empowerment_buff )
+                                       ->set_default_value_from_effect( 1 );
   }
 
   void warlock_t::create_buffs_demonology()
@@ -829,8 +861,9 @@ namespace warlock
 
     buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", talents.rain_of_chaos_buff );
 
-    buffs.conflagration_of_chaos = make_buff( this, "conflagration_of_chaos", talents.conflagration_of_chaos_buff )
-                                       ->set_chance( talents.conflagration_of_chaos->effectN( 1 ).percent() );
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+      buffs.conflagration_of_chaos = make_buff( this, "conflagration_of_chaos", talents.conflagration_of_chaos_buff )
+                                         ->set_chance( talents.conflagration_of_chaos->effectN( 1 ).percent() );
 
     buffs.flashpoint = make_buff( this, "flashpoint", talents.flashpoint_buff )
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -1092,6 +1125,8 @@ namespace warlock
     procs.infernal_rapidity = get_proc( "infernal_rapidity" );
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
     procs.demonic_knowledge = get_proc( "demonic_knowledge" );
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      procs.isolated_implosion = get_proc( "isolated_implosion" );
   }
 
   void warlock_t::init_procs_destruction()
@@ -1305,6 +1340,14 @@ namespace warlock
 
       deck_rng.demonic_knowledge = get_shuffled_rng( "demonic_knowledge", cards, deck_size );
     }
+
+    // Modeling Isolated Implosion as a pseudo-random distribution (PRD) with a nominal
+    // rate of 20%, which corresponds to PRD constant C = 0.055704042949781852.
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && active_4pc<MID2>() )
+    {
+      double c_ii = prd::find_constant( tier.wl_demonology_12_1_class_set_4pc->effectN( 3 ).percent() );
+      prd_rng.isolated_implosion = get_accumulated_rng( "isolated_implosion", c_ii );
+    }
   }
 
   void warlock_t::init_rng_destruction()
@@ -1328,7 +1371,8 @@ namespace warlock
     }
 
     // Rain of Chaos uses Deck of Cards RNG at 3 out of 20
-    if ( talents.rain_of_chaos.ok() ) {
+    if ( talents.rain_of_chaos.ok() )
+    {
       int deck_size = static_cast<int>( rng_settings.rain_of_chaos_deck_size.setting_value );
       int cards = static_cast<int>( rng_settings.rain_of_chaos_cards.setting_value );
       deck_rng.rain_of_chaos = get_shuffled_rng( "rain_of_chaos", cards, deck_size );
@@ -1386,11 +1430,12 @@ namespace warlock
       } );
     }
 
-    // Modeling Echo of Sargeras as a pseudo-random distribution (PRD) with a nominal
-    // rate of 10%, which corresponds to PRD constant C = 0.014745844781072676.
+    // Modeling Echo of Sargeras as a pseudo-random distribution (PRD) with a nominal rate of 10% (20% with 12.1.0 2p tier),
+    // which corresponds to PRD constant C = 0.014745844781072676 (0.055704042949781852 with 12.1.0 2p tier).
     if ( talents.embers_of_nihilam_1.ok() )
     {
-      double c_es = prd::find_constant( rng_settings.echo_of_sargeras.setting_value );
+      double c_es = prd::find_constant( ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) ) ? talents.embers_of_nihilam_1->effectN( 1 ).percent()
+                                        : rng_settings.echo_of_sargeras.setting_value );
       prd_rng.echo_of_sargeras = get_accumulated_rng( "echo_of_sargeras", c_es );
     }
   }

@@ -17,8 +17,8 @@ event_manager_t::event_manager_t( sim_t* s )
     total_events_processed( 0 ),
     max_events_remaining( 0 ),
     timing_slice( 0 ),
-    global_event_id( 1 ),  // start at 1, so we can identify event -> id == 0
-                           // meaning a unscheduled event.
+    global_event_id( 0 ),  // event->id == 0 represents an unscheduled event,
+                           // make sure to use preincrement when assigning event ids
     timing_wheel(),
     recycled_event_list( nullptr ),
     wheel_seconds( 0 ),
@@ -26,7 +26,7 @@ event_manager_t::event_manager_t( sim_t* s )
     wheel_mask( 0 ),
     wheel_shift( 5 ),
     wheel_granularity( 0.0 ),
-    wheel_time( timespan_t::zero() ),
+    wheel_time( 0_ms ),
     event_stopwatch(),
 #ifndef NDEBUG
     max_events( 0U ),
@@ -35,8 +35,8 @@ event_manager_t::event_manager_t( sim_t* s )
     monitor_cpu( false ),
     max_queue_depth( 0 ),
     n_allocated_events( 0 ),
-    n_requested_events( 0 ),
     n_end_insert( 0 ),
+    n_requested_events( 0 ),
     events_traversed( 0 ),
     events_added( 0 )
 #else
@@ -114,20 +114,21 @@ void event_manager_t::recycle_event( event_t* e )
 void event_manager_t::add_event( event_t* e, timespan_t delta_time )
 {
   assert( e -> next == nullptr );
-  e->id = ++global_event_id;
+  if ( e->id == 0 )
+    e->id = ++global_event_id;
 
-  if ( delta_time < timespan_t::zero() )
-    delta_time = timespan_t::zero();
+  if ( delta_time < 0_ms )
+    delta_time = 0_ms;
 
   if ( delta_time > wheel_time )
   {
-    e->time = current_time + wheel_time - timespan_t::from_seconds( 1 );
+    e->time = current_time + wheel_time - 1_s;
     e->reschedule_time = current_time + delta_time;
   }
   else
   {
     e->time            = current_time + delta_time;
-    e->reschedule_time = timespan_t::zero();
+    e->reschedule_time = event_t::no_reschedule;
   }
 
   // Determine the timing wheel position to which the event will belong
@@ -141,8 +142,10 @@ void event_manager_t::add_event( event_t* e, timespan_t delta_time )
   unsigned traversed = 0;
 #endif
 
+  // Find the first event p (= *prev) for which (p->time, p->id) > (e->time, e->id)
   while ( ( *prev ) &&
-          ( *prev )->time <= e->time )  // Find position in the list
+          ( ( *prev )->time < e->time ||
+            ( ( *prev )->time == e->time && ( *prev )->id <= e->id ) ) )
   {
     prev = &( ( *prev )->next );
 #ifdef EVENT_QUEUE_DEBUG
@@ -256,7 +259,7 @@ bool event_manager_t::execute()
     {
       sim->print_debug( "Canceled event: {}", *e );
     }
-    else if ( e->reschedule_time > e->time )
+    else if ( e->reschedule_time != event_t::no_reschedule )
     {
       reschedule_event( e );
       continue;
@@ -394,7 +397,7 @@ void event_manager_t::reset()
   timing_slice     = 0;
   global_event_id  = 0;
   canceled         = false;
-  current_time     = timespan_t::zero();
+  current_time     = 0_ms;
 }
 
 // event_manager_t::merge ===================================================

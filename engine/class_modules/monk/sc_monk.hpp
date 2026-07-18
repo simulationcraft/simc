@@ -16,6 +16,7 @@
 #include "sc_enums.hpp"
 #include "sc_stagger.hpp"
 #include "sim/proc.hpp"
+#include "sim/profileset_control.hpp"
 #include "util/timeline.hpp"
 
 #include <array>
@@ -63,7 +64,7 @@ struct monk_action_t : public parse_action_effects_t<Base>
 {
   bool ww_mastery;
   bool may_combo_strike;
-  bool cast_during_sck;
+  std::vector<unsigned> cast_during_ids;
   bool track_cd_waste;
   std::vector<player_effect_t> persistent_multiplier_effects;
 
@@ -96,8 +97,8 @@ public:
 
   std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override;
 
-  bool usable_moving() const override;
   bool ready() override;
+  bool usable_moving() const override;
   void init() override;
   void init_finished() override;
   void reset_swing();
@@ -1215,6 +1216,24 @@ public:
   // Actions
   void trigger_celestial_fortune( action_state_t * );
 };
+
+namespace profileset_control
+{
+struct valid_talents_t : profileset_controller_t
+{
+  using data_t = profileset_controller_data_t;
+
+  player_t *player;
+  unsigned int count;
+
+  valid_talents_t( sim_t *sim, unsigned int id );
+
+  const std::string name() const override;
+  bool evaluate_post_init() override;
+  const std::string reason() const override;
+  void create_options() override;
+};
+}  // namespace profileset_control
 
 namespace events
 {

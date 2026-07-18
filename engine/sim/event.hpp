@@ -44,6 +44,8 @@ constexpr unsigned next_power_of_two( unsigned v )
 // (4) create events through make_event method
 struct event_t : private noncopyable
 {
+  static constexpr timespan_t no_reschedule = -1_ms;
+
   sim_t& _sim;
   event_t*    next;
   timespan_t  time;
@@ -70,7 +72,7 @@ struct event_t : private noncopyable
     schedule( delta_time );
   }
 
-  timespan_t occurs() const { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
+  timespan_t occurs() const { return ( reschedule_time != no_reschedule ) ? reschedule_time : time; }
   timespan_t remains() const;
 
   void schedule( timespan_t delta_time );

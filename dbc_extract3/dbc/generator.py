@@ -1538,6 +1538,7 @@ class SpellDataGenerator(DataGenerator):
          1263768, # Lightspire Core
          1263614, # Wraps of Cosmic Madness
          1255685, 1255687, 1255688, # crucible of erratic energies
+         1292299, 1292300, 1306870, 1308012, 1308013, 1308014, # Gebbo's Bottomless Bag
         ),
 
         # Warrior:
@@ -1647,6 +1648,8 @@ class SpellDataGenerator(DataGenerator):
             ( 431522, 0),           # Dawnlight Buff
             ( 406957, 0),           # Divine Toll Judgment
             ( 402916, 0),           # Righteous Cause Buff
+            ( 1268810, 0),          # Vanguard
+            ( 1305230, 0),          # Divine Power
         ),
 
         # Hunter:
@@ -1711,6 +1714,7 @@ class SpellDataGenerator(DataGenerator):
           ( 1250068, 0 ), # Stampede (Pack Leader 4pc buff)
           ( 1258344, 0 ), # Stampede (Pack Leader)
           ( 1264357, 0 ), # Shoot (Dark Minion)
+          ( 1302277, 2 ), # Death Bringer Buff
         ),
 
         # Rogue:
@@ -2017,6 +2021,8 @@ class SpellDataGenerator(DataGenerator):
           ( 1278150, 0 ), # Lesser Ghoul Sweeping Claws
           ( 1277098, 0 ), # Lesser Ghoul
           ( 1282570, 0 ), # Forbidden Ritual
+          ( 1292072, 0 ), # Lord of the Dead Summon
+          ( 1294026, 0 ), # Summon Army Ghoul
         ),
 
         # Shaman:
