@@ -833,11 +833,12 @@ struct vampiric_touch_t final : public priest_spell_t
 // missile - 1242173
 // damage - 1242189
 // ==========================================================================
-struct void_volley_damage_t final : public priest_spell_t
+struct void_volley_damage_base_t : public priest_spell_t
 {
   bool set_bonus_effectiveness_active = false;
+  double cast_effectiveness_multiplier = 1.0;
 
-  void_volley_damage_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
+  void_volley_damage_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     background                 = true;
     affected_by_shadow_weaving = true;
@@ -845,12 +846,24 @@ struct void_volley_damage_t final : public priest_spell_t
 
   bool insidious_ire_active() const
   {
-    return priest().talents.shadow.insidious_ire.enabled() && priest().buffs.insidious_ire->check();
+    if ( !priest().talents.shadow.insidious_ire.enabled() )
+      return false;
+
+    return priest().buffs.insidious_ire->check();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+    m *= cast_effectiveness_multiplier;
+    return m;
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double m = priest_spell_t::composite_ta_multiplier( s );
+
+    m *= cast_effectiveness_multiplier;
 
     if ( set_bonus_effectiveness_active )
     {
@@ -866,15 +879,18 @@ struct void_volley_damage_t final : public priest_spell_t
   }
 };
 
-struct void_volley_damage_aoe_t final : public priest_spell_t
+struct void_volley_damage_t final : public void_volley_damage_base_t
 {
-  bool set_bonus_effectiveness_active = false;
-
-  void_volley_damage_aoe_t( util::string_view n, priest_t& p, const spell_data_t* s, double _radius )
-    : priest_spell_t( n, p, s )
+  void_volley_damage_t( util::string_view n, priest_t& p, const spell_data_t* s ) : void_volley_damage_base_t( n, p, s )
   {
-    background                 = true;
-    affected_by_shadow_weaving = true;
+  }
+};
+
+struct void_volley_damage_aoe_t final : public void_volley_damage_base_t
+{
+  void_volley_damage_aoe_t( util::string_view n, priest_t& p, const spell_data_t* s, double _radius )
+    : void_volley_damage_base_t( n, p, s )
+  {
     aoe                        = -1;
     radius                     = _radius;
   }
@@ -903,31 +919,6 @@ struct void_volley_damage_aoe_t final : public priest_spell_t
 
     return tl.size();
   }
-
-  bool insidious_ire_active() const
-  {
-    if ( !priest().talents.shadow.insidious_ire.enabled() )
-      return false;
-
-    return priest().buffs.insidious_ire->check();
-  }
-
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_spell_t::composite_ta_multiplier( s );
-
-    if ( set_bonus_effectiveness_active )
-    {
-      m *= priest().buffs.void_volley_set_bonus_effectiveness->default_value;
-    }
-
-    if ( insidious_ire_active() )
-    {
-      m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
-    }
-
-    return m;
-  }
 };
 
 struct void_volley_base_t : public priest_spell_t
@@ -938,6 +929,11 @@ struct void_volley_base_t : public priest_spell_t
   virtual bool cast_has_set_bonus_effectiveness() const
   {
     return false;
+  }
+
+  virtual double cast_effectiveness_multiplier() const
+  {
+    return 1.0;
   }
 
   void_volley_base_t( priest_t& p, std::string name )
@@ -979,26 +975,51 @@ struct void_volley_base_t : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     const bool set_bonus_effectiveness = cast_has_set_bonus_effectiveness();
+    const double cast_effectiveness    = cast_effectiveness_multiplier();
+    player_t* volley_target            = s->target;
 
     // fire s1 bolts at main target
-    void_volley_damage->set_bonus_effectiveness_active = set_bonus_effectiveness;
-    void_volley_damage->target                         = s->target;
-    make_repeating_event(
-        sim, 50_ms, [ this ] { void_volley_damage->execute(); }, as<int>( data().effectN( 1 ).base_value() ) );
+    make_repeating_event( sim, 50_ms,
+                          [ this, set_bonus_effectiveness, cast_effectiveness, volley_target ] {
+                            void_volley_damage->set_bonus_effectiveness_active = set_bonus_effectiveness;
+                            void_volley_damage->cast_effectiveness_multiplier   = cast_effectiveness;
+                            void_volley_damage->target                          = volley_target;
+                            void_volley_damage->execute();
+                          },
+                          as<int>( data().effectN( 1 ).base_value() ) );
 
-    if ( void_volley_damage_aoe->target != s->target )
+    if ( void_volley_damage_aoe->target != volley_target )
     {
-      void_volley_damage_aoe->target = s->target;
+      void_volley_damage_aoe->target = volley_target;
       // Invalidate the cache if the target has been changed.
       void_volley_damage_aoe->target_cache.is_valid = false;
     }
+
     // fire s3 bolts at secondary targets with s1 radius
     if ( !void_volley_damage_aoe->target_list().empty() )
     {
-      void_volley_damage_aoe->set_bonus_effectiveness_active = set_bonus_effectiveness;
-      make_repeating_event(
-          sim, 50_ms, [ this ] { void_volley_damage_aoe->execute(); }, as<int>( data().effectN( 3 ).base_value() ) );
+      make_repeating_event( sim, 50_ms,
+                            [ this, set_bonus_effectiveness, cast_effectiveness, volley_target ] {
+                              void_volley_damage_aoe->set_bonus_effectiveness_active = set_bonus_effectiveness;
+                              void_volley_damage_aoe->cast_effectiveness_multiplier   = cast_effectiveness;
+
+                              if ( void_volley_damage_aoe->target != volley_target )
+                              {
+                                void_volley_damage_aoe->target = volley_target;
+                                void_volley_damage_aoe->target_cache.is_valid = false;
+                              }
+
+                              void_volley_damage_aoe->execute();
+                            },
+                            as<int>( data().effectN( 3 ).base_value() ) );
     }
+  }
+
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double ea = priest_spell_t::composite_energize_amount( s );
+    ea *= cast_effectiveness_multiplier();
+    return ea;
   }
 };
 
@@ -1087,10 +1108,30 @@ struct void_volley_voidform_t final : public void_volley_base_t
 
 struct void_volley_swm_t final : public void_volley_base_t
 {
+  double focused_outburst_effectiveness = 1.0;
+
   void_volley_swm_t( priest_t& p ) : void_volley_base_t( p, "void_volley_swm" )
   {
     background     = true;
     track_cd_waste = false;
+
+    if ( priest().talents.archon.focused_outburst.enabled() )
+    {
+      if ( priest().talents.archon.focused_outburst->effect_count() >= 4 )
+      {
+        focused_outburst_effectiveness = priest().talents.archon.focused_outburst->effectN( 4 ).percent();
+      }
+      else
+      {
+        sim->print_debug( "{} Focused Outburst missing effect #4; defaulting void_volley_swm effectiveness to 100%.",
+                          priest() );
+      }
+    }
+  }
+
+  double cast_effectiveness_multiplier() const override
+  {
+    return focused_outburst_effectiveness;
   }
 };
 
