@@ -880,9 +880,8 @@ void loa_worshipers_band( special_effect_t& effect )
         double janalai_value = effect.driver()->effectN( 4 ).average( effect );
         janalai_value *= bandolier_mul( effect.player );
 
-        janalai = create_proc_action<generic_proc_t>( "janalais_flames", e, 1252817 );
+        janalai = create_proc_action<generic_aoe_proc_t>( "janalais_flames", e, 1252817, true );
         janalai->base_dd_min = janalai->base_dd_max = janalai_value;
-        janalai->aoe = -1;
         // janalai->base_multiplier *= role_mult( e ); - Role Mult currently not applied to Loa Worshiper's Band
       }
 
