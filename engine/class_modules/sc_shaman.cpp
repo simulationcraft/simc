@@ -7341,6 +7341,7 @@ struct lightning_bolt_t : public shaman_spell_t
       {
         p()->summon_ancestor();
       }
+
       if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) && p()->is_ptr() &&
            p()->talent.power_of_the_maelstrom->ok() )
       {
