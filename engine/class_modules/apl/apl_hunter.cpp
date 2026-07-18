@@ -207,10 +207,11 @@ void beast_mastery_ptr( player_t* p )
   drst->add_action( "black_arrow,if=buff.withering_fire.up&cooldown.kill_command.full_recharge_time>gcd" );
   drst->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3" );
   drst->add_action( "wailing_arrow,if=buff.withering_fire.remains<execute_time+2*gcd|time_to_die.remains<execute_time+gcd" );
+  drst->add_action( "cobra_shot,if=buff.cobra_fang.stack>3" );
   drst->add_action( "cobra_shot,if=talent.killer_cobra&buff.bestial_wrath.up&cooldown.barbed_shot.charges_fractional<1.4" );
   drst->add_action( "black_arrow" );
   drst->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
-  drst->add_action( "cobra_shot" );
+  drst->add_action( "cobra_shot,if=cooldown.bestial_wrath.remains>gcd" );
 
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd|full_recharge_time<gcd" );
   st->add_action( "bestial_wrath" );
