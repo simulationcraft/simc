@@ -3123,6 +3123,11 @@ using namespace helpers;
         return lv < rv;
       } );
 
+      unsigned max_imps = as<unsigned>( data().effectN( 1 ).base_value() );
+      // NOTE: 2026-07-18: PTR 12.1.0 Without the To Hell and Back talent, when trying to implode 6 Wild Imps, only 5 are sent to implode (bug)
+      if ( p()->bugs && sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && !p()->talents.to_hell_and_back.ok() )
+        max_imps--;
+
       unsigned launch_counter = 0;
       for ( auto imp : imps )
       {
@@ -3150,7 +3155,7 @@ using namespace helpers;
 
         launch_counter++;
 
-        if ( launch_counter >= as<unsigned>( data().effectN( 1 ).base_value() ) )
+        if ( launch_counter >= max_imps )
           break;
       }
       if ( p()->talents.to_hell_and_back.ok() )
@@ -3602,7 +3607,7 @@ using namespace helpers;
         if ( p()->talents.reign_of_tyranny.ok() )
         {
           if ( dreadstalker->expiration )
-            dreadstalker->expiration->reschedule_time = dreadstalker->expiration->time + extension_time;
+            dreadstalker->expiration->reschedule( dreadstalker->expiration->remains() + extension_time );
         }
 
         demonic_power_counter++;
