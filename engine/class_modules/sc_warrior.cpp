@@ -671,6 +671,7 @@ public:
       player_talent_t hack_and_slash;
       player_talent_t cruelty;
       player_talent_t meat_cleaver;
+      player_talent_t carving_blades;
       // Row 7
       player_talent_t cold_steel_hot_blood;
       player_talent_t ragedrinker;
@@ -6392,6 +6393,12 @@ struct whirlwind_fury_damage_t : public warrior_attack_t
     double m = warrior_attack_t::composite_da_multiplier( state );
     if ( p()->talents.fury.meat_cleaver->ok() && p()->sim->target_non_sleeping_list.size() >= p()->talents.fury.meat_cleaver->effectN( 2 ).base_value() )
       m *= 1.0 + p()->talents.fury.meat_cleaver->effectN( 1 ).percent();
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.fury.carving_blades.ok() &&
+          state->n_targets == as<int>( p()->talents.fury.carving_blades->effectN( 2 ).base_value() ) )
+    {
+      m *= 1.0 + p()->talents.fury.carving_blades->effectN( 1 ).percent();
+    }
     return m;
   }
 };
@@ -7514,6 +7521,7 @@ void warrior_t::init_spells()
   talents.fury.hack_and_slash        = find_talent_spell( talent_tree::SPECIALIZATION, "Hack and Slash" );
   talents.fury.cruelty               = find_talent_spell( talent_tree::SPECIALIZATION, "Cruelty" );
   talents.fury.meat_cleaver          = find_talent_spell( talent_tree::SPECIALIZATION, "Meat Cleaver" );
+  talents.fury.carving_blades        = find_talent_spell( talent_tree::SPECIALIZATION, "Carving Blades" );
   // Row 7
   talents.fury.cold_steel_hot_blood  = find_talent_spell( talent_tree::SPECIALIZATION, "Cold Steel, Hot Blood" );
   talents.fury.ragedrinker           = find_talent_spell( talent_tree::SPECIALIZATION, "Ragedrinker" );
