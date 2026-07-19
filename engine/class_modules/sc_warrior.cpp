@@ -306,6 +306,7 @@ public:
 
     // 12.1 Tier Sets
     buff_t* winding_up;
+    buff_t* fury_mid2_4pc_crit;
   } buff;
 
   struct rppm_t
@@ -2696,6 +2697,9 @@ struct bloodthirst_t : public warrior_attack_t
     if ( p()->talents.fury.bloodborne->ok() )
       p()->buff.bloodborne->trigger();
 
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, MID2, B4 ) && p()->buff.recklessness->up() )
+      p()->buff.fury_mid2_4pc_crit->trigger( 1 );
+
     p()->buff.bloodcraze->expire();
   }
 
@@ -2927,6 +2931,9 @@ struct bloodbath_t : public warrior_attack_t
 
     if ( p()->talents.fury.bloodborne->ok() )
       p()->buff.bloodborne->trigger();
+
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, MID2, B4 ) && p()->buff.recklessness->up() )
+      p()->buff.fury_mid2_4pc_crit->trigger( 1 );
 
     p()->buff.bloodcraze->expire();
   }
@@ -7029,6 +7036,7 @@ struct recklessness_t : public warrior_spell_t
 
     p()->buff.recklessness->extend_duration_or_trigger();
     p()->fury_mid2_2pc_extensions = 0;  // Reset counter on hard cast
+    p()->buff.fury_mid2_4pc_crit->expire();
 
     if ( p()->talents.mountain_thane.snap_induction->ok() )
       p()->buff.thunder_blast->trigger();
@@ -8310,7 +8318,11 @@ void warrior_t::create_buffs()
                             ->set_cooldown( talents.arms.martial_prowess->internal_cooldown() );
 
   buff.recklessness = make_buff( this, "recklessness", spell.recklessness_buff )
-    ->set_cooldown( timespan_t::zero() );
+    ->set_cooldown( timespan_t::zero() )
+    ->set_stack_change_callback( [this]( buff_t*, int, int new_stack ) {
+      if ( new_stack == 0 && buff.fury_mid2_4pc_crit )
+        buff.fury_mid2_4pc_crit->expire();
+    });
 
   buff.sudden_death = make_buff( this, "sudden_death", spell.sudden_death_buff );
 
@@ -8406,6 +8418,11 @@ void warrior_t::create_buffs()
   // Tier MID2
   // Arms
   buff.winding_up = make_buff( this, "winding_up", find_spell( 1300670 ) );
+  // Fury
+  buff.fury_mid2_4pc_crit = make_buff( this, "fury_mid2_4pc_crit" )
+                                ->set_default_value( sets->set( WARRIOR_FURY, MID2, B4 )->effectN( 2 ).percent() )
+                                ->set_max_stack( as<int>( sets->set( WARRIOR_FURY, MID2, B4 )->effectN( 3 ).base_value() ) )
+                                ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 }
 
 // warrior_t::init_special_effects() ====================================
@@ -9158,7 +9175,6 @@ double warrior_t::composite_attack_power_multiplier() const
 double warrior_t::composite_melee_crit_chance() const
 {
   double c = parse_player_effects_t::composite_melee_crit_chance();
-
   return c;
 }
 
