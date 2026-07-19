@@ -205,6 +205,7 @@ public:
   bool first_rampage_attack_missed;
   int slayers_strike_attempts_since_last_proc;
   int master_of_warfare_attempts_since_last_proc;
+  int fury_mid2_2pc_extensions;
 
   auto_dispose<std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
   auto_dispose<std::vector<simple_data_t*> > cd_waste_iter;
@@ -868,6 +869,7 @@ public:
     never_surrender_percentage = 70;
     slayers_strike_attempts_since_last_proc = 0;
     master_of_warfare_attempts_since_last_proc = 0;
+    fury_mid2_2pc_extensions = 0;
     resource_regeneration = regen_type::DISABLED;
   }
 
@@ -4949,6 +4951,13 @@ struct raging_blow_t : public warrior_attack_t
       }
     }
 
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, MID2, B2 ) && p()->buff.recklessness->up() &&
+          p()->fury_mid2_2pc_extensions < as<int>( p()->sets->set( WARRIOR_FURY, MID2, B2 )->effectN( 3 ).base_value() ) )
+    {
+      p()->buff.recklessness->extend_duration_or_trigger( p()->sets->set( WARRIOR_FURY, MID2, B2 )->effectN( 2 ).time_value() );
+      p()->fury_mid2_2pc_extensions++;
+    }
+
     p()->buff.hack_and_slash->decrement();
   }
 
@@ -5105,6 +5114,13 @@ struct crushing_blow_t : public warrior_attack_t
       {
         lightning_strike->execute();
       }
+    }
+
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, MID2, B2 ) && p()->buff.recklessness->up() &&
+      p()->fury_mid2_2pc_extensions < as<int>( p()->sets->set( WARRIOR_FURY, MID2, B2 )->effectN( 3 ).base_value() ) )
+    {
+      p()->buff.recklessness->extend_duration_or_trigger( p()->sets->set( WARRIOR_FURY, MID2, B2 )->effectN( 2 ).time_value() );
+      p()->fury_mid2_2pc_extensions++;
     }
 
     p()->buff.hack_and_slash->decrement();
@@ -6395,7 +6411,7 @@ struct whirlwind_fury_damage_t : public warrior_attack_t
       m *= 1.0 + p()->talents.fury.meat_cleaver->effectN( 1 ).percent();
 
     if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.fury.carving_blades.ok() &&
-          state->n_targets == as<int>( p()->talents.fury.carving_blades->effectN( 2 ).base_value() ) )
+          state->n_targets == as<unsigned int>( p()->talents.fury.carving_blades->effectN( 2 ).base_value() ) )
     {
       m *= 1.0 + p()->talents.fury.carving_blades->effectN( 1 ).percent();
     }
@@ -7012,6 +7028,7 @@ struct recklessness_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     p()->buff.recklessness->extend_duration_or_trigger();
+    p()->fury_mid2_2pc_extensions = 0;  // Reset counter on hard cast
 
     if ( p()->talents.mountain_thane.snap_induction->ok() )
       p()->buff.thunder_blast->trigger();
@@ -8935,6 +8952,7 @@ void warrior_t::reset()
   first_rampage_attack_missed = false;
   slayers_strike_attempts_since_last_proc = 0;
   master_of_warfare_attempts_since_last_proc = 0;
+  fury_mid2_2pc_extensions = 0;
 }
 
 // Movement related overrides. =============================================
