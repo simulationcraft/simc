@@ -11,6 +11,11 @@ initiative and help out wherever needed. GitHub provides considerable utilities 
 The mantra is: Just check it in. Don't ask for permission. If the code needs to be changed for functional (or artistic!) reasons,
 someone will revert/modify as needed.
 
+## Profiles
+SimulationCraft used to contain a set of sample profiles for the current raid tier.
+These have been moved to the [SimC Profile](https://github.com/simulationcraft/simc-profile) repository.
+Information on how to contribute to profiles and what they are used for can be found there.
+
 ## Action Priority List (APL)
 SimulationCraft includes a set of default action priority lists for each specialization, to offer users a ready-to-use 
 simulation experience once they import their character. This APL is the main factor defining if a character performs just ok 
