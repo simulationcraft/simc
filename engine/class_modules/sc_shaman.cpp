@@ -1195,6 +1195,7 @@ public:
   bool sk_during_cast;
   bool lava_surge_during_lvb;
   bool recently_used_sk;
+  bool buffer_tier;
   std::unordered_map<std::string, std::tuple<timespan_t, double>> active_wolf_expr_cache;
 
   /// Shaman ability cooldowns
@@ -1945,6 +1946,7 @@ public:
       sk_during_cast( false ),
       lava_surge_during_lvb( false ),
       recently_used_sk( false ),
+      buffer_tier( false ),
       ls_counter( 0U ),
       raptor_glyph( false ),
       dre_samples( "dre_tracker", false ),
@@ -2499,6 +2501,8 @@ public:
   bool affected_by_lightning_cap_da;
   bool affected_by_lightning_cap_ta;
 
+  bool affected_by_potm;
+
   bool affected_by_maelstrom_weapon = false;
   int mw_consumed_stacks, mw_affected_stacks;
   // Maelstrom-consuming parent spell to inherit stacks from its cast
@@ -2531,6 +2535,7 @@ public:
       affected_by_lightning_cap_da( false ),
       affected_by_lightning_cap_ta( false ),
       affected_by_maelstrom_weapon( false ),
+      affected_by_potm( false ),
       mw_consumed_stacks( 0 ), mw_affected_stacks( 0 ),
       mw_parent( nullptr )
   {
@@ -2579,6 +2584,8 @@ public:
     affected_by_flametongue_ta = ab::data().affected_by( player->spell.improved_flametongue_weapon->effectN( 2 ) );
     affected_by_lightning_cap_da = ab::data().affected_by( player->talent.lightning_capacitor->effectN( 1 ) );
     affected_by_lightning_cap_ta = ab::data().affected_by( player->talent.lightning_capacitor->effectN( 2 ) );
+
+    affected_by_potm = ab::data().affected_by( player->buff.power_of_the_maelstrom->data().effectN( 1 ) );
 
     if ( this->data().ok() )
     {
@@ -3156,6 +3163,11 @@ public:
     if ( ( this->execute_state->action->id == 188389 ) ||
          ( this->is_variant( spell_variant::NORMAL ) && !this->background && s->chain_target == 0 ) )
     {
+      if ( this->sim->debug )
+      {
+        this->sim->out_debug.print( "LOOK {} ancestor triggers", this->name() );
+      }
+      
       this->p()->trigger_ancestor( ancestor_trigger, this->execute_state );
     }
   }
@@ -3197,14 +3209,17 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
   bool affected_by_master_of_the_elements = false;
   proc_t* proc_moe;
+  proc_t* proc_potm;
 
   // Lightning Rod management
   double accumulated_lightning_rod_damage;
   event_t* lr_event;
 
   shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
-                 unsigned type_ = static_cast<unsigned>( spell_variant::NORMAL ) ) :
-    base_t( token, p, s, type_ ), overload( nullptr ), proc_moe( nullptr ),
+                 unsigned type_ = static_cast<unsigned>( spell_variant::NORMAL ) ) : base_t( token, p, s, type_ ),
+      overload( nullptr ),
+      proc_moe( nullptr ),
+      proc_potm( nullptr ),
     accumulated_lightning_rod_damage( 0.0 ), lr_event( nullptr )
   { }
 
@@ -3213,6 +3228,11 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( affected_by_master_of_the_elements && p()->talent.master_of_the_elements.ok() )
     {
       proc_moe = p()->get_proc( "Master of the Elements: " + full_name() );
+    }
+
+    if (affected_by_potm && p()->talent.power_of_the_maelstrom.ok() && p()->is_ptr())
+    {
+      proc_potm = p()->get_proc( "Power of the Maelstrom: " + full_name() );
     }
 
     base_t::init_finished();
@@ -3251,6 +3271,11 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       m *= 1.0 + p()->buff.mid2_ele_4pc_builder->data().effectN( 1 ).percent();
     }
 
+    if ( affected_by_potm && p()->buff.power_of_the_maelstrom->up() && p()->is_ptr())
+    {
+      m *= 1.0 + p()->buff.power_of_the_maelstrom->data().effectN( 1 ).percent();
+    }   
+     
 
     return m;
   }
@@ -3277,6 +3302,16 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     {
       p()->buff.master_of_the_elements->decrement();
       proc_moe->occur();
+    }
+
+    if (affected_by_potm && !background && p()->buff.power_of_the_maelstrom->check() && p()->is_ptr())
+    {
+      p()->buff.power_of_the_maelstrom->decrement();
+      if ( p()->talent.fusion_of_elements->ok() )
+      {
+        p()->action.elemental_blast_foe->execute_on_target( target );
+      }
+      proc_potm->occur();
     }
 
     p()->trigger_earthen_rage( execute_state );
@@ -4322,6 +4357,18 @@ struct ancestor_t : public shaman_pet_t
     {
       background = true;
       base_crit = 1.0;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = pet_spell_t<ancestor_t>::action_multiplier();
+
+      if ( p()->is_ptr())
+      {
+        m *= this->composite_crit_chance();
+      }
+
+      return m;
     }
   };
 
@@ -6527,6 +6574,12 @@ struct chain_lightning_t : public chained_base_t
       {
         p()->summon_ancestor();
       }
+      if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) && p()->is_ptr() &&
+           p()->talent.power_of_the_maelstrom->ok() )
+      {
+        p()->buff.power_of_the_maelstrom->trigger();
+      }
+
     }
 
     if ( p()->buff.storm_elemental->check() && p()->talent.primal_elementalist.ok() )
@@ -6593,7 +6646,7 @@ struct chain_lightning_t : public chained_base_t
 
   void schedule_travel(action_state_t* s) override
   {
-    if ( s->chain_target == 0 && p()->buff.power_of_the_maelstrom->up() )
+    if ( s->chain_target == 0 && p()->buff.power_of_the_maelstrom->up() && !p()->is_ptr())
     {
       trigger_elemental_overload( s, 1.0 );
       p()->buff.power_of_the_maelstrom->decrement();
@@ -7131,7 +7184,7 @@ struct lava_burst_t : public shaman_spell_t
     p()->lava_surge_during_lvb = false;
 
     if ( is_variant( spell_variant::NORMAL ) &&
-         rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) )
+         rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) && !p()->is_ptr())
     {
       p()->buff.power_of_the_maelstrom->trigger();
     }
@@ -7313,6 +7366,12 @@ struct lightning_bolt_t : public shaman_spell_t
       {
         p()->summon_ancestor();
       }
+
+      if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) && p()->is_ptr() &&
+           p()->talent.power_of_the_maelstrom->ok() )
+      {
+        p()->buff.power_of_the_maelstrom->trigger();
+      }
     }
 
     // Track last cast for LB / CL because of Thorim's Invocation
@@ -7354,7 +7413,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
   void schedule_travel( action_state_t* s ) override
   {
-    if ( is_variant( spell_variant::NORMAL ) && p()->buff.power_of_the_maelstrom->up() )
+    if ( is_variant( spell_variant::NORMAL ) && p()->buff.power_of_the_maelstrom->up() && !p()->is_ptr() )
     {
       trigger_elemental_overload( s, 1.0 );
 
@@ -8303,8 +8362,8 @@ public:
       p()->lava_surge_attempts_normalized += 1.0/active_flame_shocks;
       double proc_chance =
           std::max( 0.0, 0.6-std::pow(1.16, -2*(p()->lava_surge_attempts_normalized-5)));
-
       proc_chance *= 1.0 + p()->talent.mystic_knowledge->effectN( 1 ).percent();
+      ;
 
       if ( p()->spec.restoration_shaman->ok() )
       {
@@ -8350,9 +8409,12 @@ public:
   void execute() override
   {
     shaman_spell_t::execute();
-    if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
+    if ( is_variant( spell_variant::NORMAL ) )
     {
-      p()->summon_ancestor();
+      if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
+      {
+         p()->summon_ancestor();
+      }
     }
   }
 };
@@ -8522,6 +8584,13 @@ struct ascendance_t : public shaman_spell_t
       auto tl = target_list();
       for ( size_t i = 0; i < std::min( tl.size(), as<size_t>( data().effectN( 7 ).base_value() ) ); ++i )
       {
+        if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
+        {
+         p()->summon_ancestor(); //not pretty but we need to trigger rolls for all hits before the hits happen
+        }
+      }
+      for ( size_t i = 0; i < std::min( tl.size(), as<size_t>( data().effectN( 7 ).base_value() ) ); ++i )
+      {
         p()->trigger_secondary_flame_shock( tl[ i ], spell_variant::ASCENDANCE );
       }
     }
@@ -8624,7 +8693,7 @@ struct stormkeeper_t : public shaman_spell_t
     {
       maelstrom_gain = original_maelstrom_gain;
     }
-
+    p()->recently_used_sk = true;
   }
 
   bool ready() override
@@ -9792,6 +9861,11 @@ struct tempest_t : public shaman_spell_t
       p()->buff.wind_gust->trigger();
     }
 
+    if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) && p()->is_ptr() && p()->talent.power_of_the_maelstrom->ok())
+    {
+      p()->buff.power_of_the_maelstrom->trigger();
+    }
+
     // Bug: If Tempest would apply a new Stormkeeper buff (so none was present beforehand), it'll generate Maelstrom
     auto original_maelstrom_gain = maelstrom_gain;
     auto original_maelstrom_gain_per_target = maelstrom_gain_per_target;
@@ -9883,7 +9957,7 @@ struct tempest_t : public shaman_spell_t
   {
     if ( s->chain_target == 0 )
     {
-      if ( p()->buff.power_of_the_maelstrom->up() )
+      if ( p()->buff.power_of_the_maelstrom->up() && !p()->is_ptr() )
       {
         p()->proc.potm_tempest_overload->occur();
         trigger_elemental_overload( s, 1.0 );
@@ -9944,7 +10018,11 @@ struct voltaic_blaze_t : public shaman_spell_t
     {
       shaman_spell_t::impact( state );
 
-      p()->trigger_secondary_flame_shock( state->target, spell_variant::VOLTAIC_BLAZE );
+      make_event( sim, rng().gauss( 500_ms, 25_ms ), [ this, state ]() {
+        p()->trigger_secondary_flame_shock( state->target, spell_variant::VOLTAIC_BLAZE );
+      } );
+
+      
     }
   };
 
@@ -9967,10 +10045,13 @@ struct voltaic_blaze_t : public shaman_spell_t
     {
       p()->action.fire_nova->execute_on_target( execute_state->target );
     }
-
-    if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
+    auto tl = target_list();
+    for ( size_t i = 0; i < tl.size(); ++i )
     {
-      p()->summon_ancestor();
+      if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
+      {
+        p()->summon_ancestor();
+      }
     }
 
     if ( p() ->talent.purging_flames.ok() )
@@ -12426,8 +12507,8 @@ void shaman_t::create_buffs()
   buff.ascendance->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
     if ( new_ == 0 ) 
     {
-      buff.mid2_ele_4pc_builder->trigger(recently_used_sk ? 2 : 4);
-      recently_used_sk = false;
+      buff.mid2_ele_4pc_builder->trigger(buffer_tier ? 2 : 4);
+      buffer_tier = false;
     }
   } );
 
@@ -12461,11 +12542,12 @@ void shaman_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )  // Handled by the action
     ->set_default_value_from_effect( 2 ) // Damage bonus as default value
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-     if ( new_ == 0 )
+     if ( new_ == 0 && recently_used_sk)
      {
          if (buff.ascendance->up())
          {
-           recently_used_sk = true;
+           buffer_tier = true;
+           recently_used_sk = false;
          }
          else
          {
@@ -12525,10 +12607,17 @@ void shaman_t::create_buffs()
                        ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() )
                        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                        ->set_default_value_from_effect_type( A_HASTE_ALL );
-
-  buff.power_of_the_maelstrom =
-      make_buff( this, "power_of_the_maelstrom", talent.power_of_the_maelstrom )
-          ->set_default_value( talent.power_of_the_maelstrom->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
+  if (is_ptr())
+  {
+    buff.power_of_the_maelstrom = make_buff( this, "power_of_the_maelstrom", find_spell(191877))
+            ->set_default_value( find_spell( 191877 )->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
+  }
+  else
+  {
+    buff.power_of_the_maelstrom =
+        make_buff( this, "power_of_the_maelstrom", talent.power_of_the_maelstrom )
+            ->set_default_value( talent.power_of_the_maelstrom->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
+  }
 
   // PvP
   buff.thundercharge = make_buff( this, "thundercharge", find_spell( 204366 ) )
@@ -13693,6 +13782,7 @@ void shaman_t::reset()
 
   lava_surge_during_lvb = false;
   sk_during_cast        = false;
+  buffer_tier           = false;
   recently_used_sk      = false;
 
   ls_counter = 0U;

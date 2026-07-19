@@ -207,10 +207,11 @@ void beast_mastery_ptr( player_t* p )
   drst->add_action( "black_arrow,if=buff.withering_fire.up&cooldown.kill_command.full_recharge_time>gcd" );
   drst->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3" );
   drst->add_action( "wailing_arrow,if=buff.withering_fire.remains<execute_time+2*gcd|time_to_die.remains<execute_time+gcd" );
+  drst->add_action( "cobra_shot,if=buff.cobra_fang.stack>3" );
   drst->add_action( "cobra_shot,if=talent.killer_cobra&buff.bestial_wrath.up&cooldown.barbed_shot.charges_fractional<1.4" );
   drst->add_action( "black_arrow" );
   drst->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
-  drst->add_action( "cobra_shot" );
+  drst->add_action( "cobra_shot,if=cooldown.bestial_wrath.remains>gcd" );
 
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd|full_recharge_time<gcd" );
   st->add_action( "bestial_wrath" );
@@ -363,7 +364,7 @@ void marksmanship_ptr( player_t* p )
   drst->add_action( "explosive_shot" );
   drst->add_action( "volley" );
   drst->add_action( "aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time" );
-  drst->add_action( "trueshot,if=variable.trueshot_ready" );
+  drst->add_action( "trueshot,if=variable.trueshot_ready&(raid_event.pull.remains>30|talent.calling_the_shots|!raid_event.pull.exists)" );
   drst->add_action( "rapid_fire" );
   drst->add_action( "wailing_arrow" );
   drst->add_action( "arcane_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
@@ -376,7 +377,7 @@ void marksmanship_ptr( player_t* p )
   draoe->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time&full_recharge_time<gcd+cast_time" );
   draoe->add_action( "black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
   draoe->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.trick_shots.down" );
-  draoe->add_action( "trueshot,if=variable.trueshot_ready" );
+  draoe->add_action( "trueshot,if=variable.trueshot_ready&(raid_event.pull.remains>30|talent.calling_the_shots|!raid_event.pull.exists)" );
   draoe->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload)" );
   draoe->add_action( "wailing_arrow,if=!cooldown.black_arrow.ready" );
   draoe->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time" );
@@ -386,7 +387,7 @@ void marksmanship_ptr( player_t* p )
 
   sentaoe->add_action( "explosive_shot" );
   sentaoe->add_action( "volley" );
-  sentaoe->add_action( "trueshot,if=variable.trueshot_ready" );
+  sentaoe->add_action( "trueshot,if=variable.trueshot_ready&(raid_event.pull.remains>30|talent.calling_the_shots|!raid_event.pull.exists)" );
   sentaoe->add_action( "multishot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down" );
   sentaoe->add_action( "rapid_fire" );
   sentaoe->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time" );
@@ -396,7 +397,7 @@ void marksmanship_ptr( player_t* p )
 
   sentst->add_action( "explosive_shot" );
   sentst->add_action( "volley" );
-  sentst->add_action( "trueshot,if=variable.trueshot_ready" );
+  sentst->add_action( "trueshot,if=variable.trueshot_ready&(raid_event.pull.remains>30|talent.calling_the_shots|!raid_event.pull.exists)" );
   sentst->add_action( "rapid_fire,if=debuff.spotters_mark_rapid_fire.up|!apex.3" );
   sentst->add_action( "kill_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&active_enemies=1&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
   sentst->add_action( "arcane_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
