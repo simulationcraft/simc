@@ -51,6 +51,7 @@ actions.draoe+=/steady_shot
 actions.sentaoe=explosive_shot
 actions.sentaoe+=/volley
 actions.sentaoe+=/trueshot,if=variable.trueshot_ready&(raid_event.pull.remains>30|talent.calling_the_shots|!raid_event.pull.exists)
+actions.sentaoe+=/moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max
 actions.sentaoe+=/multishot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down
 actions.sentaoe+=/rapid_fire
 actions.sentaoe+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
@@ -61,11 +62,11 @@ actions.sentaoe+=/steady_shot
 actions.sentst=explosive_shot
 actions.sentst+=/volley
 actions.sentst+=/trueshot,if=variable.trueshot_ready&(raid_event.pull.remains>30|talent.calling_the_shots|!raid_event.pull.exists)
+actions.sentst+=/moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max
 actions.sentst+=/rapid_fire,if=debuff.spotters_mark_rapid_fire.up|!apex.3
-actions.sentst+=/kill_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&active_enemies=1&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)
+actions.sentst+=/kill_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)
 actions.sentst+=/arcane_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)
 actions.sentst+=/rapid_fire,if=(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload&target.health.pct<20)
-actions.sentst+=/moonlight_chakram,if=buff.trueshot.remains<execute_time+gcd
 actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage
 actions.sentst+=/moonlight_chakram
 actions.sentst+=/rapid_fire
