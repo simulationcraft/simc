@@ -205,6 +205,7 @@ public:
   bool first_rampage_attack_missed;
   int slayers_strike_attempts_since_last_proc;
   int master_of_warfare_attempts_since_last_proc;
+  int fury_mid2_2pc_extensions;
 
   auto_dispose<std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
   auto_dispose<std::vector<simple_data_t*> > cd_waste_iter;
@@ -247,6 +248,7 @@ public:
     buff_t* die_by_the_sword;
     buff_t* enrage;
     buff_t* frenzy;
+    buff_t* hack_and_slash;
     buff_t* heroic_leap_movement;
     buff_t* ignore_pain;
     buff_t* intervene_movement;
@@ -304,6 +306,7 @@ public:
 
     // 12.1 Tier Sets
     buff_t* winding_up;
+    buff_t* fury_mid2_4pc_crit;
   } buff;
 
   struct rppm_t
@@ -427,6 +430,7 @@ public:
     const spell_data_t* rend_dot;
 
     // Fury
+    const spell_data_t* rampaging_ruin_damage;
 
     // Protection
     const spell_data_t* devastating_focus_debuff;
@@ -669,6 +673,7 @@ public:
       player_talent_t hack_and_slash;
       player_talent_t cruelty;
       player_talent_t meat_cleaver;
+      player_talent_t carving_blades;
       // Row 7
       player_talent_t cold_steel_hot_blood;
       player_talent_t ragedrinker;
@@ -865,6 +870,7 @@ public:
     never_surrender_percentage = 70;
     slayers_strike_attempts_since_last_proc = 0;
     master_of_warfare_attempts_since_last_proc = 0;
+    fury_mid2_2pc_extensions = 0;
     resource_regeneration = regen_type::DISABLED;
   }
 
@@ -1084,6 +1090,8 @@ public:
       parse_effects( p()->buff.surge_of_adrenaline );
 
       parse_effects( p()->buff.bloodborne );
+
+      parse_effects( p()->buff.hack_and_slash, effect_mask_t( true ).enable( 1 ) );
 
       parse_effects( p()->buff.recklessness, effect_mask_t( true ).disable( 11, 12, 13, 14, 15 ) );
       if ( p()->talents.fury.reckless_abandon->ok() )
@@ -2500,7 +2508,6 @@ struct bloodthirst_t : public warrior_attack_t
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
   double rage_from_burst_of_power;
-  action_t* reap_the_storm;
   bool unhinged;
   bloodthirst_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodthirst", p, p->talents.fury.bloodthirst ),
@@ -2511,7 +2518,6 @@ struct bloodthirst_t : public warrior_attack_t
       enrage_chance( p->talents.fury.bloodthirst->effectN( 3 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_burst_of_power( 0 ),
-      reap_the_storm( nullptr ),
       unhinged( false )
   {
     parse_options( options_str );
@@ -2529,12 +2535,6 @@ struct bloodthirst_t : public warrior_attack_t
     if ( p->talents.fury.cold_steel_hot_blood.ok() )
     {
       gushing_wound = new gushing_wound_dot_t( p );
-    }
-
-    if ( p->talents.slayer.reap_the_storm->ok() && sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-    {
-      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_bloodthirst", p );
-      add_child( reap_the_storm );
     }
 
     if ( p->talents.mountain_thane.burst_of_power->ok() )
@@ -2570,14 +2570,6 @@ struct bloodthirst_t : public warrior_attack_t
     if ( p->talents.fury.cold_steel_hot_blood.ok() )
     {
       gushing_wound = new gushing_wound_dot_t( p );
-    }
-
-    if ( p->talents.slayer.reap_the_storm->ok() && sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-    {
-      std::string s = "reap_the_storm_";
-      s += name;
-      reap_the_storm = get_action<reap_the_storm_t>( s, p );
-      add_child( reap_the_storm );
     }
 
     if ( p->talents.mountain_thane.burst_of_power->ok() )
@@ -2705,14 +2697,8 @@ struct bloodthirst_t : public warrior_attack_t
     if ( p()->talents.fury.bloodborne->ok() )
       p()->buff.bloodborne->trigger();
 
-    if ( p()->talents.slayer.reap_the_storm->ok() && sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->effectN( 4 ).percent() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, MID2, B4 ) && p()->buff.recklessness->up() )
+      p()->buff.fury_mid2_4pc_crit->trigger( 1 );
 
     p()->buff.bloodcraze->expire();
   }
@@ -2750,7 +2736,6 @@ struct bloodbath_t : public warrior_attack_t
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
   double rage_from_burst_of_power;
-  action_t* reap_the_storm;
   bool unhinged;
   bloodbath_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodbath", p, p->spec.bloodbath ),
@@ -2762,7 +2747,6 @@ struct bloodbath_t : public warrior_attack_t
       enrage_chance( p->spec.bloodbath->effectN( 3 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_burst_of_power( 0 ),
-      reap_the_storm( nullptr ),
       unhinged( false )
   {
     parse_options( options_str );
@@ -2785,12 +2769,6 @@ struct bloodbath_t : public warrior_attack_t
     }
 
     bloodbath_dot = new bloodbath_dot_t( p );
-
-    if ( p->talents.slayer.reap_the_storm->ok() && sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-    {
-      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_bloodbath", p );
-      add_child( reap_the_storm );
-    }
 
     if ( p->talents.mountain_thane.burst_of_power->ok() )
     {
@@ -2829,14 +2807,6 @@ struct bloodbath_t : public warrior_attack_t
     }
 
     bloodbath_dot = new bloodbath_dot_t( p );
-
-    if ( p->talents.slayer.reap_the_storm->ok() && sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-    {
-      std::string s = "reap_the_storm_";
-      s += name;
-      reap_the_storm = get_action<reap_the_storm_t>( s, p );
-      add_child( reap_the_storm );
-    }
 
     if ( p->talents.mountain_thane.burst_of_power->ok() )
     {
@@ -2962,14 +2932,8 @@ struct bloodbath_t : public warrior_attack_t
     if ( p()->talents.fury.bloodborne->ok() )
       p()->buff.bloodborne->trigger();
 
-    if ( p()->talents.slayer.reap_the_storm->ok() && sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->effectN( 4 ).percent() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, MID2, B4 ) && p()->buff.recklessness->up() )
+      p()->buff.fury_mid2_4pc_crit->trigger( 1 );
 
     p()->buff.bloodcraze->expire();
   }
@@ -2991,14 +2955,12 @@ struct mortal_strike_t : public warrior_attack_t
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
   warrior_attack_t* rend_dot;
-  action_t* reap_the_storm;
   bool unhinged;
   mortal_strike_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "mortal_strike", p, p->talents.arms.mortal_strike ),
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
       rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
       rend_dot( nullptr ),
-      reap_the_storm( nullptr ),
       unhinged( false )
   {
     parse_options( options_str );
@@ -3006,11 +2968,6 @@ struct mortal_strike_t : public warrior_attack_t
     weapon           = &( p->main_hand_weapon );
     cooldown->hasted = true;  // Doesn't show up in spelldata for some reason.
     rend_dot = new rend_dot_t( p );
-    if ( p->talents.slayer.reap_the_storm->ok() && sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-    {
-      reap_the_storm = get_action<reap_the_storm_t>( "reap_the_storm_mortal_strike", p );
-      add_child( reap_the_storm );
-    }
   }
 
   // This version is used for unhinged and other background actions
@@ -3024,13 +2981,6 @@ struct mortal_strike_t : public warrior_attack_t
     background = true;
     rend_dot = new rend_dot_t( p );
     cooldown->duration = 0_s;
-    if ( p->talents.slayer.reap_the_storm->ok() && sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-    {
-      std::string s = "reap_the_storm_";
-      s += name;
-      reap_the_storm = get_action<reap_the_storm_t>( s, p );
-      add_child( reap_the_storm );
-    }
   }
 
   // This version is used for unhinged, to set the variable, as unhinged does not cleave
@@ -3081,15 +3031,6 @@ struct mortal_strike_t : public warrior_attack_t
     p()->buff.fierce_followthrough->expire();
 
     p()->buff.celeritous_conclusion_crit->expire();
-
-    if ( p()->talents.slayer.reap_the_storm->ok() && sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->effectN( 3 ).percent() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
 
     p()->buff.executioners_precision->expire();
     p()->buff.martial_prowess->expire();
@@ -3667,8 +3608,6 @@ struct cleave_t : public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
-    if ( execute_state->result == RESULT_CRIT && p()->talents.arms.mortal_wounds->ok() && sim->dbc->wowv() < wowv_t( 12, 0, 5 ) )
-      p()->active.deep_wounds->execute_on_target( s->target );
 
     auto target_data = td( s->target );
 
@@ -5018,6 +4957,15 @@ struct raging_blow_t : public warrior_attack_t
         lightning_strike->execute();
       }
     }
+
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, MID2, B2 ) && p()->buff.recklessness->up() &&
+          p()->fury_mid2_2pc_extensions < as<int>( p()->sets->set( WARRIOR_FURY, MID2, B2 )->effectN( 3 ).base_value() ) )
+    {
+      p()->buff.recklessness->extend_duration_or_trigger( p()->sets->set( WARRIOR_FURY, MID2, B2 )->effectN( 2 ).time_value() );
+      p()->fury_mid2_2pc_extensions++;
+    }
+
+    p()->buff.hack_and_slash->decrement();
   }
 
   bool ready() override
@@ -5174,6 +5122,15 @@ struct crushing_blow_t : public warrior_attack_t
         lightning_strike->execute();
       }
     }
+
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, MID2, B2 ) && p()->buff.recklessness->up() &&
+      p()->fury_mid2_2pc_extensions < as<int>( p()->sets->set( WARRIOR_FURY, MID2, B2 )->effectN( 3 ).base_value() ) )
+    {
+      p()->buff.recklessness->extend_duration_or_trigger( p()->sets->set( WARRIOR_FURY, MID2, B2 )->effectN( 2 ).time_value() );
+      p()->fury_mid2_2pc_extensions++;
+    }
+
+    p()->buff.hack_and_slash->decrement();
   }
 
   bool ready() override
@@ -5484,13 +5441,6 @@ struct rampage_attack_base_t : public warrior_attack_t
     {  // If the first attack misses, all of the rest do as well. However, if any other attack misses, the attacks after
        // continue. The animations and timing of everything else still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
-
-      if ( sim->dbc->wowv() < wowv_t( 12, 0, 5 ) &&
-      p()->talents.fury.hack_and_slash->ok() && rng().roll( hack_and_slash_chance ) )
-      {
-        p()->cooldown.raging_blow->reset( true );
-        p()->cooldown.crushing_blow->reset( true );
-      }
     }
   }
 };
@@ -5541,11 +5491,12 @@ struct rampage_attack_t : public rampage_attack_base_t
 
     if ( first_attack && sim->dbc->wowv() >= wowv_t( 12, 0, 5 )  &&
           p()->talents.fury.hack_and_slash.ok() &&
-          p()->cooldown.hack_and_slash_icd->up() )
+          p()->cooldown.hack_and_slash_icd->up() && rng().roll( hack_and_slash_chance ) )
     {
       p()->cooldown.raging_blow->reset( true );
       p()->cooldown.crushing_blow->reset( true );
       p()->cooldown.hack_and_slash_icd->start();
+      p()->buff.hack_and_slash->trigger();
     }
   }
 
@@ -5607,6 +5558,18 @@ struct rampage_attack_aoe_t : public rampage_attack_base_t
   }
 };
 
+struct rampaging_ruin_attack_t : public rampage_attack_base_t
+{
+  rampaging_ruin_attack_t( util::string_view name, warrior_t* p )
+    : rampage_attack_base_t( name, p, p->spell.rampaging_ruin_damage )
+  {
+    background = true;
+    aoe = -1;
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
+    target_filter_callback = secondary_targets_only();
+  }
+};
+
 struct rampage_parent_t : public warrior_attack_t
 {
   double cost_rage;
@@ -5620,6 +5583,7 @@ struct rampage_parent_t : public warrior_attack_t
   rampage_attack_aoe_t* rampage2_aoe_mh;
   rampage_attack_aoe_t* rampage3_aoe_oh;
   rampage_attack_aoe_t* rampage4_aoe_mh;
+  rampaging_ruin_attack_t* rampaging_ruin_aoe;
 
   rampage_parent_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "rampage", p, p->talents.fury.rampage ),
@@ -5632,7 +5596,8 @@ struct rampage_parent_t : public warrior_attack_t
     rampage1_aoe_oh( nullptr ),
     rampage2_aoe_mh( nullptr ),
     rampage3_aoe_oh( nullptr ),
-    rampage4_aoe_mh( nullptr )
+    rampage4_aoe_mh( nullptr ),
+    rampaging_ruin_aoe( nullptr )
   {
     parse_options( options_str );
 
@@ -5651,19 +5616,28 @@ struct rampage_parent_t : public warrior_attack_t
 
     if ( p->talents.fury.rampaging_ruin->ok() )
     {
+      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+      {
       // AOE attacks
-      rampage1_aoe_oh = new rampage_attack_aoe_t( "rampage1_aoe", p, p->talents.fury.rampage->effectN( 6 ).trigger() );
-      rampage1_aoe_oh->weapon = &(p->off_hand_weapon);
-      add_child( rampage1_aoe_oh );
-      rampage2_aoe_mh = new rampage_attack_aoe_t( "rampage2_aoe", p, p->talents.fury.rampage->effectN( 7 ).trigger() );
-      rampage2_aoe_mh->weapon = &(p->main_hand_weapon);
-      add_child( rampage2_aoe_mh );
-      rampage3_aoe_oh = new rampage_attack_aoe_t( "rampage3_aoe", p, p->talents.fury.rampage->effectN( 8 ).trigger() );
-      rampage3_aoe_oh->weapon = &(p->off_hand_weapon);
-      add_child( rampage3_aoe_oh );
-      rampage4_aoe_mh = new rampage_attack_aoe_t( "rampage4_aoe", p, p->talents.fury.rampage->effectN( 9 ).trigger() );
-      rampage4_aoe_mh->weapon = &(p->main_hand_weapon);
-      add_child( rampage4_aoe_mh );
+        rampage1_aoe_oh = new rampage_attack_aoe_t( "rampage1_aoe", p, p->talents.fury.rampage->effectN( 6 ).trigger() );
+        rampage1_aoe_oh->weapon = &(p->off_hand_weapon);
+        add_child( rampage1_aoe_oh );
+        rampage2_aoe_mh = new rampage_attack_aoe_t( "rampage2_aoe", p, p->talents.fury.rampage->effectN( 7 ).trigger() );
+        rampage2_aoe_mh->weapon = &(p->main_hand_weapon);
+        add_child( rampage2_aoe_mh );
+        rampage3_aoe_oh = new rampage_attack_aoe_t( "rampage3_aoe", p, p->talents.fury.rampage->effectN( 8 ).trigger() );
+        rampage3_aoe_oh->weapon = &(p->off_hand_weapon);
+        add_child( rampage3_aoe_oh );
+        rampage4_aoe_mh = new rampage_attack_aoe_t( "rampage4_aoe", p, p->talents.fury.rampage->effectN( 9 ).trigger() );
+        rampage4_aoe_mh->weapon = &(p->main_hand_weapon);
+        add_child( rampage4_aoe_mh );
+      }
+      else if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        rampaging_ruin_aoe = new rampaging_ruin_attack_t( "rampaging_ruin", p );
+        rampaging_ruin_aoe->weapon = &(p->main_hand_weapon);
+        add_child( rampaging_ruin_aoe );
+      }
     }
     track_cd_waste = false;
 
@@ -5697,7 +5671,7 @@ struct rampage_parent_t : public warrior_attack_t
 
     // Berserk triggers after the first hit of rampage lands, so add 1_ms to it
 
-    if( p()->talents.fury.rampaging_ruin->ok() && p()->buff.whirlwind->up() )
+    if( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && p()->talents.fury.rampaging_ruin.ok() && p()->buff.whirlwind->up() )
     {
       make_event<delayed_execute_event_t>( *sim, p(), rampage1_aoe_oh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 6 ).misc_value1()) );
       if ( p()->talents.fury.rampaging_berserker_1->ok() )
@@ -5714,6 +5688,8 @@ struct rampage_parent_t : public warrior_attack_t
       make_event<delayed_execute_event_t>( *sim, p(), rampage2_mh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 3 ).misc_value1()) );
       make_event<delayed_execute_event_t>( *sim, p(), rampage3_oh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 4 ).misc_value1()) );
       make_event<delayed_execute_event_t>( *sim, p(), rampage4_mh, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 5 ).misc_value1()) );
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.fury.rampaging_ruin.ok() && p()->buff.whirlwind->up() )
+        make_event<delayed_execute_event_t>( *sim, p(), rampaging_ruin_aoe, p()->target, timespan_t::from_millis(p()->talents.fury.rampage->effectN( 6 ).misc_value1() ) );
     }
 
     if ( p()->sets->has_set_bonus( WARRIOR_FURY, MID1, B4 ) )
@@ -6440,6 +6416,12 @@ struct whirlwind_fury_damage_t : public warrior_attack_t
     double m = warrior_attack_t::composite_da_multiplier( state );
     if ( p()->talents.fury.meat_cleaver->ok() && p()->sim->target_non_sleeping_list.size() >= p()->talents.fury.meat_cleaver->effectN( 2 ).base_value() )
       m *= 1.0 + p()->talents.fury.meat_cleaver->effectN( 1 ).percent();
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->talents.fury.carving_blades.ok() &&
+          state->n_targets == as<unsigned int>( p()->talents.fury.carving_blades->effectN( 2 ).base_value() ) )
+    {
+      m *= 1.0 + p()->talents.fury.carving_blades->effectN( 1 ).percent();
+    }
     return m;
   }
 };
@@ -6495,13 +6477,29 @@ struct fury_whirlwind_parent_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p()->talents.fury.improved_whirlwind->ok() )
-    {
-      const int num_available_targets = std::min( 5, as<int>( target_list().size() ));  // Capped to 5 targets
-      p()->resource_gain( RESOURCE_RAGE, ( base_rage_gain + additional_rage_gain_per_target * num_available_targets ),
-                        p()->gain.whirlwind );
+    // Rage gain is a little different between 12.1 and 12.0.
 
-      p()->buff.whirlwind->trigger( p()->buff.whirlwind->max_stack() );
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+    {
+      if ( p()->talents.fury.improved_whirlwind->ok() )
+      {
+        const int num_available_targets = std::min( 5, as<int>( target_list().size() ));  // Capped to 5 targets
+        p()->resource_gain( RESOURCE_RAGE, ( base_rage_gain + additional_rage_gain_per_target * num_available_targets ),
+                          p()->gain.whirlwind );
+
+        p()->buff.whirlwind->trigger( p()->buff.whirlwind->max_stack() );
+      }
+    }
+    else if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+    {
+      double rage_gained = base_rage_gain;
+      if ( p()->talents.fury.improved_whirlwind.ok() )
+      {
+        const int num_available_targets = std::min( as<int>( p()->spec.whirlwind->effectN( 3 ).base_value() ), as<int>( target_list().size() ));  // Capped to 5 targets
+        rage_gained += ( additional_rage_gain_per_target * num_available_targets );
+        p()->buff.whirlwind->trigger( p()->buff.whirlwind->max_stack() );
+      }
+      p()->resource_gain( RESOURCE_RAGE, rage_gained, p()->gain.whirlwind );
     }
 
     mh_first_attack->execute_on_target( target );
@@ -7037,6 +7035,8 @@ struct recklessness_t : public warrior_spell_t
     warrior_spell_t::execute();
 
     p()->buff.recklessness->extend_duration_or_trigger();
+    p()->fury_mid2_2pc_extensions = 0;  // Reset counter on hard cast
+    p()->buff.fury_mid2_4pc_crit->expire();
 
     if ( p()->talents.mountain_thane.snap_induction->ok() )
       p()->buff.thunder_blast->trigger();
@@ -7359,6 +7359,8 @@ void warrior_t::init_spells()
   spec.bloodbath                = find_spell(335096);
   spec.crushing_blow            = find_spell(335097);
   spell.whirlwind_buff          = find_spell( 85739, WARRIOR_FURY );
+  if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+    spell.rampaging_ruin_damage   = find_spell( 1299944 );
 
   // Protection Spells
   mastery.critical_block        = find_mastery_spell( WARRIOR_PROTECTION );
@@ -7544,6 +7546,7 @@ void warrior_t::init_spells()
   talents.fury.hack_and_slash        = find_talent_spell( talent_tree::SPECIALIZATION, "Hack and Slash" );
   talents.fury.cruelty               = find_talent_spell( talent_tree::SPECIALIZATION, "Cruelty" );
   talents.fury.meat_cleaver          = find_talent_spell( talent_tree::SPECIALIZATION, "Meat Cleaver" );
+  talents.fury.carving_blades        = find_talent_spell( talent_tree::SPECIALIZATION, "Carving Blades" );
   // Row 7
   talents.fury.cold_steel_hot_blood  = find_talent_spell( talent_tree::SPECIALIZATION, "Cold Steel, Hot Blood" );
   talents.fury.ragedrinker           = find_talent_spell( talent_tree::SPECIALIZATION, "Ragedrinker" );
@@ -8281,6 +8284,8 @@ void warrior_t::create_buffs()
   buff.intervene_movement     = make_buff( this, "intervene_movement" );
   buff.shield_charge_movement = make_buff( this, "shield_charge_movement" );
 
+  buff.hack_and_slash = make_buff( this, "hack_and_slash", talents.fury.hack_and_slash->effectN( 1 ).trigger() );
+
   buff.into_the_fray = make_buff( this, "into_the_fray", find_spell( 202602 ) )
     ->set_chance( talents.protection.into_the_fray->ok() )
     ->set_default_value( find_spell( 202602 )->effectN( 1 ).percent() )
@@ -8313,7 +8318,11 @@ void warrior_t::create_buffs()
                             ->set_cooldown( talents.arms.martial_prowess->internal_cooldown() );
 
   buff.recklessness = make_buff( this, "recklessness", spell.recklessness_buff )
-    ->set_cooldown( timespan_t::zero() );
+    ->set_cooldown( timespan_t::zero() )
+    ->set_stack_change_callback( [this]( buff_t*, int, int new_stack ) {
+      if ( new_stack == 0 && buff.fury_mid2_4pc_crit )
+        buff.fury_mid2_4pc_crit->expire();
+    });
 
   buff.sudden_death = make_buff( this, "sudden_death", spell.sudden_death_buff );
 
@@ -8409,6 +8418,11 @@ void warrior_t::create_buffs()
   // Tier MID2
   // Arms
   buff.winding_up = make_buff( this, "winding_up", find_spell( 1300670 ) );
+  // Fury
+  buff.fury_mid2_4pc_crit = make_buff( this, "fury_mid2_4pc_crit" )
+                                ->set_default_value( sets->set( WARRIOR_FURY, MID2, B4 )->effectN( 2 ).percent() )
+                                ->set_max_stack( as<int>( sets->set( WARRIOR_FURY, MID2, B4 )->effectN( 3 ).base_value() ) )
+                                ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 }
 
 // warrior_t::init_special_effects() ====================================
@@ -8955,6 +8969,7 @@ void warrior_t::reset()
   first_rampage_attack_missed = false;
   slayers_strike_attempts_since_last_proc = 0;
   master_of_warfare_attempts_since_last_proc = 0;
+  fury_mid2_2pc_extensions = 0;
 }
 
 // Movement related overrides. =============================================
@@ -9160,7 +9175,6 @@ double warrior_t::composite_attack_power_multiplier() const
 double warrior_t::composite_melee_crit_chance() const
 {
   double c = parse_player_effects_t::composite_melee_crit_chance();
-
   return c;
 }
 
