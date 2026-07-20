@@ -5493,9 +5493,6 @@ struct rapid_fire_t: public hunter_ranged_attack_t
         double amount = state->result_amount * p()->talents.sanctified_armaments->effectN( 1 ).percent();
         residual_action::trigger( sanctified_armaments, state->target, amount );
       }
-
-      if ( p()->talents.bulletstorm.ok() )
-        p()->buffs.bulletstorm->trigger();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -5691,6 +5688,11 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     }
 
     hunter_ranged_attack_t::execute();
+
+    if ( p()->talents.bulletstorm.ok() )
+    {
+      p()->buffs.bulletstorm->trigger( p()->talents.bulletstorm_buff->max_stacks() );
+    }
 
     if ( rng().roll( deathblow.chance ) )
       p()->trigger_deathblow();
