@@ -1735,7 +1735,7 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
   }
   if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
   {
-    ue = new unrelenting_edict_t( p, "judgment" );
+    ue = new unrelenting_edict_t( p, "hammer_of_wrath" );
     add_child( ue );
   }
 }
