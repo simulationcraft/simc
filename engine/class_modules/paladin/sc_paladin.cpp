@@ -596,6 +596,10 @@ struct consecration_t : public paladin_spell_t
       }
       dg_damage->base_dd_multiplier =
           ( as<double>( totalTargets - healingAlliesSize ) / totalTargets );
+
+      // DG always deals full damage on the PTR. Full rewrite once 12.1 is live.
+      if ( p()->is_ptr() )
+        dg_damage->base_dd_multiplier = 1.0;
     }
 
     paladin_spell_t::execute();
