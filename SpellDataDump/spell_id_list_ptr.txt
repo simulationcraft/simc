@@ -8754,7 +8754,7 @@ Hunter
 1262361  Raptor Swipe
 1262384 *Sticky Bombs
 1262390  Sticky Bomb
-1262391 *Sticky Bomb
+1262391  Sticky Bomb
 1262408  Lethal Calibration
 1262409  Lethal Calibration
 1262435 *Wildfire Tar

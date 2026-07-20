@@ -2378,7 +2378,7 @@ Effects          :
                    Family Flags: 2
 #3 (id=191143)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Dire Beast (120679), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Freezing Trap (187650), Tar Trap (187698), Harpoon (190925), Hatchet Toss (193265), Cobra Shot (193455), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), High Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Kill Command (259489), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Death Chakram (325553), Wild Mark (328275), Wild Spirit (328520), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Spearhead (360966), Death Chakram (361756), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Hunter's Mark (428402), Black Arrow (466930), Intimidation (474421), Raptor Swipe (1262293), Raptor Swipe (1262343), Wild Thrash (1264359), Moonlight Chakram (1264949), Moonlight Chakram (1266081)
+                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Dire Beast (120679), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Freezing Trap (187650), Tar Trap (187698), Harpoon (190925), Hatchet Toss (193265), Cobra Shot (193455), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), High Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Kill Command (259489), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Death Chakram (325553), Wild Mark (328275), Wild Spirit (328520), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Spearhead (360966), Death Chakram (361756), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Hunter's Mark (428402), Black Arrow (466930), Intimidation (474421), Raptor Swipe (1262293), Raptor Swipe (1262343), Sticky Bomb (1262391), Wild Thrash (1264359), Moonlight Chakram (1264949), Moonlight Chakram (1266081)
                    Family Flags: 1
 #4 (id=191144)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1628 (Category) | Target: Self (1)
@@ -3678,7 +3678,7 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph 
 Effects          :
 #1 (id=283823)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.625 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Auto Shot (75), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Tranquilizing Shot (19801), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Explosive Shot (212431), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Volley (260243), Resonating Arrow (308491), Kill Shot (320976), Flayed Shot (324149), Death Chakram (325028), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Rapid Fire (460496), Black Arrow (466930), Bleak Arrows (467718), Black Arrow (468037), Moonlight Chakram (1264949)
+                   Affected Spells: Auto Shot (75), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Tranquilizing Shot (19801), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Explosive Shot (212431), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Volley (260243), Resonating Arrow (308491), Kill Shot (320976), Flayed Shot (324149), Death Chakram (325028), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Rapid Fire (460496), Black Arrow (466930), Bleak Arrows (467718), Black Arrow (468037), Sticky Bomb (1262391), Moonlight Chakram (1264949)
                    Family Flags: 121
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4 | Target: Self (1)
@@ -3689,7 +3689,7 @@ Effects          :
                    Family Flags: 103, 119
 #4 (id=345392)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Aimed Shot (19434), A Murder of Crows (131900), Wind Arrow (191043), Explosive Shot (212431), Rapid Fire (257044), Volley (260243), Volley (260247), Resonating Arrow (308495), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Coordinated Assault (361738), Death Chakram (361756), Wailing Arrow (392058), Shadow Surge (444269), Black Arrow (466930), Black Arrow (468037), Black Arrow (468572), Moonlight Chakram (1264949), Moonlight Chakram (1266081), Let Fly! (1271682)
+                   Affected Spells: Aimed Shot (19434), A Murder of Crows (131900), Wind Arrow (191043), Explosive Shot (212431), Rapid Fire (257044), Volley (260243), Volley (260247), Resonating Arrow (308495), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Coordinated Assault (361738), Death Chakram (361756), Wailing Arrow (392058), Shadow Surge (444269), Black Arrow (466930), Black Arrow (468037), Black Arrow (468572), Sticky Bomb (1262391), Moonlight Chakram (1264949), Moonlight Chakram (1266081), Let Fly! (1271682)
                    Family Flags: 5, 14, 17, 34, 63, 70, 74, 76, 91, 93, 99, 118, 119
 #5 (id=1258291)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4 | Misc Value 2: 5078 (Label) | Target: Self (1)
@@ -14746,7 +14746,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
 Effects          :
 #1 (id=1185799)  : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -1000 | Scaled Value: -1000 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Explosive Shot (212431)
+                   Affected Spells: Explosive Shot (212431), Sticky Bomb (1262391)
                    Family Flags: 63
 Description      : $@spelldesc459843
 Tooltip          : The cooldown of Explosive Shot has been reset.
@@ -14879,7 +14879,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1187670)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Explosive Shot (212431)
+                   Affected Spells: Explosive Shot (212431), Sticky Bomb (1262391)
                    Family Flags: 63
 Description      : Explosive Shot lasts ${$m1/1000}.1 sec longer.
 
@@ -18166,6 +18166,30 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc212431
 
+Name             : Sticky Bomb (id=1262391) [Spell Family (9)] 
+Class            : Hunter
+School           : Fire
+Spell Type       : Ranged
+Spell Level      : 1
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 3 seconds
+Requires weapon  : Two-handed Axe, Bow, Gun, Two-handed Mace, Polearm, Two-handed Sword, Staff, Spear, Crossbow
+Cooldown         : 30 seconds
+Labels           : 16: Class Spells
+                 : 23: Hunter Spells
+                 : 292
+Affecting Spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effects: #1, #4), Grenade Juggler (470492 effect#1), Precision Detonation (471369 effect#1), Hunter Marksmanship 12.1 Class Set 2pc (1296633 effects: #1, #2, #3), Lock and Load: Explosive Shot (1300701 effect#1), Incendiary Ammunition (1301406 effect#1), Unstable Trigger (1301778 effect#1)
+Family Flags     : 1, 63, 121
+Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), DoT Stacking Rule (103), Allow Client Targeting (133), Not On Trivial (182), Do Not Chain To Crowd-Controlled Targets (200), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (489)
+Effects          :
+#1 (id=1272654)  : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+#2 (id=1272655)  : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+Description      : Fires an explosive shot at your target. After $t1 sec, the shot will explode, dealing $212680s1 Fire damage to all enemies within $212680A1 yds. Deals reduced damage beyond $s2 targets.
+Tooltip          : Exploding for $212680s1 Fire damage after $t1 sec.
+
 Name             : Lethal Calibration (id=1262408) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -19993,15 +20017,15 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1319303)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.5 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Explosive Shot (212431)
+                   Affected Spells: Explosive Shot (212431), Sticky Bomb (1262391)
                    Family Flags: 63
 #2 (id=1332919)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Explosive Shot (212431)
+                   Affected Spells: Explosive Shot (212431), Sticky Bomb (1262391)
                    Family Flags: 63
 #3 (id=1332920)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Explosive Shot (212431)
+                   Affected Spells: Explosive Shot (212431), Sticky Bomb (1262391)
                    Family Flags: 63
 Description      : Explosive Shot lasts ${$m1/1000}.1 sec longer and deals $s2% increased damage.
 
@@ -20132,7 +20156,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
 Effects          :
 #1 (id=1325478)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Explosive Shot (212431)
+                   Affected Spells: Explosive Shot (212431), Sticky Bomb (1262391)
                    Family Flags: 63
 Description      : $@spelldesc473520
 Tooltip          : Your next Explosive Shot will not incur its cooldown.
@@ -20177,7 +20201,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1326496)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Explosive Shot (212431)
+                   Affected Spells: Explosive Shot (212431), Sticky Bomb (1262391)
                    Family Flags: 63
 Description      : Explosive Shot cooldown reduced by ${$m1/-1000}.1 sec.
 
@@ -20195,7 +20219,7 @@ Proc Flags       : Yellow Ranged, Magic Hostile Spell
 Effects          :
 #1 (id=1327043)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Explosive Shot (212431)
+                   Affected Spells: Explosive Shot (212431), Sticky Bomb (1262391)
                    Family Flags: 63
 Description      : $@spelldesc473520
 Tooltip          : Explosive Shot can be recast and consumes $m1% less Focus.
