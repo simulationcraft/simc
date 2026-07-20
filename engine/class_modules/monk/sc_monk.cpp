@@ -2481,17 +2481,45 @@ struct keg_smash_t : monk_melee_attack_t
     }
   };
 
+  struct mid2_brm_2pc_t : monk_spell_t
+  {
+    mid2_brm_2pc_t( monk_t *player ) : monk_spell_t( player, "fiery_shrapnel", player->tier.mid2.brm_2pc_damage )
+    {
+      aoe                 = -1;
+      full_amount_targets = 1;
+      background = dual = true;
+    }
+
+    void execute() override
+    {
+      bool has_buff = p()->buff.mid2_brm_2pc->up();
+      p()->buff.mid2_brm_2pc->expire();
+
+      if ( has_buff )
+        monk_spell_t::execute();
+    }
+
+    void impact( action_state_t *state ) override
+    {
+      monk_spell_t::impact( state );
+
+      get_td( state->target )->debuff.mid2_brm_4pc->trigger();
+    }
+  };
+
   cooldown_t *breath_of_fire;
   action_t *empty_barrel;
   action_t *extra_kick;
   action_t *fuel_on_the_fire;
+  action_t *mid2_brm_2pc;
 
   keg_smash_t( monk_t *player, std::string_view options_str, std::string_view name = "keg_smash" )
     : monk_melee_attack_t( player, name, player->talent.brewmaster.keg_smash ),
       breath_of_fire( nullptr ),
       empty_barrel( nullptr ),
       extra_kick( nullptr ),
-      fuel_on_the_fire( nullptr )
+      fuel_on_the_fire( nullptr ),
+      mid2_brm_2pc( nullptr )
   {
     parse_options( options_str );
     CAST_DURING( SPINNING_CRANE_KICK_IDS );
@@ -2543,10 +2571,22 @@ struct keg_smash_t : monk_melee_attack_t
       fuel_on_the_fire = new fuel_on_the_fire_t( player );
       add_child( fuel_on_the_fire );
     }
+
+    if ( player->sets->set( MONK_BREWMASTER, MID2, B2 ) )
+    {
+      mid2_brm_2pc = new mid2_brm_2pc_t( player );
+      add_child( mid2_brm_2pc );
+    }
+
+    if ( player->sets->set( MONK_BREWMASTER, MID2, B4 ) )
+      add_child( player->action.mid2_brm_4pc );
   }
 
   void execute() override
   {
+    if ( mid2_brm_2pc )
+      mid2_brm_2pc->execute();
+
     monk_melee_attack_t::execute();
 
     if ( breath_of_fire )
@@ -5173,6 +5213,12 @@ monk_td_t::monk_td_t( player_t *target, monk_t *player )
                            ->set_trigger_spell( player->talent.shado_pan.high_impact )
                            ->set_quiet( true );
 
+  // Tier
+  debuff.mid2_brm_4pc = make_buff_fallback( player->sets->has_set_bonus( MONK_BREWMASTER, MID2, B4 ), *this, "scorched",
+                                            player->tier.mid2.brm_4pc_debuff )
+                            ->set_trigger_spell( player->talent.brewmaster.keg_smash );
+  // TODO: make this tick for aflame damage
+
   dot.breath_of_fire               = target->get_dot( "breath_of_fire_dot", player );
   dot.crackling_jade_lightning_aoe = target->get_dot( "crackling_jade_lightning_aoe", player );
   dot.aspect_of_harmony            = target->get_dot( "aspect_of_harmony_damage", player );
@@ -5943,6 +5989,18 @@ void monk_t::init_spells()
     tier.mid1.brm_4pc_extra_kick = find_spell( 1272464 );
 
     tier.mid2.ww_4pc_buff = sets->set( MONK_WINDWALKER, MID2, B4 )->effectN( 1 ).trigger();
+
+    if ( sets->set( MONK_BREWMASTER, MID2, B2 ) )
+    {
+      tier.mid2.brm_2pc_buff   = find_spell( 1301477 );
+      tier.mid2.brm_2pc_damage = find_spell( 1301619 );
+    }
+
+    if ( sets->set( MONK_BREWMASTER, MID2, B4 ) )
+    {
+      tier.mid2.brm_4pc_debuff = find_spell( 1301410 );
+      tier.mid2.brm_4pc_damage = find_spell( 1301418 );
+    }
   }
 
   // Register passives
@@ -6047,6 +6105,10 @@ void monk_t::init_background_actions()
     action.flurry_of_xuen            = new flurry_of_xuen_t( this );
     action.combat_wisdom_eh          = new expel_harm_t( this, "" );
   }
+
+  // Tier
+  if ( sets->has_set_bonus( MONK_BREWMASTER, MID2, B4 ) )
+    action.mid2_brm_4pc = new monk_spell_t( this, "aflame", tier.mid2.brm_4pc_damage );
 }
 
 void monk_t::init_base_stats()
