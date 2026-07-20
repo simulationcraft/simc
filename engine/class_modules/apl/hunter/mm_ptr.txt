@@ -43,8 +43,8 @@ actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_s
 actions.draoe+=/trueshot,if=variable.trueshot_ready&(raid_event.pull.remains>30|talent.calling_the_shots|!raid_event.pull.exists)
 actions.draoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload)
 actions.draoe+=/wailing_arrow,if=!cooldown.black_arrow.ready
-actions.draoe+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
 actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
+actions.draoe+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
 actions.draoe+=/black_arrow
 actions.draoe+=/steady_shot
 
@@ -52,7 +52,7 @@ actions.sentaoe=explosive_shot
 actions.sentaoe+=/volley
 actions.sentaoe+=/trueshot,if=variable.trueshot_ready&(raid_event.pull.remains>30|talent.calling_the_shots|!raid_event.pull.exists)
 actions.sentaoe+=/moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max
-actions.sentaoe+=/multishot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down
+actions.sentaoe+=/multishot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down
 actions.sentaoe+=/rapid_fire
 actions.sentaoe+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
 actions.sentaoe+=/moonlight_chakram
