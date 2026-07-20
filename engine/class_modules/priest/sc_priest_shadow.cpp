@@ -1708,7 +1708,6 @@ struct tentacle_slam_damage_t final : public priest_spell_t
   {
     background                 = true;
     affected_by_shadow_weaving = true;
-    reduced_aoe_targets        = 5;
     aoe                        = -1;
   }
 };
