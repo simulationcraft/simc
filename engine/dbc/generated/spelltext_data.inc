@@ -1,5 +1,5 @@
 // Spell text, wow build 12.0.7.68453
-static constexpr std::array<spelltext_data_t, 28758> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 28759> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27535,6 +27535,7 @@ static constexpr std::array<spelltext_data_t, 28758> __spelltext_data { {
   { 1262388, "After $s3 sec of combat, party members and Valeera deal $s1% more damage and healing for $s2 sec. ($1262284d cooldown)", "After $w3 sec of combat, party members and Valeera deal $w1% more damage and healing for $w2 sec. ($1262284d cooldown)", 0 },
   { 1262389, "After $s3 sec of combat, party members and Valeera deal $s1% more damage and healing for $s2 sec. ($1262284d cooldown)", "After $w3 sec of combat, party members and Valeera deal $w1% more damage and healing for $w2 sec. ($1262284d cooldown)", 0 },
   { 1262390, "$@spelldesc212431", 0, 0 },
+  { 1262391, "Fires an explosive shot at your target. After $t1 sec, the shot will explode, dealing $212680s1 Fire damage to all enemies within $212680A1 yds. Deals reduced damage beyond $s2 targets.", "Exploding for $212680s1 Fire damage after $t1 sec.", 0 },
   { 1262392, "$@spelldesc1262389", "$@spelldesc1262389", "Rank 2/4" },
   { 1262393, "$@spelldesc1262388", "$@spelldesc1262388", "Rank 3/4" },
   { 1262394, "$@spelldesc1262387", "$@spelldesc1262387", "Rank 4/4" },
