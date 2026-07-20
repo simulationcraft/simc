@@ -3311,6 +3311,8 @@ struct breath_of_fire_t : public monk_spell_t
         make_event<events::delayed_execute_event_t>( *sim, p(), dragonfire_brew, target,
                                                      i * timespan_t::from_seconds( 1.5 ) );
 
+    p()->buff.mid2_brm_2pc->trigger();
+
     monk_spell_t::execute();
 
     p()->action.flurry_strikes->execute( flurry_strikes_t::WISDOM_OF_THE_WALL );
@@ -6358,6 +6360,10 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.brewmaster.swift_as_a_coursing_river->ok(), this, "swift_as_a_coursing_river",
                           talent.brewmaster.swift_as_a_coursing_river->effectN( 1 ).trigger() )
           ->set_trigger_spell( talent.brewmaster.swift_as_a_coursing_river );
+
+  buff.mid2_brm_2pc =
+      make_buff_fallback( sets->has_set_bonus( MONK_BREWMASTER, MID2, B2 ), this, "hot_potato", tier.mid2.brm_2pc_buff )
+          ->set_trigger_spell( talent.brewmaster.breath_of_fire );
 
   // Windwalker
   buff.teachings_of_the_monastery =
