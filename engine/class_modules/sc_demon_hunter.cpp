@@ -5071,8 +5071,11 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
     void execute() override
     {
-      // Evaluate if_expr to make sure the actor still wants to consume.
-      if ( frag && frag->active() && ( !expr || expr->eval() ) && dh->active.consume_soul_greater )
+      // The targeted fragment may have been consumed (and deleted) by another effect during the
+      // pick up movement (see soul_fragment_t::remove()); check that it is still tracked before
+      // dereferencing. Evaluate if_expr to make sure the actor still wants to consume.
+      if ( frag && range::contains( dh->soul_fragments, frag ) && frag->active() &&
+           ( !expr || expr->eval() ) && dh->active.consume_soul_greater )
       {
         frag->consume( false );
       }
