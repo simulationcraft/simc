@@ -1715,6 +1715,8 @@ class SpellDataGenerator(DataGenerator):
           ( 1258344, 0 ), # Stampede (Pack Leader)
           ( 1264357, 0 ), # Shoot (Dark Minion)
           ( 1302277, 2 ), # Death Bringer Buff
+          ( 1262390, 2 ), # Sticky Bomb (Explosive Shot)
+          ( 1262391, 2 ), # Sticky Bomb (Explosive Shot)
         ),
 
         # Rogue:
