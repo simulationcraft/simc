@@ -871,7 +871,7 @@ void loa_worshipers_band( special_effect_t& effect )
 
         halazzi = create_proc_action<generic_proc_t>( "claws_of_halazzi", e, 1252814 );
         halazzi->base_dd_min = halazzi->base_dd_max = halazzi_value;
-        // halazzi->base_multiplier *= role_mult( e ); - Role Mult currently not applied to Loa Worshiper's Band
+        halazzi->base_multiplier *= role_mult( e );
       }
 
       if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_LAPIS ) )
@@ -882,7 +882,7 @@ void loa_worshipers_band( special_effect_t& effect )
 
         janalai = create_proc_action<generic_aoe_proc_t>( "janalais_flames", e, 1252817, true );
         janalai->base_dd_min = janalai->base_dd_max = janalai_value;
-        // janalai->base_multiplier *= role_mult( e ); - Role Mult currently not applied to Loa Worshiper's Band
+        janalai->base_multiplier *= role_mult( e );
       }
 
       if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_PERIDOT ) )
