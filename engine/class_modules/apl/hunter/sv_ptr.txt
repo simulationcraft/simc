@@ -64,8 +64,8 @@ actions.plcleave+=/takedown
 #AOE - Sent
 actions.sentcleave=kill_command,if=buff.tip_of_the_spear.stack=0
 actions.sentcleave+=/wildfire_bomb,if=talent.wildfire_shells&(buff.tip_of_the_spear.up&!debuff.sentinels_mark.remains&cooldown.boomstick.remains<11&cooldown.boomstick.remains>1)
+actions.sentcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.up
 actions.sentcleave+=/boomstick,if=buff.tip_of_the_spear.up
-actions.sentcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4+gcd)
 actions.sentcleave+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
 actions.sentcleave+=/takedown,if=buff.tip_of_the_spear.up
 actions.sentcleave+=/moonlight_chakram,if=buff.tip_of_the_spear.up

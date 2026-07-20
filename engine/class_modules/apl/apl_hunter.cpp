@@ -182,8 +182,8 @@ void beast_mastery_ptr( player_t* p )
 
   cleave->add_action( "cancel_buff,name=beast_cleave,if=set_bonus.midnight_season_2_4pc" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=full_recharge_time<gcd" );
-  cleave->add_action( "wild_thrash,if=talent.beast_cleave" );
   cleave->add_action( "bestial_wrath,if=!prev.wild_thrash" );
+  cleave->add_action( "wild_thrash,if=talent.beast_cleave" );
   cleave->add_action( "wild_thrash,if=!talent.beast_cleave" );
   cleave->add_action( "kill_command,if=buff.natures_ally.react|talent.master_handler&(active_enemies>3|howl_summon.ready)" );
   cleave->add_action( "cobra_shot,if=cooldown.wild_thrash.remains>gcd&buff.hogstrider.up&active_enemies<4" );
@@ -566,8 +566,8 @@ void survival_ptr( player_t* p )
 
   sentcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0", "AOE - Sent" );
   sentcleave->add_action( "wildfire_bomb,if=talent.wildfire_shells&(buff.tip_of_the_spear.up&!debuff.sentinels_mark.remains&cooldown.boomstick.remains<11&cooldown.boomstick.remains>1)" );
+  sentcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up" );
   sentcleave->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
-  sentcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4+gcd)" );
   sentcleave->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
   sentcleave->add_action( "takedown,if=buff.tip_of_the_spear.up" );
   sentcleave->add_action( "moonlight_chakram,if=buff.tip_of_the_spear.up" );
