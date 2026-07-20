@@ -3349,14 +3349,18 @@ void font_of_venomous_rage( special_effect_t& effect )
 
       channeled = true;
 
-      base_td = equip->driver()->effectN( 1 ).average( e );
+      unsigned num_ticks = as<unsigned>( dot_duration / base_tick_time ) + tick_on_application;
+
+      base_td = equip->driver()->effectN( 1 ).average( e ) / num_ticks;
       base_td_multiplier *= role_mult( e );
 
-      venom_splatter = create_proc_action<generic_aoe_proc_t>( "venom_splatter", e, e.player->find_spell( 1307222 ) );
-      venom_splatter->base_dd_min = venom_splatter->base_dd_max = equip->driver()->effectN( 2 ).average( e );
+      venom_splatter = create_proc_action<generic_aoe_proc_t>( "venom_splatter", e, e.player->find_spell( 1307222 ), false );
+      venom_splatter->base_dd_min = venom_splatter->base_dd_max = equip->driver()->effectN( 2 ).average( e ) / num_ticks;
       venom_splatter->base_multiplier *= role_mult( e );
       venom_splatter->dual = true;
       venom_splatter->target_filter_callback = secondary_targets_only();
+      venom_splatter->split_aoe_damage = false;
+      venom_splatter->reduced_aoe_targets = 8;
       add_child( venom_splatter );
     }
 
