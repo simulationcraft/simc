@@ -4687,6 +4687,10 @@ struct blood_beast_pet_t : public death_knight_pet_t
   {
     blood_beast_melee_t( blood_beast_pet_t* p ) : auto_attack_melee_t<blood_beast_pet_t>( p )
     {
+      // Not sure if this was applied to AP% inheritence, or just autos. doing just autos for now to be safe. 
+      // TODO: Confirm.
+      if( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+        base_multiplier = 14.0; 
     }
 
     void impact( action_state_t* state ) override
