@@ -196,6 +196,8 @@ void monk_action_t<Base>::apply_buff_effects()
 template <class Base>
 void monk_action_t<Base>::apply_debuff_effects()
 {
+  parse_target_effects( td_fn( &monk_td_t::debuff_t::mid2_brm_4pc ), p()->tier.mid2.brm_4pc_debuff );
+
   parse_target_effects( td_fn( &monk_td_t::dots_t::aspect_of_harmony ),
                         p()->talent.master_of_harmony.aspect_of_harmony_damage );
 }
@@ -2538,6 +2540,7 @@ struct keg_smash_t : monk_melee_attack_t
     {
       monk_spell_t::execute();
 
+      params.target( p()->target );
       make_event<ground_aoe_event_t>( *sim, p(), params, true );
     }
   };
@@ -2623,6 +2626,8 @@ struct keg_smash_t : monk_melee_attack_t
   {
     if ( mid2_brm_2pc )
       mid2_brm_2pc->execute();
+    if ( mid2_brm_4pc )
+      mid2_brm_4pc->execute();
 
     monk_melee_attack_t::execute();
 
