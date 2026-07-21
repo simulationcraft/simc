@@ -871,7 +871,7 @@ void loa_worshipers_band( special_effect_t& effect )
 
         halazzi = create_proc_action<generic_proc_t>( "claws_of_halazzi", e, 1252814 );
         halazzi->base_dd_min = halazzi->base_dd_max = halazzi_value;
-        halazzi->base_multiplier *= role_mult( e.player );
+        // halazzi->base_multiplier *= role_mult( e.player ); - Role Mult currently not applied to Claws of Halazzi
       }
 
       if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_LAPIS ) )
