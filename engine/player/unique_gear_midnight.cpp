@@ -3516,10 +3516,8 @@ void vashniks_sanguine_rancor( special_effect_t& effect )
       // only erupt when the buff was consumed at max stacks, not when expired during combat end
       if ( stacks < b->max_stack() )
         return;
-      crimson_bile->set_target( b->player->target );
-      auto n_targets = crimson_bile->target_list().size();
       crimson_bile->execute_on_target( b->player->target );
-      if ( n_targets == 1 )
+      if ( crimson_bile->num_targets_hit == 1 )
         concentrated_bile->execute_on_target( b->player->target );
     } );
 
