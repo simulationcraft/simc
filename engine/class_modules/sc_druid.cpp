@@ -600,6 +600,7 @@ struct druid_t final : public parse_player_effects_t
     action_t* shooting_stars_sunfire;
     action_t* shooting_stars_mid1;  // mid1 4pc, exploding shooting star
     action_t* solar_bolt;
+    action_t* starfall_mid2;  // mid2 2pc, instant starfall damage
     action_t* sundered_firmament;
     action_t* fungal_growth;  // consolidated dot
     action_t* sunseeker_mushroom;
@@ -699,6 +700,7 @@ struct druid_t final : public parse_player_effects_t
     buff_t* survival_instincts;
 
     // Balance
+    buff_t* akilzons_clarity;  // mid2 4pc
     buff_t* ascendant_fires;
     buff_t* ascendant_stars;
     buff_t* ascendant_stars_starfall;
@@ -3308,6 +3310,7 @@ struct eclipse_buff_base_t : public druid_buff_t
 
     // subsequent effects are queued after eclipse application
     make_event( *sim, 1_ms, [ this ] {
+      p()->buff.akilzons_clarity->trigger();
       p()->buff.ascendant_fires->trigger();
       p()->buff.ascendant_stars->trigger();
 
@@ -3324,6 +3327,9 @@ struct eclipse_buff_base_t : public druid_buff_t
   {
     // hijack expire delay to indicate that dreamstate should not be granted
     base_t::expire( 0_ms );
+
+    if ( !p()->buff.eclipse_lunar->check() && !p()->buff.eclipse_solar->check() )
+      p()->buff.akilzons_clarity->expire();
 
     if ( p()->resources.current[ RESOURCE_ASTRAL_POWER ] < challenge_ap )
       p()->buff.elunes_challenge->trigger();
@@ -3374,6 +3380,72 @@ struct eclipse_solar_t final : public eclipse_buff_base_t
   {
     if ( p()->active.solar_bolt )
       p()->active.solar_bolt->execute();
+  }
+};
+
+// Akil'zon's Clarity (Balance MID2 4pc) ====================================
+struct akilzons_clarity_buff_t final : public druid_buff_t
+{
+  int max_val;
+  int min_val;
+
+  akilzons_clarity_buff_t( druid_t* p )
+    : base_t( p, "akilzons_clarity", p->find_spell( 1301768 ) ),
+      max_val( as<int>( data().effectN( 3 ).base_value() ) ),
+      min_val( as<int>( data().effectN( 4 ).base_value() ) )
+  {
+    // since the effects have EX_SUPPRESS_STACKING only the current value should be applied
+    // the stacks are for display only
+    set_default_value( max_val * 0.01 );
+    // the duration is 0 since we tie it to eclipse
+    set_duration( 0_ms );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
+    // prevent ticks from bumping stacks and refreshes from cancelling tick_event
+    set_freeze_stacks( true );
+    // eff#5 seems to be the tick interval
+    set_period( data().effectN( 5 ).period() );
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { update_stacks(); } );
+  }
+
+  // compute the current stack count based on eclipse progress
+  int eclipse_stacks( const buff_t* b ) const
+  {
+    if ( !b->check() )
+      return 0;
+
+    auto elapsed_ = ( sim->current_time() - b->last_trigger_time() ).total_seconds();
+    auto total = elapsed_ + b->remains().total_seconds();
+    if ( total <= 0 )
+      return max_val;
+
+    auto mid = total * 0.5;
+    double val;
+
+    if ( elapsed_ <= mid )
+      val = max_val - ( max_val - min_val ) * elapsed_ / mid;
+    else
+      val = min_val + ( max_val - min_val ) * ( elapsed_ - mid ) / std::max( 1.0, mid - 1.0 );
+
+    return std::clamp( as<int>( std::ceil( val ) ), min_val, max_val );
+  }
+
+  // called every tick
+  void update_stacks()
+  {
+    auto s = std::max( eclipse_stacks( p()->buff.eclipse_lunar ), eclipse_stacks( p()->buff.eclipse_solar ) );
+    if ( !s )
+      return;  // if no eclipse then buff expires
+
+    if ( s > current_stack )
+      increment( s - current_stack, s * 0.01 );
+    else if ( s < current_stack )
+      decrement( current_stack - s, s * 0.01 );
+  }
+
+  bool trigger( int, double, double c, timespan_t d ) override
+  {
+    // the buff itself is always (re)triggered at eclipse start so it's always at max stacks
+    return base_t::trigger( max_val, max_val * 0.01, c, d );
   }
 };
 
@@ -8187,6 +8259,18 @@ struct stampeding_roar_t final : public druid_spell_t
   }
 };
 
+// Instant Starfall MID2 ==========================================================
+struct starfall_mid2_t final : public druid_spell_t
+{
+  starfall_mid2_t( druid_t* p ) : druid_spell_t( "starfall_instant", p, p->find_spell( 1301742 ) )
+  {
+    background = proc = true;
+    aoe = p->find_spell( 1301747 )->max_targets();
+
+    name_str_reporting = "Instant";
+  }
+};
+
 // Starfall Spell ===========================================================
 struct starfall_t final : public ap_spender_t
 {
@@ -8343,6 +8427,9 @@ struct starfall_t final : public ap_spender_t
 
     buff->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { driver->execute(); } );
     buff->trigger();
+
+    if ( p()->active.starfall_mid2 )
+      p()->active.starfall_mid2->execute_on_target( target );
 
     // technically triggered by buff application, do it in action so we can easily grab the driver targets
     if ( rng().roll( mid1_4pc_chance ) )
@@ -10971,6 +11058,9 @@ void druid_t::create_buffs()
     ->set_consume_all_stacks( false )
     ->set_initial_stack_to_max_stack();
 
+  buff.akilzons_clarity = make_fallback<akilzons_clarity_buff_t>(
+    sets->has_set_bonus( DRUID_BALANCE, MID2, B4 ), this, "akilzons_clarity" );
+
   buff.eclipse_lunar = make_fallback<eclipse_lunar_t>( talent.eclipse.ok(), this, "eclipse_lunar" );
 
   buff.eclipse_solar = make_fallback<eclipse_solar_t>( talent.eclipse.ok(), this, "eclipse_solar" );
@@ -11697,6 +11787,9 @@ void druid_t::create_actions()
   if ( sets->has_set_bonus( DRUID_BALANCE, MID1, B4 ) )
     active.shooting_stars_mid1 = get_secondary_action<shooting_stars_mid1_t>( "shooting_stars_exploding" );
 
+  if ( sets->has_set_bonus( DRUID_BALANCE, MID2, B2 ) )
+    active.starfall_mid2 = get_secondary_action<starfall_mid2_t>( "starfall_instant" );
+
   // Feral
   if ( talent.unseen_predator_1.ok() )
   {
@@ -11898,6 +11991,7 @@ void druid_t::create_actions()
   find_parent( active.echo_of_ravage, "wild_guardian" );
   find_parent( active.echo_of_raze, "wild_guardian" );
   find_parent( active.shooting_stars_mid1, "shooting_stars" );
+  find_parent( active.starfall_mid2, "starfall" );
   find_parent( active.sundering_roar_thrash, "sundering_roar" );
   find_parent( active.the_light_of_elune, "moonfire" );
   find_parent( active.thrash_flashing, "thrash" );
@@ -14043,6 +14137,7 @@ void druid_t::parse_action_effects( action_t* action )
                      // and dream burst (433850), solar bolt (1261573), and meteorites (1240913)
                      affect_list_t( 3 ).add_label( 2391 ).add_spell( 433850, 1261573, 1240913 ) );
 
+  _a->parse_effects( buff.akilzons_clarity, USE_CURRENT );
   _a->parse_effects( buff.ascendant_fires );  // consumption handled within starfire_base_t/wrath_base_t
   _a->parse_effects( buff.ascendant_stars, CONSUME_BUFF );
   _a->parse_effects( buff.astral_communion );
