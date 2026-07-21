@@ -1126,8 +1126,9 @@ public:
       const spell_data_t *ww_4pc_buff;
       const spell_data_t *brm_2pc_buff;
       const spell_data_t *brm_2pc_damage;
-      const spell_data_t *brm_4pc_debuff;
+      const spell_data_t *brm_4pc_action;
       const spell_data_t *brm_4pc_damage;
+      const spell_data_t *brm_4pc_debuff;
     } mid2;
 
     struct
