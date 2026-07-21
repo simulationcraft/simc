@@ -2618,7 +2618,7 @@ struct keg_smash_t : monk_melee_attack_t
       add_child( mid2_brm_2pc );
     }
 
-    if ( player->sets->set( MONK_BREWMASTER, MID2, B4 ) )
+    if ( player->sets->set( MONK_BREWMASTER, MID2, B4 ) && player->tier.mid2.brm_4pc_damage->ok() )
       mid2_brm_4pc = new mid2_brm_4pc_t( player, this );
   }
 
