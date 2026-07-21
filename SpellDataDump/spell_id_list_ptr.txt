@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.0.68745
+Class Spell ID List, wow build 12.1.0.68824
 
 Death Knight
 3714     Path of Frost
@@ -8865,7 +8865,7 @@ Hunter
 1299409  Cobra Cleave
 1300701  Lock and Load: Explosive Shot
 1301098  Spotter's Mark: Rapid Fire
-1301406  Incendiary Ammunition
+1301406  Tactical Reload
 1301778  Unstable Trigger
 1302277  Death Bringer
 1306018 *test proc spell
@@ -20862,7 +20862,7 @@ Shaman
 1252415  Crash Lightning
 1252431  Crash Lightning (Unleashed)
 1252433  Crash Lightning
-1252841  Calm Waters
+1252841 *Calm Waters
 1252874  Soothing Rain
 1252882  Double Dip
 1252978 *Downpour
@@ -20948,6 +20948,7 @@ Shaman
 1300222  Overcharge!
 1300642  Condensation
 1307888  Healing Rain
+1312843  Swelling Tides
 
 Warlock
 126      Eye of Kilrogg
@@ -22760,7 +22761,7 @@ Warlock
 1260229  Fatal Echoes
 1260264  Shard Instability
 1260269  Shard Instability
-1260271  Nocturnal Yield
+1260271 *Nocturnal Yield
 1260279  Nightfall
 1260285 *Patient Zero
 1261036 *Cloying Power
@@ -22937,6 +22938,7 @@ Warlock
 1306077  Isolated Implosion
 1311653  Soul Leech
 1311969  Hedonic Gorging
+1312998  Impetuous Wrath
 
 Warrior
 71       Vanguard

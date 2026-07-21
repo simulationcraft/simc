@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68745 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68824 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -75,7 +75,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken
 Affecting Spells : Earthen Harmony (382020 effect#3), Earthen Communion (443441 effects: #1, #2), Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #2, #3)
 Family Flags     : 42
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Limit N (165), Vehicle Immunity Category (218), Disable Aura While Dead (226), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Limit N (165), Vehicle Immunity Category (218), Disable Aura While Dead (226), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=372)      : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
@@ -110,7 +110,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effects: #2, #3), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114052 effects: #9, #13, #16, #18), Restoration Shaman (137039 effects: #1, #2, #12), Elemental Shaman (137040 effect#15), Enhancement Shaman (137041 effect#19), Elemental Rebalancers (208777 effect#1), Jonat's Focus (210607 effect#1), Tidebringer (236502 effects: #1, #2), Ancestral Reach (263790 effect#1), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Nature's Fury (381655 effect#1), Earthliving Weapon (382024 effect#2), Flow of the Tides (382039 effect#2), Ancestral Reach (382732 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Overflowing Maelstrom (410681 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #4, #5, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effect#1), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Fate Reversal (1219323 effect#1), Calm Waters (1252841 effect#1), Restoration Shaman (1256945 effects: #1, #2), Windspeaker (1270447 effects: #1, #2), Boon of the Water Ascendant (1271192 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
+Affecting Spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effects: #2, #3), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114052 effects: #9, #13, #16, #18), Restoration Shaman (137039 effects: #1, #2, #12), Elemental Shaman (137040 effect#15), Enhancement Shaman (137041 effect#19), Elemental Rebalancers (208777 effect#1), Jonat's Focus (210607 effect#1), Tidebringer (236502 effects: #1, #2), Ancestral Reach (263790 effect#1), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Nature's Fury (381655 effect#1), Earthliving Weapon (382024 effect#2), Flow of the Tides (382039 effect#2), Ancestral Reach (382732 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Overflowing Maelstrom (410681 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #4, #5, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effect#1), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Fate Reversal (1219323 effect#1), Current Control (1253093 effect#2), Restoration Shaman (1256945 effects: #1, #2), Windspeaker (1270447 effects: #1, #2), Boon of the Water Ascendant (1271192 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
 Triggered By     : Overflowing Maelstrom (410681)
 Family Flags     : 8, 41
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Heal Prediction (280), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Chain by Most Hit (440)
@@ -1445,12 +1445,12 @@ Labels           : 16: Class Spells
                  : 741: Healing Spells
 Affecting Spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Torrent (200072 effect#1), Elemental Rebalancers (208777 effect#1), Nature's Fury (381655 effect#1), Wavespeaker's Blessing (381946 effects: #1, #2), Earthliving Weapon (382024 effect#2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Shaman Restoration 10.2 Class Set 4pc (422916 effects: #1, #2), Elemental Reverb (443418 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Coalescing Water (470077 effect#1), Restoration Shaman (1256945 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
 Family Flags     : 41, 68
-Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (456), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (456)
 Effects          :
 #1 (id=55127)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.80288 | PvP Coefficient: 1.32 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6 | PvP Coefficient: 1.518 | Target: Targeted Ally (21)
 #2 (id=55128)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.398429 | PvP Coefficient: 1.6 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.797 | PvP Coefficient: 1.84 | Target: Targeted Ally (21)
 Description      : Restorative waters wash over a friendly target, healing them for $s1 and an additional $o2 over $d.
 Tooltip          : Heals $w2 every $t2 seconds.
 
@@ -1580,7 +1580,7 @@ Family Flags     : 41, 94
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Active Threat (94), Not a Proc (105), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=66866)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.09991 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 12.2 | Target: Targeted Ally (21)
 #2 (id=66867)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Chain Heal (1064), Healing Wave (77472)
@@ -1640,7 +1640,7 @@ Effects          :
 #3 (id=199332)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 14 | Scaled Value: 14 | Target: Self (1)
 #4 (id=1172442)  : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5
+                   Base Value: 6 | Scaled Value: 6
 #5 (id=1322369)  : Trigger Spell (64): Healing Rain
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1298679 | Radius: 0 - 11 yards | Target: at Area (87) -> At Ally in Area (31)
 Description      : Blanket the target area in healing rains, restoring ${$73921m1*6*2/$t2} health to up to $s4 allies over $d.
@@ -5092,7 +5092,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1712: Ancestral Vigor (207401 effect#2)
 Triggered By     : Ancestral Vigor (207401)
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Aura Never Bounces (148), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Aura Never Bounces (148), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=306723)   : Apply Aura (6) | Increase Health% (133)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -10482,7 +10482,7 @@ Labels           : 16: Class Spells
                  : 2676: Overflowing Shores (383222 effect#2), Surging Totem (455630 effect#9)
 Affecting Spells : Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Crackling Surge (224127 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Primal Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Enhancement Shaman (1214207 effects: #1, #2), Elemental Shaman (1231772 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effects: #1, #2), Natural Gift (1264691 effects: #1, #2), Feedback Loop (1270061 effects: #2, #3), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
 Family Flags     : 39, 126
-Attributes       : No Aura Cancel (31), Not an Action (92), Suppress Target Procs (113), Treat As Periodic (121), Suppress Weapon Procs (151), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Aura Points On Client (268), Don't close loot window (379), Allow during spell override (404), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
+Attributes       : No Aura Cancel (31), Not an Action (92), Treat As Periodic (121), Suppress Weapon Procs (151), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Aura Points On Client (268), Don't close loot window (379), Allow during spell override (404), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1007012)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1 | PvP Coefficient: 1.3 | Radius: 0 - 11 yards | Target: at Area (87) -> at Enemy in Area (16)
@@ -10890,7 +10890,7 @@ Effects          :
 Description      : Increases the critical strike chance of Lightning Bolt$?a454009[, Tempest,][] and Chain Lightning by $s1%.
 
 Name             : Wavespeaker's Blessing (id=381946) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=9, col=6, max_rank=2, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=5, col=6, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(3000, 6000)]
                  : Effect#2 [op=set, values=(10, 20)]
 Class            : Shaman
@@ -10986,7 +10986,7 @@ Labels           : 16: Class Spells
                  : 1679: Nature's Fury (381655 effect#2)
 Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Improved Earthliving Weapon (382315 effect#2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Enhanced Imbues (462796 effects: #3, #10), Restoration Shaman (1256945 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
 Family Flags     : 41, 81
-Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Do Not Display Range (126), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Do Not Display Range (126), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1013214)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.46305 | PvP Coefficient: 1.2 | Target: Targeted Ally (21)
@@ -11660,7 +11660,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken
 Affecting Spells : Earthen Harmony (382020 effect#3), Earthen Communion (443441 effects: #1, #2), Reactive Warding (462454 effect#2), Therazane's Resilience (1217622 effects: #2, #3)
 Family Flags     : 42
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Vehicle Immunity Category (218), Disable Aura While Dead (226), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Combo on Block (Mainline: Dispel All Stacks) (62), DoT Stacking Rule (103), Allow Aura While Dead (116), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Vehicle Immunity Category (218), Disable Aura While Dead (226), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1015698)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Ally (21)
@@ -13422,7 +13422,7 @@ Labels           : 16: Class Spells
                  : 3022
                  : 3494: Latent Wisdom (443449 effect#1)
                  : 5683: Restoration Shaman (137039 effect#3)
-Attributes       : Do Not Display Range (126), Aura Points On Client (268), Non-secret Aura (506)
+Attributes       : Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
 #1 (id=1140967)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.725 | Misc Value: 0x7f | Target: Targeted Ally (21)
@@ -17709,22 +17709,6 @@ Description      : Electrocutes all enemies in front of you, dealing ${$s1*$<CAP
 Enhances your weapons for $187878d, causing Stormstrike and Lava Lash to discharge ${$195592s1*$<CAP>/$AP} Nature damage up to $195592i enemies in front of you. $?s1252373[Multiple applications may overlap.][]
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
-Name             : Calm Waters (id=1252841) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=5, col=6, max_rank=1, req_points=8]
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Labels           : 16: Class Spells
-                 : 24: Shaman Spells
-                 : 292
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Effects          :
-#1 (id=1258241)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064)
-                   Family Flags: 8
-Description      : Reduces the mana cost of Chain Heal by $s1%.
-
 Name             : Soothing Rain (id=1252874) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Restoration [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Shaman
@@ -17807,7 +17791,11 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Healing Wave (77472)
                    Family Flags: 80
-Description      : Reduces the mana cost of Healing Wave by 15%.
+#2 (id=1343853)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Chain Heal (1064)
+                   Family Flags: 8
+Description      : Reduces the mana cost of Healing Wave by $s1% and the mana cost of Chain Heal by $s2%.
 
 Name             : Quickstream (id=1253099) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Restoration [tree=spec, row=5, col=7, max_rank=1, req_points=8]
@@ -18445,7 +18433,7 @@ Effects          :
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 0.5 | Misc Value: 1539 (Category) | Target: Self (1)
                    Affected Spells (Category): Unleash Life (73685)
 #2 (id=1285136)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Unleash Life (73685)
                    Family Flags: 94
 Description      : Unleash Life's cooldown is reduced by ${$s1/-1000}.1 sec and its direct healing is increased by $s2%.
@@ -18912,7 +18900,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Unleash Life (73685)
                    Family Flags: 94
-#2 (id=1283652)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
+#2 (id=1283652)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Unleash Life (73685)
                    Family Flags: 94
@@ -19221,7 +19209,7 @@ Proc Flags       : Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1319299)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 8000 | Scaled Value: 8000 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Healing Wave and Chain Heal have a chance to create a Healing Rain at the target's location for ${$m1/1000}.1 sec.
 
 Name             : Shaman Restoration 12.1 Class Set 4pc (id=1296630) [Spell Family (11), Passive, Hidden] 
@@ -19367,7 +19355,7 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Not an Action (92), Suppress Caster Procs (112), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1325387)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.8 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
 Description      : $@spelldesc1296630
 Tooltip          : Absorbs $w1 damage.
@@ -19388,4 +19376,20 @@ Effects          :
                    Base Value: 14 | Scaled Value: 14 | Target: Self (1)
 Description      : $@spelldesc73920
 Tooltip          : Your Healing Rain is currently active.
+
+Name             : Swelling Tides (id=1312843) [Spell Family (11), Passive, Hidden] 
+Talent Entry     : Restoration [tree=spec, row=9, col=6, max_rank=1, req_points=20]
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+Proc Chance      : 101%
+Proc Flags       : Generic Helpful, Magic Heal
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1343882)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 3000 | Scaled Value: 3000 | Target: Self (1)
+Description      : Healing Stream Totem $?a1267016[and Stormstream Totem ][]extend$?a1267016[][s] the duration of your active Riptides by ${$m1/1000}.1 sec.
 
