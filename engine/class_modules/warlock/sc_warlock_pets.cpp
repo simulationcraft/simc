@@ -708,6 +708,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
   fel_firebolt_t* twin = nullptr;
   const bool is_twin;
   mutable bool target_cache_unstable_soul_state = false;
+  bool triggers_isolated_implosion = false;
 
   fel_firebolt_t( warlock_pet_t* p, bool _is_twin = false )
     : warlock_pet_spell_t( "fel_firebolt", p, p->find_spell( 104318 ) ),
@@ -813,13 +814,19 @@ struct fel_firebolt_t : public warlock_pet_spell_t
   {
     player_t* ffb_target = target;
 
+    triggers_isolated_implosion = false;
+
     warlock_pet_spell_t::execute();
 
-    // Extra Fel Firebolts from Infernal Rapidity cannot proc Infernal Rapidity again
-    if ( ( twin != nullptr ) && ( p()->bugs ? debug_cast<wild_imp_pet_t*>( p() )->prd_rng_infernal_rapidity->trigger() : rng().roll( p()->o()->talents.infernal_rapidity->effectN( 1 ).percent() ) ) )
+    // NOTE: 2026-07-18 PTR 12.1.0 Infernal Rapidity cannot proc from the last Fel Firebolt cast of a Wild Imp if that Wild Imp also triggers Isolated Implosion (bug)
+    if ( !p()->bugs || !triggers_isolated_implosion )
     {
-      p()->o()->procs.infernal_rapidity->occur();
-      twin->execute_on_target( ffb_target );
+      // Extra Fel Firebolts from Infernal Rapidity cannot proc Infernal Rapidity again
+      if ( ( twin != nullptr ) && ( p()->bugs ? debug_cast<wild_imp_pet_t*>( p() )->prd_rng_infernal_rapidity->trigger() : rng().roll( p()->o()->talents.infernal_rapidity->effectN( 1 ).percent() ) ) )
+      {
+        p()->o()->procs.infernal_rapidity->occur();
+        twin->execute_on_target( ffb_target );
+      }
     }
   }
 
@@ -831,10 +838,18 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
     // Imp dies if it cannot cast
     if ( player->resources.current[ RESOURCE_ENERGY ] < cost() )
-      make_event( sim, 0_ms, [ this, imp = debug_cast<warlock::pets::demonology::wild_imp_pet_t*>( player ), imp_target = ffb_target ]() {
+    {
+      auto imp = debug_cast<warlock::pets::demonology::wild_imp_pet_t*>( player );
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        if ( p()->o()->active_4pc<MID2>() && imp->o()->prd_rng.isolated_implosion->trigger() )
+          triggers_isolated_implosion = true;
+      }
+
+      make_event( sim, 0_ms, [ this, imp = imp, imp_target = ffb_target, isolated_implosion_proc = triggers_isolated_implosion ] {
         if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
         {
-          if ( imp->o()->active_4pc<MID2>() && imp->o()->prd_rng.isolated_implosion->trigger() )
+          if ( isolated_implosion_proc )
             helpers::trigger_isolated_implosion( imp->o(), imp, imp_target );
           else
             imp->cast_pet()->dismiss();
@@ -844,6 +859,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
           imp->cast_pet()->dismiss();
         }
       } );
+    }
   }
 };
 
@@ -1320,8 +1336,9 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
   action_list_str += "/travel";
   action_list_str += "/headbutt";
 
-  // Currently bugged and not being affected by the crit bonus
-  affected_by.demonic_brutality = false;
+  // Currently bugged in 12.0.7 and not being affected by the crit bonus
+  if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+    affected_by.demonic_brutality = false;
 
   // 2026-02-17: Validated coefficients
   owner_coeff.ap_from_sp = 0.45;
