@@ -218,6 +218,7 @@ public:
     action_t* tough_as_nails;
     action_t* slayers_strike;
     action_t* ravager_whirling_blade;
+    action_t* bloody_rebuke;  // Protection MID2 4pc
   } active;
 
   // Buffs
@@ -307,6 +308,7 @@ public:
     // 12.1 Tier Sets
     buff_t* winding_up;
     buff_t* fury_mid2_4pc_crit;
+    buff_t* vengeful_shield;  // Protection 2pc
   } buff;
 
   struct rppm_t
@@ -590,7 +592,7 @@ public:
       player_talent_t overpower;
       player_talent_t sudden_death;
       // Row 3
-      player_talent_t fueled_by_violence;  // NYI
+      player_talent_t fueled_by_violence;
       player_talent_t ignore_pain;
       player_talent_t die_by_the_sword;
       // Row 4
@@ -734,7 +736,7 @@ public:
       player_talent_t punish;
       // Row 7
       player_talent_t tough_as_nails;
-      player_talent_t fueled_by_violence; // NYI
+      player_talent_t fueled_by_violence;
       player_talent_t enduring_defenses;
       player_talent_t unyielding_stance;
       player_talent_t deep_wounds;
@@ -830,6 +832,7 @@ public:
     {
       player_talent_t avatar;
       player_talent_t bladestorm;
+      player_talent_t fueled_by_violence;
       player_talent_t ravager;
       player_talent_t bloodsurge;
       player_talent_t sudden_death;
@@ -1112,6 +1115,10 @@ public:
       parse_effects( p()->buff.revenge );
 
       parse_effects( p()->buff.best_served_cold );
+
+      if ( ab::sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+        parse_effects( p()->buff.vengeful_shield );
+
       if ( ab::sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && ( p()->talents.protection.ravager.ok() || p()->talents.protection.whirling_blade.ok() ) )
         parse_effects( p()->buff.ravager, effect_mask_t( false ).enable( 5 ) );
 
@@ -1638,7 +1645,18 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     master_of_warfare_proc_chance( 0 )
   {
     if ( p->talents.slayer.slayers_dominance->ok() )
-      slayers_strike_proc_chance = prd::find_constant( p->talents.slayer.slayers_dominance->effectN( 1 ).percent() );
+    {
+      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+        slayers_strike_proc_chance = prd::find_constant( p->talents.slayer.slayers_dominance->effectN( 1 ).percent() );
+      else if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        if ( p->specialization() == WARRIOR_ARMS )
+          slayers_strike_proc_chance = prd::find_constant( p->talents.slayer.slayers_dominance->effectN( 2 ).percent() );
+        else if ( p->specialization() == WARRIOR_FURY )
+          slayers_strike_proc_chance = prd::find_constant( p->talents.slayer.slayers_dominance->effectN( 1 ).percent() );
+      }
+    }
+
     if ( p->talents.arms.master_of_warfare_1.ok() )
       master_of_warfare_proc_chance = prd::find_constant( 0.15 );  // Not in spelldata
     special = true;
@@ -2100,6 +2118,9 @@ struct melee_t : public warrior_attack_t
     {
       p()->buff.wild_strikes->trigger();
     }
+
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p()->specialization() == WARRIOR_PROTECTION && p()->rppm.revenge->trigger() )
+        p()->buff.revenge->trigger();
   }
 
   void trigger_rage_gain( const action_state_t* s )
@@ -2212,18 +2233,48 @@ struct auto_attack_t : public warrior_attack_t
   }
 };
 
+// Fueled by Violence Heal ============================================
+struct fueled_by_violence_heal_t : public warrior_heal_t
+{
+  fueled_by_violence_heal_t ( std::string_view name, warrior_t* p )
+    : warrior_heal_t( name, p, p->find_spell( 383104 ) )
+  {
+    callbacks = false;
+    background = true;
+    target = p;
+    attack_power_mod.direct = attack_power_mod.tick = 0;
+    dot_duration = base_tick_time = 0_ms;
+  }
+};
+
 // Rend ==============================================================
 
 struct rend_dot_t : public warrior_attack_t
 {
   double bloodsurge_chance, rage_from_bloodsurge;
+  action_t* fueled_by_violence_heal;
   rend_dot_t( warrior_t* p )
     : warrior_attack_t( "rend_dot", p, p->spell.rend_dot ),
       bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
-      rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
+      rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) ),
+      fueled_by_violence_heal( nullptr )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
+
+    if ( p->talents.shared.fueled_by_violence.ok() )
+      fueled_by_violence_heal = get_action<fueled_by_violence_heal_t>( "fueled_by_violence", p );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    warrior_attack_t::tick( d );
+
+    if ( fueled_by_violence_heal && d->state->result_amount )
+    {
+      fueled_by_violence_heal->base_dd_min = fueled_by_violence_heal->base_dd_max = d->state->result_amount * p()->talents.shared.fueled_by_violence->effectN( 1 ).percent();
+      fueled_by_violence_heal->execute();
+    }
   }
 };
 
@@ -3719,14 +3770,40 @@ struct colossus_smash_t : public warrior_attack_t
   }
 };
 
-// Deep Wounds ARMS ==============================================================
+// Protection MID2 4pc ===========================================================
+struct bloody_rebuke_dot_t : public warrior_attack_t
+{
+  bloody_rebuke_dot_t( warrior_t* p )
+    : warrior_attack_t( "bloody_rebuke", p, p->find_spell( 1300690 ) )
+  {
+    background = tick_may_crit = true;
+  }
+};
 
+
+// Deep Wounds ARMS ==============================================================
 struct deep_wounds_t : public warrior_attack_t
 {
-  deep_wounds_t( warrior_t* p ) : warrior_attack_t( "deep_wounds", p, p->spell.deep_wounds_dot )
+  action_t* fueled_by_violence_heal;
+  deep_wounds_t( warrior_t* p ) : warrior_attack_t( "deep_wounds", p, p->spell.deep_wounds_dot ),
+  fueled_by_violence_heal( nullptr )
   {
     background = tick_may_crit = true;
     rolling_periodic           = true;
+
+    if ( p->talents.shared.fueled_by_violence.ok() )
+      fueled_by_violence_heal = get_action<fueled_by_violence_heal_t>( "fueled_by_violence", p );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    warrior_attack_t::tick( d );
+
+    if ( fueled_by_violence_heal && d->state->result_amount )
+    {
+      fueled_by_violence_heal->base_dd_min = fueled_by_violence_heal->base_dd_max = d->state->result_amount * p()->talents.shared.fueled_by_violence->effectN( 1 ).percent();
+      fueled_by_violence_heal->execute();
+    }
   }
 };
 
@@ -5728,7 +5805,12 @@ struct ravager_tick_t : public warrior_attack_t
     warrior_attack_t::impact( state );
 
     if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+    {
       td( state->target )->debuffs_ravaged->trigger( ravaged_debuff_duration );
+
+      if ( p()->specialization() == WARRIOR_PROTECTION && p()->sets->has_set_bonus( WARRIOR_PROTECTION, MID2, B4 ) )
+        p()->active.bloody_rebuke->execute_on_target( state->target );
+    }
   }
 
   void execute() override
@@ -5907,8 +5989,13 @@ struct revenge_t : public warrior_attack_t
 
   void execute() override
   {
+    bool free_revenge = p()->buff.revenge->up();
+
     warrior_attack_t::execute();
     p()->buff.revenge->expire();
+
+    if ( free_revenge && p()->sets->has_set_bonus( WARRIOR_PROTECTION, MID2, B2 ) )
+      p()->buff.vengeful_shield->trigger();
 
     if ( rng().roll( shield_slam_reset ) )
       p()->cooldown.shield_slam->reset( true );
@@ -5937,6 +6024,14 @@ struct revenge_t : public warrior_attack_t
         lightning_strike->execute();
       }
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    if ( p()->buff.revenge->up() && p()->sets->has_set_bonus( WARRIOR_PROTECTION, MID2, B4 ) )
+      p()->active.bloody_rebuke->execute_on_target( s->target );
   }
 
   bool ready() override
@@ -6175,6 +6270,8 @@ struct shield_slam_t : public warrior_attack_t
       phalanx->execute_on_target( p()->target );
       p()->buff.phalanx->expire();
     }
+
+    p()->buff.vengeful_shield->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -7036,7 +7133,8 @@ struct recklessness_t : public warrior_spell_t
 
     p()->buff.recklessness->extend_duration_or_trigger();
     p()->fury_mid2_2pc_extensions = 0;  // Reset counter on hard cast
-    p()->buff.fury_mid2_4pc_crit->expire();
+    if ( p()->buff.fury_mid2_4pc_crit )
+      p()->buff.fury_mid2_4pc_crit->expire();
 
     if ( p()->talents.mountain_thane.snap_induction->ok() )
       p()->buff.thunder_blast->trigger();
@@ -7797,6 +7895,7 @@ void warrior_t::init_spells()
 
   talents.shared.avatar = find_shared_talent( { &talents.arms.avatar, &talents.fury.avatar, &talents.protection.avatar } );
   talents.shared.bladestorm = find_shared_talent( { &talents.arms.bladestorm, &talents.fury.bladestorm } );
+  talents.shared.fueled_by_violence = find_shared_talent( { &talents.arms.fueled_by_violence, &talents.protection.fueled_by_violence } );
   talents.shared.ravager = find_shared_talent( { &talents.arms.ravager, &talents.protection.ravager } );
   talents.shared.bloodsurge = find_shared_talent( { &talents.arms.bloodsurge, &talents.protection.bloodsurge } );
   talents.shared.sudden_death = find_shared_talent( { &talents.arms.sudden_death, &talents.fury.sudden_death, &talents.protection.sudden_death } );
@@ -7807,6 +7906,7 @@ void warrior_t::init_spells()
   active.deep_wounds    = nullptr;
   active.fatality       = nullptr;
   active.slayers_strike = nullptr;
+  active.bloody_rebuke  = nullptr;
 
   // Cooldowns
   cooldown.avatar         = get_cooldown( "avatar" );
@@ -8419,10 +8519,13 @@ void warrior_t::create_buffs()
   // Arms
   buff.winding_up = make_buff( this, "winding_up", find_spell( 1300670 ) );
   // Fury
-  buff.fury_mid2_4pc_crit = make_buff( this, "fury_mid2_4pc_crit" )
+  if ( sets->has_set_bonus( WARRIOR_FURY, MID2, B4 ) )
+    buff.fury_mid2_4pc_crit = make_buff( this, "fury_mid2_4pc_crit" )
                                 ->set_default_value( sets->set( WARRIOR_FURY, MID2, B4 )->effectN( 2 ).percent() )
                                 ->set_max_stack( as<int>( sets->set( WARRIOR_FURY, MID2, B4 )->effectN( 3 ).base_value() ) )
                                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+  // Protection
+  buff.vengeful_shield = make_buff( this, "vengeful_shield", find_spell( 1300681 ) );
 }
 
 // warrior_t::init_special_effects() ====================================
@@ -8946,6 +9049,9 @@ void warrior_t::create_actions()
   {
     active.ravager_whirling_blade = new ravager_t( "ravager_whirling_blade", this );
   }
+
+  if ( sets->has_set_bonus( WARRIOR_PROTECTION, MID2, B4 ) )
+    active.bloody_rebuke = new bloody_rebuke_dot_t( this );
 
   parse_player_effects_t::create_actions();
 }
