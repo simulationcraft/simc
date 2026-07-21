@@ -2662,7 +2662,8 @@ struct bloodthirst_t : public warrior_attack_t
       if ( rng().roll( enrage_chance ) )
         p()->enrage();
     }
-    if( execute_state && !td( execute_state->target )->hit_by_fresh_meat )
+
+    if( p()->talents.fury.fresh_meat.ok() && execute_state && !td( execute_state->target )->hit_by_fresh_meat )
     {
       p()->buff.enrage->trigger();
       td( execute_state->target )->hit_by_fresh_meat = true;
@@ -2674,7 +2675,6 @@ struct bloodthirst_t : public warrior_attack_t
       // Double the benefit on crit
       if( execute_state && execute_state->result == RESULT_CRIT )
         p()->buff.enrage->extend_duration( p()->talents.fury.deft_experience->effectN( 2 ).time_value() );
-
     }
 
     p()->buff.fierce_followthrough->expire();
@@ -2902,6 +2902,12 @@ struct bloodbath_t : public warrior_attack_t
 
       if ( rng().roll( enrage_chance ) )
         p()->enrage();
+    }
+
+    if( p()->talents.fury.fresh_meat.ok() && execute_state && !td( execute_state->target )->hit_by_fresh_meat )
+    {
+      p()->buff.enrage->trigger();
+      td( execute_state->target )->hit_by_fresh_meat = true;
     }
 
     if ( p()->buff.enrage->up() )
