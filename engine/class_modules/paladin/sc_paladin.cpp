@@ -4554,11 +4554,11 @@ double paladin_t::composite_spell_crit_chance() const
 {
   double h = player_t::composite_spell_crit_chance();
 
-  if ( is_ptr() )
-    return h;
-
   if ( buffs.avenging_wrath->up() )
     h += buffs.avenging_wrath->data().effectN( 3 ).percent();
+
+  if ( is_ptr() )
+    return h;
 
   if ( buffs.sentinel->up() )
     h += buffs.sentinel->get_crit_bonus();
@@ -4570,11 +4570,11 @@ double paladin_t::composite_melee_crit_chance() const
 {
   double h = player_t::composite_melee_crit_chance();
 
-  if ( is_ptr() )
-    return h;
-
   if ( buffs.avenging_wrath->up() )
     h += buffs.avenging_wrath->data().effectN( 3 ).percent();
+
+  if ( is_ptr() )
+    return h;
 
   if ( buffs.sentinel->up() )
     h += buffs.sentinel->get_crit_bonus();
