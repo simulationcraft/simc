@@ -12507,7 +12507,7 @@ void shaman_t::create_buffs()
   buff.ascendance->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
     if ( new_ == 0 ) 
     {
-      buff.mid2_ele_4pc_builder->trigger(buffer_tier ? 2 : 4);
+      buff.mid2_ele_4pc_builder->trigger(buffer_tier ? 4 : 2);
       buffer_tier = false;
     }
   } );
@@ -12835,10 +12835,9 @@ void shaman_t::create_buffs()
                                        buff.mid2_ele_4pc_spender->trigger();
                                      }
                                    });
-  ;
   buff.mid2_ele_4pc_spender =
-      make_buff( this, "overcharge!", find_spell( 1300222 ) ) 
-      ->set_trigger_spell(sets->set( SHAMAN_ELEMENTAL, MID2, B4 ) );
+      make_buff( this, "overcharge_tier", find_spell( 1300222 ) ) 
+      ->set_trigger_spell(sets->set( SHAMAN_ELEMENTAL, MID2, B4 ));
 
 
   if ( dbc->ptr )
