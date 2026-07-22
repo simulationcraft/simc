@@ -3401,6 +3401,9 @@ struct akilzons_clarity_buff_t final : public druid_buff_t
     set_default_value( max_val * 0.01 );
     // the duration is 0 since we tie it to eclipse
     set_duration( 0_ms );
+    //since the duration is 0ms and the buff is manually removed we need to
+    // set this otherwise simc treats a 0ms buff starting at 00:00 as constant
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
     // prevent ticks from bumping stacks and refreshes from cancelling tick_event
     set_freeze_stacks( true );
