@@ -3418,13 +3418,9 @@ struct akilzons_clarity_buff_t final : public druid_buff_t
     if ( total <= 0 )
       return max_val;
 
-    auto mid = total * 0.5;
-    double val;
-
-    if ( elapsed_ <= mid )
-      val = max_val - ( max_val - min_val ) * elapsed_ / mid;
-    else
-      val = min_val + ( max_val - min_val ) * ( elapsed_ - mid ) / std::max( 1.0, mid - 1.0 );
+    auto center = ( total - 1.0 ) * 0.5;
+    auto dist = std::min( elapsed_, total - 1.0 - elapsed_ );
+    double val = max_val - ( max_val - min_val ) * dist / std::max( 1.0, center );
 
     return std::clamp( as<int>( std::ceil( val ) ), min_val, max_val );
   }
