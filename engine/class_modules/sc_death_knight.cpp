@@ -4687,10 +4687,6 @@ struct blood_beast_pet_t : public death_knight_pet_t
   {
     blood_beast_melee_t( blood_beast_pet_t* p ) : auto_attack_melee_t<blood_beast_pet_t>( p )
     {
-      // Not sure if this was applied to AP% inheritence, or just autos. doing just autos for now to be safe. 
-      // TODO: Confirm.
-      if( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-        base_multiplier = 14.0; 
     }
 
     void impact( action_state_t* state ) override
@@ -4728,6 +4724,8 @@ struct blood_beast_pet_t : public death_knight_pet_t
     main_hand_weapon.swing_time = 1_s;
     npc_id                      = owner->find_spell( 434237 )->effectN( 1 ).misc_value1();
     owner_coeff.ap_from_ap      = owner->specialization() == DEATH_KNIGHT_UNHOLY ? 0.2325 : 0.2325;
+    if ( owner->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      owner_coeff.ap_from_ap    = 3.0;
     resource_regeneration       = regen_type::DISABLED;
     blood_beast_mod             = dk()->specialization() == DEATH_KNIGHT_BLOOD
                                       ? dk()->talent.sanlayn.the_blood_is_life->effectN( 1 ).percent()
