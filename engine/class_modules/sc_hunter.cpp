@@ -562,7 +562,6 @@ public:
   struct rppm_t
   {
     real_ppm_t* wildfire_imbuement;
-    real_ppm_t* grenade_juggler;
 
     real_ppm_t* lethal_barbs;
 
@@ -6208,6 +6207,9 @@ struct boomstick_t : public hunter_spell_t
         }
       }
     }
+
+    if ( p()->talents.grenade_juggler.ok() )
+      p()->buffs.grenade_juggler->trigger();
     
     hunter_spell_t::execute();
   }
@@ -8229,7 +8231,6 @@ void hunter_t::init_rng()
   player_t::init_rng();
 
   rppm.wildfire_imbuement       = get_rppm( "Wildfire Imbuement", talents.wildfire_imbuement );
-  rppm.grenade_juggler          = get_rppm( "Grenade Juggler", talents.grenade_juggler );
 
   rppm.lethal_barbs             = get_rppm( "Lethal Barbs", talents.lethal_barbs );
   
