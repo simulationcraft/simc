@@ -531,6 +531,7 @@ struct druid_t final : public parse_player_effects_t
   moon_stage_e moon_stage;
   std::vector<event_t*> persistent_event_delay;
   event_t* astral_power_decay;
+  int cp_spent_in_berserk = 0;  // mid2 2pc
 
   struct dot_list_t
   {
@@ -739,6 +740,7 @@ struct druid_t final : public parse_player_effects_t
     buff_t* coiled_to_spring;
     buff_t* flash_of_clarity;  // mid1 2pc
     buff_t* frantic_momentum;
+    buff_t* halazzis_fury;  // mid2 2pc
     buff_t* hunger_for_battle;
     buff_t* incarnation_cat;
     buff_t* incarnation_cat_prowl;
@@ -3845,6 +3847,10 @@ public:
   void consume_resource() override
   {
     base_t::consume_resource();
+
+    // all finishers count their effective combo points, including free finishers (apex, convoke) at max
+    if ( hit_any_target && p()->buff.b_inc_cat->check() )
+      p()->cp_spent_in_berserk += _combo_points();
 
     if ( background || !hit_any_target )
       return;
@@ -11199,6 +11205,21 @@ void druid_t::create_buffs()
         resource_gain( RESOURCE_COMBO_POINT, cp, gain );
       } );
 
+  if ( sets->has_set_bonus( DRUID_FERAL, MID2, B2 ) )
+  {
+    auto b2 = sets->set( DRUID_FERAL, MID2, B2 );
+    auto per_cp = timespan_t::from_millis( talent.incarnation_cat.ok() && talent.ashamanes_guidance.ok()
+                                             ? b2->effectN( 2 ).base_value()
+                                             : b2->effectN( 1 ).base_value() );
+
+    buff.b_inc_cat->add_stack_change_callback( [ this, per_cp ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        cp_spent_in_berserk = 0;
+      else if ( cp_spent_in_berserk > 0 )
+        buff.halazzis_fury->trigger( cp_spent_in_berserk * per_cp );
+    } );
+  }
+
   buff.chomp_enabler =
     make_fallback( talent.chomp.ok(), this, "chomp_enabler", spec.chomp_controller->effectN( 1 ).trigger() );
 
@@ -11217,6 +11238,9 @@ void druid_t::create_buffs()
       ->set_cooldown( talent.frantic_momentum->internal_cooldown() )
       ->set_chance( find_trigger( talent.frantic_momentum ).percent() )
       ->set_trigger_spell( talent.frantic_momentum );
+
+  buff.halazzis_fury =
+    make_fallback( sets->has_set_bonus( DRUID_FERAL, MID2, B2 ), this, "halazzis_fury", find_spell( 1301600 ) );
 
   buff.incarnation_cat_prowl = make_fallback( talent.incarnation_cat.ok(),
     this, "incarnation_avatar_of_ashamane_prowl", find_effect( talent.incarnation_cat, E_TRIGGER_SPELL ).trigger() )
@@ -13041,6 +13065,7 @@ void druid_t::reset()
   dot_lists.thrash.clear();
   dot_lists.dreadful_wound.clear();
   spell_queued = {};
+  cp_spent_in_berserk = 0;
 }
 
 /*
@@ -14191,6 +14216,7 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.apex_predators_craving );
   _a->parse_effects( buff.berserk_cat );
   _a->parse_effects( buff.coiled_to_spring, CONSUME_BUFF );
+  _a->parse_effects( buff.halazzis_fury );
   _a->parse_effects( buff.hunger_for_battle );
   _a->parse_effects( buff.incarnation_cat );
   _a->parse_effects( buff.predator, USE_CURRENT );
