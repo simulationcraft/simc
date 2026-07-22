@@ -12507,7 +12507,7 @@ void shaman_t::create_buffs()
   buff.ascendance->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
     if ( new_ == 0 ) 
     {
-      buff.mid2_ele_4pc_builder->trigger(buffer_tier ? 2 : 4);
+      buff.mid2_ele_4pc_builder->trigger(buffer_tier ? 4 : 2);
       buffer_tier = false;
     }
   } );
