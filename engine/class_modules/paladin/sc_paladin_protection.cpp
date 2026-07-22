@@ -41,7 +41,7 @@ namespace paladin {
 
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-    add_invalidate( CACHE_MASTERY );
+    add_invalidate( CACHE_CRIT_CHANCE );
     add_invalidate( CACHE_STAMINA );
   }
 
