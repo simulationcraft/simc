@@ -3342,10 +3342,17 @@ struct otherworldly_focus_benefit_t : public BASE
 {
   using base_t = otherworldly_focus_benefit_t<BASE>;
 
+  double increase_percent;
+
   otherworldly_focus_benefit_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
                                 util::string_view o = {} )
     : BASE( n, p, s, o )
   {
+    increase_percent = p->talent.annihilator.otherworldly_focus->effectN( 1 ).percent();
+    if (p->is_ptr() && p->specialization() == DEMON_HUNTER_DEVOURER)
+    {
+      increase_percent = p->talent.annihilator.otherworldly_focus->effectN( 3 ).percent();
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -3360,8 +3367,7 @@ struct otherworldly_focus_benefit_t : public BASE
       // etc until reaching 0 benefit
       auto num_target_reduction_percent = BASE::dh()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() *
                                           ( std::max( std::min( s->n_targets - 1, 10U ), 0U ) );
-      m *= 1.0 + std::max( 0.0, BASE::dh()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() -
-                                    num_target_reduction_percent );
+      m *= 1.0 + std::max( 0.0, increase_percent - num_target_reduction_percent );
     }
 
     return m;

@@ -391,6 +391,9 @@ struct monk_td_t : public actor_target_data_t
 
     // Shado-Pan
     propagate_const<buff_t *> high_impact;
+
+    // Tier
+    propagate_const<buff_t *> mid2_brm_4pc;
   } debuff;
 
   monk_t &monk;
@@ -505,6 +508,9 @@ public:
 
     // Shado-Pan
     actions::flurry_strikes_t *flurry_strikes;
+
+    // Tier
+    propagate_const<action_t *> mid2_brm_4pc;
   } action;
 
   std::vector<action_t *> combo_strike_actions;
@@ -592,6 +598,7 @@ public:
 
     // Tier
     propagate_const<buff_t *> mid2_ww_4pc;
+    propagate_const<buff_t *> mid2_brm_2pc;
   } buff;
 
   struct
@@ -1117,6 +1124,11 @@ public:
     struct
     {
       const spell_data_t *ww_4pc_buff;
+      const spell_data_t *brm_2pc_buff;
+      const spell_data_t *brm_2pc_damage;
+      const spell_data_t *brm_4pc_action;
+      const spell_data_t *brm_4pc_damage;
+      const spell_data_t *brm_4pc_debuff;
     } mid2;
 
     struct

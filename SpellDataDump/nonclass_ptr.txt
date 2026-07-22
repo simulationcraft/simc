@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68745 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68824 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -93149,6 +93149,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 4528.988 (coefficient=35.43713) | PvP Coefficient: 0.4 | Radius: 15 yards | Target: Enemies in Cone to Targeted Enemy (104)
 #2 (id=1339607)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 267402 | Target: Self (1)
+Description      : $@spelldesc267402
 Tooltip          : Inflicts $w1 Nature damage every $t1 sec.
 
 Name             : Zandalari Herbalism (id=267458) 
@@ -160032,7 +160033,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 #2 (id=1028791)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 383812
-Description      : $@spelldesc383812
+Description      : The warmth of the Red Dragonflight increases your Critical Strike by $383812s5.
 Tooltip          : The warmth of the Red Dragonflight increases your Critical Strike by $w1.
 
 Name             : Lobbing Fire Nova (id=383814) 
@@ -165922,8 +165923,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Targeted Ally (21)
 #2 (id=1029062)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 383812
-Description      : $@spelldesc383812
-
+Description      : The Ruby Whelp takes an ally under their wing, granting them $383812s6 Haste.
 Tooltip          : $@auracaster's Ruby Whelp takes you under their wing, increasing your Haste by $w1.
 
 Name             : Fire Shot (id=389839) 
@@ -243084,7 +243084,7 @@ Effects          :
                    Affected School(s): All
 Tooltip          : Absorb $w1 damage.
 
-Name             : Drum of Renewed Bonds (id=1247568) [Passive] 
+Name             : Renewed Critical Strike (id=1247568) [Passive] 
 School           : Nature
 Spell Type       : None
 Proc Chance      : 101%
@@ -243096,7 +243096,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1247577 | Target: Self (1)
 Description      : Your abilities have a chance to grant you $1247577s1 Critical Strike for $1247577d.
 
-Name             : Drum of Renewed Bonds (id=1247569) [Passive] 
+Name             : Renewed Haste (id=1247569) [Passive] 
 School           : Nature
 Spell Type       : None
 Proc Chance      : 101%
@@ -243108,7 +243108,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1247578 | Target: Self (1)
 Description      : Your abilities have a chance to grant you $1247578s1 Haste for $1247578d.
 
-Name             : Drum of Renewed Bonds (id=1247570) [Passive] 
+Name             : Renewed Mastery (id=1247570) [Passive] 
 School           : Nature
 Spell Type       : None
 Proc Chance      : 101%
@@ -243120,7 +243120,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1247579 | Target: Self (1)
 Description      : Your abilities have a chance to grant you $1247579s1 Mastery for $1247579d.
 
-Name             : Drum of Renewed Bonds (id=1247571) [Passive] 
+Name             : Renewed Versatility (id=1247571) [Passive] 
 School           : Nature
 Spell Type       : None
 Proc Chance      : 101%
@@ -243136,7 +243136,7 @@ Name             : Akil'zon's Clarity (id=1247577)
 School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
-Triggered By     : Drum of Renewed Bonds (1247568)
+Triggered By     : Renewed Critical Strike (1247568)
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1249907)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
@@ -243147,7 +243147,7 @@ Name             : Halazzi's Swiftness (id=1247578)
 School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
-Triggered By     : Drum of Renewed Bonds (1247569)
+Triggered By     : Renewed Haste (1247569)
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1249908)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
@@ -243158,7 +243158,7 @@ Name             : Jan'alai's Warmth (id=1247579)
 School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
-Triggered By     : Drum of Renewed Bonds (1247570)
+Triggered By     : Renewed Mastery (1247570)
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1249909)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
@@ -243169,7 +243169,7 @@ Name             : Nalorakk's Resolve (id=1247580)
 School           : Physical
 Spell Type       : None
 Duration         : 12 seconds
-Triggered By     : Drum of Renewed Bonds (1247571)
+Triggered By     : Renewed Versatility (1247571)
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1249910)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
@@ -244843,7 +244843,7 @@ Real PPM         : 1.25
 Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1254622)  : Apply Aura (6) | Proc Trigger Spell (42): Lightspire Core
+#1 (id=1254622)  : Apply Aura (6) | Proc Trigger Spell (42): Radiant Light
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1263762 | Target: Self (1)
 #2 (id=1275854)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 52.44412 (coefficient=0.400091) | Rating: Mastery | Target: Self (1)
@@ -245006,9 +245006,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 88.30984 (coefficient=0.673707) | Trigger Spell: 1254180 | Target: Self (1)
 #2 (id=1279134)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 11.91915 (coefficient=0.09093)
-Description      : Your damaging abilities have a chance to echo with Xathuux's furious roar, increasing Critical Strike by $s1 for $1254180d.
+Description      : Your damaging abilities have a chance to echo with Xathuux's furious roar, increasing your Critical Strike by $s1 for $1254180d.
 
-During this time, each of your attacks increases your Critical Strike by an additional $s2, $@spelldesc1254331
+During this time, each of your attacks increases your Critical Strike by an additional $s2, stacking up to a maximum of $1254331u times.
 
 Name             : Nalorakk's Rage (id=1250567) [Passive] 
 School           : Physical
@@ -246047,7 +246047,7 @@ Internal Cooldown: 5 seconds
 Proc Chance      : 101%
 Real PPM         : 1
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Unknown 38
-Triggered By     : Bear (1266182), Pangolin (1266184), Lynx (1266197)
+Triggered By     : Bear (1266182)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1258639)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Secondary Rating (-7)
@@ -246491,7 +246491,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 #2 (id=1260696)  : Apply Party Aura (35) | Proc Trigger Spell (42): Echoing Roar
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1254331
-Description      : Your damaging abilities have a chance to echo with Xathuux's furious roar, increasing Critical Strike by $s1 for $d.
+Description      : Your damaging abilities have a chance to echo with Xathuux's furious roar, increasing your Critical Strike by $1250564s1 for $d.
 Tooltip          : Critical Strike increased by $w1.
 
 Name             : Latch's Crooked Hook (id=1254193) 
@@ -246532,7 +246532,7 @@ Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Ste
 Effects          :
 #1 (id=1260693)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
-Description      : stacking up to a maximum of $u times.
+Description      : While echoing Xathuux's furious roar, each of your attacks grants an additional $1250564s2 Critical Strike, stacking up to $1254331u times.
 Tooltip          : Critical Strike increased by $w1.
 
 Name             : Unstable Felheart Crystal (id=1254339) 
@@ -246769,6 +246769,7 @@ Effects          :
 #1 (id=1261918)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Targeted Ally (21)
                    Affected School(s): All
+Description      : $@spelldesc1254339
 Tooltip          : Absorbs $1266821s2 damage.
 
 Name             : Withered Saptor's Paw (id=1255226) 
@@ -247069,7 +247070,6 @@ Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 2
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Triggered By     : Reborn Haste (1264150)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1263917)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
@@ -247274,6 +247274,7 @@ Attributes       : Aura Stays After Combat (57), Aura Points On Client (268)
 Effects          :
 #1 (id=1266763)  : Apply Aura (6) | Increase Movement Speed% (171)
                    Base Value: 25 | Scaled Value: 25 | Target: Current Target (25)
+Description      : Nearby allies with Nalorakk's favor are rallied, gaining $1258222s1% movement speed for $1258222d.
 Tooltip          : Speed increased by $w1%.
 
 Name             : Nalorakk's Rage (id=1258223) 
@@ -247288,7 +247289,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Stat: Str | Target: Self (1)
 #2 (id=1266765)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1250567 | Target: Self (1)
-Description      : $@spelldesc1250567
+Description      : You have proven your worth to Nalorakk. Your abilities have a chance to echo with the war god's furious roar, granting you $1250567s1 Strength for $d.
 Tooltip          : Strength increased by $w1.
 
 Name             : Mark of Light (id=1258226) 
@@ -248506,7 +248507,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 #2 (id=1269743)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1250588
-Description      : $@spelldesc1250588
+Description      : You gain Nalorakk's Favor of Enduring. Taking damage has a chance to grant a Mark of Frost, increasing your Critical Strike by $1250588s1 for $d. Stacks up to $u times.
 Tooltip          : You gain $w1 Critical Strike.
 
 Name             : Permafrost Reservoir (id=1260321) 
@@ -248519,7 +248520,7 @@ Effects          :
 #1 (id=1269750)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Description      : $@spelldesc1250588
+Description      : If your health falls below $1250588s2%, the reservoir ruptures, consuming all marks to form a Frost Barrier that absorbs $1250588s3 damage per mark for $d.
 Tooltip          : Absorb $w1 damage for $d.
 
 Name             : Nullsight (id=1260459) 
@@ -250790,7 +250791,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 13.10805 (coefficient=0.1) | Rating: Crit | Target: Self (1)
 #2 (id=1274054)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1250557
-Description      : $@spelldesc1250557
+Description      : Each attack against the marked target grants you $1250557s2 Critical Strike, up to ${$1250557s2*$1263357u}.
 Tooltip          : The execution of your target looms closer, granting you $w1 Critical Strike.
 
 Name             : Cosmic Barrage (id=1263393) 
@@ -250939,7 +250940,7 @@ Effects          :
 Description      : $@spelldesc1258283
 Tooltip          : Absorbing $w2% of incoming damage, up to $w1.
 
-Name             : Lightspire Core (id=1263762) [Hidden] 
+Name             : Radiant Light (id=1263762) [Hidden] 
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -250951,6 +250952,8 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow 
 Effects          :
 #1 (id=1274640)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 40323 | Target: at Self (18)
+Description      : Your damaging spells and abilities can call a beam of radiant light nearby. Standing in the light blesses you with $1250527s3 Mastery while you stand in it.
+Tooltip          : Your damaging spells and abilities called a beam of radiant light nearby.
 
 Name             : Light's Blessing (id=1263768) 
 School           : Physical
@@ -250962,7 +250965,8 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1274648)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
-Tooltip          : Mastery increased by increased by $w1.
+Description      : The light blesses you with $1250527s3 Mastery while you remain within it.
+Tooltip          : Mastery increased by $w1.
 
 Name             : Commendation of the Dragonscale Expedition (id=1264120) 
 School           : None
@@ -251045,19 +251049,6 @@ Effects          :
 #2 (id=1275303)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1250589
 Description      : $@spelldesc1250589
-
-Name             : Reborn Haste (id=1264150) 
-School           : Physical
-Spell Type       : None
-Duration         : 12 seconds
-Labels           : 292
-                 : 3959: Item Effects
-Attributes       : Aura Points On Client (268)
-Effects          :
-#1 (id=1275304)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Trigger Spell: 1256391 | Target: Self (1)
-Description      : $@spelldesc1256391
-Tooltip          : Haste increased by $w1.
 
 Name             : Crawling Plague (id=1264156) 
 School           : Nature
@@ -251810,52 +251801,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
 #2 (id=1278430)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1253111
-Description      : $@spelldesc1253111
+Description      : Increases $pri for $d.
 Tooltip          : $pri increased by $w1.
-
-Name             : Pangolin (id=1266184) 
-School           : Physical
-Spell Type       : None
-Range            : 50000 yards
-Duration         : 30 seconds
-Attributes       : Allow Cast While Dead (23), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1278435)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
-#2 (id=1278436)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
-#3 (id=1278452)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
-#4 (id=1278453)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
-#5 (id=1278454)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1253111 | Target: Self (1)
-Description      : $@spelldesc1253111
-Tooltip          : $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $w5.
-
-Name             : Lynx (id=1266197) 
-School           : Physical
-Spell Type       : None
-Range            : 50000 yards
-Duration         : 30 seconds
-Attributes       : Allow Cast While Dead (23), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1278461)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
-#2 (id=1278462)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
-#3 (id=1278463)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
-#4 (id=1278464)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
-#5 (id=1278465)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1253111 | Target: Self (1)
-#6 (id=1278466)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed, Leech, Avoidance | Target: Self (1)
-Description      : $@spelldesc1253111
-Tooltip          : $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Lowest secondary stat] increased by $w5.
-
-Speed, Avoidance, and Leech increased by $w6.
 
 Name             : Heaven's Glaive (id=1266257) [Passive] 
 School           : Physical
@@ -251889,7 +251836,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Rating: Vers | Target: Self (1)
 #5 (id=1278647)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Trigger Spell: 1253120 | Target: Self (1)
-Description      : $@spelldesc1253120
+Description      : During combat you have a chance to become consumed by Fanatical Inspiration, increasing your highest secondary by $1253120s1 for $1266299d.
 Tooltip          : $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $w5.
 
 Name             : Fanatically Inspired (id=1266300) 
@@ -251909,7 +251856,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Rating: Vers | Target: Targeted Ally (21)
 #5 (id=1278652)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Trigger Spell: 1253120 | Target: Targeted Ally (21)
-Description      : $@spelldesc1253120
+Description      : Party members also equipped with the keepsake have their lowest secondary increased by $1253120s2 for $1266300d.
 Tooltip          : $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Lowest secondary stat] increased by $w5.
 
 Name             : Dive-Bomb (id=1266366) 
@@ -251985,6 +251932,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Rating: Crit | Target: Self (1)
 #2 (id=1278831)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1253113
+Description      : Rebranding an enemy ignites the text, granting you $1253113s2 Critical Strike for $1266403d and immediately dealing all remaining damage.
+
 Tooltip          : Critical Strike increased by $w1.
 
 Name             : Text Ignite (id=1266407) 
@@ -257279,7 +257228,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
 #5 (id=1318020)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
-Description      : $@spelldesc1293326
+Description      : The Amani war banner fills you with battle fervor, increasing your highest secondary stat while standing within $1293326s3 yards of it.
 Tooltip          : The Amani war banner fills you with battle fervor, increasing your $?e1[Critical strike by $w2.][]$?e2[Haste by $w3.][]$?e3[Mastery by $w4.][]$?e4[Versatility by $w5.][]
 
 Name             : Corrosive Bilespear (id=1295761) 
@@ -258066,7 +258015,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Avoidance | Target: Self (1)
 #8 (id=1319453)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed | Target: Self (1)
-Description      : $@spelldesc1294329
+Description      : A random secondary stat is increased by $1294329s1.
+
+A random tertiary stat is increased by $1294329s2.
+
 Tooltip          : $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][A random secondary stat is] increased by $?e0[$w1]?e1[$w2]?e2[$w3]?e3[$w4][$w5].
 $?e5[Leech]?e6[Avoidance]?e7[Speed][A random tertiary stat is] increased by $?e5[$w6]?e6[$w7]?e7[$w8][$w8].
 
@@ -258222,21 +258174,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Trigger Spell: 1296883 | Target: Self (1)
 Description      : $@spelldesc1306743
 
-Name             : Ophidian Bone Whistle (id=1296890) 
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
-Aura Interrupt   : Leave World (19), Enter World (22)
-Effects          :
-#1 (id=1319681)  : Apply Aura (6) | Proc Trigger Spell (42): Ophidian Bone Whistle
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1306744 | Target: Self (1)
-Description      : $@spelldesc1306743
-Tooltip          : Your next harmful spell or ability will send a spirit snake to your target's location dealing $w1 Nature damage split between nearby enemies.
-
 Name             : Pulse Seeker's Oculus (id=1296971) 
 School           : Physical
 Spell Type       : None
@@ -258258,7 +258195,7 @@ Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1319830)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc1294326
+Description      : Mastery granted by Pulse Seeker's Oculus increased by $1294326s6% for $d.
 Tooltip          : Mastery granted by Pulse Seeker's Oculus increased by $w1%.
 
 Name             : Searing Lightblast (id=1296979) 
@@ -258622,7 +258559,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 292
                  : 3959: Item Effects
-Triggered By     : Voracious Heart of Ula'tek (1297761), Devour Morsel (1305374)
+Triggered By     : Voracious Heart of Ula'tek (1297761), Devour Morsel (1305374), Devoured Strength (1305376)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1321124)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
@@ -259094,8 +259031,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: -389.2279 (coefficient=-2.969381) | Target: Self (1)
 #3 (id=1328182)  : Apply Aura (6) | Proc Trigger Spell (42): Insidious Venom
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1302662 | Target: Self (1)
-Description      : Chance during combat to Poison yourself, lowering all of your Secondary and Tertiary Statistics while greatly increasing your $pri for $1302621d.
-Tooltip          : Chance during combat to Poison yourself, lowering all of your Secondary and Tertiary Statistics while greatly increasing your $pri for $1302621d.
+Description      : Chance during combat to Poison yourself, lowering all of your Secondary and Tertiary Stats while greatly increasing your $pri for $1302621d.
+Tooltip          : Chance during combat to Poison yourself, lowering all of your Secondary and Tertiary Stats while greatly increasing your $pri for $1302621d.
 
 Name             : Virulent Mucus (id=1302577) 
 School           : Physical
@@ -259823,6 +259760,25 @@ Effects          :
 #2 (id=1332570)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1297760 | Target: Self (1)
 Description      : $@spelldesc1297761
+
+Name             : Devoured Strength (id=1305376) 
+School           : Physical
+Spell Type       : None
+Duration         : 20 seconds
+Labels           : 292
+                 : 3959: Item Effects
+Stacks           : 99 maximum
+Proc Chance      : 101%
+Attributes       : Aura Points On Client (268)
+Effects          :
+#1 (id=1332572)  : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Agi | Target: Self (1)
+#2 (id=1332573)  : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Str | Target: Self (1)
+#3 (id=1332574)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1297760 | Target: Self (1)
+Description      : Devour a morsel of your target, dealing $1297760s2 Physical damage and further increasing your $?(a137047|a137005|a137026)[Strength]?(a212611|a137009|a137014|a137022|a137034|a137038)[Agility][Strength or Agility] by $1297760s3.
+Tooltip          : Devouring a morsel of your prey has increased your $pri by $w1.
 
 Name             : Necrotic Tear (id=1305391) 
 School           : Shadow
@@ -260663,7 +260619,6 @@ Spell Type       : Magic
 Range            : 60 yards
 Labels           : 292
 Proc Chance      : 101%
-Triggered By     : Ophidian Bone Whistle (1296890)
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Can Proc From Procs (122), Always Line of Sight (185), Always AOE Line of Sight (186), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1334273)  : Trigger Spell (64): Ophidian Bone Whistle

@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68745 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68824 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -440,7 +440,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enab
 Effects          :
 #1 (id=118198)   : Trigger Spell (64): Rising Sun Kick
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 185099 | Target: Targeted Enemy (6)
-                   Modified By: Rising Sun Kick (1296687 effect#4)
 Description      : Kick upwards, dealing $?s137025[${$185099s1*$<CAP>/$AP}][$185099s1] Physical damage$?s128595[, and reducing the effectiveness of healing on the target for $115804d][].$?a388847[
 
 Applies Renewing Mist for $388847s1 seconds to an ally within $388847r yds][]
@@ -778,7 +777,7 @@ Labels           : 16: Class Spells
                  : 3566: Balanced Stratagem (451508 effect#1)
 Affecting Spells : Renewing Mist (119611 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#6), Mistweaver Monk (137024 effects: #1, #2, #17), Dome of Mist (205655 effect#2), Ovyd's Winter Wrap (217642 effect#2), Invoke Yu'lon, the Jade Serpent (322118 effects: #8, #9), Invoke Chi-Ji, the Red Crane (325197 effects: #7, #8), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Elusive Mists (388681 effects: #2, #3), Save Them All (389579 effect#1), Jadefire Brand (395413 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effects: #1, #2), Peer Into Peace (440008 effect#3), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Renewing Mist (1238851 effect#2), Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283666 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283667 effects: #1, #2), Vital Expenditure (1299572 effects: #1, #2)
 Family Flags     : 24, 48
-Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Name in Channel Bar (61), Include In Advanced Combat Log (72), No Target Per-Second Costs (75), Active Threat (94), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Name in Channel Bar (61), Include In Advanced Combat Log (72), No Target Per-Second Costs (75), Active Threat (94), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14), Standing (19), Invulnerability (22)
 Effects          :
 #1 (id=128871)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
@@ -1594,14 +1593,12 @@ Attributes       : Passive (6), Do Not Log (8), Can Proc From Procs (122), Maste
 Effects          :
 #1 (id=134001)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 31.185 | Misc Value: 24 | Target: Self (1)
-Hotfixed         : SP Coefficient (20.790001 -> 31.184999)
 #2 (id=287388)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=305755)   : Apply Aura (6) | Add Flat Modifier (107): Spell Coefficient (24)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.31185 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Gust of Mists (191894), Gust of Mists (328748), Gust of Mists (343819)
                    Family Flags: 110
-Hotfixed         : SP Coefficient (0.2079 -> 0.31185)
 Description      : Renewing Mist and Enveloping Mist cause a gust of healing mists, instantly healing the primary target for $191894s1.
 
 Name             : Crackling Jade Lightning (id=117952) [Spell Family (53)] 
@@ -1799,7 +1796,7 @@ Labels           : 16: Class Spells
                  : 741: Healing Spells
 Affecting Spells : Thunder Focus Tea (116680 effect#3), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Dome of Mist (205655 effect#2), Ovyd's Winter Wrap (217642 effect#2), Shelter of Rin (281301 effects: #1, #2), Invoke Yu'lon, the Jade Serpent (322118 effects: #8, #9), Invoke Chi-Ji, the Red Crane (325197 effects: #7, #8), Enveloping Breath (325209 effect#3), Tear of Morning (337993 effect#2), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Save Them All (389579 effect#1), Jadefire Brand (395413 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Soulfang Vitality (410082 effects: #1, #2), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effects: #1, #2), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Monk Mistweaver 11.0 Class Set 2pc (453628 effects: #1, #2), Chi Harmony (457013 effect#1), Lotus Infusion (458431 effects: #1, #2), Rushing Winds (467341 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Renewing Mist (1238851 effect#2), Way of the Serpent (1243155 effects: #1, #2), Monk Mistweaver 12.0 Class Set 2pc (1264840 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283666 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283667 effects: #1, #2)
 Family Flags     : 23, 48
-Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Not a Proc (105), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Spell Haste Affects Periodic (173), Doesn't Reset Swing Timer if Instant (217), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416), Periodic Script Runs Late (420), Periodic Refresh Extends Duration (436), Unknown (456), Non-secret Aura (506)
+Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Not a Proc (105), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Spell Haste Affects Periodic (173), Doesn't Reset Swing Timer if Instant (217), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416), Periodic Script Runs Late (420), Periodic Refresh Extends Duration (436), Unknown (456)
 Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19665 | PvP Coefficient: 1.96 | Target: Targeted Ally (21)
@@ -2571,7 +2568,7 @@ Labels           : 16: Class Spells
                  : 3566: Balanced Stratagem (451508 effect#1)
 Affecting Spells : Soothing Mist (115175 effect#3), Thunder Focus Tea (116680 effect#6), Renewing Mist (119611 effect#2), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Dome of Mist (205655 effect#2), Soothing Mist (209525 effect#2), The Black Flame's Gamble (216995 effect#1), Invoke Yu'lon, the Jade Serpent (322118 effects: #5, #6, #7, #8, #9), Invoke Chi-Ji, the Red Crane (325197 effects: #3, #4, #5, #7, #8), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #2, #3), Tear of Morning (337993 effect#2), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2), Invoke Chi-Ji, the Red Crane (344035 effect#1), Enveloping Breath (358560 effect#3), Primordial Mending (364266 effects: #1, #2), Tear of Morning (387995 effect#2), Save Them All (389579 effect#1), Jadefire Brand (395413 effect#1), Monk Mistweaver 10.1 Class Set 2pc (405541 effects: #1, #2), Chi Harmony (423439 effect#1), Mistweaver Monk (428200 effects: #1, #2), Temple Training (442743 effects: #1, #3), Strength of the Black Ox (443112 effect#1), Renewing Mist (448430 effect#2), Lighter Than Air (449609 effect#3), Chi Proficiency (450426 effects: #2, #3), Aspect of Harmony (450769 effect#2), Monk Mistweaver 11.0 Class Set 2pc (453628 effects: #1, #2), Chi Harmony (457013 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Renewing Mist (1238851 effect#2), Celestial Harmony (1242405 effect#1), Spiritfont (1260565 effect#3), Spiritfont (1260677 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283666 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283667 effects: #1, #2)
 Family Flags     : 48, 67, 79
-Attributes       : Not Shapeshifted (16), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Spell Haste Affects Periodic (173), Doesn't Reset Swing Timer if Instant (217), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (456), Non-secret Aura (506)
+Attributes       : Not Shapeshifted (16), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Spell Haste Affects Periodic (173), Doesn't Reset Swing Timer if Instant (217), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (456)
 Effects          :
 #1 (id=157840)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.248 | Target: Targeted Ally (21)
@@ -3124,12 +3121,10 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Awakening Spirit (1263631), Silent Sanctuary (1266720), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48
-Hotfixed         : Base Value (-13 -> -20)
 #2 (id=191104)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Awakening Spirit (1263631), Silent Sanctuary (1266720), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48
-Hotfixed         : Base Value (-13 -> -20)
 #3 (id=191105)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Blackout Kick (228649), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Thunderfist (393566), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443611), Flurry Strike (450617), Flurry Strike (451250), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Rushing Wind Kick (468179), Glyph of Tiger Palm (468605), Slicing Winds (1217411), Stomp (1242373), Jadefire Stomp (1248815), Spinning Crane Kick (1250999), Empty the Cellar (1262765), Celestial Flames (1263667), Harmonic Surge (1271011), Zenith Stomp (1272696)
@@ -3253,7 +3248,7 @@ Effects          :
                    Affected Spells: Rushing Jade Wind (116847), Rushing Jade Wind (148187)
                    Family Flags: 5
 #18 (id=1266579) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 1647 | Scaled Value: 1647 | Target: Self (1)
+                   Base Value: 1909 | Scaled Value: 1909 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (107270)
                    Family Flags: 8
 #19 (id=1286217) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -3646,7 +3641,6 @@ Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), 
 Effects          :
 #1 (id=268390)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.438 | Target: Targeted Enemy (6)
-                   Modified By: Rising Sun Kick (1296687 effect#4)
 Description      : $@spelldesc107428
 
 Name             : Gust of Mists (id=191894) [Spell Family (53)] 
@@ -10802,7 +10796,7 @@ Attributes       : Passive (6), Not In Spellbook (143)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1024677)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 280 | Scaled Value: 280 | Target: Self (1)
+                   Base Value: 280 | Scaled Value: 280 | PvP Coefficient: 0.358 | Target: Self (1)
 #2 (id=1024678)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=1024679)  : Apply Aura (6) | Dummy (4)
@@ -11373,7 +11367,6 @@ Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), 
 Effects          :
 #1 (id=1031561)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.5 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
-                   Modified By: Rising Sun Kick (1296687 effect#4)
 #2 (id=1031562)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 288634
 #3 (id=1031563)  : Energize Power (30)
@@ -11682,7 +11675,7 @@ Family Flags     : 103
 Attributes       : No Threat (42), Do Not Reset Combat Timers (81), Not a Proc (105), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1031743)  : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (11)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.8 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.34 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
 Description      : $@spelldesc392979
 
 Name             : Chi Energy (id=393057) [Spell Family (53)] 
@@ -15076,7 +15069,7 @@ Labels           : 16: Class Spells
                  : 3570
 Proc Chance      : 101%
 Proc Flags       : Generic Helpful Taken, Magic Heal Taken, Helpful Periodic Taken
-Attributes       : Can't Crit (93), Aura Is Buff (140), Allow Entering Arena (149), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Ignore Positive Damage Taken Modifiers (321), Rolling Periodic (334), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Can't Crit (93), Aura Is Buff (140), Allow Entering Arena (149), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Ignore Positive Damage Taken Modifiers (321), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1150888)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -17205,7 +17198,6 @@ Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack)
 Effects          :
 #1 (id=1180392)  : Trigger Spell (64): Rushing Wind Kick
                    Base Value: 6 | Scaled Value: 6 | Trigger Spell: 468179 | Target: Self (1)
-                   Modified By: Rising Sun Kick (1296687 effect#4)
 #2 (id=1181690)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=1280794)  : Dummy (3)
@@ -17299,7 +17291,6 @@ Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack)
 Effects          :
 #1 (id=1181673)  : School Damage (2): nature | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.7975 | Radius: 25 yards | Target: Enemies in Cone (24)
-                   Modified By: Rising Sun Kick (1296687 effect#4)
 Description      : $@spelldesc467307
 
 Name             : Glyph of Tiger Palm (id=468605) [Spell Family (53)] 
@@ -20727,10 +20718,12 @@ Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1285948)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
+#1 (id=1285948)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+#2 (id=1340371)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Misc Value 2: 6968 (Label) | Target: Self (1)
                    Affected Spells (Label): Zenith Stomp (1291484)
-#2 (id=1340371)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Doses (31)
+#3 (id=1343377)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Doses (31)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 31 | Misc Value 2: 6968 (Label) | Target: Self (1)
                    Affected Spells (Label): Zenith Stomp (1291484)
 Description      : Activating Zenith causes you to release a powerful stomp, dealing $1272696s1 Nature damage to nearby enemies, reduced beyond $s1 targets.
@@ -21045,7 +21038,7 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 6968: Zenith Stomp (1272694 effect#1), Zenith Stomp (1272694 effect#2)
+                 : 6968: Zenith Stomp (1272694 effect#2), Zenith Stomp (1272694 effect#3)
 Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
@@ -21092,7 +21085,7 @@ Labels           : 16: Class Spells
                  : 3536
 Proc Chance      : 101%
 Proc Flags       : Generic Helpful Taken, Magic Heal Taken, Helpful Periodic Taken
-Attributes       : Can't Crit (93), Aura Is Buff (140), Allow Entering Arena (149), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Ignore Positive Damage Taken Modifiers (321), Rolling Periodic (334), Allow Class Ability Procs (416), Non-secret Aura (506)
+Attributes       : Can't Crit (93), Aura Is Buff (140), Allow Entering Arena (149), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Ignore Positive Damage Taken Modifiers (321), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1313290)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -21204,6 +21197,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Is Ability (4), No Immunities (29), No Threat (42), No Aura Icon (60), Can Proc From Procs (122), Floating Combat Text On Cast (198), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1319382)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1518 (Category) | Target: Self (1)
@@ -21215,8 +21209,8 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 0.5 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 39
-#4 (id=1319898)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 0.5 | Misc Value: 3 | Target: Self (1)
+#4 (id=1319898)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 0.5 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 39
 Description      : $@spelldesc1296620
