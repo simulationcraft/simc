@@ -5779,8 +5779,7 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::tick( dot );
 
-    // 2026-07-12: Explosive Shot's cleave damage can crit independently of the main tick, so grab the pre-crit amount
-    double amount = dot->state->result_amount / ( 1.0 + dot->state->result_crit_bonus );
+    double amount = dot->state->result_amount;
     amount *= 1.0 - data().effectN( 3 ).percent();
 
     cleave->execute_on_target( dot->target, amount );
