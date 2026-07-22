@@ -19,8 +19,7 @@ actions.cds+=/ancestral_call,if=cooldown.bestial_wrath.ready|fight_remains<16
 actions.cds+=/fireblood,if=cooldown.bestial_wrath.ready|fight_remains<9
 actions.cds+=/potion,if=cooldown.bestial_wrath.ready|fight_remains<31
 
-actions.cleave=cancel_buff,name=beast_cleave,if=set_bonus.midnight_season_2_4pc
-actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=full_recharge_time<gcd
+actions.cleave=barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=full_recharge_time<gcd
 actions.cleave+=/bestial_wrath,if=!prev.wild_thrash
 actions.cleave+=/wild_thrash,if=talent.beast_cleave
 actions.cleave+=/wild_thrash,if=!talent.beast_cleave
