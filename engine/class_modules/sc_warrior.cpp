@@ -3440,13 +3440,6 @@ struct concussive_slam_t : public warrior_attack_t
       reduced_aoe_targets = data().effectN( 2 ).base_value();
       target_filter_callback = secondary_targets_only();
     }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-    if ( execute_state->result == RESULT_CRIT && p()->talents.arms.mortal_wounds->ok() )
-      p()->active.deep_wounds->execute_on_target( s->target );
-  }
 };
 
 struct slam_base_t : public warrior_attack_t
@@ -5398,6 +5391,8 @@ struct dreadnaught_t : warrior_attack_t
     aoe = -1;
     reduced_aoe_targets = 5.0;
     background  = true;
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      target_filter_callback = secondary_targets_only();
   }
 };
 
