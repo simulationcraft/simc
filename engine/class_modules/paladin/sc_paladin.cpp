@@ -3931,7 +3931,8 @@ void paladin_t::apply_action_effects( action_t* a ) {
   if ( !talents.crusade->ok() )
     aw_effect_mask.disable( 11 );
 
-  action->parse_effects( buffs.avenging_wrath, aw_effect_mask, IGNORE_STACKS );
+  if ( !is_ptr() || talents.sentinel->ok() )
+    action->parse_effects( buffs.avenging_wrath, aw_effect_mask, IGNORE_STACKS );
   action->parse_effects( buffs.divine_power );
   // TODO: add in Divine Purpose - logic here is going to be complex
 
@@ -4553,6 +4554,9 @@ double paladin_t::composite_spell_crit_chance() const
 {
   double h = player_t::composite_spell_crit_chance();
 
+  if ( is_ptr() )
+    return h;
+
   if ( buffs.avenging_wrath->up() )
     h += buffs.avenging_wrath->data().effectN( 3 ).percent();
 
@@ -4565,6 +4569,9 @@ double paladin_t::composite_spell_crit_chance() const
 double paladin_t::composite_melee_crit_chance() const
 {
   double h = player_t::composite_melee_crit_chance();
+
+  if ( is_ptr() )
+    return h;
 
   if ( buffs.avenging_wrath->up() )
     h += buffs.avenging_wrath->data().effectN( 3 ).percent();
