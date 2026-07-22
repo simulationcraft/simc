@@ -12837,8 +12837,8 @@ void shaman_t::create_buffs()
                                    });
   ;
   buff.mid2_ele_4pc_spender =
-      make_buff( this, "overcharge!", find_spell( 1300222 ) ) 
-      ->set_trigger_spell(sets->set( SHAMAN_ELEMENTAL, MID2, B4 ) );
+      make_buff( this, "overcharge_tier", find_spell( 1300222 ) ) 
+      ->set_trigger_spell(sets->set( SHAMAN_ELEMENTAL, MID2, B4 ));
 
 
   if ( dbc->ptr )
