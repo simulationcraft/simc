@@ -747,7 +747,7 @@ public:
 
     spell_data_ptr_t kill_shot;
     spell_data_ptr_t trueshot;
-    spell_data_ptr_t incendiary_ammunition;
+    spell_data_ptr_t tactical_reload;
     spell_data_ptr_t unstable_trigger;
     spell_data_ptr_t unstable_trigger_buff;
     spell_data_ptr_t precision_detonation;
@@ -5826,6 +5826,11 @@ struct explosive_shot_t final : public explosive_shot_base_t
     {
       p()->buffs.unstable_trigger->trigger();
     }
+
+    if ( p()->talents.tactical_reload.ok() )
+    {
+      p()->buffs.lock_and_load->trigger();
+    }
   }
 
   void queue_execute( execute_type et )
@@ -6834,7 +6839,13 @@ struct volley_t : public hunter_spell_t
       hunter_ranged_attack_t::impact( s );
 
       if ( s->chain_target < salvo.targets && p()->cooldowns.salvo->up() )
+      {
         salvo.explosive_shot->execute_on_target( s->target );
+        if ( p()->talents.tactical_reload.ok() && s->chain_target == 0 )
+        {
+          p()->buffs.lock_and_load->trigger();
+        }
+      }
     }
   };
 
@@ -7517,7 +7528,7 @@ void hunter_t::init_spells()
 
     talents.kill_shot                         = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Shot", HUNTER_MARKSMANSHIP );
     talents.trueshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Trueshot", HUNTER_MARKSMANSHIP );
-    talents.incendiary_ammunition             = find_talent_spell( talent_tree::SPECIALIZATION, "Incendiary Ammunition", HUNTER_MARKSMANSHIP );
+    talents.tactical_reload                   = find_talent_spell( talent_tree::SPECIALIZATION, "Tactical Reload", HUNTER_MARKSMANSHIP );
     talents.unstable_trigger                  = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Trigger", HUNTER_MARKSMANSHIP );
     talents.unstable_trigger_buff             = talents.unstable_trigger.ok() ? find_spell( 1301778 ) : spell_data_t::not_found();
     talents.precision_detonation              = find_talent_spell( talent_tree::SPECIALIZATION, "Precision Detonation", HUNTER_MARKSMANSHIP );
