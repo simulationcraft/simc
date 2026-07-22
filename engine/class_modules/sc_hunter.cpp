@@ -5885,7 +5885,11 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     cleave_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.explosive_shot_cleave )
     {
       aoe = -1;
-      target_filter_callback = secondary_targets_only();
+      
+      if ( !p->bugs )
+      {
+        target_filter_callback = secondary_targets_only();
+      }
 
       // 2026-17-07: Salvo can trigger this action without the base (212431) being talented, so grab it here unconditionally.
       reduced_aoe_targets = p->find_spell( 212431 )->effectN( 2 ).base_value();
