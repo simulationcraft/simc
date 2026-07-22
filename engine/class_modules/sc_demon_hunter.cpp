@@ -86,7 +86,7 @@ constexpr unsigned MAX_SOUL_FRAGMENTS          = 6;
 constexpr unsigned HAVOC_MAX_SOUL_FRAGMENTS    = 5;
 constexpr unsigned DEVOURER_MAX_SOUL_FRAGMENTS = 10;
 constexpr double VENGEFUL_RETREAT_DISTANCE     = 20.0;
-constexpr double THE_HUNT_LEAP_SPEED           = 25.0;  // yd/s, approximate The Hunt charge speed (no velocity in spell data)
+constexpr double THE_HUNT_LEAP_SPEED = 25.0;  // yd/s, approximate The Hunt charge speed (no velocity in spell data)
 
 enum class soul_fragment : unsigned
 {
@@ -3349,7 +3349,7 @@ struct otherworldly_focus_benefit_t : public BASE
     : BASE( n, p, s, o )
   {
     increase_percent = p->talent.annihilator.otherworldly_focus->effectN( 1 ).percent();
-    if (p->is_ptr() && p->specialization() == DEMON_HUNTER_DEVOURER)
+    if ( p->is_ptr() && p->specialization() == DEMON_HUNTER_DEVOURER )
     {
       increase_percent = p->talent.annihilator.otherworldly_focus->effectN( 3 ).percent();
     }
@@ -5080,8 +5080,8 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
       // The targeted fragment may have been consumed (and deleted) by another effect during the
       // pick up movement (see soul_fragment_t::remove()); check that it is still tracked before
       // dereferencing. Evaluate if_expr to make sure the actor still wants to consume.
-      if ( frag && range::contains( dh->soul_fragments, frag ) && frag->active() &&
-           ( !expr || expr->eval() ) && dh->active.consume_soul_greater )
+      if ( frag && range::contains( dh->soul_fragments, frag ) && frag->active() && ( !expr || expr->eval() ) &&
+           dh->active.consume_soul_greater )
       {
         frag->consume( false );
       }
@@ -8415,10 +8415,13 @@ struct vengeful_retreat_t
     add_child( execute_action );
 
     // TODO: Remove or modify when category cooldowns are implemented/fixed
-    cooldown->duration = data().category_cooldown();
-    if ( data().affected_by( p->talent.havoc.tactical_retreat->effectN( 1 ) ) )
+    if ( !p->is_ptr() )
     {
-      cooldown->duration += p->talent.havoc.tactical_retreat->effectN( 1 ).time_value();
+      cooldown->duration = data().category_cooldown();
+      if ( data().affected_by( p->talent.havoc.tactical_retreat->effectN( 1 ) ) )
+      {
+        cooldown->duration += p->talent.havoc.tactical_retreat->effectN( 1 ).time_value();
+      }
     }
 
     base_teleport_distance                        = VENGEFUL_RETREAT_DISTANCE;
