@@ -1351,7 +1351,9 @@ public:
       if ( p()->cooldowns.strike_as_one->up() )
       {
         auto pet = p()->pets.main;
-        if ( pet )
+        // action only exists when talented; the cooldown is no guard
+        // (untalented -> 0s icd -> always up -> nullptr deref)
+        if ( pet && pet->actions.strike_as_one )
         {
           pet->actions.strike_as_one->execute_on_target( p()->target );
           p()->cooldowns.strike_as_one->start();
@@ -4376,7 +4378,9 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
       if ( p()->cooldowns.strike_as_one->up() )
       {
         auto pet = p()->pets.main;
-        if ( pet )
+        // action only exists when talented; the cooldown is no guard
+        // (untalented -> 0s icd -> always up -> nullptr deref)
+        if ( pet && pet->actions.strike_as_one )
         {
           p()->pets.main->actions.strike_as_one->execute_on_target( target );
           p()->cooldowns.strike_as_one->start();
@@ -6068,8 +6072,9 @@ struct raptor_strike_t : public raptor_strike_base_t
     void execute() override
     {
       // Run before execute() as Tip is decremented in the base class
+      // (action requires Strike as One in addition to Raptor Swipe tier 3)
       if ( p()->talents.raptor_swipe_3.ok() && p()->buffs.tip_of_the_spear->check() )
-        if ( auto pet = p()->pets.main )
+        if ( auto pet = p()->pets.main; pet && pet->actions.strike_as_one_swipe )
           pet->actions.strike_as_one_swipe->execute_on_target( target );
 
       raptor_strike_base_t::execute();
@@ -6204,7 +6209,9 @@ struct boomstick_t : public hunter_spell_t
       if ( p()->cooldowns.strike_as_one->up() )
       {
         auto pet = p()->pets.main;
-        if ( pet )
+        // action only exists when talented; the cooldown is no guard
+        // (untalented -> 0s icd -> always up -> nullptr deref)
+        if ( pet && pet->actions.strike_as_one )
         {
           p()->pets.main->actions.strike_as_one->execute_on_target( target );
           p()->cooldowns.strike_as_one->start();
@@ -7055,7 +7062,7 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
   {
     // Tip of the Spear is decremented in execute() so run here
     if ( p()->tier_set.mid_s1_sv_4pc.ok() && p()->buffs.tip_of_the_spear->check() )
-      if ( auto pet = p()->pets.main )
+      if ( auto pet = p()->pets.main; pet && pet->actions.strike_as_one )
         pet->actions.strike_as_one->execute_on_target( target );
 
     wildfire_bomb_base_t::execute();
