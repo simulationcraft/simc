@@ -3418,6 +3418,11 @@ struct akilzons_clarity_buff_t final : public druid_buff_t
     if ( total <= 0 )
       return max_val;
 
+    // the buff is triggered 1ms after the eclipse, so snap to whole-second ticks
+    // otherwise ceil() tips the wrong way at the midpoint (e.g. CA would show 3 instead of 2)
+    elapsed_ = std::round( elapsed_ );
+    total = std::round( total );
+
     auto center = ( total - 1.0 ) * 0.5;
     auto dist = std::min( elapsed_, total - 1.0 - elapsed_ );
     double val = max_val - ( max_val - min_val ) * dist / std::max( 1.0, center );
