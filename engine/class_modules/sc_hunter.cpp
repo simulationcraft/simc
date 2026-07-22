@@ -3620,12 +3620,6 @@ void hunter_t::consume_precise_shots()
 
   buffs.precise_shots->expire();
   buffs.stargazer->trigger();
-
-  if ( rng().roll( talents.windrunner_quiver->effectN( 3 ).percent() ) )
-  {
-    buffs.precise_shots->trigger();
-    procs.windrunner_quiver->occur();
-  }
 }
 
 void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force )
@@ -5698,6 +5692,12 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
     if ( p()->talents.no_scope.ok() )
       p()->buffs.precise_shots->trigger();
+
+    if ( rng().roll( p()->talents.windrunner_quiver->effectN( 2 ).percent() ) )
+    {
+      p()->buffs.lock_and_load->trigger();
+      p()->procs.windrunner_quiver->occur();
+    }
 
     execute_unload();
   }
