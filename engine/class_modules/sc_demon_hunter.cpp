@@ -11299,7 +11299,10 @@ void demon_hunter_t::init_spells()
 
   // TODO: Check if this still behaves as described in `composite_player_critical_damage_multiplier`
   deregister_passive_spell( talent.havoc.know_your_enemy );
-  deregister_passive_spell( talent.havoc.tactical_retreat );
+  if ( !is_ptr() )
+  {
+    deregister_passive_spell( talent.havoc.tactical_retreat );
+  }
 
   // conditional passive, yippee
   deregister_passive_spell( talent.havoc.never_say_die );
