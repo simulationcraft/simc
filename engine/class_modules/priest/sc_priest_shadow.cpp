@@ -1088,16 +1088,9 @@ struct void_volley_t final : public void_volley_base_t
     void_volley_base_t::execute();
     set_bonus_effectiveness_for_cast = false;
 
-    if ( priest().talents.shadow.crushing_void.enabled() && priest().buffs.crushing_void->check() )
-    {
-      priest().buffs.crushing_void->decrement();
-    }
+    priest().buffs.crushing_void->decrement();
+    priest().buffs.void_volley->decrement();
 
-    if ( priest().buffs.void_volley->check() )
-    {
-      priest().buffs.void_volley->decrement();
-    }
-    
     priest().buffs.void_volley_set_bonus_effectiveness->decrement();
 
     if ( set_bonus_cast )
