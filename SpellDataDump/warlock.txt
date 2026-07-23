@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68453 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68887 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -10734,7 +10734,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1024496)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Drain Soul overrides Shadow Bolt
                    Base Value: 198590 | Scaled Value: 198590 | Misc Value: 686 | Misc Value 2: 2 | Target: Self (1)
-Hotfixed         : Affects Spells
 Description      : $@spelldesc198590
 
 Name             : Explosive Potential (id=388827) [Spell Family (5), Passive, Hidden] 
