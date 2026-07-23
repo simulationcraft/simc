@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68453 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68887 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1450,10 +1450,8 @@ Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), D
 Effects          :
 #1 (id=55127)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.80288 | PvP Coefficient: 1.518 | Target: Targeted Ally (21)
-Hotfixed         : PvP Coefficient (1.32 -> 1.518)
 #2 (id=55128)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.398429 | PvP Coefficient: 1.84 | Target: Targeted Ally (21)
-Hotfixed         : PvP Coefficient (1.6 -> 1.84)
 Description      : Restorative waters wash over a friendly target, healing them for $s1 and an additional $o2 over $d.
 Tooltip          : Heals $w2 every $t2 seconds.
 

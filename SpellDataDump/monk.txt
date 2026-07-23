@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68453 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68887 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -10785,7 +10785,6 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
 Effects          :
 #1 (id=1024677)  : Apply Aura (6) | Dummy (4)
                    Base Value: 340 | Scaled Value: 340 | PvP Coefficient: 0.295 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.295)
 #2 (id=1024678)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=1024679)  : Apply Aura (6) | Dummy (4)
