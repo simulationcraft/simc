@@ -1541,6 +1541,7 @@ class SpellDataGenerator(DataGenerator):
          1292299, 1292300, 1306870, 1308012, 1308013, 1308014, # Gebbo's Bottomless Bag
          # 12.1
          1305376, # Voracious Heart of Ula'tek
+         1266182, 1266184, 1266197, # Lost Idol of the Hash'ey
         ),
 
         # Warrior:
