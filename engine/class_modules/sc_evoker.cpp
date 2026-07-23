@@ -1194,11 +1194,13 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> volcanic_upsurge;  // TWW1 2PC
     propagate_const<buff_t*> tww1_4pc_aug;
     propagate_const<buff_t*> duplicate;
+    propagate_const<buff_t*> magnified_fate; // MID2 4pc
 
     // Chronowarden
     propagate_const<buff_t*> primacy;
     propagate_const<buff_t*> temporal_burst;
     propagate_const<buff_t*> time_convergence_intellect;
+    propagate_const<buff_t*> doubletime;
     // Flameshaper
     propagate_const<buff_t*> inner_flame;
     // Scalecommander
@@ -1447,6 +1449,7 @@ struct evoker_t : public player_t
       player_talent_t overclock;
       player_talent_t energy_cycles;
       player_talent_t chronal_dynamo;
+      const spell_data_t* doubletime_buff;  // 460688
     } chronowarden;
 
     struct flameshaper_t
@@ -4473,7 +4476,11 @@ public:
 
   double ebon_value() const
   {
-    return p()->spec.ebon_might->effectN( 1 ).percent() * ( 1 + p()->buff.ebon_might_self_buff->check_value() ) +
+    if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+      return p()->spec.ebon_might->effectN( 1 ).percent() * ( 1 + p()->buff.ebon_might_self_buff->check_value() ) +
+             p()->buff.tww1_4pc_aug->check_stack_value();
+
+    return p()->spec.ebon_might->effectN( 1 ).percent() * ( 1 + p()->buff.doubletime->check_value() ) +
            p()->buff.tww1_4pc_aug->check_stack_value();
   }
 
@@ -4623,7 +4630,14 @@ public:
       buff->trigger( time );
       if ( p()->talent.chronowarden.double_time.enabled() && crit && t == p() )
       {
-        buff->current_value = double_time_mult;
+        if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+        {
+          buff->current_value = double_time_mult;
+        }
+        else
+        {
+          p()->buff.doubletime->trigger();
+        }
       }
     }
     else
@@ -5801,6 +5815,9 @@ struct upheaval_t : public empowered_charge_spell_t
 
       if ( !is_rumbling_earth )
       {
+        if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, MID2, B4 ) )
+          p()->buff.magnified_fate->trigger();
+
         if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW1, B2 ) )
           p()->buff.volcanic_upsurge->trigger();
 
@@ -7168,7 +7185,8 @@ public:
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    return cast_state( s )->evoker->talent.fate_mirror->effectN( 1 ).percent();
+    return cast_state( s )->evoker->talent.fate_mirror->effectN( 1 ).percent() +
+           cast_state( s )->evoker->buff.magnified_fate->check_value();
   }
 
   void init() override
@@ -9905,6 +9923,7 @@ void evoker_t::init_spells()
   talent.chronowarden.energy_cycles                   = HT( "Energy Cycles" );
   talent.chronowarden.overclock                       = HT( "Overclock" );
   talent.chronowarden.chronal_dynamo                  = HT( "Chronal Dynamo" );
+  talent.chronowarden.doubletime_buff                 = find_spell( 460688 );
 
   // flameshaper
   talent.flameshaper.trailblazer              = HT( "Trailblazer" );
@@ -10373,6 +10392,10 @@ void evoker_t::create_buffs()
     buff.tww1_4pc_aug->set_default_value( sets->set( EVOKER_AUGMENTATION, TWW1, B4 )->effectN( 1 ).percent() / 1000 );
   }
 
+  buff.magnified_fate =
+      MBF( sets->has_set_bonus( EVOKER_AUGMENTATION, MID2, B4 ), this, "magnified_fate", find_spell( 1297728 ) )
+          ->set_default_value_from_effect( 1, 0.01 );
+
   buff.duplicate = MBF( talent.duplicate3.ok(), this, "duplicate", talent.duplicate3_buff )
                        ->set_max_stack( 99 )
                        ->set_duration( 0_s )
@@ -10404,6 +10427,10 @@ void evoker_t::create_buffs()
       }
     } );
   }
+
+  buff.doubletime = MBF( talent.chronowarden.double_time.ok(), this, "doubletime", talent.chronowarden.doubletime_buff )
+                        ->set_refresh_behavior( buff_refresh_behavior::EXTEND )
+                        ->set_default_value( talent.chronowarden.double_time->effectN( 2 ).percent() );
 
   buff.time_convergence_intellect = MBF( talent.chronowarden.time_convergence.ok(), this, "time_convergence_intellect",
                                          talent.chronowarden.time_convergence_intellect_buff )

@@ -54,7 +54,7 @@ struct parsed_item_data_t : dbc_item_data_t
     bonus_level = 0;
   }
 
-  void init( const dbc_item_data_t& raw, const dbc_t& dbc );
+  void init( const dbc_item_data_t& raw, const dbc_t& dbc, const dbc_item_data_t* redirect_item = nullptr );
 
   size_t add_effect( unsigned spell_id, int type );
   size_t add_effect( const item_effect_t& effect );
@@ -123,6 +123,7 @@ struct item_t
     unsigned                                         titan_disc_driver_id;
     unsigned                                         content_tuning_id;
     bool                                             has_midnight_scaling;
+    unsigned                                         redirect_item_id;
 
     // Priority state tracking for item bonuses
     int base_level_priority;

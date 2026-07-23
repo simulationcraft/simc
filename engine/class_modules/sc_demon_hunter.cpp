@@ -86,6 +86,7 @@ constexpr unsigned MAX_SOUL_FRAGMENTS          = 6;
 constexpr unsigned HAVOC_MAX_SOUL_FRAGMENTS    = 5;
 constexpr unsigned DEVOURER_MAX_SOUL_FRAGMENTS = 10;
 constexpr double VENGEFUL_RETREAT_DISTANCE     = 20.0;
+constexpr double THE_HUNT_LEAP_SPEED = 25.0;  // yd/s, approximate The Hunt charge speed (no velocity in spell data)
 
 enum class soul_fragment : unsigned
 {
@@ -3341,10 +3342,17 @@ struct otherworldly_focus_benefit_t : public BASE
 {
   using base_t = otherworldly_focus_benefit_t<BASE>;
 
+  double increase_percent;
+
   otherworldly_focus_benefit_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
                                 util::string_view o = {} )
     : BASE( n, p, s, o )
   {
+    increase_percent = p->talent.annihilator.otherworldly_focus->effectN( 1 ).percent();
+    if ( p->is_ptr() && p->specialization() == DEMON_HUNTER_DEVOURER )
+    {
+      increase_percent = p->talent.annihilator.otherworldly_focus->effectN( 3 ).percent();
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -3359,8 +3367,7 @@ struct otherworldly_focus_benefit_t : public BASE
       // etc until reaching 0 benefit
       auto num_target_reduction_percent = BASE::dh()->talent.annihilator.otherworldly_focus->effectN( 2 ).percent() *
                                           ( std::max( std::min( s->n_targets - 1, 10U ), 0U ) );
-      m *= 1.0 + std::max( 0.0, BASE::dh()->talent.annihilator.otherworldly_focus->effectN( 1 ).percent() -
-                                    num_target_reduction_percent );
+      m *= 1.0 + std::max( 0.0, increase_percent - num_target_reduction_percent );
     }
 
     return m;
@@ -5070,8 +5077,11 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
     void execute() override
     {
-      // Evaluate if_expr to make sure the actor still wants to consume.
-      if ( frag && frag->active() && ( !expr || expr->eval() ) && dh->active.consume_soul_greater )
+      // The targeted fragment may have been consumed (and deleted) by another effect during the
+      // pick up movement (see soul_fragment_t::remove()); check that it is still tracked before
+      // dereferencing. Evaluate if_expr to make sure the actor still wants to consume.
+      if ( frag && range::contains( dh->soul_fragments, frag ) && frag->active() && ( !expr || expr->eval() ) &&
+           dh->active.consume_soul_greater )
       {
         frag->consume( false );
       }
@@ -5517,6 +5527,15 @@ struct the_hunt_base_t
 
   timespan_t travel_time() const override
   {
+    // The Hunt charges to its target, so the leap scales with distance. A Devourer that opens
+    // distance with Vengeful Retreat first stays airborne long enough to enter Metamorphosis
+    // mid-leap, so the impact lands during Meta and is empowered by Demonic Intensity just like
+    // Predator's Wake. In melee, and for other specs, the flat short travel is kept.
+    if ( dh()->specialization() == DEMON_HUNTER_DEVOURER && dh()->buff.vengeful_retreat_move->check() )
+    {
+      const double distance = dh()->buff.vengeful_retreat_move->distance_moved;
+      return std::max( 100_ms, timespan_t::from_seconds( distance / THE_HUNT_LEAP_SPEED ) );
+    }
     return 100_ms;
   }
 };
@@ -8396,10 +8415,13 @@ struct vengeful_retreat_t
     add_child( execute_action );
 
     // TODO: Remove or modify when category cooldowns are implemented/fixed
-    cooldown->duration = data().category_cooldown();
-    if ( data().affected_by( p->talent.havoc.tactical_retreat->effectN( 1 ) ) )
+    if ( !p->is_ptr() )
     {
-      cooldown->duration += p->talent.havoc.tactical_retreat->effectN( 1 ).time_value();
+      cooldown->duration = data().category_cooldown();
+      if ( data().affected_by( p->talent.havoc.tactical_retreat->effectN( 1 ) ) )
+      {
+        cooldown->duration += p->talent.havoc.tactical_retreat->effectN( 1 ).time_value();
+      }
     }
 
     base_teleport_distance                        = VENGEFUL_RETREAT_DISTANCE;
@@ -11277,7 +11299,10 @@ void demon_hunter_t::init_spells()
 
   // TODO: Check if this still behaves as described in `composite_player_critical_damage_multiplier`
   deregister_passive_spell( talent.havoc.know_your_enemy );
-  deregister_passive_spell( talent.havoc.tactical_retreat );
+  if ( !is_ptr() )
+  {
+    deregister_passive_spell( talent.havoc.tactical_retreat );
+  }
 
   // conditional passive, yippee
   deregister_passive_spell( talent.havoc.never_say_die );

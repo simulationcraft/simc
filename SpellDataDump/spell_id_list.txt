@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.7.68453
+Class Spell ID List, wow build 12.0.7.68887
 
 Death Knight
 3714     Path of Frost
@@ -8687,7 +8687,7 @@ Hunter
 1262361  Raptor Swipe
 1262384 *Sticky Bombs
 1262390  Sticky Bomb
-1262391 *Sticky Bomb
+1262391  Sticky Bomb
 1262408  Lethal Calibration
 1262409  Lethal Calibration
 1262435 *Wildfire Tar

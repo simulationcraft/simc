@@ -871,7 +871,7 @@ void loa_worshipers_band( special_effect_t& effect )
 
         halazzi = create_proc_action<generic_proc_t>( "claws_of_halazzi", e, 1252814 );
         halazzi->base_dd_min = halazzi->base_dd_max = halazzi_value;
-        // halazzi->base_multiplier *= role_mult( e ); - Role Mult currently not applied to Loa Worshiper's Band
+        // halazzi->base_multiplier *= role_mult( e.player ); - Role Mult currently not applied to Claws of Halazzi
       }
 
       if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_LAPIS ) )
@@ -880,10 +880,9 @@ void loa_worshipers_band( special_effect_t& effect )
         double janalai_value = effect.driver()->effectN( 4 ).average( effect );
         janalai_value *= bandolier_mul( effect.player );
 
-        janalai = create_proc_action<generic_proc_t>( "janalais_flames", e, 1252817 );
+        janalai = create_proc_action<generic_aoe_proc_t>( "janalais_flames", e, 1252817, true );
         janalai->base_dd_min = janalai->base_dd_max = janalai_value;
-        janalai->aoe = -1;
-        // janalai->base_multiplier *= role_mult( e ); - Role Mult currently not applied to Loa Worshiper's Band
+        janalai->base_multiplier *= role_mult( e.player );
       }
 
       if ( range::contains( unique_gem_list( e.player, gem_colors ), GEM_PERIDOT ) )
@@ -3349,14 +3348,18 @@ void font_of_venomous_rage( special_effect_t& effect )
 
       channeled = true;
 
-      base_td = equip->driver()->effectN( 1 ).average( e );
+      unsigned num_ticks = as<unsigned>( dot_duration / base_tick_time ) + tick_on_application;
+
+      base_td = equip->driver()->effectN( 1 ).average( e ) / num_ticks;
       base_td_multiplier *= role_mult( e );
 
-      venom_splatter = create_proc_action<generic_aoe_proc_t>( "venom_splatter", e, e.player->find_spell( 1307222 ) );
-      venom_splatter->base_dd_min = venom_splatter->base_dd_max = equip->driver()->effectN( 2 ).average( e );
+      venom_splatter = create_proc_action<generic_aoe_proc_t>( "venom_splatter", e, e.player->find_spell( 1307222 ), false );
+      venom_splatter->base_dd_min = venom_splatter->base_dd_max = equip->driver()->effectN( 2 ).average( e ) / num_ticks;
       venom_splatter->base_multiplier *= role_mult( e );
       venom_splatter->dual = true;
       venom_splatter->target_filter_callback = secondary_targets_only();
+      venom_splatter->split_aoe_damage = false;
+      venom_splatter->reduced_aoe_targets = 8;
       add_child( venom_splatter );
     }
 
@@ -3543,6 +3546,39 @@ void hex_lords_dooming_idol( special_effect_t& effect )
   effect.has_use_buff_override = true;
   effect.execute_action =
       create_proc_action<hex_lords_dooming_idol_t>( "hex_lords_dooming_idol", effect, doom, use_buff );
+}
+  
+// Vashnik's Sanguine Rancor
+// 1295553 Driver
+// 1303479 Sanguine Rancor (stack buff)
+// 1303483 Crimson Bile (aoe dmg)
+// 1303484 Concentrated Bile (st dot)
+void vashniks_sanguine_rancor( special_effect_t& effect )
+{
+  auto damage = effect.driver()->effectN( 1 ).average( effect );
+
+  auto concentrated_bile = create_proc_action<generic_proc_t>( "concentrated_bile", effect, 1303484 );
+  concentrated_bile->base_td = damage * effect.driver()->effectN( 2 ).percent()
+                              * concentrated_bile->base_tick_time / concentrated_bile->dot_duration;
+  concentrated_bile->base_td_multiplier *= role_mult( effect );
+
+  auto crimson_bile = create_proc_action<generic_aoe_proc_t>( "crimson_bile", effect, 1303483 );
+  crimson_bile->base_dd_min = crimson_bile->base_dd_max = damage;
+  crimson_bile->base_multiplier *= role_mult( effect );
+  crimson_bile->add_child( concentrated_bile );
+
+  effect.custom_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 1303479 ) )
+    ->set_expire_at_max_stack( true )
+    ->set_expire_callback( [ crimson_bile, concentrated_bile ]( buff_t* b, int stacks, timespan_t ) {
+      // only erupt when the buff was consumed at max stacks, not when expired during combat end
+      if ( stacks < b->max_stack() )
+        return;
+      crimson_bile->execute_on_target( b->player->target );
+      if ( crimson_bile->num_targets_hit == 1 )
+        concentrated_bile->execute_on_target( b->player->target );
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 }  // namespace trinkets
 
@@ -4649,6 +4685,7 @@ void register_special_effects()
   register_special_effect( 1292065, trinkets::keepers_seething_core );
   register_special_effect( 1295885, trinkets::hex_lords_dooming_idol, true );
   register_special_effect( 1295884, DISABLED_EFFECT );  // Hex Lord's Dooming Idol equip driver
+  register_special_effect( 1295553, trinkets::vashniks_sanguine_rancor );
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil

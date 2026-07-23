@@ -1,4 +1,4 @@
-// Item effects, wow build 12.1.0.68745
+// Item effects, wow build 12.1.0.68824
 static constexpr std::array<item_effect_t, 11036> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -1126,10 +1126,10 @@ static constexpr std::array<item_effect_t, 11036> __ptr_item_effect_data { {
   { 139263, 358567,      0,   2,   1,    0,      -1,      -1 }, // Harsh Tutelage
   { 139264, 358569,      0,   2,   1,    0,      -1,      -1 }, // Harsh Tutelage
   { 139265, 358571,      0,   2,   1,    0,      -1,      -1 }, // Harsh Tutelage
-  { 213562, 1247568,      0,   2,   1,    0,      -1,      -1 }, // Drum of Renewed Bonds
-  { 213563, 1247569,      0,   2,   1,    0,      -1,      -1 }, // Drum of Renewed Bonds
-  { 213564, 1247570,      0,   2,   1,    0,      -1,      -1 }, // Drum of Renewed Bonds
-  { 213565, 1247571,      0,   2,   1,    0,      -1,      -1 }, // Drum of Renewed Bonds
+  { 213562, 1247568,      0,   2,   1,    0,      -1,      -1 }, // Renewed Critical Strike
+  { 213563, 1247569,      0,   2,   1,    0,      -1,      -1 }, // Renewed Haste
+  { 213564, 1247570,      0,   2,   1,    0,      -1,      -1 }, // Renewed Mastery
+  { 213565, 1247571,      0,   2,   1,    0,      -1,      -1 }, // Renewed Versatility
   { 116156, 315281,      0,   3,   1,    0,      -1,      -1 }, // Strikethrough
   { 116157, 315282,      0,   4,   1,    0,      -1,      -1 }, // Strikethrough
   {      9,  17152,    647,   0,   2,    0,      -1,      -1 }, // Destiny

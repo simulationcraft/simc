@@ -596,6 +596,10 @@ struct consecration_t : public paladin_spell_t
       }
       dg_damage->base_dd_multiplier =
           ( as<double>( totalTargets - healingAlliesSize ) / totalTargets );
+
+      // DG always deals full damage on the PTR. Full rewrite once 12.1 is live.
+      if ( p()->is_ptr() )
+        dg_damage->base_dd_multiplier = 1.0;
     }
 
     paladin_spell_t::execute();
@@ -1735,7 +1739,7 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
   }
   if ( p->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
   {
-    ue = new unrelenting_edict_t( p, "judgment" );
+    ue = new unrelenting_edict_t( p, "hammer_of_wrath" );
     add_child( ue );
   }
 }
@@ -3927,7 +3931,8 @@ void paladin_t::apply_action_effects( action_t* a ) {
   if ( !talents.crusade->ok() )
     aw_effect_mask.disable( 11 );
 
-  action->parse_effects( buffs.avenging_wrath, aw_effect_mask, IGNORE_STACKS );
+  if ( !is_ptr() || talents.sentinel->ok() )
+    action->parse_effects( buffs.avenging_wrath, aw_effect_mask, IGNORE_STACKS );
   action->parse_effects( buffs.divine_power );
   // TODO: add in Divine Purpose - logic here is going to be complex
 

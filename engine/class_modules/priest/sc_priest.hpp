@@ -227,7 +227,8 @@ public:
     propagate_const<buff_t*> crushing_void;
     propagate_const<buff_t*> ancient_madness_extension;
     propagate_const<buff_t*> ancient_madness;
-    propagate_const<buff_t*> vampiric_insight;  // mid_s2_4pc buff
+    propagate_const<buff_t*> void_volley_set_bonus;
+    propagate_const<buff_t*> void_volley_set_bonus_effectiveness;
 
     // Archon
     propagate_const<buff_t*> power_surge;
@@ -674,7 +675,6 @@ public:
     const spell_data_t* dispersion;
     const spell_data_t* silence;
     const spell_data_t* vampiric_embrace;
-    const spell_data_t* vampiric_insight_buff;  // mid_s2_4pc
   } specs;
 
   // DoT Spells
@@ -753,7 +753,6 @@ public:
     propagate_const<gain_t*> insanity_dark_thoughts;
     propagate_const<gain_t*> insanity_horrific_vision;
     propagate_const<gain_t*> insanity_vision_of_nzoth;
-    propagate_const<gain_t*> insanity_vampiric_insight;  // mid_s2_4pc gain
   } gains;
 
   // Benefits
@@ -778,7 +777,6 @@ public:
     propagate_const<proc_t*> shadowy_apparition_nzoth;
     propagate_const<proc_t*> shadowy_apparition_yogg;
     propagate_const<proc_t*> shadowy_apparition_cthun;
-    propagate_const<proc_t*> shadowy_apparition_vampiric_insight;  // mid_s2_4pc proc
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> void_tendril;
     propagate_const<proc_t*> void_lasher;
@@ -799,6 +797,7 @@ public:
     propagate_const<proc_t*> void_apparition_yogg;
     propagate_const<proc_t*> void_apparition_cthun;
     propagate_const<proc_t*> tentacle_slam_idol;
+    propagate_const<proc_t*> midnight_s2_4pc_void_volley;
     // Holy
     propagate_const<proc_t*> divine_favor_chastise;
     propagate_const<proc_t*> divine_image;

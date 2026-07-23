@@ -6228,7 +6228,7 @@ void mage_t::init_spells()
   spec.freeze_and_shatter = find_mastery_spell( MAGE_FROST );
 
   // Misc
-  cooldowns.arcane_echo->duration = find_spell( 464515 )->internal_cooldown();
+  cooldowns.arcane_echo->duration = bugs ? 0_ms : find_spell( 464515 )->internal_cooldown();
 
   // Register passives
   // Fire's Ire is dynamic and should not be applied as a passive

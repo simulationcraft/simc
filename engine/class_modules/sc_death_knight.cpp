@@ -863,7 +863,8 @@ public:
     propagate_const<buff_t*> army_of_the_dead;
     // Tier Sets
     propagate_const<buff_t*> blighted;
-    propagate_const<buff_t*> relentless_riders_precision;  // Blood MID2 4pc
+    propagate_const<buff_t*> blood_debt; // Blood MID2 2pc
+    propagate_const<buff_t*> relentless_riders_strength;  // Blood MID2 2pc
 
     // Rider of the Apocalypse
     propagate_const<buff_t*> a_feast_of_souls;
@@ -907,6 +908,7 @@ public:
     cooldown_t* dancing_rune_weapon;
     propagate_const<cooldown_t*> vampiric_blood;
     cooldown_t* bloody_reflection_icd;
+    cooldown_t* mid2_2pc;
     // Frost
     propagate_const<cooldown_t*> inexorable_assault_icd;  // internal cooldown to prevent multiple procs during aoe
     propagate_const<cooldown_t*>
@@ -1476,7 +1478,9 @@ public:
 
     // Blood Tier Set Spells
     const spell_data_t* rejuvenating_blood; // 2pc rp gain
-    const spell_data_t* relentless_riders_precision_buff;  // MID2 4pc
+    const spell_data_t* blood_debt_buff; // MID2 2pc
+    const spell_data_t* relentless_riders_strength_buff;  // MID2 2pc
+    const spell_data_t* bloody_demise; // MID2 4pc
 
     // Frost
     const spell_data_t* runic_empowerment_gain;
@@ -1946,6 +1950,7 @@ public:
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
     cooldown.vampiric_blood      = get_cooldown( "vampiric_blood" );
     cooldown.bloody_reflection_icd   = get_cooldown( "bloody_reflection_icd" );
+    cooldown.mid2_2pc            = get_cooldown( "mid2_2pc" );
 
     // Frost
     cooldown.inexorable_assault_icd = get_cooldown( "inexorable_assault_icd" );
@@ -4719,6 +4724,8 @@ struct blood_beast_pet_t : public death_knight_pet_t
     main_hand_weapon.swing_time = 1_s;
     npc_id                      = owner->find_spell( 434237 )->effectN( 1 ).misc_value1();
     owner_coeff.ap_from_ap      = owner->specialization() == DEATH_KNIGHT_UNHOLY ? 0.2325 : 0.2325;
+    if ( owner->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      owner_coeff.ap_from_ap    = 3.0;
     resource_regeneration       = regen_type::DISABLED;
     blood_beast_mod             = dk()->specialization() == DEATH_KNIGHT_BLOOD
                                       ? dk()->talent.sanlayn.the_blood_is_life->effectN( 1 ).percent()
@@ -9575,22 +9582,6 @@ struct death_and_decay_damage_t final : public death_and_decay_damage_base_t
   }
 };
 
-// Blood MID2 4pc Empowered DnD damage (2x multiplier) when triggered by Crimson Scourge
-struct death_and_decay_damage_empowered_t final : public death_and_decay_damage_base_t
-{
-  death_and_decay_damage_empowered_t( std::string_view name, death_knight_t* p )
-    : death_and_decay_damage_base_t( name, p, p->spell.death_and_decay_damage )
-  {
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = death_and_decay_damage_base_t::composite_da_multiplier( s );
-    m *= 2.0;
-    return m;
-  }
-};
-
 // Relish in Blood healing and RP generation
 struct relish_in_blood_t final : public death_knight_heal_t
 {
@@ -9616,7 +9607,7 @@ struct relish_in_blood_t final : public death_knight_heal_t
 struct death_and_decay_base_t : public death_knight_spell_t
 {
   death_and_decay_base_t( death_knight_t* p, std::string_view name, const spell_data_t* spell )
-    : death_knight_spell_t( name, p, spell ), params(), damage( nullptr ), damage_empowered( nullptr )
+    : death_knight_spell_t( name, p, spell ), params(), damage( nullptr )
   {
     base_tick_time = dot_duration = 0_ms;  // Handled by event
     ignore_false_positive         = true;  // TODO: Is this necessary?
@@ -9678,8 +9669,6 @@ struct death_and_decay_base_t : public death_knight_spell_t
   {
     death_knight_spell_t::init_finished();
     add_child( damage );
-    if ( damage_empowered )
-      add_child( damage_empowered );
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
@@ -9698,7 +9687,6 @@ struct death_and_decay_base_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    // Capture Crimson Scourge state before consumption for MID2 4pc empowered DnD
     bool cs_was_up = p()->specialization() == DEATH_KNIGHT_BLOOD && p()->buffs.crimson_scourge->up();
 
     // If bone shield isn't up, Relish in Blood doesn't heal or generate any RP
@@ -9712,9 +9700,6 @@ struct death_and_decay_base_t : public death_knight_spell_t
     {
       p()->buffs.crimson_scourge->decrement();
 
-      if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B4 ) )
-        p()->buffs.relentless_riders_precision->trigger();
-
       if ( p()->talent.blood.perseverance_of_the_ebon_blade.ok() )
         p()->buffs.perseverance_of_the_ebon_blade->trigger();
 
@@ -9723,8 +9708,6 @@ struct death_and_decay_base_t : public death_knight_spell_t
     }
 
     init_params( target );
-    if ( cs_was_up && damage_empowered && p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B4 ) )
-      params.action( damage_empowered );
     make_event<ground_aoe_event_t>( *sim, p(), params, true /* Immediate pulse */ );
   }
 
@@ -9740,7 +9723,6 @@ private:
 
 public:
   action_t* damage;
-  action_t* damage_empowered;
 };
 
 struct death_and_decay_t final : public death_and_decay_base_t
@@ -9749,7 +9731,6 @@ struct death_and_decay_t final : public death_and_decay_base_t
     : death_and_decay_base_t( p, "death_and_decay", p->spec.death_and_decay )
   {
     damage = get_action<death_and_decay_damage_t>( "death_and_decay_damage", p );
-    damage_empowered = get_action<death_and_decay_damage_empowered_t>( "death_and_decay_damage_empowered", p );
     parse_options( options_str );
   }
 };
@@ -10140,6 +10121,13 @@ struct death_strike_t final : public death_knight_melee_attack_t
     {
       p()->cooldown.blood_boil->reset( false );
     }
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B2 ) && p()->cooldown.mid2_2pc->up() )
+    {
+      p()->buffs.blood_debt->trigger();
+      p()->cooldown.mid2_2pc->start();
+    }
+
   }
 
 private:
@@ -11649,14 +11637,49 @@ private:
 };
 
 // Marrowrend ===============================================================
+struct bloody_demise_t final : public death_knight_spell_t
+{
+  bloody_demise_t( std::string_view name, death_knight_t* p )
+   : death_knight_spell_t( name, p, p->spell.bloody_demise )
+   {
+    background = true;
+    aoe = 0;
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+   }
+};
+
+struct bloody_demise_aoe_t final : public death_knight_spell_t
+{
+  bloody_demise_aoe_t( std::string_view name, death_knight_t* p )
+   : death_knight_spell_t( name, p, p->spell.bloody_demise )
+   {
+    background = true;
+    aoe = -1;
+    attack_power_mod.direct = data().effectN( 2 ).ap_coeff();
+    target_filter_callback = secondary_targets_only();
+   }
+};
+
 
 struct marrowrend_t final : public death_knight_melee_attack_t
 {
+  action_t* bloody_demise;
+  action_t* bloody_demise_aoe;
   marrowrend_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_melee_attack_t( "marrowrend", p, p->talent.blood.marrowrend )
+    : death_knight_melee_attack_t( "marrowrend", p, p->talent.blood.marrowrend ),
+    bloody_demise( nullptr ),
+    bloody_demise_aoe( nullptr )
   {
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
+
+    if ( p->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B4 ) )
+    {
+      bloody_demise = get_action<bloody_demise_t>( "bloody_demise", p );
+      bloody_demise_aoe = get_action<bloody_demise_aoe_t>( "bloody_demise_aoe", p );
+      bloody_demise->add_child( bloody_demise_aoe );
+      add_child( bloody_demise );
+    }
   }
 
   void execute() override
@@ -11677,6 +11700,18 @@ struct marrowrend_t final : public death_knight_melee_attack_t
       p()->buffs.exterminate->decrement();
       make_event<delayed_execute_event_t>( *sim, p(), p()->background_actions.exterminate, execute_state->target,
                                            500_ms );
+    }
+
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B2 ) && p()->buffs.blood_debt->at_max_stacks() )
+    {
+      p()->buffs.blood_debt->expire();
+      p()->buffs.relentless_riders_strength->trigger();
+      if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B4 ) )
+      {
+        p()->buffs.bone_shield->trigger( as<int>( p()->sets->set( DEATH_KNIGHT_BLOOD, MID2, B4 )->effectN( 1 ).base_value() ) );
+        bloody_demise->execute_on_target( target );
+        bloody_demise_aoe->execute_on_target( target );
+      }
     }
   }
 
@@ -15213,7 +15248,9 @@ void death_knight_t::spell_lookups()
 
   // Blood Tier set spells
   spell.rejuvenating_blood       = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID1, B2 ), 1271198 );
-  spell.relentless_riders_precision_buff = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B4 ), 1300369 );
+  spell.blood_debt_buff          = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B2 ), 1310372 );
+  spell.relentless_riders_strength_buff = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B2 ), 1300369 );
+  spell.bloody_demise            = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B4 ), 1310571 );
 
   // Frost
   spell.murderous_efficiency_gain   = conditional_spell_lookup( talent.frost.murderous_efficiency.ok(), 207062 );
@@ -15465,6 +15502,9 @@ void death_knight_t::set_icds()
   if ( talent.frost.inexorable_assault.ok() )
     cooldown.inexorable_assault_icd->duration =
         spell.inexorable_assault_buff->internal_cooldown();  // Inexorable Assault buff spell id
+
+  if ( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B2 ) )
+    cooldown.mid2_2pc->duration = sets->set( DEATH_KNIGHT_BLOOD, MID2, B2 )->internal_cooldown();
 }
 
 // death_knight_t::init_action_list =========================================
@@ -16219,8 +16259,9 @@ void death_knight_t::create_buffs()
   buffs.blighted =
       make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, MID1, B4 ), this, "blighted", spell.blighted_buff );
 
-  buffs.relentless_riders_precision =
-      make_fallback( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B4 ), this, "relentless_riders_precision", spell.relentless_riders_precision_buff );
+  buffs.blood_debt = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B2 ), this, "blood_debt", spell.blood_debt_buff );
+  buffs.relentless_riders_strength =
+      make_fallback( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, MID2, B2 ), this, "relentless_riders_strength", spell.relentless_riders_strength_buff );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -16865,7 +16906,6 @@ void death_knight_t::apply_action_effects( action_t* a, bool pet )
       action->parse_effects( buffs.sanguinary_burst );
       action->parse_effects( buffs.hemostasis );
       action->parse_effects( buffs.ossuary );
-      action->parse_effects( buffs.relentless_riders_precision );
       break;
     case DEATH_KNIGHT_FROST:
       action->parse_effects( buffs.rime );
@@ -17026,6 +17066,11 @@ void death_knight_t::parse_player_effects()
       parse_effects( buffs.bone_shield, IGNORE_STACKS );
       parse_effects( buffs.perseverance_of_the_ebon_blade );
       parse_effects( buffs.dance_of_midnight_2 );
+      parse_effects( buffs.blood_debt, [ this ]( double v ) {
+        v *= 0.1; // 0.5% in game, instead of 5% found in spelldata
+        return v;
+      } );
+      parse_effects( buffs.relentless_riders_strength );
       break;
     case DEATH_KNIGHT_FROST:
       parse_effects( buffs.bonegrinder_frost );

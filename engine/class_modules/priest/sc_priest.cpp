@@ -2350,7 +2350,6 @@ void priest_t::create_gains()
   gains.insanity_dark_thoughts           = get_gain( "Dark Thoughts" );
   gains.insanity_horrific_vision         = get_gain( "Horrific Vision" );
   gains.insanity_vision_of_nzoth         = get_gain( "Vision of N'Zoth" );
-  gains.insanity_vampiric_insight        = get_gain( "Vampiric Insight" );
 }
 
 /** Construct priest procs */
@@ -2363,16 +2362,14 @@ void priest_t::create_procs()
       get_proc( "Power of the Dark Side from Dark Indulgence lost to overflow" );
   procs.expiation_lost_no_dot = get_proc( "Missed chance for expiation to consume a DoT" );
   // Shadow - Talents
-  procs.shadowy_apparition_swp     = get_proc( "Shadowy Apparition from Tormented Spirits" );
-  procs.shadowy_apparition_swm     = get_proc( "Shadowy Apparition from Shadow Word: Madness" );
-  procs.shadowy_apparition_mb      = get_proc( "Shadowy Apparition from Mind Blast" );
-  procs.shadowy_apparition_mfi     = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
-  procs.shadowy_apparition_yshaarj = get_proc( "Shadowy Apparition from Idol of Y'Shaarj" );
-  procs.shadowy_apparition_nzoth   = get_proc( "Shadowy Apparition from Idol of N'Zoth" );
-  procs.shadowy_apparition_yogg    = get_proc( "Shadowy Apparition from Idol of Yogg-Saron" );
-  procs.shadowy_apparition_cthun   = get_proc( "Shadowy Apparition from Idol of C'Thun" );
-  procs.shadowy_apparition_vampiric_insight =
-      get_proc( "Shadowy Apparition from Vampiric Insight (Midnight Season 2 4pc)" );
+  procs.shadowy_apparition_swp          = get_proc( "Shadowy Apparition from Tormented Spirits" );
+  procs.shadowy_apparition_swm          = get_proc( "Shadowy Apparition from Shadow Word: Madness" );
+  procs.shadowy_apparition_mb           = get_proc( "Shadowy Apparition from Mind Blast" );
+  procs.shadowy_apparition_mfi          = get_proc( "Shadowy Apparition from Mind Flay: Insanity" );
+  procs.shadowy_apparition_yshaarj      = get_proc( "Shadowy Apparition from Idol of Y'Shaarj" );
+  procs.shadowy_apparition_nzoth        = get_proc( "Shadowy Apparition from Idol of N'Zoth" );
+  procs.shadowy_apparition_yogg         = get_proc( "Shadowy Apparition from Idol of Yogg-Saron" );
+  procs.shadowy_apparition_cthun        = get_proc( "Shadowy Apparition from Idol of C'Thun" );
   procs.mind_devourer                   = get_proc( "Mind Devourer free Shadow Word: Madness proc" );
   procs.void_tendril                    = get_proc( "Void Tendril proc from Idol of C'Thun" );
   procs.void_lasher                     = get_proc( "Void Lasher proc from Idol of C'Thun" );
@@ -2393,6 +2390,7 @@ void priest_t::create_procs()
   procs.void_apparition_yogg            = get_proc( "Idol of Yogg-Saron from Tentacle Slam" );
   procs.void_apparition_cthun           = get_proc( "Idol of C'Thun from Tentacle Slam" );
   procs.tentacle_slam_idol              = get_proc( "Idol spell from Tentacle Slam" );
+  procs.midnight_s2_4pc_void_volley     = get_proc( "Void Volley access from Midnight Season 2 4pc" );
   // Holy
   procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
   procs.divine_image          = get_proc( "Divine Image from Holy Words" );
@@ -4125,15 +4123,9 @@ public:
     shadowy_apparition_sources.set( "plotOptions.pie.dataLabels.format", "{point.name}: {point.percentage:.1f}%" );
 
     std::vector<proc_t*> sa_source_list = {
-        p.procs.shadowy_apparition_swp,
-        p.procs.shadowy_apparition_swm,
-        p.procs.shadowy_apparition_mb,
-        p.procs.shadowy_apparition_mfi,
-        p.procs.shadowy_apparition_yshaarj,
-        p.procs.shadowy_apparition_nzoth,
-        p.procs.shadowy_apparition_yogg,
-        p.procs.shadowy_apparition_cthun,
-        p.procs.shadowy_apparition_vampiric_insight,
+        p.procs.shadowy_apparition_swp,  p.procs.shadowy_apparition_swm,     p.procs.shadowy_apparition_mb,
+        p.procs.shadowy_apparition_mfi,  p.procs.shadowy_apparition_yshaarj, p.procs.shadowy_apparition_nzoth,
+        p.procs.shadowy_apparition_yogg, p.procs.shadowy_apparition_cthun,
     };
 
     double sum = 0.0;

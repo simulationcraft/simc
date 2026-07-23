@@ -405,7 +405,9 @@ public:
     proc_t* freezing_applied;
     proc_t* freezing_expired;
     proc_t* freezing_overflow;
+
     proc_t* icicle_from_set_bonus;
+    proc_t* icicle_overflow;
   } procs;
 
   struct accumulated_rngs_t
@@ -2745,16 +2747,8 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     // Arcane Charge from the Orb cast increases Barrage damage, but does not change
     // how many targets it hits. Snapshot the buff stacks before executing the Orb.
     snapshot_charges = p()->buffs.arcane_charge->check();
-    if ( p()->talents.orb_barrage->ok() )
-    {
-      triggers.clearcasting = true;
-      if ( rng().roll( p()->buffs.arcane_salvo->check() * p()->talents.orb_barrage->effectN( 1 ).percent() ) )
-      {
-        orb_barrage->execute_on_target( target );
-        // Likely a bug: Arcane Orb procs from Orb Barrage uniquely prevent Barrage from rolling Clearcasting's proc chance, and incrementing its BLP.
-        triggers.clearcasting = false;
-      }
-    }
+    if ( rng().roll( p()->buffs.arcane_salvo->check() * p()->talents.orb_barrage->effectN( 1 ).percent() ) )
+      orb_barrage->execute_on_target( target );
 
     p()->benefits.arcane_charge.arcane_barrage->update();
 
@@ -6260,7 +6254,7 @@ void mage_t::init_spells()
   spec.freeze_and_shatter = find_mastery_spell( MAGE_FROST );
 
   // Misc
-  cooldowns.arcane_echo->duration = find_spell( 464515 )->internal_cooldown();
+  cooldowns.arcane_echo->duration = bugs ? 0_ms : find_spell( 464515 )->internal_cooldown();
 
   // Register passives
   // Fire's Ire is dynamic and should not be applied as a passive
@@ -6515,7 +6509,9 @@ void mage_t::init_procs()
       procs.freezing_applied  = get_proc( "Freezing applied" );
       procs.freezing_expired  = get_proc( "Freezing expired" );
       procs.freezing_overflow = get_proc( "Freezing overflow" );
+
       procs.icicle_from_set_bonus = get_proc( "Icicle from 12.1 2pc Set Bonus" );
+      procs.icicle_overflow       = get_proc( "Icicle overflow" );
       break;
     default:
       break;
@@ -7118,9 +7114,13 @@ void mage_t::trigger_icicle( int count, bool grant_buff )
     return;
 
   int max_icicles = as<int>( talents.icicles->effectN( 2 ).base_value() );
+  int old_icicles = state.icicles;
   state.icicles = std::min( state.icicles + count, max_icicles );
   if ( grant_buff && state.icicles == max_icicles )
     buffs.glacial_spike->trigger();
+  int overflow = old_icicles + count - state.icicles;
+  for ( int i = 0; i < overflow; i++ )
+    procs.icicle_overflow->occur();
 }
 
 void mage_t::trigger_fired_up()

@@ -535,16 +535,21 @@ struct pull_event_t final : raid_event_t
     // adjust hp based on dungeon_route_simple_dps_members since the mob hp is assumed to be pre-adjusted for the player being simmed
     if ( sim->dungeon_route_simple_dps_members > 0 )
     {
-      int player_mult = sim->dungeon_route_pct_hp;
-
       // assume this is too much for a single player
       if ( sim->dungeon_route_pct_hp > 40 )
       {
         sim->error( "Warning: using dungeon_route_simple_dps_members but keystone_pct_hp is over 40 which seems high for one player; hp will not be adjusted, \
           make sure input health values accomodate the extra actors or set keystone_pct_hp according to only the player profile" );
       }
+      // don't adjust hp if single_actor_batch=1 is mistakenly used, the simple dps players will just be ignored
+      else if ( sim->single_actor_batch == 1 )
+      {
+        sim->error( "Warning: single_actor_batch is enabled but dungeon_route_simple_dps_members was > 0; hp will not be adjusted" );
+      }
       else
       {
+        int player_mult = sim->dungeon_route_pct_hp;
+
         player_t* sim_player = nullptr;
         for ( player_t* player : sim->player_no_pet_list )
         {

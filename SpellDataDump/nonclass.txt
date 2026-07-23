@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68453 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68887 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -254388,7 +254388,6 @@ $fireHealing=${$<basePoints>*$1263002s2}
 $statsvalue=$?a1288183[${((1/100*$1288183w3))}][${((1/100*$1288183s3))}]
 
 Name             : Rune of Lingering (desc=Core Rune) (id=1287663) 
-Hotfixed         : Attributes
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards
@@ -254542,7 +254541,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 13.1441 (coefficient=0.100275) | Target: Self (1)
 
 Name             : Rune of Echoes (id=1289063) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -255263,7 +255261,6 @@ Effects          :
 Description      : Defeat rare foes to have a chance at gear for your current specialization.
 
 Name             : Rune of Echoes (id=1303048) 
-Hotfixed         : Attributes
 School           : Cosmic
 Spell Type       : Magic
 Range            : 100 yards

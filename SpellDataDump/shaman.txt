@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68453 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68887 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1449,9 +1449,9 @@ Family Flags     : 41, 68
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Unknown (456), Non-secret Aura (506)
 Effects          :
 #1 (id=55127)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.80288 | PvP Coefficient: 1.32 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.80288 | PvP Coefficient: 1.518 | Target: Targeted Ally (21)
 #2 (id=55128)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.398429 | PvP Coefficient: 1.6 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.398429 | PvP Coefficient: 1.84 | Target: Targeted Ally (21)
 Description      : Restorative waters wash over a friendly target, healing them for $s1 and an additional $o2 over $d.
 Tooltip          : Heals $w2 every $t2 seconds.
 

@@ -26,26 +26,18 @@
 #include <vector>
 
 struct buff_t;
-struct stat_buff_t;
-struct spelleffect_data_t;
-struct absorb_buff_t;
-struct cost_reduction_buff_t;
-struct actor_pair_t;
-struct sim_t;
-struct action_t;
-struct item_t;
-struct gain_t;
-struct action_state_t;
-struct stats_t;
-struct event_t;
 struct cooldown_t;
-struct real_ppm_t;
+struct event_t;
 struct expr_t;
-struct spell_data_t;
-namespace rng{
+struct gain_t;
+struct item_t;
+struct real_ppm_t;
+struct spelleffect_data_t;
+struct stats_t;
+namespace rng
+{
 struct rng_t;
 }
-
 
 using buff_tick_callback_t = std::function<void(buff_t* buff, int remaining_ticks, timespan_t tick_time)>;
 using buff_tick_time_callback_t = std::function<timespan_t(const buff_t*, unsigned)>;
@@ -584,12 +576,7 @@ struct damage_buff_t : public buff_t
   damage_buff_t* apply_dynamic_buff_multiplier( buff_t* buff );
   damage_buff_t* apply_mod_affecting_effect( damage_buff_modifier_t&, const spelleffect_data_t& );
 
-  damage_buff_t* set_is_stacking_mod( bool value )
-  {
-    is_stacking = value;
-    return this;
-  };
-
+  damage_buff_t* set_is_stacking_mod( bool value );
   damage_buff_t* set_direct_mod( double );
   damage_buff_t* set_direct_mod( const spell_data_t*, size_t, double = 0.0, double = 1.0 );
   damage_buff_t* set_periodic_mod( double );
