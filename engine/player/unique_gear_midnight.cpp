@@ -3490,6 +3490,64 @@ void keepers_seething_core( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Hex Lord's Dooming Idol
+// 1295884 equip driver
+//  e1: int drain per stack
+//  e2: on-use int per stack
+// 1295885 on-use driver & buff
+// 1307470 stacking int drain
+void hex_lords_dooming_idol( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect, { "hex_lords_dooming_idol", "hex_lords_doom" } ) )
+    return;
+
+  unsigned equip_id = 1295884;
+  auto equip = find_special_effect( effect.player, equip_id );
+  assert( equip && "Hex Lord's Dooming Idol missing equip effect" );
+
+  auto equip_data = equip->driver();
+
+  auto doom = create_buff<stat_buff_t>( effect.player, equip->trigger() )
+    ->set_stat_from_effect_type( A_MOD_STAT, -equip_data->effectN( 1 ).average( effect ) )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
+  equip->custom_buff = doom;
+
+  new dbc_proc_callback_t( effect.player, *equip );
+
+  auto use_buff = create_buff<stat_buff_t>( effect.player, "hex_lords_dooming_idol", effect.driver() )
+    ->set_stat_from_effect_type( A_MOD_STAT, equip_data->effectN( 2 ).average( effect ) )
+    ->set_max_stack( doom->max_stack() )
+    ->set_cooldown( 0_ms );
+
+  struct hex_lords_dooming_idol_t : public generic_proc_t
+  {
+    buff_t* doom;
+    buff_t* use_buff;
+
+    hex_lords_dooming_idol_t( const special_effect_t& e, buff_t* doom, buff_t* use )
+      : generic_proc_t( e, "hex_lords_dooming_idol", e.driver() ), doom( doom ), use_buff( use )
+    {}
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+
+      if ( !doom->check() )
+        return;
+
+      use_buff->expire();
+      use_buff->trigger( doom->check() );
+      doom->expire();
+    }
+  };
+
+  effect.disable_buff();
+  effect.has_use_buff_override = true;
+  effect.execute_action =
+      create_proc_action<hex_lords_dooming_idol_t>( "hex_lords_dooming_idol", effect, doom, use_buff );
+}
+  
 // Vashnik's Sanguine Rancor
 // 1295553 Driver
 // 1303479 Sanguine Rancor (stack buff)
@@ -4625,6 +4683,8 @@ void register_special_effects()
   register_special_effect( 1295275, trinkets::stormbound_emblem_of_dazar );
   register_special_effect( 1294744, DISABLED_EFFECT );  // Stormbound Emblem of Dazar equip driver
   register_special_effect( 1292065, trinkets::keepers_seething_core );
+  register_special_effect( 1295885, trinkets::hex_lords_dooming_idol, true );
+  register_special_effect( 1295884, DISABLED_EFFECT );  // Hex Lord's Dooming Idol equip driver
   register_special_effect( 1295553, trinkets::vashniks_sanguine_rancor );
   reset_version_check();
   // Weapons
