@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.0.68824
-static constexpr std::array<spelltext_data_t, 29232> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29234> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27920,6 +27920,8 @@ static constexpr std::array<spelltext_data_t, 29232> __ptr_spelltext_data { {
   { 1266151, "Deep Breath deals $?a134735[$s1% reduced][$s1% increased] damage and can be cast again within $1266165d of being used.\r\n\r\nRecall will be available after the second cast if talented.", 0, 0 },
   { 1266165, "$@spelldesc1266151", "Deep Breath can be cast for free.", 0 },
   { 1266182, "Increases $pri for $d.", "$pri increased by $w1.", 0 },
+  { 1266184, "Increases $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] for $d.", "$?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $w5.", 0 },
+  { 1266197, "Increases $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Lowest secondary stat] as well as Speed, Avoidance, and Leech for $d.", "$?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Lowest secondary stat] increased by $w5.\r\n\r\nSpeed, Avoidance, and Leech increased by $w6.", 0 },
   { 1266257, "Dealing damage has a high chance to unleash a Heaven's Glaive, dealing ${$s1*$<rolemult>} Cosmic damage split between nearby enemies. $@spelldesc1240903", 0, 0 },
   { 1266296, "The primary target of $?c3[Void Nova][Chaos Nova] is stunned for an additional ${$s1/1000} sec.", 0, 0 },
   { 1266299, "During combat you have a chance to become consumed by Fanatical Inspiration, increasing your highest secondary by $1253120s1 for $1266299d.", "$?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $w5.", 0 },
