@@ -5432,7 +5432,10 @@ struct overpower_t : public warrior_attack_t
     // Dreadnaught fires off per target hit by overpower.  SS will cause casts
     if ( dreadnaught && result_is_hit( s->result ) )
     {
-      dreadnaught->execute_on_target( s->target );
+      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+        dreadnaught->execute_on_target( s->target );
+      else if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && sim->target_non_sleeping_list.size() > 1 )
+        dreadnaught->execute_on_target( s->target );
     }
 
     if ( !background && p()->talents.arms.master_of_warfare_1.ok() && !p()->buff.master_of_warfare_proc->up() && p()->rng().roll( master_of_warfare_proc_chance * ++p()->master_of_warfare_attempts_since_last_proc ) )
