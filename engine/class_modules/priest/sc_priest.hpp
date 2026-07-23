@@ -227,7 +227,6 @@ public:
     propagate_const<buff_t*> crushing_void;
     propagate_const<buff_t*> ancient_madness_extension;
     propagate_const<buff_t*> ancient_madness;
-    propagate_const<buff_t*> void_volley_voidform_charges;
     propagate_const<buff_t*> void_volley_set_bonus;
     propagate_const<buff_t*> void_volley_set_bonus_effectiveness;
 

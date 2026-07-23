@@ -856,6 +856,17 @@ struct void_volley_damage_base_t : public priest_spell_t
   {
     double m = priest_spell_t::composite_da_multiplier( s );
     m *= cast_effectiveness_multiplier;
+
+    if ( set_bonus_effectiveness_active )
+    {
+      m *= priest().buffs.void_volley_set_bonus_effectiveness->default_value;
+    }
+
+    if ( insidious_ire_active() )
+    {
+      m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -963,8 +974,7 @@ struct void_volley_base_t : public priest_spell_t
       return false;
     }
 
-    if ( priest().is_ptr() && !priest().buffs.voidform->check() && !priest().buffs.crushing_void->check() &&
-         !priest().buffs.void_volley->check() )
+    if ( priest().is_ptr() && ( !priest().buffs.crushing_void->check() && !priest().buffs.void_volley->check() ) )
     {
       return false;
     }
@@ -1046,21 +1056,23 @@ struct void_volley_t final : public void_volley_base_t
       return false;
     }
 
-    // Non-tier equivalents (e.g. Crushing Void) are consumed before set-bonus charges.
-    if ( priest().buffs.crushing_void->check() )
+    const int total_void_volley_charges = priest().buffs.void_volley->check();
+
+    if ( set_bonus_charges == total_void_volley_charges )
     {
-      return false;
+      return true;
     }
 
-    const int total_void_volley_charges = priest().buffs.void_volley->check();
-    return total_void_volley_charges == set_bonus_charges;
+    const int crushing_void_volley_charges = priest().buffs.crushing_void->check();
+
+    return crushing_void_volley_charges == set_bonus_charges;
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double ea = void_volley_base_t::composite_energize_amount( s );
-
-    if ( consumes_set_bonus_charge() )
+    
+    if ( priest().buffs.void_volley_set_bonus_effectiveness->check() )
     {
       ea *= priest().buffs.void_volley_set_bonus_effectiveness->default_value;
     }
@@ -1071,7 +1083,7 @@ struct void_volley_t final : public void_volley_base_t
   void execute() override
   {
     bool set_bonus_cast              = consumes_set_bonus_charge();
-    set_bonus_effectiveness_for_cast = set_bonus_cast;
+    set_bonus_effectiveness_for_cast = priest().buffs.void_volley_set_bonus_effectiveness->check();
 
     void_volley_base_t::execute();
     set_bonus_effectiveness_for_cast = false;
@@ -1085,11 +1097,12 @@ struct void_volley_t final : public void_volley_base_t
     {
       priest().buffs.void_volley->decrement();
     }
+    
+    priest().buffs.void_volley_set_bonus_effectiveness->decrement();
 
     if ( set_bonus_cast )
     {
       priest().buffs.void_volley_set_bonus->decrement();
-      priest().buffs.void_volley_set_bonus_effectiveness->decrement();
     }
   }
 };
@@ -1402,7 +1415,6 @@ struct voidform_t final : public priest_spell_t
     {
       int voidform_charges = as<int>( priest().talents.shadow.voidform->effectN( 3 ).base_value() );
       priest().buffs.void_volley->trigger( voidform_charges );
-      priest().buffs.void_volley_voidform_charges->trigger( voidform_charges );
     }
 
     if ( priest().buffs.sustained_potency->check() )
@@ -1420,7 +1432,7 @@ struct voidform_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( priest().buffs.voidform->check() )
+    if ( priest().buffs.voidform->check() || priest().buffs.crushing_void->check() || priest().buffs.void_volley->check() )
     {
       return false;
     }
@@ -1813,7 +1825,16 @@ struct tentacle_slam_t final : public priest_spell_t
          set_bonus->effect_count() >= 1 && rng().roll( set_bonus->effectN( 1 ).percent() ) )
     {
       priest().procs.midnight_s2_4pc_void_volley->occur();
-      priest().buffs.void_volley->trigger();
+
+      if ( priest().buffs.voidform->check() )
+      {
+        priest().buffs.void_volley->trigger();
+      }
+      else
+      {
+        priest().buffs.crushing_void->trigger();
+      }
+
       priest().buffs.void_volley_set_bonus->trigger();
       priest().buffs.void_volley_set_bonus_effectiveness->trigger();
     }
@@ -1932,7 +1953,8 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    int voidform_granted_charges = priest().buffs.void_volley_voidform_charges->check();
+    int void_volley_charges      = priest().buffs.void_volley->check();
+    int tierset_procs_left       = priest().buffs.void_volley_set_bonus->check();
 
     if ( priest().buffs.shadowform_state->check() )
     {
@@ -1952,17 +1974,11 @@ struct voidform_t final : public priest_buff_t<buff_t>
       priest().buffs.crushing_void->trigger();
     }
 
-    if ( voidform_granted_charges > 0 )
+    assert( tierset_procs_left <= void_volley_charges && "Should never exceed void volley charges" );
+    if ( void_volley_charges > 0 && tierset_procs_left > 0 )
     {
-      int current_void_volley_charges = priest().buffs.void_volley->check();
-      int charges_to_remove           = std::min( current_void_volley_charges, voidform_granted_charges );
-
-      if ( charges_to_remove > 0 )
-      {
-        priest().buffs.void_volley->decrement( charges_to_remove );
-      }
-
-      priest().buffs.void_volley_voidform_charges->expire();
+      priest().buffs.void_volley->expire();
+      priest().buffs.crushing_void->trigger( tierset_procs_left );
     }
 
     if ( priest().is_ptr() && priest().buffs.ancient_madness_extension->check() )
@@ -2225,9 +2241,6 @@ void priest_t::create_buffs_shadow()
   const double shadow_mid2_4pc_effectiveness = shadow_mid2_4pc->ok() && shadow_mid2_4pc->effect_count() >= 2
                                                    ? shadow_mid2_4pc->effectN( 2 ).percent()
                                                    : fallback_mid2_4pc_effectiveness;
-
-  buffs.void_volley_voidform_charges =
-      make_buff( this, "void_volley_voidform_charges" )->set_quiet( true )->set_max_stack( void_volley_max_stacks );
 
   buffs.void_volley_set_bonus =
       make_buff( this, "void_volley_set_bonus" )->set_quiet( true )->set_max_stack( void_volley_max_stacks );
