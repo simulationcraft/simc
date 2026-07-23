@@ -140,7 +140,7 @@ struct warrior_td_t : public actor_target_data_t
   bool hit_by_fresh_meat;
 
   warrior_t& warrior;
-  warrior_td_t( player_t* target, warrior_t& p );
+  warrior_td_t( player_t& target, warrior_t& p );
 
   void target_demise();
 };
@@ -955,7 +955,7 @@ public:
 
     if ( !td )
     {
-      td = new warrior_td_t( target, const_cast<warrior_t&>( *this ) );
+      td = new warrior_td_t( *target, const_cast<warrior_t&>( *this ) );
     }
     return td;
   }
@@ -2712,12 +2712,12 @@ struct bloodthirst_t : public warrior_attack_t
 
       if ( rng().roll( enrage_chance ) )
         p()->enrage();
-    }
 
-    if( p()->talents.fury.fresh_meat.ok() && execute_state && !td( execute_state->target )->hit_by_fresh_meat )
-    {
-      p()->buff.enrage->trigger();
-      td( execute_state->target )->hit_by_fresh_meat = true;
+      if( p()->talents.fury.fresh_meat.ok() && execute_state && !td( execute_state->target )->hit_by_fresh_meat )
+      {
+        p()->buff.enrage->trigger();
+        td( execute_state->target )->hit_by_fresh_meat = true;
+      }
     }
 
     if ( p()->buff.enrage->up() )
@@ -2953,12 +2953,12 @@ struct bloodbath_t : public warrior_attack_t
 
       if ( rng().roll( enrage_chance ) )
         p()->enrage();
-    }
 
-    if( p()->talents.fury.fresh_meat.ok() && execute_state && !td( execute_state->target )->hit_by_fresh_meat )
-    {
-      p()->buff.enrage->trigger();
-      td( execute_state->target )->hit_by_fresh_meat = true;
+      if( p()->talents.fury.fresh_meat.ok() && execute_state && !td( execute_state->target )->hit_by_fresh_meat )
+      {
+        p()->buff.enrage->trigger();
+        td( execute_state->target )->hit_by_fresh_meat = true;
+      }
     }
 
     if ( p()->buff.enrage->up() )
@@ -8257,15 +8257,15 @@ struct debuff_demo_shout_t : public warrior_buff_t<buff_t>
 // Warrior Character Definition
 // ==========================================================================
 
-warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data_t( target, &p ), warrior( p )
+warrior_td_t::warrior_td_t( player_t& target, warrior_t& p ) : actor_target_data_t( &target, &p ), warrior( p )
 {
-  target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
+  target.register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
   using namespace buffs;
 
   hit_by_fresh_meat = false;
-  dots_deep_wounds = target->get_dot( "deep_wounds", &p );
-  dots_rend        = target->get_dot( "rend_dot", &p );
-  dots_gushing_wound = target->get_dot( "gushing_wound", &p );
+  dots_deep_wounds = target.get_dot( "deep_wounds", &p );
+  dots_rend        = target.get_dot( "rend_dot", &p );
+  dots_gushing_wound = target.get_dot( "gushing_wound", &p );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash", p.spell.colossus_smash_debuff );
 
@@ -8377,7 +8377,8 @@ void warrior_t::create_buffs()
      ->add_invalidate( CACHE_ATTACK_HASTE )
      ->add_invalidate( CACHE_RUN_SPEED )
      ->set_default_value( find_spell( 184362 )->effectN( 1 ).percent() )
-     ->set_duration( find_spell( 184362 )->duration() );
+     ->set_duration( find_spell( 184362 )->duration() )
+     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buff.frenzy = make_buff( this, "frenzy", find_spell(335082) )
                           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
@@ -9080,6 +9081,12 @@ void warrior_t::reset()
   slayers_strike_attempts_since_last_proc = 0;
   master_of_warfare_attempts_since_last_proc = 0;
   fury_mid2_2pc_extensions = 0;
+
+  for ( auto* td : target_data.get_entries() )
+  {
+    if( td )
+      td->hit_by_fresh_meat = false;
+  }
 }
 
 // Movement related overrides. =============================================
