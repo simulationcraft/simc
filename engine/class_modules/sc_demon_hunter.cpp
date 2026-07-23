@@ -5101,6 +5101,8 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     // use_off_gcd = true;
     may_miss = callbacks = harmful = false;
     range                          = 5.0;  // Disallow use outside of melee.
+    // Consume and Devour are castable while moving; fragments can be collected during those casts.
+    usable_while_casting = use_while_casting = true;
   }
 
   void parse_mode( util::string_view value )
@@ -5268,6 +5270,13 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
   bool ready() override
   {
     if ( dh()->soul_fragment_pick_up )
+    {
+      return false;
+    }
+
+    // Only Consume and Devour can be cast while moving; any other cast or channel blocks the pick up.
+    action_t* casting = dh()->executing ? dh()->executing : dh()->channeling;
+    if ( casting && casting->id != dh()->spec.consume->id() && casting->id != dh()->spec.devour->id() )
     {
       return false;
     }
