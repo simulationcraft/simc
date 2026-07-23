@@ -4712,8 +4712,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #3 (id=1342487)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Targeted Enemy (6)
-#4 (id=1343669)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Fires an explosive shot at your target that lasts for $d. Every $t1 sec the target burns for $s1 Fire damage and explode, dealing $s3% of the damage to all enemies within $212680A1 yds. $?a1301406[Any remaining damage from your previous Explosive Shot will be added into a new Explosive Shot. ][]Deals reduced damage beyond $s2 targets.
 Tooltip          : Exploding for $s1 Fire damage every $t1 sec.
 
