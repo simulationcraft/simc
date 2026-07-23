@@ -531,7 +531,8 @@ void survival_ptr( player_t* p )
   cds->add_action( "potion,if=target.time_to_die<25|cooldown.takedown.ready" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
-  plst->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&howl_summon.ready", "ST - PL" );
+  plst->add_action( "sequence,name=Standard-opener:raptor_strike:kill_command:boomstick:kill_command:takedown,line_cd=10000", "ST - PL" );
+  plst->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&howl_summon.ready" );
   plst->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
   plst->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   plst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up&(talent.lethal_calibration&full_recharge_time<4+gcd|!talent.lethal_calibration)" );
@@ -565,8 +566,8 @@ void survival_ptr( player_t* p )
 
   sentcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0", "AOE - Sent" );
   sentcleave->add_action( "wildfire_bomb,if=talent.wildfire_shells&(buff.tip_of_the_spear.up&!debuff.sentinels_mark.remains&cooldown.boomstick.remains<11&cooldown.boomstick.remains>1)" );
-  sentcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up" );
   sentcleave->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
+  sentcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up" );
   sentcleave->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
   sentcleave->add_action( "takedown,if=buff.tip_of_the_spear.up" );
   sentcleave->add_action( "moonlight_chakram,if=buff.tip_of_the_spear.up" );
