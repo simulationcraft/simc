@@ -6927,9 +6927,10 @@ private:
   stats_t* umbral_stats = nullptr;
   stats_t* orig_stats;
   proc_t* fake_umbral = nullptr;
-  double cascade_chance;
 
 protected:
+  double cascade_chance;
+
   using base_t = ap_generator_t;
   using state_t = druid_action_state_t<ap_generator_data_t>;
   double touch_pct = 0.0;
@@ -9008,6 +9009,10 @@ struct wrath_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
 
   DRUID_ABILITY( wrath_t, base_t, "wrath", p->spec.wrath )
   {
+    // do not proc from wrath in ptr
+    if ( p->is_ptr() )
+      cascade_chance = 0.0;
+
     auto m_data = p->get_modified_spell( &data() );
     set_energize( m_data );
 
