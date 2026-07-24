@@ -1,5 +1,5 @@
-// Spell text, wow build 12.1.0.68824
-static constexpr std::array<spelltext_data_t, 29234> __ptr_spelltext_data { {
+// Spell text, wow build 12.1.0.68914
+static constexpr std::array<spelltext_data_t, 29235> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -48,7 +48,7 @@ static constexpr std::array<spelltext_data_t, 29234> __ptr_spelltext_data { {
   {     710, "Banishes an enemy Demon, Aberration$?s386651[, Undead][], or Elemental, preventing any action for $d. Limit 1. Casting Banish again on the target will cancel the effect.", "Invulnerable, but unable to act.", 0 },
   {     740, "Heals all allies within $a2 yards for $<healing> over $d.$?s197721[ Extends the duration of all your heal over time effects by $s6 sec every $t1 sec.][] Healing decreased beyond $s3 targets.\r\n\r\nRoots form around you while channeling, absorbing up to $s6% of your health in damage and preventing knockbacks.", "Absorbing $w5 damage and protected from knockbacks.", 0 },
   {     768, "Shapeshift into Cat Form, increasing auto-attack damage by $s4%, movement speed by $113636s1%, granting protection from Polymorph effects, and reducing falling damage.\r\n\r\nThe act of shapeshifting frees you from movement impairing effects.", "Autoattack damage increased by $w4%.\r\nImmune to Polymorph effects.\r\nMovement speed increased by $113636s1% and falling damage reduced.", "Shapeshift" },
-  {     772, "Wounds the target, causing $s1 Physical damage instantly and an additional $388539o1 Bleed damage over $388539d.$?s6343[\r\n\r\n|cFFFFFFFFThunder Clap affects $6343s5 nearby targets with Rend.\r\n][]", "Bleeding for $w2 damage every $t2 sec.", 0 },
+  {     772, "Wounds the target, causing $s1 Physical damage instantly and an additional $388539o1 Bleed damage over $388539d.", "Bleeding for $w2 damage every $t2 sec.", 0 },
   {     774, "Heals the target for $o1 over $d.$?s155675[\r\n\r\nYou can apply Rejuvenation twice to the same target.][]$?s33891[\r\n\r\n|C0033AA11Tree of Life: Healing increased by $5420s5% and Mana cost reduced by $5420s4%.|R][]", "Healing $w1 every $t1 sec.", 0 },
   {     781, "Leap backwards$?s109215[, clearing movement impairing effects, and increasing your movement speed by $118922s1% for $118922d][]$?s109298[, and activating a web trap which encases all targets within $115928A1 yards in sticky webs, preventing movement for $136634d][].", 0, 0 },
   {     783, "Shapeshift into a travel form appropriate to your current location, increasing movement speed on land, in water, or in the air, and granting protection from Polymorph effects.\r\n\r\nThe act of shapeshifting frees you from movement impairing effects.$?a159456[\r\n\r\nLand speed increased when used out of combat. This effect is disabled in battlegrounds and arenas.][]", "Immune to Polymorph effects. Movement speed increased.", "Shapeshift" },
@@ -1421,7 +1421,7 @@ static constexpr std::array<spelltext_data_t, 29234> __ptr_spelltext_data { {
   {   42292, "Removes all movement impairing effects and all effects which cause loss of control of your character.", 0, 0 },
   {   42293, "Stamina increased by $s1 and Versatility increased by $s2. Lasts $d.", "Stamina increased by $w1 and Versatility increased by $w2.", 0 },
   {   42620, "Permanently enchant a melee weapon to increase Agility by $ec1. Cannot be applied to items higher than level $ecix.", 0, 0 },
-  {   42650, "Summon or empower Lesser Ghouls to form an unholy army of $s1 for ${$d} sec. While active, you command your army through Scourge Strike, executing Orders based on nearby enemies instead of summoning Lesser Ghouls.\r\n\r\n$@spellicon47541 |cFFFFFFFFDeath Orders|r\r\nLesser Ghouls strike with you, dealing ${0.30*$1294264s1*(1+$mas/100)} Shadow damage to your target.\r\n\r\n$@spellicon207317 |cFFFFFFFFEpidemic Orders|r\r\nLesser Ghouls erupt in viscera, dealing ${$s5/100*$<damage>} Shadow damage to nearby enemies. Deals reduced damage beyond $s6 targets.", "Commanding the Army of the Dead.", 0 },
+  {   42650, "Summon or empower Lesser Ghouls to form an unholy army of $s1 for ${$d} sec. While active, summoning a Lesser Ghoul will instead execute Orders based on nearby enemies.\r\n\r\n$@spellicon47541 |cFFFFFFFFDeath Orders|r\r\nLesser Ghouls strike with you, dealing ${0.30*$1294264s1*(1+$mas/100)} Shadow damage to your target.\r\n\r\n$@spellicon207317 |cFFFFFFFFEpidemic Orders|r\r\nLesser Ghouls erupt in viscera, dealing ${$s5/100*$<damage>} Shadow damage to nearby enemies. Deals reduced damage beyond $s6 targets.", "Commanding the Army of the Dead.", 0 },
   {   42651, "$@spelldesc42650", 0, 0 },
   {   42974, "Permanently enchant a melee weapon to occasionally grant you $s1 critical strike.  Only one instance of this effect can be active at a time. Cannot be applied to items higher than level $ecix.", 0, 0 },
   {   42976, "You have an additional $s1 critical strike for $d.", "Critical strike increased by $w1.", 0 },
@@ -27828,7 +27828,7 @@ static constexpr std::array<spelltext_data_t, 29234> __ptr_spelltext_data { {
   { 1265560, "$@spelldesc1265359", "Auto-attack speed and damage increased by $w1%.", 0 },
   { 1265566, "$@spelldesc1250602", "Empowered by the soul, you gain $w1 $pri.", 0 },
   { 1265570, "Execute generates ${$s1/10} additional Rage and increases the damage of Rampage by $1265575s1% for $1265575d.", 0, 0 },
-  { 1265574, "Vampiric Strike increases the damage of $?c3[the Lesser Ghoul it summons][your Dancing Rune Weapons] by $?c3[$1280386s1%.][$1236822s3% for $1236822d. \r\n\r\nMultiple applications may overlap.]", 0, 0 },
+  { 1265574, "Vampiric Strike increases the damage of $?c3[your Lesser Ghouls][your Dancing Rune Weapons] by $?c3[$1280386s1][$1236822s3]% for $1236822d.$?c1[\r\n\r\nMultiple applications may overlap.][]", 0, 0 },
   { 1265575, "$@spelldesc1265570", "Rampage damage increased by $w1%.", 0 },
   { 1265577, "$@spelldesc1236260", "Damage increased by $s1%.", 0 },
   { 1265593, "$@spelldesc1248911", "Damage and healing done increased by $w1%.", 0 },
@@ -28826,6 +28826,7 @@ static constexpr std::array<spelltext_data_t, 29234> __ptr_spelltext_data { {
   { 1295775, "Your healing has a high chance to infuse the target with Preternatural Antivenom for $1305846d, healing your ally for $s2% of any damage they take until $s1 health has been restored.", 0, 0 },
   { 1295776, "Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.", 0, 0 },
   { 1295777, "Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.", 0, 0 },
+  { 1295783, "Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.", 0, 0 },
   { 1295803, "Increases $pri by $s1% and all Tertiary stats by $s2%", "$pri increased by $w1% and Tertiary stats increased by $s3%.", 0 },
   { 1295825, "$@spelldesc1248903", "The Curse slumbers.", 0 },
   { 1295833, "Unleash a deluge of caustic venom, dealing ${$1295832s1*$<rolemult>*$d/$t1} Nature damage to your target. Damage increased by $1295832S2% for every 1% health the enemy has remaining.\r\n\r\nDefeat enemies to catalyze their essential fluids into additional venom, reducing this cooldown by $1295832s3 sec.", 0, 0 },
@@ -28849,7 +28850,7 @@ static constexpr std::array<spelltext_data_t, 29234> __ptr_spelltext_data { {
   { 1296019, "Deals $s1 Nature damage.", "Deals $w1 Nature damage.", 0 },
   { 1296107, "$@spelldesc1248939", "Soul shattered increasing the enemy's damage taken by $w1%.", 0 },
   { 1296121, "$@spelldesc1248939", "Soul shattered increasing the enemy's damage taken by $w1%.", 0 },
-  { 1296158, "Collect the weapon enchantment appearance of Venomous.", 0, 0 },
+  { 1296158, "Collect the weapon enchantment appearance of Venomcoil.", 0, 0 },
   { 1296184, "$@spelldesc1288781", "Movement Speed increased by $w1% and Haste increased by $w2%.\r\n\r\nSuffering $w3% of your current health as Nature damage every $1305686t sec.", 0 },
   { 1296195, "$@spelldesc1288781", "Infusion reversed.", 0 },
   { 1296418, "Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.", 0, 0 },
@@ -28936,7 +28937,7 @@ static constexpr std::array<spelltext_data_t, 29234> __ptr_spelltext_data { {
   { 1296654, "Your Magus of the Dead and Lord of the Dead cast a more powerful Necrotic Bolt instead of Frostbolt, and Withering Grasp instead of Shadow Bolt.", 0, 0 },
   { 1296655, "Necrotic Bolt's damage is increased by $s1%, and Withering Grasp's damage is increased by $s2%, against enemies below $s3% health.", 0, 0 },
   { 1296656, "Infusion of Light increases the healing of Flash of Light by an additional $s1% and the absorb from Greater Judgment by an additional $s2%.", 0, 0 },
-  { 1296657, "Judgment now has a $s1% chance to grant Infusion of Light. Holy Light now has a $s2% chance to grant Infusion of Light.", 0, 0 },
+  { 1296657, "Judgment now has a $s1% chance to grant Infusion of Light. Holy Light now has a $s2% chance to grant Infusion of Light, but its mana cost is increased by $s3%.", 0, 0 },
   { 1296658, "Consecration is $s1% larger and enemies within your Consecration are illuminated, increasing the chance for your abilities to critically strike them by $s2%.", 0, 0 },
   { 1296659, "Enemies struck by Judgment or $?s204019[Blessed Hammer]?s53595[Hammer of the Righteous][Crusader Strike] take $s1% additional Holy damage. If they are struck by a critical strike the additional damage is increased by $s2%.", 0, 0 },
   { 1296660, "Divine Purpose has an additional $s1% chance to activate, and consuming it grants Divine Power, increasing Holy damage done by $1305230s1% for $1305230d.", 0, 0 },
@@ -29236,11 +29237,11 @@ static constexpr std::array<spelltext_data_t, 29234> __ptr_spelltext_data { {
   { 1312998, "$?a388667[Drain Soul][Shadow Bolt] and Malefic Grasp damage increased by $s1% or $s2% if the target is affected by Haunt. \r\n\r\nDark Harvest damage increased by $s3% or $s4% if the target is affected by Haunt.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.1.0.68824
+// spelltext hotfix entries, wow build 12.1.0.68914
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.1.0.68824
+// Spell description variables, wow build 12.1.0.68914
 static constexpr std::array<spelldesc_vars_data_t, 736> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29980,7 +29981,7 @@ static constexpr std::array<spelldesc_vars_data_t, 736> __ptr_spelldesc_vars_dat
   { 1309793, "$base=${10}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.1.0.68824
+// spelldesc_vars hotfix entries, wow build 12.1.0.68914
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
