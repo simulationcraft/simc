@@ -5325,14 +5325,6 @@ struct aimed_shot_t : public aimed_shot_base_t
       {
         p()->buffs.lock_and_load->decrement();
       }
-
-      // 2026-07-12: This check is duplicated from aimed_shot_t but made unreactable as Hydra can munch Death Bringers from the primary shot.
-      //             Should really be in aimed_shot_base_t but working on the assumption that this will be fixed so duplicating here for ease of cleanup.
-      if ( p()->buffs.death_bringer->up() )
-      {
-        p()->buffs.death_bringer->expire();
-        p()->trigger_deathblow();
-      }
     }
   };
 
@@ -5540,10 +5532,12 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       // 2026-07-17: Spotter's Mark Rapid Fire also expires on impact, meaning a sequence of Rapid Fire -> Precise Shots 
       //             can munch a proc with no benefit, depending on travel time & distance.
       // 2026-07-22: This interaction only happens for Spotter's Mark Rapid Fire debuffs NOT triggered by Unload.
+      // 2026-07-24: ... when the initial Rapid Fire was cast against a marked target.
       if ( p()->bugs )
       {
         if ( td( state->target )->debuffs.spotters_mark_rapid_fire->check() &&
-            !td( state->target )->debuffs.spotters_mark_rapid_fire->triggered_by_unload )
+            !td( state->target )->debuffs.spotters_mark_rapid_fire->triggered_by_unload &&
+            range::find( channel->marked_targets, state->target ) != channel->marked_targets.end() )
         {
           td( state->target )->debuffs.spotters_mark_rapid_fire->expire();
           p()->procs.rapid_fire_mark_munched->occur();
@@ -5885,11 +5879,7 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     cleave_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.explosive_shot_cleave )
     {
       aoe = -1;
-      
-      if ( !p->bugs )
-      {
-        target_filter_callback = secondary_targets_only();
-      }
+      target_filter_callback = secondary_targets_only();
 
       // 2026-17-07: Salvo can trigger this action without the base (212431) being talented, so grab it here unconditionally.
       reduced_aoe_targets = p->find_spell( 212431 )->effectN( 2 ).base_value();
