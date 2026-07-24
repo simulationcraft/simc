@@ -7352,7 +7352,7 @@ struct lightning_bolt_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
+    p()->buff.mid2_ele_4pc_builder->decrement();
     if ( is_variant( spell_variant::NORMAL ) && p()->specialization() == SHAMAN_ELEMENTAL )
     {
       if ( !p()->sk_during_cast )
@@ -7360,7 +7360,7 @@ struct lightning_bolt_t : public shaman_spell_t
         p()->buff.stormkeeper->decrement();
       }
       p()->sk_during_cast = false;
-      p()->buff.mid2_ele_4pc_builder->decrement();
+      
 
       if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
       {
