@@ -13818,7 +13818,7 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric, bool sum
   {
     if ( specialization() == DEATH_KNIGHT_UNHOLY )
     {
-      if ( summoned_ghoul && !buffs.army_of_the_dead->check() && sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+      if ( summoned_ghoul && !buffs.army_of_the_dead->check() /* && sim->dbc->wowv() < wowv_t( 12, 1, 0 )*/ )
         active_lesser_ghouls.back()->transfusion->trigger();
       // if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
         // for ( auto& ghoul : active_lesser_ghouls )
