@@ -3588,23 +3588,20 @@ int hunter_t::ticking_dots( player_t* t )
 {
   int dots = 0;
 
-  auto hunter_td = get_target_data( t );
-  if ( hunter_td )
+  if ( auto hunter_td = get_target_data( t ) )
   {
     dots += hunter_td->dots.wildfire_bomb->is_ticking();
     dots += hunter_td->dots.sanctified_armaments->is_ticking();
   }
 
-  auto pet_td = pets.main->get_target_data( t );
-  if ( pet_td )
+  if ( auto pet = pets.main )
   {
-    dots += pet_td->dots.sic_em->is_ticking();
+    dots += pet->get_target_data( t )->dots.sic_em->is_ticking();
   }
 
-  auto bear_td = pets.bear.active_pet()->get_target_data( t );
-  if ( bear_td )
+  if ( auto bear = pets.bear.active_pet() )
   {
-    dots += bear_td->dots.rend_flesh->is_ticking();
+    dots += bear->get_target_data( t )->dots.rend_flesh->is_ticking();
   }
 
   return dots;
