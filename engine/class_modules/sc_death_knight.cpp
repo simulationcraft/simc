@@ -2886,6 +2886,9 @@ struct death_knight_pet_t : public pet_t
                       ->set_default_value_from_effect( 1 )
                       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
+    // if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      // transfusion->set_duration( 8_s ); // Transfusion has no duration in data, changing it to 8s manually in 12.1
+
     mastery_dreadblade_crit = make_buff<mastery_dreadblade_crit_t>( this );
   }
 
@@ -13494,10 +13497,6 @@ void death_knight_t::sudden_doom_execute_effects( bool coil )
 
   if ( talent.unholy.doomed_bidding.ok() )
   {
-    // Bugged currently and sudden doom with doomed bidding fizzles entirely when army is active.
-    if ( buffs.army_of_the_dead->check() && bugs )
-      return;
-
     if ( coil )
       pet_summon.db_ghoul_coil->execute();
     else
@@ -13817,8 +13816,14 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric, bool sum
 
   if ( talent.sanlayn.transfusion.ok() )
   {
-    if ( specialization() == DEATH_KNIGHT_UNHOLY && summoned_ghoul && !buffs.army_of_the_dead->check() )
-      active_lesser_ghouls.back()->transfusion->trigger();
+    if ( specialization() == DEATH_KNIGHT_UNHOLY )
+    {
+      if ( summoned_ghoul && !buffs.army_of_the_dead->check() && sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+        active_lesser_ghouls.back()->transfusion->trigger();
+      // if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+        // for ( auto& ghoul : active_lesser_ghouls )
+          // ghoul->transfusion->trigger();
+    }
 
     else if ( specialization() == DEATH_KNIGHT_BLOOD )
     {
@@ -16475,10 +16480,6 @@ bool death_knight_t::validate_actor()
 {
   if ( talent.frost.frostbane.ok() )
     sim->error( error_level_e::SEVERE, "The precise proc chance of Frostbane is unknown. Results will be incorrect." );
-
-  if ( talent.unholy.lord_of_the_dead.ok() )
-    sim->error( error_level_e::SEVERE,
-                "The % damage increase formula of Lord of the Dead is unknown. Results will be incorrect." );
 
   if ( deprecated_dnd_expression )
   {
