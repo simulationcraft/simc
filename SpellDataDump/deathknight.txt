@@ -20160,7 +20160,7 @@ Talent Entry     : Blood [tree=spec, row=11, col=4, max_rank=2, req_points=20, s
                  : Effect#1 [op=set, values=(3, 6)]
                  : Effect#2 [op=set, values=(3, 6)]
                  : Effect#3 [op=set, values=(3, 6)]
-                 : Effect#4 [op=set, values=(4, 4)]
+                 : Effect#4 [op=set, values=(-4, -4)]
                  : Effect#5 [op=set, values=(3, 6)]
 Class            : Death Knight
 School           : Physical
