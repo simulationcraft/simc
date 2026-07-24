@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.0.68824
+Class Spell ID List, wow build 12.1.0.68914
 
 Death Knight
 3714     Path of Frost
@@ -4816,7 +4816,6 @@ Druid
 392146   Embrace of the Dream
 392147   Embrace of the Dream
 392160  *Invigorate
-392162  *Dreamstate
 392167   Everbloom
 392220   Flash of Clarity
 392221   Waking Dream

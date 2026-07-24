@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68824 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68914 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -4366,11 +4366,11 @@ Effects          :
                    Affected Spells: Rip (1079)
                    Family Flags: 85
 #19 (id=1049861) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Regrowth (8936), Regrowth (1264664)
                    Family Flags: 6
 #20 (id=1080082) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936), Regrowth (1264664)
                    Family Flags: 6
 #21 (id=1081594) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
@@ -6593,7 +6593,7 @@ Effects          :
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Regrowth (8936), Regrowth (1264664)
                    Family Flags: 6
-#2 (id=307088)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7) | Attributes: Suppress Points Stacking (6)
+#2 (id=307088)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7) | Attributes: Suppress Points Stacking (6)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Regrowth (8936), Regrowth (1264664)
                    Family Flags: 6
