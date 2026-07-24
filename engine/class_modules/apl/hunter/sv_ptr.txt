@@ -26,8 +26,7 @@ actions.cds+=/potion,if=target.time_to_die<25|cooldown.takedown.ready
 actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
 #ST - PL
-actions.plst=sequence,name=Standard-opener:raptor_strike:kill_command:boomstick:kill_command:takedown,line_cd=10000
-actions.plst+=/kill_command,if=buff.tip_of_the_spear.stack<2&howl_summon.ready
+actions.plst=kill_command,if=buff.tip_of_the_spear.stack<2&howl_summon.ready
 actions.plst+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
 actions.plst+=/takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs
 actions.plst+=/wildfire_bomb,if=buff.tip_of_the_spear.up&(talent.lethal_calibration&full_recharge_time<4+gcd|!talent.lethal_calibration)
