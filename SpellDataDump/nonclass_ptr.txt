@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68824 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68914 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -93127,7 +93127,7 @@ Attributes       : Is Channelled (34), Is Self Channelled (38), Name in Channel 
 Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
 Effects          :
 #1 (id=714061)   : Apply Aura (6) | Periodic Trigger Spell (23): Noxious Venom every 1 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4528.988 (coefficient=35.43713) | Trigger Spell: 267410 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2264.654 (coefficient=17.71982) | Trigger Spell: 267410 | Target: Self (1)
 #2 (id=721364)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -200 | Scaled Value: -200 | Target: Self (1)
 Description      : Pump the fang's noxious venom gland, spraying poisonous mist forward in a cone. The mist deals ${$267410s1*$<rolemult>} Nature damage every $267410t1 sec over $d, stacking up to $267410u times.
@@ -93146,7 +93146,7 @@ Triggered By     : Noxious Venom Gland (267402)
 Attributes       : DoT Stacking Rule (103), Do Not Display Range (126), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Area Effects Use Target Radius (328), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=714074)   : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4528.988 (coefficient=35.43713) | PvP Coefficient: 0.4 | Radius: 15 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 2264.654 (coefficient=17.71982) | PvP Coefficient: 0.4 | Radius: 15 yards | Target: Enemies in Cone to Targeted Enemy (104)
 #2 (id=1339607)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 267402 | Target: Self (1)
 Description      : $@spelldesc267402
@@ -244700,7 +244700,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1252131)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 6 | Scaled Value: 6 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Radius: 1000 yards | Target: Self (1)
 #2 (id=1318448)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Radius: 1000 yards | Target: Self (1)
 #3 (id=1318449)  : Apply Aura Raid (65) | Dummy (4)
@@ -257343,6 +257343,19 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 8951 | Target: Self (1)
 Description      : Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.
 
+Name             : Venom-Spiced Cutlets (id=1295783) 
+School           : Physical
+Spell Type       : None
+Cast Time        : 2 seconds
+Labels           : 971
+                 : 4369
+                 : 4370
+Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Effects          :
+#1 (id=1318060)  : Craft Item (288)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 8946 | Target: Self (1)
+Description      : Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.
+
 Name             : Ouroboric Gift (id=1295803) 
 School           : Physical
 Spell Type       : None
@@ -257578,7 +257591,7 @@ Triggered By     : Dundun's Favor (1296018)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1318425)  : School Damage (2): nature
-                   Base Value: 1.2 | Scaled Value: 1.2 (delta=0.05) | Target: Targeted Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 (delta=0.05) | Target: Targeted Enemy (6)
 Description      : Deals $s1 Nature damage.
 Tooltip          : Deals $w1 Nature damage.
 
@@ -257618,7 +257631,7 @@ Attributes       : Do Not Log (8), Allow While Mounted (24), Allow While Sitting
 Effects          :
 #1 (id=1318629)  : Learn Transmog Illusion (276)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 101 | Target: Self (1)
-Description      : Collect the weapon enchantment appearance of Venomous.
+Description      : Collect the weapon enchantment appearance of Venomcoil.
 
 Name             : Venom Infusion (id=1296184) 
 School           : Physical
@@ -257954,7 +257967,7 @@ Effects          :
 #1 (id=1319137)  : Craft Item (288)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 8975 | Target: Self (1)
 
-Name             : Rolled Bed Linens (id=1296512) 
+Name             : Twilight's Blade Bedroll (id=1296512) 
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -260148,7 +260161,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1332767)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 12 | Scaled Value: 12 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | Radius: 1000 yards | Target: Self (1)
 #2 (id=1332768)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
 #3 (id=1332769)  : Apply Aura Raid (65) | Dummy (4)
@@ -260179,7 +260192,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1332773)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 10 | Scaled Value: 10 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Radius: 1000 yards | Target: Self (1)
 #2 (id=1332774)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
 #3 (id=1332775)  : Apply Aura Raid (65) | Dummy (4)
@@ -260210,7 +260223,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
 #1 (id=1332779)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 8 | Scaled Value: 8 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Radius: 1000 yards | Target: Self (1)
 #2 (id=1332780)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Radius: 1000 yards | Target: Self (1)
 #3 (id=1332781)  : Apply Aura Raid (65) | Dummy (4)
@@ -261000,7 +261013,7 @@ Triggered By     : Venomcursed Critical Strike (1307906)
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1336174)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.66 | Rating: Crit | Target: Self (1)
 #2 (id=1336175)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Haste, Mastery, Vers | Target: Self (1)
 Description      : $@spelldesc1307906
@@ -261016,7 +261029,7 @@ Triggered By     : Venomcursed Mastery (1307923)
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1336193)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.66 | Rating: Mastery | Target: Self (1)
 #2 (id=1336194)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit, Haste, Vers | Target: Self (1)
 Description      : $@spelldesc1307923
@@ -261048,7 +261061,7 @@ Triggered By     : Venomcursed Haste (1307928)
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1336204)  : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.66 | Rating: Haste | Target: Self (1)
 #2 (id=1336205)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit, Mastery, Vers | Target: Self (1)
 Description      : $@spelldesc1307928

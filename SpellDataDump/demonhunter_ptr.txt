@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68824 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68914 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -13493,7 +13493,6 @@ Attributes       : Ignore Line of Sight (66), Always AOE Line of Sight (186), Al
 Effects          :
 #1 (id=1207523)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.3 | Radius: 8 yards | Target: at Enemy in Area (16)
-Hotfixed         : SP Coefficient (5.625 -> 6.3)
 Description      : $@spelldesc1221150
 
 Name             : Collapsing Star (id=1221167) [Spell Family (107), Passive, Hidden] 
@@ -13696,7 +13695,6 @@ Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1215271)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.328 | PvP Coefficient: 0.568 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (6.732 -> 6.328)
 Description      : $@spelldesc1226019
 
 Name             : Eradicate (id=1225826) [Spell Family (107)] 
@@ -13741,7 +13739,6 @@ Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always 
 Effects          :
 #1 (id=1215275)  : School Damage (2): cosmic | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.328 | PvP Coefficient: 0.568 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
-Hotfixed         : SP Coefficient (6.732 -> 6.328)
 Description      : $@spelldesc1225826
 
 Name             : Reap (id=1226019) [Spell Family (107)] 
@@ -14866,7 +14863,6 @@ Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1246508)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.14 | PvP Coefficient: 0.568 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (8.66 -> 8.14)
 Description      : $@spelldesc1245453
 
 Name             : Reaper's Toll (id=1245470) [Spell Family (107)] 
@@ -17462,7 +17458,6 @@ Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always 
 Effects          :
 #1 (id=1291601)  : School Damage (2): cosmic | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.14 | PvP Coefficient: 0.568 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
-Hotfixed         : SP Coefficient (8.66 -> 8.14)
 Description      : $@spelldesc1225826
 
 Name             : Harness the Cosmos (id=1279247) [Spell Family (107), Passive] 

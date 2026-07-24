@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68824 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68914 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -114,7 +114,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #6 (id=1324067)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Summon or empower Lesser Ghouls to form an unholy army of $s1 for ${$d} sec. While active, you command your army through Scourge Strike, executing Orders based on nearby enemies instead of summoning Lesser Ghouls.
+Description      : Summon or empower Lesser Ghouls to form an unholy army of $s1 for ${$d} sec. While active, summoning a Lesser Ghoul will instead execute Orders based on nearby enemies.
 
 $@spellicon47541 |cFFFFFFFFDeath Orders|r
 Lesser Ghouls strike with you, dealing ${0.30*$1294264s1*(1+$mas/100)} Shadow damage to your target.
@@ -2975,6 +2975,9 @@ Effects          :
 #21 (id=1339788) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -25 | Scaled Value: -25 | Misc Value 2: 5087 (Label) | Target: Self (1)
                    Affected Spells (Label): Death Coil (445513)
+#22 (id=1344905) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Max Stacks (37)
+                   Base Value: -19 | Scaled Value: -19 | Misc Value: 37 | Misc Value 2: 7028 (Label) | Target: Self (1)
+                   Affected Spells (Label): Blood Rush (1236822)
 
 Name             : Blood Death Knight (id=137008) [Spell Family (15), Passive, Hidden] 
 Class            : Blood Death Knight
@@ -18451,6 +18454,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
+                 : 7028: Unholy Death Knight (137007 effect#22)
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Client Targeting (133), Allow Cast While Casting (135), Ignore Default Arena Restrictions (145), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow Spell Reflection (224), Allow While Charmed (261), Ignore Default Rated Battleground Restrictions (302), Allow Class Ability Procs (416)
@@ -20501,9 +20505,9 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1277419)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Vampiric Strike increases the damage of $?c3[the Lesser Ghoul it summons][your Dancing Rune Weapons] by $?c3[$1280386s1%.][$1236822s3% for $1236822d. 
+Description      : Vampiric Strike increases the damage of $?c3[your Lesser Ghouls][your Dancing Rune Weapons] by $?c3[$1280386s1][$1236822s3]% for $1236822d.$?c1[
 
-Multiple applications may overlap.]
+Multiple applications may overlap.][]
 
 Name             : Transfusion (id=1265577) 
 Class            : Death Knight
