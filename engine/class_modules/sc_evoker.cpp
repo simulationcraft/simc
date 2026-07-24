@@ -3146,9 +3146,8 @@ struct empowered_release_t : public empowered_base_t<BASE>
     {
       evoker_augment_t::impact( s );
 
-      auto buff_size                                                         = p()->cache.mastery_value();
+      auto buff_size = p()->cache.mastery_value();
 
-      //p()->get_target_data( s->target )->buffs.shifting_sands->current_value = buff_size;
       p()->get_target_data( s->target )->buffs.shifting_sands->trigger( 1, buff_size );
     }
 
@@ -11022,9 +11021,8 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
       return;
     case mote_buffs_e::SHIFTING_SANDS:
     {
-      auto td                                 = get_target_data( target );
-      auto buff_size                          = cache.mastery_value();
-      //td->buffs.shifting_sands->current_value = buff_size;
+      auto td        = get_target_data( target );
+      auto buff_size = cache.mastery_value();
       td->buffs.shifting_sands->trigger( 1, buff_size );
       return;
     }
