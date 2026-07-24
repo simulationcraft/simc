@@ -2604,6 +2604,7 @@ const char* util::retarget_event_string( retarget_source event )
     case retarget_source::ACTOR_INVULNERABLE: return "actor_invulnerable";
     case retarget_source::ACTOR_VULNERABLE: return "actor_vulnnerable";
     case retarget_source::SELF_ARISE: return "self_arise";
+    case retarget_source::PRIORITY_CHANGE: return "priority_change";
     default: return "unknown";
   }
 }

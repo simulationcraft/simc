@@ -58,7 +58,8 @@ enum class retarget_source
   ACTOR_DEMISE,         // Any actor demises
   ACTOR_INVULNERABLE,   // Actor becomes invulnerable
   ACTOR_VULNERABLE,     // Actor becomes vulnerable (after becoming invulnerable)
-  SELF_ARISE            // Actor has arisen (no context provided)
+  SELF_ARISE,           // Actor has arisen (no context provided)
+  PRIORITY_CHANGE       // DungeonRoute dynamic targeting: periodic re-check of the highest-hp mob (no context)
 };
 
 // Misc Constants

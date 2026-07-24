@@ -14657,6 +14657,9 @@ void player_t::acquire_target( retarget_source event, player_t* context )
   player_t* candidate_target = nullptr;
   player_t* first_invuln_target = nullptr;
 
+  bool dynamic_targeting = sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && sim->dungeon_route_dynamic_targeting;
+  double candidate_hp = -1.0;
+
   // TODO: Fancier system
   for ( auto enemy : sim->target_non_sleeping_list )
   {
@@ -14669,8 +14672,39 @@ void player_t::acquire_target( retarget_source event, player_t* context )
       continue;
     }
 
-    candidate_target = enemy;
-    break;
+    if ( dynamic_targeting )
+    {
+      // Dynamic targeting: always attack the mob that currently has the most hp, since it gates the
+      // end of the pull. Re-evaluated on arise/demise and on the periodic PRIORITY_CHANGE event.
+      double enemy_hp = enemy->resources.current[ RESOURCE_HEALTH ];
+      if ( enemy_hp > candidate_hp )
+      {
+        candidate_hp = enemy_hp;
+        candidate_target = enemy;
+      }
+    }
+    else
+    {
+      candidate_target = enemy;
+      break;
+    }
+  }
+
+  if ( dynamic_targeting )
+  {
+    // Keep the current target unless the candidate leads it by more than 5%: no two mobs are ever
+    // exactly tied mid-combat, and per-tick lead flips between mobs dying together would cause
+    // pointless target flickering. A player swaps on a visible hp lead, not on every frame.
+    if ( target && target != candidate_target && !target->is_sleeping() && target->is_enemy() &&
+         !( target->debuffs.invulnerable && target->debuffs.invulnerable->check() ) &&
+         candidate_hp <= target->resources.current[ RESOURCE_HEALTH ] * 1.05 )
+    {
+      candidate_target = target;
+    }
+
+    // Track the current priority mob for the Priority DPS metric. Follows the hysteresis-kept
+    // choice so the metric always agrees with the target the player is actually prioritizing.
+    sim->dungeon_route_priority_target = candidate_target;
   }
 
   // Invulnerable targets are currently not in the target_non_sleeping_list, so fall back to

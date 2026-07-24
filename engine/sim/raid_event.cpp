@@ -480,6 +480,32 @@ struct pull_event_t final : raid_event_t
     }
   };
 
+  // Periodically re-checks which mob is currently the highest-hp one and retargets the players
+  // onto it (dungeon_route_dynamic_targeting). 1 second approximates a player's tab-retarget
+  // reaction time.
+  struct dynamic_retarget_event_t : public event_t
+  {
+    pull_event_t* pull;
+
+    dynamic_retarget_event_t( pull_event_t* pull_ ) : event_t( *pull_->sim, 1.0_s ), pull( pull_ )
+    { }
+
+    const char* name() const override
+    {
+      return "dynamic_retarget_event_t";
+    }
+
+    void execute() override
+    {
+      pull->retarget_event = nullptr;
+
+      range::for_each( sim().player_non_sleeping_list,
+                       []( player_t* p ) { p->acquire_target( retarget_source::PRIORITY_CHANGE ); } );
+
+      pull->retarget_event = make_event<dynamic_retarget_event_t>( sim(), pull );
+    }
+  };
+
   player_t* master;
   std::string enemies_str;
   timespan_t delay;
@@ -489,6 +515,7 @@ struct pull_event_t final : raid_event_t
   bool has_boss;
   event_t* spawn_event;
   event_t* redistribute_event;
+  event_t* retarget_event;
   extended_sample_data_t real_duration;
   std::vector<std::unique_ptr<raid_event_t>> child_events;
 
@@ -513,6 +540,7 @@ struct pull_event_t final : raid_event_t
       has_boss( false ),
       spawn_event( nullptr ),
       redistribute_event( nullptr ),
+      retarget_event( nullptr ),
       real_duration( "Pull Length", false )
   {
     add_option( opt_string( "enemies", enemies_str ) );
@@ -738,6 +766,9 @@ struct pull_event_t final : raid_event_t
     if ( shared_health )
       redistribute_event = make_event<redistribute_event_t>( *sim, this );
 
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && sim->dungeon_route_dynamic_targeting )
+      retarget_event = make_event<dynamic_retarget_event_t>( *sim, this );
+
     sim->print_log( "Spawned Pull {}: {} mobs with {} total health, {:.1f}s delay from previous",
                     pull, adds.size(), total_health, delay.total_seconds() );
 
@@ -768,6 +799,7 @@ struct pull_event_t final : raid_event_t
     saved_duration = timespan_t::from_seconds( length );
 
     event_t::cancel( redistribute_event );
+    event_t::cancel( retarget_event );
 
     if ( has_boss )
     {
@@ -824,6 +856,7 @@ struct pull_event_t final : raid_event_t
       raid_event->reset();
 
     redistribute_event = nullptr;
+    retarget_event = nullptr;
   }
 
   double parse_health( util::string_view str )

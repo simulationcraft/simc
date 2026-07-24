@@ -1467,6 +1467,8 @@ sim_t::sim_t()
     dungeon_route_simple_dps_members( 0 ),
     dungeon_route_pct_hp( 0 ),
     dungeon_route_key_level( 0 ),
+    dungeon_route_dynamic_targeting( false ),
+    dungeon_route_priority_target( nullptr ),
     challenge_mode( false ),
     scale_itemlevel_down_only( false ),
     disable_set_bonuses( false ),
@@ -1805,6 +1807,8 @@ void sim_t::combat()
 void sim_t::reset()
 {
   print_debug( "Resetting Simulator" );
+
+  dungeon_route_priority_target = nullptr;
 
   if ( deterministic )
     seed = rng().reseed();
@@ -3910,6 +3914,7 @@ void sim_t::create_options()
   add_option( opt_int( "keystone_level", dungeon_route_key_level ) );
   add_option( opt_int( "keystone_pct_hp", dungeon_route_pct_hp, 0, 100 ) );
   add_option( opt_bool( "dungeon_route_smart_targeting", dungeon_route_smart_targeting ) );
+  add_option( opt_bool( "dungeon_route_dynamic_targeting", dungeon_route_dynamic_targeting ) );
   add_option( opt_int( "dungeon_route_simple_dps_members", dungeon_route_simple_dps_members, 0, 3 ) );
 
   // Character Creation

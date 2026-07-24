@@ -2130,7 +2130,16 @@ void action_t::assess_damage( result_amount_type rt, action_state_t* state )
   {
     if ( sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
     {
-      if ( state->target->is_boss() )
+      if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && sim->dungeon_route_dynamic_targeting )
+      {
+        // Dynamic targeting: priority damage is damage into the mob currently gating the end of
+        // the pull (the highest-hp one), regardless of BOSS_ prefixes.
+        if ( state->target == sim->dungeon_route_priority_target )
+        {
+          player->priority_iteration_dmg += state->result_amount;
+        }
+      }
+      else if ( state->target->is_boss() )
       {
         player->priority_iteration_dmg += state->result_amount;
       }
@@ -5120,8 +5129,10 @@ void action_t::acquire_target( retarget_source event, player_t* /* context */, p
   }
 
   // Don't swap targets if the action's current target is still alive, except in cases
-  // where the actor has risen (been summoned, start of iteration etc).
+  // where the actor has risen (been summoned, start of iteration etc), or when dungeon route
+  // dynamic targeting moves everyone onto the currently-highest-hp mob.
   if ( event != retarget_source::SELF_ARISE &&
+       !( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && sim->dungeon_route_dynamic_targeting ) &&
        target && !target->is_sleeping() && !target->debuffs.invulnerable->check() )
   {
     return;
