@@ -5251,8 +5251,23 @@ struct frostfire_empowerment_t final : public spell_t
     target_filter_callback = secondary_targets_only();
     aoe = -1;
     base_dd_min = base_dd_max = 1.0;
-    // TODO: Check how it behaves wrt the excluded main target
-    reduced_aoe_targets = p->talents.frostfire_empowerment->effectN( 5 ).base_value();
+  }
+
+  // The excluded main target still counts towards the target cap,
+  // so it needs to be added back into the target count used for the sqrt reduction.
+  // This can't be done via reduced_aoe_targets since that compares
+  // against state->n_targets directly, which only sees the secondary targets.
+  double composite_aoe_multiplier( const action_state_t* s ) const override
+  {
+    double cam = spell_t::composite_aoe_multiplier( s );
+
+    mage_t* p = debug_cast<mage_t*>( player );
+    double cap = p->talents.frostfire_empowerment->effectN( 5 ).base_value();
+    double n = as<double>( s->n_targets ) + 1;
+    if ( n > cap )
+      cam *= std::sqrt( cap / std::min<double>( sim->max_aoe_enemies, n ) );
+
+    return cam;
   }
 
   void impact( action_state_t* s ) override
