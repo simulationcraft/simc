@@ -687,7 +687,7 @@ struct simplified_player_t : public player_t
       double m = spell_t::composite_target_multiplier( t );
 
       if ( t->resources.pct( RESOURCE_HEALTH ) <= p()->execute_threshold )
-        m *= 1 + p()->execute_amount;
+        m *= 1.0 + p()->execute_amount;
 
       return m;
     }
@@ -705,7 +705,7 @@ struct simplified_player_t : public player_t
 
     void set_action_stats( bob_settings_t settings, simplified_player_t* p )
     {
-      double scaling_factor = pow( 1 + settings.scaling_factor, ( p->option.item_level - 489 ) );
+      double scaling_factor = pow( 1.0 + settings.scaling_factor, ( p->option.item_level - 489 ) );
 
       spell_power_mod.direct = settings.sp_coeff * scaling_factor * p->option.skill;
       gcd_type               = settings.hasted_gcds ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
@@ -2328,7 +2328,7 @@ public:
     if ( p()->specialization() != EVOKER_AUGMENTATION || !bb::data().affected_by( p()->spec.mastery->effectN( 2 ) ) )
       return bb::buff_duration();
 
-    auto m = 1 + p()->cache.mastery() * p()->spec.mastery->effectN( 2 ).mastery_value();
+    auto m = 1.0 + p()->cache.mastery() * p()->spec.mastery->effectN( 2 ).mastery_value();
 
     return m * bb::buff_duration();
   }
@@ -3146,8 +3146,10 @@ struct empowered_release_t : public empowered_base_t<BASE>
     {
       evoker_augment_t::impact( s );
 
-      p()->get_target_data( s->target )->buffs.shifting_sands->current_value = p()->cache.mastery_value();
-      p()->get_target_data( s->target )->buffs.shifting_sands->trigger();
+      auto buff_size                                                         = p()->cache.mastery_value();
+
+      p()->get_target_data( s->target )->buffs.shifting_sands->current_value = buff_size;
+      p()->get_target_data( s->target )->buffs.shifting_sands->trigger( 1, buff_size );
     }
 
     size_t available_targets( std::vector<player_t*>& target_list ) const override
@@ -3649,7 +3651,7 @@ struct duplicate_t : evoker_pet_t
 
       if ( evoker()->talent.ricocheting_pyroclast.ok() )
       {
-        da *= 1 + std::min( static_cast<double>( s->n_targets ),
+        da *= 1.0 + std::min( static_cast<double>( s->n_targets ),
                             evoker()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
                       evoker()->talent.ricocheting_pyroclast->effectN( 1 ).percent();
       }
@@ -4365,7 +4367,7 @@ struct empowered_release_spell_t : public empowered_release_t<evoker_spell_t>
 
     if ( !background && p()->sets->has_set_bonus( EVOKER_DEVASTATION, TWW2, B4 ) )
     {
-      m *= 1 + p()->buff.jackpot->check_stack_value();
+      m *= 1.0 + p()->buff.jackpot->check_stack_value();
     }
 
     return m;
@@ -4477,10 +4479,10 @@ public:
   double ebon_value() const
   {
     if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
-      return p()->spec.ebon_might->effectN( 1 ).percent() * ( 1 + p()->buff.ebon_might_self_buff->check_value() ) +
+      return p()->spec.ebon_might->effectN( 1 ).percent() * ( 1.0 + p()->buff.ebon_might_self_buff->check_value() ) +
              p()->buff.tww1_4pc_aug->check_stack_value();
 
-    return p()->spec.ebon_might->effectN( 1 ).percent() * ( 1 + p()->buff.doubletime->check_value() ) +
+    return p()->spec.ebon_might->effectN( 1 ).percent() * ( 1.0 + p()->buff.doubletime->check_value() ) +
            p()->buff.tww1_4pc_aug->check_stack_value();
   }
 
@@ -4520,7 +4522,7 @@ public:
 
     if ( p()->talent.duplicate2.enabled() && p()->buff.duplicate->check() )
     {
-      amount *= 1 + p()->buff.duplicate->check_value();
+      amount *= 1.0 + p()->buff.duplicate->check_value();
     }
 
     return amount;
@@ -4532,7 +4534,7 @@ public:
       return;
 
     if ( rng().roll( p()->cache.spell_crit_chance() ) )
-      extend *= 1 + p()->talent.sands_of_time->effectN( 4 ).percent();
+      extend *= 1.0 + p()->talent.sands_of_time->effectN( 4 ).percent();
 
     if ( p()->buff.ebon_might_self_buff->check() )
     {
@@ -4644,7 +4646,7 @@ public:
     {
       auto time = ebon_time;
       if ( crit )
-        time *= 1 + p()->talent.sands_of_time->effectN( 4 ).percent();
+        time *= 1.0 + p()->talent.sands_of_time->effectN( 4 ).percent();
       buff->extend_duration( time );
     }
   }
@@ -5086,7 +5088,7 @@ struct fire_breath_t : public empowered_charge_spell_t
 
       if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() )
       {
-        mul /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
+        mul /= ( 1.0 + p()->talent.catalyze->effectN( 1 ).percent() );
       }
 
       return mul;
@@ -5262,7 +5264,7 @@ struct eternity_surge_t : public empowered_charge_spell_t
 
       if ( p()->talent.eye_of_infinity.enabled() && s->chain_target == 0 )
       {
-        m *= 1 + p()->talent.eye_of_infinity->effectN( 1 ).percent();
+        m *= 1.0 + p()->talent.eye_of_infinity->effectN( 1 ).percent();
       }
 
       return m;
@@ -5282,7 +5284,7 @@ struct eternity_surge_t : public empowered_charge_spell_t
         auto empower_level =
             p()->sets->has_set_bonus( EVOKER_DEVASTATION, MID2, B2 ) ? max_empower : cast_state( s )->empower;
 
-        damage_state->da_multiplier *= 1 + ( empower_level - 1 ) * p()->talent.shattering_stars->effectN( 1 ).percent();
+        damage_state->da_multiplier *= 1.0 + ( empower_level - 1 ) * p()->talent.shattering_stars->effectN( 1 ).percent();
 
         shattering_star->schedule_execute( damage_state );
       }
@@ -5324,7 +5326,7 @@ struct azure_strike_base_t : public evoker_spell_t
   {
     evoker_spell_t::execute();
     double eb_chance =
-        p()->talent.azure_essence_burst->effectN( 1 ).percent() * ( 1 + p()->buff.inner_flame->check_stack_value() );
+        p()->talent.azure_essence_burst->effectN( 1 ).percent() * ( 1.0 + p()->buff.inner_flame->check_stack_value() );
 
     // TODO:  Work out how this is rolled.
     if ( p()->talent.flameshaper.titanic_precision.ok() && rng().roll( composite_target_crit_chance( target ) ) &&
@@ -5404,7 +5406,7 @@ struct azure_sweep_t : public azure_strike_base_t
 
     if ( s->chain_target == 0 && p()->sets->has_set_bonus( EVOKER_DEVASTATION, MID1, B2 ) )
     {
-      da *= 1 + p()->sets->set( EVOKER_DEVASTATION, MID1, B2 )->effectN( 2 ).percent();
+      da *= 1.0 + p()->sets->set( EVOKER_DEVASTATION, MID1, B2 )->effectN( 2 ).percent();
     }
 
     return da;
@@ -5466,7 +5468,7 @@ struct eruption_t : public essence_spell_t
 
       if ( p()->talent.ricocheting_pyroclast.ok() )
       {
-        da *= 1 + std::min( static_cast<double>( s->n_targets ),
+        da *= 1.0 + std::min( static_cast<double>( s->n_targets ),
                             p()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
                       p()->talent.ricocheting_pyroclast->effectN( 1 ).percent();
       }
@@ -5501,7 +5503,7 @@ struct eruption_t : public essence_spell_t
 
       if ( p()->talent.ricocheting_pyroclast.ok() )
       {
-        da *= 1 + std::min( static_cast<double>( s->n_targets ),
+        da *= 1.0 + std::min( static_cast<double>( s->n_targets ),
                             p()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
                       p()->talent.ricocheting_pyroclast->effectN( 1 ).percent();
       }
@@ -5587,7 +5589,7 @@ struct eruption_t : public essence_spell_t
     if ( p()->buff.mass_eruption_stacks->check() && !is_overlord &&
          mass_eruption_targets() < mass_eruption_max_targets )
     {
-      da *= 1 + ( mass_eruption_max_targets - mass_eruption_targets() ) * mass_eruption_mult;
+      da *= 1.0 + ( mass_eruption_max_targets - mass_eruption_targets() ) * mass_eruption_mult;
     }
 
     if ( p()->buff.essence_burst->check() && p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 ) )
@@ -5768,7 +5770,7 @@ struct upheaval_t : public empowered_charge_spell_t
 
       if ( p()->talent.tectonic_locus.ok() && s->chain_target == 0 )
       {
-        da *= 1 + p()->talent.tectonic_locus->effectN( 1 ).percent();
+        da *= 1.0 + p()->talent.tectonic_locus->effectN( 1 ).percent();
       }
 
       return da;
@@ -6382,7 +6384,7 @@ struct disintegrate_t : public essence_spell_t
     {
       residual_action::trigger( p()->action.enkindle, d->state->target,
                                 d->state->result_amount * enkindle_mul *
-                                    ( 1 + p()->buff.inner_flame->stack() *
+                                    ( 1.0 + p()->buff.inner_flame->stack() *
                                               p()->talent.flameshaper.inner_flame_buff->effectN( 2 ).percent() ) );
     }
 
@@ -6699,7 +6701,7 @@ struct living_flame_t : public evoker_spell_t
     if ( p()->talent.ruby_essence_burst.ok() )
     {
       double eb_chance =
-          p()->talent.ruby_essence_burst->effectN( 1 ).percent() * ( 1 + p()->buff.inner_flame->check_stack_value() );
+          p()->talent.ruby_essence_burst->effectN( 1 ).percent() * ( 1.0 + p()->buff.inner_flame->check_stack_value() );
 
       for ( int i = 0; i < total_damage_hits; i++ )
       {
@@ -7264,7 +7266,7 @@ public:
     double m = p( s )->talent.temporal_wound->effectN( 1 ).percent();
 
     if ( p( s )->close_as_clutchmates )
-      m *= 1 + p( s )->spec.close_as_clutchmates->effectN( 1 ).percent();
+      m *= 1.0 + p( s )->spec.close_as_clutchmates->effectN( 1 ).percent();
 
     int player_count = as<int>( p( s )->allies_with_my_ebon.size() );
 
@@ -7315,7 +7317,7 @@ public:
     anachronism_chance = p->talent.anachronism->effectN( 1 ).percent();
     double_time_mult   = p->talent.chronowarden.double_time->effectN( 2 ).percent();
 
-    may_crit = true;
+    may_crit = p->talent.chronowarden.double_time.enabled();
 
     add_option( opt_bool( "use_auto", use_auto ) );
     parse_options( options_str );
@@ -7360,7 +7362,7 @@ public:
 
     if ( s->result == RESULT_CRIT )
     {
-      prescience_value *= 1 + double_time_mult;
+      prescience_value *= 1.0 + double_time_mult;
     }
 
     p()->get_target_data( s->target )->buffs.prescience->trigger( 1, prescience_value );
@@ -7958,18 +7960,18 @@ public:
       {
         if ( td && evoker->talent.molten_embers.enabled() && td->dots.fire_breath->is_ticking() )
         {
-          tm *= 1 + evoker->spec.fire_breath_damage->effectN( 5 ).percent();
+          tm *= 1.0 + evoker->spec.fire_breath_damage->effectN( 5 ).percent();
         }
       }
 
       if ( td && td->debuffs.melt_armor->check() )
       {
-        tm *= 1 + td->debuffs.melt_armor->check_value();
+        tm *= 1.0 + td->debuffs.melt_armor->check_value();
       }
 
       if ( evoker->buff.ebon_might_self_buff->check() )
       {
-        tm *= 1 + evoker->buff.ebon_might_self_buff->data().effectN( 1 ).percent();
+        tm *= 1.0 + evoker->buff.ebon_might_self_buff->data().effectN( 1 ).percent();
       }
 
       // No mastery yet
@@ -8241,7 +8243,7 @@ public:
 
     if ( p()->buff.t31_2pc_proc->check() )
     {
-      bd *= 1 + p()->buff.t31_2pc_proc->check_value();
+      bd *= 1.0 + p()->buff.t31_2pc_proc->check_value();
     }
 
     return bd;
@@ -11005,15 +11007,25 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
       get_target_data( target )->buffs.infernos_blessing->trigger();
       return;
     case mote_buffs_e::PRESCIENCE:
-      get_target_data( target )->buffs.prescience->trigger();
+    {
+      double prescience_value = get_target_data( target )->buffs.prescience->default_value;
+
+      if ( talent.chronowarden.double_time.enabled() && rng().roll( cache.spell_crit_chance() ) )
+      {
+        prescience_value *= 1.0 + talent.chronowarden.double_time->effectN( 2 ).percent();
+      }
+
+      get_target_data( target )->buffs.prescience->trigger( 1, prescience_value );
       return;
+    }
     case mote_buffs_e::SYMBIOTIC_BLOOM:
       return;
     case mote_buffs_e::SHIFTING_SANDS:
     {
       auto td                                 = get_target_data( target );
-      td->buffs.shifting_sands->current_value = cache.mastery_value();
-      td->buffs.shifting_sands->trigger();
+      auto buff_size                          = cache.mastery_value();
+      td->buffs.shifting_sands->current_value = buff_size;
+      td->buffs.shifting_sands->trigger( 1, buff_size );
       return;
     }
     default:
