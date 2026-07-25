@@ -4648,10 +4648,10 @@ void zuljins_guillotine_technique( special_effect_t& effect )
   struct guillotine_t : public generic_proc_t
   {
     bool has_set;
-    action_t* perfected_guillotine;
+    const special_effect_t& effect;
 
-    guillotine_t( const special_effect_t& e )
-      : generic_proc_t( e, "guillotine", e.player->find_spell( 1306604 ) ), has_set( false )
+    guillotine_t( const special_effect_t& e, std::string_view n, const spell_data_t* s )
+      : generic_proc_t( e, n, s ), has_set( false ), effect( e )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
       base_multiplier *= role_mult( e );
@@ -4659,37 +4659,36 @@ void zuljins_guillotine_technique( special_effect_t& effect )
       if ( has_set )
       {
         auto bite_of_zuljan_driver        = find_special_effect( e.player, 1291726 );
-        perfected_guillotine              = create_proc_action<generic_proc_t>( "perfected_guillotine", e, 1306624 );
         // Currently set to 100% of the base damage of the original proc, but wiring the spell data in case this changes. 
-        perfected_guillotine->base_dd_min = perfected_guillotine->base_dd_max = base_dd_min * bite_of_zuljan_driver->driver()->effectN( 2 ).percent();
-        perfected_guillotine->base_multiplier *= role_mult( e );
+        base_dd_min *= bite_of_zuljan_driver->driver()->effectN( 2 ).percent();
+        base_dd_max *= bite_of_zuljan_driver->driver()->effectN( 2 ).percent();
 
         // Venomfang
         auto venomfang_driver               = find_special_effect( e.player, 1291718 );
         auto venomfang                      = create_proc_action<venomfang_t>( "venomfang", *venomfang_driver );
-        perfected_guillotine->impact_action = venomfang;
         impact_action                       = venomfang;
-
-        add_child( perfected_guillotine );
       }
     }
 
-    void execute() override
+    double composite_target_multiplier( player_t* target ) const override
     {
-      generic_proc_t::execute();
-      if ( has_set && sim->target_non_sleeping_list.size() > 1 )
-      {
-        for ( auto& tar : sim->target_non_sleeping_list )
-          if ( tar != execute_state->target )
-          {
-            perfected_guillotine->execute_on_target( tar );
-            break;
-          }
-      }
+      double m = generic_proc_t::composite_target_multiplier( target );
+      
+      m *= 1.0 + effect.driver()->effectN( 2 ).percent() * ( 100 - target->health_percentage() );
+
+      return m;
     }
   };
 
-  effect.execute_action = create_proc_action<guillotine_t>( "guillotine", effect );
+  std::string_view name = "guillotine";
+  const spell_data_t* spell = effect.player->find_spell( 1306604 );
+  if ( effect.player->sets->has_set_bonus( effect.player->specialization(), MID_BOZ, B2 ) )
+  {
+    name = "perfected_guillotine";
+    spell = effect.player->find_spell( 1306624 );
+  }
+
+  effect.execute_action = create_proc_action<guillotine_t>( name, effect, spell );
   new dbc_proc_callback_t( effect.player, effect );
 }
 
