@@ -4591,6 +4591,116 @@ void rune_of_voidtouched_orbs( special_effect_t& effect )
 }
 }  // namespace omnium
 
+namespace bite_of_zuljan
+{
+struct venomfang_t : public generic_proc_t
+{
+  action_t* venomfang_burst;
+
+  venomfang_t( const special_effect_t& effect )
+    : generic_proc_t( effect, "venomfang", effect.player->find_spell( 1306635 ) ), venomfang_burst( nullptr )
+  {
+    base_td = effect.driver()->effectN( 1 ).average( effect );
+    base_td_multiplier *= role_mult( effect );
+    dot_max_stack                = 1;  // Override Max Stacks to 1, this behavior is handled by the asyncronous debuff
+    venomfang_burst              = create_proc_action<generic_proc_t>( "venomfang_burst", effect, 1306639 );
+    venomfang_burst->base_dd_min = venomfang_burst->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
+    venomfang_burst->base_multiplier *= role_mult( effect );
+    add_child( venomfang_burst );
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = generic_proc_t::composite_ta_multiplier( s );
+
+    if ( auto debuff = find_debuff( s->target ) )
+      m *= debuff->check();
+    else
+      m = 0.0;
+
+    return m;
+  }
+
+  buff_t* create_debuff( player_t* t ) override
+  {
+    return make_buff<buff_t>( actor_pair_t( t, player ), "venomfang_debuff", &data() )
+        ->set_activated( true )
+        ->set_duration( data().duration() + 1_ms )  // Extra 1ms to avoid expiration before next tick
+        ->set_stack_change_callback( [ & ]( buff_t* b, int old_, int new_ ) {
+          if ( old_ > new_ )
+            venomfang_burst->execute_on_target( b->player );
+        } );
+  }
+
+  void execute() override
+  {
+    generic_proc_t::execute();
+    get_debuff( execute_state->target )->trigger();
+  }
+};
+
+// Zul'jin's Guillotine Technique
+// 1291728 Driver
+// 1306604 Damage
+// 1306624 Perfected Guillotine
+void zuljins_guillotine_technique( special_effect_t& effect )
+{
+  struct guillotine_t : public generic_proc_t
+  {
+    bool has_set;
+    action_t* perfected_guillotine;
+
+    guillotine_t( const special_effect_t& e )
+      : generic_proc_t( e, "guillotine", e.player->find_spell( 1306604 ) ), has_set( false )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+      base_multiplier *= role_mult( e );
+      has_set = e.player->sets->has_set_bonus( e.player->specialization(), MID_BOZ, B2 );
+      if ( has_set )
+      {
+        auto bite_of_zuljan_driver        = find_special_effect( e.player, 1291726 );
+        perfected_guillotine              = create_proc_action<generic_proc_t>( "perfected_guillotine", e, 1306624 );
+        // Currently set to 100% of the base damage of the original proc, but wiring the spell data in case this changes. 
+        perfected_guillotine->base_dd_min = perfected_guillotine->base_dd_max = base_dd_min * bite_of_zuljan_driver->driver()->effectN( 2 ).percent();
+        perfected_guillotine->base_multiplier *= role_mult( e );
+
+        // Venomfang
+        auto venomfang_driver               = find_special_effect( e.player, 1291718 );
+        auto venomfang                      = create_proc_action<venomfang_t>( "venomfang", *venomfang_driver );
+        perfected_guillotine->impact_action = venomfang;
+        impact_action                       = venomfang;
+
+        add_child( perfected_guillotine );
+      }
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      if ( has_set && sim->target_non_sleeping_list.size() > 1 )
+      {
+        for ( auto& tar : sim->target_non_sleeping_list )
+          if ( tar != execute_state->target )
+          {
+            perfected_guillotine->execute_on_target( tar );
+            break;
+          }
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<guillotine_t>( "guillotine", effect );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void venomfang( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<venomfang_t>( "venomfang", effect );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+}  // namespace bite_of_zuljan
+
 void register_special_effects()
 {
   // NOTE: use unique_gear:: namespace for static consumables so we don't activate them with enable_all_item_effects
@@ -4746,6 +4856,7 @@ void register_special_effects()
   register_special_effect( 1295885, trinkets::hex_lords_dooming_idol, true );
   register_special_effect( 1295884, DISABLED_EFFECT );  // Hex Lord's Dooming Idol equip driver
   register_special_effect( 1295553, trinkets::vashniks_sanguine_rancor );
+  register_special_effect( 1291728, bite_of_zuljan::zuljins_guillotine_technique );
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
@@ -4754,6 +4865,7 @@ void register_special_effects()
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( 1296874, weapons::polished_lightwood_channeler );
   register_special_effect( 1298085, weapons::janthrazet_the_soul_fang );
+  register_special_effect( 1291718, bite_of_zuljan::venomfang );
   reset_version_check();
   // Armor
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
@@ -4780,6 +4892,7 @@ void register_special_effects()
   register_special_effect( 1253358, DISABLED_EFFECT );  // torments duality
   register_special_effect( 253819, sets::umbral_shift );
   register_special_effect( 1290152, DISABLED_EFFECT ); // umbral shift equip effect
+  register_special_effect( 1291726, DISABLED_EFFECT ); // bite of zuljan set bonus, handled by bite_of_zuljan::zuljins_guillotine_technique
   // Omnium Folio
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1279599, omnium::rune_of_unleashed_fire );
