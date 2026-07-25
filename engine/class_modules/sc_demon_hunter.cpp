@@ -5640,10 +5640,10 @@ struct voidsurge_t : public surge_base_t
 
 struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigger_t<demon_hunter_spell_t>>
 {
-  struct soulburst_t : public demon_hunter_spell_t
+  struct soulburst_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
     soulburst_t( util::string_view n, demon_hunter_t* p )
-      : demon_hunter_spell_t( n, p, p->set_bonuses.soulburst_damage )
+      : base_t( n, p, p->set_bonuses.soulburst_damage )
     {
       background = dual = true;
       aoe               = -1;
