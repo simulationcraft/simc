@@ -17059,6 +17059,7 @@ void death_knight_t::parse_player_effects()
   {
     case DEATH_KNIGHT_BLOOD:
       parse_effects( mastery.blood_shield );
+      parse_effects( buffs.blood_shield );
       parse_effects( buffs.blood_mist );
       parse_effects( buffs.voracious );
       parse_effects( buffs.dancing_rune_weapon );
