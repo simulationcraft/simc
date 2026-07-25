@@ -3401,6 +3401,9 @@ struct akilzons_clarity_buff_t final : public druid_buff_t
     set_default_value( max_val * 0.01 );
     // the duration is 0 since we tie it to eclipse
     set_duration( 0_ms );
+    //since the duration is 0ms and the buff is manually removed we need to
+    // set this otherwise simc treats a 0ms buff starting at 00:00 as constant
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
     // prevent ticks from bumping stacks and refreshes from cancelling tick_event
     set_freeze_stacks( true );
@@ -6927,9 +6930,10 @@ private:
   stats_t* umbral_stats = nullptr;
   stats_t* orig_stats;
   proc_t* fake_umbral = nullptr;
-  double cascade_chance;
 
 protected:
+  double cascade_chance;
+
   using base_t = ap_generator_t;
   using state_t = druid_action_state_t<ap_generator_data_t>;
   double touch_pct = 0.0;
@@ -9008,6 +9012,10 @@ struct wrath_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
 
   DRUID_ABILITY( wrath_t, base_t, "wrath", p->spec.wrath )
   {
+    // do not proc from wrath in ptr
+    if ( p->is_ptr() )
+      cascade_chance = 0.0;
+
     auto m_data = p->get_modified_spell( &data() );
     set_energize( m_data );
 
