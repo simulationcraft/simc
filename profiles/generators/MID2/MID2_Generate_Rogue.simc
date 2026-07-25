@@ -1,0 +1,108 @@
+# rogue="MID2_Rogue_Assassination"
+# spec=assassination
+# level=90
+# race=orc
+# role=attack
+# position=back
+# talents=CMQAAAAAAAAAAAAAAAAAAAAAAYmZMbzgBAAAAAmlBbzAAAAAAabbmZmZmZMmZmZ2mZZmZGMmZmZMzYYAMwCMjRjZBklBsZAwMzgB
+
+# head=masquerade_of_the_grim_jest,id=250006,bonus_id=6652/12667/12806/13335/13338/13575/13575/13575/13575/13575/13575/13575/13575,ilvel=289
+# neck=ribbon_of_coiled_malice,id=249337,bonus_id=12806/13577/13668,gem_id=240967,ilvel=289
+# shoulder=venom_casks_of_the_grim_jest,id=250004,bonus_id=6652/12806/13335/13340/13574/13574/13574/13574/13574/13574/13574/13574,ilvel=289
+# back=defiant_defenders_drape,id=260312,bonus_id=12806/13577,ilvel=289
+# chest=fantastic_finery_of_the_grim_jest,id=250009,bonus_id=6652/12806/13335/13336/13575/13575/13575/13575/13575/13575/13575/13575,enchant_id=7987,ilvel=289
+# wrist=silvermoon_agents_deflectors,id=244576,bonus_id=8960/12066/12214/12214/12214/12214/12214/12214/12384/13622/13667,crafted_stats=32/36,ilvel=285
+# hands=sleight_of_hand_of_the_grim_jest,id=250007,bonus_id=6652/12806/13335/13337/13574/13574/13574/13574/13574/13574/13574/13574,ilvel=289
+# waist=scornscarred_shulkas_belt,id=249374,bonus_id=12806/13577,ilvel=289
+# legs=legwraps_of_lingering_legacies,id=251087,bonus_id=12806/13577,enchant_id=8159,ilvel=289
+# feet=canopy_walkers_footwraps,id=249382,bonus_id=12806/13577,ilvel=289
+# finger1=eye_of_midnight,id=249920,bonus_id=6652/12806/13335/13668,gem_id=240898/240890,enchant_id=7967,ilvel=289
+# finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967,ilvel=289
+# trinket1=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577,ilvel=289
+# trinket2=algethar_puzzle_box,id=193701,bonus_id=12806/13577,ilvel=289
+# main_hand=hungering_victory,id=249925,bonus_id=12806/13577,enchant_id=7981,ilvel=289
+# off_hand=farstriders_mercy,id=237837,bonus_id=8791/8960/12066/12214/12214/12214/12214/12214/12214/12693/13622/13667/12497,enchant_id=7983,crafted_stats=32/36,ilvel=285
+
+# save=MID2_Rogue_Assassination.simc
+
+
+# rogue="MID2_Rogue_Outlaw_Fatebound"
+# level=90
+# race=pandaren
+# role=attack
+# position=back
+# spec=outlaw
+# talents=CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MGjZmZmtZmZmZMmFGmZZaZw2MAAAAAgZbbmZGmZmZGzMzyAAAAwAYgNYGjGzGgtJswAgZmBG
+
+# head=voidlashed_hood,id=151336,bonus_id=12806/13577/1808,enchant_id=8017,gem_id=240967
+# neck=ribbon_of_coiled_malice,id=249337,bonus_id=12806/13577/13668,gem_id=240894
+# shoulder=venom_casks_of_the_grim_jest,id=250004,bonus_id=13574/6652/12806/13335/13340,enchant_id=8001
+# back=potionstained_cloak,id=193712,bonus_id=12806/13577
+# chest=fantastic_finery_of_the_grim_jest,id=250009,bonus_id=13575/6652/12806/13335/13336,enchant_id=7987
+# wrist=silvermoon_agents_deflectors,id=244576,bonus_id=12214/13622/13667/12066/9627/1808/8960/12384,gem_id=240900,crafted_stats=32/36
+# hands=sleight_of_hand_of_the_grim_jest,id=250007,bonus_id=13574/6652/12806/13335/13337
+# waist=scornscarred_shulkas_belt,id=249374,bonus_id=1808/12806/13577,gem_id=240916
+# legs=blade_holsters_of_the_grim_jest,id=250005,bonus_id=13575/6652/12806/13335/13339,enchant_id=8159
+# feet=silvermoon_agents_sneakers,id=244569,bonus_id=12214/13622/13667/12066/9627/8960/12384,crafted_stats=32/40,enchant_id=7963
+# finger1=eye_of_midnight,id=249920,bonus_id=6652/12806/13335/13668,enchant_id=7967,gem_id=240916/240916
+# finger2=signet_of_the_starved_beast,id=249336,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240906
+# trinket1=gaze_of_the_alnseer,id=249343,bonus_id=6652/12806/13335
+# trinket2=umbral_plume,id=260235,bonus_id=12806/13577
+# main_hand=arators_swift_remembrance,id=260423,bonus_id=12806/13577,enchant_id=7981
+# off_hand=kricks_beetle_stabber,id=133491,enchant_id=8039,ilevel=289
+
+# save=MID2_Rogue_Outlaw.simc
+
+# rogue="MID2_Rogue_Outlaw_Trickster"
+# level=90
+# race=pandaren
+# role=attack
+# position=back
+# spec=outlaw
+# talents=CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MYmZmZmtZmZmZMmNeAmZbaZw2MAAAAAgZbbmZGmZmZGzMzyAAAAwYAwYWMMkBmFWoF2YAmZwAD
+
+# head=voidlashed_hood,id=151336,bonus_id=12806/13577/1808,enchant_id=8017,gem_id=240967
+# neck=ribbon_of_coiled_malice,id=249337,bonus_id=12806/13577/13668,gem_id=240894
+# shoulder=venom_casks_of_the_grim_jest,id=250004,bonus_id=13574/6652/12806/13335/13340,enchant_id=8001
+# back=potionstained_cloak,id=193712,bonus_id=12806/13577
+# chest=fantastic_finery_of_the_grim_jest,id=250009,bonus_id=13575/6652/12806/13335/13336,enchant_id=7987
+# wrist=silvermoon_agents_deflectors,id=244576,bonus_id=12214/13622/13667/12066/9627/1808/8960/12384,gem_id=240900,crafted_stats=32/36
+# hands=sleight_of_hand_of_the_grim_jest,id=250007,bonus_id=13574/6652/12806/13335/13337
+# waist=scornscarred_shulkas_belt,id=249374,bonus_id=1808/12806/13577,gem_id=240916
+# legs=blade_holsters_of_the_grim_jest,id=250005,bonus_id=13575/6652/12806/13335/13339,enchant_id=8159
+# feet=silvermoon_agents_sneakers,id=244569,bonus_id=12214/13622/13667/12066/9627/8960/12384,crafted_stats=32/40,enchant_id=7963
+# finger1=eye_of_midnight,id=249920,bonus_id=6652/12806/13335/13668,enchant_id=7967,gem_id=240916/240916
+# finger2=signet_of_the_starved_beast,id=249336,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240906
+# trinket1=gaze_of_the_alnseer,id=249343,bonus_id=6652/12806/13335
+# trinket2=umbral_plume,id=260235,bonus_id=12806/13577
+# main_hand=arators_swift_remembrance,id=260423,bonus_id=12806/13577,enchant_id=7981
+# off_hand=kricks_beetle_stabber,id=133491,enchant_id=8039,ilevel=289
+
+# save=MID2_Rogue_Outlaw_Trickster.simc
+
+# rogue="MID2_Rogue_Subtlety"
+# level=90
+# race=pandaren
+# role=attack
+# position=back
+# spec=subtlety
+# talents=CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMjZwMzMzYMbDzYbbmZmZmZMYMz2AAAAwgxAGzmhBGYW0CtYDzAmZwMGA
+ 
+# head=masquerade_of_the_grim_jest,id=250006,bonus_id=12676/13338/13534/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983
+# neck=eternal_voidsong_chain,id=249368,bonus_id=13534,ilevel=289,gem_id=240908
+# shoulders=venom_casks_of_the_grim_jest,id=250004,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+# back=rigid_scale_greatcloak,id=258575,ilevel=289
+# chest=fantastic_finery_of_the_grim_jest,id=250009,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+# wrists=silvermoon_agents_deflectors,id=244576,bonus_id=1808/8960/12066/12214/12214/12384/13622/13667/9627,gem_id=240908,crafted_stats=32/49
+# hands=sleight_of_hand_of_the_grim_jest,id=250007,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+# waist=snapvine_cinch,id=251082,bonus_id=13534,ilevel=289,gem_id=240908
+# legs=power_stance_breeches,id=260373,bonus_id=12806/13577,enchant_id=8163,crafted_stats=32/49
+# feet=balancing_boots_of_the_grim_jest,id=250008,ilevel=289
+# finger1=occlusion_of_void,id=251217,bonus_id=13534,ilevel=289,gem_id=240908,enchant_id=7967
+# finger2=omission_of_light,id=251093,bonus_id=13534,ilevel=289,gem_id=240908,enchant_id=7967
+# trinket1=light_company_guidon,id=249344,ilevel=298
+# trinket2=gaze_of_the_alnseer,id=249343,bonus_id=6652/12806/13335,ilevel=298
+# main_hand=belorens_swift_talon,id=249284,ilevel=298,enchant_id=8039
+# off_hand=farstriders_mercy,id=237837,bonus_id=8791/8960/12214/12214/12214/12214/12214/12214/12214/12214/12693,ilevel=294,enchant_id=8039
+
+# save=MID2_Rogue_Subtlety.simc
