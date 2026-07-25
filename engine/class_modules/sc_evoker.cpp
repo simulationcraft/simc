@@ -3170,14 +3170,11 @@ struct empowered_release_t : public empowered_base_t<BASE>
                              [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
       } );
 
-      // if (shifting_point)
-
       if ( shifting_point > target_list.begin() )
       {
         rng().shuffle( target_list.begin(), shifting_point );
         std::partition( target_list.begin(), shifting_point, [ & ]( player_t* t ) {
-          return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
-                 t->specialization() != EVOKER_AUGMENTATION;
+          return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK;
         } );
       }
 
@@ -3185,8 +3182,7 @@ struct empowered_release_t : public empowered_base_t<BASE>
       {
         rng().shuffle( shifting_point, target_list.end() );
         std::partition( shifting_point, target_list.end(), [ & ]( player_t* t ) {
-          return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
-                 t->specialization() != EVOKER_AUGMENTATION;
+          return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK;
         } );
       }
 
