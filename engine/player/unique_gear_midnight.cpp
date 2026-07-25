@@ -4647,16 +4647,14 @@ void zuljins_guillotine_technique( special_effect_t& effect )
 {
   struct guillotine_t : public generic_proc_t
   {
-    bool has_set;
     const special_effect_t& effect;
 
     guillotine_t( const special_effect_t& e, std::string_view n, const spell_data_t* s )
-      : generic_proc_t( e, n, s ), has_set( false ), effect( e )
+      : generic_proc_t( e, n, s ), effect( e )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
       base_multiplier *= role_mult( e );
-      has_set = e.player->sets->has_set_bonus( e.player->specialization(), MID_BOZ, B2 );
-      if ( has_set )
+      if ( e.player->sets->has_set_bonus( e.player->specialization(), MID_BOZ, B2 ) )
       {
         auto bite_of_zuljan_driver        = find_special_effect( e.player, 1291726 );
         // Currently set to 100% of the base damage of the original proc, but wiring the spell data in case this changes. 
