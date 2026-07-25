@@ -1026,14 +1026,14 @@ void polished_ammolite( special_effect_t& effect )
 
   auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
   auto buff        = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1301039 ) )
-                         ->add_stat_from_effect_type( A_MOD_STAT, stat_amount );
+                         ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
 
   // skip setup if callback has been created by already having another copy of the embellishment
   if ( find_special_effect( effect.player, effect.trigger()->id() ) )
     return;
 
   damage->base_multiplier *= role_mult( effect );
-  damage->base_crit = 1;
+  damage->base_crit = 1.0;
 
   struct polished_ammolite_cb_t final : public dbc_proc_callback_t
   {
