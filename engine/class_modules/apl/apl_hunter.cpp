@@ -253,6 +253,7 @@ void marksmanship( player_t* p )
   precombat->add_action( "steady_shot" );
 
   default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25|time<10" );
+  default_->add_action( "variable,name=trueshot_ready,op=setif,condition=fight_style.dungeonroute,value_else=variable.trueshot_ready,value=raid_event.pull.remains>30|raid_event.pull.in>60|talent.calling_the_shots", "For DungeonRoute, hold Trueshot at the end of pulls." );
   default_->add_action( "auto_shot" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=trinkets" );
@@ -343,6 +344,7 @@ void marksmanship_ptr( player_t* p )
   precombat->add_action( "aimed_shot" );
 
   default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25|time<10" );
+  default_->add_action( "variable,name=trueshot_ready,op=setif,condition=fight_style.dungeonroute,value_else=variable.trueshot_ready,value=raid_event.pull.remains>30|raid_event.pull.in>60|talent.calling_the_shots", "For DungeonRoute, hold Trueshot at the end of pulls." );
   default_->add_action( "auto_shot" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=trinkets" );
@@ -363,7 +365,7 @@ void marksmanship_ptr( player_t* p )
   drst->add_action( "explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up" );
   drst->add_action( "volley" );
   drst->add_action( "aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time" );
-  drst->add_action( "trueshot,if=variable.trueshot_ready&(raid_event.pull.remains>30|talent.calling_the_shots|!raid_event.pull.exists)" );
+  drst->add_action( "trueshot,if=variable.trueshot_ready" );
   drst->add_action( "rapid_fire" );
   drst->add_action( "wailing_arrow" );
   drst->add_action( "arcane_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
@@ -377,7 +379,7 @@ void marksmanship_ptr( player_t* p )
   draoe->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time&full_recharge_time<gcd+cast_time" );
   draoe->add_action( "black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
   draoe->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.trick_shots.down" );
-  draoe->add_action( "trueshot,if=variable.trueshot_ready&(raid_event.pull.remains>30|talent.calling_the_shots|!raid_event.pull.exists)" );
+  draoe->add_action( "trueshot,if=variable.trueshot_ready" );
   draoe->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload)" );
   draoe->add_action( "wailing_arrow,if=!cooldown.black_arrow.ready" );
   draoe->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
@@ -388,7 +390,7 @@ void marksmanship_ptr( player_t* p )
   sentaoe->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&(!talent.tactical_reload|!buff.lock_and_load.up)" );
   sentaoe->add_action( "explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up" );
   sentaoe->add_action( "volley" );
-  sentaoe->add_action( "trueshot,if=variable.trueshot_ready&(raid_event.pull.remains>30|talent.calling_the_shots|!raid_event.pull.exists)" );
+  sentaoe->add_action( "trueshot,if=variable.trueshot_ready" );
   sentaoe->add_action( "moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max" );
   sentaoe->add_action( "multishot,target_if=max:debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down" );
   sentaoe->add_action( "rapid_fire,target_if=max:debuff.sentinels_mark.down,if=talent.unload" );
@@ -399,7 +401,7 @@ void marksmanship_ptr( player_t* p )
 
   sentst->add_action( "explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up" );
   sentst->add_action( "volley" );
-  sentst->add_action( "trueshot,if=variable.trueshot_ready&(raid_event.pull.remains>30|talent.calling_the_shots|!raid_event.pull.exists)" );
+  sentst->add_action( "trueshot,if=variable.trueshot_ready" );
   sentst->add_action( "moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max" );
   sentst->add_action( "kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
   sentst->add_action( "arcane_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
