@@ -3174,7 +3174,8 @@ struct empowered_release_t : public empowered_base_t<BASE>
       {
         rng().shuffle( target_list.begin(), shifting_point );
         std::partition( target_list.begin(), shifting_point, [ & ]( player_t* t ) {
-          return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK;
+          return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
+                 t != player;
         } );
       }
 
@@ -3182,7 +3183,8 @@ struct empowered_release_t : public empowered_base_t<BASE>
       {
         rng().shuffle( shifting_point, target_list.end() );
         std::partition( shifting_point, target_list.end(), [ & ]( player_t* t ) {
-          return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK;
+          return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
+                 t != player;
         } );
       }
 
@@ -9328,6 +9330,10 @@ void evoker_t::init_finished()
         }
       }
     }
+    else if ( p->type == DEMON_HUNTER )
+    {
+      allied_major_cds[ p ] = buff_t::find( p, "metamorphosis" );
+    }
     else if ( p->type == EVOKER )
     {
       if ( p->specialization() == EVOKER_AUGMENTATION )
@@ -9347,17 +9353,13 @@ void evoker_t::init_finished()
     {
       if ( p->specialization() == PRIEST_SHADOW )
       {
-        if ( CT( p, "Power Infusion" ).ok() )
-        {
-          allied_major_cds[ p ] = buff_t::find( p, "power_infusion" );
-        }
-        else if ( ST( p, "Void Eruption" ).ok() )
+        if ( ST( p, "Void Eruption" ).ok() )
         {
           allied_major_cds[ p ] = buff_t::find( p, "voidform" );
         }
-        else if ( ST( p, "Dark Ascension" ).ok() )
+        else if ( CT( p, "Power Infusion" ).ok() )
         {
-          allied_major_cds[ p ] = buff_t::find( p, "dark_ascension" );
+          allied_major_cds[ p ] = buff_t::find( p, "power_infusion" );
         }
       }
     }
@@ -9392,6 +9394,21 @@ void evoker_t::init_finished()
             allied_major_cds[ p ] = buff_t::find( p, "celestial_alignment" );
         }
       }
+      else if ( p->specialization() == DRUID_FERAL )
+      {
+        if ( ST( p, "Incarnation: Avatar of Ashamane" ) )
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "incarnation_avatar_of_ashamane" );
+        }
+        else if ( ST( p, "Berserk" ) )
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "berserk" );
+        }
+        else
+        {
+          allied_major_cds[ p ] = buff_t::find( p, "tigers_fury" );
+        }
+      }
     }
     else if ( p->type == SHAMAN )
     {
@@ -9423,13 +9440,9 @@ void evoker_t::init_finished()
     }
     else if ( p->type == MONK )
     {
-      if ( ST( p, "Serenity" ).ok() )
+      if ( ST( p, "Zenith" ).ok() )
       {
-        allied_major_cds[ p ] = buff_t::find( p, "serenity" );
-      }
-      else if ( ST( p, "Storm, Earth, and Fire" ).ok() )
-      {
-        allied_major_cds[ p ] = buff_t::find( p, "storm_earth_and_fire" );
+        allied_major_cds[ p ] = buff_t::find( p, "zenith" );
       }
     }
     else if ( p->type == ROGUE )
