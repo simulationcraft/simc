@@ -1189,7 +1189,7 @@ public:
   }
 
   void trigger_bloodseeker_update();
-  int ticking_dots( hunter_td_t* td );
+  int ticking_dots( player_t* target );
   void trigger_outland_venom_update();
   void consume_trick_shots();
   void trigger_deathblow( bool activated = false );
@@ -1359,16 +1359,12 @@ public:
       p()->buffs.tip_of_the_spear->decrement();
       p()->buffs.stargazer->trigger();
 
-      // 2026-02-13: For Survival, Sentinel's Mark applies to a random target hit for AoE spells.
-      //             Tipped Wildfire Bombs can also trigger an additional mark after consuming one so make an event.
-      make_event( p()->sim, [ this ]() { p()->trigger_eagles_mark( get_random_valid_target(), true ); } );
+      // 2026-07-24: Tipped Wildfire Bombs can trigger an additional mark after consuming one so make an event.
+      make_event( p()->sim, [ this, s ]() { p()->trigger_eagles_mark( s->target, true ); } );
 
       if ( p()->cooldowns.strike_as_one->up() )
       {
-        auto pet = p()->pets.main;
-        // action only exists when talented; the cooldown is no guard
-        // (untalented -> 0s icd -> always up -> nullptr deref)
-        if ( pet && pet->actions.strike_as_one )
+        if ( auto pet = p()->pets.main )
         {
           pet->actions.strike_as_one->execute_on_target( p()->target );
           p()->cooldowns.strike_as_one->start();
@@ -2128,6 +2124,7 @@ public:
   struct dots_t
   {
     dot_t* bloodshed = nullptr;
+    dot_t* sic_em = nullptr;
   } dots;
 
   hunter_main_pet_base_td_t( player_t* target, hunter_main_pet_base_t* p );
@@ -3308,6 +3305,7 @@ bear_td_t::bear_td_t( player_t* target, bear_t* p ) : actor_target_data_t( targe
 hunter_main_pet_base_td_t::hunter_main_pet_base_td_t( player_t* target, hunter_main_pet_base_t* p ) : actor_target_data_t( target, p ), dots()
 {
   dots.bloodshed = target->get_dot( "bloodshed", p );
+  dots.sic_em = target->get_dot( "sic_em", p );
 }
 
 hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p ) : hunter_main_pet_base_td_t( target, p ) {}
@@ -3586,13 +3584,25 @@ void hunter_t::trigger_bloodseeker_update()
 }
 
 // Currently only relevant for Survival's Outland Venom.
-int hunter_t::ticking_dots( hunter_td_t* td )
+int hunter_t::ticking_dots( player_t* t )
 {
   int dots = 0;
 
-  auto hunter_dots = td->dots;
-  dots += hunter_dots.wildfire_bomb->is_ticking();
-  dots += hunter_dots.sanctified_armaments->is_ticking();
+  if ( auto hunter_td = get_target_data( t ) )
+  {
+    dots += hunter_td->dots.wildfire_bomb->is_ticking();
+    dots += hunter_td->dots.sanctified_armaments->is_ticking();
+  }
+
+  if ( auto pet = pets.main )
+  {
+    dots += pet->get_target_data( t )->dots.sic_em->is_ticking();
+  }
+
+  if ( auto bear = pets.bear.active_pet() )
+  {
+    dots += bear->get_target_data( t )->dots.rend_flesh->is_ticking();
+  }
 
   return dots;
 }
@@ -3608,7 +3618,7 @@ void hunter_t::trigger_outland_venom_update()
     {
       auto td = get_target_data( t );
       int current = td->debuffs.outland_venom->check();
-      int new_stacks = ticking_dots( td );
+      int new_stacks = ticking_dots( t );
 
       new_stacks = std::min( new_stacks, td->debuffs.outland_venom->max_stack() );
 
@@ -4420,10 +4430,7 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
       // 2026-01-23: Chakram cannot proc Sentinel's Mark
       if ( p()->cooldowns.strike_as_one->up() )
       {
-        auto pet = p()->pets.main;
-        // action only exists when talented; the cooldown is no guard
-        // (untalented -> 0s icd -> always up -> nullptr deref)
-        if ( pet && pet->actions.strike_as_one )
+        if ( auto pet = p()->pets.main )
         {
           p()->pets.main->actions.strike_as_one->execute_on_target( target );
           p()->cooldowns.strike_as_one->start();
@@ -4770,21 +4777,6 @@ struct boar_charge_t final : hunter_ranged_attack_t
       // target_filter_callback = secondary_targets_only();
     }
 
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double am = hunter_ranged_attack_t::composite_da_multiplier( s );
-
-      // 2026-03-30: Boar Charges double dip Spirit Bond's bonus
-      if ( p()->bugs && p()->specialization() == HUNTER_SURVIVAL )
-      {
-        double bonus = p()->cache.mastery() * p()->mastery.spirit_bond->effectN( affected_by.spirit_bond.direct ).mastery_value();
-        bonus *= 1 + p()->mastery.spirit_bond_buff->effectN( 1 ).percent();
-        am *= 1 + bonus;
-      }
-
-      return am;
-    }
-
     void impact( action_state_t* s ) override
     {
       hunter_ranged_attack_t::impact( s );
@@ -4802,21 +4794,6 @@ struct boar_charge_t final : hunter_ranged_attack_t
     travel_speed = 50; // 2026-01-19: Not in spelldata, estimating based on log data.
 
     add_child( cleave );
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double am = hunter_ranged_attack_t::composite_da_multiplier( s );
-
-    // 2026-03-30: Boar Charges double dip Spirit Bond's bonus
-    if ( p()->bugs && p()->specialization() == HUNTER_SURVIVAL )
-    {
-      double bonus = p()->cache.mastery() * p()->mastery.spirit_bond->effectN( affected_by.spirit_bond.direct ).mastery_value();
-      bonus *= 1 + p()->mastery.spirit_bond_buff->effectN( 1 ).percent();
-      am *= 1 + bonus;
-    }
-
-    return am;
   }
 
   void execute() override
@@ -4903,6 +4880,21 @@ struct let_fly_t final : hunter_ranged_attack_t
 
 struct cobra_shot_base_t: public hunter_ranged_attack_t
 {
+  struct state_data_t
+  {
+    struct
+    {
+      bool active = false;
+      int stacks = 0;
+    } cobra_cleave;
+
+    friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out )
+    {
+      fmt::format_to( out, "cobra_cleave.active={}, cobra_cleave.stacks={}", data.cobra_cleave.active, data.cobra_cleave.stacks );
+    }
+  };
+  using state_t = hunter_action_state_t<state_data_t>;
+
   const timespan_t kill_command_reduction;
   const double serpentine_strikes_amount = p()->talents.serpentine_strikes_energize->effectN( 1 ).base_value();
 
@@ -4916,7 +4908,11 @@ struct cobra_shot_base_t: public hunter_ranged_attack_t
   {
     int n = hunter_ranged_attack_t::n_targets();
 
-    n += p()->buffs.hogstrider->check();
+    if ( p()->buffs.hogstrider->check() )
+    {
+      // 2026-07-24: Hogstrider Cobra Shots fire onto <stacks> additional targets, not <stacks> total targets.
+      n += p()->buffs.hogstrider->stack() + 1;
+    }
 
     return n;
   }
@@ -4947,8 +4943,11 @@ struct cobra_shot_base_t: public hunter_ranged_attack_t
     if ( p()->buffs.hogstrider->up() )
       m *= 1 + p()->talents.hogstrider_buff->effectN( 1 ).percent();
 
-    if ( p()->buffs.cobra_fang->up() && !p()->buffs.beast_cleave->check() && s->chain_target == 0 )
-      m *= 1 + p()->tier_set.mid_s2_bm_4pc_buff->effectN( 2 ).percent() * p()->buffs.cobra_fang->check();
+    auto custom_state = debug_cast<const state_t*>( s );
+    if ( s->chain_target == 0 && p()->buffs.cobra_fang->check() && !custom_state->cobra_cleave.active )
+    {
+      m *= 1 + p()->tier_set.mid_s2_bm_4pc_buff->effectN( 2 ).percent() * custom_state->cobra_cleave.stacks;
+    }
 
     return m;
   }
@@ -4964,11 +4963,12 @@ struct cobra_shot_base_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( p()->buffs.cobra_fang->up() && p()->buffs.beast_cleave->check() && s->chain_target == 0 )
+    auto custom_state = debug_cast<state_t*>( s );
+    if ( s->chain_target == 0 && custom_state->cobra_cleave.active )
     {
       // 2026-07-11: It seems like Cobra Cleave's target multipliers replicate to other targets, unlike all other Beast Cleaves
       //             TODO fully confirm the above
-      const double effectiveness = p()->tier_set.mid_s2_bm_4pc_buff->effectN( 1 ).percent() * p()->buffs.cobra_fang->check();
+      const double effectiveness = p()->tier_set.mid_s2_bm_4pc_buff->effectN( 1 ).percent() * custom_state->cobra_cleave.stacks;
       const double amount = s->result_total * effectiveness;
 
       p()->actions.cobra_cleave->execute_on_target( s->target, amount );
@@ -4976,6 +4976,19 @@ struct cobra_shot_base_t: public hunter_ranged_attack_t
 
     if ( s->result == RESULT_CRIT && p()->talents.serpentine_strikes.ok() ) 
       p()->resource_gain( RESOURCE_FOCUS, serpentine_strikes_amount, p()->gains.serpentine_strikes, this );
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    debug_cast<state_t*>( s )->cobra_cleave.stacks = p()->buffs.cobra_fang->stack();
+    debug_cast<state_t*>( s )->cobra_cleave.active = p()->buffs.cobra_fang->check() && p()->buffs.beast_cleave->check();
+
+    hunter_ranged_attack_t::snapshot_internal( s, flags, rt );
   }
 };
 
@@ -5325,14 +5338,6 @@ struct aimed_shot_t : public aimed_shot_base_t
       {
         p()->buffs.lock_and_load->decrement();
       }
-
-      // 2026-07-12: This check is duplicated from aimed_shot_t but made unreactable as Hydra can munch Death Bringers from the primary shot.
-      //             Should really be in aimed_shot_base_t but working on the assumption that this will be fixed so duplicating here for ease of cleanup.
-      if ( p()->buffs.death_bringer->up() )
-      {
-        p()->buffs.death_bringer->expire();
-        p()->trigger_deathblow();
-      }
     }
   };
 
@@ -5540,10 +5545,12 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       // 2026-07-17: Spotter's Mark Rapid Fire also expires on impact, meaning a sequence of Rapid Fire -> Precise Shots 
       //             can munch a proc with no benefit, depending on travel time & distance.
       // 2026-07-22: This interaction only happens for Spotter's Mark Rapid Fire debuffs NOT triggered by Unload.
+      // 2026-07-24: ... when the initial Rapid Fire was cast against a marked target.
       if ( p()->bugs )
       {
         if ( td( state->target )->debuffs.spotters_mark_rapid_fire->check() &&
-            !td( state->target )->debuffs.spotters_mark_rapid_fire->triggered_by_unload )
+            !td( state->target )->debuffs.spotters_mark_rapid_fire->triggered_by_unload &&
+            range::find( channel->marked_targets, state->target ) != channel->marked_targets.end() )
         {
           td( state->target )->debuffs.spotters_mark_rapid_fire->expire();
           p()->procs.rapid_fire_mark_munched->occur();
@@ -5885,11 +5892,7 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     cleave_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.explosive_shot_cleave )
     {
       aoe = -1;
-      
-      if ( !p->bugs )
-      {
-        target_filter_callback = secondary_targets_only();
-      }
+      target_filter_callback = secondary_targets_only();
 
       // 2026-17-07: Salvo can trigger this action without the base (212431) being talented, so grab it here unconditionally.
       reduced_aoe_targets = p->find_spell( 212431 )->effectN( 2 ).base_value();
@@ -6196,9 +6199,8 @@ struct raptor_strike_t : public raptor_strike_base_t
     void execute() override
     {
       // Run before execute() as Tip is decremented in the base class
-      // (action requires Strike as One in addition to Raptor Swipe tier 3)
       if ( p()->talents.raptor_swipe_3.ok() && p()->buffs.tip_of_the_spear->check() )
-        if ( auto pet = p()->pets.main; pet && pet->actions.strike_as_one_swipe )
+        if ( auto pet = p()->pets.main )
           pet->actions.strike_as_one_swipe->execute_on_target( target );
 
       raptor_strike_base_t::execute();
@@ -6328,14 +6330,11 @@ struct boomstick_t : public hunter_spell_t
 
       p()->buffs.stargazer->trigger();
 
-      p()->trigger_eagles_mark( get_random_valid_target( boomstick_tick->aoe ), true );
+      p()->trigger_eagles_mark( target, true );
 
       if ( p()->cooldowns.strike_as_one->up() )
       {
-        auto pet = p()->pets.main;
-        // action only exists when talented; the cooldown is no guard
-        // (untalented -> 0s icd -> always up -> nullptr deref)
-        if ( pet && pet->actions.strike_as_one )
+        if ( auto pet = p()->pets.main )
         {
           p()->pets.main->actions.strike_as_one->execute_on_target( target );
           p()->cooldowns.strike_as_one->start();
@@ -7143,16 +7142,6 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
 
     impact_action = p->get_background_action<bomb_damage_t>( "wildfire_bomb_damage", this );
   }
-
-  double recharge_rate_multiplier( const cooldown_t& cd ) const override
-  {
-    double m = hunter_ranged_attack_t::recharge_rate_multiplier( cd );
-
-    if ( p()->buffs.grenade_juggler->check() )
-      m /= 1.0 + p()->talents.grenade_juggler_buff->effectN( 1 ).percent();
-
-    return m;
-  }
 };
 
 struct wildfire_bomb_t: public wildfire_bomb_base_t
@@ -7186,7 +7175,7 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
   {
     // Tip of the Spear is decremented in execute() so run here
     if ( p()->tier_set.mid_s1_sv_4pc.ok() && p()->buffs.tip_of_the_spear->check() )
-      if ( auto pet = p()->pets.main; pet && pet->actions.strike_as_one )
+      if ( auto pet = p()->pets.main )
         pet->actions.strike_as_one->execute_on_target( target );
 
     wildfire_bomb_base_t::execute();
@@ -7197,6 +7186,18 @@ struct wildfire_bomb_t: public wildfire_bomb_base_t
       p()->state.fury_of_the_wyvern_extension += fury_of_the_wyvern.extension;
       p()->state.fury_of_the_wyvern_extendable = p()->state.fury_of_the_wyvern_extension < fury_of_the_wyvern.cap;
     }
+  }
+
+  double recharge_rate_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = wildfire_bomb_base_t::recharge_rate_multiplier( cd );
+
+    if ( p()->buffs.grenade_juggler->check() )
+    {
+      m /= 1.0 + p()->talents.grenade_juggler_buff->effectN( 1 ).percent();
+    }
+
+    return m;
   }
 };
 
@@ -8173,7 +8174,11 @@ void hunter_t::create_buffs()
       ->set_default_value_from_effect( 1 );
 
   buffs.grenade_juggler = 
-    make_buff( this, "grenade_juggler", talents.grenade_juggler_buff );
+    make_buff( this, "grenade_juggler", talents.grenade_juggler_buff )
+      ->set_stack_change_callback(
+        [ this ]( buff_t*, int, int ) {
+          cooldowns.wildfire_bomb->adjust_recharge_multiplier();
+        } );
 
   buffs.wildfire_imbuement = 
     make_buff( this, "wildfire_imbuement", talents.wildfire_imbuement_buff );

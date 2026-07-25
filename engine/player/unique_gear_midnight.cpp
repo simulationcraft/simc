@@ -1008,6 +1008,62 @@ void b1p_scorcher_of_souls( special_effect_t& effect )
 
   effect.execute_action = create_proc_action<b1p_scorcher_of_souls_t>( "b1p_scorcher_of_souls", effect );
 }
+
+// 1296982 Driver
+// 1301037 RPPM
+// 1301039 Buff
+// 1301049 Damage
+void polished_ammolite( special_effect_t& effect )
+{
+  effect.player->sim->error(
+      UNVERIFIED_IMPLEMENTATION,
+      "Polished Ammolite: Implementation currently assumes that the stat effect cannot trigger while at five stacks. "
+      "This has not be verified in-game." );
+
+  auto damage = create_proc_action<generic_proc_t>( "ammolitic_burst", effect, 1301049 );
+  damage->base_dd_min += effect.driver()->effectN( 2 ).average( effect );
+  damage->base_dd_max += effect.driver()->effectN( 2 ).average( effect );
+
+  auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
+  auto buff        = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1301039 ) )
+                         ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
+
+  // skip setup if callback has been created by already having another copy of the embellishment
+  if ( find_special_effect( effect.player, effect.trigger()->id() ) )
+    return;
+
+  damage->base_multiplier *= role_mult( effect );
+  damage->base_crit = 1.0;
+
+  struct polished_ammolite_cb_t final : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+    action_t* damage;
+
+    polished_ammolite_cb_t( const special_effect_t& e, buff_t* triggered_buff, action_t* triggered_damage )
+      : dbc_proc_callback_t( e.player, e ), buff( triggered_buff ), damage( triggered_damage )
+    {
+    }
+
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
+    {
+      if ( buff->at_max_stacks() )
+      {
+        damage->execute_on_target( t );
+      }
+      else
+      {
+        // Currently assumed this cannot re-trigger while at maximum stacks.
+        buff->trigger();
+      }
+    }
+  };
+
+  effect.spell_id     = effect.trigger()->id();
+  effect.proc_flags2_ = PF2_CRIT;
+
+  new polished_ammolite_cb_t( effect, buff, damage );
+}
 }  // namespace embellishments
 
 namespace darkmoon
@@ -4606,6 +4662,10 @@ void register_special_effects()
   register_special_effect( 1251904, embellishments::loa_worshipers_band );
   register_special_effect( 1261968, embellishments::b0p_curator_of_booms );
   register_special_effect( 1246309, embellishments::b1p_scorcher_of_souls );
+  set_min_version( wowv_t( 12, 1, 0 ) );
+  register_special_effect( 1296982, embellishments::polished_ammolite );
+  reset_version_check();
+  
   // Darkmoon Trinkets & Embellishments
   register_special_effect( { 1245001, 1245053 }, darkmoon::blood );
   register_special_effect( { 1245055, 1245051 }, darkmoon::rot );

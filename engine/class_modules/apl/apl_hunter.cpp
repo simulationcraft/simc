@@ -390,7 +390,7 @@ void marksmanship_ptr( player_t* p )
   sentaoe->add_action( "volley" );
   sentaoe->add_action( "trueshot,if=variable.trueshot_ready&(raid_event.pull.remains>30|talent.calling_the_shots|!raid_event.pull.exists)" );
   sentaoe->add_action( "moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max" );
-  sentaoe->add_action( "multishot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down" );
+  sentaoe->add_action( "multishot,target_if=max:debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down" );
   sentaoe->add_action( "rapid_fire,target_if=max:debuff.sentinels_mark.down,if=talent.unload" );
   sentaoe->add_action( "rapid_fire" );
   sentaoe->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time" );
@@ -401,8 +401,8 @@ void marksmanship_ptr( player_t* p )
   sentst->add_action( "volley" );
   sentst->add_action( "trueshot,if=variable.trueshot_ready&(raid_event.pull.remains>30|talent.calling_the_shots|!raid_event.pull.exists)" );
   sentst->add_action( "moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max" );
-  sentst->add_action( "kill_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
-  sentst->add_action( "arcane_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
+  sentst->add_action( "kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
+  sentst->add_action( "arcane_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
   sentst->add_action( "rapid_fire" );
   sentst->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage" );
   sentst->add_action( "moonlight_chakram" );
@@ -531,8 +531,7 @@ void survival_ptr( player_t* p )
   cds->add_action( "potion,if=target.time_to_die<25|cooldown.takedown.ready" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
-  plst->add_action( "sequence,name=Standard-opener:raptor_strike:kill_command:boomstick:kill_command:takedown,line_cd=10000", "ST - PL" );
-  plst->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&howl_summon.ready" );
+  plst->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&howl_summon.ready", "ST - PL" );
   plst->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
   plst->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   plst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up&(talent.lethal_calibration&full_recharge_time<4+gcd|!talent.lethal_calibration)" );

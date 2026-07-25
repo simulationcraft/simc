@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68824 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68914 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -4474,6 +4474,7 @@ Cooldown         : 40 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
+                 : 6669: Demon Hunter Havoc 12.1 Class Set 4pc (1296612 effect#1)
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #6), Vengeance Demon Hunter (212613 effect#6), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Never Say Die (427794 effects: #4, #5), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Devourer Demon Hunter (1213636 effect#5), Havoc Demon Hunter (1256955 effects: #1, #2), Blind Focus (1272364 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2), Demon Hunter Havoc 12.1 Class Set 2pc (1296611 effect#1)
 Family Flags     : 16, 32, 43, 71
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
@@ -13491,7 +13492,7 @@ Family Flags     : 95, 103
 Attributes       : Ignore Line of Sight (66), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1207523)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.625 | Radius: 8 yards | Target: at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.3 | Radius: 8 yards | Target: at Enemy in Area (16)
 Description      : $@spelldesc1221150
 
 Name             : Collapsing Star (id=1221167) [Spell Family (107), Passive, Hidden] 
@@ -13693,7 +13694,7 @@ Family Flags     : 95, 99
 Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1215271)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.732 | PvP Coefficient: 0.568 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.328 | PvP Coefficient: 0.568 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1226019
 
 Name             : Eradicate (id=1225826) [Spell Family (107)] 
@@ -13737,7 +13738,7 @@ Family Flags     : 95, 99
 Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1215275)  : School Damage (2): cosmic | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.732 | PvP Coefficient: 0.568 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.328 | PvP Coefficient: 0.568 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
 Description      : $@spelldesc1225826
 
 Name             : Reap (id=1226019) [Spell Family (107)] 
@@ -14861,7 +14862,7 @@ Family Flags     : 95, 99
 Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1246508)  : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.66 | PvP Coefficient: 0.568 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.14 | PvP Coefficient: 0.568 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1245453
 
 Name             : Reaper's Toll (id=1245470) [Spell Family (107)] 
@@ -15073,7 +15074,6 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 6669: Demon Hunter Havoc 12.1 Class Set 4pc (1296612 effect#1)
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Inertia (427641 effects: #1, #2), Never Say Die (427794 effects: #4, #5), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Blind Focus (1272364 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2), Demon Hunter Havoc 12.1 Class Set 2pc (1296611 effect#1)
 Family Flags     : 16, 43, 71
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
@@ -17457,7 +17457,7 @@ Family Flags     : 95, 99
 Attributes       : Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1291601)  : School Damage (2): cosmic | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.66 | PvP Coefficient: 0.568 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 8.14 | PvP Coefficient: 0.568 | Radius: 0 - 30 yards | Target: at Area (87) -> Line to Enemy (134)
 Description      : $@spelldesc1225826
 
 Name             : Harness the Cosmos (id=1279247) [Spell Family (107), Passive] 
@@ -17637,7 +17637,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1319281)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.5 | Misc Value 2: 6669 (Label) | Target: Self (1)
-                   Affected Spells (Label): Essence Break (1245759)
+                   Affected Spells (Label): Essence Break (258860)
 #2 (id=1320869)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.5 | Misc Value: 1 | Misc Value 2: 6670 (Label) | Target: Self (1)
                    Affected Spells (Label): Essence Break (320338)

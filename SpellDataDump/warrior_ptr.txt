@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68824 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.68914 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -120,10 +120,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=310)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.24581 | PvP Coefficient: 1.15 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Description      : Wounds the target, causing $s1 Physical damage instantly and an additional $388539o1 Bleed damage over $388539d.$?s6343[
-
-|cFFFFFFFFThunder Clap affects $6343s5 nearby targets with Rend.
-][]
+Description      : Wounds the target, causing $s1 Physical damage instantly and an additional $388539o1 Bleed damage over $388539d.
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
 Name             : Cleave (id=845) [Spell Family (4)] 
@@ -6552,7 +6549,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Striking the Anvil (288455 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Improved Overpower (385571 effect#1), Battle Stance (386164 effect#4), Rend (388539 effect#2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Strength of Arms (400803 effects: #1, #2, #3), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Colossal Might (440989 effect#3), Slayer's Malice (444779 effect#1), Overwhelmed (445836 effect#1), Wrecked (447513 effects: #2, #3), Overpowering Might (455483 effect#1), Opportunist (456120 effects: #3, #4), Winning Streak! (1216552 effect#1), Luck of the Draw! (1218163 effects: #1, #4), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Mastery: Master of Arms (1258398 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Master of Warfare (1269394 effects: #2, #3), Warrior - Midnight PrePatch - 11.2 Class Set 2pc (1283642 effects: #1, #2), Warrior - Midnight PrePatch - 11.2 Class Set 4pc (1283643 effects: #1, #2), Warrior Arms 12.1 Class Set 4pc (1296644 effect#1)
 Family Flags     : 2, 9
-Attributes       : No Active Defense (21), No AutoCast (AI) (49), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
+Attributes       : No Active Defense (21), No AutoCast (AI) (49), Suppress Caster Procs (112), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=800084)   : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.4 | Radius: 0 - 10 yards | Target: at Area (87) -> Line to Enemy (134)
@@ -6644,7 +6641,7 @@ Stacks           : 3 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee
 Triggered By     : Martial Prowess (1273062)
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=800946)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -16808,7 +16805,7 @@ Proc Chance      : 101%
 Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #14, #15), Mastery: Unshackled Fury (76856 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #1, #2), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Pulverizing Blows (275689 effect#1), Simmering Rage (278757 effect#2), Unbridled Ferocity (288056 effect#2), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Battle Stance (386164 effect#4), Rend (388539 effect#2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Warrior Fury 10.1 Class Set 2pc (405579 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Strength of the Mountain (437068 effect#4), Overwhelmed (445836 effect#1), Brutal Finish (446918 effect#2), Wrecked (447513 effects: #2, #3), Bloody Rampage (455490 effect#1), Winning Streak! (1216561 effect#1), Luck of the Draw! (1218163 effects: #1, #4), Arms Warrior (1256919 effects: #1, #2), Protection Warrior (1256935 effects: #1, #2), Fury Warrior (1257520 effects: #1, #2), Mastery: Master of Arms (1258398 effects: #1, #2), Master Tactician (1261216 effects: #1, #2), Warrior Fury 12.0 Class Set 2pc (1264877 effect#1), Executioner's Wrath (1265575 effect#1), Rampaging Berserker (1269308 effect#1), Warrior - Midnight PrePatch - 11.2 Class Set 2pc (1283642 effects: #1, #2), Warrior - Midnight PrePatch - 11.2 Class Set 4pc (1283643 effects: #1, #2)
 Triggered By     : Rampage (184367)
 Family Flags     : 9, 108
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Off-Hand Weapon (120), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Suppress Caster Procs (112), Requires Off-Hand Weapon (120), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1324375)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.72289 | PvP Coefficient: 1.275 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
