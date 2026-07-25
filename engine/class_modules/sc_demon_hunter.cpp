@@ -5657,10 +5657,11 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
       {
         dh()->buff.moment_of_craving->trigger();
         dh()->cooldown.reap->reset( true );
-        dh()->buff.soulburst->expire();
         dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_soulburst, soul_fragment::LESSER,
                                    as<unsigned int>( dh()->set_bonuses.mid2_devourer_4pc->effectN( 1 ).base_value() ) );
       }
+
+      dh()->buff.soulburst->expire();
     }
   };
 
