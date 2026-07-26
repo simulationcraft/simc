@@ -5246,7 +5246,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 {
   const int trick_shots_targets;
 
-
   aimed_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
     hunter_ranged_attack_t( n, p, s ),
     trick_shots_targets( as<int>( p->talents.trick_shots_data->effectN( 1 ).base_value() ) )
@@ -5301,6 +5300,29 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
       return 1 + trick_shots_targets;
 
     return hunter_ranged_attack_t::n_targets();
+  }
+
+  std::vector<player_t*>& target_list() const override
+  {
+    auto& tl = hunter_ranged_attack_t::target_list();
+
+    if ( is_aoe() && as<int>( tl.size() ) > n_targets() )
+    {
+      // always hit the target, then randomize bounces
+      auto start_it = tl.begin() + ( tl[ 0 ] == target ? 1 : 0 );
+      rng().shuffle( start_it, tl.end() );
+
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} shuffled targets for {} ({})", *player, signature_str, *this );
+        for ( size_t i = 0; i < tl.size(); i++ )
+        {
+          sim->print_debug( "[{}, {} (id={})]", i, *tl[ i ], tl[ i ]->actor_index );
+        }
+      }
+    }
+
+    return tl;
   }
 
   void impact( action_state_t* s ) override
@@ -5783,12 +5805,16 @@ struct rapid_fire_t: public hunter_ranged_attack_t
   void execute() override
   {
     hydra_target = nullptr;
-    if ( aspect_of_the_hydra && target_list().size() > 1 )
+    if ( aspect_of_the_hydra )
     {
-      auto it = range::find_if( target_list(), [ this ]( const player_t* t ) { return t != target; } );
-      if ( it != target_list().end() )
+      auto tl = target_list();
+      if ( tl.size() > 1 ) 
       {
-        hydra_target = *it;
+        auto it = range::find_if( tl, [ this ]( const player_t* t ) { return t != target; } );
+        if ( it != tl.end() )
+        {
+          hydra_target = *it;
+        }
       }
     }
 
