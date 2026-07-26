@@ -929,6 +929,12 @@ using namespace helpers;
       if ( p()->talents.withering_bolt.ok() )
         m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( ( int )( p()->talents.withering_bolt->effectN( 2 ).base_value() ), p()->get_target_data( t )->count_affliction_dots() );
 
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        if ( p()->talents.impetuous_wrath.ok() )
+          m *= 1.0 + ( td( t )->debuffs.haunt->check() ? p()->talents.impetuous_wrath->effectN( 2 ).percent() : p()->talents.impetuous_wrath->effectN( 1 ).percent() );
+      }
+
       return m;
     }
   };
@@ -1960,11 +1966,14 @@ using namespace helpers;
       if ( ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) ) && p()->talents.patient_zero.ok() )
         p()->patient_zero_target = main_seed_target;
 
-      // 2026-06-30 Hotfix: Nightfall SoC detonates existing SoC when smart targeting leaves the primary seed on an already seeded target
-      if ( p()->talents.nocturnal_yield.ok() && p()->buffs.nightfall->check() && mstdata->dots.seed_of_corruption->is_ticking() && mstdata->soc_threshold > 0 )
+      if ( p()->sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
       {
-        mstdata->soc_threshold = 0;
-        mstdata->dots.seed_of_corruption->cancel();
+        // 2026-06-30 Hotfix: Nightfall SoC detonates existing SoC when smart targeting leaves the primary seed on an already seeded target
+        if ( p()->talents.nocturnal_yield.ok() && p()->buffs.nightfall->check() && mstdata->dots.seed_of_corruption->is_ticking() && mstdata->soc_threshold > 0 )
+        {
+          mstdata->soc_threshold = 0;
+          mstdata->dots.seed_of_corruption->cancel();
+        }
       }
 
       warlock_spell_t::execute();
@@ -1973,17 +1982,20 @@ using namespace helpers;
 
       const bool soc_had_prev_succulent_soul = p()->buffs.succulent_soul->check();
 
-      if ( time_to_execute == 0_ms && soul_harvester() && p()->talents.nocturnal_yield.ok() && p()->buffs.nightfall->check() )
+      if ( p()->sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
       {
-        if ( p()->hero.wicked_reaping.ok() )
-          p()->proc_actions.wicked_reaping->execute_on_target( main_seed_target );
+        if ( time_to_execute == 0_ms && soul_harvester() && p()->talents.nocturnal_yield.ok() && p()->buffs.nightfall->check() )
+        {
+          if ( p()->hero.wicked_reaping.ok() )
+            p()->proc_actions.wicked_reaping->execute_on_target( main_seed_target );
 
-        if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
-          p()->proc_actions.shared_fate->execute_on_target( main_seed_target );
+          if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
+            p()->proc_actions.shared_fate->execute_on_target( main_seed_target );
 
-        // Feast of Souls is processed after SoC captures its previous Succulent Soul state but before the delayed stack removal
-        if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger( execute_state ) )
-          p()->feast_of_souls_gain();
+          // Feast of Souls is processed after SoC captures its previous Succulent Soul state but before the delayed stack removal
+          if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger( execute_state ) )
+            p()->feast_of_souls_gain();
+        }
       }
 
       if ( soul_harvester() )
@@ -2012,8 +2024,18 @@ using namespace helpers;
 
       // NOTE: 2026-02-26 If Nightfall is obtained during the casting of Seed of Corruption, that SoC cast
       // benefits from the cost reduction but does not consume the effect. (bug?)
-      if ( p()->talents.nocturnal_yield.ok() && time_to_execute == 0_ms )
-        p()->buffs.nightfall->decrement();
+      if ( p()->sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+      {
+        if ( p()->talents.nocturnal_yield.ok() && time_to_execute == 0_ms )
+          p()->buffs.nightfall->decrement();
+      }
+
+      // NOTE: 2026-07-26 Seed of Corruption is not consuming Shard Instability buff (bug)
+      if ( p()->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        if ( !p()->bugs && time_to_execute == 0_ms )
+          p()->buffs.shard_instability->decrement();
+      }
 
       if ( p()->talents.cull_the_weak.ok() )
         p()->cooldowns.dark_harvest->adjust( -p()->talents.cull_the_weak->effectN( 1 ).time_value() );
@@ -2240,8 +2262,11 @@ using namespace helpers;
 
     void snapshot_state( action_state_t* s, result_amount_type rt ) override
     {
-      // NOTE: 2026-02-20 Malefic Grasp does not benefit from the Nightfall damage bonus under any circumstances (bug)
-      double dmg_mul = p()->bugs ? 0.0 : p()->talents.nightfall_buff->effectN( 2 ).percent();
+      // NOTE: 2026-07-26 12.0.7: Malefic Grasp does not benefit from the Nightfall damage bonus under any circumstances (bug)
+      // NOTE: 2026-07-26 12.1.0: PTR Nightfall does not buff Malefic Grasp damage unless the Necrolyte Teachings hero talent (Soul Harvester) is used (bug)
+      double dmg_mul = ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+                ? ( p()->bugs ? 0.0 : p()->talents.nightfall_buff->effectN( 2 ).percent() )
+                : ( ( p()->bugs && !p()->hero.necrolyte_teachings.ok() ) ? 0.0 : p()->talents.nightfall_buff->effectN( 2 ).percent() );
 
       debug_cast<malefic_grasp_state_t*>( s )->td_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? dmg_mul : 0.0 );
       debug_cast<malefic_grasp_state_t*>( s )->tick_time_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? p()->talents.nightfall_buff->effectN( 3 ).percent() : 0.0 );
@@ -2308,6 +2333,19 @@ using namespace helpers;
         trigger_extra_tick( tdata->dots.wither, extra_tick_mul, wither_mg, false );
         trigger_extra_tick( tdata->dots.corruption, extra_tick_mul, corruption_mg );
       }
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double m = warlock_spell_t::composite_target_multiplier( t );
+
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        if ( p()->talents.impetuous_wrath.ok() )
+          m *= 1.0 + ( td( t )->debuffs.haunt->check() ? p()->talents.impetuous_wrath->effectN( 2 ).percent() : p()->talents.impetuous_wrath->effectN( 1 ).percent() );
+      }
+
+      return m;
     }
 
     double composite_ta_multiplier( const action_state_t* s ) const override
@@ -2449,6 +2487,12 @@ using namespace helpers;
       if ( p()->talents.withering_bolt.ok() )
         m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( ( int )( p()->talents.withering_bolt->effectN( 2 ).base_value() ), td( t )->count_affliction_dots() );
 
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        if ( p()->talents.impetuous_wrath.ok() )
+          m *= 1.0 + ( td( t )->debuffs.haunt->check() ? p()->talents.impetuous_wrath->effectN( 2 ).percent() : p()->talents.impetuous_wrath->effectN( 1 ).percent() );
+      }
+
       return m;
     }
 
@@ -2520,6 +2564,19 @@ using namespace helpers;
         : warlock_spell_t( "Dark Harvest (tick)", p, p->talents.dark_harvest_dmg )
       {
         background = dual = true;
+      }
+
+      double composite_target_multiplier( player_t* t ) const override
+      {
+        double m = warlock_spell_t::composite_target_multiplier( t );
+
+        if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+        {
+          if ( p()->talents.impetuous_wrath.ok() )
+            m *= 1.0 + ( td( t )->debuffs.haunt->check() ? p()->talents.impetuous_wrath->effectN( 4 ).percent() : p()->talents.impetuous_wrath->effectN( 3 ).percent() );
+        }
+
+        return m;
       }
     };
 

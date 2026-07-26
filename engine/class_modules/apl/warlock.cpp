@@ -92,7 +92,10 @@ void affliction( player_t* p )
   default_->add_action( "call_action_list,name=items" );
   default_->add_action( "call_action_list,name=soul_harvester,if=hero_tree.soul_harvester" );
   default_->add_action( "call_action_list,name=hellcaller,if=hero_tree.hellcaller" );
-  default_->add_action( "seed_of_corruption,if=talent.nocturnal_yield&active_enemies>1&buff.nightfall.react&(buff.nightfall.react=buff.nightfall.max_stack|buff.nightfall.remains<execute_time*buff.nightfall.max_stack)" );
+  if ( p->sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+  {
+    default_->add_action( "seed_of_corruption,if=talent.nocturnal_yield&active_enemies>1&buff.nightfall.react&(buff.nightfall.react=buff.nightfall.max_stack|buff.nightfall.remains<execute_time*buff.nightfall.max_stack)" );
+  }
   default_->add_action( "malefic_grasp,chain=1,early_chain_if=buff.nightfall.react,if=pet.darkglare.active" );
   default_->add_action( "drain_soul,chain=1,early_chain_if=buff.nightfall.react,interrupt_if=tick_time>0.5" );
   default_->add_action( "shadow_bolt" );

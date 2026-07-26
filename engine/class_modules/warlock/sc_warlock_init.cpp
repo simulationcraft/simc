@@ -146,7 +146,7 @@ namespace warlock
 
     talents.nightfall = find_talent_spell( talent_tree::SPECIALIZATION, "Nightfall" ); // Should be ID 108558
     talents.nightfall_buff = conditional_spell_lookup( warlock_base.affliction_warlock->ok(), 264571 );
-    talents.nightfall_buff_2 = conditional_spell_lookup( warlock_base.affliction_warlock->ok(), 1260279 );
+    talents.nightfall_buff_2 = conditional_spell_lookup( warlock_base.affliction_warlock->ok() && ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) ), 1260279 );
 
     talents.haunt = find_talent_spell( talent_tree::SPECIALIZATION, "Haunt" ); // Should be ID 48181
 
@@ -208,7 +208,10 @@ namespace warlock
 
     talents.potent_soul_shards = find_talent_spell( talent_tree::SPECIALIZATION, "Potent Soul Shards" ); // Should be ID 1259815
 
-    talents.nocturnal_yield = find_talent_spell( talent_tree::SPECIALIZATION, "Nocturnal Yield" ); // Should be ID 1260271
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      talents.impetuous_wrath = find_talent_spell( talent_tree::SPECIALIZATION, "Impetuous Wrath" ); // Should be ID 1312998
+    else
+      talents.nocturnal_yield = find_talent_spell( talent_tree::SPECIALIZATION, "Nocturnal Yield" ); // Should be ID 1260271
 
     talents.xavius_gambit = find_talent_spell( talent_tree::SPECIALIZATION, "Xavius' Gambit" ); // Should be ID 416615
 
@@ -765,7 +768,7 @@ namespace warlock
 
   void warlock_t::create_buffs_affliction()
   {
-    buffs.nightfall = make_buff( this, "nightfall", talents.nocturnal_yield.ok() ? talents.nightfall_buff_2 : talents.nightfall_buff );
+    buffs.nightfall = make_buff( this, "nightfall", ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) && talents.nocturnal_yield.ok() ) ? talents.nightfall_buff_2 : talents.nightfall_buff );
 
     buffs.darkglare_presence = make_buff( this, "darkglare_presence", talents.darkglare_presence_buff );
 

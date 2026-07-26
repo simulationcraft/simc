@@ -428,6 +428,7 @@ public:
     player_talent_t niskaran_methods;
     player_talent_t potent_soul_shards;
     player_talent_t nocturnal_yield;
+    player_talent_t impetuous_wrath;
 
     player_talent_t xavius_gambit; // Unstable Affliction Damage Multiplier
     player_talent_t ravenous_afflictions;
