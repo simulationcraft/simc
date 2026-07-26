@@ -2670,13 +2670,13 @@ namespace diabolist
 
       if ( p()->o()->demonology() )
       {
-        // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology
+        // Modify Diab Demons damage for Demonology
         m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent();
       }
 
       if ( p()->o()->destruction() )
       {
-        // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
+        // Modify Diab Demons damage for Destruction
         m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
       }
 
@@ -2746,13 +2746,13 @@ namespace diabolist
 
       if ( p()->o()->demonology() )
       {
-        // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology
+        // Modify Diab Demons damage for Demonology
         m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent();
       }
 
       if ( p()->o()->destruction() )
       {
-        // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
+        // Modify Diab Demons damage for Destruction
         m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
       }
 
@@ -2841,13 +2841,13 @@ namespace diabolist
 
       if ( p()->o()->demonology() )
       {
-        // Added in build: 11.2.0.62253: reduces Diab Demons Damage by 20% for Demonology
+        // Modify Diab Demons damage for Demonology
         m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 3 ).percent();
       }
 
       if ( p()->o()->destruction() )
       {
-        // Added in build 11.2.0.62253: Increases Diab Demons damage by 15% for Destruction, missing from Patch Notes.
+        // Modify Diab Demons damage for Destruction
         m *= 1.0 + p()->o()->hero.diabolic_ritual->effectN( 4 ).percent();
       }
 
