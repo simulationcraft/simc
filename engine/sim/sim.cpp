@@ -1949,7 +1949,8 @@ void sim_t::combat_begin()
     make_event<bloodlust_check_t>( *this, *this, timespan_t::from_seconds( 0.0 ) );
   }
 
-  if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
+  // Keep droute from creating an end event, it will end itself after the last pull ends
+  if ( ( fixed_time || target -> resources.base[ RESOURCE_HEALTH ] == 0 ) && fight_style != FIGHT_STYLE_DUNGEON_ROUTE )
   {
     make_event<sim_end_event_t>( *this, *this, expected_iteration_time );
     target -> death_pct = enemy_death_pct;
@@ -2360,6 +2361,10 @@ void sim_t::init_fight_style()
       fixed_time = false;
       // Bloodlust is handled by an option on each pull raid event.
       overrides.bloodlust = 0;
+      // Only use for this should be setting the safeguard event (max_time * 2). As long as Blizzard remains sane and tunes around a typical dungeon
+      // taking about 30 minutes to complete, a safeguard of 1.5 hours should be a safe point to assume something has gone wrong in the sim, either the 
+      // input needs to be checked or something got stuck.
+      max_time = 45_min;
       break;
 
     case FIGHT_STYLE_CLEAVE_ADD:

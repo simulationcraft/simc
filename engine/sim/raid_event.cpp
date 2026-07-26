@@ -2042,7 +2042,7 @@ void raid_event_t::finish()
       return;
     }
     // End the iteration if no sequential pull is found.
-    make_event<player_demise_event_t>( *sim, *sim->target_list.data().front() );
+    sim->cancel_iteration();
   }
 }
 

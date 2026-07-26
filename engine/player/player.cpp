@@ -7158,7 +7158,7 @@ void player_t::demise()
   if ( is_enemy() )
   {
     sim->active_enemies--;
-    sim->target_non_sleeping_list.find_and_erase_unordered( this );
+    sim->target_non_sleeping_list.find_and_erase( this );
 
     // When an enemy dies, trigger players to acquire a new target
     range::for_each( sim->player_non_sleeping_list,
