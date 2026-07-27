@@ -1442,6 +1442,9 @@ public:
 
     if ( affected_by.wyverns_cry.tick )
       am *= 1 + p()->buffs.wyverns_cry->check_stack_value();
+    
+    if ( affected_by.mongoose_fury.tick && p()->buffs.mongoose_fury->check() )
+      am *= 1 + p()->buffs.mongoose_fury->stack_value();
 
     return am;
   }
