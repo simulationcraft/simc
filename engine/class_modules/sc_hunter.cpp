@@ -2616,16 +2616,7 @@ public:
 
     if ( affected_by.mongoose_fury.direct && o()->buffs.mongoose_fury->check() )
     {
-      /* 2026-01-17: Strike as One has a unique spell effect in Mongoose Fury's buff, conditioned on a talent (Bloody Claws).
-                     So use that for the special case. */
-      if ( s->action->name_str == "strike_as_one" || s->action->name_str == "strike_as_one_swipe" )
-      {
-        am *= 1 + o()->talents.mongoose_fury_buff->effectN( 2 ).percent() * o()->buffs.mongoose_fury->stack();
-      }
-      else
-      {
-        am *= 1 + o()->buffs.mongoose_fury->check_stack_value();
-      }
+      am *= 1 + o()->buffs.mongoose_fury->check_stack_value();
     }
 
     if ( affected_by.tip_of_the_spear.direct && o()->buffs.tip_of_the_spear->check() )
