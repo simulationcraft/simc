@@ -1640,6 +1640,40 @@ public:
     }
     return ab::target;
   }
+
+  player_t* get_hydra_target( const player_t* base_target, const player_t* current_hydra_target ) const
+  {
+    if ( !p()->talents.aspect_of_the_hydra.ok() )
+    {
+      return nullptr;
+    }
+
+    const auto& tl = ab::target_list();
+    if ( tl.empty() || tl.size() < 2 )
+    {
+      return nullptr;
+    }
+
+    // Use the current Hydra target unless it's dead.
+    if ( current_hydra_target )
+    {
+      auto it = range::find( tl, current_hydra_target );
+      if ( it != tl.end() )
+      {
+        return *it;
+      }
+    }
+
+    unsigned attempts = 0;
+    player_t* selection = nullptr;
+    do
+    {
+      selection = p()->rng().range( tl );
+      attempts++;
+    } while ( selection == base_target && attempts < 30 ); // Just in case...
+
+    return selection;
+  }
 };
 
 struct hunter_spell_t : public hunter_action_t<spell_t>
@@ -5383,6 +5417,7 @@ struct aimed_shot_t : public aimed_shot_base_t
   } deathblow;
 
   aimed_shot_aspect_of_the_hydra_t* aspect_of_the_hydra = nullptr;
+  player_t* hydra_target = nullptr;
   bool lock_and_loaded = false;
 
   aimed_shot_t( hunter_t* p, util::string_view options_str ) : 
@@ -5447,6 +5482,8 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   void execute() override
   {
+    hydra_target = get_hydra_target( target, hydra_target );
+
     aimed_shot_base_t::execute();
 
     if ( rng().roll( surging_shots.chance ) )
@@ -5475,11 +5512,11 @@ struct aimed_shot_t : public aimed_shot_base_t
       p()->buffs.death_bringer->trigger();
     }
       
-    auto& tl = target_list();
-
-    // Delay these secondary shots since they can consume Moving Target or Lock and Load if either trigger off a queued cast.
-    if ( aspect_of_the_hydra && tl.size() > 1 )
-      make_event( p()->sim, 10_ms, [ this, tl ]() { aspect_of_the_hydra->execute_on_target( tl[ 1 ] ); } );
+    if ( aspect_of_the_hydra && hydra_target )
+    {
+      // Delay these secondary shots since they can consume Lock and Load if it triggers off a queued cast.
+      make_event( p()->sim, 10_ms, [ this ]() { aspect_of_the_hydra->execute_on_target( hydra_target ); } );
+    }
 
     if ( p()->talents.pact_of_the_hollow.ok() )
       for ( auto pet : p()->pets.dark_minion.active_pets() )
@@ -5843,20 +5880,7 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
   void execute() override
   {
-    hydra_target = nullptr;
-    if ( aspect_of_the_hydra )
-    {
-      auto& tl = target_list();
-      if ( tl.size() > 1 ) 
-      {
-        auto it = range::find_if( tl, [ this ]( const player_t* t ) { return t != target; } );
-        if ( it != tl.end() )
-        {
-          hydra_target = *it;
-        }
-      }
-    }
-
+    hydra_target = get_hydra_target( target, hydra_target );
     marked_targets.clear();
 
     // 2026-07-22: Unload is a weird spell with No Scope talented. If Precise Shots is active before casting Rapid Fire, Precise Shots
