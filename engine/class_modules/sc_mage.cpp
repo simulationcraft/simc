@@ -301,6 +301,7 @@ public:
     buff_t* freezing_rain;
     buff_t* glacial_spike;
     buff_t* hand_of_frost;
+    buff_t* icicles;
     buff_t* permafrost_lances;
     buff_t* rapid_refreezing;
     buff_t* thermal_void;
@@ -457,7 +458,6 @@ public:
     timespan_t last_random_clearcasting; // Brainstorm cannot be triggered twice if a singular spell/action triggers Clearcasting twice.
     bool thermal_void_active;
     int glorious_incandescence_snapshot;
-    int icicles;
     int fired_up_count; // number of Fired Up procs in this Combustion
   } state;
 
@@ -4283,7 +4283,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
     p()->buffs.glacial_spike->decrement();
-    p()->state.icicles = 0;
+    p()->buffs.icicles->expire();
 
     // 12.1 4-set bonus
     p()->buffs.rapid_refreezing->trigger();
@@ -6403,6 +6403,8 @@ void mage_t::create_buffs()
                                ->add_invalidate( CACHE_PET_DAMAGE_MULTIPLIER )
                                ->add_invalidate( CACHE_GUARDIAN_DAMAGE_MULTIPLIER )
                                ->set_chance( talents.hand_of_frost_2.ok() );
+  buffs.icicles            = make_buff( this, "icicles", find_spell( 205473 ) )
+                               ->set_chance( talents.icicles.ok() );
   buffs.permafrost_lances  = make_buff( this, "permafrost_lances", find_spell( 455122 ) )
                                ->set_default_value_from_effect( 1 )
                                ->set_chance( talents.permafrost_lances.ok() );
@@ -6938,10 +6940,12 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
     } );
   }
 
+  // TODO: remove later
   if ( util::str_compare_ci( name, "icicles" ) )
   {
+    sim->error( error_level_e::TRIVIAL, "The 'icicles' expression is deprecated, use buff.icicles.stack/react instead." );
     return make_fn_expr( name, [ this ]
-    { return state.icicles; } );
+    { return buffs.icicles->check(); } );
   }
 
   auto splits = util::string_split<std::string_view>( name, "." );
@@ -7113,12 +7117,11 @@ void mage_t::trigger_icicle( int count, bool grant_buff )
   if ( !talents.icicles.ok() || count <= 0 )
     return;
 
-  int max_icicles = as<int>( talents.icicles->effectN( 2 ).base_value() );
-  int old_icicles = state.icicles;
-  state.icicles = std::min( state.icicles + count, max_icicles );
-  if ( grant_buff && state.icicles == max_icicles )
+  int old_icicles = buffs.icicles->check();
+  buffs.icicles->trigger( count );
+  if ( grant_buff && buffs.icicles->at_max_stacks() )
     buffs.glacial_spike->trigger();
-  int overflow = old_icicles + count - state.icicles;
+  int overflow = old_icicles + count - buffs.icicles->check();
   for ( int i = 0; i < overflow; i++ )
     procs.icicle_overflow->occur();
 }
