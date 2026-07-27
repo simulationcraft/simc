@@ -720,8 +720,7 @@ void prismatic_focusing_iris( special_effect_t& effect )
   auto pct_per_gem  = effect.driver()->effectN( 3 ).percent();
   dot->base_td_multiplier *= 1.0 + ( pct_per_gem * unique_gem_list( effect.player, gem_colors ).size() );
 
-  // Feb 23 2026 - tank mod is not being applied in game
-  // dot->base_td_multiplier *= role_mult( effect );
+  dot->base_td_multiplier *= role_mult( effect );
   dot->base_td_multiplier *= bandolier_mul( effect.player );
 
   effect.spell_id       = effect.trigger()->id();
