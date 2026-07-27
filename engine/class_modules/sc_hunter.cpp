@@ -74,6 +74,12 @@ static damage_affected_by parse_damage_affecting_aura( action_t* a, spell_data_p
     if ( effect.type() != E_APPLY_AURA )
       continue;
 
+    if ( effect.base_value() == 0.0 && effect.sp_coeff() == 0.0 && a->data().affected_by( effect ) )
+    {
+      a->sim->print_debug( "Filtered out effect {} with base value 0.0 for action {}", effect.spell_id(), a->name() );
+      continue;
+    }
+
     if ( ( effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && a->data().affected_by( effect ) ) ||
          ( effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL && a->data().affected_by_label( effect ) ) )
     {
