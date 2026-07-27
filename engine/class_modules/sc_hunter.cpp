@@ -76,7 +76,7 @@ static damage_affected_by parse_damage_affecting_aura( action_t* a, spell_data_p
 
     if ( effect.base_value() == 0.0 && effect.sp_coeff() == 0.0 && a->data().affected_by( effect ) )
     {
-      a->sim->print_debug( "Filtered out effect {} with base value 0.0 for action {}", effect.spell_id(), a->name() );
+      a->sim->print_debug( "Filtered out {} (id={}) effect#{} from affecting {} {} because it has a base value and sp_coeff of 0.0. This usually means it is conditionally affected by a talent, tier or other effect not present in this simulation - filtering it out", effect.spell()->name_cstr(), effect.spell()->id(), effect.spell_effect_num() + 1, *a->player, *a );
       continue;
     }
 
