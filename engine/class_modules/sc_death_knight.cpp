@@ -992,6 +992,7 @@ public:
     propagate_const<action_t*> putrefy_fk_st;
     propagate_const<action_t*> putrefy_fk_aoe;
     propagate_const<action_t*> dread_plague_death;
+    propagate_const<action_t*> epidemic_order;
   } background_actions;
 
   struct runeforge_actions_t
@@ -3746,8 +3747,24 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   void trigger_orders()
   {
     if ( sim->target_non_sleeping_list.size() >= 3 && epidemic_order )
+    {
+      // Non doomed bidding epidemic orders come from the DK, rather than the pets confusingly.
+      if ( dk()->bugs )
+        dk()->background_actions.epidemic_order->execute();
+      else
+        epidemic_order->execute();
+    }
+    else if ( death_order )
+      death_order->execute();
+    else
+      assert( false && "Death Order and Epidemic Order are not available for this ghoul" );
+  }
+
+  void trigger_db_orders( bool coil = true )
+  {
+    if ( !coil && epidemic_order )
       epidemic_order->execute();
-    else if( death_order )
+    else if ( death_order )
       death_order->execute();
     else
       assert( false && "Death Order and Epidemic Order are not available for this ghoul" );
@@ -6744,7 +6761,7 @@ struct summon_lesser_ghoul_t : public death_knight_summon_spell_t
     if ( putrefy_instantly )
       p()->active_lesser_ghouls.back()->putrefy_ghoul( putrefy_source );
 
-    if ( ordered )
+    if ( ordered && source != LESSER_DOOMED_BIDDING_COIL && source != LESSER_DOOMED_BIDDING_EPIDEMIC )
       for ( auto& ghoul : p()->active_lesser_ghouls )
       {
         if ( ghoul->pet_type == PET_ARMY_GHOUL )
@@ -6874,6 +6891,23 @@ struct raise_skulker_t : public death_knight_summon_spell_t
   {
     death_knight_summon_spell_t::execute();
     p()->pets.risen_skulker.spawn();
+  }
+};
+
+// Epidemic Order ==========================================================
+struct epidemic_order_t : public death_knight_spell_t
+{
+  epidemic_order_t( std::string_view n, death_knight_t* p ) : death_knight_spell_t( n, p, p->pet_spell.epidemic_order )
+  {
+    background = true;
+    aoe        = -1;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+
+    p()->trigger_rune_of_the_apocalypse( s->target );
   }
 };
 
@@ -13497,10 +13531,21 @@ void death_knight_t::sudden_doom_execute_effects( bool coil )
 
   if ( talent.unholy.doomed_bidding.ok() )
   {
-    if ( coil )
-      pet_summon.db_ghoul_coil->execute();
+    if ( !buffs.army_of_the_dead->check() )
+    {
+      if ( coil )
+        pet_summon.db_ghoul_coil->execute();
+      else
+        pet_summon.db_ghoul_epi->execute();
+    }
     else
-      pet_summon.db_ghoul_epi->execute();
+    {
+      for ( auto& ghoul : active_lesser_ghouls )
+      {
+        if ( ghoul->pet_type == PET_ARMY_GHOUL )
+          ghoul->trigger_db_orders( coil );
+      }
+    }
   }
 }
 
@@ -14204,8 +14249,11 @@ void death_knight_t::create_actions()
     }
 
     if ( talent.unholy.army_of_the_dead.ok() )
+    {
       pet_summon.army_ghoul = get_action<summon_lesser_ghoul_t>( "army_ghoul", this, spell.summon_army_ghoul,
                                                                  lesser_ghoul_e::LESSER_ARMY_OF_THE_DEAD );
+      background_actions.epidemic_order = get_action<epidemic_order_t>( "epidemic_order", this );
+    }
 
     if ( talent.unholy.infected_claws.ok() )
       background_actions.infected_claws = get_action<infected_claws_t>( "infected_claws", this );
