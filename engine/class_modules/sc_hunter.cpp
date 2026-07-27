@@ -5304,9 +5304,12 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
   std::vector<player_t*>& target_list() const override
   {
+    // no need to shuffle every time something just fetches the list
+    bool was_valid = target_cache.is_valid;
+
     auto& tl = hunter_ranged_attack_t::target_list();
 
-    if ( is_aoe() && as<int>( tl.size() ) > n_targets() )
+    if ( !was_valid && is_aoe() && as<int>( tl.size() ) > n_targets() )
     {
       // always hit the target, then randomize bounces
       auto start_it = tl.begin() + ( tl[ 0 ] == target ? 1 : 0 );
@@ -5314,7 +5317,7 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
       if ( sim->debug )
       {
-        sim->print_debug( "{} shuffled targets for {} ({})", *player, signature_str, *this );
+        sim->print_debug( "{} shuffled targets for {}", *player, *this );
         for ( size_t i = 0; i < tl.size(); i++ )
         {
           sim->print_debug( "[{}, {} (id={})]", i, *tl[ i ], tl[ i ]->actor_index );
@@ -5465,7 +5468,7 @@ struct aimed_shot_t : public aimed_shot_base_t
       p()->buffs.death_bringer->trigger();
     }
       
-    auto tl = target_list();
+    auto& tl = target_list();
 
     // Delay these secondary shots since they can consume Moving Target or Lock and Load if either trigger off a queued cast.
     if ( aspect_of_the_hydra && tl.size() > 1 )
@@ -5536,8 +5539,37 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       return hunter_ranged_attack_t::n_targets();
     }
 
+    std::vector<player_t*>& target_list() const override
+    {
+      // no need to shuffle every time something just fetches the list
+      bool was_valid = target_cache.is_valid;
+
+      auto& tl = hunter_ranged_attack_t::target_list();
+
+      if ( !was_valid && is_aoe() && as<int>( tl.size() ) > n_targets() )
+      {
+        // always hit the target, then randomize bounces
+        auto start_it = tl.begin() + ( tl[ 0 ] == target ? 1 : 0 );
+        rng().shuffle( start_it, tl.end() );
+
+        if ( sim->debug )
+        {
+          sim->print_debug( "{} shuffled targets for {}", *player, *this );
+          for ( size_t i = 0; i < tl.size(); i++ )
+          {
+            sim->print_debug( "[{}, {} (id={})]", i, *tl[ i ], tl[ i ]->actor_index );
+          }
+        }
+      }
+
+      return tl;
+    }
+
     void execute() override
     {
+      if ( is_aoe() )
+        target_cache.is_valid = false;
+
       hunter_ranged_attack_t::execute();
 
       p()->buffs.trick_shots->up(); // Benefit tracking
@@ -5807,7 +5839,7 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     hydra_target = nullptr;
     if ( aspect_of_the_hydra )
     {
-      auto tl = target_list();
+      auto& tl = target_list();
       if ( tl.size() > 1 ) 
       {
         auto it = range::find_if( tl, [ this ]( const player_t* t ) { return t != target; } );
