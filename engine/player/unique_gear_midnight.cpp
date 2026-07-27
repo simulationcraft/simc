@@ -3635,6 +3635,76 @@ void vashniks_sanguine_rancor( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Vexhul's Everflowing Gland
+// 1295833 On-use driver (1s aura, ticks every 0.2s)
+// 1306785 Caustic Venom (tick damage)
+// 1295832 Equip effect
+//  e1: damage per tick
+//  e2: damage bonus per 1% of the target's remaining health
+//  e3: cooldown reduction per enemy defeated
+void vexhuls_everflowing_gland( special_effect_t& effect )
+{
+  unsigned equip_id = 1295832;
+  auto equip = find_special_effect( effect.player, equip_id );
+  assert( equip && "Vexhul's Everflowing Gland missing equip effect" );
+
+  struct caustic_venom_tick_t : public generic_proc_t
+  {
+    double health_bonus;
+
+    caustic_venom_tick_t( const special_effect_t& e, const spell_data_t* equip )
+      : generic_proc_t( e, "caustic_venom_tick", 1306785 ), health_bonus( 1.0 )
+    {
+      base_dd_min = base_dd_max = equip->effectN( 1 ).average( e );
+      base_multiplier *= role_mult( e );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      return generic_proc_t::composite_da_multiplier( s ) * health_bonus;
+    }
+  };
+
+  struct caustic_venom_t : public generic_proc_t
+  {
+    caustic_venom_tick_t* venom;
+    double health_mult;
+
+    caustic_venom_t( const special_effect_t& e, const spell_data_t* equip )
+      : generic_proc_t( e, "caustic_venom", e.driver() ),
+        venom( debug_cast<caustic_venom_tick_t*>(
+            create_proc_action<caustic_venom_tick_t>( "caustic_venom_tick", e, equip ) ) ),
+        health_mult( equip->effectN( 2 ).percent() )
+    {
+      cooldown->duration = 0_ms;  // Handled by the special effect
+      tick_action = venom;
+    }
+
+    void init() override
+    {
+      generic_proc_t::init();
+
+      // the ticks are discrete casts of 1306785, so they are direct damage and not periodic
+      tick_action->direct_tick = false;
+    }
+
+    void execute() override
+    {
+      // the health bonus is snapshot when the venom is unleashed, confirmed with in game logs
+      venom->health_bonus = 1.0 + health_mult * target->health_percentage();
+
+      generic_proc_t::execute();
+    }
+  };
+
+  effect.execute_action = create_proc_action<caustic_venom_t>( "caustic_venom", effect, equip->driver() );
+
+  auto cdr = timespan_t::from_seconds( equip->driver()->effectN( 3 ).base_value() );
+  auto cd  = effect.player->get_cooldown( effect.cooldown_name() );
+
+  effect.player->register_on_kill_callback( [ cd, cdr ]( player_t* ) { cd->adjust( -cdr ); } );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -4852,6 +4922,8 @@ void register_special_effects()
   register_special_effect( 1295885, trinkets::hex_lords_dooming_idol, true );
   register_special_effect( 1295884, DISABLED_EFFECT );  // Hex Lord's Dooming Idol equip driver
   register_special_effect( 1295553, trinkets::vashniks_sanguine_rancor );
+  register_special_effect( 1295833, trinkets::vexhuls_everflowing_gland );
+  register_special_effect( 1295832, DISABLED_EFFECT );  // Vexhul's Everflowing Gland equip driver
   register_special_effect( 1291728, bite_of_zuljan::zuljins_guillotine_technique );
   reset_version_check();
   // Weapons
