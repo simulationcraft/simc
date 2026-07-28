@@ -2015,6 +2015,19 @@
       { "data_type": "i", "field": "unk_2" }
     ]
   },
+  "TraitCurrencySource": {
+    "fields": [
+      { "data_type": "S", "field": "requirement_lang" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "id_trait_currency" },
+      { "data_type": "i", "field": "amount" },
+      { "data_type": "i", "field": "id_quest" },
+      { "data_type": "i", "field": "id_achievement" },
+      { "data_type": "i", "field": "player_level" },
+      { "data_type": "i", "field": "id_trait_node_entry" },
+      { "data_type": "i", "field": "order_index" }
+    ]
+  },
   "TraitDefinition": {
     "fields": [
       { "data_type": "S", "field": "override_name" },
