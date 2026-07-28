@@ -353,6 +353,10 @@ struct tar_trap_aoe_t;
 struct hunter_td_t: public actor_target_data_t
 {
   bool damaged = false;
+  // Faking what seems to be GUID based behavior that chooses the Aspect of the Hydra target, which sticks
+  // to one particular target in a group unless a higher priority target is introduced or the target dies.
+  // Active targets will get a random priority set and be ranked by it when the secondary target is chosen.
+  int hydra_priority;
 
   struct spotters_mark_rapid_fire_buff_t final : public buff_t
   {
@@ -1053,6 +1057,7 @@ public:
     howl_of_the_pack_leader_beast howl_of_the_pack_leader_next_beast = WYVERN;
     timespan_t fury_of_the_wyvern_extension = 0_s;
     bool fury_of_the_wyvern_extendable = false;
+    player_t* aspect_of_the_hydra_target = nullptr;
   } state;
 
   struct options_t {
@@ -1157,7 +1162,8 @@ public:
   stat_e convert_hybrid_stat( stat_e s ) const override;
   std::string create_profile( save_e ) override;
   void copy_from( player_t* source ) override;
-  void moving( ) override;
+  void moving() override;
+  void acquire_target( retarget_source event, player_t* context ) override;
 
   std::string default_potion() const override { return hunter_apl::potion( this ); }
   std::string default_flask() const override { return hunter_apl::flask( this ); }
@@ -1207,6 +1213,7 @@ public:
   void trigger_natures_ally_3();
   void trigger_huntmasters_call();
   void spawn_dire_beast( timespan_t base_duration, bool force_hound = false );
+  player_t* get_hydra_target( player_t* target );
 };
 
 // Template for common hunter action code.
@@ -1648,40 +1655,6 @@ public:
       }
     }
     return ab::target;
-  }
-
-  player_t* get_hydra_target( const player_t* base_target, const player_t* current_hydra_target ) const
-  {
-    if ( !p()->talents.aspect_of_the_hydra.ok() )
-    {
-      return nullptr;
-    }
-
-    const auto& tl = ab::target_list();
-    if ( tl.empty() || tl.size() < 2 )
-    {
-      return nullptr;
-    }
-
-    // Use the current Hydra target unless it's dead.
-    if ( current_hydra_target )
-    {
-      auto it = range::find( tl, current_hydra_target );
-      if ( it != tl.end() )
-      {
-        return *it;
-      }
-    }
-
-    unsigned attempts = 0;
-    player_t* selection = nullptr;
-    do
-    {
-      selection = p()->rng().range( tl );
-      attempts++;
-    } while ( selection == base_target && attempts < 30 ); // Just in case...
-
-    return selection;
   }
 };
 
@@ -3919,6 +3892,47 @@ void hunter_t::spawn_dire_beast( timespan_t base_duration, bool force_hound )
   trigger_huntmasters_call();
 }
 
+player_t* hunter_t::get_hydra_target( player_t* primary_target )
+{
+  if ( !talents.aspect_of_the_hydra.ok() )
+    return nullptr;
+
+  if ( sim->target_non_sleeping_list.size() < 2 )
+    return nullptr;
+
+  if ( state.aspect_of_the_hydra_target && state.aspect_of_the_hydra_target != primary_target )
+    return state.aspect_of_the_hydra_target;
+
+  player_t* candidate = nullptr;
+  hunter_td_t* candidate_td = nullptr;
+
+  // rank all enemies that are not the current primary target of the cast
+  for ( auto* t : sim->target_non_sleeping_list )
+  {
+    if ( t->is_enemy() && t != primary_target )
+    {
+      if ( !candidate )
+      {
+        candidate = t;
+        candidate_td = get_target_data( t );
+      }
+      else
+      {
+        hunter_td_t* td = get_target_data( t );
+        if ( td->hydra_priority < candidate_td->hydra_priority )
+        {
+          candidate = t;
+          candidate_td = td;
+        }
+      }
+    }
+  }
+
+  state.aspect_of_the_hydra_target = candidate;
+
+  return candidate;
+}
+
 // ==========================================================================
 // Hunter Attacks
 // ==========================================================================
@@ -5482,7 +5496,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   void execute() override
   {
-    hydra_target = get_hydra_target( target, hydra_target );
+    hydra_target = p()->get_hydra_target( target );
 
     aimed_shot_base_t::execute();
 
@@ -5880,7 +5894,7 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
   void execute() override
   {
-    hydra_target = get_hydra_target( target, hydra_target );
+    hydra_target = p()->get_hydra_target( target );
     marked_targets.clear();
 
     // 2026-07-22: Unload is a weird spell with No Scope talented. If Precise Shots is active before casting Rapid Fire, Precise Shots
@@ -7379,6 +7393,9 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
   debuffs(),
   dots()
 {
+  if ( p->talents.aspect_of_the_hydra.ok() )
+    hydra_priority = p->rng().range( INT_MAX );
+
   double outland_venom_value = p->talents.outland_venom_debuff->effectN( 1 ).percent();
   if ( p->bugs )
     outland_venom_value /= 2; // 2026-01-24: Outland Venom is only giving half of its value.
@@ -9024,6 +9041,15 @@ void hunter_t::moving()
   // Override moving() so that it doesn't suppress auto_shot and only interrupts the few shots that cannot be used while moving.
   if ( ( executing && !executing -> usable_moving() ) || ( channeling && !channeling -> usable_moving() ) )
     player_t::interrupt();
+}
+
+void hunter_t::acquire_target( retarget_source event, player_t* context )
+{
+  player_t::acquire_target( event, context );
+
+  // When available targets change, force a re-check
+  if ( talents.aspect_of_the_hydra.ok() )
+    state.aspect_of_the_hydra_target = nullptr;
 }
 
 /* Report Extension Class
