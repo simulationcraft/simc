@@ -3654,7 +3654,6 @@ void knot_of_writhing_serpents( special_effect_t& effect )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
       base_multiplier *= role_mult( e );
-      travel_speed = e.player->find_spell( 1295690 )->missile_speed();
 
       dot = create_proc_action<generic_proc_t>( "writhing_venom_dot", e, 1295679 );
       dot->base_td = e.driver()->effectN( 2 ).average( e ) * dot->base_tick_time / dot->dot_duration;
@@ -3672,7 +3671,13 @@ void knot_of_writhing_serpents( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<writhing_venom_t>( "writhing_venom", effect );
+  auto missile = create_proc_action<generic_proc_t>( "writhing_venom_missile", effect, 1295690 );
+  auto damage  = create_proc_action<writhing_venom_t>( "writhing_venom", effect );
+
+  missile->add_child( damage );
+  missile->impact_action = damage;
+
+  effect.execute_action = missile;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
