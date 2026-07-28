@@ -7641,6 +7641,16 @@ struct essence_break_t : public demon_hunter_attack_t
     add_child( p->active.essence_break_proc );
   }
 
+  void execute() override
+  {
+    demon_hunter_attack_t::execute();
+
+    if ( dh()->set_bonuses.mid2_havoc_4pc->ok() && dh()->talent.havoc.cycle_of_hatred->ok() )
+    {
+      dh()->buff.cycle_of_hatred->trigger();
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     demon_hunter_attack_t::impact( s );
