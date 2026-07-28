@@ -185,7 +185,7 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "wild_thrash,if=talent.beast_cleave" );
   cleave->add_action( "wild_thrash,if=!talent.beast_cleave" );
   cleave->add_action( "kill_command,if=buff.natures_ally.react|talent.master_handler&(active_enemies>3|howl_summon.ready)|!apex.3" );
-  cleave->add_action( "cobra_shot,if=cooldown.wild_thrash.remains>gcd&buff.hogstrider.up&active_enemies<4" );
+  cleave->add_action( "cobra_shot,if=buff.cobra_fang.up&buff.beast_cleave.remains" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
   cleave->add_action( "cobra_shot,if=talent.beast_cleave&cooldown.wild_thrash.remains>gcd|!talent.beast_cleave" );
 
