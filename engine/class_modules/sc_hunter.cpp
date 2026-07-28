@@ -633,7 +633,7 @@ public:
     spell_data_ptr_t trigger_finger;
     spell_data_ptr_t tar_trap;
     spell_data_ptr_t scare_beast; //Utility talent, won't implement
-    spell_data_ptr_t touch_of_grass; //Utility talent, won't implement
+    spell_data_ptr_t touch_of_grass;
     spell_data_ptr_t camouflage; //Utility talent, won't implement
     spell_data_ptr_t no_hard_feelings; //Utility talent, won't implement
 
@@ -7638,6 +7638,7 @@ void hunter_t::init_spells()
 
   talents.trigger_finger                    = find_talent_spell( talent_tree::CLASS, "Trigger Finger" );
   talents.tar_trap                          = find_talent_spell( talent_tree::CLASS, "Tar Trap" );
+  talents.touch_of_grass                    = find_talent_spell( talent_tree::CLASS, "Touch of Grass" );
 
   talents.specialized_arsenal               = find_talent_spell( talent_tree::CLASS, "Specialized Arsenal" );
 
@@ -8097,6 +8098,11 @@ void hunter_t::init_base_stats()
   base.spell_power_per_intellect = 1;
 
   player_t::init_base_stats();
+
+  if ( talents.touch_of_grass.ok() )
+  {
+    resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + talents.touch_of_grass->effectN( 1 ).percent();
+  }
 }
 
 void hunter_t::create_actions()
