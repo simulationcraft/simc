@@ -130,7 +130,7 @@ trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=40/13335/13848
 trinket2=gebbos_bottomless_bag,id=270164,bonus_id=40/12854/13335
 main_hand=mazeroa_warlords_fury,id=268213,bonus_id=40/13335/13848,enchant_id=6245
 
-# save=MID2_Death_Knight_Unholy.simc
+save=MID2_Death_Knight_Unholy.simc
 
 deathknight="MID2_Death_Knight_Unholy_San'layn"
 spec=unholy
@@ -159,4 +159,4 @@ trinket2=gebbos_bottomless_bag,id=270164,bonus_id=40/12854/13335
 main_hand=mazeroa_warlords_fury,id=268213,bonus_id=40/13335/13848,enchant_id=6245
 
 
-# save=MID2_Death_Knight_Unholy_San'layn.simc
+save=MID2_Death_Knight_Unholy_San'layn.simc
