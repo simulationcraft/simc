@@ -3291,7 +3291,8 @@ void gebbos_bottomless_bag( special_effect_t& effect )
                                           effect.player->find_spell( 1292300 ) )
     ->add_stat_from_effect_type( A_MOD_RATING, totem_decrement )
     ->set_max_stack( totem_stacks )
-    ->set_reverse( true );
+    ->set_internal_cooldown( 0_ms ) // Handled by the special effect
+    ->set_initial_stack( totem_stacks );
 
   struct totem_drain_cb_t : public dbc_proc_callback_t
   {
@@ -3300,17 +3301,17 @@ void gebbos_bottomless_bag( special_effect_t& effect )
     totem_drain_cb_t( const special_effect_t& e, buff_t* t ) : dbc_proc_callback_t( e.player, e ), totem( t )
     {}
 
-    void execute( const spell_data_t*, player_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
-      if ( s && s->action && !s->action->background )
-        totem->decrement();
+      totem->decrement();
     }
   };
 
-  auto totem_drain = new special_effect_t( effect.player );
-  totem_drain->name_str = "brittle_torga_totem_drain";
-  totem_drain->spell_id = 1292300;
-  totem_drain->set_can_proc_from_procs( false );
+  auto totem_drain          = new special_effect_t( effect.player );
+  totem_drain->name_str     = "brittle_torga_totem_drain";
+  totem_drain->spell_id     = totem->data().id();
+  totem_drain->cooldown_    = totem->data().internal_cooldown();
+  totem_drain->proc_flags2_ = PF2_ALL_HIT;
   effect.player->special_effects.push_back( totem_drain );
 
   auto totem_drain_cb = new totem_drain_cb_t( *totem_drain, totem );
