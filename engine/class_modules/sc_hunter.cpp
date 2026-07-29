@@ -1373,7 +1373,8 @@ public:
       p()->buffs.stargazer->trigger();
 
       // 2026-07-24: Tipped Wildfire Bombs can trigger an additional mark after consuming one so make an event.
-      make_event( p()->sim, [ this, s ]() { p()->trigger_eagles_mark( s->target, true ); } );
+      player_t* mark_target = s->target;
+      make_event( p()->sim, [ this, mark_target ]() { p()->trigger_eagles_mark( mark_target, true ); } );
 
       if ( p()->cooldowns.strike_as_one->up() )
       {
