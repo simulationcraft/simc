@@ -5642,7 +5642,8 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
 {
   struct soulburst_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
-    soulburst_t( util::string_view n, demon_hunter_t* p ) : base_t( n, p, p->set_bonuses.soulburst_damage )
+    soulburst_t( util::string_view n, demon_hunter_t* p )
+      : base_t( n, p, p->set_bonuses.soulburst_damage )
     {
       background = dual = true;
       aoe               = -1;
@@ -8084,8 +8085,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
     SCREAMING_BRUTALITY_DEATH_SWEEP_THROW = 3
   };
 
-  struct throw_glaive_damage_t
-    : public shattered_souls_trigger_t<soulscar_trigger_t<burning_blades_trigger_t<demon_hunter_attack_t>>>
+  struct throw_glaive_damage_t : public soulscar_trigger_t<burning_blades_trigger_t<demon_hunter_attack_t>>
   {
     glaive_source source;
 
