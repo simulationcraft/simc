@@ -8113,16 +8113,6 @@ struct throw_glaive_t : public demon_hunter_attack_t
       }
     }
 
-    void execute() override
-    {
-      base_t::execute();
-
-      if ( dh()->is_ptr() && dh()->talent.havoc.serrated_glaive->ok() )
-      {
-        dh()->buff.serrated_glaive->trigger();
-      }
-    }
-
     void impact( action_state_t* state ) override
     {
       base_t::impact( state );
@@ -8134,9 +8124,16 @@ struct throw_glaive_t : public demon_hunter_attack_t
           dh()->active.burning_wound->execute_on_target( state->target );
         }
 
-        if ( dh()->talent.havoc.serrated_glaive->ok() && !dh()->is_ptr() )
+        if ( dh()->talent.havoc.serrated_glaive->ok() )
         {
-          td( state->target )->debuffs.serrated_glaive->trigger();
+          if ( dh()->is_ptr() )
+          {
+            dh()->buff.serrated_glaive->trigger();
+          }
+          else
+          {
+            td( state->target )->debuffs.serrated_glaive->trigger();
+          }
         }
       }
     }
