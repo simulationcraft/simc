@@ -94,9 +94,11 @@ struct warlock_td_t : public actor_target_data_t
 
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
-  // 12.1 Affliction 4pc
+  // 12.1 Affliction 4pc UA
   int ua_regular_stacks;
   int ua_seed_stacks;
+  // Track the independent expiration of each UA stack
+  std::vector<event_t*> ua_stack_drop_events;
 
   warlock_t& warlock;
   warlock_td_t( player_t* target, warlock_t& p );
@@ -114,6 +116,7 @@ struct warlock_td_t : public actor_target_data_t
   void ua_stack_expired( bool is_seed_ua );
   void reset_ua_stack_tracking();
   double ua_calculate_damage_stacks() const;
+  timespan_t ua_stack_remains( int min_stacks ) const; // Time until the target has fewer than min_stacks UA stacks
 };
 
 // Shuffled Bag RNG (sampling without replacement)
@@ -1193,6 +1196,7 @@ public:
   void invalidate_cache( cache_e c ) override;
   double composite_mastery() const override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
+  std::unique_ptr<expr_t> create_action_expression( action_t& action, util::string_view name_str ) override;
   std::string default_potion() const override { return warlock_apl::potion( this ); }
   std::string default_flask() const override { return warlock_apl::flask( this ); }
   std::string default_food() const override { return warlock_apl::food( this ); }
