@@ -1618,7 +1618,8 @@ using namespace helpers;
         if ( dot->duration() > dot_new_last_duration )
           dot->adjust_duration( dot_new_last_duration - dot->duration() );
 
-        make_event<ua_stack_drop_event_t>( *sim, p(), dot, dot_new_last_duration, is_seed_applied );
+        auto ev = make_event<ua_stack_drop_event_t>( *sim, p(), dot, dot_new_last_duration, is_seed_applied );
+        tdata->ua_stack_drop_events.push_back( ev );
       }
     }
 
@@ -5773,12 +5774,18 @@ using namespace helpers;
   void ua_stack_drop_event_t::execute()
   {
     warlock_t* p = static_cast<warlock_t*>( player() );
+    player_t* target = dot->target;
+    warlock_td_t* tdata = p->get_target_data( target );
+
+    // A previous UA expiration or cancellation invalidates its remaining stack events
+    auto ua_stack_drop_events_it = std::find( tdata->ua_stack_drop_events.begin(), tdata->ua_stack_drop_events.end(), this );
+    if ( ua_stack_drop_events_it == tdata->ua_stack_drop_events.end() )
+      return;
+
+    tdata->ua_stack_drop_events.erase( ua_stack_drop_events_it );
 
     if ( dot->is_ticking() && dot->tick_event && dot->current_action && dot->remains() > 0_ms )
     {
-      player_t* target = dot->target;
-      warlock_td_t* tdata = p->get_target_data( target );
-
       dot->decrement( 1 );
       tdata->ua_stack_expired( is_seed_applied );
       assert( ( dot->is_ticking() && dot->current_stack() > 0 ) && "UA stack decrement event should not cancel the DoT" );

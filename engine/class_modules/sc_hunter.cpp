@@ -74,6 +74,12 @@ static damage_affected_by parse_damage_affecting_aura( action_t* a, spell_data_p
     if ( effect.type() != E_APPLY_AURA )
       continue;
 
+    if ( effect.base_value() == 0.0 && effect.sp_coeff() == 0.0 && a->data().affected_by( effect ) )
+    {
+      a->sim->print_debug( "Filtered out {} (id={}) effect#{} from affecting {} {} because it has a base value and sp_coeff of 0.0. This usually means it is conditionally affected by a talent, tier or other effect not present in this simulation", effect.spell()->name_cstr(), effect.spell()->id(), effect.spell_effect_num() + 1, *a->player, *a );
+      continue;
+    }
+
     if ( ( effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && a->data().affected_by( effect ) ) ||
          ( effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL && a->data().affected_by_label( effect ) ) )
     {
@@ -347,6 +353,10 @@ struct tar_trap_aoe_t;
 struct hunter_td_t: public actor_target_data_t
 {
   bool damaged = false;
+  // Faking what seems to be GUID based behavior that chooses the Aspect of the Hydra target, which sticks
+  // to one particular target in a group unless a higher priority target is introduced or the target dies.
+  // Active targets will get a random priority set and be ranked by it when the secondary target is chosen.
+  int hydra_priority;
 
   struct spotters_mark_rapid_fire_buff_t final : public buff_t
   {
@@ -623,7 +633,7 @@ public:
     spell_data_ptr_t trigger_finger;
     spell_data_ptr_t tar_trap;
     spell_data_ptr_t scare_beast; //Utility talent, won't implement
-    spell_data_ptr_t touch_of_grass; //Utility talent, won't implement
+    spell_data_ptr_t touch_of_grass;
     spell_data_ptr_t camouflage; //Utility talent, won't implement
     spell_data_ptr_t no_hard_feelings; //Utility talent, won't implement
 
@@ -1047,6 +1057,7 @@ public:
     howl_of_the_pack_leader_beast howl_of_the_pack_leader_next_beast = WYVERN;
     timespan_t fury_of_the_wyvern_extension = 0_s;
     bool fury_of_the_wyvern_extendable = false;
+    player_t* aspect_of_the_hydra_target = nullptr;
   } state;
 
   struct options_t {
@@ -1151,7 +1162,8 @@ public:
   stat_e convert_hybrid_stat( stat_e s ) const override;
   std::string create_profile( save_e ) override;
   void copy_from( player_t* source ) override;
-  void moving( ) override;
+  void moving() override;
+  void acquire_target( retarget_source event, player_t* context ) override;
 
   std::string default_potion() const override { return hunter_apl::potion( this ); }
   std::string default_flask() const override { return hunter_apl::flask( this ); }
@@ -1201,6 +1213,7 @@ public:
   void trigger_natures_ally_3();
   void trigger_huntmasters_call();
   void spawn_dire_beast( timespan_t base_duration, bool force_hound = false );
+  player_t* get_hydra_target( player_t* target );
 };
 
 // Template for common hunter action code.
@@ -1360,7 +1373,8 @@ public:
       p()->buffs.stargazer->trigger();
 
       // 2026-07-24: Tipped Wildfire Bombs can trigger an additional mark after consuming one so make an event.
-      make_event( p()->sim, [ this, s ]() { p()->trigger_eagles_mark( s->target, true ); } );
+      player_t* mark_target = s->target;
+      make_event( p()->sim, [ this, mark_target ]() { p()->trigger_eagles_mark( mark_target, true ); } );
 
       if ( p()->cooldowns.strike_as_one->up() )
       {
@@ -1436,6 +1450,9 @@ public:
 
     if ( affected_by.wyverns_cry.tick )
       am *= 1 + p()->buffs.wyverns_cry->check_stack_value();
+    
+    if ( affected_by.mongoose_fury.tick && p()->buffs.mongoose_fury->check() )
+      am *= 1 + p()->buffs.mongoose_fury->stack_value();
 
     return am;
   }
@@ -2576,16 +2593,7 @@ public:
 
     if ( affected_by.mongoose_fury.direct && o()->buffs.mongoose_fury->check() )
     {
-      /* 2026-01-17: Strike as One has a unique spell effect in Mongoose Fury's buff, conditioned on a talent (Bloody Claws).
-                     So use that for the special case. */
-      if ( s->action->name_str == "strike_as_one" || s->action->name_str == "strike_as_one_swipe" )
-      {
-        am *= 1 + o()->talents.mongoose_fury_buff->effectN( 2 ).percent() * o()->buffs.mongoose_fury->stack();
-      }
-      else
-      {
-        am *= 1 + o()->buffs.mongoose_fury->check_stack_value();
-      }
+      am *= 1 + o()->buffs.mongoose_fury->check_stack_value();
     }
 
     if ( affected_by.tip_of_the_spear.direct && o()->buffs.tip_of_the_spear->check() )
@@ -3177,14 +3185,21 @@ struct kill_command_wildspeaker_t: public hunter_pet_attack_t<dire_critter_t>
   {
     hunter_pet_attack_t::impact( s );
 
-    if ( o()->talents.kill_cleave.ok() && s->action->result_is_hit( s->result ) &&
-      s->action->sim->active_enemies > 1 && p()->hunter_pet_t::buffs.beast_cleave->up() )
+    // 2026-07-27: Wildspeaker Kill Command can Beast Cleave without Kill Cleave talented.
+    if ( s->action->result_is_hit( s->result ) && s->action->sim->active_enemies > 1 && p()->hunter_pet_t::buffs.beast_cleave->up() )
     {
+      // 2026-07-27: Wildspeaker Kill Command's crit bonus is not Beast Cleaved.
+      double amount = s->result_total;
+      if ( s->result == RESULT_CRIT && s->result_crit_bonus > 0 )
+      {
+        amount /= ( 1.0 + s->result_crit_bonus ) / 2.0;
+      }
+      // 2026-07-27: Wildspeaker Kill Command cleaves for Beast Cleave's value, not Kill Cleave's.
+      amount *= o()->bugs ? p()->hunter_pet_t::buffs.beast_cleave->check_value() : o()->talents.kill_cleave->effectN( 1 ).percent();
       // Target multipliers do not replicate to secondary targets
-      const double target_da_multiplier = ( 1.0 / s->target_da_multiplier );
-      const double target_pet_multiplier = ( 1.0 / s->target_pet_multiplier );
+      amount *= ( 1.0 / s->target_da_multiplier );
+      amount *= ( 1.0 / s->target_pet_multiplier );
 
-      const double amount = s->result_total * o()->talents.kill_cleave->effectN( 1 ).percent() * target_da_multiplier * target_pet_multiplier;
       // Damage is represented as Beast Cleave
       p()->hunter_pet_t::actions.beast_cleave->execute_on_target( s->target, amount );
     }
@@ -3876,6 +3891,47 @@ void hunter_t::spawn_dire_beast( timespan_t base_duration, bool force_hound )
   sim->print_debug( "{} summoned with {} autoattacks", name, base_attacks_per_summon );
 
   trigger_huntmasters_call();
+}
+
+player_t* hunter_t::get_hydra_target( player_t* primary_target )
+{
+  if ( !talents.aspect_of_the_hydra.ok() )
+    return nullptr;
+
+  if ( sim->target_non_sleeping_list.size() < 2 )
+    return nullptr;
+
+  if ( state.aspect_of_the_hydra_target && state.aspect_of_the_hydra_target != primary_target )
+    return state.aspect_of_the_hydra_target;
+
+  player_t* candidate = nullptr;
+  hunter_td_t* candidate_td = nullptr;
+
+  // rank all enemies that are not the current primary target of the cast
+  for ( auto* t : sim->target_non_sleeping_list )
+  {
+    if ( t->is_enemy() && t != primary_target )
+    {
+      if ( !candidate )
+      {
+        candidate = t;
+        candidate_td = get_target_data( t );
+      }
+      else
+      {
+        hunter_td_t* td = get_target_data( t );
+        if ( td->hydra_priority < candidate_td->hydra_priority )
+        {
+          candidate = t;
+          candidate_td = td;
+        }
+      }
+    }
+  }
+
+  state.aspect_of_the_hydra_target = candidate;
+
+  return candidate;
 }
 
 // ==========================================================================
@@ -5376,6 +5432,7 @@ struct aimed_shot_t : public aimed_shot_base_t
   } deathblow;
 
   aimed_shot_aspect_of_the_hydra_t* aspect_of_the_hydra = nullptr;
+  player_t* hydra_target = nullptr;
   bool lock_and_loaded = false;
 
   aimed_shot_t( hunter_t* p, util::string_view options_str ) : 
@@ -5440,6 +5497,8 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   void execute() override
   {
+    hydra_target = p()->get_hydra_target( target );
+
     aimed_shot_base_t::execute();
 
     if ( rng().roll( surging_shots.chance ) )
@@ -5468,11 +5527,11 @@ struct aimed_shot_t : public aimed_shot_base_t
       p()->buffs.death_bringer->trigger();
     }
       
-    auto& tl = target_list();
-
-    // Delay these secondary shots since they can consume Moving Target or Lock and Load if either trigger off a queued cast.
-    if ( aspect_of_the_hydra && tl.size() > 1 )
-      make_event( p()->sim, 10_ms, [ this, tl ]() { aspect_of_the_hydra->execute_on_target( tl[ 1 ] ); } );
+    if ( aspect_of_the_hydra && hydra_target )
+    {
+      // Delay these secondary shots since they can consume Lock and Load if it triggers off a queued cast.
+      make_event( p()->sim, 10_ms, [ this ]() { aspect_of_the_hydra->execute_on_target( hydra_target ); } );
+    }
 
     if ( p()->talents.pact_of_the_hollow.ok() )
       for ( auto pet : p()->pets.dark_minion.active_pets() )
@@ -5836,20 +5895,7 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
   void execute() override
   {
-    hydra_target = nullptr;
-    if ( aspect_of_the_hydra )
-    {
-      auto& tl = target_list();
-      if ( tl.size() > 1 ) 
-      {
-        auto it = range::find_if( tl, [ this ]( const player_t* t ) { return t != target; } );
-        if ( it != tl.end() )
-        {
-          hydra_target = *it;
-        }
-      }
-    }
-
+    hydra_target = p()->get_hydra_target( target );
     marked_targets.clear();
 
     // 2026-07-22: Unload is a weird spell with No Scope talented. If Precise Shots is active before casting Rapid Fire, Precise Shots
@@ -7348,6 +7394,9 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
   debuffs(),
   dots()
 {
+  if ( p->talents.aspect_of_the_hydra.ok() )
+    hydra_priority = p->rng().range( INT_MAX );
+
   double outland_venom_value = p->talents.outland_venom_debuff->effectN( 1 ).percent();
   if ( p->bugs )
     outland_venom_value /= 2; // 2026-01-24: Outland Venom is only giving half of its value.
@@ -7590,6 +7639,7 @@ void hunter_t::init_spells()
 
   talents.trigger_finger                    = find_talent_spell( talent_tree::CLASS, "Trigger Finger" );
   talents.tar_trap                          = find_talent_spell( talent_tree::CLASS, "Tar Trap" );
+  talents.touch_of_grass                    = find_talent_spell( talent_tree::CLASS, "Touch of Grass" );
 
   talents.specialized_arsenal               = find_talent_spell( talent_tree::CLASS, "Specialized Arsenal" );
 
@@ -8049,6 +8099,11 @@ void hunter_t::init_base_stats()
   base.spell_power_per_intellect = 1;
 
   player_t::init_base_stats();
+
+  if ( talents.touch_of_grass.ok() )
+  {
+    resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + talents.touch_of_grass->effectN( 1 ).percent();
+  }
 }
 
 void hunter_t::create_actions()
@@ -8993,6 +9048,15 @@ void hunter_t::moving()
   // Override moving() so that it doesn't suppress auto_shot and only interrupts the few shots that cannot be used while moving.
   if ( ( executing && !executing -> usable_moving() ) || ( channeling && !channeling -> usable_moving() ) )
     player_t::interrupt();
+}
+
+void hunter_t::acquire_target( retarget_source event, player_t* context )
+{
+  player_t::acquire_target( event, context );
+
+  // When available targets change, force a re-check
+  if ( talents.aspect_of_the_hydra.ok() )
+    state.aspect_of_the_hydra_target = nullptr;
 }
 
 /* Report Extension Class

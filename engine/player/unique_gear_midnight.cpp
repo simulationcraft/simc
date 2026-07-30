@@ -3291,7 +3291,8 @@ void gebbos_bottomless_bag( special_effect_t& effect )
                                           effect.player->find_spell( 1292300 ) )
     ->add_stat_from_effect_type( A_MOD_RATING, totem_decrement )
     ->set_max_stack( totem_stacks )
-    ->set_reverse( true );
+    ->set_internal_cooldown( 0_ms ) // Handled by the special effect
+    ->set_initial_stack( totem_stacks );
 
   struct totem_drain_cb_t : public dbc_proc_callback_t
   {
@@ -3300,17 +3301,17 @@ void gebbos_bottomless_bag( special_effect_t& effect )
     totem_drain_cb_t( const special_effect_t& e, buff_t* t ) : dbc_proc_callback_t( e.player, e ), totem( t )
     {}
 
-    void execute( const spell_data_t*, player_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
-      if ( s && s->action && !s->action->background )
-        totem->decrement();
+      totem->decrement();
     }
   };
 
-  auto totem_drain = new special_effect_t( effect.player );
-  totem_drain->name_str = "brittle_torga_totem_drain";
-  totem_drain->spell_id = 1292300;
-  totem_drain->set_can_proc_from_procs( false );
+  auto totem_drain          = new special_effect_t( effect.player );
+  totem_drain->name_str     = "brittle_torga_totem_drain";
+  totem_drain->spell_id     = totem->data().id();
+  totem_drain->cooldown_    = totem->data().internal_cooldown();
+  totem_drain->proc_flags2_ = PF2_ALL_HIT;
   effect.player->special_effects.push_back( totem_drain );
 
   auto totem_drain_cb = new totem_drain_cb_t( *totem_drain, totem );
@@ -3704,6 +3705,51 @@ void vexhuls_everflowing_gland( special_effect_t& effect )
   auto cd  = effect.player->get_cooldown( effect.cooldown_name() );
 
   effect.player->register_on_kill_callback( [ cd, cdr ]( player_t* ) { cd->adjust( -cdr ); } );
+}
+
+// Knot of Writhing Serpents
+// 1293304 Driver
+//  e1: aoe damage
+//  e2: dot damage
+// 1295690 Missile
+// 1295676 Writhing Venom (aoe dmg)
+// 1295679 Writhing Venom (st dot)
+void knot_of_writhing_serpents( special_effect_t& effect )
+{
+  struct writhing_venom_t : public generic_aoe_proc_t
+  {
+    action_t* dot;
+
+    writhing_venom_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "writhing_venom", 1295676 )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+      base_multiplier *= role_mult( e );
+
+      dot = create_proc_action<generic_proc_t>( "writhing_venom_dot", e, 1295679 );
+      dot->base_td = e.driver()->effectN( 2 ).average( e ) * dot->base_tick_time / dot->dot_duration;
+      dot->base_td_multiplier *= role_mult( e );
+
+      add_child( dot );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_aoe_proc_t::impact( s );
+
+      if ( s->chain_target == 0 )
+        dot->execute_on_target( s->target );
+    }
+  };
+
+  auto missile = create_proc_action<generic_proc_t>( "writhing_venom_missile", effect, 1295690 );
+  auto damage  = create_proc_action<writhing_venom_t>( "writhing_venom", effect );
+
+  missile->add_child( damage );
+  missile->impact_action = damage;
+
+  effect.execute_action = missile;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 }  // namespace trinkets
 
@@ -4925,6 +4971,7 @@ void register_special_effects()
   register_special_effect( 1295833, trinkets::vexhuls_everflowing_gland );
   register_special_effect( 1295832, DISABLED_EFFECT );  // Vexhul's Everflowing Gland equip driver
   register_special_effect( 1291728, bite_of_zuljan::zuljins_guillotine_technique );
+  register_special_effect( 1293304, trinkets::knot_of_writhing_serpents );
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil

@@ -104,57 +104,59 @@
 
 # save="MID2_Death_Knight_Frost_Rider.simc"
 
-# deathknight="MID2_Death_Knight_Unholy_Rider"
-# spec=unholy
-# level=90
-# race=troll
-# role=attack
-# position=back
-# talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAw2MmZ2mZGjZAbmFDDZgZjhGLAYGAGzMjZAmZmxYA
-# omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_critical_power/rune_of_overload
+deathknight="MID2_Death_Knight_Unholy_Rider"
+spec=unholy
+level=90
+race=troll
+role=attack
+position=back
+talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAw2MmZ2mZGjZAbmFDDZgZjhGLAYGAGzMjZAmZmxYA
+omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_critical_power/rune_of_overload
+flask=flask_of_the_blood_knights_2
 
-# head=relentless_riders_crown,id=249970,bonus_id=40/6935/12676/12806/13335/13338/13575,gem_id=240983
-# neck=rotmires_sporeheart,id=268291,bonus_id=13786,gem_id=240908
-# shoulder=shoulderplates_of_frozen_blood,id=50234,bonus_id=12806/13577
-# back=adherents_silken_shroud,id=239656,bonus_id=8791/8960/12066/12214/12384/13622/13667/9627
-# chest=relentless_riders_cuirass,id=249973,bonus_id=13786,enchant_id=7987
-# wrist=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12066/12384/13622/12497,gem_id=240908
-# hands=relentless_riders_bonegrasps,id=249971,bonus_id=40/12675/12806/13335/13337/13574
-# waist=girdle_of_devouring_rot,id=268289,bonus_id=13786,gem_id=240908
-# legs=relentless_riders_legguards,id=249969,bonus_id=40/12676/12806/13335/13339/13575,enchant_id=8159
-# feet=greaves_of_the_unformed,id=249381,bonus_id=13355/13468/13469
-# finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant=eyes_of_the_eagle_2
-# finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant=eyes_of_the_eagle_2
-# trinket1=gaze_of_the_alnseer,id=249343,bonus_id=13654
-# trinket2=light_company_guidon,id=249344,bonus_id=13654
-# main_hand=bellamys_final_judgement,id=249277,bonus_id=13654,enchant_id=6245
+head=baleful_graveknights_casque,id=271474,bonus_id=40/12854/13335/13692/13696/13698,enchant_id=7991,content_tuning=807,redirected_base_stats=251126
+neck=aqirbane_reliquary,id=268265,bonus_id=40/13335/13668/13708/13848,gem_id=240983/240898,content_tuning=883
+shoulders=baleful_graveknights_gibbets,id=271472,bonus_id=40/12854/13335/13694/13697,enchant_id=7973,content_tuning=807,redirected_base_stats=251138
+back=adherents_silken_shroud,id=239656,bonus_id=8791/8960/12214/12384/13667/13751/13836/12497,crafted_stats=49/32,content_tuning=3615
+chest=baleful_graveknights_breastplate,id=271477,bonus_id=13690/13698/13848,enchant_id=7987,redirected_base_stats=268222
+wrists=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12214/12384/13667/13750/13751/13836/12497,gem_id=240898,crafted_stats=49/40,content_tuning=3615
+hands=baleful_graveknights_deathgrips,id=271475,bonus_id=40/12854/13335/13691/13697,content_tuning=807
+waist=girdle_of_toxic_regret,id=268259,bonus_id=13662/13750/13848,gem_id=240898
+legs=baleful_graveknights_greaves,id=271473,bonus_id=40/12854/13335/13693/13698/13846,ilevel=344,enchant_id=8159,redirected_base_stats=271878
+feet=scaled_fiends_warboots,id=268260,bonus_id=6652/12851/12854/13335/13662,enchant_id=8019
+finger1=vile_alchemists_band,id=268249,bonus_id=12854/13335/13668,gem_id=240898,enchant_id=7967,content_tuning=883
+finger2=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240898,enchant_id=7967
+trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=40/13335/13848
+trinket2=gebbos_bottomless_bag,id=270164,bonus_id=40/12854/13335
+main_hand=mazeroa_warlords_fury,id=268213,bonus_id=40/13335/13848,enchant_id=6245
 
-# save=MID2_Death_Knight_Unholy.simc
+save=MID2_Death_Knight_Unholy.simc
 
-# deathknight="MID2_Death_Knight_Unholy_San'layn"
-# spec=unholy
-# level=90
-# race=troll
-# role=attack
-# position=back
-# talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAw2MmZ2mZGjZMwAzYRjlFAbTsBgZAYMzMmBzMYGjB
-# omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_critical_power/rune_of_overload
+deathknight="MID2_Death_Knight_Unholy_San'layn"
+spec=unholy
+level=90
+race=troll
+role=attack
+position=back
+talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAw2MmZ2mZGjZMwAzYRjlFAbTsBgZAYMzMmBzMYGjB
+omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_critical_power/rune_of_overload
+flask=flask_of_the_blood_knights_2
 
-# head=relentless_riders_crown,id=249970,bonus_id=40/6935/12676/12806/13335/13338/13575,gem_id=240983
-# neck=rotmires_sporeheart,id=268291,bonus_id=13786,gem_id=240908
-# shoulder=shoulderplates_of_frozen_blood,id=50234,bonus_id=12806/13577
-# back=adherents_silken_shroud,id=239656,bonus_id=8791/8960/12066/12214/12384/13622/13667/9627
-# chest=relentless_riders_cuirass,id=249973,bonus_id=13786,enchant_id=7987
-# wrist=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12066/12384/13622/12497,gem_id=240908
-# hands=relentless_riders_bonegrasps,id=249971,bonus_id=40/12675/12806/13335/13337/13574
-# waist=girdle_of_devouring_rot,id=268289,bonus_id=13786,gem_id=240908
-# legs=relentless_riders_legguards,id=249969,bonus_id=40/12676/12806/13335/13339/13575,enchant_id=8159
-# feet=greaves_of_the_unformed,id=249381,bonus_id=13355/13468/13469
-# finger1=platinum_star_band,id=193708,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant=eyes_of_the_eagle_2
-# finger2=sindorei_band_of_hope,id=249919,bonus_id=6935/13355/13468/13469,gem_id=240908,enchant=eyes_of_the_eagle_2
-# trinket1=gaze_of_the_alnseer,id=249343,bonus_id=13654
-# trinket2=light_company_guidon,id=249344,bonus_id=13654
-# main_hand=bellamys_final_judgement,id=249277,bonus_id=13654,enchant_id=6245
+head=baleful_graveknights_casque,id=271474,bonus_id=40/12854/13335/13692/13696/13698,enchant_id=7991,content_tuning=807,redirected_base_stats=251126
+neck=aqirbane_reliquary,id=268265,bonus_id=40/13335/13668/13708/13848,gem_id=240983/240898,content_tuning=883
+shoulders=baleful_graveknights_gibbets,id=271472,bonus_id=40/12854/13335/13694/13697,enchant_id=7973,content_tuning=807,redirected_base_stats=251138
+back=adherents_silken_shroud,id=239656,bonus_id=8791/8960/12214/12384/13667/13751/13836/12497,crafted_stats=49/32,content_tuning=3615
+chest=baleful_graveknights_breastplate,id=271477,bonus_id=13690/13698/13848,enchant_id=7987,redirected_base_stats=268222
+wrists=spellbreakers_bracers,id=237834,bonus_id=8791/8960/12214/12384/13667/13750/13751/13836/12497,gem_id=240898,crafted_stats=49/40,content_tuning=3615
+hands=baleful_graveknights_deathgrips,id=271475,bonus_id=40/12854/13335/13691/13697,content_tuning=807
+waist=girdle_of_toxic_regret,id=268259,bonus_id=13662/13750/13848,gem_id=240898
+legs=baleful_graveknights_greaves,id=271473,bonus_id=40/12854/13335/13693/13698/13846,ilevel=344,enchant_id=8159,redirected_base_stats=271878
+feet=scaled_fiends_warboots,id=268260,bonus_id=6652/12851/12854/13335/13662,enchant_id=8019
+finger1=vile_alchemists_band,id=268249,bonus_id=12854/13335/13668,gem_id=240898,enchant_id=7967,content_tuning=883
+finger2=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240898,enchant_id=7967
+trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=40/13335/13848
+trinket2=gebbos_bottomless_bag,id=270164,bonus_id=40/12854/13335
+main_hand=mazeroa_warlords_fury,id=268213,bonus_id=40/13335/13848,enchant_id=6245
 
 
-# save=MID2_Death_Knight_Unholy_San'layn.simc
+save=MID2_Death_Knight_Unholy_San'layn.simc

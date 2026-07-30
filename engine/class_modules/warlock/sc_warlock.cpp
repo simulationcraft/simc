@@ -16,6 +16,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
     soc_threshold( 0.0 ),
     ua_regular_stacks( 0 ),
     ua_seed_stacks( 0 ),
+    ua_stack_drop_events(),
     warlock( p )
 {
   // Shared
@@ -165,11 +166,29 @@ void warlock_td_t::reset_ua_stack_tracking()
 {
   ua_regular_stacks = 0;
   ua_seed_stacks = 0;
+  ua_stack_drop_events.clear();
 }
 
 double warlock_td_t::ua_calculate_damage_stacks() const
 {
   return as<double>( ua_regular_stacks ) + as<double>( ua_seed_stacks ) * warlock.tier.wl_affliction_12_1_class_set_4pc->effectN( 1 ).percent();
+}
+
+timespan_t warlock_td_t::ua_stack_remains( int min_stacks ) const
+{
+  assert( min_stacks > 0 );
+
+  const int current_stacks = dots.unstable_affliction->current_stack();
+  assert( current_stacks >= 0 );
+
+  if ( current_stacks < min_stacks || dots.unstable_affliction->remains() == 0_ms )
+    return 0_ms;
+
+  const size_t expiration_index = as<size_t>( current_stacks - min_stacks );
+  assert( expiration_index < ua_stack_drop_events.size() && "UA stack count exceeds tracked stack expiration events" );
+
+  // UA stack events are stored in application order and all stacks have the same duration, so application order is also expiration order
+  return ua_stack_drop_events[ expiration_index ]->remains();
 }
 
 void warlock_td_t::target_demise()
@@ -1050,6 +1069,50 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
   }
 
   return player_t::create_expression( name_str );
+}
+
+std::unique_ptr<expr_t> warlock_t::create_action_expression( action_t& action, util::string_view name_str )
+{
+  auto splits = util::string_split<util::string_view>( name_str, ".", false );
+
+  if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "dot" ) && util::str_compare_ci( splits[ 1 ], "unstable_affliction" ) && util::str_compare_ci( splits[ 2 ], "stack_remains" ) )
+  {
+    const bool use_current_stacks = splits.size() == 4 && util::str_compare_ci( splits[ 3 ], "current" );
+
+    if ( splits.size() != 4 || util::ends_with( name_str, '.' ) || splits[ 3 ].empty() || ( !use_current_stacks && !util::is_number( splits[ 3 ] ) ) )
+      throw sc_invalid_apl_argument( fmt::format( "Invalid expression '{}'. Expected 'dot.unstable_affliction.{}.N', where N is a positive integer or 'current'.", name_str, splits[ 2 ] ) );
+
+    int min_stacks = 0;
+    if ( !use_current_stacks )
+    {
+      try
+      {
+        min_stacks = util::to_int( splits[ 3 ] );
+      }
+      catch ( const std::exception& )
+      {
+        throw sc_invalid_apl_argument( fmt::format( "Invalid expression '{}'. Expected 'dot.unstable_affliction.{}.N', where N is a positive integer or 'current'.", name_str, splits[ 2 ] ) );
+      }
+
+      if ( min_stacks <= 0 )
+        throw sc_invalid_apl_argument( fmt::format( "Invalid expression '{}'. Expected 'dot.unstable_affliction.{}.N', where N is a positive integer or 'current'.", name_str, splits[ 2 ] ) );
+
+      const int max_stacks = as<int>( talents.unstable_affliction->max_stacks() );
+      if ( max_stacks > 0 && min_stacks > max_stacks )
+        throw sc_invalid_apl_argument( fmt::format( "Invalid stack amount in '{}'. N must be between 1 and {}.", name_str, max_stacks ) );
+    }
+
+    return make_fn_expr( name_str, [ this, &action, min_stacks, use_current_stacks ] {
+      auto tdata = get_target_data( action.get_expression_target() );
+      const int threshold = use_current_stacks ? tdata->dots.unstable_affliction->current_stack() : min_stacks;
+      if ( threshold == 0 )
+        return 0_ms;
+
+      return tdata->ua_stack_remains( threshold );
+    } );
+  }
+
+  return player_t::create_action_expression( action, name_str );
 }
 
 /* ----------------------------------------------------------

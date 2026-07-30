@@ -1304,6 +1304,9 @@ std::string item_t::encoded_item() const
   if ( !option_content_tuning_id.empty() )
     s << ",content_tuning=" << option_content_tuning_id;
 
+  if ( parsed.redirect_item_id != 0 )
+    s << ",redirected_base_stats=" << parsed.redirect_item_id;
+
   return s.str();
 }
 
