@@ -4114,16 +4114,24 @@ void rotmires_sporeheart( special_effect_t& effect )
 
 void venomcursed( special_effect_t& effect )
 {
-  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
-                  ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
-                  ->add_stat_from_effect( 2, effect.driver()->effectN( 2 ).average( effect ) );
+  stat_buff_t* buff =
+      debug_cast<stat_buff_t*>( buff_t::find( effect.player, util::tokenize_fn( effect.trigger()->name_cstr() ) ) );
 
-  if ( find_special_effect( effect.player, effect.driver()->id() ) )
-    return;
+  bool do_init = false;
+  if ( !buff )
+  {
+    buff    = create_buff<stat_buff_t>( effect.player, effect.trigger() );
+    do_init = true;
+  }
 
-  effect.custom_buff = buff;
+  buff->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
+      ->add_stat_from_effect( 2, effect.driver()->effectN( 2 ).average( effect ) );
 
-  new dbc_proc_callback_t( effect.player, effect );
+  if ( do_init )
+  {
+    effect.custom_buff = buff;
+    new dbc_proc_callback_t( effect.player, effect );
+  }
 }
 
 }  // namespace armors
