@@ -3636,6 +3636,51 @@ void vashniks_sanguine_rancor( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Knot of Writhing Serpents
+// 1293304 Driver
+//  e1: aoe damage
+//  e2: dot damage
+// 1295690 Missile
+// 1295676 Writhing Venom (aoe dmg)
+// 1295679 Writhing Venom (st dot)
+void knot_of_writhing_serpents( special_effect_t& effect )
+{
+  struct writhing_venom_t : public generic_aoe_proc_t
+  {
+    action_t* dot;
+
+    writhing_venom_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "writhing_venom", 1295676 )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+      base_multiplier *= role_mult( e );
+
+      dot = create_proc_action<generic_proc_t>( "writhing_venom_dot", e, 1295679 );
+      dot->base_td = e.driver()->effectN( 2 ).average( e ) * dot->base_tick_time / dot->dot_duration;
+      dot->base_td_multiplier *= role_mult( e );
+
+      add_child( dot );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_aoe_proc_t::impact( s );
+
+      if ( s->chain_target == 0 )
+        dot->execute_on_target( s->target );
+    }
+  };
+
+  auto missile = create_proc_action<generic_proc_t>( "writhing_venom_missile", effect, 1295690 );
+  auto damage  = create_proc_action<writhing_venom_t>( "writhing_venom", effect );
+
+  missile->add_child( damage );
+  missile->impact_action = damage;
+
+  effect.execute_action = missile;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -4854,6 +4899,7 @@ void register_special_effects()
   register_special_effect( 1295884, DISABLED_EFFECT );  // Hex Lord's Dooming Idol equip driver
   register_special_effect( 1295553, trinkets::vashniks_sanguine_rancor );
   register_special_effect( 1291728, bite_of_zuljan::zuljins_guillotine_technique );
+  register_special_effect( 1293304, trinkets::knot_of_writhing_serpents );
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
