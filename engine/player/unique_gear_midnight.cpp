@@ -4114,9 +4114,12 @@ void rotmires_sporeheart( special_effect_t& effect )
 
 void venomcursed( special_effect_t& effect )
 {
-  auto buff       = create_buff<stat_buff_t>( effect.player, effect.trigger() )
-    ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
-    ->add_stat_from_effect( 2, effect.driver()->effectN( 2 ).average( effect ) );
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+                  ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
+                  ->add_stat_from_effect( 2, effect.driver()->effectN( 2 ).average( effect ) );
+
+  if ( find_special_effect( effect.player, effect.driver()->id() ) )
+    return;
 
   effect.custom_buff = buff;
 
