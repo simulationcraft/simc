@@ -1004,6 +1004,7 @@ class SpellDataGenerator(DataGenerator):
     _spell_id_list = [
         (
          134735,                    # PvP Rules Enabled
+         154797, 154797,            # Touch of Elune (Night Elf racial) day/night spell
          109871, 109869,            # No'Kaled the Elements of Death - LFR
          107785, 107789,            # No'Kaled the Elements of Death - Normal
          109872, 109870,            # No'Kaled the Elements of Death - Heroic
@@ -1081,6 +1082,8 @@ class SpellDataGenerator(DataGenerator):
          268954, 268955, 268953,
          # Mag'har Orc Ancestral Call buffs
          274739, 274740, 274741, 274742,
+         # Dark Iron Dwarf Fireblood buff display spell
+         273104,
          # 8.0 Galley Banquet food buffs
          259448, 259449, 259452, 259453,
          # 8.0 Bountiful Captain's Feast food buffs
@@ -1535,6 +1538,10 @@ class SpellDataGenerator(DataGenerator):
          1263768, # Lightspire Core
          1263614, # Wraps of Cosmic Madness
          1255685, 1255687, 1255688, # crucible of erratic energies
+         1292299, 1292300, 1306870, 1308012, 1308013, 1308014, # Gebbo's Bottomless Bag
+         # 12.1
+         1305376, # Voracious Heart of Ula'tek
+         1266182, 1266184, 1266197, # Lost Idol of the Hash'ey
         ),
 
         # Warrior:
@@ -1644,6 +1651,8 @@ class SpellDataGenerator(DataGenerator):
             ( 431522, 0),           # Dawnlight Buff
             ( 406957, 0),           # Divine Toll Judgment
             ( 402916, 0),           # Righteous Cause Buff
+            ( 1268810, 0),          # Vanguard
+            ( 1305230, 0),          # Divine Power
         ),
 
         # Hunter:
@@ -1708,6 +1717,9 @@ class SpellDataGenerator(DataGenerator):
           ( 1250068, 0 ), # Stampede (Pack Leader 4pc buff)
           ( 1258344, 0 ), # Stampede (Pack Leader)
           ( 1264357, 0 ), # Shoot (Dark Minion)
+          ( 1302277, 2 ), # Death Bringer Buff
+          ( 1262390, 2 ), # Sticky Bomb (Explosive Shot)
+          ( 1262391, 2 ), # Sticky Bomb (Explosive Shot)
         ),
 
         # Rogue:
@@ -2014,6 +2026,8 @@ class SpellDataGenerator(DataGenerator):
           ( 1278150, 0 ), # Lesser Ghoul Sweeping Claws
           ( 1277098, 0 ), # Lesser Ghoul
           ( 1282570, 0 ), # Forbidden Ritual
+          ( 1292072, 0 ), # Lord of the Dead Summon
+          ( 1294026, 0 ), # Summon Army Ghoul
         ),
 
         # Shaman:
@@ -4065,6 +4079,16 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'midnight_season_1',
             'bonuses': [ 1978, 1979, 1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990 ],
             'tier'   : 'MID1'
+        },
+        {
+            'name'   : 'midnight_season_2',
+            'bonuses': [ 2055, 2056, 2057, 2058, 2059, 2060, 2061, 2062, 2063, 2064, 2065, 2066, 2067 ],
+            'tier'   : 'MID2'
+        },
+        {
+            'name'   : 'bite_of_zuljan',
+            'bonuses': [ 2070 ],
+            'tier'   : 'MID_BOZ'
         }
     ]
 
@@ -5205,7 +5229,7 @@ class ItemScalingConfigGenerator(DataGenerator):
             length = len(data) if data else 1)
 
         for entry in data:
-            fields = entry.field('id', 'item_offset_curve_id', 'item_level', 'player_level')
+            fields = entry.field('id', 'item_offset_curve_id', 'item_level', 'player_level', 'squish_era_id')
             self.output_record(fields)
 
         self.output_footer()
@@ -5223,6 +5247,26 @@ class ItemOffsetCurveGenerator(DataGenerator):
         for entry in data:
             fields = entry.field('id', 'id_curve', 'offset')
             self.output_record(fields)
+
+        self.output_footer()
+
+class ContentTuningGenerator(DataGenerator):
+    def generate(self, data = None):
+        content_tuning_db = self.db('ContentTuning')
+        data = sorted(content_tuning_db.values(), key=lambda e: e.id)
+
+        self.output_header(
+            header = 'Content Tuning data',
+            type = 'content_tuning_data_t',
+            array = 'content_tuning',
+            length = len(data) if data else 1)
+
+        for entry in data:
+            record = entry.field('id', 'flags', 'id_expansion', 'min_level_squish', 'max_level_squish', 'i_level')
+            self.output_record(record)
+
+        if not data:
+            self.output_record('')
 
         self.output_footer()
 

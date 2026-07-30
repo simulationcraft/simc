@@ -5,7 +5,7 @@ level=90
 race=mechagnome
 role=tank
 position=front
-talents=CoPAAAAAAAAAAAAAAAAAAAAAAwYWGzMmZmZmhZbmZmmZxMjxMGAAAAYmZmZGmZGzMjBAMzMzAAAYMbDMglglhJwwCgZYGAAzMAgB
+talents=CoPAAAAAAAAAAAAAAAAAAAAAAwYWmZmxMmZmhZZmZmmZxMjxMAAAAAzMzMzwMDzYMDAjZmZGAAgxsNwAWCWGmADLAmxMAAMzAMYA
 
 # Default consumables
 potion=draught_of_rampant_abandon_2
@@ -92,8 +92,8 @@ hands=voidclaw_gauntlets,id=151332,ilevel=289
 waist=relentless_riders_chain,id=249967,ilevel=289,gem_id=240902
 legs=relentless_riders_legguards,id=249969,ilevel=289,enchant=forest_hunters_armor_kit_2
 feet=sabatons_of_furious_revenge,id=251091,ilevel=289,enchant=enchant_boots__farstriders_hunt_2
-finger1=platinum_star_band,id=193708,ilevel=289,gem_id=240902/240902,enchant=enchant_ring__natures_fury_2
-finger2=sindorei_band_of_hope,id=249919,ilevel=289,gem_id=240902/240902,enchant=enchant_ring__natures_fury_2
+finger1=platinum_star_band,id=193708,ilevel=289,gem_id=240902/240902,enchant=enchant_ring__eyes_of_the_eagle_2
+finger2=sindorei_band_of_hope,id=249919,ilevel=289,gem_id=240902/240902,enchant=enchant_ring__eyes_of_the_eagle_2
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
 trinket2=dragon_games_equipment,id=193719,ilevel=289
 main_hand=liferippers_cutlass,id=251168,ilevel=289,enchant=rune_of_sanguination
@@ -102,7 +102,7 @@ main_hand=liferippers_cutlass,id=251168,ilevel=289,enchant=rune_of_sanguination
 # gear_ilvl=288.47
 # gear_strength=1243
 # gear_stamina=17604
-# gear_crit_rating=938
+# gear_crit_rating=880
 # gear_haste_rating=649
 # gear_mastery_rating=798
 # gear_versatility_rating=245

@@ -1183,7 +1183,7 @@ bool special_effect::usable_proc( const special_effect_t& effect )
   {
     if ( effect.item )
     {
-      effect.item->sim->print_debug( "Effect '{}' no proc flags / trigger type", effect.name() );
+      effect.item->sim->print_debug( "'{}' no proc flags / trigger type", effect );
     }
     return false;
   }
@@ -1193,7 +1193,7 @@ bool special_effect::usable_proc( const special_effect_t& effect )
   {
     if ( effect.item )
     {
-      effect.item->sim->print_debug( "Effect '{}' No RPPM / PPM / Proc chance", effect.name() );
+      effect.item->sim->print_debug( "'{}' No RPPM / PPM / Proc chance", effect );
     }
     return false;
   }
@@ -1203,7 +1203,7 @@ bool special_effect::usable_proc( const special_effect_t& effect )
   {
     if ( effect.item )
     {
-      effect.item->sim->print_debug( "Effect '{}' No constructible buff or action", effect.name() );
+      effect.item->sim->print_debug( "'{}' No constructible buff or action", effect );
     }
     return false;
   }

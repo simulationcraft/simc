@@ -199,6 +199,9 @@ public:
   /// Used with direct damage effects that trigger periodic proc flags
   bool treat_as_periodic;
 
+  /// Unknown to what extent this is sufficient to be treated as aoe as not on interactions treat it as such
+  bool treat_as_area_effect;
+
   /// Used with psudo-DoT effects, tells us to ignore armor even if the physical damage is direct
   bool ignores_armor;
 
@@ -274,7 +277,7 @@ public:
   bool round_base_dmg;
 
   /// Used with tick_action, tells tick_action to update state on every tick.
-  bool dynamic_tick_action;
+  dynamic_tick_action_e dynamic_tick_action;
 
   /// Track time spent with fully charged cooldown before the action is used.
   bool track_cd_waste;
@@ -817,12 +820,6 @@ public:
   virtual double glance_chance( int /* delta_level */ ) const
   { return 0; }
 
-  virtual double block_chance( action_state_t* /* state */ ) const
-  { return 0; }
-
-  virtual double crit_block_chance( action_state_t* /* state */  ) const
-  { return 0; }
-
   virtual double total_crit_bonus( const action_state_t* /* state */ ) const; // Check if we want to move this into the stateless system.
 
   virtual int num_targets() const;
@@ -918,7 +915,7 @@ public:
 
   virtual double composite_total_spell_power() const;
 
-  virtual double composite_target_armor( player_t* ) const;
+  virtual double composite_target_armor( const action_state_t* ) const;
 
   virtual double composite_target_crit_chance( player_t* ) const;
 
@@ -976,9 +973,9 @@ public:
   virtual double composite_aoe_multiplier( const action_state_t* ) const
   { return 1.0; }
 
-  virtual double composite_target_mitigation( player_t* t, school_e s ) const;
+  virtual double composite_target_mitigation( const action_state_t*, bool direct ) const;
 
-  virtual double composite_player_critical_multiplier( const action_state_t* s ) const;
+  virtual double composite_player_critical_multiplier( const action_state_t* ) const;
 
   /// Action proc type, needed for dynamic aoe stuff and such.
   virtual proc_types proc_type() const

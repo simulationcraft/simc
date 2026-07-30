@@ -54,7 +54,7 @@ struct parsed_item_data_t : dbc_item_data_t
     bonus_level = 0;
   }
 
-  void init( const dbc_item_data_t& raw, const dbc_t& dbc );
+  void init( const dbc_item_data_t& raw, const dbc_t& dbc, const dbc_item_data_t* redirect_item = nullptr );
 
   size_t add_effect( unsigned spell_id, int type );
   size_t add_effect( const item_effect_t& effect );
@@ -107,7 +107,7 @@ struct item_t
     std::array<int, MAX_GEM_SLOTS>                   gem_actual_ilevel;
     std::array<int, MAX_GEM_SLOTS>                   gem_color;
     std::vector<int>                                 bonus_id;
-    std::vector<stat_pair_t>                         gem_stats, meta_gem_stats, socket_bonus_stats;
+    std::vector<stat_pair_t>                         gem_stats, socket_bonus_stats;
     std::string                                      encoded_enchant;
     std::vector<stat_pair_t>                         enchant_stats;
     std::vector<stat_pair_t>                         temp_enchant_stats;
@@ -121,7 +121,9 @@ struct item_t
     std::vector<unsigned>                            azerite_ids;
     std::vector<int>                                 crafted_stat_mod;
     unsigned                                         titan_disc_driver_id;
+    unsigned                                         content_tuning_id;
     bool                                             has_midnight_scaling;
+    unsigned                                         redirect_item_id;
 
     // Priority state tracking for item bonuses
     int base_level_priority;
@@ -167,6 +169,7 @@ struct item_t
   std::string option_azerite_level_str;
   std::string option_crafted_stat_str;
   std::string option_titan_disc_driver_id;
+  std::string option_content_tuning_id;
   double option_initial_cd;
 
   // Extracted data

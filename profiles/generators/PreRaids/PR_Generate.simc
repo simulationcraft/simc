@@ -11,10 +11,10 @@
 # * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats if possible.
 
 # Death Knight
-# PR_Generate_Death_Knight.simc
+# PR_Generate_Deathknight.simc
 
 # Demon Hunter
-# PR_Generate_Demon_Hunter.simc
+# PR_Generate_Demonhunter.simc
 
 # Druid
 # PR_Generate_Druid.simc

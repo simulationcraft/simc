@@ -9,7 +9,6 @@
 #include "class_modules/class_module.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
-#include "gsl-lite/gsl-lite.hpp"
 #include "interfaces/bcp_api.hpp"
 #include "interfaces/sc_http.hpp"
 #include "player/pet.hpp"
@@ -1466,8 +1465,8 @@ sim_t::sim_t()
     scale_to_itemlevel( -1 ),
     dungeon_route_smart_targeting( true ),
     dungeon_route_simple_dps_members( 0 ),
-    dungeon_route_key_level( 0 ),
     dungeon_route_pct_hp( 0 ),
+    dungeon_route_key_level( 0 ),
     challenge_mode( false ),
     scale_itemlevel_down_only( false ),
     disable_set_bonuses( false ),
@@ -1513,6 +1512,7 @@ sim_t::sim_t()
     analyze_time(),
     report_iteration_data( 0.025 ),
     min_report_iteration_data( -1 ),
+    report_strict_iteration_data( false ),
     report_progress( 1 ),
     bloodlust_percent( 0 ),
     bloodlust_time( 0_ms ),
@@ -1525,6 +1525,7 @@ sim_t::sim_t()
     report_merged_stats( "dps,dpspct" ),
     full_damage_sources_chart( false ),
     report_all_variables( false ),
+    collect_action_sequence( true ),
     report_rng( 0 ),
     hosted_html( 0 ),
     offline( 0 ),
@@ -1550,6 +1551,10 @@ sim_t::sim_t()
     count_overheal_as_heal( false ),
     scaling_normalized( 1.0 ),
     merge_enemy_priority_dmg( false ),
+    profileset_controller_factory(
+        { { "set_bonus_enabled", profileset_controller::create_fn_pair<set_bonus_enabled_t>() } } ),
+    profileset_controller(),
+    profileset_controller_data(),
     // Multi-Threading
     threads( 0 ),
     thread_index( 0 ),
@@ -1576,7 +1581,8 @@ sim_t::sim_t()
     profileset_enabled( false ),
     profileset_work_threads( 0 ),
     profileset_init_threads( 1 ),
-    profilesets( std::make_unique<profileset::profilesets_t>() )
+    profilesets( std::make_unique<profileset::profilesets_t>() ),
+    profileset_name()
 {
   item_db_sources.assign( std::begin( default_item_db_sources ), std::end( default_item_db_sources ) );
 
@@ -1589,9 +1595,12 @@ sim_t::sim_t()
   profileset::create_options( this );
 }
 
-sim_t::sim_t( sim_t* p, int index ) : sim_t()
+sim_t::sim_t( sim_t* p, int index, std::string_view profileset_name )
+  : sim_t()
 {
   assert( p );
+
+  this->profileset_name = profileset_name;
 
   parent = p;
   thread_index = index;
@@ -1616,9 +1625,12 @@ sim_t::sim_t( sim_t* p, int index ) : sim_t()
   parent -> add_relative( this );
 }
 
-sim_t::sim_t( sim_t* p, int index, sim_control_t* control ) : sim_t()
+sim_t::sim_t( sim_t* p, int index, sim_control_t* control, std::string_view profileset_name )
+  : sim_t()
 {
   assert( p && control );
+
+  this->profileset_name = profileset_name;
 
   parent = p;
   thread_index = index;
@@ -1937,7 +1949,8 @@ void sim_t::combat_begin()
     make_event<bloodlust_check_t>( *this, *this, timespan_t::from_seconds( 0.0 ) );
   }
 
-  if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
+  // Keep droute from creating an end event, it will end itself after the last pull ends
+  if ( ( fixed_time || target -> resources.base[ RESOURCE_HEALTH ] == 0 ) && fight_style != FIGHT_STYLE_DUNGEON_ROUTE )
   {
     make_event<sim_end_event_t>( *this, *this, expected_iteration_time );
     target -> death_pct = enemy_death_pct;
@@ -2081,12 +2094,13 @@ void sim_t::datacollection_end()
   total_absorb.add( iteration_absorb );
   raid_aps.add( current_time() != timespan_t::zero() ? iteration_absorb / current_time().total_seconds() : 0 );
 
-  if ( deterministic && report_iteration_data > 0 && current_iteration > 0 &&
+  if ( deterministic && report_iteration_data > 0 && ( iterations == 1 || current_iteration > 0 ) &&
        current_time() > timespan_t::zero() )
   {
     // TODO: Metric should be selectable
-    iteration_data_entry_t entry( iteration_dmg / current_time().total_seconds(),
-        current_time().total_seconds(), seed, current_iteration );
+    iteration_data_entry_t entry( iteration_dmg / current_time().total_seconds(), current_time().total_seconds(), seed,
+                                  current_iteration, thread_index, single_actor_batch ? as<int>( current_index ) : -1 );
+
     for ( auto* t : target_list )
     {
        // Once we start hitting adds (instead of real enemies), break out as those don't have real
@@ -2347,6 +2361,10 @@ void sim_t::init_fight_style()
       fixed_time = false;
       // Bloodlust is handled by an option on each pull raid event.
       overrides.bloodlust = 0;
+      // Only use for this should be setting the safeguard event (max_time * 2). As long as Blizzard remains sane and tunes around a typical dungeon
+      // taking about 30 minutes to complete, a safeguard of 1.5 hours should be a safe point to assume something has gone wrong in the sim, either the 
+      // input needs to be checked or something got stuck.
+      max_time = 45_min;
       break;
 
     case FIGHT_STYLE_CLEAVE_ADD:
@@ -2483,10 +2501,15 @@ void sim_t::init_parties()
 /// Initialize actors
 void sim_t::init_actors()
 {
-  if ( debug )
-  {
-    out_debug.printf( "Initializing actors." );
-  }
+  // sort initializers by priority
+  std::stable_sort( actor_initializer.begin(), actor_initializer.end(), []( const auto& a, const auto& b ) {
+    auto a_prio = std::get<int>( a );
+    auto b_prio = std::get<int>( b );
+    assert( a_prio != b_prio || std::get<std::string>( a ) != std::get<std::string>( b ) );
+    return a_prio == b_prio ? std::get<std::string>( a ) < std::get<std::string>( b ) : a_prio < b_prio;
+  } );
+
+  print_debug( "Initializing actors." );
 
   for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
   {
@@ -2503,8 +2526,7 @@ void sim_t::init_actors()
     init_actor( target_list[ i ] );
   }
 
-  if ( debug )
-    out_debug.printf( "Initializing Players." );
+  print_debug( "Initializing Players." );
 
   if ( decorated_tooltips == -1 )
     decorated_tooltips = 1;
@@ -2546,121 +2568,27 @@ void sim_t::init_actors()
 
 // sim_t::init_actor ========================================================
 
-// This method handles the bulk of player initialization. Order is pretty
-// critical here. Called in sim_t::init()
 void sim_t::init_actor( player_t* p )
 {
   try
   {
-    // initialize class/enemy modules
+    // Initialize class/enemy modules
     for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
-    {
-      const module_t* m = module_t::get( i );
-      if ( m )
-        m->init( p );
-    }
+      if ( auto m = module_t::get( i ) )
+       m->init( p );
 
+    // Clear APL for default actions
     if ( default_actions && !p->is_pet() )
     {
       p->clear_action_priority_lists();
       p->action_list_str.clear();
     }
 
-    p->init();
-    p->initialized = true;
-
-    // This next section handles all the ugly details of initialization. Ideally, each of these
-    // init_* methods will eventually return a bool to indicate success or failure, from which
-    // we can either continue or halt initialization.
-
-    p->init_target();
-
-    // Initialize player characteristics
-    p->init_race();
-    p->init_talents();
-
-    p->replace_spells();
-    p->init_position();
-    p->init_professions();
-
-    // Initialize each actor's items, construct gear information & stats
-    p->init_items();
-
-    // Must be done after init_items (processes item options, so we know selected azerite powers in
-    // each item), and before init_spells (class modules "find_azerite_spell" in these).
-    p->init_azerite();
-
-    // Main spell looksup. Populate class/spec/hero talents & spells.
-    p->init_spells();
-
-    // First-phase creation of special effects from various sources. Needed to be able to create actions (APLs, really)
-    // based on the presence of special effects on items. Certain effects, such as effects that modify base stats, may
-    // be flagged to have their custom initialization run on creation.
-    p->create_special_effects();
-
-    // Initialize stats from DBC. Base stats can be modified until init_initial_stats().
-    p->init_base_stats();
-
-    // Buffs are created before actions, as typically action constructors tends to be more customized than buff
-    // constructors. This allow actions to reference buff validity during instantiation, but the vice versa is not
-    // possible.
-    p->create_buffs();
-
-    // Currently this only holds leech_t.
-    p->init_background_actions();
-
-    // First, validate the actor and create all the action objects and set up action lists properly.
-    // If actor is not valid, set quiet and skip action creation.
-    if ( p->validate_actor() )
+    // Use index loop to allow initializers to add more initializers
+    for ( size_t i = 0; i < actor_initializer.size(); ++i )
     {
-      p->create_actions();
+      std::get<1>( actor_initializer[ i ] )( p );
     }
-#ifdef NDBEBUG
-    else
-    {
-      quiet = true;
-    }
-  #endif
-
-    // More initilization of class modules. Needed to create shared actions provided by a class.
-    for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
-    {
-      const module_t* m = module_t::get( i );
-      if ( m )
-        m->create_actions( p );
-    }
-
-    // Create persistent actors from dynamic spawners
-    spawner::create_persistent_actors( *p );
-
-    // Create all actor pets before special effects get initialized. This ensures that we can use
-    // stuff like the presence of an action (created with create_actions()) to determine if a pet
-    // needs to be created or not. Similarly, talent, spec, and item based qualifiers would work.
-    p->create_pets();
-
-    // Second-phase initialize all special effects and register them to actors
-    p->init_special_effects();
-
-    // Finally, initialize all action objects
-    p->init_actions();
-
-    // Once all transient properties are initialized (e.g., base stats, spells, special effects,
-    // items), initialize the initial stats of the actor. Do not modify base stats after this call.
-    p->init_initial_stats();
-
-    // And once initial stats are initialized, derive the passive defensive properties of the actor.
-    p->init_defense();
-
-    p->init_scaling();
-    p->init_gains();
-    p->init_procs();
-    p->init_uptimes();
-    p->init_benefits();
-    p->init_rng();
-    p->init_stats();
-    p->init_distance_targeting();
-    p->init_absorb_priority();
-    p->init_assessors();
   }
   catch ( const std::exception& )
   {
@@ -2708,6 +2636,7 @@ void sim_t::init()
   event_mgr.init();
 
   unique_gear::register_target_data_initializers( this );
+  register_actor_initializers();
 
   // Seed RNG
   if ( seed == 0 )
@@ -2972,6 +2901,22 @@ void sim_t::init()
   }
 
   init_mutex.lock();
+
+  if ( !parent && !profileset_controller_options.empty() && !profileset_map.empty() )
+  {
+    for ( const auto& [ key, values ] : profileset_controller_options )
+    {
+      if ( profileset_controller_t::controller_exists( this, key ) )
+        for ( const auto& value : values )
+          profileset_controller_data.emplace_back( key, value );
+      else
+        throw sc_invalid_sim_argument( fmt::format( "Unknown profileset controller option with name '{}'.", key ) );
+    }
+  }
+  if ( parent && profileset_enabled )
+    for ( auto& profileset_controller_datum : parent->profileset_controller_data )
+      profileset_controller_datum.construct_controller( this );
+
   initialized = true;
   init_mutex.unlock();
 
@@ -2981,6 +2926,100 @@ void sim_t::init()
   {
     throw std::runtime_error( fmt::format( "Canceled ({})", thread_index ) );
   }
+}
+
+// sim_t::register_actor_initializers() =====================================
+
+void sim_t::register_actor_initializers()
+{
+  // add default initializers
+  print_debug( "Registering actor initializers." );
+
+  register_actor_initializer( INIT_ACTOR_INIT, &player_t::init, "init" );
+  register_actor_initializer( INIT_ACTOR_INIT + 10, []( player_t* p ) { p->initialized = true; } );
+
+  // Initialize player properties
+  register_actor_initializer( INIT_ACTOR_PROPERTIES + 5, &player_t::init_race, "race" );
+  register_actor_initializer( INIT_ACTOR_PROPERTIES + 10, &player_t::init_position, "position" );
+  register_actor_initializer( INIT_ACTOR_PROPERTIES + 15, &player_t::init_target, "target" );
+  register_actor_initializer( INIT_ACTOR_PROPERTIES + 20, &player_t::init_professions, "professions" );
+
+  // Initialize talents before items, as some item options like temporary enchant can utilize expressions
+  register_actor_initializer( INIT_ACTOR_TALENTS, &player_t::init_talents, "talents" );
+
+  // Initialize each actor's items, construct gear information & stats
+  register_actor_initializer( INIT_ACTOR_ITEMS, &player_t::init_items, "items" );
+  register_actor_initializer( INIT_ACTOR_ITEMS + 10, &player_t::init_azerite, "azerite" );
+
+  // Main spell looksup. Populate class/spec/hero talents & spells.
+  register_actor_initializer( INIT_ACTOR_SPELLS, &player_t::init_spells, "spells" );
+  // Apply spec spell overrides to the DBC, must be done before spell lookups
+  register_actor_initializer( INIT_ACTOR_SPELLS - 10, &player_t::replace_spells, "replace_spells" );
+
+  // First-phase creation of special effects from various sources. Needed to be able to create actions (APLs, really)
+  // based on the presence of special effects on items. Certain effects, such as effects that modify base stats, may be
+  // flagged to have their custom initialization run on creation.
+  register_actor_initializer( INIT_ACTOR_CREATE_EFFECTS, &player_t::create_special_effects, "create_effects" );
+
+  // Initialize stats from DBC. Base stats can be modified until init_initial_stats()
+  register_actor_initializer( INIT_ACTOR_BASE_STATS, &player_t::init_base_stats, "base_stats" );
+
+  // Buffs are created before actions, as typically action constructors tends to be more customized than buff
+  // constructors. This allow actions to reference buff validity during instantiation, but the vice versa is not
+  // possible.
+  register_actor_initializer( INIT_ACTOR_CREATE_BUFFS, &player_t::create_buffs, "create_buffs" );
+
+  // Validate the actor and create all the action objects and set up action lists properly. If actor is not valid, set
+  // quiet and skip action creation.
+  register_actor_initializer( INIT_ACTOR_CREATE_ACTIONS, []( player_t* p ) {
+    if ( p->validate_actor() )
+      p->create_actions();
+#ifdef NDEBUG
+    else
+      p->quiet = true;
+#endif
+  }, "create_actions" );
+  // Background actions must be created before actions as some actions can reference them in their constructors
+  register_actor_initializer( INIT_ACTOR_CREATE_ACTIONS - 10, &player_t::init_background_actions );
+
+  // Create all actor pets before special effects get initialized. This ensures that we can use stuff like the presence
+  // of an action (created with create_actions()) to determine if a pet needs to be created or not. Similarly, talent,
+  // spec, and item based qualifiers would work.
+  register_actor_initializer( INIT_ACTOR_PETS, &player_t::create_pets, "pets" );
+  // Create persistent actors from dynamic spawners
+  register_actor_initializer( INIT_ACTOR_PETS + 10, []( player_t* p ) { spawner::create_persistent_actors( *p ); } );
+
+  // Second-phase initialize all special effects and register them to actors
+  register_actor_initializer( INIT_ACTOR_INIT_EFFECTS, &player_t::init_special_effects, "init_effects" );
+
+  // Finally, initialize all action objects
+  register_actor_initializer( INIT_ACTOR_INIT_ACTIONS, &player_t::init_actions, "init_actions" );
+
+  // Once all transient properties are initialized (e.g., base stats, spells, special effects, items), initialize the
+  // initial stats of the actor. Do not modify base stats after this call.
+  register_actor_initializer( INIT_ACTOR_INITIAL_STATS, &player_t::init_initial_stats, "initial_stats" );
+  // And once initial stats are initialized, derive the passive defensive properties of the actor
+  register_actor_initializer( INIT_ACTOR_INITIAL_STATS + 10, &player_t::init_defense, "defense" );
+
+  register_actor_initializer( INIT_ACTOR_MISC + 5, &player_t::init_scaling, "scaling" );
+  register_actor_initializer( INIT_ACTOR_MISC + 10, &player_t::init_gains, "gains" );
+  register_actor_initializer( INIT_ACTOR_MISC + 15, &player_t::init_procs, "procs" );
+  register_actor_initializer( INIT_ACTOR_MISC + 20, &player_t::init_uptimes, "uptimes" );
+  register_actor_initializer( INIT_ACTOR_MISC + 25, &player_t::init_benefits, "benefits" );
+  register_actor_initializer( INIT_ACTOR_MISC + 30, &player_t::init_rng, "rng" );
+  register_actor_initializer( INIT_ACTOR_MISC + 35, &player_t::init_stat_data, "stat_data" );
+  register_actor_initializer( INIT_ACTOR_MISC + 40, &player_t::init_distance_targeting, "distance_targeting" );
+  register_actor_initializer( INIT_ACTOR_MISC + 45, &player_t::init_absorb_priority, "absorb_priority" );
+
+  register_actor_initializer( INIT_ACTOR_ASSESSORS, &player_t::init_assessors, "assessors" );
+
+  // Register initializers from class modules
+  for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
+    if ( auto m = module_t::get( i ) )
+      m->register_actor_initializers( this );
+
+  // Register initializers from xpac gear
+  unique_gear::register_actor_initializers( *this );
 }
 
 // sim_t::analyze ===========================================================
@@ -3003,7 +3042,6 @@ void sim_t::analyze()
     fmt::print( "Analyzing actor data ...\n" );
     std::fflush( stdout );
   }
-
 
   assert( iterations > 0 );
 
@@ -3041,8 +3079,28 @@ void sim_t::analyze()
 void sim_t::analyze_iteration_data()
 {
   // Only enabled for deterministic simulations for now
-  if ( ! deterministic || report_iteration_data == 0 )
+  if ( !deterministic || ( report_iteration_data == 0 && !report_strict_iteration_data ) )
   {
+    return;
+  }
+
+  if ( report_strict_iteration_data )
+  {
+    if ( single_actor_batch )
+    {
+      range::sort( iteration_data, []( const auto& a, const auto& b ) {
+        return a.actor_index == b.actor_index
+                 ? a.thread_index == b.thread_index ? a.iteration < b.iteration : a.thread_index < b.thread_index
+                 : a.actor_index < b.actor_index;
+      } );
+    }
+    else
+    {
+      range::sort( iteration_data, []( const auto& a, const auto& b ) {
+        return a.thread_index == b.thread_index ? a.iteration < b.iteration : a.thread_index < b.thread_index;
+      } );
+    }
+
     return;
   }
 
@@ -3065,7 +3123,6 @@ void sim_t::analyze_iteration_data()
   range::sort( high_iteration_data, iteration_data_cmp );
 }
 
-
 // sim_t::iterate ===========================================================
 
 bool sim_t::iterate()
@@ -3084,6 +3141,8 @@ bool sim_t::iterate()
 
   progress_bar.init();
 
+  profileset_controller_t::evaluate( this, POST_INIT );
+
   try
   {
     activate_actors();
@@ -3100,6 +3159,8 @@ bool sim_t::iterate()
       {
         progress_bar.output( false );
       }
+
+      profileset_controller_t::evaluate( this, POST_ITER );
 
       do_pause();
       auto old_active = current_index;
@@ -3340,7 +3401,7 @@ void sim_t::partition()
 
   for ( int i = 0; i < num_children; i++ )
   {
-    auto  child = new sim_t( this, i + 1, child_control );
+    auto  child = new sim_t( this, i + 1, child_control, child_control->combat.name );
 
     assert( child );
     children.push_back( child );
@@ -3380,13 +3441,27 @@ void sim_t::partition()
 
 bool sim_t::execute()
 {
+  struct finally_t
+  {
+    std::function<void()> fn;
+
+    finally_t( std::function<void()> fn ) : fn( std::move( fn ) )
+    {
+    }
+
+    ~finally_t()
+    {
+      fn();
+    }
+  };
+
   const auto start_cpu_time  = chrono::cpu_clock::now();
   const auto start_wall_time = chrono::wall_clock::now();
 
   bool success = false;
   {
     // Always merge, even in cases of unsuccessful simulation, parent sim merge_mutex is unlocked in merge()
-    auto merge_final_action = gsl_lite::finally( [ & ]() {
+    auto merge_final_action = finally_t( [ & ]() {
       merge();
       // Rethrow accumulated exceptions from threads
       if ( !children.empty() && rethrow_exception_queue() )
@@ -3803,6 +3878,7 @@ void sim_t::create_options()
   add_option( opt_bool( "strict_work_queue", strict_work_queue ) );
   add_option( opt_float( "report_iteration_data", report_iteration_data ) );
   add_option( opt_int( "min_report_iteration_data", min_report_iteration_data ) );
+  add_option( opt_bool( "report_strict_iteration_data", report_strict_iteration_data ) );
   add_option( opt_bool( "average_range", average_range ) );
   add_option( opt_bool( "average_gauss", average_gauss ) );
   // Misc
@@ -3902,6 +3978,7 @@ void sim_t::create_options()
   add_option( opt_func( "report_merged_stats", parse_report_merged_stats) );
   add_option( opt_bool( "full_damage_sources_chart", full_damage_sources_chart ) );
   add_option( opt_bool( "report_all_variables", report_all_variables ) );
+  add_option( opt_bool( "collect_action_sequence", collect_action_sequence ) );
   add_option( opt_bool( "report_rng", report_rng ) );
   add_option( opt_int( "statistics_level", statistics_level ) );
   add_option( opt_bool( "separate_stats_by_actions", separate_stats_by_actions ) );
@@ -3918,7 +3995,9 @@ void sim_t::create_options()
   add_option( opt_float( "scaling_normalized", scaling_normalized ) );
   add_option( opt_bool( "merge_enemy_priority_dmg", merge_enemy_priority_dmg ) );
   add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );
-  add_option( opt_uint( "spell_query_wrap", spell_query_wrap ) );
+  add_option( opt_uint( "spell_query_wrap", spell_query_wrap, 50, UINT_MAX ) );
+  // Sim Controller Options
+  add_option( opt_map_list( "profileset_controller.", profileset_controller_options ) );
   // Charts
   add_option( opt_bool( "chart_show_relative_difference", chart_show_relative_difference ) );
   add_option( opt_bool( "chart_show_relative_difference_percent", chart_show_relative_difference_percent ) );
@@ -4267,7 +4346,12 @@ void sim_t::setup( sim_control_t* c )
   }
 
   if ( player_list.empty() && spell_query == nullptr && !display_bonus_ids && display_build <= 1 )
-    throw sc_runtime_error( "Nothing to sim!" );
+  {
+    fmt::print( "Nothing to sim! " );
+    canceled = true;
+    display_build = 2;
+    return;
+  }
 
   range::for_each( player_list, []( player_t* p ) { p->validate_sim_options(); } );
 
@@ -4459,14 +4543,8 @@ void sim_t::abort()
 /// add chart to sim for end of report processing
 void sim_t::add_chart_data( const highchart::chart_t& chart )
 {
-  if ( chart.toggle_id_str_.empty() )
-  {
-    on_ready_chart_data.push_back( chart.to_aggregate_string( false ) );
-  }
-  else
-  {
-    chart_data[ chart.toggle_id_str_ ].push_back( chart.to_data() );
-  }
+  // the report script renders charts with an empty toggle id once their target div is in the DOM.
+  chart_data[ chart.toggle_id_str_ ].push_back( chart.to_data() );
 }
 
 void sim_t::print_spell_query()
@@ -4737,10 +4815,70 @@ void sim_t::heartbeat_event_callback()
     heartbeat_event_callback_function[ i ]( this );
 }
 
-void sim_t::register_heartbeat_event_callback(std::function<void(sim_t*)> fn)
+void sim_t::register_heartbeat_event_callback( std::function<void( sim_t* )> fn )
 {
   heartbeat_event_callback_function.emplace_back( std::move( fn ) );
 }
+
+void sim_t::register_target_data_initializer( std::function<void( actor_target_data_t* )> fn )
+{
+  target_data_initializer.emplace_back( std::move( fn ) );
+}
+
+void sim_t::register_actor_initializer( int priority, std::function<void( player_t* )> fn, std::string name )
+{
+  if ( priority == 0 )
+    throw sc_initialization_error( fmt::format( "Actor initializer '{}' priority cannot be 0.", name ) );
+
+  for ( const auto& e : actor_initializer )
+  {
+    std::string_view e_name = std::get<std::string>( e );
+    int e_prio = std::get<int>( e );
+
+    if ( !name.empty() && util::str_compare_ci( e_name, name ) )
+    {
+      // Don't register duplicate initializers
+      if ( e_prio == priority )
+        return;
+      // Otherwise enforce name uniqueness
+      else
+        throw sc_initialization_error( fmt::format( "Actor initializer '{}' already exists.", name ) );
+    }
+
+    // Prevent priority clashes without names to resolve them
+    if ( name.empty() && e_name.empty() && e_prio == priority )
+      throw sc_initialization_error( fmt::format( "Actor initializer with priority {} already exists.", priority ) );
+  }
+
+  actor_initializer.emplace_back( priority, std::move( fn ), std::move( name ) );
+}
+
+void sim_t::register_actor_initializer( int priority, void ( player_t::*fn)(), std::string name )
+{
+  register_actor_initializer( priority, [ fn ]( player_t* p ) { std::invoke( fn, p ); }, std::move( name ) );
+}
+
+void sim_t::register_actor_initializer( std::string_view base, int offset, std::function<void( player_t* )> fn,
+                                        std::string name )
+{
+  if ( base.empty() )
+    throw sc_initialization_error( fmt::format( "Empty base for offset of actor initializer '{}'.", name ) );
+
+  auto it = range::find_if( actor_initializer, [ base ]( const auto& e ) {
+    return std::get<std::string>( e ) == base;
+  } );
+
+  if ( it == actor_initializer.end() )
+    throw sc_initialization_error( fmt::format( "Actor initializer '{}' not found as base for '{}'.", base, name ) );
+
+  register_actor_initializer( std::get<int>( *it ) + offset, std::move( fn ), std::move( name ) );
+}
+
+void sim_t::register_actor_initializer( std::string_view base, int offset, void ( player_t::*fn )(), std::string name )
+{
+  register_actor_initializer( base, offset, [ fn ]( player_t* p ) { std::invoke( fn, p ); }, std::move( name ) );
+}
+
 
 bool sim_t::rethrow_exception_queue()
 {

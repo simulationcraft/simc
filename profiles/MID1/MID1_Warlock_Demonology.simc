@@ -1,15 +1,15 @@
-warlock="MID1_Warlock_Demonology_Soul_Harvester"
+warlock="MID1_Warlock_Demonology_Diabolist"
 source=default
 spec=demonology
 level=90
 race=Orc
 role=spell
 position=ranged_back
-talents=CoQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmxsMAAAAAAAjtlBGwAmhtQGbGjx2sMzMjZAAzMzMzAMzMmxMDAAwYmZmZMDLDAD
+talents=CoQAAAAAAAAAAAAAAAAAAAAAAYmxMzoZjZ2mZGzyAAAAAAAAGzYYBGYb0CNsYMGLzyMzMmBAmZMzMzMDgZGzAAAYMzMjhhlZMgB
 
 # Default consumables
-potion=lights_potential_2
-flask=flask_of_the_magisters_2
+potion=potion_of_recklessness_2
+flask=flask_of_the_shattered_sun_2
 food=harandar_celebration
 augmentation=void_touched
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
@@ -89,33 +89,33 @@ actions.soulharvest+=/demonbolt,if=soul_shard<4&buff.demonic_core.stack>=2&!tale
 actions.soulharvest+=/demonbolt,if=soul_shard<4&buff.demonic_core.react
 actions.soulharvest+=/shadow_bolt
 
-head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
-neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240916
+head=abyssal_immolators_smoldering_flames,id=250042,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
+neck=eternal_voidsong_chain,id=249368,bonus_id=12806/13577/13668,gem_id=240906
 shoulders=mantle_of_dark_devotion,id=251085,bonus_id=12806/13577,enchant_id=8001
-back=adherents_silken_shroud,id=239656,bonus_id=8795/8960/12214/12214/12214/12214/12214/12214/12384/13622/13667/9627,crafted_stats=36/49
-chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
-wrists=martyrs_bindings,id=239648,bonus_id=1808/8960/12066/12214/12214/12214/12384/13622/13667/9627,gem_id=240900,crafted_stats=32/49
-hands=abyssal_immolators_grasps,id=250043,bonus_id=13574/13574/13574/13574/13574/13574/13574,ilevel=289
-waist=abyssal_immolators_blazing_core,id=250039,bonus_id=1808/12806,gem_id=240892
-legs=abyssal_immolators_pillars,id=250041,bonus_id=13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7935
-feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
-finger1=platinum_star_band,id=193708,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967
-finger2=sindorei_band_of_hope,id=249919,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967
-trinket1=locuswalkers_ribbon,id=249809,bonus_id=4786/4800/12806
-trinket2=emberwing_feather,id=250144,bonus_id=12806/13577,ilevel=289
-main_hand=umbral_spire_of_zuraal,id=258514,bonus_id=12806/13577,enchant_id=7981
+back=adherents_silken_shroud,id=239656,bonus_id=8791/8960/12214/12384/13622/13667/9627,crafted_stats=36/49
+chest=abyssal_immolators_dreadrobe,id=250045,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+wrists=martyrs_bindings,id=239648,bonus_id=1808/8960/12066/12214/12214/12214/12214/12214/12384/13622/13667/9627,gem_id=240906,crafted_stats=32/49
+hands=abyssal_immolators_grasps,id=250043,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+waist=abyssal_immolators_blazing_core,id=250039,bonus_id=1808/12806,gem_id=240906
+legs=abyssal_immolators_pillars,id=250041,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7935
+feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7963
+finger1=omission_of_light,id=251093,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967
+finger2=occlusion_of_void,id=251217,bonus_id=12806/13577/13668,gem_id=240906,enchant_id=7967
+trinket1=emberwing_feather,id=250144,bonus_id=12806/13577,ilevel=289
+trinket2=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577
+main_hand=umbral_spire_of_zuraal,id=258514,bonus_id=12806/13577,enchant_id=8039
 
 # Gear Summary
 # gear_ilvl=288.47
 # gear_stamina=17604
 # gear_intellect=1670
-# gear_crit_rating=1074
-# gear_haste_rating=580
-# gear_mastery_rating=788
-# gear_versatility_rating=61
-# gear_leech_rating=83
-# gear_avoidance_rating=111
+# gear_crit_rating=887
+# gear_haste_rating=839
+# gear_mastery_rating=777
+# gear_leech_rating=55
+# gear_avoidance_rating=130
 # gear_armor=531
+# set_bonus=voidlight_bindings_2pc=1
 # set_bonus=midnight_season_1_2pc=1
 # set_bonus=midnight_season_1_4pc=1
 warlock.soul_shards=0

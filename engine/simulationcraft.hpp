@@ -13,7 +13,6 @@
 #include "lib/fmt/format.h"
 #include "lib/fmt/ostream.h"
 #include "lib/fmt/printf.h"
-#include "lib/gsl-lite/gsl-lite.hpp"
 
 
 #include "util/timespan.hpp" // Time class representing ingame time

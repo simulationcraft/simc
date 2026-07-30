@@ -12,7 +12,12 @@ namespace warlock
 {
 
 warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
-  : actor_target_data_t( target, &p ), soc_threshold( 0.0 ), warlock( p )
+  : actor_target_data_t( target, &p ),
+    soc_threshold( 0.0 ),
+    ua_regular_stacks( 0 ),
+    ua_seed_stacks( 0 ),
+    ua_stack_drop_events(),
+    warlock( p )
 {
   // Shared
   dots.drain_life = target->get_dot( "drain_life", &p );
@@ -62,8 +67,14 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                              ->set_max_stack( 1 )
                              ->set_proc_callbacks( false );
 
-  debuffs.shadowburn = make_buff( *this, "shadowburn", p.talents.shadowburn )
+  debuffs.shadowburn = make_buff( *this, "shadowburn", ( p.sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) ) ? p.talents.shadowburn_debuff : p.talents.shadowburn )
                            ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
+
+  if ( p.sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+  {
+    debuffs.dark_titans_mark = make_buff( *this, "dark_titans_mark", p.tier.dark_titans_mark_debuff )
+                                   ->set_default_value_from_effect( 1 );
+  }
 
   // Use havoc_debuff where we need the data but don't have the active talent
   // Mayhem proc chance follows a Flat % RNG model, but has ICD
@@ -96,11 +107,26 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                                ->set_duration( 0_ms )
                                ->set_tick_zero( false )
                                ->set_period( p.hero.blackened_soul_trigger->effectN( 1 ).period() )
-                               ->set_tick_callback( [ this, target ]( buff_t*, int, timespan_t ) {
-                                 warlock.proc_actions.blackened_soul->execute_on_target( target );
+                               ->set_tick_callback( [ &p, target ]( buff_t* blackened_soul_debuff, int, timespan_t ) {
+                                  auto tdata = p.get_target_data( target );
+                                  if ( tdata->dots.wither->is_ticking() )
+                                  {
+                                    p.proc_actions.blackened_soul->execute_on_target( target );
+                                  }
+                                  else
+                                  {
+                                    // blackened_soul is a 0-duration frozen-stack debuff, so expiring it from its
+                                    // tick callback is safe; tick_t will not apply post-callback stack changes.
+                                    assert( blackened_soul_debuff->freeze_stacks );
+                                    assert( blackened_soul_debuff->buff_duration() == 0_ms );
+                                    assert( blackened_soul_debuff->expiration.empty() );
+                                    assert( blackened_soul_debuff->tick_event == nullptr );
+                                    blackened_soul_debuff->expire();
+                                  }
                                } )
                                ->set_tick_behavior( buff_tick_behavior::REFRESH )
-                               ->set_freeze_stacks( true );
+                               ->set_freeze_stacks( true )
+                               ->set_max_stack( 99 );
 
   debuffs.wither = make_buff( *this, "wither", p.hero.wither_dot )
                        ->set_refresh_behavior( buff_refresh_behavior::DURATION )
@@ -112,6 +138,57 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots.shared_fate = target->get_dot( "shared_fate", &p );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
+}
+
+void warlock_td_t::ua_stack_applied( bool is_seed_ua )
+{
+  if ( is_seed_ua )
+    ua_seed_stacks++;
+  else
+    ua_regular_stacks++;
+}
+
+void warlock_td_t::ua_stack_expired( bool is_seed_ua )
+{
+  if ( is_seed_ua )
+  {
+    assert( ua_seed_stacks > 0 );
+    ua_seed_stacks--;
+  }
+  else
+  {
+    assert( ua_regular_stacks > 0 );
+    ua_regular_stacks--;
+  }
+}
+
+void warlock_td_t::reset_ua_stack_tracking()
+{
+  ua_regular_stacks = 0;
+  ua_seed_stacks = 0;
+  ua_stack_drop_events.clear();
+}
+
+double warlock_td_t::ua_calculate_damage_stacks() const
+{
+  return as<double>( ua_regular_stacks ) + as<double>( ua_seed_stacks ) * warlock.tier.wl_affliction_12_1_class_set_4pc->effectN( 1 ).percent();
+}
+
+timespan_t warlock_td_t::ua_stack_remains( int min_stacks ) const
+{
+  assert( min_stacks > 0 );
+
+  const int current_stacks = dots.unstable_affliction->current_stack();
+  assert( current_stacks >= 0 );
+
+  if ( current_stacks < min_stacks || dots.unstable_affliction->remains() == 0_ms )
+    return 0_ms;
+
+  const size_t expiration_index = as<size_t>( current_stacks - min_stacks );
+  assert( expiration_index < ua_stack_drop_events.size() && "UA stack count exceeds tracked stack expiration events" );
+
+  // UA stack events are stored in application order and all stacks have the same duration, so application order is also expiration order
+  return ua_stack_drop_events[ expiration_index ]->remains();
 }
 
 void warlock_td_t::target_demise()
@@ -224,15 +301,13 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.summon_doomguard = get_cooldown( "summon_doomguard" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
   cooldowns.echo_of_sargeras = get_cooldown( "echo_of_sargeras_icd" );
-  cooldowns.blackened_soul = get_cooldown( "blackened_soul_icd" );
-  cooldowns.seeds_of_their_demise = get_cooldown( "seeds_of_their_demise_icd" );
 
   resource_regeneration = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ] = true;
   regen_caches[ CACHE_SPELL_HASTE ] = true;
 
   sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
-    // NOTE (2026-04-24): Some pets are currently bugged when updating Hellbent Commander stacks on arise/demise.
+    // NOTE (2026-07-11): Some pets are currently bugged when updating Hellbent Commander stacks on arise/demise.
     // Hellbent Commander's stacks are refreshed on each heartbeat update, but not all pets are correctly accounted for.
     if ( bugs && talents.hellbent_commander.ok() )
     {
@@ -264,7 +339,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
         this->sim->print_debug( "{} heartbeat event update {} buff stack number from stacks_before={} to stacks_after={}",
                         this->name(), buffs.hellbent_commander->name(), current_stacks, expected_stacks );
       }
-      assert( ( buffs.hellbent_commander->check() == expected_stacks ) && "Incorrent Demon Count for Hellbent Commander" );
+      assert( ( buffs.hellbent_commander->check() == expected_stacks ) && "Incorrect Demon Count for Hellbent Commander" );
     }
 
     for ( auto pet : active_pets )
@@ -330,11 +405,6 @@ void warlock_t::init_assessors()
   };
 
   assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_soc_fn );
-
-  for ( auto pet : pet_list )
-  {
-    pet->assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_soc_fn );
-  }
 
   if ( hero.shared_fate.ok() || hero.feast_of_souls.ok() )
   {
@@ -489,7 +559,7 @@ int warlock_t::active_demon_count( bool include_diabolist ) const
     if ( lock_pet->is_sleeping() )
       continue;
 
-    // NOTE: 2026-02-17 Dibolist guardians seems to not count for some effects/talents (Sacrificed Souls)
+    // NOTE: 2026-07-11 Diabolist guardians seem to not count for some effects/talents (Sacrificed Souls)
     if ( !include_diabolist && lock_pet->is_diabolist_guardian )
       continue;
 
@@ -1001,6 +1071,50 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
   return player_t::create_expression( name_str );
 }
 
+std::unique_ptr<expr_t> warlock_t::create_action_expression( action_t& action, util::string_view name_str )
+{
+  auto splits = util::string_split<util::string_view>( name_str, ".", false );
+
+  if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "dot" ) && util::str_compare_ci( splits[ 1 ], "unstable_affliction" ) && util::str_compare_ci( splits[ 2 ], "stack_remains" ) )
+  {
+    const bool use_current_stacks = splits.size() == 4 && util::str_compare_ci( splits[ 3 ], "current" );
+
+    if ( splits.size() != 4 || util::ends_with( name_str, '.' ) || splits[ 3 ].empty() || ( !use_current_stacks && !util::is_number( splits[ 3 ] ) ) )
+      throw sc_invalid_apl_argument( fmt::format( "Invalid expression '{}'. Expected 'dot.unstable_affliction.{}.N', where N is a positive integer or 'current'.", name_str, splits[ 2 ] ) );
+
+    int min_stacks = 0;
+    if ( !use_current_stacks )
+    {
+      try
+      {
+        min_stacks = util::to_int( splits[ 3 ] );
+      }
+      catch ( const std::exception& )
+      {
+        throw sc_invalid_apl_argument( fmt::format( "Invalid expression '{}'. Expected 'dot.unstable_affliction.{}.N', where N is a positive integer or 'current'.", name_str, splits[ 2 ] ) );
+      }
+
+      if ( min_stacks <= 0 )
+        throw sc_invalid_apl_argument( fmt::format( "Invalid expression '{}'. Expected 'dot.unstable_affliction.{}.N', where N is a positive integer or 'current'.", name_str, splits[ 2 ] ) );
+
+      const int max_stacks = as<int>( talents.unstable_affliction->max_stacks() );
+      if ( max_stacks > 0 && min_stacks > max_stacks )
+        throw sc_invalid_apl_argument( fmt::format( "Invalid stack amount in '{}'. N must be between 1 and {}.", name_str, max_stacks ) );
+    }
+
+    return make_fn_expr( name_str, [ this, &action, min_stacks, use_current_stacks ] {
+      auto tdata = get_target_data( action.get_expression_target() );
+      const int threshold = use_current_stacks ? tdata->dots.unstable_affliction->current_stack() : min_stacks;
+      if ( threshold == 0 )
+        return 0_ms;
+
+      return tdata->ua_stack_remains( threshold );
+    } );
+  }
+
+  return player_t::create_action_expression( action, name_str );
+}
+
 /* ----------------------------------------------------------
 * NOTE NOTE NOTE
 * Applies DYNAMIC (Buffs, Debuffs, DoTs, or anything else that could change state during combat)
@@ -1042,6 +1156,11 @@ void warlock_t::parse_player_effects()
   {
     // Affliction Mastery
     parse_effects( warlock_base.potent_afflictions ); // 77215
+
+    // Affliction Buffs
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      parse_effects( buffs.unstable_empowerment ); // 1305774
+
     // Affliction Debuffs/DoTs
     // NOTE: Shadow of Nathreza II (rank 2) only increases by 2% (as if it were rank 1) the
     // effect #2 and #3 (pet and guardian damage) of the Haunt debuff damage bonus (bug)
@@ -1053,6 +1172,7 @@ void warlock_t::parse_player_effects()
   {
     // Demonology Mastery
     parse_effects( warlock_base.master_demonologist ); // 77219
+
     // Demonology Buffs
     parse_effects( buffs.hellbent_commander ); // 1281559
   }
@@ -1060,6 +1180,8 @@ void warlock_t::parse_player_effects()
   // Destruction
   if ( destruction() )
   {
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      parse_target_effects( d_fn( &warlock_td_t::debuffs_t::dark_titans_mark ), tier.dark_titans_mark_debuff ); // 1305711
   }
 
   // Diabolist
@@ -1104,7 +1226,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
   return actual_amount;
 }
 
-void warlock_t::feast_of_souls_gain( bool from_quietus_seed )
+void warlock_t::feast_of_souls_gain()
 {
   // NOTE: 2026-03-17 The shard gained from Feast of Souls can also proc another Succulent Soul (bug?)
   if ( bugs )
@@ -1115,12 +1237,6 @@ void warlock_t::feast_of_souls_gain( bool from_quietus_seed )
   buffs.succulent_soul->trigger();
   procs.succulent_soul->occur();
   procs.feast_of_souls->occur();
-
-  // NOTE: 2026-03-06 If Feast of Souls is gained by consuming Nightfall with SoC (Quietus hero talent) and after
-  // the gain you only have one stack of Succulent Soul, it will be spent without producing its effects (bug)
-  // This behavior is modeled here simply by decrementing a stack of Succulent Soul without triggering its effects
-  if ( bugs && from_quietus_seed && buffs.succulent_soul->check() == 1 )
-    buffs.succulent_soul->decrement();
 }
 
 // Setup to allow taking specific pets from Dominion of Argus, or a random one if the random enum is passed in.
@@ -1129,16 +1245,19 @@ void warlock_t::feast_of_souls_gain( bool from_quietus_seed )
 void warlock_t::summon_dominion_of_argus_pet( dominion_of_argus_pet_e pet )
 {
   dominion_of_argus_pet_e actual_pet = pet;
-  // Odds for each pet currently seem to be
-  // Jailer: 30%, Sacrolash: 20%, Grand Warlock Alythess: 20%, Inquisitor: 30% (last tested 2026-02-19)
-  // More testing required for more accurate rates.
-  // Probably better to do a better weighted random selection than this.
+  // Current evidence suggests a uniform flat 25% base roll among the 4 pets
+  // Grand Warlock and Sacrolash cannot be summoned while another of the same type is already active:
+  // - rolling Grand Warlock while one Grand Warlock is active redirects to Jailer
+  // - rolling Sacrolash while one Sacrolash is active redirects to Inquisitor
   if ( pet == DOA_PET_RANDOM )
   {
-    const std::array<dominion_of_argus_pet_e, 10> pets = {
-        DOA_PET_JAILER,        DOA_PET_JAILER,        DOA_PET_JAILER,     DOA_PET_SACROLASH,  DOA_PET_SACROLASH,
-        DOA_PET_GRAND_WARLOCK, DOA_PET_GRAND_WARLOCK, DOA_PET_INQUISITOR, DOA_PET_INQUISITOR, DOA_PET_INQUISITOR };
+    static constexpr std::array<dominion_of_argus_pet_e, 4> pets = { DOA_PET_JAILER, DOA_PET_INQUISITOR, DOA_PET_GRAND_WARLOCK, DOA_PET_SACROLASH };
     actual_pet = rng().range( pets );
+
+    if ( actual_pet == DOA_PET_GRAND_WARLOCK && warlock_pet_list.grand_warlock_alythess.n_active_pets() > 0 )
+      actual_pet = DOA_PET_JAILER;
+    else if ( actual_pet == DOA_PET_SACROLASH && warlock_pet_list.lady_sacrolash.n_active_pets() > 0 )
+      actual_pet = DOA_PET_INQUISITOR;
   }
 
   switch ( actual_pet )
@@ -1146,16 +1265,17 @@ void warlock_t::summon_dominion_of_argus_pet( dominion_of_argus_pet_e pet )
     case DOA_PET_JAILER:
       summons.antoran_jailer->execute();
       break;
-    case DOA_PET_SACROLASH:
-      summons.lady_sacrolash->execute();
+    case DOA_PET_INQUISITOR:
+      summons.antoran_inquisitor->execute();
       break;
     case DOA_PET_GRAND_WARLOCK:
       summons.grand_warlock_alythess->execute();
       break;
-    case DOA_PET_INQUISITOR:
-      summons.antoran_inquisitor->execute();
+    case DOA_PET_SACROLASH:
+      summons.lady_sacrolash->execute();
       break;
     default:
+      assert( false && "Unhandled dominion_of_argus_pet_e value" );
       break;
   }
 }
@@ -1252,17 +1372,11 @@ struct warlock_module_t : public module_t
   void register_hotfixes() const override
   { }
 
+  void register_actor_initializers( sim_t* ) const override
+  { }
+
   bool valid() const override
   { return true; }
-
-  void init( player_t* ) const override
-  { }
-
-  void combat_begin( sim_t* ) const override
-  { }
-
-  void combat_end( sim_t* ) const override
-  { }
 };
 
 warlock::warlock_t::pets_t::pets_t( warlock_t* w )

@@ -70,6 +70,8 @@ void register_target_data_initializers( sim_t* );
 void register_target_data_initializers_legion( sim_t* );  // Legion targetdata initializers
 void register_target_data_initializers_bfa( sim_t* );     // Battle for Azeroth targetdata initializers
 
+void register_actor_initializers( sim_t& );
+
 void init( player_t* );
 
 std::vector<special_effect_t*> find_special_effects( player_t*, unsigned, special_effect_e = SPECIAL_EFFECT_NONE );
@@ -99,4 +101,9 @@ const spell_data_t* spell_from_spell_text( const special_effect_t& );
 
 std::vector<unsigned> equipped_gem_list( player_t*, util::span<const unsigned> );
 std::vector<unsigned> unique_gem_list( player_t*, util::span<const unsigned> );
+
+// assuming priority for highest/lowest secondary is vers > mastery > haste > crit
+static constexpr std::array<stat_e, 4> secondary_ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING,
+                                                             STAT_HASTE_RATING, STAT_CRIT_RATING };
+
 }  // namespace unique_gear

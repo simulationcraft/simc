@@ -20,6 +20,7 @@ extern std::vector<unsigned> __mid_special_effect_ids;
 
 void register_special_effects();
 void register_target_data_initializers( sim_t& );
+void register_actor_initializers( sim_t& );
 void register_hotfixes();
 action_t* create_action( player_t*, std::string_view, std::string_view );
 double bandolier_mul( player_t* p );

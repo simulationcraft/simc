@@ -5,7 +5,7 @@ level=90
 race=orc
 role=attack
 position=ranged_back
-talents=C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwCsBzwQDbAAYG2GzsMzwMmZYYmxYmxMzYGzwMzYGzghmBAAAAAMDAAAzMzMAzshwwsA2MA
+talents=C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwCsBzwQDbAAYG2GzsNzwMmZYYmxYmxMzYGzwMzYGzgx0MAAAAAmBAAgxMzMgZ2AbwsA2GA
 
 # Default consumables
 potion=lights_potential_2
@@ -45,14 +45,15 @@ actions.cleave=barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage
 actions.cleave+=/wild_thrash,if=talent.beast_cleave
 actions.cleave+=/bestial_wrath,if=!prev.wild_thrash
 actions.cleave+=/wild_thrash,if=!talent.beast_cleave
-actions.cleave+=/kill_command
+actions.cleave+=/kill_command,if=cooldown.bestial_wrath.remains>gcd&(buff.natures_ally.react|talent.master_handler)
 actions.cleave+=/cobra_shot,if=cooldown.wild_thrash.remains>gcd&buff.hogstrider.up&active_enemies<4
 actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage
 actions.cleave+=/cobra_shot,if=talent.beast_cleave&cooldown.wild_thrash.remains>gcd|!talent.beast_cleave
 
-actions.drcleave=bestial_wrath,if=buff.beast_cleave.remains
+actions.drcleave=black_arrow,if=buff.beast_cleave.remains<gcd&cooldown.bestial_wrath.remains<gcd&active_enemies>2
+actions.drcleave+=/bestial_wrath,if=buff.beast_cleave.remains
 actions.drcleave+=/wild_thrash
-actions.drcleave+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3
+actions.drcleave+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3
 actions.drcleave+=/barbed_shot,if=full_recharge_time<1*gcd,target_if=min:dot.barbed_shot.remains|max_prio_damage
 actions.drcleave+=/black_arrow,if=buff.withering_fire.up
 actions.drcleave+=/wailing_arrow,if=buff.withering_fire.remains<execute_time+gcd|time_to_die.remains<execute_time+gcd
@@ -61,22 +62,22 @@ actions.drcleave+=/black_arrow
 actions.drcleave+=/wailing_arrow
 actions.drcleave+=/cobra_shot
 
-actions.drst=barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<2*gcd
+actions.drst=barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=(talent.bloody_frenzy&talent.snakeskin_quiver&talent.jagged_wounds)&cooldown.bestial_wrath.remains<2*gcd
 actions.drst+=/bestial_wrath
-actions.drst+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.up|!apex.3
-actions.drst+=/black_arrow,if=buff.withering_fire.up
+actions.drst+=/black_arrow,if=buff.withering_fire.up&cooldown.kill_command.full_recharge_time>gcd
+actions.drst+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3
 actions.drst+=/wailing_arrow,if=buff.withering_fire.remains<execute_time+2*gcd|time_to_die.remains<execute_time+gcd
 actions.drst+=/cobra_shot,if=talent.killer_cobra&buff.bestial_wrath.up&cooldown.barbed_shot.charges_fractional<1.4
-actions.drst+=/barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage
 actions.drst+=/black_arrow
+actions.drst+=/barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage
 actions.drst+=/cobra_shot
 
 actions.st=barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=cooldown.bestial_wrath.remains<gcd
 actions.st+=/bestial_wrath
 actions.st+=/wild_thrash,if=active_enemies>1
-actions.st+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.up|howl_summon.ready)|!apex.3
+actions.st+=/kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&(buff.natures_ally.react|howl_summon.ready)|!apex.3
 actions.st+=/barbed_shot,if=(focus<75|full_recharge_time<gcd)&!talent.serpentine_strikes|talent.serpentine_strikes
-actions.st+=/cobra_shot
+actions.st+=/cobra_shot,if=cooldown.bestial_wrath.remains>gcd
 
 actions.trinkets=use_item,name=light_company_guidon,if=cooldown.bestial_wrath.ready|fight_remains<21
 actions.trinkets+=/use_item,name=void_execution_mandate,if=cooldown.bestial_wrath.ready|fight_remains<21
@@ -89,30 +90,30 @@ actions.trinkets+=/use_item,name=rangercaptains_iridescent_insignia
 actions.trinkets+=/use_item,name=void_stalkers_contract
 actions.trinkets+=/use_item,name=latchs_crooked_hook
 
-head=primal_sentrys_maw,id=249988,bonus_id=40/1808/12676/12806/13335/13338/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=8017
-neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240918/240898
+head=primal_sentrys_maw,id=249988,bonus_id=40/1808/12676/12806/13335/13338/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=8017
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240898/240898
 shoulders=pauldrons_of_the_void_hunter,id=151323,ilevel=289,enchant_id=8001
 back=imperators_banner,id=249335,ilevel=289
-chest=primal_sentrys_scaleplate,id=249991,bonus_id=40/12676/12806/13335/13336/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
+chest=primal_sentrys_scaleplate,id=249991,bonus_id=40/12676/12806/13335/13336/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
 wrists=fallen_kings_cuffs,id=249304,bonus_id=1808,ilevel=289,gem_id=240898
-hands=primal_sentrys_talonguards,id=249989,bonus_id=40/12675/12806/13335/13337/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
-waist=world_tenders_barkclasp,id=244611,bonus_id=1808/8960/8960/8960/8960/8960/8960/12066/12214/12214/12214/12214/12214/13622/13667/9627,gem_id=240898
-legs=primal_sentrys_legguards,id=249987,bonus_id=13575/13575/13575,ilevel=289,enchant_id=8159
-feet=world_tenders_rootslippers,id=244610,bonus_id=8960/8960/8960/8960/8960/8960/12066/12214/12214/12214/12214/12214/13622/13667/9627,enchant_id=7963
-finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240898/240908,enchant_id=7967
-finger2=bond_of_light,id=249369,bonus_id=1808,ilevel=289,gem_id=240892,enchant_id=7967
-trinket1=radiant_plume,id=249806,ilevel=289
-trinket2=algethar_puzzle_box,id=193701,ilevel=289
-main_hand=sunstrike_rifle,id=249279,ilevel=289,enchant_id=8039
+hands=primal_sentrys_talonguards,id=249989,bonus_id=40/12675/12806/13335/13337/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
+waist=world_tenders_barkclasp,id=244611,bonus_id=1808/8960/8960/8960/8960/8960/8960/8960/8960/12066/12214/12214/12214/12214/12214/12214/12214/13622/13667/9627,gem_id=240898
+legs=primal_sentrys_legguards,id=249987,bonus_id=13575/13575/13575/13575/13575,ilevel=289,enchant_id=8159
+feet=world_tenders_rootslippers,id=244610,bonus_id=8960/8960/8960/8960/8960/8960/8960/8960/12066/12214/12214/12214/12214/12214/12214/12214/13622/13667/9627,enchant_id=7963
+finger1=eye_of_midnight,id=249920,bonus_id=12806/13577/13668,gem_id=240898/240898,enchant_id=7969
+finger2=bond_of_light,id=249369,bonus_id=1808,ilevel=289,gem_id=240898,enchant_id=7969
+trinket1=radiant_plume,id=249806,ilevel=298
+trinket2=algethar_puzzle_box,id=193701,ilevel=298
+main_hand=sunstrike_rifle,id=249279,ilevel=298,enchant_id=8039
 
 # Gear Summary
-# gear_ilvl=288.47
-# gear_agility=1361
-# gear_stamina=17574
-# gear_crit_rating=526
-# gear_haste_rating=838
-# gear_mastery_rating=970
-# gear_versatility_rating=100
+# gear_ilvl=290.27
+# gear_agility=1392
+# gear_stamina=17780
+# gear_crit_rating=531
+# gear_haste_rating=827
+# gear_mastery_rating=1057
+# gear_versatility_rating=84
 # gear_avoidance_rating=362
 # gear_armor=1256
 # set_bonus=root_wardens_regalia_2pc=1

@@ -975,6 +975,7 @@ void SC_MainWindow::simulateFinished( std::shared_ptr<sim_t> sim )
     SC_WebView* resultsHtmlView = new SC_WebView( this, resultsEntry );
     resultsHtmlView->enableKeyboardNavigation();
     resultsHtmlView->enableMouseNavigation();
+    resultsHtmlView->settings()->setAttribute( QWebEngineSettings::LocalContentCanAccessRemoteUrls, true );
     resultsEntry->addTab( resultsHtmlView, "html" );
     QFile html_file( sim->html_file_str.c_str() );
     if ( html_file.open( QIODevice::ReadOnly ) )

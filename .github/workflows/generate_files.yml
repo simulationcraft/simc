@@ -13,9 +13,8 @@ jobs:
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
+            ActionPriorityLists
             profiles
-            tests
-            generate_profiles_ci.sh
             .git
           key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
 
@@ -37,12 +36,12 @@ jobs:
           pattern: apl-${{ github.sha }}-*
           merge-multiple: true
 
-      - name: Generate Profiles
-        if: steps.cache.outputs.cache-hit == 'true'
-        continue-on-error: true
-        env:
-          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
-        run: ${{ github.workspace }}/generate_profiles_ci.sh
+      - name: Download Profiles
+        uses: actions/download-artifact@v8
+        with:
+          path: profiles
+          pattern: profiles-${{ github.sha }}-*
+          merge-multiple: true
 
       - name: Dump Spell Data
         if: steps.cache.outputs.cache-hit == 'true'
@@ -68,7 +67,9 @@ jobs:
             - "*.simc"
             - "*.txt"
 
-      - name: Cleanup APL Dumps
+      - name: Cleanup Artifacts
         uses: geekyeggo/delete-artifact@v6
         with:
-          name: apl-${{ github.sha }}-*
+          name: |
+            apl-${{ github.sha }}-*
+            profiles-${{ github.sha }}-*

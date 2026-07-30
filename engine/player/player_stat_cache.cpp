@@ -361,18 +361,6 @@ double player_stat_cache_t::block() const
   return _block;
 }
 
-double player_stat_cache_t::crit_block() const
-{
-  if ( !active || !valid[ CACHE_CRIT_BLOCK ] )
-  {
-    valid[ CACHE_CRIT_BLOCK ] = true;
-    _crit_block               = player->composite_crit_block();
-  }
-  else
-    assert( _crit_block == player->composite_crit_block() );
-  return _crit_block;
-}
-
 double player_stat_cache_t::crit_avoidance() const
 {
   if ( !active || !valid[ CACHE_CRIT_AVOIDANCE ] )
@@ -609,7 +597,6 @@ double player_stat_cache_t::spell_cast_speed() const { return _player->composite
 double player_stat_cache_t::dodge() const { return _player->composite_dodge(); }
 double player_stat_cache_t::parry() const { return _player->composite_parry(); }
 double player_stat_cache_t::block() const { return _player->composite_block(); }
-double player_stat_cache_t::crit_block() const { return _player->composite_crit_block(); }
 double player_stat_cache_t::crit_avoidance() const { return _player->composite_crit_avoidance(); }
 double player_stat_cache_t::miss() const { return _player->composite_miss(); }
 double player_stat_cache_t::armor() const { return _player->composite_armor(); }

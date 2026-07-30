@@ -343,26 +343,20 @@ struct angelic_feather_t final : public priest_spell_t
   {
     parse_options( options_str );
     harmful = may_hit = may_crit = false;
+
+    target_debuff = p.find_spell( 121557 );
+  }
+
+  buff_t* create_debuff( player_t* t ) override
+  {
+    return priest_spell_t::create_debuff( t )->set_movement_speed_buff_from_data();
   }
 
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
-    if ( s->target->buffs.angelic_feather )
-    {
-      s->target->buffs.angelic_feather->trigger();
-    }
-  }
-
-  bool target_ready( player_t* candidate_target ) override
-  {
-    if ( !candidate_target->buffs.angelic_feather )
-    {
-      return false;
-    }
-
-    return priest_spell_t::target_ready( candidate_target );
+    get_debuff( s->target )->trigger();
   }
 };
 
@@ -434,7 +428,7 @@ struct halo_spell_t final : public priest_spell_t
 
     priest_spell_t::impact( s );
 
-    if ( p().talents.archon.resonant_energy.enabled() )
+    if ( p().talents.archon.resonant_energy.enabled() && !p().is_ptr() )
     {
       auto td = p().get_target_data( s->target );
       if ( td )
@@ -643,6 +637,15 @@ struct halo_t final : public priest_spell_t
         default:
           break;
       }
+    }
+
+    // PTR version: Resonant Energy is a self-buff and should trigger once per Halo creation.
+    if ( priest().talents.archon.resonant_energy.enabled() && priest().is_ptr() )
+    {
+      if ( priest().specialization() == PRIEST_SHADOW )
+        priest().buffs.resonant_energy_damage->trigger();
+      else if ( priest().specialization() == PRIEST_HOLY )
+        priest().buffs.resonant_energy_healing->trigger();
     }
   }
 
@@ -859,7 +862,7 @@ struct power_infusion_t final : public priest_spell_t
   double power_infusion_magnitude;
   power_infusion_t( priest_t& p, util::string_view options_str, util::string_view name )
     : priest_spell_t( name, p, p.talents.power_infusion ),
-      power_infusion_magnitude( player->buffs.power_infusion->default_value )
+      power_infusion_magnitude( p.buffs.power_infusion->default_value )
   {
     parse_options( options_str );
     harmful = false;
@@ -872,8 +875,8 @@ struct power_infusion_t final : public priest_spell_t
     // Trigger PI on the actor only if casting on itself
     if ( priest().options.self_power_infusion || priest().talents.twins_of_the_sun_priestess.enabled() )
     {
-      player->buffs.power_infusion->trigger( 1, power_infusion_magnitude, -1,
-                                             player->buffs.power_infusion->buff_duration() );
+      priest().buffs.power_infusion->trigger( 1, power_infusion_magnitude, -1,
+                                              priest().buffs.power_infusion->buff_duration() );
     }
   }
 };
@@ -1081,6 +1084,47 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
   }
 };
 
+struct devour_matter_damage_t final : public priest_spell_t
+{
+  double execute_percent;
+  double execute_modifier;
+  int parent_chain_number = 0;
+
+  devour_matter_damage_t( priest_t& p, const spell_data_t* swd_spell )
+    : priest_spell_t( "shadow_word_death_devour_matter", p, swd_spell ),
+      execute_percent( swd_spell->effectN( 3 ).base_value() ),
+      execute_modifier( swd_spell->effectN( 4 ).percent() )
+  {
+    background                 = true;
+    affected_by_shadow_weaving = true;
+    triggers_atonement         = false;
+    spell_power_mod.direct     = swd_spell->effectN( 1 ).sp_coeff();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    if ( parent_chain_number > 0 )
+      m *= priest().talents.shared.deaths_torment->effectN( 2 ).percent();
+
+    if ( s->target->health_percentage() < execute_percent )
+      m *= 1 + execute_modifier;
+
+    return m;
+  }
+
+  double composite_energize_amount( const action_state_t* /* s */ ) const override
+  {
+    double ea = priest().talents.voidweaver.devour_matter->effectN( 3 ).base_value();
+
+    if ( parent_chain_number > 0 )
+      ea *= priest().talents.shared.deaths_torment->effectN( 2 ).percent();
+
+    return ea;
+  }
+};
+
 struct shadow_word_death_t final : public priest_spell_t
 {
 protected:
@@ -1098,6 +1142,7 @@ public:
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
   propagate_const<expiation_t*> child_expiation;
   action_t* child_searing_light;
+  propagate_const<devour_matter_damage_t*> child_devour_matter;
   timespan_t execute_override;
 
   // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1359
@@ -1108,6 +1153,7 @@ public:
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light ),
+      child_devour_matter( nullptr ),
       execute_override( execute_override )
   {
     affected_by_shadow_weaving   = true;
@@ -1123,13 +1169,9 @@ public:
 
     triggers_atonement = true;
 
-    // Devour Matter gives you more Insanity and an extra amount of sp coeff
-    // TODO: Refactor this into an additional hit (same spell ID)
-    // This additional hit has an independet crit chance, gets the execute mod, and gets the deathspeaker mod
-    if ( priest().options.force_devour_matter && priest().talents.voidweaver.devour_matter.enabled() )
+    if ( priest().talents.voidweaver.devour_matter.enabled() )
     {
-      energize_amount += priest().talents.voidweaver.devour_matter->effectN( 3 ).base_value();
-      spell_power_mod.direct += data().effectN( 1 ).sp_coeff();
+      child_devour_matter = new devour_matter_damage_t( priest(), &data() );
     }
   }
 
@@ -1242,6 +1284,14 @@ public:
   {
     ab::impact( s );
 
+    if ( child_devour_matter && result_is_hit( s->result ) &&
+         ( priest().options.force_devour_matter || s->target->has_absorb() ) )
+    {
+      child_devour_matter->parent_chain_number = cast_state( s )->chain_number;
+      child_devour_matter->set_target( s->target );
+      child_devour_matter->execute();
+    }
+
     if ( priest().talents.shared.inescapable_torment.enabled() )
     {
       auto mod = 1.0;
@@ -1301,12 +1351,12 @@ public:
           shadow_word_death_t* child_death          = priest().background_actions.shadow_word_death.get();
           child_death->idol_of_nzoth_execute_stacks = 1;
           state_t* state                            = child_death->cast_state( child_death->get_state() );
-          
+
           child_death->set_target( s->target );
 
-          state->target                             = s->target;
-          state->chain_number                       = curr_state->chain_number + 1;
-          state->max_chain                          = number_of_chains;
+          state->target       = s->target;
+          state->chain_number = curr_state->chain_number + 1;
+          state->max_chain    = number_of_chains;
 
           child_death->snapshot_state( state, child_death->amount_type( state ) );
 
@@ -1803,12 +1853,14 @@ struct power_word_shield_t final : public priest_absorb_t
 {
   double insanity;
   timespan_t atonement_duration;
+  const spell_data_t* bns_data;
 
   power_word_shield_t( priest_t& p, util::string_view options_str )
     : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ),
       insanity( priest().specs.hallucinations->effectN( 1 ).resource() ),
       atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() +
-                                                    p.talents.discipline.indemnity->effectN( 1 ).base_value() ) )
+                                                    p.talents.discipline.indemnity->effectN( 1 ).base_value() ) ),
+      bns_data( p.talents.body_and_soul.ok() ? p.find_spell( 65081 ) : nullptr )
   {
     parse_options( options_str );
 
@@ -1834,6 +1886,17 @@ struct power_word_shield_t final : public priest_absorb_t
 
     auto buff = make_buff<buffs::power_word_shield_buff_t>( &priest(), s->target );
     buff->set_absorb_source( stats );
+
+    if ( bns_data )
+    {
+      auto bns = make_buff( actor_pair_t( s->target, &priest() ), "body_and_soul", bns_data )
+                     ->set_movement_speed_buff_from_data();
+
+      buff->add_stack_change_callback( [ bns ]( buff_t*, int old_, int new_ ) {
+        if ( !old_ && new_ )
+          bns->trigger();
+      } );
+    }
 
     return buff;
   }
@@ -1870,11 +1933,6 @@ struct power_word_shield_t final : public priest_absorb_t
   void impact( action_state_t* s ) override
   {
     priest_absorb_t::impact( s );
-
-    if ( priest().talents.body_and_soul.enabled() && s->target->buffs.body_and_soul )
-    {
-      s->target->buffs.body_and_soul->trigger();
-    }
 
     if ( priest().talents.discipline.atonement.enabled() )
     {
@@ -2211,8 +2269,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
                           // size_t idx = std::clamp( as<int>( p.allies_with_atonement.size() ) - 1, 0, 19 );
                         } );
 
-  buffs.resonant_energy = make_buff_fallback( p.talents.archon.resonant_energy.enabled(), *this, "resonant_energy",
-                                              p.talents.archon.resonant_energy_shadow );
+  buffs.resonant_energy = make_buff_fallback( p.talents.archon.resonant_energy.enabled() && !p.is_ptr(), *this,
+                                              "resonant_energy", p.talents.archon.resonant_energy_shadow );
 
   buffs.horrific_visions = make_buff( *this, "horrific_visions", p.talents.shadow.horrific_visions );
 }
@@ -2332,6 +2390,7 @@ void priest_t::create_procs()
   procs.void_apparition_yogg            = get_proc( "Idol of Yogg-Saron from Tentacle Slam" );
   procs.void_apparition_cthun           = get_proc( "Idol of C'Thun from Tentacle Slam" );
   procs.tentacle_slam_idol              = get_proc( "Idol spell from Tentacle Slam" );
+  procs.midnight_s2_4pc_void_volley     = get_proc( "Void Volley access from Midnight Season 2 4pc" );
   // Holy
   procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
   procs.divine_image          = get_proc( "Divine Image from Holy Words" );
@@ -2654,6 +2713,22 @@ double priest_t::composite_attribute_multiplier( attribute_e attr ) const
   }
 
   return mul;
+}
+
+double priest_t::composite_mitigation_multiplier( const action_state_t* s, school_e school, bool direct ) const
+{
+  double m = player_t::composite_mitigation_multiplier( s, school, direct );
+
+  if ( talents.translucent_image.ok() && buffs.fade->check() )
+    m *= 1.0 + buffs.fade->check_value();
+
+  if ( buffs.protective_light->check() )
+    m *= 1.0 + buffs.protective_light->check_value();
+
+  if ( buffs.dispersion->check() )
+    m *= 1.0 + specs.dispersion->effectN( 1 ).percent();
+
+  return m;
 }
 
 void priest_t::pre_analyze_hook()
@@ -3093,6 +3168,8 @@ void priest_t::init_spells()
   talents.archon.sustained_potency_buff   = find_spell( 454002 );
   talents.archon.resonant_energy          = HT( "Resonant Energy" );
   talents.archon.resonant_energy_shadow   = find_spell( 453850 );
+  talents.archon.resonant_energy_healing  = find_spell( 453846 );
+  talents.archon.resonant_energy_damage   = find_spell( 453850 );
   talents.archon.energy_cycle             = HT( "Energy Cycle" );
   talents.archon.focused_outburst         = HT( "Focused Outburst" );
   talents.archon.divine_halo              = HT( "Divine Halo" );
@@ -3164,7 +3241,7 @@ void priest_t::create_buffs()
   // Generic buffs
   buffs.desperate_prayer  = make_buff<buffs::desperate_prayer_t>( *this );
   buffs.power_word_shield = new buffs::power_word_shield_buff_t( this, this );
-  buffs.fade              = make_buff( this, "fade", find_class_spell( "Fade" ) )->set_default_value_from_effect( 1 );
+  buffs.fade              = make_buff( this, "fade", find_class_spell( "Fade" ) )->set_default_value_from_effect( 4 );
   buffs.levitate          = make_buff( this, "levitate", specs.levitate_buff )->set_duration( timespan_t::zero() );
 
   // Shared talent buffs
@@ -3265,6 +3342,13 @@ void priest_t::create_buffs()
 
   buffs.sustained_potency = make_buff_fallback( talents.archon.sustained_potency.enabled(), this, "sustained_potency",
                                                 talents.archon.sustained_potency_buff );
+
+  buffs.resonant_energy_healing =
+      make_buff_fallback( talents.archon.resonant_energy.enabled() && is_ptr(), this, "resonant_energy_healing",
+                          talents.archon.resonant_energy_healing );
+
+  buffs.resonant_energy_damage = make_buff_fallback( talents.archon.resonant_energy.enabled() && is_ptr(), this,
+                                                     "resonant_energy_damage", talents.archon.resonant_energy_damage );
 
   buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", talents.archon.mind_flay_insanity_buff );
 
@@ -3783,26 +3867,6 @@ void priest_t::reset()
   state = state_t();
 }
 
-void priest_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
-{
-  base_t::target_mitigation( school, dt, s );
-
-  if ( buffs.dispersion->check() )
-  {
-    s->result_amount *= 1.0 + buffs.dispersion->data().effectN( 1 ).percent();
-  }
-
-  if ( talents.translucent_image.enabled() && buffs.fade->up() )
-  {
-    s->result_amount *= 1.0 + talents.fade->effectN( 4 ).percent();
-  }
-
-  if ( talents.protective_light.enabled() && buffs.protective_light->up() )
-  {
-    s->result_amount *= 1.0 + talents.protective_light_buff->effectN( 1 ).percent();
-  }
-}
-
 void priest_t::create_options()
 {
   base_t::create_options();
@@ -3935,7 +3999,7 @@ void priest_t::spawn_idol_of_cthun( action_state_t* s )
 
   if ( talents.shadow.void_apparitions_1.enabled() )
   {
-    trigger_shadowy_apparitions( procs.shadowy_apparition_cthun );
+    trigger_shadowy_apparitions( procs.shadowy_apparition_cthun, s->target );
   }
 }
 
@@ -4169,7 +4233,7 @@ public:
       return;
 
     // Only show this when you are able to extend Voidform
-    if ( p.talents.shadow.ancient_madness.enabled() )
+    if ( p.talents.shadow.ancient_madness.enabled() || p.talents.archon.sustained_potency.enabled() )
     {
       html_customsection_voidform( os );
     }
@@ -4200,26 +4264,37 @@ struct priest_module_t final : public module_t
   {
     return true;
   }
-  void init( player_t* p ) const override
+  void register_actor_initializers( sim_t* sim ) const override
   {
-    p->buffs.body_and_soul    = make_buff( p, "body_and_soul", p->find_spell( 65081 ) );
-    p->buffs.angelic_feather  = make_buff( p, "angelic_feather", p->find_spell( 121557 ) );
-    p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
-    p->buffs.pain_suppression = make_buff( p, "pain_suppression",
-                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
+    sim->register_actor_initializer(
+        INIT_ACTOR_CREATE_BUFFS + offset(),
+        []( player_t* p ) {
+          if ( !p->is_player() )
+            return;
+
+          // Always create PI as it's a commonly simmed external
+          auto pi_buff = make_buff( p, "power_infusion", p->find_spell( 10060 ) )
+                             ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                             ->set_default_value_from_effect_type( A_HASTE_ALL )
+                             ->set_cooldown( 0_ms );
+
+          if ( p->type == PRIEST )
+          {
+            debug_cast<priest_t*>( p )->buffs.power_infusion = pi_buff;
+          }
+
+          if ( !p->external_buffs.power_infusion.empty() )
+          {
+            p->register_timed_buff_triggers( pi_buff, p->external_buffs.power_infusion );
+          }
+        },
+        "create_buffs_priest" );
   }
   void static_init() const override
   {
     items::init();
   }
   void register_hotfixes() const override
-  {
-  }
-  void combat_begin( sim_t* ) const override
-  {
-  }
-  void combat_end( sim_t* ) const override
   {
   }
 };

@@ -84,6 +84,8 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* sanctify;
     buff_t* crusaders_resolve;
     buff_t* empyrean_hammer;
+    buff_t* consecration;
+    buff_t* seal_of_reprisal;
   } debuff;
 
   struct
@@ -128,6 +130,7 @@ public:
     action_t* hammer_of_light_cons;
 
     action_t* expurgation;
+    action_t* divine_arbiter;
 
     action_t* divine_hammer_tick;
 
@@ -152,6 +155,10 @@ public:
   {
     // Shared
     buff_t* avenging_wrath;
+    buff_t* divine_arbiter_divine_storm;
+    buff_t* divine_arbiter_hammer_of_light;
+    buff_t* divine_arbiter_verdict;
+    buff_t* divine_power;
     buff_t* divine_purpose;
     buff_t* divine_shield;
     buff_t* divine_steed;
@@ -291,6 +298,7 @@ public:
     const spell_data_t* shield_of_the_righteous;
     const spell_data_t* holy_paladin;
     const spell_data_t* protection_paladin;
+    const spell_data_t* protection_paladin_2;
     const spell_data_t* retribution_paladin;
     const spell_data_t* retribution_paladin_2;
     const spell_data_t* word_of_glory_2;
@@ -345,7 +353,6 @@ public:
     const spell_data_t* sanctuary;
 
     const spell_data_t* aegis_of_light;
-    const spell_data_t* aegis_of_light_2;
 
     const spell_data_t* art_of_war;
     const spell_data_t* art_of_war_2;
@@ -382,15 +389,27 @@ public:
     proc_t* grand_crusader_ror_hb;
   } procs;
 
+  struct proc_data_entries_t
+  {
+    proc_data_t crusading_strikes_energize;
+  } proc_data_entries;
+
   // Spells
   struct spells_t
   {
     const spell_data_t* avenging_wrath;
+    const spell_data_t* divine_arbiter_divine_storm;
+    const spell_data_t* divine_arbiter_hammer_of_light;
+    const spell_data_t* divine_arbiter_verdict;
+    const spell_data_t* divine_power;
     const spell_data_t* divine_purpose_buff;
     const spell_data_t* judgment_debuff;
     const spell_data_t* sanctify;
+    const spell_data_t* consecration;
+    const spell_data_t* seal_of_reprisal;
 
     const spell_data_t* sotr_buff;
+    const spell_data_t* standing_in_consecration_buff;
 
     const spell_data_t* consecrated_blade;
     const spell_data_t* crusade;
@@ -434,6 +453,9 @@ public:
     const spell_data_t* judgment_ret_dt;
     const spell_data_t* hammer_of_wrath_ret;
     const spell_data_t* hammer_of_wrath_ret_dt;
+
+    // Tier stuff
+    const spell_data_t* unrelenting_edict;
   } spells;
 
   struct rppms_t {
@@ -762,67 +784,71 @@ public:
 
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
-  virtual void init_assessors() override;
-  virtual void init_base_stats() override;
-  virtual void init_gains() override;
-  virtual void init_procs() override;
-  virtual void init() override;
-  virtual void init_scaling() override;
-  virtual void create_buffs() override;
-  virtual void init_special_effects() override;
-  virtual void init_rng() override;
-  virtual void init_spells() override;
-  virtual void init_action_list() override;
-  virtual void init_blizzard_action_list() override;
+  void init_assessors() override;
+  void init_base_stats() override;
+  void init_gains() override;
+  void init_procs() override;
+  void init() override;
+  void init_scaling() override;
+  void create_buffs() override;
+  void init_special_effects() override;
+  void init_rng() override;
+  void init_spells() override;
+  void init_action_list() override;
+  void init_blizzard_action_list() override;
+  void init_proc_data_entries();
   std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const override;
   parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
                                                             const assisted_combat_step_data_t& step ) const override;
-  virtual bool validate_fight_style( fight_style_e style ) const override;
-  virtual bool validate_actor() override;
-  virtual void reset() override;
-  virtual std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
+  bool validate_fight_style( fight_style_e style ) const override;
+  bool validate_actor() override;
+  void reset() override;
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
 
   // player stat functions
-  virtual double composite_player_multiplier( school_e ) const override;
-  virtual double composite_attribute_multiplier( attribute_e attr ) const override;
-  virtual double composite_attack_power_multiplier() const override;
-  virtual double composite_bonus_armor() const override;
-  virtual double composite_melee_crit_chance() const override;
-  virtual double composite_spell_crit_chance() const override;
-  virtual double composite_damage_versatility() const override;
-  virtual double composite_heal_versatility() const override;
-  virtual double composite_mitigation_versatility() const override;
-  virtual double composite_mastery() const override;
-  virtual double composite_melee_haste() const override;
-  virtual double composite_melee_auto_attack_speed() const override;
-  virtual double composite_spell_haste() const override;
-  virtual double composite_crit_avoidance() const override;
-  virtual double composite_parry() const override;
-  virtual double composite_parry_rating() const override;
-  virtual double composite_block() const override;
-  virtual double non_stacking_movement_modifier() const override;
-  virtual double composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  virtual double composite_base_armor_multiplier() const override;
+  double composite_player_multiplier( school_e ) const override;
+  double composite_attribute_multiplier( attribute_e attr ) const override;
+  double composite_attack_power_multiplier() const override;
+  double composite_bonus_armor() const override;
+  double composite_melee_crit_chance() const override;
+  double composite_spell_crit_chance() const override;
+  double composite_damage_versatility() const override;
+  double composite_heal_versatility() const override;
+  double composite_mitigation_versatility() const override;
+  double composite_mastery() const override;
+  double composite_melee_haste() const override;
+  double composite_melee_auto_attack_speed() const override;
+  double composite_spell_haste() const override;
+  double composite_crit_avoidance() const override;
+  double composite_parry() const override;
+  double composite_parry_rating() const override;
+  double composite_block() const override;
+  double composite_mitigation_multiplier( const action_state_t*, school_e, bool direct ) const override;
+  double composite_mitigation_from_player_multiplier( player_t*, const action_state_t*, school_e, bool direct ) const override;
+  double non_stacking_movement_modifier() const override;
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double composite_base_armor_multiplier() const override;
 
-  virtual double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr,
+  double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr,
                                 action_t* action = nullptr ) override;
-  virtual double resource_loss( resource_e resource_type, double amount, gain_t* source = nullptr,
+  double resource_loss( resource_e resource_type, double amount, gain_t* source = nullptr,
                                 action_t* action = nullptr ) override;
 
   // combat outcome functions
-  virtual void assess_damage( school_e, result_amount_type, action_state_t* ) override;
-  virtual void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
+  void assess_damage( school_e, result_amount_type, action_state_t* ) override;
+  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
+  block_result_e target_block_resolution( const action_state_t* ) const override;
 
-  virtual void invalidate_cache( cache_e ) override;
-  virtual void create_options() override;
-  virtual double matching_gear_multiplier( attribute_e attr ) const override;
-  virtual void create_actions() override;
-  virtual action_t* create_action( util::string_view name, util::string_view options_str ) override;
-  virtual resource_e primary_resource() const override;
-  virtual role_e primary_role() const override;
-  virtual stat_e convert_hybrid_stat( stat_e s ) const override;
-  virtual void combat_begin() override;
-  virtual void copy_from( player_t* ) override;
+  void invalidate_cache( cache_e ) override;
+  void create_options() override;
+  double matching_gear_multiplier( attribute_e attr ) const override;
+  void create_actions() override;
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
+  resource_e primary_resource() const override;
+  role_e primary_role() const override;
+  stat_e convert_hybrid_stat( stat_e s ) const override;
+  void combat_begin() override;
+  void copy_from( player_t* ) override;
 
   void trigger_grand_crusader( grand_crusader_source source = GC_NORMAL );
   void trigger_laying_down_arms();
@@ -840,6 +866,9 @@ public:
   void trigger_greater_judgment( paladin_td_t* targetdata );
   bool get_how_availability() const;
   bool wings_up() const;
+  bool templar() const;
+  bool lightsmith() const;
+  bool herald_of_the_sun() const;
 
   std::unique_ptr<expr_t> create_consecration_expression( util::string_view expr_str );
   std::unique_ptr<expr_t> create_aw_expression( util::string_view expr_str );
@@ -1209,15 +1238,18 @@ public:
         if ( td->debuff.judgment->up() )
           td->debuff.judgment->decrement();
       }
-      if ( p()->buffs.lightsmith.masterwork_weapon->up() )
+      if ( !p()->is_ptr() )
       {
-        p()->buffs.lightsmith.masterwork_weapon->decrement();
-        p()->cast_lesser_armament( 1, LESSER_WEAPON );
-      }
-      if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
-      {
-        p()->buffs.lightsmith.masterwork_bulwark->decrement();
-        p()->cast_lesser_armament( 1, LESSER_BULWARK );
+        if ( p()->buffs.lightsmith.masterwork_weapon->up() )
+        {
+          p()->buffs.lightsmith.masterwork_weapon->decrement();
+          p()->cast_lesser_armament( 1, LESSER_WEAPON );
+        }
+        if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
+        {
+          p()->buffs.lightsmith.masterwork_bulwark->decrement();
+          p()->cast_lesser_armament( 1, LESSER_BULWARK );
+        }
       }
     }
 
@@ -1337,7 +1369,10 @@ struct paladin_spell_t : public paladin_spell_base_t<spell_t>
 
 struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 {
-  paladin_heal_t( util::string_view n, paladin_t* p, const spell_data_t* s = spell_data_t::nil() ) : base_t( n, p, s )
+  double beacon_pct;
+
+  paladin_heal_t( util::string_view n, paladin_t* p, const spell_data_t* s = spell_data_t::nil() )
+    : base_t( n, p, s ), beacon_pct( p->find_spell( 53563 )->effectN( 1 ).percent() )
   {
     may_crit      = true;
     tick_may_crit = true;
@@ -1361,9 +1396,6 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
     if ( !p()->beacon_target )
       return;
 
-    if ( !p()->beacon_target->buffs.beacon_of_light->up() )
-      return;
-
     if ( proc )
       return;
 
@@ -1371,8 +1403,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
     p()->active.beacon_of_light->target = p()->beacon_target;
 
-    double amount = s->result_amount;
-    amount *= p()->beacon_target->buffs.beacon_of_light->data().effectN( 1 ).percent();
+    double amount = s->result_amount * beacon_pct;
 
     p()->active.beacon_of_light->base_dd_min = amount;
     p()->active.beacon_of_light->base_dd_max = amount;
@@ -1409,6 +1440,7 @@ private:
 public:
   using base_t = holy_power_consumer_t;
   bool is_divine_storm;
+  bool is_divine_arbiter_verdict;
   bool is_wog;
   bool is_sotr;
   bool doesnt_consume_dp;
@@ -1425,6 +1457,7 @@ public:
   holy_power_consumer_t( util::string_view n, paladin_t* player, const spell_data_t* s )
     : ab( n, player, s ),
       is_divine_storm( false ),
+      is_divine_arbiter_verdict( false ),
       is_wog( false ),
       is_sotr( false ),
       doesnt_consume_dp( false ),
@@ -1532,6 +1565,7 @@ public:
     }
 
     // For Holy Power spending stuff, SotR with Instrument always counts as 3 Holy Power spent
+    // Probably not a bug, since it now doesn't munch 2 HP
     if (p->bugs && is_sotr && p->talents.instrument_of_the_divine->ok() && cost() > 3.0)
     {
       num_hopo_spent = 3.0;
@@ -1628,7 +1662,8 @@ public:
         p->buffs.sentinel_decay->extend_duration( timespan_t::from_seconds( 1 ) );
       }
       // 2025-12-18 Instrument of the Divine talented extends Sentinel's decay by double the time, regardless of Holy Power spent.
-      if (p->bugs && p->talents.instrument_of_the_divine->ok())
+      // Bug is fixed on PTR
+      if (p->bugs && p->talents.instrument_of_the_divine->ok() && !p->is_ptr() )
       {
         p->buffs.sentinel_decay->extend_duration( timespan_t::from_seconds( 1 ) );
       }
@@ -1644,6 +1679,52 @@ public:
       if ( p->buffs.divine_purpose->up() && !doesnt_consume_dp )
       {
         p->buffs.divine_purpose->expire();
+        if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, MID2, B2 ) )
+          p->buffs.divine_power->trigger();
+        if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, MID2, B4 ) &&
+             !p->buffs.divine_arbiter_verdict->up() && !p->buffs.divine_arbiter_divine_storm->up() &&
+             !p->buffs.divine_arbiter_hammer_of_light->up() )
+        {
+          if ( is_hammer_of_light_main )
+            p->buffs.divine_arbiter_hammer_of_light->trigger();
+          else if ( is_divine_storm )
+            p->buffs.divine_arbiter_divine_storm->trigger();
+          else if ( is_divine_arbiter_verdict )
+            p->buffs.divine_arbiter_verdict->trigger();
+        }
+      }
+    }
+
+    if ( !ab::background && p->sets->has_set_bonus( PALADIN_RETRIBUTION, MID2, B4 ) )
+    {
+      buff_t* divine_arbiter = nullptr;
+
+      if ( is_hammer_of_light_main )
+      {
+        if ( p->buffs.divine_arbiter_divine_storm->up() )
+          divine_arbiter = p->buffs.divine_arbiter_divine_storm;
+        else if ( p->buffs.divine_arbiter_verdict->up() )
+          divine_arbiter = p->buffs.divine_arbiter_verdict;
+      }
+      else if ( is_divine_storm )
+      {
+        if ( p->buffs.divine_arbiter_hammer_of_light->up() )
+          divine_arbiter = p->buffs.divine_arbiter_hammer_of_light;
+        else if ( p->buffs.divine_arbiter_verdict->up() )
+          divine_arbiter = p->buffs.divine_arbiter_verdict;
+      }
+      else if ( is_divine_arbiter_verdict )
+      {
+        if ( p->buffs.divine_arbiter_divine_storm->up() )
+          divine_arbiter = p->buffs.divine_arbiter_divine_storm;
+        else if ( p->buffs.divine_arbiter_hammer_of_light->up() )
+          divine_arbiter = p->buffs.divine_arbiter_hammer_of_light;
+      }
+
+      if ( divine_arbiter )
+      {
+        divine_arbiter->expire();
+        p->active.divine_arbiter->execute_on_target( ab::execute_state->target );
       }
     }
 
@@ -1703,12 +1784,42 @@ struct delayed_execute_event_t : public event_t
   }
 };
 
+struct delayed_execute_on_target_event_t : public event_t
+{
+  action_t* action;
+  player_t* target;
+  double amount;
+
+  delayed_execute_on_target_event_t(paladin_t* p, action_t* a, player_t* t, double amount, timespan_t delay)
+    : event_t( *p->sim, delay ), action(a), target(t), amount(amount)
+  {
+    assert( action->background );
+  }
+  const char* name() const override
+  {
+    return action->name();
+  }
+
+  void execute() override
+  {
+    if (!target->is_sleeping())
+    {
+      action->execute_on_target( target, amount );
+    }
+  }
+};
+
 struct avenging_wrath_t : public paladin_spell_t
 {
   avenging_wrath_t( paladin_t* p );
   avenging_wrath_t( paladin_t* p, util::string_view options_str );
   void execute() override;
   action_state_t* new_state() override;
+};
+struct unrelenting_edict_t : public paladin_spell_t
+{
+  unrelenting_edict_t( paladin_t* p, util::string_view name );
+  void do_execute( action_state_t* s );
 };
 struct hammer_and_anvil_t : public paladin_spell_t
 {
@@ -1734,6 +1845,7 @@ private:
 public:
   bool triggers_second_sunrise   = false;
   bool triggers_divine_resonance = false;
+  unrelenting_edict_t* ue;
   hammer_of_wrath_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str,
                      const spell_data_t* s = spell_data_t::nil() );
@@ -1746,6 +1858,7 @@ public:
 struct judgment_t : public judgment_base_t
 {
   bool triggered_hammer_and_anvil;
+  unrelenting_edict_t* ue;
 
   judgment_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   judgment_t( paladin_t* p, util::string_view name, util::string_view options_str,
@@ -1753,6 +1866,7 @@ struct judgment_t : public judgment_base_t
 
   proc_types proc_type() const override;
   void execute() override;
+  void impact(action_state_t* s) override;
   bool action_ready() override;
 };
 

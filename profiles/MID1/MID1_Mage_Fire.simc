@@ -6,11 +6,12 @@ race=orc
 role=spell
 position=ranged_back
 talents=C8DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDZmZGAAAGAwMz0sssMDAwmZmx2wYmBAAAAAsZmZmZAAwYGzYmZMz2AwMDxMGDmhB
+omnium_talents=136822:1/136816:1/136817:1/136820:1/136814:1
 
 # Default consumables
 potion=lights_potential_2
-flask=flask_of_the_magisters_2
-food=queldorei_medley
+flask=flask_of_the_blood_knights_2
+food=silvermoon_parade
 augmentation=void_touched_augment_rune
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
@@ -29,7 +30,7 @@ actions.precombat+=/variable,name=flamestriking,op=reset,default=1
 actions.precombat+=/variable,name=ff_combustion_flamestrike,if=!talent.spellfire_spheres,value=4+(999*!talent.fuel_the_fire)
 # Flamestrike at 8 targets.
 actions.precombat+=/variable,name=ff_filler_flamestrike,if=!talent.spellfire_spheres,value=8+(999*!talent.fuel_the_fire)
-# Flamestrike at 4 targets during Combustion. Do at 3 targets if you don't care about prio dmg.
+# Flamestrike at 4 targets during Combustion.
 actions.precombat+=/variable,name=sf_combustion_flamestrike,if=talent.spellfire_spheres,value=4+(999*!talent.fuel_the_fire)
 # Flamestrike at 4 targets.
 actions.precombat+=/variable,name=sf_filler_flamestrike,if=talent.spellfire_spheres,value=4+(999*!talent.fuel_the_fire)
@@ -37,7 +38,7 @@ actions.precombat+=/variable,name=sf_filler_flamestrike,if=talent.spellfire_sphe
 actions.precombat+=/variable,name=combustion_delay,value=(18*talent.firestarter)-(10*(expected_combat_length<60)+10*(expected_combat_length<30))-10*(((expected_combat_length%%60)>=25)&((expected_combat_length%%60)<=40))
 actions.precombat+=/variable,name=15ssteroid_trinket_equipped,op=set,value=equipped.nevermelting_ice_crystal|equipped.lily_of_the_eternal_weave|equipped.sunblood_amethyst|equipped.astral_gladiators_badge_of_ferocity|equipped.arazs_ritual_forge|equipped.freightrunners_flask|equipped.emberwing_feather|equipped.vaelgors_final_stare|equipped.galactic_gladiators_badge_of_ferocity
 actions.precombat+=/variable,name=10ssteroid_trinket_equipped,op=set,value=equipped.ever_collapsing_void_fissure
-actions.precombat+=/variable,name=nonsteroid_trinket_equipped,op=set,value=equipped.mereldars_toll|equipped.perfidious_projector|equipped.chaotic_nethergate|equipped.wraps_of_cosmic_madness|equipped.astalors_anguish_agitator
+actions.precombat+=/variable,name=nonsteroid_trinket_equipped,op=set,value=equipped.mereldars_toll|equipped.perfidious_projector|equipped.chaotic_nethergate|equipped.wraps_of_cosmic_madness|equipped.astalors_anguish_agitator|equipped.litany_of_lightblind_wrath|equipped.gloom_spattered_dreadscale
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
 # Precast one of these.
@@ -56,17 +57,17 @@ actions+=/run_action_list,name=sf_filler
 actions.cds=variable,name=combustion_precast_time,value=(action.scorch.cast_time*!buff.pyroclasm.up*scorch_execute.active)+(action.fireball.cast_time*!buff.pyroclasm.up*!scorch_execute.active)+(action.pyroblast.cast_time*buff.pyroclasm.up)-variable.cast_remains_time
 # Use Potion on pull. Delay by about 8 seconds if playing with Firestarter as Sunfury.
 actions.cds+=/potion,if=time>=(8*(talent.firestarter&talent.spellfire_spheres))|buff.combustion.remains>6|fight_remains<35
-# Force Vaelgor as highest priority on-use trinket, if potentially two on-use trinkets are equipped.
-actions.cds+=/use_item,name=vaelgors_final_stare,if=buff.combustion.remains>6|fight_remains<20
+# Vaelgor is prioritised during Bloodlust.
+actions.cds+=/use_item,name=vaelgors_final_stare,if=buff.combustion.remains>6&buff.bloodlust.up|fight_remains<20
 actions.cds+=/use_item,name=emberwing_feather,if=buff.combustion.remains>6|fight_remains<20
-actions.cds+=/use_item,name=nevermelting_ice_crystal,if=buff.combustion.remains>6|fight_remains<20
-actions.cds+=/use_item,name=freightrunners_flask,if=buff.combustion.remains>6|fight_remains<20
-actions.cds+=/use_item,name=astral_gladiators_badge_of_ferocity,if=buff.combustion.remains>6|fight_remains<20
+actions.cds+=/use_item,name=vaelgors_final_stare,if=buff.combustion.remains>6|fight_remains<20
 actions.cds+=/use_item,name=galactic_gladiators_badge_of_ferocity,if=buff.combustion.remains>6|fight_remains<20
 actions.cds+=/use_item,name=ever_collapsing_void_fissure,if=buff.combustion.remains>6|fight_remains<20
+actions.cds+=/use_item,name=nevermelting_ice_crystal,if=buff.combustion.remains>6|fight_remains<20
+actions.cds+=/use_item,name=freightrunners_flask,if=buff.combustion.remains>6|fight_remains<20
 # Non-steriod trinkets are used outside cooldowns.
 actions.cds+=/use_items,if=variable.nonsteroid_trinket_equipped&time>variable.combustion_delay&buff.combustion.down&buff.hyperthermia.down&cooldown.combustion.remains>20
-actions.cds+=/use_items,if=buff.combustion.remains>6|fight_remains<20
+actions.cds+=/use_items,if=(buff.combustion.remains>6|fight_remains<20)
 actions.cds+=/ancestral_call,if=buff.combustion.remains>6|fight_remains<20
 actions.cds+=/berserking,if=buff.combustion.remains>6|fight_remains<20
 actions.cds+=/blood_fury,if=buff.combustion.remains>6|fight_remains<20
@@ -86,7 +87,7 @@ actions.ff_combustion+=/pyroblast,if=buff.hot_streak.react
 # Make sure Pyroclasm FINISHES its cast before Combustion ends.
 actions.ff_combustion+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.ff_combustion_flamestrike&variable.flamestriking&(buff.pyroclasm.up&cast_time<buff.combustion.remains)
 actions.ff_combustion+=/pyroblast,if=buff.pyroclasm.up&cast_time<buff.combustion.remains
-actions.ff_combustion+=/scorch,if=buff.heat_shimmer.react|talent.scald&target.health.pct<30&buff.frostfire_empowerment.down
+actions.ff_combustion+=/scorch,if=buff.heat_shimmer.react|talent.scald&scorch_execute.active&buff.frostfire_empowerment.down
 actions.ff_combustion+=/fireball
 actions.ff_combustion+=/call_action_list,name=fireblast,if=!talent.pyroclasm|(buff.pyroclasm.stack<2|action.pyroblast.executing&action.pyroblast.execute_remains>0.2&buff.pyroclasm.stack=2|cooldown.fire_blast.charges_fractional>=2|buff.combustion.remains<action.pyroblast.cast_time)&(active_enemies<variable.sf_combustion_flamestrike&variable.flamestriking|buff.pyroclasm.down|!action.flamestrike.executing)
 
@@ -104,12 +105,14 @@ actions.ff_filler+=/scorch,if=buff.heat_shimmer.react
 actions.ff_filler+=/fireball
 actions.ff_filler+=/call_action_list,name=fireblast
 
+# Cast Fire Blast if close to overcapping charges. This can result in casting Fire Blast twice during one cast, if you have ample time left of your cast.
+actions.fireblast=fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&cooldown.fire_blast.charges_fractional>=2.9&talent.firestarter
 # During Combustion/Hyperthermia, spend Fire Blasts with Heating Up.
-actions.fireblast=fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(buff.combustion.up|buff.hyperthermia.up)&(hot_streak_spells_in_flight+buff.heating_up.react=1)&gcd.remains<gcd.max
+actions.fireblast+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(buff.combustion.up|buff.hyperthermia.up)&(hot_streak_spells_in_flight+buff.heating_up.react=1)&gcd.remains<gcd.max
 # During non-execute filler, use Fire Blast with Heating Up while hardcasting Fireball/Frostfire Bolt/Pyroblast.
-actions.fireblast+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(action.fireball.executing&action.fireball.execute_remains>0.1|buff.pyroclasm.react&action.pyroblast.executing&action.pyroblast.execute_remains>0.1)&((target.health.pct>=30|!talent.scorch)&buff.heating_up.react)&(hot_streak_spells_in_flight+buff.heating_up.react=1)&gcd.remains<gcd.max
+actions.fireblast+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(action.fireball.executing&action.fireball.execute_remains>0.1|buff.pyroclasm.react&action.pyroblast.executing&action.pyroblast.execute_remains>0.1)&((!scorch_execute.active|!talent.scorch)&buff.heating_up.react)&(hot_streak_spells_in_flight+buff.heating_up.react=1)&gcd.remains<gcd.max
 # During execute, spend Fire Blasts while casting Scorch if you don't have Heating Up.
-actions.fireblast+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(target.health.pct<30&talent.scorch)&(hot_streak_spells_in_flight+buff.heating_up.react=0)&action.scorch.executing&buff.heat_shimmer.down&gcd.remains<gcd.max
+actions.fireblast+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&scorch_execute.active&(hot_streak_spells_in_flight+buff.heating_up.react=0)&action.scorch.executing&buff.heat_shimmer.down&gcd.remains<gcd.max
 # While delaying Combustion on pull (Firestarter or not), spend Fire Blasts with Heating Up freely. If not playing Firestarter, only do so during hardcasts.
 actions.fireblast+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&time<variable.combustion_delay&(talent.firestarter|action.fireball.executing&action.fireball.execute_remains>0.1|buff.pyroclasm.react&action.pyroblast.executing&action.pyroblast.execute_remains>0.1)&(hot_streak_spells_in_flight+buff.heating_up.react=1)&gcd.remains<gcd.max&cooldown.combustion.ready
 # When talented into Spontaneous Combustion, spend all Fire Blasts during the pre-cast going into Combustion regardless of Heating Up / Hot Streak status.
@@ -124,7 +127,7 @@ actions.sf_combustion=combustion,use_off_gcd=1,use_while_casting=1,if=action.sco
 actions.sf_combustion+=/meteor,if=buff.bloodlust.up&buff.combustion.down
 actions.sf_combustion+=/flamestrike,if=talent.fuel_the_fire&active_enemies>=variable.sf_combustion_flamestrike&variable.flamestriking&(buff.combustion.down&!buff.hot_streak.react&buff.pyroclasm.up)
 actions.sf_combustion+=/pyroblast,if=buff.combustion.down&!buff.hot_streak.react&buff.pyroclasm.up
-actions.sf_combustion+=/scorch,if=buff.combustion.down&(target.health.pct<30|active_enemies>=4)
+actions.sf_combustion+=/scorch,if=buff.combustion.down&(scorch_execute.active|active_enemies>=4)
 # If precasting Meteor into Combustion, can fit a Fireball unless Bloodlust is active.
 actions.sf_combustion+=/fireball,if=buff.combustion.down&(!prev_gcd.1.meteor|buff.bloodlust.down)
 # Make sure Meteor lands during Combustion.
@@ -153,36 +156,36 @@ actions.sf_filler+=/pyroblast,if=buff.pyroclasm.up&(cooldown.combustion.remains>
 # Meteor is used on CD with Blast Zone starting from the first Combustion. Without Blast Zone, it's used either purely during Combustion or within 12 seconds before if talented into Sunfury Execution.
 actions.sf_filler+=/meteor,if=(!talent.blast_zone&talent.sunfury_execution&cooldown.combustion.remains<12&buff.pyroclasm.stack<2)|(talent.blast_zone&time>variable.combustion_delay)
 # Cast Scorch in execute or with a Heat Shimmer proc.
-actions.sf_filler+=/scorch,if=talent.scald&target.health.pct<30|buff.heat_shimmer.react&(target.health.pct>=90|prev_gcd.1.pyroblast|prev_gcd.1.flamestrike)
+actions.sf_filler+=/scorch,if=talent.scald&scorch_execute.active|buff.heat_shimmer.react&(firestarter.active|prev_gcd.1.pyroblast|prev_gcd.1.flamestrike)
 actions.sf_filler+=/fireball
 actions.sf_filler+=/call_action_list,name=fireblast
 
-head=voidbreakers_veil,id=250060,bonus_id=1808/12214/12667/13575/13575/13575/12497,ilevel=289,gem_id=240967,enchant_id=7991
-neck=amulet_of_the_abyssal_hymn,id=250247,ilevel=289,gem_id=240892/240900
-shoulders=voidbreakers_leyline_nexi,id=250058,bonus_id=40/12675/12806/13335/13340/13574/13574/13574,ilevel=289,enchant_id=7973
-back=adherents_silken_shroud,id=239656,bonus_id=8793/8960/12214/12384,ilevel=285,crafted_stats=36/32
-chest=robes_of_endless_oblivion,id=249912,bonus_id=40/12676/12806/13335/13336,ilevel=289,enchant_id=7987
-wrists=martyrs_bindings,id=239648,bonus_id=1808/8960/12066/12214/12214/12214/12214/12384/12667/12497,ilevel=285,gem_id=240900,crafted_stats=36/49
-hands=voidbreakers_gloves,id=250061,bonus_id=40/12675/12806/13335/13337/13574/13574/13574,ilevel=289
-waist=whisperinscribed_sash,id=249376,bonus_id=1808,ilevel=289,gem_id=240900
-legs=voidbreakers_britches,id=250059,bonus_id=40/12676/12806/13335/13339/13575/13575/13575,ilevel=289,enchant_id=7935
-feet=voidbreakers_treads,id=250062,bonus_id=40/12806/13335,ilevel=289,enchant_id=8019
-finger1=eye_of_midnight,id=249920,ilevel=289,gem_id=240906/240900,enchant_id=7967
-finger2=bond_of_light,id=249369,ilevel=289,gem_id=240916,enchant_id=7967
-trinket1=emberwing_feather,id=250144,bonus_id=40/12806/13440,ilevel=298
-trinket2=gaze_of_the_alnseer,id=249343,bonus_id=40/12806/13335,ilevel=298
-main_hand=brazier_of_the_dissonant_dirge,id=249286,bonus_id=12792/13452,ilevel=298,enchant_id=8039
+head=voidbreakers_veil,id=250060,bonus_id=12806/13335/13668,ilevel=289,gem_id=240967,enchant_id=8017
+neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13335/13668,ilevel=289,gem_id=240892/240900
+shoulders=voidbreakers_leyline_nexi,id=250058,bonus_id=12806/13335,ilevel=289,enchant_id=8001
+back=adherents_silken_shroud,id=239656,bonus_id=8960/12066/12384,ilevel=285,crafted_stats=36/49
+chest=mycomancers_rot_robes,id=268284,bonus_id=13335/13786,ilevel=298,enchant_id=7987
+wrists=voracious_wristwraps,id=249315,bonus_id=12806/13335/13668,ilevel=289,gem_id=240900
+hands=voidbreakers_gloves,id=250061,bonus_id=12806/13335,ilevel=289
+waist=whisperinscribed_sash,id=249376,bonus_id=12806/13335/13668,ilevel=289,gem_id=240900
+legs=voidbreakers_britches,id=250059,bonus_id=12806/13335,ilevel=289,enchant_id=7935
+feet=voidbreakers_treads,id=250062,bonus_id=13335/13786,ilevel=298,enchant_id=7963
+finger1=omission_of_light,id=251093,bonus_id=12806/13440/13668,ilevel=289,gem_id=240906,enchant_id=7967
+finger2=sporecallers_blooming_loop,id=268290,bonus_id=13335/13668/13786,ilevel=298,gem_id=240916,enchant_id=7967
+trinket1=vaelgors_final_stare,id=249346,bonus_id=12806/13335/13654,ilevel=298
+trinket2=gaze_of_the_alnseer,id=249343,bonus_id=12806/13335/13654,ilevel=298
+main_hand=belomelorn_the_shattered_talon,id=249283,bonus_id=12806/13335/13654,ilevel=298,enchant_id=8039
+off_hand=alnhara_lantern,id=245769,bonus_id=8960/12066/12693/13655,ilevel=295,crafted_stats=36/49
 
 # Gear Summary
-# gear_ilvl=290.27
-# gear_stamina=17810
-# gear_intellect=1720
+# gear_ilvl=292.50
+# gear_stamina=18297
+# gear_intellect=1735
 # gear_crit_rating=87
-# gear_haste_rating=1201
-# gear_mastery_rating=1218
+# gear_haste_rating=1349
+# gear_mastery_rating=1081
 # gear_versatility_rating=59
-# gear_speed_rating=98
-# gear_avoidance_rating=411
-# gear_armor=531
+# gear_avoidance_rating=167
+# gear_armor=540
 # set_bonus=midnight_season_1_2pc=1
 # set_bonus=midnight_season_1_4pc=1

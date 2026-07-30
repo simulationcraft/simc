@@ -5,466 +5,533 @@ single_actor_batch=1
 deathknight=blood_1
 spec=blood
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 deathknight=blood_2
 spec=blood
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 deathknight=frost_dk_1
 spec=frost
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 deathknight=frost_dk_2
 spec=frost
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 deathknight=unholy_1
 spec=unholy
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 deathknight=unholy_2
 spec=unholy
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 demonhunter=havoc_1
 spec=havoc
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 demonhunter=havoc_2
 spec=havoc
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 demonhunter=vengeance_1
 spec=vengeance
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 demonhunter=vengeance_2
 spec=vengeance
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 demonhunter=devourer_1
 spec=devourer
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 demonhunter=devourer_2
 spec=devourer
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 druid=balance_1
 spec=balance
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 druid=balance_2
 spec=balance
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 druid=feral_1
 spec=feral
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 druid=feral_2
 spec=feral
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 druid=guardian_1
 spec=guardian
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 druid=guardian_2
 spec=guardian
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 druid=restoration_dru_1
 spec=restoration
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 druid=restoration_dru_2
 spec=restoration
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 #evoker=augmentation
 #spec=augmentation
 #load_default_gear=1
-#load_default_talents=1
+#class_talents=all
+#spec_talents=all
 
 evoker=devastation_1
 spec=devastation
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 evoker=devastation_2
 spec=devastation
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 hunter=beast_mastery_1
 spec=beast_mastery
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 hunter=beast_mastery_2
 spec=beast_mastery
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 hunter=marksmanship_1
 spec=marksmanship
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 hunter=marksmanship_2
 spec=marksmanship
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 hunter=survival_1
 spec=survival
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 hunter=survival_2
 spec=survival
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 mage=arcane_1
 spec=arcane
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 mage=arcane_2
 spec=arcane
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 mage=fire_1
 spec=fire
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 mage=fire_2
 spec=fire
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 mage=frost_1
 spec=frost
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 mage=frost_2
 spec=frost
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 monk=brewmaster_1
 spec=brewmaster
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 monk=brewmaster_2
 spec=brewmaster
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 monk=windwalker_1
 spec=windwalker
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 monk=windwalker_2
 spec=windwalker
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 paladin=protection_pal_1
 spec=protection
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 paladin=protection_pal_2
 spec=protection
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 paladin=retribution_1
 spec=retribution
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 paladin=retribution_2
 spec=retribution
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 priest=shadow_1
 spec=shadow
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 priest=shadow_2
 spec=shadow
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 rogue=assassination_1
 spec=assassination
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 rogue=assassination_2
 spec=assassination
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 rogue=outlaw_1
 spec=outlaw
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 rogue=outlaw_2
 spec=outlaw
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 rogue=subtlety_1
 spec=subtlety
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 rogue=subtlety_2
 spec=subtlety
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 shaman=elemental_1
 spec=elemental
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 shaman=elemental_2
 spec=elemental
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 shaman=enhancement_1
 spec=enhancement
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 shaman=enhancement_2
 spec=enhancement
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 warlock=affliction_1
 spec=affliction
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 warlock=affliction_2
 spec=affliction
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 warlock=demonology_1
 spec=demonology
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 warlock=demonology_2
 spec=demonology
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 warlock=destruction_1
 spec=destruction
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 warlock=destruction_2
 spec=destruction
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 warrior=arms_1
 spec=arms
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 warrior=arms_2
 spec=arms
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 warrior=fury_1
 spec=fury
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 warrior=fury_2
 spec=fury
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1
 
 warrior=protection_war_1
 spec=protection
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=1
 set_bonus=latest_2pc=1/latest_4pc=1
 
 warrior=protection_war_2
 spec=protection
 load_default_gear=1
-load_default_talents=1
+class_talents=all
+spec_talents=all
 hero_talents=2
 set_bonus=latest_2pc=1/latest_4pc=1

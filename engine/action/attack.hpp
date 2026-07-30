@@ -29,8 +29,6 @@ struct attack_t : public action_t
 
   double miss_chance( double hit, player_t* t ) const override;
   double dodge_chance( double /* expertise */, player_t* t ) const override;
-  double block_chance( action_state_t* s ) const override;
-  double crit_block_chance( action_state_t* s ) const override;
 
   double bonus_da( const action_state_t* ) const override;
   double action_multiplier() const override;

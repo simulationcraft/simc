@@ -779,6 +779,9 @@ buff_t::~buff_t() = default;
 
 const spell_data_t& buff_t::data_reporting() const
 {
+  if ( is_fallback )
+    return *spell_data_t::nil();
+
   if (s_data_reporting == spell_data_t::nil())
     return *s_data;
   else
@@ -828,17 +831,19 @@ void buff_t::update_trigger_calculations()
 
 buff_t* buff_t::set_chance( double chance )
 {
-  if ( !is_fallback )
-  {
-    manual_chance = chance;
-    update_trigger_calculations();
-  }
+  if ( is_fallback )
+    return this;
 
+  manual_chance = chance;
+  update_trigger_calculations();
   return this;
 }
 
 buff_t* buff_t::set_duration( timespan_t duration )
 {
+  if ( is_fallback )
+    return this;
+
   // Set Buff duration
   if ( duration == timespan_t::min() )
   {
@@ -869,12 +874,18 @@ buff_t* buff_t::set_duration( timespan_t duration )
 
 buff_t* buff_t::modify_duration( timespan_t duration )
 {
+  if ( is_fallback )
+    return this;
+
   set_duration( base_buff_duration + duration );
   return this;
 }
 
 buff_t* buff_t::set_duration_multiplier( double multiplier )
 {
+  if ( is_fallback )
+    return this;
+
   assert( multiplier >= 0.0 );
   buff_duration_multiplier = multiplier;
 
@@ -888,6 +899,9 @@ buff_t* buff_t::set_duration_multiplier( double multiplier )
 
 buff_t* buff_t::set_dynamic_time_duration_multiplier( double new_multiplier )
 {
+  if ( is_fallback )
+    return this;
+
   assert( new_multiplier > 0.0 );
   if ( new_multiplier == dynamic_time_duration_multiplier )
     return this;
@@ -940,10 +954,7 @@ buff_t* buff_t::set_dynamic_time_duration_multiplier( double new_multiplier )
 buff_t* buff_t::set_max_stack( int max_stack )
 {
   if ( is_fallback )
-  {
-    _max_stack = 1;
     return this;
-  }
 
   // _max_stack is initialized at -1, then set_max_stack is called in the buff_t base constructor
   if ( max_stack == -1 )
@@ -996,6 +1007,9 @@ buff_t* buff_t::set_max_stack( int max_stack )
 
 buff_t* buff_t::modify_max_stack( int max_stack )
 {
+  if ( is_fallback )
+    return this;
+
   set_max_stack( _max_stack + max_stack );
   return this;
 }
@@ -1003,12 +1017,18 @@ buff_t* buff_t::modify_max_stack( int max_stack )
 // TODO: find less blunt & hacky way to handle this
 buff_t* buff_t::increase_max_stack_uptime( int max_stack_uptime )
 {
+  if ( is_fallback )
+    return this;
+
   stack_uptime.resize( stack_uptime.size() + max_stack_uptime );
   return this;
 }
 
 buff_t* buff_t::set_initial_stack( int initial_stack )
 {
+  if ( is_fallback )
+    return this;
+
   // _initial_stack is initialized at -1, then set_initial_stack is called in the buff_t base constructor
   if ( initial_stack == -1 )
   {
@@ -1053,6 +1073,9 @@ buff_t* buff_t::set_initial_stack( int initial_stack )
 
 buff_t* buff_t::modify_initial_stack( int initial_stack )
 {
+  if ( is_fallback )
+    return this;
+
   assert( _initial_stack > 0 && "Cannot modify invalid initial stack. Use set_initial_stack() with a postive value.");
   set_initial_stack( _initial_stack + initial_stack );
   return this;
@@ -1060,6 +1083,9 @@ buff_t* buff_t::modify_initial_stack( int initial_stack )
 
 buff_t* buff_t::set_initial_stack_to_max_stack()
 {
+  if ( is_fallback )
+    return this;
+
   set_initial_stack( max_stack() );
   return this;
 }
@@ -1094,6 +1120,9 @@ buff_t* buff_t::set_consume_all_stacks( bool consume_all )
 
 buff_t* buff_t::set_cooldown( timespan_t duration )
 {
+  if ( is_fallback )
+    return this;
+
   if ( duration == timespan_t::min() )  // min() called in buff_t constructor
   {
     if ( data().ok() && data().cooldown() != 0_ms )
@@ -1116,6 +1145,9 @@ buff_t* buff_t::set_cooldown( timespan_t duration )
 
 buff_t* buff_t::set_internal_cooldown( timespan_t duration )
 {
+  if ( is_fallback )
+    return this;
+
   timespan_t _dur = timespan_t::min();
 
   if ( duration == timespan_t::min() )  // min() called in buff_t constructor
@@ -1151,12 +1183,18 @@ buff_t* buff_t::set_internal_cooldown( timespan_t duration )
 
 buff_t* buff_t::modify_cooldown( timespan_t duration )
 {
+  if ( is_fallback )
+    return this;
+
   set_cooldown( cooldown->duration + duration );
   return this;
 }
 
 buff_t* buff_t::set_period( timespan_t period )
 {
+  if ( is_fallback )
+    return this;
+
   if ( period == timespan_t::min() )
   {
     for ( size_t i = 1; i <= s_data->effect_count(); i++ )
@@ -1206,22 +1244,26 @@ buff_t* buff_t::set_period( timespan_t period )
 
 buff_t* buff_t::modify_period( timespan_t duration )
 {
+  if ( is_fallback )
+    return this;
+
   set_period( buff_period + duration );
   return this;
 }
 
 buff_t* buff_t::disable_ticking( bool v )
 {
+  if ( is_fallback )
+    return this;
+
   disable_tick_effects = v;
   return this;
 }
 
 buff_t* buff_t::add_invalidate( cache_e c )
 {
-  if ( c == CACHE_NONE || is_fallback )
-  {
+  if ( is_fallback || c == CACHE_NONE )
     return this;
-  }
 
   if ( range::find( invalidate_list, c ) == invalidate_list.end() )  // avoid duplication
   {
@@ -1238,13 +1280,16 @@ buff_t* buff_t::add_invalidate( cache_e c )
 
 buff_t* buff_t::set_schools( unsigned schools_ )
 {
+  if ( is_fallback )
+    return this;
+
   schools = schools_;
   return this;
 }
 
 buff_t* buff_t::set_schools_from_effect( size_t effect_idx )
 {
-  if ( !s_data->ok() )
+  if ( is_fallback || !s_data->ok() )
     return this;
 
   assert( effect_idx > 0 && effect_idx <= s_data->effect_count() );
@@ -1254,13 +1299,16 @@ buff_t* buff_t::set_schools_from_effect( size_t effect_idx )
 
 buff_t* buff_t::add_school( school_e school )
 {
+  if ( is_fallback )
+    return this;
+
   schools |= dbc::get_school_mask( school );
   return this;
 }
 
 buff_t* buff_t::set_pct_buff_type( stat_pct_buff_type type )
 {
-  if ( !player || type == STAT_PCT_BUFF_MAX )
+  if ( is_fallback || !player || type == STAT_PCT_BUFF_MAX )
     return this;
 
   auto& buffs = player->buffs.stat_pct_buffs[ type ];
@@ -1271,8 +1319,141 @@ buff_t* buff_t::set_pct_buff_type( stat_pct_buff_type type )
   return this;
 }
 
+buff_t* buff_t::set_pct_buff_type_from_effect( size_t effect_idx, bool set_default )
+{
+  if ( is_fallback || !data().ok() )
+    return this;
+
+  if ( set_default )
+    set_default_value_from_effect( effect_idx );
+
+  const auto& _eff = data().effectN( effect_idx );
+
+  switch ( _eff.subtype() )
+  {
+    case A_MOD_ALL_CRIT_CHANCE: return set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    case A_HASTE_ALL:           return set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    case A_MOD_VERSATILITY_PCT: return set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+    case A_MOD_MASTERY_PCT:     return set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+    case A_MOD_TOTAL_STAT_PERCENTAGE:
+    {
+      auto _misc = _eff.misc_value2();
+
+      for ( auto i = STAT_PCT_BUFF_STRENGTH; i < STAT_PCT_BUFF_MAX; ++i )
+        if ( _misc & ( 0b1 << ( i - STAT_PCT_BUFF_STRENGTH ) ) )
+          set_pct_buff_type( i );
+
+      break;
+    }
+    default: break;
+  }
+
+  return this;
+}
+
+buff_t* buff_t::set_pct_buff_type_from_data( bool set_default )
+{
+  if ( is_fallback )
+    return this;
+
+  std::vector<double> validation;
+
+  for ( const auto& _eff : data().effects() )
+  {
+    switch ( _eff.subtype() )
+    {
+      case A_MOD_ALL_CRIT_CHANCE:
+      case A_HASTE_ALL:
+      case A_MOD_VERSATILITY_PCT:
+      case A_MOD_MASTERY_PCT:
+      case A_MOD_TOTAL_STAT_PERCENTAGE:
+        set_pct_buff_type_from_effect( _eff.index() + 1, set_default );
+        if ( set_default )
+          validation.push_back( default_value );
+      default: break;
+    }
+  }
+
+  if ( set_default && !validation.empty() && !range::all_of( validation, [ v = validation.front() ]( auto i ) {
+         return i == v;
+       } ) )
+  {
+    throw sc_initialization_error( fmt::format(
+      "set_pct_buff_type_from_data() used on '{}' with applicable effects that have different default values.",
+      *this ) );
+  }
+
+  return this;
+}
+
+buff_t* buff_t::set_movement_speed_buff( bool stacking, double percent )
+{
+  if ( is_fallback || !player )
+    return this;
+
+  if ( stacking )
+  {
+    player->buffs.movement_speed_buffs[ 0 ].emplace_back( percent, this );
+  }
+  else
+  {
+    // non-stacking buffs with a single stack need to be sorted
+    if ( max_stack() <= 1 )
+    {
+      auto& _vec = player->buffs.movement_speed_buffs[ 1 ];
+      auto it = range::upper_bound( _vec, percent, {}, &std::pair<double, buff_t*>::first );
+
+      assert( it == _vec.end() || it->first <= percent );
+
+      _vec.insert( it, { percent, this } );
+    }
+    // non-stacking buffs with multiple stacks will always get checked and don't need sorting
+    else
+    {
+      player->buffs.movement_speed_buffs[ 2 ].emplace_back( percent, this );
+    }
+  }
+
+  add_invalidate( CACHE_RUN_SPEED );
+
+  return this;
+}
+
+buff_t* buff_t::set_movement_speed_buff_from_effect( size_t effect_idx, double percent )
+{
+  if ( is_fallback || !data().ok() )
+    return this;
+
+  const auto& _eff = data().effectN( effect_idx );
+
+  if ( !percent )
+    percent = _eff.percent();
+
+  switch ( _eff.subtype() )
+  {
+    case A_MOD_INCREASE_SPEED: return set_movement_speed_buff( false, percent );
+    case A_MOD_SPEED_ALWAYS:   return set_movement_speed_buff( true, percent );
+    default:                   return this;
+  }
+}
+
+buff_t* buff_t::set_movement_speed_buff_from_data( double percent )
+{
+  if ( is_fallback )
+    return this;
+
+  for ( const auto& _eff : data().effects() )
+    if ( _eff.subtype() == A_MOD_INCREASE_SPEED || _eff.subtype() == A_MOD_SPEED_ALWAYS )
+      return set_movement_speed_buff_from_effect( _eff.index() + 1, percent );
+
+  return this;
+}
+
 buff_t* buff_t::set_default_value( double value, size_t effect_idx )
 {
+  if ( is_fallback )
+    return this;
+
   // Ensure we are not errantly overwriting a value that is already set to a given effect
   assert( default_value_effect_idx == 0 || default_value_effect_idx == effect_idx );
 
@@ -1283,7 +1464,7 @@ buff_t* buff_t::set_default_value( double value, size_t effect_idx )
 
 buff_t* buff_t::set_default_value_from_effect( size_t effect_idx, double multiplier )
 {
-  if ( !s_data->ok() )
+  if ( is_fallback || !s_data->ok() )
     return this;
 
   assert( effect_idx > 0 && effect_idx <= s_data->effect_count() );
@@ -1302,7 +1483,7 @@ buff_t* buff_t::set_default_value_from_effect( size_t effect_idx, double multipl
 buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, property_type_t p_type, double multiplier,
                                                     effect_type_t e_type )
 {
-  if ( !s_data->ok() )
+  if ( is_fallback || !s_data->ok() )
     return this;
 
   for ( size_t idx = 1; idx <= s_data->effect_count(); idx++ )
@@ -1335,36 +1516,54 @@ buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, pro
 
 buff_t* buff_t::modify_default_value( double value )
 {
+  if ( is_fallback )
+    return this;
+
   set_default_value( default_value + value, default_value_effect_idx );
   return this;
 }
 
 buff_t* buff_t::set_reverse( bool r )
 {
+  if ( is_fallback )
+    return this;
+
   reverse = r;
   return this;
 }
 
 buff_t* buff_t::set_quiet( bool q )
 {
+  if ( is_fallback )
+    return this;
+
   quiet = q;
   return this;
 }
 
 buff_t* buff_t::set_activated( bool a )
 {
+  if ( is_fallback )
+    return this;
+
   activated = a;
   return this;
 }
 
 buff_t* buff_t::set_can_cancel( bool cc )
 {
+  if ( is_fallback )
+    return this;
+
   can_cancel = cc;
   return this;
 }
 
 buff_t* buff_t::set_tick_behavior( buff_tick_behavior behavior )
 {
+  if ( is_fallback )
+    return this;
+
   tick_behavior = behavior;
 
   // If period is set, but no buff tick behavior, set the behavior automatically to clipped ticks
@@ -1378,17 +1577,21 @@ buff_t* buff_t::set_tick_behavior( buff_tick_behavior behavior )
 
 buff_t* buff_t::set_tick_callback( buff_tick_callback_t fn )
 {
-  if ( fn && !is_fallback )
-  {
+  if ( is_fallback )
+    return this;
+
+  if ( fn )
     tick_callback = std::move( fn );
-  }
 
   return this;
 }
 
 buff_t* buff_t::set_tick_time_callback( buff_tick_time_callback_t cb )
 {
-  if ( cb && !is_fallback )
+  if ( is_fallback )
+    return this;
+
+  if ( cb )
   {
     set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
     tick_time_callback = std::move( cb );
@@ -1399,12 +1602,18 @@ buff_t* buff_t::set_tick_time_callback( buff_tick_time_callback_t cb )
 
 buff_t* buff_t::set_affects_regen( bool state )
 {
+  if ( is_fallback )
+    return this;
+
   change_regen_rate = state;
   return this;
 }
 
 buff_t* buff_t::set_constant_behavior( buff_constant_behavior b )
 {
+  if ( is_fallback )
+    return this;
+
   constant_behavior = b;
   if ( b == buff_constant_behavior::ALWAYS_CONSTANT )
     constant = true;
@@ -1415,6 +1624,9 @@ buff_t* buff_t::set_constant_behavior( buff_constant_behavior b )
 
 buff_t* buff_t::set_refresh_behavior( buff_refresh_behavior b )
 {
+  if ( is_fallback )
+    return this;
+
   if ( b == buff_refresh_behavior::NONE )
   {
     // In wod, default behavior for ticking buffs is to pandemic-extend the duration
@@ -1439,7 +1651,10 @@ buff_t* buff_t::set_refresh_behavior( buff_refresh_behavior b )
 
 buff_t* buff_t::set_refresh_duration_callback( buff_refresh_duration_callback_t cb )
 {
-  if ( cb && !is_fallback )
+  if ( is_fallback )
+    return this;
+
+  if ( cb )
   {
     refresh_behavior          = buff_refresh_behavior::CUSTOM;
     refresh_duration_callback = std::move( cb );
@@ -1449,6 +1664,9 @@ buff_t* buff_t::set_refresh_duration_callback( buff_refresh_duration_callback_t 
 
 buff_t* buff_t::set_rppm( rppm_scale_e scale, double freq, double mod )
 {
+  if ( is_fallback )
+    return this;
+
   if ( scale == RPPM_DISABLE )
   {
     rppm = nullptr;
@@ -1477,6 +1695,9 @@ buff_t* buff_t::set_rppm( rppm_scale_e scale, double freq, double mod )
 
 buff_t* buff_t::set_trigger_spell( const spell_data_t* s )
 {
+  if ( is_fallback )
+    return this;
+
   // If the params specifies a trigger spell (even if it's not found), use it instead of the actual
   // spell data of the buff.
   if ( s != spell_data_t::nil() )
@@ -1492,61 +1713,73 @@ buff_t* buff_t::set_trigger_spell( const spell_data_t* s )
 
 buff_t* buff_t::set_stack_change_callback( const buff_stack_change_callback_t& cb )
 {
-  if ( !is_fallback )
-  {
-    stack_change_callback.clear();
-    stack_change_callback.push_back( cb );
-  }
+  if ( is_fallback )
+    return this;
 
+  stack_change_callback.clear();
+  stack_change_callback.push_back( cb );
   return this;
 }
 
 buff_t* buff_t::add_stack_change_callback( const buff_stack_change_callback_t& cb )
 {
-  if ( !is_fallback )
-  {
-    stack_change_callback.push_back( cb );
-  }
+  if ( is_fallback )
+    return this;
 
+  stack_change_callback.push_back( cb );
   return this;
 }
 
 buff_t* buff_t::set_expire_callback( const buff_expire_callback_t& cb )
 {
-  if (!is_fallback)
-  {
-    expire_callback = cb;
-  }
+  if ( is_fallback )
+    return this;
 
+  expire_callback = cb;
   return this;
 }
 
 buff_t* buff_t::set_reverse_stack_count( int count )
 {
+  if ( is_fallback )
+    return this;
+
   reverse_stack_reduction = count;
   return this;
 }
 
 buff_t* buff_t::set_stack_behavior( buff_stack_behavior b )
 {
+  if ( is_fallback )
+    return this;
+
   stack_behavior = b;
   return this;
 }
 
 buff_t* buff_t::set_allow_precombat( bool b )
 {
+  if ( is_fallback )
+    return this;
+
   allow_precombat = b;
   return this;
 }
 
 buff_t* buff_t::set_name_reporting( std::string_view n )
 {
+  if ( is_fallback )
+    return this;
+
   name_str_reporting = n;
   return this;
 }
 
 buff_t* buff_t::set_disable_async_expire_events_removal( bool b )
 {
+  if ( is_fallback )
+    return this;
+
   disable_async_expire_events_removal = b;
   return this;
 }
@@ -1563,7 +1796,7 @@ buff_t* buff_t::set_disable_async_expire_events_removal( bool b )
 // aware there may be more work required to support your usecase.
 buff_t* buff_t::apply_time_rate_modifier( const spell_data_t* spell )
 {
-  if ( !spell->ok() || !s_data->ok() )
+  if ( is_fallback || !spell->ok() || !s_data->ok() )
     return this;
 
   assert( ( spell->flags( SX_PASSIVE ) || spell->duration() < 0_ms ) && "only passive spells should be affecting buffs." );
@@ -2035,7 +2268,7 @@ void buff_t::decrement( int stacks, double value )
 
     if ( old_stack != current_stack )
     {
-      if ( sim->buff_stack_uptime_timeline )
+      if ( sim->buff_stack_uptime_timeline && !quiet )
         update_stack_uptime_array( sim->current_time(), old_stack );
 
       last_stack_change = sim->current_time();
@@ -2093,6 +2326,43 @@ void buff_t::extend_duration( timespan_t extra_seconds )
 
     sim->print_log( "{} decreases {} by {}. New expiration: {}", *source, *this, -extra_seconds,
                     expiration.back()->occurs() );
+  }
+}
+
+void buff_t::extend_async_duration( timespan_t extra_seconds )
+{
+  if ( !check() )
+  {
+    return;
+  }
+
+  if ( stack_behavior != buff_stack_behavior::ASYNCHRONOUS )
+  {
+    throw sc_runtime_error( fmt::format( "{} attempts to extend non-asynchronous {}.", *source, *this ) );
+  }
+
+  if ( expiration.empty() )
+  {
+    return;
+  }
+
+  extra_seconds = extra_seconds * get_time_duration_multiplier();
+
+  if ( extra_seconds > timespan_t::zero() )
+  {
+    for ( size_t i = 0; i < expiration.size(); i++ )
+    {
+      // instead of rescheduling, cancel the events and create fresh ones to maintain expiration event ordering
+      expiration_t* exp = debug_cast<expiration_t*>( expiration[ i ] );
+      expiration[ i ] = make_event<expiration_t>( *sim, this, exp->stack, exp->remains() + extra_seconds );
+      event_t::cancel( exp );
+      sim->print_log( "{} extends {} by {}. New expiration time: {}", *source, *this, extra_seconds,
+                     expiration[ i ]->occurs() );
+    }
+  }
+  else if ( extra_seconds < timespan_t::zero() )
+  {
+    throw sc_runtime_error( fmt::format( "{} attempts to decrease asynchronous {} - this is not yet implemented.", *source, *this ) );
   }
 }
 
@@ -2221,7 +2491,6 @@ void buff_t::start( int stacks, double value, timespan_t duration )
         return a->remains() < b->remains();
       } );
     }
-
   }
 
   timespan_t period = tick_time();
@@ -2463,7 +2732,7 @@ void buff_t::bump( int stacks, double value )
 
   if ( old_stack != current_stack )
   {
-    if ( sim->buff_stack_uptime_timeline )
+    if ( sim->buff_stack_uptime_timeline && !quiet )
       update_stack_uptime_array( sim->current_time(), old_stack );
 
     last_stack_change = sim->current_time();
@@ -2796,7 +3065,7 @@ void buff_t::merge( const buff_t& other )
   avg_expire.merge( other.avg_expire );
   avg_overflow_count.merge( other.avg_overflow_count );
   avg_overflow_total.merge( other.avg_overflow_total );
-  if ( sim->buff_uptime_timeline )
+  if ( sim->buff_uptime_timeline && !quiet )
     uptime_array.merge( other.uptime_array );
 
 #ifndef NDEBUG
@@ -3064,7 +3333,7 @@ void buff_t::init_haste_type()
 
 void buff_t::update_stack_uptime_array( timespan_t current_time, int old_stacks )
 {
-  if ( !sim->buff_uptime_timeline )
+  if ( !sim->buff_uptime_timeline || quiet )
     return;
 
   // No data collection done on first iteration of multi-iteration sim, as per sim_t::combat_end()
@@ -3194,6 +3463,9 @@ stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_da
 
 stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const stat_check_fn& c )
 {
+  if ( is_fallback )
+    return this;
+
   if ( !manual_stats_added )
   {
     // If we are the first to add manual stats, clear the spell_data parsed ones.
@@ -3219,6 +3491,9 @@ stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const stat_check_fn& c )
 
 stat_buff_t* stat_buff_t::set_stat( stat_e s, double a, const stat_check_fn& c )
 {
+  if ( is_fallback )
+    return this;
+
   manual_stats_added = false;
 
   return add_stat( s, a, c );
@@ -3226,6 +3501,9 @@ stat_buff_t* stat_buff_t::set_stat( stat_e s, double a, const stat_check_fn& c )
 
 stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_check_fn& c )
 {
+  if ( is_fallback )
+    return this;
+
   auto do_error = [ this, i ]( std::string_view msg ) -> stat_buff_t* {
     sim->error( "{} cannot add stat from effect#{}: {}", name(), i, msg );
     return this;
@@ -3283,6 +3561,9 @@ stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_c
 
 stat_buff_t* stat_buff_t::set_stat_from_effect( size_t i, double a, const stat_check_fn& c )
 {
+  if ( is_fallback )
+    return this;
+
   manual_stats_added = false;
 
   return add_stat_from_effect( i, a, c );
@@ -3290,6 +3571,9 @@ stat_buff_t* stat_buff_t::set_stat_from_effect( size_t i, double a, const stat_c
 
 stat_buff_t* stat_buff_t::add_stat_from_effect_type( effect_subtype_t type, double a, const stat_check_fn& c )
 {
+  if ( is_fallback )
+    return this;
+
   const auto& eff = spell_data_t::find_spelleffect( data(), E_APPLY_AURA, type );
   assert( eff.ok() && "Effect type not found in stat buff" );
 
@@ -3298,36 +3582,51 @@ stat_buff_t* stat_buff_t::add_stat_from_effect_type( effect_subtype_t type, doub
 
 stat_buff_t* stat_buff_t::set_stat_from_effect_type( effect_subtype_t type, double a, const stat_check_fn& c )
 {
+  if ( is_fallback )
+    return this;
+
   manual_stats_added = false;
 
   return add_stat_from_effect_type( type, a, c );
 }
 
-double stat_buff_t::buff_stat_stack_amount( const buff_stat_t& buff_stat, int s ) const
+double stat_buff_t::buff_stat_stack_amount( const buff_stat_t& buff_stat, int stacks ) const
 {
-  return buff_stat.stack_amount( s );
+  return std::max( 1.0, std::fabs( buff_stat.amount ) ) * stacks;
 }
 
-void stat_buff_t::bump( int stacks, double /* value */ )
+void stat_buff_t::update_player_buff_stat( buff_stat_t& buff_stat, int stacks )
 {
-  buff_t::bump( stacks );
+  // Blizzard likes to use effect coefficients that give (almost) exact values at the
+  // intended level. Small floating point conversion errors can add up to give the wrong
+  // value. We compensate by increasing the absolute value by a tiny bit before truncating.
+  double _val = buff_stat_stack_amount( buff_stat, stacks );
+  _val = std::copysign( std::trunc( _val + stat_fp_epsilon ), buff_stat.amount );
+
+  double delta = _val - buff_stat.current_value;
+
+  if ( delta > 0 )
+  {
+    player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > 0_ms );
+  }
+  else if ( delta < 0 )
+  {
+    player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > 0_ms );
+  }
+
+  buff_stat.current_value += delta;
+}
+
+void stat_buff_t::bump( int stacks, double value )
+{
+  buff_t::bump( stacks, value );
 
   for ( auto& buff_stat : stats )
   {
     if ( buff_stat.check_func && !buff_stat.check_func( *this ) )
       continue;
 
-    double delta = buff_stat_stack_amount( buff_stat, current_stack ) - buff_stat.current_value;
-    if ( delta > 0 )
-    {
-      player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-    }
-    else if ( delta < 0 )
-    {
-      player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-    }
-
-    buff_stat.current_value += delta;
+    update_player_buff_stat( buff_stat, current_stack );
   }
 }
 
@@ -3347,17 +3646,9 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
     for ( auto& buff_stat : stats )
     {
-      double delta = buff_stat.current_value - buff_stat_stack_amount( buff_stat, new_stack );
-      if ( delta > 0 )
-      {
-        player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-      }
-      else if ( delta < 0 )
-      {
-        player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
-      }
-      buff_stat.current_value -= delta;
+      update_player_buff_stat( buff_stat, new_stack );
     }
+
     current_stack -= stacks;
 
     invalidate_cache();
@@ -3369,7 +3660,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
 
     if ( old_stack != current_stack )
     {
-      if ( sim->buff_stack_uptime_timeline )
+      if ( sim->buff_stack_uptime_timeline && !quiet )
         update_stack_uptime_array( sim->current_time(), old_stack );
 
       last_stack_change = sim->current_time();
@@ -3477,6 +3768,9 @@ void cost_reduction_buff_t::expire_override( int expiration_stacks, timespan_t r
 
 cost_reduction_buff_t* cost_reduction_buff_t::set_reduction( school_e s, double a )
 {
+  if ( is_fallback )
+    return this;
+
   amount = a;
   school = s;
   return this;
@@ -3566,12 +3860,18 @@ double absorb_buff_t::consume( double amount, action_state_t* state )
 
 absorb_buff_t* absorb_buff_t::set_absorb_gain( gain_t* g )
 {
+  if ( is_fallback )
+    return this;
+
   absorb_gain = g;
   return this;
 }
 
 absorb_buff_t* absorb_buff_t::set_absorb_source( stats_t* s )
 {
+  if ( is_fallback )
+    return this;
+
   if ( s )
     s->type = STATS_ABSORB;
   absorb_source = s;
@@ -3580,6 +3880,9 @@ absorb_buff_t* absorb_buff_t::set_absorb_source( stats_t* s )
 
 absorb_buff_t* absorb_buff_t::set_absorb_school( school_e s )
 {
+  if ( is_fallback )
+    return this;
+
   absorb_school = s;
   if ( s == SCHOOL_CHAOS )
   {
@@ -3605,6 +3908,9 @@ absorb_buff_t* absorb_buff_t::set_absorb_school( school_e s )
 
 absorb_buff_t* absorb_buff_t::set_absorb_high_priority( bool hp )
 {
+  if ( is_fallback )
+    return this;
+
   high_priority = hp;
   // TODO: check if player absorb_priority and instant_absorb_list could be automatically
   // populated from here somehow.
@@ -3613,6 +3919,9 @@ absorb_buff_t* absorb_buff_t::set_absorb_high_priority( bool hp )
 
 absorb_buff_t* absorb_buff_t::set_absorb_eligibility( absorb_eligibility e )
 {
+  if ( is_fallback )
+    return this;
+
   eligibility = std::move(e);
   // TODO: check if player absorb_priority and instant_absorb_list could be automatically
   // populated from here somehow.
@@ -3621,6 +3930,9 @@ absorb_buff_t* absorb_buff_t::set_absorb_eligibility( absorb_eligibility e )
 
 absorb_buff_t* absorb_buff_t::set_cumulative( bool c )
 {
+  if ( is_fallback )
+    return this;
+
   cumulative = c;
   return this;
 }
@@ -3680,7 +3992,7 @@ damage_buff_t::damage_buff_t( actor_pair_t q, util::string_view name, const spel
 
 damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, double conduit_value, double talent_value )
 {
-  if ( !spell->ok() )
+  if ( is_fallback || !spell->ok() )
     return this;
 
   for ( size_t idx = 1; idx <= spell->effect_count(); idx++ )
@@ -3809,6 +4121,9 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
 
 damage_buff_t* damage_buff_t::apply_dynamic_buff_multiplier( buff_t* buff )
 {
+  if ( is_fallback )
+    return this;
+
   auto parse_dynamic_buff_multiplier_for_mod = [ this, buff ]( damage_buff_modifier_t& mod ) {
 
     if ( !mod.s_data || !mod.s_data->ok() )
@@ -3858,7 +4173,7 @@ damage_buff_t* damage_buff_t::apply_dynamic_buff_multiplier( buff_t* buff )
 
 damage_buff_t* damage_buff_t::apply_mod_affecting_effect( damage_buff_modifier_t& mod, const spelleffect_data_t& effect )
 {
-  if ( !mod.s_data || !mod.s_data->ok() )
+  if ( is_fallback || !mod.s_data || !mod.s_data->ok() )
     return this;
 
   if ( ( effect.subtype() == A_ADD_FLAT_MODIFIER && mod.s_data->affected_by( effect ) ) ||
@@ -3889,11 +4204,17 @@ damage_buff_t* damage_buff_t::apply_mod_affecting_effect( damage_buff_modifier_t
 
 damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, double multiplier )
 {
+  if ( is_fallback )
+    return this;
+
   return set_buff_mod( mod, spell_data_t::nil(), 0, multiplier, 1.0 );
 }
 
 damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, const spell_data_t* s, size_t effect_idx, double multiplier, double initial_multiplier )
 {
+  if ( is_fallback )
+    return this;
+
   assert( mod.s_data == nullptr && mod.effect_idx == 0 );
   mod.initial_multiplier = initial_multiplier;
 
@@ -3912,29 +4233,78 @@ damage_buff_t* damage_buff_t::set_buff_mod( damage_buff_modifier_t& mod, const s
   return this;
 }
 
+damage_buff_t* damage_buff_t::set_is_stacking_mod( bool value )
+{
+  if ( is_fallback )
+    return this;
+
+  is_stacking = value;
+  return this;
+}
+
 damage_buff_t* damage_buff_t::set_direct_mod( double multiplier )
-{ return set_direct_mod( spell_data_t::nil(), 0, multiplier ); }
+{
+  if ( is_fallback )
+    return this;
+
+  return set_direct_mod( spell_data_t::nil(), 0, multiplier );
+}
 
 damage_buff_t* damage_buff_t::set_direct_mod( const spell_data_t* s, size_t effect_idx, double multiplier, double initial_multiplier )
-{ return set_buff_mod( direct_mod, s, effect_idx, multiplier, initial_multiplier ); }
+{
+  if ( is_fallback )
+    return this;
+
+  return set_buff_mod( direct_mod, s, effect_idx, multiplier, initial_multiplier );
+}
 
 damage_buff_t* damage_buff_t::set_periodic_mod( double multiplier )
-{ return set_periodic_mod( spell_data_t::nil(), 0, multiplier ); }
+{
+  if ( is_fallback )
+    return this;
+
+  return set_periodic_mod( spell_data_t::nil(), 0, multiplier );
+}
 
 damage_buff_t* damage_buff_t::set_periodic_mod( const spell_data_t* s, size_t effect_idx, double multiplier, double initial_multiplier )
-{ return set_buff_mod( periodic_mod, s, effect_idx, multiplier, initial_multiplier ); }
+{
+  if ( is_fallback )
+    return this;
+
+  return set_buff_mod( periodic_mod, s, effect_idx, multiplier, initial_multiplier );
+}
 
 damage_buff_t* damage_buff_t::set_auto_attack_mod( double multiplier )
-{ return set_auto_attack_mod( spell_data_t::nil(), 0, multiplier ); }
+{
+  if ( is_fallback )
+    return this;
+
+  return set_auto_attack_mod( spell_data_t::nil(), 0, multiplier );
+}
 
 damage_buff_t* damage_buff_t::set_auto_attack_mod( const spell_data_t* s, size_t effect_idx, double multiplier, double initial_multiplier )
-{ return set_buff_mod( auto_attack_mod, s, effect_idx, multiplier, initial_multiplier ); }
+{
+  if ( is_fallback )
+    return this;
+
+  return set_buff_mod( auto_attack_mod, s, effect_idx, multiplier, initial_multiplier );
+}
 
 damage_buff_t* damage_buff_t::set_crit_chance_mod( double multiplier )
-{ return set_crit_chance_mod( spell_data_t::nil(), 0, multiplier ); }
+{
+  if ( is_fallback )
+    return this;
+
+  return set_crit_chance_mod( spell_data_t::nil(), 0, multiplier );
+}
 
 damage_buff_t* damage_buff_t::set_crit_chance_mod( const spell_data_t* s, size_t effect_idx, double multiplier )
-{ return set_buff_mod( crit_chance_mod, s, effect_idx, multiplier, 1.0 ); }
+{
+  if ( is_fallback )
+    return this;
+
+  return set_buff_mod( crit_chance_mod, s, effect_idx, multiplier, 1.0 );
+}
 
 bool damage_buff_t::is_affecting( const spell_data_t* s )
 {

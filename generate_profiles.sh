@@ -18,7 +18,7 @@ else
   echo 'Skipped PreRaids, directory not found.'
 fi
 # MIDX profiles generation
-for season in MID1
+for season in MID1 MID2
 do
   PROFDIR="$season"
   echo "---$PROFDIR---"

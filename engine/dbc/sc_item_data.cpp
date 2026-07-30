@@ -204,7 +204,18 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       if ( offset_entries.size() == 0 )
         break;
       const auto& offset_entry = offset_entries[ 0 ];
-      if ( entry.value_2 != 0 && scaling_entries[ 0 ].player_level <= 80 )
+      auto level               = scaling_entry.player_level;
+      if ( item.parsed.drop_level != 0 && item.parsed.drop_level <= 80 &&
+           ( level > as<int>( item.parsed.drop_level ) || level == 0 ) )
+        level = item.parsed.drop_level;
+      if ( item.parsed.content_tuning_id != 0 )
+      {
+        const auto& content_tuning = item.player->dbc->content_tuning( item.parsed.content_tuning_id );
+        if ( content_tuning.id != 0 && content_tuning.max_level_squish > 0 &&
+             ( level > content_tuning.max_level_squish || level == 0 ) )
+          level = content_tuning.max_level_squish;
+      }
+      if ( scaling_entry.squish_era_id < 2 )
         item.parsed.data.level = as<int>(
             util::round( curve_point_value( *item.player->dbc, SQUISH_CURVE_MIDNIGHT, scaling_entry.item_level ) ) );
       else
@@ -212,7 +223,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
             util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
       item.parsed.data.level += offset_entry.offset;
       item.parsed.has_midnight_scaling = true;
-      item.parsed.data.req_level       = scaling_entry.player_level;
+      item.parsed.data.req_level       = level;
       break;
     }
     case ITEM_BONUS_SCALE_CONFIG_2:
@@ -226,8 +237,19 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       if ( offset_entries.size() == 0 )
         break;
       const auto& offset_entry = offset_entries[ 0 ];
-      if ( item.parsed.drop_level > 0 )
-        item.parsed.data.level = as<int>( util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, item.parsed.drop_level ) ) );
+      if ( auto level = item.parsed.drop_level; level > 0 )
+      {
+        if ( item.parsed.content_tuning_id != 0 )
+        {
+          const auto& content_tuning = item.player->dbc->content_tuning( item.parsed.content_tuning_id );
+          if ( content_tuning.id != 0 && content_tuning.max_level_squish > 0 &&
+               level > as<unsigned>( content_tuning.max_level_squish ) )
+            level = content_tuning.max_level_squish;
+        }
+
+        item.parsed.data.level = as<int>(
+            util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, level ) ) );
+      }
       else
         item.parsed.data.level = as<int>(
             util::round( curve_point_value( *item.player->dbc, offset_entry.curve_id, scaling_entry.item_level ) ) );
@@ -1050,7 +1072,15 @@ bool item_database::load_item_from_data( item_t& item )
   const auto& data = item.player->dbc->item( item.parsed.data.id );
   if ( data.id == 0 ) return false;
 
-  item.parsed.data.init( data, *item.player->dbc );
+  const dbc_item_data_t* redirect_item = nullptr;
+  if ( item.parsed.redirect_item_id != 0 )
+  {
+    redirect_item = &item.player->dbc->item( item.parsed.redirect_item_id );
+    if ( redirect_item->id == 0 )
+      redirect_item = nullptr;
+  }
+
+  item.parsed.data.init( data, *item.player->dbc, redirect_item );
   item.name_str = data.name;
   item.parsed.data.name = item.name_str.c_str();
 

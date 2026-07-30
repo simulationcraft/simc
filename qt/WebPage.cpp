@@ -14,6 +14,11 @@ bool SC_WebPage::acceptNavigationRequest( const QUrl& url, NavigationType, bool 
 {
   if ( !isMainFrame )
   {
+    if ( url.host().contains( "raidbots.com" ) )
+    {
+        return true;
+    }
+    qWarning() << "Blocked navigation request to " << url << " from child frame\n";
     return false;
   }
 

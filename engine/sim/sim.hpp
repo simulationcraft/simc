@@ -9,6 +9,7 @@
 #include "event_manager.hpp"
 #include "player/gear_stats.hpp"
 #include "progress_bar.hpp"
+#include "profileset_control.hpp"
 #include "sim_ostream.hpp"
 #include "sim/option.hpp"
 #include "util/concurrency.hpp"
@@ -17,8 +18,10 @@
 #include "util/util.hpp"
 #include "util/vector_with_callback.hpp"
 
+#include <deque>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <unordered_set>
 
 struct actor_target_data_t;
@@ -513,7 +516,7 @@ struct sim_t : private sc_thread_t
   chrono::wall_clock::duration elapsed_time;
   std::vector<size_t> work_per_thread;
   size_t work_done;
-  double     iteration_dmg, priority_iteration_dmg,  iteration_heal, iteration_absorb;
+  double iteration_dmg, priority_iteration_dmg,  iteration_heal, iteration_absorb;
   simple_sample_data_t total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
   extended_sample_data_t raid_dps, simulation_length;
   chrono::wall_clock::duration merge_time, init_time, analyze_time;
@@ -521,11 +524,13 @@ struct sim_t : private sc_thread_t
   // replayability
   std::vector<iteration_data_entry_t> iteration_data, low_iteration_data, high_iteration_data;
   // Report percent (how many% of lowest/highest iterations reported, default 2.5%)
-  double     report_iteration_data;
+  double report_iteration_data;
   // Minimum number of low/high iterations reported (default 5 of each)
-  int        min_report_iteration_data;
-  int        report_progress;
-  int        bloodlust_percent;
+  int min_report_iteration_data;
+  // Report all iterations in strict thread & iteration order with no sorting. Takes precedence over above 2 options.
+  bool report_strict_iteration_data;
+  int report_progress;
+  int bloodlust_percent;
   timespan_t bloodlust_time;
   std::string reference_player_str;
   std::vector<player_t*> players_by_dps;
@@ -551,6 +556,7 @@ struct sim_t : private sc_thread_t
   std::string report_merged_stats;
   bool full_damage_sources_chart;
   bool report_all_variables;
+  bool collect_action_sequence;
   int report_rng;
   int hosted_html;
   int offline;
@@ -577,6 +583,12 @@ struct sim_t : private sc_thread_t
   bool count_overheal_as_heal;
   double scaling_normalized;
   bool merge_enemy_priority_dmg;
+
+  // sim control
+  std::unordered_map<std::string, profileset_controller_t::factory_fn_pair_t> profileset_controller_factory;
+  std::vector<std::unique_ptr<profileset_controller_t>> profileset_controller;
+  std::deque<profileset_controller_data_wrapper_t> profileset_controller_data;
+  opts::map_list_t profileset_controller_options;
 
   // Multi-Threading
   mutex_t merge_mutex;
@@ -606,12 +618,9 @@ struct sim_t : private sc_thread_t
 
   // Highcharts stuff
 
-  // Vector of on-ready charts. These receive individual jQuery handlers in the HTML report (at the
-  // end of the report) to load the highcharts into the target div.
-  std::vector<std::string> on_ready_chart_data;
-
   // A map of highcharts data, added as a json object into the HTML report. JQuery installs handlers
-  // to correct elements (toggled elements in the HTML report) based on the data.
+  // to correct elements (toggled elements in the HTML report) based on the data. Charts with no toggle
+  // are grouped under the empty-string key and rendered as soon as their target div is in the DOM.
   std::map<std::string, std::vector<std::string> > chart_data;
 
   bool chart_show_relative_difference;
@@ -624,7 +633,11 @@ struct sim_t : private sc_thread_t
 
   // List of callbacks to call when an actor_target_data_t object is created. Currently used to
   // initialize the generic targetdata debuffs/dots we have.
-  std::vector<std::function<void(actor_target_data_t*)> > target_data_initializer;
+  std::vector<std::function<void( actor_target_data_t* )>> target_data_initializer;
+
+  // Priority-based actor initialization callbacks. Each callback is run on the player object during init_actor() in
+  // priority order, and additional callbacks can be inserted at any point from external modules.
+  std::vector<std::tuple<int, std::function<void( player_t* )>, std::string>> actor_initializer;
 
   bool display_hotfixes, disable_hotfixes;
   bool display_bonus_ids;
@@ -639,10 +652,11 @@ struct sim_t : private sc_thread_t
   bool profileset_enabled;
   int profileset_work_threads, profileset_init_threads;
   std::unique_ptr<profileset::profilesets_t> profilesets;
+  std::string_view profileset_name;
 
   sim_t();
-  explicit sim_t( sim_t* parent, int thread_index = 0 );
-  sim_t( sim_t* parent, int thread_index, sim_control_t* control );
+  explicit sim_t( sim_t* parent, int thread_index = 0, std::string_view profileset_name = {} );
+  sim_t( sim_t* parent, int thread_index, sim_control_t* control, std::string_view profileset_name = {} );
   ~sim_t() override;
 
   void run() override;
@@ -750,15 +764,26 @@ struct sim_t : private sc_thread_t
   void activate_actors();
 
   void heartbeat_event_callback();
-  std::vector<std::function<void(sim_t*)>> heartbeat_event_callback_function;
+  std::vector<std::function<void( sim_t* )>> heartbeat_event_callback_function;
   void register_heartbeat_event_callback( std::function<void( sim_t*)> fn );
+
+  void register_target_data_initializer( std::function<void( actor_target_data_t* )> fn );
+
+  void register_actor_initializers();
+  // Register a callback
+  void register_actor_initializer( int priority, std::function<void( player_t* )> fn, std::string name = "" );
+  // Register a player_t member function
+  void register_actor_initializer( int priority, void ( player_t::*fn )(), std::string name = "" );
+  // Register with an offset from another named initializer
+  void register_actor_initializer( std::string_view base, int offset, std::function<void( player_t* )> fn,
+                                   std::string name = "" );
+  // Register a player_t member function with an offset
+  void register_actor_initializer( std::string_view base, int offset, void ( player_t::*fn )(), std::string name = "" );
 
   timespan_t current_time() const
   { return event_mgr.current_time; }
   static double distribution_mean_error( const sim_t& s, const extended_sample_data_t& sd )
   { return s.confidence_estimator * sd.mean_std_dev; }
-  void register_target_data_initializer(std::function<void(actor_target_data_t*)> cb)
-  { target_data_initializer.push_back( cb ); }
   const rng::rng_t& rng() const
   { return _rng; }
   rng::rng_t& rng()
@@ -818,3 +843,20 @@ private:
   void disable_debug_seed();
   bool requires_cleanup() const;
 };
+
+template <typename T>
+data_wrapper_t<T> profileset_controller_t::get_data()
+{
+  auto& pcd = parent->profileset_controller_data;
+  assert( pcd.size() > id );
+  auto& data = pcd[ id ];
+  return { *data.data.get(), data.mutex };
+}
+
+template <typename T>
+void profileset_controller_t::set_data( T&& data )
+{
+  auto& pcd = parent->profileset_controller_data;
+  assert( pcd.size() > id );
+  pcd[ id ].data = std::make_unique<T>( data );
+}
