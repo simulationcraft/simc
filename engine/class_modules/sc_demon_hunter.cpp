@@ -4834,6 +4834,11 @@ struct immolation_aura_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
 
     dh()->trigger_demonsurge( demonsurge_ability::CONSUMING_FIRE );
+
+    if ( action_list->name_str == "precombat" )
+    {
+      internal_cooldown->reset( false );
+    }
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
@@ -5642,8 +5647,7 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
 {
   struct soulburst_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
-    soulburst_t( util::string_view n, demon_hunter_t* p )
-      : base_t( n, p, p->set_bonuses.soulburst_damage )
+    soulburst_t( util::string_view n, demon_hunter_t* p ) : base_t( n, p, p->set_bonuses.soulburst_damage )
     {
       background = dual = true;
       aoe               = -1;
