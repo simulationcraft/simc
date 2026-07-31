@@ -15373,6 +15373,7 @@ Description      : $@spelldesc228260
 Tooltip          : Void Volley is available!
 
 Name             : Void Volley (id=1242173) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -15385,7 +15386,7 @@ Stance Mask      : 0x08000000
 Affecting Spells : Priest (137030 effect#1), Insidious Ire (373213 effect#1), Dark Ascension (391109 effect#1), Focused Outburst (1272320 effect#3), Crushing Void (1279354 effect#1)
 Triggered By     : Void Volley (1242171), Crushing Void (1279437)
 Family Flags     : 41
-Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1241581)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
@@ -17301,10 +17302,11 @@ Labels           : 16: Class Spells
                  : 6656
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1319237)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+#1 (id=1319237)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139)
                    Family Flags: 6
+Hotfixed         : Misc Value (0 -> 22)
 #2 (id=1333406)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Renew healing increased by $s1%. Light's Resurgence now has a $s2% chance to leave a Renew on the first target Prayer of Mending heals.

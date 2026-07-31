@@ -13142,8 +13142,9 @@ Triggered By     : Blade of Justice (184575)
 Family Flags     : 27, 65, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), No Aura Log (202), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1051843)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.585195 | Radius: 0 - 6 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+#1 (id=1051843)  : School Damage (2): holy | Attributes: Always AOE Line of Sight (5), Area Effects Use Target Radius (17)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.585195 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : Attribute (0 -> 131104)
 Description      : Pierces enemies within 6 yds of your target with a blade of light, dealing $s1 Holy damage.
 
 Deals reduced damage beyond 5 targets.

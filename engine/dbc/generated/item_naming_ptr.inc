@@ -1,5 +1,5 @@
 // Item name descriptions, wow build 12.1.0.68914
-static constexpr std::array<item_name_description_t, 1055> __ptr_item_name_description_data { {
+static constexpr std::array<item_name_description_t, 1056> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -1055,5 +1055,6 @@ static constexpr std::array<item_name_description_t, 1055> __ptr_item_name_descr
   { 14477, "Delves and War Mode"                         },
   { 14478, "Aspirant and War Mode"                       },
   { 14528, "Adventurer"                                  },
+  { 14530, "Midnight Season 1"                           },
 } };
 

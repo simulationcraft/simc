@@ -93208,19 +93208,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5935 | Misc Value 2: 11
 Description      : $@spelldesc255066
 
-Name             : Barrel Through (id=267494) 
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Max Targets      : 1
-Duration         : 6.2 seconds
-Attributes       : Do Not Sheath (18), No Active Defense (21), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Only On Player (104), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Don't Cause Spell Pushback (230), AI Face Target (283), Allow Cast While Channeling (308)
-Effects          :
-#1 (id=714204)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1305749 | Radius: 0 - 300 yards | Target: at Self (18) -> at Enemy in Area (16)
-Description      : $@spelldesc266936
-Tooltip          : Targeted by $@spellname267494!
-
 Name             : Swift Hearthing (id=267495) 
 School           : Physical
 Spell Type       : None
@@ -244891,8 +244878,9 @@ Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1254628)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 186.0526 (coefficient=1.455771) | Rating: Crit | Target: Self (1)
+#1 (id=1254628)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 314.7733 (coefficient=2.401374) | Rating: Crit | Target: Self (1)
+Hotfixed         : Coefficient (1.455771 -> 2.401374), Scaling Class (-9 -> -7)
 Description      : Take a sip of the drink you swiped from the freight, increasing your Critical Strike by $s1 for $d.
 Tooltip          : Critical Strike increased by $w1.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
@@ -254969,6 +254957,7 @@ Description      : $@spelldesc1279616
 Tooltip          : Accumulating damage or healing from $@auracaster's Core Rune and Rune of Lingering. The accumulated amount will be dealt on expiration.
 
 Name             : Ula'tek's Gift (id=1289148) 
+Hotfixed         : Description, Tooltip
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
@@ -254982,14 +254971,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 543.6669 (coefficient=4.253929) | Target: Targeted Enemy (6)
 #2 (id=1307468)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
-#3 (id=1324291)  : Dummy (3)
+#3 (id=1324291)  : Dummy (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20
-Description      : Deal $1291581s1 Nature damage per application every $t sec for $d.
+Hotfixed         : Attribute (0 -> 64)
+Description      : Deal $s1 Nature damage per application every $t sec for $d.
+
+Upon applying $s3 stacks to a target, the Gift corrodes, dealing the remainder of its damage immediately before removing itself.
+Tooltip          : Deal $w1 Nature damage per application every $t1 sec for $d.
 
 Upon applying $s3 stacks to a target, the Gift Corrodes, dealing the remainder of its' damage immediately before removing itself.
-Tooltip          : Deal $1291581w1 Nature damage per application every $t sec for $d.
-
-Upon applying $w3 stacks to a target, the Gift Corrodes, dealing the remainder of its' damage immediately before removing itself.
 
 Name             : Add Keystone Affix: Lindormi's Guidance (id=1289155) 
 School           : Physical
@@ -260402,16 +260392,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 1000 yards | Target: Self (1)
 Description      : Upon entering combat, party members become Poisoned, suffering $s6% of their current health as Nature damage every 1 min, while gaining $s2% movement speed and $s4% haste for every $s3% of their health missing. This effect is reversed for the first $s5 sec of combat.
 Tooltip          : Upon entering combat, party members become Poisoned, suffering $w6% of their current health as Nature damage every 1 min, while gaining $w2% movement speed and $w4% haste for every $w3% of their health missing. This effect is reversed for the first $w5 sec of combat.
-
-Name             : Barrel Through (id=1305749) [Hidden] 
-School           : Physical
-Spell Type       : None
-Duration         : 5.9 seconds
-Triggered By     : Barrel Through (267494)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Sheath (18), No Active Defense (21), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), Don't Cause Spell Pushback (230), Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1332918)  : Apply Aura (6) | Area Trigger (395)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 43855 | Target: Self (1)
 
 Name             : Ward of the Uncoiled (id=1305773) 
 School           : Nature

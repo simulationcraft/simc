@@ -4786,6 +4786,7 @@ Effects          :
 Description      : $@spelldesc212431
 
 Name             : Explosive Shot (id=212680) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
@@ -4796,7 +4797,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Mastery: Master of Beasts (76657 effects: #5, #6), Tip of the Spear (460852 effect#1)
 Family Flags     : 73
-Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Always AOE Line of Sight (186), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Always AOE Line of Sight (186), Ignore Caster Damage Modifiers (221), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=315406)   : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
@@ -17086,6 +17087,7 @@ Tooltip          : Your damaging attacks and abilities deal an additional $12529
 Name             : Razor Edge (id=1253053) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Survival [tree=spec, row=10, col=7, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
+                 : Effect#2 [op=mul, values=(1, 2)]
 Class            : Hunter
 School           : Nature
 Spell Type       : None

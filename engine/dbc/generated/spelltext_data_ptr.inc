@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.0.68914
-static constexpr std::array<spelltext_data_t, 29235> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29234> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -9907,7 +9907,6 @@ static constexpr std::array<spelltext_data_t, 29235> __ptr_spelltext_data { {
   {  267482, "$@spelldesc255040", 0, 0 },
   {  267486, "$@spelldesc255065", 0, 0 },
   {  267490, "$@spelldesc255066", 0, 0 },
-  {  267494, "$@spelldesc266936", "Targeted by $@spellname267494!", 0 },
   {  267495, "$@spelldesc255068", 0, 0 },
   {  267498, "$@spelldesc255070", 0, 0 },
   {  267537, "$@spelldesc255103", "Healing for $w1 health every $t1 sec.", 0 },
@@ -28649,7 +28648,7 @@ static constexpr std::array<spelltext_data_t, 29235> __ptr_spelltext_data { {
   { 1288804, "$@spelldesc", "$@spelldesc", "Rank 3/4" },
   { 1288805, "$@spelldesc", "$@spelldesc", "Rank 4/4" },
   { 1289063, "$@spelldesc1279616", "Accumulating damage or healing from $@auracaster's Core Rune and Rune of Lingering. The accumulated amount will be dealt on expiration.", 0 },
-  { 1289148, "Deal $1291581s1 Nature damage per application every $t sec for $d.\r\n\r\nUpon applying $s3 stacks to a target, the Gift Corrodes, dealing the remainder of its' damage immediately before removing itself.", "Deal $1291581w1 Nature damage per application every $t sec for $d.\r\n\r\nUpon applying $w3 stacks to a target, the Gift Corrodes, dealing the remainder of its' damage immediately before removing itself.", 0 },
+  { 1289148, "Deal $s1 Nature damage per application every $t sec for $d.\r\n\r\nUpon applying $s3 stacks to a target, the Gift corrodes, dealing the remainder of its damage immediately before removing itself.", "Deal $w1 Nature damage per application every $t1 sec for $d.\r\n\r\nUpon applying $s3 stacks to a target, the Gift Corrodes, dealing the remainder of its' damage immediately before removing itself.", 0 },
   { 1289155, "Add the Lindormi's Guidance affix to a Mythic Keystone.", 0, 0 },
   { 1289281, "Create a soulbound set shoulder item appropriate for your class.", 0, 0 },
   { 1289283, "Create a soulbound set leg item appropriate for your class.", 0, 0 },
@@ -29238,7 +29237,9 @@ static constexpr std::array<spelltext_data_t, 29235> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.1.0.68914
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+  { 1289148,  0, "Deal $1291581s1 Nature damage per application every $t sec for $d.\r\n\r\nUpon applying $s3 stacks to a target, the Gift Corrodes, dealing the remainder of its' damage immediately before removing itself.", "Deal $s1 Nature damage per application every $t sec for $d.\r\n\r\nUpon applying $s3 stacks to a target, the Gift corrodes, dealing the remainder of its damage immediately before removing itself." },
+  { 1289148,  1, "Deal $1291581w1 Nature damage per application every $t sec for $d.\r\n\r\nUpon applying $w3 stacks to a target, the Gift Corrodes, dealing the remainder of its' damage immediately before removing itself.", "Deal $w1 Nature damage per application every $t1 sec for $d.\r\n\r\nUpon applying $s3 stacks to a target, the Gift Corrodes, dealing the remainder of its' damage immediately before removing itself." },
 } };
 
 // Spell description variables, wow build 12.1.0.68914

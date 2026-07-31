@@ -503,8 +503,6 @@ Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=616)      : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -60 | Scaled Value: -60 | Target: Targeted Enemy (6)
-#3 (id=1341085)  : Apply Aura (6) | Creature Immunities (147)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1808 | Target: Targeted Enemy (6)
 Description      : Blinds the target, causing it to wander disoriented for $d. Damage may interrupt the effect. Limit 1.
 Tooltip          : Disoriented.
 
