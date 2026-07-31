@@ -6015,6 +6015,7 @@ struct eradicate_t
     damage_action      = p->get_background_action<eradicate_damage_t>( "eradicate_reap", p->spec.eradicate_damage );
     damage_action->aoe = -1;
     damage_action->reduced_aoe_targets = p->talent.devourer.eradicate->effectN( 1 ).base_value();
+    damage_action->base_aoe_multiplier = data().effectN( 1 ).percent();
     add_child( damage_action );
 
     if ( p->talent.devourer.void_metamorphosis->ok() )
@@ -6023,6 +6024,7 @@ struct eradicate_t
           p->get_background_action<eradicate_damage_t>( "eradicate_cull", p->spec.eradicate_damage_meta );
       damage_action_meta->aoe                 = -1;
       damage_action_meta->reduced_aoe_targets = p->talent.devourer.eradicate->effectN( 1 ).base_value();
+      damage_action_meta->base_aoe_multiplier = data().effectN( 1 ).percent();
       add_child( damage_action_meta );
     }
 
