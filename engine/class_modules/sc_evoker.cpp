@@ -516,7 +516,7 @@ struct simplified_player_t : public player_t
         } 
       },
       { "shadow_archon", 
-        { ROLE_SPELL, 19.1 * 1.32, true, 1.5_s, 0.6, -1, 12, 1, -0.1, 20000.0, 0.0011, 0.1, 0.35,
+        { ROLE_SPELL, 19.1 * 1.32, true, 1.5_s, 0.45, -1, 12, 1, -0.1, 20000.0, 0.0011, 0.1, 0.35,
           { 
             { "trinket", 0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
             { "pi", 0.2, 15_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
@@ -529,7 +529,7 @@ struct simplified_player_t : public player_t
         }
       },
       { "shadow",
-        { ROLE_SPELL, 21.0 * 1.32, true, 1.5_s, 0.6, -1, 12, 1, -0.1,  20000.0, 0.0011, 0.1, 0.35,
+        { ROLE_SPELL, 21.0 * 1.32, true, 1.5_s, 0.45, -1, 12, 1, -0.1,  20000.0, 0.0011, 0.1, 0.35,
           { 
             { "trinket", 0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
             { "pi", 0.2, 15_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
@@ -600,8 +600,8 @@ struct simplified_player_t : public player_t
             { "funny_dragon",               0.10,    3_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "funny_dragon_haste",         0.12,   12_s,   90_s,  1_s, bob_buff_type_e::BUFF_HASTE },
             { "breath_of_sindragosa",       0.1,    30_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "pillar_of_frost",            0.3,    18_s,   45_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "pillar_of_frost_lingering",  0.1,    20_s,   45_s, 19_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "pillar_of_frost",            0.181,  18_s,   45_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "pillar_of_frost_lingering",  0.1,    38_s,   45_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "rider_cds_1",                0.1,    20_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "rider_cds_2",                0.15,   30_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "rider_cds_3",                0.2,    45_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -617,8 +617,8 @@ struct simplified_player_t : public player_t
             { "funny_dragon_haste",         0.12,   12_s,   90_s,  1_s, bob_buff_type_e::BUFF_HASTE },
             { "breath_of_sindragosa",       0.2,    30_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "pillar_cd_dump",             0.3,    20_s,   45_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "pillar_of_frost",            0.3,    18_s,   45_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "pillar_of_frost_lingering",  0.1,    20_s,   45_s, 19_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "pillar_of_frost",            0.181,  18_s,   45_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "pillar_of_frost_lingering",  0.1,    38_s,   45_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "reapers_mark_1",             0.2,    16_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "reapers_mark_2",             0.1,    12_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "reapers_mark_3",             0.2,     8_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
