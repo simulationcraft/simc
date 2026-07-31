@@ -15444,6 +15444,7 @@ Description      : $?c1[When your Boar deals damage, the damage of your next Cob
 Each additional enemy damaged by your Boar causes Cobra Shot to strike $472640s3 additional $Ltarget:targets;, up to $472640u][Each time your Boar deals damage, the damage of your next Boomstick is increased by $472640s2%, up to ${$472640s2*$472640u}%].
 
 Name             : Hogstrider (id=472640) [Spell Family (9)] 
+Hotfixed         : Aura Interrupt
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -15457,7 +15458,7 @@ Stacks           : 4 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell
 Attributes       : Can Proc From Procs (122), Not In Spellbook (143), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Encounter Start (55)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Challenge Mode Start (54)
 Effects          :
 #1 (id=1190878)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
