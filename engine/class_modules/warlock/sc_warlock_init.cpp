@@ -1413,8 +1413,39 @@ namespace warlock
 
     if ( talents.demonfire_infusion.ok() )
     {
-      flat_rng.demonfire_infusion_dot = get_simple_proc_rng( "demonfire_infusion_dot", talents.demonfire_infusion->effectN( 1 ).percent() );
-      flat_rng.demonfire_infusion_inc = get_simple_proc_rng( "demonfire_infusion_incinerate", talents.demonfire_infusion->effectN( 2 ).percent() );
+      // Uniform sources use twice the spell-data chance as their maximum so their mean increment matches that chance
+      const double inc_max_demonfire_infusion_dot = talents.demonfire_infusion->effectN( 1 ).percent() * 2.0;
+      const double inc_max_demonfire_infusion_inc = talents.demonfire_infusion->effectN( 2 ).percent() * 2.0;
+      const double inc_fixed_demonfire_infusion_ib = talents.demonfire_infusion->effectN( 2 ).percent();
+      const bool fnb_talent = talents.fire_and_brimstone.ok();
+
+      progress_rng.demonfire_infusion = get_threshold_rng( "demonfire_infusion", inc_max_demonfire_infusion_dot,
+        [ this, inc_max_demonfire_infusion_inc, inc_fixed_demonfire_infusion_ib, fnb_talent ]( double increment_max, action_state_t* s ) {
+          assert( s );
+          if ( s->action->id == warlock_base.incinerate->id() )
+          {
+            // Incinerate uses a source-specific uniform increment maximum instead of the default increment_max
+            increment_max = inc_max_demonfire_infusion_inc;
+            if ( fnb_talent )
+            {
+              // With FnB, Incinerate's expected total accumulator contribution scales with the cube root of the cast's unique impacts, including Havoc
+              const unsigned target_count = helpers::incinerate_state_target_count( s );
+              assert( target_count > 0 );
+              increment_max *= std::pow( target_count, -2.0 / 3.0 );
+            }
+          }
+          else if ( s->action->id == hero.infernal_bolt->id() )
+          {
+            // Infernal Bolt impacts, including Havoc, add a fixed value to the accumulator
+            return inc_fixed_demonfire_infusion_ib;
+          }
+          else
+          {
+            // Immolate and Wither use the default increment_max initialized from inc_max_demonfire_infusion_dot
+            assert( s->action->id == warlock_base.immolate_dot->id() || s->action->id == hero.wither_dot->id() );
+          }
+          return rng().range( 0.0, increment_max );
+        }, true, true );
     }
 
     if ( talents.alythesss_ire.ok() )

@@ -1023,6 +1023,7 @@ public:
   {
     threshold_rng_t* agony_energize;
     threshold_rng_t* nightfall;
+    threshold_rng_t* demonfire_infusion;
     threshold_rng_t* seeds_of_their_demise;
   } progress_rng;
 
@@ -1052,8 +1053,6 @@ public:
     simple_proc_t* immolate_crit_energize; // TODO: Need to check the type of rng
     simple_proc_t* demoniac_imp_implosion;
     simple_proc_t* carnivorous_stalkers;
-    simple_proc_t* demonfire_infusion_dot; // TODO: Need to check the type of rng
-    simple_proc_t* demonfire_infusion_inc; // TODO: Need to check the type of rng
     simple_proc_t* alythesss_ire_shift;
     simple_proc_t* wither_crit_energize;   // TODO: Need to check the type of rng
     simple_proc_t* blackened_soul;
@@ -1329,6 +1328,8 @@ namespace helpers
     virtual const char* name() const override;
     virtual void execute() override;
   };
+
+  unsigned incinerate_state_target_count( const action_state_t* state );
 
   void consume_succulent_soul( warlock_t* p, player_t* target );
 
