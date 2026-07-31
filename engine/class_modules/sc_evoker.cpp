@@ -5449,6 +5449,11 @@ struct eternity_surge_t : public empowered_charge_spell_t
 
         damage_state->da_multiplier *= 1.0 + ( empower_level - 1 ) * p()->talent.shattering_stars->effectN( 1 ).percent();
 
+        if ( proc_spell_type == proc_spell_type_e::SCINTILLATION )
+        {
+          damage_state->da_multiplier *= p()->talent.scintillation->effectN( 1 ).percent();
+        }
+
         shattering_star->schedule_execute( damage_state );
       }
     }
