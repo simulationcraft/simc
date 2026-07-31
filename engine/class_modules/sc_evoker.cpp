@@ -493,6 +493,142 @@ struct simplified_player_t : public player_t
       }
   };
 
+  std::map<std::string, bob_settings_t> bob_settings_121 = {
+      { "default", 
+        { ROLE_SPELL, 29.4 * 1.21, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0.1, 0.2,
+          {
+            { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
+          } 
+        } 
+      },
+      { "tank", 
+        { ROLE_TANK, 20.9 * 1.21, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0, 0,
+          {
+            { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
+          } 
+        } 
+      },
+      { "healer", 
+        { ROLE_HEAL, 5.4 * 1.21, true, 1.5_s, 0.25, -1, 5, 1, 0.0, 20000.0, 0.0011, 0, 0,
+          {
+            { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
+          } 
+        } 
+      },
+      { "shadow_archon", 
+        { ROLE_SPELL, 19.1 * 1.32, true, 1.5_s, 0.6, -1, 12, 1, -0.1, 20000.0, 0.0011, 0.1, 0.35,
+          { 
+            { "trinket", 0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
+            { "pi", 0.2, 15_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
+            { "vf", 0.3, 26_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "one_mins_cds", 0.3, 25_s, 60_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "one_mins_cds_part2", 0.1, 25_s, 60_s, 8_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "one_mins_cds_lingering", 0.1, 35_s, 60_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
+          } 
+        }
+      },
+      { "shadow",
+        { ROLE_SPELL, 21.0 * 1.32, true, 1.5_s, 0.6, -1, 12, 1, -0.1,  20000.0, 0.0011, 0.1, 0.35,
+          { 
+            { "trinket", 0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
+            { "pi", 0.2, 15_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
+            { "vf", 0.3, 20_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "30s_cds", 0.4, 12_s, 30.75_s, 2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "dps_pot", 695.0, 30_s, 300_s, 2_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
+          } 
+        }
+      },
+      { "bm",
+        { ROLE_SPELL, 16.4 * 1.245, true, 1.5_s, 0.45, -1, 8, 1, -0.1, 14000.0, 0.0011, 0, 0,
+          { 
+            { "trinket",            0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
+            { "beastial_wrath",     0.8, 16_s,  30_s, 1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "beastial_wrath2",    0.8,  8_s,  30_s, 1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "dps_pot",          695.0, 30_s, 300_s, 1_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } ,
+            { "racial",           168.7, 15_s, 120_s, 1_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } 
+          } 
+        }
+      },
+      { "assa",
+        { ROLE_SPELL, 13.5 * 1.21, false, 1_s, 0.5, -1, 8, 1, 0.8, 11100.0, 0.0011, 0.25, 0.35,
+          { 
+            { "two_mins_cds", 0.9, 20_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "one_mins_cds", 0.65, 14_s, 60_s, 4_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "dps_pot", 695.0, 30_s, 360_s, 4_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } 
+          } 
+        }
+      },
+      { "unh",
+        { ROLE_SPELL, 19.6 * 0.945, true, 1.5_s, 0.5, -1, 8, 1, 0, 18000.0, 0.0011, 0.1, 0.35,
+          { 
+            { "90s_cds", 0.8, 20_s, 90_s, 6_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "45s_cds", 0.55, 20_s, 45_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "45s_cds_2", 0.2, 30_s, 45_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "dps_pot", 695.0, 30_s, 360_s, 7_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } 
+          }
+        } 
+      },
+      { "demo",
+        { ROLE_SPELL, 19.0, true, 1.5_s, 0.5, -1, 8, 1, -0.2, 9000.0, 0.0011, 0.1, 0.35,
+          { 
+            { "60s_cds_p1", 0.2,  30_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "60s_cds_p2", 0.2,  30_s,  60_s,  7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "60s_cds_p3", 0.1,  30_s,  60_s, 11_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "60s_cds_p4", 0.1,  20_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "60s_cds_p5", 0.3,  15_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "20s_cds",    0.2,  12_s,  20_s,  2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "120s_cds",   0.2,  15_s, 120_s,  2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "120s_cds_2", 0.2,  15_s, 120_s,  2_s, bob_buff_type_e::BUFF_HASTE },
+            { "dps_pot",  695.0,  30_s, 300_s,  7_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } 
+          }
+        } 
+      },
+      { "arcane",
+        { ROLE_SPELL, 16.4 * 1.21, true, 1.5_s, 0.45, -1,  8, 1, 0.0, 20000.0, 0.0011, 0.15, 0.35,
+          { 
+            { "90s_cds", 1.2, 15_s, 90_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "45s_cds", 0.8, 12_s, 45_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "dps_pot", 695.0, 30_s, 320_s, 2_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } 
+          }
+        }
+      },
+      { "dk_frost",
+        { ROLE_SPELL, 16.2 * 1.4, true, 1.5_s, 0.45, -1, 8, 1, 0, 6900.0, 0.0011, 0.05, 0.35,
+          { { "nerf_lust",                 -0.2,     8_s,  600_s,  0_s, bob_buff_type_e::BUFF_HASTE },
+            { "90s_trinket",              480.0,    20_s,   90_s,  1_s, bob_buff_type_e::BUFF_FLAT_PRIMARY },
+            { "funny_dragon",               0.10,    3_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "funny_dragon_haste",         0.12,   12_s,   90_s,  1_s, bob_buff_type_e::BUFF_HASTE },
+            { "breath_of_sindragosa",       0.1,    30_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "pillar_of_frost",            0.3,    18_s,   45_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "pillar_of_frost_lingering",  0.1,    20_s,   45_s, 19_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "rider_cds_1",                0.1,    20_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "rider_cds_2",                0.15,   30_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "rider_cds_3",                0.2,    45_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "dps_pot",                  695.0,    30_s,  300_s,  3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
+          }
+        }
+      },
+      { "dk_frost_db",
+        { ROLE_SPELL, 16.2 * 1.076, true, 1.5_s, 0.45, -1, 8, 1, 0, 6900.0, 0.0011, 0.05, 0.35,
+          { { "nerf_lust",                 -0.2,     8_s,  600_s,  0_s, bob_buff_type_e::BUFF_HASTE },
+            { "90s_trinket",              480.0,   20_s,   90_s,  1_s, bob_buff_type_e::BUFF_FLAT_PRIMARY },
+            { "funny_dragon",               0.10,    3_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "funny_dragon_haste",         0.12,   12_s,   90_s,  1_s, bob_buff_type_e::BUFF_HASTE },
+            { "breath_of_sindragosa",       0.2,    30_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "pillar_cd_dump",             0.3,    20_s,   45_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "pillar_of_frost",            0.3,    18_s,   45_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "pillar_of_frost_lingering",  0.1,    20_s,   45_s, 19_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "reapers_mark_1",             0.2,    16_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "reapers_mark_2",             0.1,    12_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "reapers_mark_3",             0.2,     8_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "reapers_mark_4",             0.5,     4_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "dps_pot",                  695.0,    30_s,  300_s,  3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
+          }
+        }
+      }
+  };
+
   simplified_player_t( sim_t* sim, std::string_view name, race_e r = RACE_HUMAN )
     : player_t( sim, PLAYER_SIMPLIFIED, name, r ),
       damage_buffs(),
@@ -586,24 +722,28 @@ struct simplified_player_t : public player_t
 
   bob_settings_t& get_variant_settings()
   {
-    auto it = bob_settings.find( option.variant );
-    if ( it != bob_settings.end() )
+    auto& settings = sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) ? bob_settings_121 : bob_settings;
+
+    auto it = settings.find( option.variant );
+    if ( it != settings.end() )
     {
       return it->second;
     }
 
-    return bob_settings.at( "default" );
+    return settings.at( "default" );
   }
 
   const bob_settings_t& get_variant_settings() const
   {
-    auto it = bob_settings.find( option.variant );
-    if ( it != bob_settings.end() )
+    auto& settings = sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) ? bob_settings_121 : bob_settings;
+
+    auto it = settings.find( option.variant );
+    if ( it != settings.end() )
     {
       return it->second;
     }
 
-    return bob_settings.at( "default" );
+    return settings.at( "default" );
   }
 
   void init() override
@@ -820,27 +960,53 @@ struct simplified_player_t : public player_t
   {
     int item_level = option.item_level;
 
-    const int crafted_item_ilvl = item_level - 4;
-    bool void_event           = ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && sim->dbc->wowv() < wowv_t( 12, 1, 0 ) );
-    const int void_event_ilvl = void_event ? item_level + 9 : item_level;
+    std::map<slot_e, std::string> default_items;
 
-    std::map<slot_e, std::string> default_items = {
-        { SLOT_HEAD, fmt::format( ",id=195476,gem_id=240983,ilevel={}", item_level ) },
-        { SLOT_NECK, fmt::format( ",id=207163,gem_id=240900,ilevel={}", item_level ) },
-        { SLOT_SHOULDERS, fmt::format( ",id=193637,ilevel={}", item_level ) },
-        { SLOT_BACK, fmt::format( ",id=195482,ilevel={}", item_level ) },
-        { SLOT_CHEST, fmt::format( ",id=193801,ilevel={},enchant_id=7987", item_level ) },
-        { SLOT_WRISTS, fmt::format( ",id=193812,gem_id=240900,ilevel={},enchant=23int", crafted_item_ilvl ) },
-        { SLOT_HANDS, fmt::format( ",id=193818,ilevel={}", item_level ) },
-        { SLOT_WAIST, fmt::format( ",id=207144,gem_id=240900,ilevel={},enchant=23int", crafted_item_ilvl ) },
-        { SLOT_LEGS, fmt::format( ",id=193759,ilevel={},enchant_id=7935", item_level ) },
-        { SLOT_FEET, fmt::format( ",id=207139,ilevel={}", item_level ) },
-        { SLOT_FINGER_1, fmt::format( ",id=207159,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
-        { SLOT_FINGER_2, fmt::format( ",id=237570,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
-        { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", void_event_ilvl ) },
-        { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", void_event_ilvl ) },
-        { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={},enchant=39int", void_event_ilvl ) },
-    };
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+    {
+      const int crafted_item_ilvl = item_level - 3;
+      const int elevated_item_ilvl = item_level == 334 ? 344 : item_level;
+      default_items               = {
+          { SLOT_HEAD, fmt::format( ",id=195476,gem_id=240983,ilevel={},enchant=175crit", elevated_item_ilvl ) },
+          { SLOT_NECK, fmt::format( ",id=207163,gem_id=240900,ilevel={},enchant=103mastery", elevated_item_ilvl ) },
+          { SLOT_SHOULDERS, fmt::format( ",id=193637,ilevel={},enchant=-56haste", item_level ) },
+          { SLOT_BACK, fmt::format( ",id=195482,ilevel={},enchant=-56vers", elevated_item_ilvl ) },
+          { SLOT_CHEST, fmt::format( ",id=193801,ilevel={},enchant_id=7987", elevated_item_ilvl ) },
+          { SLOT_WRISTS, fmt::format( ",id=193812,gem_id=240900,ilevel={},enchant=35int", crafted_item_ilvl ) },
+          { SLOT_HANDS, fmt::format( ",id=193818,ilevel={}", item_level ) },
+          { SLOT_WAIST, fmt::format( ",id=207144,gem_id=240900,ilevel={},enchant=35int", crafted_item_ilvl ) },
+          { SLOT_LEGS, fmt::format( ",id=193759,ilevel={},enchant_id=7935", item_level ) },
+          { SLOT_FEET, fmt::format( ",id=207139,ilevel={}", elevated_item_ilvl ) },
+          { SLOT_FINGER_1, fmt::format( ",id=207159,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
+          { SLOT_FINGER_2, fmt::format( ",id=237570,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
+          { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", item_level ) },
+          { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", item_level ) },
+          { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={},enchant=39int", elevated_item_ilvl ) },
+      };
+    }
+    else
+    {
+      const int crafted_item_ilvl = item_level - 4;
+      bool void_event             = ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) && sim->dbc->wowv() < wowv_t( 12, 1, 0 ) );
+      const int void_event_ilvl   = void_event ? item_level + 9 : item_level;
+      default_items               = {
+          { SLOT_HEAD, fmt::format( ",id=195476,gem_id=240983,ilevel={}", item_level ) },
+          { SLOT_NECK, fmt::format( ",id=207163,gem_id=240900,ilevel={}", item_level ) },
+          { SLOT_SHOULDERS, fmt::format( ",id=193637,ilevel={}", item_level ) },
+          { SLOT_BACK, fmt::format( ",id=195482,ilevel={}", item_level ) },
+          { SLOT_CHEST, fmt::format( ",id=193801,ilevel={},enchant_id=7987", item_level ) },
+          { SLOT_WRISTS, fmt::format( ",id=193812,gem_id=240900,ilevel={},enchant=23int", crafted_item_ilvl ) },
+          { SLOT_HANDS, fmt::format( ",id=193818,ilevel={}", item_level ) },
+          { SLOT_WAIST, fmt::format( ",id=207144,gem_id=240900,ilevel={},enchant=23int", crafted_item_ilvl ) },
+          { SLOT_LEGS, fmt::format( ",id=193759,ilevel={},enchant_id=7935", item_level ) },
+          { SLOT_FEET, fmt::format( ",id=207139,ilevel={}", item_level ) },
+          { SLOT_FINGER_1, fmt::format( ",id=207159,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
+          { SLOT_FINGER_2, fmt::format( ",id=237570,gem_id=240900,ilevel={},enchant_id=7997", item_level ) },
+          { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", void_event_ilvl ) },
+          { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", void_event_ilvl ) },
+          { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={},enchant=39int", void_event_ilvl ) },
+      };
+    }
 
     for ( const auto& [ slot, item_str ] : default_items )
     {
@@ -9207,26 +9373,49 @@ void evoker_t::create_permanent_actors()
     {
       option.force_clutchmates = "yes";
       close_as_clutchmates     = true;
-
-      bobs = { { "Bob Demo", "demo" }, { "Bob UDK", "unh" }, { "Bob Tank", "tank" }, { "Bob Healer", "healer" } };
+      
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+        bobs = { { "Bob Shadow", "shadow_archon" }, { "Bob BM", "bm" }, { "Bob Tank", "tank" }, { "Bob Healer", "healer" } };
+      }
+      else
+      {
+        bobs = { { "Bob Demo", "demo" }, { "Bob UDK", "unh" }, { "Bob Tank", "tank" }, { "Bob Healer", "healer" } };
+      }
     }
     else
     {
       option.force_clutchmates = "no";
       close_as_clutchmates     = false;
-
       // Spawn in a vastly reduced Raid Cohort and estimate Breath of Eons instead.
       // This will slightly over-estimate the power of Ebon Might but makes the sims significantly faster.
-      bobs = {
-          { "Bob UHDK1", "unh" },
-          { "Bob Demo", "demo" },
-          { "Bob BM", "bm" },
-          { "Bob Flat1", "default" },
-          { "Bob Flat2", "default" },
-          { "Bob ShadowVW", "shadow" },  // Local sandbag spec to estimate the more varied damage profiles of a real raid.
-          { "Bob Healer1", "healer" },
-          { "Bob Tank1", "tank" },
-      };
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      {
+          
+        bobs = {
+            { "Bob Shadow1",  "shadow" },
+            { "Bob Shadow2",  "shadow" },
+            { "Bob FDK",      "dk_frost" },
+            { "Bob BM",       "bm" },
+            { "Bob Flat1",    "default" },
+            { "Bob Demo",     "demo" },  // Local sandbag spec to estimate the more varied damage profiles of a real raid.
+            { "Bob Healer1",  "healer" },
+            { "Bob Tank1",    "tank" },
+        };
+      }
+      else
+      {
+        bobs = {
+            { "Bob UHDK1", "unh" },
+            { "Bob Demo", "demo" },
+            { "Bob BM", "bm" },
+            { "Bob Flat1", "default" },
+            { "Bob Flat2", "default" },
+            { "Bob ShadowVW", "shadow" },  // Local sandbag spec to estimate the more varied damage profiles of a real raid.
+            { "Bob Healer1", "healer" },
+            { "Bob Tank1", "tank" },
+        };
+      }
     }
 
     for ( auto& pair : bobs )
