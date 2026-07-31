@@ -1688,6 +1688,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
   void execute() override
   {
+    set_target( player );
     auto *tick = spinning_crane_kick_tick;
     if ( !tick->execute_state )
       tick->execute_state = tick->get_state();
