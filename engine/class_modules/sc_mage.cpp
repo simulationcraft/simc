@@ -6414,11 +6414,8 @@ void mage_t::create_buffs()
   buffs.rapid_refreezing   = make_buff( this, "rapid_refreezing", find_spell( 1310248 ) )
                                ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
                                  { trigger_icicle(); } )
-                               // We collect RPPM data from parent spell
-                               ->set_trigger_spell( sets->set( MAGE_FROST, MID2, B4 ) )
-                               // Set to the last known value before it was removed from spell data
-                               // TODO: Figure out how it works now
-                               ->set_rppm( RPPM_NONE, 2.0 );
+                               // TODO: This is just a first approximation, get more data
+                               ->set_chance( sets->has_set_bonus( MAGE_FROST, MID2, B4 ) ? 0.25 : 0.0 );
   buffs.thermal_void       = make_buff( this, "thermal_void", find_spell( 1247730 ) )
                                ->set_chance( talents.thermal_void->effectN( 1 ).percent() );
 
