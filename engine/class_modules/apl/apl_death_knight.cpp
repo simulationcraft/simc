@@ -116,13 +116,14 @@ void blood( player_t* p )
   action_priority_list_t* san_gift = p->get_action_priority_list( "san_gift" );
   action_priority_list_t* sanlayn = p->get_action_priority_list( "sanlayn" );
 
-  precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "snapshot_stats", "Default consumables otion=potion_of_recklessness_ lask=flask_of_thalassian_resistance_ ood=silvermoon_parad ugmentation=void_touche emporary_enchant=main_hand:thalassian_phoenix_oil_" );
   precombat->add_action( "deaths_caress" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "use_items" );
-  default_->add_action( "use_item,name=light_company_guidon,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<15" );
-  default_->add_action( "use_item,name=algethar_puzzle_box,if=fight_remains>122|cooldown.dancing_rune_weapon.remains>78|fight_remains<25" );
+  default_->add_action( "use_item,name=voracious_heart_of_ulatek,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<20" );
+  default_->add_action( "use_item,name=blazebinders_hoof,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<20|fight_remains>120" );
+  default_->add_action( "use_item,name=vile_vial_of_volatile_venom,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<20|fight_remains>120" );
   default_->add_action( "fireblood,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<8" );
   default_->add_action( "blood_fury,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<12" );
   default_->add_action( "berserking,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<=15" );
@@ -135,8 +136,7 @@ void blood( player_t* p )
   default_->add_action( "run_action_list,name=sanlayn,if=hero_tree.sanlayn" );
 
   high_prio_actions->add_action( "raise_dead,use_off_gcd=1" );
-  high_prio_actions->add_action( "death_strike,if=buff.coagulopathy.up&buff.coagulopathy.remains<=gcd" );
-  high_prio_actions->add_action( "dancing_rune_weapon,if=!buff.exterminate.up&!debuff.reapers_mark_debuff.up&!buff.dancing_rune_weapon.up&(fight_remains>95|fight_remains<25|time>300)" );
+  high_prio_actions->add_action( "dancing_rune_weapon,if=!buff.exterminate.up&!debuff.reapers_mark_debuff.up&(fight_remains>95|fight_remains<25|time>300)" );
 
   deathbringer->add_action( "death_strike,if=(runic_power.deficit<20|(runic_power.deficit<26&buff.dancing_rune_weapon.up))" );
   deathbringer->add_action( "death_and_decay,if=!buff.death_and_decay.up" );
@@ -153,28 +153,28 @@ void blood( player_t* p )
 
   san_gift->add_action( "heart_strike,if=buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains" );
   san_gift->add_action( "death_strike,if=runic_power.deficit<36" );
-  san_gift->add_action( "blood_boil,if=!drw.bp_ticking" );
-  san_gift->add_action( "any_dnd,if=buff.crimson_scourge.remains" );
+  san_gift->add_action( "any_dnd,if=buff.crimson_scourge.remains&!buff.visceral_strength.remains" );
   san_gift->add_action( "heart_strike,if=buff.essence_of_the_blood_queen.stack<7" );
   san_gift->add_action( "death_strike" );
-  san_gift->add_action( "blood_boil,if=buff.boiling_point.up&!buff.boiling_point_echo.up" );
+  san_gift->add_action( "blood_boil,if=buff.boiling_point.up" );
   san_gift->add_action( "heart_strike" );
   san_gift->add_action( "blood_boil" );
 
   sanlayn->add_action( "deaths_caress,if=!buff.bone_shield.up|buff.bone_shield.remains<1.5|buff.bone_shield.stack<=1" );
-  sanlayn->add_action( "blood_boil,if=dot.blood_plague.remains<3" );
-  sanlayn->add_action( "heart_strike,if=(buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains&buff.vampiric_strike.remains)" );
+  sanlayn->add_action( "heart_strike,if=(buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains&buff.vampiric_strike.remains&fight_remains>buff.essence_of_the_blood_queen.remains+10)" );
   sanlayn->add_action( "death_strike,if=runic_power.deficit<20" );
   sanlayn->add_action( "deaths_caress,if=buff.bone_shield.stack<6" );
   sanlayn->add_action( "marrowrend,if=buff.bone_shield.stack<6" );
   sanlayn->add_action( "any_dnd,if=buff.crimson_scourge.remains" );
+  sanlayn->add_action( "blood_boil,if=buff.boiling_point.up" );
+  sanlayn->add_action( "marrowrend,if=buff.blood_debt.stack=10" );
   sanlayn->add_action( "heart_strike,if=buff.vampiric_strike.up" );
-  sanlayn->add_action( "death_strike" );
-  sanlayn->add_action( "blood_boil,if=buff.boiling_point.up&!buff.boiling_point_echo.up" );
+  sanlayn->add_action( "death_strike,if=runic_power.deficit<40|fight_remains<10|(buff.essence_of_the_blood_queen.remains&buff.essence_of_the_blood_queen.remains<8)" );
   sanlayn->add_action( "consumption,empower_to=1" );
   sanlayn->add_action( "heart_strike,if=rune>=2" );
   sanlayn->add_action( "blood_boil" );
   sanlayn->add_action( "heart_strike" );
+  sanlayn->add_action( "death_strike" );
 }
 //blood_apl_end
 
