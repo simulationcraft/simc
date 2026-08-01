@@ -7009,10 +7009,6 @@ struct blade_dance_base_t
     }
 
     ability_cooldown = data().cooldown();
-    if ( data().affected_by( p->spec.blade_dance_2->effectN( 1 ) ) )
-    {
-      ability_cooldown += p->spec.blade_dance_2->effectN( 1 ).time_value();
-    }
 
     if ( p->talent.havoc.trail_of_ruin->ok() )
     {
