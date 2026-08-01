@@ -4431,7 +4431,10 @@ struct ice_lance_t final : public frost_mage_spell_t
     enable_calculate_on_impact( 228598 );
 
     if ( p->talents.fractured_frost.ok() )
+    {
       aoe = 1 + as<int>( p->talents.fractured_frost->effectN( 1 ).base_value() );
+      chain_multiplier = p->talents.fractured_frost->effectN( 2 ).percent();
+    }
 
     if ( p->spec.shatter->ok() )
       add_child( p->action.shatter.ice_lance );
