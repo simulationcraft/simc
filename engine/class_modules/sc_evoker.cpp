@@ -511,11 +511,11 @@ struct simplified_player_t : public player_t
       { "bdk", 
         { ROLE_TANK, 10.1 * 1.1, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0, 0,
           {
-            { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY },
+            { "dps_pot",                  695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY },
             { "90s_trinket",              480.0,    20_s,   90_s,  0_s, bob_buff_type_e::BUFF_FLAT_PRIMARY },
             { "berserking",                 0.1,    12_s,  180_s,  0_s, bob_buff_type_e::BUFF_HASTE },
             { "raise_dead",                 0.2,    15_s,   90_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "90s_something",              0.15,   10_s,    90_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "90s_something",              0.15,   10_s,   90_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "reapers_mark_1",             0.4,    16_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "reapers_mark_2",             0.3,    12_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "reapers_mark_3",             0.2,     8_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -533,23 +533,23 @@ struct simplified_player_t : public player_t
       { "shadow_archon", 
         { ROLE_SPELL, 19.1 * 1.32, true, 1.5_s, 0.45, -1, 12, 1, -0.1, 20000.0, 0.0011, 0.1, 0.35,
           { 
-            { "trinket", 0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
-            { "pi", 0.2, 15_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
-            { "vf", 0.3, 26_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "one_mins_cds", 0.3, 25_s, 60_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "one_mins_cds_part2", 0.1, 25_s, 60_s, 8_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "trinket",                0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
+            { "pi",                     0.2, 15_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
+            { "vf",                     0.3, 26_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "one_mins_cds",           0.3, 25_s, 60_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "one_mins_cds_part2",     0.1, 25_s, 60_s, 8_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "one_mins_cds_lingering", 0.1, 35_s, 60_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
+            { "dps_pot",              695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
           } 
         }
       },
       { "shadow",
         { ROLE_SPELL, 21.0 * 1.32, true, 1.5_s, 0.45, -1, 12, 1, -0.1,  20000.0, 0.0011, 0.1, 0.35,
           { 
-            { "trinket", 0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
-            { "pi", 0.2, 15_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
-            { "vf", 0.3, 20_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "30s_cds", 0.4, 12_s, 30.75_s, 2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "trinket",   0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
+            { "pi",        0.2, 15_s, 120_s, 3_s, bob_buff_type_e::BUFF_HASTE },
+            { "vf",        0.3, 20_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "30s_cds",   0.4, 12_s,  30_s, 2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "dps_pot", 695.0, 30_s, 300_s, 2_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
           } 
         }
@@ -568,18 +568,18 @@ struct simplified_player_t : public player_t
       { "assa",
         { ROLE_SPELL, 13.5 * 1.21, false, 1_s, 0.5, -1, 8, 1, 0.8, 11100.0, 0.0011, 0.25, 0.35,
           { 
-            { "two_mins_cds", 0.9, 20_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "one_mins_cds", 0.65, 14_s, 60_s, 4_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "dps_pot", 695.0, 30_s, 360_s, 4_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } 
+            { "two_mins_cds", 0.9,  20_s, 120_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "one_mins_cds", 0.65, 14_s,  60_s, 4_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "dps_pot",    695.0,  30_s, 360_s, 4_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } 
           } 
         }
       },
       { "unh",
         { ROLE_SPELL, 19.6 * 0.945, true, 1.5_s, 0.5, -1, 8, 1, 0, 18000.0, 0.0011, 0.1, 0.35,
           { 
-            { "90s_cds", 0.8, 20_s, 90_s, 6_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "45s_cds", 0.55, 20_s, 45_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "45s_cds_2", 0.2, 30_s, 45_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "90s_cds",  0.8,  20_s,  90_s, 6_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "45s_cds",  0.55, 20_s,  45_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "45s_cds_2", 0.2, 30_s,  45_s, 7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "dps_pot", 695.0, 30_s, 360_s, 7_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } 
           }
         } 
@@ -602,8 +602,8 @@ struct simplified_player_t : public player_t
       { "arcane",
         { ROLE_SPELL, 16.4 * 1.21, true, 1.5_s, 0.45, -1,  8, 1, 0.0, 20000.0, 0.0011, 0.15, 0.35,
           { 
-            { "90s_cds", 1.2, 15_s, 90_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
-            { "45s_cds", 0.8, 12_s, 45_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "90s_cds",   1.2, 15_s, 90_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "45s_cds",   0.8, 12_s, 45_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
             { "dps_pot", 695.0, 30_s, 320_s, 2_s, bob_buff_type_e::BUFF_FLAT_PRIMARY } 
           }
         }
