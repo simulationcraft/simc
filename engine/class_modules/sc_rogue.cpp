@@ -148,12 +148,12 @@ public:
     dot_t* deadly_poison;
     dot_t* deathmark;
     dot_t* garrote;
+    dot_t* goremaws_bite;
     dot_t* internal_bleeding;
     dot_t* killing_spree; // Strictly speaking, this should probably be on player
     dot_t* kingsbane;
     dot_t* mutilated_flesh;
     dot_t* rupture;
-    dot_t* soulrip;
   } dots;
 
   struct debuffs_t
@@ -284,6 +284,7 @@ public:
     actions::rogue_attack_t* caustic_spatter = nullptr;
     actions::rogue_attack_t* echoing_reprimand = nullptr;
     actions::rogue_attack_t* fan_the_hammer = nullptr;
+    actions::rogue_attack_t* goremaws_bite = nullptr;
     actions::rogue_attack_t* internal_bleeding = nullptr;
     actions::rogue_attack_t* lashe_macabre = nullptr;
     actions::rogue_attack_t* lingering_shadow = nullptr;
@@ -291,7 +292,7 @@ public:
     actions::rogue_attack_t* poison_bomb = nullptr;
     actions::rogue_attack_t* secondary_poisoning = nullptr;
     actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
-    actions::rogue_spell_t* thistle_tea = nullptr;
+    actions::rogue_spell_t* thistle_tea_auto = nullptr;
 
     residual_action::residual_periodic_action_t<spell_t>* doomblade = nullptr;
 
@@ -450,6 +451,7 @@ public:
 
     // Set Bonuses
     damage_buff_t* mid1_outlaw_4pc;
+    damage_buff_t* mid2_assassination_2pc;
     buff_t* mid2_outlaw_4pc;
 
   } buffs;
@@ -628,6 +630,7 @@ public:
     const spell_data_t* implacable_damage;
     const spell_data_t* implacable_damage_physical;
     const spell_data_t* implacable_damage_nature;
+    const spell_data_t* implacable_energize;
     const spell_data_t* implacable_tracker_buff;
     const spell_data_t* internal_bleeding_debuff;
     const spell_data_t* kingsbane_buff;
@@ -696,6 +699,8 @@ public:
     const spell_data_t* eviscerate_shadow_attack;
     const spell_data_t* find_weakness_buff;
     const spell_data_t* goremaws_bite_buff;
+    const spell_data_t* goremaws_bite_finisher_damage;
+    const spell_data_t* goremaws_bite_finisher_debuff;
     const spell_data_t* master_of_shadows_buff;
     const spell_data_t* premeditation_buff;
     const spell_data_t* relentless_strikes_energize;
@@ -784,7 +789,8 @@ public:
       player_talent_t supercharger;
       player_talent_t subterfuge;
 
-      player_talent_t thistle_tea;
+      player_talent_t thistle_tea_auto;
+      player_talent_t thistle_tea_ability;
       player_talent_t echoing_reprimand;
       player_talent_t forced_induction;
       player_talent_t deeper_stratagem;
@@ -845,7 +851,8 @@ public:
       player_talent_t regicides_reward;
       player_talent_t inspiring_strike;
       player_talent_t poisoners_drive;
-      player_talent_t deadly_momentum;
+      player_talent_t deadly_momentum;          // TODO: Remove with is_ptr checks
+      player_talent_t unstable_toxin;
       player_talent_t scent_of_blood;
 
       player_talent_t dashing_scoundrel;
@@ -1107,8 +1114,12 @@ public:
     const spell_data_t* mid1_subtlety_2pc;
     const spell_data_t* mid1_subtlety_4pc;
 
+    const spell_data_t* mid2_assassination_2pc;
+    const spell_data_t* mid2_assassination_4pc;
     const spell_data_t* mid2_outlaw_2pc;
     const spell_data_t* mid2_outlaw_4pc;
+    const spell_data_t* mid2_subtlety_2pc;
+    const spell_data_t* mid2_subtlety_4pc;
   } set_bonuses;
 
   // Options
@@ -1632,9 +1643,11 @@ public:
     bool mid1_assassination_4pc = false;
     bool mid1_subtlety_2pc = false;
 
+    bool mid2_assassination_4pc = false;
     bool mid2_outlaw_4pc = false;
 
     damage_affect_data follow_the_blood;
+    damage_affect_data lingering_shadow;
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
   } affected_by;
@@ -1769,9 +1782,14 @@ public:
       affected_by.death_perception_shadow_dance = ab::data().affected_by( p->spec.shadow_dance->effectN( 2 ) );
     }
     
-    if ( p->talent.subtlety.goremaws_bite->ok() && p->spec.goremaws_bite_buff->ok() )
+    if ( p->talent.subtlety.goremaws_bite->ok() && !p->is_ptr() && p->spec.goremaws_bite_buff->ok() )
     {
       affected_by.goremaws_bite = ab::data().affected_by( p->spec.goremaws_bite_buff->effectN( 2 ) );
+    }
+
+    if ( p->talent.subtlety.lingering_shadow->ok() )
+    {
+      affected_by.lingering_shadow.direct_percent = 1.0;
     }
 
     if ( p->talent.subtlety.planned_execution->ok() )
@@ -1792,6 +1810,11 @@ public:
     if ( p->set_bonuses.mid1_subtlety_2pc->ok() )
     {
       affected_by.mid1_subtlety_2pc = consumes_combo_points();
+    }
+
+    if ( p->set_bonuses.mid2_assassination_4pc->ok() )
+    {
+      affected_by.mid2_assassination_4pc = ab::data().affected_by( p->talent.assassination.deadly_poison->effectN( 1 ).trigger()->effectN( 2 ) );
     }
 
     if ( p->set_bonuses.mid2_outlaw_4pc->ok() )
@@ -1872,6 +1895,7 @@ public:
     register_damage_buff( p()->buffs.jackpot );
 
     register_damage_buff( p()->buffs.mid1_outlaw_4pc );
+    register_damage_buff( p()->buffs.mid2_assassination_2pc );
 
     if ( consumes_combo_points() )
     {
@@ -1903,7 +1927,10 @@ public:
                            cold_blood_consumed_proc, 1_ms );
     register_consume_buff( p()->buffs.unshakeable_drive, p()->buffs.unshakeable_drive->is_affecting( &ab::data() ) || affected_by.unshakeable_drive_2,
                            unshakeable_drive_consumed_proc, 0_ms, true, true );
-    register_consume_buff( p()->buffs.goremaws_bite, affected_by.goremaws_bite );
+    if ( !p()->is_ptr() )
+    {
+      register_consume_buff( p()->buffs.goremaws_bite, affected_by.goremaws_bite );
+    }
     register_consume_buff( p()->buffs.silent_storm, p()->buffs.silent_storm->is_affecting_crit_chance( &ab::data() ), nullptr, 1_ms ); // MIDNIGHT TOCHECK Shadow Clone timing
     register_consume_buff( p()->buffs.symbolic_victory, p()->buffs.symbolic_victory->is_affecting( &ab::data() ),
                            nullptr, p()->bugs ? 0_ms : 1_ms, false, true ); // 2024-08-12 -- Consumed immediatey, does not work with Shadowy Finishers
@@ -2246,6 +2273,7 @@ public:
   void trigger_fatebound_edge_case( const action_state_t* state );
   void trigger_fazed( const action_state_t* state );
   void trigger_find_weakness( const action_state_t* state, timespan_t duration = timespan_t::min() );
+  void trigger_goremaws_bite( const action_state_t* state );
   void trigger_hand_of_fate( const action_state_t*, bool biased = false, timespan_t current_delay = timespan_t::zero() );
   void trigger_keep_it_rolling();
   void trigger_lingering_shadow( const action_state_t* state );
@@ -2526,6 +2554,11 @@ public:
       m *= tdata->debuffs.fazed->stack_value_direct();
     }
 
+    if ( affected_by.mid2_assassination_4pc && tdata->dots.deadly_poison->is_ticking() )
+    {
+      m *= p()->set_bonuses.mid2_assassination_4pc->effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -2659,11 +2692,11 @@ public:
       }
 
       // 2024-09-07 -- Thistle Tea now triggers automatically when Energy drops low enough
-      if ( p()->talent.rogue.thistle_tea->ok() && p()->cooldowns.thistle_tea->current_charge > 0 )
+      if ( p()->talent.rogue.thistle_tea_auto->ok() && p()->cooldowns.thistle_tea->current_charge > 0 )
       {
-        if ( p()->resources.current[ RESOURCE_ENERGY ] < p()->talent.rogue.thistle_tea->effectN( 2 ).resource( RESOURCE_ENERGY ) )
+        if ( p()->resources.current[ RESOURCE_ENERGY ] < p()->talent.rogue.thistle_tea_auto->effectN( 2 ).resource( RESOURCE_ENERGY ) )
         {
-          p()->active.thistle_tea->execute();
+          p()->active.thistle_tea_auto->execute();
         }
       }
     }
@@ -2827,12 +2860,14 @@ struct rogue_attack_t : public rogue_action_t<melee_attack_t>
     trigger_fatal_flourish( state );
     trigger_blade_flurry( state );
     trigger_nimble_flurry( state );
+    trigger_lingering_shadow( state );
     trigger_shadow_blades_attack( state );
     trigger_dashing_scoundrel( state );
     trigger_caustic_spatter( state );
     trigger_cloud_cover( state );
     trigger_deathstalkers_mark( state );
     trigger_cold_blood( state );
+    trigger_goremaws_bite( state );
   }
 
   void tick( dot_t* d ) override
@@ -3421,6 +3456,11 @@ struct melee_t : public rogue_attack_t
 
     m *= td( target )->debuffs.fazed->stack_value_auto_attack();
 
+    if ( p()->set_bonuses.mid2_assassination_4pc->ok() )
+    {
+      m *= 1.0 + p()->set_bonuses.mid2_assassination_4pc->effectN( 2 ).percent() * td( target )->debuffs.amplifying_poison->check();
+    }
+
     return m;
   }
 
@@ -3672,6 +3712,7 @@ struct backstab_t : public rogue_attack_t
   backstab_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->spec.backstab, options_str )
   {
+    affected_by.lingering_shadow.direct = true;
   }
 
   void init() override
@@ -3711,8 +3752,6 @@ struct backstab_t : public rogue_attack_t
       timespan_t duration = timespan_t::from_seconds( p()->talent.subtlety.improved_backstab->effectN( 1 ).base_value() );
       trigger_find_weakness( state, duration );
     }
-
-    trigger_lingering_shadow( state );
   }
 
   bool verify_actor_spec() const override
@@ -4087,7 +4126,7 @@ struct crimson_tempest_t : public rogue_attack_t
       p()->sim->print_log( "{} {} cloning {} from {} to {} with remains={:.3f}",
                            *p(), *this, *source_dot, *tl.back(), *tl[ i ], source_dot->remains().total_seconds() );
 
-      if ( internal_bleeding && p()->active.internal_bleeding )
+      if ( internal_bleeding && p()->active.internal_bleeding && !p()->is_ptr() )
       {
         p()->active.internal_bleeding->trigger_secondary_action( tl[ i ], cast_state( source_dot->state )->get_combo_points() );
         p()->sim->print_log( "{} {} clone of {} triggered internal_bleeding on {} with {} cp",
@@ -4257,6 +4296,17 @@ struct envenom_t : public rogue_attack_t
     // 2023-10-05 -- Envenom spell no longer has a base 1s duration, hard code for now
     timespan_t envenom_duration = ( 1_s * cast_state( state )->get_combo_points() );
 
+    if ( p()->talent.assassination.unstable_toxin->ok() )
+    {
+      envenom_duration += p()->talent.assassination.unstable_toxin->effectN( 2 ).time_value();
+    }
+
+    if ( p()->is_ptr() && p()->talent.assassination.implacable_1->ok() )
+    {
+      double energy_regen = cast_state( state )->get_combo_points() * p()->spec.implacable_energize->effectN( 1 ).resource();
+      p()->resource_gain( RESOURCE_ENERGY, energy_regen, p()->gains.implacable, this );
+    }
+
     if ( p()->buffs.envenom->check() )
     {
       if ( p()->talent.assassination.poisoners_drive->ok() )
@@ -4271,6 +4321,11 @@ struct envenom_t : public rogue_attack_t
       if ( p()->talent.assassination.inspiring_strike->ok() )
       {
         p()->buffs.inspiring_strike->trigger( envenom_duration );
+      }
+
+      if ( p()->set_bonuses.mid2_assassination_2pc->ok() )
+      {
+        p()->buffs.mid2_assassination_2pc->trigger( envenom_duration );
       }
 
       p()->buffs.implacable_tracker->trigger();
@@ -4295,6 +4350,8 @@ struct eviscerate_t : public rogue_attack_t
       rogue_attack_t( name, p, p->spec.eviscerate_shadow_attack )
     {
       affected_by.darkest_night = affected_by.darkest_night_crit = true;
+      affected_by.lingering_shadow.direct = p->set_bonuses.mid2_subtlety_4pc->ok();
+      affected_by.lingering_shadow.direct_percent = p->set_bonuses.mid2_subtlety_4pc->effectN( 1 ).percent();
       affected_by.mid1_subtlety_2pc = true;
 
       if ( p->talent.subtlety.shadowed_finishers->ok() )
@@ -4317,6 +4374,8 @@ struct eviscerate_t : public rogue_attack_t
     bonus_attack( nullptr )
   {
     affected_by.darkest_night = affected_by.darkest_night_crit = true;
+    affected_by.lingering_shadow.direct = p->set_bonuses.mid2_subtlety_4pc->ok();
+    affected_by.lingering_shadow.direct_percent = p->set_bonuses.mid2_subtlety_4pc->effectN( 1 ).percent();
 
     if ( p->talent.subtlety.shadowed_finishers->ok() )
     {
@@ -4530,6 +4589,7 @@ struct gloomblade_t : public rogue_attack_t
   gloomblade_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->talent.subtlety.gloomblade, options_str )
   {
+    affected_by.lingering_shadow.direct = true;
   }
 
   void init() override
@@ -4557,8 +4617,6 @@ struct gloomblade_t : public rogue_attack_t
       timespan_t duration = timespan_t::from_seconds( p()->talent.subtlety.improved_backstab->effectN( 1 ).base_value() );
       trigger_find_weakness( state, duration );
     }
-
-    trigger_lingering_shadow( state );
   }
 
   rogue_attack_t* shadow_clone_attack() const override
@@ -4769,7 +4827,7 @@ struct kingsbane_t : public rogue_attack_t
       { return true; }
 
       bool procs_cold_blood( const action_state_t* ) const override
-      { return false; }
+      { return p()->is_ptr(); }
     };
 
     struct implacable_strike_nature_t : public rogue_attack_t
@@ -5577,6 +5635,8 @@ struct black_powder_t: public rogue_attack_t
     {
       aoe = -1;
       reduced_aoe_targets = p->spec.shadow_clone_black_powder_attack->effectN( 4 ).base_value();
+      affected_by.lingering_shadow.direct = p->set_bonuses.mid2_subtlety_4pc->ok();
+      affected_by.lingering_shadow.direct_percent = p->set_bonuses.mid2_subtlety_4pc->effectN( 1 ).percent();
     }
 
     double combo_point_da_multiplier( const action_state_t* state ) const override
@@ -5600,6 +5660,8 @@ struct black_powder_t: public rogue_attack_t
       callbacks = false; // 2021-07-19 -- Does not appear to trigger normal procs
       aoe = -1;
       reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
+      affected_by.lingering_shadow.direct = p->set_bonuses.mid2_subtlety_4pc->ok();
+      affected_by.lingering_shadow.direct_percent = p->set_bonuses.mid2_subtlety_4pc->effectN( 1 ).percent();
       affected_by.mid1_subtlety_2pc = true;
 
       if ( p->talent.subtlety.shadowed_finishers->ok() )
@@ -5635,6 +5697,8 @@ struct black_powder_t: public rogue_attack_t
   {
     aoe = -1;
     reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
+    affected_by.lingering_shadow.direct = p->set_bonuses.mid2_subtlety_4pc->ok();
+    affected_by.lingering_shadow.direct_percent = p->set_bonuses.mid2_subtlety_4pc->effectN( 1 ).percent();
 
     if ( p->talent.subtlety.shadowed_finishers->ok() )
     {
@@ -6299,12 +6363,49 @@ struct preparation_t : public rogue_spell_t
 
 struct goremaws_bite_t : public rogue_attack_t
 {
+  struct goremaws_bite_finisher_damage_t : public rogue_attack_t
+  {
+    target_filter_callback_t goremaws_bite_targets_only()
+    {
+      return [ & ]( const action_t*, player_t* target ) {
+        return p()->get_target_data( target )->dots.goremaws_bite->is_ticking();
+      };
+    }
+
+    goremaws_bite_finisher_damage_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
+      rogue_attack_t( name, p, p->spec.goremaws_bite_finisher_damage, options_str )
+    {
+      aoe = -1;
+      split_aoe_damage = true;
+      dual = true;
+      target_filter_callback = goremaws_bite_targets_only();
+      base_multiplier = p->spec.goremaws_bite_finisher_debuff->effectN( 1 ).percent();
+    }
+  };
+
+  struct goremaws_bite_dot_t : public rogue_attack_t
+  {
+    goremaws_bite_dot_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
+      rogue_attack_t( name, p, p->talent.subtlety.goremaws_bite->effectN( 2 ).trigger(), options_str )
+    {
+      dual = true;
+    }
+
+    dot_t* get_dot( player_t* t ) override
+    { return td( t )->dots.goremaws_bite; }
+  };
+
   struct goremaws_bite_damage_t : public rogue_attack_t
   {
     goremaws_bite_damage_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
       rogue_attack_t( name, p, p->talent.subtlety.goremaws_bite->effectN( 1 ).trigger(), options_str )
     {
       dual = true;
+
+      if ( p->is_ptr() )
+      {
+        impact_action = p->get_background_action<goremaws_bite_dot_t>( "goremaws_bite_dot" );
+      }
     }
   };
 
@@ -6313,21 +6414,46 @@ struct goremaws_bite_t : public rogue_attack_t
   {
     impact_action = p->get_background_action<goremaws_bite_damage_t>( "goremaws_bite_damage" );
     impact_action->stats = stats;
-    stats->school = impact_action->school; // Fix HTML Reporting
 
-    // 2023-10-02 -- CP gen is technically in the buff, move to the ability for expression and event handling
-    affected_by.shadow_blades_cp = true; // Buff is affected by Shadow Blades label 
-    energize_type = action_energize::ON_HIT;
-    energize_resource = RESOURCE_COMBO_POINT;
-    energize_amount = p->spec.goremaws_bite_buff->effectN( 1 ).base_value();
+    if ( !p->is_ptr() )
+    {
+      stats->school = impact_action->school; // Fix HTML Reporting
+
+      // 2023-10-02 -- CP gen is technically in the buff, move to the ability for expression and event handling
+      affected_by.shadow_blades_cp = true; // Buff is affected by Shadow Blades label 
+      energize_type = action_energize::ON_HIT;
+      energize_resource = RESOURCE_COMBO_POINT;
+      energize_amount = p->spec.goremaws_bite_buff->effectN( 1 ).base_value();
+    }
+    else
+    {
+      aoe = data().effectN( 1 ).base_value();
+      add_child( impact_action );
+      impact_action->impact_action->stats = stats;
+    }
+  }
+
+  void init_finished() override
+  {
+    rogue_attack_t::init_finished();
+
+    if ( p()->is_ptr() )
+    {
+      add_child( p()->active.goremaws_bite );
+      stats->school = SCHOOL_SHADOWSTRIKE; // Fix HTML Reporting
+    }
   }
 
   void execute() override
   {
     rogue_attack_t::execute();
-    p()->buffs.goremaws_bite->trigger();
+    if ( !p()->is_ptr() )
+    {
+      p()->buffs.goremaws_bite->trigger();
+    }
   }
 
+  // 2026-08-01 -- TOCHECK: Still triggers this even though it is not a generator
   rogue_attack_t* shadow_clone_attack() const override
   { return p()->active.shadow_clone_attack.goremaws_bite; }
 };
@@ -6536,6 +6662,8 @@ struct coup_de_grace_t : public rogue_attack_t
     coup_de_grace_shadow_clone_t( util::string_view name, rogue_t* p, const spell_data_t* s ) :
       shadow_clone_t( name, p, s )
     {
+      affected_by.lingering_shadow.direct = p->set_bonuses.mid2_subtlety_4pc->ok();
+      affected_by.lingering_shadow.direct_percent = p->set_bonuses.mid2_subtlety_4pc->effectN( 1 ).percent();
     }
 
     bool procs_nimble_flurry() const override
@@ -6548,6 +6676,8 @@ struct coup_de_grace_t : public rogue_attack_t
       rogue_attack_t( name, p, s )
     {
       dual = true;
+      affected_by.lingering_shadow.direct = p->set_bonuses.mid2_subtlety_4pc->ok();
+      affected_by.lingering_shadow.direct_percent = p->set_bonuses.mid2_subtlety_4pc->effectN( 1 ).percent();
       affected_by.mid1_subtlety_2pc = true;
 
       if ( p->talent.subtlety.shadowed_finishers->ok() )
@@ -6574,6 +6704,8 @@ struct coup_de_grace_t : public rogue_attack_t
       rogue_attack_t( name, p, s ),
       bonus_attack( nullptr )
     {
+      affected_by.lingering_shadow.direct = p->set_bonuses.mid2_subtlety_4pc->ok();
+      affected_by.lingering_shadow.direct_percent = p->set_bonuses.mid2_subtlety_4pc->effectN( 1 ).percent();
       affected_by.mid1_subtlety_2pc = true;
 
       if ( p->talent.subtlety.shadowed_finishers->ok() )
@@ -8323,7 +8455,7 @@ void actions::rogue_action_t<Base>::trigger_master_of_shadows()
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_dashing_scoundrel( const action_state_t* state )
 {
-  if ( !affected_by.dashing_scoundrel )
+  if ( !affected_by.dashing_scoundrel || p()->is_ptr() )
     return;
 
   // 2021-02-21-- Use the Crit-modifier whitelist to control this as it currently matches
@@ -8351,8 +8483,7 @@ void actions::rogue_action_t<Base>::trigger_lingering_shadow( const action_state
   if ( !p()->talent.subtlety.lingering_shadow->ok() || !ab::result_is_hit( state->result ) )
     return;
 
-  // Testing appears to show this does not work on Weaponmaster attacks
-  if ( is_secondary_action() )
+  if ( !affected_by.lingering_shadow.direct )
     return;
 
   int stacks = p()->buffs.lingering_shadow->stack();
@@ -8360,7 +8491,7 @@ void actions::rogue_action_t<Base>::trigger_lingering_shadow( const action_state
     return;
 
   // Tooltips imply a bonus of 1% per stack, appears to use mitigated result
-  double amount = state->result_mitigated * ( stacks / 100.0 );
+  double amount = state->result_mitigated * affected_by.lingering_shadow.direct_percent * ( stacks / 100.0 );
   p()->active.lingering_shadow->trigger_residual_action( state->target, amount );
 }
 
@@ -8799,6 +8930,23 @@ void actions::rogue_action_t<Base>::trigger_cold_blood( const action_state_t* st
   p()->buffs.cold_blood->trigger();
 }
 
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_goremaws_bite( const action_state_t* state )
+{
+  if ( !p()->is_ptr() || !p()->talent.subtlety.goremaws_bite->ok() || !ab::result_is_hit( state->result ) )
+    return;
+
+  if ( p()->get_active_dots( td( this->target )->dots.goremaws_bite ) == 0 )
+    return;
+
+  // TOCHECK -- Using combo point state for now, may need to have a manual procs_goremaws_bite() function
+  if ( cast_state( state )->get_combo_points() == 0 )
+    return;
+
+  // Damage multiplier is handled in the base_multiplier of goremaws_bite_finisher_damage_t
+  p()->active.goremaws_bite->trigger_residual_action( state, 1.0 );
+}
+
 // ==========================================================================
 // Rogue Targetdata Definitions
 // ==========================================================================
@@ -8811,11 +8959,11 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.deadly_poison            = target->get_dot( "deadly_poison_dot", source );
   dots.deathmark                = target->get_dot( "deathmark", source );
   dots.garrote                  = target->get_dot( "garrote", source );
+  dots.goremaws_bite            = target->get_dot( "goremaws_bite", source );
   dots.internal_bleeding        = target->get_dot( "internal_bleeding", source );
   dots.kingsbane                = target->get_dot( "kingsbane", source );
   dots.mutilated_flesh          = target->get_dot( "mutilated_flesh", source );
   dots.rupture                  = target->get_dot( "rupture", source );
-  dots.soulrip                  = target->get_dot( "soulrip", source );
 
   debuffs.wound_poison          = new buffs::wound_poison_t( *this );
   debuffs.atrophic_poison       = new buffs::atrophic_poison_t( *this );
@@ -9834,7 +9982,8 @@ void rogue_t::init_spells()
   talent.rogue.supercharger = find_talent_spell( talent_tree::CLASS, "Supercharger" );
   talent.rogue.superior_mixture = find_talent_spell( talent_tree::CLASS, "Superior Mixture" );
   talent.rogue.swift_slasher = find_talent_spell( talent_tree::CLASS, "Swift Slasher" );
-  talent.rogue.thistle_tea = find_talent_spell( talent_tree::CLASS, "Thistle Tea" );
+  talent.rogue.thistle_tea_auto = find_talent_spell( talent_tree::CLASS, "Thistle Tea" );
+  talent.rogue.thistle_tea_ability = find_talent_spell( talent_tree::CLASS, "Thistle Tea", 2U );
   talent.rogue.thrill_seeking = find_talent_spell( talent_tree::CLASS, "Thrill Seeking" );
   talent.rogue.tight_spender = find_talent_spell( talent_tree::CLASS, "Tight Spender" );
   talent.rogue.toxic_stiletto = find_talent_spell( talent_tree::CLASS, "Toxic Stiletto" );
@@ -9885,6 +10034,7 @@ void rogue_t::init_spells()
   talent.assassination.sudden_demise = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Demise" );
   talent.assassination.systemic_failure = find_talent_spell( talent_tree::SPECIALIZATION, "Systemic Failure" );
   talent.assassination.thrown_precision = find_talent_spell( talent_tree::SPECIALIZATION, "Thrown Precision" );
+  talent.assassination.unstable_toxin = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Toxin" );
   talent.assassination.venomous_wounds = find_talent_spell( talent_tree::SPECIALIZATION, "Venomous Wounds" );
   talent.assassination.zoldyck_recipe = find_talent_spell( talent_tree::SPECIALIZATION, "Zoldyck Recipe" );
 
@@ -10058,7 +10208,8 @@ void rogue_t::init_spells()
   spell.recuperator_heal = talent.rogue.recuperator->ok() ? find_spell( 426605 ) : spell_data_t::not_found();
   spell.shadowstep_buff = spec.shadowstep->ok() ? find_spell( 36554 ) : spell_data_t::not_found();
   spell.subterfuge_buff = talent.rogue.subterfuge->ok() ? find_spell( 115192 ) : spell_data_t::not_found();
-  spell.thistle_tea = talent.rogue.thistle_tea->ok() ? talent.rogue.thistle_tea->effectN( 1 ).trigger() : spell_data_t::not_found();
+  spell.thistle_tea = talent.rogue.thistle_tea_auto->ok() ? talent.rogue.thistle_tea_auto->effectN( 1 ).trigger() :
+    ( talent.rogue.thistle_tea_ability->ok() ? talent.rogue.thistle_tea_ability : spell_data_t::not_found() );
   spell.vanish_buff = spell.vanish->ok() ? find_spell( 11327 ) : spell_data_t::not_found();
 
   // Hero Talent Background Spells
@@ -10110,11 +10261,12 @@ void rogue_t::init_spells()
   spec.doomblade_debuff = talent.assassination.doomblade->ok() ? find_spell( 394021 ) : spell_data_t::not_found();
   spec.finish_the_job_buff = talent.assassination.finish_the_job->ok() ? find_spell( 1249810 ) : spell_data_t::not_found();
   spec.improved_garrote_buff = talent.assassination.improved_garrote->ok() ? find_spell( 392401 ) : spell_data_t::not_found();
-  spec.implacable_buff = talent.assassination.implacable_1->ok() ? find_spell( 1265391 ) : spell_data_t::not_found();
-  spec.implacable_tracker_buff = talent.assassination.implacable_1->ok() ? find_spell( 1265389 ) : spell_data_t::not_found();
+  spec.implacable_buff = !is_ptr() && talent.assassination.implacable_1->ok() ? find_spell( 1265391 ) : spell_data_t::not_found();
+  spec.implacable_tracker_buff = !is_ptr() && talent.assassination.implacable_1->ok() ? find_spell( 1265389 ) : spell_data_t::not_found();
   spec.implacable_damage = talent.assassination.implacable_3->ok() ? find_spell( 1265787 ) : spell_data_t::not_found();
   spec.implacable_damage_nature = talent.assassination.implacable_3->ok() ? find_spell( 1265794 ) : spell_data_t::not_found();
   spec.implacable_damage_physical = talent.assassination.implacable_3->ok() ? find_spell( 1265795 ) : spell_data_t::not_found();
+  spec.implacable_energize = talent.assassination.implacable_1->ok() ? find_spell( 1298870 ) : spell_data_t::not_found();
   spec.internal_bleeding_debuff = talent.assassination.internal_bleeding->ok() ? find_spell( 381628 ) : spell_data_t::not_found();
   spec.kingsbane_buff = talent.assassination.kingsbane->ok() ? find_spell( 394095 ) : spell_data_t::not_found();
   spec.poison_bomb_driver = talent.assassination.poison_bomb->ok() ? find_spell( 255545 ) : spell_data_t::not_found();
@@ -10161,7 +10313,9 @@ void rogue_t::init_spells()
   spec.deepening_shadows_buff = talent.subtlety.deepening_shadows->ok() ? find_spell( 1271702 ) : spell_data_t::not_found();
   spec.eviscerate_shadow_attack = talent.subtlety.shadowed_finishers->ok() ? find_spell( 328082 ) : spell_data_t::not_found();
   spec.find_weakness_buff = talent.subtlety.find_weakness->ok() ? find_spell( 1264521 ) : spell_data_t::not_found();
-  spec.goremaws_bite_buff = talent.subtlety.goremaws_bite->effectN( 2 ).trigger();
+  spec.goremaws_bite_buff = !is_ptr() ? talent.subtlety.goremaws_bite->effectN( 2 ).trigger() : spell_data_t::not_found();
+  spec.goremaws_bite_finisher_damage = is_ptr() && talent.subtlety.goremaws_bite->ok() ? find_spell( 1309309 ) : spell_data_t::not_found();
+  spec.goremaws_bite_finisher_debuff = is_ptr() && talent.subtlety.goremaws_bite->ok() ? find_spell( 1309274 ) : spell_data_t::not_found();
   spec.lashe_macabre_attack = talent.subtlety.danse_macabre->ok() ? find_spell( 1264397 ) : spell_data_t::not_found();
   spec.lingering_shadow_attack = talent.subtlety.lingering_shadow->ok() ? find_spell( 386081 ) : spell_data_t::not_found();
   spec.lingering_shadow_buff = talent.subtlety.lingering_shadow->ok() ? find_spell( 385960 ) : spell_data_t::not_found();
@@ -10197,8 +10351,12 @@ void rogue_t::init_spells()
   set_bonuses.mid1_subtlety_2pc = sets->set( ROGUE_SUBTLETY, MID1, B2 );
   set_bonuses.mid1_subtlety_4pc = sets->set( ROGUE_SUBTLETY, MID1, B4 );
   
+  set_bonuses.mid2_assassination_2pc = sets->set( ROGUE_ASSASSINATION, MID2, B2 );
+  set_bonuses.mid2_assassination_4pc = sets->set( ROGUE_ASSASSINATION, MID2, B4 );
   set_bonuses.mid2_outlaw_2pc = sets->set( ROGUE_OUTLAW, MID2, B2 );
   set_bonuses.mid2_outlaw_4pc = sets->set( ROGUE_OUTLAW, MID2, B4 );
+  set_bonuses.mid2_subtlety_2pc = sets->set( ROGUE_SUBTLETY, MID2, B2 );
+  set_bonuses.mid2_subtlety_4pc = sets->set( ROGUE_SUBTLETY, MID2, B4 );
 
   spec.mid2_outlaw_4pc_buff = set_bonuses.mid2_outlaw_4pc->effectN( 1 ).trigger();
 
@@ -10251,9 +10409,9 @@ void rogue_t::init_spells()
     active.echoing_reprimand = get_background_action<actions::echoing_reprimand_t>( "echoing_reprimand" );
   }
 
-  if ( talent.rogue.thistle_tea->ok() )
+  if ( talent.rogue.thistle_tea_auto->ok() )
   {
-    active.thistle_tea = get_background_action<actions::thistle_tea_t>( "thistle_tea_auto" );
+    active.thistle_tea_auto = get_background_action<actions::thistle_tea_t>( "thistle_tea_auto" );
   }
 
   // Assassination
@@ -10353,15 +10511,26 @@ void rogue_t::init_spells()
         secondary_trigger::SHADOW_CLONE, "shadowstrike_weaponmaster_clone", spec.shadow_clone_shadowstrike_attack, false );
     }
 
+    if ( talent.subtlety.lingering_shadow->ok() )
+    {
+      active.shadow_clone_attack.backstab->affected_by.lingering_shadow.direct = true;
+      active.shadow_clone_attack.gloomblade->affected_by.lingering_shadow.direct = true;
+      active.shadow_clone_attack.shuriken_storm->affected_by.lingering_shadow.direct = true;
+
+      if ( talent.subtlety.weaponmaster->ok() )
+      {
+        active.shadow_clone_attack.weaponmaster.backstab->affected_by.lingering_shadow.direct = true;
+        active.shadow_clone_attack.weaponmaster.gloomblade->affected_by.lingering_shadow.direct = true;
+      }
+
+      active.shadow_clone_attack.eviscerate->affected_by.lingering_shadow.direct = set_bonuses.mid2_subtlety_4pc->ok();
+      active.shadow_clone_attack.eviscerate->affected_by.lingering_shadow.direct_percent = set_bonuses.mid2_subtlety_4pc->effectN( 1 ).percent();
+    }
+
     active.shadow_clone_attack.eviscerate->affected_by.darkest_night = true;
     active.shadow_clone_attack.eviscerate->affected_by.darkest_night_crit = true;
 
     cooldowns.shadow_techniques_icd->duration = spec.shadow_techniques_energize->internal_cooldown();
-  }
-
-  if ( talent.subtlety.weaponmaster->ok() )
-  {
-    cooldowns.weaponmaster->base_duration = talent.subtlety.weaponmaster->internal_cooldown();
   }
 
   if ( talent.subtlety.danse_macabre->ok() )
@@ -10369,9 +10538,19 @@ void rogue_t::init_spells()
     active.lashe_macabre = get_background_action<actions::lashe_macabre_t>( "lashe_macabre" );
   }
 
+  if ( talent.subtlety.goremaws_bite->ok() && is_ptr() )
+  {
+    active.goremaws_bite = get_background_action<actions::goremaws_bite_t::goremaws_bite_finisher_damage_t>( "goremaws_bite_finisher" );
+  }
+
   if ( talent.subtlety.lingering_shadow->ok() )
   {
     active.lingering_shadow = get_background_action<actions::lingering_shadow_t>( "lingering_shadow" );
+  }
+
+  if ( talent.subtlety.weaponmaster->ok() )
+  {
+    cooldowns.weaponmaster->base_duration = talent.subtlety.weaponmaster->internal_cooldown();
   }
 
   // Deathstalker
@@ -10591,7 +10770,7 @@ void rogue_t::create_buffs()
     ->disable_ticking( true )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( new_ == 0 && talent.assassination.implacable_1->ok() )
+      if ( new_ == 0 && talent.assassination.implacable_1->ok() && !is_ptr() )
       {
         // Implacable Envenom cap bonus is hard-coded to 4x in the tooltip, not in spell data
         const double regen_bonus = talent.assassination.implacable_1->effectN( 1 ).percent() +
@@ -10599,9 +10778,12 @@ void rogue_t::create_buffs()
         buffs.implacable->trigger( 1, regen_bonus );
         buffs.implacable_tracker->expire();
       }
-      if ( new_ == 0 && talent.assassination.inspiring_strike->ok() )
+      if ( new_ == 0 )
       {
-        buffs.inspiring_strike->expire();
+        if( talent.assassination.inspiring_strike->ok() )
+          buffs.inspiring_strike->expire();
+        if ( set_bonuses.mid2_assassination_2pc->ok() )
+          buffs.mid2_assassination_2pc->expire();
       }
     } );
 
@@ -10741,8 +10923,11 @@ void rogue_t::create_buffs()
 
   buffs.darkest_night = make_buff( this, "darkest_night", spell.darkest_night_buff );
 
-  buffs.unshakeable_drive = make_buff<damage_buff_t>( this, "unshakeable_drive", spell.unshakeable_drive_buff, false )
-    ->set_is_stacking_mod( bugs ); // 2026-03-13 -- Does not suppress points stacking even though only one stack is decremented
+  buffs.unshakeable_drive = make_buff<damage_buff_t>( this, "unshakeable_drive", spell.unshakeable_drive_buff, false );
+  if ( !is_ptr() )
+  {
+    buffs.unshakeable_drive->set_is_stacking_mod( bugs ); // 2026-03-13 -- Does not suppress points stacking even though only one stack is decremented
+  }
   if ( spell.unshakeable_drive_buff->ok() )
   {
     // Use the 50% modifier as the "generic" version of this buff, Shadowstrike has a lower buff in effect 2
@@ -10999,6 +11184,20 @@ void rogue_t::create_buffs()
   // Set Bonus Items ========================================================
 
   buffs.mid1_outlaw_4pc = make_buff<damage_buff_t>( this, "whirl_of_blades", set_bonuses.mid1_outlaw_4pc->effectN( 2 ).trigger() );
+
+  // Part of the Envenom buff in effects 8-10 but entirely scripted in-game, handle as a distinct buff in sims for tracking
+  // Use the Envenom whitelists for the damage buff and sync up on trigger and expire
+  buffs.mid2_assassination_2pc = make_buff<damage_buff_t>( this, "mid2_assassination_2pc", set_bonuses.mid2_assassination_2pc, false );
+  buffs.mid2_assassination_2pc
+    ->set_proc_callbacks( false )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  if ( set_bonuses.mid2_assassination_2pc->ok() )
+  {
+    const double set_bonus_value = set_bonuses.mid2_assassination_2pc->effectN( 2 ).percent();
+    buffs.mid2_assassination_2pc->set_direct_mod( spec.envenom, 8, set_bonus_value );
+    buffs.mid2_assassination_2pc->set_periodic_mod( spec.envenom, 9, set_bonus_value );
+    buffs.mid2_assassination_2pc->set_auto_attack_mod( spec.envenom, 10, set_bonus_value );
+  }
 
   buffs.mid2_outlaw_4pc = make_buff_fallback( set_bonuses.mid2_outlaw_4pc->ok(), this, "fang_strike", spec.mid2_outlaw_4pc_buff )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 );
@@ -11647,11 +11846,19 @@ void rogue_t::regen( timespan_t periodicity )
       mult_regen_base += energy_regen;
     }
 
-    if ( buffs.implacable->up() )
+    if ( buffs.implacable->up() && !is_ptr() )
     {
       double energy_regen = mult_regen_base * buffs.implacable->value();
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.implacable );
       mult_regen_base += energy_regen;
+    }
+
+    if ( is_ptr() && talent.assassination.dashing_scoundrel->ok() )
+    {
+      double energy_regen = mult_regen_base * talent.assassination.dashing_scoundrel->effectN( 2 ).percent() *
+        ( active.lethal_poison_dtb ? 2 : active.lethal_poison ? 1 : 0 );
+
+      resource_gain( RESOURCE_ENERGY, energy_regen, gains.dashing_scoundrel );
     }
   }
 }
