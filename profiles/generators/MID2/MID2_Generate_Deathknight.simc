@@ -114,12 +114,12 @@ level=90
 race=troll
 role=attack
 position=back
-talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAw2MmZ2mZGjZAbmFDDZgZjhGLAYGAGzMjZAmZmxYA
+talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAwyMmZ2mZGjZAbmFDDZgZjhGLAYGAGzMjZAmZmxYA
 omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_critical_power/rune_of_overload
 flask=flask_of_the_blood_knights_2
 
-head=baleful_graveknights_casque,id=271474,bonus_id=40/12854/13335/13692/13696/13698,enchant_id=7991,content_tuning=807,redirected_base_stats=251126
-neck=aqirbane_reliquary,id=268265,bonus_id=40/13335/13668/13708/13848,gem_id=240983/240898,content_tuning=883
+head=baleful_graveknights_casque,id=271474,bonus_id=40/12854/13335/13692/13696/13698,gem_id=240983,enchant_id=7991,content_tuning=807,redirected_base_stats=251126
+neck=aqirbane_reliquary,id=268265,bonus_id=40/13335/13668/13708/13848,gem_id=240898/240898,content_tuning=883
 shoulders=baleful_graveknights_gibbets,id=271472,bonus_id=40/12854/13335/13694/13697,enchant_id=7973,content_tuning=807,redirected_base_stats=251138
 back=adherents_silken_shroud,id=239656,bonus_id=8791/8960/12214/12384/13667/13751/13836/12497,crafted_stats=49/32,content_tuning=3615
 chest=baleful_graveknights_breastplate,id=271477,bonus_id=13690/13698/13848,enchant_id=7987,redirected_base_stats=268222
@@ -131,7 +131,7 @@ feet=scaled_fiends_warboots,id=268260,bonus_id=6652/12851/12854/13335/13662,ench
 finger1=vile_alchemists_band,id=268249,bonus_id=12854/13335/13668,gem_id=240898,enchant_id=7967,content_tuning=883
 finger2=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240898,enchant_id=7967
 trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=40/13335/13848
-trinket2=gebbos_bottomless_bag,id=270164,bonus_id=40/12854/13335
+trinket2=zuljins_guillotine_technique,id=270173,bonus_id=40/13335/13848
 main_hand=mazeroa_warlords_fury,id=268213,bonus_id=40/13335/13848,enchant_id=6245
 
 save=MID2_Death_Knight_Unholy.simc
@@ -146,8 +146,8 @@ talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAw2MmZ2mZGjZM
 omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_critical_power/rune_of_overload
 flask=flask_of_the_blood_knights_2
 
-head=baleful_graveknights_casque,id=271474,bonus_id=40/12854/13335/13692/13696/13698,enchant_id=7991,content_tuning=807,redirected_base_stats=251126
-neck=aqirbane_reliquary,id=268265,bonus_id=40/13335/13668/13708/13848,gem_id=240983/240898,content_tuning=883
+head=baleful_graveknights_casque,id=271474,bonus_id=40/12854/13335/13692/13696/13698,gem_id=240983,enchant_id=7991,content_tuning=807,redirected_base_stats=251126
+neck=aqirbane_reliquary,id=268265,bonus_id=40/13335/13668/13708/13848,gem_id=240898/240898,content_tuning=883
 shoulders=baleful_graveknights_gibbets,id=271472,bonus_id=40/12854/13335/13694/13697,enchant_id=7973,content_tuning=807,redirected_base_stats=251138
 back=adherents_silken_shroud,id=239656,bonus_id=8791/8960/12214/12384/13667/13751/13836/12497,crafted_stats=49/32,content_tuning=3615
 chest=baleful_graveknights_breastplate,id=271477,bonus_id=13690/13698/13848,enchant_id=7987,redirected_base_stats=268222
@@ -159,7 +159,7 @@ feet=scaled_fiends_warboots,id=268260,bonus_id=6652/12851/12854/13335/13662,ench
 finger1=vile_alchemists_band,id=268249,bonus_id=12854/13335/13668,gem_id=240898,enchant_id=7967,content_tuning=883
 finger2=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240898,enchant_id=7967
 trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=40/13335/13848
-trinket2=gebbos_bottomless_bag,id=270164,bonus_id=40/12854/13335
+trinket2=zuljins_guillotine_technique,id=270173,bonus_id=40/13335/13848
 main_hand=mazeroa_warlords_fury,id=268213,bonus_id=40/13335/13848,enchant_id=6245
 
 
