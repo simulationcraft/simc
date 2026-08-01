@@ -17,8 +17,9 @@ precombat->add_action( "wrath,if=talent.dream_surge&enemies=1" );
 precombat->add_action( "starfire,if=hero_tree.elunes_chosen|enemies>2" );
 
 def->add_action( "potion,if=buff.harmony_of_the_grove.up&buff.ca_inc.up&hero_tree.keeper_of_the_grove|buff.ca_inc.up&hero_tree.elunes_chosen|variable.opener&prev_gcd.1.eclipse|fight_remains<=30","Potion" );
-def->add_action( "use_items,if=(!trinket.1.is.wraps_of_cosmic_madness|!trinket.2.is.wraps_of_cosmic_madness)&buff.ca_inc.up&(buff.harmony_of_the_grove.up|hero_tree.elunes_chosen)|fight_remains<20","Catch all items, exclude special trinkets" );
+def->add_action( "use_items,if=!trinket.1.is.wraps_of_cosmic_madness&!trinket.2.is.wraps_of_cosmic_madness&!trinket.1.is.font_of_venomous_rage&!trinket.2.is.font_of_venomous_rage&buff.ca_inc.up&(buff.harmony_of_the_grove.up|hero_tree.elunes_chosen)|fight_remains<20","Catch all items, exclude special trinkets" );
 def->add_action( "use_item,name=wraps_of_cosmic_madness,if=!buff.eclipse.up","Conditions for special trinkets" );
+def->add_action( "use_item,name=font_of_venomous_rage,if=!buff.eclipse.up" );
 def->add_action( "berserking,if=buff.ca_inc.up&(buff.harmony_of_the_grove.up|!talent.dream_surge)|fight_remains<cooldown.ca_inc.remains","Troll racial" );
 def->add_action( "invoke_external_buff,name=power_infusion,if=buff.ca_inc.up","Your priest won't give it to you anyway but here is the PI condition" );
 def->add_action( "variable,name=eclipse_timings,value=(cooldown.eclipse.full_recharge_time<(cooldown.force_of_nature.remains<?(cooldown.fury_of_elune.remains*hero_tree.elunes_chosen*!talent.lunation)<?((buff.eclipse.duration+2)))|cooldown.ca_inc.remains<(cooldown.force_of_nature.remains<?(cooldown.fury_of_elune.remains*hero_tree.elunes_chosen*!talent.lunation)<?(buff.eclipse.duration+2)))|fight_remains<buff.eclipse.duration","Eclipse Variable" );
