@@ -8047,8 +8047,8 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
   // 2023-10-02 -- 10.2.0 tooltip was adjusted to show "28%" for Shadow Techniques and "reduced by 40%" for Shadowcraft
   //               However, this is just an expansion of the probability and doesn't change the underlying counter mechanic
   const unsigned shadowcraft_adjustment = ( p()->talent.subtlety.shadowcraft->ok() && p()->buffs.shadow_dance->check() ) ? 1 : 0;
-  const unsigned shadow_techniques_upper = 4 - shadowcraft_adjustment;
-  const unsigned shadow_techniques_lower = 3 - shadowcraft_adjustment;
+  const unsigned shadow_techniques_upper = p()->is_ptr() ? 3 - shadowcraft_adjustment : 4 - shadowcraft_adjustment;
+  const unsigned shadow_techniques_lower = p()->is_ptr() ? 2 : 3 - shadowcraft_adjustment;
   if ( ++p()->shadow_techniques_counter >= shadow_techniques_upper ||
        ( p()->shadow_techniques_counter == shadow_techniques_lower && p()->rng().roll( 0.5 ) ) )
   {
@@ -8083,7 +8083,7 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques_buff( const action
   p()->buffs.shadow_techniques->trigger( 1 + shadowcraft_adjustment );
   p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
   // 2024-11-28 -- Shadowcraft's implementation appears to trigger the energize twice
-  if ( shadowcraft_adjustment > 0 )
+  if ( shadowcraft_adjustment > 0 && !p()->is_ptr() )
   {
     p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
   }
