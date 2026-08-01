@@ -7402,7 +7402,7 @@ public:
   {
     may_dodge = may_parry = may_block = false;
     background                        = true;
-    spell_power_mod.direct            = 3.5;  // Hardcoded for some reason, 29/12/2025
+    spell_power_mod.direct            = 2.69;  // Hardcoded for some reason, 29/12/2025
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
