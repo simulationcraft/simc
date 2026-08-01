@@ -3288,8 +3288,7 @@ using namespace helpers;
         spell_power_mod.direct = p->talents.implosion_aoe->effectN( 1 ).sp_coeff();
         aoe = -1;
         target_filter_callback = secondary_targets_only();
-        // NOTE: 2026-07-06: The spell description lists 125% effectiveness, but in-game damage behaves as +125% increased effectiveness (bug?)
-        base_dd_multiplier *= ( p->bugs ? 1.0 : 0.0 ) + p->tier.wl_demonology_12_1_class_set_4pc->effectN( 2 ).percent();
+        base_dd_multiplier *= p->tier.wl_demonology_12_1_class_set_4pc->effectN( 2 ).percent();
       }
     };
 
@@ -3303,8 +3302,7 @@ using namespace helpers;
         spell_power_mod.direct = p->talents.implosion_aoe->effectN( 1 ).sp_coeff();
         aoe = 0;
         radius = 0;
-        // NOTE: 2026-07-06: The spell description lists 150% effectiveness, but in-game damage behaves as +150% increased effectiveness (bug?)
-        base_dd_multiplier *= ( p->bugs ? 1.0 : 0.0 ) + p->tier.wl_demonology_12_1_class_set_4pc->effectN( 1 ).percent();
+        base_dd_multiplier *= p->tier.wl_demonology_12_1_class_set_4pc->effectN( 1 ).percent();
 
         impact_action = new isolated_implosion_aoe_secondary_t( p );
         impact_action->stats = stats;
