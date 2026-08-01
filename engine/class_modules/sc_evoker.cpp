@@ -502,9 +502,24 @@ struct simplified_player_t : public player_t
         } 
       },
       { "tank", 
-        { ROLE_TANK, 20.9 * 1.21, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0, 0,
+        { ROLE_TANK, 20.9 * 0.9, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0, 0,
           {
             { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY }
+          } 
+        } 
+      },
+      { "bdk", 
+        { ROLE_TANK, 10.1 * 1.1, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, 0, 0,
+          {
+            { "dps_pot", 695.0, 30_s, 300_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY },
+            { "90s_trinket",              480.0,    20_s,   90_s,  0_s, bob_buff_type_e::BUFF_FLAT_PRIMARY },
+            { "berserking",                 0.1,    12_s,  180_s,  0_s, bob_buff_type_e::BUFF_HASTE },
+            { "raise_dead",                 0.2,    15_s,   90_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "90s_something",              0.15,   10_s,    90_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "reapers_mark_1",             0.4,    16_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "reapers_mark_2",             0.3,    12_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "reapers_mark_3",             0.2,     8_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
+            { "reapers_mark_4",             0.5,     4_s,   45_s,  0_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
           } 
         } 
       },
@@ -540,7 +555,7 @@ struct simplified_player_t : public player_t
         }
       },
       { "bm",
-        { ROLE_SPELL, 16.4 * 1.245, true, 1.5_s, 0.45, -1, 8, 1, -0.1, 14000.0, 0.0011, 0, 0,
+        { ROLE_SPELL, 16.4 * 1.245 * 0.96, true, 1.5_s, 0.45, -1, 8, 1, -0.1, 14000.0, 0.0011, 0, 0,
           { 
             { "trinket",            0.2, 15_s, 120_s, 0_s, bob_buff_type_e::BUFF_MAST },
             { "beastial_wrath",     0.8, 16_s,  30_s, 1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -594,7 +609,7 @@ struct simplified_player_t : public player_t
         }
       },
       { "dk_frost",
-        { ROLE_SPELL, 16.2 * 1.4, true, 1.5_s, 0.45, -1, 8, 1, 0, 6900.0, 0.0011, 0.05, 0.35,
+        { ROLE_SPELL, 16.2 * 1.4 * 1.022, true, 1.5_s, 0.55, -1, 8, 1, 0, 6900.0, 0.0011, 0.05, 0.35,
           { { "nerf_lust",                 -0.2,     8_s,  600_s,  0_s, bob_buff_type_e::BUFF_HASTE },
             { "90s_trinket",              480.0,    20_s,   90_s,  1_s, bob_buff_type_e::BUFF_FLAT_PRIMARY },
             { "funny_dragon",               0.10,    3_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -610,7 +625,7 @@ struct simplified_player_t : public player_t
         }
       },
       { "dk_frost_db",
-        { ROLE_SPELL, 16.2 * 1.076, true, 1.5_s, 0.45, -1, 8, 1, 0, 6900.0, 0.0011, 0.05, 0.35,
+        { ROLE_SPELL, 16.2 * 1.076 * 1.025, true, 1.5_s, 0.55, -1, 8, 1, 0, 6900.0, 0.0011, 0.05, 0.35,
           { { "nerf_lust",                 -0.2,     8_s,  600_s,  0_s, bob_buff_type_e::BUFF_HASTE },
             { "90s_trinket",              480.0,   20_s,   90_s,  1_s, bob_buff_type_e::BUFF_FLAT_PRIMARY },
             { "funny_dragon",               0.10,    3_s,   90_s,  1_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE },
@@ -9381,7 +9396,7 @@ void evoker_t::create_permanent_actors()
       
       if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
       {
-        bobs = { { "Bob Shadow", "shadow_archon" }, { "Bob BM", "bm" }, { "Bob Tank", "tank" }, { "Bob Healer", "healer" } };
+        bobs = { { "Bob FDK", "dk_frost" }, { "Bob Shadow", "shadow_archon" }, { "Bob BDK", "bdk" }, { "Bob Healer", "healer" } };
       }
       else
       {
@@ -9398,14 +9413,14 @@ void evoker_t::create_permanent_actors()
       {
           
         bobs = {
-            { "Bob Shadow1",  "shadow" },
-            { "Bob Shadow2",  "shadow" },
+            { "Bob Shadow1",  "shadow_archon" },
+            { "Bob Shadow2",  "shadow_archon" },
             { "Bob FDK",      "dk_frost" },
             { "Bob BM",       "bm" },
             { "Bob Flat1",    "default" },
             { "Bob Demo",     "demo" },  // Local sandbag spec to estimate the more varied damage profiles of a real raid.
             { "Bob Healer1",  "healer" },
-            { "Bob Tank1",    "tank" },
+            { "Bob BDK",      "bdk" },
         };
       }
       else
