@@ -8425,7 +8425,7 @@ void warrior_t::create_buffs()
   buff.recklessness = make_buff( this, "recklessness", spell.recklessness_buff )
     ->set_cooldown( timespan_t::zero() )
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stack ) {
-      if ( new_stack == 0 && buff.fury_mid2_4pc_crit )
+      if ( new_stack == 0 && buff.fury_mid2_4pc_crit  && buff.fury_mid2_4pc_crit->up() )
         buff.fury_mid2_4pc_crit->expire();
     });
 
@@ -8524,7 +8524,7 @@ void warrior_t::create_buffs()
   // Arms
   buff.winding_up = make_buff( this, "winding_up", find_spell( 1300670 ) );
   // Fury
-  if ( sets->has_set_bonus( WARRIOR_FURY, MID2, B4 ) )
+  if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
     buff.fury_mid2_4pc_crit = make_buff( this, "fury_mid2_4pc_crit" )
                                 ->set_default_value( sets->set( WARRIOR_FURY, MID2, B4 )->effectN( 2 ).percent() )
                                 ->set_max_stack( as<int>( sets->set( WARRIOR_FURY, MID2, B4 )->effectN( 3 ).base_value() ) )
