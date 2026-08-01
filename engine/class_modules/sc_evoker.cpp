@@ -11203,12 +11203,10 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
       case mote_buffs_e::SYMBIOTIC_BLOOM:
       case mote_buffs_e::SHIFTING_SANDS:
       default:
-        //// Add a 3 copies of yourself. 50%~ for M+, relatively low in Raid.
-        //// TODO: Rework this entire system to use actions with travel times.
-        // helper.push_back( this );
-        // helper.push_back( this );
-        // helper.push_back( this );
         target = rng().range( helper );
+        // Roll again if it picks a tank, a healer, or you. These are not likely outcomes if played well.
+        if ( target == this || target->primary_role() == ROLE_TANK || target->primary_role() == ROLE_HEAL )
+          target = rng().range( helper );
         break;
     }
   }
