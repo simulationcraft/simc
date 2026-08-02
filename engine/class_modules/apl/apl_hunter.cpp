@@ -525,7 +525,7 @@ void survival_ptr( player_t* p )
   default_->add_action( "call_action_list,name=sentcleave,if=active_enemies>2&!talent.howl_of_the_pack_leader" );
 
   cds->add_action( "blood_fury,if=buff.takedown.up|cooldown.takedown.ready", "CDS" );
-  cds->add_action( "use_items,if=buff.takedown.up|cooldown.takedown.ready|!talent.takedown" );
+  cds->add_action( "use_items,if=buff.takedown.up|cooldown.takedown.ready|cooldown.takedown.remains>20|!talent.takedown" );
   cds->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.takedown.remains<5|!talent.takedown" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.takedown.up&!buff.power_infusion.up" );
   cds->add_action( "ancestral_call,if=buff.takedown.up|cooldown.takedown.ready" );
