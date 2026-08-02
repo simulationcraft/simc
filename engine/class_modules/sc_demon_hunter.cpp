@@ -4033,10 +4033,10 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
 
     if ( dh()->talent.havoc.cycle_of_hatred->ok() )
     {
-      this->cooldown->adjust(
-          -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_stack_value() ) ) );
+      this->cooldown->adjust( -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_stack_value() ) ) );
 
-      // Essence Break and Eyebeam currently reduce the value of the other by 2.5 seconds when stacks 2 - 4 are each applied. 
+      // 08/01/2026 - Essence Break and Eyebeam currently reduce the value of the other by 2.5 seconds when stacks 2 - 4 are each
+      // applied.
       if ( dh()->buff.cycle_of_hatred->check() && dh()->buff.cycle_of_hatred->stack() < 4 )
       {
         dh()->cooldown.essence_break->adjust(
@@ -4045,7 +4045,7 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
 
       dh()->buff.cycle_of_hatred->trigger();
     }
-    
+
     timespan_t duration = composite_dot_duration( execute_state );
 
     // Since Demonic triggers Meta with 5s + hasted duration, need to extend by the hasted duration after have an
@@ -7675,8 +7675,8 @@ struct essence_break_t : public demon_hunter_attack_t
       dh()->cooldown.essence_break->adjust(
           -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_stack_value() ) ) );
 
-      // Essence Break and Eyebeam currently reduce the value of the other by 2.5 seconds when stacks 2 - 4 are each
-      // applied. 
+      // 08/01/2026 - Essence Break and Eyebeam currently reduce the value of the other by 2.5 seconds when stacks 2 - 4 are each
+      // applied.
       if ( dh()->buff.cycle_of_hatred->check() && dh()->buff.cycle_of_hatred->stack() < 4 )
       {
         dh()->cooldown.eye_beam->adjust(
@@ -9432,9 +9432,9 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
     case DEMON_HUNTER_VENGEANCE:
       dots.fiery_brand = target->get_dot( "fiery_brand", &p );
       debuffs.frailty  = make_buff( *this, "frailty", p.spec.frailty_debuff )
-                             ->set_default_value_from_effect( 1 )
-                             ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                             ->disable_ticking( true );
+                            ->set_default_value_from_effect( 1 )
+                            ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                            ->disable_ticking( true );
       break;
     default:
       break;
@@ -9778,7 +9778,7 @@ void demon_hunter_t::create_buffs()
   buff.immolation_aura      = make_buff<buffs::immolation_aura_buff_t>( this );
   buff.metamorphosis        = make_buff<buffs::metamorphosis_buff_t>( this );
   buff.soul_fragments       = make_buff( this, "soul_fragments", spec.soul_fragments_buff )
-                                  ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   // Devourer ===============================================================
 
