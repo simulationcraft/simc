@@ -582,6 +582,7 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     reduced_aoe_targets = data().effectN( 2 ).base_value();
 
     background = is_free;
+    can_consume_divine_arbiter = true;
     base_multiplier *= mul;
 
     if ( p->talents.tempest_of_the_lightbringer->ok() )
