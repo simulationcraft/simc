@@ -5264,14 +5264,17 @@ struct secret_technique_t : public rogue_attack_t
       shadow_clone_t( name, p, s )
     {
       aoe = -1;
+      full_amount_targets = 1; // 2025-05-30 -- Primary target is not reduced by sqrt scaling
+      reduced_aoe_targets = p->spec.secret_technique->effectN( 6 ).base_value() - 1;
     }
 
     // 02-12-2026 -- The shadow clone attack mirrors the primary vs. AoE damage scaling
+    // 08-02-2926 -- This no longer appears to be the case and it is full damage
     double composite_target_multiplier( player_t* target ) const override
     {
       double m = shadow_clone_t::composite_target_multiplier( target );
 
-      if ( target != this->target )
+      if ( !p()->bugs && target != this->target )
         m *= p()->spec.secret_technique->effectN( 3 ).percent();
 
       return m;
@@ -5285,8 +5288,18 @@ struct secret_technique_t : public rogue_attack_t
     {
       aoe = -1;
       full_amount_targets = 1; // 2025-05-30 -- Primary target is not reduced by sqrt scaling
-      reduced_aoe_targets = p->spec.secret_technique->effectN( 6 ).base_value() - 1;
       affected_by.mid1_subtlety_2pc = true;
+    }
+
+    void init() override
+    {
+      rogue_attack_t::init();
+
+      // 2026-08-02 -- Currently only the physical player attack has reduced AoE scaling
+      if ( secondary_trigger_type == secondary_trigger::SECRET_TECHNIQUE )
+      {
+        reduced_aoe_targets = p()->spec.secret_technique->effectN( 6 ).base_value() - 1;
+      }
     }
 
     double composite_player_multiplier( const action_state_t* state ) const override
@@ -5400,9 +5413,10 @@ struct secret_technique_t : public rogue_attack_t
     clone_attack->snapshot_internal( clone_state, clone_attack->snapshot_flags, clone_attack->amount_type( clone_state ) );
     auto clone_state_2 = clone_attack->get_state( clone_state );
 
-    clone_attack->trigger_secondary_action( clone_state, 1_s );
-    clone_attack->trigger_secondary_action( clone_state_2, 1.3_s );
-    p()->buffs.secret_technique->trigger( 1.3_s );
+    // 2028-08-02 -- When Apex clones are triggered, Secret Technique clones are set to the same delay
+    clone_attack->trigger_secondary_action( clone_state, p()->is_ptr() && p()->buffs.ancient_arts->check() ? 500_ms : 1.0_s);
+    clone_attack->trigger_secondary_action( clone_state_2, p()->is_ptr() && p()->buffs.ancient_arts->check() ? 500_ms : 1.3_s );
+    p()->buffs.secret_technique->trigger( p()->is_ptr() && p()->buffs.ancient_arts->check() ? 500_ms : 1.3_s );
 
     // Manually expire Cold Blood due to special handling above
     if ( p()->buffs.cold_blood->check() )
@@ -5642,7 +5656,8 @@ struct black_powder_t: public rogue_attack_t
     {
       double m = cast_state( state )->get_combo_points();
 
-      if ( p()->talent.subtlety.potent_powder->ok() && m >= p()->talent.subtlety.potent_powder->effectN( 2 ).base_value() )
+      // 2026-08-02 -- Shadow Clones do not currently benefit from Potent Powder in-game
+      if ( !p()->bugs && p()->talent.subtlety.potent_powder->ok() && m >= p()->talent.subtlety.potent_powder->effectN( 2 ).base_value() )
       {
         m *= 1.0 + ( p()->cache.mastery_value() * p()->talent.subtlety.potent_powder->effectN( 1 ).percent() );
       }
