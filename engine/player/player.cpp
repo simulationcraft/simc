@@ -13622,12 +13622,14 @@ void player_t::create_options()
                             midnight_opts.crucible_of_erratic_energies_predation ) );
   add_option(    opt_float( "midnight.vessel_of_tortured_souls_miss_chance",
                             midnight_opts.vessel_of_tortured_souls_miss_chance, 0, 1 ) );
-  add_option(
-      opt_float( "midnight.arcanoweave_trappings_uptime", midnight_opts.arcanoweave_trappings_uptime, 0.0, 1.0 ) );
+  add_option(    opt_float( "midnight.arcanoweave_trappings_uptime",
+                            midnight_opts.arcanoweave_trappings_uptime, 0.0, 1.0 ) );
   add_option( opt_timespan( "midnight.arcanoweave_trappings_update_interval",
                             midnight_opts.arcanoweave_trappings_update_interval, 1_s, timespan_t::max() ) );
   add_option( opt_timespan( "midnight.arcanoweave_trappings_update_interval_stddev",
                             midnight_opts.arcanoweave_trappings_update_interval_stddev, 1_s, timespan_t::max() ) );
+  add_option(    opt_float( "midnight.lightspire_core_duration_multiplier",
+                            midnight_opts.lightspire_core_duration_multiplier, 0.0, 1.0 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

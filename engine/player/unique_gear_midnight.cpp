@@ -2337,7 +2337,8 @@ void lightspire_core( special_effect_t& effect )
 
   auto light_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1263768 ) )
                         ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 3 ).average( effect ) )
-                        ->set_duration( effect.player->find_spell( 1263762 )->duration() );
+                        ->set_duration( effect.player->find_spell( 1263762 )->duration() )
+                        ->set_duration_multiplier( effect.player->midnight_opts.lightspire_core_duration_multiplier );
 
   effect.custom_buff = light_buff;
 
