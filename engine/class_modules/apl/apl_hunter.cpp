@@ -221,16 +221,8 @@ void beast_mastery_ptr( player_t* p )
   st->add_action( "barbed_shot,if=(focus<75|full_recharge_time<gcd)&!talent.serpentine_strikes|talent.serpentine_strikes" );
   st->add_action( "cobra_shot,if=cooldown.bestial_wrath.remains>gcd" );
 
-  trinkets->add_action( "use_item,name=light_company_guidon,if=cooldown.bestial_wrath.ready|fight_remains<21" );
-  trinkets->add_action( "use_item,name=void_execution_mandate,if=cooldown.bestial_wrath.ready|fight_remains<21" );
-  trinkets->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.bestial_wrath.remains<2|fight_remains<23" );
-  trinkets->add_action( "use_item,name=emberwing_feather,if=cooldown.bestial_wrath.ready|fight_remains<16" );
-  trinkets->add_action( "use_item,name=freightrunners_flask,if=cooldown.bestial_wrath.ready|fight_remains<16" );
-  trinkets->add_action( "use_item,name=sealed_chaos_urn,if=cooldown.bestial_wrath.ready|fight_remains<21" );
-  trinkets->add_action( "use_item,name=evercollapsing_void_fissure,if=cooldown.bestial_wrath.ready|fight_remains<11" );
-  trinkets->add_action( "use_item,name=rangercaptains_iridescent_insignia" );
-  trinkets->add_action( "use_item,name=void_stalkers_contract" );
-  trinkets->add_action( "use_item,name=latchs_crooked_hook" );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage" );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff" );
 }
 //beast_mastery_ptr_apl_end
 
@@ -525,7 +517,9 @@ void survival_ptr( player_t* p )
   default_->add_action( "call_action_list,name=sentcleave,if=active_enemies>2&!talent.howl_of_the_pack_leader" );
 
   cds->add_action( "blood_fury,if=buff.takedown.up|cooldown.takedown.ready", "CDS" );
-  cds->add_action( "use_items,if=buff.takedown.up|cooldown.takedown.ready|cooldown.takedown.remains>20|!talent.takedown" );
+  cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage" );
+  cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&talent.takedown&!other_trinket.has_use_buff&this_trinket.cooldown.duration>=cooldown.takedown.duration*2&this_trinket.has_buff.haste&(buff.takedown.up|cooldown.takedown.remains>this_trinket.cooldown.duration*0.45)" );
+  cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(!talent.takedown|other_trinket.has_use_buff|this_trinket.cooldown.duration<cooldown.takedown.duration*2|!this_trinket.has_buff.haste)&(buff.takedown.up|cooldown.takedown.ready|cooldown.takedown.remains>20|!talent.takedown)" );
   cds->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.takedown.remains<5|!talent.takedown" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.takedown.up&!buff.power_infusion.up" );
   cds->add_action( "ancestral_call,if=buff.takedown.up|cooldown.takedown.ready" );

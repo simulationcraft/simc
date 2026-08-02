@@ -15,7 +15,9 @@ actions+=/call_action_list,name=sentcleave,if=active_enemies>2&!talent.howl_of_t
 
 # CDS
 actions.cds=blood_fury,if=buff.takedown.up|cooldown.takedown.ready
-actions.cds+=/use_items,if=buff.takedown.up|cooldown.takedown.ready|cooldown.takedown.remains>20|!talent.takedown
+actions.cds+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage
+actions.cds+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&talent.takedown&!other_trinket.has_use_buff&this_trinket.cooldown.duration>=cooldown.takedown.duration*2&this_trinket.has_buff.haste&(buff.takedown.up|cooldown.takedown.remains>this_trinket.cooldown.duration*0.45)
+actions.cds+=/use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(!talent.takedown|other_trinket.has_use_buff|this_trinket.cooldown.duration<cooldown.takedown.duration*2|!this_trinket.has_buff.haste)&(buff.takedown.up|cooldown.takedown.ready|cooldown.takedown.remains>20|!talent.takedown)
 actions.cds+=/use_item,name=algethar_puzzle_box,if=cooldown.takedown.remains<5|!talent.takedown
 actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.takedown.up&!buff.power_infusion.up
 actions.cds+=/ancestral_call,if=buff.takedown.up|cooldown.takedown.ready
