@@ -5947,6 +5947,10 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
       this->energize_type     = action_energize::NONE;
       this->energize_resource = RESOURCE_NONE;
     }
+    if ( this->base_costs[ RESOURCE_RUNIC_POWER ] == 0 && this->base_costs[ RESOURCE_RUNE ] > 0 )
+    {
+      this->resource_current = RESOURCE_RUNE;
+    }
 
     if ( this->data().ok() )
     {
