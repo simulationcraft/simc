@@ -3752,6 +3752,42 @@ void knot_of_writhing_serpents( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Permafrost Essence
+// 1250588 Permafrost Reservoir (driver, procs on damage taken, 8 RPPM)
+// 1260316 Mark of Frost (15s, 10 stacks, crit rating per stack)
+// 1260321 Permafrost Reservoir (absorb all schools, 10s)
+void permafrost_essence( special_effect_t& effect )
+{
+  struct permafrost_essence_cb_t final : public dbc_proc_callback_t
+  {
+    buff_t* mark_of_frost;
+    buff_t* reservoir;
+
+    permafrost_essence_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        mark_of_frost( create_buff<stat_buff_t>( e.player, e.player->find_spell( 1260316 ) )
+          ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) ) ),
+        reservoir( create_buff<absorb_buff_t>( e.player, e.player->find_spell( 1260321 ) )
+          ->set_absorb_source( e.player->get_stats( "permafrost_reservoir" ) ) )
+    {
+    }
+
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
+    {
+      mark_of_frost->trigger();
+
+      if ( t->health_percentage() <= effect.driver()->effectN( 2 ).base_value() )
+      {
+        double amount = effect.driver()->effectN( 3 ).average( effect ) * mark_of_frost->check();
+        mark_of_frost->expire();
+        reservoir->trigger( 1, amount );
+      }
+    }
+  };
+
+  new permafrost_essence_cb_t( effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -4961,6 +4997,7 @@ void register_special_effects()
   register_special_effect( 1253112, trinkets::sylvan_wakrapuku );
   register_special_effect( 1260633, trinkets::gloomspattered_dreadscale );
   register_special_effect( 1260627, DISABLED_EFFECT );  // Gloom-Spattered Dreadscale Passive Driver
+  register_special_effect( 1250588, trinkets::permafrost_essence );
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1284696, trinkets::sporelords_mycelium );
   reset_version_check();
