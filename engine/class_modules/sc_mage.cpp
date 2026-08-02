@@ -413,10 +413,11 @@ public:
 
   struct accumulated_rngs_t
   {
-    accumulated_rng_t* pyromaniac;
-    accumulated_rng_t* clearcasting;
-    accumulated_rng_t* spellfire_spheres;
     accumulated_rng_t* augury_abounds;
+    accumulated_rng_t* clearcasting;
+    accumulated_rng_t* pyromaniac;
+    accumulated_rng_t* rapid_refreezing;
+    accumulated_rng_t* spellfire_spheres;
   } accumulated_rng;
 
   // Sample data
@@ -4285,8 +4286,6 @@ struct glacial_spike_t final : public frost_mage_spell_t
     p()->buffs.glacial_spike->decrement();
     p()->buffs.icicles->expire();
 
-    // 12.1 4-set bonus
-    p()->buffs.rapid_refreezing->trigger();
     p()->trigger_brain_freeze( bf_chance, proc_brain_freeze, 150_ms );
     p()->trigger_fof( fof_chance, proc_fof );
     p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), proc_fof );
@@ -4301,6 +4300,9 @@ struct glacial_spike_t final : public frost_mage_spell_t
       p()->buffs.frostfire_empowerment->trigger();
       p()->buffs.frostfire_empowerment->predict();
     }
+
+    if ( p()->accumulated_rng.rapid_refreezing->trigger() )
+      p()->buffs.rapid_refreezing->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -6414,8 +6416,7 @@ void mage_t::create_buffs()
   buffs.rapid_refreezing   = make_buff( this, "rapid_refreezing", find_spell( 1310248 ) )
                                ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
                                  { trigger_icicle(); } )
-                               // TODO: This is just a first approximation, get more data
-                               ->set_chance( sets->has_set_bonus( MAGE_FROST, MID2, B4 ) ? 0.25 : 0.0 );
+                               ->set_chance( sets->has_set_bonus( MAGE_FROST, MID2, B4 ) );
   buffs.thermal_void       = make_buff( this, "thermal_void", find_spell( 1247730 ) )
                                ->set_chance( talents.thermal_void->effectN( 1 ).percent() );
 
@@ -6587,6 +6588,10 @@ void mage_t::init_rng()
   accumulated_rng.augury_abounds = get_accumulated_rng(
     "augury_abounds", prd::find_constant( augury_chance, options.augury_blp_threshold ),
     options.augury_blp_threshold );
+
+  // If Blizz uses this sort of RNG elsewhere, it might be worth adding to the core
+  auto rr_chance = [] ( double c, unsigned i, action_state_t* ) { return 0.2 + ( i - 1 ) * c; };
+  accumulated_rng.rapid_refreezing = get_accumulated_rng( "rapid_refreezing", 0.020116149192034555, 0, rr_chance );
 }
 
 void mage_t::init_finished()
