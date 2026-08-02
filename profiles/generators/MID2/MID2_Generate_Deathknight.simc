@@ -115,7 +115,7 @@ race=troll
 role=attack
 position=back
 talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAwyMmZ2mZGjZAbmFDDZgZjhGLAYGAGzMjZAmZmxYA
-omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_critical_power/rune_of_overload
+omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_masterful_cunning/rune_of_overload
 flask=flask_of_the_blood_knights_2
 
 head=baleful_graveknights_casque,id=271474,bonus_id=40/12854/13335/13692/13696/13698,gem_id=240983,enchant_id=7991,content_tuning=807,redirected_base_stats=251126
@@ -128,7 +128,7 @@ hands=baleful_graveknights_deathgrips,id=271475,bonus_id=40/12854/13335/13691/13
 waist=girdle_of_toxic_regret,id=268259,bonus_id=13662/13750/13848,gem_id=240898
 legs=baleful_graveknights_greaves,id=271473,bonus_id=40/12854/13335/13693/13698/13846,ilevel=344,enchant_id=8159,redirected_base_stats=271878
 feet=scaled_fiends_warboots,id=268260,bonus_id=6652/12851/12854/13335/13662,enchant_id=8019
-finger1=vile_alchemists_band,id=268249,bonus_id=12854/13335/13668,gem_id=240898,enchant_id=7967,content_tuning=883
+finger1=band_of_the_amani_warlord,id=273792,bonus_id=4786/13750/12854,gem_id=240898,enchant_id=7967
 finger2=sickening_signet_of_atroxus,id=252258,bonus_id=4786/13750/12854,gem_id=240898,enchant_id=7967
 trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=40/13335/13848
 trinket2=zuljins_guillotine_technique,id=270173,bonus_id=40/13335/13848
@@ -143,7 +143,7 @@ race=troll
 role=attack
 position=back
 talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAw2MmZ2mZGjZMwAzYRjlFAbTsBgZAYMzMmBzMYGjB
-omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_critical_power/rune_of_overload
+omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_masterful_cunning/rune_of_overload
 flask=flask_of_the_blood_knights_2
 
 head=baleful_graveknights_casque,id=271474,bonus_id=40/12854/13335/13692/13696/13698,gem_id=240983,enchant_id=7991,content_tuning=807,redirected_base_stats=251126
@@ -156,7 +156,7 @@ hands=baleful_graveknights_deathgrips,id=271475,bonus_id=40/12854/13335/13691/13
 waist=girdle_of_toxic_regret,id=268259,bonus_id=13662/13750/13848,gem_id=240898
 legs=baleful_graveknights_greaves,id=271473,bonus_id=40/12854/13335/13693/13698/13846,ilevel=344,enchant_id=8159,redirected_base_stats=271878
 feet=scaled_fiends_warboots,id=268260,bonus_id=6652/12851/12854/13335/13662,enchant_id=8019
-finger1=vile_alchemists_band,id=268249,bonus_id=12854/13335/13668,gem_id=240898,enchant_id=7967,content_tuning=883
+finger1=band_of_the_amani_warlord,id=273792,bonus_id=4786/13750/12854,gem_id=240898,enchant_id=7967
 finger2=sickening_signet_of_atroxus,id=252258,bonus_id=4786/13750/12854,gem_id=240898,enchant_id=7967
 trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=40/13335/13848
 trinket2=zuljins_guillotine_technique,id=270173,bonus_id=40/13335/13848
