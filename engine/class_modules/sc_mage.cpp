@@ -6336,6 +6336,7 @@ void mage_t::create_buffs()
                                       ->set_chance( spec.clearcasting->ok() ) ;
   buffs.cumulative_power          = make_buff( this, "cumulative_power", find_spell( 1296930 ) )
                                       ->set_default_value_from_effect( 1 )
+                                      ->set_disable_async_expire_events_removal( bugs )
                                       ->set_chance( sets->has_set_bonus( MAGE_ARCANE, MID2, B4 ) );
   buffs.enlightened               = make_buff( this, "enlightened", find_spell( 1217242 ) )
                                       ->set_schools_from_effect( 4 )
