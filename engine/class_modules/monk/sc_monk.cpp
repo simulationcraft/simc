@@ -1619,9 +1619,10 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    may_combo_strike         = true;
-    tick_zero                = true;
-    spinning_crane_kick_tick = new tick_t( player, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
+    may_miss = may_dodge = may_parry = false;
+    may_combo_strike                 = true;
+    tick_zero                        = true;
+    spinning_crane_kick_tick         = new tick_t( player, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
     add_child( spinning_crane_kick_tick );
 
     interrupt_auto_attack = player->specialization() != MONK_WINDWALKER;
