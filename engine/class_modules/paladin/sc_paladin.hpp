@@ -1444,6 +1444,7 @@ public:
   bool is_wog;
   bool is_sotr;
   bool doesnt_consume_dp;
+  bool can_consume_divine_arbiter;
   bool is_hammer_of_light_cleave;
   bool is_hammer_of_light_main;
   double hol_cost;
@@ -1461,6 +1462,7 @@ public:
       is_wog( false ),
       is_sotr( false ),
       doesnt_consume_dp( false ),
+      can_consume_divine_arbiter( false ),
       is_hammer_of_light_cleave( false ),
       is_hammer_of_light_main( false ),
       hol_cost( 3.0 ),
@@ -1676,7 +1678,8 @@ public:
     // Divine Purpose isn't consumed on DS if EP was consumed
     if ( should_continue )
     {
-      if ( p->buffs.divine_purpose->up() && !doesnt_consume_dp )
+      // Triggered spenders, such as Empyrean Legacy's Divine Storm, must not consume or classify Divine Purpose.
+      if ( !ab::background && p->buffs.divine_purpose->up() && !doesnt_consume_dp )
       {
         p->buffs.divine_purpose->expire();
         if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, MID2, B2 ) )
@@ -1695,7 +1698,8 @@ public:
       }
     }
 
-    if ( !ab::background && p->sets->has_set_bonus( PALADIN_RETRIBUTION, MID2, B4 ) )
+    if ( ( !ab::background || can_consume_divine_arbiter ) &&
+         p->sets->has_set_bonus( PALADIN_RETRIBUTION, MID2, B4 ) )
     {
       buff_t* divine_arbiter = nullptr;
 
