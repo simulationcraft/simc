@@ -11213,37 +11213,30 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
 
   assert( target && "Target should be non-null" );
 
-  switch ( mote_buff )
+  if ( mote_buff == mote_buffs_e::INFERNOS_BLESSING )
   {
-    case mote_buffs_e::INFERNOS_BLESSING:
-      // Maintain two IBs
-      if ( active_infernos_blessings.size() > 0 )
-        rng().range( active_infernos_blessings )->cancel();
-      get_target_data( target )->buffs.infernos_blessing->trigger();
-      return;
-    case mote_buffs_e::PRESCIENCE:
-    {
-      double prescience_value = get_target_data( target )->buffs.prescience->default_value;
+    // Maintain two IBs
+    if ( active_infernos_blessings.size() > 0 )
+      rng().range( active_infernos_blessings )->cancel();
 
-      if ( talent.chronowarden.double_time.enabled() && rng().roll( cache.spell_crit_chance() ) )
-      {
-        prescience_value *= 1.0 + talent.chronowarden.double_time->effectN( 2 ).percent();
-      }
+    get_target_data( target )->buffs.infernos_blessing->trigger();
+  }
+  else if ( mote_buff == mote_buffs_e::PRESCIENCE )
+  {
+    double prescience_value = get_target_data( target )->buffs.prescience->default_value;
 
-      get_target_data( target )->buffs.prescience->trigger( 1, prescience_value );
-      return;
-    }
-    case mote_buffs_e::SYMBIOTIC_BLOOM:
-      return;
-    case mote_buffs_e::SHIFTING_SANDS:
+    if ( talent.chronowarden.double_time.enabled() && rng().roll( cache.spell_crit_chance() ) )
     {
-      auto td        = get_target_data( target );
-      auto buff_size = cache.mastery_value();
-      td->buffs.shifting_sands->trigger( 1, buff_size );
-      return;
+      prescience_value *= 1.0 + talent.chronowarden.double_time->effectN( 2 ).percent();
     }
-    default:
-      return;
+
+    get_target_data( target )->buffs.prescience->trigger( 1, prescience_value );
+  }
+  else if ( mote_buff == mote_buffs_e::SHIFTING_SANDS )
+  {
+    auto td        = get_target_data( target );
+    auto buff_size = cache.mastery_value();
+    td->buffs.shifting_sands->trigger( 1, buff_size );
   }
 }
 
