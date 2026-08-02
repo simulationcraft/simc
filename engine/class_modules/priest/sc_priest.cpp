@@ -3801,6 +3801,12 @@ void priest_t::combat_begin()
 {
   player_t::combat_begin();
 
+  // Crushing Void should never carry into pull; it is only meaningful as an in-combat proc.
+  if ( buffs.crushing_void )
+  {
+    buffs.crushing_void->cancel();
+  }
+
   // Removed on Encounter Start
   if ( talents.archon.sustained_potency.enabled() )
   {

@@ -136,6 +136,7 @@ void shadow_ptr( player_t* p )
   precombat->add_action( "variable,name=max_vts,default=12,op=reset" );
   precombat->add_action( "variable,name=is_vt_possible,default=0,op=reset" );
   precombat->add_action( "arcane_torrent" );
+  precombat->add_action( "mind_blast,if=set_bonus.mid2_4pc", "Crushing Void from Tentacle Slam is reset on pull, open with Mind Blast instead." );
   precombat->add_action( "tentacle_slam" );
 
   default_->add_action( "variable,name=holding_tentacle_slam,op=set,value=raid_event.adds.in<15" );
