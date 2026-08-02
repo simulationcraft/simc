@@ -136,6 +136,7 @@ struct evoker_td_t : public actor_target_data_t
     buff_t* infernos_blessing;
     buff_t* ebon_might;
     buff_t* shifting_sands;
+    buff_t* symbiotic_bloom;
 
     // Legendary
     buff_t* unbound_surge;
@@ -1569,7 +1570,7 @@ struct evoker_t : public player_t
     // Aspects' Favor - Non DPS
     player_talent_t plot_the_future;
     player_talent_t dream_of_spring;
-    // Symbiotic Bloom - Non DPS but Scarlet exists. Todo: implement healing
+    player_talent_t symbiotic_bloom;
     player_talent_t reactive_hide;
     const spell_data_t* reactive_hide_buff;
     player_talent_t hoarded_power;
@@ -8845,6 +8846,11 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                                  evoker->allies_with_my_shifting_sands.find_and_erase_unordered( target );
                                }
                              } );
+
+  buffs.symbiotic_bloom =
+      make_buff_fallback<e_buff_t>( is_ally, *this, "symbiotic_bloom", evoker->find_spell( 410686 ) )
+          ->set_default_value_from_effect( 1, 0.01 );
+
   if ( is_ally )
   {
     buffs.shifting_sands->set_default_value( 0.0 )
@@ -10050,9 +10056,9 @@ void evoker_t::init_spells()
   talent.molten_blood        = ST( "Molten Blood" );
   // Power Nexus - Devastation also has
   // Aspects' Favor - Non DPS
-  talent.plot_the_future = ST( "Plot the Future" );
-  talent.dream_of_spring = ST( "Dream of Spring" );
-  // Symbiotic Bloom - Non DPS but Scarlet exists. Todo: implement healing
+  talent.plot_the_future    = ST( "Plot the Future" );
+  talent.dream_of_spring    = ST( "Dream of Spring" );
+  talent.symbiotic_bloom    = ST( "Symbiotic Bloom" );
   talent.reactive_hide      = ST( "Reactive Hide" );
   talent.reactive_hide_buff = find_spell( 410256 );
   // Hoarded Power - Devas Has
@@ -11237,6 +11243,12 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
     auto td        = get_target_data( target );
     auto buff_size = cache.mastery_value();
     td->buffs.shifting_sands->trigger( 1, buff_size );
+  }
+  else if ( mote_buff == mote_buffs_e::SYMBIOTIC_BLOOM )
+  {
+    auto& buff = get_target_data( target )->buffs.symbiotic_bloom;
+    // Always triggers with at least 6%
+    buff->trigger( 1, buff->default_value + 0.06 );
   }
 }
 
