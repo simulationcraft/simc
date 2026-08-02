@@ -1676,7 +1676,8 @@ public:
     // Divine Purpose isn't consumed on DS if EP was consumed
     if ( should_continue )
     {
-      if ( p->buffs.divine_purpose->up() && !doesnt_consume_dp )
+      // Triggered spenders, such as Empyrean Legacy's Divine Storm, must not consume or classify Divine Purpose.
+      if ( !ab::background && p->buffs.divine_purpose->up() && !doesnt_consume_dp )
       {
         p->buffs.divine_purpose->expire();
         if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, MID2, B2 ) )
