@@ -3721,7 +3721,6 @@ struct backstab_t : public rogue_attack_t
 
     if ( !is_secondary_action() && !p()->talent.subtlety.gloomblade->ok() )
     {
-      add_child( p()->active.lingering_shadow );
       add_child( p()->active.echoing_reprimand );
       add_child( p()->active.shadow_clone_attack.weaponmaster.backstab );
     }
@@ -4598,7 +4597,6 @@ struct gloomblade_t : public rogue_attack_t
 
     if ( !is_secondary_action() && p()->talent.subtlety.gloomblade->ok() )
     {
-      add_child( p()->active.lingering_shadow );
       add_child( p()->active.echoing_reprimand );
       add_child( p()->active.shadow_clone_attack.weaponmaster.gloomblade );
     }
@@ -5296,7 +5294,8 @@ struct secret_technique_t : public rogue_attack_t
       double m = rogue_attack_t::composite_player_multiplier( state );
 
       // 2024-09-16 -- Lingering Darkness does not work on pet clone attacks
-      if ( p()->bugs && secondary_trigger_type == secondary_trigger::SECRET_TECHNIQUE_CLONE &&
+      // 2026-08-01 -- Fixed on PTR
+      if ( p()->bugs && !p()->is_ptr() && secondary_trigger_type == secondary_trigger::SECRET_TECHNIQUE_CLONE &&
            p()->buffs.lingering_darkness->check() )
       {
         m /= 1.0 + p()->buffs.lingering_darkness->check_value();
@@ -5753,6 +5752,7 @@ struct shuriken_storm_t: public rogue_attack_t
     {
       aoe = -1;
       reduced_aoe_targets = data().effectN( 4 ).base_value();
+      affected_by.lingering_shadow.direct = p->is_ptr();
     }
 
     double action_multiplier() const override
@@ -5777,6 +5777,7 @@ struct shuriken_storm_t: public rogue_attack_t
     ap_type = attack_power_type::WEAPON_BOTH;
     // 2021-04-22- Not in the whitelist but confirmed as working in-game
     affected_by.shadow_blades_cp = true;
+    affected_by.lingering_shadow.direct = p->is_ptr();
 
     aoe = -1;
     reduced_aoe_targets = data().effectN( 4 ).base_value();
@@ -10515,7 +10516,6 @@ void rogue_t::init_spells()
     {
       active.shadow_clone_attack.backstab->affected_by.lingering_shadow.direct = true;
       active.shadow_clone_attack.gloomblade->affected_by.lingering_shadow.direct = true;
-      active.shadow_clone_attack.shuriken_storm->affected_by.lingering_shadow.direct = true;
 
       if ( talent.subtlety.weaponmaster->ok() )
       {
