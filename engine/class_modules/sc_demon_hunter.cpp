@@ -1029,6 +1029,7 @@ public:
     cooldown_t* relentless_onslaught_icd;
     cooldown_t* fel_rush_vengeful_retreat_movement_shared;
     cooldown_t* felblade_vengeful_retreat_movement_shared;
+    cooldown_t* essence_break;
     target_specific_cooldown_t* essence_break_proc_icd;
 
     // Vengeance
@@ -4032,6 +4033,16 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
 
     if ( dh()->talent.havoc.cycle_of_hatred->ok() )
     {
+      this->cooldown->adjust( -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_stack_value() ) ) );
+
+      // 08/01/2026 - Essence Break and Eyebeam currently reduce the value of the other by 2.5 seconds when stacks 2 - 4 are each
+      // applied.
+      if ( dh()->buff.cycle_of_hatred->check() && dh()->buff.cycle_of_hatred->stack() < 4 )
+      {
+        dh()->cooldown.essence_break->adjust(
+            -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_value() ) ) );
+      }
+
       dh()->buff.cycle_of_hatred->trigger();
     }
 
@@ -4060,12 +4071,6 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
   result_amount_type amount_type( const action_state_t*, bool ) const override
   {
     return result_amount_type::DMG_DIRECT;
-  }
-
-  timespan_t cooldown_base_duration( const cooldown_t& cd ) const override
-  {
-    return base_t::cooldown_base_duration( cd ) -
-           timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_stack_value() ) );
   }
 };
 
@@ -7656,6 +7661,7 @@ struct essence_break_t : public demon_hunter_attack_t
   {
     aoe                 = -1;
     reduced_aoe_targets = p->talent.havoc.essence_break->effectN( 2 ).base_value();
+    cooldown            = p->cooldown.essence_break;
 
     add_child( p->active.essence_break_proc );
   }
@@ -7666,6 +7672,17 @@ struct essence_break_t : public demon_hunter_attack_t
 
     if ( dh()->set_bonuses.mid2_havoc_4pc->ok() && dh()->talent.havoc.cycle_of_hatred->ok() )
     {
+      dh()->cooldown.essence_break->adjust(
+          -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_stack_value() ) ) );
+
+      // 08/01/2026 - Essence Break and Eyebeam currently reduce the value of the other by 2.5 seconds when stacks 2 - 4 are each
+      // applied.
+      if ( dh()->buff.cycle_of_hatred->check() && dh()->buff.cycle_of_hatred->stack() < 4 )
+      {
+        dh()->cooldown.eye_beam->adjust(
+            -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_value() ) ) );
+      }
+
       dh()->buff.cycle_of_hatred->trigger();
     }
   }
@@ -7680,16 +7697,6 @@ struct essence_break_t : public demon_hunter_attack_t
       buff_t* debuff = td( s->target )->debuffs.essence_break;
       make_event( *dh()->sim, 250_ms, [ debuff ] { debuff->trigger(); } );
     }
-  }
-
-  timespan_t cooldown_base_duration( const cooldown_t& cd ) const override
-  {
-    if ( dh()->set_bonuses.mid2_havoc_4pc->ok() )
-    {
-      return demon_hunter_attack_t::cooldown_base_duration( cd ) -
-             timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_stack_value() ) );
-    }
-    return demon_hunter_attack_t::cooldown_base_duration( cd );
   }
 };
 
@@ -11777,6 +11784,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.relentless_onslaught_icd                  = get_cooldown( "relentless_onslaught_icd" );
   cooldown.fel_rush_vengeful_retreat_movement_shared = get_cooldown( "fel_rush_vengeful_retreat_movement_shared" );
   cooldown.felblade_vengeful_retreat_movement_shared = get_cooldown( "felblade_vengeful_retreat_movement_shared" );
+  cooldown.essence_break                             = get_cooldown( "essence_break" );
   cooldown.essence_break_proc_icd                    = get_target_specific_cooldown( "essence_break_proc_icd" );
 
   // Vengeance
