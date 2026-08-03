@@ -2937,7 +2937,8 @@ struct prismatic_bolt_t final : public arcane_mage_spell_t
     arcane_mage_spell_t( n, p, p->find_spell( 1295924 ) )
   {
     parse_options( options_str );
-    triggers.clearcasting = triggers.spellfire_sphere = triggers.mana_cascade = true;
+    // TODO: Check if this can trigger clearcasting randomly when only the first rank of the talent is known.
+    triggers.spellfire_sphere = triggers.mana_cascade = true;
 
     impact_action = get_action<prismatic_bolt_aoe_t>( "prismatic_bolt_aoe", p );
     add_child( impact_action );
