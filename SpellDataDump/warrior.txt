@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68887 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68974 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -864,7 +864,7 @@ Effects          :
 #1 (id=5981)     : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Targeted Enemy (6)
 #2 (id=5982)     : School Damage (2): physical | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 80.41395 (coefficient=0.286) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 36.55179 (coefficient=0.286) | Target: Targeted Enemy (6)
 Description      : Pummel the target for $s2 damage and interrupt the spell being cast for $d.
 
 Name             : Cripple (desc=Rank 1) (id=18381) [Spell Family (4)] 
@@ -14522,7 +14522,7 @@ Triggered By     : Godly Rage (1223161)
 Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1210915)  : School Damage (2): fire | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 5549.191 (coefficient=100) | Radius: 0 - 20 yards | Target: at Self (18) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 2522.36 (coefficient=100) | Radius: 0 - 20 yards | Target: at Self (18) -> at Enemy in Area (16)
 #2 (id=1210928)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Inflicts $s1 Fire damage to all enemies within $A1 yards, reduced beyond $1223163s2 targets.

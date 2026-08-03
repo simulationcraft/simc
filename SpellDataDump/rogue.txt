@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68887 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68974 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -1481,7 +1481,7 @@ Range            : 5 yards
 Attributes       : No Redirection (35), No Reflection (39), Item Cast With Owner Skill (88)
 Effects          :
 #1 (id=29416)    : School Damage (2): nature | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 6.210404 - 8.066387 (coefficient=1.02, delta=0.26) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 2.822911 - 3.66654 (coefficient=1.02, delta=0.26) | Target: Targeted Enemy (6)
 
 Name             : Rogue Tier 6 Trinket (id=40460) [Spell Family (8), Passive, Hidden] 
 School           : Physical
@@ -7979,7 +7979,7 @@ Triggered By     : Banshee's Blight (358126)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=895083)   : Apply Aura (6) | Cast Linked Spell w/ Value (285): Banshee's Blight | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 5421.477 (coefficient=19.28201) | Trigger Spell: 358135 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2464.308 (coefficient=19.28201) | Trigger Spell: 358135 | Target: Self (1)
 
 Name             : Deathmark (id=360194) [Spell Family (8)] 
 Talent Entry     : Assassination [tree=spec, row=5, col=4, max_rank=1, req_points=8]
@@ -12679,7 +12679,7 @@ Triggered By     : Bubbling Wax (448001)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Unique (43), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1146222)  : Apply Aura (6) | Proc Trigger Spell (42): Bubbling Wax | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3666.668 (coefficient=13.04086) | Trigger Spell: 448001 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1666.667 (coefficient=13.04086) | Trigger Spell: 448001 | Target: Self (1)
 Description      : $@spelldesc444755
 
 Name             : Coup de Grace (id=450743) [Spell Family (8)] 

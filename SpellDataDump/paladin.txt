@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68887 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68974 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1016,7 +1016,7 @@ Stance Mask      : 0x00000002
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=31647)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 628.4097 (coefficient=2.235) | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 285.6408 (coefficient=2.235) | Target: Targeted Ally (21)
 Description      : Heals the target for $o1 over $d.
 Tooltip          : Heals $s1 damage every $t1 seconds.
 
@@ -1028,7 +1028,7 @@ Duration         : 8 seconds
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=31648)    : Apply Aura (6) | Periodic Damage (3): holy every 2 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 397.0087 (coefficient=1.412) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 180.4585 (coefficient=1.412) | Target: Targeted Enemy (6)
 Description      : Causes $o1 Holy damage over $d.
 Tooltip          : $s1 Holy damage every $t1 seconds.
 
@@ -2798,7 +2798,7 @@ Proc Flags       : Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=103171)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3431.198 (coefficient=12.20339) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1559.636 (coefficient=12.20339) | Target: Self (1)
 Description      : You gain an Electrical Charge each time you cause a damaging spell critical strike, granting a chance to fire a Lightning Bolt for ${$m1*0.875} to ${$m1*1.125} damage per Electrical Charge accumulated.  You cannot have more than $96890u Electrical Charges and cannot gain one more often than once every 2.5 sec.
 
 Name             : Eye of Blazing Power (id=96967) [Spell Family (10), Passive] 
@@ -6689,7 +6689,7 @@ Triggered By     : Martyr's Breath (273034)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=724321)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 6 | Scaled Value: 4657.378 (coefficient=16.56442) | Misc Value: 1 | Trigger Spell: 273032 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 2116.99 (coefficient=16.56442) | Misc Value: 1 | Trigger Spell: 273032 | Target: Self (1)
 Description      : Light of the Martyr has a chance to cause your Blessing of Sacrifice to additionally heal the target for $s1. This effect can stack up to $273034u times.
 
 Name             : Martyr's Breath (id=273032) [Spell Family (10), Hidden] 

@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68887 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68974 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -783,7 +783,7 @@ Velocity         : 20 yards/sec
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=28224)    : School Damage (2): nature | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3096.253 - 3598.348 (coefficient=11.905, delta=0.15) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 1407.388 - 1635.613 (coefficient=11.905, delta=0.15) | Target: Targeted Enemy (6)
 Description      : Casts a bolt of lightning at the target for $s1 Nature damage.
 
 Name             : Shaman Tier 6 Trinket (id=40463) [Spell Family (11), Passive, Hidden] 
@@ -1178,7 +1178,7 @@ Velocity         : 20 yards/sec
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=47725)    : School Damage (2): nature | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 113.3866 - 131.7736 (coefficient=14.337, delta=0.15) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 51.53936 - 59.89709 (coefficient=14.337, delta=0.15) | Target: Targeted Enemy (6)
 Description      : Casts a bolt of lightning at the target for $s1 Nature damage.
 
 Name             : Emerald Boar (id=56188) [Spell Family (11)] 
@@ -1538,7 +1538,7 @@ Velocity         : 20 yards/sec
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=61880)    : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3727.08 - 4331.471 (coefficient=14.33051, delta=0.15) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 1694.127 - 1968.85 (coefficient=14.33051, delta=0.15) | Target: Targeted Enemy (6)
 Description      : Casts a Pillar of Flame at the target for $s1 Fire damage.
 
 Name             : Pillar of Flame (desc=Rank 1) (id=67760) [Spell Family (11)] 
@@ -1549,7 +1549,7 @@ Velocity         : 20 yards/sec
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=61942)    : School Damage (2): fire | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 2176.35 - 2529.272 (coefficient=8.368, delta=0.15) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 989.25 - 1149.669 (coefficient=8.368, delta=0.15) | Target: Targeted Enemy (6)
 Description      : Casts a Pillar of Flame at the target for $s1 Fire damage.
 
 Name             : Unleash Life (id=73685) [Spell Family (11)] 
@@ -7415,11 +7415,11 @@ Triggered By     : Rumbling Tremors (279523), Rumbling Tremors (279553), Rumblin
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734578)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1897.45 (coefficient=6.748466) | Trigger Spell: 279522 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 862.4774 (coefficient=6.748466) | Trigger Spell: 279522 | Target: Self (1)
 #2 (id=734579)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=734580)   : Dummy (3) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2242.441 (coefficient=7.97546)
+                   Base Value: 0 | Scaled Value: 1019.291 (coefficient=7.97546)
 #4 (id=739329)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Your Earth Elemental spawns Tremors that deal $s1 Physical damage to enemies within $s4 yds every $s2 seconds. Earth Elemental's auto attack damage is increased by $s3.
