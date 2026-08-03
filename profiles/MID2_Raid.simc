@@ -65,8 +65,8 @@ MID2_Priest_Shadow_Archon.simc
 # MID2_Warlock_Affliction_Hellcaller.simc
 # MID2_Warlock_Demonology_Soul_Harvester.simc
 # MID2_Warlock_Demonology.simc
-# MID2_Warlock_Destruction.simc
-# MID2_Warlock_Destruction_Hellcaller.simc
+MID2_Warlock_Destruction.simc
+MID2_Warlock_Destruction_Diabolist.simc
 
 # MID2_Warrior_Arms.simc
 # MID2_Warrior_Fury.simc
