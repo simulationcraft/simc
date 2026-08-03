@@ -3,13 +3,13 @@ optimal_raid=1
 default_actions=1
 single_actor_batch=1
 
-# MID2_Death_Knight_Blood.simc
-# MID2_Death_Knight_Blood_Deathbringer.simc
+MID2_Death_Knight_Blood.simc
+MID2_Death_Knight_Blood_Deathbringer.simc
 # MID2_Death_Knight_Frost.simc
 # MID2_Death_Knight_Frost_Rider.simc
 # MID2_Death_Knight_Frost_Deathbringer.simc
-# MID2_Death_Knight_Unholy.simc
-# MID2_Death_Knight_Unholy_San'layn.simc
+MID2_Death_Knight_Unholy.simc
+MID2_Death_Knight_Unholy_San'layn.simc
 
 # MID2_Demon_Hunter_Devourer.simc
 # MID2_Demon_Hunter_Devourer_Void-Scarred.simc
