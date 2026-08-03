@@ -88,6 +88,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
   fake_lesser_weapon_set.clear();
+
+  if ( is_ptr() )
+    reflection_of_radiance_proc_chance = .001;  // Idk, something very, very low
 }
 
 const paladin_td_t* paladin_t::find_target_data( const player_t* target ) const
