@@ -1070,7 +1070,7 @@ void polished_ammolite( special_effect_t& effect )
 // 1296567 Explosion
 void snakeskin_lining( special_effect_t& effect )
 {
-  effect.player->sim->error( IMPLEMENTATION_NOTES,
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
                              "Snakeskin Lining: The chance for the Explosion Damage is unknown. The tick size is "
                              "unknown. Currently unknown if the Explosion is true split or has scaling." );
 
@@ -1147,7 +1147,7 @@ void snakeskin_lining( special_effect_t& effect )
 // 1296884 Buff
 void adorned_fang( special_effect_t& effect )
 {
-  effect.player->sim->error( IMPLEMENTATION_NOTES,
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
                              "Adorned Fang: The increased proc chance for low health enemies is currently unknown. A "
                              "placeholder value has been used instead." );
 
@@ -1188,6 +1188,51 @@ void adorned_fang( special_effect_t& effect )
   new adorned_fang_cb_t( effect );
 }
 
+// 1297382 Driver
+// 1295897 RPPM
+// 1295898 1295899 1295900 1295901 Buffs
+void hunters_ritual_stone( special_effect_t& effect )
+{
+  std::array<buff_t*, 4> buffs = { nullptr, nullptr, nullptr, nullptr };
+
+  auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
+
+  int _idx = 0;
+  for ( auto id : { 1295898, 1295899, 1295900, 1295901 } )
+  {
+    buffs[ _idx ] = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( id ) )
+                        ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
+    _idx++;
+  }
+
+  for ( auto b : buffs )
+  {
+    if ( !b )
+      throw std::runtime_error( "Failed to create buff for Hunters Ritual Stone" );
+  }
+
+  // skip setup if callback has been created by already having another copy of the Embellishment
+  if ( find_special_effect( effect.player, effect.trigger()->id() ) )
+    return;
+
+  struct hunters_ritual_stone_cb_t final : public dbc_proc_callback_t
+  {
+    std::array<buff_t*, 4> buffs;
+
+    hunters_ritual_stone_cb_t( const special_effect_t& e, std::array<buff_t*, 4> b )
+      : dbc_proc_callback_t( e.player, e ), buffs( b )
+    {
+    }
+
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
+    {
+      rng().range( buffs )->trigger();
+    }
+  };
+
+  effect.spell_id = effect.trigger()->id();
+  new hunters_ritual_stone_cb_t( effect, buffs );
+}
 }  // namespace embellishments
 
 namespace darkmoon
@@ -5061,7 +5106,7 @@ void register_special_effects()
   register_special_effect( 1296982, embellishments::polished_ammolite );
   register_special_effect( 1296550, embellishments::snakeskin_lining );
   register_special_effect( 1296870, embellishments::adorned_fang );
-  
+  register_special_effect( 1297382, embellishments::hunters_ritual_stone );
   reset_version_check();
   
   // Darkmoon Trinkets & Embellishments
