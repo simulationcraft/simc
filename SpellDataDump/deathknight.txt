@@ -6757,9 +6757,9 @@ Triggered By     : Glacial Contagion (274074)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=726180)   : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 642.9376 (coefficient=5.030674) | Trigger Spell: 274071 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1414.463 (coefficient=5.030674) | Trigger Spell: 274071 | Target: Self (1)
 #2 (id=726181)   : Dummy (3) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 214.0513 (coefficient=1.674847) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 470.9128 (coefficient=1.674847) | Target: Self (1)
 Description      : Your autoattacks have a chance to apply Glacial Contagion, dealing ${$s1*($274074d/$274074t1)} Frost damage over $274074d. Obliterate deals an additional $s2 damage to targets infected with Glacial Contagion.
 
 Name             : Glacial Contagion (id=274071) [Spell Family (15), Hidden] 

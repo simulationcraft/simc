@@ -11333,7 +11333,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Log on Learn (355), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=1031558)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 9940.916 (coefficient=77.78283) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 21870.01 (coefficient=77.78283) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1031559)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=1031560)  : Dummy (3)
