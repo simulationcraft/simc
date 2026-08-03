@@ -1063,6 +1063,84 @@ void polished_ammolite( special_effect_t& effect )
 
   new polished_ammolite_cb_t( effect, buff, damage );
 }
+
+// Driver 1296550. Effect 1 => DoT Effect 2 => Explosion.
+// 1296561 RPPM
+// 1296565 DoT
+// 1296567 Explosion
+void snakeskin_lining( special_effect_t& effect )
+{
+  effect.player->sim->error( IMPLEMENTATION_NOTES,
+                             "Snakeskin Lining: The chance for the Explosion Damage is unknown. The tick size is "
+                             "unknown. Currently unknown if the Explosion is true split or has scaling." );
+
+  auto corrosive_venom_dot = effect.trigger()->effectN( 1 ).trigger();
+  auto dot_td              = effect.driver()->effectN( 1 ).average( effect );
+  auto explosive_dd     = effect.driver()->effectN( 2 ).average( effect );
+
+
+  // TODO: Is this per tick? Spell Data shows both. Assuming the Worst.
+  dot_td *= corrosive_venom_dot->effectN( 1 ).period() / corrosive_venom_dot->duration();
+
+  assert( corrosive_venom_dot->effectN( 1 ).subtype() == A_PERIODIC_DAMAGE );
+
+  auto dot_damage = create_proc_action<generic_proc_t>( "corrosive_venom", effect, corrosive_venom_dot );
+  dot_damage->base_td += dot_td;
+
+  // TODO: Confirm if this has meteor scaling or is fully split
+  auto aoe_damage = create_proc_action<generic_aoe_proc_t>( "Toxic Eruption", effect, 1296567 );
+  aoe_damage->base_dd_min += explosive_dd;
+  aoe_damage->base_dd_max += explosive_dd;
+
+  // skip setup if callback has been created by already having another copy of the Embellishment
+  if ( find_special_effect( effect.player, effect.trigger()->id() ) )
+    return;
+
+  dot_damage->base_multiplier *= role_mult( effect );
+  aoe_damage->base_multiplier *= role_mult( effect );
+
+  dot_damage->add_child( aoe_damage );
+  
+  struct snakeskin_lining_cb_t final : public dbc_proc_callback_t
+  {
+    action_t* dot_action;
+    action_t* explosion_action;
+
+    snakeskin_lining_cb_t( const special_effect_t& e, action_t* dot, action_t* explosion )
+      : dbc_proc_callback_t( e.player, e ), dot_action( dot ), explosion_action( explosion )
+    {
+    }
+
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
+    {
+      if ( s )
+      {
+        if ( dot_action->get_dot( get_target( t, s ) )->is_ticking() )
+        {
+          // TODO: The chance for the Explosion Damage is unknown. This is a placeholder. Please update this.
+          // Currently assuming that it always triggers if it is currently up and does not refresh.
+          explosion_action->set_target( get_target( t, s ) );
+          auto proc_state    = explosion_action->get_state();
+          proc_state->target = explosion_action->target;
+          explosion_action->snapshot_state( proc_state, explosion_action->amount_type( proc_state ) );
+          explosion_action->schedule_execute( proc_state );
+        }
+        else
+        {
+          dot_action->set_target( get_target( t, s ) );
+          auto proc_state    = dot_action->get_state();
+          proc_state->target = dot_action->target;
+          dot_action->snapshot_state( proc_state, dot_action->amount_type( proc_state ) );
+          dot_action->schedule_execute( proc_state );
+        }
+      }
+    }
+  };
+
+  effect.spell_id = effect.trigger()->id();
+
+  new snakeskin_lining_cb_t( effect, dot_damage, aoe_damage );
+}
 }  // namespace embellishments
 
 namespace darkmoon
@@ -4934,6 +5012,7 @@ void register_special_effects()
   register_special_effect( 1246309, embellishments::b1p_scorcher_of_souls );
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( 1296982, embellishments::polished_ammolite );
+  register_special_effect( 1296550, embellishments::snakeskin_lining );  
   reset_version_check();
   
   // Darkmoon Trinkets & Embellishments
