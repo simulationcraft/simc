@@ -1195,7 +1195,7 @@ void hunters_ritual_stone( special_effect_t& effect )
 {
   std::array<buff_t*, 4> buffs = { nullptr, nullptr, nullptr, nullptr };
 
-  auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
+  auto stat_amount = effect.driver()->effectN( 2 ).average( effect );
 
   int _idx = 0;
   for ( auto id : { 1295898, 1295899, 1295900, 1295901 } )
