@@ -277,6 +277,53 @@ void potion_of_zealotry( special_effect_t& effect )
 
   effect.custom_buff = buff;
 }
+// Liquid Luster
+// 1295132 driver
+// 1295147 buff
+void liquid_luster( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, "lustrous_gleam", effect.trigger(), effect.item )
+                           ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
+                           ->set_period( effect.driver()->effectN( 1 ).period() );
+}
+// Alluring Nostrum
+// 1295015 Driver & buff
+// 1295019 damage
+// 1295024 Slow
+void alluring_nostrum( special_effect_t& effect )
+{
+  auto debuff = create_buff( effect.player, effect.driver()->effectN( 2 ).trigger(), effect.item );
+
+  struct voidlash_salvo_t : public generic_proc_t
+  {
+    buff_t* debuff;
+    voidlash_salvo_t( const special_effect_t& e, buff_t* d )
+      : generic_proc_t( e, "voidlash_salvo", e.trigger() ), debuff( d )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      debuff->trigger();
+    }
+  };
+
+  auto buff = create_buff<buff_t>( effect.player, "potion_of_zealotry", effect.driver() )->set_rppm( RPPM_DISABLE );
+
+  auto voidlash_salvo            = new special_effect_t( effect.player );
+  voidlash_salvo->name_str       = "voidlash_salvo_proc";
+  voidlash_salvo->spell_id       = effect.driver()->id();
+  voidlash_salvo->cooldown_      = 0_ms;  // Cooldown handled by the main special effect
+  voidlash_salvo->execute_action = create_proc_action<voidlash_salvo_t>( "voidlash_salvo", effect, debuff );
+  effect.player->special_effects.push_back( voidlash_salvo );
+
+  auto nostrum_cb = new dbc_proc_callback_t( effect.player, *voidlash_salvo );
+  nostrum_cb->activate_with_buff( buff, true );
+
+  effect.custom_buff = buff;
+}
 
 // 1262056 r1 driver
 // 1262108 r1 dot
@@ -1025,13 +1072,14 @@ void polished_ammolite( special_effect_t& effect )
 
   auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
   auto buff        = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1301039 ) )
-                         ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
+                         ->add_stat_from_effect_type( A_MOD_RATING, stat_amount * bandolier_mul( effect.player ) );
 
   // skip setup if callback has been created by already having another copy of the embellishment
   if ( find_special_effect( effect.player, effect.trigger()->id() ) )
     return;
 
   damage->base_multiplier *= role_mult( effect );
+  damage->base_multiplier *= bandolier_mul( effect.player );
   damage->base_crit = 1.0;
 
   struct polished_ammolite_cb_t final : public dbc_proc_callback_t
@@ -5072,6 +5120,11 @@ void register_special_effects()
   register_special_effect( 1236998, consumables::draught_of_rampant_abandon );
   register_special_effect( 1236994, consumables::potion_of_recklessness );
   register_special_effect( 1238443, consumables::potion_of_zealotry );
+  set_min_version( wowv_t( 12, 1, 0 ) );
+  register_special_effect( 1295132, consumables::liquid_luster );
+  register_special_effect( 1295015, consumables::alluring_nostrum );
+  
+  reset_version_check();
   // Oils
   register_special_effect( { 1262056, 1262111 }, consumables::laced_zoomshots );
   register_special_effect( { 1237009, 1237012 }, consumables::smugglers_enchanted_edge );
