@@ -116,22 +116,22 @@ talents=CsQAAAAAAAAAAAAAAAAAAAAAAwMmZGNLMzmZmZWmFzMzsYMWMDAAmZGzMzCYMjhFyAbDL0Yh
 omnium_talents=136822:1/136816:1/136817:1/136818:1/136814:1
 flask=flask_of_the_magisters_2
 
-head=venomkeepers_horrific_cowl,id=271874,enchant_id=7961,gem_id=240983,bonus_id=13846/40/13696/13663/13335/13848/13695,content_tuning=883
-neck=aqirbane_reliquary,id=268265,gem_id=240900/240900,bonus_id=13708/13668/40/13335/13848,content_tuning=883
+head=venomkeepers_horrific_cowl,id=271874,enchant_id=7961,gem_id=240967,bonus_id=13846/40/13696/13663/13335/13848/13695,content_tuning=883
+neck=aqirbane_reliquary,id=268265,gem_id=240914/240892,bonus_id=13708/13668/40/13335/13848,content_tuning=883
 shoulder=spires_of_the_damned_necrolyte,id=271544,enchant_id=8001,bonus_id=13694/13697,redirected_base_stats=239031,ilevel=334
 back=silken_voodoo_drape,id=268253,ilevel=344
 chest=damned_necrolytes_rattling_robes,id=271549,enchant_id=7987,bonus_id=13690/13698/12854/13335/40,content_tuning=807
-wrist=martyrs_bindings,id=239648,gem_id=240900,bonus_id=12214/8793/12384/8960/13750,ilevel=331
+wrist=martyrs_bindings,id=239648,gem_id=240892,bonus_id=12214/8793/12384/8960/13750,ilevel=331
 hands=damned_necrolytes_charred_grasps,id=271547,bonus_id=13691/13697,redirected_base_stats=273773,ilevel=344
-waist=martyrs_waistwrap,id=239649,gem_id=240900,bonus_id=13836/13751/9627/8960/12384/13750/8791,crafted_stats=49/36,crafting_quality=5
+waist=martyrs_waistwrap,id=239649,gem_id=240892,bonus_id=12214/13836/13751/9627/8960/12384/13750,crafted_stats=49/36,crafting_quality=5
 legs=damned_necrolytes_leg_bindings,id=271545,enchant_id=7935,bonus_id=13693/13698/12854/13335/40,content_tuning=807
-feet=soles_of_the_damned_necrolyte,id=271548,enchant_id=7993,bonus_id=12854/13335/40,content_tuning=807
-finger1=charged_sandstone_band,id=158366,enchant_id=7967,gem_id=240900,bonus_id=12854/13662/13750
-finger2=band_of_the_amani_warlord,id=273792,enchant_id=7967,gem_id=240900,bonus_id=13668/12854/13662
+feet=cackling_soultreads,id=268255,enchant_id=7993,bonus_id=13848/13662
+finger1=apex_brutes_claw_ring,id=268252,enchant_id=7967,gem_id=240908,bonus_id=13668/40/13335/12854,content_tuning=883
+finger2=charged_sandstone_band,id=158366,enchant_id=7967,gem_id=240900,bonus_id=12854/13662/13750
 trinket1=freightrunners_flask,id=250215,bonus_id=12854/13440/40,content_tuning=883
 trinket2=gebbos_bottomless_bag,id=270164,bonus_id=40/13335/12854,content_tuning=883
-main_hand=janthrazet_the_soul_fang,id=271092,enchant_id=8039,bonus_id=40/13335/13848,content_tuning=883
-off_hand=nocuous_focal_fang,id=273779,content_tuning=1279,ilevel=334
+main_hand=janthrazet_the_soul_fang,id=271092,enchant_id=8041,bonus_id=40/13335/13848,content_tuning=883
+off_hand=spine_of_the_hissing_abyss,id=268197,bonus_id=12854/13662
 
 save=MID2_Warlock_Destruction_Diabolist.simc
 
@@ -144,21 +144,21 @@ talents=CsQAAAAAAAAAAAAAAAAAAAAAAwMmZGNLMzmZmZWmFzMzsYMWMDAAmZGzMziNYgZxoxMAmtYj
 omnium_talents=136822:1/136816:1/136817:1/136818:1/136814:1
 flask=flask_of_the_magisters_2
 
-head=venomkeepers_horrific_cowl,id=271874,enchant_id=7961,gem_id=240983,bonus_id=13846/40/13696/13663/13335/13848/13695,content_tuning=883
-neck=aqirbane_reliquary,id=268265,gem_id=240900/240900,bonus_id=13708/13668/40/13335/13848,content_tuning=883
+head=venomkeepers_horrific_cowl,id=271874,enchant_id=7961,gem_id=240967,bonus_id=13846/40/13696/13663/13335/13848/13695,content_tuning=883
+neck=aqirbane_reliquary,id=268265,gem_id=240914/240892,bonus_id=13708/13668/40/13335/13848,content_tuning=883
 shoulder=spires_of_the_damned_necrolyte,id=271544,enchant_id=8001,bonus_id=13694/13697,redirected_base_stats=239031,ilevel=334
 back=silken_voodoo_drape,id=268253,ilevel=344
 chest=damned_necrolytes_rattling_robes,id=271549,enchant_id=7987,bonus_id=13690/13698/12854/13335/40,content_tuning=807
-wrist=martyrs_bindings,id=239648,gem_id=240900,bonus_id=12214/8793/12384/8960/13750,ilevel=331
+wrist=martyrs_bindings,id=239648,gem_id=240892,bonus_id=12214/8793/12384/8960/13750,ilevel=331
 hands=damned_necrolytes_charred_grasps,id=271547,bonus_id=13691/13697,redirected_base_stats=273773,ilevel=344
-waist=martyrs_waistwrap,id=239649,gem_id=240900,bonus_id=13836/13751/9627/8960/12384/13750/8791,crafted_stats=49/36,crafting_quality=5
+waist=martyrs_waistwrap,id=239649,gem_id=240892,bonus_id=12214/13836/13751/9627/8960/12384/13750,crafted_stats=49/36,crafting_quality=5
 legs=damned_necrolytes_leg_bindings,id=271545,enchant_id=7935,bonus_id=13693/13698/12854/13335/40,content_tuning=807
-feet=soles_of_the_damned_necrolyte,id=271548,enchant_id=7993,bonus_id=12854/13335/40,content_tuning=807
-finger1=charged_sandstone_band,id=158366,enchant_id=7967,gem_id=240900,bonus_id=12854/13662/13750
-finger2=band_of_the_amani_warlord,id=273792,enchant_id=7967,gem_id=240900,bonus_id=13668/12854/13662
+feet=cackling_soultreads,id=268255,enchant_id=7993,bonus_id=13848/13662
+finger1=apex_brutes_claw_ring,id=268252,enchant_id=7967,gem_id=240908,bonus_id=13668/40/13335/12854,content_tuning=883
+finger2=charged_sandstone_band,id=158366,enchant_id=7967,gem_id=240900,bonus_id=12854/13662/13750
 trinket1=freightrunners_flask,id=250215,bonus_id=12854/13440/40,content_tuning=883
 trinket2=gebbos_bottomless_bag,id=270164,bonus_id=40/13335/12854,content_tuning=883
-main_hand=janthrazet_the_soul_fang,id=271092,enchant_id=8039,bonus_id=40/13335/13848,content_tuning=883
-off_hand=nocuous_focal_fang,id=273779,content_tuning=1279,ilevel=334
+main_hand=janthrazet_the_soul_fang,id=271092,enchant_id=8041,bonus_id=40/13335/13848,content_tuning=883
+off_hand=spine_of_the_hissing_abyss,id=268197,bonus_id=12854/13662
 
 save=MID2_Warlock_Destruction.simc
