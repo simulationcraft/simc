@@ -2556,7 +2556,7 @@ public:
 
     if ( affected_by.mid2_assassination_4pc && tdata->dots.deadly_poison->is_ticking() )
     {
-      m *= p()->set_bonuses.mid2_assassination_4pc->effectN( 1 ).percent();
+      m *= 1.0 + p()->set_bonuses.mid2_assassination_4pc->effectN( 1 ).percent();
     }
 
     return m;
