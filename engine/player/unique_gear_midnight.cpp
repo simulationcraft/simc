@@ -4006,6 +4006,45 @@ void permafrost_essence( special_effect_t& effect )
 
   new permafrost_essence_cb_t( effect );
 }
+
+// 1294329 Driver
+// 1296714 Buff
+void ulateks_faithful( special_effect_t& effect )
+{
+  std::unordered_map<stat_e, buff_t*> buffs;
+
+  double secondary_amount = effect.driver()->effectN( 1 ).average( effect );
+  double tertiary_amount  = effect.driver()->effectN( 2 ).average( effect );
+
+  create_all_stat_buffs( effect, effect.player->find_spell( 1296714 ), 0,
+                         [ &buffs, secondary_amount, tertiary_amount ]( stat_e s, buff_t* b ) {
+                           if ( s >= STAT_CRIT_RATING && s <= STAT_VERSATILITY_RATING )
+                           {
+                             dynamic_cast<stat_buff_t*>( b )->add_stat( s, secondary_amount );
+                           }
+                           else
+                           {
+                             dynamic_cast<stat_buff_t*>( b )->add_stat( s, tertiary_amount );
+                           }
+
+                           buffs[ s ] = b;
+                         } );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.spell_id, [ buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
+        auto secondary_stat = cb->rng().range( secondary_ratings );
+        auto tertiary_stat  = cb->rng().range( tertiary_ratings );
+        for ( auto [ s, b ] : buffs )
+        {
+          if ( s == secondary_stat || s == tertiary_stat )
+            b->trigger();
+          else
+            b->expire();
+        }
+      } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -5247,6 +5286,7 @@ void register_special_effects()
   register_special_effect( 1295832, DISABLED_EFFECT );  // Vexhul's Everflowing Gland equip driver
   register_special_effect( 1291728, bite_of_zuljan::zuljins_guillotine_technique );
   register_special_effect( 1293304, trinkets::knot_of_writhing_serpents );
+  register_special_effect( 1294329, trinkets::ulateks_faithful );
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
