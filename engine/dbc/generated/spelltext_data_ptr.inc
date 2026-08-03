@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.0.68914
-static constexpr std::array<spelltext_data_t, 29234> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29237> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28835,6 +28835,9 @@ static constexpr std::array<spelltext_data_t, 29234> __ptr_spelltext_data { {
   { 1295885, "Consume the power of Hex Lord's Doom, increasing your Intellect by $1295884s2 per stack for $d.", "Intellect increased by $w1.", 0 },
   { 1295897, "DNT testing Hunter's Ritual Stone", 0, 0 },
   { 1295898, "Increases Versatility by $s1 for $d.", "Versatility increased by $w1.", 0 },
+  { 1295899, "Increases Critical Strike by $s1 for $d.", "Critical Strike increased by $w1.", 0 },
+  { 1295900, "Increases Haste by $s1 for $d.", "Haste increased by $w1.", 0 },
+  { 1295901, "Increases Mastery by $s1 for $d.", "Mastery increased by $w1.", 0 },
   { 1295922, "A particularly useful totem that provides several useful boons when navigated treacherous waters.\r\n\r\nBoons Granted:\r\n\r\n- Blood Hunters will not attack you when catching them.\r\n\r\n- Water walking.\r\n\r\n- Detected Range reduced.\r\n\r\n", 0, 0 },
   { 1295923, "Arcane Barrage has a $s1% chance per stack of Arcane Salvo consumed to replace your next Arcane Blast with Prismatic Bolt.\r\n\r\n$@spellicon1295924 $@spellname1295924\r\n$@spelldesc1295924", 0, 0 },
   { 1295924, "Devastates the target with overwhelming energy, dealing $s1 Arcane damage to them and $1295939s2 Arcane damage to other nearby enemies. Damage reduced beyond $s4 targets.\r\n\r\n|cFFFFFFFFGenerates $s3 Arcane $lCharge:Charges;.|r", 0, 0 },
