@@ -1141,6 +1141,53 @@ void snakeskin_lining( special_effect_t& effect )
 
   new snakeskin_lining_cb_t( effect, dot_damage, aoe_damage );
 }
+
+// 1296870 Driver
+// 1296881 RPPM
+// 1296884 Buff
+void adorned_fang( special_effect_t& effect )
+{
+  effect.player->sim->error( IMPLEMENTATION_NOTES,
+                             "Adorned Fang: The increased proc chance for low health enemies is currently unknown. A "
+                             "placeholder value has been used instead." );
+
+  auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
+  auto buff        = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1296884 ) )
+                         ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
+
+  // skip setup if callback has been created by already having another copy of the Embellishment
+  if ( find_special_effect( effect.player, effect.trigger()->id() ) )
+    return;
+
+  effect.spell_id    = effect.trigger()->id();
+  effect.custom_buff = buff;
+
+  struct adorned_fang_cb_t final : public dbc_proc_callback_t
+  {
+    double base_ppm;
+
+    adorned_fang_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), base_ppm( e.trigger()->real_ppm() )
+    {
+    }
+
+    void trigger( const proc_data_t& source_data, player_t* target, action_state_t* state,
+                  proc_trigger_type_e type ) override
+    {
+      // TODO: The amount the proc chance is increased for each missing health is currently unknown. This is a
+      // placeholder. Please update this.
+
+      static const double increase_for_missing_health = 1.0;
+      rppm->set_frequency( base_ppm * ( 1.0 + increase_for_missing_health -
+                                        increase_for_missing_health * target->resources.pct( RESOURCE_HEALTH ) ) );
+
+      dbc_proc_callback_t::trigger( source_data, target, state, type );
+    }
+  };
+
+  new adorned_fang_cb_t( effect );
+}
+
 }  // namespace embellishments
 
 namespace darkmoon
@@ -5012,7 +5059,9 @@ void register_special_effects()
   register_special_effect( 1246309, embellishments::b1p_scorcher_of_souls );
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( 1296982, embellishments::polished_ammolite );
-  register_special_effect( 1296550, embellishments::snakeskin_lining );  
+  register_special_effect( 1296550, embellishments::snakeskin_lining );
+  register_special_effect( 1296870, embellishments::adorned_fang );
+  
   reset_version_check();
   
   // Darkmoon Trinkets & Embellishments
