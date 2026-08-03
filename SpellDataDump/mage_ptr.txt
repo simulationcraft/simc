@@ -17995,6 +17995,7 @@ Hotfixed         : Base Value (10 -> 5)
 Description      : Casting Glacial Spike has a chance to rapidly generate $s2 Icicles over $1310248d. Shatter damage increased by $s1%.
 
 Name             : Cumulative Power (id=1296930) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -18006,7 +18007,7 @@ Labels           : 16: Class Spells
 Stacks           : 8 maximum
 Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
-Attributes       : Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428), Asynchronous Buff (490)
+Attributes       : Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1319740)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
