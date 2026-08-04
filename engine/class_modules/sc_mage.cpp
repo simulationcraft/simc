@@ -4288,8 +4288,8 @@ struct glacial_spike_t final : public frost_mage_spell_t
     p()->buffs.icicles->expire();
 
     p()->trigger_brain_freeze( bf_chance, proc_brain_freeze, 150_ms );
-    p()->trigger_fof( fof_chance, proc_fof );
     p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), proc_fof );
+    p()->trigger_fof( fof_chance, proc_fof );
     p()->trigger_splinter( p()->target );
     p()->trigger_splinter( p()->target, as<int>( p()->talents.signature_spell->effectN( 2 ).base_value() ) );
 
