@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.0.7.68887 Live
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68974 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -1068,7 +1068,7 @@ Velocity         : 20 yards/sec
 Attributes       : Not Shapeshifted (16), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=9714)     : School Damage (2): nature | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 759.2159 - 1081.307 (coefficient=3.273, delta=0.35) | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 345.0981 - 491.5034 (coefficient=3.273, delta=0.35) | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Nature damage.
 
 Name             : Swiftmend (id=18562) [Spell Family (7)] 
@@ -1725,7 +1725,7 @@ Triggered By     : HoTs on Heals (38299)
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=29068)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 468.7065 (coefficient=1.667) | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 213.0484 (coefficient=1.667) | Target: Targeted Ally (21)
 Tooltip          : Heals $s1 damage every $t1 seconds.
 
 Name             : Regeneration (id=38325) [Spell Family (7)] 
@@ -1736,7 +1736,7 @@ Duration         : 12 seconds
 Attributes       : Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=29069)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1218.299 (coefficient=4.333) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 553.7725 (coefficient=4.333) | Target: Self (1)
 Description      : Heals $o1 damage over $d.
 Tooltip          : Heals $s1 damage every $t1 seconds.
 
@@ -1772,7 +1772,7 @@ Triggered By     : Blessing of Life (38332)
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=29077)    : Apply Aura (6) | Modify Healing Received (115) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 133.8358 (coefficient=0.476) | Misc Value: 126 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 60.83445 (coefficient=0.476) | Misc Value: 126 | Target: Targeted Ally (21)
 Description      : Increases healing received by up to $s1.
 Tooltip          : Increases healing received by up to $s1.
 
@@ -2200,7 +2200,7 @@ Triggered By     : Talisman of Troll Divinity (60517)
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=54226)    : Apply Aura (6) | Modify Healing Received (115) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 110.2177 (coefficient=0.392) | Misc Value: 126 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 50.09896 (coefficient=0.392) | Misc Value: 126 | Target: Targeted Ally (21)
 Description      : Increases healing received by up to $s1.
 Tooltip          : Increases healing received by up to $s1.
 
@@ -2214,7 +2214,7 @@ Triggered By     : Forethought Talisman (60529)
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Do Not Display Range (126), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=54242)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1503.403 (coefficient=5.347) | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 683.3652 (coefficient=5.347) | Target: Targeted Ally (21)
 Description      : Heals for $s1 every $t1 sec for $d.
 Tooltip          : Heals $s1 damage every $t1 seconds.
 
@@ -7448,7 +7448,7 @@ Labels           : 63
 Attributes       : Not In Arena or Rated Battleground (144), Not On Player (167), Not On Player Controlled NPC (168), Not In Raid Instances (203), Not in Battleground (284), Not In Arena (297), Not in Instances (363), Not in Mythic+ Mode (Challenge Mode) (368), Not In Proving Grounds (401)
 Effects          :
 #1 (id=343350)   : School Damage (2): fire | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 2674.205 - 3618.043 (coefficient=235.433, delta=0.3) | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 1215.548 - 1644.565 (coefficient=235.433, delta=0.3) | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc227953
 
 Name             : Shapeshift Form (desc=Shapeshift) (id=228545) [Spell Family (7), Hidden] 
