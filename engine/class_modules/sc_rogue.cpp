@@ -3703,6 +3703,9 @@ struct lingering_shadow_t : public rogue_attack_t
   {
     base_dd_min = base_dd_max = 1; // Override from 0 for snapshot_flags
   }
+
+  bool procs_shadow_blades_damage() const override
+  { return true; }
 };
 
 // Backstab =================================================================
@@ -6405,6 +6408,18 @@ struct goremaws_bite_t : public rogue_attack_t
       rogue_attack_t( name, p, p->talent.subtlety.goremaws_bite->effectN( 2 ).trigger(), options_str )
     {
       dual = true;
+      aoe = 1; // Spell data has chain_targets, ignore this so we ensure the DoT is on the same targets
+    }
+
+    double composite_crit_chance() const override
+    {
+      if ( !p()->bugs )
+      {
+        return rogue_attack_t::composite_crit_chance();
+      }
+
+      // 2026-08-03 -- Due to strange spell typing, only appears to benefit from generic crit
+      return p()->current.all_crit;
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -6443,7 +6458,6 @@ struct goremaws_bite_t : public rogue_attack_t
     }
     else
     {
-      aoe = data().effectN( 1 ).base_value();
       add_child( impact_action );
       impact_action->impact_action->stats = stats;
     }
@@ -10396,7 +10410,8 @@ void rogue_t::init_spells()
 
   // Improved Secret Technique effect 1 does not directly affect the pet damage spell
   // 2026-03-20 -- Appears this is now double-dipping in-game
-  if ( !bugs )
+  // 2026-08-03 -- Double-dipping issue appears fixed on PTR
+  if ( !bugs || is_ptr() )
   {
     register_passive_affect_list( talent.subtlety.improved_secret_technique, affect_list_t( 1 ).remove_spell( 282449 ) );
   }
