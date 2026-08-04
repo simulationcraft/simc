@@ -5907,6 +5907,11 @@ struct upheaval_t : public empowered_charge_spell_t
         sands = nullptr;
         base_dd_multiplier *= p->talent.rumbling_earth->effectN( 1 ).percent();
         extend_ebon = 0_s;
+
+        if ( reverberations )
+        {
+          add_child( reverberations );
+        }
       }
       else if ( p->talent.rumbling_earth.enabled() )
       {
