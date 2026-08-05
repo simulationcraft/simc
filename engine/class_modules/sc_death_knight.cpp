@@ -3752,7 +3752,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
       if ( dk()->bugs )
         dk()->background_actions.epidemic_order->execute();
       else
-        epidemic_order->execute();
+      epidemic_order->execute();
     }
     else if ( death_order )
       death_order->execute();
@@ -13462,15 +13462,18 @@ void death_knight_t::trigger_bonegrinder( int stacks )
 
   if ( bugs && buffs.bonegrinder_frost->check() && buffs.bonegrinder_crit->check() )
   {
-    buffs.bonegrinder_frost->trigger();
-    buffs.bonegrinder_crit->expire();
+    buffs.bonegrinder_crit->trigger( stacks );
+    if ( buffs.bonegrinder_crit->current_stack >= buffs.bonegrinder_crit->max_stack() - 1 ) {
+      buffs.bonegrinder_frost->trigger();
+      buffs.bonegrinder_crit->expire();
+    }
   }
 
   if ( buffs.bonegrinder_frost->check() )
     return;
 
   buffs.bonegrinder_crit->trigger( stacks );
-  if ( buffs.bonegrinder_crit->at_max_stacks() )
+  if ( buffs.bonegrinder_crit->current_stack >= buffs.bonegrinder_crit->max_stack() - 1 )
   {
     buffs.bonegrinder_frost->trigger();
     buffs.bonegrinder_crit->expire();
@@ -13537,11 +13540,11 @@ void death_knight_t::sudden_doom_execute_effects( bool coil )
   {
     if ( !buffs.army_of_the_dead->check() )
     {
-      if ( coil )
-        pet_summon.db_ghoul_coil->execute();
-      else
-        pet_summon.db_ghoul_epi->execute();
-    }
+    if ( coil )
+      pet_summon.db_ghoul_coil->execute();
+    else
+      pet_summon.db_ghoul_epi->execute();
+  }
     else
     {
       for ( auto& ghoul : active_lesser_ghouls )
@@ -13549,7 +13552,7 @@ void death_knight_t::sudden_doom_execute_effects( bool coil )
         if ( ghoul->pet_type == PET_ARMY_GHOUL )
           ghoul->trigger_db_orders( coil );
       }
-    }
+}
   }
 }
 
@@ -16187,8 +16190,7 @@ void death_knight_t::create_buffs()
   buffs.bonegrinder_crit =
       make_fallback( talent.frost.bonegrinder.ok(), this, "bonegrinder_crit", spell.bonegrinder_crit_buff )
           ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-          ->set_cooldown( talent.frost.bonegrinder->internal_cooldown() )
-          ->set_max_stack( spell.bonegrinder_crit_buff->max_stacks() - 1 );
+          ->set_cooldown( talent.frost.bonegrinder->internal_cooldown() );
 
   buffs.bonegrinder_frost =
       make_fallback( talent.frost.bonegrinder.ok(), this, "bonegrinder_frost", spell.bonegrinder_frost_buff )
