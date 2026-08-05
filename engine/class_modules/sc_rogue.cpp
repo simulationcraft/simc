@@ -3705,7 +3705,7 @@ struct lingering_shadow_t : public rogue_attack_t
   }
 
   bool procs_shadow_blades_damage() const override
-  { return true; }
+  { return false; }
 };
 
 // Backstab =================================================================
@@ -6424,6 +6424,9 @@ struct goremaws_bite_t : public rogue_attack_t
 
     dot_t* get_dot( player_t* t ) override
     { return td( t )->dots.goremaws_bite; }
+
+    bool procs_poison() const override
+    { return false; }
   };
 
   struct goremaws_bite_damage_t : public rogue_attack_t
@@ -6438,6 +6441,9 @@ struct goremaws_bite_t : public rogue_attack_t
         impact_action = p->get_background_action<goremaws_bite_dot_t>( "goremaws_bite_dot" );
       }
     }
+
+    bool procs_poison() const override
+    { return false; }
   };
 
   goremaws_bite_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
@@ -7973,17 +7979,14 @@ void actions::rogue_action_t<Base>::trigger_venomous_wounds( const action_state_
   for ( auto t : ab::sim->target_non_sleeping_list )
   {
     rogue_td_t* tdata = p()->get_target_data( t );
-    if ( tdata->is_poisoned() )
+    if ( tdata->is_poisoned() && ab::get_dot( t )->is_ticking() )
     {
-      poisoned_bleeds += tdata->dots.garrote->is_ticking() + tdata->dots.rupture->is_ticking();
+      poisoned_bleeds++;
     }
   }
 
-  // 2026-03-24 -- Logs indicate the descripted formula is closer to #bleeds / 2 rather than #bleeds
-  const double refund_amount = poisoned_bleeds <= 2 ?
-    p()->talent.assassination.venomous_wounds->effectN( 1 ).base_value() :
-    p()->talent.assassination.venomous_wounds->effectN( 1 ).base_value() /
-    std::pow( poisoned_bleeds / 2.0, p()->talent.assassination.venomous_wounds->effectN( 3 ).percent() );
+  const double refund_amount = p()->talent.assassination.venomous_wounds->effectN( 1 ).base_value() /
+    std::pow( poisoned_bleeds, p()->talent.assassination.venomous_wounds->effectN( 3 ).percent() );
 
   p()->venomous_wounds_accumulator += refund_amount;
   p()->sim->print_debug( "{} {} accumulates {} Venomous Wounds ({})", *p(), *this, refund_amount, p()->venomous_wounds_accumulator );
@@ -11948,7 +11951,15 @@ public:
   bool valid() const override
   { return true; }
 
-  void register_hotfixes() const override {}
+  void register_hotfixes() const override
+  {
+    hotfix::register_effect( "Rogue", "2026-08-04", "Venomous Wounds generates more Energy when multiple targets are affected by your bleeds", 1250174,
+                             hotfix::HOTFIX_FLAG_PTR )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 55 )
+      .verification_value( 78 );
+  }
 
   void register_actor_initializers( sim_t* ) const override {}
 };
