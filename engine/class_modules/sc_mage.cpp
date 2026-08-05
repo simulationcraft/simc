@@ -7139,7 +7139,7 @@ void mage_t::trigger_fired_up()
     return;
 
   // TODO: Fit an equation or get more accurate numbers here. This list of probabilities is from logged data on target dummies.
-  constexpr std::array<double, 6> combustion_chance = { 0.889, 0.764, 0.483, 0.241, 0.0957, 0.027 };
+  constexpr std::array<double, 6> combustion_chance = { 0.897, 0.616, 0.373, 0.201, 0.109, 0.0728 };
   double chance;
   // TODO: This is bugged and seems to apply its changes to the proc chance during Combustion even when the talent is not learned.
   if ( buffs.combustion->check() && ( bugs || talents.fired_up_3.ok() ) )
