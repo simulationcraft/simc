@@ -4161,6 +4161,11 @@ struct deathmark_t : public rogue_attack_t
     energize_type = action_energize::PER_TICK;
     energize_resource = RESOURCE_ENERGY;
     energize_amount = data().effectN( 3 ).base_value();
+
+    if ( p->is_ptr() )
+    {
+      energize_amount /= ( data().duration() / data().effectN( 1 ).period() );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -4326,15 +4331,16 @@ struct envenom_t : public rogue_attack_t
         p()->buffs.inspiring_strike->trigger( envenom_duration );
       }
 
-      if ( p()->set_bonuses.mid2_assassination_2pc->ok() )
-      {
-        p()->buffs.mid2_assassination_2pc->trigger( envenom_duration );
-      }
-
       p()->buffs.implacable_tracker->trigger();
     }
 
     p()->buffs.envenom->trigger( envenom_duration );
+
+    if ( p()->set_bonuses.mid2_assassination_2pc->ok() )
+    {
+      p()->buffs.mid2_assassination_2pc->trigger( envenom_duration );
+    }
+
     trigger_caustic_spatter_debuff( state ); // Appears to be before impact and poisons
 
     rogue_attack_t::impact( state );
@@ -11227,6 +11233,7 @@ void rogue_t::create_buffs()
   // Use the Envenom whitelists for the damage buff and sync up on trigger and expire
   buffs.mid2_assassination_2pc = make_buff<damage_buff_t>( this, "mid2_assassination_2pc", set_bonuses.mid2_assassination_2pc, false );
   buffs.mid2_assassination_2pc
+    ->set_quiet( true )
     ->set_proc_callbacks( false )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   if ( set_bonuses.mid2_assassination_2pc->ok() )
