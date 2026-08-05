@@ -13,7 +13,7 @@ namespace priest_apl
 {
 std::string potion( const player_t* p )
 {
-  return ( p->true_level > 80 ) ? "lights_potential_2" : "tempered_potion_3";
+  return ( p->true_level > 80 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
 }
 
 std::string flask( const player_t* p )
