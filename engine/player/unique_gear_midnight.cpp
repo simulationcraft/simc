@@ -1127,7 +1127,7 @@ void snakeskin_lining( special_effect_t& effect )
 
   auto corrosive_venom_dot = effect.trigger()->effectN( 1 ).trigger();
   auto dot_td              = effect.driver()->effectN( 1 ).average( effect );
-  auto explosive_dd     = effect.driver()->effectN( 2 ).average( effect );
+  auto explosive_dd        = effect.driver()->effectN( 2 ).average( effect );
 
 
   // TODO: Is this per tick? Spell Data shows both.
@@ -1139,7 +1139,7 @@ void snakeskin_lining( special_effect_t& effect )
   dot_damage->base_td += dot_td;
 
   // TODO: Confirm if this has meteor scaling or is fully split
-  auto aoe_damage = create_proc_action<generic_aoe_proc_t>( "Toxic Eruption", effect, 1296567 );
+  auto aoe_damage = create_proc_action<generic_aoe_proc_t>( "toxic_eruption", effect, 1296567 );
   aoe_damage->base_dd_min += explosive_dd;
   aoe_damage->base_dd_max += explosive_dd;
 
