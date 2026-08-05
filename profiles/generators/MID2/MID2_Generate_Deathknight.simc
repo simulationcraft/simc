@@ -71,7 +71,7 @@ chest=reckless_spirit_breastplate,id=268222,bonus_id=13335/13848,enchant_id=7987
 wrists=spellbreakers_bracers,id=237834,bonus_id=8793/8960/12214/12384/13750/13751/13836/12497,gem_id=240890
 hands=baleful_graveknights_deathgrips,id=271475,bonus_id=40/13691/13697,ilevel=334,content_tuning=807,redirected_base_stats=268220
 waist=girdle_of_toxic_regret,id=268259,bonus_id=13335/13750/13848,gem_id=240890,content_tuning=883
-legs=baleful_graveknights_greaves,id=271473,bonus_id=40/13693/13698/13846,ilevel=334,enchant_id=8159,content_tuning=807
+legs=baleful_graveknights_greaves,id=271473,bonus_id=40/13693/13698/13846,ilevel=344,enchant_id=8159,content_tuning=807
 feet=scaled_fiends_warboots,id=268260,bonus_id=12854/13335,content_tuning=883
 finger1=vile_alchemists_band,id=268249,bonus_id=12854/13335/13668,gem_id=240890,enchant_id=7967,content_tuning=883
 finger2=loa_worshipers_band,id=251513,bonus_id=8960/12214/13751/13836/9627,gem_id=240890,enchant_id=7967
@@ -99,7 +99,7 @@ chest=reckless_spirit_breastplate,id=268222,bonus_id=13335/13848,enchant_id=7987
 wrists=spellbreakers_bracers,id=237834,bonus_id=8793/8960/12214/12384/13750/13751/13836/12497,gem_id=240890
 hands=baleful_graveknights_deathgrips,id=271475,bonus_id=40/13691/13697,ilevel=334,content_tuning=807,redirected_base_stats=268220
 waist=girdle_of_toxic_regret,id=268259,bonus_id=13335/13750/13848,gem_id=240890,content_tuning=883
-legs=baleful_graveknights_greaves,id=271473,bonus_id=40/13693/13698/13846,ilevel=334,enchant_id=8159,content_tuning=807
+legs=baleful_graveknights_greaves,id=271473,bonus_id=40/13693/13698/13846,ilevel=344,enchant_id=8159,content_tuning=807
 feet=scaled_fiends_warboots,id=268260,bonus_id=12854/13335,content_tuning=883
 finger1=band_of_the_amani_warlord,id=273792,bonus_id=12854/13335/13668,gem_id=240890,enchant_id=7967,content_tuning=883
 finger2=loa_worshipers_band,id=251513,bonus_id=8960/13751/13836/9627,gem_id=240890,enchant_id=7967
