@@ -256842,7 +256842,8 @@ Category Cooldown: 300 seconds
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Unknown (508)
 Effects          :
 #1 (id=1316988)  : Apply Aura (6) | Periodic Trigger Spell (23): Lustrous Gleam every 6 seconds | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 182.4397 (coefficient=1.391814) | Trigger Spell: 1295147 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 87.80243 (coefficient=0.669836) | Trigger Spell: 1295147 | Target: Self (1)
+Hotfixed         : Coefficient (1.391814 -> 0.669836)
 Description      : Drink to apply $@spellname1295147 every $t1 seconds for $d seconds, increasing your Versatility by $s1 while this potion is active. 
 
 $@spelldesc1295147
@@ -258027,9 +258028,11 @@ Labels           : 4369
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1319194)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Snakeskin Lining | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 2563.094 (coefficient=20.05496) | Trigger Spell: 1296561 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 287.565 (coefficient=2.250056) | Trigger Spell: 1296561 | Target: Self (1)
+Hotfixed         : Coefficient (20.054964 -> 2.250056)
 #2 (id=1319255)  : Dummy (3) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 13840.71 (coefficient=108.2968)
+                   Base Value: 0 | Scaled Value: 1037.54 (coefficient=8.118242)
+Hotfixed         : Coefficient (108.296806 -> 8.118242)
 Description      : Your direct damaging spells and abilities have a chance to apply $@spellname1296565 to your target, dealing ${$<rolemult>*$s1} Nature damage over $1296565d. 
 Further applications of $@spellname1296565 have a chance to cause a $@spellname1296567, dealing ${$<rolemult>*$s2} split between nearby enemies.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
@@ -258038,7 +258041,7 @@ Name             : Snakeskin Lining (id=1296561) [Passive]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Real PPM         : 6
+Real PPM         : 3 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Snakeskin Lining (1296550)
 Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446), Unknown (452)
@@ -258166,7 +258169,8 @@ Triggered By     : Rush of Fangs (1296884)
 Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29), No Aura Cancel (31), No Threat (42), Not an Action (92), Not a Proc (105), Aura Is Buff (140), Allow Entering Arena (149), Not an Attack (194), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1319651)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Adorned Fang | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 67.16197 (coefficient=0.512372) | Trigger Spell: 1296881 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 17.78199 (coefficient=0.135657) | Trigger Spell: 1296881 | Target: Self (1)
+Hotfixed         : Coefficient (0.512372 -> 0.135657)
 Description      : Your spells and abilities have a chance to imbue you with $@spellname1296884. $@spelldesc1296884
 Attacking or healing targets at lower health will increase this chance. 
 
@@ -258207,7 +258211,7 @@ School           : Nature
 Spell Type       : None
 Labels           : 4124
 Proc Chance      : 101%
-Real PPM         : 2
+Real PPM         : 4
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered By     : Adorned Fang (1296870)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
@@ -258302,9 +258306,11 @@ Triggered By     : Polished Ammolite (1301039)
 Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29), No Aura Cancel (31), No Threat (42), Not an Action (92), Not a Proc (105), Aura Is Buff (140), Allow Entering Arena (149), Not an Attack (194), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1319840)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Polished Ammolite | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 73.6525 (coefficient=0.576295) | Trigger Spell: 1301037 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5.123641 (coefficient=0.04009) | Trigger Spell: 1301037 | Target: Self (1)
+Hotfixed         : Coefficient (0.576295 -> 0.04009)
 #2 (id=1326362)  : Dummy (3) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 8325.935 (coefficient=65.14639)
+                   Base Value: 0 | Scaled Value: 390.0381 (coefficient=3.051858)
+Hotfixed         : Coefficient (65.146393 -> 3.051858)
 Description      : Your critical strikes have a chance to apply $@spellname1301039, increasing your Critical Strike by $s1 and stacking up to $1301039u times. While at $1301039u stacks, your critical strikes have a chance to unleash an $@spellname1301049 at your target. This damage always critically strikes.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -258807,7 +258813,7 @@ Name             : Polished Ammolite (id=1301037) [Passive, Hidden]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Real PPM         : 3 (Haste multiplier)
+Real PPM         : 3
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Triggered By     : Polished Ammolite (1296982)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Scales with Casting Item's Level (354)
