@@ -282,6 +282,9 @@ void potion_of_zealotry( special_effect_t& effect )
 // 1295147 buff
 void liquid_luster( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "lustrous_gleam" } ) )
+    return;
+
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, "lustrous_gleam", effect.trigger(), effect.item )
                            ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
                            ->set_period( effect.driver()->effectN( 1 ).period() );
@@ -310,7 +313,7 @@ void alluring_nostrum( special_effect_t& effect )
     }
   };
 
-  auto buff = create_buff<buff_t>( effect.player, "potion_of_zealotry", effect.driver() )->set_rppm( RPPM_DISABLE );
+  auto buff = create_buff<buff_t>( effect.player, "alluring_nostrum", effect.driver() )->set_rppm( RPPM_DISABLE );
 
   auto voidlash_salvo            = new special_effect_t( effect.player );
   voidlash_salvo->name_str       = "voidlash_salvo_proc";
@@ -1127,8 +1130,8 @@ void snakeskin_lining( special_effect_t& effect )
   auto explosive_dd     = effect.driver()->effectN( 2 ).average( effect );
 
 
-  // TODO: Is this per tick? Spell Data shows both. Assuming the Worst.
-  dot_td *= corrosive_venom_dot->effectN( 1 ).period() / corrosive_venom_dot->duration();
+  // TODO: Is this per tick? Spell Data shows both.
+  // dot_td *= corrosive_venom_dot->effectN( 1 ).period() / corrosive_venom_dot->duration();
 
   assert( corrosive_venom_dot->effectN( 1 ).subtype() == A_PERIODIC_DAMAGE );
 
@@ -5160,7 +5163,7 @@ void register_special_effects()
   register_special_effect( 1236994, consumables::potion_of_recklessness );
   register_special_effect( 1238443, consumables::potion_of_zealotry );
   set_min_version( wowv_t( 12, 1, 0 ) );
-  register_special_effect( 1295132, consumables::liquid_luster );
+  register_special_effect( 1295132, consumables::liquid_luster, true );
   register_special_effect( 1295015, consumables::alluring_nostrum );
   
   reset_version_check();
