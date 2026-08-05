@@ -1960,7 +1960,7 @@ Effects          :
 #2 (id=1250169)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=1250174)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 78 | Scaled Value: 78 | Target: Self (1)
+                   Base Value: 55 | Scaled Value: 55 | Target: Self (1)
 Description      : You regain $s1 Energy each time your Garrote or Rupture deal Bleed damage to a target affected by your weapon poisons. Energy gain is reduced for bleeds beyond the first.
 
 If an enemy dies while afflicted by your Rupture, you regain energy based on its remaining duration.
