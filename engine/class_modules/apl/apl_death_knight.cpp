@@ -242,7 +242,7 @@ void frost( player_t* p )
   default_->add_action( "call_action_list,name=high_prio_actions" );
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "call_action_list,name=racials" );
-  default_->add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
+  default_->add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   default_->add_action( "run_action_list,name=single_target" );
 
   aoe->add_action( "frostscythe,if=buff.killing_machine.react=2&active_enemies>=variable.frostscythe_priority", "Aoe Rotation" );
@@ -254,7 +254,8 @@ void frost( player_t* p )
   aoe->add_action( "frostscythe,if=buff.killing_machine.react&!variable.rune_pooling&active_enemies>=variable.frostscythe_priority" );
   aoe->add_action( "obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=buff.killing_machine.react&!variable.rune_pooling" );
   aoe->add_action( "howling_blast,if=buff.rime.react" );
-  aoe->add_action( "glacial_advance,if=!variable.rp_pooling" );
+  aoe->add_action( "glacial_advance,if=!variable.rp_pooling&active_enemies>=3" );
+  aoe->add_action( "frost_strike,if=!variable.rp_pooling&active_enemies<=2" );
   aoe->add_action( "frostscythe,if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)&active_enemies>=variable.frostscythe_priority" );
   aoe->add_action( "obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)" );
   aoe->add_action( "howling_blast,if=!buff.killing_machine.react&(talent.obliteration&buff.pillar_of_frost.up)" );
@@ -263,7 +264,7 @@ void frost( player_t* p )
   cooldowns->add_action( "reapers_mark,target_if=first:debuff.reapers_mark_debuff.down,if=cooldown.pillar_of_frost.remains<=gcd.max&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>20|cooldown.breath_of_sindragosa.remains<gcd.max&runic_power>=40)|fight_remains<20" );
   cooldowns->add_action( "pillar_of_frost,if=variable.sending_cds&(!hero_tree.deathbringer|cooldown.reapers_mark.remains>10)&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>20|cooldown.breath_of_sindragosa.up&runic_power>=60)|fight_remains<20" );
   cooldowns->add_action( "breath_of_sindragosa,use_off_gcd=1,if=!buff.breath_of_sindragosa.up&(buff.pillar_of_frost.up|fight_remains<20)" );
-  cooldowns->add_action( "frostwyrms_fury,if=((talent.apocalypse_now|talent.chosen_of_frostbrood)&!buff.chosen_of_frostbrood_fwf.up)&variable.sending_cds&(!talent.breath_of_sindragosa&buff.pillar_of_frost.up|buff.breath_of_sindragosa.up)&!debuff.reapers_mark_debuff.up&!buff.exterminate.up|(fight_remains<20&!buff.chosen_of_frostbrood_haste.up)" );
+  cooldowns->add_action( "frostwyrms_fury,if=((talent.apocalypse_now|talent.chosen_of_frostbrood)&!buff.chosen_of_frostbrood_fwf.up)&variable.sending_cds&(!talent.breath_of_sindragosa&buff.pillar_of_frost.up|buff.breath_of_sindragosa.up)|(fight_remains<20&!buff.chosen_of_frostbrood_haste.up)" );
   cooldowns->add_action( "frostwyrms_fury,if=buff.chosen_of_frostbrood_fwf.up&variable.fwf_buffs" );
   cooldowns->add_action( "frostwyrms_fury,if=!(talent.apocalypse_now|talent.chosen_of_frostbrood)&active_enemies=1&(talent.pillar_of_frost&buff.pillar_of_frost.up&!talent.obliteration|!talent.pillar_of_frost)&(!raid_event.adds.exists|raid_event.adds.in>cooldown.frostwyrms_fury.duration+raid_event.adds.duration)&variable.fwf_buffs|fight_remains<3" );
   cooldowns->add_action( "frostwyrms_fury,if=!(talent.apocalypse_now|talent.chosen_of_frostbrood)&active_enemies>=2&(talent.pillar_of_frost&buff.pillar_of_frost.up|raid_event.adds.exists&raid_event.adds.up&raid_event.adds.in<cooldown.pillar_of_frost.remains-raid_event.adds.in-raid_event.adds.duration)&variable.fwf_buffs" );
@@ -313,7 +314,7 @@ void frost( player_t* p )
   variables->add_action( "variable,name=fwf_buffs,value=(buff.pillar_of_frost.remains<gcd.max|(buff.unholy_strength.up&buff.unholy_strength.remains<gcd.max)|(talent.bonegrinder.rank=2&buff.bonegrinder_frost.up&buff.bonegrinder_frost.remains<gcd.max))&(active_enemies>1|debuff.razorice.stack=5|talent.shattering_blade)" );
   variables->add_action( "variable,name=rune_pooling,value=hero_tree.deathbringer&cooldown.reapers_mark.remains<6&rune<3&variable.sending_cds" );
   variables->add_action( "variable,name=rp_pooling,value=talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains<4*gcd.max&runic_power<60+(35+5*buff.icy_onslaught.up)-(10*rune)&variable.sending_cds" );
-  variables->add_action( "variable,name=frostscythe_priority,value=3", "Frostscythe is equal at 3 targets" );
+  variables->add_action( "variable,name=frostscythe_priority,value=2", "Frostscythe is better at 2 targets" );
   variables->add_action( "variable,name=breath_of_sindragosa_check,value=!talent.breath_of_sindragosa|(cooldown.breath_of_sindragosa.remains>20|(cooldown.breath_of_sindragosa.remains<1*gcd.max&runic_power>=(60-20*hero_tree.deathbringer)))" );
 }
 //frost_apl_end
