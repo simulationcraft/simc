@@ -6159,6 +6159,53 @@ struct eradicate_t
     return souls;
   }
 
+  timespan_t gcd() const override
+  {
+    if ( trigger_gcd == timespan_t::zero() )
+      return timespan_t::zero();
+
+    timespan_t gcd_ = trigger_gcd;
+    switch ( gcd_type )
+    {
+      case gcd_haste_type::HASTE:
+      case gcd_haste_type::SPELL_HASTE:
+      case gcd_haste_type::ATTACK_HASTE:
+        gcd_ *= composite_haste();
+        break;
+      case gcd_haste_type::SPELL_CAST_SPEED:
+        gcd_ *= player->cache.spell_cast_speed();
+        gcd_ *= player->cache.spell_cast_speed();
+        break;
+      case gcd_haste_type::AUTO_ATTACK_SPEED:
+        gcd_ *= player->cache.auto_attack_speed();
+        gcd_ *= player->cache.auto_attack_speed();
+        break;
+      case gcd_haste_type::NONE:
+      default:
+        break;
+    }
+
+    for ( const auto& i : gcd_effects )
+      gcd_ *= 1.0 + get_effect_value( i );
+
+    if ( gcd_ < min_gcd )
+    {
+      gcd_ = min_gcd;
+    }
+
+    if ( gcd_ != timespan_t::zero() && player->is_player() &&
+         player->thewarwithin_opts.additional_gcd_time > timespan_t::zero() )
+    {
+      gcd_ += player->thewarwithin_opts.additional_gcd_time;
+    }
+
+    // TODO: Figure out how this works for spells with cast times.
+    if ( gcd_ != timespan_t::zero() && player->is_player() && player->one_button_mode && can_have_one_button_penalty )
+      gcd_ *= 1.0 + player->single_button_assistant->effectN( 1 ).percent();
+
+    return gcd_;
+  }
+
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
     if ( util::str_compare_ci( name, "max_souls_consumed" ) )
