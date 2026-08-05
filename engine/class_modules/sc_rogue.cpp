@@ -584,6 +584,7 @@ public:
     const spell_data_t* darkest_night_buff;
     const spell_data_t* deathstalkers_mark_damage;
     const spell_data_t* deathstalkers_mark_debuff;
+    const spell_data_t* deal_fate_energize;
     const spell_data_t* escalating_blade_buff;
     const spell_data_t* fatebound_coin_flips;
     const spell_data_t* fatebound_coin_heads_buff;
@@ -7882,7 +7883,10 @@ void actions::rogue_action_t<Base>::trigger_seal_fate( const action_state_t* sta
 
   if ( p()->talent.fatebound.deal_fate->ok() && procs_deal_fate() )
   {
-    trigger_combo_point_gain( as<int>( p()->talent.fatebound.deal_fate->effectN( 1 ).base_value() ), p()->gains.deal_fate );
+    if ( p()->is_ptr() && !p()->rng().roll( p()->talent.fatebound.deal_fate->effectN( 1 ).percent() ) )
+      return;
+
+    trigger_combo_point_gain( as<int>( p()->spell.deal_fate_energize->effectN( 1 ).base_value() ), p()->gains.deal_fate );
   }
 }
 
@@ -8210,7 +8214,7 @@ void actions::rogue_action_t<Base>::trigger_opportunity( const action_state_t* s
   {
     if ( p()->talent.fatebound.deal_fate->ok() )
     {
-      trigger_combo_point_gain( as<int>( p()->talent.fatebound.deal_fate->effectN( 1 ).base_value() ),
+      trigger_combo_point_gain( as<int>( p()->spell.deal_fate_energize->effectN( 1 ).base_value() ),
                                 p()->gains.deal_fate );
     }
 
@@ -10264,6 +10268,7 @@ void rogue_t::init_spells()
   spell.fatebound_coin_tails_buff = talent.fatebound.hand_of_fate->ok() ? find_spell( 452917 ) : spell_data_t::not_found();
   spell.fatebound_coin_tails = talent.fatebound.hand_of_fate->ok() ? find_spell( 452538 ) : spell_data_t::not_found();
   spell.fatebound_lucky_coin_buff = talent.fatebound.lucky_coin->ok() ? find_spell( 1248971 ) : spell_data_t::not_found();
+  spell.deal_fate_energize = talent.fatebound.deal_fate->ok() ? find_spell( 454421 ) : spell_data_t::not_found();
 
   // Trickster
   spell.cloud_cover_buff = talent.trickster.cloud_cover->ok() ? find_spell( 441587 ) : spell_data_t::not_found();
