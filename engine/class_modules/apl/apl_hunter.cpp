@@ -561,11 +561,11 @@ void survival_ptr( player_t* p )
   plcleave->add_action( "wildfire_bomb" );
   plcleave->add_action( "takedown" );
 
-  sentcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0", "AOE - Sent" );
+  sentcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0&(cooldown.takedown.remains|!talent.twin_fangs)", "AOE - Sent" );
   sentcleave->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
   sentcleave->add_action( "wildfire_bomb,target_if=max:debuff.sentinels_mark.remains,if=buff.tip_of_the_spear.up" );
   sentcleave->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
-  sentcleave->add_action( "takedown,target_if=min:debuff.sentinels_mark.remains,if=buff.tip_of_the_spear.up" );
+  sentcleave->add_action( "takedown,target_if=min:debuff.sentinels_mark.remains,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   sentcleave->add_action( "moonlight_chakram,target_if=min:debuff.sentinels_mark.remains,if=buff.tip_of_the_spear.up" );
   sentcleave->add_action( "raptor_strike,target_if=min:debuff.sentinels_mark.remains,if=buff.tip_of_the_spear.up&buff.raptor_swipe.up|!buff.raptor_swipe.up" );
   sentcleave->add_action( "kill_command" );
