@@ -4082,6 +4082,11 @@ struct frostbolt_t final : public frost_mage_spell_t
     p()->trigger_brain_freeze( bf_chance, proc_brain_freeze, 150_ms );
     p()->trigger_splinter( p()->target );
 
+    // Bug: grant the Glacial Spike buff here if it was suppressed by trigger_icicle() while this
+    // Frostfire Bolt cast was in progress.
+    if ( frostfire && p()->bugs && p()->buffs.icicles->at_max_stacks() && !p()->buffs.glacial_spike->check() )
+      p()->buffs.glacial_spike->trigger();
+
     if ( frostfire && p()->buffs.frostfire_empowerment->check() )
     {
       // Buff is decremented with a short delay, allowing two spells to benefit.
@@ -7126,7 +7131,10 @@ void mage_t::trigger_icicle( int count, bool grant_buff )
 
   int old_icicles = buffs.icicles->check();
   buffs.icicles->trigger( count );
-  if ( grant_buff && buffs.icicles->at_max_stacks() )
+  // Bug: Reaching max Icicle stacks while a Frostfire Bolt cast is in progress does not grant
+  // Glacial Spike. The buff only appears once that cast completes.
+  bool frostfire_bolt_casting = bugs && executing && executing->name_str == "frostfire_bolt";
+  if ( grant_buff && buffs.icicles->at_max_stacks() && !frostfire_bolt_casting )
     buffs.glacial_spike->trigger();
   int overflow = old_icicles + count - buffs.icicles->check();
   for ( int i = 0; i < overflow; i++ )
