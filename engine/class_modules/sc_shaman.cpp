@@ -6564,9 +6564,8 @@ struct chain_lightning_t : public chained_base_t
 
   void execute() override
   {
-    chained_base_t::execute();
-
     p()->buff.mid2_ele_4pc_builder->decrement();
+    chained_base_t::execute();
 
     if ( is_variant( spell_variant::NORMAL ) && p()->specialization() == SHAMAN_ELEMENTAL )
     {
