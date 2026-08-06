@@ -8070,6 +8070,12 @@ void hunter_t::init_spells()
                                                     ? effect_mask_t( true ).disable( 2 )
                                                     : effect_mask_t( true ).disable( 1 ) );
 
+  register_passive_effect_mask( talents.lethal_barbs, 
+                                specialization() == HUNTER_BEAST_MASTERY ||
+                                specialization() == HUNTER_MARKSMANSHIP
+                                                    ? effect_mask_t( true ).disable( 3 )
+                                                    : effect_mask_t( true ).disable( 2 ) );
+
   register_passive_effect_mask( talents.better_together, 
                                 specialization() == HUNTER_BEAST_MASTERY
                                                     ? effect_mask_t( true ).disable( 2, 3 )
