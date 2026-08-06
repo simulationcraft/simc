@@ -5,6 +5,7 @@ spec=shadow
 role=spell
 position=ranged_back
 talents=CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAAMLmxMbzMMz2MzYG2mZGzMzYDZGLmpBYmZGAIAz2stEMbMAwgxMzMmtxMYmBzgB
+omnium_talents=rune_of_unleashed_fire/rune_of_selfmending/rune_of_lingering/rune_of_critical_power/rune_of_overload
 
 head=cosmic_penitents_truesight,id=271555,bonus_id=13846,ilevel=344,gem_id=240983,enchant_id=7961,redirected_base_stats=271874
 neck=aqirbane_reliquary,id=268265,bonus_id=13708,ilevel=344,gem_id=240892/240900
@@ -32,6 +33,7 @@ spec=shadow
 role=spell
 position=ranged_back
 talents=CIQAAAAAAAAAAAAAAAAAAAAAAMMDDAAAAAAAAAAAAmZxMmZbmxMz2MGzw2MzYmZGbIzYxMNAzAMzmZ0sZAIjxCAmZAjZmZMbMz2yAMDGA
+omnium_talents=rune_of_unleashed_fire/rune_of_selfmending/rune_of_lingering/rune_of_critical_power/rune_of_overload
 
 head=cosmic_penitents_truesight,id=271555,bonus_id=13846,ilevel=344,gem_id=240983,enchant_id=7961,redirected_base_stats=271874
 neck=aqirbane_reliquary,id=268265,bonus_id=13708,ilevel=344,gem_id=240892/240900

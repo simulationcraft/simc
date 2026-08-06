@@ -6,6 +6,7 @@ race=pandaren
 role=spell
 position=ranged_back
 talents=CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAAMLmxMbzMMz2MzYG2mZGzMzYDZGLmpBYmZGAIAz2stEMbMAwgxMzMmtxMYmBzgB
+omnium_talents=rune_of_unleashed_fire/rune_of_selfmending/rune_of_lingering/rune_of_critical_power/rune_of_overload
 
 # Default consumables
 potion=potion_of_recklessness_2
