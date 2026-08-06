@@ -8546,10 +8546,10 @@ struct burning_blades_t : public residual_action::residual_periodic_action_t<dem
 struct vengeful_retreat_t
   : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exergy_trigger_t<demon_hunter_spell_t>>>
 {
-  struct voidstep_damage_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
+  struct voidstep_damage_t : public demon_hunter_spell_t
   {
     voidstep_damage_t( util::string_view n, demon_hunter_t* p )
-      : base_t( n, p, p->spec.voidstep->effectN( 1 ).trigger() )
+      : demon_hunter_spell_t( n, p, p->spec.voidstep->effectN( 1 ).trigger() )
     {
       aoe = -1;
     }
