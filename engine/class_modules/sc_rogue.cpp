@@ -6473,6 +6473,14 @@ struct goremaws_bite_t : public rogue_attack_t
     {
       add_child( impact_action );
       impact_action->impact_action->stats = stats;
+
+      // 2026-08-05 -- Still procs some energize effects like Premeditation and Shadow Techniques
+      if ( p->bugs )
+      {
+        energize_type = action_energize::ON_HIT;
+        energize_resource = RESOURCE_COMBO_POINT;
+        energize_amount = 0;
+      }
     }
   }
 
@@ -10967,11 +10975,8 @@ void rogue_t::create_buffs()
 
   buffs.darkest_night = make_buff( this, "darkest_night", spell.darkest_night_buff );
 
-  buffs.unshakeable_drive = make_buff<damage_buff_t>( this, "unshakeable_drive", spell.unshakeable_drive_buff, false );
-  if ( !is_ptr() )
-  {
-    buffs.unshakeable_drive->set_is_stacking_mod( bugs ); // 2026-03-13 -- Does not suppress points stacking even though only one stack is decremented
-  }
+  buffs.unshakeable_drive = make_buff<damage_buff_t>( this, "unshakeable_drive", spell.unshakeable_drive_buff, false )
+    ->set_is_stacking_mod( !is_ptr() && bugs );
   if ( spell.unshakeable_drive_buff->ok() )
   {
     // Use the 50% modifier as the "generic" version of this buff, Shadowstrike has a lower buff in effect 2
