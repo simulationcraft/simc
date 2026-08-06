@@ -1639,10 +1639,12 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
 {  // Main Warrior Attack Class
   double slayers_strike_proc_chance;
   double master_of_warfare_proc_chance;
+  bool proc_slayers_strike;
   warrior_attack_t( util::string_view n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() )
     : base_t( n, p, s ),
     slayers_strike_proc_chance( 0 ),
-    master_of_warfare_proc_chance( 0 )
+    master_of_warfare_proc_chance( 0 ),
+    proc_slayers_strike( false )
   {
     if ( p->talents.slayer.slayers_dominance->ok() )
     {
@@ -1687,8 +1689,11 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
 
     // TODO confirm slayers strike proc rate, currently this is just reading 15% from effect 1
     // However, I am pretty sure this is using pseudo_random_c_from_p from dk module
-    if ( p()->talents.slayer.slayers_dominance->ok() && s->target == p()->target && 
-          p()->cooldown.slayers_dominance_icd->up() && !background &&
+    // 12.1: rolls per eligible hit, verified on PTR vs live logs. Pre-12.1 keeps the old
+    // non-background roll.
+    if ( p()->talents.slayer.slayers_dominance->ok() && s->target == p()->target &&
+          p()->cooldown.slayers_dominance_icd->up() &&
+          ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) ? !background : proc_slayers_strike ) &&
           p()->rng().roll( slayers_strike_proc_chance * ++p()->slayers_strike_attempts_since_last_proc ) )
     {
       p()->slayers_strike_attempts_since_last_proc = 0;
@@ -2575,6 +2580,7 @@ struct bloodthirst_t : public warrior_attack_t
 
     weapon = &( p->main_hand_weapon );
     radius = 5;
+    proc_slayers_strike = true;  // Bloodthirst's single hit rolls slayer's strike
     if ( p->non_dps_mechanics )
     {
       bloodthirst_heal = new bloodthirst_heal_t( p, p->find_spell( 117313 ) );
@@ -2607,6 +2613,7 @@ struct bloodthirst_t : public warrior_attack_t
       unhinged( false )
   {
     background = true;
+    proc_slayers_strike = true;  // Bladestorm-unhinged bloodthirst rolls slayer's strike (12.1)
 
     weapon = &( p->main_hand_weapon );
     radius = 5;
@@ -3025,6 +3032,7 @@ struct mortal_strike_t : public warrior_attack_t
     weapon           = &( p->main_hand_weapon );
     cooldown->hasted = true;  // Doesn't show up in spelldata for some reason.
     rend_dot = new rend_dot_t( p );
+    proc_slayers_strike = true;  // Mortal strike's single hit rolls slayer's strike
   }
 
   // This version is used for unhinged and other background actions
@@ -3038,6 +3046,7 @@ struct mortal_strike_t : public warrior_attack_t
     background = true;
     rend_dot = new rend_dot_t( p );
     cooldown->duration = 0_s;
+    proc_slayers_strike = true;  // Bladestorm-unhinged mortal strike rolls slayer's strike (12.1)
   }
 
   // This version is used for unhinged, to set the variable, as unhinged does not cleave
@@ -3453,6 +3462,7 @@ struct slam_base_t : public warrior_attack_t
   {
     weapon                       = &( p->main_hand_weapon );
     radius = 5;
+    proc_slayers_strike = true;  // Slam / heroic strike single hit rolls slayer's strike
     if ( player->specialization() == WARRIOR_FURY )
     {
       base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
@@ -3618,6 +3628,8 @@ struct cleave_t : public warrior_attack_t
     weapon = &( player->main_hand_weapon );
     aoe = -1;
     reduced_aoe_targets = p->talents.arms.cleave->effectN( 2 ).base_value();
+
+    proc_slayers_strike = true;
 
     if ( p->talents.arms.fervor_of_battle->ok() )
     {
@@ -4269,6 +4281,7 @@ struct execute_arms_t : public warrior_attack_t
     weapon        = &( p->main_hand_weapon );
 
     trigger_attack = new execute_damage_t( p, options_str );
+    trigger_attack->proc_slayers_strike = true;  // Execute's single hit rolls slayer's strike
     add_child( trigger_attack );
 
     if ( p->talents.arms.massacre->ok() )
@@ -4420,6 +4433,7 @@ struct execute_main_hand_t : public warrior_attack_t
     dual   = true;
     weapon = &( p->main_hand_weapon );
     radius = 5;
+    proc_slayers_strike = true;  // Fury execute's main hit rolls slayer's strike
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
 
@@ -4906,6 +4920,7 @@ struct raging_blow_attack_t : public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
     dual                                         = true;
     background = true;
+    proc_slayers_strike = true;  // Each hit rolls slayer's strike
 
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
@@ -5072,6 +5087,7 @@ struct crushing_blow_attack_t : public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
     dual                                         = true;
     background = true;
+    proc_slayers_strike = true;  // Each hit rolls slayer's strike
 
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
@@ -5409,6 +5425,7 @@ struct overpower_t : public warrior_attack_t
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
     weapon                            = &( p->main_hand_weapon );
+    proc_slayers_strike = true;  // Overpower's single hit rolls slayer's strike
 
     if ( p->talents.arms.dreadnaught->ok() )
     {
@@ -5693,6 +5710,7 @@ struct rampage_parent_t : public warrior_attack_t
     add_child( rampage3_oh );
     rampage4_mh = new rampage_attack_t( "rampage4", p, p->talents.fury.rampage->effectN( 5 ).trigger() );
     rampage4_mh->weapon = &(p->main_hand_weapon);
+    rampage4_mh->proc_slayers_strike = true;  // Slayer's strike rolls off the last rampage hit
     add_child( rampage4_mh );
 
     if ( p->talents.fury.rampaging_ruin->ok() )
