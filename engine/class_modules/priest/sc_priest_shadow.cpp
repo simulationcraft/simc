@@ -1707,6 +1707,33 @@ struct shadow_weaving_t final : public priest_spell_t
 // ==========================================================================
 // Tentacle Slam
 // ==========================================================================
+// Hits enemies on a line between the caster and the target plus a radius around the target.
+// Line width assumed to be around 8 yds
+static constexpr double tentacle_slam_line_half_width = 4.0;
+
+static bool in_tentacle_slam_area( const player_t* caster, const player_t* primary, const player_t* candidate,
+                                   double around_radius )
+{
+  if ( candidate == primary )
+    return true;
+  if ( candidate->get_position_distance( primary->x_position, primary->y_position ) <= around_radius )
+    return true;
+
+  double vx   = primary->x_position - caster->x_position;
+  double vy   = primary->y_position - caster->y_position;
+  double len2 = vx * vx + vy * vy;
+  double t    = 0.0;
+  if ( len2 > 0.0 )
+  {
+    t = ( ( candidate->x_position - caster->x_position ) * vx + ( candidate->y_position - caster->y_position ) * vy ) /
+        len2;
+    t = std::clamp( t, 0.0, 1.0 );
+  }
+  double dx = candidate->x_position - ( caster->x_position + t * vx );
+  double dy = candidate->y_position - ( caster->y_position + t * vy );
+  return std::sqrt( dx * dx + dy * dy ) <= tentacle_slam_line_half_width;
+}
+
 struct tentacle_slam_damage_t final : public priest_spell_t
 {
   tentacle_slam_damage_t( priest_t& p, const spell_data_t* s ) : priest_spell_t( "tentacle_slam_damage", p, s )
@@ -1714,6 +1741,17 @@ struct tentacle_slam_damage_t final : public priest_spell_t
     background                 = true;
     affected_by_shadow_weaving = true;
     aoe                        = -1;
+  }
+
+  std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
+  {
+    double around = data().effectN( 1 ).radius();
+    tl.erase( std::remove_if( tl.begin(), tl.end(),
+                              [ this, around ]( player_t* t ) {
+                                return !in_tentacle_slam_area( player, target, t, around );
+                              } ),
+              tl.end() );
+    return tl;
   }
 };
 
@@ -1729,6 +1767,18 @@ struct tentacle_slam_dots_t final : public priest_spell_t
     background           = true;
     aoe                  = as<int>( s->effectN( 3 ).base_value() );
     child_vt->background = true;
+  }
+
+  std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
+  {
+    // VT application uses the same slam area as the damage
+    double around = priest().talents.shadow.tentacle_slam_damage->effectN( 1 ).radius();
+    tl.erase( std::remove_if( tl.begin(), tl.end(),
+                              [ this, around ]( player_t* t ) {
+                                return !in_tentacle_slam_area( player, target, t, around );
+                              } ),
+              tl.end() );
+    return tl;
   }
 
   std::vector<player_t*>& target_list() const override
