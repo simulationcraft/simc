@@ -4048,6 +4048,73 @@ void ulateks_faithful( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Tattered Amani War Banner
+// 1293326 Driver
+// 1295725 value spell
+// 1295735 Buff
+// TODO: Range seems quite small, data suggests 12 yards. Need to model a probablility distribution for how long the
+// buff will last. Probably do this based on a player option?
+void tattered_amani_war_banner( special_effect_t& effect )
+{
+  struct battle_fervor_t : public stat_buff_t
+  {
+    bool extended;
+    timespan_t extend_dur;
+
+    battle_fervor_t( player_t* p, std::string_view name, const spell_data_t* s )
+      : stat_buff_t( p, name, s ), extended( false ), extend_dur( 0_ms )
+    {
+      const spell_data_t* driver = p->find_spell( 1293326 );
+      extend_dur = timespan_t::from_seconds( driver->effectN( 2 ).base_value() );
+      // Player option should probably be related to this. change the duration based off a gaussian distribution?
+      set_duration( driver->duration() );
+    }
+
+    void extend_battle_fervor()
+    {
+      if ( extended )
+        return;
+
+      extended = true;
+      extend_duration( extend_dur );
+    }
+  };
+
+  std::unordered_map<stat_e, battle_fervor_t*> buffs;
+  create_all_stat_buffs<battle_fervor_t>( effect, effect.player->find_spell( 1295735 ),
+                         effect.player->find_spell( 1295725 )->effectN( 1 ).average( effect ),
+                         [ &buffs ]( stat_e s, buff_t* b ) { buffs[ s ] = debug_cast<battle_fervor_t*>( b ); } );
+
+  struct tattered_amani_war_banner_t : public generic_proc_t
+  {
+    std::unordered_map<stat_e, battle_fervor_t*> buffs;
+    tattered_amani_war_banner_t( const special_effect_t& e, std::string_view n, const spell_data_t* s,
+                                 std::unordered_map<stat_e, battle_fervor_t*> b )
+      : generic_proc_t( e, n, s ), buffs( b )
+    {
+      cooldown->duration = 0_ms;  // Handled by the special effect
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      buffs.at( util::highest_stat( player, secondary_ratings ) )->trigger();
+    }
+  };
+
+  effect.player->register_on_kill_callback( [ &buffs ]( player_t* p ) {
+    if ( p->sim->event_mgr.canceled )
+      return;
+
+    for ( auto buff : buffs )
+      if ( buff.second->check() )
+        buff.second->extend_battle_fervor();
+  } );
+
+  effect.execute_action =
+      create_proc_action<tattered_amani_war_banner_t>( "tattered_amani_war_banner", effect, effect.driver(), buffs );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -5290,6 +5357,7 @@ void register_special_effects()
   register_special_effect( 1291728, bite_of_zuljan::zuljins_guillotine_technique );
   register_special_effect( 1293304, trinkets::knot_of_writhing_serpents );
   register_special_effect( 1294329, trinkets::ulateks_faithful );
+  register_special_effect( 1293326, trinkets::tattered_amani_war_banner );
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
