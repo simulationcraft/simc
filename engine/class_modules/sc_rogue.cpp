@@ -6407,6 +6407,34 @@ struct goremaws_bite_t : public rogue_attack_t
       target_filter_callback = goremaws_bite_targets_only();
       base_multiplier = p->spec.goremaws_bite_finisher_debuff->effectN( 1 ).percent();
     }
+
+    virtual void trigger_residual_action( const action_state_t* s, double, bool, bool, player_t*, bool ) override
+    {
+      double result_damage = s->result_total;
+      double result_crit_bonus = 1.0;
+      player_t* primary_target = s->target;
+
+      // Does not use the original spell's critical modifier or target damage modifier
+      // Reverses them and instead uses base modifiers only as the damage spell is in no whitelists
+      double target_da_multiplier = 1.0 / s->target_da_multiplier;
+      
+      if ( p()->bugs && s->result == RESULT_CRIT )
+      {
+        double spell_bonus = composite_crit_damage_bonus_multiplier() * composite_target_crit_damage_bonus_multiplier( s->target );
+        double global_bonus = composite_player_critical_multiplier( s );
+        result_damage /= 1.0 + s->result_crit_bonus;
+        result_crit_bonus = ( 1.0 + spell_bonus ) * global_bonus;
+      }
+
+      result_damage *= target_da_multiplier * result_crit_bonus;
+      
+      p()->sim->print_log( "{} triggers residual {} for {:.2f} damage ({:.2f} * {:.2f} * {:.2f}) on {}",
+                           *p(), *this, result_damage, s->result_total, target_da_multiplier, result_crit_bonus, *primary_target );
+
+      make_event( *p()->sim, 0_ms, [ this, result_damage, primary_target ]() {
+        rogue_attack_t::execute_on_target( primary_target, result_damage );
+      } );
+    }
   };
 
   struct goremaws_bite_dot_t : public rogue_attack_t
@@ -8143,7 +8171,9 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques_buff( const action
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_shadow_techniques_cp( const action_state_t* )
 {
-  if ( !p()->spec.shadow_techniques->ok() || !p()->buffs.shadow_techniques->up() || ab::energize_amount == 0 )
+  // 2026-08-06 -- Special case for allowing Goremaw's Bite
+  if ( !p()->spec.shadow_techniques->ok() || !p()->buffs.shadow_techniques->up() ||
+       ab::energize_amount == 0 && !( p()->bugs && ab::data().id() == p()->talent.subtlety.goremaws_bite->id() ) )
     return;
 
   auto consume_stacks = std::min( p()->buffs.shadow_techniques->check(),
@@ -8987,7 +9017,15 @@ void actions::rogue_action_t<Base>::trigger_goremaws_bite( const action_state_t*
   if ( !p()->is_ptr() || !p()->talent.subtlety.goremaws_bite->ok() || !ab::result_is_hit( state->result ) )
     return;
 
+  if ( state->result_total <= 0 )
+    return;
+
   if ( p()->get_active_dots( td( this->target )->dots.goremaws_bite ) == 0 )
+    return;
+
+  // 2026-08-06 -- Does not appear to copy any pet clone attacks currently
+  if ( secondary_trigger_type == secondary_trigger::SECRET_TECHNIQUE_CLONE ||
+       secondary_trigger_type == secondary_trigger::SHADOW_CLONE )
     return;
 
   // TOCHECK -- Using combo point state for now, may need to have a manual procs_goremaws_bite() function
@@ -8995,6 +9033,7 @@ void actions::rogue_action_t<Base>::trigger_goremaws_bite( const action_state_t*
     return;
 
   // Damage multiplier is handled in the base_multiplier of goremaws_bite_finisher_damage_t
+  // Custom implementation of trigger_residual_action in the action
   p()->active.goremaws_bite->trigger_residual_action( state, 1.0 );
 }
 
