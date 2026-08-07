@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.69111 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.69189 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -2536,7 +2536,6 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.676 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (3.79 -> 3.676)
 Description      : Launch a surge of stellar energies at the target, dealing $s1 Astral damage.
 
 Name             : Solar Beam (id=78675) [Spell Family (7)] 
@@ -4136,21 +4135,16 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Thrash (192090), Brambles (203958), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Raze (400254), Lunar Beam (414613), Ravage (441605), Dreadful Wound (451177), Sundering Roar (1253799), Lunar Beam (1270292), Twin Claw (1271657)
                    Family Flags: 77
-Hotfixed         : Base Value (0 -> 8)
 #2 (id=191158)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Thrash (192090), Brambles (203958), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Raze (400254), Lunar Beam (414613), Ravage (441605), Dreadful Wound (451177), Sundering Roar (1253799), Lunar Beam (1270292), Twin Claw (1271657)
                    Family Flags: 77
-Hotfixed         : Base Value (0 -> 8)
 #3 (id=191159)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 8)
 #4 (id=191160)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 8)
 #5 (id=191161)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 224 | Scaled Value: 224 | Target: Self (1)
-Hotfixed         : Base Value (200 -> 224)
 #6 (id=260757)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #7 (id=260758)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
@@ -4210,12 +4204,10 @@ Hotfixed         : Base Value (200 -> 224)
                    Base Value: 121 | Scaled Value: 121 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812), Red Moon (1252871), Red Moon (1253582), Lunar Wrath (1253609)
                    Family Flags: 21, 92
-Hotfixed         : Base Value (105 -> 121)
 #23 (id=1176396) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 121 | Scaled Value: 121 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812), Red Moon (1252871), Red Moon (1253582), Lunar Wrath (1253609)
                    Family Flags: 21, 92
-Hotfixed         : Base Value (105 -> 121)
 #24 (id=1220204) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 80 | Scaled Value: 80 | Misc Value 2: 4781 (Label) | Target: Self (1)
                    Affected Spells (Label): Fury of Elune (211545), Boundless Moonlight (428682)
@@ -4456,22 +4448,18 @@ Effects          :
                    Base Value: 125 | Scaled Value: 125 | Target: Self (1)
                    Affected Spells: Sunfire (164815)
                    Family Flags: 127
-Hotfixed         : Base Value (131 -> 125)
 #13 (id=1177984) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 125 | Scaled Value: 125 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Sunfire (164815)
                    Family Flags: 127
-Hotfixed         : Base Value (131 -> 125)
 #14 (id=1177985) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 125 | Scaled Value: 125 | Target: Self (1)
                    Affected Spells: Moonfire (164812), Red Moon (1252871), Red Moon (1253582), Lunar Wrath (1253609)
                    Family Flags: 92
-Hotfixed         : Base Value (131 -> 125)
 #15 (id=1177986) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 125 | Scaled Value: 125 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (164812), Red Moon (1252871), Red Moon (1253582), Lunar Wrath (1253609)
                    Family Flags: 92
-Hotfixed         : Base Value (131 -> 125)
 
 Name             : Item - Druid T15 Restoration 2P Bonus (id=138284) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -5408,7 +5396,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=280158)   : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.27 | PvP Coefficient: 0.833 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.278 -> 0.27)
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
@@ -6159,7 +6146,6 @@ Attributes       : Allow While Sitting (27), No Reflection (39), No Threat (42),
 Effects          :
 #1 (id=298525)   : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.68 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.748 -> 0.68)
 #2 (id=298537)   : Energize Power (30)
                    Base Value: 20 | Scaled Value: 20 | Resource: astral_power | Target: Self (1)
 Description      : $@spelldesc202342
@@ -20426,7 +20412,6 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1239547)  : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.2195 | PvP Coefficient: 0.8 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.2582 -> 0.2195)
 Description      : $@spelldesc1240907
 
 Name             : Frantic Frenzy (id=1243807) [Spell Family (7)] 
@@ -21345,12 +21330,10 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Embrace of the Dream (392147), Verdancy (392329), Nourish (422090), Nourish (423618), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121), Reactive Resin (468152), Blossom Burst (473919), Mass Blooming (474149), Insurance! (1215515), Insurance! (1215518), Tranquility (1236573), Regrowth (1264664), Spirit of the Thicket (1264905)
                    Family Flags: 118
-Hotfixed         : Base Value (13 -> 2)
 #2 (id=1266737)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Embrace of the Dream (392147), Verdancy (392329), Nourish (422090), Nourish (423618), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121), Reactive Resin (468152), Blossom Burst (473919), Mass Blooming (474149), Insurance! (1215515), Insurance! (1215518), Tranquility (1236573), Regrowth (1264664), Spirit of the Thicket (1264905)
                    Family Flags: 118
-Hotfixed         : Base Value (13 -> 2)
 #3 (id=1266738)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 16 | Scaled Value: 16 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Ferocious Bite (22568), Mangle (33917), Thrash (77758), Starsurge (78674), Swipe (106785), Thrash (106830), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Swipe (213771), Thrash (405233), Ravage (441591), Red Moon (1252871), Dire Echo (1253489), Red Moon (1253582), Lunar Wrath (1253609), Starsurge (1271222)
@@ -21361,7 +21344,6 @@ Hotfixed         : Base Value (13 -> 2)
                    Family Flags: 0, 2, 12, 15, 38, 40, 52, 74, 85, 89, 91, 92, 108, 126, 127
 #5 (id=1266740)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
-Hotfixed         : Base Value (-2 -> -5)
 #6 (id=1266741)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #7 (id=1266742)  : Apply Aura (6) | Modify Cooldown Time (Category) (341)
@@ -22173,7 +22155,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1276181)  : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.675 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.7 -> 0.675)
 Description      : $@spelldesc1264671
 
 Name             : Starsurge (id=1264677) [Spell Family (7)] 
@@ -22708,7 +22689,6 @@ Attributes       : Suppress Caster Procs (112), Suppress Target Procs (113), All
 Effects          :
 #1 (id=1283814)  : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.676 | PvP Coefficient: 0.8574 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (3.79 -> 3.676)
 Description      : Launch a surge of stellar energies at the target, dealing $s1 Astral damage.
 
 Name             : Penumbral Swell (id=1271261) [Spell Family (7), Passive] 
@@ -23449,10 +23429,8 @@ Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1326128)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.54 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.5 -> 0.54)
 #2 (id=1326129)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.27 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.25 -> 0.27)
 Description      : Impales its target for $s1 Nature damage and $s2 Nature damage to up to $i nearby enemies.
 
 Name             : Gorestained Claws (id=1301286) [Spell Family (7)] 

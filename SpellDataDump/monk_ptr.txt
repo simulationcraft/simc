@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.69111 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.69189 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -13139,7 +13139,6 @@ Effects          :
                    Affected Spells (Category): PvP Trinket (42292), Honorable Medallion (195710), Gladiator's Medallion (336126), Gladiator's Fastidious Resolve (363117)
 #6 (id=1110533)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
-Hotfixed         : Base Value (-2 -> -5)
 #7 (id=1113291)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #8 (id=1266554)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
@@ -20120,7 +20119,6 @@ Effects          :
                    Affected Spells (Label): Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Keg Smash (121253), Rushing Jade Wind (148187), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Flurry Strike (450617), Stomp (1242373), Empty Barrel (1265133), Fiery Shrapnel (1301619)
 #4 (id=1346815)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Gaining an Empty Barrel resets the cooldown of Keg Smash and makes its next cast cost $s2% less energy. 
 
 Physical damage dealt increased by $s1%.
@@ -21262,12 +21260,10 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.34 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Soothing Mist (209525)
                    Family Flags: 24
-Hotfixed         : PvP Coefficient (1 -> 0.34)
 #2 (id=1323883)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.165 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Soothing Mist (209525)
                    Family Flags: 24
-Hotfixed         : PvP Coefficient (1 -> 0.165)
 Description      : Soothing Mist healing increased by $s1%, but its mana cost is increased by $s2%.
 
 Name             : Scorched (id=1301410) [Spell Family (53)] 
@@ -21287,7 +21283,6 @@ Effects          :
                    Affected Spells (Label): Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Keg Smash (121253), Rushing Jade Wind (148187), Special Delivery (196733), Blackout Kick (205523), Stomp (227291), Flurry Strike (450617), Stomp (1242373), Empty Barrel (1265133), Fiery Shrapnel (1301619)
 #2 (id=1346816)  : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1296618
 Tooltip          : Taking $s1% additional damage from Physical abilities from $@auracaster
 

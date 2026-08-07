@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.69111 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.69189 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1872,7 +1872,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Ghost Wolf (2645), Searing Bolt (3606), Healing Surge (8004), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Hex (51514), Healing Stream Totem (52042), Lava Lash (60103), Riptide (61295), Earthquake (61882), Unleash Life (73685), Healing Rain (73920), Healing Rain (73921), Healing Wave (77472), Earthquake (77478), Healing Tide (114942), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Stormkeeper (191634), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Downpour (207778), Icefury (210714), Chain Lightning (211094), Ancestral Vision (212048), Lightning Bolt (214815), Lightning Bolt Overload (214816), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Soothing Waters (273019), Lightning Shield (273324), Strength of Earth (273466), Serene Spirit (274416), Lightning Conduit (275394), Swelling Stream (275499), Overflowing Shores (278095), Spouting Spirits (279505), Rumbling Tremors (279556), Pack Spirit (280205), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Restorative Mists (294020), Earthquake (298762), Earthquake Overload (298765), Surge of Earth (320747), Chain Harvest (320751), Chain Harvest (320752), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328928), Fae Transfusion (328930), Earthquake (329801), Fire Nova (333977), Earthquake (336740), Ascendance (344548), Vesper Totem (356791), Acid Rain (378597), Earth Shock Overload (381725), Earthliving Weapon (382024), Stormkeeper (383009), Overflowing Shores (383223), Doom Winds (384352), Tidal Reservoir (424464), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Chain Heal (458357), Spouting Spirits (462384), Tidewaters (462425), Reactive Warding (462477), Earthquake (462620), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Insurance! (1215539), Insurance! (1215540), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101), Stormstream Totem (1267745), Stormswell (1268684), Healing Rain (1298679)
                    Family Flags: 0, 1, 5, 7, 8, 11, 39, 41, 44, 47, 62, 80, 83, 84, 92, 98, 111
-Hotfixed         : Affects Spells
 #2 (id=289427)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Modified By: Graceful Spirit (192088 effect#2)
@@ -2906,7 +2905,6 @@ Effects          :
 #28 (id=1346256) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20 | Misc Value 2: 6464 (Label) | Target: Self (1)
                    Affected Spells (Label): Lava Burst (447419), Chain Lightning (447425)
-Hotfixed         : NEW EFFECT
 Description      : Elemental Shaman baseline passive
 
 Name             : Enhancement Shaman (id=137041) [Spell Family (11), Passive, Hidden] 
@@ -5581,7 +5579,6 @@ Attributes       : Not Shapeshifted (16), Always Line of Sight (185), Always AOE
 Effects          :
 #1 (id=312680)   : School Damage (2): nature | Attributes: Add Target (Dest) Combat Reach to AOE (11), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.164 | Chain Multiplier: 0.8 | Chain Targets: 3 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.73025 -> 1.164)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 Name             : Ancestral Vision (id=212048) [Spell Family (11)] 
@@ -16691,10 +16688,11 @@ Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1185918)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+#1 (id=1185918)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443), Chain Lightning (211094)
                    Family Flags: 1
+Hotfixed         : Attribute (0 -> 64)
 #2 (id=1185919)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443), Chain Lightning (211094)
@@ -17529,12 +17527,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Flametongue Attack (10444), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Elemental Blast (117014), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Chain Lightning (211094), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Lava Burst (285452), Lightning Lasso (305484), Lightning Lasso (305485), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Tempest Overload (463351), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 56
-Hotfixed         : Affects Spells
 #2 (id=1254432)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Flametongue Attack (10444), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Elemental Blast (117014), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Chain Lightning (211094), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Lava Burst (285452), Lightning Lasso (305484), Lightning Lasso (305485), Fae Transfusion (328928), Fire Nova (333977), Ascendance (344548), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Tempest Overload (463351), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118), Crash Lightning (Unleashed) (1252431), Crash Lightning (1252433), Voltaic Blaze (1259101)
                    Family Flags: 56
-Hotfixed         : Affects Spells
 #3 (id=1254433)  : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
 #4 (id=1254434)  : Apply Aura (6) | Dummy (4)
@@ -17876,7 +17872,6 @@ Effects          :
                    Family Flags: 39
 #5 (id=1266433)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
-Hotfixed         : Base Value (-2 -> -5)
 #6 (id=1266434)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #7 (id=1266435)  : Apply Aura (6) | Modify Cooldown Time (Category) (341)
@@ -19292,12 +19287,10 @@ Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (
 Effects          :
 #1 (id=1324422)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Sub Type (108 -> 4), Affects Spells
 Description      : $@spelldesc1296628
 Tooltip          : Your next Crash Lightning will deal $w1% increased damage.
 
 Name             : Flowing Elements (id=1300219) [Spell Family (11)] 
-Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Shaman
 School           : Physical
 Spell Type       : None
