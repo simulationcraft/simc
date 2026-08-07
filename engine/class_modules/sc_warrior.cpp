@@ -1691,10 +1691,6 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
 
     // TODO confirm slayers strike proc rate, currently this is just reading 15% from effect 1
     // However, I am pretty sure this is using pseudo_random_c_from_p from dk module
-    // 12.1: rolls per eligible hit, verified on PTR vs live logs. Pre-12.1 keeps the old
-    // non-background roll.
-    // Cleave (proc_slayers_strike_per_target) rolls once per target hit, verified on PTR
-    // vs dummy dome logs. All other abilities only roll on the primary target.
     if ( p()->talents.slayer.slayers_dominance->ok() &&
           ( s->target == p()->target || proc_slayers_strike_per_target ) &&
           p()->cooldown.slayers_dominance_icd->up() &&
@@ -3635,7 +3631,7 @@ struct cleave_t : public warrior_attack_t
     reduced_aoe_targets = p->talents.arms.cleave->effectN( 2 ).base_value();
 
     proc_slayers_strike = true;
-    proc_slayers_strike_per_target = true;  // Cleave rolls once per target hit, verified on PTR dummy dome logs
+    proc_slayers_strike_per_target = true;
 
     if ( p->talents.arms.fervor_of_battle->ok() )
     {
