@@ -4103,11 +4103,11 @@ void tattered_amani_war_banner( special_effect_t& effect )
     }
   };
 
-  effect.player->register_on_kill_callback( [ &buffs ]( player_t* p ) {
+  effect.player->register_on_kill_callback( [ buffs ]( player_t* p ) {
     if ( p->sim->event_mgr.canceled )
       return;
 
-    for ( auto buff : buffs )
+    for ( auto& buff : buffs )
       if ( buff.second->check() )
         buff.second->extend_battle_fervor();
   } );
