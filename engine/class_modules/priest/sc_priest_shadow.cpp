@@ -969,7 +969,7 @@ struct void_volley_base_t : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest().is_ptr() && !priest().buffs.crushing_void->check() )
+    if ( !priest().is_ptr() && !priest().buffs.voidform->check() && !priest().buffs.crushing_void->check() )
     {
       return false;
     }
