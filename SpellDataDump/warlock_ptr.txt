@@ -16351,6 +16351,7 @@ Effects          :
 Description      : Damage dealt by $?s388667[Drain Soul][Shadow Bolt] has a $?s198590[$s1][$s2]% chance to make your next Unstable Affliction or Seed of Corruption cost no Soul Shards and cast instantly.
 
 Name             : Shard Instability (id=1260269) [Spell Family (5)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -16362,6 +16363,7 @@ Stacks           : 3 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1269666)  : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
