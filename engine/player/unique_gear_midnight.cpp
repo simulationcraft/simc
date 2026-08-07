@@ -4114,6 +4114,8 @@ void tattered_amani_war_banner( special_effect_t& effect )
 
   effect.execute_action =
       create_proc_action<tattered_amani_war_banner_t>( "tattered_amani_war_banner", effect, effect.driver(), buffs );
+  effect.disable_buff();
+  effect.has_use_buff_override = true;
 }
 }  // namespace trinkets
 
