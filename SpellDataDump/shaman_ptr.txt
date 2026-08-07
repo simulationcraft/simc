@@ -16691,10 +16691,11 @@ Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
-#1 (id=1185918)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+#1 (id=1185918)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443), Chain Lightning (211094)
                    Family Flags: 1
+Hotfixed         : Attribute (0 -> 64)
 #2 (id=1185919)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443), Chain Lightning (211094)
