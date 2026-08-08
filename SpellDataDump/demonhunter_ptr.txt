@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.69111 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.69189 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -980,7 +980,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=293648)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.1567 | PvP Coefficient: 1.1 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (1.0912 -> 1.1567)
 Description      : $@spelldesc162794
 
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
@@ -1000,7 +999,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=293657)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.2475 | PvP Coefficient: 1.1 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (0.2335 -> 0.2475)
 Description      : $@spelldesc188499
 
 Name             : Metamorphosis (id=200166) [Spell Family (107)] 
@@ -1041,7 +1039,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=295487)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.742 | PvP Coefficient: 1.1 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (0.7 -> 0.742)
 Description      : $@spelldesc188499
 
 Name             : Annihilation (id=201427) [Spell Family (107)] 
@@ -1086,7 +1083,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=296759)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.5034 | PvP Coefficient: 1.1 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (1.41829 -> 1.5034)
 Description      : $@spelldesc201427
 
 Name             : Metamorphosis (id=201453) [Spell Family (107), Hidden] 
@@ -2812,7 +2808,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=311157)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.3218 | PvP Coefficient: 1.1 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (0.30355 -> 0.3218)
 Description      : $@spelldesc210152
 
 Name             : Death Sweep (id=210155) [Spell Family (107)] 
@@ -2832,7 +2827,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=311160)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.9646 | PvP Coefficient: 1.1 | Radius: 0 - 8 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : AP Coefficient (0.91 -> 0.9646)
 Description      : $@spelldesc210152
 
 Name             : Soul Fragments (id=210788) [Spell Family (107), Hidden] 
@@ -3744,7 +3738,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=331359)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.736 | PvP Coefficient: 1.1 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.69432 -> 0.736)
 Description      : $@spelldesc162794
 
 Name             : Fel Barrage (desc=Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
@@ -3932,7 +3925,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=342015)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.9567 | PvP Coefficient: 1.1 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.90253 -> 0.9567)
 Description      : $@spelldesc201427
 
 Name             : Castigation (id=227854) [Spell Family (107)] 
@@ -4489,7 +4481,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enab
 Effects          :
 #1 (id=483076)   : School Damage (2): chaos | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.62 | Radius: 10 yards | Target: Enemies in Cone to Targeted Enemy (104)
-Hotfixed         : AP Coefficient (4.2 -> 4.62)
 #2 (id=1028999)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Slash all enemies in front of you for $s1 Chaos damage, causing Chaos Strike and Blade Dance to deal $1245759s1 Chaos damage to them for $320338d. Deals reduced damage beyond $s2 targets.
@@ -7790,7 +7781,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Not In Spellbook Until Le
 Effects          :
 #1 (id=982578)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 7.4424 | PvP Coefficient: 0.85 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (6.645 -> 7.4424)
 #2 (id=982579)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Targeted Enemy (6)
 #3 (id=982580)   : Trigger Spell (64): The Hunt
@@ -7861,7 +7851,6 @@ Attributes       : Spell Haste Affects Periodic (173), Always Line of Sight (185
 Effects          :
 #1 (id=982586)   : Apply Aura (6) | Periodic Damage (3): chromatic every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.602 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (1.43 -> 1.602)
 Description      : $@spelldesc370965
 Tooltip          : Suffering $w1 Chaos damage every $t1 sec.
 
@@ -9136,7 +9125,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
 #2 (id=1028849)  : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.2475 | PvP Coefficient: 1.1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.2335 -> 0.2475)
 Description      : $@spelldesc188499
 
 Name             : Blade Dance (id=391378) [Spell Family (107)] 
@@ -9156,7 +9144,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1028854)  : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.742 | PvP Coefficient: 1.1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.7 -> 0.742)
 Description      : $@spelldesc188499
 
 Name             : Erratic Felheart (id=391397) [Spell Family (107), Passive] 
@@ -9324,7 +9311,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1031725)  : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.9646 | PvP Coefficient: 1.1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.91 -> 0.9646)
 Description      : $@spelldesc210152
 
 Name             : Death Sweep (id=393055) [Spell Family (107)] 
@@ -9344,7 +9330,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Targeted Enemy (6)
 #2 (id=1031727)  : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.3218 | PvP Coefficient: 1.1 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (0.30355 -> 0.3218)
 Description      : $@spelldesc210152
 
 Name             : Demon Hunter Havoc Class Set 2pc (id=393628) [Spell Family (107), Passive, Hidden] 
@@ -12935,7 +12920,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1192725)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.15 | PvP Coefficient: 1.56 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (2.6 -> 1.56)
 Description      : Drain the essence from your target, dealing $s1 Cosmic damage.
 
 Castable while moving.
@@ -13058,7 +13042,6 @@ Effects          :
 #13 (id=1346291) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: -2000 | Scaled Value: -2000 | Misc Value: 1 | Misc Value 2: 7054 (Label) | Target: Self (1)
                    Affected Spells (Label): Voidfall (1256322)
-Hotfixed         : NEW EFFECT
 
 Name             : Void Ray (id=1213649) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -13402,7 +13385,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1201793)  : School Damage (2): cosmic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.15 | PvP Coefficient: 1.56 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.69 -> 1.56)
 Description      : Devour the life essence of your target, dealing $s1 Cosmic damage. Reduces the cooldown of Reap by ${$1217607s14/1000}.1 sec.
 
 Castable while moving.
@@ -13736,7 +13718,6 @@ Attributes       : No Aura Icon (60), Can Proc From Procs (122), Enforce Facing 
 Effects          :
 #1 (id=1215274)  : Dummy (3)
                    Base Value: 85 | Scaled Value: 85 | Target: Targeted Enemy (6)
-Hotfixed         : Base Value (100 -> 85)
 #2 (id=1215655)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : Slam your Scythe to the ground, dealing $?a1217607[$1279200s1][$1225827s1] Cosmic damage to your primary target and $?a1217607[${$1279200s1*($s1/100)}][${$1225827s1*($s1/100)}] to all other enemies within a $s2 yd cone in front of you. Damage reduced beyond $1226033s1 targets.
@@ -15102,7 +15083,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enab
 Effects          :
 #1 (id=1246981)  : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.574 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (1.98 -> 2.574)
 Description      : $@spelldesc258860
 
 Name             : Voidsurge (id=1246160) [Spell Family (107)] 

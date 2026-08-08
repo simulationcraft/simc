@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.69111 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.69189 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -244880,7 +244880,6 @@ Attributes       : Aura Points On Client (268), Scales with Casting Item's Level
 Effects          :
 #1 (id=1254628)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 314.7733 (coefficient=2.401374) | Rating: Crit | Target: Self (1)
-Hotfixed         : Coefficient (1.455771 -> 2.401374), Scaling Class (-9 -> -7)
 Description      : Take a sip of the drink you swiped from the freight, increasing your Critical Strike by $s1 for $d.
 Tooltip          : Critical Strike increased by $w1.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
@@ -254957,7 +254956,6 @@ Description      : $@spelldesc1279616
 Tooltip          : Accumulating damage or healing from $@auracaster's Core Rune and Rune of Lingering. The accumulated amount will be dealt on expiration.
 
 Name             : Ula'tek's Gift (id=1289148) 
-Hotfixed         : Description, Tooltip
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
@@ -254973,7 +254971,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10
 #3 (id=1324291)  : Dummy (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20
-Hotfixed         : Attribute (0 -> 64)
 Description      : Deal $s1 Nature damage per application every $t sec for $d.
 
 Upon applying $s3 stacks to a target, the Gift corrodes, dealing the remainder of its damage immediately before removing itself.
@@ -256843,7 +256840,6 @@ Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Ste
 Effects          :
 #1 (id=1316988)  : Apply Aura (6) | Periodic Trigger Spell (23): Lustrous Gleam every 6 seconds | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 87.80243 (coefficient=0.669836) | Trigger Spell: 1295147 | Target: Self (1)
-Hotfixed         : Coefficient (1.391814 -> 0.669836)
 Description      : Drink to apply $@spellname1295147 every $t1 seconds for $d seconds, increasing your Versatility by $s1 while this potion is active. 
 
 $@spelldesc1295147
@@ -258029,10 +258025,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1319194)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Snakeskin Lining | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 287.565 (coefficient=2.250056) | Trigger Spell: 1296561 | Target: Self (1)
-Hotfixed         : Coefficient (20.054964 -> 2.250056)
 #2 (id=1319255)  : Dummy (3) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 1037.54 (coefficient=8.118242)
-Hotfixed         : Coefficient (108.296806 -> 8.118242)
 Description      : Your direct damaging spells and abilities have a chance to apply $@spellname1296565 to your target, dealing ${$<rolemult>*$s1} Nature damage over $1296565d. 
 Further applications of $@spellname1296565 have a chance to cause a $@spellname1296567, dealing ${$<rolemult>*$s2} split between nearby enemies.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
@@ -258170,7 +258164,6 @@ Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29)
 Effects          :
 #1 (id=1319651)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Adorned Fang | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 17.78199 (coefficient=0.135657) | Trigger Spell: 1296881 | Target: Self (1)
-Hotfixed         : Coefficient (0.512372 -> 0.135657)
 Description      : Your spells and abilities have a chance to imbue you with $@spellname1296884. $@spelldesc1296884
 Attacking or healing targets at lower health will increase this chance. 
 
@@ -258307,10 +258300,8 @@ Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29)
 Effects          :
 #1 (id=1319840)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Polished Ammolite | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 5.123641 (coefficient=0.04009) | Trigger Spell: 1301037 | Target: Self (1)
-Hotfixed         : Coefficient (0.576295 -> 0.04009)
 #2 (id=1326362)  : Dummy (3) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 390.0381 (coefficient=3.051858)
-Hotfixed         : Coefficient (65.146393 -> 3.051858)
 Description      : Your critical strikes have a chance to apply $@spellname1301039, increasing your Critical Strike by $s1 and stacking up to $1301039u times. While at $1301039u stacks, your critical strikes have a chance to unleash an $@spellname1301049 at your target. This damage always critically strikes.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 

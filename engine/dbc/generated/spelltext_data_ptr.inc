@@ -1,4 +1,4 @@
-// Spell text, wow build 12.1.0.69111
+// Spell text, wow build 12.1.0.69189
 static constexpr std::array<spelltext_data_t, 29237> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -21006,7 +21006,7 @@ static constexpr std::array<spelltext_data_t, 29237> __ptr_spelltext_data { {
   {  432120, "$@spelldesc428514", 0, 0 },
   {  432154, "Ascend into the air and unleash a massive barrage of Penance bolts, causing $<penancedamage> Holy damage to enemies or $<penancehealing> healing to allies over $421434d.\r\n\r\nWhile ascended, gain a shield for $s1% of your health. In addition, you are unaffected by knockbacks or crowd control effects.", "Absorbing $w3 damage.", 0 },
   {  432180, "$@spelldesc432181", "Your physical damage taken is reduced by $w1% until you receive a physical attack.", 0 },
-  {  432181, "Your physical damage taken is reduced by $s2% and an additional $432180s2% every $t1 sec until you receive a physical attack.", 0, 0 },
+  {  432181, "Your physical damage taken is reduced by $s2% and an additional $432180s2% every $t1 sec until you receive a physical attack, stacking up to $432180u.", 0, 0 },
   {  432220, "$@spelldesc428517", 0, 0 },
   {  432265, "Drink to increase your Perception by $s1 and allow you to see camouflaged mining and herbalism nodes.\r\n\r\n$@spelldesc431969", "Perception increased by $w1 and you are able to see camouflaged mining and herbalism nodes.", 0 },
   {  432286, "Drink to increase your Finesse by $s1 during the Summer or your Resourcefulness by $s2 during the Winter. Only applies to Khaz Algar professions.\r\n\r\n$@spelldesc431969", "Your profession stats are increased based on the current season.\r\n$?$W1>0[\r\nFinesse increased by $w1 while you are experiencing Summer.][]$?$W2>0[\r\nResourcefulness increased by $w2 while you are experiencing Winter.][]\r\n\r\nOnly affects Khaz Algar professions.", 0 },
@@ -29239,13 +29239,12 @@ static constexpr std::array<spelltext_data_t, 29237> __ptr_spelltext_data { {
   { 1312998, "$?a388667[Drain Soul][Shadow Bolt] and Malefic Grasp damage increased by $s1% or $s2% if the target is affected by Haunt. \r\n\r\nDark Harvest damage increased by $s3% or $s4% if the target is affected by Haunt.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.1.0.69111
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
-  { 1289148,  0, "Deal $1291581s1 Nature damage per application every $t sec for $d.\r\n\r\nUpon applying $s3 stacks to a target, the Gift Corrodes, dealing the remainder of its' damage immediately before removing itself.", "Deal $s1 Nature damage per application every $t sec for $d.\r\n\r\nUpon applying $s3 stacks to a target, the Gift corrodes, dealing the remainder of its damage immediately before removing itself." },
-  { 1289148,  1, "Deal $1291581w1 Nature damage per application every $t sec for $d.\r\n\r\nUpon applying $w3 stacks to a target, the Gift Corrodes, dealing the remainder of its' damage immediately before removing itself.", "Deal $w1 Nature damage per application every $t1 sec for $d.\r\n\r\nUpon applying $s3 stacks to a target, the Gift Corrodes, dealing the remainder of its' damage immediately before removing itself." },
+// spelltext hotfix entries, wow build 12.1.0.69189
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  432181,  0, "Your physical damage taken is reduced by $s2% and an additional $432180s2% every $t1 sec until you receive a physical attack.", "Your physical damage taken is reduced by $s2% and an additional $432180s2% every $t1 sec until you receive a physical attack, stacking up to $432180u." },
 } };
 
-// Spell description variables, wow build 12.1.0.69111
+// Spell description variables, wow build 12.1.0.69189
 static constexpr std::array<spelldesc_vars_data_t, 736> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29985,7 +29984,7 @@ static constexpr std::array<spelldesc_vars_data_t, 736> __ptr_spelldesc_vars_dat
   { 1309793, "$base=${10}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.1.0.69111
+// spelldesc_vars hotfix entries, wow build 12.1.0.69189
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
