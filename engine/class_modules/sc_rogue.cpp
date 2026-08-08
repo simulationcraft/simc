@@ -8739,7 +8739,7 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
     return;
 
   // Darkest Night checks take priority and no stacks can be removed if Darkest Night is active
-  if ( p()->buffs.darkest_night->check())
+  if ( p()->buffs.darkest_night->check() && !ignore_cp )
   {
     if ( affected_by.darkest_night && cast_state( state )->get_combo_points() >= COMBO_POINT_MAX )
     {
@@ -9034,7 +9034,7 @@ void actions::rogue_action_t<Base>::trigger_goremaws_bite( const action_state_t*
 
   // Damage multiplier is handled in the base_multiplier of goremaws_bite_finisher_damage_t
   // Custom implementation of trigger_residual_action in the action
-  p()->active.goremaws_bite->trigger_residual_action( state, 1.0 );
+  p()->active.goremaws_bite->trigger_residual_action( state );
 }
 
 // ==========================================================================
