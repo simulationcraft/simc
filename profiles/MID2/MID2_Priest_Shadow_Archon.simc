@@ -2,7 +2,7 @@ priest="MID2_Priest_Shadow_Archon"
 source=default
 spec=shadow
 level=90
-race=pandaren
+race=void_elf
 role=spell
 position=ranged_back
 talents=CIQAAAAAAAAAAAAAAAAAAAAAAMMDDAAAAAAAAAAAAmZxMmZbmxMz2MGzw2MzYmZGbIzYxMNAzAMzmZ0sZAIjxCAmZAjZmZMbMz2yAMDGA
@@ -121,7 +121,7 @@ back=silken_voodoo_drape,id=268253,ilevel=344
 chest=cosmic_penitents_eclipsing_robes,id=271558,ilevel=344,enchant_id=7987
 wrists=martyrs_bindings,id=239648,bonus_id=8793/12384,ilevel=331,gem_id=240900
 hands=cosmic_penitents_celestial_grips,id=271556,ilevel=344,redirected_base_stats=268255
-waist=arcanoweave_cord,id=239664,ilevel=331,gem_id=240918
+waist=caustic_chainwrapped_sash,id=268257,ilevel=334,gem_id=240918
 legs=enveloping_legwraps_of_the_cosmic_penitent,id=271554,ilevel=334,enchant_id=7935,redirected_base_stats=251160
 feet=cackling_soultreads,id=268255,ilevel=344
 finger1=sickening_signet_of_atroxus,id=252258,ilevel=334,gem_id=240900,enchant_id=7967
@@ -129,17 +129,17 @@ finger2=vile_alchemists_band,id=268249,ilevel=334,gem_id=240900,enchant_id=7967
 trinket1=gebbos_bottomless_bag,id=270164,ilevel=334
 trinket2=freightrunners_flask,id=250215,ilevel=334
 main_hand=janthrazet_the_soul_fang,id=271092,ilevel=344,enchant_id=8041
-off_hand=spine_of_the_hissing_abyss,id=268197,ilevel=334
+off_hand=alnhara_lantern,id=245769,bonus_id=8793/13771,ilevel=331
 
 # Gear Summary
 # gear_ilvl=338.00
-# gear_stamina=40736
-# gear_intellect=2783
-# gear_crit_rating=832
-# gear_haste_rating=1024
-# gear_mastery_rating=1201
+# gear_stamina=40769
+# gear_intellect=2778
+# gear_crit_rating=758
+# gear_haste_rating=1070
+# gear_mastery_rating=1232
 # gear_versatility_rating=16
 # gear_leech_rating=221
-# gear_armor=740
+# gear_armor=741
 # set_bonus=midnight_season_2_2pc=1
 # set_bonus=midnight_season_2_4pc=1
