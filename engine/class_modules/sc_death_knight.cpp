@@ -3221,6 +3221,29 @@ struct base_ghoul_pet_t : public death_knight_pet_t
 
 struct ghoul_pet_t final : public base_ghoul_pet_t
 {
+  struct ghoul_auto_t final : public auto_attack_melee_t<ghoul_pet_t>
+  {
+    ghoul_auto_t( ghoul_pet_t* p, std::string_view name ) : auto_attack_melee_t( p, name )
+    {
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = pet_melee_attack_t<ghoul_pet_t>::composite_da_multiplier( s );
+      // Currently using the normalized attack speed increase aura, which reduces auto attack damage perportionally to
+      // the attack speed increase. This results in a 0 auto attack dps gain. Lovely bug.
+      if ( pet()->unholy_devotion->check() && dk()->bugs )
+        m /= 1.0 + pet()->unholy_devotion->check_stack_value();
+      return m;
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      auto_attack_melee_t<ghoul_pet_t>::impact( state );
+      pet()->trigger_infected_claws( state->target );
+    }
+  };
+
   // Generic Dark Transformation pet ability
   struct dt_melee_ability_t : public pet_melee_attack_t<ghoul_pet_t>
   {
@@ -3332,6 +3355,11 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     {
       dynamic = false;
     }
+  }
+
+  attack_t* create_main_hand_auto_attack() override
+  {
+    return new ghoul_auto_t( this, "auto_attack_mh" );
   }
 
   void init_base_stats() override
