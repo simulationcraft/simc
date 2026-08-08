@@ -156,11 +156,11 @@ temporary_enchant=main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix
 
 head=abyssal_doomhounds_relentless_stare,id=271537,bonus_id=13668/13847,ilevel=344,gem_id=240983,enchant_id=7961,redirected_base_stats=271875
 neck=aqirbane_reliquary,id=268265,ilevel=344,gem_id=240916/240916
-shoulders=abyssal_doomhounds_jaws,id=271535,ilevel=334,enchant_id=7971
+shoulders=abyssal_doomhounds_jaws,id=271535,ilevel=334,enchant_id=7971,redirected_base_stats=251223
 back=silken_voodoo_drape,id=268253,ilevel=344
 chest=abyssal_doomhounds_coreguard,id=271540,ilevel=334,enchant_id=7987
 wrists=silvermoon_agents_deflectors,id=244576,ilevel=331,gem_id=240916,embellishment=arcanoweave_lining,crafted_stats=36/40
-hands=abyssal_doomhounds_studded_gauntlets,id=271538,ilevel=334
+hands=abyssal_doomhounds_studded_gauntlets,id=271538,ilevel=334,redirected_base_stats=251124
 waist=sash_of_the_forlorn_vessel,id=268256,ilevel=344,gem_id=240916
 legs=abyssal_doomhounds_legwraps,id=271536,ilevel=344,enchant_id=8161,redirected_base_stats=268225
 feet=arctic_explorers_legwraps,id=251153,ilevel=334,enchant_id=8019
