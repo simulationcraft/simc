@@ -5266,7 +5266,8 @@ struct fire_breath_t : public empowered_charge_spell_t
     {
       auto mul = base_t::tick_time_pct_multiplier( state );
 
-      if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() )
+      if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() &&
+           p()->get_target_data( state->target )->dots.disintegrate->ticks_left_fractional() > 0 )
       {
         mul /= ( 1.0 + p()->talent.catalyze->effectN( 1 ).percent() );
       }
