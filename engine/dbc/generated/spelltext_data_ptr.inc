@@ -21006,7 +21006,7 @@ static constexpr std::array<spelltext_data_t, 29237> __ptr_spelltext_data { {
   {  432120, "$@spelldesc428514", 0, 0 },
   {  432154, "Ascend into the air and unleash a massive barrage of Penance bolts, causing $<penancedamage> Holy damage to enemies or $<penancehealing> healing to allies over $421434d.\r\n\r\nWhile ascended, gain a shield for $s1% of your health. In addition, you are unaffected by knockbacks or crowd control effects.", "Absorbing $w3 damage.", 0 },
   {  432180, "$@spelldesc432181", "Your physical damage taken is reduced by $w1% until you receive a physical attack.", 0 },
-  {  432181, "Your physical damage taken is reduced by $s2% and an additional $432180s2% every $t1 sec until you receive a physical attack.", 0, 0 },
+  {  432181, "Your physical damage taken is reduced by $s2% and an additional $432180s2% every $t1 sec until you receive a physical attack, stacking up to $432180u.", 0, 0 },
   {  432220, "$@spelldesc428517", 0, 0 },
   {  432265, "Drink to increase your Perception by $s1 and allow you to see camouflaged mining and herbalism nodes.\r\n\r\n$@spelldesc431969", "Perception increased by $w1 and you are able to see camouflaged mining and herbalism nodes.", 0 },
   {  432286, "Drink to increase your Finesse by $s1 during the Summer or your Resourcefulness by $s2 during the Winter. Only applies to Khaz Algar professions.\r\n\r\n$@spelldesc431969", "Your profession stats are increased based on the current season.\r\n$?$W1>0[\r\nFinesse increased by $w1 while you are experiencing Summer.][]$?$W2>0[\r\nResourcefulness increased by $w2 while you are experiencing Winter.][]\r\n\r\nOnly affects Khaz Algar professions.", 0 },
@@ -29240,7 +29240,8 @@ static constexpr std::array<spelltext_data_t, 29237> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.1.0.69189
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  432181,  0, "Your physical damage taken is reduced by $s2% and an additional $432180s2% every $t1 sec until you receive a physical attack.", "Your physical damage taken is reduced by $s2% and an additional $432180s2% every $t1 sec until you receive a physical attack, stacking up to $432180u." },
 } };
 
 // Spell description variables, wow build 12.1.0.69189
