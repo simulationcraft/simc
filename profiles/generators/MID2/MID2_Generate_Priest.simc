@@ -9,11 +9,11 @@ omnium_talents=rune_of_unleashed_fire/rune_of_selfmending/rune_of_lingering/rune
 
 head=cosmic_penitents_truesight,id=271555,bonus_id=13846,ilevel=344,gem_id=240983,enchant_id=7961,redirected_base_stats=271874
 neck=aqirbane_reliquary,id=268265,bonus_id=13708,ilevel=344,gem_id=240892/240900
-shoulders=cosmic_penitents_echoing_screams,id=271553,ilevel=334,enchant_id=8031
+shoulders=mantle_of_ceremonial_ascension,id=239045,ilevel=334,enchant_id=8031
 back=silken_voodoo_drape,id=268253,ilevel=344
-chest=cosmic_penitents_eclipsing_robes,id=271558,ilevel=344,enchant_id=7987
+chest=cosmic_penitents_eclipsing_robes,id=271558,ilevel=334,enchant_id=7987
 wrists=martyrs_bindings,id=239648,ilevel=331,bonus_id=8793/12384,gem_id=240900
-hands=cosmic_penitents_celestial_grips,id=271556,ilevel=344,redirected_base_stats=268255
+hands=cosmic_penitents_celestial_grips,id=271556,ilevel=344,redirected_base_stats=268243
 waist=caustic_chainwrapped_sash,id=268257,ilevel=334,gem_id=240918
 legs=enveloping_legwraps_of_the_cosmic_penitent,id=271554,ilevel=334,enchant_id=7935,redirected_base_stats=251160
 feet=cackling_soultreads,id=268255,ilevel=344
@@ -37,11 +37,11 @@ omnium_talents=rune_of_unleashed_fire/rune_of_selfmending/rune_of_lingering/rune
 
 head=cosmic_penitents_truesight,id=271555,bonus_id=13846,ilevel=344,gem_id=240983,enchant_id=7961,redirected_base_stats=271874
 neck=aqirbane_reliquary,id=268265,bonus_id=13708,ilevel=344,gem_id=240892/240900
-shoulders=cosmic_penitents_echoing_screams,id=271553,ilevel=334,enchant_id=8031
+shoulders=mantle_of_ceremonial_ascension,id=239045,ilevel=334,enchant_id=8031
 back=silken_voodoo_drape,id=268253,ilevel=344
-chest=cosmic_penitents_eclipsing_robes,id=271558,ilevel=344,enchant_id=7987
+chest=cosmic_penitents_eclipsing_robes,id=271558,ilevel=334,enchant_id=7987
 wrists=martyrs_bindings,id=239648,ilevel=331,bonus_id=8793/12384,gem_id=240900
-hands=cosmic_penitents_celestial_grips,id=271556,ilevel=344,redirected_base_stats=268255
+hands=cosmic_penitents_celestial_grips,id=271556,ilevel=344,redirected_base_stats=268243
 waist=caustic_chainwrapped_sash,id=268257,ilevel=334,gem_id=240918
 legs=enveloping_legwraps_of_the_cosmic_penitent,id=271554,ilevel=334,enchant_id=7935,redirected_base_stats=251160
 feet=cackling_soultreads,id=268255,ilevel=344
