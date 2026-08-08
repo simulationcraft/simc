@@ -13711,12 +13711,14 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Proc Chance      : 100%
-Proc Flags       : Generic Helpful, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1163297)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 35)
+#2 (id=1347638)  : Apply Aura (6) | Modify Damage Done Against Target With Aura (303)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 13 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Damage dealt to targets below $s1% health is increased by $458910s1%.
 
 Name             : Spellfrost Teachings (id=458411) [Spell Family (3)] 
