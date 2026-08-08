@@ -1,70 +1,72 @@
-# mage="MID2_Mage_Arcane_Spellslinger"
-# spec=arcane
-# level=90
-# race=troll
-# role=spell
-# position=back
-# talents=C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMzQzMzAAAwAAgAmZmZZZmZYBAgtxMzMmtFLzMzYmxYMzMGLMzMjZAAGAAAzsAAmBADD
-# omnium_talents=136822:1/136817:1/136815:1/136814:1
+mage="MID2_Mage_Arcane_Spellslinger"
+spec=arcane
+level=90
+race=mechagnome
+role=spell
+position=back
+talents=C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDamZGAAAGAAEwMzMLLzMxCAAwMzMjNLzMzsMjxYmZwCzYmZGAgBAAYmZBAMDAGmZG
+omnium_talents=136822:1/136817:1/136815:1/136814:1
 
-# potion=lights_potential_2
-# flask=flask_of_thalassian_resistance_2
-# food=silvermoon_parade
-# augmentation=void_touched_augment_rune
-# temporary_enchant=main_hand:thalassian_phoenix_oil_2
+potion=lights_potential_2
+flask=flask_of_the_blood_knights_2
+food=silvermoon_parade
+augmentation=void_touched_augment_rune
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
-# head=voidbreakers_veil,id=250060,ilevel=289,bonus_id=13534,gem_id=240983,enchant_id=8017
-# neck=rotmires_sporeheart,id=268291,bonus_id=13786/13577/13668,gem_id=240918
-# shoulder=voidbreakers_leyline_nexi,id=250058,ilevel=289,enchant_id=8031
-# back=arcanoweave_cloak,id=239661,ilevel=285,bonus_id=8794
-# chest=voidbreakers_robe,id=250063,bonus_id=13575/13786,enchant_id=7987
-# wrists=arcanoweave_bracers,id=239660,ilevel=285,bonus_id=8794/13534,gem_id=240918
-# hands=voidbreakers_gloves,id=250061,ilevel=289
-# waist=whisperinscribed_sash,id=249376,ilevel=289,bonus_id=13534,gem_id=240918
-# legs=commanders_faded_breeches,id=251090,ilevel=289,enchant_id=7937
-# feet=luxurious_loamstriders,id=268282,bonus_id=13786/13577,enchant_id=7993
-# finger1=sindorei_band_of_hope,id=249919,ilevel=289,bonus_id=13534,gem_id=240918,enchant_id=7967
-# finger2=sporecallers_blooming_loop,id=268290,bonus_id=13786/13577/13668,enchant_id=7967,gem_id=240918
-# trinket1=gaze_of_the_alnseer,id=249343,ilevel=298
-# trinket2=vaelgors_final_stare,id=249346,ilevel=298
-# main_hand=skybreakers_blade,id=258218,ilevel=298,enchant_id=8039
-# off_hand=sigil_of_the_restless_heart,id=251094,ilevel=298
+head=venomkeepers_horrific_cowl,id=271874,bonus_id=13335/13668/13846/13848,ilevel=344,gem_id=240967,enchant_id=8017
+neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13708/13848,ilevel=344,gem_id=240892/240906
+shoulder=ornaments_of_the_eternal_coil,id=268241,bonus_id=12854/13335,ilevel=334,enchant_id=8001
+back=silken_voodoo_drape,id=268253,bonus_id=13335/13848,ilevel=344
+chest=primordial_robe_of_rites,id=273785,bonus_id=12854/13440,ilevel=334,enchant_id=7987
+wrist=martyrs_bindings,id=239648,bonus_id=8960/12384/13668/13751,ilevel=331,gem_id=240900,crafted_stats=32/40
+hands=grasps_of_the_eternal_shadow,id=268243,bonus_id=13335/13848,ilevel=344
+waist=arcanoweave_cord,id=239664,bonus_id=8960/13668/13751,ilevel=331,gem_id=240900
+legs=initiates_sacrificial_tights,id=268236,bonus_id=12854/13335,ilevel=334,enchant_id=7937
+feet=cackling_soultreads,id=268255,bonus_id=13335/13848,ilevel=344,enchant_id=7963
+finger1=ritual_binders_ring,id=159459,bonus_id=12854/13440/13668,ilevel=334,gem_id=240906,enchant_id=7967
+finger2=lightwardens_bind,id=251194,bonus_id=13668/12854/13440,ilevel=334,gem_id=240916,enchant_id=7967
+trinket1=freightrunners_flask,id=250215,bonus_id=12854/13440,ilevel=334
+trinket2=gebbos_bottomless_bag,id=270164,bonus_id=12854/13335,ilevel=334
+main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13335/13848,ilevel=344,enchant_id=8039
+off_hand=vessel_of_last_rites,id=159667,bonus_id=12854/13440,ilevel=334
+set_bonus=midnight_season_2_2pc=1/midnight_season_2_4pc=1
 
-# save=MID2_Mage_Arcane.simc
+save=MID2_Mage_Arcane.simc
 
-# mage="MID2_Mage_Arcane_Sunfury"
-# spec=arcane
-# level=90
-# race=void_elf
-# role=spell
-# position=back
-# talents=C4DAAAAAAAAAAAAAAAAAAAAAAYGmZZmZmFmZGamxAAAwAAmZmmlltZAgYDAgNmZmxYzyMzMLzMGjZmxYhZmZMDAwAAAMAzMgZAwwA
-# omnium_talents=136822:1/136817:1/136815:1/136814:1
+mage="MID2_Mage_Arcane_Sunfury"
+spec=arcane
+level=90
+race=mechagnome
+role=spell
+position=back
+talents=C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDamZGAAAGAwMz0sssMDAEbAAAzMzM2sMzMzyMGjZmBLMjZmZAAGAAgBYmBMDAGmZG
+omnium_talents=136822:1/136817:1/136815:1/136814:1
 
-# potion=lights_potential_2
-# flask=flask_of_thalassian_resistance_2
-# food=silvermoon_parade
-# augmentation=void_touched_augment_rune
-# temporary_enchant=main_hand:thalassian_phoenix_oil_2
+potion=lights_potential_2
+flask=flask_of_the_blood_knights_2
+food=silvermoon_parade
+augmentation=void_touched_augment_rune
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
-# head=voidbreakers_veil,id=250060,ilevel=289,bonus_id=13534,gem_id=240983,enchant_id=8017
-# neck=rotmires_sporeheart,id=268291,bonus_id=13786/13577/13668,gem_id=240918
-# shoulder=voidbreakers_leyline_nexi,id=250058,ilevel=289,enchant_id=8031
-# back=arcanoweave_cloak,id=239661,ilevel=285,bonus_id=8794
-# chest=voidbreakers_robe,id=250063,bonus_id=13575/13786,enchant_id=7987
-# wrists=arcanoweave_bracers,id=239660,ilevel=285,bonus_id=8794/13534,gem_id=240918
-# hands=voidbreakers_gloves,id=250061,ilevel=289
-# waist=whisperinscribed_sash,id=249376,ilevel=289,bonus_id=13534,gem_id=240918
-# legs=commanders_faded_breeches,id=251090,ilevel=289,enchant_id=7937
-# feet=luxurious_loamstriders,id=268282,bonus_id=13786/13577,enchant_id=7993
-# finger1=sindorei_band_of_hope,id=249919,ilevel=289,bonus_id=13534,gem_id=240918,enchant_id=7967
-# finger2=sporecallers_blooming_loop,id=268290,bonus_id=13786/13577/13668,enchant_id=7967,gem_id=240918
-# trinket1=gaze_of_the_alnseer,id=249343,ilevel=298
-# trinket2=vaelgors_final_stare,id=249346,ilevel=298
-# main_hand=skybreakers_blade,id=258218,ilevel=298,enchant_id=8039
-# off_hand=sigil_of_the_restless_heart,id=251094,ilevel=298
+head=venomkeepers_horrific_cowl,id=271874,bonus_id=13335/13668/13846/13848,ilevel=344,gem_id=240967,enchant_id=8017
+neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13708/13848,ilevel=344,gem_id=240892/240906
+shoulder=ornaments_of_the_eternal_coil,id=268241,bonus_id=12854/13335,ilevel=334,enchant_id=8001
+back=silken_voodoo_drape,id=268253,bonus_id=13335/13848,ilevel=344
+chest=primordial_robe_of_rites,id=273785,bonus_id=12854/13440,ilevel=334,enchant_id=7987
+wrist=martyrs_bindings,id=239648,bonus_id=8960/12384/13668/13751,ilevel=331,gem_id=240900,crafted_stats=32/40
+hands=grasps_of_the_eternal_shadow,id=268243,bonus_id=13335/13848,ilevel=344
+waist=arcanoweave_cord,id=239664,bonus_id=8960/13668/13751,ilevel=331,gem_id=240900
+legs=initiates_sacrificial_tights,id=268236,bonus_id=12854/13335,ilevel=334,enchant_id=7937
+feet=cackling_soultreads,id=268255,bonus_id=13335/13848,ilevel=344,enchant_id=7963
+finger1=alluring_bubbleband,id=268266,bonus_id=13668/12854/13335,ilevel=334,gem_id=240916,enchant_id=7967
+finger2=pilfered_precious_band,id=251148,bonus_id=12854/13440/13668,ilevel=334,gem_id=240916,enchant_id=7967
+trinket1=freightrunners_flask,id=250215,bonus_id=12854/13440,ilevel=334
+trinket2=gebbos_bottomless_bag,id=270164,bonus_id=12854/13335,ilevel=334
+main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13335/13848,ilevel=344,enchant_id=8039
+off_hand=vessel_of_last_rites,id=159667,bonus_id=12854/13440,ilevel=334
+set_bonus=midnight_season_2_2pc=1/midnight_season_2_4pc=1
 
-# save=MID2_Mage_Arcane_Sunfury.simc
+save=MID2_Mage_Arcane_Sunfury.simc
 
 # mage="MID2_Mage_Fire_Sunfury"
 # spec=fire
