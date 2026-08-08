@@ -290,7 +290,7 @@ actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_b
 actions.trinkets+=/use_item,slot=trinket1,if=variable.execute
 actions.trinkets+=/use_item,slot=trinket2,if=variable.execute
 
-head=abyssal_doomhounds_relentless_stare,id=271537,ilevel=344,gem_id=240983,enchant_id=7961
+head=gaze_of_the_coiled_watcher,id=271875,ilevel=344,gem_id=240983,enchant_id=7961
 neck=aqirbane_reliquary,id=268265,ilevel=344,gem_id=240858/240858
 shoulders=abyssal_doomhounds_jaws,id=271535,ilevel=334,enchant_id=7971
 back=silken_voodoo_drape,id=268253,ilevel=344
@@ -312,9 +312,9 @@ off_hand=spellbreakers_warglaive,id=237840,ilevel=331,embellishment=darkmoon_sig
 # gear_agility=2041
 # gear_stamina=40055
 # gear_intellect=442
-# gear_crit_rating=1253
-# gear_haste_rating=973
-# gear_mastery_rating=518
+# gear_crit_rating=1113
+# gear_haste_rating=1182
+# gear_mastery_rating=450
 # gear_versatility_rating=405
 # gear_leech_rating=55
 # gear_speed_rating=50

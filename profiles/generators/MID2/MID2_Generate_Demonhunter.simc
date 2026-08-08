@@ -154,7 +154,7 @@ food=silvermoon_parade
 augmentation=void_touched
 temporary_enchant=main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2
 
-head=abyssal_doomhounds_relentless_stare,id=271537,ilevel=344,gem_id=240983,enchant_id=7961
+head=gaze_of_the_coiled_watcher,id=271875,ilevel=344,gem_id=240983,enchant_id=7961
 neck=aqirbane_reliquary,id=268265,ilevel=344,gem_id=240858/240858
 shoulders=abyssal_doomhounds_jaws,id=271535,ilevel=334,enchant_id=7971
 back=silken_voodoo_drape,id=268253,ilevel=344
