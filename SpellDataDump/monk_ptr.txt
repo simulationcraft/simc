@@ -13185,6 +13185,7 @@ Effects          :
 Description      : $@spelldesc431406
 
 Name             : Dance of the Wind (id=432180) [Spell Family (53)] 
+Hotfixed         : Max stacks (9 -> 4)
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13192,7 +13193,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Stacks           : 9 maximum
+Stacks           : 4 maximum
 Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Helpful Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken
 Triggered By     : Dance of the Wind (432181)
@@ -13206,6 +13207,7 @@ Description      : $@spelldesc432181
 Tooltip          : Your physical damage taken is reduced by $w1% until you receive a physical attack.
 
 Name             : Dance of the Wind (id=432181) [Spell Family (53), Passive] 
+Hotfixed         : Description
 Talent Entry     : Windwalker [tree=class, row=7, col=6, max_rank=1, req_points=8]
                  : Mistweaver [tree=class, row=7, col=6, max_rank=1, req_points=8]
 Class            : Monk
@@ -13221,7 +13223,7 @@ Effects          :
 #2 (id=1120530)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.5 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
-Description      : Your physical damage taken is reduced by $s2% and an additional $432180s2% every $t1 sec until you receive a physical attack.
+Description      : Your physical damage taken is reduced by $s2% and an additional $432180s2% every $t1 sec until you receive a physical attack, stacking up to $432180u.
 
 Name             : Chi Cocoon (id=432772) [Spell Family (53)] 
 Class            : Monk
