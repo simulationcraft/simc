@@ -413,7 +413,6 @@ public:
 
     const spell_data_t* consecrated_blade;
     const spell_data_t* crusade;
-    const spell_data_t* sentinel;
     const spell_data_t* refining_fire_tick;
     const spell_data_t* expurgation;
     const spell_data_t* crusading_strikes_data;
@@ -570,51 +569,53 @@ public:
     const spell_data_t* hammer_of_the_righteous;
     const spell_data_t* blessed_hammer;
 
+    const spell_data_t* valiant_crusade;
+    const spell_data_t* blessed_word;
+    const spell_data_t* grand_crusader;
     const spell_data_t* imbued_shield;
     const spell_data_t* redoubt;
-    const spell_data_t* grand_crusader;
-    const spell_data_t* seal_of_charity;
 
-    const spell_data_t* refining_fire;
-    const spell_data_t* valiant_crusade;
+    const spell_data_t* blessing_of_spellwarding;
+    const spell_data_t* uthers_counsel;
     const spell_data_t* ardent_defender;
     const spell_data_t* searing_sunlight;
-    const spell_data_t* solace;
+    const spell_data_t* hand_of_the_protector;
 
     // 8
-    const spell_data_t* undying_embers;
+    const spell_data_t* refining_fire;
     const spell_data_t* bulwark_of_order;
-    const spell_data_t* improved_ardent_defender;
-    const spell_data_t* blessing_of_spellwarding;
+    //const spell_data_t* avenging_wrath;
     const spell_data_t* light_of_the_titans;
     const spell_data_t* tirions_devotion;
-    const spell_data_t* vision_of_sanctity;
+    const spell_data_t* solace;
+    const spell_data_t* instrument_of_the_divine;
 
     const spell_data_t* tyrs_enforcer;
+    const spell_data_t* undying_embers;
     const spell_data_t* relentless_inquisitor;
-    const spell_data_t* avenging_wrath_might;
-    const spell_data_t* sentinel;
+    const spell_data_t* improved_ardent_defender;
+    const spell_data_t* seal_of_reprisal;
     const spell_data_t* crusaders_judgment;
+    const spell_data_t* vision_of_sanctity;
     const spell_data_t* consecration_in_flame;
 
     const spell_data_t* soaring_shield;
-    const spell_data_t* seal_of_reprisal;
+    const spell_data_t* focused_enmity;
     const spell_data_t* guardian_of_ancient_kings;
-    const spell_data_t* hand_of_the_protector;
     const spell_data_t* sanctuary;
 
     // 20
-    const spell_data_t* focused_enmity;
-    const spell_data_t* gift_of_the_golden_valkyr;
-    const spell_data_t* sanctified_wrath;
-    const spell_data_t* uthers_counsel;
-
     const spell_data_t* strength_in_adversity;
     const spell_data_t* crusaders_resolve;
-    const spell_data_t* ferren_marcuss_fervor;
+    const spell_data_t* gift_of_the_golden_valkyr;
     const spell_data_t* empyrean_authority;
+    const spell_data_t* seal_of_charity;
+
+    const spell_data_t* sanctified_wrath;
+
+    const spell_data_t* ferren_marcuss_fervor;
+    const spell_data_t* sentinel;
     const spell_data_t* zealots_paragon;
-    const spell_data_t* instrument_of_the_divine;
 
     const spell_data_t* sweeping_verdict;
     const spell_data_t* adjudication;
@@ -1168,7 +1169,7 @@ public:
 
     this->clears_judgment                 = this->data().affected_by( p->spells.judgment_debuff->effectN( 1 ) );
     this->affected_by.avenging_wrath      = this->data().affected_by( p->spells.avenging_wrath->effectN( 2 ) );
-    this->affected_by.sentinel            = this->data().affected_by( p->spells.sentinel->effectN( 1 ) );
+    this->affected_by.sentinel            = this->data().affected_by( p->talents.sentinel->effectN( 1 ) );
     this->affected_by.divine_purpose_cost = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 1 ) );
     this->affected_by.divine_purpose      = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 2 ) );
 
