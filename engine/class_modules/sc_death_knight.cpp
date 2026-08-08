@@ -3265,7 +3265,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
       : dt_melee_ability_t( p, name, spell, dt )
     {
       triggers_apocalypse = true;
-      base_multiplier *= 0.85;
     }
   };
 
@@ -4434,7 +4433,7 @@ struct magus_base_pet_t : public death_knight_pet_t
     void execute() override
     {
       if ( pet()->pet_type == PET_LORD_OF_THE_DEAD )
-        trigger_gcd = execute_time() + rng().range( 50_ms, 650_ms );
+        trigger_gcd = execute_time() + rng().range( 250_ms, 1000_ms );
 
       magus_spell_t::execute();
     }
