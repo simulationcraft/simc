@@ -88,6 +88,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
   fake_lesser_weapon_set.clear();
+
+  if ( is_ptr() )
+    reflection_of_radiance_proc_chance = .001;  // Idk, something very, very low
 }
 
 const paladin_td_t* paladin_t::find_target_data( const player_t* target ) const
@@ -3664,7 +3667,8 @@ void paladin_t::create_buffs()
   buffs.divine_arbiter_hammer_of_light =
       make_buff( this, "divine_arbiter_hammer_of_light", spells.divine_arbiter_hammer_of_light );
   buffs.divine_arbiter_verdict = make_buff( this, "divine_arbiter_verdict", spells.divine_arbiter_verdict );
-  buffs.divine_power   = make_buff( this, "divine_power", spells.divine_power );
+  buffs.divine_power = make_buff( this, "divine_power", spells.divine_power )
+                           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
   buffs.divine_shield  = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                             ->set_cooldown( 0_ms );  // Let the ability handle the CD
@@ -3931,9 +3935,7 @@ void paladin_t::apply_action_effects( action_t* a ) {
   if ( !talents.crusade->ok() )
     aw_effect_mask.disable( 11 );
 
-  if ( !is_ptr() || talents.sentinel->ok() )
-    action->parse_effects( buffs.avenging_wrath, aw_effect_mask, IGNORE_STACKS );
-  action->parse_effects( buffs.divine_power );
+  action->parse_effects( buffs.avenging_wrath, aw_effect_mask, IGNORE_STACKS );
   // TODO: add in Divine Purpose - logic here is going to be complex
 
   // Hero talents
@@ -4486,6 +4488,9 @@ stat_e paladin_t::convert_hybrid_stat( stat_e s ) const
 double paladin_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
+
+  if ( buffs.divine_power->check() && dbc::is_school( school, SCHOOL_HOLY ) )
+    m *= 1.0 + buffs.divine_power->data().effectN( 1 ).percent();
 
   return m;
 }

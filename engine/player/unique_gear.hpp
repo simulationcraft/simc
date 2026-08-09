@@ -106,4 +106,7 @@ std::vector<unsigned> unique_gem_list( player_t*, util::span<const unsigned> );
 static constexpr std::array<stat_e, 4> secondary_ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING,
                                                              STAT_HASTE_RATING, STAT_CRIT_RATING };
 
+static constexpr std::array<stat_e, 3> tertiary_ratings = { STAT_SPEED_RATING, STAT_AVOIDANCE_RATING,
+                                                            STAT_LEECH_RATING };
+
 }  // namespace unique_gear

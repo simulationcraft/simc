@@ -277,6 +277,56 @@ void potion_of_zealotry( special_effect_t& effect )
 
   effect.custom_buff = buff;
 }
+// Liquid Luster
+// 1295132 driver
+// 1295147 buff
+void liquid_luster( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect, { "lustrous_gleam" } ) )
+    return;
+
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, "lustrous_gleam", effect.trigger(), effect.item )
+                           ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
+                           ->set_period( effect.driver()->effectN( 1 ).period() );
+}
+// Alluring Nostrum
+// 1295015 Driver & buff
+// 1295019 damage
+// 1295024 Slow
+void alluring_nostrum( special_effect_t& effect )
+{
+  auto debuff = create_buff( effect.player, effect.driver()->effectN( 2 ).trigger(), effect.item );
+
+  struct voidlash_salvo_t : public generic_proc_t
+  {
+    buff_t* debuff;
+    voidlash_salvo_t( const special_effect_t& e, buff_t* d )
+      : generic_proc_t( e, "voidlash_salvo", e.trigger() ), debuff( d )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      debuff->trigger();
+    }
+  };
+
+  auto buff = create_buff<buff_t>( effect.player, "alluring_nostrum", effect.driver() )->set_rppm( RPPM_DISABLE );
+
+  auto voidlash_salvo            = new special_effect_t( effect.player );
+  voidlash_salvo->name_str       = "voidlash_salvo_proc";
+  voidlash_salvo->spell_id       = effect.driver()->id();
+  voidlash_salvo->cooldown_      = 0_ms;  // Cooldown handled by the main special effect
+  voidlash_salvo->execute_action = create_proc_action<voidlash_salvo_t>( "voidlash_salvo", effect, debuff );
+  effect.player->special_effects.push_back( voidlash_salvo );
+
+  auto nostrum_cb = new dbc_proc_callback_t( effect.player, *voidlash_salvo );
+  nostrum_cb->activate_with_buff( buff, true );
+
+  effect.custom_buff = buff;
+}
 
 // 1262056 r1 driver
 // 1262108 r1 dot
@@ -1025,13 +1075,14 @@ void polished_ammolite( special_effect_t& effect )
 
   auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
   auto buff        = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1301039 ) )
-                         ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
+                         ->add_stat_from_effect_type( A_MOD_RATING, stat_amount * bandolier_mul( effect.player ) );
 
   // skip setup if callback has been created by already having another copy of the embellishment
   if ( find_special_effect( effect.player, effect.trigger()->id() ) )
     return;
 
   damage->base_multiplier *= role_mult( effect );
+  damage->base_multiplier *= bandolier_mul( effect.player );
   damage->base_crit = 1.0;
 
   struct polished_ammolite_cb_t final : public dbc_proc_callback_t
@@ -1062,6 +1113,176 @@ void polished_ammolite( special_effect_t& effect )
   effect.proc_flags2_ = PF2_CRIT;
 
   new polished_ammolite_cb_t( effect, buff, damage );
+}
+
+// Driver 1296550. Effect 1 => DoT Effect 2 => Explosion.
+// 1296561 RPPM
+// 1296565 DoT
+// 1296567 Explosion
+void snakeskin_lining( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+                             "Snakeskin Lining: The chance for the Explosion Damage is unknown. The tick size is "
+                             "unknown. Currently unknown if the Explosion is true split or has scaling." );
+
+  auto corrosive_venom_dot = effect.trigger()->effectN( 1 ).trigger();
+  auto dot_td              = effect.driver()->effectN( 1 ).average( effect );
+  auto explosive_dd        = effect.driver()->effectN( 2 ).average( effect );
+
+
+  // TODO: Is this per tick? Spell Data shows both.
+  // dot_td *= corrosive_venom_dot->effectN( 1 ).period() / corrosive_venom_dot->duration();
+
+  assert( corrosive_venom_dot->effectN( 1 ).subtype() == A_PERIODIC_DAMAGE );
+
+  auto dot_damage = create_proc_action<generic_proc_t>( "corrosive_venom", effect, corrosive_venom_dot );
+  dot_damage->base_td += dot_td;
+
+  // TODO: Confirm if this has meteor scaling or is fully split
+  auto aoe_damage = create_proc_action<generic_aoe_proc_t>( "toxic_eruption", effect, 1296567 );
+  aoe_damage->base_dd_min += explosive_dd;
+  aoe_damage->base_dd_max += explosive_dd;
+
+  // skip setup if callback has been created by already having another copy of the Embellishment
+  if ( find_special_effect( effect.player, effect.trigger()->id() ) )
+    return;
+
+  dot_damage->base_multiplier *= role_mult( effect );
+  aoe_damage->base_multiplier *= role_mult( effect );
+
+  dot_damage->add_child( aoe_damage );
+  
+  struct snakeskin_lining_cb_t final : public dbc_proc_callback_t
+  {
+    action_t* dot_action;
+    action_t* explosion_action;
+
+    snakeskin_lining_cb_t( const special_effect_t& e, action_t* dot, action_t* explosion )
+      : dbc_proc_callback_t( e.player, e ), dot_action( dot ), explosion_action( explosion )
+    {
+    }
+
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
+    {
+      if ( s )
+      {
+        if ( dot_action->get_dot( get_target( t, s ) )->is_ticking() )
+        {
+          // TODO: The chance for the Explosion Damage is unknown. This is a placeholder. Please update this.
+          // Currently assuming that it always triggers if it is currently up and does not refresh.
+          explosion_action->set_target( get_target( t, s ) );
+          auto proc_state    = explosion_action->get_state();
+          proc_state->target = explosion_action->target;
+          explosion_action->snapshot_state( proc_state, explosion_action->amount_type( proc_state ) );
+          explosion_action->schedule_execute( proc_state );
+        }
+        else
+        {
+          dot_action->set_target( get_target( t, s ) );
+          auto proc_state    = dot_action->get_state();
+          proc_state->target = dot_action->target;
+          dot_action->snapshot_state( proc_state, dot_action->amount_type( proc_state ) );
+          dot_action->schedule_execute( proc_state );
+        }
+      }
+    }
+  };
+
+  effect.spell_id = effect.trigger()->id();
+
+  new snakeskin_lining_cb_t( effect, dot_damage, aoe_damage );
+}
+
+// 1296870 Driver
+// 1296881 RPPM
+// 1296884 Buff
+void adorned_fang( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+                             "Adorned Fang: The increased proc chance for low health enemies is currently unknown. A "
+                             "placeholder value has been used instead." );
+
+  auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
+  auto buff        = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1296884 ) )
+                         ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
+
+  // skip setup if callback has been created by already having another copy of the Embellishment
+  if ( find_special_effect( effect.player, effect.trigger()->id() ) )
+    return;
+
+  effect.spell_id    = effect.trigger()->id();
+  effect.custom_buff = buff;
+
+  struct adorned_fang_cb_t final : public dbc_proc_callback_t
+  {
+    double base_ppm;
+
+    adorned_fang_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), base_ppm( e.trigger()->real_ppm() )
+    {
+    }
+
+    void trigger( const proc_data_t& source_data, player_t* target, action_state_t* state,
+                  proc_trigger_type_e type ) override
+    {
+      // TODO: The amount the proc chance is increased for each missing health is currently unknown. This is a
+      // placeholder. Please update this.
+
+      static const double increase_for_missing_health = 1.0;
+      rppm->set_frequency( base_ppm * ( 1.0 + increase_for_missing_health -
+                                        increase_for_missing_health * target->resources.pct( RESOURCE_HEALTH ) ) );
+
+      dbc_proc_callback_t::trigger( source_data, target, state, type );
+    }
+  };
+
+  new adorned_fang_cb_t( effect );
+}
+
+// 1297382 Driver
+// 1295897 RPPM
+// 1295898 1295899 1295900 1295901 Buffs
+void hunters_ritual_stone( special_effect_t& effect )
+{
+  std::array<buff_t*, 4> buffs = { nullptr, nullptr, nullptr, nullptr };
+
+  auto stat_amount = effect.driver()->effectN( 2 ).average( effect );
+
+  int _idx = 0;
+  for ( auto id : { 1295898, 1295899, 1295900, 1295901 } )
+  {
+    buffs[ _idx ] = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( id ) )
+                        ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
+    _idx++;
+  }
+
+  for ( auto b : buffs )
+  {
+    if ( !b )
+      throw std::runtime_error( "Failed to create buff for Hunters Ritual Stone" );
+  }
+
+  // skip setup if callback has been created by already having another copy of the Embellishment
+  if ( find_special_effect( effect.player, effect.trigger()->id() ) )
+    return;
+
+  struct hunters_ritual_stone_cb_t final : public dbc_proc_callback_t
+  {
+    std::array<buff_t*, 4> buffs;
+
+    hunters_ritual_stone_cb_t( const special_effect_t& e, std::array<buff_t*, 4> b )
+      : dbc_proc_callback_t( e.player, e ), buffs( b )
+    {
+    }
+
+    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
+    {
+      rng().range( buffs )->trigger();
+    }
+  };
+
+  effect.spell_id = effect.trigger()->id();
+  new hunters_ritual_stone_cb_t( effect, buffs );
 }
 }  // namespace embellishments
 
@@ -2337,7 +2558,8 @@ void lightspire_core( special_effect_t& effect )
 
   auto light_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1263768 ) )
                         ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 3 ).average( effect ) )
-                        ->set_duration( effect.player->find_spell( 1263762 )->duration() );
+                        ->set_duration( effect.player->find_spell( 1263762 )->duration() )
+                        ->set_duration_multiplier( effect.player->midnight_opts.lightspire_core_duration_multiplier );
 
   effect.custom_buff = light_buff;
 
@@ -3636,6 +3858,265 @@ void vashniks_sanguine_rancor( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Vexhul's Everflowing Gland
+// 1295833 On-use driver (1s aura, ticks every 0.2s)
+// 1306785 Caustic Venom (tick damage)
+// 1295832 Equip effect
+//  e1: damage per tick
+//  e2: damage bonus per 1% of the target's remaining health
+//  e3: cooldown reduction per enemy defeated
+void vexhuls_everflowing_gland( special_effect_t& effect )
+{
+  unsigned equip_id = 1295832;
+  auto equip = find_special_effect( effect.player, equip_id );
+  assert( equip && "Vexhul's Everflowing Gland missing equip effect" );
+
+  struct caustic_venom_tick_t : public generic_proc_t
+  {
+    double health_bonus;
+
+    caustic_venom_tick_t( const special_effect_t& e, const spell_data_t* equip )
+      : generic_proc_t( e, "caustic_venom_tick", 1306785 ), health_bonus( 1.0 )
+    {
+      base_dd_min = base_dd_max = equip->effectN( 1 ).average( e );
+      base_multiplier *= role_mult( e );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      return generic_proc_t::composite_da_multiplier( s ) * health_bonus;
+    }
+  };
+
+  struct caustic_venom_t : public generic_proc_t
+  {
+    caustic_venom_tick_t* venom;
+    double health_mult;
+
+    caustic_venom_t( const special_effect_t& e, const spell_data_t* equip )
+      : generic_proc_t( e, "caustic_venom", e.driver() ),
+        venom( debug_cast<caustic_venom_tick_t*>(
+            create_proc_action<caustic_venom_tick_t>( "caustic_venom_tick", e, equip ) ) ),
+        health_mult( equip->effectN( 2 ).percent() )
+    {
+      cooldown->duration = 0_ms;  // Handled by the special effect
+      tick_action = venom;
+    }
+
+    void init() override
+    {
+      generic_proc_t::init();
+
+      // the ticks are discrete casts of 1306785, so they are direct damage and not periodic
+      tick_action->direct_tick = false;
+    }
+
+    void execute() override
+    {
+      // the health bonus is snapshot when the venom is unleashed, confirmed with in game logs
+      venom->health_bonus = 1.0 + health_mult * target->health_percentage();
+
+      generic_proc_t::execute();
+    }
+  };
+
+  effect.execute_action = create_proc_action<caustic_venom_t>( "caustic_venom", effect, equip->driver() );
+
+  auto cdr = timespan_t::from_seconds( equip->driver()->effectN( 3 ).base_value() );
+  auto cd  = effect.player->get_cooldown( effect.cooldown_name() );
+
+  effect.player->register_on_kill_callback( [ cd, cdr ]( player_t* ) { cd->adjust( -cdr ); } );
+}
+
+// Knot of Writhing Serpents
+// 1293304 Driver
+//  e1: aoe damage
+//  e2: dot damage
+// 1295690 Missile
+// 1295676 Writhing Venom (aoe dmg)
+// 1295679 Writhing Venom (st dot)
+void knot_of_writhing_serpents( special_effect_t& effect )
+{
+  struct writhing_venom_t : public generic_aoe_proc_t
+  {
+    action_t* dot;
+
+    writhing_venom_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "writhing_venom", 1295676 )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+      base_multiplier *= role_mult( e );
+
+      dot = create_proc_action<generic_proc_t>( "writhing_venom_dot", e, 1295679 );
+      dot->base_td = e.driver()->effectN( 2 ).average( e ) * dot->base_tick_time / dot->dot_duration;
+      dot->base_td_multiplier *= role_mult( e );
+
+      add_child( dot );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_aoe_proc_t::impact( s );
+
+      if ( s->chain_target == 0 )
+        dot->execute_on_target( s->target );
+    }
+  };
+
+  auto missile = create_proc_action<generic_proc_t>( "writhing_venom_missile", effect, 1295690 );
+  auto damage  = create_proc_action<writhing_venom_t>( "writhing_venom", effect );
+
+  missile->add_child( damage );
+  missile->impact_action = damage;
+
+  effect.execute_action = missile;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Permafrost Essence
+// 1250588 Permafrost Reservoir (driver, procs on damage taken, 8 RPPM)
+// 1260316 Mark of Frost (15s, 10 stacks, crit rating per stack)
+// 1260321 Permafrost Reservoir (absorb all schools, 10s)
+void permafrost_essence( special_effect_t& effect )
+{
+  struct permafrost_essence_cb_t final : public dbc_proc_callback_t
+  {
+    buff_t* mark_of_frost;
+    buff_t* reservoir;
+
+    permafrost_essence_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        mark_of_frost( create_buff<stat_buff_t>( e.player, e.player->find_spell( 1260316 ) )
+          ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) ) ),
+        reservoir( create_buff<absorb_buff_t>( e.player, e.player->find_spell( 1260321 ) )
+          ->set_absorb_source( e.player->get_stats( "permafrost_reservoir" ) ) )
+    {
+    }
+
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
+    {
+      mark_of_frost->trigger();
+
+      if ( t->health_percentage() <= effect.driver()->effectN( 2 ).base_value() )
+      {
+        double amount = effect.driver()->effectN( 3 ).average( effect ) * mark_of_frost->check();
+        mark_of_frost->expire();
+        reservoir->trigger( 1, amount );
+      }
+    }
+  };
+
+  new permafrost_essence_cb_t( effect );
+}
+
+// 1294329 Driver
+// 1296714 Buff
+void ulateks_faithful( special_effect_t& effect )
+{
+  std::unordered_map<stat_e, buff_t*> buffs;
+
+  double secondary_amount = effect.driver()->effectN( 1 ).average( effect );
+  double tertiary_amount  = effect.driver()->effectN( 2 ).average( effect );
+
+  create_all_stat_buffs( effect, effect.player->find_spell( 1296714 ), 0,
+                         [ &buffs, secondary_amount, tertiary_amount ]( stat_e s, buff_t* b ) {
+                           if ( s >= STAT_CRIT_RATING && s <= STAT_VERSATILITY_RATING )
+                           {
+                             dynamic_cast<stat_buff_t*>( b )->add_stat( s, secondary_amount );
+                           }
+                           else
+                           {
+                             dynamic_cast<stat_buff_t*>( b )->add_stat( s, tertiary_amount );
+                           }
+
+                           buffs[ s ] = b;
+                         } );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.spell_id, [ buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
+        auto secondary_stat = cb->rng().range( secondary_ratings );
+        auto tertiary_stat  = cb->rng().range( tertiary_ratings );
+        for ( auto [ s, b ] : buffs )
+        {
+          if ( s == secondary_stat || s == tertiary_stat )
+            b->trigger();
+          else
+            b->expire();
+        }
+      } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Tattered Amani War Banner
+// 1293326 Driver
+// 1295725 value spell
+// 1295735 Buff
+// TODO: Range seems quite small, data suggests 12 yards. Need to model a probablility distribution for how long the
+// buff will last. Probably do this based on a player option?
+void tattered_amani_war_banner( special_effect_t& effect )
+{
+  struct battle_fervor_t : public stat_buff_t
+  {
+    bool extended;
+    timespan_t extend_dur;
+
+    battle_fervor_t( player_t* p, std::string_view name, const spell_data_t* s )
+      : stat_buff_t( p, name, s ), extended( false ), extend_dur( 0_ms )
+    {
+      const spell_data_t* driver = p->find_spell( 1293326 );
+      extend_dur = timespan_t::from_seconds( driver->effectN( 2 ).base_value() );
+      // Player option should probably be related to this. change the duration based off a gaussian distribution?
+      set_duration( driver->duration() );
+    }
+
+    void extend_battle_fervor()
+    {
+      if ( extended )
+        return;
+
+      extended = true;
+      extend_duration( extend_dur );
+    }
+  };
+
+  std::unordered_map<stat_e, battle_fervor_t*> buffs;
+  create_all_stat_buffs<battle_fervor_t>( effect, effect.player->find_spell( 1295735 ),
+                         effect.player->find_spell( 1295725 )->effectN( 1 ).average( effect ),
+                         [ &buffs ]( stat_e s, buff_t* b ) { buffs[ s ] = debug_cast<battle_fervor_t*>( b ); } );
+
+  struct tattered_amani_war_banner_t : public generic_proc_t
+  {
+    std::unordered_map<stat_e, battle_fervor_t*> buffs;
+    tattered_amani_war_banner_t( const special_effect_t& e, std::string_view n, const spell_data_t* s,
+                                 std::unordered_map<stat_e, battle_fervor_t*> b )
+      : generic_proc_t( e, n, s ), buffs( b )
+    {
+      cooldown->duration = 0_ms;  // Handled by the special effect
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      buffs.at( util::highest_stat( player, secondary_ratings ) )->trigger();
+    }
+  };
+
+  effect.player->register_on_kill_callback( [ buffs ]( player_t* p ) {
+    if ( p->sim->event_mgr.canceled )
+      return;
+
+    for ( auto& buff : buffs )
+      if ( buff.second->check() )
+        buff.second->extend_battle_fervor();
+  } );
+
+  effect.execute_action =
+      create_proc_action<tattered_amani_war_banner_t>( "tattered_amani_war_banner", effect, effect.driver(), buffs );
+  effect.disable_buff();
+  effect.has_use_buff_override = true;
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -4069,13 +4550,24 @@ void rotmires_sporeheart( special_effect_t& effect )
 
 void venomcursed( special_effect_t& effect )
 {
-  auto buff       = create_buff<stat_buff_t>( effect.player, effect.trigger() )
-    ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
-    ->add_stat_from_effect( 2, effect.driver()->effectN( 2 ).average( effect ) );
+  stat_buff_t* buff =
+      debug_cast<stat_buff_t*>( buff_t::find( effect.player, util::tokenize_fn( effect.trigger()->name_cstr() ) ) );
 
-  effect.custom_buff = buff;
+  bool do_init = false;
+  if ( !buff )
+  {
+    buff    = create_buff<stat_buff_t>( effect.player, effect.trigger() );
+    do_init = true;
+  }
 
-  new dbc_proc_callback_t( effect.player, effect );
+  buff->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
+      ->add_stat_from_effect( 2, effect.driver()->effectN( 2 ).average( effect ) );
+
+  if ( do_init )
+  {
+    effect.custom_buff = buff;
+    new dbc_proc_callback_t( effect.player, effect );
+  }
 }
 
 }  // namespace armors
@@ -4739,6 +5231,11 @@ void register_special_effects()
   register_special_effect( 1236998, consumables::draught_of_rampant_abandon );
   register_special_effect( 1236994, consumables::potion_of_recklessness );
   register_special_effect( 1238443, consumables::potion_of_zealotry );
+  set_min_version( wowv_t( 12, 1, 0 ) );
+  register_special_effect( 1295132, consumables::liquid_luster, true );
+  register_special_effect( 1295015, consumables::alluring_nostrum );
+  
+  reset_version_check();
   // Oils
   register_special_effect( { 1262056, 1262111 }, consumables::laced_zoomshots );
   register_special_effect( { 1237009, 1237012 }, consumables::smugglers_enchanted_edge );
@@ -4771,6 +5268,9 @@ void register_special_effects()
   register_special_effect( 1246309, embellishments::b1p_scorcher_of_souls );
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( 1296982, embellishments::polished_ammolite );
+  register_special_effect( 1296550, embellishments::snakeskin_lining );
+  register_special_effect( 1296870, embellishments::adorned_fang );
+  register_special_effect( 1297382, embellishments::hunters_ritual_stone );
   reset_version_check();
   
   // Darkmoon Trinkets & Embellishments
@@ -4834,6 +5334,7 @@ void register_special_effects()
   register_special_effect( 1253112, trinkets::sylvan_wakrapuku );
   register_special_effect( 1260633, trinkets::gloomspattered_dreadscale );
   register_special_effect( 1260627, DISABLED_EFFECT );  // Gloom-Spattered Dreadscale Passive Driver
+  register_special_effect( 1250588, trinkets::permafrost_essence );
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1284696, trinkets::sporelords_mycelium );
   reset_version_check();
@@ -4853,7 +5354,12 @@ void register_special_effects()
   register_special_effect( 1295885, trinkets::hex_lords_dooming_idol, true );
   register_special_effect( 1295884, DISABLED_EFFECT );  // Hex Lord's Dooming Idol equip driver
   register_special_effect( 1295553, trinkets::vashniks_sanguine_rancor );
+  register_special_effect( 1295833, trinkets::vexhuls_everflowing_gland );
+  register_special_effect( 1295832, DISABLED_EFFECT );  // Vexhul's Everflowing Gland equip driver
   register_special_effect( 1291728, bite_of_zuljan::zuljins_guillotine_technique );
+  register_special_effect( 1293304, trinkets::knot_of_writhing_serpents );
+  register_special_effect( 1294329, trinkets::ulateks_faithful );
+  register_special_effect( 1293326, trinkets::tattered_amani_war_banner );
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil

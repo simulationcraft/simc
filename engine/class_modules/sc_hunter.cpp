@@ -483,6 +483,7 @@ public:
     buff_t* huntmasters_call;
     buff_t* summon_fenryr;
     buff_t* summon_hati;
+    buff_t* heart_of_the_pack;
     buff_t* natures_ally_3;
     buff_t* bloody_frenzy;
 
@@ -720,6 +721,7 @@ public:
     spell_data_ptr_t brutal_companion;
     spell_data_ptr_t huntmasters_call;
     spell_data_ptr_t razor_sharp;
+    spell_data_ptr_t heart_of_the_pack_buff;
     spell_data_ptr_t bloodshed;
     spell_data_ptr_t bloodshed_dot;
     spell_data_ptr_t savagery_bm;
@@ -3751,6 +3753,13 @@ void hunter_t::trigger_huntmasters_call()
       buffs.summon_hati->trigger();
       pets.hati.despawn();
       pets.hati.spawn( buffs.summon_hati->buff_duration() );
+    }
+
+    // 2026-04-08: With Razor Sharp talented, Huntmaster's Call summons will trigger a ghost Heart of the Pack buff.
+    //             This buff uses Razor Sharp's base value of 100 (divided by 10) to create a free 10% haste buff.
+    if ( bugs && talents.razor_sharp.ok() )
+    {
+      buffs.heart_of_the_pack->trigger();
     }
   }
 }
@@ -7707,6 +7716,7 @@ void hunter_t::init_spells()
     talents.brutal_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Companion", HUNTER_BEAST_MASTERY );
     talents.huntmasters_call                  = find_talent_spell( talent_tree::SPECIALIZATION, "Huntmaster's Call", HUNTER_BEAST_MASTERY );
     talents.razor_sharp                       = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Sharp", HUNTER_BEAST_MASTERY );
+    talents.heart_of_the_pack_buff            = talents.razor_sharp.ok() ? find_spell( 1282747 ) : spell_data_t::not_found();
     talents.bloodshed                         = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodshed", HUNTER_BEAST_MASTERY );
     talents.bloodshed_dot                     = talents.bloodshed.ok() ? find_spell( 321538 ) : spell_data_t::not_found();
     talents.savagery_bm                       = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_BEAST_MASTERY );
@@ -8060,6 +8070,12 @@ void hunter_t::init_spells()
                                                     ? effect_mask_t( true ).disable( 2 )
                                                     : effect_mask_t( true ).disable( 1 ) );
 
+  register_passive_effect_mask( talents.lethal_barbs, 
+                                specialization() == HUNTER_BEAST_MASTERY ||
+                                specialization() == HUNTER_MARKSMANSHIP
+                                                    ? effect_mask_t( true ).disable( 3 )
+                                                    : effect_mask_t( true ).disable( 2 ) );
+
   register_passive_effect_mask( talents.better_together, 
                                 specialization() == HUNTER_BEAST_MASTERY
                                                     ? effect_mask_t( true ).disable( 2, 3 )
@@ -8227,6 +8243,12 @@ void hunter_t::create_buffs()
     make_buff( this, "summon_fenryr", find_spell ( 459735 ) )
     -> set_default_value_from_effect( 2 )
     -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+  // 2026-08-04: This is a bugged buff that should not exist, it uses the spell data of its replacement talent.
+  buffs.heart_of_the_pack =
+    make_buff( this, "heart_of_the_pack", talents.heart_of_the_pack_buff )
+      -> set_default_value( talents.razor_sharp->effectN( 1 ).percent() / 10 )
+      -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buffs.summon_hati = 
     make_buff( this, "summon_hati", find_spell( 459738 ) )

@@ -38,7 +38,6 @@ public:
 
     // Havoc
     dot_t* burning_wound;
-    dot_t* trail_of_ruin;
 
     // Vengeance
     dot_t* fiery_brand;
@@ -57,7 +56,6 @@ public:
     buff_t* burning_wound;
     buff_t* essence_break;
     buff_t* initiative_tracker;
-    buff_t* serrated_glaive;
 
     // Vengeance
     buff_t* frailty;
@@ -353,7 +351,6 @@ public:
     buff_t* blind_fury;
     buff_t* blur;
     buff_t* chaos_theory;
-    buff_t* death_sweep;
     buff_t* furious_gaze;
     buff_t* inertia;
     buff_t* inertia_trigger;  // hidden buff that determines if we can trigger inertia
@@ -1029,6 +1026,7 @@ public:
     cooldown_t* relentless_onslaught_icd;
     cooldown_t* fel_rush_vengeful_retreat_movement_shared;
     cooldown_t* felblade_vengeful_retreat_movement_shared;
+    cooldown_t* essence_break;
     target_specific_cooldown_t* essence_break_proc_icd;
 
     // Vengeance
@@ -1053,7 +1051,6 @@ public:
   {
     // General
     gain_t* miss_refund;
-    gain_t* immolation_aura;
 
     // Devourer
     gain_t* voidglare_boon;
@@ -1086,7 +1083,6 @@ public:
   {
     // General
     proc_t* delayed_aa_range;
-    proc_t* delayed_aa_channel;
     proc_t* soul_fragment_greater;
     proc_t* soul_fragment_greater_demon;
     proc_t* soul_fragment_empowered_demon;
@@ -1118,9 +1114,6 @@ public:
     proc_t* annihilation_in_essence_break;
     proc_t* blade_dance_in_essence_break;
     proc_t* death_sweep_in_essence_break;
-    proc_t* chaos_strike_in_serrated_glaive;
-    proc_t* annihilation_in_serrated_glaive;
-    proc_t* throw_glaive_in_serrated_glaive;
     proc_t* shattered_destiny;
     proc_t* eye_beam_canceled;
 
@@ -1172,6 +1165,8 @@ public:
   {
     // Annihilator
     accumulated_rng_t* voidfall;
+    // MID2 Devourer 2pc
+    accumulated_rng_t* soulburst;
   } accumulated_rng;
 
   // Special
@@ -1256,6 +1251,11 @@ public:
     double proc_from_killing_blow_chance          = 0.4;
     int entropy_starting_souls                    = -1;
     int channel_tick_cutoff_benefit               = 2;
+    // Soulburst chance grows by step with each harvest that fails to proc, up to cap.
+    // Fitted from PTR logs. Set base to 0 to use the flat roll from spell data.
+    double soulburst_blp_base = 0.0663;
+    double soulburst_blp_step = 0.0519;
+    double soulburst_blp_cap  = 0.3949;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -1628,7 +1628,7 @@ struct undying_embers_event_t : public event_t
   {
   }
 
-  ~undying_embers_event_t()
+  ~undying_embers_event_t() override
   {
     if ( state )
       action_state_t::release( state );
@@ -2255,12 +2255,6 @@ public:
 
     // Havoc
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::burning_wound ), dh()->spec.burning_wound_debuff );
-    if ( !dh()->is_ptr() )
-    {
-      ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::serrated_glaive ),
-                                dh()->talent.havoc.serrated_glaive->effectN( 1 ).trigger(),
-                                dh()->talent.havoc.serrated_glaive );
-    }
 
     // Vengeance
     if ( dh()->talent.vengeance.vulnerability->ok() )
@@ -3349,7 +3343,7 @@ struct otherworldly_focus_benefit_t : public BASE
     : BASE( n, p, s, o )
   {
     increase_percent = p->talent.annihilator.otherworldly_focus->effectN( 1 ).percent();
-    if ( p->is_ptr() && p->specialization() == DEMON_HUNTER_DEVOURER )
+    if ( p->specialization() == DEMON_HUNTER_DEVOURER )
     {
       increase_percent = p->talent.annihilator.otherworldly_focus->effectN( 3 ).percent();
     }
@@ -3440,9 +3434,15 @@ struct soulburst_trigger_t : public BASE
   void trigger_soulburst( unsigned fragments_consumed )
   {
     // TOCHECK: Is this instant?
-    if ( BASE::dh()->set_bonuses.mid2_devourer_2pc->ok() &&
-         fragments_consumed >= BASE::dh()->set_bonuses.mid2_devourer_2pc->effectN( 1 ).base_value() &&
-         BASE::rng().roll( BASE::dh()->set_bonuses.mid2_devourer_2pc->effectN( 2 ).percent() ) )
+    if ( !BASE::dh()->set_bonuses.mid2_devourer_2pc->ok() ||
+         fragments_consumed < BASE::dh()->set_bonuses.mid2_devourer_2pc->effectN( 1 ).base_value() )
+      return;
+
+    // Harvests below the fragment threshold don't roll and don't advance the counter.
+    const bool proc = BASE::dh()->accumulated_rng.soulburst
+                          ? BASE::dh()->accumulated_rng.soulburst->trigger() > 0
+                          : BASE::rng().roll( BASE::dh()->set_bonuses.mid2_devourer_2pc->effectN( 2 ).percent() );
+    if ( proc )
     {
       BASE::dh()->buff.soulburst->trigger();
     }
@@ -4019,6 +4019,16 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
 
     if ( dh()->talent.havoc.cycle_of_hatred->ok() )
     {
+      this->cooldown->adjust( -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_stack_value() ) ) );
+
+      // 08/01/2026 - Essence Break and Eyebeam currently reduce the value of the other by 2.5 seconds when stacks 2 - 4
+      // are each applied.
+      if ( dh()->buff.cycle_of_hatred->check() && dh()->buff.cycle_of_hatred->stack() < 4 )
+      {
+        dh()->cooldown.essence_break->adjust(
+            -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_value() ) ) );
+      }
+
       dh()->buff.cycle_of_hatred->trigger();
     }
 
@@ -4047,12 +4057,6 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
   result_amount_type amount_type( const action_state_t*, bool ) const override
   {
     return result_amount_type::DMG_DIRECT;
-  }
-
-  timespan_t cooldown_base_duration( const cooldown_t& cd ) const override
-  {
-    return base_t::cooldown_base_duration( cd ) -
-           timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_stack_value() ) );
   }
 };
 
@@ -4834,6 +4838,11 @@ struct immolation_aura_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
 
     dh()->trigger_demonsurge( demonsurge_ability::CONSUMING_FIRE );
+
+    if ( action_list->name_str == "precombat" )
+    {
+      internal_cooldown->reset( false );
+    }
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
@@ -5642,8 +5651,7 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
 {
   struct soulburst_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
   {
-    soulburst_t( util::string_view n, demon_hunter_t* p )
-      : base_t( n, p, p->set_bonuses.soulburst_damage )
+    soulburst_t( util::string_view n, demon_hunter_t* p ) : base_t( n, p, p->set_bonuses.soulburst_damage )
     {
       background = dual = true;
       aoe               = -1;
@@ -5678,6 +5686,54 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
       soulburst = new soulburst_t( fmt::format( "soulburst_{}", n ), p );
       add_child( soulburst );
     }
+  }
+
+  // Override GCD as hastes reduction to GCD is currently applying twice. 2026/08/05 YY/MM/DD - Sael
+  timespan_t gcd() const override
+  {
+    if ( trigger_gcd == timespan_t::zero() )
+      return timespan_t::zero();
+
+    timespan_t gcd_ = trigger_gcd;
+    switch ( gcd_type )
+    {
+      case gcd_haste_type::HASTE:
+      case gcd_haste_type::SPELL_HASTE:
+      case gcd_haste_type::ATTACK_HASTE:
+        gcd_ *= composite_haste();
+        break;
+      case gcd_haste_type::SPELL_CAST_SPEED:
+        gcd_ *= player->cache.spell_cast_speed();
+        gcd_ *= player->cache.spell_cast_speed();
+        break;
+      case gcd_haste_type::AUTO_ATTACK_SPEED:
+        gcd_ *= player->cache.auto_attack_speed();
+        gcd_ *= player->cache.auto_attack_speed();
+        break;
+      case gcd_haste_type::NONE:
+      default:
+        break;
+    }
+
+    for ( const auto& i : gcd_effects )
+      gcd_ *= 1.0 + get_effect_value( i );
+
+    if ( gcd_ < min_gcd )
+    {
+      gcd_ = min_gcd;
+    }
+
+    if ( gcd_ != timespan_t::zero() && player->is_player() &&
+         player->thewarwithin_opts.additional_gcd_time > timespan_t::zero() )
+    {
+      gcd_ += player->thewarwithin_opts.additional_gcd_time;
+    }
+
+    // TODO: Figure out how this works for spells with cast times.
+    if ( gcd_ != timespan_t::zero() && player->is_player() && player->one_button_mode && can_have_one_button_penalty )
+      gcd_ *= 1.0 + player->single_button_assistant->effectN( 1 ).percent();
+
+    return gcd_;
   }
 
   void execute() override
@@ -5947,6 +6003,54 @@ struct reap_base_t
     return souls;
   }
 
+  // Override GCD as hastes reduction to GCD is currently applying twice. 2026/08/05 YY/MM/DD - Sael
+  timespan_t gcd() const override
+  {
+    if ( trigger_gcd == timespan_t::zero() )
+      return timespan_t::zero();
+
+    timespan_t gcd_ = trigger_gcd;
+    switch ( gcd_type )
+    {
+      case gcd_haste_type::HASTE:
+      case gcd_haste_type::SPELL_HASTE:
+      case gcd_haste_type::ATTACK_HASTE:
+        gcd_ *= composite_haste();
+        break;
+      case gcd_haste_type::SPELL_CAST_SPEED:
+        gcd_ *= player->cache.spell_cast_speed();
+        gcd_ *= player->cache.spell_cast_speed();
+        break;
+      case gcd_haste_type::AUTO_ATTACK_SPEED:
+        gcd_ *= player->cache.auto_attack_speed();
+        gcd_ *= player->cache.auto_attack_speed();
+        break;
+      case gcd_haste_type::NONE:
+      default:
+        break;
+    }
+
+    for ( const auto& i : gcd_effects )
+      gcd_ *= 1.0 + get_effect_value( i );
+
+    if ( gcd_ < min_gcd )
+    {
+      gcd_ = min_gcd;
+    }
+
+    if ( gcd_ != timespan_t::zero() && player->is_player() &&
+         player->thewarwithin_opts.additional_gcd_time > timespan_t::zero() )
+    {
+      gcd_ += player->thewarwithin_opts.additional_gcd_time;
+    }
+
+    // TODO: Figure out how this works for spells with cast times.
+    if ( gcd_ != timespan_t::zero() && player->is_player() && player->one_button_mode && can_have_one_button_penalty )
+      gcd_ *= 1.0 + player->single_button_assistant->effectN( 1 ).percent();
+
+    return gcd_;
+  }
+
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
     if ( util::str_compare_ci( name, "max_souls_consumed" ) )
@@ -6011,6 +6115,7 @@ struct eradicate_t
     damage_action      = p->get_background_action<eradicate_damage_t>( "eradicate_reap", p->spec.eradicate_damage );
     damage_action->aoe = -1;
     damage_action->reduced_aoe_targets = p->talent.devourer.eradicate->effectN( 1 ).base_value();
+    damage_action->base_aoe_multiplier = data().effectN( 1 ).percent();
     add_child( damage_action );
 
     if ( p->talent.devourer.void_metamorphosis->ok() )
@@ -6019,6 +6124,7 @@ struct eradicate_t
           p->get_background_action<eradicate_damage_t>( "eradicate_cull", p->spec.eradicate_damage_meta );
       damage_action_meta->aoe                 = -1;
       damage_action_meta->reduced_aoe_targets = p->talent.devourer.eradicate->effectN( 1 ).base_value();
+      damage_action_meta->base_aoe_multiplier = data().effectN( 1 ).percent();
       add_child( damage_action_meta );
     }
 
@@ -6037,6 +6143,53 @@ struct eradicate_t
       souls += as<unsigned int>( dh()->buff.moment_of_craving->check_value() );
     }
     return souls;
+  }
+
+  timespan_t gcd() const override
+  {
+    if ( trigger_gcd == timespan_t::zero() )
+      return timespan_t::zero();
+
+    timespan_t gcd_ = trigger_gcd;
+    switch ( gcd_type )
+    {
+      case gcd_haste_type::HASTE:
+      case gcd_haste_type::SPELL_HASTE:
+      case gcd_haste_type::ATTACK_HASTE:
+        gcd_ *= composite_haste();
+        break;
+      case gcd_haste_type::SPELL_CAST_SPEED:
+        gcd_ *= player->cache.spell_cast_speed();
+        gcd_ *= player->cache.spell_cast_speed();
+        break;
+      case gcd_haste_type::AUTO_ATTACK_SPEED:
+        gcd_ *= player->cache.auto_attack_speed();
+        gcd_ *= player->cache.auto_attack_speed();
+        break;
+      case gcd_haste_type::NONE:
+      default:
+        break;
+    }
+
+    for ( const auto& i : gcd_effects )
+      gcd_ *= 1.0 + get_effect_value( i );
+
+    if ( gcd_ < min_gcd )
+    {
+      gcd_ = min_gcd;
+    }
+
+    if ( gcd_ != timespan_t::zero() && player->is_player() &&
+         player->thewarwithin_opts.additional_gcd_time > timespan_t::zero() )
+    {
+      gcd_ += player->thewarwithin_opts.additional_gcd_time;
+    }
+
+    // TODO: Figure out how this works for spells with cast times.
+    if ( gcd_ != timespan_t::zero() && player->is_player() && player->one_button_mode && can_have_one_button_penalty )
+      gcd_ *= 1.0 + player->single_button_assistant->effectN( 1 ).percent();
+
+    return gcd_;
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
@@ -6985,19 +7138,11 @@ struct blade_dance_base_t
     }
 
     ability_cooldown = data().cooldown();
-    if ( data().affected_by( p->spec.blade_dance_2->effectN( 1 ) ) )
-    {
-      ability_cooldown += p->spec.blade_dance_2->effectN( 1 ).time_value();
-    }
 
     if ( p->talent.havoc.trail_of_ruin->ok() )
     {
-      trail_of_ruin = p->get_background_action<trail_of_ruin_t>( dh()->is_ptr() ? fmt::format( "trail_of_ruin_{}", n )
-                                                                                : "trail_of_ruin" );
-      if ( dh()->is_ptr() )
-      {
-        add_child( trail_of_ruin );
-      }
+      trail_of_ruin = p->get_background_action<trail_of_ruin_t>( fmt::format( "trail_of_ruin_{}", n ) );
+      add_child( trail_of_ruin );
     }
   }
 
@@ -7356,14 +7501,7 @@ struct chaos_strike_base_t
       // TOCHECK -- Does the applying Chaos Strike/Annihilation benefit from the debuff?
       if ( dh()->talent.havoc.serrated_glaive->ok() )
       {
-        if ( dh()->is_ptr() )
-        {
-          dh()->buff.serrated_glaive->trigger();
-        }
-        else
-        {
-          td( s->target )->debuffs.serrated_glaive->trigger();
-        }
+        dh()->buff.serrated_glaive->trigger();
       }
 
       if ( dh()->talent.aldrachi_reaver.warblades_hunger && dh()->buff.warblades_hunger->up() )
@@ -7428,17 +7566,11 @@ struct chaos_strike_base_t
     {
       if ( td( target )->debuffs.essence_break->up() )
         dh()->proc.annihilation_in_essence_break->occur();
-
-      if ( td( target )->debuffs.serrated_glaive->up() )
-        dh()->proc.annihilation_in_serrated_glaive->occur();
     }
     else
     {
       if ( td( target )->debuffs.essence_break->up() )
         dh()->proc.chaos_strike_in_essence_break->occur();
-
-      if ( td( target )->debuffs.serrated_glaive->up() )
-        dh()->proc.chaos_strike_in_serrated_glaive->occur();
     }
 
     // Demonic Appetite
@@ -7637,6 +7769,7 @@ struct essence_break_t : public demon_hunter_attack_t
   {
     aoe                 = -1;
     reduced_aoe_targets = p->talent.havoc.essence_break->effectN( 2 ).base_value();
+    cooldown            = p->cooldown.essence_break;
 
     add_child( p->active.essence_break_proc );
   }
@@ -7647,6 +7780,17 @@ struct essence_break_t : public demon_hunter_attack_t
 
     if ( dh()->set_bonuses.mid2_havoc_4pc->ok() && dh()->talent.havoc.cycle_of_hatred->ok() )
     {
+      dh()->cooldown.essence_break->adjust(
+          -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_stack_value() ) ) );
+
+      // 08/01/2026 - Essence Break and Eyebeam currently reduce the value of the other by 2.5 seconds when stacks 2 - 4
+      // are each applied.
+      if ( dh()->buff.cycle_of_hatred->check() && dh()->buff.cycle_of_hatred->stack() < 4 )
+      {
+        dh()->cooldown.eye_beam->adjust(
+            -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_value() ) ) );
+      }
+
       dh()->buff.cycle_of_hatred->trigger();
     }
   }
@@ -7661,16 +7805,6 @@ struct essence_break_t : public demon_hunter_attack_t
       buff_t* debuff = td( s->target )->debuffs.essence_break;
       make_event( *dh()->sim, 250_ms, [ debuff ] { debuff->trigger(); } );
     }
-  }
-
-  timespan_t cooldown_base_duration( const cooldown_t& cd ) const override
-  {
-    if ( dh()->set_bonuses.mid2_havoc_4pc->ok() )
-    {
-      return demon_hunter_attack_t::cooldown_base_duration( cd ) -
-             timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_stack_value() ) );
-    }
-    return demon_hunter_attack_t::cooldown_base_duration( cd );
   }
 };
 
@@ -8126,14 +8260,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
         if ( dh()->talent.havoc.serrated_glaive->ok() )
         {
-          if ( dh()->is_ptr() )
-          {
-            dh()->buff.serrated_glaive->trigger();
-          }
-          else
-          {
-            td( state->target )->debuffs.serrated_glaive->trigger();
-          }
+          dh()->buff.serrated_glaive->trigger();
         }
       }
     }
@@ -8241,11 +8368,6 @@ struct throw_glaive_t : public demon_hunter_attack_t
       {
         make_event<delayed_execute_event_t>( *sim, dh(), dh()->active.preemptive_strike, target, 400_ms );
       }
-    }
-
-    if ( td( target )->debuffs.serrated_glaive->up() )
-    {
-      dh()->proc.throw_glaive_in_serrated_glaive->occur();
     }
 
     if ( dh()->active.preemptive_strike )
@@ -8430,16 +8552,6 @@ struct vengeful_retreat_t
   {
     execute_action = p->get_background_action<vengeful_retreat_damage_t>( "vengeful_retreat_damage" );
     add_child( execute_action );
-
-    // TODO: Remove or modify when category cooldowns are implemented/fixed
-    if ( !p->is_ptr() )
-    {
-      cooldown->duration = data().category_cooldown();
-      if ( data().affected_by( p->talent.havoc.tactical_retreat->effectN( 1 ) ) )
-      {
-        cooldown->duration += p->talent.havoc.tactical_retreat->effectN( 1 ).time_value();
-      }
-    }
 
     base_teleport_distance                        = VENGEFUL_RETREAT_DISTANCE;
     movement_directionality                       = movement_direction_type::OMNI;
@@ -9454,10 +9566,6 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   dots.sigil_of_doom  = target->get_dot( "sigil_of_doom", &p );
   dots.the_hunt       = target->get_dot( "the_hunt_dot", &p );
 
-  debuffs.serrated_glaive =
-      make_buff( *this, "serrated_glaive", p.talent.havoc.serrated_glaive->effectN( 1 ).trigger() )
-          ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 
@@ -10325,6 +10433,9 @@ void demon_hunter_t::create_options()
   add_option( opt_deprecated( "entropy_starting_souls", "demonhunter.entropy_starting_souls" ) );
   add_option( opt_int( "demonhunter.channel_tick_cutoff_benefit", options.channel_tick_cutoff_benefit, 0, 10 ) );
   add_option( opt_deprecated( "channel_tick_cutoff_benefit", "demonhunter.channel_tick_cutoff_benefit" ) );
+  add_option( opt_float( "demonhunter.soulburst_blp_base", options.soulburst_blp_base, 0.0, 1.0 ) );
+  add_option( opt_float( "demonhunter.soulburst_blp_step", options.soulburst_blp_step, 0.0, 1.0 ) );
+  add_option( opt_float( "demonhunter.soulburst_blp_cap", options.soulburst_blp_cap, 0.0, 1.0 ) );
 
   add_option( opt_float( "demonhunter.void_metamorphosis_initial_drain", devourer_fury_state.initial_drain, 0, 100 ) );
   add_option( opt_deprecated( "void_metamorphosis_initial_drain", "demonhunter.void_metamorphosis_initial_drain" ) );
@@ -10461,9 +10572,6 @@ void demon_hunter_t::init_procs()
   proc.annihilation_in_essence_break       = get_proc( "Annihilation in Essence Break" );
   proc.blade_dance_in_essence_break        = get_proc( "Blade Dance in Essence Break" );
   proc.death_sweep_in_essence_break        = get_proc( "Death Sweep in Essence Break" );
-  proc.chaos_strike_in_serrated_glaive     = get_proc( "Chaos Strike in Serrated Glaive" );
-  proc.annihilation_in_serrated_glaive     = get_proc( "Annihilation in Serrated Glaive" );
-  proc.throw_glaive_in_serrated_glaive     = get_proc( "Throw Glaive in Serrated Glaive" );
   proc.shattered_destiny                   = get_proc( "Shattered Destiny" );
   proc.eye_beam_canceled                   = get_proc( "Eye Beam canceled" );
 
@@ -10576,6 +10684,17 @@ void demon_hunter_t::init_rng()
   // Accumulated proc objects
   accumulated_rng.voidfall =
       get_accumulated_rng( "voidfall", prd::find_constant( talent.annihilator.voidfall->effectN( 3 ).percent() ) );
+
+  accumulated_rng.soulburst = nullptr;
+  if ( set_bonuses.mid2_devourer_2pc->ok() && options.soulburst_blp_base > 0 )
+  {
+    accumulated_rng.soulburst =
+        get_accumulated_rng( "soulburst", options.soulburst_blp_base, 0U,
+                             [ step = options.soulburst_blp_step, cap = options.soulburst_blp_cap ](
+                                 double base, unsigned count, action_state_t* ) {
+                               return std::min( base + step * ( as<double>( count ) - 1.0 ), cap );
+                             } );
+  }
 
   player_t::init_rng();
 }
@@ -11104,9 +11223,7 @@ void demon_hunter_t::init_spells()
   spec.empowered_eye_beam_buff                   = talent_spell_lookup( talent.havoc.eternal_hunt_1, 1271144 );
   spec.empowered_eye_beam_damage                 = talent_spell_lookup( talent.havoc.eternal_hunt_1, 1287949 );
   spec.eternal_hunt_buff                         = talent_spell_lookup( talent.havoc.eternal_hunt_3, 1271092 );
-  spec.serrated_glaive_buff                      = is_ptr() && talent.havoc.serrated_glaive->ok()
-                                                       ? talent.havoc.serrated_glaive->effectN( 1 ).trigger()
-                                                       : spell_data_t::not_found();
+  spec.serrated_glaive_buff                      = talent.havoc.serrated_glaive->effectN( 1 ).trigger();
 
   spec.demon_spikes_buff               = find_spell( 203819, DEMON_HUNTER_VENGEANCE );
   spec.sigil_of_flame                  = find_spell( 204596, DEMON_HUNTER_VENGEANCE );
@@ -11316,10 +11433,6 @@ void demon_hunter_t::init_spells()
 
   // TODO: Check if this still behaves as described in `composite_player_critical_damage_multiplier`
   deregister_passive_spell( talent.havoc.know_your_enemy );
-  if ( !is_ptr() )
-  {
-    deregister_passive_spell( talent.havoc.tactical_retreat );
-  }
 
   // conditional passive, yippee
   deregister_passive_spell( talent.havoc.never_say_die );
@@ -11744,6 +11857,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.relentless_onslaught_icd                  = get_cooldown( "relentless_onslaught_icd" );
   cooldown.fel_rush_vengeful_retreat_movement_shared = get_cooldown( "fel_rush_vengeful_retreat_movement_shared" );
   cooldown.felblade_vengeful_retreat_movement_shared = get_cooldown( "felblade_vengeful_retreat_movement_shared" );
+  cooldown.essence_break                             = get_cooldown( "essence_break" );
   cooldown.essence_break_proc_icd                    = get_target_specific_cooldown( "essence_break_proc_icd" );
 
   // Vengeance

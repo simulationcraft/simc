@@ -68,8 +68,8 @@ actions.sentst=explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up
 actions.sentst+=/volley
 actions.sentst+=/trueshot,if=variable.trueshot_ready
 actions.sentst+=/moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max
-actions.sentst+=/kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)
-actions.sentst+=/multishot,target_if=max:debuff.sentinels_mark.down,if=talent.aspect_of_the_hydra&!max_prio_damage&active_enemies>1&buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)
+actions.sentst+=/kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up
+actions.sentst+=/multishot,target_if=max:debuff.sentinels_mark.down,if=talent.aspect_of_the_hydra&!max_prio_damage&active_enemies>1&buff.precise_shots.up
 actions.sentst+=/arcane_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)
 actions.sentst+=/rapid_fire
 actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage

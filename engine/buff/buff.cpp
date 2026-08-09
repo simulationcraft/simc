@@ -770,6 +770,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, std::string_view
   {
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
     set_activated( false );
+    if ( source && source->bugs )
+      set_disable_async_expire_events_removal( true );
   }
 
   update_trigger_calculations();

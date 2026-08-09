@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.68914 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.69189 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -601,7 +601,7 @@ Family Flags     : 49, 65
 Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=2210)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 26.6717 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 38.674 | Target: Targeted Enemy (6)
 #2 (id=740054)   : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000
 #3 (id=831295)   : Dummy (3)
@@ -1498,14 +1498,14 @@ Effects          :
 #1 (id=40331)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.20612 | PvP Coefficient: 0.71 | Target: Targeted Enemy (6)
 #2 (id=40332)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 0x7f | Target: Targeted Enemy (6)
+                   Base Value: 16 | Scaled Value: 16 | Misc Value: 0x7f | Target: Targeted Enemy (6)
                    Affected School(s): All
                    Modified By: Shadow of Nathreza (1261990 effect#2)
 #3 (id=889616)   : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
-                   Base Value: 12 | Scaled Value: 12 | Target: Targeted Enemy (6)
+                   Base Value: 16 | Scaled Value: 16 | Target: Targeted Enemy (6)
                    Modified By: Shadow of Nathreza (1261990 effect#3)
 #4 (id=889617)   : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
-                   Base Value: 12 | Scaled Value: 12 | Target: Targeted Enemy (6)
+                   Base Value: 16 | Scaled Value: 16 | Target: Targeted Enemy (6)
                    Modified By: Shadow of Nathreza (1261990 effect#4)
 #5 (id=1273044)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -1740,7 +1740,7 @@ Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39
 Aura Interrupt   : Duel End (44)
 Effects          :
 #1 (id=68521)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | Target: Targeted Enemy (6)
+                   Base Value: 50 | Scaled Value: 50 | Target: Targeted Enemy (6)
                    Modified By: Gloom of Nathreza (429899 effect#2), Improved Havoc (1244460 effect#2)
 Description      : Marks a target with Havoc for $d, causing your single target spells to also strike the Havoc victim for $s1% of the damage dealt.
 Tooltip          : Spells cast by the Warlock also hit this target for $s1% of the damage dealt.
@@ -2758,7 +2758,7 @@ Family Flags     : 45, 49, 118
 Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.08618 | PvP Coefficient: 1.98347 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.29049 | PvP Coefficient: 1.98347 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -3121,7 +3121,7 @@ Effects          :
 #4 (id=191029)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: -4 | Scaled Value: -4 | Target: Self (1)
 #5 (id=191030)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506), Malefic Grasp (1261153)
                    Family Flags: 0
 #6 (id=1300810)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -5802,7 +5802,7 @@ Family Flags     : 49, 70
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.96778 | PvP Coefficient: 1.12346 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.15006 | PvP Coefficient: 1.12346 | Target: Targeted Enemy (6)
 #2 (id=1049817)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #3 (id=1173941)  : Trigger Missiles (32): Doom
@@ -14533,7 +14533,7 @@ Family Flags     : 114
 Attributes       : Not Shapeshifted (16), Do Not Display Range (126), No Cooldown On Tooltip (192), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1158911)  : Summon Guardian (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 226268 | Misc Value 2: 4266 | Radius: 5 yards | Target: Front Right of Self (41)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 226268 | Misc Value 2: 6852 | Radius: 5 yards | Target: Front Right of Self (41)
 Description      : Summon a Gloomhound to fight for you for the next $d.
 
 Name             : Summon Charhound (id=455476) [Spell Family (5)] 
@@ -16351,6 +16351,7 @@ Effects          :
 Description      : Damage dealt by $?s388667[Drain Soul][Shadow Bolt] has a $?s198590[$s1][$s2]% chance to make your next Unstable Affliction or Seed of Corruption cost no Soul Shards and cast instantly.
 
 Name             : Shard Instability (id=1260269) [Spell Family (5)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -16362,6 +16363,7 @@ Stacks           : 3 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1269666)  : Apply Aura (6) | Ignore Aura State (262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -18934,9 +18936,9 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1319235)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1333354)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 125 | Scaled Value: 125 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 225 | Scaled Value: 225 | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1333391)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : When their energy depletes, Wild Imps have a $s3% chance to fling themselves at their target and Implode at $s1% effectiveness to their main target and $s2% effectiveness to other targets.

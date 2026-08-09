@@ -1639,10 +1639,14 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
 {  // Main Warrior Attack Class
   double slayers_strike_proc_chance;
   double master_of_warfare_proc_chance;
+  bool proc_slayers_strike;
+  bool proc_slayers_strike_per_target;
   warrior_attack_t( util::string_view n, warrior_t* p, const spell_data_t* s = spell_data_t::nil() )
     : base_t( n, p, s ),
     slayers_strike_proc_chance( 0 ),
-    master_of_warfare_proc_chance( 0 )
+    master_of_warfare_proc_chance( 0 ),
+    proc_slayers_strike( false ),
+    proc_slayers_strike_per_target( false )
   {
     if ( p->talents.slayer.slayers_dominance->ok() )
     {
@@ -1687,8 +1691,9 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
 
     // TODO confirm slayers strike proc rate, currently this is just reading 15% from effect 1
     // However, I am pretty sure this is using pseudo_random_c_from_p from dk module
-    if ( p()->talents.slayer.slayers_dominance->ok() && s->target == p()->target && 
-          p()->cooldown.slayers_dominance_icd->up() && !background &&
+    if ( p()->talents.slayer.slayers_dominance->ok() &&
+          ( s->target == p()->target || proc_slayers_strike_per_target ) &&
+          p()->cooldown.slayers_dominance_icd->up() && proc_slayers_strike &&
           p()->rng().roll( slayers_strike_proc_chance * ++p()->slayers_strike_attempts_since_last_proc ) )
     {
       p()->slayers_strike_attempts_since_last_proc = 0;
@@ -2575,6 +2580,7 @@ struct bloodthirst_t : public warrior_attack_t
 
     weapon = &( p->main_hand_weapon );
     radius = 5;
+    proc_slayers_strike = true;
     if ( p->non_dps_mechanics )
     {
       bloodthirst_heal = new bloodthirst_heal_t( p, p->find_spell( 117313 ) );
@@ -2607,6 +2613,7 @@ struct bloodthirst_t : public warrior_attack_t
       unhinged( false )
   {
     background = true;
+    proc_slayers_strike = true;
 
     weapon = &( p->main_hand_weapon );
     radius = 5;
@@ -3025,6 +3032,7 @@ struct mortal_strike_t : public warrior_attack_t
     weapon           = &( p->main_hand_weapon );
     cooldown->hasted = true;  // Doesn't show up in spelldata for some reason.
     rend_dot = new rend_dot_t( p );
+    proc_slayers_strike = true;
   }
 
   // This version is used for unhinged and other background actions
@@ -3038,6 +3046,7 @@ struct mortal_strike_t : public warrior_attack_t
     background = true;
     rend_dot = new rend_dot_t( p );
     cooldown->duration = 0_s;
+    proc_slayers_strike = true;
   }
 
   // This version is used for unhinged, to set the variable, as unhinged does not cleave
@@ -3453,6 +3462,7 @@ struct slam_base_t : public warrior_attack_t
   {
     weapon                       = &( p->main_hand_weapon );
     radius = 5;
+    proc_slayers_strike = true;
     if ( player->specialization() == WARRIOR_FURY )
     {
       base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
@@ -3618,6 +3628,9 @@ struct cleave_t : public warrior_attack_t
     weapon = &( player->main_hand_weapon );
     aoe = -1;
     reduced_aoe_targets = p->talents.arms.cleave->effectN( 2 ).base_value();
+
+    proc_slayers_strike = true;
+    proc_slayers_strike_per_target = true;
 
     if ( p->talents.arms.fervor_of_battle->ok() )
     {
@@ -4269,6 +4282,7 @@ struct execute_arms_t : public warrior_attack_t
     weapon        = &( p->main_hand_weapon );
 
     trigger_attack = new execute_damage_t( p, options_str );
+    trigger_attack->proc_slayers_strike = true;
     add_child( trigger_attack );
 
     if ( p->talents.arms.massacre->ok() )
@@ -4420,6 +4434,7 @@ struct execute_main_hand_t : public warrior_attack_t
     dual   = true;
     weapon = &( p->main_hand_weapon );
     radius = 5;
+    proc_slayers_strike = true;
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
 
@@ -4906,6 +4921,7 @@ struct raging_blow_attack_t : public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
     dual                                         = true;
     background = true;
+    proc_slayers_strike = true;
 
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
@@ -5072,6 +5088,7 @@ struct crushing_blow_attack_t : public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
     dual                                         = true;
     background = true;
+    proc_slayers_strike = true;
 
     base_aoe_multiplier = p->spell.whirlwind_buff->effectN( 2 ).percent();
   }
@@ -5394,6 +5411,14 @@ struct dreadnaught_t : warrior_attack_t
     if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
       target_filter_callback = secondary_targets_only();
   }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = warrior_attack_t::composite_target_multiplier( target );
+    if ( p()->talents.arms.overpowering_finish.ok() && target->health_percentage() < p()->talents.arms.overpowering_finish->effectN( 2 ).base_value() )
+      m *= 1.0 + p()->talents.arms.overpowering_finish->effectN( 1 ).percent();
+    return m;
+  }
 };
 
 struct overpower_t : public warrior_attack_t
@@ -5409,6 +5434,7 @@ struct overpower_t : public warrior_attack_t
     parse_options( options_str );
     may_block = may_parry = may_dodge = false;
     weapon                            = &( p->main_hand_weapon );
+    proc_slayers_strike = true;
 
     if ( p->talents.arms.dreadnaught->ok() )
     {
@@ -5693,6 +5719,7 @@ struct rampage_parent_t : public warrior_attack_t
     add_child( rampage3_oh );
     rampage4_mh = new rampage_attack_t( "rampage4", p, p->talents.fury.rampage->effectN( 5 ).trigger() );
     rampage4_mh->weapon = &(p->main_hand_weapon);
+    rampage4_mh->proc_slayers_strike = true;
     add_child( rampage4_mh );
 
     if ( p->talents.fury.rampaging_ruin->ok() )
@@ -8425,7 +8452,7 @@ void warrior_t::create_buffs()
   buff.recklessness = make_buff( this, "recklessness", spell.recklessness_buff )
     ->set_cooldown( timespan_t::zero() )
     ->set_stack_change_callback( [this]( buff_t*, int, int new_stack ) {
-      if ( new_stack == 0 && buff.fury_mid2_4pc_crit )
+      if ( new_stack == 0 && buff.fury_mid2_4pc_crit  && buff.fury_mid2_4pc_crit->up() )
         buff.fury_mid2_4pc_crit->expire();
     });
 
@@ -8524,7 +8551,7 @@ void warrior_t::create_buffs()
   // Arms
   buff.winding_up = make_buff( this, "winding_up", find_spell( 1300670 ) );
   // Fury
-  if ( sets->has_set_bonus( WARRIOR_FURY, MID2, B4 ) )
+  if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
     buff.fury_mid2_4pc_crit = make_buff( this, "fury_mid2_4pc_crit" )
                                 ->set_default_value( sets->set( WARRIOR_FURY, MID2, B4 )->effectN( 2 ).percent() )
                                 ->set_max_stack( as<int>( sets->set( WARRIOR_FURY, MID2, B4 )->effectN( 3 ).base_value() ) )

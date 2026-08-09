@@ -1316,17 +1316,34 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
   {
     npc_id = owner->talents.gloomhound->effectN( 1 ).misc_value1();
     npc_suffix = "vilefiend";
+    // 2026-08-01: Validated coefficients
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+    {
+      owner_coeff.ap_from_sp = 0.6075;
+      owner_coeff.sp_from_sp = 2.6325;
+    }
+    else
+    {
+      owner_coeff.ap_from_sp = 0.45;
+      owner_coeff.sp_from_sp = 1.95;
+    }
   }
   else if ( owner->talents.mark_of_fharg.ok() )
   {
     npc_id = owner->talents.charhound->effectN( 1 ).misc_value1();
     npc_suffix = "vilefiend";
+    // 2026-08-01: Validated coefficients
+    owner_coeff.ap_from_sp = 0.45;
+    owner_coeff.sp_from_sp = 1.95;
   }
   else
   {
     npc_id = owner->talents.vilefiend->effectN( 1 ).misc_value1();
     // NOTE: 2026-07-11 Regular Vilefiend do not trigger Hellbent Commander on heartbeat (bug?)
     triggers.hellbent_commander_heartbeat &= !bugs;
+    // 2026-08-01: Validated coefficients
+    owner_coeff.ap_from_sp = 0.45;
+    owner_coeff.sp_from_sp = 1.95;
   }
 
   // NOTE: 2026-07-11 Vilefiend do not trigger Hellbent Commander on demise (must wait to player heartbeat) (bug?)
@@ -1339,10 +1356,6 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
   // Currently bugged in 12.0.7 and not being affected by the crit bonus
   if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
     affected_by.demonic_brutality = false;
-
-  // 2026-02-17: Validated coefficients
-  owner_coeff.ap_from_sp = 0.45;
-  owner_coeff.sp_from_sp = 1.95;
 
   owner_coeff.health = 0.75;
 

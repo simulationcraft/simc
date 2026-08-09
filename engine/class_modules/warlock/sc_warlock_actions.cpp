@@ -480,7 +480,7 @@ using namespace helpers;
         p()->procs.ravenous_afflictions->occur();
       }
 
-      if ( destruction() && p()->talents.reverse_entropy.ok() )
+      if ( destruction() && p()->talents.reverse_entropy.ok() && result_is_hit( d->state->result ) )
       {
         if ( p()->buffs.reverse_entropy->trigger() )
           p()->procs.reverse_entropy->occur();
@@ -1105,37 +1105,43 @@ using namespace helpers;
 
         if ( affliction() )
         {
-          if ( result_is_hit( d->state->result ) && p()->talents.nightfall.ok() && p()->progress_rng.nightfall->trigger( d->state ) )
+          if ( result_is_hit( d->state->result ) )
           {
-            p()->procs.nightfall->occur();
-            p()->buffs.nightfall->trigger();
-          }
-          if ( p()->talents.siphon_life.ok() || ( p()->hero.seeds_of_their_demise.ok() && d->target->health_percentage() <= p()->hero.seeds_of_their_demise->effectN( 2 ).base_value() ) )
-          {
-            // Affliction Wither DoT ticks trigger procs when talented into Siphon Life
-            // Affliction Wither DoT ticks also trigger procs when attempting to start a collapse via Seeds of Their Demise
-            p()->trigger_aura_applied_callbacks( proc_data, p() );
+            if ( p()->talents.nightfall.ok() && p()->progress_rng.nightfall->trigger( d->state ) )
+            {
+              p()->procs.nightfall->occur();
+              p()->buffs.nightfall->trigger();
+            }
+            if ( p()->talents.siphon_life.ok() || ( p()->hero.seeds_of_their_demise.ok() && d->target->health_percentage() <= p()->hero.seeds_of_their_demise->effectN( 2 ).base_value() ) )
+            {
+              // Affliction Wither DoT ticks trigger procs when talented into Siphon Life
+              // Affliction Wither DoT ticks also trigger procs when attempting to start a collapse via Seeds of Their Demise
+              p()->trigger_aura_applied_callbacks( proc_data, p() );
+            }
           }
         }
 
         if ( destruction() )
         {
-          if ( d->state->result == RESULT_CRIT && p()->flat_rng.wither_crit_energize->trigger() )
-            p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither_crits );
-
-          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither );
-
-          if ( p()->talents.flashpoint.ok() && d->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
-            p()->buffs.flashpoint->trigger();
-
-          if ( p()->talents.demonfire_infusion.ok() && p()->flat_rng.demonfire_infusion_dot->trigger() )
+          if ( result_is_hit( d->state->result ) )
           {
-            p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
-            p()->procs.demonfire_infusion_dot->occur();
-          }
+            if ( d->state->result == RESULT_CRIT && p()->flat_rng.wither_crit_energize->trigger() )
+              p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither_crits );
 
-          // Destruction Wither DoT ticks trigger procs through some hidden trigger
-          p()->trigger_aura_applied_callbacks( proc_data, p() );
+            p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.wither );
+
+            if ( p()->talents.flashpoint.ok() && d->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
+              p()->buffs.flashpoint->trigger();
+
+            if ( p()->talents.demonfire_infusion.ok() && p()->progress_rng.demonfire_infusion->trigger( d->state ) )
+            {
+              p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
+              p()->procs.demonfire_infusion_dot->occur();
+            }
+
+            // Destruction Wither DoT ticks trigger procs through some hidden trigger
+            p()->trigger_aura_applied_callbacks( proc_data, p() );
+          }
         }
 
         // Seeds of their Demise collapse conditions must be checked periodically for every Wither tick
@@ -1518,17 +1524,20 @@ using namespace helpers;
 
     void tick( dot_t* d ) override
     {
-      if ( p()->progress_rng.agony_energize->trigger( d->state ) )
-      {
-        p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
-
-        // Agony energize spell triggers procs
-        p()->trigger_aura_applied_callbacks( p()->proc_data_entries.agony_energize, p() );
-      }
-
       warlock_spell_t::tick( d );
 
-      d->increment( 1 );
+      if ( result_is_hit( d->state->result ) )
+      {
+        if ( p()->progress_rng.agony_energize->trigger( d->state ) )
+        {
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
+
+          // Agony energize spell triggers procs
+          p()->trigger_aura_applied_callbacks( p()->proc_data_entries.agony_energize, p() );
+        }
+
+        d->increment( 1 );
+      }
     }
   };
 
@@ -3288,8 +3297,7 @@ using namespace helpers;
         spell_power_mod.direct = p->talents.implosion_aoe->effectN( 1 ).sp_coeff();
         aoe = -1;
         target_filter_callback = secondary_targets_only();
-        // NOTE: 2026-07-06: The spell description lists 125% effectiveness, but in-game damage behaves as +125% increased effectiveness (bug?)
-        base_dd_multiplier *= ( p->bugs ? 1.0 : 0.0 ) + p->tier.wl_demonology_12_1_class_set_4pc->effectN( 2 ).percent();
+        base_dd_multiplier *= p->tier.wl_demonology_12_1_class_set_4pc->effectN( 2 ).percent();
       }
     };
 
@@ -3303,8 +3311,7 @@ using namespace helpers;
         spell_power_mod.direct = p->talents.implosion_aoe->effectN( 1 ).sp_coeff();
         aoe = 0;
         radius = 0;
-        // NOTE: 2026-07-06: The spell description lists 150% effectiveness, but in-game damage behaves as +150% increased effectiveness (bug?)
-        base_dd_multiplier *= ( p->bugs ? 1.0 : 0.0 ) + p->tier.wl_demonology_12_1_class_set_4pc->effectN( 1 ).percent();
+        base_dd_multiplier *= p->tier.wl_demonology_12_1_class_set_4pc->effectN( 1 ).percent();
 
         impact_action = new isolated_implosion_aoe_secondary_t( p );
         impact_action->stats = stats;
@@ -3886,8 +3893,39 @@ using namespace helpers;
 
   struct incinerate_t : public warlock_spell_t
   {
+    struct incinerate_state_t : public action_state_t
+    {
+      unsigned real_total_target_count;
+
+      incinerate_state_t( action_t* action, player_t* target )
+        : action_state_t( action, target ),
+        real_total_target_count( 1 )
+      { }
+
+      void initialize() override
+      {
+        action_state_t::initialize();
+        real_total_target_count = 1;
+      }
+
+      std::ostringstream& debug_str( std::ostringstream& s ) override
+      {
+        action_state_t::debug_str( s );
+        s << " real_total_target_count=" << real_total_target_count;
+        return s;
+      }
+
+      void copy_state( const action_state_t* s ) override
+      {
+        action_state_t::copy_state( s );
+        real_total_target_count = debug_cast<const incinerate_state_t*>( s )->real_total_target_count;
+      }
+    };
+
     struct incinerate_fnb_t : public warlock_spell_t
     {
+      unsigned real_total_target_count = 1;
+
       incinerate_fnb_t( warlock_t* p )
         : warlock_spell_t( "Incinerate (Fire and Brimstone)", p, p->warlock_base.incinerate )
       {
@@ -3912,6 +3950,15 @@ using namespace helpers;
       double cost() const override
       { return 0.0; }
 
+      action_state_t* new_state() override
+      { return new incinerate_state_t( this, target ); }
+
+      void snapshot_state( action_state_t* s, result_amount_type rt ) override
+      {
+        warlock_spell_t::snapshot_state( s, rt );
+        debug_cast<incinerate_state_t*>( s )->real_total_target_count = real_total_target_count;
+      }
+
       size_t available_targets( std::vector<player_t*>& tl ) const override
       {
         warlock_spell_t::available_targets( tl );
@@ -3931,13 +3978,23 @@ using namespace helpers;
       {
         warlock_spell_t::impact( s );
 
-        if ( p()->bugs && p()->talents.diabolic_embers.ok() && s->result == RESULT_CRIT )
-          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits );
+        if ( result_is_hit( s->result ) )
+        {
+          if ( p()->bugs && p()->talents.diabolic_embers.ok() && s->result == RESULT_CRIT )
+            p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits );
+
+          if ( p()->talents.demonfire_infusion.ok() && p()->progress_rng.demonfire_infusion->trigger( s ) )
+          {
+            p()->proc_actions.demonfire_infusion->execute_on_target( s->target );
+            p()->procs.demonfire_infusion_inc->occur();
+          }
+        }
       }
     };
 
     double energize_mult;
     incinerate_fnb_t* fnb_action;
+    unsigned real_total_target_count = 1;
 
     incinerate_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Incinerate", p, p->warlock_base.incinerate, options_str ),
@@ -3957,6 +4014,15 @@ using namespace helpers;
       triggers.embers_of_nihilam_1 = p->talents.embers_of_nihilam_1.ok();
 
       add_child( fnb_action );
+    }
+
+    action_state_t* new_state() override
+    { return new incinerate_state_t( this, target ); }
+
+    void snapshot_state( action_state_t* s, result_amount_type rt ) override
+    {
+      warlock_spell_t::snapshot_state( s, rt );
+      debug_cast<incinerate_state_t*>( s )->real_total_target_count = real_total_target_count;
     }
 
     // Custom init() to combine Havoc+FnB coefficients instead of using the generic warlock_spell_t::init() Havoc multiplier
@@ -3985,16 +4051,23 @@ using namespace helpers;
     {
       player_t* cast_target = target;
 
+      real_total_target_count = 1;
+      if ( use_havoc() )
+        real_total_target_count = std::min( 2u, as<unsigned>( target_list().size() ) );
+
+      if ( p()->talents.fire_and_brimstone.ok() )
+      {
+        // FnB excludes the primary and Havoc targets, so both lists together contain every unique impact.
+        fnb_action->set_target( cast_target );
+        real_total_target_count += as<unsigned>( fnb_action->target_list().size() );
+        fnb_action->real_total_target_count = real_total_target_count;
+      }
+      assert( real_total_target_count > 0 );
+
       warlock_spell_t::execute();
 
       if ( p()->talents.fire_and_brimstone.ok() )
-        fnb_action->execute_on_target( cast_target );
-
-      if ( p()->talents.demonfire_infusion.ok() && p()->flat_rng.demonfire_infusion_inc->trigger() )
-      {
-        p()->proc_actions.demonfire_infusion->execute_on_target( cast_target );
-        p()->procs.demonfire_infusion_inc->occur();
-      }
+        fnb_action->execute();
 
       // Incinerate energize spell triggers procs
       p()->trigger_aura_applied_callbacks( p()->proc_data_entries.incinerate_energize, p() );
@@ -4014,13 +4087,22 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      // TOCHECK: 2025-08-27 Incinerate Havoc crit impacts don't give extra shards (bug?), and only 1 extra shard with Diabolic Embers
-      if ( s->result == RESULT_CRIT )
+      if ( result_is_hit( s->result ) )
       {
-        if ( !p()->bugs || s->chain_target == 0 )
-          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
-        else if ( p()->talents.diabolic_embers.ok() )
-          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits );
+        // TOCHECK: 2025-08-27 Incinerate Havoc crit impacts don't give extra shards (bug?), and only 1 extra shard with Diabolic Embers
+        if ( s->result == RESULT_CRIT )
+        {
+          if ( !p()->bugs || s->chain_target == 0 )
+            p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
+          else if ( p()->talents.diabolic_embers.ok() )
+            p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits );
+        }
+
+        if ( p()->talents.demonfire_infusion.ok() && p()->progress_rng.demonfire_infusion->trigger( s ) )
+        {
+          p()->proc_actions.demonfire_infusion->execute_on_target( s->target );
+          p()->procs.demonfire_infusion_inc->occur();
+        }
       }
     }
   };
@@ -4041,22 +4123,25 @@ using namespace helpers;
       {
         warlock_spell_t::tick( d );
 
-        if ( d->state->result == RESULT_CRIT && p()->flat_rng.immolate_crit_energize->trigger() )
-          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
-
-        p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
-
-        if ( p()->talents.flashpoint.ok() && d->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
-          p()->buffs.flashpoint->trigger();
-
-        if ( p()->talents.demonfire_infusion.ok() && p()->flat_rng.demonfire_infusion_dot->trigger() )
+        if ( result_is_hit( d->state->result ) )
         {
-          p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
-          p()->procs.demonfire_infusion_dot->occur();
-        }
+          if ( d->state->result == RESULT_CRIT && p()->flat_rng.immolate_crit_energize->trigger() )
+            p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
 
-        // Immolate DoT ticks trigger procs through some hidden trigger
-        p()->trigger_aura_applied_callbacks( proc_data, p() );
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
+
+          if ( p()->talents.flashpoint.ok() && d->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
+            p()->buffs.flashpoint->trigger();
+
+          if ( p()->talents.demonfire_infusion.ok() && p()->progress_rng.demonfire_infusion->trigger( d->state ) )
+          {
+            p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
+            p()->procs.demonfire_infusion_dot->occur();
+          }
+
+          // Immolate DoT ticks trigger procs through some hidden trigger
+          p()->trigger_aura_applied_callbacks( proc_data, p() );
+        }
       }
     };
 
@@ -5262,16 +5347,7 @@ using namespace helpers;
 
     void execute() override
     {
-      player_t* ib_target = target;
-
       warlock_spell_t::execute();
-
-      // 2026-02-18 Infernal Bolt can proc Demonfire Infusion
-      if ( p()->talents.demonfire_infusion.ok() && p()->flat_rng.demonfire_infusion_inc->trigger() )
-      {
-        p()->proc_actions.demonfire_infusion->execute_on_target( ib_target );
-        p()->procs.demonfire_infusion_inc->occur();
-      }
 
       // Infernal Bolt energize spell effect triggers procs
       p()->trigger_aura_applied_callbacks( proc_data, p() );
@@ -5283,6 +5359,18 @@ using namespace helpers;
       // Chaotic Inferno buff is only consumed by an Infernal Bolt cast that benefits from the effect
       if ( time_to_execute == 0_ms )
         p()->buffs.chaotic_inferno->decrement();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      // 2026-07-29 Infernal Bolt hits can proc Demonfire Infusion
+      if ( result_is_hit( s->result ) && p()->talents.demonfire_infusion.ok() && p()->progress_rng.demonfire_infusion->trigger( s ) )
+      {
+        p()->proc_actions.demonfire_infusion->execute_on_target( s->target );
+        p()->procs.demonfire_infusion_inc->occur();
+      }
     }
   };
 
@@ -5531,6 +5619,12 @@ using namespace helpers;
 
   // Diabolist Actions End
   // Helper Functions Begin
+
+  unsigned helpers::incinerate_state_target_count( const action_state_t* state )
+  {
+    assert( state );
+    return debug_cast<const incinerate_t::incinerate_state_t*>( state )->real_total_target_count;
+  }
 
   void helpers::consume_succulent_soul( warlock_t* p, player_t* target )
   {

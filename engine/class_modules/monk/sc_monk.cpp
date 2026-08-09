@@ -1619,9 +1619,10 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    may_combo_strike         = true;
-    tick_zero                = true;
-    spinning_crane_kick_tick = new tick_t( player, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
+    may_miss = may_dodge = may_parry = false;
+    may_combo_strike                 = true;
+    tick_zero                        = true;
+    spinning_crane_kick_tick         = new tick_t( player, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
     add_child( spinning_crane_kick_tick );
 
     interrupt_auto_attack = player->specialization() != MONK_WINDWALKER;
@@ -1688,6 +1689,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
   void execute() override
   {
+    set_target( player );
     auto *tick = spinning_crane_kick_tick;
     if ( !tick->execute_state )
       tick->execute_state = tick->get_state();
@@ -6476,7 +6478,8 @@ void monk_t::create_buffs()
   buff.whirling_dragon_punch = make_buff_fallback<buffs::whirling_dragon_punch_buff_t>(
       talent.windwalker.whirling_dragon_punch->ok(), this, "whirling_dragon_punch" );
 
-  buff.zenith = make_buff_fallback<buffs::zenith_t>( talent.windwalker.zenith->ok(), this, "zenith" );
+  buff.zenith = make_buff_fallback<buffs::zenith_t>( talent.windwalker.zenith->ok(), this, "zenith" )
+                    ->set_expire_callback( [ & ]( buff_t *, int, timespan_t ) { buff.zenith_stomp->expire(); } );
 
   buff.zenith_stomp = make_buff_fallback( talent.windwalker.tigereye_brew_3->ok(), this, "zenith_stomp",
                                           talent.monk.zenith_stomp_buff );

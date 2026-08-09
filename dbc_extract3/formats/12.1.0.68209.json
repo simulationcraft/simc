@@ -483,6 +483,21 @@
       { "data_type": "i", "field": "unk_3" }
     ]
   },
+  "DungeonEncounter": {
+    "fields": [
+      { "data_type": "S", "field": "name_lang" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "h", "field": "id_map" },
+      { "data_type": "h", "field": "id_difficulty" },
+      { "data_type": "i", "field": "order_index" },
+      { "data_type": "i", "field": "id_complete_world_state" },
+      { "data_type": "b", "field": "bit" },
+      { "data_type": "i", "field": "flags" },
+      { "data_type": "i", "field": "id_spell_icon_file" },
+      { "data_type": "i", "field": "faction" },
+      { "data_type": "i", "field": "item_sequence_level" }
+    ]
+  },
   "ExpectedStat": {
     "fields": [
       { "data_type": "i", "field": "id_expansion",             "formats": { "cpp": "%13.5ff" } },
@@ -1033,7 +1048,7 @@
       { "data_type": "f", "field": "coord", "elements": 2 },
       { "data_type": "i", "field": "id" },
       { "data_type": "H", "field": "id_journal_instance" },
-      { "data_type": "H", "field": "unk_1" },
+      { "data_type": "H", "field": "id_dungeon_encounter" },
       { "data_type": "I", "field": "order_index" },
       { "data_type": "H", "field": "first_section_id" },
       { "data_type": "H", "field": "ui_map_id" },

@@ -1,16 +1,16 @@
 #ifndef PTR_CLIENT_DATA_VERSION_INC
 #define PTR_CLIENT_DATA_VERSION_INC
 
-// Client data versioning information for 12.1.0.68914
+// Client data versioning information for 12.1.0.69189
 
-#define PTR_CLIENT_DATA_WOW_VERSION "12.1.0.68914"
+#define PTR_CLIENT_DATA_WOW_VERSION "12.1.0.69189"
 #define PTR_SIMC_WOW_VERSION "1210"
-static const wowv_t __ptr_client_data_version { 12, 1, 0, 68914 };
+static const wowv_t __ptr_client_data_version { 12, 1, 0, 69189 };
 
 // Hotfix data versioning information
 
-#define PTR_CLIENT_DATA_HOTFIX_DATE "2026-07-24"
-#define PTR_CLIENT_DATA_HOTFIX_BUILD (68914)
-#define PTR_CLIENT_DATA_HOTFIX_HASH "8ef62e606477ce04ede8d7511b60a61252e3495e2d09a49e8e83113e84e6458c"
+#define PTR_CLIENT_DATA_HOTFIX_DATE "2026-08-08"
+#define PTR_CLIENT_DATA_HOTFIX_BUILD (69189)
+#define PTR_CLIENT_DATA_HOTFIX_HASH "3fe44e066bac1528695787a33e4f5040cae5536c61f05ca1a1cc31b74a21be2a"
 
 #endif /* PTR_CLIENT_DATA_VERSION_INC*/

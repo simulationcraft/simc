@@ -181,7 +181,7 @@ void beast_mastery_ptr( player_t* p )
   cds->add_action( "potion,if=cooldown.bestial_wrath.ready|fight_remains<31" );
 
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=full_recharge_time<gcd" );
-  cleave->add_action( "bestial_wrath,if=!prev.wild_thrash" );
+  cleave->add_action( "bestial_wrath,if=buff.beast_cleave.remains|!talent.beast_cleave|!talent.wild_thrash" );
   cleave->add_action( "wild_thrash,if=talent.beast_cleave" );
   cleave->add_action( "wild_thrash,if=!talent.beast_cleave" );
   cleave->add_action( "kill_command,if=buff.natures_ally.react|talent.master_handler&(active_enemies>3|howl_summon.ready)|!apex.3" );
@@ -221,16 +221,8 @@ void beast_mastery_ptr( player_t* p )
   st->add_action( "barbed_shot,if=(focus<75|full_recharge_time<gcd)&!talent.serpentine_strikes|talent.serpentine_strikes" );
   st->add_action( "cobra_shot,if=cooldown.bestial_wrath.remains>gcd" );
 
-  trinkets->add_action( "use_item,name=light_company_guidon,if=cooldown.bestial_wrath.ready|fight_remains<21" );
-  trinkets->add_action( "use_item,name=void_execution_mandate,if=cooldown.bestial_wrath.ready|fight_remains<21" );
-  trinkets->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.bestial_wrath.remains<2|fight_remains<23" );
-  trinkets->add_action( "use_item,name=emberwing_feather,if=cooldown.bestial_wrath.ready|fight_remains<16" );
-  trinkets->add_action( "use_item,name=freightrunners_flask,if=cooldown.bestial_wrath.ready|fight_remains<16" );
-  trinkets->add_action( "use_item,name=sealed_chaos_urn,if=cooldown.bestial_wrath.ready|fight_remains<21" );
-  trinkets->add_action( "use_item,name=evercollapsing_void_fissure,if=cooldown.bestial_wrath.ready|fight_remains<11" );
-  trinkets->add_action( "use_item,name=rangercaptains_iridescent_insignia" );
-  trinkets->add_action( "use_item,name=void_stalkers_contract" );
-  trinkets->add_action( "use_item,name=latchs_crooked_hook" );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage" );
+  trinkets->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff" );
 }
 //beast_mastery_ptr_apl_end
 
@@ -404,8 +396,8 @@ void marksmanship_ptr( player_t* p )
   sentst->add_action( "volley" );
   sentst->add_action( "trueshot,if=variable.trueshot_ready" );
   sentst->add_action( "moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max" );
-  sentst->add_action( "kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
-  sentst->add_action( "multishot,target_if=max:debuff.sentinels_mark.down,if=talent.aspect_of_the_hydra&!max_prio_damage&active_enemies>1&buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
+  sentst->add_action( "kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up" );
+  sentst->add_action( "multishot,target_if=max:debuff.sentinels_mark.down,if=talent.aspect_of_the_hydra&!max_prio_damage&active_enemies>1&buff.precise_shots.up" );
   sentst->add_action( "arcane_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
   sentst->add_action( "rapid_fire" );
   sentst->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage" );
@@ -525,7 +517,9 @@ void survival_ptr( player_t* p )
   default_->add_action( "call_action_list,name=sentcleave,if=active_enemies>2&!talent.howl_of_the_pack_leader" );
 
   cds->add_action( "blood_fury,if=buff.takedown.up|cooldown.takedown.ready", "CDS" );
-  cds->add_action( "use_items,if=buff.takedown.up|cooldown.takedown.ready|!talent.takedown" );
+  cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_damage" );
+  cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&talent.takedown&!other_trinket.has_use_buff&this_trinket.cooldown.duration>=cooldown.takedown.duration*2&this_trinket.has_buff.haste&(buff.takedown.up|cooldown.takedown.remains>this_trinket.cooldown.duration*0.45)" );
+  cds->add_action( "use_items,check_existing=0,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(!talent.takedown|other_trinket.has_use_buff|this_trinket.cooldown.duration<cooldown.takedown.duration*2|!this_trinket.has_buff.haste)&(buff.takedown.up|cooldown.takedown.ready|cooldown.takedown.remains>20|!talent.takedown)" );
   cds->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.takedown.remains<5|!talent.takedown" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.takedown.up&!buff.power_infusion.up" );
   cds->add_action( "ancestral_call,if=buff.takedown.up|cooldown.takedown.ready" );
@@ -567,11 +561,11 @@ void survival_ptr( player_t* p )
   plcleave->add_action( "wildfire_bomb" );
   plcleave->add_action( "takedown" );
 
-  sentcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0", "AOE - Sent" );
+  sentcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0&(cooldown.takedown.remains|!talent.twin_fangs)", "AOE - Sent" );
   sentcleave->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
   sentcleave->add_action( "wildfire_bomb,target_if=max:debuff.sentinels_mark.remains,if=buff.tip_of_the_spear.up" );
   sentcleave->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
-  sentcleave->add_action( "takedown,target_if=min:debuff.sentinels_mark.remains,if=buff.tip_of_the_spear.up" );
+  sentcleave->add_action( "takedown,target_if=min:debuff.sentinels_mark.remains,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
   sentcleave->add_action( "moonlight_chakram,target_if=min:debuff.sentinels_mark.remains,if=buff.tip_of_the_spear.up" );
   sentcleave->add_action( "raptor_strike,target_if=min:debuff.sentinels_mark.remains,if=buff.tip_of_the_spear.up&buff.raptor_swipe.up|!buff.raptor_swipe.up" );
   sentcleave->add_action( "kill_command" );

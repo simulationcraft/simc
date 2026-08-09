@@ -29,6 +29,9 @@ actions=auto_attack
 actions+=/use_items
 actions+=/use_item,name=light_company_guidon,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<15
 actions+=/use_item,name=algethar_puzzle_box,if=fight_remains>122|cooldown.dancing_rune_weapon.remains>78|fight_remains<25
+actions+=/use_item,name=voracious_heart_of_ulatek,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<20
+actions+=/use_item,name=blazebinders_hoof,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<20|fight_remains>120
+actions+=/use_item,name=vile_vial_of_volatile_venom,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<20|fight_remains>120
 actions+=/fireblood,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<8
 actions+=/blood_fury,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<12
 actions+=/berserking,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<=15

@@ -1194,7 +1194,6 @@ public:
 
   bool sk_during_cast;
   bool lava_surge_during_lvb;
-  bool recently_used_sk;
   bool buffer_tier;
   std::unordered_map<std::string, std::tuple<timespan_t, double>> active_wolf_expr_cache;
 
@@ -1945,7 +1944,6 @@ public:
     : parse_player_effects_t( sim, SHAMAN, name, r ),
       sk_during_cast( false ),
       lava_surge_during_lvb( false ),
-      recently_used_sk( false ),
       buffer_tier( false ),
       ls_counter( 0U ),
       raptor_glyph( false ),
@@ -6566,9 +6564,8 @@ struct chain_lightning_t : public chained_base_t
 
   void execute() override
   {
-    chained_base_t::execute();
-
     p()->buff.mid2_ele_4pc_builder->decrement();
+    chained_base_t::execute();
 
     if ( is_variant( spell_variant::NORMAL ) && p()->specialization() == SHAMAN_ELEMENTAL )
     {
@@ -7954,6 +7951,7 @@ struct earthquake_t : public earthquake_base_t
     // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
     // buff multiplier as persistent.
 
+    p()->buff.mid2_ele_4pc_spender->decrement();
     p()->buff.master_of_the_elements->decrement();
 
   }
@@ -8693,7 +8691,6 @@ struct stormkeeper_t : public shaman_spell_t
     {
       maelstrom_gain = original_maelstrom_gain;
     }
-    p()->recently_used_sk = true;
   }
 
   bool ready() override
@@ -12542,12 +12539,11 @@ void shaman_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )  // Handled by the action
     ->set_default_value_from_effect( 2 ) // Damage bonus as default value
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-     if ( new_ == 0 && recently_used_sk)
+     if ( new_ == 0)
      {
          if (buff.ascendance->up())
          {
            buffer_tier = true;
-           recently_used_sk = false;
          }
          else
          {
@@ -13782,7 +13778,6 @@ void shaman_t::reset()
   lava_surge_during_lvb = false;
   sk_during_cast        = false;
   buffer_tier           = false;
-  recently_used_sk      = false;
 
   ls_counter = 0U;
   dre_attempts = 0U;
