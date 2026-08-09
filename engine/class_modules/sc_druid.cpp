@@ -3495,7 +3495,7 @@ struct matted_fur_buff_t final : public druid_absorb_buff_t
 
   matted_fur_buff_t( druid_t* p )
     : base_t( p, "matted_fur", find_trigger( p->talent.matted_fur ).trigger() ),
-      coeff( find_trigger( p->talent.matted_fur ).percent() * 1.25 )
+      coeff( find_trigger( p->talent.matted_fur ).percent() )
   {}
 
   bool trigger( int s, double, double c, timespan_t d ) override
