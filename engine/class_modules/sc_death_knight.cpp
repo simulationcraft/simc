@@ -3435,8 +3435,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     {
       def->add_action( "gnaw" );
       def->add_action( "monstrous_blow" );
-      def->add_action( "sweeping_claws,if=energy>45" );
-      def->add_action( "claw,if=energy>70" );
+      def->add_action( "sweeping_claws" );
     }
     else
     {
@@ -4456,14 +4455,13 @@ struct magus_base_pet_t : public death_knight_pet_t
         // If the target is immune to slows, frostbolt seems to be used at most every 6 seconds
         cooldown->duration = s->duration();
       }
-    }
 
-    void execute() override
-    {
-      if ( pet()->pet_type == PET_LORD_OF_THE_DEAD )
-        trigger_gcd = execute_time() + rng().range( 250_ms, 1000_ms );
-
-      magus_spell_t::execute();
+      if ( p->pet_type == PET_LORD_OF_THE_DEAD && dk()->bugs )
+      {
+        // Currently bugged. While this doesnt capture its behavior perfectly, its close enough for now. 
+        min_gcd     = data().cast_time() * 0.8;
+        trigger_gcd = data().cast_time();
+      }
     }
 
     // Frostbolt applies a slowing debuff on non-boss targets
@@ -4683,7 +4681,7 @@ struct lord_of_the_dead_pet_t : public magus_base_pet_t
 
     assert( magus_dur > 0_s && "Magus duration must be positive" );
 
-    m *= 1.0 + ( 0.005 * magus_dur.total_seconds() );
+    m *= 1.0 + ( 0.006 * magus_dur.total_seconds() );
 
     return m;
   }
@@ -4752,6 +4750,7 @@ struct blood_beast_pet_t : public death_knight_pet_t
       : pet_melee_attack_t<blood_beast_pet_t>( p, "corrupted_blood", p->dk()->pet_spell.corrupted_blood )
     {
       parse_options( options_str );
+      p->corrupted_blood = cooldown;
       aoe = -1;
     }
 
@@ -4801,6 +4800,9 @@ struct blood_beast_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::arise();
     accumulator = 0;
+    // Seems to skip the first possible cast of this.
+    if ( dk()->bugs )
+      corrupted_blood->start();
   }
 
   void reset() override
@@ -4836,6 +4838,7 @@ public:
 
 private:
   double blood_beast_mod;
+  cooldown_t* corrupted_blood;
 };
 
 // ==========================================================================
@@ -5529,6 +5532,7 @@ struct abomination_pet_t : public death_knight_pet_t
     timespan_t period = timespan_t::from_seconds( dk()->talent.unholy.raise_abomination->effectN( 1 ).base_value() );
 
     make_event<disease_cloud_event_t>( *sim, this, period );
+    disease_cloud->execute();
 
     death_knight_pet_t::arise();
     // Assume precombat abominations have to walk far further than normal
