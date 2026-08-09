@@ -764,8 +764,6 @@ public:
   struct options_t
   {
     bool fake_sov                         = true;
-    int min_dg_heal_targets               = 1;
-    int max_dg_heal_targets               = 5;
     bool fake_solidarity                  = true;
     double ror_bulwark_additional_proc_chance = .3;
     double blessed_hammer_strikes          = 2.0;
