@@ -6630,15 +6630,19 @@ struct chain_lightning_t : public chained_base_t
       p()->trigger_arc_discharge( state );
     }
 
-    if ( state->chain_target == 0 )
+    // Normal and TI triggered Chain Lightnings trigger Totemic Rebound (Surging Bolt) on the main
+    // target
+    if ( state->chain_target == 0 &&
+      ( is_variant( spell_variant::NORMAL ) || is_variant( spell_variant::THORIMS_INVOCATION ) ) )
     {
       p()->trigger_totemic_rebound( state );
-    }
-
-    if ( ( is_variant( spell_variant::NORMAL ) || is_variant( spell_variant::THORIMS_INVOCATION ) )
-      && state->chain_target == 0 )
-    {
       p()->trigger_whirling_air( state );
+    }
+    // Ride the Lightning triggers Totemic Rebound (Surging Bolt) on the final target
+    else if ( state->chain_target == as<int>( state->n_targets ) - 1 &&
+      is_variant( spell_variant::RIDE_THE_LIGHTNING ) )
+    {
+      p()->trigger_totemic_rebound( state );
     }
   }
 
@@ -7642,7 +7646,6 @@ struct elemental_blast_t : public shaman_spell_t
     // these are effects which ONLY trigger when the player cast the spell directly
     if ( is_variant( spell_variant::NORMAL ) )
     {
-      p()->trigger_totemic_rebound( execute_state );
       p()->buff.mid2_ele_4pc_spender->decrement();
     }
 
@@ -12335,6 +12338,13 @@ void shaman_t::trigger_totemic_rebound( const action_state_t* state, bool whirl,
   if ( !whirl && !rng_obj.totemic_rebound->trigger() )
   {
     return;
+  }
+
+  if ( sim->debug )
+  {
+    sim->out_debug.print(
+      "Player '{}' trigger totemic_rebound from {} on target={}, whirl={}, delay={}",
+      name(), state->action->name(), state->target->name(), whirl, delay );
   }
 
   buff.totemic_rebound->trigger();
