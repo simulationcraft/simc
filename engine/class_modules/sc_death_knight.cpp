@@ -3717,8 +3717,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
     timespan_t travel_time = timespan_t::from_seconds( spawn_distance / dk()->pet_spell.leap->missile_speed() );
     make_event( *sim, travel_time + rng().range( 0_ms, 100_ms ), [ &, source ]() {
       // RNG roll technically not needed as its a 100% chance, but, leaving this here in case it changes in the future
-      bool reanimation_triggered = reanimation_triggered =
-          rng().roll( dk()->talent.unholy.lord_of_the_dead->effectN( 1 ).percent() );
+      bool reanimation_triggered          = rng().roll( dk()->talent.unholy.lord_of_the_dead->effectN( 1 ).percent() );
       action_t* magus_summon_action       = dk()->pet_summon.lotd_magus;
       timespan_t unholy_devotion_duration = dk()->pet_spell.unholy_devotion_buff->duration();
       timespan_t cycle_of_death_cdr       = -dk()->talent.unholy.cycle_of_death->effectN( 1 ).time_value();
