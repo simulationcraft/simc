@@ -8287,6 +8287,9 @@ public:
     parse_options( options_str );
     affected_by_master_of_the_elements = true;
 
+    cooldown->duration = player->find_class_spell( "Flame Shock" )->cooldown();
+    trigger_gcd = player->find_class_spell( "Flame Shock" )->gcd();
+
     // Ensure Flame Shock is single target, since Simulationcraft naively interprets a
     // Max Targets value on a spell to mean "aoe this many targets"
     aoe = 0;
