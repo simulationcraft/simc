@@ -367,10 +367,7 @@ void unholy( player_t* p )
   cooldowns->add_action( "outbreak,if=(!talent.blightburst|talent.blightburst&(cooldown.putrefy.remains>gcd.max*2|time<5))&(dot.dread_plague.active_dots=0|dot.virulent_plague.active_dots=0)&(fight_remains>gcd.max*2&!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>gcd.max*2)" );
   cooldowns->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(buff.festering_scythe_tt.up|!talent.festering_scythe)" );
   cooldowns->add_action( "soul_reaper,target_if=min:health.pct,if=!talent.blightfall&(!debuff.soul_reaper_debuff.up|!variable.cds_active&cooldown.dark_transformation.remains>cooldown.soul_reaper.duration-1|cooldown.dark_transformation.remains<gcd.max&talent.reaping)|talent.blightfall&talent.infliction_of_sorrow&(buff.dark_transformation.remains<5|buff.reaping.remains<=gcd.max)" );
-  if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-    cooldowns->add_action( "putrefy,if=(variable.st_planning|variable.adds_remain)&(buff.dark_transformation.up|raid_event.adds.exists&raid_event.adds.remains<3)" );
-  else
-    cooldowns->add_action( "putrefy,if=(variable.st_planning|variable.adds_remain)*(target.health.pct>35|!talent.soul_reaper)&(charges=max_charges&!buff.sudden_doom.react&(cooldown.dark_transformation.remains>9|!talent.reaping|!talent.soul_reaper)|buff.dark_transformation.up)|fight_remains<cooldown.soul_reaper.remains|raid_event.adds.exists&raid_event.adds.remains<3" );
+  cooldowns->add_action( "putrefy,if=(variable.st_planning|variable.adds_remain)&(buff.dark_transformation.up|raid_event.adds.exists&raid_event.adds.remains<3)" );
   cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&!buff.blightfall.up&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead)|buff.blightfall.up&buff.dark_transformation.remains<4" );
 
   racials->add_action( "ancestral_call,if=variable.cds_active", "Racials" );
