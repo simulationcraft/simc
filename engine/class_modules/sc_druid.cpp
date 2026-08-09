@@ -617,6 +617,7 @@ struct druid_t final : public parse_player_effects_t
     action_t* lunar_wrath;
     action_t* lunar_wrath_heal;
     action_t* memory_of_ysera_heal;
+    action_t* rampant_thorn; // mid2 4pc
     action_t* sundering_roar_thrash;
     action_t* thrash_flashing;
     action_t* waking_nightmare;  // placeholder
@@ -5733,6 +5734,67 @@ struct maul_t final : public maul_ravage_base_t<maul_base_t>
   }
 };
 
+struct rampant_thorn_t final : public bear_attack_t
+{
+  enum damage_e
+  {
+    SINGLETARGET,
+    AOE
+  };
+
+  template <damage_e TYPE>
+  struct damage_t final : public bear_attack_t
+  {
+    damage_t( druid_t* p, const spell_data_t* sd ) :
+      bear_attack_t( TYPE == SINGLETARGET ? "rampant_thorn_singletarget" : TYPE == AOE ? "rampant_thorn_aoe" : "default", p, sd )
+    {
+      size_t index = 0;
+      switch ( TYPE )
+      {
+      case SINGLETARGET:
+        aoe = 1;
+        index = 1;
+        break;
+      case AOE:
+        // tooltip interpolates $i which is max_targets(), but the value is not set
+        aoe = p->sets->set( DRUID_GUARDIAN, MID2, B4 )->effectN( 4 ).base_value();
+        index = 2;
+        break;
+      default:
+        assert( false );
+      }
+
+      spell_power_mod.direct = data().effectN( index ).ap_coeff();
+    }
+  };
+
+  action_t* singletarget;
+  action_t* aoe;
+
+  rampant_thorn_t( druid_t* p )
+    : bear_attack_t( "rampant_thorn", p, spell_data_t::nil() ),
+      singletarget( nullptr ),
+      aoe( nullptr )
+  {
+    dual = background = proc = true;
+
+    const spell_data_t* spell = p->find_spell( 1301157 );
+    singletarget = new damage_t<SINGLETARGET>( p, spell );
+    aoe = new damage_t<AOE>( p, spell );
+
+    add_child( singletarget );
+    add_child( aoe );
+  }
+
+  void execute() override
+  {
+    base_t::execute();
+
+    singletarget->execute();
+    aoe->execute();
+  }
+};
+
 struct raze_t final : public maul_ravage_base_t<raze_base_t>
 {
   DRUID_ABILITY( raze_t, base_t, "raze", p->talent.raze )
@@ -5842,6 +5904,10 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
     base_t::execute();
 
     p()->buff.gorestained_claws->trigger( this );
+    if ( p()->sets->has_set_bonus( DRUID_GUARDIAN, MID2, B4 ) )
+    {
+      p()->active.rampant_thorn->execute();
+    }
 
     if ( rng().roll( fc_pct ) )
       make_event( *sim, 500_ms, [ this ]() { p()->active.thrash_flashing->execute_on_target( target ); } );
@@ -11161,7 +11227,7 @@ void druid_t::create_buffs()
     ->set_trigger_spell( talent.gore );
 
   buff.gorestained_claws = make_fallback( sets->has_set_bonus( DRUID_GUARDIAN, MID2, B2 ), this, "gorestained_claws", find_trigger( sets->set( DRUID_GUARDIAN, MID2, B2 ) ).trigger() )
-    ->set_chance( sets->set( DRUID_GUARDIAN, MID2, B2 ).trigger()->effectN( 1 ).percent() )
+    ->set_chance( sets->set( DRUID_GUARDIAN, MID2, B2 )->effectN( 1 ).percent() )
     ->set_trigger_spell( sets->set( DRUID_GUARDIAN, MID2, B2 ) );
 
   buff.gory_fur_ironfur = make_fallback( talent.gory_fur.ok(), this, "gory_fur_ironfur", find_spell( 201671 ) )
@@ -11637,6 +11703,11 @@ void druid_t::create_actions()
     active.sundering_roar_thrash = sr_thrash;
   }
 
+  if ( sets->has_set_bonus( DRUID_GUARDIAN, MID2, B4 ) )
+  {
+    active.rampant_thorn = get_secondary_action<rampant_thorn_t>( "rampant_thorn", this );
+  }
+
   if ( talent.waking_nightmare.ok() )
   {
     active.waking_nightmare = new waking_nightmare_t( this );
@@ -11760,7 +11831,7 @@ void druid_t::create_actions()
   find_parent( active.sundering_roar_thrash, "sundering_roar" );
   find_parent( active.the_light_of_elune, "moonfire" );
   find_parent( active.thrash_flashing, "thrash" );
-  find_parent( active.vicious_brambles, "wild_guardian" );
+  find_parent( active.rampant_thorn, "thrash" );
 
   // shroom madness
   find_parent( active.fungal_growth, "wild_mushroom" );
