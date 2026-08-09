@@ -13191,10 +13191,6 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
   // Set bonuses
   eff::source_eff_builder_t( buff.tww2_enh_2pc ).build( a );
   eff::source_eff_builder_t( buff.tww2_enh_4pc_damage ).build( a );
-  if ( dbc->ptr )
-  {
-    eff::source_eff_builder_t( buff.mid2_enh_4pc ).build( a );
-  }
 
   // Elemental
   eff::source_eff_builder_t( mastery.elemental_overload ).build( a );
