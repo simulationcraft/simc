@@ -767,7 +767,8 @@ struct druid_t final : public parse_player_effects_t
     buff_t* gift_of_ironfur;
     buff_t* gift_of_maul;
     buff_t* gore;
-    buff_t* gory_fur;
+    buff_t* gory_fur_ironfur;
+    buff_t* gory_fur_maul_ravage;
     buff_t* guardian_of_elune;
     buff_t* incarnation_bear;
     buff_t* lunar_beam;
@@ -5258,6 +5259,8 @@ struct ironfur_t final : public rage_spender_t<druid_spell_t>
   {
     base_t::execute();
 
+    p()->buff.gory_fur_maul_ravage->trigger( this );
+
     auto dur = p()->buff.ironfur->buff_duration();
 
     if ( p()->buff.guardian_of_elune->check() )
@@ -5401,7 +5404,7 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
   {
     base_t::execute();
 
-    p()->buff.gory_fur->trigger( this );
+    p()->buff.gory_fur_ironfur->trigger( this );
     p()->buff.guardian_of_elune->trigger( this );
 
     p()->buff.gore->consume( this );
@@ -11241,7 +11244,12 @@ void druid_t::create_buffs()
   buff.gore = make_fallback( talent.gore.ok(), this, "gore", find_spell( 93622 ) )
     ->set_trigger_spell( talent.gore );
 
-  buff.gory_fur = make_fallback( talent.gory_fur.ok(), this, "gory_fur", find_trigger( talent.gory_fur ).trigger() )
+  buff.gory_fur_ironfur = make_fallback( talent.gory_fur.ok(), this, "gory_fur_ironfur", find_spell( 201671 ) )
+    ->set_chance( talent.gory_fur->effectN( 2 ).percent() )
+    ->set_trigger_spell( talent.gory_fur );
+
+  buff.gory_fur_maul_ravage = make_fallback( talent.gory_fur.ok(), this, "gory_fur_maul_ravage", find_spell( 1307881 ) )
+    ->set_chance( talent.gory_fur->effectN( 1 ).percent() )
     ->set_trigger_spell( talent.gory_fur );
 
   buff.guardian_of_elune = make_fallback( talent.guardian_of_elune.ok(),
@@ -14058,7 +14066,8 @@ void druid_t::parse_action_effects( action_t* action )
   // snapshots regrowth hot, so disable the effect
   _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
 
-  _a->parse_effects( buff.gory_fur, CONSUME_BUFF );
+  _a->parse_effects( buff.gory_fur_ironfur, CONSUME_BUFF );
+  _a->parse_effects( buff.gory_fur_maul_ravage, CONSUME_BUFF );
 
   if ( talent.penumbral_swell.ok() )
     _a->parse_effects( buff.lunar_beam );

@@ -2440,6 +2440,7 @@ class SpellDataGenerator(DataGenerator):
           # Guardian
           ( 1250913, 3 ), # Memory of Ysera heal
           ( 1269633, 3 ), ( 1269645, 3 ), ( 1269648, 3 ), # Apex talent echoes
+          ( 201671, 3 ), ( 1307881, 3 ), # Gory Fur
           # Restoration
         ),
         # Demon Hunter:
