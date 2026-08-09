@@ -1318,6 +1318,7 @@ public:
 
     // Doom Winds triggred by Enhancement Ascendance
     action_t* doom_winds_asc;
+    action_t* doom_winds_dre;
 
     action_t* set_ascendance;
     action_t* tww3_primordial_storm;
@@ -2532,8 +2533,8 @@ public:
       affected_by_flametongue_ta( false ),
       affected_by_lightning_cap_da( false ),
       affected_by_lightning_cap_ta( false ),
-      affected_by_maelstrom_weapon( false ),
       affected_by_potm( false ),
+      affected_by_maelstrom_weapon( false ),
       mw_consumed_stacks( 0 ), mw_affected_stacks( 0 ),
       mw_parent( nullptr )
   {
@@ -3165,7 +3166,7 @@ public:
       {
         this->sim->out_debug.print( "LOOK {} ancestor triggers", this->name() );
       }
-      
+
       this->p()->trigger_ancestor( ancestor_trigger, this->execute_state );
     }
   }
@@ -3272,8 +3273,8 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( affected_by_potm && p()->buff.power_of_the_maelstrom->up() && p()->is_ptr())
     {
       m *= 1.0 + p()->buff.power_of_the_maelstrom->data().effectN( 1 ).percent();
-    }   
-     
+    }
+
 
     return m;
   }
@@ -6629,15 +6630,19 @@ struct chain_lightning_t : public chained_base_t
       p()->trigger_arc_discharge( state );
     }
 
-    if ( state->chain_target == 0 )
+    // Normal and TI triggered Chain Lightnings trigger Totemic Rebound (Surging Bolt) on the main
+    // target
+    if ( state->chain_target == 0 &&
+      ( is_variant( spell_variant::NORMAL ) || is_variant( spell_variant::THORIMS_INVOCATION ) ) )
     {
       p()->trigger_totemic_rebound( state );
-    }
-
-    if ( ( is_variant( spell_variant::NORMAL ) || is_variant( spell_variant::THORIMS_INVOCATION ) )
-      && state->chain_target == 0 )
-    {
       p()->trigger_whirling_air( state );
+    }
+    // Ride the Lightning triggers Totemic Rebound (Surging Bolt) on the final target
+    else if ( state->chain_target == as<int>( state->n_targets ) - 1 &&
+      is_variant( spell_variant::RIDE_THE_LIGHTNING ) )
+    {
+      p()->trigger_totemic_rebound( state );
     }
   }
 
@@ -7215,7 +7220,7 @@ struct lava_burst_t : public shaman_spell_t
 
     p()->buff.mid2_ele_4pc_builder->decrement();
   }
-  
+
   timespan_t execute_time() const override
   {
     if ( p()->buff.lava_surge->up() )
@@ -7357,7 +7362,7 @@ struct lightning_bolt_t : public shaman_spell_t
         p()->buff.stormkeeper->decrement();
       }
       p()->sk_during_cast = false;
-      
+
 
       if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
       {
@@ -7641,7 +7646,6 @@ struct elemental_blast_t : public shaman_spell_t
     // these are effects which ONLY trigger when the player cast the spell directly
     if ( is_variant( spell_variant::NORMAL ) )
     {
-      p()->trigger_totemic_rebound( execute_state );
       p()->buff.mid2_ele_4pc_spender->decrement();
     }
 
@@ -8286,6 +8290,9 @@ public:
     parse_options( options_str );
     affected_by_master_of_the_elements = true;
 
+    cooldown->duration = player->find_class_spell( "Flame Shock" )->cooldown();
+    trigger_gcd = player->find_class_spell( "Flame Shock" )->gcd();
+
     // Ensure Flame Shock is single target, since Simulationcraft naively interprets a
     // Max Targets value on a spell to mean "aoe this many targets"
     aoe = 0;
@@ -8606,7 +8613,14 @@ struct ascendance_t : public shaman_spell_t
     if ( p()->specialization() == SHAMAN_ENHANCEMENT )
     {
       p()->action.ascendance_damage->execute_on_target( target );
-      p()->action.doom_winds_asc->execute_on_target( target );
+      if ( p()->talent.deeply_rooted_elements.ok() )
+      {
+        p()->action.doom_winds_dre->execute_on_target( target );
+      }
+      else
+      {
+        p()->action.doom_winds_asc->execute_on_target( target );
+      }
     }
   }
 
@@ -8738,6 +8752,13 @@ struct doom_winds_t : public shaman_attack_t
     if ( is_variant( spell_variant::ASCENDANCE ) )
     {
       cooldown = player->get_cooldown( "doom_winds_ascendance" );
+      cooldown->duration = 0_ms;
+      background = true;
+    }
+    else if ( is_variant( spell_variant::DEEPLY_ROOTED_ELEMENTS ) )
+    {
+      cooldown = player->get_cooldown( "doom_winds_dre" );
+      cooldown->duration = 0_ms;
       background = true;
     }
     else
@@ -8750,8 +8771,25 @@ struct doom_winds_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
-    p()->buff.doom_winds->extend_duration_or_trigger(
-      data().effectN( 1 ).trigger()->duration() );
+    // Normal Doom Winds buttonpress extends the existing buff, or triggers normally
+    if ( is_variant( spell_variant::NORMAL ) )
+    {
+      p()->buff.doom_winds->extend_duration_or_trigger(
+        data().effectN( 1 ).trigger()->duration() );
+    }
+    // During ascendance, Doom Winds pandemic-extends any existing buff, or triggers normally
+    else if ( is_variant( spell_variant::ASCENDANCE ) )
+    {
+      p()->buff.doom_winds->trigger();
+    }
+    // During DRE-based Ascendance, Doom Winds does not get extension, only triggers for the special
+    // duration.
+    else if ( is_variant( spell_variant::DEEPLY_ROOTED_ELEMENTS ) && ! p()->buff.doom_winds->up() )
+    {
+      p()->buff.doom_winds->trigger(
+        p()->talent.deeply_rooted_elements->effectN( 1 ).time_value() +
+        p()->talent.thorims_invocation->effectN( 6 ).time_value() );
+    }
 
     if ( p()->talent.feral_spirit.ok() )
     {
@@ -10019,7 +10057,7 @@ struct voltaic_blaze_t : public shaman_spell_t
         p()->trigger_secondary_flame_shock( state->target, spell_variant::VOLTAIC_BLAZE );
       } );
 
-      
+
     }
   };
 
@@ -10533,8 +10571,13 @@ void shaman_t::create_actions()
     action.fire_nova = new fire_nova_t( this, variant_flag( spell_variant::NORMAL ) );
   }
 
-  if ( talent.deeply_rooted_elements.ok() ||
-       ( talent.ascendance.ok() && specialization() == SHAMAN_ENHANCEMENT ) )
+  if ( talent.deeply_rooted_elements.ok() )
+  {
+    action.doom_winds_dre = new doom_winds_t( this,
+      variant_flag( spell_variant::DEEPLY_ROOTED_ELEMENTS ) );
+  }
+
+  if ( talent.ascendance.ok() && specialization() == SHAMAN_ENHANCEMENT )
   {
     action.doom_winds_asc = new doom_winds_t( this, variant_flag( spell_variant::ASCENDANCE ) );
   }
@@ -12297,6 +12340,13 @@ void shaman_t::trigger_totemic_rebound( const action_state_t* state, bool whirl,
     return;
   }
 
+  if ( sim->debug )
+  {
+    sim->out_debug.print(
+      "Player '{}' trigger totemic_rebound from {} on target={}, whirl={}, delay={}",
+      name(), state->action->name(), state->target->name(), whirl, delay );
+  }
+
   buff.totemic_rebound->trigger();
 
   make_event( *sim, delay, [ this, t = state->target ] {
@@ -12502,7 +12552,7 @@ void shaman_t::create_buffs()
   //
   buff.ascendance = new ascendance_buff_t( this );
   buff.ascendance->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-    if ( new_ == 0 ) 
+    if ( new_ == 0 )
     {
       buff.mid2_ele_4pc_builder->trigger(buffer_tier ? 4 : 2);
       buffer_tier = false;
@@ -12753,6 +12803,7 @@ void shaman_t::create_buffs()
     } );
   buff.doom_winds = make_buff( this, "doom_winds", find_spell( 466772 ) )
     ->set_tick_on_application( true )
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
     ->set_period( timespan_t::from_seconds( find_spell( 466772 )->effectN( 5 ).base_value() ) )
     ->set_cooldown( 0_ms ) // Handled by the action
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
@@ -12832,7 +12883,7 @@ void shaman_t::create_buffs()
                                      }
                                    });
   buff.mid2_ele_4pc_spender =
-      make_buff( this, "overcharge_tier", find_spell( 1300222 ) ) 
+      make_buff( this, "overcharge_tier", find_spell( 1300222 ) )
       ->set_trigger_spell(sets->set( SHAMAN_ELEMENTAL, MID2, B4 ));
 
 
@@ -13150,10 +13201,6 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
   // Set bonuses
   eff::source_eff_builder_t( buff.tww2_enh_2pc ).build( a );
   eff::source_eff_builder_t( buff.tww2_enh_4pc_damage ).build( a );
-  if ( dbc->ptr )
-  {
-    eff::source_eff_builder_t( buff.mid2_enh_4pc ).build( a );
-  }
 
   // Elemental
   eff::source_eff_builder_t( mastery.elemental_overload ).build( a );

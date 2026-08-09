@@ -764,8 +764,6 @@ public:
   struct options_t
   {
     bool fake_sov                         = true;
-    int min_dg_heal_targets               = 1;
-    int max_dg_heal_targets               = 5;
     bool fake_solidarity                  = true;
     double ror_bulwark_additional_proc_chance = .3;
     double blessed_hammer_strikes          = 2.0;
@@ -1239,19 +1237,6 @@ public:
         if ( td->debuff.judgment->up() )
           td->debuff.judgment->decrement();
       }
-      if ( !p()->is_ptr() )
-      {
-        if ( p()->buffs.lightsmith.masterwork_weapon->up() )
-        {
-          p()->buffs.lightsmith.masterwork_weapon->decrement();
-          p()->cast_lesser_armament( 1, LESSER_WEAPON );
-        }
-        if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
-        {
-          p()->buffs.lightsmith.masterwork_bulwark->decrement();
-          p()->cast_lesser_armament( 1, LESSER_BULWARK );
-        }
-      }
     }
 
     if ( ab::energize_resource_() == RESOURCE_HOLY_POWER && p()->talents.rush_of_light->ok() && s->result == RESULT_CRIT )
@@ -1661,12 +1646,6 @@ public:
     {
       // 2022-11-14 Free Holy Power spenders do not delay Sentinel's decay
       if ( !( p->bugs && isFreeSLDPSpender ) )
-      {
-        p->buffs.sentinel_decay->extend_duration( timespan_t::from_seconds( 1 ) );
-      }
-      // 2025-12-18 Instrument of the Divine talented extends Sentinel's decay by double the time, regardless of Holy Power spent.
-      // Bug is fixed on PTR
-      if (p->bugs && p->talents.instrument_of_the_divine->ok() && !p->is_ptr() )
       {
         p->buffs.sentinel_decay->extend_duration( timespan_t::from_seconds( 1 ) );
       }

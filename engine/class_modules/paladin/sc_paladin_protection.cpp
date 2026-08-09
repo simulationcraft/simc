@@ -121,18 +121,9 @@ struct avengers_shield_base_t : public paladin_spell_t
       : paladin_spell_t( n, p, p->spells.glory_of_the_vanguard )
     {
       background = true;
-      // Glory of the Vanguard hits every enemy in a line. For now, just assume it hits everything
-      // Theoretically, it also has a chance to miss completely, for whatever reasons. Drunk Paladins.
-      if ( p->is_ptr() )
-      {
-        aoe      = 1;
-        gotv_aoe = new glory_of_the_vanguard_aoe_t( std::string( n ) + "_aoe", p );
-        add_child( gotv_aoe );
-      }
-      else
-      {
-        aoe = -1;
-      }
+      aoe        = 1;
+      gotv_aoe   = new glory_of_the_vanguard_aoe_t( std::string( n ) + "_aoe", p );
+      add_child( gotv_aoe );
     }
     void execute() override
     {
@@ -148,8 +139,7 @@ struct avengers_shield_base_t : public paladin_spell_t
     void impact(action_state_t* s) override
     {
       paladin_spell_t::impact( s );
-      if ( p()->is_ptr() )
-        gotv_aoe->execute_on_target( s->target, s->result_amount );
+      gotv_aoe->execute_on_target( s->target, s->result_amount );
     }
   };
 
@@ -258,12 +248,9 @@ struct avengers_shield_base_t : public paladin_spell_t
     // Technically this should be in execute(), but we only know on impact if Avenger's Shield critted.
     if ( triggers_apex && s->chain_target == 0 )
     {
-      if ( p()->is_ptr() )
-        make_event<delayed_execute_on_target_event_t>(
-            *sim, p(), glory_of_the_vanguard, s->target,
-            s->result_amount * p()->talents.glory_of_the_vanguard_1->effectN( 1 ).percent(), 300_ms );
-      else
-        make_event<delayed_execute_event_t>( *sim, p(), glory_of_the_vanguard, s->target, 300_ms );
+      make_event<delayed_execute_on_target_event_t>(
+          *sim, p(), glory_of_the_vanguard, s->target,
+          s->result_amount * p()->talents.glory_of_the_vanguard_1->effectN( 1 ).percent(), 300_ms );
     }
   }
 
@@ -357,8 +344,6 @@ struct avengers_shield_divine_exaction_t :public avengers_shield_base_t
                               p->talents.templar.divine_exaction->effectN( 2 ).percent() )
   {
     background = true;
-    if ( !p->is_ptr() )
-      base_multiplier += 1.0;
   }
 };
 
@@ -409,7 +394,7 @@ struct blessed_hammer_t : public paladin_spell_t
       // To Do: Investigate refresh behaviour
       td( s->target )
           ->debuff.blessed_hammer->trigger( 1, s->attack_power * p()->talents.blessed_hammer->effectN( 1 ).percent() );
-      if ( p()->is_ptr() && p()->talents.seal_of_reprisal->ok() )
+      if ( p()->talents.seal_of_reprisal->ok() )
         p()->get_target_data( s->target )->debuff.seal_of_reprisal->execute();
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
         ue->do_execute( s );
@@ -466,18 +451,15 @@ struct blessed_hammer_t : public paladin_spell_t
     paladin_spell_t::execute();
     // Grand Crusader can proc on cast, but not on impact
     p()->trigger_grand_crusader();
-    if ( p()->is_ptr() )
+    if ( p()->buffs.lightsmith.masterwork_weapon->up() )
     {
-      if ( p()->buffs.lightsmith.masterwork_weapon->up() )
-      {
-        p()->buffs.lightsmith.masterwork_weapon->decrement();
-        p()->cast_lesser_armament( 1, LESSER_WEAPON );
-      }
-      if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
-      {
-        p()->buffs.lightsmith.masterwork_bulwark->decrement();
-        p()->cast_lesser_armament( 1, LESSER_BULWARK );
-      }
+      p()->buffs.lightsmith.masterwork_weapon->decrement();
+      p()->cast_lesser_armament( 1, LESSER_WEAPON );
+    }
+    if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
+    {
+      p()->buffs.lightsmith.masterwork_bulwark->decrement();
+      p()->cast_lesser_armament( 1, LESSER_BULWARK );
     }
   }
   void impact( action_state_t* s ) override
@@ -616,7 +598,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       paladin_melee_attack_t::impact( s );
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
         ue->do_execute( s );
-      if ( p()->is_ptr() && p()->talents.seal_of_reprisal->ok() )
+      if ( p()->talents.seal_of_reprisal->ok() )
         p()->get_target_data( s->target )->debuff.seal_of_reprisal->execute();
     }
   };
@@ -665,18 +647,15 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       if ( hotr_aoe->target != execute_state->target )
         hotr_aoe->target_cache.is_valid = false;
     }
-    if ( p()->is_ptr() )
+    if ( p()->buffs.lightsmith.masterwork_weapon->up() )
     {
-      if ( p()->buffs.lightsmith.masterwork_weapon->up() )
-      {
-        p()->buffs.lightsmith.masterwork_weapon->decrement();
-        p()->cast_lesser_armament( 1, LESSER_WEAPON );
-      }
-      if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
-      {
-        p()->buffs.lightsmith.masterwork_bulwark->decrement();
-        p()->cast_lesser_armament( 1, LESSER_BULWARK );
-      }
+      p()->buffs.lightsmith.masterwork_weapon->decrement();
+      p()->cast_lesser_armament( 1, LESSER_WEAPON );
+    }
+    if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
+    {
+      p()->buffs.lightsmith.masterwork_bulwark->decrement();
+      p()->cast_lesser_armament( 1, LESSER_BULWARK );
     }
   }
 
@@ -694,7 +673,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     p()->buffs.lightsmith.blessed_assurance->expire();
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
       ue->do_execute( s );
-    if ( p()->is_ptr() && p()->talents.seal_of_reprisal->ok() )
+    if ( p()->talents.seal_of_reprisal->ok() )
       p()->get_target_data( s->target )->debuff.seal_of_reprisal->execute();
   }
 
