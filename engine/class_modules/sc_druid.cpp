@@ -2925,7 +2925,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 template <class Base, bool DOT = false>
 struct druid_residual_action_t : public Base
 {
-protected: 
+protected:
   using base_t = druid_residual_action_t<Base, DOT>;
   double residual_mul = 1.0;
 
@@ -3337,7 +3337,7 @@ struct eclipse_buff_base_t : public druid_buff_t
       p()->buff.elunes_challenge->trigger();
 
     if ( d == 0_ms )
-      p()->buff.dreamstate->trigger();  
+      p()->buff.dreamstate->trigger();
   }
 };
 
@@ -11911,7 +11911,7 @@ void druid_t::create_actions()
   }
 
   if ( talent.wild_guardian_3.ok() )
-    active.vicious_brambles = get_secondary_action<vicious_brambles_t>( "vicious_brambles", this ); 
+    active.vicious_brambles = get_secondary_action<vicious_brambles_t>( "vicious_brambles", this );
 
   // Restoration
   if ( talent.yseras_gift.ok() )
@@ -12905,7 +12905,7 @@ void druid_t::init_special_effects()
     driver->spell_id = talent.twin_claw->id();
     driver->proc_flags_ = PF_MELEE_ABILITY;  // only melee abilities trigger
     driver->set_can_only_proc_from_class_abilities( true );
-  
+
     if ( specialization() == DRUID_FERAL )
     {
       auto claw = get_secondary_action<cat_attack_t>( "twin_claw", this, find_spell( 1271636 ) );
