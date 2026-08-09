@@ -8663,13 +8663,14 @@ struct abomination_limb_t : public death_knight_spell_t
 // Blightfall
 struct blightfall_t final : public death_knight_spell_t
 {
-  blightfall_t( std::string_view name, death_knight_t* p )
+  blightfall_t( std::string_view name, death_knight_t* p, std::string_view options )
     : death_knight_spell_t( name, p, p->spell.blightfall ), damage_mult( 1.0 ), duration_mult( 1.0 )
   {
     aoe                    = -1;
     damage_mult            = p->talent.unholy.blightfall->effectN( 2 ).percent();
     duration_mult          = p->talent.unholy.blightfall->effectN( 1 ).percent();
     target_filter_callback = unholy_diseases_only();
+    parse_options( options );
 
     if ( !p->options.wcl_reporting_mode )
     {
@@ -8762,7 +8763,7 @@ struct dark_transformation_t : public death_knight_spell_t
     }
 
     if ( p->talent.unholy.blightfall.ok() )
-      set_replacement_action( new blightfall_t( "blightfall", p ), p->buffs.blightfall );
+      set_replacement_action( new blightfall_t( "blightfall", p, options_str ), p->buffs.blightfall );
 
     if ( !p->talent.unholy.blightfall.ok() )
       trigger_gcd = 0_ms;  // in data as 1.5s, only triggers this gcd if blightfall is talented.
