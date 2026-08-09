@@ -45,8 +45,6 @@ static constexpr size_t UNSEEN_SWIPE_TARGETS = 3;
 static constexpr double UNSEEN_SWIPE_REDUCED_AOE = 5;
 // ursoc's fury & natural resilience cap as percentage of max hp
 static constexpr double GUARDIAN_SHIELD_CAP_HP_PCT = 0.3;
-// wild guardian echo delays
-static constexpr std::array<timespan_t, 2> WILD_GUARDIAN_ECHO_DELAY = { 300_ms, 400_ms };
 
 namespace pets
 {
@@ -621,7 +619,6 @@ struct druid_t final : public parse_player_effects_t
     action_t* memory_of_ysera_heal;
     action_t* sundering_roar_thrash;
     action_t* thrash_flashing;
-    action_t* vicious_brambles;
     action_t* waking_nightmare;  // placeholder
     action_t* waking_nightmare_pulse;
 
@@ -779,7 +776,6 @@ struct druid_t final : public parse_player_effects_t
     buff_t* sundering_roar;
     buff_t* ursocs_fury;
     buff_t* waking_nightmare;  // proxy buff to track stack uptime
-    buff_t* wild_guardian;  // enable replacement action
 
     // Restoration
     buff_t* abundance;
@@ -5161,8 +5157,6 @@ struct berserk_bear_base_t : public bear_attack_t
 
     if ( p()->cooldown.thrash )
       p()->cooldown.thrash->reset( true );
-
-    p()->buff.wild_guardian->trigger();
   }
 };
 
@@ -5489,19 +5483,11 @@ public:
 
   void execute() override
   {
-    auto gift_stacks = p_->buff.gift_of_maul->check();
-
     ab::execute();
 
     if ( repeat_action && p_->buff.celestial_might->consume( this ) )
     {
-      auto delay = ab::rng().range( WILD_GUARDIAN_ECHO_DELAY );
-
-      // if gift was consumed for an echo, the repeat is delayed until after the echo
-      if ( gift_stacks - p_->buff.gift_of_maul->check() > 0 )
-        delay += ab::rng().range( WILD_GUARDIAN_ECHO_DELAY );
-
-      make_event( *ab::sim, delay, [ this, rage_mod = BASE::rage_modifier(), t = ab::target ] {
+      make_event( *ab::sim, 0_ms, [ this, rage_mod = BASE::rage_modifier(), t = ab::target ] {
         snapshot_and_execute( repeat_action, nullptr, false, [ this, rage_mod, t ]( auto, auto to ) {
           auto state = ab::cast_state( to );
           state->rage_mod = rage_mod;
@@ -5537,14 +5523,12 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
   double kb_excess_rage = 0.0;
   double kb_max_excess_rage = 0.0;
   double kb_excess_rage_mul = 0.0;
-  double vb_mul = 0.0;
   bool max_rage = false;
 
   maul_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
     : base_t( n, p, s, f ),
       hr_rage_threshold( p->talent.harnessed_rage->effectN( 1 ).base_value() ),
-      hr_gore_chance_pct( p->talent.harnessed_rage->effectN( 2 ).percent() ),
-      vb_mul( p->talent.wild_guardian_3->effectN( 1 ).percent() )
+      hr_gore_chance_pct( p->talent.harnessed_rage->effectN( 2 ).percent() )
   {
     add_option( opt_bool( "max_rage", max_rage ) );
 
@@ -5600,14 +5584,6 @@ struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
       kb_excess_rage = get_excess_rage();
 
     base_t::execute();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    base_t::impact( s );
-
-    if ( vb_mul && s->result_amount )
-      residual_action::trigger( p()->active.vicious_brambles, s->target, s->result_amount * vb_mul );
   }
 
   void consume_resource() override
@@ -5890,15 +5866,6 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
       // order of thrash targets so we instead randomize the starsurge target
       p()->active.star_cascade->execute_on_target( rng().range( target_list() ) );
     }
-  }
-};
-
-// Vicious Brambles =========================================================
-struct vicious_brambles_t final : residual_action::residual_periodic_action_t<bear_attack_t>
-{
-  vicious_brambles_t( druid_t* p ) : residual_action_t( "vicious_brambles", p, p->find_spell( 1270065 ) )
-  {
-    proc = true;
   }
 };
 } // end namespace bear_attacks
@@ -8685,41 +8652,6 @@ struct wild_charge_t final : public druid_spell_t
   }
 };
 
-// Wild Guardian ============================================================
-struct wild_guardian_t final : public druid_spell_t
-{
-  int dream_charges;
-
-  DRUID_ABILITY( wild_guardian_t, druid_spell_t, "wild_guardian",
-                 p->talent.wild_guardian_1.ok() ? p->find_spell( 1269658 ) : spell_data_t::not_found() ),
-    dream_charges( as<int>( p->talent.wild_guardian_2->effectN( 2 ).base_value() ) )
-  {}
-
-  bool ready() override
-  {
-    if ( !p()->buff.wild_guardian->check() )
-      return false;
-
-    return druid_spell_t::ready();
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p()->buff.wild_guardian->expire();
-    p()->buff.gift_of_frenzied_regeneration->trigger();
-    p()->buff.gift_of_ironfur->trigger();
-    p()->buff.gift_of_maul->trigger();
-
-    if ( dream_charges )
-    {
-      p()->buff.dream_guide->trigger( dream_charges );
-      p()->buff.dream_of_cenarius->trigger( dream_charges );
-    }
-  }
-};
-
 // Wild Mushroom ============================================================
 struct wild_mushroom_t final : public druid_spell_t
 {
@@ -10021,7 +9953,6 @@ action_t* druid_t::create_action( std::string_view name, std::string_view opt )
             name == "red_moon"                      ) a =                     new red_moon_t( this );
   else if ( name == "moonfire_only"                 ) a =                     new moonfire_t( this );
   else if ( name == "sundering_roar"                ) a =               new sundering_roar_t( this );
-  else if ( name == "wild_guardian"                 ) a =                new wild_guardian_t( this );
 
   // Restoration
   else if ( name == "efflorescence"                 ) a =                new efflorescence_t( this );
@@ -11226,24 +11157,6 @@ void druid_t::create_buffs()
     } );
   }
 
-  buff.gift_of_frenzied_regeneration =
-    make_fallback( talent.wild_guardian_1.ok() && ( talent.berserk_bear.ok() || talent.incarnation_bear.ok() ),
-      this,"gift_of_frenzied_regeneration", find_spell( 1269661 ) )
-        ->set_initial_stack_to_max_stack()
-        ->set_consume_all_stacks( false );
-
-  buff.gift_of_ironfur =
-    make_fallback( talent.wild_guardian_1.ok() && ( talent.berserk_bear.ok() || talent.incarnation_bear.ok() ),
-      this, "gift_of_ironfur", find_spell( 1269659 ) )
-        ->set_initial_stack_to_max_stack()
-        ->set_consume_all_stacks( false );
-
-  buff.gift_of_maul =
-    make_fallback( talent.wild_guardian_1.ok() && ( talent.berserk_bear.ok() || talent.incarnation_bear.ok() ),
-      this, "gift_of_maul", find_spell( 1269660 ) )
-        ->set_initial_stack_to_max_stack()
-        ->set_consume_all_stacks( false );
-
   buff.gore = make_fallback( talent.gore.ok(), this, "gore", find_spell( 93622 ) )
     ->set_trigger_spell( talent.gore );
 
@@ -11302,8 +11215,6 @@ void druid_t::create_buffs()
   buff.waking_nightmare = make_fallback( talent.waking_nightmare.ok(),
     this, "waking_nightmare", find_trigger( talent.waking_nightmare ).trigger() )
       ->set_proc_callbacks( false );
-
-  buff.wild_guardian = make_fallback( talent.wild_guardian_1.ok(), this, "wild_guardian", find_spell( 1269616 ) );
 
   // Restoration buffs
   buff.abundance = make_fallback( talent.abundance.ok(), this, "abundance", find_spell( 207640 ) )
@@ -11736,9 +11647,6 @@ void druid_t::create_actions()
     active.waking_nightmare_pulse = pulse;
     active.waking_nightmare->add_child( pulse );
   }
-
-  if ( talent.wild_guardian_3.ok() )
-    active.vicious_brambles = get_secondary_action<vicious_brambles_t>( "vicious_brambles", this );
 
   // Restoration
   if ( talent.yseras_gift.ok() )
