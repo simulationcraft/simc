@@ -614,9 +614,6 @@ struct druid_t final : public parse_player_effects_t
     action_t* after_the_wildfire_heal;
     action_t* blazing_thorns;
     action_t* brambles_reflect;
-    action_t* echo_of_maul;
-    action_t* echo_of_ravage;
-    action_t* echo_of_raze;
     action_t* elunes_favored_heal;
     action_t* galactic_guardian;
     action_t* lunar_wrath;
@@ -763,7 +760,6 @@ struct druid_t final : public parse_player_effects_t
     buff_t* celestial_might;  // mid1 4pc
     buff_t* dream_guide;
     buff_t* dream_of_cenarius;
-    buff_t* echo_of_ironfur;
     buff_t* elunes_favored;
     buff_t* galactic_guardian;
     buff_t* gift_of_an_ancient_guardian;
@@ -828,7 +824,6 @@ struct druid_t final : public parse_player_effects_t
   struct hots_t
   {
     dot_t* frenzied_regeneration;
-    dot_t* echo_of_frenzied_regeneration;
   } hots;
 
   // Cooldowns
@@ -2444,47 +2439,6 @@ public:
   }
 };
 
-template <typename BASE>
-struct trigger_wild_guardian_echo_base_t : public BASE
-{
-protected:
-  using base_t = trigger_wild_guardian_echo_base_t<BASE>;
-  action_t* echo_action = nullptr;
-  buff_t* echo_buff = nullptr;
-  timespan_t repeat_delay = 0_ms;
-  int num_repeat;
-
-public:
-  trigger_wild_guardian_echo_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
-    : BASE( n, p, s, f ), num_repeat( as<int>( p->talent.wild_guardian_3->effectN( 3 ).base_value() ) )
-  {
-    if ( num_repeat )
-      repeat_delay = p->talent.wild_guardian_3->effectN( 4 ).time_value() / num_repeat;
-  }
-
-
-  virtual void trigger_echoes()
-  {
-    make_event( *BASE::sim, BASE::rng().range( WILD_GUARDIAN_ECHO_DELAY ), [ this ] {
-      echo_action->execute();
-
-      if ( repeat_delay > 0_ms )
-        make_repeating_event( *BASE::sim, repeat_delay, [ this ] { echo_action->execute(); }, num_repeat );
-    } );
-  }
-
-  void execute() override
-  {
-    BASE::execute();
-
-    if ( echo_action && echo_buff->check() )
-    {
-      echo_buff->decrement();
-      trigger_echoes();
-    }
-  }
-};
-
 template <specialization_e S, typename BASE>
 struct trigger_wildpower_surge_t : public BASE
 {
@@ -3104,7 +3058,6 @@ struct bear_form_buff_t final : public druid_buff_t, public swap_melee_t
       else
       {
         p()->buff.ironfur->expire();
-        p()->buff.echo_of_ironfur->expire();
       }
     } );
   }
@@ -5290,25 +5243,8 @@ struct incapacitating_roar_t final : public bear_attack_t
 };
 
 // Ironfur ==================================================================
-struct ironfur_t final : public trigger_wild_guardian_echo_base_t<rage_spender_t<druid_spell_t>>
+struct ironfur_t final : public rage_spender_t<druid_spell_t>
 {
-  struct echo_of_ironfur_t final : public druid_spell_t
-  {
-    echo_of_ironfur_t( druid_t* p )
-      : druid_spell_t( "echo_of_ironfur", p, p->find_spell( 1269633 ), flag_e::WILDGUARDIAN )
-    {
-      proc = background = true;
-    }
-
-    void execute() override
-    {
-      druid_spell_t::execute();
-
-      // TODO: determine if duration increased by guardian of elune
-      p()->buff.echo_of_ironfur->trigger();
-    }
-  };
-
   timespan_t goe_ext;
 
   DRUID_ABILITY( ironfur_t, base_t, "ironfur", p->talent.ironfur ),
@@ -5316,12 +5252,6 @@ struct ironfur_t final : public trigger_wild_guardian_echo_base_t<rage_spender_t
   {
     use_off_gcd = true;
     harmful = may_miss = may_dodge = may_parry = may_block = false;
-
-    if ( p->talent.wild_guardian_1.ok() )
-    {
-      echo_action = p->get_secondary_action<echo_of_ironfur_t>( "echo_of_ironfur" );
-      echo_buff = p->buff.gift_of_ironfur;
-    }
   }
 
   void execute() override
@@ -5506,31 +5436,25 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
 /*
 maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spender
 |
-|->maul_ravage_base_t:trigger_celestial_might_repeat_t:trigger_wild_guardian_echo_maul_t
+|->maul_ravage_base_t:trigger_celestial_might_repeat_t
 |  |
 |  |->maul_t "maul"
-|
-|->echo_of_maul_t "echo_of_maul"
 |
 |->celestial_might_maul_t "maul_repeat"
 |
 |->raze_base_t
 |  |
-|  |->maul_ravage_base_t:trigger_celestial_might_repeat_t:trigger_wild_guardian_echo_maul_t
+|  |->maul_ravage_base_t:trigger_celestial_might_repeat_t
 |  |  |
 |  |  |->raze_t "raze"
 |  |
 |  |->celestial_might_raze_t "raze_repeat"
-|  |
-|  |->echo_of_maul_t "echo_of_raze"
 |
 |->ravage_base_t
    |
-   |->ravage_maul_t:trigger_celestial_might_repeat_t:trigger_wild_guardian_echo_maul_t "ravage_maul"
+   |->ravage_maul_t:trigger_celestial_might_repeat_t "ravage_maul"
    |
    |->celestial_might_maul_t "ravage_repeat"
-   |
-   |->echo_of_maul_t "echo_of_ravage"
 */
 
 struct maul_data_t
@@ -5544,51 +5468,10 @@ struct maul_data_t
 };
 
 template <typename BASE>
-struct trigger_wild_guardian_echo_maul_t : public trigger_wild_guardian_echo_base_t<BASE>
+struct trigger_celestial_might_repeat_t : public BASE
 {
 private:
-  using ab = trigger_wild_guardian_echo_base_t<BASE>;
-
-public:
-  trigger_wild_guardian_echo_maul_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
-    : ab( n, p, s, f )
-  {
-    if ( p->talent.wild_guardian_1.ok() )
-      ab::echo_buff = p->buff.gift_of_maul;
-  }
-
-  void trigger_echoes() override
-  {
-    // this maul and echo maul are all derived from maul_base_t so we can use ab::cast_state
-    make_event( *BASE::sim, BASE::rng().range( WILD_GUARDIAN_ECHO_DELAY ),
-      [ this, rage_mod = BASE::rage_modifier(), t = ab::target ] {
-        snapshot_and_execute( ab::echo_action, nullptr, false, [ this, rage_mod, t ]( auto, auto to ) {
-          auto state = ab::cast_state( to );
-          state->rage_mod = rage_mod;
-          state->target = t;
-          ab::echo_action->set_target( t );
-        } );
-
-        if ( ab::repeat_delay > 0_ms )
-        {
-          make_repeating_event( *BASE::sim, ab::repeat_delay, [ this, rage_mod, t ] {
-            snapshot_and_execute( ab::echo_action, nullptr, false, [ this, rage_mod, t ]( auto, auto to ) {
-              auto state = ab::cast_state( to );
-              state->rage_mod = rage_mod;
-              state->target = t;
-              ab::echo_action->set_target( t );
-            } );
-          }, ab::num_repeat );
-        }
-      } );
-  }
-};
-
-template <typename BASE>
-struct trigger_celestial_might_repeat_t : public trigger_wild_guardian_echo_maul_t<BASE>
-{
-private:
-  using ab = trigger_wild_guardian_echo_maul_t<BASE>;
+  using ab = BASE;
   druid_t* p_;
 
 protected:
@@ -5623,18 +5506,6 @@ public:
         } );
       } );
     }
-  }
-};
-
-template <typename BASE>
-struct echo_of_maul_t : public BASE
-{
-  echo_of_maul_t( druid_t* p, std::string_view n, const spell_data_t* s ) : BASE( n, p, s, flag_e::WILDGUARDIAN )
-  {
-    BASE::proc = BASE::background = true;
-    BASE::base_multiplier *= p->talent.wild_guardian_1->effectN( 1 ).percent();
-
-    BASE::kb_excess_rage_mul = 0.0;  // echoes snapshot the kb rage multiplier and don't need to re-calculate
   }
 };
 
@@ -5812,9 +5683,6 @@ public:
       // hasted gcd despite being 1s
       gcd_type = gcd_haste_type::ATTACK_HASTE;
 
-      if ( p->talent.wild_guardian_1.ok() )
-        echo_action = p->active.echo_of_ravage;
-
       if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
       {
         repeat_action = p->get_secondary_action<celestial_might_maul_t<ravage_t>>( name_str + "_repeat", &data() );
@@ -5864,9 +5732,6 @@ struct maul_t final : public maul_ravage_base_t<maul_base_t>
     if ( !data().ok() )
       return;
 
-    if ( p->talent.wild_guardian_1.ok() )
-      echo_action = p->active.echo_of_maul;
-
     if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
     {
       repeat_action = p->get_secondary_action<celestial_might_maul_t<maul_base_t>>( name_str + "_repeat", &data() );
@@ -5894,9 +5759,6 @@ struct raze_t final : public maul_ravage_base_t<raze_base_t>
   {
     if ( !data().ok() )
       return;
-
-    if ( p->talent.wild_guardian_1.ok() )
-      echo_action = p->active.echo_of_raze;
 
     if ( p->sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ) )
     {
@@ -6700,35 +6562,10 @@ struct yseras_gift_t final : public druid_heal_t
 
 // Frenzied Regeneration ====================================================
 // NOTE: this must come after regrowth and rejuvenation due to reinvigoration
-struct frenzied_regeneration_t final : public trigger_wild_guardian_echo_base_t<
-                                              bear_attacks::rage_spender_t<
+struct frenzied_regeneration_t final : public bear_attacks::rage_spender_t<
                                               trigger_call_of_the_elder_druid_t<
-                                              druid_heal_t>>>
+                                              druid_heal_t>>
 {
-  struct echo_of_frenzied_regeneration_t final : public druid_heal_t
-  {
-    echo_of_frenzied_regeneration_t( druid_t* p )
-      : druid_heal_t( "echo_of_frenzied_regeneration", p, p->find_spell( 1269645 ), flag_e::WILDGUARDIAN )
-    {
-      proc = background = true;
-
-      // normalized based on duration, results in 17.5% less total healing
-      base_td_multiplier *= 1.0 + ( p->talent.frenzied_regeneration->duration() / data().duration() );
-
-      // scripted adjustment for increased tick time from reinvigoration, results 20% more total healing
-      base_td_multiplier *=
-        1.0 + ( find_effect( p->talent.reinvigoration, this, A_ADD_PCT_MODIFIER, P_TICK_TIME ).percent() );
-
-      base_td_multiplier *= p->talent.wild_guardian_1->effectN( 1 ).percent();
-    }
-
-    dot_t* get_dot( [[maybe_unused]] player_t* t ) override
-    {
-      assert( t == player );
-      return p()->hots.echo_of_frenzied_regeneration;
-    }
-  };
-
   action_t* regrowth = nullptr;
   action_t* rejuvenation = nullptr;
   double goe_mul;
@@ -6755,12 +6592,6 @@ struct frenzied_regeneration_t final : public trigger_wild_guardian_echo_base_t<
     {
       regrowth = get_reinvigoration_action<regrowth_t>( "regrowth" );
       rejuvenation = get_reinvigoration_action<rejuvenation_t>( "rejuvenation" );
-    }
-
-    if ( p->talent.wild_guardian_1.ok() )
-    {
-      echo_action = p->get_secondary_action<echo_of_frenzied_regeneration_t>( "echo_of_frenzied_regeneration" );
-      echo_buff = p->buff.gift_of_frenzied_regeneration;
     }
 
     // verdant heart from FR doesn't apply to FR itself
@@ -10707,9 +10538,6 @@ void druid_t::init_spells()
   if ( talent.frenzied_regeneration.ok() )
   {
     hots.frenzied_regeneration = get_dot( "frenzied_regeneration", this );
-
-    if ( talent.wild_guardian_1.ok() )
-      hots.echo_of_frenzied_regeneration = get_dot( "echo_of_frenzied_regeneration", this );
   }
 
   // Arcane affinity is bugged with wrath and manually handled in wrath_t
@@ -11365,14 +11193,6 @@ void druid_t::create_buffs()
   buff.dream_of_cenarius = make_fallback( talent.dream_of_cenarius_bear.ok(),
     this, "dream_of_cenarius", talent.dream_of_cenarius_bear->effectN( 1 ).trigger() );
 
-  buff.echo_of_ironfur =
-    make_fallback( talent.wild_guardian_1.ok(), this, "echo_of_ironfur", find_spell( 1269633 ) )
-      ->set_default_value( find_effect( talent.ironfur, A_MOD_ARMOR_BY_PRIMARY_STAT_PCT ).percent() *
-                           talent.wild_guardian_1->effectN( 1 ).percent() )
-      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-      ->add_invalidate( CACHE_AGILITY )
-      ->add_invalidate( CACHE_ARMOR );
-
   buff.elunes_favored = make_fallback( talent.elunes_favored.ok(), this, "elunes_favored", spec.elunes_favored )
     ->set_quiet( true )
     ->set_freeze_stacks( true )
@@ -11902,14 +11722,6 @@ void druid_t::create_actions()
     active.waking_nightmare->add_child( pulse );
   }
 
-  if ( talent.wild_guardian_1.ok() )
-  {
-    active.echo_of_maul = get_secondary_action<echo_of_maul_t<maul_base_t>>( "echo_of_maul", find_spell( 1269648 ) );
-    active.echo_of_raze = get_secondary_action<echo_of_maul_t<raze_base_t>>( "echo_of_raze", find_spell( 1269972 ) );
-    active.echo_of_ravage = get_secondary_action<echo_of_maul_t<ravage_t>>( "echo_of_ravage", find_spell( 1269973 ) );
-    active.echo_of_ravage->name_str_reporting.clear();
-  }
-
   if ( talent.wild_guardian_3.ok() )
     active.vicious_brambles = get_secondary_action<vicious_brambles_t>( "vicious_brambles", this );
 
@@ -12020,9 +11832,6 @@ void druid_t::create_actions()
   };
 
   find_parent( active.bursting_growth, "bloodseeker_vines" );
-  find_parent( active.echo_of_maul, "wild_guardian" );
-  find_parent( active.echo_of_ravage, "wild_guardian" );
-  find_parent( active.echo_of_raze, "wild_guardian" );
   find_parent( active.shooting_stars_mid1, "shooting_stars" );
   find_parent( active.starfall_mid2, "starfall" );
   find_parent( active.sundering_roar_thrash, "sundering_roar" );
@@ -13290,7 +13099,7 @@ void druid_t::invalidate_cache( cache_e c )
       break;
 
     case CACHE_AGILITY:
-      if ( buff.ironfur->check() || buff.echo_of_ironfur->check() )
+      if ( buff.ironfur->check() )
         invalidate_cache( CACHE_ARMOR );
       break;
 
@@ -13309,9 +13118,9 @@ double druid_t::composite_armor() const
 {
   double a = player_t::composite_armor();
 
-  if ( buff.ironfur->check() || buff.echo_of_ironfur->check() )
+  if ( buff.ironfur->check() )
   {
-    auto if_val = buff.ironfur->check_stack_value() + buff.echo_of_ironfur->check_stack_value();
+    auto if_val = buff.ironfur->check_stack_value();
 
     // TODO: confirm this is dynamic
     if ( buff.killing_strikes->check() )
