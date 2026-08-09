@@ -80,7 +80,7 @@ trinket2=voracious_heart_of_ulatek,id=270175,bonus_id=13335/13848
 main_hand=jaw_of_the_shackled_goddess,id=268202,bonus_id=13847/13848,enchant_id=3847
 off_hand=jaw_of_the_shackled_goddess,id=268202,bonus_id=13847/13848,enchant_id=3368
 
-# save="MID2_Death_Knight_Frost.simc"
+save="MID2_Death_Knight_Frost.simc"
 
 deathknight="MID2_Death_Knight_Frost_Rider"
 spec=frost
