@@ -353,7 +353,7 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
   default_->add_action( "call_action_list,name=single_target,if=active_enemies<3" );
 
-  aoe->add_action( "death_and_decay,if=!death_and_decay.ticking&talent.desecrate|talent.cycle_of_death&cooldown.putrefy.charges<cooldown.putrefy.max_charges&(raid_event.adds.exists&raid_event.adds.remains>duration%2|!raid_event.adds.exists&fight_remains>duration%2)&(raid_event.adds.exists&raid_event.adds.count<active_enemies|!raid_event.adds.exists|charges=max_charges|raid_event.adds.remains>cooldown.any_dnd.duration)", "Aoe Rotation" );
+  aoe->add_action( "death_and_decay,if=talent.cycle_of_death&cooldown.putrefy.charges<cooldown.putrefy.max_charges&(raid_event.adds.exists&raid_event.adds.remains>duration%2|!raid_event.adds.exists&fight_remains>duration%2)&(raid_event.adds.exists&raid_event.adds.count<active_enemies|!raid_event.adds.exists|charges=max_charges|raid_event.adds.remains>cooldown.any_dnd.duration)", "Aoe Rotation" );
   aoe->add_action( "festering_strike,target_if=min:health.pct,if=talent.festering_scythe&(fight_remains>3|raid_event.adds.exists&raid_event.adds.remains>3)&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|buff.festering_scythe_tt.remains<3)|!buff.festering_scythe.up&buff.festering_scythe_tt.remains<3)" );
   aoe->add_action( "putrefy,if=buff.dark_transformation.up" );
   aoe->add_action( "soul_reaper,target_if=min:health.pct" );
