@@ -2582,6 +2582,9 @@ struct holy_armaments_t : public paladin_spell_t
     harmful            = false;
     name_str_reporting = "Holy Armaments";
     background = !p->lightsmith();
+    // Protection does not gain Holy Power from this, only Holy does
+    if ( p->specialization() == PALADIN_PROTECTION )
+      energize_amount = 0;
   }
 
   timespan_t execute_time() const override
