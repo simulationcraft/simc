@@ -767,6 +767,7 @@ struct druid_t final : public parse_player_effects_t
     buff_t* gift_of_ironfur;
     buff_t* gift_of_maul;
     buff_t* gore;
+    buff_t* gorestained_claws; // mid2 2pc
     buff_t* gory_fur_ironfur;
     buff_t* gory_fur_maul_ravage;
     buff_t* guardian_of_elune;
@@ -5863,6 +5864,8 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
   void execute() override
   {
     base_t::execute();
+
+    p()->buff.gorestained_claws->trigger( this );
 
     if ( rng().roll( fc_pct ) )
       make_event( *sim, 500_ms, [ this ]() { p()->active.thrash_flashing->execute_on_target( target ); } );
@@ -11244,6 +11247,10 @@ void druid_t::create_buffs()
   buff.gore = make_fallback( talent.gore.ok(), this, "gore", find_spell( 93622 ) )
     ->set_trigger_spell( talent.gore );
 
+  buff.gorestained_claws = make_fallback( sets->has_set_bonus( DRUID_GUARDIAN, MID2, B2 ), this, "gorestained_claws", find_trigger( sets->set( DRUID_GUARDIAN, MID2, B2 ) ).trigger() )
+    ->set_chance( sets->set( DRUID_GUARDIAN, MID2, B2 ).trigger()->effectN( 1 ).percent() )
+    ->set_trigger_spell( sets->set( DRUID_GUARDIAN, MID2, B2 ) );
+
   buff.gory_fur_ironfur = make_fallback( talent.gory_fur.ok(), this, "gory_fur_ironfur", find_spell( 201671 ) )
     ->set_chance( talent.gory_fur->effectN( 2 ).percent() )
     ->set_trigger_spell( talent.gory_fur );
@@ -14066,6 +14073,7 @@ void druid_t::parse_action_effects( action_t* action )
   // snapshots regrowth hot, so disable the effect
   _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
 
+  _a->parse_effects( buff.gorestained_claws, CONSUME_BUFF );
   _a->parse_effects( buff.gory_fur_ironfur, CONSUME_BUFF );
   _a->parse_effects( buff.gory_fur_maul_ravage, CONSUME_BUFF );
 
