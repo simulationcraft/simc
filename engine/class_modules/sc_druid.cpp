@@ -5766,6 +5766,16 @@ struct rampant_thorn_t final : public bear_attack_t
 
       spell_power_mod.direct = data().effectN( index ).ap_coeff();
     }
+
+    std::vector<player_t *> &target_list() const override
+    {
+      auto &tl = bear_attack_t::target_list();
+
+      if ( TYPE == AOE )
+        range::erase_remove( tl, [ this ]( const auto &t ) { return t == target; } );
+
+      return tl;
+    }
   };
 
   action_t* singletarget;
@@ -5790,8 +5800,8 @@ struct rampant_thorn_t final : public bear_attack_t
   {
     base_t::execute();
 
-    singletarget->execute();
-    aoe->execute();
+    singletarget->execute_on_target( target );
+    aoe->execute_on_target( target );
   }
 };
 
@@ -5906,7 +5916,8 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
     p()->buff.gorestained_claws->trigger( this );
     if ( p()->sets->has_set_bonus( DRUID_GUARDIAN, MID2, B4 ) )
     {
-      p()->active.rampant_thorn->execute();
+      for ( size_t i = 1; i < 4; i++ )
+        make_event( *sim, i * 250_ms, [ this ]() { p()->active.rampant_thorn->execute_on_target( target ); } );
     }
 
     if ( rng().roll( fc_pct ) )
