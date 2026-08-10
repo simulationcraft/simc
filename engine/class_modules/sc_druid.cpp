@@ -5448,7 +5448,6 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
     if ( p()->buff.answered_calling->up() )
       p()->active.spirits_wrath->execute_on_target( target );
 
-    p()->buff.gory_fur_ironfur->trigger( this );
     p()->buff.guardian_of_elune->trigger( this );
 
     p()->buff.gore->consume( this );
@@ -5632,6 +5631,8 @@ struct maul_base_t : public trigger_vicious_brambles_t<
   {
     if ( kb_excess_rage_mul )
       kb_excess_rage = get_excess_rage();
+
+    p()->buff.gory_fur_ironfur->trigger( this );
 
     base_t::execute();
   }
