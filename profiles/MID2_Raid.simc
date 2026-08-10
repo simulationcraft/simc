@@ -56,8 +56,8 @@ MID2_Priest_Shadow_Archon.simc
 # MID2_Rogue_Outlaw_Trickster.simc
 # MID2_Rogue_Subtlety.simc
 
-# MID2_Shaman_Elemental_Stormbringer.simc
-# MID2_Shaman_Elemental.simc
+MID2_Shaman_Elemental.simc
+MID2_Shaman_Elemental_Stormbringer.simc
 # MID2_Shaman_Enhancement.simc
 # MID2_Shaman_Enhancement_Stormbringer.simc
 
