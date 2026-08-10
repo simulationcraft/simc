@@ -1669,6 +1669,7 @@ struct entropic_rift_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
+    priest().buffs.entropic_rift->expire();
     priest().buffs.entropic_rift->trigger();
 
     // Keep track of this for collapsing void
