@@ -192,11 +192,6 @@ public:
       priest().buffs.shattered_psyche->expire();
     }
 
-    if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.voidweaver.entropic_rift.enabled() )
-    {
-      priest().trigger_entropic_rift();
-    }
-
     if ( priest().talents.discipline.master_the_darkness_3.enabled() )
     {
       priest().buffs.master_the_darkness->trigger();
