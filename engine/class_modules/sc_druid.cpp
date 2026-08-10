@@ -842,6 +842,8 @@ struct druid_t final : public parse_player_effects_t
     cooldown_t* mangle;
     cooldown_t* moon_cd;  // New / Half / Full Moon
     cooldown_t* thrash;
+    timespan_t lunation_foe_cdr;
+    timespan_t lunation_moon_cdr;
   } cooldown;
 
   // RNGs
@@ -1879,14 +1881,11 @@ public:
 
     if ( can_trigger_lunation() )
     {
-      assert( p()->talent.lunation->effects().size() == 3 );
+      if ( p()->cooldown.lunation_foe_cdr != 0_ms )
+        p()->cooldown.fury_of_elune->adjust( p()->cooldown.lunation_foe_cdr );
 
-      static constexpr std::array<cooldown_t* druid_t::cooldowns_t::*, 2> lunation_cds = {
-        &druid_t::cooldowns_t::fury_of_elune, &druid_t::cooldowns_t::moon_cd };
-
-      for ( auto eff : p()->talent.lunation->effects() )
-        if ( auto cd = std::invoke( lunation_cds[ eff.index() ], p()->cooldown ) )
-          cd->adjust( eff.time_value() );
+      if ( p()->cooldown.lunation_moon_cdr != 0_ms )
+        p()->cooldown.moon_cd->adjust( p()->cooldown.lunation_moon_cdr );
     }
   }
 
@@ -1910,7 +1909,6 @@ public:
       case 197628:  // starfire offspec
       case 383410:  // celestial alignment orbital strike
       case 390414:  // incarnation orbital strike
-      case 1252871: // red moon
         return true;
       default:
         return false;
@@ -7408,6 +7406,9 @@ struct fury_of_elune_t final : public druid_spell_t
     }
 
     set_tracked_cooldown( p->cooldown.fury_of_elune );
+
+    if ( p->talent.lunation.ok() && p->cooldown.fury_of_elune && p->cooldown.lunation_foe_cdr == 0_ms )
+      p->cooldown.lunation_foe_cdr = p->talent.lunation->effectN( 1 ).time_value();
   }
 
   // needed to allow on-cast procs
@@ -7548,6 +7549,9 @@ struct moon_base_t : public druid_spell_t
     }
 
     set_shared_cooldown( "moon_cd", p->cooldown.moon_cd );
+
+    if ( p->talent.lunation.ok() && p->cooldown.moon_cd && p->cooldown.lunation_moon_cdr == 0_ms )
+      p->cooldown.lunation_moon_cdr = p->talent.lunation->effectN( 2 ).time_value();
   }
 
   virtual bool check_stage() const
