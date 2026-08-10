@@ -621,6 +621,7 @@ struct druid_t final : public parse_player_effects_t
     action_t* spirits_wrath; // wild guardian 1 damage
     action_t* sundering_roar_thrash;
     action_t* thrash_flashing;
+    action_t* vicious_brambles; // wild guardian 2 damage
     action_t* waking_nightmare;  // placeholder
     action_t* waking_nightmare_pulse;
 
@@ -5350,12 +5351,43 @@ struct lunar_beam_t final : public druid_spell_t
   }
 };
 
+// Vicious Brambles==========================================================
+template <typename BASE>
+struct trigger_vicious_brambles_t : public BASE
+{
+private:
+  using ab = BASE;
+  double multiplier;
+
+protected:
+  using base_t = trigger_vicious_brambles_t<BASE>;
+
+public:
+  trigger_vicious_brambles_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
+    : ab( n, p, s, f ), multiplier( 0.0 )
+  {
+    if ( !p->talent.wild_guardian_2.ok() )
+      return;
+
+    multiplier = p->talent.wild_guardian_2->effectN( 2 ).percent();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    ab::impact( s );
+
+    if ( multiplier && s->result_amount )
+      residual_action::trigger( ab::p()->active.vicious_brambles, s->target, s->result_amount * multiplier );
+  }
+};
+
 // Mangle ===================================================================
 struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
+                               trigger_vicious_brambles_t<
                                trigger_claw_rampage_t<DRUID_GUARDIAN,
                                trigger_aggravate_wounds_t<DRUID_GUARDIAN,
                                trigger_wildpower_surge_t<DRUID_GUARDIAN,
-                               bear_attack_t>>>>
+                               bear_attack_t>>>>>
 {
   action_t* strike = nullptr;
   gain_t* red_moon_gain = nullptr;
@@ -5526,10 +5558,11 @@ public:
   }
 };
 
-struct maul_base_t : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
+struct maul_base_t : public trigger_vicious_brambles_t<
+                            trigger_aggravate_wounds_t<DRUID_GUARDIAN,
                             trigger_ursocs_fury_t<
                             trigger_gore_t<
-                            rage_spender_t<bear_attack_t>>>>
+                            rage_spender_t<bear_attack_t>>>>>
 {
   double hr_rage_threshold;
   double hr_gore_chance_pct;
@@ -11753,6 +11786,14 @@ void druid_t::create_actions()
     auto s_data = find_spell( 1308093 );
     active.spirits_wrath = get_secondary_action<druid_spell_t>( "spirits_wrath", this, s_data );
     active.spirits_wrath->proc = true;
+  }
+
+  if ( talent.wild_guardian_2->ok() )
+  {
+    using vicious_brambles_t = residual_action::residual_periodic_action_t<bear_attack_t>;
+    auto s_data = find_spell( 1270065 );
+    active.vicious_brambles = get_secondary_action<vicious_brambles_t>( "vicious_brambles", this, s_data );
+    active.vicious_brambles->proc = true;
   }
 
   // Restoration
