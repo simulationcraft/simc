@@ -2267,13 +2267,13 @@ struct atonement_t final : public priest_heal_t
     if ( state->chain_target > 0 )
       amount *= base_aoe_multiplier;
 
-    if ( state->target->health_percentage() >= 100.0 )
+    if ( state->target->health_percentage() >= 100.0 && state->n_targets >= reduced_aoe_targets )
     {
-      amount *= std::sqrt( reduced_aoe_targets / state->n_targets );
+      amount *= std::pow( reduced_aoe_targets / state->n_targets, 0.75 );
     }
     else if ( missing_hp_targets > reduced_aoe_targets )
     {
-      amount *= std::sqrt( reduced_aoe_targets / missing_hp_targets );
+      amount *= std::pow( reduced_aoe_targets / missing_hp_targets, 0.75 );
     }
 
     amount *= composite_aoe_multiplier( state );
