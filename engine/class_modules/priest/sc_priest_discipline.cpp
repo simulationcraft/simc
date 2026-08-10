@@ -216,6 +216,7 @@ struct searing_light_t : public periodic_base_t
   searing_light_t( priest_t& p, util::string_view n )
     : residual_action_t( n, p, p.talents.discipline.searing_light_dot )
   {
+    triggers_atonement = true;
   }
 };
 
