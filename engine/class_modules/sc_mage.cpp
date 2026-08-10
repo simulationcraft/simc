@@ -108,7 +108,6 @@ struct mage_td_t final : public actor_target_data_t
     buff_t* controlled_destruction;
     buff_t* freezing;
     buff_t* freezing_winds;
-    buff_t* molten_fury;
     buff_t* touch_of_the_magi;
   } debuffs;
 
@@ -1555,7 +1554,6 @@ struct mage_spell_t : public spell_t
     bool freeze_and_shatter_1 = false;
     bool freeze_and_shatter_2 = false;
     bool hand_of_frost = true;
-    bool molten_fury = true;
     bool savant = false;
     bool spellfire_sphere = true;
 
@@ -1713,19 +1711,6 @@ public:
 
     if ( affected_by.savant )
       m *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 5 ).mastery_value();
-
-    return m;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = spell_t::composite_target_multiplier( target );
-
-    if ( auto td = find_td( target ) )
-    {
-      if ( affected_by.molten_fury )
-        m *= 1.0 + td->debuffs.molten_fury->check_value();
-    }
 
     return m;
   }
@@ -1910,15 +1895,6 @@ public:
 
     if ( p()->talents.fevered_incantation.ok() && s->result_type == result_amount_type::DMG_DIRECT )
       p()->trigger_merged_buff( p()->buffs.fevered_incantation, s->result == RESULT_CRIT );
-
-    // TODO: Test the exact behavior of the hidden Molten Fury debuff.
-    if ( p()->talents.molten_fury.ok() )
-    {
-      if ( target->health_percentage() <= p()->talents.molten_fury->effectN( 1 ).base_value() )
-        get_td( s->target )->debuffs.molten_fury->trigger();
-      else
-        get_td( s->target )->debuffs.molten_fury->expire();
-    }
   }
 
   void assess_damage( result_amount_type rt, action_state_t* s ) override
@@ -5613,9 +5589,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.freezing_winds         = make_buff( *this, "recently_damaged_by_blizzard", mage->find_spell( 1216988 ) )
                                      ->set_chance( mage->talents.freezing_winds.ok() )
                                      ->set_quiet( true );
-  debuffs.molten_fury            = make_buff( *this, "molten_fury", mage->find_spell( 458910 ) )
-                                     ->set_default_value_from_effect( 1 )
-                                     ->set_chance( mage->talents.molten_fury.ok() );
   debuffs.touch_of_the_magi      = make_buff<buffs::touch_of_the_magi_t>( this );
 }
 
@@ -6755,12 +6728,17 @@ double mage_t::composite_player_target_multiplier( player_t* target, school_e sc
 {
   double m = player_t::composite_player_target_multiplier( target, school );
 
+  // TODO: Remove this? With old apex gone, this is always 0%
   if ( auto td = find_target_data( target ) )
   {
     auto totm = td->debuffs.touch_of_the_magi;
     if ( totm->check() && totm->has_common_school( school ) )
       m *= 1.0 + totm->data().effectN( 2 ).percent();
   }
+
+  // TODO: this still technically points to 458910's value (but the debuff is likely no longer used)
+  if ( talents.molten_fury.ok() && target->health_percentage() <= talents.molten_fury->effectN( 1 ).base_value() )
+    m *= 1.0 + talents.molten_fury->effectN( 2 ).percent();
 
   return m;
 }
