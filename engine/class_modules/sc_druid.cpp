@@ -6446,27 +6446,12 @@ struct rejuvenation_base_t : public druid_heal_t
     return pm;
   }
 
-  void trigger_dot( action_state_t* s ) override
-  {
-    if ( !get_dot( s->target )->is_ticking() )
-      p()->buff.abundance->increment();
-
-    druid_heal_t::trigger_dot( s );
-  }
-
   void tick( dot_t* d ) override
   {
     druid_heal_t::tick( d );
 
     if ( cult_hot && d->target->health_percentage() <= cult_pct )
       cult_hot->execute_on_target( d->target );
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    druid_heal_t::last_tick( d );
-
-    p()->buff.abundance->decrement();
   }
 };
 
@@ -10447,7 +10432,7 @@ void druid_t::init_spells()
 
   // Restoration
   sim->print_debug( "Initializing restoration talents..." );
-  talent.abundance                      = ST( "Abundance" );
+  talent.abundance                      = ST( "Abundance" );  // TODO: NYI
   talent.call_of_the_elder_druid        = ST( "Call of the Elder Druid" );
   talent.cenarius_guidance              = ST( "Cenarius' Guidance" );  // TODO: Incarn bonus NYI
   talent.cultivation                    = ST( "Cultivation" );
