@@ -821,8 +821,8 @@ struct smite_base_t : public priest_spell_t
         {
           auto it = *( std::min_element( p().allies_with_atonement.begin(), p().allies_with_atonement.end(),
                                          [ this ]( player_t* a, player_t* b ) {
-                                           return a->health_percentage() < b->health_percentage() &&
-                                                  priest().find_target_data( b )->buffs.atonement->remains() < 30_s;
+                                           return priest().find_target_data( a )->buffs.atonement->remains() <
+                                                  priest().find_target_data( b )->buffs.atonement->remains();
                                          } ) );
 
           auto atone = priest().find_target_data( it )->buffs.atonement;
