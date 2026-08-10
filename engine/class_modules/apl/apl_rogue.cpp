@@ -101,9 +101,11 @@ void assassination( player_t* p )
 
   generate->add_action( "crimson_tempest,target_if=max:dot.rupture.remains,if=!variable.single_target&(active_dot.garrote<spell_targets.fan_of_knives|active_dot.rupture<spell_targets.fan_of_knives)&(dot.rupture.remains>5|energy.regen_combined>40)", "Generator List Crimson Tempest to spread bleeds to everything in AoE" );
   generate->add_action( "shiv,if=buff.darkest_night.up&combo_points.deficit=1&spell_targets.fan_of_knives<=3&talent.toxic_stiletto", "Special Edge Case to use Shiv for Darkest Night in low target cleave as Toxic Stiletto makes it very efficient" );
-  generate->add_action( "ambush,if=spell_targets.fan_of_knives<=1+talent.blindside", "Ambush on low target counts when available" );
-  generate->add_action( "mutilate,if=spell_targets.fan_of_knives<=1+talent.blindside", "Mutilate on low target counts" );
-  generate->add_action( "fan_of_knives,if=spell_targets.fan_of_knives>1+talent.blindside", "Fan of Knives in AoE to fill if nothing else" );
+  generate->add_action( "fan_of_knives,if=spell_targets.fan_of_knives>1+talent.blindside", "Fan of Knives in AoE" );
+  generate->add_action( "ambush,if=spell_targets.fan_of_knives<=1+talent.blindside&(buff.unshakeable_drive.stack>2|buff.bloodlust.up|!talent.deathstalkers_mark|talent.blindside)", "Ambush on low target counts when available" );
+  generate->add_action( "mutilate,if=spell_targets.fan_of_knives<=1+talent.blindside&(buff.unshakeable_drive.stack>2|buff.bloodlust.up|!talent.deathstalkers_mark|talent.blindside)", "Mutilate on low target counts" );
+  generate->add_action( "fan_of_knives,if=spell_targets.fan_of_knives<=1+talent.blindside&!talent.blindside&(buff.unshakeable_drive.stack<3&!buff.bloodlust.up&talent.deathstalkers_mark)", "Fan of Knives and Shiv in ST with Deathstalker builds" );
+  generate->add_action( "shiv,if=spell_targets.fan_of_knives<=1&talent.toxic_stiletto&(buff.unshakeable_drive.stack<3&!buff.bloodlust.up&talent.deathstalkers_mark)" );
 
   items->add_action( "variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2|dot.deathmark.ticking|fight_remains<=22", "Special Case Trinkets" );
   items->add_action( "use_item,name=astral_gladiators_badge_of_ferocity,use_off_gcd=1,if=dot.kingsbane.ticking|dot.deathmark.ticking|(cooldown.kingsbane.remains>60|cooldown.deathmark.remains>60)" );
@@ -117,7 +119,9 @@ void assassination( player_t* p )
   misc_cds->add_action( "fireblood,use_off_gcd=1,if=debuff.deathmark.up" );
   misc_cds->add_action( "ancestral_call,use_off_gcd=1,if=debuff.deathmark.up" );
 
-  spend->add_action( "envenom,if=buff.implacable_tracker.stack<4", "Spend List Envenom if we are not at max stacks of the Apex talent" );
+  spend->add_action( "cancel_buff,name=envenom,if=buff.implacable_tracker.stack>4&(!talent.rapid_injection|spell_targets.fan_of_knives>=5)", "Spend List   Cancelaura Envenom in situations where we can make use of the energy but don't have time to AFK" );
+  spend->add_action( "cancel_buff,name=envenom,if=buff.implacable_tracker.stack>3&talent.rapid_injection&debuff.deathstalkers_mark.stack=1", "Special edgecase Cancelaura for Darkest Night handling" );
+  spend->add_action( "envenom,if=buff.implacable_tracker.stack<4", "Spend with envenom as per normal" );
   spend->add_action( "envenom,if=energy.pct>70|fight_remains<15", "Envenom if we are going to overcap on energy" );
 
   vanish->add_action( "vanish,if=variable.single_target&talent.improved_garrote&dot.garrote.pmultiplier<=1&(dot.deathmark.ticking|cooldown.deathmark.remains>target.time_to_die-10)&!raid_event.adds.in<=30", "Vanish list Single Target vanish check to line up improved garrote with Deathmark, making sure there are no adds soon. TODO Check after ImpGar fixes" );
@@ -165,7 +169,7 @@ void outlaw( player_t* p )
   build->add_action( "ambush,if=talent.hidden_opportunity" );
   build->add_action( "sinister_strike" );
 
-  cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)&(raid_event.adds.remains>5|raid_event.adds.in<5|!raid_event.adds.exists|!raid_event.adds.count)", "Cooldowns  Maintain Adrenaline Rush. With Improved AR, use at low CPs. Has a cursory check to try not to send if immediate downtime is expected." );
+  cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)&(raid_event.adds.remains>5|raid_event.adds.in<5|raid_event.adds.in>30)", "Cooldowns  Maintain Adrenaline Rush. With Improved AR, use at low CPs. Has a cursory check to try not to send if immediate downtime is expected." );
   cds->add_action( "blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd", "Maintain Blade Flurry at 2+ targets." );
   cds->add_action( "preparation,if=cooldown.adrenaline_rush.remains>30&!cooldown.between_the_eyes.ready|fight_remains<30", "Use Preparation to reset Adrenaline Rush and Between the Eyes." );
   cds->add_action( "keep_it_rolling,if=rtb_buffs>=3", "Use Keep it Rolling with at least stage 3 of RtB." );
@@ -216,15 +220,15 @@ void subtlety( player_t* p )
   default_->add_action( "call_action_list,name=race" );
   default_->add_action( "call_action_list,name=item" );
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "shadowstrike,if=talent.ancient_arts_3&variable.targets<=2&(buff.darkest_night.up|(talent.unseen_blade&buff.supercharge_1.up))&buff.shadow_techniques.stack>=5&!buff.ancient_arts.up&!cooldown.secret_technique.ready" );
+  default_->add_action( "shadowstrike,if=talent.ancient_arts_3&variable.targets<=2&(buff.darkest_night.up|(talent.unseen_blade&buff.supercharge_1.up))&buff.shadow_techniques.stack>=5&!buff.ancient_arts.up" );
   default_->add_action( "shuriken_storm,if=talent.ancient_arts_3&variable.targets>=3&(buff.supercharge_1.up)&buff.shadow_techniques.stack>=5&!buff.ancient_arts.up&!cooldown.secret_technique.ready" );
   default_->add_action( "call_action_list,name=finish,if=combo_points>=cp_max_spend-!buff.darkest_night.up" );
   default_->add_action( "call_action_list,name=build,if=variable.stealth|energy>60" );
   default_->add_action( "call_action_list,name=fill,if=!variable.stealth" );
 
-  cds->add_action( "shadow_blades,if=variable.shd_cp&cooldown.shadow_dance.charges_fractional>=1+0.8*talent.deathstalkers_mark&cooldown.secret_technique.ready&(fight_remains>90|!equipped.algethar_puzzle_box|trinket.1.proc.mastery.up)|(fight_remains<=20|target.time_to_die.remains<=20)", "Cooldowns  Delay the last Shadow Blades to line up with puzzle box if its equipped." );
+  cds->add_action( "shadow_blades,if=variable.shd_cp&cooldown.shadow_dance.charges_fractional>=1+0.8*talent.deathstalkers_mark&cooldown.secret_technique.ready&(fight_remains>90|!equipped.algethar_puzzle_box|trinket.1.proc.mastery.up|trinket.2.proc.mastery.up)|(fight_remains<=20|target.time_to_die.remains<=20)", "Cooldowns  Delay the last Shadow Blades to line up with puzzle box if its equipped." );
   cds->add_action( "shadow_dance,if=!variable.stealth&variable.shd_cp&energy>=30&((cooldown.secret_technique.ready|buff.darkest_night.up)&(cooldown.shadow_blades.remains>=30-cooldown.secret_technique.duration)|(buff.shadow_blades.up&cooldown.secret_technique.duration>=18))|(fight_remains<=10|target.time_to_die-remains<=9)" );
-  cds->add_action( "shadow_dance,if=buff.shadow_blades.up&talent.unseen_blade&buff.shadow_blades.remains<=buff.shadow_dance.duration", "Have the second Shadow Dance in Shadow Blades line up with the end of Shadow Blades instead of back-to-back for trickster." );
+  cds->add_action( "shadow_dance,if=buff.shadow_blades.up&talent.unseen_blade&buff.shadow_blades.remains<=buff.shadow_dance.duration+1", "Have the second Shadow Dance in Shadow Blades line up with the end of Shadow Blades instead of back-to-back for trickster." );
   cds->add_action( "shadow_dance,if=equipped.algethar_puzzle_box&talent.unseen_blade&!variable.stealth&variable.shd_cp&energy>=30&((cooldown.secret_technique.ready|buff.darkest_night.up)&(trinket.algethar_puzzle_box.cooldown.remains>=39-30*cooldown.shadow_blades.up))", "Used for when Shadow Blades is ready but holding for Algethar Puzzlebox trinket at the end of pull" );
   cds->add_action( "vanish,if=!variable.stealth&energy>=50&!buff.subterfuge.up&combo_points<=2" );
   cds->add_action( "shadowmeld,if=energy>=50&!variable.stealth&combo_points.deficit>=2" );
@@ -236,15 +240,15 @@ void subtlety( player_t* p )
   race->add_action( "invoke_external_buff,name=power_infusion,if=variable.racial_sync" );
 
   item->add_action( "potion,if=buff.shadow_blades.up|fight_remains<30", "Trinket and Items" );
-  item->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.shadow_blades.ready&cooldown.secret_technique.remains<=2&combo_points>=6", "actions.item+=/use_item,name=light_company_guidon,use_off_gcd=1,if=buff.shadow_blades.up" );
+  item->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.shadow_blades.ready&cooldown.secret_technique.remains<=2&combo_points>=6" );
   item->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
   item->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
 
-  finish->add_action( "secret_technique,if=buff.shadow_dance.up|(cooldown.secret_technique.duration<18|cooldown.shadow_dance.remains>=10)&!cooldown.shadow_dance.ready" );
   finish->add_action( "eviscerate,if=buff.darkest_night.up" );
+  finish->add_action( "secret_technique,if=buff.shadow_dance.up|(cooldown.secret_technique.duration<18|cooldown.shadow_dance.remains>=10)&!cooldown.shadow_dance.ready" );
   finish->add_action( "coup_de_grace,if=cooldown.secret_technique.remains>=3|buff.shadow_dance.up" );
-  finish->add_action( "black_powder,if=variable.targets>=3-talent.potent_powder" );
-  finish->add_action( "eviscerate,if=cooldown.secret_technique.remains>=3|buff.shadow_dance.up|buff.shadow_blades.up|talent.deathstalkers_mark", "Pool some Shadow Technique Stacks before entering Shadow Dance by not finishing right before." );
+  finish->add_action( "black_powder,if=variable.targets>=3" );
+  finish->add_action( "eviscerate,if=cooldown.secret_technique.remains>=3&talent.unseen_blade|buff.shadow_dance.up|buff.shadow_blades.up|debuff.deathstalkers_mark.stack>1|debuff.deathstalkers_mark.stack=1&buff.shadow_techniques.stack>=5", "Pool some Shadow Technique Stacks before entering Shadow Dance by not finishing right before." );
 
   build->add_action( "shuriken_storm,if=prev.shadow_dance&buff.premeditation.up&talent.danse_macabre" );
   build->add_action( "shadowstrike,if=!debuff.deathstalkers_mark.up&talent.deathstalkers_mark&!buff.darkest_night.up|variable.targets<=3|variable.priority_rotation" );

@@ -244,8 +244,8 @@ struct player_t : public actor_t
 
     gear_stats_t stats;
 
-    double spell_power_per_intellect, spell_power_per_attack_power, spell_crit_per_intellect;
-    double attack_power_per_strength, attack_power_per_agility, attack_crit_per_agility, attack_power_per_spell_power;
+    double spell_power_per_intellect, spell_power_per_attack_power;
+    double attack_power_per_strength, attack_power_per_agility, attack_power_per_spell_power;
     double dodge_per_agility, parry_per_strength, parry_rating_per_crit_rating;
     double health_per_stamina;
     std::array<double, SCHOOL_MAX> resource_reduction;
@@ -323,7 +323,7 @@ struct player_t : public actor_t
   event_t* off_gcd;
   event_t* cast_while_casting_poll_event; // Periodically check for something to do while casting
   event_t* spell_queue_event;
-  std::vector<std::pair<const cooldown_t*,const cooldown_t*>> off_gcd_cd;
+  std::vector<std::pair<const cooldown_t*, const cooldown_t*>> off_gcd_cd;
   std::vector<std::pair<const cooldown_t*, const cooldown_t*>> cast_while_casting_cd;
   timespan_t off_gcd_ready;
   timespan_t cast_while_casting_ready;
@@ -420,10 +420,10 @@ struct player_t : public actor_t
   auto_dispose<std::vector<sample_data_helper_t*>> sample_data_list;
   std::vector<std::unique_ptr<cooldown_waste_data_t>> cooldown_waste_data_list;
 
-  bool collect_pet_sequence_data;
-
   // All Data collected during / end of combat
   player_collected_data_t collected_data;
+  bool collect_pet_sequence_data;
+
 
   // Damage
   double iteration_dmg, priority_iteration_dmg, iteration_dmg_taken; // temporary accumulators
@@ -446,14 +446,13 @@ struct player_t : public actor_t
   void sequence_add( const action_t* a, const player_t* target );
 
   // Gear
-  std::string meta_gem_str, potion_str, flask_str, food_str, rune_str;
+  std::string potion_str, flask_str, food_str, rune_str;
   std::string temporary_enchant_str;
   std::vector<item_t> items;
   gear_stats_t gear, enchant; // Option based stats
   gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
   std::unique_ptr<set_bonus_t> sets;
   std::string set_bonus_str;
-  meta_gem_e meta_gem;
   bool matching_gear;
   std::unique_ptr<cooldown_t> item_cooldown;
   timespan_t default_item_group_cooldown;
@@ -487,33 +486,21 @@ struct player_t : public actor_t
   struct buffs_t
   {
     std::array<std::vector<buff_t*>, STAT_PCT_BUFF_MAX> stat_pct_buffs;
+    // 0 == stacking, 1 == non-stacking, 2 == non-stacking with multiple buff stacks
+    std::array<std::vector<std::pair<double, buff_t*>>, 3> movement_speed_buffs;
     std::vector<std::tuple<buff_t*, unsigned, double>> creature_type_buffs;
-    buff_t* angelic_feather;
-    buff_t* beacon_of_light;
-    buff_t* blood_fury;
-    buff_t* body_and_soul;
     buff_t* damage_done;
-    buff_t* darkflight;
     buff_t* devotion_aura;
     buff_t* entropic_embrace;
     buff_t* exhaustion;
     buff_t* guardian_spirit;
     buff_t* blessing_of_sacrifice;
-    buff_t* nitro_boosts;
     buff_t* pain_suppression;
     buff_t* movement;
-    buff_t* stampeding_roar;
     buff_t* shadowmeld;
-    buff_t* close_to_heart_aura;
-    buff_t* generous_pour_aura;
-    buff_t* windwalking_movement_aura;
     buff_t* stoneform;
     buff_t* stunned;
     buff_t* rooted;
-    std::array<buff_t*, 4> ancestral_call;
-    buff_t* fireblood;
-
-    buff_t* berserking;
     buff_t* bloodlust;
 
     // 7.0 trinket proxy buffs
@@ -531,54 +518,26 @@ struct player_t : public actor_t
     buff_t* galeforce_striking; // Gale-Force Striking weapon enchant
     buff_t* torrent_of_elements; // Torrent of Elements weapon enchant
 
-    // Azerite power
-    buff_t* normalization_increase;
-
     /// 8.2 Azerite Essences
     buff_t* memory_of_lucid_dreams;
     buff_t* lucid_dreams; // Versatility Buff from Rank 3
     buff_t* seething_rage_essence; // Blood of the Enemy major - 25% crit dam
 
     // 8.2 misc
-    buff_t* fathom_hunter; // Follower themed Benthic boots special effect
     buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
-
-    // 9.0 class buffs
-    buff_t* focus_magic; // Mage talent
-    buff_t* power_infusion; // Priest spell
-    buff_t* rallying_cry; // Warrior spell
 
     // 9.0 Runecarves
     buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
     buff_t* echo_of_eonar;               // passive self buff
 
-    // Trinkets
-    buff_t* soleahs_secret_technique_external;
-    buff_t* elegy_of_the_eternals_external;
-
-    // 9.2 Sepulcher of the First Ones
-    buff_t* boon_of_azeroth; // Jailer fight buff
-    buff_t* boon_of_azeroth_mythic; // Jailer fight buff (Mythic)
-
     // 10.0 Buffs
     buff_t* chilled_clarity;  // potion of chilled clarity
     buff_t* elemental_chaos_fire;  // phial of elemental chaos
-    buff_t* elemental_chaos_air;
     buff_t* elemental_chaos_earth;
     buff_t* elemental_chaos_frost;
-    buff_t* tome_of_unstable_power;
     buff_t* way_of_controlled_currents;
     buff_t* stormeaters_boon;
     buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
-
-    // 11.0 The War Within
-    buff_t* ingest_mineral;  // earthen well fed racial
-    buff_t* surekian_grace;  // sik'ran's shadow arsenal barrage movement speed buff
-    buff_t* earthen_ire;     // sigil of algari concordance tank buff
-    buff_t* quickwicks_quick_trick_wick_walk;  // quickwick candlestick movement speed buff
-    buff_t* building_momentum;  // scroll of momentum counter buff
-    buff_t* full_momentum;      // scroll of momentum max buff
-    buff_t* potion_bomb_of_power; // potion bomb of power primary stat
   } buffs;
 
   struct debuffs_t
@@ -600,37 +559,22 @@ struct player_t : public actor_t
 
     // Dragonflight Raid Damage Modifier Debuffs
     buff_t* hunters_mark;
-
   } debuffs;
 
   struct external_buffs_t
   {
     std::string pool;
     std::unordered_map<buff_t*, std::vector<cooldown_t*>> invoke_cds;
-    bool focus_magic;
-    double blessing_of_summer_duration_multiplier;
     std::vector<timespan_t> power_infusion;
-    std::vector<timespan_t> blessing_of_summer;
-    std::vector<timespan_t> blessing_of_autumn;
-    std::vector<timespan_t> blessing_of_winter;
-    std::vector<timespan_t> blessing_of_spring;
-    std::vector<timespan_t> conquerors_banner;
     std::vector<timespan_t> rallying_cry;
-    std::vector<timespan_t> boon_of_azeroth;
-    std::vector<timespan_t> boon_of_azeroth_mythic;
-    std::vector<timespan_t> tome_of_unstable_power;
     std::vector<timespan_t> potion_bomb_of_power;
-    int tome_of_unstable_power_ilevel;
     int soleahs_secret_technique;
-    std::string elegy_of_the_eternals;
   } external_buffs;
-
 
   struct gains_t
   {
     std::array<gain_t*, RESOURCE_MAX> resource_regen;
     gain_t* health;
-    gain_t* vampiric_embrace;
   } gains;
 
   struct spells_t
@@ -654,36 +598,9 @@ struct player_t : public actor_t
 
   struct racials_t
   {
-    const spell_data_t* quickness;
-    const spell_data_t* elusiveness;
-    const spell_data_t* command;
-    const spell_data_t* arcane_acuity;
-    const spell_data_t* heroic_presence;
     const spell_data_t* might_of_the_mountain;
-    const spell_data_t* expansive_mind;
-    const spell_data_t* nimble_fingers;
-    const spell_data_t* time_is_money;
-    const spell_data_t* the_human_spirit;
-    const spell_data_t* touch_of_elune;
     const spell_data_t* brawn;
-    const spell_data_t* endurance;
-    const spell_data_t* viciousness;
-    const spell_data_t* magical_affinity;
-    const spell_data_t* mountaineer;
-    const spell_data_t* brush_it_off;
-    const spell_data_t* awakened;
-    const spell_data_t* azerite_surge;
-    const spell_data_t* titanwrought_frame;
-    const spell_data_t* holy_providence;
-    const spell_data_t* lash_out;
-    const spell_data_t* subterranean_predator;
   } racials;
-
-  struct passives_t
-  {
-    double amplification_1;
-    double amplification_2;
-  } passive_values;
 
   bool active_during_iteration;
   const spell_data_t* spec_spell;
@@ -901,6 +818,8 @@ struct player_t : public actor_t
     bool crucible_of_erratic_energies_predation = false;
     // Chance to miss vessel of tortured souls orb
     double vessel_of_tortured_souls_miss_chance = 0.6;
+    // Duration multiplier for Lightspire Core's mastery buff
+    double lightspire_core_duration_multiplier = 0.5;
   } midnight_opts;
 
 private:
@@ -1176,7 +1095,6 @@ public:
   { return true; }
   virtual bool validate_actor()
   { return true; }
-  virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
   virtual std::vector<std::string> get_item_actions();
   virtual std::vector<std::string> get_profession_actions();
@@ -1219,7 +1137,7 @@ public:
   virtual void init_uptimes();
   virtual void init_benefits();
   virtual void init_rng();
-  virtual void init_stats();
+  virtual void init_stat_data();
   virtual void init_distance_targeting();
   virtual void init_absorb_priority();
   virtual void init_assessors();
@@ -1416,6 +1334,10 @@ public:
   virtual void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* );
   virtual void assess_damage_imminent( school_e, result_amount_type, action_state_t* );
   virtual void do_damage( action_state_t* );
+
+  virtual bool has_absorb() const { return false; }
+  virtual double current_absorb_amount() const { return 0.0; }
+
   virtual void assess_heal( school_e, result_amount_type, action_state_t* );
   virtual void trigger_callbacks( proc_types, proc_types2, action_t* action, action_state_t* state,
                                   proc_trigger_type_e pt_type = TRIGGER_ACTION );
@@ -1462,9 +1384,6 @@ public:
 
   player_t* get_owner_or_self()
   { return const_cast<player_t*>(static_cast<const player_t*>(this) -> get_owner_or_self()); }
-
-  // T18 Hellfire Citadel class trinket detection
-  virtual bool has_t18_class_trinket() const;
 
   // Targetdata stuff
   virtual const actor_target_data_t* find_target_data( const player_t* /* target */ ) const
@@ -1571,7 +1490,7 @@ public:
   assessor::state_assessor_pipeline_t assessor_out_damage;
 
   /// Start-of-combat effects
-  using combat_begin_fn_t = std::function<void(player_t*)>;
+  using combat_begin_fn_t = std::function<void( player_t* )>;
   std::vector<combat_begin_fn_t> combat_begin_functions;
   std::vector<combat_begin_fn_t> precombat_begin_functions;
 
@@ -1597,6 +1516,9 @@ public:
 
   // buffs that grant increased damage based on target creature type
   void register_creature_type_buff( buff_t*, const spell_data_t* = spell_data_t::nil() );
+
+  // trigger buff at a list of timestamps starting from beginning of combat
+  void register_timed_buff_triggers( buff_t*, const std::vector<timespan_t>&, timespan_t duration = timespan_t::min() );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

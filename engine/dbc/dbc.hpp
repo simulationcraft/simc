@@ -11,6 +11,7 @@
 #include "data_definitions.hh"
 #include "data_enums.hh"
 #include "dbc/azerite.hpp"
+#include "dbc/content_tuning.hpp"
 #include "dbc/expected_stat.hpp"
 #include "dbc/embellishment_data.hpp"
 #include "dbc/gem_data.hpp"
@@ -349,7 +350,6 @@ public:
   double dodge_base( player_e t ) const;
   double dodge_base( pet_e t ) const;
   double resource_base( player_e t, unsigned level ) const;
-  double health_base( player_e t, unsigned level ) const;
   const stat_data_t& attribute_base( player_e t, unsigned level ) const;
   const stat_data_t& attribute_base( pet_e t, unsigned level ) const;
   const stat_data_t& race_base( race_e r ) const;
@@ -363,10 +363,6 @@ public:
   double horizontal_shift( player_e t ) const;
 
   double spell_scaling( player_e t, unsigned level ) const;
-  double melee_crit_scaling( player_e t, unsigned level ) const;
-  double melee_crit_scaling( pet_e t, unsigned level ) const;
-  double spell_crit_scaling( player_e t, unsigned level ) const;
-  double spell_crit_scaling( pet_e t, unsigned level ) const;
   double health_per_stamina( unsigned level ) const;
   double item_socket_cost( unsigned ilevel ) const;
   double armor_mitigation_constant( unsigned level ) const;
@@ -461,6 +457,9 @@ public:
 
   const expected_stat_t& expected_stat( unsigned level ) const
   { return expected_stat_t::find( level, ptr ); }
+
+  const content_tuning_data_t& content_tuning( unsigned id ) const
+  { return content_tuning_data_t::find( id, ptr ); }
 
   template <typename T, typename = std::enable_if_t<std::is_invocable_v<T, expected_stat_mod_t>>>
   double expected_stat_mod( difficulty_e difficulty, T field ) const

@@ -103,15 +103,6 @@ struct action_state_t : private noncopyable
     return rolling_ta_multiplier;
   }
 
-  virtual double composite_target_mitigation_da_multiplier() const
-  { return target_mitigation_da_multiplier; }
-
-  virtual double composite_target_mitigation_ta_multiplier() const
-  { return target_mitigation_ta_multiplier; }
-
-  virtual double composite_target_armor() const
-  { return target_armor; }
-
   // Inlined
   virtual proc_types proc_type() const;
   virtual proc_types2 execute_proc_type2() const;

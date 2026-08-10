@@ -1103,8 +1103,10 @@ double parse_player_effects_t::composite_player_healing_received_multiplier() co
 double parse_player_effects_t::composite_player_absorb_received_multiplier() const
 {
   auto ar = player_t::composite_player_absorb_received_multiplier();
+
   for ( const auto& i : absorb_received_mult_effects )
     ar *= 1.0 + get_effect_value( i );
+
   return ar;
 }
 
@@ -1152,6 +1154,26 @@ double parse_player_effects_t::composite_mitigation_from_player_multiplier( play
   for ( const auto& i : mitigation_from_target_multiplier_effects )
     if ( i.opt_enum & dbc::get_school_mask( school ) )
       m *= 1.0 + get_effect_value( i, td );
+
+  return m;
+}
+
+double parse_player_effects_t::non_stacking_movement_modifier() const
+{
+  auto m = player_t::non_stacking_movement_modifier();
+
+  for ( const auto& i : non_stacking_movement_effects )
+    m = std::max( get_effect_value( i ), m );
+
+  return m;
+}
+
+double parse_player_effects_t::stacking_movement_modifier() const
+{
+  auto m = player_t::stacking_movement_modifier();
+
+  for ( const auto& i : stacking_movement_effects )
+    m += get_effect_value( i );
 
   return m;
 }
@@ -1348,6 +1370,16 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       str = "absorb received";
       return &absorb_received_mult_effects;
 
+    case A_MOD_INCREASE_SPEED:
+      str = "exclusive move speed";
+      invalidate( CACHE_RUN_SPEED );
+      return &non_stacking_movement_effects;
+
+    case A_MOD_SPEED_ALWAYS:
+      str = "stacking move speed";
+      invalidate( CACHE_RUN_SPEED );
+      return &stacking_movement_effects;
+
     case A_MOD_PERCENT_STAT:
       sim->error( SEVERE,
                   "Parse Effects: {}(id={}), effectN {} is utilizing aura subtype 80, rather than 137. This is a bug, "
@@ -1479,10 +1511,10 @@ void parse_player_effects_t::print_custom_parsed_effects( report::sc_html_stream
     print_parsed_type( os, crit_avoidance_effects, "Crit Avoidance" );
     print_parsed_type( os, crit_chance_effects, "Crit Chance" );
     print_parsed_type( os, crit_bonus_effects, "Crit Damage Bonus" );
-    print_parsed_type( os, dodge_effects, "Dodge" );
     print_parsed_type( os, mitigation_multiplier_effects, "Damage Taken Multiplier", &opt_strings::school );
     print_parsed_type( os, mitigation_from_target_multiplier_effects, "Damage Taken From Target Multiplier",
                        &opt_strings::school );
+    print_parsed_type( os, dodge_effects, "Dodge" );
     print_parsed_type( os, expertise_effects, "Expertise" );
     print_parsed_type( os, haste_effects, "All Haste" );
     print_parsed_type( os, melee_haste_effects, "Melee Haste" );
@@ -1490,6 +1522,8 @@ void parse_player_effects_t::print_custom_parsed_effects( report::sc_html_stream
     print_parsed_type( os, healing_received_effects, "Healing Received" );
     print_parsed_type( os, leech_effects, "Leech" );
     print_parsed_type( os, mastery_effects, "Mastery", nullptr, mastery_val );
+    print_parsed_type( os, non_stacking_movement_effects, "Move Speed Modifier - Exclusive" );
+    print_parsed_type( os, stacking_movement_effects, "Move Speed Modifier - Stacking" );
     print_parsed_type( os, parry_effects, "Parry" );
     print_parsed_type( os, parry_rating_from_crit_effects, "Parry Rating from Crit" );
     print_parsed_type( os, pet_multiplier_effects, "Pet Multiplier", &opt_strings::pet_type );
@@ -1535,7 +1569,9 @@ size_t parse_player_effects_t::total_effects_count() const
          healing_received_effects.size() +
          absorb_received_mult_effects.size() +
          target_multiplier_effects.size() +
-         target_pet_multiplier_effects.size();
+         target_pet_multiplier_effects.size() +
+         non_stacking_movement_effects.size() +
+         stacking_movement_effects.size();
 }
 
 void parse_action_base_t::parse_callback_function( pack_t<player_effect_t>& pack, parse_cb_t cb )

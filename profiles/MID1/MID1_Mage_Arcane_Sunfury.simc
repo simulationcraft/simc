@@ -6,6 +6,7 @@ race=void_elf
 role=spell
 position=back
 talents=C4DAAAAAAAAAAAAAAAAAAAAAAYGmZZmZmFmZGamxAAAwAAmZmmlltZAgYDAgNmZmxYzyMzMLzMGjZmxYhZmZMDAwAAAMAzMgZAwwA
+omnium_talents=136822:1/136817:1/136815:1/136814:1
 
 # Default consumables
 potion=lights_potential_2
@@ -122,33 +123,33 @@ actions.sunfury+=/arcane_blast
 actions.sunfury+=/arcane_barrage,if=(variable.sf_touch_surge&(!prev_gcd.1.arcane_surge|prev_off_gcd.touch_of_the_magi&buff.arcane_salvo.react=25))|!variable.sf_touch_surge
 
 head=voidbreakers_veil,id=250060,bonus_id=13534,ilevel=289,gem_id=240983,enchant_id=8017
-neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=13534,ilevel=289,gem_id=240902/240902
+neck=rotmires_sporeheart,id=268291,bonus_id=13577/13668/13786,gem_id=240918
 shoulders=voidbreakers_leyline_nexi,id=250058,ilevel=289,enchant_id=8031
 back=arcanoweave_cloak,id=239661,bonus_id=8794,ilevel=285
-chest=voidbreakers_robe,id=250063,ilevel=289,enchant_id=7987
-wrists=arcanoweave_bracers,id=239660,bonus_id=8794/13534,ilevel=285,gem_id=240902
+chest=voidbreakers_robe,id=250063,bonus_id=13575/13786,enchant_id=7987
+wrists=arcanoweave_bracers,id=239660,bonus_id=8794/13534,ilevel=285,gem_id=240918
 hands=voidbreakers_gloves,id=250061,ilevel=289
-waist=whisperinscribed_sash,id=249376,bonus_id=13534,ilevel=289,gem_id=240902
+waist=whisperinscribed_sash,id=249376,bonus_id=13534,ilevel=289,gem_id=240918
 legs=commanders_faded_breeches,id=251090,ilevel=289,enchant_id=7937
-feet=dreamscorched_striders,id=249373,ilevel=289,enchant_id=7993
-finger1=sindorei_band_of_hope,id=249919,bonus_id=13534,ilevel=289,gem_id=240902,enchant_id=7967
-finger2=eye_of_midnight,id=249920,bonus_id=13534,ilevel=289,gem_id=240902/240902,enchant_id=7967
+feet=luxurious_loamstriders,id=268282,bonus_id=13577/13786,enchant_id=7993
+finger1=sindorei_band_of_hope,id=249919,bonus_id=13534,ilevel=289,gem_id=240918,enchant_id=7967
+finger2=sporecallers_blooming_loop,id=268290,bonus_id=13577/13668/13786,gem_id=240918,enchant_id=7967
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=298
 trinket2=vaelgors_final_stare,id=249346,ilevel=298
 main_hand=skybreakers_blade,id=258218,ilevel=298,enchant_id=8039
 off_hand=sigil_of_the_restless_heart,id=251094,ilevel=298
 
 # Gear Summary
-# gear_ilvl=290.75
-# gear_stamina=17695
-# gear_intellect=1728
-# gear_crit_rating=507
-# gear_haste_rating=731
-# gear_mastery_rating=1012
-# gear_versatility_rating=314
+# gear_ilvl=293.00
+# gear_stamina=18285
+# gear_intellect=1747
+# gear_crit_rating=561
+# gear_haste_rating=656
+# gear_mastery_rating=1010
+# gear_versatility_rating=345
 # gear_leech_rating=194
 # gear_avoidance_rating=37
-# gear_armor=531
+# gear_armor=539
 # set_bonus=arcanoweave_trappings_2pc=1
 # set_bonus=midnight_season_1_2pc=1
 # set_bonus=midnight_season_1_4pc=1

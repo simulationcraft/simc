@@ -53,7 +53,7 @@ jobs:
         env:
           CCACHE_BASEDIR: ${{ runner.workspace }}
           CCACHE_DIR: ${{ runner.workspace }}/.ccache
-          CCACHE_MAXSIZE: 256M # original size ~1.1G, assume ~5x compression
+          CCACHE_MAXSIZE: 350M
         run: |
           ccache -z
           ninja -C '${{ runner.workspace }}/b/ninja'
@@ -63,9 +63,8 @@ jobs:
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
+            ActionPriorityLists
             profiles
-            tests
-            generate_profiles_ci.sh
             .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
@@ -120,7 +119,7 @@ jobs:
         env:
           CCACHE_BASEDIR: ${{ runner.workspace }}
           CCACHE_DIR: ${{ runner.workspace }}/.ccache
-          CCACHE_MAXSIZE: 304M # original size ~1.5G, assume ~5x compression
+          CCACHE_MAXSIZE: 400M
         run: |
           ccache -z
           ninja -C '${{ runner.workspace }}/b/ninja'
@@ -130,9 +129,8 @@ jobs:
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
+            ActionPriorityLists
             profiles
-            tests
-            generate_profiles_ci.sh
             .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
@@ -159,7 +157,7 @@ jobs:
         env:
           CCACHE_BASEDIR: ${{ runner.workspace }}
           CCACHE_DIR: ${{ runner.workspace }}/.ccache
-          CCACHE_MAXSIZE: 416M # original size ~2.0G, assume ~5x compression
+          CCACHE_MAXSIZE: 500M
         run: |
           ccache -z
           make CXX="ccache c++" SANITIZE=1 -C engine debug -j 2
@@ -208,7 +206,7 @@ jobs:
         env:
           CCACHE_BASEDIR: ${{ github.workspace }}
           CCACHE_DIR: ${{ github.workspace }}\.ccache
-          CCACHE_MAXSIZE: 192M # original size ~1.1G, assume ~6x compression
+          CCACHE_MAXSIZE: 400M
         run: |
           ccache -z
           cmake --build "${{ env.CMAKE_BUILD_DIR }}"

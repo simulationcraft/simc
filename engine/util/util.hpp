@@ -79,15 +79,51 @@ SC_EXCEPTION( sc_invalid_item_string, 82, "Invalid item string" );
 namespace util
 {
 double stat_value( const player_t* p, stat_e stat );
+
+template <typename Cmp>
+stat_e find_stat( const player_t* p, util::span<const stat_e> stats, Cmp cmp )
+{
+  assert( !stats.empty() );
+
+  stat_e stat = stats.front();
+  double value = stat_value( p, stat );
+  for ( const stat_e s : stats.subspan( 1 ) )
+  {
+    const double v = stat_value( p, s );
+    if ( cmp( v, value ) )
+    {
+      stat = s;
+      value = v;
+    }
+  }
+
+  return stat;
+}
+
+template <typename Cmp>
+std::vector<stat_e> find_stats( const player_t* p, util::span<const stat_e> stats, Cmp cmp )
+{
+  double value = stat_value( p, find_stat( p, stats, cmp ) );
+
+  std::vector<stat_e> vec;
+  vec.reserve( stats.size() );
+  for ( const stat_e stat : stats )
+    if ( value == stat_value( p, stat ) )
+      vec.emplace_back( stat );
+
+  return vec;
+}
+
 stat_e highest_stat( const player_t* p, util::span<const stat_e> stat );
+std::vector<stat_e> highest_stats( const player_t* p, util::span<const stat_e> stat );
 stat_e lowest_stat( const player_t* p, util::span<const stat_e> stat );
+std::vector<stat_e> lowest_stats( const player_t* p, util::span<const stat_e> stat );
 
 std::string version_info_str( const dbc_t* dbc );
 std::string build_info_str( const dbc_t* dbc, int display_level );
 
 const char* attribute_type_string     ( attribute_e type );
 const char* dot_behavior_type_string  ( dot_behavior_e t );
-const char* meta_gem_type_string      ( meta_gem_e type );
 const char* player_type_string        ( player_e );
 const char* player_type_string_long   ( player_e );
 const char* pet_type_string           ( pet_e type );
@@ -156,7 +192,6 @@ stat_e power_type_to_stat( power_e );
 
 attribute_e parse_attribute_type ( util::string_view name );
 result_amount_type parse_dmg_type ( util::string_view name );
-meta_gem_e parse_meta_gem_type   ( util::string_view name );
 player_e parse_player_type       ( util::string_view name );
 pet_e parse_pet_type             ( util::string_view name );
 profession_e parse_profession_type( util::string_view name );
@@ -204,7 +239,6 @@ weapon_e translate_weapon_subclass( int weapon_subclass );
 item_subclass_weapon translate_weapon( weapon_e weapon );
 profession_e translate_profession_id( int skill_id );
 bool socket_gem_match( item_socket_color socket, item_socket_color gem );
-double crit_multiplier( meta_gem_e gem );
 bool scale_metric_is_raid( scale_metric_e );
 double calculate_armor_resist( double armor, double armor_coeff, double multipler = 1.0 );
 
@@ -326,7 +360,6 @@ namespace fmt {
 
 SC_ENUM_FORMATTER( attribute_e,             util::attribute_type_string );
 SC_ENUM_FORMATTER( dot_behavior_e,          util::dot_behavior_type_string );
-SC_ENUM_FORMATTER( meta_gem_e,              util::meta_gem_type_string );
 SC_ENUM_FORMATTER( player_e,                util::player_type_string );
 SC_ENUM_FORMATTER( pet_e,                   util::pet_type_string );
 SC_ENUM_FORMATTER( position_e,              util::position_type_string );

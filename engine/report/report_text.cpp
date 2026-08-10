@@ -639,7 +639,7 @@ void print_waiting_all( std::ostream& os, const sim_t& sim )
 
 void print_iteration_data( std::ostream& os, const sim_t& sim )
 {
-  if ( !sim.deterministic || sim.report_iteration_data == 0 )
+  if ( !sim.deterministic || ( sim.report_iteration_data == 0 && !sim.report_strict_iteration_data ) )
   {
     return;
   }
@@ -702,45 +702,53 @@ void print_iteration_data( std::ostream& os, const sim_t& sim )
       spacer_str_1.clear();
       spacer_str_2.clear();
     }
-    fmt::print( os, ".--------------------------------------------------------{}.\n",
-                   spacer_str_1 );
-    fmt::print( os, "| Iteration Data                                         {}|\n",
-                   spacer_str_2 );
-    fmt::print( os, "+--------+-----------+----------------------+------------{}+\n",
-                   spacer_str_1 );
+    fmt::print( os, ".{}{}--------------------------------------------------------{}.\n",
+                sim.report_strict_iteration_data ? "---------" : "", sim.single_actor_batch ? "--------" : "",
+                spacer_str_1 );
+    fmt::print( os, "| Iteration Data{}{}                                         {}|\n",
+                sim.report_strict_iteration_data ? "         " : "", sim.single_actor_batch ? "        " : "",
+                spacer_str_2 );
+    fmt::print( os, "{}{}+--------+-----------+----------------------+------------{}+\n",
+                sim.report_strict_iteration_data ? "+--------" : "", sim.single_actor_batch ? "+-------" : "",
+                spacer_str_1 );
     if ( sim.fixed_time == 0 )
     {
-      fmt::print( os, "|  Iter# |    Metric |                 Seed |  {}Health(s) |\n",
-                     spacer_str_2 );
+      fmt::print( os, "{}{}|  Iter# |    Metric |                 Seed |  {}Health(s) |\n",
+                  sim.report_strict_iteration_data ? "| Thread " : "", sim.single_actor_batch ? "| Actor " : "",
+                  spacer_str_2 );
     }
     else
     {
-      fmt::print( os, "|  Iter# |    Metric |                 Seed |  {}   Length |\n",
-                     spacer_str_2 );
+      fmt::print( os, "{}{}|  Iter# |    Metric |                 Seed |  {}   Length |\n",
+                  sim.report_strict_iteration_data ? "| Thread " : "", sim.single_actor_batch ? "| Actor " : "",
+                  spacer_str_2 );
     }
-    fmt::print( os, "+--------+-----------+----------------------+------------{}+\n",
-                   spacer_str_1 );
+    fmt::print( os, "{}{}+--------+-----------+----------------------+------------{}+\n",
+                sim.report_strict_iteration_data ? "+--------" : "", sim.single_actor_batch ? "+-------" : "",
+                spacer_str_1 );
 
     for ( auto& data : sim.iteration_data )
     {
+      std::string actor_str, thread_str;
+      if ( sim.single_actor_batch )
+        actor_str = fmt::format( "| {:5} ", data.actor_index );
+      if ( sim.report_strict_iteration_data )
+        thread_str = fmt::format( "| {:6} ", data.thread_index );
+
       if ( sim.fixed_time == 0 )
       {
-        fmt::print( os, "| {:6} | {:9.1f} | {:20} | {:>10} |\n",
-            data.iteration,
-            data.metric,
-            data.seed,
-            fmt::join( data.target_health, ", " ) );
+        fmt::print( os, "{}{}| {:6} | {:9.1f} | {:20} | {:>10} |\n", thread_str, actor_str, data.iteration, data.metric,
+                    data.seed, fmt::join( data.target_health, ", " ) );
       }
       else
       {
-        fmt::print( os, "| {:6} | {:9.1f} | {:20} | {:10.3f} |\n",
-            data.iteration,
-            data.metric,
-            data.seed, data.iteration_length );
+        fmt::print( os, "{}{}| {:6} | {:9.1f} | {:20} | {:10.3f} |\n", thread_str, actor_str, data.iteration,
+                    data.metric, data.seed, data.iteration_length );
       }
     }
-    fmt::print( os, "'--------+-----------+----------------------+------------{}'\n",
-                   spacer_str_1 );
+    fmt::print( os, "'{}{}--------+-----------+----------------------+------------{}'\n",
+                sim.report_strict_iteration_data ? "--------+" : "", sim.single_actor_batch ? "-------+" : "",
+                spacer_str_1 );
   }
 }
 
@@ -826,7 +834,6 @@ void sim_summary_performance( std::ostream& os, sim_t* sim )
       sim->event_mgr.events_added );
 
   fmt::print( os, "\nEvent Queue Allocation:\n" );
-  double total_a = 0;
   for ( size_t i = 0; i < sim->event_mgr.event_requested_size_count.size();
         ++i )
   {
@@ -841,8 +848,6 @@ void sim_summary_performance( std::ostream& os, sim_t* sim )
         i,
         count,
         p );
-
-    total_a += p;
   }
 
   fmt::print( os, "Total: {:.3f}% Alloc Samples: {}\n",

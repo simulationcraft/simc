@@ -535,9 +535,10 @@ inline modified_spell_data_t* modified_spell_data_t::nil() { return &modified_sp
 struct parse_effects_t : public parse_base_t
 {
 protected:
+  // Internal player pointer used to access target data and mastery, can differ from the player of the action
   player_t* _player;
   std::array<std::vector<parse_cb_t>, PARSE_CALLBACK_MAX> callback_list;
-  std::array<uint32_t, PARSE_CALLBACK_MAX> callback_mask;
+  std::array<uint32_t, PARSE_CALLBACK_MAX> callback_mask{};
   mutable uint32_t callback_idx = 0;
 
 public:
@@ -723,6 +724,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> healing_received_effects;
   std::vector<target_effect_t> target_multiplier_effects;
   std::vector<target_effect_t> target_pet_multiplier_effects;
+  std::vector<player_effect_t> non_stacking_movement_effects;
+  std::vector<player_effect_t> stacking_movement_effects;
 
   // Cache Pairing, invalidate first of the pair when the second is invalidated
   std::vector<std::pair<cache_e, cache_e>> invalidate_with_parent;
@@ -762,6 +765,8 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   double composite_mitigation_multiplier( const action_state_t*, school_e, bool direct ) const override;
   double composite_mitigation_from_player_multiplier( player_t*, const action_state_t*, school_e,
                                                       bool direct ) const override;
+  double non_stacking_movement_modifier() const override;
+  double stacking_movement_modifier() const override;
 
   void invalidate_cache( cache_e c ) override;
 

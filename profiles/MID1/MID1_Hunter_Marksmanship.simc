@@ -5,7 +5,7 @@ level=90
 race=orc
 role=attack
 position=ranged_back
-talents=C4PAAAAAAAAAAAAAAAAAAAAAAwCMwMGNWGQmBbAAAAAAAAAzYGzwMmZGzgx0MmZmZ222MzMDzMYmZbwsMYGAAwMzMAwMjNmFDwGG
+talents=C4PAAAAAAAAAAAAAAAAAAAAAAYzsMwAGwMsFYWAAAAAAAAAmxMmhZMzMmBjpZMzM22YMzyMzMzMzyYmlBDAAwYmZmZmZAyGMAbMDA
 
 # Default consumables
 potion=lights_potential_2
@@ -29,6 +29,8 @@ actions.precombat+=/steady_shot
 
 # Executed every time the actor is available.
 actions=variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25|time<10
+# For DungeonRoute, hold Trueshot at the end of pulls.
+actions+=/variable,name=trueshot_ready,op=setif,condition=fight_style.dungeonroute,value_else=variable.trueshot_ready,value=raid_event.pull.remains>30|raid_event.pull.in>60|talent.calling_the_shots
 actions+=/auto_shot
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=trinkets
@@ -45,48 +47,53 @@ actions.cds+=/fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_r
 actions.cds+=/lights_judgment,if=buff.trueshot.down
 actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|fight_remains<120-30*talent.calling_the_shots)|fight_remains<31
 
-actions.draoe=black_arrow
-actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down
-actions.draoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(talent.unload&(talent.no_scope&buff.bulletstorm.stack<10|target.health.pct<20)|buff.bulletstorm.remains<action.aimed_shot.execute_time)
+actions.draoe=aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time&full_recharge_time<gcd+cast_time
+actions.draoe+=/black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
+actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down
 actions.draoe+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
+actions.draoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload)
+actions.draoe+=/wailing_arrow,if=!cooldown.black_arrow.ready
 actions.draoe+=/volley,if=!buff.double_tap.up
 actions.draoe+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
-actions.draoe+=/wailing_arrow
-actions.draoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time
+actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
+actions.draoe+=/explosive_shot
 actions.draoe+=/steady_shot
 
-actions.drst=black_arrow
+actions.drst=black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
+actions.drst+=/aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time
 actions.drst+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
-actions.drst+=/rapid_fire,if=talent.unload&(talent.no_scope&buff.bulletstorm.stack<10|target.health.pct<20)
-actions.drst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.volley.remains%action.aimed_shot.execute_time>action.arcane_shot.execute_time&buff.trueshot.down
+actions.drst+=/rapid_fire
+actions.drst+=/wailing_arrow,if=!cooldown.black_arrow.ready
 actions.drst+=/arcane_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
-actions.drst+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
 actions.drst+=/volley,if=!buff.double_tap.up
 actions.drst+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage
-actions.drst+=/wailing_arrow
-actions.drst+=/rapid_fire
+actions.drst+=/explosive_shot
 actions.drst+=/steady_shot
 
-actions.sentaoe=multishot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down
-actions.sentaoe+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
+actions.sentaoe=multishot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target,if=buff.precise_shots.up&!talent.aspect_of_the_hydra&!prev_gcd.1.multishot|buff.trick_shots.down
+actions.sentaoe+=/rapid_fire,if=(buff.bulletstorm.remains<action.aimed_shot.execute_time|buff.bulletstorm.stack<18|talent.unload&target.health.pct<20)
 actions.sentaoe+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
 actions.sentaoe+=/volley,if=!buff.double_tap.up
-actions.sentaoe+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage
+actions.sentaoe+=/explosive_shot,if=talent.shrapnel_shot&buff.trueshot.down&buff.lock_and_load.down&cooldown.aimed_shot.charges_fractional<=1.1
+actions.sentaoe+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
 actions.sentaoe+=/moonlight_chakram
-actions.sentaoe+=/rapid_fire
+actions.sentaoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time
+actions.sentaoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&talent.windrunner_quiver
+actions.sentaoe+=/explosive_shot
 actions.sentaoe+=/steady_shot
 
-actions.sentst=volley,if=!buff.double_tap.up&active_enemies=1
-actions.sentst+=/trueshot,if=!buff.double_tap.up&active_enemies=1&variable.trueshot_ready
-actions.sentst+=/rapid_fire,if=talent.unload&((buff.precise_shots.up&!talent.no_scope)&buff.bulletstorm.stack<10|target.health.pct<20)
-actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=active_enemies>2&buff.volley.remains%action.aimed_shot.execute_time>action.arcane_shot.execute_time&buff.trueshot.down
-actions.sentst+=/arcane_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
-actions.sentst+=/rapid_fire,if=buff.bulletstorm.remains<action.aimed_shot.execute_time
-actions.sentst+=/trueshot,if=!buff.double_tap.up&active_enemies>1&variable.trueshot_ready
-actions.sentst+=/volley,if=!buff.double_tap.up&active_enemies>1
-actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=cooldown.volley.remains>2|buff.trueshot.up|!talent.volley
+actions.sentst=volley,if=!buff.double_tap.up
+actions.sentst+=/trueshot,if=!buff.double_tap.up&variable.trueshot_ready
+actions.sentst+=/rapid_fire,if=buff.bulletstorm.stack<18
+actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=full_recharge_time<gcd+cast_time
+actions.sentst+=/arcane_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)
+actions.sentst+=/rapid_fire,if=(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload&target.health.pct<20)
+actions.sentst+=/kill_shot,target_if=max:debuff.sentinels_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up&active_enemies=1
+actions.sentst+=/moonlight_chakram,if=buff.trueshot.remains<execute_time+gcd
+actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage
 actions.sentst+=/moonlight_chakram
 actions.sentst+=/rapid_fire
+actions.sentst+=/explosive_shot
 actions.sentst+=/steady_shot
 
 # A buff trinket that lines up cleanly with Trueshot; use with Trueshot.
@@ -110,16 +117,16 @@ legs=primal_sentrys_legguards,id=249987,bonus_id=13575/13575/13575/13575/13575/1
 feet=world_tenders_rootslippers,id=244610,bonus_id=8960/8960/8960/8960/12214/12214/12214,ilevel=285
 finger1=signet_of_the_starved_beast,id=249336,bonus_id=1808,ilevel=289,gem_id=240890,enchant_id=7967
 finger2=sindorei_band_of_hope,id=249919,bonus_id=1808,ilevel=289,gem_id=240908,enchant_id=7967
-trinket1=umbral_plume,id=260235,ilevel=289
-trinket2=algethar_puzzle_box,id=193701,ilevel=289
-main_hand=rangercaptains_lethal_recurve,id=249288,ilevel=289,enchant_id=8039
+trinket1=umbral_plume,id=260235,ilevel=298
+trinket2=algethar_puzzle_box,id=193701,ilevel=298
+main_hand=rangercaptains_lethal_recurve,id=249288,ilevel=298,enchant_id=8039
 
 # Gear Summary
-# gear_ilvl=288.47
-# gear_agility=1352
-# gear_stamina=17342
-# gear_crit_rating=1135
-# gear_haste_rating=411
+# gear_ilvl=290.27
+# gear_agility=1383
+# gear_stamina=17548
+# gear_crit_rating=1140
+# gear_haste_rating=413
 # gear_mastery_rating=667
 # gear_versatility_rating=197
 # gear_armor=1256

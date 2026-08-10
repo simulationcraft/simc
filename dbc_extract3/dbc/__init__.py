@@ -102,6 +102,7 @@ KEY_FIELD_HOTFIX_RECORD = {
     'CharacterLoadoutItem'        : 'id_loadout',
     'ChrSpecialization'           : 'class_id',
     'CurvePoint'                  : 'id_distribution',
+    'DungeonEncounter'            : 'id_map',
     'GarrTalent'                  : 'id_garr_talent_tree',
     'ItemBonus'                   : 'id_node',
     'ItemBonusListGroupEntry'     : 'id_item_bonus_list_group',

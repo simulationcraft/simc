@@ -148,9 +148,9 @@ class BLTEChunk:
 
         iv_len = struct.unpack_from('<B', data, offset)[0]
         offset += 1
-        if iv_len != 4:
+        if iv_len not in (4, 8):
             print(
-                f"Only initial vector lengths of 4 bytes are supported for encrypted chunks, "
+                f"Only initial vector lengths of 4 or 8 bytes are supported for encrypted chunks, "
                 f"given {iv_len}",
                 file=sys.stderr)
             return False

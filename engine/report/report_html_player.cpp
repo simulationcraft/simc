@@ -1411,6 +1411,18 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
         item_sim_desc += s.str();
         item_sim_desc += " }";
       }
+
+      if ( item.parsed.redirect_item_id != 0 )
+      {
+        auto& redirect_item = item.player->dbc->item( item.parsed.redirect_item_id );
+        if ( redirect_item.id != 0 )
+        {
+          item_sim_desc += "<br/>";
+          item_sim_desc += "catalysed from: { ";
+          item_sim_desc += report_decorators::decorated_item_data( *p.sim, redirect_item ).c_str();
+          item_sim_desc += " }";
+        }
+      }
     }
 
     os.printf(
@@ -2046,18 +2058,13 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
      << "<h3 class=\"toggle\">Talents</h3>\n"
      << "<div class=\"toggle-content hide\">\n";
 
-  auto num_players = p.sim->players_by_name.size();
-  if ( num_players == 1 )
-  {
-    auto max_col = class_columns( p.specialization(), p.is_ptr() ) + spec_columns( p.specialization(), p.is_ptr() );
-    auto h_ = static_cast<int>( 1165 - max_col * 28 );
-    os.format( R"(<iframe src="{}" width="1165" height="{}"></iframe>)",
-               raidbots_talent_render_src( p.talents_str, p.true_level, 1165, false, p.dbc->ptr ), h_ );
+  auto max_col = class_columns( p.specialization(), p.is_ptr() ) + spec_columns( p.specialization(), p.is_ptr() );
+  auto h_ = static_cast<int>( 1165 - max_col * 28 );
+  os.format( R"(<iframe src="{}" width="1165" height="{}" style="background:#160f0b"></iframe>)",
+              raidbots_talent_render_src( p.talents_str, p.true_level, 1165, false, p.dbc->ptr ), h_ );
 
-    // Hide the talent table only if the Raidbots talent iframe is present.
-    os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
-       << "<div class=\"toggle-content hide\">\n";
-  }
+  os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
+     << "<div class=\"toggle-content hide\">\n";
 
   if ( range::accumulate( class_traits, 0, &std::vector<talentrank_t>::size ) )
   {
@@ -2087,11 +2094,8 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
     os << "</div>\n";
   }
 
-  // Close the talent table div only if it exists.
-  if ( num_players == 1 )
-    os << "</div>\n";
-
   os << "</div>\n"
+     << "</div>\n"
      << "</div>\n";
 }
 
@@ -2653,9 +2657,9 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
   // Statistics & Data Analysis
 
   os << "<div class=\"player-section analysis\">\n"
-        "<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n"
-        "<div class=\"toggle-content hide\">\n"
-        "<table class=\"sc stripebody\">\n";
+     << "<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n"
+     << "<div class=\"toggle-content hide\">\n"
+     << "<table class=\"sc stripebody\">\n";
 
   report_helper::print_html_sample_data( os, p, p.collected_data.fight_length, "Fight Length" );
   report_helper::print_html_sample_data( os, p, p.collected_data.dps, "DPS" );
@@ -2674,8 +2678,8 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
   }
 
   os << "</table>\n"
-        "</div>\n"
-        "</div>\n";
+     << "</div>\n"
+     << "</div>\n";
 }
 
 // print_html_player_statistics =============================================
@@ -2701,15 +2705,16 @@ std::string find_matching_decorator( const player_t& p, std::string_view n )
   if ( buff && !buff->is_fallback )
     return report_decorators::decorated_buff( *buff );
 
-  auto spell                = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::CLASS, n_token, p.specialization(), true ) );
-  if ( !spell->ok() ) spell = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::SPECIALIZATION, n_token, p.specialization(), true ) );
-  if ( !spell->ok() ) spell = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::HERO, n ) );
-  if ( !spell->ok() ) spell = p.find_specialization_spell( n );
-  if ( !spell->ok() ) spell = p.find_specialization_spell( n_token );
-  if ( !spell->ok() ) spell = p.find_class_spell( n );
-  if ( !spell->ok() ) spell = p.find_class_spell( n_token );
-  if ( spell->ok() )
-    return report_decorators::decorated_spell_data( *p.sim, spell );
+  if ( p.is_player() )
+  {
+    auto spell = p.find_class_spell( n );
+    if ( !spell->ok() )
+      spell = p.find_specialization_spell( n );
+    if ( !spell->ok() )
+      spell = report_helper::find_talent_spell( n_token, p );
+    if ( spell->ok() )
+      return report_decorators::decorated_spell_data( *p.sim, spell );
+  }
 
   return util::encode_html( n );
 }
@@ -2993,7 +2998,8 @@ void print_html_player_resources( report::sc_html_stream& os, const player_t& p 
       print_html_resource_changes_table( os, p );
   }
 
-  os << "</div><div class=\"column-charts\">\n"; // Open DIV for charts
+  os << "</div>\n"
+     << "<div class=\"column-charts\">\n"; // Open DIV for charts
 
   for ( resource_e r = RESOURCE_MAX; --r > RESOURCE_NONE; )
   {
@@ -3244,7 +3250,7 @@ void print_html_player_plots( report::sc_html_stream& os, const player_t& p, con
       auto gear_rating = scale_override >= 0 ? scale_override : p.composite_rating( util::stat_to_rating( i ) );
 
       size_t count = plot_data.size();
-      size_t rows = as<size_t>( std::ceil( count / 6 ) );
+      size_t rows = count ? ( ( count + 5 ) / 6 ) : 1;
 
       os.format(
         R"(<table class="sc"><tr class="details"><td class="details"><h4>{}</h4></td></tr><tr class="details">)",
@@ -3720,13 +3726,8 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
   bool one_player = sim.players_by_name.size() == 1 && !p.is_enemy() && sim.profilesets->n_profilesets() == 0;
 
   // Player Description
-  os << "<div id=\"player" << p.index << "\" class=\"player section\">\n";
-
-  os << "<h2 id=\"player" << p.index << "toggle\" class=\"toggle";
-  if ( one_player )
-  {
-    os << " open";
-  }
+  os.printf( R"(<div id="player%d" class="player section%s">)""\n", p.index, (one_player ? " section-open" : "" ) );
+  os.printf( R"(<h2 id="player%dtoggle" class="toggle%s")", p.index, (one_player ? " open" : "" ) );
 
   const std::string n = util::encode_html( p.name() );
   if ( ( p.collected_data.dps.mean() >= p.collected_data.hps.mean() && sim.enemy_targets > 1 ) ||
@@ -3764,6 +3765,8 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
     os << " hide";
   }
   os << "\">\n";
+
+  os.printf( R"(<script type="text/x-deferred-html" data-toggle="player%dtoggle">)", p.index );
 
   os << "<ul class=\"params\">\n";
 #if SC_BETA
@@ -3835,7 +3838,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
 
   os << "<div class=\"toggle-content\">\n";
 
-  if ( p.sim->players_by_name.size() == 1 && p.is_player() )
+  if ( p.is_player() )
   {
     auto max_col = class_columns( p.specialization(), p.is_ptr() ) + spec_columns( p.specialization(), p.is_ptr() );
     auto w_ = static_cast<int>( max_col * 12.5 - 25 );
@@ -4986,6 +4989,7 @@ void print_html_player_( report::sc_html_stream& os, const player_t& p )
 
   // print_html_player_gear_weights( os, p, p.report_information );
 
+  os << "</script>\n";
   os << "</div>\n"
      << "</div>\n\n";
 }

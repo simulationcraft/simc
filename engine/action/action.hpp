@@ -199,6 +199,9 @@ public:
   /// Used with direct damage effects that trigger periodic proc flags
   bool treat_as_periodic;
 
+  /// Unknown to what extent this is sufficient to be treated as aoe as not on interactions treat it as such
+  bool treat_as_area_effect;
+
   /// Used with psudo-DoT effects, tells us to ignore armor even if the physical damage is direct
   bool ignores_armor;
 

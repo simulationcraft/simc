@@ -125,9 +125,10 @@ struct apotheosis_t final : public priest_spell_t
 
 // holy word cast -> Divine Image [Talent] (392988) -> Divine Image [Buff] (405963) -> Divine Image [Summon] (392990) ->
 // Searing Light (196811) procs from Holy Fire, Chastise, Shadow Word: Pain, Shadow Word: Death, and Smite
-struct searing_light_t final : public priest_spell_t
+struct searing_light_di_t final : public priest_spell_t
 {
-  searing_light_t( priest_t& p ) : priest_spell_t( "searing_light", p, p.talents.holy.divine_image_searing_light )
+  searing_light_di_t( priest_t& p )
+    : priest_spell_t( "searing_light_divine_image", p, p.talents.holy.divine_image_searing_light )
   {
     background = true;
     may_miss   = false;
@@ -435,6 +436,52 @@ struct holy_word_chastise_t final : public priest_spell_t
   }
 };
 
+struct guardian_spirit_t final : public priest_spell_t
+{
+  target_specific_t<buff_t> buff_initialized;
+
+  guardian_spirit_t( priest_t& p, std::string_view options_str )
+    : priest_spell_t( "guardian_spirit", p, p.talents.holy.guardian_spirit )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+
+    target_debuff = p.talents.holy.guardian_spirit;
+  }
+
+  buff_t* create_debuff( player_t* t ) override
+  {
+    auto gs_buff = priest_spell_t::create_debuff( t )
+                     ->set_default_value_from_effect_type( A_MOD_HEALING_RECEIVED_PCT )
+                     ->set_cooldown( 0_ms );  // Let the ability handle the CD
+
+    t->assessor_out_damage.add( assessor::LOG - 1, [ gs_buff, t ]( auto, action_state_t* s ) {
+      auto max_hp = t->resources.max[ RESOURCE_HEALTH ];
+      auto cur_hp = t->resources.current[ RESOURCE_HEALTH ];
+      auto new_hp = std::max( 0.0, cur_hp - s->result_amount );
+
+      if ( gs_buff->check() && new_hp / max_hp * 100.0 <= t->death_pct && s->result_amount <= max_hp * 2.0 &&
+           !t->resources.is_infinite( RESOURCE_HEALTH ) && !t->demise_event )
+      {
+        s->result_amount = cur_hp - new_hp + 1;
+        gs_buff->expire();
+      }
+
+      return assessor::CONTINUE;
+    } );
+
+    return gs_buff;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    get_debuff( target )->trigger();
+  }
+};
+
 }  // namespace actions::spells
 
 namespace buffs
@@ -578,13 +625,9 @@ action_t* priest_t::create_action_holy( util::string_view name, util::string_vie
   {
     return new holy_word_sanctify_t( *this, options_str );
   }
-  if ( name == "searing_light" )
+  if ( name == "guardian_spirit" )
   {
-    return new searing_light_t( *this );
-  }
-  if ( name == "light_eruption" )
-  {
-    return new light_eruption_t( *this );
+    return new guardian_spirit_t( *this, options_str );
   }
 
   return nullptr;
@@ -594,7 +637,7 @@ void priest_t::init_background_actions_holy()
 {
   if ( talents.holy.divine_image.enabled() )
   {
-    background_actions.searing_light  = new actions::spells::searing_light_t( *this );
+    background_actions.searing_light  = new actions::spells::searing_light_di_t( *this );
     background_actions.light_eruption = new actions::spells::light_eruption_t( *this );
   }
 

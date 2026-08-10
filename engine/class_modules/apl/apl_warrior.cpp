@@ -337,8 +337,8 @@ void protection( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* colossus_aoe = p->get_action_priority_list( "colossus_aoe" );
-  action_priority_list_t* thane_aoe = p->get_action_priority_list( "thane_aoe" );
   action_priority_list_t* colossus_st = p->get_action_priority_list( "colossus_st" );
+  action_priority_list_t* thane_aoe = p->get_action_priority_list( "thane_aoe" );
   action_priority_list_t* thane_st = p->get_action_priority_list( "thane_st" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
@@ -363,6 +363,7 @@ void protection( player_t* p )
   default_->add_action( "potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20" );
   default_->add_action( "ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=20&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=15|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.practiced_strikes.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.practiced_strikes.enabled)|(rage>=70|buff.seeing_red.stack=7&rage>=35)&cooldown.shield_slam.remains<=1&buff.shield_block.remains,use_off_gcd=1" );
   default_->add_action( "ravager" );
+  default_->add_action( "thunder_blast,if=talent.booming_voice.enabled&buff.thunder_blast.stack=2&talent.snap_induction.enabled" );
   default_->add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
   default_->add_action( "champions_leap" );
   default_->add_action( "champions_spear" );
@@ -375,48 +376,47 @@ void protection( player_t* p )
   default_->add_action( "run_action_list,name=colossus_st,if=talent.demolish" );
   default_->add_action( "run_action_list,name=thane_st,if=talent.lightning_strikes" );
 
-  colossus_aoe->add_action( "thunder_clap,if=dot.rend_dot.remains<=1" );
-  colossus_aoe->add_action( "shield_slam,if=buff.violent_outburst.up&buff.phalanx.up" );
-  colossus_aoe->add_action( "thunder_clap,if=spell_targets.thunder_clap>6&buff.avatar.up" );
-  colossus_aoe->add_action( "revenge,if=rage>=70&spell_targets.revenge>=3" );
-  colossus_aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up" );
+  colossus_aoe->add_action( "thunder_clap,if=buff.ravager.up&!dot.rend_dot.ticking" );
+  colossus_aoe->add_action( "revenge,if=buff.revenge.up" );
+  colossus_aoe->add_action( "shield_slam,if=buff.phalanx.up&(buff.violent_outburst.up|rage<30)" );
+  colossus_aoe->add_action( "thunder_clap,if=rage<30" );
+  colossus_aoe->add_action( "revenge,if=spell_targets.revenge>=3" );
+  colossus_aoe->add_action( "shield_slam" );
   colossus_aoe->add_action( "thunder_clap" );
-  colossus_aoe->add_action( "revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled" );
+  colossus_aoe->add_action( "revenge,if=rage>=30" );
   colossus_aoe->add_action( "execute,if=spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled" );
 
-  thane_aoe->add_action( "thunder_blast,if=dot.rend_dot.remains<=1" );
-  thane_aoe->add_action( "thunder_clap,if=dot.rend_dot.remains<=1" );
-  thane_aoe->add_action( "shield_slam,if=buff.violent_outburst.up&buff.phalanx.up" );
-  thane_aoe->add_action( "thunder_blast,if=spell_targets.thunder_clap>=2&buff.avatar.up" );
-  thane_aoe->add_action( "shield_slam,if=buff.phalanx.up" );
-  thane_aoe->add_action( "thunder_clap,if=spell_targets.thunder_clap>=4&buff.avatar.up" );
-  thane_aoe->add_action( "revenge,if=rage>=70&spell_targets.revenge>=3" );
-  thane_aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up" );
-  thane_aoe->add_action( "thunder_blast" );
-  thane_aoe->add_action( "thunder_clap" );
-  thane_aoe->add_action( "execute,if=spell_targets.execute>=2&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled" );
-  thane_aoe->add_action( "revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled" );
-
   colossus_st->add_action( "shield_slam" );
+  colossus_st->add_action( "thunder_clap,if=!buff.phalanx.up" );
+  colossus_st->add_action( "execute" );
+  colossus_st->add_action( "revenge,if=buff.revenge.up" );
   colossus_st->add_action( "thunder_clap" );
-  colossus_st->add_action( "revenge,if=buff.ravager.up" );
-  colossus_st->add_action( "execute,if=buff.sudden_death.up&talent.deep_wounds|talent.deep_wounds&rage>=40" );
+  colossus_st->add_action( "revenge" );
   colossus_st->add_action( "thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)&hero_tree.mountain_thane&rage<=80" );
   colossus_st->add_action( "revenge,if=rage>=80&!variable.execute_phase|buff.revenge.up&variable.execute_phase&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&!variable.execute_phase" );
   colossus_st->add_action( "wrecking_throw,if=talent.javelineer.enabled" );
   colossus_st->add_action( "shattering_throw,if=talent.javelineer.enabled" );
-  colossus_st->add_action( "revenge" );
   colossus_st->add_action( "devastate" );
 
+  thane_aoe->add_action( "thunder_blast" );
+  thane_aoe->add_action( "shield_slam,if=buff.phalanx.up" );
+  thane_aoe->add_action( "thunder_clap" );
+  thane_aoe->add_action( "revenge,if=buff.revenge.up" );
+  thane_aoe->add_action( "shield_slam" );
+  thane_aoe->add_action( "revenge" );
+  thane_aoe->add_action( "execute,if=spell_targets.execute=3&(rage>=50|buff.sudden_death.up)&talent.heavy_handed.enabled" );
+
   thane_st->add_action( "thunder_blast" );
-  thane_st->add_action( "thunder_clap,if=buff.ravager.up" );
   thane_st->add_action( "shield_slam" );
+  thane_st->add_action( "execute" );
+
+  colossus_st->add_action( "thunder_clap,if=!buff.phalanx.up" );
+
+  thane_st->add_action( "revenge,if=buff.revenge.up" );
   thane_st->add_action( "thunder_clap" );
   thane_st->add_action( "thunder_blast,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains)" );
-  thane_st->add_action( "execute,if=buff.sudden_death.up|rage>=40" );
   thane_st->add_action( "wrecking_throw,if=talent.javelineer.enabled" );
   thane_st->add_action( "shattering_throw,if=talent.javelineer.enabled" );
-  thane_st->add_action( "revenge,if=rage>=80&!variable.execute_phase|buff.revenge.up&variable.execute_phase&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&!variable.execute_phase" );
   thane_st->add_action( "revenge" );
   thane_st->add_action( "devastate" );
 

@@ -63,6 +63,8 @@ CONSUMABLE_ITEM_WHITELIST = {
     224572,                            # Crystallized Augment Rune
     # Midnight
     259085,                            # Void-Touched Augment Rune
+    271886, 271887,                    # Liquid Luster
+    271889, 271890,                    # Alluring Nostrum
     ]
 }
 

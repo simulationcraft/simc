@@ -36,6 +36,7 @@ namespace enchants
   /* Legacy Enchants */
   void executioner( special_effect_t& );
   void hurricane_spell( special_effect_t& );
+  void meta_gem_effect( special_effect_t& );
 
   /* Mists of Pandaria */
   void dancing_steel( special_effect_t& );
@@ -628,6 +629,11 @@ void enchants::executioner( special_effect_t& effect )
   new dbc_proc_callback_t( effect.item, effect );
 }
 
+void enchants::meta_gem_effect( special_effect_t& effect )
+{
+  effect.player->parse_passive_item_effect( effect.driver () );
+}
+
 // Profession perks =========================================================
 
 struct engineering_effect_t : public action_t
@@ -665,18 +671,19 @@ struct engineering_effect_t : public action_t
 
 struct nitro_boosts_action_t : public engineering_effect_t
 {
+  buff_t* buff;
+
   nitro_boosts_action_t( player_t* p ) :
     engineering_effect_t( p, "nitro_boosts" )
   {
-    if ( !p->buffs.nitro_boosts )
-      p->buffs.nitro_boosts = make_buff( p, "nitro_boosts", p->find_spell( 54861 ) );
+    buff = make_buff( p, "nitro_boosts", p->find_spell( 54861 ) )->set_movement_speed_buff_from_data();
   }
 
   void execute() override
   {
     engineering_effect_t::execute();
 
-    player -> buffs.nitro_boosts-> trigger();
+    buff->trigger();
   }
 };
 
@@ -1448,18 +1455,15 @@ void item::spellbound_runic_band( special_effect_t& effect )
   {
     case STAT_STRENGTH:
       buff = create_buff<buff_t>( p, p->find_spell( 177175 ) )
-        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+        ->set_pct_buff_type_from_data( true );
       break;
     case STAT_AGILITY:
       buff = create_buff<buff_t>( p, p->find_spell( 177172 ) )
-        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+        ->set_pct_buff_type_from_data( true );
       break;
     case STAT_INTELLECT:
       buff = create_buff<buff_t>( p, p->find_spell( 177176 ) )
-        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
+        ->set_pct_buff_type_from_data( true );
       break;
     default:
       break;
@@ -1485,18 +1489,15 @@ void item::spellbound_solium_band( special_effect_t& effect )
   {
     case STAT_STRENGTH:
       buff = create_buff<buff_t>( p, p->find_spell( 177160 ) )
-        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+        ->set_pct_buff_type_from_data( true );
       break;
     case STAT_AGILITY:
       buff = create_buff<buff_t>( p, p->find_spell( 177161 ) )
-        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+        ->set_pct_buff_type_from_data( true );
       break;
     case STAT_INTELLECT:
       buff = create_buff<buff_t>( p, p->find_spell( 177159 ) )
-        ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-        ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
+        ->set_pct_buff_type_from_data( true );
       break;
     default:
       break;
@@ -1837,24 +1838,7 @@ void item::readiness( special_effect_t& effect )
 
 void item::amplification( special_effect_t& effect )
 {
-  maintenance_check( 528 );
-
-  player_t* p      = effect.item->player;
-  double amp_value = 0.1;  // Seems to be 0.1 regardless of level/item level now.
-  if ( !p->passive_values.amplification_1 )
-  {
-    p->passive_values.amplification_1 = amp_value;
-    for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
-      p->base.crit_damage_multiplier[ school ] *= 1.0 + amp_value;
-    p->base.crit_healing_multiplier *= 1.0 + amp_value;
-  }
-  else
-  {
-    p->passive_values.amplification_2 = amp_value;
-    for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
-      p->base.crit_damage_multiplier[ school ] *= 1.0 + amp_value;
-    p->base.crit_healing_multiplier *= 1.0 + amp_value;
-  }
+  effect.player->parse_passive_item_effect( effect.driver() );
 }
 
 void item::prismatic_prison_of_pride( special_effect_t& effect )
@@ -3157,8 +3141,7 @@ void racial::zandalari_loa( special_effect_t& effect )
     {
       // Buff spell data contains duration and amount
       paku = make_buff( effect.player, "embrace_of_paku", effect.player->find_spell( 292463 ) )
-                 ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+        ->set_pct_buff_type_from_data( true );
     }
 
     driver->custom_buff = paku;
@@ -4714,7 +4697,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 145955, item::readiness                      );
   register_special_effect( 146019, item::readiness                      );
   register_special_effect( 146025, item::readiness                      );
-  register_special_effect( 146051, item::amplification                  );
+  register_special_effect( 146051, item::amplification, false, true     );
   register_special_effect( 146136, item::cleave                         );
 
   register_special_effect( 146183, item::black_blood_of_yshaarj         );
@@ -4763,6 +4746,7 @@ void unique_gear::register_special_effects()
   /**
    * Enchants
    */
+  register_special_effect( { 44797, 55275, 55344 }, enchants::meta_gem_effect, false, true );
 
   /* The Burning Crusade */
   register_special_effect(  28093, "1PPM"                               ); /* Mongoose */
@@ -4871,6 +4855,14 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   dragonflight::register_target_data_initializers( *sim );
   thewarwithin::register_target_data_initializers( *sim );
   midnight::register_target_data_initializers( *sim );
+}
+
+void unique_gear::register_actor_initializers( sim_t& sim )
+{
+  shadowlands::register_actor_initializers( sim );
+  dragonflight::register_actor_initializers( sim );
+  thewarwithin::register_actor_initializers( sim );
+  midnight::register_actor_initializers( sim );
 }
 
 std::vector<special_effect_t*> unique_gear::find_special_effects( player_t* p, unsigned id, special_effect_e type )

@@ -84,6 +84,8 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* sanctify;
     buff_t* crusaders_resolve;
     buff_t* empyrean_hammer;
+    buff_t* consecration;
+    buff_t* seal_of_reprisal;
   } debuff;
 
   struct
@@ -128,6 +130,7 @@ public:
     action_t* hammer_of_light_cons;
 
     action_t* expurgation;
+    action_t* divine_arbiter;
 
     action_t* divine_hammer_tick;
 
@@ -152,6 +155,10 @@ public:
   {
     // Shared
     buff_t* avenging_wrath;
+    buff_t* divine_arbiter_divine_storm;
+    buff_t* divine_arbiter_hammer_of_light;
+    buff_t* divine_arbiter_verdict;
+    buff_t* divine_power;
     buff_t* divine_purpose;
     buff_t* divine_shield;
     buff_t* divine_steed;
@@ -291,6 +298,7 @@ public:
     const spell_data_t* shield_of_the_righteous;
     const spell_data_t* holy_paladin;
     const spell_data_t* protection_paladin;
+    const spell_data_t* protection_paladin_2;
     const spell_data_t* retribution_paladin;
     const spell_data_t* retribution_paladin_2;
     const spell_data_t* word_of_glory_2;
@@ -390,16 +398,21 @@ public:
   struct spells_t
   {
     const spell_data_t* avenging_wrath;
+    const spell_data_t* divine_arbiter_divine_storm;
+    const spell_data_t* divine_arbiter_hammer_of_light;
+    const spell_data_t* divine_arbiter_verdict;
+    const spell_data_t* divine_power;
     const spell_data_t* divine_purpose_buff;
     const spell_data_t* judgment_debuff;
     const spell_data_t* sanctify;
+    const spell_data_t* consecration;
+    const spell_data_t* seal_of_reprisal;
 
     const spell_data_t* sotr_buff;
     const spell_data_t* standing_in_consecration_buff;
 
     const spell_data_t* consecrated_blade;
     const spell_data_t* crusade;
-    const spell_data_t* sentinel;
     const spell_data_t* refining_fire_tick;
     const spell_data_t* expurgation;
     const spell_data_t* crusading_strikes_data;
@@ -439,6 +452,9 @@ public:
     const spell_data_t* judgment_ret_dt;
     const spell_data_t* hammer_of_wrath_ret;
     const spell_data_t* hammer_of_wrath_ret_dt;
+
+    // Tier stuff
+    const spell_data_t* unrelenting_edict;
   } spells;
 
   struct rppms_t {
@@ -553,51 +569,53 @@ public:
     const spell_data_t* hammer_of_the_righteous;
     const spell_data_t* blessed_hammer;
 
+    const spell_data_t* valiant_crusade;
+    const spell_data_t* blessed_word;
+    const spell_data_t* grand_crusader;
     const spell_data_t* imbued_shield;
     const spell_data_t* redoubt;
-    const spell_data_t* grand_crusader;
-    const spell_data_t* seal_of_charity;
 
-    const spell_data_t* refining_fire;
-    const spell_data_t* valiant_crusade;
+    const spell_data_t* blessing_of_spellwarding;
+    const spell_data_t* uthers_counsel;
     const spell_data_t* ardent_defender;
     const spell_data_t* searing_sunlight;
-    const spell_data_t* solace;
+    const spell_data_t* hand_of_the_protector;
 
     // 8
-    const spell_data_t* undying_embers;
+    const spell_data_t* refining_fire;
     const spell_data_t* bulwark_of_order;
-    const spell_data_t* improved_ardent_defender;
-    const spell_data_t* blessing_of_spellwarding;
+    //const spell_data_t* avenging_wrath;
     const spell_data_t* light_of_the_titans;
     const spell_data_t* tirions_devotion;
-    const spell_data_t* vision_of_sanctity;
+    const spell_data_t* solace;
+    const spell_data_t* instrument_of_the_divine;
 
     const spell_data_t* tyrs_enforcer;
+    const spell_data_t* undying_embers;
     const spell_data_t* relentless_inquisitor;
-    const spell_data_t* avenging_wrath_might;
-    const spell_data_t* sentinel;
+    const spell_data_t* improved_ardent_defender;
+    const spell_data_t* seal_of_reprisal;
     const spell_data_t* crusaders_judgment;
+    const spell_data_t* vision_of_sanctity;
     const spell_data_t* consecration_in_flame;
 
     const spell_data_t* soaring_shield;
-    const spell_data_t* seal_of_reprisal;
+    const spell_data_t* focused_enmity;
     const spell_data_t* guardian_of_ancient_kings;
-    const spell_data_t* hand_of_the_protector;
     const spell_data_t* sanctuary;
 
     // 20
-    const spell_data_t* focused_enmity;
-    const spell_data_t* gift_of_the_golden_valkyr;
-    const spell_data_t* sanctified_wrath;
-    const spell_data_t* uthers_counsel;
-
     const spell_data_t* strength_in_adversity;
     const spell_data_t* crusaders_resolve;
-    const spell_data_t* ferren_marcuss_fervor;
+    const spell_data_t* gift_of_the_golden_valkyr;
     const spell_data_t* empyrean_authority;
+    const spell_data_t* seal_of_charity;
+
+    const spell_data_t* sanctified_wrath;
+
+    const spell_data_t* ferren_marcuss_fervor;
+    const spell_data_t* sentinel;
     const spell_data_t* zealots_paragon;
-    const spell_data_t* instrument_of_the_divine;
 
     const spell_data_t* sweeping_verdict;
     const spell_data_t* adjudication;
@@ -746,8 +764,6 @@ public:
   struct options_t
   {
     bool fake_sov                         = true;
-    int min_dg_heal_targets               = 1;
-    int max_dg_heal_targets               = 5;
     bool fake_solidarity                  = true;
     double ror_bulwark_additional_proc_chance = .3;
     double blessed_hammer_strikes          = 2.0;
@@ -849,6 +865,9 @@ public:
   void trigger_greater_judgment( paladin_td_t* targetdata );
   bool get_how_availability() const;
   bool wings_up() const;
+  bool templar() const;
+  bool lightsmith() const;
+  bool herald_of_the_sun() const;
 
   std::unique_ptr<expr_t> create_consecration_expression( util::string_view expr_str );
   std::unique_ptr<expr_t> create_aw_expression( util::string_view expr_str );
@@ -1148,7 +1167,7 @@ public:
 
     this->clears_judgment                 = this->data().affected_by( p->spells.judgment_debuff->effectN( 1 ) );
     this->affected_by.avenging_wrath      = this->data().affected_by( p->spells.avenging_wrath->effectN( 2 ) );
-    this->affected_by.sentinel            = this->data().affected_by( p->spells.sentinel->effectN( 1 ) );
+    this->affected_by.sentinel            = this->data().affected_by( p->talents.sentinel->effectN( 1 ) );
     this->affected_by.divine_purpose_cost = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 1 ) );
     this->affected_by.divine_purpose      = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 2 ) );
 
@@ -1217,16 +1236,6 @@ public:
         paladin_td_t* td = this->td( s->target );
         if ( td->debuff.judgment->up() )
           td->debuff.judgment->decrement();
-      }
-      if ( p()->buffs.lightsmith.masterwork_weapon->up() )
-      {
-        p()->buffs.lightsmith.masterwork_weapon->decrement();
-        p()->cast_lesser_armament( 1, LESSER_WEAPON );
-      }
-      if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
-      {
-        p()->buffs.lightsmith.masterwork_bulwark->decrement();
-        p()->cast_lesser_armament( 1, LESSER_BULWARK );
       }
     }
 
@@ -1346,7 +1355,10 @@ struct paladin_spell_t : public paladin_spell_base_t<spell_t>
 
 struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 {
-  paladin_heal_t( util::string_view n, paladin_t* p, const spell_data_t* s = spell_data_t::nil() ) : base_t( n, p, s )
+  double beacon_pct;
+
+  paladin_heal_t( util::string_view n, paladin_t* p, const spell_data_t* s = spell_data_t::nil() )
+    : base_t( n, p, s ), beacon_pct( p->find_spell( 53563 )->effectN( 1 ).percent() )
   {
     may_crit      = true;
     tick_may_crit = true;
@@ -1370,9 +1382,6 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
     if ( !p()->beacon_target )
       return;
 
-    if ( !p()->beacon_target->buffs.beacon_of_light->up() )
-      return;
-
     if ( proc )
       return;
 
@@ -1380,8 +1389,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
     p()->active.beacon_of_light->target = p()->beacon_target;
 
-    double amount = s->result_amount;
-    amount *= p()->beacon_target->buffs.beacon_of_light->data().effectN( 1 ).percent();
+    double amount = s->result_amount * beacon_pct;
 
     p()->active.beacon_of_light->base_dd_min = amount;
     p()->active.beacon_of_light->base_dd_max = amount;
@@ -1418,9 +1426,11 @@ private:
 public:
   using base_t = holy_power_consumer_t;
   bool is_divine_storm;
+  bool is_divine_arbiter_verdict;
   bool is_wog;
   bool is_sotr;
   bool doesnt_consume_dp;
+  bool can_consume_divine_arbiter;
   bool is_hammer_of_light_cleave;
   bool is_hammer_of_light_main;
   double hol_cost;
@@ -1434,9 +1444,11 @@ public:
   holy_power_consumer_t( util::string_view n, paladin_t* player, const spell_data_t* s )
     : ab( n, player, s ),
       is_divine_storm( false ),
+      is_divine_arbiter_verdict( false ),
       is_wog( false ),
       is_sotr( false ),
       doesnt_consume_dp( false ),
+      can_consume_divine_arbiter( false ),
       is_hammer_of_light_cleave( false ),
       is_hammer_of_light_main( false ),
       hol_cost( 3.0 ),
@@ -1541,6 +1553,7 @@ public:
     }
 
     // For Holy Power spending stuff, SotR with Instrument always counts as 3 Holy Power spent
+    // Probably not a bug, since it now doesn't munch 2 HP
     if (p->bugs && is_sotr && p->talents.instrument_of_the_divine->ok() && cost() > 3.0)
     {
       num_hopo_spent = 3.0;
@@ -1636,11 +1649,6 @@ public:
       {
         p->buffs.sentinel_decay->extend_duration( timespan_t::from_seconds( 1 ) );
       }
-      // 2025-12-18 Instrument of the Divine talented extends Sentinel's decay by double the time, regardless of Holy Power spent.
-      if (p->bugs && p->talents.instrument_of_the_divine->ok())
-      {
-        p->buffs.sentinel_decay->extend_duration( timespan_t::from_seconds( 1 ) );
-      }
     }
 
     // We should only have should_continue false in the event that we're a divine storm
@@ -1650,9 +1658,57 @@ public:
     // Divine Purpose isn't consumed on DS if EP was consumed
     if ( should_continue )
     {
-      if ( p->buffs.divine_purpose->up() && !doesnt_consume_dp )
+      // Triggered spenders, such as Empyrean Legacy's Divine Storm, must not consume or classify Divine Purpose.
+      if ( !ab::background && p->buffs.divine_purpose->up() && !doesnt_consume_dp )
       {
         p->buffs.divine_purpose->expire();
+        if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, MID2, B2 ) )
+          p->buffs.divine_power->trigger();
+        if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, MID2, B4 ) &&
+             !p->buffs.divine_arbiter_verdict->up() && !p->buffs.divine_arbiter_divine_storm->up() &&
+             !p->buffs.divine_arbiter_hammer_of_light->up() )
+        {
+          if ( is_hammer_of_light_main )
+            p->buffs.divine_arbiter_hammer_of_light->trigger();
+          else if ( is_divine_storm )
+            p->buffs.divine_arbiter_divine_storm->trigger();
+          else if ( is_divine_arbiter_verdict )
+            p->buffs.divine_arbiter_verdict->trigger();
+        }
+      }
+    }
+
+    if ( ( !ab::background || can_consume_divine_arbiter ) &&
+         p->sets->has_set_bonus( PALADIN_RETRIBUTION, MID2, B4 ) )
+    {
+      buff_t* divine_arbiter = nullptr;
+
+      if ( is_hammer_of_light_main )
+      {
+        if ( p->buffs.divine_arbiter_divine_storm->up() )
+          divine_arbiter = p->buffs.divine_arbiter_divine_storm;
+        else if ( p->buffs.divine_arbiter_verdict->up() )
+          divine_arbiter = p->buffs.divine_arbiter_verdict;
+      }
+      else if ( is_divine_storm )
+      {
+        if ( p->buffs.divine_arbiter_hammer_of_light->up() )
+          divine_arbiter = p->buffs.divine_arbiter_hammer_of_light;
+        else if ( p->buffs.divine_arbiter_verdict->up() )
+          divine_arbiter = p->buffs.divine_arbiter_verdict;
+      }
+      else if ( is_divine_arbiter_verdict )
+      {
+        if ( p->buffs.divine_arbiter_divine_storm->up() )
+          divine_arbiter = p->buffs.divine_arbiter_divine_storm;
+        else if ( p->buffs.divine_arbiter_hammer_of_light->up() )
+          divine_arbiter = p->buffs.divine_arbiter_hammer_of_light;
+      }
+
+      if ( divine_arbiter )
+      {
+        divine_arbiter->expire();
+        p->active.divine_arbiter->execute_on_target( ab::execute_state->target );
       }
     }
 
@@ -1712,12 +1768,42 @@ struct delayed_execute_event_t : public event_t
   }
 };
 
+struct delayed_execute_on_target_event_t : public event_t
+{
+  action_t* action;
+  player_t* target;
+  double amount;
+
+  delayed_execute_on_target_event_t(paladin_t* p, action_t* a, player_t* t, double amount, timespan_t delay)
+    : event_t( *p->sim, delay ), action(a), target(t), amount(amount)
+  {
+    assert( action->background );
+  }
+  const char* name() const override
+  {
+    return action->name();
+  }
+
+  void execute() override
+  {
+    if (!target->is_sleeping())
+    {
+      action->execute_on_target( target, amount );
+    }
+  }
+};
+
 struct avenging_wrath_t : public paladin_spell_t
 {
   avenging_wrath_t( paladin_t* p );
   avenging_wrath_t( paladin_t* p, util::string_view options_str );
   void execute() override;
   action_state_t* new_state() override;
+};
+struct unrelenting_edict_t : public paladin_spell_t
+{
+  unrelenting_edict_t( paladin_t* p, util::string_view name );
+  void do_execute( action_state_t* s );
 };
 struct hammer_and_anvil_t : public paladin_spell_t
 {
@@ -1743,6 +1829,7 @@ private:
 public:
   bool triggers_second_sunrise   = false;
   bool triggers_divine_resonance = false;
+  unrelenting_edict_t* ue;
   hammer_of_wrath_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str,
                      const spell_data_t* s = spell_data_t::nil() );
@@ -1755,6 +1842,7 @@ public:
 struct judgment_t : public judgment_base_t
 {
   bool triggered_hammer_and_anvil;
+  unrelenting_edict_t* ue;
 
   judgment_t( paladin_t* p, util::string_view name, const spell_data_t* s = spell_data_t::nil() );
   judgment_t( paladin_t* p, util::string_view name, util::string_view options_str,
@@ -1762,6 +1850,7 @@ struct judgment_t : public judgment_base_t
 
   proc_types proc_type() const override;
   void execute() override;
+  void impact(action_state_t* s) override;
   bool action_ready() override;
 };
 

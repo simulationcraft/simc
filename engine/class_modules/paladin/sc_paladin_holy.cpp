@@ -33,7 +33,6 @@ struct beacon_of_light_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     p()->beacon_target = target;
-    target->buffs.beacon_of_light->trigger();
   }
 };
 

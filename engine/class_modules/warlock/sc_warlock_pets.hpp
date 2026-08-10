@@ -435,6 +435,7 @@ struct wild_imp_pet_t : public warlock_pet_t
   bool is_hog_imp;
   bool power_siphon;
   bool imploded;
+  bool isolated_imploded;
   timespan_t infernal_command_ev_ts;
   timespan_t infernal_command_ev_offset;
   accumulated_rng_t* prd_rng_infernal_rapidity;
@@ -633,7 +634,7 @@ struct darkglare_t : public warlock_pet_t
   darkglare_t( warlock_t*, util::string_view = "darkglare" );
   void arise() override;
   void demise() override;
-  action_t* create_action( util::string_view , util::string_view ) override;
+  action_t* create_action( util::string_view, util::string_view ) override;
 };
 
 struct desperate_soul_t : public warlock_pet_t
@@ -642,7 +643,7 @@ struct desperate_soul_t : public warlock_pet_t
 
   desperate_soul_t( warlock_t*, util::string_view = "desperate_soul" );
   void arise() override;
-  action_t* create_action( util::string_view , util::string_view ) override;
+  action_t* create_action( util::string_view, util::string_view ) override;
 };
 }  // namespace affliction
 

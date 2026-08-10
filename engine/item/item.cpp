@@ -32,7 +32,7 @@ struct token_t
 
 } // end unnamed namespace
 
-void parsed_item_data_t::init( const dbc_item_data_t& raw, const dbc_t& dbc )
+void parsed_item_data_t::init( const dbc_item_data_t& raw, const dbc_t& dbc, const dbc_item_data_t* redirect_item )
 {
   *static_cast<dbc_item_data_t*>( this ) = raw;
   for ( size_t i = 0; i < stat_type_e.size(); i++ )
@@ -45,6 +45,15 @@ void parsed_item_data_t::init( const dbc_item_data_t& raw, const dbc_t& dbc )
   {
     assert( effect.index <= static_cast<int>( effects.size() ) );
     effects[ effect.index ] = effect;
+  }
+
+  if ( redirect_item )
+  {
+    for ( size_t i = 0; i < stat_type_e.size(); i++ )
+    {
+      stat_type_e[ i ] = i < redirect_item->_dbc_stats_count ? redirect_item->_dbc_stats[ i ].type_e : -1;
+      stat_alloc[ i ] = i < redirect_item->_dbc_stats_count ? redirect_item->_dbc_stats[ i ].alloc : 0;
+    }
   }
 }
 
@@ -81,6 +90,7 @@ item_t::parsed_input_t::parsed_input_t()
     initial_cd( timespan_t::zero() ),
     drop_level( 0 ),
     has_midnight_scaling( false ),
+    redirect_item_id( 0 ),
     base_level_priority( std::numeric_limits<int>::max() ),
     scaling_level_priority( std::numeric_limits<int>::max() )
 {
@@ -249,10 +259,6 @@ gear_stats_t item_t::total_stats() const
     });
 
     range::for_each( parsed.gem_stats, [ stat, to, &total_stats ]( const stat_pair_t& s ) {
-      if ( stat == s.stat ) total_stats.add_stat( to, s.value );
-    });
-
-    range::for_each( parsed.meta_gem_stats, [ stat, to, &total_stats ]( const stat_pair_t& s ) {
       if ( stat == s.stat ) total_stats.add_stat( to, s.value );
     });
 
@@ -823,7 +829,7 @@ void item_t::parse_options()
     option_name_str = options_str.substr( 0, cut_pt );
   }
 
-  std::array<std::unique_ptr<option_t>, 34> options { {
+  std::array<std::unique_ptr<option_t>, 36> options { {
     opt_uint("id", parsed.data.id),
     opt_string("stats", option_stats_str),
     opt_string("gems", option_gems_str),
@@ -857,7 +863,9 @@ void item_t::parse_options()
     opt_string("context", DUMMY_CONTEXT),
     opt_string("crafted_stats", option_crafted_stat_str),
     opt_string("crafting_quality", DUMMY_CRAFTING_QUALITY),
-    opt_string("titan_disc_id", option_titan_disc_driver_id )
+    opt_string("titan_disc_id", option_titan_disc_driver_id ),
+    opt_string("content_tuning", option_content_tuning_id ),
+    opt_uint("redirected_base_stats", parsed.redirect_item_id )
   } };
 
   try
@@ -1063,6 +1071,9 @@ void item_t::parse_options()
 
   if ( !option_titan_disc_driver_id.empty() )
     parsed.titan_disc_driver_id = util::to_unsigned( option_titan_disc_driver_id );
+
+  if ( !option_content_tuning_id.empty() )
+    parsed.content_tuning_id = util::to_unsigned( option_content_tuning_id );
 }
 
 // item_t::initialize_data ==================================================
@@ -1149,8 +1160,7 @@ std::string item_t::encoded_item() const
   // there are gems to spit out.  Note that gem_id= option is also always
   // printed below, and if present, the gems= string will be found in "gear
   // comments" (enabled by save_gear_comments=1 option).
-  else if ( option_gem_id_str.empty() &&
-            ( !parsed.gem_stats.empty() || ( slot == SLOT_HEAD && player->meta_gem != META_GEM_NONE ) ) )
+  else if ( option_gem_id_str.empty() && !parsed.gem_stats.empty() )
     s << ",gems=" << encoded_gems();
 
   auto gem_bonus_it = range::find_if( parsed.gem_bonus_id, []( const std::vector<unsigned>& v ) {
@@ -1291,6 +1301,12 @@ std::string item_t::encoded_item() const
   if ( !option_titan_disc_driver_id.empty() )
     s << ",titan_disc_id=" << option_titan_disc_driver_id;
 
+  if ( !option_content_tuning_id.empty() )
+    s << ",content_tuning=" << option_content_tuning_id;
+
+  if ( parsed.redirect_item_id != 0 )
+    s << ",redirected_base_stats=" << parsed.redirect_item_id;
+
   return s.str();
 }
 
@@ -1331,8 +1347,7 @@ std::string item_t::encoded_comment()
 
   // Print out encoded comment string if there's no gems= option given, and we
   // have something relevant to spit out
-  if ( option_gems_str.empty() && ( !parsed.gem_stats.empty() ||
-      ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) ) )
+  if ( option_gems_str.empty() && !parsed.gem_stats.empty() )
     s << "gems=" << encoded_gems() << ",";
 
   if ( option_enchant_str.empty() &&
@@ -1387,15 +1402,6 @@ std::string item_t::encoded_gems() const
       stats_str += "_";
 
     stats_str += stat_pairs_to_str( parsed.socket_bonus_stats );
-  }
-
-  if ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE )
-  {
-    std::string meta_str = util::meta_gem_type_string( player -> meta_gem );
-    if ( ! stats_str.empty() )
-      stats_str = meta_str + std::string( "_" ) + stats_str;
-    else
-      stats_str = meta_str;
   }
 
   return stats_str;
@@ -1816,18 +1822,7 @@ void item_t::decode_gems()
       return;
     }
 
-    // Parse user given gems= string. Stats are parsed as is, meta gem through
-    // DBC data
-    //
-    // Detect meta gem through DBC data, instead of clunky prefix matching
-    const item_enchantment_data_t& meta_gem_enchant = enchant::find_meta_gem( *player->dbc, option_gems_str );
-    meta_gem_e meta_gem = enchant::meta_gem_type( *player->dbc, meta_gem_enchant );
-
-    if ( meta_gem != META_GEM_NONE )
-    {
-      player->meta_gem = meta_gem;
-    }
-
+    // Parse user given gems= string. Stats are parsed as is.
     auto tokens = item_database::parse_tokens( option_gems_str );
 
     for ( auto& t : tokens )

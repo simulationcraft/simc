@@ -159,11 +159,10 @@ void phial_of_elemental_chaos( special_effect_t& effect )
             ->add_stat( STAT_CRIT_RATING, amount )
             ->set_default_value_from_effect_type( A_MOD_CRIT_DAMAGE_MULTIPLIER )
             ->set_duration( duration ) );
-    effect.player->buffs.elemental_chaos_air = buff_list.emplace_back(
+    buff_list.emplace_back(  // no need for hardcoded player buff pointer
         make_buff<stat_buff_t>( effect.player, "elemental_chaos_air", effect.player->find_spell( 371350 ) )
             ->add_stat( STAT_HASTE_RATING, amount )
-            ->set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS )
-            ->add_invalidate( CACHE_RUN_SPEED )
+            ->set_movement_speed_buff_from_data()
             ->set_duration( duration ) );
     effect.player->buffs.elemental_chaos_earth = buff_list.emplace_back(
         make_buff<stat_buff_t>( effect.player, "elemental_chaos_earth", effect.player->find_spell( 371351 ) )
@@ -622,9 +621,8 @@ void projectile_propulsion_pinion( special_effect_t& effect )
   };
 
   effect.player->register_combat_begin( [ buffs ]( player_t* p ) {
-    static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
-    buffs.find( util::highest_stat( p, ratings ) ) -> second -> trigger();
-    buffs.find( util::lowest_stat( p, ratings ) ) -> second -> trigger();
+    buffs.find( util::highest_stat( p, secondary_ratings ) )->second->trigger();
+    buffs.find( util::lowest_stat( p, secondary_ratings ) )->second->trigger();
   } );
 }
 
@@ -3275,8 +3273,6 @@ void frenzying_signoll_flare(special_effect_t& effect)
     action_t* smorfs;
     action_t* barfs;
     std::shared_ptr<std::map<stat_e, buff_t*>> siki_buffs;
-    // When selecting the highest stat, the priority of equal secondary stats is Vers > Mastery > Haste > Crit.
-    std::array<stat_e, 4> ratings;
 
     frenzying_signoll_flare_t(const special_effect_t& e) :
         proc_spell_t("frenzying_signoll_flare", e.player, e.player -> find_spell(382119), e.item)
@@ -3291,9 +3287,7 @@ void frenzying_signoll_flare(special_effect_t& effect)
       siki_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
       double amount = e.driver()->effectN( 1 ).average( e.item );
 
-      ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
-                                                     STAT_CRIT_RATING };
-      for ( auto stat : ratings )
+      for ( auto stat : secondary_ratings )
       {
         auto name = std::string( "sikis_ambush_" ) + util::stat_type_string( stat );
         buff_t* buff = buff_t::find( e.player, name );
@@ -3328,7 +3322,7 @@ void frenzying_signoll_flare(special_effect_t& effect)
 
       else if (selected_effect == 2 )
       {
-        stat_e max_stat = util::highest_stat( player, ratings );
+        stat_e max_stat = util::highest_stat( player, secondary_ratings );
         ( *siki_buffs )[ max_stat ]->trigger();
       }
     }
@@ -3850,11 +3844,11 @@ void ruby_whelp_shell( special_effect_t& effect )
     stat_buff_t* haste;
     stat_buff_t* crit;
 
-    ruby_whelp_assist_cb_t( const special_effect_t& e, std::vector<int> t, std::vector<ruby_whelp_type_e> c ) :
-      dbc_proc_callback_t( e.player, e ), training_levels( t ), context_aware_procs( c )
+    ruby_whelp_assist_cb_t( const special_effect_t& e, std::vector<int> t, std::vector<ruby_whelp_type_e> c )
+      : dbc_proc_callback_t( e.player, e ), training_levels( t ), context_aware_procs( c )
     {
       ruby_whelp_type_e whelp_type = RUBY_WHELP_TYPE_NONE;
-      untrained_levels = 6;
+      untrained_levels             = 6;
       for ( auto level : training_levels )
       {
         whelp_type++;
@@ -3864,7 +3858,7 @@ void ruby_whelp_shell( special_effect_t& effect )
           untrained_levels -= level;
       }
 
-      shot = create_proc_action<generic_proc_t>( "fire_shot", e, "fire_shot", 389839 );
+      shot              = create_proc_action<generic_proc_t>( "fire_shot", e, "fire_shot", 389839 );
       shot->base_dd_min = shot->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
 
       nova = create_proc_action<generic_aoe_proc_t>( "lobbing_fire_nova", e, "lobbing_fire_nova", 390234, true );
@@ -3877,15 +3871,15 @@ void ruby_whelp_shell( special_effect_t& effect )
       crit->set_stat( STAT_CRIT_RATING, e.driver()->effectN( 5 ).average( e.item ) );
     }
 
-    void trigger_whelp_proc( ruby_whelp_type_e whelp_type, action_state_t* s )
+    void trigger_whelp_proc( ruby_whelp_type_e whelp_type, player_t* t )
     {
       switch ( whelp_type )
       {
         case FIRE_SHOT:
-          shot->execute_on_target( s->target );
+          shot->execute_on_target( t );
           break;
         case LOBBING_FIRE_NOVA:
-          nova->execute_on_target( s->target );
+          nova->execute_on_target( t );
           break;
         case SLEEPY_RUBY_WARMTH:
           crit->trigger();
@@ -3899,33 +3893,32 @@ void ruby_whelp_shell( special_effect_t& effect )
       }
     }
 
-    void trigger_random_whelp_proc( action_state_t* s )
+    void trigger_random_whelp_proc( player_t* t )
     {
       int choice = rng().range( static_cast<int>( RUBY_WHELP_TYPE_MAX ) );
-      trigger_whelp_proc( static_cast<ruby_whelp_type_e>( choice ), s );
+      trigger_whelp_proc( static_cast<ruby_whelp_type_e>( choice ), t );
     }
 
-    void trigger_random_whelp_proc( std::vector<ruby_whelp_type_e>& whelp_types, action_state_t* s )
+    void trigger_random_whelp_proc( std::vector<ruby_whelp_type_e>& whelp_types, player_t* t )
     {
       if ( whelp_types.empty() )
       {
         // If no types are available, fallback to fully random.
-        trigger_random_whelp_proc( s );
+        trigger_random_whelp_proc( t );
       }
       else
       {
-        trigger_whelp_proc( rng().range( whelp_types ), s );
+        trigger_whelp_proc( rng().range( whelp_types ), t );
       }
     }
 
-    void execute( const spell_data_t*, player_t*, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       double r = rng().real();
 
       // Helper function for checking if each chance is
       // successful using the random number generated above.
-      auto whelp_roll = [ &r ] ( double chance )
-      {
+      auto whelp_roll = [ &r ]( double chance ) {
         r -= chance;
         return r < 0.0;
       };
@@ -3937,7 +3930,7 @@ void ruby_whelp_shell( special_effect_t& effect )
         whelp_type++;
         if ( whelp_roll( level / 8.0 ) )
         {
-          trigger_whelp_proc( whelp_type, s );
+          trigger_whelp_proc( whelp_type, t );
           return;
         }
       }
@@ -3945,19 +3938,19 @@ void ruby_whelp_shell( special_effect_t& effect )
       // Try the untrained levels.
       if ( whelp_roll( untrained_levels / 8.0 ) )
       {
-        trigger_random_whelp_proc( s );
+        trigger_random_whelp_proc( t );
         return;
       }
 
       // Try the context-aware procs.
       if ( whelp_roll( 1.0 / 8.0 ) )
       {
-        trigger_random_whelp_proc( context_aware_procs, s );
+        trigger_random_whelp_proc( context_aware_procs, t );
         return;
       }
 
       // If nothing else succeeded, trigger a random untrained proc.
-      trigger_random_whelp_proc( untrained_procs, s );
+      trigger_random_whelp_proc( untrained_procs, t );
     }
   };
 
@@ -4753,12 +4746,12 @@ void elementium_pocket_anvil( special_effect_t& e )
 // Azure - 401519, Minor - 405611
 void ominous_chromatic_essence( special_effect_t& e )
 {
-  buff_t* buff;
-  buff_t* obsidian_minor;
-  buff_t* ruby_minor;
-  buff_t* bronze_minor;
-  buff_t* azure_minor;
-  buff_t* emerald_minor;
+  buff_t* buff = nullptr;
+  buff_t* obsidian_minor = nullptr;
+  buff_t* ruby_minor = nullptr;
+  buff_t* bronze_minor = nullptr;
+  buff_t* azure_minor = nullptr;
+  buff_t* emerald_minor = nullptr;
   double main_value       = e.driver()->effectN( 1 ).average( e.item );
   double minor_value      = e.driver()->effectN( 2 ).average( e.item );
   const auto& flight      = e.player->dragonflight_opts.ominous_chromatic_essence_dragonflight;
@@ -5554,9 +5547,6 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
     }
   };
 
-  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
-                                                     STAT_CRIT_RATING };
-
   struct mirror_of_fractured_tomorrows_t : public spell_t
   {
     spawner::pet_spawner_t<future_self_pet_t> spawner;
@@ -5571,7 +5561,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       dual = false;
 
       auto amount = e.driver()->effectN( 1 ).average( e.item );
-      for ( auto stat : ratings )
+      for ( auto stat : secondary_ratings )
       {
         auto name = std::string( "mirror_of_fractured_tomorrows_" ) + util::stat_type_string( stat );
         auto buff = create_buff<stat_buff_t>( e.player, name, e.player->find_spell( 418527 ) )
@@ -5643,7 +5633,7 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       spell_t::execute();
       spawner.spawn();
 
-      stat_e max_stat = util::highest_stat( effect.player, ratings );
+      stat_e max_stat = util::highest_stat( effect.player, secondary_ratings );
       buffs[ max_stat ]->trigger();
     }
   };
@@ -6013,6 +6003,8 @@ void pips_emerald_friendship_badge( special_effect_t& e )
 
     auto _static = create_buff<stat_buff_t>( e.player, data )
       ->set_stat_from_effect( 1, buff_value )
+      ->set_refresh_behavior( buff_refresh_behavior::NONE )
+      ->set_tick_behavior( buff_tick_behavior::NONE )
       ->set_duration( 0_ms );
 
     auto _empowered = create_buff<stat_buff_t>( e.player, _static->name_str + "_empowered", data )
@@ -8858,11 +8850,10 @@ void potent_venom( special_effect_t& effect )
   auto buff = create_buff<potent_venom_t>(effect.player, effect.driver()->effectN(3).trigger(), effect);
   buff->set_stack_change_callback( [effect, buff, gain, loss] ( buff_t*, int, int new_ )
     {
-      static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
       if ( new_ )
       {
-        buff->gain = util::highest_stat(effect.player, ratings);
-        buff->loss = util::lowest_stat(effect.player, ratings);
+        buff->gain = util::highest_stat(effect.player, secondary_ratings);
+        buff->loss = util::lowest_stat(effect.player, secondary_ratings);
 
         buff->player->stat_gain(buff->gain, gain);
         buff->player->stat_loss(buff->loss, loss);
@@ -9101,14 +9092,11 @@ void voice_of_the_silent_star( special_effect_t& effect )
                      "power_beyond_imagination_haste_rating", "power_beyond_imagination_versatility_rating" } ) )
     return;
 
-  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
-                                                     STAT_CRIT_RATING };
-
   auto buffs = std::make_shared<std::map<stat_e, buff_t*>>();
   double amount = effect.driver()->effectN( 1 ).average( effect.item ) +
                   ( effect.driver()->effectN( 3 ).average( effect.item ) * effect.driver()->effectN( 4 ).base_value() );
 
-  for ( auto stat : ratings )
+  for ( auto stat : secondary_ratings )
   {
     auto name = std::string( "power_beyond_imagination_" ) + util::stat_type_string( stat );
     auto buff = create_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 409447 ), effect.item )
@@ -9123,7 +9111,7 @@ void voice_of_the_silent_star( special_effect_t& effect )
     ->set_stack_change_callback( [ buffs, effect ]( buff_t*, int, int new_ ) {
       if ( !new_ )
       {
-        stat_e max_stat = util::highest_stat( effect.player, ratings );
+        stat_e max_stat = util::highest_stat( effect.player, secondary_ratings );
         ( *buffs )[ max_stat ]->trigger();
       }
     } );
@@ -9730,9 +9718,6 @@ void raging_tempests( special_effect_t& effect )
 
   if ( check_set( B2 ) )
   {
-    static constexpr std::array<stat_e, 4> ratings =
-        { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING, STAT_CRIT_RATING };
-
     auto buff = create_buff<stat_buff_t>( effect.player, effect.driver() );
     buff->set_constant_behavior( buff_constant_behavior::ALWAYS_CONSTANT );
 
@@ -9742,7 +9727,7 @@ void raging_tempests( special_effect_t& effect )
     // temporary buffs during equip, instead of implementing as a passive stat bonus we create a buff to trigger on
     // combat start, accounting for anything in the precombat apl.
     effect.player->register_combat_begin( [ buff, effect, val ]( player_t* p ) {
-      buff->set_stat( util::highest_stat( p, ratings ), val );
+      buff->set_stat( util::highest_stat( p, secondary_ratings ), val );
       buff->trigger();
     } );
   }
@@ -11727,11 +11712,34 @@ void register_special_effects()
 }
 
 void register_target_data_initializers( sim_t& )
-{
-}
+{}
 
 void register_hotfixes()
+{}
+
+void register_actor_initializers( sim_t& sim )
 {
+  // 20+10 for wow version 10.x
+  sim.register_actor_initializer( INIT_ACTOR_CREATE_EFFECTS + 30, []( player_t* p ) {
+    if ( p->dragonflight_opts.emerald_coachs_whistle_ally_ilvl > 0 )
+    {
+      struct emerald_coachs_whistle_ally_t : public external_special_effect_t
+      {
+        emerald_coachs_whistle_ally_t( player_t* p )
+          : external_special_effect_t( p, "emerald_coachs_whistle_ally", 193718,
+                                        p->dragonflight_opts.emerald_coachs_whistle_ally_ilvl )
+        {
+          if ( p->dragonflight_opts.emerald_coachs_whistle_ally_is_healer )
+            spell_id = 386578;
+
+          custom_init = &items::emerald_coachs_whistle;
+        }
+      };
+
+      p->special_effects.push_back( new emerald_coachs_whistle_ally_t( p ) );
+    }
+  },
+  "create_effects_dragonflight" );
 }
 
 // check and return multiplier for toxified armor patch
