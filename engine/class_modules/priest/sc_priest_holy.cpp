@@ -453,8 +453,8 @@ struct guardian_spirit_t final : public priest_spell_t
   buff_t* create_debuff( player_t* t ) override
   {
     auto gs_buff = priest_spell_t::create_debuff( t )
-                     ->set_default_value_from_effect_type( A_MOD_HEALING_RECEIVED_PCT )
-                     ->set_cooldown( 0_ms );  // Let the ability handle the CD
+                       ->set_default_value_from_effect_type( A_MOD_HEALING_RECEIVED_PCT )
+                       ->set_cooldown( 0_ms );  // Let the ability handle the CD
 
     t->assessor_out_damage.add( assessor::LOG - 1, [ gs_buff, t ]( auto, action_state_t* s ) {
       auto max_hp = t->resources.max[ RESOURCE_HEALTH ];
