@@ -127,7 +127,7 @@ void affliction( player_t* p )
   SH_aoe->add_action( "haunt" );
   SH_aoe->add_action( "seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
   SH_aoe->add_action( "dark_harvest" );
-  SH_aoe->add_action( "unstable_affliction,target_if=!ticking&prev.dark_harvest,if=active_enemies<=5" );
+  SH_aoe->add_action( "seed_of_corruption,target_if=!dot.unstable_affliction.ticking&prev.dark_harvest,if=set_bonus.midnight_season_2_4pc&active_enemies<=5" );
   SH_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<10&remains<5" );
   SH_aoe->add_action( "summon_darkglare" );
   SH_aoe->add_action( "seed_of_corruption" );
