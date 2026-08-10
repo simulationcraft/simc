@@ -618,6 +618,7 @@ struct druid_t final : public parse_player_effects_t
     action_t* lunar_wrath_heal;
     action_t* memory_of_ysera_heal;
     action_t* rampant_thorn; // mid2 4pc
+    action_t* spirits_wrath; // wild guardian 1 damage
     action_t* sundering_roar_thrash;
     action_t* thrash_flashing;
     action_t* waking_nightmare;  // placeholder
@@ -751,6 +752,7 @@ struct druid_t final : public parse_player_effects_t
 
     // Guardian
     buff_t* after_the_wildfire;
+    buff_t* answered_calling; // wild guardian 1
     buff_t* berserk_bear;
     buff_t* blood_frenzy;
     buff_t* brambles;
@@ -1856,6 +1858,12 @@ public:
 
     ab::execute();
 
+    if ( p()->talent.wild_guardian_1.ok() && ab::base_costs[ RESOURCE_RAGE ] > 0 )
+    {
+      if ( p()->rng().roll( p()->talent.wild_guardian_1->effectN( 2 ).percent() ) )
+        p()->buff.answered_calling->trigger( this );
+    }
+
     if ( !has_flag( flag_e::ALLOWSTEALTH ) )
     {
       if ( p()->talent.strategic_infusion.ok() && p()->buff.prowl->check() )
@@ -1881,7 +1889,7 @@ public:
   bool can_trigger_lunation() const
   {
     // guardian druid lunation is a static cooldown duration modifier
-    if ( !p()->talent.lunation.ok() || ab::background || specialization() == DRUID_GUARDIAN )
+    if ( !p()->talent.lunation.ok() || ab::background || p()->specialization() == DRUID_GUARDIAN )
       return false;
 
     switch ( ab::id )
@@ -5401,6 +5409,9 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
   {
     base_t::execute();
 
+    if ( p()->buff.answered_calling->up() )
+      p()->active.spirits_wrath->execute_on_target( target );
+
     p()->buff.gory_fur_ironfur->trigger( this );
     p()->buff.guardian_of_elune->trigger( this );
 
@@ -5913,6 +5924,9 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
   void execute() override
   {
     base_t::execute();
+
+    if ( p()->buff.answered_calling->up() )
+      p()->active.spirits_wrath->execute_on_target( target );
 
     p()->buff.gorestained_claws->trigger( this );
     if ( p()->sets->has_set_bonus( DRUID_GUARDIAN, MID2, B4 ) )
@@ -10057,7 +10071,7 @@ action_t* druid_t::create_action( std::string_view name, std::string_view opt )
   else if ( name == "soothe"                        ) a =                       new soothe_t( this );
   else if ( name == "stampeding_roar"               ) a =              new stampeding_roar_t( this );
   else if ( name == "starfire"                      ) a =                     new starfire_t( this );
-  else if ( name == "starsurge"                     )a =            new starsurge_offspec_t( this );
+  else if ( name == "starsurge"                     ) a =            new starsurge_offspec_t( this );
   else if ( name == "sunfire"                       ) a =                      new sunfire_t( this );
   else if ( name == "swipe"                         ) a =                  new swipe_proxy_t( this );
   else if ( name == "swipe_bear"                    ) a =                   new swipe_bear_t( this );
@@ -10553,7 +10567,7 @@ void druid_t::init_spells()
 
   // non-guardian lunation is still a proc effect
   if ( specialization() != DRUID_GUARDIAN )
-    deregister_passive_spell( talent.lunation->effectN( 3 ) );
+    deregister_passive_spell( talent.lunation );
 
   // Arcane affinity is bugged with wrath and manually handled in wrath_t
   register_passive_affect_list( talent.arcane_affinity, affect_list_t( 1 ).remove_family_flag( 0 ) );
@@ -11159,6 +11173,9 @@ void druid_t::create_buffs()
       ->set_default_value( talent.after_the_wildfire->effectN( 2 ).base_value() )
       ->set_max_stack( 1 );
 
+  buff.answered_calling = make_fallback( talent.wild_guardian_1.ok(), this, "answered_calling", find_trigger( talent.wild_guardian_1 ).trigger() )
+    ->set_trigger_spell( talent.wild_guardian_1 );
+
   buff.berserk_bear = make_fallback( talent.berserk_bear.ok(), this, "berserk_bear", talent.berserk_bear )
     ->set_name_reporting( "berserk" )
     ->set_cooldown( 0_ms )
@@ -11729,6 +11746,13 @@ void druid_t::create_actions()
     pulse->name_str_reporting = "Pulse";
     active.waking_nightmare_pulse = pulse;
     active.waking_nightmare->add_child( pulse );
+  }
+
+  if ( talent.wild_guardian_1->ok() )
+  {
+    auto s_data = find_spell( 1308093 );
+    active.spirits_wrath = get_secondary_action<druid_spell_t>( "spirits_wrath", this, s_data );
+    active.spirits_wrath->proc = true;
   }
 
   // Restoration
