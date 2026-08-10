@@ -172,7 +172,7 @@ struct evangelism_t final : public priest_heal_t
     harmful = false;
 
     evangelism_radiance =
-        priest().get_secondary_action<power_word_radiance_t>( "evangelism_radiance", "evangelism_radiance" );
+        priest().get_secondary_action<power_word_radiance_t>( "evangelism_radiance", "" );
 
     if ( !evangelism_radiance->stats->parent )
     {
@@ -273,6 +273,17 @@ protected:
       d *= cast_state( s )->snapshot_mult;
 
       return d;
+    }
+
+    
+    double composite_atonement_multiplier( action_state_t* s ) override
+    {
+      double mul = priest_spell_t::composite_atonement_multiplier( s );
+
+      if ( p().talents.voidweaver.void_infusion.enabled() )
+        mul *= 1 + p().talents.voidweaver.void_infusion->effectN( 2 ).percent();
+
+      return mul;
     }
 
     void impact( action_state_t* s ) override
@@ -502,6 +513,20 @@ public:
     priest().buffs.power_of_the_dark_side->expire();
 
     priest().buffs.harsh_discipline->decrement();
+
+    if ( priest().talents.discipline.master_the_darkness_1.enabled() )
+    {
+      if ( priest().deck_rng.master_of_darkness->trigger() )
+      {
+        priest().buffs.master_the_darkness->trigger();
+      }
+    }
+
+    if ( const spell_data_t* set_bonus = priest().sets->set( PRIEST_DISCIPLINE, MID2, B2 );
+         priest().is_ptr() && priest().sets->has_set_bonus( PRIEST_DISCIPLINE, MID2, B2 ) && set_bonus->ok() )
+    {
+      priest().cooldowns.mind_blast->adjust( -set_bonus->effectN( 2 ).time_value() );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -543,6 +568,16 @@ protected:
     {
       dot_extension      = priest().talents.discipline.painful_punishment->effectN( 1 ).time_value();
       triggers_atonement = true;
+    }
+
+    double composite_atonement_multiplier( action_state_t* s ) override
+    {
+      double mul = priest_spell_t::composite_atonement_multiplier( s );
+
+      if ( p().talents.voidweaver.void_infusion.enabled() )
+        mul *= 1 + p().talents.voidweaver.void_infusion->effectN( 2 ).percent();
+
+      return mul;
     }
 
     void impact( action_state_t* s ) override
@@ -621,6 +656,14 @@ namespace buffs
 
 void priest_t::create_buffs_discipline()
 {
+  buffs.dark_transference =
+      make_buff_fallback( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ), this, "dark_transference", find_spell( 1307795 ) );
+
+  if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+  {
+    buffs.dark_transference->set_default_value_from_effect( 1, 0.01 );
+  }
+
   buffs.power_of_the_dark_side =
       make_buff( this, "power_of_the_dark_side", talents.discipline.power_of_the_dark_side->effectN( 1 ).trigger() )
           ->set_default_value_from_effect( 1, 0.01 );
@@ -628,7 +671,8 @@ void priest_t::create_buffs_discipline()
   buffs.harsh_discipline = make_buff( this, "harsh_discipline", find_spell( 373183 ) )
                                ->set_default_value( talents.discipline.harsh_discipline->effectN( 2 ).base_value() );
 
-  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) )->add_invalidate( CACHE_HASTE );
+  buffs.borrowed_time =
+      make_buff( this, "borrowed_time", find_spell( 390692 ) )->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   if ( talents.discipline.borrowed_time.ok() )
   {
@@ -728,7 +772,7 @@ void priest_t::init_spells_discipline()
   talents.discipline.searing_light_dot = find_spell( 1280134 );
   talents.discipline.expiation         = ST( "Expiation" );
   // Apex
-  talents.discipline.master_the_darkness_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1253591 );
+  talents.discipline.master_the_darkness_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1253590 );
   talents.discipline.void_shield           = find_spell( 1253593 );
   talents.discipline.void_shield_reflect   = find_spell( 1253828 );
   talents.discipline.master_the_darkness_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1253845 );
@@ -768,10 +812,6 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
   if ( name == "ultimate_penitence" || name == "uppies" )
   {
     return new ultimate_penitence_t( *this, options_str );
-  }
-  if ( name == "void_shield" )
-  {
-    //return new void_shield_t( *this, options_str );
   }
 
   return nullptr;

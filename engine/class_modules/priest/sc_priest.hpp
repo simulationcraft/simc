@@ -198,7 +198,8 @@ public:
     propagate_const<buff_t*> archangel;
     propagate_const<buff_t*> holy_ray;
     propagate_const<buff_t*> greater_smite;
-
+    propagate_const<buff_t*> master_the_darkness;
+    propagate_const<buff_t*> dark_transference; // MID2 4pc 1307795
     // Holy
     propagate_const<buff_t*> apotheosis;
     propagate_const<buff_t*> empyreal_blaze;

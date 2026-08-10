@@ -514,7 +514,7 @@ struct void_flay_t final : public priest_pet_spell_t
           p.o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) ),  // Sfiend Power Leech
       void_flay_mana( p.o().specialization() == PRIEST_SHADOW
                           ? 0.0
-                          : p.o().find_spell( 34433 )->effectN( 4 ).percent() / 10 )  // Sfiend Spell
+                          : p.o().find_spell( 343727 )->effectN( 1 ).percent() / 10 )  // Sfiend Spell
   {
     parse_options( options );
 
