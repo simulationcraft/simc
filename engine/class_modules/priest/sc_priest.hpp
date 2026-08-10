@@ -61,7 +61,6 @@ struct idol_of_cthun_t;
 struct shadow_word_pain_t;
 struct mental_fortitude_t;
 struct expiation_t;
-struct purge_the_wicked_t;
 struct holy_fire_t;
 struct burning_vehemence_t;
 struct entropic_rift_t;
@@ -100,7 +99,6 @@ public:
     propagate_const<dot_t*> mind_flay;
     propagate_const<dot_t*> mind_flay_insanity;
     propagate_const<dot_t*> void_torrent;
-    propagate_const<dot_t*> purge_the_wicked;
     propagate_const<dot_t*> holy_fire;
     propagate_const<dot_t*> searing_light;
   } dots;
@@ -819,10 +817,9 @@ public:
     propagate_const<actions::spells::void_apparition_spell_t*> void_apparitions;
     propagate_const<actions::spells::shadow_word_death_t*> shadow_word_death;
     propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
-    propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;
+    propagate_const<action_t*> shadow_word_pain;
     propagate_const<actions::spells::mental_fortitude_t*> mental_fortitude;
     propagate_const<actions::spells::expiation_t*> expiation;
-    propagate_const<actions::spells::purge_the_wicked_t*> purge_the_wicked;
     propagate_const<action_t*> searing_light;
     propagate_const<action_t*> light_eruption;
     propagate_const<actions::spells::burning_vehemence_t*> burning_vehemence;

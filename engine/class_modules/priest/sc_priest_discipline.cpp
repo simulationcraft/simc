@@ -210,45 +210,6 @@ struct evangelism_t final : public priest_heal_t
   }
 };
 
-// Purge the wicked
-struct purge_the_wicked_t final : public priest_spell_t
-{
-  struct purge_the_wicked_dot_t final : public priest_spell_t
-  {
-    // Manually create the dot effect because "ticking" is not present on
-    // primary spell
-    purge_the_wicked_dot_t( priest_t& p, util::string_view options_str )
-      : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked->effectN( 2 ).trigger() )
-    {
-      parse_options( options_str );
-      background = true;
-      // TODO: Implement the spreading of Purge the Wicked via penance
-
-      triggers_atonement = true;
-    }
-
-    void tick( dot_t* d ) override
-    {
-      priest_spell_t::tick( d );
-
-      if ( d->state->result_amount > 0 )
-      {
-        trigger_power_of_the_dark_side();
-      }
-    }
-  };
-
-  purge_the_wicked_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked )
-  {
-    parse_options( options_str );
-    tick_zero      = false;
-    execute_action = new purge_the_wicked_dot_t( p, "" );
-
-    triggers_atonement = true;
-  }
-};
-
 using periodic_base_t = residual_action::residual_periodic_action_t<priest_spell_t>;
 struct searing_light_t : public periodic_base_t
 {
@@ -319,7 +280,6 @@ protected:
       priest_spell_t::impact( s );
       priest_td_t& td = get_td( s->target );
       td.dots.shadow_word_pain->adjust_duration( dot_extension );
-      td.dots.purge_the_wicked->adjust_duration( dot_extension );
       if ( p().talents.discipline.searing_light->ok() )
       {
         residual_action::trigger( p().background_actions.searing_light_dot, s->target,
@@ -527,68 +487,11 @@ public:
       move_random_target( has_swp_targets, targets );
     }
 
-    sim->print_debug( "{} purge_the_wicked spread selected targets={{ {} }}", player->name(),
+    sim->print_debug( "{} encroaching shadows spread selected targets={{ {} }}", player->name(),
                       actor_list_str( targets ) );
 
     range::for_each(
-        targets, [ & ]( player_t* target ) { p.background_actions.purge_the_wicked->execute_on_target( target ); } );
-  }
-
-  void spread_purge_the_wicked( const action_state_t* state, priest_t& p ) const
-  {
-    // Exit if PTW isn't ticking
-    if ( !td( state->target )->dots.purge_the_wicked->is_ticking() )
-    {
-      return;
-    }
-    // Exit if there 1 or fewer targets
-    if ( target_list().size() <= 1 )
-    {
-      return;
-    }
-    // Targets to spread PTW to
-    std::vector<player_t*> targets;
-
-    // Targets without PTW
-    std::vector<player_t*> no_ptw_targets,
-        // Targets that already have PTW
-        has_ptw_targets;
-
-    // Categorize all available targets (within 8 yards of the main target) based on presence of PTW
-    range::for_each( target_list(), [ & ]( player_t* t ) {
-      // Ignore main target
-      if ( t == state->target )
-      {
-        return;
-      }
-
-      if ( !td( t )->dots.purge_the_wicked->is_ticking() )
-      {
-        no_ptw_targets.push_back( t );
-      }
-      else if ( td( t )->dots.purge_the_wicked->is_ticking() )
-      {
-        has_ptw_targets.push_back( t );
-      }
-    } );
-
-    // 1) Randomly select targets without PTW, unless there already are the maximum number of targets with PTW up.
-    while ( no_ptw_targets.size() > 0 && targets.size() < max_spread_targets )
-    {
-      move_random_target( no_ptw_targets, targets );
-    }
-
-    // 2) Randomly select targets that already have PTW on them
-    while ( has_ptw_targets.size() > 0 && targets.size() < max_spread_targets )
-    {
-      move_random_target( has_ptw_targets, targets );
-    }
-
-    sim->print_debug( "{} purge_the_wicked spread selected targets={{ {} }}", player->name(),
-                      actor_list_str( targets ) );
-
-    range::for_each(
-        targets, [ & ]( player_t* target ) { p.background_actions.purge_the_wicked->execute_on_target( target ); } );
+        targets, [ & ]( player_t* target ) { p.background_actions.shadow_word_pain->execute_on_target( target ); } );
   }
 
   void execute() override
@@ -647,7 +550,6 @@ protected:
       priest_spell_t::impact( s );
       priest_td_t& td = get_td( s->target );
       td.dots.shadow_word_pain->adjust_duration( dot_extension );
-      td.dots.purge_the_wicked->adjust_duration( dot_extension );
     }
   };
 

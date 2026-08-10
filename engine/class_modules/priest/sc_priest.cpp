@@ -93,8 +93,7 @@ struct expiation_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_td_t& td = get_td( s->target );
-    dot_t* dot =
-        priest().talents.discipline.purge_the_wicked.enabled() ? td.dots.purge_the_wicked : td.dots.shadow_word_pain;
+    dot_t* dot = td.dots.shadow_word_pain;
 
     auto dot_damage = priest().tick_damage_over_time( consume_time, dot );
     if ( dot_damage > 0 )
@@ -2248,7 +2247,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.mind_flay           = target->get_dot( "mind_flay", &p );
   dots.mind_flay_insanity  = target->get_dot( "mind_flay_insanity", &p );
   dots.void_torrent        = target->get_dot( "void_torrent", &p );
-  dots.purge_the_wicked    = target->get_dot( "purge_the_wicked", &p );
   dots.holy_fire           = target->get_dot( "holy_fire", &p );
   dots.searing_light       = target->get_dot( "searing_light", &p );
 
