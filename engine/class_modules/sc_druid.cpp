@@ -99,8 +99,7 @@ enum flag_e : uint32_t
   LIGHTOFELUNE = 0x00008000,  // light of elune talent
   CASCADE      = 0x00010000,  // star cascade talent
   SYLVAN       = 0x00020000,  // sylvan beckoning dryad starfall
-  WILDGUARDIAN = 0x00040000,  // wild guardian echo
-  CELESTIAL    = 0x00080000,  // bear mid1 4pc
+  CELESTIAL    = 0x00040000,  // bear mid1 4pc
 };
 
 template <typename T>
@@ -7445,6 +7444,7 @@ struct fury_of_elune_t final : public druid_spell_t
 };
 
 // Incarnation (Tree) =========================================================
+// Instant Regrowth to Allies NYI
 struct incarnation_tree_t final : public trigger_control_of_the_dream_t<druid_spell_t>
 {
   DRUID_ABILITY( incarnation_tree_t, base_t, "incarnation_tree_of_life", p->talent.incarnation_tree )
