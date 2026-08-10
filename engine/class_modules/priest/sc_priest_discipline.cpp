@@ -172,7 +172,7 @@ struct evangelism_t final : public priest_heal_t
     harmful = false;
 
     evangelism_radiance =
-        priest().get_secondary_action<power_word_radiance_t>( "evangelism_radiance", "" );
+        priest().get_secondary_action<power_word_radiance_t>( "evangelism_radiance", "evangelism_radiance", "" );
 
     if ( !evangelism_radiance->stats->parent )
     {
