@@ -1869,8 +1869,8 @@ public:
     {
       assert( p()->talent.lunation->effects().size() == 3 );
 
-      static constexpr std::array<cooldown_t* druid_t::cooldowns_t::*, 3> lunation_cds = {
-        &druid_t::cooldowns_t::fury_of_elune, &druid_t::cooldowns_t::moon_cd, &druid_t::cooldowns_t::lunar_beam };
+      static constexpr std::array<cooldown_t* druid_t::cooldowns_t::*, 2> lunation_cds = {
+        &druid_t::cooldowns_t::fury_of_elune, &druid_t::cooldowns_t::moon_cd };
 
       for ( auto eff : p()->talent.lunation->effects() )
         if ( auto cd = std::invoke( lunation_cds[ eff.index() ], p()->cooldown ) )
@@ -1880,7 +1880,8 @@ public:
 
   bool can_trigger_lunation() const
   {
-    if ( !p()->talent.lunation.ok() || ab::background )
+    // guardian druid lunation is a static cooldown duration modifier
+    if ( !p()->talent.lunation.ok() || ab::background || specialization() == DRUID_GUARDIAN )
       return false;
 
     switch ( ab::id )
@@ -10549,6 +10550,10 @@ void druid_t::init_spells()
   {
     hots.frenzied_regeneration = get_dot( "frenzied_regeneration", this );
   }
+
+  // non-guardian lunation is still a proc effect
+  if ( specialization() != DRUID_GUARDIAN )
+    deregister_passive_spell( talent.lunation->effectN( 3 ) );
 
   // Arcane affinity is bugged with wrath and manually handled in wrath_t
   register_passive_affect_list( talent.arcane_affinity, affect_list_t( 1 ).remove_family_flag( 0 ) );
