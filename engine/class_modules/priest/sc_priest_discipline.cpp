@@ -249,6 +249,15 @@ struct purge_the_wicked_t final : public priest_spell_t
   }
 };
 
+using periodic_base_t = residual_action::residual_periodic_action_t<priest_spell_t>;
+struct searing_light_t : public periodic_base_t
+{
+  searing_light_t( priest_t& p, util::string_view n )
+    : residual_action_t( n, p, p.talents.discipline.searing_light_dot )
+  {
+  }
+};
+
 // ==========================================================================
 // Penance & Dark Reprimand
 // Penance:
@@ -311,6 +320,11 @@ protected:
       priest_td_t& td = get_td( s->target );
       td.dots.shadow_word_pain->adjust_duration( dot_extension );
       td.dots.purge_the_wicked->adjust_duration( dot_extension );
+      if ( p().talents.discipline.searing_light->ok() )
+      {
+        residual_action::trigger( p().background_actions.searing_light_dot, s->target,
+                                  s->result_amount * p().talents.discipline.searing_light->effectN( 1 ).percent() );
+      }
     }
 
     void execute() override
@@ -735,14 +749,14 @@ void priest_t::create_buffs_discipline()
 
 void priest_t::init_rng_discipline()
 {
-  deck_rng.master_of_darkness = get_shuffled_rng( "master_of_darkness", 1, 3 );
+  deck_rng.master_of_darkness = get_shuffled_rng( "master_of_darkness", 1, 4 );
 }
 
 void priest_t::init_background_actions_discipline()
 {
-  if ( talents.discipline.purge_the_wicked.enabled() )
+  if ( talents.discipline.searing_light.enabled() )
   {
-    background_actions.purge_the_wicked = new actions::spells::purge_the_wicked_t( *this, "" );
+    background_actions.searing_light_dot = new actions::spells::searing_light_t( *this, "searing_light" );
   }
 }
 
@@ -845,10 +859,6 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
   {
     return new penance_t( *this, options_str );
   }
-  if ( name == "purge_the_wicked" )
-  {
-    return new purge_the_wicked_t( *this, options_str );
-  }
   if ( name == "evangelism" )
   {
     return new evangelism_t( *this, options_str );
@@ -856,6 +866,10 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
   if ( name == "ultimate_penitence" || name == "uppies" )
   {
     return new ultimate_penitence_t( *this, options_str );
+  }
+  if ( name == "void_shield" )
+  {
+    //return new void_shield_t( *this, options_str );
   }
 
   return nullptr;

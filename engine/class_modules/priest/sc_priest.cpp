@@ -2250,6 +2250,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.void_torrent        = target->get_dot( "void_torrent", &p );
   dots.purge_the_wicked    = target->get_dot( "purge_the_wicked", &p );
   dots.holy_fire           = target->get_dot( "holy_fire", &p );
+  dots.searing_light       = target->get_dot( "searing_light", &p );
 
   buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
 

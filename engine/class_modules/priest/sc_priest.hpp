@@ -73,6 +73,7 @@ struct vision_of_nzoth_t;
 struct void_apparition_spell_t;
 struct void_bolt_t;
 struct shadeburst_t;
+struct searing_light_t;
 }  // namespace actions::spells
 
 namespace actions::heals
@@ -101,6 +102,7 @@ public:
     propagate_const<dot_t*> void_torrent;
     propagate_const<dot_t*> purge_the_wicked;
     propagate_const<dot_t*> holy_fire;
+    propagate_const<dot_t*> searing_light;
   } dots;
 
   struct buffs_t
@@ -837,6 +839,7 @@ public:
     propagate_const<actions::spells::vision_of_nzoth_t*> vision_of_nzoth;
     propagate_const<actions::spells::void_bolt_t*> void_bolt;
     propagate_const<actions::spells::shadeburst_t*> shadeburst;
+    propagate_const<actions::spells::searing_light_t*> searing_light_dot;
   } background_actions;
 
   // Items
