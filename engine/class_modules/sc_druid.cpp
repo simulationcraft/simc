@@ -1110,7 +1110,6 @@ struct druid_t final : public parse_player_effects_t
     player_talent_t improved_swiftmend;
     player_talent_t improved_wild_growth;
     player_talent_t incarnation_tree;
-    player_talent_t inner_peace;
     player_talent_t intensity;
     player_talent_t ironbark;
     player_talent_t lifebloom;
@@ -10466,7 +10465,6 @@ void druid_t::init_spells()
   talent.improved_swiftmend             = ST( "Improved Swiftmend" );
   talent.improved_wild_growth           = ST( "Improved Wild Growth" );
   talent.incarnation_tree               = ST( "Incarnation: Tree of Life" );
-  talent.inner_peace                    = ST( "Inner Peace" );
   talent.intensity                      = ST( "Intensity" );
   talent.ironbark                       = ST( "Ironbark" );
   talent.lifebloom                      = ST( "Lifebloom" );
