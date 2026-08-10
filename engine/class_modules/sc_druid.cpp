@@ -1928,16 +1928,7 @@ public:
 
   double cost() const override
   {
-    if ( is_free() )
-      return 0.0;
-
-    if ( p()->specialization() == DRUID_RESTORATION && ab::current_resource() == RESOURCE_MANA &&
-         p()->buff.innervate->up() )
-    {
-      return 0.0;
-    }
-
-    return ab::cost();
+    return is_free() ? 0.0 : ab::cost();
   }
 
   void set_energize( modified_spell_data_t* m_data )
@@ -6527,6 +6518,8 @@ struct soothe_t final : public trigger_lethal_preservation_t<druid_heal_t>
 };
 
 // Swiftmend ================================================================
+// Verdant Infustion interaction NYI
+// Healing increased by consumed HoT NYI
 struct swiftmend_t final : public druid_heal_t
 {
   DRUID_ABILITY( swiftmend_t, druid_heal_t, "swiftmend", p->talent.swiftmend ) {}
@@ -6566,6 +6559,8 @@ struct swiftmend_t final : public druid_heal_t
 };
 
 // Tranquility ==============================================================
+// Multi target reduction NYI
+// Absorb while channeling NYI
 struct tranquility_t final : public druid_heal_t
 {
   struct tranquility_tick_t final : public druid_heal_t
@@ -7468,6 +7463,7 @@ struct incarnation_tree_t final : public trigger_control_of_the_dream_t<druid_sp
 };
 
 // Innervate ================================================================
+// Periodic Mana Regen NYI
 struct innervate_t final : public druid_spell_t
 {
   DRUID_ABILITY( innervate_t, druid_spell_t, "innervate", p->talent.innervate )
