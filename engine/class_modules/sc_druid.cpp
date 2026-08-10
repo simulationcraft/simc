@@ -1117,7 +1117,6 @@ struct druid_t final : public parse_player_effects_t
     player_talent_t liveliness;
     player_talent_t master_shapeshifter;
     player_talent_t natures_bounty;
-    player_talent_t natures_splendor;
     player_talent_t natures_swiftness;
     player_talent_t nurturing_dormancy;
     player_talent_t omen_of_clarity_tree;
@@ -10458,7 +10457,6 @@ void druid_t::init_spells()
   talent.liveliness                     = ST( "Liveliness" );
   talent.master_shapeshifter            = ST( "Master Shapeshifter" );
   talent.natures_bounty                 = ST( "Nature's Bounty" );
-  talent.natures_splendor               = ST( "Nature's Splendor" );
   talent.natures_swiftness              = ST( "Nature's Swiftness" );
   talent.nurturing_dormancy             = ST( "Nurturing Dormancy" );  // TODO: NYI
   talent.omen_of_clarity_tree           = ST( "Omen of Clarity", DRUID_RESTORATION );
