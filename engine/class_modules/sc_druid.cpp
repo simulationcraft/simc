@@ -760,6 +760,7 @@ struct druid_t final : public parse_player_effects_t
     buff_t* brambles;
     buff_t* bristling_fur;
     buff_t* celestial_might;  // mid1 4pc
+    buff_t* dream_conduit; // wild guardian 3
     buff_t* dream_guide;
     buff_t* dream_of_cenarius;
     buff_t* elunes_favored;
@@ -781,6 +782,7 @@ struct druid_t final : public parse_player_effects_t
     buff_t* sundering_roar;
     buff_t* ursocs_fury;
     buff_t* waking_nightmare;  // proxy buff to track stack uptime
+    buff_t* wild_guardian; // wild guardian 3
 
     // Restoration
     buff_t* abundance;
@@ -5164,6 +5166,8 @@ struct berserk_bear_base_t : public bear_attack_t
     assert( buff );
     buff->trigger();
 
+    p()->buff.wild_guardian->trigger();
+
     if ( p()->cooldown.growl )
       p()->cooldown.growl->reset( true );
 
@@ -8916,6 +8920,30 @@ struct wild_mushroom_t final : public druid_spell_t
   }
 };
 
+// Wild Guardian ============================================================
+struct wild_guardian_t final : public druid_spell_t
+{
+  DRUID_ABILITY( wild_guardian_t, druid_spell_t, "wild_guardian",
+                 p->talent.wild_guardian_3.ok() ? p->find_spell( 1269658 ) : spell_data_t::not_found() )
+  {}
+
+  bool ready() override
+  {
+    if ( !p()->buff.wild_guardian->check() )
+      return false;
+
+    return druid_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p()->buff.wild_guardian->expire();
+    p()->buff.dream_conduit->trigger();
+  }
+};
+
 // Wrath ====================================================================
 struct wrath_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
 {
@@ -10095,6 +10123,7 @@ action_t* druid_t::create_action( std::string_view name, std::string_view opt )
             name == "red_moon"                      ) a =                     new red_moon_t( this );
   else if ( name == "moonfire_only"                 ) a =                     new moonfire_t( this );
   else if ( name == "sundering_roar"                ) a =               new sundering_roar_t( this );
+  else if ( name == "wild_guardian"                 ) a =                new wild_guardian_t( this );
 
   // Restoration
   else if ( name == "efflorescence"                 ) a =                new efflorescence_t( this );
@@ -11284,6 +11313,9 @@ void druid_t::create_buffs()
   buff.celestial_might = make_fallback( sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ),
     this, "celestial_might", find_trigger( sets->set( DRUID_GUARDIAN, MID1, B4 ) ).trigger() );
 
+  buff.dream_conduit = make_fallback( talent.wild_guardian_3.ok(), this, "dream_conduit", find_trigger( find_spell( 1269658 ) ).trigger() )
+    ->set_trigger_spell( talent.wild_guardian_3 );
+
   buff.dream_guide =
     make_fallback( talent.dream_guide.ok(), this, "dream_guide", find_trigger( talent.dream_guide ).trigger() )
       ->set_consume_all_stacks( false );
@@ -11376,6 +11408,9 @@ void druid_t::create_buffs()
   buff.waking_nightmare = make_fallback( talent.waking_nightmare.ok(),
     this, "waking_nightmare", find_trigger( talent.waking_nightmare ).trigger() )
       ->set_proc_callbacks( false );
+
+  buff.wild_guardian = make_fallback( talent.wild_guardian_3.ok(), this, "wild_guardian", find_spell( 1269616 ) )
+    ->set_trigger_spell( talent.wild_guardian_3 );
 
   // Restoration buffs
   buff.abundance = make_fallback( talent.abundance.ok(), this, "abundance", find_spell( 207640 ) )
