@@ -436,8 +436,8 @@ public:
 
       auto* apparition_state = cast_state( s );
 
-      if ( priest().is_ptr() && priest().background_actions.shadeburst && apparition_state->parent_target &&
-           apparition_state->parent_target->is_enemy() && s->target == apparition_state->parent_target )
+       if ( priest().background_actions.shadeburst && apparition_state->parent_target &&
+         apparition_state->parent_target->is_enemy() && s->target == apparition_state->parent_target )
       {
         player->sim->print_debug( "{} triggering shadeburst from {}. target={} parent={}", priest(),
                                   apparition_state->trigger_source_name, s->target->name(),
@@ -959,12 +959,7 @@ struct void_volley_base_t : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest().is_ptr() && !priest().buffs.voidform->check() && !priest().buffs.crushing_void->check() )
-    {
-      return false;
-    }
-
-    if ( priest().is_ptr() && ( !priest().buffs.crushing_void->check() && !priest().buffs.void_volley->check() ) )
+    if ( !priest().buffs.crushing_void->check() && !priest().buffs.void_volley->check() )
     {
       return false;
     }
@@ -1354,8 +1349,7 @@ struct shadow_word_madness_t final : public priest_spell_t
       priest().expand_entropic_rift();
     }
 
-    if ( priest().is_ptr() && priest().talents.archon.focused_outburst.enabled() && casted &&
-         priest().buffs.voidform->check() )
+    if ( priest().talents.archon.focused_outburst.enabled() && casted && priest().buffs.voidform->check() )
     {
       void_volley_swm->execute();
     }
@@ -1378,7 +1372,7 @@ struct voidform_t final : public priest_spell_t
     may_miss                     = false;
     idol_of_nzoth_execute_stacks = 10;
 
-    if ( !priest().is_ptr() && priest().talents.shadow.improved_voidform.enabled() )
+    if ( priest().talents.shadow.improved_voidform.enabled() )
     {
       energize_amount   = priest().talents.shadow.improved_voidform->effectN( 1 ).base_value();
       energize_type     = action_energize::ON_CAST;
@@ -1394,7 +1388,7 @@ struct voidform_t final : public priest_spell_t
 
     void_volley->execute();
 
-    if ( priest().is_ptr() && priest().talents.shadow.voidform->effect_count() >= 3 )
+    if ( priest().talents.shadow.voidform->effect_count() >= 3 )
     {
       int voidform_charges = as<int>( priest().talents.shadow.voidform->effectN( 3 ).base_value() );
       priest().buffs.void_volley->trigger( voidform_charges );
@@ -1853,7 +1847,7 @@ struct tentacle_slam_t final : public priest_spell_t
     priest_spell_t::execute();
 
     if ( const spell_data_t* set_bonus = priest().sets->set( PRIEST_SHADOW, MID2, B4 );
-         priest().is_ptr() && priest().sets->has_set_bonus( PRIEST_SHADOW, MID2, B4 ) && set_bonus->ok() &&
+         priest().sets->has_set_bonus( PRIEST_SHADOW, MID2, B4 ) && set_bonus->ok() &&
          set_bonus->effect_count() >= 1 && rng().roll( set_bonus->effectN( 1 ).percent() ) )
     {
       priest().procs.midnight_s2_4pc_void_volley->occur();
@@ -2013,7 +2007,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
       priest().buffs.crushing_void->trigger( tierset_procs_left );
     }
 
-    if ( priest().is_ptr() && priest().buffs.ancient_madness_extension->check() )
+    if ( priest().buffs.ancient_madness_extension->check() )
     {
       priest().trigger_ancient_madness( priest().buffs.ancient_madness_extension->check() );
     }
@@ -2285,36 +2279,32 @@ void priest_t::create_buffs_shadow()
   buffs.ancient_madness_extension =
       make_buff( this, "ancient_madness_extension", talents.shadow.ancient_madness )
           ->set_duration( timespan_t::zero() )
-          ->set_max_stack( is_ptr() ? as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) : 99 );
+          ->set_max_stack( as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) );
 
-  if ( is_ptr() )
-  {
-    buffs.ancient_madness_extension->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-        ->set_default_value( buffs.voidform->data().effectN( 12 ).percent() );
+  buffs.ancient_madness_extension->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+      ->set_default_value( buffs.voidform->data().effectN( 12 ).percent() );
 
-    buffs.ancient_madness = make_buff( this, "ancient_madness", talents.shadow.ancient_madness_buff )
-                                ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                                ->set_default_value_from_effect_type( A_HASTE_ALL )
-                                ->set_duration( talents.shadow.ancient_madness_buff->duration() )
-                                ->set_max_stack( 1 )
-                                ->set_freeze_stacks( true )
-                                ->set_period( talents.shadow.ancient_madness_buff->effectN( 2 ).period() );
+  buffs.ancient_madness = make_buff( this, "ancient_madness", talents.shadow.ancient_madness_buff )
+                              ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                              ->set_default_value_from_effect_type( A_HASTE_ALL )
+                              ->set_duration( talents.shadow.ancient_madness_buff->duration() )
+                              ->set_max_stack( 1 )
+                              ->set_freeze_stacks( true )
+                              ->set_period( talents.shadow.ancient_madness_buff->effectN( 2 ).period() );
 
-    // PTR Ancient Madness starts from the accumulated extension stacks and decays linearly over the aura duration.
-    const double ancient_madness_tick_count = as<double>( talents.shadow.ancient_madness_buff->duration() /
-                                                          talents.shadow.ancient_madness_buff->effectN( 2 ).period() );
+  const double ancient_madness_tick_count = as<double>( talents.shadow.ancient_madness_buff->duration() /
+                                                        talents.shadow.ancient_madness_buff->effectN( 2 ).period() );
 
-    buffs.ancient_madness->set_tick_callback( [ ancient_madness_tick_count ]( buff_t* buff, int, timespan_t ) {
-      if ( buff->default_value <= 0.0 )
-      {
-        return;
-      }
+  buffs.ancient_madness->set_tick_callback( [ ancient_madness_tick_count ]( buff_t* buff, int, timespan_t ) {
+    if ( buff->default_value <= 0.0 )
+    {
+      return;
+    }
 
-      double decay = buff->default_value / ancient_madness_tick_count;
-      double value = std::max( 0.0, buff->current_value - decay );
-      buff->bump( 0, value );
-    } );
-  }
+    double decay = buff->default_value / ancient_madness_tick_count;
+    double value = std::max( 0.0, buff->current_value - decay );
+    buff->bump( 0, value );
+  } );
 
   buffs.void_volley = make_buff( this, "void_volley", talents.shadow.void_volley_buff );
 }  // namespace priestspace
@@ -2434,16 +2424,9 @@ void priest_t::init_spells_shadow()
   talents.shadow.maddening_touch_insanity = find_spell( 391232 );
   talents.shadow.improved_voidform        = ST( "Improved Voidform" );
   talents.shadow.ancient_madness          = ST( "Ancient Madness" );
-  if ( is_ptr() )
-  {
-    talents.shadow.ancient_madness_buff = find_spell( 1304485 );
-    talents.shadow.shadeburst           = ST( "Shadeburst" );
-    talents.shadow.shadeburst_spell     = find_spell( 1231479 );
-  }
-  else
-  {
-    talents.shadow.phantom_menace = ST( "Phantom Menace" );
-  }
+  talents.shadow.ancient_madness_buff = find_spell( 1304485 );
+  talents.shadow.shadeburst           = ST( "Shadeburst" );
+  talents.shadow.shadeburst_spell     = find_spell( 1231479 );
   talents.shadow.dark_evangelism  = ST( "Dark Evangelism" );
   talents.shadow.shattered_psyche = ST( "Shattered Psyche" );
   // Row 7
@@ -2697,7 +2680,7 @@ void priest_t::trigger_shadow_weaving( action_state_t* s )
 
 void priest_t::trigger_ancient_madness( int stacks )
 {
-  if ( !is_ptr() || !talents.shadow.ancient_madness.enabled() || !buffs.ancient_madness )
+  if ( !talents.shadow.ancient_madness.enabled() || !buffs.ancient_madness )
   {
     return;
   }
@@ -2731,43 +2714,23 @@ void priest_t::trigger_ancient_madness_extension()
     return;
   }
 
-  if ( is_ptr() )
+  int old_stacks         = buffs.ancient_madness_extension->check();
+  timespan_t extension   = 0_ms;
+  bool extended_voidform = false;
+
+  // Voidform duration extends by 1.5s per SW:M cast, stacking up to 5.
+  if ( !buffs.ancient_madness_extension->at_max_stacks() )
   {
-    int old_stacks         = buffs.ancient_madness_extension->check();
-    timespan_t extension   = 0_ms;
-    bool extended_voidform = false;
-
-    // PTR: +1.5s Voidform duration per SW:M cast, but only while stacking up to 5.
-    if ( !buffs.ancient_madness_extension->at_max_stacks() )
-    {
-      extension = buffs.voidform->data().effectN( 14 ).time_value();
-      buffs.voidform->extend_duration( extension );
-      extended_voidform = true;
-    }
-
-    buffs.ancient_madness_extension->trigger();
-    sim->print_debug(
-        "ancient_madness_extension: stacks {}->{} extended_voidform={} extension_s={} voidform_remains_s={}",
-        old_stacks, buffs.ancient_madness_extension->check(), extended_voidform, extension.total_seconds(),
-        buffs.voidform->remains().total_seconds() );
-    return;
-  }
-
-  // Live: preserve diminishing extension behavior.
-  timespan_t base_duration = talents.shadow.voidform->effectN( 2 ).time_value();
-
-  if ( buffs.ancient_madness_extension->check() )
-  {
-    double factor = std::pow( 1 - talents.shadow.ancient_madness->effectN( 3 ).percent(),
-                              buffs.ancient_madness_extension->check() );
-    buffs.voidform->extend_duration( base_duration * factor );
-  }
-  else
-  {
-    buffs.voidform->extend_duration( base_duration );
+    extension = buffs.voidform->data().effectN( 14 ).time_value();
+    buffs.voidform->extend_duration( extension );
+    extended_voidform = true;
   }
 
   buffs.ancient_madness_extension->trigger();
+  sim->print_debug(
+      "ancient_madness_extension: stacks {}->{} extended_voidform={} extension_s={} voidform_remains_s={}",
+      old_stacks, buffs.ancient_madness_extension->check(), extended_voidform, extension.total_seconds(),
+      buffs.voidform->remains().total_seconds() );
 }
 
 // Helper function to refresh insidious ire buff
