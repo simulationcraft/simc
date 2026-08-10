@@ -5477,7 +5477,7 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
 
 // Maul / Raze ==============================================================
 /*
-maul_base_t:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spender
+maul_base_t:trigger_vicious_brambles:trigger_aggravate_wounds:trigger_ursocs_fury:trigger_gore:rage_spender
 |
 |->maul_ravage_base_t:trigger_celestial_might_repeat_t
 |  |
