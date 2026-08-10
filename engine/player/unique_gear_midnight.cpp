@@ -4117,6 +4117,47 @@ void tattered_amani_war_banner( special_effect_t& effect )
   effect.disable_buff();
   effect.has_use_buff_override = true;
 }
+
+// Sethraliss' Defiled Relic
+// 1294746 On-use driver, rotten wound dot
+// 1294747 Equip, value spell
+//  e1: rotten wound total damage
+//  e2: deepened wound damage
+// 1294941 Rotten Wound self aura, rppm driver for the deepened wound proc
+// 1294936 Deepened Wound, hits the enemy that procced it and does not require the wound on it
+void sethraliss_defiled_relic( special_effect_t& effect )
+{
+  unsigned equip_id = 1294747;
+  auto equip        = find_special_effect( effect.player, equip_id );
+  assert( equip && "Sethraliss' Defiled Relic missing equip effect" );
+
+  auto dot = create_proc_action<generic_proc_t>( "curse_of_the_wound", effect, effect.driver() );
+  dot->base_td = equip->driver()->effectN( 1 ).average( effect ) * dot->base_tick_time / dot->dot_duration;
+  dot->base_td_multiplier *= role_mult( effect );
+  dot->cooldown->duration = 0_ms;  // Handled by the special effect
+
+  auto damage = create_proc_action<generic_proc_t>( "deepened_wound", effect, 1294936 );
+  damage->base_dd_min = damage->base_dd_max = equip->driver()->effectN( 2 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  dot->add_child( damage );
+
+  // 1294941 holds the rppm of the proc it arms, which must not gate the on-use application of the aura itself
+  auto buff = create_buff<buff_t>( effect.player, "rotten_wound", effect.player->find_spell( 1294941 ) )
+                  ->set_rppm( RPPM_DISABLE );
+
+  auto driver            = new special_effect_t( effect.player );
+  driver->name_str       = "deepened_wound_driver";
+  driver->spell_id       = buff->data().id();
+  driver->execute_action = damage;
+  effect.player->special_effects.push_back( driver );
+
+  auto cb = new dbc_proc_callback_t( effect.player, *driver );
+  cb->activate_with_buff( buff, true );
+
+  effect.custom_buff    = buff;
+  effect.execute_action = dot;
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -5360,6 +5401,8 @@ void register_special_effects()
   register_special_effect( 1293304, trinkets::knot_of_writhing_serpents );
   register_special_effect( 1294329, trinkets::ulateks_faithful );
   register_special_effect( 1293326, trinkets::tattered_amani_war_banner );
+  register_special_effect( 1294746, trinkets::sethraliss_defiled_relic );
+  register_special_effect( 1294747, DISABLED_EFFECT );  // Sethraliss' Defiled Relic equip driver
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
