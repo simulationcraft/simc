@@ -528,6 +528,7 @@ struct druid_t final : public parse_player_effects_t
   moon_stage_e moon_stage;
   std::vector<event_t*> persistent_event_delay;
   event_t* astral_power_decay;
+  player_t* stellar_amplification_target;
   int cp_spent_in_berserk = 0;  // mid2 2pc
 
   struct dot_list_t
@@ -550,6 +551,8 @@ struct druid_t final : public parse_player_effects_t
     action_t* blooming_infusion_damage_expire = nullptr;
     player_t* star_cascade = nullptr;
   } spell_queued;
+  // !!!==========================================================================!!!
+  // !!!                                                                          !!!
   // !!!==========================================================================!!!
 
   // Options
@@ -1281,7 +1284,6 @@ struct druid_t final : public parse_player_effects_t
   struct uptimes_t
   {
     uptime_t* atmospheric_exposure;
-    uptime_t* stellar_amplification;
   } uptime;
 
   auto_dispose<std::vector<modified_spell_data_t*>> modified_spells;
@@ -12390,9 +12392,6 @@ void druid_t::init_uptimes()
 
   if ( talent.atmospheric_exposure.ok() )
     uptime.atmospheric_exposure = get_uptime( "Atmospheric Exposure" );
-
-  if ( talent.stellar_amplification.ok() )
-    uptime.stellar_amplification = get_uptime( "Stellar Amplification" );
 }
 
 // druid_t::init_resources ==================================================
@@ -12994,6 +12993,7 @@ void druid_t::reset()
   moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
   persistent_event_delay.clear();
   astral_power_decay = nullptr;
+  stellar_amplification_target = nullptr;
   dot_lists.moonfire.clear();
   dot_lists.sunfire.clear();
   dot_lists.rake.clear();
@@ -13783,11 +13783,22 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
           [ dur = source.talent.stellar_amplification->effectN( 1 ).time_value() ]( const buff_t* b, timespan_t d ) {
             return std::min( dur, b->remains() + d );
           } )
-        ->set_stack_change_callback( [ p = &source ]( auto, int old_, int new_ ) {
+        ->set_stack_change_callback( [ p = &source ]( buff_t* b, int old_, int new_ ) {
           if ( new_ )
-            p->uptime.stellar_amplification->update( true, p->sim->current_time() );
+          {
+            if ( p->stellar_amplification_target )
+            {
+              assert( p->stellar_amplification_target != b->player );
+
+              // expire first since it resets stellar_amplification_target to nullptr
+              p->get_target_data( p->stellar_amplification_target )->debuff.stellar_amplification->expire();
+              p->stellar_amplification_target = b->player;
+            }
+          }
           else if ( old_ )
-            p->uptime.stellar_amplification->update( false, p->sim->current_time() );
+          {
+            p->stellar_amplification_target = nullptr;
+          }
         } );
   }
   else
