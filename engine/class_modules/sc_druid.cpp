@@ -771,7 +771,7 @@ struct druid_t final : public parse_player_effects_t
     buff_t* gore;
     buff_t* gorestained_claws; // mid2 2pc
     buff_t* gory_fur_ironfur;
-    buff_t* gory_fur_maul_ravage;
+    buff_t* gory_fur_maul;
     buff_t* guardian_of_elune;
     buff_t* incarnation_bear;
     buff_t* lunar_beam;
@@ -5262,7 +5262,7 @@ struct ironfur_t final : public rage_spender_t<druid_spell_t>
   {
     base_t::execute();
 
-    p()->buff.gory_fur_maul_ravage->trigger( this );
+    p()->buff.gory_fur_maul->trigger( this );
 
     auto dur = p()->buff.ironfur->buff_duration();
 
@@ -11353,10 +11353,12 @@ void druid_t::create_buffs()
     ->set_trigger_spell( sets->set( DRUID_GUARDIAN, MID2, B2 ) );
 
   buff.gory_fur_ironfur = make_fallback( talent.gory_fur.ok(), this, "gory_fur_ironfur", find_spell( 201671 ) )
+    ->set_name_reporting( "Ironfur" )
     ->set_chance( talent.gory_fur->effectN( 2 ).percent() )
     ->set_trigger_spell( talent.gory_fur );
 
-  buff.gory_fur_maul_ravage = make_fallback( talent.gory_fur.ok(), this, "gory_fur_maul_ravage", find_spell( 1307881 ) )
+  buff.gory_fur_maul = make_fallback( talent.gory_fur.ok(), this, "gory_fur_maul", find_spell( 1307881 ) )
+    ->set_name_reporting( talent.raze.ok() ? "Raze" : "Maul" )
     ->set_chance( talent.gory_fur->effectN( 1 ).percent() )
     ->set_trigger_spell( talent.gory_fur );
 
@@ -14191,7 +14193,7 @@ void druid_t::parse_action_effects( action_t* action )
 
   _a->parse_effects( buff.gorestained_claws, CONSUME_BUFF );
   _a->parse_effects( buff.gory_fur_ironfur, CONSUME_BUFF );
-  _a->parse_effects( buff.gory_fur_maul_ravage, CONSUME_BUFF );
+  _a->parse_effects( buff.gory_fur_maul, CONSUME_BUFF );
 
   if ( talent.penumbral_swell.ok() )
     _a->parse_effects( buff.lunar_beam );
