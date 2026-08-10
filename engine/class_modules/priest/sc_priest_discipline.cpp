@@ -147,8 +147,8 @@ struct pain_suppression_t final : public priest_spell_t
   buff_t* create_debuff( player_t* t ) override
   {
     return priest_spell_t::create_debuff( t )
-      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
-      ->set_cooldown( 0_ms );  // Let the ability handle the CD
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
+        ->set_cooldown( 0_ms );  // Let the ability handle the CD
   }
 
   void execute() override
@@ -276,7 +276,6 @@ protected:
       return d;
     }
 
-    
     double composite_atonement_multiplier( action_state_t* s ) override
     {
       double mul = priest_spell_t::composite_atonement_multiplier( s );
@@ -629,8 +628,7 @@ protected:
 
 public:
   ultimate_penitence_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "ultimate_penitence", p, p.talents.discipline.ultimate_penitence ),
-      nested_action( nullptr )
+    : priest_spell_t( "ultimate_penitence", p, p.talents.discipline.ultimate_penitence ), nested_action( nullptr )
   {
     add_option( opt_string( "nested_action", nested_action_name ) );
     parse_options( options_str );
@@ -807,8 +805,8 @@ void priest_t::init_spells_discipline()
 
   // General Spells
   specs.penance         = find_spell( 47540 );
-  specs.penance_channel = find_spell( 47758 );   // Channel spell, triggered by 47540, executes 47666 every tick
-  specs.penance_tick    = find_spell( 47666 );   // Not triggered from 47540, only 47758
+  specs.penance_channel = find_spell( 47758 );  // Channel spell, triggered by 47540, executes 47666 every tick
+  specs.penance_tick    = find_spell( 47666 );  // Not triggered from 47540, only 47758
 
   specs.plea = find_spell( 200829 );
 

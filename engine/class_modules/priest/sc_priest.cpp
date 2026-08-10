@@ -136,7 +136,7 @@ struct expiation_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_td_t& td = get_td( s->target );
-    dot_t* dot = td.dots.shadow_word_pain;
+    dot_t* dot      = td.dots.shadow_word_pain;
 
     auto dot_damage = priest().tick_damage_over_time( consume_time, dot );
     if ( dot_damage > 0 )
@@ -902,7 +902,7 @@ struct void_blast_disc_t final : public smite_base_t
   void execute() override
   {
     smite_base_t::execute();
-    
+
     p().extend_entropic_rift();
   }
 };
@@ -2170,7 +2170,6 @@ struct void_shield_t final : public priest_absorb_t
 
   void execute() override
   {
-
     if ( priest().talents.discipline.borrowed_time.enabled() )
     {
       priest().buffs.borrowed_time->trigger();
