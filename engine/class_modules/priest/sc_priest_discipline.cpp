@@ -624,17 +624,39 @@ protected:
   };
 
   propagate_const<ultimate_penitence_channel_t*> channel;
+  action_t* nested_action;
+  std::string nested_action_name;
 
 public:
   ultimate_penitence_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "ultimate_penitence", p, p.talents.discipline.ultimate_penitence )
+    : priest_spell_t( "ultimate_penitence", p, p.talents.discipline.ultimate_penitence ),
+      nested_action( nullptr )
   {
+    add_option( opt_string( "nested_action", nested_action_name ) );
     parse_options( options_str );
     // Channel = 421434
     // Damage bolt = 421543
 
+    if ( action_t* a = p.create_action( nested_action_name, "" ); a )
+    {
+      if ( a->base_execute_time > 0_s && !a->channeled )
+      {
+        sim->errorf( "Ultimate Penitence nested action %s has a cast time, which is not supported.",
+                     nested_action_name );
+      }
+      nested_action = a;
+    }
+
     channel = new ultimate_penitence_channel_t( p, stats );
     add_child( channel->damage );
+  }
+
+  bool ready() override
+  {
+    if ( nested_action && !nested_action->ready() )
+      return false;
+
+    return priest_spell_t::ready();
   }
 
   void execute() override
@@ -646,7 +668,11 @@ public:
   {
     priest_spell_t::impact( s );
 
-    channel->execute_on_target( s->target );
+    if ( nested_action && nested_action->ready() )
+      nested_action->queue_execute( execute_type::CAST_WHILE_CASTING );
+
+    channel->set_target( s->target );
+    channel->queue_execute( execute_type::CAST_WHILE_CASTING );
   }
 };
 }  // namespace actions::spells
