@@ -754,6 +754,7 @@ struct druid_t final : public parse_player_effects_t
     // Guardian
     buff_t* after_the_wildfire;
     buff_t* answered_calling; // wild guardian 1
+    buff_t* answered_calling_damage; // wild guardian 3
     buff_t* berserk_bear;
     buff_t* blood_frenzy;
     buff_t* brambles;
@@ -1862,7 +1863,10 @@ public:
     if ( p()->talent.wild_guardian_1.ok() && ab::base_costs[ RESOURCE_RAGE ] > 0 )
     {
       if ( p()->rng().roll( p()->talent.wild_guardian_1->effectN( 2 ).percent() ) )
+      {
         p()->buff.answered_calling->trigger( this );
+        p()->buff.answered_calling_damage->trigger( this );
+      }
     }
 
     if ( !has_flag( flag_e::ALLOWSTEALTH ) )
@@ -5991,6 +5995,22 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
       // order of thrash targets so we instead randomize the starsurge target
       p()->active.star_cascade->execute_on_target( rng().range( target_list() ) );
     }
+  }
+};
+
+// Spirit's Wrath ===========================================================
+struct spirits_wrath_t final : public bear_attack_t
+{
+  spirits_wrath_t( druid_t* p )
+    : bear_attack_t( "spirits_wrath", p, p->find_spell( 1308093 ) )
+  {
+    proc = true;
+
+    if ( !p->talent.wild_guardian_3.ok() )
+      return;
+
+    // rage generation if wild guardian 3 is talented
+    parse_effect_data( p->find_spell( 1308125 )->effectN( 1 ) );
   }
 };
 } // end namespace bear_attacks
@@ -11207,7 +11227,19 @@ void druid_t::create_buffs()
       ->set_max_stack( 1 );
 
   buff.answered_calling = make_fallback( talent.wild_guardian_1.ok(), this, "answered_calling", find_trigger( talent.wild_guardian_1 ).trigger() )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int _new ) {
+      if ( !_new || !talent.wild_guardian_3.ok() )
+        return;
+
+      if ( cooldown.mangle )
+        cooldown.mangle->reset( true );
+      if ( cooldown.thrash )
+        cooldown.thrash->reset( true );
+    } )
     ->set_trigger_spell( talent.wild_guardian_1 );
+
+  buff.answered_calling_damage = make_fallback( talent.wild_guardian_3.ok(), this, "answered_calling", find_spell( 1308647 ) )
+    ->set_trigger_spell( talent.wild_guardian_3 );
 
   buff.berserk_bear = make_fallback( talent.berserk_bear.ok(), this, "berserk_bear", talent.berserk_bear )
     ->set_name_reporting( "berserk" )
@@ -11782,11 +11814,7 @@ void druid_t::create_actions()
   }
 
   if ( talent.wild_guardian_1->ok() )
-  {
-    auto s_data = find_spell( 1308093 );
-    active.spirits_wrath = get_secondary_action<druid_spell_t>( "spirits_wrath", this, s_data );
-    active.spirits_wrath->proc = true;
-  }
+    active.spirits_wrath = get_secondary_action<spirits_wrath_t>( "spirits_wrath", this );
 
   if ( talent.wild_guardian_2->ok() )
   {
@@ -14115,6 +14143,7 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.unseen_predators_craving, talent.unseen_predator_2->effectN( 1 ).percent() );
 
   // Guardian
+  _a->parse_effects( buff.answered_calling_damage );
   _a->parse_effects( buff.berserk_bear, effect_mask_t( true ).disable( 6, 7, 8, 9 ) );
   _a->parse_effects( buff.incarnation_bear, effect_mask_t( true ).disable( 6, 7, 8, 9, 14, 15, 16, 17 ) );
   // additional effects if astral insight is talented
