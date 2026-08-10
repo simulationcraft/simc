@@ -4,7 +4,8 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=algethar_puzzle_box
 
 # Executed every time the actor is available.
-actions=auto_shot
+actions=retarget,target_if=max:target.health,line_cd=5,if=fight_style.dungeonroute
+actions+=/auto_shot
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=drst,if=talent.black_arrow&(active_enemies<2|!talent.beast_cleave&active_enemies<3)

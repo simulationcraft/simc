@@ -165,6 +165,7 @@ void beast_mastery_ptr( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
 
+  default_->add_action( "retarget,target_if=max:target.health,line_cd=5,if=fight_style.dungeonroute" );
   default_->add_action( "auto_shot" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=trinkets" );
@@ -337,6 +338,7 @@ void marksmanship_ptr( player_t* p )
 
   default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25|time<10" );
   default_->add_action( "variable,name=trueshot_ready,op=setif,condition=fight_style.dungeonroute,value_else=variable.trueshot_ready,value=raid_event.pull.remains>30|raid_event.pull.in>60|talent.calling_the_shots", "For DungeonRoute, hold Trueshot at the end of pulls." );
+  default_->add_action( "retarget,target_if=max:target.health,line_cd=5,if=fight_style.dungeonroute" );
   default_->add_action( "auto_shot" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=trinkets" );
@@ -509,6 +511,7 @@ void survival_ptr( player_t* p )
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "wildfire_bomb,if=active_enemies=1" );
 
+  default_->add_action( "retarget,target_if=max:target.health,line_cd=5,if=fight_style.dungeonroute" );
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=plst,if=active_enemies<3&talent.howl_of_the_pack_leader" );

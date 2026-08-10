@@ -50,7 +50,6 @@ enum class attack_power_type : unsigned
   DEFAULT = WEAPON_MAINHAND,
 };
 
-
 // Retargeting request (event) sources. Context in ACTOR_ is the actor that triggered the event
 enum class retarget_source
 {
@@ -58,7 +57,8 @@ enum class retarget_source
   ACTOR_DEMISE,         // Any actor demises
   ACTOR_INVULNERABLE,   // Actor becomes invulnerable
   ACTOR_VULNERABLE,     // Actor becomes vulnerable (after becoming invulnerable)
-  SELF_ARISE            // Actor has arisen (no context provided)
+  SELF_ARISE,           // Actor has arisen (no context provided)
+  SELF_RETARGET         // Actor is choosing to retarget
 };
 
 // Misc Constants
