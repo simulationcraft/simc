@@ -95,6 +95,7 @@ void protection( player_t* p )
   default_->add_action( "hammer_of_wrath" );
   default_->add_action( "judgment,if=full_recharge_time<=gcd*2" );
   default_->add_action( "avengers_shield" );
+  default_->add_action( "consecration,if=!consecration.up" );
   default_->add_action( "hammer_of_the_righteous,if=buff.blessed_assurance.up" );
   default_->add_action( "blessed_hammer,if=buff.blessed_assurance.up" );
   default_->add_action( "judgment" );
