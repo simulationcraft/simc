@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.0.69214
-static constexpr std::array<spelltext_data_t, 29241> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -28124,6 +28124,7 @@ static constexpr std::array<spelltext_data_t, 29241> __ptr_spelltext_data { {
   { 1270203, "$@spelldesc1943", "Bleeding for $w1 Shadow damage every $t1 sec.", 0 },
   { 1270243, "$@spelldesc1943", 0, 0 },
   { 1270255, "Reduces the cooldown of Shadowfury by ${$s1/-1000} sec and increases its radius by $s2 yds.\r\n\r\nReduces the cooldown of Howl of Terror by ${$s3/-1000} sec and it now fears $s4 additional enemies.", 0, 0 },
+  { 1270277, "Wild Guardian is available to cast:\r\n$@spellicon1269658$@spellname1269658: \r\n$@spelldesc1269658", "Wild Guardian is available to cast.", 0 },
   { 1270292, "$@spelldesc204066", "Suffering $o1 damage over $d.", 0 },
   { 1270337, "Your spells and abilities have a chance to activate the Manacell, filling you with Volatile Power that grants $s1 of a random secondary stat for $1270343d.", 0, 0 },
   { 1270343, "$@spelldesc1270337", "Filled with Volatile Power, increasing your $?e0[Critical Strike by $w1]?e1[Haste by $w2]?e2[Mastery by $w3]?e3[Versatility by $w4][random secondary stat by $w5].", 0 },

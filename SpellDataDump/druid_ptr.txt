@@ -2096,7 +2096,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 690: Major Cooldowns
 Category Cooldown: 180 seconds
-Affecting Spells : Starfall (191034 effect#2), Legacy of the Sleeper (339062 effect#1)
+Affecting Spells : Starfall (191034 effect#2), Legacy of the Sleeper (339062 effect#1), Wild Guardian (1270277 effect#1)
 Family Flags     : 84
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (491)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
@@ -22605,6 +22605,27 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Target: Targeted Enemy (6)
 Description      : $@spelldesc1269619
 Tooltip          : Suffering $w1 Nature damage every $t1 sec.
+
+Name             : Wild Guardian (id=1270277) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 21: Druid Spells
+                 : 292
+Proc Chance      : 101%
+Attributes       : Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Log on Learn (355), Allow during spell override (404), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Effects          :
+#1 (id=1282218)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332)
+                   Base Value: 1269658 | Scaled Value: 1269658 | Target: Self (1)
+                   Affected Spells: Berserk (50334)
+                   Family Flags: 84
+Description      : Wild Guardian is available to cast:
+$@spellicon1269658$@spellname1269658: 
+$@spelldesc1269658
+Tooltip          : Wild Guardian is available to cast.
 
 Name             : Lunar Beam (id=1270292) [Spell Family (7)] 
 Class            : Druid
