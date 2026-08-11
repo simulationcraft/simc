@@ -119,7 +119,10 @@ void shadow( player_t* p )
   main->add_action( "shadow_word_pain,target_if=min:remains", "Use Shadow Word: Pain while moving as a low-priority action" );
 
   trinkets->add_action( "use_item,name=galactic_gladiators_badge_of_ferocity,if=(buff.voidform.up|buff.power_infusion.remains>=10|(talent.voidform&cooldown.voidform.remains>10))|fight_remains<20" );
-  trinkets->add_action( "use_item,name=hex_lords_dooming_idol,if=buff.power_infusion.up&buff.hex_lords_doom.stack>5|fight_remains<=30" );
+  if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+  {
+    trinkets->add_action( "use_item,name=hex_lords_dooming_idol,if=buff.power_infusion.up&buff.hex_lords_doom.stack>5|fight_remains<=30" );
+  }
   trinkets->add_action( "use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|equipped.neural_synapse_enhancer&buff.entropic_rift.up)|fight_remains<20" );
 }
 //shadow_apl_end
@@ -201,7 +204,10 @@ void shadow_ptr( player_t* p )
   main->add_action( "shadow_word_pain,target_if=min:remains", "Use Shadow Word: Pain while moving as a low-priority action" );
 
   trinkets->add_action( "use_item,name=galactic_gladiators_badge_of_ferocity,if=(buff.voidform.up|buff.power_infusion.remains>=10|(talent.voidform&cooldown.voidform.remains>10))|fight_remains<20" );
-  trinkets->add_action( "use_item,name=hex_lords_dooming_idol,if=buff.power_infusion.up&buff.hex_lords_doom.stack>5|fight_remains<=30" );
+  if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+  {
+    trinkets->add_action( "use_item,name=hex_lords_dooming_idol,if=buff.power_infusion.up&buff.hex_lords_doom.stack>5|fight_remains<=30" );
+  }
   trinkets->add_action( "use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|equipped.neural_synapse_enhancer&buff.entropic_rift.up)|fight_remains<20" );
 }
 //shadow_ptr_apl_end
