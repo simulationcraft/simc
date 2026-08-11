@@ -1,29 +1,60 @@
-# shaman="MID2_Shaman_Elemental_Stormbringer"
-# level=90
-# race=tauren
-# spec=elemental
-# role=spell
-# position=ranged_back
-# # Stormbringer
-# talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMzMzMLbbDMmZAAAAAbmZbzMzwmhFmtZmGamNAYWmZmxYbxEmZ2GLzMzMGWmlZsYmhZWAAGAzMzMGGG
-# head=,id=249979,bonus_id=13575/13575/13575/13575/12806/13335/13338/40/12676/1808,enchant_id=8017,gem_id=240967
-# neck=,id=250247,bonus_id=12806/13577/13668,gem_id=240918/240892
-# shoulder=,id=249977,bonus_id=13574/13574/13574/13574/12806/13335/13340/40/12675,enchant_id=7973
-# back=,id=249974,bonus_id=12806/13335/40
-# chest=,id=249982,bonus_id=13575/13575/13575/13575/12806/13335/13336/40/12676,enchant_id=7987
-# wrist=,id=249304,bonus_id=12806/13577/1808,gem_id=240908
-# hands=,id=249980,bonus_id=13574/13574/13574/13574/12806/13335/13337/40/12675
-# waist=,id=244611,bonus_id=8960/12214/8960/12214/8960/12214/8960/12214/12214/8960/12497/12066/12667/13622/13667/1808,gem_id=240898
-# legs=,id=251215,bonus_id=13440/6652/13577/12699/12806,enchant_id=7935
-# feet=,id=244610,bonus_id=8960/12214/8960/12214/8960/12214/8960/12214/12214/8960/12497/12066/13622/13667,enchant_id=8019
-# finger1=,id=193708,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240898
-# finger2=,id=249919,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240898
-# trinket1=,id=249343,bonus_id=40/13335/12806
-# trinket2=,id=250144,bonus_id=12806/13440/40
-# main_hand=,id=251083,bonus_id=12806/13577,enchant_id=7981
-# off_hand=,id=251105,bonus_id=12806/13577
+shaman="MID2_Shaman_Elemental_Farseer"
+level=90
+race=tauren
+spec=elemental
+role=spell
+position=ranged_back
+# Farseer
+talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbbzMmZmZZbZMMjBAAAAsYmNYADY2YCZWAgZbmZGjtFTYmxYxMzMmZWsMjFzMMzyAAGGAzMGGGA
+omnium_talents=136822:1/136819:1/136817:1/136815:1/136814:1
 
-# save=MID2_Shaman_Elemental.simc
+head=,id=271483,enchant_id=8017,gem_id=240967,bonus_id=13692/13698/13750/12854,redirected_base_stats=251220
+neck=,id=268265,gem_id=240918/240908,bonus_id=13708/13668/13848/13662
+shoulder=,id=271481,enchant_id=8001,bonus_id=13694/13697/13848,redirected_base_stats=268231
+back=,id=268253,bonus_id=13848/13662
+chest=,id=271486,enchant_id=7987,bonus_id=13690/13698/13708/13848,redirected_base_stats=271876
+wrist=,id=244584,gem_id=240900,bonus_id=12214/13836/13751/9627/8960/12384/13750,crafted_stats=36/49,crafting_quality=5
+hands=,id=271484,bonus_id=13691/13697/12854,redirected_base_stats=160213
+waist=,id=268254,gem_id=240892,bonus_id=12854/13662/13750
+legs=,id=271482,enchant_id=7935,bonus_id=13693/13698/13848,redirected_base_stats=268237
+feet=,id=244577,enchant_id=8019,bonus_id=12214/13836/13751/9627/8960/12384,crafted_stats=36/49,crafting_quality=5
+finger1=,id=268249,enchant_id=7967,gem_id=240892,bonus_id=13668/12854/13662
+finger2=,id=252258,enchant_id=7967,gem_id=240892,bonus_id=13668/12854/13662
+trinket1=,id=270164,bonus_id=12854/13662
+trinket2=,id=273796,bonus_id=12854/13662
+main_hand=,id=271092,enchant_id=7983,bonus_id=13848/13662
+off_hand=,id=268262,bonus_id=12854/13662
+
+save=MID2_Shaman_Elemental.simc
+
+shaman="MID2_Shaman_Elemental_Stormbringer"
+level=90
+race=tauren
+spec=elemental
+role=spell
+position=ranged_back
+# Stormbringer
+talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbbzMmZmZZbZgxMDAAAAAWMjhNYBmRDN2AgZbmZGjtFTYmxYxMzMmZWsMjFzMjZWAAGGYmBGGGA
+omnium_talents=136822:1/136819:1/136817:1/136815:1/136814:1
+
+head=,id=271483,enchant_id=8017,gem_id=240967,bonus_id=13692/13698/13750/12854,redirected_base_stats=251220
+neck=,id=268265,gem_id=240918/240908,bonus_id=13708/13668/13848/13662
+shoulder=,id=271481,enchant_id=8001,bonus_id=13694/13697/13848,redirected_base_stats=268231
+back=,id=268253,bonus_id=13848/13662
+chest=,id=271486,enchant_id=7987,bonus_id=13690/13698/13708/13848,redirected_base_stats=271876
+wrist=,id=244584,gem_id=240900,bonus_id=12214/13836/13751/9627/8960/12384/13750,crafted_stats=36/49,crafting_quality=5
+hands=,id=271484,bonus_id=13691/13697/12854,redirected_base_stats=160213
+waist=,id=268254,gem_id=240892,bonus_id=12854/13662/13750
+legs=,id=271482,enchant_id=7935,bonus_id=13693/13698/13848,redirected_base_stats=268237
+feet=,id=244577,enchant_id=8019,bonus_id=12214/13836/13751/9627/8960/12384,crafted_stats=36/49,crafting_quality=5
+finger1=,id=268249,enchant_id=7967,gem_id=240892,bonus_id=13668/12854/13662
+finger2=,id=252258,enchant_id=7967,gem_id=240892,bonus_id=13668/12854/13662
+trinket1=,id=270164,bonus_id=12854/13662
+trinket2=,id=273796,bonus_id=12854/13662
+main_hand=,id=271092,enchant_id=7983,bonus_id=13848/13662
+off_hand=,id=268262,bonus_id=12854/13662
+
+save=MID2_Shaman_Elemental_Stormbringer.simc
 
 shaman="MID2_Shaman_Enhancement_Totemic"
 level=90
