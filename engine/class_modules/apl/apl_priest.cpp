@@ -8,6 +8,8 @@
 
 #include "player/action_priority_list.hpp"
 #include "player/player.hpp"
+#include "dbc/dbc.hpp"
+#include "sim/sim.hpp"
 
 namespace priest_apl
 {
@@ -57,7 +59,10 @@ void shadow( player_t* p )
   precombat->add_action( "variable,name=max_vts,default=12,op=reset" );
   precombat->add_action( "variable,name=is_vt_possible,default=0,op=reset" );
   precombat->add_action( "arcane_torrent" );
-  precombat->add_action( "mind_blast,if=set_bonus.mid2_4pc", "Crushing Void from Tentacle Slam is reset on pull, open with Mind Blast instead." );
+  if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+  {
+    precombat->add_action( "mind_blast,if=set_bonus.mid2_4pc", "Crushing Void from Tentacle Slam is reset on pull, open with Mind Blast instead." );
+  }
   precombat->add_action( "tentacle_slam" );
 
   default_->add_action( "variable,name=holding_tentacle_slam,op=set,value=raid_event.adds.in<15" );
@@ -114,7 +119,10 @@ void shadow( player_t* p )
   main->add_action( "shadow_word_pain,target_if=min:remains", "Use Shadow Word: Pain while moving as a low-priority action" );
 
   trinkets->add_action( "use_item,name=galactic_gladiators_badge_of_ferocity,if=(buff.voidform.up|buff.power_infusion.remains>=10|(talent.voidform&cooldown.voidform.remains>10))|fight_remains<20" );
-  trinkets->add_action( "use_item,name=hex_lords_dooming_idol,if=buff.power_infusion.up&buff.hex_lords_doom.stack>5|fight_remains<=30" );
+  if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+  {
+    trinkets->add_action( "use_item,name=hex_lords_dooming_idol,if=buff.power_infusion.up&buff.hex_lords_doom.stack>5|fight_remains<=30" );
+  }
   trinkets->add_action( "use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|equipped.neural_synapse_enhancer&buff.entropic_rift.up)|fight_remains<20" );
 }
 //shadow_apl_end
@@ -196,7 +204,10 @@ void shadow_ptr( player_t* p )
   main->add_action( "shadow_word_pain,target_if=min:remains", "Use Shadow Word: Pain while moving as a low-priority action" );
 
   trinkets->add_action( "use_item,name=galactic_gladiators_badge_of_ferocity,if=(buff.voidform.up|buff.power_infusion.remains>=10|(talent.voidform&cooldown.voidform.remains>10))|fight_remains<20" );
-  trinkets->add_action( "use_item,name=hex_lords_dooming_idol,if=buff.power_infusion.up&buff.hex_lords_doom.stack>5|fight_remains<=30" );
+  if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+  {
+    trinkets->add_action( "use_item,name=hex_lords_dooming_idol,if=buff.power_infusion.up&buff.hex_lords_doom.stack>5|fight_remains<=30" );
+  }
   trinkets->add_action( "use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|equipped.neural_synapse_enhancer&buff.entropic_rift.up)|fight_remains<20" );
 }
 //shadow_ptr_apl_end

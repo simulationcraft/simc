@@ -1034,27 +1034,6 @@ struct void_volley_t final : public void_volley_base_t
     return set_bonus_effectiveness_for_cast;
   }
 
-  bool consumes_set_bonus_charge() const
-  {
-    const int set_bonus_charges = priest().buffs.void_volley_set_bonus->check();
-
-    if ( set_bonus_charges <= 0 )
-    {
-      return false;
-    }
-
-    const int total_void_volley_charges = priest().buffs.void_volley->check();
-
-    if ( set_bonus_charges == total_void_volley_charges )
-    {
-      return true;
-    }
-
-    const int crushing_void_volley_charges = priest().buffs.crushing_void->check();
-
-    return crushing_void_volley_charges == set_bonus_charges;
-  }
-
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double ea = void_volley_base_t::composite_energize_amount( s );
@@ -1069,8 +1048,8 @@ struct void_volley_t final : public void_volley_base_t
 
   void execute() override
   {
-    bool set_bonus_cast              = consumes_set_bonus_charge();
     set_bonus_effectiveness_for_cast = priest().buffs.void_volley_set_bonus_effectiveness->check();
+    bool set_bonus_cast              = set_bonus_effectiveness_for_cast;
 
     void_volley_base_t::execute();
     set_bonus_effectiveness_for_cast = false;
@@ -1854,17 +1833,15 @@ struct tentacle_slam_t final : public priest_spell_t
     {
       priest().procs.midnight_s2_4pc_void_volley->occur();
 
-      if ( priest().buffs.voidform->check() )
-      {
-        priest().buffs.void_volley->trigger();
-      }
-      else
-      {
-        priest().buffs.crushing_void->trigger();
-      }
+      buff_t* charge_buff = priest().buffs.voidform->check() ? priest().buffs.void_volley : priest().buffs.crushing_void;
+      int charges_before  = charge_buff->check();
+      charge_buff->trigger();
 
-      priest().buffs.void_volley_set_bonus->trigger();
-      priest().buffs.void_volley_set_bonus_effectiveness->trigger();
+      if ( charge_buff->check() > charges_before )
+      {
+        priest().buffs.void_volley_set_bonus->trigger();
+        priest().buffs.void_volley_set_bonus_effectiveness->trigger();
+      }
     }
   }
 
@@ -1982,6 +1959,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     int void_volley_charges = priest().buffs.void_volley->check();
+    int crushing_void_charges = priest().buffs.crushing_void->check();
     int tierset_procs_left  = priest().buffs.void_volley_set_bonus->check();
 
     if ( priest().buffs.shadowform_state->check() )
@@ -2002,11 +1980,21 @@ struct voidform_t final : public priest_buff_t<buff_t>
       priest().buffs.crushing_void->trigger();
     }
 
-    assert( tierset_procs_left <= void_volley_charges && "Should never exceed void volley charges" );
-    if ( void_volley_charges > 0 && tierset_procs_left > 0 )
+    const int total_void_volley_charges = void_volley_charges + crushing_void_charges;
+
+    if ( tierset_procs_left > total_void_volley_charges )
+    {
+      const int desynced_stacks = tierset_procs_left - total_void_volley_charges;
+      priest().buffs.void_volley_set_bonus->decrement( desynced_stacks );
+      priest().buffs.void_volley_set_bonus_effectiveness->decrement( desynced_stacks );
+      tierset_procs_left = total_void_volley_charges;
+    }
+
+    const int transferable_set_bonus_charges = std::min( tierset_procs_left, void_volley_charges );
+    if ( void_volley_charges > 0 && transferable_set_bonus_charges > 0 )
     {
       priest().buffs.void_volley->expire();
-      priest().buffs.crushing_void->trigger( tierset_procs_left );
+      priest().buffs.crushing_void->trigger( transferable_set_bonus_charges );
     }
 
     if ( priest().buffs.ancient_madness_extension->check() )
@@ -2278,12 +2266,16 @@ void priest_t::create_buffs_shadow()
                                                   ->set_max_stack( void_volley_max_stacks )
                                                   ->set_default_value( shadow_mid2_4pc_effectiveness );
 
+  const int ancient_madness_max_extension_stacks = dbc->wowv() >= wowv_t( 12, 1, 0 )
+                                                       ? std::max( 1, as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) )
+                                                       : 1;
+
   buffs.ancient_madness_extension = make_buff( this, "ancient_madness_extension", talents.shadow.ancient_madness )
                                         ->set_duration( timespan_t::zero() )
-                                        ->set_max_stack( as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) );
+                                        ->set_max_stack( ancient_madness_max_extension_stacks );
 
   buffs.ancient_madness_extension->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-      ->set_default_value( buffs.voidform->data().effectN( 12 ).percent() );
+      ->set_default_value( dbc->wowv() >= wowv_t( 12, 1, 0 ) ? buffs.voidform->data().effectN( 12 ).percent() : 0.0 );
 
   buffs.ancient_madness = make_buff( this, "ancient_madness", talents.shadow.ancient_madness_buff )
                               ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -2293,11 +2285,14 @@ void priest_t::create_buffs_shadow()
                               ->set_freeze_stacks( true )
                               ->set_period( talents.shadow.ancient_madness_buff->effectN( 2 ).period() );
 
-  const double ancient_madness_tick_count = as<double>( talents.shadow.ancient_madness_buff->duration() /
-                                                        talents.shadow.ancient_madness_buff->effectN( 2 ).period() );
+  const timespan_t ancient_madness_period = talents.shadow.ancient_madness_buff->effectN( 2 ).period();
+  const double ancient_madness_tick_count = ancient_madness_period > 0_ms
+                                                ? static_cast<double>( talents.shadow.ancient_madness_buff->duration() /
+                                                                       ancient_madness_period )
+                                                : 0.0;
 
   buffs.ancient_madness->set_tick_callback( [ ancient_madness_tick_count ]( buff_t* buff, int, timespan_t ) {
-    if ( buff->default_value <= 0.0 )
+    if ( buff->default_value <= 0.0 || ancient_madness_tick_count <= 0.0 )
     {
       return;
     }
@@ -2686,12 +2681,17 @@ void priest_t::trigger_ancient_madness( int stacks )
     return;
   }
 
+  if ( dbc->wowv() < wowv_t( 12, 1, 0 ) )
+  {
+    return;
+  }
+
   if ( stacks <= 0 )
   {
     return;
   }
 
-  const int max_stacks         = as<int>( buffs.voidform->data().effectN( 13 ).base_value() );
+  const int max_stacks         = std::max( 1, as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) );
   const int applied_stacks     = std::min( stacks, max_stacks );
   const double full_haste      = talents.shadow.ancient_madness_buff->effectN( 1 ).percent();
   const double per_stack_haste = full_haste / as<double>( max_stacks );
@@ -2711,6 +2711,11 @@ void priest_t::trigger_ancient_madness( int stacks )
 void priest_t::trigger_ancient_madness_extension()
 {
   if ( !talents.shadow.ancient_madness.enabled() || !buffs.voidform->up() )
+  {
+    return;
+  }
+
+  if ( dbc->wowv() < wowv_t( 12, 1, 0 ) )
   {
     return;
   }
