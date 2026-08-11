@@ -1,11 +1,12 @@
-rogue="MID1_Rogue_Subtlety"
+rogue="MID2_Rogue_Subtlety"
 source=default
 spec=subtlety
 level=90
-race=pandaren
+race=dwarf
 role=attack
 position=back
-talents=CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMjZwMzMzYMbDzYbbmZmZmZMYMz2AAAAwgxAGzmhBGYW0CtYDzAmZwMGA
+talents=CUQAAAAAAAAAAAAAAAAAAAAAAAgx2MAAAAAwsMGLTMbbjxMDDzMzMzw8AbzYGbbzMzMzMjBjZ2GAAAAGMmFzyADYBsMMhMLYGmZAmxA
+omnium_talents=136822:1/136816:1/136817:1/136818:1/136814:1
 
 # Default consumables
 potion=lights_potential_2
@@ -93,32 +94,32 @@ actions.race+=/fireblood,if=variable.racial_sync
 actions.race+=/ancestral_call,if=buff.shadow_blades.up
 actions.race+=/invoke_external_buff,name=power_infusion,if=variable.racial_sync
 
-head=masquerade_of_the_grim_jest,id=250006,bonus_id=12676/13338/13534/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983
-neck=eternal_voidsong_chain,id=249368,bonus_id=13534,ilevel=289,gem_id=240908
-shoulders=venom_casks_of_the_grim_jest,id=250004,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
-back=rigid_scale_greatcloak,id=258575,ilevel=289
-chest=fantastic_finery_of_the_grim_jest,id=250009,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,enchant_id=7987
-wrists=silvermoon_agents_deflectors,id=244576,bonus_id=1808/8960/12066/12214/12214/12384/13622/13667/9627,gem_id=240908,crafted_stats=32/49
-hands=sleight_of_hand_of_the_grim_jest,id=250007,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
-waist=snapvine_cinch,id=251082,bonus_id=13534,ilevel=289,gem_id=240908
-legs=power_stance_breeches,id=260373,bonus_id=12806/13577,enchant_id=8163,crafted_stats=32/49
-feet=balancing_boots_of_the_grim_jest,id=250008,ilevel=289
-finger1=occlusion_of_void,id=251217,bonus_id=13534,ilevel=289,gem_id=240908,enchant_id=7967
-finger2=omission_of_light,id=251093,bonus_id=13534,ilevel=289,gem_id=240908,enchant_id=7967
-trinket1=light_company_guidon,id=249344,ilevel=298
-trinket2=gaze_of_the_alnseer,id=249343,bonus_id=6652/12806/13335,ilevel=298
-main_hand=belorens_swift_talon,id=249284,ilevel=298,enchant_id=8039
-off_hand=farstriders_mercy,id=237837,bonus_id=8791/8960/12214/12214/12214/12214/12214/12214/12214/12214/12693,ilevel=294,enchant_id=8039
+head=chosen_bloodslayers_spirit_shroud,id=271510,bonus_id=13692/13698/13750/13847/13848,gem_id=240983,enchant_id=8017,redirected_base_stats=271875
+neck=aqirbane_reliquary,id=268265,bonus_id=13534/13668/13708,ilevel=344,gem_id=240900/240900
+shoulders=chosen_bloodslayers_voodoo_guards,id=271508,bonus_id=40/12854/13335/13694/13697,ilevel=334,enchant_id=8001
+back=adherents_silken_shroud,id=239656,bonus_id=8791/8960/12214/12384/13667/13751/13836/12497,ilevel=331
+chest=war_trial_vestments,id=251159,ilevel=334,enchant_id=7987
+wrists=chosen_bloodslayers_wristguards,id=271506,bonus_id=13534,ilevel=334,gem_id=240900
+hands=chosen_bloodslayers_fanged_grips,id=271511,bonus_id=40/12854/13335/13691/13697,ilevel=334
+waist=sash_of_the_forlorn_vessel,id=268256,bonus_id=13534,ilevel=344,gem_id=240900
+legs=chosen_bloodslayers_reinforced_pants,id=271509,bonus_id=13693/13698/13848,enchant_id=8159,redirected_base_stats=268225
+feet=goldfeather_boots,id=159304,ilevel=334,enchant_id=7963
+finger1=lightwardens_bind,id=251194,bonus_id=13534/13668,ilevel=334,gem_id=240900,enchant_id=7967
+finger2=sickening_signet_of_atroxus,id=252258,bonus_id=13534/13668,ilevel=334,gem_id=240900,enchant_id=7967
+trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=40/13335/13848,ilevel=344
+trinket2=zuljins_guillotine_technique,id=270173,bonus_id=40/13335/13848,ilevel=344
+main_hand=zathatek_breath_of_corruption,id=271093,bonus_id=40/13335/13848,ilevel=344,enchant_id=8011
+off_hand=farstriders_mercy,id=237837,bonus_id=8793/8960/12214/13667/13751/13771/13836/12497,ilevel=331,enchant_id=8011
 
 # Gear Summary
-# gear_ilvl=290.75
-# gear_agility=1264
-# gear_stamina=22963
-# gear_crit_rating=986
-# gear_haste_rating=630
-# gear_mastery_rating=875
-# gear_versatility_rating=57
-# gear_armor=875
-# set_bonus=voidlight_bindings_2pc=1
-# set_bonus=midnight_season_1_2pc=1
-# set_bonus=midnight_season_1_4pc=1
+# gear_ilvl=338.00
+# gear_agility=1905
+# gear_stamina=40378
+# gear_crit_rating=869
+# gear_haste_rating=918
+# gear_mastery_rating=1134
+# gear_versatility_rating=325
+# gear_avoidance_rating=476
+# gear_armor=1198
+# set_bonus=midnight_season_2_2pc=1
+# set_bonus=midnight_season_2_4pc=1
