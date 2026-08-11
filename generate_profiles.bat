@@ -12,7 +12,8 @@ echo Running PR_Generate.simc in %cd%
 "%~dp0simc.exe" PR_Generate.simc
 cd ..\
 :: MIDX profiles generation
-for %%g in (MID1, MID2) do (
+:: MID1 removed as talent hashes have changed
+for %%g in ( MID2 ) do (
   cd %%g
   echo Running %%g_Generate.simc in %cd%
   "%~dp0simc.exe" %%g_Generate.simc

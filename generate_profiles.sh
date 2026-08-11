@@ -18,7 +18,8 @@ else
   echo 'Skipped PreRaids, directory not found.'
 fi
 # MIDX profiles generation
-for season in MID1 MID2
+# MID1 removed as talent hashes have changed
+for season in MID2
 do
   PROFDIR="$season"
   echo "---$PROFDIR---"
