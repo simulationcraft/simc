@@ -626,11 +626,11 @@ struct druid_t final : public parse_player_effects_t
     action_t* lunar_wrath;
     action_t* lunar_wrath_heal;
     action_t* memory_of_ysera_heal;
-    action_t* rampant_thorn; // mid2 4pc
-    action_t* spirits_wrath; // wild guardian 1 damage
+    action_t* rampant_thorn;  // mid2 4pc
+    action_t* spirits_wrath;  // wild guardian 1 damage
     action_t* sundering_roar_thrash;
     action_t* thrash_flashing;
-    action_t* vicious_brambles; // wild guardian 2 damage
+    action_t* vicious_brambles;  // wild guardian 2 damage
     action_t* waking_nightmare;  // placeholder
     action_t* waking_nightmare_pulse;
 
@@ -788,10 +788,11 @@ struct druid_t final : public parse_player_effects_t
     buff_t* lunar_wrath;
     buff_t* natural_resilience;
     buff_t* persistence;
+    buff_t* rampant_thorn;  // mid2 4pc hidden ticker
     buff_t* sundering_roar;
     buff_t* ursocs_fury;
     buff_t* waking_nightmare;  // proxy buff to track stack uptime
-    buff_t* wild_guardian; // wild guardian 3
+    buff_t* wild_guardian;  // wild guardian 3
 
     // Restoration
     buff_t* abundance;
@@ -5132,10 +5133,7 @@ public:
     BASE::execute();
 
     if ( p_->active.spirits_wrath && p_->buff.answered_calling_summon->check() )
-    {
-      auto _tar = p_->rng().range( p_->active.spirits_wrath->target_list() );
-      p_->active.spirits_wrath->execute_on_target( _tar );
-    }
+      p_->active.spirits_wrath->execute();
   }
 };
 
@@ -5826,72 +5824,32 @@ struct maul_t final : public maul_ravage_base_t<maul_base_t>
 
 struct rampant_thorn_t final : public bear_attack_t
 {
-  enum damage_e
-  {
-    SINGLETARGET,
-    AOE
-  };
-
-  template <damage_e TYPE>
-  struct damage_t final : public bear_attack_t
-  {
-    damage_t( druid_t* p, const spell_data_t* sd ) :
-      bear_attack_t( TYPE == SINGLETARGET ? "rampant_thorn_singletarget" : TYPE == AOE ? "rampant_thorn_aoe" : "default", p, sd )
-    {
-      size_t index = 0;
-      switch ( TYPE )
-      {
-      case SINGLETARGET:
-        aoe = 1;
-        index = 1;
-        break;
-      case AOE:
-        // tooltip interpolates $i which is max_targets(), but the value is not set
-        aoe = p->sets->set( DRUID_GUARDIAN, MID2, B4 )->effectN( 4 ).base_value();
-        index = 2;
-        break;
-      default:
-        assert( false );
-      }
-
-      spell_power_mod.direct = data().effectN( index ).ap_coeff();
-    }
-
-    std::vector<player_t *> &target_list() const override
-    {
-      auto &tl = bear_attack_t::target_list();
-
-      if ( TYPE == AOE )
-        range::erase_remove( tl, [ this ]( const auto &t ) { return t == target; } );
-
-      return tl;
-    }
-  };
-
-  action_t* singletarget;
-  action_t* aoe;
+  double aoe_coeff;
 
   rampant_thorn_t( druid_t* p )
-    : bear_attack_t( "rampant_thorn", p, spell_data_t::nil() ),
-      singletarget( nullptr ),
-      aoe( nullptr )
+    : bear_attack_t( "rampant_thorn", p, p->find_spell( 1301157 ) )
   {
-    dual = background = proc = true;
+    // the aoe effect is parsed last and overwrites the st effect, so we need to cache the aoe coeff and re-parse the
+    // st effect
+    aoe_coeff = attack_power_mod.direct;
+    parse_effect_direct_mods( data().effectN( 1 ), false );
 
-    const spell_data_t* spell = p->find_spell( 1301157 );
-    singletarget = new damage_t<SINGLETARGET>( p, spell );
-    aoe = new damage_t<AOE>( p, spell );
-
-    add_child( singletarget );
-    add_child( aoe );
+    aoe = as<int>( p->sets->set( DRUID_GUARDIAN, MID2, B4 )->effectN( 4 ).base_value() ) + 1;
   }
 
-  void execute() override
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
-    base_t::execute();
+    return s->chain_target == 0 ? bear_attack_t::attack_direct_power_coefficient( s ) : aoe_coeff;
+  }
 
-    singletarget->execute_on_target( target );
-    aoe->execute_on_target( target );
+  std::vector<player_t*>& target_list() const override
+  {
+    // hits a random target and 5 random targets around it, so we shuffle the target list every time
+    auto& tl = bear_attack_t::target_list();
+
+    rng().shuffle( tl.begin(), tl.end() );
+
+    return tl;
   }
 };
 
@@ -6009,16 +5967,16 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
     base_t::execute();
 
     p()->buff.gorestained_claws->trigger( this );
+
     if ( p()->sets->has_set_bonus( DRUID_GUARDIAN, MID2, B4 ) )
     {
+      p()->buff.rampant_thorn->trigger();
+
       if ( p()->mid2_4pc_extension < mid2_4pc_max && p()->buff.b_inc_bear->check() )
       {
         p()->mid2_4pc_extension += mid2_4pc_add;
         p()->buff.b_inc_bear->extend_duration( mid2_4pc_add );
       }
-
-      for ( size_t i = 1; i < 4; i++ )
-        make_event( *sim, i * 250_ms, [ this ]() { p()->active.rampant_thorn->execute_on_target( target ); } );
     }
 
     if ( rng().roll( fc_pct ) )
@@ -6063,6 +6021,14 @@ struct spirits_wrath_t final : public bear_attack_t
       // TODO: check if this can trigger generic helpful procs
       parse_effect_data( find_effect( p->find_spell( 1308125 ), E_ENERGIZE ) );
     }
+  }
+
+  void execute() override
+  {
+    // hits random target
+    set_target( rng().range( target_list() ) );
+
+    bear_attack_t::execute();
   }
 };
 } // end namespace bear_attacks
@@ -11430,9 +11396,9 @@ void druid_t::create_buffs()
   buff.gore = make_fallback( talent.gore.ok(), this, "gore", find_spell( 93622 ) )
     ->set_trigger_spell( talent.gore );
 
-  buff.gorestained_claws = make_fallback( sets->has_set_bonus( DRUID_GUARDIAN, MID2, B2 ), this, "gorestained_claws", find_trigger( sets->set( DRUID_GUARDIAN, MID2, B2 ) ).trigger() )
-    ->set_chance( sets->set( DRUID_GUARDIAN, MID2, B2 )->effectN( 1 ).percent() )
-    ->set_trigger_spell( sets->set( DRUID_GUARDIAN, MID2, B2 ) );
+  buff.gorestained_claws = make_fallback( sets->has_set_bonus( DRUID_GUARDIAN, MID2, B2 ),
+    this, "gorestained_claws", find_trigger( sets->set( DRUID_GUARDIAN, MID2, B2 ) ).trigger() )
+      ->set_chance( sets->set( DRUID_GUARDIAN, MID2, B2 )->effectN( 1 ).percent() );
 
   buff.gory_fur_ironfur = make_fallback( talent.gory_fur.ok(), this, "gory_fur_ironfur", find_spell( 201671 ) )
     ->set_name_reporting( "Ironfur" )
@@ -11462,6 +11428,13 @@ void druid_t::create_buffs()
 
   buff.persistence = make_fallback( talent.persistence.ok(), this, "persistence", find_spell( 1251407 ) )
     ->set_reverse( true );
+
+  buff.rampant_thorn =
+    make_fallback( sets->has_set_bonus( DRUID_GUARDIAN, MID2, B4 ), this, "rampant_thorn", find_spell( 1310213 ) )
+      ->set_refresh_behavior( buff_refresh_behavior::EXTEND )
+      ->set_tick_callback( [ this ]( auto, auto, auto ) {
+        active.rampant_thorn->execute();
+      } );
 
   buff.sundering_roar = make_fallback( talent.sundering_roar.ok(), this, "sundering_roar", talent.sundering_roar )
     ->set_cooldown( 0_ms )
@@ -11909,9 +11882,7 @@ void druid_t::create_actions()
   }
 
   if ( sets->has_set_bonus( DRUID_GUARDIAN, MID2, B4 ) )
-  {
     active.rampant_thorn = get_secondary_action<rampant_thorn_t>( "rampant_thorn", this );
-  }
 
   if ( talent.waking_nightmare.ok() )
   {
