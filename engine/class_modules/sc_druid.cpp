@@ -356,6 +356,8 @@ struct druid_action_state_t : public Base, public Data
 template <typename V>
 static const spell_data_t* resolve_spell_data( V data )
 {
+  if ( !data )
+    return spell_data_t::nil();
   if constexpr( std::is_invocable_v<decltype( &spell_data_t::ok ), V> )
     return data;
   else if constexpr( std::is_invocable_v<decltype( &buff_t::data ), V> )
@@ -601,7 +603,6 @@ struct druid_t final : public parse_player_effects_t
     action_t* shooting_stars_sunfire;
     action_t* shooting_stars_mid1;  // mid1 4pc, exploding shooting star
     action_t* solar_bolt;
-    action_t* starfall_mid2;  // mid2 2pc, instant starfall damage
     action_t* sundered_firmament;
     action_t* fungal_growth;  // consolidated dot
     action_t* sunseeker_mushroom;
@@ -5075,10 +5076,10 @@ public:
 
   void consume_rage_wild_guardian( double )
   {
-    if ( wg_pct && ( p()->buff.dream_conduit->check() || p()->rng().roll( wg_pct ) ) )
+    if ( wg_pct && ( p_->buff.dream_conduit->check() || p_->rng().roll( wg_pct ) ) )
     {
       // technically can have 2 stacks
-      p()->buff.dream_conduit->decrement();
+      p_->buff.dream_conduit->decrement();
 
       // trigger wild guardian 1, if possible
       if ( p_->buff.answered_calling_summon->trigger( this ) )
@@ -8211,18 +8212,6 @@ struct stampeding_roar_t final : public druid_spell_t
   }
 };
 
-// Instant Starfall MID2 ==========================================================
-struct starfall_mid2_t final : public druid_spell_t
-{
-  starfall_mid2_t( druid_t* p ) : druid_spell_t( "starfall_instant", p, p->find_spell( 1301742 ) )
-  {
-    background = proc = true;
-    aoe = p->find_spell( 1301747 )->max_targets();
-
-    name_str_reporting = "Instant";
-  }
-};
-
 // Starfall Spell ===========================================================
 struct starfall_t final : public ap_spender_t
 {
@@ -8338,7 +8327,43 @@ struct starfall_t final : public ap_spender_t
     }
   };
 
+  struct starfall_mid2_damage_t final : public druid_spell_t
+  {
+    starfall_mid2_damage_t( druid_t* p, std::string_view n, flag_e f )
+      : druid_spell_t( n, p, p->find_spell( 1301742 ), f )
+    {
+      background = proc = dual = true;
+    }
+  };
+
+  // TODO: consolidate with starfall_driver_t into generic driver base class
+  struct starfall_mid2_driver_t final : public druid_spell_t
+  {
+    starfall_mid2_driver_t( druid_t* p, std::string_view n, flag_e f ) : druid_spell_t( n, p, p->find_spell( 1301747 ), f )
+    {
+      background = proc = true;
+
+      name_str_reporting = "Instant";
+
+      auto pre = name_str.substr( 0, name_str.find_last_of( '_' ) );
+      impact_action = p->get_secondary_action<starfall_mid2_damage_t>( pre + "_damage", f );
+
+    }
+
+    std::vector<player_t*>& target_list() const override
+    {
+      auto& tl = druid_spell_t::target_list();
+
+      // randomize every execute
+      rng().shuffle( tl.begin(), tl.end() );
+
+      return tl;
+    }
+  };
+
+
   starfall_driver_t* driver;
+  starfall_mid2_driver_t* mid2_driver;
   buff_t* buff;
   timespan_t dot_ext = 0_ms;
   timespan_t max_ext = 0_ms;
@@ -8362,6 +8387,14 @@ struct starfall_t final : public ap_spender_t
       replace_stats( this, driver->damage );
       if ( driver->meteorites )
         add_child( driver->meteorites );
+
+      if ( p->sets->has_set_bonus( DRUID_BALANCE, MID2, B2 ) )
+      {
+        mid2_driver = p->get_secondary_action<starfall_mid2_driver_t>( name_str + "_mid2_driver", f );
+        assert( mid2_driver->impact_action );
+        replace_stats( mid2_driver, mid2_driver->impact_action );
+        add_child( mid2_driver );
+      }
     }
 
     weaver_buff = p->buff.starweaver_starfall;
@@ -8380,8 +8413,7 @@ struct starfall_t final : public ap_spender_t
     buff->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { driver->execute(); } );
     buff->trigger();
 
-    if ( p()->active.starfall_mid2 )
-      p()->active.starfall_mid2->execute_on_target( target );
+    mid2_driver->execute();
 
     // technically triggered by buff application, do it in action so we can easily grab the driver targets
     if ( rng().roll( mid1_4pc_chance ) )
@@ -11765,9 +11797,6 @@ void druid_t::create_actions()
   if ( sets->has_set_bonus( DRUID_BALANCE, MID1, B4 ) )
     active.shooting_stars_mid1 = get_secondary_action<shooting_stars_mid1_t>( "shooting_stars_exploding" );
 
-  if ( sets->has_set_bonus( DRUID_BALANCE, MID2, B2 ) )
-    active.starfall_mid2 = get_secondary_action<starfall_mid2_t>( "starfall_instant" );
-
   // Feral
   if ( talent.unseen_predator_1.ok() )
   {
@@ -11971,7 +12000,6 @@ void druid_t::create_actions()
 
   find_parent( active.bursting_growth, "bloodseeker_vines" );
   find_parent( active.shooting_stars_mid1, "shooting_stars" );
-  find_parent( active.starfall_mid2, "starfall" );
   find_parent( active.sundering_roar_thrash, "sundering_roar" );
   find_parent( active.the_light_of_elune, "moonfire" );
   find_parent( active.thrash_flashing, "thrash" );
