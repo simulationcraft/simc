@@ -6877,8 +6877,6 @@ private:
   proc_t* fake_umbral = nullptr;
 
 protected:
-  double cascade_chance;
-
   using base_t = ap_generator_t;
   using state_t = druid_action_state_t<ap_generator_data_t>;
   double touch_pct = 0.0;
@@ -6888,8 +6886,7 @@ public:
 
   ap_generator_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
     : druid_spell_t( n, p, s, f ),
-      orig_stats( stats ),
-      cascade_chance( p->specialization() == DRUID_BALANCE ? p->talent.star_cascade->effectN( 1 ).percent() : 0.0 )
+      orig_stats( stats )
   {
     // damage bonus is applied at end of cast, but cast speed bonuses apply before
     parse_effects( p->buff.dreamstate, effect_mask_t( false ).enable( 3 ) );
@@ -7017,15 +7014,6 @@ public:
 
     if ( cast_state( s )->dream_burst )
       p()->active.dream_burst->execute_on_target( s->target );
-
-    // has an icd to prevent multiple procs, but we can just check only on the main target instead
-    if ( !proc && s->chain_target == 0 && rng().roll( cascade_chance ) )
-    {
-      if ( time_to_execute > 0_ms )
-        p()->spell_queued.star_cascade = target;
-      else
-        p()->active.star_cascade->execute_on_target( target );
-    }
   }
 
   void record_data( action_state_t* s ) override
@@ -8416,7 +8404,10 @@ struct starfall_t final : public ap_spender_t
 // Starfire =============================================================
 struct starfire_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
 {
-  DRUID_ABILITY( starfire_t, base_t, "starfire", p->talent.starfire )
+  double cascade_chance;
+
+  DRUID_ABILITY( starfire_t, base_t, "starfire", p->talent.starfire ),
+    cascade_chance( p->specialization() == DRUID_BALANCE ? p->talent.star_cascade->effectN( 1 ).percent() : 0.0 )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( p->specialization() == DRUID_BALANCE ? 5 : 3 ).base_value();
@@ -8493,6 +8484,20 @@ struct starfire_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
         p()->buff.owlkin_frenzy->expire();
 
     p()->buff.lunar_eclipse_override->trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+
+    // has an icd to prevent multiple procs, but we can just check only on the main target instead
+    if ( !proc && s->chain_target == 0 && rng().roll( cascade_chance ) )
+    {
+      if ( time_to_execute > 0_ms )
+        p()->spell_queued.star_cascade = target;
+      else
+        p()->active.star_cascade->execute_on_target( target );
+    }
   }
 };
 
@@ -8947,10 +8952,6 @@ struct wrath_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
 
   DRUID_ABILITY( wrath_t, base_t, "wrath", p->spec.wrath )
   {
-    // do not proc from wrath in ptr
-    if ( p->is_ptr() )
-      cascade_chance = 0.0;
-
     auto m_data = p->get_modified_spell( &data() );
     set_energize( m_data );
 
