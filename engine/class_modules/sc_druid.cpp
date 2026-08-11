@@ -535,7 +535,7 @@ struct druid_t final : public parse_player_effects_t
   player_t* stellar_amplification_target;
   moon_stage_e moon_stage;
   // Feral
-  int cp_spent_in_berserk = 0;  // mid2 2pc
+  timespan_t halazzis_fury_duration;  // mid2 2pc
   // Guardian
   timespan_t rampant_thorn_berserk_extension;  // mid2 4pc
 
@@ -3761,6 +3761,8 @@ struct cp_spender_t : public trigger_aggravate_wounds_t<DRUID_FERAL, cat_attack_
 {
 private:
   gain_t* sotf_gain = nullptr;
+  cooldown_t* halazzis_fury_icd = nullptr;
+  timespan_t halazzis_fury_add = 0_ms;
   double sotf_energy;
 
 public:
@@ -3769,6 +3771,15 @@ public:
   {
     if ( p->talent.soul_of_the_forest_cat.ok() )
       sotf_gain = p->get_gain( "Soul of the Forest" );
+
+    if ( auto mid2_2pc = p->sets->set( DRUID_FERAL, MID2, B2 ); mid2_2pc->ok() )
+    {
+      halazzis_fury_icd = p->get_cooldown( "halazzis_fury_icd" );
+      halazzis_fury_icd->duration = mid2_2pc->internal_cooldown();
+
+      auto idx = p->talent.incarnation_cat.ok() && p->talent.ashamanes_guidance.ok() ? 2 : 1;
+      halazzis_fury_add = mid2_2pc->effectN( idx ).time_value();
+    }
   }
 
   // used during state snapshot
@@ -3808,10 +3819,6 @@ public:
   {
     base_t::consume_resource();
 
-    // all finishers count their effective combo points, including free finishers (apex, convoke) at max
-    if ( hit_any_target && p()->buff.b_inc_cat->check() )
-      p()->cp_spent_in_berserk += _combo_points();
-
     if ( background || !hit_any_target )
       return;
 
@@ -3820,6 +3827,10 @@ public:
 
     if ( sotf_gain )
       p()->resource_gain( RESOURCE_ENERGY, cp * sotf_energy, sotf_gain );
+
+    // all finishers count their effective combo points, including free finishers (apex, convoke) at max
+    if ( halazzis_fury_add > 0_ms && halazzis_fury_icd->up() )
+      p()->halazzis_fury_duration += halazzis_fury_add * cp;
 
     trigger_with_chance_per_cp( p()->buff.frantic_momentum, cp );
     trigger_with_chance_per_cp( p()->buff.predatory_swiftness, cp );
@@ -11168,9 +11179,6 @@ void druid_t::create_buffs()
       }
     } );
 
-  buff.hunger_for_battle =
-    make_fallback( talent.hunger_for_battle.ok(), this, "hunger_for_battle", find_spell( 1244553 ) );
-
   buff.incarnation_cat =
     make_fallback( talent.incarnation_cat.ok(), this, "incarnation_avatar_of_ashamane", talent.incarnation_cat )
       ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST_1 )
@@ -11193,19 +11201,11 @@ void druid_t::create_buffs()
       ( buff_t*, int, timespan_t ) {
         resource_gain( RESOURCE_COMBO_POINT, cp, gain );
       } );
-
   if ( sets->has_set_bonus( DRUID_FERAL, MID2, B2 ) )
   {
-    auto b2 = sets->set( DRUID_FERAL, MID2, B2 );
-    auto per_cp = timespan_t::from_millis( talent.incarnation_cat.ok() && talent.ashamanes_guidance.ok()
-                                             ? b2->effectN( 2 ).base_value()
-                                             : b2->effectN( 1 ).base_value() );
-
-    buff.b_inc_cat->add_stack_change_callback( [ this, per_cp ]( buff_t*, int, int new_ ) {
-      if ( new_ )
-        cp_spent_in_berserk = 0;
-      else if ( cp_spent_in_berserk > 0 )
-        buff.halazzis_fury->trigger( cp_spent_in_berserk * per_cp );
+    buff.b_inc_cat->set_expire_callback( [ this ]( auto, auto, auto ) {
+      buff.halazzis_fury->trigger( halazzis_fury_duration );
+      halazzis_fury_duration = 0_ms;
     } );
   }
 
@@ -11230,6 +11230,9 @@ void druid_t::create_buffs()
 
   buff.halazzis_fury =
     make_fallback( sets->has_set_bonus( DRUID_FERAL, MID2, B2 ), this, "halazzis_fury", find_spell( 1301600 ) );
+
+  buff.hunger_for_battle =
+    make_fallback( talent.hunger_for_battle.ok(), this, "hunger_for_battle", find_spell( 1244553 ) );
 
   buff.incarnation_cat_prowl = make_fallback( talent.incarnation_cat.ok(),
     this, "incarnation_avatar_of_ashamane_prowl", find_effect( talent.incarnation_cat, E_TRIGGER_SPELL ).trigger() )
@@ -11324,9 +11327,12 @@ void druid_t::create_buffs()
         } );
 
   buff.b_inc_bear = talent.incarnation_bear.ok() ? buff.incarnation_bear : buff.berserk_bear;
-  buff.b_inc_bear->set_expire_callback( [ this ]( auto, auto, auto ) {
-    rampant_thorn_berserk_extension = 0_ms;
-  } );
+  if ( sets->has_set_bonus( DRUID_GUARDIAN, MID2, B4 ) )
+  {
+    buff.b_inc_bear->set_expire_callback( [ this ]( auto, auto, auto ) {
+      rampant_thorn_berserk_extension = 0_ms;
+    } );
+  }
 
   buff.blood_frenzy =
     make_fallback( talent.blood_frenzy.ok(), this, "blood_frenzy_buff", talent.blood_frenzy )
@@ -13047,7 +13053,7 @@ void druid_t::reset()
   astral_power_decay = nullptr;
   stellar_amplification_target = nullptr;
   moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
-  cp_spent_in_berserk = 0;
+  halazzis_fury_duration = 0_ms;
   rampant_thorn_berserk_extension = 0_ms;
   dot_lists.moonfire.clear();
   dot_lists.sunfire.clear();
@@ -13532,7 +13538,11 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name )
   }
   else if ( specialization() == DRUID_FERAL )
   {
-    if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "moonfire_cat" ) )
+    if ( util::str_compare_ci( name, "halazzis_fury_duration" ) )
+    {
+      return make_fn_expr( name, [ this ] { return halazzis_fury_duration.total_seconds(); } );
+    }
+    else if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "moonfire_cat" ) )
     {
       splits[ 1 ] = "lunar_inspiration";
       return druid_t::create_expression( util::string_join( splits, "." ) );
