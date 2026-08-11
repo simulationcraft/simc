@@ -119,9 +119,7 @@ void assassination( player_t* p )
   misc_cds->add_action( "fireblood,use_off_gcd=1,if=debuff.deathmark.up" );
   misc_cds->add_action( "ancestral_call,use_off_gcd=1,if=debuff.deathmark.up" );
 
-  spend->add_action( "cancel_buff,name=envenom,if=buff.implacable_tracker.stack>4&(!talent.rapid_injection|spell_targets.fan_of_knives>=5)", "Spend List   Cancelaura Envenom in situations where we can make use of the energy but don't have time to AFK" );
-  spend->add_action( "cancel_buff,name=envenom,if=buff.implacable_tracker.stack>3&talent.rapid_injection&debuff.deathstalkers_mark.stack=1", "Special edgecase Cancelaura for Darkest Night handling" );
-  spend->add_action( "envenom,if=buff.implacable_tracker.stack<4", "Spend with envenom as per normal" );
+  spend->add_action( "envenom", "Spend List   Spend with envenom as per normal" );
   spend->add_action( "envenom,if=energy.pct>70|fight_remains<15", "Envenom if we are going to overcap on energy" );
 
   vanish->add_action( "vanish,if=variable.single_target&talent.improved_garrote&dot.garrote.pmultiplier<=1&(dot.deathmark.ticking|cooldown.deathmark.remains>target.time_to_die-10)&!raid_event.adds.in<=30", "Vanish list Single Target vanish check to line up improved garrote with Deathmark, making sure there are no adds soon. TODO Check after ImpGar fixes" );
