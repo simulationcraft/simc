@@ -11105,11 +11105,9 @@ void druid_t::create_buffs()
         } );
   }
 
-  buff.orbit_breaker = make_fallback( talent.orbit_breaker.ok(), this, "orbit_breaker" )
-    ->set_quiet( true )
+  buff.orbit_breaker = make_fallback( talent.orbit_breaker.ok(), this, "orbit_breaker", find_spell( 1303480 ) )
     ->set_proc_callbacks( false )
-    ->set_cooldown( talent.orbit_breaker->internal_cooldown() )
-    ->set_max_stack( std::max( 1, as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) ) );
+    ->set_trigger_spell( talent.orbit_breaker );
 
   buff.owlkin_frenzy = make_fallback( specialization() == DRUID_BALANCE && talent.moonkin_form.ok(),
     this, "owlkin_frenzy", find_spell( 157228 ) );
