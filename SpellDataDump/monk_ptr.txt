@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69214 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69273 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -13185,7 +13185,6 @@ Effects          :
 Description      : $@spelldesc431406
 
 Name             : Dance of the Wind (id=432180) [Spell Family (53)] 
-Hotfixed         : Max stacks (9 -> 4)
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13207,7 +13206,6 @@ Description      : $@spelldesc432181
 Tooltip          : Your physical damage taken is reduced by $w1% until you receive a physical attack.
 
 Name             : Dance of the Wind (id=432181) [Spell Family (53), Passive] 
-Hotfixed         : Description
 Talent Entry     : Windwalker [tree=class, row=7, col=6, max_rank=1, req_points=8]
                  : Mistweaver [tree=class, row=7, col=6, max_rank=1, req_points=8]
 Class            : Monk
