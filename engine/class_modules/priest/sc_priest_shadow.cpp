@@ -2266,12 +2266,16 @@ void priest_t::create_buffs_shadow()
                                                   ->set_max_stack( void_volley_max_stacks )
                                                   ->set_default_value( shadow_mid2_4pc_effectiveness );
 
+  const int ancient_madness_max_extension_stacks = dbc->wowv() >= wowv_t( 12, 1, 0 )
+                                                       ? std::max( 1, as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) )
+                                                       : 1;
+
   buffs.ancient_madness_extension = make_buff( this, "ancient_madness_extension", talents.shadow.ancient_madness )
                                         ->set_duration( timespan_t::zero() )
-                                        ->set_max_stack( as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) );
+                                        ->set_max_stack( ancient_madness_max_extension_stacks );
 
   buffs.ancient_madness_extension->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-      ->set_default_value( buffs.voidform->data().effectN( 12 ).percent() );
+      ->set_default_value( dbc->wowv() >= wowv_t( 12, 1, 0 ) ? buffs.voidform->data().effectN( 12 ).percent() : 0.0 );
 
   buffs.ancient_madness = make_buff( this, "ancient_madness", talents.shadow.ancient_madness_buff )
                               ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -2674,12 +2678,17 @@ void priest_t::trigger_ancient_madness( int stacks )
     return;
   }
 
+  if ( dbc->wowv() < wowv_t( 12, 1, 0 ) )
+  {
+    return;
+  }
+
   if ( stacks <= 0 )
   {
     return;
   }
 
-  const int max_stacks         = as<int>( buffs.voidform->data().effectN( 13 ).base_value() );
+  const int max_stacks         = std::max( 1, as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) );
   const int applied_stacks     = std::min( stacks, max_stacks );
   const double full_haste      = talents.shadow.ancient_madness_buff->effectN( 1 ).percent();
   const double per_stack_haste = full_haste / as<double>( max_stacks );
@@ -2699,6 +2708,11 @@ void priest_t::trigger_ancient_madness( int stacks )
 void priest_t::trigger_ancient_madness_extension()
 {
   if ( !talents.shadow.ancient_madness.enabled() || !buffs.voidform->up() )
+  {
+    return;
+  }
+
+  if ( dbc->wowv() < wowv_t( 12, 1, 0 ) )
   {
     return;
   }
