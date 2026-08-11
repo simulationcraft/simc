@@ -13231,7 +13231,7 @@ std::string shaman_t::generate_bloodlust_options()
 
 std::string shaman_t::default_potion() const
 {
-  std::string enhancement_potion = ( true_level >= 81 ) ? "lights_potential_2" :
+  std::string enhancement_potion = ( true_level >= 81 ) ? "potion_of_recklessness_2" :
                                    ( true_level >= 71 ) ? "tempered_potion_3" :
                                    ( true_level >= 61 ) ? "elemental_potion_of_ultimate_power_3" :
                                    ( true_level >= 51 ) ? "potion_of_spectral_agility" :
@@ -13383,6 +13383,7 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action( "variable,name=trinket2_is_weird,value=trinket.2.is.algethar_puzzle_box|trinket.2.is.unyielding_netherprism" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
+  precombat->add_action( "potion" );
 
   // Dynamic variables
   def->add_action( "variable,name=target_nature_mod,value=(1+debuff.chaos_brand.up*debuff.chaos_brand.value)*(1+(debuff.hunters_mark.up*target.health.pct>=80)*debuff.hunters_mark.value)" );
@@ -13417,7 +13418,7 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action( "windstrike,if=talent.thorims_invocation.enabled&talent.splitstream.enabled&buff.hot_hand.up" );
   aoe->add_action( "stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up&talent.splitstream.enabled&buff.hot_hand.up" );
   aoe->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=(9+1*talent.surging_totem.enabled)&talent.splitstream.enabled&buff.hot_hand.up" );
-  aoe->add_action( "voltaic_blaze,if=talent.fire_nova.enabled" );
+  aoe->add_action( "voltaic_blaze,if=talent.fire_nova.enabled|set_bonus.midnight_season_2_2pc" );
   aoe->add_action( "crash_lightning" );
   aoe->add_action( "windstrike,if=talent.thorims_invocation.enabled" );
   aoe->add_action( "stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up" );
@@ -13454,6 +13455,7 @@ void shaman_t::init_action_list_enhancement()
   single_sb->add_action( "call_action_list,name=buffs" );
   single_sb->add_action( "sundering,if=talent.surging_elements.enabled|talent.feral_spirit.enabled" );
   single_sb->add_action( "doom_winds" );
+  single_sb->add_action( "voltaic_blaze,if=set_bonus.midnight_season_2_2pc" );
   single_sb->add_action( "crash_lightning,if=!buff.crash_lightning.up|talent.storm_unleashed.enabled" );
   single_sb->add_action( "voltaic_blaze,if=(buff.doom_winds.up&buff.maelstrom_weapon.stack>=10-(1+2*talent.fire_nova.enabled)&!buff.maelstrom_weapon.stack=10)&talent.thorims_invocation.enabled" );
   single_sb->add_action( "windstrike,if=buff.maelstrom_weapon.stack>0&talent.thorims_invocation.enabled" );
@@ -13463,10 +13465,11 @@ void shaman_t::init_action_list_enhancement()
   single_sb->add_action( "tempest,if=buff.maelstrom_weapon.stack=10" );
   single_sb->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack=10" );
   single_sb->add_action( "stormstrike,if=charges_fractional>=1.8" );
-  single_sb->add_action( "lava_lash" );
+  single_sb->add_action( "lava_lash,if=talent.lashing_flames.enabled" );
   single_sb->add_action( "stormstrike" );
   single_sb->add_action( "voltaic_blaze" );
   single_sb->add_action( "sundering" );
+  single_sb->add_action( "lava_lash" );
   single_sb->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=8" );
   single_sb->add_action( "crash_lightning" );
   single_sb->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5" );
@@ -13480,6 +13483,7 @@ void shaman_t::init_action_list_enhancement()
   single_totemic->add_action( "sundering,if=talent.surging_elements.enabled|buff.whirling_earth.up|talent.feral_spirit.enabled" );
   single_totemic->add_action( "lava_lash,if=buff.whirling_fire.up|buff.hot_hand.up" );
   single_totemic->add_action( "doom_winds" );
+  single_totemic->add_action( "voltaic_blaze,if=set_bonus.midnight_season_2_2pc" );
   single_totemic->add_action( "crash_lightning,if=!buff.crash_lightning.up|talent.storm_unleashed.enabled" );
   single_totemic->add_action( "primordial_storm,if=(buff.maelstrom_weapon.stack>=10|buff.primordial_storm.remains<3.5&buff.maelstrom_weapon.stack>=5)" );
   single_totemic->add_action( "windstrike,if=talent.thorims_invocation.enabled&buff.ascendance.up" );
