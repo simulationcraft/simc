@@ -5009,19 +5009,8 @@ public:
         {
           for ( int i = 0; i < _stacks; ++i )
           {
-            if ( p_->bugs )  // only one proc for every 2 stacks
-            {
-              if ( i % 2 == 0 )
-              {
-                p_->active.lunar_wrath_heal->execute();
-                p_->active.lunar_wrath->execute_on_target( s->target );
-              }
-            }
-            else
-            {
-              p_->active.lunar_wrath_heal->execute();
-              p_->active.lunar_wrath->execute_on_target( s->target );
-            }
+            p_->active.lunar_wrath_heal->execute();
+            p_->active.lunar_wrath->execute_on_target( s->target );
           }
         }
       }
