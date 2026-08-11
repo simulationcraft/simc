@@ -107,7 +107,6 @@ public:
   {
     propagate_const<buff_t*> death_and_madness_debuff;
     buff_t* atonement;
-    propagate_const<buff_t*> resonant_energy;
     propagate_const<buff_t*> horrific_visions;
   } buffs;
 
@@ -576,7 +575,6 @@ public:
       player_talent_t sustained_potency;
       const spell_data_t* sustained_potency_buff;
       player_talent_t resonant_energy;
-      const spell_data_t* resonant_energy_shadow;
       const spell_data_t* resonant_energy_healing;
       const spell_data_t* resonant_energy_damage;
       player_talent_t energy_cycle;
@@ -1213,7 +1211,7 @@ public:
     parse_effects( p().buffs.surge_of_light, IGNORE_STACKS );
 
     // ARCHON BUFF EFFECTS
-    if ( p().talents.archon.resonant_energy.enabled() && p().is_ptr() )
+    if ( p().talents.archon.resonant_energy.enabled() )
     {
       if ( p().specialization() == PRIEST_SHADOW )
         parse_effects( p().buffs.resonant_energy_damage );
@@ -1257,12 +1255,6 @@ public:
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
   void apply_debuffs_effects()
   {
-    // Archon (non-PTR)
-    if ( p().talents.archon.resonant_energy.enabled() && !p().is_ptr() )
-    {
-      parse_target_effects( d_fn( &priest_td_t::buffs_t::resonant_energy, true ),
-                            p().talents.archon.resonant_energy_shadow );
-    }
   }
 
   template <typename... Ts>
