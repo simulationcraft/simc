@@ -2285,11 +2285,14 @@ void priest_t::create_buffs_shadow()
                               ->set_freeze_stacks( true )
                               ->set_period( talents.shadow.ancient_madness_buff->effectN( 2 ).period() );
 
-  const double ancient_madness_tick_count = as<double>( talents.shadow.ancient_madness_buff->duration() /
-                                                        talents.shadow.ancient_madness_buff->effectN( 2 ).period() );
+  const timespan_t ancient_madness_period = talents.shadow.ancient_madness_buff->effectN( 2 ).period();
+  const double ancient_madness_tick_count = ancient_madness_period > 0_ms
+                                                ? static_cast<double>( talents.shadow.ancient_madness_buff->duration() /
+                                                                       ancient_madness_period )
+                                                : 0.0;
 
   buffs.ancient_madness->set_tick_callback( [ ancient_madness_tick_count ]( buff_t* buff, int, timespan_t ) {
-    if ( buff->default_value <= 0.0 )
+    if ( buff->default_value <= 0.0 || ancient_madness_tick_count <= 0.0 )
     {
       return;
     }

@@ -8,6 +8,8 @@
 
 #include "player/action_priority_list.hpp"
 #include "player/player.hpp"
+#include "dbc/dbc.hpp"
+#include "sim/sim.hpp"
 
 namespace priest_apl
 {
@@ -57,7 +59,10 @@ void shadow( player_t* p )
   precombat->add_action( "variable,name=max_vts,default=12,op=reset" );
   precombat->add_action( "variable,name=is_vt_possible,default=0,op=reset" );
   precombat->add_action( "arcane_torrent" );
-  precombat->add_action( "mind_blast,if=set_bonus.mid2_4pc", "Crushing Void from Tentacle Slam is reset on pull, open with Mind Blast instead." );
+  if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+  {
+    precombat->add_action( "mind_blast,if=set_bonus.mid2_4pc", "Crushing Void from Tentacle Slam is reset on pull, open with Mind Blast instead." );
+  }
   precombat->add_action( "tentacle_slam" );
 
   default_->add_action( "variable,name=holding_tentacle_slam,op=set,value=raid_event.adds.in<15" );
