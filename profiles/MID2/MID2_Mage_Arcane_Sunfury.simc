@@ -1,0 +1,106 @@
+mage="MID2_Mage_Arcane_Sunfury"
+source=default
+spec=arcane
+level=90
+race=mechagnome
+role=spell
+position=back
+talents=C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDamZGAAAGAwMz0sssMDAEbAAAzMzM2sMzMzyMGjZmBLMjZmZAAGAAgBYmBMDAGmZG
+omnium_talents=136822:1/136817:1/136815:1/136814:1
+
+# Default consumables
+potion=lights_potential_2
+flask=flask_of_the_blood_knights_2
+food=silvermoon_parade
+augmentation=void_touched_augment_rune
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=arcane_intellect
+actions.precombat+=/variable,name=aoe_count,op=set,value=2+(3*talent.spellfire_spheres)
+actions.precombat+=/variable,name=20ssteroid_trinket_equipped,op=set,value=equipped.signet_of_the_priory|equipped.incorporeal_essencegorger|equipped.sealed_chaos_urn|equipped.hex_lords_dooming_idol
+actions.precombat+=/variable,name=15ssteroid_trinket_equipped,op=set,value=equipped.lily_of_the_eternal_weave|equipped.sunblood_amethyst|equipped.astral_gladiators_badge_of_ferocity|equipped.arazs_ritual_forge|equipped.freightrunners_flask|equipped.emberwing_feather|equipped.vaelgors_final_stare|equipped.galactic_gladiators_badge_of_ferocity|equipped.vile_vial_of_volatile_venom|equipped.venomous_gladiators_badge_of_ferocity
+actions.precombat+=/variable,name=12ssteroid_trinket_equipped,op=set,value=equipped.nevermelting_ice_crystal|equipped.ever_collapsing_void_fissure
+actions.precombat+=/variable,name=steroid_trinket_equipped,op=set,value=equipped.lily_of_the_eternal_weave|equipped.sunblood_amethyst|equipped.astral_gladiators_badge_of_ferocity|equipped.arazs_ritual_forge|equipped.freightrunners_flask|equipped.emberwing_feather|equipped.vaelgors_final_stare|equipped.galactic_gladiators_badge_of_ferocity|equipped.nevermelting_ice_crystal|equipped.ever_collapsing_void_fissure|equipped.signet_of_the_priory|equipped.incorporeal_essencegorger|equipped.sealed_chaos_urn|equipped.venomous_gladiators_badge_of_ferocity|equipped.vile_vial_of_volatile_venom|equipped.stormbound_emblem_of_dazar
+actions.precombat+=/variable,name=nonsteroid_trinket_equipped,op=set,value=equipped.mereldars_toll|equipped.perfidious_projector|equipped.chaotic_nethergate|equipped.wraps_of_cosmic_madness|equipped.astalors_anguish_agitator|equipped.sethraliss_defiled_relic|equipped.vexhuls_everflowing_gland|equipped.font_of_venomous_rage|equipped.ophidian_bone_whistle|equipped.spiritrending_poison
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mirror_image
+actions.precombat+=/potion,if=talent.spellfire_spheres
+actions.precombat+=/arcane_surge,if=talent.spellfire_spheres
+actions.precombat+=/arcane_blast
+
+# Executed every time the actor is available.
+actions=counterspell
+actions+=/invoke_external_buff,name=power_infusion,if=(buff.arcane_surge.up&debuff.touch_of_the_magi.up)|(fight_remains<16)
+actions+=/potion,if=cooldown.arcane_surge.ready|fight_remains<35
+actions+=/berserking,if=(buff.arcane_surge.up&debuff.touch_of_the_magi.up)|(fight_remains<13)
+actions+=/blood_fury,if=(buff.arcane_surge.up&debuff.touch_of_the_magi.up)|(fight_remains<9)
+actions+=/fireblood,if=(buff.arcane_surge.up&debuff.touch_of_the_magi.up)|(fight_remains<16)
+actions+=/ancestral_call,if=(buff.arcane_surge.up&debuff.touch_of_the_magi.up)|(fight_remains<16)
+actions+=/use_item,name=stormbound_emblem_of_dazar,if=(cooldown.arcane_surge.remains<2)|cooldown.arcane_surge.ready|(fight_remains<22)
+actions+=/use_items,if=((buff.arcane_surge.up&((variable.12ssteroid_trinket_equipped&debuff.touch_of_the_magi.up)|variable.15ssteroid_trinket_equipped))|(cooldown.arcane_surge.ready&variable.20ssteroid_trinket_equipped))|(fight_remains<13&variable.12ssteroid_trinket_equipped)|(fight_remains<16&variable.15ssteroid_trinket_equipped)|(fight_remains<21&variable.20ssteroid_trinket_equipped)|(variable.nonsteroid_trinket_equipped&((buff.arcane_surge.down&cooldown.arcane_surge.remains>20)|!variable.steroid_trinket_equipped))
+actions+=/arcane_barrage,if=fight_remains<gcd.max*2&buff.arcane_charge.stack=4
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=spellslinger,if=talent.splintering_sorcery
+actions+=/call_action_list,name=sunfury,if=!talent.splintering_sorcery
+actions+=/arcane_barrage,if=talent.spellfire_spheres&!buff.arcane_surge.up
+
+actions.cooldowns=arcane_orb,if=talent.splintering_sorcery,line_cd=999
+actions.cooldowns+=/touch_of_the_magi,use_off_gcd=1,if=(prev_gcd.1.prismatic_bolt|prev_gcd.1.arcane_barrage|(buff.arcane_surge.up&buff.arcane_surge.remains<12))&(buff.arcane_surge.up|cooldown.arcane_surge.remains>30)
+actions.cooldowns+=/arcane_surge,if=buff.lustrous_gleam.stack>=2|buff.lustrous_gleam.down
+actions.cooldowns+=/cancel_action,if=action.evocation.channeling&mana.pct>=95
+actions.cooldowns+=/evocation,if=mana.pct<10&buff.arcane_surge.down&debuff.touch_of_the_magi.down&cooldown.arcane_surge.remains>10
+actions.cooldowns+=/presence_of_mind,use_off_gcd=1,if=buff.arcane_charge.stack<1&!buff.prismatic_bolt.up&!cooldown.arcane_orb.ready&!cooldown.arcane_pulse.ready&!cooldown.touch_of_the_magi.ready&(buff.clearcasting.react=0|!talent.high_voltage)&prev_gcd.1.arcane_barrage
+
+actions.spellslinger=prismatic_bolt,if=(!set_bonus.midnight_season_2_4pc|buff.cumulative_power.stack>=6|active_enemies>=variable.aoe_count&buff.clearcasting.react=0)&(active_enemies>=variable.aoe_count&buff.clearcasting.react<3|buff.arcane_salvo.react>13)
+actions.spellslinger+=/arcane_orb,if=cooldown.arcane_orb.charges_fractional>=1+(0.95*talent.charged_orb)&talent.orb_mastery&active_enemies>=variable.aoe_count
+actions.spellslinger+=/arcane_barrage,if=buff.arcane_salvo.react>=(20-talent.orb_barrage)&(active_enemies<variable.aoe_count|buff.arcane_charge.stack=4)|prev_gcd.1.arcane_surge&buff.arcane_salvo.stack>=(10+5*talent.orb_barrage)
+actions.spellslinger+=/arcane_missiles,if=buff.clearcasting.react&(buff.arcane_salvo.stack<15|active_enemies<variable.aoe_count&buff.clearcasting.react=3),interrupt_if=tick_time>gcd.remains&(buff.overpowered_missiles.react=0|active_enemies>=variable.aoe_count|!talent.high_voltage),interrupt_global=1,interrupt_immediate=1
+actions.spellslinger+=/prismatic_bolt
+actions.spellslinger+=/arcane_orb,if=buff.arcane_charge.stack<(3+(active_enemies>=variable.aoe_count))|(talent.orb_mastery|active_enemies>=(variable.aoe_count+2))&cooldown.arcane_orb.charges_fractional>=(1+0.5*(talent.orb_mastery&active_enemies<variable.aoe_count&buff.arcane_surge.down))
+actions.spellslinger+=/arcane_pulse,if=buff.arcane_charge.stack<3&buff.arcane_surge.down
+actions.spellslinger+=/arcane_blast
+
+actions.sunfury=arcane_missiles,if=buff.clearcasting.react&buff.arcane_salvo.stack<12,chain=1
+actions.sunfury+=/prismatic_bolt,if=((!set_bonus.midnight_season_2_4pc)|buff.cumulative_power.stack=8)&buff.arcane_soul.down
+actions.sunfury+=/arcane_barrage,if=(buff.arcane_charge.stack=4&(((((cooldown.arcane_orb.charges_fractional>0.95|cooldown.arcane_pulse.charges_fractional>0.95)&active_enemies>=variable.aoe_count)|buff.clearcasting.react)&buff.arcane_salvo.react>=12)|((buff.arcane_surge.remains>gcd.max|buff.arcane_surge.down)&buff.arcane_salvo.react=25)))|buff.arcane_soul.up|(buff.arcane_salvo.react>8&cooldown.touch_of_the_magi.ready)
+actions.sunfury+=/prismatic_bolt
+actions.sunfury+=/arcane_orb,if=buff.arcane_charge.stack<1
+actions.sunfury+=/arcane_pulse,if=active_enemies>=(variable.aoe_count-1)|buff.arcane_charge.stack<1
+actions.sunfury+=/arcane_blast
+
+head=venomkeepers_horrific_cowl,id=271874,bonus_id=13335/13668/13846/13848,ilevel=344,gem_id=240967,enchant_id=8017
+neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13708/13848,ilevel=344,gem_id=240892/240906
+shoulders=ornaments_of_the_eternal_coil,id=268241,bonus_id=12854/13335,ilevel=334,enchant_id=8001
+back=silken_voodoo_drape,id=268253,bonus_id=13335/13848,ilevel=344
+chest=primordial_robe_of_rites,id=273785,bonus_id=12854/13440,ilevel=334,enchant_id=7987
+wrists=martyrs_bindings,id=239648,bonus_id=8960/12384/13668/13751,ilevel=331,gem_id=240900,crafted_stats=32/40
+hands=grasps_of_the_eternal_shadow,id=268243,bonus_id=13335/13848,ilevel=344
+waist=caustic_chainwrapped_sash,id=268257,bonus_id=13668,ilevel=334,gem_id=240900
+legs=initiates_sacrificial_tights,id=268236,bonus_id=12854/13335,ilevel=334,enchant_id=7937
+feet=cackling_soultreads,id=268255,bonus_id=13335/13848,ilevel=344,enchant_id=7963
+finger1=alluring_bubbleband,id=268266,bonus_id=12854/13335/13668,ilevel=334,gem_id=240916,enchant_id=7967
+finger2=pilfered_precious_band,id=251148,bonus_id=12854/13440/13668,ilevel=334,gem_id=240916,enchant_id=7967
+trinket1=freightrunners_flask,id=250215,bonus_id=12854/13440,ilevel=334
+trinket2=gebbos_bottomless_bag,id=270164,bonus_id=12854/13335,ilevel=334
+main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13335/13848,ilevel=344,enchant_id=8039
+off_hand=alnhara_lantern,id=245769,bonus_id=8960/13751/13771,ilevel=331,crafted_stats=32/36
+
+# Gear Summary
+# gear_ilvl=337.38
+# gear_stamina=40411
+# gear_intellect=2751
+# gear_crit_rating=775
+# gear_haste_rating=1101
+# gear_mastery_rating=664
+# gear_versatility_rating=528
+# gear_avoidance_rating=167
+# gear_armor=733
+# set_bonus=midnight_season_2_2pc=1
+# set_bonus=midnight_season_2_4pc=1
