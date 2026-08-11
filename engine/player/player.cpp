@@ -10847,6 +10847,33 @@ struct retarget_auto_attack_t : public action_t
   }
 };
 
+// Player Retargeting ==================================================
+
+struct retarget_t : public action_t
+{
+  retarget_t( player_t* player, util::string_view options_str )
+    : action_t( ACTION_OTHER, "retarget", player )
+  {
+    parse_options( options_str );
+    quiet = true;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  void execute() override
+  {
+    player->target = target;
+    for ( auto action : player->action_list )
+      action->acquire_target( retarget_source::SELF_RETARGET, player, target );
+
+    for ( auto pet : player->pet_list )
+    {
+      pet->target = target;
+      for ( auto action : pet->action_list )
+        action->acquire_target( retarget_source::SELF_RETARGET, player, target );
+    }
+  }
+};
+
 // Invoke External Buff ==================================================
 
 struct invoke_external_buff_t : public action_t
@@ -11087,6 +11114,8 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
     return new cycling_variable_t( this, options_str );
   if ( name == "wait_for_cooldown" )
     return new wait_for_cooldown_t( this, options_str );
+  if ( name == "retarget" )
+    return new retarget_t( this, options_str );
   if ( name == "retarget_auto_attack" )
     return new retarget_auto_attack_t( this, options_str );
 

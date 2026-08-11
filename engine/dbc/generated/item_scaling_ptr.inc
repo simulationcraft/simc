@@ -1,5 +1,5 @@
-// Curve points data, wow build 12.1.0.69189
-static constexpr std::array<curve_point_t, 171114> __ptr_curve_point_data { {
+// Curve points data, wow build 12.1.0.69214
+static constexpr std::array<curve_point_t, 171119> __ptr_curve_point_data { {
   {    8,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
   {    9,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
   {   11,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
@@ -171089,6 +171089,11 @@ static constexpr std::array<curve_point_t, 171114> __ptr_curve_point_data { {
   { 113726,  1,    0.20364f,    2.45989f,    0.20364f,    2.45989f },
   { 113726,  2,    0.64364f,    2.03209f,    0.64364f,    2.03209f },
   { 113726,  3,    1.00000f,    1.00000f,    1.00000f,    1.00000f },
+  { 114670,  0,    0.00000f,    9.94142f,    0.00000f,    0.00000f },
+  { 114670,  1,    0.19625f,    0.10042f,    0.00000f,    0.00000f },
+  { 114670,  2,    1.41300f,    0.00000f,    0.00000f,    0.00000f },
+  { 114671,  0,    0.00000f,    1.00000f,    0.00000f,    0.00000f },
+  { 114671,  1,    1.00000f,    0.00000f,    1.00000f,    1.00000f },
   { 114672,  0,    0.00000f,    0.11230f,    0.00000f,    1.00000f },
   { 114672,  1,    0.02182f,    1.00000f,    1.00000f,    1.01604f },
   { 114672,  2,    0.22545f,    0.61497f,    0.00000f,    0.00000f },
@@ -171116,7 +171121,7 @@ static constexpr std::array<curve_point_t, 171114> __ptr_curve_point_data { {
   { 115006,  3,    1.00000f,    0.00000f,    1.00000f,    0.00000f },
 } };
 
-// Item Scaling Config data, wow build 12.1.0.69189
+// Item Scaling Config data, wow build 12.1.0.69214
 static constexpr std::array<item_scaling_config_data_t, 416> __ptr_item_scaling_config_data { {
   {   1, 12, 70, 70, 0 },
   {   2, 13, 70, 70, 0 },
@@ -171536,7 +171541,7 @@ static constexpr std::array<item_scaling_config_data_t, 416> __ptr_item_scaling_
   { 485, 68, 0, 0, 2 },
 } };
 
-// Item Offset Curve data, wow build 12.1.0.69189
+// Item Offset Curve data, wow build 12.1.0.69214
 static constexpr std::array<item_offset_curve_data_t, 68> __ptr_item_offset_curve_data { {
   {  1, 6243, 0 },
   {  2, 6243, -6 },

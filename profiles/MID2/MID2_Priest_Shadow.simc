@@ -116,11 +116,11 @@ actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.remains>=1
 
 head=cosmic_penitents_truesight,id=271555,bonus_id=13846,ilevel=344,gem_id=240983,enchant_id=7961,redirected_base_stats=271874
 neck=aqirbane_reliquary,id=268265,bonus_id=13708,ilevel=344,gem_id=240892/240900
-shoulders=cosmic_penitents_echoing_screams,id=271553,ilevel=334,enchant_id=8031
+shoulders=mantle_of_ceremonial_ascension,id=239045,ilevel=334,enchant_id=8031
 back=silken_voodoo_drape,id=268253,ilevel=344
-chest=cosmic_penitents_eclipsing_robes,id=271558,ilevel=344,enchant_id=7987
+chest=cosmic_penitents_eclipsing_robes,id=271558,ilevel=334,enchant_id=7987
 wrists=martyrs_bindings,id=239648,bonus_id=8793/12384,ilevel=331,gem_id=240900
-hands=cosmic_penitents_celestial_grips,id=271556,ilevel=344,redirected_base_stats=268255
+hands=cosmic_penitents_celestial_grips,id=271556,ilevel=344,redirected_base_stats=268243
 waist=caustic_chainwrapped_sash,id=268257,ilevel=334,gem_id=240918
 legs=enveloping_legwraps_of_the_cosmic_penitent,id=271554,ilevel=334,enchant_id=7935,redirected_base_stats=251160
 feet=cackling_soultreads,id=268255,ilevel=344
@@ -132,14 +132,14 @@ main_hand=janthrazet_the_soul_fang,id=271092,ilevel=344,enchant_id=8041
 off_hand=alnhara_lantern,id=245769,bonus_id=8793/13771,ilevel=331
 
 # Gear Summary
-# gear_ilvl=338.00
-# gear_stamina=40769
-# gear_intellect=2778
-# gear_crit_rating=758
-# gear_haste_rating=1070
-# gear_mastery_rating=1232
+# gear_ilvl=337.38
+# gear_stamina=40294
+# gear_intellect=2760
+# gear_crit_rating=701
+# gear_haste_rating=1078
+# gear_mastery_rating=1274
 # gear_versatility_rating=16
 # gear_leech_rating=221
-# gear_armor=741
+# gear_armor=733
 # set_bonus=midnight_season_2_2pc=1
 # set_bonus=midnight_season_2_4pc=1

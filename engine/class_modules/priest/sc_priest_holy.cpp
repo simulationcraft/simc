@@ -125,9 +125,10 @@ struct apotheosis_t final : public priest_spell_t
 
 // holy word cast -> Divine Image [Talent] (392988) -> Divine Image [Buff] (405963) -> Divine Image [Summon] (392990) ->
 // Searing Light (196811) procs from Holy Fire, Chastise, Shadow Word: Pain, Shadow Word: Death, and Smite
-struct searing_light_t final : public priest_spell_t
+struct searing_light_di_t final : public priest_spell_t
 {
-  searing_light_t( priest_t& p ) : priest_spell_t( "searing_light", p, p.talents.holy.divine_image_searing_light )
+  searing_light_di_t( priest_t& p )
+    : priest_spell_t( "searing_light_divine_image", p, p.talents.holy.divine_image_searing_light )
   {
     background = true;
     may_miss   = false;
@@ -452,8 +453,8 @@ struct guardian_spirit_t final : public priest_spell_t
   buff_t* create_debuff( player_t* t ) override
   {
     auto gs_buff = priest_spell_t::create_debuff( t )
-                     ->set_default_value_from_effect_type( A_MOD_HEALING_RECEIVED_PCT )
-                     ->set_cooldown( 0_ms );  // Let the ability handle the CD
+                       ->set_default_value_from_effect_type( A_MOD_HEALING_RECEIVED_PCT )
+                       ->set_cooldown( 0_ms );  // Let the ability handle the CD
 
     t->assessor_out_damage.add( assessor::LOG - 1, [ gs_buff, t ]( auto, action_state_t* s ) {
       auto max_hp = t->resources.max[ RESOURCE_HEALTH ];
@@ -624,14 +625,6 @@ action_t* priest_t::create_action_holy( util::string_view name, util::string_vie
   {
     return new holy_word_sanctify_t( *this, options_str );
   }
-  if ( name == "searing_light" )
-  {
-    return new searing_light_t( *this );
-  }
-  if ( name == "light_eruption" )
-  {
-    return new light_eruption_t( *this );
-  }
   if ( name == "guardian_spirit" )
   {
     return new guardian_spirit_t( *this, options_str );
@@ -644,7 +637,7 @@ void priest_t::init_background_actions_holy()
 {
   if ( talents.holy.divine_image.enabled() )
   {
-    background_actions.searing_light  = new actions::spells::searing_light_t( *this );
+    background_actions.searing_light  = new actions::spells::searing_light_di_t( *this );
     background_actions.light_eruption = new actions::spells::light_eruption_t( *this );
   }
 

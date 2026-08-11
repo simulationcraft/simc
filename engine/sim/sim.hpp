@@ -516,7 +516,7 @@ struct sim_t : private sc_thread_t
   chrono::wall_clock::duration elapsed_time;
   std::vector<size_t> work_per_thread;
   size_t work_done;
-  double iteration_dmg, priority_iteration_dmg,  iteration_heal, iteration_absorb;
+  double iteration_dmg, priority_iteration_dmg, iteration_heal, iteration_absorb;
   simple_sample_data_t total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
   extended_sample_data_t raid_dps, simulation_length;
   chrono::wall_clock::duration merge_time, init_time, analyze_time;

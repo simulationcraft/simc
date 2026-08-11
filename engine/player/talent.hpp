@@ -47,6 +47,8 @@ public:
   { return m_spell; }
 
   const spell_data_t* find_override_spell( bool require_talent = true ) const;
+
+  const spell_data_t* find_replaced_spell( bool require_talent = true ) const;
 };
 
 #endif /* TALENT_HPP */

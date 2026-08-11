@@ -1,0 +1,177 @@
+shaman="MID2_Shaman_Enhancement_Totemic"
+source=default
+spec=enhancement
+level=90
+race=troll
+role=attack
+position=back
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzMzMzMzMzMzMzYGAAAAAAAAAsAbwMW0YbAMTwGAzyMmZGLLzYhZmNWmZmZYYMDAgBYMjYmBAGDA
+omnium_talents=136822:1/136823:1/136817:1/136821:1/136814:1
+
+# Default consumables
+potion=potion_of_recklessness_2
+flask=flask_of_the_blood_knights_2
+food=harandar_celebration
+augmentation=void_touched
+temporary_enchant=disabled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=windfury_weapon
+actions.precombat+=/flametongue_weapon
+actions.precombat+=/lightning_shield
+actions.precombat+=/variable,name=trinket1_is_weird,value=trinket.1.is.algethar_puzzle_box|trinket.1.is.unyielding_netherprism
+actions.precombat+=/variable,name=trinket2_is_weird,value=trinket.2.is.algethar_puzzle_box|trinket.2.is.unyielding_netherprism
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=variable,name=target_nature_mod,value=(1+debuff.chaos_brand.up*debuff.chaos_brand.value)*(1+(debuff.hunters_mark.up*target.health.pct>=80)*debuff.hunters_mark.value)
+actions+=/variable,name=expected_lb_funnel,value=action.lightning_bolt.damage*(1+debuff.lightning_rod.up*variable.target_nature_mod*(1+active_dot.flame_shock)*debuff.lightning_rod.value)
+actions+=/variable,name=expected_cl_funnel,value=action.chain_lightning.damage*(1+debuff.lightning_rod.up*variable.target_nature_mod*active_enemies*debuff.lightning_rod.value)
+actions+=/variable,name=flame_shock_saturated,value=((active_dot.flame_shock=active_enemies)|(active_dot.flame_shock=6))
+actions+=/bloodlust,line_cd=600
+actions+=/auto_attack
+actions+=/call_action_list,name=single_sb,if=active_enemies=1&!talent.surging_totem.enabled
+actions+=/call_action_list,name=single_totemic,if=active_enemies=1&talent.surging_totem.enabled
+actions+=/call_action_list,name=aoe,if=active_enemies>1
+
+# Multi target action priority list
+actions.aoe=voltaic_blaze,if=talent.surging_totem.enabled&dot.flame_shock.remains=0
+actions.aoe+=/flame_shock,if=!ticking
+actions.aoe+=/surging_totem
+actions.aoe+=/ascendance,if=ti_chain_lightning
+actions.aoe+=/call_action_list,name=buffs
+actions.aoe+=/sundering,if=talent.surging_elements.enabled|buff.whirling_earth.up
+actions.aoe+=/lava_lash,if=buff.whirling_fire.up
+actions.aoe+=/doom_winds
+actions.aoe+=/crash_lightning,if=talent.thorims_invocation.enabled&buff.whirling_air.up&(buff.doom_winds.up|buff.ascendance.up)
+actions.aoe+=/windstrike,if=talent.thorims_invocation.enabled&buff.whirling_air.up
+actions.aoe+=/stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up&buff.whirling_air.up
+actions.aoe+=/lava_lash,if=talent.splitstream.enabled&buff.hot_hand.up
+actions.aoe+=/tempest,if=buff.maelstrom_weapon.stack>=10&(!buff.ascendance.up|!buff.doom_winds.up)
+actions.aoe+=/primordial_storm,if=buff.maelstrom_weapon.stack>=10
+actions.aoe+=/crash_lightning,if=talent.thorims_invocation.enabled&(buff.doom_winds.up|buff.ascendance.up)&talent.splitstream.enabled&buff.hot_hand.up
+actions.aoe+=/windstrike,if=talent.thorims_invocation.enabled&talent.splitstream.enabled&buff.hot_hand.up
+actions.aoe+=/stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up&talent.splitstream.enabled&buff.hot_hand.up
+actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=(9+1*talent.surging_totem.enabled)&talent.splitstream.enabled&buff.hot_hand.up
+actions.aoe+=/voltaic_blaze,if=talent.fire_nova.enabled|set_bonus.midnight_season_2_2pc
+actions.aoe+=/crash_lightning
+actions.aoe+=/windstrike,if=talent.thorims_invocation.enabled
+actions.aoe+=/stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up
+actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=(9+1*talent.surging_totem.enabled)
+actions.aoe+=/sundering,if=talent.feral_spirit.enabled
+actions.aoe+=/voltaic_blaze
+actions.aoe+=/lava_lash,if=pet.searing_totem.active
+actions.aoe+=/windstrike
+actions.aoe+=/stormstrike,if=charges_fractional>=1.8|buff.converging_storms.stack=buff.converging_storms.max_stack
+actions.aoe+=/sundering,if=cooldown.surging_totem.remains>25
+actions.aoe+=/stormstrike,if=!talent.surging_totem.enabled
+actions.aoe+=/lava_lash
+actions.aoe+=/stormstrike
+actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5
+actions.aoe+=/flame_shock
+
+# Buff action priority list
+actions.buffs=use_item,name=algethar_puzzle_box,if=(talent.ascendance.enabled&(cooldown.ascendance.remains<2*gcd.max))|(talent.doom_winds.enabled&!talent.ascendance.enabled&(cooldown.doom_winds.remains<2*gcd.max))|(fight_remains%%120<=20)
+actions.buffs+=/use_item,name=unyielding_netherprism,if=(talent.ascendance.enabled&(cooldown.ascendance.remains<2*gcd.max))|(talent.doom_winds.enabled&!talent.ascendance.enabled&(cooldown.doom_winds.remains<2*gcd.max))|fight_remains<=20
+actions.buffs+=/use_item,slot=trinket1,if=!variable.trinket1_is_weird&((buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled)))|!trinket.1.has_use_buff
+actions.buffs+=/use_item,slot=trinket2,if=!variable.trinket2_is_weird&((buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled)))|!trinket.2.has_use_buff
+actions.buffs+=/potion,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%300<=30)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))
+actions.buffs+=/blood_fury,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.blood_fury.cooldown<=action.blood_fury.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))
+actions.buffs+=/berserking,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.berserking.cooldown<=action.berserking.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))
+actions.buffs+=/fireblood,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.fireblood.cooldown<=action.fireblood.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))
+actions.buffs+=/ancestral_call,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.ancestral_call.cooldown<=action.ancestral_call.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))
+actions.buffs+=/invoke_external_buff,name=power_infusion,if=((talent.deeply_rooted_elements.enabled&buff.ascendance.remains>7.5)|(!talent.deeply_rooted_elements.enabled&(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active))|(fight_remains%%120<=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))
+
+# Single target action priority list for the Stormbringer hero talent tree
+actions.single_sb=primordial_storm,if=(buff.maelstrom_weapon.stack>=9|buff.primordial_storm.remains<=4&buff.maelstrom_weapon.stack>=5)
+actions.single_sb+=/voltaic_blaze,if=dot.flame_shock.remains=0&time<5
+actions.single_sb+=/flame_shock,if=!ticking
+actions.single_sb+=/lava_lash,if=!debuff.lashing_flames.up&time<5
+actions.single_sb+=/call_action_list,name=buffs
+actions.single_sb+=/sundering,if=talent.surging_elements.enabled|talent.feral_spirit.enabled
+actions.single_sb+=/doom_winds
+actions.single_sb+=/voltaic_blaze,if=set_bonus.midnight_season_2_2pc
+actions.single_sb+=/crash_lightning,if=!buff.crash_lightning.up|talent.storm_unleashed.enabled
+actions.single_sb+=/voltaic_blaze,if=(buff.doom_winds.up&buff.maelstrom_weapon.stack>=10-(1+2*talent.fire_nova.enabled)&!buff.maelstrom_weapon.stack=10)&talent.thorims_invocation.enabled
+actions.single_sb+=/windstrike,if=buff.maelstrom_weapon.stack>0&talent.thorims_invocation.enabled
+actions.single_sb+=/ascendance
+actions.single_sb+=/stormstrike,if=buff.doom_winds.up&talent.thorims_invocation.enabled
+actions.single_sb+=/crash_lightning,if=buff.doom_winds.up&talent.thorims_invocation.enabled
+actions.single_sb+=/tempest,if=buff.maelstrom_weapon.stack=10
+actions.single_sb+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10
+actions.single_sb+=/stormstrike,if=charges_fractional>=1.8
+actions.single_sb+=/lava_lash,if=talent.lashing_flames.enabled
+actions.single_sb+=/stormstrike
+actions.single_sb+=/voltaic_blaze
+actions.single_sb+=/sundering
+actions.single_sb+=/lava_lash
+actions.single_sb+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=8
+actions.single_sb+=/crash_lightning
+actions.single_sb+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
+actions.single_sb+=/flame_shock
+
+# Single target action priority list for the Totemic hero talent tree
+actions.single_totemic=voltaic_blaze,if=dot.flame_shock.remains=0
+actions.single_totemic+=/flame_shock,if=!ticking
+actions.single_totemic+=/surging_totem
+actions.single_totemic+=/call_action_list,name=buffs
+actions.single_totemic+=/sundering,if=talent.surging_elements.enabled|buff.whirling_earth.up|talent.feral_spirit.enabled
+actions.single_totemic+=/lava_lash,if=buff.whirling_fire.up|buff.hot_hand.up
+actions.single_totemic+=/doom_winds
+actions.single_totemic+=/voltaic_blaze,if=set_bonus.midnight_season_2_2pc
+actions.single_totemic+=/crash_lightning,if=!buff.crash_lightning.up|talent.storm_unleashed.enabled
+actions.single_totemic+=/primordial_storm,if=(buff.maelstrom_weapon.stack>=10|buff.primordial_storm.remains<3.5&buff.maelstrom_weapon.stack>=5)
+actions.single_totemic+=/windstrike,if=talent.thorims_invocation.enabled&buff.ascendance.up
+actions.single_totemic+=/ascendance,if=ti_lightning_bolt
+actions.single_totemic+=/crash_lightning,if=talent.thorims_invocation.enabled&buff.doom_winds.up|buff.ascendance.up
+actions.single_totemic+=/stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up
+actions.single_totemic+=/lightning_bolt,if=talent.elemental_tempo.enabled&(buff.maelstrom_weapon.stack>=5&(cooldown.lava_lash.remains>gcd.max)&(cooldown.lava_lash.remains<=buff.maelstrom_weapon.stack*0.3)|buff.maelstrom_weapon.stack>=10)
+actions.single_totemic+=/crash_lightning,if=!buff.crash_lightning.up
+actions.single_totemic+=/lava_lash
+actions.single_totemic+=/sundering,if=cooldown.surging_totem.remains>25
+actions.single_totemic+=/stormstrike
+actions.single_totemic+=/voltaic_blaze
+actions.single_totemic+=/crash_lightning
+actions.single_totemic+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
+actions.single_totemic+=/flame_shock
+
+head=serpent_crown_of_the_ophidian_oracle,id=271483,bonus_id=10835/12854/13662,gem_id=240967,enchant_id=7991,redirected_base_stats=251220
+neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13708/13848,gem_id=240918/240898
+shoulders=hissing_mantle_of_the_ophidian_oracle,id=271481,bonus_id=13848,enchant_id=8001,redirected_base_stats=268231
+back=silken_voodoo_drape,id=268253,bonus_id=13848
+chest=fanged_raiment_of_the_ophidian_oracle,id=271486,bonus_id=13662/13708/13848,enchant_id=7987,redirected_base_stats=271876
+wrists=farstriders_plated_bracers,id=244584,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240898,crafted_stats=49/36
+hands=hexing_grips_of_the_ophidian_oracle,id=271484,bonus_id=12854
+waist=serpentine_mixing_belt,id=268254,bonus_id=10835/12854,gem_id=240898
+legs=leggings_of_the_ophidian_oracle,id=271482,bonus_id=13662/13848,enchant_id=8159,redirected_base_stats=268237
+feet=ferocious_scaleboots,id=268233,bonus_id=12854/13662,enchant_id=7963
+finger1=vile_alchemists_band,id=268249,bonus_id=12854/13750,gem_id=240890,enchant_id=7967
+finger2=sickening_signet_of_atroxus,id=252258,bonus_id=12854/13750,gem_id=240906,enchant_id=7967
+trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=13335/13848
+trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13662/13848
+main_hand=amanmuso_warlords_vengeance,id=268209,bonus_id=13848,enchant_id=8041
+off_hand=farstriders_chopper,id=237850,bonus_id=8960/13751/13771/13836/12497,enchant_id=7983,crafted_stats=49/36
+
+# Gear Summary
+# gear_ilvl=338.63
+# gear_agility=1906
+# gear_stamina=40645
+# gear_crit_rating=997
+# gear_haste_rating=837
+# gear_mastery_rating=1337
+# gear_versatility_rating=16
+# gear_speed_rating=22
+# gear_avoidance_rating=130
+# gear_armor=1744
+# set_bonus=midnight_season_2_2pc=1
+# set_bonus=midnight_season_2_4pc=1
+# set_bonus=bite_of_zuljan_2pc=1

@@ -38,7 +38,6 @@ public:
 
     // Havoc
     dot_t* burning_wound;
-    dot_t* trail_of_ruin;
 
     // Vengeance
     dot_t* fiery_brand;
@@ -57,7 +56,6 @@ public:
     buff_t* burning_wound;
     buff_t* essence_break;
     buff_t* initiative_tracker;
-    buff_t* serrated_glaive;
 
     // Vengeance
     buff_t* frailty;
@@ -353,7 +351,6 @@ public:
     buff_t* blind_fury;
     buff_t* blur;
     buff_t* chaos_theory;
-    buff_t* death_sweep;
     buff_t* furious_gaze;
     buff_t* inertia;
     buff_t* inertia_trigger;  // hidden buff that determines if we can trigger inertia
@@ -1054,7 +1051,6 @@ public:
   {
     // General
     gain_t* miss_refund;
-    gain_t* immolation_aura;
 
     // Devourer
     gain_t* voidglare_boon;
@@ -1087,7 +1083,6 @@ public:
   {
     // General
     proc_t* delayed_aa_range;
-    proc_t* delayed_aa_channel;
     proc_t* soul_fragment_greater;
     proc_t* soul_fragment_greater_demon;
     proc_t* soul_fragment_empowered_demon;
@@ -1119,9 +1114,6 @@ public:
     proc_t* annihilation_in_essence_break;
     proc_t* blade_dance_in_essence_break;
     proc_t* death_sweep_in_essence_break;
-    proc_t* chaos_strike_in_serrated_glaive;
-    proc_t* annihilation_in_serrated_glaive;
-    proc_t* throw_glaive_in_serrated_glaive;
     proc_t* shattered_destiny;
     proc_t* eye_beam_canceled;
 
@@ -1636,7 +1628,7 @@ struct undying_embers_event_t : public event_t
   {
   }
 
-  ~undying_embers_event_t()
+  ~undying_embers_event_t() override
   {
     if ( state )
       action_state_t::release( state );
@@ -2263,12 +2255,6 @@ public:
 
     // Havoc
     ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::burning_wound ), dh()->spec.burning_wound_debuff );
-    if ( !dh()->is_ptr() )
-    {
-      ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::serrated_glaive ),
-                                dh()->talent.havoc.serrated_glaive->effectN( 1 ).trigger(),
-                                dh()->talent.havoc.serrated_glaive );
-    }
 
     // Vengeance
     if ( dh()->talent.vengeance.vulnerability->ok() )
@@ -3357,7 +3343,7 @@ struct otherworldly_focus_benefit_t : public BASE
     : BASE( n, p, s, o )
   {
     increase_percent = p->talent.annihilator.otherworldly_focus->effectN( 1 ).percent();
-    if ( p->is_ptr() && p->specialization() == DEMON_HUNTER_DEVOURER )
+    if ( p->specialization() == DEMON_HUNTER_DEVOURER )
     {
       increase_percent = p->talent.annihilator.otherworldly_focus->effectN( 3 ).percent();
     }
@@ -4035,8 +4021,8 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
     {
       this->cooldown->adjust( -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_stack_value() ) ) );
 
-      // 08/01/2026 - Essence Break and Eyebeam currently reduce the value of the other by 2.5 seconds when stacks 2 - 4 are each
-      // applied.
+      // 08/01/2026 - Essence Break and Eyebeam currently reduce the value of the other by 2.5 seconds when stacks 2 - 4
+      // are each applied.
       if ( dh()->buff.cycle_of_hatred->check() && dh()->buff.cycle_of_hatred->stack() < 4 )
       {
         dh()->cooldown.essence_break->adjust(
@@ -7155,12 +7141,8 @@ struct blade_dance_base_t
 
     if ( p->talent.havoc.trail_of_ruin->ok() )
     {
-      trail_of_ruin = p->get_background_action<trail_of_ruin_t>( dh()->is_ptr() ? fmt::format( "trail_of_ruin_{}", n )
-                                                                                : "trail_of_ruin" );
-      if ( dh()->is_ptr() )
-      {
-        add_child( trail_of_ruin );
-      }
+      trail_of_ruin = p->get_background_action<trail_of_ruin_t>( fmt::format( "trail_of_ruin_{}", n ) );
+      add_child( trail_of_ruin );
     }
   }
 
@@ -7519,14 +7501,7 @@ struct chaos_strike_base_t
       // TOCHECK -- Does the applying Chaos Strike/Annihilation benefit from the debuff?
       if ( dh()->talent.havoc.serrated_glaive->ok() )
       {
-        if ( dh()->is_ptr() )
-        {
-          dh()->buff.serrated_glaive->trigger();
-        }
-        else
-        {
-          td( s->target )->debuffs.serrated_glaive->trigger();
-        }
+        dh()->buff.serrated_glaive->trigger();
       }
 
       if ( dh()->talent.aldrachi_reaver.warblades_hunger && dh()->buff.warblades_hunger->up() )
@@ -7591,17 +7566,11 @@ struct chaos_strike_base_t
     {
       if ( td( target )->debuffs.essence_break->up() )
         dh()->proc.annihilation_in_essence_break->occur();
-
-      if ( td( target )->debuffs.serrated_glaive->up() )
-        dh()->proc.annihilation_in_serrated_glaive->occur();
     }
     else
     {
       if ( td( target )->debuffs.essence_break->up() )
         dh()->proc.chaos_strike_in_essence_break->occur();
-
-      if ( td( target )->debuffs.serrated_glaive->up() )
-        dh()->proc.chaos_strike_in_serrated_glaive->occur();
     }
 
     // Demonic Appetite
@@ -7814,8 +7783,8 @@ struct essence_break_t : public demon_hunter_attack_t
       dh()->cooldown.essence_break->adjust(
           -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_stack_value() ) ) );
 
-      // 08/01/2026 - Essence Break and Eyebeam currently reduce the value of the other by 2.5 seconds when stacks 2 - 4 are each
-      // applied.
+      // 08/01/2026 - Essence Break and Eyebeam currently reduce the value of the other by 2.5 seconds when stacks 2 - 4
+      // are each applied.
       if ( dh()->buff.cycle_of_hatred->check() && dh()->buff.cycle_of_hatred->stack() < 4 )
       {
         dh()->cooldown.eye_beam->adjust(
@@ -8291,14 +8260,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
 
         if ( dh()->talent.havoc.serrated_glaive->ok() )
         {
-          if ( dh()->is_ptr() )
-          {
-            dh()->buff.serrated_glaive->trigger();
-          }
-          else
-          {
-            td( state->target )->debuffs.serrated_glaive->trigger();
-          }
+          dh()->buff.serrated_glaive->trigger();
         }
       }
     }
@@ -8406,11 +8368,6 @@ struct throw_glaive_t : public demon_hunter_attack_t
       {
         make_event<delayed_execute_event_t>( *sim, dh(), dh()->active.preemptive_strike, target, 400_ms );
       }
-    }
-
-    if ( td( target )->debuffs.serrated_glaive->up() )
-    {
-      dh()->proc.throw_glaive_in_serrated_glaive->occur();
     }
 
     if ( dh()->active.preemptive_strike )
@@ -8595,16 +8552,6 @@ struct vengeful_retreat_t
   {
     execute_action = p->get_background_action<vengeful_retreat_damage_t>( "vengeful_retreat_damage" );
     add_child( execute_action );
-
-    // TODO: Remove or modify when category cooldowns are implemented/fixed
-    if ( !p->is_ptr() )
-    {
-      cooldown->duration = data().category_cooldown();
-      if ( data().affected_by( p->talent.havoc.tactical_retreat->effectN( 1 ) ) )
-      {
-        cooldown->duration += p->talent.havoc.tactical_retreat->effectN( 1 ).time_value();
-      }
-    }
 
     base_teleport_distance                        = VENGEFUL_RETREAT_DISTANCE;
     movement_directionality                       = movement_direction_type::OMNI;
@@ -9619,10 +9566,6 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   dots.sigil_of_doom  = target->get_dot( "sigil_of_doom", &p );
   dots.the_hunt       = target->get_dot( "the_hunt_dot", &p );
 
-  debuffs.serrated_glaive =
-      make_buff( *this, "serrated_glaive", p.talent.havoc.serrated_glaive->effectN( 1 ).trigger() )
-          ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
-
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 
@@ -10629,9 +10572,6 @@ void demon_hunter_t::init_procs()
   proc.annihilation_in_essence_break       = get_proc( "Annihilation in Essence Break" );
   proc.blade_dance_in_essence_break        = get_proc( "Blade Dance in Essence Break" );
   proc.death_sweep_in_essence_break        = get_proc( "Death Sweep in Essence Break" );
-  proc.chaos_strike_in_serrated_glaive     = get_proc( "Chaos Strike in Serrated Glaive" );
-  proc.annihilation_in_serrated_glaive     = get_proc( "Annihilation in Serrated Glaive" );
-  proc.throw_glaive_in_serrated_glaive     = get_proc( "Throw Glaive in Serrated Glaive" );
   proc.shattered_destiny                   = get_proc( "Shattered Destiny" );
   proc.eye_beam_canceled                   = get_proc( "Eye Beam canceled" );
 
@@ -11283,9 +11223,7 @@ void demon_hunter_t::init_spells()
   spec.empowered_eye_beam_buff                   = talent_spell_lookup( talent.havoc.eternal_hunt_1, 1271144 );
   spec.empowered_eye_beam_damage                 = talent_spell_lookup( talent.havoc.eternal_hunt_1, 1287949 );
   spec.eternal_hunt_buff                         = talent_spell_lookup( talent.havoc.eternal_hunt_3, 1271092 );
-  spec.serrated_glaive_buff                      = is_ptr() && talent.havoc.serrated_glaive->ok()
-                                                       ? talent.havoc.serrated_glaive->effectN( 1 ).trigger()
-                                                       : spell_data_t::not_found();
+  spec.serrated_glaive_buff                      = talent.havoc.serrated_glaive->effectN( 1 ).trigger();
 
   spec.demon_spikes_buff               = find_spell( 203819, DEMON_HUNTER_VENGEANCE );
   spec.sigil_of_flame                  = find_spell( 204596, DEMON_HUNTER_VENGEANCE );
@@ -11495,10 +11433,6 @@ void demon_hunter_t::init_spells()
 
   // TODO: Check if this still behaves as described in `composite_player_critical_damage_multiplier`
   deregister_passive_spell( talent.havoc.know_your_enemy );
-  if ( !is_ptr() )
-  {
-    deregister_passive_spell( talent.havoc.tactical_retreat );
-  }
 
   // conditional passive, yippee
   deregister_passive_spell( talent.havoc.never_say_die );

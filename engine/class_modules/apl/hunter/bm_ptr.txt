@@ -4,7 +4,8 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=algethar_puzzle_box
 
 # Executed every time the actor is available.
-actions=auto_shot
+actions=retarget,target_if=max:target.health,line_cd=5,if=fight_style.dungeonroute
+actions+=/auto_shot
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=drst,if=talent.black_arrow&(active_enemies<2|!talent.beast_cleave&active_enemies<3)
@@ -55,7 +56,7 @@ actions.st=barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=
 actions.st+=/bestial_wrath
 actions.st+=/wild_thrash,if=active_enemies>1
 actions.st+=/kill_command,if=howl_summon.ready
-actions.st+=/kill_command,if=(cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3)&(buff.howl_of_the_pack_leader_cooldown.remains>4|cooldown.kill_command.charges_fractional>1)
+actions.st+=/kill_command,if=(cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3)&(buff.howl_of_the_pack_leader_cooldown.remains>4|cooldown.kill_command.charges_fractional>1.8)
 actions.st+=/cobra_shot,if=buff.cobra_fang.stack>=3
 actions.st+=/barbed_shot,if=(focus<75|full_recharge_time<gcd)&!talent.serpentine_strikes|talent.serpentine_strikes
 actions.st+=/cobra_shot,if=cooldown.bestial_wrath.remains>gcd

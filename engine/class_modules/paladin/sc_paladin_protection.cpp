@@ -13,7 +13,7 @@ namespace paladin {
   namespace buffs
   {
   sentinel_buff_t::sentinel_buff_t( paladin_t* p )
-    : buff_t( p, "sentinel", p->spells.sentinel ),
+    : buff_t( p, "sentinel", p->talents.sentinel ),
       damage_modifier( 0.0 ),
       healing_modifier( 0.0 ),
       crit_bonus( 0.0 ),
@@ -53,7 +53,7 @@ namespace paladin {
     }
     set_refresh_behavior( buff_refresh_behavior::NONE );
 
-    cooldown->duration = p->spells.sentinel->effectN( 14 ).time_value() *
+    cooldown->duration = p->talents.sentinel->effectN( 14 ).time_value() *
                          ( p->talents.righteous_protector->ok()
                              ? ( 1.0 - ( std::abs( p->talents.righteous_protector->effectN( 2 ).percent() ) ) )
                              : 1.0 );
@@ -121,18 +121,9 @@ struct avengers_shield_base_t : public paladin_spell_t
       : paladin_spell_t( n, p, p->spells.glory_of_the_vanguard )
     {
       background = true;
-      // Glory of the Vanguard hits every enemy in a line. For now, just assume it hits everything
-      // Theoretically, it also has a chance to miss completely, for whatever reasons. Drunk Paladins.
-      if ( p->is_ptr() )
-      {
-        aoe      = 1;
-        gotv_aoe = new glory_of_the_vanguard_aoe_t( std::string( n ) + "_aoe", p );
-        add_child( gotv_aoe );
-      }
-      else
-      {
-        aoe = -1;
-      }
+      aoe        = 1;
+      gotv_aoe   = new glory_of_the_vanguard_aoe_t( std::string( n ) + "_aoe", p );
+      add_child( gotv_aoe );
     }
     void execute() override
     {
@@ -148,8 +139,7 @@ struct avengers_shield_base_t : public paladin_spell_t
     void impact(action_state_t* s) override
     {
       paladin_spell_t::impact( s );
-      if ( p()->is_ptr() )
-        gotv_aoe->execute_on_target( s->target, s->result_amount );
+      gotv_aoe->execute_on_target( s->target, s->result_amount );
     }
   };
 
@@ -258,12 +248,9 @@ struct avengers_shield_base_t : public paladin_spell_t
     // Technically this should be in execute(), but we only know on impact if Avenger's Shield critted.
     if ( triggers_apex && s->chain_target == 0 )
     {
-      if ( p()->is_ptr() )
-        make_event<delayed_execute_on_target_event_t>(
-            *sim, p(), glory_of_the_vanguard, s->target,
-            s->result_amount * p()->talents.glory_of_the_vanguard_1->effectN( 1 ).percent(), 300_ms );
-      else
-        make_event<delayed_execute_event_t>( *sim, p(), glory_of_the_vanguard, s->target, 300_ms );
+      make_event<delayed_execute_on_target_event_t>(
+          *sim, p(), glory_of_the_vanguard, s->target,
+          s->result_amount * p()->talents.glory_of_the_vanguard_1->effectN( 1 ).percent(), 300_ms );
     }
   }
 
@@ -357,8 +344,6 @@ struct avengers_shield_divine_exaction_t :public avengers_shield_base_t
                               p->talents.templar.divine_exaction->effectN( 2 ).percent() )
   {
     background = true;
-    if ( !p->is_ptr() )
-      base_multiplier += 1.0;
   }
 };
 
@@ -409,7 +394,7 @@ struct blessed_hammer_t : public paladin_spell_t
       // To Do: Investigate refresh behaviour
       td( s->target )
           ->debuff.blessed_hammer->trigger( 1, s->attack_power * p()->talents.blessed_hammer->effectN( 1 ).percent() );
-      if ( p()->is_ptr() && p()->talents.seal_of_reprisal->ok() )
+      if ( p()->talents.seal_of_reprisal->ok() )
         p()->get_target_data( s->target )->debuff.seal_of_reprisal->execute();
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
         ue->do_execute( s );
@@ -466,18 +451,15 @@ struct blessed_hammer_t : public paladin_spell_t
     paladin_spell_t::execute();
     // Grand Crusader can proc on cast, but not on impact
     p()->trigger_grand_crusader();
-    if ( p()->is_ptr() )
+    if ( p()->buffs.lightsmith.masterwork_weapon->up() )
     {
-      if ( p()->buffs.lightsmith.masterwork_weapon->up() )
-      {
-        p()->buffs.lightsmith.masterwork_weapon->decrement();
-        p()->cast_lesser_armament( 1, LESSER_WEAPON );
-      }
-      if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
-      {
-        p()->buffs.lightsmith.masterwork_bulwark->decrement();
-        p()->cast_lesser_armament( 1, LESSER_BULWARK );
-      }
+      p()->buffs.lightsmith.masterwork_weapon->decrement();
+      p()->cast_lesser_armament( 1, LESSER_WEAPON );
+    }
+    if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
+    {
+      p()->buffs.lightsmith.masterwork_bulwark->decrement();
+      p()->cast_lesser_armament( 1, LESSER_BULWARK );
     }
   }
   void impact( action_state_t* s ) override
@@ -616,7 +598,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       paladin_melee_attack_t::impact( s );
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
         ue->do_execute( s );
-      if ( p()->is_ptr() && p()->talents.seal_of_reprisal->ok() )
+      if ( p()->talents.seal_of_reprisal->ok() )
         p()->get_target_data( s->target )->debuff.seal_of_reprisal->execute();
     }
   };
@@ -665,18 +647,15 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       if ( hotr_aoe->target != execute_state->target )
         hotr_aoe->target_cache.is_valid = false;
     }
-    if ( p()->is_ptr() )
+    if ( p()->buffs.lightsmith.masterwork_weapon->up() )
     {
-      if ( p()->buffs.lightsmith.masterwork_weapon->up() )
-      {
-        p()->buffs.lightsmith.masterwork_weapon->decrement();
-        p()->cast_lesser_armament( 1, LESSER_WEAPON );
-      }
-      if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
-      {
-        p()->buffs.lightsmith.masterwork_bulwark->decrement();
-        p()->cast_lesser_armament( 1, LESSER_BULWARK );
-      }
+      p()->buffs.lightsmith.masterwork_weapon->decrement();
+      p()->cast_lesser_armament( 1, LESSER_WEAPON );
+    }
+    if ( p()->buffs.lightsmith.masterwork_bulwark->up() )
+    {
+      p()->buffs.lightsmith.masterwork_bulwark->decrement();
+      p()->cast_lesser_armament( 1, LESSER_BULWARK );
     }
   }
 
@@ -694,7 +673,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     p()->buffs.lightsmith.blessed_assurance->expire();
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, MID2, B4 ) )
       ue->do_execute( s );
-    if ( p()->is_ptr() && p()->talents.seal_of_reprisal->ok() )
+    if ( p()->talents.seal_of_reprisal->ok() )
       p()->get_target_data( s->target )->debuff.seal_of_reprisal->execute();
   }
 
@@ -742,7 +721,7 @@ struct judgment_prot_t : public judgment_t
 // Sentinel
 struct sentinel_t : public paladin_spell_t
 {
-  sentinel_t( paladin_t* p, util::string_view options_str ) : paladin_spell_t( "sentinel", p, p->spells.sentinel)
+  sentinel_t( paladin_t* p, util::string_view options_str ) : paladin_spell_t( "sentinel", p, p->talents.sentinel)
   {
     parse_options( options_str );
 
@@ -1026,53 +1005,54 @@ void paladin_t::init_spells_protection()
   talents.hammer_of_the_righteous        = find_talent_spell( talent_tree::SPECIALIZATION, "Hammer of the Righteous" );
   talents.blessed_hammer                 = find_talent_spell( talent_tree::SPECIALIZATION, "Blessed Hammer" );
 
+  talents.valiant_crusade                = find_talent_spell( talent_tree::SPECIALIZATION, "Valiant Crusade" );
+  talents.blessed_word                   = find_talent_spell( talent_tree::SPECIALIZATION, "Blessed Word" );
+  talents.grand_crusader                 = find_talent_spell( talent_tree::SPECIALIZATION, "Grand Crusader" );
   talents.imbued_shield                  = find_talent_spell( talent_tree::SPECIALIZATION, "Imbued Shield" );
   talents.redoubt                        = find_talent_spell( talent_tree::SPECIALIZATION, "Redoubt" );
-  talents.grand_crusader                 = find_talent_spell( talent_tree::SPECIALIZATION, "Grand Crusader" );
-  talents.seal_of_charity                = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Charity" );
 
-
-  talents.refining_fire                  = find_talent_spell( talent_tree::SPECIALIZATION, "Refining Fire" );
-  talents.valiant_crusade                = find_talent_spell( talent_tree::SPECIALIZATION, "Valiant Crusade" );
+  talents.blessing_of_spellwarding       = find_talent_spell( talent_tree::SPECIALIZATION, "Blessing of Spellwarding" );
+  talents.uthers_counsel                 = find_talent_spell( talent_tree::SPECIALIZATION, "Uther's Counsel" );
   talents.ardent_defender                = find_talent_spell( talent_tree::SPECIALIZATION, "Ardent Defender" );
   talents.searing_sunlight               = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Sunlight" );
-  talents.solace                         = find_talent_spell( talent_tree::SPECIALIZATION, "Solace" );
+  talents.hand_of_the_protector          = find_talent_spell( talent_tree::SPECIALIZATION, "Hand of the Protector" );
 
   //8
-  talents.undying_embers                 = find_talent_spell( talent_tree::SPECIALIZATION, "Undying Embers" );
+  talents.refining_fire                  = find_talent_spell( talent_tree::SPECIALIZATION, "Refining Fire" );
   talents.bulwark_of_order               = find_talent_spell( talent_tree::SPECIALIZATION, "Bulwark of Order" );
-  talents.improved_ardent_defender       = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Ardent Defender" );
-  talents.blessing_of_spellwarding       = find_talent_spell( talent_tree::SPECIALIZATION, "Blessing of Spellwarding" );
+  talents.avenging_wrath                 = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath" );
   talents.light_of_the_titans            = find_talent_spell( talent_tree::SPECIALIZATION, "Light of the Titans" );
   talents.tirions_devotion               = find_talent_spell( talent_tree::SPECIALIZATION, "Tirion's Devotion" );
-  talents.vision_of_sanctity             = find_talent_spell( talent_tree::SPECIALIZATION, "Vision of Sanctity" );
+  talents.solace                         = find_talent_spell( talent_tree::SPECIALIZATION, "Solace" );
+  talents.instrument_of_the_divine       = find_talent_spell( talent_tree::SPECIALIZATION, "Instrument of the Divine" );
 
   talents.tyrs_enforcer                  = find_talent_spell( talent_tree::SPECIALIZATION, "Tyr's Enforcer" );
+  talents.undying_embers                 = find_talent_spell( talent_tree::SPECIALIZATION, "Undying Embers" );
   talents.relentless_inquisitor          = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
-  talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath: Might" );
-  talents.sentinel                       = find_talent_spell( talent_tree::SPECIALIZATION, "Sentinel" );
+  talents.improved_ardent_defender       = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Ardent Defender" );
+  talents.seal_of_reprisal               = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Reprisal" );
   talents.crusaders_judgment             = find_talent_spell( talent_tree::SPECIALIZATION, "Crusader's Judgment" );
+  talents.vision_of_sanctity             = find_talent_spell( talent_tree::SPECIALIZATION, "Vision of Sanctity" );
   talents.consecration_in_flame          = find_talent_spell( talent_tree::SPECIALIZATION, "Consecration in Flame" );
 
   talents.soaring_shield                 = find_talent_spell( talent_tree::SPECIALIZATION, "Soaring Shield" );
-  talents.seal_of_reprisal               = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Reprisal" );
+  talents.focused_enmity                 = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Enmity" );
   talents.guardian_of_ancient_kings      = find_talent_spell( talent_tree::SPECIALIZATION, "Guardian of Ancient Kings" );
-  talents.hand_of_the_protector          = find_talent_spell( talent_tree::SPECIALIZATION, "Hand of the Protector" );
   talents.sanctuary                      = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctuary" );
 
 
   //20
-  talents.focused_enmity                 = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Enmity" );
-  talents.gift_of_the_golden_valkyr      = find_talent_spell( talent_tree::SPECIALIZATION, "Gift of the Golden Val'kyr" );
-  talents.sanctified_wrath               = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctified Wrath" );
-  talents.uthers_counsel                 = find_talent_spell( talent_tree::SPECIALIZATION, "Uther's Counsel" );
-
   talents.strength_in_adversity          = find_talent_spell( talent_tree::SPECIALIZATION, "Strength in Adversity" );
   talents.crusaders_resolve              = find_talent_spell( talent_tree::SPECIALIZATION, "Crusader's Resolve" );
-  talents.ferren_marcuss_fervor          = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcus's Fervor" );
+  talents.gift_of_the_golden_valkyr      = find_talent_spell( talent_tree::SPECIALIZATION, "Gift of the Golden Val'kyr" );
   talents.empyrean_authority             = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Authority" );
+  talents.seal_of_charity                = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Charity" );
+
+  talents.sanctified_wrath = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctified Wrath" );
+
+  talents.ferren_marcuss_fervor          = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcus's Fervor" );
+  talents.sentinel                       = find_talent_spell( talent_tree::SPECIALIZATION, "Sentinel" );
   talents.zealots_paragon                = find_talent_spell( talent_tree::SPECIALIZATION, "Zealot's Paragon" );
-  talents.instrument_of_the_divine       = find_talent_spell( talent_tree::SPECIALIZATION, "Instrument of the Divine" );
 
   talents.sweeping_verdict               = find_talent_spell( talent_tree::SPECIALIZATION, "Sweeping Verdict" );
   talents.adjudication                   = find_talent_spell( talent_tree::SPECIALIZATION, "Adjudication" );
@@ -1110,7 +1090,6 @@ void paladin_t::init_spells_protection()
   passives.sanctuary           = find_specialization_spell( "Sanctuary" );
   passives.aegis_of_light      = find_specialization_spell( "Aegis of Light" );
 
-  spells.sentinel = find_spell( 389539 );
   spells.refining_fire_tick = find_spell( 469882 );
 
   spells.glory_of_the_vanguard = find_spell( 1269175 );

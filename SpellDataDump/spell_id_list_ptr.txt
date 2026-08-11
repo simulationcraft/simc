@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.0.69189
+Class Spell ID List, wow build 12.1.0.69214
 
 Death Knight
 3714     Path of Frost
@@ -3948,7 +3948,7 @@ Druid
 201604  *Den Mother Targeting Effect
 201629  *Ironfur
 201664  *Demoralizing Roar
-201671  *Gory Fur
+201671   Gory Fur
 202021   Predator
 202028   Brutal Slash
 202031   Sabertooth
@@ -5363,12 +5363,12 @@ Druid
 1264911  Spirit of the Thicket
 1269186  Unshapeshifted
 1269614  Wild Guardian
-1269616 *Wild Guardian
+1269616  Wild Guardian
 1269617  Wild Guardian
 1269619  Wild Guardian
 1269658  Wild Guardian
 1270065  Vicious Brambles
-1270277 *Wild Guardian
+1270277  Wild Guardian
 1270292  Lunar Beam
 1270565  Green Thumb
 1270586  Rampancy
@@ -5417,14 +5417,14 @@ Druid
 1301286  Gorestained Claws
 1301340  Incarnation: Tree of Life
 1301600  Halazzi's Fury
-1301638 *Symbiotic Relationship
+1301638  Symbiotic Relationship
 1301742  Starfall
 1301747  Starfall
 1301768  Akil'zon's Clarity
 1301989  Overgrowth
 1302255  Genesis
 1303480  Orbit Breaker
-1307881 *Gory Fur
+1307881  Gory Fur
 1308093  Spirit's Wrath
 1308125  Spirit's Wrath
 1308176  Dream Conduit
@@ -5432,12 +5432,12 @@ Druid
 1308437  Spirit's Wrath
 1308448 *Listener
 1308479  Spirit's Wrath
-1308522 *Wild Guardian Spirit
+1308522  Wild Guardian Spirit
 1308639  Spirit's Wrath
 1308647  Answered Calling
 1308653 *Listener
 1310150  Rampant Thorn
-1310213 *Rampant Thorn
+1310213  Rampant Thorn
 
 Evoker
 351338   Quell

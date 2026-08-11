@@ -4460,6 +4460,7 @@ private:
   using ab = evoker_action_t<spell_t>;
 
 public:
+  bool affected_by_giantkiller = true;
   evoker_spell_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil(),
                   std::string_view options_str = {} )
     : ab( name, player, spell )
@@ -4512,7 +4513,7 @@ public:
 
     // Preliminary testing shows this is linear with target hp %.
     // TODO: confirm this applies only to all evoker offensive spells
-    if ( p()->specialization() == EVOKER_DEVASTATION )
+    if ( p()->specialization() == EVOKER_DEVASTATION && affected_by_giantkiller )
     {
       if ( use_full_mastery() )
         tm *= 1.0 + p()->cache.mastery_value();
@@ -5265,7 +5266,8 @@ struct fire_breath_t : public empowered_charge_spell_t
     {
       auto mul = base_t::tick_time_pct_multiplier( state );
 
-      if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() )
+      if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() &&
+           p()->get_target_data( state->target )->dots.disintegrate->ticks_left_fractional() > 0 )
       {
         mul /= ( 1.0 + p()->talent.catalyze->effectN( 1 ).percent() );
       }
@@ -5399,6 +5401,7 @@ struct shattering_star_t : public evoker_spell_t
 {
   shattering_star_t( evoker_t* p, std::string_view name ) : evoker_spell_t( name, p, p->talent.shattering_star_spell )
   {
+    affected_by_giantkiller = false;
   }
 };
 
@@ -9177,10 +9180,10 @@ void evoker_t::init_action_list()
       evoker_apl::preservation( this );
       break;
     case EVOKER_AUGMENTATION:
-      if ( sim->dbc->wowv() >= wowv_t( 12, 0, 5 ) )
-        evoker_apl::augmentation_12_0_5( this );
+      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+        evoker_apl::augmentation_12_1_0( this );
       else
-        evoker_apl::augmentation_12_0_0( this );
+        evoker_apl::augmentation_12_0_5( this );
       break;
     default:
       evoker_apl::no_spec( this );
@@ -10221,6 +10224,8 @@ void evoker_t::init_spells()
   register_passive_effect_mask( spec.close_as_clutchmates, effect_mask_t( true ).disable( 1, 2 ) );
 
   register_passive_affect_list( talent.natural_convergence, affect_list_t( 3 ).remove_spell( 1259172 ) );
+
+  register_passive_affect_list( talent.spellweavers_dominance, affect_list_t( 1 ).add_spell( 444089, 445495 ) );
 
   // Register passives
   parse_all_class_passives();

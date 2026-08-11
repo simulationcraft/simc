@@ -61,7 +61,6 @@ struct idol_of_cthun_t;
 struct shadow_word_pain_t;
 struct mental_fortitude_t;
 struct expiation_t;
-struct purge_the_wicked_t;
 struct holy_fire_t;
 struct burning_vehemence_t;
 struct entropic_rift_t;
@@ -73,6 +72,7 @@ struct vision_of_nzoth_t;
 struct void_apparition_spell_t;
 struct void_bolt_t;
 struct shadeburst_t;
+struct searing_light_t;
 }  // namespace actions::spells
 
 namespace actions::heals
@@ -99,8 +99,8 @@ public:
     propagate_const<dot_t*> mind_flay;
     propagate_const<dot_t*> mind_flay_insanity;
     propagate_const<dot_t*> void_torrent;
-    propagate_const<dot_t*> purge_the_wicked;
     propagate_const<dot_t*> holy_fire;
+    propagate_const<dot_t*> searing_light;
   } dots;
 
   struct buffs_t
@@ -198,7 +198,8 @@ public:
     propagate_const<buff_t*> archangel;
     propagate_const<buff_t*> holy_ray;
     propagate_const<buff_t*> greater_smite;
-
+    propagate_const<buff_t*> master_the_darkness;
+    propagate_const<buff_t*> dark_transference;  // MID2 4pc 1307795
     // Holy
     propagate_const<buff_t*> apotheosis;
     propagate_const<buff_t*> empyreal_blaze;
@@ -817,10 +818,9 @@ public:
     propagate_const<actions::spells::void_apparition_spell_t*> void_apparitions;
     propagate_const<actions::spells::shadow_word_death_t*> shadow_word_death;
     propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
-    propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;
+    propagate_const<action_t*> shadow_word_pain;
     propagate_const<actions::spells::mental_fortitude_t*> mental_fortitude;
     propagate_const<actions::spells::expiation_t*> expiation;
-    propagate_const<actions::spells::purge_the_wicked_t*> purge_the_wicked;
     propagate_const<action_t*> searing_light;
     propagate_const<action_t*> light_eruption;
     propagate_const<actions::spells::burning_vehemence_t*> burning_vehemence;
@@ -837,6 +837,7 @@ public:
     propagate_const<actions::spells::vision_of_nzoth_t*> vision_of_nzoth;
     propagate_const<actions::spells::void_bolt_t*> void_bolt;
     propagate_const<actions::spells::shadeburst_t*> shadeburst;
+    propagate_const<actions::spells::searing_light_t*> searing_light_dot;
   } background_actions;
 
   // Items

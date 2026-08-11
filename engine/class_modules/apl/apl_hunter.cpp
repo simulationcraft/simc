@@ -165,6 +165,7 @@ void beast_mastery_ptr( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
 
+  default_->add_action( "retarget,target_if=max:target.health,line_cd=5,if=fight_style.dungeonroute" );
   default_->add_action( "auto_shot" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=trinkets" );
@@ -216,7 +217,7 @@ void beast_mastery_ptr( player_t* p )
   st->add_action( "bestial_wrath" );
   st->add_action( "wild_thrash,if=active_enemies>1" );
   st->add_action( "kill_command,if=howl_summon.ready" );
-  st->add_action( "kill_command,if=(cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3)&(buff.howl_of_the_pack_leader_cooldown.remains>4|cooldown.kill_command.charges_fractional>1)" );
+  st->add_action( "kill_command,if=(cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3)&(buff.howl_of_the_pack_leader_cooldown.remains>4|cooldown.kill_command.charges_fractional>1.8)" );
   st->add_action( "cobra_shot,if=buff.cobra_fang.stack>=3" );
   st->add_action( "barbed_shot,if=(focus<75|full_recharge_time<gcd)&!talent.serpentine_strikes|talent.serpentine_strikes" );
   st->add_action( "cobra_shot,if=cooldown.bestial_wrath.remains>gcd" );
@@ -337,6 +338,7 @@ void marksmanship_ptr( player_t* p )
 
   default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25|time<10" );
   default_->add_action( "variable,name=trueshot_ready,op=setif,condition=fight_style.dungeonroute,value_else=variable.trueshot_ready,value=raid_event.pull.remains>30|raid_event.pull.in>60|talent.calling_the_shots", "For DungeonRoute, hold Trueshot at the end of pulls." );
+  default_->add_action( "retarget,target_if=max:target.health,line_cd=5,if=fight_style.dungeonroute" );
   default_->add_action( "auto_shot" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=trinkets" );
@@ -509,6 +511,7 @@ void survival_ptr( player_t* p )
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "wildfire_bomb,if=active_enemies=1" );
 
+  default_->add_action( "retarget,target_if=max:target.health,line_cd=5,if=fight_style.dungeonroute" );
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=plst,if=active_enemies<3&talent.howl_of_the_pack_leader" );

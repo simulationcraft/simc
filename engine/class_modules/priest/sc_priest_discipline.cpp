@@ -147,8 +147,8 @@ struct pain_suppression_t final : public priest_spell_t
   buff_t* create_debuff( player_t* t ) override
   {
     return priest_spell_t::create_debuff( t )
-      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
-      ->set_cooldown( 0_ms );  // Let the ability handle the CD
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
+        ->set_cooldown( 0_ms );  // Let the ability handle the CD
   }
 
   void execute() override
@@ -172,7 +172,7 @@ struct evangelism_t final : public priest_heal_t
     harmful = false;
 
     evangelism_radiance =
-        priest().get_secondary_action<power_word_radiance_t>( "evangelism_radiance", "evangelism_radiance" );
+        priest().get_secondary_action<power_word_radiance_t>( "evangelism_radiance", "evangelism_radiance", "" );
 
     if ( !evangelism_radiance->stats->parent )
     {
@@ -210,41 +210,12 @@ struct evangelism_t final : public priest_heal_t
   }
 };
 
-// Purge the wicked
-struct purge_the_wicked_t final : public priest_spell_t
+using periodic_base_t = residual_action::residual_periodic_action_t<priest_spell_t>;
+struct searing_light_t : public periodic_base_t
 {
-  struct purge_the_wicked_dot_t final : public priest_spell_t
+  searing_light_t( priest_t& p, util::string_view n )
+    : residual_action_t( n, p, p.talents.discipline.searing_light_dot )
   {
-    // Manually create the dot effect because "ticking" is not present on
-    // primary spell
-    purge_the_wicked_dot_t( priest_t& p, util::string_view options_str )
-      : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked->effectN( 2 ).trigger() )
-    {
-      parse_options( options_str );
-      background = true;
-      // TODO: Implement the spreading of Purge the Wicked via penance
-
-      triggers_atonement = true;
-    }
-
-    void tick( dot_t* d ) override
-    {
-      priest_spell_t::tick( d );
-
-      if ( d->state->result_amount > 0 )
-      {
-        trigger_power_of_the_dark_side();
-      }
-    }
-  };
-
-  purge_the_wicked_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked )
-  {
-    parse_options( options_str );
-    tick_zero      = false;
-    execute_action = new purge_the_wicked_dot_t( p, "" );
-
     triggers_atonement = true;
   }
 };
@@ -305,12 +276,26 @@ protected:
       return d;
     }
 
+    double composite_atonement_multiplier( action_state_t* s ) override
+    {
+      double mul = priest_spell_t::composite_atonement_multiplier( s );
+
+      if ( p().talents.voidweaver.void_infusion.enabled() )
+        mul *= 1 + p().talents.voidweaver.void_infusion->effectN( 2 ).percent();
+
+      return mul;
+    }
+
     void impact( action_state_t* s ) override
     {
       priest_spell_t::impact( s );
       priest_td_t& td = get_td( s->target );
       td.dots.shadow_word_pain->adjust_duration( dot_extension );
-      td.dots.purge_the_wicked->adjust_duration( dot_extension );
+      if ( p().talents.discipline.searing_light->ok() )
+      {
+        residual_action::trigger( p().background_actions.searing_light_dot, s->target,
+                                  s->result_amount * p().talents.discipline.searing_light->effectN( 1 ).percent() );
+      }
     }
 
     void execute() override
@@ -513,68 +498,11 @@ public:
       move_random_target( has_swp_targets, targets );
     }
 
-    sim->print_debug( "{} purge_the_wicked spread selected targets={{ {} }}", player->name(),
+    sim->print_debug( "{} encroaching shadows spread selected targets={{ {} }}", player->name(),
                       actor_list_str( targets ) );
 
     range::for_each(
-        targets, [ & ]( player_t* target ) { p.background_actions.purge_the_wicked->execute_on_target( target ); } );
-  }
-
-  void spread_purge_the_wicked( const action_state_t* state, priest_t& p ) const
-  {
-    // Exit if PTW isn't ticking
-    if ( !td( state->target )->dots.purge_the_wicked->is_ticking() )
-    {
-      return;
-    }
-    // Exit if there 1 or fewer targets
-    if ( target_list().size() <= 1 )
-    {
-      return;
-    }
-    // Targets to spread PTW to
-    std::vector<player_t*> targets;
-
-    // Targets without PTW
-    std::vector<player_t*> no_ptw_targets,
-        // Targets that already have PTW
-        has_ptw_targets;
-
-    // Categorize all available targets (within 8 yards of the main target) based on presence of PTW
-    range::for_each( target_list(), [ & ]( player_t* t ) {
-      // Ignore main target
-      if ( t == state->target )
-      {
-        return;
-      }
-
-      if ( !td( t )->dots.purge_the_wicked->is_ticking() )
-      {
-        no_ptw_targets.push_back( t );
-      }
-      else if ( td( t )->dots.purge_the_wicked->is_ticking() )
-      {
-        has_ptw_targets.push_back( t );
-      }
-    } );
-
-    // 1) Randomly select targets without PTW, unless there already are the maximum number of targets with PTW up.
-    while ( no_ptw_targets.size() > 0 && targets.size() < max_spread_targets )
-    {
-      move_random_target( no_ptw_targets, targets );
-    }
-
-    // 2) Randomly select targets that already have PTW on them
-    while ( has_ptw_targets.size() > 0 && targets.size() < max_spread_targets )
-    {
-      move_random_target( has_ptw_targets, targets );
-    }
-
-    sim->print_debug( "{} purge_the_wicked spread selected targets={{ {} }}", player->name(),
-                      actor_list_str( targets ) );
-
-    range::for_each(
-        targets, [ & ]( player_t* target ) { p.background_actions.purge_the_wicked->execute_on_target( target ); } );
+        targets, [ & ]( player_t* target ) { p.background_actions.shadow_word_pain->execute_on_target( target ); } );
   }
 
   void execute() override
@@ -585,6 +513,20 @@ public:
     priest().buffs.power_of_the_dark_side->expire();
 
     priest().buffs.harsh_discipline->decrement();
+
+    if ( priest().talents.discipline.master_the_darkness_1.enabled() )
+    {
+      if ( priest().deck_rng.master_of_darkness->trigger() )
+      {
+        priest().buffs.master_the_darkness->trigger();
+      }
+    }
+
+    if ( const spell_data_t* set_bonus = priest().sets->set( PRIEST_DISCIPLINE, MID2, B2 );
+         priest().is_ptr() && priest().sets->has_set_bonus( PRIEST_DISCIPLINE, MID2, B2 ) && set_bonus->ok() )
+    {
+      priest().cooldowns.mind_blast->adjust( -set_bonus->effectN( 2 ).time_value() );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -628,12 +570,21 @@ protected:
       triggers_atonement = true;
     }
 
+    double composite_atonement_multiplier( action_state_t* s ) override
+    {
+      double mul = priest_spell_t::composite_atonement_multiplier( s );
+
+      if ( p().talents.voidweaver.void_infusion.enabled() )
+        mul *= 1 + p().talents.voidweaver.void_infusion->effectN( 2 ).percent();
+
+      return mul;
+    }
+
     void impact( action_state_t* s ) override
     {
       priest_spell_t::impact( s );
       priest_td_t& td = get_td( s->target );
       td.dots.shadow_word_pain->adjust_duration( dot_extension );
-      td.dots.purge_the_wicked->adjust_duration( dot_extension );
     }
   };
 
@@ -672,17 +623,38 @@ protected:
   };
 
   propagate_const<ultimate_penitence_channel_t*> channel;
+  action_t* nested_action;
+  std::string nested_action_name;
 
 public:
   ultimate_penitence_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "ultimate_penitence", p, p.talents.discipline.ultimate_penitence )
+    : priest_spell_t( "ultimate_penitence", p, p.talents.discipline.ultimate_penitence ), nested_action( nullptr )
   {
+    add_option( opt_string( "nested_action", nested_action_name ) );
     parse_options( options_str );
     // Channel = 421434
     // Damage bolt = 421543
 
+    if ( action_t* a = p.create_action( nested_action_name, "" ); a )
+    {
+      if ( a->base_execute_time > 0_s && !a->channeled )
+      {
+        sim->errorf( "Ultimate Penitence nested action %s has a cast time, which is not supported.",
+                     nested_action_name );
+      }
+      nested_action = a;
+    }
+
     channel = new ultimate_penitence_channel_t( p, stats );
     add_child( channel->damage );
+  }
+
+  bool ready() override
+  {
+    if ( nested_action && !nested_action->ready() )
+      return false;
+
+    return priest_spell_t::ready();
   }
 
   void execute() override
@@ -694,7 +666,11 @@ public:
   {
     priest_spell_t::impact( s );
 
-    channel->execute_on_target( s->target );
+    if ( nested_action && nested_action->ready() )
+      nested_action->queue_execute( execute_type::CAST_WHILE_CASTING );
+
+    channel->set_target( s->target );
+    channel->queue_execute( execute_type::CAST_WHILE_CASTING );
   }
 };
 }  // namespace actions::spells
@@ -705,6 +681,14 @@ namespace buffs
 
 void priest_t::create_buffs_discipline()
 {
+  buffs.dark_transference =
+      make_buff_fallback( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ), this, "dark_transference", find_spell( 1307795 ) );
+
+  if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+  {
+    buffs.dark_transference->set_default_value_from_effect( 1, 0.01 );
+  }
+
   buffs.power_of_the_dark_side =
       make_buff( this, "power_of_the_dark_side", talents.discipline.power_of_the_dark_side->effectN( 1 ).trigger() )
           ->set_default_value_from_effect( 1, 0.01 );
@@ -712,7 +696,8 @@ void priest_t::create_buffs_discipline()
   buffs.harsh_discipline = make_buff( this, "harsh_discipline", find_spell( 373183 ) )
                                ->set_default_value( talents.discipline.harsh_discipline->effectN( 2 ).base_value() );
 
-  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) )->add_invalidate( CACHE_HASTE );
+  buffs.borrowed_time =
+      make_buff( this, "borrowed_time", find_spell( 390692 ) )->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   if ( talents.discipline.borrowed_time.ok() )
   {
@@ -735,14 +720,14 @@ void priest_t::create_buffs_discipline()
 
 void priest_t::init_rng_discipline()
 {
-  deck_rng.master_of_darkness = get_shuffled_rng( "master_of_darkness", 1, 3 );
+  deck_rng.master_of_darkness = get_shuffled_rng( "master_of_darkness", 1, 4 );
 }
 
 void priest_t::init_background_actions_discipline()
 {
-  if ( talents.discipline.purge_the_wicked.enabled() )
+  if ( talents.discipline.searing_light.enabled() )
   {
-    background_actions.purge_the_wicked = new actions::spells::purge_the_wicked_t( *this, "" );
+    background_actions.searing_light_dot = new actions::spells::searing_light_t( *this, "searing_light" );
   }
 }
 
@@ -812,7 +797,7 @@ void priest_t::init_spells_discipline()
   talents.discipline.searing_light_dot = find_spell( 1280134 );
   talents.discipline.expiation         = ST( "Expiation" );
   // Apex
-  talents.discipline.master_the_darkness_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1253591 );
+  talents.discipline.master_the_darkness_1 = find_talent_spell( talent_tree::SPECIALIZATION, 1253590 );
   talents.discipline.void_shield           = find_spell( 1253593 );
   talents.discipline.void_shield_reflect   = find_spell( 1253828 );
   talents.discipline.master_the_darkness_2 = find_talent_spell( talent_tree::SPECIALIZATION, 1253845 );
@@ -820,8 +805,8 @@ void priest_t::init_spells_discipline()
 
   // General Spells
   specs.penance         = find_spell( 47540 );
-  specs.penance_channel = find_spell( 47758 );   // Channel spell, triggered by 47540, executes 47666 every tick
-  specs.penance_tick    = find_spell( 47666 );   // Not triggered from 47540, only 47758
+  specs.penance_channel = find_spell( 47758 );  // Channel spell, triggered by 47540, executes 47666 every tick
+  specs.penance_tick    = find_spell( 47666 );  // Not triggered from 47540, only 47758
 
   specs.plea = find_spell( 200829 );
 
@@ -844,10 +829,6 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
   if ( name == "penance" )
   {
     return new penance_t( *this, options_str );
-  }
-  if ( name == "purge_the_wicked" )
-  {
-    return new purge_the_wicked_t( *this, options_str );
   }
   if ( name == "evangelism" )
   {

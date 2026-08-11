@@ -2130,13 +2130,12 @@ void action_t::assess_damage( result_amount_type rt, action_state_t* state )
   {
     if ( sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
     {
-      if ( state->target->is_boss() )
+      if ( state->target->is_boss() || sim->merge_enemy_priority_dmg && state->target == player->target )
       {
         player->priority_iteration_dmg += state->result_amount;
       }
     }
-    else if ( state->target == sim->target ||
-              ( sim->merge_enemy_priority_dmg && state->target->is_boss() ) )
+    else if ( state->target == sim->target || sim->merge_enemy_priority_dmg && state->target->is_boss() )
     {
       player->priority_iteration_dmg += state->result_amount;
     }
@@ -5120,8 +5119,8 @@ void action_t::acquire_target( retarget_source event, player_t* /* context */, p
   }
 
   // Don't swap targets if the action's current target is still alive, except in cases
-  // where the actor has risen (been summoned, start of iteration etc).
-  if ( event != retarget_source::SELF_ARISE &&
+  // where the actor has risen (been summoned, start of iteration etc) or is deliberately retargeting.
+  if ( event != retarget_source::SELF_ARISE && event != retarget_source::SELF_RETARGET &&
        target && !target->is_sleeping() && !target->debuffs.invulnerable->check() )
   {
     return;

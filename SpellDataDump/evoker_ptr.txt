@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.69189 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.69214 PTR
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -8213,6 +8213,7 @@ $meTalent=$?s1291457[${1+($1291457s1/100)}][${1}]
 $dmg=${$INT*$<coeff>*$<meTalent>*(1+$@versadmg)*$pctD}
 
 Name             : Inferno's Blessing (id=410263) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Fire
 Spell Type       : Magic
@@ -8227,7 +8228,7 @@ Real PPM         : 10 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Affecting Spells : Mastery: Timewalker (406380 effect#2)
 Family Flags     : 67
-Attributes       : Can Proc From Procs (122), Limit N (165), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Can Proc From Procs (122), Only Proc From Class Abilities (415), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1075749)  : Apply Aura (6) | Dummy (4) | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 100 yards | Target: at Self (18) -> At Ally in Area (31)

@@ -62,6 +62,49 @@ struct power_word_shield_buff_t : public priest_buff_t<absorb_buff_t>
   }
 };
 
+// ==========================================================================
+// Power Word: Shield
+// ==========================================================================
+struct void_shield_buff_t : public priest_buff_t<absorb_buff_t>
+{
+  double initial_size;
+  double energize_amount;
+  using ab = priest_buff_t<absorb_buff_t>;
+
+  void_shield_buff_t( priest_t* player, player_t* target )
+    : ab( actor_pair_t( target, player ), "void_shield", player->find_spell( 1253593 ) ),
+      energize_amount( player->find_spell( 47755 )->effectN( 1 ).percent() / 100 *
+                       priest().resources.max[ RESOURCE_MANA ] )
+  {
+    set_absorb_source( player->get_stats( "void_shield" ) );
+    set_cooldown( 0_s );
+    initial_size = 0;
+    disable_ticking( true );  // TODO: Work out why Power Word: Shield has buff period. Work out why shields ticking
+                              // refreshes them to full value.
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    sim->print_debug( "{} changes stored Void Shield maximum from {} to {}", *player, initial_size, value );
+    initial_size = value;
+
+    return ab::trigger( stacks, value, chance, duration );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    if ( remaining_duration > timespan_t::zero() )
+    {
+      if ( priest().talents.discipline.shield_discipline.enabled() )
+      {
+        priest().resource_gain( RESOURCE_MANA, energize_amount, priest().gains.shield_discipline );
+      }
+    }
+
+    ab::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
 }  // namespace buffs
 
 namespace actions
@@ -93,8 +136,7 @@ struct expiation_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_td_t& td = get_td( s->target );
-    dot_t* dot =
-        priest().talents.discipline.purge_the_wicked.enabled() ? td.dots.purge_the_wicked : td.dots.shadow_word_pain;
+    dot_t* dot      = td.dots.shadow_word_pain;
 
     auto dot_damage = priest().tick_damage_over_time( consume_time, dot );
     if ( dot_damage > 0 )
@@ -150,9 +192,14 @@ public:
       priest().buffs.shattered_psyche->expire();
     }
 
-    if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.voidweaver.entropic_rift.enabled() )
+    if ( priest().talents.discipline.master_the_darkness_3.enabled() )
     {
-      priest().trigger_entropic_rift();
+      priest().buffs.master_the_darkness->trigger();
+    }
+
+    if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, MID2, B4 ) )
+    {
+      priest().buffs.dark_transference->trigger();
     }
   }
 
@@ -774,8 +821,8 @@ struct smite_base_t : public priest_spell_t
         {
           auto it = *( std::min_element( p().allies_with_atonement.begin(), p().allies_with_atonement.end(),
                                          [ this ]( player_t* a, player_t* b ) {
-                                           return a->health_percentage() < b->health_percentage() &&
-                                                  priest().find_target_data( b )->buffs.atonement->remains() < 30_s;
+                                           return priest().find_target_data( a )->buffs.atonement->remains() <
+                                                  priest().find_target_data( b )->buffs.atonement->remains();
                                          } ) );
 
           auto atone = priest().find_target_data( it )->buffs.atonement;
@@ -851,6 +898,12 @@ struct void_blast_disc_t final : public smite_base_t
       return false;
 
     return smite_base_t::action_ready();
+  }
+  void execute() override
+  {
+    smite_base_t::execute();
+
+    p().extend_entropic_rift();
   }
 };
 
@@ -1611,6 +1664,7 @@ struct entropic_rift_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
+    priest().buffs.entropic_rift->expire();
     priest().buffs.entropic_rift->trigger();
 
     // Keep track of this for collapsing void
@@ -1847,7 +1901,6 @@ struct desperate_prayer_t final : public priest_heal_t
 
 // ==========================================================================
 // Power Word: Shield
-// TODO: add Weal and Woe bonuses
 // ==========================================================================
 struct power_word_shield_t final : public priest_absorb_t
 {
@@ -1901,6 +1954,14 @@ struct power_word_shield_t final : public priest_absorb_t
     return buff;
   }
 
+  bool ready() override
+  {
+    if ( p().buffs.master_the_darkness->check() )
+      return false;
+
+    return priest_absorb_t::ready();
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = priest_absorb_t::composite_da_multiplier( s );
@@ -1908,6 +1969,11 @@ struct power_word_shield_t final : public priest_absorb_t
     if ( priest().buffs.weal_and_woe->check() )
     {
       m *= 1 + priest().buffs.weal_and_woe->data().effectN( 2 ).percent() * priest().buffs.weal_and_woe->check();
+    }
+
+    if ( priest().buffs.dark_transference->check() )
+    {
+      m *= 1.0 + priest().buffs.dark_transference->check_value();
     }
 
     return m;
@@ -1928,11 +1994,213 @@ struct power_word_shield_t final : public priest_absorb_t
     priest_absorb_t::execute();
 
     priest().buffs.weal_and_woe->expire();
+    priest().buffs.dark_transference->decrement();
   }
 
   void impact( action_state_t* s ) override
   {
     priest_absorb_t::impact( s );
+
+    if ( priest().talents.discipline.atonement.enabled() )
+    {
+      priest_td_t& td = get_td( s->target );
+      td.buffs.atonement->trigger( atonement_duration );
+    }
+  }
+};
+
+// ==========================================================================
+// Void Shield
+// ==========================================================================
+struct void_shield_t final : public priest_absorb_t
+{
+  struct void_shield_damage_t : public priest_spell_t
+  {
+    void_shield_damage_t( priest_t& p ) : priest_spell_t( "void_shield_damage", p, p.find_spell( 1253828 ) )
+    {
+      background         = true;
+      triggers_atonement = true;
+    }
+  };
+
+  timespan_t atonement_duration;
+  const spell_data_t* bns_data;
+  action_t* damage;
+
+  void_shield_t( priest_t& p, util::string_view options_str )
+    : priest_absorb_t( "void_shield", p, p.find_spell( 1253593 ) ),
+      atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() +
+                                                    p.talents.discipline.indemnity->effectN( 1 ).base_value() ) ),
+      bns_data( p.talents.body_and_soul.ok() ? p.find_spell( 65081 ) : nullptr )
+  {
+    parse_options( options_str );
+
+    cooldown = p.cooldowns.power_word_shield;
+
+    disc_mastery = true;
+    harmful      = false;
+    aoe          = as<int>( data().effectN( 2 ).base_value() );
+
+    damage = p.get_secondary_action<void_shield_damage_t>( "void_shield_damage" );
+    add_child( damage );
+  }
+
+  // Manually create the buff so we can reference it with Void Shield
+  absorb_buff_t* create_buff( const action_state_t* s ) override
+  {
+    buff_t* b = buff_t::find( s->target, name_str, player );
+    if ( b )
+      return debug_cast<absorb_buff_t*>( b );
+
+    auto buff = make_buff<buffs::void_shield_buff_t>( &priest(), s->target );
+    buff->set_absorb_source( stats );
+
+    if ( bns_data )
+    {
+      auto bns = make_buff( actor_pair_t( s->target, &priest() ), "body_and_soul", bns_data )
+                     ->set_movement_speed_buff_from_data();
+
+      buff->add_stack_change_callback( [ bns ]( buff_t*, int old_, int new_ ) {
+        if ( !old_ && new_ )
+          bns->trigger();
+      } );
+    }
+
+    return buff;
+  }
+
+  bool ready() override
+  {
+    if ( !p().buffs.master_the_darkness->check() )
+      return false;
+
+    return priest_absorb_t::ready();
+  }
+
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
+  {
+    target_list.clear();
+    target_list.push_back( target );
+
+    /*for ( const auto& t : sim->healing_no_pet_list )
+      if ( t != target )
+        target_list.push_back( t );
+
+    rng().shuffle( target_list.begin() + 1, target_list.end() );*/
+
+    // Don't include pets for the ease of writing APLs
+    if ( as<int>( sim->healing_no_pet_list.size() ) <= n_targets() )
+    {
+      for ( auto t : sim->healing_no_pet_list )
+        if ( t != target && ( t->is_active() || ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
+          target_list.push_back( t );
+
+      auto offset = target_list.size();
+
+      for ( auto t : sim->healing_pet_list )
+      {
+        if ( t != target && ( ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
+          target_list.push_back( t );
+      }
+
+      if ( std::next( target_list.begin(), offset ) < target_list.end() )
+        rng().shuffle( std::next( target_list.begin(), offset ), target_list.end() );
+
+      return target_list.size();
+    }
+
+    std::vector<player_t*> helper_list = {};
+
+    for ( auto t : sim->healing_no_pet_list )
+    {
+      if ( t != target && ( t->is_active() || ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
+      {
+        if ( !p().find_target_data( t ) || !p().find_target_data( t )->buffs.atonement->check() )
+        {
+          target_list.push_back( t );
+        }
+        else
+        {
+          helper_list.push_back( t );
+        }
+      }
+    }
+
+    if ( as<int>( target_list.size() ) > n_targets() )
+    {
+      rng().shuffle( target_list.begin() + 1, target_list.end() );
+    }
+
+    auto offset = target_list.size();
+
+    for ( auto t : helper_list )
+    {
+      target_list.push_back( t );
+    }
+
+    if ( std::next( target_list.begin(), offset ) < target_list.end() )
+      rng().shuffle( std::next( target_list.begin(), offset ), target_list.end() );
+
+    return target_list.size();
+  }
+
+  void activate() override
+  {
+    priest_absorb_t::activate();
+
+    priest().allies_with_atonement.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_absorb_t::composite_da_multiplier( s );
+
+    if ( priest().buffs.weal_and_woe->check() )
+    {
+      m *= 1 + priest().buffs.weal_and_woe->data().effectN( 2 ).percent() * priest().buffs.weal_and_woe->check();
+    }
+
+    if ( priest().buffs.dark_transference->check() )
+    {
+      m *= 1.0 + priest().buffs.dark_transference->check_value();
+    }
+
+    return m;
+  }
+
+  void execute() override
+  {
+    if ( priest().talents.discipline.borrowed_time.enabled() )
+    {
+      priest().buffs.borrowed_time->trigger();
+    }
+
+    priest_absorb_t::execute();
+
+    priest().buffs.weal_and_woe->expire();
+    priest().buffs.master_the_darkness->decrement();
+    priest().buffs.dark_transference->decrement();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_absorb_t::impact( s );
+
+    if ( priest().talents.discipline.master_the_darkness_3.enabled() )
+    {
+      auto target = priest().target;
+      if ( !target || !target->is_enemy() )
+      {
+        if ( priest().sim->target_non_sleeping_list.size() > 0 )
+          target = rng().range( priest().sim->target_non_sleeping_list );
+      }
+
+      if ( target && !target->is_sleeping() && target->is_enemy() )
+      {
+        damage->execute_on_target(
+            target, s->result_amount * p().talents.discipline.master_the_darkness_3->effectN( 1 ).percent() );
+      }
+    }
 
     if ( priest().talents.discipline.atonement.enabled() )
     {
@@ -1993,13 +2261,13 @@ struct atonement_t final : public priest_heal_t
     if ( state->chain_target > 0 )
       amount *= base_aoe_multiplier;
 
-    // Spell splits damage across all targets equally
-    if ( state->action->split_aoe_damage )
-      amount /= state->n_targets;
-
-    if ( missing_hp_targets > reduced_aoe_targets && state->target->health_percentage() <= 100.0 )
+    if ( state->target->health_percentage() >= 100.0 && state->n_targets >= reduced_aoe_targets )
     {
-      amount *= std::sqrt( reduced_aoe_targets / missing_hp_targets );
+      amount *= std::pow( reduced_aoe_targets / state->n_targets, 0.75 );
+    }
+    else if ( missing_hp_targets > reduced_aoe_targets )
+    {
+      amount *= std::pow( reduced_aoe_targets / missing_hp_targets, 0.75 );
     }
 
     amount *= composite_aoe_multiplier( state );
@@ -2248,8 +2516,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.mind_flay           = target->get_dot( "mind_flay", &p );
   dots.mind_flay_insanity  = target->get_dot( "mind_flay_insanity", &p );
   dots.void_torrent        = target->get_dot( "void_torrent", &p );
-  dots.purge_the_wicked    = target->get_dot( "purge_the_wicked", &p );
   dots.holy_fire           = target->get_dot( "holy_fire", &p );
+  dots.searing_light       = target->get_dot( "searing_light", &p );
 
   buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
 
@@ -2811,6 +3079,10 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     return new power_word_shield_t( *this, options_str );
   }
+  if ( specialization() == PRIEST_DISCIPLINE && name == "void_shield" )
+  {
+    return new void_shield_t( *this, options_str );
+  }
   if ( name == "power_word_fortitude" )
   {
     return new power_word_fortitude_t( *this, options_str );
@@ -3243,6 +3515,8 @@ void priest_t::create_buffs()
   buffs.power_word_shield = new buffs::power_word_shield_buff_t( this, this );
   buffs.fade              = make_buff( this, "fade", find_class_spell( "Fade" ) )->set_default_value_from_effect( 4 );
   buffs.levitate          = make_buff( this, "levitate", specs.levitate_buff )->set_duration( timespan_t::zero() );
+
+  buffs.master_the_darkness = make_buff( this, "master_the_darkness", find_spell( 1253591 ) );
 
   // Shared talent buffs
   // Does not show damage value on the buff spelldata, that is only found on the talent
