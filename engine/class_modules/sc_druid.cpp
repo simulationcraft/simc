@@ -45,6 +45,8 @@ static constexpr size_t UNSEEN_SWIPE_TARGETS = 3;
 static constexpr double UNSEEN_SWIPE_REDUCED_AOE = 5;
 // ursoc's fury & natural resilience cap as percentage of max hp
 static constexpr double GUARDIAN_SHIELD_CAP_HP_PCT = 0.3;
+// wild guardian spirit wrath spawn delay (in seconds)
+static constexpr double SPIRIT_WRATH_DELAY = 0.2;
 
 namespace pets
 {
@@ -5112,6 +5114,32 @@ public:
 };
 
 template <typename BASE>
+struct trigger_spirits_wrath_t : public BASE
+{
+private:
+  druid_t* p_;
+
+protected:
+  using base_t = trigger_spirits_wrath_t<BASE>;
+
+public:
+  trigger_spirits_wrath_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
+    : BASE( n, p, s, f ), p_( p )
+  {}
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( p_->active.spirits_wrath && p_->buff.answered_calling_summon->check() )
+    {
+      auto _tar = p_->rng().range( p_->active.spirits_wrath->target_list() );
+      p_->active.spirits_wrath->execute_on_target( _tar );
+    }
+  }
+};
+
+template <typename BASE>
 struct trigger_ursocs_fury_t : public BASE
 {
 private:
@@ -5399,7 +5427,7 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
                                trigger_claw_rampage_t<DRUID_GUARDIAN,
                                trigger_aggravate_wounds_t<DRUID_GUARDIAN,
                                trigger_wildpower_surge_t<DRUID_GUARDIAN,
-                               bear_attack_t>>>>>
+                               trigger_spirits_wrath_t<bear_attack_t>>>>>>
 {
   action_t* strike = nullptr;
   gain_t* red_moon_gain = nullptr;
@@ -5452,9 +5480,6 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
   void execute() override
   {
     base_t::execute();
-
-    if ( p()->buff.answered_calling_summon->check() )
-      p()->active.spirits_wrath->execute_on_target( target );
 
     p()->buff.guardian_of_elune->trigger( this );
 
@@ -5926,7 +5951,8 @@ struct swipe_bear_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
 struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
                                trigger_aggravate_wounds_t<DRUID_GUARDIAN,
                                trigger_ursocs_fury_t<
-                               trigger_gore_t<bear_attack_t>>>>
+                               trigger_gore_t<
+                               trigger_spirits_wrath_t<bear_attack_t>>>>>
 {
   struct thrash_bleed_t final : public trigger_ursocs_fury_t<use_dot_list_t<bear_attack_t>>
   {
@@ -5982,10 +6008,6 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
   {
     base_t::execute();
 
-    // TODO: determine if target is random
-    if ( p()->buff.answered_calling_summon->check() )
-      p()->active.spirits_wrath->execute_on_target( target );
-
     p()->buff.gorestained_claws->trigger( this );
     if ( p()->sets->has_set_bonus( DRUID_GUARDIAN, MID2, B4 ) )
     {
@@ -6032,6 +6054,8 @@ struct spirits_wrath_t final : public bear_attack_t
     : bear_attack_t( "spirits_wrath", p, p->find_spell( 1308093 ) )
   {
     proc = true;
+    travel_delay = SPIRIT_WRATH_DELAY;
+    // TODO: determine travel speed for the spawn charge
 
     if ( p->talent.wild_guardian_3.ok() )
     {
