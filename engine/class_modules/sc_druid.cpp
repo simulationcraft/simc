@@ -537,7 +537,7 @@ struct druid_t final : public parse_player_effects_t
   // Feral
   int cp_spent_in_berserk = 0;  // mid2 2pc
   // Guardian
-  timespan_t mid2_4pc_extension;
+  timespan_t rampant_thorn_berserk_extension;  // mid2 4pc
 
   struct dot_list_t
   {
@@ -5224,7 +5224,7 @@ struct berserk_bear_base_t : public bear_attack_t
     if ( p()->cooldown.thrash )
       p()->cooldown.thrash->reset( true );
 
-    p()->mid2_4pc_extension = 0_ms;
+    p()->rampant_thorn_berserk_extension = 0_ms;
   }
 };
 
@@ -5963,9 +5963,9 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
     {
       p()->buff.rampant_thorn->trigger();
 
-      if ( p()->mid2_4pc_extension < mid2_4pc_max && p()->buff.b_inc_bear->check() )
+      if ( p()->rampant_thorn_berserk_extension < mid2_4pc_max && p()->buff.b_inc_bear->check() )
       {
-        p()->mid2_4pc_extension += mid2_4pc_add;
+        p()->rampant_thorn_berserk_extension += mid2_4pc_add;
         p()->buff.b_inc_bear->extend_duration( mid2_4pc_add );
       }
     }
@@ -11324,6 +11324,9 @@ void druid_t::create_buffs()
         } );
 
   buff.b_inc_bear = talent.incarnation_bear.ok() ? buff.incarnation_bear : buff.berserk_bear;
+  buff.b_inc_bear->set_expire_callback( [ this ]( auto, auto, auto ) {
+    rampant_thorn_berserk_extension = 0_ms;
+  } );
 
   buff.blood_frenzy =
     make_fallback( talent.blood_frenzy.ok(), this, "blood_frenzy_buff", talent.blood_frenzy )
@@ -13045,7 +13048,7 @@ void druid_t::reset()
   stellar_amplification_target = nullptr;
   moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
   cp_spent_in_berserk = 0;
-  mid2_4pc_extension = 0_ms;
+  rampant_thorn_berserk_extension = 0_ms;
   dot_lists.moonfire.clear();
   dot_lists.sunfire.clear();
   dot_lists.rake.clear();
@@ -13534,6 +13537,11 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name )
       splits[ 1 ] = "lunar_inspiration";
       return druid_t::create_expression( util::string_join( splits, "." ) );
     }
+  }
+  else if ( specialization() == DRUID_GUARDIAN )
+  {
+    if ( util::str_compare_ci( name, "rampant_thorn_berserk_extension" ) )
+      return make_fn_expr( name, [ this ] { return rampant_thorn_berserk_extension.total_seconds(); } );
   }
 
   // Convert [talent/buff/cooldown].incarnation.* to spec-based incarnations
