@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.69214 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.69273 PTR
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -8213,7 +8213,6 @@ $meTalent=$?s1291457[${1+($1291457s1/100)}][${1}]
 $dmg=${$INT*$<coeff>*$<meTalent>*(1+$@versadmg)*$pctD}
 
 Name             : Inferno's Blessing (id=410263) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Fire
 Spell Type       : Magic

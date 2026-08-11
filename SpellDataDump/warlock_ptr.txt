@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.69214 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.69273 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -16351,7 +16351,6 @@ Effects          :
 Description      : Damage dealt by $?s388667[Drain Soul][Shadow Bolt] has a $?s198590[$s1][$s2]% chance to make your next Unstable Affliction or Seed of Corruption cost no Soul Shards and cast instantly.
 
 Name             : Shard Instability (id=1260269) [Spell Family (5)] 
-Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
