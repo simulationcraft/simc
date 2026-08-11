@@ -376,18 +376,14 @@ jobs:
         shell: bash
         run: |
           cd profiles
-          for dir in generators/*; do
-            if [ -d $dir ]; then
-              SEASON=${dir##*/}
-              GENERATOR=${SEASON}_Generate_${{ env.CLASS_STR_CAP }}.simc
-              if [ -f $dir/$GENERATOR ]; then
-                cd $SEASON
-                echo "---$SEASON---${{ env.CLASS_STR_CAP }}---$GENERATOR---"
-                ${{ runner.workspace }}/b/ninja/simc $dir/$GENERATOR
-                cd ..
-              fi
-            fi
-          done
+
+          SEASON=MID2
+          GENERATOR=${SEASON}_Generate_${{ env.CLASS_STR_CAP }}.simc
+
+          if [ -f "generators/$SEASON/$GENERATOR" ]; then
+            echo "---$SEASON---${{ env.CLASS_STR_CAP }}---$GENERATOR---"
+            ${{ runner.workspace }}/b/ninja/simc "generators/$SEASON/$GENERATOR"
+          fi
 
       - name: Check Profile Changes
         id: check_profile_changes
