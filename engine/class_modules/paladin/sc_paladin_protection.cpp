@@ -246,11 +246,16 @@ struct avengers_shield_base_t : public paladin_spell_t
     }
 
     // Technically this should be in execute(), but we only know on impact if Avenger's Shield critted.
-    if ( triggers_apex && s->chain_target == 0 )
+
+    bool isApex3 = p()->wings_up() && p()->talents.glory_of_the_vanguard_3->ok();
+    if ( s->chain_target == 0 && triggers_apex &&
+         ( ( p()->talents.glory_of_the_vanguard_1->ok() && p()->buffs.vanguard->up() ) || isApex3 ) )
     {
       make_event<delayed_execute_on_target_event_t>(
           *sim, p(), glory_of_the_vanguard, s->target,
           s->result_amount * p()->talents.glory_of_the_vanguard_1->effectN( 1 ).percent(), 300_ms );
+      if ( !isApex3 )
+        p()->buffs.vanguard->decrement();
     }
   }
 
@@ -288,12 +293,6 @@ struct avengers_shield_base_t : public paladin_spell_t
     if ( p()->talents.searing_sunlight->ok() && p()->all_active_consecrations.size() > 0 )
     {
       consecration_tick->execute_on_target( target );
-    }
-    bool isApex3 = p()->wings_up() && p()->talents.glory_of_the_vanguard_3->ok();
-    if ( triggers_apex && ( ( p()->talents.glory_of_the_vanguard_1->ok() && p()->buffs.vanguard->up() ) || isApex3 ) )
-    {
-      if (!isApex3)
-        p()->buffs.vanguard->decrement();
     }
   }
 };
