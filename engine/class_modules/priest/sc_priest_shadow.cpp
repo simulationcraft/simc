@@ -1834,10 +1834,11 @@ struct tentacle_slam_t final : public priest_spell_t
       priest().procs.midnight_s2_4pc_void_volley->occur();
 
       buff_t* charge_buff = priest().buffs.voidform->check() ? priest().buffs.void_volley : priest().buffs.crushing_void;
+      int charges_before  = charge_buff->check();
+      charge_buff->trigger();
 
-      if ( !charge_buff->at_max_stacks() )
+      if ( charge_buff->check() > charges_before )
       {
-        charge_buff->trigger();
         priest().buffs.void_volley_set_bonus->trigger();
         priest().buffs.void_volley_set_bonus_effectiveness->trigger();
       }
