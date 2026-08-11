@@ -27,10 +27,10 @@ MID2_Death_Knight_Unholy_San'layn.simc
 # MID2_Evoker_Devastation_SC.simc
 # MID2_Evoker_Devastation_FS.simc
 
-# MID2_Hunter_Beast_Mastery.simc
-# MID2_Hunter_Marksmanship.simc
+MID2_Hunter_Beast_Mastery.simc
+MID2_Hunter_Marksmanship.simc
 # MID2_Hunter_Survival_PL_DW.simc
-# MID2_Hunter_Survival.simc
+MID2_Hunter_Survival.simc
 
 # MID2_Mage_Arcane.simc
 # MID2_Mage_Arcane_Sunfury.simc
