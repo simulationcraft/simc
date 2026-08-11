@@ -92,6 +92,8 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=nonsteroid_trinket_equipped,op=set,value=equipped.mereldars_toll|equipped.perfidious_projector|equipped.chaotic_nethergate|equipped.wraps_of_cosmic_madness|equipped.astalors_anguish_agitator|equipped.sethraliss_defiled_relic|equipped.vexhuls_everflowing_gland|equipped.font_of_venomous_rage|equipped.ophidian_bone_whistle|equipped.spiritrending_poison" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
+  precombat->add_action( "potion,if=talent.spellfire_spheres" );
+  precombat->add_action( "arcane_surge,if=talent.spellfire_spheres" );
   precombat->add_action( "arcane_blast" );
 
   default_->add_action( "counterspell" );
@@ -107,9 +109,9 @@ void arcane( player_t* p )
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "call_action_list,name=spellslinger,if=talent.splintering_sorcery" );
   default_->add_action( "call_action_list,name=sunfury,if=!talent.splintering_sorcery" );
-  default_->add_action( "arcane_barrage,if=talent.spellfire_spheres" );
+  default_->add_action( "arcane_barrage,if=talent.spellfire_spheres&!buff.arcane_surge.up" );
 
-  cooldowns->add_action( "arcane_orb,line_cd=999" );
+  cooldowns->add_action( "arcane_orb,if=talent.splintering_sorcery,line_cd=999" );
   cooldowns->add_action( "touch_of_the_magi,use_off_gcd=1,if=(prev_gcd.1.prismatic_bolt|prev_gcd.1.arcane_barrage|(buff.arcane_surge.up&buff.arcane_surge.remains<12))&(buff.arcane_surge.up|cooldown.arcane_surge.remains>30)" );
   cooldowns->add_action( "arcane_surge,if=buff.lustrous_gleam.stack>=2|buff.lustrous_gleam.down" );
   cooldowns->add_action( "cancel_action,if=action.evocation.channeling&mana.pct>=95" );
