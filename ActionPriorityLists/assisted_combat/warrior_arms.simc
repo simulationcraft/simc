@@ -11,7 +11,7 @@ actions+=/charge,if=time<=0.5|movement.distance>5
 
 # This is the default action priority list from the game's Assisted Combat system.
 actions.assisted_combat=battle_shout,if=buff.battle_shout_highlight.up
-actions.assisted_combat+=/thunder_clap,if=!dot.rend.ticking&talent.rend
+actions.assisted_combat+=/cleave,if=!dot.rend.ticking&talent.rend&active_enemies>3
 actions.assisted_combat+=/rend,if=!dot.rend.ticking
 actions.assisted_combat+=/sweeping_strikes,if=active_enemies>2
 actions.assisted_combat+=/ravager

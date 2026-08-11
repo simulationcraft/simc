@@ -25,7 +25,6 @@ actions+=/call_action_list,name=ogcd
 actions+=/call_action_list,name=items
 actions+=/call_action_list,name=soul_harvester,if=hero_tree.soul_harvester
 actions+=/call_action_list,name=hellcaller,if=hero_tree.hellcaller
-actions+=/seed_of_corruption,if=talent.nocturnal_yield&active_enemies>1&buff.nightfall.react&(buff.nightfall.react=buff.nightfall.max_stack|buff.nightfall.remains<execute_time*buff.nightfall.max_stack)
 actions+=/malefic_grasp,chain=1,early_chain_if=buff.nightfall.react,if=pet.darkglare.active
 actions+=/drain_soul,chain=1,early_chain_if=buff.nightfall.react,interrupt_if=tick_time>0.5
 actions+=/shadow_bolt
@@ -49,8 +48,8 @@ actions.HC_cleave+=/dark_harvest
 actions.HC_cleave+=/summon_darkglare
 actions.HC_cleave+=/malevolence
 actions.HC_cleave+=/malefic_grasp,if=pet.darkglare.remains<gcd
-actions.HC_cleave+=/unstable_affliction,if=!talent.sow_the_seeds&!talent.patient_zero&(pet.darkglare.remains|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react|(talent.cascading_calamity&buff.cascading_calamity.remains<gcd.max))
-actions.HC_cleave+=/seed_of_corruption,if=talent.patient_zero&talent.sow_the_seeds
+actions.HC_cleave+=/unstable_affliction,if=!talent.sow_the_seeds&(pet.darkglare.remains|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react|(talent.cascading_calamity&buff.cascading_calamity.remains<gcd.max))
+actions.HC_cleave+=/seed_of_corruption,if=talent.sow_the_seeds
 
 # Haunt on CD for apex
 actions.HC_st=haunt
@@ -90,8 +89,8 @@ actions.SH_cleave+=/summon_darkglare
 actions.SH_cleave+=/malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd
 actions.SH_cleave+=/drain_soul,if=buff.nightfall.react>1
 actions.SH_cleave+=/shadow_bolt,if=buff.nightfall.react>1
-actions.SH_cleave+=/unstable_affliction,if=!talent.patient_zero&!talent.sow_the_seeds&(soul_shard|buff.shard_instability.react)
-actions.SH_cleave+=/seed_of_corruption,if=talent.patient_zero&talent.sow_the_seeds
+actions.SH_cleave+=/unstable_affliction,if=!talent.sow_the_seeds&(soul_shard|buff.shard_instability.react)
+actions.SH_cleave+=/seed_of_corruption,if=talent.sow_the_seeds
 
 # Haunt on CD for apex, regardless of Nightfall stacks
 actions.SH_st=haunt
@@ -107,8 +106,8 @@ actions.SH_st+=/shadow_bolt,if=buff.nightfall.react>1
 # SH does not care about saving shards in pure patchwerk. In reality it's good to save 1 shard for cascading calamity
 actions.SH_st+=/unstable_affliction,if=soul_shard|buff.shard_instability.react
 
-actions.end_of_fight=unstable_affliction,if=soul_shard&fight_remains<8&(!talent.patient_zero&!talent.sow_the_seeds)
-actions.end_of_fight+=/seed_of_corruption,if=soul_shard&fight_remains<8&(talent.patient_zero&talent.sow_the_seeds)
+actions.end_of_fight=unstable_affliction,if=soul_shard&fight_remains<8&(!talent.sow_the_seeds)
+actions.end_of_fight+=/seed_of_corruption,if=soul_shard&fight_remains<8&(talent.sow_the_seeds)
 actions.end_of_fight+=/drain_soul,if=buff.nightfall.react&fight_remains<5
 actions.end_of_fight+=/shadow_bolt,if=buff.nightfall.react&fight_remains<5
 

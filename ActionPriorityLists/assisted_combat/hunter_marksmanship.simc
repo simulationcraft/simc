@@ -12,6 +12,7 @@ actions+=/call_action_list,name=assisted_combat
 # This is for Blizzard automation and is not included in the game's Assisted Combat system.
 actions.assisted_combat=trueshot
 actions.assisted_combat+=/volley,if=target.distance<=50
+actions.assisted_combat+=/explosive_shot
 actions.assisted_combat+=/multishot,if=buff.trick_shots.down&active_enemies>3
 actions.assisted_combat+=/multishot,if=buff.trick_shots.up&buff.trick_shots.remains<=2&active_enemies>3
 actions.assisted_combat+=/multishot,if=buff.precise_shots.up&active_enemies>3

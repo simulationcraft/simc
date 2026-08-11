@@ -17,8 +17,8 @@ actions.assisted_combat+=/thrash,if=target.distance<=8&active_enemies>3
 actions.assisted_combat+=/lunar_beam,if=target.distance<=8
 actions.assisted_combat+=/convoke_the_spirits,if=target.distance<=5
 actions.assisted_combat+=/moonfire,if=!dot.moonfire.ticking
-actions.assisted_combat+=/mangle
 actions.assisted_combat+=/thrash,if=target.distance<=8
+actions.assisted_combat+=/mangle
 actions.assisted_combat+=/moonfire,if=buff.galactic_guardian.up
 actions.assisted_combat+=/maul,if=rage>=8
 actions.assisted_combat+=/swipe,if=target.distance<=8

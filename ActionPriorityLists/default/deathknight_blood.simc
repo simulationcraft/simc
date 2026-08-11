@@ -42,30 +42,29 @@ actions.deathbringer+=/consumption,empower_to=1
 actions.deathbringer+=/arcane_torrent,if=runic_power.deficit>20
 
 actions.high_prio_actions=raise_dead,use_off_gcd=1
-actions.high_prio_actions+=/death_strike,if=buff.coagulopathy.up&buff.coagulopathy.remains<=gcd
-actions.high_prio_actions+=/dancing_rune_weapon,if=!buff.exterminate.up&!debuff.reapers_mark_debuff.up&!buff.dancing_rune_weapon.up&(fight_remains>95|fight_remains<25|time>300)
+actions.high_prio_actions+=/dancing_rune_weapon,if=!buff.exterminate.up&!debuff.reapers_mark_debuff.up&(fight_remains>95|fight_remains<25|time>300)
 
 actions.san_gift=heart_strike,if=buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains
 actions.san_gift+=/death_strike,if=runic_power.deficit<36
-actions.san_gift+=/blood_boil,if=!drw.bp_ticking
-actions.san_gift+=/any_dnd,if=buff.crimson_scourge.remains
+actions.san_gift+=/any_dnd,if=buff.crimson_scourge.remains&!buff.visceral_strength.remains
 actions.san_gift+=/heart_strike,if=buff.essence_of_the_blood_queen.stack<7
 actions.san_gift+=/death_strike
-actions.san_gift+=/blood_boil,if=buff.boiling_point.up&!buff.boiling_point_echo.up
+actions.san_gift+=/blood_boil,if=buff.boiling_point.up
 actions.san_gift+=/heart_strike
 actions.san_gift+=/blood_boil
 
 actions.sanlayn=deaths_caress,if=!buff.bone_shield.up|buff.bone_shield.remains<1.5|buff.bone_shield.stack<=1
-actions.sanlayn+=/blood_boil,if=dot.blood_plague.remains<3
-actions.sanlayn+=/heart_strike,if=(buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains&buff.vampiric_strike.remains)
+actions.sanlayn+=/heart_strike,if=(buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains&buff.vampiric_strike.remains&fight_remains>buff.essence_of_the_blood_queen.remains+10)
 actions.sanlayn+=/death_strike,if=runic_power.deficit<20
 actions.sanlayn+=/deaths_caress,if=buff.bone_shield.stack<6
 actions.sanlayn+=/marrowrend,if=buff.bone_shield.stack<6
 actions.sanlayn+=/any_dnd,if=buff.crimson_scourge.remains
+actions.sanlayn+=/blood_boil,if=buff.boiling_point.up
+actions.sanlayn+=/marrowrend,if=buff.blood_debt.stack=10
 actions.sanlayn+=/heart_strike,if=buff.vampiric_strike.up
-actions.sanlayn+=/death_strike
-actions.sanlayn+=/blood_boil,if=buff.boiling_point.up&!buff.boiling_point_echo.up
+actions.sanlayn+=/death_strike,if=runic_power.deficit<40|fight_remains<10|(buff.essence_of_the_blood_queen.remains&buff.essence_of_the_blood_queen.remains<8)
 actions.sanlayn+=/consumption,empower_to=1
 actions.sanlayn+=/heart_strike,if=rune>=2
 actions.sanlayn+=/blood_boil
 actions.sanlayn+=/heart_strike
+actions.sanlayn+=/death_strike

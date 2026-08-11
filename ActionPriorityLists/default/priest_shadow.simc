@@ -15,6 +15,8 @@ actions.precombat+=/variable,name=me_force_prio,default=0,op=reset
 actions.precombat+=/variable,name=max_vts,default=12,op=reset
 actions.precombat+=/variable,name=is_vt_possible,default=0,op=reset
 actions.precombat+=/arcane_torrent
+# Crushing Void from Tentacle Slam is reset on pull, open with Mind Blast instead.
+actions.precombat+=/mind_blast,if=set_bonus.mid2_4pc
 actions.precombat+=/tentacle_slam
 
 # Executed every time the actor is available.
@@ -94,4 +96,5 @@ actions.main+=/shadow_word_death,target_if=max:dot.shadow_word_madness.remains
 actions.main+=/shadow_word_pain,target_if=min:remains
 
 actions.trinkets=use_item,name=galactic_gladiators_badge_of_ferocity,if=(buff.voidform.up|buff.power_infusion.remains>=10|(talent.voidform&cooldown.voidform.remains>10))|fight_remains<20
+actions.trinkets+=/use_item,name=hex_lords_dooming_idol,if=buff.power_infusion.up&buff.hex_lords_doom.stack>5|fight_remains<=30
 actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|equipped.neural_synapse_enhancer&buff.entropic_rift.up)|fight_remains<20
