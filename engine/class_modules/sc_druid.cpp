@@ -5074,13 +5074,10 @@ public:
       p_->cooldown.berserk_bear->adjust( dur );
   }
 
-  void consume_rage_wild_guardian( double )
+  void consume_rage_wild_guardian( double chance )
   {
-    if ( wg_pct && ( p_->buff.dream_conduit->check() || p_->rng().roll( wg_pct ) ) )
+    if ( chance && p_->rng().roll( chance ) )
     {
-      // technically can have 2 stacks
-      p_->buff.dream_conduit->decrement();
-
       // trigger wild guardian 1, if possible
       if ( p_->buff.answered_calling_summon->trigger( this ) )
       {
@@ -5106,7 +5103,7 @@ public:
     consume_rage_after_the_wildfire( BASE::last_resource_cost );
     consume_rage_memory_of_ysera( BASE::last_resource_cost );
     consume_rage_ursocs_guidance( BASE::last_resource_cost );
-    consume_rage_wild_guardian( BASE::last_resource_cost );
+    consume_rage_wild_guardian( wg_pct );
   }
 };
 
@@ -5640,6 +5637,13 @@ struct maul_base_t : public trigger_vicious_brambles_t<
     p()->buff.gory_fur_ironfur->trigger( this );
 
     base_t::execute();
+
+    if ( p()->buff.dream_conduit->check() )
+    {
+      // technically can have 2 stacks
+      p()->buff.dream_conduit->decrement();
+      consume_rage_wild_guardian( 1.0 );
+    }
   }
 
   void consume_resource() override
