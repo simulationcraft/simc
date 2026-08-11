@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.0.69189
-static constexpr std::array<spelltext_data_t, 29237> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29241> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -6607,6 +6607,7 @@ static constexpr std::array<spelltext_data_t, 29237> __ptr_spelltext_data { {
   {  201640, "Intellect increased by $s1.  Lasts $d.", "Intellect increased by $w1.", 0 },
   {  201641, "Stamina increased by $s1.  Lasts $d.", "Stamina increased by $w1.", 0 },
   {  201670, "Increases Speed by $s1 for $d.", "Speed increased by $s1.", 0 },
+  {  201671, "Reduces the Rage cost of your next Ironfur by $s1%.", "Reduces the Rage cost of your next Ironfur by $s1%.", 0 },
   {  201676, "Eat some bacon!\r\n\r\nExtend the benefit of any Well Fed buff from the Broken Isles by 1 hour, up to a maximum of 6 hours.", 0, 0 },
   {  201695, "When not in combat, heal for $s1 every $T1 sec. Lasts $d.", "Healing for $w1 every $t1 sec when not in combat.\r\n\r\n|cFF00AA99\"Your hair, fur or hide looks vibrant.\"|r", 0 },
   {  201709, "$@spelldesc195127", 0, 0 },
@@ -28088,6 +28089,7 @@ static constexpr std::array<spelltext_data_t, 29237> __ptr_spelltext_data { {
   { 1269592, "$@spelldesc1268932", 0, 0 },
   { 1269597, "$@spelldesc1259153", 0, 0 },
   { 1269614, "Spending Rage has a $s2% chance to awaken a guardian spirit for $1308647d, which attacks a nearby enemy for $1308093s1 when you cast Thrash or Mangle.", 0, 0 },
+  { 1269616, "Wild Guardian is available to cast:\r\n\r\n$@spellicon1269658$@spellname1269658: \r\n$@spelldesc1269658", "Wild Guardian is available to cast.", 0 },
   { 1269617, "Mangle, $?s400254[Raze][Maul] and Ravage deal $s2% additional Nature damage over $1270065d. Your Mastery is increased by $s1%.", 0, 0 },
   { 1269619, "When a spirit is awakened, the cooldowns of Thrash and Mangle are reset, and they deal $1308647s1% increased damage while the spirit is with you. Each time a spirit attacks, you generate ${$1308125s1/10} additional Rage.\r\n\r\nAfter casting $?s102558[Incarnation: Guardian of Ursoc][Berserk], gain $s1 $Lcharge:charges; of Wild Guardian:\r\n\r\n$@spellicon1269658 $@spellname1269658:\r\n$@spelldesc1269658", 0, 0 },
   { 1269630, "$@spelldesc196819", 0, 0 },
@@ -29183,6 +29185,7 @@ static constexpr std::array<spelltext_data_t, 29237> __ptr_spelltext_data { {
   { 1307776, "$@spelldesc1307781", 0, 0 },
   { 1307781, "Your harmful spells and abilities have a chance to toss an axe at the enemy dealing $s1 Physical damage. The axes deal increased damage to enemies below $s2% health.", 0, 0 },
   { 1307795, "$@spelldesc1296578", "Your next Power Word: Shield or Void Shield absorbs $W1% more damage.", 0 },
+  { 1307881, "Reduces the Rage cost of your next $?s400254[Raze][Maul] or Ravage by $s1%.", "Reduces the Rage cost of your next $?s400254[Raze][Maul] or Ravage by $s1%.", 0 },
   { 1307888, "$@spelldesc73920", "Your Healing Rain is currently active.", 0 },
   { 1307906, "Your spells and abilities have a chance to increase your Critical Strike by $s1, but reduce your other secondary stats by $s2 for $1307910d.", 0, 0 },
   { 1307910, "$@spelldesc1307906", "Critical Strike increased by $w1. Haste, Mastery, and Versatility decreased by $w2.", 0 },
@@ -29225,6 +29228,7 @@ static constexpr std::array<spelltext_data_t, 29237> __ptr_spelltext_data { {
   { 1309820, "Add a socket to a Midnight Season $s3 item that does not already have one. Can be used on Helms, Bracers, or Belts. Cannot be used on PvP equipment.", 0, 0 },
   { 1310061, "Allows you to see unique fish on The Coiled Isle for $d.", "Increased chance to catch unique fish on The Coiled Isle.", 0 },
   { 1310150, "$@spelldesc1301157", 0, 0 },
+  { 1310213, "Impales its target for $s1 Nature damage and $s2 Nature damage to up to $i nearby enemies.", 0, 0 },
   { 1310248, "$@spelldesc1296586", "Generating Icicles.", 0 },
   { 1310372, "$@spelldesc1296650", "Strength increased by ${$W1}.1%.", 0 },
   { 1310389, "$@spelldesc433106", 0, 0 },

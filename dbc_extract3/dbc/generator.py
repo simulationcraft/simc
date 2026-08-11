@@ -2426,6 +2426,7 @@ class SpellDataGenerator(DataGenerator):
           ( 106829, 0 ), ( 106899, 0 ), # Bear Form override
           ( 429438, 0 ), # Blooming Infusion buff
           ( 1269186, 0 ), # HOTW caster form?
+          ( 1301638, 0 ), # Symbiotic Relationship?
           # Balance
           ( 188046, 1 ), # Fey Missile
           ( 274282, 1 ), # Half Moon
@@ -2438,8 +2439,10 @@ class SpellDataGenerator(DataGenerator):
           ( 1244038, 2 ), ( 1244046, 2 ), ( 1244050, 2 ), # Flicker Clone
           ( 1280133, 2 ), # Rake (unused?)
           # Guardian
+          ( 201671, 3 ), ( 1307881, 3 ), # Gory Fur
           ( 1250913, 3 ), # Memory of Ysera heal
-          ( 1269633, 3 ), ( 1269645, 3 ), ( 1269648, 3 ), # Apex talent echoes
+          ( 1269616, 3 ), ( 1308522, 3 ), # Wild Guardian's Spirit (new apex)
+          ( 1310213, 3 ), # 12.1 Set 4pc
           # Restoration
         ),
         # Demon Hunter:

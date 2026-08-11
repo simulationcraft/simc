@@ -244420,7 +244420,8 @@ Effects          :
 #1 (id=1252099)  : Apply Aura Raid (65) | Trigger Spell Based on Health% (468): Ouroboric Curse
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Trigger Spell: 1295843 | Radius: 1000 yards | Target: Self (1)
 #2 (id=1318048)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (5 -> 20)
 #3 (id=1318049)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Radius: 1000 yards | Target: Self (1)
 #4 (id=1318050)  : Apply Aura Raid (65) | Dummy (4)
@@ -244539,7 +244540,7 @@ Labels           : 2916
                  : 6623
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 3
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), No Aura Log (202), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
@@ -244682,7 +244683,7 @@ Duration         : Aura (infinite)
 Labels           : 6637
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 1.5
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
@@ -244717,13 +244718,16 @@ Proc Flags       : Cast Successful
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), No Aura Log (202), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1252136)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 10 | Scaled Value: 10 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (10 -> 15)
 #2 (id=1318561)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (2 -> 1)
 #3 (id=1318562)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
                    Base Value: 1 | Scaled Value: 1 | Radius: 1000 yards | Target: Self (1)
 #4 (id=1332788)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 30 | Scaled Value: 30 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (30 -> 10)
 Description      : When any party member interrupts or crowd-controls an Elite enemy, the Dreamcatcher shatters their soul, causing them to take $s1% increased damage for $s4 sec, stacking up to $s2 times.
 Tooltip          : When any party member interrupts or crowd-controls an Elite enemy, the Dreamcatcher shatters their soul, causing them to take $w1% increased damage for $w4 sec, stacking up to $w2 times.
 
@@ -254720,7 +254724,8 @@ Effects          :
 #2 (id=1318215)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 30 seconds
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #3 (id=1318216)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Hotfixed         : Base Value (1 -> 5)
 #4 (id=1318217)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #5 (id=1318218)  : Apply Aura (6) | Dummy (4)
@@ -255279,7 +255284,8 @@ Triggered By     : Corrosive Fang (1291832)
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow during spell override (404), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1311034)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 1095 (coefficient=8.567842) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2190 (coefficient=17.13568) | Target: Self (1)
+Hotfixed         : Coefficient (8.567842 -> 17.135685)
 #2 (id=1329130)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=1333885)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
@@ -257284,7 +257290,8 @@ Range            : 50000 yards
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1318019)  : School Damage (2): nature
-                   Base Value: 10 | Scaled Value: 10 (delta=0.05) | Target: Targeted Enemy (6)
+                   Base Value: 18.5 | Scaled Value: 18.5 (delta=0.05) | Target: Targeted Enemy (6)
+Hotfixed         : Base Value (10 -> 18.5)
 Description      : $@spelldesc1248919
 
 Name             : Preternatural Antivenom (id=1295775) [Passive] 
@@ -257588,7 +257595,8 @@ Labels           : 6642
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1318351)  : School Damage (2): nature
-                   Base Value: 5 | Scaled Value: 5 (delta=0.05) | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+                   Base Value: 12 | Scaled Value: 12 (delta=0.05) | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
+Hotfixed         : Base Value (5 -> 12)
 #2 (id=1318352)  : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Stun | Target: at Area (87) -> at Enemy in Area (16)
 Description      : $@spelldesc1288787
@@ -257614,16 +257622,18 @@ Triggered By     : Dundun's Favor (1296018)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1318425)  : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 (delta=0.05) | Target: Targeted Enemy (6)
+                   Base Value: 1.5 | Scaled Value: 1.5 (delta=0.05) | Target: Targeted Enemy (6)
+Hotfixed         : Base Value (1 -> 1.5)
 Description      : Deals $s1 Nature damage.
 Tooltip          : Deals $w1 Nature damage.
 
 Name             : Shattered Soul (id=1296107) 
+Hotfixed         : Max stacks (99 -> 1)
 School           : Shadow
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 10 seconds
-Stacks           : 99 maximum
+Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Feared By Fear Mechanic (417), Asynchronous Buff (490)
 Effects          :
@@ -257634,10 +257644,11 @@ Description      : $@spelldesc1248939
 Tooltip          : Soul shattered increasing the enemy's damage taken by $w1%.
 
 Name             : Soul-Cracking Dreamcatcher (id=1296121) 
+Hotfixed         : Max stacks (99 -> 1)
 School           : Shadow
 Spell Type       : Magic
 Range            : 50000 yards
-Stacks           : 99 maximum
+Stacks           : 1 maximum
 Proc Chance      : 101%
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Feared By Fear Mechanic (417), Asynchronous Buff (490)
 Effects          :
@@ -259692,7 +259703,8 @@ Range            : 50000 yards
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1332053)  : School Damage (2): nature
-                   Base Value: 15 | Scaled Value: 15 (delta=0.05) | Target: Targeted Enemy (6)
+                   Base Value: 18.5 | Scaled Value: 18.5 (delta=0.05) | Target: Targeted Enemy (6)
+Hotfixed         : Base Value (15 -> 18.5)
 Description      : $@spelldesc1248856
 
 Name             : R0CKY-To-Go (id=1305148) 
@@ -259901,9 +259913,11 @@ Effects          :
 #1 (id=1332679)  : Apply Aura Raid (65) | Trigger Spell Based on Health% (468): Ouroboric Curse
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Trigger Spell: 1295843 | Radius: 1000 yards | Target: Self (1)
 #2 (id=1332680)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (10 -> 25)
 #3 (id=1332681)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (50 -> 75)
 #4 (id=1332682)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
 #5 (id=1332683)  : Apply Aura Raid (65) | Dummy (4)
@@ -259933,9 +259947,11 @@ Effects          :
 #1 (id=1332686)  : Apply Aura Raid (65) | Trigger Spell Based on Health% (468): Ouroboric Curse
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Trigger Spell: 1295843 | Radius: 1000 yards | Target: Self (1)
 #2 (id=1332687)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (10 -> 25)
 #3 (id=1332688)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 75 | Scaled Value: 75 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (75 -> 100)
 #4 (id=1332689)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Radius: 1000 yards | Target: Self (1)
 #5 (id=1332690)  : Apply Aura Raid (65) | Dummy (4)
@@ -259965,9 +259981,11 @@ Effects          :
 #1 (id=1332693)  : Apply Aura Raid (65) | Trigger Spell Based on Health% (468): Ouroboric Curse
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Trigger Spell: 1295843 | Radius: 1000 yards | Target: Self (1)
 #2 (id=1332694)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (15 -> 30)
 #3 (id=1332695)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (100 -> 150)
 #4 (id=1332696)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Radius: 1000 yards | Target: Self (1)
 #5 (id=1332697)  : Apply Aura Raid (65) | Dummy (4)
@@ -259992,7 +260010,7 @@ Labels           : 2916
                  : 6623
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 3
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), No Aura Log (202), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
@@ -260018,7 +260036,7 @@ Labels           : 2916
                  : 6623
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 3
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), No Aura Log (202), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
@@ -260048,7 +260066,7 @@ Labels           : 2916
                  : 6623
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 3
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), No Aura Log (202), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
@@ -260087,7 +260105,8 @@ Effects          :
 #2 (id=1332735)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 30 seconds
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #3 (id=1332736)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+Hotfixed         : Base Value (4 -> 8)
 #4 (id=1332737)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #5 (id=1332738)  : Apply Aura (6) | Dummy (4)
@@ -260121,7 +260140,8 @@ Effects          :
 #2 (id=1332747)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 30 seconds
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #3 (id=1332748)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
+Hotfixed         : Base Value (3 -> 7)
 #4 (id=1332749)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #5 (id=1332750)  : Apply Aura (6) | Dummy (4)
@@ -260155,7 +260175,8 @@ Effects          :
 #2 (id=1332756)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 30 seconds
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 #3 (id=1332757)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+Hotfixed         : Base Value (2 -> 6)
 #4 (id=1332758)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #5 (id=1332759)  : Apply Aura (6) | Dummy (4)
@@ -260179,7 +260200,7 @@ Duration         : Aura (infinite)
 Labels           : 6637
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 1.5
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
@@ -260210,7 +260231,7 @@ Duration         : Aura (infinite)
 Labels           : 6637
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 1.5
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
@@ -260241,7 +260262,7 @@ Duration         : Aura (infinite)
 Labels           : 6637
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 1.5
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
 Effects          :
@@ -260276,13 +260297,16 @@ Proc Flags       : Cast Successful
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), No Aura Log (202), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1332793)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 15 | Scaled Value: 15 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (15 -> 20)
 #2 (id=1332794)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (2 -> 1)
 #3 (id=1332795)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
                    Base Value: 4 | Scaled Value: 4 | Radius: 1000 yards | Target: Self (1)
 #4 (id=1332796)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 60 | Scaled Value: 60 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (60 -> 25)
 Description      : When any party member interrupts or crowd-controls an Elite enemy, the Dreamcatcher shatters their soul, causing them to take $s1% increased damage for $s4 sec, stacking up to $s2 times.
 
 Nearby enemies' souls are also shattered.
@@ -260302,13 +260326,16 @@ Proc Flags       : Cast Successful
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), No Aura Log (202), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1332797)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 10 | Scaled Value: 10 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (10 -> 15)
 #2 (id=1332798)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (2 -> 1)
 #3 (id=1332799)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
                    Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
 #4 (id=1332800)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 45 | Scaled Value: 45 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (45 -> 15)
 Description      : When any party member interrupts or crowd-controls an Elite enemy, the Dreamcatcher shatters their soul, causing them to take $s1% increased damage for $s4 sec, stacking up to $s2 times.
 Tooltip          : When any party member interrupts or crowd-controls an Elite enemy, the Dreamcatcher shatters their soul, causing them to take $w1% increased damage for $w4 sec, stacking up to $w2 times.
 
@@ -260324,13 +260351,16 @@ Proc Flags       : Cast Successful
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Client Targeting (133), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), No Aura Log (202), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1332801)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 15 | Scaled Value: 15 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (15 -> 20)
 #2 (id=1332802)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (2 -> 1)
 #3 (id=1332803)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
                    Base Value: 3 | Scaled Value: 3 | Radius: 1000 yards | Target: Self (1)
 #4 (id=1332804)  : Apply Aura Raid (65) | Proc Trigger Spell (42)
-                   Base Value: 45 | Scaled Value: 45 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (45 -> 20)
 Description      : When any party member interrupts or crowd-controls an Elite enemy, the Dreamcatcher shatters their soul, causing them to take $s1% increased damage for $s4 sec, stacking up to $s2 times.
 
 Nearby enemies' souls are also shattered.
@@ -260370,7 +260400,8 @@ Effects          :
 #3 (id=1332811)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Radius: 1000 yards | Target: Self (1)
 #4 (id=1332812)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (2 -> 4)
 #5 (id=1332813)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | Radius: 1000 yards | Target: Self (1)
 #6 (id=1332814)  : Apply Aura Raid (65) | Dummy (4)
@@ -260394,7 +260425,8 @@ Effects          :
 #3 (id=1332817)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Radius: 1000 yards | Target: Self (1)
 #4 (id=1332818)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (2 -> 3)
 #5 (id=1332819)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Radius: 1000 yards | Target: Self (1)
 #6 (id=1332820)  : Apply Aura Raid (65) | Dummy (4)
@@ -260418,7 +260450,8 @@ Effects          :
 #3 (id=1332823)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Radius: 1000 yards | Target: Self (1)
 #4 (id=1332824)  : Apply Aura Raid (65) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Radius: 1000 yards | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Radius: 1000 yards | Target: Self (1)
+Hotfixed         : Base Value (1 -> 2)
 #5 (id=1332825)  : Apply Aura Raid (65) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Radius: 1000 yards | Target: Self (1)
 #6 (id=1332826)  : Apply Aura Raid (65) | Dummy (4)
