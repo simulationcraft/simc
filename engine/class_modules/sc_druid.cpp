@@ -8407,7 +8407,7 @@ struct starfall_t final : public ap_spender_t
 
 
   starfall_driver_t* driver;
-  starfall_mid2_driver_t* mid2_driver;
+  starfall_mid2_driver_t* mid2_driver = nullptr;
   buff_t* buff;
   timespan_t dot_ext = 0_ms;
   timespan_t max_ext = 0_ms;
@@ -8457,7 +8457,8 @@ struct starfall_t final : public ap_spender_t
     buff->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { driver->execute(); } );
     buff->trigger();
 
-    mid2_driver->execute();
+    if ( mid2_driver )
+      mid2_driver->execute();
 
     // technically triggered by buff application, do it in action so we can easily grab the driver targets
     if ( rng().roll( mid1_4pc_chance ) )
