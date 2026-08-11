@@ -3226,7 +3226,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       proc_moe = p()->get_proc( "Master of the Elements: " + full_name() );
     }
 
-    if (affected_by_potm && p()->talent.power_of_the_maelstrom.ok() && p()->is_ptr())
+    if (affected_by_potm && p()->talent.power_of_the_maelstrom.ok())
     {
       proc_potm = p()->get_proc( "Power of the Maelstrom: " + full_name() );
     }
@@ -3267,7 +3267,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       m *= 1.0 + p()->buff.mid2_ele_4pc_builder->data().effectN( 1 ).percent();
     }
 
-    if ( affected_by_potm && p()->buff.power_of_the_maelstrom->up() && p()->is_ptr())
+    if ( affected_by_potm && p()->buff.power_of_the_maelstrom->up())
     {
       m *= 1.0 + p()->buff.power_of_the_maelstrom->data().effectN( 1 ).percent();
     }
@@ -3300,7 +3300,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       proc_moe->occur();
     }
 
-    if (affected_by_potm && !background && p()->buff.power_of_the_maelstrom->check() && p()->is_ptr())
+    if (affected_by_potm && !background && p()->buff.power_of_the_maelstrom->check())
     {
       p()->buff.power_of_the_maelstrom->decrement();
       if ( p()->talent.fusion_of_elements->ok() )
@@ -4359,10 +4359,7 @@ struct ancestor_t : public shaman_pet_t
     {
       double m = pet_spell_t<ancestor_t>::action_multiplier();
 
-      if ( p()->is_ptr())
-      {
-        m *= this->composite_crit_chance();
-      }
+      m *= this->composite_crit_chance();
 
       return m;
     }
@@ -6571,7 +6568,7 @@ struct chain_lightning_t : public chained_base_t
       {
         p()->summon_ancestor();
       }
-      if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) && p()->is_ptr() &&
+      if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) &&
            p()->talent.power_of_the_maelstrom->ok() )
       {
         p()->buff.power_of_the_maelstrom->trigger();
@@ -6645,16 +6642,6 @@ struct chain_lightning_t : public chained_base_t
 
   void schedule_travel(action_state_t* s) override
   {
-    if ( s->chain_target == 0 && p()->buff.power_of_the_maelstrom->up() && !p()->is_ptr())
-    {
-      trigger_elemental_overload( s, 1.0 );
-      p()->buff.power_of_the_maelstrom->decrement();
-      if ( p()->talent.fusion_of_elements->ok() )
-      {
-        p()->action.elemental_blast_foe->execute_on_target( s->target );
-      }
-    }
-
     if ( s->chain_target == 0 && p()->talent.supercharge.ok() )
     {
       trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
@@ -7179,12 +7166,6 @@ struct lava_burst_t : public shaman_spell_t
 
     p()->lava_surge_during_lvb = false;
 
-    if ( is_variant( spell_variant::NORMAL ) &&
-         rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) && !p()->is_ptr())
-    {
-      p()->buff.power_of_the_maelstrom->trigger();
-    }
-
     if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() &&
          is_variant( spell_variant::NORMAL ) )
     {
@@ -7363,7 +7344,7 @@ struct lightning_bolt_t : public shaman_spell_t
         p()->summon_ancestor();
       }
 
-      if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) && p()->is_ptr() &&
+      if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) &&
            p()->talent.power_of_the_maelstrom->ok() )
       {
         p()->buff.power_of_the_maelstrom->trigger();
@@ -7409,17 +7390,6 @@ struct lightning_bolt_t : public shaman_spell_t
 
   void schedule_travel( action_state_t* s ) override
   {
-    if ( is_variant( spell_variant::NORMAL ) && p()->buff.power_of_the_maelstrom->up() && !p()->is_ptr() )
-    {
-      trigger_elemental_overload( s, 1.0 );
-
-      p()->buff.power_of_the_maelstrom->decrement();
-      if ( p()->talent.fusion_of_elements->ok() )
-      {
-        p()->action.elemental_blast_foe->execute_on_target( s->target );
-      }
-    }
-
     if ( p()->talent.supercharge.ok())
     {
       trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
@@ -9890,7 +9860,7 @@ struct tempest_t : public shaman_spell_t
       p()->buff.wind_gust->trigger();
     }
 
-    if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) && p()->is_ptr() && p()->talent.power_of_the_maelstrom->ok())
+    if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 1 ).percent() ) && p()->talent.power_of_the_maelstrom->ok())
     {
       p()->buff.power_of_the_maelstrom->trigger();
     }
@@ -9986,17 +9956,6 @@ struct tempest_t : public shaman_spell_t
   {
     if ( s->chain_target == 0 )
     {
-      if ( p()->buff.power_of_the_maelstrom->up() && !p()->is_ptr() )
-      {
-        p()->proc.potm_tempest_overload->occur();
-        trigger_elemental_overload( s, 1.0 );
-        p()->buff.power_of_the_maelstrom->decrement();
-        if ( p()->talent.fusion_of_elements->ok() )
-        {
-          p()->action.elemental_blast_foe->execute_on_target( s->target );
-        }
-      }
-
       if ( p()->talent.supercharge.ok() )
       {
         trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
@@ -12647,17 +12606,9 @@ void shaman_t::create_buffs()
                        ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() )
                        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                        ->set_default_value_from_effect_type( A_HASTE_ALL );
-  if (is_ptr())
-  {
-    buff.power_of_the_maelstrom = make_buff( this, "power_of_the_maelstrom", find_spell(191877))
-            ->set_default_value( find_spell( 191877 )->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
-  }
-  else
-  {
-    buff.power_of_the_maelstrom =
-        make_buff( this, "power_of_the_maelstrom", talent.power_of_the_maelstrom )
-            ->set_default_value( talent.power_of_the_maelstrom->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
-  }
+  buff.power_of_the_maelstrom = make_buff( this, "power_of_the_maelstrom", find_spell(191877))
+                       ->set_default_value( find_spell( 191877 )->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
+
 
   // PvP
   buff.thundercharge = make_buff( this, "thundercharge", find_spell( 204366 ) )
