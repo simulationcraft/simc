@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69214 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69273 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -13715,10 +13715,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1163297)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 35)
 #2 (id=1347638)  : Apply Aura (6) | Modify Damage Done Against Target With Aura (303)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 13 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Damage dealt to targets below $s1% health is increased by $458910s1%.
 
 Name             : Spellfrost Teachings (id=458411) [Spell Family (3)] 
