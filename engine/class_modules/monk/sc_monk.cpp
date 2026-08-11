@@ -1598,7 +1598,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
             max_targets =
                 player->talent.windwalker.xuens_battlegear->effectN( 5 ).time_value() /
                 player->talent.windwalker.xuens_battlegear->effectN( 4 ).time_value() ]( const action_state_t * ) {
-            size_t reduction_count = std::min( xuens_battlegear.size(), as<unsigned long>( max_targets ) );
+            size_t reduction_count = std::min( xuens_battlegear.size(), as<size_t>( max_targets ) );
             p()->cooldown.fists_of_fury->adjust( -reduction * reduction_count, true );
 
             // Proc once per half second reduced
