@@ -88,7 +88,7 @@ back=silken_voodoo_drape,id=268253,bonus_id=13848/13335,ilevel=344
 chest=crest_of_the_primal_leywarden,id=271567,bonus_id=12854/13440,ilevel=334,enchant_id=7987,redirected_base_stats=251147
 wrists=martyrs_bindings,id=239648,bonus_id=13668/8960/13751/12384,ilevel=331,gem_id=240900,crafted_stats=36/40
 hands=primal_leywardens_manashapers,id=271565,bonus_id=13848/13335,ilevel=344,redirected_base_stats=268243
-waist=martyrs_waistwrap,id=239649,bonus_id=13668/8960/13751/12384,ilevel=331,gem_id=240916,crafted_stats=36/40
+waist=caustic_chainwrapped_sash,id=268257,bonus_id=13668/12854/13335,ilevel=334,gem_id=240894
 legs=primal_leywardens_tailored_legwraps,id=271563,bonus_id=12854/13335,ilevel=334,enchant_id=7935,redirected_base_stats=268236
 feet=cackling_soultreads,id=268255,bonus_id=13848/13335,ilevel=344,enchant_id=7963
 finger1=alluring_bubbleband,id=268266,bonus_id=13668/12854/13335,ilevel=334,gem_id=240916,enchant_id=7967
@@ -96,7 +96,7 @@ finger2=ritual_binders_ring,id=159459,bonus_id=13668/12854/13440,ilevel=334,gem_
 trinket1=vile_vial_of_volatile_venom,id=273796,bonus_id=12854/13440,ilevel=334
 trinket2=gebbos_bottomless_bag,id=270164,bonus_id=12854/13335,ilevel=334
 main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13848/13335,ilevel=344,enchant_id=8011
-off_hand=vessel_of_last_rites,id=159667,bonus_id=12854/13440,ilevel=334
+off_hand=alnhara_lantern,id=245769,bonus_id=8960/13751/13771,ilevel=331,crafted_stats=36/40
 
 save=MID2_Mage_Fire.simc
 
@@ -122,7 +122,7 @@ back=silken_voodoo_drape,id=268253,bonus_id=13848/13335,ilevel=344
 chest=crest_of_the_primal_leywarden,id=271567,bonus_id=12854/13440,ilevel=334,enchant_id=7987,redirected_base_stats=251147
 wrists=martyrs_bindings,id=239648,bonus_id=13668/8960/13751/12384,ilevel=331,gem_id=240916,crafted_stats=36/40
 hands=primal_leywardens_manashapers,id=271565,bonus_id=13848/13335,ilevel=344,redirected_base_stats=268243
-waist=martyrs_waistwrap,id=239649,bonus_id=13668/8960/13751/12384,ilevel=331,gem_id=240902,crafted_stats=36/40
+waist=caustic_chainwrapped_sash,id=268257,bonus_id=13668/12854/13335,ilevel=334,gem_id=240916
 legs=primal_leywardens_tailored_legwraps,id=271563,bonus_id=12854/13335,ilevel=334,enchant_id=7935,redirected_base_stats=268236
 feet=cackling_soultreads,id=268255,bonus_id=13848/13335,ilevel=344,enchant_id=7963
 finger1=alluring_bubbleband,id=268266,bonus_id=13668/12854/13335,ilevel=334,gem_id=240894,enchant_id=7967
@@ -130,7 +130,7 @@ finger2=ritual_binders_ring,id=159459,bonus_id=13668/12854/13440,ilevel=334,gem_
 trinket1=vile_vial_of_volatile_venom,id=273796,bonus_id=12854/13440,ilevel=334
 trinket2=gebbos_bottomless_bag,id=270164,bonus_id=12854/13335,ilevel=334
 main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13848/13335,ilevel=344,enchant_id=8041
-off_hand=spine_of_the_hissing_abyss,id=268197,bonus_id=12854/13335,ilevel=334
+off_hand=alnhara_lantern,id=245769,bonus_id=8960/13751/13771,ilevel=331,crafted_stats=36/40
 
 save=MID2_Mage_Fire_Frostfire.simc
 
