@@ -375,14 +375,26 @@ jobs:
         continue-on-error: true
         shell: bash
         run: |
+          set -euo pipefail
           cd profiles
-
-          SEASON=MID2
-          GENERATOR=${SEASON}_Generate_${{ env.CLASS_STR_CAP }}.simc
-
-          if [ -f "generators/$SEASON/$GENERATOR" ]; then
-            echo "---$SEASON---${{ env.CLASS_STR_CAP }}---$GENERATOR---"
-            ${{ runner.workspace }}/b/ninja/simc "generators/$SEASON/$GENERATOR"
+          errors=0
+          for dir in generators/*; do
+            if [ -d "$dir" ]; then
+              SEASON=${dir##*/}
+              GENERATOR=${SEASON}_Generate_${{ env.CLASS_STR_CAP }}.simc
+              if [ -f "$dir/$GENERATOR" ]; then
+                cd "$SEASON"
+                echo "---$SEASON---${{ env.CLASS_STR_CAP }}---$GENERATOR---"
+                if ! ${{ runner.workspace }}/b/ninja/simc "$dir/$GENERATOR"; then
+                  echo "ERROR: generator failed for $dir/$GENERATOR" >&2
+                  errors=1
+                fi
+                cd ..
+              fi
+            fi
+          done
+          if [ "$errors" -ne 0 ]; then
+            echo "One or more profile generators failed, but the loop completed."
           fi
 
       - name: Check Profile Changes
