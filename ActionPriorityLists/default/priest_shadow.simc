@@ -33,7 +33,7 @@ actions.aoe_variables+=/variable,name=holding_tentacle_slam,op=set,value=(variab
 actions.aoe_variables+=/variable,name=manual_vts_applied,op=set,value=(active_dot.vampiric_touch+6*!variable.holding_tentacle_slam)>=variable.max_vts|!variable.is_vt_possible
 
 # TODO: Add holding condition for weird fight times to potion with execute
-actions.cds=potion,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)&(fight_remains>=320|time_to_bloodlust>=320|buff.bloodlust.react)|fight_remains<=30
+actions.cds=potion,if=(((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)&(fight_remains>=320|time_to_bloodlust>=320|buff.bloodlust.react)|fight_remains<=30)
 actions.cds+=/fireblood,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=8
 actions.cds+=/berserking,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=12
 actions.cds+=/blood_fury,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=15
@@ -57,20 +57,19 @@ actions.main=variable,name=dots_up,op=set,value=active_dot.vampiric_touch=active
 actions.main+=/call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_tentacle_slam|active_enemies>2)&variable.dots_up
 # High Priority Shadow Word: Death when Devour Matter is active (target shielded or forced)
 actions.main+=/shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.shadow_word_madness.ticking,if=(priest.force_devour_matter|target.has_absorb)&talent.devour_matter
-# Do not overcap on insanity
-actions.main+=/shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35|buff.mind_devourer.react|!raid_event.adds.exists&target.time_to_die<=10|buff.entropic_rift.up&action.shadow_word_madness.cost>0
-actions.main+=/void_volley
+# Do not overcap on insanity, but hold it for Voidform on a single long-lived target
+actions.main+=/shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35&(cooldown.voidform.remains>25|target.time_to_die<25|active_enemies>1|insanity.deficit<=5)|buff.mind_devourer.react|!raid_event.adds.exists&target.time_to_die<=10|buff.entropic_rift.up&(cooldown.voidform.remains>=75|!talent.ancient_madness)|buff.voidform.up
 # Blast more burst :wicked:
 actions.main+=/void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)
 # Use Tentacle Slam to prevent capping charges or to refresh Vampiric Touch
-actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=dot.vampiric_touch.refreshable|cooldown.tentacle_slam.full_recharge_time<=gcd.max*2
+actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=dot.vampiric_touch.refreshable&(!in_flight|active_dot.vampiric_touch+6<active_enemies)|cooldown.tentacle_slam.full_recharge_time<=gcd.max*2
 # Use Void Torrent if it will get near full Mastery Value
 actions.main+=/void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&variable.dots_up
 # Put out Shadow Word: Pain on enemies that will live at least 12s as a filler when talented into Invoked Nightmare.
-actions.main+=/shadow_word_pain,target_if=max:(refreshable*100000+target.time_to_die+dot.vampiric_touch.ticking*10000),if=talent.invoked_nightmare&refreshable&target.time_to_die>12&dot.vampiric_touch.ticking
+actions.main+=/shadow_word_pain,target_if=max:(refreshable*100000+target.time_to_die+dot.vampiric_touch.ticking*10000),if=talent.invoked_nightmare&refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|action.tentacle_slam.in_flight)
+actions.main+=/void_volley,if=cooldown.voidform.up
 # Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption
 actions.main+=/mind_blast,target_if=max:dot.shadow_word_madness.remains,if=(!buff.mind_devourer.react|!talent.mind_devourer)
-# MFI is a good button
 actions.main+=/mind_flay_insanity,target_if=max:dot.shadow_word_madness.remains
 # Use Tentacle Slam for Void Apparitions or Maddening Tentacles value, holding for adds if needed
 actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=(talent.void_apparitions|talent.maddening_tentacles)&(raid_event.adds.in>30|raid_event.adds.in>5&cooldown.tentacle_slam.full_recharge_time<=gcd.max*2)
@@ -82,7 +81,9 @@ actions.main+=/call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff
 actions.main+=/vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die),if=refreshable&target.time_to_die>12
 actions.main+=/shadow_word_death,target_if=min:target.health.pct,if=(pet.mindbender.active|pet.voidwraith.active|pet.shadowfiend.active)&talent.inescapable_torment|target.health.pct<(20+15*talent.deathspeaker)&talent.shadowfiend&talent.idol_of_yshaarj
 actions.main+=/shadow_word_death,target_if=min:target.health.pct,if=(target.health.pct<(20+15*talent.deathspeaker))
-actions.main+=/mind_flay,target_if=max:dot.shadow_word_madness.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=3,interrupt_global=1
+# Bank Void Volley charges for the Resonant Energy window, dumping once Voidform is within a Halo cycle, in Voidform, or if charges would overcap
+actions.main+=/void_volley,if=!talent.resonant_energy|cooldown.voidform.remains<60|buff.voidform.up|buff.resonant_energy_damage.up|buff.crushing_void.stack>=4|fight_remains<45
+actions.main+=/mind_flay,target_if=max:dot.shadow_word_madness.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2,interrupt_global=1
 # Use Tentacle Slam while moving as a low-priority action when adds will not spawn in 20 seconds.
 actions.main+=/tentacle_slam,if=raid_event.adds.in>20
 # Use Shadow Word: Death while moving as a low-priority action in execute

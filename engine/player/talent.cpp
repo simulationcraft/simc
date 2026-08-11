@@ -28,3 +28,8 @@ const spell_data_t* player_talent_t::find_override_spell( bool require_talent ) 
 {
   return ( !require_talent || enabled() ) ? m_player->find_spell( m_trait->id_override_spell ) : spell_data_t::not_found();
 }
+
+const spell_data_t* player_talent_t::find_replaced_spell( bool require_talent ) const
+{
+  return ( !require_talent || enabled() ) ? m_player->find_spell( m_trait->id_replace_spell ) : spell_data_t::not_found();
+}

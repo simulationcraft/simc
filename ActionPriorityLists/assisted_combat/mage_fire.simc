@@ -18,6 +18,11 @@ actions.assisted_combat+=/fire_blast,if=buff.heating_up.up&buff.hyperthermia.dow
 actions.assisted_combat+=/flamestrike,if=buff.hot_streak.up&active_enemies>3
 actions.assisted_combat+=/flamestrike,if=buff.hot_streak.up&active_enemies>3
 actions.assisted_combat+=/pyroblast,if=buff.hot_streak.up
+actions.assisted_combat+=/flamestrike,if=active_enemies>3&buff.pyroclasm.up,cooldown_allow_casting_success=1
+actions.assisted_combat+=/flamestrike,if=buff.pyroclasm.up&active_enemies>3,cooldown_allow_casting_success=1
+actions.assisted_combat+=/pyroblast,if=buff.pyroclasm.up,cooldown_allow_casting_success=1
+actions.assisted_combat+=/scorch,if=buff.heat_shimmer.up,cooldown_allow_casting_success=1
+actions.assisted_combat+=/scorch,if=target.health.pct<=30,cooldown_allow_casting_success=1
 actions.assisted_combat+=/frostfire_bolt,cooldown_allow_casting_success=1
 actions.assisted_combat+=/fireball,cooldown_allow_casting_success=1
 actions.assisted_combat+=/fireball

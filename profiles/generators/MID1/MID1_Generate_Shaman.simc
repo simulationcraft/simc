@@ -1,29 +1,29 @@
-shaman="MID1_Shaman_Elemental_Stormbringer"
-level=90
-race=tauren
-spec=elemental
-role=spell
-position=ranged_back
+# shaman="MID1_Shaman_Elemental_Stormbringer"
+# level=90
+# race=tauren
+# spec=elemental
+# role=spell
+# position=ranged_back
 # Stormbringer
-talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMzMzMLbbDMmZAAAAAbmZbzMzwmhFmtZmGamNAYWmZmxYbxEmZ2GLzMzMGWmlZsYmhZWAAGAzMzMGGG
-head=,id=249979,bonus_id=13575/13575/13575/13575/12806/13335/13338/40/12676/1808,enchant_id=8017,gem_id=240967
-neck=,id=250247,bonus_id=12806/13577/13668,gem_id=240918/240892
-shoulder=,id=249977,bonus_id=13574/13574/13574/13574/12806/13335/13340/40/12675,enchant_id=7973
-back=,id=249974,bonus_id=12806/13335/40
-chest=,id=249982,bonus_id=13575/13575/13575/13575/12806/13335/13336/40/12676,enchant_id=7987
-wrist=,id=249304,bonus_id=12806/13577/1808,gem_id=240908
-hands=,id=249980,bonus_id=13574/13574/13574/13574/12806/13335/13337/40/12675
-waist=,id=244611,bonus_id=8960/12214/8960/12214/8960/12214/8960/12214/12214/8960/12497/12066/12667/13622/13667/1808,gem_id=240898
-legs=,id=251215,bonus_id=13440/6652/13577/12699/12806,enchant_id=7935
-feet=,id=244610,bonus_id=8960/12214/8960/12214/8960/12214/8960/12214/12214/8960/12497/12066/13622/13667,enchant_id=8019
-finger1=,id=193708,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240898
-finger2=,id=249919,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240898
-trinket1=,id=249343,bonus_id=40/13335/12806
-trinket2=,id=250144,bonus_id=12806/13440/40
-main_hand=,id=251083,bonus_id=12806/13577,enchant_id=7981
-off_hand=,id=251105,bonus_id=12806/13577
+# talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbLzMzMzMLbbDMmZAAAAAbmZbzMzwmhFmtZmGamNAYWmZmxYbxEmZ2GLzMzMGWmlZsYmhZWAAGAzMzMGGG
+# head=,id=249979,bonus_id=13575/13575/13575/13575/12806/13335/13338/40/12676/1808,enchant_id=8017,gem_id=240967
+# neck=,id=250247,bonus_id=12806/13577/13668,gem_id=240918/240892
+# shoulder=,id=249977,bonus_id=13574/13574/13574/13574/12806/13335/13340/40/12675,enchant_id=7973
+# back=,id=249974,bonus_id=12806/13335/40
+# chest=,id=249982,bonus_id=13575/13575/13575/13575/12806/13335/13336/40/12676,enchant_id=7987
+# wrist=,id=249304,bonus_id=12806/13577/1808,gem_id=240908
+# hands=,id=249980,bonus_id=13574/13574/13574/13574/12806/13335/13337/40/12675
+# waist=,id=244611,bonus_id=8960/12214/8960/12214/8960/12214/8960/12214/12214/8960/12497/12066/12667/13622/13667/1808,gem_id=240898
+# legs=,id=251215,bonus_id=13440/6652/13577/12699/12806,enchant_id=7935
+# feet=,id=244610,bonus_id=8960/12214/8960/12214/8960/12214/8960/12214/12214/8960/12497/12066/13622/13667,enchant_id=8019
+# finger1=,id=193708,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240898
+# finger2=,id=249919,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240898
+# trinket1=,id=249343,bonus_id=40/13335/12806
+# trinket2=,id=250144,bonus_id=12806/13440/40
+# main_hand=,id=251083,bonus_id=12806/13577,enchant_id=7981
+# off_hand=,id=251105,bonus_id=12806/13577
 
-save=MID1_Shaman_Elemental.simc
+# save=MID1_Shaman_Elemental.simc
 
 shaman="MID1_Shaman_Enhancement_Totemic"
 level=90
@@ -31,7 +31,7 @@ race=orc
 spec=enhancement
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZmZmZmZmZmZmZGAAAAAAAAAYB2gZsox2AYmgNAsMjZMWWmBmZ2GLzMzMMWGzAAYAGzMxMDAMGA
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzMzMzMzMzMzMzYGAAAAAAAAAsAbwMW0YbAMTwGAzyMmZGLLzYhZmNWmZmZYYMDAgBYMjYmBAGDA
 
 head=locus_of_the_primal_core,id=249979,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant=enchant_helm__empowered_rune_of_avoidance_2
 neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240892/240892
@@ -58,7 +58,7 @@ race=orc
 spec=enhancement
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzwMzMzMzMzMzMzAAAAAAAAAsBYzMG2ILwMM0gFAmlZMzMWWmBmZ2YZmZmhhxMAAzwwwMTgZGMYcBA
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzgZmZmZmhZmZAAAAAAAAA2AsZGDLkFYGGawCAzyMmxYZZGYmZbsMzMzMGGzAAMDjZGGBmZwgxA
 
 head=locus_of_the_primal_core,id=249979,bonus_id=1808/13575/13575/13575/13575/13575/13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant=enchant_helm__empowered_rune_of_avoidance_2
 neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240890/240890

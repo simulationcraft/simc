@@ -85,12 +85,8 @@ actions.misc_cds+=/berserking,use_off_gcd=1,if=debuff.deathmark.up
 actions.misc_cds+=/fireblood,use_off_gcd=1,if=debuff.deathmark.up
 actions.misc_cds+=/ancestral_call,use_off_gcd=1,if=debuff.deathmark.up
 
-# Spend List   Cancelaura Envenom in situations where we can make use of the energy but don't have time to AFK
-actions.spend=cancel_buff,name=envenom,if=buff.implacable_tracker.stack>4&(!talent.rapid_injection|spell_targets.fan_of_knives>=5)
-# Special edgecase Cancelaura for Darkest Night handling
-actions.spend+=/cancel_buff,name=envenom,if=buff.implacable_tracker.stack>3&talent.rapid_injection&debuff.deathstalkers_mark.stack=1
-# Spend with envenom as per normal
-actions.spend+=/envenom,if=buff.implacable_tracker.stack<4
+# Spend List   Spend with envenom as per normal
+actions.spend=envenom
 # Envenom if we are going to overcap on energy
 actions.spend+=/envenom,if=energy.pct>70|fight_remains<15
 

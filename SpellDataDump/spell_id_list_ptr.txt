@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.0.69189
+Class Spell ID List, wow build 12.1.0.69214
 
 Death Knight
 3714     Path of Frost
@@ -5368,7 +5368,7 @@ Druid
 1269619  Wild Guardian
 1269658  Wild Guardian
 1270065  Vicious Brambles
-1270277 *Wild Guardian
+1270277  Wild Guardian
 1270292  Lunar Beam
 1270565  Green Thumb
 1270586  Rampancy

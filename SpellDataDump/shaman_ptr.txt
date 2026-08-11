@@ -1,4 +1,4 @@
-SimulationCraft 1205-01 for World of Warcraft 12.1.0.69189 PTR
+SimulationCraft 1205-01 for World of Warcraft 12.1.0.69214 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -16692,7 +16692,6 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443), Chain Lightning (211094)
                    Family Flags: 1
-Hotfixed         : Attribute (0 -> 64)
 #2 (id=1185919)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443), Chain Lightning (211094)

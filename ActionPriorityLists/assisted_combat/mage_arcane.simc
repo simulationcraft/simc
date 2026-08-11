@@ -11,14 +11,17 @@ actions.assisted_combat=arcane_intellect,if=aura.arcane_intellect.down
 actions.assisted_combat+=/arcane_barrage,if=buff.arcane_charge.stack>=4&talent.spellfire_salvo&buff.arcane_salvo.stack>=22
 actions.assisted_combat+=/arcane_barrage,if=buff.arcane_charge.stack>=4&!talent.spellfire_salvo&buff.arcane_salvo.stack>=17
 actions.assisted_combat+=/touch_of_the_magi,if=cooldown.arcane_blast.ready&debuff.touch_of_the_magi.down
+actions.assisted_combat+=/arcane_barrage,if=buff.arcane_soul.up
 # This is for Blizzard automation and is not included in the game's Assisted Combat system.
 actions.assisted_combat+=/arcane_surge
 actions.assisted_combat+=/arcane_missiles,if=buff.overpowered_missiles.up
-actions.assisted_combat+=/arcane_orb,if=buff.arcane_charge.stack<=1&active_enemies>2
-actions.assisted_combat+=/arcane_orb,if=buff.arcane_charge.stack<=1
+actions.assisted_combat+=/arcane_orb,if=talent.orb_mastery&buff.clearcasting.up
+actions.assisted_combat+=/arcane_orb,if=buff.arcane_charge.stack<=1&active_enemies>2&!talent.orb_mastery
+actions.assisted_combat+=/arcane_orb,if=buff.arcane_charge.stack<=1&!talent.orb_mastery
 actions.assisted_combat+=/arcane_missiles,if=buff.clearcasting.up&talent.high_voltage
 actions.assisted_combat+=/arcane_missiles,if=buff.clearcasting.up&active_enemies<=2,cooldown_allow_casting_success=1
 actions.assisted_combat+=/evocation,if=mana.pct<=20&buff.arcane_surge.down
+actions.assisted_combat+=/prismatic_bolt,if=buff.prismatic_bolt.up
 actions.assisted_combat+=/arcane_barrage,if=mana.pct<=10&buff.arcane_surge.down
 actions.assisted_combat+=/arcane_pulse,if=talent.arcane_pulse&active_enemies>3,cooldown_allow_casting_success=1
 actions.assisted_combat+=/arcane_pulse,if=active_enemies>3&!talent.amplification

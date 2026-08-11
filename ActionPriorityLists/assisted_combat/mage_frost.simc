@@ -13,6 +13,9 @@ actions.assisted_combat+=/frozen_orb
 actions.assisted_combat+=/blizzard,if=active_enemies>3
 actions.assisted_combat+=/ray_of_frost,if=debuff.freezing.stack<=5
 actions.assisted_combat+=/ice_lance,if=buff.fingers_of_frost.up&debuff.freezing.up
+actions.assisted_combat+=/glacial_spike,if=buff.glacial_spike.up&debuff.freezing.stack<=16
+actions.assisted_combat+=/frostbolt,if=buff.glacial_spike.up&debuff.freezing.stack<=16
+actions.assisted_combat+=/flurry,if=buff.brain_freeze.up&debuff.freezing.stack<=16
 actions.assisted_combat+=/ice_lance,if=debuff.freezing.stack>=5
 actions.assisted_combat+=/flurry
 actions.assisted_combat+=/glacial_spike,if=buff.frostfire_empowerment.up

@@ -136,7 +136,7 @@ struct expiation_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_td_t& td = get_td( s->target );
-    dot_t* dot = td.dots.shadow_word_pain;
+    dot_t* dot      = td.dots.shadow_word_pain;
 
     auto dot_damage = priest().tick_damage_over_time( consume_time, dot );
     if ( dot_damage > 0 )
@@ -821,8 +821,8 @@ struct smite_base_t : public priest_spell_t
         {
           auto it = *( std::min_element( p().allies_with_atonement.begin(), p().allies_with_atonement.end(),
                                          [ this ]( player_t* a, player_t* b ) {
-                                           return a->health_percentage() < b->health_percentage() &&
-                                                  priest().find_target_data( b )->buffs.atonement->remains() < 30_s;
+                                           return priest().find_target_data( a )->buffs.atonement->remains() <
+                                                  priest().find_target_data( b )->buffs.atonement->remains();
                                          } ) );
 
           auto atone = priest().find_target_data( it )->buffs.atonement;
@@ -902,7 +902,7 @@ struct void_blast_disc_t final : public smite_base_t
   void execute() override
   {
     smite_base_t::execute();
-    
+
     p().extend_entropic_rift();
   }
 };
@@ -2170,7 +2170,6 @@ struct void_shield_t final : public priest_absorb_t
 
   void execute() override
   {
-
     if ( priest().talents.discipline.borrowed_time.enabled() )
     {
       priest().buffs.borrowed_time->trigger();

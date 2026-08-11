@@ -520,7 +520,6 @@ public:
     // General
     propagate_const<buff_t *> chi_wave;
     propagate_const<buff_t *> rushing_jade_wind;
-    propagate_const<buff_t *> spinning_crane_kick;  // TODO: is this necessary?
     propagate_const<buff_t *> yulons_grace;
 
     // Brewmaster

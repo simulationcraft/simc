@@ -362,7 +362,7 @@ struct hunter_td_t: public actor_target_data_t
   {
     bool triggered_by_unload = false;
 
-    spotters_mark_rapid_fire_buff_t( player_t* p, util::string_view n, const spell_data_ptr_t s ) : buff_t( p, n, s ) {}
+    spotters_mark_rapid_fire_buff_t( actor_pair_t q, util::string_view n, const spell_data_ptr_t s ) : buff_t( q, n, s ) {}
 
     bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double chance = (-1.0), timespan_t duration = timespan_t::min() ) override
     {
@@ -7416,7 +7416,7 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
   debuffs.spotters_mark = make_buff( *this, "spotters_mark", p->specs.spotters_mark_debuff )
     ->set_default_value( p->specs.spotters_mark_debuff->effectN( 1 ).percent() );
 
-  debuffs.spotters_mark_rapid_fire = new spotters_mark_rapid_fire_buff_t( t, "spotters_mark_rapid_fire", p->talents.spotters_mark_rapid_fire_debuff );
+  debuffs.spotters_mark_rapid_fire = new spotters_mark_rapid_fire_buff_t( *this, "spotters_mark_rapid_fire", p->talents.spotters_mark_rapid_fire_debuff );
   debuffs.spotters_mark_rapid_fire->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS );
   debuffs.spotters_mark_rapid_fire->set_chance( p->talents.spotters_mark_rapid_fire_debuff.ok() );
 
@@ -9104,10 +9104,6 @@ private:
   hunter_t& p;
 };
 
-namespace live_hunter {
-#include "class_modules/sc_hunter_live.inc"
-};
-
 // HUNTER MODULE INTERFACE ==================================================
 
 struct hunter_module_t: public module_t
@@ -9116,19 +9112,9 @@ struct hunter_module_t: public module_t
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
   {
-    // TODO: Remove version check and the live hunter file
-    if ( sim->dbc->wowv() >= wowv_t{ 12, 1, 0 } )
-    {
-      auto  p = new hunter_t( sim, name, r );
-      p -> report_extension = std::unique_ptr<player_report_extension_t>( new hunter_report_t( *p ) );
-      return p;
-    }
-    else
-    {
-      auto  p = new live_hunter::hunter_t( sim, name, r );
-      p -> report_extension = std::unique_ptr<player_report_extension_t>( new live_hunter::hunter_report_t( *p ) );
-      return p;
-    }
+    auto  p = new hunter_t( sim, name, r );
+    p -> report_extension = std::unique_ptr<player_report_extension_t>( new hunter_report_t( *p ) );
+    return p;
   }
 
   bool valid() const override { return true; }

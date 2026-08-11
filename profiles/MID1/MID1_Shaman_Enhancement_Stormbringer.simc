@@ -5,10 +5,10 @@ level=90
 race=orc
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzwMzMzMzMzMzMzAAAAAAAAAsBYzMG2ILwMM0gFAmlZMzMWWmBmZ2YZmZmhhxMAAzwwwMTgZGMYcBA
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzgZmZmZmhZmZAAAAAAAAA2AsZGDLkFYGGawCAzyMmxYZZGYmZbsMzMzMGGzAAMDjZGGBmZwgxA
 
 # Default consumables
-potion=lights_potential_2
+potion=potion_of_recklessness_2
 flask=flask_of_the_blood_knights_2
 food=harandar_celebration
 augmentation=void_touched
@@ -29,6 +29,7 @@ actions.precombat+=/variable,name=trinket2_is_weird,value=trinket.2.is.algethar_
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=variable,name=target_nature_mod,value=(1+debuff.chaos_brand.up*debuff.chaos_brand.value)*(1+(debuff.hunters_mark.up*target.health.pct>=80)*debuff.hunters_mark.value)
@@ -60,7 +61,7 @@ actions.aoe+=/crash_lightning,if=talent.thorims_invocation.enabled&(buff.doom_wi
 actions.aoe+=/windstrike,if=talent.thorims_invocation.enabled&talent.splitstream.enabled&buff.hot_hand.up
 actions.aoe+=/stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up&talent.splitstream.enabled&buff.hot_hand.up
 actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=(9+1*talent.surging_totem.enabled)&talent.splitstream.enabled&buff.hot_hand.up
-actions.aoe+=/voltaic_blaze,if=talent.fire_nova.enabled
+actions.aoe+=/voltaic_blaze,if=talent.fire_nova.enabled|set_bonus.midnight_season_2_2pc
 actions.aoe+=/crash_lightning
 actions.aoe+=/windstrike,if=talent.thorims_invocation.enabled
 actions.aoe+=/stormstrike,if=talent.thorims_invocation.enabled&buff.doom_winds.up
@@ -97,6 +98,7 @@ actions.single_sb+=/lava_lash,if=!debuff.lashing_flames.up&time<5
 actions.single_sb+=/call_action_list,name=buffs
 actions.single_sb+=/sundering,if=talent.surging_elements.enabled|talent.feral_spirit.enabled
 actions.single_sb+=/doom_winds
+actions.single_sb+=/voltaic_blaze,if=set_bonus.midnight_season_2_2pc
 actions.single_sb+=/crash_lightning,if=!buff.crash_lightning.up|talent.storm_unleashed.enabled
 actions.single_sb+=/voltaic_blaze,if=(buff.doom_winds.up&buff.maelstrom_weapon.stack>=10-(1+2*talent.fire_nova.enabled)&!buff.maelstrom_weapon.stack=10)&talent.thorims_invocation.enabled
 actions.single_sb+=/windstrike,if=buff.maelstrom_weapon.stack>0&talent.thorims_invocation.enabled
@@ -106,10 +108,11 @@ actions.single_sb+=/crash_lightning,if=buff.doom_winds.up&talent.thorims_invocat
 actions.single_sb+=/tempest,if=buff.maelstrom_weapon.stack=10
 actions.single_sb+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10
 actions.single_sb+=/stormstrike,if=charges_fractional>=1.8
-actions.single_sb+=/lava_lash
+actions.single_sb+=/lava_lash,if=talent.lashing_flames.enabled
 actions.single_sb+=/stormstrike
 actions.single_sb+=/voltaic_blaze
 actions.single_sb+=/sundering
+actions.single_sb+=/lava_lash
 actions.single_sb+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=8
 actions.single_sb+=/crash_lightning
 actions.single_sb+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
@@ -123,6 +126,7 @@ actions.single_totemic+=/call_action_list,name=buffs
 actions.single_totemic+=/sundering,if=talent.surging_elements.enabled|buff.whirling_earth.up|talent.feral_spirit.enabled
 actions.single_totemic+=/lava_lash,if=buff.whirling_fire.up|buff.hot_hand.up
 actions.single_totemic+=/doom_winds
+actions.single_totemic+=/voltaic_blaze,if=set_bonus.midnight_season_2_2pc
 actions.single_totemic+=/crash_lightning,if=!buff.crash_lightning.up|talent.storm_unleashed.enabled
 actions.single_totemic+=/primordial_storm,if=(buff.maelstrom_weapon.stack>=10|buff.primordial_storm.remains<3.5&buff.maelstrom_weapon.stack>=5)
 actions.single_totemic+=/windstrike,if=talent.thorims_invocation.enabled&buff.ascendance.up
@@ -159,7 +163,7 @@ off_hand=farstriders_chopper,id=237850,bonus_id=8793/8960/12066/12214/12214/1221
 # Gear Summary
 # gear_ilvl=288.50
 # gear_agility=1244
-# gear_stamina=17609
+# gear_stamina=23062
 # gear_crit_rating=584
 # gear_haste_rating=1058
 # gear_mastery_rating=935
