@@ -755,8 +755,8 @@ struct druid_t final : public parse_player_effects_t
 
     // Guardian
     buff_t* after_the_wildfire;
-    buff_t* answered_calling; // wild guardian 1
-    buff_t* answered_calling_damage; // wild guardian 3
+    buff_t* answered_calling_summon; // wild guardian 1
+    buff_t* answered_calling; // wild guardian 3
     buff_t* berserk_bear;
     buff_t* blood_frenzy;
     buff_t* brambles;
@@ -1271,6 +1271,8 @@ struct druid_t final : public parse_player_effects_t
     const spell_data_t* fury_of_nature;
     const spell_data_t* lightning_reflexes;
     const spell_data_t* ursine_adept;
+    const spell_data_t* wild_guardian_buff;   // wild guardian 3 available buff
+    const spell_data_t* wild_guardian_action; // wild guardian 3 replacement action
 
     // Resto
 
@@ -1862,15 +1864,6 @@ public:
       check_autoshift();
 
     ab::execute();
-
-    if ( p()->talent.wild_guardian_1.ok() && ab::base_costs[ RESOURCE_RAGE ] > 0 )
-    {
-      if ( p()->rng().roll( p()->talent.wild_guardian_1->effectN( 2 ).percent() ) )
-      {
-        p()->buff.answered_calling->trigger( this );
-        p()->buff.answered_calling_damage->trigger( this );
-      }
-    }
 
     if ( !has_flag( flag_e::ALLOWSTEALTH ) )
     {
@@ -4970,8 +4963,9 @@ private:
   druid_t* p_;
   buff_t* atw_buff;
   double moy_hp_pct_per_rage = 0.0;
-  double ug_cdr;
+  double ug_rage_per_cdr;
   double lw_rage_bucket = 0.0;
+  double wg_pct;
 
 protected:
   using base_t = rage_spender_t<BASE>;
@@ -4981,7 +4975,8 @@ public:
     : BASE( n, p, s, f ),
       p_( p ),
       atw_buff( p->buff.after_the_wildfire ),
-      ug_cdr( p->talent.ursocs_guidance->effectN( 5 ).base_value() )
+      ug_rage_per_cdr( p->talent.ursocs_guidance->effectN( 5 ).base_value() ),
+      wg_pct( p->talent.wild_guardian_1->effectN( 2 ).percent() )
   {
     if ( p->talent.memory_of_ysera.ok() )
     {
@@ -5069,13 +5064,35 @@ public:
     if ( !p_->talent.ursocs_guidance.ok() )
       return;
 
-    auto dur = timespan_t::from_seconds( amount / -ug_cdr );
+    auto dur = timespan_t::from_seconds( amount / -ug_rage_per_cdr );
 
     if ( p_->cooldown.incarnation_bear )
       p_->cooldown.incarnation_bear->adjust( dur );
 
     if ( p_->cooldown.berserk_bear )
       p_->cooldown.berserk_bear->adjust( dur );
+  }
+
+  void consume_rage_wild_guardian( double )
+  {
+    if ( wg_pct && ( p()->buff.dream_conduit->check() || p()->rng().roll( wg_pct ) ) )
+    {
+      // technically can have 2 stacks
+      p()->buff.dream_conduit->decrement();
+
+      // trigger wild guardian 1, if possible
+      if ( p_->buff.answered_calling_summon->trigger( this ) )
+      {
+        // trigger wild guardian 3, if possible
+        if ( p_->buff.answered_calling->trigger() )
+        {
+          if ( p_->cooldown.mangle )
+            p_->cooldown.mangle->reset( true );
+          if ( p_->cooldown.thrash )
+            p_->cooldown.thrash->reset( true );
+        }
+      }
+    }
   }
 
   void consume_resource() override
@@ -5088,6 +5105,7 @@ public:
     consume_rage_after_the_wildfire( BASE::last_resource_cost );
     consume_rage_memory_of_ysera( BASE::last_resource_cost );
     consume_rage_ursocs_guidance( BASE::last_resource_cost );
+    consume_rage_wild_guardian( BASE::last_resource_cost );
   }
 };
 
@@ -5132,6 +5150,30 @@ public:
     BASE::tick( d );
 
     trigger_ursocs_fury( d->state );
+  }
+};
+
+template <typename BASE>
+struct trigger_vicious_brambles_t : public BASE
+{
+private:
+  using ab = BASE;
+  double multiplier;
+
+protected:
+  using base_t = trigger_vicious_brambles_t<BASE>;
+
+public:
+  trigger_vicious_brambles_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
+    : ab( n, p, s, f ), multiplier( p->talent.wild_guardian_2->effectN( 2 ).percent() )
+  {}
+
+  void impact( action_state_t* s ) override
+  {
+    ab::impact( s );
+
+    if ( multiplier && s->result_amount )
+      residual_action::trigger( ab::p()->active.vicious_brambles, s->target, s->result_amount * multiplier );
   }
 };
 
@@ -5347,36 +5389,6 @@ struct lunar_beam_t final : public druid_spell_t
   }
 };
 
-// Vicious Brambles==========================================================
-template <typename BASE>
-struct trigger_vicious_brambles_t : public BASE
-{
-private:
-  using ab = BASE;
-  double multiplier;
-
-protected:
-  using base_t = trigger_vicious_brambles_t<BASE>;
-
-public:
-  trigger_vicious_brambles_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
-    : ab( n, p, s, f ), multiplier( 0.0 )
-  {
-    if ( !p->talent.wild_guardian_2.ok() )
-      return;
-
-    multiplier = p->talent.wild_guardian_2->effectN( 2 ).percent();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    ab::impact( s );
-
-    if ( multiplier && s->result_amount )
-      residual_action::trigger( ab::p()->active.vicious_brambles, s->target, s->result_amount * multiplier );
-  }
-};
-
 // Mangle ===================================================================
 struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
                                trigger_vicious_brambles_t<
@@ -5437,7 +5449,7 @@ struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
   {
     base_t::execute();
 
-    if ( p()->buff.answered_calling->up() )
+    if ( p()->buff.answered_calling_summon->check() )
       p()->active.spirits_wrath->execute_on_target( target );
 
     p()->buff.guardian_of_elune->trigger( this );
@@ -5955,7 +5967,8 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
   {
     base_t::execute();
 
-    if ( p()->buff.answered_calling->up() )
+    // TODO: determine if target is random
+    if ( p()->buff.answered_calling_summon->check() )
       p()->active.spirits_wrath->execute_on_target( target );
 
     p()->buff.gorestained_claws->trigger( this );
@@ -5999,11 +6012,12 @@ struct spirits_wrath_t final : public bear_attack_t
   {
     proc = true;
 
-    if ( !p->talent.wild_guardian_3.ok() )
-      return;
-
-    // rage generation if wild guardian 3 is talented
-    parse_effect_data( p->find_spell( 1308125 )->effectN( 1 ) );
+    if ( p->talent.wild_guardian_3.ok() )
+    {
+      // rage generation if wild guardian 3 is talented
+      // TODO: check if this can trigger generic helpful procs
+      parse_effect_data( find_effect( p->find_spell( 1308125 ), E_ENERGIZE ) );
+    }
   }
 };
 } // end namespace bear_attacks
@@ -8909,23 +8923,19 @@ struct wild_mushroom_t final : public druid_spell_t
 // Wild Guardian ============================================================
 struct wild_guardian_t final : public druid_spell_t
 {
-  DRUID_ABILITY( wild_guardian_t, druid_spell_t, "wild_guardian",
-                 p->talent.wild_guardian_3.ok() ? p->find_spell( 1269658 ) : spell_data_t::not_found() )
-  {}
+  DRUID_ABILITY( wild_guardian_t, druid_spell_t, "wild_guardian", p->spec.wild_guardian_action ) {}
 
   bool ready() override
   {
-    if ( !p()->buff.wild_guardian->check() )
-      return false;
-
-    return druid_spell_t::ready();
+    return p()->buff.wild_guardian->check() ? druid_spell_t::ready() : false;
   }
 
   void execute() override
   {
     druid_spell_t::execute();
 
-    p()->buff.wild_guardian->expire();
+    // technically the incarn override has 2 stacks
+    p()->buff.wild_guardian->decrement();
     p()->buff.dream_conduit->trigger();
   }
 };
@@ -9040,6 +9050,7 @@ struct wrath_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
 };
 
 // Heart of the Wild ========================================================
+// Caster Form Wild Growth NYI
 struct heart_of_the_wild_t final : public druid_spell_t
 {
   action_t* hotw_cat;
@@ -10612,6 +10623,19 @@ void druid_t::init_spells()
   spec.lightning_reflexes       = find_specialization_spell( "Lightning Reflexes" );
   spec.ursine_adept             = find_specialization_spell( "Ursine Adept" );
 
+  if ( talent.incarnation_bear.ok() )
+  {
+    spec.wild_guardian_buff   = check( talent.wild_guardian_3, 1269616 );
+    spec.wild_guardian_action =
+      check( talent.wild_guardian_3, apply_override( talent.incarnation_bear, spec.wild_guardian_buff ) );
+  }
+  else if ( talent.berserk_bear.ok() )
+  {
+    spec.wild_guardian_buff   = check( talent.wild_guardian_3, 1270277 );
+    spec.wild_guardian_action =
+      check( spec.wild_guardian_buff, apply_override( talent.berserk_bear, spec.wild_guardian_buff ) );
+  }
+
   // Restoration Abilities
 
   // Hero Talents
@@ -11240,20 +11264,13 @@ void druid_t::create_buffs()
       ->set_default_value( talent.after_the_wildfire->effectN( 2 ).base_value() )
       ->set_max_stack( 1 );
 
-  buff.answered_calling = make_fallback( talent.wild_guardian_1.ok(), this, "answered_calling", find_trigger( talent.wild_guardian_1 ).trigger() )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int _new ) {
-      if ( !_new || !talent.wild_guardian_3.ok() )
-        return;
+  buff.answered_calling_summon = make_fallback( talent.wild_guardian_1.ok(),
+    this, "answered_calling_summon", find_trigger( talent.wild_guardian_1 ).trigger() )
+      // chance to proc handled in rage_spender_t
+      ->set_name_reporting( "Summon" )
+      ->set_trigger_spell( talent.wild_guardian_1 );
 
-      if ( cooldown.mangle )
-        cooldown.mangle->reset( true );
-      if ( cooldown.thrash )
-        cooldown.thrash->reset( true );
-    } )
-    ->set_trigger_spell( talent.wild_guardian_1 );
-
-  buff.answered_calling_damage = make_fallback( talent.wild_guardian_3.ok(), this, "answered_calling", find_spell( 1308647 ) )
-    ->set_trigger_spell( talent.wild_guardian_3 );
+  buff.answered_calling = make_fallback( talent.wild_guardian_3.ok(), this, "answered_calling", find_spell( 1308647 ) );
 
   buff.berserk_bear = make_fallback( talent.berserk_bear.ok(), this, "berserk_bear", talent.berserk_bear )
     ->set_name_reporting( "berserk" )
@@ -11297,8 +11314,8 @@ void druid_t::create_buffs()
   buff.celestial_might = make_fallback( sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ),
     this, "celestial_might", find_trigger( sets->set( DRUID_GUARDIAN, MID1, B4 ) ).trigger() );
 
-  buff.dream_conduit = make_fallback( talent.wild_guardian_3.ok(), this, "dream_conduit", find_trigger( find_spell( 1269658 ) ).trigger() )
-    ->set_trigger_spell( talent.wild_guardian_3 );
+  buff.dream_conduit = make_fallback( talent.wild_guardian_3.ok(),
+    this, "dream_conduit", find_trigger( spec.wild_guardian_action ).trigger() );
 
   buff.dream_guide =
     make_fallback( talent.dream_guide.ok(), this, "dream_guide", find_trigger( talent.dream_guide ).trigger() )
@@ -11395,8 +11412,7 @@ void druid_t::create_buffs()
     this, "waking_nightmare", find_trigger( talent.waking_nightmare ).trigger() )
       ->set_proc_callbacks( false );
 
-  buff.wild_guardian = make_fallback( talent.wild_guardian_3.ok(), this, "wild_guardian", find_spell( 1269616 ) )
-    ->set_trigger_spell( talent.wild_guardian_3 );
+  buff.wild_guardian = make_fallback( talent.wild_guardian_3.ok(), this, "wild_guardian", spec.wild_guardian_buff );
 
   // Restoration buffs
   buff.abundance = make_fallback( talent.abundance.ok(), this, "abundance", find_spell( 207640 ) )
@@ -11841,9 +11857,9 @@ void druid_t::create_actions()
   if ( talent.wild_guardian_2->ok() )
   {
     using vicious_brambles_t = residual_action::residual_periodic_action_t<bear_attack_t>;
-    auto s_data = find_spell( 1270065 );
-    active.vicious_brambles = get_secondary_action<vicious_brambles_t>( "vicious_brambles", this, s_data );
-    active.vicious_brambles->proc = true;
+    auto vb = get_secondary_action<vicious_brambles_t>( "vicious_brambles", this, find_spell( 1270065 ) );
+    vb->proc = true;
+    active.vicious_brambles = vb;
   }
 
   // Restoration
@@ -14174,7 +14190,7 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.unseen_predators_craving, talent.unseen_predator_2->effectN( 1 ).percent() );
 
   // Guardian
-  _a->parse_effects( buff.answered_calling_damage );
+  _a->parse_effects( buff.answered_calling );
   _a->parse_effects( buff.berserk_bear, effect_mask_t( true ).disable( 6, 7, 8, 9 ) );
   _a->parse_effects( buff.incarnation_bear, effect_mask_t( true ).disable( 6, 7, 8, 9, 14, 15, 16, 17 ) );
   // additional effects if astral insight is talented
