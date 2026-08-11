@@ -9023,9 +9023,9 @@ void actions::rogue_action_t<Base>::trigger_goremaws_bite( const action_state_t*
   if ( p()->get_active_dots( td( this->target )->dots.goremaws_bite ) == 0 )
     return;
 
-  // 2026-08-06 -- Does not appear to copy any pet clone attacks currently
+  // 2026-08-06 -- Does not appear to copy any Secret Technique clone attacks currently
   if ( secondary_trigger_type == secondary_trigger::SECRET_TECHNIQUE_CLONE ||
-       secondary_trigger_type == secondary_trigger::SHADOW_CLONE )
+       ab::data().id() == p()->spec.shadow_clone_secret_technique_attack->id() )
     return;
 
   // TOCHECK -- Using combo point state for now, may need to have a manual procs_goremaws_bite() function
