@@ -19,7 +19,7 @@ else
 fi
 # MIDX profiles generation
 # MID1 removed as talent hashes have changed
-for season in MID2
+for season in MID1, MID2
 do
   PROFDIR="$season"
   echo "---$PROFDIR---"
