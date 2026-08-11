@@ -3873,6 +3873,10 @@ void ruby_whelp_shell( special_effect_t& effect )
 
     void trigger_whelp_proc( ruby_whelp_type_e whelp_type, player_t* t )
     {
+      // only trigger damage if the target is an enemy, otherwise ignore for 'heal'
+      if ( !t->is_enemy() )
+        return;
+
       switch ( whelp_type )
       {
         case FIRE_SHOT:
@@ -3895,10 +3899,6 @@ void ruby_whelp_shell( special_effect_t& effect )
 
     void trigger_random_whelp_proc( player_t* t )
     {
-      // only trigger damage if the target is an enemy, otherwise ignore for 'heal'
-      if ( !t->is_enemy() )
-        return;
-
       int choice = rng().range( static_cast<int>( RUBY_WHELP_TYPE_MAX ) );
       trigger_whelp_proc( static_cast<ruby_whelp_type_e>( choice ), t );
     }
