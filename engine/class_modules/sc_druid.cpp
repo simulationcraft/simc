@@ -5684,6 +5684,8 @@ struct maul_base_t : public trigger_vicious_brambles_t<
       p()->resource_loss( RESOURCE_RAGE, kb_excess_rage );
       stats->consume_resource( RESOURCE_RAGE, kb_excess_rage );
       last_resource_cost += kb_excess_rage;
+      sim->print_log( "{} consumes {} rage for Killing Blow ({})", *p(), kb_excess_rage,
+                      p()->resources.current[ RESOURCE_RAGE ] );
 
       consume_rage_memory_of_ysera( kb_excess_rage );
       consume_rage_after_the_wildfire( kb_excess_rage );
