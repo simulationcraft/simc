@@ -527,11 +527,15 @@ struct druid_t final : public parse_player_effects_t
   // !!!==========================================================================!!!
   // !!! Runtime variables NOTE: these MUST be properly reset in druid_t::reset() !!!
   // !!!==========================================================================!!!
-  moon_stage_e moon_stage;
   std::vector<event_t*> persistent_event_delay;
+  // Balance
   event_t* astral_power_decay;
   player_t* stellar_amplification_target;
+  moon_stage_e moon_stage;
+  // Feral
   int cp_spent_in_berserk = 0;  // mid2 2pc
+  // Guardian
+  timespan_t mid2_4pc_extension;
 
   struct dot_list_t
   {
@@ -5204,6 +5208,8 @@ struct berserk_bear_base_t : public bear_attack_t
 
     if ( p()->cooldown.thrash )
       p()->cooldown.thrash->reset( true );
+
+    p()->mid2_4pc_extension = 0_ms;
   }
 };
 
@@ -5953,10 +5959,14 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
 
   double fc_pct;
   double cascade_chance;
+  timespan_t mid2_4pc_add;
+  timespan_t mid2_4pc_max;
 
   DRUID_ABILITY( thrash_t, base_t, "thrash", p->spec.thrash ),
     fc_pct( p->talent.flashing_claws->effectN( 1 ).percent() ),
-    cascade_chance( p->specialization() == DRUID_GUARDIAN ? p->talent.star_cascade->effectN( 2 ).percent() : 0.0 )
+    cascade_chance( p->specialization() == DRUID_GUARDIAN ? p->talent.star_cascade->effectN( 2 ).percent() : 0.0 ),
+    mid2_4pc_add( p->sets->set( DRUID_GUARDIAN, MID2, B4 )->effectN( 1 ).time_value() ),
+    mid2_4pc_max( p->sets->set( DRUID_GUARDIAN, MID2, B4 )->effectN( 2 ).time_value() )
   {
     aoe = -1;
     impact_action = p->get_secondary_action<thrash_bleed_t>( name_str + "_dot", f );
@@ -5979,6 +5989,12 @@ struct thrash_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
     p()->buff.gorestained_claws->trigger( this );
     if ( p()->sets->has_set_bonus( DRUID_GUARDIAN, MID2, B4 ) )
     {
+      if ( p()->mid2_4pc_extension < mid2_4pc_max && p()->buff.b_inc_bear->check() )
+      {
+        p()->mid2_4pc_extension += mid2_4pc_add;
+        p()->buff.b_inc_bear->extend_duration( mid2_4pc_add );
+      }
+
       for ( size_t i = 1; i < 4; i++ )
         make_event( *sim, i * 250_ms, [ this ]() { p()->active.rampant_thorn->execute_on_target( target ); } );
     }
@@ -13037,10 +13053,12 @@ void druid_t::reset()
     recalculate_resource_max( RESOURCE_HEALTH );
 
   // Reset runtime variables
-  moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
   persistent_event_delay.clear();
   astral_power_decay = nullptr;
   stellar_amplification_target = nullptr;
+  moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
+  cp_spent_in_berserk = 0;
+  mid2_4pc_extension = 0_ms;
   dot_lists.moonfire.clear();
   dot_lists.sunfire.clear();
   dot_lists.rake.clear();
@@ -13048,7 +13066,6 @@ void druid_t::reset()
   dot_lists.thrash.clear();
   dot_lists.dreadful_wound.clear();
   spell_queued = {};
-  cp_spent_in_berserk = 0;
 }
 
 /*
