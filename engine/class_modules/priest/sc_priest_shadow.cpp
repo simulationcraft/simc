@@ -1981,7 +1981,14 @@ struct voidform_t final : public priest_buff_t<buff_t>
     }
 
     const int total_void_volley_charges = void_volley_charges + crushing_void_charges;
-    assert( tierset_procs_left <= total_void_volley_charges && "Should never exceed total void volley charges" );
+
+    if ( tierset_procs_left > total_void_volley_charges )
+    {
+      const int desynced_stacks = tierset_procs_left - total_void_volley_charges;
+      priest().buffs.void_volley_set_bonus->decrement( desynced_stacks );
+      priest().buffs.void_volley_set_bonus_effectiveness->decrement( desynced_stacks );
+      tierset_procs_left = total_void_volley_charges;
+    }
 
     const int transferable_set_bonus_charges = std::min( tierset_procs_left, void_volley_charges );
     if ( void_volley_charges > 0 && transferable_set_bonus_charges > 0 )
