@@ -1034,27 +1034,6 @@ struct void_volley_t final : public void_volley_base_t
     return set_bonus_effectiveness_for_cast;
   }
 
-  bool consumes_set_bonus_charge() const
-  {
-    const int set_bonus_charges = priest().buffs.void_volley_set_bonus->check();
-
-    if ( set_bonus_charges <= 0 )
-    {
-      return false;
-    }
-
-    const int total_void_volley_charges = priest().buffs.void_volley->check();
-
-    if ( set_bonus_charges == total_void_volley_charges )
-    {
-      return true;
-    }
-
-    const int crushing_void_volley_charges = priest().buffs.crushing_void->check();
-
-    return crushing_void_volley_charges == set_bonus_charges;
-  }
-
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double ea = void_volley_base_t::composite_energize_amount( s );
@@ -1069,8 +1048,8 @@ struct void_volley_t final : public void_volley_base_t
 
   void execute() override
   {
-    bool set_bonus_cast              = consumes_set_bonus_charge();
     set_bonus_effectiveness_for_cast = priest().buffs.void_volley_set_bonus_effectiveness->check();
+    bool set_bonus_cast              = set_bonus_effectiveness_for_cast;
 
     void_volley_base_t::execute();
     set_bonus_effectiveness_for_cast = false;
@@ -1854,17 +1833,14 @@ struct tentacle_slam_t final : public priest_spell_t
     {
       priest().procs.midnight_s2_4pc_void_volley->occur();
 
-      if ( priest().buffs.voidform->check() )
-      {
-        priest().buffs.void_volley->trigger();
-      }
-      else
-      {
-        priest().buffs.crushing_void->trigger();
-      }
+      buff_t* charge_buff = priest().buffs.voidform->check() ? priest().buffs.void_volley : priest().buffs.crushing_void;
 
-      priest().buffs.void_volley_set_bonus->trigger();
-      priest().buffs.void_volley_set_bonus_effectiveness->trigger();
+      if ( !charge_buff->at_max_stacks() )
+      {
+        charge_buff->trigger();
+        priest().buffs.void_volley_set_bonus->trigger();
+        priest().buffs.void_volley_set_bonus_effectiveness->trigger();
+      }
     }
   }
 
@@ -1982,6 +1958,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     int void_volley_charges = priest().buffs.void_volley->check();
+    int crushing_void_charges = priest().buffs.crushing_void->check();
     int tierset_procs_left  = priest().buffs.void_volley_set_bonus->check();
 
     if ( priest().buffs.shadowform_state->check() )
@@ -2002,11 +1979,14 @@ struct voidform_t final : public priest_buff_t<buff_t>
       priest().buffs.crushing_void->trigger();
     }
 
-    assert( tierset_procs_left <= void_volley_charges && "Should never exceed void volley charges" );
-    if ( void_volley_charges > 0 && tierset_procs_left > 0 )
+    const int total_void_volley_charges = void_volley_charges + crushing_void_charges;
+    assert( tierset_procs_left <= total_void_volley_charges && "Should never exceed total void volley charges" );
+
+    const int transferable_set_bonus_charges = std::min( tierset_procs_left, void_volley_charges );
+    if ( void_volley_charges > 0 && transferable_set_bonus_charges > 0 )
     {
       priest().buffs.void_volley->expire();
-      priest().buffs.crushing_void->trigger( tierset_procs_left );
+      priest().buffs.crushing_void->trigger( transferable_set_bonus_charges );
     }
 
     if ( priest().buffs.ancient_madness_extension->check() )
