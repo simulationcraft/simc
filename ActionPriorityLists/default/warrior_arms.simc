@@ -125,7 +125,7 @@ actions.slayer_execute+=/avatar,if=debuff.colossus_smash.up|cooldown.colossus_sm
 actions.slayer_execute+=/colossus_smash
 actions.slayer_execute+=/heroic_strike
 actions.slayer_execute+=/bladestorm,if=debuff.colossus_smash.up|cooldown.colossus_smash.remains>25|buff.avatar.up|buff.executioners_precision.stack=2
-actions.slayer_execute+=/mortal_strike,if=buff.executioners_precision.stack=2&(dot.rend.remains<2|buff.martial_prowess.stack=3|buff.fierce_followthrough.up)
+actions.slayer_execute+=/mortal_strike,if=buff.executioners_precision.stack=2&(dot.rend.remains<2|buff.martial_prowess.stack=3)
 actions.slayer_execute+=/overpower,if=buff.opportunist.stack=2&talent.opportunist
 actions.slayer_execute+=/execute,if=buff.sudden_death.up&buff.executioner.stack>0
 actions.slayer_execute+=/execute,if=rage>40
