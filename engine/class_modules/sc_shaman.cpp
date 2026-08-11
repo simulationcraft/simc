@@ -2277,15 +2277,12 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   debuff.flametongue_attack = make_buff( *this, "flametongue_attack", p->find_spell( 467390 ) )
     ->set_trigger_spell( p->talent.imbuement_mastery );
 
-  if ( p->dbc->ptr )
-  {
-    debuff.mid2_enh_2pc = make_buff( *this, "burning_core", p->find_spell( 1299975 ) )
-        ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
-        ->set_tick_callback( [ p, this ]( buff_t*, int, timespan_t ) {
-          p->action.fire_nova_explosion->execute_on_target( this->target );
-        } )
-        ->set_trigger_spell( p->sets->set( SHAMAN_ENHANCEMENT, MID2, B2 ) );
-  }
+  debuff.mid2_enh_2pc = make_buff( *this, "burning_core", p->find_spell( 1299975 ) )
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
+      ->set_tick_callback( [ p, this ]( buff_t*, int, timespan_t ) {
+        p->action.fire_nova_explosion->execute_on_target( this->target );
+      } )
+      ->set_trigger_spell( p->sets->set( SHAMAN_ENHANCEMENT, MID2, B2 ) );
 }
 
 namespace expr
@@ -2813,7 +2810,7 @@ public:
     if ( ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
            p()->buff.storm_elemental->check() && p()->talent.primal_elementalist.ok() ) )
     {
-      m *= 1.0 + p()->talent.elemental_unity->effectN( p()->dbc->ptr ? 1 : 3 ).percent();
+      m *= 1.0 + p()->talent.elemental_unity->effectN( 1 ).percent();
     }
 
     if ( ( affected_by_flametongue_da && p()->talent.flametongue_weapon.ok() &&
@@ -2842,7 +2839,7 @@ public:
     if ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() &&
          p()->talent.primal_elementalist.ok() )
     {
-      m *= 1.0 + p()->talent.elemental_unity->effectN( p()->dbc->ptr ? 2 : 1 ).percent();
+      m *= 1.0 + p()->talent.elemental_unity->effectN( 2 ).percent();
     }
 
     if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
@@ -2854,7 +2851,7 @@ public:
     if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
         p()->talent.primal_elementalist.ok() )
     {
-      m *= 1.0 + p()->talent.elemental_unity->effectN( p()->dbc->ptr ? 2 : 3 ).percent();
+      m *= 1.0 + p()->talent.elemental_unity->effectN( 2 ).percent();
     }
 
     if ( ( affected_by_flametongue_ta && p()->talent.flametongue_weapon.ok() &&
@@ -4571,7 +4568,7 @@ struct crash_lightning_attack_t : public shaman_attack_t
 
     // MID2 enhancement 4 piece applies the average of the on-going snapshotted Static Charge
     // value to the crash lightning attack
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B4 ) )
+    if ( p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B4 ) )
     {
       auto mul = range::accumulate( p()->mid2_enh_4pc_mul, 0.0 ) /
         ( p()->mid2_enh_4pc_mul.empty()
@@ -6038,7 +6035,7 @@ struct crash_lightning_t : public shaman_attack_t
 
     if ( p()->talent.storm_unleashed_3.ok() )
     {
-      double mid2_4pc_mul = p()->dbc->ptr ? p()->buff.mid2_enh_4pc->check_stack_value() : 1.0;
+      double mid2_4pc_mul = p()->buff.mid2_enh_4pc->check_stack_value();
 
       make_repeating_event( sim, 1_s, [ this, mul = mid2_4pc_mul ]() {
         for ( auto t : target_list() )
@@ -6054,7 +6051,7 @@ struct crash_lightning_t : public shaman_attack_t
       }, as<int>( p()->talent.storm_unleashed_3->effectN( 2 ).base_value() ) );
     }
 
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B4 ) )
+    if ( p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B4 ) )
     {
       if ( sim->debug )
       {
@@ -6947,10 +6944,7 @@ struct fire_nova_explosion_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_multiplier( t );
 
-    if ( p()->dbc->ptr )
-    {
-      m *= 1.0 + td( t )->debuff.mid2_enh_2pc->value();
-    }
+    m *= 1.0 + td( t )->debuff.mid2_enh_2pc->value();
 
     return m;
   }
@@ -6959,7 +6953,7 @@ struct fire_nova_explosion_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B4 ) )
+    if ( p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B4 ) )
     {
       p()->cooldown.crash_lightning->adjust(
         -p()->sets->set( SHAMAN_ENHANCEMENT, MID2, B4 )->effectN( 1 ).time_value(), false );
@@ -10096,7 +10090,7 @@ struct voltaic_blaze_t : public shaman_spell_t
 
     p()->trigger_lively_totems( execute_state );
 
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B2 ) )
+    if ( p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID2, B2 ) )
     {
       td( execute_state->target )->debuff.mid2_enh_2pc->trigger();
     }
@@ -12779,7 +12773,7 @@ void shaman_t::create_buffs()
   // PTR modifies MID1 Enhancement 4PC spell data in such a way that the automagic parsing system
   // can no longer cope. Explicitly add mastery invalidation to the crash lightning buff, and also
   // implement the mastery gain in shaman_t::composite_mastery().
-  if ( dbc->ptr && sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID1, B4 ) )
+  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID1, B4 ) )
   {
     buff.crash_lightning->add_invalidate( CACHE_MASTERY );
   }
@@ -12887,12 +12881,9 @@ void shaman_t::create_buffs()
       ->set_trigger_spell(sets->set( SHAMAN_ELEMENTAL, MID2, B4 ));
 
 
-  if ( dbc->ptr )
-  {
-    buff.mid2_enh_4pc = make_buff( this, "short_circuit", find_spell( 1299991 ) )
-      ->set_default_value_from_effect( 1U )
-      ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, MID2, B4 ) );
-  }
+  buff.mid2_enh_4pc = make_buff( this, "short_circuit", find_spell( 1299991 ) )
+    ->set_default_value_from_effect( 1U )
+    ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, MID2, B4 ) );
   //
   // Restoration
   //
@@ -13138,19 +13129,6 @@ void shaman_t::apply_player_effects()
   eff::source_eff_builder_t( buff.crash_lightning )
     .set_effect_mask( effect_mask_t( false ).enable( 2 ) )
     .build( this );
-  // [20260328] BUG: Enhancement 12.0 4PC gives half as much mastery as is on the tin
-  // PTR modifies MID1 Enhancement 4PC spell data in such a way that the automagic parsing system
-  // can no longer cope. For PTR (12.1), mastery point gain is implemented in
-  // shaman_t::composite_mastery().
-  if ( !dbc->ptr )
-  {
-    eff::source_eff_builder_t( buff.crash_lightning )
-      .set_effect_mask( effect_mask_t( false ).enable( 3 ) )
-      .set_value( [ this ]( double value ) -> double {
-        return value * ( bugs ? 0.5 : 1.0 );
-      } )
-      .build( this );
-  }
 
   // Elemental
   eff::source_eff_builder_t( mastery.elemental_overload ).build( this );
@@ -13732,7 +13710,7 @@ double shaman_t::composite_mastery() const
   double m = parse_player_effects_t::composite_mastery();
 
   // [20260328] BUG: Enhancement 12.0 4PC gives half as much mastery as is on the tin
-  if ( dbc->ptr && sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID1, B4 ) )
+  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, MID1, B4 ) )
   {
     if ( buff.crash_lightning->up() )
     {
