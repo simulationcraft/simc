@@ -1,7 +1,7 @@
-action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-action_priority_list_t* def = get_action_priority_list( "default" );
-action_priority_list_t* assisted_combat = get_action_priority_list( "assisted_combat" );
-action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+action_priority_list_t* def = p->get_action_priority_list( "default" );
+action_priority_list_t* assisted_combat = p->get_action_priority_list( "assisted_combat" );
+action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
 
 precombat->add_action( "bear_form,if=buff.bear_form.down","Executed before combat begins. Accepts non-harmful actions only." );
 

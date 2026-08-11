@@ -1,6 +1,6 @@
-action_priority_list_t* def = get_action_priority_list( "default" );
-action_priority_list_t* assisted_combat = get_action_priority_list( "assisted_combat" );
-action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+action_priority_list_t* def = p->get_action_priority_list( "default" );
+action_priority_list_t* assisted_combat = p->get_action_priority_list( "assisted_combat" );
+action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
 
 def->add_action( "call_action_list,name=cooldowns","Executed every time the actor is available." );
 def->add_action( "call_action_list,name=assisted_combat" );

@@ -30,6 +30,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\class_modules\apl\apl_rogue.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_shaman.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_warrior.hpp" />
+		<ClInclude Include="..\engine\class_modules\apl\druid\druid.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\mage.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\warlock.hpp" />
 		<ClInclude Include="..\engine\class_modules\class_module.hpp" />
@@ -223,6 +224,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\class_modules\apl\apl_rogue.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_shaman.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_warrior.cpp" />
+		<ClCompile Include="..\engine\class_modules\apl\druid\druid.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\mage.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\warlock.cpp" />
 		<ClCompile Include="..\engine\class_modules\monk\sc_monk.cpp" />

@@ -6,6 +6,7 @@
 #include "config.hpp"
 
 #include "action/parse_effects.hpp"
+#include "class_modules/apl/druid/druid.hpp"
 #include "player/pet_spawner.hpp"
 #include "report/highchart.hpp"
 
@@ -1408,14 +1409,6 @@ struct druid_t final : public parse_player_effects_t
 private:
   void apl_precombat();
   void apl_default();
-  void apl_feral();
-  void apl_feral_ptr();
-  void apl_balance();
-  void apl_balance_ptr();
-  void apl_guardian();
-  void apl_guardian_ptr();
-  void apl_restoration();
-  void apl_restoration_ptr();
 
   target_specific_t<druid_td_t> target_data;
 };
@@ -12109,47 +12102,6 @@ void druid_t::apl_default()
     def->add_action( action_str );
 }
 
-// Action Priority Lists ========================================
-void druid_t::apl_feral()
-{
-#include "class_modules/apl/druid/feral_apl.inc"
-}
-
-void druid_t::apl_feral_ptr()
-{
-#include "class_modules/apl/druid/feral_apl_ptr.inc"
-}
-
-void druid_t::apl_balance()
-{
-#include "class_modules/apl/druid/balance_apl.inc"
-}
-
-void druid_t::apl_balance_ptr()
-{
-#include "class_modules/apl/druid/balance_apl_ptr.inc"
-}
-
-void druid_t::apl_guardian()
-{
-#include "class_modules/apl/druid/guardian_apl.inc"
-}
-
-void druid_t::apl_guardian_ptr()
-{
-#include "class_modules/apl/druid/guardian_apl_ptr.inc"
-}
-
-void druid_t::apl_restoration()
-{
-#include "class_modules/apl/druid/restoration_druid_apl.inc"
-}
-
-void druid_t::apl_restoration_ptr()
-{
-#include "class_modules/apl/druid/restoration_druid_apl_ptr.inc"
-}
-
 // druid_t::init_scaling ====================================================
 void druid_t::init_scaling()
 {
@@ -12941,11 +12893,11 @@ void druid_t::init_action_list()
 
   switch ( specialization() )
   {
-    case DRUID_FERAL:       is_ptr() ? apl_feral_ptr() : apl_feral();             break;
-    case DRUID_BALANCE:     is_ptr() ? apl_balance_ptr() : apl_balance();         break;
-    case DRUID_GUARDIAN:    is_ptr() ? apl_guardian_ptr() : apl_guardian();       break;
-    case DRUID_RESTORATION: is_ptr() ? apl_restoration_ptr() : apl_restoration(); break;
-    default:                apl_default();                                        break;
+    case DRUID_BALANCE:     is_ptr() ? druid_apl::apl_balance_ptr( this ) : druid_apl::apl_balance( this );         break;
+    case DRUID_FERAL:       is_ptr() ? druid_apl::apl_feral_ptr( this ) : druid_apl::apl_feral( this );             break;
+    case DRUID_GUARDIAN:    is_ptr() ? druid_apl::apl_guardian_ptr( this ) : druid_apl::apl_guardian( this );       break;
+    case DRUID_RESTORATION: is_ptr() ? druid_apl::apl_restoration_ptr( this ) : druid_apl::apl_restoration( this ); break;
+    default:                apl_default(); break;
   }
 
   use_default_action_list = true;

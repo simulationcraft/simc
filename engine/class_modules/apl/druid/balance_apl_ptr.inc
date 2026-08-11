@@ -1,10 +1,10 @@
-action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-action_priority_list_t* def = get_action_priority_list( "default" );
-action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
-action_priority_list_t* mini = get_action_priority_list( "mini" );
-action_priority_list_t* aoe = get_action_priority_list( "aoe" );
-action_priority_list_t* ec_st = get_action_priority_list( "ec_st" );
-action_priority_list_t* kotg_st = get_action_priority_list( "kotg_st" );
+action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+action_priority_list_t* def = p->get_action_priority_list( "default" );
+action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
+action_priority_list_t* mini = p->get_action_priority_list( "mini" );
+action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
+action_priority_list_t* ec_st = p->get_action_priority_list( "ec_st" );
+action_priority_list_t* kotg_st = p->get_action_priority_list( "kotg_st" );
 
 precombat->add_action( "variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds","Setting up variables" );
 precombat->add_action( "variable,name=opener,op=set,value=1","Enable opener" );

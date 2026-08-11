@@ -1,7 +1,7 @@
-action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-action_priority_list_t* def = get_action_priority_list( "default" );
-action_priority_list_t* bear = get_action_priority_list( "bear" );
-action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
+action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+action_priority_list_t* def = p->get_action_priority_list( "default" );
+action_priority_list_t* bear = p->get_action_priority_list( "bear" );
+action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
 
 precombat->add_action( "bear_form,if=buff.bear_form.down&!talent.heart_of_the_wild.enabled","Executed before combat begins. Accepts non-harmful actions only." );
 precombat->add_action( "cat_form,if=buff.bear_form.down&talent.heart_of_the_wild.enabled" );

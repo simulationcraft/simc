@@ -1,11 +1,11 @@
-action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-action_priority_list_t* def = get_action_priority_list( "default" );
-action_priority_list_t* aoe = get_action_priority_list( "aoe" );
-action_priority_list_t* ec_st = get_action_priority_list( "ec_st" );
-action_priority_list_t* kotg_st = get_action_priority_list( "kotg_st" );
-action_priority_list_t* opener_aoe = get_action_priority_list( "opener_aoe" );
-action_priority_list_t* opener_ec = get_action_priority_list( "opener_ec" );
-action_priority_list_t* opener_kotg = get_action_priority_list( "opener_kotg" );
+action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+action_priority_list_t* def = p->get_action_priority_list( "default" );
+action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
+action_priority_list_t* ec_st = p->get_action_priority_list( "ec_st" );
+action_priority_list_t* kotg_st = p->get_action_priority_list( "kotg_st" );
+action_priority_list_t* opener_aoe = p->get_action_priority_list( "opener_aoe" );
+action_priority_list_t* opener_ec = p->get_action_priority_list( "opener_ec" );
+action_priority_list_t* opener_kotg = p->get_action_priority_list( "opener_kotg" );
 
 precombat->add_action( "variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds","Executed before combat begins. Accepts non-harmful actions only." );
 precombat->add_action( "variable,name=opener,op=set,value=1" );

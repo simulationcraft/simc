@@ -1,12 +1,12 @@
-action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-action_priority_list_t* def = get_action_priority_list( "default" );
-action_priority_list_t* aoe_builder = get_action_priority_list( "aoe_builder" );
-action_priority_list_t* aoe_finisher = get_action_priority_list( "aoe_finisher" );
-action_priority_list_t* builder = get_action_priority_list( "builder" );
-action_priority_list_t* finisher = get_action_priority_list( "finisher" );
-action_priority_list_t* cd_variable = get_action_priority_list( "cd_variable" );
-action_priority_list_t* cooldown = get_action_priority_list( "cooldown" );
-action_priority_list_t* custom_timers = get_action_priority_list( "custom_timers" );
+action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+action_priority_list_t* def = p->get_action_priority_list( "default" );
+action_priority_list_t* aoe_builder = p->get_action_priority_list( "aoe_builder" );
+action_priority_list_t* aoe_finisher = p->get_action_priority_list( "aoe_finisher" );
+action_priority_list_t* builder = p->get_action_priority_list( "builder" );
+action_priority_list_t* finisher = p->get_action_priority_list( "finisher" );
+action_priority_list_t* cd_variable = p->get_action_priority_list( "cd_variable" );
+action_priority_list_t* cooldown = p->get_action_priority_list( "cooldown" );
+action_priority_list_t* custom_timers = p->get_action_priority_list( "custom_timers" );
 
 precombat->add_action( "variable,name=regrowth,op=reset","optional variable that sends regrowth casts. Turned off by default" );
 precombat->add_action( "variable,name=use_custom_timers,op=set,value=0","toggle this to 1 if you are setting static timers for tigers fury/berserk. Convoke will automatically be paired with berserk." );

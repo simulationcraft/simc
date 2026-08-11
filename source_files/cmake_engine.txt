@@ -24,6 +24,7 @@ class_modules/apl/apl_priest.hpp
 class_modules/apl/apl_rogue.hpp
 class_modules/apl/apl_shaman.hpp
 class_modules/apl/apl_warrior.hpp
+class_modules/apl/druid/druid.hpp
 class_modules/apl/mage.hpp
 class_modules/apl/warlock.hpp
 class_modules/class_module.hpp
@@ -217,6 +218,7 @@ class_modules/apl/apl_priest.cpp
 class_modules/apl/apl_rogue.cpp
 class_modules/apl/apl_shaman.cpp
 class_modules/apl/apl_warrior.cpp
+class_modules/apl/druid/druid.cpp
 class_modules/apl/mage.cpp
 class_modules/apl/warlock.cpp
 class_modules/monk/sc_monk.cpp
