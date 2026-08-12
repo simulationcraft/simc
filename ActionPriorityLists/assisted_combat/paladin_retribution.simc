@@ -3,7 +3,8 @@
 actions.precombat=snapshot_stats
 
 # Executed every time the actor is available.
-actions=call_action_list,name=cooldowns
+actions=auto_attack
+actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.

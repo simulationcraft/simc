@@ -1,0 +1,74 @@
+ptr=1
+optimal_raid=1
+default_actions=1
+single_actor_batch=1
+
+MID2_Death_Knight_Blood.simc
+MID2_Death_Knight_Blood_Deathbringer.simc
+MID2_Death_Knight_Frost.simc
+MID2_Death_Knight_Frost_Rider.simc
+# MID2_Death_Knight_Frost_Deathbringer.simc
+MID2_Death_Knight_Unholy.simc
+MID2_Death_Knight_Unholy_San'layn.simc
+
+# MID2_Demon_Hunter_Devourer.simc
+# MID2_Demon_Hunter_Devourer_Void-Scarred.simc
+# MID2_Demon_Hunter_Havoc.simc
+# MID2_Demon_Hunter_Havoc_Aldrachi_Reaver.simc
+# MID2_Demon_Hunter_Vengeance.simc
+# MID2_Demon_Hunter_Vengeance_Aldrachi_Reaver.simc
+
+# MID2_Druid_Balance.simc
+# MID2_Druid_Feral.simc
+# MID2_Druid_Feral_DOTC.simc
+# MID2_Druid_Guardian.simc
+
+# MID2_Evoker_Devastation.simc
+# MID2_Evoker_Devastation_SC.simc
+# MID2_Evoker_Devastation_FS.simc
+
+MID2_Hunter_Beast_Mastery.simc
+MID2_Hunter_Marksmanship.simc
+# MID2_Hunter_Survival_PL_DW.simc
+MID2_Hunter_Survival.simc
+
+# MID2_Mage_Arcane.simc
+# MID2_Mage_Arcane_Sunfury.simc
+# MID2_Mage_Fire.simc
+# MID2_Mage_Fire_Frostfire.simc
+# MID2_Mage_Frost.simc
+# MID2_Mage_Frost_Frostfire.simc
+
+# MID2_Monk_Brewmaster.simc
+# MID2_Monk_Windwalker.simc
+# MID2_Monk_Windwalker_Conduit.simc
+
+MID2_Paladin_Protection.simc
+MID2_Paladin_Protection_Lightsmith.simc
+# MID2_Paladin_Retribution.simc
+# MID2_Paladin_Retribution_Herald.simc
+
+MID2_Priest_Shadow.simc
+MID2_Priest_Shadow_Archon.simc
+
+# MID2_Rogue_Assassination.simc
+# MID2_Rogue_Outlaw.simc
+# MID2_Rogue_Outlaw_Trickster.simc
+# MID2_Rogue_Subtlety.simc
+
+MID2_Shaman_Elemental.simc
+MID2_Shaman_Elemental_Stormbringer.simc
+MID2_Shaman_Enhancement.simc
+MID2_Shaman_Enhancement_Totemic.simc
+
+# MID2_Warlock_Affliction.simc
+# MID2_Warlock_Affliction_Hellcaller.simc
+# MID2_Warlock_Demonology_Soul_Harvester.simc
+# MID2_Warlock_Demonology.simc
+MID2_Warlock_Destruction.simc
+MID2_Warlock_Destruction_Diabolist.simc
+
+# MID2_Warrior_Arms.simc
+# MID2_Warrior_Fury.simc
+# MID2_Warrior_Protection.simc
+# MID2_Warrior_Protection_Colossus.simc

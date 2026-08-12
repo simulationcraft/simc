@@ -1,0 +1,116 @@
+deathknight="MID2_Death_Knight_Blood_San'layn"
+source=default
+spec=blood
+level=90
+race=mechagnome
+role=tank
+position=front
+talents=CoPAAAAAAAAAAAAAAAAAAAAAAwYWmZmxMmZmhZZmZmmZxMjxMAAAAAmZmZGmZGzMjZAgZmZGAAADMwMW0YZDklBsBYGzAAAmZwgB
+omnium_talents=rune_of_unleashed_fire/rune_of_selfmending/rune_of_lingering/rune_of_masterful_cunning/rune_of_overload
+
+# Default consumables
+potion=draught_of_rampant_abandon_2
+flask=flask_of_the_blood_knights_2
+food=silvermoon_parade
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/deaths_caress
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/use_items
+actions+=/use_item,name=light_company_guidon,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<15
+actions+=/use_item,name=algethar_puzzle_box,if=fight_remains>122|cooldown.dancing_rune_weapon.remains>78|fight_remains<25
+actions+=/use_item,name=voracious_heart_of_ulatek,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<20
+actions+=/use_item,name=blazebinders_hoof,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<20|fight_remains>120
+actions+=/use_item,name=vile_vial_of_volatile_venom,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<20|fight_remains>120
+actions+=/fireblood,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<8
+actions+=/blood_fury,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<12
+actions+=/berserking,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<=15
+actions+=/ancestral_call,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<15
+actions+=/potion,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<=30
+actions+=/vampiric_blood,if=!buff.vampiric_blood.up
+actions+=/call_action_list,name=high_prio_actions
+actions+=/run_action_list,name=deathbringer,if=hero_tree.deathbringer
+actions+=/run_action_list,name=san_gift,if=hero_tree.sanlayn&buff.gift_of_the_sanlayn.up
+actions+=/run_action_list,name=sanlayn,if=hero_tree.sanlayn
+
+actions.deathbringer=death_strike,if=(runic_power.deficit<20|(runic_power.deficit<26&buff.dancing_rune_weapon.up))
+actions.deathbringer+=/death_and_decay,if=!buff.death_and_decay.up
+actions.deathbringer+=/reapers_mark
+actions.deathbringer+=/marrowrend,if=buff.exterminate.up
+actions.deathbringer+=/deaths_caress,if=(!buff.bone_shield.up|buff.bone_shield.remains<3|buff.bone_shield.stack<6)&rune<4
+actions.deathbringer+=/marrowrend,if=!buff.bone_shield.up|buff.bone_shield.remains<3|buff.bone_shield.stack<6
+actions.deathbringer+=/death_strike
+actions.deathbringer+=/blood_boil
+actions.deathbringer+=/consumption,empower_to=1,if=!buff.dancing_rune_weapon.up
+actions.deathbringer+=/heart_strike
+actions.deathbringer+=/consumption,empower_to=1
+actions.deathbringer+=/arcane_torrent,if=runic_power.deficit>20
+
+actions.high_prio_actions=raise_dead,use_off_gcd=1
+actions.high_prio_actions+=/dancing_rune_weapon,if=!buff.exterminate.up&!debuff.reapers_mark_debuff.up&(fight_remains>95|fight_remains<25|time>300)
+
+actions.san_gift=heart_strike,if=buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains
+actions.san_gift+=/death_strike,if=runic_power.deficit<36
+actions.san_gift+=/any_dnd,if=buff.crimson_scourge.remains&!buff.visceral_strength.remains
+actions.san_gift+=/heart_strike,if=buff.essence_of_the_blood_queen.stack<7
+actions.san_gift+=/death_strike
+actions.san_gift+=/blood_boil,if=buff.boiling_point.up
+actions.san_gift+=/heart_strike
+actions.san_gift+=/blood_boil
+
+actions.sanlayn=deaths_caress,if=!buff.bone_shield.up|buff.bone_shield.remains<1.5|buff.bone_shield.stack<=1
+actions.sanlayn+=/heart_strike,if=(buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains&buff.vampiric_strike.remains&fight_remains>buff.essence_of_the_blood_queen.remains+10)
+actions.sanlayn+=/death_strike,if=runic_power.deficit<20
+actions.sanlayn+=/deaths_caress,if=buff.bone_shield.stack<6
+actions.sanlayn+=/marrowrend,if=buff.bone_shield.stack<6
+actions.sanlayn+=/any_dnd,if=buff.crimson_scourge.remains
+actions.sanlayn+=/blood_boil,if=buff.boiling_point.up
+actions.sanlayn+=/marrowrend,if=buff.blood_debt.stack=10
+actions.sanlayn+=/heart_strike,if=buff.vampiric_strike.up
+actions.sanlayn+=/death_strike,if=runic_power.deficit<40|fight_remains<10|(buff.essence_of_the_blood_queen.remains&buff.essence_of_the_blood_queen.remains<8)
+actions.sanlayn+=/consumption,empower_to=1
+actions.sanlayn+=/heart_strike,if=rune>=2
+actions.sanlayn+=/blood_boil
+actions.sanlayn+=/heart_strike
+actions.sanlayn+=/death_strike
+
+head=baleful_graveknights_casque,id=271474,bonus_id=13750,ilevel=334,gem_id=240983,enchant_id=7991,redirected_base_stats=268229
+neck=aqirbane_reliquary,id=268265,bonus_id=13668,ilevel=344,gem_id=240914/240894
+shoulders=baleful_graveknights_gibbets,id=271472,ilevel=334,enchant_id=7973
+back=silken_voodoo_drape,id=268253,ilevel=344
+chest=baleful_graveknights_breastplate,id=271477,ilevel=344,enchant_id=7987,redirected_base_stats=268222
+wrists=spellbreakers_bracers,id=237834,bonus_id=8960/13454/13750,ilevel=331,gem_id=240916,crafted_stats=40/36
+hands=baleful_graveknights_deathgrips,id=271475,ilevel=334,redirected_base_stats=251214
+waist=girdle_of_toxic_regret,id=268259,bonus_id=13750,ilevel=344,gem_id=240918
+legs=baleful_graveknights_greaves,id=271473,ilevel=344,enchant_id=8159,redirected_base_stats=271878
+feet=entombed_cultists_sabatons,id=268245,ilevel=334,enchant_id=8019
+finger1=band_of_the_amani_warlord,id=273792,bonus_id=13668,ilevel=334,gem_id=240910,enchant_id=7967
+finger2=masterwork_sindorei_band,id=240949,bonus_id=8960/13453,ilevel=331,gem_id=240894,enchant_id=7967,crafted_stats=40/36
+trinket1=voracious_heart_of_ulatek,id=270175,ilevel=344
+trinket2=zuljins_guillotine_technique,id=270173,ilevel=344
+main_hand=mazeroa_warlords_fury,id=268213,ilevel=344,enchant_id=6241
+
+# Gear Summary
+# gear_ilvl=338.93
+# gear_strength=1927
+# gear_stamina=40875
+# gear_crit_rating=1246
+# gear_haste_rating=1079
+# gear_mastery_rating=466
+# gear_versatility_rating=425
+# gear_speed_rating=98
+# gear_armor=2575
+# set_bonus=midnight_season_2_2pc=1
+# set_bonus=midnight_season_2_4pc=1
+# set_bonus=bite_of_zuljan_2pc=1

@@ -9,8 +9,7 @@ actions+=/call_action_list,name=assisted_combat
 
 # This is the default action priority list from the game's Assisted Combat system.
 actions.assisted_combat=sunfire,if=!dot.sunfire.ticking
-# (Overridden from 'debuff.dream_surge.up')
-actions.assisted_combat+=/force_of_nature,if=buff.dream_burst.down
+actions.assisted_combat+=/force_of_nature,if=talent.dream_surge
 actions.assisted_combat+=/moonfire,if=!dot.moonfire.ticking&buff.harmony_of_the_grove.down
 # This is for Blizzard automation and is not included in the game's Assisted Combat system.
 actions.assisted_combat+=/celestial_alignment,if=buff.eclipse_solar.down&buff.eclipse_lunar.down

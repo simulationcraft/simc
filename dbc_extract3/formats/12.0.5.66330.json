@@ -274,20 +274,21 @@
   },
   "ContentTuning": {
     "fields": [
+      { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "flags" },
       { "data_type": "i", "field": "id_expansion" },
-      { "data_type": "i", "field": "id_health_curve" },
-      { "data_type": "i", "field": "id_damage_curve" },
-      { "data_type": "i", "field": "min_level" },
-      { "data_type": "i", "field": "max_level" },
-      { "data_type": "i", "field": "lower_bound_semantics" },
-      { "data_type": "f", "field": "upper_bound_semantics" },
-      { "data_type": "i", "field": "target_level_delta" },
-      { "data_type": "i", "field": "target_level_delta_max" },
-      { "data_type": "i", "field": "target_level_min" },
-      { "data_type": "i", "field": "target_level_max" },
-      { "data_type": "i", "field": "item_level_min" },
-      { "data_type": "i", "field": "quest_xp_mult" },
+      { "data_type": "i", "field": "id_hp_scaling_curve" },
+      { "data_type": "i", "field": "id_dmg_scaling_curve" },
+      { "data_type": "i", "field": "id_hp_primary_stat_scaling_curve" },
+      { "data_type": "i", "field": "id_dmg_primary_stat_scaling_curve" },
+      { "data_type": "i", "field": "id_primary_stat_scaling_mod_player_data_element_character" },
+      { "data_type": "f", "field": "primary_stat_scaling_mod_player_data_element_character_multiplier" },
+      { "data_type": "i", "field": "min_level_squish" },
+      { "data_type": "i", "field": "max_level_squish" },
+      { "data_type": "i", "field": "min_level_scaling_offset" },
+      { "data_type": "i", "field": "max_level_scaling_offset" },
+      { "data_type": "i", "field": "allowed_min_offset" },
+      { "data_type": "i", "field": "allowed_max_offset" },
       { "data_type": "i", "field": "lfg_min_level" },
       { "data_type": "i", "field": "lfg_max_level" },
       { "data_type": "i", "field": "i_level" },
@@ -298,8 +299,8 @@
     "parent": "ContentTuning",
     "fields": [
       { "data_type": "i", "field": "id_expected_stat_mod" },
-      { "data_type": "i", "field": "id_mythic_plus_season", "ref": "MythicPlusSeason" },
-      { "data_type": "i", "field": "unk_1" }
+      { "data_type": "i", "field": "id_mythic_plus_season_min", "ref": "MythicPlusSeason" },
+      { "data_type": "i", "field": "id_mythic_plus_season_max", "ref": "MythicPlusSeason" }
     ]
   },
   "Covenant": {
@@ -595,7 +596,7 @@
   },
   "ItemSparse": {
     "fields": [
-      { "data_type": "Q", "field": "race_mask", "formats": { "cpp": "%#.16x" } },
+      { "data_type": "Q", "field": "race_mask_old", "formats": { "cpp": "%#.16x" } },
       { "data_type": "S", "field": "desc" },
       { "data_type": "S", "field": "pad2" },
       { "data_type": "S", "field": "pad1" },
@@ -617,7 +618,7 @@
       { "data_type": "i", "field": "max_count" },
       { "data_type": "i", "field": "req_rep_rank" },
       { "data_type": "I", "field": "req_spell" },
-	  { "data_type": "I", "field": "unk_0", "elements": 2 },
+	    { "data_type": "I", "field": "race_mask", "elements": 2, "formats": { "cpp": "%#.8x" } },
       { "data_type": "I", "field": "sell_price" },
       { "data_type": "I", "field": "buy_price" },
       { "data_type": "I", "field": "vendor_stack" },
@@ -1496,7 +1497,7 @@
   "SkillLineAbility": {
     "parent": "SkillLine",
     "fields": [
-      { "data_type": "Q", "field": "mask_race", "formats": { "cpp": "%#.16x" } },
+      { "data_type": "Q", "field": "mask_race_old", "formats": { "cpp": "%#.16x" } },
       { "data_type": "S", "field": "verb" },
       { "data_type": "S", "field": "verb_all" },
       { "data_type": "i", "field": "id" },
@@ -1513,7 +1514,7 @@
       { "data_type": "h", "field": "index" },
       { "data_type": "h", "field": "id_filter", "ref": "TradeSkillCategory" },
       { "data_type": "h", "field": "id_skill_up" },
-      { "data_type": "I", "field": "unk1", "elements": 2 }
+      { "data_type": "I", "field": "mask_race", "elements": 2, "formats": { "cpp": "%#.8x" } }
     ]
   },
   "SkillLineXTraitTree": {
@@ -1908,7 +1909,7 @@
       { "data_type": "f", "field": "cone" },
       { "data_type": "b", "field": "max_affected_targets" },
       { "data_type": "I", "field": "max_target_level" },
-      { "data_type": "h", "field": "unk_4" },
+      { "data_type": "h", "field": "allowed_creature_types" },
       { "data_type": "i", "field": "flags" },
       { "data_type": "f", "field": "width" }
     ]

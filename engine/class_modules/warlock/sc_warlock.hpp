@@ -58,6 +58,7 @@ struct warlock_td_t : public actor_target_data_t
     propagate_const<buff_t*> lake_of_fire;
     propagate_const<buff_t*> shadowburn;
     propagate_const<buff_t*> havoc;
+    propagate_const<buff_t*> dark_titans_mark;
 
     // Diabolist
     propagate_const<buff_t*> cloven_soul;
@@ -93,15 +94,29 @@ struct warlock_td_t : public actor_target_data_t
 
   double soc_threshold; // Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
+  // 12.1 Affliction 4pc UA
+  int ua_regular_stacks;
+  int ua_seed_stacks;
+  // Track the independent expiration of each UA stack
+  std::vector<event_t*> ua_stack_drop_events;
+
   warlock_t& warlock;
   warlock_td_t( player_t* target, warlock_t& p );
 
   void reset()
-  { soc_threshold = 0; }
+  {
+    soc_threshold = 0;
+    reset_ua_stack_tracking();
+  }
 
   void target_demise();
 
   int count_affliction_dots() const;
+  void ua_stack_applied( bool is_seed_ua );
+  void ua_stack_expired( bool is_seed_ua );
+  void reset_ua_stack_tracking();
+  double ua_calculate_damage_stacks() const;
+  timespan_t ua_stack_remains( int min_stacks ) const; // Time until the target has fewer than min_stacks UA stacks
 };
 
 // Shuffled Bag RNG (sampling without replacement)
@@ -165,7 +180,7 @@ public:
   fixed_cycle_proc_t( std::string_view n, player_t* p, unsigned trigger_count_,
                       bool random_initial_state_ = false, proc_reset_counter_fn proc_reset_fn_ = nullptr )
     : proc_rng_t( rng_type, n, p ),
-      proc_reset_fn( proc_reset_fn_ ),
+      proc_reset_fn( std::move( proc_reset_fn_ ) ),
       counter( 0u ),
       trigger_count( trigger_count_ ),
       random_initial_state( random_initial_state_ )
@@ -256,6 +271,7 @@ public:
   player_t* havoc_target;
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   player_t* haunt_target; // Used for tracking the current haunt target
+  player_t* patient_zero_target; // Used to track which target benefits from the Patient Zero talent damage increase
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
   int diabolic_ritual; // Used to cycle between the three different Diabolic Ritual buffs
   bool demonic_art_buff_replaced; // Used to not spawn the Demonic Art demon if the buff is replaced by another
@@ -415,6 +431,7 @@ public:
     player_talent_t niskaran_methods;
     player_talent_t potent_soul_shards;
     player_talent_t nocturnal_yield;
+    player_talent_t impetuous_wrath;
 
     player_talent_t xavius_gambit; // Unstable Affliction Damage Multiplier
     player_talent_t ravenous_afflictions;
@@ -425,6 +442,7 @@ public:
     const spell_data_t* cascading_calamity_buff;
     player_talent_t deaths_embrace; // Volatile Agony and Perpetual Unstability are unaffected by this
     player_talent_t patient_zero;
+    player_talent_t hedonic_gorging;
     player_talent_t sow_the_seeds;
 
     // Affliction Apex
@@ -466,7 +484,6 @@ public:
     player_talent_t rune_of_shadows;
     player_talent_t carnivorous_stalkers; // Chance for Dreadstalkers to perform additional Dreadbites
     player_talent_t fel_armaments;
-    const spell_data_t* fel_armaments_2; // Another effect of Fel Armaments that, due to a bug, is always active
 
     player_talent_t imp_gang_boss;
     const spell_data_t* imp_gang_boss_buff; // Buff on Wild Imps
@@ -550,6 +567,7 @@ public:
 
     player_talent_t shadowburn;
     const spell_data_t* shadowburn_2; // Contains Soul Shard energize data
+    const spell_data_t* shadowburn_debuff; // Shadowburn Debuff
     player_talent_t backlash; // Crit chance increase. NOT IMPLEMENTED: Instant Incinerate proc when physically attacked
     player_talent_t improved_havoc;
     player_talent_t ashen_remains; // Increased Chaos Bolt and Incinerate damage to targets afflicted by Immolate
@@ -603,10 +621,9 @@ public:
     const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
     player_talent_t soul_fire;
     const spell_data_t* soul_fire_2; // Contains Soul Shard energize data
-    player_talent_t inferno;
+    player_talent_t chaos_incarnate; // Greater mastery value for some spells
     player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit
-    const spell_data_t* conflagration_of_chaos_cf; // Player buff which affects next Conflagrate
-    const spell_data_t* conflagration_of_chaos_sb; // Player buff which affects next Shadowburn
+    const spell_data_t* conflagration_of_chaos_buff; // Player buff which affects next Conflagrate/Shadowburn
     player_talent_t diabolic_embers; // Incinerate generates more Soul Shards
     player_talent_t demonfire_infusion;
     player_talent_t channel_demonfire;
@@ -617,7 +634,7 @@ public:
     const spell_data_t* summon_overfiend;
     const spell_data_t* overfiend_buff; // Buff on Warlock while Overfiend is out, generates Soul Shards
     const spell_data_t* overfiend_cb; // Chaos Bolt cast by Overfiend
-    player_talent_t chaos_incarnate; // Greater mastery value for some spells
+    player_talent_t inferno;
     player_talent_t alythesss_ire;
     const spell_data_t* alythesss_ire_buff;
     player_talent_t raging_demonfire;
@@ -755,6 +772,7 @@ public:
     action_t* diabolic_gaze_3;
     action_t* diabolic_oculi;
     action_t* blighted_maw;
+    action_t* isolated_implosion;
     action_t* echo_of_sargeras;
     action_t* echo_of_sargeras_cb;
     action_t* echo_of_sargeras_sb;
@@ -795,7 +813,6 @@ public:
     proc_data_t agony_energize;
     proc_data_t demonbolt_energize;
     proc_data_t incinerate_energize;
-    proc_data_t fel_armaments_2;
     proc_data_t marked_soul;
   } proc_data_entries;
 
@@ -807,6 +824,16 @@ public:
     const spell_data_t* wl_demonology_12_0_class_set_4pc;
     const spell_data_t* wl_destruction_12_0_class_set_2pc;
     const spell_data_t* wl_destruction_12_0_class_set_4pc;
+    const spell_data_t* wl_affliction_12_1_class_set_2pc;
+    const spell_data_t* wl_affliction_12_1_class_set_4pc;
+    const spell_data_t* unstable_empowerment_buff;
+    const spell_data_t* wl_demonology_12_1_class_set_2pc;
+    const spell_data_t* wl_demonology_12_1_class_set_4pc;
+    const spell_data_t* isolated_implosion;
+    const spell_data_t* isolated_implosion_aoe;
+    const spell_data_t* wl_destruction_12_1_class_set_2pc;
+    const spell_data_t* wl_destruction_12_1_class_set_4pc;
+    const spell_data_t* dark_titans_mark_debuff;
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
@@ -818,8 +845,6 @@ public:
     propagate_const<cooldown_t*> summon_doomguard;
     propagate_const<cooldown_t*> felstorm_icd;
     propagate_const<cooldown_t*> echo_of_sargeras; // ICD for Embers of Nihilam rank 4 procs
-    propagate_const<cooldown_t*> blackened_soul; // Internal cooldown on triggering stack increase to Wither
-    propagate_const<cooldown_t*> seeds_of_their_demise; // Estimated internal cooldown, a guess at how Blizzard is minimizing lucky streaks
   } cooldowns;
 
   // Buffs
@@ -836,6 +861,7 @@ public:
     propagate_const<buff_t*> shard_instability;
     propagate_const<buff_t*> cascading_calamity;
     propagate_const<buff_t*> seed_of_corruption_is_out_dnt;
+    propagate_const<buff_t*> unstable_empowerment;
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
@@ -858,8 +884,7 @@ public:
     propagate_const<buff_t*> fiendish_cruelty;
     propagate_const<buff_t*> chaotic_inferno;
     propagate_const<buff_t*> rain_of_chaos;
-    propagate_const<buff_t*> conflagration_of_chaos_cf;
-    propagate_const<buff_t*> conflagration_of_chaos_sb;
+    propagate_const<buff_t*> conflagration_of_chaos;
     propagate_const<buff_t*> flashpoint;
     propagate_const<buff_t*> crashing_chaos;
     propagate_const<buff_t*> alythesss_ire;
@@ -941,6 +966,7 @@ public:
     proc_t* infernal_rapidity;
     proc_t* spiteful_reconstitution;
     proc_t* demonic_knowledge;
+    proc_t* isolated_implosion;
 
     // Destruction
     proc_t* reverse_entropy;
@@ -950,8 +976,7 @@ public:
     proc_t* chaotic_inferno;
     proc_t* dimensional_rift;
     proc_t* avatar_of_destruction;
-    proc_t* conflagration_of_chaos_cf;
-    proc_t* conflagration_of_chaos_sb;
+    proc_t* conflagration_of_chaos;
     proc_t* demonfire_infusion_inc;
     proc_t* demonfire_infusion_dot;
     proc_t* alythesss_ire;
@@ -998,6 +1023,8 @@ public:
   {
     threshold_rng_t* agony_energize;
     threshold_rng_t* nightfall;
+    threshold_rng_t* demonfire_infusion;
+    threshold_rng_t* seeds_of_their_demise;
   } progress_rng;
 
   struct prd_rng_t
@@ -1015,6 +1042,9 @@ public:
     accumulated_rng_t* feast_of_souls;
     accumulated_rng_t* demoniac_imp_fade;
     accumulated_rng_t* spiteful_reconstitution;
+    accumulated_rng_t* bleakheart_tactics;
+    accumulated_rng_t* mark_of_perotharn;
+    accumulated_rng_t* isolated_implosion;
     double infernal_rapidity_prd_c_value;
   } prd_rng;
 
@@ -1023,17 +1053,11 @@ public:
     simple_proc_t* immolate_crit_energize; // TODO: Need to check the type of rng
     simple_proc_t* demoniac_imp_implosion;
     simple_proc_t* carnivorous_stalkers;
-    simple_proc_t* demonfire_infusion_dot; // TODO: Need to check the type of rng
-    simple_proc_t* demonfire_infusion_inc; // TODO: Need to check the type of rng
     simple_proc_t* alythesss_ire_shift;
     simple_proc_t* wither_crit_energize;   // TODO: Need to check the type of rng
-    simple_proc_t* blackened_soul;         // TODO: Need to check the type of rng and chance value
-    simple_proc_t* bleakheart_tactics;     // TODO: Need to check the type of rng and chance value
-    simple_proc_t* seeds_of_their_demise;  // TODO: Need to check the type of rng and chance value
-    simple_proc_t* mark_of_perotharn;      // TODO: Need to check the type of rng and chance value
+    simple_proc_t* blackened_soul;
   } flat_rng;
 
-  // TODO: Need to check that these RNG values ​​are still correct in Midnight
   struct rng_settings_t
   {
     struct rng_setting_t
@@ -1041,44 +1065,47 @@ public:
       double setting_value;
       double default_value;
       std::string option_name;
+      double min = std::numeric_limits<double>::lowest();
+      double max = std::numeric_limits<double>::max();
     };
 
     // Affliction
-    rng_setting_t agony_energize = { 0.370, 0.370, "agony_energize" };
-    rng_setting_t nightfall = { 0.130, 0.130, "nightfall" };
-    rng_setting_t cunning_cruelty_sb = { 0.50, 0.50, "cunning_cruelty_sb" };
-    rng_setting_t cunning_cruelty_ds = { 0.25, 0.25, "cunning_cruelty_ds" };
+    rng_setting_t agony_energize = { 0.370, 0.370, "agony_energize", 0.0 };
+    rng_setting_t nightfall = { 0.130, 0.130, "nightfall", 0.0 };
+    rng_setting_t cunning_cruelty_sb = { 0.50, 0.50, "cunning_cruelty_sb", 0.0 };
+    rng_setting_t cunning_cruelty_ds = { 0.25, 0.25, "cunning_cruelty_ds", 0.0 };
 
     // Demonology
-    rng_setting_t demoniac_imp_fade_hard_cap = { 21.0, 21.0, "demoniac_imp_fade_hard_cap" };
-    rng_setting_t spiteful_reconstitution = { 0.10, 0.10, "spiteful_reconstitution" };
-    rng_setting_t spiteful_reconstitution_hard_cap = { 21.0, 21.0, "spiteful_reconstitution_hard_cap" };
-    rng_setting_t demonic_knowledge_rank1_cards = { 6.0, 6.0, "demonic_knowledge_rank1_cards" };
-    rng_setting_t demonic_knowledge_rank2_cards = { 12.0, 12.0, "demonic_knowledge_rank2_cards" };
-    rng_setting_t demonic_knowledge_deck_size = { 80.0, 80.0, "demonic_knowledge_deck_size" };
+    rng_setting_t demoniac_imp_fade_hard_cap = { 21.0, 21.0, "demoniac_imp_fade_hard_cap", 0.0 };
+    rng_setting_t spiteful_reconstitution = { 0.10, 0.10, "spiteful_reconstitution", 0.0 };
+    rng_setting_t spiteful_reconstitution_hard_cap = { 21.0, 21.0, "spiteful_reconstitution_hard_cap", 0.0 };
+    rng_setting_t demonic_knowledge_rank1_cards = { 6.0, 6.0, "demonic_knowledge_rank1_cards", 0.0 };
+    rng_setting_t demonic_knowledge_rank2_cards = { 12.0, 12.0, "demonic_knowledge_rank2_cards", 0.0 };
+    rng_setting_t demonic_knowledge_deck_size = { 80.0, 80.0, "demonic_knowledge_deck_size", 0.0 };
 
     // Destruction
-    rng_setting_t rain_of_chaos_cards = { 3.0, 3.0, "rain_of_chaos_cards" };
-    rng_setting_t rain_of_chaos_deck_size = { 20.0, 20.0, "rain_of_chaos_deck_size" };
-    rng_setting_t alythesss_ire_shift = { 0.01, 0.01, "alythesss_ire_shift" };
-    rng_setting_t echo_of_sargeras = { 0.10, 0.10, "echo_of_sargeras" };
+    rng_setting_t rain_of_chaos_cards = { 3.0, 3.0, "rain_of_chaos_cards", 0.0 };
+    rng_setting_t rain_of_chaos_deck_size = { 20.0, 20.0, "rain_of_chaos_deck_size", 0.0 };
+    rng_setting_t alythesss_ire_shift = { 0.01, 0.01, "alythesss_ire_shift", 0.0 };
+    rng_setting_t echo_of_sargeras = { 0.10, 0.10, "echo_of_sargeras", 0.0 };
 
     // Diabolist
 
     // Hellcaller
-    rng_setting_t blackened_soul = { 0.10, 0.10, "blackened_soul" };
-    rng_setting_t bleakheart_tactics = { 0.15, 0.15, "bleakheart_tactics" };
-    rng_setting_t seeds_of_their_demise = { 0.15, 0.15, "seeds_of_their_demise" };
-    rng_setting_t mark_of_perotharn = { 0.15, 0.15, "mark_of_perotharn" };
+    rng_setting_t blackened_soul = { 0.23, 0.23, "blackened_soul", 0.0 };
+    rng_setting_t bleakheart_tactics = { 0.15, 0.15, "bleakheart_tactics", 0.0 };
+    rng_setting_t seeds_of_their_demise = { 0.240, 0.240, "seeds_of_their_demise", 0.0 };
+    rng_setting_t mark_of_perotharn = { 0.15, 0.15, "mark_of_perotharn", 0.0 };
 
     // Soul Harvester
-    rng_setting_t succulent_soul_aff = { 0.225, 0.225, "succulent_soul_aff" };
-    rng_setting_t succulent_soul_demo = { 0.15, 0.15, "succulent_soul_demo" };
-    rng_setting_t feast_of_souls_aff = { 0.04, 0.04, "feast_of_souls_aff" };
-    rng_setting_t feast_of_souls_demo = { 0.10, 0.10, "feast_of_souls_demo" };
-    rng_setting_t feast_of_souls_hard_cap_aff = { 26.0, 26.0, "feast_of_souls_hard_cap_aff" };
-    rng_setting_t feast_of_souls_hard_cap_demo = { 26.0, 26.0, "feast_of_souls_hard_cap_demo" };
-    rng_setting_t manifested_avarice = { 0.10, 0.10, "manifested_avarice" };
+    rng_setting_t succulent_soul_aff = { 0.225, 0.225, "succulent_soul_aff", 0.0 };
+    rng_setting_t succulent_soul_demo = { 0.15, 0.15, "succulent_soul_demo", 0.0 };
+    rng_setting_t feast_of_souls_aff = { 0.12, 0.12, "feast_of_souls_aff", 0.0 };
+    rng_setting_t feast_of_souls_aff_quietus = { 0.04, 0.04, "feast_of_souls_aff_quietus", 0.0 };
+    rng_setting_t feast_of_souls_demo = { 0.10, 0.10, "feast_of_souls_demo", 0.0 };
+    rng_setting_t feast_of_souls_hard_cap_aff = { 26.0, 26.0, "feast_of_souls_hard_cap_aff", 0.0 };
+    rng_setting_t feast_of_souls_hard_cap_demo = { 26.0, 26.0, "feast_of_souls_hard_cap_demo", 0.0 };
+    rng_setting_t manifested_avarice = { 0.10, 0.10, "manifested_avarice", 0.0 };
 
     template <typename F>
     void for_each( F&& f )
@@ -1104,6 +1131,7 @@ public:
       f( succulent_soul_aff );
       f( succulent_soul_demo );
       f( feast_of_souls_aff );
+      f( feast_of_souls_aff_quietus );
       f( feast_of_souls_demo );
       f( feast_of_souls_hard_cap_aff );
       f( feast_of_souls_hard_cap_demo );
@@ -1118,7 +1146,6 @@ public:
   bool eye_explosion_instanced_bug_cb;
   bool eye_explosion_instanced_bug_sb;
   bool eye_explosion_instanced_bug_rof;
-  bool fel_armaments_extra_effect_bug;
   double tyrant_antoran_armaments_target_mul;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
@@ -1168,6 +1195,7 @@ public:
   void invalidate_cache( cache_e c ) override;
   double composite_mastery() const override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
+  std::unique_ptr<expr_t> create_action_expression( action_t& action, util::string_view name_str ) override;
   std::string default_potion() const override { return warlock_apl::potion( this ); }
   std::string default_flask() const override { return warlock_apl::flask( this ); }
   std::string default_food() const override { return warlock_apl::food( this ); }
@@ -1176,7 +1204,7 @@ public:
   std::vector<player_t*> get_smart_targets( const std::vector<player_t*>& tl, propagate_const<dot_t*> warlock_td_t::dots_t::* dot, int n_targets, player_t* exclude = nullptr, double range = 0.0, bool really_smart = false );
   player_t* get_smart_target( const std::vector<player_t*>& tl, propagate_const<dot_t*> warlock_td_t::dots_t::* dot, player_t* exclude = nullptr, double range = 0.0, bool really_smart = false );
   double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr, action_t* action = nullptr ) override;
-  void feast_of_souls_gain( bool from_quietus_seed = false );
+  void feast_of_souls_gain();
   void summon_dominion_of_argus_pet( dominion_of_argus_pet_e pet );
 
   bool affliction() const;
@@ -1211,6 +1239,24 @@ public:
       td = new warlock_td_t( target, const_cast<warlock_t&>( *this ) );
     }
     return td;
+  }
+
+  template <typename T>
+  bool dot_or_debuff_active( T d, warlock_td_t* t )
+  {
+    if constexpr ( std::is_invocable_v<T, warlock_td_t::debuffs_t> )
+    {
+      return std::invoke( d, t->debuffs )->check() > 0;
+    }
+    else if constexpr ( std::is_invocable_v<T, warlock_td_t::dots_t> )
+    {
+      return std::invoke( d, t->dots )->is_ticking();
+    }
+    else
+    {
+      sim->error( SEVERE, "%s dot_or_debuff_active: Unsupported type passed.\n", name() );
+      return false;
+    }
   }
 
   action_t* create_action_warlock( util::string_view, util::string_view );
@@ -1276,16 +1322,25 @@ namespace helpers
 
   struct ua_stack_drop_event_t : public player_event_t
   {
-    ua_stack_drop_event_t( warlock_t*, dot_t*, timespan_t );
+    ua_stack_drop_event_t( warlock_t*, dot_t*, timespan_t, bool = false );
     dot_t* dot;
+    bool is_seed_applied;
     virtual const char* name() const override;
     virtual void execute() override;
   };
 
-  void trigger_blackened_soul( warlock_t* p, bool malevolence );
+  unsigned incinerate_state_target_count( const action_state_t* state );
+
+  void consume_succulent_soul( warlock_t* p, player_t* target );
+
+  void trigger_blackened_soul( warlock_t* p, bool malevolence, player_t* bs_target = nullptr );
 
   void trigger_echo_of_sargeras( warlock_t* p, player_t* target, action_t* echo_action, proc_t* proc );
 
   void trigger_wrath_of_nathreza( warlock_t* p, player_t* target );
+
+  void trigger_isolated_implosion( warlock_t* p, pets::demonology::wild_imp_pet_t* imp, player_t* target );
+
+  void update_unstable_empowerment_buff( warlock_t* p );
 }
 }  // namespace warlock

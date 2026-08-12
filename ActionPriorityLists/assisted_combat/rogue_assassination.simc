@@ -31,6 +31,9 @@ actions.assisted_combat+=/ambush,if=target.distance<=40&stealthed.basic&!talent.
 actions.assisted_combat+=/garrote,if=target.distance<=40&stealthed.basic
 actions.assisted_combat+=/garrote,if=!dot.garrote.ticking
 actions.assisted_combat+=/ambush,if=buff.blindside.up
+actions.assisted_combat+=/crimson_tempest,if=active_enemies>=3&active_dot.garrote<=1&active_dot.rupture>=1&active_dot.garrote>=1
+actions.assisted_combat+=/crimson_tempest,if=active_enemies>=5&active_dot.garrote<=3&active_dot.rupture>=1&active_dot.garrote>=1
+actions.assisted_combat+=/crimson_tempest,if=active_enemies>=7&active_dot.garrote<=5&active_dot.rupture>=1&active_dot.garrote>=1
 actions.assisted_combat+=/fan_of_knives,if=active_enemies>=3
 actions.assisted_combat+=/mutilate
 actions.assisted_combat+=/poisoned_knife,if=buff.stealth.down&buff.vanish.down&energy>=70&target.distance>15

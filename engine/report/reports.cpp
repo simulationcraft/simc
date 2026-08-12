@@ -162,7 +162,9 @@ void print_profiles(sim_t* sim)
 
 void print_spell_query( std::ostream& out, const sim_t& sim, const spell_data_expr_t& sq, unsigned level )
 {
+  static constexpr unsigned INDENT_SIZE = 19;
   expr_data_e data_type = sq.data_type;
+
   for ( unsigned int id : sq.result_spell_list )
   {
     switch ( data_type )
@@ -180,7 +182,7 @@ void print_spell_query( std::ostream& out, const sim_t& sim, const spell_data_ex
           auto effect = range::find( spell_effects, base_effect->id(), &spelleffect_data_t::id );
           if ( effect != spell_effects.end() )
           {
-            spell_info::effect_to_str( *sim.dbc, spell, &( *effect ), sqs, level, sim.spell_query_wrap );
+            spell_info::effect_to_str( *sim.dbc, spell, &( *effect ), sqs, level, sim.spell_query_wrap - INDENT_SIZE );
             out << sqs.str();
           }
         }
@@ -189,7 +191,7 @@ void print_spell_query( std::ostream& out, const sim_t& sim, const spell_data_ex
       default:
       {
         const spell_data_t* spell = dbc::find_spell( &( sim ), sim.dbc->spell( id ) );
-        out << spell_info::to_str( *sim.dbc, spell, level, sim.spell_query_wrap );
+        out << spell_info::to_str( *sim.dbc, spell, level, sim.spell_query_wrap - INDENT_SIZE);
       }
     }
   }
@@ -238,6 +240,10 @@ void print_suite( sim_t* sim )
 
   try
   {
+    // flush buffers first
+    sim->out_log.raw().get_stream()->flush();
+    sim->out_debug.raw().get_stream()->flush();
+
     report::print_text( sim, sim->report_details != 0 );
   }
   catch ( const std::exception& )

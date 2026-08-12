@@ -41,6 +41,8 @@ public:
   rng::truncated_gauss_t duration;
   int pull;
   std::string pull_target_str;
+  // Every raid event is given a unique internal_id in init()
+  int internal_id;
 
   // Player filter options
   double distance_min;   // Minimal player distance
@@ -69,9 +71,7 @@ public:
   void add_option( std::unique_ptr<option_t> new_option )
   { options.insert( options.begin(), std::move( new_option ) ); }
 
-  const char* log_name() const
-  { return name.empty() ? type.c_str() : name.c_str(); }
-
+  std::string log_name() const;
   timespan_t cooldown_time();
   virtual timespan_t duration_time();
   timespan_t next_time() const;

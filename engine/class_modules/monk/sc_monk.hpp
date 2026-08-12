@@ -16,6 +16,7 @@
 #include "sc_enums.hpp"
 #include "sc_stagger.hpp"
 #include "sim/proc.hpp"
+#include "sim/profileset_control.hpp"
 #include "util/timeline.hpp"
 
 #include <array>
@@ -63,7 +64,7 @@ struct monk_action_t : public parse_action_effects_t<Base>
 {
   bool ww_mastery;
   bool may_combo_strike;
-  bool cast_during_sck;
+  std::vector<unsigned> cast_during_ids;
   bool track_cd_waste;
   std::vector<player_effect_t> persistent_multiplier_effects;
 
@@ -96,8 +97,8 @@ public:
 
   std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override;
 
-  bool usable_moving() const override;
   bool ready() override;
+  bool usable_moving() const override;
   void init() override;
   void init_finished() override;
   void reset_swing();
@@ -390,6 +391,9 @@ struct monk_td_t : public actor_target_data_t
 
     // Shado-Pan
     propagate_const<buff_t *> high_impact;
+
+    // Tier
+    propagate_const<buff_t *> mid2_brm_4pc;
   } debuff;
 
   monk_t &monk;
@@ -504,6 +508,9 @@ public:
 
     // Shado-Pan
     actions::flurry_strikes_t *flurry_strikes;
+
+    // Tier
+    propagate_const<action_t *> mid2_brm_4pc;
   } action;
 
   std::vector<action_t *> combo_strike_actions;
@@ -513,7 +520,6 @@ public:
     // General
     propagate_const<buff_t *> chi_wave;
     propagate_const<buff_t *> rushing_jade_wind;
-    propagate_const<buff_t *> spinning_crane_kick;  // TODO: is this necessary?
     propagate_const<buff_t *> yulons_grace;
 
     // Brewmaster
@@ -557,8 +563,10 @@ public:
     propagate_const<buff_t *> touch_of_karma;
     propagate_const<buff_t *> whirling_dragon_punch;
     propagate_const<buff_t *> zenith;
+    propagate_const<buff_t *> zenith_stomp;
     propagate_const<buff_t *> rushing_wind_kick;
     propagate_const<buff_t *> tigereye_brew_1;
+    propagate_const<buff_t *> tigereye_brew_1_accumulator;
     propagate_const<buff_t *> tigereye_brew_3;
 
     // Conduit of the Celestials
@@ -567,6 +575,7 @@ public:
     propagate_const<buff_t *> heart_of_the_jade_serpent;
     propagate_const<buff_t *> heart_of_the_jade_serpent_yulons_avatar;
     propagate_const<buff_t *> heart_of_the_jade_serpent_unity_within;
+    propagate_const<buff_t *> inner_compass_crane_stance;
     propagate_const<buff_t *> inner_compass_ox_stance;
     propagate_const<buff_t *> inner_compass_serpent_stance;
     propagate_const<buff_t *> inner_compass_tiger_stance;
@@ -585,6 +594,10 @@ public:
     propagate_const<buff_t *> predictive_training;
     propagate_const<buff_t *> stand_ready;
     propagate_const<buff_t *> whirling_steel;
+
+    // Tier
+    propagate_const<buff_t *> mid2_ww_4pc;
+    propagate_const<buff_t *> mid2_brm_2pc;
   } buff;
 
   struct
@@ -608,7 +621,7 @@ public:
     propagate_const<proc_t *> salsalabims_strength;
     propagate_const<proc_t *> tranquil_spirit_expel_harm;
     propagate_const<proc_t *> tranquil_spirit_goto;
-    propagate_const<proc_t *> xuens_battlegear_reduction;
+    propagate_const<proc_t *> xuens_battlegear_sck_reduction;
     propagate_const<proc_t *> elusive_brawler_preserved;
   } proc;
 
@@ -756,6 +769,7 @@ public:
       player_talent_t summon_black_ox_statue;  // Brewmaster
       player_talent_t zenith_stomp;            // Windwalker
       const spell_data_t *zenith_stomp_damage;
+      const spell_data_t *zenith_stomp_buff;
       player_talent_t ironshell_brew;
       player_talent_t expeditious_fortification;
       player_talent_t diffuse_magic;
@@ -1009,6 +1023,7 @@ public:
       const spell_data_t *celestial_conduit_damage;
       const spell_data_t *celestial_conduit_heal;
       player_talent_t inner_compass;
+      const spell_data_t *inner_compass_crane_stance_buff;
       const spell_data_t *inner_compass_ox_stance_buff;
       const spell_data_t *inner_compass_tiger_stance_buff;
       const spell_data_t *inner_compass_serpent_stance_buff;
@@ -1107,6 +1122,12 @@ public:
 
     struct
     {
+      const spell_data_t *ww_4pc_buff;
+      const spell_data_t *brm_2pc_buff;
+      const spell_data_t *brm_2pc_damage;
+      const spell_data_t *brm_4pc_action;
+      const spell_data_t *brm_4pc_damage;
+      const spell_data_t *brm_4pc_debuff;
     } mid2;
 
     struct
@@ -1206,6 +1227,24 @@ public:
   // Actions
   void trigger_celestial_fortune( action_state_t * );
 };
+
+namespace profileset_control
+{
+struct valid_talents_t : profileset_controller_t
+{
+  using data_t = profileset_controller_data_t;
+
+  player_t *player;
+  unsigned int count;
+
+  valid_talents_t( sim_t *sim, unsigned int id );
+
+  const std::string name() const override;
+  bool evaluate_post_init() override;
+  const std::string reason() const override;
+  void create_options() override;
+};
+}  // namespace profileset_control
 
 namespace events
 {

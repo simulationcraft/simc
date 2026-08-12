@@ -5,7 +5,7 @@ level=90
 race=mechagnome
 role=tank
 position=front
-talents=CoPAAAAAAAAAAAAAAAAAAAAAAwYWGzMmZmZmhZbmZmmZxMjxMGAAAAYmZmZGmZGzMjBAMzMzAAAYMbDMglglhJwwCgZYGAAzMAgB
+talents=CoPAAAAAAAAAAAAAAAAAAAAAAwYWmZmxMmZmhZZmZmmZxMjxMAAAAAzMzMzwMDzYMDAjZmZGAAgxsNwAWCWGmADLAmxMAAMzAMYA
 
 # Default consumables
 potion=draught_of_rampant_abandon_2
@@ -29,6 +29,9 @@ actions=auto_attack
 actions+=/use_items
 actions+=/use_item,name=light_company_guidon,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<15
 actions+=/use_item,name=algethar_puzzle_box,if=fight_remains>122|cooldown.dancing_rune_weapon.remains>78|fight_remains<25
+actions+=/use_item,name=voracious_heart_of_ulatek,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<20
+actions+=/use_item,name=blazebinders_hoof,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<20|fight_remains>120
+actions+=/use_item,name=vile_vial_of_volatile_venom,use_off_gcd=1,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<20|fight_remains>120
 actions+=/fireblood,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<8
 actions+=/blood_fury,if=fight_remains>120|cooldown.dancing_rune_weapon.remains>78|fight_remains<12
 actions+=/berserking,if=cooldown.dancing_rune_weapon.remains>78|fight_remains<=15
@@ -54,33 +57,32 @@ actions.deathbringer+=/consumption,empower_to=1
 actions.deathbringer+=/arcane_torrent,if=runic_power.deficit>20
 
 actions.high_prio_actions=raise_dead,use_off_gcd=1
-actions.high_prio_actions+=/death_strike,if=buff.coagulopathy.up&buff.coagulopathy.remains<=gcd
-actions.high_prio_actions+=/dancing_rune_weapon,if=!buff.exterminate.up&!debuff.reapers_mark_debuff.up&!buff.dancing_rune_weapon.up&(fight_remains>95|fight_remains<25|time>300)
+actions.high_prio_actions+=/dancing_rune_weapon,if=!buff.exterminate.up&!debuff.reapers_mark_debuff.up&(fight_remains>95|fight_remains<25|time>300)
 
 actions.san_gift=heart_strike,if=buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains
 actions.san_gift+=/death_strike,if=runic_power.deficit<36
-actions.san_gift+=/blood_boil,if=!drw.bp_ticking
-actions.san_gift+=/any_dnd,if=buff.crimson_scourge.remains
+actions.san_gift+=/any_dnd,if=buff.crimson_scourge.remains&!buff.visceral_strength.remains
 actions.san_gift+=/heart_strike,if=buff.essence_of_the_blood_queen.stack<7
 actions.san_gift+=/death_strike
-actions.san_gift+=/blood_boil,if=buff.boiling_point.up&!buff.boiling_point_echo.up
+actions.san_gift+=/blood_boil,if=buff.boiling_point.up
 actions.san_gift+=/heart_strike
 actions.san_gift+=/blood_boil
 
 actions.sanlayn=deaths_caress,if=!buff.bone_shield.up|buff.bone_shield.remains<1.5|buff.bone_shield.stack<=1
-actions.sanlayn+=/blood_boil,if=dot.blood_plague.remains<3
-actions.sanlayn+=/heart_strike,if=(buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains&buff.vampiric_strike.remains)
+actions.sanlayn+=/heart_strike,if=(buff.essence_of_the_blood_queen.remains<1.5&buff.essence_of_the_blood_queen.remains&buff.vampiric_strike.remains&fight_remains>buff.essence_of_the_blood_queen.remains+10)
 actions.sanlayn+=/death_strike,if=runic_power.deficit<20
 actions.sanlayn+=/deaths_caress,if=buff.bone_shield.stack<6
 actions.sanlayn+=/marrowrend,if=buff.bone_shield.stack<6
 actions.sanlayn+=/any_dnd,if=buff.crimson_scourge.remains
+actions.sanlayn+=/blood_boil,if=buff.boiling_point.up
+actions.sanlayn+=/marrowrend,if=buff.blood_debt.stack=10
 actions.sanlayn+=/heart_strike,if=buff.vampiric_strike.up
-actions.sanlayn+=/death_strike
-actions.sanlayn+=/blood_boil,if=buff.boiling_point.up&!buff.boiling_point_echo.up
+actions.sanlayn+=/death_strike,if=runic_power.deficit<40|fight_remains<10|(buff.essence_of_the_blood_queen.remains&buff.essence_of_the_blood_queen.remains<8)
 actions.sanlayn+=/consumption,empower_to=1
 actions.sanlayn+=/heart_strike,if=rune>=2
 actions.sanlayn+=/blood_boil
 actions.sanlayn+=/heart_strike
+actions.sanlayn+=/death_strike
 
 head=relentless_riders_crown,id=249970,ilevel=289,gem_id=240983
 neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240902/240902
@@ -92,8 +94,8 @@ hands=voidclaw_gauntlets,id=151332,ilevel=289
 waist=relentless_riders_chain,id=249967,ilevel=289,gem_id=240902
 legs=relentless_riders_legguards,id=249969,ilevel=289,enchant=forest_hunters_armor_kit_2
 feet=sabatons_of_furious_revenge,id=251091,ilevel=289,enchant=enchant_boots__farstriders_hunt_2
-finger1=platinum_star_band,id=193708,ilevel=289,gem_id=240902/240902,enchant=enchant_ring__natures_fury_2
-finger2=sindorei_band_of_hope,id=249919,ilevel=289,gem_id=240902/240902,enchant=enchant_ring__natures_fury_2
+finger1=platinum_star_band,id=193708,ilevel=289,gem_id=240902/240902,enchant=enchant_ring__eyes_of_the_eagle_2
+finger2=sindorei_band_of_hope,id=249919,ilevel=289,gem_id=240902/240902,enchant=enchant_ring__eyes_of_the_eagle_2
 trinket1=gaze_of_the_alnseer,id=249343,ilevel=289
 trinket2=dragon_games_equipment,id=193719,ilevel=289
 main_hand=liferippers_cutlass,id=251168,ilevel=289,enchant=rune_of_sanguination
@@ -101,8 +103,8 @@ main_hand=liferippers_cutlass,id=251168,ilevel=289,enchant=rune_of_sanguination
 # Gear Summary
 # gear_ilvl=288.47
 # gear_strength=1243
-# gear_stamina=17604
-# gear_crit_rating=938
+# gear_stamina=23054
+# gear_crit_rating=880
 # gear_haste_rating=649
 # gear_mastery_rating=798
 # gear_versatility_rating=245

@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 12.0.1.66838
-static constexpr std::array<item_name_description_t, 1031> __item_name_description_data { {
+// Item name descriptions, wow build 12.1.0.69273
+static constexpr std::array<item_name_description_t, 1056> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -1020,6 +1020,7 @@ static constexpr std::array<item_name_description_t, 1031> __item_name_descripti
   { 14366, "Housing Dye Pigment"                         },
   { 14367, "Gravestone Cosmetic"                         },
   { 14368, "Pinnacle Cache - Midnight Season 1"          },
+  { 14369, "Void Assaults"                               },
   { 14401, "Nobility"                                    },
   { 14402, "Har'alnor"                                   },
   { 14403, "Shul'ka"                                     },
@@ -1030,6 +1031,30 @@ static constexpr std::array<item_name_description_t, 1031> __item_name_descripti
   { 14409, "Nightmare Hunts"                             },
   { 14410, "Tan"                                         },
   { 14412, "Pinnacle Cache - Midnight Preseason"         },
+  { 14414, "Ascendant Voidforged: Myth"                  },
+  { 14415, "Ascendant Voidforged: Hero"                  },
   { 14416, "Normal Hunts"                                },
+  { 14420, "Ascendant Voidforged"                        },
+  { 14429, "Ritual Sites"                                },
+  { 14437, "Midnight Season 2"                           },
+  { 14445, "Lost Armaments"                              },
+  { 14446, "Galactic Void-Charged"                       },
+  { 14447, "Venomcursed"                                 },
+  { 14448, "Housing Fixture"                             },
+  { 14449, "Artisanal House"                             },
+  { 14450, "Corrosive"                                   },
+  { 14452, "Tidal Crafted"                               },
+  { 14453, "Artisanal Room"                              },
+  { 14456, "[DNT] of Zul'jarra's Advance"                },
+  { 14458, "Pinnacle Cache - Midnight Season 2"          },
+  { 14459, "Sporefused: Myth"                            },
+  { 14460, "Sporefused: Hero"                            },
+  { 14461, "Sporefused: Champion"                        },
+  { 14462, "Sporefused: Veteran"                         },
+  { 14465, "Corrosive"                                   },
+  { 14477, "Delves and War Mode"                         },
+  { 14478, "Aspirant and War Mode"                       },
+  { 14528, "Adventurer"                                  },
+  { 14530, "Midnight Season 1"                           },
 } };
 

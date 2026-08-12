@@ -12,7 +12,7 @@ echo Running PR_Generate.simc in %cd%
 "%~dp0simc.exe" PR_Generate.simc
 cd ..\
 :: MIDX profiles generation
-for %%g in (MID1) do (
+for %%g in ( MID1, MID2 ) do (
   cd %%g
   echo Running %%g_Generate.simc in %cd%
   "%~dp0simc.exe" %%g_Generate.simc

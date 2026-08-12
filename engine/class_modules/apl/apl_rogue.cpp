@@ -16,9 +16,6 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  if ( p->specialization() == ROGUE_SUBTLETY && p->true_level >= 81 )
-    return "flask_of_the_magisters_2";
-
   return ( ( p->true_level >= 81 ) ? "flask_of_the_shattered_sun_2" :
            ( p->true_level >= 71 ) ? "flask_of_alchemical_chaos_3" :
            ( p->true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" :
@@ -104,12 +101,14 @@ void assassination( player_t* p )
 
   generate->add_action( "crimson_tempest,target_if=max:dot.rupture.remains,if=!variable.single_target&(active_dot.garrote<spell_targets.fan_of_knives|active_dot.rupture<spell_targets.fan_of_knives)&(dot.rupture.remains>5|energy.regen_combined>40)", "Generator List Crimson Tempest to spread bleeds to everything in AoE" );
   generate->add_action( "shiv,if=buff.darkest_night.up&combo_points.deficit=1&spell_targets.fan_of_knives<=3&talent.toxic_stiletto", "Special Edge Case to use Shiv for Darkest Night in low target cleave as Toxic Stiletto makes it very efficient" );
-  generate->add_action( "ambush,if=spell_targets.fan_of_knives<=1+talent.blindside", "Ambush on low target counts when available" );
-  generate->add_action( "mutilate,if=spell_targets.fan_of_knives<=1+talent.blindside", "Mutilate on low target counts" );
-  generate->add_action( "fan_of_knives,if=spell_targets.fan_of_knives>1+talent.blindside", "Fan of Knives in AoE to fill if nothing else" );
+  generate->add_action( "fan_of_knives,if=spell_targets.fan_of_knives>1+talent.blindside", "Fan of Knives in AoE" );
+  generate->add_action( "ambush,if=spell_targets.fan_of_knives<=1+talent.blindside&(buff.unshakeable_drive.stack>2|buff.bloodlust.up|!talent.deathstalkers_mark|talent.blindside)", "Ambush on low target counts when available" );
+  generate->add_action( "mutilate,if=spell_targets.fan_of_knives<=1+talent.blindside&(buff.unshakeable_drive.stack>2|buff.bloodlust.up|!talent.deathstalkers_mark|talent.blindside)", "Mutilate on low target counts" );
+  generate->add_action( "fan_of_knives,if=spell_targets.fan_of_knives<=1+talent.blindside&!talent.blindside&(buff.unshakeable_drive.stack<3&!buff.bloodlust.up&talent.deathstalkers_mark)", "Fan of Knives and Shiv in ST with Deathstalker builds" );
+  generate->add_action( "shiv,if=spell_targets.fan_of_knives<=1&talent.toxic_stiletto&(buff.unshakeable_drive.stack<3&!buff.bloodlust.up&talent.deathstalkers_mark)" );
 
   items->add_action( "variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2|dot.deathmark.ticking|fight_remains<=22", "Special Case Trinkets" );
-  items->add_action( "use_item,name=astral_gladiators_badge_of_ferocity,use_off_gcd=1,if=dot.kingsbane.ticking|dot.deathmkark.ticking|(cooldown.kingsbane.remains>60|cooldown.deathmark.remains>60)" );
+  items->add_action( "use_item,name=astral_gladiators_badge_of_ferocity,use_off_gcd=1,if=dot.kingsbane.ticking|dot.deathmark.ticking|(cooldown.kingsbane.remains>60|cooldown.deathmark.remains>60)" );
   items->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1,if=variable.base_trinket_condition&buff.envenom.up" );
   items->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(debuff.deathmark.up)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot|fight_remains<=20" );
   items->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(debuff.deathmark.up)|(variable.trinket_sync_slot=1&!trinket.1.cooldown.ready&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot|fight_remains<=20" );
@@ -120,7 +119,7 @@ void assassination( player_t* p )
   misc_cds->add_action( "fireblood,use_off_gcd=1,if=debuff.deathmark.up" );
   misc_cds->add_action( "ancestral_call,use_off_gcd=1,if=debuff.deathmark.up" );
 
-  spend->add_action( "envenom,if=buff.implacable_tracker.stack<4", "Spend List Envenom if we are not at max stacks of the Apex talent" );
+  spend->add_action( "envenom", "Spend List   Spend with envenom as per normal" );
   spend->add_action( "envenom,if=energy.pct>70|fight_remains<15", "Envenom if we are going to overcap on energy" );
 
   vanish->add_action( "vanish,if=variable.single_target&talent.improved_garrote&dot.garrote.pmultiplier<=1&(dot.deathmark.ticking|cooldown.deathmark.remains>target.time_to_die-10)&!raid_event.adds.in<=30", "Vanish list Single Target vanish check to line up improved garrote with Deathmark, making sure there are no adds soon. TODO Check after ImpGar fixes" );
@@ -147,7 +146,8 @@ void outlaw( player_t* p )
   default_->add_action( "stealth", "Restealth if possible (no vulnerable enemies in combat)." );
   default_->add_action( "kick", "Interrupt on cooldown to allow simming interactions with that." );
   default_->add_action( "variable,name=ambush_condition,value=(talent.hidden_opportunity|combo_points.deficit>=2+talent.improved_ambush)&energy>=50" );
-  default_->add_action( "variable,name=finish_condition,value=combo_points>=cp_max_spend-1-(hero_tree.fatebound&!cooldown.between_the_eyes.ready)", "Use finishers if at -1 from max combo points, but Fatebound uses Dispatch at -2." );
+  default_->add_action( "variable,name=finish_condition,value=combo_points>=cp_max_spend-1-(!cooldown.between_the_eyes.ready&hero_tree.fatebound)", "Use finishers if at -1 from max combo points, but Fatebound uses Dispatch at -2." );
+  default_->add_action( "variable,name=finish_condition,value=1,if=buff.fang_strike.up&!cooldown.between_the_eyes.ready&!cooldown.killing_spree.ready", "Use Dispatch early with MID2 4pc proc but not as priority over other finishers." );
   default_->add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "run_action_list,name=finish,if=variable.finish_condition" );
@@ -157,9 +157,8 @@ void outlaw( player_t* p )
   default_->add_action( "lights_judgment" );
   default_->add_action( "bag_of_tricks" );
 
-  build->add_action( "ambush,if=talent.hidden_opportunity&buff.audacity.up", "Builders   High priority Ambush with Hidden Opportunity." );
+  build->add_action( "ambush,if=talent.hidden_opportunity&buff.audacity.up", "Builders  High priority Ambush with Hidden Opportunity." );
   build->add_action( "blade_flurry,if=talent.deft_maneuvers&spell_targets>=3", "With Deft Maneuvers, build CPs with Blade Flurry at 3+ targets." );
-  build->add_action( "coup_de_grace,if=buff.disorienting_strikes.up", "Prioritize Coup de Grace if Unseen Blade is guaranteed after Killing Spree." );
   build->add_action( "pistol_shot,if=talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up", "With Audacity + Hidden Opportunity, consume Opportunity to proc Audacity any time Ambush is not available." );
   build->add_action( "pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)", "With Fan the Hammer, consume Opportunity if at max stacks or if it will expire." );
   build->add_action( "pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(combo_points.deficit>=(1+talent.quick_draw+(talent.quick_draw*talent.fan_the_hammer.rank))&(combo_points>1|rtb_buffs<2|!talent.deal_fate))", "With Fan the Hammer, consume Opportunity if it will not overcap CPs. Fatebound with stage 2 RTB tries to avoid consuming PS at 1CP." );
@@ -168,12 +167,12 @@ void outlaw( player_t* p )
   build->add_action( "ambush,if=talent.hidden_opportunity" );
   build->add_action( "sinister_strike" );
 
-  cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)&(raid_event.adds.remains>5|raid_event.adds.in<5|!raid_event.adds.exists|!raid_event.adds.count)", "Cooldowns   Maintain Adrenaline Rush. With Improved AR, use at low CPs. Has a cursory check to try not to send if immediate downtime is expected." );
+  cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(raid_event.adds.remains>5|raid_event.adds.in<5|raid_event.adds.in>30)", "Cooldowns  Maintain Adrenaline Rush. Has a cursory check to try not to send if immediate downtime is expected." );
   cds->add_action( "blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd", "Maintain Blade Flurry at 2+ targets." );
-  cds->add_action( "preparation,if=cooldown.adrenaline_rush.remains>30&!cooldown.between_the_eyes.ready&(!cooldown.killing_spree.ready|!hero_tree.trickster)|fight_remains<30", "Use Preparation to reset Adrenaline Rush, Between the Eyes, and Killing Spree if Trickster." );
-  cds->add_action( "keep_it_rolling,if=rtb_buffs=2&buff.roll_the_bones.remains<cooldown.adrenaline_rush.remains&!buff.loaded_dice.up&(cooldown.preparation.remains|!talent.preparation)|rtb_buffs>=3", "Use Keep it Rolling with at least stage 2 of RtB. Try not to KIR at stage 2 if your next roll is guaranteed to have Loaded Dice." );
-  cds->add_action( "roll_the_bones,if=!buff.roll_the_bones.up|rtb_buffs=1", "Use Roll the Bones if not active, or reroll for stage 2." );
-  cds->add_action( "blade_rush,if=set_bonus.mid1_4pc&!buff.whirl_of_blades.up|spell_targets=1&energy.base_time_to_max>2|spell_targets>=2", "Use Blade Rush if tier bonus is not active, or in AoE, or if you will not overcap energy within the gcd on ST." );
+  cds->add_action( "preparation,if=cooldown.adrenaline_rush.remains>30&!cooldown.between_the_eyes.ready&!cooldown.killing_spree.ready|fight_remains<30", "Use Preparation to reset Adrenaline Rush, Between the Eyes, and Killing Spree." );
+  cds->add_action( "keep_it_rolling,if=rtb_buffs>=3", "Use Keep it Rolling with at least stage 3 of RtB." );
+  cds->add_action( "roll_the_bones,if=!buff.roll_the_bones.up|rtb_buffs=1+(buff.loaded_dice.up&cooldown.between_the_eyes.ready)", "Use Roll the Bones if not active, or reroll for stage 2. Roll over stage 2 if both Loaded Dice is active and BtE is ready." );
+  cds->add_action( "blade_rush,if=set_bonus.mid1_2pc|spell_targets=1&energy.base_time_to_max>2|spell_targets>=2", "Use Blade Rush if using MID1 tier, or in AoE, or if you will not overcap energy within the gcd on ST." );
   cds->add_action( "vanish,if=!variable.finish_condition&talent.hidden_opportunity&!buff.audacity.up&!buff.opportunity.up", "Hidden Opportunity builds use Vanish or Shadowmeld for an extra Ambush in between procs." );
   cds->add_action( "shadowmeld,if=!variable.finish_condition&talent.hidden_opportunity&!buff.audacity.up&!buff.opportunity.up" );
   cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.adrenaline_rush.up" );
@@ -184,10 +183,9 @@ void outlaw( player_t* p )
   cds->add_action( "use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20", "Default conditions for usable items." );
   cds->add_action( "use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20" );
 
-  finish->add_action( "dispatch,if=!buff.slice_and_dice.up", "Finishers" );
-  finish->add_action( "between_the_eyes,if=cooldown.adrenaline_rush.remains>30|buff.adrenaline_rush.up|!talent.supercharger|!talent.zero_in", "With Supercharger and Zero In, hold BtE for an upcoming Adrenaline Rush" );
+  finish->add_action( "between_the_eyes,if=!(buff.supercharge_1.up&!buff.supercharge_2.up)|!talent.supercharger|!cooldown.killing_spree.ready", "Finishers  Prioritize Between the Eyes unless you can spend the final Supercharger on Killing Spree." );
   finish->add_action( "pool_resource,for_next=1" );
-  finish->add_action( "killing_spree" );
+  finish->add_action( "killing_spree,if=buff.supercharge_1.up|cooldown.adrenaline_rush.remains>120|!talent.supercharger", "Always attempt to Supercharge Killing Spree unless Adrenaline Rush is horrifically desync'd." );
   finish->add_action( "coup_de_grace" );
   finish->add_action( "dispatch" );
 }
@@ -208,53 +206,56 @@ void subtlety( player_t* p )
   precombat->add_action( "apply_poison" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=priority_rotation,value=priority_rotation" );
-  precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)" );
+  precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)", "Check for on-use stat trinkets and which slot has the most powerful effect (ie longest cooldown)." );
   precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.2.cooldown.duration>trinket.1.cooldown.duration)" );
   precombat->add_action( "stealth" );
 
   default_->add_action( "variable,name=stealth,value=buff.shadow_dance.up|buff.stealth.up|buff.vanish.up" );
-  default_->add_action( "variable,name=haste_trinket_snapshot,value=(trinket.1.proc.haste.remains<=1&trinket.1.proc.haste.up)|(trinket.2.proc.haste.remains<=1&trinket.2.proc.haste.up)" );
   default_->add_action( "variable,name=targets,value=spell_targets.shuriken_storm" );
   default_->add_action( "variable,name=racial_sync,value=(buff.shadow_blades.up&buff.shadow_dance.up)|fight_remains<20" );
-  default_->add_action( "variable,name=shd_cp,value=combo_points<=2&talent.deathstalkers_mark|combo_points>=6&talent.unseen_blade|variable.targets>=5" );
+  default_->add_action( "variable,name=dance_condition,value=!variable.stealth&energy>=30&buff.slice_and_dice.up&(combo_points<=2&talent.deathstalkers_mark|combo_points>=6)" );
+  default_->add_action( "variable,name=build_at_max_for_apex,value=talent.ancient_arts_3&!buff.ancient_arts.up&buff.shadow_techniques.stack>=5" );
+  default_->add_action( "stealth" );
   default_->add_action( "call_action_list,name=race" );
   default_->add_action( "call_action_list,name=item" );
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "shadowstrike,if=(buff.darkest_night.up&variable.targets<=4|(talent.unseen_blade&buff.supercharge_1.up))&buff.shadow_techniques.stack>=5&!buff.ancient_arts.up&!cooldown.secret_technique.ready" );
+  default_->add_action( "shuriken_storm,if=variable.build_at_max_for_apex&(variable.targets>=3|!used_for_danse&talent.unseen_blade&talent.danse_macabre)&(buff.supercharge_1.up|cooldown.secret_technique.ready)" );
+  default_->add_action( "shadowstrike,if=variable.build_at_max_for_apex&variable.targets<=2&(buff.darkest_night.up|(talent.unseen_blade&buff.supercharge_1.up)|cooldown.secret_technique.ready)" );
   default_->add_action( "call_action_list,name=finish,if=combo_points>=cp_max_spend-!buff.darkest_night.up" );
   default_->add_action( "call_action_list,name=build,if=variable.stealth|energy>60" );
   default_->add_action( "call_action_list,name=fill,if=!variable.stealth" );
 
-  cds->add_action( "potion,if=buff.shadow_blades.up|fight_remains<30", "Cooldowns" );
-  cds->add_action( "shadow_blades,if=variable.shd_cp&cooldown.shadow_dance.ready&cooldown.secret_technique.ready|fight_remains<=10" );
-  cds->add_action( "shadow_dance,if=!variable.stealth&variable.shd_cp&energy>=30&((cooldown.secret_technique.ready|buff.darkest_night.up)&(cooldown.shadow_blades.remains>=9)|(buff.shadow_blades.up&cooldown.secret_technique.duration>=18))|fight_remains<=10" );
-  cds->add_action( "shadow_dance,if=buff.shadow_blades.up&talent.unseen_blade&variable.haste_trinket_snapshot&cooldown.secret_technique.remains<=4" );
-  cds->add_action( "vanish,if=!variable.stealth&energy>=50&!buff.subterfuge.up&combo_points<=1" );
+  cds->add_action( "goremaws_bite,if=buff.shadow_dance.up&!buff.ancient_arts.up|fight_remains<=14", "Cooldowns" );
+  cds->add_action( "shadow_blades,if=variable.dance_condition&cooldown.shadow_dance.charges_fractional>=1+0.8*talent.deathstalkers_mark&(buff.ancient_arts.up|!talent.unseen_blade)|(fight_remains<=20|target.time_to_die.remains<=20)" );
+  cds->add_action( "shadow_dance,if=variable.dance_condition&talent.deathstalkers_mark&(variable.targets<=3&(buff.darkest_night.up|cooldown.secret_technique.ready&debuff.deathstalkers_mark.stack<=1)|variable.targets>3&debuff.deathstalkers_mark.stack>=2)&(cooldown.shadow_blades.remains>=35-cooldown.secret_technique.duration)|(fight_remains<=10|target.time_to_die-remains<=9)", "Deathstalker: Send Shadow Dance when Darkest Night is up on ST and when its not up on AoE." );
+  cds->add_action( "shadow_dance,if=variable.dance_condition&talent.unseen_blade&(cooldown.secret_technique.ready&(cooldown.shadow_blades.remains>=25-cooldown.secret_technique.duration))|(fight_remains<=10|target.time_to_die-remains<=9)", "Trickster: Send Shadow Dance whenever Secret Technique is ready" );
+  cds->add_action( "shadow_dance,if=buff.shadow_blades.up&(talent.unseen_blade|variable.targets>=3)", "Trickster: Second Shadow Dance later during Shadow Blades for better alignment." );
+  cds->add_action( "vanish,if=!variable.stealth&energy>=50&!buff.subterfuge.up&combo_points<=2", "Vanish whenever outside of CDs." );
   cds->add_action( "shadowmeld,if=energy>=50&!variable.stealth&combo_points.deficit>=2" );
 
   race->add_action( "blood_fury,if=variable.racial_sync", "Race Cooldowns" );
   race->add_action( "berserking,if=variable.racial_sync" );
   race->add_action( "fireblood,if=variable.racial_sync" );
-  race->add_action( "ancestral_call,if=variable.racial_sync" );
+  race->add_action( "ancestral_call,if=buff.shadow_blades.up" );
   race->add_action( "invoke_external_buff,name=power_infusion,if=variable.racial_sync" );
 
-  item->add_action( "use_item,name=light_company_guidon,use_off_gcd=1,if=buff.shadow_blades.up", "Trinket and Items" );
-  item->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.shadow_blades.ready&cooldown.secret_technique.remains<=2" );
+  item->add_action( "potion,if=buff.shadow_blades.up|fight_remains<30", "Trinket and Items" );
+  item->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.shadow_blades.ready&cooldown.secret_technique.remains<=2&combo_points>=6" );
   item->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
   item->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
 
-  finish->add_action( "secret_technique,if=buff.shadow_dance.up|cooldown.secret_technique.duration<18&!cooldown.shadow_dance.ready" );
-  finish->add_action( "eviscerate,if=buff.darkest_night.up" );
-  finish->add_action( "coup_de_grace,if=cooldown.secret_technique.remains>=3|buff.shadow_dance.up" );
-  finish->add_action( "black_powder,if=variable.targets>=3-talent.potent_powder" );
-  finish->add_action( "eviscerate,if=cooldown.secret_technique.remains>=3|buff.shadow_dance.up|buff.shadow_blades.up|talent.deathstalkers_mark", "Pool some Shadow Technique Stacks before entering Shadow Dance by not finishing right before." );
+  finish->add_action( "eviscerate,if=buff.darkest_night.up|!buff.slice_and_dice.up" );
+  finish->add_action( "secret_technique,if=buff.shadow_dance.up|(cooldown.secret_technique.duration<18|cooldown.shadow_dance.remains>=10)&!cooldown.shadow_dance.ready" );
+  finish->add_action( "coup_de_grace,if=cooldown.secret_technique.remains>=6|buff.shadow_dance.up" );
+  finish->add_action( "black_powder,if=talent.unseen_blade&variable.targets>=(3-talent.potent_powder)&(cooldown.secret_technique.remains>=3|buff.shadow_dance.up|buff.shadow_blades.up)", "Pool some Shadow Technique Stacks as Trickster before entering Shadow Dance by not finishing right before." );
+  finish->add_action( "black_powder,if=talent.deathstalkers_mark&variable.targets>=2", "As Deathstalker just press BP" );
+  finish->add_action( "eviscerate,if=cooldown.secret_technique.remains>=6&talent.unseen_blade|buff.shadow_dance.up|buff.shadow_blades.up|debuff.deathstalkers_mark.stack>1|debuff.deathstalkers_mark.stack=1&buff.shadow_techniques.stack>=5", "Pool some Shadow Technique Stacks as Trickster before entering Shadow Dance by not finishing right before." );
 
-  build->add_action( "shuriken_storm,if=prev.shadow_dance&buff.premeditation.up&talent.danse_macabre" );
+  build->add_action( "shuriken_storm,if=buff.shadow_dance.up&buff.premeditation.up&(debuff.deathstalkers_mark.up|buff.darkest_night.up|!talent.deathstalkers_mark)" );
   build->add_action( "shadowstrike,if=!debuff.deathstalkers_mark.up&talent.deathstalkers_mark&!buff.darkest_night.up|variable.targets<=3|variable.priority_rotation" );
   build->add_action( "shuriken_storm,if=variable.targets>1" );
-  build->add_action( "goremaws_bite,if=combo_points.deficit>=3" );
-  build->add_action( "gloomblade,if=variable.targets<2" );
-  build->add_action( "backstab,if=variable.targets<2" );
+  build->add_action( "gloomblade,if=variable.targets<2&!variable.stealth" );
+  build->add_action( "backstab,if=variable.targets<2&!variable.stealth" );
 
   fill->add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen", "This list usually contains Cooldowns with negligible impact that causes global cooldowns" );
   fill->add_action( "arcane_pulse" );

@@ -1,7 +1,7 @@
-action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-action_priority_list_t* def = get_action_priority_list( "default" );
-action_priority_list_t* cat = get_action_priority_list( "cat" );
-action_priority_list_t* healing = get_action_priority_list( "healing" );
+action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+action_priority_list_t* def = p->get_action_priority_list( "default" );
+action_priority_list_t* cat = p->get_action_priority_list( "cat" );
+action_priority_list_t* healing = p->get_action_priority_list( "healing" );
 
 precombat->add_action( "cat_form,if=talent.rake.enabled","Executed before combat begins. Accepts non-harmful actions only." );
 precombat->add_action( "prowl,if=talent.rake.enabled" );

@@ -50,7 +50,6 @@ enum class attack_power_type : unsigned
   DEFAULT = WEAPON_MAINHAND,
 };
 
-
 // Retargeting request (event) sources. Context in ACTOR_ is the actor that triggered the event
 enum class retarget_source
 {
@@ -58,7 +57,8 @@ enum class retarget_source
   ACTOR_DEMISE,         // Any actor demises
   ACTOR_INVULNERABLE,   // Actor becomes invulnerable
   ACTOR_VULNERABLE,     // Actor becomes vulnerable (after becoming invulnerable)
-  SELF_ARISE            // Actor has arisen (no context provided)
+  SELF_ARISE,           // Actor has arisen (no context provided)
+  SELF_RETARGET         // Actor is choosing to retarget
 };
 
 // Misc Constants
@@ -84,6 +84,9 @@ constexpr auto DIMINISHING_RETURN_VERS_MITIG_CR_CURVE = 21035u;
 
 // Midnight curve from ItemSquishEra.db2
 constexpr auto SQUISH_CURVE_MIDNIGHT = 92181u;
+
+// Maximum damage reduction from armor / block
+constexpr auto MAX_ARMOR_DAMAGE_REDUCTION = 0.85;
 
 // Enable/Disable azerite effects
 enum class azerite_control
@@ -424,7 +427,9 @@ enum pet_e
   PET_BLOODWORMS,
   PET_DANCING_RUNE_WEAPON,
   PET_LESSER_GHOUL,
+  PET_ARMY_GHOUL,
   PET_MAGUS_OF_THE_DEAD,
+  PET_LORD_OF_THE_DEAD,
   PET_RISEN_SKULKER,
   PET_ABOMINATION,
   PET_GARGOYOLE,
@@ -491,6 +496,13 @@ enum dot_copy_e
   DOT_COPY_START,            // Start a new DoT with the same remaining duration
   DOT_COPY_CLONE,            // Clone everything from source DoT (tick time, stacks, remaining duration, etc) and refresh if active
   DOT_COPY_CLONE_NO_REFRESH, // Clone everything from source DoT (tick time, stacks, remaining duration, etc) 
+};
+
+enum dynamic_tick_action_e
+{
+  TICK_ACTION_NONE = 0,  // no state snapshot on parent dot tick
+  TICK_ACTION_UPDATE,    // update state on parent dot tick
+  TICK_ACTION_SNAPSHOT   // snapshot state on parent dot tick
 };
 
 enum attribute_e
@@ -711,8 +723,6 @@ enum school_e
   SCHOOL_MAX
 };
 
-const school_e SCHOOL_RADIANT = SCHOOL_HOLYFIRE;
-
 enum school_mask_e
 {
   SCHOOL_MASK_PHYSICAL = 0x01,
@@ -875,89 +885,9 @@ enum set_bonus_type_e
   MID_VB,
   MID_UWP,
   MID1,
+  MID2,
+  MID_BOZ,
   SET_BONUS_MAX
-};
-
-enum meta_gem_e
-{
-  META_GEM_NONE = 0,
-  META_AGILE_SHADOWSPIRIT,
-  META_AGILE_PRIMAL,
-  META_AUSTERE_EARTHSIEGE,
-  META_AUSTERE_SHADOWSPIRIT,
-  META_AUSTERE_PRIMAL,
-  META_BEAMING_EARTHSIEGE,
-  META_BRACING_EARTHSIEGE,
-  META_BRACING_EARTHSTORM,
-  META_BRACING_SHADOWSPIRIT,
-  META_BURNING_SHADOWSPIRIT,
-  META_BURNING_PRIMAL,
-  META_CHAOTIC_SHADOWSPIRIT,
-  META_CHAOTIC_SKYFIRE,
-  META_CHAOTIC_SKYFLARE,
-  META_DESTRUCTIVE_SHADOWSPIRIT,
-  META_DESTRUCTIVE_SKYFIRE,
-  META_DESTRUCTIVE_SKYFLARE,
-  META_DESTRUCTIVE_PRIMAL,
-  META_EFFULGENT_SHADOWSPIRIT,
-  META_EFFULGENT_PRIMAL,
-  META_EMBER_SHADOWSPIRIT,
-  META_EMBER_PRIMAL,
-  META_EMBER_SKYFIRE,
-  META_EMBER_SKYFLARE,
-  META_ENIGMATIC_SHADOWSPIRIT,
-  META_ENIGMATIC_PRIMAL,
-  META_ENIGMATIC_SKYFLARE,
-  META_ENIGMATIC_STARFLARE,
-  META_ENIGMATIC_SKYFIRE,
-  META_ETERNAL_EARTHSIEGE,
-  META_ETERNAL_EARTHSTORM,
-  META_ETERNAL_SHADOWSPIRIT,
-  META_ETERNAL_PRIMAL,
-  META_FLEET_SHADOWSPIRIT,
-  META_FLEET_PRIMAL,
-  META_FORLORN_SHADOWSPIRIT,
-  META_FORLORN_PRIMAL,
-  META_FORLORN_SKYFLARE,
-  META_FORLORN_STARFLARE,
-  META_IMPASSIVE_SHADOWSPIRIT,
-  META_IMPASSIVE_PRIMAL,
-  META_IMPASSIVE_SKYFLARE,
-  META_IMPASSIVE_STARFLARE,
-  META_INSIGHTFUL_EARTHSIEGE,
-  META_INSIGHTFUL_EARTHSTORM,
-  META_INVIGORATING_EARTHSIEGE,
-  META_MYSTICAL_SKYFIRE,
-  META_PERSISTENT_EARTHSIEGE,
-  META_PERSISTENT_EARTHSHATTER,
-  META_POWERFUL_EARTHSIEGE,
-  META_POWERFUL_EARTHSHATTER,
-  META_POWERFUL_EARTHSTORM,
-  META_POWERFUL_SHADOWSPIRIT,
-  META_POWERFUL_PRIMAL,
-  META_RELENTLESS_EARTHSIEGE,
-  META_RELENTLESS_EARTHSTORM,
-  META_REVERBERATING_SHADOWSPIRIT,
-  META_REVERBERATING_PRIMAL,
-  META_REVITALIZING_SHADOWSPIRIT,
-  META_REVITALIZING_PRIMAL,
-  META_REVITALIZING_SKYFLARE,
-  META_SWIFT_SKYFIRE,
-  META_SWIFT_SKYFLARE,
-  META_SWIFT_STARFIRE,
-  META_SWIFT_STARFLARE,
-  META_THUNDERING_SKYFIRE,
-  META_THUNDERING_SKYFLARE,
-  META_TIRELESS_STARFLARE,
-  META_TIRELESS_SKYFLARE,
-  META_TRENCHANT_EARTHSIEGE,
-  META_TRENCHANT_EARTHSHATTER,
-  // Legendaries
-  META_SINISTER_PRIMAL,
-  META_COURAGEOUS_PRIMAL,
-  META_INDOMITABLE_PRIMAL,
-  META_CAPACITIVE_PRIMAL,
-  META_GEM_MAX
 };
 
 enum stat_e
@@ -1004,7 +934,7 @@ enum stat_e
   STAT_RESILIENCE_RATING,
   STAT_DODGE_RATING,
   STAT_PARRY_RATING,
-  STAT_BLOCK_RATING, // Block CHANCE rating. Block damage reduction is in player_t::composite_block_reduction()
+  STAT_BLOCK_RATING, // Block CHANCE rating. Block damage reduction is in player_t::composite_block_value()
   STAT_PVP_POWER,
   STAT_WEAPON_DPS,
   STAT_WEAPON_OFFHAND_DPS,
@@ -1119,7 +1049,6 @@ enum cache_e
   CACHE_DODGE,
   CACHE_PARRY,
   CACHE_BLOCK,
-  CACHE_CRIT_BLOCK,
   CACHE_ARMOR,
   CACHE_BONUS_ARMOR,
   CACHE_CRIT_AVOIDANCE,
@@ -1355,40 +1284,38 @@ enum power_e
 // New stuff
 enum snapshot_state_e
 {
-  STATE_HASTE          = 0x000001,
-  STATE_CRIT           = 0x000002,
-  STATE_AP             = 0x000004,
-  STATE_SP             = 0x000008,
+  STATE_HASTE          = 0x00000001,
+  STATE_CRIT           = 0x00000002,
+  STATE_AP             = 0x00000004,
+  STATE_SP             = 0x00000008,
 
-  STATE_MUL_SPELL_DA   = 0x000010,  // Add Percent Modifier (108): Spell Direct Amount (0) list-based multiplier
-  STATE_MUL_SPELL_TA   = 0x000020,  // Add Percent Modifier (108): Spell Periodic Amount (22) list-based multiplier
-  STATE_VERSATILITY    = 0x000040,
-  STATE_MUL_PERSISTENT = 0x000080,  // Persistent modifier for the few abilities that snapshot
+  STATE_MUL_SPELL_DA   = 0x00000010,  // Add Percent Modifier (108): Spell Direct Amount (0) list-based multiplier
+  STATE_MUL_SPELL_TA   = 0x00000020,  // Add Percent Modifier (108): Spell Periodic Amount (22) list-based multiplier
+  STATE_VERSATILITY    = 0x00000040,
+  STATE_MUL_PERSISTENT = 0x00000080,  // Persistent modifier for the few abilities that snapshot
 
-  STATE_TGT_CRIT       = 0x000100,
-  STATE_TGT_MUL_DA     = 0x000200,
-  STATE_TGT_MUL_TA     = 0x000400,
+  STATE_TGT_CRIT       = 0x00000100,
+  STATE_TGT_MUL_DA     = 0x00000200,
+  STATE_TGT_MUL_TA     = 0x00000400,
 
-  STATE_MUL_PLAYER_DAM = 0x000800,  // Modify Damage Done% (79) school-based player-wide multiplier
-
-  STATE_MUL_DA         = STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM,
-  STATE_MUL_TA         = STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM,
+  STATE_MUL_PLAYER_DAM = 0x00000800,  // Modify Damage Done% (79) school-based player-wide multiplier
 
   // User-defined state flags
-  STATE_USER_1         = 0x001000,
-  STATE_USER_2         = 0x002000,
-  STATE_USER_3         = 0x004000,
-  STATE_USER_4         = 0x008000,
+  STATE_USER_1         = 0x00001000,
+  STATE_USER_2         = 0x00002000,
+  STATE_USER_3         = 0x00004000,
+  STATE_USER_4         = 0x00008000,
 
-  STATE_TGT_MITG_DA    = 0x010000,
-  STATE_TGT_MITG_TA    = 0x020000,
-  STATE_TGT_ARMOR      = 0x040000,
+  STATE_TGT_MITG_DA    = 0x00010000,
+  STATE_TGT_MITG_TA    = 0x00020000,
+  STATE_TGT_ARMOR      = 0x00040000,
 
   /// Multiplier from the owner to pet damage
-  STATE_MUL_PET        = 0x100000,
-  STATE_TGT_MUL_PET    = 0x200000,
+  STATE_MUL_PET        = 0x00100000,
+  STATE_TGT_MUL_PET    = 0x00200000,
 
-  STATE_ROLLING_TA     = 0x400000,
+  STATE_ROLLING_TA     = 0x00400000,
+  STATE_MUL_VERSUS     = 0x00800000,  // Modify Damage Done% vs Race (168) and Modify Damage Done Against Target With Aura (303)
 
   // User-defined target-specific state flags
   STATE_TGT_USER_1     = 0x10000000,
@@ -1396,16 +1323,20 @@ enum snapshot_state_e
   STATE_TGT_USER_3     = 0x40000000,
   STATE_TGT_USER_4     = 0x80000000,
 
+  STATE_MUL_DA         = STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM,
+  STATE_MUL_TA         = STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM,
+
   /**
    * No multiplier helper, use in action_t::init() (after parent init) by issuing snapshot_flags &= STATE_NO_MULTIPLIER
    * (and/or update_flags &= STATE_NO_MULTIPLIER if a dot). This disables all multipliers, including versatility, and
    * any/all persistent multipliers the action would use. */
   STATE_NO_MULTIPLIER  = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA |
-                            STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_MUL_PET | STATE_TGT_MUL_PET ),
+                            STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_MUL_PET | STATE_TGT_MUL_PET | STATE_MUL_VERSUS ),
 
   /// Target-specific state variables, excluding the pet damage multiplier
   STATE_TARGET_NO_PET  = ( STATE_TGT_CRIT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_TGT_MITG_DA |
-                           STATE_TGT_MITG_TA | STATE_TGT_USER_1 | STATE_TGT_USER_2 | STATE_TGT_USER_3 | STATE_TGT_USER_4 ),
+                           STATE_TGT_MITG_TA | STATE_TGT_USER_1 | STATE_TGT_USER_2 | STATE_TGT_USER_3 | STATE_TGT_USER_4 |
+                           STATE_MUL_VERSUS ),
 
   /// Target-specific state variables
   STATE_TARGET         = STATE_TARGET_NO_PET | STATE_TGT_MUL_PET
@@ -1487,7 +1418,8 @@ enum class talent_tree : unsigned
   SPECIALIZATION,
   HERO,
   SELECTION,
-  MAX
+  MAX,  // Everything below are not player traits
+  EXPANSION  // expansion/patch specific miscellaneous traits
 };
 
 enum trait_definition_op : int
@@ -1525,4 +1457,23 @@ enum proc_trigger_type_e : unsigned short
   TRIGGER_ACTION_PROC_TAKEN,
   TRIGGER_AURA_APPLIED,
   TRIGGER_HEARTBEAT,
+};
+
+enum init_actor_e
+{
+  INIT_ACTOR_INIT             = 100,
+  INIT_ACTOR_PROPERTIES       = 200,
+  INIT_ACTOR_TALENTS          = 300,
+  INIT_ACTOR_ITEMS            = 400,
+  INIT_ACTOR_SPELLS           = 500,
+  INIT_ACTOR_CREATE_EFFECTS   = 600,
+  INIT_ACTOR_BASE_STATS       = 700,
+  INIT_ACTOR_CREATE_BUFFS     = 800,
+  INIT_ACTOR_CREATE_ACTIONS   = 900,
+  INIT_ACTOR_PETS             = 1000,
+  INIT_ACTOR_INIT_EFFECTS     = 1100,
+  INIT_ACTOR_INIT_ACTIONS     = 1200,
+  INIT_ACTOR_INITIAL_STATS    = 1300,
+  INIT_ACTOR_MISC             = 1400,
+  INIT_ACTOR_ASSESSORS        = 1600,
 };

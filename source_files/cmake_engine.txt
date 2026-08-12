@@ -24,6 +24,7 @@ class_modules/apl/apl_priest.hpp
 class_modules/apl/apl_rogue.hpp
 class_modules/apl/apl_shaman.hpp
 class_modules/apl/apl_warrior.hpp
+class_modules/apl/druid/druid.hpp
 class_modules/apl/mage.hpp
 class_modules/apl/warlock.hpp
 class_modules/class_module.hpp
@@ -40,6 +41,7 @@ dbc/character_loadout.hpp
 dbc/class_spells.hpp
 dbc/client_data.hpp
 dbc/client_hotfix_entry.hpp
+dbc/content_tuning.hpp
 dbc/data_definitions.hh
 dbc/data_enums.hh
 dbc/dbc.hpp
@@ -87,7 +89,6 @@ lib/cpp-semver/base/util.hpp
 lib/cpp-semver/cpp-semver.hpp
 lib/cpp-semver/parser/parser.hpp
 lib/cpp-semver/parser/peg.hpp
-lib/gsl-lite/gsl-lite.hpp
 lib/rapidxml/rapidxml.hpp
 lib/rapidxml/rapidxml_print.hpp
 lib/tcb/span.hpp
@@ -156,6 +157,7 @@ sim/plot.hpp
 sim/proc.hpp
 sim/proc_rng.hpp
 sim/profileset.hpp
+sim/profileset_control.hpp
 sim/progress_bar.hpp
 sim/raid_event.hpp
 sim/reforge_plot.hpp
@@ -216,6 +218,7 @@ class_modules/apl/apl_priest.cpp
 class_modules/apl/apl_rogue.cpp
 class_modules/apl/apl_shaman.cpp
 class_modules/apl/apl_warrior.cpp
+class_modules/apl/druid/druid.cpp
 class_modules/apl/mage.cpp
 class_modules/apl/warlock.cpp
 class_modules/monk/sc_monk.cpp
@@ -250,6 +253,7 @@ dbc/character_loadout.cpp
 dbc/class_spells.cpp
 dbc/client_data.cpp
 dbc/client_hotfix_entry.cpp
+dbc/content_tuning.cpp
 dbc/embellishment_data.cpp
 dbc/expected_stat.cpp
 dbc/gem_data.cpp
@@ -345,6 +349,7 @@ sim/plot.cpp
 sim/proc.cpp
 sim/proc_rng.cpp
 sim/profileset.cpp
+sim/profileset_control.cpp
 sim/progress_bar.cpp
 sim/raid_event.cpp
 sim/reforge_plot.cpp

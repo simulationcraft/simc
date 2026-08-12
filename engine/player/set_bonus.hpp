@@ -26,7 +26,7 @@ struct set_bonus_t
 {
   // Some magic constants
   static constexpr unsigned N_BONUSES = 8;  // Number of set bonuses in tier gear
-  static constexpr unsigned current_sets[] = { MID1 };
+  static constexpr unsigned current_sets[] = { MID1, MID2 };
 
   struct set_bonus_data_t
   {

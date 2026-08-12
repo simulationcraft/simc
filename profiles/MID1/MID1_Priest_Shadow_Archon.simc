@@ -8,7 +8,7 @@ position=ranged_back
 talents=CIQAAAAAAAAAAAAAAAAAAAAAAMMjZGAAAAAAAAAAAgxMMjxyMDzsNzwMsNzMmZmxGyMWMTDwMAzsZGmNDAZMWAwMQGzMzY2GzstMAzED
 
 # Default consumables
-potion=lights_potential_2
+potion=potion_of_recklessness_2
 flask=flask_of_the_magisters_2
 food=silvermoon_parade
 augmentation=void_touched
@@ -30,6 +30,8 @@ actions.precombat+=/variable,name=me_force_prio,default=0,op=reset
 actions.precombat+=/variable,name=max_vts,default=12,op=reset
 actions.precombat+=/variable,name=is_vt_possible,default=0,op=reset
 actions.precombat+=/arcane_torrent
+# Crushing Void from Tentacle Slam is reset on pull, open with Mind Blast instead.
+actions.precombat+=/mind_blast,if=set_bonus.mid2_4pc
 actions.precombat+=/tentacle_slam
 
 # Executed every time the actor is available.
@@ -48,7 +50,7 @@ actions.aoe_variables+=/variable,name=holding_tentacle_slam,op=set,value=(variab
 actions.aoe_variables+=/variable,name=manual_vts_applied,op=set,value=(active_dot.vampiric_touch+6*!variable.holding_tentacle_slam)>=variable.max_vts|!variable.is_vt_possible
 
 # TODO: Add holding condition for weird fight times to potion with execute
-actions.cds=potion,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)&(fight_remains>=320|time_to_bloodlust>=320|buff.bloodlust.react)|fight_remains<=30
+actions.cds=potion,if=(((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)&(fight_remains>=320|time_to_bloodlust>=320|buff.bloodlust.react)|fight_remains<=30)
 actions.cds+=/fireblood,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=8
 actions.cds+=/berserking,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=12
 actions.cds+=/blood_fury,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=15
@@ -70,22 +72,21 @@ actions.heal_for_tof=holy_nova,if=talent.lightburst
 
 actions.main=variable,name=dots_up,op=set,value=active_dot.vampiric_touch=active_enemies&active_dot.shadow_word_pain>=active_dot.vampiric_touch,if=active_enemies<3
 actions.main+=/call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_tentacle_slam|active_enemies>2)&variable.dots_up
-# High Priority Shadow Word: Death when you are forcing the bonus from Devour Matter
-actions.main+=/shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.shadow_word_madness.ticking,if=priest.force_devour_matter&talent.devour_matter
-# Do not overcap on insanity
-actions.main+=/shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35|buff.mind_devourer.react|!raid_event.adds.exists&target.time_to_die<=10|buff.entropic_rift.up&action.shadow_word_madness.cost>0
-actions.main+=/void_volley
+# High Priority Shadow Word: Death when Devour Matter is active (target shielded or forced)
+actions.main+=/shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.shadow_word_madness.ticking,if=(priest.force_devour_matter|target.has_absorb)&talent.devour_matter
+# Do not overcap on insanity, but hold it for Voidform on a single long-lived target
+actions.main+=/shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35&(cooldown.voidform.remains>25|target.time_to_die<25|active_enemies>1|insanity.deficit<=5)|buff.mind_devourer.react|!raid_event.adds.exists&target.time_to_die<=10|buff.entropic_rift.up&(cooldown.voidform.remains>=75|!talent.ancient_madness)|buff.voidform.up
 # Blast more burst :wicked:
 actions.main+=/void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)
 # Use Tentacle Slam to prevent capping charges or to refresh Vampiric Touch
-actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=dot.vampiric_touch.refreshable|cooldown.tentacle_slam.full_recharge_time<=gcd.max*2
+actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=dot.vampiric_touch.refreshable&(!in_flight|active_dot.vampiric_touch+6<active_enemies)|cooldown.tentacle_slam.full_recharge_time<=gcd.max*2
 # Use Void Torrent if it will get near full Mastery Value
 actions.main+=/void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&variable.dots_up
 # Put out Shadow Word: Pain on enemies that will live at least 12s as a filler when talented into Invoked Nightmare.
-actions.main+=/shadow_word_pain,target_if=max:(refreshable*100000+target.time_to_die+dot.vampiric_touch.ticking*10000),if=talent.invoked_nightmare&refreshable&target.time_to_die>12&dot.vampiric_touch.ticking
+actions.main+=/shadow_word_pain,target_if=max:(refreshable*100000+target.time_to_die+dot.vampiric_touch.ticking*10000),if=talent.invoked_nightmare&refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|action.tentacle_slam.in_flight)
+actions.main+=/void_volley,if=cooldown.voidform.up
 # Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption
 actions.main+=/mind_blast,target_if=max:dot.shadow_word_madness.remains,if=(!buff.mind_devourer.react|!talent.mind_devourer)
-# MFI is a good button
 actions.main+=/mind_flay_insanity,target_if=max:dot.shadow_word_madness.remains
 # Use Tentacle Slam for Void Apparitions or Maddening Tentacles value, holding for adds if needed
 actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=(talent.void_apparitions|talent.maddening_tentacles)&(raid_event.adds.in>30|raid_event.adds.in>5&cooldown.tentacle_slam.full_recharge_time<=gcd.max*2)
@@ -97,7 +98,9 @@ actions.main+=/call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff
 actions.main+=/vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die),if=refreshable&target.time_to_die>12
 actions.main+=/shadow_word_death,target_if=min:target.health.pct,if=(pet.mindbender.active|pet.voidwraith.active|pet.shadowfiend.active)&talent.inescapable_torment|target.health.pct<(20+15*talent.deathspeaker)&talent.shadowfiend&talent.idol_of_yshaarj
 actions.main+=/shadow_word_death,target_if=min:target.health.pct,if=(target.health.pct<(20+15*talent.deathspeaker))
-actions.main+=/mind_flay,target_if=max:dot.shadow_word_madness.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=3,interrupt_global=1
+# Bank Void Volley charges for the Resonant Energy window, dumping once Voidform is within a Halo cycle, in Voidform, or if charges would overcap
+actions.main+=/void_volley,if=!talent.resonant_energy|cooldown.voidform.remains<60|buff.voidform.up|buff.resonant_energy_damage.up|buff.crushing_void.stack>=4|fight_remains<45
+actions.main+=/mind_flay,target_if=max:dot.shadow_word_madness.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2,interrupt_global=1
 # Use Tentacle Slam while moving as a low-priority action when adds will not spawn in 20 seconds.
 actions.main+=/tentacle_slam,if=raid_event.adds.in>20
 # Use Shadow Word: Death while moving as a low-priority action in execute
@@ -108,34 +111,34 @@ actions.main+=/shadow_word_death,target_if=max:dot.shadow_word_madness.remains
 actions.main+=/shadow_word_pain,target_if=min:remains
 
 actions.trinkets=use_item,name=galactic_gladiators_badge_of_ferocity,if=(buff.voidform.up|buff.power_infusion.remains>=10|(talent.voidform&cooldown.voidform.remains>10))|fight_remains<20
+actions.trinkets+=/use_item,name=hex_lords_dooming_idol,if=buff.power_infusion.up&buff.hex_lords_doom.stack>5|fight_remains<=30
 actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|equipped.neural_synapse_enhancer&buff.entropic_rift.up)|fight_remains<20
 
 head=blind_oaths_winged_crest,id=250051,bonus_id=13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=7961
-neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240892
+neck=eternal_voidsong_chain,id=249368,ilevel=289,gem_id=240900
 shoulders=blind_oaths_seraphguards,id=250049,bonus_id=13574/13574/13574/13574,ilevel=289,enchant_id=8031
 back=draconic_nullcape,id=249370,ilevel=289
-chest=blind_oaths_raiment,id=250054,bonus_id=13575/13575/13575/13575,ilevel=289,enchant_id=7987
-wrists=martyrs_bindings,id=239648,bonus_id=8793/12384,ilevel=285,gem_id=240908
+chest=blind_oaths_raiment,id=250054,bonus_id=13575/13575/13575/13575,ilevel=298,enchant_id=7987
+wrists=martyrs_bindings,id=239648,bonus_id=8793/12384,ilevel=285,gem_id=240900
 hands=vilehex_bonds,id=251172,ilevel=289
 waist=arcanoweave_cord,id=239664,ilevel=285,gem_id=240900
 legs=blind_oaths_leggings,id=250050,bonus_id=13575/13575/13575/13575,ilevel=289,enchant_id=7935
-feet=lightbinder_treads,id=109796,ilevel=289,enchant_id=7993
-finger1=occlusion_of_void,id=251217,ilevel=289,gem_id=240918,enchant_id=7969
-finger2=omission_of_light,id=251093,ilevel=289,gem_id=240900,enchant_id=7997
-trinket1=vaelgors_final_stare,id=249346,ilevel=289
-trinket2=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577,ilevel=289
-main_hand=brazier_of_the_dissonant_dirge,id=249286,ilevel=289,enchant_id=8041
+feet=blind_oaths_slippers,id=250053,ilevel=298,enchant_id=7993
+finger1=occlusion_of_void,id=251217,ilevel=289,gem_id=240900,enchant_id=7967
+finger2=omission_of_light,id=251093,ilevel=289,gem_id=240900,enchant_id=7967
+trinket1=vaelgors_final_stare,id=249346,ilevel=298
+trinket2=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577,ilevel=298
+main_hand=brazier_of_the_dissonant_dirge,id=249286,ilevel=298,enchant_id=8041
 
 # Gear Summary
-# gear_ilvl=288.47
-# gear_stamina=17589
-# gear_intellect=1670
-# gear_crit_rating=542
-# gear_haste_rating=1132
-# gear_mastery_rating=872
-# gear_versatility_rating=16
+# gear_ilvl=291.47
+# gear_stamina=23730
+# gear_intellect=1748
+# gear_crit_rating=497
+# gear_haste_rating=1114
+# gear_mastery_rating=918
 # gear_leech_rating=249
-# gear_armor=532
+# gear_armor=540
 # set_bonus=voidlight_bindings_2pc=1
 # set_bonus=midnight_season_1_2pc=1
 # set_bonus=midnight_season_1_4pc=1

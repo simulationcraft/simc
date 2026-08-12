@@ -2826,14 +2826,12 @@ void relational_normalization_gizmo( special_effect_t& effect )
   auto increase = unique_gear::create_buff<stat_buff_t>( effect.player, "normalization_increase",
       effect.player->find_spell( 280653 ) )
     ->add_stat( STAT_HASTE_RATING, haste_amount )
-    ->add_invalidate( CACHE_RUN_SPEED );
+    ->set_movement_speed_buff_from_data();
 
   auto decrease = unique_gear::create_buff<stat_buff_t>( effect.player, "normalization_decrease",
       effect.player->find_spell( 280654 ) )
     ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), stat_amount )
     ->add_stat( STAT_MAX_HEALTH, health_amount );
-
-  effect.player->buffs.normalization_increase = increase;
 
   new gizmo_cb_t( effect, { decrease, increase } );
 }
@@ -4510,8 +4508,7 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
       pet_t(p->sim, p, "guardian_of_azeroth", true, true), essence(std::move(ess))
     {
       guardian = make_buff( owner, "guardian_of_azeroth", owner->find_spell( 295855 ) )
-        ->set_default_value_from_effect( 1 )
-        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+        ->set_pct_buff_type_from_data( true );
     }
 
     action_t* create_action( std::string_view name, std::string_view opt_str ) override
@@ -4916,8 +4913,7 @@ void the_unbound_force(special_effect_t& effect)
   effect.custom_buff = make_buff( effect.player, "reckless_force_counter", effect.player->find_spell( 302917 ) );
 
   auto crit_buff = make_buff( effect.player, "reckless_force", effect.player->find_spell( 302932 ) )
-    ->set_default_value_from_effect( 1 )
-    ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    ->set_pct_buff_type_from_data( true );
 
   if (essence.rank() >= 3)
     crit_buff->base_buff_duration += timespan_t::from_millis(essence.spell_ref(3U, essence_spell::UPGRADE, essence_type::MINOR).effectN(1).base_value());
@@ -5208,7 +5204,10 @@ struct worldvein_resonance_buff_t : public buff_t
 
     if ( lifeblood->check() )
     {
-      double delta = stat_entry.stack_amount( lifeblood->current_stack ) - stat_entry.current_value;
+      double _val = lifeblood->buff_stat_stack_amount( stat_entry, lifeblood->current_stack );
+      _val = std::copysign( std::trunc( _val + stat_buff_t::stat_fp_epsilon ), stat_entry.amount );
+
+      double delta = _val - stat_entry.current_value;
       sim->print_debug( "{} worldvein_resonance {}creases lifeblood stats by {}%,"
                         " stacks={}, old={}, new={} ({}{})",
         player->name(),

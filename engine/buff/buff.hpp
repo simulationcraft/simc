@@ -26,26 +26,18 @@
 #include <vector>
 
 struct buff_t;
-struct stat_buff_t;
-struct spelleffect_data_t;
-struct absorb_buff_t;
-struct cost_reduction_buff_t;
-struct actor_pair_t;
-struct sim_t;
-struct action_t;
-struct item_t;
-struct gain_t;
-struct action_state_t;
-struct stats_t;
-struct event_t;
 struct cooldown_t;
-struct real_ppm_t;
+struct event_t;
 struct expr_t;
-struct spell_data_t;
-namespace rng{
+struct gain_t;
+struct item_t;
+struct real_ppm_t;
+struct spelleffect_data_t;
+struct stats_t;
+namespace rng
+{
 struct rng_t;
 }
-
 
 using buff_tick_callback_t = std::function<void(buff_t* buff, int remaining_ticks, timespan_t tick_time)>;
 using buff_tick_time_callback_t = std::function<timespan_t(const buff_t*, unsigned)>;
@@ -273,6 +265,7 @@ public:
   virtual void increment( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual void decrement( int stacks = 1, double value = DEFAULT_VALUE() );
   virtual void extend_duration( timespan_t seconds );
+  virtual void extend_async_duration( timespan_t seconds );
   virtual void extend_duration_or_trigger( timespan_t duration = timespan_t::min() );
   virtual void reschedule_tick( timespan_t delta );
 
@@ -345,7 +338,7 @@ public:
   static buff_t* make_buff_fallback( bool true_buff, Player&& player, std::string_view name, Args&&... args )
   {
     static_assert( std::is_base_of_v<buff_t, Buff>, "Buff must be derived from buff_t" );
-    static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<Player>> ||
+    static_assert( std::is_base_of_v<player_t, std::remove_pointer_t<std::remove_reference_t<Player>>> ||
                    std::is_base_of_v<actor_pair_t, std::remove_reference_t<Player>>,
                    "Player must be derived from player_t or actor_pair_t" );
 
@@ -405,9 +398,14 @@ public:
   buff_t* set_schools( unsigned );
   buff_t* set_schools_from_effect( size_t );
   buff_t* add_school( school_e );
-  // Treat the buff's value as stat % increase and apply it automatically
-  // in the relevant player_t functions.
+  // Treat the buff's value as stat % increase and apply it automatically in the relevant player_t functions.
   buff_t* set_pct_buff_type( stat_pct_buff_type );
+  buff_t* set_pct_buff_type_from_effect( size_t, bool set_default = false );
+  buff_t* set_pct_buff_type_from_data( bool set_default = false );
+  // Movement buffs to calculate automatically in the relevant player_t functions.
+  buff_t* set_movement_speed_buff( bool stacking, double );
+  buff_t* set_movement_speed_buff_from_effect( size_t, double = 0.0 );
+  buff_t* set_movement_speed_buff_from_data( double = 0.0 );
   buff_t* set_default_value( double, size_t = 0 );
   virtual buff_t* set_default_value_from_effect( size_t, double = 0.0 );
   virtual buff_t* set_default_value_from_effect_type( effect_subtype_t a_type,
@@ -466,26 +464,17 @@ struct stat_buff_t : public buff_t
     double current_value;
     stat_check_fn check_func;
 
-    buff_stat_t( stat_e s, double a,
-                 std::function<bool( const stat_buff_t& )> c = std::function<bool( const stat_buff_t& )>() )
+    buff_stat_t( stat_e s, double a, std::function<bool( const stat_buff_t& )> c = nullptr )
       : stat( s ), amount( a ), current_value( 0 ), check_func( std::move( c ) )
-    {
-    }
-
-    double stack_amount( int stacks ) const
-    {
-      // Blizzard likes to use effect coefficients that give (almost) exact values at the
-      // intended level. Small floating point conversion errors can add up to give the wrong
-      // value. We compensate by increasing the absolute value by a tiny bit before truncating.
-      double val = std::max( 1.0, std::fabs( amount ) );
-      return std::copysign( std::trunc( stacks * val + 1e-3 ), amount );
-    }
+    {}
   };
+
   std::vector<buff_stat_t> stats;
   gain_t* stat_gain;
   bool manual_stats_added;
 
-  virtual double buff_stat_stack_amount( const buff_stat_t&, int ) const;
+  virtual double buff_stat_stack_amount( const buff_stat_t&, int stacks ) const;
+  void update_player_buff_stat( buff_stat_t&, int stacks );
 
   void bump     ( int stacks = 1, double value = -1.0 ) override;
   void decrement( int stacks = 1, double value = -1.0 ) override;
@@ -500,6 +489,9 @@ struct stat_buff_t : public buff_t
 
   stat_buff_t( actor_pair_t q, util::string_view name );
   stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
+
+  // floating point compensation before truncating for final amount to apply to player stats
+  static constexpr double stat_fp_epsilon = 1e-3;
 };
 
 struct absorb_buff_t : public buff_t
@@ -584,12 +576,7 @@ struct damage_buff_t : public buff_t
   damage_buff_t* apply_dynamic_buff_multiplier( buff_t* buff );
   damage_buff_t* apply_mod_affecting_effect( damage_buff_modifier_t&, const spelleffect_data_t& );
 
-  damage_buff_t* set_is_stacking_mod( bool value )
-  {
-    is_stacking = value;
-    return this;
-  };
-
+  damage_buff_t* set_is_stacking_mod( bool value );
   damage_buff_t* set_direct_mod( double );
   damage_buff_t* set_direct_mod( const spell_data_t*, size_t, double = 0.0, double = 1.0 );
   damage_buff_t* set_periodic_mod( double );

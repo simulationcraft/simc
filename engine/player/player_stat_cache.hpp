@@ -55,7 +55,7 @@ private:
   mutable double _attack_crit_chance, _spell_crit_chance;
   mutable double _attack_haste, _spell_haste;
   mutable double _auto_attack_speed, _spell_cast_speed;
-  mutable double _dodge, _parry, _block, _crit_block, _armor, _bonus_armor;
+  mutable double _dodge, _parry, _block, _armor, _bonus_armor;
   mutable double _mastery, _mastery_value, _crit_avoidance, _miss;
   mutable std::array<double, SCHOOL_MAX + 1> _player_mult;
   mutable std::array<double, SCHOOL_MAX + 1> _player_heal_mult;
@@ -92,7 +92,6 @@ public:
   double dodge() const;
   double parry() const;
   double block() const;
-  double crit_block() const;
   double crit_avoidance() const;
   double miss() const;
   double armor() const;
@@ -134,7 +133,6 @@ public:
   double dodge() const { return _player->composite_dodge(); }
   double parry() const { return _player->composite_parry(); }
   double block() const { return _player->composite_block(); }
-  double crit_block() const { return _player->composite_crit_block(); }
   double crit_avoidance() const { return _player->composite_crit_avoidance(); }
   double miss() const { return _player->composite_miss(); }
   double armor() const { return _player->composite_armor(); }

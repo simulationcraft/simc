@@ -34,11 +34,10 @@ struct action_state_t : private noncopyable
   block_result_e  block_result;
   double          result_raw;             // Base result value, without crit/glance etc.
   double          result_total;           // Total unmitigated result, including crit bonus, glance penalty, etc.
-  double          result_mitigated;       // Result after mitigation / resist. *NOTENOTENOTE* Only filled after action_t::impact() call
+  double          result_mitigated;       // Result after mitigation / resist.
   double          result_absorbed;        // Result after absorption. *NOTENOTENOTE* Only filled after action_t::impact() call
   double          result_crit_bonus;      // Crit bonus multiplier used in the final calculation
   double          result_amount;          // Final (actual) result
-  double          blocked_amount;         // The amount of damage reduced via block or critical block
   double          self_absorb_amount;     // The amount of damage reduced via personal absorbs such as shield_barrier.
   // Snapshotted stats during execution
   double          haste;
@@ -52,6 +51,7 @@ struct action_state_t : private noncopyable
   double          ta_multiplier;
   double          rolling_ta_multiplier;
   double          player_multiplier;
+  double          versus_multiplier;
   double          persistent_multiplier;
   double          pet_multiplier; // Owner -> pet multiplier
   double          target_da_multiplier;
@@ -61,6 +61,7 @@ struct action_state_t : private noncopyable
   double          target_mitigation_da_multiplier;
   double          target_mitigation_ta_multiplier;
   double          target_armor;
+  double          target_block_value;  // Only players can block, so this is only set in enemy_action_t::snapshot_internal()
 
   static void release( action_state_t*& s );
   static std::string flags_to_str( unsigned flags );
@@ -88,29 +89,20 @@ struct action_state_t : private noncopyable
 
   virtual double composite_da_multiplier() const
   {
-    return da_multiplier * player_multiplier * persistent_multiplier * target_da_multiplier * versatility *
-           pet_multiplier * target_pet_multiplier;
+    return da_multiplier * player_multiplier * versus_multiplier * persistent_multiplier * target_da_multiplier *
+           versatility * pet_multiplier * target_pet_multiplier;
   }
 
   virtual double composite_ta_multiplier() const
   {
-    return ta_multiplier * player_multiplier * persistent_multiplier * target_ta_multiplier * versatility *
-           pet_multiplier * target_pet_multiplier;
+    return ta_multiplier * player_multiplier * versus_multiplier * persistent_multiplier * target_ta_multiplier *
+           versatility * pet_multiplier * target_pet_multiplier;
   }
 
   virtual double composite_rolling_ta_multiplier() const
   {
     return rolling_ta_multiplier;
   }
-
-  virtual double composite_target_mitigation_da_multiplier() const
-  { return target_mitigation_da_multiplier; }
-
-  virtual double composite_target_mitigation_ta_multiplier() const
-  { return target_mitigation_ta_multiplier; }
-
-  virtual double composite_target_armor() const
-  { return target_armor; }
 
   // Inlined
   virtual proc_types proc_type() const;

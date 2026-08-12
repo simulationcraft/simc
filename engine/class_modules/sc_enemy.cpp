@@ -79,7 +79,7 @@ struct enemy_t : public player_t
   virtual std::string generate_action_list();
   virtual void generate_heal_raid_event();
   void init_action_list() override;
-  void init_stats() override;
+  void init_actions() override;
   double resource_loss( resource_e, double, gain_t*, action_t* ) override;
   void create_options() override;
   pet_t* create_pet( util::string_view add_name, util::string_view pet_type = {} ) override;
@@ -92,6 +92,19 @@ struct enemy_t : public player_t
   void demise() override;
   double armor_coefficient( int level, tank_dummy_e diff );
   std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override;
+
+  bool has_absorb() const override
+  {
+    return range::any_of( absorb_buff_list,
+                          []( const absorb_buff_t* ab ) { return ab->check_value() > 0; } );
+  }
+
+  double current_absorb_amount() const override
+  {
+    return range::accumulate( absorb_buff_list, 0.0,
+                              []( const absorb_buff_t* ab ) { return ab->check_value(); } );
+  }
+
   timespan_t available() const override
   {
     return waiting_time;
@@ -257,6 +270,14 @@ struct enemy_action_t : public ACTION_TYPE
     }
 
     return tl.size();
+  }
+
+  void snapshot_internal( action_state_t* s, unsigned fl, result_amount_type rt ) override
+  {
+    action_type_t::snapshot_internal( s, fl, rt );
+
+    if ( s->target->is_player() )
+      s->target_block_value = s->target->composite_block_value( s );
   }
 
   double calculate_direct_amount( action_state_t* s ) const override
@@ -1272,9 +1293,7 @@ void enemy_t::init_base_stats()
     true_level = sim->max_player_level + 3;
 
   // waiting_time override
-  waiting_time = timespan_t::from_seconds( 5.0 );
-  if ( waiting_time < timespan_t::from_seconds( 1.0 ) )
-    waiting_time = timespan_t::from_seconds( 1.0 );
+  waiting_time = 5_s;
 
   base.attack_crit_chance = 0.05;
 
@@ -1624,13 +1643,13 @@ void enemy_t::init_action_list()
       action_list_str = new_action_list_str;
     }
   }
+
   player_t::init_action_list();
 }
 
-// Hack to get this executed after player_t::init_action_list.
-void enemy_t::init_stats()
+void enemy_t::init_actions()
 {
-  player_t::init_stats();
+  player_t::init_actions();
 
   // Small hack to increase waiting time for target without any actions
   for ( size_t i = 0; i < action_list.size(); ++i )
@@ -1642,7 +1661,7 @@ void enemy_t::init_stats()
       continue;
     if ( action->name_str.find( "auto_attack" ) != std::string::npos )
       continue;
-    waiting_time = timespan_t::from_seconds( 1.0 );
+    waiting_time = 1_s;
     break;
   }
 }
@@ -2137,83 +2156,48 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
 
 struct enemy_module_t : public module_t
 {
-  enemy_module_t() : module_t( ENEMY )
-  {
-  }
+  enemy_module_t() : module_t( ENEMY ) {}
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
   {
     return new enemy_t( sim, name );
   }
-  bool valid() const override
-  {
-    return true;
-  }
-  void init( player_t* ) const override
-  {
-  }
-  void combat_begin( sim_t* ) const override
-  {
-  }
-  void combat_end( sim_t* ) const override
-  {
-  }
+
+  bool valid() const override { return true; }
+  void register_hotfixes() const override {}
+  void register_actor_initializers( sim_t* ) const override {}
 };
 
 // HEAL ENEMY MODULE INTERFACE ==============================================
 
 struct heal_enemy_module_t : public module_t
 {
-  heal_enemy_module_t() : module_t( HEALING_ENEMY )
-  {
-  }
+  heal_enemy_module_t() : module_t( HEALING_ENEMY ) {}
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
   {
-    auto p = new heal_enemy_t( sim, name );
-    return p;
+    return new heal_enemy_t( sim, name );
   }
-  bool valid() const override
-  {
-    return true;
-  }
-  void init( player_t* ) const override
-  {
-  }
-  void combat_begin( sim_t* ) const override
-  {
-  }
-  void combat_end( sim_t* ) const override
-  {
-  }
+
+  bool valid() const override { return true; }
+  void register_hotfixes() const override {}
+  void register_actor_initializers( sim_t* ) const override {}
 };
 
 // TANK DUMMY ENEMY MODULE INTERFACE ==============================================
 
 struct tank_dummy_enemy_module_t : public module_t
 {
-  tank_dummy_enemy_module_t() : module_t( TANK_DUMMY )
-  {
-  }
+  tank_dummy_enemy_module_t() : module_t( TANK_DUMMY ) {}
 
   player_t* create_player( sim_t* sim, util::string_view name, race_e /* r = RACE_NONE */ ) const override
   {
-    auto p = new tank_dummy_enemy_t( sim, name );
-    return p;
+    return new tank_dummy_enemy_t( sim, name );
   }
-  bool valid() const override
-  {
-    return true;
-  }
-  void init( player_t* ) const override
-  {
-  }
-  void combat_begin( sim_t* ) const override
-  {
-  }
-  void combat_end( sim_t* ) const override
-  {
-  }
+
+  bool valid() const override { return true; }
+  void register_hotfixes() const override {}
+  void register_actor_initializers( sim_t* ) const override {}
 };
 
 }  // END UNNAMED NAMESPACE

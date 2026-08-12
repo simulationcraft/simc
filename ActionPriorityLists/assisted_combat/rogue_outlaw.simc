@@ -20,6 +20,8 @@ actions.assisted_combat+=/adrenaline_rush,if=talent.improved_adrenaline_rush&eff
 actions.assisted_combat+=/blade_rush,if=talent.vigor&energy<=174
 actions.assisted_combat+=/blade_rush,if=!talent.vigor&energy<=74
 actions.assisted_combat+=/between_the_eyes,if=effective_combo_points>=5
+actions.assisted_combat+=/dispatch,if=buff.fang_strike.up
+actions.assisted_combat+=/coup_de_grace,if=buff.fang_strike.up
 actions.assisted_combat+=/killing_spree,if=effective_combo_points>=5&active_enemies>=1
 actions.assisted_combat+=/dispatch,if=effective_combo_points>=5
 actions.assisted_combat+=/coup_de_grace,if=effective_combo_points>=5

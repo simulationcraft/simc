@@ -1219,50 +1219,6 @@ double dbc_t::spell_scaling( player_e t, unsigned level ) const
 #endif
 }
 
-double dbc_t::melee_crit_scaling( player_e t, unsigned level ) const
-{
-  uint32_t class_id = util::class_id( t );
-  ( void ) class_id; ( void ) level;
-
-  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_SCALING_LEVEL );
-  /*
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_chance_to_melee_crit[ class_id ][ level - 1 ]
-             : __gt_chance_to_melee_crit[ class_id ][ level - 1 ];
-#else
-  return __gt_chance_to_melee_crit[ class_id ][ level - 1 ];
-#endif
-  */
-  return 0;
-}
-
-double dbc_t::melee_crit_scaling( pet_e t, unsigned level ) const
-{
-  return melee_crit_scaling( util::pet_class_type( t ), level );
-}
-
-double dbc_t::spell_crit_scaling( player_e t, unsigned level ) const
-{
-  uint32_t class_id = util::class_id( t );
-  ( void ) class_id; ( void ) level;
-
-  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_SCALING_LEVEL );
-  /*
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_chance_to_spell_crit[ class_id ][ level - 1 ]
-             : __gt_chance_to_spell_crit[ class_id ][ level - 1 ];
-#else
-  return __gt_chance_to_spell_crit[ class_id ][ level - 1 ];
-#endif
-  */
-  return 0;
-}
-
-double dbc_t::spell_crit_scaling( pet_e t, unsigned level ) const
-{
-  return spell_crit_scaling( util::pet_class_type( t ), level );
-}
-
 double dbc_t::avoid_per_str_agi_by_level( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_LEVEL );
@@ -1272,26 +1228,6 @@ double dbc_t::avoid_per_str_agi_by_level( unsigned level ) const
 #else
   return _gt_avoid_per_str_agi_by_level[level - 1];
 #endif
-}
-
-double dbc_t::health_base( player_e t, [[maybe_unused]] unsigned level ) const
-{
-  [[maybe_unused]] auto class_id = util::class_id( t );
-
-  #if SC_USE_PTR
-  assert( class_id < ( ptr ? PTR_MAX_CLASS : MAX_CLASS ) && level > 0 && level <= MAX_SCALING_LEVEL );
-#else
-  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_SCALING_LEVEL );
-#endif
-  /*
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_octbase_hpby_class[ class_id ][ level - 1 ]
-             : __gt_octbase_hpby_class[ class_id ][ level - 1 ];
-#else
-  return __gt_octbase_hpby_class[ class_id ][ level - 1 ];
-#endif
-  */
-  return 0;
 }
 
 double dbc_t::resource_base( player_e t, unsigned level ) const
@@ -1526,6 +1462,17 @@ double dbc_t::npc_armor_value( unsigned level ) const
 {
   assert( level > 0 && level <= ( MAX_SCALING_LEVEL + 3 ) );
   return expected_stat( level ).creature_armor;
+}
+
+double dbc_t::expected_creature_health( unsigned level ) const
+{
+  assert( level > 0 && level <= ( MAX_SCALING_LEVEL + 3 ) );
+  return expected_stat( level ).creature_health;
+}
+
+double dbc_t::expected_creature_health_mod( difficulty_e diff ) const
+{
+  return expected_stat_mod( diff, &expected_stat_mod_t::creature_health );
 }
 
 /* Generic helper methods */

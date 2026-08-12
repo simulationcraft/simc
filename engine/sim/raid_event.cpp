@@ -5,12 +5,14 @@
 
 #include "action/heal.hpp"
 #include "action/action.hpp"
+#include "action/action_state.hpp"
 #include "action/spell.hpp"
 #include "buff/buff.hpp"
 #include "dbc/dbc.hpp"
 #include "player/pet.hpp"
 #include "player/player.hpp"
 #include "player/player_demise_event.hpp"
+#include "player/player_scaling.hpp"
 #include "player/pet_spawner.hpp"
 #include "raid_event.hpp"
 #include "sim/event.hpp"
@@ -528,6 +530,60 @@ struct pull_event_t final : raid_event_t
     cooldown.stddev = cooldown.min = cooldown.max = 0_ms;
     duration.stddev = duration.min = duration.max = 0_ms;
 
+    double hp_mult = 1.0;
+
+    // adjust hp based on dungeon_route_simple_dps_members since the mob hp is assumed to be pre-adjusted for the player being simmed
+    if ( sim->dungeon_route_simple_dps_members > 0 )
+    {
+      // assume this is too much for a single player
+      if ( sim->dungeon_route_pct_hp > 40 )
+      {
+        sim->error( "Warning: using dungeon_route_simple_dps_members but keystone_pct_hp is over 40 which seems high for one player; hp will not be adjusted, \
+          make sure input health values accomodate the extra actors or set keystone_pct_hp according to only the player profile" );
+      }
+      // don't adjust hp if single_actor_batch=1 is mistakenly used, the simple dps players will just be ignored
+      else if ( sim->single_actor_batch == 1 )
+      {
+        sim->error( "Warning: single_actor_batch is enabled but dungeon_route_simple_dps_members was > 0; hp will not be adjusted" );
+      }
+      else
+      {
+        int player_mult = sim->dungeon_route_pct_hp;
+
+        player_t* sim_player = nullptr;
+        for ( player_t* player : sim->player_no_pet_list )
+        {
+          if ( player->is_player() && player->type != player_e::PLAYER_SIMPLIFIED )
+          {
+            sim_player = player;
+            break;
+          }
+        }
+
+        if ( sim_player )
+        {
+          // use rough pct values from logs that used to ship with the mdt sim export wa
+          if ( player_mult == 0 )
+          {
+            if ( sim_player->primary_role() == ROLE_HEAL || sim_player->primary_role() == ROLE_HYBRID )
+            {
+              player_mult = 5;
+            }
+            else if ( sim_player->primary_role() == ROLE_TANK )
+            {
+              player_mult = 14;
+            }
+            else
+            {
+              player_mult = 27;
+            }
+          }
+
+          hp_mult = ( player_mult + ( sim->dungeon_route_simple_dps_members * 27.0 ) ) / player_mult;
+        }
+      }
+    }
+
     name = "Pull_" + util::to_string( pull );
 
     real_duration.name_str = name + " Length";
@@ -581,12 +637,21 @@ struct pull_event_t final : raid_event_t
             }
 
             spawn.name   = splits[ 0 ];
-            spawn.health = util::to_double( splits[ 1 ] );
+            spawn.health = parse_health( splits[ 1 ] ) * hp_mult;
 
             if ( splits.size() > 2 )
               spawn.race = util::parse_race_type( util::tokenize_fn( splits[ 2 ] ) );
+            int clone = 1;
+            if ( splits.size() > 3 )
+              clone = util::to_int( splits[ 3 ] );
 
             spawn_parameters.emplace_back( spawn );
+            for ( int i = 1; i < clone; i++ )
+            {
+              spawn_parameter spawn_copy{ spawn };
+              spawn_copy.name += fmt::format( "_copy{}", i );
+              spawn_parameters.emplace_back( spawn_copy );
+            }
           }
         }
 
@@ -678,14 +743,16 @@ struct pull_event_t final : raid_event_t
 
     regenerate_cache();
 
-    if ( has_boss )
+    for ( auto p : affected_players )
     {
-      for ( auto& p : affected_players )
+      if ( p->is_player() )
       {
-        if ( p->is_player() )
-        {
+        if ( has_boss )
           p->in_boss_encounter++;
-        }
+
+        // wake up any ready_trigger players since they are not constantly polling
+        if ( p->ready_type == ready_e::READY_TRIGGER && !p->readying )
+          p->schedule_ready();
       }
     }
 
@@ -757,6 +824,19 @@ struct pull_event_t final : raid_event_t
       raid_event->reset();
 
     redistribute_event = nullptr;
+  }
+
+  double parse_health( util::string_view str )
+  {
+    double mult = 1.0;
+    if ( str.size() && str.back() == 'c' )
+    {
+      mult = sim->dbc->expected_creature_health( sim->max_player_level ) *
+             sim->dbc->expected_creature_health_mod( difficulty_e::DUNGEON );
+      str.remove_suffix( 1 );
+    }
+
+    return util::to_double( str ) * mult;
   }
 };
 
@@ -1136,6 +1216,11 @@ struct movement_event_t final : public raid_event_t
     {
       direction = util::parse_movement_direction( move_direction );
     }
+
+    sim->register_actor_initializer( "scaling", 1, []( player_t* p ) {
+      if ( !p->is_pet() && !p->is_enemy() )
+        p->scaling->enable( STAT_SPEED_RATING );
+    }, "scaling_speed_rating" );
   }
 
   bool parse_target( std::string_view value )
@@ -1457,6 +1542,12 @@ struct damage_done_buff_event_t final : public raid_event_t
   {
     add_option( opt_float( "multiplier", multiplier ) );
     parse_options( options_str );
+
+    sim->register_actor_initializer( INIT_ACTOR_CREATE_BUFFS + 40, []( player_t* p ) {
+      p->buffs.damage_done = make_buff( p, "damage_done" )
+        ->set_max_stack( 1 )
+        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    }, "create_buffs_damage_done" );
   }
 
   void _start() override
@@ -1594,6 +1685,84 @@ struct vulnerable_event_t final : public raid_event_t
   }
 };
 
+// Absorb ===================================================================
+
+struct absorb_event_t final : public raid_event_t
+{
+  double amount;
+  std::string school_str;
+  std::string target_str;
+  school_e school;
+  target_specific_t<absorb_buff_t> absorb_buffs;
+
+  absorb_event_t( sim_t* s, std::string_view options_str )
+    : raid_event_t( s, "absorb" ), amount( 0.0 ), school( SCHOOL_NONE ), absorb_buffs( false )
+  {
+    add_option( opt_float( "amount", amount ) );
+    add_option( opt_string( "school", school_str ) );
+    add_option( opt_string( "target", target_str ) );
+
+    parse_options( options_str );
+
+    if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+      target_str = "Pull_" + util::to_string( pull ) + "_" + target_str;
+
+    if ( !school_str.empty() )
+    {
+      school = util::parse_school_type( school_str );
+      if ( school == SCHOOL_NONE )
+        throw std::invalid_argument( fmt::format( "Unknown absorb raid event school '{}'", school_str ) );
+    }
+
+    // Credit absorbed-on-enemy damage back to attacker stats
+    sim->register_actor_initializer( INIT_ACTOR_ASSESSORS + 10, []( player_t* p ) {
+      if ( p->is_enemy() )
+        return;
+
+      p->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, []( auto, action_state_t* s ) {
+        if ( s->target && s->target->is_enemy() )
+        {
+          if ( auto absorbed = s->result_mitigated - s->result_absorbed; absorbed > 0 )
+            s->result_amount += absorbed;
+        }
+
+        return assessor::CONTINUE;
+      } );
+    }, "assessors_absorb_event" );
+  }
+
+  player_t* resolve_target() const
+  {
+    if ( target_str.empty() )
+      return sim->target;
+    if ( player_t* t = sim->find_player( target_str ) )
+      return t;
+    throw std::invalid_argument( fmt::format( "Unknown absorb raid event target '{}'", target_str ) );
+  }
+
+  void _start() override
+  {
+    player_t* target = resolve_target();
+    absorb_buff_t*& buff = absorb_buffs[ target ];
+    if ( !buff )
+    {
+      buff = make_buff<absorb_buff_t>( target, fmt::format( "raid_event_absorb_{}", internal_id ) );
+      if ( school != SCHOOL_NONE )
+        buff->set_absorb_school( school );
+    }
+
+    // No amount => unbreakable; infinity makes consume() never reduce to 0.
+    double value = amount > 0 ? amount : std::numeric_limits<double>::infinity();
+    buff->trigger( 1, value, -1.0, timespan_t::max() );
+  }
+
+  void _finish() override
+  {
+    if ( absorb_buff_t* buff = absorb_buffs[ resolve_target() ] )
+      buff->expire();
+  }
+};
+
 // Position Switch ==========================================================
 
 struct position_event_t : public raid_event_t
@@ -1640,10 +1809,18 @@ raid_event_t* get_next_raid_event( const std::vector<raid_event_t*>& matching_ev
   return result;
 }
 
-raid_event_t* get_next_pull_event( raid_event_t* up )
+raid_event_t* get_next_pull_event( sim_t* s, raid_event_t* up )
 {
   if ( !up )
+  {
+    for ( auto& pull_event : s->raid_events )
+    {
+      if ( pull_event->until_next() > timespan_t::zero() && pull_event->until_next() < timespan_t::max() )
+        return pull_event.get();
+    }
+
     return nullptr;
+  }
 
   for ( auto& pull_event : up->sim->raid_events )
   {
@@ -1698,6 +1875,7 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
     duration( 0_ms, 0_ms, 0_ms, 0_ms ),
     pull( 0 ),
     pull_target_str(),
+    internal_id( as<int>( sim->raid_events.size() ) ),
     distance_min( 0 ),
     distance_max( 0 ),
     players_only( false ),
@@ -1738,6 +1916,11 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
   add_option( opt_int( "pull", pull ) );
   add_option( opt_string( "pull_target", pull_target_str ) );
   add_option( opt_func( "timestamps", std::bind( &raid_event_t::parse_timestamps, this, std::placeholders::_3 ) ) );
+}
+
+std::string raid_event_t::log_name() const
+{
+  return fmt::format( "{} (id={})", name.empty() ? type : name, internal_id );
 }
 
 timespan_t raid_event_t::cooldown_time()
@@ -1853,13 +2036,13 @@ void raid_event_t::finish()
 
   if ( type == "pull" )
   {
-    if ( auto next = get_next_pull_event( this ) )
+    if ( auto next = get_next_pull_event( sim, this ) )
     {
       next->combat_begin();
       return;
     }
     // End the iteration if no sequential pull is found.
-    make_event<player_demise_event_t>( *sim, *sim->target_list.data().front() );
+    sim->cancel_iteration();
   }
 }
 
@@ -2232,6 +2415,8 @@ std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim, util::string_vie
     return std::unique_ptr<raid_event_t>( new stun_event_t( sim, options_str ) );
   if ( name == "vulnerable" )
     return std::unique_ptr<raid_event_t>( new vulnerable_event_t( sim, options_str ) );
+  if ( name == "absorb" )
+    return std::unique_ptr<raid_event_t>( new absorb_event_t( sim, options_str ) );
   if ( name == "position_switch" )
     return std::unique_ptr<raid_event_t>( new position_event_t( sim, options_str ) );
   if ( name == "flying" )
@@ -2282,15 +2467,35 @@ void raid_event_t::init( sim_t* sim )
       if ( raid_event->type == "pull" && sim->fight_style != FIGHT_STYLE_DUNGEON_ROUTE )
         throw std::invalid_argument( "DungeonRoute fight style is required for pull events." );
 
-      if ( raid_event->cooldown.min == 0_ms )
-        raid_event->cooldown.min = raid_event->cooldown.mean * 0.5;
-      if ( raid_event->cooldown.max == 0_ms )
-        raid_event->cooldown.max = raid_event->cooldown.mean * 1.5;
+      if ( raid_event->cooldown.mean == timespan_t::max() )
+      {
+        if ( raid_event->cooldown.min == 0_ms )
+          raid_event->cooldown.min = timespan_t::max();
+        if ( raid_event->cooldown.max == 0_ms )
+          raid_event->cooldown.max = timespan_t::max();
+      }
+      else
+      {
+        if ( raid_event->cooldown.min == 0_ms )
+          raid_event->cooldown.min = raid_event->cooldown.mean * 0.5;
+        if ( raid_event->cooldown.max == 0_ms )
+          raid_event->cooldown.max = raid_event->cooldown.mean * 1.5;
+      }
 
-      if ( raid_event->duration.min == 0_ms )
-        raid_event->duration.min = raid_event->duration.mean * 0.5;
-      if ( raid_event->duration.max == 0_ms )
-        raid_event->duration.max = raid_event->duration.mean * 1.5;
+      if ( raid_event->duration.mean == timespan_t::max() )
+      {
+        if ( raid_event->duration.min == 0_ms )
+          raid_event->duration.min = timespan_t::max();
+        if ( raid_event->duration.max == 0_ms )
+          raid_event->duration.max = timespan_t::max();
+      }
+      else
+      {
+        if ( raid_event->duration.min == 0_ms )
+          raid_event->duration.min = raid_event->duration.mean * 0.5;
+        if ( raid_event->duration.max == 0_ms )
+          raid_event->duration.max = raid_event->duration.mean * 1.5;
+      }
 
       // Collect other raid events assigned to a pull.
       if ( raid_event->pull > 0 && raid_event->type != "pull" )
@@ -2445,7 +2650,7 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
   raid_event_t* e = nullptr;
   // For all remaining expression, go through the list of matching raid events and look for the one happening first
   if ( ( type_or_name == "adds" || type_or_name == "pull" ) && s->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
-    e = get_next_pull_event( up );
+    e = get_next_pull_event( s, up );
   else
     e = get_next_raid_event( matching_events );
 
@@ -2458,7 +2663,7 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
     if ( e->type == "pull" )
     {
       if ( up == nullptr )
-        return timespan_t::max().total_seconds();
+        return e->until_next().total_seconds();
       else
         return ( up->remains() + e->cooldown.mean ).total_seconds();
     }

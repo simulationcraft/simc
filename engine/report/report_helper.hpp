@@ -50,6 +50,9 @@ void print_distribution_chart( report::sc_html_stream& os, const player_t& p, ex
                                bool time_element = false );
 
 void collect_aps( const stats_t* stats, double& amount, double& amount_pct );
+
+const spell_data_t* find_talent_spell( std::string_view name, const player_t& );
+const spell_data_t* find_talent_spell( unsigned spell_id, const player_t& );
 }  // namespace report_helper
 
 #endif  // SC_REPORT_HPP

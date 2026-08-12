@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.0.1.66838
+Class Spell ID List, wow build 12.1.0.69273
 
 Death Knight
 3714     Path of Frost
@@ -625,7 +625,6 @@ Death Knight
 227591  *Death and Decay
 228322  *Hypothermia
 228645   Heart Strike
-231361  *Death Grip (test spell for Caroline)
 232048  *Splintering Bone
 232049  *Bone Shield
 232051  *Plagued Grip
@@ -1608,7 +1607,7 @@ Death Knight
 1241567  Clawing Shadows
 1241569  Clawing Shadows
 1241705  Outnumber
-1241707  March of Madness
+1241707 *March of Madness
 1241719 *Festering Scythe
 1241732 *Festering Scythe
 1241786  Infected Claws
@@ -1621,16 +1620,15 @@ Death Knight
 1242174  Necrotic Coil
 1242178  Necrotic Coil
 1242274 *Lesser Ghoul Despawn
-1242283 *Reanimation
-1242289 *Reawakening
+1242289 *Lord of the Dead
 1242294  Army of the Damned
-1242561  Scythe of Decay
+1242561 *Scythe of Decay
 1242564  Dread Plague
 1242597 *Blighted
 1242601 *Festering Corruption
 1242604  Scourging
 1242608  Raise Abomination
-1242616  Blightfall
+1242616 *Blightfall
 1242619 *Compromised
 1242654  Reaping
 1242756 *Compromised
@@ -1638,7 +1636,7 @@ Death Knight
 1242998  Lesser Ghoul
 1244030 *Putrefy
 1244102  Disease Cloud
-1244158  March of Madness
+1244158 *March of Madness
 1244347  Disease Cloud
 1244516 *Forbidden Knowledge
 1244519  Reaping
@@ -1658,7 +1656,7 @@ Death Knight
 1256565  Forbidden Knowledge
 1256566  Forbidden Knowledge
 1256576  Forbidden Sacrifice
-1256813  Reanimation
+1256813  Lord of the Dead
 1256884 *Chains of Ice
 1256915  Frost Death Knight
 1256916  Blood Death Knight
@@ -1733,10 +1731,10 @@ Death Knight
 1271198  Rejuvenating Blood
 1271199  Blighted
 1271390 *Battle Resurrection Highlight
-1271967  Pestilence
-1271974  Pestilence
-1271975  Pestilence
-1272116  Pestilence
+1271967  Blightfall
+1271974  Blightfall
+1271975  Blightfall
+1272116  Blightfall
 1277016  Putrefy
 1277098  Lesser Ghoul
 1277365  Blood Bond
@@ -1747,13 +1745,40 @@ Death Knight
 1280645  Ruptured Viscera
 1280658  Inevitable
 1281529 *Stitchmaster
-1282535  Lesser Ghoul
+1282535 *Lesser Ghoul
 1282554 *Superstrain
 1282564 *Death and Decay
-1282565  Scythe of Decay
+1282565 *Scythe of Decay
 1282570  Forbidden Ritual
 1283621  Death Knight - Midnight PrePatch - 11.2 Class Set 2pc
 1283622  Death Knight - Midnight PrePatch - 11.2 Class Set 4pc
+1286168 *Frenzied Decay
+1290864  Cycle of Death
+1292072  Lord of the Dead
+1292107  Frostbolt
+1293166 *Lord of the Dead
+1294026  Lesser Ghoul
+1294029 *Lesser Ghoul
+1294180  Lesser Ghoul
+1294261 *Death Order
+1294264  Death Order
+1294480 *Epidemic Order
+1296650  Death Knight Blood 12.1 Class Set 2pc
+1296651  Death Knight Blood 12.1 Class Set 4pc
+1296652  Death Knight Frost 12.1 Class Set 2pc
+1296653  Death Knight Frost 12.1 Class Set 4pc
+1296654  Death Knight Unholy 12.1 Class Set 2pc
+1296655  Death Knight Unholy 12.1 Class Set 4pc
+1297055  Necrotic Bolt
+1297063  Death Knight Unholy 12.1 Class Set 2pc
+1297086  Necrotic Bolt
+1297087  Death Knight Unholy 12.1 Class Set 2pc
+1297091  Withering Grasp
+1297365  Freezing Tempest
+1300330  Epidemic Order
+1300369  Relentless Rider's Strength
+1310372  Blood Debt
+1310571  Bloody Demise
 
 Demon Hunter
 1490     Chaos Brand
@@ -1763,7 +1788,6 @@ Demon Hunter
 162794   Chaos Strike
 163073   Demon Soul
 178716  *Sweep
-178717  *Sweep
 178940   Shattered Souls
 178963   Consume Soul
 179057   Chaos Nova
@@ -2056,7 +2080,6 @@ Demon Hunter
 212105   Fel Devastation
 212106   Fel Devastation
 212548  *Holy Missile
-212576  *caroline test custom
 212611   Demon Hunter
 212612   Havoc Demon Hunter
 212613   Vengeance Demon Hunter
@@ -2739,7 +2762,7 @@ Demon Hunter
 427776   Deflecting Dance
 427785   Fel Rush
 427793   Dash of Chaos
-427794   Dash of Chaos
+427794   Never Say Die
 427857  *Fel Rush
 427867  *Fel Rush
 427873  *Fel Rush
@@ -2760,7 +2783,7 @@ Demon Hunter
 427916   Immolation Aura
 427917   Immolation Aura
 427918   A Fire Inside
-428160   Dash of Chaos
+428160  *Dash of Chaos
 428232   Scars of Suffering
 428241   Demon Hide
 428361   Ragefire
@@ -3226,6 +3249,16 @@ Demon Hunter
 1285383 *Initial Demon Hunter
 1285387 *Shattered Souls
 1287949  Eye Beam
+1288123  Devour
+1292047  Spontaneous Immolation
+1296611  Demon Hunter Havoc 12.1 Class Set 2pc
+1296612  Demon Hunter Havoc 12.1 Class Set 4pc
+1296613  Demon Hunter Vengeance 12.1 Class Set 2pc
+1296614  Demon Hunter Vengeance 12.1 Class Set 4pc
+1296615  Demon Hunter Devourer 12.1 Class Set 2pc
+1296616  Demon Hunter Devourer 12.1 Class Set 4pc
+1297432  Soulburst
+1297433  Soulburst
 
 Druid
 99       Incapacitating Roar
@@ -3862,7 +3895,7 @@ Druid
 196259  *Natural Cure
 197018  *Jeremy's Roots
 197061   Stonebark
-197073   Inner Peace
+197073  *Inner Peace
 197479  *Quicksilver
 197481  *Quicksilver
 197488  *Balance Affinity
@@ -3987,8 +4020,8 @@ Druid
 203553  *Focused Growth
 203554  *Focused Growth
 203624  *Early Spring
-203651  *Overgrowth
-203652  *Overgrowth
+203651   Overgrowth
+203652   Overgrowth
 203709  *Gift of the Wild
 203953   Brambles
 203958   Brambles
@@ -4459,7 +4492,7 @@ Druid
 325727   Adaptive Swarm
 325733   Adaptive Swarm
 325748   Adaptive Swarm
-326228   Natural Wisdom
+326228  *Natural Wisdom
 326434   Kindred Spirits
 326446  *Empower Bond
 326462  *Empower Bond
@@ -4783,13 +4816,12 @@ Druid
 392146   Embrace of the Dream
 392147   Embrace of the Dream
 392160  *Invigorate
-392162  *Dreamstate
 392167   Everbloom
 392220   Flash of Clarity
 392221   Waking Dream
 392223   Waking Dream
 392256   Harmonious Blooming
-392288   Nature's Splendor
+392288  *Nature's Splendor
 392301  *Undergrowth
 392302   Power of the Archdruid
 392315  *Luxuriant Soil
@@ -5334,15 +5366,7 @@ Druid
 1269616  Wild Guardian
 1269617  Wild Guardian
 1269619  Wild Guardian
-1269633  Echo of Ironfur
-1269645  Echo of Frenzied Regeneration
-1269648  Echo of Maul
 1269658  Wild Guardian
-1269659  Gift of Ironfur
-1269660  Gift of Maul
-1269661  Gift of Frenzied Regeneration
-1269972  Echo of Raze
-1269973  Echo of Ravage
 1270065  Vicious Brambles
 1270277  Wild Guardian
 1270292  Lunar Beam
@@ -5380,6 +5404,40 @@ Druid
 1286243  Starfall
 1286247  Starfall
 1292031  Dream Guide
+1296603  Druid Balance 12.1 Class Set 2pc
+1296604  Druid Balance 12.1 Class Set 4pc
+1296605  Druid Feral 12.1 Class Set 2pc
+1296606  Druid Feral 12.1 Class Set 4pc
+1296607  Druid Guardian 12.1 Class Set 2pc
+1296608  Druid Guardian 12.1 Class Set 4pc
+1296609  Druid Restoration 12.1 Class Set 2pc
+1296610  Druid Restoration 12.1 Class Set 4pc
+1297521  Stellar Protection
+1301157  Rampant Thorn
+1301286  Gorestained Claws
+1301340  Incarnation: Tree of Life
+1301600  Halazzi's Fury
+1301638  Symbiotic Relationship
+1301742  Starfall
+1301747  Starfall
+1301768  Akil'zon's Clarity
+1301989  Overgrowth
+1302255  Genesis
+1303480  Orbit Breaker
+1307881  Gory Fur
+1308093  Spirit's Wrath
+1308125  Spirit's Wrath
+1308176  Dream Conduit
+1308399  Answered Calling
+1308437  Spirit's Wrath
+1308448 *Listener
+1308479  Spirit's Wrath
+1308522  Wild Guardian Spirit
+1308639  Spirit's Wrath
+1308647  Answered Calling
+1308653 *Listener
+1310150  Rampant Thorn
+1310213  Rampant Thorn
 
 Evoker
 351338   Quell
@@ -5387,7 +5445,6 @@ Evoker
 353167   Evoker
 353473  *Template [DNT]
 353759   Deep Breath
-354154  *Mount Auto-Shapeshift
 355627   Azure Strike
 355689   Landslide
 355913   Emerald Blossom
@@ -5454,7 +5511,6 @@ Evoker
 363558  *Rewind
 363800   Landslide
 363898  *Fire Breath
-363906  *Disintegrate
 363916   Obsidian Scales
 363922  *Dream Breath
 363940  *Past Self
@@ -5642,7 +5698,6 @@ Evoker
 373861   Temporal Anomaly
 373862   Temporal Anomaly
 374227   Zephyr
-374229   Zephyr
 374251   Cauterizing Flame
 374286  *Rescue
 374346   Overawe
@@ -5687,7 +5742,7 @@ Evoker
 376179   Lifeforce Mender
 376204   Just in Time
 376207   Delay Harm
-376236   Resonating Sphere
+376236  *Resonating Sphere
 376237   Nozdormu's Teachings
 376239   Grace Period
 376240   Timeless Magic
@@ -5720,7 +5775,6 @@ Evoker
 378441  *Time Stop
 378444  *Obsidian Mettle
 378464  *Nullifying Shroud
-379996  *Mount Auto-Shapeshift
 381414  *Dream Projection
 381437   Soar
 381451   Principles of Soaring
@@ -5747,7 +5801,6 @@ Evoker
 382614   Dream Breath
 382731   Spiritbloom
 383005  *Chrono Loop
-383108  *Visage Mount Tracker [DNT]
 383332  *Time Stop
 383340  *Time Stop
 383610  *Nullifying Shroud
@@ -5761,7 +5814,6 @@ Evoker
 384689  *Divide and Conquer
 384691   Divide and Conquer
 385696   Flow State
-385871  *Test Disintegrate Aura [DNT]
 386272   Titanic Wrath
 386283   Catalyze
 386348   Onyx Legacy
@@ -6104,7 +6156,7 @@ Evoker
 459152  *Rumbling Earth
 459537   Imminent Destruction
 459574   Imminent Destruction
-459725   Molten Embers
+459725  *Molten Embers
 460688   Double-time
 461039  *Wing Buffet
 461526  *Return
@@ -6112,7 +6164,6 @@ Evoker
 462075   Evoker
 462076   Devastation Evoker
 462078   Preservation Evoker
-469347   Hover
 470785  *Past Self
 474535  *Super Fly
 1215549  Evoker Preservation 11.1 Class Set 2pc
@@ -6132,7 +6183,6 @@ Evoker
 1219255  Upheaval
 1219257  Upheaval
 1219723  Azure Celerity
-1235842 *Command Squadron
 1235843 *Command Squadron
 1236364 *Evoker Flameshaper 11.2 Class Set 2pc
 1236365 *Evoker Flameshaper 11.2 Class Set 4pc
@@ -6187,7 +6237,7 @@ Evoker
 1259174  Duplicate
 1259175  Duplicate
 1260484  Chronoboon
-1260568  Energy Cycles
+1260568 *Energy Cycles
 1260647  Overclock
 1260745  Command Squadron
 1261393 *Command Squadron
@@ -6237,6 +6287,21 @@ Evoker
 1289618 *Blistering Scales
 1289630 *Source of Magic
 1289631 *Timelessness
+1289650 *Visage Chosen Identity Tracker [DNT]
+1291457  Mighty Inferno
+1291522  Chronal Dynamo
+1291636  Temporal Barrier
+1292321  Unbound Flame
+1292322  Unbound Flame
+1292323  Unbound Flame
+1292325  Unbound Flame
+1296637  Evoker Augmentation 12.1 Class Set 2pc
+1296638  Evoker Augmentation 12.1 Class Set 4pc
+1296639  Evoker Devastation 12.1 Class Set 2pc
+1296640  Evoker Devastation 12.1 Class Set 4pc
+1296641  Evoker Preservation 12.1 Class Set 2pc
+1296642  Evoker Preservation 12.1 Class Set 4pc
+1297728  Magnified Fate
 
 Hunter
 75       Auto Shot
@@ -8110,7 +8175,7 @@ Hunter
 378210  *Hunter's Prey
 378215  *Hunter's Prey
 378244   Cobra Senses
-378442   Wild Instincts
+378442  *Wild Instincts
 378739  *Bloody Frenzy
 378740   Killer Command
 378743   Dire Command
@@ -8256,7 +8321,7 @@ Hunter
 422879   Hunter Survival 10.2 Class Set 4pc
 424557   Savagery
 424558   Master Handler
-424567   Wild Instincts
+424567  *Wild Instincts
 424571  *Windrunner's Guidance
 425830   Fury Strikes
 426344   Contained Explosion
@@ -8453,10 +8518,10 @@ Hunter
 471350   Obsidian Arrowhead
 471363   Headshot
 471366   Tensile Bowstring
-471369  *Precision Detonation
+471369   Precision Detonation
 471426  *Focused Barrage
 471427  *Improved Streamline
-471428   Incendiary Ammunition
+471428   Accuracy By Volume
 471429   Spotter's Mark
 471536   Tip of the Spear
 471876   Howl of the Pack Leader
@@ -8498,13 +8563,13 @@ Hunter
 473326  *Bear Dressing
 473340  *Wyvern Dressing
 473369   Eagle's Accuracy
-473370   Double Tap
-473378   Bullet Hell
-473379   Target Acquisition
+473370  *Double Tap
+473378  *Bullet Hell
+473379  *Target Acquisition
 473380   Quickdraw
 473385   No Scope
 473461  *Summon Wyvern - FX
-473520   Shrapnel Shot
+473520   Unstable Trigger
 473522  *Tactical Reload
 473523   Windrunner Quiver
 474190  *Lock and Load
@@ -8599,10 +8664,10 @@ Hunter
 1250476 *Kill Cleave
 1250646  Takedown
 1251091 *Hemorrhaging Strikes
-1251592  Flamefang Pitch
-1251595  Flamefang Pitch
-1251610  Flamefang Pitch
-1251614  Flamefang Pitch
+1251592 *Flamefang Pitch
+1251595 *Flamefang Pitch
+1251610 *Flamefang Pitch
+1251614 *Flamefang Pitch
 1251683  Hemorrhaging Strikes
 1251703 *Takedown
 1251717  Strike as One
@@ -8621,7 +8686,7 @@ Hunter
 1252947  Wildfire Imbuement
 1252966  Wildfire Imbuement
 1252976  Wildfire Imbuement
-1253053  Shower of Blood
+1253053  Razor Edge
 1253065 *Rupturing Blow
 1253074 *Rupturing Blow
 1253137  Sic 'Em
@@ -8677,7 +8742,7 @@ Hunter
 1259003  Raptor Swipe
 1259017  Raptor Swipe
 1259019  Raptor Swipe
-1259922  Lethality
+1259922 *Lethality
 1261193  Boomstick
 1261215  Boomstick
 1261229  Wildfire Shells
@@ -8688,7 +8753,7 @@ Hunter
 1262361  Raptor Swipe
 1262384 *Sticky Bombs
 1262390  Sticky Bomb
-1262391 *Sticky Bomb
+1262391  Sticky Bomb
 1262408  Lethal Calibration
 1262409  Lethal Calibration
 1262435 *Wildfire Tar
@@ -8723,7 +8788,7 @@ Hunter
 1264949  Moonlight Chakram
 1265044  Jagged Wounds
 1265051  Thrill of the Hunt
-1265052  Heart of the Pack
+1265052  Razor Sharp
 1265063  Bloody Frenzy
 1266069  Stalk and Strike
 1266081  Moonlight Chakram
@@ -8785,7 +8850,28 @@ Hunter
 1283818 *Dire Beast
 1284992  Pet Damage
 1285912  Bestial Wrath
-1286400  Heart of the Pack
+1286400  Scout's Vigil
+1289896  Misdirection
+1292687  Shrapnel Bomb
+1296631  Hunter Beast Mastery 12.1 Class Set 2pc
+1296632  Hunter Beast Mastery 12.1 Class Set 4pc
+1296633  Hunter Marksmanship 12.1 Class Set 2pc
+1296634  Hunter Marksmanship 12.1 Class Set 4pc
+1296635  Hunter Survival 12.1 Class Set 4pc
+1296636  Hunter Survival 12.1 Class Set 4pc
+1298446 *Unbreakable Bond
+1299389  Cobra Fang
+1299409  Cobra Cleave
+1300701  Lock and Load: Explosive Shot
+1301098  Spotter's Mark: Rapid Fire
+1301406  Tactical Reload
+1301778  Unstable Trigger
+1302277  Death Bringer
+1306018 *test proc spell
+1306960 *Dire Beast
+1306990 *Dark Summon
+1308188 *Dire Beast
+1311963  Bombardier
 
 Mage
 66       Invisibility
@@ -9026,7 +9112,7 @@ Mage
 32266   *Portal: Exodar
 32267   *Portal: Silvermoon (Burning Crusade)
 32271   *Teleport: Exodar
-32272   *Teleport: Silvermoon
+32272   *Teleport: Silvermoon (Burning Crusade)
 32366   *Summon Void Zone
 32602   *Energy Stream
 32603   *Energy Stream
@@ -9853,7 +9939,7 @@ Mage
 210476   Master of Escape
 210478  *Arcane Barrage
 210716  *Force Barrier
-210725   Touch of the Magi
+210725  *Touch of the Magi
 210730  *Sloooow Down
 210732  *Sloooow Down
 210797   Crashing Storm
@@ -10430,7 +10516,6 @@ Mage
 355623  *Ice Wall
 356877   Heart of the Fae
 356881   Heart of the Fae
-363405  *Ring of Fire
 363500   Fiery Rush
 363508   Fiery Rush
 363535   Frost Storm
@@ -10749,7 +10834,6 @@ Mage
 449349   Sunfury Execution
 449382   Codex of the Sunstriders
 449394   Glorious Incandescence
-449400   Spellfire Spheres
 449412   Savor the Moment
 449558  *Ignite the Future
 449559   Meteorite
@@ -10913,7 +10997,7 @@ Mage
 471742   Spellfrost Teachings
 473290  *Gravity Lapse
 473291  *Gravity Lapse
-1213793 *FX Test Shader [DNT]
+1213793 *FX Testing - Player Shader [DNT]
 1215132  Mage Fire 11.1 Class Set 2pc
 1215133  Mage Frost 11.1 Class Set 2pc
 1215136  Mage Arcane 11.1 Class Set 2pc
@@ -10939,7 +11023,6 @@ Mage
 1220739 *Overpowered Barrier
 1220755 *Overpowered Barrier
 1220758 *Overpowered Barrier
-1221106 *Overpowered Barrier
 1221107 *Overpowered Barrier
 1221389  Freezing
 1221415 *Norgannon's Foresight
@@ -11039,7 +11122,6 @@ Mage
 1254024  Cinderstorm
 1254054 *Cinderstorm
 1254194  Kindling
-1254311  Scorch
 1254512  Burn It All
 1254756  Ignition
 1254828  Wildfire
@@ -11054,16 +11136,16 @@ Mage
 1257348  Fired Up
 1257349  Fired Up
 1257350  Fired Up
-1257942  Touch of the Archmage
-1257947  Touch of the Archmage
-1257950  Touch of the Archmage
-1258036  Touch of the Archmage
-1258134  Touch of the Archmage
+1257942 *Touch of the Archmage
+1257947 *Touch of the Archmage
+1257950 *Touch of the Archmage
+1258036 *Touch of the Archmage
+1258134 *Touch of the Archmage
 1259190 *Teleport: Silvermoon City
 1259194 *Portal: Silvermoon City
 1259200 *Portal: Silvermoon City
 1260272  Ashes of Inspiration
-1260277  Lesser Time Warp
+1260277 *Lesser Time Warp
 1260616  Spellfire Salvo
 1260673  Pyrocosm
 1261080  Infused Splinters
@@ -11120,7 +11202,31 @@ Mage
 1283635  Mage - Midnight PrePatch - 11.2 Class Set 4pc
 1284108 *Conjure Refreshment Table
 1285457 *Frost Mage
-1286314 *Arcane Phoenix - Dissolve Delay and Transport
+1286314 *Dissolve Delay and Transport
+1286444  Cauterize
+1294067 *Shimmer
+1294068 *Blink
+1295923  Prismatic Bolt
+1295924  Prismatic Bolt
+1295939  Prismatic Bolt
+1295942  Prismatic Bolt!
+1295944  Prismatic Bolt
+1295946  Prismatic Bolt
+1295977  Arcane Pulse
+1296581  Mage Arcane 12.1 Class Set 2pc
+1296582  Mage Arcane 12.1 Class Set 4pc
+1296583  Mage Fire 12.1 Class Set 2pc
+1296584  Mage Fire 12.1 Class Set 4pc
+1296585  Mage Frost 12.1 Class Set 2pc
+1296586  Mage Frost 12.1 Class Set 4pc
+1296930  Cumulative Power
+1297073  Improved Warding
+1299546 *Ice Armor
+1309497  Refractive Images
+1309786  Refraction
+1309787  Refraction
+1309793  Amplified Refraction
+1310248  Rapid Refreezing
 
 Monk
 8647     Mystic Touch
@@ -12789,7 +12895,7 @@ Monk
 1221044 *Touch of Death Notification
 1222923  Windwalker Monk
 1226058  Luck of the Draw!
-1236377  Monk Master of Harmony 11.2 Class Set 2pc
+1236377 *Monk Master of Harmony 11.2 Class Set 2pc
 1236378 *Monk Master of Harmony 11.2 Class Set 4pc
 1236379 *Monk Shado-Pan 11.2 Class Set 2pc
 1236380 *Monk Shado-Pan 11.2 Class Set 4pc
@@ -12800,9 +12906,9 @@ Monk
 1238883 *Concentrated Mistfall
 1238901  Jade Serpent's Blessing
 1238904  Heart of the Jade Serpent
-1239442  Harmonic Surge
-1239443  Harmonic Surge
-1239483  Potential Energy
+1239442 *Harmonic Surge
+1239443 *Harmonic Surge
+1239483 *Potential Energy
 1240636 *Health Globe
 1240640 *Health Globe
 1241059  Celestial Infusion
@@ -12847,7 +12953,7 @@ Monk
 1249758  Combo Strikes: Fists of Fury
 1249759  Combo Strikes: Slicing Winds
 1249762  Combo Strikes: Storm, Earth, and Fire
-1249763  Combo Strikes: Zenith
+1249763  Combo Strikes: Zenith Stomp
 1249764  Combo Strikes: Crackling Jade Lightning
 1249765  Combo Strikes: Whirling Dragon Punch
 1249766  Combo Strikes: Strike of the Windlord
@@ -12891,7 +12997,6 @@ Monk
 1262017  Fuel on the Fire
 1262035  Fuel on the Fire
 1262040  Fuel on the Fire
-1262042  Tigereye Brew
 1262159  Fuel on the Fire
 1262329  Empty the Cellar
 1262334  Jade Flash
@@ -12944,11 +13049,11 @@ Monk
 1268807  Emperor's Elixir
 1268808 *Jadefire Stomp
 1268817  Misty Coalescence
-1268958  Soothing Mist
+1268958 *Soothing Mist
 1269159  Rushing Wind Kick
 1270621  Tranquil Tea
 1270958  Harmonic Surge
-1270990  Harmonic Surge
+1270990  Potential Energy
 1271011  Harmonic Surge
 1271045  Harmonic Surge
 1271048  Potential Energy
@@ -12979,6 +13084,24 @@ Monk
 1283666  Monk - Midnight PrePatch - 11.2 Class Set 2pc - Healing
 1283667  Monk - Midnight PrePatch - 11.2 Class Set 4pc - Healing
 1285660  Serene Vitality
+1285805 *[DO NOT USE]monk ring but 10 min
+1291484  Zenith Stomp
+1292919  Coalescence
+1292922  Coalescence
+1296617  Monk Brewmaster 12.1 Class Set 2pc
+1296618  Monk Brewmaster 12.1 Class Set 4pc
+1296619  Monk Mistweaver 12.1 Class Set 2pc
+1296620  Monk Mistweaver 12.1 Class Set 4pc
+1296621  Monk Windwalker 12.1 Class Set 2pc
+1296624  Unbroken Rhythm
+1296687  Rising Sun Kick
+1297033  Unbroken Rhythm
+1299572  Vital Expenditure
+1301410  Scorched
+1301417  In Flames
+1301418  Aflame
+1301477  Hot Potato
+1301619  Fiery Shrapnel
 
 Paladin
 465      Devotion Aura
@@ -15150,7 +15273,37 @@ Paladin
 1283660  Paladin - Midnight PrePatch - 11.2 Class Set 4pc
 1283662  Paladin - Midnight PrePatch - 11.2 Class Set 2pc - Healing
 1283663  Paladin - Midnight PrePatch - 11.2 Class Set 4pc - Healing
+1289616  Divine Steed
+1289617  Divine Steed
+1289728  Holy Armaments
+1289890  Holy Armaments
+1289892  Holy Armaments
+1289922  Holy Armament Override
+1289943  Holy Armament Override
 1291678 *Hammer of Wrath
+1296656  Paladin Holy 12.1 Class Set 2pc
+1296657  Paladin Holy 12.1 Class Set 4pc
+1296658  Paladin Protection 12.1 Class Set 2pc
+1296659  Paladin Protection 12.1 Class Set 4pc
+1296660  Paladin Retribution 12.1 Class Set 2pc
+1296661  Paladin Retribution 12.1 Class Set 4pc
+1299636 *Art of War
+1300662  Unrelenting Edict
+1301732  Blessed Word
+1301739  Blessed Word
+1302139  Seal of Reprisal
+1303626 *Surface Tension
+1305063  Protection Paladin
+1305230  Divine Power
+1306159  Divine Power: Storm
+1306161  Divine Arbiter
+1306162  Divine Arbiter
+1306923  Divine Arbiter
+1307499  Crusading Strikes
+1307639 *Glory of the Vanguard
+1310389  Divine Guidance
+1310461  Divine Arbiter
+1310686  Ardent Defender
 
 Priest
 17       Power Word: Shield
@@ -15514,7 +15667,7 @@ Priest
 71930   *Flash of Light
 71931   *Greater Heal
 73325    Leap of Faith
-73510    Corrupted Apparitions
+73510    Shadeburst
 74402   *Drain Soul
 76279   *Armor Skills
 77413   *Flash of Light
@@ -16985,7 +17138,7 @@ Priest
 1230101 *11.1.7 Lorewalking - Elves - Mind Flay
 1230339  Mindbender
 1231346  Ancient Madness
-1231479  Corrupted Apparition
+1231479  Shadeburst
 1232567  Penance
 1232571  Penance
 1232592  Dark Reprimand
@@ -17014,11 +17167,11 @@ Priest
 1240388  Dark Thoughts
 1240394  Madness Weaving
 1240401 *Void Volley
-1242171 *Void Volley
+1242171  Void Volley
 1242173  Void Volley
 1242189  Void Volley
 1242666  Descending Darkness
-1242779  Phantom Menace
+1242779 *Phantom Menace
 1242862  Instilled Doubt
 1243069  Horrific Visions
 1243105  Horrific Vision
@@ -17059,14 +17212,13 @@ Priest
 1250691  Void Tendrils
 1250806  False Autonomy
 1250818  Spiritual Guidance
-1250820  Strength of Soul
+1250820  Strength of Resolve
 1250835  Dark Enlightenment
 1251029  Mindpierce
 1251030  Painful Invocation
 1251077  Twin Disciplines
 1251208 *Fade
 1251209 *Shadowform
-1252215  Shadow Mend
 1252217  Shadow Mend
 1253590  Master the Darkness
 1253591  Master the Darkness
@@ -17124,6 +17276,19 @@ Priest
 1283670  Priest - Midnight PrePatch - 11.2 Class Set 2pc - Healing
 1283671  Priest - Midnight PrePatch - 11.2 Class Set 4pc - Healing
 1287613  Shadowy Insight
+1289366 *Holy Impact
+1296575  Priest Holy 12.1 Class Set 2pc
+1296576  Priest Holy 12.1 Class Set 4pc
+1296577  Priest Discipline 12.1 Class Set 2pc
+1296578  Priest Discipline 12.1 Class Set 4pc
+1296579  Priest Shadow 12.1 Class Set 2pc
+1296580  Priest Shadow 12.1 Class Set 4pc
+1298779  Grim Deliverance
+1300008  Power Word: Shield (Unfolding Vision)
+1300009  Void Shield (Unfolding Vision)
+1304485  Ancient Madness
+1306118  Renewed Vigor
+1307795  Dark Transference
 
 Rogue
 53       Backstab
@@ -18256,7 +18421,6 @@ Rogue
 381877   Combat Stamina
 381878   Deft Maneuvers
 381885   Heavy Hitter
-381982  *Count the Odds
 381985  *Precise Cuts
 381988   Swift Slasher
 381989   Keep It Rolling
@@ -18344,8 +18508,6 @@ Rogue
 394309  *Swift Death
 394320   Secret Stratagem
 394321   Devious Stratagem
-394324   Deadly Poison
-394325   Deadly Poison
 394326   Instant Poison
 394327   Wound Poison
 394328   Amplifying Poison
@@ -18366,7 +18528,6 @@ Rogue
 395003   Masterful Finish
 395422   Improved Adrenaline Rush
 395424   Improved Adrenaline Rush
-395996   Dashing Scoundrel
 400783   Arterial Precision
 400789   Shiv
 400804   Unbreakable Stride
@@ -18464,7 +18625,7 @@ Rogue
 441415   Don't Be Suspicious
 441423   Coup de Grace
 441429   Cloud Cover
-441587   Distract
+441587   Cloud Cover
 441640   Smokescreen
 441662   Distract
 441776   Coup de Grace
@@ -18649,8 +18810,8 @@ Rogue
 1250036  Inspiring Strike
 1250141  Secondary Poisoning
 1250216  Secondary Poisoning
-1250271  Deadly Momentum
-1250272  Deadly Momentum
+1250271 *Deadly Momentum
+1250272 *Deadly Momentum
 1250318  Poisoner's Drive
 1250325  Regicide's Reward
 1250331  Regicide's Reward
@@ -18690,8 +18851,6 @@ Rogue
 1265385  Implacable
 1265386  Implacable
 1265387  Implacable
-1265389  Implacable
-1265391  Implacable
 1265787  Implacable Strikes
 1265794  Implacable Strikes
 1265795  Implacable Strikes
@@ -18753,6 +18912,25 @@ Rogue
 1283637  Rogue - Midnight PrePatch - 11.2 Class Set 2pc
 1283639  Rogue - Midnight PrePatch - 11.2 Class Set 4pc
 1291471  Hemotoxin
+1292996  Negotiable Contract
+1293135  Sanguine Vial
+1293138  Sanguine Vial
+1293149  Crimson Vial
+1293340  Mark for Death
+1293579 *Mark for Death Enabler
+1296588  Rogue Outlaw 12.1 Class Set 2pc
+1296589  Rogue Outlaw 12.1 Class Set 4pc
+1296590  Rogue Assassination 12.1 Class Set 2pc
+1296591  Rogue Assassination 12.1 Class Set 4pc
+1296592  Rogue Subtlety 12.1 Class Set 2pc
+1296593  Rogue Subtlety 12.1 Class Set 4pc
+1298812  Unstable Toxin
+1298826  Thistle Tea
+1298870  Implacable
+1301405  Fang Strike
+1305994  Secret Technique
+1309274  Goremaw's Bite
+1309309  Goremaw's Bite
 
 Shaman
 370      Purge
@@ -20262,9 +20440,9 @@ Shaman
 383648   Earth Shield
 384087  *Echoes of Great Sundering
 384088  *Echoes of Great Sundering
-384143   Raging Maelstrom
+384143   Overflowing Maelstrom
 384146  *Focused Maelstrom
-384149   Overflowing Maelstrom
+384149   Raging Maelstrom
 384352   Doom Winds
 384355   Elemental Weapons
 384357  *Ice Strike
@@ -20343,7 +20521,7 @@ Shaman
 409834   Crackling Thunder
 410018   Primal Fracture
 410673   Stormweaver
-410681   Raging Maelstrom
+410681   Overflowing Maelstrom
 412180  *Spiritwalker's Grace
 412692   Maelstrom Weapon
 417374   Initial Shaman
@@ -20526,7 +20704,7 @@ Shaman
 462864  *Echo of the Elementals
 462866   Elemental Unity
 462867   Everlasting Elements
-462990   Lesser Storm Elemental
+462990   Lesser Primal Storm Elemental
 462991  *Lesser Primal Fire Elemental
 462992   Lesser Fire Elemental
 462993   Lesser Storm Elemental
@@ -20627,8 +20805,6 @@ Shaman
 1218612  Jackpot!
 1218616  Winning Streak!
 1219323  Fate Reversal
-1219343  Feral Lunge
-1219348  Feral Lunge
 1219440  Maelstrom Weapon
 1219461  Thorim's Invocation
 1219480  Ascendance
@@ -20685,7 +20861,7 @@ Shaman
 1252415  Crash Lightning
 1252431  Crash Lightning (Unleashed)
 1252433  Crash Lightning
-1252841  Calm Waters
+1252841 *Calm Waters
 1252874  Soothing Rain
 1252882  Double Dip
 1252978 *Downpour
@@ -20758,6 +20934,20 @@ Shaman
 1283721 *Rumbling Roar
 1283722 *Kapara Smash
 1283723 *Stomp
+1296625  Shaman Elemental 12.1 Class Set 2pc
+1296626  Shaman Elemental 12.1 Class Set 4pc
+1296627  Shaman Enhancement 12.1 Class Set 2pc
+1296628  Shaman Enhancement 12.1 Class Set 4pc
+1296629  Shaman Restoration 12.1 Class Set 2pc
+1296630  Shaman Restoration 12.1 Class Set 4pc
+1298679  Healing Rain
+1299975  Burning Core
+1299991  Short Circuit
+1300219  Flowing Elements
+1300222  Overcharge!
+1300642  Condensation
+1307888  Healing Rain
+1312843  Swelling Tides
 
 Warlock
 126      Eye of Kilrogg
@@ -21748,7 +21938,6 @@ Warlock
 312397   Scouring Tithe
 312420   Scouring Tithe
 314462  *Scouring Tithe
-316099   Unstable Affliction
 316107  *Malefic Rapture
 317031  *Xavian Teachings
 317138   Strength of Will
@@ -21893,7 +22082,6 @@ Warlock
 342601   Ritual of Doom
 342824  *Mark of Borrowed Power
 342914   Fear
-342938  *Unstable Affliction
 342997   Grim Inquisitor's Dread Calling
 344026   Create Healthstone
 344324  *Doom
@@ -22034,8 +22222,6 @@ Warlock
 387096   Pyrogenics
 387103   Ruin
 387108   Conflagration of Chaos
-387109   Conflagration of Chaos
-387110   Conflagration of Chaos
 387118  *Soul Tap
 387153  *Burn to Ashes
 387154  *Burn to Ashes
@@ -22574,9 +22760,9 @@ Warlock
 1260229  Fatal Echoes
 1260264  Shard Instability
 1260269  Shard Instability
-1260271  Nocturnal Yield
+1260271 *Nocturnal Yield
 1260279  Nightfall
-1260285  Patient Zero
+1260285 *Patient Zero
 1261036 *Cloying Power
 1261124  Cascading Calamity
 1261147 *Soul Miser
@@ -22677,7 +22863,7 @@ Warlock
 1276433  Dominant Hand
 1276452  Grimoire: Imp Lord
 1276467  Grimoire: Fel Ravager
-1276610  Spell Lock
+1276610  Devour Magic
 1276623  Singe Magic
 1276661  Stabilized Portals
 1276672  Summon Doomguard
@@ -22734,6 +22920,24 @@ Warlock
 1282757  Shadow Nova
 1283640  Warlock - Midnight PrePatch - 11.2 Class Set 2pc
 1283641  Warlock - Midnight PrePatch - 11.2 Class Set 4pc
+1288945 *Imp Lord
+1288950 *Fel Ravager
+1288970 *Recently Demon Has Been Summoned [DNT]
+1292384  Soul Barrage
+1292391  Soul Barrage
+1296568  Warlock Affliction 12.1 Class Set 2pc
+1296569  Warlock Affliction 12.1 Class Set 4pc
+1296571  Warlock Destruction 12.1 Class Set 2pc
+1296572  Warlock Destruction 12.1 Class Set 4pc
+1296573  Warlock Demonology 12.1 Class Set 2pc
+1296574  Warlock Demonology 12.1 Class Set 4pc
+1305711  Dark Titan's Mark
+1305774  Unstable Empowerment
+1305798  Refund Soul Shard
+1306077  Isolated Implosion
+1311653  Soul Leech
+1311969  Hedonic Gorging
+1312998  Impetuous Wrath
 
 Warrior
 71       Vanguard
@@ -23702,7 +23906,7 @@ Warrior
 280122  *Demoralizing Shout
 280209   Moment of Glory
 280211   Bury the Hatchet
-280270  *Always Angry
+280270   Improved Raging Blow
 280283  *Endless Rage
 280392   Meat Cleaver
 280561  *Surge
@@ -24043,7 +24247,7 @@ Warrior
 383124   Concussive Blows
 383136  *Punishment
 383154   Bloodletting
-383155   Improved Sweeping Strikes
+383155  *Improved Sweeping Strikes
 383162  *Exploit the Weakness
 383219  *Exhilarating Blows
 383226  *Exhilarating Blows
@@ -24100,7 +24304,7 @@ Warrior
 384102   Berserker Shout
 384110   Wrecking Throw
 384124   Armored to the Teeth
-384277  *Blood and Thunder
+384277   Blood and Thunder
 384305  *Dauntless Duelist
 384318  *Thunderous Roar
 384361   Bloodsurge
@@ -24525,10 +24729,6 @@ Warrior
 1265560  Surge of Adrenaline
 1265570  Executioner's Wrath
 1265575  Executioner's Wrath
-1265579  Rampaging Ruin
-1265580  Rampaging Ruin
-1265581  Rampaging Ruin
-1265582  Rampaging Ruin
 1265598  Kill or Be Killed
 1265600  Kill or Be Killed
 1265641  Kill or Be Killed
@@ -24580,5 +24780,22 @@ Warrior
 1283442  Bloodthirst Heal
 1283642  Warrior - Midnight PrePatch - 11.2 Class Set 2pc
 1283643  Warrior - Midnight PrePatch - 11.2 Class Set 4pc
+1292024 *Improved Execute
 1292058  Heroic Might
 1292071  Phalanx
+1293603  Wrecking Throw Highlight
+1293610  Shattering Throw Highlight
+1296643  Warrior Arms 12.1 Class Set 2pc
+1296644  Warrior Arms 12.1 Class Set 4pc
+1296645  Warrior Fury 12.1 Class Set 2pc
+1296646  Warrior Fury 12.1 Class Set 4pc
+1296647  Warrior Protection 12.1 Class Set 2pc
+1296648  Warrior Protection 12.1 Class Set 4pc
+1299025  Storm of Blood
+1299405  Ravaged
+1299944  Rampaging Ruin
+1300463  Carving Blades
+1300660  Concussive Slam
+1300670  Winding Up
+1300681  Vengeful Shield
+1300690  Bloody Rebuke

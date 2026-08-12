@@ -37,9 +37,8 @@ jobs:
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
+            ActionPriorityLists
             profiles
-            tests
-            generate_profiles_ci.sh
             .git
           key: ${{ inputs.cache-key }}
 
@@ -48,8 +47,12 @@ jobs:
         env:
           MATRIX_SPEC: ${{ matrix.spec }}
         run: |
-          echo "CLASS_STR=${MATRIX_SPEC%%_*}" >> "$GITHUB_ENV"
-          echo "SPEC_STR=${MATRIX_SPEC#*_}" >> "$GITHUB_ENV"
+          CLASS_STR=${MATRIX_SPEC%%_*}
+          CLASS_STR_CAP=${CLASS_STR^}
+          SPEC_STR=${MATRIX_SPEC#*_}
+          echo "CLASS_STR=$CLASS_STR" >> "$GITHUB_ENV"
+          echo "CLASS_STR_CAP=$CLASS_STR_CAP" >> "$GITHUB_ENV"
+          echo "SPEC_STR=$SPEC_STR" >> "$GITHUB_ENV"
 
       - name: Enable PTR
         if: inputs.is-ptr
@@ -73,18 +76,6 @@ jobs:
       - name: "Log Debug"
         if: always()
         run: |
-          SECONDS=0
-          echo ">>>>> Single Target <<<<<"
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} log=1 debug=1 \
-            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo "Run time: $SECONDS seconds"
-          SECONDS=0
-          echo ">>>>> Multi Target <<<<<"
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.MT_ARGS}} log=1 debug=1 \
-            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          echo "Run time: $SECONDS seconds"
           SECONDS=0
           echo ">>>>> Dungeon Slice <<<<<"
           ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ env.DS_ARGS}} log=1 debug=1 \
@@ -338,31 +329,99 @@ jobs:
         id: dump_apl_default
         if: github.event_name == 'push' && !failure() && !inputs.is-ptr
         run: |
-          mkdir default
           ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
             enable_all_talents=1 enable_all_sets=1 \
             allow_experimental_specializations=1  ${{ env.CLASS_STR }}=${{ matrix.spec }} \
             spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
-            save_actions=default/${{ matrix.spec }}.simc
+            save_actions=ActionPriorityLists/default/${{ matrix.spec }}.simc
 
       - name: Dump APL Assisted
         id: dump_apl_assisted
         if: github.event_name == 'push' && !failure() && !inputs.is-ptr
         run: |
-          mkdir assisted_combat
           ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
             enable_all_talents=1 enable_all_sets=1 \
             allow_experimental_specializations=1  ${{ env.CLASS_STR }}=${{ matrix.spec }} \
             spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} use_blizzard_action_list=1 \
-            save_actions=assisted_combat/${{ matrix.spec }}.simc
+            save_actions=ActionPriorityLists/assisted_combat/${{ matrix.spec }}.simc
+
+      - name: Check APL Changes
+        id: check_apl_changes
+        if: (steps.dump_apl_default.outcome == 'success' || steps.dump_apl_assisted.outcome == 'success')
+        shell: bash
+        run: |
+          CHANGED=$(git status --porcelain -- \
+            ActionPriorityLists/default/${{ matrix.spec }}.simc \
+            ActionPriorityLists/assisted_combat/${{ matrix.spec }}.simc)
+          if [ -n "$CHANGED" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Upload APL
-        if: steps.dump_apl_default.outcome == 'success' || steps.dump_apl_assisted.outcome == 'success'
+        if: steps.check_apl_changes.outputs.changed == 'true'
         continue-on-error: true
         uses: actions/upload-artifact@v6
         with:
           name: apl-${{ github.sha }}-${{ matrix.spec }}
           path: |
-            default/${{ matrix.spec }}.simc
-            assisted_combat/${{ matrix.spec }}.simc
+            ActionPriorityLists/*/${{ matrix.spec }}.simc
+          retention-days: 1
+
+      - name: Generate Profiles
+        id: generate_profiles
+        if: github.event_name == 'push' && !failure() && !inputs.is-ptr
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd profiles
+          errors=0
+          for dir in generators/*; do
+            if [ -d "$dir" ]; then
+              SEASON=${dir##*/}
+              GENERATOR=${SEASON}_Generate_${{ env.CLASS_STR_CAP }}.simc
+              if [ -f "$dir/$GENERATOR" ]; then
+                cd "$SEASON"
+                echo "---$SEASON---${{ env.CLASS_STR_CAP }}---$GENERATOR---"
+                if ! ${{ runner.workspace }}/b/ninja/simc "$dir/$GENERATOR"; then
+                  echo "ERROR: generator failed for $dir/$GENERATOR" >&2
+                  errors=1
+                fi
+                cd ..
+              fi
+            fi
+          done
+          if [ "$errors" -ne 0 ]; then
+            echo "One or more profile generators failed, but the loop completed."
+          fi
+
+      - name: Check Profile Changes
+        id: check_profile_changes
+        if: steps.generate_profiles.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          CHANGED=$(git status --porcelain -- profiles/*/*.simc | sed 's/^...//')
+          if [ -n "$CHANGED" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Changed profile files:"
+            echo "$CHANGED"
+            mkdir -p /tmp/changed_profiles
+            echo "$CHANGED" | while read -r f; do
+              cp --parents "$f" /tmp/changed_profiles/
+            done
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No profile files changed"
+          fi
+
+      - name: Upload Profiles
+        if: steps.check_profile_changes.outputs.changed == 'true'
+        continue-on-error: true
+        uses: actions/upload-artifact@v6
+        with:
+          name: profiles-${{ github.sha }}-${{ matrix.spec }}
+          path: /tmp/changed_profiles/profiles/
           retention-days: 1

@@ -72,6 +72,7 @@ struct warlock_pet_t : public pet_t
 
   struct triggers_t
   {
+    bool hellbent_commander_heartbeat;
     bool hellbent_commander_arise;
     bool hellbent_commander_demise;
   } triggers;
@@ -361,12 +362,19 @@ public:
 struct warlock_pet_spell_t : public warlock_pet_action_t<spell_t>
 {
 public:
-  warlock_pet_spell_t( warlock_pet_t* p, util::string_view n ) : base_t( n, p, p->find_pet_spell( n ) )
-  { }
+  struct affected_by_t
+  {
+    bool xalans_cruelty_effect_6 = false;
+    bool xalans_cruelty_effect_9 = false;
+    bool xalans_ferocity_effect_6 = false;
+    bool xalans_ferocity_effect_7 = false;
+  } affected_by;
 
-  warlock_pet_spell_t( util::string_view token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( token, p, s )
-  { }
+  warlock_pet_spell_t( util::string_view token, warlock_pet_t* p, const spell_data_t* s = spell_data_t::nil() );
+
+  warlock_pet_spell_t( warlock_pet_t* p, util::string_view n );
+
+  double composite_crit_chance_multiplier() const override;
 };
 
 namespace base
@@ -427,6 +435,7 @@ struct wild_imp_pet_t : public warlock_pet_t
   bool is_hog_imp;
   bool power_siphon;
   bool imploded;
+  bool isolated_imploded;
   timespan_t infernal_command_ev_ts;
   timespan_t infernal_command_ev_offset;
   accumulated_rng_t* prd_rng_infernal_rapidity;
@@ -625,16 +634,16 @@ struct darkglare_t : public warlock_pet_t
   darkglare_t( warlock_t*, util::string_view = "darkglare" );
   void arise() override;
   void demise() override;
-  action_t* create_action( util::string_view , util::string_view ) override;
+  action_t* create_action( util::string_view, util::string_view ) override;
 };
 
 struct desperate_soul_t : public warlock_pet_t
 {
   int wraths;
 
-  desperate_soul_t( warlock_t*, util::string_view = "desperate_souls" );
+  desperate_soul_t( warlock_t*, util::string_view = "desperate_soul" );
   void arise() override;
-  action_t* create_action( util::string_view , util::string_view ) override;
+  action_t* create_action( util::string_view, util::string_view ) override;
 };
 }  // namespace affliction
 

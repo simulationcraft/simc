@@ -18,15 +18,15 @@ If you want to improve those profiles, please note to the following:
    The files in /profiles are auto-generated and will be overriden.
 
 ## Action Priority List (APL)
-SimulationCraft includes a set of default action priority list for each specialization, to offer users a ready-to-use 
+SimulationCraft includes a set of default action priority lists for each specialization, to offer users a ready-to-use 
 simulation experience once they import their character. This APL is the main factor defining if a character performs just ok 
 or as good as possible, maximizing their DPS. Naturally, these APL can be constantly improved.
 
-You can directly modify and improve a existing set of action lists and contribute that either directly to your classes main 
+You can directly modify and improve an existing set of action lists and contribute that either directly to your classes main 
 maintainer, through your class Discord or directly as a ticket on Github.
 
  * As a developer or experienced user, please try to port Action Priority List (APL) changes directly to the class module code,
-   eg. /engine/class_modules/sc_mage.cpp . You can usually find the apl functions near the bottom of the file in functions 
+   eg. /engine/class_modules/sc_mage.cpp . You can usually find the apl functions near the bottom of the file in functions
    called. eg. mage_t::apl_fire()
 
 ## Pull Requests

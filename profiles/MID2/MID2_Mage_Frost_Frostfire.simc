@@ -1,0 +1,143 @@
+mage="MID2_Mage_Frost_Frostfire"
+source=default
+spec=frost
+level=90
+race=tauren
+role=spell
+position=ranged_back
+talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsMmZmYmZGjZMziZmZmxMzsMTzMLzCAAAaBAAAAAA2AYbZMzMDsNjxM2WAAAAzMYGYADMMA
+omnium_talents=136822:1/136816:1/136817:1/136818:1/136814:1
+
+# Default consumables
+potion=potion_of_recklessness_2
+flask=flask_of_the_shattered_sun_2
+food=harandar_celebration
+augmentation=void_touched_augment_rune
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=arcane_intellect
+actions.precombat+=/snapshot_stats
+actions.precombat+=/summon_water_elemental
+# Blizzard is only used as a precast when it is also hardcasted in the regular rotation at the given number of enemies.
+actions.precombat+=/blizzard,if=talent.frostfire_bolt&active_enemies>=(8-3*talent.freezing_winds-2*talent.freezing_rain)|!talent.frostfire_bolt&active_enemies>=(7-2*talent.freezing_winds-2*talent.freezing_rain)
+actions.precombat+=/glacial_spike
+actions.precombat+=/frostbolt
+
+# Executed every time the actor is available.
+actions=call_action_list,name=cds
+actions+=/run_action_list,name=frostfire,if=talent.frostfire_bolt
+actions+=/run_action_list,name=spellslinger
+
+# Frostfire uses potions, items and racials after Frozen Orb, Comet Storm or Glacial Spike, or together with Ray of Frost.
+actions.cds=variable,name=ff_trinket_timing,value=talent.frostfire_bolt&(fight_remains<15|prev_gcd.1.frozen_orb|prev_gcd.1.comet_storm|prev_gcd.1.glacial_spike|cooldown.ray_of_frost.charges>=1&debuff.freezing.react<12&buff.fingers_of_frost.react<2&buff.icicles.react<5&(!buff.frostfire_empowerment.react|active_enemies<=2)&(!buff.brain_freeze.react|buff.thermal_void.up))
+# Spellslinger uses potions, items and racials after Frozen Orb or together with Ray of Frost.
+actions.cds+=/variable,name=ss_trinket_timing,value=!talent.frostfire_bolt&(fight_remains<15|prev_gcd.1.frozen_orb|time>1.5&cooldown.ray_of_frost.charges>=1&debuff.freezing.react<6&!buff.fingers_of_frost.react&buff.icicles.react<=3&(!buff.brain_freeze.react|buff.thermal_void.up))
+# Haste trinkets are used after using potion (of recklessness). Crit trinkets are used before using potion. Mastery trinkets are used after using potion if Crit is your highest secondary stat, and before otherwise.
+actions.cds+=/use_item,name=nevermelting_ice_crystal,if=variable.ff_trinket_timing|variable.ss_trinket_timing
+actions.cds+=/use_item,name=freightrunners_flask,if=variable.ff_trinket_timing|variable.ss_trinket_timing
+actions.cds+=/use_item,name=vaelgors_final_stare,if=(variable.ff_trinket_timing|variable.ss_trinket_timing)&(stat.haste_rating>stat.crit_rating|stat.versatility_rating>stat.crit_rating)
+actions.cds+=/potion,if=variable.ff_trinket_timing|variable.ss_trinket_timing|fight_remains<35
+actions.cds+=/use_item,name=vaelgors_final_stare,if=variable.ff_trinket_timing|variable.ss_trinket_timing
+actions.cds+=/use_item,name=vile_vial_of_volatile_venom,if=variable.ff_trinket_timing|variable.ss_trinket_timing
+actions.cds+=/use_items
+actions.cds+=/blood_fury,if=variable.ff_trinket_timing|variable.ss_trinket_timing
+actions.cds+=/berserking,if=variable.ff_trinket_timing|variable.ss_trinket_timing
+actions.cds+=/fireblood,if=variable.ff_trinket_timing|variable.ss_trinket_timing
+actions.cds+=/ancestral_call,if=variable.ff_trinket_timing|variable.ss_trinket_timing
+# Frostfire Opener: precast Frostfire Bolt/Blizzard --> Ray of Frost --> Flurry --> Frozen Orb.
+actions.cds+=/ray_of_frost,if=talent.frostfire_bolt,interrupt_if=!talent.hand_of_frost_4&active_enemies>=2&tick_time>gcd.remains&(!talent.crystalline_refraction|talent.crystalline_refraction&buff.fingers_of_frost.react=2),interrupt_global=1,interrupt_immediate=1,line_cd=9999
+actions.cds+=/flurry,if=talent.frostfire_bolt&talent.wintertide,line_cd=9999
+actions.cds+=/frozen_orb,if=talent.frostfire_bolt,line_cd=9999
+# Spellslinger Opener: precast Frostbolt/Blizzard --> Flurry --> Frozen Orb --> Ray of Frost.
+actions.cds+=/flurry,if=!talent.frostfire_bolt&talent.wintertide,line_cd=9999
+actions.cds+=/frozen_orb,if=!talent.frostfire_bolt,line_cd=9999
+actions.cds+=/ray_of_frost,if=!talent.frostfire_bolt,line_cd=9999
+# End-Of-Fight actions and overcap protection.
+actions.cds+=/ray_of_frost,if=fight_remains<12|charges=2,interrupt_if=talent.frostfire_bolt&!talent.hand_of_frost_4&active_enemies>=2&tick_time>gcd.remains&(!talent.crystalline_refraction|talent.crystalline_refraction&buff.fingers_of_frost.react=2),interrupt_global=1,interrupt_immediate=1
+actions.cds+=/comet_storm,if=fight_remains<8
+# Externals.
+actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.power_infusion.down
+
+# These Glacial Spike conditions prevent super-human behaviour. Chaincasting 4p proccs as GS --> X --> GS --> X is reasonable, as long as the cast time/gcd of X is longer than 1 second.
+actions.frostfire=glacial_spike,if=buff.glacial_spike.react|time-buff.rapid_refreezing.last_trigger<1.5
+# In AoE, Comet Storm can quickly refill Icicles through the 2pc bonus. Cast it second-to-last after Glacial Spike, allowing time to react to a 4pc proc first.
+actions.frostfire+=/comet_storm,if=active_enemies<=2|prev_gcd.2.glacial_spike&(time-buff.rapid_refreezing.last_trigger>1.5|!set_bonus.midnight_season_2_4pc)
+actions.frostfire+=/flurry,if=buff.brain_freeze.react&buff.thermal_void.down
+actions.frostfire+=/ice_lance,if=buff.fingers_of_frost.react=2
+# Without the final Apex Talent, Ray of Frost is cast at higher priority. Against 2+ targets, cancel Ray of Frost on your next gcd. With Crystalline Refraction, wait until 2 Fingers of Frost before cancelling it.
+actions.frostfire+=/ray_of_frost,if=!talent.hand_of_frost_4,interrupt_if=active_enemies>=2&tick_time>gcd.remains&(!talent.crystalline_refraction|talent.crystalline_refraction&buff.fingers_of_frost.react=2),interrupt_global=1,interrupt_immediate=1
+actions.frostfire+=/frozen_orb
+actions.frostfire+=/blizzard,if=active_enemies>=(8-3*talent.freezing_winds-2*talent.freezing_rain)|active_enemies>=3&buff.freezing_rain.up
+# Single Finger of Frost procs are held unless Thermal Void is active. They may still get spent passively when the enemy has 12+ stacks of Freezing.
+actions.frostfire+=/ice_lance,if=buff.fingers_of_frost.react&buff.thermal_void.up
+actions.frostfire+=/ice_lance,if=debuff.freezing.stack>=12
+actions.frostfire+=/flurry,if=cooldown_react
+actions.frostfire+=/ice_nova,if=active_enemies>=5&talent.cone_of_frost&!buff.frostfire_empowerment.react&cooldown.ray_of_frost.charges>=1
+actions.frostfire+=/cone_of_cold,if=active_enemies>=5&talent.cone_of_frost&!buff.frostfire_empowerment.react&cooldown.ray_of_frost.charges>=1
+# With the final Apex Talent, spend Frostfire Empowerment in AoE before casting Ray of Frost. This builds Freezing stacks before the following Comet Storm.
+actions.frostfire+=/ray_of_frost,if=active_enemies<=2|!buff.frostfire_empowerment.react
+actions.frostfire+=/glacial_spike
+actions.frostfire+=/frostbolt
+actions.frostfire+=/call_action_list,name=movement
+
+actions.movement=any_blink,if=movement.distance>5
+actions.movement+=/blizzard,if=buff.freezing_rain.up
+actions.movement+=/ice_nova,if=talent.cone_of_frost
+actions.movement+=/cone_of_cold,if=talent.cone_of_frost
+actions.movement+=/ice_lance
+
+actions.spellslinger=comet_storm
+actions.spellslinger+=/flurry,if=buff.brain_freeze.react&buff.thermal_void.down
+actions.spellslinger+=/ice_lance,if=buff.fingers_of_frost.react=2
+actions.spellslinger+=/frozen_orb
+# These Glacial Spike conditions prevent super-human behaviour. Chaincasting 4p proccs as GS --> X --> GS --> X is reasonable, as long as the cast time/gcd of X is longer than 1 second.
+actions.spellslinger+=/glacial_spike,if=buff.glacial_spike.react|time-buff.rapid_refreezing.last_trigger<1.5
+actions.spellslinger+=/blizzard,if=active_enemies>=(5-2*talent.freezing_winds)&buff.freezing_rain.up
+actions.spellslinger+=/ice_lance,if=buff.fingers_of_frost.react
+actions.spellslinger+=/ice_lance,if=debuff.freezing.react>=6
+# This Ray of Frost optimization improves ressource overflow slightly. It is neutral in AoE.
+actions.spellslinger+=/ray_of_frost,if=buff.icicles.react<=3|active_enemies>=3
+actions.spellslinger+=/flurry,if=cooldown_react
+actions.spellslinger+=/ice_nova,if=active_enemies>=4&talent.cone_of_frost
+actions.spellslinger+=/cone_of_cold,if=active_enemies>=4&talent.cone_of_frost
+actions.spellslinger+=/blizzard,if=active_enemies>=(7-2*talent.freezing_winds-2*talent.freezing_rain)
+actions.spellslinger+=/glacial_spike
+actions.spellslinger+=/frostbolt
+actions.spellslinger+=/call_action_list,name=movement
+
+head=venomkeepers_horrific_cowl,id=271874,bonus_id=13335/13668/13846/13848,ilevel=344,gem_id=240967,enchant_id=8017
+neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13708/13848,ilevel=344,gem_id=240898/240898
+shoulders=brood_cleansers_amice,id=239031,bonus_id=12854/13440,ilevel=334,enchant_id=8001
+back=silken_voodoo_drape,id=268253,bonus_id=13335/13848,ilevel=344
+chest=primordial_robe_of_rites,id=273785,bonus_id=12854/13440,ilevel=334,enchant_id=7987
+wrists=martyrs_bindings,id=239648,bonus_id=8791/8960/12214/12384/13668/13751,ilevel=331,gem_id=240898,crafted_stats=32/36
+hands=grasps_of_the_eternal_shadow,id=268243,bonus_id=13335/13848,ilevel=344
+waist=martyrs_waistwrap,id=239649,bonus_id=8791/8960/12214/12384/13668/13751,ilevel=331,gem_id=240898,crafted_stats=32/36
+legs=downlined_breeches,id=159234,bonus_id=12854/13440,ilevel=334,enchant_id=7935
+feet=cackling_soultreads,id=268255,bonus_id=13335/13848,ilevel=344,enchant_id=7993
+finger1=vile_alchemists_band,id=268249,bonus_id=12854/13335/13668,ilevel=334,gem_id=240892,enchant_id=7967
+finger2=charged_sandstone_band,id=158366,bonus_id=4786/12854/13750,gem_id=240908,enchant_id=7967
+trinket1=wavecallers_seastone,id=270167,bonus_id=12854/13335,ilevel=334
+trinket2=gebbos_bottomless_bag,id=270164,bonus_id=12854/13335,ilevel=334
+main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13335/13848,ilevel=344,enchant_id=7981
+off_hand=frostscales_mystic_frond,id=268263,bonus_id=12854/13335,ilevel=334
+
+# Gear Summary
+# gear_ilvl=337.38
+# gear_stamina=40493
+# gear_intellect=2577
+# gear_crit_rating=1224
+# gear_haste_rating=711
+# gear_mastery_rating=1275
+# gear_leech_rating=28
+# gear_avoidance_rating=148
+# gear_armor=732
+# set_bonus=midnight_season_2_2pc=1
+# set_bonus=midnight_season_2_4pc=1

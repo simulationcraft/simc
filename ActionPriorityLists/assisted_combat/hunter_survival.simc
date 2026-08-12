@@ -14,10 +14,8 @@ actions.assisted_combat=call_pet_1,if=!pet.any.active
 actions.assisted_combat+=/takedown
 actions.assisted_combat+=/kill_command,if=buff.tip_of_the_spear.down
 actions.assisted_combat+=/boomstick,if=active_enemies>3&target.distance<=15
-actions.assisted_combat+=/flamefang_pitch,if=active_enemies>3&target.distance<=40
 actions.assisted_combat+=/wildfire_bomb
 actions.assisted_combat+=/boomstick,if=target.distance<=15
-actions.assisted_combat+=/flamefang_pitch,if=target.distance<=40
 actions.assisted_combat+=/raptor_strike,if=target.distance<=5
 actions.assisted_combat+=/kill_command,if=focus<=40
 actions.assisted_combat+=/arcane_shot

@@ -1,5 +1,5 @@
-// Embellishment data, wow build 12.0.1.66838
-static constexpr std::array<embellishment_data_t, 49> __embellishment_data { {
+// Embellishment data, wow build 12.1.0.69273
+static constexpr std::array<embellishment_data_t, 54> __embellishment_data { {
   { "Armor Spikes"                               ,    8188,  147859,  396581 },
   { "Potion Absorption Inhibitor"                ,    8175,  147812,  371700 },
   { "Alchemical Flavor Pocket"                   ,    8174,  147811,  372120 },
@@ -49,5 +49,10 @@ static constexpr std::array<embellishment_data_t, 49> __embellishment_data { {
   { "Stabilizing Gemstone Bandolier"             ,   13454,  215078, 1251905 },
   { "HU5H, Nonchalant Pup"                       ,   13556,  224964, 1259648 },
   { "B0P, Curator of Booms"                      ,   13588,  225886, 1261968 },
+  { "Snakeskin Lining"                           ,   13764,  234348, 1296550 },
+  { "Adorned Fang"                               ,   13767,  234413, 1296870 },
+  { "Polished Ammolite"                          ,   13768,  234416, 1296982 },
+  { "Coiled Snake-Eye"                           ,   13769,  234558, 1297384 },
+  { "Hunter's Ritual Stone"                      ,   13771,  234561, 1297382 },
 } };
 

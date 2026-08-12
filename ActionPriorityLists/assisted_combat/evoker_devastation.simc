@@ -16,6 +16,7 @@ actions.assisted_combat+=/eternity_surge,cooldown_allow_casting_success=1
 # (Overridden from 'buff.recall.down&target.distance<=40')
 actions.assisted_combat+=/deep_breath,if=target.distance<=40
 actions.assisted_combat+=/disintegrate,if=active_enemies>3&buff.mass_disintegrate_stacks.up
+actions.assisted_combat+=/dragonrage,if=buff.unbound_flame.up&buff.essence_burst.stack<=1
 actions.assisted_combat+=/pyre,if=active_enemies>3
 actions.assisted_combat+=/azure_strike,if=buff.azure_sweep.up
 actions.assisted_combat+=/living_flame,if=active_enemies>3&buff.burnout.up&buff.leaping_flames.up

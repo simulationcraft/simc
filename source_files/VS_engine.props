@@ -30,6 +30,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\class_modules\apl\apl_rogue.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_shaman.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_warrior.hpp" />
+		<ClInclude Include="..\engine\class_modules\apl\druid\druid.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\mage.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\warlock.hpp" />
 		<ClInclude Include="..\engine\class_modules\class_module.hpp" />
@@ -46,6 +47,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\dbc\class_spells.hpp" />
 		<ClInclude Include="..\engine\dbc\client_data.hpp" />
 		<ClInclude Include="..\engine\dbc\client_hotfix_entry.hpp" />
+		<ClInclude Include="..\engine\dbc\content_tuning.hpp" />
 		<ClInclude Include="..\engine\dbc\data_definitions.hh" />
 		<ClInclude Include="..\engine\dbc\data_enums.hh" />
 		<ClInclude Include="..\engine\dbc\dbc.hpp" />
@@ -93,7 +95,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\lib\cpp-semver\cpp-semver.hpp" />
 		<ClInclude Include="..\engine\lib\cpp-semver\parser\parser.hpp" />
 		<ClInclude Include="..\engine\lib\cpp-semver\parser\peg.hpp" />
-		<ClInclude Include="..\engine\lib\gsl-lite\gsl-lite.hpp" />
 		<ClInclude Include="..\engine\lib\rapidxml\rapidxml.hpp" />
 		<ClInclude Include="..\engine\lib\rapidxml\rapidxml_print.hpp" />
 		<ClInclude Include="..\engine\lib\tcb\span.hpp" />
@@ -162,6 +163,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\sim\proc.hpp" />
 		<ClInclude Include="..\engine\sim\proc_rng.hpp" />
 		<ClInclude Include="..\engine\sim\profileset.hpp" />
+		<ClInclude Include="..\engine\sim\profileset_control.hpp" />
 		<ClInclude Include="..\engine\sim\progress_bar.hpp" />
 		<ClInclude Include="..\engine\sim\raid_event.hpp" />
 		<ClInclude Include="..\engine\sim\reforge_plot.hpp" />
@@ -222,6 +224,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\class_modules\apl\apl_rogue.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_shaman.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_warrior.cpp" />
+		<ClCompile Include="..\engine\class_modules\apl\druid\druid.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\mage.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\warlock.cpp" />
 		<ClCompile Include="..\engine\class_modules\monk\sc_monk.cpp" />
@@ -256,6 +259,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\dbc\class_spells.cpp" />
 		<ClCompile Include="..\engine\dbc\client_data.cpp" />
 		<ClCompile Include="..\engine\dbc\client_hotfix_entry.cpp" />
+		<ClCompile Include="..\engine\dbc\content_tuning.cpp" />
 		<ClCompile Include="..\engine\dbc\embellishment_data.cpp" />
 		<ClCompile Include="..\engine\dbc\expected_stat.cpp" />
 		<ClCompile Include="..\engine\dbc\gem_data.cpp" />
@@ -351,6 +355,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\sim\proc.cpp" />
 		<ClCompile Include="..\engine\sim\proc_rng.cpp" />
 		<ClCompile Include="..\engine\sim\profileset.cpp" />
+		<ClCompile Include="..\engine\sim\profileset_control.cpp" />
 		<ClCompile Include="..\engine\sim\progress_bar.cpp" />
 		<ClCompile Include="..\engine\sim\raid_event.cpp" />
 		<ClCompile Include="..\engine\sim\reforge_plot.cpp" />

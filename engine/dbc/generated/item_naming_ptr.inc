@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 12.0.5.66741
-static constexpr std::array<item_name_description_t, 1040> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 12.1.0.69273
+static constexpr std::array<item_name_description_t, 1056> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -1036,9 +1036,25 @@ static constexpr std::array<item_name_description_t, 1040> __ptr_item_name_descr
   { 14416, "Normal Hunts"                                },
   { 14420, "Ascendant Voidforged"                        },
   { 14429, "Ritual Sites"                                },
+  { 14437, "Midnight Season 2"                           },
   { 14445, "Lost Armaments"                              },
   { 14446, "Galactic Void-Charged"                       },
+  { 14447, "Venomcursed"                                 },
   { 14448, "Housing Fixture"                             },
   { 14449, "Artisanal House"                             },
+  { 14450, "Corrosive"                                   },
+  { 14452, "Tidal Crafted"                               },
+  { 14453, "Artisanal Room"                              },
+  { 14456, "[DNT] of Zul'jarra's Advance"                },
+  { 14458, "Pinnacle Cache - Midnight Season 2"          },
+  { 14459, "Sporefused: Myth"                            },
+  { 14460, "Sporefused: Hero"                            },
+  { 14461, "Sporefused: Champion"                        },
+  { 14462, "Sporefused: Veteran"                         },
+  { 14465, "Corrosive"                                   },
+  { 14477, "Delves and War Mode"                         },
+  { 14478, "Aspirant and War Mode"                       },
+  { 14528, "Adventurer"                                  },
+  { 14530, "Midnight Season 1"                           },
 } };
 

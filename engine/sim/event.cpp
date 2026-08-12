@@ -14,8 +14,8 @@
 event_t::event_t( sim_t& s, actor_t* a )
   : _sim( s ),
     next( nullptr ),
-    time( timespan_t::zero() ),
-    reschedule_time( timespan_t::zero() ),
+    time( 0_ms ),
+    reschedule_time( no_reschedule ),
     id( 0 ),
     canceled( false ),
     recycled( false ),
@@ -48,11 +48,12 @@ void* event_t::operator new( std::size_t size, sim_t& sim )
 
 void event_t::reschedule( timespan_t delta_time )
 {
+  id = ++_sim.event_mgr.global_event_id;
   delta_time += _sim.event_mgr.current_time;
 
   if ( _sim.debug )
   {
-    if ( reschedule_time == timespan_t::zero() )
+    if ( reschedule_time == no_reschedule )
     {
       _sim.print_debug("Rescheduling event {} from {} to {}",
           *this, time, delta_time );
