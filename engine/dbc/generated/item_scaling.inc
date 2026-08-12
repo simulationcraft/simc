@@ -1,5 +1,5 @@
-// Curve points data, wow build 12.1.0.69214
-static constexpr std::array<curve_point_t, 171119> __curve_point_data { {
+// Curve points data, wow build 12.1.0.69273
+static constexpr std::array<curve_point_t, 171131> __curve_point_data { {
   {    8,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
   {    9,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
   {   11,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
@@ -171079,6 +171079,12 @@ static constexpr std::array<curve_point_t, 171119> __curve_point_data { {
   { 113092,  4,    1.50000f,  -80.00000f,    0.00000f,    0.00000f },
   { 113130,  0,    1.00000f,    1.00000f,    0.00000f,    0.00000f },
   { 113130,  1,    2.00000f,    2.00000f,    0.00000f,    0.00000f },
+  { 113137,  0,    0.00000f,    0.11230f,    0.00000f,    1.00000f },
+  { 113137,  1,    0.02182f,    1.00000f,    1.00000f,    1.01604f },
+  { 113137,  2,    0.09455f,    1.83957f,    0.00000f,    0.00000f },
+  { 113137,  3,    0.49818f,    1.97861f,    0.00000f,    0.00000f },
+  { 113137,  4,    0.96364f,    1.77540f,    0.00000f,    0.00000f },
+  { 113137,  5,    1.00000f,    0.59893f,    0.00000f,    0.00000f },
   { 113685,  0,    0.00000f,    7.53138f,    0.00000f,    0.00000f },
   { 113685,  1,    0.14544f,    0.30125f,    0.00000f,    0.00000f },
   { 113685,  2,    2.99200f,    0.00000f,    0.00000f,    0.00000f },
@@ -171111,6 +171117,12 @@ static constexpr std::array<curve_point_t, 171119> __curve_point_data { {
   { 114678,  1,    6.20200f,    0.00000f,    0.00000f,    0.00000f },
   { 114679,  0,    0.00000f,    0.00000f,    0.00000f,    0.00000f },
   { 114679,  1,    6.20200f,    0.00000f,    0.00000f,    0.00000f },
+  { 114680,  0,    0.00000f,    9.33891f,    0.00000f,    0.00000f },
+  { 114680,  1,    0.20285f,    0.10042f,    0.00000f,    0.00000f },
+  { 114680,  2,    0.69000f,    0.00000f,    0.00000f,    0.00000f },
+  { 114681,  0,    0.00000f,    9.33891f,    0.00000f,    0.00000f },
+  { 114681,  1,    0.20285f,    0.10042f,    0.00000f,    0.00000f },
+  { 114681,  2,    0.69000f,    0.00000f,    0.00000f,    0.00000f },
   { 115005,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
   { 115005,  1,    0.19636f,    0.30481f,    0.19636f,    0.30481f },
   { 115005,  2,    0.50545f,    0.10695f,    0.50545f,    0.10695f },
@@ -171121,7 +171133,7 @@ static constexpr std::array<curve_point_t, 171119> __curve_point_data { {
   { 115006,  3,    1.00000f,    0.00000f,    1.00000f,    0.00000f },
 } };
 
-// Item Scaling Config data, wow build 12.1.0.69214
+// Item Scaling Config data, wow build 12.1.0.69273
 static constexpr std::array<item_scaling_config_data_t, 416> __item_scaling_config_data { {
   {   1, 12, 70, 70, 0 },
   {   2, 13, 70, 70, 0 },
@@ -171541,7 +171553,7 @@ static constexpr std::array<item_scaling_config_data_t, 416> __item_scaling_conf
   { 485, 68, 0, 0, 2 },
 } };
 
-// Item Offset Curve data, wow build 12.1.0.69214
+// Item Offset Curve data, wow build 12.1.0.69273
 static constexpr std::array<item_offset_curve_data_t, 68> __item_offset_curve_data { {
   {  1, 6243, 0 },
   {  2, 6243, -6 },
