@@ -1211,6 +1211,7 @@ public:
   virtual double matching_gear_multiplier( attribute_e /* attr */ ) const;
   /// Player-wide school based multipliers
   virtual double composite_player_multiplier( school_e ) const;
+  virtual double composite_versus_multiplier( player_t* ) const;
   /// Persistent multipliers that are snapshot at the beginning of the spell application/execution
   virtual double composite_persistent_multiplier( school_e ) const { return 1.0; }
   virtual double composite_player_target_multiplier( player_t*, school_e school ) const;
