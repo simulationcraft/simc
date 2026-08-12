@@ -13,9 +13,9 @@ actions.precombat=snapshot_stats
 # optional variable that sends regrowth casts. Turned off by default
 actions.precombat+=/variable,name=regrowth,op=reset
 # see the 2nd rake line in aoe_builders. This determines when that line can return true
-actions.precombat+=/variable,name=dotc_rake_threshold,op=set,value=0
-actions.precombat+=/variable,name=dotc_rake_threshold,op=set,if=talent.wild_slashes&!talent.infected_wounds,value=0
-actions.precombat+=/variable,name=dotc_rake_threshold,op=set,if=!talent.wild_slashes&talent.infected_wounds,value=0
+actions.precombat+=/variable,name=dotc_rake_threshold,op=set,value=99
+actions.precombat+=/variable,name=dotc_rake_threshold,op=set,if=talent.wild_slashes&talent.merciless_claws,value=5
+actions.precombat+=/variable,name=dotc_rake_threshold,op=set,if=talent.wild_slashes&!talent.merciless_claws,value=8
 # for practicism, we give a 1s leeway (at 0% haste) from cast end until start of the fight.
 actions.precombat+=/variable,name=algethar_puzzle_box_precombat_cast,value=3,if=trinket.1.is.algethar_puzzle_box|!trinket.1.has_use_buff
 actions.precombat+=/use_item,name=algethar_puzzle_box,if=trinket.1.is.algethar_puzzle_box|!trinket.1.has_use_buff
