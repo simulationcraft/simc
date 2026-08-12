@@ -862,6 +862,7 @@ public:
   double composite_player_critical_damage_multiplier( const action_state_t*, school_e school ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
+  double composite_versus_multiplier( player_t* ) const override;
   double composite_spell_crit_chance() const override;
   double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double composite_attribute_multiplier( attribute_e ) const override;
@@ -6735,6 +6736,13 @@ double mage_t::composite_player_target_multiplier( player_t* target, school_e sc
     if ( totm->check() && totm->has_common_school( school ) )
       m *= 1.0 + totm->data().effectN( 2 ).percent();
   }
+
+  return m;
+}
+
+double mage_t::composite_versus_multiplier( player_t* target ) const
+{
+  double m = player_t::composite_versus_multiplier( target );
 
   // TODO: this still technically points to 458910's value (but the debuff is likely no longer used)
   if ( talents.molten_fury.ok() && target->health_percentage() <= talents.molten_fury->effectN( 1 ).base_value() )
