@@ -1115,6 +1115,7 @@ struct druid_t final : public parse_player_effects_t
     player_talent_t everbloom_1;  // apex
     player_talent_t everbloom_2;  // apex
     player_talent_t everbloom_3;  // apex
+    player_talent_t flash_of_clarity;
     player_talent_t flourish;
     player_talent_t germination;
     player_talent_t grove_guardians;
@@ -1134,6 +1135,7 @@ struct druid_t final : public parse_player_effects_t
     player_talent_t natures_swiftness;
     player_talent_t nurturing_dormancy;
     player_talent_t omen_of_clarity_tree;
+    player_talent_t overgrowth;
     player_talent_t passing_seasons;
     player_talent_t photosynthesis;
     player_talent_t power_of_the_archdruid;
@@ -10497,6 +10499,7 @@ void druid_t::init_spells()
   talent.everbloom_1                    = ST( "Everbloom", 1 );
   talent.everbloom_2                    = ST( "Everbloom", 2 );
   talent.everbloom_3                    = ST( "Everbloom", 3 );
+  talent.flash_of_clarity               = ST( "Flash of Clarity" );  // TODO: NYI
   talent.flourish                       = ST( "Flourish" );
   talent.germination                    = ST( "Germination" );
   talent.grove_guardians                = ST( "Grove Guardians" );  // TODO: NYI
@@ -10516,6 +10519,7 @@ void druid_t::init_spells()
   talent.natures_swiftness              = ST( "Nature's Swiftness" );
   talent.nurturing_dormancy             = ST( "Nurturing Dormancy" );  // TODO: NYI
   talent.omen_of_clarity_tree           = ST( "Omen of Clarity", DRUID_RESTORATION );
+  talent.overgrowth                     = ST( "Overgrowth" );  // TODO: NYI
   talent.passing_seasons                = ST( "Passing Seasons" );
   talent.photosynthesis                 = ST( "Photosynthesis" );
   talent.power_of_the_archdruid         = ST( "Power of the Archdruid" );  // TODO: NYI
