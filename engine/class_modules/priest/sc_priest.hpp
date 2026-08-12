@@ -1390,7 +1390,7 @@ public:
   {
     base_t::execute();
 
-    if ( priest().talents.surge_of_light.enabled() )
+    if ( !background && priest().talents.surge_of_light.enabled() )
       priest().buffs.surge_of_light->trigger();
   }
 };
@@ -1489,7 +1489,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     base_t::execute();
 
-    if ( priest().talents.surge_of_light.enabled() )
+    if ( !background && priest().talents.surge_of_light.enabled() )
       priest().buffs.surge_of_light->trigger();
   }
 };
