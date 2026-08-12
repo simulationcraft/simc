@@ -78,18 +78,17 @@ actions.SH_cleave+=/summon_darkglare
 actions.SH_cleave+=/malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd
 actions.SH_cleave+=/drain_soul,if=buff.nightfall.react>1
 actions.SH_cleave+=/shadow_bolt,if=buff.nightfall.react>1
-actions.SH_cleave+=/haunt
-actions.SH_cleave+=/seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight
-actions.SH_cleave+=/dark_harvest
-actions.SH_cleave+=/unstable_affliction,cycle_targets=1,if=!ticking&prev.dark_harvest
-actions.SH_cleave+=/seed_of_corruption,if=talent.sow_the_seeds
-actions.SH_cleave+=/unstable_affliction
-actions.SH_cleave+=/agony,target_if=refreshable
-actions.SH_cleave+=/summon_darkglare
-actions.SH_cleave+=/malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd
-actions.SH_cleave+=/drain_soul,if=buff.nightfall.react>1
-actions.SH_cleave+=/shadow_bolt,if=buff.nightfall.react>1
 
+actions.SH_st=haunt
+actions.SH_st+=/agony,if=remains<3
+actions.SH_st+=/corruption,if=remains<3
+actions.SH_st+=/dark_harvest,if=soul_shard<3&execute_time<(dot.agony.remains<?dot.corruption.remains)&(!talent.cascading_calamity|buff.cascading_calamity.remains)&(!set_bonus.midnight_season_2_4pc|buff.unstable_empowerment.remains)
+actions.SH_st+=/summon_darkglare,if=cooldown.dark_harvest.remains
+actions.SH_st+=/malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd
+actions.SH_st+=/drain_soul,if=buff.nightfall.react>1
+actions.SH_st+=/shadow_bolt,if=buff.nightfall.react>1
+actions.SH_st+=/seed_of_corruption,if=set_bonus.midnight_season_2_4pc&talent.siphon_life&buff.shard_instability.react
+actions.SH_st+=/unstable_affliction,if=soul_shard|buff.shard_instability.react
 
 actions.end_of_fight=unstable_affliction,if=soul_shard&fight_remains<8&active_enemies<3
 actions.end_of_fight+=/seed_of_corruption,if=soul_shard&fight_remains<8&active_enemies>2
