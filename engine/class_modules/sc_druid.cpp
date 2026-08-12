@@ -6806,7 +6806,7 @@ void druid_action_t<Base>::init()
 
   // some actions have both direct & periodic damage effects. we don't need to update direct multipliers.
   if ( ab::does_periodic_damage() && ab::does_direct_damage() )
-    ab::update_flags &= ~( STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_TGT_MITG_DA | STATE_TGT_ARMOR );
+    ab::update_flags &= ~( STATE_MUL_SPELL_DA | STATE_TGT_MUL_DA | STATE_TGT_MITG_DA | STATE_TGT_ARMOR );
 }
 
 namespace spells
