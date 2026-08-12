@@ -1809,12 +1809,15 @@ struct soul_fragment_t
   void set_position()
   {
     // Base position is up to 15 yards to the front right or front left for Vengeance, 9.5 yards for Havoc
+    // 08/12/2026: Devourer base distance appears to be slightly larger than Havoc, needs further testing but
+    // distance=5.6066 results in similar automatic soul pickups to ingame
+
     double distance = 0;
     double dist;
     switch ( dh->specialization() )
     {
       case DEMON_HUNTER_DEVOURER:
-        distance = 4.6066;
+        distance = 5.6066;
         break;
       case DEMON_HUNTER_HAVOC:
         distance = 4.6066;
