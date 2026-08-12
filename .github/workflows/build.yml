@@ -191,7 +191,7 @@ jobs:
 
       - name: Install deps
         run: |
-          winget install -e --id Ccache.Ccache
+          winget install -e --id Ccache.Ccache -s winget
 
       - name: Generate project files
         run: |
