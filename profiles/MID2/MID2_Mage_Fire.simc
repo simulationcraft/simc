@@ -10,7 +10,7 @@ omnium_talents=136822:1/136816:1/136817:1/136820:1/136814:1
 
 # Default consumables
 potion=lights_potential_2
-flask=flask_of_the_blood_knights_2
+flask=flask_of_thalassian_resistance_2
 food=silvermoon_parade
 augmentation=void_touched_augment_rune
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
@@ -103,6 +103,8 @@ actions.ff_filler+=/call_action_list,name=fireblast
 actions.fireblast=fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&cooldown.fire_blast.charges_fractional>=2.9&talent.firestarter
 # During Combustion/Hyperthermia, spend Fire Blasts with Heating Up.
 actions.fireblast+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(buff.combustion.up|buff.hyperthermia.up)&(hot_streak_spells_in_flight+buff.heating_up.react=1)&gcd.remains<gcd.max
+# Cast Fire Blast during a hardcasted Pyroblast with Pyroclasm. Doing this can result in casting Fire Blast twice during one cast.
+actions.fireblast+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&action.pyroblast.executing&buff.pyroclasm.up&gcd.remains<gcd.max
 # During non-execute filler, use Fire Blast with Heating Up while hardcasting Fireball/Frostfire Bolt/Pyroblast/Flamestrike.
 actions.fireblast+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=cooldown_react&!buff.hot_streak.react&(action.fireball.executing&action.fireball.execute_remains>0.1|buff.pyroclasm.react&action.pyroblast.executing&action.pyroblast.execute_remains>0.1|action.flamestrike.executing&action.flamestrike.execute_remains>0.1)&(!scorch_execute.active|!talent.scorch)&buff.heating_up.react&(hot_streak_spells_in_flight+buff.heating_up.react=1)&gcd.remains<gcd.max
 # During execute, spend Fire Blasts while casting Scorch, or consuming Pyroclasm with 12.1 2pc, if you don't have Heating Up.
