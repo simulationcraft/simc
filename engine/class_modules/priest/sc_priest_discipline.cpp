@@ -41,6 +41,8 @@ struct power_word_radiance_t final : public priest_heal_t
     {
       priest().buffs.harsh_discipline->trigger();
     }
+
+    priest().buffs.evangelism->decrement();
   }
 
   void impact( action_state_t* s ) override
