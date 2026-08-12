@@ -191,7 +191,7 @@ jobs:
 
       - name: Install deps
         run: |
-          choco install -y ccache
+          winget install -e --id Ccache.Ccache
 
       - name: Generate project files
         run: |
