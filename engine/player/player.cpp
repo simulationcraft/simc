@@ -5563,7 +5563,7 @@ double player_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double player_t::composite_player_target_multiplier( player_t* t, school_e /* school */ ) const
+double player_t::composite_versus_multiplier( player_t* t ) const
 {
   double m = 1.0;
 
@@ -5579,6 +5579,13 @@ double player_t::composite_player_target_multiplier( player_t* t, school_e /* sc
       m *= 1.0 + std::get<2>( entry );
     }
   }
+
+  return m;
+}
+
+double player_t::composite_player_target_multiplier( player_t* t, school_e /* school */ ) const
+{
+  double m = 1.0;
 
   auto td = find_target_data( t );
   if ( td )

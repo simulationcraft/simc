@@ -102,6 +102,7 @@ void action_state_t::copy_state( const action_state_t* o )
   ta_multiplier         = o->ta_multiplier;
   rolling_ta_multiplier = o->rolling_ta_multiplier;
   player_multiplier     = o->player_multiplier;
+  versus_multiplier     = o->versus_multiplier;
   persistent_multiplier = o->persistent_multiplier;
   pet_multiplier        = o->pet_multiplier;
 
@@ -142,6 +143,7 @@ action_state_t::action_state_t( action_t* a, player_t* t )
     ta_multiplier( 1.0 ),
     rolling_ta_multiplier( 1.0 ),
     player_multiplier( 1.0 ),
+    versus_multiplier( 1.0 ),
     persistent_multiplier( 1.0 ),
     pet_multiplier( 1.0 ),
     target_da_multiplier( 1.0 ),
@@ -220,6 +222,7 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << " ta_mul=" << ta_multiplier;
   s << " rolling_ta_mul=" << rolling_ta_multiplier;
   s << " ply_mul=" << player_multiplier;
+  s << " vs_mul=" << versus_multiplier;
   s << " per_mul=" << persistent_multiplier;
   if ( action->player->is_pet() )
   {
@@ -307,6 +310,7 @@ std::string action_state_t::flags_to_str( unsigned flags )
   concat_flag_str( str, "MUL_DA", STATE_MUL_SPELL_DA );
   concat_flag_str( str, "MUL_TA", STATE_MUL_SPELL_TA );
   concat_flag_str( str, "MUL_PLY", STATE_MUL_PLAYER_DAM );
+  concat_flag_str( str, "MUL_VS", STATE_MUL_VERSUS );
   concat_flag_str( str, "MUL_PER", STATE_MUL_PERSISTENT );
   concat_flag_str( str, "MUL_PET", STATE_MUL_PET );
 

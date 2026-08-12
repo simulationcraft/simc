@@ -961,6 +961,9 @@ public:
   // Multiplier for Rolling Periodic DoTs
   virtual double composite_rolling_ta_multiplier( const action_state_t* ) const;
 
+  /// Multiplier for "versus" effects (e.g. extra damage vs creature type)
+  virtual double composite_versus_multiplier( player_t* ) const;
+
   /// Persistent modifiers that are snapshot at the start of the spell cast
   virtual double composite_persistent_multiplier( const action_state_t* ) const;
 

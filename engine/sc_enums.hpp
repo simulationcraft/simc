@@ -1284,40 +1284,38 @@ enum power_e
 // New stuff
 enum snapshot_state_e
 {
-  STATE_HASTE          = 0x000001,
-  STATE_CRIT           = 0x000002,
-  STATE_AP             = 0x000004,
-  STATE_SP             = 0x000008,
+  STATE_HASTE          = 0x00000001,
+  STATE_CRIT           = 0x00000002,
+  STATE_AP             = 0x00000004,
+  STATE_SP             = 0x00000008,
 
-  STATE_MUL_SPELL_DA   = 0x000010,  // Add Percent Modifier (108): Spell Direct Amount (0) list-based multiplier
-  STATE_MUL_SPELL_TA   = 0x000020,  // Add Percent Modifier (108): Spell Periodic Amount (22) list-based multiplier
-  STATE_VERSATILITY    = 0x000040,
-  STATE_MUL_PERSISTENT = 0x000080,  // Persistent modifier for the few abilities that snapshot
+  STATE_MUL_SPELL_DA   = 0x00000010,  // Add Percent Modifier (108): Spell Direct Amount (0) list-based multiplier
+  STATE_MUL_SPELL_TA   = 0x00000020,  // Add Percent Modifier (108): Spell Periodic Amount (22) list-based multiplier
+  STATE_VERSATILITY    = 0x00000040,
+  STATE_MUL_PERSISTENT = 0x00000080,  // Persistent modifier for the few abilities that snapshot
 
-  STATE_TGT_CRIT       = 0x000100,
-  STATE_TGT_MUL_DA     = 0x000200,
-  STATE_TGT_MUL_TA     = 0x000400,
+  STATE_TGT_CRIT       = 0x00000100,
+  STATE_TGT_MUL_DA     = 0x00000200,
+  STATE_TGT_MUL_TA     = 0x00000400,
 
-  STATE_MUL_PLAYER_DAM = 0x000800,  // Modify Damage Done% (79) school-based player-wide multiplier
-
-  STATE_MUL_DA         = STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM,
-  STATE_MUL_TA         = STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM,
+  STATE_MUL_PLAYER_DAM = 0x00000800,  // Modify Damage Done% (79) school-based player-wide multiplier
 
   // User-defined state flags
-  STATE_USER_1         = 0x001000,
-  STATE_USER_2         = 0x002000,
-  STATE_USER_3         = 0x004000,
-  STATE_USER_4         = 0x008000,
+  STATE_USER_1         = 0x00001000,
+  STATE_USER_2         = 0x00002000,
+  STATE_USER_3         = 0x00004000,
+  STATE_USER_4         = 0x00008000,
 
-  STATE_TGT_MITG_DA    = 0x010000,
-  STATE_TGT_MITG_TA    = 0x020000,
-  STATE_TGT_ARMOR      = 0x040000,
+  STATE_TGT_MITG_DA    = 0x00010000,
+  STATE_TGT_MITG_TA    = 0x00020000,
+  STATE_TGT_ARMOR      = 0x00040000,
 
   /// Multiplier from the owner to pet damage
-  STATE_MUL_PET        = 0x100000,
-  STATE_TGT_MUL_PET    = 0x200000,
+  STATE_MUL_PET        = 0x00100000,
+  STATE_TGT_MUL_PET    = 0x00200000,
 
-  STATE_ROLLING_TA     = 0x400000,
+  STATE_ROLLING_TA     = 0x00400000,
+  STATE_MUL_VERSUS     = 0x00800000,  // Modify Damage Done% vs Race (168) and Modify Damage Done Against Target With Aura (303)
 
   // User-defined target-specific state flags
   STATE_TGT_USER_1     = 0x10000000,
@@ -1325,16 +1323,20 @@ enum snapshot_state_e
   STATE_TGT_USER_3     = 0x40000000,
   STATE_TGT_USER_4     = 0x80000000,
 
+  STATE_MUL_DA         = STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM,
+  STATE_MUL_TA         = STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM,
+
   /**
    * No multiplier helper, use in action_t::init() (after parent init) by issuing snapshot_flags &= STATE_NO_MULTIPLIER
    * (and/or update_flags &= STATE_NO_MULTIPLIER if a dot). This disables all multipliers, including versatility, and
    * any/all persistent multipliers the action would use. */
   STATE_NO_MULTIPLIER  = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA |
-                            STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_MUL_PET | STATE_TGT_MUL_PET ),
+                            STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_MUL_PET | STATE_TGT_MUL_PET | STATE_MUL_VERSUS ),
 
   /// Target-specific state variables, excluding the pet damage multiplier
   STATE_TARGET_NO_PET  = ( STATE_TGT_CRIT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_TGT_MITG_DA |
-                           STATE_TGT_MITG_TA | STATE_TGT_USER_1 | STATE_TGT_USER_2 | STATE_TGT_USER_3 | STATE_TGT_USER_4 ),
+                           STATE_TGT_MITG_TA | STATE_TGT_USER_1 | STATE_TGT_USER_2 | STATE_TGT_USER_3 | STATE_TGT_USER_4 |
+                           STATE_MUL_VERSUS ),
 
   /// Target-specific state variables
   STATE_TARGET         = STATE_TARGET_NO_PET | STATE_TGT_MUL_PET

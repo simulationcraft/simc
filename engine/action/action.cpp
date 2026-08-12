@@ -2730,19 +2730,19 @@ void action_t::init()
 
   if ( does_periodic_damage() )
   {
-    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_TGT_MITG_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    snapshot_flags |= STATE_MUL_TA | STATE_MUL_VERSUS | STATE_TGT_MUL_TA | STATE_TGT_MITG_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
   }
 
   if ( does_direct_damage() )
   {
-    snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_TGT_MITG_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    snapshot_flags |= STATE_MUL_DA | STATE_MUL_VERSUS | STATE_TGT_MUL_DA | STATE_TGT_MITG_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
     // Because schools can change during runtime, armor is flagged and not snapshot if determined to be non-physical
     if ( !ignores_armor )
       snapshot_flags |= STATE_TGT_ARMOR;
   }
 
-  if ( player->is_pet() && ( snapshot_flags & ( STATE_MUL_DA | STATE_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA |
+  if ( player->is_pet() && ( snapshot_flags & ( STATE_MUL_DA | STATE_MUL_TA | STATE_MUL_VERSUS | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA |
                                                 STATE_MUL_PERSISTENT | STATE_VERSATILITY ) ) )
   {
     snapshot_flags |= STATE_MUL_PET | STATE_TGT_MUL_PET;
@@ -2751,7 +2751,7 @@ void action_t::init()
   if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) ||
        data().flags( spell_attribute::SX_DISABLE_PLAYER_HEALING_MULT ) )
   {
-    snapshot_flags &= ~( STATE_VERSATILITY | STATE_MUL_PLAYER_DAM | STATE_MUL_PET );
+    snapshot_flags &= ~( STATE_VERSATILITY | STATE_MUL_PLAYER_DAM | STATE_MUL_VERSUS | STATE_MUL_PET );
   }
 
   if ( data().flags( spell_attribute::SX_DISABLE_TARGET_MULT ) )
@@ -2802,7 +2802,7 @@ void action_t::init()
   {
     if ( is_periodic_damage_effect( eff ) && eff.flags( spelleffect_attribute::EX_COMPUTE_ON_CAST ) )
     {
-      update_flags &= ~( STATE_AP | STATE_SP | STATE_MUL_TA | STATE_VERSATILITY );
+      update_flags &= ~( STATE_AP | STATE_SP | STATE_MUL_TA | STATE_MUL_VERSUS | STATE_VERSATILITY );
       break;
     }
   }
@@ -4341,6 +4341,9 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
   if ( flags & STATE_MUL_PLAYER_DAM )
     state->player_multiplier = composite_player_multiplier( state );
 
+  if ( flags & STATE_MUL_VERSUS )
+    state->versus_multiplier = composite_versus_multiplier( state->target );
+
   if ( flags & STATE_MUL_PERSISTENT )
     state->persistent_multiplier = composite_persistent_multiplier( state );
 
@@ -5000,6 +5003,11 @@ double action_t::composite_rolling_ta_multiplier( const action_state_t* s ) cons
   }
 
   return m;
+}
+
+double action_t::composite_versus_multiplier( player_t* t ) const
+{
+  return player->composite_versus_multiplier( t );
 }
 
 /// Persistent modifiers that are snapshot at the start of the spell cast
