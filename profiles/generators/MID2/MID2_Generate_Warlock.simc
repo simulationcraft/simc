@@ -113,7 +113,7 @@ trinket2=vile_vial_of_volatile_venom,id=273796,bonus_id=12854/13662
 main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=40/13335/13848,enchant_id=7981,content_tuning=883
 off_hand=nocuous_focal_fang,id=273779,bonus_id=12854/13662
 
-save=MID2_Warlock_Demonology.simc
+save=MID2_Warlock_Demonology_Diabolist.simc
 
 warlock=MID2_Warlock_Destruction_Diabolist
 level=90
