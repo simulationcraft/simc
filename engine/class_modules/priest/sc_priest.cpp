@@ -4165,6 +4165,7 @@ void priest_t::create_options()
   add_option(
       opt_float( "priest.archon_halo_outgoing_hit_chance", options.archon_halo_outgoing_hit_chance, 0.0, 1.0 ) );
   add_option( opt_float( "priest.archon_halo_return_hit_chance", options.archon_halo_return_hit_chance, 0.0, 1.0 ) );
+  add_option( opt_bool( "priest.twist_of_fate_from_healing", options.twist_of_fate_from_healing ) );  
 }
 
 std::string priest_t::create_profile( save_e type )

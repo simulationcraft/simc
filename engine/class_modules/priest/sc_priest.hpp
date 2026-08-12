@@ -914,6 +914,9 @@ public:
     double archon_halo_outgoing_hit_chance = 0.5;
     // Chance for returning Halo damage pulses to hit (Divine Halo / Archon).
     double archon_halo_return_hit_chance = 0.5;
+
+    // Should healing a target below the threshold grant Twist of Fate?
+    bool twist_of_fate_from_healing = true;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -1472,7 +1475,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     if ( s->result_amount > 0 )
     {
       // TODO: Use proper base_value() from talent struct when fixed
-      if ( priest().talents.twist_of_fate.enabled() &&
+      if ( priest().talents.twist_of_fate.enabled() && priest().options.twist_of_fate_from_healing &&
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
@@ -1545,7 +1548,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
       mul *= 1 + p().talents.discipline.atonement->effectN( 3 ).percent();
 
     if ( p().talents.discipline.abyssal_reverie.enabled() &&
-         ( dbc::get_school_mask( s->action->school ) & SCHOOL_SHADOW ) != SCHOOL_SHADOW )
+         ( dbc::get_school_mask( s->action->school ) & SCHOOL_MASK_SHADOW ) == SCHOOL_MASK_SHADOW )
       mul *= 1 + p().talents.discipline.abyssal_reverie->effectN( 1 ).percent();
 
     if ( p().talents.voidweaver.voidheart.enabled() && p().buffs.voidheart->check() )
