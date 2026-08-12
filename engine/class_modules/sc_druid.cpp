@@ -5105,7 +5105,9 @@ public:
     consume_rage_after_the_wildfire( BASE::last_resource_cost );
     consume_rage_memory_of_ysera( BASE::last_resource_cost );
     consume_rage_ursocs_guidance( BASE::last_resource_cost );
-    consume_rage_wild_guardian( wg_pct );
+
+    if ( !p_->buff.answered_calling_summon->check() )
+      consume_rage_wild_guardian( wg_pct );
   }
 };
 
@@ -5662,12 +5664,8 @@ struct maul_base_t : public trigger_vicious_brambles_t<
 
     base_t::execute();
 
-    if ( p()->buff.dream_conduit->check() )
-    {
-      // technically can have 2 stacks
-      p()->buff.dream_conduit->decrement();
+    if ( p()->buff.dream_conduit->consume( this ) )
       consume_rage_wild_guardian( 1.0 );
-    }
   }
 
   void consume_resource() override
@@ -11354,7 +11352,8 @@ void druid_t::create_buffs()
     this, "celestial_might", find_trigger( sets->set( DRUID_GUARDIAN, MID1, B4 ) ).trigger() );
 
   buff.dream_conduit = make_fallback( talent.wild_guardian_3.ok(),
-    this, "dream_conduit", find_trigger( spec.wild_guardian_action ).trigger() );
+    this, "dream_conduit", find_trigger( spec.wild_guardian_action ).trigger() )
+      ->set_consume_all_stacks( false );
 
   buff.dream_guide =
     make_fallback( talent.dream_guide.ok(), this, "dream_guide", find_trigger( talent.dream_guide ).trigger() )
