@@ -1911,8 +1911,9 @@ public:
                                                     ( secondary_trigger_type != secondary_trigger::COUP_DE_GRACE ||
                                                       ab::data().id() == p()->spell.coup_de_grace_damage_3->id() ) ),
                            cold_blood_consumed_proc, 1_ms );
-    register_consume_buff( p()->buffs.unshakeable_drive, p()->buffs.unshakeable_drive->is_affecting( &ab::data() ) || affected_by.unshakeable_drive_2,
-                           unshakeable_drive_consumed_proc, 0_ms, true, true );
+    register_consume_buff( p()->buffs.unshakeable_drive, ( p()->buffs.unshakeable_drive->is_affecting( &ab::data() ) ||
+                                                           affected_by.unshakeable_drive_2 || ab::data().id() == p()->spec.mutilate->id() ),
+                           unshakeable_drive_consumed_proc, 201_ms, false, true ); // 2026-08-11 -- Delayed for Shadow Clone attacks
     register_consume_buff( p()->buffs.silent_storm, p()->buffs.silent_storm->is_affecting_crit_chance( &ab::data() ), nullptr, 1_ms ); // MIDNIGHT TOCHECK Shadow Clone timing
     register_consume_buff( p()->buffs.symbolic_victory, p()->buffs.symbolic_victory->is_affecting( &ab::data() ),
                            nullptr, p()->bugs ? 0_ms : 1_ms, false, true ); // 2024-08-12 -- Consumed immediatey, does not work with Shadowy Finishers
