@@ -1870,9 +1870,14 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
     // TODO: confirm truncation happens on final amount, and not per stack amount
     double buff_stat_stack_amount( const buff_stat_t& stat, int s ) const override
     {
-      double stack = s <= cap ? s : cap + ( s - cap ) * cap_mul;
+      int under_cap = std::min( s, cap );
+      int over_cap = s - under_cap;
 
-      return stat_buff_t::buff_stat_stack_amount( stat, stack );
+      double amount = stat_buff_t::buff_stat_stack_amount( stat, under_cap );
+      if ( over_cap > 0 )
+        amount += stat_buff_t::buff_stat_stack_amount( stat, over_cap ) * cap_mul;
+
+      return amount;
     }
   };
 

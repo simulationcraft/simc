@@ -1275,7 +1275,7 @@ void hunters_ritual_stone( special_effect_t& effect )
     {
     }
 
-    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
       rng().range( buffs )->trigger();
     }

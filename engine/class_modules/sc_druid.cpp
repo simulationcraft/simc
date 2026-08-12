@@ -8955,7 +8955,7 @@ struct wild_mushroom_t final : public druid_spell_t
       auto spell_targets = damage->create_expression( "spell_targets" );
 
       return make_fn_expr( name, [ this, spell_targets = std::move( spell_targets ) ] {
-        return damage->ap_gain( spell_targets->evaluate() );
+        return damage->ap_gain( as<int>( spell_targets->evaluate() ) );
       } );
     }
 
