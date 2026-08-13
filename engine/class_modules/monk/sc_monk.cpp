@@ -3987,7 +3987,8 @@ struct zenith_t : public monk_spell_t
 
   void execute() override
   {
-    p()->buff.heart_of_the_jade_serpent_yulons_avatar->trigger();
+    p()->buff.heart_of_the_jade_serpent_yulons_avatar->trigger(
+        p()->talent.conduit_of_the_celestials.yulons_avatar->effectN( 1 ).time_value() );
 
     monk_spell_t::execute();
 
