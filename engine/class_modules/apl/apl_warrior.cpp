@@ -285,7 +285,7 @@ void arms( player_t* p )
   slayer_execute->add_action( "colossus_smash" );
   slayer_execute->add_action( "heroic_strike" );
   slayer_execute->add_action( "bladestorm,if=debuff.colossus_smash.up|cooldown.colossus_smash.remains>25|buff.avatar.up|buff.executioners_precision.stack=2" );
-  slayer_execute->add_action( "mortal_strike,if=buff.executioners_precision.stack=2&(dot.rend.remains<2|buff.martial_prowess.stack=3)" );
+  slayer_execute->add_action( "mortal_strike,if=buff.executioners_precision.stack=2" );
   slayer_execute->add_action( "overpower,if=buff.opportunist.stack=2&talent.opportunist" );
   slayer_execute->add_action( "execute,if=buff.sudden_death.up&buff.executioner.stack>0" );
   slayer_execute->add_action( "execute,if=rage>40" );
