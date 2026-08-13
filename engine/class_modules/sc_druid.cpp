@@ -3824,8 +3824,10 @@ public:
       p()->resource_gain( RESOURCE_ENERGY, cp * sotf_energy, sotf_gain );
 
     // all finishers count their effective combo points, including free finishers (apex, convoke) at max
-    if ( halazzis_fury_add > 0_ms && halazzis_fury_icd->up() )
+    if ( halazzis_fury_add > 0_ms && p()->buff.b_inc_cat->check() && halazzis_fury_icd->up() )
+    {
       p()->halazzis_fury_duration += halazzis_fury_add * cp;
+    }
 
     trigger_with_chance_per_cp( p()->buff.frantic_momentum, cp );
     trigger_with_chance_per_cp( p()->buff.predatory_swiftness, cp );
