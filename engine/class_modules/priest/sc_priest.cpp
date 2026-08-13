@@ -2235,7 +2235,6 @@ struct atonement_t final : public priest_heal_t
     aoe       = -1;
     may_dodge = may_parry = may_block = harmful = false;
     background                                  = true;
-    base_crit_bonus                             = 0.0;
     disc_mastery                                = true;
     divine_aegis                                = false;
 
@@ -4253,7 +4252,7 @@ void priest_t::trigger_atonement( action_state_t* s, double mul )
   if ( s->result_amount <= 0 )
     return;
 
-  auto r = s->result_amount;
+  auto r = s->result_raw;
 
   r *= mul;
 
