@@ -1338,7 +1338,7 @@ public:
   void set_out_of_range( timespan_t duration );
   void adjust_movement();
   double calculate_expected_max_health() const;
-  unsigned consume_soul_fragments( soul_fragment = soul_fragment::ANY, bool instant = true,
+  unsigned consume_soul_fragments( soul_fragment = soul_fragment::ANY, bool instant = false,
                                    unsigned max = MAX_SOUL_FRAGMENTS );
   unsigned consume_nearby_soul_fragments( soul_fragment = soul_fragment::ANY );
   unsigned get_active_soul_fragments( soul_fragment = soul_fragment::ANY ) const;
@@ -1740,7 +1740,8 @@ struct soul_fragment_t
   timespan_t get_travel_time( bool activation = false ) const
   {
     double velocity = dh->spec.consume_soul->missile_speed();
-    if ( ( activation && consume_on_activation ) || velocity == 0 )
+
+    if ( velocity == 0 )
       return timespan_t::zero();
 
     if ( activation )
@@ -5367,6 +5368,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
 
     // Soul fragments consumed are capped for Spirit Bomb
+    // TOCHECK: Do the souls instantly consume?
     const int fragments_consumed = dh()->consume_soul_fragments( soul_fragment::ANY, true, max_fragments_consumed );
     if ( fragments_consumed > 0 )
     {
@@ -8186,6 +8188,7 @@ struct soul_cleave_t
     heal->execute_on_target( player );
 
     // Soul fragments consumed are capped for Soul Cleave
+    // TOCHECK: Do the souls instantly consume?
     const int fragments_consumed = dh()->consume_soul_fragments( soul_fragment::ANY, true, max_fragments_consumed );
     damage->set_target( target );
     action_state_t* damage_state = damage->get_state();
@@ -12367,7 +12370,7 @@ unsigned demon_hunter_t::consume_nearby_soul_fragments( soul_fragment type )
   }
 
   event_t::cancel( soul_fragment_pick_up );
-  return demon_hunter_t::consume_soul_fragments( type, true, soul_fragments_to_consume );
+  return demon_hunter_t::consume_soul_fragments( type, false, soul_fragments_to_consume );
 }
 
 // demon_hunter_t::get_active_soul_fragments ================================
@@ -12500,10 +12503,10 @@ void demon_hunter_t::activate_soul_fragment( soul_fragment_t* frag )
 {
   buff.soul_fragments->trigger();
 
-  // If we spawn a fragment with this flag, instantly consume it
+  // If we spawn a fragment with this flag, consume it once it is active
   if ( frag->consume_on_activation )
   {
-    frag->consume( true );
+    frag->consume();
     return;
   }
 
