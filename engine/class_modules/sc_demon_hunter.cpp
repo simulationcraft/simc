@@ -1106,6 +1106,7 @@ public:
     proc_t* soul_fragment_from_reapers_toll;
     proc_t* soul_fragment_from_void_metamorphosis;
     proc_t* soul_fragment_from_entropy;
+    proc_t* soul_fragment_auto_pickup;
     std::unordered_map<std::string, proc_t*> shattered_souls;
 
     // Havoc
@@ -1707,6 +1708,15 @@ struct soul_fragment_t
 
       frag->activate   = nullptr;
       frag->expiration = make_event<fragment_expiration_t>( sim(), frag );
+
+      // Devourer souls automatically get picked up if they activate inside the pickup range
+      if ( ( frag->dh->specialization() == DEMON_HUNTER_DEVOURER ) && ( frag->get_distance( frag->dh ) <= 4.0 ) )
+      {
+        frag->consume_on_activation = true;
+
+        frag->dh->proc.soul_fragment_auto_pickup->occur();
+      }
+
       frag->dh->activate_soul_fragment( frag );
     }
   };
@@ -1805,12 +1815,15 @@ struct soul_fragment_t
   void set_position()
   {
     // Base position is up to 15 yards to the front right or front left for Vengeance, 9.5 yards for Havoc
+    // 08/12/2026: Devourer base distance appears to be slightly larger than Havoc, needs further testing but
+    // distance=5.6066 results in similar automatic soul pickups to ingame
+
     double distance = 0;
     double dist;
     switch ( dh->specialization() )
     {
       case DEMON_HUNTER_DEVOURER:
-        distance = 4.6066;
+        distance = 5.6066;
         break;
       case DEMON_HUNTER_HAVOC:
         distance = 4.6066;
@@ -10568,6 +10581,7 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_from_reapers_toll       = get_proc( "Soul Fragment from Reaper's Toll" );
   proc.soul_fragment_from_void_metamorphosis = get_proc( "Soul Fragment from Void Metamorphosis" );
   proc.soul_fragment_from_entropy            = get_proc( "Soul Fragment from Entropy" );
+  proc.soul_fragment_auto_pickup             = get_proc( "Soul Fragment Auto Pickup" );
 
   // Havoc
   proc.soul_fragment_from_demonic_appetite = get_proc( "Soul Fragment from Demonic Appetite" );
@@ -12954,6 +12968,7 @@ public:
         p.proc.soul_fragment_from_reapers_toll,
         p.proc.soul_fragment_from_void_metamorphosis,
         p.proc.soul_fragment_from_entropy,
+        p.proc.soul_fragment_auto_pickup,
 
         // havoc
         p.proc.soul_fragment_from_demonic_appetite,
