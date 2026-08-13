@@ -1545,11 +1545,15 @@ struct priest_spell_t : public priest_action_t<spell_t>
     double mul = p().talents.discipline.atonement->effectN( 1 ).percent();
 
     if ( !p().options.discipline_in_raid )
-      mul *= 1 + p().talents.discipline.atonement->effectN( 3 ).percent();
+      mul *= 1.0 + p().talents.discipline.atonement->effectN( 3 ).percent();
 
     if ( p().talents.discipline.abyssal_reverie.enabled() &&
          ( dbc::get_school_mask( s->action->school ) & SCHOOL_MASK_SHADOW ) == SCHOOL_MASK_SHADOW )
-      mul *= 1 + p().talents.discipline.abyssal_reverie->effectN( 1 ).percent();
+      mul *= 1.0 + p().talents.discipline.abyssal_reverie->effectN( 1 ).percent();
+
+    if ( p().talents.oracle.prophets_insight.enabled() &&
+         ( dbc::get_school_mask( s->action->school ) & SCHOOL_MASK_HOLY ) == SCHOOL_MASK_HOLY )
+      mul *= 1.0 + p().talents.oracle.prophets_insight->effectN( 4 ).percent();
 
     if ( p().talents.voidweaver.voidheart.enabled() && p().buffs.voidheart->check() )
       mul *= 1.0 + p().talents.voidweaver.voidheart->effectN( 2 ).percent();

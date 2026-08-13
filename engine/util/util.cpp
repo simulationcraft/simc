@@ -1849,6 +1849,7 @@ const char* util::scale_metric_type_string( scale_metric_e sm )
     case SCALE_METRIC_DEATHS:    return "Deaths";
     case SCALE_METRIC_TIME:      return "Fight Length";
     case SCALE_METRIC_RAID_DPS:  return "Raid Damage per Second";
+    case SCALE_METRIC_DHAPS:     return "Damage/Healing/Absorb per Second";
     default:                     return "Unknown";
   }
 }
@@ -1872,6 +1873,7 @@ const char* util::scale_metric_type_abbrev( scale_metric_e sm )
     case SCALE_METRIC_DEATHS:    return "deaths";
     case SCALE_METRIC_TIME:      return "time";
     case SCALE_METRIC_RAID_DPS:  return "raid_dps";
+    case SCALE_METRIC_DHAPS:     return "dhaps";
     default:                     return "unknown";
   }
 }

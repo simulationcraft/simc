@@ -282,7 +282,7 @@ protected:
     {
       double mul = priest_spell_t::composite_atonement_multiplier( s );
 
-      if ( p().talents.voidweaver.void_infusion.enabled() )
+      if ( p().talents.voidweaver.void_infusion.enabled() && p().buffs.entropic_rift->check() )
         mul *= 1 + p().talents.voidweaver.void_infusion->effectN( 2 ).percent();
 
       return mul;
@@ -308,11 +308,65 @@ protected:
       {
         priest().buffs.holy_ray->trigger();
       }
+
+      if ( priest().talents.discipline.weal_and_woe.enabled() )
+      {
+        priest().buffs.weal_and_woe->trigger();
+      }
+    }
+  };
+
+  struct penance_heal_t : public priest_heal_t
+  {
+    // TODO: implement contrition
+    penance_heal_t( priest_t& p, util::string_view n, const spell_data_t* s ) : priest_heal_t( n, p, s )
+    {
+      background = dual = direct_tick = tick_may_crit = may_crit = true;
+    }
+
+    action_state_t* new_state() override
+    {
+      return new state_t( this, target );
+    }
+
+    state_t* cast_state( action_state_t* s )
+    {
+      return static_cast<state_t*>( s );
+    }
+
+    const state_t* cast_state( const action_state_t* s ) const
+    {
+      return static_cast<const state_t*>( s );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double d = priest_heal_t::composite_da_multiplier( s );
+
+      d *= cast_state( s )->snapshot_mult;
+
+      return d;
+    }
+
+    void execute() override
+    {
+      priest_heal_t::execute();
+
+      if ( priest().talents.discipline.holy_ray.enabled() )
+      {
+        priest().buffs.holy_ray->trigger();
+      }
+
+      if ( priest().talents.discipline.weal_and_woe.enabled() )
+      {
+        priest().buffs.weal_and_woe->trigger();
+      }
     }
   };
 
 private:
   propagate_const<penance_damage_t*> damage;
+  propagate_const<penance_heal_t*> heal;
   unsigned max_spread_targets;
   double default_bolts;
 
@@ -321,6 +375,7 @@ public:
                   const spell_data_t* s_tick )
     : priest_spell_t( name, p, s ),
       damage( new penance_damage_t( p, std::string( name ) + "_tick", s_tick ) ),
+      heal( new penance_heal_t( p, std::string( name ) + "_heal_tick", p.find_spell( 47750 ) ) ),
       max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_darkness->effectN( 2 ).base_value() ) )
   {
     cooldown = p.cooldowns.penance;
@@ -408,11 +463,19 @@ public:
   {
     priest_spell_t::tick( d );
 
+
     if ( d->get_tick_factor() >= 1.0 )
     {
-      if ( priest().talents.discipline.weal_and_woe.enabled() )
+      if ( p().talents.oracle.twinsight.enabled() && d->current_tick <= 3 )
       {
-        priest().buffs.weal_and_woe->trigger();
+        heal->set_target( rng().range( heal->target_list() ) );
+
+        state_t* state       = heal->cast_state( heal->get_state() );
+        state->target        = heal->target;
+        state->snapshot_mult = cast_state( d->state )->snapshot_mult;
+        heal->snapshot_state( state, heal->amount_type( state ) );
+
+        heal->schedule_execute( state );
       }
 
       priest().expand_entropic_rift();
@@ -423,6 +486,12 @@ public:
       state->target        = d->state->target;
       state->snapshot_mult = cast_state( d->state )->snapshot_mult;
       damage->snapshot_state( state, damage->amount_type( state ) );
+      
+      // For some reason its the 2nd bolt? Dont ask me. It says first on the tooltip :)
+      if ( d->current_tick == 2 && p().talents.oracle.prompt_prognosis.enabled() )
+      {
+        state->da_multiplier *= 1.0 + p().talents.oracle.prompt_prognosis->effectN( 1 ).percent();
+      }
 
       damage->schedule_execute( state );
     }
@@ -576,7 +645,7 @@ protected:
     {
       double mul = priest_spell_t::composite_atonement_multiplier( s );
 
-      if ( p().talents.voidweaver.void_infusion.enabled() )
+      if ( p().talents.voidweaver.void_infusion.enabled() && p().buffs.entropic_rift->check() )
         mul *= 1 + p().talents.voidweaver.void_infusion->effectN( 2 ).percent();
 
       return mul;

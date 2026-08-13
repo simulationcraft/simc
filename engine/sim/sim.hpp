@@ -581,6 +581,7 @@ struct sim_t : private sc_thread_t
   bool ignore_invulnerable_targets;
   bool enable_dps_healing;
   bool count_overheal_as_heal;
+  double dhaps_healing_weight;
   double scaling_normalized;
   bool merge_enemy_priority_dmg;
 

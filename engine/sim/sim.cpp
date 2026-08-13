@@ -1549,6 +1549,7 @@ sim_t::sim_t()
     ignore_invulnerable_targets( false ),
     enable_dps_healing( false ),
     count_overheal_as_heal( false ),
+    dhaps_healing_weight( 1.0 ),
     scaling_normalized( 1.0 ),
     merge_enemy_priority_dmg( false ),
     profileset_controller_factory(
@@ -3992,6 +3993,7 @@ void sim_t::create_options()
   add_option( opt_bool( "ignore_invulnerable_targets", ignore_invulnerable_targets ) );
   add_option( opt_bool( "enable_dps_healing", enable_dps_healing ) );
   add_option( opt_bool( "count_overheal_as_heal", count_overheal_as_heal ) );
+  add_option( opt_float( "dhaps_healing_weight", dhaps_healing_weight ) );
   add_option( opt_float( "scaling_normalized", scaling_normalized ) );
   add_option( opt_bool( "merge_enemy_priority_dmg", merge_enemy_priority_dmg ) );
   add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );

@@ -117,14 +117,16 @@ namespace spells
 struct expiation_t final : public priest_spell_t
 {
   timespan_t consume_time;
-
+  double damage_multiplier;
   expiation_t( priest_t& p )
     : priest_spell_t( "expiation", p, p.talents.discipline.expiation ),
-      consume_time( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
+      consume_time( timespan_t::from_seconds( p.talents.discipline.expiation->effectN( 1 ).base_value() ) ),
+      damage_multiplier( p.talents.discipline.expiation->effectN( 2 ).percent() )
   {
-    background = dual = true;
-    may_crit          = true;
-    tick_may_crit     = true;
+    background = dual  = true;
+    may_crit           = true;
+    tick_may_crit      = true;
+    triggers_atonement = true;
     // Spell data has this listed as physical, but in-game it's shadow
     school = SCHOOL_SHADOW;
 
@@ -132,19 +134,17 @@ struct expiation_t final : public priest_spell_t
     // also check that the STATE_NO_MULTIPLIER does exactly what we expect.
     snapshot_flags &= ~STATE_NO_MULTIPLIER;
   }
-
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    priest_td_t& td = get_td( s->target );
-    dot_t* dot      = td.dots.shadow_word_pain;
-
+    dot_t* dot      = td( target )->dots.shadow_word_pain;
     auto dot_damage = priest().tick_damage_over_time( consume_time, dot );
+
     if ( dot_damage > 0 )
     {
       sim->print_debug( "Expiation consumed {} seconds, dealing {}", consume_time, dot_damage );
-      base_dd_min = base_dd_max = dot_damage;
-      priest_spell_t::impact( s );
+      base_dd_min = base_dd_max = dot_damage * damage_multiplier;
       dot->adjust_duration( -consume_time );
+      priest_spell_t::execute();
     }
     else
     {
@@ -271,7 +271,7 @@ public:
 
       if ( child_expiation )
       {
-        child_expiation->target = s->target;
+        child_expiation->set_target( s->target );
         child_expiation->execute();
       }
     }
@@ -875,7 +875,7 @@ struct void_blast_disc_t final : public smite_base_t
   {
     double mul = smite_base_t::composite_atonement_multiplier( s );
 
-    if ( p().talents.voidweaver.void_infusion.enabled() )
+    if ( p().talents.voidweaver.void_infusion.enabled() && p().buffs.entropic_rift->check() )
       mul *= 1 + p().talents.voidweaver.void_infusion->effectN( 2 ).percent();
 
     return mul;
@@ -1432,7 +1432,7 @@ public:
 
       if ( child_expiation )
       {
-        child_expiation->target = s->target;
+        child_expiation->set_target( s->target );
         child_expiation->execute();
       }
 
@@ -1914,6 +1914,12 @@ struct power_word_shield_t final : public priest_absorb_t
     harmful      = false;
   }
 
+  void init_finished() override
+  {
+    priest_absorb_t::init_finished();
+    snapshot_flags &= ~STATE_MUL_PLAYER_DAM;
+  }
+
   // Manually create the buff so we can reference it with Void Shield
   absorb_buff_t* create_buff( const action_state_t* s ) override
   {
@@ -2034,6 +2040,12 @@ struct void_shield_t final : public priest_absorb_t
 
     damage = p.get_secondary_action<void_shield_damage_t>( "void_shield_damage" );
     add_child( damage );
+  }
+
+  void init_finished() override
+  {
+    priest_absorb_t::init_finished();
+    snapshot_flags &= ~STATE_MUL_PLAYER_DAM;
   }
 
   // Manually create the buff so we can reference it with Void Shield
@@ -2932,7 +2944,6 @@ double priest_t::composite_player_absorb_multiplier( const action_state_t* s ) c
 double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
   if ( specialization() == PRIEST_SHADOW && talents.voidweaver.voidheart.enabled() && buffs.voidheart->check() &&
        dbc::is_school( school, SCHOOL_SHADOW ) )
   {
@@ -3445,11 +3456,11 @@ void priest_t::init_spells()
   talents.oracle.forseen_circumstances = HT( "Forseen Circumstances" );
   talents.oracle.prophets_insight      = HT( "Prophets Insight" );    // NYI
   talents.oracle.prophets_will         = HT( "Prophets Will" );       // NYI
-  talents.oracle.desperate_measures    = HT( "Desperate Measures" );  // NYI
+  talents.oracle.desperate_measures    = HT( "Desperate Measures" );
   talents.oracle.prompt_prognosis      = HT( "Prompt Prognosis" );    // NYI
   talents.oracle.piety                 = HT( "Piety" );               // NYI
   talents.oracle.unfolding_vision      = HT( "Unfolding Vision" );    // NYI
-  talents.oracle.twinsight             = HT( "Twinsight" );           // NYI
+  talents.oracle.twinsight             = HT( "Twinsight" );
   talents.oracle.twinsight_healing     = find_spell( 1232567 );
   talents.oracle.twinsight_damage      = find_spell( 1232571 );
 
@@ -3482,6 +3493,9 @@ void priest_t::init_spells()
   talents.voidweaver.overwhelming_shadows   = HT( "Overwhelming Shadows" );
   talents.voidweaver.collapsing_void        = HT( "Collapsing Void" );
   talents.voidweaver.collapsing_void_damage = find_spell( 448405 );
+
+ 
+  register_passive_affect_list( talents.discipline.inner_focus, affect_list_t( 1 ).add_spell( 17, 1253593 ) );
 
   if ( specialization() == PRIEST_SHADOW )
     deregister_passive_effect( talents.voidweaver.overwhelming_shadows->effectN( 2 ) );

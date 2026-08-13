@@ -1021,6 +1021,21 @@ statistical_data_t metric_data( const player_t* player, scale_metric_e metric )
         sqrt( d.aps.mean_variance + d.hps.mean_variance )
       };
     }
+    case SCALE_METRIC_DHAPS:
+    {
+      auto hps_value = player->sim->dhaps_healing_weight;
+      auto dps       = collect( d.dps );
+      auto hps       = collect( d.hps );
+      auto aps       = collect( d.aps );
+      return { ( hps.min + aps.min ) * hps_value + dps.min,
+               ( hps.first_quartile + aps.first_quartile ) * hps_value + dps.first_quartile,
+               ( hps.median + aps.median ) * hps_value + dps.median,
+               ( hps.mean + aps.mean ) * hps_value + dps.mean,
+               ( hps.third_quartile + aps.first_quartile ) * hps_value + dps.first_quartile,
+               ( hps.max + aps.max ) * hps_value + dps.max,
+               sqrt( ( d.aps.variance + d.hps.variance ) * hps_value + d.dps.variance ),
+               sqrt( ( d.aps.mean_variance + d.hps.mean_variance ) * hps_value + d.dps.mean_variance ) };
+    }
     default:                     return { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
   }
 }

@@ -568,6 +568,7 @@ struct shadow_word_pain_t final : public priest_spell_t
       base_dd_min            = 0.0;
       energize_type          = action_energize::NONE;  // no insanity gain
       spell_power_mod.direct = 0;
+      base_costs[ RESOURCE_MANA ] = 0;
     }
 
     if ( casted )
