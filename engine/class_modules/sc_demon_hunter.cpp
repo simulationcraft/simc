@@ -1106,6 +1106,7 @@ public:
     proc_t* soul_fragment_from_reapers_toll;
     proc_t* soul_fragment_from_void_metamorphosis;
     proc_t* soul_fragment_from_entropy;
+    proc_t* soul_fragment_auto_pickup;
     std::unordered_map<std::string, proc_t*> shattered_souls;
 
     // Havoc
@@ -1707,12 +1708,16 @@ struct soul_fragment_t
 
       frag->activate   = nullptr;
       frag->expiration = make_event<fragment_expiration_t>( sim(), frag );
-      frag->dh->activate_soul_fragment( frag );
+
       // Devourer souls automatically get picked up if they activate inside the pickup range
       if ( ( frag->dh->specialization() == DEMON_HUNTER_DEVOURER ) && ( frag->get_distance( frag->dh ) <= 4.0 ) )
       {
-        frag->consume();
+        frag->consume_on_activation = true;
+
+        frag->dh->proc.soul_fragment_auto_pickup->occur();
       }
+
+      frag->dh->activate_soul_fragment( frag );
     }
   };
 
@@ -10573,6 +10578,7 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_from_reapers_toll       = get_proc( "Soul Fragment from Reaper's Toll" );
   proc.soul_fragment_from_void_metamorphosis = get_proc( "Soul Fragment from Void Metamorphosis" );
   proc.soul_fragment_from_entropy            = get_proc( "Soul Fragment from Entropy" );
+  proc.soul_fragment_auto_pickup             = get_proc( "Soul Fragment Auto Pickup" );
 
   // Havoc
   proc.soul_fragment_from_demonic_appetite = get_proc( "Soul Fragment from Demonic Appetite" );
@@ -12959,6 +12965,7 @@ public:
         p.proc.soul_fragment_from_reapers_toll,
         p.proc.soul_fragment_from_void_metamorphosis,
         p.proc.soul_fragment_from_entropy,
+        p.proc.soul_fragment_auto_pickup,
 
         // havoc
         p.proc.soul_fragment_from_demonic_appetite,
