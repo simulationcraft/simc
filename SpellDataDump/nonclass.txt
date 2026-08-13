@@ -258844,7 +258844,8 @@ Effects          :
 Description      : Deals $1296982s1 Nature damage. Guaranteed to critically strike.
 
 Name             : Corrosive Gifts (id=1301266) 
-School           : None
+Hotfixed         : Attributes
+School           : Physical
 Spell Type       : None
 Effects          :
 #2 (id=1331702)  : Trigger Spell (64): Corrosive Gifts
