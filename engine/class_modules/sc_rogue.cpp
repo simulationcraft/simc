@@ -5623,7 +5623,6 @@ struct black_powder_t: public rogue_attack_t
     black_powder_bonus_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p->spec.black_powder_shadow_attack )
     {
-      callbacks = false; // 2021-07-19 -- Does not appear to trigger normal procs
       aoe = -1;
       reduced_aoe_targets = p->spec.black_powder->effectN( 4 ).base_value();
       affected_by.lingering_shadow.direct = p->set_bonuses.mid2_subtlety_4pc->ok();
