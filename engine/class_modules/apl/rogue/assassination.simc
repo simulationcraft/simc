@@ -58,7 +58,7 @@ actions.generate+=/fan_of_knives,if=spell_targets.fan_of_knives>1+(talent.blinds
 # Ambush on low target counts when available
 actions.generate+=/ambush,if=spell_targets.fan_of_knives<=1+(talent.blindside&!talent.clear_the_witnesses)
 # Mutilate on low target counts
-actions.generate+=/mutilate,if=spell_targets.fan_of_knives<=1(talent.blindside&!talent.clear_the_witnesses)
+actions.generate+=/mutilate,if=spell_targets.fan_of_knives<=1+(talent.blindside&!talent.clear_the_witnesses)
 
 # Special Case Trinkets
 actions.items=variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2|dot.deathmark.ticking|fight_remains<=22
