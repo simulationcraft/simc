@@ -61,7 +61,7 @@ public:
     // ab::hasted_ticks = false;
     // ab::rolling_periodic = false;
     // ab::dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
-    // ab::snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    // ab::snapshot_flags |= STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
   }
 
   action_state_t* new_state() override

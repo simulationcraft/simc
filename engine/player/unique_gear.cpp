@@ -2554,7 +2554,7 @@ struct soul_capacitor_explosion_t : public spell_t
   {
     spell_t::init();
 
-    snapshot_flags = STATE_MUL_DA;
+    snapshot_flags = STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM;
     update_flags = 0;
   }
 

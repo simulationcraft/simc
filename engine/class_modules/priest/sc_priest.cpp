@@ -1140,7 +1140,7 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
     // We don't want this counted towards our dps
     stats->type = stats_e::STATS_NEUTRAL;
 
-    snapshot_flags |= STATE_MUL_DA;
+    snapshot_flags |= STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM;
   }
 
   proc_types proc_type() const override
@@ -2244,7 +2244,7 @@ struct atonement_t final : public priest_heal_t
   void init() override
   {
     priest_heal_t::init();
-    snapshot_flags |= STATE_TGT_MUL_DA | STATE_MUL_DA;
+    snapshot_flags |= STATE_TGT_MUL_DA | STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM;
     snapshot_flags &= ~( STATE_CRIT | STATE_VERSATILITY );
   }
 
