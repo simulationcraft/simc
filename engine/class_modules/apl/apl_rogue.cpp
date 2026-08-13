@@ -72,8 +72,8 @@ void assassination( player_t* p )
 
   precombat->add_action( "apply_poison" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)&!trinket.2.is.treacherous_transmitter|trinket.1.is.treacherous_transmitter|trinket.1.is.house_of_cards", "Check which trinket slots have Stat Values" );
-  precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.2.cooldown.duration>trinket.1.cooldown.duration)&!trinket.1.is.treacherous_transmitter|trinket.2.is.treacherous_transmitter|trinket.2.is.house_of_cards" );
+  precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)", "Check which trinket slots have Stat Values" );
+  precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.2.cooldown.duration>trinket.1.cooldown.duration)" );
   precombat->add_action( "stealth", "Pre-cast Slice and Dice if possible" );
   precombat->add_action( "slice_and_dice,precombat_seconds=1" );
 
@@ -82,7 +82,7 @@ void assassination( player_t* p )
   default_->add_action( "variable,name=single_target,value=spell_targets.fan_of_knives=1", "Helper Variable to check for single target in combat" );
   default_->add_action( "thistle_tea,if=energy.pct<50&fight_remains<10", "Edge-case check to dump thistle tea at the end of fights" );
   default_->add_action( "ambush,if=stealthed.rogue&variable.single_target&talent.blindside&talent.improved_ambush&!talent.shrouded_suffocation", "Special Ambush condition for the start of fights when applicable" );
-  default_->add_action( "call_action_list,name=cds", "Cooldown list takes priority" );
+  default_->add_action( "call_action_list,name=cds,if=variable.single_target|!talent.scent_of_blood|buff.scent_of_blood.stack>=(2*talent.scent_of_blood.rank*spell_targets.fan_of_knives>?20)", "Cooldown list takes priority" );
   default_->add_action( "call_action_list,name=core_dot", "Maintain dots when possible" );
   default_->add_action( "call_action_list,name=generate,if=!buff.darkest_night.up&combo_points<5|buff.darkest_night.up&combo_points.deficit>0", "Build combo points until 5, max with darkest night" );
   default_->add_action( "call_action_list,name=spend,if=!buff.darkest_night.up&combo_points>=5|buff.darkest_night.up&combo_points.deficit=0", "If combo point threshold is reached, spend them" );
@@ -100,16 +100,15 @@ void assassination( player_t* p )
   core_dot->add_action( "rupture,cycle_targets=1,if=!talent.crimson_tempest&combo_points>=5&refreshable&target.time_to_die-remains>12&(!buff.darkest_night.up|!dot.rupture.ticking)" );
 
   generate->add_action( "crimson_tempest,target_if=max:dot.rupture.remains,if=!variable.single_target&(active_dot.garrote<spell_targets.fan_of_knives|active_dot.rupture<spell_targets.fan_of_knives)&(dot.rupture.remains>5|energy.regen_combined>40)", "Generator List Crimson Tempest to spread bleeds to everything in AoE" );
-  generate->add_action( "shiv,if=buff.darkest_night.up&combo_points.deficit=1&spell_targets.fan_of_knives<=3&talent.toxic_stiletto", "Special Edge Case to use Shiv for Darkest Night in low target cleave as Toxic Stiletto makes it very efficient" );
-  generate->add_action( "fan_of_knives,if=spell_targets.fan_of_knives>1+talent.blindside", "Fan of Knives in AoE" );
-  generate->add_action( "ambush,if=spell_targets.fan_of_knives<=1+talent.blindside&(buff.unshakeable_drive.stack>2|buff.bloodlust.up|!talent.deathstalkers_mark|talent.blindside)", "Ambush on low target counts when available" );
-  generate->add_action( "mutilate,if=spell_targets.fan_of_knives<=1+talent.blindside&(buff.unshakeable_drive.stack>2|buff.bloodlust.up|!talent.deathstalkers_mark|talent.blindside)", "Mutilate on low target counts" );
-  generate->add_action( "fan_of_knives,if=spell_targets.fan_of_knives<=1+talent.blindside&!talent.blindside&(buff.unshakeable_drive.stack<3&!buff.bloodlust.up&talent.deathstalkers_mark)", "Fan of Knives and Shiv in ST with Deathstalker builds" );
-  generate->add_action( "shiv,if=spell_targets.fan_of_knives<=1&talent.toxic_stiletto&(buff.unshakeable_drive.stack<3&!buff.bloodlust.up&talent.deathstalkers_mark)" );
+  generate->add_action( "shiv,if=buff.darkest_night.up&combo_points.deficit=1&spell_targets.fan_of_knives<=1&talent.toxic_stiletto", "Special Edge Case to use Shiv for Darkest Night in low target cleave as Toxic Stiletto makes it very efficient" );
+  generate->add_action( "fan_of_knives,if=spell_targets.fan_of_knives>1+(talent.blindside&!talent.clear_the_witnesses)", "Fan of Knives in AoE" );
+  generate->add_action( "ambush,if=spell_targets.fan_of_knives<=1+(talent.blindside&!talent.clear_the_witnesses)", "Ambush on low target counts when available" );
+  generate->add_action( "mutilate,if=spell_targets.fan_of_knives<=1(talent.blindside&!talent.clear_the_witnesses)", "Mutilate on low target counts" );
 
   items->add_action( "variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2|dot.deathmark.ticking|fight_remains<=22", "Special Case Trinkets" );
   items->add_action( "use_item,name=astral_gladiators_badge_of_ferocity,use_off_gcd=1,if=dot.kingsbane.ticking|dot.deathmark.ticking|(cooldown.kingsbane.remains>60|cooldown.deathmark.remains>60)" );
   items->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1,if=variable.base_trinket_condition&buff.envenom.up" );
+  items->add_action( "use_item,name=font_of_venomous_rage,use_off_gcd=1,if=buff.lingering_darkness.up|!dot.deathmark.ticking&!cooldown.deathmark.ready&cooldown.deathmark.remains>20" );
   items->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(debuff.deathmark.up)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot|fight_remains<=20" );
   items->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(debuff.deathmark.up)|(variable.trinket_sync_slot=1&!trinket.1.cooldown.ready&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot|fight_remains<=20" );
 
@@ -119,8 +118,9 @@ void assassination( player_t* p )
   misc_cds->add_action( "fireblood,use_off_gcd=1,if=debuff.deathmark.up" );
   misc_cds->add_action( "ancestral_call,use_off_gcd=1,if=debuff.deathmark.up" );
 
-  spend->add_action( "envenom", "Spend List   Spend with envenom as per normal" );
+  spend->add_action( "envenom,if=buff.envenom.remains<=1|buff.deathmark.up", "Spend List   Spend with envenom as per normal, clipping the last second to maintain uptime" );
   spend->add_action( "envenom,if=energy.pct>70|fight_remains<15", "Envenom if we are going to overcap on energy" );
+  spend->add_action( "envenom,if=energy.pct>30&(target.time_to_die<12|spell_targets.fan_of_knives>=4)", "In AoE with mob cycles, we want to start envenoming sooner to avoid wasting time/energy" );
 
   vanish->add_action( "vanish,if=variable.single_target&talent.improved_garrote&dot.garrote.pmultiplier<=1&(dot.deathmark.ticking|cooldown.deathmark.remains>target.time_to_die-10)&!raid_event.adds.in<=30", "Vanish list Single Target vanish check to line up improved garrote with Deathmark, making sure there are no adds soon. TODO Check after ImpGar fixes" );
   vanish->add_action( "vanish,if=!variable.single_target&talent.improved_garrote&dot.garrote.pmultiplier<=1&(raid_event.adds.remains>=10|!raid_event.adds.in<=30)", "AoE vanish check to spread improved garrote in multitarget" );
