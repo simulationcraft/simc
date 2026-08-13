@@ -83,6 +83,27 @@ struct void_shield_buff_t : public priest_buff_t<absorb_buff_t>
                               // refreshes them to full value.
   }
 
+  void absorb_used( double absorbed, player_t* source ) override
+  {
+    ab::absorb_used( absorbed, source );
+
+    if ( priest().talents.discipline.master_the_darkness_3.enabled() )
+    {
+      auto target = source;
+      if ( !target || !target->is_enemy() || target->is_sleeping() || target->debuffs.invulnerable->check() )
+      {
+        if ( priest().sim->target_non_sleeping_list.size() > 0 )
+          target = rng().range( priest().sim->target_non_sleeping_list );
+      }
+
+      if ( target && !target->is_sleeping() && target->is_enemy() )
+      {
+        priest().background_actions.void_shield_damage->execute_on_target(
+            target, absorbed * priest().talents.discipline.master_the_darkness_3->effectN( 1 ).percent() );
+      }
+    }
+  }
+
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     sim->print_debug( "{} changes stored Void Shield maximum from {} to {}", *player, initial_size, value );
@@ -2009,20 +2030,19 @@ struct power_word_shield_t final : public priest_absorb_t
 // ==========================================================================
 // Void Shield
 // ==========================================================================
+struct void_shield_damage_t : public priest_spell_t
+{
+  void_shield_damage_t( priest_t& p ) : priest_spell_t( "void_shield_damage", p, p.find_spell( 1253828 ) )
+  {
+    background         = true;
+    triggers_atonement = true;
+  }
+};
+
 struct void_shield_t final : public priest_absorb_t
 {
-  struct void_shield_damage_t : public priest_spell_t
-  {
-    void_shield_damage_t( priest_t& p ) : priest_spell_t( "void_shield_damage", p, p.find_spell( 1253828 ) )
-    {
-      background         = true;
-      triggers_atonement = true;
-    }
-  };
-
   timespan_t atonement_duration;
   const spell_data_t* bns_data;
-  action_t* damage;
 
   void_shield_t( priest_t& p, util::string_view options_str )
     : priest_absorb_t( "void_shield", p, p.find_spell( 1253593 ) ),
@@ -2038,8 +2058,10 @@ struct void_shield_t final : public priest_absorb_t
     harmful      = false;
     aoe          = as<int>( data().effectN( 2 ).base_value() );
 
-    damage = p.get_secondary_action<void_shield_damage_t>( "void_shield_damage" );
-    add_child( damage );
+    if ( p.talents.discipline.master_the_darkness_3.enabled() )
+    {
+      add_child( p.background_actions.void_shield_damage );
+    }
   }
 
   void init_finished() override
@@ -2188,22 +2210,6 @@ struct void_shield_t final : public priest_absorb_t
   void impact( action_state_t* s ) override
   {
     priest_absorb_t::impact( s );
-
-    if ( priest().talents.discipline.master_the_darkness_3.enabled() )
-    {
-      auto target = priest().target;
-      if ( !target || !target->is_enemy() )
-      {
-        if ( priest().sim->target_non_sleeping_list.size() > 0 )
-          target = rng().range( priest().sim->target_non_sleeping_list );
-      }
-
-      if ( target && !target->is_sleeping() && target->is_enemy() )
-      {
-        damage->execute_on_target(
-            target, s->result_amount * p().talents.discipline.master_the_darkness_3->effectN( 1 ).percent() );
-      }
-    }
 
     if ( priest().talents.discipline.atonement.enabled() )
     {
@@ -3663,7 +3669,10 @@ void priest_t::init_background_actions()
   background_actions.entropic_rift        = new actions::spells::entropic_rift_t( *this );
   background_actions.entropic_rift_damage = new actions::spells::entropic_rift_damage_t( *this );
   background_actions.collapsing_void      = new actions::spells::collapsing_void_damage_t( *this );
-
+  if ( talents.discipline.master_the_darkness_3.enabled() )
+  {
+    background_actions.void_shield_damage = new actions::heals::void_shield_damage_t( *this );
+  }
   if ( talents.discipline.divine_aegis.enabled() )
   {
     background_actions.divine_aegis = new actions::heals::divine_aegis_t( *this );

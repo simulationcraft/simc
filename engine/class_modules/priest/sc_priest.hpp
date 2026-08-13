@@ -836,6 +836,7 @@ public:
     propagate_const<actions::spells::void_bolt_t*> void_bolt;
     propagate_const<actions::spells::shadeburst_t*> shadeburst;
     propagate_const<actions::spells::searing_light_t*> searing_light_dot;
+    propagate_const<action_t*> void_shield_damage;
   } background_actions;
 
   // Items
