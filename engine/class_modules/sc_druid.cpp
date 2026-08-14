@@ -538,6 +538,8 @@ struct druid_t final : public parse_player_effects_t
   // Feral
   timespan_t halazzis_fury_duration;  // mid2 2pc
   // Guardian
+  player_t* red_moon_target;  // lunar wrath hits most recent rm target
+  double lunar_wrath_rage_spent;
   timespan_t rampant_thorn_berserk_extension;  // mid2 4pc
 
   struct dot_list_t
@@ -4978,9 +4980,9 @@ struct rage_spender_t : public BASE
 private:
   druid_t* p_;
   buff_t* atw_buff;
-  double moy_hp_pct_per_rage = 0.0;
+  double lw_rage_per_proc;
+  double moy_hp_pct_per_rage;
   double ug_rage_per_cdr;
-  double lw_rage_bucket = 0.0;
   double wg_pct;
 
 protected:
@@ -4991,51 +4993,19 @@ public:
     : BASE( n, p, s, f ),
       p_( p ),
       atw_buff( p->buff.after_the_wildfire ),
+      lw_rage_per_proc( p->talent.red_moon.ok()
+        ? p->talent.galactic_guardian->effectN( 3 ).base_value()
+        : 0.0 ),
+      moy_hp_pct_per_rage( p->talent.memory_of_ysera.ok()
+        ? p->talent.memory_of_ysera->effectN( 1 ).percent() * 0.01 / p->talent.memory_of_ysera->effectN( 2 ).base_value()
+        : 0.0 ),
       ug_rage_per_cdr( p->talent.ursocs_guidance->effectN( 5 ).base_value() ),
       wg_pct( p->talent.wild_guardian_1->effectN( 2 ).percent() )
-  {
-    if ( p->talent.memory_of_ysera.ok() )
-    {
-      moy_hp_pct_per_rage =
-        p->talent.memory_of_ysera->effectN( 1 ).percent() * 0.01 / p->talent.memory_of_ysera->effectN( 2 ).base_value();
-    }
-
-    if ( p->talent.galactic_guardian.ok() && p->talent.red_moon.ok() )
-      lw_rage_bucket = p->talent.galactic_guardian->effectN( 3 ).base_value();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    BASE::impact( s );
-
-    if ( !BASE::proc && BASE::td( s->target )->dots.red_moon->is_ticking() )
-    {
-      if ( lw_rage_bucket )
-      {
-        auto _stacks = static_cast<int>( BASE::last_resource_cost / lw_rage_bucket );
-        if ( p_->buff.lunar_wrath->consume( this, _stacks ) )
-        {
-          for ( int i = 0; i < _stacks; ++i )
-          {
-            p_->active.lunar_wrath_heal->execute();
-            p_->active.lunar_wrath->execute_on_target( s->target );
-          }
-        }
-      }
-      else
-      {
-        if ( p_->buff.lunar_wrath->consume( this ) )
-        {
-          p_->active.lunar_wrath_heal->execute();
-          p_->active.lunar_wrath->execute_on_target( s->target );
-        }
-      }
-    }
-  }
+  {}
 
   void consume_rage_after_the_wildfire( double amount )
   {
-    if ( !p_->talent.after_the_wildfire.ok() )
+    if ( !p_->talent.after_the_wildfire.ok() || amount < 0.0 )
       return;
 
     if ( !atw_buff->check() )
@@ -5051,9 +5021,31 @@ public:
     }
   }
 
+  void consume_rage_lunar_wrath( double amount )
+  {
+    if ( !lw_rage_per_proc || amount < 0.0 || !p_->red_moon_target )
+      return;
+
+    assert( BASE::td( p_->red_moon_target )->dots.red_moon->is_ticking() &&
+            "Lunar Wrath attempting to proc on target without Red Moon" );
+
+    p_->lunar_wrath_rage_spent += amount;
+
+    while ( p_->lunar_wrath_rage_spent >= lw_rage_per_proc )
+    {
+      p_->lunar_wrath_rage_spent -= lw_rage_per_proc;
+
+      if ( p_->buff.lunar_wrath->consume( this ) )
+      {
+        p_->active.lunar_wrath_heal->execute();
+        p_->active.lunar_wrath->execute_on_target( p_->red_moon_target );
+      }
+    }
+  }
+
   void consume_rage_memory_of_ysera( double amount )
   {
-    if ( !p_->talent.memory_of_ysera.ok() )
+    if ( !moy_hp_pct_per_rage || amount < 0.0 )
       return;
 
     auto heal_amount = p_->resources.max[ RESOURCE_HEALTH ] * amount * moy_hp_pct_per_rage;
@@ -5066,7 +5058,7 @@ public:
 
   void consume_rage_ursocs_guidance( double amount )
   {
-    if ( !p_->talent.ursocs_guidance.ok() )
+    if ( !ug_rage_per_cdr || amount < 0.0 )
       return;
 
     auto dur = timespan_t::from_seconds( amount / -ug_rage_per_cdr );
@@ -5080,19 +5072,19 @@ public:
 
   void consume_rage_wild_guardian( double chance )
   {
-    if ( chance && p_->rng().roll( chance ) )
+    if ( !chance || !p_->rng().roll( chance ) )
+      return;
+
+    // trigger wild guardian 1, if possible
+    if ( p_->buff.answered_calling_summon->trigger( this ) )
     {
-      // trigger wild guardian 1, if possible
-      if ( p_->buff.answered_calling_summon->trigger( this ) )
+      // trigger wild guardian 3, if possible
+      if ( p_->buff.answered_calling->trigger() )
       {
-        // trigger wild guardian 3, if possible
-        if ( p_->buff.answered_calling->trigger() )
-        {
-          if ( p_->cooldown.mangle )
-            p_->cooldown.mangle->reset( true );
-          if ( p_->cooldown.thrash )
-            p_->cooldown.thrash->reset( true );
-        }
+        if ( p_->cooldown.mangle )
+          p_->cooldown.mangle->reset( true );
+        if ( p_->cooldown.thrash )
+          p_->cooldown.thrash->reset( true );
       }
     }
   }
@@ -7990,6 +7982,24 @@ struct red_moon_t final : public druid_spell_t
   DRUID_ABILITY( red_moon_t, druid_spell_t, "red_moon", p->talent.red_moon )
   {
     dot_name = "red_moon";
+  }
+
+  void trigger_dot( action_state_t* s ) override
+  {
+    druid_spell_t::trigger_dot( s );
+
+    p()->red_moon_target = s->target;
+
+    // rage tracking is reset on new cast
+    p()->lunar_wrath_rage_spent = 0.0;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    druid_spell_t::last_tick( d );
+
+    if ( p()->red_moon_target == d->target )
+      p()->red_moon_target = nullptr;
   }
 };
 
@@ -13011,6 +13021,8 @@ void druid_t::reset()
   stellar_amplification_target = nullptr;
   moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
   halazzis_fury_duration = 0_ms;
+  red_moon_target = nullptr;
+  lunar_wrath_rage_spent = 0;
   rampant_thorn_berserk_extension = 0_ms;
   dot_lists.moonfire.clear();
   dot_lists.sunfire.clear();
