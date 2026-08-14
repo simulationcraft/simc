@@ -4142,13 +4142,6 @@ struct arcane_shot_base_t: public hunter_ranged_attack_t
 
   arcane_shot_base_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->specs.arcane_shot ) {}
 
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    p()->consume_precise_shots();
-  }
-
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double am = hunter_ranged_attack_t::composite_da_multiplier( s );
@@ -4201,6 +4194,13 @@ struct arcane_shot_t : public arcane_shot_base_t
   arcane_shot_t( hunter_t* p, util::string_view options_str ) : arcane_shot_base_t( "arcane_shot", p )
   {
     parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    arcane_shot_base_t::execute();
+
+    p()->consume_precise_shots();
   }
 
   void impact( action_state_t* s ) override
@@ -4272,13 +4272,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   kill_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
     hunter_ranged_attack_t( n, p, s ),
     health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() ) {}
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    p()->consume_precise_shots();
-  }
 
   void impact( action_state_t* s ) override
   {
@@ -4396,6 +4389,7 @@ struct kill_shot_t : public kill_shot_base_t
     kill_shot_base_t::execute();
 
     p()->buffs.deathblow->expire();
+    p()->consume_precise_shots();
   }
 
   void impact( action_state_t* s ) override
@@ -4732,7 +4726,7 @@ struct black_arrow_t final : public black_arrow_base_t
     }
 
     p()->buffs.deathblow->expire();
-
+    p()->consume_precise_shots();
     p()->trigger_natures_ally_3();
   }
 
@@ -5870,22 +5864,40 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       p()->trigger_eagles_mark( target, p()->talents.sentinel.ok() );
     }
 
-    if ( unload.black_arrow && unload.black_arrow->target_ready( target ) )
+    bool executed = false;
+    if ( !executed && unload.black_arrow && unload.black_arrow->target_ready( target ) )
     {
       unload.black_arrow->sequence = sequence;
       unload.black_arrow->execute_on_target( target );
-      return;
+      executed = true;
     }
 
-    if ( unload.kill_shot && unload.kill_shot->target_ready( target ) )
+    if ( !executed && unload.kill_shot && unload.kill_shot->target_ready( target ) )
     {
       unload.kill_shot->sequence = sequence;
       unload.kill_shot->execute_on_target( target );
-      return;
+      executed = true;
     }
 
-    unload.arcane_shot->sequence = sequence;
-    unload.arcane_shot->execute_on_target( target );
+    if ( !executed )
+    {
+      unload.arcane_shot->sequence = sequence;
+      unload.arcane_shot->execute_on_target( target );
+      executed = true;
+    }
+
+    // 2026-14-07: Unload's second shot consumes Precise Shots on a slight delay. This allows Rapid Fire
+    //             channels to be clipped with Precise Shots spenders to have both spells benefit from the buff.
+    //       TODO: Consider a refactor if this bug sticks around.
+    //       TODO: Move the consume_precise_shots() call back to the base spell execute() functions if/when this is fixed.
+    if ( p()->bugs && sequence == 2 )
+    {
+      make_event( sim, 10_ms, [ this ]() { p()->consume_precise_shots(); } );
+    }
+    else
+    {
+      p()->consume_precise_shots();
+    }
   }
 
   void init() override
