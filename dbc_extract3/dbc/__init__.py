@@ -106,6 +106,7 @@ KEY_FIELD_HOTFIX_RECORD = {
     'GarrTalent'                  : 'id_garr_talent_tree',
     'ItemBonus'                   : 'id_node',
     'ItemBonusListGroupEntry'     : 'id_item_bonus_list_group',
+    'ItemSpec'                    : 'item_type',
     'ItemModifiedAppearance'      : 'id_item',
     'JournalEncounterCreature'    : 'id_journal_encounter',
     'JournalEncounterItem'        : 'id_encounter',
