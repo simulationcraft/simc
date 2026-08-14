@@ -12590,7 +12590,8 @@ void shaman_t::create_buffs()
   buff.surging_totem = make_buff( this, "surging_totem", find_spell( 1221347 ) )
     ->set_trigger_spell( talent.surging_totem );
 
-  buff.flametongue_weapon = make_buff( this, "flametongue_weapon", find_spell( 319778 ) );
+  buff.flametongue_weapon = make_buff( this, "flametongue_weapon", find_spell( 319778 ) )
+    ->set_trigger_spell( talent.flametongue_weapon );
 
   //
   // Elemental
