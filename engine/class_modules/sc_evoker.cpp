@@ -6543,7 +6543,9 @@ struct disintegrate_t : public essence_spell_t
 
     p()->trigger_aura_applied_callbacks( proc_data, p() );
 
-    if ( current_dots[ 0 ] == d )
+    bool is_main_tick = current_dots[ 0 ] == d && ( p()->buff.mass_disintegrate_ticks->check() || current_dots.size() == 1 );
+
+    if ( is_main_tick )
     {
       p()->buff.mass_disintegrate_ticks->decrement();
     }
@@ -6580,7 +6582,7 @@ struct disintegrate_t : public essence_spell_t
                                               p()->talent.flameshaper.inner_flame_buff->effectN( 2 ).percent() ) );
     }
 
-    if ( p()->talent.causality.ok() && current_dots[ 0 ] == d )
+    if ( p()->talent.causality.ok() && is_main_tick )
     {
       auto cdr = p()->talent.causality->effectN( 1 ).time_value();
       p()->cooldown.eternity_surge->adjust( cdr );
