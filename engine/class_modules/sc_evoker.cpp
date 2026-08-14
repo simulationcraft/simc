@@ -6373,6 +6373,13 @@ struct disintegrate_t : public essence_spell_t
     add_child( eternity_surge );
   }
 
+  void cancel_buff_helpers()
+  {
+    p()->buff.mass_disintegrate_ticks->expire();
+    p()->buff.essence_burst_titanic_wrath_disintegrate->expire();
+    p()->buff.iridescence_red->expire();
+  }
+
   int max_targets() const
   {
     // TODO: Check if the additional target actually increases ST when its missing.
@@ -6393,7 +6400,8 @@ struct disintegrate_t : public essence_spell_t
     {
       dot->cancel();
     }
-
+    
+    cancel_buff_helpers();
     current_dots.clear();
 
     essence_spell_t::cancel();
@@ -6407,6 +6415,8 @@ struct disintegrate_t : public essence_spell_t
     {
       dot->cancel();
     }
+    
+    cancel_buff_helpers();
   }
 
   void reset() override
