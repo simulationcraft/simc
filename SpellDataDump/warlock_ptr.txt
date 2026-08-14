@@ -2195,19 +2195,22 @@ Effects          :
 Description      : $@spelldesc108370
 Tooltip          : Absorbs $w1 damage.
 
-Name             : Soul Leech (id=108370) [Spell Family (5), Passive] 
+Name             : Soul Leech (id=108370) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
+Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Affecting Spells : Demon Skin (219272 effect#2), Norgannon's Foresight (236431 effect#1), Infernal Bulwark (434561 effect#1), Illhoof's Design (440070 effect#2), Fortified Soul (1271694 effect#1)
+Triggered By     : Soul Leech (1311653)
 Family Flags     : 68
-Attributes       : Is Ability (4), Passive (6), No Aura Icon (60), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), No Aura Icon (60), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=119452)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -19059,6 +19062,9 @@ Effects          :
 #2 (id=1342101)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Modified By: Demon Skin (219272 effect#2), Infernal Bulwark (434561 effect#1), Illhoof's Design (440070 effect#2), Fortified Soul (1271694 effect#1)
+#3 (id=1349999)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Soul Leech
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 108370 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : All single-target damage done by you and your minions grants you and your pet shadowy shields that absorb $s1% of the damage dealt$?s219272[][ for $108366d], up to $s2% of maximum health.
 
 Name             : Shadowburn (id=1311913) 
