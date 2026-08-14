@@ -5023,7 +5023,7 @@ public:
 
   void consume_rage_lunar_wrath( double amount )
   {
-    if ( !lw_rage_per_proc || amount < 0.0 || !p_->red_moon_target )
+    if ( !lw_rage_per_proc || amount < 0.0 || !p_->red_moon_target || !p_->buff.lunar_wrath->check() )
       return;
 
     assert( BASE::td( p_->red_moon_target )->dots.red_moon->is_ticking() &&
@@ -5031,7 +5031,7 @@ public:
 
     p_->lunar_wrath_rage_spent += amount;
 
-    while ( p_->lunar_wrath_rage_spent >= lw_rage_per_proc )
+    while ( p_->lunar_wrath_rage_spent >= lw_rage_per_proc && p_->buff.lunar_wrath->check() )
     {
       p_->lunar_wrath_rage_spent -= lw_rage_per_proc;
 
@@ -5072,7 +5072,7 @@ public:
 
   void consume_rage_wild_guardian( double chance )
   {
-    if ( !chance || !p_->rng().roll( chance ) )
+    if ( !chance || p_->buff.answered_calling_summon->check() || !p_->rng().roll( chance ) )
       return;
 
     // trigger wild guardian 1, if possible
@@ -5097,11 +5097,10 @@ public:
       return;
 
     consume_rage_after_the_wildfire( BASE::last_resource_cost );
+    consume_rage_lunar_wrath( BASE::last_resource_cost );
     consume_rage_memory_of_ysera( BASE::last_resource_cost );
     consume_rage_ursocs_guidance( BASE::last_resource_cost );
-
-    if ( !p_->buff.answered_calling_summon->check() )
-      consume_rage_wild_guardian( wg_pct );
+    consume_rage_wild_guardian( wg_pct );
   }
 };
 
