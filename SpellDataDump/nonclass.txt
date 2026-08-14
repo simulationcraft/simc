@@ -47455,6 +47455,7 @@ School           : Physical
 Spell Type       : None
 Range            : 40 yards
 Velocity         : 16 yards/sec
+Cooldown         : 1 seconds
 Attributes       : Not In Combat (Only Peaceful) (28), No Threat (42), Exclude Caster (51), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=221450)   : Dummy (3)
@@ -87216,11 +87217,12 @@ Description      : Summon a yellow rune of power above your head.
 Tooltip          : Adorned with a yellow rune of power.
 
 Name             : Throw Lightsphere (id=254503) 
+Hotfixed         : Cooldown (0 -> 1000)
 School           : Physical
 Spell Type       : None
 Range            : 40 yards
 Velocity         : 16 yards/sec
-Cooldown         : 5 seconds
+Cooldown         : 1 seconds
 Category         : 1416 (Type 0x0)
 Category Cooldown: 5 seconds
 Attributes       : Allow Item Spell In PvP (13), Not In Combat (Only Peaceful) (28), Exclude Caster (51)
@@ -102641,11 +102643,12 @@ Description      : Wear a Syndicate mask, replacing any existing headwear.
 Tooltip          : Wearing a Syndicate mask.
 
 Name             : Throw Magic Fun Rock (id=279989) 
+Hotfixed         : Cooldown (0 -> 1000)
 School           : Physical
 Spell Type       : None
 Range            : 40 yards
 Velocity         : 16 yards/sec
-Cooldown         : 5 seconds
+Cooldown         : 1 seconds
 Category         : 1416 (Type 0x0)
 Category Cooldown: 5 seconds
 Attributes       : Allow Item Spell In PvP (13), Not In Combat (Only Peaceful) (28), Exclude Caster (51)
@@ -227257,6 +227260,7 @@ Spell Type       : None
 Range            : 40 yards
 Cast Time        : 1 seconds
 Velocity         : 16 yards/sec
+Cooldown         : 1 seconds
 Attributes       : Not In Combat (Only Peaceful) (28), No Threat (42), Exclude Caster (51), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1210079)  : Dummy (3)
@@ -259644,7 +259648,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 150 yards
 Duration         : 10 seconds
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Always AOE Line of Sight (186), Ignore For Mod Time Rate (196), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Proc cooldown on a per target basis (330), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Always AOE Line of Sight (186), Ignore For Mod Time Rate (196), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Proc cooldown on a per target basis (330), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1329611)  : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Targeted Enemy (6)
