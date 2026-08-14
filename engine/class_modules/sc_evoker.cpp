@@ -6543,7 +6543,7 @@ struct disintegrate_t : public essence_spell_t
 
     p()->trigger_aura_applied_callbacks( proc_data, p() );
 
-    bool is_main_tick = current_dots[ 0 ] == d && ( p()->buff.mass_disintegrate_ticks->check() || current_dots.size() == 1 );
+    bool is_main_tick = current_dots[ 0 ] == d && ( p()->buff.mass_disintegrate_ticks->check() > 1 || current_dots.size() == 1 );
 
     if ( is_main_tick )
     {
