@@ -1208,7 +1208,7 @@ public:
   void consume_trick_shots();
   void trigger_deathblow( bool activated = false );
   void trigger_lunar_storm( player_t* target );
-  void consume_precise_shots();
+  void consume_precise_shots( bool expire_buff = true );
   void trigger_eagles_mark( player_t* target, bool sentinel, bool force = false, bool unload = false );
   bool consume_howl_of_the_pack_leader( player_t* target );
   void trigger_howl_of_the_pack_leader();
@@ -3655,15 +3655,20 @@ void hunter_t::consume_trick_shots()
   buffs.trick_shots -> decrement();
 }
 
-void hunter_t::consume_precise_shots()
+void hunter_t::consume_precise_shots( bool expire_buff )
 {
   if ( !talents.precise_shots.ok() || !buffs.precise_shots->check() )
     return;
 
   cooldowns.aimed_shot->adjust( -talents.focused_aim->effectN( 1 ).time_value() );
-
-  buffs.precise_shots->expire();
   buffs.stargazer->trigger();
+
+  // 2026-08-14: In some cases the benefits of consuming Precise Shots can be gained
+  //             without actually consuming the buff.
+  if ( expire_buff )
+  {
+    buffs.precise_shots->expire();
+  }
 }
 
 void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force, bool unload )
@@ -5892,7 +5897,8 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     //       TODO: Move the consume_precise_shots() call back to the base spell execute() functions if/when this is fixed.
     if ( p()->bugs && sequence == 2 )
     {
-      make_event( sim, 10_ms, [ this ]() { p()->consume_precise_shots(); } );
+      p()->consume_precise_shots( false );
+      make_event( sim, 10_ms, [ this ]() { p()->buffs.precise_shots->expire(); } );
     }
     else
     {
