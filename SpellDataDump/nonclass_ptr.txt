@@ -247995,7 +247995,8 @@ Labels           : 292
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1268341)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 755.1957 (coefficient=5.761313) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 679.7151 (coefficient=5.185479) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (5.761313 -> 5.185479)
 
 Name             : Murder Row Materials (id=1259297) [Passive, Hidden] 
 School           : Physical
