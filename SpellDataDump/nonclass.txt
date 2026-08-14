@@ -256864,7 +256864,8 @@ Category Cooldown: 300 seconds
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Visible only to caster (conversations only) (343), Scales with Casting Item's Level (354), Not In Proving Grounds (401), Unknown (508)
 Effects          :
 #1 (id=1316988)  : Apply Aura (6) | Periodic Trigger Spell (23): Lustrous Gleam every 6 seconds | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 87.80243 (coefficient=0.669836) | Trigger Spell: 1295147 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 220.8204 (coefficient=1.684617) | Trigger Spell: 1295147 | Target: Self (1)
+Hotfixed         : Coefficient (0.669836 -> 1.684617)
 Description      : Drink to apply $@spellname1295147 every $t1 seconds for $d seconds, increasing your Versatility by $s1 while this potion is active. 
 
 $@spelldesc1295147
