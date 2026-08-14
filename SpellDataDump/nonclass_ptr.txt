@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69273 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69299 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -93003,7 +93003,8 @@ Labels           : 3959: Item Effects
 Attributes       : Not In Spellbook (143), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=713702)   : School Damage (2): nature | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 8023.639 (coefficient=62.78108) | Chain Multiplier: 0.5 | Chain Targets: 3 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 9227.185 (coefficient=72.19823) | Chain Multiplier: 0.5 | Chain Targets: 3 | Target: Targeted Enemy (6)
+Hotfixed         : Coefficient (62.781075 -> 72.198235)
 Description      : $@spelldesc267177
 
 Name             : Jani Whisper (id=267272) [Hidden] 
@@ -161174,9 +161175,11 @@ Triggered By     : Burning Embers (387036), Burning Embers (397376)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), Can Proc From Procs (122), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1017394)  : Apply Aura (6) | Proc Trigger Spell (42): Burning Embers | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 11433.3 (coefficient=89.45999) | Trigger Spell: 387028 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 20557.29 (coefficient=160.8508) | Trigger Spell: 387028 | Target: Self (1)
+Hotfixed         : Coefficient (89.459991 -> 160.850784)
 #2 (id=1021469)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 3626.317 (coefficient=28.37417) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5444.072 (coefficient=42.59722) | Target: Self (1)
+Hotfixed         : Coefficient (28.374168 -> 42.597218)
 Description      : Your helpful spells and abilities have a high chance to create a Burning Ember on an ally. The ember flares up after $387028d, cauterizing wounds to heal for $s1 and expelling $s2 Fire damage split between nearby enemies.
 
 Name             : Deathly Gusts (id=384650) 
@@ -244911,7 +244914,8 @@ Triggered By     : Voidtorn Eruption (1264374), Cosmic Siphon (1264404)
 Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254646)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 13458.23 (coefficient=105.3041) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 15476.97 (coefficient=121.0997) | Target: Self (1)
+Hotfixed         : Coefficient (105.304123 -> 121.099747)
 #2 (id=1254647)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 205.1712 (coefficient=1.565231) | Target: Self (1)
 Description      : Your damaging spells have a chance to stir the Void near your target, erupting for $s1 Shadow damage split among nearby enemies. You siphon energy from the Void, gaining $s2 Intellect for $1264404d.
@@ -245116,9 +245120,11 @@ Triggered By     : Crawling Plague (1264146), Crawling Plague (1264156)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254726)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 5210.114 (coefficient=40.76661) | PvP Coefficient: 0.4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 5991.631 (coefficient=46.8816) | PvP Coefficient: 0.4 | Target: Self (1)
+Hotfixed         : Coefficient (40.766609 -> 46.881596)
 #2 (id=1275293)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3277.857 (coefficient=25.64763) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4589 (coefficient=35.90669) | Target: Self (1)
+Hotfixed         : Coefficient (25.647633 -> 35.906689)
 Description      : Your attacks have a chance to release toxic parasites that burst around you, dealing $s1 Nature damage split among nearby enemies and healing you for $s2.
 
 Name             : Mycolic Medicine (id=1250591) [Passive, Hidden] 
@@ -245131,9 +245137,11 @@ Triggered By     : Mycolic Medicine (1264293), Glowcap Mushroom's Rejuvenation (
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254732)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 9837.091 (coefficient=76.97045) | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12788.22 (coefficient=100.0616) | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Coefficient (76.970451 -> 100.0616)
 #2 (id=1254733)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 2.5 | Scaled Value: 5621.287 (coefficient=43.98383) | Target: Self (1)
+                   Base Value: 2.5 | Scaled Value: 7307.672 (coefficient=57.17898) | Target: Self (1)
+Hotfixed         : Coefficient (43.983833 -> 57.178978)
 Description      : You gain Nalorakk's Favor of Growth. Your healing spells and abilities have a chance to instantly heal your target for $s1 and spawn a glowing mushroom near them that lasts for $1264294d.
 
 If an ally steps on and consumes the mushroom, they are healed for an additional $s2.
@@ -245209,9 +245217,11 @@ Triggered By     : Sappy Demise (1263121)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254757)  : Apply Aura (6) | Proc Trigger Spell (42): Uprooted Lasher | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1123.361 (coefficient=8.789752) | Trigger Spell: 1263077 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1291.865 (coefficient=10.10821) | Trigger Spell: 1263077 | Target: Self (1)
+Hotfixed         : Coefficient (8.789752 -> 10.108214)
 #2 (id=1254758)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 2925.605 (coefficient=22.89144) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3364.447 (coefficient=26.32516) | Target: Self (1)
+Hotfixed         : Coefficient (22.891438 -> 26.325157)
 Description      : Your spells and abilities have a chance to uproot a Lightspawn Lasher to aid you in combat for $1263077d, dealing up to ${$<rolemult>*($s1*10)} Physical damage.
 
 The Lightspawn Lasher then withers, bursting into light-infused sap and inflicting ${$<rolemult>*$s2} Holy damage split among nearby enemies.
@@ -247109,7 +247119,8 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1264645)  : Apply Aura (6) | Proc Trigger Spell (42): Alnsight | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 18.9275 (coefficient=0.144396) | PvP Coefficient: 0.5 | Trigger Spell: 1266686 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 15.14202 (coefficient=0.115517) | PvP Coefficient: 0.5 | Trigger Spell: 1266686 | Target: Self (1)
+Hotfixed         : Coefficient (0.144396 -> 0.115517)
 Description      : Your damage and healing has a chance to grant you Alnsight for $1266686d. While active, casting spells and abilities manifests unstable Alnscorned and consumes their essence to grant you $s1 $pri for $1266687d. Multiple applications may overlap.
 
 Name             : Nalorakk's Call to War (id=1257183) 
@@ -252333,7 +252344,8 @@ Spell Type       : None
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1279509)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 75245.96 (coefficient=588.763) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 97819.75 (coefficient=765.392) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (588.763 -> 765.391968)
 
 Name             : Deepening Temptation (id=1268058) 
 School           : Physical
@@ -252840,7 +252852,8 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1285139)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 86.41363 (coefficient=0.659241) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 73.68178 (coefficient=0.562111) | Target: Self (1)
+Hotfixed         : Coefficient (0.659241 -> 0.562111)
 #2 (id=1285205)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=1285226)  : Dummy (3)
@@ -255890,7 +255903,8 @@ Proc Flags       : Death
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1311588)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 64464.67 (coefficient=504.4047) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 54794.83 (coefficient=428.7429) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (504.404663 -> 428.74292)
 #2 (id=1335718)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=1335902)  : Apply Aura Raid (65) | Dummy (4)
@@ -256234,21 +256248,28 @@ Triggered By     : Slick and Slimy Gralstone (1308012)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1312240)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 27.08896 (coefficient=0.206659) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 19.12477 (coefficient=0.145901) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.206659 -> 0.145901)
 #2 (id=1334480)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 323.9834 (coefficient=2.471637) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 229.4432 (coefficient=1.750399) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (2.471637 -> 1.750399)
 #3 (id=1334481)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 323.9834 (coefficient=2.471637) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 229.4432 (coefficient=1.750399) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (2.471637 -> 1.750399)
 #4 (id=1334482)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 161.9918 (coefficient=1.235819) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 114.7486 (coefficient=0.875406) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (1.235819 -> 0.875406)
 #5 (id=1336278)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 320.2282 (coefficient=2.50563) | Target: Self (1)
 #6 (id=1336279)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 101.3125 (coefficient=0.772903) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 71.6773 (coefficient=0.546819) | Target: Self (1)
+Hotfixed         : Coefficient (0.772903 -> 0.546819)
 #7 (id=1336280)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 20.04575 (coefficient=0.152927) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 14.35711 (coefficient=0.109529) | Target: Self (1)
+Hotfixed         : Coefficient (0.152927 -> 0.109529)
 #8 (id=1336281)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 23.29641 (coefficient=0.177726) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 16.41586 (coefficient=0.125235) | Target: Self (1)
+Hotfixed         : Coefficient (0.177726 -> 0.125235)
 Description      : You have a chance to pull an artifact of questionable value out of the bag when casting spells and abilities, enhancing your secondary stats in various ways. There are probably no fish left in the bag, but it's hard to be sure.
 
 Name             : Seriously Sharp Seashell (id=1292299) 
@@ -256346,9 +256367,11 @@ Triggered By     : Writhing Venom (1295676), Writhing Venom (1295679), Writhing 
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1313864)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3351.509 (coefficient=26.22393) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3854.235 (coefficient=30.15752) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (26.223927 -> 30.157516)
 #2 (id=1317825)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3351.509 (coefficient=26.22393) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3854.235 (coefficient=30.15752) | Target: Self (1)
+Hotfixed         : Coefficient (26.223927 -> 30.157516)
 Description      : Your harmful spells have a chance to ensorcell a serpent into spewing venom at your target, inflicting ${$s1*$<rolemult>} Nature damage split between nearby enemies. $@spelldesc1240903
 
 The primary target also suffers an additional ${$s2*$<rolemult>} Nature damage over $1295679d. 
@@ -256887,7 +256910,8 @@ Proc Flags       : Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1317123)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 42.32774 (coefficient=0.331194) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 48.61069 (coefficient=0.380355) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.331194 -> 0.380355)
 #2 (id=1317236)  : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
 Description      : Your harmful spells have a very high chance to befoul your target with Umbral Malignance, dealing ${$s1*$<rolemult>} Shadow damage every $1305853t1 sec for $1305853d, stacking up to $1305853u times.
@@ -256940,7 +256964,8 @@ Effects          :
 #1 (id=1317305)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
                    Base Value: 0 | Scaled Value: 87825.16 (coefficient=687.1891) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1317344)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 3495.612 (coefficient=27.35146) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4369.515 (coefficient=34.18933) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (27.351461 -> 34.189327)
 
 Name             : First Mate's Shellward (id=1295328) 
 School           : Physical
@@ -257066,7 +257091,8 @@ Triggered By     : Envenomed Bite (1295535)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1317564)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 15678.73 (coefficient=122.6784) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 18030.5 (coefficient=141.0799) | Target: Self (1)
+Hotfixed         : Coefficient (122.678436 -> 141.079895)
 
 Name             : Sludge Coating (id=1295513) 
 School           : Physical
@@ -257105,7 +257131,8 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1317645)  : Apply Aura (6) | Proc Trigger Spell (42): Sanguine Rancor | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 16087.63 (coefficient=125.8779) | PvP Coefficient: 0.5 | Trigger Spell: 1303479 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 18500.77 (coefficient=144.7595) | PvP Coefficient: 0.5 | Trigger Spell: 1303479 | Target: Self (1)
+Hotfixed         : Coefficient (125.877861 -> 144.759537)
 #2 (id=1317654)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25
 Description      : Your attacks have a very high chance to build sanguine rancor within you. After $1303479u times, the rancor erupts to scourge your target and all nearby enemies with crimson bile, dealing ${$s1*$<rolemult>} Shadow damage split between them. $@spelldesc1240903
@@ -257143,11 +257170,14 @@ Triggered By     : Ravage (1307332), Mutilate (1307333)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1317797)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 6894.835 (coefficient=53.94873) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7928.852 (coefficient=62.03941) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (53.94873 -> 62.03941)
 #2 (id=1335266)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4022.067 (coefficient=31.47072) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4625.377 (coefficient=36.19133) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (31.470718 -> 36.191326)
 #3 (id=1335267)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 1828.183 (coefficient=14.30464) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2102.299 (coefficient=16.44946) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (14.304644 -> 16.449463)
 #4 (id=1336295)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : You have a high chance to follow up your attacks with Ravage, Mutilate, or Tempest based on the number of nearby enemies.
@@ -257166,7 +257196,8 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1317836)  : Apply Aura (6) | Proc Trigger Spell (42): Bolstering Gale | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 190.3261 (coefficient=1.451979) | PvP Coefficient: 0.5 | Trigger Spell: 1295649 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 199.8424 (coefficient=1.524578) | PvP Coefficient: 0.5 | Trigger Spell: 1295649 | Target: Self (1)
+Hotfixed         : Coefficient (1.451979 -> 1.524578)
 #2 (id=1317851)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 65.01343 (coefficient=0.495981) | Target: Self (1)
 Description      : Dodging, parrying, or blocking has a high chance to call bolstering winds, increasing your $?(a137047|a137005|a137026)[Strength]?(a212611|a137009|a137014|a137022|a137034|a137038)[Agility][Strength or Agility] by $s1 and Speed by $s2 for $1295649d.
@@ -257299,7 +257330,8 @@ Triggered By     : Preternatural Antivenom (1305846)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1318047)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 47363.96 (coefficient=370.6) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 61573.15 (coefficient=481.78) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (370.599976 -> 481.779968)
 #2 (id=1333118)  : Dummy (3)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
 Description      : Your healing has a high chance to infuse the target with Preternatural Antivenom for $1305846d, healing your ally for $s2% of any damage they take until $s1 health has been restored.
@@ -257388,7 +257420,8 @@ Proc Flags       : Killing Blow
 Attributes       : Passive (6), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1318153)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 9161.832 (coefficient=71.68687) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 10535.99 (coefficient=82.439) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (71.686874 -> 82.438995)
 #2 (id=1318179)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=1334243)  : Dummy (3)
@@ -257448,9 +257481,11 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1318226)  : Apply Aura (6) | Proc Trigger Spell (42): Hex Lord's Doom | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 1.577291 (coefficient=0.012033) | PvP Coefficient: 0.5 | Trigger Spell: 1307470 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1.051528 (coefficient=0.008022) | PvP Coefficient: 0.5 | Trigger Spell: 1307470 | Target: Self (1)
+Hotfixed         : Coefficient (0.012033 -> 0.008022)
 #2 (id=1318228)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 11.25129 (coefficient=0.085835) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12.93909 (coefficient=0.098711) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.085835 -> 0.098711)
 Description      : Your spells afflict you with Hex Lord's Doom, draining your Intellect by $s1 up to $1307470u times. This effect may occur once every $proccooldown sec.
 
 
@@ -258705,9 +258740,11 @@ Triggered By     : Venom Splatter (1307222)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1321360)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 274213.5 (coefficient=2145.587) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 329056.3 (coefficient=2574.705) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (2145.587402 -> 2574.705078)
 #2 (id=1321379)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 48257.61 (coefficient=377.5923) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 57909.32 (coefficient=453.1122) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (377.592316 -> 453.112244)
 
 Name             : Zatha'tek, Breath of Corruption (id=1298023) [Passive] 
 School           : Physical
@@ -258844,7 +258881,8 @@ Effects          :
 Description      : Deals $1296982s1 Nature damage. Guaranteed to critically strike.
 
 Name             : Corrosive Gifts (id=1301266) 
-School           : None
+Hotfixed         : Attributes
+School           : Physical
 Spell Type       : None
 Effects          :
 #2 (id=1331702)  : Trigger Spell (64): Corrosive Gifts
@@ -259377,11 +259415,12 @@ Effects          :
 Description      : $@spelldesc1302600
 
 Name             : Gorgoneion Gaze (id=1302873) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 60 seconds
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Ignore For Mod Time Rate (196), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404)
 Aura Interrupt   : Enter Combat (28), Leave Combat (31)
 Effects          :
 #1 (id=1328583)  : Apply Aura (6) | Dummy (4)
@@ -259596,11 +259635,12 @@ Description      : $@spelldesc1295553
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
 Name             : Gorgoneion Gaze (id=1303487) 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : Magic
 Range            : 150 yards
 Duration         : 10 seconds
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Always AOE Line of Sight (186), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Proc cooldown on a per target basis (330), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Always AOE Line of Sight (186), Ignore For Mod Time Rate (196), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Proc cooldown on a per target basis (330), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1329611)  : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Targeted Enemy (6)
@@ -259616,11 +259656,12 @@ Description      : $@spelldesc1291725
 Tooltip          : Petrified
 
 Name             : Gorgoneion Gaze (id=1303502) 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : Magic
 Range            : 150 yards
 Duration         : 10 seconds
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Always AOE Line of Sight (186), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Proc cooldown on a per target basis (330), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Do Not Consume Aura Stack On Proc (428)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Always AOE Line of Sight (186), Ignore For Mod Time Rate (196), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Proc cooldown on a per target basis (330), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1329638)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
