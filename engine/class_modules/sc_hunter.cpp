@@ -2465,12 +2465,15 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
 namespace actions
 {
 
-static void trigger_beast_cleave( const action_state_t* s )
+static void trigger_beast_cleave( const action_state_t* s, const double multiplier )
 {
   if ( !s->action->result_is_hit( s->result ) )
     return;
 
-  if ( s->action->sim->active_enemies == 1 )
+  if ( s->action->sim->active_enemies < 2 )
+    return;
+
+  if ( multiplier <= 0.0 )
     return;
 
   auto p = debug_cast<hunter_pet_t*>( s->action->player );
@@ -2478,11 +2481,18 @@ static void trigger_beast_cleave( const action_state_t* s )
   if ( !p->buffs.beast_cleave->up() )
     return;
 
+  // 2026-08-14: Crit bonuses are not Beast Cleaved across the board.
+  auto amount = s->result_total;
+  if ( p->o()->bugs && s->result == RESULT_CRIT && s->result_crit_bonus > 0 )
+  {
+    amount /= ( 1.0 + s->result_crit_bonus ) / 2.0;
+  }
+  
   // Target multipliers do not replicate to secondary targets
-  const double target_da_multiplier = ( 1.0 / s->target_da_multiplier );
-  const double target_pet_multiplier = ( 1.0 / s->target_pet_multiplier );
+  amount *= multiplier;
+  amount *= ( 1.0 / s->target_da_multiplier );
+  amount *= ( 1.0 / s->target_pet_multiplier );
 
-  const double amount = s->result_total * p->buffs.beast_cleave->check_value() * target_da_multiplier * target_pet_multiplier;
   p->actions.beast_cleave->execute_on_target( s->target, amount );
 }
 
@@ -2967,7 +2977,7 @@ struct pet_melee_t : public hunter_pet_melee_t<hunter_pet_t>
   {
     hunter_pet_melee_t::impact( s );
 
-    trigger_beast_cleave( s );
+    trigger_beast_cleave( s, p()->buffs.beast_cleave->default_value );
   }
 };
 
@@ -3006,7 +3016,7 @@ struct main_pet_base_melee_t : public hunter_pet_melee_t<hunter_main_pet_base_t>
   {
     hunter_pet_melee_t::impact( s );
 
-    trigger_beast_cleave( s );
+    trigger_beast_cleave( s, p()->hunter_pet_t::buffs.beast_cleave->default_value );
 
     if ( o()->buffs.wyverns_cry->check() )
       o()->buffs.wyverns_cry->increment( 1, buff_t::DEFAULT_VALUE(), o()->buffs.wyverns_cry->remains() );
@@ -3028,7 +3038,7 @@ struct basic_attack_base_t : public hunter_pet_attack_t<hunter_main_pet_t>
     hunter_pet_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-      trigger_beast_cleave( s );
+      trigger_beast_cleave( s, p()->hunter_pet_t::buffs.beast_cleave->default_value );
   }
 };
 
@@ -3168,7 +3178,7 @@ struct bestial_wrath_t : hunter_pet_attack_t<hunter_main_pet_base_t>
   {
     hunter_pet_attack_t::impact( s );
 
-    trigger_beast_cleave( s );
+    trigger_beast_cleave( s, p()->hunter_pet_t::buffs.beast_cleave->default_value );
   }
 };
 
@@ -3185,22 +3195,9 @@ struct kill_command_wildspeaker_t: public hunter_pet_attack_t<dire_critter_t>
   {
     hunter_pet_attack_t::impact( s );
 
-    if ( s->action->result_is_hit( s->result ) && s->action->sim->active_enemies > 1 && o()->talents.kill_cleave.ok() 
-      && p()->hunter_pet_t::buffs.beast_cleave->up() )
+    if ( o()->talents.kill_cleave.ok() )
     {
-      // 2026-07-27: Wildspeaker Kill Command's crit bonus is not Beast Cleaved.
-      double amount = s->result_total;
-      if ( s->result == RESULT_CRIT && s->result_crit_bonus > 0 )
-      {
-        amount /= ( 1.0 + s->result_crit_bonus ) / 2.0;
-      }
-      amount *= o()->talents.kill_cleave->effectN( 1 ).percent();
-      // Target multipliers do not replicate to secondary targets
-      amount *= ( 1.0 / s->target_da_multiplier );
-      amount *= ( 1.0 / s->target_pet_multiplier );
-
-      // Damage is represented as Beast Cleave
-      p()->hunter_pet_t::actions.beast_cleave->execute_on_target( s->target, amount );
+      trigger_beast_cleave( s, o()->talents.kill_cleave->effectN( 1 ).percent() );
     }
   }
   
