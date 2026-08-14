@@ -4090,7 +4090,7 @@ struct celestial_fortune_t : public monk_heal_t
     // disable the snapshot_flags for all multipliers, but specifically allow
     // action_multiplier() to be called so we can override.
     snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_MUL_DA;
+    snapshot_flags |= STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM;
   }
 };
 

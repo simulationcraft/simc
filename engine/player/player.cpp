@@ -470,7 +470,8 @@ struct leech_t : public heal_t
   {
     heal_t::init();
 
-    snapshot_flags = update_flags = STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT;
+    snapshot_flags = update_flags =
+      STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT;
 
     player->register_combat_begin( []( player_t* p ) {
       make_repeating_event( *p->sim,

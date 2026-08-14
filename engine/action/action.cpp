@@ -2730,20 +2730,23 @@ void action_t::init()
 
   if ( does_periodic_damage() )
   {
-    snapshot_flags |= STATE_MUL_TA | STATE_MUL_VERSUS | STATE_TGT_MUL_TA | STATE_TGT_MITG_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    snapshot_flags |= STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM | STATE_MUL_VERSUS | STATE_TGT_MUL_TA |
+                      STATE_TGT_MITG_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
   }
 
   if ( does_direct_damage() )
   {
-    snapshot_flags |= STATE_MUL_DA | STATE_MUL_VERSUS | STATE_TGT_MUL_DA | STATE_TGT_MITG_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    snapshot_flags |= STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM | STATE_MUL_VERSUS | STATE_TGT_MUL_DA |
+                      STATE_TGT_MITG_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
     // Because schools can change during runtime, armor is flagged and not snapshot if determined to be non-physical
     if ( !ignores_armor )
       snapshot_flags |= STATE_TGT_ARMOR;
   }
 
-  if ( player->is_pet() && ( snapshot_flags & ( STATE_MUL_DA | STATE_MUL_TA | STATE_MUL_VERSUS | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA |
-                                                STATE_MUL_PERSISTENT | STATE_VERSATILITY ) ) )
+  if ( player->is_pet() &&
+       ( snapshot_flags & ( STATE_MUL_SPELL_DA | STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM | STATE_MUL_VERSUS |
+                            STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY ) ) )
   {
     snapshot_flags |= STATE_MUL_PET | STATE_TGT_MUL_PET;
   }
@@ -2802,7 +2805,8 @@ void action_t::init()
   {
     if ( is_periodic_damage_effect( eff ) && eff.flags( spelleffect_attribute::EX_COMPUTE_ON_CAST ) )
     {
-      update_flags &= ~( STATE_AP | STATE_SP | STATE_MUL_TA | STATE_MUL_VERSUS | STATE_VERSATILITY );
+      update_flags &=
+        ~( STATE_AP | STATE_SP | STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM | STATE_MUL_VERSUS | STATE_VERSATILITY );
       break;
     }
   }

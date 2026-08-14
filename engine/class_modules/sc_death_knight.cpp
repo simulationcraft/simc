@@ -9994,7 +9994,7 @@ struct death_strike_heal_t final : public death_knight_heal_t
   {
     death_knight_heal_t::init();
 
-    snapshot_flags |= STATE_MUL_DA;
+    snapshot_flags |= STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM;
   }
 
   double base_da_min( const action_state_t* ) const override

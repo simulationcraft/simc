@@ -1324,15 +1324,13 @@ enum snapshot_state_e
   STATE_TGT_USER_3     = 0x40000000,
   STATE_TGT_USER_4     = 0x80000000,
 
-  STATE_MUL_DA         = STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM,
-  STATE_MUL_TA         = STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM,
-
   /**
    * No multiplier helper, use in action_t::init() (after parent init) by issuing snapshot_flags &= STATE_NO_MULTIPLIER
    * (and/or update_flags &= STATE_NO_MULTIPLIER if a dot). This disables all multipliers, including versatility, and
    * any/all persistent multipliers the action would use. */
-  STATE_NO_MULTIPLIER  = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA |
-                            STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_MUL_PET | STATE_TGT_MUL_PET | STATE_MUL_VERSUS ),
+  STATE_NO_MULTIPLIER  = ~( STATE_MUL_SPELL_DA | STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM | STATE_VERSATILITY |
+                            STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_ARMOR |
+                            STATE_MUL_PET | STATE_TGT_MUL_PET | STATE_MUL_VERSUS ),
 
   /// Target-specific state variables, excluding the pet damage multiplier
   STATE_TARGET_NO_PET  = ( STATE_TGT_CRIT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_TGT_MITG_DA |

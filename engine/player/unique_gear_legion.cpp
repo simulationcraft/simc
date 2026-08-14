@@ -3946,7 +3946,7 @@ void item::figurehead_of_the_naglfar( special_effect_t& effect )
         proc_spell_t::init();
 
         // Allow DA multipliers so base_multiplier may take effect.
-        snapshot_flags = STATE_MUL_DA;
+        snapshot_flags = STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM;
         update_flags = 0;
       }
 
@@ -4197,7 +4197,7 @@ struct aw_nuts_t : public proc_spell_t
     proc_spell_t::init();
 
     // Don't benefit from player multipliers because, in game, the squirrel is dealing the damage, not you.
-    snapshot_flags &= ~( STATE_MUL_DA | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA );
+    snapshot_flags &= ~( STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA );
   }
 };
 
@@ -4711,7 +4711,8 @@ void item::wriggling_sinew( special_effect_t& effect )
   effect.trigger_spell_id = 222050;
   auto damage = effect.initialize_offensive_spell_action();
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-  damage->snapshot_flags |= STATE_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA;
+  damage->snapshot_flags |=
+    STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA;
   // Reset triggered spell; we don't want to trigger a spell on use.
   effect.trigger_spell_id = 0;
 

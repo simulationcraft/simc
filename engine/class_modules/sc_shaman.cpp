@@ -4461,7 +4461,7 @@ struct stormblast_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    snapshot_flags = update_flags = ~STATE_MUL_PLAYER_DAM & ( STATE_MUL_DA | STATE_TGT_MUL_DA );
+    snapshot_flags = update_flags = STATE_MUL_SPELL_DA | STATE_TGT_MUL_DA;
 
     may_proc_hot_hand = false;
     may_proc_ability_procs = false;

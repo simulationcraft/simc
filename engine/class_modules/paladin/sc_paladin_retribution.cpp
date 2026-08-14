@@ -206,9 +206,9 @@ struct execution_sentence_t : public paladin_melee_attack_t
     void init() override
     {
       paladin_melee_attack_t::init();
-      snapshot_flags |= STATE_TARGET_NO_PET | STATE_MUL_TA | STATE_MUL_DA;
+      snapshot_flags |= STATE_TARGET_NO_PET | STATE_MUL_SPELL_DA | STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM;
       update_flags &= ~STATE_TARGET;
-      update_flags |= STATE_MUL_TA | STATE_MUL_DA;
+      update_flags |= STATE_MUL_SPELL_DA | STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM;
     }
   };
 
