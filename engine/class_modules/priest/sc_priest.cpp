@@ -787,19 +787,6 @@ struct smite_base_t : public priest_spell_t
     triggers_atonement = true;
   }
 
-  double execute_time_pct_multiplier() const override
-  {
-    auto mul = priest_spell_t::execute_time_pct_multiplier();
-
-    if ( priest().talents.unwavering_will.enabled() &&
-         priest().health_percentage() > priest().talents.unwavering_will->effectN( 2 ).base_value() )
-    {
-      mul *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
-    }
-
-    return mul;
-  }
-
   void execute() override
   {
     priest_spell_t::execute();
@@ -1755,19 +1742,6 @@ struct flash_heal_t final : public priest_heal_t
       snapshot_flags &= STATE_NO_MULTIPLIER;
       snapshot_flags &= ~( STATE_SP );
     }
-  }
-
-  double execute_time_pct_multiplier() const override
-  {
-    auto mul = priest_heal_t::execute_time_pct_multiplier();
-
-    if ( priest().talents.unwavering_will.enabled() &&
-         priest().health_percentage() > priest().talents.unwavering_will->effectN( 2 ).base_value() )
-    {
-      mul *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
-    }
-
-    return mul;
   }
 
   void execute() override
