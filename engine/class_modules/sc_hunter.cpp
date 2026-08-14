@@ -3185,8 +3185,8 @@ struct kill_command_wildspeaker_t: public hunter_pet_attack_t<dire_critter_t>
   {
     hunter_pet_attack_t::impact( s );
 
-    // 2026-07-27: Wildspeaker Kill Command can Beast Cleave without Kill Cleave talented.
-    if ( s->action->result_is_hit( s->result ) && s->action->sim->active_enemies > 1 && p()->hunter_pet_t::buffs.beast_cleave->up() )
+    if ( s->action->result_is_hit( s->result ) && s->action->sim->active_enemies > 1 && o()->talents.kill_cleave.ok() 
+      && p()->hunter_pet_t::buffs.beast_cleave->up() )
     {
       // 2026-07-27: Wildspeaker Kill Command's crit bonus is not Beast Cleaved.
       double amount = s->result_total;
@@ -3194,8 +3194,7 @@ struct kill_command_wildspeaker_t: public hunter_pet_attack_t<dire_critter_t>
       {
         amount /= ( 1.0 + s->result_crit_bonus ) / 2.0;
       }
-      // 2026-07-27: Wildspeaker Kill Command cleaves for Beast Cleave's value, not Kill Cleave's.
-      amount *= o()->bugs ? p()->hunter_pet_t::buffs.beast_cleave->check_value() : o()->talents.kill_cleave->effectN( 1 ).percent();
+      amount *= o()->talents.kill_cleave->effectN( 1 ).percent();
       // Target multipliers do not replicate to secondary targets
       amount *= ( 1.0 / s->target_da_multiplier );
       amount *= ( 1.0 / s->target_pet_multiplier );
