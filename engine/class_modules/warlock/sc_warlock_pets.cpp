@@ -818,7 +818,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
     warlock_pet_spell_t::execute();
 
-    // NOTE: 2026-07-18 PTR 12.1.0 Infernal Rapidity cannot proc from the last Fel Firebolt cast of a Wild Imp if that Wild Imp also triggers Isolated Implosion (bug)
+    // NOTE: 2026-07-18 Infernal Rapidity cannot proc from the last Fel Firebolt cast of a Wild Imp if that Wild Imp also triggers Isolated Implosion (bug)
     if ( !p()->bugs || !triggers_isolated_implosion )
     {
       // Extra Fel Firebolts from Infernal Rapidity cannot proc Infernal Rapidity again
@@ -840,24 +840,14 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     if ( player->resources.current[ RESOURCE_ENERGY ] < cost() )
     {
       auto imp = debug_cast<warlock::pets::demonology::wild_imp_pet_t*>( player );
-      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      {
-        if ( p()->o()->active_4pc<MID2>() && imp->o()->prd_rng.isolated_implosion->trigger() )
-          triggers_isolated_implosion = true;
-      }
+      if ( p()->o()->active_4pc<MID2>() && imp->o()->prd_rng.isolated_implosion->trigger() )
+        triggers_isolated_implosion = true;
 
-      make_event( sim, 0_ms, [ this, imp = imp, imp_target = ffb_target, isolated_implosion_proc = triggers_isolated_implosion ] {
-        if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-        {
-          if ( isolated_implosion_proc )
-            helpers::trigger_isolated_implosion( imp->o(), imp, imp_target );
-          else
-            imp->cast_pet()->dismiss();
-        }
+      make_event( sim, 0_ms, [ imp = imp, imp_target = ffb_target, isolated_implosion_proc = triggers_isolated_implosion ] {
+        if ( isolated_implosion_proc )
+          helpers::trigger_isolated_implosion( imp->o(), imp, imp_target );
         else
-        {
           imp->cast_pet()->dismiss();
-        }
       } );
     }
   }
@@ -967,7 +957,7 @@ void wild_imp_pet_t::demise()
     {
       if ( !power_siphon )
       {
-        // NOTE: 2026-07-11: PTR 12.1.0 Isolated Imploded imps cannot trigger Demoniac (bug)
+        // NOTE: 2026-07-11: Isolated Imploded imps cannot trigger Demoniac (bug)
         if ( imploded )
         {
           if ( o()->flat_rng.demoniac_imp_implosion->trigger() )
@@ -1317,16 +1307,9 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
     npc_id = owner->talents.gloomhound->effectN( 1 ).misc_value1();
     npc_suffix = "vilefiend";
     // 2026-08-01: Validated coefficients
-    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-    {
-      owner_coeff.ap_from_sp = 0.6075;
-      owner_coeff.sp_from_sp = 2.6325;
-    }
-    else
-    {
-      owner_coeff.ap_from_sp = 0.45;
-      owner_coeff.sp_from_sp = 1.95;
-    }
+    // Gloomhound does 35% more damage than the other variants
+    owner_coeff.ap_from_sp = 0.6075;
+    owner_coeff.sp_from_sp = 2.6325;
   }
   else if ( owner->talents.mark_of_fharg.ok() )
   {
@@ -1352,10 +1335,6 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
   action_list_str = "bile_spit";
   action_list_str += "/travel";
   action_list_str += "/headbutt";
-
-  // Currently bugged in 12.0.7 and not being affected by the crit bonus
-  if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
-    affected_by.demonic_brutality = false;
 
   owner_coeff.health = 0.75;
 
