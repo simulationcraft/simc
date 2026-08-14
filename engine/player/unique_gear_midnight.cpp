@@ -4261,6 +4261,21 @@ void janthrazet_the_soul_fang( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Sharpened Lightwood Slasher
+// 1296732 driver
+// 1296735 damage
+void sharpened_lightwood_slasher( special_effect_t& effect ) 
+{
+  auto damage = 
+    create_proc_action<generic_proc_t>( "searing_lightwood", effect, 1296735 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+
+  effect.execute_action = damage;
+  
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace weapons
 
 namespace armors
@@ -5368,6 +5383,7 @@ void register_special_effects()
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( 1296874, weapons::polished_lightwood_channeler );
   register_special_effect( 1298085, weapons::janthrazet_the_soul_fang );
+  register_special_effect( 1296732, weapons::sharpened_lightwood_slasher );
   register_special_effect( 1291718, bite_of_zuljan::venomfang );
   reset_version_check();
   // Armor
