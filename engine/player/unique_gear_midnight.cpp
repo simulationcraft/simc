@@ -4313,7 +4313,8 @@ void zathatek_breath_of_corruption( special_effect_t& effect )
     {
       double m = generic_proc_t::composite_da_multiplier( state );
 
-      m *= 1.0 + find_debuff( state->target )->check_stack_value();
+      if ( auto _debuff = find_debuff( state->target ) )
+        m *= 1.0 + _debuff->check_stack_value();
 
       return m;
     }
