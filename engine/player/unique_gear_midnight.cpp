@@ -4320,7 +4320,6 @@ void zathek_breath_of_corruption( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
-
 }  // namespace weapons
 
 namespace armors
@@ -4629,7 +4628,6 @@ void venomcursed( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, effect );
   }
 }
-
 }  // namespace armors
 
 namespace sets
@@ -4902,9 +4900,12 @@ struct lingering_rune_t : public BASE
   double echo_coeff;
   action_t* echo;
 
-  lingering_rune_t( const special_effect_t& e, std::string_view n, const spell_data_t* s, bool ech, double coef, action_t* d )
+  lingering_rune_t( const special_effect_t& e, std::string_view n, const spell_data_t* s, bool ech, double coef,
+                    action_t* d )
     : BASE( e, n, s ), has_echoes( ech ), echo_coeff( coef ), echo( d )
   {
+    if ( has_echoes )
+      BASE::target_debuff = e.player->find_spell( 1289063 );
   }
 
   buff_t* create_debuff( player_t* t ) override
@@ -4912,8 +4913,10 @@ struct lingering_rune_t : public BASE
     auto debuff = buff_t::find( t, "rune_of_echoes_debuff" );
 
     if ( !debuff )
+    {
       debuff = make_buff<rune_of_echoes_debuff_t>( actor_pair_t( t, BASE::player ), "rune_of_echoes_debuff",
-                                                   BASE::player->find_spell( 1289063 ), echo );
+                                                   BASE::target_debuff, echo );
+    }
 
     return debuff;
   }
@@ -4959,6 +4962,8 @@ struct omnium_core_rune_t : public BASE
     has_echoes = find_special_effect( e.player, 1279616 ) != nullptr;
     if ( has_echoes )
     {
+      BASE::target_debuff = e.player->find_spell( 1289063 );
+
       echo              = create_proc_action<BASE>( fmt::format( "{}_echo", n ), e, heal ? 1303071 : 1303048 );
       echo->base_dd_min = echo->base_dd_max = 1.0;  // actual value is determined by accumulator
       echo->name_str_reporting               = "rune_of_echoes";
@@ -4997,8 +5002,10 @@ struct omnium_core_rune_t : public BASE
     auto debuff = buff_t::find( t, "rune_of_echoes_debuff" );
 
     if ( !debuff )
+    {
       debuff = make_buff<rune_of_echoes_debuff_t>( actor_pair_t( t, BASE::player ), "rune_of_echoes_debuff",
-                                                   BASE::player->find_spell( 1289063 ), echo );
+                                                   BASE::target_debuff, echo );
+    }
 
     return debuff;
   }
