@@ -7105,7 +7105,7 @@ struct pyre_t : public essence_spell_t
     timespan_t consume_flame_duration;
     pyre_damage_t( evoker_t* p, std::string_view name_str )
       : essence_spell_t( name_str, p, p->find_spell( 357212 ) ),
-        consume_flame_mul( p->talent.flameshaper.consume_flame->effectN( 4 ).percent() ),
+        consume_flame_mul( p->talent.flameshaper.consume_flame->effectN( 7 ).percent() ),
         consume_flame_duration( p->talent.flameshaper.consume_flame->effectN( 3 ).time_value() )
     {
       dual = true;
