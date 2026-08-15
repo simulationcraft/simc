@@ -5171,7 +5171,14 @@ struct barbed_shot_t : public barbed_shot_base_t
 
 struct laceration_t : public residual_bleed_base_t
 {
-  laceration_t( hunter_t* p ) : residual_bleed_base_t( "laceration", p, p->talents.laceration_bleed ) {}
+  laceration_t( hunter_t* p ) : residual_bleed_base_t( "laceration", p, p->talents.laceration_bleed )
+  {
+    // 2026-08-15: Due to scripting, Laceration is in Unnatural Causes' spell data but is not affected by it.
+    if ( p->bugs )
+    {
+      affected_by.unnatural_causes.tick = as<uint8_t>( 0 );
+    }
+  }
 };
 
 //==============================
@@ -7226,7 +7233,10 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
       background = dual = true;
 
       // 2026-02-11: Wildfire Bomb's direct damage is not buffed by Unnatural Causes in game, despite being in spell data
-      affected_by.unnatural_causes.direct = as<uint8_t>( 0 );
+      if ( p->bugs )
+      {
+        affected_by.unnatural_causes.direct = as<uint8_t>( 0 );
+      }
 
       aoe = -1;
       reduced_aoe_targets = p -> talents.wildfire_bomb -> effectN( 2 ).base_value();
