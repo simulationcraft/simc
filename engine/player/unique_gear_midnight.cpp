@@ -4276,40 +4276,44 @@ void sharpened_lightwood_slasher( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// Za'thek, Breath of Corruption
+// Zatha'tek, Breath of Corruption
 // 1298023 Driver
-// 1305391 Buff (contains damage coefficient)
+// 1305391 Buff
 // 1305395 Damage
-void zathek_breath_of_corruption( special_effect_t& effect )
+void zathatek_breath_of_corruption( special_effect_t& effect )
 {
   struct breath_of_corruption_t : generic_proc_t
   {
-    buff_t* necrotic_tear;
+    double necrotic_tear_mul;
 
     breath_of_corruption_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "breath_of_corruption", effect.player->find_spell( 1305395 ) ), necrotic_tear( nullptr )
+      : generic_proc_t( effect, "breath_of_corruption", effect.player->find_spell( 1305395 ) ),
+        necrotic_tear_mul( effect.driver()->effectN( 2 ).percent() )
     {
-      auto buff = player->find_spell( 1305391 );
-
-      base_dd_min = base_dd_max = buff->effectN( 1 ).average( effect );
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect );
       base_multiplier *= role_mult( effect );
-
-      necrotic_tear =
-          create_buff( player, "necrotic_tear", buff )->set_default_value( effect.driver()->effectN( 2 ).base_value() );
+      target_debuff = effect.player->find_spell( 1305391 );
     }
 
-    void execute() override
+    buff_t* create_debuff( player_t* t ) override
     {
-      generic_proc_t::execute();
+      return generic_proc_t::create_debuff( t )
+        ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+        ->set_default_value( necrotic_tear_mul );
+    }
 
-      necrotic_tear->trigger();
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      get_debuff( s->target )->trigger();
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
     {
       double m = generic_proc_t::composite_da_multiplier( state );
 
-      m *= 1.0 + necrotic_tear->stack_value();
+      m *= 1.0 + find_debuff( state->target )->check_stack_value();
 
       return m;
     }
@@ -5437,7 +5441,7 @@ void register_special_effects()
   register_special_effect( 1296874, weapons::polished_lightwood_channeler );
   register_special_effect( 1298085, weapons::janthrazet_the_soul_fang );
   register_special_effect( 1296732, weapons::sharpened_lightwood_slasher );
-  register_special_effect( 1298023, weapons::zathek_breath_of_corruption );
+  register_special_effect( 1298023, weapons::zathatek_breath_of_corruption );
   register_special_effect( 1291718, bite_of_zuljan::venomfang );
   reset_version_check();
   // Armor
@@ -5450,7 +5454,6 @@ void register_special_effects()
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1285138, armors::sporecallers_blooming_loop );
   register_special_effect( 1285139, armors::rotmires_sporeheart );
-  reset_version_check();
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( { 1307906, 1307923, 1307928 }, armors::venomcursed );
   reset_version_check();
