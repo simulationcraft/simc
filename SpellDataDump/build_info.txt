@@ -1,1 +1,1 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69299 Live (hotfix 2026-08-14/69299)
+SimulationCraft 1205-01 for World of Warcraft 12.0.7.68453 Live (hotfix 2026-07-18/68453)
