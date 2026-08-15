@@ -5295,6 +5295,17 @@ struct multishot_t: public hunter_ranged_attack_t
 
 struct aimed_shot_base_t : public hunter_ranged_attack_t
 {
+  struct state_data_t
+  {
+    bool expires_marks = false;
+
+    friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out )
+    {
+      fmt::format_to( out, "expires_marks={}", data.expires_marks );
+    }
+  };
+  using state_t = hunter_action_state_t<state_data_t>;
+
   const int trick_shots_targets;
 
   aimed_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
@@ -5303,6 +5314,11 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
   {
     radius = 8;
     base_aoe_multiplier = p->talents.trick_shots_data->effectN( 4 ).percent();
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
   }
 
   double action_multiplier() const override
@@ -5387,9 +5403,12 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
     if ( target_data->debuffs.spotters_mark->check() || target_data->debuffs.sentinels_mark->check() )
     {
-      target_data->debuffs.spotters_mark->expire();
-      target_data->debuffs.sentinels_mark->expire();
-      p()->trigger_lunar_storm( s->target );
+      if ( !p()->bugs || debug_cast<state_t*>( s )->expires_marks )
+      {
+        target_data->debuffs.spotters_mark->expire();
+        target_data->debuffs.sentinels_mark->expire();
+        p()->trigger_lunar_storm( s->target );
+      }
     }
   }
 };
@@ -5403,6 +5422,14 @@ struct aimed_shot_t : public aimed_shot_base_t
       background = dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_multiplier *= p->talents.aspect_of_the_hydra->effectN( 1 ).percent();
+    }
+
+    void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+    {
+      aimed_shot_base_t::snapshot_internal( s, flags, rt );
+
+      // Hydra Aimed Shot always consumes Spotter's Mark normally
+      debug_cast<state_t*>( s )->expires_marks = true;
     }
 
     void execute() override
@@ -5449,6 +5476,17 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     if ( p->talents.deathblow.ok() )
       deathblow.chance = p->talents.deathblow->effectN( 1 ).percent();
+  }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    aimed_shot_base_t::snapshot_internal( s, flags, rt );
+
+    // 2026-08-14: Aimed Shot hits and bounces can only expire Spotter's Marks if the primary
+    //             target had Spotter's Mark up.
+    debug_cast<state_t*>( s )->expires_marks = s->chain_target == 0 &&
+                                             ( td( s->target )->debuffs.spotters_mark->check() ||
+                                               td( s->target )->debuffs.sentinels_mark->check() );
   }
 
   double cost() const override
