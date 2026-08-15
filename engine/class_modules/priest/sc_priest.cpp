@@ -1553,9 +1553,10 @@ struct collapsing_void_damage_t final : public priest_spell_t
   {
     affected_by_shadow_weaving = true;
 
-    aoe              = -1;
-    radius           = data().effectN( 1 ).radius_max();
-    split_aoe_damage = 1;
+    aoe                = -1;
+    radius             = data().effectN( 1 ).radius_max();
+    split_aoe_damage   = 1;
+    triggers_atonement = true;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1604,6 +1605,7 @@ struct entropic_rift_damage_t final : public priest_spell_t
     background = dual = true;
     radius            = base_radius;
 
+    triggers_atonement         = true;
     affected_by_shadow_weaving = true;
   }
 
