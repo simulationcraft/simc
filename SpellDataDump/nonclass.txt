@@ -226481,7 +226481,7 @@ Labels           : 959
                  : 4370
 Proc Chance      : 101%
 Proc Flags       : Death
-Triggered By     : Well Fed (1219182), Well Fed (1219183), Well Fed (1219184), Well Fed (1219185), Refreshment (1219187), Hearty Well Fed (1232076), Hearty Well Fed (1232078), Well Fed (1232086), Well Fed (1232087), Well Fed (1232089), Well Fed (1232091), Refreshment (1232246), Refreshment (1232249), Refreshment (1232250), Refreshment (1232251), Refreshment (1232252), Refreshment (1232253), Refreshment (1232256), Refreshment (1232257), Well Fed (1232313), Well Fed (1232316), Well Fed (1232317), Well Fed (1232318), Well Fed (1232320), Well Fed (1232321), Well Fed (1232324), Well Fed (1232325), Refreshment (1232481), Refreshment (1232483), Refreshment (1232484), Refreshment (1232485), Refreshment (1232486), Refreshment (1232487), Refreshment (1232488), Refreshment (1232489), Well Fed (1232490), Well Fed (1232491), Well Fed (1232492), Well Fed (1232493), Well Fed (1232496), Well Fed (1232498), Well Fed (1232500), Well Fed (1232501), Well Fed (1232582), Well Fed (1232584), Well Fed (1232585), Refreshment (1232901), Refreshment (1232902), Refreshment (1232903), Refreshment (1232905), Refreshment (1232906), Refreshment (1232907), Refreshment (1232908), Refreshment (1232909), Refreshment (1232910), Refreshment (1232913), Refreshment (1232914), Refreshment (1232915), Refreshment (1232916), Refreshment (1232917), Refreshment (1232919), Refreshment (1232920), Refreshment (1232921), Refreshment (1232925), Refreshment (1232926), Refreshment (1232927), Well Fed (1233400), Well Fed (1233401), Well Fed (1233402), Well Fed (1233403), Well Fed (1233404), Well Fed (1233405), Well Fed (1233406), Well Fed (1233407), Well Fed (1233408), Hearty Well Fed (1233733), Hearty Refreshment (1233738), Hearty Refreshment (1233739), Hearty Refreshment (1233740), Hearty Refreshment (1233741), Hearty Refreshment (1233742), Hearty Refreshment (1233743), Hearty Refreshment (1233744), Hearty Refreshment (1233745), Hearty Refreshment (1233746), Hearty Refreshment (1233747), Hearty Refreshment (1233748), Hearty Refreshment (1233749), Hearty Refreshment (1233750), Hearty Refreshment (1233751), Hearty Refreshment (1233752), Hearty Refreshment (1233753), Hearty Refreshment (1233754), Hearty Refreshment (1233755), Hearty Refreshment (1233756), Hearty Refreshment (1233757), Hearty Refreshment (1233758), Hearty Refreshment (1233759), Hearty Refreshment (1233760), Hearty Refreshment (1233761), Hearty Refreshment (1233762), Hearty Refreshment (1233763), Hearty Refreshment (1233764), Hearty Refreshment (1233765), Hearty Refreshment (1233766), Hearty Refreshment (1233767), Hearty Refreshment (1233768), Hearty Refreshment (1233769), Hearty Refreshment (1233770), Refreshment (1259662), Refreshment (1269305), Refreshment (1280485), Refreshment (1283374), Refreshment (1305158), Hearty Refreshment (1305159)
+Triggered By     : Well Fed (1219182), Well Fed (1219183), Well Fed (1219184), Well Fed (1219185), Refreshment (1219187), Hearty Well Fed (1232076), Hearty Well Fed (1232078), Well Fed (1232086), Well Fed (1232087), Well Fed (1232089), Well Fed (1232091), Refreshment (1232246), Refreshment (1232249), Refreshment (1232250), Refreshment (1232251), Refreshment (1232252), Refreshment (1232253), Refreshment (1232256), Refreshment (1232257), Well Fed (1232313), Well Fed (1232316), Well Fed (1232317), Well Fed (1232318), Well Fed (1232320), Well Fed (1232321), Well Fed (1232324), Well Fed (1232325), Refreshment (1232481), Refreshment (1232483), Refreshment (1232484), Refreshment (1232485), Refreshment (1232486), Refreshment (1232487), Refreshment (1232488), Refreshment (1232489), Well Fed (1232490), Well Fed (1232491), Well Fed (1232492), Well Fed (1232493), Well Fed (1232496), Well Fed (1232498), Well Fed (1232500), Well Fed (1232501), Well Fed (1232582), Well Fed (1232584), Well Fed (1232585), Refreshment (1232901), Refreshment (1232902), Refreshment (1232903), Refreshment (1232905), Refreshment (1232906), Refreshment (1232907), Refreshment (1232908), Refreshment (1232909), Refreshment (1232910), Refreshment (1232913), Refreshment (1232914), Refreshment (1232915), Refreshment (1232916), Refreshment (1232917), Refreshment (1232919), Refreshment (1232920), Refreshment (1232921), Refreshment (1232925), Refreshment (1232926), Refreshment (1232927), Well Fed (1233400), Well Fed (1233401), Well Fed (1233402), Well Fed (1233403), Well Fed (1233404), Well Fed (1233405), Well Fed (1233406), Well Fed (1233407), Well Fed (1233408), Hearty Well Fed (1233733), Hearty Refreshment (1233738), Hearty Refreshment (1233739), Hearty Refreshment (1233740), Hearty Refreshment (1233741), Hearty Refreshment (1233742), Hearty Refreshment (1233743), Hearty Refreshment (1233744), Hearty Refreshment (1233745), Hearty Refreshment (1233746), Hearty Refreshment (1233747), Hearty Refreshment (1233748), Hearty Refreshment (1233749), Hearty Refreshment (1233750), Hearty Refreshment (1233751), Hearty Refreshment (1233752), Hearty Refreshment (1233753), Hearty Refreshment (1233754), Hearty Refreshment (1233755), Hearty Refreshment (1233756), Hearty Refreshment (1233757), Hearty Refreshment (1233758), Hearty Refreshment (1233759), Hearty Refreshment (1233760), Hearty Refreshment (1233761), Hearty Refreshment (1233762), Hearty Refreshment (1233763), Hearty Refreshment (1233764), Hearty Refreshment (1233765), Hearty Refreshment (1233766), Hearty Refreshment (1233767), Hearty Refreshment (1233768), Hearty Refreshment (1233769), Hearty Refreshment (1233770), Refreshment (1259662), Refreshment (1269305), Refreshment (1280485), Refreshment (1283374), Well Fed (1305151), Refreshment (1305158), Hearty Refreshment (1305159)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Sitting (27), Allow While Stealthed (37), Retain Item Cast (95), Allow Aura While Dead (116), Do Not Display Range (126), No Cooldown On Tooltip (192), Aura Points On Client (268), Recompute Aura On Level Scale (446), Unknown (467)
 Effects          :
 #1 (id=1204679)  : Apply Aura (6) | Dummy (4)
@@ -248246,7 +248246,7 @@ Attributes       : Allow Item Spell In PvP (13), Aura Unique (43), Not an Action
 Effects          :
 #1 (id=1268811)  : Apply Aura Raid (65) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 4376 (Label) | Radius: 15 yards | Target: Self (1)
-                   Affected Spells (Label): Well Fed (1219182), Well Fed (1219183), Well Fed (1219184), Well Fed (1219185), Well Fed (1232086), Well Fed (1232087), Well Fed (1232089), Well Fed (1232091), Well Fed (1232313), Well Fed (1232316), Well Fed (1232317), Well Fed (1232318), Well Fed (1232320), Well Fed (1232321), Well Fed (1232324), Well Fed (1232325), Well Fed (1232490), Well Fed (1232491), Well Fed (1232492), Well Fed (1232493), Well Fed (1232496), Well Fed (1232498), Well Fed (1232500), Well Fed (1232501), Well Fed (1232582), Well Fed (1232584), Well Fed (1232585), Well Fed (1233400), Well Fed (1233401), Well Fed (1233402), Well Fed (1233403), Well Fed (1233404), Well Fed (1233405), Well Fed (1233406), Well Fed (1233407), Well Fed (1233408), Refreshment (1259662), Relaxed (1269152), Refreshment (1280485), Refreshment (1283374), Refreshment (1305158)
+                   Affected Spells (Label): Well Fed (1219182), Well Fed (1219183), Well Fed (1219184), Well Fed (1219185), Well Fed (1232086), Well Fed (1232087), Well Fed (1232089), Well Fed (1232091), Well Fed (1232313), Well Fed (1232316), Well Fed (1232317), Well Fed (1232318), Well Fed (1232320), Well Fed (1232321), Well Fed (1232324), Well Fed (1232325), Well Fed (1232490), Well Fed (1232491), Well Fed (1232492), Well Fed (1232493), Well Fed (1232496), Well Fed (1232498), Well Fed (1232500), Well Fed (1232501), Well Fed (1232582), Well Fed (1232584), Well Fed (1232585), Well Fed (1233400), Well Fed (1233401), Well Fed (1233402), Well Fed (1233403), Well Fed (1233404), Well Fed (1233405), Well Fed (1233406), Well Fed (1233407), Well Fed (1233408), Refreshment (1259662), Relaxed (1269152), Refreshment (1280485), Refreshment (1283374), Well Fed (1305151), Refreshment (1305158)
 #2 (id=1268812)  : Apply Aura Raid (65) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 4876 (Label) | Radius: 15 yards | Target: Self (1)
                    Affected Spells (Label): Flask of Thalassian Resistance (1235057), Flask of the Magisters (1235108), Flask of the Blood Knights (1235110), Flask of the Shattered Sun (1235111), Vicious Thalassian Flask of Honor (1239355)
@@ -259756,6 +259756,48 @@ Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No 
 Effects          :
 #1 (id=1332165)  : Craft Item (288)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 8986 | Target: Self (1)
+
+Name             : Well Fed (id=1305151) 
+School           : Physical
+Spell Type       : None
+Duration         : 3600 seconds
+Labels           : 959
+                 : 4370
+                 : 4376: W-47CH D0G (1259647 effect#1)
+                 : 4898
+                 : 4902
+                 : 4905
+                 : 4906
+                 : 6103
+                 : 6881
+Proc Chance      : 101%
+Proc Flags       : Death
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Scales with Casting Item's Level (354), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=1332180)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219179 | Target: Self (1)
+#2 (id=1332181)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1332182)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#4 (id=1332183)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#5 (id=1332184)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1332185)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#7 (id=1332186)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#8 (id=1332187)  : Apply Aura (6) | Dummy (4) | Scaling Class: Primary Attribute (-1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#9 (id=1332188)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
+#10 (id=1332189) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Sta | Target: Self (1)
+#11 (id=1332190) : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
+Description      : Increases Critical Strike by $s1 for $d.
+Tooltip          : Stamina increased by $w10 and Critical Strike increased by $w9.
 
 Name             : Refreshment (id=1305158) 
 School           : Physical
