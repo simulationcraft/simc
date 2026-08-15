@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.0.69299
-static constexpr std::array<spelltext_data_t, 29242> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29243> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -29110,6 +29110,7 @@ static constexpr std::array<spelltext_data_t, 29242> __spelltext_data { {
   { 1303624, "Throw the catch back into the water to gain $s2 Midnight Perception for $d.\r\n\r\nThrowing multiple catches can extend this buff up to $M1 min.", "Midnight Perception increased by $w2.", 0 },
   { 1304485, "$@spelldesc1231346", "Haste increased by ${$W1}.1%.", 0 },
   { 1305083, "$@spelldesc1248856", 0, 0 },
+  { 1305151, "Increases Critical Strike by $s1 for $d.", "Stamina increased by $w10 and Critical Strike increased by $w9.", 0 },
   { 1305158, "$@spelldesc1232065\r\n\r\n$@spellicon461960  $@spellname461960\r\nIf you spend at least 10 seconds eating, you will become $@spellname461960 and gain ${$1219179s4*1} of your highest secondary stat for $461960d.", 0, 0 },
   { 1305159, "$@spelldesc1232065\r\n\r\n$@spellicon1232076  $@spellname1232076\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232076 and gain $1219179s2 primary stat for $1232076d.\r\n\r\nThis food persists through death.", 0, 0 },
   { 1305166, "Become a snake when underwater in Midnight Zones, allowing you to breathe water and swim rapidly.\r\n", "Capable of waterbreathing.\r\nSwim speed increased by $188042s2%.", 0 },
