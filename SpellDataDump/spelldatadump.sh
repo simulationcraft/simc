@@ -18,22 +18,22 @@ do
   echo "Processing $CLASS"
   FILE=SpellDataDump/$CLASS.txt
   echo $FILE
-  ./engine/simc display_build="0" spell_query="spell.class=$CLASS" > $FILE.unix
+  ./build/simc display_build="0" spell_query="spell.class=$CLASS" > $FILE.unix
   convert_line_ending $FILE
 done
 
 FILE=SpellDataDump/allspells.txt
-./engine/simc display_build="0" spell_query="spell" > $FILE.unix
+./build/simc display_build="0" spell_query="spell" > $FILE.unix
 convert_line_ending $FILE
 
 FILE=SpellDataDump/nonclass.txt
-./engine/simc display_build="0" spell_query="spell.class=none" > $FILE.unix
+./build/simc display_build="0" spell_query="spell.class=none" > $FILE.unix
 convert_line_ending $FILE
 
 FILE=SpellDataDump/build_info.txt
-./engine/simc display_build="2" > $FILE.unix
+./build/simc display_build="2" > $FILE.unix
 convert_line_ending $FILE
 
 FILE=SpellDataDump/bonus_ids.txt
-./engine/simc display_build="0" show_bonus_ids="1" > $FILE.unix
+./build/simc display_build="0" show_bonus_ids="1" > $FILE.unix
 convert_line_ending $FILE
