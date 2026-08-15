@@ -3594,7 +3594,7 @@ void voracious_heart_of_ulatek( special_effect_t& effect )
   auto damage = create_proc_action<devour_morsel_t>( "devour_morsel", effect, equip, stacking );
 
   auto equip_se = new special_effect_t( effect.player );
-  equip_se->name_str = "voracious_heart_of_ulatek_driver";
+  equip_se->name_str = "voracious_heart_of_ulatek_equip_driver";
   equip_se->spell_id = effect.driver()->id();
   equip_se->execute_action = damage;
   equip_se->proc_flags2_   = PF2_ALL_HIT;  // TODO: confirm
