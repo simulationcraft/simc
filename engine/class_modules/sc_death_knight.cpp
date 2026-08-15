@@ -17674,32 +17674,38 @@ struct death_knight_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura buffed 9%", 179689, hotfix::HOTFIX_FLAG_LIVE )
+    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (direct) buffed 9%", 179689, hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( -3 )
+        .modifier( -4 )
         .verification_value( -12 );
 
-    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura buffed 9%", 191174,
+    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (periodic) buffed 9%", 191174,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( -3 )
+        .modifier( -4 )
         .verification_value( -12 );
 
-    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (buffed 9%", 844541,
+    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (pet) buffed 9%", 844541,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( -3 )
+        .modifier( -4 )
         .verification_value( -12 );
 
-    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura buffed 9%", 1032340,
+    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (guardian) buffed 9%", 1032340,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( -3 )
+        .modifier( -4 )
         .verification_value( -12 );
+
+      hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (melee) buffed 9%", 1052714, hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 296 )
+        .verification_value( 264 );
 
     hotfix::register_effect( "Death Knight", "2026-08-14", "Freezing Tempest attack speed nerfed 50%", 1320578,
                              hotfix::HOTFIX_FLAG_LIVE )
