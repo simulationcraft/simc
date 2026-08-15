@@ -6701,6 +6701,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   {
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     travel_speed = player->find_spell( 77451 )->missile_speed();
+    affected_by_mid2_dmg   = true;
   }
 
   static lava_burst_state_t* cast_state( action_state_t* s )
@@ -7227,6 +7228,7 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     maelstrom_gain  = p->spec.maelstrom->effectN( 2 ).resource( RESOURCE_MAELSTROM );
 
     affected_by_master_of_the_elements = true;
+    affected_by_mid2_dmg               = true;
     // Stormkeeper affected by flagging is applied to the Energize spell ...
     affected_by_stormkeeper_damage = p->talent.stormkeeper.ok() && p->specialization() == SHAMAN_ELEMENTAL;
     affected_by_stormkeeper_damage_tier = p->talent.stormkeeper.ok() && p->specialization() == SHAMAN_ELEMENTAL;
