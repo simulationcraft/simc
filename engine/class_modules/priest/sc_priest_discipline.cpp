@@ -775,7 +775,8 @@ void priest_t::create_buffs_discipline()
     buffs.borrowed_time->set_default_value( talents.discipline.borrowed_time->effectN( 2 ).percent() );
   }
 
-  buffs.weal_and_woe = make_buff( this, "weal_and_woe", talents.discipline.weal_and_woe_buff );
+  buffs.weal_and_woe =
+      make_buff( this, "weal_and_woe", talents.discipline.weal_and_woe_buff )->set_default_value_from_effect( 1, 0.01 );
 
   buffs.archangel = make_buff( this, "archangel", talents.discipline.archangel_buff );
 

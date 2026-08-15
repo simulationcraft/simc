@@ -1962,7 +1962,7 @@ struct power_word_shield_t final : public priest_absorb_t
 
     if ( priest().buffs.weal_and_woe->check() )
     {
-      m *= 1 + priest().buffs.weal_and_woe->data().effectN( 2 ).percent() * priest().buffs.weal_and_woe->check();
+      m *= 1.0 + priest().buffs.weal_and_woe->check_value();
     }
 
     if ( priest().buffs.dark_transference->check() )
@@ -2158,7 +2158,7 @@ struct void_shield_t final : public priest_absorb_t
 
     if ( priest().buffs.weal_and_woe->check() )
     {
-      m *= 1 + priest().buffs.weal_and_woe->data().effectN( 2 ).percent() * priest().buffs.weal_and_woe->check();
+      m *= 1.0 + priest().buffs.weal_and_woe->check_value();
     }
 
     if ( priest().buffs.dark_transference->check() )
