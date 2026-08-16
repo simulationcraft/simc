@@ -2410,7 +2410,7 @@ struct dummy_action_t : public action_t
 struct shaman_action_state_t : public action_state_t
 {
 protected:
-  unsigned exec_type = static_cast<unsigned>( spell_variant::NORMAL );
+  unsigned exec_type = variant_flag( spell_variant::NORMAL );
 
 public:
   double mw_mul = 0.0;
@@ -2431,7 +2431,7 @@ public:
   void initialize() override
   {
     action_state_t::initialize();
-    exec_type = static_cast<unsigned>( spell_variant::NORMAL );
+    exec_type = variant_flag( spell_variant::NORMAL );
     mw_mul = 0.0;
   }
 
@@ -2506,7 +2506,7 @@ public:
   action_t* mw_parent;
 
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil(),
-                  unsigned variant_ = static_cast<unsigned>( spell_variant::NORMAL ) )
+                  unsigned variant_ = variant_flag( spell_variant::NORMAL ) )
     : ab( n, player, s ),
       exec_type( variant_ ),
       unshift_ghost_wolf( true ),
@@ -3015,7 +3015,7 @@ public:
   stats::proc_tracker_t* proc_wf, *proc_ls, *proc_hh, *proc_ft;
 
   shaman_attack_t( util::string_view token, shaman_t* p, const spell_data_t* s,
-                   unsigned variant_ = static_cast<unsigned>( spell_variant::NORMAL ) )
+                   unsigned variant_ = variant_flag( spell_variant::NORMAL ) )
     : base_t( token, p, s, variant_ ),
       may_proc_windfury( p->talent.windfury_weapon.ok() ),
       may_proc_flametongue( p->talent.flametongue_weapon.ok() ),
@@ -3122,7 +3122,7 @@ public:
 
   shaman_spell_base_t( util::string_view n, shaman_t* player,
                        const spell_data_t* s = spell_data_t::nil(),
-                       unsigned type_ = static_cast<unsigned>( spell_variant::NORMAL ) )
+                       unsigned type_ = variant_flag( spell_variant::NORMAL ) )
     : ab( n, player, s, type_ ), ancestor_trigger( ancestor_cast::DISABLED ),
       proc_deeply_rooted_elements( nullptr )
   { }
@@ -3156,8 +3156,7 @@ public:
   void impact( action_state_t* s ) override
   {
     ab::impact( s );
-    if ( ( this->id == 61882 ||
-           this->is_variant( spell_variant::NORMAL ) && !this->background && s->chain_target == 0 ) )
+    if ( this->is_variant( spell_variant::NORMAL ) && !this->background && s->chain_target == 0 )
     {
       if ( this->sim->debug )
       {
@@ -3212,7 +3211,8 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   event_t* lr_event;
 
   shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
-                 unsigned type_ = static_cast<unsigned>( spell_variant::NORMAL ) ) : base_t( token, p, s, type_ ),
+                 unsigned type_ = variant_flag( spell_variant::NORMAL ) ) :
+    base_t( token, p, s, type_ ),
       overload( nullptr ),
       proc_moe( nullptr ),
       proc_potm( nullptr ),
@@ -4842,7 +4842,7 @@ struct elemental_overload_spell_t : public shaman_spell_t
 
   elemental_overload_spell_t( shaman_t* p, util::string_view name, const spell_data_t* s,
                               shaman_spell_t* parent_, double multiplier = -1.0,
-                              unsigned type_ = static_cast<unsigned>( spell_variant::NORMAL ) )
+                              unsigned type_ = variant_flag( spell_variant::NORMAL ) )
     : shaman_spell_t( name, p, s, type_ ), parent( parent_ )
   {
     base_execute_time = timespan_t::zero();
@@ -9302,7 +9302,7 @@ struct surging_totem_pulse_t : public spell_totem_action_t
   { return variant & ( 1 << static_cast<unsigned>( variant_ ) ); }
 
   surging_totem_pulse_t( spell_totem_pet_t* totem,
-    unsigned var_ = static_cast<unsigned>( spell_variant::NORMAL ) ) :
+    unsigned var_ = variant_flag( spell_variant::NORMAL ) ) :
     spell_totem_action_t( ::action_name( "tremor", var_ ), totem,
       totem->find_spell( 455622 ) ), variant( var_ )
   {
