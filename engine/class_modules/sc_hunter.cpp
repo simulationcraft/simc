@@ -1192,7 +1192,7 @@ public:
   void trigger_deathblow( bool activated = false );
   void trigger_lunar_storm( player_t* target );
   void consume_precise_shots( bool expire_buff = true );
-  void trigger_eagles_mark( player_t* target, bool sentinel, bool force = false, bool unload = false );
+  void trigger_eagles_mark( player_t* target, bool sentinel, bool force = false );
   bool consume_howl_of_the_pack_leader( player_t* target );
   void trigger_howl_of_the_pack_leader();
   void trigger_natures_ally_3();
@@ -3650,7 +3650,7 @@ void hunter_t::consume_precise_shots( bool expire_buff )
   }
 }
 
-void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force, bool unload )
+void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force )
 {
   if ( !talents.sentinel.ok() && !specs.spotters_mark_data.ok() )
     return;
@@ -5735,7 +5735,7 @@ struct rapid_fire_t: public hunter_ranged_attack_t
         //             of Unload's first shot being able to instantly trigger a Mark without Precise Shots.
         if ( !p()->bugs || sequence == 2 )
         {
-          p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok(), false, true );
+          p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok(), false );
         }
       }
     }
@@ -5767,7 +5767,7 @@ struct rapid_fire_t: public hunter_ranged_attack_t
         //             of Unload's first shot being able to instantly trigger a Mark without Precise Shots.
         if ( !p()->bugs || sequence == 2 )
         {
-          p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok(), false, true );
+          p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok(), false );
         }
       }
     }
@@ -5799,7 +5799,7 @@ struct rapid_fire_t: public hunter_ranged_attack_t
         //             of Unload's first shot being able to instantly trigger a Mark without Precise Shots.
         if ( !p()->bugs || sequence == 2 )
         {
-          p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok(), false, true );
+          p()->trigger_eagles_mark( s->target, p()->talents.sentinel.ok(), false );
         }
       }
     }
