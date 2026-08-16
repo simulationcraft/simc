@@ -12443,8 +12443,9 @@ double demon_hunter_t::fury_state_t::fury_drain_per_second( int stacks ) const
 
   if ( has_reduced_drain )
   {
-    // Reduced while casting Collapsing Star / channeling Void Ray. Measured ~0.127 from logs.
-    drain *= 0.127;
+    // Reduced while casting Collapsing Star / channeling Void Ray.
+    // 2026-08-16 -- Remeasured on 12.1 to be a factor of 10.
+    drain *= 0.1;
   }
 
   if ( drain_stacks < 1 )
