@@ -12746,6 +12746,10 @@ void shaman_t::create_buffs()
     ->set_default_value( talent.static_accumulation->effectN( 1 ).base_value() )
     ->set_trigger_spell( talent.static_accumulation )
     ->set_duration( 0_ms ) // Buff state controlled by Ascendance and Doom winds buffs
+    // Ascendance expiration event eats the last tick, so proc it with a stack change callback
+    ->set_expire_callback( [ this ]( buff_t* b, int /* stacks */, timespan_t /* duration */) {
+      generate_maelstrom_weapon( action.ascendance, as<int>( b->value() ) );
+    } )
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
       generate_maelstrom_weapon( action.ascendance, as<int>( b->value() ) );
     } );
