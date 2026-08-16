@@ -3689,7 +3689,7 @@ void font_of_venomous_rage( special_effect_t& effect )
     action_t* venom_splatter;
 
     font_channel_t( const special_effect_t& e ) :
-      proc_spell_t( "font_of_venemous_rage", e.player, e.driver() )
+      proc_spell_t( "font_of_venomous_rage", e.player, e.driver() )
     {
       unsigned equip_id = 1297911;
       auto equip = find_special_effect( e.player, equip_id );
@@ -3734,7 +3734,7 @@ void font_of_venomous_rage( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<font_channel_t>( "font_of_venemous_rage", effect );
+  effect.execute_action = create_proc_action<font_channel_t>( "font_of_venomous_rage", effect );
 }
 
 // Stormbound Emblem of Dazar
