@@ -60,6 +60,7 @@ actions.draoe+=/wailing_arrow,if=!cooldown.black_arrow.ready
 actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
 actions.draoe+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
 actions.draoe+=/black_arrow
+actions.draoe+=/multishot,if=focus>cost+action.aimed_shot.cost&max_prio_damage
 actions.draoe+=/steady_shot
 
 actions.drst=black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
@@ -86,6 +87,7 @@ actions.sentaoe+=/rapid_fire,target_if=max:debuff.sentinels_mark.down,if=talent.
 actions.sentaoe+=/rapid_fire,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
 actions.sentaoe+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
 actions.sentaoe+=/moonlight_chakram
+actions.sentaoe+=/multishot,if=focus>cost+action.aimed_shot.cost&max_prio_damage
 actions.sentaoe+=/steady_shot
 
 actions.sentst=explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&active_enemies>1&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)
