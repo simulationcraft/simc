@@ -285,6 +285,7 @@ void marksmanship( player_t* p )
   draoe->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
   draoe->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time" );
   draoe->add_action( "black_arrow" );
+  draoe->add_action( "multishot,if=focus>cost+action.aimed_shot.cost&max_prio_damage" );
   draoe->add_action( "steady_shot" );
 
   sentaoe->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)" );
@@ -297,6 +298,7 @@ void marksmanship( player_t* p )
   sentaoe->add_action( "rapid_fire,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1" );
   sentaoe->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time" );
   sentaoe->add_action( "moonlight_chakram" );
+  sentaoe->add_action( "multishot,if=focus>cost+action.aimed_shot.cost&max_prio_damage" );
   sentaoe->add_action( "steady_shot" );
 
   sentst->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&active_enemies>1&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)" );
