@@ -358,26 +358,12 @@ struct hunter_td_t: public actor_target_data_t
   // Active targets will get a random priority set and be ranked by it when the secondary target is chosen.
   int hydra_priority;
 
-  struct spotters_mark_rapid_fire_buff_t final : public buff_t
-  {
-    bool triggered_by_unload = false;
-
-    spotters_mark_rapid_fire_buff_t( actor_pair_t q, util::string_view n, const spell_data_ptr_t s ) : buff_t( q, n, s ) {}
-
-    bool trigger( int stacks = -1, double value = DEFAULT_VALUE(), double chance = (-1.0), timespan_t duration = timespan_t::min() ) override
-    {
-      triggered_by_unload = false;
-
-      return buff_t::trigger( stacks, value, chance, duration );
-    }
-  };
-
   struct debuffs_t
   {
     buff_t* outland_venom;
 
     buff_t* spotters_mark;
-    spotters_mark_rapid_fire_buff_t* spotters_mark_rapid_fire;
+    buff_t* spotters_mark_rapid_fire;
     buff_t* sentinels_mark;
   } debuffs;
 
@@ -577,7 +563,6 @@ public:
 
     proc_t* windrunner_quiver;
     proc_t* eagles_mark;
-    proc_t* rapid_fire_mark_munched;
 
     proc_t* dire_beast_spawn;
     proc_t* dark_minion_spawn;
@@ -3677,7 +3662,6 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force,
     if ( talents.spotters_mark_rapid_fire_debuff.ok() )
     {
       td->debuffs.spotters_mark_rapid_fire->trigger();
-      td->debuffs.spotters_mark_rapid_fire->triggered_by_unload = unload;
     }
 
     procs.eagles_mark->occur();
@@ -3722,7 +3706,6 @@ void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force,
     if ( talents.spotters_mark_rapid_fire_debuff.ok() )
     {
       td->debuffs.spotters_mark_rapid_fire->trigger();
-      td->debuffs.spotters_mark_rapid_fire->triggered_by_unload = unload;
     }
 
     procs.eagles_mark->occur();
@@ -5695,21 +5678,6 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     {
       hunter_ranged_attack_t::impact( state );
 
-      // 2026-07-17: Spotter's Mark Rapid Fire also expires on impact, meaning a sequence of Rapid Fire -> Precise Shots 
-      //             can munch a proc with no benefit, depending on travel time & distance.
-      // 2026-07-22: This interaction only happens for Spotter's Mark Rapid Fire debuffs NOT triggered by Unload.
-      // 2026-07-24: ... when the initial Rapid Fire was cast against a marked target.
-      if ( p()->bugs )
-      {
-        if ( td( state->target )->debuffs.spotters_mark_rapid_fire->check() &&
-            !td( state->target )->debuffs.spotters_mark_rapid_fire->triggered_by_unload &&
-            range::find( channel->marked_targets, state->target ) != channel->marked_targets.end() )
-        {
-          td( state->target )->debuffs.spotters_mark_rapid_fire->expire();
-          p()->procs.rapid_fire_mark_munched->occur();
-        }
-      }
-
       if ( sanctified_armaments )
       {
         double amount = state->result_amount * p()->talents.sanctified_armaments->effectN( 1 ).percent();
@@ -7473,9 +7441,10 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
   debuffs.spotters_mark = make_buff( *this, "spotters_mark", p->specs.spotters_mark_debuff )
     ->set_default_value( p->specs.spotters_mark_debuff->effectN( 1 ).percent() );
 
-  debuffs.spotters_mark_rapid_fire = new spotters_mark_rapid_fire_buff_t( *this, "spotters_mark_rapid_fire", p->talents.spotters_mark_rapid_fire_debuff );
-  debuffs.spotters_mark_rapid_fire->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS );
-  debuffs.spotters_mark_rapid_fire->set_chance( p->talents.spotters_mark_rapid_fire_debuff.ok() );
+  debuffs.spotters_mark_rapid_fire = 
+    make_buff( *this, "spotters_mark_rapid_fire", p->talents.spotters_mark_rapid_fire_debuff )
+      ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER_SPELLS )
+      ->set_chance( p->talents.spotters_mark_rapid_fire_debuff.ok() );
 
   debuffs.sentinels_mark = make_buff( *this, "sentinels_mark", p->talents.sentinels_mark )
     ->set_default_value_from_effect( p->specialization() == HUNTER_MARKSMANSHIP ? 1 : 2 );
@@ -8543,11 +8512,6 @@ void hunter_t::init_procs()
     procs.eagles_mark = get_proc( "Sentinel's Mark" );
   else if ( specs.spotters_mark_data.ok() )
     procs.eagles_mark = get_proc( "Spotter's Mark" );
-
-  if ( talents.spotters_mark_rapid_fire_debuff.ok() )
-  {
-    procs.rapid_fire_mark_munched = get_proc( "Rapid Fire Mark munched" );
-  }
 
   procs.windrunner_quiver = get_proc( "Windrunner Quiver" );
 
