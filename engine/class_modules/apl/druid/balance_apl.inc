@@ -25,10 +25,10 @@ def->add_action( "use_item,name=wraps_of_cosmic_madness,if=!buff.eclipse.up" );
 def->add_action( "use_item,name=font_of_venomous_rage,if=!buff.eclipse.up" );
 def->add_action( "berserking,if=buff.ca_inc.up&(buff.harmony_of_the_grove.up|!talent.dream_surge)|fight_remains<cooldown.ca_inc.remains" );
 def->add_action( "invoke_external_buff,name=power_infusion,if=buff.ca_inc.up" );
-def->add_action( "variable,name=eclipse_timings,value=(cooldown.eclipse.full_recharge_time<(cooldown.force_of_nature.remains<?(cooldown.fury_of_elune.remains*hero_tree.elunes_chosen*!talent.lunation)<?((buff.eclipse.duration+2)))|cooldown.ca_inc.remains<(cooldown.force_of_nature.remains<?(cooldown.fury_of_elune.remains*hero_tree.elunes_chosen*!talent.lunation)<?(buff.eclipse.duration+2)))|fight_remains<buff.eclipse.duration" );
+def->add_action( "variable,name=eclipse_timings,value=((cooldown.eclipse.full_recharge_time<(cooldown.force_of_nature.remains<?(cooldown.fury_of_elune.remains*hero_tree.elunes_chosen*!talent.lunation)<?((buff.eclipse.duration+2)))|cooldown.ca_inc.remains<(cooldown.force_of_nature.remains<?(cooldown.fury_of_elune.remains*hero_tree.elunes_chosen*!talent.lunation)<?(buff.eclipse.duration+2)))|fight_remains<buff.eclipse.duration)&(buff.eclipse.remains<2&fight_style.dungeonroute|!fight_style.dungeonroute)" );
 def->add_action( "variable,name=opener,op=set,value=0,if=buff.ca_inc.up" );
 def->add_action( "variable,name=starfall_cosmos,value=(talent.starweaver&(talent.meteorites&(talent.incarnation_chosen_of_elune&talent.meteor_storm&!talent.power_of_goldrinn|buff.ca_inc.down&(talent.incarnation_chosen_of_elune|talent.stellar_amplification|!talent.power_of_goldrinn))|buff.eclipse.down&(talent.meteorites|talent.aetherial_kindling|talent.stellar_amplification&!talent.power_of_goldrinn))|buff.ca_inc.down&talent.meteorites&talent.aetherial_kindling&talent.stellar_amplification&!talent.power_of_goldrinn|buff.eclipse.down&talent.meteorites&(talent.aetherial_kindling|talent.stellar_amplification|!talent.power_of_goldrinn))&buff.touch_the_cosmos.react&!buff.starweavers_weft.react" );
-def->add_action( "variable,name=cds,op=set,value=1,if=(((cooldown.force_of_nature.remains*hero_tree.keeper_of_the_grove)<?(cooldown.fury_of_elune.remains*hero_tree.elunes_chosen*!talent.lunation)<?cooldown.ca_inc.remains<?(buff.eclipse.remains-(10*(buff.bloodlust.up*buff.ascendant_stars.down)))<?buff.ca_inc.remains)<1)&(active_dot.moonfire>=active_enemies|active_dots.moonfire>=10|spell_targets=1&hero_tree.keeper_of_the_grove|hero_tree.elunes_chosen&variable.opener&spell_targets=1)" );
+def->add_action( "variable,name=cds,op=set,value=1,if=((((cooldown.force_of_nature.remains*hero_tree.keeper_of_the_grove)<?(cooldown.fury_of_elune.remains*hero_tree.elunes_chosen*!talent.lunation)<?cooldown.ca_inc.remains<?(buff.eclipse.remains-(10*(buff.bloodlust.up*buff.ascendant_stars.down)))<?buff.ca_inc.remains)<1)&(active_dot.moonfire>=active_enemies|active_dots.moonfire>=10|spell_targets=1&hero_tree.keeper_of_the_grove|hero_tree.elunes_chosen&variable.opener&spell_targets=1))&target.time_to_die>20" );
 def->add_action( "variable,name=cds,op=set,value=0,if=buff.ca_inc.up" );
 def->add_action( "variable,name=mini,op=set,value=1,if=(((cooldown.eclipse.remains<?cooldown.force_of_nature.remains<?cooldown.fury_of_elune.remains-15<?buff.eclipse.remains)<1)&(cooldown.ca_inc.remains+10>(cooldown.force_of_nature.duration<?cooldown.fury_of_elune.duration-15)))&hero_tree.keeper_of_the_grove" );
 def->add_action( "variable,name=mini,op=set,value=0,if=prev_gcd.1.eclipse" );
@@ -50,7 +50,7 @@ aoe->add_action( "force_of_nature,if=hero_tree.elunes_chosen&astral_power<50&coo
 aoe->add_action( "eclipse,if=variable.eclipse_timings" );
 aoe->add_action( "convoke_the_spirits,if=(buff.ca_inc.up&astral_power<40|cooldown.ca_inc.remains>50&buff.harmony_of_the_grove.up&buff.ca_inc.down)&(buff.orbit_breaker.stack<10|hero_tree.keeper_of_the_grove)" );
 aoe->add_action( "starsurge,if=(astral_power>80|buff.eclipse.up&action.starsurge.cost>1)&variable.Starfall_talents&!buff.starweavers_warp.react&!buff.touch_the_cosmos.react|buff.starweavers_weft.react" );
-aoe->add_action( "starfall,if=(astral_power>80-79*hero_tree.elunes_chosen|buff.eclipse.up&action.starfall.cost>1)&target.time_to_die>5&spell_targets>=2|buff.starweavers_warp.react|buff.touch_the_cosmos.react" );
+aoe->add_action( "starfall,if=((astral_power>80-79*hero_tree.elunes_chosen|buff.eclipse.up&action.starfall.cost>1)&spell_targets>=2|buff.starweavers_warp.react|buff.touch_the_cosmos.react)&target.time_to_die>5" );
 aoe->add_action( "starfire,if=buff.ascendant_fires.up&buff.eclipse_lunar.up" );
 aoe->add_action( "new_moon,if=astral_power.deficit>energize_amount&debuff.atmospheric_exposure.remains<execute_time+0.5" );
 aoe->add_action( "half_moon,if=astral_power.deficit>energize_amount&debuff.atmospheric_exposure.remains<execute_time+0.5" );
@@ -59,8 +59,9 @@ aoe->add_action( "wild_mushroom,if=buff.eclipse_solar.up|cooldown.wild_mushroom.
 aoe->add_action( "starfire,if=hero_tree.elunes_chosen|buff.eclipse.down&spell_targets.starfire>2|buff.eclipse_lunar.up&spell_targets.starfire>2" );
 aoe->add_action( "wrath,if=spell_targets<=2" );
 
+cooldowns->add_action( "moonfire,target_if=hero_tree.elunes_chosen&dot.moonfire.remains<12&spell_targets=1,line_cd=20" );
+cooldowns->add_action( "moonfire,target_if=refreshable&(target.time_to_die-remains)>6&active_dots.moonfire<10&spell_targets>1" );
 cooldowns->add_action( "sunfire,if=dot.sunfire.remains<15,line_cd=10" );
-cooldowns->add_action( "moonfire,target_if=hero_tree.elunes_chosen&dot.moonfire.remains<12,line_cd=10" );
 cooldowns->add_action( "fury_of_elune" );
 cooldowns->add_action( "force_of_nature,if=hero_tree.keeper_of_the_grove" );
 cooldowns->add_action( "celestial_alignment,add_queue_lag=1" );
@@ -102,9 +103,11 @@ mini->add_action( "force_of_nature" );
 mini->add_action( "eclipse" );
 
 opener->add_action( "moonfire,if=!talent.convoke_the_spirits,line_cd=999" );
+opener->add_action( "moonfire,target_if=refreshable&(target.time_to_die-remains)>6&active_dots.moonfire<10&spell_targets>1" );
 opener->add_action( "sunfire,line_cd=999" );
 opener->add_action( "eclipse,if=!talent.convoke_the_spirits,line_cd=999" );
-opener->add_action( "starsurge,if=buff.ascendant_stars.up&!talent.convoke_the_spirits" );
+opener->add_action( "starsurge,if=buff.ascendant_stars.up&!talent.convoke_the_spirits&((variable.Starfall_talents&!buff.starweavers_warp.react&!buff.touch_the_cosmos.react|buff.starweavers_weft.react)&spell_targets>1|spell_targets=1)" );
+opener->add_action( "starfall,if=buff.ascendant_stars.up&!talent.convoke_the_spirits&((action.starfall.cost>1)|buff.starweavers_warp.react|buff.touch_the_cosmos.react)&spell_targets>=2" );
 opener->add_action( "wrath,if=(buff.ascendant_stars.up|buff.ascendant_stars.down&astral_power<80)&!talent.convoke_the_spirits&hero_tree.keeper_of_the_grove&spell_targets.starfire<3" );
 opener->add_action( "starfire,if=(buff.ascendant_stars.up|buff.ascendant_stars.down&astral_power<80)&!talent.convoke_the_spirits&(hero_tree.elunes_chosen|spell_targets.starfire>=3)" );
 opener->add_action( "moonfire,if=buff.ascendant_stars.down&hero_tree.elunes_chosen,line_cd=999" );
