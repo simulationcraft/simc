@@ -9897,14 +9897,7 @@ void demon_hunter_t::create_buffs()
   buff.rolling_torment = make_buff( this, "rolling_torment", spec.rolling_torment_buff )->disable_ticking( true );
 
   buff.emptiness = make_buff( this, "emptiness", spec.emptiness_buff )
-                       ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                        ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-
-  if ( spec.emptiness_buff->ok() )
-  {
-    buff.emptiness->set_default_value( talent.devourer.emptiness->effectN( 1 ).percent() /
-                                       spec.emptiness_buff->max_stacks() );
-  }
 
   buff.impending_apocalypse = make_buff<impending_apocalypse_buff_t>( this );
 
@@ -12729,6 +12722,7 @@ void demon_hunter_t::parse_player_effects()
   parse_effects( buff.voidfall_building );
   parse_effects( buff.voidfall_spending );
   parse_effects( buff.voidfall_final_hour );
+  parse_effects( buff.emptiness, talent.devourer.emptiness->effectN( 1 ).percent() / 100 );
 
   // Scarred
   parse_effects( buff.pursuit_of_angryness, USE_CURRENT );
