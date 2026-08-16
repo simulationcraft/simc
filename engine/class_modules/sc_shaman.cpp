@@ -5271,7 +5271,7 @@ struct lava_lash_t : public shaman_attack_t
 
     trigger_flame_shock( state );
 
-    if ( result_is_hit( state->result ) )
+    if ( result_is_hit( state->result ) && p()->buff.crash_lightning->up() )
     {
       p()->trigger_crash_lightning_proc( execute_state, strike_variant::NORMAL );
     }
@@ -5593,8 +5593,10 @@ struct stormstrike_base_t : public shaman_attack_t
         oh->stormblast_trigger = ss->stormblast;
         oh->execute_on_target( execute_state->target );
       }
-
-      p()->trigger_crash_lightning_proc( execute_state, strike_type );
+      if ( p()->buff.crash_lightning->up() )
+      {
+        p()->trigger_crash_lightning_proc( execute_state, strike_type );
+      }
     }
 
     p()->trigger_stormflurry( execute_state );
