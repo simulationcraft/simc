@@ -147,6 +147,7 @@ void special_effect_t::reset()
 
   spell_id = 0;
   trigger_spell_id = 0;
+  driver_spell = nullptr;
 
   execute_action = nullptr;
   custom_buff = nullptr;
@@ -169,7 +170,10 @@ const spell_data_t* special_effect_t::driver() const
   if ( !player || spell_id == 0 )
     return spell_data_t::nil();
 
-  return player->find_spell( spell_id );
+  if ( !driver_spell || driver_spell->id() != spell_id )
+    driver_spell = player->find_spell( spell_id );
+
+  return driver_spell;
 }
 
 const spell_data_t* special_effect_t::trigger() const
