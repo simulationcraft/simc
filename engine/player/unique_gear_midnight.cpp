@@ -282,13 +282,84 @@ void potion_of_zealotry( special_effect_t& effect )
 // 1295147 buff
 void liquid_luster( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs( effect, { "lustrous_gleam" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "liquid_luster", "lustrous_gleam" } ) )
     return;
 
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, "lustrous_gleam", effect.trigger(), effect.item )
-                           ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
-                           ->set_period( effect.driver()->effectN( 1 ).period() );
+  struct liquid_luster_buff_t : public buff_t
+  {
+    stat_buff_t* gleam;
+    timespan_t gleam_period;
+
+    liquid_luster_buff_t( player_t* p, std::string_view n, const special_effect_t& e )
+      : buff_t( p, n, e.driver() ), gleam_period( e.driver()->effectN( 1 ).period() )
+    {
+      // ticks are scripted to allow for precombat usage
+      set_period( 0_ms );
+
+      gleam = create_buff<stat_buff_t>( player, e.trigger() )
+        ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
+    }
+
+    void _tick()
+    {
+      gleam->trigger( remains() );
+    }
+
+    bool trigger( int s, double v, double c, timespan_t d ) override
+    {
+      // partial duration should only happen during precombat
+      assert( !player->in_combat || d == timespan_t::min() );
+
+      auto ret = buff_t::trigger( s, v, c, d );
+      if ( ret )
+      {
+        d = remains();
+
+        // starts out with one stack on potion use
+        int _initial_stack = static_cast<int>( ( buff_duration() - d ) / gleam_period ) + 1;
+        gleam->trigger( _initial_stack, d );
+
+        // determine how manu full ticks are left
+        int _full_ticks = static_cast<int>( d / gleam_period );
+        if ( !_full_ticks )
+          return ret;
+
+        // determine how long the current partial tick (if any) will take
+        timespan_t _partial_tick = d - gleam_period * _full_ticks;
+
+        // final tick happens on expiration so we don't need to schedule it
+        _full_ticks--;
+
+        if ( _partial_tick > 0_ms )
+        {
+          if ( _full_ticks )
+          {
+            // trigger the partial then the remaining ticks
+            make_event( *sim, _partial_tick, [ this, _full_ticks ] {
+              gleam->trigger( remains() );
+              make_repeating_event( *sim, gleam_period, [ this ] { _tick(); }, _full_ticks );
+            } );
+          }
+          else
+          {
+            // trigger the partial only
+            make_event( *sim, _partial_tick, [ this ] { gleam->trigger( remains() ); } );
+          }
+
+          return ret;
+        }
+
+        if ( _full_ticks )
+          make_repeating_event( *sim, gleam_period, [ this ] { _tick(); }, _full_ticks );
+      }
+
+      return ret;
+    }
+  };
+
+  effect.custom_buff = create_buff<liquid_luster_buff_t>( effect.player, "liquid_luster", effect );
 }
+
 // Alluring Nostrum
 // 1295015 Driver & buff
 // 1295019 damage
