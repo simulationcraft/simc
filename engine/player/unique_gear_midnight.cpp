@@ -5347,6 +5347,7 @@ void register_special_effects()
   unique_gear::register_special_effect( 1232919, consumables::selector_food( 1233408, true ) );  // flora frenzy / champion's bento
   unique_gear::register_special_effect( 1259657, consumables::selector_food( 1232325, true ) );  // quel'dorei medley
   unique_gear::register_special_effect( 1296432, consumables::selector_food( 1305151, true ) );  // amani cornucopia
+  unique_gear::register_special_effect( 1296433, consumables::selector_food( 1305151, true ) );  // loa's gathering
   unique_gear::register_special_effect( 1259658, consumables::primary_food( 1232582, STAT_STR_AGI_INT, 2 ) ); // rootland celebration
   unique_gear::register_special_effect( 1259659, consumables::primary_food( 1232585, STAT_STR_AGI_INT, 2 ) ); // silvermoon parade
   unique_gear::register_special_effect( 1232917, consumables::primary_food( 1232584, STAT_STR_AGI_INT, 2 ) );  // [impossibly] royal roast
