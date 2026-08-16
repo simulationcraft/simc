@@ -32,7 +32,7 @@ actions.drst+=/explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up
 actions.drst+=/volley
 actions.drst+=/aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time
 actions.drst+=/trueshot,if=variable.trueshot_ready
-actions.drst+=/rapid_fire,interrupt_if=ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
+actions.drst+=/rapid_fire,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
 actions.drst+=/wailing_arrow
 actions.drst+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target,if=talent.aspect_of_the_hydra&(!max_prio_damage|!fight_style.dungeonroute|active_enemies>2)&active_enemies>1&buff.precise_shots.up
 actions.drst+=/arcane_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
@@ -47,7 +47,7 @@ actions.draoe+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage
 actions.draoe+=/black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
 actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.trick_shots.down
 actions.draoe+=/trueshot,if=variable.trueshot_ready
-actions.draoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload),interrupt_if=ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
+actions.draoe+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload),interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
 actions.draoe+=/wailing_arrow,if=!cooldown.black_arrow.ready
 actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
 actions.draoe+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
@@ -60,8 +60,8 @@ actions.sentaoe+=/volley
 actions.sentaoe+=/trueshot,if=variable.trueshot_ready
 actions.sentaoe+=/moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max
 actions.sentaoe+=/multishot,target_if=max:debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down
-actions.sentaoe+=/rapid_fire,target_if=max:debuff.sentinels_mark.down,if=talent.unload,interrupt_if=ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
-actions.sentaoe+=/rapid_fire,interrupt_if=ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
+actions.sentaoe+=/rapid_fire,target_if=max:debuff.sentinels_mark.down,if=talent.unload,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
+actions.sentaoe+=/rapid_fire,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
 actions.sentaoe+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
 actions.sentaoe+=/moonlight_chakram
 actions.sentaoe+=/steady_shot
@@ -74,7 +74,7 @@ actions.sentst+=/moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max
 actions.sentst+=/kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up
 actions.sentst+=/multishot,target_if=max:debuff.sentinels_mark.down,if=talent.aspect_of_the_hydra&(!max_prio_damage|!fight_style.dungeonroute|active_enemies>2)&active_enemies>1&buff.precise_shots.up
 actions.sentst+=/arcane_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)
-actions.sentst+=/rapid_fire,interrupt_if=ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
+actions.sentst+=/rapid_fire,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
 actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage
 actions.sentst+=/moonlight_chakram
 actions.sentst+=/steady_shot
