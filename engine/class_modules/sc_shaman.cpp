@@ -1334,6 +1334,7 @@ public:
     action_t* thorims_invocation;
     action_t* ride_the_lightning;
     action_t* deeply_rooted_elements;
+    action_t* static_accumulation;
   } dummy;
 
   // Pets
@@ -10691,6 +10692,11 @@ void shaman_t::create_actions()
     action.ascendance->add_child( action.ascendance_damage );
   }
 
+  if ( talent.static_accumulation.ok() )
+  {
+    dummy.static_accumulation = new dummy_action_t( this, talent.static_accumulation );
+  }
+
   if ( specialization() == SHAMAN_ENHANCEMENT )
   {
     action.doom_winds = new doom_winds_damage_t( this, variant_flag( spell_variant::NORMAL ) );
@@ -12748,10 +12754,10 @@ void shaman_t::create_buffs()
     ->set_duration( 0_ms ) // Buff state controlled by Ascendance and Doom winds buffs
     // Ascendance expiration event eats the last tick, so proc it with a stack change callback
     ->set_expire_callback( [ this ]( buff_t* b, int /* stacks */, timespan_t /* duration */) {
-      generate_maelstrom_weapon( action.ascendance, as<int>( b->value() ) );
+      generate_maelstrom_weapon( dummy.static_accumulation, as<int>( b->value() ) );
     } )
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-      generate_maelstrom_weapon( action.ascendance, as<int>( b->value() ) );
+      generate_maelstrom_weapon( dummy.static_accumulation, as<int>( b->value() ) );
     } );
   buff.doom_winds = make_buff( this, "doom_winds", find_spell( 466772 ) )
     ->set_tick_on_application( true )
