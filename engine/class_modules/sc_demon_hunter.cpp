@@ -1422,9 +1422,10 @@ public:
     double meta_drain_multiplier = 1.0;
     // Fit against per-tick drain event schedules from logs (matches cumulative drain
     // timing through end of meta, not just instantaneous rates); see PR #11549.
-    double initial_drain = 15.0;
-    double exp_factor    = 1.40;
-    double exp_power     = 0.0775;
+    double initial_drain          = 15.0;
+    double exp_factor             = 1.40;
+    double exp_power              = 0.0775;
+    double per_event_drain_amount = 2;
 
     fury_state_t( demon_hunter_t* a )
       : start_time( timespan_t::min() ), next_drain_event( nullptr ), drain_stacks( 0 ), actor( a )
@@ -1449,6 +1450,8 @@ public:
       // calculation.
       initial_drain *= meta_drain_multiplier;
       exp_factor *= meta_drain_multiplier;
+
+      per_event_drain_amount = -dh()->spec.void_buildup->effectN( 1 ).resource( RESOURCE_FURY );
     }
 
     void clear_state();
@@ -12462,10 +12465,9 @@ timespan_t demon_hunter_t::fury_state_t::time_to_next_tick( int stacks ) const
   // The drain is a periodic event. A tick schedules the next one at the rate in force when it fires,
   // and a change to the reduced-drain state does not re-time the tick already pending: that tick runs
   // to term at the interval it was scheduled with, and only the tick after it picks up the new rate.
-
-  // 2 as it currently drains 2 per event.
-  // TODO: Don't hardcode this.
-  return 2.0_s / fury_drain_per_second( stacks );
+  // Time between ticks cannot go below 0s and cannot go above 1s.
+  return std::clamp( timespan_t::from_seconds( per_event_drain_amount ) / fury_drain_per_second( stacks ), 0.0_s,
+                     1.0_s );
 }
 
 void demon_hunter_t::fury_state_t::clear_state()
