@@ -282,13 +282,84 @@ void potion_of_zealotry( special_effect_t& effect )
 // 1295147 buff
 void liquid_luster( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs( effect, { "lustrous_gleam" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "liquid_luster", "lustrous_gleam" } ) )
     return;
 
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, "lustrous_gleam", effect.trigger(), effect.item )
-                           ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
-                           ->set_period( effect.driver()->effectN( 1 ).period() );
+  struct liquid_luster_buff_t : public buff_t
+  {
+    stat_buff_t* gleam;
+    timespan_t gleam_period;
+
+    liquid_luster_buff_t( player_t* p, std::string_view n, const special_effect_t& e )
+      : buff_t( p, n, e.driver() ), gleam_period( e.driver()->effectN( 1 ).period() )
+    {
+      // ticks are scripted to allow for precombat usage
+      set_period( 0_ms );
+
+      gleam = create_buff<stat_buff_t>( player, e.trigger() )
+        ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
+    }
+
+    void _tick()
+    {
+      gleam->trigger( remains() );
+    }
+
+    bool trigger( int s, double v, double c, timespan_t d ) override
+    {
+      // partial duration should only happen during precombat
+      assert( !player->in_combat || d == timespan_t::min() );
+
+      auto ret = buff_t::trigger( s, v, c, d );
+      if ( ret )
+      {
+        d = remains();
+
+        // starts out with one stack on potion use
+        int _initial_stack = static_cast<int>( ( buff_duration() - d ) / gleam_period ) + 1;
+        gleam->trigger( _initial_stack, d );
+
+        // determine how manu full ticks are left
+        int _full_ticks = static_cast<int>( d / gleam_period );
+        if ( !_full_ticks )
+          return ret;
+
+        // determine how long the current partial tick (if any) will take
+        timespan_t _partial_tick = d - gleam_period * _full_ticks;
+
+        // final tick happens on expiration so we don't need to schedule it
+        _full_ticks--;
+
+        if ( _partial_tick > 0_ms )
+        {
+          if ( _full_ticks )
+          {
+            // trigger the partial then the remaining ticks
+            make_event( *sim, _partial_tick, [ this, _full_ticks ] {
+              gleam->trigger( remains() );
+              make_repeating_event( *sim, gleam_period, [ this ] { _tick(); }, _full_ticks );
+            } );
+          }
+          else
+          {
+            // trigger the partial only
+            make_event( *sim, _partial_tick, [ this ] { gleam->trigger( remains() ); } );
+          }
+
+          return ret;
+        }
+
+        if ( _full_ticks )
+          make_repeating_event( *sim, gleam_period, [ this ] { _tick(); }, _full_ticks );
+      }
+
+      return ret;
+    }
+  };
+
+  effect.custom_buff = create_buff<liquid_luster_buff_t>( effect.player, "liquid_luster", effect );
 }
+
 // Alluring Nostrum
 // 1295015 Driver & buff
 // 1295019 damage
@@ -1151,7 +1222,7 @@ void snakeskin_lining( special_effect_t& effect )
   aoe_damage->base_multiplier *= role_mult( effect );
 
   dot_damage->add_child( aoe_damage );
-  
+
   struct snakeskin_lining_cb_t final : public dbc_proc_callback_t
   {
     action_t* dot_action;
@@ -3594,7 +3665,7 @@ void voracious_heart_of_ulatek( special_effect_t& effect )
   auto damage = create_proc_action<devour_morsel_t>( "devour_morsel", effect, equip, stacking );
 
   auto equip_se = new special_effect_t( effect.player );
-  equip_se->name_str = "voracious_heart_of_ulatek_driver";
+  equip_se->name_str = "voracious_heart_of_ulatek_equip_driver";
   equip_se->spell_id = effect.driver()->id();
   equip_se->execute_action = damage;
   equip_se->proc_flags2_   = PF2_ALL_HIT;  // TODO: confirm
@@ -3825,7 +3896,7 @@ void hex_lords_dooming_idol( special_effect_t& effect )
   effect.execute_action =
       create_proc_action<hex_lords_dooming_idol_t>( "hex_lords_dooming_idol", effect, doom, use_buff );
 }
-  
+
 // Vashnik's Sanguine Rancor
 // 1295553 Driver
 // 1303479 Sanguine Rancor (stack buff)
@@ -4261,6 +4332,70 @@ void janthrazet_the_soul_fang( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Sharpened Lightwood Slasher
+// 1296732 driver
+// 1296735 damage
+void sharpened_lightwood_slasher( special_effect_t& effect )
+{
+  auto damage =
+    create_proc_action<generic_proc_t>( "searing_lightwood", effect, 1296735 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Zatha'tek, Breath of Corruption
+// 1298023 Driver
+// 1305391 Buff
+// 1305395 Damage
+void zathatek_breath_of_corruption( special_effect_t& effect )
+{
+  struct breath_of_corruption_t : generic_proc_t
+  {
+    double necrotic_tear_mul;
+
+    breath_of_corruption_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "breath_of_corruption", effect.player->find_spell( 1305395 ) ),
+        necrotic_tear_mul( effect.driver()->effectN( 2 ).percent() )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+      base_multiplier *= role_mult( effect );
+      target_debuff = effect.player->find_spell( 1305391 );
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      return generic_proc_t::create_debuff( t )
+        ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+        ->set_default_value( necrotic_tear_mul );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      get_debuff( s->target )->trigger();
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( state );
+
+      if ( auto _debuff = find_debuff( state->target ) )
+        m *= 1.0 + _debuff->check_stack_value();
+
+      return m;
+    }
+  };
+
+  auto proc             = create_proc_action<breath_of_corruption_t>( "breath_of_corruption", effect );
+  effect.execute_action = proc;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace weapons
 
 namespace armors
@@ -4569,7 +4704,6 @@ void venomcursed( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, effect );
   }
 }
-
 }  // namespace armors
 
 namespace sets
@@ -4842,9 +4976,12 @@ struct lingering_rune_t : public BASE
   double echo_coeff;
   action_t* echo;
 
-  lingering_rune_t( const special_effect_t& e, std::string_view n, const spell_data_t* s, bool ech, double coef, action_t* d )
+  lingering_rune_t( const special_effect_t& e, std::string_view n, const spell_data_t* s, bool ech, double coef,
+                    action_t* d )
     : BASE( e, n, s ), has_echoes( ech ), echo_coeff( coef ), echo( d )
   {
+    if ( has_echoes )
+      BASE::target_debuff = e.player->find_spell( 1289063 );
   }
 
   buff_t* create_debuff( player_t* t ) override
@@ -4852,8 +4989,10 @@ struct lingering_rune_t : public BASE
     auto debuff = buff_t::find( t, "rune_of_echoes_debuff" );
 
     if ( !debuff )
+    {
       debuff = make_buff<rune_of_echoes_debuff_t>( actor_pair_t( t, BASE::player ), "rune_of_echoes_debuff",
-                                                   BASE::player->find_spell( 1289063 ), echo );
+                                                   BASE::target_debuff, echo );
+    }
 
     return debuff;
   }
@@ -4899,6 +5038,8 @@ struct omnium_core_rune_t : public BASE
     has_echoes = find_special_effect( e.player, 1279616 ) != nullptr;
     if ( has_echoes )
     {
+      BASE::target_debuff = e.player->find_spell( 1289063 );
+
       echo              = create_proc_action<BASE>( fmt::format( "{}_echo", n ), e, heal ? 1303071 : 1303048 );
       echo->base_dd_min = echo->base_dd_max = 1.0;  // actual value is determined by accumulator
       echo->name_str_reporting               = "rune_of_echoes";
@@ -4937,8 +5078,10 @@ struct omnium_core_rune_t : public BASE
     auto debuff = buff_t::find( t, "rune_of_echoes_debuff" );
 
     if ( !debuff )
+    {
       debuff = make_buff<rune_of_echoes_debuff_t>( actor_pair_t( t, BASE::player ), "rune_of_echoes_debuff",
-                                                   BASE::player->find_spell( 1289063 ), echo );
+                                                   BASE::target_debuff, echo );
+    }
 
     return debuff;
   }
@@ -5149,7 +5292,7 @@ void zuljins_guillotine_technique( special_effect_t& effect )
       if ( e.player->sets->has_set_bonus( e.player->specialization(), MID_BOZ, B2 ) )
       {
         auto bite_of_zuljan_driver        = find_special_effect( e.player, 1291726 );
-        // Currently set to 100% of the base damage of the original proc, but wiring the spell data in case this changes. 
+        // Currently set to 100% of the base damage of the original proc, but wiring the spell data in case this changes.
         base_dd_min *= bite_of_zuljan_driver->driver()->effectN( 2 ).percent();
         base_dd_max *= bite_of_zuljan_driver->driver()->effectN( 2 ).percent();
 
@@ -5163,7 +5306,7 @@ void zuljins_guillotine_technique( special_effect_t& effect )
     double composite_target_multiplier( player_t* target ) const override
     {
       double m = generic_proc_t::composite_target_multiplier( target );
-      
+
       m *= 1.0 + effect.driver()->effectN( 2 ).percent() * ( 100 - target->health_percentage() );
 
       return m;
@@ -5203,6 +5346,7 @@ void register_special_effects()
   unique_gear::register_special_effect( 1259656, consumables::selector_food( 1232324, true ) );  // blooming feast
   unique_gear::register_special_effect( 1232919, consumables::selector_food( 1233408, true ) );  // flora frenzy / champion's bento
   unique_gear::register_special_effect( 1259657, consumables::selector_food( 1232325, true ) );  // quel'dorei medley
+  unique_gear::register_special_effect( 1296432, consumables::selector_food( 1305151, true ) );  // amani cornucopia
   unique_gear::register_special_effect( 1259658, consumables::primary_food( 1232582, STAT_STR_AGI_INT, 2 ) ); // rootland celebration
   unique_gear::register_special_effect( 1259659, consumables::primary_food( 1232585, STAT_STR_AGI_INT, 2 ) ); // silvermoon parade
   unique_gear::register_special_effect( 1232917, consumables::primary_food( 1232584, STAT_STR_AGI_INT, 2 ) );  // [impossibly] royal roast
@@ -5234,7 +5378,7 @@ void register_special_effects()
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( 1295132, consumables::liquid_luster, true );
   register_special_effect( 1295015, consumables::alluring_nostrum );
-  
+
   reset_version_check();
   // Oils
   register_special_effect( { 1262056, 1262111 }, consumables::laced_zoomshots );
@@ -5272,7 +5416,7 @@ void register_special_effects()
   register_special_effect( 1296870, embellishments::adorned_fang );
   register_special_effect( 1297382, embellishments::hunters_ritual_stone );
   reset_version_check();
-  
+
   // Darkmoon Trinkets & Embellishments
   register_special_effect( { 1245001, 1245053 }, darkmoon::blood );
   register_special_effect( { 1245055, 1245051 }, darkmoon::rot );
@@ -5368,6 +5512,8 @@ void register_special_effects()
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( 1296874, weapons::polished_lightwood_channeler );
   register_special_effect( 1298085, weapons::janthrazet_the_soul_fang );
+  register_special_effect( 1296732, weapons::sharpened_lightwood_slasher );
+  register_special_effect( 1298023, weapons::zathatek_breath_of_corruption );
   register_special_effect( 1291718, bite_of_zuljan::venomfang );
   reset_version_check();
   // Armor
@@ -5380,7 +5526,6 @@ void register_special_effects()
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1285138, armors::sporecallers_blooming_loop );
   register_special_effect( 1285139, armors::rotmires_sporeheart );
-  reset_version_check();
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( { 1307906, 1307923, 1307928 }, armors::venomcursed );
   reset_version_check();

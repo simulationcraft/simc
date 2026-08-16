@@ -483,7 +483,6 @@ public:
     buff_t* huntmasters_call;
     buff_t* summon_fenryr;
     buff_t* summon_hati;
-    buff_t* heart_of_the_pack;
     buff_t* natures_ally_3;
     buff_t* bloody_frenzy;
 
@@ -721,7 +720,6 @@ public:
     spell_data_ptr_t brutal_companion;
     spell_data_ptr_t huntmasters_call;
     spell_data_ptr_t razor_sharp;
-    spell_data_ptr_t heart_of_the_pack_buff;
     spell_data_ptr_t bloodshed;
     spell_data_ptr_t bloodshed_dot;
     spell_data_ptr_t savagery_bm;
@@ -1208,7 +1206,7 @@ public:
   void consume_trick_shots();
   void trigger_deathblow( bool activated = false );
   void trigger_lunar_storm( player_t* target );
-  void consume_precise_shots();
+  void consume_precise_shots( bool expire_buff = true );
   void trigger_eagles_mark( player_t* target, bool sentinel, bool force = false, bool unload = false );
   bool consume_howl_of_the_pack_leader( player_t* target );
   void trigger_howl_of_the_pack_leader();
@@ -2467,12 +2465,15 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
 namespace actions
 {
 
-static void trigger_beast_cleave( const action_state_t* s )
+static void trigger_beast_cleave( const action_state_t* s, const double multiplier )
 {
   if ( !s->action->result_is_hit( s->result ) )
     return;
 
-  if ( s->action->sim->active_enemies == 1 )
+  if ( s->action->sim->active_enemies < 2 )
+    return;
+
+  if ( multiplier <= 0.0 )
     return;
 
   auto p = debug_cast<hunter_pet_t*>( s->action->player );
@@ -2480,11 +2481,18 @@ static void trigger_beast_cleave( const action_state_t* s )
   if ( !p->buffs.beast_cleave->up() )
     return;
 
+  // 2026-08-14: Crit bonuses are not Beast Cleaved across the board.
+  auto amount = s->result_total;
+  if ( p->o()->bugs && s->result == RESULT_CRIT && s->result_crit_bonus > 0 )
+  {
+    amount /= ( 1.0 + s->result_crit_bonus ) / 2.0;
+  }
+  
   // Target multipliers do not replicate to secondary targets
-  const double target_da_multiplier = ( 1.0 / s->target_da_multiplier );
-  const double target_pet_multiplier = ( 1.0 / s->target_pet_multiplier );
+  amount *= multiplier;
+  amount *= ( 1.0 / s->target_da_multiplier );
+  amount *= ( 1.0 / s->target_pet_multiplier );
 
-  const double amount = s->result_total * p->buffs.beast_cleave->check_value() * target_da_multiplier * target_pet_multiplier;
   p->actions.beast_cleave->execute_on_target( s->target, amount );
 }
 
@@ -2969,7 +2977,7 @@ struct pet_melee_t : public hunter_pet_melee_t<hunter_pet_t>
   {
     hunter_pet_melee_t::impact( s );
 
-    trigger_beast_cleave( s );
+    trigger_beast_cleave( s, p()->buffs.beast_cleave->default_value );
   }
 };
 
@@ -3008,7 +3016,7 @@ struct main_pet_base_melee_t : public hunter_pet_melee_t<hunter_main_pet_base_t>
   {
     hunter_pet_melee_t::impact( s );
 
-    trigger_beast_cleave( s );
+    trigger_beast_cleave( s, p()->hunter_pet_t::buffs.beast_cleave->default_value );
 
     if ( o()->buffs.wyverns_cry->check() )
       o()->buffs.wyverns_cry->increment( 1, buff_t::DEFAULT_VALUE(), o()->buffs.wyverns_cry->remains() );
@@ -3030,7 +3038,7 @@ struct basic_attack_base_t : public hunter_pet_attack_t<hunter_main_pet_t>
     hunter_pet_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-      trigger_beast_cleave( s );
+      trigger_beast_cleave( s, p()->hunter_pet_t::buffs.beast_cleave->default_value );
   }
 };
 
@@ -3170,7 +3178,7 @@ struct bestial_wrath_t : hunter_pet_attack_t<hunter_main_pet_base_t>
   {
     hunter_pet_attack_t::impact( s );
 
-    trigger_beast_cleave( s );
+    trigger_beast_cleave( s, p()->hunter_pet_t::buffs.beast_cleave->default_value );
   }
 };
 
@@ -3187,23 +3195,9 @@ struct kill_command_wildspeaker_t: public hunter_pet_attack_t<dire_critter_t>
   {
     hunter_pet_attack_t::impact( s );
 
-    // 2026-07-27: Wildspeaker Kill Command can Beast Cleave without Kill Cleave talented.
-    if ( s->action->result_is_hit( s->result ) && s->action->sim->active_enemies > 1 && p()->hunter_pet_t::buffs.beast_cleave->up() )
+    if ( o()->talents.kill_cleave.ok() )
     {
-      // 2026-07-27: Wildspeaker Kill Command's crit bonus is not Beast Cleaved.
-      double amount = s->result_total;
-      if ( s->result == RESULT_CRIT && s->result_crit_bonus > 0 )
-      {
-        amount /= ( 1.0 + s->result_crit_bonus ) / 2.0;
-      }
-      // 2026-07-27: Wildspeaker Kill Command cleaves for Beast Cleave's value, not Kill Cleave's.
-      amount *= o()->bugs ? p()->hunter_pet_t::buffs.beast_cleave->check_value() : o()->talents.kill_cleave->effectN( 1 ).percent();
-      // Target multipliers do not replicate to secondary targets
-      amount *= ( 1.0 / s->target_da_multiplier );
-      amount *= ( 1.0 / s->target_pet_multiplier );
-
-      // Damage is represented as Beast Cleave
-      p()->hunter_pet_t::actions.beast_cleave->execute_on_target( s->target, amount );
+      trigger_beast_cleave( s, o()->talents.kill_cleave->effectN( 1 ).percent() );
     }
   }
   
@@ -3655,15 +3649,20 @@ void hunter_t::consume_trick_shots()
   buffs.trick_shots -> decrement();
 }
 
-void hunter_t::consume_precise_shots()
+void hunter_t::consume_precise_shots( bool expire_buff )
 {
   if ( !talents.precise_shots.ok() || !buffs.precise_shots->check() )
     return;
 
   cooldowns.aimed_shot->adjust( -talents.focused_aim->effectN( 1 ).time_value() );
-
-  buffs.precise_shots->expire();
   buffs.stargazer->trigger();
+
+  // 2026-08-14: In some cases the benefits of consuming Precise Shots can be gained
+  //             without actually consuming the buff.
+  if ( expire_buff )
+  {
+    buffs.precise_shots->expire();
+  }
 }
 
 void hunter_t::trigger_eagles_mark( player_t* target, bool sentinel, bool force, bool unload )
@@ -3753,13 +3752,6 @@ void hunter_t::trigger_huntmasters_call()
       buffs.summon_hati->trigger();
       pets.hati.despawn();
       pets.hati.spawn( buffs.summon_hati->buff_duration() );
-    }
-
-    // 2026-04-08: With Razor Sharp talented, Huntmaster's Call summons will trigger a ghost Heart of the Pack buff.
-    //             This buff uses Razor Sharp's base value of 100 (divided by 10) to create a free 10% haste buff.
-    if ( bugs && talents.razor_sharp.ok() )
-    {
-      buffs.heart_of_the_pack->trigger();
     }
   }
 }
@@ -4142,13 +4134,6 @@ struct arcane_shot_base_t: public hunter_ranged_attack_t
 
   arcane_shot_base_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->specs.arcane_shot ) {}
 
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    p()->consume_precise_shots();
-  }
-
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double am = hunter_ranged_attack_t::composite_da_multiplier( s );
@@ -4201,6 +4186,13 @@ struct arcane_shot_t : public arcane_shot_base_t
   arcane_shot_t( hunter_t* p, util::string_view options_str ) : arcane_shot_base_t( "arcane_shot", p )
   {
     parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    arcane_shot_base_t::execute();
+
+    p()->consume_precise_shots();
   }
 
   void impact( action_state_t* s ) override
@@ -4272,13 +4264,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   kill_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
     hunter_ranged_attack_t( n, p, s ),
     health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() ) {}
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    p()->consume_precise_shots();
-  }
 
   void impact( action_state_t* s ) override
   {
@@ -4396,6 +4381,7 @@ struct kill_shot_t : public kill_shot_base_t
     kill_shot_base_t::execute();
 
     p()->buffs.deathblow->expire();
+    p()->consume_precise_shots();
   }
 
   void impact( action_state_t* s ) override
@@ -4732,7 +4718,7 @@ struct black_arrow_t final : public black_arrow_base_t
     }
 
     p()->buffs.deathblow->expire();
-
+    p()->consume_precise_shots();
     p()->trigger_natures_ally_3();
   }
 
@@ -5185,7 +5171,14 @@ struct barbed_shot_t : public barbed_shot_base_t
 
 struct laceration_t : public residual_bleed_base_t
 {
-  laceration_t( hunter_t* p ) : residual_bleed_base_t( "laceration", p, p->talents.laceration_bleed ) {}
+  laceration_t( hunter_t* p ) : residual_bleed_base_t( "laceration", p, p->talents.laceration_bleed )
+  {
+    // 2026-08-15: Due to scripting, Laceration is in Unnatural Causes' spell data but is not affected by it.
+    if ( p->bugs )
+    {
+      affected_by.unnatural_causes.tick = as<uint8_t>( 0 );
+    }
+  }
 };
 
 //==============================
@@ -5309,6 +5302,17 @@ struct multishot_t: public hunter_ranged_attack_t
 
 struct aimed_shot_base_t : public hunter_ranged_attack_t
 {
+  struct state_data_t
+  {
+    bool expires_marks = false;
+
+    friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out )
+    {
+      fmt::format_to( out, "expires_marks={}", data.expires_marks );
+    }
+  };
+  using state_t = hunter_action_state_t<state_data_t>;
+
   const int trick_shots_targets;
 
   aimed_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
@@ -5317,6 +5321,11 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
   {
     radius = 8;
     base_aoe_multiplier = p->talents.trick_shots_data->effectN( 4 ).percent();
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
   }
 
   double action_multiplier() const override
@@ -5401,9 +5410,12 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
     if ( target_data->debuffs.spotters_mark->check() || target_data->debuffs.sentinels_mark->check() )
     {
-      target_data->debuffs.spotters_mark->expire();
-      target_data->debuffs.sentinels_mark->expire();
-      p()->trigger_lunar_storm( s->target );
+      if ( !p()->bugs || debug_cast<state_t*>( s )->expires_marks )
+      {
+        target_data->debuffs.spotters_mark->expire();
+        target_data->debuffs.sentinels_mark->expire();
+        p()->trigger_lunar_storm( s->target );
+      }
     }
   }
 };
@@ -5417,6 +5429,14 @@ struct aimed_shot_t : public aimed_shot_base_t
       background = dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       base_multiplier *= p->talents.aspect_of_the_hydra->effectN( 1 ).percent();
+    }
+
+    void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+    {
+      aimed_shot_base_t::snapshot_internal( s, flags, rt );
+
+      // Hydra Aimed Shot always consumes Spotter's Mark normally
+      debug_cast<state_t*>( s )->expires_marks = true;
     }
 
     void execute() override
@@ -5463,6 +5483,17 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     if ( p->talents.deathblow.ok() )
       deathblow.chance = p->talents.deathblow->effectN( 1 ).percent();
+  }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    aimed_shot_base_t::snapshot_internal( s, flags, rt );
+
+    // 2026-08-14: Aimed Shot hits and bounces can only expire Spotter's Marks if the primary
+    //             target had Spotter's Mark up.
+    debug_cast<state_t*>( s )->expires_marks = s->chain_target == 0 &&
+                                             ( td( s->target )->debuffs.spotters_mark->check() ||
+                                               td( s->target )->debuffs.sentinels_mark->check() );
   }
 
   double cost() const override
@@ -5870,22 +5901,41 @@ struct rapid_fire_t: public hunter_ranged_attack_t
       p()->trigger_eagles_mark( target, p()->talents.sentinel.ok() );
     }
 
-    if ( unload.black_arrow && unload.black_arrow->target_ready( target ) )
+    bool executed = false;
+    if ( !executed && unload.black_arrow && unload.black_arrow->target_ready( target ) )
     {
       unload.black_arrow->sequence = sequence;
       unload.black_arrow->execute_on_target( target );
-      return;
+      executed = true;
     }
 
-    if ( unload.kill_shot && unload.kill_shot->target_ready( target ) )
+    if ( !executed && unload.kill_shot && unload.kill_shot->target_ready( target ) )
     {
       unload.kill_shot->sequence = sequence;
       unload.kill_shot->execute_on_target( target );
-      return;
+      executed = true;
     }
 
-    unload.arcane_shot->sequence = sequence;
-    unload.arcane_shot->execute_on_target( target );
+    if ( !executed )
+    {
+      unload.arcane_shot->sequence = sequence;
+      unload.arcane_shot->execute_on_target( target );
+      executed = true;
+    }
+
+    // 2026-14-07: Unload's second shot consumes Precise Shots on a slight delay. This allows Rapid Fire
+    //             channels to be clipped with Precise Shots spenders to have both spells benefit from the buff.
+    //       TODO: Consider a refactor if this bug sticks around.
+    //       TODO: Move the consume_precise_shots() call back to the base spell execute() functions if/when this is fixed.
+    if ( p()->bugs && sequence == 2 )
+    {
+      p()->consume_precise_shots( false );
+      make_event( sim, 10_ms, [ this ]() { p()->buffs.precise_shots->expire(); } );
+    }
+    else
+    {
+      p()->consume_precise_shots();
+    }
   }
 
   void init() override
@@ -5955,8 +6005,12 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
     if ( aspect_of_the_hydra && hydra_target )
     {
-      aspect_of_the_hydra->channel = this;
-      aspect_of_the_hydra->execute_on_target( hydra_target );
+      // 2026-08-14: Hydra Rapid Fire only triggers on every other channel tick, starting with the first.
+      if ( !p()->bugs || d->current_tick % 2 == 0 )
+      {
+        aspect_of_the_hydra->channel = this;
+        aspect_of_the_hydra->execute_on_target( hydra_target );
+      }
     }
   }
 
@@ -7179,7 +7233,10 @@ struct wildfire_bomb_base_t : public hunter_ranged_attack_t
       background = dual = true;
 
       // 2026-02-11: Wildfire Bomb's direct damage is not buffed by Unnatural Causes in game, despite being in spell data
-      affected_by.unnatural_causes.direct = as<uint8_t>( 0 );
+      if ( p->bugs )
+      {
+        affected_by.unnatural_causes.direct = as<uint8_t>( 0 );
+      }
 
       aoe = -1;
       reduced_aoe_targets = p -> talents.wildfire_bomb -> effectN( 2 ).base_value();
@@ -7716,7 +7773,6 @@ void hunter_t::init_spells()
     talents.brutal_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Companion", HUNTER_BEAST_MASTERY );
     talents.huntmasters_call                  = find_talent_spell( talent_tree::SPECIALIZATION, "Huntmaster's Call", HUNTER_BEAST_MASTERY );
     talents.razor_sharp                       = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Sharp", HUNTER_BEAST_MASTERY );
-    talents.heart_of_the_pack_buff            = talents.razor_sharp.ok() ? find_spell( 1282747 ) : spell_data_t::not_found();
     talents.bloodshed                         = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodshed", HUNTER_BEAST_MASTERY );
     talents.bloodshed_dot                     = talents.bloodshed.ok() ? find_spell( 321538 ) : spell_data_t::not_found();
     talents.savagery_bm                       = find_talent_spell( talent_tree::SPECIALIZATION, "Savagery", HUNTER_BEAST_MASTERY );
@@ -8243,12 +8299,6 @@ void hunter_t::create_buffs()
     make_buff( this, "summon_fenryr", find_spell ( 459735 ) )
     -> set_default_value_from_effect( 2 )
     -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-
-  // 2026-08-04: This is a bugged buff that should not exist, it uses the spell data of its replacement talent.
-  buffs.heart_of_the_pack =
-    make_buff( this, "heart_of_the_pack", talents.heart_of_the_pack_buff )
-      -> set_default_value( talents.razor_sharp->effectN( 1 ).percent() / 10 )
-      -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buffs.summon_hati = 
     make_buff( this, "summon_hati", find_spell( 459738 ) )
@@ -9126,6 +9176,18 @@ struct hunter_module_t: public module_t
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
         .modifier( 25 )
+        .verification_value( 15 );
+
+    hotfix::register_effect( "Hunter", "2026-08-16", "Cobra Cleave Percent", 1323597, hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 30 )
+        .verification_value( 20 );
+
+    hotfix::register_effect( "Hunter", "2026-08-16", "Cobra Fang Percent", 1323599, hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 20 )
         .verification_value( 15 );
   }
 

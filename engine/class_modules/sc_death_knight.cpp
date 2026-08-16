@@ -9994,7 +9994,7 @@ struct death_strike_heal_t final : public death_knight_heal_t
   {
     death_knight_heal_t::init();
 
-    snapshot_flags |= STATE_MUL_DA;
+    snapshot_flags |= STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM;
   }
 
   double base_da_min( const action_state_t* ) const override
@@ -17674,78 +17674,73 @@ struct death_knight_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    // hotfix::register_effect( "Death Knight", "2026-5-1", "Shadow Bolt Nerfed 15%", 803165,
-    //                          hotfix::HOTFIX_FLAG_LIVE )
-    //     .field( "ap_coefficient" )
-    //     .operation( hotfix::HOTFIX_SET )
-    //     .modifier( 0.6587568 )
-    //     .verification_value( 0.775008 );
+    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (direct) buffed 9%", 179689, hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( -4 )
+        .verification_value( -12 );
 
-    // hotfix::register_effect( "Death Knight", "2026-5-1", "Graveyard (main) nerfed 15%", 1015149,
-    //                          hotfix::HOTFIX_FLAG_LIVE )
-    //     .field( "ap_coefficient" )
-    //     .operation( hotfix::HOTFIX_SET )
-    //     .modifier( 0.9546775 )
-    //     .verification_value( 1.12315 );
+    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (periodic) buffed 9%", 191174,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( -4 )
+        .verification_value( -12 );
 
-    // hotfix::register_effect( "Death Knight", "2026-5-1", "Graveyard (AoE) nerfed 15%", 1274362,
-    //                          hotfix::HOTFIX_FLAG_LIVE )
-    //     .field( "ap_coefficient" )
-    //     .operation( hotfix::HOTFIX_SET )
-    //     .modifier( 0.3818761 )
-    //     .verification_value( 0.449266 );
+    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (pet) buffed 9%", 844541,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( -4 )
+        .verification_value( -12 );
 
-    // hotfix::register_effect( "Death Knight", "2026-5-1", "Whitemane Epidemic (main) nerfed 25%", 1233789,
-    //                          hotfix::HOTFIX_FLAG_LIVE )
-    //     .field( "ap_coefficient" )
-    //     .operation( hotfix::HOTFIX_SET )
-    //     .modifier( 0.494484 )
-    //     .verification_value( 0.659312 );
+    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (guardian) buffed 9%", 1032340,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( -4 )
+        .verification_value( -12 );
 
-    // hotfix::register_effect( "Death Knight", "2026-5-1", "Whitemane Epidemic (AoE) nerfed 25%", 1233790,
-    //                          hotfix::HOTFIX_FLAG_LIVE )
-    //     .field( "ap_coefficient" )
-    //     .operation( hotfix::HOTFIX_SET )
-    //     .modifier( 0.19779525 )
-    //     .verification_value( 0.263727 );
+      hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (melee) buffed 9%", 1052714, hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 296 )
+        .verification_value( 264 );
 
-    // hotfix::register_effect( "Death Knight", "2026-5-1", "Trollbanes icy Fury nerfed 25%", 1141463,
-    //                          hotfix::HOTFIX_FLAG_LIVE )
-    //     .field( "ap_coefficient" )
-    //     .operation( hotfix::HOTFIX_SET )
-    //     .modifier( 0.78975 )
-    //     .verification_value( 1.053 );
+    hotfix::register_effect( "Death Knight", "2026-08-14", "Freezing Tempest attack speed nerfed 50%", 1320578,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1 )
+        .verification_value( 2 );
 
-    // hotfix::register_effect( "Death Knight", "2026-5-1", "Thrill of Blood DP damage increased to 10%", 1319202,
-    //                          hotfix::HOTFIX_FLAG_LIVE )
-    //     .field( "base_value" )
-    //     .operation( hotfix::HOTFIX_SET )
-    //     .modifier( 10 )
-    //     .verification_value( 5 );
-    // hotfix::register_effect( "Death Knight", "2026-05-11", "Dancing Rune Weapon grants 25% Parry", 68684,
-    //                           hotfix::HOTFIX_FLAG_LIVE )
-    //       .field( "base_value" )
-    //       .operation( hotfix::HOTFIX_SET )
-    //       .modifier( 25 )
-    //       .verification_value( 20 );
-    // hotfix::register_effect( "Death Knight", "2026-05-11", "Blood Fortification increased to 40%", 1000722,
-    //                           hotfix::HOTFIX_FLAG_LIVE )
-    //       .field( "base_value" )
-    //       .operation( hotfix::HOTFIX_SET )
-    //       .modifier( 40 )
-    //       .verification_value( 35 );
-    // hotfix::register_effect( "Death Knight", "2026-05-11", "Improved Death Strike healing increased to 15%", 1000063,
-    //                           hotfix::HOTFIX_FLAG_LIVE )
-    //       .field( "base_value" )
-    //       .operation( hotfix::HOTFIX_SET )
-    //       .modifier( 15 )
-    //       .verification_value( 5 );
-    // hotfix::register_spell( "Death Knight", "2026-05-11", "Dance of Midnight grants DRW for 8 seconds", 1264353,
-    //                           hotfix::HOTFIX_FLAG_LIVE )
-    //       .field( "duration" )
-    //       .operation( hotfix::HOTFIX_SET )
-    //       .modifier( 8000 )
-    //       .verification_value( 6000 );
+    hotfix::register_effect( "Death Knight", "2026-08-14", "Freezing Tempest Icy Death Torrent nerfed 50%", 1320580,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 2 )
+        .verification_value( 4 );
+
+    hotfix::register_effect( "Death Knight", "2026-08-14", "Blood's Transfusion buff nerfed 50%", 1277423,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 5 )
+        .verification_value( 10 );
+
+    hotfix::register_effect( "Death Knight", "2026-08-14", "Blood's Transfusion buff nerfed 50%", 1277425,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 5 )
+        .verification_value( 10 );
+
+    hotfix::register_effect( "Death Knight", "2026-08-14", "Blood's Visceral Strength nerfed 40%", 1169307,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 6 )
+        .verification_value( 10 );
   }
 
   void register_actor_initializers( sim_t* ) const override

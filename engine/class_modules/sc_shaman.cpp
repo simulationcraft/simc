@@ -1334,6 +1334,7 @@ public:
     action_t* thorims_invocation;
     action_t* ride_the_lightning;
     action_t* deeply_rooted_elements;
+    action_t* static_accumulation;
   } dummy;
 
   // Pets
@@ -3155,9 +3156,8 @@ public:
   void impact( action_state_t* s ) override
   {
     ab::impact( s );
-
-    if ( ( this->execute_state->action->id == 188389 ) ||
-         ( this->is_variant( spell_variant::NORMAL ) && !this->background && s->chain_target == 0 ) )
+    if ( ( this->id == 61882 ||
+           this->is_variant( spell_variant::NORMAL ) && !this->background && s->chain_target == 0 ) )
     {
       if ( this->sim->debug )
       {
@@ -4461,7 +4461,7 @@ struct stormblast_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    snapshot_flags = update_flags = ~STATE_MUL_PLAYER_DAM & ( STATE_MUL_DA | STATE_TGT_MUL_DA );
+    snapshot_flags = update_flags = STATE_MUL_SPELL_DA | STATE_TGT_MUL_DA;
 
     may_proc_hot_hand = false;
     may_proc_ability_procs = false;
@@ -5272,7 +5272,7 @@ struct lava_lash_t : public shaman_attack_t
 
     trigger_flame_shock( state );
 
-    if ( result_is_hit( state->result ) )
+    if ( result_is_hit( state->result ) && p()->buff.crash_lightning->up() )
     {
       p()->trigger_crash_lightning_proc( execute_state, strike_variant::NORMAL );
     }
@@ -5594,8 +5594,10 @@ struct stormstrike_base_t : public shaman_attack_t
         oh->stormblast_trigger = ss->stormblast;
         oh->execute_on_target( execute_state->target );
       }
-
-      p()->trigger_crash_lightning_proc( execute_state, strike_type );
+      if ( p()->buff.crash_lightning->up() )
+      {
+        p()->trigger_crash_lightning_proc( execute_state, strike_type );
+      }
     }
 
     p()->trigger_stormflurry( execute_state );
@@ -6702,6 +6704,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   {
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     travel_speed = player->find_spell( 77451 )->missile_speed();
+    affected_by_mid2_dmg   = true;
   }
 
   static lava_burst_state_t* cast_state( action_state_t* s )
@@ -7228,6 +7231,7 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     maelstrom_gain  = p->spec.maelstrom->effectN( 2 ).resource( RESOURCE_MAELSTROM );
 
     affected_by_master_of_the_elements = true;
+    affected_by_mid2_dmg               = true;
     // Stormkeeper affected by flagging is applied to the Energize spell ...
     affected_by_stormkeeper_damage = p->talent.stormkeeper.ok() && p->specialization() == SHAMAN_ELEMENTAL;
     affected_by_stormkeeper_damage_tier = p->talent.stormkeeper.ok() && p->specialization() == SHAMAN_ELEMENTAL;
@@ -10688,6 +10692,11 @@ void shaman_t::create_actions()
     action.ascendance->add_child( action.ascendance_damage );
   }
 
+  if ( talent.static_accumulation.ok() )
+  {
+    dummy.static_accumulation = new dummy_action_t( this, talent.static_accumulation );
+  }
+
   if ( specialization() == SHAMAN_ENHANCEMENT )
   {
     action.doom_winds = new doom_winds_damage_t( this, variant_flag( spell_variant::NORMAL ) );
@@ -12743,8 +12752,12 @@ void shaman_t::create_buffs()
     ->set_default_value( talent.static_accumulation->effectN( 1 ).base_value() )
     ->set_trigger_spell( talent.static_accumulation )
     ->set_duration( 0_ms ) // Buff state controlled by Ascendance and Doom winds buffs
+    // Ascendance expiration event eats the last tick, so proc it with a stack change callback
+    ->set_expire_callback( [ this ]( buff_t* b, int /* stacks */, timespan_t /* duration */) {
+      generate_maelstrom_weapon( dummy.static_accumulation, as<int>( b->value() ) );
+    } )
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-      generate_maelstrom_weapon( action.ascendance, as<int>( b->value() ) );
+      generate_maelstrom_weapon( dummy.static_accumulation, as<int>( b->value() ) );
     } );
   buff.doom_winds = make_buff( this, "doom_winds", find_spell( 466772 ) )
     ->set_tick_on_application( true )

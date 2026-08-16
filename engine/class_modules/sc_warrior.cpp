@@ -9752,6 +9752,12 @@ struct warrior_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Warrior", "2026-8-13", "Rampaging Ruin damage halved by offhand weapon penalty", 1324375,
+                              hotfix::HOTFIX_FLAG_LIVE )
+         .field( "ap_coefficient" )
+         .operation( hotfix::HOTFIX_SET )
+         .modifier( 1.861445 )
+         .verification_value( 3.72289 );
   }
 
   void register_actor_initializers( sim_t* sim ) const override

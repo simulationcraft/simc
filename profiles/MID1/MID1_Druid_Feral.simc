@@ -39,7 +39,6 @@ actions.precombat+=/cat_form,if=buff.cat_form.down
 actions.precombat+=/prowl
 
 # Executed every time the actor is available.
-# Executed every time the actor is available.
 actions=prowl,if=buff.bs_inc.down&!buff.prowl.up&!buff.shadowmeld.up
 actions+=/cat_form,if=!buff.cat_form.up&!talent.fluid_form
 # Line up <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> with <a href='https://www.wowhead.com/spell=106951/berserk'>Berserk</a> every 2 minutes.
@@ -118,8 +117,8 @@ actions.cd_variable+=/variable,name=secondLowestCDremaining,op=setif,condition=c
 # this line is here to reduce the amount of variable calls in the APL by only checking variables when they are potentially relevant.
 actions.cooldown=call_action_list,name=cd_variable,if=!cooldown.bs_inc.remains|!cooldown.potion.remains|!trinket.1.cooldown.remains|!trinket.2.cooldown.remains
 # non-stat on use trinkets get used on cooldown, so long as it wont interfere with a stat on-use trinket
-actions.cooldown+=/use_item,slot=trinket1,if=trinket.1.has_use_damage&(trinket.2.cooldown.remains>20|!trinket.2.has_use_buff|(cooldown.tigers_fury.remains<25&cooldown.tigers_fury.remains>20))
-actions.cooldown+=/use_item,slot=trinket2,if=trinket.2.has_use_damage&(trinket.1.cooldown.remains>20|!trinket.1.has_use_buff|(cooldown.tigers_fury.remains<25&cooldown.tigers_fury.remains>20))
+actions.cooldown+=/use_item,slot=trinket1,if=trinket.1.has_use_damage&(trinket.2.cooldown.remains>20|!trinket.2.has_use_buff|(cooldown.tigers_fury.remains<25&cooldown.tigers_fury.remains>20))&(!trinket.1.is.font_of_venomous_rage|!buff.bs_inc.up)
+actions.cooldown+=/use_item,slot=trinket2,if=trinket.2.has_use_damage&(trinket.1.cooldown.remains>20|!trinket.1.has_use_buff|(cooldown.tigers_fury.remains<25&cooldown.tigers_fury.remains>20))&(!trinket.2.is.font_of_venomous_rage|!buff.bs_inc.up)
 actions.cooldown+=/berserking
 # potion during berserk, fallback pot if the fight is going to end within its duration. Expedite use if you would lose a pot use by holding it.
 actions.cooldown+=/potion,if=buff.bs_inc.up|fight_remains<32|buff.tigers_fury.up&!variable.holdPot

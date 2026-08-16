@@ -787,19 +787,6 @@ struct smite_base_t : public priest_spell_t
     triggers_atonement = true;
   }
 
-  double execute_time_pct_multiplier() const override
-  {
-    auto mul = priest_spell_t::execute_time_pct_multiplier();
-
-    if ( priest().talents.unwavering_will.enabled() &&
-         priest().health_percentage() > priest().talents.unwavering_will->effectN( 2 ).base_value() )
-    {
-      mul *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
-    }
-
-    return mul;
-  }
-
   void execute() override
   {
     priest_spell_t::execute();
@@ -1140,7 +1127,7 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
     // We don't want this counted towards our dps
     stats->type = stats_e::STATS_NEUTRAL;
 
-    snapshot_flags |= STATE_MUL_DA;
+    snapshot_flags |= STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM;
   }
 
   proc_types proc_type() const override
@@ -1566,9 +1553,10 @@ struct collapsing_void_damage_t final : public priest_spell_t
   {
     affected_by_shadow_weaving = true;
 
-    aoe              = -1;
-    radius           = data().effectN( 1 ).radius_max();
-    split_aoe_damage = 1;
+    aoe                = -1;
+    radius             = data().effectN( 1 ).radius_max();
+    split_aoe_damage   = 1;
+    triggers_atonement = true;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1617,6 +1605,7 @@ struct entropic_rift_damage_t final : public priest_spell_t
     background = dual = true;
     radius            = base_radius;
 
+    triggers_atonement         = true;
     affected_by_shadow_weaving = true;
   }
 
@@ -1755,19 +1744,6 @@ struct flash_heal_t final : public priest_heal_t
       snapshot_flags &= STATE_NO_MULTIPLIER;
       snapshot_flags &= ~( STATE_SP );
     }
-  }
-
-  double execute_time_pct_multiplier() const override
-  {
-    auto mul = priest_heal_t::execute_time_pct_multiplier();
-
-    if ( priest().talents.unwavering_will.enabled() &&
-         priest().health_percentage() > priest().talents.unwavering_will->effectN( 2 ).base_value() )
-    {
-      mul *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
-    }
-
-    return mul;
   }
 
   void execute() override
@@ -1986,7 +1962,7 @@ struct power_word_shield_t final : public priest_absorb_t
 
     if ( priest().buffs.weal_and_woe->check() )
     {
-      m *= 1 + priest().buffs.weal_and_woe->data().effectN( 2 ).percent() * priest().buffs.weal_and_woe->check();
+      m *= 1.0 + priest().buffs.weal_and_woe->check_value();
     }
 
     if ( priest().buffs.dark_transference->check() )
@@ -2182,7 +2158,7 @@ struct void_shield_t final : public priest_absorb_t
 
     if ( priest().buffs.weal_and_woe->check() )
     {
-      m *= 1 + priest().buffs.weal_and_woe->data().effectN( 2 ).percent() * priest().buffs.weal_and_woe->check();
+      m *= 1.0 + priest().buffs.weal_and_woe->check_value();
     }
 
     if ( priest().buffs.dark_transference->check() )
@@ -2244,7 +2220,7 @@ struct atonement_t final : public priest_heal_t
   void init() override
   {
     priest_heal_t::init();
-    snapshot_flags |= STATE_TGT_MUL_DA | STATE_MUL_DA;
+    snapshot_flags |= STATE_TGT_MUL_DA | STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM;
     snapshot_flags &= ~( STATE_CRIT | STATE_VERSATILITY );
   }
 

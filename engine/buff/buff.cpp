@@ -3507,7 +3507,7 @@ stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_c
     return this;
 
   auto do_error = [ this, i ]( std::string_view msg ) -> stat_buff_t* {
-    sim->error( "{} cannot add stat from effect#{}: {}", name(), i, msg );
+    sim->error( "{} cannot add stat from effect#{}: {}", *this, i, msg );
     return this;
   };
 

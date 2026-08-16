@@ -1,5 +1,5 @@
-// Spell text, wow build 12.1.0.69273
-static constexpr std::array<spelltext_data_t, 29242> __spelltext_data { {
+// Spell text, wow build 12.1.0.69299
+static constexpr std::array<spelltext_data_t, 29243> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -29110,6 +29110,7 @@ static constexpr std::array<spelltext_data_t, 29242> __spelltext_data { {
   { 1303624, "Throw the catch back into the water to gain $s2 Midnight Perception for $d.\r\n\r\nThrowing multiple catches can extend this buff up to $M1 min.", "Midnight Perception increased by $w2.", 0 },
   { 1304485, "$@spelldesc1231346", "Haste increased by ${$W1}.1%.", 0 },
   { 1305083, "$@spelldesc1248856", 0, 0 },
+  { 1305151, "Increases Critical Strike by $s1 for $d.", "Stamina increased by $w10 and Critical Strike increased by $w9.", 0 },
   { 1305158, "$@spelldesc1232065\r\n\r\n$@spellicon461960  $@spellname461960\r\nIf you spend at least 10 seconds eating, you will become $@spellname461960 and gain ${$1219179s4*1} of your highest secondary stat for $461960d.", 0, 0 },
   { 1305159, "$@spelldesc1232065\r\n\r\n$@spellicon1232076  $@spellname1232076\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232076 and gain $1219179s2 primary stat for $1232076d.\r\n\r\nThis food persists through death.", 0, 0 },
   { 1305166, "Become a snake when underwater in Midnight Zones, allowing you to breathe water and swim rapidly.\r\n", "Capable of waterbreathing.\r\nSwim speed increased by $188042s2%.", 0 },
@@ -29244,11 +29245,11 @@ static constexpr std::array<spelltext_data_t, 29242> __spelltext_data { {
   { 1312998, "$?a388667[Drain Soul][Shadow Bolt] and Malefic Grasp damage increased by $s1% or $s2% if the target is affected by Haunt. \r\n\r\nDark Harvest damage increased by $s3% or $s4% if the target is affected by Haunt.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.1.0.69273
+// spelltext hotfix entries, wow build 12.1.0.69299
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.1.0.69273
+// Spell description variables, wow build 12.1.0.69299
 static constexpr std::array<spelldesc_vars_data_t, 736> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29988,7 +29989,7 @@ static constexpr std::array<spelldesc_vars_data_t, 736> __spelldesc_vars_data { 
   { 1309793, "$base=${10}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.1.0.69273
+// spelldesc_vars hotfix entries, wow build 12.1.0.69299
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

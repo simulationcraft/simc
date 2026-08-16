@@ -150,7 +150,15 @@ void cooldown_t::adjust_recharge_multiplier()
   double old_multiplier = recharge_multiplier;
   assert( action && "Only cooldowns with associated action can have their recharge multiplier adjusted." );
   recharge_multiplier = action->recharge_multiplier( *this ) * action->recharge_rate_multiplier( *this );
-  assert( recharge_multiplier > 0.0 );
+
+  if ( recharge_multiplier == 0.0 )
+  {
+    // Fully reset the cooldown if recharge multiplier is adjusted to be 0, which typically happens via -100% modify
+    // recharge time effect
+    reset( false, -1 );
+    return;
+  }
+
   if ( old_multiplier == recharge_multiplier )
   {
     return;
@@ -161,8 +169,8 @@ void cooldown_t::adjust_recharge_multiplier()
 
   if ( sim.debug )
   {
-    sim.out_debug.print( "{} dynamic cooldown {} adjusted: new_ready={} old_ready={} old_mul={} new_mul={}",
-        *(action -> player), name(), ready, old_ready, old_multiplier, recharge_multiplier );
+    sim.print_debug( "{} dynamic cooldown {} adjusted: new_ready={} old_ready={} old_mul={} new_mul={}",
+                     *( action->player ), name(), ready, old_ready, old_multiplier, recharge_multiplier );
   }
 }
 

@@ -16,7 +16,7 @@ precombat->add_action( "use_item,name=algethar_puzzle_box,if=trinket.1.is.algeth
 precombat->add_action( "cat_form,if=buff.cat_form.down" );
 precombat->add_action( "prowl" );
 
-def->add_action( "prowl,if=buff.bs_inc.down&!buff.prowl.up&!buff.shadowmeld.up","Executed every time the actor is available." );
+def->add_action( "prowl,if=buff.bs_inc.down&!buff.prowl.up&!buff.shadowmeld.up" );
 def->add_action( "cat_form,if=!buff.cat_form.up&!talent.fluid_form" );
 def->add_action( "invoke_external_buff,name=power_infusion,if=buff.bs_inc.up|!talent.berserk_heart_of_the_lion","Line up <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> with <a href='https://www.wowhead.com/spell=106951/berserk'>Berserk</a> every 2 minutes." );
 def->add_action( "auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up" );
@@ -70,8 +70,8 @@ cd_variable->add_action( "variable,name=lowestCDremaining,op=setif,condition=tal
 cd_variable->add_action( "variable,name=secondLowestCDremaining,op=setif,condition=cooldown.convoke_the_spirits.remains>cooldown.bs_inc.remains,value=cooldown.convoke_the_spirits.remains>?cooldown.potion.remains,value_else=cooldown.bs_inc.remains>?cooldown.potion.remains" );
 
 cooldown->add_action( "call_action_list,name=cd_variable,if=!cooldown.bs_inc.remains|!cooldown.potion.remains|!trinket.1.cooldown.remains|!trinket.2.cooldown.remains","this line is here to reduce the amount of variable calls in the APL by only checking variables when they are potentially relevant." );
-cooldown->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_damage&(trinket.2.cooldown.remains>20|!trinket.2.has_use_buff|(cooldown.tigers_fury.remains<25&cooldown.tigers_fury.remains>20))","non-stat on use trinkets get used on cooldown, so long as it wont interfere with a stat on-use trinket" );
-cooldown->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_damage&(trinket.1.cooldown.remains>20|!trinket.1.has_use_buff|(cooldown.tigers_fury.remains<25&cooldown.tigers_fury.remains>20))" );
+cooldown->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_damage&(trinket.2.cooldown.remains>20|!trinket.2.has_use_buff|(cooldown.tigers_fury.remains<25&cooldown.tigers_fury.remains>20))&(!trinket.1.is.font_of_venomous_rage|!buff.bs_inc.up)","non-stat on use trinkets get used on cooldown, so long as it wont interfere with a stat on-use trinket" );
+cooldown->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_damage&(trinket.1.cooldown.remains>20|!trinket.1.has_use_buff|(cooldown.tigers_fury.remains<25&cooldown.tigers_fury.remains>20))&(!trinket.2.is.font_of_venomous_rage|!buff.bs_inc.up)" );
 cooldown->add_action( "berserking" );
 cooldown->add_action( "potion,if=buff.bs_inc.up|fight_remains<32|buff.tigers_fury.up&!variable.holdPot","potion during berserk, fallback pot if the fight is going to end within its duration. Expedite use if you would lose a pot use by holding it." );
 cooldown->add_action( "use_items","non trinket gear-on-uses have variable rules on whether or not they trigger the trinket shared CD. For the cases they do we will need specific APL entries. For now just use on cooldown." );

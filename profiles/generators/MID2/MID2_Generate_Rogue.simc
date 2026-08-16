@@ -24,7 +24,8 @@ trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13662/13848
 main_hand=zathatek_breath_of_corruption,id=271093,bonus_id=13662/13848,enchant_id=7983
 off_hand=sharpened_lightwood_slasher,id=275070,bonus_id=12854/13662,enchant_id=7983
 
-save=MID2_Rogue_Assassination_Deathstalker.simc
+# save=MID2_Rogue_Assassination_Deathstalker.simc
+save=MID2_Rogue_Assassination.simc
 
 rogue="MID2_Rogue_Assassination_Fatebound"
 spec=assassination
