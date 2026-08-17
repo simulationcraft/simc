@@ -340,16 +340,16 @@ void dbc_proc_callback_t::initialize()
   listener->callbacks.register_callback( effect.proc_flags(), effect.proc_flags2(), this );
 
   // Get custom trigger function if it exists
-  if ( effect.driver()->id() && trigger_type == trigger_fn_type::NONE )
+  if ( effect.spell_id && trigger_type == trigger_fn_type::NONE )
   {
-    trigger_fn = listener->callbacks.callback_trigger_function( effect.driver()->id() );
-    trigger_type = listener->callbacks.callback_trigger_function_type( effect.driver()->id() );
+    trigger_fn = listener->callbacks.callback_trigger_function( effect.spell_id );
+    trigger_type = listener->callbacks.callback_trigger_function_type( effect.spell_id );
   }
 
   // Get custom execute function if it exists
-  if ( effect.driver()->id() && execute_fn == nullptr )
+  if ( effect.spell_id && execute_fn == nullptr )
   {
-    execute_fn = listener->callbacks.callback_execute_function( effect.driver()->id() );
+    execute_fn = listener->callbacks.callback_execute_function( effect.spell_id );
   }
 
   proc_data.spell = effect.driver();

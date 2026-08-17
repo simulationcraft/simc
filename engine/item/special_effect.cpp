@@ -313,7 +313,7 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
   // Setup the spell for the stat buff
   if ( trigger()->id() > 0 )
     spell_data = trigger();
-  else if ( driver()->id() > 0 )
+  else if ( spell_id > 0 )
     spell_data = driver();
 
   stat_buff_t* buff =
@@ -384,7 +384,7 @@ absorb_buff_t* special_effect_t::initialize_absorb_buff() const
   {
     buff_spell = trigger();
   }
-  else if ( driver()->id() > 0 )
+  else if ( spell_id > 0 )
   {
     buff_spell = driver();
   }
@@ -551,7 +551,7 @@ spell_t* special_effect_t::initialize_resource_action() const
   // Setup the spell data
   if ( trigger()->id() > 0 )
     s = trigger();
-  else if ( driver()->id() > 0 )
+  else if ( spell_id > 0 )
     s = driver();
 
   auto spell =
@@ -621,7 +621,7 @@ heal_t* special_effect_t::initialize_heal_action() const
   // Setup the spell data
   if ( trigger()->id() > 0 )
     s = trigger();
-  else if ( driver()->id() > 0 )
+  else if ( spell_id > 0 )
     s = driver();
 
   auto heal = new unique_gear::proc_heal_t( name(), player, s, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
@@ -656,7 +656,7 @@ attack_t* special_effect_t::initialize_attack_action() const
   // Setup the spell data
   if ( trigger()->id() > 0 )
     s = trigger();
-  else if ( driver()->id() > 0 )
+  else if ( spell_id > 0 )
     s = driver();
 
   auto attack =
@@ -718,7 +718,7 @@ unsigned special_effect_t::rppm_scale() const
     return 0;
   }
 
-  return player->dbc->real_ppm_scale( driver()->id() );
+  return player->dbc->real_ppm_scale( spell_id );
 }
 
 double special_effect_t::rppm_modifier() const
@@ -733,7 +733,7 @@ double special_effect_t::rppm_modifier() const
     return 0.0;
   }
 
-  return player->dbc->real_ppm_modifier( driver()->id(), player, item ? item->item_level() : 0 );
+  return player->dbc->real_ppm_modifier( spell_id, player, item ? item->item_level() : 0 );
 }
 
 /**
@@ -1226,13 +1226,13 @@ std::string special_effect_t::cooldown_name() const
   }
 
   std::string n;
-  if ( driver()->id() > 0 )
+  if ( spell_id > 0 )
   {
     n = driver()->name_cstr();
     // Append the spell ID of the driver to the cooldown name. In some cases, the
     // drivers of different trinket procs are actually named identically, causing
     // issues when the trinkets are worn.
-    n += "_" + util::to_string( driver()->id() );
+    n += "_" + util::to_string( spell_id );
   }
   else if ( item )
   {

@@ -1048,7 +1048,7 @@ custom_cb_t idol_of_the_aspects( std::string_view type )
     } );
 
     effect.player->callbacks.register_callback_execute_function(
-        effect.driver()->id(), [ buff, gems ]( auto, auto, auto, auto ) {
+        effect.spell_id, [ buff, gems ]( auto, auto, auto, auto ) {
           buff->trigger( gems );
         } );
   };
@@ -2316,7 +2316,7 @@ void voidmenders_shadowgem( special_effect_t& effect )
   stacking_driver->name_str           = "voidmenders_shadowgem_stacks";
   stacking_driver->type               = SPECIAL_EFFECT_EQUIP;
   stacking_driver->source             = SPECIAL_EFFECT_SOURCE_ITEM;
-  stacking_driver->spell_id           = effect.driver()->id();
+  stacking_driver->spell_id           = effect.spell_id;
   stacking_driver->cooldown_          = 0_ms;
   stacking_driver->cooldown_category_ = 0;
   stacking_driver->custom_buff        = stacking_buff;
@@ -3487,7 +3487,7 @@ void blazebinders_hoof(special_effect_t& effect)
 
   special_effect_t* bound_by_fire_and_blaze = new special_effect_t( effect.player );
   bound_by_fire_and_blaze->source = effect.source;
-  bound_by_fire_and_blaze->spell_id = effect.driver()->id();
+  bound_by_fire_and_blaze->spell_id = effect.spell_id;
   bound_by_fire_and_blaze->custom_buff = buff;
   bound_by_fire_and_blaze->cooldown_ = 0_ms;
 
@@ -6430,7 +6430,7 @@ void pinch_of_dream_magic( special_effect_t& effect )
   add_buff( "dreamsaber", 424275 );
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
+      effect.spell_id, [ buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
         cb->rng().range( buffs )->trigger();
       } );
 
@@ -6918,7 +6918,7 @@ void branch_of_the_tormented_ancient( special_effect_t& e )
 
   const auto driver      = new special_effect_t( e.player );
   driver->name_str       = "roots_of_the_tormented_ancient_proc";
-  driver->spell_id       = e.driver()->id();
+  driver->spell_id       = e.spell_id;
   driver->cooldown_      = e.driver()->internal_cooldown();
   driver->execute_action = damage;
   e.player->special_effects.push_back( driver );
@@ -7776,7 +7776,7 @@ void spore_keepers_baton( special_effect_t& effect )
                   ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   effect.player->callbacks.register_callback_execute_function(
-    effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t* cb, auto, player_t* t, action_state_t* s ) {
+    effect.spell_id, [ dot, buff ]( const dbc_proc_callback_t* cb, auto, player_t* t, action_state_t* s ) {
       if ( s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME ||
            t->is_enemy() == cb->listener->is_enemy() )
       {
@@ -8724,7 +8724,7 @@ void elemental_lariat( special_effect_t& effect )
   add_buff( FROST_GEM, "frost", 375343, STAT_VERSATILITY_RATING );
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
+      effect.spell_id, [ buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
         cb->rng().range( buffs )->trigger();
       } );
 }
@@ -8987,7 +8987,7 @@ void rallied_to_victory( special_effect_t& effect )
 void adaptive_dracothyst_armguards( special_effect_t& effect )
 {
   // Handle both drivers, this is the Crit Driver.
-  if ( effect.driver()->id() == 406928 )
+  if ( effect.spell_id == 406928 )
   {
     auto buff = create_buff<stat_buff_t>( effect.player, "adaptive_stonescales_crit", effect.driver()->effectN( 1 ).trigger() );
     buff->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
@@ -9305,7 +9305,7 @@ void demonsbane( special_effect_t& e )
   dot->base_td = e.driver()->effectN( 1 ).average( e.item );
 
   e.player->callbacks.register_callback_trigger_function(
-      e.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      e.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
       []( auto, const auto&, player_t* t, auto, auto ) { return t->race == RACE_DEMON; } );
 
   e.execute_action = dot;
@@ -9530,7 +9530,7 @@ void verdant_conduit( special_effect_t& effect )
   if ( first )
   {
     effect.player->callbacks.register_callback_execute_function(
-        effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
+        effect.spell_id, [ buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
           cb->rng().range( buffs )->trigger();
         } );
   }
@@ -9617,7 +9617,7 @@ void playful_spirits_fur( special_effect_t& effect )
 
   auto set_driver_id = effect.player->sets->set( effect.player->specialization(), DF_PSF, B2 )->id();
 
-  if ( effect.driver()->id() == set_driver_id )
+  if ( effect.spell_id == set_driver_id )
   {
     effect.trigger_spell_id = 376932;
 
@@ -9638,7 +9638,7 @@ void horizon_striders_garments( special_effect_t& effect )
   auto set_driver_id =
       effect.player->sets->set( effect.player->specialization(), DF_HSG, B2 )->id();
 
-  if ( effect.driver()->id() == set_driver_id )
+  if ( effect.spell_id == set_driver_id )
   {
     effect.proc_flags2_ = PF2_CRIT;
 
@@ -9662,7 +9662,7 @@ void azureweave_vestments( special_effect_t& effect )
 
   auto set_driver_id = effect.player->sets->set( effect.player->specialization(), DF_AV, B2 )->id();
 
-  if ( effect.driver()->id() == set_driver_id )
+  if ( effect.spell_id == set_driver_id )
   {
     // effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
 
@@ -9686,7 +9686,7 @@ void woven_chronocloth( special_effect_t& effect )
 
   auto set_driver_id = effect.player->sets->set( effect.player->specialization(), DF_WC, B2 )->id();
 
-  if ( effect.driver()->id() == set_driver_id )
+  if ( effect.spell_id == set_driver_id )
   {
     new dbc_proc_callback_t( effect.player, effect );
   }
@@ -9717,7 +9717,7 @@ void raging_tempests( special_effect_t& effect )
   auto check_set = [ effect ]( set_bonus_e b ) {
     return effect.player->sets->has_set_bonus( effect.player->specialization(), DF_RT, b ) &&
            effect.player->sets->set( effect.player->specialization(), DF_RT, b )->id() ==
-               effect.driver()->id();
+               effect.spell_id;
   };
 
   if ( check_set( B2 ) )
@@ -9777,7 +9777,7 @@ void might_of_the_drogbar( special_effect_t& effect )
 {
   auto set_driver_id = 407914U;
 
-  if ( effect.driver()->id() == set_driver_id )
+  if ( effect.spell_id == set_driver_id )
   {
     new dbc_proc_callback_t( effect.player, effect );
   }
@@ -9836,7 +9836,7 @@ enum primordial_stone_family_e
 
 primordial_stone_family_e get_stone_family( const special_effect_t& e )
 {
-  switch ( e.driver()->id() )
+  switch ( e.spell_id )
   {
     case SPARKLING_MANA_STONE:
     case HUMMING_ARCANE_STONE:
@@ -9887,7 +9887,7 @@ enum primordial_stone_type_e
 
 primordial_stone_type_e get_stone_type( const special_effect_t& e )
 {
-  switch ( e.driver()->id() )
+  switch ( e.spell_id )
   {
     case STORM_INFUSED_STONE:
     case ECHOING_THUNDER_STONE:
@@ -10062,7 +10062,7 @@ struct primordial_stone_cb_t : public dbc_proc_callback_t
       {
         if ( get_stone_type( *e ) == PRIMORDIAL_TYPE_DAMAGE )
         {
-          twilight_action = find_primordial_stone_action( e->player, e->driver()->id() );
+          twilight_action = find_primordial_stone_action( e->player, e->spell_id );
           break;
         }
       }
@@ -10073,7 +10073,7 @@ struct primordial_stone_cb_t : public dbc_proc_callback_t
       {
         if ( get_stone_type( *e ) == PRIMORDIAL_TYPE_HEAL )
         {
-          twilight_action = find_primordial_stone_action( e->player, e->driver()->id() );
+          twilight_action = find_primordial_stone_action( e->player, e->spell_id );
           break;
         }
       }
@@ -10505,7 +10505,7 @@ void humming_arcane_stone( special_effect_t& effect )
   new primordial_stone_cb_t( effect.player, effect );
 
   effect.player->callbacks.register_callback_trigger_function(
-      effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
       []( auto, const auto&, auto, action_state_t* s, auto  ) {
         return s->action->get_school() != SCHOOL_PHYSICAL;
       } );

@@ -267,7 +267,7 @@ void potion_of_zealotry( special_effect_t& effect )
 
   auto burst_of_zealotry            = new special_effect_t( effect.player );
   burst_of_zealotry->name_str       = "burst_of_zealotry_proc";
-  burst_of_zealotry->spell_id       = effect.driver()->id();
+  burst_of_zealotry->spell_id       = effect.spell_id;
   burst_of_zealotry->cooldown_      = 0_ms; // Cooldown handled by the main special effect
   burst_of_zealotry->execute_action = create_proc_action<burst_of_zealotry_t>( "burst_of_zealotry", effect );
   effect.player->special_effects.push_back( burst_of_zealotry );
@@ -319,7 +319,7 @@ void liquid_luster( special_effect_t& effect )
         int _initial_stack = static_cast<int>( ( buff_duration() - d ) / gleam_period ) + 1;
         gleam->trigger( _initial_stack, d );
 
-        // determine how manu full ticks are left
+        // determine how many full ticks are left
         int _full_ticks = static_cast<int>( d / gleam_period );
         if ( !_full_ticks )
           return ret;
@@ -336,7 +336,7 @@ void liquid_luster( special_effect_t& effect )
           {
             // trigger the partial then the remaining ticks
             make_event( *sim, _partial_tick, [ this, _full_ticks ] {
-              gleam->trigger( remains() );
+              _tick();
               make_repeating_event( *sim, gleam_period, [ this ] { _tick(); }, _full_ticks );
             } );
           }
@@ -388,7 +388,7 @@ void alluring_nostrum( special_effect_t& effect )
 
   auto voidlash_salvo            = new special_effect_t( effect.player );
   voidlash_salvo->name_str       = "voidlash_salvo_proc";
-  voidlash_salvo->spell_id       = effect.driver()->id();
+  voidlash_salvo->spell_id       = effect.spell_id;
   voidlash_salvo->cooldown_      = 0_ms;  // Cooldown handled by the main special effect
   voidlash_salvo->execute_action = create_proc_action<voidlash_salvo_t>( "voidlash_salvo", effect, debuff );
   effect.player->special_effects.push_back( voidlash_salvo );
@@ -2412,7 +2412,7 @@ void void_execution_mandate( special_effect_t& effect )
   auto impending          = new special_effect_t( effect.player );
   impending->name_str     = "impending_execution_proc";
   impending->item         = effect.item;
-  impending->spell_id     = effect.driver()->id();
+  impending->spell_id     = effect.spell_id;
   impending->cooldown_    = 0_ms; // Cooldown is for on use effect, not the equip effect.
   impending->proc_flags2_ = PF2_ALL_HIT;
   effect.player->special_effects.push_back( impending );
@@ -2420,7 +2420,7 @@ void void_execution_mandate( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, *impending );
 
   effect.player->callbacks.register_callback_execute_function(
-    effect.driver()->id(), [ debuff, crit_buff ]( auto, auto, player_t* t, auto ) {
+    effect.spell_id, [ debuff, crit_buff ]( auto, auto, player_t* t, auto ) {
       if ( debuff->get_debuff( t )->check() )
         crit_buff->trigger();
     } );
@@ -3666,7 +3666,7 @@ void voracious_heart_of_ulatek( special_effect_t& effect )
 
   auto equip_se = new special_effect_t( effect.player );
   equip_se->name_str = "voracious_heart_of_ulatek_equip_driver";
-  equip_se->spell_id = effect.driver()->id();
+  equip_se->spell_id = effect.spell_id;
   equip_se->execute_action = damage;
   equip_se->proc_flags2_   = PF2_ALL_HIT;  // TODO: confirm
   equip_se->cooldown_      = 0_ms;
@@ -4251,7 +4251,7 @@ void torments_duality( special_effect_t& effect )
         cb->get_debuff( t )->trigger( stacks );
       } );
   }
-  else if ( effect.driver()->id() == 1253359 )  // radiant foil
+  else if ( effect.spell_id == 1253359 )  // radiant foil
   {
     effect.player->sim->error( UNVERIFIED_VALUE,
       "Torment's Duality: Damage increase to Radiant Foil per purified Void Tear is assumed to be added to the base "
@@ -4721,7 +4721,7 @@ void venomcursed( special_effect_t& effect )
     // the same item.
     auto new_effect          = new special_effect_t( effect.player );
     new_effect->name_str     = util::tokenize_fn( effect.driver()->name_cstr() ) + "_2";
-    new_effect->spell_id     = effect.driver()->id();
+    new_effect->spell_id     = effect.spell_id;
     new_effect->custom_buff  = buff;
     effect.player->special_effects.push_back( new_effect );
     new dbc_proc_callback_t( effect.player, *new_effect );
@@ -5353,7 +5353,6 @@ void venomfang( special_effect_t& effect )
   effect.execute_action = create_proc_action<venomfang_t>( "venomfang", effect );
   new dbc_proc_callback_t( effect.player, effect );
 }
-
 }  // namespace bite_of_zuljan
 
 void register_special_effects()
@@ -5402,7 +5401,6 @@ void register_special_effects()
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( 1295132, consumables::liquid_luster, true );
   register_special_effect( 1295015, consumables::alluring_nostrum );
-
   reset_version_check();
   // Oils
   register_special_effect( { 1262056, 1262111 }, consumables::laced_zoomshots );
@@ -5505,7 +5503,6 @@ void register_special_effects()
   register_special_effect( 1250588, trinkets::permafrost_essence );
   set_min_version( wowv_t( 12, 0, 7 ) );
   register_special_effect( 1284696, trinkets::sporelords_mycelium );
-  reset_version_check();
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( 1295058, trinkets::wavecallers_seastone );
   register_special_effect( 1293316, trinkets::vile_vial_of_volatile_venom );

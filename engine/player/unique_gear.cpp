@@ -2885,8 +2885,8 @@ void item::warlords_unseeing_eye( special_effect_t& effect )
   // Store the magic mitigation number in a player-scope variable.
   auto magic = effect.driver()->effectN( 2 ).average( effect.item ) / 10000.0;
   // Register our handler function so it can be managed by player_t::account_absorb_buffs()
-  effect.player->instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
-      effect.driver()->id(),
+  effect.player->instant_absorb_list.insert( std::make_pair(
+      effect.spell_id,
       instant_absorb_t( effect.player, effect.driver(), "warlords_unseeing_eye", [ magic ]( const action_state_t* s ) {
         /* Absorb is based on what the player's HP would be after taking the damage,
           accounting for absorbs that occur prior but ignoring the rest.
@@ -2933,7 +2933,7 @@ void item::sorrowsong( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 
   effect.player->callbacks.register_callback_trigger_function(
-      effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
       [ effect ]( auto, const auto&, player_t* t, auto, auto ) {
         return t->health_percentage() <= effect.driver()->effectN( 1 ).base_value();
       } );
@@ -4871,7 +4871,7 @@ std::vector<special_effect_t*> unique_gear::find_special_effects( player_t* p, u
 
   for ( auto e : p->special_effects )
   {
-    if ( e->driver()->id() == id && ( type == SPECIAL_EFFECT_NONE || type == e->type ) )
+    if ( e->spell_id == id && ( type == SPECIAL_EFFECT_NONE || type == e->type ) )
     {
       effects.push_back( e );
     }
@@ -4881,7 +4881,7 @@ std::vector<special_effect_t*> unique_gear::find_special_effects( player_t* p, u
   {
     for ( auto e : item.parsed.special_effects )
     {
-      if ( e->driver()->id() == id && ( type == SPECIAL_EFFECT_NONE || type == e->type ) )
+      if ( e->spell_id == id && ( type == SPECIAL_EFFECT_NONE || type == e->type ) )
       {
         effects.push_back( e );
       }

@@ -1245,7 +1245,7 @@ void items::mydas_talisman( special_effect_t& effect )
   effect2->custom_buff = effect.custom_buff;
 
   // the trinket 'on use' essentially triggers itself
-  effect.trigger_spell_id = effect.driver()->id();
+  effect.trigger_spell_id = effect.spell_id;
 }
 
 // Harlan's Loaded Dice =====================================================
@@ -4882,7 +4882,7 @@ void items::goldcoated_superconductors( special_effect_t& effect )
   effect.custom_buff = buff;
 
   effect.player->callbacks.register_callback_trigger_function(
-      effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
       [ & ]( auto, const auto&, auto, const action_state_t* s, auto ) {
         return dbc::get_school_mask( s->action->get_school() ) & dbc::get_school_mask( SCHOOL_NATURE );
       } );

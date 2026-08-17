@@ -9983,7 +9983,7 @@ struct use_item_t : public action_t
 
       // if the action is the same as the driver, has a direct/periodic damage effect, and the driver has a cast time,
       // then the action is not considered a proc
-      if ( action && action->id == e->driver()->id() && e->driver()->cast_time() > 0_ms &&
+      if ( action && action->id == e->spell_id && e->driver()->cast_time() > 0_ms &&
            ( action_t::has_direct_damage_effect( *e->driver() ) ||
              action_t::has_periodic_damage_effect( *e->driver() ) ) )
       {
