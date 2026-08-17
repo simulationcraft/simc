@@ -4715,6 +4715,17 @@ void venomcursed( special_effect_t& effect )
     effect.custom_buff = buff;
     new dbc_proc_callback_t( effect.player, effect );
   }
+  else
+  {
+    // Currently Venomcursed items are bugged and will duplicate their driver as well as buff size if you can get two of
+    // the same item.
+    auto new_effect          = new special_effect_t( effect.player );
+    new_effect->name_str     = util::tokenize_fn( effect.driver()->name_cstr() ) + "_2";
+    new_effect->spell_id     = effect.driver()->id();
+    new_effect->custom_buff  = buff;
+    effect.player->special_effects.push_back( new_effect );
+    new dbc_proc_callback_t( effect.player, *new_effect );
+  }
 }
 }  // namespace armors
 
