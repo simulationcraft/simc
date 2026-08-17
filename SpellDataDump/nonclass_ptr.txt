@@ -254039,6 +254039,7 @@ Description      : Restores $s1% of your maximum health and mana every second ov
 Tooltip          : Restoring $s1% health and mana every sec.
 
 Name             : Bundle of Adventurer Mistcrests (id=1286592) 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -254048,9 +254049,10 @@ Category Cooldown: 0.5 seconds
 Effects          :
 #1 (id=1303508)  : Loot (189)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 140060 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 10 Adventurer Mistcrests. These Crests ignore the seasonal cap.
+Description      : Collect 10 Adventurer Mistcrests.
 
 Name             : Satchel of Champion Mistcrests (id=1286602) 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -254060,9 +254062,10 @@ Category Cooldown: 0.5 seconds
 Effects          :
 #1 (id=1303519)  : Loot (189)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 140061 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 10 Champion Mistcrests. These Crests ignore the seasonal cap.
+Description      : Collect 10 Champion Mistcrests.
 
 Name             : Pack of Hero Mistcrests (id=1286604) 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -254072,9 +254075,10 @@ Category Cooldown: 0.5 seconds
 Effects          :
 #1 (id=1303521)  : Loot (189)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 140062 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 10 Hero Mistcrests. These Crests ignore the seasonal cap.
+Description      : Collect 10 Hero Mistcrests.
 
 Name             : Pouch of Veteran Mistcrests (id=1286605) 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -254084,7 +254088,7 @@ Category Cooldown: 0.5 seconds
 Effects          :
 #1 (id=1303522)  : Loot (189)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 140063 | Misc Value 2: 556 | Target: Self (1)
-Description      : Collect 10 Veteran Mistcrests. These Crests ignore the seasonal cap.
+Description      : Collect 10 Veteran Mistcrests.
 
 Name             : Triumphant Satchel of Champion Mistcrests (id=1286611) 
 School           : Physical
@@ -255470,7 +255474,7 @@ Max Scaling Level: 90
 Duration         : Aura (infinite)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
-Real PPM         : 1 (Haste multiplier)
+Real PPM         : 2 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Unknown 38
 Triggered By     : Viperine Grasp (1291878)
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Allow during spell override (404), Only Proc From Class Abilities (415)
@@ -257384,6 +257388,7 @@ Effects          :
 Description      : Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.
 
 Name             : Ouroboric Gift (id=1295803) 
+Hotfixed         : Tooltip
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -257401,9 +257406,10 @@ Effects          :
 #2 (id=1318107)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed, Leech, Avoidance | Target: Self (1)
 #3 (id=1318110)  : Apply Aura (6) | Modify Combat Rating Multiplier (405)
-                   Base Value: 100 | Scaled Value: 100 | Rating: RunSpeed, Leech, Avoidance | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed, Leech, Avoidance | Target: Self (1)
+Hotfixed         : Base Value (100 -> 0)
 Description      : Increases $pri by $s1% and all Tertiary stats by $s2%
-Tooltip          : $pri increased by $w1% and Tertiary stats increased by $s3%.
+Tooltip          : $pri increased by $w1% and Tertiary stats increased by $w3%.
 
 Name             : Ouroboric Curse (id=1295825) 
 School           : Physical
