@@ -4142,6 +4142,18 @@ void tattered_amani_war_banner( special_effect_t& effect )
       set_duration( driver->duration() );
     }
 
+    void expire_override( int s, timespan_t d ) override
+    {
+      stat_buff_t::expire_override( s, d );
+      extended = false;
+    }
+
+    void reset() override
+    {
+      stat_buff_t::reset();
+      extended = false;
+    }
+
     void extend_battle_fervor()
     {
       if ( extended )
