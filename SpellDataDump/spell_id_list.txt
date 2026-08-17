@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.0.69299
+Class Spell ID List, wow build 12.1.0.69323
 
 Death Knight
 3714     Path of Frost
@@ -22936,6 +22936,7 @@ Warlock
 1305798  Refund Soul Shard
 1306077  Isolated Implosion
 1311653  Soul Leech
+1311913  Shadowburn
 1311969  Hedonic Gorging
 1312998  Impetuous Wrath
 

@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69299 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69323 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -809,6 +809,7 @@ Use this ability when below 20% health.
 Tooltip          : Maximum health increased by $s1%.
 
 Name             : Shadowburn (id=17877) [Spell Family (5)] 
+Hotfixed         : Description
 Talent Entry     : Destruction [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadowflame
@@ -836,7 +837,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1311913 | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Shadowflame damage. Only usable on enemies that have less than $s4% health.
 
-|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and removes its cooldown if the target dies within $d.|r
+|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and removes its cooldown if the target dies within $1311913d.|r
 
 Name             : Agony (id=17941) [Spell Family (5)] 
 Class            : Warlock
@@ -19067,7 +19068,8 @@ Effects          :
 Hotfixed         : NEW EFFECT
 Description      : All single-target damage done by you and your minions grants you and your pet shadowy shields that absorb $s1% of the damage dealt$?s219272[][ for $108366d], up to $s2% of maximum health.
 
-Name             : Shadowburn (id=1311913) 
+Name             : Shadowburn (id=1311913) [Spell Family (5)] 
+Hotfixed         : Affecting Spells
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : None
