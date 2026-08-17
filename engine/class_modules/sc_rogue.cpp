@@ -6282,6 +6282,12 @@ struct thistle_tea_t : public rogue_spell_t
     {
       p()->cooldowns.thistle_tea->adjust( -timespan_t::from_seconds( precombat_seconds ), false );
     }
+
+    // Manually inject the auto-trigger Thistle Tea into the sample sequence for visibility
+    if ( background )
+    {
+      p()->sequence_add(this, this->target);
+    }
   }
 };
 
