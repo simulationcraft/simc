@@ -28583,10 +28583,10 @@ static constexpr std::array<spelltext_data_t, 29242> __spelltext_data { {
   { 1286533, "$@spelldesc1285138", 0, 0 },
   { 1286535, "Restores $s1% of your maximum health every second over $d. Must remain seated while eating.", "Restoring $s1% health every sec.", 0 },
   { 1286537, "Restores $s1% of your maximum health and mana every second over $d. Must remain seated while eating.", "Restoring $s1% health and mana every sec.", 0 },
-  { 1286592, "Collect 10 Adventurer Mistcrests. These Crests ignore the seasonal cap.", 0, 0 },
-  { 1286602, "Collect 10 Champion Mistcrests. These Crests ignore the seasonal cap.", 0, 0 },
-  { 1286604, "Collect 10 Hero Mistcrests. These Crests ignore the seasonal cap.", 0, 0 },
-  { 1286605, "Collect 10 Veteran Mistcrests. These Crests ignore the seasonal cap.", 0, 0 },
+  { 1286592, "Collect 10 Adventurer Mistcrests.", 0, 0 },
+  { 1286602, "Collect 10 Champion Mistcrests.", 0, 0 },
+  { 1286604, "Collect 10 Hero Mistcrests.", 0, 0 },
+  { 1286605, "Collect 10 Veteran Mistcrests.", 0, 0 },
   { 1286611, "Collect 10 Champion Mistcrests.", 0, 0 },
   { 1286612, "Collect 10 Hero Mistcrests.", 0, 0 },
   { 1286613, "Collect 10 Myth Mistcrests.", 0, 0 },
@@ -29245,7 +29245,11 @@ static constexpr std::array<spelltext_data_t, 29242> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.1.0.69299
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
+  { 1286592,  0, "Collect 10 Adventurer Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Adventurer Mistcrests." },
+  { 1286602,  0, "Collect 10 Champion Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Champion Mistcrests." },
+  { 1286604,  0, "Collect 10 Hero Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Hero Mistcrests." },
+  { 1286605,  0, "Collect 10 Veteran Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Veteran Mistcrests." },
 } };
 
 // Spell description variables, wow build 12.1.0.69299
