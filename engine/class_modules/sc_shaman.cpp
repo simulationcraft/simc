@@ -6025,7 +6025,7 @@ struct crash_lightning_t : public shaman_attack_t
       p()->buff.tww2_enh_4pc_damage->trigger( p()->buff.tww2_enh_4pc->check() );
     }
 
-    if ( p()->buff.doom_winds->up() )
+    if ( p()->buff.doom_winds->up() || p()->buff.ascendance->up() )
     {
       p()->trigger_thorims_invocation( execute_state );
     }
