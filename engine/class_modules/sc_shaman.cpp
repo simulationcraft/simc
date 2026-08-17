@@ -10010,11 +10010,9 @@ struct voltaic_blaze_t : public shaman_spell_t
     {
       shaman_spell_t::impact( state );
 
-      make_event( sim, rng().gauss( 500_ms, 25_ms ), [ this, state ]() {
-        p()->trigger_secondary_flame_shock( state->target, spell_variant::VOLTAIC_BLAZE );
+      make_event( sim, rng().gauss( 500_ms, 25_ms ), [ this, t = state->target ]() {
+        p()->trigger_secondary_flame_shock( t, spell_variant::VOLTAIC_BLAZE );
       } );
-
-
     }
   };
 
