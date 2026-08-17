@@ -7371,7 +7371,8 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     // TODO-midnight-talent: Uniform RNG, or what?
-    if ( ( is_variant( spell_variant::NORMAL ) || is_variant( spell_variant::THORIMS_INVOCATION ) )
+    if ( mw_consumed_stacks > 0 &&
+      ( is_variant( spell_variant::NORMAL ) || is_variant( spell_variant::THORIMS_INVOCATION ) )
       && rng().roll( p()->talent.thunder_capacitor->effectN( 2 ).percent() ) )
     {
       sim->print_debug( "{} procs thunder_capacitor", player->name() );
