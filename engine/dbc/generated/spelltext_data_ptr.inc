@@ -28583,10 +28583,10 @@ static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
   { 1286533, "$@spelldesc1285138", 0, 0 },
   { 1286535, "Restores $s1% of your maximum health every second over $d. Must remain seated while eating.", "Restoring $s1% health every sec.", 0 },
   { 1286537, "Restores $s1% of your maximum health and mana every second over $d. Must remain seated while eating.", "Restoring $s1% health and mana every sec.", 0 },
-  { 1286592, "Collect 10 Adventurer Mistcrests. These Crests ignore the seasonal cap.", 0, 0 },
-  { 1286602, "Collect 10 Champion Mistcrests. These Crests ignore the seasonal cap.", 0, 0 },
-  { 1286604, "Collect 10 Hero Mistcrests. These Crests ignore the seasonal cap.", 0, 0 },
-  { 1286605, "Collect 10 Veteran Mistcrests. These Crests ignore the seasonal cap.", 0, 0 },
+  { 1286592, "Collect 10 Adventurer Mistcrests.", 0, 0 },
+  { 1286602, "Collect 10 Champion Mistcrests.", 0, 0 },
+  { 1286604, "Collect 10 Hero Mistcrests.", 0, 0 },
+  { 1286605, "Collect 10 Veteran Mistcrests.", 0, 0 },
   { 1286611, "Collect 10 Champion Mistcrests.", 0, 0 },
   { 1286612, "Collect 10 Hero Mistcrests.", 0, 0 },
   { 1286613, "Collect 10 Myth Mistcrests.", 0, 0 },
@@ -28829,7 +28829,7 @@ static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
   { 1295776, "Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.", 0, 0 },
   { 1295777, "Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.", 0, 0 },
   { 1295783, "Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.", 0, 0 },
-  { 1295803, "Increases $pri by $s1% and all Tertiary stats by $s2%", "$pri increased by $w1% and Tertiary stats increased by $s3%.", 0 },
+  { 1295803, "Increases $pri by $s1% and all Tertiary stats by $s2%", "$pri increased by $w1% and Tertiary stats increased by $w3%.", 0 },
   { 1295825, "$@spelldesc1248903", "The Curse slumbers.", 0 },
   { 1295833, "Unleash a deluge of caustic venom, dealing ${$1295832s1*$<rolemult>*$d/$t1} Nature damage to your target. Damage increased by $1295832S2% for every 1% health the enemy has remaining.\r\n\r\nDefeat enemies to catalyze their essential fluids into additional venom, reducing this cooldown by $1295832s3 sec.", 0, 0 },
   { 1295836, "$@spelldesc1248903", "Horrified by the $@auracaster.", 0 },
@@ -29245,7 +29245,12 @@ static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.1.0.69299
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __ptr_spelltext_hotfix_data { {
+  { 1286592,  0, "Collect 10 Adventurer Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Adventurer Mistcrests." },
+  { 1286602,  0, "Collect 10 Champion Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Champion Mistcrests." },
+  { 1286604,  0, "Collect 10 Hero Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Hero Mistcrests." },
+  { 1286605,  0, "Collect 10 Veteran Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Veteran Mistcrests." },
+  { 1295803,  1, "$pri increased by $w1% and Tertiary stats increased by $s3%.", "$pri increased by $w1% and Tertiary stats increased by $w3%." },
 } };
 
 // Spell description variables, wow build 12.1.0.69299
