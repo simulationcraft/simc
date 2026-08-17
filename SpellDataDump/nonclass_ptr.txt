@@ -255010,6 +255010,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 165
 Description      : Add the Lindormi's Guidance affix to a Mythic Keystone.
 
+Name             : Gift Expunction (id=1289168) 
+Hotfixed         : Description
+School           : Nature
+Spell Type       : Magic
+Range            : 50000 yards
+Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=1307400)  : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.4 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.4)
+Description      : $@spelldesc1291581
+Tooltip          : Deal all remaining Ula'tek's Gift damage to the afflicted target.
+
 Name             : Remnant of Hakkar (id=1289281) 
 School           : Physical
 Spell Type       : None
