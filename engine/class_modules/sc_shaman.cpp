@@ -6598,8 +6598,9 @@ struct chain_lightning_t : public chained_base_t
     }
 
     // TODO-midnight-talent: Uniform RNG, or what?
-    if ( ( is_variant( spell_variant::NORMAL ) || is_variant( spell_variant::THORIMS_INVOCATION ) ) &&
-         rng().roll( p()->talent.thunder_capacitor->effectN( 2 ).percent() ) )
+    if ( mw_consumed_stacks > 0 &&
+      ( is_variant( spell_variant::NORMAL ) || is_variant( spell_variant::THORIMS_INVOCATION ) ) &&
+      rng().roll( p()->talent.thunder_capacitor->effectN( 2 ).percent() ) )
     {
       sim->print_debug( "{} procs thunder_capacitor", player->name() );
       p()->generate_maelstrom_weapon( execute_state->action, mw_consumed_stacks );
