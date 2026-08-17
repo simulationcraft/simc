@@ -75,7 +75,6 @@ struct special_effect_t
 private:
   bool override_can_proc_from_procs, can_proc_from_procs_;
   bool override_can_only_proc_from_class_abilities, can_only_proc_from_class_abilities_;
-  mutable const spell_data_t* driver_spell;
 
 public:
   unsigned spell_id, trigger_spell_id;
