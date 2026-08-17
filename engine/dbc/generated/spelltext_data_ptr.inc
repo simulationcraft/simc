@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.0.69299
-static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29243> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -534,7 +534,7 @@ static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
   {   17712, "Restores $s1 health.", 0, 0 },
   {   17735, "The $?s108499[Voidlord][Voidwalker] taunts the target to attack it for $d, and increases its threat against the target.\r\n\r\n|cFFFFFFFFAuto-Cast:|r\r\nTaunts the current target if it is not attacking the $?s108499[Voidlord][Voidwalker] and taunts any target who attacks its master.\r\n\r\n|cFF777777(Right-Click to toggle)|r", "Taunted.", "Special Ability" },
   {   17767, "Temporarily increases current and maximum health by $s1% for $d.\r\n\r\n|cFFFFFFFFAuto-Cast:|r\r\nUse this ability when below 20% health.\r\n\r\n|cFF777777(Right-Click to toggle)|r", "Maximum health increased by $s1%.", "Command Demon Ability" },
-  {   17877, "Blasts a target for $s1 Shadowflame damage. Only usable on enemies that have less than $s4% health.\r\n\r\n|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and removes its cooldown if the target dies within $d.|r", 0, 0 },
+  {   17877, "Blasts a target for $s1 Shadowflame damage. Only usable on enemies that have less than $s4% health.\r\n\r\n|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and removes its cooldown if the target dies within $1311913d.|r", 0, 0 },
   {   17941, "$@spelldesc980", 0, 0 },
   {   17962, "Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[\r\n\r\nReduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]\r\n\r\n|cFFFFFFFFGenerates $245330s1 Soul Shard Fragments.|r", 0, 0 },
   {   18077, "Poisons target for $s1 Nature damage every $t1 sec for $d.", "$s1 Nature damage inflicted every $t1 sec.", 0 },
@@ -28653,6 +28653,7 @@ static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
   { 1289063, "$@spelldesc1279616", "Accumulating damage or healing from $@auracaster's Core Rune and Rune of Lingering. The accumulated amount will be dealt on expiration.", 0 },
   { 1289148, "Deal $s1 Nature damage per application every $t sec for $d.\r\n\r\nUpon applying $s3 stacks to a target, the Gift corrodes, dealing the remainder of its damage immediately before removing itself.", "Deal $w1 Nature damage per application every $t1 sec for $d.\r\n\r\nUpon applying $s3 stacks to a target, the Gift Corrodes, dealing the remainder of its' damage immediately before removing itself.", 0 },
   { 1289155, "Add the Lindormi's Guidance affix to a Mythic Keystone.", 0, 0 },
+  { 1289168, "$@spelldesc1291581", "Deal all remaining Ula'tek's Gift damage to the afflicted target.", 0 },
   { 1289281, "Create a soulbound set shoulder item appropriate for your class.", 0, 0 },
   { 1289283, "Create a soulbound set leg item appropriate for your class.", 0, 0 },
   { 1289284, "Create a soulbound set head item appropriate for your class.", 0, 0 },
@@ -29245,11 +29246,13 @@ static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 12.1.0.69299
-static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 7> __ptr_spelltext_hotfix_data { {
+  {   17877,  0, "Blasts a target for $s1 Shadowflame damage. Only usable on enemies that have less than $s4% health.\r\n\r\n|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and removes its cooldown if the target dies within $d.|r", "Blasts a target for $s1 Shadowflame damage. Only usable on enemies that have less than $s4% health.\r\n\r\n|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and removes its cooldown if the target dies within $1311913d.|r" },
   { 1286592,  0, "Collect 10 Adventurer Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Adventurer Mistcrests." },
   { 1286602,  0, "Collect 10 Champion Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Champion Mistcrests." },
   { 1286604,  0, "Collect 10 Hero Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Hero Mistcrests." },
   { 1286605,  0, "Collect 10 Veteran Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Veteran Mistcrests." },
+  { 1289168,  0, "Applying X stacks of Ula'tek's Gift to a target causes Loa to intervene, expunging the Gift dealing it's remaining damage instantly to the target before being removed while also triggering your corrosive effects at 200% value regardless of cooldown.\r\n\r\n\r\n\r\nDeal all remaining Ula'tek's Gift damage to the afflicted target.", "$@spelldesc1291581" },
   { 1295803,  1, "$pri increased by $w1% and Tertiary stats increased by $s3%.", "$pri increased by $w1% and Tertiary stats increased by $w3%." },
 } };
 
