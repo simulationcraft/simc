@@ -5331,7 +5331,7 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
-    m *= 1 + td( target )->debuffs.spotters_mark->check_value();
+    m *= 1 + td( t )->debuffs.spotters_mark->check_value();
 
     return m;
   }
@@ -5474,9 +5474,9 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     // 2026-08-14: Aimed Shot hits and bounces can only expire Spotter's Marks if the primary
     //             target had Spotter's Mark up.
-    debug_cast<state_t*>( s )->expires_marks = s->chain_target == 0 &&
-                                             ( td( s->target )->debuffs.spotters_mark->check() ||
-                                               td( s->target )->debuffs.sentinels_mark->check() );
+    //       Note: Using action_t::target as the primary target.
+    debug_cast<state_t*>( s )->expires_marks = td( target )->debuffs.spotters_mark->check() ||
+                                               td( target )->debuffs.sentinels_mark->check();
   }
 
   double cost() const override
