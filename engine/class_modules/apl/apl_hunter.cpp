@@ -240,7 +240,7 @@ void marksmanship( player_t* p )
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "aimed_shot" );
 
-  default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25|time<10" );
+  default_->add_action( "variable,name=trueshot_ready,value=!talent.bullseye|(fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack)&(cooldown.explosive_shot.remains>=15|cooldown.explosive_shot.ready)|fight_remains<25|time<10" );
   default_->add_action( "variable,name=trueshot_ready,op=setif,condition=fight_style.dungeonroute,value_else=variable.trueshot_ready,value=raid_event.pull.remains>30|raid_event.pull.in>60|talent.calling_the_shots", "For DungeonRoute, hold Trueshot at the end of pulls." );
   default_->add_action( "retarget,target_if=max:target.health,line_cd=5,if=fight_style.dungeonroute" );
   default_->add_action( "auto_shot" );
@@ -309,6 +309,7 @@ void marksmanship( player_t* p )
   sentst->add_action( "kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up" );
   sentst->add_action( "multishot,target_if=max:debuff.sentinels_mark.down,if=talent.aspect_of_the_hydra&(!max_prio_damage|!fight_style.dungeonroute|active_enemies>2)&active_enemies>1&buff.precise_shots.up" );
   sentst->add_action( "arcane_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
+  sentst->add_action( "rapid_fire,target_if=max:debuff.sentinels_mark.down,if=!fight_style.dungeonroute,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1" );
   sentst->add_action( "rapid_fire,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1" );
   sentst->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage" );
   sentst->add_action( "moonlight_chakram" );
