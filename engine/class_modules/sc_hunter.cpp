@@ -9141,18 +9141,6 @@ struct hunter_module_t: public module_t
         .operation( hotfix::HOTFIX_SET )
         .modifier( 25 )
         .verification_value( 15 );
-
-    hotfix::register_effect( "Hunter", "2026-08-16", "Cobra Cleave Percent", 1323597, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 30 )
-        .verification_value( 20 );
-
-    hotfix::register_effect( "Hunter", "2026-08-16", "Cobra Fang Percent", 1323599, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 20 )
-        .verification_value( 15 );
   }
 
   void register_actor_initializers( sim_t* ) const override {}
