@@ -20529,7 +20529,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1277423)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=1277424)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
