@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69299 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69382 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -958,7 +958,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 117
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effects: #2, #3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Rotting Jaws (264195 effect#1), Alpha Predator (269737 effect#4), Trueshot (288613 effect#4), Flamewaker's Cobra Sting (336826 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Improved Kill Command (378010 effect#1), Killer Command (378740 effect#1), Spearhead (378957 effects: #2, #3), Hunter Beast Mastery Class Set 2pc (393646 effect#1), Lethal Command (394298 effect#1), Hunter Beast Mastery 10.1 Class Set 2pc (405524 effect#2), In the Rhythm (407405 effect#1), Savagery (424557 effect#1), Fury Strikes (425830 effects: #1, #2), Specialized Arsenal (459542 effects: #1, #2), Go for the Throat (459550 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2), Marksmanship Hunter (1256940 effects: #1, #2), Survival Hunter (1256941 effects: #1, #2), Lethal Calibration (1262408 effect#1), Take Aim (1273129 effect#1), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effects: #2, #3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Rotting Jaws (264195 effect#1), Trueshot (288613 effect#4), Flamewaker's Cobra Sting (336826 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Improved Kill Command (378010 effect#1), Killer Command (378740 effect#1), Spearhead (378957 effects: #2, #3), Hunter Beast Mastery Class Set 2pc (393646 effect#1), Lethal Command (394298 effect#1), Hunter Beast Mastery 10.1 Class Set 2pc (405524 effect#2), In the Rhythm (407405 effect#1), Fury Strikes (425830 effects: #1, #2), Specialized Arsenal (459542 effect#2), Go for the Throat (459550 effect#1), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2), Marksmanship Hunter (1256940 effects: #1, #2), Survival Hunter (1256941 effects: #1, #2), Lethal Calibration (1262408 effect#1), Take Aim (1273129 effect#1), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
 Family Flags     : 1, 2, 43, 106
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Discount Power On Miss (59), No Aura Icon (60), Hide Channel Bar (109), Not an Attack (194), Taps immediately (215), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
@@ -966,7 +966,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Targeted Enemy (6)
 #2 (id=83780)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-                   Modified By: Alpha Predator (269737 effect#4)
 Description      : Give the command to kill, causing your pet to charge your target and savagely deal $83381s1 Physical damage to the enemy.
 
 Name             : Misdirection (id=34477) [Spell Family (9)] 
@@ -4435,7 +4434,7 @@ Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include
 Effects          :
 #1 (id=306612)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Revive Pet (982), Multi-Shot (2643), Kill Command (34026), Kill Command (83381), A Murder of Crows (131900), Cobra Shot (193455), Multi-Shot (257620), Volley (260243), Volley (260247), Kill Command (1232922)
+                   Affected Spells: Revive Pet (982), Multi-Shot (2643), Kill Command (34026), Kill Command (83381), A Murder of Crows (131900), Cobra Shot (193455), Multi-Shot (257620), Volley (260243), Volley (260247)
                    Family Flags: 12, 24, 34, 43, 86, 98, 99
 Description      : $@spelldesc207280
 Tooltip          : Reduces Focus costs by $s1%.
@@ -7354,10 +7353,11 @@ Effects          :
 #3 (id=1025596)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2067 (Category) | Target: Self (1)
                    Affected Spells (Category): Kill Command (34026)
-#4 (id=1025597)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (1232922)
-                   Family Flags: 43
+#4 (id=1025597)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: Kill Command (83381), Kill Command (1232922)
+                   Family Flags: 108
+Hotfixed         : Misc Value (12 -> 0), Affects Spells
 Description      : Kill Command now has ${$s1+1} charges, and deals $s2% increased damage.
 
 Name             : Wildfire Bomb (id=269747) [Spell Family (9)] 
@@ -8178,7 +8178,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook
 Effects          :
 #1 (id=725856)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Kill Command (83381)
+                   Affected Spells: Kill Command (83381), Kill Command (1232922)
                    Family Flags: 108
 Description      : Kill Command deals $s1% increased damage.
 
@@ -9491,7 +9491,7 @@ Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Supp
 Effects          :
 #1 (id=834483)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (1232922)
+                   Affected Spells: Kill Command (34026), Kill Command (83381)
                    Family Flags: 43
 Description      : $@spelldesc336822
 Tooltip          : Your next Kill Command will consume $s1% less Focus.
@@ -10903,7 +10903,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook
 Effects          :
 #1 (id=1006233)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (259277), Kill Command (1232922)
+                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (259277)
                    Family Flags: 37, 43
 Description      : Kill Command damage increased by $s1%.
 
@@ -11024,7 +11024,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1007162)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (1232922)
+                   Affected Spells: Kill Command (34026), Kill Command (83381)
                    Family Flags: 43
 Description      : Kill Command damage increased by $s1%.
 
@@ -11668,7 +11668,7 @@ Attributes       : Passive (6), No Aura Cancel (31), No Threat (42), Not an Acti
 Effects          :
 #1 (id=1029935)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Kill Command (83381)
+                   Affected Spells: Kill Command (83381), Kill Command (1232922)
                    Family Flags: 108
 Description      : Kill Command critical damage increased by $s1%.
 
@@ -11848,7 +11848,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1032731)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (1232922)
+                   Affected Spells: Kill Command (34026), Kill Command (83381)
                    Family Flags: 43
 Description      : Kill Command damage increased by $s1% and it has a $h% chance to reset the cooldown on Barbed Shot.
 
@@ -11980,7 +11980,7 @@ Attributes       : Do Not Sheath (18), No Threat (42), Include In Advanced Comba
 Effects          :
 #1 (id=1033805)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (1232922)
+                   Affected Spells: Kill Command (34026), Kill Command (83381)
                    Family Flags: 43
 Description      : $@spelldesc393647
 Tooltip          : Damage of Kill Command increased by $s1%.
@@ -12226,7 +12226,7 @@ Effects          :
                    Family Flags: 86
 #2 (id=1075473)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (1232922)
+                   Affected Spells: Kill Command (34026), Kill Command (83381)
                    Family Flags: 43
 Description      : Cobra Shot and Kill Command damage increased by $s1%.
 
@@ -12573,8 +12573,9 @@ Attributes       : Passive (6), Not Shapeshifted (16), Not In Spellbook (143), A
 Effects          :
 #1 (id=1101619)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (1232922)
-                   Family Flags: 43
+                   Affected Spells: Kill Command (83381), Kill Command (1232922)
+                   Family Flags: 108
+Hotfixed         : Affects Spells
 #2 (id=1101620)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Barbed Shot (217200), Frenzy (217207), Thrill of the Hunt (257946), Frenzy (272795), Thrill of the Hunt (312365)
@@ -13312,11 +13313,12 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1166436)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Aimed Shot (19434), Kill Command (34026), Kill Command (83381), Wildfire Bomb (265157), Pheromone Bomb (270329), Shrapnel Bomb (270338), Volatile Bomb (271048), Kill Command (1232922)
-                   Family Flags: 17, 25, 43
+                   Affected Spells: Aimed Shot (19434), Kill Command (83381), Wildfire Bomb (265157), Pheromone Bomb (270329), Shrapnel Bomb (270338), Volatile Bomb (271048), Kill Command (1232922)
+                   Family Flags: 17, 25, 108
+Hotfixed         : Affects Spells
 #2 (id=1166437)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Aimed Shot (19434), Kill Command (34026), Kill Command (83381), Scorching Wildfire (259587), Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049), Kill Command (1232922), Wildfire Bomb (1253171)
+                   Affected Spells: Aimed Shot (19434), Kill Command (34026), Kill Command (83381), Scorching Wildfire (259587), Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049), Wildfire Bomb (1253171)
                    Family Flags: 17, 22, 43
 Description      : $?a137017[Wildfire Bomb]?a137016[Aimed Shot][Kill Command] deals $s1% increased damage.
 
@@ -13369,7 +13371,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (2
 Effects          :
 #1 (id=1166449)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Kill Command (34026), Kill Command (83381), Kill Command (1232922)
+                   Affected Spells: Kill Command (34026), Kill Command (83381)
                    Family Flags: 43
 #2 (id=1166450)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -15015,7 +15017,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
 Effects          :
 #1 (id=1189659)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Kill Command (83381)
+                   Affected Spells: Kill Command (83381), Kill Command (1232922)
                    Family Flags: 108
 Description      : $@spelldesc471876
 Tooltip          : Your next Kill Command deals $?c1[$472358s1][$472358s4]% increased damage and summons a Wyvern.
@@ -16459,6 +16461,7 @@ Description      : Dire Beasts will now obey your Kill Command, dealing its dama
 Bestial Wrath now sends your Dire Beasts into a rage, increasing their damage dealt by $1235388s1% for $186254d. Dire Beasts summoned during a Bestial Wrath will benefit at a reduced duration.
 
 Name             : Kill Command (id=1232922) [Spell Family (9)] 
+Hotfixed         : Affecting Spells
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -16467,8 +16470,8 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Roar of the Seven Lions (207318 effect#1), Rotting Jaws (264195 effect#1), Alpha Predator (269737 effect#4), Flamewaker's Cobra Sting (336826 effect#1), Improved Kill Command (378010 effect#1), Killer Command (378740 effect#1), Hunter Beast Mastery Class Set 2pc (393646 effect#1), Lethal Command (394298 effect#1), Hunter Beast Mastery 10.1 Class Set 2pc (405524 effect#2), Savagery (424557 effect#1), Specialized Arsenal (459542 effects: #1, #2), Go for the Throat (459550 effect#1)
-Family Flags     : 43
+Affecting Spells : Alpha Predator (269737 effect#4), Killer Instinct (273887 effect#1), Piercing Fangs (392053 effect#1), Savagery (424557 effect#1), Specialized Arsenal (459542 effect#1), Howl of the Pack Leader (471878 effect#1), Nature's Ally (1276720 effect#1)
+Family Flags     : 108
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1226015)  : School Damage (2): physical
@@ -19497,7 +19500,7 @@ Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Allow
 Effects          :
 #1 (id=1288679)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-                   Affected Spells: Kill Command (83381)
+                   Affected Spells: Kill Command (83381), Kill Command (1232922)
                    Family Flags: 108
 Description      : $@spelldesc1273126
 Tooltip          : Your next Kill Command deals $s1% increased damage.

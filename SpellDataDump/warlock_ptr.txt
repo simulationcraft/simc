@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69299 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69382 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -809,6 +809,7 @@ Use this ability when below 20% health.
 Tooltip          : Maximum health increased by $s1%.
 
 Name             : Shadowburn (id=17877) [Spell Family (5)] 
+Hotfixed         : Description
 Talent Entry     : Destruction [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadowflame
@@ -836,7 +837,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1311913 | Target: Targeted Enemy (6)
 Description      : Blasts a target for $s1 Shadowflame damage. Only usable on enemies that have less than $s4% health.
 
-|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and removes its cooldown if the target dies within $d.|r
+|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and removes its cooldown if the target dies within $1311913d.|r
 
 Name             : Agony (id=17941) [Spell Family (5)] 
 Class            : Warlock
@@ -2196,7 +2197,6 @@ Description      : $@spelldesc108370
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Soul Leech (id=108370) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -19064,10 +19064,10 @@ Effects          :
                    Modified By: Demon Skin (219272 effect#2), Infernal Bulwark (434561 effect#1), Illhoof's Design (440070 effect#2), Fortified Soul (1271694 effect#1)
 #3 (id=1349999)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Soul Leech
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 108370 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : All single-target damage done by you and your minions grants you and your pet shadowy shields that absorb $s1% of the damage dealt$?s219272[][ for $108366d], up to $s2% of maximum health.
 
-Name             : Shadowburn (id=1311913) 
+Name             : Shadowburn (id=1311913) [Spell Family (5)] 
+Hotfixed         : Affecting Spells
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : None
