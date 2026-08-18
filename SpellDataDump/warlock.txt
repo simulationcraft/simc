@@ -9885,10 +9885,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1021683)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
+#1 (id=1021683)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Shadowburn (17877), Conflagrate (17962)
                    Family Flags: 7, 55
+Hotfixed         : Sub Type (108 -> 107)
 Description      : Conflagrate and Shadowburn have a $s1% chance to critical strike and their damage is increased by your critical strike chance.
 
 Name             : Ritual of Ruin (id=387156) [Spell Family (5), Passive] 
