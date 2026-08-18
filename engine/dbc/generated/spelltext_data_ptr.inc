@@ -1,5 +1,5 @@
-// Spell text, wow build 12.1.0.69299
-static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
+// Spell text, wow build 12.1.0.69382
+static constexpr std::array<spelltext_data_t, 29244> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -534,7 +534,7 @@ static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
   {   17712, "Restores $s1 health.", 0, 0 },
   {   17735, "The $?s108499[Voidlord][Voidwalker] taunts the target to attack it for $d, and increases its threat against the target.\r\n\r\n|cFFFFFFFFAuto-Cast:|r\r\nTaunts the current target if it is not attacking the $?s108499[Voidlord][Voidwalker] and taunts any target who attacks its master.\r\n\r\n|cFF777777(Right-Click to toggle)|r", "Taunted.", "Special Ability" },
   {   17767, "Temporarily increases current and maximum health by $s1% for $d.\r\n\r\n|cFFFFFFFFAuto-Cast:|r\r\nUse this ability when below 20% health.\r\n\r\n|cFF777777(Right-Click to toggle)|r", "Maximum health increased by $s1%.", "Command Demon Ability" },
-  {   17877, "Blasts a target for $s1 Shadowflame damage. Only usable on enemies that have less than $s4% health.\r\n\r\n|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and removes its cooldown if the target dies within $d.|r", 0, 0 },
+  {   17877, "Blasts a target for $s1 Shadowflame damage. Only usable on enemies that have less than $s4% health.\r\n\r\n|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and removes its cooldown if the target dies within $1311913d.|r", 0, 0 },
   {   17941, "$@spelldesc980", 0, 0 },
   {   17962, "Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[\r\n\r\nReduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]\r\n\r\n|cFFFFFFFFGenerates $245330s1 Soul Shard Fragments.|r", 0, 0 },
   {   18077, "Poisons target for $s1 Nature damage every $t1 sec for $d.", "$s1 Nature damage inflicted every $t1 sec.", 0 },
@@ -28583,10 +28583,10 @@ static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
   { 1286533, "$@spelldesc1285138", 0, 0 },
   { 1286535, "Restores $s1% of your maximum health every second over $d. Must remain seated while eating.", "Restoring $s1% health every sec.", 0 },
   { 1286537, "Restores $s1% of your maximum health and mana every second over $d. Must remain seated while eating.", "Restoring $s1% health and mana every sec.", 0 },
-  { 1286592, "Collect 10 Adventurer Mistcrests. These Crests ignore the seasonal cap.", 0, 0 },
-  { 1286602, "Collect 10 Champion Mistcrests. These Crests ignore the seasonal cap.", 0, 0 },
-  { 1286604, "Collect 10 Hero Mistcrests. These Crests ignore the seasonal cap.", 0, 0 },
-  { 1286605, "Collect 10 Veteran Mistcrests. These Crests ignore the seasonal cap.", 0, 0 },
+  { 1286592, "Collect 10 Adventurer Mistcrests.", 0, 0 },
+  { 1286602, "Collect 10 Champion Mistcrests.", 0, 0 },
+  { 1286604, "Collect 10 Hero Mistcrests.", 0, 0 },
+  { 1286605, "Collect 10 Veteran Mistcrests.", 0, 0 },
   { 1286611, "Collect 10 Champion Mistcrests.", 0, 0 },
   { 1286612, "Collect 10 Hero Mistcrests.", 0, 0 },
   { 1286613, "Collect 10 Myth Mistcrests.", 0, 0 },
@@ -28653,6 +28653,7 @@ static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
   { 1289063, "$@spelldesc1279616", "Accumulating damage or healing from $@auracaster's Core Rune and Rune of Lingering. The accumulated amount will be dealt on expiration.", 0 },
   { 1289148, "Deal $s1 Nature damage per application every $t sec for $d.\r\n\r\nUpon applying $s3 stacks to a target, the Gift corrodes, dealing the remainder of its damage immediately before removing itself.", "Deal $w1 Nature damage per application every $t1 sec for $d.\r\n\r\nUpon applying $s3 stacks to a target, the Gift Corrodes, dealing the remainder of its' damage immediately before removing itself.", 0 },
   { 1289155, "Add the Lindormi's Guidance affix to a Mythic Keystone.", 0, 0 },
+  { 1289168, "$@spelldesc1291581", "Deal all remaining Ula'tek's Gift damage to the afflicted target.", 0 },
   { 1289281, "Create a soulbound set shoulder item appropriate for your class.", 0, 0 },
   { 1289283, "Create a soulbound set leg item appropriate for your class.", 0, 0 },
   { 1289284, "Create a soulbound set head item appropriate for your class.", 0, 0 },
@@ -28829,7 +28830,7 @@ static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
   { 1295776, "Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.", 0, 0 },
   { 1295777, "Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.", 0, 0 },
   { 1295783, "Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.", 0, 0 },
-  { 1295803, "Increases $pri by $s1% and all Tertiary stats by $s2%", "$pri increased by $w1% and Tertiary stats increased by $s3%.", 0 },
+  { 1295803, "Increases $pri by $s1% and all Tertiary stats by $s2%", "$pri increased by $w1% and Tertiary stats increased by $w3%.", 0 },
   { 1295825, "$@spelldesc1248903", "The Curse slumbers.", 0 },
   { 1295833, "Unleash a deluge of caustic venom, dealing ${$1295832s1*$<rolemult>*$d/$t1} Nature damage to your target. Damage increased by $1295832S2% for every 1% health the enemy has remaining.\r\n\r\nDefeat enemies to catalyze their essential fluids into additional venom, reducing this cooldown by $1295832s3 sec.", 0, 0 },
   { 1295836, "$@spelldesc1248903", "Horrified by the $@auracaster.", 0 },
@@ -29110,6 +29111,7 @@ static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
   { 1303624, "Throw the catch back into the water to gain $s2 Midnight Perception for $d.\r\n\r\nThrowing multiple catches can extend this buff up to $M1 min.", "Midnight Perception increased by $w2.", 0 },
   { 1304485, "$@spelldesc1231346", "Haste increased by ${$W1}.1%.", 0 },
   { 1305083, "$@spelldesc1248856", 0, 0 },
+  { 1305151, "Increases Critical Strike by $s1 for $d.", "Stamina increased by $w10 and Critical Strike increased by $w9.", 0 },
   { 1305158, "$@spelldesc1232065\r\n\r\n$@spellicon461960  $@spellname461960\r\nIf you spend at least 10 seconds eating, you will become $@spellname461960 and gain ${$1219179s4*1} of your highest secondary stat for $461960d.", 0, 0 },
   { 1305159, "$@spelldesc1232065\r\n\r\n$@spellicon1232076  $@spellname1232076\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232076 and gain $1219179s2 primary stat for $1232076d.\r\n\r\nThis food persists through death.", 0, 0 },
   { 1305166, "Become a snake when underwater in Midnight Zones, allowing you to breathe water and swim rapidly.\r\n", "Capable of waterbreathing.\r\nSwim speed increased by $188042s2%.", 0 },
@@ -29244,11 +29246,18 @@ static constexpr std::array<spelltext_data_t, 29242> __ptr_spelltext_data { {
   { 1312998, "$?a388667[Drain Soul][Shadow Bolt] and Malefic Grasp damage increased by $s1% or $s2% if the target is affected by Haunt. \r\n\r\nDark Harvest damage increased by $s3% or $s4% if the target is affected by Haunt.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.1.0.69299
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 12.1.0.69382
+static constexpr std::array<hotfix::client_hotfix_entry_t, 7> __ptr_spelltext_hotfix_data { {
+  {   17877,  0, "Blasts a target for $s1 Shadowflame damage. Only usable on enemies that have less than $s4% health.\r\n\r\n|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and removes its cooldown if the target dies within $d.|r", "Blasts a target for $s1 Shadowflame damage. Only usable on enemies that have less than $s4% health.\r\n\r\n|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and removes its cooldown if the target dies within $1311913d.|r" },
+  { 1286592,  0, "Collect 10 Adventurer Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Adventurer Mistcrests." },
+  { 1286602,  0, "Collect 10 Champion Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Champion Mistcrests." },
+  { 1286604,  0, "Collect 10 Hero Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Hero Mistcrests." },
+  { 1286605,  0, "Collect 10 Veteran Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Veteran Mistcrests." },
+  { 1289168,  0, "Applying X stacks of Ula'tek's Gift to a target causes Loa to intervene, expunging the Gift dealing it's remaining damage instantly to the target before being removed while also triggering your corrosive effects at 200% value regardless of cooldown.\r\n\r\n\r\n\r\nDeal all remaining Ula'tek's Gift damage to the afflicted target.", "$@spelldesc1291581" },
+  { 1295803,  1, "$pri increased by $w1% and Tertiary stats increased by $s3%.", "$pri increased by $w1% and Tertiary stats increased by $w3%." },
 } };
 
-// Spell description variables, wow build 12.1.0.69299
+// Spell description variables, wow build 12.1.0.69382
 static constexpr std::array<spelldesc_vars_data_t, 736> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29988,7 +29997,7 @@ static constexpr std::array<spelldesc_vars_data_t, 736> __ptr_spelldesc_vars_dat
   { 1309793, "$base=${10}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.1.0.69299
+// spelldesc_vars hotfix entries, wow build 12.1.0.69382
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
