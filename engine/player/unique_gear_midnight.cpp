@@ -5548,7 +5548,7 @@ void register_special_effects()
   register_special_effect( 1285138, armors::sporecallers_blooming_loop );
   register_special_effect( 1285139, armors::rotmires_sporeheart );
   set_min_version( wowv_t( 12, 1, 0 ) );
-  register_special_effect( { 1307906, 1307923, 1307928 }, armors::venomcursed );
+  register_special_effect( { 1307906, 1307923, 1307928, 1317036 }, armors::venomcursed );
   reset_version_check();
   // Sets
   register_special_effect( 1281574, sets::voidlight_bindings );
