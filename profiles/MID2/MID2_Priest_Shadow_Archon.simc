@@ -31,6 +31,7 @@ actions.precombat+=/variable,name=me_force_prio,default=0,op=reset
 actions.precombat+=/variable,name=max_vts,default=12,op=reset
 actions.precombat+=/variable,name=is_vt_possible,default=0,op=reset
 actions.precombat+=/arcane_torrent
+actions.precombat+=/potion,if=potion.liquid_luster
 # Crushing Void from Tentacle Slam is reset on pull, open with Mind Blast instead.
 actions.precombat+=/mind_blast,if=set_bonus.mid2_4pc
 actions.precombat+=/tentacle_slam
@@ -113,6 +114,8 @@ actions.main+=/shadow_word_pain,target_if=min:remains
 
 actions.trinkets=use_item,name=galactic_gladiators_badge_of_ferocity,if=(buff.voidform.up|buff.power_infusion.remains>=10|(talent.voidform&cooldown.voidform.remains>10))|fight_remains<20
 actions.trinkets+=/use_item,name=hex_lords_dooming_idol,if=buff.power_infusion.up&buff.hex_lords_doom.stack>5|fight_remains<=30
+actions.trinkets+=/use_item,name=font_of_venomous_rage
+actions.trinkets+=/use_item,name=vexhuls_everflowing_gland
 actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|equipped.neural_synapse_enhancer&buff.entropic_rift.up)|fight_remains<20
 
 head=cosmic_penitents_truesight,id=271555,bonus_id=13846,ilevel=344,gem_id=240983,enchant_id=7961,redirected_base_stats=271874
@@ -122,25 +125,25 @@ back=silken_voodoo_drape,id=268253,ilevel=344
 chest=cosmic_penitents_eclipsing_robes,id=271558,ilevel=334,enchant_id=7987
 wrists=martyrs_bindings,id=239648,bonus_id=8793/12384,ilevel=331,gem_id=240900
 hands=cosmic_penitents_celestial_grips,id=271556,ilevel=344,redirected_base_stats=268243
-waist=caustic_chainwrapped_sash,id=268257,ilevel=334,gem_id=240918
+waist=martyrs_waistwrap,id=239649,bonus_id=8793/12384,ilevel=331,gem_id=240918
 legs=enveloping_legwraps_of_the_cosmic_penitent,id=271554,ilevel=334,enchant_id=7935,redirected_base_stats=251160
 feet=cackling_soultreads,id=268255,ilevel=344
 finger1=sickening_signet_of_atroxus,id=252258,ilevel=334,gem_id=240900,enchant_id=7967
 finger2=vile_alchemists_band,id=268249,ilevel=334,gem_id=240900,enchant_id=7967
-trinket1=gebbos_bottomless_bag,id=270164,ilevel=334
+trinket1=wavecallers_seastone,id=270167,ilevel=334
 trinket2=freightrunners_flask,id=250215,ilevel=334
 main_hand=janthrazet_the_soul_fang,id=271092,ilevel=344,enchant_id=8041
-off_hand=alnhara_lantern,id=245769,bonus_id=8793/13771,ilevel=331
+off_hand=spine_of_the_hissing_abyss,id=268197,ilevel=334
 
 # Gear Summary
 # gear_ilvl=337.38
-# gear_stamina=40294
-# gear_intellect=2760
+# gear_stamina=40261
+# gear_intellect=2586
 # gear_crit_rating=701
-# gear_haste_rating=1078
-# gear_mastery_rating=1274
+# gear_haste_rating=1175
+# gear_mastery_rating=1317
 # gear_versatility_rating=16
 # gear_leech_rating=221
-# gear_armor=733
+# gear_armor=732
 # set_bonus=midnight_season_2_2pc=1
 # set_bonus=midnight_season_2_4pc=1
