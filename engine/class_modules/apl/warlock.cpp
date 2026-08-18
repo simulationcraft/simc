@@ -12,7 +12,7 @@ namespace warlock_apl{
 
     switch ( p->specialization() )
     {
-      case WARLOCK_AFFLICTION: lvl90_potion = "lights_potential_2"; break;
+      case WARLOCK_AFFLICTION: lvl90_potion = "liquid_luster_2"; break;
       case WARLOCK_DEMONOLOGY: lvl90_potion = "potion_of_recklessness_2"; break;
       case WARLOCK_DESTRUCTION: lvl90_potion = "potion_of_recklessness_2"; break;
       default: break;
