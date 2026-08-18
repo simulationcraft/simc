@@ -271,7 +271,6 @@ public:
   player_t* havoc_target;
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   player_t* haunt_target; // Used for tracking the current haunt target
-  player_t* patient_zero_target; // Used to track which target benefits from the Patient Zero talent damage increase
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG TODO: Is this still needed with faster spawns?
   int diabolic_ritual; // Used to cycle between the three different Diabolic Ritual buffs
   bool demonic_art_buff_replaced; // Used to not spawn the Demonic Art demon if the buff is replaced by another
@@ -386,7 +385,6 @@ public:
 
     player_talent_t nightfall;
     const spell_data_t* nightfall_buff;
-    const spell_data_t* nightfall_buff_2;
     player_talent_t haunt;
     player_talent_t shared_agony;
 
@@ -430,7 +428,6 @@ public:
     const spell_data_t* shard_instability_buff;
     player_talent_t niskaran_methods;
     player_talent_t potent_soul_shards;
-    player_talent_t nocturnal_yield;
     player_talent_t impetuous_wrath;
 
     player_talent_t xavius_gambit; // Unstable Affliction Damage Multiplier
@@ -441,7 +438,6 @@ public:
     player_talent_t cascading_calamity;
     const spell_data_t* cascading_calamity_buff;
     player_talent_t deaths_embrace; // Volatile Agony and Perpetual Unstability are unaffected by this
-    player_talent_t patient_zero;
     player_talent_t hedonic_gorging;
     player_talent_t sow_the_seeds;
 
@@ -622,8 +618,7 @@ public:
     player_talent_t soul_fire;
     const spell_data_t* soul_fire_2; // Contains Soul Shard energize data
     player_talent_t chaos_incarnate; // Greater mastery value for some spells
-    player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit
-    const spell_data_t* conflagration_of_chaos_buff; // Player buff which affects next Conflagrate/Shadowburn
+    player_talent_t conflagration_of_chaos;
     player_talent_t diabolic_embers; // Incinerate generates more Soul Shards
     player_talent_t demonfire_infusion;
     player_talent_t channel_demonfire;
@@ -884,7 +879,6 @@ public:
     propagate_const<buff_t*> fiendish_cruelty;
     propagate_const<buff_t*> chaotic_inferno;
     propagate_const<buff_t*> rain_of_chaos;
-    propagate_const<buff_t*> conflagration_of_chaos;
     propagate_const<buff_t*> flashpoint;
     propagate_const<buff_t*> crashing_chaos;
     propagate_const<buff_t*> alythesss_ire;
@@ -976,7 +970,6 @@ public:
     proc_t* chaotic_inferno;
     proc_t* dimensional_rift;
     proc_t* avatar_of_destruction;
-    proc_t* conflagration_of_chaos;
     proc_t* demonfire_infusion_inc;
     proc_t* demonfire_infusion_dot;
     proc_t* alythesss_ire;
@@ -991,7 +984,6 @@ public:
     proc_t* blackened_soul;
     proc_t* bleakheart_tactics;
     proc_t* seeds_of_their_demise;
-    proc_t* mark_of_perotharn;
     proc_t* devil_fruit;
 
     // Soul Harvester
@@ -1043,7 +1035,6 @@ public:
     accumulated_rng_t* demoniac_imp_fade;
     accumulated_rng_t* spiteful_reconstitution;
     accumulated_rng_t* bleakheart_tactics;
-    accumulated_rng_t* mark_of_perotharn;
     accumulated_rng_t* isolated_implosion;
     double infernal_rapidity_prd_c_value;
   } prd_rng;
@@ -1087,7 +1078,6 @@ public:
     rng_setting_t rain_of_chaos_cards = { 3.0, 3.0, "rain_of_chaos_cards", 0.0 };
     rng_setting_t rain_of_chaos_deck_size = { 20.0, 20.0, "rain_of_chaos_deck_size", 0.0 };
     rng_setting_t alythesss_ire_shift = { 0.01, 0.01, "alythesss_ire_shift", 0.0 };
-    rng_setting_t echo_of_sargeras = { 0.10, 0.10, "echo_of_sargeras", 0.0 };
 
     // Diabolist
 
@@ -1095,7 +1085,6 @@ public:
     rng_setting_t blackened_soul = { 0.23, 0.23, "blackened_soul", 0.0 };
     rng_setting_t bleakheart_tactics = { 0.15, 0.15, "bleakheart_tactics", 0.0 };
     rng_setting_t seeds_of_their_demise = { 0.240, 0.240, "seeds_of_their_demise", 0.0 };
-    rng_setting_t mark_of_perotharn = { 0.15, 0.15, "mark_of_perotharn", 0.0 };
 
     // Soul Harvester
     rng_setting_t succulent_soul_aff = { 0.225, 0.225, "succulent_soul_aff", 0.0 };
@@ -1123,11 +1112,9 @@ public:
       f( rain_of_chaos_cards );
       f( rain_of_chaos_deck_size );
       f( alythesss_ire_shift );
-      f( echo_of_sargeras );
       f( blackened_soul );
       f( bleakheart_tactics );
       f( seeds_of_their_demise );
-      f( mark_of_perotharn );
       f( succulent_soul_aff );
       f( succulent_soul_demo );
       f( feast_of_souls_aff );

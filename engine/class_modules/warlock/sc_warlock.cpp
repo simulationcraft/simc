@@ -67,14 +67,11 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                              ->set_max_stack( 1 )
                              ->set_proc_callbacks( false );
 
-  debuffs.shadowburn = make_buff( *this, "shadowburn", ( p.sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) ) ? p.talents.shadowburn_debuff : p.talents.shadowburn )
+  debuffs.shadowburn = make_buff( *this, "shadowburn", p.talents.shadowburn_debuff )
                            ->set_default_value( p.talents.shadowburn_2->effectN( 1 ).base_value() / 10 );
 
-  if ( p.sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-  {
-    debuffs.dark_titans_mark = make_buff( *this, "dark_titans_mark", p.tier.dark_titans_mark_debuff )
-                                   ->set_default_value_from_effect( 1 );
-  }
+  debuffs.dark_titans_mark = make_buff( *this, "dark_titans_mark", p.tier.dark_titans_mark_debuff )
+                                 ->set_default_value_from_effect( 1 );
 
   // Use havoc_debuff where we need the data but don't have the active talent
   // Mayhem proc chance follows a Flat % RNG model, but has ICD
@@ -593,7 +590,7 @@ std::pair<timespan_t, timespan_t> warlock_t::dreadstalkers_delay_duration_adjust
     // There is no delay on the first melee attack when summoned from melee
     delay = 0_ms;
     // In this case the extra duration of the dreadstalkers can be assumed random between the minumum (0ms) and the maximum (820ms) (last tested 2025-04-06)
-    dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
+    dur_adjust = timespan_t::from_millis( rng().range( 820.0 ) );
   }
   return ret;
 }
@@ -1158,8 +1155,7 @@ void warlock_t::parse_player_effects()
     parse_effects( warlock_base.potent_afflictions ); // 77215
 
     // Affliction Buffs
-    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      parse_effects( buffs.unstable_empowerment ); // 1305774
+    parse_effects( buffs.unstable_empowerment ); // 1305774
 
     // Affliction Debuffs/DoTs
     // NOTE: Shadow of Nathreza II (rank 2) only increases by 2% (as if it were rank 1) the
@@ -1180,8 +1176,7 @@ void warlock_t::parse_player_effects()
   // Destruction
   if ( destruction() )
   {
-    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      parse_target_effects( d_fn( &warlock_td_t::debuffs_t::dark_titans_mark ), tier.dark_titans_mark_debuff ); // 1305711
+    parse_target_effects( d_fn( &warlock_td_t::debuffs_t::dark_titans_mark ), tier.dark_titans_mark_debuff ); // 1305711
   }
 
   // Diabolist
