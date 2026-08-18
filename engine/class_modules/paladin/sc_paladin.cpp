@@ -2931,7 +2931,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     double m = paladin_melee_attack_t::composite_da_multiplier( state );
     if ( p()->buffs.valor->up() && state->chain_target == 0 )
     {
-      m *= 1.0 + p()->buffs.valor->data().effectN( 1 ).percent();
+      m *= 1.0 + p()->buffs.valor->data().effectN( 1 ).percent() * p()->buffs.valor->stack();
     }
     return m;
   }
