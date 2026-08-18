@@ -1,0 +1,123 @@
+warlock="MID2_Warlock_Demonology_Soulharvester"
+source=default
+spec=demonology
+level=90
+race=Orc
+role=spell
+position=ranged_back
+talents=CoQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmxsMAAAAAAAjtlBGwAmhtQGbmhZ2mlZmZMDAYMzMzAMzMmxMDAAwMzMzMjZYZAYA
+omnium_talents=136822:1/136816:1/136817:1/136821:1/136814:1
+
+# Default consumables
+potion=potion_of_recklessness_2
+flask=flask_of_the_shattered_sun_2
+food=harandar_celebration
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=summon_pet
+actions.precombat+=/snapshot_stats
+actions.precombat+=/variable,name=in_opener,op=set,value=1
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff
+actions.precombat+=/variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration
+actions.precombat+=/variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration
+actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.summon_demonic_tyrant.duration=0|cooldown.summon_demonic_tyrant.duration%%trinket.1.cooldown.duration=0)
+actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.summon_demonic_tyrant.duration=0|cooldown.summon_demonic_tyrant.duration%%trinket.2.cooldown.duration=0)
+actions.precombat+=/variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>trinket.1.ilvl
+actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_buff_duration)*(1.5+trinket.2.has_buff.intellect)*(variable.trinket_2_sync))>(((trinket.1.cooldown.duration%variable.trinket_1_buff_duration)*(1.5+trinket.1.has_buff.intellect)*(variable.trinket_1_sync))*(1+((trinket.1.ilvl-trinket.2.ilvl)%100)))
+actions.precombat+=/power_siphon
+actions.precombat+=/demonbolt,if=!buff.power_siphon.up&(talent.ruination&!talent.grimoire_imp_lord|talent.ruination&!talent.summon_doomguard)
+actions.precombat+=/shadow_bolt
+
+# Executed every time the actor is available.
+actions=potion,if=pet.demonic_tyrant.active|fight_remains<=30
+actions+=/invoke_external_buff,name=power_infusion,if=pet.demonic_tyrant.active
+actions+=/call_action_list,name=racials,if=pet.demonic_tyrant.active|fight_remains<22,use_off_gcd=1
+actions+=/call_action_list,name=items,use_off_gcd=1
+actions+=/call_action_list,name=diabolist,if=talent.diabolic_ritual
+actions+=/call_action_list,name=soulharvest,if=talent.demonic_soul
+
+actions.diabolist=power_siphon,if=buff.demonic_core.stack<=1|fight_remains<10
+actions.diabolist+=/hand_of_guldan,if=buff.dominion_of_argus.up
+actions.diabolist+=/grimoire_imp_lord
+actions.diabolist+=/grimoire_fel_ravager
+actions.diabolist+=/summon_doomguard
+actions.diabolist+=/call_dreadstalkers,if=talent.reign_of_tyranny&(cooldown.summon_demonic_tyrant.remains>=20+gcd.max|cooldown.summon_demonic_tyrant.remains<=12-gcd.max)
+actions.diabolist+=/call_dreadstalkers,if=!talent.reign_of_tyranny
+actions.diabolist+=/summon_demonic_tyrant,if=soul_shard=5
+actions.diabolist+=/implosion,if=buff.wild_imps.stack>=6&(active_enemies>2|talent.to_hell_and_back.enabled)
+actions.diabolist+=/ruination
+actions.diabolist+=/hand_of_guldan,if=soul_shard>=3&cooldown.summon_demonic_tyrant.remains>5|soul_shard=5
+actions.diabolist+=/infernal_bolt,if=soul_shard<3
+actions.diabolist+=/demonbolt,target_if=(!debuff.doom.up),if=soul_shard<4&buff.demonic_core.react&talent.doom
+actions.diabolist+=/demonbolt,if=soul_shard<4&buff.demonic_core.react
+actions.diabolist+=/shadow_bolt
+actions.diabolist+=/infernal_bolt
+
+actions.items=use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&(!pet.demonic_tyrant.active&trinket.1.cast_time>0|!trinket.1.cast_time>0)&(pet.demonic_tyrant.active|!talent.summon_demonic_tyrant|variable.trinket_priority=2&cooldown.summon_demonic_tyrant.remains>20&!pet.demonic_tyrant.active&trinket.2.cooldown.remains<cooldown.summon_demonic_tyrant.remains+5)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|variable.trinket_1_buff_duration>=fight_remains
+actions.items+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&(!pet.demonic_tyrant.active&trinket.2.cast_time>0|!trinket.2.cast_time>0)&(pet.demonic_tyrant.active|!talent.summon_demonic_tyrant|variable.trinket_priority=1&cooldown.summon_demonic_tyrant.remains>20&!pet.demonic_tyrant.active&trinket.1.cooldown.remains<cooldown.summon_demonic_tyrant.remains+5)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|variable.trinket_2_buff_duration>=fight_remains
+actions.items+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&((variable.damage_trinket_priority=1|trinket.2.cooldown.remains)&(trinket.1.cast_time>0&!pet.demonic_tyrant.active|!trinket.1.cast_time>0)|(time<20&variable.trinket_2_buffs)|cooldown.summon_demonic_tyrant.remains_expected>20)
+actions.items+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&((variable.damage_trinket_priority=2|trinket.1.cooldown.remains)&(trinket.2.cast_time>0&!pet.demonic_tyrant.active|!trinket.2.cast_time>0)|(time<20&variable.trinket_1_buffs)|cooldown.summon_demonic_tyrant.remains_expected>20)
+actions.items+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains)
+actions.items+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains)
+actions.items+=/use_item,use_off_gcd=1,slot=main_hand
+
+actions.racials=berserking,use_off_gcd=1
+actions.racials+=/blood_fury
+actions.racials+=/fireblood
+actions.racials+=/ancestral_call
+
+actions.soulharvest=power_siphon,if=buff.demonic_core.stack<=1|fight_remains<10
+actions.soulharvest+=/hand_of_guldan,if=buff.dominion_of_argus.up
+actions.soulharvest+=/grimoire_imp_lord
+actions.soulharvest+=/grimoire_fel_ravager
+actions.soulharvest+=/summon_doomguard
+actions.soulharvest+=/call_dreadstalkers
+actions.soulharvest+=/summon_demonic_tyrant
+actions.soulharvest+=/implosion,if=buff.wild_imps.stack>=6&(active_enemies>2|talent.to_hell_and_back.enabled)
+actions.soulharvest+=/hand_of_guldan
+actions.soulharvest+=/infernal_bolt,if=soul_shard<3
+actions.soulharvest+=/demonbolt,target_if=(!debuff.doom.up),if=soul_shard<4&buff.demonic_core.stack>=1&talent.doom
+actions.soulharvest+=/demonbolt,if=soul_shard<4&buff.demonic_core.stack>=2&!talent.doom
+actions.soulharvest+=/demonbolt,if=soul_shard<4&buff.demonic_core.react
+actions.soulharvest+=/shadow_bolt
+
+head=venomkeepers_horrific_cowl,id=271874,bonus_id=40/13335/13663/13695/13696/13846/13848,gem_id=240983,enchant_id=7961,content_tuning=883
+neck=aqirbane_reliquary,id=268265,bonus_id=40/13335/13668/13708/13848,gem_id=240906/240906,content_tuning=883
+shoulders=spires_of_the_damned_necrolyte,id=271544,bonus_id=13694/13697,ilevel=334,enchant_id=8001,redirected_base_stats=239031
+back=silken_voodoo_drape,id=268253,ilevel=344
+chest=damned_necrolytes_rattling_robes,id=271549,bonus_id=12854/13690/13698,enchant_id=7987,redirected_base_stats=251139
+wrists=martyrs_bindings,id=239648,bonus_id=8790/8960/12214/12384/13750,ilevel=331,gem_id=240906
+hands=damned_necrolytes_charred_grasps,id=271547,bonus_id=13691/13697/13848,redirected_base_stats=268243
+waist=ethereal_netherwrap,id=251222,bonus_id=12854/13662/13750,gem_id=240898
+legs=damned_necrolytes_leg_bindings,id=271545,bonus_id=40/12854/13335/13693/13698,enchant_id=7935,content_tuning=807
+feet=cackling_soultreads,id=268255,bonus_id=13662/13848,enchant_id=7993
+finger1=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240906,enchant_id=7967
+finger2=vile_alchemists_band,id=268249,bonus_id=12854/13662/13668,gem_id=240906,enchant_id=7967
+trinket1=vile_vial_of_volatile_venom,id=273796,bonus_id=12854/13662
+trinket2=wavecallers_seastone,id=270167,bonus_id=12854/13662
+main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=40/13335/13848,enchant_id=8041,content_tuning=883
+off_hand=alnhara_lantern,id=245769,bonus_id=8791/8960/12214/13751/13771/13836/9627,crafted_stats=49/36
+
+# Gear Summary
+# gear_ilvl=337.38
+# gear_stamina=40526
+# gear_intellect=2581
+# gear_crit_rating=1188
+# gear_haste_rating=1048
+# gear_mastery_rating=976
+# gear_leech_rating=83
+# gear_avoidance_rating=405
+# gear_armor=733
+# set_bonus=midnight_season_2_2pc=1
+# set_bonus=midnight_season_2_4pc=1
+warlock.soul_shards=0
+warlock.default_pet=felguard
