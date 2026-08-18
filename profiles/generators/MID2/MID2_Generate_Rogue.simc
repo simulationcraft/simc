@@ -56,59 +56,33 @@ off_hand=sharpened_lightwood_slasher,id=275070,bonus_id=12854/13662,enchant_id=7
 save=MID2_Rogue_Assassination_Fatebound.simc
 
 
-# rogue="MID2_Rogue_Outlaw_Fatebound"
-# level=90
-# race=pandaren
-# role=attack
-# position=back
-# spec=outlaw
-# talents=CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MGjZmZmtZmZmZMmFGmZZaZw2MAAAAAgZbbmZGmZmZGzMzyAAAAwAYgNYGjGzGgtJswAgZmBG
+rogue=MID2_Rogue_Outlaw
+level=90
+race=dwarf
+role=attack
+position=back
+spec=outlaw
+talents=CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MMzMmZmtZmZmZMmF4BmZbaZw2MAAAAAALLzMzwMzMziZmZbAAAAYmBAjZxwQGYWYhWYjBYmBDMA
+omnium_talents=136822:1/136823:1/136817:1/136820:1/136814:1
 
-# head=voidlashed_hood,id=151336,bonus_id=12806/13577/1808,enchant_id=8017,gem_id=240967
-# neck=ribbon_of_coiled_malice,id=249337,bonus_id=12806/13577/13668,gem_id=240894
-# shoulder=venom_casks_of_the_grim_jest,id=250004,bonus_id=13574/6652/12806/13335/13340,enchant_id=8001
-# back=potionstained_cloak,id=193712,bonus_id=12806/13577
-# chest=fantastic_finery_of_the_grim_jest,id=250009,bonus_id=13575/6652/12806/13335/13336,enchant_id=7987
-# wrist=silvermoon_agents_deflectors,id=244576,bonus_id=12214/13622/13667/12066/9627/1808/8960/12384,gem_id=240900,crafted_stats=32/36
-# hands=sleight_of_hand_of_the_grim_jest,id=250007,bonus_id=13574/6652/12806/13335/13337
-# waist=scornscarred_shulkas_belt,id=249374,bonus_id=1808/12806/13577,gem_id=240916
-# legs=blade_holsters_of_the_grim_jest,id=250005,bonus_id=13575/6652/12806/13335/13339,enchant_id=8159
-# feet=silvermoon_agents_sneakers,id=244569,bonus_id=12214/13622/13667/12066/9627/8960/12384,crafted_stats=32/40,enchant_id=7963
-# finger1=eye_of_midnight,id=249920,bonus_id=6652/12806/13335/13668,enchant_id=7967,gem_id=240916/240916
-# finger2=signet_of_the_starved_beast,id=249336,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240906
-# trinket1=gaze_of_the_alnseer,id=249343,bonus_id=6652/12806/13335
-# trinket2=umbral_plume,id=260235,bonus_id=12806/13577
-# main_hand=arators_swift_remembrance,id=260423,bonus_id=12806/13577,enchant_id=7981
-# off_hand=kricks_beetle_stabber,id=133491,enchant_id=8039,ilevel=289
+head=chosen_bloodslayers_spirit_shroud,id=271510,bonus_id=13692/13698/13750/13847/13848,gem_id=240967,enchant_id=8017,redirected_base_stats=271875
+neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13708/13848,gem_id=240914/240898
+shoulders=chosen_bloodslayers_voodoo_guards,id=271508,bonus_id=12854/13694/13697,redirected_base_stats=251223
+back=adherents_silken_shroud,id=239656,bonus_id=8960/12384/13751/13836/9627,crafted_stats=32/40
+chest=chosen_bloodslayers_banded_poncho,id=271513,bonus_id=12854/13690/13698,enchant_id=7987,redirected_base_stats=251226
+wrists=silvermoon_agents_deflectors,id=244576,bonus_id=8790/8960/12214/12384/13534,ilevel=331,gem_id=240890
+hands=chosen_bloodslayers_fanged_grips,id=271511,bonus_id=12854/13691/13697,redirected_base_stats=251124
+waist=rootwalker_harness,id=251189,bonus_id=13534,ilevel=334,gem_id=240890
+legs=chosen_bloodslayers_reinforced_pants,id=271509,bonus_id=12854/13693/13698,enchant_id=8163,redirected_base_stats=159313
+feet=bespittled_slitherslippers,id=268261,ilevel=334,enchant_id=7963
+finger1=ritual_binders_ring,id=159459,bonus_id=13534,ilevel=334,gem_id=240890,enchant_id=7967
+finger2=alluring_bubbleband,id=268266,bonus_id=12854/13662/13668,gem_id=240906,enchant_id=7967
+trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=40/13335/13848,ilevel=344
+trinket2=zuljins_guillotine_technique,id=270173,bonus_id=40/13335/13848,ilevel=344
+main_hand=amanmuso_warlords_vengeance,id=268209,ilevel=344,enchant_id=8039
+off_hand=sharpened_lightwood_slasher,id=275070,bonus_id=12854/13662,enchant_id=8039
 
-# save=MID2_Rogue_Outlaw.simc
-
-# rogue="MID2_Rogue_Outlaw_Trickster"
-# level=90
-# race=pandaren
-# role=attack
-# position=back
-# spec=outlaw
-# talents=CQQAAAAAAAAAAAAAAAAAAAAAAAgx2MYmZmZmtZmZmZMmNeAmZbaZw2MAAAAAgZbbmZGmZmZGzMzyAAAAwYAwYWMMkBmFWoF2YAmZwAD
-
-# head=voidlashed_hood,id=151336,bonus_id=12806/13577/1808,enchant_id=8017,gem_id=240967
-# neck=ribbon_of_coiled_malice,id=249337,bonus_id=12806/13577/13668,gem_id=240894
-# shoulder=venom_casks_of_the_grim_jest,id=250004,bonus_id=13574/6652/12806/13335/13340,enchant_id=8001
-# back=potionstained_cloak,id=193712,bonus_id=12806/13577
-# chest=fantastic_finery_of_the_grim_jest,id=250009,bonus_id=13575/6652/12806/13335/13336,enchant_id=7987
-# wrist=silvermoon_agents_deflectors,id=244576,bonus_id=12214/13622/13667/12066/9627/1808/8960/12384,gem_id=240900,crafted_stats=32/36
-# hands=sleight_of_hand_of_the_grim_jest,id=250007,bonus_id=13574/6652/12806/13335/13337
-# waist=scornscarred_shulkas_belt,id=249374,bonus_id=1808/12806/13577,gem_id=240916
-# legs=blade_holsters_of_the_grim_jest,id=250005,bonus_id=13575/6652/12806/13335/13339,enchant_id=8159
-# feet=silvermoon_agents_sneakers,id=244569,bonus_id=12214/13622/13667/12066/9627/8960/12384,crafted_stats=32/40,enchant_id=7963
-# finger1=eye_of_midnight,id=249920,bonus_id=6652/12806/13335/13668,enchant_id=7967,gem_id=240916/240916
-# finger2=signet_of_the_starved_beast,id=249336,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240906
-# trinket1=gaze_of_the_alnseer,id=249343,bonus_id=6652/12806/13335
-# trinket2=umbral_plume,id=260235,bonus_id=12806/13577
-# main_hand=arators_swift_remembrance,id=260423,bonus_id=12806/13577,enchant_id=7981
-# off_hand=kricks_beetle_stabber,id=133491,enchant_id=8039,ilevel=289
-
-# save=MID2_Rogue_Outlaw_Trickster.simc
+save=MID2_Rogue_Outlaw.simc
 
 rogue="MID2_Rogue_Subtlety"
 level=90
