@@ -16780,7 +16780,8 @@ Family Flags     : 120
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1275190)  : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.96 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.96 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
+Hotfixed         : Target 1 (104 -> 18), Target 2 (0 -> 16)
 #2 (id=1275242)  : None (0)
                    Base Value: 8 | Scaled Value: 8
 Description      : Cleaves the area in front of the caster, inflicting $s1 Shadowflame damage. Damage reduced beyond $s2 targets.
