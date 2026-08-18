@@ -260538,13 +260538,14 @@ Description      : $@spelldesc1305830
 
 
 Name             : Preternatural Antivenom (id=1305846) 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
 Duration         : 30 seconds
 Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : DoT Stacking Rule (103), Aura Is Buff (140), Aura Points On Client (268)
+Attributes       : DoT Stacking Rule (103), Can Proc From Procs (122), Aura Is Buff (140), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268)
 Effects          :
 #1 (id=1333048)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
@@ -261120,8 +261121,9 @@ Real PPM         : 2
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1336195)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+#1 (id=1336195)  : Apply Aura (6) | Proc Trigger Spell (42): Venomcursed Mastery | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Trigger Spell: 1307922 | Target: Self (1)
+Hotfixed         : Sub Type (4 -> 42)
 #2 (id=1336196)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -27.63072 (coefficient=-0.210792) | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Mastery by $s1, but reduce your other secondary stats by $s2 for $1307922d.
