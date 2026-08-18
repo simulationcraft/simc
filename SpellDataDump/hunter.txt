@@ -20120,8 +20120,10 @@ Attributes       : Can Proc From Procs (122), Only Proc From Class Abilities (41
 Effects          :
 #1 (id=1323597)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 30)
 #2 (id=1323599)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 20)
 Description      : $@spelldesc1296632
 Tooltip          : Your next Cobra Shot will either benefit from Beast Cleave and deal $s1% damage to enemies surrounding your target, or will deal $s2% additional damage to your primary target.
 

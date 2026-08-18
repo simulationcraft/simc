@@ -601,7 +601,8 @@ Family Flags     : 49, 65
 Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=2210)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 38.674 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 38.674 | PvP Coefficient: 0.7 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.7)
 #2 (id=740054)   : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000
 #3 (id=831295)   : Dummy (3)
@@ -18938,9 +18939,11 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1319235)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 350 | Scaled Value: 350 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Base Value (250 -> 350)
 #2 (id=1333354)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 225 | Scaled Value: 225 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 315 | Scaled Value: 315 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Base Value (225 -> 315)
 #3 (id=1333391)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : When their energy depletes, Wild Imps have a $s3% chance to fling themselves at their target and Implode at $s1% effectiveness to their main target and $s2% effectiveness to other targets.
