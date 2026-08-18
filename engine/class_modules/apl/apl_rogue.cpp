@@ -219,7 +219,8 @@ void subtlety( player_t* p )
   default_->add_action( "call_action_list,name=race" );
   default_->add_action( "call_action_list,name=item" );
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "shuriken_storm,if=variable.build_at_max_for_apex&(variable.targets>=3|!used_for_danse&talent.unseen_blade&talent.danse_macabre)&(buff.supercharge_1.up|cooldown.secret_technique.ready)" );
+  default_->add_action( "shuriken_storm,if=variable.build_at_max_for_apex&variable.targets>=3&(buff.supercharge_1.up|cooldown.secret_technique.ready)" );
+  default_->add_action( "gloomblade,if=variable.build_at_max_for_apex&variable.targets<=2&(buff.darkest_night.up|(talent.unseen_blade&buff.supercharge_1.up)|cooldown.secret_technique.ready)&buff.lingering_shadow.stack>=35" );
   default_->add_action( "shadowstrike,if=variable.build_at_max_for_apex&variable.targets<=2&(buff.darkest_night.up|(talent.unseen_blade&buff.supercharge_1.up)|cooldown.secret_technique.ready)" );
   default_->add_action( "call_action_list,name=finish,if=combo_points>=cp_max_spend-!buff.darkest_night.up" );
   default_->add_action( "call_action_list,name=build,if=variable.stealth|energy>60" );
@@ -245,14 +246,15 @@ void subtlety( player_t* p )
   item->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
 
   finish->add_action( "eviscerate,if=buff.darkest_night.up|!buff.slice_and_dice.up" );
-  finish->add_action( "secret_technique,if=buff.shadow_dance.up|(cooldown.secret_technique.duration<18|cooldown.shadow_dance.remains>=10)&!cooldown.shadow_dance.ready" );
-  finish->add_action( "coup_de_grace,if=cooldown.secret_technique.remains>=6|buff.shadow_dance.up" );
+  finish->add_action( "secret_technique,if=buff.shadow_dance.up" );
+  finish->add_action( "secret_technique,if=talent.unseen_blade&cooldown.secret_technique.duration<18&!cooldown.shadow_dance.ready", "Cast Secret Technique on cooldown as trickster if Shadow Dance is not ready" );
+  finish->add_action( "coup_de_grace,if=cooldown.secret_technique.remains>=3|buff.shadow_dance.up" );
   finish->add_action( "black_powder,if=talent.unseen_blade&variable.targets>=(3-talent.potent_powder)&(cooldown.secret_technique.remains>=3|buff.shadow_dance.up|buff.shadow_blades.up)", "Pool some Shadow Technique Stacks as Trickster before entering Shadow Dance by not finishing right before." );
   finish->add_action( "black_powder,if=talent.deathstalkers_mark&variable.targets>=2", "As Deathstalker just press BP" );
-  finish->add_action( "eviscerate,if=cooldown.secret_technique.remains>=6&talent.unseen_blade|buff.shadow_dance.up|buff.shadow_blades.up|debuff.deathstalkers_mark.stack>1|debuff.deathstalkers_mark.stack=1&buff.shadow_techniques.stack>=5", "Pool some Shadow Technique Stacks as Trickster before entering Shadow Dance by not finishing right before." );
+  finish->add_action( "eviscerate,if=cooldown.secret_technique.remains>=3&talent.unseen_blade|buff.shadow_dance.up|buff.shadow_blades.up|debuff.deathstalkers_mark.stack>1|debuff.deathstalkers_mark.stack=1&buff.shadow_techniques.stack>=5", "Pool some Shadow Technique Stacks as Trickster before entering Shadow Dance by not finishing right before." );
 
   build->add_action( "shuriken_storm,if=buff.shadow_dance.up&buff.premeditation.up&(debuff.deathstalkers_mark.up|buff.darkest_night.up|!talent.deathstalkers_mark)" );
-  build->add_action( "shadowstrike,if=!debuff.deathstalkers_mark.up&talent.deathstalkers_mark&!buff.darkest_night.up|variable.targets<=3|variable.priority_rotation" );
+  build->add_action( "shadowstrike,if=!debuff.deathstalkers_mark.up&talent.deathstalkers_mark&!buff.darkest_night.up|variable.targets<=2-set_bonus.midnight_season_2_2pc|variable.priority_rotation" );
   build->add_action( "shuriken_storm,if=variable.targets>1" );
   build->add_action( "gloomblade,if=variable.targets<2&!variable.stealth" );
   build->add_action( "backstab,if=variable.targets<2&!variable.stealth" );
