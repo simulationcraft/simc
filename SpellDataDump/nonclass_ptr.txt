@@ -258394,8 +258394,10 @@ If an afflicted target dies the Venom is expelled, instantly dealing its remaini
 Tooltip          : Absorb x damage.
 
 Name             : Hunter's Ritual Stone (id=1297382) [Passive, Hidden] 
+Hotfixed         : Max Scaling Level (0 -> 90)
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 90
 Labels           : 4369
                  : 4414
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
@@ -258403,7 +258405,8 @@ Effects          :
 #1 (id=1320610)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Hunter's Ritual Stone
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 1295897 | Target: Self (1)
 #2 (id=1320611)  : Dummy (3) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 108.8975 (coefficient=0.830768)
+                   Base Value: 0 | Scaled Value: 66.51784 (coefficient=0.507458)
+Hotfixed         : Coefficient (0.830768 -> 0.507458)
 Description      : Your damaging spells and abilities have a chance to grant $s2 of a random secondary stat for $1295898d.
 
 While on a Prey Hunt this effect is increased by $s1%. This bonus is only available outdoors while hunting prey.
@@ -261073,20 +261076,22 @@ Real PPM         : 2
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1336169)  : Apply Aura (6) | Proc Trigger Spell (42): Venomcursed Critical Strike | Scaling Class: Secondary Rating (-7)
+#1 (id=1336169)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Trigger Spell: 1307910 | Target: Self (1)
+Hotfixed         : Sub Type (42 -> 4)
 #2 (id=1336170)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -27.63072 (coefficient=-0.210792) | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Critical Strike by $s1, but reduce your other secondary stats by $s2 for $1307910d.
 
 Name             : Venomcursed Critical Strike (id=1307910) 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Duration         : 12 seconds
 Labels           : 292
                  : 3959: Item Effects
-Triggered By     : Venomcursed Critical Strike (1307906)
-Attributes       : Aura Points On Client (268)
+Triggered By     : Venomcursed Critical Strike (1307906), Venomcursed Critical Strike (1317036)
+Attributes       : Aura Never Bounces (148), Aura Points On Client (268), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1336174)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.66 | Rating: Crit | Target: Self (1)
@@ -261096,13 +261101,14 @@ Description      : $@spelldesc1307906
 Tooltip          : Critical Strike increased by $w1. Haste, Mastery, and Versatility decreased by $w2.
 
 Name             : Venomcursed Mastery (id=1307922) 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Duration         : 12 seconds
 Labels           : 292
                  : 3959: Item Effects
 Triggered By     : Venomcursed Mastery (1307923)
-Attributes       : Aura Points On Client (268)
+Attributes       : Aura Never Bounces (148), Aura Points On Client (268), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1336193)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.66 | Rating: Mastery | Target: Self (1)
@@ -261121,21 +261127,22 @@ Real PPM         : 2
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1336195)  : Apply Aura (6) | Proc Trigger Spell (42): Venomcursed Mastery | Scaling Class: Secondary Rating (-7)
+#1 (id=1336195)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Trigger Spell: 1307922 | Target: Self (1)
-Hotfixed         : Sub Type (4 -> 42)
+Hotfixed         : Sub Type (42 -> 4)
 #2 (id=1336196)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -27.63072 (coefficient=-0.210792) | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Mastery by $s1, but reduce your other secondary stats by $s2 for $1307922d.
 
 Name             : Venomcursed Haste (id=1307927) 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Duration         : 12 seconds
 Labels           : 292
                  : 3959: Item Effects
 Triggered By     : Venomcursed Haste (1307928)
-Attributes       : Aura Points On Client (268)
+Attributes       : Aura Never Bounces (148), Aura Points On Client (268), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1336204)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.66 | Rating: Haste | Target: Self (1)
@@ -261154,8 +261161,9 @@ Real PPM         : 2
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1336206)  : Apply Aura (6) | Proc Trigger Spell (42): Venomcursed Haste | Scaling Class: Secondary Rating (-7)
+#1 (id=1336206)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Trigger Spell: 1307927 | Target: Self (1)
+Hotfixed         : Sub Type (42 -> 4)
 #2 (id=1336207)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -27.63072 (coefficient=-0.210792) | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Haste by $s1, but reduce your other secondary stats by $s2 for $1307927d.
@@ -261453,4 +261461,23 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #1 (id=1342188)  : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 265919 | Target: Self (1)
+
+Name             : Venomcursed Critical Strike (id=1317036) [Passive] 
+Hotfixed         : NEW SPELL
+School           : Physical
+Spell Type       : None
+Labels           : 292
+                 : 3959: Item Effects
+Proc Chance      : 101%
+Real PPM         : 2
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1350099)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 124.7005 (coefficient=0.951328) | Trigger Spell: 1307910 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#2 (id=1350100)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: -20.78347 (coefficient=-0.158555) | Target: Self (1)
+Hotfixed         : NEW EFFECT
+Description      : Your spells and abilities have a chance to increase your Critical Strike by $s1, but reduce your other secondary stats by $s2 for $1307910d.
 
