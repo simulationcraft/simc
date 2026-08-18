@@ -4697,35 +4697,20 @@ void rotmires_sporeheart( special_effect_t& effect )
 
 void venomcursed( special_effect_t& effect )
 {
-  stat_buff_t* buff =
-      debug_cast<stat_buff_t*>( buff_t::find( effect.player, util::tokenize_fn( effect.trigger()->name_cstr() ) ) );
-
-  bool do_init = false;
+  // TODO: in-game the buff value is overriden by the trigger script based on the coeff of the trigger. Current
+  // implementation assumes both drivers have the same coeff, and will create the buff based on the first driver
+  // processed. If the coeff difference stays in-game, this will need to be reworked to match in-game behavior.
+  auto buff = buff_t::find( effect.player, util::tokenize_fn( effect.trigger()->name_cstr() ) );
   if ( !buff )
   {
-    buff    = create_buff<stat_buff_t>( effect.player, effect.trigger() );
-    do_init = true;
-  }
-
-  buff->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
+    buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+      ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
       ->add_stat_from_effect( 2, effect.driver()->effectN( 2 ).average( effect ) );
+  }
 
-  if ( do_init )
-  {
-    effect.custom_buff = buff;
-    new dbc_proc_callback_t( effect.player, effect );
-  }
-  else
-  {
-    // Currently Venomcursed items are bugged and will duplicate their driver as well as buff size if you can get two of
-    // the same item.
-    auto new_effect          = new special_effect_t( effect.player );
-    new_effect->name_str     = util::tokenize_fn( effect.driver()->name_cstr() ) + "_2";
-    new_effect->spell_id     = effect.spell_id;
-    new_effect->custom_buff  = buff;
-    effect.player->special_effects.push_back( new_effect );
-    new dbc_proc_callback_t( effect.player, *new_effect );
-  }
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 }  // namespace armors
 
