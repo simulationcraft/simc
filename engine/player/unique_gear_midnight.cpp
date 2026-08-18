@@ -308,7 +308,7 @@ void liquid_luster( special_effect_t& effect )
     bool trigger( int s, double v, double c, timespan_t d ) override
     {
       // partial duration should only happen during precombat
-      assert( !player->in_combat || d == timespan_t::min() );
+      assert( !player->in_combat || d == timespan_t::min() || d == buff_duration() );
 
       auto ret = buff_t::trigger( s, v, c, d );
       if ( ret )
