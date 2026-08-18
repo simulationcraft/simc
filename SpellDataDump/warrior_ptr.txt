@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69299 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69382 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -13167,17 +13167,14 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.33334 | Target: Self (1)
                    Affected Spells: Execute Off-Hand (163558), Execute (260798), Execute (280849), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 115, 116
-Hotfixed         : Affects Spells
 #2 (id=1142883)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.33334 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Execute Off-Hand (163558), Execute (260798), Execute (280849), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 115, 116
-Hotfixed         : Affects Spells
 #3 (id=1142884)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.33334 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Execute Off-Hand (163558), Execute (260798), Execute (280849), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 115, 116
-Hotfixed         : Affects Spells
 Description      : $@spelldesc444767
 
 Tooltip          : Execute damage$?e1[, critical strike chance, and critical strike damage][] increased by $w1%.
