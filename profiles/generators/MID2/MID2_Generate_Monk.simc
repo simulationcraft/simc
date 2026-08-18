@@ -6,6 +6,7 @@ race=tauren
 role=tank
 position=front
 talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZbzYGzMWmxGmZMAAAAAAALLYmwMwMM2MDmZmZY2GzMmZBLb22GzYWAAglZZaZ2mZZAAgAMDbgZGw0YADAYA
+omnium_talents=136822:1/136819:1/136817:1/136820:1/136814:1
 
 head=monkey_kings_unyielding_visage,id=271519,bonus_id=13848/13847/10835,redirected_base_stats=271875,enchant_id=7959,gem_id=240983
 neck=aqirbane_reliquary,id=268265,bonus_id=13848/13708/10835,gem_id=240914/240914,crafted_stats=32/40
