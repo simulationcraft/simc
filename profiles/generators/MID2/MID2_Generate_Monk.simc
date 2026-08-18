@@ -1,29 +1,29 @@
-# monk="MID2_Monk_Brewmaster"
-# source=default
-# spec=brewmaster
-# level=90
-# race=tauren
-# role=tank
-# position=front
-# talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZbzYGzM2mxGmZAAAAAAAYZBjYmBmhBzYMzMzwsMmZMzywymttxMmFAAYZWmWmtZWGAAIAzwGYmBMNGAAwA
+monk="MID2_Monk_Brewmaster"
+source=default
+spec=brewmaster
+level=90
+race=tauren
+role=tank
+position=front
+talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZbzYGzMWmxGmZMAAAAAAALLYmwMwMM2MDmZmZY2GzMmZBLb22GzYWAAglZZaZ2mZZAAgAMDbgZGw0YADAYA
 
-# head=fearsome_visage_of_radens_chosen,id=250015,bonus_id=13575/13575/13575/12806/1808,enchant_id=7991,gem_id=240983
-# neck=masterwork_sindorei_amulet,id=240950,bonus_id=12214/13622/13667/12066/9627/8791/13454/8960,gem_id=240914,crafted_stats=32/40
-# shoulder=aurastones_of_radens_chosen,id=250013,bonus_id=13574/13574/13574/12806,enchant_id=7973
-# back=imperators_banner,id=249335,bonus_id=12806/13577
-# chest=battle_garb_of_radens_chosen,id=250018,bonus_id=13575/13575/13575/12806,enchant_id=7987
-# wrist=strikeguards_of_radens_chosen,id=250011,bonus_id=12806/1808,gem_id=240914
-# hands=thunderfists_of_radens_chosen,id=250016,bonus_id=13574/13574/13574/12806
-# waist=snapvine_cinch,id=251082,bonus_id=12806/13577/1808,gem_id=240914
-# legs=shifting_stalker_hide_pants,id=151314,bonus_id=12806/13577,enchant_id=8163
-# feet=footpads_of_seeping_dread,id=151317,bonus_id=12806/13577,enchant_id=8019
-# finger1=signet_of_the_starved_beast,id=249336,bonus_id=12806/13577/13668,enchant_id=7967,gem_id=240914
-# finger2=loa_worshipers_band,id=251513,bonus_id=8960/12214/8960/12214/8960/13622/13667/12066/9627,enchant_id=7967,gem_id=240914
-# trinket1=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577
-# trinket2=radiant_plume,id=249806,bonus_id=12806/13577
-# main_hand=inescapable_reach,id=249302,bonus_id=12806/13577,enchant_id=8039
+head=monkey_kings_unyielding_visage,id=271519,bonus_id=13848/13847/10835,redirected_base_stats=271875,enchant_id=7959,gem_id=240983
+neck=aqirbane_reliquary,id=268265,bonus_id=13848/13708/10835,gem_id=240914/240914,crafted_stats=32/40
+shoulder=tassels_of_the_monkey_king,id=271517,bonus_id=13335/12854,redirected_base_stats=273774,enchant_id=8031
+back=silken_voodoo_drape,id=268253,bonus_id=13848
+chest=battle_gi_of_the_monkey_king,id=271522,bonus_id=13335/12854,redirected_base_stats=251226,enchant_id=7987
+wrist=silvermoon_agents_deflectors,id=244576,bonus_id=13751/12497/13836/10835/8795/13454,gem_id=240914,crafting_quality=5
+hands=monkey_kings_fighting_fists,id=271520,bonus_id=13335/12854,redirected_base_stats=193758
+waist=sash_of_the_forlorn_vessel,id=268256,bonus_id=13848/10835,gem_id=240914
+legs=pantaloons_of_the_monkey_king,id=271518,bonus_id=13848,redirected_base_stats=268225,enchant_id=8159
+feet=goldfeather_boots,id=159304,bonus_id=13440/12854,enchant_id=7993
+finger1=pilfered_precious_band,id=251148,bonus_id=13440/12854/10835,enchant_id=7967,gem_id=240914
+finger2=loa_worshipers_band,id=251513,bonus_id=13751/12497/13836,enchant_id=7967,gem_id=240914,crafting_quality=5
+trinket1=zuljins_guillotine_technique,id=270173,bonus_id=13335/13848
+trinket2=font_of_venomous_rage,id=270168,bonus_id=13335/13848
+main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13848/13846,enchant_id=8039
 
-# save=MID2_Monk_Brewmaster.simc
+save=MID2_Monk_Brewmaster.simc
 
 # monk="MID2_Monk_Windwalker"
 # spec=windwalker
