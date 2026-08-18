@@ -2870,6 +2870,7 @@ Description      : Drink an alchemical concoction that heals you for $?a354425&a
 Tooltip          : Healing for $?a354425|a193546[${$W1}.2][$w1]% of maximum health every $t1 sec.
 
 Name             : Shadow Dance (id=185313) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Subtlety Rogue
 School           : Physical
 Spell Type       : None
@@ -2886,6 +2887,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Dark Shadow (245687 effects: #1, #2), Death Perception (469642 effect#2), The First Dance (470678 effects: #1, #2), Deepening Shadows (1271702 effects: #1, #2)
 Family Flags     : 103
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Aura Cancel (31), No Skill Increase (36), No Threat (42), No Aura Icon (60), Suppress Caster Procs (112), Suppress Target Procs (113), No Aura Log (202), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=269037)   : Apply Aura (6) | Temporary Threat Reduction (103)
                    Base Value: -10000000 | Scaled Value: -1e+07 | Target: Self (1)
@@ -2943,6 +2945,7 @@ Description      : Shadow Dance duration is increased by $1271702s3% of your Has
 Current bonus duration: ${$s1/1000}.2 sec
 
 Name             : Shadow Dance (id=185422) [Spell Family (8)] 
+Hotfixed         : Attributes, Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -2953,8 +2956,8 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Shadowrunner (378807 effect#1), The First Dance (470678 effects: #1, #2), Deepening Shadows (1271702 effects: #1, #2)
 Family Flags     : 57
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Skill Increase (36), No Threat (42), Fail on all targets immune (85), Can Proc From Procs (122), No Cast Log (128), Allow Proc While Sitting (147), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (491)
-Aura Interrupt   : Change Specialization (38)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Aura Cancel (31), No Skill Increase (36), No Threat (42), Fail on all targets immune (85), Can Proc From Procs (122), No Cast Log (128), Allow Proc While Sitting (147), Aura Points On Client (268), Newest Exclusive Complete (362), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Important Spell (491)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=269222)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 30 | Misc Value 2: 2 | Target: Self (1)
@@ -13729,6 +13732,7 @@ Effects          :
 Description      : Deals Plague damage.
 
 Name             : Lingering Darkness (id=457273) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -13740,6 +13744,7 @@ Labels           : 16: Class Spells
                  : 5175
                  : 5176
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1162160)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x8 | Target: Self (1)
