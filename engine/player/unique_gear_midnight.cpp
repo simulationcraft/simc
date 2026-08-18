@@ -4696,22 +4696,63 @@ void rotmires_sporeheart( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 1307906, 1317036 crit driver
+// 1307910 crit buff
+// 1307923 mast driver
+// 1307922 mast buff
+// 1307928 haste driver
+// 1307927 haste buff
 void venomcursed( special_effect_t& effect )
 {
-  // TODO: in-game the buff value is overriden by the trigger script based on the coeff of the trigger. Current
-  // implementation assumes both drivers have the same coeff, and will create the buff based on the first driver
-  // processed. If the coeff difference stays in-game, this will need to be reworked to match in-game behavior.
-  auto buff = buff_t::find( effect.player, util::tokenize_fn( effect.trigger()->name_cstr() ) );
-  if ( !buff )
+  // The crit version has two drivers with different coeffs, but share the same buff. Each driver can proc
+  // independently, and when triggered will apply the buff with the stat amount based on it's own coeff, including
+  // overwriting existing stat amount if it refreshes a buff triggered by the other driver. The stat amounts are cached
+  // in dbc_proc_callback_t and buffs are created with the values for the first processed driver for html reporting
+  // purposes.
+  struct venomcursed_cb_t : public dbc_proc_callback_t
   {
-    buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
-      ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
-      ->add_stat_from_effect( 2, effect.driver()->effectN( 2 ).average( effect ) );
-  }
+    stat_buff_t* buff;
+    double pos_value;
+    double neg_value;
 
-  effect.custom_buff = buff;
+    venomcursed_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        pos_value( e.driver()->effectN( 1 ).average( e ) ),
+        neg_value( e.driver()->effectN( 2 ).average( e ) )
+    {
+      buff = debug_cast<stat_buff_t*>( buff_t::find( e.player, util::tokenize_fn( e.trigger()->name_cstr() ) ) );
+      if ( !buff )
+      {
+        buff = create_buff<stat_buff_t>( e.player, e.trigger() )
+          ->add_stat_from_effect( 1, pos_value )
+          ->add_stat_from_effect( 2, neg_value );
+      }
+    }
 
-  new dbc_proc_callback_t( effect.player, effect );
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
+    {
+      if ( buff->check() && buff->stats.front().amount != pos_value )
+      {
+        if ( listener->sim->debug )
+        {
+          listener->sim->print_debug( "{} replacing {}: {} -> {}", *buff,
+                                      util::stat_type_abbrev( buff->stats.front().stat ), buff->stats.front().amount,
+                                      pos_value );
+        }
+
+        for ( auto it = buff->stats.begin(); it != buff->stats.end(); ++it )
+        {
+          buff->update_player_buff_stat( *it, 0 );
+          it->amount = it == buff->stats.begin() ? pos_value : neg_value;
+          buff->update_player_buff_stat( *it, 1 );
+        }
+      }
+
+      buff->trigger();
+    }
+  };
+
+  new venomcursed_cb_t( effect );
 }
 }  // namespace armors
 
