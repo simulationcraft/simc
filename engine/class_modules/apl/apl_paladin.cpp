@@ -42,16 +42,15 @@ void retribution( player_t* p )
   cooldowns->add_action( "execution_sentence,if=(cooldown.avenging_wrath.remains>15|talent.radiant_glory)&(target.time_to_die>10)&cooldown.wake_of_ashes.remains<gcd&(!talent.holy_flames|dot.expurgation.ticking)" );
   cooldowns->add_action( "avenging_wrath,if=(!raid_event.adds.up|target.time_to_die>10)&(!talent.holy_flames|dot.expurgation.ticking)&(!equipped.algethar_puzzle_box|trinket.1.is.algethar_puzzle_box&trinket.1.cooldown.remains>5|trinket.2.is.algethar_puzzle_box&trinket.2.cooldown.remains>5)" );
 
-  finishers->add_action( "variable,name=ds_castable,value=(active_enemies>=3-(talent.tempest_of_the_lightbringer&!talent.jurisdiction)|buff.empyrean_power.up)&!buff.empyrean_legacy.up" );
+  finishers->add_action( "variable,name=ds_castable,value=(active_enemies>=2|buff.divine_arbiter_verdict.up&(buff.empyrean_power.up|!talent.seal_of_the_templar))&!buff.empyrean_legacy.up&(!buff.divine_arbiter_divine_storm.up|active_enemies>=3+2*!talent.dawnlight)" );
   finishers->add_action( "hammer_of_light,if=!buff.hammer_of_light_free.up|buff.hammer_of_light_free.up&(buff.undisputed_ruling.remains<gcd*1.5&(talent.radiant_glory|cooldown.avenging_wrath.remains>4)|buff.avenging_wrath.up&(buff.avenging_wrath.remains<gcd*2|cooldown.wake_of_ashes.remains=0)|buff.hammer_of_light_free.remains<gcd*2|target.time_to_die<gcd*2)" );
   finishers->add_action( "divine_storm,if=variable.ds_castable&(!buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up)" );
   finishers->add_action( "templars_verdict,if=(!buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up)" );
 
   generators->add_action( "call_action_list,name=finishers,if=holy_power=5&cooldown.wake_of_ashes.remains|buff.hammer_of_light_free.remains<gcd*2" );
-  generators->add_action( "blade_of_justice,if=talent.holy_flames&!dot.expurgation.ticking&time<5" );
   generators->add_action( "wake_of_ashes,if=(cooldown.avenging_wrath.remains>6|talent.radiant_glory)&(!talent.execution_sentence|cooldown.execution_sentence.remains>4|target.time_to_die<10)&(!raid_event.adds.exists|raid_event.adds.in>10|raid_event.adds.up)" );
   generators->add_action( "divine_toll,if=(!raid_event.adds.exists|raid_event.adds.in>10|raid_event.adds.up)&(cooldown.avenging_wrath.remains>15|talent.radiant_glory|fight_remains<8)" );
-  generators->add_action( "blade_of_justice,if=(buff.art_of_war.up|buff.righteous_cause.up)&(!talent.walk_into_light|!buff.avenging_wrath.up)" );
+  generators->add_action( "blade_of_justice,if=(buff.art_of_war.stack=2|buff.righteous_cause.stack=2)&(!talent.walk_into_light|!buff.avenging_wrath.up)" );
   generators->add_action( "call_action_list,name=finishers" );
   generators->add_action( "hammer_of_wrath,if=talent.walk_into_light" );
   generators->add_action( "blade_of_justice" );
