@@ -338,7 +338,7 @@ double spelleffect_data_t::average( const player_t* p, unsigned level ) const
 
     double value = _m_coeff * p->dbc->spell_scaling( scale, level );
 
-// TODO: confirm which combat rating multiplier is used
+    // TODO: confirm which combat rating multiplier is used
     if ( scale == PLAYER_SPECIAL_SCALE7 )
       value = item_database::apply_combat_rating_multiplier( p, CR_MULTIPLIER_TRINKET, level, value );
 
