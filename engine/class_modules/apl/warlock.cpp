@@ -129,17 +129,19 @@ void affliction( player_t* p )
   SH_aoe->add_action( "seed_of_corruption,target_if=!dot.unstable_affliction.ticking&prev.dark_harvest,if=set_bonus.midnight_season_2_4pc&active_enemies<=5" );
   SH_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<10&remains<5" );
   SH_aoe->add_action( "summon_darkglare" );
+  SH_aoe->add_action( "malefic_grasp,if=buff.nightfall.react>1&active_enemies<=6" );
+  SH_aoe->add_action( "shadow_bolt,if=buff.nightfall.react>1&active_enemies<=7" );
   SH_aoe->add_action( "seed_of_corruption" );
   SH_aoe->add_action( "agony,target_if=min:remains,if=remains<duration*0.5" );
   SH_aoe->add_action( "malefic_grasp,if=pet.darkglare.remains<gcd" );
 
   SH_cleave->add_action( "haunt" );
   SH_cleave->add_action( "seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
+  SH_cleave->add_action( "agony,target_if=refreshable" );
   SH_cleave->add_action( "dark_harvest" );
   SH_cleave->add_action( "unstable_affliction,cycle_targets=1,if=!ticking&prev.dark_harvest" );
   SH_cleave->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
   SH_cleave->add_action( "unstable_affliction" );
-  SH_cleave->add_action( "agony,target_if=refreshable" );
   SH_cleave->add_action( "summon_darkglare" );
   SH_cleave->add_action( "malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd" );
   SH_cleave->add_action( "drain_soul,if=buff.nightfall.react>1" );
