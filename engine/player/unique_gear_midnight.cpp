@@ -295,6 +295,7 @@ void liquid_luster( special_effect_t& effect )
     {
       // ticks are scripted to allow for precombat usage
       set_period( 0_ms );
+      set_refresh_behavior( buff_refresh_behavior::DURATION );
 
       gleam = create_buff<stat_buff_t>( player, e.trigger() )
         ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
