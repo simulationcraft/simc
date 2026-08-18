@@ -258394,8 +258394,10 @@ If an afflicted target dies the Venom is expelled, instantly dealing its remaini
 Tooltip          : Absorb x damage.
 
 Name             : Hunter's Ritual Stone (id=1297382) [Passive, Hidden] 
+Hotfixed         : Max Scaling Level (0 -> 90)
 School           : Physical
 Spell Type       : None
+Max Scaling Level: 90
 Labels           : 4369
                  : 4414
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
@@ -258403,7 +258405,8 @@ Effects          :
 #1 (id=1320610)  : Apply Aura (6) | Cast Linked Spell w/ Value (285): Hunter's Ritual Stone
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 1295897 | Target: Self (1)
 #2 (id=1320611)  : Dummy (3) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 108.8975 (coefficient=0.830768)
+                   Base Value: 0 | Scaled Value: 66.51784 (coefficient=0.507458)
+Hotfixed         : Coefficient (0.830768 -> 0.507458)
 Description      : Your damaging spells and abilities have a chance to grant $s2 of a random secondary stat for $1295898d.
 
 While on a Prey Hunt this effect is increased by $s1%. This bonus is only available outdoors while hunting prey.
