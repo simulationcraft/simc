@@ -4,7 +4,7 @@ race=dwarf
 spec=beast_mastery
 role=attack
 position=ranged_back
-talents=C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwCsAzwwMsBAgZYMzyMDzYmxMMzYMzwMjZMzy2MzYGzgHw0MAAAAgZAAAYMzMAzsxghZBsNAMA
+talents=C0PAAAAAAAAAAAAAAAAAAAAAAAMmxwCsAzwwMsBAgZYMzyMDzYmxMMzYMzwMjZMziZmxMmBjpZAAAAAzAAAwYmZAmZjxGMLgtBgBA
 omnium_talents=136822:1/136819:1/136817:1/136818:1/136814:1
 
 head=,id=271492,bonus_id=1808/13662,ilevel=334,gem_id=240983,enchant_id=8017,redirected_base_stats=251220
@@ -31,7 +31,7 @@ race=dwarf
 spec=marksmanship
 role=attack
 position=ranged_back
-talents=C4PAAAAAAAAAAAAAAAAAAAAAAwCMwMGzYZAjZwGAAAAAAAAYGzYmltZMzMmBPgpZMYstMzMzMzMzMLMzygZAAAjZmxAYGbMMAbMz2MGA
+talents=C4PAAAAAAAAAAAAAAAAAAAAAAwCMwMGzYZAjZwGAAAAAAAAYGzYmFzYmZMDGTzYwYbZmZmZmZmZWYmlBzAAAGzMjBwM22gBYjZ2mxAA
 omnium_talents=136822:1/136819:1/136817:1/136818:1/136814:1
 
 head=,id=271492,bonus_id=1808/13662,ilevel=334,gem_id=240967,enchant_id=7961,redirected_base_stats=268230
@@ -58,7 +58,7 @@ race=dwarf
 spec=survival
 role=attack
 position=back
-talents=C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgtZMzMGzyAAAAAAwMmxMLbzYMjZwDYaGAAAgBAzYZZmZWMmZmxMzAgZswwYYsZAA
+talents=C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgtZMzMGzyAAAAAAwMmxMLmxYGzgx0MAAAADAmxyyMzsYMzMjZmBAzYZDGDjNDAA
 omnium_talents=136822:1/136819:1/136817:1/136821:1/136814:1
 
 head=,id=271492,bonus_id=13692/13698/1808,ilevel=334,gem_id=240983,enchant_id=7961
