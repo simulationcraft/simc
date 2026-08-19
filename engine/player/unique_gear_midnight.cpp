@@ -4737,11 +4737,11 @@ void venomcursed( special_effect_t& effect )
         buff = create_buff<stat_buff_t>( e.player, e.trigger() )
                    ->add_stat_from_effect( 1, pos_value )
                    ->add_stat_from_effect( 2, neg_value );
-      }
-      if ( ascendace )
-      {
-        buff->add_stat_from_effect( 3, neg_value );
-        buff->add_stat_from_effect( 4, neg_value );
+        if ( ascendace )
+        {
+          buff->add_stat_from_effect( 3, neg_value );
+          buff->add_stat_from_effect( 4, neg_value );
+        }
       }
     }
 
