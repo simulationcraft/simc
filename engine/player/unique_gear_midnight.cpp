@@ -4703,12 +4703,14 @@ void rotmires_sporeheart( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// 1307906, 1317036 crit driver
+// 1307906 crit driver
 // 1307910 crit buff
 // 1307923 mast driver
 // 1307922 mast buff
 // 1307928 haste driver
 // 1307927 haste buff
+// 1317582 Ascendace (random stat) driver
+// 1317581 Ascendace (random stat) buff
 void venomcursed( special_effect_t& effect )
 {
   // The crit version has two drivers with different coeffs, but share the same buff. Each driver can proc
@@ -4721,18 +4723,48 @@ void venomcursed( special_effect_t& effect )
     stat_buff_t* buff;
     double pos_value;
     double neg_value;
+    bool ascendace;
 
     venomcursed_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
         pos_value( e.driver()->effectN( 1 ).average( e ) ),
-        neg_value( e.driver()->effectN( 2 ).average( e ) )
+        neg_value( e.driver()->effectN( 2 ).average( e ) ),
+        ascendace( e.spell_id == 1317582 )
     {
       buff = debug_cast<stat_buff_t*>( buff_t::find( e.player, util::tokenize_fn( e.trigger()->name_cstr() ) ) );
       if ( !buff )
       {
         buff = create_buff<stat_buff_t>( e.player, e.trigger() )
-          ->add_stat_from_effect( 1, pos_value )
-          ->add_stat_from_effect( 2, neg_value );
+                   ->add_stat_from_effect( 1, pos_value )
+                   ->add_stat_from_effect( 2, neg_value );
+      }
+      if ( ascendace )
+      {
+        buff->add_stat_from_effect( 3, neg_value );
+        buff->add_stat_from_effect( 4, neg_value );
+      }
+    }
+
+    void ascendance_stat_change( stat_e stat )
+    {
+      for ( auto& s : buff->stats )
+      {
+        if ( s.stat == stat )
+        {
+          if ( buff->check() )
+            buff->update_player_buff_stat( s, 0 );
+          s.amount = pos_value;
+          if ( buff->check() )
+            buff->update_player_buff_stat( s, 1 );
+        }
+        else
+        {
+          if ( buff->check() )
+            buff->update_player_buff_stat( s, 0 );
+          s.amount = neg_value;
+          if ( buff->check() )
+            buff->update_player_buff_stat( s, 1 );
+        }
       }
     }
 
@@ -4755,6 +4787,11 @@ void venomcursed( special_effect_t& effect )
         }
       }
 
+      if ( ascendace )
+      {
+        auto rng_stat = rng().range( secondary_ratings );
+        ascendance_stat_change( rng_stat );
+      }
       buff->trigger();
     }
   };
@@ -5583,7 +5620,7 @@ void register_special_effects()
   register_special_effect( 1285138, armors::sporecallers_blooming_loop );
   register_special_effect( 1285139, armors::rotmires_sporeheart );
   set_min_version( wowv_t( 12, 1, 0 ) );
-  register_special_effect( { 1307906, 1307923, 1307928, 1317036 }, armors::venomcursed );
+  register_special_effect( { 1307906, 1307923, 1307928, 1317036, 1317582 }, armors::venomcursed );
   reset_version_check();
   // Sets
   register_special_effect( 1281574, sets::voidlight_bindings );
