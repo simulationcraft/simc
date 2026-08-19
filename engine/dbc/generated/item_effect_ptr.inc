@@ -1055,7 +1055,7 @@ static constexpr std::array<item_effect_t, 11039> __ptr_item_effect_data { {
   { 236281, 1307906,      0,   0,   1,    0,      -1,      -1 }, // Venomcursed Critical Strike
   { 236288, 1307923,      0,   0,   1,    0,      -1,      -1 }, // Venomcursed Mastery
   { 236289, 1307928,      0,   0,   1,    0,      -1,      -1 }, // Venomcursed Haste
-  { 237622, 1317036,      0,   0,   1,    0,      -1,      -1 }, // Venomcursed Critical Strike
+  { 237622, 1317582,      0,   0,   1,    0,      -1,      -1 }, // Venomcursed Ascendance
   { 116155, 315277,      0,   2,   1,    0,      -1,      -1 }, // Strikethrough
   { 116221, 315529,      0,   2,   1,    0,      -1,      -1 }, // Masterful
   { 116222, 315530,      0,   2,   1,    0,      -1,      -1 }, // Masterful

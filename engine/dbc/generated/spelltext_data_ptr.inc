@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.0.69382
-static constexpr std::array<spelltext_data_t, 29245> __ptr_spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29246> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -29244,7 +29244,8 @@ static constexpr std::array<spelltext_data_t, 29245> __ptr_spelltext_data { {
   { 1311969, "Increases Drain Life damage by $s1% and Siphon Life now increases the damage of Corruption by an additional $s2%.\r\n\r\nDark Harvest channels $s3% faster and deals $s5% increased damage.", 0, 0 },
   { 1312843, "Healing Stream Totem $?a1267016[and Stormstream Totem ][]extend$?a1267016[][s] the duration of your active Riptides by ${$m1/1000}.1 sec.", 0, 0 },
   { 1312998, "$?a388667[Drain Soul][Shadow Bolt] and Malefic Grasp damage increased by $s1% or $s2% if the target is affected by Haunt. \r\n\r\nDark Harvest damage increased by $s3% or $s4% if the target is affected by Haunt.", 0, 0 },
-  { 1317036, "Your spells and abilities have a chance to increase your Critical Strike by $s1, but reduce your other secondary stats by $s2 for $1307910d.", 0, 0 },
+  { 1317581, "$@spelldesc1317582", "$?$W1>0[Critical Strike increased by $w1. Haste, Mastery, and Versatility decreased by $w2.]?$W2>0[Haste increased by $w2. Critical Strike, Mastery, and Versatility decreased by $w1.]?$W3>0[Mastery increased by $w3. Critical Strike, Haste, and Versatility decreased by $w1.]?$W4>0[Versatility increased by $w4. Critical Strike, Haste, and Mastery decreased by $w1.][]", 0 },
+  { 1317582, "Your spells and abilities have a chance to increase a random secondary stat by $s1 but reduce your other secondary stats by $s2 for $1317581d.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 12.1.0.69382
