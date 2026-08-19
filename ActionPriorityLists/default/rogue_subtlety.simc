@@ -24,14 +24,15 @@ actions+=/stealth
 actions+=/call_action_list,name=race
 actions+=/call_action_list,name=item
 actions+=/call_action_list,name=cds
-actions+=/shuriken_storm,if=variable.build_at_max_for_apex&(variable.targets>=3|!used_for_danse&talent.unseen_blade&talent.danse_macabre)&(buff.supercharge_1.up|cooldown.secret_technique.ready)
+actions+=/shuriken_storm,if=variable.build_at_max_for_apex&variable.targets>=3&(buff.supercharge_1.up|cooldown.secret_technique.ready)
+actions+=/gloomblade,if=variable.build_at_max_for_apex&variable.targets<=2&(buff.darkest_night.up|(talent.unseen_blade&buff.supercharge_1.up)|cooldown.secret_technique.ready)&buff.lingering_shadow.stack>=35
 actions+=/shadowstrike,if=variable.build_at_max_for_apex&variable.targets<=2&(buff.darkest_night.up|(talent.unseen_blade&buff.supercharge_1.up)|cooldown.secret_technique.ready)
 actions+=/call_action_list,name=finish,if=combo_points>=cp_max_spend-!buff.darkest_night.up
 actions+=/call_action_list,name=build,if=variable.stealth|energy>60
 actions+=/call_action_list,name=fill,if=!variable.stealth
 
 actions.build=shuriken_storm,if=buff.shadow_dance.up&buff.premeditation.up&(debuff.deathstalkers_mark.up|buff.darkest_night.up|!talent.deathstalkers_mark)
-actions.build+=/shadowstrike,if=!debuff.deathstalkers_mark.up&talent.deathstalkers_mark&!buff.darkest_night.up|variable.targets<=3|variable.priority_rotation
+actions.build+=/shadowstrike,if=!debuff.deathstalkers_mark.up&talent.deathstalkers_mark&!buff.darkest_night.up|variable.targets<=2-set_bonus.midnight_season_2_2pc|variable.priority_rotation
 actions.build+=/shuriken_storm,if=variable.targets>1
 actions.build+=/gloomblade,if=variable.targets<2&!variable.stealth
 actions.build+=/backstab,if=variable.targets<2&!variable.stealth
@@ -56,14 +57,16 @@ actions.fill+=/lights_judgment
 actions.fill+=/bag_of_tricks
 
 actions.finish=eviscerate,if=buff.darkest_night.up|!buff.slice_and_dice.up
-actions.finish+=/secret_technique,if=buff.shadow_dance.up|(cooldown.secret_technique.duration<18|cooldown.shadow_dance.remains>=10)&!cooldown.shadow_dance.ready
-actions.finish+=/coup_de_grace,if=cooldown.secret_technique.remains>=6|buff.shadow_dance.up
+actions.finish+=/secret_technique,if=buff.shadow_dance.up
+# Cast Secret Technique on cooldown as trickster if Shadow Dance is not ready
+actions.finish+=/secret_technique,if=talent.unseen_blade&cooldown.secret_technique.duration<18&!cooldown.shadow_dance.ready
+actions.finish+=/coup_de_grace,if=cooldown.secret_technique.remains>=3|buff.shadow_dance.up
 # Pool some Shadow Technique Stacks as Trickster before entering Shadow Dance by not finishing right before.
 actions.finish+=/black_powder,if=talent.unseen_blade&variable.targets>=(3-talent.potent_powder)&(cooldown.secret_technique.remains>=3|buff.shadow_dance.up|buff.shadow_blades.up)
 # As Deathstalker just press BP
 actions.finish+=/black_powder,if=talent.deathstalkers_mark&variable.targets>=2
 # Pool some Shadow Technique Stacks as Trickster before entering Shadow Dance by not finishing right before.
-actions.finish+=/eviscerate,if=cooldown.secret_technique.remains>=6&talent.unseen_blade|buff.shadow_dance.up|buff.shadow_blades.up|debuff.deathstalkers_mark.stack>1|debuff.deathstalkers_mark.stack=1&buff.shadow_techniques.stack>=5
+actions.finish+=/eviscerate,if=cooldown.secret_technique.remains>=3&talent.unseen_blade|buff.shadow_dance.up|buff.shadow_blades.up|debuff.deathstalkers_mark.stack>1|debuff.deathstalkers_mark.stack=1&buff.shadow_techniques.stack>=5
 
 # Trinket and Items
 actions.item=potion,if=buff.shadow_blades.up|fight_remains<30
