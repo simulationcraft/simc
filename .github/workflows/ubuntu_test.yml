@@ -22,13 +22,13 @@ jobs:
         compiler: [clang++-15, clang++-18, gcc-12, gcc-14]
         include:
           - compiler: clang++-15
-            os: ubuntu-latest
+            os: ubuntu-22.04
           - compiler: clang++-18
-            os: ubuntu-latest
+            os: ubuntu-24.04
           - compiler: gcc-14
-            os: ubuntu-latest
+            os: ubuntu-24.04
           - compiler: gcc-12
-            os: ubuntu-latest
+            os: ubuntu-22.04
 
     steps:
       - uses: actions/cache@v5

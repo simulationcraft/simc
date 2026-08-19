@@ -16,7 +16,7 @@ on:
 jobs:
   spec-test:
     name: spec-test-${{ matrix.spec }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     continue-on-error: ${{ inputs.is-ptr }}
     timeout-minutes: 15
 
