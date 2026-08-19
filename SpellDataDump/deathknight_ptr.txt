@@ -19956,6 +19956,7 @@ Effects          :
 Tooltip          : Damage of Sanguinary Burst increased by $w1%.
 
 Name             : Consumption (id=1263824) [Spell Family (15)] 
+Hotfixed         : Channel Interrupt
 Talent Entry     : Blood [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Shadow
@@ -19969,7 +19970,7 @@ Labels           : 16: Class Spells
                  : 292
 Family Flags     : 125
 Attributes       : Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Force Display Castbar (155), Allow Actions During Channel (160), Do Not Consume Resources (197), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Do Not Display Power Cost (303), Reset cooldown upon ending an encounter (333), Allow Defense While Channeling (338)
-Channel Interrupt: Sheathing (10), Interacting (11), Attacking (13), Action (Delayed) (17)
+Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Attacking (13)
 Effects          :
 #1 (id=1274730)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -21844,7 +21845,8 @@ Stance Mask      : 0x01000000
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1324918)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2 | Radius: 8 yards | Target: Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5 | Radius: 8 yards | Target: Enemy in Area (15)
+Hotfixed         : AP Coefficient (2 -> 0.5)
 Description      : $@spelldesc288848
 
 Name             : Relentless Rider's Strength (id=1300369) [Spell Family (15)] 
