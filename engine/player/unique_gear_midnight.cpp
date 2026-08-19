@@ -446,8 +446,11 @@ void weighted_boomshots( special_effect_t& effect )
   // assumed to not split so use generic_proc_t and just set aoe = -1;
   auto aoe = create_proc_action<generic_proc_t>( "weighted_boomshots", effect, missile->data().effectN( 1 ).trigger() );
   aoe->aoe = -1;
-  missile->stats = aoe->stats;  // just report the damage
+
+  missile->dual = true;
   missile->impact_action = aoe;
+  missile->stats = aoe->stats;  // just report the damage
+  aoe->stats->action_list.push_back( missile );
 
   effect.execute_action = missile;
 
@@ -722,7 +725,8 @@ void devouring_banding( special_effect_t& effect )
       dual = true;
 
       impact_action = create_proc_action<generic_proc_t>( "devouring_bolt", e, data().effectN( 1 ).trigger() );
-      stats         = impact_action->stats;  // report the damage only
+      stats = impact_action->stats;  // report the damage only
+      impact_action->stats->action_list.push_back( this );
     }
   };
 
@@ -3684,7 +3688,6 @@ void voracious_heart_of_ulatek( special_effect_t& effect )
 // 1307222 Venom Splatter
 void font_of_venomous_rage( special_effect_t& effect )
 {
-
   struct font_channel_t : public proc_spell_t
   {
     action_t* venom_splatter;
@@ -4325,8 +4328,10 @@ void polished_lightwood_channeler( special_effect_t& effect )
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
   damage->base_multiplier *= role_mult( effect );
 
-  missile->add_child( damage );
+  missile->dual = true;
   missile->impact_action = damage;
+  missile->stats = damage->stats;
+  damage->stats->action_list.push_back( missile );
 
   effect.execute_action = missile;
 
@@ -4636,6 +4641,8 @@ void sporecallers_blooming_loop( special_effect_t& effect )
       dot->dual = damage->dual = true;
       stats = dot->stats;
       damage->stats = dot->stats;
+      dot->stats->action_list.push_back( this );
+      dot->stats->action_list.push_back( damage );
     }
 
     void impact( action_state_t* state ) override
@@ -4775,8 +4782,9 @@ action_t* create_mrm_action( std::string n, const special_effect_t& e, unsigned 
   auto impact = create_proc_action<T>( n, e, missile->data().effectN( 1 ).trigger() );
   impact->base_dd_min = impact->base_dd_max = a;
   missile->dual = true;
-  missile->stats = impact->stats;  // report the damage only
   missile->impact_action = impact;
+  missile->stats = impact->stats;  // report the damage only
+  impact->stats->action_list.push_back( missile );
 
   return missile;
 }
