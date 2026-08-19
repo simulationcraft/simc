@@ -261090,7 +261090,7 @@ Spell Type       : None
 Duration         : 12 seconds
 Labels           : 292
                  : 3959: Item Effects
-Triggered By     : Venomcursed Critical Strike (1307906), Venomcursed Critical Strike (1317036)
+Triggered By     : Venomcursed Critical Strike (1307906)
 Attributes       : Aura Never Bounces (148), Aura Points On Client (268), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1336174)  : Apply Aura (6) | Modify Rating (189)
@@ -261462,7 +261462,32 @@ Effects          :
 #1 (id=1342188)  : Summon Credit Creature (90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 265919 | Target: Self (1)
 
-Name             : Venomcursed Critical Strike (id=1317036) [Passive] 
+Name             : Venomcursed Ascendance (id=1317581) 
+Hotfixed         : NEW SPELL
+School           : Nature
+Spell Type       : None
+Duration         : 12 seconds
+Labels           : 292
+                 : 3959: Item Effects
+Triggered By     : Venomcursed Ascendance (1317582)
+Attributes       : Aura Points On Client (268), Periodic Refresh Extends Duration (436)
+Effects          :
+#1 (id=1350712)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.66 | Rating: Crit | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#2 (id=1350713)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#3 (id=1350714)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#4 (id=1350715)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
+Hotfixed         : NEW EFFECT
+Description      : $@spelldesc1317582
+Tooltip          : $?$W1>0[Critical Strike increased by $w1. Haste, Mastery, and Versatility decreased by $w2.]?$W2>0[Haste increased by $w2. Critical Strike, Mastery, and Versatility decreased by $w1.]?$W3>0[Mastery increased by $w3. Critical Strike, Haste, and Versatility decreased by $w1.]?$W4>0[Versatility increased by $w4. Critical Strike, Haste, and Mastery decreased by $w1.][]
+
+Name             : Venomcursed Ascendance (id=1317582) [Passive] 
 Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
@@ -261473,11 +261498,11 @@ Real PPM         : 2
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
-#1 (id=1350099)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 124.7005 (coefficient=0.951328) | Trigger Spell: 1307910 | Target: Self (1)
+#1 (id=1350716)  : Apply Aura (6) | Proc Trigger Spell (42): Venomcursed Ascendance | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: 130.8133 (coefficient=0.997962) | Trigger Spell: 1317581 | Target: Self (1)
 Hotfixed         : NEW EFFECT
-#2 (id=1350100)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: -20.78347 (coefficient=-0.158555) | Target: Self (1)
+#2 (id=1350717)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
+                   Base Value: 0 | Scaled Value: -22.00592 (coefficient=-0.167881) | Target: Self (1)
 Hotfixed         : NEW EFFECT
-Description      : Your spells and abilities have a chance to increase your Critical Strike by $s1, but reduce your other secondary stats by $s2 for $1307910d.
+Description      : Your spells and abilities have a chance to increase a random secondary stat by $s1 but reduce your other secondary stats by $s2 for $1317581d.
 
