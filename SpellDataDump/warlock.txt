@@ -9885,10 +9885,11 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1021683)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
+#1 (id=1021683)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Shadowburn (17877), Conflagrate (17962)
                    Family Flags: 7, 55
+Hotfixed         : Sub Type (108 -> 107)
 Description      : Conflagrate and Shadowburn have a $s1% chance to critical strike and their damage is increased by your critical strike chance.
 
 Name             : Ritual of Ruin (id=387156) [Spell Family (5), Passive] 
@@ -12988,6 +12989,7 @@ Effects          :
 Description      : Shadow damage dealt by your spells and abilities is increased by $s3% and your Shadow spells gain $s1% more critical strike chance from all sources.
 
 Name             : Blackened Soul (id=440043) [Spell Family (5), Passive, Hidden] 
+Hotfixed         : Proc Flags 1 (0 -> 331776), Proc Flags 2 (4 -> 0)
 Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
@@ -12996,7 +12998,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Cast Successful
+Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Suppress Caster Procs (112)
 Effects          :
 #1 (id=1133702)  : Apply Aura (6) | Dummy (4)
@@ -16779,7 +16781,8 @@ Family Flags     : 120
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1275190)  : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.96 | Radius: 8 yards | Target: Enemies in Cone to Targeted Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.96 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
+Hotfixed         : Target 1 (104 -> 18), Target 2 (0 -> 16)
 #2 (id=1275242)  : None (0)
                    Base Value: 8 | Scaled Value: 8
 Description      : Cleaves the area in front of the caster, inflicting $s1 Shadowflame damage. Damage reduced beyond $s2 targets.
