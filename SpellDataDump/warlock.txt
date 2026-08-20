@@ -12989,7 +12989,7 @@ Effects          :
 Description      : Shadow damage dealt by your spells and abilities is increased by $s3% and your Shadow spells gain $s1% more critical strike chance from all sources.
 
 Name             : Blackened Soul (id=440043) [Spell Family (5), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (0 -> 331776), Proc Flags 2 (4 -> 0)
+Hotfixed         : Proc Flags 1 (331776 -> 69632)
 Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
@@ -12998,7 +12998,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
+Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Suppress Caster Procs (112)
 Effects          :
 #1 (id=1133702)  : Apply Aura (6) | Dummy (4)
