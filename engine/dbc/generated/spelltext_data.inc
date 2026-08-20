@@ -1,4 +1,4 @@
-// Spell text, wow build 12.1.0.69382
+// Spell text, wow build 12.1.0.69404
 static constexpr std::array<spelltext_data_t, 29245> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -46,7 +46,7 @@ static constexpr std::array<spelltext_data_t, 29245> __spelltext_data { {
   {     702, "Increases the time between an enemy's attacks by $s1% for $d.$?s103112[\r\n\r\n|CFFE55BB0Soulburn: Your Curse of Weakness will affect all enemies in a $104222A yard radius around your target.|R][]\r\n\r\n|cFF8282FFCurses: A warlock can only have one Curse active per target.|r", "Time between attacks increased by $w1%. $?e1[Chance to critically strike reduced by $w2%.][]", 0 },
   {     703, "Garrote the enemy, causing $o1 Bleed damage over $d.$?a196861[ Silences the target for $1330d when used from Stealth.][]\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", "Suffering $w1 damage every $t1 seconds.", 0 },
   {     710, "Banishes an enemy Demon, Aberration$?s386651[, Undead][], or Elemental, preventing any action for $d. Limit 1. Casting Banish again on the target will cancel the effect.", "Invulnerable, but unable to act.", 0 },
-  {     740, "Heals all allies within $a2 yards for $<healing> over $d.$?s197721[ Extends the duration of all your heal over time effects by $s6 sec every $t1 sec.][] Healing decreased beyond $s3 targets.\r\n\r\nRoots form around you while channeling, absorbing up to $s6% of your health in damage and preventing knockbacks.", "Absorbing $w5 damage and protected from knockbacks.", 0 },
+  {     740, "Heals all allies within $a2 yards for $<healing> over $d.$?s197721[ Extends the duration of all your heal over time effects by $197721s1 sec every $t1 sec.][] Healing decreased beyond $s3 targets.\r\n\r\nRoots form around you while channeling, absorbing up to $s6% of your health in damage and preventing knockbacks.", "Absorbing $w5 damage and protected from knockbacks.", 0 },
   {     768, "Shapeshift into Cat Form, increasing auto-attack damage by $s4%, movement speed by $113636s1%, granting protection from Polymorph effects, and reducing falling damage.\r\n\r\nThe act of shapeshifting frees you from movement impairing effects.", "Autoattack damage increased by $w4%.\r\nImmune to Polymorph effects.\r\nMovement speed increased by $113636s1% and falling damage reduced.", "Shapeshift" },
   {     772, "Wounds the target, causing $s1 Physical damage instantly and an additional $388539o1 Bleed damage over $388539d.", "Bleeding for $w2 damage every $t2 sec.", 0 },
   {     774, "Heals the target for $o1 over $d.$?s155675[\r\n\r\nYou can apply Rejuvenation twice to the same target.][]$?s33891[\r\n\r\n|C0033AA11Tree of Life: Healing increased by $5420s5% and Mana cost reduced by $5420s4%.|R][]", "Healing $w1 every $t1 sec.", 0 },
@@ -29247,21 +29247,15 @@ static constexpr std::array<spelltext_data_t, 29245> __spelltext_data { {
   { 1317036, "Your spells and abilities have a chance to increase your Critical Strike by $s1, but reduce your other secondary stats by $s2 for $1307910d.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.1.0.69382
-static constexpr std::array<hotfix::client_hotfix_entry_t, 10> __spelltext_hotfix_data { {
-  {   17877,  0, "Blasts a target for $s1 Shadowflame damage. Only usable on enemies that have less than $s4% health.\r\n\r\n|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and removes its cooldown if the target dies within $d.|r", "Blasts a target for $s1 Shadowflame damage. Only usable on enemies that have less than $s4% health.\r\n\r\n|cFFFFFFFFRestores ${$245731s1/10} Soul Shard and removes its cooldown if the target dies within $1311913d.|r" },
-  { 1286592,  0, "Collect 10 Adventurer Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Adventurer Mistcrests." },
-  { 1286602,  0, "Collect 10 Champion Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Champion Mistcrests." },
-  { 1286604,  0, "Collect 10 Hero Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Hero Mistcrests." },
-  { 1286605,  0, "Collect 10 Veteran Mistcrests. These Crests ignore the seasonal cap.", "Collect 10 Veteran Mistcrests." },
-  { 1289168,  0, "Applying X stacks of Ula'tek's Gift to a target causes Loa to intervene, expunging the Gift dealing it's remaining damage instantly to the target before being removed while also triggering your corrosive effects at 200% value regardless of cooldown.\r\n\r\n\r\n\r\nDeal all remaining Ula'tek's Gift damage to the afflicted target.", "$@spelldesc1291581" },
-  { 1295803,  1, "$pri increased by $w1% and Tertiary stats increased by $s3%.", "$pri increased by $w1% and Tertiary stats increased by $w3%." },
+// spelltext hotfix entries, wow build 12.1.0.69404
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
+  {     740,  0, "Heals all allies within $a2 yards for $<healing> over $d.$?s197721[ Extends the duration of all your heal over time effects by $s6 sec every $t1 sec.][] Healing decreased beyond $s3 targets.\r\n\r\nRoots form around you while channeling, absorbing up to $s6% of your health in damage and preventing knockbacks.", "Heals all allies within $a2 yards for $<healing> over $d.$?s197721[ Extends the duration of all your heal over time effects by $197721s1 sec every $t1 sec.][] Healing decreased beyond $s3 targets.\r\n\r\nRoots form around you while channeling, absorbing up to $s6% of your health in damage and preventing knockbacks." },
   { 1303407,  0, "Place a Hearty Amani Cornucopia for all players to enjoy!\r\n\r\n$@spelldesc1232065\r\n\r\n$@spellicon457049 $@spellname1232078\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232078 gaining $1219179s7 Stamina and $1219179s4 of your highest secondary stat for $462209d.\r\n\r\nThis aura persists through death.", "Place a Hearty Amani Cornucopia for all players to enjoy!\r\n\r\n$@spelldesc1232065\r\n\r\n$@spellicon457049 $@spellname1232078\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232078 gaining ${$1219179s7*1.1} Stamina and ${$1219179s4*1.1} of your highest secondary stat for $462209d.\r\n\r\nThis aura persists through death." },
   { 1303408,  0, "Place a Hearty Loa's Gathering for all players to enjoy!\r\n\r\n$@spelldesc1232065\r\n\r\n$@spellicon457049 $@spellname1232078\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232078 gaining $1219179s7 Stamina and $1219179s4 of your highest secondary stat for $462209d.\r\n\r\nThis aura persists through death.", "Place a Hearty Loa's Gathering for all players to enjoy!\r\n\r\n$@spelldesc1232065\r\n\r\n$@spellicon457049 $@spellname1232078\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232078 gaining ${$1219179s7*1.1} Stamina and ${$1219179s4*1.1} of your highest secondary stat for $462209d.\r\n\r\nThis aura persists through death." },
   { 1303409,  0, "Place a Hearty Feast of Knowledge for all players to enjoy!\r\n\r\n$@spelldesc1232065\r\n\r\n$@spellicon457049 $@spellname1232078\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232078 gaining $1219179s7 Stamina and $1219179s4 of your highest secondary stat for $462209d.\r\n\r\nThis aura persists through death.", "Place a Hearty Feast of Knowledge for all players to enjoy!\r\n\r\n$@spelldesc1232065\r\n\r\n$@spellicon457049 $@spellname1232078\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232078 gaining ${$1219179s7*1.1} Stamina and ${$1219179s4*1.1} of your highest secondary stat for $462209d.\r\n\r\nThis aura persists through death." },
 } };
 
-// Spell description variables, wow build 12.1.0.69382
+// Spell description variables, wow build 12.1.0.69404
 static constexpr std::array<spelldesc_vars_data_t, 736> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -30001,7 +29995,7 @@ static constexpr std::array<spelldesc_vars_data_t, 736> __spelldesc_vars_data { 
   { 1309793, "$base=${10}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.1.0.69382
+// spelldesc_vars hotfix entries, wow build 12.1.0.69404
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
