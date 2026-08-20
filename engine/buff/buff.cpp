@@ -727,11 +727,19 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, std::string_view
   // If there's no overridden proc chance (%), setup any potential custom RPPM-affecting attribute
   set_rppm( RPPM_NONE, -1, -1 );
 
+  // TODO: refactor refresh behavior parsing to consolidate calls across different methods like set_period and eliminate
+  // need to manually manipulate refresh_behavior_overridden
   if ( s_data->flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
   {
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
     // Reset this after parsing the flag since the `set_refresh_behavior` call will set `refresh_behavior_overridden` to
     // true, which we don't want in this case.
+    refresh_behavior_overridden = false;
+  }
+  // TODO: What happens if both SX_REFRESH_EXTENDS_DURATION and SX_AURA_DOES_NOT_REFRESH are set?
+  else if ( s_data->flags( spell_attribute::SX_AURA_DOES_NOT_REFRESH ) )
+  {
+    set_refresh_behavior( buff_refresh_behavior::DISABLED );
     refresh_behavior_overridden = false;
   }
 

@@ -959,6 +959,7 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, std::
   { 449, "Reagent Consumes Charges"                                              },
   { 451, "Hide Passive From Tooltip"                                             },
   { 468, "Private Aura"                                                          },
+  { SX_AURA_DOES_NOT_REFRESH, "Aura Does Not Refresh"                            },  // 489
   { SX_ASYNCHRONOUS_STACKING_AURA, "Asynchronous Aura"                           },  // 490
   { SX_IMPORTANT_SPELL, "Important Spell"                                        },  // 491
   { SX_IS_EXTERNAL_DEFENSIVE, "External Defensive"                               },  // 499

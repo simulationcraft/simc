@@ -779,7 +779,6 @@ namespace warlock
                                    ->set_default_value_from_effect( 1 );
 
     buffs.dominion_of_argus = make_buff( this, "dominion_of_argus", talents.dominion_of_argus_1_buff )
-                                  ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
                                   ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur ) {
                                     if ( cur == b->max_stack() )
                                     {

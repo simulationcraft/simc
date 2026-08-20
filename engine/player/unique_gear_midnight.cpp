@@ -1280,8 +1280,7 @@ void adorned_fang( special_effect_t& effect )
 
   auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
   auto buff        = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1296884 ) )
-                         ->add_stat_from_effect_type( A_MOD_RATING, stat_amount )
-                         ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+                         ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
 
   // skip setup if callback has been created by already having another copy of the Embellishment
   if ( find_special_effect( effect.player, effect.trigger()->id() ) )
@@ -2402,8 +2401,7 @@ void void_execution_mandate( special_effect_t& effect )
   };
 
   auto crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1263357 ) )
-                     ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) )
-                     ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+                     ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
 
   auto haste_buff = create_buff<stat_buff_t>( effect.player, effect.driver() )
                       ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 3 ).average( effect ) )
@@ -5036,11 +5034,9 @@ struct rune_of_echoes_debuff_t : public buff_t
   double accumulator;
   action_t* echo;
 
-  rune_of_echoes_debuff_t( actor_pair_t pair, std::string_view n, const spell_data_t* s,
-                           action_t* d )
+  rune_of_echoes_debuff_t( actor_pair_t pair, std::string_view n, const spell_data_t* s, action_t* d )
     : buff_t( pair, n, s ), accumulator( 0 ), echo( d )
-  {
-  }
+  {}
 
   void reset() override
   {
