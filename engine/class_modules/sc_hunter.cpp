@@ -5973,12 +5973,8 @@ struct rapid_fire_t: public hunter_ranged_attack_t
 
     if ( aspect_of_the_hydra && hydra_target )
     {
-      // 2026-08-14: Hydra Rapid Fire only triggers on every other channel tick, starting with the first.
-      if ( !p()->bugs || d->current_tick % 2 == 0 )
-      {
-        aspect_of_the_hydra->channel = this;
-        aspect_of_the_hydra->execute_on_target( hydra_target );
-      }
+      aspect_of_the_hydra->channel = this;
+      aspect_of_the_hydra->execute_on_target( hydra_target );
     }
   }
 
