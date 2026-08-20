@@ -2944,7 +2944,8 @@ public:
       trigger_maelstrom_gain( ab::execute_state );
     }
 
-    if ( p()->talent.flurry.ok() && this->execute_state->result == RESULT_CRIT )
+    if ( p()->talent.flurry.ok() && this->hit_any_target &&
+      this->execute_state->result == RESULT_CRIT )
     {
       p()->buff.flurry->trigger( p()->buff.flurry->max_stack() );
     }
@@ -2959,7 +2960,10 @@ public:
       p()->buff.ancestral_swiftness->decrement();
     }
 
-    this->p()->consume_maelstrom_weapon( this->execute_state, mw_consumed_stacks );
+    if ( this->hit_any_target )
+    {
+      this->p()->consume_maelstrom_weapon( this->execute_state, mw_consumed_stacks );
+    }
   }
 
   void schedule_execute( action_state_t* execute_state = nullptr ) override
@@ -3094,7 +3098,7 @@ public:
     base_t::impact( state );
 
     // Bail out early if the result is a miss/dodge/parry/ms
-    if ( !result_is_hit( state->result ) )
+    if ( !hit_any_target || !result_is_hit( state->result ) )
       return;
 
     p()->trigger_windfury_weapon( state );
@@ -5921,9 +5925,15 @@ struct thunderstrike_ward_t : public weapon_imbue_t
 
 struct crash_lightning_t : public shaman_attack_t
 {
+  timespan_t precombat_action = 0_ms;
+
   crash_lightning_t( shaman_t* player, util::string_view options_str )
-    : shaman_attack_t( "crash_lightning", player, player->talent.crash_lightning )
+    : shaman_attack_t( "crash_lightning", player, player->talent.crash_lightning ),
+      precombat_action( 0_ms )
   {
+    add_option( opt_timespan( "crl_precombat_time", precombat_action,
+      1_ms, player->buff.crash_lightning->buff_duration() ) );
+
     parse_options( options_str );
 
     aoe     = -1;
@@ -5933,6 +5943,31 @@ struct crash_lightning_t : public shaman_attack_t
     ap_type = attack_power_type::WEAPON_BOTH;
 
     player->crash_lightning.emplace_back( this );
+
+    if ( precombat_action > 0_ms )
+    {
+      harmful = false;
+    }
+  }
+
+  void manage_precombat_state()
+  {
+    if ( sim->debug )
+    {
+      sim->out_debug.print( "Player '{}' precombat crash_lightning execute, time={}",
+        player->name(), precombat_action );
+    }
+
+    if ( player->readying )
+    {
+      auto delayed_ready = gcd() - precombat_action;
+
+      if ( delayed_ready > 0_ms )
+      {
+        event_t::cancel( player->readying );
+        player->schedule_ready( delayed_ready );
+      }
+    }
   }
 
   void init() override
@@ -5941,6 +5976,21 @@ struct crash_lightning_t : public shaman_attack_t
 
     add_child( p()->action.crash_lightning_aoe );
     add_child( p()->action.crash_lightning_unleashed );
+  }
+
+  std::vector<player_t*>& target_list() const override
+  {
+    if ( precombat_action > 0_ms )
+    {
+      target_cache.list.clear();
+      target_cache.is_valid = false;
+
+      return target_cache.list;
+    }
+    else
+    {
+      return shaman_attack_t::target_list();
+    }
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override
@@ -6004,25 +6054,53 @@ struct crash_lightning_t : public shaman_attack_t
     return m;
   }
 
+  bool usable_precombat() const override
+  {
+    if ( precombat_action > 0_ms )
+    {
+      return true;
+    }
+
+    return shaman_attack_t::usable_precombat();
+  }
+
+  timespan_t cooldown_base_duration( const cooldown_t& cd ) const override
+  {
+    auto total = cd.duration;
+
+    if ( precombat_action > 0_ms )
+    {
+      total -= precombat_action / ( recharge_multiplier( cd ) * recharge_rate_multiplier( cd ) );
+    }
+
+    return total;
+  }
+
   void execute() override
   {
     shaman_attack_t::execute();
 
-    if ( result_is_hit( execute_state->result ) )
+    if ( precombat_action > 0_ms )
     {
-      p()->buff.crash_lightning->trigger();
-
-      if ( p()->talent.converging_storms->ok() )
-      {
-        p()->buff.converging_storms->trigger( num_targets_hit );
-      }
+      p()->buff.crash_lightning->set_proc_callbacks( false );
     }
 
-    p()->buff.tww2_enh_4pc->decrement( p()->buff.tww2_enh_4pc_damage->check() );
-    p()->buff.tww2_enh_4pc_damage->expire();
-    if ( p()->buff.tww2_enh_4pc->check() )
+    p()->buff.crash_lightning->trigger( p()->buff.crash_lightning->buff_duration() - precombat_action );
+
+    if ( precombat_action > 0_ms )
     {
-      p()->buff.tww2_enh_4pc_damage->trigger( p()->buff.tww2_enh_4pc->check() );
+      manage_precombat_state();
+      p()->buff.crash_lightning->set_proc_callbacks( false );
+    }
+
+    if ( !hit_any_target || !result_is_hit( execute_state->result ) )
+    {
+      return;
+    }
+
+    if ( p()->talent.converging_storms->ok() )
+    {
+      p()->buff.converging_storms->trigger( num_targets_hit );
     }
 
     if ( p()->buff.doom_winds->up() || p()->buff.ascendance->up() )
