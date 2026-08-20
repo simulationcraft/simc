@@ -5852,6 +5852,7 @@ struct windfury_weapon_t : public weapon_imbue_t
   {
     imbue = WINDFURY_IMBUE;
     imbue_buff = player->buff.windfury_weapon;
+    callbacks = may_crit = may_miss = may_dodge = may_parry = false;
 
     if ( slot == SLOT_MAIN_HAND )
     {
@@ -5882,6 +5883,7 @@ struct flametongue_weapon_t : public weapon_imbue_t
   {
     imbue = FLAMETONGUE_IMBUE;
     imbue_buff = player->buff.flametongue_weapon;
+    callbacks = may_crit = may_miss = may_dodge = may_parry = false;
 
     if ( slot == SLOT_MAIN_HAND || slot == SLOT_OFF_HAND )
     {
@@ -6201,7 +6203,7 @@ struct lightning_shield_t : public shaman_spell_t
     shaman_spell_t( "lightning_shield", player, player->find_class_spell( "Lightning Shield" ) )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful = callbacks = may_crit = may_miss = may_dodge = may_parry = false;
   }
 
   void execute() override
