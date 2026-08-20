@@ -18346,6 +18346,7 @@ Description      : $@spelldesc1248704
 Tooltip          : Rising Sun Kick's critical strike chance is increased by $w1%.
 
 Name             : Skyfire Heel (id=1248712) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -18353,7 +18354,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Attributes       : Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
+Attributes       : Can't Crit (93), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1251829)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
