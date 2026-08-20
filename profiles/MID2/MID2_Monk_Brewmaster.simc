@@ -1,11 +1,12 @@
-monk="MID1_Monk_Brewmaster"
+monk="MID2_Monk_Brewmaster"
 source=default
 spec=brewmaster
 level=90
 race=tauren
 role=tank
 position=front
-talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZbzYGzM2mxGmZAAAAAAAYZBjYmBmhBzYMzMzwsMmZMzywymttxMmFAAYZWmWmtZWGAAIAzwGYmBMNGAAwA
+talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAgZbzYGzMWmxGmZMAAAAAAALLYmwMwMM2MDmZmZY2GzMmZBLb22GzYWAAglZZaZ2mZZAAgAMDbgZGw0YADAYA
+omnium_talents=136822:1/136819:1/136817:1/136820:1/136814:1
 
 # Default consumables
 potion=draught_of_rampant_abandon_2
@@ -94,32 +95,31 @@ actions.shado_pan+=/blackout_kick
 actions.shado_pan+=/tiger_palm,if=energy>65-energy.regen
 actions.shado_pan+=/expel_harm
 
-head=fearsome_visage_of_radens_chosen,id=250015,bonus_id=1808/12806/13575/13575/13575,gem_id=240983,enchant_id=7991
-neck=masterwork_sindorei_amulet,id=240950,bonus_id=8791/8960/12066/12214/13454/13622/13667/9627,gem_id=240914,crafted_stats=32/40
-shoulders=aurastones_of_radens_chosen,id=250013,bonus_id=12806/13574/13574/13574,enchant_id=7973
-back=imperators_banner,id=249335,bonus_id=12806/13577
-chest=battle_garb_of_radens_chosen,id=250018,bonus_id=12806/13575/13575/13575,enchant_id=7987
-wrists=strikeguards_of_radens_chosen,id=250011,bonus_id=1808/12806,gem_id=240914
-hands=thunderfists_of_radens_chosen,id=250016,bonus_id=12806/13574/13574/13574
-waist=snapvine_cinch,id=251082,bonus_id=1808/12806/13577,gem_id=240914
-legs=shifting_stalker_hide_pants,id=151314,bonus_id=12806/13577,enchant_id=8163
-feet=footpads_of_seeping_dread,id=151317,bonus_id=12806/13577,enchant_id=8019
-finger1=signet_of_the_starved_beast,id=249336,bonus_id=12806/13577/13668,gem_id=240914,enchant_id=7967
-finger2=loa_worshipers_band,id=251513,bonus_id=8960/8960/8960/12066/12214/12214/13622/13667/9627,gem_id=240914,enchant_id=7967
-trinket1=gaze_of_the_alnseer,id=249343,bonus_id=12806/13577
-trinket2=radiant_plume,id=249806,bonus_id=12806/13577
-main_hand=inescapable_reach,id=249302,bonus_id=12806/13577,enchant_id=8039
+head=monkey_kings_unyielding_visage,id=271519,bonus_id=10835/13847/13848,gem_id=240983,enchant_id=7959,redirected_base_stats=271875
+neck=aqirbane_reliquary,id=268265,bonus_id=10835/13708/13848,gem_id=240914/240914,crafted_stats=32/40
+shoulders=tassels_of_the_monkey_king,id=271517,bonus_id=12854/13335,enchant_id=8031,redirected_base_stats=273774
+back=silken_voodoo_drape,id=268253,bonus_id=13848
+chest=battle_gi_of_the_monkey_king,id=271522,bonus_id=12854/13335,enchant_id=7987,redirected_base_stats=251226
+wrists=silvermoon_agents_deflectors,id=244576,bonus_id=8795/10835/13454/13751/13836/12497,gem_id=240914
+hands=monkey_kings_fighting_fists,id=271520,bonus_id=12854/13335,redirected_base_stats=193758
+waist=sash_of_the_forlorn_vessel,id=268256,bonus_id=10835/13848,gem_id=240914
+legs=pantaloons_of_the_monkey_king,id=271518,bonus_id=13848,enchant_id=8159,redirected_base_stats=268225
+feet=goldfeather_boots,id=159304,bonus_id=12854/13440,enchant_id=7993
+finger1=pilfered_precious_band,id=251148,bonus_id=10835/12854/13440,gem_id=240914,enchant_id=7967
+finger2=loa_worshipers_band,id=251513,bonus_id=13751/13836/12497,gem_id=240914,enchant_id=7967
+trinket1=zuljins_guillotine_technique,id=270173,bonus_id=13335/13848
+trinket2=font_of_venomous_rage,id=270168,bonus_id=13335/13848
+main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13846/13848,enchant_id=8039
 
 # Gear Summary
-# gear_ilvl=288.47
-# gear_agility=1249
-# gear_stamina=22939
-# gear_crit_rating=1075
-# gear_haste_rating=231
-# gear_mastery_rating=718
-# gear_versatility_rating=468
-# gear_speed_rating=98
-# gear_armor=876
-# gear_bonus_armor=27
-# set_bonus=midnight_season_1_2pc=1
-# set_bonus=midnight_season_1_4pc=1
+# gear_ilvl=338.93
+# gear_agility=1927
+# gear_stamina=40875
+# gear_crit_rating=1226
+# gear_haste_rating=375
+# gear_mastery_rating=929
+# gear_versatility_rating=687
+# gear_leech_rating=227
+# gear_armor=1203
+# set_bonus=midnight_season_2_2pc=1
+# set_bonus=midnight_season_2_4pc=1
