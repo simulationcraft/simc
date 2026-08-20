@@ -8726,8 +8726,7 @@ struct dark_transformation_t : public death_knight_spell_t
     if ( p->talent.unholy.blightfall.ok() )
       set_replacement_action( new blightfall_t( "blightfall", p, options_str ), p->buffs.blightfall );
 
-    if ( !p->talent.unholy.blightfall.ok() )
-      trigger_gcd = 0_ms;  // in data as 1.5s, only triggers this gcd if blightfall is talented.
+    trigger_gcd = 0_ms;  // in data as 1.5s, only triggers a shared gcd with blightfall so this shouldnt apply.
   }
 
   void execute() override
