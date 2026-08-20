@@ -21,7 +21,7 @@ std::string default_potion( const monk_t* player )
 std::string default_flask( const monk_t* player )
 {
   if ( player->true_level >= 90 )
-    return "flask_of_the_magisters_2";
+    return "flask_of_thalassian_resistance_2";
   return "disabled";
 }
 
@@ -70,7 +70,7 @@ void default_apl( monk_t* player )
   moh->add_action( "celestial_brew,if=buff.aspect_of_harmony_spender.up&!buff.empty_barrel.up" );
   moh->add_action( "keg_smash,if=buff.aspect_of_harmony_spender.up&buff.empty_barrel.up" );
   moh->add_action( "blackout_kick,if=talent.blackout_combo.enabled&!buff.blackout_combo.up" );
-  moh->add_action( "celestial_brew,if=!(apex.3&buff.empty_barrel.up)&buff.aspect_of_harmony_accumulator.value>0.3*health.max&cooldown.celestial_brew.charges_fractional>1.9" );
+  moh->add_action( "celestial_brew,if=!(apex.3&buff.empty_barrel.up)&buff.aspect_of_harmony_accumulator.value>0.95*health.max&cooldown.celestial_brew.charges_fractional>1.9" );
   moh->add_action( "celestial_brew,if=!(apex.3&buff.empty_barrel.up)&target.time_to_die<15&buff.aspect_of_harmony_accumulator.value>0.2*health.max" );
   moh->add_action( "purifying_brew,if=!(apex.1&buff.empty_barrel.up)" );
   moh->add_action( "fortifying_brew,if=!(apex.3&buff.empty_barrel.up)" );
@@ -79,37 +79,37 @@ void default_apl( monk_t* player )
   moh->add_action( "tiger_palm,if=buff.blackout_combo.up&cooldown.blackout_kick.remains<1.3" );
   moh->add_action( "exploding_keg,if=cooldown.keg_smash.charges_fractional<1" );
   moh->add_action( "empty_the_cellar,if=cooldown.celestial_brew.remains>15" );
-  moh->add_action( "breath_of_fire,if=cooldown.blackout_kick.remains>1.5&!buff.empty_barrel.up&cooldown.keg_smash.charges<1+talent.stormstouts_last_keg.enabled" );
+  moh->add_action( "breath_of_fire,if=cooldown.blackout_kick.remains>1.5&buff.blackout_combo.up" );
   moh->add_action( "tiger_palm,if=buff.blackout_combo.up" );
-  moh->add_action( "keg_smash,if=talent.scalding_brew.enabled" );
-  moh->add_action( "keg_smash,if=buff.empty_barrel.up" );
-  moh->add_action( "keg_smash,if=cooldown.keg_smash.charges=1+talent.stormstouts_last_keg.enabled" );
   moh->add_action( "breath_of_fire" );
+  moh->add_action( "keg_smash" );
   moh->add_action( "empty_the_cellar" );
   moh->add_action( "rushing_jade_wind" );
-  moh->add_action( "keg_smash" );
+  moh->add_action( "celestial_brew,if=!(apex.3&buff.empty_barrel.up)" );
   moh->add_action( "blackout_kick" );
   moh->add_action( "tiger_palm,if=energy>50-energy.regen*2" );
   moh->add_action( "expel_harm" );
 
   // Shado-Pan
-  spm->add_action( "black_ox_brew,if=!(apex.1&buff.empty_barrel.up)&cooldown.celestial_brew.charges_fractional<0.5" );
   spm->add_action( "breath_of_fire,if=talent.salsalabims_strength.enabled&buff.invoke_niuzao_the_black_ox.up" );
   spm->add_action( "keg_smash,if=talent.salsalabims_strength.enabled&buff.invoke_niuzao_the_black_ox.up" );
+  spm->add_action( "purifying_brew,if=!(apex.1&buff.empty_barrel.up)&buff.invoke_niuzao_the_black_ox.up" );
+  spm->add_action( "black_ox_brew,if=!(apex.1&buff.empty_barrel.up)&cooldown.celestial_brew.charges_fractional<0.25&buff.invoke_niuzao_the_black_ox.up" );
+  spm->add_action( "celestial_brew,if=!(apex.3&buff.empty_barrel.up)&buff.invoke_niuzao_the_black_ox.up" );
+  spm->add_action( "exploding_keg,if=buff.invoke_niuzao_the_black_ox.up" );
+  spm->add_action( "fortifying_brew,if=!(apex.3&buff.empty_barrel.up)&buff.invoke_niuzao_the_black_ox.up" );
   spm->add_action( "blackout_kick,if=talent.blackout_combo.enabled&!buff.blackout_combo.up" );
   spm->add_action( "purifying_brew,if=!(apex.1&buff.empty_barrel.up)" );
-  spm->add_action( "fortifying_brew,if=!(apex.3&buff.empty_barrel.up)" );
-  spm->add_action( "chi_burst" );
   spm->add_action( "invoke_niuzao" );
   spm->add_action( "tiger_palm,if=buff.blackout_combo.up&cooldown.blackout_kick.remains<1.3" );
-  spm->add_action( "exploding_keg,if=cooldown.keg_smash.charges_fractional<1" );
   spm->add_action( "empty_the_cellar,if=buff.empty_the_cellar.remains<1.5" );
   spm->add_action( "tiger_palm,if=buff.blackout_combo.up" );
-  spm->add_action( "celestial_brew,if=!(apex.3&buff.empty_barrel.up)" );
-  spm->add_action( "breath_of_fire,if=active_enemies>2" );
-  spm->add_action( "keg_smash" );
-  spm->add_action( "empty_the_cellar" );
   spm->add_action( "breath_of_fire" );
+  spm->add_action( "keg_smash" );
+  spm->add_action( "exploding_keg" );
+  spm->add_action( "celestial_brew,if=!(apex.3&buff.empty_barrel.up)" );
+  spm->add_action( "empty_the_cellar" );
+  spm->add_action( "chi_burst" );
   spm->add_action( "rushing_jade_wind" );
   spm->add_action( "blackout_kick" );
   spm->add_action( "tiger_palm,if=energy>65-energy.regen" );
