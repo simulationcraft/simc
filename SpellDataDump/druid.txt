@@ -55,6 +55,7 @@ Description      : Roots the target in place for $d. Damage may cancel the effec
 Tooltip          : Rooted.$?<$w2>0>[ Suffering $w2 Nature damage every $t2 sec.][]
 
 Name             : Tranquility (id=740) [Spell Family (7)] 
+Hotfixed         : Description
 Talent Entry     : Restoration [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
@@ -91,7 +92,7 @@ Effects          :
 #7 (id=1202407)  : Apply Aura (6) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 4339 (Label) | Target: Self (1)
                    Affected Spells (Label): Incarnation (117679)
-Description      : Heals all allies within $a2 yards for $<healing> over $d.$?s197721[ Extends the duration of all your heal over time effects by $s6 sec every $t1 sec.][] Healing decreased beyond $s3 targets.
+Description      : Heals all allies within $a2 yards for $<healing> over $d.$?s197721[ Extends the duration of all your heal over time effects by $197721s1 sec every $t1 sec.][] Healing decreased beyond $s3 targets.
 
 Roots form around you while channeling, absorbing up to $s6% of your health in damage and preventing knockbacks.
 Tooltip          : Absorbing $w5 damage and protected from knockbacks.

@@ -250637,15 +250637,15 @@ Name             : Rune of Unleashed Fire (id=1263002)
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Max Targets      : 1
 Labels           : 6782
 Attributes       : Can't Crit (93)
 Effects          :
 #1 (id=1273548)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 45 yards | Target: Ally in Area (30)
+Hotfixed         : Target 1 (21 -> 30)
 #2 (id=1305384)  : Dummy (3)
                    Base Value: 2051 | Scaled Value: 2051 | Target: Targeted Ally (21)
-#3 (id=1307063)  : Trigger Spell (64): Rune of Lingering
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287665 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279599
 
 Name             : Amani Extract (id=1263074) 
@@ -254178,15 +254178,16 @@ Name             : Rune of Unleashed Fire (id=1286970)
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Max Targets      : 1
 Labels           : 6782
 Attributes       : Can't Crit (93), Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1304141)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 45 yards | Target: Source (22) -> Enemy in Area (15)
+Hotfixed         : Target 1 (6 -> 22), Target 2 (0 -> 15)
 #2 (id=1305382)  : Dummy (3)
-                   Base Value: 977 | Scaled Value: 977 | Target: Targeted Enemy (6)
-#3 (id=1307066)  : Trigger Spell (64): Rune of Lingering
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287663 | Target: Targeted Enemy (6)
+                   Base Value: 977 | Scaled Value: 977 | Radius: 0 - 45 yards | Target: Source (22) -> Enemy in Area (15)
+Hotfixed         : Target 1 (6 -> 22), Target 2 (0 -> 15)
 Description      : $@spelldesc1279599
 
 Name             : Rune of Void-Touched Orbs (desc=Core Rune) (id=1287255) [Hidden] 
@@ -254273,7 +254274,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
 Labels           : 6782
-Triggered By     : Rune of Void-Touched Orbs (1286716), Rune of Unleashed Fire (1286970)
+Triggered By     : Rune of Void-Touched Orbs (1286716)
 Attributes       : Not an Action (92), Do Not Display Range (126), Not an Attack (194), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1305315)  : Apply Aura (6) | Periodic Damage (3): cosmic every 1 seconds | Attributes: Compute Points Only At Cast Time (15)
@@ -254289,7 +254290,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
 Labels           : 6782
-Triggered By     : Rune of Unleashed Fire (1263002), Rune of Void-Touched Orbs (1286721)
+Triggered By     : Rune of Void-Touched Orbs (1286721)
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1305319)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds | Attributes: Compute Points Only At Cast Time (15)
