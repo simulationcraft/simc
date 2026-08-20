@@ -117,15 +117,14 @@ void devourer( player_t* p )
   annihilator_ranged->add_action( "consume,if=buff.soulburst.up" );
   annihilator_ranged->add_action( "void_ray,if=talent.eradicate&active_enemies>1&!buff.eradicate.up" );
   annihilator_ranged->add_action( "collapsing_star,if=active_enemies>1&buff.collapsing_star_stacking.stack>=30" );
-  annihilator_ranged->add_action( "call_action_list,name=reaps,if=!buff.metamorphosis.up&action.reap.souls_consumed>=4&variable.wont_drop_meta" );
+  annihilator_ranged->add_action( "call_action_list,name=reaps,if=active_enemies=1&!buff.metamorphosis.up&action.reap.souls_consumed>=4&variable.wont_drop_meta" );
   annihilator_ranged->add_action( "collapsing_star,if=active_enemies=1" );
-  annihilator_ranged->add_action( "call_action_list,name=reaps,if=active_enemies>1&buff.eradicate.up&action.reap.souls_consumed>=1+3*set_bonus.midnight_season_2_4pc&variable.wont_drop_meta" );
-  annihilator_ranged->add_action( "call_action_list,name=reaps,if=action.reap.souls_consumed>=4" );
+  annihilator_ranged->add_action( "call_action_list,name=reaps,if=active_enemies=1&action.reap.souls_consumed>=4" );
   annihilator_ranged->add_action( "call_action_list,name=reaps,if=fight_remains<=6&action.reap.souls_consumed>=1" );
-  annihilator_ranged->add_action( "call_action_list,name=reaps,if=talent.eradicate&active_enemies>1&buff.eradicate.up&action.reap.souls_consumed>=1+3*set_bonus.midnight_season_2_4pc" );
+  annihilator_ranged->add_action( "call_action_list,name=reaps,if=active_enemies>1&buff.eradicate.up&action.reap.souls_consumed>=4+6*buff.moment_of_craving.up" );
   annihilator_ranged->add_action( "void_ray,if=!buff.eradicate.up|!buff.moment_of_craving.up|!set_bonus.midnight_season_2_4pc" );
   annihilator_ranged->add_action( "call_action_list,name=reaps,if=(!buff.eradicate.up|active_enemies=1)&(buff.voidfall_spending.stack>=3&prev_gcd.1.void_ray|buff.voidfall_spending.react>=3)" );
-  annihilator_ranged->add_action( "call_action_list,name=reaps,if=buff.metamorphosis.up&talent.collapsing_star&buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30&variable.wont_overcap_cstar&void_metamorphosis_base_drain_ps>35&action.reap.souls_consumed>=1+3*set_bonus.midnight_season_2_4pc&variable.wont_drop_meta" );
+  annihilator_ranged->add_action( "call_action_list,name=reaps,if=buff.metamorphosis.up&talent.collapsing_star&buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30&variable.wont_overcap_cstar&void_metamorphosis_base_drain_ps>35&action.reap.souls_consumed>=4&variable.wont_drop_meta" );
   annihilator_ranged->add_action( "soul_immolation,if=active_dot.soul_immolation=0&(!buff.metamorphosis.up|fury<void_metamorphosis_base_drain_ps)" );
   annihilator_ranged->add_action( "devour" );
   annihilator_ranged->add_action( "consume" );
@@ -201,11 +200,10 @@ void devourer( player_t* p )
 
   vsm_meta->add_action( "soul_immolation,if=variable.void_ray_count>=2&active_dot.soul_immolation=0&fury<=gcd.max*(void_metamorphosis_base_drain_ps-6)-6" );
   vsm_meta->add_action( "pick_up_fragment,mode=nearest,type=all,use_off_gcd=1,line_cd=0.35,if=variable.void_ray_count=1&cooldown.void_ray.remains<gcd.max*2&fury<void_metamorphosis_base_drain_ps*cooldown.void_ray.remains" );
-  vsm_meta->add_action( "throw_glaive,if=variable.void_ray_count>=2&fury>void_metamorphosis_base_drain_ps*gcd.max*2&cooldown.void_ray.remains>gcd.max" );
   vsm_meta->add_action( "wait,sec=0.05,if=variable.void_ray_count>=2" );
   vsm_meta->add_action( "vengeful_retreat,use_off_gcd=1,if=buff.voidstep.up" );
   vsm_meta->add_action( "void_ray,if=variable.void_ray_count=0&!talent.eradicate" );
-  vsm_meta->add_action( "eradicate,if=(action.reap.souls_consumed>=10|buff.moment_of_craving.remains<gcd.max|cooldown.void_ray.remains<gcd.max)&!buff.soulburst.up" );
+  vsm_meta->add_action( "eradicate,if=(buff.moment_of_craving.remains<gcd.max|cooldown.void_ray.remains<gcd.max)&!buff.soulburst.up" );
   vsm_meta->add_action( "void_ray,if=talent.eradicate&!buff.eradicate.up" );
   vsm_meta->add_action( "reapers_toll,if=buff.hungering_slash.remains<gcd.max*2" );
   vsm_meta->add_action( "devour,if=buff.soulburst.up" );
@@ -225,9 +223,7 @@ void devourer( player_t* p )
   vsm_out->add_action( "metamorphosis,if=buff.eradicate.up|!talent.eradicate|fight_remains<15" );
   vsm_out->add_action( "the_hunt" );
   vsm_out->add_action( "consume,if=buff.soulburst.up&buff.soulburst.remains<gcd.max" );
-  vsm_out->add_action( "eradicate,if=action.reap.souls_consumed>=10&buff.void_metamorphosis_stack.stack<buff.void_metamorphosis_stack.max_stack-3&!buff.soulburst.up" );
   vsm_out->add_action( "void_ray,if=talent.eradicate&!buff.eradicate.up" );
-  vsm_out->add_action( "consume,if=buff.soulburst.up" );
   vsm_out->add_action( "hungering_slash" );
   vsm_out->add_action( "soul_immolation,if=active_dot.soul_immolation=0" );
   vsm_out->add_action( "reap,if=action.reap.souls_consumed>=4&!buff.soulburst.up" );
