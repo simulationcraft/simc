@@ -1280,7 +1280,8 @@ void adorned_fang( special_effect_t& effect )
 
   auto stat_amount = effect.driver()->effectN( 1 ).average( effect );
   auto buff        = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1296884 ) )
-                         ->add_stat_from_effect_type( A_MOD_RATING, stat_amount );
+                         ->add_stat_from_effect_type( A_MOD_RATING, stat_amount )
+                         ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   // skip setup if callback has been created by already having another copy of the Embellishment
   if ( find_special_effect( effect.player, effect.trigger()->id() ) )
