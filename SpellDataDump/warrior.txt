@@ -7385,7 +7385,7 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Triggered By     : Frenzy (335077)
-Attributes       : Aura Points On Client (268), Asynchronous Buff (490)
+Attributes       : Aura Points On Client (268), Asynchronous Aura (490)
 Effects          :
 #1 (id=831419)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13166,7 +13166,7 @@ Labels           : 16: Class Spells
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered By     : Slayer's Strike (445579)
-Attributes       : Aura Points On Client (268), Asynchronous Buff (490)
+Attributes       : Aura Points On Client (268), Asynchronous Aura (490)
 Effects          :
 #1 (id=1142521)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.33334 | Target: Self (1)
@@ -15897,7 +15897,7 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Triggered By     : Rampaging Berserker (1269308)
-Attributes       : Aura Points On Client (268), Asynchronous Buff (490)
+Attributes       : Aura Points On Client (268), Asynchronous Aura (490)
 Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1281122)  : Apply Aura (6) | Modify Total Stat% (137)
@@ -15963,7 +15963,7 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Triggered By     : Heroic Strike (1269383)
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Aura (490)
 Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1281196)  : Apply Aura (6) | Modify Target Armor% (280)

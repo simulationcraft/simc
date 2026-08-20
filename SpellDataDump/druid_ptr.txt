@@ -21713,7 +21713,7 @@ Labels           : 16: Class Spells
                  : 4082: Meteor Storm (1240262 effect#3)
 Stacks           : 20 maximum
 Proc Chance      : 101%
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Asynchronous Buff (490)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Asynchronous Aura (490)
 Effects          :
 #1 (id=1274051)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -23676,7 +23676,7 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Triggered By     : Druid Restoration 12.1 Class Set 2pc (1296609)
-Attributes       : Asynchronous Buff (490)
+Attributes       : Asynchronous Aura (490)
 Effects          :
 #1 (id=1327783)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)

@@ -5989,7 +5989,7 @@ Stacks           : 10 maximum
 Proc Chance      : 101%
 Affecting Spells : Shaman (137038 effect#3), Elemental Spirits (262624 effect#1)
 Family Flags     : 48
-Attributes       : No Aura Cancel (31), DoT Stacking Rule (103), Do Not Display Range (126), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
+Attributes       : No Aura Cancel (31), DoT Stacking Rule (103), Do Not Display Range (126), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Aura (490)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=335392)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -17660,7 +17660,7 @@ Internal Cooldown: 0.2 seconds
 Stacks           : 20 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Not Shapeshifted (16), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Asynchronous Buff (490)
+Attributes       : Not Shapeshifted (16), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Asynchronous Aura (490)
 Effects          :
 #1 (id=1257552)  : Apply Aura (6) | Proc Trigger Spell (42): Crash Lightning | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 195592 | Target: Self (1)

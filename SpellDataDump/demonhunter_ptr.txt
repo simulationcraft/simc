@@ -13946,7 +13946,7 @@ Labels           : 16: Class Spells
                  : 5312: Sweet Suffering (1244295 effect#1)
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416), Asynchronous Buff (490)
+Attributes       : Can Proc From Procs (122), Allow Class Ability Procs (416), Asynchronous Aura (490)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1224845)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -14459,7 +14459,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Attributes       : DoT Stacking Rule (103), Can Proc From Procs (122), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Asynchronous Buff (490)
+Attributes       : DoT Stacking Rule (103), Can Proc From Procs (122), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Asynchronous Aura (490)
 Effects          :
 #1 (id=1240554)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.4167 | Target: Targeted Enemy (6)
@@ -15901,7 +15901,7 @@ Labels           : 16: Class Spells
                  : 7054: Devourer Demon Hunter (1213636 effect#13)
 Stacks           : 20 maximum
 Proc Chance      : 101%
-Attributes       : No Aura Cancel (31), Not In Spellbook (143), Do Not Log on Learn (355), Asynchronous Buff (490)
+Attributes       : No Aura Cancel (31), Not In Spellbook (143), Do Not Log on Learn (355), Asynchronous Aura (490)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1263799)  : Apply Aura (6) | Dummy (4)
@@ -17607,7 +17607,7 @@ Spell Type       : None
 Duration         : 1 seconds
 Labels           : 16: Class Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Floating Combat Text On Cast (198), Allow Class Ability Procs (416), Unknown (489)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Floating Combat Text On Cast (198), Allow Class Ability Procs (416), Aura Does Not Refresh (489)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1311826)  : Apply Aura (6) | Dummy (4)

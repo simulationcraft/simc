@@ -18150,7 +18150,7 @@ Stacks           : 99 maximum
 Proc Chance      : 101%
 Affecting Spells : Celestial Brew (322507 effect#2), Tear of Morning (337993 effect#2), Tear of Morning (387995 effect#2), Luck of the Draw! (1217990 effects: #1, #2)
 Family Flags     : 42
-Attributes       : Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
+Attributes       : Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Aura (490)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1239912)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds

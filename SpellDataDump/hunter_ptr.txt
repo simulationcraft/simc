@@ -5555,7 +5555,7 @@ Labels           : 16: Class Spells
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Family Flags     : 89
-Attributes       : Is Ability (4), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
+Attributes       : Is Ability (4), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Aura (490)
 Effects          :
 #1 (id=374725)   : Apply Aura (6) | Periodic Energize Power (24): every 2 seconds
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 2 | Target: Self (1)
@@ -5999,7 +5999,7 @@ Stacks           : 20 maximum
 Proc Chance      : 101%
 Affecting Spells : Bloody Claws (385737 effect#1), Hunter Survival 12.1 Class Set 4pc (1296635 effects: #2, #3, #4, #5), Hunter Survival 12.1 Class Set 4pc (1296636 effects: #1, #2)
 Family Flags     : 64
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Asynchronous Buff (490)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Asynchronous Aura (490)
 Effects          :
 #1 (id=483865)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -17322,7 +17322,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Attributes       : Asynchronous Buff (490)
+Attributes       : Asynchronous Aura (490)
 Effects          :
 #1 (id=1259757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 15 | Target: Self (1)
@@ -18097,7 +18097,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Attributes       : Allow Class Ability Procs (416), Asynchronous Buff (490)
+Attributes       : Allow Class Ability Procs (416), Asynchronous Aura (490)
 Effects          :
 #1 (id=1272485)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
@@ -18186,7 +18186,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effects: #1, #4), Small Game Hunter (459802 effect#1), Grenade Juggler (470492 effect#1), Precision Detonation (471369 effect#1), Take Aim (1273129 effect#3), Hunter Marksmanship 12.1 Class Set 2pc (1296633 effects: #1, #2, #3), Lock and Load: Explosive Shot (1300701 effect#1), Unstable Trigger (1301778 effect#1)
 Family Flags     : 1, 63, 121
-Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), DoT Stacking Rule (103), Allow Client Targeting (133), Not On Trivial (182), Do Not Chain To Crowd-Controlled Targets (200), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Unknown (489)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), DoT Stacking Rule (103), Allow Client Targeting (133), Not On Trivial (182), Do Not Chain To Crowd-Controlled Targets (200), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Aura Does Not Refresh (489)
 Effects          :
 #1 (id=1272654)  : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -18474,7 +18474,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 5061
-Attributes       : Allow Class Ability Procs (416), Asynchronous Buff (490)
+Attributes       : Allow Class Ability Procs (416), Asynchronous Aura (490)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1276351)  : Apply Aura (6) | Modify Mastery% (318)
@@ -19797,7 +19797,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Aura (490)
 Effects          :
 #1 (id=1296701)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)

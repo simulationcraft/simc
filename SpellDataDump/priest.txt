@@ -15536,7 +15536,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Attributes       : No Aura Icon (60), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Asynchronous Buff (490)
+Attributes       : No Aura Icon (60), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Asynchronous Aura (490)
 Effects          :
 #1 (id=1243041)  : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 13 | Target: Self (1)
@@ -15554,7 +15554,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Attributes       : No Aura Icon (60), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Asynchronous Buff (490)
+Attributes       : No Aura Icon (60), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Asynchronous Aura (490)
 Effects          :
 #1 (id=1243042)  : Apply Aura (6) | Periodic Energize Power (24): every 0.25 seconds
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 13 | Target: Self (1)

@@ -9505,7 +9505,7 @@ Labels           : 16: Class Spells
 Stacks           : 100 maximum
 Proc Chance      : 101%
 Triggered By     : Feel the Burn (383391)
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Aura (490)
 Effects          :
 #1 (id=1015295)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -12447,7 +12447,7 @@ Labels           : 16: Class Spells
                  : 4117
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Aura (490)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1148339)  : Apply Aura (6) | Modify All Haste% (193)
@@ -12468,7 +12468,7 @@ Labels           : 16: Class Spells
                  : 4117
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Aura (490)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1148348)  : Apply Aura (6) | Modify All Haste% (193)
@@ -14055,7 +14055,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Attributes       : Asynchronous Buff (490)
+Attributes       : Asynchronous Aura (490)
 Effects          :
 #1 (id=1170073)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 1 | Scaled Value: 1 | Stat: Int | Target: Self (1)
@@ -16403,7 +16403,7 @@ Labels           : 16: Class Spells
                  : 7054: Devourer Demon Hunter (1213636 effect#13)
 Stacks           : 20 maximum
 Proc Chance      : 101%
-Attributes       : No Aura Cancel (31), Not In Spellbook (143), Do Not Log on Learn (355), Asynchronous Buff (490)
+Attributes       : No Aura Cancel (31), Not In Spellbook (143), Do Not Log on Learn (355), Asynchronous Aura (490)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1263799)  : Apply Aura (6) | Dummy (4)
@@ -16658,7 +16658,7 @@ Labels           : 16: Class Spells
                  : 5671
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Attributes       : Allow Class Ability Procs (416), Asynchronous Buff (490)
+Attributes       : Allow Class Ability Procs (416), Asynchronous Aura (490)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1265238)  : Apply Aura (6) | Modify Damage Done% (79)
@@ -17048,7 +17048,7 @@ Labels           : 16: Class Spells
                  : 5786: Hand of Frost (1262981 effect#3), Hand of Frost (1262981 effect#4)
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Buff (490)
+Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Asynchronous Aura (490)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1273807)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
