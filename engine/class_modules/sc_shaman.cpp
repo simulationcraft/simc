@@ -1427,9 +1427,6 @@ public:
     buff_t* storm_unleashed;
     buff_t* lively_totems;
 
-    buff_t* tww2_enh_2pc; // Winning Streak!
-    buff_t* tww2_enh_4pc; // Electrostatic Wager (visible buff)
-    buff_t* tww2_enh_4pc_damage; // Electrostatic Wager (hidden damage to CL)
     buff_t* elemental_overflow; // Elemental Overflow
 
     buff_t* mid2_enh_4pc; // Short Circuit
@@ -3089,8 +3086,6 @@ public:
     {
       p()->buff.flurry->decrement();
     }
-
-    p()->buff.tww2_enh_2pc->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -3315,8 +3310,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     }
 
     p()->trigger_earthen_rage( execute_state );
-
-    p()->buff.tww2_enh_2pc->trigger();
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -8777,14 +8770,6 @@ struct doom_winds_damage_t : public shaman_attack_t
     aoe = -1;
     reduced_aoe_targets = 5.0;
   }
-
-  void execute() override
-  {
-    shaman_attack_t::execute();
-
-    p()->buff.tww2_enh_4pc->trigger();
-    p()->buff.tww2_enh_4pc_damage->trigger();
-  }
 };
 
 struct doom_winds_t : public shaman_attack_t
@@ -11767,17 +11752,6 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
     trigger_deeply_rooted_elements( state );
   }
 
-  if ( buff.tww2_enh_2pc->check() &&
-    rng().roll( sets->set( SHAMAN_ENHANCEMENT, TWW2, B2 )->effectN( 1 ).base_value() * 0.001 * stacks ) )
-  {
-    buff.tww2_enh_2pc->expire();
-    if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, TWW2, B4 ) )
-    {
-      buff.doom_winds->extend_duration_or_trigger(
-        sets->set( SHAMAN_ENHANCEMENT, TWW2, B4 )->effectN( 1 ).time_value() );
-    }
-  }
-
   if ( talent.elemental_tempo.ok() && stacks > 0 )
   {
     cooldown.strike->adjust(
@@ -12903,13 +12877,6 @@ void shaman_t::create_buffs()
     } )
     ->set_trigger_spell( talent.storm_unleashed_1 );
 
-  buff.tww2_enh_2pc = make_buff( this, "winning_streak", find_spell( 1218616 ) )
-    ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, TWW2, B2 ) );
-  buff.tww2_enh_4pc = make_buff( this, "electrostatic_wager", find_spell( 1223410 ) )
-    ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, TWW2, B4 ) );
-  buff.tww2_enh_4pc_damage = make_buff( this, "electrostatic_wager_dmg", find_spell( 1223332 ) )
-    ->set_quiet( true )
-    ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, TWW2, B4 ) );
   buff.elemental_overflow = make_buff( this, "elemental_overflow", find_spell( 1239170 ) )
     ->set_chance( sets->has_set_bonus( HERO_TOTEMIC, TWW3, B4 ) || talent.primal_catalyst.ok() ? 1.0 : 0.0 );
   buff.storms_eye = make_buff( this, "storms_eye", find_spell(1239315) )
@@ -13132,8 +13099,7 @@ void shaman_t::init_special_effects()
         return false;
       } );
 
-    parse_player_effects_t::init_special_effects();
-
+  parse_player_effects_t::init_special_effects();
 }
 
 void shaman_t::init_finished()
@@ -13228,8 +13194,6 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
     .build( a );
 
   // Set bonuses
-  eff::source_eff_builder_t( buff.tww2_enh_2pc ).build( a );
-  eff::source_eff_builder_t( buff.tww2_enh_4pc_damage ).build( a );
 
   // Elemental
   eff::source_eff_builder_t( mastery.elemental_overload ).build( a );
