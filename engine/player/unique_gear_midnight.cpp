@@ -4709,94 +4709,74 @@ void rotmires_sporeheart( special_effect_t& effect )
 // 1307922 mast buff
 // 1307928 haste driver
 // 1307927 haste buff
-// 1317582 Ascendace (random stat) driver
-// 1317581 Ascendace (random stat) buff
 void venomcursed( special_effect_t& effect )
 {
-  // The crit version has two drivers with different coeffs, but share the same buff. Each driver can proc
-  // independently, and when triggered will apply the buff with the stat amount based on it's own coeff, including
-  // overwriting existing stat amount if it refreshes a buff triggered by the other driver. The stat amounts are cached
-  // in dbc_proc_callback_t and buffs are created with the values for the first processed driver for html reporting
-  // purposes.
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+    ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
+    ->add_stat_from_effect( 2, effect.driver()->effectN( 2 ).average( effect ) );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 1317582 Ascendace (random stat) driver
+// 1317581 Ascendace (random stat) buff
+void venomcursed_ascendance( special_effect_t& effect )
+{
   struct venomcursed_cb_t : public dbc_proc_callback_t
   {
     stat_buff_t* buff;
     double pos_value;
     double neg_value;
-    bool ascendace;
 
     venomcursed_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
         pos_value( e.driver()->effectN( 1 ).average( e ) ),
-        neg_value( e.driver()->effectN( 2 ).average( e ) ),
-        ascendace( e.spell_id == 1317582 )
+        neg_value( e.driver()->effectN( 2 ).average( e ) )
     {
-      buff = debug_cast<stat_buff_t*>( buff_t::find( e.player, util::tokenize_fn( e.trigger()->name_cstr() ) ) );
-      if ( !buff )
-      {
-        buff = create_buff<stat_buff_t>( e.player, e.trigger() )
-                   ->add_stat_from_effect( 1, pos_value )
-                   ->add_stat_from_effect( 2, neg_value );
-        if ( ascendace )
-        {
-          buff->add_stat_from_effect( 3, neg_value );
-          buff->add_stat_from_effect( 4, neg_value );
-        }
-      }
+      // Because the buff pandemics, we can't use create_all_stat_buffs and must instead utilize a single buff with
+      // hacked execute using update_player_buff_stat and directly stat amount manipulation.
+      buff = create_buff<stat_buff_t>( e.player, e.trigger() )
+        ->add_stat_from_effect( 1, pos_value )
+        ->add_stat_from_effect( 2, neg_value )
+        ->add_stat_from_effect( 3, neg_value )
+        ->add_stat_from_effect( 4, neg_value );
     }
 
-    void ascendance_stat_change( stat_e stat )
+    void ascendance_stat_change( stat_e stat, bool update )
     {
       for ( auto& s : buff->stats )
       {
-        if ( s.stat == stat )
-        {
-          if ( buff->check() )
-            buff->update_player_buff_stat( s, 0 );
-          s.amount = pos_value;
-          if ( buff->check() )
-            buff->update_player_buff_stat( s, 1 );
-        }
-        else
-        {
-          if ( buff->check() )
-            buff->update_player_buff_stat( s, 0 );
-          s.amount = neg_value;
-          if ( buff->check() )
-            buff->update_player_buff_stat( s, 1 );
-        }
+        if ( update )
+          buff->update_player_buff_stat( s, 0 );
+
+        s.amount = s.stat == stat ? pos_value : neg_value;
+
+        if ( update )
+          buff->update_player_buff_stat( s, 1 );
       }
     }
 
     void execute( const spell_data_t*, player_t*, action_state_t* ) override
     {
-      if ( buff->check() && buff->stats.front().amount != pos_value )
-      {
-        if ( listener->sim->debug )
-        {
-          listener->sim->print_debug( "{} replacing {}: {} -> {}", *buff,
-                                      util::stat_type_abbrev( buff->stats.front().stat ), buff->stats.front().amount,
-                                      pos_value );
-        }
+      auto rng_stat = rng().range( buff->stats );
 
-        for ( auto it = buff->stats.begin(); it != buff->stats.end(); ++it )
-        {
-          buff->update_player_buff_stat( *it, 0 );
-          it->amount = it == buff->stats.begin() ? pos_value : neg_value;
-          buff->update_player_buff_stat( *it, 1 );
-        }
+      if ( listener->sim->debug )
+      {
+        listener->sim->print_debug( "{} procs with stat: {}{}", *buff, util::stat_type_abbrev( rng_stat.stat ),
+                                    buff->check() ? " (refreshed)" : "" );
       }
 
-      if ( ascendace )
-      {
-        auto rng_stat = rng().range( secondary_ratings );
-        ascendance_stat_change( rng_stat );
-      }
+      // update stat amounts if the randomly chosen stat is not already positive
+      if ( rng_stat.amount != pos_value )
+        ascendance_stat_change( rng_stat.stat, buff->check() );
+
       buff->trigger();
     }
   };
 
-  new venomcursed_cb_t( effect );
+  // TODO: remove check when driver is hotfixed in
+  if ( effect.driver()->ok() )
+    new venomcursed_cb_t( effect );
 }
 }  // namespace armors
 
@@ -5620,7 +5600,8 @@ void register_special_effects()
   register_special_effect( 1285138, armors::sporecallers_blooming_loop );
   register_special_effect( 1285139, armors::rotmires_sporeheart );
   set_min_version( wowv_t( 12, 1, 0 ) );
-  register_special_effect( { 1307906, 1307923, 1307928, 1317036, 1317582 }, armors::venomcursed );
+  register_special_effect( { 1307906, 1307923, 1307928 }, armors::venomcursed );
+  register_special_effect( 1317582, armors::venomcursed_ascendance );
   reset_version_check();
   // Sets
   register_special_effect( 1281574, sets::voidlight_bindings );
