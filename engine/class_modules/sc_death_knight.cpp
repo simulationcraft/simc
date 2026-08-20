@@ -2880,9 +2880,12 @@ struct death_knight_pet_t : public pet_t
                         ->set_default_value_from_effect_type( A_MOD_CRIT_DAMAGE_MULTIPLIER )
                         ->set_quiet( true );
 
-    transfusion = make_buff( this, "transfusion", dk()->spell.transfusion_buff )
-                      ->set_default_value_from_effect( 1 )
-                      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    transfusion = make_buff( this, "transfusion", dk()->spell.transfusion_buff )->set_default_value_from_effect( 1 );
+
+    if ( dk()->specialization() == DEATH_KNIGHT_BLOOD )
+      transfusion->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    else
+      transfusion->set_max_stack( 1 );
 
     // if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY )
       // transfusion->set_duration( 8_s ); // Transfusion has no duration in data, changing it to 8s manually in 12.1
