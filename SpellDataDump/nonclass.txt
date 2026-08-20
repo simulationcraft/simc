@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69382 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69404 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -250637,15 +250637,15 @@ Name             : Rune of Unleashed Fire (id=1263002)
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Max Targets      : 1
 Labels           : 6782
 Attributes       : Can't Crit (93)
 Effects          :
 #1 (id=1273548)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 45 yards | Target: Ally in Area (30)
+Hotfixed         : Target 1 (21 -> 30)
 #2 (id=1305384)  : Dummy (3)
                    Base Value: 2051 | Scaled Value: 2051 | Target: Targeted Ally (21)
-#3 (id=1307063)  : Trigger Spell (64): Rune of Lingering
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287665 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279599
 
 Name             : Amani Extract (id=1263074) 
@@ -254023,7 +254023,6 @@ Description      : Restores $s1% of your maximum health and mana every second ov
 Tooltip          : Restoring $s1% health and mana every sec.
 
 Name             : Bundle of Adventurer Mistcrests (id=1286592) 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -254036,7 +254035,6 @@ Effects          :
 Description      : Collect 10 Adventurer Mistcrests.
 
 Name             : Satchel of Champion Mistcrests (id=1286602) 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -254049,7 +254047,6 @@ Effects          :
 Description      : Collect 10 Champion Mistcrests.
 
 Name             : Pack of Hero Mistcrests (id=1286604) 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -254062,7 +254059,6 @@ Effects          :
 Description      : Collect 10 Hero Mistcrests.
 
 Name             : Pouch of Veteran Mistcrests (id=1286605) 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -254178,15 +254174,16 @@ Name             : Rune of Unleashed Fire (id=1286970)
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Max Targets      : 1
 Labels           : 6782
 Attributes       : Can't Crit (93), Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1304141)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 45 yards | Target: Source (22) -> Enemy in Area (15)
+Hotfixed         : Target 1 (6 -> 22), Target 2 (0 -> 15)
 #2 (id=1305382)  : Dummy (3)
-                   Base Value: 977 | Scaled Value: 977 | Target: Targeted Enemy (6)
-#3 (id=1307066)  : Trigger Spell (64): Rune of Lingering
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1287663 | Target: Targeted Enemy (6)
+                   Base Value: 977 | Scaled Value: 977 | Radius: 0 - 45 yards | Target: Source (22) -> Enemy in Area (15)
+Hotfixed         : Target 1 (6 -> 22), Target 2 (0 -> 15)
 Description      : $@spelldesc1279599
 
 Name             : Rune of Void-Touched Orbs (desc=Core Rune) (id=1287255) [Hidden] 
@@ -254273,7 +254270,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
 Labels           : 6782
-Triggered By     : Rune of Void-Touched Orbs (1286716), Rune of Unleashed Fire (1286970)
+Triggered By     : Rune of Void-Touched Orbs (1286716)
 Attributes       : Not an Action (92), Do Not Display Range (126), Not an Attack (194), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1305315)  : Apply Aura (6) | Periodic Damage (3): cosmic every 1 seconds | Attributes: Compute Points Only At Cast Time (15)
@@ -254289,7 +254286,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
 Labels           : 6782
-Triggered By     : Rune of Unleashed Fire (1263002), Rune of Void-Touched Orbs (1286721)
+Triggered By     : Rune of Void-Touched Orbs (1286721)
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1305319)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds | Attributes: Compute Points Only At Cast Time (15)
@@ -254994,7 +254991,6 @@ Effects          :
 Description      : Add the Lindormi's Guidance affix to a Mythic Keystone.
 
 Name             : Gift Expunction (id=1289168) 
-Hotfixed         : Description
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
@@ -257362,7 +257358,6 @@ Effects          :
 Description      : Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.
 
 Name             : Ouroboric Gift (id=1295803) 
-Hotfixed         : Tooltip
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -257381,7 +257376,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed, Leech, Avoidance | Target: Self (1)
 #3 (id=1318110)  : Apply Aura (6) | Modify Combat Rating Multiplier (405)
                    Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed, Leech, Avoidance | Target: Self (1)
-Hotfixed         : Base Value (100 -> 0)
 Description      : Increases $pri by $s1% and all Tertiary stats by $s2%
 Tooltip          : $pri increased by $w1% and Tertiary stats increased by $w3%.
 
@@ -258394,7 +258388,6 @@ If an afflicted target dies the Venom is expelled, instantly dealing its remaini
 Tooltip          : Absorb x damage.
 
 Name             : Hunter's Ritual Stone (id=1297382) [Passive, Hidden] 
-Hotfixed         : Max Scaling Level (0 -> 90)
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
@@ -258406,7 +258399,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 1295897 | Target: Self (1)
 #2 (id=1320611)  : Dummy (3) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 66.51784 (coefficient=0.507458)
-Hotfixed         : Coefficient (0.830768 -> 0.507458)
 Description      : Your damaging spells and abilities have a chance to grant $s2 of a random secondary stat for $1295898d.
 
 While on a Prey Hunt this effect is increased by $s1%. This bonus is only available outdoors while hunting prey.
@@ -260544,7 +260536,6 @@ Description      : $@spelldesc1305830
 
 
 Name             : Preternatural Antivenom (id=1305846) 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
@@ -261081,13 +261072,11 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1336169)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Trigger Spell: 1307910 | Target: Self (1)
-Hotfixed         : Sub Type (42 -> 4)
 #2 (id=1336170)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -27.63072 (coefficient=-0.210792) | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Critical Strike by $s1, but reduce your other secondary stats by $s2 for $1307910d.
 
 Name             : Venomcursed Critical Strike (id=1307910) 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Duration         : 12 seconds
@@ -261104,7 +261093,6 @@ Description      : $@spelldesc1307906
 Tooltip          : Critical Strike increased by $w1. Haste, Mastery, and Versatility decreased by $w2.
 
 Name             : Venomcursed Mastery (id=1307922) 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Duration         : 12 seconds
@@ -261132,13 +261120,11 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1336195)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Trigger Spell: 1307922 | Target: Self (1)
-Hotfixed         : Sub Type (42 -> 4)
 #2 (id=1336196)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -27.63072 (coefficient=-0.210792) | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Mastery by $s1, but reduce your other secondary stats by $s2 for $1307922d.
 
 Name             : Venomcursed Haste (id=1307927) 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Duration         : 12 seconds
@@ -261166,7 +261152,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1336206)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Trigger Spell: 1307927 | Target: Self (1)
-Hotfixed         : Sub Type (42 -> 4)
 #2 (id=1336207)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -27.63072 (coefficient=-0.210792) | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Haste by $s1, but reduce your other secondary stats by $s2 for $1307927d.
@@ -261466,7 +261451,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 265919 | Target: Self (1)
 
 Name             : Venomcursed Critical Strike (id=1317036) [Passive] 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -261478,9 +261462,7 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1350099)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 124.7005 (coefficient=0.951328) | Trigger Spell: 1307910 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #2 (id=1350100)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -20.78347 (coefficient=-0.158555) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Your spells and abilities have a chance to increase your Critical Strike by $s1, but reduce your other secondary stats by $s2 for $1307910d.
 
