@@ -13716,6 +13716,7 @@ Effects          :
 Description      : $@spelldesc457054
 
 Name             : Singular Focus (id=457236) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Melee
@@ -13725,7 +13726,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3936: Mastery: Potent Assassin (76803 effect#4), Subtlety Rogue (137035 effect#7), Subtlety Rogue (137035 effect#8), Shiv (319504 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (382517 effect#5), Deeper Daggers (382517 effect#6), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6), Caustic Spatter (421976 effect#4), Vile Tincture (458475 effect#4), Winning Streak! (1218143 effect#6), Winning Streak! (1218143 effect#7), Implacable (1265386 effect#4)
-Attributes       : Allow Cast While Dead (23), Allow While Stealthed (37), Not an Action (92), Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
+Attributes       : Allow Cast While Dead (23), Allow While Stealthed (37), Not an Action (92), Can't Crit (93), Do Not Display Range (126), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1162111)  : School Damage (2): shadowstorm
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
