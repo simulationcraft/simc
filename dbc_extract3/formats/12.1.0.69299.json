@@ -1548,6 +1548,17 @@
       { "data_type": "i", "field": "unk_3" }
     ]
   },
+  "SkillRaceClassInfo": {
+    "fields": [
+      { "data_type": "h", "field": "id_skill" },
+      { "data_type": "i", "field": "class_mask" },
+      { "data_type": "i", "field": "flags" },
+      { "data_type": "i", "field": "availability" },
+      { "data_type": "b", "field": "min_level" },
+      { "data_type": "h", "field": "id_skill_tier" },
+      { "data_type": "i", "field": "race_masks" }
+    ]
+  },
   "Soulbind": {
     "fields": [
       { "data_type": "S", "field": "name" },
