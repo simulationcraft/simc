@@ -64,15 +64,14 @@ actions.annihilator_ranged+=/devour,if=buff.soulburst.up&active_enemies=1
 actions.annihilator_ranged+=/consume,if=buff.soulburst.up
 actions.annihilator_ranged+=/void_ray,if=talent.eradicate&active_enemies>1&!buff.eradicate.up
 actions.annihilator_ranged+=/collapsing_star,if=active_enemies>1&buff.collapsing_star_stacking.stack>=30
-actions.annihilator_ranged+=/call_action_list,name=reaps,if=!buff.metamorphosis.up&action.reap.souls_consumed>=4&variable.wont_drop_meta
+actions.annihilator_ranged+=/call_action_list,name=reaps,if=active_enemies=1&!buff.metamorphosis.up&action.reap.souls_consumed>=4&variable.wont_drop_meta
 actions.annihilator_ranged+=/collapsing_star,if=active_enemies=1
-actions.annihilator_ranged+=/call_action_list,name=reaps,if=active_enemies>1&buff.eradicate.up&action.reap.souls_consumed>=1+3*set_bonus.midnight_season_2_4pc&variable.wont_drop_meta
-actions.annihilator_ranged+=/call_action_list,name=reaps,if=action.reap.souls_consumed>=4
+actions.annihilator_ranged+=/call_action_list,name=reaps,if=active_enemies=1&action.reap.souls_consumed>=4
 actions.annihilator_ranged+=/call_action_list,name=reaps,if=fight_remains<=6&action.reap.souls_consumed>=1
-actions.annihilator_ranged+=/call_action_list,name=reaps,if=talent.eradicate&active_enemies>1&buff.eradicate.up&action.reap.souls_consumed>=1+3*set_bonus.midnight_season_2_4pc
+actions.annihilator_ranged+=/call_action_list,name=reaps,if=active_enemies>1&buff.eradicate.up&action.reap.souls_consumed>=4+6*buff.moment_of_craving.up
 actions.annihilator_ranged+=/void_ray,if=!buff.eradicate.up|!buff.moment_of_craving.up|!set_bonus.midnight_season_2_4pc
 actions.annihilator_ranged+=/call_action_list,name=reaps,if=(!buff.eradicate.up|active_enemies=1)&(buff.voidfall_spending.stack>=3&prev_gcd.1.void_ray|buff.voidfall_spending.react>=3)
-actions.annihilator_ranged+=/call_action_list,name=reaps,if=buff.metamorphosis.up&talent.collapsing_star&buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30&variable.wont_overcap_cstar&void_metamorphosis_base_drain_ps>35&action.reap.souls_consumed>=1+3*set_bonus.midnight_season_2_4pc&variable.wont_drop_meta
+actions.annihilator_ranged+=/call_action_list,name=reaps,if=buff.metamorphosis.up&talent.collapsing_star&buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30&variable.wont_overcap_cstar&void_metamorphosis_base_drain_ps>35&action.reap.souls_consumed>=4&variable.wont_drop_meta
 actions.annihilator_ranged+=/soul_immolation,if=active_dot.soul_immolation=0&(!buff.metamorphosis.up|fury<void_metamorphosis_base_drain_ps)
 actions.annihilator_ranged+=/devour
 actions.annihilator_ranged+=/consume
@@ -121,11 +120,10 @@ actions.voidscarred_ranged+=/consume
 
 actions.vsm_meta=soul_immolation,if=variable.void_ray_count>=2&active_dot.soul_immolation=0&fury<=gcd.max*(void_metamorphosis_base_drain_ps-6)-6
 actions.vsm_meta+=/pick_up_fragment,mode=nearest,type=all,use_off_gcd=1,line_cd=0.35,if=variable.void_ray_count=1&cooldown.void_ray.remains<gcd.max*2&fury<void_metamorphosis_base_drain_ps*cooldown.void_ray.remains
-actions.vsm_meta+=/throw_glaive,if=variable.void_ray_count>=2&fury>void_metamorphosis_base_drain_ps*gcd.max*2&cooldown.void_ray.remains>gcd.max
 actions.vsm_meta+=/wait,sec=0.05,if=variable.void_ray_count>=2
 actions.vsm_meta+=/vengeful_retreat,use_off_gcd=1,if=buff.voidstep.up
 actions.vsm_meta+=/void_ray,if=variable.void_ray_count=0&!talent.eradicate
-actions.vsm_meta+=/eradicate,if=(action.reap.souls_consumed>=10|buff.moment_of_craving.remains<gcd.max|cooldown.void_ray.remains<gcd.max)&!buff.soulburst.up
+actions.vsm_meta+=/eradicate,if=(buff.moment_of_craving.remains<gcd.max|cooldown.void_ray.remains<gcd.max)&!buff.soulburst.up
 actions.vsm_meta+=/void_ray,if=talent.eradicate&!buff.eradicate.up
 actions.vsm_meta+=/reapers_toll,if=buff.hungering_slash.remains<gcd.max*2
 actions.vsm_meta+=/devour,if=buff.soulburst.up
@@ -145,9 +143,7 @@ actions.vsm_out+=/voidblade,if=prev_gcd.1.void_ray
 actions.vsm_out+=/metamorphosis,if=buff.eradicate.up|!talent.eradicate|fight_remains<15
 actions.vsm_out+=/the_hunt
 actions.vsm_out+=/consume,if=buff.soulburst.up&buff.soulburst.remains<gcd.max
-actions.vsm_out+=/eradicate,if=action.reap.souls_consumed>=10&buff.void_metamorphosis_stack.stack<buff.void_metamorphosis_stack.max_stack-3&!buff.soulburst.up
 actions.vsm_out+=/void_ray,if=talent.eradicate&!buff.eradicate.up
-actions.vsm_out+=/consume,if=buff.soulburst.up
 actions.vsm_out+=/hungering_slash
 actions.vsm_out+=/soul_immolation,if=active_dot.soul_immolation=0
 actions.vsm_out+=/reap,if=action.reap.souls_consumed>=4&!buff.soulburst.up
