@@ -2885,10 +2885,7 @@ struct death_knight_pet_t : public pet_t
     if ( dk()->specialization() == DEATH_KNIGHT_BLOOD )
       transfusion->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
     else
-      transfusion->set_max_stack( 1 );
-
-    // if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY )
-      // transfusion->set_duration( 8_s ); // Transfusion has no duration in data, changing it to 8s manually in 12.1
+      transfusion->set_duration( 8_s );  // Transfusion has no duration in data, changing it to 8s manually
 
     mastery_dreadblade_crit = make_buff<mastery_dreadblade_crit_t>( this );
   }
