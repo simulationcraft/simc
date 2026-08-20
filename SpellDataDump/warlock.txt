@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69382 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69404 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -602,7 +602,6 @@ Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Aura Poin
 Effects          :
 #1 (id=2210)     : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 38.674 | PvP Coefficient: 0.7 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.7)
 #2 (id=740054)   : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000
 #3 (id=831295)   : Dummy (3)
@@ -810,7 +809,6 @@ Use this ability when below 20% health.
 Tooltip          : Maximum health increased by $s1%.
 
 Name             : Shadowburn (id=17877) [Spell Family (5)] 
-Hotfixed         : Description
 Talent Entry     : Destruction [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadowflame
@@ -9889,7 +9887,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Shadowburn (17877), Conflagrate (17962)
                    Family Flags: 7, 55
-Hotfixed         : Sub Type (108 -> 107)
 Description      : Conflagrate and Shadowburn have a $s1% chance to critical strike and their damage is increased by your critical strike chance.
 
 Name             : Ritual of Ruin (id=387156) [Spell Family (5), Passive] 
@@ -16782,7 +16779,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1275190)  : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.96 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
-Hotfixed         : Target 1 (104 -> 18), Target 2 (0 -> 16)
 #2 (id=1275242)  : None (0)
                    Base Value: 8 | Scaled Value: 8
 Description      : Cleaves the area in front of the caster, inflicting $s1 Shadowflame damage. Damage reduced beyond $s2 targets.
@@ -18943,10 +18939,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1319235)  : Apply Aura (6) | Dummy (4)
                    Base Value: 350 | Scaled Value: 350 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Base Value (250 -> 350)
 #2 (id=1333354)  : Apply Aura (6) | Dummy (4)
                    Base Value: 315 | Scaled Value: 315 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Base Value (225 -> 315)
 #3 (id=1333391)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : When their energy depletes, Wild Imps have a $s3% chance to fling themselves at their target and Implode at $s1% effectiveness to their main target and $s2% effectiveness to other targets.
@@ -19073,7 +19067,6 @@ Effects          :
 Description      : All single-target damage done by you and your minions grants you and your pet shadowy shields that absorb $s1% of the damage dealt$?s219272[][ for $108366d], up to $s2% of maximum health.
 
 Name             : Shadowburn (id=1311913) [Spell Family (5)] 
-Hotfixed         : Affecting Spells
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : None

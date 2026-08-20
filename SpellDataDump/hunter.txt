@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69382 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69404 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -4785,6 +4785,7 @@ Effects          :
 Description      : $@spelldesc212431
 
 Name             : Explosive Shot (id=212680) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
@@ -4795,7 +4796,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Mastery: Master of Beasts (76657 effects: #5, #6), Tip of the Spear (460852 effect#1)
 Family Flags     : 73
-Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Always AOE Line of Sight (186), Ignore Caster Damage Modifiers (221), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Always AOE Line of Sight (186), Ignore Caster Damage Modifiers (221), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=315406)   : School Damage (2): fire | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
@@ -7357,7 +7358,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Kill Command (83381), Kill Command (1232922)
                    Family Flags: 108
-Hotfixed         : Misc Value (12 -> 0), Affects Spells
 Description      : Kill Command now has ${$s1+1} charges, and deals $s2% increased damage.
 
 Name             : Wildfire Bomb (id=269747) [Spell Family (9)] 
@@ -12575,7 +12575,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Kill Command (83381), Kill Command (1232922)
                    Family Flags: 108
-Hotfixed         : Affects Spells
 #2 (id=1101620)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Barbed Shot (217200), Frenzy (217207), Thrill of the Hunt (257946), Frenzy (272795), Thrill of the Hunt (312365)
@@ -13315,7 +13314,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434), Kill Command (83381), Wildfire Bomb (265157), Pheromone Bomb (270329), Shrapnel Bomb (270338), Volatile Bomb (271048), Kill Command (1232922)
                    Family Flags: 17, 25, 108
-Hotfixed         : Affects Spells
 #2 (id=1166437)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434), Kill Command (34026), Kill Command (83381), Scorching Wildfire (259587), Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049), Wildfire Bomb (1253171)
@@ -16461,7 +16459,6 @@ Description      : Dire Beasts will now obey your Kill Command, dealing its dama
 Bestial Wrath now sends your Dire Beasts into a rage, increasing their damage dealt by $1235388s1% for $186254d. Dire Beasts summoned during a Bestial Wrath will benefit at a reduced duration.
 
 Name             : Kill Command (id=1232922) [Spell Family (9)] 
-Hotfixed         : Affecting Spells
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -20120,10 +20117,8 @@ Attributes       : Can Proc From Procs (122), Only Proc From Class Abilities (41
 Effects          :
 #1 (id=1323597)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 30)
 #2 (id=1323599)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 20)
 Description      : $@spelldesc1296632
 Tooltip          : Your next Cobra Shot will either benefit from Beast Cleave and deal $s1% damage to enemies surrounding your target, or will deal $s2% additional damage to your primary target.
 
