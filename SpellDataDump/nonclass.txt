@@ -259506,6 +259506,7 @@ Description      : Restores $s1% of your maximum mana every second over $d. Must
 Tooltip          : Restoring $w1% mana every sec.
 
 Name             : Hearty Amani Cornucopia (id=1303407) 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Range            : 5 yards
@@ -259524,11 +259525,12 @@ Description      : Place a Hearty Amani Cornucopia for all players to enjoy!
 $@spelldesc1232065
 
 $@spellicon457049 $@spellname1232078
-If you spend at least 10 seconds eating, you will become $@spellname1232078 gaining $1219179s7 Stamina and $1219179s4 of your highest secondary stat for $462209d.
+If you spend at least 10 seconds eating, you will become $@spellname1232078 gaining ${$1219179s7*1.1} Stamina and ${$1219179s4*1.1} of your highest secondary stat for $462209d.
 
 This aura persists through death.
 
 Name             : Hearty Loa's Gathering (id=1303408) 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Range            : 5 yards
@@ -259547,11 +259549,12 @@ Description      : Place a Hearty Loa's Gathering for all players to enjoy!
 $@spelldesc1232065
 
 $@spellicon457049 $@spellname1232078
-If you spend at least 10 seconds eating, you will become $@spellname1232078 gaining $1219179s7 Stamina and $1219179s4 of your highest secondary stat for $462209d.
+If you spend at least 10 seconds eating, you will become $@spellname1232078 gaining ${$1219179s7*1.1} Stamina and ${$1219179s4*1.1} of your highest secondary stat for $462209d.
 
 This aura persists through death.
 
 Name             : Hearty Feast of Knowledge (id=1303409) 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Range            : 5 yards
@@ -259570,7 +259573,7 @@ Description      : Place a Hearty Feast of Knowledge for all players to enjoy!
 $@spelldesc1232065
 
 $@spellicon457049 $@spellname1232078
-If you spend at least 10 seconds eating, you will become $@spellname1232078 gaining $1219179s7 Stamina and $1219179s4 of your highest secondary stat for $462209d.
+If you spend at least 10 seconds eating, you will become $@spellname1232078 gaining ${$1219179s7*1.1} Stamina and ${$1219179s4*1.1} of your highest secondary stat for $462209d.
 
 This aura persists through death.
 
