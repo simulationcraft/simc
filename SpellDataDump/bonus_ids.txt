@@ -8304,4 +8304,4 @@ bonus_id={ 13901 }, base_ilevel={ 140 }, quality={ rare }
 bonus_id={ 13902 }, base_ilevel={ 126 }, quality={ rare }
 bonus_id={ 13935 }, base_ilevel={ 120 }, quality={ uncommon }
 bonus_id={ 13936 }, base_ilevel={ 126 }, quality={ rare }
-bonus_id={ 13987 }, desc={ Venomcursed }, effects={ Venomcursed Critical Strike (id=1317036, index=0, type=equip) }
+bonus_id={ 13987 }, desc={ Venomcursed }, effects={ Venomcursed Ascendance (id=1317582, index=0, type=equip) }
