@@ -1042,6 +1042,7 @@ public:
   void trigger_vision_of_nzoth( player_t* target );
   void trigger_shadowy_insight( bool guaranteed = false, action_state_t* s = nullptr );
   void trigger_idol_of_yshaarj( player_t* target = nullptr );
+  void trigger_surge_of_light();
 
   std::vector<action_t*> secondary_action_list;
 
@@ -1394,8 +1395,8 @@ public:
   {
     base_t::execute();
 
-    if ( !background && priest().talents.surge_of_light.enabled() )
-      priest().buffs.surge_of_light->trigger();
+    if ( !background )
+      priest().trigger_surge_of_light();
   }
 };
 
@@ -1493,8 +1494,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     base_t::execute();
 
-    if ( !background && priest().talents.surge_of_light.enabled() )
-      priest().buffs.surge_of_light->trigger();
+    if ( !background )
+      priest().trigger_surge_of_light();
   }
 };
 

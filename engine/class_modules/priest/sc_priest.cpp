@@ -795,9 +795,8 @@ struct smite_base_t : public priest_spell_t
     {
       priest().buffs.greater_smite->trigger();
     }
-
-    if ( priest().talents.surge_of_light.enabled() )
-      priest().buffs.surge_of_light->trigger();
+    
+    priest().trigger_surge_of_light();
 
     if ( priest().talents.holy.holy_word_chastise.enabled() )
     {
@@ -3492,6 +3491,20 @@ void priest_t::init_spells()
   parse_raid_buffs();
 }
 
+void priest_t::trigger_surge_of_light()
+{
+  if ( !talents.surge_of_light.ok() )
+    return;
+
+  auto chance = talents.surge_of_light->effectN( 1 ).percent();
+  chance *= 1.0 + talents.everlasting_light->effectN( 1 ).percent() * ( 1.0 - resources.pct( RESOURCE_MANA ) );
+
+  if ( rng().roll( chance ) )
+  {
+    buffs.surge_of_light->trigger();
+  }
+}
+
 void priest_t::create_buffs()
 {
   base_t::create_buffs();
@@ -3524,8 +3537,7 @@ void priest_t::create_buffs()
   buffs.protective_light =
       make_buff( this, "protective_light", talents.protective_light_buff )->set_default_value_from_effect( 1 );
 
-  buffs.surge_of_light = make_buff( this, "surge_of_light", talents.surge_of_light_buff )
-                             ->set_chance( talents.surge_of_light->effectN( 1 ).percent() );
+  buffs.surge_of_light = make_buff( this, "surge_of_light", talents.surge_of_light_buff );
 
   // Voidweaver
   buffs.voidheart = make_buff( this, "voidheart", talents.voidweaver.voidheart_buff )
