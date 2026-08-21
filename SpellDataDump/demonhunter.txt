@@ -12814,6 +12814,7 @@ Effects          :
 Description      : $@spelldesc452402
 
 Name             : Void Metamorphosis (id=471306) [Spell Family (107), Passive, Hidden] 
+Hotfixed         : Attributes
 Talent Entry     : Devourer [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Spellshadow
@@ -12822,7 +12823,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 5408: Soul Glutton (1247534 effect#2)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Ignore For Mod Time Rate (196), Do Not Log on Learn (355)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1187543)  : Apply Aura (6) | Periodic Dummy (226): every 0.12 seconds
