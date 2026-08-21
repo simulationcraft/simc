@@ -3481,6 +3481,10 @@ void priest_t::init_spells()
   if ( specialization() == PRIEST_SHADOW )
     deregister_passive_effect( talents.voidweaver.overwhelming_shadows->effectN( 2 ) );
 
+  // Entropic Rift is currently in both Effect1 and Effect2. Ingame it seems to only apply once, in sim it is clearly
+  // applying twice. Deregistering the second effect for now.
+  deregister_passive_effect( talents.voidweaver.quickened_pulse->effectN( 2 ) );
+
   // Register passives
   parse_all_class_passives();
   parse_all_passive_talents();
