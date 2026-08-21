@@ -4721,36 +4721,17 @@ void venomcursed( special_effect_t& effect )
 // 1317581 Ascendace (random stat) buff
 void venomcursed_ascendance( special_effect_t& effect )
 {
-  if ( effect.spell_id == 1317036 )
-  {
-    effect.player->sim->error( IMPLEMENTATION_NOTES,
-      "Aqirbane Reliquary will proc random stats to match behavior of upcoming hotfix on weekly reset. "
-      "However the item itself only provides crit instead of all stats." );
-  }
-
-  struct venomcursed_cb_t : public dbc_proc_callback_t
+  struct venomcursed_ascendance_cb_t : public dbc_proc_callback_t
   {
     stat_buff_t* buff;
     double pos_value;
     double neg_value;
 
-    venomcursed_cb_t( const special_effect_t& e )
+    venomcursed_ascendance_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
         pos_value( e.driver()->effectN( 1 ).average( e ) ),
         neg_value( e.driver()->effectN( 2 ).average( e ) )
     {
-      // TODO: remove when data is hotfixed in
-      if ( e.spell_id == 1317036 )
-      {
-        buff = create_buff<stat_buff_t>( e.player, "venomcursed_ascendance", e.trigger() )
-          ->add_stat( STAT_CRIT_RATING, pos_value )
-          ->add_stat( STAT_HASTE_RATING, neg_value )
-          ->add_stat( STAT_MASTERY_RATING, neg_value )
-          ->add_stat( STAT_VERSATILITY_RATING, neg_value );
-
-        return;
-      }
-
       // Because the buff pandemics, we can't use create_all_stat_buffs and must instead utilize a single buff with
       // hacked execute using update_player_buff_stat and directly stat amount manipulation.
       buff = create_buff<stat_buff_t>( e.player, e.trigger() )
@@ -4792,10 +4773,7 @@ void venomcursed_ascendance( special_effect_t& effect )
     }
   };
 
-  // TODO: remove check when driver is hotfixed in
-  if ( !effect.driver()->ok() )
-    return;
-  new venomcursed_cb_t( effect );
+  new venomcursed_ascendance_cb_t( effect );
 }
 }  // namespace armors
 
@@ -5618,7 +5596,7 @@ void register_special_effects()
   register_special_effect( 1285139, armors::rotmires_sporeheart );
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( { 1307906, 1307923, 1307928 }, armors::venomcursed );
-  register_special_effect( { 1317036, 1317582 }, armors::venomcursed_ascendance );
+  register_special_effect( 1317582, armors::venomcursed_ascendance );
   reset_version_check();
   // Sets
   register_special_effect( 1281574, sets::voidlight_bindings );
