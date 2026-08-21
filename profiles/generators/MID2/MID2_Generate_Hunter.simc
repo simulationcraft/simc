@@ -66,9 +66,9 @@ neck=,id=268265,bonus_id=13708/13668,ilevel=344,gem_id=240898/240898
 shoulder=,id=271490,bonus_id=13662,ilevel=344,enchant_id=8031,redirected_base_stats=268231
 back=,id=268253,ilevel=344
 chest=,id=271495,bonus_id=13708/13662,ilevel=344,enchant_id=7987,redirected_base_stats=271876
-wrist=,id=244584,bonus_id=12214/13767/13836/13751/9627/1808/8960/8793,ilevel=331,gem_id=240898,crafted_stats=32/49,crafting_quality=5
+wrist=,id=244584,bonus_id=12214/12384/13836/13751/9627/1808/8960/8793,ilevel=331,gem_id=240898,crafted_stats=32/49,crafting_quality=5
 hands=,id=271493,bonus_id=13662,ilevel=334,redirected_base_stats=160213
-waist=,id=244581,bonus_id=12214/13767/13836/13751/9627/1808/8960/8793,ilevel=331,gem_id=240898,crafted_stats=32/49,crafting_quality=5
+waist=,id=244581,bonus_id=12214/12384/13836/13751/9627/1808/8960/8793,ilevel=331,gem_id=240898,crafted_stats=32/49,crafting_quality=5
 legs=,id=271491,bonus_id=13662,ilevel=344,enchant_id=8159,redirected_base_stats=268237
 feet=,id=268233,ilevel=334,enchant_id=7993
 finger1=,id=252258,bonus_id=13668,ilevel=334,gem_id=240898,enchant_id=7967
