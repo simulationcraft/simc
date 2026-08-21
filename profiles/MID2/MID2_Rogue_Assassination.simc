@@ -132,9 +132,10 @@ off_hand=sharpened_lightwood_slasher,id=275070,bonus_id=12854/13662,enchant_id=7
 # gear_ilvl=338.63
 # gear_agility=1914
 # gear_stamina=40380
-# gear_crit_rating=1507
-# gear_haste_rating=857
-# gear_mastery_rating=885
+# gear_crit_rating=1186
+# gear_haste_rating=964
+# gear_mastery_rating=992
+# gear_versatility_rating=107
 # gear_armor=1201
 # set_bonus=midnight_season_2_2pc=1
 # set_bonus=midnight_season_2_4pc=1

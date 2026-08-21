@@ -152,9 +152,10 @@ off_hand=jaw_of_the_shackled_goddess,id=268202,bonus_id=13847/13848,enchant_id=3
 # gear_ilvl=339.25
 # gear_strength=1923
 # gear_stamina=40617
-# gear_crit_rating=1150
-# gear_haste_rating=854
-# gear_mastery_rating=1248
+# gear_crit_rating=829
+# gear_haste_rating=961
+# gear_mastery_rating=1355
+# gear_versatility_rating=107
 # gear_avoidance_rating=90
 # gear_armor=2569
 # set_bonus=midnight_season_2_2pc=1

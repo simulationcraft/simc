@@ -133,9 +133,10 @@ off_hand=frostscales_mystic_frond,id=268263,bonus_id=12854/13335,ilevel=334
 # gear_ilvl=337.38
 # gear_stamina=40493
 # gear_intellect=2577
-# gear_crit_rating=1224
-# gear_haste_rating=711
-# gear_mastery_rating=1275
+# gear_crit_rating=903
+# gear_haste_rating=818
+# gear_mastery_rating=1382
+# gear_versatility_rating=107
 # gear_leech_rating=28
 # gear_avoidance_rating=148
 # gear_armor=732

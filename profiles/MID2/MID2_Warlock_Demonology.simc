@@ -111,9 +111,10 @@ off_hand=alnhara_lantern,id=245769,bonus_id=8791/8960/12214/13751/13771/13836/96
 # gear_ilvl=337.38
 # gear_stamina=40526
 # gear_intellect=2581
-# gear_crit_rating=1188
-# gear_haste_rating=1048
-# gear_mastery_rating=976
+# gear_crit_rating=867
+# gear_haste_rating=1155
+# gear_mastery_rating=1083
+# gear_versatility_rating=107
 # gear_leech_rating=83
 # gear_avoidance_rating=405
 # gear_armor=733
