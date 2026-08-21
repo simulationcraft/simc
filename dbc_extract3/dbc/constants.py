@@ -144,6 +144,23 @@ CLASS_INFO = [
   { 'id': 13, 'bit': 12, 'name': 'Evoker',       'skill': 2810, 'family': 224, 'label': 1216 }
 ]
 
+SPEC_SKILL_CATEGORIES = [
+  (),
+  (   71,   72,   73,   0 ), # Warrior
+  (   65,   66,   70,   0 ), # Paladin
+  (  254,  255,  256,   0 ), # Hunter
+  (  259,  260,  261,   0 ), # Rogue
+  (  256,  257,  258,   0 ), # Priest
+  (  250,  251,  252,   0 ), # Death Knight
+  (  262,  263,  264,   0 ), # Shaman
+  (   62,   63,   64,   0 ), # Mage
+  (  265,  266,  267,   0 ), # Warlock
+  (  268,  270,  269,   0 ), # Monk
+  (  102,  103,  104, 105 ), # Druid
+  (  577,  581, 1480,   0 ), # Demon Hunter
+  ( 1467, 1468, 1473,   0 ), # Evoker
+]
+
 PET_SKILL_CATEGORIES = [
   ( ),
   # Warrior

@@ -2584,41 +2584,6 @@ class SpellDataGenerator(DataGenerator):
         773,  # Inscription
     ]
 
-    _pet_skill_categories = [
-        ( ),
-        ( ),         # Warrior
-        ( ),         # Paladin
-        ( 203, 208, 209, 210, 211, 212, 213, 214, 215, 217, 218, 236, 251, 270, 653, 654, 655, 656, 763, 764, 765, 766, 767, 768, 775, 780, 781, 783, 784, 785, 786, 787, 788, 808, 811 ),       # Hunter
-        ( ),         # Rogue
-        ( ),         # Priest
-        ( 782, ),    # Death Knight
-        ( 962, 963 ),         # Shaman
-        ( 805, ),    # Mage
-        ( 188, 189, 204, 205, 206, 207, 761 ),  # Warlock
-        ( ),         # Monk
-        ( ),         # Druid
-        ( ),         # Evoker
-    ]
-
-    # Specialization categories, Spec0 | Spec1 | Spec2
-    # Note, these are reset for MoP
-    _spec_skill_categories = [
-        (),
-        (   71,   72,   73,   0 ), # Warrior
-        (   65,   66,   70,   0 ), # Paladin
-        (  254,  255,  256,   0 ), # Hunter
-        (  259,  260,  261,   0 ), # Rogue
-        (  256,  257,  258,   0 ), # Priest
-        (  250,  251,  252,   0 ), # Death Knight
-        (  262,  263,  264,   0 ), # Shaman
-        (   62,   63,   64,   0 ), # Mage
-        (  265,  266,  267,   0 ), # Warlock
-        (  268,  270,  269,   0 ), # Monk
-        (  102,  103,  104, 105 ), # Druid
-        (  577,  581, 1480,   0 ), # Demon Hunter
-        ( 1467, 1468, 1473,   0 ), # Evoker
-    ]
-
     _race_categories = [
         (),
         ( 754 ),   # Human           0x00000001
@@ -2807,15 +2772,15 @@ class SpellDataGenerator(DataGenerator):
         return 0
 
     def class_mask_by_spec_skill(self, spec_skill):
-        for i in range(0, len(self._spec_skill_categories)):
-            if spec_skill in self._spec_skill_categories[i]:
+        for i in range(0, len(constants.SPEC_SKILL_CATEGORIES)):
+            if spec_skill in constants.SPEC_SKILL_CATEGORIES[i]:
                 return util.class_mask(class_id=i)
 
         return 0
 
     def class_mask_by_pet_skill(self, pet_skill):
-        for i in range(0, len(self._pet_skill_categories)):
-            if pet_skill in self._pet_skill_categories[i]:
+        for i in range(0, len(constants.PET_SKILL_CATEGORIES)):
+            if pet_skill in constants.PET_SKILL_CATEGORIES[i]:
                 return util.class_mask(class_id=i)
 
         return 0

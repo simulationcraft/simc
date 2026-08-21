@@ -9376,7 +9376,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1013600)  : Apply Aura (6) | Modify Cooldown Time (Category) (341)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 88 (Category) | Target: Self (1)
-                   Affected Spells (Category): Counterspell (2139), Pummel (6552), Silence (18278), Spell Lock (19647), Mind Freeze (47528), Rebuke (96231), Shadow Lock (171138), Shadow Lock (171140), Disrupt (183752), Muzzle (187707)
+                   Affected Spells (Category): Counterspell (2139), Pummel (6552), Silence (18278), Spell Lock (19647), Mind Freeze (47528), Rebuke (96231), Optical Blast (115781), Optical Blast (119911), Shadow Lock (171138), Shadow Lock (171140), Disrupt (183752), Muzzle (187707)
 Description      : Counterspell's cooldown is reduced by ${-$s1/1000} sec.
 
 Name             : Winter's Protection (id=382424) [Spell Family (3), Passive, Hidden] 
