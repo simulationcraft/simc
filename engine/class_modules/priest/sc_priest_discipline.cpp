@@ -594,7 +594,7 @@ public:
     }
 
     if ( const spell_data_t* set_bonus = priest().sets->set( PRIEST_DISCIPLINE, MID2, B2 );
-         priest().is_ptr() && priest().sets->has_set_bonus( PRIEST_DISCIPLINE, MID2, B2 ) && set_bonus->ok() )
+         priest().sets->has_set_bonus( PRIEST_DISCIPLINE, MID2, B2 ) && set_bonus->ok() )
     {
       priest().cooldowns.mind_blast->adjust( -set_bonus->effectN( 2 ).time_value() );
     }
