@@ -5925,26 +5925,11 @@ struct rapid_fire_t: public hunter_ranged_attack_t
     hydra_target = p()->get_hydra_target( target );
     marked_targets.clear();
 
-    // 2026-07-22: Unload is a weird spell with No Scope talented. If Precise Shots is active before casting Rapid Fire, Precise Shots
-    //             will be refreshed by No Scope and then consumed by Unload's first shot. If Precise Shots is not active, No Scope will
-    //             apply it but Unload's first shot will not consume it, leaving it for the second shot.
-    //
-    //             I am choosing to trigger Precise Shots after Unload's first shot in the second case for simplicity of modeling.
-    if ( p()->buffs.precise_shots->check() )
+    // 2026-08-20 HotFix: No Scope applies Precise Shots after Unload's first shot, allowing the second shot to benefit from and consume it.
+    execute_unload( 1 );
+    if ( p()->talents.no_scope.ok() )
     {
-      if ( p()->talents.no_scope.ok() )
-      {
-        p()->buffs.precise_shots->trigger();
-      }
-      execute_unload( 1 );
-    }
-    else
-    {
-      execute_unload( 1 );
-      if ( p()->talents.no_scope.ok() )
-      {
-        p()->buffs.precise_shots->trigger();
-      }
+      p()->buffs.precise_shots->trigger();
     }
 
     hunter_ranged_attack_t::execute();
