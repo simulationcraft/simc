@@ -330,7 +330,7 @@ public:
       // Row 2
       player_talent_t psychic_link;
       player_talent_t misery;
-      player_talent_t invoked_nightmares;
+      player_talent_t invoked_nightmare;
       player_talent_t intangibility;
       player_talent_t mental_fortitude;
       // Row 3
