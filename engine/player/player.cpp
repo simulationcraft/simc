@@ -7417,7 +7417,7 @@ void player_t::regen( timespan_t periodicity )
 
   for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
   {
-    if ( resources.is_active( r ) )
+    if ( resources.active_resource[ r ] )
     {
       double regen  = resource_regen_per_second( r );
       gain_t* gain = gains.resource_regen[ r ];
