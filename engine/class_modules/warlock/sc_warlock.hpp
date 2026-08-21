@@ -112,8 +112,8 @@ struct warlock_td_t : public actor_target_data_t
   void target_demise();
 
   int count_affliction_dots() const;
-  void ua_stack_applied( bool is_seed_ua );
-  void ua_stack_expired( bool is_seed_ua );
+  void ua_stack_applied( bool is_seed_ua = false );
+  void ua_stack_expired( bool is_seed_ua = false );
   void reset_ua_stack_tracking();
   double ua_calculate_damage_stacks() const;
   timespan_t ua_stack_remains( int min_stacks ) const; // Time until the target has fewer than min_stacks UA stacks
@@ -437,7 +437,7 @@ public:
     player_talent_t fatal_echoes;
     player_talent_t cascading_calamity;
     const spell_data_t* cascading_calamity_buff;
-    player_talent_t deaths_embrace; // Volatile Agony and Perpetual Unstability are unaffected by this
+    player_talent_t deaths_embrace;
     player_talent_t hedonic_gorging;
     player_talent_t sow_the_seeds;
 
@@ -1133,7 +1133,6 @@ public:
   bool eye_explosion_instanced_bug_cb;
   bool eye_explosion_instanced_bug_sb;
   bool eye_explosion_instanced_bug_rof;
-  double tyrant_antoran_armaments_target_mul;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 

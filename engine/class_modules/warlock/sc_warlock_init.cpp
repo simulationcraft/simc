@@ -1710,8 +1710,6 @@ namespace warlock
     add_option( opt_deprecated( "eye_explosion_instanced_bug_sb", "warlock.eye_explosion_instanced_bug_sb" ) );
     add_option( opt_bool( "warlock.eye_explosion_instanced_bug_rof", eye_explosion_instanced_bug_rof ) );
     add_option( opt_deprecated( "eye_explosion_instanced_bug_rof", "warlock.eye_explosion_instanced_bug_rof" ) );
-    add_option( opt_float( "warlock.tyrant_antoran_armaments_target_mul", tyrant_antoran_armaments_target_mul, 0.0, 1.0 ));
-    add_option( opt_deprecated( "tyrant_antoran_armaments_target_mul", "warlock.tyrant_antoran_armaments_target_mul" ) );
 
     rng_settings.for_each( [ this ]( auto& setting )
     {

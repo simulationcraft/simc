@@ -515,10 +515,6 @@ using namespace helpers;
     {
       double m = action_base_t::composite_da_multiplier( s );
 
-      double deaths_embrace_health = p()->talents.deaths_embrace->effectN( 2 ).base_value();
-      if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < deaths_embrace_health )
-        m *= 1.0 + p()->talents.deaths_embrace->effectN( 1 ).percent() * ( 1 - s->target->health_percentage() / deaths_embrace_health );
-
       // NOTE: 2026-07-11 Diabolist guardians do not count towards Sacrificed Souls talent (bug?)
       if ( demonology() && affected_by.sacrificed_souls )
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count( !p()->bugs );
@@ -526,13 +522,17 @@ using namespace helpers;
       return m;
     }
 
-    double composite_ta_multiplier( const action_state_t* s ) const override
+    double composite_target_multiplier( player_t* t ) const override
     {
-      double m = action_base_t::composite_ta_multiplier( s );
+      double m = action_base_t::composite_target_multiplier( t );
 
       double deaths_embrace_health = p()->talents.deaths_embrace->effectN( 2 ).base_value();
-      if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < deaths_embrace_health )
-        m *= 1.0 + p()->talents.deaths_embrace->effectN( 1 ).percent() * ( 1 - s->target->health_percentage() / deaths_embrace_health );
+      if ( affliction() && affected_by.deaths_embrace && t->health_percentage() < deaths_embrace_health )
+      {
+        // NOTE: 2026-08-21: UA does not benefit from Death's Embrace while any seed-applied 4pc UA stack is active (bug)
+        if ( !p()->bugs || this->id != p()->talents.unstable_affliction->id() || td( t )->ua_seed_stacks == 0 )
+          m *= 1.0 + p()->talents.deaths_embrace->effectN( 1 ).percent() * ( 1 - t->health_percentage() / deaths_embrace_health );
+      }
 
       return m;
     }
@@ -791,7 +791,7 @@ using namespace helpers;
       if ( seed_action )
         spell_power_mod.direct = 0; // Corruption does not deal instant damage when applied from SoC
 
-      // NOTE: 2026-02-20: Death's Embrace talent is not applying to the Corruption (direct damage) spell (bug?)
+      // NOTE: 2026-08-21: Death's Embrace talent is not applying to the Corruption (direct damage) spell (bug?)
       affected_by.deaths_embrace = !p->bugs && p->talents.deaths_embrace.ok();
     }
 
@@ -813,7 +813,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_target_multiplier( t );
 
-      // NOTE: 2026-02-20 Shadowbolt Volley (Cunning Cruelty) is affected by Withering Bolt
+      // NOTE: 2026-08-21 Shadowbolt Volley (Cunning Cruelty) is affected by Withering Bolt
       if ( p()->talents.withering_bolt.ok() )
         m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( ( int )( p()->talents.withering_bolt->effectN( 2 ).base_value() ), p()->get_target_data( t )->count_affliction_dots() );
 
@@ -1194,7 +1194,7 @@ using namespace helpers;
       impact_action = new wither_dot_t( p );
       add_child( impact_action );
 
-      // NOTE: 2026-02-20: Death's Embrace talent is not applying to the Wither (direct damage) spell (bug?)
+      // NOTE: 2026-08-21: Death's Embrace talent is not applying to the Wither (direct damage) spell (bug?)
       affected_by.deaths_embrace = affliction() && !p->bugs && p->talents.deaths_embrace.ok();
     }
 
@@ -1512,35 +1512,32 @@ using namespace helpers;
     {
       player_t* ua_target = target;
 
-      // NOTE: 2026-04-29 Currently ingame a UA applied by Fatal Echoes also processes/consumes some UA 'execute' effects:
+      // NOTE: 2026-08-21 Currently ingame a UA applied by Fatal Echoes also processes/consumes some UA 'execute' effects:
       // - Succulent Soul: consumes a stack and triggers its effects (Demonic Soul dmg and Manifested Avarice rng proc)
       // - Cull the Weak: reduces the cooldown of Dark Harvest
-      // - Hellcaller Blackened Soul: increments Wither stacks
+      // - Hellcaller Blackened Soul: unaffected; Fatal Echoes does not increment Wither stacks
       // - Shard Instability: unaffected; Fatal Echoes does not consume a stack of this buff
 
       warlock_spell_t::execute();
-
-      // NOTE: 2026-07-06 12.1 4pc seed-applied UA does not increment Wither stacks
-      if ( hellcaller() && p()->hero.blackened_soul.ok() && !is_seed_applied )
-        helpers::trigger_blackened_soul( p(), false, ua_target );
 
       // NOTE: 2026-07-06 12.1 4pc seed-applied UA does not reduce the cooldown of Dark Harvest (Cull the Weak talent)
       if ( p()->talents.cull_the_weak.ok() && !is_seed_applied )
         p()->cooldowns.dark_harvest->adjust( -p()->talents.cull_the_weak->effectN( 1 ).time_value() );
 
-      // NOTE: 2026-04-29 If Shard Instability buff is gained during the casting of Unstable Affliction, that UA cast benefits from the cost
+      // NOTE: 2026-08-21 If Shard Instability buff is gained during the casting of Unstable Affliction, that UA cast benefits from the cost
       // reduction but does not consume the effect (bug?). As expected, a Fatal Echoes UA proc does not consume it either.
       if ( time_to_execute == 0_ms && !is_fatal_echoes_execute )
       {
-        // NOTE: 2026-07-06 12.1 4pc seed-applied UA consumes shard instability (bug?)
+        // NOTE: 2026-08-21 12.1 4pc seed-applied UA consumes Shard Instability (bug?)
         if ( p()->bugs || !is_seed_applied )
           p()->buffs.shard_instability->decrement();
       }
 
       if ( soul_harvester() )
       {
-        // NOTE: 2026-07-06 12.1 4pc seed-applied UA consumes a Succulent Soul stack and triggers its effects
-        helpers::consume_succulent_soul( p(), ua_target );
+        // NOTE: 2026-08-21 12.1 4pc seed-applied UA does not consume a Succulent Soul stack
+        if ( !is_seed_applied )
+          helpers::consume_succulent_soul( p(), ua_target );
       }
     }
 
@@ -1562,6 +1559,11 @@ using namespace helpers;
       if ( result_is_hit( s->result ) )
       {
         tdata->ua_stack_applied( is_seed_applied );
+
+        // NOTE: 2026-08-21 UA increments Wither stacks on impact, including seed-applied UA from the 12.1 4pc tier bonus
+        // NOTE: 2026-08-21 UA applied by Fatal Echoes does not increment Wither stacks
+        if ( hellcaller() && p()->hero.blackened_soul.ok() && !is_fatal_echoes_execute )
+          helpers::trigger_blackened_soul( p(), false, s->target );
 
         if ( active_4pc<MID2>() )
           helpers::update_unstable_empowerment_buff( p() );
@@ -1897,6 +1899,7 @@ using namespace helpers;
       if ( soul_harvester() )
         helpers::consume_succulent_soul( p(), main_seed_target );
 
+      const int prev_shard_instability_stacks = p()->buffs.shard_instability->check();
       if ( ua_seed_tier )
       {
         // 12.1 4pc seed UA is applied to the main_seed_target (could be redirected from the main SoC cast target)
@@ -1905,9 +1908,18 @@ using namespace helpers;
         ua_seed_tier->execute();
       }
 
-      // NOTE: 2026-07-26 Seed of Corruption is not consuming Shard Instability buff (bug)
-      if ( !p()->bugs && time_to_execute == 0_ms )
-        p()->buffs.shard_instability->decrement();
+      // NOTE: 2026-08-21 If Shard Instability buff is gained during the casting of Seed of Corruption,
+      // that SoC cast benefits from the cost reduction but does not consume the effect (bug?)
+      if ( time_to_execute == 0_ms )
+      {
+        // NOTE: 2026-08-21 SoC and its seed-applied UA consume at most 1 Shard Instability stack in total,
+        // so SoC does not consume SI here if the seed-applied UA already did
+        const int current_shard_instability_stacks = p()->buffs.shard_instability->check();
+        assert( prev_shard_instability_stacks == current_shard_instability_stacks || prev_shard_instability_stacks == current_shard_instability_stacks + 1 );
+
+        if ( !p()->bugs || !ua_seed_tier || prev_shard_instability_stacks == current_shard_instability_stacks )
+          p()->buffs.shard_instability->decrement();
+      }
 
       if ( p()->talents.cull_the_weak.ok() )
         p()->cooldowns.dark_harvest->adjust( -p()->talents.cull_the_weak->effectN( 1 ).time_value() );
@@ -2090,8 +2102,8 @@ using namespace helpers;
       extra_tick_mul( p->talents.malefic_grasp_2->effectN( 2 ).percent() )
     {
       channeled = true;
-      // NOTE: 2026-04-29 Malefic Grasp ticks are not affected by Death's Embrace (bug?)
-      affected_by.deaths_embrace = !p->bugs && p->talents.deaths_embrace.ok();
+      // NOTE: 2026-08-21 Malefic Grasp ticks are affected by Death's Embrace
+      affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
       if ( p->talents.cunning_cruelty.ok() )
         volley = new shadowbolt_volley_t( p );
@@ -2207,6 +2219,10 @@ using namespace helpers;
     double composite_target_multiplier( player_t* t ) const override
     {
       double m = warlock_spell_t::composite_target_multiplier( t );
+
+      // NOTE: 2026-08-21 Malefic Grasp is affected by Withering Bolt
+      if ( p()->talents.withering_bolt.ok() )
+        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( ( int )( p()->talents.withering_bolt->effectN( 2 ).base_value() ), td( t )->count_affliction_dots() );
 
       if ( p()->talents.impetuous_wrath.ok() )
         m *= 1.0 + ( td( t )->debuffs.haunt->check() ? p()->talents.impetuous_wrath->effectN( 2 ).percent() : p()->talents.impetuous_wrath->effectN( 1 ).percent() );
@@ -3019,74 +3035,131 @@ using namespace helpers;
 
     void execute() override
     {
-      // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
-      timespan_t imp_travel_time = calc_imp_travel_time( 65 );
-
       auto imps = p()->warlock_pet_list.wild_imps.active_pets();
+      const unsigned active_imps = as<unsigned>( imps.size() );
 
-      // NOTE: 2026-02-17: Seems than older wild imps (or with less energy) are prioritized for implosion.
-      // It hasn't yet been determined whether those with less energy or the oldest are prioritized first.
-      // The Imp Gang Boss / Unstable Soul buffs do not seem to affect the selection.
-      // There also seem to exist some unusual interactions with the priority of wild imps to implode (not implemented):
-      // - The distance of the wild imps from the player can affect their selection.
-      // - When there are many imps (more than 9), the selection of some of them seems to become somewhat random
-      //   (maybe not random; in any case, their actual behavior in this situation has not been fully determined).
-      range::sort( imps, []( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
-        double lv = imp1->resources.current[ RESOURCE_ENERGY ];
-        double rv = imp2->resources.current[ RESOURCE_ENERGY ];
-        if ( lv == rv )
-          return imp1->actor_spawn_index < imp2->actor_spawn_index;
+      const unsigned max_selected_demons = as<unsigned>( data().effectN( 1 ).base_value() );
+      unsigned selected_demons = std::min( max_selected_demons, active_imps );
+      unsigned selected_imps = selected_demons;
 
-        return lv < rv;
-      } );
-
-      unsigned max_imps = as<unsigned>( data().effectN( 1 ).base_value() );
-      // NOTE: 2026-07-18: Without the To Hell and Back talent, when trying to implode 6 Wild Imps, only 5 are sent to implode (bug)
-      if ( p()->bugs && !p()->talents.to_hell_and_back.ok() )
-        max_imps--;
-
-      unsigned launch_counter = 0;
-      for ( auto imp : imps )
+      // NOTE: 2026-08-21: Implosion currently appears to select up to 6 demons from a broader set of
+      // Warlock summons before restricting the actual Implosion effect to Wild Imps (bug). This can
+      // cause fewer than 6 Wild Imps to implode when other eligible demons are active. In-game
+      // selection appears to depend on spatial cell ordering, which SimC does not model, so approximate
+      // the number of selected Wild Imps by randomly sampling from the eligible demon pool.
+      if ( p()->bugs )
       {
-        implosion_aoe_t* ex = explosion;
-        player_t* tar = target;
-        double dist = p()->get_player_distance( *tar );
+        unsigned implosion_candidates = 0;
+        for ( auto pet : p()->active_pets )
+        {
+          auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
 
-        imp->trigger_movement( dist, movement_direction_type::TOWARDS );
-        imp->interrupt();
-        imp->imploded = true;
+          if ( lock_pet == nullptr )
+            continue;
 
-        // Imps launched with Implosion appear to be staggered and snapshot when they impact
-        // 2020-12-04: Implosion may have been made quicker in Shadowlands, too fast to easily discern with combat log
-        // Going to set the interval to 10 ms, which should keep all but the most extreme imp counts from bleeding into the next GCD
-        // TODO: There's an awkward possibility of Implosion seeming "ready" after casting it if all the imps have not imploded yet. Find a workaround
-        make_event( sim, 50_ms * launch_counter + imp_travel_time, [ ex, tar, imp ] {
-          if ( imp && !imp->is_sleeping() )
+          if ( !lock_pet->is_implosion_candidate )
+            continue;
+
+          implosion_candidates++;
+        }
+        assert( active_imps <= implosion_candidates );
+
+        selected_demons = std::min( max_selected_demons, implosion_candidates );
+
+        if ( selected_demons == implosion_candidates )
+        {
+          selected_imps = active_imps;
+        }
+        else
+        {
+          // Sample from the eligible demon pool without replacement
+          selected_imps = 0;
+          unsigned remaining_demons = implosion_candidates;
+          unsigned remaining_imps = active_imps;
+          for ( unsigned i = 0; i < selected_demons; i++ )
           {
-            ex->energy_remaining = ( imp->resources.current[ RESOURCE_ENERGY ] );
-            ex->set_target( tar );
-            ex->next_imp = imp;
-            ex->execute();
+            if ( remaining_imps == 0 )
+              break;
+
+            if ( remaining_imps == remaining_demons )
+            {
+              selected_imps += selected_demons - i;
+              break;
+            }
+
+            if ( rng().roll( static_cast<double>( remaining_imps ) / remaining_demons ) )
+            {
+              selected_imps++;
+              remaining_imps--;
+            }
+
+            remaining_demons--;
           }
+        }
+      }
+      assert( selected_imps <= selected_demons );
+      assert( selected_imps <= active_imps );
+      assert( selected_demons <= max_selected_demons );
+
+      if ( selected_imps > 0 )
+      {
+        // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
+        const timespan_t imp_travel_time = calc_imp_travel_time( 65 );
+
+        // NOTE: 2026-02-17: Seems that older Wild Imps (or those with less energy) are prioritized for Implosion.
+        // It hasn't yet been determined whether those with less energy or the oldest are prioritized first.
+        // The Imp Gang Boss / Unstable Soul buffs do not seem to affect the selection.
+        // NOTE: 2026-08-21: Spatial cell ordering also appears to affect which individual Wild Imps are selected
+        // in some way, but the exact interaction is not yet understood or modeled by SimC
+        range::sort( imps, []( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
+          double lv = imp1->resources.current[ RESOURCE_ENERGY ];
+          double rv = imp2->resources.current[ RESOURCE_ENERGY ];
+          if ( lv == rv )
+            return imp1->actor_spawn_index < imp2->actor_spawn_index;
+
+          return lv < rv;
         } );
 
-        launch_counter++;
+        unsigned launch_counter = 0;
+        for ( auto imp : imps )
+        {
+          if ( launch_counter >= selected_imps )
+            break;
 
-        if ( launch_counter >= max_imps )
-          break;
+          implosion_aoe_t* ex = explosion;
+          player_t* tar = target;
+          const double dist = p()->get_player_distance( *tar );
+
+          imp->trigger_movement( dist, movement_direction_type::TOWARDS );
+          imp->interrupt();
+          imp->imploded = true;
+
+          // Imps launched with Implosion appear to be staggered and snapshot when they impact
+          // NOTE: 2026-08-21: In-game tests suggest that Wild Imps are launched for Implosion at roughly 50 ms intervals
+          // TODO: There's an awkward possibility of Implosion seeming "ready" after casting it if all the imps have not imploded yet. Find a workaround
+          make_event( sim, 50_ms * launch_counter + imp_travel_time, [ ex, tar, imp ] {
+            if ( imp && !imp->is_sleeping() )
+            {
+              ex->energy_remaining = ( imp->resources.current[ RESOURCE_ENERGY ] );
+              ex->set_target( tar );
+              ex->next_imp = imp;
+              ex->execute();
+            }
+          } );
+
+          launch_counter++;
+        }
       }
+
       if ( p()->talents.to_hell_and_back.ok() )
       {
         const unsigned imps_per_group = as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
         const unsigned group_size = as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() );
-        unsigned groups;
-        // NOTE: 2026-07-11: Implosion rounds up To Hell and Back summons (bug?)
-        if ( p()->bugs )
-          groups = ( launch_counter + group_size - 1 ) / group_size;
-        else
-          groups = launch_counter / group_size;
+        // NOTE: 2026-08-21: The number of empowered Wild Imps summoned by To Hell and Back depends on
+        // the number of demons selected by Implosion, not the number of Wild Imps actually imploded
+        const unsigned groups = selected_demons / group_size;
 
-        unsigned new_imps = groups * imps_per_group;
+        const unsigned new_imps = groups * imps_per_group;
         if ( new_imps > 0 )
         {
           auto imps = debug_cast<summon_wild_imp_2_t*>( p()->summons.wild_imp_2 )->execute_spawn( new_imps );
@@ -3338,13 +3411,13 @@ using namespace helpers;
 
     void execute() override
     {
-      player_t* cast_target = target;
+      player_t* call_dread_target = target;
 
       warlock_spell_t::execute();
 
       unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
 
-      const auto delay_dur_adjusts = p()->dreadstalkers_delay_duration_adjustment_helper( *cast_target );
+      const auto delay_dur_adjusts = p()->dreadstalkers_delay_duration_adjustment_helper( *call_dread_target );
       const timespan_t& delay = delay_dur_adjusts.first;
       const timespan_t& dur_adjust = delay_dur_adjusts.second;
 
@@ -3357,7 +3430,7 @@ using namespace helpers;
       }
 
       if ( p()->talents.summon_vilefiend.ok() )
-        p()->summons.vilefiend->execute_on_target( cast_target );
+        p()->summons.vilefiend->execute_on_target( call_dread_target );
     }
   };
 
@@ -3899,7 +3972,7 @@ using namespace helpers;
 
     void execute() override
     {
-      player_t* cast_target = target;
+      player_t* inc_target = target;
 
       real_total_target_count = 1;
       if ( use_havoc() )
@@ -3908,7 +3981,7 @@ using namespace helpers;
       if ( p()->talents.fire_and_brimstone.ok() )
       {
         // FnB excludes the primary and Havoc targets, so both lists together contain every unique impact.
-        fnb_action->set_target( cast_target );
+        fnb_action->set_target( inc_target );
         real_total_target_count += as<unsigned>( fnb_action->target_list().size() );
         fnb_action->real_total_target_count = real_total_target_count;
       }
@@ -4252,11 +4325,17 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && ( td( s->target )->dots.immolate->is_ticking() || td( s->target )->dots.wither->is_ticking() ) )
-        internal_combustion->execute_on_target( s->target );
+      if ( result_is_hit( s->result ) )
+      {
+        if ( hellcaller() && p()->hero.blackened_soul.ok() )
+          helpers::trigger_blackened_soul( p(), false, s->target );
 
-      if ( p()->talents.embers_of_nihilam_3.ok() && result_is_hit( s->result ) )
-        helpers::trigger_echo_of_sargeras( p(), s->target, p()->proc_actions.echo_of_sargeras_cb, p()->procs.echo_of_sargeras_cb );
+        if ( p()->talents.internal_combustion.ok() && ( td( s->target )->dots.immolate->is_ticking() || td( s->target )->dots.wither->is_ticking() ) )
+          internal_combustion->execute_on_target( s->target );
+
+        if ( p()->talents.embers_of_nihilam_3.ok() )
+          helpers::trigger_echo_of_sargeras( p(), s->target, p()->proc_actions.echo_of_sargeras_cb, p()->procs.echo_of_sargeras_cb );
+      }
     }
 
     void schedule_execute( action_state_t* s ) override
@@ -4301,12 +4380,7 @@ using namespace helpers;
       if ( p()->bugs && diabolist() && affected_by.touch_of_rancora && affected_by.havoc && rancora_empowered )
         base_aoe_multiplier *= havoc_rancora_mul_adjust;
 
-      player_t* cb_target = target;
-
       warlock_spell_t::execute();
-
-      if ( hellcaller() && p()->hero.blackened_soul.ok() )
-        helpers::trigger_blackened_soul( p(), false, cb_target );
 
       base_aoe_multiplier = prev_base_aoe_multiplier; // Restore original previous havoc aoe multiplier
 
@@ -4732,6 +4806,9 @@ using namespace helpers;
       {
         td( s->target )->debuffs.shadowburn->trigger();
 
+        if ( hellcaller() && p()->hero.blackened_soul.ok() )
+          helpers::trigger_blackened_soul( p(), false, s->target );
+
         if ( p()->talents.embers_of_nihilam_3.ok() )
           helpers::trigger_echo_of_sargeras( p(), s->target, p()->proc_actions.echo_of_sargeras_sb, p()->procs.echo_of_sargeras_sb );
       }
@@ -4750,12 +4827,7 @@ using namespace helpers;
       if ( p()->bugs && diabolist() && affected_by.touch_of_rancora && affected_by.havoc && rancora_empowered )
         base_aoe_multiplier *= havoc_rancora_mul_adjust;
 
-      player_t* sb_target = target;
-
       warlock_spell_t::execute();
-
-      if ( hellcaller() && p()->hero.blackened_soul.ok() )
-        helpers::trigger_blackened_soul( p(), false, sb_target );
 
       base_aoe_multiplier = prev_base_aoe_multiplier; // Restore original previous havoc aoe multiplier
 

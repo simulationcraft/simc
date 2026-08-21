@@ -94,6 +94,7 @@ struct warlock_pet_t : public pet_t
 
   bool is_main_pet = false;
   bool is_diabolist_guardian = false;
+  bool is_implosion_candidate = true;
   bool melee_on_summon = true; // Set this to false for a pet to prevent t=0 melees. You MUST schedule a new auto attack manually elsewhere in the implementation if this is disabled
 
   warlock_pet_t( warlock_t*, util::string_view, pet_e, bool = false );
