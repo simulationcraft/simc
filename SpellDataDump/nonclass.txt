@@ -260910,6 +260910,7 @@ Description      : $@spelldesc1295617
 Tooltip          : Follow up your next attack with $@spellname1307332, $@spellname1307333, or $@spellname1307324 based on the number of nearby enemies.
 
 Name             : Hex Lord's Doom (id=1307470) 
+Hotfixed         : Aura Interrupt
 School           : Shadow
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -260919,7 +260920,7 @@ Stacks           : 30 maximum
 Proc Chance      : 101%
 Triggered By     : Hex Lord's Dooming Idol (1295884)
 Attributes       : No Aura Cancel (31), Aura Points On Client (268)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40), Enter Instance (43), Encounter End (56)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40), Enter Instance (43)
 Effects          :
 #1 (id=1335550)  : Apply Aura (6) | Attribute (29) | Scaling Class: Primary Attribute (-1)
                    Base Value: 0 | Scaled Value: 2.103055 (coefficient=0.016044) | Stat: Int | Target: Self (1)
