@@ -4259,6 +4259,166 @@ void tattered_amani_war_banner( special_effect_t& effect )
   effect.disable_buff();
   effect.has_use_buff_override = true;
 }
+// 1291885 effect driver
+// 1291894 use driver
+// 1307599 aura trigger
+// 1307578 absorb
+void soulcoiler_ritual_vessel( special_effect_t& effect )
+{
+  struct fractional_absorb_t : public absorb_buff_t
+  {
+    double absorb_fraction;
+
+    fractional_absorb_t( actor_pair_t q, std::string_view name, const spell_data_t* spell,
+                         const item_t* item = nullptr )
+      : absorb_buff_t( q, name, spell, item ), absorb_fraction( 1.0 )
+    {
+    }
+
+    fractional_absorb_t( player_t* target, player_t* source, std::string_view name, const spell_data_t* spell,
+                         const item_t* item = nullptr )
+      : fractional_absorb_t( { target, source }, name, spell, item )
+    {
+    }
+
+    double consume( double amount, action_state_t* state = nullptr ) override
+    {
+      return absorb_buff_t::consume( amount * absorb_fraction, state );
+    }
+
+    absorb_buff_t* set_absorb_fraction( double fraction )
+    {
+      absorb_fraction = fraction;
+      return this;
+    }
+  };
+
+  struct soulcoiler_ritual_vessel_t : public proc_heal_t
+  {
+    target_specific_t<absorb_buff_t> absorb_buffs;
+    const special_effect_t& e;
+    const spell_data_t* absorb_spell;
+    double absorb_amount;
+    mutable target_cache_t absorb_target_cache;
+
+    soulcoiler_ritual_vessel_t( const special_effect_t& effect, const spell_data_t* absorb_spell )
+      : proc_heal_t( "soulcoiler_ritual_vessel", effect.player, effect.driver() ),
+        absorb_amount( 0 ),
+        absorb_target_cache(),
+        absorb_buffs{ false },
+        e( effect ),
+        absorb_spell( absorb_spell )
+    {
+      auto equip = find_special_effect( effect.player, 1291885 );
+      assert( equip && "Soulcoiler Ritual Vessel missing equip effect" );
+
+      absorb_amount = equip->driver()->effectN( 1 ).average( effect.item );
+      absorb_amount *= role_mult( effect );
+
+      channeled = tick_zero = true;
+      harmful   = false;
+
+      target = player;
+    }
+
+    absorb_buff_t* get_buff( player_t* t )
+    {
+      if ( absorb_buffs[ t ] )
+        return absorb_buffs[ t ];
+
+      auto buff = make_buff<fractional_absorb_t>( t, player, "soulcoil_barrier", absorb_spell )
+                      ->set_absorb_fraction( absorb_spell->effectN( 2 ).percent() )
+                      ->set_absorb_source( e.player->get_stats( "soulcoiler_ritual_vessel", this ) );
+
+      absorb_buffs[ t ] = buff;
+
+      return buff;
+    }
+
+    void reset() override
+    {
+      proc_heal_t::reset();
+      absorb_target_cache.is_valid = false;
+    }
+
+    void activate() override
+    {
+      proc_heal_t::activate();
+
+      sim->healing_no_pet_list.register_callback( [ this ]( player_t* ) { absorb_target_cache.is_valid = false; } );
+    }
+
+    size_t absorb_available_targets( std::vector<player_t*>& target_list ) const
+    {
+      target_list.clear();
+
+      for ( const auto& t : sim->healing_no_pet_list )
+      {
+        if ( !t->is_sleeping() )
+          target_list.push_back( t );
+      }
+
+      return target_list.size();
+    }
+
+    std::vector<player_t*>& absorb_target_list() const
+    {
+      if ( !absorb_target_cache.is_valid )
+      {
+        absorb_available_targets( absorb_target_cache.list );
+        absorb_target_cache.is_valid = true;
+      }
+
+      return absorb_target_cache.list;
+    }
+
+    void execute() override
+    {
+      proc_heal_t::execute();
+
+      // cancel the player-ready event triggered by use_item_t
+      event_t::cancel( player->readying );
+
+      // prevent auto attacks while channeling
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      proc_heal_t::tick( d );
+
+      auto& tl = absorb_target_list();
+
+      if ( tl.size() > 0 )
+      {
+        rng().shuffle( tl.begin(), tl.end() );
+
+        auto target = tl.begin();
+        while ( target < tl.end() && get_buff( *target )->check() )
+        {
+          target = next( target );
+        }
+
+        get_buff( *target )->trigger( -1, absorb_amount );
+      }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      // cache first since last_tick() will null out player->channeling
+      bool was_channeling = player->channeling == this;
+
+      proc_heal_t::last_tick( d );
+
+      // restart the player since the player-ready from use_item_t was canceled
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
+    }
+  };
+
+  effect.execute_action = create_proc_action<soulcoiler_ritual_vessel_t>( "soulcoiler_ritual_vessel", effect,
+                                                                          effect.player->find_spell( 1307578 ) );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -5628,7 +5788,9 @@ void register_special_effects()
   register_special_effect( 1291728, bite_of_zuljan::zuljins_guillotine_technique );
   register_special_effect( 1293304, trinkets::knot_of_writhing_serpents );
   register_special_effect( 1294329, trinkets::ulateks_faithful );
-  register_special_effect( 1293326, trinkets::tattered_amani_war_banner );
+  register_special_effect( 1293326, trinkets::tattered_amani_war_banner );// 1291885 base driver
+  register_special_effect( 1291885, DISABLED_EFFECT );                     // Soulcoiler Ritual Vessel equip Driver
+  register_special_effect( 1291894, trinkets::soulcoiler_ritual_vessel );  // 1291894 use driver
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
