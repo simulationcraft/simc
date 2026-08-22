@@ -2841,11 +2841,14 @@ void sim_t::init()
                                     : single_actor_batch ? players_for_content - 1
                                                          : players_for_content - ( healers + dps + tanks );
 
-    while ( healing_targets_to_create > 0 )
+    if ( healers > 0 || healing > 0 )
     {
-      heal_target = module_t::heal_enemy()->create_player(
-          this, "Healing_Target_" + util::to_string( healing_targets_to_create ), RACE_NONE );
-      healing_targets_to_create--;
+      while ( healing_targets_to_create > 0 )
+      {
+        heal_target = module_t::heal_enemy()->create_player(
+            this, "Healing_Target_" + util::to_string( healing_targets_to_create ), RACE_NONE );
+        healing_targets_to_create--;
+      }
     }
   }
 
