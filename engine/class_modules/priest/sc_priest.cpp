@@ -2868,27 +2868,12 @@ double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buffs.idol_of_yshaarj->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.idol_of_yshaarj->check_value() );
-  }
-
-  if ( buffs.borrowed_time->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.borrowed_time->check_value() );
-  }
-
   return h;
 }
 
 double priest_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
-
-  if ( buffs.borrowed_time->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.borrowed_time->check_value() );
-  }
 
   return h;
 }

@@ -2214,8 +2214,8 @@ void priest_t::create_buffs_shadow()
           } ) );
 
   buffs.idol_of_yshaarj = make_buff( this, "idol_of_yshaarj", talents.shadow.idol_of_yshaarj_buff )
-                              ->set_default_value_from_effect( 1 )
-                              ->add_invalidate( CACHE_HASTE );
+                              ->set_default_value_from_effect( 1, 0.01 )
+                              ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buffs.shattered_psyche =
       make_buff( this, "shattered_psyche", talents.shadow.shattered_psyche->effectN( 2 ).trigger() )
