@@ -309,7 +309,7 @@ void marksmanship( player_t* p )
   sentst->add_action( "rapid_fire,if=buff.precise_shots.up&talent.unload&talent.no_scope" );
   sentst->add_action( "kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up" );
   sentst->add_action( "multishot,target_if=max:debuff.sentinels_mark.down,if=buff.precise_shots.up&active_enemies>1&talent.aspect_of_the_hydra&(!fight_style.dungeonroute|!max_prio_damage|active_enemies>2)", "Multi-Shot as a PS spender on 2T with Hydra talented. In DRoute, do it on 3 or more targets." );
-  sentst->add_action( "arcane_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)" );
+  sentst->add_action( "arcane_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up" );
   sentst->add_action( "rapid_fire,target_if=max:debuff.sentinels_mark.down,if=!fight_style.dungeonroute" );
   sentst->add_action( "rapid_fire" );
   sentst->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up" );
