@@ -32,7 +32,7 @@ actions.drst+=/explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up
 actions.drst+=/volley
 actions.drst+=/aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time
 actions.drst+=/trueshot,if=variable.trueshot_ready
-actions.drst+=/rapid_fire,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
+actions.drst+=/rapid_fire
 actions.drst+=/wailing_arrow
 # Multi-Shot as a PS spender on 2T with Hydra talented. In DRoute, do it on 3 or more targets.
 actions.drst+=/multishot,target_if=max:debuff.spotters_mark.down,if=buff.precise_shots.up&active_enemies>1&talent.aspect_of_the_hydra&(!fight_style.dungeonroute|active_enemies>2)
@@ -64,7 +64,7 @@ actions.sentaoe+=/moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max
 actions.sentaoe+=/multishot,target_if=max:debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down
 actions.sentaoe+=/rapid_fire,target_if=max:debuff.sentinels_mark.down,if=talent.unload,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
 actions.sentaoe+=/rapid_fire,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
-actions.sentaoe+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
+actions.sentaoe+=/aimed_shot,target_if=max:debuff.sentinels_mark.up,if=buff.trick_shots.remains>cast_time
 actions.sentaoe+=/moonlight_chakram
 actions.sentaoe+=/multishot,if=focus>cost+action.aimed_shot.cost&!max_prio_damage
 actions.sentaoe+=/steady_shot
@@ -74,13 +74,14 @@ actions.sentst+=/explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.u
 actions.sentst+=/volley
 actions.sentst+=/trueshot,if=variable.trueshot_ready
 actions.sentst+=/moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max
+actions.sentst+=/rapid_fire,if=buff.precise_shots.up&talent.unload&talent.no_scope
 actions.sentst+=/kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up
 # Multi-Shot as a PS spender on 2T with Hydra talented. In DRoute, do it on 3 or more targets.
 actions.sentst+=/multishot,target_if=max:debuff.sentinels_mark.down,if=buff.precise_shots.up&active_enemies>1&talent.aspect_of_the_hydra&(!fight_style.dungeonroute|!max_prio_damage|active_enemies>2)
 actions.sentst+=/arcane_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)
-actions.sentst+=/rapid_fire,target_if=max:debuff.sentinels_mark.down,if=!fight_style.dungeonroute,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
-actions.sentst+=/rapid_fire,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
-actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage
+actions.sentst+=/rapid_fire,target_if=max:debuff.sentinels_mark.down,if=!fight_style.dungeonroute
+actions.sentst+=/rapid_fire
+actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up
 actions.sentst+=/moonlight_chakram
 actions.sentst+=/steady_shot
 
