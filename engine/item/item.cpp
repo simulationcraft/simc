@@ -362,7 +362,7 @@ std::string item_t::gem_stats_str() const
 
 std::string item_t::enchant_stats_str() const
 {
-  if ( parsed.enchant_stats.empty() )
+  if ( parsed.enchant_stats.empty() && parsed.enchant_notes.empty() )
   {
     return {};
   }
@@ -373,6 +373,11 @@ std::string item_t::enchant_stats_str() const
   {
     s << "+" << enchant_stat.value
       << " " << util::stat_type_abbrev( enchant_stat.stat ) << ", ";
+  }
+
+  for ( const auto& note : parsed.enchant_notes )
+  {
+    s << note << ", ";
   }
 
   std::string str = s.str();

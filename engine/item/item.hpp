@@ -110,6 +110,7 @@ struct item_t
     std::vector<stat_pair_t>                         gem_stats, socket_bonus_stats;
     std::string                                      encoded_enchant;
     std::vector<stat_pair_t>                         enchant_stats;
+    std::vector<std::string>                         enchant_notes;
     std::vector<stat_pair_t>                         temp_enchant_stats;
     std::string                                      encoded_addon;
     std::vector<stat_pair_t>                         addon_stats;

@@ -295,6 +295,11 @@ bool enchant::passive_enchant( item_t& item, unsigned spell_id )
         item.player->base.stacking_movement_speed_modifier += effect.percent();
         ret = true;
         break;
+      case A_MOD_MAX_MANA_PCT:
+        item.player->resources.initial_multiplier[ RESOURCE_MANA ] *= 1.0 + effect.percent();
+        item.parsed.enchant_notes.push_back( fmt::format( "+{}% Mana", (int)value ) );
+        ret = true;
+        break;
       default:
         break;
     }
