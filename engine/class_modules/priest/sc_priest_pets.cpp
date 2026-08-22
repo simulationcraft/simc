@@ -334,9 +334,6 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
   {
     double mul = p().o().talents.discipline.atonement->effectN( 1 ).percent();
 
-    if ( !p().o().options.discipline_in_raid )
-      mul *= 1 + p().o().talents.discipline.atonement->effectN( 3 ).percent();
-
     if ( p().o().talents.discipline.abyssal_reverie.enabled() &&
          ( dbc::get_school_mask( s->action->school ) & SCHOOL_SHADOW ) != SCHOOL_SHADOW && affected_by_reveries )
       mul *= 1 + p().o().talents.discipline.abyssal_reverie->effectN( 1 ).percent();

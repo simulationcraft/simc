@@ -4394,7 +4394,7 @@ void soulcoiler_ritual_vessel( special_effect_t& effect )
         rng().shuffle( tl.begin(), tl.end() );
 
         auto target = tl.begin();
-        while ( target < tl.end() && get_buff( *target )->check() )
+        while ( next( target ) < tl.end() && get_buff( *target )->check() )
         {
           target = next( target );
         }
