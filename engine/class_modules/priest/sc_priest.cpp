@@ -359,6 +359,11 @@ struct mind_blast_t final : public mind_blast_base_t
     }
 
     mind_blast_base_t::execute();
+
+    if ( priest().talents.shadow.insidious_ire.enabled() && !insidious_ire_active() )
+    {
+      priest().procs.mindblasts_without_ire->occur();
+    }
   }
 };
 
@@ -386,6 +391,11 @@ struct void_blast_shadow_t final : public mind_blast_base_t
     if ( priest().talents.voidweaver.darkening_horizon.enabled() )
     {
       priest().extend_entropic_rift();
+    }
+
+    if ( priest().talents.shadow.insidious_ire.enabled() && !insidious_ire_active() )
+    {
+      priest().procs.voidblasts_without_ire->occur();
     }
   }
 
@@ -2639,6 +2649,8 @@ void priest_t::create_procs()
   procs.void_apparition_cthun           = get_proc( "Idol of C'Thun from Tentacle Slam" );
   procs.tentacle_slam_idol              = get_proc( "Idol spell from Tentacle Slam" );
   procs.midnight_s2_4pc_void_volley     = get_proc( "Void Volley access from Midnight Season 2 4pc" );
+  procs.mindblasts_without_ire          = get_proc( "Mindblasts cast without Insidious Ire" );
+  procs.voidblasts_without_ire          = get_proc( "Voidblasts cast without Insidious Ire" );
   // Holy
   procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
   procs.divine_image          = get_proc( "Divine Image from Holy Words" );

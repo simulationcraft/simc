@@ -797,6 +797,8 @@ public:
     propagate_const<proc_t*> void_apparition_cthun;
     propagate_const<proc_t*> tentacle_slam_idol;
     propagate_const<proc_t*> midnight_s2_4pc_void_volley;
+    propagate_const<proc_t*> mindblasts_without_ire;
+    propagate_const<proc_t*> voidblasts_without_ire;
     // Holy
     propagate_const<proc_t*> divine_favor_chastise;
     propagate_const<proc_t*> divine_image;
