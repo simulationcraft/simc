@@ -59,7 +59,7 @@ actions.cds+=/blood_fury,if=((buff.voidform.up|!talent.voidform)&buff.power_infu
 actions.cds+=/ancestral_call,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=15
 actions.cds+=/invoke_external_buff,name=power_infusion,if=(buff.voidform.up|!talent.voidform)&!buff.power_infusion.up
 actions.cds+=/invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40
-# Sync Power Infusion with Voidform or Dark Ascension
+# Sync Power Infusion with Voidform
 actions.cds+=/power_infusion,if=(buff.voidform.up|!talent.voidform)&!buff.power_infusion.up
 actions.cds+=/halo
 actions.cds+=/voidform,if=active_dot.shadow_word_pain>=active_dot.vampiric_touch
@@ -74,19 +74,15 @@ actions.main=variable,name=dots_up,op=set,value=active_dot.vampiric_touch=active
 actions.main+=/call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_tentacle_slam|active_enemies>2)&variable.dots_up
 # High Priority Shadow Word: Death when Devour Matter is active (target shielded or forced)
 actions.main+=/shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.shadow_word_madness.ticking,if=(priest.force_devour_matter|target.has_absorb)&talent.devour_matter
-# Do not overcap on insanity, but hold it for Voidform on a single long-lived target
-actions.main+=/shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35&(cooldown.voidform.remains>25|target.time_to_die<25|active_enemies>1|insanity.deficit<=5)|buff.mind_devourer.react|!raid_event.adds.exists&target.time_to_die<=10|buff.entropic_rift.up&(cooldown.voidform.remains>=75|!talent.ancient_madness)|buff.voidform.up
-# Blast more burst :wicked:
-actions.main+=/void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)
-# Use Tentacle Slam to prevent capping charges or to refresh Vampiric Touch
+actions.main+=/shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max*2|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35&(cooldown.voidform.remains>25|target.time_to_die<25|active_enemies>1|insanity.deficit<=5)|buff.mind_devourer.react|!raid_event.adds.exists&target.time_to_die<=10|buff.entropic_rift.up&(cooldown.voidform.remains>=75|!talent.ancient_madness)|buff.voidform.up
 actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=dot.vampiric_touch.refreshable&(!in_flight|active_dot.vampiric_touch+6<active_enemies)|cooldown.tentacle_slam.full_recharge_time<=gcd.max*2
 # Use Void Torrent if it will get near full Mastery Value
 actions.main+=/void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&variable.dots_up
 # Put out Shadow Word: Pain on enemies that will live at least 12s as a filler when talented into Invoked Nightmare.
 actions.main+=/shadow_word_pain,target_if=max:(refreshable*100000+target.time_to_die+dot.vampiric_touch.ticking*10000),if=talent.invoked_nightmare&refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|action.tentacle_slam.in_flight)
 actions.main+=/void_volley,if=cooldown.voidform.up
-# Spend Mind Blast charges unless the Mind Devourer proc is reaction-ready
-actions.main+=/mind_blast,target_if=max:dot.shadow_word_madness.remains,if=(!buff.mind_devourer.react|!talent.mind_devourer)
+actions.main+=/void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)
+actions.main+=/mind_blast,target_if=max:dot.shadow_word_madness.remains,if=(!buff.mind_devourer.react|!talent.mind_devourer)&(!talent.void_blast|!talent.thought_harvester|cooldown.void_torrent.remains>=gcd.max*2|variable.holding_tentacle_slam|!variable.dots_up)
 actions.main+=/mind_flay_insanity,target_if=max:dot.shadow_word_madness.remains
 # Use Tentacle Slam for Void Apparitions or Maddening Tentacles value, holding for adds if needed
 actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=(talent.void_apparitions|talent.maddening_tentacles)&(raid_event.adds.in>30|raid_event.adds.in>5&cooldown.tentacle_slam.full_recharge_time<=gcd.max*2)
