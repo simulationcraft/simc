@@ -1675,7 +1675,10 @@ highchart::time_series_t& chart::generate_stats_timeline(
 
 bool chart::generate_actor_dps_series( highchart::time_series_t& series, const player_t& p )
 {
-  if ( p.collected_data.dps.mean() <= 0 )
+  bool is_hps = p.primary_role() == ROLE_HEAL;
+
+  if ( is_hps && ( p.collected_data.hps.mean() + p.collected_data.aps.mean() ) <= 0 ||
+       !is_hps && p.collected_data.dps.mean() <= 0 )
   {
     return false;
   }
@@ -1690,8 +1693,8 @@ bool chart::generate_actor_dps_series( highchart::time_series_t& series, const p
   series.set( "yAxis.min", 0 );
   series.set_yaxis_title( "Damage per second" );
   series.set_title( util::encode_html( p.name_str ) + " Damage per second" );
-  series.add_simple_series( "area", color::class_color( p.type ), "DPS", timeline_dps.data() );
-  series.set_mean( util::round( p.collected_data.dps.mean(), p.sim->report_precision ) );
+  series.add_simple_series( "area", color::class_color( p.type ), is_hps ? "HPS" : "DPS", timeline_dps.data() );
+  series.set_mean( util::round( is_hps ? p.collected_data.hps.mean() + p.collected_data.aps.mean() : p.collected_data.dps.mean(), p.sim->report_precision ) );
 
   return true;
 }
