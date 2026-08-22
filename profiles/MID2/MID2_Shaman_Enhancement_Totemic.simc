@@ -10,7 +10,7 @@ omnium_talents=136822:1/136823:1/136817:1/136821:1/136814:1
 
 # Default consumables
 potion=potion_of_recklessness_2
-flask=flask_of_the_blood_knights_2
+flask=flask_of_the_shattered_sun_2
 food=harandar_celebration
 augmentation=void_touched
 temporary_enchant=disabled
@@ -146,7 +146,7 @@ actions.single_totemic+=/crash_lightning
 actions.single_totemic+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
 actions.single_totemic+=/flame_shock
 
-head=serpent_crown_of_the_ophidian_oracle,id=271483,bonus_id=10835/12854/13662,gem_id=240967,enchant_id=7991,redirected_base_stats=251220
+head=serpent_crown_of_the_ophidian_oracle,id=271483,bonus_id=10835/12854/13662,gem_id=240967,enchant_id=7991,redirected_base_stats=268230
 neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13848/13987,gem_id=240918/240898
 shoulders=hissing_mantle_of_the_ophidian_oracle,id=271481,bonus_id=13848,enchant_id=8001,redirected_base_stats=268231
 back=silken_voodoo_drape,id=268253,bonus_id=13848
@@ -157,7 +157,7 @@ waist=serpentine_mixing_belt,id=268254,bonus_id=10835/12854,gem_id=240898
 legs=leggings_of_the_ophidian_oracle,id=271482,bonus_id=13662/13848,enchant_id=8159,redirected_base_stats=268237
 feet=boots_of_the_reckless_wayfarer,id=268258,bonus_id=12854/13662,enchant_id=7963
 finger1=apex_brutes_claw_ring,id=268252,bonus_id=12854/13750,gem_id=240890,enchant_id=7967
-finger2=sickening_signet_of_atroxus,id=252258,bonus_id=12854/13750,gem_id=240906,enchant_id=7967
+finger2=band_of_the_amani_warlord,id=273792,bonus_id=12854/13750,gem_id=240890,enchant_id=7967
 trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=13335/13848
 trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13662/13848
 main_hand=amanmuso_warlords_vengeance,id=268209,bonus_id=13848,enchant_id=8041
@@ -167,9 +167,9 @@ off_hand=farstriders_chopper,id=237850,bonus_id=8960/13751/13771/13836/12497,enc
 # gear_ilvl=338.63
 # gear_agility=1906
 # gear_stamina=40645
-# gear_crit_rating=833
-# gear_haste_rating=964
-# gear_mastery_rating=1267
+# gear_crit_rating=1107
+# gear_haste_rating=827
+# gear_mastery_rating=1129
 # gear_versatility_rating=123
 # gear_speed_rating=22
 # gear_avoidance_rating=130
