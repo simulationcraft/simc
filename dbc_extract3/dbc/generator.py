@@ -4892,8 +4892,16 @@ class TraitGenerator(DataGenerator):
                     _name = self.db('SpellName')[int(override[11:])].name
 
             fields.append("{:>40s}".format(f'"{_name}"'))
-            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["specs"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["specs"]))])} }}')
-            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["starter"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["starter"]))])} }}')
+
+            specs_list = sorted(entry["specs"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["specs"]))
+            starter_list = sorted(entry["starter"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["starter"]))
+
+            # granted hero traits with no explicit starter spec are automatically given to all available specs
+            if entry["is_granted"] and entry["tree"] == 3 and all(x == 0 for x in starter_list):
+                starter_list = specs_list.copy()
+
+            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in specs_list])} }}')
+            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in starter_list])} }}')
 
             _subtree = entry['entry'].id_trait_sub_tree if entry['tree'] == 4 else entry['node'].id_trait_sub_tree
             if _subtree != 0:
