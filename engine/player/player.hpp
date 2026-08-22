@@ -820,6 +820,9 @@ struct player_t : public actor_t
     double vessel_of_tortured_souls_miss_chance = 0.6;
     // Duration multiplier for Lightspire Core's mastery buff
     double lightspire_core_duration_multiplier = 0.5;
+    // Fraction of Rite of the Hash'ey procs that happen while above the enchant's 80% health
+    // threshold, i.e. how often the proc favors your highest secondary stat instead of a random one.
+    double rite_of_the_hashey_uptime = 0.6;
   } midnight_opts;
 
 private:
