@@ -1605,13 +1605,10 @@ public:
     if ( triggers_crusade_stacks && p->talents.crusade->ok() && p->buffs.avenging_wrath->up() )
     {
       int crusade_stacks = as<int>( num_hopo_spent );
-      // Hammer of Light always gives 5 Stacks, even if it's free
-      if ( is_hammer_of_light_main )
+      // 2026-08-22 Hammer of Light always gives 9 Stacks. Because
+      if ( is_hammer_of_light_main && p->bugs)
       {
-        crusade_stacks = as<int>( hol_cost );
-        // 2025-12-24 Fluttershy: Currently, if HoL is cast with less then 5 stacks, you gain 10 Crusade Stacks
-        if ( p->bugs && p->buffs.avenging_wrath->stack() < 5 )
-          crusade_stacks *= 2;
+        crusade_stacks = 9;
       }
       if ( crusade_stacks > 0 )
         p->buffs.avenging_wrath->trigger( as<int>( crusade_stacks ) );
