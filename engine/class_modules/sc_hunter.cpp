@@ -5551,8 +5551,7 @@ struct aimed_shot_t : public aimed_shot_base_t
       
     if ( aspect_of_the_hydra && hydra_target )
     {
-      // Delay these secondary shots since they can consume Lock and Load if it triggers off a queued cast.
-      make_event( p()->sim, 10_ms, [ this ]() { aspect_of_the_hydra->execute_on_target( hydra_target ); } );
+      aspect_of_the_hydra->execute_on_target( hydra_target );
     }
 
     if ( p()->talents.pact_of_the_hollow.ok() )
