@@ -223,6 +223,8 @@ void discipline( player_t* p )
   precombat->add_action( "flash_heal,target_if=target!=self" );
   precombat->add_action( "power_word_radiance,target_if=min:debuff.atonement.remains+10*(target=self)" );
   precombat->add_action( "power_word_radiance,target_if=min:debuff.atonement.remains+10*(target=self)" );
+  precombat->add_action( "variable,name=trinket_1_ogcd_cast,value=trinket.1.is.soulcoiler_ritual_vessel" );
+  precombat->add_action( "variable,name=trinket_2_ogcd_cast,value=trinket.2.is.soulcoiler_ritual_vessel" );
   precombat->add_action( "evangelism,target_if=min:debuff.atonement.remains+10*(target=self)" );
   precombat->add_action( "mind_blast" );
 
@@ -234,7 +236,10 @@ void discipline( player_t* p )
   default_->add_action( "invoke_external_buff,name=power_infusion" );
   default_->add_action( "potion" );
   default_->add_action( "use_item,name=hex_lords_dooming_idol,if=buff.hex_lords_doom.stack>=5|fight_remains<=30" );
-  default_->add_action( "use_items" );
+  default_->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_ogcd_cast" );
+  default_->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_ogcd_cast" );
+  default_->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_ogcd_cast&gcd.remains>=0.75*gcd.max" );
+  default_->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_ogcd_cast&gcd.remains>=0.75*gcd.max" );
   default_->add_action( "mind_blast" );
   default_->add_action( "evangelism,target_if=min:debuff.atonement.remains+10*(target=self)" );
   default_->add_action( "uppies,nested_action=void_shield" );
