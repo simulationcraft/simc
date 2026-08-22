@@ -13132,7 +13132,7 @@ Effects          :
 Description      : $@spelldesc433901
 
 Name             : Vampiric Strike (id=433901) [Spell Family (15), Passive] 
-Talent Entry     : San'layn (Blood, Unholy) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : San'layn (Blood, Unholy) [free=(Blood, Unholy), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -13982,7 +13982,7 @@ Effects          :
 Description      : $@spelldesc437161
 
 Name             : Reaper's Mark (id=439843) [Spell Family (15)] 
-Talent Entry     : Deathbringer (Blood, Frost) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Deathbringer (Blood, Frost) [free=(Blood, Frost), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -14697,7 +14697,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 
 Name             : Rider's Champion (id=444005) [Spell Family (15), Passive] 
-Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Rider of the Apocalypse (Frost, Unholy) [free=(Frost, Unholy), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None

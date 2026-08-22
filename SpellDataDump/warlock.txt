@@ -12588,7 +12588,7 @@ Effects          :
 Description      : $@spelldesc428351
 
 Name             : Diabolic Ritual (id=428514) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Diabolist (Demonology, Destruction) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Diabolist (Demonology, Destruction) [free=(Demonology, Destruction), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -13872,7 +13872,7 @@ Effects          :
 Description      : $@spelldesc430014
 
 Name             : Wither (id=445465) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=1, col=3, max_rank=1, req_points=0, override="Wither" (id=445468)]
+Talent Entry     : Hellcaller (Affliction, Destruction) [free=(Affliction, Destruction), tree=hero, row=1, col=3, max_rank=1, req_points=0, override="Wither" (id=445468)]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -14015,7 +14015,7 @@ Description      : $@spelldesc440059
 Tooltip          : Time between attacks increased $w1% and casting speed increased by $w2%.
 
 Name             : Demonic Soul (id=449614) [Spell Family (5), Passive, Hidden] 
-Talent Entry     : Soul Harvester (Affliction, Demonology) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Soul Harvester (Affliction, Demonology) [free=(Affliction, Demonology), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
 Spell Type       : None

@@ -2212,7 +2212,7 @@ Effects          :
 Description      : $@spelldesc115294
 
 Name             : Invoke Xuen, the White Tiger (id=123904) [Spell Family (53)] 
-Talent Entry     : Conduit of the Celestials (Windwalker) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Conduit of the Celestials (Windwalker) [free=(Windwalker), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -13444,7 +13444,7 @@ Description      : $@spelldesc442747
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Celestial Conduit (id=443028) [Spell Family (53)] 
-Talent Entry     : Conduit of the Celestials (Mistweaver) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Conduit of the Celestials (Mistweaver) [free=(Mistweaver), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -14502,7 +14502,7 @@ Effects          :
 Description      : The duration of snare effects on you is reduced by $s1%.
 
 Name             : Aspect of Harmony (id=450508) [Spell Family (53), Passive] 
-Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [free=(Brewmaster, Mistweaver), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14903,7 +14903,7 @@ Description      : $@spelldesc450595
 Tooltip          : Movement slowed by $w1%.
 
 Name             : Flurry Strikes (id=450615) [Spell Family (53), Passive] 
-Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [free=(Brewmaster, Windwalker), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic

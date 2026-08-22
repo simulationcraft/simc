@@ -14904,7 +14904,7 @@ Allies receiving this effect will become Sated and unable to benefit from Harrie
 Tooltip          : Haste increased by $s1%.
 
 Name             : Black Arrow (id=466930) [Spell Family (9)] 
-Talent Entry     : Dark Ranger (Beast Mastery) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Dark Ranger (Beast Mastery) [free=(Beast Mastery), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Shadow
 Spell Type       : Ranged
@@ -14932,7 +14932,7 @@ Effects          :
 Description      : You attempt to finish off a wounded target, dealing $s1 Shadow damage and $468572o1 Shadow damage over $468572d. Only usable on enemies above $s3% health or below $s2% health.
 
 Name             : Black Arrow (id=466932) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Dark Ranger (Marksmanship) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Dark Ranger (Marksmanship) [free=(Marksmanship), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -15612,7 +15612,7 @@ Description      : $@spelldesc260285
 Tooltip          : Your next Explosive Shot deals $s1% increased damage.
 
 Name             : Howl of the Pack Leader (id=471876) [Spell Family (9), Passive] 
-Talent Entry     : Pack Leader (Beast Mastery, Survival) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Pack Leader (Beast Mastery, Survival) [free=(Beast Mastery, Survival), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -17876,7 +17876,7 @@ Description      : $@spelldesc459843
 Tooltip          : The damage of your next Flamefang Pitch is increased by $s1%.
 
 Name             : Sentinel (id=1253599) [Spell Family (9), Passive] 
-Talent Entry     : Sentinel (Marksmanship, Survival) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Sentinel (Marksmanship, Survival) [free=(Marksmanship, Survival), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Hunter
 School           : Physical
 Spell Type       : None

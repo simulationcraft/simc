@@ -10929,7 +10929,7 @@ Effects          :
 Description      : $@spelldesc436897
 
 Name             : Art of the Glaive (id=442290) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [free=(Havoc, Vengeance), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -11591,8 +11591,8 @@ Effects          :
 Description      : $@spelldesc451258
 
 Name             : Demonsurge (id=452402) [Spell Family (107), Passive] 
-Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
-                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=1, col=3, max_rank=1, req_points=1, name="Voidsurge"]
+Talent Entry     : Fel-Scarred (Havoc, Devourer) [free=(Havoc, Devourer), tree=hero, row=1, col=3, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [free=(Havoc, Devourer), tree=hero, row=1, col=3, max_rank=1, req_points=1, name="Voidsurge"]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None

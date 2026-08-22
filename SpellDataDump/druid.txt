@@ -15739,7 +15739,7 @@ Effects          :
 Description      : Heals a friendly target for $s1.  Receives $s2% bonus from $@spellname77495.
 
 Name             : Boundless Moonlight (id=424058) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Elune's Chosen (Balance, Guardian) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Elune's Chosen (Balance, Guardian) [free=(Balance, Guardian), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Druid
 School           : Shadow
 Spell Type       : None
@@ -16732,7 +16732,7 @@ Effects          :
 Description      : Your Regrowth protects you, reducing damage you take by $s1% while your Regrowth is on you.
 
 Name             : Dream Surge (id=433831) [Spell Family (7), Passive] 
-Talent Entry     : Keeper of the Grove (Balance, Restoration) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Keeper of the Grove (Balance, Restoration) [free=(Balance, Restoration), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -16856,7 +16856,7 @@ Description      : Time elapsed while your major abilities are available to be u
 Affects $?a137012[Nature's Swiftness, Incarnation: Tree of Life,][Force of Nature,] $?a137012[]?a394013[Incarnation: Chosen of Elune, ][Celestial Alignment, ]and Convoke the Spirits.
 
 Name             : Thriving Growth (id=439528) [Spell Family (7), Passive] 
-Talent Entry     : Wildstalker (Feral, Restoration) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Wildstalker (Feral, Restoration) [free=(Feral, Restoration), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -17369,7 +17369,7 @@ Effects          :
 Description      : $@spelldesc440120
 
 Name             : Ravage (id=441583) [Spell Family (7), Passive] 
-Talent Entry     : Druid of the Claw (Feral, Guardian) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Druid of the Claw (Feral, Guardian) [free=(Feral, Guardian), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Druid
 School           : Physical
 Spell Type       : None

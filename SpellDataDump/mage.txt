@@ -11445,8 +11445,8 @@ Description      : $@spelldesc422881
 Tooltip          : Empowering Arcane Missiles.
 
 Name             : Frostfire Bolt (id=431044) [Spell Family (3)] 
-Talent Entry     : Frostfire (Frost) [tree=hero, row=1, col=3, max_rank=1, req_points=0, replace="Frostbolt" (id=116)]
-                 : Frostfire (Fire) [tree=hero, row=1, col=3, max_rank=1, req_points=0, replace="Fireball" (id=133)]
+Talent Entry     : Frostfire (Frost) [free=(Frost), tree=hero, row=1, col=3, max_rank=1, req_points=0, replace="Frostbolt" (id=116)]
+                 : Frostfire (Fire) [free=(Fire), tree=hero, row=1, col=3, max_rank=1, req_points=0, replace="Fireball" (id=133)]
 Class            : Mage
 School           : Frostfire
 Spell Type       : Magic
@@ -11969,7 +11969,7 @@ Effects          :
 Description      : Conjure raw Frost magic into a sharp projectile that deals $s1 Frost damage.
 
 Name             : Splintering Sorcery (id=443739) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Spellslinger (Arcane, Frost) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Spellslinger (Arcane, Frost) [free=(Arcane, Frost), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -12320,7 +12320,7 @@ Effects          :
 Description      : Direct damage from $?c1[Arcane][Frost] Splinters reduces the cooldown of $?c1[Arcane][Frozen] Orb by $?c1[${$s1/1000}.2][${$s2/1000}.2] sec.
 
 Name             : Spellfire Spheres (id=448601) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Sunfury (Arcane, Fire) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Sunfury (Arcane, Fire) [free=(Arcane, Fire), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None

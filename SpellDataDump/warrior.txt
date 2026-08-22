@@ -12113,7 +12113,7 @@ Effects          :
 Description      : $?c1[Mortal Strike][Shield Slam] critical strikes grant an additional stack of Colossal Might.
 
 Name             : Lightning Strikes (id=434969) [Spell Family (4), Passive] 
-Talent Entry     : Mountain Thane (Fury, Protection) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Mountain Thane (Fury, Protection) [free=(Fury, Protection), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12353,7 +12353,7 @@ Effects          :
 Description      : Your attacks trigger Lightning Strikes $s1% more often.
 
 Name             : Demolish (id=436358) [Spell Family (4)] 
-Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Colossus (Arms, Protection) [free=(Arms, Protection), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -12886,7 +12886,7 @@ Effects          :
 Description      : $@spelldesc6544
 
 Name             : Slayer's Dominance (id=444767) [Spell Family (4), Passive, Hidden] 
-Talent Entry     : Slayer (Arms, Fury) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Slayer (Arms, Fury) [free=(Arms, Fury), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Warrior
 School           : Physical
 Spell Type       : None
