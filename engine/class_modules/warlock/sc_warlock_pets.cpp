@@ -1540,22 +1540,6 @@ struct burning_cleave_t : public warlock_pet_spell_t
     aoe = -1;
     reduced_aoe_targets = as<int>( data().effectN( 2 ).base_value() );
   }
-
-  int n_targets() const override
-  {
-    // Tyrant with Antoran Armaments (Burning Cleave) has a very narrow arc, so it often misses some targets.
-    // This behavior is replicated through a configurable option that controls the target ratio affected by Burning Cleave.
-    if ( p()->o()->talents.antoran_armaments.ok() && p()->o()->tyrant_antoran_armaments_target_mul < 1.0 )
-    {
-      assert( warlock_pet_spell_t::n_targets() == -1 );
-      const size_t cur_n_targets = target_list().size();
-      return std::max( 1, as<int>( std::lround( cur_n_targets * p()->o()->tyrant_antoran_armaments_target_mul ) ) );
-    }
-    else
-    {
-      return warlock_pet_spell_t::n_targets();
-    }
-  }
 };
 
 struct demonic_tyrant_leap_t : warlock_pet_t::travel_t
@@ -1845,6 +1829,7 @@ dominion_of_argus_pet_t::dominion_of_argus_pet_t( warlock_t* owner, std::string_
 {
   resource_regeneration = regen_type::DISABLED;
   affected_by.demonic_brutality = false;
+  is_implosion_candidate = false;
   // NOTE: 2026-07-11 DoA guardians do not trigger Hellbent Commander on arise/demise (must wait to player heartbeat) (bug?)
   triggers.hellbent_commander_arise &= !bugs;
   triggers.hellbent_commander_demise &= !bugs;
@@ -2589,6 +2574,7 @@ namespace diabolist
     npc_id = owner->hero.summon_overlord->effectN( 1 ).misc_value1();
 
     is_diabolist_guardian = true;
+    is_implosion_candidate = false;
     affected_by.demonic_brutality = false;
     // NOTE: 2026-07-11 Diabolist guardians do not trigger Hellbent Commander (bug?)
     triggers.hellbent_commander_heartbeat &= !bugs;
@@ -2712,6 +2698,7 @@ namespace diabolist
     npc_id = owner->hero.summon_mother->effectN( 1 ).misc_value1();
 
     is_diabolist_guardian = true;
+    is_implosion_candidate = false;
     affected_by.demonic_brutality = false;
     // NOTE: 2026-07-11 Diabolist guardians do not trigger Hellbent Commander (bug?)
     triggers.hellbent_commander_heartbeat &= !bugs;
@@ -2806,6 +2793,7 @@ namespace diabolist
     npc_id = owner->hero.summon_pit_lord->effectN( 1 ).misc_value1();
 
     is_diabolist_guardian = true;
+    is_implosion_candidate = false;
     affected_by.demonic_brutality = false;
     // NOTE: 2026-07-11 Diabolist guardians do not trigger Hellbent Commander (bug?)
     triggers.hellbent_commander_heartbeat &= !bugs;
@@ -3024,6 +3012,8 @@ rampaging_demonic_soul_t::rampaging_demonic_soul_t( warlock_t* owner, std::strin
   affected_by.demonic_brutality = false;
   action_list_str               = "soul_swipe";
   owner_coeff.sp_from_sp        = 1.0;
+
+  is_implosion_candidate = false;
   // NOTE: 2026-07-11 Demonic Soul does not trigger Hellbent Commander (bug?)
   triggers.hellbent_commander_heartbeat &= !bugs;
   triggers.hellbent_commander_arise  &= !bugs;
