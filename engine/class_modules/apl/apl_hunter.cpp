@@ -280,7 +280,7 @@ void marksmanship( player_t* p )
   draoe->add_action( "black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
   draoe->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.trick_shots.down" );
   draoe->add_action( "trueshot,if=variable.trueshot_ready" );
-  draoe->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload),interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1" );
+  draoe->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(buff.bulletstorm.remains<action.aimed_shot.execute_time|talent.unload)" );
   draoe->add_action( "wailing_arrow,if=!cooldown.black_arrow.ready" );
   draoe->add_action( "multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
   draoe->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time" );
