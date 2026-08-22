@@ -601,6 +601,62 @@ void farstriders_hawkeye( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Rite of the Hash'ey
+// 1297651 Rank 1 Driver
+// 1297652 Rank 2 Driver
+// 1297654 RPPM
+// 1297655 Jan'alai's Rite (Haste)
+// 1297663 Halazzi's Rite (Crit)
+// 1297664 Akil'zon's Rite (Mastery)
+// 1297665 Nalorakk's Rite (Vers)
+// The proc always grants the highest secondary stat, so "favors"
+// is implemented as a guarantee while above the health threshold.
+void rite_of_the_hashey( special_effect_t& effect )
+{
+  struct rite_of_the_hashey_cb_t final : public dbc_proc_callback_t
+  {
+    std::unordered_map<stat_e, buff_t*> rites;
+
+    rite_of_the_hashey_cb_t( const special_effect_t& e, std::unordered_map<stat_e, buff_t*> b )
+      : dbc_proc_callback_t( e.player, e ), rites( std::move( b ) )
+    {}
+
+    void execute( const spell_data_t*, player_t*, action_state_t* ) override
+    {
+      // The enchant favors the highest secondary stat while above 80% health. Instead of tracking
+      // health, roll against the configured uptime for how often that condition is met.
+      auto stat = rng().roll( listener->midnight_opts.rite_of_the_hashey_uptime )
+                    ? util::highest_stat( listener, secondary_ratings )
+                    : secondary_ratings[ rng().range( secondary_ratings.size() ) ];
+
+      rites[ stat ]->trigger();
+    }
+  };
+
+  auto proc_value = effect.driver()->effectN( 1 ).average( effect );
+
+  std::unordered_map<stat_e, buff_t*> rites;
+
+  for ( unsigned id : { 1297655u, 1297663u, 1297664u, 1297665u } )
+  {
+    auto rite_data = effect.player->find_spell( id );
+
+    assert( rite_data->effectN( 1 ).subtype() == A_MOD_RATING );
+
+    rites[ util::translate_rating_mod( rite_data->effectN( 1 ).misc_value1() ) ] =
+      create_buff<stat_buff_t>( effect.player, rite_data )
+        ->add_stat_from_effect_type( A_MOD_RATING, proc_value );
+  }
+
+  // skip setup if callback has been created by already having another copy of the enchant
+  if ( find_special_effect( effect.player, effect.trigger()->id() ) )
+    return;
+
+  effect.spell_id = effect.trigger()->id();
+
+  new rite_of_the_hashey_cb_t( effect, std::move( rites ) );
+}
 }  // namespace enchants
 
 namespace embellishments
@@ -5466,6 +5522,7 @@ void register_special_effects()
   register_special_effect( { 1236700, 1236701 }, enchants::eyes_of_the_eagle, false, true );
   register_special_effect( { 1262295, 1262298 }, enchants::smugglers_lynxeye );
   register_special_effect( { 1262337, 1262339 }, enchants::farstriders_hawkeye );
+  register_special_effect( { 1297651, 1297652 }, enchants::rite_of_the_hashey );
   // Embellishments & Tinkers
   register_special_effect( 1283697, embellishments::arcanoweave_lining );
   register_special_effect( 1241711, embellishments::sunfire_silk_lining );
