@@ -15,11 +15,17 @@ namespace priest_apl
 {
 std::string potion( const player_t* p )
 {
+  if ( p->specialization() == PRIEST_DISCIPLINE )
+    return ( p->true_level > 80 ) ? "lights_potential_2" : "tempered_potion_3";
+
   return ( p->true_level > 80 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
 }
 
 std::string flask( const player_t* p )
 {
+  if ( p->specialization() == PRIEST_DISCIPLINE )
+    return ( p->true_level > 80 ) ? "flask_of_the_blood_knights_2" : "tempered_potion_3";
+
   return ( p->true_level > 80 ) ? "flask_of_the_magisters_2" : "flask_of_alchemical_chaos_3";
 }
 
@@ -211,29 +217,35 @@ void discipline( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* main = p->get_action_priority_list( "main" );
-  action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
+  action_priority_list_t* shield = p->get_action_priority_list( "shield" );
 
-  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat->add_action( "smite" );
+  precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "flash_heal,target_if=target!=self" );
+  precombat->add_action( "power_word_radiance,target_if=min:debuff.atonement.remains+10*(target=self)" );
+  precombat->add_action( "power_word_radiance,target_if=min:debuff.atonement.remains+10*(target=self)" );
+  precombat->add_action( "evangelism,target_if=min:debuff.atonement.remains+10*(target=self)" );
+  precombat->add_action( "mind_blast" );
 
-  default_->add_action( "run_action_list,name=main" );
+  shield->add_action( "void_shield,target_if=min:debuff.atonement.remains+10*(target=self)+100*(!debuff.atonement.up)" );
+  shield->add_action( "power_word_shield,target_if=min:debuff.atonement.remains+10*(target=self)+100*(!debuff.atonement.up),if=talent.borrowed_time" );
 
-  main->add_action( "call_action_list,name=cooldowns" );
-  main->add_action( "purge_the_wicked,if=refreshable" );
-  main->add_action( "shadow_word_pain,if=refreshable" );
-  main->add_action( "shadow_word_death,if=target.health.pct<20" );
-  main->add_action( "penance" );
-  main->add_action( "mind_blast" );
-  main->add_action( "shadow_word_death,if=talent.expiation&(target.time_to_pct_20>(0.5*cooldown.shadow_word_death.duration))" );
-  main->add_action( "halo" );
-  main->add_action( "divine_star" );
-  main->add_action( "shadow_word_death,if=target.time_to_pct_20>(0.5*cooldown.shadow_word_death.duration)" );
-  main->add_action( "smite" );
-
-  cooldowns->add_action( "power_infusion" );
-  cooldowns->add_action( "potion,if=buff.power_infusion.up", "sync potion with PI" );
-  cooldowns->add_action( "use_items,if=buff.power_infusion.up|cooldown.power_infusion.remains>=cooldown", "sync trinkets with PI" );
+  default_->add_action( "shadow_word_pain,if=refreshable" );
+  default_->add_action( "power_infusion" );
+  default_->add_action( "invoke_external_buff,name=power_infusion" );
+  default_->add_action( "potion" );
+  default_->add_action( "use_item,name=hex_lords_dooming_idol,if=buff.hex_lords_doom.stack>=5|fight_remains<=30" );
+  default_->add_action( "use_items" );
+  default_->add_action( "mind_blast" );
+  default_->add_action( "evangelism,target_if=min:debuff.atonement.remains+10*(target=self)" );
+  default_->add_action( "uppies,nested_action=void_shield" );
+  default_->add_action( "power_word_radiance,target_if=min:debuff.atonement.remains+10*(target=self),if=cooldown.mind_blast.remains<=gcd.max*2|!buff.entropic_rift.up|full_recharge_time<=gcd.max*2" );
+  default_->add_action( "void_blast,if=buff.greater_smite.remains<=gcd.max*2&buff.greater_smite.remains>=execute_time" );
+  default_->add_action( "call_action_list,name=shield,if=cooldown.penance.remains<=gcd.max|talent.shield_discipline" );
+  default_->add_action( "penance,target_if=max:dot.shadow_word_pain.remains,interrupt_if=gcd.remains<=0&buff.entropic_rift.up,interrupt_immediate=1,if=cooldown.mind_blast.remains>=2+gcd.max|!set_bonus.mid2_2pc" );
+  default_->add_action( "shadow_word_death,if=target.health.pct<=20&(talent.shadowfiend|!buff.entropic_rift.up)|talent.expiation|talent.inescapable_torment&(pet.shadowfiend.active|pet.voidwraith.active|pet.mindbender.active)" );
+  default_->add_action( "flash_heal,target_if=min:debuff.atonement.remains+20*(target=self),if=buff.atonement.remains<=gcd.max" );
+  default_->add_action( "void_blast" );
+  default_->add_action( "smite" );
 }
 //discipline_apl_end
 //holy_apl_start

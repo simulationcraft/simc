@@ -919,7 +919,7 @@ public:
     double archon_halo_return_hit_chance = 0.5;
 
     // Should healing a target below the threshold grant Twist of Fate?
-    bool twist_of_fate_from_healing = true;
+    bool twist_of_fate_from_healing = false;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
