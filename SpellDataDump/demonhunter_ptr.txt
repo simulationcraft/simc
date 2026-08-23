@@ -36,7 +36,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3875
 Proc Chance      : 101%
-Triggered By     : Bloody Screech (24423), Monstrous Bite (54680), Deadly Sting (160060), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858)
+Triggered By     : Bloody Screech (24423), Monstrous Bite (54680), Gruesome Bite (160018), Deadly Sting (160060), Infected Bite (263853), Savage Rend (263854), Gnaw (263856), Ravage (263857), Toxic Sting (263858), Gore (263861), Acid Bite (263863), Grievous Bite (279362)
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129901)   : Apply Aura (6) | Modify Healing Received% (118)
@@ -913,20 +913,21 @@ Effects          :
 Description      : Reduces all damage taken by $212800s3% for $212800d.
 
 Name             : Vengeful Retreat (id=198793) [Spell Family (107)] 
+Hotfixed         : Cooldown (500 -> 750)
 Talent Entry     : Generic [free=(Havoc), tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 1 seconds
-Cooldown         : 0.5 seconds
+Cooldown         : 0.75 seconds
 Charges          : 1 (25 seconds cooldown)
-Category         : 1601 (Type 0x9): Tactical Retreat (389688 effect#1), Voidstep (1223157 effect#2), Voidstep (1223157 effect#3)
+Category         : 1601 (Type 0x9): Tactical Retreat (389688 effect#1), Evasive Action (444929 effect#1), Evasive Action (444929 effect#2), Voidstep (1223157 effect#2), Voidstep (1223157 effect#3)
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 186
                  : 219
                  : 292
-Affecting Spells : Prepared (203551 effect#2), Evasive Action (444929 effect#1), Demonsurge (1245496 effect#3)
+Affecting Spells : Prepared (203551 effect#2), Demonsurge (1245496 effect#3)
 Triggered By     : Vengeful Retreat (344866)
 Family Flags     : 3
 Attributes       : Is Ability (4), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), No Aura Icon (60), No Casting Bar Text (98), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -951,7 +952,7 @@ Duration         : 3 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Never Say Die (427794 effects: #4, #5), Reaver's Mark (442624 effect#1), Evasive Action (444929 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Keen Edge (1272138 effects: #2, #3), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Never Say Die (427794 effects: #4, #5), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Tempered Steel (1265800 effects: #1, #2), Keen Edge (1272138 effects: #2, #3), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Triggered By     : Vengeful Retreat (198793)
 Family Flags     : 3, 16, 42, 58, 70
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -7000,7 +7001,7 @@ Labels           : 16: Class Spells
                  : 219
                  : 292
 Category Cooldown: 25 seconds
-Affecting Spells : Prepared (203551 effect#2), Evasive Action (444929 effect#1), Demonsurge (1245496 effect#3)
+Affecting Spells : Prepared (203551 effect#2), Demonsurge (1245496 effect#3)
 Family Flags     : 3
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
@@ -10906,7 +10907,7 @@ Description      : $@spelldesc427775
 Name             : Blazing Nova (id=436899) [Spell Family (107)] 
 School           : Fire
 Spell Type       : Magic
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Never Say Die (427794 effects: #4, #5), Reaver's Mark (442624 effect#1), Evasive Action (444929 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Never Say Die (427794 effects: #4, #5), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Triggered By     : Blazing Nova (436897)
 Family Flags     : 3, 16, 42, 70
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Not Available While Charmed (174), Aura Points On Client (268), Visible only to caster (conversations only) (343), Don't close loot window (379), Allow Class Ability Procs (416)
@@ -10918,7 +10919,7 @@ Description      : $@spelldesc436897
 Name             : Blazing Nova (id=436964) [Spell Family (107)] 
 School           : Fire
 Spell Type       : Magic
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Never Say Die (427794 effects: #4, #5), Reaver's Mark (442624 effect#1), Evasive Action (444929 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Never Say Die (427794 effects: #4, #5), Reaver's Mark (442624 effect#1), Void Metamorphosis (471306 effect#3), Luck of the Draw! (1219012 effects: #1, #2), Demonsurge (1245496 effect#3), Havoc Demon Hunter (1256955 effects: #1, #2), Vengeance Demon Hunter (1256959 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283625 effects: #1, #2), Demon Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283628 effects: #1, #2)
 Triggered By     : Blazing Nova (436897)
 Family Flags     : 3, 16, 42, 70
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Not Available While Charmed (174), Allow While Fleeing (177), Always AOE Line of Sight (186), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow during spell override (404), Allow While Feared By Fear Mechanic (417)
@@ -10928,7 +10929,7 @@ Effects          :
 Description      : $@spelldesc436897
 
 Name             : Art of the Glaive (id=442290) [Spell Family (107), Passive] 
-Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [free=(Havoc, Vengeance), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -11478,10 +11479,14 @@ Proc Flags       : Cast Successful
 Triggered By     : Evasive Action (444926)
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1141601)  : Apply Aura (6) | Ignore Spell Cooldown (383)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Vengeful Retreat (198793), Vengeful Retreat (198813), Vengeful Retreat (344866), Blazing Nova (436899), Blazing Nova (436964)
-                   Family Flags: 3
+#1 (id=1141601)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1601 (Category) | Target: Self (1)
+                   Affected Spells (Category): Vengeful Retreat (198793)
+Hotfixed         : Sub Type (383 -> 500), Misc Value (0 -> 1601), Affects Spells
+#2 (id=1351393)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1601 (Category) | Target: Self (1)
+                   Affected Spells (Category): Vengeful Retreat (198793)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc444926
 Tooltip          : Vengeful Retreat may be cast again.
 
@@ -11586,8 +11591,8 @@ Effects          :
 Description      : $@spelldesc451258
 
 Name             : Demonsurge (id=452402) [Spell Family (107), Passive] 
-Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
-                 : Void-Scarred (Havoc, Devourer) [tree=hero, row=1, col=3, max_rank=1, req_points=1, name="Voidsurge"]
+Talent Entry     : Fel-Scarred (Havoc, Devourer) [free=(Havoc, Devourer), tree=hero, row=1, col=3, max_rank=1, req_points=1]
+                 : Void-Scarred (Havoc, Devourer) [free=(Havoc, Devourer), tree=hero, row=1, col=3, max_rank=1, req_points=1, name="Voidsurge"]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -12809,6 +12814,7 @@ Effects          :
 Description      : $@spelldesc452402
 
 Name             : Void Metamorphosis (id=471306) [Spell Family (107), Passive, Hidden] 
+Hotfixed         : Attributes
 Talent Entry     : Devourer [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Spellshadow
@@ -12817,7 +12823,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 5408: Soul Glutton (1247534 effect#2)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Ignore For Mod Time Rate (196), Do Not Log on Learn (355)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1187543)  : Apply Aura (6) | Periodic Dummy (226): every 0.12 seconds

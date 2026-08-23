@@ -55,6 +55,7 @@ Description      : Roots the target in place for $d. Damage may cancel the effec
 Tooltip          : Rooted.$?<$w2>0>[ Suffering $w2 Nature damage every $t2 sec.][]
 
 Name             : Tranquility (id=740) [Spell Family (7)] 
+Hotfixed         : Description
 Talent Entry     : Restoration [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
@@ -91,7 +92,7 @@ Effects          :
 #7 (id=1202407)  : Apply Aura (6) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 4339 (Label) | Target: Self (1)
                    Affected Spells (Label): Incarnation (117679)
-Description      : Heals all allies within $a2 yards for $<healing> over $d.$?s197721[ Extends the duration of all your heal over time effects by $s6 sec every $t1 sec.][] Healing decreased beyond $s3 targets.
+Description      : Heals all allies within $a2 yards for $<healing> over $d.$?s197721[ Extends the duration of all your heal over time effects by $197721s1 sec every $t1 sec.][] Healing decreased beyond $s3 targets.
 
 Roots form around you while channeling, absorbing up to $s6% of your health in damage and preventing knockbacks.
 Tooltip          : Absorbing $w5 damage and protected from knockbacks.
@@ -15738,7 +15739,7 @@ Effects          :
 Description      : Heals a friendly target for $s1.  Receives $s2% bonus from $@spellname77495.
 
 Name             : Boundless Moonlight (id=424058) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Elune's Chosen (Balance, Guardian) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Elune's Chosen (Balance, Guardian) [free=(Balance, Guardian), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Druid
 School           : Shadow
 Spell Type       : None
@@ -16731,7 +16732,7 @@ Effects          :
 Description      : Your Regrowth protects you, reducing damage you take by $s1% while your Regrowth is on you.
 
 Name             : Dream Surge (id=433831) [Spell Family (7), Passive] 
-Talent Entry     : Keeper of the Grove (Balance, Restoration) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Keeper of the Grove (Balance, Restoration) [free=(Balance, Restoration), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -16855,7 +16856,7 @@ Description      : Time elapsed while your major abilities are available to be u
 Affects $?a137012[Nature's Swiftness, Incarnation: Tree of Life,][Force of Nature,] $?a137012[]?a394013[Incarnation: Chosen of Elune, ][Celestial Alignment, ]and Convoke the Spirits.
 
 Name             : Thriving Growth (id=439528) [Spell Family (7), Passive] 
-Talent Entry     : Wildstalker (Feral, Restoration) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Wildstalker (Feral, Restoration) [free=(Feral, Restoration), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -17368,7 +17369,7 @@ Effects          :
 Description      : $@spelldesc440120
 
 Name             : Ravage (id=441583) [Spell Family (7), Passive] 
-Talent Entry     : Druid of the Claw (Feral, Guardian) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Druid of the Claw (Feral, Guardian) [free=(Feral, Guardian), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -20874,6 +20875,7 @@ Effects          :
 Description      : Damage of your bleeds increased by $s1%.
 
 Name             : Skyfire Heel (id=1248712) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -20881,7 +20883,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Attributes       : Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
+Attributes       : Can't Crit (93), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1251829)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)

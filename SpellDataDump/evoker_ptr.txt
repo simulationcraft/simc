@@ -9572,7 +9572,7 @@ Effects          :
 Description      : $@spelldesc359073
 
 Name             : Chrono Flame (desc=Bronze) (id=431442) [Spell Family (224), Passive] 
-Talent Entry     : Chronowarden (Preservation) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Chronowarden (Preservation) [free=(Preservation), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -10376,7 +10376,7 @@ Variables        : $flight=$?a375517[${$375517s1/1000}][${0}]
 $dura=$?a406380[${6*(1+$406380s2/100)+$<flight>}.1][${6+$<flight>}]
 
 Name             : Mass Disintegrate (desc=Blue) (id=436335) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Devastation) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Scalecommander (Devastation) [free=(Devastation), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
@@ -10419,7 +10419,7 @@ Description      : $@spelldesc436335
 Tooltip          : Next Disintegrate strikes up to ${$s1+1} targets.
 
 Name             : Mass Eruption (desc=Black) (id=438587) [Spell Family (224), Passive] 
-Talent Entry     : Scalecommander (Augmentation) [tree=hero, row=1, col=1, max_rank=1, req_points=0]
+Talent Entry     : Scalecommander (Augmentation) [free=(Augmentation), tree=hero, row=1, col=1, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : None
@@ -12891,7 +12891,7 @@ Effects          :
 Description      : Essence abilities deal $s1% additional damage.
 
 Name             : Legacy of the Lifebinder (desc=Red) (id=1264269) [Spell Family (224), Passive, Hidden] 
-Talent Entry     : Flameshaper (Devastation, Preservation) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Flameshaper (Devastation, Preservation) [free=(Devastation, Preservation), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Physical
 Spell Type       : None

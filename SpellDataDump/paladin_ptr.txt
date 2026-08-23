@@ -15247,7 +15247,7 @@ Description      : $@spelldesc427453
 Tooltip          : You can cast Hammer of Light.
 
 Name             : Light's Guidance (id=427445) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Templar (Protection, Retribution) [free=(Protection, Retribution), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -15445,7 +15445,7 @@ Effects          :
 Description      : $@spelldesc427453
 
 Name             : Dawnlight (id=431377) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Herald of the Sun (Holy, Retribution) [free=(Holy, Retribution), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -16226,7 +16226,7 @@ Effects          :
 Description      : $@spelldesc431425
 
 Name             : Holy Bulwark (id=432459) [Spell Family (10)] 
-Talent Entry     : Lightsmith (Protection) [tree=hero, row=1, col=3, max_rank=1, req_points=0, name="Holy Armaments"]
+Talent Entry     : Lightsmith (Protection) [free=(Protection), tree=hero, row=1, col=3, max_rank=1, req_points=0, name="Holy Armaments"]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -22056,7 +22056,7 @@ Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
 
 Name             : Holy Armaments (id=1289728) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Lightsmith (Holy) [tree=hero, row=1, col=3, max_rank=1, req_points=0, override="Holy Bulwark" (id=432459)]
+Talent Entry     : Lightsmith (Holy) [free=(Holy), tree=hero, row=1, col=3, max_rank=1, req_points=0, override="Holy Bulwark" (id=432459)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
