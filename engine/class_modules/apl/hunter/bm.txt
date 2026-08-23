@@ -20,9 +20,11 @@ actions.cds+=/ancestral_call,if=cooldown.bestial_wrath.ready|fight_remains<16
 actions.cds+=/fireblood,if=cooldown.bestial_wrath.ready|fight_remains<9
 actions.cds+=/potion,if=cooldown.bestial_wrath.ready|fight_remains<31
 
-actions.cleave=barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=full_recharge_time<gcd
+# Bestial Wrath spawns an Apex Pet which casts Bestial Wrath 1.5s after, but it does not get the Beast Cleave that was active prior to Bestial Wrath. Therefore, to ensure this hit cleaves, Wild Thrash needs to follow up Bestial Wrath.
+actions.cleave=wild_thrash,if=talent.beast_cleave&(prev_gcd.1.bestial_wrath|!buff.beast_cleave.up)
+actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains|max_prio_damage,if=full_recharge_time<gcd
 actions.cleave+=/bestial_wrath,if=buff.beast_cleave.remains|!talent.beast_cleave|!talent.wild_thrash
-actions.cleave+=/wild_thrash,if=talent.beast_cleave
+actions.cleave+=/wild_thrash,if=talent.beast_cleave&cooldown.bestial_wrath.remains>buff.beast_cleave.remains
 actions.cleave+=/wild_thrash,if=!talent.beast_cleave
 actions.cleave+=/kill_command,if=buff.natures_ally.react|talent.master_handler&(active_enemies>3|howl_summon.ready)|!apex.3
 actions.cleave+=/cobra_shot,if=buff.cobra_fang.up&buff.beast_cleave.remains
