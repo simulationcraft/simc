@@ -9380,7 +9380,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1013600)  : Apply Aura (6) | Modify Cooldown Time (Category) (341)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 88 (Category) | Target: Self (1)
-                   Affected Spells (Category): Counterspell (2139), Pummel (6552), Silence (18278), Spell Lock (19647), Mind Freeze (47528), Rebuke (96231), Shadow Lock (171138), Shadow Lock (171140), Disrupt (183752), Muzzle (187707)
+                   Affected Spells (Category): Counterspell (2139), Pummel (6552), Silence (18278), Spell Lock (19647), Mind Freeze (47528), Rebuke (96231), Optical Blast (115781), Optical Blast (119911), Shadow Lock (171138), Shadow Lock (171140), Disrupt (183752), Muzzle (187707)
 Description      : Counterspell's cooldown is reduced by ${-$s1/1000} sec.
 
 Name             : Winter's Protection (id=382424) [Spell Family (3), Passive, Hidden] 
@@ -11449,8 +11449,8 @@ Description      : $@spelldesc422881
 Tooltip          : Empowering Arcane Missiles.
 
 Name             : Frostfire Bolt (id=431044) [Spell Family (3)] 
-Talent Entry     : Frostfire (Frost) [tree=hero, row=1, col=3, max_rank=1, req_points=0, replace="Frostbolt" (id=116)]
-                 : Frostfire (Fire) [tree=hero, row=1, col=3, max_rank=1, req_points=0, replace="Fireball" (id=133)]
+Talent Entry     : Frostfire (Frost) [free=(Frost), tree=hero, row=1, col=3, max_rank=1, req_points=0, replace="Frostbolt" (id=116)]
+                 : Frostfire (Fire) [free=(Fire), tree=hero, row=1, col=3, max_rank=1, req_points=0, replace="Fireball" (id=133)]
 Class            : Mage
 School           : Frostfire
 Spell Type       : Magic
@@ -11973,7 +11973,7 @@ Effects          :
 Description      : Conjure raw Frost magic into a sharp projectile that deals $s1 Frost damage.
 
 Name             : Splintering Sorcery (id=443739) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Spellslinger (Arcane, Frost) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Spellslinger (Arcane, Frost) [free=(Arcane, Frost), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -12324,7 +12324,7 @@ Effects          :
 Description      : Direct damage from $?c1[Arcane][Frost] Splinters reduces the cooldown of $?c1[Arcane][Frozen] Orb by $?c1[${$s1/1000}.2][${$s2/1000}.2] sec.
 
 Name             : Spellfire Spheres (id=448601) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Sunfury (Arcane, Fire) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Sunfury (Arcane, Fire) [free=(Arcane, Fire), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None

@@ -15738,7 +15738,7 @@ Effects          :
 Description      : Increases Cosmic Ripple healing by $s1%.
 
 Name             : Guiding Light (id=1248423) [Spell Family (6), Passive] 
-Talent Entry     : Oracle (Discipline, Holy) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Oracle (Discipline, Holy) [free=(Discipline, Holy), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None

@@ -1084,7 +1084,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3875
 Proc Chance      : 101%
-Triggered By     : Bloody Screech (24423), Monstrous Bite (54680), Deadly Sting (160060), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858)
+Triggered By     : Bloody Screech (24423), Monstrous Bite (54680), Gruesome Bite (160018), Deadly Sting (160060), Infected Bite (263853), Savage Rend (263854), Gnaw (263856), Ravage (263857), Toxic Sting (263858), Gore (263861), Acid Bite (263863), Grievous Bite (279362)
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129901)   : Apply Aura (6) | Modify Healing Received% (118)
@@ -2212,7 +2212,7 @@ Effects          :
 Description      : $@spelldesc115294
 
 Name             : Invoke Xuen, the White Tiger (id=123904) [Spell Family (53)] 
-Talent Entry     : Conduit of the Celestials (Windwalker) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Conduit of the Celestials (Windwalker) [free=(Windwalker), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -13444,7 +13444,7 @@ Description      : $@spelldesc442747
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Celestial Conduit (id=443028) [Spell Family (53)] 
-Talent Entry     : Conduit of the Celestials (Mistweaver) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Conduit of the Celestials (Mistweaver) [free=(Mistweaver), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -14502,7 +14502,7 @@ Effects          :
 Description      : The duration of snare effects on you is reduced by $s1%.
 
 Name             : Aspect of Harmony (id=450508) [Spell Family (53), Passive] 
-Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Master of Harmony (Brewmaster, Mistweaver) [free=(Brewmaster, Mistweaver), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14903,7 +14903,7 @@ Description      : $@spelldesc450595
 Tooltip          : Movement slowed by $w1%.
 
 Name             : Flurry Strikes (id=450615) [Spell Family (53), Passive] 
-Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [free=(Brewmaster, Windwalker), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -18346,6 +18346,7 @@ Description      : $@spelldesc1248704
 Tooltip          : Rising Sun Kick's critical strike chance is increased by $w1%.
 
 Name             : Skyfire Heel (id=1248712) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -18353,7 +18354,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Attributes       : Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
+Attributes       : Can't Crit (93), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1251829)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)

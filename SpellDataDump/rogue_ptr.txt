@@ -12195,7 +12195,7 @@ Effects          :
 Description      : $@spelldesc441146
 
 Name             : Unseen Blade (id=441146) [Spell Family (8), Passive] 
-Talent Entry     : Trickster (Outlaw, Subtlety) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Trickster (Outlaw, Subtlety) [free=(Outlaw, Subtlety), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12674,7 +12674,7 @@ Effects          :
 Description      : $@spelldesc271877
 
 Name             : Hand of Fate (id=452536) [Spell Family (8), Passive] 
-Talent Entry     : Fatebound (Assassination, Outlaw) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Fatebound (Assassination, Outlaw) [free=(Assassination, Outlaw), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -13423,7 +13423,7 @@ Description      : Evasion reduces magical damage taken by ${-$s1}%.
 Cloak of Shadows reduces physical damage taken by ${-$s2}%.
 
 Name             : Deathstalker's Mark (id=457052) [Spell Family (8), Passive] 
-Talent Entry     : Deathstalker (Assassination, Subtlety) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Deathstalker (Assassination, Subtlety) [free=(Assassination, Subtlety), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Rogue
 School           : Physical
 Spell Type       : None

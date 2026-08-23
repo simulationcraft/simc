@@ -6714,7 +6714,7 @@ Hunter
 89923   *Item - Hunter T11 2P Bonus
 89925   *Item - Hunter T11 4P Bonus
 90328    Spirit Walk
-90339   *Harden Carapace
+90339    Harden Carapace
 90347    Play
 90355   *Ancient Hysteria
 90361    Spirit Mend
@@ -6796,9 +6796,9 @@ Hunter
 126215  *Dire Beast
 126216  *Dire Beast
 126256  *Shoot
-126259  *Trick
-126311  *Surface Trot
-126364  *Rest
+126259   Trick
+126311   Surface Trot
+126364   Rest
 126581  *Hellfire Arrow
 126595  *Piercing Shot
 126627  *Shoot
@@ -6914,15 +6914,15 @@ Hunter
 159956  *Dust of Life
 160007  *Updraft
 160011   Agile Reflexes
-160018  *Gruesome Bite
+160018   Gruesome Bite
 160032  *Resurrection In Progress
-160044  *Primal Agility
-160048  *Stone Armor
-160049  *Stone Armor
+160044   Primal Agility
+160048   Stone Armor
+160049   Stone Armor
 160057   Thick Hide
 160058   Thick Hide
 160060   Deadly Sting
-160063  *Solid Shell
+160063   Solid Shell
 160065   Tendon Rip
 160067   Web Spray
 160124   Molten Hide
@@ -7661,31 +7661,31 @@ Hunter
 263821   Ride the Lightning
 263829   Aspect of the Cheetah
 263840   Furious Bite
-263841  *Petrifying Gaze
+263841   Petrifying Gaze
 263852   Talon Rend
 263853   Infected Bite
 263854   Savage Rend
-263856  *Gnaw
+263856   Gnaw
 263857   Ravage
 263858   Toxic Sting
-263861  *Gore
-263863  *Acid Bite
-263865  *Scale Shield
+263861   Gore
+263863   Acid Bite
+263865   Scale Shield
 263867   Obsidian Skin
-263868  *Defense Matrix
+263868   Defense Matrix
 263869   Bristle
 263887   Dragon's Guile
 263892   Catlike Reflexes
 263904   Serpent's Swiftness
-263916  *Feather Flurry
+263916   Feather Flurry
 263920  *Gruff
 263921  *Gruff
 263926   Thick Fur
 263934   Thick Fur
 263938   Silverback
 263939   Silverback
-264022  *Niuzao's Fortitude
-264023  *Niuzao's Fortitude
+264022   Niuzao's Fortitude
+264023   Niuzao's Fortitude
 264195   Rotting Jaws
 264198   In The Rhythm
 264199   Whirling Rebound
@@ -7719,7 +7719,7 @@ Hunter
 267605  *Chakrams
 267617  *Chakrams
 267666   Chakrams
-267922  *Eternal Guardian
+267922   Eternal Guardian
 267923  *Eternal Guardian
 267924  *Eternal Rest
 267933  *Chakrams Missile
@@ -7824,11 +7824,11 @@ Hunter
 278565   Multi-Shot
 279262  *Shoot
 279264  *Shoot
-279336  *Swarm of Flies
-279362  *Grievous Bite
-279399  *Ancient Hide
-279400  *Ancient Hide
-279410  *Bulwark
+279336   Swarm of Flies
+279362   Grievous Bite
+279399   Ancient Hide
+279400   Ancient Hide
+279410   Bulwark
 279589   Wilderness Survival
 279591  *Up Close And Personal
 279593  *Up Close And Personal
@@ -7866,7 +7866,7 @@ Hunter
 288571   Primeval Intuition
 288573   Primeval Intuition
 288613   Trueshot
-288962  *Blood Bolt
+288962   Blood Bolt
 289725  *Shoot
 290138  *Dire Beast
 290139  *Dire Beast
@@ -8082,13 +8082,13 @@ Hunter
 343248   Deathblow
 344120   Chimaera Shot
 344121   Chimaera Shot
-344346  *Soothing Waters
+344346   Soothing Waters
 344347   Spore Cloud
 344348   Sonic Screech
 344349   Nether Energy
-344350  *Oiled Feathers
+344350   Oiled Feathers
 344351   Spirit Pulse
-344352  *Nature's Grace
+344352   Nature's Grace
 344353   Serenity Dust
 344572   Bestial Wrath
 346103  *Throw Spear
@@ -21279,9 +21279,9 @@ Warlock
 113896   Demonic Gateway
 113942   Demonic Gateway
 115234  *Shadow Shield
-115240  *Void Shield
-115746  *Felbolt
-115832  *Wrathstorm
+115240   Void Shield
+115746   Felbolt
+115832   Wrathstorm
 116858   Chaos Bolt
 117828   Backdraft
 118699   Fear
@@ -21291,10 +21291,10 @@ Warlock
 119907   Shadow Bulwark
 119909   Seduction
 119910   Spell Lock
-119911  *Optical Blast
-119913  *Fellash
+119911   Optical Blast
+119913   Fellash
 119914   Axe Toss
-119915  *Wrathstorm
+119915   Wrathstorm
 120038  *Create Healthstone
 120729   Demonic Gateway
 121089  *Spiritual Innervation
@@ -21386,13 +21386,13 @@ Warlock
 166862  *Inner Demon
 168800  *Grimoire of Convert Demon
 170995   Cripple
-170996  *Debilitate
+170996   Debilitate
 171017   Meteor Strike
-171018  *Meteor Strike
+171018   Meteor Strike
 171139  *Shadow Lock
 171140   Shadow Lock
 171152   Meteor Strike
-171154  *Meteor Strike
+171154   Meteor Strike
 171156   Meteor Strike
 171377  *Item - Warlock WoD PvP Affliction 2P Bonus
 171378  *Soul Infusion
@@ -21688,7 +21688,7 @@ Warlock
 231791   Unstable Affliction
 231792  *Agony
 231793   Improved Conflagrate
-231795  *Firebolt
+231795   Firebolt
 231811   Soulstone
 232670  *Shadow Bolt
 233490   Unstable Affliction

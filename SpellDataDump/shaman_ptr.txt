@@ -13323,7 +13323,7 @@ Effects          :
 Description      : Your Ancestors' spells are $s1% more powerful.
 
 Name             : Call of the Ancestors (id=443450) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Farseer (Elemental, Restoration) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Farseer (Elemental, Restoration) [free=(Elemental, Restoration), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -14219,7 +14219,7 @@ Effects          :
 Description      : Activating Feral Spirits summons $s1 extra Feral Spirit.
 
 Name             : Tempest (id=454009) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Stormbringer (Elemental, Enhancement) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Stormbringer (Elemental, Enhancement) [free=(Elemental, Enhancement), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -14735,7 +14735,7 @@ Effects          :
 Description      : Surging Totem creates Tremors every $455593t1 sec, dealing $s1 Flamestrike damage to enemies within $A1 yards. Damage reduced beyond $s2 targets.
 
 Name             : Surging Totem (id=455630) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Totemic (Enhancement, Restoration) [tree=hero, row=1, col=3, max_rank=1, req_points=1, override="Surging Totem" (id=444995)]
+Talent Entry     : Totemic (Enhancement, Restoration) [free=(Enhancement, Restoration), tree=hero, row=1, col=3, max_rank=1, req_points=1, override="Surging Totem" (id=444995)]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
