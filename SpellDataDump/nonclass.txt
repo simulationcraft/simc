@@ -258268,6 +258268,23 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Trigger Spell: 1296883 | Target: Self (1)
 Description      : $@spelldesc1306743
 
+Name             : Ophidian Bone Whistle (id=1296890) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Aura Interrupt   : Leave World (19), Enter World (22)
+Effects          :
+#1 (id=1319681)  : Apply Aura (6) | Proc Trigger Spell (42): Ophidian Bone Whistle
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1306744 | Target: Self (1)
+Description      : Your next harmful spell or ability will send a spirit snake to your target's location dealing ${$1296883s1*$<rolemult>} Nature damage split between nearby enemies
+Tooltip          : Your next harmful spell or ability will send a spirit snake to your target's location dealing $w1 Nature damage split between nearby enemies.
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
+$healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
+
 Name             : Pulse Seeker's Oculus (id=1296971) 
 School           : Physical
 Spell Type       : None
@@ -260749,6 +260766,7 @@ Spell Type       : Magic
 Range            : 60 yards
 Labels           : 292
 Proc Chance      : 101%
+Triggered By     : Ophidian Bone Whistle (1296890)
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Can Proc From Procs (122), Always Line of Sight (185), Always AOE Line of Sight (186), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1334273)  : Trigger Spell (64): Ophidian Bone Whistle
