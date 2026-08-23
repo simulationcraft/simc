@@ -12055,7 +12055,7 @@ std::string druid_t::default_potion() const
   switch ( specialization() )
   {
     case DRUID_BALANCE:     return "lights_potential_2";
-    case DRUID_FERAL:       return "lights_potential_2";
+    case DRUID_FERAL:       return "liquid_luster_2";
     case DRUID_GUARDIAN:    return "lights_potential_2";
     case DRUID_RESTORATION: return "lights_potential_2";
     default:                return "disabled";
