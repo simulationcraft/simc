@@ -6144,6 +6144,16 @@ struct crash_lightning_t : public shaman_attack_t
       p()->trigger_windfury_weapon( execute_state, 1.0 );
     }
   }
+
+  bool ready() override
+  {
+    if ( precombat_action > 0_ms && p()->in_combat )
+    {
+      return false;
+    }
+
+    return shaman_attack_t::ready();
+  }
 };
 
 // Earth Elemental ===========================================================
