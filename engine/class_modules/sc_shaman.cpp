@@ -6085,7 +6085,7 @@ struct crash_lightning_t : public shaman_attack_t
     if ( precombat_action > 0_ms )
     {
       manage_precombat_state();
-      p()->buff.crash_lightning->set_proc_callbacks( false );
+      p()->buff.crash_lightning->set_proc_callbacks( true );
     }
 
     if ( !hit_any_target || !result_is_hit( execute_state->result ) )
