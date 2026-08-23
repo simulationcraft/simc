@@ -3093,7 +3093,7 @@ public:
     base_t::impact( state );
 
     // Bail out early if the result is a miss/dodge/parry/ms
-    if ( !hit_any_target || !result_is_hit( state->result ) )
+    if ( !result_is_hit( state->result ) )
       return;
 
     p()->trigger_windfury_weapon( state );
