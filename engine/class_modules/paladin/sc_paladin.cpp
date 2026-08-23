@@ -36,7 +36,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     random_weapon_target( nullptr ),
     random_bulwark_target( nullptr ),
     divine_inspiration_next( -1 ),
-    reflection_of_radiance_proc_chance( .001 ) // ToDo Fluttershy: Find out real proc chance - Currently something very, very low
+    reflection_of_radiance_proc_chance( .04 ) // ToDo Fluttershy: Find out real proc chance - Currently something very, very low
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
