@@ -16,6 +16,7 @@ actions.precombat+=/variable,name=regrowth,op=reset
 actions.precombat+=/variable,name=dotc_rake_threshold,op=set,value=99
 actions.precombat+=/variable,name=dotc_rake_threshold,op=set,if=talent.wild_slashes&talent.merciless_claws,value=5
 actions.precombat+=/variable,name=dotc_rake_threshold,op=set,if=talent.wild_slashes&!talent.merciless_claws,value=8
+actions.precombat+=/potion,pre_pot_time=12,if=potion.liquid_luster
 # for practicism, we give a 1s leeway (at 0% haste) from cast end until start of the fight.
 actions.precombat+=/variable,name=algethar_puzzle_box_precombat_cast,value=3,if=trinket.1.is.algethar_puzzle_box|!trinket.1.has_use_buff
 actions.precombat+=/use_item,name=algethar_puzzle_box,if=trinket.1.is.algethar_puzzle_box|!trinket.1.has_use_buff
