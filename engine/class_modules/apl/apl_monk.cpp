@@ -184,7 +184,7 @@ void live_apl( monk_t* player )
   pre->add_action( "variable,name=patchwerk,value=fight_style.patchwerk|fight_style.castingpatchwerk" );
 
   // Default List
-  def->add_action( "auto_attack,target_if=max:target.time_to_die", "Default List" );
+  def->add_action( "auto_attack", "Default List" );
   def->add_action( "touch_of_karma,target_if=max:target.time_to_die" );
   def->add_action( "potion,if=buff.invoke_xuen_the_white_tiger.remains>15|fight_remains<=30" );
   def->add_action( "potion,if=talent.flurry_strikes&chi>2&(time<5|cooldown.zenith.up&time<5|time>300&((trinket.1.is.algethar_puzzle_box&trinket.1.cooldown.remains>100|trinket.2.is.algethar_puzzle_box&trinket.2.cooldown.remains>100)|!trinket.1.has_use_buff&!trinket.2.has_use_buff)&talent.flurry_strikes|time>300&buff.zenith.up)" );
@@ -252,7 +252,7 @@ void live_apl( monk_t* player )
   zen->add_action( "zenith,target_if=max:target.time_to_die,if=!buff.zenith.up&(variable.patchwerk&!trinket.1.is.algethar_puzzle_box&!trinket.2.is.algethar_puzzle_box&trinket.1.has_use_buff&(trinket.1.cooldown.ready|cooldown.zenith.full_recharge_time<5))&(talent.flurry_strikes|buff.invoke_xuen_the_white_tiger.remains>10)" );
   zen->add_action( "zenith,target_if=max:target.time_to_die,if=!buff.zenith.up&(variable.patchwerk&!trinket.1.is.algethar_puzzle_box&!trinket.2.is.algethar_puzzle_box&trinket.2.has_use_buff&(trinket.2.cooldown.ready|cooldown.zenith.full_recharge_time<5))" );
   zen->add_action( "zenith,target_if=max:target.time_to_die,if=!buff.zenith.up&talent.celestial_conduit&cooldown.zenith.full_recharge_time<30&active_enemies>4&fight_style.dungeonslice|talent.flurry_strikes&fight_style.dungeonslice&cooldown.zenith.full_recharge_time<20&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains<10&time<60&!buff.zenith.up" );
-  
+
   // Racials (Good)
   racials->add_action( "berserking,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.invoke_xuen_the_white_tiger&buff.zenith.remains>14|fight_remains<20", "Racials (Good)" );
   racials->add_action( "ancestral_call,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.invoke_xuen_the_white_tiger&buff.zenith.remains>14|fight_remains<20" );
@@ -292,7 +292,7 @@ void live_apl( monk_t* player )
   st->add_action( "spinning_crane_kick,if=combo_strike&talent.celestial_conduit&(chi>3&!buff.zenith.up&talent.harmonic_combo|chi>4&!buff.zenith.up)" );
   st->add_action( "blackout_kick,if=combo_strike&buff.zenith.up&chi>3" );
   st->add_action( "tiger_palm,if=combo_strike&chi<4+talent.ascension" );
-  
+
   //Multitarget
   multi->add_action( "fists_of_fury,target_if=max:target.time_to_die,if=buff.heart_of_the_jade_serpent.remains<1&buff.heart_of_the_jade_serpent.up", "Multi Target" );
   multi->add_action( "touch_of_death,target_if=min:target.time_to_die,if=!buff.zenith.up|fight_remains<5|((trinket.1.is.algethar_puzzle_box&trinket.1.cooldown.remains>100|trinket.2.is.algethar_puzzle_box&trinket.2.cooldown.remains>100)|!trinket.1.has_use_buff&!trinket.2.has_use_buff)" );
@@ -323,7 +323,7 @@ void live_apl( monk_t* player )
   multi->add_action( "tiger_palm,target_if=max:target.time_to_die,if=combo_strike&(chi.max-chi>=2&(talent.energy_burst&!buff.combo_breaker.up|!talent.energy_burst)&!buff.zenith.up|(talent.energy_burst&!buff.combo_breaker.up|!talent.energy_burst)&!buff.zenith.up&!cooldown.fists_of_fury.remains&chi<3|chi=0)" );
   multi->add_action( "blackout_kick,target_if=max:target.time_to_die,if=combo_strike&talent.shadowboxing_treads" );
   multi->add_action( "rising_sun_kick,target_if=max:target.time_to_die,if=combo_strike" );
-  
+
   // Fallback
   fallback->add_action( "blackout_kick,if=combo_strike", "Fallback" );
   fallback->add_action( "slicing_winds" );
