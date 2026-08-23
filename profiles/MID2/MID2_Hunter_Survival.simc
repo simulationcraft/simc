@@ -9,7 +9,7 @@ talents=C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgtZMzMGzyAAAAAAwMmxMLmxYGzgx0MAAAAD
 omnium_talents=136822:1/136819:1/136817:1/136821:1/136814:1
 
 # Default consumables
-potion=lights_potential_2
+potion=potion_of_recklessness_2
 flask=flask_of_the_magisters_2
 food=silvermoon_parade
 augmentation=void_touched
