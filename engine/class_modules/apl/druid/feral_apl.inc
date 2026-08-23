@@ -11,6 +11,7 @@ precombat->add_action( "variable,name=regrowth,op=reset","optional variable that
 precombat->add_action( "variable,name=dotc_rake_threshold,op=set,value=99","see the 2nd rake line in aoe_builders. This determines when that line can return true" );
 precombat->add_action( "variable,name=dotc_rake_threshold,op=set,if=talent.wild_slashes&talent.merciless_claws,value=5" );
 precombat->add_action( "variable,name=dotc_rake_threshold,op=set,if=talent.wild_slashes&!talent.merciless_claws,value=8" );
+precombat->add_action( "potion,pre_pot_time=12,if=potion.liquid_luster" );
 precombat->add_action( "variable,name=algethar_puzzle_box_precombat_cast,value=3,if=trinket.1.is.algethar_puzzle_box|!trinket.1.has_use_buff","for practicism, we give a 1s leeway (at 0% haste) from cast end until start of the fight." );
 precombat->add_action( "use_item,name=algethar_puzzle_box,if=trinket.1.is.algethar_puzzle_box|!trinket.1.has_use_buff" );
 precombat->add_action( "cat_form,if=buff.cat_form.down" );
