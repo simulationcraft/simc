@@ -1880,11 +1880,6 @@ void sapling_of_the_dawnroot( special_effect_t& effect )
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
       base_multiplier *= role_mult( e );
     }
-
-    double execute_time_pct_multiplier() const override
-    {
-      return 1.0;
-    }
   };
 
   struct sappy_demise_t final : public spell_t
@@ -1936,6 +1931,11 @@ void sapling_of_the_dawnroot( special_effect_t& effect )
     {
       unique_gear_pet_t::create_actions();
       sappy_demise = new sappy_demise_t( effect, "sappy_demise", this, find_spell( 1263121 ), parent_action );
+    }
+
+    double composite_melee_auto_attack_speed() const override
+    {
+      return 1.0;
     }
 
   private:
