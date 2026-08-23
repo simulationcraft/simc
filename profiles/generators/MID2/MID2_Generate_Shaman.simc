@@ -65,24 +65,25 @@ position=back
 talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzMzMzMzMzMzMzYGAAAAAAAAAsAbwMW0YbAMTwGAzyMmZGLLzYhZmNWmZmZYYMDAgBYMjYmBAGDA
 omnium_talents=136822:1/136823:1/136817:1/136821:1/136814:1
 
+flask=flask_of_the_blood_knights_2
 potion=potion_of_recklessness_2
 
 head=serpent_crown_of_the_ophidian_oracle,id=271483,bonus_id=10835/12854/13662,gem_id=240967,enchant_id=7991,redirected_base_stats=268230
-neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13848/13987,gem_id=240918/240898
+neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13848/13987,gem_id=240914/240890
 shoulders=hissing_mantle_of_the_ophidian_oracle,id=271481,bonus_id=13848,enchant_id=8001,redirected_base_stats=268231
 back=silken_voodoo_drape,id=268253,bonus_id=13848
 chest=fanged_raiment_of_the_ophidian_oracle,id=271486,bonus_id=13662/13846/13848,enchant_id=7987,redirected_base_stats=271876
-wrists=farstriders_plated_bracers,id=244584,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240898,crafted_stats=49/36
+wrists=farstriders_plated_bracers,id=244584,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240908,crafted_stats=49/36
 hands=hexing_grips_of_the_ophidian_oracle,id=271484,bonus_id=12854
 waist=serpentine_mixing_belt,id=268254,bonus_id=10835/12854,gem_id=240898
 legs=leggings_of_the_ophidian_oracle,id=271482,bonus_id=13662/13848,enchant_id=8159,redirected_base_stats=268237
 feet=boots_of_the_reckless_wayfarer,id=268258,bonus_id=12854/13662,enchant_id=7963
-finger1=apex_brutes_claw_ring,id=268252,bonus_id=12854/13750,gem_id=240890,enchant_id=7967
-finger2=band_of_the_amani_warlord,id=273792,bonus_id=12854/13750,gem_id=240890,enchant_id=7967
+finger1=apex_brutes_claw_ring,id=268252,bonus_id=12854/13750,gem_id=240892,enchant_id=7967
+finger2=band_of_the_amani_warlord,id=273792,bonus_id=12854/13750,gem_id=240892,enchant_id=7967
 trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=13335/13848
 trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13662/13848
-main_hand=amanmuso_warlords_vengeance,id=268209,bonus_id=13848,enchant_id=8041
-off_hand=farstriders_chopper,id=237850,bonus_id=8960/13751/13771/13836/12497,enchant_id=7983,crafted_stats=49/36
+main_hand=amanmuso_warlords_vengeance,id=268209,bonus_id=13848,enchant_id=8689
+off_hand=farstriders_chopper,id=237850,bonus_id=8960/13751/13771/13836/12497,enchant_id=8689,crafted_stats=49/36
 
 save=MID2_Shaman_Enhancement_Totemic.simc
 
@@ -98,21 +99,21 @@ omnium_talents=136822:1/136823:1/136817:1/136821:1/136814:1
 potion=potion_of_recklessness_2
 
 head=serpent_crown_of_the_ophidian_oracle,id=271483,bonus_id=10835/12854/13662,gem_id=240967,enchant_id=7991,redirected_base_stats=251220
-neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13987/13848,gem_id=240892/240900
+neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13848/13987,gem_id=240914/240890
 shoulders=hissing_mantle_of_the_ophidian_oracle,id=271481,bonus_id=13848,enchant_id=8001,redirected_base_stats=268231
 back=silken_voodoo_drape,id=268253,bonus_id=13848
 chest=fanged_raiment_of_the_ophidian_oracle,id=271486,bonus_id=13662/13846/13848,enchant_id=7987,redirected_base_stats=271876
-wrists=farstriders_plated_bracers,id=244584,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240918,crafted_stats=49/36
+wrists=farstriders_plated_bracers,id=244584,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240908,crafted_stats=49/36
 hands=hexing_grips_of_the_ophidian_oracle,id=271484,bonus_id=12854/13662,redirected_base_stats=160213
 waist=tribal_defenders_cord,id=251155,bonus_id=10835/12854,gem_id=240906
 legs=leggings_of_the_ophidian_oracle,id=271482,bonus_id=13662/13848,enchant_id=8159,redirected_base_stats=268237
 feet=greaves_of_the_noxious_depths,id=271440,bonus_id=12854/13662,enchant_id=7963,crafted_stats=36/49
-finger1=apex_brutes_claw_ring,id=268252,bonus_id=12854/13750,gem_id=240906,enchant_id=7967
-finger2=band_of_the_amani_warlord,id=273792,bonus_id=12854/13750,gem_id=240906,enchant_id=7967
+finger1=apex_brutes_claw_ring,id=268252,bonus_id=12854/13750,gem_id=240898,enchant_id=7967
+finger2=band_of_the_amani_warlord,id=273792,bonus_id=12854/13750,gem_id=240900,enchant_id=7967
 trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=13335/13848
 trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13662/13848
-main_hand=amanmuso_warlords_vengeance,id=268209,bonus_id=13848,enchant_id=8041
-off_hand=farstriders_chopper,id=237850,bonus_id=8960/13751/13771/13836/12497,enchant_id=7983,crafted_stats=49/36
+main_hand=amanmuso_warlords_vengeance,id=268209,bonus_id=13848,enchant_id=8689
+off_hand=farstriders_chopper,id=237850,bonus_id=8960/13751/13771/13836/12497,enchant_id=8689,crafted_stats=49/36
 
 save=MID2_Shaman_Enhancement.simc
 

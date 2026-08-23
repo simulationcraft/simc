@@ -243,10 +243,10 @@ void discipline( player_t* p )
   default_->add_action( "mind_blast" );
   default_->add_action( "evangelism,target_if=min:debuff.atonement.remains+10*(target=self)" );
   default_->add_action( "uppies,nested_action=void_shield" );
-  default_->add_action( "power_word_radiance,target_if=min:debuff.atonement.remains+10*(target=self),if=cooldown.mind_blast.remains<=gcd.max*2|!buff.entropic_rift.up|full_recharge_time<=gcd.max*2" );
   default_->add_action( "void_blast,if=buff.greater_smite.remains<=gcd.max*2&buff.greater_smite.remains>=execute_time" );
-  default_->add_action( "call_action_list,name=shield,if=cooldown.penance.remains<=gcd.max|talent.shield_discipline" );
+  default_->add_action( "power_word_radiance,target_if=min:debuff.atonement.remains+10*(target=self),if=cooldown.mind_blast.remains<=gcd.max*2|!buff.entropic_rift.up" );
   default_->add_action( "penance,target_if=max:dot.shadow_word_pain.remains,interrupt_if=gcd.remains<=0&buff.entropic_rift.up,interrupt_immediate=1,if=cooldown.mind_blast.remains>=2+gcd.max|!set_bonus.mid2_2pc" );
+  default_->add_action( "call_action_list,name=shield,if=buff.master_the_darkness.up|cooldown.penance.remains<=gcd.max|active_atonements<=5" );
   default_->add_action( "shadow_word_death,if=target.health.pct<=20&(talent.shadowfiend|!buff.entropic_rift.up)|talent.expiation|talent.inescapable_torment&(pet.shadowfiend.active|pet.voidwraith.active|pet.mindbender.active)" );
   default_->add_action( "flash_heal,target_if=min:debuff.atonement.remains+20*(target=self),if=buff.atonement.remains<=gcd.max" );
   default_->add_action( "void_blast" );
