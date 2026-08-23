@@ -4264,6 +4264,7 @@ void tattered_amani_war_banner( special_effect_t& effect )
   effect.disable_buff();
   effect.has_use_buff_override = true;
 }
+
 // 1291885 effect driver
 // 1291894 use driver
 // 1307599 aura trigger
@@ -4423,6 +4424,97 @@ void soulcoiler_ritual_vessel( special_effect_t& effect )
 
   effect.execute_action = create_proc_action<soulcoiler_ritual_vessel_t>( "soulcoiler_ritual_vessel", effect,
                                                                           effect.player->find_spell( 1307578 ) );
+}
+
+// 1306743 use driver
+// 1296883 equip driver
+// 1294327 use damage
+// 1296888 repeat damage
+// 1296890 repeat buff
+// 1306744 repeat driver
+void ophidian_bone_whistle( special_effect_t& effect )
+{
+  struct ophidian_bone_whistle_t : public generic_proc_t
+  {
+    action_t* damage;
+    action_t* repeat;
+    buff_t* buff;
+    timespan_t damage_delay;
+    timespan_t repeat_delay;
+
+    ophidian_bone_whistle_t( const special_effect_t& e ) : generic_proc_t( e, "ophidian_bone_whistle", e.driver() )
+    {
+      unsigned equip_id = 1296883;
+      auto equip = find_special_effect( e.player, equip_id );
+      assert( equip && "Ophidian Bone Whistle missing equip effect" );
+
+      // setup on-use damage
+      damage = create_proc_action<generic_aoe_proc_t>( "ophidian_bone_whistle_damage", e, e.trigger() );
+      damage->base_dd_min = damage->base_dd_max = equip->driver()->effectN( 1 ).average( e );
+      damage->base_multiplier *= role_mult( e );
+      damage->base_execute_time = timespan_t::from_millis( e.driver()->effectN( 1 ).misc_value1() );
+      damage->dual = true;
+      damage->stats = stats;
+
+      damage_delay = timespan_t::from_millis( e.driver()->effectN( 1 ).misc_value1() );
+
+      // setup repeat damage
+      auto s_repeat_buff = e.player->find_spell( 1296890 );
+      auto s_repeat_driver = s_repeat_buff->effectN( 1 ).trigger();
+      auto s_repeat = s_repeat_driver->effectN( 1 ).trigger();
+
+      repeat = create_proc_action<generic_aoe_proc_t>( "ophidian_bone_whistle_repeat", e, s_repeat );
+      repeat->base_dd_min = repeat->base_dd_max = equip->driver()->effectN( 1 ).average( e );
+      repeat->base_multiplier *= role_mult( e.player, s_repeat_buff );
+      repeat->base_execute_time = timespan_t::from_millis( s_repeat_driver->effectN( 1 ).misc_value1() );
+      repeat->name_str_reporting = "Repeat";
+      add_child( repeat );
+
+      repeat_delay = timespan_t::from_millis( s_repeat_driver->effectN( 1 ).misc_value1() );
+
+      // setup repeat buff + cb
+      buff = create_buff<buff_t>( e.player, s_repeat_buff );
+
+      auto repeat_eff = new special_effect_t( e.player );
+      repeat_eff->name_str = "ophidian_bone_whistle_repeat";
+      repeat_eff->spell_id = s_repeat_buff->id();
+      repeat_eff->execute_action = repeat;
+      e.player->special_effects.push_back( repeat_eff );
+
+      auto repeat_cb = new dbc_proc_callback_t( e.player, *repeat_eff );
+      repeat_cb->activate_with_buff( buff );
+
+      // proc is guaranteed on next spell, so we can use register_callback_trigger_function to expire the buff
+      e.player->callbacks.register_callback_trigger_function(
+        repeat_eff->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+        [ this ]( dbc_proc_callback_t* cb, const auto&, auto, auto, auto ) {
+          assert( cb->proc_chance >= 1.0 && buff->check() );
+          buff->expire();
+          return true;
+        } );
+
+      // TODO: is this cast at the target's location? does this need to be set up as ground_aoe?
+      e.player->callbacks.register_callback_execute_function(
+        repeat_eff->spell_id, [ this ]( auto, auto, player_t* t, auto ) {
+          assert( !buff->check() );
+          repeat->set_target( t );
+          make_event( *sim, repeat_delay, [ this ] { repeat->execute(); } );
+        } );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+
+      damage->set_target( target );
+      make_event( *sim, damage_delay, [ this ] { damage->execute(); } );
+
+      assert( cooldown && cooldown->down() );
+      make_event( *sim, cooldown->remains(), [ this ] { buff->trigger(); } );
+    }
+  };
+
+  effect.execute_action = create_proc_action<ophidian_bone_whistle_t>( "ophidian_bone_whistle", effect );
 }
 }  // namespace trinkets
 
@@ -5793,9 +5885,11 @@ void register_special_effects()
   register_special_effect( 1291728, bite_of_zuljan::zuljins_guillotine_technique );
   register_special_effect( 1293304, trinkets::knot_of_writhing_serpents );
   register_special_effect( 1294329, trinkets::ulateks_faithful );
-  register_special_effect( 1293326, trinkets::tattered_amani_war_banner );// 1291885 base driver
-  register_special_effect( 1291885, DISABLED_EFFECT );                     // Soulcoiler Ritual Vessel equip Driver
-  register_special_effect( 1291894, trinkets::soulcoiler_ritual_vessel );  // 1291894 use driver
+  register_special_effect( 1293326, trinkets::tattered_amani_war_banner );
+  register_special_effect( 1291894, trinkets::soulcoiler_ritual_vessel );
+  register_special_effect( 1291885, DISABLED_EFFECT );  // Soulcoiler Ritual Vessel equip Driver
+  register_special_effect( 1306743, trinkets::ophidian_bone_whistle );
+  register_special_effect( 1296883, DISABLED_EFFECT );  // Ophidian Bone Whistle equip driver
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil

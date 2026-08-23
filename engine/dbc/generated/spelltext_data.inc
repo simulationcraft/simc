@@ -1,5 +1,5 @@
 // Spell text, wow build 12.1.0.69404
-static constexpr std::array<spelltext_data_t, 29299> __spelltext_data { {
+static constexpr std::array<spelltext_data_t, 29300> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -29012,6 +29012,7 @@ static constexpr std::array<spelltext_data_t, 29299> __spelltext_data { {
   { 1296876, "$@spelldesc1296874", 0, 0 },
   { 1296884, "$@spellname1296884 increases your Haste by $1296870s0. This effect can stack up to $u times.", "Haste increased by $w1.", 0 },
   { 1296888, "$@spelldesc1306743", 0, 0 },
+  { 1296890, "Your next harmful spell or ability will send a spirit snake to your target's location dealing ${$1296883s1*$<rolemult>} Nature damage split between nearby enemies", "Your next harmful spell or ability will send a spirit snake to your target's location dealing $w1 Nature damage split between nearby enemies.", 0 },
   { 1296930, "$@spelldesc1296582", "Damage of your next Arcane Blast, Arcane Pulse, or Prismatic Bolt increased by $s1%.", 0 },
   { 1296971, "$@spelldesc1294326", "The Oculus is resting.", 0 },
   { 1296976, "Mastery granted by Pulse Seeker's Oculus increased by $1294326s6% for $d.", "Mastery granted by Pulse Seeker's Oculus increased by $w1%.", 0 },
@@ -29310,7 +29311,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix
 } };
 
 // Spell description variables, wow build 12.1.0.69404
-static constexpr std::array<spelldesc_vars_data_t, 739> __spelldesc_vars_data { {
+static constexpr std::array<spelldesc_vars_data_t, 740> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -30042,6 +30043,7 @@ static constexpr std::array<spelldesc_vars_data_t, 739> __spelldesc_vars_data { 
   { 1295833, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1296550, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1296874, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  { 1296890, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]\r\n$healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]" },
   { 1296982, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1297908, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1298023, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },

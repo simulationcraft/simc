@@ -1543,6 +1543,7 @@ class SpellDataGenerator(DataGenerator):
          1292299, 1292300, 1306870, 1308012, 1308013, 1308014, # Gebbo's Bottomless Bag
          1305376, # Voracious Heart of Ula'tek
          1295898, 1295899, 1295900, 1295901, # Hunter's Ritual Stone
+         1296890, # Ophidian Bone Whistle
         ),
 
         # Warrior:
