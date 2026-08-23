@@ -1880,6 +1880,11 @@ void sapling_of_the_dawnroot( special_effect_t& effect )
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
       base_multiplier *= role_mult( e );
     }
+
+    double execute_time_pct_multiplier() const override
+    {
+      return 1.0;
+    }
   };
 
   struct sappy_demise_t final : public spell_t
@@ -1910,7 +1915,7 @@ void sapling_of_the_dawnroot( special_effect_t& effect )
     {
       parent_action = parent;
       main_hand_weapon.type = WEAPON_BEAST;
-      main_hand_weapon.swing_time = 2_s;
+      main_hand_weapon.swing_time = 1500_ms;
       use_auto_attack = true;
     }
 
