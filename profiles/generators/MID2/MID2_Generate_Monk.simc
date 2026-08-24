@@ -26,55 +26,56 @@ main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13848/13846,enchant_id
 
 save=MID2_Monk_Brewmaster.simc
 
-# monk="MID2_Monk_Windwalker"
-# spec=windwalker
-# level=90
-# race=troll
-# role=attack
-# position=back
-# talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzMD2mxgtZGbzAAAAAAAAAAAAsMMCzYbYAzYYmZmhZZYGmlZCAYxMbjhZmZGAAbAoZZWamZmFAMwMDAsMGwAG
+monk="MID2_Monk_Windwalker"
+spec=windwalker
+level=90
+race=troll
+role=attack
+position=back
+talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzYw2MmhlZGbzAAAAAAAAAAAAsMMaGzAGwMGmZmZY2GmhZZmAAWMz2MDzMzMAA2AQzys0MzMLAYgZGAGLDgB8B
+omnium_talents=136822:1/136819:1/136817:1/136815:1/136814:1
 
-# head=fearsome_visage_of_radens_chosen,id=250015,bonus_id=1808/6652/12667/12676/12806/13335/13338/13575,gem_id=240983,enchant_id=8017
-# neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=3170/4786/4800/12806/13668,gem_id=240890/240890
-# shoulders=aurastones_of_radens_chosen,id=250013,bonus_id=6652/12675/12806/13335/13340/13574,enchant_id=8001
-# back=windwrap_of_radens_chosen,id=250010,bonus_id=6652/12806/13335
-# chest=battle_garb_of_radens_chosen,id=250018,bonus_id=6652/12676/12806/13335/13336/13575,enchant_id=7987
-# wrists=silvermoon_agents_deflectors,id=244576,bonus_id=8793/8960/11307/12066/12214/13454/13622/12497,crafted_stats=32/40,gem_id=240890
-# hands=vaelgors_fearsome_grasp,id=249321,bonus_id=12806/13577
-# waist=snapvine_cinch,id=251082,bonus_id=3190/4786/11307/12806,gem_id=240890
-# legs=swiftsweepers_of_radens_chosen,id=250014,bonus_id=6652/12676/12806/13335/13339/13575,enchant_id=8159
-# feet=canopy_walkers_footwraps,id=249382,bonus_id=6652/12806/13335,enchant_id=7963
-# finger1=loa_worshipers_band,id=251513,bonus_id=8960/12066/12214/13622/12497,gem_id=240890,enchant_id=7967
-# finger2=eye_of_midnight,id=249920,bonus_id=6652/12806/13335/13534,gem_id=240890/240890,enchant_id=7967
-# trinket1=gaze_of_the_alnseer,id=249343,bonus_id=6652/12806/13335
-# trinket2=algethar_puzzle_box,id=193701,bonus_id=6652/12699/12801/12806/13440
-# main_hand=inescapable_reach,id=249302,bonus_id=12806/13577,enchant_id=8041
+head=monkey_kings_unyielding_visage,id=271519,enchant_id=7991,gem_id=240967,bonus_id=13692/13698/13847/13750/13848,redirected_base_stats=271875
+neck=aqirbane_reliquary,id=268265,bonus_id=13848/13708/10835,gem_id=240914/240890
+shoulder=tassels_of_the_monkey_king,id=271517,bonus_id=13335/12854,enchant_id=8031,redirected_base_stats=251223
+back=silken_voodoo_drape,id=268253,bonus_id=13848
+chest=battle_gi_of_the_monkey_king,id=271522,bonus_id=13335/12854,enchant_id=7987
+wrist=silvermoon_agents_deflectors,id=244576,gem_id=240890,bonus_id=13751/12497/13836/10835/8795/12384,crafted_stats=32/49,crafting_quality=5
+hands=gauntlets_of_fevered_defense,id=251124,bonus_id=12854/13662
+waist=sash_of_the_forlorn_vessel,id=268256,bonus_id=13848/10835,gem_id=240890
+legs=pantaloons_of_the_monkey_king,id=271518,bonus_id=13848,enchant_id=8159,redirected_base_stats=268225
+feet=silvermoon_agents_sneakers,id=244569,enchant_id=7963,bonus_id=13751/12497/13836/8795/12384,crafted_stats=36/49
+finger1=vile_alchemists_band,id=268249,enchant_id=7967,gem_id=240900,bonus_id=13668/12854/13662
+finger2=band_of_the_amani_warlord,id=273792,bonus_id=12854/13662/13668,gem_id=240908,enchant_id=7967
+trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=13848/13662
+trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13848/13662
+main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13848/13846,enchant_id=8041
 
-# save=MID2_Monk_Windwalker.simc
+save=MID2_Monk_Windwalker.simc
 
-# monk="MID2_Monk_Windwalker_Conduit"
-# spec=windwalker
-# level=90
-# race=troll
-# role=attack
-# position=back
-# talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzYM2GGsMzMbzAAAAAAAAAAAAsMMCzYbYAzYYmZmhZZYGmlZCAYzMbjhZmZGAALmZZWGTQAAYAMDALjBMzMLG
+monk="MID2_Monk_Windwalker_Conduit"
+spec=windwalker
+level=90
+race=troll
+role=attack
+position=back
+talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzYM2GGsMzMbzAAAAAAAAAAAAsMMaGzAGwMGmZmZY2GmhZZmAAWMz2MzYMzMAAWMzysNmgAAMGAzAMWGAzMzmLA
+omnium_talents=136822:1/136819:1/136817:1/136815:1/136814:1
 
-# head=fearsome_visage_of_radens_chosen,id=250015,bonus_id=1808/6652/12667/12676/12806/13335/13338/13575,gem_id=240983,enchant_id=8017
-# neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=3170/4786/4800/12806/13668,gem_id=240892/240892
-# shoulders=aurastones_of_radens_chosen,id=250013,bonus_id=6652/12675/12806/13335/13340/13574,enchant_id=8001
-# back=rigid_scale_greatcloak,id=258575,bonus_id=3202/4786/12806
-# chest=battle_garb_of_radens_chosen,id=250018,bonus_id=6652/12676/12806/13335/13336/13575,enchant_id=7987
-# wrists=frenzyroot_cuffs,id=193714,bonus_id=3165/4786/11307/12806,gem_id=240892
-# hands=vaelgors_fearsome_grasp,id=249321,bonus_id=12806/13577
-# waist=snapvine_cinch,id=251082,bonus_id=3190/4786/11307/12806,gem_id=240892
-# legs=swiftsweepers_of_radens_chosen,id=250014,bonus_id=6652/12676/12806/13335/13339/13575,enchant_id=8159
-# feet=boots_of_burning_focus,id=258577,bonus_id=3202/4786/12806,enchant_id=7963
-# finger1=loa_worshipers_band,id=251513,bonus_id=8960/12066/12214/13622/12497,gem_id=240892,enchant_id=7967
-# finger2=eye_of_midnight,id=249920,bonus_id=6652/12806/13335/13534,gem_id=240892/240892,enchant_id=7967
-# trinket1=gaze_of_the_alnseer,id=249343,bonus_id=6652/12806/13335
-# trinket2=algethar_puzzle_box,id=193701,bonus_id=6652/12699/12801/12806/13440
-# main_hand=clutchmates_caress,id=249287,bonus_id=3160/4786/4800/12803/12806,enchant_id=8041
-# off_hand=bloomforged_claw,id=237845,bonus_id=8960/12066/12214/12693/13622/12497,enchant_id=7983,crafted_stats=36/49
+head=monkey_kings_unyielding_visage,id=271519,enchant_id=7991,gem_id=240967,bonus_id=13692/13698/13847/13750/13848,redirected_base_stats=271875
+neck=aqirbane_reliquary,id=268265,bonus_id=13848/13708/10835,gem_id=240914/240890
+shoulder=tassels_of_the_monkey_king,id=271517,bonus_id=13335/12854,enchant_id=8031
+back=silken_voodoo_drape,id=268253,bonus_id=13848
+chest=battle_gi_of_the_monkey_king,id=271522,bonus_id=13335/12854,enchant_id=7987
+wrist=silvermoon_agents_deflectors,id=244576,gem_id=240908,bonus_id=13751/12497/13836/10835/8795/12384,crafted_stats=36/49,crafting_quality=5
+hands=gauntlets_of_fevered_defense,id=251124,bonus_id=12854/13662
+waist=sash_of_the_forlorn_vessel,id=268256,bonus_id=13848/10835,gem_id=240908
+legs=pantaloons_of_the_monkey_king,id=271518,bonus_id=13848,enchant_id=8159,redirected_base_stats=268225
+feet=silvermoon_agents_sneakers,id=244569,enchant_id=7963,bonus_id=13751/12497/13836/8795/12384,crafted_stats=36/49
+finger1=vile_alchemists_band,id=268249,enchant_id=7967,gem_id=240908,bonus_id=13668/12854/13662
+finger2=sickening_signet_of_atroxus,id=252258,enchant_id=7967,gem_id=240900,bonus_id=13668/12854/13662
+trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=13848/13662
+trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13848/13662
+main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13848/13846,enchant_id=8041
 
-# save=MID2_Monk_Windwalker_Conduit.simc
+save=MID2_Monk_Windwalker_Conduit.simc
