@@ -972,10 +972,11 @@ struct melee_t : public paladin_melee_attack_t
   {
     if ( !player->in_combat )
       return 10_ms;
-    if ( first )
+
+    if ( first && !player->channeling )
       return 0_ms;
-    else
-      return paladin_melee_attack_t::execute_time();
+
+    return paladin_melee_attack_t::execute_time();
   }
 
   void execute() override
