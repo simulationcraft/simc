@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69404 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69465 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -913,7 +913,6 @@ Effects          :
 Description      : Reduces all damage taken by $212800s3% for $212800d.
 
 Name             : Vengeful Retreat (id=198793) [Spell Family (107)] 
-Hotfixed         : Cooldown (500 -> 750)
 Talent Entry     : Generic [free=(Havoc), tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Physical
@@ -11482,11 +11481,9 @@ Effects          :
 #1 (id=1141601)  : Apply Aura (6) | Ignore Spell Charge Cooldown (Category) (500)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1601 (Category) | Target: Self (1)
                    Affected Spells (Category): Vengeful Retreat (198793)
-Hotfixed         : Sub Type (383 -> 500), Misc Value (0 -> 1601), Affects Spells
 #2 (id=1351393)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1601 (Category) | Target: Self (1)
                    Affected Spells (Category): Vengeful Retreat (198793)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc444926
 Tooltip          : Vengeful Retreat may be cast again.
 

@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69404 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69465 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -13502,7 +13502,6 @@ Effects          :
 Description      : Shadow damage dealt by your spells and abilities is increased by $s3% and your Shadow spells gain $s1% more critical strike chance from all sources.
 
 Name             : Blackened Soul (id=440043) [Spell Family (5), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (331776 -> 69632)
 Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=2, col=2, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Physical
