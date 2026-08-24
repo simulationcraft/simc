@@ -1,4 +1,4 @@
-// Item bonuses, wow build 12.1.0.69382
+// Item bonuses, wow build 12.1.0.69497
 static constexpr std::array<item_bonus_entry_t, 20224> __ptr_item_bonus_data { {
   {     2,    1,  2,       7,   15789,       0,       0,  0 },
   {   899,    1,  4,    2015,       0,       0,       0,  1 },
