@@ -1,5 +1,5 @@
-// Curve points data, wow build 12.1.0.69404
-static constexpr std::array<curve_point_t, 171129> __curve_point_data { {
+// Curve points data, wow build 12.1.0.69465
+static constexpr std::array<curve_point_t, 171121> __curve_point_data { {
   {    8,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
   {    9,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
   {   11,  0,    0.00000f,    1.00000f,    0.00000f,    1.00000f },
@@ -146299,14 +146299,6 @@ static constexpr std::array<curve_point_t, 171129> __curve_point_data { {
   { 91194,  3,    0.80000f,    4.50000f,    0.00000f,    0.00000f },
   { 91194,  4,    0.90000f,    4.80000f,    0.00000f,    0.00000f },
   { 91194,  5,    1.00000f,    5.00000f,    0.00000f,    0.00000f },
-  { 91198,  0,    0.00000f,    0.01000f,    0.00000f,    0.00000f },
-  { 91198,  1,    1.00000f,    3.00000f,    1.00000f,    3.00000f },
-  { 91198,  2,    4.00000f,    3.00000f,    4.00000f,    3.00000f },
-  { 91198,  3,    5.00000f,   25.00000f,    5.00000f,   25.00000f },
-  { 91198,  4,    8.00000f,   25.00000f,    8.00000f,   25.00000f },
-  { 91198,  5,    9.00000f,   40.00000f,    9.00000f,   40.00000f },
-  { 91198,  6,   12.00000f,  100.00000f,   12.00000f,  100.00000f },
-  { 91198,  7,   20.00000f,  100.00000f,   20.00000f,  100.00000f },
   { 91200,  0,    0.00000f,    0.00000f,    0.00000f,    0.00000f },
   { 91200,  1,    0.29080f,    0.00000f,    0.00000f,    0.00000f },
   { 91200,  2,    0.50000f,  -20.00000f,    0.00000f,    0.00000f },
@@ -171131,7 +171123,7 @@ static constexpr std::array<curve_point_t, 171129> __curve_point_data { {
   { 115747,  5,   30.00000f,    1.00000f,    0.00000f,    0.00000f },
 } };
 
-// Item Scaling Config data, wow build 12.1.0.69404
+// Item Scaling Config data, wow build 12.1.0.69465
 static constexpr std::array<item_scaling_config_data_t, 417> __item_scaling_config_data { {
   {   1, 12, 70, 70, 0 },
   {   2, 13, 70, 70, 0 },
@@ -171552,7 +171544,7 @@ static constexpr std::array<item_scaling_config_data_t, 417> __item_scaling_conf
   { 489, 71, 0, 0, 2 },
 } };
 
-// Item Offset Curve data, wow build 12.1.0.69404
+// Item Offset Curve data, wow build 12.1.0.69465
 static constexpr std::array<item_offset_curve_data_t, 69> __item_offset_curve_data { {
   {  1, 6243, 0 },
   {  2, 6243, -6 },

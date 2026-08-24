@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69404 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69465 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -19956,7 +19956,6 @@ Effects          :
 Tooltip          : Damage of Sanguinary Burst increased by $w1%.
 
 Name             : Consumption (id=1263824) [Spell Family (15)] 
-Hotfixed         : Channel Interrupt
 Talent Entry     : Blood [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Shadow
@@ -21846,7 +21845,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (
 Effects          :
 #1 (id=1324918)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5 | Radius: 8 yards | Target: Enemy in Area (15)
-Hotfixed         : AP Coefficient (2 -> 0.5)
 Description      : $@spelldesc288848
 
 Name             : Relentless Rider's Strength (id=1300369) [Spell Family (15)] 

@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69404 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69465 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -13714,7 +13714,6 @@ Effects          :
 Description      : $@spelldesc457054
 
 Name             : Singular Focus (id=457236) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Melee

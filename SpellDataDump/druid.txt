@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69404 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69465 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -55,7 +55,6 @@ Description      : Roots the target in place for $d. Damage may cancel the effec
 Tooltip          : Rooted.$?<$w2>0>[ Suffering $w2 Nature damage every $t2 sec.][]
 
 Name             : Tranquility (id=740) [Spell Family (7)] 
-Hotfixed         : Description
 Talent Entry     : Restoration [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature

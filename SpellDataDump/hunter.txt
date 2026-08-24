@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69404 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69465 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -4982,7 +4982,6 @@ Effects          :
 Description      : $@spelldesc212431
 
 Name             : Explosive Shot (id=212680) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
