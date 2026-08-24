@@ -34,8 +34,9 @@ actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|fight_remains<120-30
 # Bullseye's crit devalues Potion of Recklessness in execute. Additionally, a mid-fight pot means that prepotting Luster before Trueshot becomes higher value than pre-potting before combat begins. Therefore, Pot of Recklessness on pull, but during execute, Luster pot around 10s before Trueshot to maximize its benefit.
 actions.cds+=/potion,name=liquid_luster_2,if=potion.potion_of_recklessness&buff.bullseye.up&cooldown.trueshot.remains<10|fight_remains<31
 
-actions.draoe=explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)
-actions.draoe+=/explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up
+actions.draoe=volley,if=fight_style.dungeonroute
+actions.draoe+=/explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)
+actions.draoe+=/explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!fight_style.dungeonroute|active_dot.explosive_shot=0|buff.unstable_trigger.up)
 actions.draoe+=/volley
 actions.draoe+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time&full_recharge_time<gcd+cast_time
 actions.draoe+=/black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
@@ -50,8 +51,9 @@ actions.draoe+=/multishot,if=focus>cost+action.aimed_shot.cost&!max_prio_damage
 actions.draoe+=/steady_shot
 
 actions.drst=black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
+actions.drst+=/volley,if=fight_style.dungeonroute&active_enemies>1
 actions.drst+=/explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&active_enemies>1&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)
-actions.drst+=/explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up
+actions.drst+=/explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!fight_style.dungeonroute|active_enemies=1|active_dot.explosive_shot=0|buff.unstable_trigger.up)
 actions.drst+=/volley
 actions.drst+=/aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time
 actions.drst+=/trueshot,if=variable.trueshot_ready
