@@ -51,6 +51,8 @@ trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=13848/13662
 trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13848/13662
 main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13848/13846,enchant_id=8041
 
+flask=flask_of_the_blood_knights_2
+
 save=MID2_Monk_Windwalker.simc
 
 monk="MID2_Monk_Windwalker_Conduit"
@@ -77,5 +79,7 @@ finger2=sickening_signet_of_atroxus,id=252258,enchant_id=7967,gem_id=240900,bonu
 trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=13848/13662
 trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13848/13662
 main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13848/13846,enchant_id=8041
+
+flask=flask_of_the_blood_knights_2
 
 save=MID2_Monk_Windwalker_Conduit.simc
