@@ -6059,16 +6059,16 @@ struct crash_lightning_t : public shaman_attack_t
     return shaman_attack_t::usable_precombat();
   }
 
-  timespan_t cooldown_base_duration( const cooldown_t& cd ) const override
+  void update_ready( timespan_t cd_duration ) override
   {
-    auto total = cd.duration;
-
     if ( precombat_action > 0_ms )
     {
-      total -= precombat_action / ( recharge_multiplier( cd ) * recharge_rate_multiplier( cd ) );
+      cd_duration = cooldown->duration -
+        precombat_action /
+        ( recharge_multiplier( *cooldown ) * recharge_rate_multiplier( *cooldown ) );
     }
 
-    return total;
+    shaman_attack_t::update_ready( cd_duration );
   }
 
   void execute() override
