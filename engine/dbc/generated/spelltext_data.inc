@@ -1,4 +1,4 @@
-// Spell text, wow build 12.1.0.69404
+// Spell text, wow build 12.1.0.69465
 static constexpr std::array<spelltext_data_t, 29300> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -29302,15 +29302,11 @@ static constexpr std::array<spelltext_data_t, 29300> __spelltext_data { {
   { 1317582, "Your spells and abilities have a chance to increase a random secondary stat by $s1 but reduce your other secondary stats by $s2 for $1317581d.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.1.0.69404
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
-  {     740,  0, "Heals all allies within $a2 yards for $<healing> over $d.$?s197721[ Extends the duration of all your heal over time effects by $s6 sec every $t1 sec.][] Healing decreased beyond $s3 targets.\r\n\r\nRoots form around you while channeling, absorbing up to $s6% of your health in damage and preventing knockbacks.", "Heals all allies within $a2 yards for $<healing> over $d.$?s197721[ Extends the duration of all your heal over time effects by $197721s1 sec every $t1 sec.][] Healing decreased beyond $s3 targets.\r\n\r\nRoots form around you while channeling, absorbing up to $s6% of your health in damage and preventing knockbacks." },
-  { 1303407,  0, "Place a Hearty Amani Cornucopia for all players to enjoy!\r\n\r\n$@spelldesc1232065\r\n\r\n$@spellicon457049 $@spellname1232078\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232078 gaining $1219179s7 Stamina and $1219179s4 of your highest secondary stat for $462209d.\r\n\r\nThis aura persists through death.", "Place a Hearty Amani Cornucopia for all players to enjoy!\r\n\r\n$@spelldesc1232065\r\n\r\n$@spellicon457049 $@spellname1232078\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232078 gaining ${$1219179s7*1.1} Stamina and ${$1219179s4*1.1} of your highest secondary stat for $462209d.\r\n\r\nThis aura persists through death." },
-  { 1303408,  0, "Place a Hearty Loa's Gathering for all players to enjoy!\r\n\r\n$@spelldesc1232065\r\n\r\n$@spellicon457049 $@spellname1232078\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232078 gaining $1219179s7 Stamina and $1219179s4 of your highest secondary stat for $462209d.\r\n\r\nThis aura persists through death.", "Place a Hearty Loa's Gathering for all players to enjoy!\r\n\r\n$@spelldesc1232065\r\n\r\n$@spellicon457049 $@spellname1232078\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232078 gaining ${$1219179s7*1.1} Stamina and ${$1219179s4*1.1} of your highest secondary stat for $462209d.\r\n\r\nThis aura persists through death." },
-  { 1303409,  0, "Place a Hearty Feast of Knowledge for all players to enjoy!\r\n\r\n$@spelldesc1232065\r\n\r\n$@spellicon457049 $@spellname1232078\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232078 gaining $1219179s7 Stamina and $1219179s4 of your highest secondary stat for $462209d.\r\n\r\nThis aura persists through death.", "Place a Hearty Feast of Knowledge for all players to enjoy!\r\n\r\n$@spelldesc1232065\r\n\r\n$@spellicon457049 $@spellname1232078\r\nIf you spend at least 10 seconds eating, you will become $@spellname1232078 gaining ${$1219179s7*1.1} Stamina and ${$1219179s4*1.1} of your highest secondary stat for $462209d.\r\n\r\nThis aura persists through death." },
+// spelltext hotfix entries, wow build 12.1.0.69465
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.1.0.69404
+// Spell description variables, wow build 12.1.0.69465
 static constexpr std::array<spelldesc_vars_data_t, 740> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -30054,7 +30050,7 @@ static constexpr std::array<spelldesc_vars_data_t, 740> __spelldesc_vars_data { 
   { 1309793, "$base=${10}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.1.0.69404
+// spelldesc_vars hotfix entries, wow build 12.1.0.69465
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
