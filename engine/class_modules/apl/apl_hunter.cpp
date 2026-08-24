@@ -307,7 +307,7 @@ void marksmanship( player_t* p )
   sentst->add_action( "explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up" );
   sentst->add_action( "volley" );
   sentst->add_action( "trueshot,if=variable.trueshot_ready" );
-  sentst->add_action( "moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max" );
+  sentst->add_action( "moonlight_chakram,if=buff.moonlight_chakram.remains<5" );
   sentst->add_action( "rapid_fire,if=buff.precise_shots.up&talent.unload&talent.no_scope" );
   sentst->add_action( "kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up" );
   sentst->add_action( "multishot,target_if=max:debuff.sentinels_mark.down,if=buff.precise_shots.up&active_enemies>1&talent.aspect_of_the_hydra&(!fight_style.dungeonroute|!max_prio_damage|active_enemies>2)", "Multi-Shot as a PS spender on 2T with Hydra talented. In DRoute, do it on 3 or more targets." );

@@ -4490,11 +4490,12 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
     auto tl = target_list();
     unsigned int bounce_limit = as<unsigned int>( p()->talents.moonlight_chakram_spell->effectN( 2 ).base_value() );
 
+    // Chakram bounce interval is 640ms for single target and ~130ms for multi-target.
+    timespan_t bounce_interval = tl.size() == 1 ? 640_ms : 130_ms;
     // 2026-01-23: Spell data count doesn't include the initial hit so use <= in the loop.
     for ( unsigned int bounce = 0; bounce <= bounce_limit; bounce++ )
     {
-      // 200ms estimation based on log data.
-      timespan_t time = 200_ms * bounce;
+      timespan_t time = bounce_interval * bounce;
       make_event( sim, time, [ this, tl, bounce ]() { damage->execute_on_target( tl[ bounce % tl.size() ] ); } );
 
       if ( bounce == bounce_limit )

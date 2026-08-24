@@ -75,7 +75,7 @@ actions.sentst=explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bo
 actions.sentst+=/explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up
 actions.sentst+=/volley
 actions.sentst+=/trueshot,if=variable.trueshot_ready
-actions.sentst+=/moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max
+actions.sentst+=/moonlight_chakram,if=buff.moonlight_chakram.remains<5
 actions.sentst+=/rapid_fire,if=buff.precise_shots.up&talent.unload&talent.no_scope
 actions.sentst+=/kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up
 # Multi-Shot as a PS spender on 2T with Hydra talented. In DRoute, do it on 3 or more targets.
