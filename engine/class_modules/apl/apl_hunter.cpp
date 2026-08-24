@@ -260,8 +260,9 @@ void marksmanship( player_t* p )
   cds->add_action( "potion,name=liquid_luster_2,if=potion.potion_of_recklessness&buff.bullseye.up&cooldown.trueshot.remains<10|fight_remains<31", "Bullseye's crit devalues Potion of Recklessness in execute. Additionally, a mid-fight pot means that prepotting Luster before Trueshot becomes higher value than pre-potting before combat begins. Therefore, Pot of Recklessness on pull, but during execute, Luster pot around 10s before Trueshot to maximize its benefit." );
 
   drst->add_action( "black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
+  drst->add_action( "volley,if=fight_style.dungeonroute&active_enemies>1" );
   drst->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&active_enemies>1&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)" );
-  drst->add_action( "explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up" );
+  drst->add_action( "explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!fight_style.dungeonroute|active_enemies=1|active_dot.explosive_shot=0|buff.unstable_trigger.up)" );
   drst->add_action( "volley" );
   drst->add_action( "aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time" );
   drst->add_action( "trueshot,if=variable.trueshot_ready" );
@@ -273,8 +274,9 @@ void marksmanship( player_t* p )
   drst->add_action( "black_arrow" );
   drst->add_action( "steady_shot" );
 
+  draoe->add_action( "volley,if=fight_style.dungeonroute" );
   draoe->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)" );
-  draoe->add_action( "explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up" );
+  draoe->add_action( "explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!fight_style.dungeonroute|active_dot.explosive_shot=0|buff.unstable_trigger.up)" );
   draoe->add_action( "volley" );
   draoe->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time&full_recharge_time<gcd+cast_time" );
   draoe->add_action( "black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
