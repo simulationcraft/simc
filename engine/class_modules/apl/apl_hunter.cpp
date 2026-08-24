@@ -111,7 +111,7 @@ void beast_mastery( player_t* p )
 
   drcleave->add_action( "black_arrow,if=buff.beast_cleave.remains<gcd&cooldown.bestial_wrath.remains<gcd&active_enemies>2" );
   drcleave->add_action( "bestial_wrath,if=buff.beast_cleave.remains|!talent.beast_cleave" );
-  drcleave->add_action( "wild_thrash" );
+  drcleave->add_action( "wild_thrash,if=talent.beast_cleave&(prev_gcd.1.bestial_wrath|!buff.beast_cleave.up|cooldown.bestial_wrath.remains>buff.beast_cleave.remains)|!talent.beast_cleave" );
   drcleave->add_action( "kill_command,if=cooldown.bestial_wrath.remains>full_recharge_time+gcd&buff.natures_ally.react|!apex.3" );
   drcleave->add_action( "barbed_shot,if=full_recharge_time<1*gcd,target_if=min:dot.barbed_shot.remains|max_prio_damage" );
   drcleave->add_action( "black_arrow,if=buff.withering_fire.up" );
