@@ -58,12 +58,14 @@ actions.draoe+=/black_arrow
 actions.draoe+=/multishot,if=focus>cost+action.aimed_shot.cost&!max_prio_damage
 actions.draoe+=/steady_shot
 
-actions.sentaoe=explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)
-actions.sentaoe+=/explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up
+actions.sentaoe=volley,if=fight_style.dungeonroute
+actions.sentaoe+=/explosive_shot,target_if=min:dot.explosive_shot.remains,if=(set_bonus.mid2_4pc&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up))&(!fight_style.dungeonroute|raid_event.pull.remains>7)
+actions.sentaoe+=/explosive_shot,if=((!talent.tactical_reload|!buff.lock_and_load.up)&(!fight_style.dungeonroute|active_dot.explosive_shot=0|buff.unstable_trigger.up))&(!fight_style.dungeonroute|raid_event.pull.remains>7)
 actions.sentaoe+=/volley
 actions.sentaoe+=/trueshot,if=variable.trueshot_ready
 actions.sentaoe+=/moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max
 actions.sentaoe+=/multishot,target_if=max:debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down
+actions.sentaoe+=/aimed_shot,target_if=max:debuff.sentinels_mark.up,if=debuff.sentinels_mark.react&buff.bulletstorm.up
 actions.sentaoe+=/rapid_fire,target_if=max:debuff.sentinels_mark.down,if=talent.unload,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
 actions.sentaoe+=/rapid_fire,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
 actions.sentaoe+=/aimed_shot,target_if=max:debuff.sentinels_mark.up,if=buff.trick_shots.remains>cast_time
@@ -71,11 +73,13 @@ actions.sentaoe+=/moonlight_chakram
 actions.sentaoe+=/multishot,if=focus>cost+action.aimed_shot.cost&!max_prio_damage
 actions.sentaoe+=/steady_shot
 
-actions.sentst=explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&active_enemies>1&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)
-actions.sentst+=/explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up
+actions.sentst=volley,if=fight_style.dungeonroute&active_enemies>1
+actions.sentst+=/explosive_shot,target_if=min:dot.explosive_shot.remains,if=(set_bonus.mid2_4pc&active_enemies>1&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up))&(!fight_style.dungeonroute|raid_event.pull.remains>7)
+actions.sentst+=/explosive_shot,if=((!talent.tactical_reload|!buff.lock_and_load.up)&(!fight_style.dungeonroute|active_enemies=1|active_dot.explosive_shot=0|buff.unstable_trigger.up))&(!fight_style.dungeonroute|raid_event.pull.remains>7)
 actions.sentst+=/volley
 actions.sentst+=/trueshot,if=variable.trueshot_ready
 actions.sentst+=/moonlight_chakram,if=buff.moonlight_chakram.remains<5
+actions.sentst+=/aimed_shot,if=debuff.sentinels_mark.react&buff.bulletstorm.up&active_enemies>1&fight_style.dungeonroute
 actions.sentst+=/rapid_fire,target_if=max:debuff.sentinels_mark.down,if=!fight_style.dungeonroute
 actions.sentst+=/rapid_fire
 actions.sentst+=/kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up

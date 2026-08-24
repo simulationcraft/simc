@@ -288,12 +288,14 @@ void marksmanship( player_t* p )
   draoe->add_action( "multishot,if=focus>cost+action.aimed_shot.cost&!max_prio_damage" );
   draoe->add_action( "steady_shot" );
 
-  sentaoe->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)" );
-  sentaoe->add_action( "explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up" );
+  sentaoe->add_action( "volley,if=fight_style.dungeonroute" );
+  sentaoe->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=(set_bonus.mid2_4pc&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up))&(!fight_style.dungeonroute|raid_event.pull.remains>7)" );
+  sentaoe->add_action( "explosive_shot,if=((!talent.tactical_reload|!buff.lock_and_load.up)&(!fight_style.dungeonroute|active_dot.explosive_shot=0|buff.unstable_trigger.up))&(!fight_style.dungeonroute|raid_event.pull.remains>7)" );
   sentaoe->add_action( "volley" );
   sentaoe->add_action( "trueshot,if=variable.trueshot_ready" );
   sentaoe->add_action( "moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max" );
   sentaoe->add_action( "multishot,target_if=max:debuff.sentinels_mark.down,if=buff.precise_shots.up&!talent.aspect_of_the_hydra|buff.trick_shots.down" );
+  sentaoe->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up,if=debuff.sentinels_mark.react&buff.bulletstorm.up" );
   sentaoe->add_action( "rapid_fire,target_if=max:debuff.sentinels_mark.down,if=talent.unload,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1" );
   sentaoe->add_action( "rapid_fire,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1" );
   sentaoe->add_action( "aimed_shot,target_if=max:debuff.sentinels_mark.up,if=buff.trick_shots.remains>cast_time" );
@@ -301,11 +303,13 @@ void marksmanship( player_t* p )
   sentaoe->add_action( "multishot,if=focus>cost+action.aimed_shot.cost&!max_prio_damage" );
   sentaoe->add_action( "steady_shot" );
 
-  sentst->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&active_enemies>1&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)" );
-  sentst->add_action( "explosive_shot,if=!talent.tactical_reload|!buff.lock_and_load.up" );
+  sentst->add_action( "volley,if=fight_style.dungeonroute&active_enemies>1" );
+  sentst->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=(set_bonus.mid2_4pc&active_enemies>1&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up))&(!fight_style.dungeonroute|raid_event.pull.remains>7)" );
+  sentst->add_action( "explosive_shot,if=((!talent.tactical_reload|!buff.lock_and_load.up)&(!fight_style.dungeonroute|active_enemies=1|active_dot.explosive_shot=0|buff.unstable_trigger.up))&(!fight_style.dungeonroute|raid_event.pull.remains>7)" );
   sentst->add_action( "volley" );
   sentst->add_action( "trueshot,if=variable.trueshot_ready" );
   sentst->add_action( "moonlight_chakram,if=buff.moonlight_chakram.remains<5" );
+  sentst->add_action( "aimed_shot,if=debuff.sentinels_mark.react&buff.bulletstorm.up&active_enemies>1&fight_style.dungeonroute" );
   sentst->add_action( "rapid_fire,target_if=max:debuff.sentinels_mark.down,if=!fight_style.dungeonroute" );
   sentst->add_action( "rapid_fire" );
   sentst->add_action( "kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up" );
