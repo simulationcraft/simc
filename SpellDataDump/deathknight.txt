@@ -19145,9 +19145,13 @@ Family Flags     : 13, 43, 78, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1241583)  : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 38420 | Radius: 1 - 12 yards | Target: Front of Self (47) -> Enemy in Area around Caster (151)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 38420 | Radius: 1 yards | Target: Front of Self (47)
+Hotfixed         : Target 2 (151 -> 0)
 #2 (id=1289731)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
+#3 (id=1351803)  : Create Area Trigger (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 45050 | Radius: 1 yards | Target: Front of Self (47)
+Hotfixed         : NEW EFFECT
 Description      : Unleash a vortex of necrotic energy and bone, dealing $1242172s1 Shadowstrike damage up to $1242158s2 foes and $1242178s1 Shadow damage to all pierced enemies.
 
 Name             : Necrotic Coil (id=1242175) [Hidden] 
