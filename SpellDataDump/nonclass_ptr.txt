@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69382 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69497 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -250642,8 +250642,8 @@ Labels           : 6782
 Attributes       : Can't Crit (93)
 Effects          :
 #1 (id=1273548)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 45 yards | Target: Ally in Area (30)
-Hotfixed         : Target 1 (21 -> 30)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 45 yards | Target: Source (22) -> Ally in Area (30)
+Hotfixed         : Target 1 (30 -> 22), Target 2 (0 -> 30)
 #2 (id=1305384)  : Dummy (3)
                    Base Value: 2051 | Scaled Value: 2051 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279599
@@ -254023,7 +254023,6 @@ Description      : Restores $s1% of your maximum health and mana every second ov
 Tooltip          : Restoring $s1% health and mana every sec.
 
 Name             : Bundle of Adventurer Mistcrests (id=1286592) 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -254036,7 +254035,6 @@ Effects          :
 Description      : Collect 10 Adventurer Mistcrests.
 
 Name             : Satchel of Champion Mistcrests (id=1286602) 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -254049,7 +254047,6 @@ Effects          :
 Description      : Collect 10 Champion Mistcrests.
 
 Name             : Pack of Hero Mistcrests (id=1286604) 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -254062,7 +254059,6 @@ Effects          :
 Description      : Collect 10 Hero Mistcrests.
 
 Name             : Pouch of Veteran Mistcrests (id=1286605) 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Cast Time        : 0.5 seconds
@@ -254184,10 +254180,8 @@ Attributes       : Can't Crit (93), Do Not Display Range (126), Do Not Display C
 Effects          :
 #1 (id=1304141)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 45 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : Target 1 (15 -> 22), Target 2 (0 -> 15)
 #2 (id=1305382)  : Dummy (3)
                    Base Value: 977 | Scaled Value: 977 | Radius: 0 - 45 yards | Target: Source (22) -> Enemy in Area (15)
-Hotfixed         : Target 1 (6 -> 22), Target 2 (0 -> 15)
 Description      : $@spelldesc1279599
 
 Name             : Rune of Void-Touched Orbs (desc=Core Rune) (id=1287255) [Hidden] 
@@ -254995,7 +254989,6 @@ Effects          :
 Description      : Add the Lindormi's Guidance affix to a Mythic Keystone.
 
 Name             : Gift Expunction (id=1289168) 
-Hotfixed         : Description
 School           : Nature
 Spell Type       : Magic
 Range            : 50000 yards
@@ -257363,7 +257356,6 @@ Effects          :
 Description      : Recipe for $M1 servings. Actual number of servings will vary based on cooking skill.
 
 Name             : Ouroboric Gift (id=1295803) 
-Hotfixed         : Tooltip
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -257382,7 +257374,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed, Leech, Avoidance | Target: Self (1)
 #3 (id=1318110)  : Apply Aura (6) | Modify Combat Rating Multiplier (405)
                    Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed, Leech, Avoidance | Target: Self (1)
-Hotfixed         : Base Value (100 -> 0)
 Description      : Increases $pri by $s1% and all Tertiary stats by $s2%
 Tooltip          : $pri increased by $w1% and Tertiary stats increased by $w3%.
 
@@ -258412,7 +258403,6 @@ If an afflicted target dies the Venom is expelled, instantly dealing its remaini
 Tooltip          : Absorb x damage.
 
 Name             : Hunter's Ritual Stone (id=1297382) [Passive, Hidden] 
-Hotfixed         : Max Scaling Level (0 -> 90)
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 90
@@ -258424,7 +258414,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 1295897 | Target: Self (1)
 #2 (id=1320611)  : Dummy (3) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 66.51784 (coefficient=0.507458)
-Hotfixed         : Coefficient (0.830768 -> 0.507458)
 Description      : Your damaging spells and abilities have a chance to grant $s2 of a random secondary stat for $1295898d.
 
 While on a Prey Hunt this effect is increased by $s1%. This bonus is only available outdoors while hunting prey.
@@ -259524,7 +259513,6 @@ Description      : Restores $s1% of your maximum mana every second over $d. Must
 Tooltip          : Restoring $w1% mana every sec.
 
 Name             : Hearty Amani Cornucopia (id=1303407) 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Range            : 5 yards
@@ -259548,7 +259536,6 @@ If you spend at least 10 seconds eating, you will become $@spellname1232078 gain
 This aura persists through death.
 
 Name             : Hearty Loa's Gathering (id=1303408) 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Range            : 5 yards
@@ -259572,7 +259559,6 @@ If you spend at least 10 seconds eating, you will become $@spellname1232078 gain
 This aura persists through death.
 
 Name             : Hearty Feast of Knowledge (id=1303409) 
-Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Range            : 5 yards
@@ -260562,7 +260548,6 @@ Description      : $@spelldesc1305830
 
 
 Name             : Preternatural Antivenom (id=1305846) 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
@@ -260938,7 +260923,6 @@ Description      : $@spelldesc1295617
 Tooltip          : Follow up your next attack with $@spellname1307332, $@spellname1307333, or $@spellname1307324 based on the number of nearby enemies.
 
 Name             : Hex Lord's Doom (id=1307470) 
-Hotfixed         : Aura Interrupt
 School           : Shadow
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -261101,13 +261085,11 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1336169)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Trigger Spell: 1307910 | Target: Self (1)
-Hotfixed         : Sub Type (42 -> 4)
 #2 (id=1336170)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -27.63072 (coefficient=-0.210792) | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Critical Strike by $s1, but reduce your other secondary stats by $s2 for $1307910d.
 
 Name             : Venomcursed Critical Strike (id=1307910) 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Duration         : 12 seconds
@@ -261124,7 +261106,6 @@ Description      : $@spelldesc1307906
 Tooltip          : Critical Strike increased by $w1. Haste, Mastery, and Versatility decreased by $w2.
 
 Name             : Venomcursed Mastery (id=1307922) 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Duration         : 12 seconds
@@ -261152,13 +261133,11 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1336195)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Trigger Spell: 1307922 | Target: Self (1)
-Hotfixed         : Sub Type (42 -> 4)
 #2 (id=1336196)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -27.63072 (coefficient=-0.210792) | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Mastery by $s1, but reduce your other secondary stats by $s2 for $1307922d.
 
 Name             : Venomcursed Haste (id=1307927) 
-Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Duration         : 12 seconds
@@ -261186,7 +261165,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1336206)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 165.7889 (coefficient=1.264787) | Trigger Spell: 1307927 | Target: Self (1)
-Hotfixed         : Sub Type (42 -> 4)
 #2 (id=1336207)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -27.63072 (coefficient=-0.210792) | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Haste by $s1, but reduce your other secondary stats by $s2 for $1307927d.
@@ -261486,7 +261464,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 265919 | Target: Self (1)
 
 Name             : Venomcursed Ascendance (id=1317581) 
-Hotfixed         : NEW SPELL
 School           : Nature
 Spell Type       : None
 Duration         : 12 seconds
@@ -261497,21 +261474,16 @@ Attributes       : Aura Points On Client (268), Periodic Refresh Extends Duratio
 Effects          :
 #1 (id=1350712)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.66 | Rating: Crit | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #2 (id=1350713)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #3 (id=1350714)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #4 (id=1350715)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1317582
 Tooltip          : $?$W1>0[Critical Strike increased by $w1. Haste, Mastery, and Versatility decreased by $w2.]?$W2>0[Haste increased by $w2. Critical Strike, Mastery, and Versatility decreased by $w1.]?$W3>0[Mastery increased by $w3. Critical Strike, Haste, and Versatility decreased by $w1.]?$W4>0[Versatility increased by $w4. Critical Strike, Haste, and Mastery decreased by $w1.][]
 
 Name             : Venomcursed Ascendance (id=1317582) [Passive] 
-Hotfixed         : NEW SPELL
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -261523,9 +261495,7 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1350716)  : Apply Aura (6) | Proc Trigger Spell (42): Venomcursed Ascendance | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: 130.8133 (coefficient=0.997962) | Trigger Spell: 1317581 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #2 (id=1350717)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -22.00592 (coefficient=-0.167881) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Your spells and abilities have a chance to increase a random secondary stat by $s1 but reduce your other secondary stats by $s2 for $1317581d.
 
