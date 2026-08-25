@@ -3999,7 +3999,7 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
   {
     for (auto e : effects)
     {
-      if ( e -> cooldown() != timespan_t::zero() && e -> rppm() == 0 ) // Technically, rppm doesn't have a cooldown.
+      if ( e->cooldown() != timespan_t::zero() )
       {
         v = 1;
         break;
