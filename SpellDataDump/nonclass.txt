@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69465 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69497 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -260923,7 +260923,6 @@ Description      : $@spelldesc1295617
 Tooltip          : Follow up your next attack with $@spellname1307332, $@spellname1307333, or $@spellname1307324 based on the number of nearby enemies.
 
 Name             : Hex Lord's Doom (id=1307470) 
-Hotfixed         : Aura Interrupt
 School           : Shadow
 Spell Type       : None
 Duration         : Aura (infinite)

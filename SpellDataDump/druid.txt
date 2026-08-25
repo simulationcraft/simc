@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69465 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69497 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -177,7 +177,8 @@ Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), D
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=311)      : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.803 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.924 | PvP Coefficient: 0.87 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (0.803 -> 0.924), PvP Coefficient (1 -> 0.87)
 Description      : Heals the target for $o1 over $d.$?s155675[
 
 You can apply Rejuvenation twice to the same target.][]$?s33891[
@@ -1844,7 +1845,8 @@ Family Flags     : 58, 118
 Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=40640)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.437 | Radius: 0 - 30 yards | Target: at Target (63) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.481 | Radius: 0 - 30 yards | Target: at Target (63) -> At Ally in Area (31)
+Hotfixed         : SP Coefficient (0.437 -> 0.481)
 #2 (id=40641)    : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
                    Modified By: Improved Wild Growth (328025 effect#1)
@@ -4727,7 +4729,8 @@ Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), A
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=216513)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.803 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.924 | PvP Coefficient: 0.87 | Target: Targeted Ally (21)
+Hotfixed         : SP Coefficient (0.803 -> 0.924), PvP Coefficient (1 -> 0.87)
 Description      : $@spelldesc774
 Tooltip          : Healing $w1 every $t1 sec.
 Variables        : $mult=${1}
@@ -20646,9 +20649,11 @@ Effects          :
 #1 (id=1245025)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #2 (id=1245026)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.25 | Target: Self (1)
+                   Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 1.042 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 24), PvP Coefficient (1.25 -> 1.042)
 #3 (id=1314559)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Hotfixed         : Base Value (6 -> 5)
 Description      : $s2% of Lifebloom's final bloom heals up to $s3 injured allies within $1244341a1 yds.
 
 Name             : Everbloom (id=1244341) [Spell Family (7)] 
@@ -21837,7 +21842,8 @@ Proc Flags       : Magic Heal
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1274815)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 10)
 Description      : Regrowth heals all other allies with Regrowth for $s1% of its healing.
 
 Name             : Unseen Slash (id=1263884) [Spell Family (7)] 
@@ -23460,8 +23466,9 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1319279)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
-                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 0.5 | Misc Value: 1 | Misc Value 2: 6767 (Label) | Target: Self (1)
+                   Base Value: 8000 | Scaled Value: 8000 | PvP Coefficient: 0.5 | Misc Value: 1 | Misc Value 2: 6767 (Label) | Target: Self (1)
                    Affected Spells (Label): Genesis (1302255)
+Hotfixed         : Base Value (4000 -> 8000)
 #2 (id=1339852)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Nature's Swiftness, Tranquility, and $?s33891[Incarnation: Tree of Life][Convoke the Spirits] have a $s2% chance to grant Genesis, and Genesis duration is increased by ${$s1/1000} sec.
