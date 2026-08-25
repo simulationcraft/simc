@@ -10654,9 +10654,16 @@ void shaman_t::create_actions()
       talent.thorims_invocation, "thorims_invocation" );
     action.lightning_bolt_ti = new lightning_bolt_t( this,
       variant_flag( spell_variant::THORIMS_INVOCATION ) );
-    action.tempest_ti = new tempest_t( this, variant_flag( spell_variant::THORIMS_INVOCATION ) );
-    action.chain_lightning_ti = new chain_lightning_t( this, talent.chain_lightning,
-      variant_flag( spell_variant::THORIMS_INVOCATION ) );
+    if ( talent.tempest.ok() )
+    {
+      action.tempest_ti = new tempest_t( this, variant_flag( spell_variant::THORIMS_INVOCATION ) );
+    }
+
+    if ( talent.chain_lightning.ok() )
+    {
+      action.chain_lightning_ti = new chain_lightning_t( this, talent.chain_lightning,
+        variant_flag( spell_variant::THORIMS_INVOCATION ) );
+    }
   }
 
   if ( talent.lightning_rod.ok() || talent.conductive_energy.ok() )
