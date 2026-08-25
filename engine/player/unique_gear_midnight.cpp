@@ -229,9 +229,13 @@ void potion_of_zealotry( special_effect_t& effect )
   {
     const special_effect_t& effect;
     player_t* last_target;
+    double mul;
 
     burst_of_zealotry_t( const special_effect_t& e )
-      : generic_proc_t( e, "burst_of_zealotry", 1237158 ), effect( e ), last_target( nullptr )
+      : generic_proc_t( e, "burst_of_zealotry", 1237158 ),
+        effect( e ),
+        last_target( nullptr ),
+        mul( e.driver()->effectN( 4 ).percent() )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e );
       target_debuff             = e.driver()->effectN( 1 ).trigger();
@@ -242,7 +246,7 @@ void potion_of_zealotry( special_effect_t& effect )
       double m = generic_proc_t::composite_da_multiplier( s );
 
       if ( auto debuff = find_debuff( s->target ) )
-        m *= 1.0 + debuff->check() * effect.driver()->effectN( 4 ).percent();
+        m *= 1.0 + debuff->check() * mul;
 
       return m;
     }
@@ -3134,10 +3138,19 @@ void glorious_crusaders_keepsake( special_effect_t& e )
   {
     target_specific_t<std::unordered_map<stat_e, buff_t*>> buffs;
     std::unordered_map<size_t, bool> valid_party_targets;
-
+    const spell_data_t* player_buff;
+    const spell_data_t* ally_buff;
+    double player_value;
+    double ally_value;
 
     glorious_crusaders_keepsake_cb_t( const special_effect_t& e )
-      : dbc_proc_callback_t( e.player, e ), buffs{ true }, valid_party_targets()
+      : dbc_proc_callback_t( e.player, e ),
+        buffs{ true },
+        valid_party_targets(),
+        player_buff( e.player->find_spell( 1266299 ) ),
+        ally_buff( e.player->find_spell( 1266300 ) ),
+        player_value( e.driver()->effectN( 1 ).average( e ) ),
+        ally_value( e.driver()->effectN( 2 ).average( e ) )
     {
       create_buffs( effect.player );
     }
@@ -3183,15 +3196,14 @@ void glorious_crusaders_keepsake( special_effect_t& e )
       if ( buffs[ target_player ] )
         return;
 
-      auto buff_spell =
-          effect.player == target_player ? effect.player->find_spell( 1266299 ) : effect.player->find_spell( 1266300 );
-
-      auto buff_size = effect.driver()->effectN( effect.player == target_player ? 1 : 2 ).average( effect );
+      auto buff_spell = effect.player == target_player ? player_buff : ally_buff;
+      auto buff_value = effect.player == target_player ? player_value : ally_value;
 
       buffs[ target_player ] = new std::unordered_map<stat_e, buff_t*>();
 
-      create_all_buffs( target_player, effect, buff_spell, buff_size,
-                        [ & ]( stat_e s, buff_t* b ) { ( *buffs[ target_player ] )[ s ] = b; } );
+      create_all_buffs( target_player, effect, buff_spell, buff_value, [ & ]( stat_e s, buff_t* b ) {
+        ( *buffs[ target_player ] )[ s ] = b;
+      } );
     }
 
     bool valid_player( player_t* target_player )
@@ -4119,23 +4131,26 @@ void permafrost_essence( special_effect_t& effect )
   {
     buff_t* mark_of_frost;
     buff_t* reservoir;
+    double hp_threshold;
+    double absorb_amount;
 
     permafrost_essence_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
         mark_of_frost( create_buff<stat_buff_t>( e.player, e.player->find_spell( 1260316 ) )
           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) ) ),
         reservoir( create_buff<absorb_buff_t>( e.player, e.player->find_spell( 1260321 ) )
-          ->set_absorb_source( e.player->get_stats( "permafrost_reservoir" ) ) )
-    {
-    }
+          ->set_absorb_source( e.player->get_stats( "permafrost_reservoir" ) ) ),
+        hp_threshold( e.driver()->effectN( 2 ).base_value() ),
+        absorb_amount( e.driver()->effectN( 3 ).average( e ) )
+    {}
 
     void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       mark_of_frost->trigger();
 
-      if ( t->health_percentage() <= effect.driver()->effectN( 2 ).base_value() )
+      if ( t->health_percentage() <= hp_threshold )
       {
-        double amount = effect.driver()->effectN( 3 ).average( effect ) * mark_of_frost->check();
+        double amount = absorb_amount * mark_of_frost->check();
         mark_of_frost->expire();
         reservoir->trigger( 1, amount );
       }
@@ -5665,10 +5680,10 @@ void zuljins_guillotine_technique( special_effect_t& effect )
 {
   struct guillotine_t : public generic_proc_t
   {
-    const special_effect_t& effect;
+    double mul_per_hp_pct;
 
     guillotine_t( const special_effect_t& e, std::string_view n, const spell_data_t* s )
-      : generic_proc_t( e, n, s ), effect( e )
+      : generic_proc_t( e, n, s ), mul_per_hp_pct( e.driver()->effectN( 2 ).percent() )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
       base_multiplier *= role_mult( e );
@@ -5690,7 +5705,7 @@ void zuljins_guillotine_technique( special_effect_t& effect )
     {
       double m = generic_proc_t::composite_target_multiplier( target );
 
-      m *= 1.0 + effect.driver()->effectN( 2 ).percent() * ( 100 - target->health_percentage() );
+      m *= 1.0 + mul_per_hp_pct * ( 100 - target->health_percentage() );
 
       return m;
     }
