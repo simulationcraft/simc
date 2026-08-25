@@ -17607,7 +17607,7 @@ struct death_knight_module_t : public module_t
   
   void register_hotfixes() const override
   {
-    
+    /*
     hotfix::register_effect( "Death Knight", "2026-08-22", "Frost aura (direct) buffed 6%", 179689,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
@@ -17698,7 +17698,7 @@ struct death_knight_module_t : public module_t
         .operation( hotfix::HOTFIX_SET )
         .modifier( .919399 )
         .verification_value( .799477 );
-        
+   */
   }
 
   void register_actor_initializers( sim_t* ) const override
