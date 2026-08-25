@@ -771,7 +771,7 @@ void cooldown_t::set_max_charges( int new_max_charges )
      * Use adjust to go from 0 charges and 0 cooldown progress to the previously calculated charges we should have after
      * changing max charges by making the cooldown advance in time by the multiple of the cooldown.
      */
-    adjust( -charges_fractional * cooldown_t::cooldown_duration( this ) );
+    adjust( -charges_fractional * cooldown_t::cooldown_duration( this ), true, false );
   }
 
   // If the player is queueing an action that uses this cooldown, cancel it.
