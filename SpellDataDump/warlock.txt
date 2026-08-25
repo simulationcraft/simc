@@ -45,7 +45,8 @@ Effects          :
 #2 (id=198373)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #3 (id=830260)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.350864 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.403494 | PvP Coefficient: 0.869564 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (0.350864 -> 0.403494), PvP Coefficient (1 -> 0.869564)
 Description      : Corrupts the target, causing $s3 Shadow damage and $?a196103[$146739s1 Shadow damage every $146739t1 sec.][an additional $146739o1 Shadow damage over $146739d.]
 
 Name             : Immolate (id=348) [Spell Family (5)] 
@@ -263,8 +264,8 @@ Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bo
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.077608 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (0.330225 -> 0.5)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.09313 | PvP Coefficient: 0.416667 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (0.077608 -> 0.09313), PvP Coefficient (0.5 -> 0.416667)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$s1*$d/$t1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -1457,7 +1458,8 @@ Family Flags     : 49, 92
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=33883)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.459162 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.596911 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (0.459162 -> 0.596911)
 Description      : $@spelldesc5740
 
 Name             : Seed of Corruption (id=43991) [Spell Family (5)] 
@@ -3468,17 +3470,20 @@ Effects          :
                    Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831), Wither (445468), Wither (445474), Corruption (1261158), Wither (1279686)
                    Family Flags: 1
 #9 (id=261080)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value 2: 3444 (Label) | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | Misc Value 2: 3444 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445468)
+Hotfixed         : Base Value (-20 -> -12)
 #10 (id=261081)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445474)
+Hotfixed         : Base Value (-20 -> -12)
 #11 (id=261082)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 39 | Scaled Value: 39 | Misc Value 2: 3545 (Label) | Target: Self (1)
                    Affected Spells (Label): Soul Anathema (450538)
 #12 (id=261083)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 55 | Scaled Value: 55 | Misc Value 2: 3456 (Label) | Target: Self (1)
+                   Base Value: 86 | Scaled Value: 86 | Misc Value 2: 3456 (Label) | Target: Self (1)
                    Affected Spells (Label): Blackened Soul (445736)
+Hotfixed         : Base Value (55 -> 86)
 #13 (id=261084)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 75 | Scaled Value: 75 | Misc Value 2: 5185 (Label) | Target: Self (1)
                    Affected Spells (Label): Wicked Reaping (449826)
@@ -3508,9 +3513,10 @@ Effects          :
 #4 (id=191029)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: -4 | Scaled Value: -4 | Target: Self (1)
 #5 (id=191030)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 45 | Scaled Value: 45 | Target: Self (1)
+                   Base Value: 95.75 | Scaled Value: 95.75 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506), Malefic Grasp (1261153)
                    Family Flags: 0
+Hotfixed         : Base Value (45 -> 95.75)
 #6 (id=1300810)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 6343 (Label) | Target: Self (1)
                    Affected Spells (Label): Wicked Reaping (449631)
@@ -3616,7 +3622,8 @@ Family Flags     : 1, 49
 Attributes       : Aura Is Debuff (26), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Taps immediately (215), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds | Attributes: Is Harmful (12)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.330526 | Target: Current Target (25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.380105 | PvP Coefficient: 0.869565 | Target: Current Target (25)
+Hotfixed         : SP Coefficient (0.330526 -> 0.380105), PvP Coefficient (1 -> 0.869565)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -6323,7 +6330,8 @@ Family Flags     : 49, 70
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.15006 | PvP Coefficient: 1.12346 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.99508 | PvP Coefficient: 1.12346 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (6.15006 -> 7.99508)
 #2 (id=1049817)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #3 (id=1173941)  : Trigger Missiles (32): Doom
@@ -16574,9 +16582,11 @@ Effects          :
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506), Malefic Grasp (1261153)
                    Family Flags: 0
 #4 (id=1264887)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 3444 (Label) | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value 2: 3444 (Label) | Target: Self (1)
+Hotfixed         : Base Value (0 -> -10)
 #5 (id=1264888)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Periodic Amount (1)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Misc Value 2: 3445 (Label) | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1 | Misc Value 2: 3445 (Label) | Target: Self (1)
+Hotfixed         : Base Value (0 -> -10)
 #6 (id=1264889)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: -17 | Scaled Value: -17 | Misc Value 2: 3545 (Label) | Target: Self (1)
 #7 (id=1264890)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
@@ -16584,7 +16594,8 @@ Effects          :
 #8 (id=1264891)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 5 | Misc Value 2: 4340 (Label) | Target: Self (1)
 #9 (id=1264892)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 3456 (Label) | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value 2: 3456 (Label) | Target: Self (1)
+Hotfixed         : Base Value (0 -> -20)
 #10 (id=1264893) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: -43 | Scaled Value: -43 | Misc Value 2: 5185 (Label) | Target: Self (1)
 #11 (id=1264894) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
@@ -16622,9 +16633,10 @@ Effects          :
                    Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Immolation (20153), Infernal Awakening (22703), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Umbral Blaze (273526), Pandemic Invocation (289367), Scouring Tithe (312321), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Channel Demonfire (409890), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Felseeker (434404), Infernal Bolt (434506), Chaos Bolt (434589), Ruination (434636), Diabolic Bolt (438823), Felseeker (438973), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Demonic Soul (449801), Wicked Reaping (449826), Soul Anathema (450538), Shared Fate (450593), Shadowbolt Volley (453176), Doom (460553), Doom (460555), Channel Demonfire (1217787), Unstable Affliction (1219045), Soul Swipe (1239714), Demonic Soul (1239715), Lake of Fire (1244890), Lake of Fire (1244918), Dark Harvest (1257065), Unstable Affliction (1259790), Malefic Grasp (1261153), Corruption (1261158), Unstable Affliction (1261176), Infernal Grudge (1264017), Echo of Sargeras (1265884), Soul Swipe (1269049), Manifested Avarice (1269050), Demonic Touch (1269221), Eye Explosion (1269800), Diabolic Gaze (1269886), Echo of Sargeras (1277879), Isolated Implosion (1306077)
                    Family Flags: 49
 #3 (id=1339339)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+                   Base Value: 148 | Scaled Value: 148 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506), Malefic Grasp (1261153)
                    Family Flags: 0
+Hotfixed         : Base Value (200 -> 148)
 #4 (id=1339596)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: -67 | Scaled Value: -67 | Misc Value 2: 4045 (Label) | Target: Self (1)
 #5 (id=1351524)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
@@ -16724,7 +16736,8 @@ Effects          :
                    Base Value: 6204 | Scaled Value: 6204 | Target: Targeted Enemy (6)
 Hotfixed         : Base Value (5170 -> 6204)
 #2 (id=1269008)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.7559 | PvP Coefficient: 1.15 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.869285 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (0.7559 -> 0.869285), PvP Coefficient (1.15 -> 1)
 #3 (id=1305431)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Targeted Enemy (6)
 #4 (id=1305448)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -17214,7 +17227,8 @@ Family Flags     : 101
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1273144)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.36181 | Chain Multiplier: 1 | Chain Targets: 4 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.452262 | PvP Coefficient: 0.8 | Chain Multiplier: 1 | Chain Targets: 4 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (0.36181 -> 0.452262), PvP Coefficient (1 -> 0.8)
 Description      : $@spelldesc1261984
 
 Name             : Fel Armaments (id=1263935) [Spell Family (5), Passive, Hidden] 
@@ -18792,7 +18806,8 @@ Triggered By     : Wrath of Nathreza (1262028)
 Attributes       : Do Not Display Range (126), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1290665)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 16.8451 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 22.7409 | PvP Coefficient: 0.74074 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : SP Coefficient (16.8451 -> 22.7409), PvP Coefficient (1 -> 0.74074)
 #2 (id=1290666)  : None (0)
                    Base Value: 8 | Scaled Value: 8
 Description      : $@spelldesc1262028
@@ -18952,7 +18967,8 @@ Effects          :
 #1 (id=1293384)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Channel Target (77)
 #2 (id=1293385)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.1945 | Radius: 10 yards | Target: at Channel Target (76) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.6334 | PvP Coefficient: 0.833333 | Radius: 10 yards | Target: at Channel Target (76) -> at Enemy in Area (16)
+Hotfixed         : SP Coefficient (2.1945 -> 2.6334), PvP Coefficient (1 -> 0.833333)
 Description      : $@spelldesc1280457
 
 Name             : Mind Sear (id=1280461) [Spell Family (5), Hidden] 
@@ -19200,7 +19216,8 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1296320)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.1185 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.7422 | PvP Coefficient: 0.833333 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : SP Coefficient (3.1185 -> 3.7422), PvP Coefficient (1 -> 0.833333)
 #2 (id=1296321)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Dark magic is unleashed at the target's location, inflicting $s1 Shadow damage to all enemies within $a1 yards.
@@ -19237,7 +19254,8 @@ Labels           : 16: Class Spells
 Triggered By     : Blaze (1282533)
 Effects          :
 #1 (id=1296369)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.1185 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.7422 | PvP Coefficient: 0.833333 | Radius: 0 - 10 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : SP Coefficient (3.1185 -> 3.7422), PvP Coefficient (1 -> 0.833333)
 #2 (id=1296370)  : None (0)
                    Base Value: 8 | Scaled Value: 8
 Description      : $@spelldesc1282533
@@ -19353,7 +19371,8 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1312424)  : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.848 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.2176 | PvP Coefficient: 0.833333 | Target: Targeted Enemy (6)
+Hotfixed         : SP Coefficient (1.848 -> 2.2176), PvP Coefficient (1 -> 0.833333)
 Description      : $@spelldesc1292384
 
 Name             : Warlock Affliction 12.1 Class Set 2pc (id=1296568) [Spell Family (5), Passive, Hidden] 
