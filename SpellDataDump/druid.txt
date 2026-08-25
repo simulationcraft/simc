@@ -17428,7 +17428,8 @@ Family Flags     : 98, 108
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), No Level Up Toast (281), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1136153)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.856 | PvP Coefficient: 0.72 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.856 | PvP Coefficient: 0.864 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (0.72 -> 0.864)
 #2 (id=1136154)  : Power Burn (62)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Target: Self (1)
 #3 (id=1137019)  : School Damage (2): physical
@@ -21303,13 +21304,15 @@ Effects          :
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Rampant Ferocity (391710), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812), Frantic Frenzy (1244079), Chomp (1244258), Unseen Slash (1263890), Unseen Swipe (1263908), Twin Claw (1271636), Unseen Slash (1271863)
                    Family Flags: 98
 #3 (id=1266734)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -14 | Scaled Value: -14 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rip (1079)
                    Family Flags: 85
+Hotfixed         : Base Value (-25 -> -14)
 #4 (id=1312805)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: -17 | Scaled Value: -17 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rake (1822), Rake (155722)
                    Family Flags: 12
+Hotfixed         : Base Value (-17 -> -5)
 
 Name             : Guardian Druid (id=1256993) [Spell Family (7), Passive, Hidden] 
 Class            : Guardian Druid
