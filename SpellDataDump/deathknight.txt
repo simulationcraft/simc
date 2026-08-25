@@ -2396,8 +2396,9 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | Target: Targeted Enemy (6)
 #2 (id=341774)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.52164 | Target: Targeted Enemy (6)
-#3 (id=1291484)  : School Damage (2): shadow
+#3 (id=1291484)  : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.360258 | Radius: 0 - 8 yards | Target: Targeted Enemy (6) -> Enemy in Area (15)
+Hotfixed         : Attribute (0 -> 133152)
 Description      : Rakes an enemy with deformed claws, dealing $<sweepingclaw> Shadow damage to the target and $<sweepingclawsecond> Shadow damage to nearby enemies.
 Variables        : $mastery=${1+($77515m1/100)}
 $sweepingclaw= ${1*($AP*0.2484)*(1+$@versadmg)*2*$<mastery>}
@@ -19447,8 +19448,9 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x01000000
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1249495)  : School Damage (2): shadow
+#1 (id=1249495)  : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2 | Radius: 8 yards | Target: Enemy in Area (15)
+Hotfixed         : Attribute (0 -> 133152)
 Description      : $@spelldesc288848
 
 Name             : Breath of Sindragosa (id=1249658) [Spell Family (15)] 
@@ -21092,6 +21094,7 @@ Effects          :
 Description      : $@spelldesc1247378
 
 Name             : Unholy Devotion (id=1270491) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -21102,10 +21105,11 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 20 maximum
 Proc Chance      : 101%
-Attributes       : Do Not Log (8), No Aura Cancel (31), No Threat (42), Allow Aura While Dead (116), No Cast Log (128), Do Not Log Caster (141), Not In Spellbook (143), Extra Initial Period (169), No Aura Log (202), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), No Summon Log (326), Do Not Log on Learn (355), Allow Harmful on Friendly (373), Allow Class Ability Procs (416), Asynchronous Aura (490)
+Attributes       : No Aura Cancel (31), No Threat (42), Allow Aura While Dead (116), Not In Spellbook (143), Extra Initial Period (169), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Allow Harmful on Friendly (373), Allow Class Ability Procs (416), Asynchronous Aura (490)
 Effects          :
-#1 (id=1282546)  : Apply Aura (6) | Auto Attack Speed (Normalized wDPS) (9)
+#1 (id=1282546)  : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Hotfixed         : Sub Type (9 -> 342)
 #2 (id=1282547)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=1293219)  : Apply Aura (6) | Modify Power Regen (110)
@@ -21297,8 +21301,9 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | Target: Targeted Enemy (6)
 #2 (id=1290821)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.34776 | Target: Targeted Enemy (6)
-#3 (id=1291482)  : School Damage (2): shadow
+#3 (id=1291482)  : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.240172 | Radius: 0 - 8 yards | Target: Targeted Enemy (6) -> Enemy in Area (15)
+Hotfixed         : Attribute (0 -> 133152)
 Description      : Rakes an enemy with deformed claws, dealing $<sweepingclaw> Shadow damage to the target and $<sweepingclawSecond> Shadow damage to nearby enemies.
 Variables        : $mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]
 $sweepingclaw= ${0.85*($AP*0.1656)*(1+$@versadmg)*$<mastery>}
@@ -21546,8 +21551,9 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x00000040
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Not In Spellbook (143), Bouncy Chain Missiles (146), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1311936)  : School Damage (2): frost
+#1 (id=1311936)  : School Damage (2): frost | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.865297 | PvP Coefficient: 0.869 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Targeted Enemy (6)
+Hotfixed         : Attribute (0 -> 2048)
 #2 (id=1311937)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 60 | Scaled Value: 60 | Mechanic: Snare | Target: Targeted Enemy (6)
 Description      : Deals $s1 Frost damage and reduces their movement speed by $s2% for $d.
@@ -21722,8 +21728,9 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x00000040
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Not In Spellbook (143), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1319951)  : School Damage (2): shadow
+#1 (id=1319951)  : School Damage (2): shadow | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.71594 | PvP Coefficient: 0.869 | Target: Targeted Enemy (6)
+Hotfixed         : Attribute (0 -> 2048)
 #2 (id=1319952)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 60 | Scaled Value: 60 | Mechanic: Snare | Target: Targeted Enemy (6)
 Description      : Deals $s1 Shadow damage and reduces their movement speed by $s2% for $d.
@@ -21764,8 +21771,9 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x00000040
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Not In Spellbook (143), Bouncy Chain Missiles (146), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1319988)  : School Damage (2): shadow
+#1 (id=1319988)  : School Damage (2): shadow | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.51406 | PvP Coefficient: 0.869 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Targeted Enemy (6)
+Hotfixed         : Attribute (0 -> 2048)
 #2 (id=1319989)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 60 | Scaled Value: 60 | Mechanic: Snare | Target: Targeted Enemy (6)
 Description      : Deals $s1 Shadow damage and reduces their movement speed by $s2% for $d.
@@ -21803,8 +21811,9 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x00000040
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Not In Spellbook (143), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1319999)  : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
+#1 (id=1319999)  : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.384306 | PvP Coefficient: 0.869 | Target: Targeted Enemy (6)
+Hotfixed         : Attribute (0 -> 2048)
 Description      : Deals $o1 Shadow damage over $d.
 Tooltip          : Suffering Shadow damage every $t1 sec.
 
