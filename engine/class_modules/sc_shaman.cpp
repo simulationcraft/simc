@@ -1487,7 +1487,7 @@ public:
     int tww3_stormbringer_set = 0;
 
     // Chance on Crash Lightning target to sit in the Crash Lightning (Unleashed) puddle
-    double crash_lightning_su_hit_chance = 0.85;
+    double crash_lightning_su_hit_chance = 0.9;
   } options;
 
   // Cooldowns
