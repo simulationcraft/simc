@@ -3224,16 +3224,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     {
     }
 
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = pet_melee_attack_t<ghoul_pet_t>::composite_da_multiplier( s );
-      // Currently using the normalized attack speed increase aura, which reduces auto attack damage perportionally to
-      // the attack speed increase. This results in a 0 auto attack dps gain. Lovely bug.
-      if ( pet()->unholy_devotion->check() && dk()->bugs )
-        m /= 1.0 + pet()->unholy_devotion->check_stack_value();
-      return m;
-    }
-
     void impact( action_state_t* state ) override
     {
       auto_attack_melee_t<ghoul_pet_t>::impact( state );
