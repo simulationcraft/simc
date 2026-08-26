@@ -52,16 +52,19 @@ actions+=/arcane_pulse
 actions+=/rocket_barrage
 actions+=/lights_judgment
 
-actions.big_coc=invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=(target.time_to_die>35&fight_style.dungeonroute|target.time_to_die>25&!fight_style.dungeonroute)&((cooldown.zenith.up|buff.zenith.remains>13)&!buff.heart_of_the_jade_serpent.up)&(!fight_style.dungeonslice|active_enemies>1|time<100)
+actions.big_coc=invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=(target.time_to_die>35&fight_style.dungeonroute|target.time_to_die>25&!fight_style.dungeonroute)&((cooldown.zenith.up|buff.zenith.remains>13)&!buff.heart_of_the_jade_serpent.up)&(!fight_style.dungeonslice|active_enemies>1|time<100)&(chi>2|chi>1&energy<40)
 actions.big_coc+=/invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=(target.time_to_die>35&fight_style.dungeonroute|target.time_to_die>25&!fight_style.dungeonroute)&(trinket.1.is.algethar_puzzle_box&trinket.1.cooldown.remains>100|trinket.2.is.algethar_puzzle_box&trinket.2.cooldown.remains>100)&(!fight_style.dungeonslice|active_enemies>1|time<100)
 actions.big_coc+=/invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=fight_style.dungeonslice&target.time_to_die>15&active_enemies>4|fight_remains<=25
 actions.big_coc+=/zenith_stomp,target_if=max:target.time_to_die,if=combo_strike&prev.celestial_conduit&chi<5
+actions.big_coc+=/zenith_stomp,target_if=max:target.time_to_die,if=combo_strike&(chi<2|buff.zenith.remains<2)
+actions.big_coc+=/tiger_palm,,target_if=max:target.time_to_die,if=buff.zenith.up&!buff.heart_of_the_jade_serpent.remains&!buff.heart_of_the_jade_serpent_yulons_avatar.remains&active_enemies=1&!talent.harmonic_combo&chi<2&combo_strike
 actions.big_coc+=/celestial_conduit,target_if=max:target.time_to_die,if=buff.zenith.up&!buff.heart_of_the_jade_serpent.remains&!buff.heart_of_the_jade_serpent_yulons_avatar.remains&(!buff.whirling_dragon_punch.up|cooldown.whirling_dragon_punch.remains|cooldown.strike_of_the_windlord.remains&talent.strike_of_the_windlord)|fight_remains<4|active_enemies>1+1*talent.drinking_horn_cover&(fight_style.dungeonslice|buff.bloodlust.up),cancel_if=(!cooldown.rising_sun_kick.remains|!cooldown.fists_of_fury.remains|!buff.heart_of_the_jade_serpent.up)&(!talent.zenith_stomp|!buff.bloodlust.up|buff.zenith_stomp.stack=0|chi>4)
 actions.big_coc+=/whirling_dragon_punch,if=buff.power_infusion.up&(!buff.heart_of_the_jade_serpent_unity_within.up|buff.heart_of_the_jade_serpent_unity_within.remains<2)
 
 # Single Target
 actions.default_st=whirling_dragon_punch,if=(talent.flurry_strikes|buff.heart_of_the_jade_serpent_unity_within.remains<2)&(!cooldown.rising_sun_kick.remains|!cooldown.fists_of_fury.remains)&(talent.echo_technique&buff.combo_breaker.stack<2|talent.revolving_whirl&buff.dance_of_chiji.stack<2|!talent.revolving_whirl&!talent.echo_technique)&(cooldown.invoke_xuen_the_white_tiger.remains>9|talent.flurry_strikes)
-actions.default_st+=/zenith_stomp,if=combo_strike&(talent.flurry_strikes|buff.zenith_stomp.stack=2|cooldown.celestial_conduit.remains>50)&(chi<2|chi<5&buff.zenith.remains<7|chi<4&cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains&(!buff.combo_breaker.up|!talent.energy_burst|buff.zenith.remains<5))
+actions.default_st+=/celestial_conduit,target_if=max:target.time_to_die,if=!buff.heart_of_the_jade_serpent.remains&!buff.heart_of_the_jade_serpent_yulons_avatar.remains&(!buff.whirling_dragon_punch.up|cooldown.whirling_dragon_punch.remains|cooldown.strike_of_the_windlord.remains&talent.strike_of_the_windlord)|fight_remains<4|active_enemies>1+1*talent.drinking_horn_cover&(fight_style.dungeonslice|buff.bloodlust.up),cancel_if=(!cooldown.rising_sun_kick.remains|!cooldown.fists_of_fury.remains|!buff.heart_of_the_jade_serpent.up)&(!talent.zenith_stomp|!buff.bloodlust.up|buff.zenith_stomp.stack=0|chi>4)
+actions.default_st+=/zenith_stomp,if=combo_strike&(talent.flurry_strikes|buff.zenith_stomp.stack=2|cooldown.celestial_conduit.remains>50)&(chi<2|chi<5&buff.zenith.remains<7|chi<4&cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains&(!buff.combo_breaker.up|!talent.energy_burst|buff.zenith.remains<5))&talent.flurry_strikes
 actions.default_st+=/fists_of_fury,if=buff.heart_of_the_jade_serpent.remains<1&buff.heart_of_the_jade_serpent.up|buff.heart_of_the_jade_serpent_unity_within.remains<1&buff.heart_of_the_jade_serpent_unity_within.up|buff.heart_of_the_jade_serpent_yulons_avatar.remains<1&buff.heart_of_the_jade_serpent_yulons_avatar.up
 actions.default_st+=/tiger_palm,if=combo_strike&!buff.zenith.up&chi<4+talent.ascension&energy.time_to_max<=gcd.max*3&(!buff.bloodlust.up|chi<1)&buff.combo_breaker.stack<2
 actions.default_st+=/strike_of_the_windlord,if=(cooldown.invoke_xuen_the_white_tiger.remains>9|talent.flurry_strikes)
@@ -159,7 +162,7 @@ actions.trinket+=/use_item,slot=trinket2,if=!trinket.1.has_use_buff&!trinket.2.h
 
 # Zenith Usage
 actions.zenith=zenith,target_if=max:target.time_to_die,if=buff.invoke_xuen_the_white_tiger.remains>10&(!buff.zenith.up|talent.flurry_strikes)
-actions.zenith+=/zenith,target_if=max:target.time_to_die,if=(buff.bloodlust.remains>10|cooldown.potion.remains>250&variable.patchwerk)&(active_enemies>2|cooldown.rising_sun_kick.remains|buff.rushing_wind_kick.up)&!buff.zenith.up
+actions.zenith+=/zenith,target_if=max:target.time_to_die,if=(buff.bloodlust.remains>10|cooldown.potion.remains>250&variable.patchwerk)&(active_enemies>2|cooldown.rising_sun_kick.remains|buff.rushing_wind_kick.up)&(!buff.zenith.up|!cooldown.fists_of_fury.remains&!buff.heart_of_the_jade_serpent.up&!buff.heart_of_the_jade_serpent_unity_within.up)
 actions.zenith+=/zenith,target_if=max:target.time_to_die,if=(target.time_to_die>30&fight_style.dungeonroute|target.time_to_die>25&!fight_style.dungeonroute)&(buff.bloodlust.up&cooldown.celestial_conduit.remains&(cooldown.rising_sun_kick.remains|active_enemies>2)&!buff.zenith.up&talent.celestial_conduit)
 actions.zenith+=/zenith,target_if=max:target.time_to_die,if=(target.time_to_die>30&fight_style.dungeonroute|target.time_to_die>25&!fight_style.dungeonroute)&(talent.flurry_strikes&(buff.bloodlust.up|cooldown.potion.remains>295))&!buff.zenith.up&(buff.bloodlust.remains>30|talent.spiritual_focus)
 actions.zenith+=/zenith,target_if=max:target.time_to_die,if=time>250&cooldown.potion.remains>295&(!trinket.1.has_use_buff&!trinket.2.has_use_buff|trinket.1.has_use_buff&trinket.1.cooldown.remains>30|trinket.2.has_use_buff&trinket.2.cooldown.remains>30)&(fight_remains>120|fight_remains<50&fight_remains>cooldown.zenith.full_recharge_time)
@@ -182,25 +185,25 @@ neck=aqirbane_reliquary,id=268265,bonus_id=10835/13708/13848,gem_id=240914/24089
 shoulders=tassels_of_the_monkey_king,id=271517,bonus_id=12854/13335,enchant_id=8031
 back=silken_voodoo_drape,id=268253,bonus_id=13848
 chest=battle_gi_of_the_monkey_king,id=271522,bonus_id=12854/13335,enchant_id=7987
-wrists=silvermoon_agents_deflectors,id=244576,bonus_id=8795/10835/12384/13751/13836/12497,gem_id=240908,crafted_stats=36/49
+wrists=silvermoon_agents_deflectors,id=244576,bonus_id=8793/10835/12384/13751/13836/12497,gem_id=240908,crafted_stats=36/49
 hands=gauntlets_of_fevered_defense,id=251124,bonus_id=12854/13662
 waist=sash_of_the_forlorn_vessel,id=268256,bonus_id=10835/13848,gem_id=240908
 legs=pantaloons_of_the_monkey_king,id=271518,bonus_id=13848,enchant_id=8159,redirected_base_stats=268225
-feet=silvermoon_agents_sneakers,id=244569,bonus_id=8795/12384/13751/13836/12497,enchant_id=7963,crafted_stats=36/49
+feet=silvermoon_agents_sneakers,id=244569,bonus_id=8793/12384/13751/13836/12497,enchant_id=7963,crafted_stats=36/49
 finger1=vile_alchemists_band,id=268249,bonus_id=12854/13662/13668,gem_id=240908,enchant_id=7967
 finger2=sickening_signet_of_atroxus,id=252258,bonus_id=12854/13662/13668,gem_id=240900,enchant_id=7967
 trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=13662/13848
 trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13662/13848
-main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13846/13848,enchant_id=8041
+main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13846/13848,enchant_id=8689
 
 # Gear Summary
 # gear_ilvl=338.93
 # gear_agility=1915
 # gear_stamina=40850
-# gear_crit_rating=635
-# gear_haste_rating=1001
-# gear_mastery_rating=1332
-# gear_versatility_rating=253
+# gear_crit_rating=505
+# gear_haste_rating=1131
+# gear_mastery_rating=1462
+# gear_versatility_rating=123
 # gear_leech_rating=166
 # gear_speed_rating=22
 # gear_avoidance_rating=19
