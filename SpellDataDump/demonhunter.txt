@@ -3168,7 +3168,7 @@ Effects          :
 #3 (id=315636)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-                   Modified By: Desperate Instincts (205411 effect#3), Havoc Demon Hunter (1256955 effect#6), Devourer Demon Hunter (1256964 effect#5)
+                   Modified By: Desperate Instincts (205411 effect#3)
 #4 (id=357029)   : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc198589
@@ -16088,11 +16088,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 3367 (Label) | Target: Self (1)
 #5 (id=1266566)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Periodic Amount (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Misc Value 2: 3367 (Label) | Target: Self (1)
-#6 (id=1351683)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Target: Self (1)
+#6 (id=1351683)  : Apply Aura (6) | Modify Flat PVP Multiplier (646): Modify Effect 3 (7)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Blur (198589), Blur (212800)
                    Family Flags: 26
-Hotfixed         : NEW EFFECT
+Hotfixed         : Sub Type (107 -> 646), Misc Value (23 -> 7)
 
 Name             : Vengeance Demon Hunter (id=1256959) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter
@@ -16133,11 +16133,11 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 5 | Misc Value 2: 6285 (Label) | Target: Self (1)
 #4 (id=1317259)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 1 (5)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 5 | Misc Value 2: 6594 (Label) | Target: Self (1)
-#5 (id=1351684)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Target: Self (1)
+#5 (id=1351684)  : Apply Aura (6) | Modify Flat PVP Multiplier (646): Modify Effect 3 (7)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Blur (198589), Blur (212800)
                    Family Flags: 26
-Hotfixed         : NEW EFFECT
+Hotfixed         : Sub Type (107 -> 646), Misc Value (23 -> 7)
 
 Name             : Devourer Demon Hunter (id=1256968) [Spell Family (107), Passive, Hidden] 
 Class            : Devourer Demon Hunter
