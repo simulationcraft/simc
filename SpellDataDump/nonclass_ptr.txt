@@ -257468,6 +257468,7 @@ Description      : Your spells afflict you with Hex Lord's Doom, draining your I
 
 
 Name             : Hex Lord's Doom (id=1295885) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Shadow
 Spell Type       : None
 Duration         : 30 seconds
@@ -257477,6 +257478,7 @@ Labels           : 292
                  : 3959: Item Effects
 Category Cooldown: 30 seconds
 Attributes       : Aura Points On Client (268)
+Aura Interrupt   : Enter Instance (43), Encounter Start (55)
 Effects          :
 #1 (id=1318227)  : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: Int | Target: Self (1)

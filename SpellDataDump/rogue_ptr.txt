@@ -3494,7 +3494,8 @@ Family Flags     : 17, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=288959)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.37325 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.37325 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : Finishing move that disembowels the target, causing damage per combo point.$?s382511[ Targets with Find Weakness suffer an additional $382511s1% damage as Shadow.][]
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -6594,7 +6595,8 @@ Family Flags     : 17, 54, 123
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=819933)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.37325 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.37325 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc196819
 
 Name             : Blindside (id=328085) [Spell Family (8), Passive] 
@@ -11891,7 +11893,8 @@ Family Flags     : 54, 67
 Attributes       : Is Ability (4), Do Not Sheath (18), Chain From Caster (76), DoT Stacking Rule (103), Requires Off-Hand Weapon (120), Spell Haste Affects Periodic (173), Do Not Chain To Crowd-Controlled Targets (200), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1105226)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.58 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 3 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.58 | PvP Coefficient: 1.33 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 3 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.33)
 Description      : $@spelldesc426591
 Tooltip          : Suffering $w1 damage every $t1 seconds.
 
@@ -13640,7 +13643,7 @@ Name             : Deathstalker's Mark (id=457129) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Range            : 5 yards
+Range            : 100 yards
 Duration         : 60 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
@@ -14143,7 +14146,8 @@ Family Flags     : 17, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1171851)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462242) [Spell Family (8)] 
@@ -14162,7 +14166,8 @@ Family Flags     : 17, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1171852)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462243) [Spell Family (8)] 
@@ -14181,7 +14186,8 @@ Family Flags     : 17, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1171853)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.187 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.187 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462244) [Spell Family (8)] 
@@ -14200,7 +14206,8 @@ Family Flags     : 17, 54, 123
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1171854)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc196819
 
 Name             : Eviscerate (Coup de Grace) (id=462247) [Spell Family (8)] 
@@ -14219,7 +14226,8 @@ Family Flags     : 17, 54, 123
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1171857)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc196819
 
 Name             : Eviscerate (Coup de Grace) (id=462248) [Spell Family (8)] 
@@ -14238,7 +14246,8 @@ Family Flags     : 17, 54, 123
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1171858)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.187 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.187 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc196819
 
 Name             : Dispatch (id=467059) [Spell Family (8)] 
@@ -16835,7 +16844,8 @@ Family Flags     : 17, 54, 122, 123
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280916)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.37325 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.37325 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc196819
 
 Name             : Backstab (id=1269209) [Spell Family (8)] 
