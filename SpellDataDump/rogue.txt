@@ -13633,7 +13633,7 @@ Name             : Deathstalker's Mark (id=457129) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Range            : 5 yards
+Range            : 100 yards
 Duration         : 60 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
