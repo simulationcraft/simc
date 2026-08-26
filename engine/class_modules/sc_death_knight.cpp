@@ -7947,8 +7947,10 @@ struct dread_plague_t final : public death_knight_disease_t
       if ( p()->sim->target_non_sleeping_list.size() > 1 )
       {
         auto target = rng().range( erupt->target_list() );
-        erupt->execute_on_target( target,
-                                  d->state->result_raw * p()->talent.unholy.superstrain->effectN( 2 ).percent() );
+        auto damage = d->state->result_raw;
+        if ( p()->bugs )
+          damage /= d->state->target_ta_multiplier;
+        erupt->execute_on_target( target, damage * p()->talent.unholy.superstrain->effectN( 2 ).percent() );
       }
     }
 
@@ -8654,6 +8656,9 @@ struct blightfall_t final : public death_knight_spell_t
       damage = dot->tick_damage_over_remaining_time() * damage_mult;
     else
       damage = dot->tick_damage_over_time( dot->remains() * duration_mult ) * damage_mult;
+
+    if ( p()->bugs )
+      damage /= dot->state->target_ta_multiplier;
 
     erupt->execute_on_target( dot->target, damage );
     dot->cancel();
@@ -12569,6 +12574,9 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     timespan_t dur = dot->current_action->tick_time( s );
 
     double dam = dot->tick_damage_over_time( dur ) * errupt_mult;
+
+    if ( p()->bugs )
+      dam /= dot->state->target_ta_multiplier;
 
     if ( dot == td->dot.virulent_plague )
     {
