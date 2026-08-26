@@ -8,13 +8,17 @@ namespace evoker_apl
 
 std::string potion( const player_t* p )
 {
-  return ( p->true_level > 89 ) ? "lights_potential_2" : "tempered_potion_3";
+  if ( p->specialization() == EVOKER_AUGMENTATION )
+     return ( p->true_level > 89 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
 
-  // return ( p->true_level > 89 ) ? "potion_of_recklessness_2" : "tempered_potion_3";
+  return ( p->true_level > 89 ) ? "lights_potential_2" : "tempered_potion_3";
 }
 
 std::string flask( const player_t* p )
 {
+  if ( p->specialization() == EVOKER_AUGMENTATION )
+    return ( p->true_level > 89 ) ? "flask_of_the_magisters_2" : "flask_of_alchemical_chaos_3";
+
   return ( p->true_level > 89 ) ? "flask_of_the_shattered_sun_2" : "flask_of_alchemical_chaos_3";
 }
 
