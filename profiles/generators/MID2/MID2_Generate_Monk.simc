@@ -40,16 +40,16 @@ neck=aqirbane_reliquary,id=268265,bonus_id=13848/13708/10835,gem_id=240914/24089
 shoulder=tassels_of_the_monkey_king,id=271517,bonus_id=13335/12854,enchant_id=8031,redirected_base_stats=251223
 back=silken_voodoo_drape,id=268253,bonus_id=13848
 chest=battle_gi_of_the_monkey_king,id=271522,bonus_id=13335/12854,enchant_id=7987
-wrist=silvermoon_agents_deflectors,id=244576,gem_id=240890,bonus_id=13751/12497/13836/10835/8795/12384,crafted_stats=32/49,crafting_quality=5
+wrist=silvermoon_agents_deflectors,id=244576,gem_id=240890,bonus_id=13751/12497/13836/10835/8791/12384,crafted_stats=32/49,crafting_quality=5
 hands=gauntlets_of_fevered_defense,id=251124,bonus_id=12854/13662
 waist=sash_of_the_forlorn_vessel,id=268256,bonus_id=13848/10835,gem_id=240890
 legs=pantaloons_of_the_monkey_king,id=271518,bonus_id=13848,enchant_id=8159,redirected_base_stats=268225
-feet=silvermoon_agents_sneakers,id=244569,enchant_id=7963,bonus_id=13751/12497/13836/8795/12384,crafted_stats=36/49
+feet=silvermoon_agents_sneakers,id=244569,enchant_id=7963,bonus_id=13751/12497/13836/8793/12384,crafted_stats=36/49
 finger1=vile_alchemists_band,id=268249,enchant_id=7967,gem_id=240900,bonus_id=13668/12854/13662
 finger2=band_of_the_amani_warlord,id=273792,bonus_id=12854/13662/13668,gem_id=240908,enchant_id=7967
 trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=13848/13662
 trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13848/13662
-main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13848/13846,enchant_id=8041
+main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13848/13846,enchant_id=8689
 
 flask=flask_of_the_blood_knights_2
 
@@ -69,16 +69,16 @@ neck=aqirbane_reliquary,id=268265,bonus_id=13848/13708/10835,gem_id=240914/24089
 shoulder=tassels_of_the_monkey_king,id=271517,bonus_id=13335/12854,enchant_id=8031
 back=silken_voodoo_drape,id=268253,bonus_id=13848
 chest=battle_gi_of_the_monkey_king,id=271522,bonus_id=13335/12854,enchant_id=7987
-wrist=silvermoon_agents_deflectors,id=244576,gem_id=240908,bonus_id=13751/12497/13836/10835/8795/12384,crafted_stats=36/49,crafting_quality=5
+wrist=silvermoon_agents_deflectors,id=244576,gem_id=240908,bonus_id=13751/12497/13836/10835/8793/12384,crafted_stats=36/49,crafting_quality=5
 hands=gauntlets_of_fevered_defense,id=251124,bonus_id=12854/13662
 waist=sash_of_the_forlorn_vessel,id=268256,bonus_id=13848/10835,gem_id=240908
 legs=pantaloons_of_the_monkey_king,id=271518,bonus_id=13848,enchant_id=8159,redirected_base_stats=268225
-feet=silvermoon_agents_sneakers,id=244569,enchant_id=7963,bonus_id=13751/12497/13836/8795/12384,crafted_stats=36/49
+feet=silvermoon_agents_sneakers,id=244569,enchant_id=7963,bonus_id=13751/12497/13836/8793/12384,crafted_stats=36/49
 finger1=vile_alchemists_band,id=268249,enchant_id=7967,gem_id=240908,bonus_id=13668/12854/13662
 finger2=sickening_signet_of_atroxus,id=252258,enchant_id=7967,gem_id=240900,bonus_id=13668/12854/13662
 trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=13848/13662
 trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13848/13662
-main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13848/13846,enchant_id=8041
+main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13848/13846,enchant_id=8689
 
 flask=flask_of_the_blood_knights_2
 
