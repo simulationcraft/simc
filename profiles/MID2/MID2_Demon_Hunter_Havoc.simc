@@ -1,0 +1,93 @@
+demonhunter="MID2_Demon_Hunter_Havoc_Fel-Scarred"
+source=default
+spec=havoc
+level=90
+race=blood_elf
+role=attack
+position=back
+talents=CEkAAAAAAAAAAAAAAAAAAAAAAYAzMzmxMzMmZmMmZAAAAAAAzyDMmtZYmxyMzYZm5BmZWmZWGjBWmFzYY200wMjhNAAAAAAAAmZwAAAAwA
+omnium_talents=136822:1/136816:1/136817:1/136815:1/136814:1
+
+# Default consumables
+potion=potion_of_recklessness_2
+flask=flask_of_the_shattered_sun_2
+food=blooming_feast
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/variable,name=tab_target_burning_wound,op=reset,default=1
+actions.precombat+=/variable,name=rg_ds,default=0,op=reset
+actions.precombat+=/variable,name=trinket1_special,value=trinket.1.is.algethar_puzzle_box
+actions.precombat+=/variable,name=trinket2_special,value=trinket.2.is.algethar_puzzle_box
+actions.precombat+=/variable,name=trinket1_crit,value=!variable.trinket1_special&trinket.1.has_cooldown&trinket.1.has_use_damage
+actions.precombat+=/variable,name=trinket2_crit,value=!variable.trinket2_special&trinket.2.has_cooldown&trinket.2.has_use_damage
+actions.precombat+=/variable,name=trinket1_steroids,value=!variable.trinket1_special&trinket.1.has_cooldown&trinket.1.has_use_buff
+actions.precombat+=/variable,name=trinket2_steroids,value=!variable.trinket2_special&trinket.2.has_cooldown&trinket.2.has_use_buff
+actions.precombat+=/immolation_aura
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/immolation_aura,if=talent.violent_transformation&talent.a_fire_inside&cooldown.metamorphosis.remains<gcd.max*3
+actions+=/metamorphosis,if=(!talent.chaotic_transformation|!cooldown.blade_dance.up&cooldown.eye_beam.remains>8)&!action.death_sweep.demonsurge_available&!action.annihilation.demonsurge_available
+actions+=/the_hunt,if=(!talent.eternal_hunt|cooldown.eye_beam.remains<10&cooldown.metamorphosis.remains>15|!cooldown.eye_beam.up&cooldown.metamorphosis.up|!hero_tree.felscarred)&!buff.reavers_glaive.up
+actions+=/vengeful_retreat,use_off_gcd=1,if=gcd.remains<0.3&cooldown.metamorphosis.remains&cooldown.eye_beam.remains<gcd.max*0.3&!buff.initiative.up|cooldown.metamorphosis.up&cooldown.eye_beam.remains&cooldown.blade_dance.remains&!buff.eternal_hunt.up
+actions+=/potion,if=cooldown.metamorphosis.up&(cooldown.eye_beam.up|!talent.chaotic_transformation)|fight_remains<=30
+actions+=/use_items,if=cooldown.metamorphosis.up|cooldown.eye_beam.up|fight_remains<=20
+actions+=/pick_up_fragment,type=all,use_off_gcd=1,if=fury<=40
+actions+=/reavers_glaive,if=buff.rending_strike.down&buff.glaive_flurry.down
+actions+=/immolation_aura,if=talent.a_fire_inside&talent.burning_wound&(charges=2|full_recharge_time<gcd.max*2)
+actions+=/annihilation,if=buff.rending_strike.up&buff.glaive_flurry.down&debuff.reavers_mark.stack<2|buff.rending_strike.up&active_enemies>=2
+actions+=/death_sweep,if=debuff.essence_break.up|action.death_sweep.demonsurge_available
+actions+=/annihilation,if=action.annihilation.demonsurge_available
+actions+=/eye_beam
+actions+=/immolation_aura,,if=action.immolation_aura.demonsurge_available&buff.demonsurge.remains<gcd.max
+actions+=/felblade,if=buff.inertia_trigger.up
+actions+=/essence_break,if=cooldown.eye_beam.remains>4
+actions+=/death_sweep
+actions+=/blade_dance
+actions+=/immolation_aura,if=active_enemies>1&(talent.a_fire_inside|talent.burning_wound)
+actions+=/annihilation
+actions+=/felblade,if=hero_tree.felscarred&fury<=100
+actions+=/chaos_strike
+actions+=/felblade
+actions+=/immolation_aura
+
+head=abyssal_doomhounds_relentless_stare,id=271537,bonus_id=4786/13692/13698/13847/13848,redirected_base_stats=271875
+neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13708/13848,gem_id=240908/240908
+shoulders=frothing_venom_spaulders,id=268246,bonus_id=12854/13662
+back=silken_voodoo_drape,id=268253,bonus_id=13662/13848
+chest=abyssal_doomhounds_coreguard,id=271540,bonus_id=4786/13690/13698/13848,enchant_id=7987,redirected_base_stats=239048
+wrists=silvermoon_agents_deflectors,id=244576,bonus_id=8960/12214/12384/13750/13751/13836/9627,gem_id=240908,crafted_stats=32/49
+hands=abyssal_doomhounds_studded_gauntlets,id=271538,bonus_id=4786/13691/13697/13848,redirected_base_stats=268234
+waist=sash_of_the_forlorn_vessel,id=268256,bonus_id=13662/13750/13848,gem_id=240908
+legs=abyssal_doomhounds_legwraps,id=271536,bonus_id=4786/13693/13698/13848,enchant_id=8159,redirected_base_stats=268225
+feet=silvermoon_agents_sneakers,id=244569,bonus_id=8960/12214/12384/13751/13836/9627,enchant_id=7963,crafted_stats=32/49
+finger1=vile_alchemists_band,id=268249,bonus_id=12854/13662/13668,gem_id=240908,enchant_id=7967
+finger2=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240908,enchant_id=7967
+trinket1=gebbos_bottomless_bag,id=270164,bonus_id=12854/13662
+trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13662/13848
+main_hand=amanmuso_warlords_vengeance,id=268209,bonus_id=13662/13848,enchant_id=7981
+off_hand=venomous_boneglaive,id=268201,bonus_id=12854/13662,enchant_id=7981
+
+# Gear Summary
+# gear_ilvl=339.25
+# gear_agility=2093
+# gear_stamina=41443
+# gear_intellect=455
+# gear_crit_rating=968
+# gear_haste_rating=529
+# gear_mastery_rating=1512
+# gear_versatility_rating=107
+# gear_avoidance_rating=19
+# gear_armor=1223
+# set_bonus=midnight_season_2_2pc=1
+# set_bonus=midnight_season_2_4pc=1
+# set_bonus=bite_of_zuljan_2pc=1
