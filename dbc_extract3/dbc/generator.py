@@ -2443,6 +2443,7 @@ class SpellDataGenerator(DataGenerator):
           ( 201671, 3 ), ( 1307881, 3 ), # Gory Fur
           ( 1250913, 3 ), # Memory of Ysera heal
           ( 1269616, 3 ), ( 1270277, 3 ), ( 1308522, 3 ), # Wild Guardian's Spirit (new apex)
+          ( 1308448, 3 ), # Apex related?
           ( 1310213, 3 ), # 12.1 Set 4pc
           # Restoration
         ),

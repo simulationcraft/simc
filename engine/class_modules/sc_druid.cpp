@@ -6015,9 +6015,11 @@ struct spirits_wrath_t final : public bear_attack_t
   void execute() override
   {
     // hits random target
-    set_target( rng().range( target_list() ) );
-
-    bear_attack_t::execute();
+    if ( const auto& tl = target_list(); tl.size() )
+    {
+      set_target( rng().range( tl ) );
+      bear_attack_t::execute();
+    }
   }
 };
 } // end namespace bear_attacks
