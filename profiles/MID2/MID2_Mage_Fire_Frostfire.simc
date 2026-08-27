@@ -152,7 +152,7 @@ actions.sf_filler+=/fireball
 actions.sf_filler+=/call_action_list,name=fireblast
 
 head=venomkeepers_horrific_cowl,id=271874,bonus_id=13335/13668/13846/13848,ilevel=344,gem_id=240967,enchant_id=8017
-neck=amulet_of_the_twin_fangs,id=268251,bonus_id=12854/13335/13668,ilevel=334,gem_id=240902
+neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13848/13987,ilevel=344,gem_id=240902/240916
 shoulders=primal_leywardens_manaflux,id=271562,bonus_id=12854/13335,ilevel=334,enchant_id=8001,redirected_base_stats=268241
 back=silken_voodoo_drape,id=268253,bonus_id=13335/13848,ilevel=344
 chest=crest_of_the_primal_leywarden,id=271567,bonus_id=12854/13440,ilevel=334,enchant_id=7987,redirected_base_stats=251147
@@ -164,18 +164,18 @@ feet=cackling_soultreads,id=268255,bonus_id=13335/13848,ilevel=344,enchant_id=79
 finger1=alluring_bubbleband,id=268266,bonus_id=12854/13335/13668,ilevel=334,gem_id=240894,enchant_id=7967
 finger2=ritual_binders_ring,id=159459,bonus_id=12854/13440/13668,ilevel=334,gem_id=240906,enchant_id=7967
 trinket1=vile_vial_of_volatile_venom,id=273796,bonus_id=12854/13440,ilevel=334
-trinket2=gebbos_bottomless_bag,id=270164,bonus_id=12854/13335,ilevel=334
-main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13335/13848,ilevel=344,enchant_id=8041
+trinket2=wavecallers_seastone,id=270167,bonus_id=12854/13335,ilevel=334
+main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13335/13848,ilevel=344,enchant_id=8689
 off_hand=alnhara_lantern,id=245769,bonus_id=8960/13751/13771,ilevel=331,crafted_stats=36/40
 
 # Gear Summary
-# gear_ilvl=336.75
-# gear_stamina=40259
-# gear_intellect=2751
-# gear_crit_rating=79
-# gear_haste_rating=1365
-# gear_mastery_rating=1011
-# gear_versatility_rating=567
+# gear_ilvl=337.38
+# gear_stamina=40526
+# gear_intellect=2572
+# gear_crit_rating=186
+# gear_haste_rating=1561
+# gear_mastery_rating=774
+# gear_versatility_rating=690
 # gear_avoidance_rating=167
 # gear_armor=733
 # set_bonus=midnight_season_2_2pc=1
