@@ -815,7 +815,7 @@ using namespace helpers;
 
       // NOTE: 2026-08-21 Shadowbolt Volley (Cunning Cruelty) is affected by Withering Bolt
       if ( p()->talents.withering_bolt.ok() )
-        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( ( int )( p()->talents.withering_bolt->effectN( 2 ).base_value() ), p()->get_target_data( t )->count_affliction_dots() );
+        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( ( int )( p()->talents.withering_bolt->effectN( 2 ).base_value() ), td( t )->count_affliction_dots() );
 
       return m;
     }
@@ -913,7 +913,7 @@ using namespace helpers;
       double m = warlock_spell_t::composite_target_multiplier( t );
 
       if ( p()->talents.withering_bolt.ok() )
-        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( ( int )( p()->talents.withering_bolt->effectN( 2 ).base_value() ), p()->get_target_data( t )->count_affliction_dots() );
+        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( ( int )( p()->talents.withering_bolt->effectN( 2 ).base_value() ), td( t )->count_affliction_dots() );
 
       if ( p()->talents.impetuous_wrath.ok() )
         m *= 1.0 + ( td( t )->debuffs.haunt->check() ? p()->talents.impetuous_wrath->effectN( 2 ).percent() : p()->talents.impetuous_wrath->effectN( 1 ).percent() );
@@ -3056,11 +3056,11 @@ using namespace helpers;
 
           if ( lock_pet == nullptr )
             continue;
-
-          if ( !lock_pet->is_implosion_candidate )
+          if ( lock_pet->is_sleeping() )
             continue;
 
-          implosion_candidates++;
+          if ( lock_pet->is_implosion_candidate )
+            implosion_candidates++;
         }
         assert( active_imps <= implosion_candidates );
 

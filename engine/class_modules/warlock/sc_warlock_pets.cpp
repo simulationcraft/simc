@@ -335,8 +335,9 @@ void felhunter_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  owner_coeff.ap_from_sp = 0.575;
-  owner_coeff.sp_from_sp = 1.15;
+  // 2026-08-26: Validated coefficients
+  owner_coeff.ap_from_sp = 2.565;
+  owner_coeff.sp_from_sp = 5.175;
 
   melee_attack = new warlock_pet_melee_t( this );
   special_action = new spell_lock_t( this, "" );
@@ -367,8 +368,9 @@ imp_pet_t::imp_pet_t( warlock_t* owner, util::string_view name )
 
   action_list_str = "firebolt";
 
-  owner_coeff.ap_from_sp = 0.625;
-  owner_coeff.sp_from_sp = 1.25;
+  // 2026-08-26: Validated coefficients
+  owner_coeff.ap_from_sp = 2.8125;
+  owner_coeff.sp_from_sp = 5.625;
   owner_coeff.health = 0.45;
 
   is_main_pet = true;
@@ -420,8 +422,9 @@ void sayaad_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  owner_coeff.ap_from_sp = 0.575;
-  owner_coeff.sp_from_sp = 1.15;
+  // 2026-08-26: Validated coefficients
+  owner_coeff.ap_from_sp = 2.565;
+  owner_coeff.sp_from_sp = 5.175;
 
   main_hand_weapon.swing_time = 3_s;
 
@@ -492,8 +495,9 @@ void voidwalker_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  owner_coeff.ap_from_sp = 0.575;
-  owner_coeff.sp_from_sp = 1.15;
+  // 2026-08-26: Validated coefficients
+  owner_coeff.ap_from_sp = 2.565;
+  owner_coeff.sp_from_sp = 5.175;
   owner_coeff.health = 0.7;
 
   melee_attack = new warlock_pet_melee_t( this );
@@ -659,9 +663,9 @@ void felguard_pet_t::init_base_stats()
   main_hand_weapon.type = WEAPON_AXE_2H;
   melee_attack = new felguard_melee_t( this, 1.0, "melee" );
 
-  // 2026-02-17: Validated coefficients
-  owner_coeff.ap_from_sp = 1.5201;
-  owner_coeff.sp_from_sp = 1.4519; // not validated
+  // 2026-08-26: Validated coefficients
+  owner_coeff.ap_from_sp = 1.82412;
+  owner_coeff.sp_from_sp = 1.74228; // not validated
   owner_coeff.health = 0.75;
 
   melee_attack->base_dd_multiplier *= 1.44;
@@ -696,6 +700,9 @@ wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
   triggers.hellbent_commander_demise &= !bugs;
 
   resource_regeneration = regen_type::DISABLED;
+  // 2026-08-26: Validated coefficients
+  owner_coeff.ap_from_sp = 0.6; // not validated
+  owner_coeff.sp_from_sp = 1.2;
   owner_coeff.health = 0.15;
 
   // Each Wild Imp uses its own independent accumulator PRD, reset to 0 on arise
@@ -1032,9 +1039,9 @@ dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "drea
   // NOTE: 2026-07-11 Dreadstalkers do not trigger Hellbent Commander on arise (must wait to player heartbeat) (bug?)
   triggers.hellbent_commander_arise &= !bugs;
 
-  // 2026-02-17: Validated coefficient
-  owner_coeff.ap_from_sp = 0.825;
-
+  // 2026-08-26: Validated coefficient
+  owner_coeff.ap_from_sp = 1.06769;
+  owner_coeff.sp_from_sp = 1.3; // not validated
   owner_coeff.health = 0.4;
 
   melee_on_summon = false;
@@ -1052,9 +1059,9 @@ dreadstalker_t::dreadstalker_t( warlock_t* owner, util::string_view pet_name, pe
   // NOTE: 2026-07-11 Dreadstalkers do not trigger Hellbent Commander on arise (must wait to player heartbeat) (bug?)
   triggers.hellbent_commander_arise &= !bugs;
 
-  // 2026-02-17: Validated coefficient
-  owner_coeff.ap_from_sp = 0.825;
-
+  // 2026-08-26: Validated coefficient
+  owner_coeff.ap_from_sp = 1.06769;
+  owner_coeff.sp_from_sp = 1.3; // not validated
   owner_coeff.health = 0.4;
 }
 
@@ -1253,7 +1260,8 @@ double dreadstalker_t::composite_player_multiplier( school_e school ) const
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  if ( o()->active_4pc<MID1>() )
+  // NOTE: 2026-08-27 The MID1 4pc damage increase does not apply in-game; its duration increase still works (bug)
+  if ( !o()->bugs && o()->active_4pc<MID1>() )
     m *= 1.0 + o()->tier.wl_demonology_12_0_class_set_4pc->effectN( 1 ).percent();
 
   return m;
@@ -1306,27 +1314,27 @@ vilefiend_t::vilefiend_t( warlock_t* owner )
   {
     npc_id = owner->talents.gloomhound->effectN( 1 ).misc_value1();
     npc_suffix = "vilefiend";
-    // 2026-08-01: Validated coefficients
+    // 2026-08-26: Validated coefficients
     // Gloomhound does 35% more damage than the other variants
     owner_coeff.ap_from_sp = 0.6075;
-    owner_coeff.sp_from_sp = 2.6325;
+    owner_coeff.sp_from_sp = 2.619;
   }
   else if ( owner->talents.mark_of_fharg.ok() )
   {
     npc_id = owner->talents.charhound->effectN( 1 ).misc_value1();
     npc_suffix = "vilefiend";
-    // 2026-08-01: Validated coefficients
+    // 2026-08-26: Validated coefficients
     owner_coeff.ap_from_sp = 0.45;
-    owner_coeff.sp_from_sp = 1.95;
+    owner_coeff.sp_from_sp = 1.94;
   }
   else
   {
     npc_id = owner->talents.vilefiend->effectN( 1 ).misc_value1();
     // NOTE: 2026-07-11 Regular Vilefiend do not trigger Hellbent Commander on heartbeat (bug?)
     triggers.hellbent_commander_heartbeat &= !bugs;
-    // 2026-08-01: Validated coefficients
+    // 2026-08-26: Validated coefficients
     owner_coeff.ap_from_sp = 0.45;
-    owner_coeff.sp_from_sp = 1.95;
+    owner_coeff.sp_from_sp = 1.94;
   }
 
   // NOTE: 2026-07-11 Vilefiend do not trigger Hellbent Commander on demise (must wait to player heartbeat) (bug?)
@@ -1621,9 +1629,10 @@ doomguard_t::doomguard_t( warlock_t* owner )
 
   action_list_str = "doom_bolt_volley";
 
-  // 2026-02-17: Validated coefficients
-  owner_coeff.ap_from_sp = 1.0;
+  // 2026-08-26: Validated coefficients
+  owner_coeff.ap_from_sp = 1.0; // not validated
   owner_coeff.sp_from_sp = 1.0;
+  owner_coeff.health = 0.75;
 }
 
 void doomguard_t::init_base_stats()
@@ -1688,8 +1697,8 @@ void grimoire_imp_lord_t::init_base_stats()
   resources.base[ RESOURCE_ENERGY ] = 200;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
 
-  // 2026-02-17: Validated coefficients
-  owner_coeff.ap_from_sp = 1.375;
+  // 2026-08-26: Validated coefficients
+  owner_coeff.ap_from_sp = 1.375; // not validated
   owner_coeff.sp_from_sp = 2.75;
   owner_coeff.health = 0.45;
 }
@@ -1765,8 +1774,8 @@ void grimoire_fel_ravager_t::init_base_stats()
   resources.base[ RESOURCE_ENERGY ] = 200;
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
 
-  // 2026-02-17: Validated coefficients
-  owner_coeff.ap_from_sp = 1.26;
+  // 2026-08-26: Validated coefficients
+  owner_coeff.ap_from_sp = 1.2555;
   owner_coeff.sp_from_sp = 2.51;
   owner_coeff.health = 0.5;
 
@@ -1828,6 +1837,11 @@ dominion_of_argus_pet_t::dominion_of_argus_pet_t( warlock_t* owner, std::string_
   : warlock_pet_t( owner, n, type, true ), main_action( nullptr )
 {
   resource_regeneration = regen_type::DISABLED;
+
+  // 2026-08-26: Validated coefficients
+  owner_coeff.sp_from_sp = 1.0;
+  owner_coeff.health = 0.75;
+
   affected_by.demonic_brutality = false;
   is_implosion_candidate = false;
   // NOTE: 2026-07-11 DoA guardians do not trigger Hellbent Commander on arise/demise (must wait to player heartbeat) (bug?)
@@ -1903,8 +1917,6 @@ lady_sacrolash_t::lady_sacrolash_t( warlock_t* owner )
   : dominion_of_argus_pet_t( owner, "lady_sacrolash", PET_LADY_SACROLASH )
 {
   npc_id = owner->talents.doa_lady_sacrolash_summon->effectN( 1 ).misc_value1();
-
-  owner_coeff.sp_from_sp = 1.0;
 }
 
 void lady_sacrolash_t::create_actions()
@@ -1943,8 +1955,6 @@ grand_warlock_alythess_t::grand_warlock_alythess_t( warlock_t* owner )
   : dominion_of_argus_pet_t( owner, "grand_warlock_alythess", PET_GRAND_WARLOCK_ALYTHESS )
 {
   npc_id = owner->talents.doa_grand_warlock_alythess_summon->effectN( 1 ).misc_value1();
-
-  owner_coeff.sp_from_sp = 1.0;
 }
 
 void grand_warlock_alythess_t::create_actions()
@@ -1983,8 +1993,6 @@ antoran_inquisitor_t::antoran_inquisitor_t( warlock_t* owner )
   : dominion_of_argus_pet_t( owner, "antoran_inquisitor", PET_ANTORAN_INQUISITOR )
 {
   npc_id = owner->talents.doa_antoran_inquisitor_summon->effectN( 1 ).misc_value1();
-
-  owner_coeff.sp_from_sp = 1.0;
 }
 
 void antoran_inquisitor_t::create_actions()
@@ -2022,8 +2030,6 @@ antoran_jailer_t::antoran_jailer_t( warlock_t* owner )
   : dominion_of_argus_pet_t( owner, "antoran_jailer", PET_ANTORAN_JAILER )
 {
   npc_id = owner->talents.doa_antoran_jailer_summon->effectN( 1 ).misc_value1();
-
-  owner_coeff.sp_from_sp = 1.0;
 }
 
 void antoran_jailer_t::create_actions()
@@ -3011,6 +3017,8 @@ rampaging_demonic_soul_t::rampaging_demonic_soul_t( warlock_t* owner, std::strin
   resource_regeneration         = regen_type::DISABLED;
   affected_by.demonic_brutality = false;
   action_list_str               = "soul_swipe";
+
+  // 2026-08-26: Validated coefficients
   owner_coeff.sp_from_sp        = 1.0;
 
   is_implosion_candidate = false;
