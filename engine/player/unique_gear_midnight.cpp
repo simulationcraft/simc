@@ -4544,6 +4544,79 @@ void ophidian_bone_whistle( special_effect_t& effect )
 
   effect.execute_action = create_proc_action<ophidian_bone_whistle_t>( "ophidian_bone_whistle", effect );
 }
+
+// Sszorak's Ferocity
+// 1295617 driver (e1: ravage, e2: mutilate, e3: tempest total, e4: killer instincts icd)
+// 1307332 Ravage (single target damage)
+// 1307333 Mutilate (frontal cone damage)
+// 1307324 Tempest (aoe dot)
+// 1307356 killing blow driver
+// 1307361 Killer Instincts buff
+void sszoraks_ferocity( special_effect_t& effect )
+{
+  auto ravage = create_proc_action<generic_proc_t>( "sszoraks_ravage", effect, 1307332 );
+  ravage->base_dd_min = ravage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  ravage->base_multiplier *= role_mult( effect );
+  ravage->name_str_reporting = "Ravage";
+
+  auto mutilate = create_proc_action<generic_aoe_proc_t>( "sszoraks_mutilate", effect, 1307333 );
+  mutilate->base_dd_min = mutilate->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
+  mutilate->base_multiplier *= role_mult( effect );
+  mutilate->name_str_reporting = "Mutilate";
+
+  // no aoe scaling, unlike mutilate
+  auto tempest = create_proc_action<generic_aoe_proc_t>( "sszoraks_tempest", effect, 1307324, false );
+  auto tempest_ticks = as<unsigned>( tempest->dot_duration / tempest->base_tick_time ) + tempest->tick_on_application;
+  tempest->base_td = effect.driver()->effectN( 3 ).average( effect ) / tempest_ticks;
+  tempest->base_td_multiplier *= role_mult( effect );
+  tempest->split_aoe_damage = false;
+  tempest->name_str_reporting = "Tempest";
+
+  // in-game testing shows ravage on 1 target, mutilate on 2-5 and tempest on 6+
+  auto follow_up = [ ravage, mutilate, tempest ]( player_t* target ) {
+    auto targets = ravage->sim->target_non_sleeping_list.size();
+    if ( targets <= 1 )
+      ravage->execute_on_target( target );
+    else if ( targets <= 5 )
+      mutilate->execute_on_target( target );
+    else
+      tempest->execute_on_target( target );
+  };
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.spell_id, [ follow_up ]( dbc_proc_callback_t*, const spell_data_t*, player_t* t, action_state_t* ) {
+        follow_up( t );
+      } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  // defeating an enemy guarantees the follow-up on your next attack, once per 10s
+  auto killer_instincts = create_buff<buff_t>( effect.player, effect.player->find_spell( 1307361 ) )
+    ->set_cooldown( effect.player->find_spell( 1307356 )->internal_cooldown() );
+
+  effect.player->register_on_kill_callback( [ p = effect.player, killer_instincts ]( player_t* ) {
+    if ( !p->sim->event_mgr.canceled )
+      killer_instincts->trigger();
+  } );
+
+  auto ki_proc = new special_effect_t( effect.player );
+  ki_proc->name_str = "killer_instincts";
+  ki_proc->spell_id = 1307361;
+  effect.player->special_effects.push_back( ki_proc );
+
+  effect.player->callbacks.register_callback_execute_function(
+      ki_proc->spell_id,
+      [ follow_up, killer_instincts ]( dbc_proc_callback_t*, const spell_data_t*, player_t* t, action_state_t* ) {
+        if ( !killer_instincts->up() )
+          return;
+
+        killer_instincts->expire();
+        follow_up( t );
+      } );
+
+  auto ki_cb = new dbc_proc_callback_t( effect.player, *ki_proc );
+  ki_cb->activate_with_buff( killer_instincts );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -5919,6 +5992,8 @@ void register_special_effects()
   register_special_effect( 1291885, DISABLED_EFFECT );  // Soulcoiler Ritual Vessel equip Driver
   register_special_effect( 1306743, trinkets::ophidian_bone_whistle );
   register_special_effect( 1296883, DISABLED_EFFECT );  // Ophidian Bone Whistle equip driver
+  register_special_effect( 1295617, trinkets::sszoraks_ferocity );
+  register_special_effect( 1307356, DISABLED_EFFECT );  // Sszorak's Ferocity killing blow driver
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
