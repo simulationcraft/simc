@@ -308,7 +308,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     {
       int expected_stacks = 0;
 
-      for ( auto pet : pet_list )
+      for ( auto pet : active_pets )
       {
         auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
 
@@ -545,7 +545,7 @@ int warlock_t::active_demon_count( bool include_diabolist ) const
 {
   int count = 0;
 
-  for ( auto pet : this->pet_list )
+  for ( auto pet : active_pets )
   {
     auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
 
