@@ -23,10 +23,8 @@ bear->add_action( "thrash,target_if=refreshable|(dot.thrash.stack<5&talent.flash
 bear->add_action( "mangle,if=buff.answered_calling.up&(active_enemies=1|buff.berserk.up&active_enemies<=4)&talent.fount_of_strength.enabled" );
 bear->add_action( "thrash,if=talent.lunar_calling.enabled|buff.answered_calling.up" );
 bear->add_action( "maul,if=buff.dream_conduit.up&!talent.fount_of_strength.enabled&!buff.answered_calling.up" );
-bear->add_action( "maul,if=buff.ravage.up&rage>=60&talent.killing_blow.enabled" );
-bear->add_action( "maul,if=buff.ravage.up&rage>=40&!talent.killing_blow.enabled&!talent.gory_fur.enabled" );
-bear->add_action( "maul,if=rage>=55&!talent.fount_of_strength.enabled&talent.killing_blow.enabled&!buff.answered_calling.up" );
-bear->add_action( "maul,if=rage>=80&!talent.fount_of_strength.enabled&talent.killing_blow.enabled&buff.answered_calling.up" );
+bear->add_action( "maul,if=rage>=55&talent.killing_blow.enabled&!buff.answered_calling.up" );
+bear->add_action( "maul,if=rage>=80&talent.killing_blow.enabled&buff.answered_calling.up" );
 bear->add_action( "maul,if=buff.gory_fur_maul.up&talent.raze.enabled" );
 bear->add_action( "maul,if=buff.gory_fur_maul.up&!talent.raze.enabled&active_enemies<3" );
 bear->add_action( "thrash,if=active_enemies>=3&talent.fount_of_strength.enabled" );
