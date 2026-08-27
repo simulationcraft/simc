@@ -13497,6 +13497,11 @@ void shaman_t::init_blizzard_action_list()
   {
     cooldowns->add_action( "doom_winds" );
   }
+
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+
+  precombat->add_action( "flametongue_weapon,if=talent.flametongue_weapon" );
+
 }
 
 
@@ -13553,8 +13558,6 @@ parsed_assisted_combat_rule_t shaman_t::parse_assisted_combat_rule( const assist
     return { "0" };
   }
 
-  if ( step.spell_id == 318038 && rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 382027 )
-    return { "talent.flametongue_weapon" };
   if ( rule.condition_type == AC_AURA_ON_PLAYER && rule.condition_value_1 == 384087 )
     return { "0" };
   if ( rule.condition_type == AC_AURA_MISSING_PLAYER && rule.condition_value_1 == 384087 )
@@ -13566,6 +13569,9 @@ void shaman_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
                                          action_priority_list_t* assisted_combat )
 {
   if ( step.spell_id == 462854 )
+    return;
+
+  if ( step.spell_id == 318038 ) 
     return;
 
   auto replace_spell = [ & ]( unsigned source_spell_id, unsigned target_spell_id ) {
