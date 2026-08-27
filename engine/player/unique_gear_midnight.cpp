@@ -4330,18 +4330,16 @@ void soulcoiler_ritual_vessel( special_effect_t& effect )
   struct soulcoiler_ritual_vessel_t : public proc_heal_t
   {
     target_specific_t<absorb_buff_t> absorb_buffs;
-    const special_effect_t& e;
     const spell_data_t* absorb_spell;
     double absorb_amount;
     mutable target_cache_t absorb_target_cache;
 
     soulcoiler_ritual_vessel_t( const special_effect_t& effect, const spell_data_t* absorb_spell )
       : proc_heal_t( "soulcoiler_ritual_vessel", effect.player, effect.driver() ),
-        absorb_amount( 0 ),
-        absorb_target_cache(),
         absorb_buffs{ false },
-        e( effect ),
-        absorb_spell( absorb_spell )
+        absorb_spell( absorb_spell ),
+        absorb_amount( 0 ),
+        absorb_target_cache()
     {
       auto equip = find_special_effect( effect.player, 1291885 );
       assert( equip && "Soulcoiler Ritual Vessel missing equip effect" );
@@ -4362,7 +4360,7 @@ void soulcoiler_ritual_vessel( special_effect_t& effect )
 
       auto buff = make_buff<fractional_absorb_t>( t, player, "soulcoil_barrier", absorb_spell )
                       ->set_absorb_fraction( absorb_spell->effectN( 2 ).percent() )
-                      ->set_absorb_source( e.player->get_stats( "soulcoiler_ritual_vessel", this ) );
+                      ->set_absorb_source( player->get_stats( "soulcoiler_ritual_vessel", this ) );
 
       absorb_buffs[ t ] = buff;
 

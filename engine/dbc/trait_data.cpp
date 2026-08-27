@@ -256,7 +256,7 @@ bool trait_data_t::is_hero_trait_available( const trait_data_t* trait, player_e 
   return false;
 }
 
-bool trait_data_t::is_granted( const trait_data_t* trait, player_e type, specialization_e spec, bool ptr )
+bool trait_data_t::is_granted( const trait_data_t* trait, specialization_e spec )
 {
   return trait->id_spec_starter[ 0 ] && range::contains( trait->id_spec_starter, spec );
 }

@@ -1677,8 +1677,8 @@ bool chart::generate_actor_dps_series( highchart::time_series_t& series, const p
 {
   bool is_hps = p.primary_role() == ROLE_HEAL;
 
-  if ( is_hps && ( p.collected_data.hps.mean() + p.collected_data.aps.mean() ) <= 0 ||
-       !is_hps && p.collected_data.dps.mean() <= 0 )
+  if ( ( is_hps && ( p.collected_data.hps.mean() + p.collected_data.aps.mean() ) <= 0 ) ||
+       ( !is_hps && p.collected_data.dps.mean() <= 0 ) )
   {
     return false;
   }

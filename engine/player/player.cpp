@@ -2639,7 +2639,7 @@ static std::string generate_traits_hash( player_t* player )
       {
         rank = _entry_rank;
         max_rank = _entry_trait->max_ranks;
-        init_rank = trait_data_t::is_granted( _entry_trait, player->type, player->specialization(), ptr ) ? 1U : 0U;
+        init_rank = trait_data_t::is_granted( _entry_trait, player->specialization() ) ? 1U : 0U;
         index = as<unsigned>( i );
         break;
       }
@@ -3086,7 +3086,7 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
   // add any freely granted traits
   for ( const auto& trait : trait_data_t::data( util::class_id( player->type ), tree, player->is_ptr() ) )
   {
-    if ( trait_data_t::is_granted( &trait, player->type, player->specialization(), player->is_ptr() ) )
+    if ( trait_data_t::is_granted( &trait, player->specialization() ) )
     {
       auto id = trait.id_trait_node_entry;
       auto it = range::find_if( player->player_traits, [ id ]( const auto& e ) { return std::get<1>( e ) == id; } );

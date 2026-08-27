@@ -2050,7 +2050,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
       cell_ptr->second = _rank;
     }
 
-    if ( !trait_data_t::is_granted( trait, p.type, p.specialization(), p.is_ptr() ) )
+    if ( !trait_data_t::is_granted( trait, p.specialization() ) )
       *points_ptr += _rank;
   }
 
