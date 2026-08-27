@@ -28,7 +28,7 @@ namespace warlock_apl{
 
     switch ( p->specialization() )
     {
-      case WARLOCK_AFFLICTION: lvl90_flask = "flask_of_the_blood_knights_2"; break;
+      case WARLOCK_AFFLICTION: lvl90_flask = "flask_of_the_shattered_sun_2"; break;
       case WARLOCK_DEMONOLOGY: lvl90_flask = "flask_of_the_shattered_sun_2"; break;
       case WARLOCK_DESTRUCTION: lvl90_flask = "flask_of_the_magisters_2"; break;
       default: break;
@@ -81,6 +81,7 @@ void affliction( player_t* p )
   precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice" );
   precombat->add_action( "seed_of_corruption,if=(hero_tree.soul_harvester&active_enemies>1)|active_enemies>2" );
   precombat->add_action( "haunt,if=active_enemies<2|(hero_tree.hellcaller&active_enemies<3)" );
+  precombat->add_action( "potion,if=potion.liquid_luster" );
 
   default_->add_action( "call_action_list,name=variables" );
   default_->add_action( "call_action_list,name=end_of_fight" );
@@ -100,10 +101,10 @@ void affliction( player_t* p )
   hellcaller->add_action( "call_action_list,name=HC_cleave,if=active_enemies=2" );
   hellcaller->add_action( "call_action_list,name=HC_aoe,if=active_enemies>2" );
 
-  items->add_action( "use_item,name=stormbound_emblem_of_dazar,if=cooldown.summon_darkglare.remains<=2&dot.agony.remains&(dot.corruption.remains|dot.wither.remains)&cooldown.dark_harvest.remains>1" );
+  items->add_action( "use_item,name=stormbound_emblem_of_dazar,if=cooldown.summon_darkglare.remains<=4&dot.agony.remains&(dot.corruption.remains|dot.wither.remains)&cooldown.dark_harvest.remains>1" );
   items->add_action( "use_item,name=galactic_gladiators_badge_of_ferocity,if=(buff.malevolence.up|pet.darkglare.active)|fight_remains<20" );
-  items->add_action( "use_items,if=(buff.malevolence.up|pet.darkglare.active)|fight_remains<20" );
   items->add_action( "use_item,name=hex_lords_dooming_idol,if=pet.darkglare.active|buff.hex_lords_doom.stack>19|fight_remains<=30" );
+  items->add_action( "use_items,if=(buff.malevolence.up|pet.darkglare.active)|fight_remains<20" );
   items->add_action( "use_item,use_off_gcd=1,slot=main_hand" );
 
   ogcd->add_action( "potion,use_off_gcd=1,if=variable.cds_active|fight_remains<32" );
@@ -127,11 +128,12 @@ void affliction( player_t* p )
   SH_aoe->add_action( "seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
   SH_aoe->add_action( "dark_harvest" );
   SH_aoe->add_action( "seed_of_corruption,target_if=!dot.unstable_affliction.ticking&prev.dark_harvest,if=set_bonus.midnight_season_2_4pc&active_enemies<=5" );
-  SH_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<10&remains<5" );
+  SH_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<12&remains<5" );
   SH_aoe->add_action( "summon_darkglare" );
   SH_aoe->add_action( "malefic_grasp,if=buff.nightfall.react>1&active_enemies<=6" );
   SH_aoe->add_action( "shadow_bolt,if=buff.nightfall.react>1&active_enemies<=7" );
-  SH_aoe->add_action( "seed_of_corruption" );
+  SH_aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds|active_enemies>5" );
+  SH_aoe->add_action( "unstable_affliction" );
   SH_aoe->add_action( "agony,target_if=min:remains,if=remains<duration*0.5" );
   SH_aoe->add_action( "malefic_grasp,if=pet.darkglare.remains<gcd" );
 
@@ -140,7 +142,6 @@ void affliction( player_t* p )
   SH_cleave->add_action( "agony,target_if=refreshable" );
   SH_cleave->add_action( "dark_harvest" );
   SH_cleave->add_action( "unstable_affliction,cycle_targets=1,if=!ticking&prev.dark_harvest" );
-  SH_cleave->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
   SH_cleave->add_action( "unstable_affliction" );
   SH_cleave->add_action( "summon_darkglare" );
   SH_cleave->add_action( "malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd" );
@@ -161,7 +162,7 @@ void affliction( player_t* p )
   HC_aoe->add_action( "haunt" );
   HC_aoe->add_action( "seed_of_corruption,if=(!dot.wither.ticking|dot.wither.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
   HC_aoe->add_action( "dark_harvest" );
-  HC_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<(8+(2*talent.sow_the_seeds))&remains<5" );
+  HC_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<14&remains<5" );
   HC_aoe->add_action( "summon_darkglare" );
   HC_aoe->add_action( "malevolence" );
   HC_aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds|active_enemies>5" );
@@ -187,6 +188,8 @@ void affliction( player_t* p )
   variables->add_action( "variable,name=cds_active,op=set,value=!talent.summon_darkglare|pet.darkglare.remains" );
   variables->add_action( "variable,name=darkglare_active,op=set,value=pet.darkglare.active|(cooldown.summon_darkglare.duration-cooldown.summon_darkglare.remains)<20" );
   variables->add_action( "cycling_variable,name=min_agony,op=min,value=dot.agony.remains+(99*!dot.agony.remains)" );
+  variables->add_action( "variable,name=malevolence_from_cast,value=0,op=set,if=buff.malevolence.up=0" );
+  variables->add_action( "variable,name=malevolence_from_cast,value=1,op=set,if=prev_gcd.1.malevolence" );
 }
 //affliction_apl_end
 
