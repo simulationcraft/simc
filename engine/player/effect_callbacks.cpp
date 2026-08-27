@@ -119,7 +119,7 @@ void effect_callbacks_t::register_callback_trigger_function( unsigned driver_id,
     }
 
     if ( dbc_proc->trigger_type == dbc_proc_callback_t::trigger_fn_type::NONE &&
-         dbc_proc->effect.driver()->id() == driver_id )
+         dbc_proc->effect.spell_id == driver_id )
     {
       return true;
     }
@@ -154,7 +154,7 @@ void effect_callbacks_t::register_callback_execute_function( unsigned driver_id,
       return false;
     }
 
-    if ( dbc_proc->effect.driver()->id() == driver_id )
+    if ( dbc_proc->effect.spell_id == driver_id )
     {
       return true;
     }

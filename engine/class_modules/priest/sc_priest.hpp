@@ -330,7 +330,7 @@ public:
       // Row 2
       player_talent_t psychic_link;
       player_talent_t misery;
-      player_talent_t invoked_nightmares;
+      player_talent_t invoked_nightmare;
       player_talent_t intangibility;
       player_talent_t mental_fortitude;
       // Row 3
@@ -797,6 +797,8 @@ public:
     propagate_const<proc_t*> void_apparition_cthun;
     propagate_const<proc_t*> tentacle_slam_idol;
     propagate_const<proc_t*> midnight_s2_4pc_void_volley;
+    propagate_const<proc_t*> mindblasts_without_ire;
+    propagate_const<proc_t*> voidblasts_without_ire;
     // Holy
     propagate_const<proc_t*> divine_favor_chastise;
     propagate_const<proc_t*> divine_image;
@@ -917,7 +919,7 @@ public:
     double archon_halo_return_hit_chance = 0.5;
 
     // Should healing a target below the threshold grant Twist of Fate?
-    bool twist_of_fate_from_healing = true;
+    bool twist_of_fate_from_healing = false;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -1042,6 +1044,7 @@ public:
   void trigger_vision_of_nzoth( player_t* target );
   void trigger_shadowy_insight( bool guaranteed = false, action_state_t* s = nullptr );
   void trigger_idol_of_yshaarj( player_t* target = nullptr );
+  void trigger_surge_of_light();
 
   std::vector<action_t*> secondary_action_list;
 
@@ -1394,8 +1397,8 @@ public:
   {
     base_t::execute();
 
-    if ( !background && priest().talents.surge_of_light.enabled() )
-      priest().buffs.surge_of_light->trigger();
+    if ( !background )
+      priest().trigger_surge_of_light();
   }
 };
 
@@ -1493,8 +1496,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     base_t::execute();
 
-    if ( !background && priest().talents.surge_of_light.enabled() )
-      priest().buffs.surge_of_light->trigger();
+    if ( !background )
+      priest().trigger_surge_of_light();
   }
 };
 
@@ -1544,9 +1547,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
   virtual double composite_atonement_multiplier( action_state_t* s )
   {
     double mul = p().talents.discipline.atonement->effectN( 1 ).percent();
-
-    if ( !p().options.discipline_in_raid )
-      mul *= 1.0 + p().talents.discipline.atonement->effectN( 3 ).percent();
 
     if ( p().talents.discipline.abyssal_reverie.enabled() &&
          ( dbc::get_school_mask( s->action->school ) & SCHOOL_MASK_SHADOW ) == SCHOOL_MASK_SHADOW )

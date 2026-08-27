@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69299 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69497 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=23, select_idx=100]
 Class            : Druid
@@ -91,7 +91,7 @@ Effects          :
 #7 (id=1202407)  : Apply Aura (6) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 4339 (Label) | Target: Self (1)
                    Affected Spells (Label): Incarnation (117679)
-Description      : Heals all allies within $a2 yards for $<healing> over $d.$?s197721[ Extends the duration of all your heal over time effects by $s6 sec every $t1 sec.][] Healing decreased beyond $s3 targets.
+Description      : Heals all allies within $a2 yards for $<healing> over $d.$?s197721[ Extends the duration of all your heal over time effects by $197721s1 sec every $t1 sec.][] Healing decreased beyond $s3 targets.
 
 Roots form around you while channeling, absorbing up to $s6% of your health in damage and preventing knockbacks.
 Tooltip          : Absorbing $w5 damage and protected from knockbacks.
@@ -4299,25 +4299,25 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -4 | Scaled Value: -4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Embrace of the Dream (392147), Verdancy (392329), Nourish (422090), Nourish (423618), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121), Reactive Resin (468152), Blossom Burst (473919), Mass Blooming (474149), Insurance! (1215515), Insurance! (1215518), Tranquility (1236573), Regrowth (1264664), Spirit of the Thicket (1264905)
                    Family Flags: 118
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -4 | Scaled Value: -4 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Embrace of the Dream (392147), Verdancy (392329), Nourish (422090), Nourish (423618), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121), Reactive Resin (468152), Blossom Burst (473919), Mass Blooming (474149), Insurance! (1215515), Insurance! (1215518), Tranquility (1236573), Regrowth (1264664), Spirit of the Thicket (1264905)
                    Family Flags: 118
 #3 (id=191151)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 120 | Points Per Level: 1 | Target: Self (1)
+                   Base Value: 74 | Scaled Value: 164 | Points Per Level: 1 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Ferocious Bite (22568), Mangle (33917), Thrash (77758), Starsurge (78674), Swipe (106785), Thrash (106830), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Swipe (213771), Thrash (405233), Ravage (441591), Red Moon (1252871), Dire Echo (1253489), Red Moon (1253582), Lunar Wrath (1253609), Starsurge (1271222)
                    Family Flags: 0, 2, 12, 15, 38, 40, 52, 74, 85, 89, 91, 92, 108, 126, 127
 #4 (id=191152)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 30 | Scaled Value: 120 | Points Per Level: 1 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 74 | Scaled Value: 164 | Points Per Level: 1 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Ferocious Bite (22568), Mangle (33917), Thrash (77758), Starsurge (78674), Swipe (106785), Thrash (106830), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Swipe (213771), Thrash (405233), Ravage (441591), Red Moon (1252871), Dire Echo (1253489), Red Moon (1253582), Lunar Wrath (1253609), Starsurge (1271222)
                    Family Flags: 0, 2, 12, 15, 38, 40, 52, 74, 85, 89, 91, 92, 108, 126, 127
 #5 (id=191153)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
+                   Base Value: 74 | Scaled Value: 164 | Points Per Level: 1 | Target: Self (1)
 #6 (id=260747)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
+                   Base Value: 74 | Scaled Value: 164 | Points Per Level: 1 | Target: Self (1)
 #7 (id=260748)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #8 (id=260749)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
@@ -15738,7 +15738,7 @@ Effects          :
 Description      : Heals a friendly target for $s1.  Receives $s2% bonus from $@spellname77495.
 
 Name             : Boundless Moonlight (id=424058) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Elune's Chosen (Balance, Guardian) [tree=hero, row=1, col=3, max_rank=1, req_points=0]
+Talent Entry     : Elune's Chosen (Balance, Guardian) [free=(Balance, Guardian), tree=hero, row=1, col=3, max_rank=1, req_points=0]
 Class            : Druid
 School           : Shadow
 Spell Type       : None
@@ -16731,7 +16731,7 @@ Effects          :
 Description      : Your Regrowth protects you, reducing damage you take by $s1% while your Regrowth is on you.
 
 Name             : Dream Surge (id=433831) [Spell Family (7), Passive] 
-Talent Entry     : Keeper of the Grove (Balance, Restoration) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Keeper of the Grove (Balance, Restoration) [free=(Balance, Restoration), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -16855,7 +16855,7 @@ Description      : Time elapsed while your major abilities are available to be u
 Affects $?a137012[Nature's Swiftness, Incarnation: Tree of Life,][Force of Nature,] $?a137012[]?a394013[Incarnation: Chosen of Elune, ][Celestial Alignment, ]and Convoke the Spirits.
 
 Name             : Thriving Growth (id=439528) [Spell Family (7), Passive] 
-Talent Entry     : Wildstalker (Feral, Restoration) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Wildstalker (Feral, Restoration) [free=(Feral, Restoration), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -17368,7 +17368,7 @@ Effects          :
 Description      : $@spelldesc440120
 
 Name             : Ravage (id=441583) [Spell Family (7), Passive] 
-Talent Entry     : Druid of the Claw (Feral, Guardian) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Druid of the Claw (Feral, Guardian) [free=(Feral, Guardian), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -17428,7 +17428,8 @@ Family Flags     : 98, 108
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), No Level Up Toast (281), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1136153)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.856 | PvP Coefficient: 0.72 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.856 | PvP Coefficient: 0.864 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (0.72 -> 0.864)
 #2 (id=1136154)  : Power Burn (62)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Target: Self (1)
 #3 (id=1137019)  : School Damage (2): physical
@@ -20874,6 +20875,7 @@ Effects          :
 Description      : Damage of your bleeds increased by $s1%.
 
 Name             : Skyfire Heel (id=1248712) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -20881,7 +20883,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Attributes       : Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
+Attributes       : Can't Crit (93), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1251829)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
@@ -21303,13 +21305,15 @@ Effects          :
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Rampant Ferocity (391710), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812), Frantic Frenzy (1244079), Chomp (1244258), Unseen Slash (1263890), Unseen Swipe (1263908), Twin Claw (1271636), Unseen Slash (1271863)
                    Family Flags: 98
 #3 (id=1266734)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -14 | Scaled Value: -14 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rip (1079)
                    Family Flags: 85
+Hotfixed         : Base Value (-25 -> -14)
 #4 (id=1312805)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: -17 | Scaled Value: -17 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rake (1822), Rake (155722)
                    Family Flags: 12
+Hotfixed         : Base Value (-17 -> -5)
 
 Name             : Guardian Druid (id=1256993) [Spell Family (7), Passive, Hidden] 
 Class            : Guardian Druid
@@ -21351,23 +21355,23 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1264729)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Embrace of the Dream (392147), Verdancy (392329), Nourish (422090), Nourish (423618), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121), Reactive Resin (468152), Blossom Burst (473919), Mass Blooming (474149), Insurance! (1215515), Insurance! (1215518), Tranquility (1236573), Regrowth (1264664), Spirit of the Thicket (1264905)
                    Family Flags: 118
 #2 (id=1266737)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Embrace of the Dream (392147), Verdancy (392329), Nourish (422090), Nourish (423618), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121), Reactive Resin (468152), Blossom Burst (473919), Mass Blooming (474149), Insurance! (1215515), Insurance! (1215518), Tranquility (1236573), Regrowth (1264664), Spirit of the Thicket (1264905)
                    Family Flags: 118
 #3 (id=1266738)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 16 | Scaled Value: 16 | Target: Self (1)
+                   Base Value: -7 | Scaled Value: -7 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Ferocious Bite (22568), Mangle (33917), Thrash (77758), Starsurge (78674), Swipe (106785), Thrash (106830), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Swipe (213771), Thrash (405233), Ravage (441591), Red Moon (1252871), Dire Echo (1253489), Red Moon (1253582), Lunar Wrath (1253609), Starsurge (1271222)
                    Family Flags: 0, 2, 12, 15, 38, 40, 52, 74, 85, 89, 91, 92, 108, 126, 127
 #4 (id=1266739)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: 16 | Scaled Value: 16 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -7 | Scaled Value: -7 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Ferocious Bite (22568), Mangle (33917), Thrash (77758), Starsurge (78674), Swipe (106785), Thrash (106830), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Swipe (213771), Thrash (405233), Ravage (441591), Red Moon (1252871), Dire Echo (1253489), Red Moon (1253582), Lunar Wrath (1253609), Starsurge (1271222)
                    Family Flags: 0, 2, 12, 15, 38, 40, 52, 74, 85, 89, 91, 92, 108, 126, 127
 #5 (id=1266740)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #6 (id=1266741)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #7 (id=1266742)  : Apply Aura (6) | Modify Cooldown Time (Category) (341)
@@ -21713,7 +21717,7 @@ Labels           : 16: Class Spells
                  : 4082: Meteor Storm (1240262 effect#3)
 Stacks           : 20 maximum
 Proc Chance      : 101%
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Asynchronous Buff (490)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Do Not Display Cast Time (441), Asynchronous Aura (490)
 Effects          :
 #1 (id=1274051)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -23676,12 +23680,13 @@ Labels           : 16: Class Spells
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Triggered By     : Druid Restoration 12.1 Class Set 2pc (1296609)
-Attributes       : Asynchronous Buff (490)
+Attributes       : Asynchronous Aura (490)
 Effects          :
 #1 (id=1327783)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Embrace of the Dream (392147), Verdancy (392329), Nourish (422090), Nourish (423618), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121), Reactive Resin (468152), Blossom Burst (473919), Mass Blooming (474149), Insurance! (1215515), Insurance! (1215518), Tranquility (1236573), Regrowth (1264664), Spirit of the Thicket (1264905)
                    Family Flags: 118
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc1296609
 Tooltip          : Heal over time effects are $s1% stronger.
 

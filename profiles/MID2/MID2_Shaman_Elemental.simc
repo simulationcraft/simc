@@ -70,20 +70,21 @@ actions.aoe+=/flame_shock,if=!buff.master_of_the_elements.up&((dot.flame_shock.r
 actions.aoe+=/voltaic_blaze,if=!buff.master_of_the_elements.up&((dot.flame_shock.refreshable&cooldown.ascendance.remains>5)|(buff.fire_elemental.up&buff.fire_elemental.remains<2)|talent.purging_flames)
 # Ascendance on CD, unless SK can be sync'd with it.
 actions.aoe+=/ascendance,if=cooldown.stormkeeper.remains>15|fight_remains<20
-# Elemental Blast if no buffs or at 3t, Earthquake to spread Lightning Rod otherwise
-actions.aoe+=/elemental_blast,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack<2&(buff.elemental_blast_critical_strike.up+buff.elemental_blast_haste.up+buff.elemental_blast_mastery.up=0)
-actions.aoe+=/earthquake,if=buff.tempest.stack<2&lightning_rod<active_enemies&(spell_targets.chain_lightning>=3+talent.elemental_blast)&(buff.elemental_blast_critical_strike.up+buff.elemental_blast_haste.up+buff.elemental_blast_mastery.up>0|!talent.elemental_blast)
-actions.aoe+=/elemental_blast,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack<2&spell_targets.chain_lightning=3
+# [SB] Elemental Blast if no buffs or at 3t, Earthquake to spread Lightning Rod otherwise  [FS] EQ with ancestors, EB - without
+actions.aoe+=/elemental_blast,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack<2&(buff.elemental_blast_critical_strike.up+buff.elemental_blast_haste.up+buff.elemental_blast_mastery.up=0)&talent.tempest
+actions.aoe+=/earthquake,if=buff.tempest.stack<2&lightning_rod<active_enemies&(spell_targets.chain_lightning>=3+talent.elemental_blast)&(buff.elemental_blast_critical_strike.up+buff.elemental_blast_haste.up+buff.elemental_blast_mastery.up>0|!talent.elemental_blast)&talent.tempest
+actions.aoe+=/earthquake,if=buff.call_of_the_ancestors.up|(spell_targets.chain_lightning>=3+3*talent.elemental_blast)&talent.call_of_the_ancestors
+actions.aoe+=/elemental_blast,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack<2&(spell_targets.chain_lightning<=3+2*talent.call_of_the_ancestors)&!buff.call_of_the_ancestors.up
 # Spend Purging flames.  !!! Remove tier requirement once fixed ingame
 actions.aoe+=/lava_burst,if=buff.purging_flames.up&(buff.lava_surge.up&buff.flowing_elements.stack<2|cooldown.voltaic_blaze.remains<2)
-# [3t] Spend Lava Surge procs to buff Tempest with MotE.
-actions.aoe+=/lava_burst,if=buff.tempest.up&buff.lava_surge.up&talent.master_of_the_elements&spell_targets.chain_lightning=3
+# [3t] Spend Lava Surge procs to buff Tempest with MotE OR anything with Farseer (without PF specced).
+actions.aoe+=/lava_burst,if=(buff.tempest.up|!talent.purging_flames&talent.call_of_the_ancestors)&buff.lava_surge.up&talent.master_of_the_elements&spell_targets.chain_lightning=3
 # [3t] Tempest if you have MotE.
 actions.aoe+=/tempest,target_if=min:debuff.lightning_rod.remains,if=buff.master_of_the_elements.up
 actions.aoe+=/tempest,target_if=min:debuff.lightning_rod.remains,if=buff.stormkeeper.stack<4&buff.tempest.stack=2
 actions.aoe+=/chain_lightning,if=buff.stormkeeper.up&maelstrom.deficit>(spell_targets.chain_lightning>?5)*(2+(spell_targets.chain_lightning>?5)+2)
 actions.aoe+=/earthquake,if=!talent.elemental_blast&maelstrom.deficit<15+(buff.stormkeeper.up*(spell_targets.chain_lightning>?5)*(2+(spell_targets.chain_lightning>?5)))
-actions.aoe+=/elemental_blast
+actions.aoe+=/elemental_blast,if=talent.tempest
 actions.aoe+=/tempest,target_if=min:debuff.lightning_rod.remains
 # Filler spell. Always available. Always the bottom line.
 actions.aoe+=/chain_lightning
@@ -102,12 +103,15 @@ actions.single_target+=/voltaic_blaze,if=!buff.master_of_the_elements.up&(dot.fl
 # Ascendance on CD, unless SK can be sync'd with it.
 actions.single_target+=/ascendance,if=cooldown.stormkeeper.remains>15|fight_remains<20
 # Consume tier procs if you gona proc new one with next builder.
+actions.single_target+=/earthquake,if=buff.flowing_elements.up&buff.overcharge_tier.up&buff.call_of_the_ancestors.stack>=3&spell_targets.chain_lightning=2
 actions.single_target+=/elemental_blast,if=buff.flowing_elements.up&buff.overcharge_tier.up
+actions.single_target+=/earthquake,if=buff.flowing_elements.up&buff.overcharge_tier.up&buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2
 actions.single_target+=/earth_shock,if=buff.flowing_elements.up&buff.overcharge_tier.up
 # Lava Burst to proc MotE if you are about to reach 2 charges and (1 target OR wind gust stacked for Farseer) or (1 target AND wind gust stacked for SB).
 actions.single_target+=/lava_burst,if=talent.master_of_the_elements&!buff.master_of_the_elements.up&maelstrom.deficit>15&cooldown.lava_burst.charges_fractional>1.8&((!buff.storm_elemental.up|buff.wind_gust.stack=4)+talent.call_of_the_ancestors>=spell_targets.chain_lightning)
 # Lava Burst to proc MotE if you have enough maelstrom for a spender.
 actions.single_target+=/lava_burst,if=talent.master_of_the_elements&!buff.master_of_the_elements.up&maelstrom.deficit>15&(maelstrom>52-5*talent.eye_of_the_storm*(1+talent.elemental_blast)+30*talent.elemental_blast)
+actions.single_target+=/lava_burst,if=talent.master_of_the_elements&!buff.master_of_the_elements.up&maelstrom.deficit>15&(maelstrom>52-5*talent.eye_of_the_storm)&buff.call_of_the_ancestors.stack>=3&spell_targets.chain_lightning=2
 # Lava Burst without MotE to prevent overcap (with any empowering talents) or with surge proc.
 actions.single_target+=/lava_burst,if=!talent.master_of_the_elements&maelstrom.deficit>15&(!buff.storm_elemental.up|buff.wind_gust.stack=4)&((cooldown.lava_burst.charges_fractional>1.8|!buff.call_of_the_ancestors.up)&(talent.molten_wrath|talent.purging_flames)|buff.lava_surge.up)
 actions.single_target+=/lava_burst,if=!buff.master_of_the_elements.up&maelstrom.deficit>15&buff.flowing_elements.up
@@ -116,7 +120,9 @@ actions.single_target+=/lava_burst,if=!buff.master_of_the_elements.up&maelstrom.
 # [SB] Tempest and Lightning Bolt with SK if you have MotE.
 actions.single_target+=/tempest,if=buff.master_of_the_elements.up|!talent.master_of_the_elements
 actions.single_target+=/lightning_bolt,if=buff.stormkeeper.up&buff.master_of_the_elements.up&talent.tempest
+actions.single_target+=/earthquake,if=buff.call_of_the_ancestors.stack>=3&(buff.master_of_the_elements.up|!talent.master_of_the_elements|maelstrom.deficit<15)&spell_targets.chain_lightning=2
 actions.single_target+=/elemental_blast,target_if=min:debuff.lightning_rod.remains,if=buff.master_of_the_elements.up|maelstrom.deficit<15
+actions.single_target+=/earthquake,if=(buff.master_of_the_elements.up|!talent.master_of_the_elements|maelstrom.deficit<15)&buff.call_of_the_ancestors.up&!talent.elemental_blast&spell_targets.chain_lightning=2
 actions.single_target+=/earth_shock,target_if=min:debuff.lightning_rod.remains,if=buff.master_of_the_elements.up|maelstrom.deficit<15
 # Consume spare MotE to buff Flame Shock, mostly on off-targets.
 actions.single_target+=/flame_shock,target_if=min:dot.flame_shock.remains,if=buff.master_of_the_elements.up&dot.flame_shock.refreshable
@@ -133,14 +139,14 @@ head=serpent_crown_of_the_ophidian_oracle,id=271483,bonus_id=12854/13692/13698/1
 neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13708/13848,gem_id=240918/240908
 shoulders=hissing_mantle_of_the_ophidian_oracle,id=271481,bonus_id=13694/13697/13848,enchant_id=8001,redirected_base_stats=268231
 back=silken_voodoo_drape,id=268253,bonus_id=13662/13848
-chest=fanged_raiment_of_the_ophidian_oracle,id=271486,bonus_id=13690/13698/13708/13848,enchant_id=7987,redirected_base_stats=271876
+chest=fanged_raiment_of_the_ophidian_oracle,id=271486,bonus_id=13690/13698/13846/13848,enchant_id=7987,redirected_base_stats=271876
 wrists=farstriders_plated_bracers,id=244584,bonus_id=8960/12214/12384/13750/13751/13836/9627,gem_id=240900,crafted_stats=36/49
 hands=hexing_grips_of_the_ophidian_oracle,id=271484,bonus_id=12854/13691/13697,redirected_base_stats=160213
 waist=serpentine_mixing_belt,id=268254,bonus_id=12854/13662/13750,gem_id=240892
 legs=leggings_of_the_ophidian_oracle,id=271482,bonus_id=13693/13698/13848,enchant_id=7935,redirected_base_stats=268237
-feet=farstriders_razor_talons,id=244577,bonus_id=8960/12214/12384/13751/13836/9627,enchant_id=8019,crafted_stats=36/49
-finger1=vile_alchemists_band,id=268249,bonus_id=12854/13662/13668,gem_id=240892,enchant_id=7967
-finger2=sickening_signet_of_atroxus,id=252258,bonus_id=12854/13662/13668,gem_id=240892,enchant_id=7967
+feet=farstriders_razor_talons,id=244577,bonus_id=8790/8960/12214/12384/13751/13836/9627,enchant_id=8019,crafted_stats=36/49
+finger1=apex_brutes_claw_ring,id=268252,bonus_id=12854/13662/13668,gem_id=240892,enchant_id=7967
+finger2=band_of_the_amani_warlord,id=273792,bonus_id=12854/13662/13668,gem_id=240892,enchant_id=7967
 trinket1=gebbos_bottomless_bag,id=270164,bonus_id=12854/13662
 trinket2=vile_vial_of_volatile_venom,id=273796,bonus_id=12854/13662
 main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13662/13848,enchant_id=7983
@@ -151,10 +157,10 @@ off_hand=bubblefin_splash_guard,id=268262,bonus_id=12854/13662
 # gear_strength=94
 # gear_stamina=40612
 # gear_intellect=2760
-# gear_crit_rating=774
-# gear_haste_rating=1018
-# gear_mastery_rating=1227
-# gear_versatility_rating=16
+# gear_crit_rating=730
+# gear_haste_rating=1172
+# gear_mastery_rating=1010
+# gear_versatility_rating=123
 # gear_speed_rating=11
 # gear_avoidance_rating=148
 # gear_armor=3014

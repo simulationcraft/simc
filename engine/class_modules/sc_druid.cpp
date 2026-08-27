@@ -6015,9 +6015,11 @@ struct spirits_wrath_t final : public bear_attack_t
   void execute() override
   {
     // hits random target
-    set_target( rng().range( target_list() ) );
-
-    bear_attack_t::execute();
+    if ( const auto& tl = target_list(); tl.size() )
+    {
+      set_target( rng().range( tl ) );
+      bear_attack_t::execute();
+    }
   }
 };
 } // end namespace bear_attacks
@@ -12055,7 +12057,7 @@ std::string druid_t::default_potion() const
   switch ( specialization() )
   {
     case DRUID_BALANCE:     return "lights_potential_2";
-    case DRUID_FERAL:       return "lights_potential_2";
+    case DRUID_FERAL:       return "liquid_luster_2";
     case DRUID_GUARDIAN:    return "lights_potential_2";
     case DRUID_RESTORATION: return "lights_potential_2";
     default:                return "disabled";

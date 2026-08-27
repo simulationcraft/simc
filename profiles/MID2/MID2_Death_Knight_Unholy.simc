@@ -123,9 +123,10 @@ main_hand=mazeroa_warlords_fury,id=268213,bonus_id=40/13335/13848,enchant_id=624
 # gear_ilvl=338.93
 # gear_strength=1924
 # gear_stamina=40850
-# gear_crit_rating=1297
-# gear_haste_rating=831
-# gear_mastery_rating=1093
+# gear_crit_rating=1185
+# gear_haste_rating=938
+# gear_mastery_rating=991
+# gear_versatility_rating=107
 # gear_speed_rating=98
 # gear_avoidance_rating=603
 # gear_armor=2569

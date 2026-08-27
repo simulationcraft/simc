@@ -30,6 +30,7 @@ actions.precombat+=/variable,name=me_force_prio,default=0,op=reset
 actions.precombat+=/variable,name=max_vts,default=12,op=reset
 actions.precombat+=/variable,name=is_vt_possible,default=0,op=reset
 actions.precombat+=/arcane_torrent
+actions.precombat+=/potion,if=potion.liquid_luster
 # Crushing Void from Tentacle Slam is reset on pull, open with Mind Blast instead.
 actions.precombat+=/mind_blast,if=set_bonus.mid2_4pc
 actions.precombat+=/tentacle_slam
@@ -57,9 +58,7 @@ actions.cds+=/blood_fury,if=((buff.voidform.up|!talent.voidform)&buff.power_infu
 actions.cds+=/ancestral_call,if=((buff.voidform.up|!talent.voidform)&buff.power_infusion.up)|fight_remains<=15
 actions.cds+=/invoke_external_buff,name=power_infusion,if=(buff.voidform.up|!talent.voidform)&!buff.power_infusion.up
 actions.cds+=/invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40
-# Use Flash Heal to proc Nexus-King's Command trinket
-actions.cds+=/flash_heal,if=equipped.nexuskings_command&buff.oathbound.up&(!buff.boon_of_the_oathsworn.up|buff.boon_of_the_oathsworn.remains<3)&((talent.voidform&(buff.voidform.up|cooldown.voidform.up))|cooldown.halo.up|cooldown.void_torrent.up)
-# Sync Power Infusion with Voidform or Dark Ascension
+# Sync Power Infusion with Voidform
 actions.cds+=/power_infusion,if=(buff.voidform.up|!talent.voidform)&!buff.power_infusion.up
 actions.cds+=/halo
 actions.cds+=/voidform,if=active_dot.shadow_word_pain>=active_dot.vampiric_touch
@@ -67,26 +66,22 @@ actions.cds+=/call_action_list,name=trinkets
 # Use Desperate Prayer to heal up should Shadow Word: Death or other damage bring you below 75%
 actions.cds+=/desperate_prayer,if=health.pct<=75
 
-# Use Halo to acquire Twist of Fate if an ally can be healed for it and it is not currently up.
+# Use Holy Nova during Halo to acquire Twist of Fate when Lightburst can heal an ally and Twist of Fate is not active.
 actions.heal_for_tof=holy_nova,if=talent.lightburst
 
 actions.main=variable,name=dots_up,op=set,value=active_dot.vampiric_touch=active_enemies&active_dot.shadow_word_pain>=active_dot.vampiric_touch,if=active_enemies<3
 actions.main+=/call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_tentacle_slam|active_enemies>2)&variable.dots_up
 # High Priority Shadow Word: Death when Devour Matter is active (target shielded or forced)
 actions.main+=/shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.shadow_word_madness.ticking,if=(priest.force_devour_matter|target.has_absorb)&talent.devour_matter
-# Do not overcap on insanity, but hold it for Voidform on a single long-lived target
-actions.main+=/shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35&(cooldown.voidform.remains>25|target.time_to_die<25|active_enemies>1|insanity.deficit<=5)|buff.mind_devourer.react|!raid_event.adds.exists&target.time_to_die<=10|buff.entropic_rift.up&(cooldown.voidform.remains>=75|!talent.ancient_madness)|buff.voidform.up
-# Blast more burst :wicked:
-actions.main+=/void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)
-# Use Tentacle Slam to prevent capping charges or to refresh Vampiric Touch
+actions.main+=/shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max*2|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35&(cooldown.voidform.remains>25|target.time_to_die<25|active_enemies>1|insanity.deficit<=5)|buff.mind_devourer.react|!raid_event.adds.exists&target.time_to_die<=10|buff.entropic_rift.up&(cooldown.voidform.remains>=75|!talent.ancient_madness)|buff.voidform.up
 actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=dot.vampiric_touch.refreshable&(!in_flight|active_dot.vampiric_touch+6<active_enemies)|cooldown.tentacle_slam.full_recharge_time<=gcd.max*2
 # Use Void Torrent if it will get near full Mastery Value
 actions.main+=/void_torrent,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die),if=!variable.holding_tentacle_slam&variable.dots_up
 # Put out Shadow Word: Pain on enemies that will live at least 12s as a filler when talented into Invoked Nightmare.
 actions.main+=/shadow_word_pain,target_if=max:(refreshable*100000+target.time_to_die+dot.vampiric_touch.ticking*10000),if=talent.invoked_nightmare&refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|action.tentacle_slam.in_flight)
 actions.main+=/void_volley,if=cooldown.voidform.up
-# Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption
-actions.main+=/mind_blast,target_if=max:dot.shadow_word_madness.remains,if=(!buff.mind_devourer.react|!talent.mind_devourer)
+actions.main+=/void_blast,target_if=max:(dot.shadow_word_madness.remains*1000+target.time_to_die)
+actions.main+=/mind_blast,target_if=max:dot.shadow_word_madness.remains,if=(!buff.mind_devourer.react|!talent.mind_devourer)&(!talent.void_blast|!talent.thought_harvester|cooldown.void_torrent.remains>=gcd.max*2|variable.holding_tentacle_slam|!variable.dots_up)
 actions.main+=/mind_flay_insanity,target_if=max:dot.shadow_word_madness.remains
 # Use Tentacle Slam for Void Apparitions or Maddening Tentacles value, holding for adds if needed
 actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=(talent.void_apparitions|talent.maddening_tentacles)&(raid_event.adds.in>30|raid_event.adds.in>5&cooldown.tentacle_slam.full_recharge_time<=gcd.max*2)
@@ -98,8 +93,8 @@ actions.main+=/call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff
 actions.main+=/vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die),if=refreshable&target.time_to_die>12
 actions.main+=/shadow_word_death,target_if=min:target.health.pct,if=(pet.mindbender.active|pet.voidwraith.active|pet.shadowfiend.active)&talent.inescapable_torment|target.health.pct<(20+15*talent.deathspeaker)&talent.shadowfiend&talent.idol_of_yshaarj
 actions.main+=/shadow_word_death,target_if=min:target.health.pct,if=(target.health.pct<(20+15*talent.deathspeaker))
-# Bank Void Volley charges for the Resonant Energy window, dumping once Voidform is within a Halo cycle, in Voidform, or if charges would overcap
-actions.main+=/void_volley,if=!talent.resonant_energy|cooldown.voidform.remains<60|buff.voidform.up|buff.resonant_energy_damage.up|buff.crushing_void.stack>=4|fight_remains<45
+# Bank Void Volley charges for Resonant Energy, spending them after the proc is reaction-ready, during Voidform, near the next Voidform, at four Crushing Void stacks, or near fight end
+actions.main+=/void_volley,if=!talent.resonant_energy|cooldown.voidform.remains<60|buff.voidform.up|buff.resonant_energy_damage.react|buff.crushing_void.stack>=4|fight_remains<45
 actions.main+=/mind_flay,target_if=max:dot.shadow_word_madness.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2,interrupt_global=1
 # Use Tentacle Slam while moving as a low-priority action when adds will not spawn in 20 seconds.
 actions.main+=/tentacle_slam,if=raid_event.adds.in>20
@@ -112,6 +107,8 @@ actions.main+=/shadow_word_pain,target_if=min:remains
 
 actions.trinkets=use_item,name=galactic_gladiators_badge_of_ferocity,if=(buff.voidform.up|buff.power_infusion.remains>=10|(talent.voidform&cooldown.voidform.remains>10))|fight_remains<20
 actions.trinkets+=/use_item,name=hex_lords_dooming_idol,if=buff.power_infusion.up&buff.hex_lords_doom.stack>5|fight_remains<=30
+actions.trinkets+=/use_item,name=font_of_venomous_rage
+actions.trinkets+=/use_item,name=vexhuls_everflowing_gland
 actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|equipped.neural_synapse_enhancer&buff.entropic_rift.up)|fight_remains<20
 
 head=blind_oaths_winged_crest,id=250051,bonus_id=13575/13575/13575/13575,ilevel=289,gem_id=240983,enchant_id=7961

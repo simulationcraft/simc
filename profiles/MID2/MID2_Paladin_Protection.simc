@@ -81,9 +81,10 @@ off_hand=venomslashed_scuteward,id=268196,ilevel=334
 # gear_ilvl=338.63
 # gear_strength=1914
 # gear_stamina=40612
-# gear_crit_rating=1151
-# gear_haste_rating=1338
-# gear_mastery_rating=755
+# gear_crit_rating=1039
+# gear_haste_rating=1445
+# gear_mastery_rating=653
+# gear_versatility_rating=107
 # gear_speed_rating=98
 # gear_armor=3843
 # set_bonus=midnight_season_2_2pc=1

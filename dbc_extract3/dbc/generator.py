@@ -1543,6 +1543,7 @@ class SpellDataGenerator(DataGenerator):
          1292299, 1292300, 1306870, 1308012, 1308013, 1308014, # Gebbo's Bottomless Bag
          1305376, # Voracious Heart of Ula'tek
          1295898, 1295899, 1295900, 1295901, # Hunter's Ritual Stone
+         1296890, # Ophidian Bone Whistle
         ),
 
         # Warrior:
@@ -2442,6 +2443,7 @@ class SpellDataGenerator(DataGenerator):
           ( 201671, 3 ), ( 1307881, 3 ), # Gory Fur
           ( 1250913, 3 ), # Memory of Ysera heal
           ( 1269616, 3 ), ( 1270277, 3 ), ( 1308522, 3 ), # Wild Guardian's Spirit (new apex)
+          ( 1308448, 3 ), # Apex related?
           ( 1310213, 3 ), # 12.1 Set 4pc
           # Restoration
         ),
@@ -2582,41 +2584,6 @@ class SpellDataGenerator(DataGenerator):
         202,  # Engineering
         333,  # Enchanting
         773,  # Inscription
-    ]
-
-    _pet_skill_categories = [
-        ( ),
-        ( ),         # Warrior
-        ( ),         # Paladin
-        ( 203, 208, 209, 210, 211, 212, 213, 214, 215, 217, 218, 236, 251, 270, 653, 654, 655, 656, 763, 764, 765, 766, 767, 768, 775, 780, 781, 783, 784, 785, 786, 787, 788, 808, 811 ),       # Hunter
-        ( ),         # Rogue
-        ( ),         # Priest
-        ( 782, ),    # Death Knight
-        ( 962, 963 ),         # Shaman
-        ( 805, ),    # Mage
-        ( 188, 189, 204, 205, 206, 207, 761 ),  # Warlock
-        ( ),         # Monk
-        ( ),         # Druid
-        ( ),         # Evoker
-    ]
-
-    # Specialization categories, Spec0 | Spec1 | Spec2
-    # Note, these are reset for MoP
-    _spec_skill_categories = [
-        (),
-        (   71,   72,   73,   0 ), # Warrior
-        (   65,   66,   70,   0 ), # Paladin
-        (  254,  255,  256,   0 ), # Hunter
-        (  259,  260,  261,   0 ), # Rogue
-        (  256,  257,  258,   0 ), # Priest
-        (  250,  251,  252,   0 ), # Death Knight
-        (  262,  263,  264,   0 ), # Shaman
-        (   62,   63,   64,   0 ), # Mage
-        (  265,  266,  267,   0 ), # Warlock
-        (  268,  270,  269,   0 ), # Monk
-        (  102,  103,  104, 105 ), # Druid
-        (  577,  581, 1480,   0 ), # Demon Hunter
-        ( 1467, 1468, 1473,   0 ), # Evoker
     ]
 
     _race_categories = [
@@ -2807,15 +2774,15 @@ class SpellDataGenerator(DataGenerator):
         return 0
 
     def class_mask_by_spec_skill(self, spec_skill):
-        for i in range(0, len(self._spec_skill_categories)):
-            if spec_skill in self._spec_skill_categories[i]:
+        for i in range(0, len(constants.SPEC_SKILL_CATEGORIES)):
+            if spec_skill in constants.SPEC_SKILL_CATEGORIES[i]:
                 return util.class_mask(class_id=i)
 
         return 0
 
     def class_mask_by_pet_skill(self, pet_skill):
-        for i in range(0, len(self._pet_skill_categories)):
-            if pet_skill in self._pet_skill_categories[i]:
+        for i in range(0, len(constants.PET_SKILL_CATEGORIES)):
+            if pet_skill in constants.PET_SKILL_CATEGORIES[i]:
                 return util.class_mask(class_id=i)
 
         return 0
@@ -4927,8 +4894,16 @@ class TraitGenerator(DataGenerator):
                     _name = self.db('SpellName')[int(override[11:])].name
 
             fields.append("{:>40s}".format(f'"{_name}"'))
-            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["specs"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["specs"]))])} }}')
-            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["starter"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["starter"]))])} }}')
+
+            specs_list = sorted(entry["specs"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["specs"]))
+            starter_list = sorted(entry["starter"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["starter"]))
+
+            # granted hero traits with no explicit starter spec are automatically given to all available specs
+            if entry["is_granted"] and entry["tree"] == 3 and all(x == 0 for x in starter_list):
+                starter_list = specs_list.copy()
+
+            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in specs_list])} }}')
+            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in starter_list])} }}')
 
             _subtree = entry['entry'].id_trait_sub_tree if entry['tree'] == 4 else entry['node'].id_trait_sub_tree
             if _subtree != 0:

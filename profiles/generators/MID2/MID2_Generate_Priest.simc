@@ -14,15 +14,15 @@ back=silken_voodoo_drape,id=268253,ilevel=344
 chest=cosmic_penitents_eclipsing_robes,id=271558,ilevel=334,enchant_id=7987
 wrists=martyrs_bindings,id=239648,ilevel=331,bonus_id=8793/12384,gem_id=240900
 hands=cosmic_penitents_celestial_grips,id=271556,ilevel=344,redirected_base_stats=268243
-waist=caustic_chainwrapped_sash,id=268257,ilevel=334,gem_id=240918
+waist=martyrs_waistwrap,id=239649,ilevel=331,bonus_id=8793/12384,gem_id=240918
 legs=enveloping_legwraps_of_the_cosmic_penitent,id=271554,ilevel=334,enchant_id=7935,redirected_base_stats=251160
 feet=cackling_soultreads,id=268255,ilevel=344
 finger1=sickening_signet_of_atroxus,id=252258,ilevel=334,enchant_id=7967,gem_id=240900
 finger2=vile_alchemists_band,id=268249,ilevel=334,enchant_id=7967,gem_id=240900
-trinket1=gebbos_bottomless_bag,id=270164,ilevel=334
+trinket1=wavecallers_seastone,id=270167,ilevel=334
 trinket2=freightrunners_flask,id=250215,ilevel=334
 main_hand=janthrazet_the_soul_fang,id=271092,ilevel=344,enchant_id=8041
-off_hand=alnhara_lantern,id=245769,ilevel=331,bonus_id=8793/13771
+off_hand=spine_of_the_hissing_abyss,id=268197,ilevel=334
 
 save=MID2_Priest_Shadow.simc
 
@@ -42,14 +42,14 @@ back=silken_voodoo_drape,id=268253,ilevel=344
 chest=cosmic_penitents_eclipsing_robes,id=271558,ilevel=334,enchant_id=7987
 wrists=martyrs_bindings,id=239648,ilevel=331,bonus_id=8793/12384,gem_id=240900
 hands=cosmic_penitents_celestial_grips,id=271556,ilevel=344,redirected_base_stats=268243
-waist=caustic_chainwrapped_sash,id=268257,ilevel=334,gem_id=240918
+waist=martyrs_waistwrap,id=239649,ilevel=331,bonus_id=8793/12384,gem_id=240918
 legs=enveloping_legwraps_of_the_cosmic_penitent,id=271554,ilevel=334,enchant_id=7935,redirected_base_stats=251160
 feet=cackling_soultreads,id=268255,ilevel=344
 finger1=sickening_signet_of_atroxus,id=252258,ilevel=334,enchant_id=7967,gem_id=240900
 finger2=vile_alchemists_band,id=268249,ilevel=334,enchant_id=7967,gem_id=240900
-trinket1=gebbos_bottomless_bag,id=270164,ilevel=334
+trinket1=wavecallers_seastone,id=270167,ilevel=334
 trinket2=freightrunners_flask,id=250215,ilevel=334
 main_hand=janthrazet_the_soul_fang,id=271092,ilevel=344,enchant_id=8041
-off_hand=alnhara_lantern,id=245769,ilevel=331,bonus_id=8793/13771
+off_hand=spine_of_the_hissing_abyss,id=268197,ilevel=334
 
 save=MID2_Priest_Shadow_Archon.simc

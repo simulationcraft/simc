@@ -288,7 +288,8 @@ void dbc_proc_callback_t::initialize()
   // prioritizes RPPM > PPM > proc chance.
   if ( effect.rppm() > 0 && effect.rppm_scale() != RPPM_DISABLE )
   {
-    rppm = listener->get_rppm( effect.name(), effect.rppm(), effect.rppm_modifier(), effect.rppm_scale() );
+    rppm = listener->get_rppm( fmt::format( "proc_{}_{}_rppm", effect.name(), effect.spell_id ), effect.rppm(),
+                               effect.rppm_modifier(), effect.rppm_scale() );
     rppm->set_blp_state( static_cast<real_ppm_t::blp>( effect.rppm_blp_ ) );
   }
   else if ( effect.ppm() > 0 )
@@ -340,16 +341,16 @@ void dbc_proc_callback_t::initialize()
   listener->callbacks.register_callback( effect.proc_flags(), effect.proc_flags2(), this );
 
   // Get custom trigger function if it exists
-  if ( effect.driver()->id() && trigger_type == trigger_fn_type::NONE )
+  if ( effect.spell_id && trigger_type == trigger_fn_type::NONE )
   {
-    trigger_fn = listener->callbacks.callback_trigger_function( effect.driver()->id() );
-    trigger_type = listener->callbacks.callback_trigger_function_type( effect.driver()->id() );
+    trigger_fn = listener->callbacks.callback_trigger_function( effect.spell_id );
+    trigger_type = listener->callbacks.callback_trigger_function_type( effect.spell_id );
   }
 
   // Get custom execute function if it exists
-  if ( effect.driver()->id() && execute_fn == nullptr )
+  if ( effect.spell_id && execute_fn == nullptr )
   {
-    execute_fn = listener->callbacks.callback_execute_function( effect.driver()->id() );
+    execute_fn = listener->callbacks.callback_execute_function( effect.spell_id );
   }
 
   proc_data.spell = effect.driver();

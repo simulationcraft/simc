@@ -5,11 +5,11 @@ level=90
 race=troll
 role=spell
 position=ranged_back
-talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZZWmZmlxAAWgBmFjGzAysBWGAAAmBAAmZAzMjBzwMjZmZGMzMzAAmBG
-omnium_talents=136822:1/136816:1/136817:1/136815:1/136814:1
+talents=CkQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZhhZmZmlBAAYmZZWmZmlxAAWgBmFjGzAysBWGAAAmBAAmZAzMjxYGmZMzMGMzMzAAmBG
+omnium_talents=136822:1/136819:1/136817:1/136815:1/136814:1
 
 # Default consumables
-potion=lights_potential_2
+potion=liquid_luster_2
 flask=flask_of_the_blood_knights_2
 food=harandar_celebration
 augmentation=void_touched
@@ -29,6 +29,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice
 actions.precombat+=/seed_of_corruption,if=(hero_tree.soul_harvester&active_enemies>1)|active_enemies>2
 actions.precombat+=/haunt,if=active_enemies<2|(hero_tree.hellcaller&active_enemies<3)
+actions.precombat+=/potion,if=potion.liquid_luster
 
 # Executed every time the actor is available.
 actions=call_action_list,name=variables
@@ -44,7 +45,7 @@ actions+=/shadow_bolt
 actions.HC_aoe=haunt
 actions.HC_aoe+=/seed_of_corruption,if=(!dot.wither.ticking|dot.wither.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight
 actions.HC_aoe+=/dark_harvest
-actions.HC_aoe+=/agony,target_if=min:remains,if=active_dot.agony<(8+(2*talent.sow_the_seeds))&remains<5
+actions.HC_aoe+=/agony,target_if=min:remains,if=active_dot.agony<14&remains<5
 actions.HC_aoe+=/summon_darkglare
 actions.HC_aoe+=/malevolence
 actions.HC_aoe+=/seed_of_corruption,if=talent.sow_the_seeds|active_enemies>5
@@ -77,19 +78,21 @@ actions.SH_aoe=haunt
 actions.SH_aoe+=/seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight
 actions.SH_aoe+=/dark_harvest
 actions.SH_aoe+=/seed_of_corruption,target_if=!dot.unstable_affliction.ticking&prev.dark_harvest,if=set_bonus.midnight_season_2_4pc&active_enemies<=5
-actions.SH_aoe+=/agony,target_if=min:remains,if=active_dot.agony<10&remains<5
+actions.SH_aoe+=/agony,target_if=min:remains,if=active_dot.agony<12&remains<5
 actions.SH_aoe+=/summon_darkglare
-actions.SH_aoe+=/seed_of_corruption
+actions.SH_aoe+=/malefic_grasp,if=buff.nightfall.react>1&active_enemies<=6
+actions.SH_aoe+=/shadow_bolt,if=buff.nightfall.react>1&active_enemies<=7
+actions.SH_aoe+=/seed_of_corruption,if=talent.sow_the_seeds|active_enemies>5
+actions.SH_aoe+=/unstable_affliction
 actions.SH_aoe+=/agony,target_if=min:remains,if=remains<duration*0.5
 actions.SH_aoe+=/malefic_grasp,if=pet.darkglare.remains<gcd
 
 actions.SH_cleave=haunt
 actions.SH_cleave+=/seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight
+actions.SH_cleave+=/agony,target_if=refreshable
 actions.SH_cleave+=/dark_harvest
 actions.SH_cleave+=/unstable_affliction,cycle_targets=1,if=!ticking&prev.dark_harvest
-actions.SH_cleave+=/seed_of_corruption,if=talent.sow_the_seeds
 actions.SH_cleave+=/unstable_affliction
-actions.SH_cleave+=/agony,target_if=refreshable
 actions.SH_cleave+=/summon_darkglare
 actions.SH_cleave+=/malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd
 actions.SH_cleave+=/drain_soul,if=buff.nightfall.react>1
@@ -115,10 +118,10 @@ actions.hellcaller=call_action_list,name=HC_st,if=active_enemies=1
 actions.hellcaller+=/call_action_list,name=HC_cleave,if=active_enemies=2
 actions.hellcaller+=/call_action_list,name=HC_aoe,if=active_enemies>2
 
-actions.items=use_item,name=stormbound_emblem_of_dazar,if=cooldown.summon_darkglare.remains<=2&dot.agony.remains&(dot.corruption.remains|dot.wither.remains)&cooldown.dark_harvest.remains>1
+actions.items=use_item,name=stormbound_emblem_of_dazar,if=cooldown.summon_darkglare.remains<=4&dot.agony.remains&(dot.corruption.remains|dot.wither.remains)&cooldown.dark_harvest.remains>1
 actions.items+=/use_item,name=galactic_gladiators_badge_of_ferocity,if=(buff.malevolence.up|pet.darkglare.active)|fight_remains<20
-actions.items+=/use_items,if=(buff.malevolence.up|pet.darkglare.active)|fight_remains<20
 actions.items+=/use_item,name=hex_lords_dooming_idol,if=pet.darkglare.active|buff.hex_lords_doom.stack>19|fight_remains<=30
+actions.items+=/use_items,if=(buff.malevolence.up|pet.darkglare.active)|fight_remains<20
 actions.items+=/use_item,use_off_gcd=1,slot=main_hand
 
 actions.ogcd=potion,use_off_gcd=1,if=variable.cds_active|fight_remains<32
@@ -134,35 +137,37 @@ actions.soul_harvester+=/call_action_list,name=SH_aoe,if=active_enemies>2
 actions.variables=variable,name=cds_active,op=set,value=!talent.summon_darkglare|pet.darkglare.remains
 actions.variables+=/variable,name=darkglare_active,op=set,value=pet.darkglare.active|(cooldown.summon_darkglare.duration-cooldown.summon_darkglare.remains)<20
 actions.variables+=/cycling_variable,name=min_agony,op=min,value=dot.agony.remains+(99*!dot.agony.remains)
+actions.variables+=/variable,name=malevolence_from_cast,value=0,op=set,if=buff.malevolence.up=0
+actions.variables+=/variable,name=malevolence_from_cast,value=1,op=set,if=prev_gcd.1.malevolence
 
 head=venomkeepers_horrific_cowl,id=271874,bonus_id=40/13335/13663/13695/13696/13846/13848,gem_id=240967,enchant_id=7961,content_tuning=883
-neck=aqirbane_reliquary,id=268265,bonus_id=40/13335/13668/13708/13848,gem_id=240914/240898,content_tuning=883
+neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13848/13987,gem_id=240902/240894
 shoulders=spires_of_the_damned_necrolyte,id=271544,bonus_id=13694/13697,ilevel=334,enchant_id=8001,redirected_base_stats=239031
 back=silken_voodoo_drape,id=268253,ilevel=344
-chest=damned_necrolytes_rattling_robes,id=271549,bonus_id=40/12854/13335/13690/13698,enchant_id=7987,content_tuning=807
-wrists=martyrs_bindings,id=239648,bonus_id=8790/8960/12214/12384/13750,ilevel=331,gem_id=240890
+chest=damned_necrolytes_rattling_robes,id=271549,bonus_id=12854/13690/13698,enchant_id=7987,redirected_base_stats=251139
+wrists=martyrs_bindings,id=239648,bonus_id=8790/8960/12214/12384/13750,ilevel=331,gem_id=240914
 hands=damned_necrolytes_charred_grasps,id=271547,bonus_id=13691/13697/13848,redirected_base_stats=268243
-waist=martyrs_waistwrap,id=239649,bonus_id=8790/8960/12214/12384/13750/13751/13836/9627,gem_id=240890,crafted_stats=49/36
-legs=damned_necrolytes_leg_bindings,id=271545,bonus_id=40/12854/13335/13693/13698,enchant_id=7935,content_tuning=807
+waist=ethereal_netherwrap,id=251222,bonus_id=12854/13662/13750,gem_id=240914
+legs=damned_necrolytes_leg_bindings,id=271545,bonus_id=12854/13693/13698,enchant_id=7935,redirected_base_stats=251160
 feet=cackling_soultreads,id=268255,ilevel=344,enchant_id=7993
-finger1=band_of_the_amani_warlord,id=273792,bonus_id=12854/13662/13668,gem_id=240890,enchant_id=7967
-finger2=apex_brutes_claw_ring,id=268252,bonus_id=12854/13662/13668,gem_id=240906,enchant_id=7967
-trinket1=stormbound_emblem_of_dazar,id=273649,ilevel=334
-trinket2=gebbos_bottomless_bag,id=270164,bonus_id=40/12854/13335,content_tuning=883
-main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=40/13335/13848,enchant_id=8039,content_tuning=883
-off_hand=nocuous_focal_fang,id=273779,ilevel=334,content_tuning=1279
+finger1=band_of_the_amani_warlord,id=273792,bonus_id=12854/13662/13668,gem_id=240914,enchant_id=7967
+finger2=apex_brutes_claw_ring,id=268252,bonus_id=12854/13662/13668,gem_id=240910,enchant_id=7967
+trinket1=wavecallers_seastone,id=270167,bonus_id=12854/13662
+trinket2=hex_lords_dooming_idol,id=270169,bonus_id=13662/13848
+main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=40/13335/13848,enchant_id=8689,content_tuning=883
+off_hand=alnhara_lantern,id=245769,bonus_id=8960/13751/13771/13836/9627,crafted_stats=32/36
 
 # Gear Summary
-# gear_ilvl=337.38
-# gear_stamina=40493
-# gear_intellect=2756
-# gear_crit_rating=1287
-# gear_haste_rating=1283
-# gear_mastery_rating=480
-# gear_versatility_rating=16
+# gear_ilvl=338.00
+# gear_stamina=40526
+# gear_intellect=2393
+# gear_crit_rating=1072
+# gear_haste_rating=1645
+# gear_mastery_rating=467
+# gear_versatility_rating=176
 # gear_leech_rating=83
-# gear_avoidance_rating=556
-# gear_armor=732
+# gear_avoidance_rating=246
+# gear_armor=733
 # set_bonus=midnight_season_2_2pc=1
 # set_bonus=midnight_season_2_4pc=1
 warlock.soul_shards=0

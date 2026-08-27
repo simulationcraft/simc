@@ -36,7 +36,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     random_weapon_target( nullptr ),
     random_bulwark_target( nullptr ),
     divine_inspiration_next( -1 ),
-    reflection_of_radiance_proc_chance( .001 ) // ToDo Fluttershy: Find out real proc chance - Currently something very, very low
+    reflection_of_radiance_proc_chance( .04 ) // ToDo Fluttershy: Find out real proc chance - Currently something very, very low
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
@@ -972,10 +972,11 @@ struct melee_t : public paladin_melee_attack_t
   {
     if ( !player->in_combat )
       return 10_ms;
-    if ( first )
+
+    if ( first && !player->channeling )
       return 0_ms;
-    else
-      return paladin_melee_attack_t::execute_time();
+
+    return paladin_melee_attack_t::execute_time();
   }
 
   void execute() override
@@ -2931,7 +2932,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     double m = paladin_melee_attack_t::composite_da_multiplier( state );
     if ( p()->buffs.valor->up() && state->chain_target == 0 )
     {
-      m *= 1.0 + p()->buffs.valor->data().effectN( 1 ).percent();
+      m *= 1.0 + p()->buffs.valor->data().effectN( 1 ).percent() * p()->buffs.valor->stack();
     }
     return m;
   }

@@ -2639,7 +2639,7 @@ static std::string generate_traits_hash( player_t* player )
       {
         rank = _entry_rank;
         max_rank = _entry_trait->max_ranks;
-        init_rank = trait_data_t::is_granted( _entry_trait, player->type, player->specialization(), ptr ) ? 1U : 0U;
+        init_rank = trait_data_t::is_granted( _entry_trait, player->specialization() ) ? 1U : 0U;
         index = as<unsigned>( i );
         break;
       }
@@ -3086,7 +3086,7 @@ static void parse_traits( talent_tree tree, const std::string& opt_str, player_t
   // add any freely granted traits
   for ( const auto& trait : trait_data_t::data( util::class_id( player->type ), tree, player->is_ptr() ) )
   {
-    if ( trait_data_t::is_granted( &trait, player->type, player->specialization(), player->is_ptr() ) )
+    if ( trait_data_t::is_granted( &trait, player->specialization() ) )
     {
       auto id = trait.id_trait_node_entry;
       auto it = range::find_if( player->player_traits, [ id ]( const auto& e ) { return std::get<1>( e ) == id; } );
@@ -7417,7 +7417,7 @@ void player_t::regen( timespan_t periodicity )
 
   for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
   {
-    if ( resources.is_active( r ) )
+    if ( resources.active_resource[ r ] )
     {
       double regen  = resource_regen_per_second( r );
       gain_t* gain = gains.resource_regen[ r ];
@@ -9983,7 +9983,7 @@ struct use_item_t : public action_t
 
       // if the action is the same as the driver, has a direct/periodic damage effect, and the driver has a cast time,
       // then the action is not considered a proc
-      if ( action && action->id == e->driver()->id() && e->driver()->cast_time() > 0_ms &&
+      if ( action && action->id == e->spell_id && e->driver()->cast_time() > 0_ms &&
            ( action_t::has_direct_damage_effect( *e->driver() ) ||
              action_t::has_periodic_damage_effect( *e->driver() ) ) )
       {
@@ -13668,6 +13668,8 @@ void player_t::create_options()
                             midnight_opts.arcanoweave_trappings_update_interval_stddev, 1_s, timespan_t::max() ) );
   add_option(    opt_float( "midnight.lightspire_core_duration_multiplier",
                             midnight_opts.lightspire_core_duration_multiplier, 0.0, 1.0 ) );
+  add_option(    opt_float( "midnight.rite_of_the_hashey_uptime",
+                            midnight_opts.rite_of_the_hashey_uptime, 0.0, 1.0 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

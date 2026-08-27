@@ -74,13 +74,14 @@ actions.cooldowns+=/blood_fury,if=(buff.ascendance.up|buff.doom_winds.up|pet.sur
 actions.cooldowns+=/berserking,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.berserking.cooldown<=action.berserking.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))
 actions.cooldowns+=/fireblood,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.fireblood.cooldown<=action.fireblood.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))
 actions.cooldowns+=/ancestral_call,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.ancestral_call.cooldown<=action.ancestral_call.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))
-actions.cooldowns+=/invoke_external_buff,name=power_infusion,if=((talent.deeply_rooted_elements.enabled&buff.ascendance.remains>7.5)|(!talent.deeply_rooted_elements.enabled&(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active))|(fight_remains%%120<=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))
+actions.cooldowns+=/invoke_external_buff,name=power_infusion,if=((talent.deeply_rooted_elements.enabled&buff.ascendance.remains>7.5)|(!talent.deeply_rooted_elements.enabled&(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active))|(fight_remains%%120<=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled)|cooldown.ascendance.remains<gcd.max)
 
 # Single target action priority list for the Stormbringer hero talent tree
 actions.single_sb=primordial_storm,if=(buff.maelstrom_weapon.stack>=9|buff.primordial_storm.remains<=4&buff.maelstrom_weapon.stack>=5)
 actions.single_sb+=/voltaic_blaze,if=dot.flame_shock.remains=0&time<5
 actions.single_sb+=/flame_shock,if=!ticking
 actions.single_sb+=/lava_lash,if=!debuff.lashing_flames.up&time<5
+actions.single_sb+=/stormstrike,if=time<1
 actions.single_sb+=/call_action_list,name=cooldowns
 actions.single_sb+=/sundering,if=talent.surging_elements.enabled|talent.feral_spirit.enabled
 actions.single_sb+=/doom_winds

@@ -359,6 +359,11 @@ struct mind_blast_t final : public mind_blast_base_t
     }
 
     mind_blast_base_t::execute();
+
+    if ( priest().talents.shadow.insidious_ire.enabled() && !insidious_ire_active() )
+    {
+      priest().procs.mindblasts_without_ire->occur();
+    }
   }
 };
 
@@ -386,6 +391,11 @@ struct void_blast_shadow_t final : public mind_blast_base_t
     if ( priest().talents.voidweaver.darkening_horizon.enabled() )
     {
       priest().extend_entropic_rift();
+    }
+
+    if ( priest().talents.shadow.insidious_ire.enabled() && !insidious_ire_active() )
+    {
+      priest().procs.voidblasts_without_ire->occur();
     }
   }
 
@@ -795,9 +805,8 @@ struct smite_base_t : public priest_spell_t
     {
       priest().buffs.greater_smite->trigger();
     }
-
-    if ( priest().talents.surge_of_light.enabled() )
-      priest().buffs.surge_of_light->trigger();
+    
+    priest().trigger_surge_of_light();
 
     if ( priest().talents.holy.holy_word_chastise.enabled() )
     {
@@ -2640,6 +2649,8 @@ void priest_t::create_procs()
   procs.void_apparition_cthun           = get_proc( "Idol of C'Thun from Tentacle Slam" );
   procs.tentacle_slam_idol              = get_proc( "Idol spell from Tentacle Slam" );
   procs.midnight_s2_4pc_void_volley     = get_proc( "Void Volley access from Midnight Season 2 4pc" );
+  procs.mindblasts_without_ire          = get_proc( "Mindblasts cast without Insidious Ire" );
+  procs.voidblasts_without_ire          = get_proc( "Voidblasts cast without Insidious Ire" );
   // Holy
   procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
   procs.divine_image          = get_proc( "Divine Image from Holy Words" );
@@ -2869,27 +2880,12 @@ double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buffs.idol_of_yshaarj->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.idol_of_yshaarj->check_value() );
-  }
-
-  if ( buffs.borrowed_time->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.borrowed_time->check_value() );
-  }
-
   return h;
 }
 
 double priest_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
-
-  if ( buffs.borrowed_time->check() )
-  {
-    h *= 1.0 / ( 1.0 + buffs.borrowed_time->check_value() );
-  }
 
   return h;
 }
@@ -3481,11 +3477,29 @@ void priest_t::init_spells()
   if ( specialization() == PRIEST_SHADOW )
     deregister_passive_effect( talents.voidweaver.overwhelming_shadows->effectN( 2 ) );
 
+  // Entropic Rift is currently in both Effect1 and Effect2. Ingame it seems to only apply once, in sim it is clearly
+  // applying twice. Deregistering the second effect for now.
+  deregister_passive_effect( talents.voidweaver.quickened_pulse->effectN( 2 ) );
+
   // Register passives
   parse_all_class_passives();
   parse_all_passive_talents();
   parse_all_passive_sets();
   parse_raid_buffs();
+}
+
+void priest_t::trigger_surge_of_light()
+{
+  if ( !talents.surge_of_light.ok() )
+    return;
+
+  auto chance = talents.surge_of_light->effectN( 1 ).percent();
+  chance *= 1.0 + talents.everlasting_light->effectN( 1 ).percent() * ( 1.0 - resources.pct( RESOURCE_MANA ) );
+
+  if ( rng().roll( chance ) )
+  {
+    buffs.surge_of_light->trigger();
+  }
 }
 
 void priest_t::create_buffs()
@@ -3520,8 +3534,7 @@ void priest_t::create_buffs()
   buffs.protective_light =
       make_buff( this, "protective_light", talents.protective_light_buff )->set_default_value_from_effect( 1 );
 
-  buffs.surge_of_light = make_buff( this, "surge_of_light", talents.surge_of_light_buff )
-                             ->set_chance( talents.surge_of_light->effectN( 1 ).percent() );
+  buffs.surge_of_light = make_buff( this, "surge_of_light", talents.surge_of_light_buff );
 
   // Voidweaver
   buffs.voidheart = make_buff( this, "voidheart", talents.voidweaver.voidheart_buff )

@@ -5674,6 +5674,7 @@ struct rampaging_ruin_attack_t : public rampage_attack_base_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
     target_filter_callback = secondary_targets_only();
+    weapon = &( p->off_hand_weapon );
   }
 };
 
@@ -5743,7 +5744,6 @@ struct rampage_parent_t : public warrior_attack_t
       else if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
       {
         rampaging_ruin_aoe = new rampaging_ruin_attack_t( "rampaging_ruin", p );
-        rampaging_ruin_aoe->weapon = &(p->main_hand_weapon);
         add_child( rampaging_ruin_aoe );
       }
     }
@@ -8727,6 +8727,9 @@ std::string warrior_t::default_flask() const
   if ( specialization() == WARRIOR_PROTECTION && true_level > 80 )
     return "flask_of_the_shattered_sun_2";
 
+  if ( specialization() == WARRIOR_FURY && true_level > 80 )
+    return "flask_of_the_magisters_2";
+
   return ( true_level > 80 )
              ? "flask_of_the_blood_knights_2"
              : ( true_level > 70 )
@@ -9752,12 +9755,12 @@ struct warrior_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Warrior", "2026-8-13", "Rampaging Ruin damage halved by offhand weapon penalty", 1324375,
-                              hotfix::HOTFIX_FLAG_LIVE )
-         .field( "ap_coefficient" )
-         .operation( hotfix::HOTFIX_SET )
-         .modifier( 1.861445 )
-         .verification_value( 3.72289 );
+    // hotfix::register_effect( "Warrior", "2026-8-13", "Rampaging Ruin damage halved by offhand weapon penalty", 1324375,
+    //                           hotfix::HOTFIX_FLAG_LIVE )
+    //      .field( "ap_coefficient" )
+    //      .operation( hotfix::HOTFIX_SET )
+    //      .modifier( 1.861445 )
+    //      .verification_value( 3.72289 );
   }
 
   void register_actor_initializers( sim_t* sim ) const override

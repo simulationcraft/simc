@@ -1240,7 +1240,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += " }";
     }
 
-    if ( !item.parsed.enchant_stats.empty() )
+    if ( !item.parsed.enchant_stats.empty() || !item.parsed.enchant_notes.empty() )
     {
       item_sim_desc += ", enchant: { ";
       item_sim_desc += item.enchant_stats_str();
@@ -2050,7 +2050,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
       cell_ptr->second = _rank;
     }
 
-    if ( !trait_data_t::is_granted( trait, p.type, p.specialization(), p.is_ptr() ) )
+    if ( !trait_data_t::is_granted( trait, p.specialization() ) )
       *points_ptr += _rank;
   }
 

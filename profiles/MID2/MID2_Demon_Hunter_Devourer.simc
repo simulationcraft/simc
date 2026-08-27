@@ -1,0 +1,220 @@
+demonhunter="MID2_Demon_Hunter_Devourer_Void-Scarred"
+source=default
+spec=devourer
+level=90
+race=void_elf
+role=spell
+position=back
+talents=CgcBAAAAAAAAAAAAAAAAAAAAAAAWMzMzMzMzMwMAAAAAAALzYMYGAAAAAAAAmxMMmZmZYmZGzsNzYsptFAEwAMjZmZbmZa2mZbmZMjBA
+omnium_talents=136822:1/136819:1/136817:1/136818:1/136814:1
+
+# Default consumables
+potion=potion_of_recklessness_2
+flask=flask_of_the_magisters_2
+food=blooming_feast
+augmentation=void_touched
+temporary_enchant=main_hand:thalassian_phoenix_oil_2/off_hand:thalassian_phoenix_oil_2
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit
+actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.font_of_venomous_rage
+actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.font_of_venomous_rage
+actions.precombat+=/variable,name=trinket_1_ogcd_cast,value=0
+actions.precombat+=/variable,name=trinket_2_ogcd_cast,value=0
+actions.precombat+=/variable,name=trinket_1_exclude,value=0
+actions.precombat+=/variable,name=trinket_2_exclude,value=0
+actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.proc.any_dps.duration)*trinket.2.proc.any_dps.default_value)>((trinket.1.proc.any_dps.duration)*trinket.1.proc.any_dps.default_value)
+actions.precombat+=/variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl
+actions.precombat+=/arcane_torrent
+actions.precombat+=/soul_immolation
+actions.precombat+=/consume
+
+# Executed every time the actor is available.
+actions=call_action_list,name=variables
+actions+=/call_action_list,name=cooldowns
+actions+=/run_action_list,name=annihilator_melee,if=hero_tree.annihilator&talent.the_hunt
+actions+=/run_action_list,name=annihilator_ranged,if=hero_tree.annihilator
+actions+=/run_action_list,name=voidscarred_ranged,if=hero_tree.voidscarred&!talent.the_hunt
+actions+=/run_action_list,name=voidscarred_melee,if=hero_tree.voidscarred&talent.the_hunt
+
+actions.annihilator_melee=metamorphosis,if=(buff.eradicate.up|!talent.eradicate|active_enemies=1|talent.voidfall)&(active_enemies>1|buff.moment_of_craving.up|cooldown.void_ray.remains>6)
+actions.annihilator_melee+=/devour,if=buff.soulburst.up
+actions.annihilator_melee+=/consume,if=buff.soulburst.up
+actions.annihilator_melee+=/void_ray,if=talent.eradicate&active_enemies>1&!buff.eradicate.up
+actions.annihilator_melee+=/collapsing_star,if=active_enemies=1&(apex.1|buff.dark_matter.up|talent.star_fragments)
+actions.annihilator_melee+=/the_hunt,if=buff.metamorphosis.up
+actions.annihilator_melee+=/hungering_slash,if=!buff.metamorphosis.up&soul_fragments<=8
+actions.annihilator_melee+=/reapers_toll,if=!buff.metamorphosis.up&soul_fragments<=8
+actions.annihilator_melee+=/vengeful_retreat,if=talent.devourers_bite&buff.voidstep.up
+actions.annihilator_melee+=/hungering_slash,if=active_enemies>1
+actions.annihilator_melee+=/reapers_toll,if=talent.devourers_bite&(buff.voidsurge_reapers_toll.up|active_enemies>1)
+actions.annihilator_melee+=/voidblade,if=buff.metamorphosis.up
+actions.annihilator_melee+=/voidblade,if=!buff.metamorphosis.up&(active_enemies=1|!talent.eradicate&active_enemies<4)
+actions.annihilator_melee+=/call_action_list,name=reaps,if=active_enemies=1&action.reap.souls_consumed>=4
+actions.annihilator_melee+=/call_action_list,name=reaps,if=!talent.eradicate&(active_enemies>1&variable.wont_overcap_cstar&set_bonus.midnight_season_2_4pc&(buff.voidfall_spending.stack>=3&prev_gcd.1.void_ray|buff.voidfall_spending.react>=3))
+actions.annihilator_melee+=/call_action_list,name=reaps,if=action.reap.souls_consumed>=4&active_enemies<5&(active_enemies>1|!buff.metamorphosis.up|buff.moment_of_craving.up|buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30|void_metamorphosis_base_drain_ps>35)
+actions.annihilator_melee+=/call_action_list,name=reaps,if=fight_remains<=6&action.reap.souls_consumed>=1
+actions.annihilator_melee+=/call_action_list,name=reaps,if=talent.eradicate&active_enemies>1&buff.eradicate.up&action.reap.souls_consumed>=1
+actions.annihilator_melee+=/void_ray,if=!buff.eradicate.up|!buff.moment_of_craving.up|set_bonus.midnight_season_2_4pc
+actions.annihilator_melee+=/collapsing_star,if=active_enemies>1
+actions.annihilator_melee+=/call_action_list,name=reaps,if=buff.eradicate.up&active_enemies>1&action.reap.souls_consumed>=4+6*buff.moment_of_craving.up
+actions.annihilator_melee+=/call_action_list,name=reaps,if=!talent.eradicate&(active_enemies>1&!buff.metamorphosis.up&buff.moment_of_craving.up&talent.voidfall&(buff.voidfall_building.react<2|variable.ray_after_reap))
+actions.annihilator_melee+=/call_action_list,name=reaps,if=!talent.eradicate&(active_enemies>1&(buff.voidfall_spending.stack>=3&prev_gcd.1.void_ray|buff.voidfall_spending.react>=3))
+actions.annihilator_melee+=/call_action_list,name=reaps,if=active_enemies>1&buff.metamorphosis.up&talent.collapsing_star&(active_enemies>1|apex.1|buff.dark_matter.up|talent.star_fragments)&buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30&variable.wont_overcap_cstar&void_metamorphosis_base_drain_ps>35
+actions.annihilator_melee+=/soul_immolation,if=active_dot.soul_immolation=0&(!buff.metamorphosis.up|fury<void_metamorphosis_base_drain_ps)
+actions.annihilator_melee+=/devour
+actions.annihilator_melee+=/consume
+
+actions.annihilator_ranged=pick_up_fragment,mode=nearest,type=all,use_off_gcd=1,line_cd=0.6,if=!buff.metamorphosis.up&!buff.void_metamorphosis_stack.at_max_stacks&buff.void_metamorphosis_stack.stack>=buff.void_metamorphosis_stack.max_stack-1-(active_enemies>1)
+actions.annihilator_ranged+=/pick_up_fragment,use_off_gcd=1,if=buff.metamorphosis.up&cooldown.reap.remains&soul_fragments+buff.collapsing_star_stacking.stack>=30&fury<void_metamorphosis_base_drain_ps&buff.collapsing_star_stacking.stack<30
+actions.annihilator_ranged+=/metamorphosis
+actions.annihilator_ranged+=/devour,if=buff.soulburst.up&active_enemies=1
+actions.annihilator_ranged+=/consume,if=buff.soulburst.up
+actions.annihilator_ranged+=/void_ray,if=talent.eradicate&active_enemies>1&!buff.eradicate.up
+actions.annihilator_ranged+=/collapsing_star,if=active_enemies>1&buff.collapsing_star_stacking.stack>=30
+actions.annihilator_ranged+=/call_action_list,name=reaps,if=active_enemies=1&!buff.metamorphosis.up&action.reap.souls_consumed>=4&variable.wont_drop_meta
+actions.annihilator_ranged+=/collapsing_star,if=active_enemies=1
+actions.annihilator_ranged+=/call_action_list,name=reaps,if=active_enemies=1&action.reap.souls_consumed>=4
+actions.annihilator_ranged+=/call_action_list,name=reaps,if=fight_remains<=6&action.reap.souls_consumed>=1
+actions.annihilator_ranged+=/call_action_list,name=reaps,if=active_enemies>1&buff.eradicate.up&action.reap.souls_consumed>=4+6*buff.moment_of_craving.up
+actions.annihilator_ranged+=/void_ray,if=!buff.eradicate.up|!buff.moment_of_craving.up|!set_bonus.midnight_season_2_4pc
+actions.annihilator_ranged+=/call_action_list,name=reaps,if=(!buff.eradicate.up|active_enemies=1)&(buff.voidfall_spending.stack>=3&prev_gcd.1.void_ray|buff.voidfall_spending.react>=3)
+actions.annihilator_ranged+=/call_action_list,name=reaps,if=buff.metamorphosis.up&talent.collapsing_star&buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30&variable.wont_overcap_cstar&void_metamorphosis_base_drain_ps>35&action.reap.souls_consumed>=4&variable.wont_drop_meta
+actions.annihilator_ranged+=/soul_immolation,if=active_dot.soul_immolation=0&(!buff.metamorphosis.up|fury<void_metamorphosis_base_drain_ps)
+actions.annihilator_ranged+=/devour
+actions.annihilator_ranged+=/consume
+
+actions.cooldowns=invoke_external_buff,name=power_infusion,if=buff.metamorphosis.up&!buff.power_infusion.up
+actions.cooldowns+=/potion,if=buff.metamorphosis.up|fight_remains<=30
+actions.cooldowns+=/use_item,slot=trinket1,if=buff.metamorphosis.up&(variable.void_ray_count=0|hero_tree.annihilator)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains|fight_remains<=trinket.1.buff.any_dps.duration
+actions.cooldowns+=/use_item,slot=trinket2,if=buff.metamorphosis.up&(variable.void_ray_count=0|hero_tree.annihilator)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2|variable.trinket_1_exclude)&!variable.trinket_2_manual|trinket.2.proc.any_dps.duration>=fight_remains|fight_remains<=trinket.2.buff.any_dps.duration
+actions.cooldowns+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&gcd.remains>0.1
+actions.cooldowns+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&gcd.remains>0.1
+actions.cooldowns+=/use_item,use_off_gcd=1,slot=trinket1,if=trinket.1.is.font_of_venomous_rage&!buff.metamorphosis.up&buff.rolling_torment.up&gcd.remains>0.1
+actions.cooldowns+=/use_item,use_off_gcd=1,slot=trinket2,if=trinket.2.is.font_of_venomous_rage&!buff.metamorphosis.up&buff.rolling_torment.up&gcd.remains>0.1
+actions.cooldowns+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&!variable.trinket_1_ogcd_cast
+actions.cooldowns+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&!variable.trinket_2_ogcd_cast
+
+actions.reaps=eradicate
+actions.reaps+=/cull
+actions.reaps+=/reap
+
+actions.variables=variable,name=wont_overcap_cstar,op=set,value=!buff.metamorphosis.up|((buff.collapsing_star_stacking.stack+action.reap.souls_consumed)<=buff.collapsing_star_stacking.max_stack|!(talent.collapsing_star&(active_enemies>1|apex.1|buff.dark_matter.up|talent.star_fragments)))
+actions.variables+=/variable,name=wont_drop_meta,op=set,value=!buff.metamorphosis.up|!buff.moment_of_craving.up|(fury>void_metamorphosis_base_drain_ps+4*action.reap.souls_consumed+10*talent.scythes_embrace&buff.collapsing_star_stacking.stack+action.reap.souls_consumed>=30|!(talent.collapsing_star&(active_enemies>1|apex.1|buff.dark_matter.up|talent.star_fragments)))
+actions.variables+=/variable,name=ray_after_reap,op=set,value=fury+4*action.reap.souls_consumed+10*talent.scythes_embrace>=100
+actions.variables+=/variable,name=void_ray_count,op=reset,if=!buff.metamorphosis.up
+actions.variables+=/variable,name=void_ray_count,op=add,value=1,if=buff.metamorphosis.up&action.void_ray.last_used>variable.last_ray_mark
+actions.variables+=/variable,name=last_ray_mark,op=set,value=action.void_ray.last_used
+
+actions.voidscarred_melee=run_action_list,name=vsm_st,if=active_enemies=1
+actions.voidscarred_melee+=/run_action_list,name=vsm_meta,if=buff.metamorphosis.up
+actions.voidscarred_melee+=/run_action_list,name=vsm_out
+
+actions.voidscarred_ranged=voidblade,if=buff.void_metamorphosis_stack.at_max_stacks&talent.devourers_bite
+actions.voidscarred_ranged+=/metamorphosis,if=buff.eradicate.up|!talent.eradicate|active_enemies=1
+actions.voidscarred_ranged+=/devour,if=buff.soulburst.up&active_enemies=1
+actions.voidscarred_ranged+=/consume,if=buff.soulburst.up
+actions.voidscarred_ranged+=/collapsing_star,if=active_enemies=1&buff.collapsing_star_stacking.stack>=35
+actions.voidscarred_ranged+=/call_action_list,name=reaps,if=action.reap.souls_consumed>=4
+actions.voidscarred_ranged+=/call_action_list,name=reaps,if=fight_remains<=6&action.reap.souls_consumed>=1
+actions.voidscarred_ranged+=/void_ray,if=!buff.eradicate.up|!buff.moment_of_craving.up|set_bonus.midnight_season_2_4pc
+actions.voidscarred_ranged+=/collapsing_star,if=active_enemies>1
+actions.voidscarred_ranged+=/vengeful_retreat,if=buff.voidstep.up
+actions.voidscarred_ranged+=/reapers_toll,if=buff.voidsurge_reapers_toll.up
+actions.voidscarred_ranged+=/pierce_the_veil,if=buff.voidsurge_pierce_the_veil.up
+actions.voidscarred_ranged+=/soul_immolation,if=active_dot.soul_immolation=0&(!buff.metamorphosis.up|fury<void_metamorphosis_base_drain_ps)
+actions.voidscarred_ranged+=/devour
+actions.voidscarred_ranged+=/consume
+
+actions.vsm_meta=soul_immolation,if=variable.void_ray_count>=2&active_dot.soul_immolation=0&fury<=gcd.max*(void_metamorphosis_base_drain_ps-6)-6
+actions.vsm_meta+=/pick_up_fragment,mode=nearest,type=all,use_off_gcd=1,line_cd=0.35,if=variable.void_ray_count=1&cooldown.void_ray.remains<gcd.max*2&fury<void_metamorphosis_base_drain_ps*cooldown.void_ray.remains
+actions.vsm_meta+=/wait,sec=0.05,if=variable.void_ray_count>=2
+actions.vsm_meta+=/vengeful_retreat,use_off_gcd=1,if=buff.voidstep.up
+actions.vsm_meta+=/void_ray,if=variable.void_ray_count=0&!talent.eradicate
+actions.vsm_meta+=/eradicate,if=(buff.moment_of_craving.remains<gcd.max|cooldown.void_ray.remains<gcd.max)&!buff.soulburst.up
+actions.vsm_meta+=/void_ray,if=talent.eradicate&!buff.eradicate.up
+actions.vsm_meta+=/reapers_toll,if=buff.hungering_slash.remains<gcd.max*2
+actions.vsm_meta+=/devour,if=buff.soulburst.up
+actions.vsm_meta+=/reapers_toll,if=soul_fragments<=8
+actions.vsm_meta+=/pierce_the_veil,if=!buff.hungering_slash.up
+actions.vsm_meta+=/predators_wake,if=!buff.hungering_slash.up
+actions.vsm_meta+=/eradicate,if=action.reap.souls_consumed>=8&!buff.soulburst.up
+actions.vsm_meta+=/cull,if=action.reap.souls_consumed>=4&!buff.soulburst.up
+actions.vsm_meta+=/void_ray
+actions.vsm_meta+=/soul_immolation,if=active_dot.soul_immolation=0&fury<=gcd.max*(void_metamorphosis_base_drain_ps-6)-6&cooldown.void_ray.remains>gcd.max
+actions.vsm_meta+=/devour,if=fury<void_metamorphosis_base_drain_ps*(cooldown.void_ray.remains+3)
+
+actions.vsm_out=pick_up_fragment,mode=nearest,type=all,use_off_gcd=1,line_cd=0.3,if=!buff.void_metamorphosis_stack.at_max_stacks&buff.void_metamorphosis_stack.stack>=buff.void_metamorphosis_stack.max_stack-3
+actions.vsm_out+=/wait,sec=0.05,if=!buff.void_metamorphosis_stack.at_max_stacks&buff.void_metamorphosis_stack.stack>=buff.void_metamorphosis_stack.max_stack-1&time-action.pick_up_fragment.last_used<1.5
+actions.vsm_out+=/vengeful_retreat,use_off_gcd=1,if=buff.voidstep.up
+actions.vsm_out+=/voidblade,if=prev_gcd.1.void_ray
+actions.vsm_out+=/metamorphosis,if=buff.eradicate.up|!talent.eradicate|fight_remains<15
+actions.vsm_out+=/the_hunt
+actions.vsm_out+=/consume,if=buff.soulburst.up&buff.soulburst.remains<gcd.max
+actions.vsm_out+=/void_ray,if=talent.eradicate&!buff.eradicate.up
+actions.vsm_out+=/hungering_slash
+actions.vsm_out+=/soul_immolation,if=active_dot.soul_immolation=0
+actions.vsm_out+=/reap,if=action.reap.souls_consumed>=4&!buff.soulburst.up
+actions.vsm_out+=/eradicate,if=action.reap.souls_consumed>=4&!buff.soulburst.up
+actions.vsm_out+=/void_ray
+actions.vsm_out+=/consume
+
+actions.vsm_st=pick_up_fragment,mode=nearest,type=all,use_off_gcd=1,line_cd=0.75,if=!buff.metamorphosis.up&!buff.void_metamorphosis_stack.at_max_stacks&buff.void_metamorphosis_stack.stack>=buff.void_metamorphosis_stack.max_stack-1
+actions.vsm_st+=/soul_immolation,if=active_dot.soul_immolation=0&fury<void_metamorphosis_base_drain_ps
+actions.vsm_st+=/devour,if=buff.soulburst.up
+actions.vsm_st+=/consume,if=buff.soulburst.up
+actions.vsm_st+=/voidblade,if=buff.void_metamorphosis_stack.at_max_stacks
+actions.vsm_st+=/vengeful_retreat,if=buff.void_metamorphosis_stack.at_max_stacks&cooldown.the_hunt.ready&!buff.metamorphosis.up
+actions.vsm_st+=/the_hunt,if=buff.void_metamorphosis_stack.at_max_stacks&buff.vengeful_retreat_movement.up
+actions.vsm_st+=/metamorphosis
+actions.vsm_st+=/the_hunt,if=!buff.metamorphosis.up&(fight_remains<15|buff.void_metamorphosis_stack.stack<buff.void_metamorphosis_stack.max_stack*0.25)
+actions.vsm_st+=/wait,sec=0.05,if=!buff.metamorphosis.up&!buff.void_metamorphosis_stack.at_max_stacks&buff.void_metamorphosis_stack.stack>=buff.void_metamorphosis_stack.max_stack-1&soul_fragments>=1
+actions.vsm_st+=/hungering_slash
+actions.vsm_st+=/reapers_toll,if=soul_fragments<=8
+actions.vsm_st+=/vengeful_retreat,if=buff.voidstep.up
+actions.vsm_st+=/pierce_the_veil
+actions.vsm_st+=/call_action_list,name=reaps,if=action.reap.souls_consumed>=4
+actions.vsm_st+=/predators_wake
+actions.vsm_st+=/void_ray,if=!buff.eradicate.up|!buff.moment_of_craving.up|set_bonus.midnight_season_2_4pc
+actions.vsm_st+=/soul_immolation,if=active_dot.soul_immolation=0&!buff.metamorphosis.up
+actions.vsm_st+=/devour
+actions.vsm_st+=/consume
+
+head=abyssal_doomhounds_relentless_stare,id=271537,bonus_id=13668/13847,ilevel=344,gem_id=240967,enchant_id=7991,redirected_base_stats=271875
+neck=aqirbane_reliquary,id=268265,bonus_id=13668/13708,ilevel=344,gem_id=240908/240892
+shoulders=abyssal_doomhounds_jaws,id=271535,ilevel=334,enchant_id=8031,redirected_base_stats=251223
+back=silken_voodoo_drape,id=268253,ilevel=344
+chest=abyssal_doomhounds_coreguard,id=271540,ilevel=334,enchant_id=7987,redirected_base_stats=251159
+wrists=silvermoon_agents_deflectors,id=244576,ilevel=331,gem_id=240918,embellishment=arcanoweave_lining,crafted_stats=32/36
+hands=abyssal_doomhounds_studded_gauntlets,id=271538,ilevel=334
+waist=sash_of_the_forlorn_vessel,id=268256,bonus_id=13668,ilevel=344,gem_id=240898
+legs=coiled_hex_legguards,id=268225,ilevel=344,enchant_id=7935
+feet=silvermoon_agents_sneakers,id=244569,ilevel=331,embellishment=arcanoweave_lining,enchant_id=7993,crafted_stats=36/49
+finger1=charged_sandstone_band,id=158366,bonus_id=13750,ilevel=334,gem_id=240898,enchant_id=7967
+finger2=vile_alchemists_band,id=268249,bonus_id=13668,ilevel=334,gem_id=240898,enchant_id=7967
+trinket1=freightrunners_flask,id=250215,ilevel=334
+trinket2=gebbos_bottomless_bag,id=270164,ilevel=334
+main_hand=janthrazet_the_soul_fang,id=271092,ilevel=344,enchant_id=8689
+off_hand=baleful_hexblade,id=268211,ilevel=344,enchant_id=8689
+
+# Gear Summary
+# gear_ilvl=338.00
+# gear_stamina=40849
+# gear_intellect=3073
+# gear_crit_rating=736
+# gear_haste_rating=950
+# gear_mastery_rating=1296
+# gear_versatility_rating=123
+# gear_leech_rating=194
+# gear_speed_rating=22
+# gear_armor=1201
+# set_bonus=midnight_season_2_2pc=1
+# set_bonus=midnight_season_2_4pc=1

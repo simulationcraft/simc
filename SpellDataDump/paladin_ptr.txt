@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69299 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69497 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -2889,6 +2889,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+                 : 7093
 Attributes       : Passive (6), Do Not Log (8), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=127297)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
@@ -3168,19 +3169,19 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179711)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Denounce (2812), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Recompense (384914), Inner Light (386553), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Judgment (406957), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311), Hammer of Light (1235934), Lesser Weapon (1239282), Hammer of Wrath (1241413), Execution Sentence (1260251), Light Within (1261160), Blaze of Glory (1269224), Crusader Strike (1279187), Hammer of Wrath (1279408), Divine Arbiter (1306923)
                    Family Flags: 65
 #2 (id=191092)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -6 | Scaled Value: -6 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Denounce (2812), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Recompense (384914), Inner Light (386553), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Judgment (406957), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311), Hammer of Light (1235934), Lesser Weapon (1239282), Hammer of Wrath (1241413), Execution Sentence (1260251), Light Within (1261160), Blaze of Glory (1269224), Crusader Strike (1279187), Hammer of Wrath (1279408), Divine Arbiter (1306923)
                    Family Flags: 65
 #3 (id=191093)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191094)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=191095)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 370 | Scaled Value: 370 | Target: Self (1)
+                   Base Value: 398 | Scaled Value: 398 | Target: Self (1)
 #6 (id=260907)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
@@ -4199,7 +4200,7 @@ Proc Flags       : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spel
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2, #11, #12, #13), Protection Paladin (137028 effects: #1, #2, #8, #23), Holy Paladin (137029 effects: #3, #4, #17), Consecration (204242 effect#3), Avenging Wrath (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Divine Toll (326011 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Divine Glimpse (387805 effect#1), Sentinel (389539 effects: #1, #2), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1), Judgment of Justice (403495 effect#2), Blades of Light (403664 effect#1), Paladin Retribution 10.1 Class Set 2pc (405549 effects: #1, #2), Retribution Paladin (412314 effects: #1, #2), Awakening (414193 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Holy Paladin (428076 effects: #3, #4, #10), Blessing of An'she (445206 effect#1), Highlord's Judgment (449198 effects: #1, #2), Avenging Wrath (454351 effects: #1, #2), Avenging Wrath (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Truth Prevails (461273 effect#1), Liberation (461471 effect#1), Luck of the Draw! (1218114 effects: #1, #2), Protection Paladin (1256936 effects: #1, #2), Retribution Paladin (1258011 effect#4), Holy Paladin (1258016 effect#2), Paladin - Midnight PrePatch - 11.2 Class Set 2pc (1283659 effects: #1, #2), Paladin - Midnight PrePatch - 11.2 Class Set 4pc (1283660 effects: #1, #2)
 Triggered By     : Paladin Retribution 10.1 Class Set 2pc (405549)
 Family Flags     : 23, 27, 65
-Attributes       : DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Asynchronous Buff (490)
+Attributes       : DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Asynchronous Aura (490)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=289735)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (6)
@@ -5281,7 +5282,7 @@ Effects          :
 #4 (id=321881)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=321882)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 55 | Scaled Value: 55 | Misc Value: 127 | Misc Value 2: 1 | Target: Self (1)
+                   Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 1.46 | Misc Value: 127 | Misc Value 2: 1 | Target: Self (1)
 #6 (id=321944)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #7 (id=321945)   : Apply Aura (6) | Ignore Aura State (262)
@@ -10660,7 +10661,7 @@ Family Flags     : 27, 44, 65, 77
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1015174)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.65069 | PvP Coefficient: 1.25 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.65069 | PvP Coefficient: 1.4375 | Target: Targeted Enemy (6)
 #2 (id=1015175)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Unleashes a powerful weapon strike that deals $s1 Holy damage to an enemy target,
@@ -14196,11 +14197,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1079573)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -18 | Scaled Value: -18 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | Target: Self (1)
                    Affected Spells: Denounce (2812), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Recompense (384914), Inner Light (386553), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Judgment (406957), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311), Hammer of Light (1235934), Lesser Weapon (1239282), Hammer of Wrath (1241413), Execution Sentence (1260251), Light Within (1261160), Blaze of Glory (1269224), Crusader Strike (1279187), Hammer of Wrath (1279408), Divine Arbiter (1306923)
                    Family Flags: 65
 #2 (id=1079574)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: -18 | Scaled Value: -18 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Denounce (2812), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Recompense (384914), Inner Light (386553), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Judgment (406957), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311), Hammer of Light (1235934), Lesser Weapon (1239282), Hammer of Wrath (1241413), Execution Sentence (1260251), Light Within (1261160), Blaze of Glory (1269224), Crusader Strike (1279187), Hammer of Wrath (1279408), Divine Arbiter (1306923)
                    Family Flags: 65
 #3 (id=1079579)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 2 (6)
@@ -14245,6 +14246,12 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Eternal Flame (156322), Eternal Flame (461432)
                    Family Flags: 89
+#17 (id=1350110) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
+                   Base Value: 30000 | Scaled Value: 30000 | Misc Value: 5 | Misc Value 2: 2651 (Label) | Target: Self (1)
+#18 (id=1350142) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 5 | Misc Value 2: 7093 (Label) | Target: Self (1)
+#19 (id=1350147) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value 2: 3084 (Label) | Target: Self (1)
 
 Name             : Aura Mastery (id=412629) [Spell Family (10), Hidden] 
 Class            : Paladin
@@ -15240,7 +15247,7 @@ Description      : $@spelldesc427453
 Tooltip          : You can cast Hammer of Light.
 
 Name             : Light's Guidance (id=427445) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Templar (Protection, Retribution) [free=(Protection, Retribution), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -15368,11 +15375,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1108026)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -36 | Scaled Value: -36
+                   Base Value: -39 | Scaled Value: -39
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002), Lesser Weapon (1239276), Beacon of the Savior (1244893), Divine Guidance (1310389)
                    Family Flags: 38, 46, 90
 #2 (id=1108027)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: -36 | Scaled Value: -36 | Misc Value: 1
+                   Base Value: -39 | Scaled Value: -39 | Misc Value: 1
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002), Lesser Weapon (1239276), Beacon of the Savior (1244893), Divine Guidance (1310389)
                    Family Flags: 46
 #3 (id=1108028)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
@@ -15384,7 +15391,7 @@ Effects          :
                    Affected Spells: Denounce (2812), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Recompense (384914), Inner Light (386553), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Judgment (406957), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311), Hammer of Light (1235934), Lesser Weapon (1239282), Hammer of Wrath (1241413), Execution Sentence (1260251), Light Within (1261160), Blaze of Glory (1269224), Crusader Strike (1279187), Hammer of Wrath (1279408), Divine Arbiter (1306923)
                    Family Flags: 65
 #5 (id=1117928)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #6 (id=1141803)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #7 (id=1141804)  : Apply Aura (6) | Modify Cooldown Time (Category) (341)
@@ -15397,7 +15404,7 @@ Effects          :
                    Affected Spells: Hammer of Wrath (24275), Hammer of Wrath (1241413), Hammer of Wrath (1279408)
                    Family Flags: 39
 #10 (id=1177912) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: -8 | Scaled Value: -8 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Boundless Judgment (383970), Judgment (383991), Judgment (406957), Hammer of Wrath (1241413)
                    Family Flags: 23
 #11 (id=1177913) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
@@ -15438,7 +15445,7 @@ Effects          :
 Description      : $@spelldesc427453
 
 Name             : Dawnlight (id=431377) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Herald of the Sun (Holy, Retribution) [tree=hero, row=1, col=3, max_rank=1, req_points=1]
+Talent Entry     : Herald of the Sun (Holy, Retribution) [free=(Holy, Retribution), tree=hero, row=1, col=3, max_rank=1, req_points=1]
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -16219,7 +16226,7 @@ Effects          :
 Description      : $@spelldesc431425
 
 Name             : Holy Bulwark (id=432459) [Spell Family (10)] 
-Talent Entry     : Lightsmith (Protection) [tree=hero, row=1, col=3, max_rank=1, req_points=0, name="Holy Armaments"]
+Talent Entry     : Lightsmith (Protection) [free=(Protection), tree=hero, row=1, col=3, max_rank=1, req_points=0, name="Holy Armaments"]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -22049,7 +22056,7 @@ Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
 
 Name             : Holy Armaments (id=1289728) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Lightsmith (Holy) [tree=hero, row=1, col=3, max_rank=1, req_points=0, override="Holy Bulwark" (id=432459)]
+Talent Entry     : Lightsmith (Holy) [free=(Holy), tree=hero, row=1, col=3, max_rank=1, req_points=0, override="Holy Bulwark" (id=432459)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None

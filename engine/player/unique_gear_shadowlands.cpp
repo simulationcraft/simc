@@ -3810,7 +3810,7 @@ void prismatic_brilliance( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
+      effect.spell_id, [ buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
         cb->rng().range( buffs )->trigger();
       } );
 }
@@ -4251,7 +4251,7 @@ void singularity_supreme( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 
   effect.player->callbacks.register_callback_trigger_function(
-      effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
       [ singularity_buff ]( auto, const auto&, auto, auto, auto ) {
         return !singularity_buff->lockout->check();
       } );

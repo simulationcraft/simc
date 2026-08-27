@@ -740,7 +740,7 @@ void twisted_appendage( special_effect_t& effect )
     }
   };
 
-  int original_driver_id = effect.driver()->id();
+  int original_driver_id = effect.spell_id;
   effect.spell_id        = 1227300;
   new twisted_appendage_cb_t( effect, original_driver_id );
 }
@@ -3667,7 +3667,7 @@ void harvesters_edict( special_effect_t& effect )
   if ( find_special_effect( effect.player, 455819 ) )
   {
     effect.rppm_modifier_ =
-      effect.player->dbc->real_ppm_modifier( effect.driver()->id(), effect.player, effect.item->item_level(), 455819 );
+      effect.player->dbc->real_ppm_modifier( effect.spell_id, effect.player, effect.item->item_level(), 455819 );
   }
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -3790,7 +3790,7 @@ void twin_fang_instruments( special_effect_t& effect )
 // TODO: determine if self damage procs anything
 void darkmoon_deck_symbiosis( special_effect_t& effect )
 {
-  bool is_embellishment = effect.driver()->id() == 463232;
+  bool is_embellishment = effect.spell_id == 463232;
 
   struct symbiosis_buff_t : public stat_buff_t
   {
@@ -4244,7 +4244,7 @@ void darkmoon_deck_radiance( special_effect_t& effect )
   radiant_focus_proc->initialize();
   radiant_focus_proc->activate();
 
-  bool embelish = effect.driver()->id() == 454558;
+  bool embelish = effect.spell_id == 454558;
 
   auto buff = buff_t::find( effect.player, "radiance" );
   if ( !buff )
@@ -4550,7 +4550,7 @@ void shadowbinding_ritual_knife( special_effect_t& effect )
   if ( negative_buffs.size() > 0 )
   {
     effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ negative_buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
+      effect.spell_id, [ negative_buffs ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
         cb->listener->rng().range( negative_buffs )->trigger();
       } );
   }
@@ -5094,7 +5094,7 @@ void detachable_fang( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 
-  effect.player->callbacks.register_callback_execute_function( effect.driver()->id(),
+  effect.player->callbacks.register_callback_execute_function( effect.spell_id,
     []( const dbc_proc_callback_t* cb, auto, player_t* t, auto ) {
       if ( cb->listener->get_player_distance( *t ) <= cb->proc_action->range )
         cb->proc_action->execute_on_target( t );
@@ -5171,7 +5171,7 @@ void wildfire_wick( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 
-  effect.player->callbacks.register_callback_execute_function( effect.driver()->id(),
+  effect.player->callbacks.register_callback_execute_function( effect.spell_id,
     []( const dbc_proc_callback_t* cb, auto, player_t* t, auto ) {
       if ( cb->proc_action->get_dot( t )->is_ticking() )
       {
@@ -5301,7 +5301,7 @@ void burst_of_knowledge( special_effect_t& effect )
 
   auto on_use_cb         = new special_effect_t( effect.player );
   on_use_cb->name_str    = effect.name() + "_cb";
-  on_use_cb->spell_id    = effect.driver()->id();
+  on_use_cb->spell_id    = effect.spell_id;
   on_use_cb->cooldown_   = effect.driver()->internal_cooldown();
   on_use_cb->custom_buff = int_buff;
   effect.player->special_effects.push_back( on_use_cb );
@@ -6906,7 +6906,7 @@ void mugs_moxie_jug( special_effect_t& effect )
       buff_driver->proc_flags2_ |= PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
 
       effect.player->callbacks.register_callback_trigger_function(
-          buff_driver->driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+          buff_driver->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
           []( auto, const auto&, auto, const action_state_t* s, auto ) {
             if ( s->action->player->type == PLAYER_GUARDIAN || s->action->player->type == PLAYER_PET )
             {
@@ -6933,7 +6933,7 @@ void mugs_moxie_jug( special_effect_t& effect )
         buff_driver->proc_flags2_ |= PF2_PERIODIC_DAMAGE;
 
         effect.player->callbacks.register_callback_trigger_function(
-            buff_driver->driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+            buff_driver->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
             []( auto, const auto&, auto, const action_state_t* s, auto ) {
               if ( s->result_type != result_amount_type::DMG_OVER_TIME )
                 return true;
@@ -8167,7 +8167,7 @@ void diamantine_voidcore( special_effect_t& effect )
       : dbc_proc_callback_t( e.player, e ),
         mana_threshold( e.driver()->effectN( 2 ).percent() ),
         rppm_mod_orig( e.rppm_modifier() ),
-        rppm_mod_boost( e.player->dbc->real_ppm_modifier( e.driver()->id(), e.player, e.item->item_level(), 1239233 ) )
+        rppm_mod_boost( e.player->dbc->real_ppm_modifier( e.spell_id, e.player, e.item->item_level(), 1239233 ) )
     {}
 
     void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
@@ -9452,13 +9452,13 @@ void nexuskings_command( special_effect_t& effect )
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1240000 ) )
     ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
 
-  effect.player->callbacks.register_callback_trigger_function( effect.driver()->id(),
+  effect.player->callbacks.register_callback_trigger_function( effect.spell_id,
     dbc_proc_callback_t::trigger_fn_type::CONDITION,
     []( auto, const proc_data_t& data, auto, auto, auto ) {
       return data->affected_by_label( LABEL_HEALING_SPELLS );
     } );
 
-  effect.player->callbacks.register_callback_execute_function( effect.driver()->id(),
+  effect.player->callbacks.register_callback_execute_function( effect.spell_id,
     [ bound ]( const dbc_proc_callback_t* cb, auto, auto, auto ) {
       cb->proc_buff->trigger();
       bound->decrement();
@@ -9673,7 +9673,7 @@ void harvesters_interdiction( special_effect_t& effect )
   if ( find_special_effect( effect.player, 451055 ) )
   {
     effect.rppm_modifier_ =
-      effect.player->dbc->real_ppm_modifier( effect.driver()->id(), effect.player, effect.item->item_level(), 451055 );
+      effect.player->dbc->real_ppm_modifier( effect.spell_id, effect.player, effect.item->item_level(), 451055 );
   }
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -10471,7 +10471,7 @@ double reshii_wraps_rppm( special_effect_t& effect )
     if ( find_special_effect( effect.player, id ) )
     {
       return effect.player->dbc->real_ppm_modifier(
-        effect.driver()->id(), effect.player, effect.item->item_level(), id );
+        effect.spell_id, effect.player, effect.item->item_level(), id );
     }
   }
 
@@ -11964,7 +11964,7 @@ void seabed_leviathans_citrine( special_effect_t& effect )
   effect.execute_action = damage;
 
   effect.player->callbacks.register_callback_trigger_function(
-      effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
       [ & ]( auto, const auto&, auto, auto, auto ) {
         return effect.player->health_percentage() > effect.driver()->effectN( 6 ).base_value();
       } );
@@ -12096,7 +12096,7 @@ void critical_chain( special_effect_t& effect )
       create_buff<critical_overload_t>( effect.player, util::tokenize_fn( driver->name_cstr() ), trigger_buff, effect );
 
   effect.player->callbacks.register_callback_trigger_function(
-    effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+    effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
     [ effect ]( auto, const auto&, auto, auto, auto )
     {
       return !effect.custom_buff->check();

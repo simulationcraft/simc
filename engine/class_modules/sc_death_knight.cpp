@@ -991,7 +991,6 @@ public:
     propagate_const<action_t*> putrefy_fk_st;
     propagate_const<action_t*> putrefy_fk_aoe;
     propagate_const<action_t*> dread_plague_death;
-    propagate_const<action_t*> epidemic_order;
   } background_actions;
 
   struct runeforge_actions_t
@@ -2881,12 +2880,12 @@ struct death_knight_pet_t : public pet_t
                         ->set_default_value_from_effect_type( A_MOD_CRIT_DAMAGE_MULTIPLIER )
                         ->set_quiet( true );
 
-    transfusion = make_buff( this, "transfusion", dk()->spell.transfusion_buff )
-                      ->set_default_value_from_effect( 1 )
-                      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    transfusion = make_buff( this, "transfusion", dk()->spell.transfusion_buff )->set_default_value_from_effect( 1 );
 
-    // if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY )
-      // transfusion->set_duration( 8_s ); // Transfusion has no duration in data, changing it to 8s manually in 12.1
+    if ( dk()->specialization() == DEATH_KNIGHT_BLOOD )
+      transfusion->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+    else
+      transfusion->set_duration( 8_s );  // Transfusion has no duration in data, changing it to 8s manually
 
     mastery_dreadblade_crit = make_buff<mastery_dreadblade_crit_t>( this );
   }
@@ -3225,16 +3224,6 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
     {
     }
 
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = pet_melee_attack_t<ghoul_pet_t>::composite_da_multiplier( s );
-      // Currently using the normalized attack speed increase aura, which reduces auto attack damage perportionally to
-      // the attack speed increase. This results in a 0 auto attack dps gain. Lovely bug.
-      if ( pet()->unholy_devotion->check() && dk()->bugs )
-        m /= 1.0 + pet()->unholy_devotion->check_stack_value();
-      return m;
-    }
-
     void impact( action_state_t* state ) override
     {
       auto_attack_melee_t<ghoul_pet_t>::impact( state );
@@ -3472,7 +3461,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
                           ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
     unholy_devotion = make_buff( this, "unholy_devotion", dk()->pet_spell.unholy_devotion_buff )
-                          ->set_default_value_from_effect_type( A_MOD_ATTACKSPEED_NORMALIZED )
+                          ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED )
                           ->set_disable_async_expire_events_removal( true );
   }
 
@@ -3761,13 +3750,7 @@ struct lesser_ghoul_pet_t final : public base_ghoul_pet_t
   void trigger_orders()
   {
     if ( sim->target_non_sleeping_list.size() >= 3 && epidemic_order )
-    {
-      // Non doomed bidding epidemic orders come from the DK, rather than the pets confusingly.
-      if ( dk()->bugs )
-        dk()->background_actions.epidemic_order->execute();
-      else
       epidemic_order->execute();
-    }
     else if ( death_order )
       death_order->execute();
     else
@@ -4439,13 +4422,6 @@ struct magus_base_pet_t : public death_knight_pet_t
       {
         // If the target is immune to slows, frostbolt seems to be used at most every 6 seconds
         cooldown->duration = s->duration();
-      }
-
-      if ( p->pet_type == PET_LORD_OF_THE_DEAD && dk()->bugs )
-      {
-        // Currently bugged. While this doesnt capture its behavior perfectly, its close enough for now. 
-        min_gcd     = data().cast_time() * 0.8;
-        trigger_gcd = data().cast_time();
       }
     }
 
@@ -6896,23 +6872,6 @@ struct raise_skulker_t : public death_knight_summon_spell_t
   }
 };
 
-// Epidemic Order ==========================================================
-struct epidemic_order_t : public death_knight_spell_t
-{
-  epidemic_order_t( std::string_view n, death_knight_t* p ) : death_knight_spell_t( n, p, p->pet_spell.epidemic_order )
-  {
-    background = true;
-    aoe        = -1;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    death_knight_spell_t::impact( s );
-
-    p()->trigger_rune_of_the_apocalypse( s->target );
-  }
-};
-
 // Blood Shield =============================================================
 struct blood_shield_buff_t final : public absorb_buff_t
 {
@@ -7988,8 +7947,10 @@ struct dread_plague_t final : public death_knight_disease_t
       if ( p()->sim->target_non_sleeping_list.size() > 1 )
       {
         auto target = rng().range( erupt->target_list() );
-        erupt->execute_on_target( target,
-                                  d->state->result_raw * p()->talent.unholy.superstrain->effectN( 2 ).percent() );
+        auto damage = d->state->result_raw;
+        if ( p()->bugs )
+          damage /= d->state->target_ta_multiplier;
+        erupt->execute_on_target( target, damage * p()->talent.unholy.superstrain->effectN( 2 ).percent() );
       }
     }
 
@@ -8611,14 +8572,6 @@ struct reapers_mark_t final : public death_knight_spell_t
       debug_cast<exterminate_t*>( p()->background_actions.exterminate )->empowered         = exterm_stacks;
       debug_cast<exterminate_aoe_t*>( p()->background_actions.exterminate_aoe )->empowered = exterm_stacks;
     }
-
-    // Tested and confirmed June 11th 2026.  Casting reapers mark gives 1 stack on blood, but should only apply to Frost
-    if ( p()->bugs && p()->specialization() == DEATH_KNIGHT_BLOOD && p()->talent.deathbringer.echoing_fury.ok() )
-    {
-      p()->buffs.exterminate->trigger( exterm_stacks );
-      debug_cast<exterminate_t*>( p()->background_actions.exterminate )->empowered         = exterm_stacks;
-      debug_cast<exterminate_aoe_t*>( p()->background_actions.exterminate_aoe )->empowered = exterm_stacks;
-    }  
   }
 
 private:
@@ -8704,6 +8657,9 @@ struct blightfall_t final : public death_knight_spell_t
     else
       damage = dot->tick_damage_over_time( dot->remains() * duration_mult ) * damage_mult;
 
+    if ( p()->bugs )
+      damage /= dot->state->target_ta_multiplier;
+
     erupt->execute_on_target( dot->target, damage );
     dot->cancel();
   }
@@ -8765,8 +8721,7 @@ struct dark_transformation_t : public death_knight_spell_t
     if ( p->talent.unholy.blightfall.ok() )
       set_replacement_action( new blightfall_t( "blightfall", p, options_str ), p->buffs.blightfall );
 
-    if ( !p->talent.unholy.blightfall.ok() )
-      trigger_gcd = 0_ms;  // in data as 1.5s, only triggers this gcd if blightfall is talented.
+    trigger_gcd = 0_ms;  // in data as 1.5s, only triggers a shared gcd with blightfall so this shouldnt apply.
   }
 
   void execute() override
@@ -12620,6 +12575,9 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
     double dam = dot->tick_damage_over_time( dur ) * errupt_mult;
 
+    if ( p()->bugs )
+      dam /= dot->state->target_ta_multiplier;
+
     if ( dot == td->dot.virulent_plague )
     {
       if ( !p()->options.wcl_reporting_mode )
@@ -13853,10 +13811,8 @@ void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric, bool sum
   {
     if ( specialization() == DEATH_KNIGHT_UNHOLY )
     {
-      if ( summoned_ghoul && !buffs.army_of_the_dead->check() )
-        active_lesser_ghouls.back()->transfusion->trigger();
-      // for ( auto& ghoul : active_lesser_ghouls )
-      // ghoul->transfusion->trigger();
+      for ( auto& ghoul : active_lesser_ghouls )
+        ghoul->transfusion->trigger();
     }
 
     else if ( specialization() == DEATH_KNIGHT_BLOOD )
@@ -14241,7 +14197,6 @@ void death_knight_t::create_actions()
     {
       pet_summon.army_ghoul = get_action<summon_lesser_ghoul_t>( "army_ghoul", this, spell.summon_army_ghoul,
                                                                  lesser_ghoul_e::LESSER_ARMY_OF_THE_DEAD );
-      background_actions.epidemic_order = get_action<epidemic_order_t>( "epidemic_order", this );
     }
 
     if ( talent.unholy.infected_claws.ok() )
@@ -16885,20 +16840,6 @@ void death_knight_t::arise()
 
   if ( talent.rider.a_feast_of_souls.ok() )
     start_a_feast_of_souls();
-
-  // Exclude Blood from recklessness checks
-  if ( specialization() != DEATH_KNIGHT_BLOOD )
-  {
-    std::array<stat_e, 4> offensive_stats = { STAT_CRIT_RATING, STAT_HASTE_RATING, STAT_MASTERY_RATING,
-                                              STAT_VERSATILITY_RATING };
-    if ( ( util::str_compare_ci( potion_str, "potion_of_recklessness" ) ||
-           util::str_compare_ci( potion_str, "potion_of_recklessness_2" ) ) &&
-         util::highest_stat( this, offensive_stats ) != STAT_MASTERY_RATING )
-      sim->error( MODERATE,
-                  "Player {} has selected Potion of Recklessness but does not have Mastery as their highest offensive "
-                  "stat. Results may be inaccurate.",
-                  name() );
-  }
 }
 
 void death_knight_t::adjust_dynamic_cooldowns()
@@ -17671,76 +17612,101 @@ struct death_knight_module_t : public module_t
      *   live_death_knight::runeforge::init_runeforges();
      */
   }
-
+  
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (direct) buffed 9%", 179689, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( -4 )
-        .verification_value( -12 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (periodic) buffed 9%", 191174,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( -4 )
-        .verification_value( -12 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (pet) buffed 9%", 844541,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( -4 )
-        .verification_value( -12 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (guardian) buffed 9%", 1032340,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( -4 )
-        .verification_value( -12 );
-
-      hotfix::register_effect( "Death Knight", "2026-08-14", "Frost aura (melee) buffed 9%", 1052714, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 296 )
-        .verification_value( 264 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-14", "Freezing Tempest attack speed nerfed 50%", 1320578,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 1 )
-        .verification_value( 2 );
-
-    hotfix::register_effect( "Death Knight", "2026-08-14", "Freezing Tempest Icy Death Torrent nerfed 50%", 1320580,
+    /*
+    hotfix::register_effect( "Death Knight", "2026-08-22", "Frost aura (direct) buffed 6%", 179689,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
         .modifier( 2 )
-        .verification_value( 4 );
+        .verification_value( -4 );
 
-    hotfix::register_effect( "Death Knight", "2026-08-14", "Blood's Transfusion buff nerfed 50%", 1277423,
+    hotfix::register_effect( "Death Knight", "2026-08-22", "Frost aura (periodic) buffed 6%", 191174,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 5 )
-        .verification_value( 10 );
+        .modifier( 2 )
+        .verification_value( -4 );
 
-    hotfix::register_effect( "Death Knight", "2026-08-14", "Blood's Transfusion buff nerfed 50%", 1277425,
+    hotfix::register_effect( "Death Knight", "2026-08-22", "Frost aura (pet) buffed 6%", 844541,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 5 )
-        .verification_value( 10 );
+        .modifier( 2 )
+        .verification_value( -4 );
 
-    hotfix::register_effect( "Death Knight", "2026-08-14", "Blood's Visceral Strength nerfed 40%", 1169307,
+    hotfix::register_effect( "Death Knight", "2026-08-22", "Frost aura (guardian) buffed 6%", 1032340,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 6 )
-        .verification_value( 10 );
+        .modifier( 2 )
+        .verification_value( -4 );
+
+    hotfix::register_effect( "Death Knight", "2026-08-22", "Frost aura (melee) buffed 6%", 1052714,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 314 )
+        .verification_value( 297 );
+
+    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (oh) buffed 15%", 60372,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( .6210621 )
+        .verification_value( .540054 );
+
+    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (mh) buffed 15%", 331344,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( .6210621 )
+        .verification_value( .540054 );
+
+    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (2h) buffed 15%", 815754,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( .919399 )
+        .verification_value( .799477 );
+
+    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (oh) buffed 15%", 60372,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( .6210621 )
+        .verification_value( .540054 );
+
+    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (mh frost) buffed 15%", 1275166,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( .6210621 )
+        .verification_value( .540054 );
+
+    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (oh frost) buffed 15%", 1275169,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( .6210621 )
+        .verification_value( .540054 );
+
+    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (2h) buffed 15%", 815754,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( .919399 )
+        .verification_value( .799477 );
+
+    hotfix::register_effect( "Death Knight", "2026-08-22", "Obliterate (2h frost) buffed 15%", 1275170,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( .919399 )
+        .verification_value( .799477 );
+   */
   }
 
   void register_actor_initializers( sim_t* ) const override

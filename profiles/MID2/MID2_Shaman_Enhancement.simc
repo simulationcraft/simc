@@ -10,7 +10,7 @@ omnium_talents=136822:1/136823:1/136817:1/136821:1/136814:1
 
 # Default consumables
 potion=potion_of_recklessness_2
-flask=flask_of_the_blood_knights_2
+flask=flask_of_the_shattered_sun_2
 food=harandar_celebration
 augmentation=void_touched
 temporary_enchant=disabled
@@ -90,13 +90,14 @@ actions.cooldowns+=/blood_fury,if=(buff.ascendance.up|buff.doom_winds.up|pet.sur
 actions.cooldowns+=/berserking,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.berserking.cooldown<=action.berserking.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))
 actions.cooldowns+=/fireblood,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.fireblood.cooldown<=action.fireblood.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))
 actions.cooldowns+=/ancestral_call,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.ancestral_call.cooldown<=action.ancestral_call.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))
-actions.cooldowns+=/invoke_external_buff,name=power_infusion,if=((talent.deeply_rooted_elements.enabled&buff.ascendance.remains>7.5)|(!talent.deeply_rooted_elements.enabled&(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active))|(fight_remains%%120<=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))
+actions.cooldowns+=/invoke_external_buff,name=power_infusion,if=((talent.deeply_rooted_elements.enabled&buff.ascendance.remains>7.5)|(!talent.deeply_rooted_elements.enabled&(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active))|(fight_remains%%120<=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled)|cooldown.ascendance.remains<gcd.max)
 
 # Single target action priority list for the Stormbringer hero talent tree
 actions.single_sb=primordial_storm,if=(buff.maelstrom_weapon.stack>=9|buff.primordial_storm.remains<=4&buff.maelstrom_weapon.stack>=5)
 actions.single_sb+=/voltaic_blaze,if=dot.flame_shock.remains=0&time<5
 actions.single_sb+=/flame_shock,if=!ticking
 actions.single_sb+=/lava_lash,if=!debuff.lashing_flames.up&time<5
+actions.single_sb+=/stormstrike,if=time<1
 actions.single_sb+=/call_action_list,name=cooldowns
 actions.single_sb+=/sundering,if=talent.surging_elements.enabled|talent.feral_spirit.enabled
 actions.single_sb+=/doom_winds
@@ -146,30 +147,30 @@ actions.single_totemic+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
 actions.single_totemic+=/flame_shock
 
 head=serpent_crown_of_the_ophidian_oracle,id=271483,bonus_id=10835/12854/13662,gem_id=240967,enchant_id=7991,redirected_base_stats=251220
-neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13708/13848,gem_id=240918/240898
+neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13848/13987,gem_id=240914/240890
 shoulders=hissing_mantle_of_the_ophidian_oracle,id=271481,bonus_id=13848,enchant_id=8001,redirected_base_stats=268231
 back=silken_voodoo_drape,id=268253,bonus_id=13848
-chest=fanged_raiment_of_the_ophidian_oracle,id=271486,bonus_id=13662/13708/13848,enchant_id=7987,redirected_base_stats=271876
-wrists=farstriders_plated_bracers,id=244584,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240898,crafted_stats=49/36
+chest=fanged_raiment_of_the_ophidian_oracle,id=271486,bonus_id=13662/13846/13848,enchant_id=7987,redirected_base_stats=271876
+wrists=farstriders_plated_bracers,id=244584,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240908,crafted_stats=49/36
 hands=hexing_grips_of_the_ophidian_oracle,id=271484,bonus_id=12854/13662,redirected_base_stats=160213
-waist=serpentine_mixing_belt,id=268254,bonus_id=10835/12854,gem_id=240898
+waist=tribal_defenders_cord,id=251155,bonus_id=10835/12854,gem_id=240906
 legs=leggings_of_the_ophidian_oracle,id=271482,bonus_id=13662/13848,enchant_id=8159,redirected_base_stats=268237
 feet=greaves_of_the_noxious_depths,id=271440,bonus_id=12854/13662,enchant_id=7963,crafted_stats=36/49
-finger1=vile_alchemists_band,id=268249,bonus_id=12854/13750,gem_id=240890,enchant_id=7967
-finger2=sickening_signet_of_atroxus,id=252258,bonus_id=12854/13750,gem_id=240906,enchant_id=7967
+finger1=apex_brutes_claw_ring,id=268252,bonus_id=12854/13750,gem_id=240898,enchant_id=7967
+finger2=band_of_the_amani_warlord,id=273792,bonus_id=12854/13750,gem_id=240900,enchant_id=7967
 trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=13335/13848
 trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13662/13848
-main_hand=amanmuso_warlords_vengeance,id=268209,bonus_id=13848,enchant_id=8041
-off_hand=farstriders_chopper,id=237850,bonus_id=8960/13751/13771/13836/12497,enchant_id=7983,crafted_stats=49/36
+main_hand=amanmuso_warlords_vengeance,id=268209,bonus_id=13848,enchant_id=8689
+off_hand=farstriders_chopper,id=237850,bonus_id=8960/13751/13771/13836/12497,enchant_id=8689,crafted_stats=49/36
 
 # Gear Summary
 # gear_ilvl=338.63
 # gear_agility=1906
 # gear_stamina=40645
-# gear_crit_rating=951
-# gear_haste_rating=962
-# gear_mastery_rating=1258
-# gear_versatility_rating=16
+# gear_crit_rating=937
+# gear_haste_rating=1076
+# gear_mastery_rating=1052
+# gear_versatility_rating=123
 # gear_speed_rating=22
 # gear_avoidance_rating=130
 # gear_armor=1744

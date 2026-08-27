@@ -5,7 +5,7 @@ actions.precombat+=/use_item,name=algethar_puzzle_box
 actions.precombat+=/aimed_shot
 
 # Executed every time the actor is available.
-actions=variable,name=trueshot_ready,value=!talent.bullseye|fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack|fight_remains<25|time<10
+actions=variable,name=trueshot_ready,value=!talent.bullseye|(fight_remains>cooldown.trueshot.duration+10|buff.bullseye.stack=buff.bullseye.max_stack)&(cooldown.explosive_shot.remains>=15|cooldown.explosive_shot.ready)|fight_remains<25|time<10
 # For DungeonRoute, hold Trueshot at the end of pulls.
 actions+=/variable,name=trueshot_ready,op=setif,condition=fight_style.dungeonroute,value_else=variable.trueshot_ready,value=raid_event.pull.remains>30|raid_event.pull.in>60|talent.calling_the_shots
 
@@ -34,7 +34,8 @@ actions.drst+=/aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.b
 actions.drst+=/trueshot,if=variable.trueshot_ready
 actions.drst+=/rapid_fire,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
 actions.drst+=/wailing_arrow
-actions.drst+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target,if=talent.aspect_of_the_hydra&(!max_prio_damage|!fight_style.dungeonroute|active_enemies>2)&active_enemies>1&buff.precise_shots.up
+# Multi-Shot as a PS spender on 2T with Hydra talented. In DRoute, do it on 3 or more targets.
+actions.drst+=/multishot,target_if=max:debuff.spotters_mark.down,if=buff.precise_shots.up&active_enemies>1&talent.aspect_of_the_hydra&(!fight_style.dungeonroute|active_enemies>2)
 actions.drst+=/arcane_shot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
 actions.drst+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage
 actions.drst+=/black_arrow
@@ -52,6 +53,7 @@ actions.draoe+=/wailing_arrow,if=!cooldown.black_arrow.ready
 actions.draoe+=/multishot,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up
 actions.draoe+=/aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
 actions.draoe+=/black_arrow
+actions.draoe+=/multishot,if=focus>cost+action.aimed_shot.cost&!max_prio_damage
 actions.draoe+=/steady_shot
 
 actions.sentaoe=explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)
@@ -64,6 +66,7 @@ actions.sentaoe+=/rapid_fire,target_if=max:debuff.sentinels_mark.down,if=talent.
 actions.sentaoe+=/rapid_fire,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
 actions.sentaoe+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time
 actions.sentaoe+=/moonlight_chakram
+actions.sentaoe+=/multishot,if=focus>cost+action.aimed_shot.cost&!max_prio_damage
 actions.sentaoe+=/steady_shot
 
 actions.sentst=explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&active_enemies>1&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)
@@ -72,8 +75,10 @@ actions.sentst+=/volley
 actions.sentst+=/trueshot,if=variable.trueshot_ready
 actions.sentst+=/moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max
 actions.sentst+=/kill_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up
-actions.sentst+=/multishot,target_if=max:debuff.sentinels_mark.down,if=talent.aspect_of_the_hydra&(!max_prio_damage|!fight_style.dungeonroute|active_enemies>2)&active_enemies>1&buff.precise_shots.up
+# Multi-Shot as a PS spender on 2T with Hydra talented. In DRoute, do it on 3 or more targets.
+actions.sentst+=/multishot,target_if=max:debuff.sentinels_mark.down,if=buff.precise_shots.up&active_enemies>1&talent.aspect_of_the_hydra&(!fight_style.dungeonroute|!max_prio_damage|active_enemies>2)
 actions.sentst+=/arcane_shot,target_if=max:debuff.sentinels_mark.down|max_prio_damage,if=buff.precise_shots.up&(buff.trueshot.up&prev_gcd.1.aimed_shot|!buff.trueshot.up)
+actions.sentst+=/rapid_fire,target_if=max:debuff.sentinels_mark.down,if=!fight_style.dungeonroute,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
 actions.sentst+=/rapid_fire,interrupt_if=talent.unload&ticks_remain<2&buff.precise_shots.up&!gcd.remains,interrupt_immediate=1,interrupt_global=1
 actions.sentst+=/aimed_shot,target_if=max:debuff.sentinels_mark.up|max_prio_damage
 actions.sentst+=/moonlight_chakram

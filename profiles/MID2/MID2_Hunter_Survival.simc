@@ -5,11 +5,11 @@ level=90
 race=dwarf
 role=attack
 position=back
-talents=C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgtZMzMGzyAAAAAAwMmxMLbzYMjZwDYaGAAAgBAzYZZmZWMmZmxMzAgZswwYYsZAA
+talents=C8PAAAAAAAAAAAAAAAAAAAAAAMWgBmxoxyAYmgtZMzMGzyAAAAAAwMmxMLmxYGzgx0MAAAADAmxyyMzsYMzMjZmBAzYZDGDjNDAA
 omnium_talents=136822:1/136819:1/136817:1/136821:1/136814:1
 
 # Default consumables
-potion=lights_potential_2
+potion=potion_of_recklessness_2
 flask=flask_of_the_magisters_2
 food=silvermoon_parade
 augmentation=void_touched
@@ -101,9 +101,9 @@ neck=aqirbane_reliquary,id=268265,bonus_id=13668/13708,ilevel=344,gem_id=240898/
 shoulders=jaws_of_the_skulking_viper,id=271490,bonus_id=13662,ilevel=344,enchant_id=8031,redirected_base_stats=268231
 back=silken_voodoo_drape,id=268253,ilevel=344
 chest=skulking_vipers_scuteplate,id=271495,bonus_id=13662/13708,ilevel=344,enchant_id=7987,redirected_base_stats=271876
-wrists=farstriders_plated_bracers,id=244584,bonus_id=1808/8793/8960/12214/13751/13767/13836/9627,ilevel=331,gem_id=240898,crafted_stats=32/49
+wrists=farstriders_plated_bracers,id=244584,bonus_id=1808/8793/8960/12214/12384/13751/13836/9627,ilevel=331,gem_id=240898,crafted_stats=32/49
 hands=skulking_vipers_hidepiercers,id=271493,bonus_id=13662,ilevel=334,redirected_base_stats=160213
-waist=farstriders_trophy_belt,id=244581,bonus_id=1808/8793/8960/12214/13751/13767/13836/9627,ilevel=331,gem_id=240898,crafted_stats=32/49
+waist=farstriders_trophy_belt,id=244581,bonus_id=1808/8793/8960/12214/12384/13751/13836/9627,ilevel=331,gem_id=240898,crafted_stats=32/49
 legs=skulking_vipers_coiled_legwraps,id=271491,bonus_id=13662,ilevel=344,enchant_id=8159,redirected_base_stats=268237
 feet=ferocious_scaleboots,id=268233,ilevel=334,enchant_id=7993
 finger1=sickening_signet_of_atroxus,id=252258,bonus_id=13668,ilevel=334,gem_id=240898,enchant_id=7967
@@ -116,9 +116,10 @@ main_hand=mazeroa_warlords_fury,id=268213,ilevel=344,enchant_id=7983
 # gear_ilvl=338.93
 # gear_agility=1924
 # gear_stamina=40850
-# gear_crit_rating=1113
-# gear_haste_rating=859
-# gear_mastery_rating=1250
+# gear_crit_rating=583
+# gear_haste_rating=966
+# gear_mastery_rating=1566
+# gear_versatility_rating=107
 # gear_leech_rating=249
 # gear_armor=1740
 # set_bonus=midnight_season_2_2pc=1

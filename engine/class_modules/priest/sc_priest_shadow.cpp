@@ -564,10 +564,10 @@ struct shadow_word_pain_t final : public priest_spell_t
     tick_zero                  = false;
     if ( !casted )
     {
-      base_dd_max            = 0.0;
-      base_dd_min            = 0.0;
-      energize_type          = action_energize::NONE;  // no insanity gain
-      spell_power_mod.direct = 0;
+      base_dd_max                 = 0.0;
+      base_dd_min                 = 0.0;
+      energize_type               = action_energize::NONE;  // no insanity gain
+      spell_power_mod.direct      = 0;
       base_costs[ RESOURCE_MANA ] = 0;
     }
 
@@ -1834,8 +1834,9 @@ struct tentacle_slam_t final : public priest_spell_t
     {
       priest().procs.midnight_s2_4pc_void_volley->occur();
 
-      buff_t* charge_buff = priest().buffs.voidform->check() ? priest().buffs.void_volley : priest().buffs.crushing_void;
-      int charges_before  = charge_buff->check();
+      buff_t* charge_buff =
+          priest().buffs.voidform->check() ? priest().buffs.void_volley : priest().buffs.crushing_void;
+      int charges_before = charge_buff->check();
       charge_buff->trigger();
 
       if ( charge_buff->check() > charges_before )
@@ -1959,9 +1960,9 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    int void_volley_charges = priest().buffs.void_volley->check();
+    int void_volley_charges   = priest().buffs.void_volley->check();
     int crushing_void_charges = priest().buffs.crushing_void->check();
-    int tierset_procs_left  = priest().buffs.void_volley_set_bonus->check();
+    int tierset_procs_left    = priest().buffs.void_volley_set_bonus->check();
 
     if ( priest().buffs.shadowform_state->check() )
     {
@@ -2213,8 +2214,8 @@ void priest_t::create_buffs_shadow()
           } ) );
 
   buffs.idol_of_yshaarj = make_buff( this, "idol_of_yshaarj", talents.shadow.idol_of_yshaarj_buff )
-                              ->set_default_value_from_effect( 1 )
-                              ->add_invalidate( CACHE_HASTE );
+                              ->set_default_value_from_effect( 1, 0.01 )
+                              ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buffs.shattered_psyche =
       make_buff( this, "shattered_psyche", talents.shadow.shattered_psyche->effectN( 2 ).trigger() )
@@ -2267,9 +2268,9 @@ void priest_t::create_buffs_shadow()
                                                   ->set_max_stack( void_volley_max_stacks )
                                                   ->set_default_value( shadow_mid2_4pc_effectiveness );
 
-  const int ancient_madness_max_extension_stacks = dbc->wowv() >= wowv_t( 12, 1, 0 )
-                                                       ? std::max( 1, as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) )
-                                                       : 1;
+  const int ancient_madness_max_extension_stacks =
+      dbc->wowv() >= wowv_t( 12, 1, 0 ) ? std::max( 1, as<int>( buffs.voidform->data().effectN( 13 ).base_value() ) )
+                                        : 1;
 
   buffs.ancient_madness_extension = make_buff( this, "ancient_madness_extension", talents.shadow.ancient_madness )
                                         ->set_duration( timespan_t::zero() )
@@ -2287,10 +2288,10 @@ void priest_t::create_buffs_shadow()
                               ->set_period( talents.shadow.ancient_madness_buff->effectN( 2 ).period() );
 
   const timespan_t ancient_madness_period = talents.shadow.ancient_madness_buff->effectN( 2 ).period();
-  const double ancient_madness_tick_count = ancient_madness_period > 0_ms
-                                                ? static_cast<double>( talents.shadow.ancient_madness_buff->duration() /
-                                                                       ancient_madness_period )
-                                                : 0.0;
+  const double ancient_madness_tick_count =
+      ancient_madness_period > 0_ms
+          ? static_cast<double>( talents.shadow.ancient_madness_buff->duration() / ancient_madness_period )
+          : 0.0;
 
   buffs.ancient_madness->set_tick_callback( [ ancient_madness_tick_count ]( buff_t* buff, int, timespan_t ) {
     if ( buff->default_value <= 0.0 || ancient_madness_tick_count <= 0.0 )
@@ -2390,11 +2391,11 @@ void priest_t::init_spells_shadow()
   auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
 
   // Row 2
-  talents.shadow.psychic_link       = ST( "Psychic Link" );
-  talents.shadow.misery             = ST( "Misery" );
-  talents.shadow.invoked_nightmares = ST( "Invoked Nightmares" );
-  talents.shadow.intangibility      = ST( "Intangibility" );
-  talents.shadow.mental_fortitude   = ST( "Mental Fortitude" );
+  talents.shadow.psychic_link      = ST( "Psychic Link" );
+  talents.shadow.misery            = ST( "Misery" );
+  talents.shadow.invoked_nightmare = ST( "Invoked Nightmare" );
+  talents.shadow.intangibility     = ST( "Intangibility" );
+  talents.shadow.mental_fortitude  = ST( "Mental Fortitude" );
   // Row 3
   talents.shadow.thought_harvester    = ST( "Thought Harvester" );
   talents.shadow.tentacle_slam        = ST( "Tentacle Slam" );

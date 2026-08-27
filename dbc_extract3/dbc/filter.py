@@ -444,7 +444,8 @@ class TraitSet(DataSet):
             'row': -1,
             'col': -1,
             'selection_index': 0,
-            'req_points': 0
+            'req_points': 0,
+            'is_granted': False
         })
 
         for group in _trait_node_groups.values():
@@ -462,6 +463,8 @@ class TraitSet(DataSet):
                 for cond in group['cond'] if cond.type == 2
             )
 
+            group_granted = any(cond.type == 2 for cond in group['cond'])
+
             for node in group['nodes'].values():
                 node_class_id = class_id if class_id else util.class_id(player_skill=_trait_trees[node['node'].id_parent][1])
 
@@ -472,6 +475,8 @@ class TraitSet(DataSet):
                 node_starter = set(_spec_map.get(cond.id_spec_set, 0)
                     for cond in node['cond'] if cond.type == 2
                 )
+
+                node_granted = any(cond.type == 2 for cond in node['cond'])
 
                 # tree type enum: 0 = invald, 1 = class, 2 = spec, 3 = hero, 4 = selection, 5 = max, 6 = expansion
                 # tree selection nodes are type 3
@@ -499,6 +504,8 @@ class TraitSet(DataSet):
                     _traits[key]['specs'] |= group_specs | node_specs
                     _traits[key]['specs'].discard(0)
                     _traits[key]['starter'] |= group_starter | node_starter
+                    _traits[key]['starter'].discard(0)
+                    _traits[key]['is_granted'] |= group_granted | node_granted
 
                     if tree_index != 0 and _traits[key]['tree'] == 0:
                         _traits[key]['tree'] = tree_index

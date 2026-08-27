@@ -196,11 +196,10 @@ using namespace helpers;
       if ( affliction() )
       {
         parse_effects( p()->warlock_base.potent_afflictions ); // 77215
-        parse_effects( p()->buffs.nightfall, effect_mask_t( true ).disable( 3 ) ); // 264571/1260279 // Effect #3 is handled in a custom action_state
+        parse_effects( p()->buffs.nightfall, effect_mask_t( true ).disable( 3 ) ); // 264571 // Effect #3 is handled in a custom action_state
         parse_effects( p()->buffs.darkglare_presence ); // 1280663
         parse_effects( p()->buffs.shard_instability ); // 1260269
-        if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-          parse_effects( p()->buffs.unstable_empowerment ); // 1305774
+        parse_effects( p()->buffs.unstable_empowerment ); // 1305774
       }
 
       // Demonology
@@ -218,9 +217,6 @@ using namespace helpers;
         parse_effects( p()->buffs.fiendish_cruelty ); // 1245664
         parse_effects( p()->buffs.chaotic_inferno ); // 1244860
         parse_effects( p()->buffs.crashing_chaos ); // 417282 // RoF is dummy
-        if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
-          parse_effects( p()->buffs.conflagration_of_chaos ); // 387109
-
         parse_effects( p()->buffs.alythesss_ire ); // 1244947
       }
 
@@ -266,8 +262,7 @@ using namespace helpers;
       {
         parse_target_effects( d_fn( &warlock_td_t::dots_t::immolate ), p()->warlock_base.immolate_dot ); // 157736
         parse_target_effects( d_fn( &warlock_td_t::debuffs_t::lake_of_fire ), p()->talents.lake_of_fire_debuff ); // 1244918
-        if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-          parse_target_effects( d_fn( &warlock_td_t::debuffs_t::dark_titans_mark ), p()->tier.dark_titans_mark_debuff ); // 1305711
+        parse_target_effects( d_fn( &warlock_td_t::debuffs_t::dark_titans_mark ), p()->tier.dark_titans_mark_debuff ); // 1305711
       }
 
       // Diabolist
@@ -289,7 +284,6 @@ using namespace helpers;
       if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
       {
         int shards_used = as<int>( last_resource_cost );
-        int base_shards = as<int>( base_cost() );
 
         // Only effective shards consumed count towards the Rain of Chaos proc
         if ( p()->buffs.rain_of_chaos->check() && shards_used > 0 )
@@ -360,14 +354,6 @@ using namespace helpers;
               break;
             default:
               break;
-          }
-        }
-
-        if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
-        {
-          if ( hellcaller() && base_shards > 0 && harmful && p()->hero.blackened_soul.ok() )
-          {
-            helpers::trigger_blackened_soul( p(), false );
           }
         }
       }
@@ -529,10 +515,6 @@ using namespace helpers;
     {
       double m = action_base_t::composite_da_multiplier( s );
 
-      double deaths_embrace_health = p()->talents.deaths_embrace->effectN( 2 ).base_value();
-      if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < deaths_embrace_health )
-        m *= 1.0 + p()->talents.deaths_embrace->effectN( 1 ).percent() * ( 1 - s->target->health_percentage() / deaths_embrace_health );
-
       // NOTE: 2026-07-11 Diabolist guardians do not count towards Sacrificed Souls talent (bug?)
       if ( demonology() && affected_by.sacrificed_souls )
         m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_demon_count( !p()->bugs );
@@ -540,13 +522,17 @@ using namespace helpers;
       return m;
     }
 
-    double composite_ta_multiplier( const action_state_t* s ) const override
+    double composite_target_multiplier( player_t* t ) const override
     {
-      double m = action_base_t::composite_ta_multiplier( s );
+      double m = action_base_t::composite_target_multiplier( t );
 
       double deaths_embrace_health = p()->talents.deaths_embrace->effectN( 2 ).base_value();
-      if ( affliction() && affected_by.deaths_embrace && s->target->health_percentage() < deaths_embrace_health )
-        m *= 1.0 + p()->talents.deaths_embrace->effectN( 1 ).percent() * ( 1 - s->target->health_percentage() / deaths_embrace_health );
+      if ( affliction() && affected_by.deaths_embrace && t->health_percentage() < deaths_embrace_health )
+      {
+        // NOTE: 2026-08-21: UA does not benefit from Death's Embrace while any seed-applied 4pc UA stack is active (bug)
+        if ( !p()->bugs || this->id != p()->talents.unstable_affliction->id() || td( t )->ua_seed_stacks == 0 )
+          m *= 1.0 + p()->talents.deaths_embrace->effectN( 1 ).percent() * ( 1 - t->health_percentage() / deaths_embrace_health );
+      }
 
       return m;
     }
@@ -805,7 +791,7 @@ using namespace helpers;
       if ( seed_action )
         spell_power_mod.direct = 0; // Corruption does not deal instant damage when applied from SoC
 
-      // NOTE: 2026-02-20: Death's Embrace talent is not applying to the Corruption (direct damage) spell (bug?)
+      // NOTE: 2026-08-21: Death's Embrace talent is not applying to the Corruption (direct damage) spell (bug?)
       affected_by.deaths_embrace = !p->bugs && p->talents.deaths_embrace.ok();
     }
 
@@ -827,9 +813,9 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_target_multiplier( t );
 
-      // NOTE: 2026-02-20 Shadowbolt Volley (Cunning Cruelty) is affected by Withering Bolt
+      // NOTE: 2026-08-21 Shadowbolt Volley (Cunning Cruelty) is affected by Withering Bolt
       if ( p()->talents.withering_bolt.ok() )
-        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( ( int )( p()->talents.withering_bolt->effectN( 2 ).base_value() ), p()->get_target_data( t )->count_affliction_dots() );
+        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( ( int )( p()->talents.withering_bolt->effectN( 2 ).base_value() ), td( t )->count_affliction_dots() );
 
       return m;
     }
@@ -927,13 +913,10 @@ using namespace helpers;
       double m = warlock_spell_t::composite_target_multiplier( t );
 
       if ( p()->talents.withering_bolt.ok() )
-        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( ( int )( p()->talents.withering_bolt->effectN( 2 ).base_value() ), p()->get_target_data( t )->count_affliction_dots() );
+        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( ( int )( p()->talents.withering_bolt->effectN( 2 ).base_value() ), td( t )->count_affliction_dots() );
 
-      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      {
-        if ( p()->talents.impetuous_wrath.ok() )
-          m *= 1.0 + ( td( t )->debuffs.haunt->check() ? p()->talents.impetuous_wrath->effectN( 2 ).percent() : p()->talents.impetuous_wrath->effectN( 1 ).percent() );
-      }
+      if ( p()->talents.impetuous_wrath.ok() )
+        m *= 1.0 + ( td( t )->debuffs.haunt->check() ? p()->talents.impetuous_wrath->effectN( 2 ).percent() : p()->talents.impetuous_wrath->effectN( 1 ).percent() );
 
       return m;
     }
@@ -1168,19 +1151,6 @@ using namespace helpers;
           }
         }
 
-        if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
-        {
-          if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && p()->prd_rng.mark_of_perotharn->trigger() )
-          {
-            // Wither stack gain by Mark of Perotharn does not directly trigger collapse in that tick (it will be trigged on the next tick)
-            // Wither stack gain by Mark of Perotharn does not benefit from Bleakheart Tactics
-            d->increment( 1 );
-            td( d->target )->debuffs.wither->bump( 1 );
-            assert( d->current_stack() == td( d->target )->debuffs.wither->check() && d->remains() == td( d->target )->debuffs.wither->remains() );
-            p()->procs.mark_of_perotharn->occur();
-          }
-        }
-
         if ( p()->hero.devil_fruit.ok() )
         {
           if ( p()->rppm_rng.devil_fruit->trigger() )
@@ -1224,7 +1194,7 @@ using namespace helpers;
       impact_action = new wither_dot_t( p );
       add_child( impact_action );
 
-      // NOTE: 2026-02-20: Death's Embrace talent is not applying to the Wither (direct damage) spell (bug?)
+      // NOTE: 2026-08-21: Death's Embrace talent is not applying to the Wither (direct damage) spell (bug?)
       affected_by.deaths_embrace = affliction() && !p->bugs && p->talents.deaths_embrace.ok();
     }
 
@@ -1233,26 +1203,6 @@ using namespace helpers;
 
     dot_t* get_dot( player_t* t ) override
     { return impact_action->get_dot( t ); }
-
-    void impact( action_state_t* s ) override
-    {
-      warlock_spell_t::impact( s );
-
-      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
-      {
-        if ( s->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && p()->prd_rng.mark_of_perotharn->trigger() )
-        {
-          auto& wither_dot = td( s->target )->dots.wither;
-          auto& wither_debuff = td( s->target )->debuffs.wither;
-          // Wither stack gain by Mark of Perotharn does not directly trigger collapse (it will be trigged on the next Wither tick)
-          // Wither stack gain by Mark of Perotharn does not benefit from Bleakheart Tactics
-          wither_dot->increment( 1 );
-          wither_debuff->bump( 1 );
-          assert( wither_dot->current_stack() == wither_debuff->check() && wither_dot->remains() == wither_debuff->remains() );
-          p()->procs.mark_of_perotharn->occur();
-        }
-      }
-    }
   };
 
   struct blackened_soul_t : public warlock_spell_t
@@ -1562,38 +1512,32 @@ using namespace helpers;
     {
       player_t* ua_target = target;
 
-      // NOTE: 2026-04-29 Currently ingame a UA applied by Fatal Echoes also processes/consumes some UA 'execute' effects:
+      // NOTE: 2026-08-21 Currently ingame a UA applied by Fatal Echoes also processes/consumes some UA 'execute' effects:
       // - Succulent Soul: consumes a stack and triggers its effects (Demonic Soul dmg and Manifested Avarice rng proc)
       // - Cull the Weak: reduces the cooldown of Dark Harvest
-      // - Hellcaller Blackened Soul: increments Wither stacks
+      // - Hellcaller Blackened Soul: unaffected; Fatal Echoes does not increment Wither stacks
       // - Shard Instability: unaffected; Fatal Echoes does not consume a stack of this buff
 
       warlock_spell_t::execute();
-
-      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      {
-        // NOTE: 2026-07-06 12.1 4pc seed-applied UA does not increment Wither stacks
-        if ( hellcaller() && p()->hero.blackened_soul.ok() && !is_seed_applied )
-          helpers::trigger_blackened_soul( p(), false, ua_target );
-      }
 
       // NOTE: 2026-07-06 12.1 4pc seed-applied UA does not reduce the cooldown of Dark Harvest (Cull the Weak talent)
       if ( p()->talents.cull_the_weak.ok() && !is_seed_applied )
         p()->cooldowns.dark_harvest->adjust( -p()->talents.cull_the_weak->effectN( 1 ).time_value() );
 
-      // NOTE: 2026-04-29 If Shard Instability buff is gained during the casting of Unstable Affliction, that UA cast benefits from the cost
+      // NOTE: 2026-08-21 If Shard Instability buff is gained during the casting of Unstable Affliction, that UA cast benefits from the cost
       // reduction but does not consume the effect (bug?). As expected, a Fatal Echoes UA proc does not consume it either.
       if ( time_to_execute == 0_ms && !is_fatal_echoes_execute )
       {
-        // NOTE: 2026-07-06 12.1 4pc seed-applied UA consumes shard instability (bug?)
+        // NOTE: 2026-08-21 12.1 4pc seed-applied UA consumes Shard Instability (bug?)
         if ( p()->bugs || !is_seed_applied )
           p()->buffs.shard_instability->decrement();
       }
 
       if ( soul_harvester() )
       {
-        // NOTE: 2026-07-06 12.1 4pc seed-applied UA consumes a Succulent Soul stack and triggers its effects
-        helpers::consume_succulent_soul( p(), ua_target );
+        // NOTE: 2026-08-21 12.1 4pc seed-applied UA does not consume a Succulent Soul stack
+        if ( !is_seed_applied )
+          helpers::consume_succulent_soul( p(), ua_target );
       }
     }
 
@@ -1616,11 +1560,13 @@ using namespace helpers;
       {
         tdata->ua_stack_applied( is_seed_applied );
 
-        if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-        {
-          if ( active_4pc<MID2>() )
-            helpers::update_unstable_empowerment_buff( p() );
-        }
+        // NOTE: 2026-08-21 UA increments Wither stacks on impact, including seed-applied UA from the 12.1 4pc tier bonus
+        // NOTE: 2026-08-21 UA applied by Fatal Echoes does not increment Wither stacks
+        if ( hellcaller() && p()->hero.blackened_soul.ok() && !is_fatal_echoes_execute )
+          helpers::trigger_blackened_soul( p(), false, s->target );
+
+        if ( active_4pc<MID2>() )
+          helpers::update_unstable_empowerment_buff( p() );
 
         // NOTE: The spell data is using DOT_REFRESH_DURATION, which should add the time-until-the-next-full-tick to the total duration
         // However, ingame, the duration does not add the last tick and only refresh the dot to the total duration (always 8 seconds)
@@ -1664,15 +1610,12 @@ using namespace helpers;
         }
       }
 
-      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
+      if ( active_4pc<MID2>() )
       {
-        if ( active_4pc<MID2>() )
-        {
-          // Delay to allow the dot to reset()
-          make_event( sim, 0_ms, [ this ] {
-            helpers::update_unstable_empowerment_buff( p() );
-          } );
-        }
+        // Delay to allow the dot to reset()
+        make_event( sim, 0_ms, [ this ] {
+          helpers::update_unstable_empowerment_buff( p() );
+        } );
       }
     }
 
@@ -1711,7 +1654,7 @@ using namespace helpers;
       // 12.1 4pc seed-applied UAs are displayed as full UA stacks, but only contribute
       // partial UA damage. The core applies the visible stack count through dot_multiplier,
       // so rescale it to the effective damage stack count on each tick.
-      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && active_4pc<MID2>() )
+      if ( active_4pc<MID2>() )
       {
         auto tdata = td( state->target );
         const int current_stacks = tdata->dots.unstable_affliction->current_stack();
@@ -1808,30 +1751,8 @@ using namespace helpers;
       {
         double m = warlock_spell_t::composite_target_da_multiplier( t );
 
-        if ( ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) ) && p()->talents.patient_zero.ok() )
-        {
-          // NOTE (2026-04-24): Patient Zero does not track seeds individually (bug?). Instead, it
-          // uses a single per-caster target reference updated on cast success to the target of the
-          // primary Seed of Corruption. Any seed explosion hitting that target gets the Patient Zero
-          // bonus. If the target is out of range, dead, or otherwise invalid (e.g., immune) at the
-          // time of explosion, the bonus is not reassigned and is simply not applied.
-          if ( p()->bugs )
-          {
-            assert( p()->patient_zero_target && "SoC does not have a valid Patient Zero target" );
-            if ( t == p()->patient_zero_target )
-              m *= 1.0 + p()->talents.patient_zero->effectN( 1 ).percent();
-          }
-          else
-          {
-            if ( t == target )
-              m *= 1.0 + p()->talents.patient_zero->effectN( 1 ).percent();
-          }
-        }
-
         if ( p()->talents.sow_the_seeds.ok() )
-        {
           m *= effectiveness;
-        }
 
         return m;
       }
@@ -1875,7 +1796,7 @@ using namespace helpers;
 
       add_child( explosion );
 
-      if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && p->active_4pc<MID2>() && p->talents.unstable_affliction.ok() )
+      if ( p->active_4pc<MID2>() && p->talents.unstable_affliction.ok() )
       {
         ua_seed_tier = new unstable_affliction_t( p );
         ua_seed_tier->background = ua_seed_tier->dual = true;
@@ -1970,60 +1891,15 @@ using namespace helpers;
 
       const auto& tl = target_list();
       player_t* main_seed_target = !tl.empty() ? tl.front() : target;
-      warlock_td_t* mstdata = td( main_seed_target );
-
-      // Patient Zero target is updated on SoC cast success, not on impact or debuff application
-      if ( ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) ) && p()->talents.patient_zero.ok() )
-        p()->patient_zero_target = main_seed_target;
-
-      if ( p()->sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
-      {
-        // 2026-06-30 Hotfix: Nightfall SoC detonates existing SoC when smart targeting leaves the primary seed on an already seeded target
-        if ( p()->talents.nocturnal_yield.ok() && p()->buffs.nightfall->check() && mstdata->dots.seed_of_corruption->is_ticking() && mstdata->soc_threshold > 0 )
-        {
-          mstdata->soc_threshold = 0;
-          mstdata->dots.seed_of_corruption->cancel();
-        }
-      }
 
       warlock_spell_t::execute();
 
       p()->buffs.seed_of_corruption_is_out_dnt->trigger();
 
-      const bool soc_had_prev_succulent_soul = p()->buffs.succulent_soul->check();
-
-      if ( p()->sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
-      {
-        if ( time_to_execute == 0_ms && soul_harvester() && p()->talents.nocturnal_yield.ok() && p()->buffs.nightfall->check() )
-        {
-          if ( p()->hero.wicked_reaping.ok() )
-            p()->proc_actions.wicked_reaping->execute_on_target( main_seed_target );
-
-          if ( p()->hero.quietus.ok() && p()->hero.shared_fate.ok() )
-            p()->proc_actions.shared_fate->execute_on_target( main_seed_target );
-
-          // Feast of Souls is processed after SoC captures its previous Succulent Soul state but before the delayed stack removal
-          if ( p()->hero.quietus.ok() && p()->hero.feast_of_souls.ok() && p()->prd_rng.feast_of_souls->trigger( execute_state ) )
-            p()->feast_of_souls_gain();
-        }
-      }
-
       if ( soul_harvester() )
-      {
-        // NOTE: 2026-07-07 If Nightfall SoC gains Succulent Soul through Feast of Souls with no pre-existing stack,
-        // SoC removes one stack after a short delay without triggering Succulent Soul effects (bug)
-        if ( !p()->bugs || soc_had_prev_succulent_soul )
-        {
-          helpers::consume_succulent_soul( p(), main_seed_target );
-        }
-        else if ( p()->buffs.succulent_soul->check() )
-        {
-          make_event( sim, 10_ms, [ p = p() ] {
-            p->buffs.succulent_soul->decrement();
-          } );
-        }
-      }
+        helpers::consume_succulent_soul( p(), main_seed_target );
 
+      const int prev_shard_instability_stacks = p()->buffs.shard_instability->check();
       if ( ua_seed_tier )
       {
         // 12.1 4pc seed UA is applied to the main_seed_target (could be redirected from the main SoC cast target)
@@ -2032,18 +1908,16 @@ using namespace helpers;
         ua_seed_tier->execute();
       }
 
-      // NOTE: 2026-02-26 If Nightfall is obtained during the casting of Seed of Corruption, that SoC cast
-      // benefits from the cost reduction but does not consume the effect. (bug?)
-      if ( p()->sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
+      // NOTE: 2026-08-21 If Shard Instability buff is gained during the casting of Seed of Corruption,
+      // that SoC cast benefits from the cost reduction but does not consume the effect (bug?)
+      if ( time_to_execute == 0_ms )
       {
-        if ( p()->talents.nocturnal_yield.ok() && time_to_execute == 0_ms )
-          p()->buffs.nightfall->decrement();
-      }
+        // NOTE: 2026-08-21 SoC and its seed-applied UA consume at most 1 Shard Instability stack in total,
+        // so SoC does not consume SI here if the seed-applied UA already did
+        const int current_shard_instability_stacks = p()->buffs.shard_instability->check();
+        assert( prev_shard_instability_stacks == current_shard_instability_stacks || prev_shard_instability_stacks == current_shard_instability_stacks + 1 );
 
-      // NOTE: 2026-07-26 Seed of Corruption is not consuming Shard Instability buff (bug)
-      if ( p()->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      {
-        if ( !p()->bugs && time_to_execute == 0_ms )
+        if ( !p()->bugs || !ua_seed_tier || prev_shard_instability_stacks == current_shard_instability_stacks )
           p()->buffs.shard_instability->decrement();
       }
 
@@ -2228,8 +2102,8 @@ using namespace helpers;
       extra_tick_mul( p->talents.malefic_grasp_2->effectN( 2 ).percent() )
     {
       channeled = true;
-      // NOTE: 2026-04-29 Malefic Grasp ticks are not affected by Death's Embrace (bug?)
-      affected_by.deaths_embrace = !p->bugs && p->talents.deaths_embrace.ok();
+      // NOTE: 2026-08-21 Malefic Grasp ticks are affected by Death's Embrace
+      affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
       if ( p->talents.cunning_cruelty.ok() )
         volley = new shadowbolt_volley_t( p );
@@ -2272,11 +2146,8 @@ using namespace helpers;
 
     void snapshot_state( action_state_t* s, result_amount_type rt ) override
     {
-      // NOTE: 2026-07-26 12.0.7: Malefic Grasp does not benefit from the Nightfall damage bonus under any circumstances (bug)
-      // NOTE: 2026-07-26 12.1.0: PTR Nightfall does not buff Malefic Grasp damage unless the Necrolyte Teachings hero talent (Soul Harvester) is used (bug)
-      double dmg_mul = ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
-                ? ( p()->bugs ? 0.0 : p()->talents.nightfall_buff->effectN( 2 ).percent() )
-                : ( ( p()->bugs && !p()->hero.necrolyte_teachings.ok() ) ? 0.0 : p()->talents.nightfall_buff->effectN( 2 ).percent() );
+      // NOTE: 2026-07-26: Nightfall does not buff Malefic Grasp damage unless the Necrolyte Teachings hero talent (Soul Harvester) is used (bug)
+      double dmg_mul = ( p()->bugs && !p()->hero.necrolyte_teachings.ok() ) ? 0.0 : p()->talents.nightfall_buff->effectN( 2 ).percent();
 
       debug_cast<malefic_grasp_state_t*>( s )->td_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? dmg_mul : 0.0 );
       debug_cast<malefic_grasp_state_t*>( s )->tick_time_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? p()->talents.nightfall_buff->effectN( 3 ).percent() : 0.0 );
@@ -2349,11 +2220,12 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_target_multiplier( t );
 
-      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      {
-        if ( p()->talents.impetuous_wrath.ok() )
-          m *= 1.0 + ( td( t )->debuffs.haunt->check() ? p()->talents.impetuous_wrath->effectN( 2 ).percent() : p()->talents.impetuous_wrath->effectN( 1 ).percent() );
-      }
+      // NOTE: 2026-08-21 Malefic Grasp is affected by Withering Bolt
+      if ( p()->talents.withering_bolt.ok() )
+        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( ( int )( p()->talents.withering_bolt->effectN( 2 ).base_value() ), td( t )->count_affliction_dots() );
+
+      if ( p()->talents.impetuous_wrath.ok() )
+        m *= 1.0 + ( td( t )->debuffs.haunt->check() ? p()->talents.impetuous_wrath->effectN( 2 ).percent() : p()->talents.impetuous_wrath->effectN( 1 ).percent() );
 
       return m;
     }
@@ -2497,11 +2369,8 @@ using namespace helpers;
       if ( p()->talents.withering_bolt.ok() )
         m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( ( int )( p()->talents.withering_bolt->effectN( 2 ).base_value() ), td( t )->count_affliction_dots() );
 
-      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      {
-        if ( p()->talents.impetuous_wrath.ok() )
-          m *= 1.0 + ( td( t )->debuffs.haunt->check() ? p()->talents.impetuous_wrath->effectN( 2 ).percent() : p()->talents.impetuous_wrath->effectN( 1 ).percent() );
-      }
+      if ( p()->talents.impetuous_wrath.ok() )
+        m *= 1.0 + ( td( t )->debuffs.haunt->check() ? p()->talents.impetuous_wrath->effectN( 2 ).percent() : p()->talents.impetuous_wrath->effectN( 1 ).percent() );
 
       return m;
     }
@@ -2580,11 +2449,8 @@ using namespace helpers;
       {
         double m = warlock_spell_t::composite_target_multiplier( t );
 
-        if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-        {
-          if ( p()->talents.impetuous_wrath.ok() )
-            m *= 1.0 + ( td( t )->debuffs.haunt->check() ? p()->talents.impetuous_wrath->effectN( 4 ).percent() : p()->talents.impetuous_wrath->effectN( 3 ).percent() );
-        }
+        if ( p()->talents.impetuous_wrath.ok() )
+          m *= 1.0 + ( td( t )->debuffs.haunt->check() ? p()->talents.impetuous_wrath->effectN( 4 ).percent() : p()->talents.impetuous_wrath->effectN( 3 ).percent() );
 
         return m;
       }
@@ -3169,74 +3035,131 @@ using namespace helpers;
 
     void execute() override
     {
-      // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
-      timespan_t imp_travel_time = calc_imp_travel_time( 65 );
-
       auto imps = p()->warlock_pet_list.wild_imps.active_pets();
+      const unsigned active_imps = as<unsigned>( imps.size() );
 
-      // NOTE: 2026-02-17: Seems than older wild imps (or with less energy) are prioritized for implosion.
-      // It hasn't yet been determined whether those with less energy or the oldest are prioritized first.
-      // The Imp Gang Boss / Unstable Soul buffs do not seem to affect the selection.
-      // There also seem to exist some unusual interactions with the priority of wild imps to implode (not implemented):
-      // - The distance of the wild imps from the player can affect their selection.
-      // - When there are many imps (more than 9), the selection of some of them seems to become somewhat random
-      //   (maybe not random; in any case, their actual behavior in this situation has not been fully determined).
-      range::sort( imps, []( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
-        double lv = imp1->resources.current[ RESOURCE_ENERGY ];
-        double rv = imp2->resources.current[ RESOURCE_ENERGY ];
-        if ( lv == rv )
-          return imp1->actor_spawn_index < imp2->actor_spawn_index;
+      const unsigned max_selected_demons = as<unsigned>( data().effectN( 1 ).base_value() );
+      unsigned selected_demons = std::min( max_selected_demons, active_imps );
+      unsigned selected_imps = selected_demons;
 
-        return lv < rv;
-      } );
-
-      unsigned max_imps = as<unsigned>( data().effectN( 1 ).base_value() );
-      // NOTE: 2026-07-18: PTR 12.1.0 Without the To Hell and Back talent, when trying to implode 6 Wild Imps, only 5 are sent to implode (bug)
-      if ( p()->bugs && sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && !p()->talents.to_hell_and_back.ok() )
-        max_imps--;
-
-      unsigned launch_counter = 0;
-      for ( auto imp : imps )
+      // NOTE: 2026-08-21: Implosion currently appears to select up to 6 demons from a broader set of
+      // Warlock summons before restricting the actual Implosion effect to Wild Imps (bug). This can
+      // cause fewer than 6 Wild Imps to implode when other eligible demons are active. In-game
+      // selection appears to depend on spatial cell ordering, which SimC does not model, so approximate
+      // the number of selected Wild Imps by randomly sampling from the eligible demon pool.
+      if ( p()->bugs )
       {
-        implosion_aoe_t* ex = explosion;
-        player_t* tar = target;
-        double dist = p()->get_player_distance( *tar );
+        unsigned implosion_candidates = 0;
+        for ( auto pet : p()->active_pets )
+        {
+          auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
 
-        imp->trigger_movement( dist, movement_direction_type::TOWARDS );
-        imp->interrupt();
-        imp->imploded = true;
+          if ( lock_pet == nullptr )
+            continue;
+          if ( lock_pet->is_sleeping() )
+            continue;
 
-        // Imps launched with Implosion appear to be staggered and snapshot when they impact
-        // 2020-12-04: Implosion may have been made quicker in Shadowlands, too fast to easily discern with combat log
-        // Going to set the interval to 10 ms, which should keep all but the most extreme imp counts from bleeding into the next GCD
-        // TODO: There's an awkward possibility of Implosion seeming "ready" after casting it if all the imps have not imploded yet. Find a workaround
-        make_event( sim, 50_ms * launch_counter + imp_travel_time, [ ex, tar, imp ] {
-          if ( imp && !imp->is_sleeping() )
+          if ( lock_pet->is_implosion_candidate )
+            implosion_candidates++;
+        }
+        assert( active_imps <= implosion_candidates );
+
+        selected_demons = std::min( max_selected_demons, implosion_candidates );
+
+        if ( selected_demons == implosion_candidates )
+        {
+          selected_imps = active_imps;
+        }
+        else
+        {
+          // Sample from the eligible demon pool without replacement
+          selected_imps = 0;
+          unsigned remaining_demons = implosion_candidates;
+          unsigned remaining_imps = active_imps;
+          for ( unsigned i = 0; i < selected_demons; i++ )
           {
-            ex->energy_remaining = ( imp->resources.current[ RESOURCE_ENERGY ] );
-            ex->set_target( tar );
-            ex->next_imp = imp;
-            ex->execute();
+            if ( remaining_imps == 0 )
+              break;
+
+            if ( remaining_imps == remaining_demons )
+            {
+              selected_imps += selected_demons - i;
+              break;
+            }
+
+            if ( rng().roll( static_cast<double>( remaining_imps ) / remaining_demons ) )
+            {
+              selected_imps++;
+              remaining_imps--;
+            }
+
+            remaining_demons--;
           }
+        }
+      }
+      assert( selected_imps <= selected_demons );
+      assert( selected_imps <= active_imps );
+      assert( selected_demons <= max_selected_demons );
+
+      if ( selected_imps > 0 )
+      {
+        // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
+        const timespan_t imp_travel_time = calc_imp_travel_time( 65 );
+
+        // NOTE: 2026-02-17: Seems that older Wild Imps (or those with less energy) are prioritized for Implosion.
+        // It hasn't yet been determined whether those with less energy or the oldest are prioritized first.
+        // The Imp Gang Boss / Unstable Soul buffs do not seem to affect the selection.
+        // NOTE: 2026-08-21: Spatial cell ordering also appears to affect which individual Wild Imps are selected
+        // in some way, but the exact interaction is not yet understood or modeled by SimC
+        range::sort( imps, []( const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2 ) {
+          double lv = imp1->resources.current[ RESOURCE_ENERGY ];
+          double rv = imp2->resources.current[ RESOURCE_ENERGY ];
+          if ( lv == rv )
+            return imp1->actor_spawn_index < imp2->actor_spawn_index;
+
+          return lv < rv;
         } );
 
-        launch_counter++;
+        unsigned launch_counter = 0;
+        for ( auto imp : imps )
+        {
+          if ( launch_counter >= selected_imps )
+            break;
 
-        if ( launch_counter >= max_imps )
-          break;
+          implosion_aoe_t* ex = explosion;
+          player_t* tar = target;
+          const double dist = p()->get_player_distance( *tar );
+
+          imp->trigger_movement( dist, movement_direction_type::TOWARDS );
+          imp->interrupt();
+          imp->imploded = true;
+
+          // Imps launched with Implosion appear to be staggered and snapshot when they impact
+          // NOTE: 2026-08-21: In-game tests suggest that Wild Imps are launched for Implosion at roughly 50 ms intervals
+          // TODO: There's an awkward possibility of Implosion seeming "ready" after casting it if all the imps have not imploded yet. Find a workaround
+          make_event( sim, 50_ms * launch_counter + imp_travel_time, [ ex, tar, imp ] {
+            if ( imp && !imp->is_sleeping() )
+            {
+              ex->energy_remaining = ( imp->resources.current[ RESOURCE_ENERGY ] );
+              ex->set_target( tar );
+              ex->next_imp = imp;
+              ex->execute();
+            }
+          } );
+
+          launch_counter++;
+        }
       }
+
       if ( p()->talents.to_hell_and_back.ok() )
       {
         const unsigned imps_per_group = as<unsigned>( p()->talents.to_hell_and_back->effectN( 1 ).base_value() );
         const unsigned group_size = as<unsigned>( p()->talents.to_hell_and_back->effectN( 2 ).base_value() );
-        unsigned groups;
-        // NOTE: 2026-07-11: PTR 12.1.0 Implosion rounds up To Hell and Back summons (bug?)
-        if ( p()->bugs && sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-          groups = ( launch_counter + group_size - 1 ) / group_size;
-        else
-          groups = launch_counter / group_size;
+        // NOTE: 2026-08-21: The number of empowered Wild Imps summoned by To Hell and Back depends on
+        // the number of demons selected by Implosion, not the number of Wild Imps actually imploded
+        const unsigned groups = selected_demons / group_size;
 
-        unsigned new_imps = groups * imps_per_group;
+        const unsigned new_imps = groups * imps_per_group;
         if ( new_imps > 0 )
         {
           auto imps = debug_cast<summon_wild_imp_2_t*>( p()->summons.wild_imp_2 )->execute_spawn( new_imps );
@@ -3488,13 +3411,13 @@ using namespace helpers;
 
     void execute() override
     {
-      player_t* cast_target = target;
+      player_t* call_dread_target = target;
 
       warlock_spell_t::execute();
 
       unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
 
-      const auto delay_dur_adjusts = p()->dreadstalkers_delay_duration_adjustment_helper( *cast_target );
+      const auto delay_dur_adjusts = p()->dreadstalkers_delay_duration_adjustment_helper( *call_dread_target );
       const timespan_t& delay = delay_dur_adjusts.first;
       const timespan_t& dur_adjust = delay_dur_adjusts.second;
 
@@ -3507,7 +3430,7 @@ using namespace helpers;
       }
 
       if ( p()->talents.summon_vilefiend.ok() )
-        p()->summons.vilefiend->execute_on_target( cast_target );
+        p()->summons.vilefiend->execute_on_target( call_dread_target );
     }
   };
 
@@ -4049,7 +3972,7 @@ using namespace helpers;
 
     void execute() override
     {
-      player_t* cast_target = target;
+      player_t* inc_target = target;
 
       real_total_target_count = 1;
       if ( use_havoc() )
@@ -4058,7 +3981,7 @@ using namespace helpers;
       if ( p()->talents.fire_and_brimstone.ok() )
       {
         // FnB excludes the primary and Havoc targets, so both lists together contain every unique impact.
-        fnb_action->set_target( cast_target );
+        fnb_action->set_target( inc_target );
         real_total_target_count += as<unsigned>( fnb_action->target_list().size() );
         fnb_action->real_total_target_count = real_total_target_count;
       }
@@ -4402,11 +4325,17 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->talents.internal_combustion.ok() && result_is_hit( s->result ) && ( td( s->target )->dots.immolate->is_ticking() || td( s->target )->dots.wither->is_ticking() ) )
-        internal_combustion->execute_on_target( s->target );
+      if ( result_is_hit( s->result ) )
+      {
+        if ( hellcaller() && p()->hero.blackened_soul.ok() )
+          helpers::trigger_blackened_soul( p(), false, s->target );
 
-      if ( p()->talents.embers_of_nihilam_3.ok() && result_is_hit( s->result ) )
-        helpers::trigger_echo_of_sargeras( p(), s->target, p()->proc_actions.echo_of_sargeras_cb, p()->procs.echo_of_sargeras_cb );
+        if ( p()->talents.internal_combustion.ok() && ( td( s->target )->dots.immolate->is_ticking() || td( s->target )->dots.wither->is_ticking() ) )
+          internal_combustion->execute_on_target( s->target );
+
+        if ( p()->talents.embers_of_nihilam_3.ok() )
+          helpers::trigger_echo_of_sargeras( p(), s->target, p()->proc_actions.echo_of_sargeras_cb, p()->procs.echo_of_sargeras_cb );
+      }
     }
 
     void schedule_execute( action_state_t* s ) override
@@ -4451,15 +4380,7 @@ using namespace helpers;
       if ( p()->bugs && diabolist() && affected_by.touch_of_rancora && affected_by.havoc && rancora_empowered )
         base_aoe_multiplier *= havoc_rancora_mul_adjust;
 
-      player_t* cb_target = target;
-
       warlock_spell_t::execute();
-
-      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      {
-        if ( hellcaller() && p()->hero.blackened_soul.ok() )
-          helpers::trigger_blackened_soul( p(), false, cb_target );
-      }
 
       base_aoe_multiplier = prev_base_aoe_multiplier; // Restore original previous havoc aoe multiplier
 
@@ -4582,19 +4503,6 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
-      {
-        p()->buffs.conflagration_of_chaos->expire();
-
-        if ( p()->talents.conflagration_of_chaos.ok() )
-        {
-          bool success = p()->buffs.conflagration_of_chaos->trigger();
-
-          if ( success )
-            p()->procs.conflagration_of_chaos->occur();
-        }
-      }
-
       if ( p()->talents.backdraft.ok() )
         p()->buffs.backdraft->trigger();
     }
@@ -4603,7 +4511,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_da_multiplier( s );
 
-      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) ? p()->buffs.conflagration_of_chaos->check() : p()->talents.conflagration_of_chaos.ok() )
+      if ( p()->talents.conflagration_of_chaos.ok() )
         m *= 1.0 + player->cache.spell_crit_chance();
 
       return m;
@@ -4898,6 +4806,9 @@ using namespace helpers;
       {
         td( s->target )->debuffs.shadowburn->trigger();
 
+        if ( hellcaller() && p()->hero.blackened_soul.ok() )
+          helpers::trigger_blackened_soul( p(), false, s->target );
+
         if ( p()->talents.embers_of_nihilam_3.ok() )
           helpers::trigger_echo_of_sargeras( p(), s->target, p()->proc_actions.echo_of_sargeras_sb, p()->procs.echo_of_sargeras_sb );
       }
@@ -4916,30 +4827,9 @@ using namespace helpers;
       if ( p()->bugs && diabolist() && affected_by.touch_of_rancora && affected_by.havoc && rancora_empowered )
         base_aoe_multiplier *= havoc_rancora_mul_adjust;
 
-      player_t* sb_target = target;
-
       warlock_spell_t::execute();
 
-      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      {
-        if ( hellcaller() && p()->hero.blackened_soul.ok() )
-          helpers::trigger_blackened_soul( p(), false, sb_target );
-      }
-
       base_aoe_multiplier = prev_base_aoe_multiplier; // Restore original previous havoc aoe multiplier
-
-      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) )
-      {
-        p()->buffs.conflagration_of_chaos->expire();
-
-        if ( p()->talents.conflagration_of_chaos.ok() )
-        {
-          bool success = p()->buffs.conflagration_of_chaos->trigger();
-
-          if ( success )
-            p()->procs.conflagration_of_chaos->occur();
-        }
-      }
 
       p()->buffs.fiendish_cruelty->decrement();
     }
@@ -4948,7 +4838,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_da_multiplier( s );
 
-      if ( sim->dbc->wowv() < wowv_t( 12, 1, 0 ) ? p()->buffs.conflagration_of_chaos->check() : p()->talents.conflagration_of_chaos.ok() )
+      if ( p()->talents.conflagration_of_chaos.ok() )
         m *= 1.0 + player->cache.spell_crit_chance();
 
       return m;
@@ -5107,7 +4997,7 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       // Random extra duration time between 0_ms and 820_ms following a uniform distribution
-      const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
+      const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 820.0 ) );
       p()->warlock_pet_list.infernals.spawn( data().duration() + dur_adjust );
     }
   };
@@ -5126,7 +5016,7 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       // Random extra duration time between 0_ms and 820_ms following a uniform distribution
-      const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
+      const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 820.0 ) );
       auto spawned = p()->warlock_pet_list.rocs.spawn( data().duration() + dur_adjust );
       for ( pets::destruction::infernal_t* s : spawned )
         s->type = pets::destruction::infernal_t::infernal_type_e::RAIN;
@@ -5147,7 +5037,7 @@ using namespace helpers;
       warlock_spell_t::execute();
 
       // Random extra duration time between 0_ms and 820_ms following a uniform distribution
-      const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 0.0, 820.0 ) );
+      const timespan_t dur_adjust = timespan_t::from_millis( rng().range( 820.0 ) );
       p()->warlock_pet_list.fragments.spawn( data().duration() + dur_adjust );
     }
   };
@@ -5277,13 +5167,8 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      {
-        if ( result_is_hit( s->result ) && active_4pc<MID2>() )
-        {
-          td( s->target )->debuffs.dark_titans_mark->trigger();
-        }
-      }
+      if ( result_is_hit( s->result ) && active_4pc<MID2>() )
+        td( s->target )->debuffs.dark_titans_mark->trigger();
     }
   };
 
@@ -5649,17 +5534,10 @@ using namespace helpers;
   void helpers::trigger_blackened_soul( warlock_t* p, bool malevolence, player_t* bs_target )
   {
     std::vector<player_t*> target_list;
-    if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-    {
-      if ( malevolence )
-        target_list = p->sim->target_non_sleeping_list.data();
-      else if ( bs_target != nullptr )
-        target_list.push_back( bs_target );
-    }
-    else
-    {
+    if ( malevolence )
       target_list = p->sim->target_non_sleeping_list.data();
-    }
+    else if ( bs_target != nullptr )
+      target_list.push_back( bs_target );
 
     for ( const auto target : target_list )
     {
@@ -5898,11 +5776,8 @@ using namespace helpers;
         ua_action->is_fatal_echoes_execute = false;
       }
 
-      if ( p->sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) )
-      {
-        if ( p->active_4pc<MID2>() )
-          helpers::update_unstable_empowerment_buff( p );
-      }
+      if ( p->active_4pc<MID2>() )
+        helpers::update_unstable_empowerment_buff( p );
     }
   }
 
@@ -6129,7 +6004,7 @@ using namespace helpers;
   {
     proc_actions.doom_proc     = new doom_t( this );
     proc_actions.blighted_maw  = new blighted_maw_t( this );
-    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 0 ) && active_4pc<MID2>() )
+    if ( active_4pc<MID2>() )
       proc_actions.isolated_implosion = new isolated_implosion_t( this );
 
     summons.wild_imp           = new summon_wild_imp_t( this );

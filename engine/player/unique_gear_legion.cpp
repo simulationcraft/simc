@@ -4316,7 +4316,7 @@ void item::moonlit_prism( special_effect_t& effect )
   effect2->source           = SPECIAL_EFFECT_SOURCE_ITEM;
   effect2->name_str         = "moonlit_prism_driver";
   effect2->proc_chance_     = 1.0;
-  effect2->spell_id         = effect.driver()->id();
+  effect2->spell_id         = effect.spell_id;
   effect2->cooldown_        = effect.driver()->internal_cooldown();
   effect2->proc_flags_      = PF_RANGED | PF_RANGED_ABILITY | PF_MAGIC_SPELL | PF_NONE_HARMFUL;
   effect2->proc_flags2_     = PF2_HIT | PF2_CRIT;

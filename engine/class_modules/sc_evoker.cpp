@@ -369,7 +369,7 @@ struct simplified_player_t : public player_t
   // Options
   struct options_t
   {
-    int item_level      = 298;
+    int item_level      = 311;
     std::string variant = "default";
     double skill         = 1.0;
   } option;
@@ -5227,14 +5227,6 @@ struct fire_breath_t : public empowered_charge_spell_t
 
       if ( p()->talent.infernos_blessing.ok() )
       {
-        if ( p()->bugs )
-        {
-          for ( auto& b : p()->active_infernos_blessings )
-          {
-            b->cancel();
-          }
-        }
-
         if ( p()->buff.ebon_might_self_buff->check() )
         {
           p()->get_target_data( p() )->buffs.infernos_blessing->trigger();
@@ -11246,10 +11238,6 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
 
   if ( mote_buff == mote_buffs_e::INFERNOS_BLESSING )
   {
-    // Maintain two IBs
-    if ( active_infernos_blessings.size() > 0 )
-      rng().range( active_infernos_blessings )->cancel();
-
     get_target_data( target )->buffs.infernos_blessing->trigger();
   }
   else if ( mote_buff == mote_buffs_e::PRESCIENCE )

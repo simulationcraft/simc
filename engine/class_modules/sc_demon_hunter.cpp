@@ -4040,7 +4040,8 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
 
       // 08/01/2026 - Essence Break and Eyebeam currently reduce the value of the other by 2.5 seconds when stacks 2 - 4
       // are each applied.
-      if ( dh()->buff.cycle_of_hatred->check() && dh()->buff.cycle_of_hatred->stack() < 4 )
+      // 2026-08-17 -- EssB is only reduced if the playerh as the 4pc equipped.
+      if ( dh()->set_bonuses.mid2_havoc_4pc->ok() && dh()->buff.cycle_of_hatred->check() && dh()->buff.cycle_of_hatred->stack() < 4 )
       {
         dh()->cooldown.essence_break->adjust(
             -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_value() ) ) );

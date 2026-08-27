@@ -13,6 +13,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice
 actions.precombat+=/seed_of_corruption,if=(hero_tree.soul_harvester&active_enemies>1)|active_enemies>2
 actions.precombat+=/haunt,if=active_enemies<2|(hero_tree.hellcaller&active_enemies<3)
+actions.precombat+=/potion,if=potion.liquid_luster
 
 # Executed every time the actor is available.
 actions=call_action_list,name=variables
@@ -28,7 +29,7 @@ actions+=/shadow_bolt
 actions.HC_aoe=haunt
 actions.HC_aoe+=/seed_of_corruption,if=(!dot.wither.ticking|dot.wither.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight
 actions.HC_aoe+=/dark_harvest
-actions.HC_aoe+=/agony,target_if=min:remains,if=active_dot.agony<(8+(2*talent.sow_the_seeds))&remains<5
+actions.HC_aoe+=/agony,target_if=min:remains,if=active_dot.agony<14&remains<5
 actions.HC_aoe+=/summon_darkglare
 actions.HC_aoe+=/malevolence
 actions.HC_aoe+=/seed_of_corruption,if=talent.sow_the_seeds|active_enemies>5
@@ -61,19 +62,21 @@ actions.SH_aoe=haunt
 actions.SH_aoe+=/seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight
 actions.SH_aoe+=/dark_harvest
 actions.SH_aoe+=/seed_of_corruption,target_if=!dot.unstable_affliction.ticking&prev.dark_harvest,if=set_bonus.midnight_season_2_4pc&active_enemies<=5
-actions.SH_aoe+=/agony,target_if=min:remains,if=active_dot.agony<10&remains<5
+actions.SH_aoe+=/agony,target_if=min:remains,if=active_dot.agony<12&remains<5
 actions.SH_aoe+=/summon_darkglare
-actions.SH_aoe+=/seed_of_corruption
+actions.SH_aoe+=/malefic_grasp,if=buff.nightfall.react>1&active_enemies<=6
+actions.SH_aoe+=/shadow_bolt,if=buff.nightfall.react>1&active_enemies<=7
+actions.SH_aoe+=/seed_of_corruption,if=talent.sow_the_seeds|active_enemies>5
+actions.SH_aoe+=/unstable_affliction
 actions.SH_aoe+=/agony,target_if=min:remains,if=remains<duration*0.5
 actions.SH_aoe+=/malefic_grasp,if=pet.darkglare.remains<gcd
 
 actions.SH_cleave=haunt
 actions.SH_cleave+=/seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight
+actions.SH_cleave+=/agony,target_if=refreshable
 actions.SH_cleave+=/dark_harvest
 actions.SH_cleave+=/unstable_affliction,cycle_targets=1,if=!ticking&prev.dark_harvest
-actions.SH_cleave+=/seed_of_corruption,if=talent.sow_the_seeds
 actions.SH_cleave+=/unstable_affliction
-actions.SH_cleave+=/agony,target_if=refreshable
 actions.SH_cleave+=/summon_darkglare
 actions.SH_cleave+=/malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd
 actions.SH_cleave+=/drain_soul,if=buff.nightfall.react>1
@@ -99,10 +102,10 @@ actions.hellcaller=call_action_list,name=HC_st,if=active_enemies=1
 actions.hellcaller+=/call_action_list,name=HC_cleave,if=active_enemies=2
 actions.hellcaller+=/call_action_list,name=HC_aoe,if=active_enemies>2
 
-actions.items=use_item,name=stormbound_emblem_of_dazar,if=cooldown.summon_darkglare.remains<=2&dot.agony.remains&(dot.corruption.remains|dot.wither.remains)&cooldown.dark_harvest.remains>1
+actions.items=use_item,name=stormbound_emblem_of_dazar,if=cooldown.summon_darkglare.remains<=4&dot.agony.remains&(dot.corruption.remains|dot.wither.remains)&cooldown.dark_harvest.remains>1
 actions.items+=/use_item,name=galactic_gladiators_badge_of_ferocity,if=(buff.malevolence.up|pet.darkglare.active)|fight_remains<20
-actions.items+=/use_items,if=(buff.malevolence.up|pet.darkglare.active)|fight_remains<20
 actions.items+=/use_item,name=hex_lords_dooming_idol,if=pet.darkglare.active|buff.hex_lords_doom.stack>19|fight_remains<=30
+actions.items+=/use_items,if=(buff.malevolence.up|pet.darkglare.active)|fight_remains<20
 actions.items+=/use_item,use_off_gcd=1,slot=main_hand
 
 actions.ogcd=potion,use_off_gcd=1,if=variable.cds_active|fight_remains<32
@@ -118,3 +121,5 @@ actions.soul_harvester+=/call_action_list,name=SH_aoe,if=active_enemies>2
 actions.variables=variable,name=cds_active,op=set,value=!talent.summon_darkglare|pet.darkglare.remains
 actions.variables+=/variable,name=darkglare_active,op=set,value=pet.darkglare.active|(cooldown.summon_darkglare.duration-cooldown.summon_darkglare.remains)<20
 actions.variables+=/cycling_variable,name=min_agony,op=min,value=dot.agony.remains+(99*!dot.agony.remains)
+actions.variables+=/variable,name=malevolence_from_cast,value=0,op=set,if=buff.malevolence.up=0
+actions.variables+=/variable,name=malevolence_from_cast,value=1,op=set,if=prev_gcd.1.malevolence
