@@ -8727,6 +8727,9 @@ std::string warrior_t::default_flask() const
   if ( specialization() == WARRIOR_PROTECTION && true_level > 80 )
     return "flask_of_the_shattered_sun_2";
 
+  if ( specialization() == WARRIOR_FURY && true_level > 80 )
+    return "flask_of_the_magisters_2";
+
   return ( true_level > 80 )
              ? "flask_of_the_blood_knights_2"
              : ( true_level > 70 )
