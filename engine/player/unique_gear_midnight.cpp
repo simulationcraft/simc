@@ -3129,6 +3129,19 @@ void astalors_anguish_agitator( special_effect_t& e )
   e.custom_buff    = leech_buff;
 }
 
+// 1247568 crit driver
+// 1247569 haste driver
+// 1247570 mastery driver
+// 1247571 versatility driver
+void drum_of_renewed_bonds( special_effect_t& effect )
+{
+  auto buff_name = fmt::format( "{}_{}", effect.trigger()->name_cstr(), "renewed_bonds" );
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, buff_name, effect.trigger() )
+    ->set_name_reporting( "Renewed Bonds" );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // 1253120 Driver
 // 1266300 Ally Buff
 // 1266299 Player Buff
@@ -5871,6 +5884,7 @@ void register_special_effects()
   register_special_effect( 1258535, trinkets::volatile_void_suffuser );
   register_special_effect( 1272693, trinkets::astalors_anguish_agitator );
   register_special_effect( 1272690, DISABLED_EFFECT ); // Astalors Anguish Agitator Passive Driver
+  register_special_effect( { 1247568, 1247569, 1247570, 1247571 }, trinkets::drum_of_renewed_bonds );
   register_special_effect( 1247311, DISABLED_EFFECT ); // Drum of Renewed Bonds on use
   register_special_effect( 1253120, trinkets::glorious_crusaders_keepsake );
   register_special_effect( 1253112, trinkets::sylvan_wakrapuku );
