@@ -1,3 +1,4 @@
+# Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=snapshot_stats
 actions.precombat+=/variable,name=tab_target_burning_wound,op=reset,default=1
 actions.precombat+=/variable,name=rg_ds,default=0,op=reset
@@ -14,16 +15,18 @@ actions.precombat+=/immolation_aura
 actions=auto_attack
 actions+=/immolation_aura,if=talent.violent_transformation&talent.a_fire_inside&cooldown.metamorphosis.remains<gcd.max*3
 actions+=/metamorphosis,if=(!talent.chaotic_transformation|!cooldown.blade_dance.up&cooldown.eye_beam.remains>8)&!action.death_sweep.demonsurge_available&!action.annihilation.demonsurge_available
+#actions+=/metamorphosis,if=!talent.chaotic_transformation|!cooldown.blade_dance.up&!cooldown.eye_beam.up
 actions+=/the_hunt,if=(!talent.eternal_hunt|cooldown.eye_beam.remains<10&cooldown.metamorphosis.remains>15|!cooldown.eye_beam.up&cooldown.metamorphosis.up|!hero_tree.felscarred)&!buff.reavers_glaive.up
 actions+=/vengeful_retreat,use_off_gcd=1,if=gcd.remains<0.3&cooldown.metamorphosis.remains&cooldown.eye_beam.remains<gcd.max*0.3&!buff.initiative.up|cooldown.metamorphosis.up&cooldown.eye_beam.remains&cooldown.blade_dance.remains&!buff.eternal_hunt.up
 actions+=/potion,if=cooldown.metamorphosis.up&(cooldown.eye_beam.up|!talent.chaotic_transformation)|fight_remains<=30
 actions+=/use_items,if=cooldown.metamorphosis.up|cooldown.eye_beam.up|fight_remains<=20
 actions+=/pick_up_fragment,type=all,use_off_gcd=1,if=fury<=40
 actions+=/reavers_glaive,if=buff.rending_strike.down&buff.glaive_flurry.down
-actions+=/immolation_aura,if=talent.a_fire_inside&talent.burning_wound&(charges=2|full_recharge_time<gcd.max*2)
 actions+=/annihilation,if=buff.rending_strike.up&buff.glaive_flurry.down&debuff.reavers_mark.stack<2|buff.rending_strike.up&active_enemies>=2
+actions+=/essence_break,if=action.death_sweep.demonsurge_available|action.annihilation.demonsurge_available
 actions+=/death_sweep,if=debuff.essence_break.up|action.death_sweep.demonsurge_available
-actions+=/annihilation,if=action.annihilation.demonsurge_available
+actions+=/annihilation,if=debuff.essence_break.up|action.annihilation.demonsurge_available
+actions+=/immolation_aura,if=talent.a_fire_inside&talent.burning_wound&(charges=2|full_recharge_time<gcd.max*2)
 actions+=/eye_beam
 actions+=/immolation_aura,,if=action.immolation_aura.demonsurge_available&buff.demonsurge.remains<gcd.max
 actions+=/felblade,if=buff.inertia_trigger.up
