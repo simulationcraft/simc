@@ -84,7 +84,7 @@ augmentation=void_touched_augment_rune
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
 head=venomkeepers_horrific_cowl,id=271874,bonus_id=13668/13848/13335/13846,ilevel=344,gem_id=240967,enchant_id=8017
-neck=amulet_of_the_twin_fangs,id=268251,bonus_id=13668/12854/13335,ilevel=334,gem_id=240894
+neck=aqirbane_reliquary,id=268265,bonus_id=13668/13848/13335/13987,ilevel=344,gem_id=240894/240916
 shoulders=primal_leywardens_manaflux,id=271562,bonus_id=12854/13335,ilevel=334,enchant_id=8001,redirected_base_stats=268241
 back=silken_voodoo_drape,id=268253,bonus_id=13848/13335,ilevel=344
 chest=crest_of_the_primal_leywarden,id=271567,bonus_id=12854/13440,ilevel=334,enchant_id=7987,redirected_base_stats=251147
@@ -96,8 +96,8 @@ feet=cackling_soultreads,id=268255,bonus_id=13848/13335,ilevel=344,enchant_id=79
 finger1=alluring_bubbleband,id=268266,bonus_id=13668/12854/13335,ilevel=334,gem_id=240916,enchant_id=7967
 finger2=ritual_binders_ring,id=159459,bonus_id=13668/12854/13440,ilevel=334,gem_id=240906,enchant_id=7967
 trinket1=vile_vial_of_volatile_venom,id=273796,bonus_id=12854/13440,ilevel=334
-trinket2=gebbos_bottomless_bag,id=270164,bonus_id=12854/13335,ilevel=334
-main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13848/13335,ilevel=344,enchant_id=8011
+trinket2=wavecallers_seastone,id=270167,bonus_id=12854/13335,ilevel=334
+main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13848/13335,ilevel=344,enchant_id=8689
 off_hand=alnhara_lantern,id=245769,bonus_id=8960/13751/13771,ilevel=331,crafted_stats=36/40
 
 save=MID2_Mage_Fire.simc
@@ -118,7 +118,7 @@ augmentation=void_touched_augment_rune
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
 head=venomkeepers_horrific_cowl,id=271874,bonus_id=13668/13848/13335/13846,ilevel=344,gem_id=240967,enchant_id=8017
-neck=amulet_of_the_twin_fangs,id=268251,bonus_id=13668/12854/13335,ilevel=334,gem_id=240902
+neck=aqirbane_reliquary,id=268265,bonus_id=13668/13848/13335/13987,ilevel=344,gem_id=240902/240916
 shoulders=primal_leywardens_manaflux,id=271562,bonus_id=12854/13335,ilevel=334,enchant_id=8001,redirected_base_stats=268241
 back=silken_voodoo_drape,id=268253,bonus_id=13848/13335,ilevel=344
 chest=crest_of_the_primal_leywarden,id=271567,bonus_id=12854/13440,ilevel=334,enchant_id=7987,redirected_base_stats=251147
@@ -130,8 +130,8 @@ feet=cackling_soultreads,id=268255,bonus_id=13848/13335,ilevel=344,enchant_id=79
 finger1=alluring_bubbleband,id=268266,bonus_id=13668/12854/13335,ilevel=334,gem_id=240894,enchant_id=7967
 finger2=ritual_binders_ring,id=159459,bonus_id=13668/12854/13440,ilevel=334,gem_id=240906,enchant_id=7967
 trinket1=vile_vial_of_volatile_venom,id=273796,bonus_id=12854/13440,ilevel=334
-trinket2=gebbos_bottomless_bag,id=270164,bonus_id=12854/13335,ilevel=334
-main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13848/13335,ilevel=344,enchant_id=8041
+trinket2=wavecallers_seastone,id=270167,bonus_id=12854/13335,ilevel=334
+main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13848/13335,ilevel=344,enchant_id=8689
 off_hand=alnhara_lantern,id=245769,bonus_id=8960/13751/13771,ilevel=331,crafted_stats=36/40
 
 save=MID2_Mage_Fire_Frostfire.simc
