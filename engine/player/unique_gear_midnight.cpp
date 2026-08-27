@@ -4579,6 +4579,9 @@ void sszoraks_ferocity( special_effect_t& effect )
   effect.player->callbacks.register_callback_execute_function(
       ki_proc->spell_id,
       [ follow_up, killer_instincts ]( dbc_proc_callback_t*, const spell_data_t*, player_t* t, action_state_t* ) {
+        if ( !killer_instincts->up() )
+          return;
+
         killer_instincts->expire();
         follow_up( t );
       } );
