@@ -1,6 +1,7 @@
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=snapshot_stats
+actions.precombat+=/flametongue_weapon,if=talent.flametongue_weapon
 
 # Executed every time the actor is available.
 actions=call_action_list,name=cooldowns
@@ -9,7 +10,6 @@ actions+=/call_action_list,name=assisted_combat
 # This is the default action priority list from the game's Assisted Combat system.
 actions.assisted_combat=lightning_shield,if=buff.lightning_shield.down
 actions.assisted_combat+=/windfury_weapon,if=buff.windfury_weapon.down
-actions.assisted_combat+=/flametongue_weapon,if=buff.flametongue_weapon.down
 actions.assisted_combat+=/surging_totem,if=buff.surging_totem.down
 # This is for Blizzard automation and is not included in the game's Assisted Combat system.
 actions.assisted_combat+=/doom_winds,if=target.distance<=8
