@@ -321,7 +321,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1), Devout Spirit (319919 effect#1)
                  : 4639
-Affecting Spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Elemental Shaman (137040 effect#14), Enhancement Shaman (137041 effect#18), Nobundo's Redemption (208764 effect#1), Elemental Rebalancers (208777 effect#1), Elemental Fury (343190 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Refreshing Waters (378211 effect#1), Nature's Fury (381655 effect#1), Earthliving Weapon (382024 effect#2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Overflowing Maelstrom (410681 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Ancestral Swiftness (443454 effects: #1, #2, #4, #5, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effect#1), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Enhancement Shaman (1214207 effect#4), Fate Reversal (1219323 effect#1), Restoration Shaman (1256945 effects: #1, #2, #9), Windspeaker (1270447 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
+Affecting Spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Elemental Shaman (137040 effect#14), Enhancement Shaman (137041 effect#18), Nobundo's Redemption (208764 effect#1), Elemental Rebalancers (208777 effect#1), Elemental Fury (343190 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Refreshing Waters (378211 effect#1), Nature's Fury (381655 effect#1), Earthliving Weapon (382024 effect#2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Overflowing Maelstrom (410681 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #4, #5, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effect#1), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Enhancement Shaman (1214207 effect#4), Fate Reversal (1219323 effect#1), Restoration Shaman (1256945 effects: #1, #2, #9), Windspeaker (1270447 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 2pc - Healing (1283657 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc - Healing (1283658 effects: #1, #2)
 Triggered By     : Overflowing Maelstrom (410681)
 Family Flags     : 7, 41
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Heal Prediction (280), Allow Class Ability Procs (416)
@@ -13270,8 +13270,9 @@ Effects          :
                    Family Flags: 20, 83, 98, 108
 #2 (id=1144457)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.8 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064), Healing Wave (77472), Downpour (207778), Downpour (462603)
-                   Family Flags: 8, 33, 80
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472), Downpour (207778), Downpour (462603)
+                   Family Flags: 7, 8, 33, 80
+Hotfixed         : Affects Spells
 Description      : $?a137040[Increases the damage of Earth Shock, Elemental Blast, and Earthquake by $s1%.
 
 Increases the healing of Healing Surge and Chain Heal by $s2%.][Increases the healing done by Healing Wave, Downpour, and Chain Heal by $s2%.]
