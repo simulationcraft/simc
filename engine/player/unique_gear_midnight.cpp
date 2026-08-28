@@ -1,4 +1,4 @@
-// ==========================================================================
+why// ==========================================================================
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -3792,11 +3792,14 @@ void font_of_venomous_rage( special_effect_t& effect )
 
       unsigned num_ticks = as<unsigned>( dot_duration / base_tick_time ) + tick_on_application;
 
-      base_td = equip->driver()->effectN( 1 ).average( e ) / num_ticks;
+      // base_td assumes 4 ticks; revert change if blizzard fixes trinket's tooltip/spell data
+      base_td = equip->driver()->effectN( 1 ).average( e ) / ( num_ticks - 1 );
       base_td_multiplier *= role_mult( e );
 
       venom_splatter = create_proc_action<generic_aoe_proc_t>( "venom_splatter", e, e.player->find_spell( 1307222 ), false );
-      venom_splatter->base_dd_min = venom_splatter->base_dd_max = equip->driver()->effectN( 2 ).average( e ) / num_ticks;
+
+      // base_td assumes 4 ticks; revert change if blizzard fixes trinket's tooltip/spell data
+      venom_splatter->base_dd_min = venom_splatter->base_dd_max = equip->driver()->effectN( 2 ).average( e ) / ( num_ticks - 1 );
       venom_splatter->base_multiplier *= role_mult( e );
       venom_splatter->dual = true;
       venom_splatter->target_filter_callback = secondary_targets_only();
