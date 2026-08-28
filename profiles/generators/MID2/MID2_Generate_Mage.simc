@@ -1,11 +1,11 @@
 mage="MID2_Mage_Arcane_Spellslinger"
 spec=arcane
 level=90
-race=mechagnome
+race=void_elf
 role=spell
 position=back
 talents=C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDamZGAAAGAAEwMzMLLzMxCAAwMzMjNLzMzsMjxYmZwCzYmZGAgBAAYmZBAMDAGmZG
-omnium_talents=136822:1/136817:1/136815:1/136814:1
+omnium_talents=136822:1/136817:1/136821:1/136814:1
 
 potion=lights_potential_2
 flask=flask_of_the_blood_knights_2
@@ -13,34 +13,33 @@ food=silvermoon_parade
 augmentation=void_touched_augment_rune
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
-head=venomkeepers_horrific_cowl,id=271874,bonus_id=13335/13668/13846/13848,ilevel=344,gem_id=240967,enchant_id=8017
-neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13708/13848,ilevel=344,gem_id=240892/240906
-shoulder=ornaments_of_the_eternal_coil,id=268241,bonus_id=12854/13335,ilevel=334,enchant_id=8001
+head=crown_of_the_primal_leywarden,id=271564,enchant_id=7961,gem_id=240983,bonus_id=13335/13668/13846/13848,redirected_base_stats=271874,ilevel=344
+neck=aqirbane_reliquary,id=268265,gem_id=240894/240894,bonus_id=13335/13668/13987/13848,ilevel=344
+shoulder=primal_leywardens_manaflux,id=271562,enchant_id=8031,bonus_id=12854/13335,ilevel=334
 back=silken_voodoo_drape,id=268253,bonus_id=13335/13848,ilevel=344
-chest=primordial_robe_of_rites,id=273785,bonus_id=12854/13440,ilevel=334,enchant_id=7987
-wrist=martyrs_bindings,id=239648,bonus_id=8960/12384/13668/13751,ilevel=331,gem_id=240900,crafted_stats=32/40
-hands=grasps_of_the_eternal_shadow,id=268243,bonus_id=13335/13848,ilevel=344
-waist=caustic_chainwrapped_sash,id=268257,bonus_id=13668,ilevel=334,gem_id=240900
-legs=initiates_sacrificial_tights,id=268236,bonus_id=12854/13335,ilevel=334,enchant_id=7937
-feet=cackling_soultreads,id=268255,bonus_id=13335/13848,ilevel=344,enchant_id=7963
-finger1=ritual_binders_ring,id=159459,bonus_id=12854/13440/13668,ilevel=334,gem_id=240906,enchant_id=7967
-finger2=lightwardens_bind,id=251194,bonus_id=13668/12854/13440,ilevel=334,gem_id=240916,enchant_id=7967
-trinket1=freightrunners_flask,id=250215,bonus_id=12854/13440,ilevel=334
-trinket2=gebbos_bottomless_bag,id=270164,bonus_id=12854/13335,ilevel=334
-main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13335/13848,ilevel=344,enchant_id=8039
-off_hand=alnhara_lantern,id=245769,bonus_id=13751/13771/8960,ilevel=331,crafted_stats=32/36
-set_bonus=midnight_season_2_2pc=1/midnight_season_2_4pc=1
+chest=crest_of_the_primal_leywarden,id=271567,enchant_id=7987,bonus_id=12854/13335,ilevel=334
+wrist=martyrs_bindings,id=239648,gem_id=240894,bonus_id=8960/12384/13668/13751,crafted_stats=32/40,crafting_quality=5,ilevel=331
+hands=primal_leywardens_manashapers,id=271565,bonus_id=13335/13848,redirected_base_stats=268243,ilevel=344
+waist=cincture_of_the_abyssal_grotto,id=268232,gem_id=240894,bonus_id=13668/12854/13335,ilevel=334
+legs=primal_leywardens_tailored_legwraps,id=271563,enchant_id=7937,bonus_id=12854/13335,ilevel=334
+feet=cackling_soultreads,id=268255,enchant_id=7993,bonus_id=13335/13848,ilevel=344
+finger1=jade_ophidian_band,id=162544,enchant_id=7967,gem_id=240894,bonus_id=13668/12854/13440,ilevel=334
+finger2=pilfered_precious_band,id=251148,enchant_id=7967,gem_id=240894,bonus_id=12854/13440/13668,ilevel=334
+trinket1=,id=250215,bonus_id=12854/13440,ilevel=334
+trinket2=,id=270164,bonus_id=12854/13335,ilevel=334
+main_hand=,id=271092,enchant_id=8689,bonus_id=13335/13848,ilevel=344
+off_hand=,id=245769,bonus_id=13751/13771/8960,crafted_stats=32/36,crafting_quality=5,ilevel=331
 
 save=MID2_Mage_Arcane.simc
 
 mage="MID2_Mage_Arcane_Sunfury"
 spec=arcane
 level=90
-race=mechagnome
+race=void_elf
 role=spell
 position=back
 talents=C4DAAAAAAAAAAAAAAAAAAAAAAYGGLzMzswMDamZGAAAGAwMz0sssMDAEbAAAzMzM2sMzMzyMGjZmBLMjZmZAAGAAgBYmBMDAGmZG
-omnium_talents=136822:1/136817:1/136815:1/136814:1
+omnium_talents=136822:1/136817:1/136821:1/136814:1
 
 potion=lights_potential_2
 flask=flask_of_the_blood_knights_2
@@ -48,23 +47,22 @@ food=silvermoon_parade
 augmentation=void_touched_augment_rune
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
 
-head=venomkeepers_horrific_cowl,id=271874,bonus_id=13335/13668/13846/13848,ilevel=344,gem_id=240967,enchant_id=8017
-neck=aqirbane_reliquary,id=268265,bonus_id=13335/13668/13708/13848,ilevel=344,gem_id=240892/240906
-shoulder=ornaments_of_the_eternal_coil,id=268241,bonus_id=12854/13335,ilevel=334,enchant_id=8001
+head=crown_of_the_primal_leywarden,id=271564,enchant_id=7961,gem_id=240983,bonus_id=13335/13668/13846/13848,redirected_base_stats=271874,ilevel=344
+neck=aqirbane_reliquary,id=268265,gem_id=240894/240894,bonus_id=13335/13668/13987/13848,ilevel=344
+shoulder=primal_leywardens_manaflux,id=271562,enchant_id=8031,bonus_id=12854/13335,ilevel=334
 back=silken_voodoo_drape,id=268253,bonus_id=13335/13848,ilevel=344
-chest=primordial_robe_of_rites,id=273785,bonus_id=12854/13440,ilevel=334,enchant_id=7987
-wrist=martyrs_bindings,id=239648,bonus_id=8960/12384/13668/13751,ilevel=331,gem_id=240900,crafted_stats=32/40
-hands=grasps_of_the_eternal_shadow,id=268243,bonus_id=13335/13848,ilevel=344
-waist=caustic_chainwrapped_sash,id=268257,bonus_id=13668,ilevel=334,gem_id=240900
-legs=initiates_sacrificial_tights,id=268236,bonus_id=12854/13335,ilevel=334,enchant_id=7937
-feet=cackling_soultreads,id=268255,bonus_id=13335/13848,ilevel=344,enchant_id=7963
-finger1=alluring_bubbleband,id=268266,bonus_id=13668/12854/13335,ilevel=334,gem_id=240916,enchant_id=7967
-finger2=pilfered_precious_band,id=251148,bonus_id=12854/13440/13668,ilevel=334,gem_id=240916,enchant_id=7967
-trinket1=freightrunners_flask,id=250215,bonus_id=12854/13440,ilevel=334
-trinket2=gebbos_bottomless_bag,id=270164,bonus_id=12854/13335,ilevel=334
-main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13335/13848,ilevel=344,enchant_id=8039
-off_hand=alnhara_lantern,id=245769,bonus_id=13751/13771/8960,ilevel=331,crafted_stats=32/36
-set_bonus=midnight_season_2_2pc=1/midnight_season_2_4pc=1
+chest=crest_of_the_primal_leywarden,id=271567,enchant_id=7987,bonus_id=12854/13335,ilevel=334
+wrist=martyrs_bindings,id=239648,gem_id=240894,bonus_id=8960/12384/13668/13751,crafted_stats=32/40,crafting_quality=5,ilevel=331
+hands=primal_leywardens_manashapers,id=271565,bonus_id=13335/13848,redirected_base_stats=268243,ilevel=344
+waist=cincture_of_the_abyssal_grotto,id=268232,gem_id=240894,bonus_id=13668/12854/13335,ilevel=334
+legs=primal_leywardens_tailored_legwraps,id=271563,enchant_id=7937,bonus_id=12854/13335,ilevel=334
+feet=cackling_soultreads,id=268255,enchant_id=7993,bonus_id=13335/13848,ilevel=344
+finger1=jade_ophidian_band,id=162544,enchant_id=7967,gem_id=240894,bonus_id=13668/12854/13440,ilevel=334
+finger2=pilfered_precious_band,id=251148,enchant_id=7967,gem_id=240894,bonus_id=12854/13440/13668,ilevel=334
+trinket1=,id=250215,bonus_id=12854/13440,ilevel=334
+trinket2=,id=270164,bonus_id=12854/13335,ilevel=334
+main_hand=,id=271092,enchant_id=8689,bonus_id=13335/13848,ilevel=344
+off_hand=,id=245769,bonus_id=13751/13771/8960,crafted_stats=32/36,crafting_quality=5,ilevel=331
 
 save=MID2_Mage_Arcane_Sunfury.simc
 
