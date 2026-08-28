@@ -6644,7 +6644,10 @@ struct chain_lightning_t : public chained_base_t
 
   void execute() override
   {
-    p()->buff.mid2_ele_4pc_builder->decrement();
+    if ( is_variant( spell_variant::NORMAL ) )
+    {
+      p()->buff.mid2_ele_4pc_builder->decrement();
+    }
     chained_base_t::execute();
 
     if ( is_variant( spell_variant::NORMAL ) && p()->specialization() == SHAMAN_ELEMENTAL )
@@ -7279,8 +7282,10 @@ struct lava_burst_t : public shaman_spell_t
     {
       p()->generate_maelstrom_weapon( this, as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
     }
-
-    p()->buff.mid2_ele_4pc_builder->decrement();
+    if ( is_variant( spell_variant::NORMAL ) )
+    {
+      p()->buff.mid2_ele_4pc_builder->decrement();
+    }
   }
 
   timespan_t execute_time() const override
