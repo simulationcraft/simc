@@ -3155,7 +3155,8 @@ public:
   void impact( action_state_t* s ) override
   {
     ab::impact( s );
-    if ( this->is_variant( spell_variant::NORMAL ) && !this->background && s->chain_target == 0 )
+    if ( ( this->is_variant( spell_variant::NORMAL ) && !this->background && s->chain_target == 0 )
+      || this->id == 188389)
     {
       if ( this->sim->debug )
       {
