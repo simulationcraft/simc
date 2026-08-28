@@ -823,6 +823,10 @@ struct player_t : public actor_t
     // Fraction of Rite of the Hash'ey procs that happen while above the enchant's 80% health
     // threshold, i.e. how often the proc favors your highest secondary stat instead of a random one.
     double rite_of_the_hashey_uptime = 0.6;
+    // Permafrost Essence chance to fire the absorb shield. Default 1% chance determined by WCL of keys and raid
+    double permafrost_essence_shield_proc_chance = 0.01;
+    // Use the original health-based (<25%) shield trigger instead of the static proc chance.
+    bool permafrost_essence_use_health_threshold = false;
   } midnight_opts;
 
 private:

@@ -4144,26 +4144,33 @@ void permafrost_essence( special_effect_t& effect )
   {
     buff_t* mark_of_frost;
     buff_t* reservoir;
-    double hp_threshold;
-    double absorb_amount;
 
     permafrost_essence_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
         mark_of_frost( create_buff<stat_buff_t>( e.player, e.player->find_spell( 1260316 ) )
           ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) ) ),
         reservoir( create_buff<absorb_buff_t>( e.player, e.player->find_spell( 1260321 ) )
-          ->set_absorb_source( e.player->get_stats( "permafrost_reservoir" ) ) ),
-        hp_threshold( e.driver()->effectN( 2 ).base_value() ),
-        absorb_amount( e.driver()->effectN( 3 ).average( e ) )
-    {}
+          ->set_absorb_source( e.player->get_stats( "permafrost_reservoir" ) ) )
+    {
+    }
 
     void execute( const spell_data_t*, player_t* t, action_state_t* ) override
     {
       mark_of_frost->trigger();
 
-      if ( t->health_percentage() <= hp_threshold )
+      bool fire_shield;
+      if ( listener->midnight_opts.permafrost_essence_use_health_threshold )
       {
-        double amount = absorb_amount * mark_of_frost->check();
+        fire_shield = t->health_percentage() <= effect.driver()->effectN( 2 ).base_value();
+      }
+      else
+      {
+        fire_shield = rng().roll( listener->midnight_opts.permafrost_essence_shield_proc_chance );
+      }
+
+      if ( fire_shield )
+      {
+        double amount = effect.driver()->effectN( 3 ).average( effect ) * mark_of_frost->check();
         mark_of_frost->expire();
         reservoir->trigger( 1, amount );
       }
