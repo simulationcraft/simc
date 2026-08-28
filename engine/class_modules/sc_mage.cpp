@@ -4051,6 +4051,16 @@ struct frostbolt_t final : public frost_mage_spell_t
     return m;
   }
 
+  void do_schedule_travel( action_state_t* s, timespan_t time ) override
+  {
+    // TODO: Frostfire Bolt seems to always impact the cleave target first, which means
+    // FFE triggers on the weaker hit. While this doesn't model it perfectly (it doesn't
+    // work with distance targeting), it should be sufficient for most sims.
+    if ( frostfire && p()->bugs && s->chain_target == 0 )
+      time += 1_ms;
+    frost_mage_spell_t::do_schedule_travel( s, time );
+  }
+
   void execute() override
   {
     frost_mage_spell_t::execute();
