@@ -5430,12 +5430,12 @@ Druid
 1308176  Dream Conduit
 1308399  Answered Calling
 1308437  Spirit's Wrath
-1308448 *Listener
+1308448  Listener
 1308479  Spirit's Wrath
 1308522  Wild Guardian Spirit
 1308639  Spirit's Wrath
 1308647  Answered Calling
-1308653 *Listener
+1308653  Listener
 1310150  Rampant Thorn
 1310213  Rampant Thorn
 
