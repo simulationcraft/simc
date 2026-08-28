@@ -10,7 +10,7 @@ omnium_talents=rune_of_unleashed_fire/rune_of_selfmending/rune_of_lingering/rune
 
 # Default consumables
 potion=draught_of_rampant_abandon_2
-flask=flask_of_the_blood_knights_2
+flask=flask_of_thalassian_resistance_2
 food=silvermoon_parade
 augmentation=void_touched
 temporary_enchant=main_hand:thalassian_phoenix_oil_2
@@ -86,17 +86,17 @@ actions.sanlayn+=/heart_strike
 actions.sanlayn+=/death_strike
 
 head=baleful_graveknights_casque,id=271474,bonus_id=13750,ilevel=334,gem_id=240983,enchant_id=7991,redirected_base_stats=268229
-neck=aqirbane_reliquary,id=268265,bonus_id=13668,ilevel=344,gem_id=240914/240894
+neck=aqirbane_reliquary,id=268265,bonus_id=13668,ilevel=344,gem_id=240894/240894
 shoulders=baleful_graveknights_gibbets,id=271472,ilevel=334,enchant_id=7973
 back=silken_voodoo_drape,id=268253,ilevel=344
 chest=baleful_graveknights_breastplate,id=271477,ilevel=344,enchant_id=7987,redirected_base_stats=268222
-wrists=spellbreakers_bracers,id=237834,bonus_id=8960/13454/13750,ilevel=331,gem_id=240916,crafted_stats=40/36
+wrists=spellbreakers_bracers,id=237834,bonus_id=8960/13454/13750,ilevel=331,gem_id=240894,crafted_stats=32/36
 hands=baleful_graveknights_deathgrips,id=271475,ilevel=334,redirected_base_stats=251214
-waist=girdle_of_toxic_regret,id=268259,bonus_id=13750,ilevel=344,gem_id=240918
+waist=girdle_of_toxic_regret,id=268259,bonus_id=13750,ilevel=344,gem_id=240894
 legs=baleful_graveknights_greaves,id=271473,ilevel=344,enchant_id=8159,redirected_base_stats=271878
-feet=entombed_cultists_sabatons,id=268245,ilevel=334,enchant_id=8019
-finger1=band_of_the_amani_warlord,id=273792,bonus_id=13668,ilevel=334,gem_id=240910,enchant_id=7967
-finger2=masterwork_sindorei_band,id=240949,bonus_id=8960/13453,ilevel=331,gem_id=240894,enchant_id=7967,crafted_stats=40/36
+feet=scaled_fiends_warboots,id=268260,ilevel=334,enchant_id=8019
+finger1=band_of_the_amani_warlord,id=273792,bonus_id=13668,ilevel=334,gem_id=240894,enchant_id=7967
+finger2=masterwork_sindorei_band,id=240949,bonus_id=8960/13453,ilevel=331,gem_id=240894,enchant_id=7967,crafted_stats=32/36
 trinket1=voracious_heart_of_ulatek,id=270175,ilevel=344
 trinket2=zuljins_guillotine_technique,id=270173,ilevel=344
 main_hand=mazeroa_warlords_fury,id=268213,ilevel=344,enchant_id=6241
@@ -105,10 +105,10 @@ main_hand=mazeroa_warlords_fury,id=268213,ilevel=344,enchant_id=6241
 # gear_ilvl=338.93
 # gear_strength=1927
 # gear_stamina=40875
-# gear_crit_rating=1134
-# gear_haste_rating=1186
-# gear_mastery_rating=364
-# gear_versatility_rating=532
+# gear_crit_rating=1261
+# gear_haste_rating=1244
+# gear_mastery_rating=461
+# gear_versatility_rating=250
 # gear_speed_rating=98
 # gear_armor=2575
 # set_bonus=midnight_season_2_2pc=1
