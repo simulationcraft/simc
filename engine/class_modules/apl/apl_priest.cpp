@@ -220,16 +220,16 @@ void discipline( player_t* p )
   action_priority_list_t* shield = p->get_action_priority_list( "shield" );
 
   precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "variable,name=trinket_1_ogcd_cast,value=trinket.1.is.soulcoiler_ritual_vessel" );
+  precombat->add_action( "variable,name=trinket_2_ogcd_cast,value=trinket.2.is.soulcoiler_ritual_vessel" );
   precombat->add_action( "flash_heal,target_if=target!=self" );
   precombat->add_action( "power_word_radiance,target_if=min:debuff.atonement.remains+10*(target=self)" );
   precombat->add_action( "power_word_radiance,target_if=min:debuff.atonement.remains+10*(target=self)" );
-  precombat->add_action( "variable,name=trinket_1_ogcd_cast,value=trinket.1.is.soulcoiler_ritual_vessel" );
-  precombat->add_action( "variable,name=trinket_2_ogcd_cast,value=trinket.2.is.soulcoiler_ritual_vessel" );
   precombat->add_action( "evangelism,target_if=min:debuff.atonement.remains+10*(target=self)" );
   precombat->add_action( "mind_blast" );
 
   shield->add_action( "void_shield,target_if=min:debuff.atonement.remains+10*(target=self)+100*(!debuff.atonement.up)" );
-  shield->add_action( "power_word_shield,target_if=min:debuff.atonement.remains+10*(target=self)+100*(!debuff.atonement.up),if=talent.borrowed_time" );
+  shield->add_action( "power_word_shield,target_if=min:debuff.atonement.remains+10*(target=self)+100*(!debuff.atonement.up),if=talent.borrowed_time&(mana.pct*2.5>=fight_remains|talent.shield_discipline&mana.pct*6>=fight_remains)" );
 
   default_->add_action( "shadow_word_pain,if=refreshable" );
   default_->add_action( "power_infusion" );
@@ -244,12 +244,14 @@ void discipline( player_t* p )
   default_->add_action( "evangelism,target_if=min:debuff.atonement.remains+10*(target=self)" );
   default_->add_action( "uppies,nested_action=void_shield" );
   default_->add_action( "void_blast,if=buff.greater_smite.remains<=gcd.max*2&buff.greater_smite.remains>=execute_time" );
-  default_->add_action( "power_word_radiance,target_if=min:debuff.atonement.remains+10*(target=self),if=cooldown.mind_blast.remains<=gcd.max*2|!buff.entropic_rift.up" );
+  default_->add_action( "power_word_radiance,target_if=min:debuff.atonement.remains+10*(target=self),if=cooldown.mind_blast.remains<=gcd.max*2" );
   default_->add_action( "penance,target_if=max:dot.shadow_word_pain.remains,interrupt_if=gcd.remains<=0&buff.entropic_rift.up,interrupt_immediate=1,if=cooldown.mind_blast.remains>=2+gcd.max|!set_bonus.mid2_2pc" );
   default_->add_action( "call_action_list,name=shield,if=buff.master_the_darkness.up|cooldown.penance.remains<=gcd.max|active_atonements<=5" );
   default_->add_action( "shadow_word_death,if=target.health.pct<=20&(talent.shadowfiend|!buff.entropic_rift.up)|talent.expiation|talent.inescapable_torment&(pet.shadowfiend.active|pet.voidwraith.active|pet.mindbender.active)" );
-  default_->add_action( "flash_heal,target_if=min:debuff.atonement.remains+20*(target=self),if=buff.atonement.remains<=gcd.max" );
+  default_->add_action( "flash_heal,target_if=min:debuff.atonement.remains+20*(target=self),if=buff.atonement.remains<=gcd.max&(mana.pct*2.5*3>=fight_remains|talent.shield_discipline&mana.pct*6*3>=fight_remains|mana.pct>=90)" );
   default_->add_action( "void_blast" );
+  default_->add_action( "power_word_radiance,target_if=min:debuff.atonement.remains+10*(target=self)" );
+  default_->add_action( "flash_heal,target_if=min:debuff.atonement.remains+20*(target=self),if=buff.surge_of_light.up&(mana.pct*2.5>=fight_remains|talent.shield_discipline&mana.pct*6>=fight_remains)" );
   default_->add_action( "smite" );
 }
 //discipline_apl_end
