@@ -13670,6 +13670,10 @@ void player_t::create_options()
                             midnight_opts.lightspire_core_duration_multiplier, 0.0, 1.0 ) );
   add_option(    opt_float( "midnight.rite_of_the_hashey_uptime",
                             midnight_opts.rite_of_the_hashey_uptime, 0.0, 1.0 ) );
+  add_option(    opt_float( "midnight.permafrost_essence_shield_proc_chance",
+                            midnight_opts.permafrost_essence_shield_proc_chance, 0.0, 1.0 ) );
+  add_option(     opt_bool( "midnight.permafrost_essence_use_health_threshold",
+                            midnight_opts.permafrost_essence_use_health_threshold ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
