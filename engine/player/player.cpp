@@ -13667,7 +13667,7 @@ void player_t::create_options()
   add_option( opt_timespan( "midnight.arcanoweave_trappings_update_interval_stddev",
                             midnight_opts.arcanoweave_trappings_update_interval_stddev, 1_s, timespan_t::max() ) );
   add_option(    opt_float( "midnight.lightspire_core_duration_multiplier",
-                            midnight_opts.lightspire_core_duration_multiplier, 0.0, 1.0 ) );
+                            midnight_opts.lightspire_core_duration_multiplier, 0.1, 1.0 ) );
   add_option(    opt_float( "midnight.rite_of_the_hashey_uptime",
                             midnight_opts.rite_of_the_hashey_uptime, 0.0, 1.0 ) );
   add_option(    opt_float( "midnight.permafrost_essence_shield_proc_chance",
