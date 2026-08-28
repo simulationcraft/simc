@@ -13642,7 +13642,7 @@ void shaman_t::parse_assisted_combat_step( const assisted_combat_step_data_t& st
   if ( step.spell_id == 462854 )
     return;
 
-  if ( step.spell_id == 318038 ) 
+  if ( step.spell_id == 318038 )
     return;
 
   auto replace_spell = [ & ]( unsigned source_spell_id, unsigned target_spell_id ) {
@@ -13877,6 +13877,7 @@ void shaman_t::reset()
   }
 
   assert( mid2_enh_4pc_mul.empty() );
+  mid2_enh_4pc_mul.clear();
 }
 
 // shaman_t::merge ==========================================================
