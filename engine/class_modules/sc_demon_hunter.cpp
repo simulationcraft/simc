@@ -5503,17 +5503,18 @@ struct the_hunt_base_t
   struct the_hunt_dot_t : public demon_hunter_spell_t
   {
     the_hunt_dot_t( util::string_view n, demon_hunter_t* p )
-      : demon_hunter_spell_t( fmt::format( "{}_dot", n ), p, p->spec.the_hunt_dot )
+      : demon_hunter_spell_t( fmt::format( "the_hunt_dot", n ), p, p->spec.the_hunt_dot )
     {
       dual = true;
       aoe  = as<int>( p->spec.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
+      dot_behavior = DOT_NONE;
     }
   };
 
   struct the_hunt_damage_t : public demon_hunter_spell_t
   {
     the_hunt_damage_t( util::string_view n, demon_hunter_t* p )
-      : demon_hunter_spell_t( fmt::format( "{}_damage", n ), p, p->spec.the_hunt_impact )
+      : demon_hunter_spell_t( fmt::format( "the_hunt_damage", n ), p, p->spec.the_hunt_impact )
     {
       dual          = true;
       impact_action = p->get_background_action<the_hunt_dot_t>( n );
