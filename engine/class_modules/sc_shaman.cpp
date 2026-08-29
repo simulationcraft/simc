@@ -13397,8 +13397,8 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action( "windfury_weapon" );
   precombat->add_action( "flametongue_weapon" );
   precombat->add_action( "lightning_shield" );
-  precombat->add_action( "variable,name=trinket1_is_weird,value=trinket.1.is.algethar_puzzle_box|trinket.1.is.unyielding_netherprism" );
-  precombat->add_action( "variable,name=trinket2_is_weird,value=trinket.2.is.algethar_puzzle_box|trinket.2.is.unyielding_netherprism" );
+  precombat->add_action( "variable,name=trinket1_is_weird,value=trinket.1.is.algethar_puzzle_box|trinket.1.is.unyielding_netherprism|trinket.1.is.font_of_venomous_rage" );
+  precombat->add_action( "variable,name=trinket2_is_weird,value=trinket.2.is.algethar_puzzle_box|trinket.2.is.unyielding_netherprism|trinket.2.is.font_of_venomous_rage" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "potion,if=!potion.liquid_luster" );
@@ -13459,6 +13459,7 @@ void shaman_t::init_action_list_enhancement()
   cooldowns->add_action( "use_item,name=unyielding_netherprism,if=(talent.ascendance.enabled&(cooldown.ascendance.remains<2*gcd.max))|(talent.doom_winds.enabled&!talent.ascendance.enabled&(cooldown.doom_winds.remains<2*gcd.max))|fight_remains<=20" );
   cooldowns->add_action( "use_item,slot=trinket1,if=!variable.trinket1_is_weird&((buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains<=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))|!trinket.1.has_use_buff)" );
   cooldowns->add_action( "use_item,slot=trinket2,if=!variable.trinket2_is_weird&((buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains<=20)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))|!trinket.2.has_use_buff)" );
+  cooldowns->add_action( "use_item,name=font_of_venomous_rage,if=!buff.ascendance.up&((!trinket.1.has_use_buff&!trinket.2.has_use_buff)|time>=20)" );
   cooldowns->add_action( "potion,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%300<=30)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
   cooldowns->add_action( "blood_fury,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.blood_fury.cooldown<=action.blood_fury.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
   cooldowns->add_action( "berserking,if=(buff.ascendance.up|buff.doom_winds.up|pet.surging_totem.active|(fight_remains%%action.berserking.cooldown<=action.berserking.duration)|(!talent.ascendance.enabled&!talent.doom_winds.enabled&!talent.surging_totem.enabled))" );
