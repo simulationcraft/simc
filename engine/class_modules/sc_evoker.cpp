@@ -3346,10 +3346,16 @@ struct empowered_release_t : public empowered_base_t<BASE>
     {
       target_list.clear();
 
+      target_list.push_back( target );
+
       for ( const auto& t : sim->player_no_pet_list )
       {
         if ( t->is_sleeping() )
           continue;
+        
+        if ( t == target )
+          continue;
+
         target_list.push_back( t );
       }
 
