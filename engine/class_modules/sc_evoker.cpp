@@ -8104,7 +8104,7 @@ public:
   bool force_external;
   bombardments_damage_t( player_t* p )
     : base( "bombardments", p, p->find_spell( 434481 ) ),
-      diverted_power_chance( 0.01 ),  // Reasonable guess. TODO: Get more accurate
+      diverted_power_chance( 0.1 ),  // Reasonable guess. TODO: Get more accurate
       cooldown_objects{ false },
       force_external( false )
   {
