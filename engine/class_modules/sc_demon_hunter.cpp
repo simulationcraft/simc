@@ -5835,7 +5835,7 @@ struct consume_t : public consume_base_t
 
 struct voidblade_base_t : public voidrush_trigger_t<hungering_slash_trigger_t<demon_hunter_spell_t>>
 {
-  struct voidblade_damage_t : public burning_blades_trigger_t<shattered_souls_trigger_t<demon_hunter_spell_t>>
+  struct voidblade_damage_t : public burning_blades_trigger_t<demon_hunter_spell_t>
   {
     voidblade_damage_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->spec.voidblade )
     {
@@ -8524,17 +8524,17 @@ struct burning_blades_t : public residual_action::residual_periodic_action_t<dem
 struct vengeful_retreat_t
   : public unbound_chaos_trigger_t<inertia_trigger_trigger_t<exergy_trigger_t<demon_hunter_spell_t>>>
 {
-  struct voidstep_damage_t : public shattered_souls_trigger_t<demon_hunter_spell_t>
+  struct voidstep_damage_t : public demon_hunter_spell_t
   {
     voidstep_damage_t( util::string_view n, demon_hunter_t* p )
-      : base_t( n, p, p->spec.voidstep->effectN( 1 ).trigger() )
+      : demon_hunter_spell_t( n, p, p->spec.voidstep->effectN( 1 ).trigger() )
     {
       aoe = -1;
     }
 
     void execute() override
     {
-      base_t::execute();
+      demon_hunter_spell_t::execute();
 
       dh()->buff.voidstep->expire();
     }
