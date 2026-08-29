@@ -3677,6 +3677,7 @@ struct lingering_shadow_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.lingering_shadow_attack )
   {
     base_dd_min = base_dd_max = 1; // Override from 0 for snapshot_flags
+    callbacks = false;
   }
 
   bool procs_shadow_blades_damage() const override
@@ -6351,6 +6352,7 @@ struct goremaws_bite_t : public rogue_attack_t
       aoe = -1;
       split_aoe_damage = true;
       dual = true;
+      callbacks = false;
       target_filter_callback = goremaws_bite_targets_only();
       base_multiplier = p->spec.goremaws_bite_finisher_debuff->effectN( 1 ).percent();
     }
@@ -6487,10 +6489,10 @@ struct deathstalkers_mark_t : public rogue_attack_t
 
 struct mass_casualty_t : public rogue_attack_t
 {
-  target_filter_callback_t rupture_targets_only()
+  target_filter_callback_t secondary_rupture_targets_only()
   {
-    return [ & ]( const action_t*, player_t* target ) {
-      return p()->get_target_data( target )->dots.rupture->is_ticking();
+    return [ & ]( const action_t* action, player_t* target ) {
+      return target != action->target && p()->get_target_data( target )->dots.rupture->is_ticking();
     };
   }
 
@@ -6503,11 +6505,12 @@ struct mass_casualty_t : public rogue_attack_t
     if ( p->specialization() == ROGUE_ASSASSINATION )
     {
       base_multiplier *= p->talent.deathstalker.mass_casualty->effectN( 1 ).percent();
-      target_filter_callback = rupture_targets_only();
+      target_filter_callback = secondary_rupture_targets_only();
     }
     else
     {
       base_multiplier *= p->talent.deathstalker.mass_casualty->effectN( 2 ).percent();
+      target_filter_callback = secondary_targets_only();
     }
   }
 
@@ -8664,12 +8667,10 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
     p()->buffs.unshakeable_drive->trigger();
     p()->active.deathstalker.deathstalkers_mark->execute_on_target( mark_target );
 
-    if ( p()->talent.deathstalker.mass_casualty->ok() )
+    if ( p()->talent.deathstalker.mass_casualty->ok() && p()->sim->active_enemies > 1 &&
+         ( p()->specialization() == ROGUE_ASSASSINATION || ab::data().id() == p()->spec.black_powder->id() ) )
     {
-      if ( p()->specialization() == ROGUE_ASSASSINATION || ab::data().id() == p()->spec.black_powder->id() )
-      {
-        p()->active.deathstalker.mass_casualty->execute_on_target( mark_target );
-      }
+      p()->active.deathstalker.mass_casualty->execute_on_target( mark_target );
     }
 
     if ( p()->talent.deathstalker.shadewalker->ok() )
