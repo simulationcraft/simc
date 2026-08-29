@@ -1311,6 +1311,8 @@ struct evoker_t : public player_t
     bool nerf_em_for_external_sims                             = false;
     bool patchwerk_in_dungeon                                  = false;
     bool force_raid                                            = false;
+    std::string shifting_sands_target_if_str                   = "";
+    bool sands_shuffle_list                                    = true;
   } option;
 
   // Action pointers
@@ -3316,6 +3318,13 @@ struct empowered_release_t : public empowered_base_t<BASE>
         aoe = 1;
     }
 
+    void init() override
+    {
+      option.target_if_str = p()->option.shifting_sands_target_if_str;
+      
+      evoker_augment_t::init();
+    }
+
     void execute() override
     {
       target_cache.is_valid = false;
@@ -3354,7 +3363,9 @@ struct empowered_release_t : public empowered_base_t<BASE>
 
       if ( shifting_point > target_list.begin() )
       {
-        rng().shuffle( target_list.begin(), shifting_point );
+        if ( p()->option.sands_shuffle_list )
+          rng().shuffle( target_list.begin(), shifting_point );
+
         std::partition( target_list.begin(), shifting_point, [ & ]( player_t* t ) {
           return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
                  t != player;
@@ -3363,7 +3374,9 @@ struct empowered_release_t : public empowered_base_t<BASE>
 
       if ( shifting_point < target_list.end() )
       {
-        rng().shuffle( shifting_point, target_list.end() );
+        if ( p()->option.sands_shuffle_list )
+          rng().shuffle( shifting_point, target_list.end() );
+
         std::partition( shifting_point, target_list.end(), [ & ]( player_t* t ) {
           return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
                  t != player;
@@ -10750,6 +10763,8 @@ void evoker_t::create_options()
   add_option( opt_bool( "evoker.patchwerk_in_dungeon", option.patchwerk_in_dungeon ) );
   add_option( opt_bool( "evoker.nerf_em_for_external_sims", option.nerf_em_for_external_sims ) );
   add_option( opt_bool( "evoker.force_raid", option.force_raid ) );
+  add_option( opt_string( "evoker.shifting_sands_target_if_str", option.shifting_sands_target_if_str ) );
+  add_option( opt_bool( "evoker.sands_shuffle_list", option.sands_shuffle_list ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
