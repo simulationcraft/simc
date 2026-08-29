@@ -471,16 +471,16 @@ void survival( player_t* p )
   plst->add_action( "takedown" );
 
   sentst->add_action( "kill_command,if=buff.tip_of_the_spear.stack=0&(cooldown.takedown.remains|!talent.twin_fangs)", "ST - Sent" );
-  sentst->add_action( "boomstick,if=buff.tip_of_the_spear.up&!debuff.sentinels_mark.remains" );
-  sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4+gcd)" );
+  sentst->add_action( "boomstick" );
+  sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4)" );
   sentst->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
   sentst->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
-  sentst->add_action( "boomstick,if=buff.tip_of_the_spear.up" );
-  sentst->add_action( "moonlight_chakram,if=buff.tip_of_the_spear.up" );
-  sentst->add_action( "raptor_strike,if=buff.tip_of_the_spear.up|!buff.raptor_swipe.up" );
+  sentst->add_action( "moonlight_chakram" );
+  sentst->add_action( "raptor_strike" );
   sentst->add_action( "kill_command,if=cooldown.takedown.remains" );
+  sentst->add_action( "wildfire_bomb" );
   sentst->add_action( "takedown" );
-
+  
   plcleave->add_action( "kill_command,if=buff.tip_of_the_spear.stack<2&(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)", "AOE - PL" );
   plcleave->add_action( "kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs" );
   plcleave->add_action( "takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs" );
