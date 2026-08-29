@@ -8556,7 +8556,7 @@ struct vengeful_retreat_t
 
     void execute() override
     {
-      base_t::execute();
+      demon_hunter_spell_t::execute();
 
       dh()->buff.voidstep->expire();
     }
