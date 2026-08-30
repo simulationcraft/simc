@@ -3284,14 +3284,6 @@ struct breath_of_fire_t : public monk_spell_t
     {
       dragonfire_brew = new dragonfire_brew_t( player );
       add_child( dragonfire_brew );
-
-      if ( const auto &effect = player->talent.brewmaster.dragonfire_brew->effectN( 2 ); effect.ok() && player->bugs )
-        add_parse_entry( da_multiplier_effects )
-            .set_value_func(
-                [ this ]( double value ) { return 1.0 + p()->find_stagger( "Stagger" )->level_index() / 3.0 * value; } )
-            .set_value( effect.percent() )
-            .set_eff( &effect )
-            .set_note( "Stagger Level Scaling" );
     }
   }
 
@@ -7443,7 +7435,6 @@ public:
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
     ReportIssue( "Press the Advantage Tiger Palm does not trigger Overwhelming Force", "2026-02-09", true );
-    ReportIssue( "Dragonfire Brew causes Breath of Fire damage to scale with Stagger level", "2026-04-14", true );
     ReportIssue(
         "Zenith Stomp erroneously references effect 1 for sqrt scaling in tooltip, which is instead used to modify the "
         "Zenith Stomp charge buff.",
