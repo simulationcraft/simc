@@ -3321,7 +3321,7 @@ struct empowered_release_t : public empowered_base_t<BASE>
     void init() override
     {
       option.target_if_str = p()->option.shifting_sands_target_if_str;
-      
+
       evoker_augment_t::init();
     }
 
@@ -3352,7 +3352,7 @@ struct empowered_release_t : public empowered_base_t<BASE>
       {
         if ( t->is_sleeping() )
           continue;
-        
+
         if ( t == target )
           continue;
 
@@ -3364,7 +3364,8 @@ struct empowered_release_t : public empowered_base_t<BASE>
 
       auto shifting_point = std::partition( target_list.begin(), target_list.end(), [ & ]( player_t* t ) {
         return std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
+                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } ) &&
+               !p()->get_target_data( t )->buffs.shifting_sands->up();
       } );
 
       if ( shifting_point > target_list.begin() )
@@ -3390,6 +3391,21 @@ struct empowered_release_t : public empowered_base_t<BASE>
       }
 
       return target_list.size();
+    }
+
+    bool target_ready( player_t* candidate_target ) override
+    {
+      auto ally_shifting = ( std::any_of(
+          p()->allied_augmentations.begin(), p()->allied_augmentations.end(), [ candidate_target ]( evoker_t* e ) {
+            return e->get_target_data( candidate_target )->buffs.shifting_sands->check();
+          } ) );
+
+      if ( ally_shifting || p()->get_target_data( candidate_target )->buffs.shifting_sands->check() )
+      {
+        return false;
+      }
+
+      return evoker_augment_t::target_ready( candidate_target );
     }
 
     // No point caching using basic cache, cache would be ruined by every cast.
