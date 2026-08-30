@@ -257,11 +257,11 @@ void marksmanship( player_t* p )
   cds->add_action( "fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9" );
   cds->add_action( "lights_judgment,if=buff.trueshot.down" );
   cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|fight_remains<120-30*talent.calling_the_shots)|fight_remains<31" );
-  cds->add_action( "potion,name=liquid_luster_2,if=potion.potion_of_recklessness&buff.bullseye.up&cooldown.trueshot.remains<10|fight_remains<31", "Bullseye's crit devalues Potion of Recklessness in execute. Additionally, a mid-fight pot means that prepotting Luster before Trueshot becomes higher value than pre-potting before combat begins. Therefore, Pot of Recklessness on pull, but during execute, Luster pot around 10s before Trueshot to maximize its benefit." );
+  cds->add_action( "potion,name=liquid_luster_2,if=potion.potion_of_recklessness&buff.bullseye.up&cooldown.trueshot.remains<10&(fight_style.dungeonroute|cooldown.explosive_shot.remains>=25|cooldown.explosive_shot.remains<10)|fight_remains<31", "Bullseye's crit devalues Potion of Recklessness in execute. Additionally, a mid-fight pot means that prepotting Luster before Trueshot becomes higher value than pre-potting before combat begins. Therefore, Pot of Recklessness on pull, but during execute, Luster pot around 10s before Trueshot to maximize its benefit." );
 
   drst->add_action( "black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
   drst->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&active_enemies>1&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)" );
-  drst->add_action( "explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!cooldown.rapid_fire.ready|buff.unstable_trigger.up|!fight_style.dungeonroute)", "In dungeonroute, yield Explosive Shot to a ready Rapid Fire so its ticks' 4pc CDR is not wasted, but always finish an Unstable Trigger pair." );
+  drst->add_action( "explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!cooldown.rapid_fire.ready|buff.unstable_trigger.up|!fight_style.dungeonroute)", "In DRoute, prioritize Rapid Fire over Explosive Shot to maximize the RF CDR from Explo, but never let the 2nd free Explo from Unstable Trigger lapse." );
   drst->add_action( "volley" );
   drst->add_action( "aimed_shot,if=buff.trueshot.up&buff.precise_shots.down&cooldown.black_arrow.ready|full_recharge_time<gcd+cast_time" );
   drst->add_action( "trueshot,if=variable.trueshot_ready" );
@@ -274,7 +274,7 @@ void marksmanship( player_t* p )
   drst->add_action( "steady_shot" );
 
   draoe->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)" );
-  draoe->add_action( "explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!cooldown.rapid_fire.ready|buff.unstable_trigger.up|!fight_style.dungeonroute)" );
+  draoe->add_action( "explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!cooldown.rapid_fire.ready|buff.unstable_trigger.up|!fight_style.dungeonroute)", "In DRoute, prioritize Rapid Fire over Explosive Shot to maximize the RF CDR from Explo, but never let the 2nd free Explo from Unstable Trigger lapse." );
   draoe->add_action( "volley" );
   draoe->add_action( "aimed_shot,target_if=max:debuff.spotters_mark.up|max_prio_damage,if=buff.trick_shots.remains>cast_time&full_recharge_time<gcd+cast_time" );
   draoe->add_action( "black_arrow,target_if=max:debuff.spotters_mark.down|action.aimed_shot.in_flight_to_target|max_prio_damage,if=buff.precise_shots.up" );
@@ -289,7 +289,7 @@ void marksmanship( player_t* p )
   draoe->add_action( "steady_shot" );
 
   sentaoe->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)" );
-  sentaoe->add_action( "explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!cooldown.rapid_fire.ready|buff.unstable_trigger.up|!fight_style.dungeonroute)" );
+  sentaoe->add_action( "explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!cooldown.rapid_fire.ready|buff.unstable_trigger.up|!fight_style.dungeonroute)", "In DRoute, prioritize Rapid Fire over Explosive Shot to maximize the RF CDR from Explo, but never let the 2nd free Explo from Unstable Trigger lapse." );
   sentaoe->add_action( "volley" );
   sentaoe->add_action( "trueshot,if=variable.trueshot_ready" );
   sentaoe->add_action( "moonlight_chakram,if=buff.moonlight_chakram.remains<gcd.max" );
@@ -303,7 +303,7 @@ void marksmanship( player_t* p )
   sentaoe->add_action( "steady_shot" );
 
   sentst->add_action( "explosive_shot,target_if=min:dot.explosive_shot.remains,if=set_bonus.mid2_4pc&active_enemies>1&(!max_prio_damage|!fight_style.dungeonroute)&(!talent.tactical_reload|!buff.lock_and_load.up)" );
-  sentst->add_action( "explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!cooldown.rapid_fire.ready|buff.unstable_trigger.up|!fight_style.dungeonroute)" );
+  sentst->add_action( "explosive_shot,if=(!talent.tactical_reload|!buff.lock_and_load.up)&(!cooldown.rapid_fire.ready|buff.unstable_trigger.up|!fight_style.dungeonroute)", "In DRoute, prioritize Rapid Fire over Explosive Shot to maximize the RF CDR from Explo, but never let the 2nd free Explo from Unstable Trigger lapse." );
   sentst->add_action( "volley" );
   sentst->add_action( "trueshot,if=variable.trueshot_ready" );
   sentst->add_action( "moonlight_chakram,if=buff.moonlight_chakram.remains<5" );
