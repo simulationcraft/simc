@@ -3901,32 +3901,25 @@ void keepers_seething_core( special_effect_t& effect )
   struct focus_of_ulatek_t : public stat_buff_t
   {
     double mult;
+
     focus_of_ulatek_t( player_t* p, std::string_view name, const special_effect_t& e )
-      : stat_buff_t( p, name, e.trigger() ), mult( 0 )
+      : stat_buff_t( p, name, e.trigger() ), mult( e.driver()->effectN( 2 ).percent() )
     {
       set_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
       set_default_value( e.driver()->effectN( 1 ).average( e ) );
       add_invalidate( CACHE_HASTE );
       disable_ticking( true );
-      mult = e.driver()->effectN( 2 ).percent();
     }
 
-    double calc_stat_val()
+    double buff_stat_stack_amount( const buff_stat_t& stat, int s ) const override
     {
-      double value = default_value;
+      auto _amount = stat_buff_t::buff_stat_stack_amount( stat, s );
 
       // Stack requirement not in data. basing implementation off tooltip text.
-      if ( check() >= 2 )
-        value *= 1.0 + mult;
+      if ( s >= 2 )
+        _amount *= 1.0 + mult;
 
-      return value;
-    }
-
-    void bump( int s, double v ) override
-    {
-      for ( auto& s : stats )
-        s.amount = calc_stat_val();
-      stat_buff_t::bump( s, v );
+      return _amount;
     }
   };
 
