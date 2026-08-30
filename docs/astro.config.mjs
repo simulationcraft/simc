@@ -4,6 +4,8 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://topplethenun.github.io',
+	base: '/simc',
 	integrations: [
 		starlight({
 			title: 'SimulationCraft',
