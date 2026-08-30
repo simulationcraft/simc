@@ -108,6 +108,7 @@ void affliction( player_t* p )
   items->add_action( "use_item,use_off_gcd=1,slot=main_hand" );
 
   ogcd->add_action( "potion,use_off_gcd=1,if=variable.cds_active|fight_remains<32" );
+  ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.cds_active|fight_remains<16" );
   ogcd->add_action( "berserking,use_off_gcd=1,if=variable.cds_active|fight_remains<14" );
   ogcd->add_action( "blood_fury,use_off_gcd=1,if=variable.cds_active|fight_remains<17" );
   ogcd->add_action( "fireblood,use_off_gcd=1,if=variable.cds_active|fight_remains<10" );
