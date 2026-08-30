@@ -339,13 +339,10 @@ void variable_t::execute()
                       signature_str );
   }
 
-  if ( !var->is_constant() && var->previous_value_ != var->current_value_ )
+  if ( var->report && !var->is_constant() && var->previous_value_ != var->current_value_ )
   {
-    last_used = sim->current_time();
+    player->sequence_add( this, nullptr );
     total_executions++;
-
-    if ( var->report )
-      player->sequence_add( this, nullptr );
   }
 }
 
