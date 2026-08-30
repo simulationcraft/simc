@@ -124,6 +124,7 @@ actions.items+=/use_items,if=(buff.malevolence.up|pet.darkglare.active)|fight_re
 actions.items+=/use_item,use_off_gcd=1,slot=main_hand
 
 actions.ogcd=potion,use_off_gcd=1,if=variable.cds_active|fight_remains<32
+actions.ogcd+=/invoke_external_buff,name=power_infusion,if=variable.cds_active|fight_remains<16
 actions.ogcd+=/berserking,use_off_gcd=1,if=variable.cds_active|fight_remains<14
 actions.ogcd+=/blood_fury,use_off_gcd=1,if=variable.cds_active|fight_remains<17
 actions.ogcd+=/fireblood,use_off_gcd=1,if=variable.cds_active|fight_remains<10
