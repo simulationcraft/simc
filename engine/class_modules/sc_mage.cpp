@@ -5234,18 +5234,22 @@ struct arcane_echo_t final : public arcane_mage_spell_t
 
 struct frostfire_empowerment_t final : public spell_t
 {
+  // Counts the excluded main target towards the soft cap.
+  double reduced_aoe_targets_2;
   proc_t* freezing_source;
 
   frostfire_empowerment_t( std::string_view n, mage_t* p ) :
     spell_t( n, p, p->find_spell( 431186 ) ),
-    freezing_source( p->get_proc( "Freezing applied (Frostfire Empowerment)" ) )
+    freezing_source( p->get_proc( "Freezing applied (Frostfire Empowerment)" ) ),
+    reduced_aoe_targets_2( p->talents.frostfire_empowerment->effectN( 5 ).base_value() )
   {
     background = proc = true;
     target_filter_callback = secondary_targets_only();
     aoe = -1;
     base_dd_min = base_dd_max = 1.0;
-    // TODO: Check how it behaves wrt the excluded main target
-    reduced_aoe_targets = p->talents.frostfire_empowerment->effectN( 5 ).base_value();
+
+    if ( !p->bugs )
+      reduced_aoe_targets = reduced_aoe_targets_2;
   }
 
   void impact( action_state_t* s ) override
@@ -5255,6 +5259,30 @@ struct frostfire_empowerment_t final : public spell_t
     mage_t* p = debug_cast<mage_t*>( player );
     if ( result_is_hit( s->result ) )
       p->trigger_freezing( s->target, as<int>( p->talents.frostfire_empowerment->effectN( 4 ).base_value() ), freezing_source );
+  }
+
+  double composite_aoe_multiplier( const action_state_t* s ) const override
+  {
+    double m = spell_t::composite_aoe_multiplier( s );
+    if ( !player->bugs )
+      return m;
+
+    // FFE has a couple of weird quirks:
+    //  a) it hits dead targets which count towards the cap (not implemented here)
+    //  b) it somehow counts the excluded primary target towards the cap
+    //  c) it doesn't split damage past 20 targets
+    // There's no core support for these, so we have to reimplement that here.
+    // Consider moving this elsewhere if we find more spells that behave similarly.
+    assert( reduced_aoe_targets_2 > 0.0 );
+
+    int targets = s->n_targets + 1;
+    if ( as<double>( targets ) > reduced_aoe_targets_2 )
+      m *= std::sqrt( reduced_aoe_targets_2 / std::min( sim->max_aoe_enemies, targets ) );
+
+    if ( s->n_targets > static_cast<size_t>( sim->max_aoe_enemies ) )
+      m /= sim->max_aoe_enemies / static_cast<double>( s->n_targets );
+
+    return m;
   }
 };
 
