@@ -5466,29 +5466,26 @@ bool monk_t::validate_actor()
     return false;
   }
 
-  if ( !sim->parent && !sim->profileset_enabled )
+  int expected = 13;
+  for ( const auto &hero_tree : player_sub_trees )
   {
-    int expected = 13;
-    for ( const auto &hero_tree : player_sub_trees )
-    {
-      int count = as<int>( range::count_if(
-          player_traits, [ is_ptr = is_ptr(), hero_tree ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
-            if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
-              return false;
-            const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
-            if ( !trait )
-              return false;
-            return static_cast<hero_tree_e>( trait->id_sub_tree ) == hero_tree;
-          } ) );
+    int count = as<int>( range::count_if(
+        player_traits, [ is_ptr = is_ptr(), hero_tree ]( std::tuple<talent_tree, unsigned, unsigned> entry ) {
+          if ( std::get<talent_tree>( entry ) != talent_tree::HERO )
+            return false;
+          const trait_data_t *trait = trait_data_t::find( std::get<1>( entry ), is_ptr );
+          if ( !trait )
+            return false;
+          return static_cast<hero_tree_e>( trait->id_sub_tree ) == hero_tree;
+        } ) );
 
-      // Report without counting the hidden talent that activates the subtree
-      count -= 1;
-      if ( count < expected && count != 0 )
-      {
-        sim->error( SEVERE, "Invalid Hero Talent tree, possibly low level. Found {} talents, expected {}.", count,
-                    expected );
-        return false;
-      }
+    // Report without counting the hidden talent that activates the subtree
+    count -= 1;
+    if ( count < expected && count != 0 )
+    {
+      sim->error( SEVERE, "Invalid Hero Talent tree, possibly low level. Found {} talents, expected {}.", count,
+                  expected );
+      return false;
     }
   }
 
@@ -6995,11 +6992,6 @@ void monk_t::init_finished()
 {
   base_t::init_finished();
   parse_player_effects();
-
-  profileset_controller_t::register_controller(
-      sim, "valid_talents", profileset_controller::create_fn_pair<profileset_control::valid_talents_t>() );
-  std::vector<std::string> rhs = { fmt::format( "player={},count=13", name() ) };
-  sim->profileset_controller_options.emplace( "valid_talents", rhs );
 }
 
 void monk_t::reset()
