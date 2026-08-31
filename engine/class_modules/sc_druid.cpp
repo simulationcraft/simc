@@ -597,6 +597,7 @@ struct druid_t final : public parse_player_effects_t
     action_t* shift_to_bear;
     action_t* shift_to_cat;
     action_t* shift_to_moonkin;
+    action_t* hotw_caster;
     action_t* hotw_cat;
     action_t* hotw_owl;
 
@@ -6609,6 +6610,8 @@ struct wild_growth_t final : public druid_heal_t
 
     // '0-tick' coeff, also unknown if this is hard set to 0.175 or based on a formula as below
     spell_power_mod.tick += decay_coeff / 2.0;
+
+    form_mask = NO_FORM;
   }
 
   double spell_tick_power_coefficient( const action_state_t* s ) const override
@@ -9106,9 +9109,6 @@ struct wrath_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
 // Caster Form Wild Growth NYI
 struct heart_of_the_wild_t final : public druid_spell_t
 {
-  action_t* hotw_cat;
-  action_t* hotw_owl;
-
   DRUID_ABILITY( heart_of_the_wild_t, druid_spell_t, "heart_of_the_wild", p->talent.heart_of_the_wild )
   {
     harmful = may_miss = reset_melee_swing = callbacks = false;
@@ -9136,12 +9136,18 @@ struct heart_of_the_wild_t final : public druid_spell_t
     {
       case BEAR_FORM:
         if( !p()->buff.heart_of_the_wild_bear->is_fallback )
+        {
           p()->buff.heart_of_the_wild_bear->trigger();
+          return;
+        }
         break;
 
       case CAT_FORM:
         if ( p()->active.hotw_cat )
+        {
           p()->active.hotw_cat->execute_on_target( target );
+          return;
+        }
         break;
 
       case MOONKIN_FORM:
@@ -9149,11 +9155,16 @@ struct heart_of_the_wild_t final : public druid_spell_t
         {
           p()->active.hotw_owl->stats->add_execute( 0_ms, target );
           p()->buff.heart_of_the_wild_owl->trigger();
+          return;
         }
         break;
 
       default: break;
     }
+
+    // shift out and heal
+    assert( p()->active.hotw_caster );
+    p()->active.hotw_caster->execute();
   }
 };
 
@@ -11744,6 +11755,13 @@ void druid_t::create_actions()
 
       active.hotw_owl = _owl;
     }
+
+    auto _caster = get_secondary_action<wild_growth_t>( "heart_of_the_wild_caster" );
+    _caster->name_str_reporting = "HotW";
+    _caster->base_multiplier *= talent.heart_of_the_wild->effectN( 4 ).percent();
+    _caster->use_off_gcd = true;
+
+    active.hotw_caster = _caster;
   }
 
   // Balance
