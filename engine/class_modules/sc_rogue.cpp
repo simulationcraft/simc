@@ -4126,9 +4126,12 @@ struct deathmark_t : public rogue_attack_t
   deathmark_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->talent.assassination.deathmark, options_str )
   {
-    energize_type = action_energize::PER_TICK;
-    energize_resource = RESOURCE_ENERGY;
-    energize_amount = data().effectN( 3 ).base_value() / ( data().duration() / data().effectN( 1 ).period() );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    rogue_attack_t::tick( d );
+    gain_energize_resource( RESOURCE_ENERGY, data().effectN( 3 ).base_value() / d->num_ticks(), gain );
   }
 
   void impact( action_state_t* state ) override
