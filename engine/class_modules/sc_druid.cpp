@@ -6598,12 +6598,10 @@ struct tranquility_t final : public druid_heal_t
 struct wild_growth_t final : public druid_heal_t
 {
   double decay_coeff;
-  double sotf_mul;
   int inc_mod;
 
   DRUID_ABILITY( wild_growth_t, druid_heal_t, "wild_growth", p->talent.wild_growth ),
     decay_coeff( 0.07 * ( 1.0 - p->talent.unstoppable_growth->effectN( 1 ).percent() ) ),
-    sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 2 ).percent() ),
     inc_mod( as<int>( p->talent.incarnation_tree->effectN( 3 ).base_value() ) )
   {
     aoe = as<int>( data().effectN( 2 ).base_value() + p->talent.improved_wild_growth->effectN( 1 ).base_value() );
@@ -6622,16 +6620,6 @@ struct wild_growth_t final : public druid_heal_t
     c -= decay_coeff * ( 1.0 - dot->remains() / dot->duration() );
 
     return c;
-  }
-
-  double composite_persistent_multiplier( const action_state_t* s ) const override
-  {
-    auto pm = druid_heal_t::composite_persistent_multiplier( s );
-
-    if ( p()->buff.soul_of_the_forest_tree->check() )
-      pm *= 1.0 + sotf_mul;
-
-    return pm;
   }
 
   int n_targets() const override
