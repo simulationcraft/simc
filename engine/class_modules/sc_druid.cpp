@@ -11744,7 +11744,7 @@ void druid_t::create_actions()
       active.hotw_owl = _owl;
     }
 
-    auto _caster = get_secondary_action<wild_growth_t>( "heart_of_the_wild_caster" );
+    auto _caster = get_secondary_action<wild_growth_t>( "heart_of_the_wild_caster", find_spell( 48438 ) );
     _caster->name_str_reporting = "HotW";
     _caster->base_multiplier *= talent.heart_of_the_wild->effectN( 4 ).percent();
     _caster->use_off_gcd = true;
