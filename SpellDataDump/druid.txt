@@ -20657,11 +20657,12 @@ Hotfixed         : Base Value (6 -> 5)
 Description      : $s2% of Lifebloom's final bloom heals up to $s3 injured allies within $1244341a1 yds.
 
 Name             : Everbloom (id=1244341) [Spell Family (7)] 
+Hotfixed         : Max Targets (6 -> 5)
 Class            : Druid
 School           : Nature
 Spell Type       : None
 Range            : 100 yards
-Max Targets      : 6
+Max Targets      : 5
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
