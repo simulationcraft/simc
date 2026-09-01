@@ -11521,10 +11521,13 @@ struct howling_blast_t final : public death_knight_spell_t
         m *= 1.0 + p()->talent.deathbringer.bind_in_darkness->effectN( 4 ).percent();
       }
     }
-    if ( p()->talent.frost.everfrost->ok() && p()->buffs.rime->check() &&
-         ( state->chain_target > 0 && !is_northwinds_target ) )
+    if ( state->chain_target > 0 && !is_northwinds_target )
     {
-      m *= 1.0 + p()->talent.frost.everfrost->effectN( 2 ).percent();
+      if ( p()->buffs.rime->check() && p()->talent.frost.everfrost->ok() )
+      {
+        m *= 1.0 + p()->talent.frost.everfrost->effectN( 2 ).percent();
+      }
+      m /= 1.0 + p()->talent.frost.howling_blast->effectN( 2 ).percent();
     }
 
     return m;
