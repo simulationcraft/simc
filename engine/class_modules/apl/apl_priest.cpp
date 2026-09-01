@@ -91,6 +91,7 @@ void shadow( player_t* p )
   cds->add_action( "invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40" );
   cds->add_action( "power_infusion,if=(buff.voidform.up|!talent.voidform)&!buff.power_infusion.up", "Sync Power Infusion with Voidform" );
   cds->add_action( "halo" );
+  cds->add_action( "use_item,name=stormbound_emblem_of_dazar,if=cooldown.voidform.remains<=2&active_dot.shadow_word_pain>=active_dot.vampiric_touch&!buff.crushing_void.up" );
   cds->add_action( "voidform,if=active_dot.shadow_word_pain>=active_dot.vampiric_touch" );
   cds->add_action( "call_action_list,name=trinkets" );
   cds->add_action( "desperate_prayer,if=health.pct<=75", "Use Desperate Prayer to heal up should Shadow Word: Death or other damage bring you below 75%" );
