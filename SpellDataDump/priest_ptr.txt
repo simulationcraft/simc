@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69497 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69587 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -319,7 +319,7 @@ Family Flags     : 10, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=611)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 21.4493 | PvP Coefficient: 1.512 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 21.4493 | PvP Coefficient: 1.28 | Target: Targeted Ally (21)
 #2 (id=709474)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 Description      : Perform a miracle, healing an ally for $s1.
@@ -1855,7 +1855,7 @@ Family Flags     : 35
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416), Unknown (450)
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 46 | Scaled Value: 46 | PvP Coefficient: 1.2 | Target: Self (1)
+                   Base Value: 46 | Scaled Value: 46 | PvP Coefficient: 1.26 | Target: Self (1)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Power Word: Shield, Flash Heal, Shadow Mend, Plea, and Power Word: Radiance apply Atonement to your target for $194384d.
@@ -3470,7 +3470,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=283373)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 25 | Scaled Value: 25 | Resource: mana | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.4 | Resource: mana | Target: Self (1)
 Description      : You regenerate mana $s1% faster.
 
 Name             : Light's Resurgence (id=193157) [Spell Family (6), Passive, Hidden] 
@@ -5173,22 +5173,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : $@spelldesc198068
 Tooltip          : Your next Penance will deal $s1% additional damage$?s200347[ or healing][].
-
-Name             : Guardian of the Forgotten Queen (id=228048) [Spell Family (6)] 
-School           : Holy
-Spell Type       : Magic
-GCD              : 1.5 seconds
-Duration         : 10 seconds
-Cooldown         : 45 seconds
-Labels           : 16: Class Spells
-                 : 18: Priest Spells
-                 : 292
-Triggered By     : Guardian of the Forgotten Queen (228049)
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), No Cast Log (128), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=343138)   : Summon Guardian (28)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 114565 | Misc Value 2: 3941 | Radius: 2 yards | Target: Front Left of Self (44)
-Description      : $@spelldesc228049
 
 Name             : Voidform (id=228260) [Spell Family (6)] 
 Talent Entry     : Shadow [tree=spec, row=5, col=4, max_rank=1, req_points=8]
@@ -7590,11 +7574,11 @@ Family Flags     : 72, 87
 Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=832086)   : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 2.275 | PvP Coefficient: 0.875 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 2.275 | Target: Targeted Enemy (6)
 #2 (id=832087)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Targeted Enemy (6)
 #3 (id=832088)   : Apply Aura (6) | Periodic Health Leech (53): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 2.275 | PvP Coefficient: 0.875 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 2.275 | Target: Targeted Enemy (6)
 Description      : A word of madness haunts the target's mind, dealing $s1 Shadow damage instantly plus an additional $o3 Shadow damage over $d. Heals you for ${$e1*100}% of damage dealt.
 
 When reapplied to a target, all remaining damage is added to the new effect.
@@ -9901,16 +9885,16 @@ Family Flags     : 72, 84
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Not In Spellbook Until Learned (269), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Aura Always Shown (438)
 Effects          :
 #1 (id=1002578)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.5 | Target: Targeted Enemy (6)
 #2 (id=1002579)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1050 | Scaled Value: 1050 | Target: Targeted Enemy (6)
+                   Base Value: 2625 | Scaled Value: 2625 | Target: Targeted Enemy (6)
                    Modified By: Shadow Word: Manipulation (356392 effect#2)
 #3 (id=1002580)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
 #4 (id=1002581)  : Trigger Spell (64): Mindgames
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 375902 | Target: Self (1)
 #5 (id=1002582)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1050 | Scaled Value: 1050 | Target: Targeted Enemy (6)
+                   Base Value: 2625 | Scaled Value: 2625 | Target: Targeted Enemy (6)
                    Modified By: Shadow Word: Manipulation (356392 effect#3)
 #6 (id=1002583)  : Apply Aura (6) | Dummy (4)
                    Base Value: 450 | Scaled Value: 450 | Target: Current Target (25)
@@ -15295,7 +15279,7 @@ Effects          :
                    Affected Spells: Flash Heal (2061), Shadow Mend (186263), Benediction (1262763)
                    Family Flags: 11
 #10 (id=1264783) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 85 | Scaled Value: 85 | Target: Self (1)
+                   Base Value: 48 | Scaled Value: 48 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
 #11 (id=1264784) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
@@ -15420,7 +15404,7 @@ Family Flags     : 41, 72
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1241611)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.9544 | PvP Coefficient: 0.7 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.9544 | PvP Coefficient: 0.805 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1242173
 
 Name             : Descending Darkness (id=1242666) [Spell Family (6), Passive, Hidden] 
@@ -15639,7 +15623,7 @@ Family Flags     : 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1248558)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 12.22 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 12.22 | PvP Coefficient: 0.75 | Target: Targeted Ally (21)
 Description      : Casting Prayer of Mending heals your target for $s1.
 
 Name             : Prompt Prognosis (id=1246799) [Spell Family (6), Passive, Hidden] 
@@ -15956,7 +15940,7 @@ Family Flags     : 10, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1254711)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 3.2174 | PvP Coefficient: 1.512 | Radius: 0 - 40 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 3.2174 | PvP Coefficient: 1.28 | Radius: 0 - 40 yards | Target: at Targeted Ally (132) -> At Ally in Area (31)
 #2 (id=1254712)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : $@spelldesc1246517
@@ -16365,7 +16349,7 @@ Effects          :
                    Affected Spells: Collapsing Void (448405)
                    Family Flags: 30
 #12 (id=1314377) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -30 | Scaled Value: -30 | Target: Self (1)
+                   Base Value: -16 | Scaled Value: -16 | Target: Self (1)
                    Affected Spells: Flash Heal (2061), Shadow Mend (186263), Shadow Mend (187464), Benediction (1262763)
                    Family Flags: 11, 52
 #13 (id=1339000) : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
@@ -16404,7 +16388,7 @@ Effects          :
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204213), Void Bolt (205448), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Shadow Word: Madness (335467), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Tentacle Slam (1227621), Shadeburst (1231479), Penance (1232571), Dark Reprimand (1232592), Void Volley (1242189), Horrific Vision (1243105), Vision of N'Zoth (1243106), Void Apparition (1264176), Void Bolt (1264177)
                    Family Flags: 72
 #3 (id=1264738)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -42 | Scaled Value: -42 | Target: Self (1)
+                   Base Value: -32 | Scaled Value: -32 | Target: Self (1)
                    Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
                    Family Flags: 33
 #4 (id=1264744)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)

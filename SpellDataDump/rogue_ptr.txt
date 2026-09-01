@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69497 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69587 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -526,7 +526,7 @@ Family Flags     : 54, 112
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=622)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.6116 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.6116 | PvP Coefficient: 1.2 | Target: Targeted Enemy (6)
 Description      : Finishing move that dispatches the enemy, dealing damage per combo point:
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -3495,7 +3495,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=288959)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.37325 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : Finishing move that disembowels the target, causing damage per combo point.$?s382511[ Targets with Find Weakness suffer an additional $382511s1% damage as Shadow.][]
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -6047,7 +6046,7 @@ Family Flags     : 54, 111
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Aura Is Buff (140), Ignore Combat Timer (156), Show Mechanic as Combat Text (213), Do Not Auto Select Target with Initiates Combat (220), No Attack Dodge (247), No Attack Parry (248), No Attack Block (256), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Asynchronous Aura (490)
 Effects          :
 #1 (id=799020)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.751 | PvP Coefficient: 0.85 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.751 | PvP Coefficient: 0.95 | Target: Targeted Enemy (6)
 #2 (id=805314)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Shadow Blade Off-hand (121474), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Rupture (394031), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Goremaw's Bite (426592), Goremaw's Bite (426593), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Fatebound Coin (Tails) (452538), Deathstalker's Mark (457157), Hunt Them Down (457193), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Dispatch (467059), Echoing Reprimand (470672), Crimson Tempest (1247227), Secondary Poisoning (1250216), Lashe Macabre (1264397), Implacable Strikes (1265794), Implacable Strikes (1265795), Gravedigger (1265862), Scoundrel Strike (1265918), Eviscerate (1269205), Backstab (1269209), Gloomblade (1269214), Goremaw's Bite (1269217), Shadowstrike (1269336), Shuriken Storm (1269340), Shuriken Toss (1269343), Secret Technique (1269560), Black Powder (1269565), Rupture (1270203), Deathstalker's Mark (1273061), Secret Technique (1305994)
@@ -6596,7 +6595,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=819933)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.37325 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc196819
 
 Name             : Blindside (id=328085) [Spell Family (8), Passive] 
@@ -9764,7 +9762,7 @@ Effects          :
 #1 (id=1019022)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #2 (id=1019023)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.469 | PvP Coefficient: 0.8 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.469 | PvP Coefficient: 0.7 | Target: Targeted Enemy (6)
 #3 (id=1019024)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #4 (id=1019025)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
@@ -11894,7 +11892,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Chain From Caster (76), D
 Effects          :
 #1 (id=1105226)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.58 | PvP Coefficient: 1.33 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 3 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.33)
 Description      : $@spelldesc426591
 Tooltip          : Suffering $w1 damage every $t1 seconds.
 
@@ -12721,7 +12718,7 @@ Range            : 20 yards
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2, #8), Assassination Rogue (137037 effects: #1, #2, #9), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Caustic Spatter (421976 effect#3), Fazed (441224 effect#1), Hand of Fate (452536 effect#5), Fatebound Coin (Tails) (452917 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Vile Tincture (458475 effects: #1, #2), Lucky Coin (1248971 effect#3), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2), Implacable (1265386 effects: #2, #3), Whirl of Blades (1275176 effects: #1, #2), Ravenholdt Mint (1276809 effect#2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Envenom (32645 effects: #8, #9), Shadow Focus (112942 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2, #8), Assassination Rogue (137037 effects: #1, #2, #9), Shadow Dance (185313 effects: #5, #9), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Symbols of Death (212283 effect#4), Between the Eyes (315341 effects: #2, #3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Caustic Spatter (421976 effect#3), Fazed (441224 effect#1), Hand of Fate (452536 effect#5), Fatebound Coin (Tails) (452917 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Fatebound Coin (Heads) (456479 effects: #1, #2), Vile Tincture (458475 effects: #1, #2), Lucky Coin (1248971 effect#3), Finish the Job (1249810 effects: #1, #2), Subtlety Rogue (1256946 effects: #1, #2), Outlaw Rogue (1256947 effects: #1, #2), Assassination Rogue (1256950 effects: #1, #2, #4), Implacable (1265386 effects: #2, #3), Whirl of Blades (1275176 effects: #1, #2), Ravenholdt Mint (1276809 effect#2), Rogue - Midnight PrePatch - 11.2 Class Set 2pc (1283637 effects: #1, #2), Rogue - Midnight PrePatch - 11.2 Class Set 4pc (1283639 effects: #1, #2)
 Family Flags     : 25, 54
 Attributes       : Is Ability (4), Not an Action (92), Active Threat (94), Can Proc From Procs (122), Allow Cast While Casting (135), Always Line of Sight (185), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -14147,7 +14144,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171851)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462242) [Spell Family (8)] 
@@ -14167,7 +14163,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171852)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462243) [Spell Family (8)] 
@@ -14187,7 +14182,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171853)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.187 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462244) [Spell Family (8)] 
@@ -14207,7 +14201,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171854)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc196819
 
 Name             : Eviscerate (Coup de Grace) (id=462247) [Spell Family (8)] 
@@ -14227,7 +14220,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171857)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.094 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc196819
 
 Name             : Eviscerate (Coup de Grace) (id=462248) [Spell Family (8)] 
@@ -14247,7 +14239,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171858)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.187 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc196819
 
 Name             : Dispatch (id=467059) [Spell Family (8)] 
@@ -14268,7 +14259,7 @@ Family Flags     : 54, 112
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1179999)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.6116 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.6116 | PvP Coefficient: 1.2 | Target: Targeted Enemy (6)
 Description      : Finishing move that dispatches the enemy, dealing damage per combo point:
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -15926,6 +15917,10 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Leeching Poison (108211)
                    Family Flags: 73
+#4 (id=1351686)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
+                   Base Value: -10 | Scaled Value: -10 | Target: Self (1)
+                   Affected Spells: Fatebound Coin (Tails) (452538)
+                   Family Flags: 25
 
 Name             : Ruthlessness (id=1258235) [Spell Family (8)] 
 Class            : Rogue
@@ -16501,7 +16496,7 @@ Family Flags     : 54, 97
 Attributes       : Is Ability (4), Do Not Sheath (18), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1277766)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.07 | PvP Coefficient: 0.65 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.07 | PvP Coefficient: 0.55 | Target: Targeted Enemy (6)
 Description      : $@spelldesc1265387
 
 Name             : Implacable Strikes (id=1265795) [Spell Family (8)] 
@@ -16518,7 +16513,7 @@ Family Flags     : 54
 Attributes       : Is Ability (4), Do Not Sheath (18), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), No Movement Radius Bonus (318), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1277767)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3 | PvP Coefficient: 0.65 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3 | PvP Coefficient: 0.55 | Target: Targeted Enemy (6)
 #2 (id=1277768)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
 Description      : $@spelldesc1265387
@@ -16845,7 +16840,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1280916)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.37325 | PvP Coefficient: 1.375 | Target: Targeted Enemy (6)
-Hotfixed         : PvP Coefficient (1.25 -> 1.375)
 Description      : $@spelldesc196819
 
 Name             : Backstab (id=1269209) [Spell Family (8)] 

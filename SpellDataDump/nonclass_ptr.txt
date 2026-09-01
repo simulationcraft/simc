@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69497 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69587 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -250643,7 +250643,6 @@ Attributes       : Can't Crit (93)
 Effects          :
 #1 (id=1273548)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 45 yards | Target: Source (22) -> Ally in Area (30)
-Hotfixed         : Target 1 (30 -> 22), Target 2 (0 -> 30)
 #2 (id=1305384)  : Dummy (3)
                    Base Value: 2051 | Scaled Value: 2051 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279599
@@ -256818,13 +256817,14 @@ Effects          :
 Description      : Your spells have a high chance to call to the sea, granting Tidal Insight to increase your Intellect by $s1 up to $1295057u times. After reaching its peak, your spells instead diminish Tidal Insight before beginning the cycle anew.
 
 Name             : Debilitating Venom (id=1295123) 
+Hotfixed         : Attributes
 School           : Nature
 Spell Type       : None
 Duration         : 15 seconds
 Labels           : 292
                  : 3959: Item Effects
 Triggered By     : Empowering Venom (1293316), Vile Vial of Volatile Venom (1295179)
-Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Aura Cancel (31), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
+Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Aura Cancel (31), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Aura Icon Only For Caster (Limit 10) (212), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1316975)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
                    Base Value: 0 | Scaled Value: -62.93292 (coefficient=-0.480109) | Rating: Crit | Target: Self (1)
@@ -257468,7 +257468,6 @@ Description      : Your spells afflict you with Hex Lord's Doom, draining your I
 
 
 Name             : Hex Lord's Doom (id=1295885) 
-Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Shadow
 Spell Type       : None
 Duration         : 30 seconds

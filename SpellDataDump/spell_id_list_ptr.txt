@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.0.69497
+Class Spell ID List, wow build 12.1.0.69587
 
 Death Knight
 3714     Path of Frost
@@ -5430,12 +5430,12 @@ Druid
 1308176  Dream Conduit
 1308399  Answered Calling
 1308437  Spirit's Wrath
-1308448 *Listener
+1308448  Listener
 1308479  Spirit's Wrath
 1308522  Wild Guardian Spirit
 1308639  Spirit's Wrath
 1308647  Answered Calling
-1308653 *Listener
+1308653  Listener
 1310150  Rampant Thorn
 1310213  Rampant Thorn
 
@@ -14071,6 +14071,7 @@ Paladin
 225297   Fragile Echoes
 225768   Temporal Shift
 225833  *Fervent Martyr
+228048   Guardian of the Forgotten Queen
 228049   Guardian of the Forgotten Queen
 228231  *Holy Power
 228473  *Cleanse the Weak
@@ -16174,7 +16175,6 @@ Priest
 225770   Temporal Shift
 226452  *Silence
 227668  *_JKL - SQL Helper
-228048   Guardian of the Forgotten Queen
 228260   Voidform
 228264   Voidform
 228266   Void Bolt

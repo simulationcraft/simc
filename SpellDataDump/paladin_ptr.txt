@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69497 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69587 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -3927,7 +3927,7 @@ Family Flags     : 118
 Attributes       : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Fail on all targets immune (85), Aura Never Bounces (148), Ignore Healing Modifiers (219), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=267680)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.75 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=358403)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -5685,13 +5685,31 @@ Effects          :
 Description      : $@spelldesc225138
 Tooltip          : Your next Holy Light has no cost, and restores $225138s2 mana.
 
+Name             : Guardian of the Forgotten Queen (id=228048) [Spell Family (10)] 
+School           : Holy
+Spell Type       : Magic
+GCD              : 1.5 seconds
+Duration         : 6 seconds
+Cooldown         : 45 seconds
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+Triggered By     : Guardian of the Forgotten Queen (228049)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), No Cast Log (128), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=343138)   : Summon Guardian (28)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 114565 | Misc Value 2: 3941 | Radius: 2 yards | Target: Front Left of Self (44)
+Description      : $@spelldesc228049
+
 Name             : Guardian of the Forgotten Queen (desc=PvP Talent) (id=228049) [Spell Family (10)] 
 School           : Holy
 Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
-Charges          : 1 (180 seconds cooldown)
-Category         : 2424 (Type 0x1): Empyrean Authority (1246481 effect#1)
+Duration         : 6 seconds
+Cooldown         : 6 seconds
+Charges          : 1 (240 seconds cooldown)
+Category         : 2586 (Type 0x1): Empyrean Authority (1246481 effect#2)
 Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
@@ -5705,6 +5723,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Ally (21)
 #2 (id=343140)   : Trigger Spell (64): Guardian of the Forgotten Queen
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 228048 | Target: Self (1)
+#3 (id=1351605)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Empowers the friendly target with the spirit of the forgotten queen, causing the target to be immune to all damage for $d.
 
 Name             : Divine Shield (desc=PvP Talent) (id=228050) 
@@ -5712,7 +5732,7 @@ School           : Holy
 Spell Type       : Magic
 Range            : 50000 yards
 Max Targets      : 1
-Duration         : 10 seconds
+Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 118
@@ -14211,7 +14231,7 @@ Effects          :
 #5 (id=1079865)  : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 5 | Misc Value 2: 2655 (Label) | Target: Self (1)
 #6 (id=1079866)  : Apply Aura (6) | Modify Flat PVP Multiplier (646): Modify Effect 1 (5)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Divine Protection (498), Divine Protection (403876)
                    Family Flags: 72
 #7 (id=1080083)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
@@ -14251,7 +14271,7 @@ Effects          :
 #18 (id=1350142) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 5 | Misc Value 2: 7093 (Label) | Target: Self (1)
 #19 (id=1350147) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value 2: 3084 (Label) | Target: Self (1)
+                   Base Value: 38 | Scaled Value: 38 | Misc Value 2: 3084 (Label) | Target: Self (1)
 
 Name             : Aura Mastery (id=412629) [Spell Family (10), Hidden] 
 Class            : Paladin
@@ -15375,11 +15395,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1108026)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -39 | Scaled Value: -39
+                   Base Value: -41 | Scaled Value: -41
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002), Lesser Weapon (1239276), Beacon of the Savior (1244893), Divine Guidance (1310389)
                    Family Flags: 38, 46, 90
 #2 (id=1108027)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: -39 | Scaled Value: -39 | Misc Value: 1
+                   Base Value: -41 | Scaled Value: -41 | Misc Value: 1
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002), Lesser Weapon (1239276), Beacon of the Savior (1244893), Divine Guidance (1310389)
                    Family Flags: 46
 #3 (id=1108028)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
@@ -20312,7 +20332,10 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1248039)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2424 (Category) | Target: Self (1)
-                   Affected Spells (Category): Guardian of Ancient Kings (86659), Guardian of the Forgotten Queen (228049)
+                   Affected Spells (Category): Guardian of Ancient Kings (86659)
+#2 (id=1351590)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2586 (Category) | Target: Self (1)
+                   Affected Spells (Category): Guardian of the Forgotten Queen (228049)
 Description      : Guardian of Ancient Kings has $s1 additional $Lcharge:charges;.
 
 Name             : Sweeping Verdict (id=1246488) [Spell Family (10), Passive] 
@@ -20505,6 +20528,8 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Target: Self (1)
                    Affected Spells: Ancient Fury (86704), Radiant Decree (383469), Hammer of Light (427453), Hammer of Light (429826), Hammer of Light (1235934)
                    Family Flags: 29, 112
+#10 (id=1351585) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
+                   Base Value: 30000 | Scaled Value: 30000 | Misc Value: 5 | Misc Value 2: 2651 (Label) | Target: Self (1)
 
 Name             : Retribution Paladin (id=1258011) [Spell Family (10), Passive, Hidden] 
 Class            : Retribution Paladin
@@ -20855,7 +20880,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1273793)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.4 | Target: Self (1)
                    Affected Spells: Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328)
                    Family Flags: 44
 #2 (id=1273806)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -22468,9 +22493,9 @@ Family Flags     : 27, 65, 88
 Attributes       : Can Proc From Procs (122), Not In Spellbook (143), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1334556)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.05 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 10.125 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
 #2 (id=1334557)  : School Damage (2): holy | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.7 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.725 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
 Description      : $@spelldesc1296661
 
 Name             : Crusading Strikes (id=1307499) [Spell Family (10), Hidden] 
