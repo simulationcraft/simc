@@ -1856,8 +1856,19 @@ public:
 
   void init() override;
 
+  void schedule_execute( action_state_t* s = nullptr ) override
+  {
+    check_unshift();
+
+    ab::schedule_execute( s );
+  }
+
   void execute() override
   {
+    // offgcd actions bypass schedule_execute so check for unshift
+    if ( ab::use_off_gcd )
+      check_unshift();
+
     ab::execute();
 
     if ( !has_flag( flag_e::ALLOWSTEALTH ) )
@@ -1962,24 +1973,34 @@ public:
     if ( is_free() )
       return;
 
-    if ( !check_form_restriction() )
+    if ( autoshift != NONE_FORM && p()->form != autoshift )
     {
       switch ( autoshift )
       {
-        case BEAR_FORM:    p()->active.shift_to_bear->execute(); break;
-        case CAT_FORM:     p()->active.shift_to_cat->execute(); break;
-        case MOONKIN_FORM: p()->active.shift_to_moonkin->execute(); break;
-        default:
-          if ( !has_flag( flag_e::NOUNSHIFT ) && form_mask & CASTER_FORM )
-          {
-            p()->active.shift_to_caster->execute();
-          }
-          else
-          {
-            throw sc_runtime_error( fmt::format( "{} executed in wrong form {:#010x} with no valid form to shift to!",
-                                                 *this, static_cast<unsigned>( p()->form ) ) );
-          }
-          break;
+        case BEAR_FORM:    p()->active.shift_to_bear->execute(); return;
+        case CAT_FORM:     p()->active.shift_to_cat->execute(); return;
+        case MOONKIN_FORM: p()->active.shift_to_moonkin->execute(); return;
+        case CASTER_FORM:  p()->active.shift_to_caster->execute(); return;
+        default: break;
+      }
+    }
+  }
+
+  void check_unshift()
+  {
+    if ( is_free() )
+      return;
+
+    if ( !check_form_restriction() )
+    {
+      if ( !has_flag( flag_e::NOUNSHIFT ) && form_mask & CASTER_FORM )
+      {
+        p()->active.shift_to_caster->execute();
+      }
+      else
+      {
+        throw sc_runtime_error( fmt::format( "{} executed in wrong form {:#010x} with no valid form to shift to!",
+                                             *this, static_cast<unsigned>( p()->form ) ) );
       }
     }
   }
@@ -3662,7 +3683,7 @@ struct cancel_form_t final : public druid_form_t
     set_form( CASTER_FORM );
 
     trigger_gcd = 0_ms;
-    use_off_gcd = true;
+    use_off_gcd = usable_while_casting = true;
   }
 };
 }  // namespace spells
@@ -11736,6 +11757,7 @@ void druid_t::create_actions()
 
     auto _caster = get_secondary_action<wild_growth_t>( "heart_of_the_wild_caster", find_spell( 48438 ) );
     _caster->name_str_reporting = "HotW";
+    _caster->use_off_gcd = true;
     _caster->base_multiplier *= talent.heart_of_the_wild->effectN( 4 ).percent();
 
     active.hotw_caster = _caster;
