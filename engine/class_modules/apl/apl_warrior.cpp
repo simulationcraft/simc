@@ -271,9 +271,10 @@ void arms( player_t* p )
   slayer_aoe->add_action( "heroic_strike,if=!talent.fervor_of_battle" );
   slayer_aoe->add_action( "overpower,if=talent.dreadnaught&charges=2" );
   slayer_aoe->add_action( "execute,if=buff.sudden_death.up" );
-  slayer_aoe->add_action( "overpower" );
+  slayer_aoe->add_action( "overpower,if=talent.dreadnaught" );
   slayer_aoe->add_action( "execute" );
   slayer_aoe->add_action( "mortal_strike" );
+  slayer_aoe->add_action( "overpower,if=!talent.dreadnaught" );
   slayer_aoe->add_action( "slam" );
   slayer_aoe->add_action( "wrecking_throw" );
   slayer_aoe->add_action( "storm_bolt,if=buff.bladestorm.up" );
