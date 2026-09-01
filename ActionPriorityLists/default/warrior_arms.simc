@@ -139,7 +139,7 @@ actions.slayer_st+=/cleave,if=dot.rend_dot.remains<=gcd|cooldown.colossus_smash.
 actions.slayer_st+=/rend,if=!talent.cleave&(dot.rend_dot.remains<=gcd&active_enemies<2|cooldown.colossus_smash.remains<2&dot.rend_dot.remains<=10&active_enemies<2)
 actions.slayer_st+=/avatar,if=debuff.colossus_smash.up|cooldown.colossus_smash.remains<10&cooldown.colossus_smash.remains>gcd
 actions.slayer_st+=/ravager,if=cooldown.colossus_smash.remains<=gcd
-actions.slayer_st+=/execute,if=buff.sudden_death.stack=2|cooldown.bladestorm.ready&(!buff.imminent_demise.stack=1|!buff.imminent_demise.stack=3)
+actions.slayer_st+=/execute,if=buff.sudden_death.stack=2|cooldown.bladestorm.ready&(buff.imminent_demise.stack<3)
 actions.slayer_st+=/colossus_smash,if=buff.sudden_death.stack<2
 actions.slayer_st+=/bladestorm,if=debuff.colossus_smash.up|buff.avatar.up
 actions.slayer_st+=/heroic_strike
