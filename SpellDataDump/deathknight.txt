@@ -2026,8 +2026,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.8 | Target: Self (1)
 #5 (id=1254942)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.2 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Blood Plague (55078), Frost Fever (55095), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Festering Wound (195757), Putrefy (390220), Dread Plague (1240996), Dread Plague (1242564), Consumption (1263872), Putrefy (1277016)
-                   Family Flags: 40, 57, 58, 85, 93, 112, 119
+                   Affected Spells: Blood Plague (55078), Frost Fever (55095), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Festering Wound (195757), Putrefy (390220), Dread Plague (1240996), Virulent Plague (Erupt) (1241167), Dread Plague (Erupt) (1241171), Dread Plague (1242564), Consumption (1263872), Putrefy (1277016)
+                   Family Flags: 40, 41, 57, 58, 85, 93, 112, 119
 Hotfixed         : Affects Spells
 #6 (id=1254948)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.2 | Misc Value: 3 | Misc Value 2: 5503 (Label) | Target: Self (1)
@@ -16231,8 +16231,8 @@ Hotfixed         : Affects Spells
 Hotfixed         : Affects Spells
 #3 (id=1158793)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Blood Plague (55078), Frost Fever (55095), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Dread Plague (1240996), Dread Plague (1242564), Consumption (1263872)
-                   Family Flags: 40, 57, 58, 93, 119
+                   Affected Spells: Blood Plague (55078), Frost Fever (55095), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Dread Plague (1240996), Virulent Plague (Erupt) (1241167), Dread Plague (Erupt) (1241171), Dread Plague (1242564), Consumption (1263872)
+                   Family Flags: 40, 41, 57, 58, 93, 119
 Hotfixed         : Affects Spells
 #4 (id=1295935)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Misc Value 2: 6230 (Label) | Target: Self (1)
@@ -18860,7 +18860,7 @@ Labels           : 16: Class Spells
                  : 881
                  : 1219
 Proc Chance      : 101%
-Affecting Spells : Virulent Plague (191587 effect#3), War (327096 effect#1), Brittle (374557 effect#1), Plague Mastery (390166 effect#1), Dread Plague (1240996 effect#2), Soul Reaper (1241521 effect#3)
+Affecting Spells : Mastery: Dreadblade (77515 effect#5), Virulent Plague (191587 effect#3), War (327096 effect#1), Brittle (374557 effect#1), Plague Mastery (390166 effect#1), Foul Infections (455396 effect#3), Dread Plague (1240996 effect#2), Soul Reaper (1241521 effect#3)
 Family Flags     : 41
 Attributes       : Is Ability (4), Ignore Line of Sight (66), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Treat As Periodic (121), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Always AOE Line of Sight (186), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Bypass Visibility Check (320), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
@@ -18880,7 +18880,7 @@ Labels           : 16: Class Spells
                  : 881
                  : 1219
 Proc Chance      : 101%
-Affecting Spells : Virulent Plague (191587 effect#3), War (327096 effect#1), Brittle (374557 effect#1), Plague Mastery (390166 effect#1), Dread Plague (1240996 effect#2), Soul Reaper (1241521 effect#3)
+Affecting Spells : Mastery: Dreadblade (77515 effect#5), Virulent Plague (191587 effect#3), War (327096 effect#1), Brittle (374557 effect#1), Plague Mastery (390166 effect#1), Foul Infections (455396 effect#3), Dread Plague (1240996 effect#2), Soul Reaper (1241521 effect#3)
 Family Flags     : 41
 Attributes       : Is Ability (4), Ignore Line of Sight (66), Not a Proc (105), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Treat As Periodic (121), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Always AOE Line of Sight (186), Ignore Caster Damage Modifiers (221), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :

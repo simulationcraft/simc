@@ -19034,8 +19034,9 @@ Labels           : 16: Class Spells
 Family Flags     : 125
 Attributes       : Ignore Line of Sight (66), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1275665)  : School Damage (2): physical
+#1 (id=1275665)  : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.91 | Radius: 0 - 10 yards | Target: at Self (18) -> at Enemy in Area (16)
+Hotfixed         : Attribute (0 -> 133120)
 #2 (id=1275666)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : $@spelldesc1264359
