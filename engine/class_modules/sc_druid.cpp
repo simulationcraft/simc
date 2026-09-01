@@ -1993,6 +1993,9 @@ public:
 
     if ( !check_form_restriction() )
     {
+      if ( autoshift != NONE_FORM )
+        return;
+
       if ( !has_flag( flag_e::NOUNSHIFT ) && form_mask & CASTER_FORM )
       {
         p()->active.shift_to_caster->execute();
