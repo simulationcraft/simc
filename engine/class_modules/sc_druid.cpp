@@ -1969,13 +1969,16 @@ public:
         case BEAR_FORM:    p()->active.shift_to_bear->execute(); break;
         case CAT_FORM:     p()->active.shift_to_cat->execute(); break;
         case MOONKIN_FORM: p()->active.shift_to_moonkin->execute(); break;
-        case CASTER_FORM:
-          if ( !has_flag( flag_e::NOUNSHIFT ) )
-            p()->active.shift_to_caster->execute();
-          break;
         default:
-          throw sc_runtime_error( fmt::format( "{} executed in wrong form {:#010x} with no valid form to shift to!",
-                                               *this, static_cast<unsigned>( p()->form ) ) );
+          if ( !has_flag( flag_e::NOUNSHIFT ) && form_mask & CASTER_FORM )
+          {
+            p()->active.shift_to_caster->execute();
+          }
+          else
+          {
+            throw sc_runtime_error( fmt::format( "{} executed in wrong form {:#010x} with no valid form to shift to!",
+                                                 *this, static_cast<unsigned>( p()->form ) ) );
+          }
           break;
       }
     }
@@ -11734,7 +11737,6 @@ void druid_t::create_actions()
     auto _caster = get_secondary_action<wild_growth_t>( "heart_of_the_wild_caster", find_spell( 48438 ) );
     _caster->name_str_reporting = "HotW";
     _caster->base_multiplier *= talent.heart_of_the_wild->effectN( 4 ).percent();
-    _caster->use_off_gcd = true;
 
     active.hotw_caster = _caster;
   }
