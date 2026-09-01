@@ -4844,6 +4844,33 @@ struct kingsbane_t : public rogue_attack_t
     }
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_da_multiplier( state );
+
+    // 2028-08-31 -- Currently appears to double-dip from both Mastery and Implacable in-game
+    if ( p()->bugs )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+      m *= 1.0 + p()->talent.assassination.implacable_2->effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_ta_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_ta_multiplier( state );
+
+    // 2028-08-31 -- Currently appears to double-dip from Implacable in-game
+    if ( p()->bugs )
+    {
+      m *= 1.0 + p()->talent.assassination.implacable_2->effectN( 3 ).percent();
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
@@ -8992,7 +9019,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 
   // Type-Based Tracking for Accumulators
   bleeds = { dots.deathmark, dots.garrote, dots.internal_bleeding, dots.rupture, dots.mutilated_flesh };
-  poison_dots = { dots.deadly_poison, dots.kingsbane };
+  poison_dots = { dots.deadly_poison }; // 2026-08-31 -- Kingsbane no longer contributes
   poison_debuffs = { debuffs.atrophic_poison, debuffs.crippling_poison, debuffs.numbing_poison,
                      debuffs.wound_poison, debuffs.amplifying_poison };
 
