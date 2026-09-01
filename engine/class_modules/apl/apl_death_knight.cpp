@@ -254,8 +254,8 @@ void frost( player_t* p )
   aoe->add_action( "frostscythe,if=buff.killing_machine.react&!variable.rune_pooling&active_enemies>=variable.frostscythe_priority" );
   aoe->add_action( "obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=buff.killing_machine.react&!variable.rune_pooling" );
   aoe->add_action( "howling_blast,if=buff.rime.react" );
-  aoe->add_action( "glacial_advance,if=!variable.rp_pooling&active_enemies>=3" );
-  aoe->add_action( "frost_strike,if=!variable.rp_pooling&active_enemies<=2" );
+  aoe->add_action( "glacial_advance,if=!variable.rp_pooling&active_enemies>=3+(1*talent.deathly_blows)" );
+  aoe->add_action( "frost_strike,if=!variable.rp_pooling" );
   aoe->add_action( "frostscythe,if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)&active_enemies>=variable.frostscythe_priority" );
   aoe->add_action( "obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)" );
   aoe->add_action( "howling_blast,if=!buff.killing_machine.react&(talent.obliteration&buff.pillar_of_frost.up)" );
@@ -315,7 +315,7 @@ void frost( player_t* p )
   variables->add_action( "variable,name=fwf_buffs,value=(buff.pillar_of_frost.remains<gcd.max|(buff.unholy_strength.up&buff.unholy_strength.remains<gcd.max)|(talent.bonegrinder.rank=2&buff.bonegrinder_frost.up&buff.bonegrinder_frost.remains<gcd.max))&(active_enemies>1|debuff.razorice.stack=5|talent.shattering_blade)" );
   variables->add_action( "variable,name=rune_pooling,value=hero_tree.deathbringer&cooldown.reapers_mark.remains<6&rune<3&variable.sending_cds" );
   variables->add_action( "variable,name=rp_pooling,value=talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains<4*gcd.max&runic_power<60+(35+5*buff.icy_onslaught.up)-(10*rune)&variable.sending_cds" );
-  variables->add_action( "variable,name=frostscythe_priority,value=2", "Frostscythe is better at 2 targets" );
+  variables->add_action( "variable,name=frostscythe_priority,value=3", "Frostscythe is better at 3 targets" );
   variables->add_action( "variable,name=breath_of_sindragosa_check,value=!talent.breath_of_sindragosa|(cooldown.breath_of_sindragosa.remains>20|(cooldown.breath_of_sindragosa.remains<1*gcd.max&runic_power>=(60-20*hero_tree.deathbringer)))" );
 }
 //frost_apl_end
