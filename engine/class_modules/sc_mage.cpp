@@ -2361,18 +2361,12 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
     c += p()->buffs.hyperthermia->check_value();
 
+    // The spelldata for Pyroclasm and the 12.1 2pc doesn't seem to be used (nor correct),
+    // so we're hardcoding it here as they probably did serverside.
+    if ( pyroclasm_active() && p()->sets->has_set_bonus( MAGE_FIRE, MID2, B2 ) )
+      c += 1.0;
+
     return c;
-  }
-
-  result_e calculate_result( action_state_t* s ) const override
-  {
-    result_e r = custom_state_spell_t::calculate_result( s );
-
-    // TODO: Pyroclasm 2pc is likely scripted. Fuel the Fire does not see the increased crit chance.
-    if ( r == RESULT_HIT && pyroclasm_active() && p()->sets->has_set_bonus( MAGE_FIRE, MID2, B2 ) )
-      r = RESULT_CRIT;
-
-    return r;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
