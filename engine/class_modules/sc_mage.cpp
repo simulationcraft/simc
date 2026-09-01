@@ -2361,7 +2361,7 @@ struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_s
 
     c += p()->buffs.hyperthermia->check_value();
 
-    // The spelldata for Pyroclasm and the 12.1 2pc doesn't seem to be used (nor correct),
+    // The spelldata for Pyroclasm and the 12.1 2pc doesn't seem to be used,
     // so we're hardcoding it here as they probably did serverside.
     if ( pyroclasm_active() && p()->sets->has_set_bonus( MAGE_FIRE, MID2, B2 ) )
       c += 1.0;
