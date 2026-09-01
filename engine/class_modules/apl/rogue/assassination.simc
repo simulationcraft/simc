@@ -16,7 +16,7 @@ actions+=/kick
 # Helper Variable to check for single target in combat
 actions+=/variable,name=single_target,value=spell_targets.fan_of_knives=1
 # Edge-case check to dump thistle tea at the end of fights
-actions+=/thistle_tea,if=energy.pct<50&fight_remains<10
+actions+=/thistle_tea,if=energy.pct<30|fight_remains<10
 # Special Ambush condition for the start of fights when applicable
 actions+=/ambush,if=stealthed.rogue&variable.single_target&talent.blindside&talent.improved_ambush&!talent.shrouded_suffocation
 # Cooldown list takes priority

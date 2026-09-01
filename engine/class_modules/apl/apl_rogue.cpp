@@ -80,7 +80,7 @@ void assassination( player_t* p )
   default_->add_action( "stealth", "Restealth if possible (no vulnerable enemies in combat)" );
   default_->add_action( "kick", "Interrupt on cooldown to allow simming interactions with that" );
   default_->add_action( "variable,name=single_target,value=spell_targets.fan_of_knives=1", "Helper Variable to check for single target in combat" );
-  default_->add_action( "thistle_tea,if=energy.pct<50&fight_remains<10", "Edge-case check to dump thistle tea at the end of fights" );
+  default_->add_action( "thistle_tea,if=energy.pct<30|fight_remains<10", "Edge-case check to dump thistle tea at the end of fights" );
   default_->add_action( "ambush,if=stealthed.rogue&variable.single_target&talent.blindside&talent.improved_ambush&!talent.shrouded_suffocation", "Special Ambush condition for the start of fights when applicable" );
   default_->add_action( "call_action_list,name=cds,if=variable.single_target|!talent.scent_of_blood|buff.scent_of_blood.stack>=(2*talent.scent_of_blood.rank*spell_targets.fan_of_knives>?20)", "Cooldown list takes priority" );
   default_->add_action( "call_action_list,name=core_dot", "Maintain dots when possible" );
