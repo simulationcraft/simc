@@ -39,7 +39,7 @@ actions+=/kick
 # Helper Variable to check for single target in combat
 actions+=/variable,name=single_target,value=spell_targets.fan_of_knives=1
 # Edge-case check to dump thistle tea at the end of fights
-actions+=/thistle_tea,if=energy.pct<50&fight_remains<10
+actions+=/thistle_tea,if=energy.pct<30|fight_remains<10
 # Special Ambush condition for the start of fights when applicable
 actions+=/ambush,if=stealthed.rogue&variable.single_target&talent.blindside&talent.improved_ambush&!talent.shrouded_suffocation
 # Cooldown list takes priority
@@ -53,6 +53,7 @@ actions+=/call_action_list,name=spend,if=!buff.darkest_night.up&combo_points>=5|
 
 # Cooldown list Deathmark if bleeds are active, kingsbane is ready, and we have envenom
 actions.cds=deathmark,if=dot.garrote.ticking&dot.rupture.ticking&cooldown.kingsbane.remains<=2&buff.envenom.remains>2&(target.time_to_die>10|fight_remains<20)
+actions.cds+=/invoke_external_buff,name=power_infusion,if=dot.deathmark.ticking
 # Check for on-use trinket usage
 actions.cds+=/call_action_list,name=items
 # Check for Racial abilties, potions, and any other misc cooldowns
@@ -89,7 +90,7 @@ actions.generate+=/fan_of_knives,if=main_hand.1h|off_hand.1h
 # Special Case Trinkets
 actions.items=variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2|dot.deathmark.ticking|fight_remains<=22
 actions.items+=/use_item,name=astral_gladiators_badge_of_ferocity,use_off_gcd=1,if=dot.kingsbane.ticking|dot.deathmark.ticking|(cooldown.kingsbane.remains>60|cooldown.deathmark.remains>60)
-actions.items+=/use_item,name=algethar_puzzle_box,use_off_gcd=1,if=variable.base_trinket_condition&buff.envenom.up
+actions.items+=/use_item,name=algethar_puzzle_box,use_off_gcd=1,if=variable.base_trinket_condition&buff.envenom.up&(target.time_to_die>10|fight_remains<20)
 actions.items+=/use_item,name=font_of_venomous_rage,use_off_gcd=1,if=buff.lingering_darkness.up|!dot.deathmark.ticking&!cooldown.deathmark.ready&cooldown.deathmark.remains>20
 actions.items+=/use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(debuff.deathmark.up)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot|fight_remains<=20
 actions.items+=/use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(debuff.deathmark.up)|(variable.trinket_sync_slot=1&!trinket.1.cooldown.ready&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot|fight_remains<=20
