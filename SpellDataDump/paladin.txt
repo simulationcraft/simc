@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69497 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69587 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -3345,8 +3345,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Misc Value 2: 1830 (Label) | Target: Self (1)
                    Affected Spells (Label): Shield of the Righteous (132403)
 #20 (id=1071179) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 7 | Scaled Value: 7 | Misc Value: 3 | Misc Value 2: 4182 (Label) | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Misc Value 2: 4182 (Label) | Target: Self (1)
                    Affected Spells (Label): Divine Guidance (433106)
+Hotfixed         : Base Value (7 -> 15)
 #21 (id=1073755) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
@@ -3368,9 +3369,10 @@ Effects          :
                    Affected Spells: Hammer of Wrath (24275), Hammer of Wrath (1241413), Hammer of Wrath (1279408)
                    Family Flags: 39
 #26 (id=1202502) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 210 | Scaled Value: 210 | Target: Self (1)
+                   Base Value: 303 | Scaled Value: 303 | Target: Self (1)
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (243597), Consecration (387881), Consecration (419810)
                    Family Flags: 5
+Hotfixed         : Base Value (210 -> 303)
 #27 (id=1266593) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Misc Value 2: 4345 (Label) | Target: Self (1)
                    Affected Spells (Label): Forge's Reckoning (447258)
@@ -3929,7 +3931,6 @@ Effects          :
 #1 (id=267680)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.75 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : PvP Coefficient (1 -> 0.75)
 #2 (id=358403)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Creates a barrier of holy light that absorbs $<shield> damage for $d.
@@ -5687,7 +5688,6 @@ Description      : $@spelldesc225138
 Tooltip          : Your next Holy Light has no cost, and restores $225138s2 mana.
 
 Name             : Guardian of the Forgotten Queen (id=228048) [Spell Family (10)] 
-Hotfixed         : Spell Family (6 -> 10)
 School           : Holy
 Spell Type       : Magic
 GCD              : 1.5 seconds
@@ -5704,7 +5704,6 @@ Effects          :
 Description      : $@spelldesc228049
 
 Name             : Guardian of the Forgotten Queen (desc=PvP Talent) (id=228049) [Spell Family (10)] 
-Hotfixed         : Cooldown (0 -> 6000), Category (2424 -> 2586)
 School           : Holy
 Spell Type       : Magic
 Range            : 40 yards
@@ -5728,7 +5727,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 228048 | Target: Self (1)
 #3 (id=1351605)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Empowers the friendly target with the spirit of the forgotten queen, causing the target to be immune to all damage for $d.
 
 Name             : Divine Shield (desc=PvP Talent) (id=228050) 
@@ -14238,7 +14236,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Divine Protection (498), Divine Protection (403876)
                    Family Flags: 72
-Hotfixed         : Base Value (5 -> 0)
 #7 (id=1080083)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 16 | Scaled Value: 16 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275), Hammer of Wrath (1241413), Hammer of Wrath (1279408)
@@ -14277,7 +14274,6 @@ Hotfixed         : Base Value (5 -> 0)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 5 | Misc Value 2: 7093 (Label) | Target: Self (1)
 #19 (id=1350147) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: 38 | Scaled Value: 38 | Misc Value 2: 3084 (Label) | Target: Self (1)
-Hotfixed         : Base Value (25 -> 38)
 
 Name             : Aura Mastery (id=412629) [Spell Family (10), Hidden] 
 Class            : Paladin
@@ -15404,12 +15400,10 @@ Effects          :
                    Base Value: -41 | Scaled Value: -41
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002), Lesser Weapon (1239276), Beacon of the Savior (1244893), Divine Guidance (1310389)
                    Family Flags: 38, 46, 90
-Hotfixed         : Base Value (-39 -> -41)
 #2 (id=1108027)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
                    Base Value: -41 | Scaled Value: -41 | Misc Value: 1
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Beacon of Light (53563), Holy Light (82326), Light of Dawn (85222), Word of Glory (85673), Arcing Light (119952), Eternal Flame (156322), Beacon of Faith (156910), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535), Pillar of Lights (1232617), Lesser Bulwark (1239002), Lesser Weapon (1239276), Beacon of the Savior (1244893), Divine Guidance (1310389)
                    Family Flags: 46
-Hotfixed         : Base Value (-39 -> -41)
 #3 (id=1108028)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Denounce (2812), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Recompense (384914), Inner Light (386553), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Judgment (406957), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311), Hammer of Light (1235934), Lesser Weapon (1239282), Hammer of Wrath (1241413), Execution Sentence (1260251), Light Within (1261160), Blaze of Glory (1269224), Crusader Strike (1279187), Hammer of Wrath (1279408), Divine Arbiter (1306923)
@@ -15419,7 +15413,8 @@ Hotfixed         : Base Value (-39 -> -41)
                    Affected Spells: Denounce (2812), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Recompense (384914), Inner Light (386553), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Judgment (406957), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311), Hammer of Light (1235934), Lesser Weapon (1239282), Hammer of Wrath (1241413), Execution Sentence (1260251), Light Within (1261160), Blaze of Glory (1269224), Crusader Strike (1279187), Hammer of Wrath (1279408), Divine Arbiter (1306923)
                    Family Flags: 65
 #5 (id=1117928)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
+Hotfixed         : Base Value (-10 -> -15)
 #6 (id=1141803)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #7 (id=1141804)  : Apply Aura (6) | Modify Cooldown Time (Category) (341)
@@ -20344,7 +20339,6 @@ Effects          :
 #2 (id=1351590)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2586 (Category) | Target: Self (1)
                    Affected Spells (Category): Guardian of the Forgotten Queen (228049)
-Hotfixed         : NEW EFFECT
 Description      : Guardian of Ancient Kings has $s1 additional $Lcharge:charges;.
 
 Name             : Sweeping Verdict (id=1246488) [Spell Family (10), Passive] 
@@ -20539,7 +20533,6 @@ Effects          :
                    Family Flags: 29, 112
 #10 (id=1351585) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: 30000 | Scaled Value: 30000 | Misc Value: 5 | Misc Value 2: 2651 (Label) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 
 Name             : Retribution Paladin (id=1258011) [Spell Family (10), Passive, Hidden] 
 Class            : Retribution Paladin
@@ -20893,7 +20886,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.4 | Target: Self (1)
                    Affected Spells: Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328)
                    Family Flags: 44
-Hotfixed         : PvP Coefficient (1 -> 1.4)
 #2 (id=1273806)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Judgment (275779), Paladin Protection 10.2 Class Set 2pc (422895)
@@ -21349,7 +21341,8 @@ Family Flags     : 65
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1280950)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5 | Radius: 0 - 12 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : AP Coefficient (2 -> 5)
 Description      : Shield of the Righteous deals $1269179s1% increased damage to your primary target and refracts light onto $1267215s2~ nearby enemies for $s1 Holy damage.
 
 Name             : Blaze of Glory (id=1269225) [Spell Family (10), Hidden] 
@@ -22505,10 +22498,8 @@ Attributes       : Can Proc From Procs (122), Not In Spellbook (143), Always AOE
 Effects          :
 #1 (id=1334556)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 10.125 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
-Hotfixed         : AP Coefficient (4.05 -> 10.125)
 #2 (id=1334557)  : School Damage (2): holy | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.725 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
-Hotfixed         : AP Coefficient (2.7 -> 4.725)
 Description      : $@spelldesc1296661
 
 Name             : Crusading Strikes (id=1307499) [Spell Family (10), Hidden] 

@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69497 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69587 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -250643,7 +250643,6 @@ Attributes       : Can't Crit (93)
 Effects          :
 #1 (id=1273548)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 45 yards | Target: Source (22) -> Ally in Area (30)
-Hotfixed         : Target 1 (30 -> 22), Target 2 (0 -> 30)
 #2 (id=1305384)  : Dummy (3)
                    Base Value: 2051 | Scaled Value: 2051 | Target: Targeted Ally (21)
 Description      : $@spelldesc1279599
@@ -257469,7 +257468,6 @@ Description      : Your spells afflict you with Hex Lord's Doom, draining your I
 
 
 Name             : Hex Lord's Doom (id=1295885) 
-Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Shadow
 Spell Type       : None
 Duration         : 30 seconds
