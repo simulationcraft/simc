@@ -4126,9 +4126,12 @@ struct deathmark_t : public rogue_attack_t
   deathmark_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->talent.assassination.deathmark, options_str )
   {
-    energize_type = action_energize::PER_TICK;
-    energize_resource = RESOURCE_ENERGY;
-    energize_amount = data().effectN( 3 ).base_value() / ( data().duration() / data().effectN( 1 ).period() );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    rogue_attack_t::tick( d );
+    gain_energize_resource( RESOURCE_ENERGY, data().effectN( 3 ).base_value() / d->num_ticks(), gain );
   }
 
   void impact( action_state_t* state ) override
@@ -4839,6 +4842,33 @@ struct kingsbane_t : public rogue_attack_t
       add_child( implacable_strikes->nature_strike );
       add_child( implacable_strikes->physical_strike );
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_da_multiplier( state );
+
+    // 2028-08-31 -- Currently appears to double-dip from both Mastery and Implacable in-game
+    if ( p()->bugs )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+      m *= 1.0 + p()->talent.assassination.implacable_2->effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_ta_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_ta_multiplier( state );
+
+    // 2028-08-31 -- Currently appears to double-dip from Implacable in-game
+    if ( p()->bugs )
+    {
+      m *= 1.0 + p()->talent.assassination.implacable_2->effectN( 3 ).percent();
+    }
+
+    return m;
   }
 
   void impact( action_state_t* state ) override
@@ -8989,7 +9019,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 
   // Type-Based Tracking for Accumulators
   bleeds = { dots.deathmark, dots.garrote, dots.internal_bleeding, dots.rupture, dots.mutilated_flesh };
-  poison_dots = { dots.deadly_poison, dots.kingsbane };
+  poison_dots = { dots.deadly_poison }; // 2026-08-31 -- Kingsbane no longer contributes
   poison_debuffs = { debuffs.atrophic_poison, debuffs.crippling_poison, debuffs.numbing_poison,
                      debuffs.wound_poison, debuffs.amplifying_poison };
 
