@@ -1512,30 +1512,30 @@ using namespace helpers;
     {
       player_t* ua_target = target;
 
-      // NOTE: 2026-08-21 Currently ingame a UA applied by Fatal Echoes also processes/consumes some UA 'execute' effects:
+      // NOTE: 2026-09-01 Currently ingame a UA applied by Fatal Echoes also processes/consumes some UA-associated effects:
       // - Succulent Soul: consumes a stack and triggers its effects (Demonic Soul dmg and Manifested Avarice rng proc)
       // - Cull the Weak: reduces the cooldown of Dark Harvest
-      // - Hellcaller Blackened Soul: unaffected; Fatal Echoes does not increment Wither stacks
+      // - Hellcaller Blackened Soul: increments Wither stacks on impact
       // - Shard Instability: unaffected; Fatal Echoes does not consume a stack of this buff
 
       warlock_spell_t::execute();
 
-      // NOTE: 2026-07-06 12.1 4pc seed-applied UA does not reduce the cooldown of Dark Harvest (Cull the Weak talent)
+      // NOTE: 2026-09-01 12.1 4pc seed-applied UA does not reduce the cooldown of Dark Harvest (Cull the Weak talent)
       if ( p()->talents.cull_the_weak.ok() && !is_seed_applied )
         p()->cooldowns.dark_harvest->adjust( -p()->talents.cull_the_weak->effectN( 1 ).time_value() );
 
-      // NOTE: 2026-08-21 If Shard Instability buff is gained during the casting of Unstable Affliction, that UA cast benefits from the cost
+      // NOTE: 2026-09-01 If Shard Instability buff is gained during the casting of Unstable Affliction, that UA cast benefits from the cost
       // reduction but does not consume the effect (bug?). As expected, a Fatal Echoes UA proc does not consume it either.
       if ( time_to_execute == 0_ms && !is_fatal_echoes_execute )
       {
-        // NOTE: 2026-08-21 12.1 4pc seed-applied UA consumes Shard Instability (bug?)
+        // NOTE: 2026-09-01 12.1 4pc seed-applied UA consumes Shard Instability (bug?)
         if ( p()->bugs || !is_seed_applied )
           p()->buffs.shard_instability->decrement();
       }
 
       if ( soul_harvester() )
       {
-        // NOTE: 2026-08-21 12.1 4pc seed-applied UA does not consume a Succulent Soul stack
+        // NOTE: 2026-09-01 12.1 4pc seed-applied UA does not consume a Succulent Soul stack
         if ( !is_seed_applied )
           helpers::consume_succulent_soul( p(), ua_target );
       }
@@ -1560,9 +1560,8 @@ using namespace helpers;
       {
         tdata->ua_stack_applied( is_seed_applied );
 
-        // NOTE: 2026-08-21 UA increments Wither stacks on impact, including seed-applied UA from the 12.1 4pc tier bonus
-        // NOTE: 2026-08-21 UA applied by Fatal Echoes does not increment Wither stacks
-        if ( hellcaller() && p()->hero.blackened_soul.ok() && !is_fatal_echoes_execute )
+        // NOTE: 2026-09-01 UA increments Wither stacks on impact, including Fatal Echoes and seed-applied UA from the 12.1 4pc tier bonus
+        if ( hellcaller() && p()->hero.blackened_soul.ok() )
           helpers::trigger_blackened_soul( p(), false, s->target );
 
         if ( active_4pc<MID2>() )
@@ -1908,11 +1907,11 @@ using namespace helpers;
         ua_seed_tier->execute();
       }
 
-      // NOTE: 2026-08-21 If Shard Instability buff is gained during the casting of Seed of Corruption,
+      // NOTE: 2026-09-01 If Shard Instability buff is gained during the casting of Seed of Corruption,
       // that SoC cast benefits from the cost reduction but does not consume the effect (bug?)
       if ( time_to_execute == 0_ms )
       {
-        // NOTE: 2026-08-21 SoC and its seed-applied UA consume at most 1 Shard Instability stack in total,
+        // NOTE: 2026-09-01 SoC and its seed-applied UA consume at most 1 Shard Instability stack in total,
         // so SoC does not consume SI here if the seed-applied UA already did
         const int current_shard_instability_stacks = p()->buffs.shard_instability->check();
         assert( prev_shard_instability_stacks == current_shard_instability_stacks || prev_shard_instability_stacks == current_shard_instability_stacks + 1 );
