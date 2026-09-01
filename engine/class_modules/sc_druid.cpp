@@ -60,15 +60,16 @@ struct sylvan_beckoning_t;
 
 enum form_e : unsigned
 {
-  CAT_FORM       = 0x1,
-  NO_FORM        = 0x2,
-  TRAVEL_FORM    = 0x4,
-  AQUATIC_FORM   = 0x8,  // Legacy
-  BEAR_FORM      = 0x10,
-  DIRE_BEAR_FORM = 0x40,  // Legacy
+  NONE_FORM      = 0x00000000,
+  CAT_FORM       = 0x00000001,
+  CASTER_FORM    = 0x00000002,
+  TRAVEL_FORM    = 0x00000004,
+  AQUATIC_FORM   = 0x00000008,  // Legacy
+  BEAR_FORM      = 0x00000010,
+  DIRE_BEAR_FORM = 0x00000040,  // Legacy
   MOONKIN_FORM   = 0x40000000,
 
-  ANY_FORM = CAT_FORM | NO_FORM | TRAVEL_FORM | BEAR_FORM | MOONKIN_FORM
+  ANY_FORM = CAT_FORM | CASTER_FORM | TRAVEL_FORM | BEAR_FORM | MOONKIN_FORM
 };
 
 enum moon_stage_e
@@ -311,8 +312,8 @@ struct druid_action_data_t  // variables that need to be accessed from action_t*
 {
   // various action flags
   uint32_t action_flags = 0;
-  // form spell to automatically cast
-  action_t* autoshift = nullptr;
+  // form to automatically shift to
+  form_e autoshift = form_e::NONE_FORM;
 
   bool has_flag( uint32_t f ) const { return action_flags & f; }
   bool is_flag( flag_e f ) const { return ( action_flags & f ) == f; }
@@ -524,7 +525,7 @@ static void snapshot_and_execute( action_t* a, const action_state_t* s, bool is_
 
 struct druid_t final : public parse_player_effects_t
 {
-  form_e form = form_e::NO_FORM;  // Active druid form
+  form_e form = form_e::CASTER_FORM;  // Active druid form
   std::array<std::vector<std::unique_ptr<benefit_tracker_t>>, tracker_e::MAX_TRACKER> trackers;
 
   // !!!==========================================================================!!!
@@ -1395,7 +1396,7 @@ struct druid_t final : public parse_player_effects_t
   void init_beast_weapon( weapon_t&, double );
   void adjust_health_pct( double, bool );
   const spell_data_t* apply_override( const spell_data_t*, const spell_data_t* ) const;
-  bool uses_form( specialization_e, std::string_view, action_t* ) const;
+  bool uses_form( specialization_e, std::string_view, form_e ) const;
   bool uses_cat_form() const;
   bool uses_bear_form() const;
   bool uses_moonkin_form() const;
@@ -1839,7 +1840,7 @@ public:
 
   bool ready() override
   {
-    if ( !check_form_restriction() && !autoshift && ( has_flag( flag_e::NOUNSHIFT ) || !( form_mask & NO_FORM ) ) )
+    if ( !check_form_restriction() && !autoshift && ( has_flag( flag_e::NOUNSHIFT ) || !( form_mask & CASTER_FORM ) ) )
     {
       if ( ab::sim->debug )
       {
@@ -1855,19 +1856,8 @@ public:
 
   void init() override;
 
-  void schedule_execute( action_state_t* s = nullptr ) override
-  {
-    check_autoshift();
-
-    ab::schedule_execute( s );
-  }
-
   void execute() override
   {
-    // offgcd actions bypass schedule_execute so check for autoshift
-    if ( ab::use_off_gcd )
-      check_autoshift();
-
     ab::execute();
 
     if ( !has_flag( flag_e::ALLOWSTEALTH ) )
@@ -1887,6 +1877,8 @@ public:
       if ( p()->cooldown.lunation_moon_cdr != 0_ms )
         p()->cooldown.moon_cd->adjust( p()->cooldown.lunation_moon_cdr );
     }
+
+    check_autoshift();
   }
 
   bool can_trigger_lunation() const
@@ -1957,7 +1949,7 @@ public:
 
   // Override this function for temporary effects that change the normal form restrictions of the spell. eg: Predatory
   // Swiftness
-  virtual bool check_form_restriction()
+  virtual bool check_form_restriction() const
   {
     if ( !form_mask || ( form_mask & p()->form ) == p()->form )
       return true;
@@ -1972,18 +1964,19 @@ public:
 
     if ( !check_form_restriction() )
     {
-      if ( autoshift )
+      switch ( autoshift )
       {
-        autoshift->execute();
-      }
-      else if ( !has_flag( flag_e::NOUNSHIFT ) && form_mask & NO_FORM )
-      {
-        p()->active.shift_to_caster->execute();
-      }
-      else
-      {
-        throw sc_runtime_error( fmt::format( "{} executed in wrong form {:#010x} with no valid form to shift to!",
-                                             *this, static_cast<unsigned>( p()->form ) ) );
+        case BEAR_FORM:    p()->active.shift_to_bear->execute(); break;
+        case CAT_FORM:     p()->active.shift_to_cat->execute(); break;
+        case MOONKIN_FORM: p()->active.shift_to_moonkin->execute(); break;
+        case CASTER_FORM:
+          if ( !has_flag( flag_e::NOUNSHIFT ) )
+            p()->active.shift_to_caster->execute();
+          break;
+        default:
+          throw sc_runtime_error( fmt::format( "{} executed in wrong form {:#010x} with no valid form to shift to!",
+                                               *this, static_cast<unsigned>( p()->form ) ) );
+          break;
       }
     }
   }
@@ -2064,9 +2057,6 @@ public:
 template <form_e FORM, typename BASE>
 struct use_fluid_form_t : public BASE
 {
-private:
-  bool delayed_shift = false;
-
 protected:
   using base_t = use_fluid_form_t<FORM, BASE>;
 
@@ -2075,25 +2065,7 @@ public:
     : BASE( n, p, s, f )
   {
     if ( p->talent.fluid_form.ok() && !BASE::is_free() )
-    {
-      if constexpr ( FORM == MOONKIN_FORM )
-        delayed_shift = p->active.shift_to_moonkin ? true : false;
-      else if constexpr ( FORM == CAT_FORM )
-        BASE::autoshift = p->active.shift_to_cat;
-      else if constexpr ( FORM == BEAR_FORM )
-        BASE::autoshift = p->active.shift_to_bear;
-    }
-  }
-
-  void execute() override
-  {
-    if constexpr ( FORM == MOONKIN_FORM )
-    {
-      if ( delayed_shift && BASE::p()->form != MOONKIN_FORM )
-        BASE::p()->active.shift_to_moonkin->execute();
-    }
-
-    BASE::execute();
+      BASE::autoshift = FORM;
   }
 };
 
@@ -3576,7 +3548,7 @@ struct druid_form_t : public druid_spell_t
 {
   buff_t* form_buff = nullptr;
   buff_t* lycara_buff = nullptr;
-  form_e form = NO_FORM;
+  form_e form = CASTER_FORM;
 
   druid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : druid_spell_t( n, p, s, f )
   {
@@ -3611,7 +3583,7 @@ struct druid_form_t : public druid_spell_t
       case BEAR_FORM:    return p()->buff.bear_form;
       case CAT_FORM:     return p()->buff.cat_form;
       case MOONKIN_FORM: return p()->buff.moonkin_form;
-      case NO_FORM:      return nullptr;
+      case CASTER_FORM:      return nullptr;
       default:           assert( false ); return nullptr;
     }
   }
@@ -3623,7 +3595,7 @@ struct druid_form_t : public druid_spell_t
       case BEAR_FORM:    return p()->buff.lycaras_teachings_vers;
       case CAT_FORM:     return p()->buff.lycaras_teachings_crit;
       case MOONKIN_FORM: return p()->buff.lycaras_teachings_mast;
-      case NO_FORM:      return p()->buff.lycaras_teachings_haste;
+      case CASTER_FORM:      return p()->buff.lycaras_teachings_haste;
       default:           assert( false ); return nullptr;
     }
   }
@@ -3684,7 +3656,7 @@ struct cancel_form_t final : public druid_form_t
   {
     callbacks = false;
 
-    set_form( NO_FORM );
+    set_form( CASTER_FORM );
 
     trigger_gcd = 0_ms;
     use_off_gcd = true;
@@ -3905,8 +3877,7 @@ struct berserk_cat_base_t : public cat_attack_t
     : cat_attack_t( n, p, s, f ), buff( p->buff.berserk_cat )
   {
     harmful   = false;
-    form_mask = CAT_FORM;
-    autoshift = p->active.shift_to_cat;
+    autoshift = CAT_FORM;
   }
 
   void execute() override
@@ -4842,8 +4813,7 @@ struct tigers_fury_t final : public cat_attack_t
     energize_type = action_energize::ON_CAST;
     track_cd_waste = true;
 
-    form_mask = CAT_FORM;
-    autoshift = p->active.shift_to_cat;
+    autoshift = CAT_FORM;
   }
 
   void execute() override
@@ -5205,8 +5175,7 @@ struct berserk_bear_base_t : public bear_attack_t
   berserk_bear_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : bear_attack_t( n, p, s, f )
   {
     harmful   = false;
-    form_mask = BEAR_FORM;
-    autoshift = p->active.shift_to_bear;
+    autoshift = BEAR_FORM;
   }
 
   void execute() override
@@ -5304,8 +5273,7 @@ struct incapacitating_roar_t final : public bear_attack_t
   {
     harmful = false;
 
-    form_mask = BEAR_FORM;
-    autoshift = p->active.shift_to_bear;
+    autoshift = BEAR_FORM;
   }
 };
 
@@ -6297,7 +6265,7 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
     bonus_crit( p->talent.improved_regrowth->effectN( 1 ).percent() ),
     sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 1 ).percent() )
   {
-    form_mask = NO_FORM | MOONKIN_FORM;
+    form_mask = CASTER_FORM | MOONKIN_FORM;
 
     dot_list = &p->dot_lists.regrowth;
 
@@ -6397,7 +6365,7 @@ struct regrowth_t final : public trigger_thriving_growth_t<use_dot_list_t<druid_
     return mod;
   }
 
-  bool check_form_restriction() override
+  bool check_form_restriction() const override
   {
     if ( p()->buff.predatory_swiftness->check() ||
          p()->buff.dream_of_cenarius->check() ||
@@ -6609,7 +6577,7 @@ struct wild_growth_t final : public druid_heal_t
     // '0-tick' coeff, also unknown if this is hard set to 0.175 or based on a formula as below
     spell_power_mod.tick += decay_coeff / 2.0;
 
-    form_mask = NO_FORM;
+    form_mask = CASTER_FORM;
   }
 
   double spell_tick_power_coefficient( const action_state_t* s ) const override
@@ -6887,7 +6855,7 @@ public:
 
     base_costs[ RESOURCE_MANA ] = 0.0;  // remove mana cost so we don't need to enable mana regen
 
-    form_mask = NO_FORM | MOONKIN_FORM;
+    form_mask = CASTER_FORM | MOONKIN_FORM;
 
     if ( p->talent.umbral_embrace.ok() )
     {
@@ -7118,8 +7086,7 @@ struct incarnation_moonkin_t final : public celestial_alignment_base_t
   DRUID_ABILITY( incarnation_moonkin_t, celestial_alignment_base_t, "incarnation_chosen_of_elune",
                  p->spec.incarnation_moonkin )
   {
-    form_mask = MOONKIN_FORM;
-    autoshift = p->active.shift_to_moonkin;
+    autoshift = MOONKIN_FORM;
     buff = p->buff.incarnation_moonkin;
   }
 };
@@ -7136,8 +7103,15 @@ struct dash_t final : public druid_spell_t
     harmful = may_miss = false;
     ignore_false_positive = true;
 
-    form_mask = CAT_FORM;
-    autoshift = p->active.shift_to_cat;
+    autoshift = CAT_FORM;
+  }
+
+  timespan_t gcd() const override
+  {
+    if ( p()->form != CAT_FORM )
+      return p()->active.shift_to_cat->gcd();
+    else
+      return druid_spell_t::gcd();
   }
 
   void execute() override
@@ -7252,7 +7226,7 @@ struct entangling_roots_t final : public druid_spell_t
   DRUID_ABILITY( entangling_roots_t, druid_spell_t, "entangling_roots", p->find_class_spell( "Entangling Roots" ) ),
     gcd_add( find_effect( p->spec.cat_form_passive, this, A_ADD_FLAT_MODIFIER, P_GCD ).time_value() )
   {
-    form_mask = NO_FORM | MOONKIN_FORM;
+    form_mask = CASTER_FORM | MOONKIN_FORM;
     harmful   = false;
     // workaround so that we do not need to enable mana regen
     base_costs[ RESOURCE_MANA ] = 0.0;
@@ -7268,7 +7242,7 @@ struct entangling_roots_t final : public druid_spell_t
     return g;
   }
 
-  bool check_form_restriction() override
+  bool check_form_restriction() const override
   {
     return p()->buff.predatory_swiftness->check() || druid_spell_t::check_form_restriction();
   }
@@ -7375,7 +7349,7 @@ struct fury_of_elune_t final : public druid_spell_t
     tick_spell( sd ? sd : p->find_spell( 211545 ) ), energize_buff( b ? b : p->buff.fury_of_elune ),
     tick_period( find_effect( energize_buff, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER ).period() )
   {
-    form_mask |= NO_FORM; // can be cast without form
+    form_mask |= CASTER_FORM; // can be cast without form
     dot_duration = 0_ms;  // AP gain handled via buffs
 
     if ( data().ok() )
@@ -7431,8 +7405,7 @@ struct incarnation_tree_t final : public trigger_control_of_the_dream_t<druid_sp
   DRUID_ABILITY( incarnation_tree_t, base_t, "incarnation_tree_of_life", p->talent.incarnation_tree )
   {
     harmful   = false;
-    form_mask = NO_FORM;
-    autoshift = p->active.shift_to_caster;
+    autoshift = CASTER_FORM;
   }
 
   void execute() override
@@ -7940,8 +7913,15 @@ struct prowl_t final : public druid_spell_t
 
     action_flags |= flag_e::ALLOWSTEALTH;
 
-    form_mask = CAT_FORM;
-    autoshift = p->active.shift_to_cat;
+    autoshift = CAT_FORM;
+  }
+
+  timespan_t gcd() const override
+  {
+    if ( p()->form != CAT_FORM )
+      return p()->active.shift_to_cat->gcd();
+    else
+      return druid_spell_t::gcd();
   }
 
   void execute() override
@@ -8199,10 +8179,17 @@ struct stampeding_roar_t final : public druid_spell_t
   {
     harmful = false;
 
-    form_mask = BEAR_FORM | CAT_FORM;
-    autoshift = p->active.shift_to_bear;
+    autoshift = BEAR_FORM;
 
     target_debuff = p->talent.stampeding_roar;
+  }
+
+  bool check_form_restriction() const override
+  {
+    if ( p()->form == CAT_FORM )
+      return true;
+
+    return druid_spell_t::check_form_restriction();
   }
 
   buff_t* create_debuff( player_t* t ) override
@@ -8386,7 +8373,7 @@ struct starfall_t final : public ap_spender_t
     may_miss = false;
     queue_failed_proc = p->get_proc( "starfall queue failed" );
     dot_duration = 0_ms;
-    form_mask |= NO_FORM;
+    form_mask |= CASTER_FORM;
 
     if ( data().ok() )
     {
@@ -8549,7 +8536,7 @@ struct starsurge_offspec_t final : public trigger_call_of_the_elder_druid_t<drui
 {
   DRUID_ABILITY( starsurge_offspec_t, base_t, "starsurge", p->talent.starsurge )
   {
-    form_mask = MOONKIN_FORM | NO_FORM;
+    form_mask = MOONKIN_FORM | CASTER_FORM;
     base_costs[ RESOURCE_MANA ] = 0.0;  // so we don't need to enable mana regen
 
     if ( p->talent.master_shapeshifter.ok() )
@@ -8615,7 +8602,7 @@ struct starsurge_t final : public trigger_call_of_the_elder_druid_t<ap_spender_t
 
   DRUID_ABILITY( starsurge_t, base_t, "starsurge", p->talent.starsurge )
   {
-    form_mask |= NO_FORM; // spec version can be cast with no form despite spell data form mask
+    form_mask |= CASTER_FORM; // spec version can be cast with no form despite spell data form mask
 
     if ( p->talent.power_of_goldrinn.ok() )
     {
@@ -12872,6 +12859,7 @@ void druid_t::init_special_effects()
     {
       auto claw = get_secondary_action<cat_attack_t>( "twin_claw", this, find_spell( 1271636 ) );
       claw->background = claw->proc = true;
+      claw->form_mask = 0;
       driver->execute_action = claw;
       driver->proc_chance_ = talent.twin_claw->effectN( 1 ).percent();
     }
@@ -12879,6 +12867,7 @@ void druid_t::init_special_effects()
     {
       auto claw = get_secondary_action<bear_attack_t>( "twin_claw", this, find_spell( 1271657 ) );
       claw->background = claw->proc = true;
+      claw->form_mask = 0;
       driver->execute_action = claw;
       driver->proc_chance_ = talent.twin_claw->effectN( 2 ).percent();
     }
@@ -13014,7 +13003,7 @@ void druid_t::reset()
   player_t::reset();
 
   // Reset druid_t variables to their original state.
-  form = NO_FORM;
+  form = CASTER_FORM;
   base_gcd = 1.5_s;
 
   // Restore main hand attack / weapon to normal state
@@ -13956,7 +13945,7 @@ const spell_data_t* druid_t::apply_override( const spell_data_t* base_spell, con
   return spell_data_t::not_found();
 }
 
-bool druid_t::uses_form( specialization_e s, std::string_view name, action_t* action ) const
+bool druid_t::uses_form( specialization_e s, std::string_view name, form_e form ) const
 {
   if ( specialization() == s )
     return true;
@@ -13968,7 +13957,7 @@ bool druid_t::uses_form( specialization_e s, std::string_view name, action_t* ac
 
     if ( auto tmp = dynamic_cast<druid_action_data_t*>( a ) )
     {
-      if ( tmp->autoshift == action )
+      if ( tmp->autoshift == form )
         return true;
     }
   }
@@ -13978,17 +13967,17 @@ bool druid_t::uses_form( specialization_e s, std::string_view name, action_t* ac
 
 bool druid_t::uses_cat_form() const
 {
-  return uses_form( DRUID_FERAL, "cat_form", active.shift_to_cat );
+  return uses_form( DRUID_FERAL, "cat_form", CAT_FORM );
 }
 
 bool druid_t::uses_bear_form() const
 {
-  return uses_form( DRUID_GUARDIAN, "bear_form", active.shift_to_bear );
+  return uses_form( DRUID_GUARDIAN, "bear_form", BEAR_FORM );
 }
 
 bool druid_t::uses_moonkin_form() const
 {
-  return uses_form( DRUID_BALANCE, "moonkin_form", active.shift_to_moonkin );
+  return uses_form( DRUID_BALANCE, "moonkin_form", MOONKIN_FORM );
 }
 
 player_t* druid_t::get_smart_target( const std::vector<player_t*>& _tl, dot_t* druid_td_t::dots_t::*dot,
