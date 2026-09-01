@@ -80,7 +80,7 @@ void assassination( player_t* p )
   default_->add_action( "stealth", "Restealth if possible (no vulnerable enemies in combat)" );
   default_->add_action( "kick", "Interrupt on cooldown to allow simming interactions with that" );
   default_->add_action( "variable,name=single_target,value=spell_targets.fan_of_knives=1", "Helper Variable to check for single target in combat" );
-  default_->add_action( "thistle_tea,if=energy.pct<50&fight_remains<10", "Edge-case check to dump thistle tea at the end of fights" );
+  default_->add_action( "thistle_tea,if=energy.pct<30|fight_remains<10", "Edge-case check to dump thistle tea at the end of fights" );
   default_->add_action( "ambush,if=stealthed.rogue&variable.single_target&talent.blindside&talent.improved_ambush&!talent.shrouded_suffocation", "Special Ambush condition for the start of fights when applicable" );
   default_->add_action( "call_action_list,name=cds,if=variable.single_target|!talent.scent_of_blood|buff.scent_of_blood.stack>=(2*talent.scent_of_blood.rank*spell_targets.fan_of_knives>?20)", "Cooldown list takes priority" );
   default_->add_action( "call_action_list,name=core_dot", "Maintain dots when possible" );
@@ -88,6 +88,7 @@ void assassination( player_t* p )
   default_->add_action( "call_action_list,name=spend,if=!buff.darkest_night.up&combo_points>=5|buff.darkest_night.up&combo_points.deficit=0", "If combo point threshold is reached, spend them" );
 
   cds->add_action( "deathmark,if=dot.garrote.ticking&dot.rupture.ticking&cooldown.kingsbane.remains<=2&buff.envenom.remains>2&(target.time_to_die>10|fight_remains<20)", "Cooldown list Deathmark if bleeds are active, kingsbane is ready, and we have envenom" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=dot.deathmark.ticking" );
   cds->add_action( "call_action_list,name=items", "Check for on-use trinket usage" );
   cds->add_action( "call_action_list,name=misc_cds", "Check for Racial abilties, potions, and any other misc cooldowns" );
   cds->add_action( "kingsbane,if=dot.garrote.ticking&dot.rupture.ticking&(dot.deathmark.ticking|cooldown.deathmark.remains>52)&buff.envenom.up&(target.time_to_die>10|fight_remains<20)", "Kingsbane if bleeds are active and Deathmark is either on cooldown or active." );
@@ -109,7 +110,7 @@ void assassination( player_t* p )
 
   items->add_action( "variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2|dot.deathmark.ticking|fight_remains<=22", "Special Case Trinkets" );
   items->add_action( "use_item,name=astral_gladiators_badge_of_ferocity,use_off_gcd=1,if=dot.kingsbane.ticking|dot.deathmark.ticking|(cooldown.kingsbane.remains>60|cooldown.deathmark.remains>60)" );
-  items->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1,if=variable.base_trinket_condition&buff.envenom.up" );
+  items->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1,if=variable.base_trinket_condition&buff.envenom.up&(target.time_to_die>10|fight_remains<20)" );
   items->add_action( "use_item,name=font_of_venomous_rage,use_off_gcd=1,if=buff.lingering_darkness.up|!dot.deathmark.ticking&!cooldown.deathmark.ready&cooldown.deathmark.remains>20" );
   items->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(debuff.deathmark.up)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot|fight_remains<=20" );
   items->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(debuff.deathmark.up)|(variable.trinket_sync_slot=1&!trinket.1.cooldown.ready&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot|fight_remains<=20" );
