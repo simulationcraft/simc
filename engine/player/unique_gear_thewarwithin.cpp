@@ -3927,9 +3927,9 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
         ->add_stat_from_effect( 2, values->effectN( 2 ).average( e ) );
     }
 
-    void execute( const spell_data_t*, player_t*, action_state_t* s ) override
+    void execute( const spell_data_t* s_data, player_t*, action_state_t* ) override
     {
-      switch ( s->action->get_school() )
+      switch ( s_data->get_school_type() )
       {
         case SCHOOL_FIRE:
           impact->trigger();
