@@ -2091,8 +2091,19 @@ public:
   use_fluid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
     : BASE( n, p, s, f )
   {
-    if ( p->talent.fluid_form.ok() && !BASE::is_free() )
+    if ( !p->talent.fluid_form.ok() || BASE::is_free() )
+      return;
+
+    // moonkin autoshift requires moonkin form talented
+    if constexpr ( FORM == MOONKIN_FORM )
+    {
+      if ( p->talent.moonkin_form.ok() )
+        BASE::autoshift = MOONKIN_FORM;
+    }
+    else
+    {
       BASE::autoshift = FORM;
+    }
   }
 };
 
@@ -3622,7 +3633,7 @@ struct druid_form_t : public druid_spell_t
       case BEAR_FORM:    return p()->buff.lycaras_teachings_vers;
       case CAT_FORM:     return p()->buff.lycaras_teachings_crit;
       case MOONKIN_FORM: return p()->buff.lycaras_teachings_mast;
-      case CASTER_FORM:      return p()->buff.lycaras_teachings_haste;
+      case CASTER_FORM:  return p()->buff.lycaras_teachings_haste;
       default:           assert( false ); return nullptr;
     }
   }
