@@ -81,6 +81,8 @@ struct selector_food_buff_t : public consumable_buff_t<stat_buff_t>
     : consumable_buff_t( e.player, e.name(), e.driver() ), highest( b )
   {
     add_stat( secondary_ratings[ 0 ], e.stat_amount );
+
+    set_chance( 1.0 );
   }
 
   void start( int s, double v, timespan_t d ) override
@@ -116,7 +118,8 @@ custom_cb_t primary_food( unsigned id, stat_e stat, size_t primary_idx = 3, doub
 
     auto coeff = effect.player->find_spell( food_coeff_spell_id );
 
-    auto buff = create_buff<consumable_buff_t<stat_buff_t>>( effect.player, effect.driver() );
+    auto buff = create_buff<consumable_buff_t<stat_buff_t>>( effect.player, effect.name(), effect.driver() );
+    buff->set_chance( 1.0 );
 
     double coefficient = 1.0;
     coefficient *= script_coefficient;
@@ -146,7 +149,8 @@ custom_cb_t secondary_food( unsigned id, stat_e stat1, stat_e stat2 = STAT_NONE,
 
     auto coeff = effect.player->find_spell( food_coeff_spell_id );
 
-    auto buff = create_buff<consumable_buff_t<stat_buff_t>>( effect.player, effect.driver() );
+    auto buff = create_buff<consumable_buff_t<stat_buff_t>>( effect.player, effect.name(), effect.driver() );
+    buff->set_chance( 1.0 );
 
     if ( stat2 == STAT_NONE )
     {
