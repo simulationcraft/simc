@@ -12985,6 +12985,9 @@ std::vector<std::string> druid_t::action_names_from_spell_id( unsigned int spell
   if ( spell_id == 274281 )  // new moon
     return { "new_moon", "half_moon", "full_moon" };
 
+  if ( spell_id == 1233346 )  // solar eclipse
+    return { "eclipse" };
+
   if ( spell_id == 1249752 )  // waiting for energy
     return { "pool_resource" };
 
