@@ -1531,7 +1531,41 @@ class SpellDataGenerator(DataGenerator):
          1266182, 1266184, 1266197, # Lost Idol of the Hash'ey
          1229746, # Arcanoweave embellishment buff
          1259130, # Primal Spore Binding embellishment heal
-         1232321, 1232324, 1219182, 1232086, 1232087, 1232313, 1232318, 1232325, 1232490, 1232491, 1232493, 1232498, 1232582, 1232585, 1233400, 1233401, 1233403, 1233404, 1233406, 1219183, 1219184, 1219185, 1232089, 1232091, 1232316, 1232317, 1232320, 1232492, 1232496, 1232500, 1232501, 1232584, 1233402, 1233405, 1233407, 1233408, 1305154, 1305151, # Midnight Food Buffs
+         # Midnight Food Buffs
+         1219182, # fel-kissed filet
+         1219183, # arcano cutlets
+         1219184, # void-kissed fish rolls
+         1219185, # warped wise wings
+         1232089, # quel'dorei medley
+         1232091, # blooming feast
+         1232313, # portable snack
+         1232316, # farstrider rations
+         1232317, # quick sandwich
+         1232318, # forager's medley
+         1232320, # silvermoon standard
+         1232321, # spiced biscuits
+         1232324, # mana-infused stew
+         1232325, # bloom skewers
+         1232407, # spellfire filet
+         1232408, # twilight angler's medley
+         1232490, # sun-seared lumifin / tasty smoked tetra
+         1232491, # glitter skewers
+         1232492, # buttered root crab
+         1232493, # null and void plate
+         1232500, # crimson calamari
+         1232501, # braised blood hunter
+         1232585, # harandar celebration / silvermoon parade
+         1233400, # bloodthistle-wrapped cutlets
+         1233401, # hearthflame supper
+         1233402, # wise tails
+         1233404, # eversong pudding
+         1233405, # sunwell delight
+         1233406, # fried bloomtail
+         1283372, # felberry figs
+         1284619, # champion's bento / flora frenzy / puffer plate / sweet-and-sour-skewers / venom-spiced cutlet
+         1294727, # impossibly royal roast / royal roast
+         1305151, # feast of knowledge
+         1305154, # amani cornucopia / loa's gathering
          1252524, 1257183, 1252814, 1252817, 1252818, 1252832, # Loa Worshipers Band
          1252486, 1252487, 1252488, 1252489, # Darkmoon Deck: Hunt
          1255853, 1255857, 1255856, # Emberwing Feather
