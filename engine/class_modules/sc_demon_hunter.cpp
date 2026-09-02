@@ -2804,10 +2804,10 @@ struct art_of_the_glaive_trigger_t : public BASE
     {
       if ( BASE::dh()->talent.aldrachi_reaver.thrill_of_the_fight->ok() )
       {
-        BASE::dh()->buff.thrill_of_the_fight_haste->trigger();
+        BASE::dh()->buff.thrill_of_the_fight_damage->trigger();
 
         make_event( *BASE::dh()->sim, thrill_delay,
-                    [ this ] { BASE::dh()->buff.thrill_of_the_fight_damage->trigger(); } );
+                    [ this ] { BASE::dh()->buff.thrill_of_the_fight_haste->trigger(); } );
       }
       if ( BASE::dh()->talent.aldrachi_reaver.aldrachi_tactics->ok() )
       {
