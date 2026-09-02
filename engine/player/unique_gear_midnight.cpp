@@ -75,23 +75,18 @@ using selector_fn = std::function<stat_e( const player_t*, util::span<const stat
 
 struct selector_food_buff_t : public consumable_buff_t<stat_buff_t>
 {
-
-  double amount;
   bool highest;
 
   selector_food_buff_t( const special_effect_t& e, bool b )
     : consumable_buff_t( e.player, e.name(), e.driver() ), highest( b )
   {
-    amount = e.stat_amount;
+    add_stat( secondary_ratings[ 0 ], e.stat_amount );
   }
 
   void start( int s, double v, timespan_t d ) override
   {
-    auto stat = highest ? util::highest_stat( player, secondary_ratings )
-                        : util::lowest_stat( player, secondary_ratings );
-
-    if( !manual_stats_added )
-      add_stat( stat, amount );
+    stats.front().stat =
+      highest ? util::highest_stat( player, secondary_ratings ) : util::lowest_stat( player, secondary_ratings );
 
     consumable_buff_t::start( s, v, d );
   }
