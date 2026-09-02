@@ -258708,6 +258708,7 @@ Tooltip          : Embraced the hunger, increasing your $?(a137047|a137005|a1370
 You have a very high chance to devour morsels of your target, dealing additional Physical damage and further empowering your $?(a137047|a137005|a137026)[Strength]?(a212611|a137009|a137014|a137022|a137034|a137038)[Agility][Strength or Agility].
 
 Name             : Font of Venomous Rage (id=1297908) 
+Hotfixed         : Channel Interrupt
 School           : Nature
 Spell Type       : Magic
 Range            : 45 yards
@@ -258719,7 +258720,7 @@ Labels           : 292
                  : 3959: Item Effects
 Category Cooldown: 20 seconds
 Attributes       : Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), DoT Stacking Rule (103), Extra Initial Period (169), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
-Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Use Item (14)
+Channel Interrupt: Damage (2), Sheathing (10), Interacting (11), Looting (12), Attacking (13)
 Effects          :
 #1 (id=1321357)  : Apply Aura (6) | Periodic Damage (3): nature every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
