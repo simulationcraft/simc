@@ -270,17 +270,21 @@ void frost( player_t* p )
 
   cds->add_action( "variable,name=ff_trinket_timing,value=talent.frostfire_bolt&(fight_remains<15|prev_gcd.1.frozen_orb|prev_gcd.1.comet_storm|prev_gcd.1.glacial_spike|cooldown.ray_of_frost.charges>=1&debuff.freezing.react<12&buff.fingers_of_frost.react<2&buff.icicles.react<5&(!buff.frostfire_empowerment.react|active_enemies<=2)&(!buff.brain_freeze.react|buff.thermal_void.up))", "Frostfire uses potions, items and racials after Frozen Orb, Comet Storm or Glacial Spike, or together with Ray of Frost." );
   cds->add_action( "variable,name=ss_trinket_timing,value=!talent.frostfire_bolt&(fight_remains<15|prev_gcd.1.frozen_orb|time>1.5&cooldown.ray_of_frost.charges>=1&debuff.freezing.react<6&!buff.fingers_of_frost.react&buff.icicles.react<=3&(!buff.brain_freeze.react|buff.thermal_void.up))", "Spellslinger uses potions, items and racials after Frozen Orb or together with Ray of Frost." );
-  cds->add_action( "use_item,name=nevermelting_ice_crystal,if=variable.ff_trinket_timing|variable.ss_trinket_timing", "Haste trinkets are used after using potion (of recklessness). Crit trinkets are used before using potion. Mastery trinkets are used after using potion if Crit is your highest secondary stat, and before otherwise." );
-  cds->add_action( "use_item,name=freightrunners_flask,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
-  cds->add_action( "use_item,name=vaelgors_final_stare,if=(variable.ff_trinket_timing|variable.ss_trinket_timing)&(stat.haste_rating>stat.crit_rating|stat.versatility_rating>stat.crit_rating)" );
-  cds->add_action( "potion,if=variable.ff_trinket_timing|variable.ss_trinket_timing|fight_remains<35" );
-  cds->add_action( "use_item,name=vaelgors_final_stare,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
-  cds->add_action( "use_item,name=vile_vial_of_volatile_venom,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
-  cds->add_action( "use_items" );
-  cds->add_action( "blood_fury,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down&(variable.ff_trinket_timing|variable.ss_trinket_timing)", "Externals." );
+  cds->add_action( "blood_fury,if=variable.ff_trinket_timing|variable.ss_trinket_timing", "Racials." );
   cds->add_action( "berserking,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
   cds->add_action( "fireblood,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
   cds->add_action( "ancestral_call,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
+  cds->add_action( "use_item,name=font_of_venomous_rage,if=cooldown.potion.remains|!potion.potion_of_recklessness", "Flat-damage on-use trinkets are used immediately, after Potion of Recklessness on combat start." );
+  cds->add_action( "use_item,name=vexhuls_everflowing_gland,if=cooldown.potion.remains|!potion.potion_of_recklessness" );
+  cds->add_action( "use_item,name=nevermelting_ice_crystal,if=variable.ff_trinket_timing|variable.ss_trinket_timing", "Haste trinkets are used after using potion (of recklessness). Crit trinkets are used before using potion. Mastery trinkets are used after using potion if Crit is your highest secondary stat, and before otherwise." );
+  cds->add_action( "use_item,name=freightrunners_flask,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
+  cds->add_action( "use_item,name=vaelgors_final_stare,if=(variable.ff_trinket_timing|variable.ss_trinket_timing)&(stat.haste_rating>stat.crit_rating|stat.versatility_rating>stat.crit_rating)" );
+  cds->add_action( "potion,if=variable.ff_trinket_timing|variable.ss_trinket_timing|(trinket.font_of_venomous_rage.cooldown.ready|trinket.vexhuls_everflowing_gland.cooldown.ready)&potion.potion_of_recklessness|fight_remains<35" );
+  cds->add_action( "use_item,name=vaelgors_final_stare,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
+  cds->add_action( "use_item,name=vile_vial_of_volatile_venom,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
+  cds->add_action( "use_items" );
+  cds->add_action( "use_item,name=hex_lords_dooming_idol,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
   cds->add_action( "ray_of_frost,if=talent.frostfire_bolt,interrupt_if=!talent.hand_of_frost_4&active_enemies>=2&tick_time>gcd.remains&(!talent.crystalline_refraction|talent.crystalline_refraction&buff.fingers_of_frost.react=2),interrupt_global=1,interrupt_immediate=1,line_cd=9999", "Frostfire Opener: precast Frostfire Bolt/Blizzard --> Ray of Frost --> Flurry --> Frozen Orb." );
   cds->add_action( "flurry,if=talent.frostfire_bolt&talent.wintertide,line_cd=9999" );
   cds->add_action( "frozen_orb,if=talent.frostfire_bolt,line_cd=9999" );
@@ -289,7 +293,6 @@ void frost( player_t* p )
   cds->add_action( "ray_of_frost,if=!talent.frostfire_bolt,line_cd=9999" );
   cds->add_action( "ray_of_frost,if=fight_remains<12|charges=2,interrupt_if=talent.frostfire_bolt&!talent.hand_of_frost_4&active_enemies>=2&tick_time>gcd.remains&(!talent.crystalline_refraction|talent.crystalline_refraction&buff.fingers_of_frost.react=2),interrupt_global=1,interrupt_immediate=1", "End-Of-Fight actions and overcap protection." );
   cds->add_action( "comet_storm,if=fight_remains<8" );
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down", "Externals." );
 
   frostfire->add_action( "glacial_spike,if=buff.glacial_spike.react|time-buff.rapid_refreezing.last_trigger<1.5", "These Glacial Spike conditions prevent super-human behaviour. Chaincasting 4p proccs as GS --> X --> GS --> X is reasonable, as long as the cast time/gcd of X is longer than 1 second." );
   frostfire->add_action( "comet_storm,if=active_enemies<=2|prev_gcd.2.glacial_spike&(time-buff.rapid_refreezing.last_trigger>1.5|!set_bonus.midnight_season_2_4pc)", "In AoE, Comet Storm can quickly refill Icicles through the 2pc bonus. Cast it second-to-last after Glacial Spike, allowing time to react to a 4pc proc first." );
