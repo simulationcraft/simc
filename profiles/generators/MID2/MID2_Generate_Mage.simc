@@ -141,7 +141,7 @@ race=tauren
 role=spell
 position=ranged_back
 talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsMmZmYmZGjZMziZmZmZMDEAAYmZmllZm2AAAAAAgNA2WGzMzAbzYmZYBAAgZ2AmBGwADD
-omnium_talents=136822:1/136816:1/136817:1/136818:1/136814:1
+omnium_talents=136822:1/136816:1/136817:1/136815:1/136814:1
 
 potion=potion_of_recklessness_2
 flask=flask_of_the_shattered_sun_2
@@ -154,7 +154,7 @@ neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13848/13987,gem_id=240898
 shoulder=primal_leywardens_manaflux,id=271562,bonus_id=12854/13694/13697,redirected_base_stats=239031
 back=silken_voodoo_drape,id=268253,bonus_id=13662/13848
 chest=crest_of_the_primal_leywarden,id=271567,bonus_id=4786/4800/12854/13690/13698,enchant_id=7987,redirected_base_stats=268221
-wrist=martyrs_bindings,id=239648,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240908,crafted_stats=32/49
+wrist=winters_embrace_bracers,id=251154,bonus_id=4786/12854/13750,gem_id=240918
 hands=primal_leywardens_manashapers,id=271565,bonus_id=13691/13697/13848,redirected_base_stats=268243
 waist=martyrs_waistwrap,id=239649,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240890,crafted_stats=32/49
 legs=primal_leywardens_tailored_legwraps,id=271563,bonus_id=12854/13693/13698,enchant_id=7935,redirected_base_stats=159234
@@ -162,9 +162,9 @@ feet=cackling_soultreads,id=268255,bonus_id=13662/13848
 finger1=signet_of_snarling_servitude,id=251136,bonus_id=4786/12854/13750,gem_id=240908,enchant_id=7967
 finger2=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240908,enchant_id=7967
 trinket1=wavecallers_seastone,id=270167,bonus_id=12854/13662
-trinket2=gebbos_bottomless_bag,id=270164,bonus_id=12854/13662
-main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13662/13848,enchant_id=7981
-off_hand=frostscales_mystic_frond,id=268263,bonus_id=12854/13662
+trinket2=font_of_venomous_rage,id=270168,bonus_id=13662/13848
+main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13662/13848,enchant_id=8689
+off_hand=alnhara_lantern,id=245769,bonus_id=8960/13751/13771/13836/9627,crafted_stats=32/49
 
 save=MID2_Mage_Frost.simc
 
@@ -175,7 +175,7 @@ race=tauren
 role=spell
 position=ranged_back
 talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsMmZmYmZGjZMziZmZmxMzsMTzMLzCAAAaBAAAAAA2AYbZMzMDsNjxM2WAAAAzMYGYADMMA
-omnium_talents=136822:1/136816:1/136817:1/136818:1/136814:1
+omnium_talents=136822:1/136816:1/136817:1/136815:1/136814:1
 
 potion=potion_of_recklessness_2
 flask=flask_of_the_shattered_sun_2
@@ -188,7 +188,7 @@ neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13848/13987,gem_id=240898
 shoulder=primal_leywardens_manaflux,id=271562,bonus_id=12854/13694/13697,redirected_base_stats=239031
 back=silken_voodoo_drape,id=268253,bonus_id=13662/13848
 chest=crest_of_the_primal_leywarden,id=271567,bonus_id=4786/4800/12854/13690/13698,enchant_id=7987,redirected_base_stats=268221
-wrist=martyrs_bindings,id=239648,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240908,crafted_stats=32/49
+wrist=winters_embrace_bracers,id=251154,bonus_id=4786/12854/13750,gem_id=240918
 hands=primal_leywardens_manashapers,id=271565,bonus_id=13691/13697/13848,redirected_base_stats=268243
 waist=martyrs_waistwrap,id=239649,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240890,crafted_stats=32/49
 legs=primal_leywardens_tailored_legwraps,id=271563,bonus_id=12854/13693/13698,enchant_id=7935,redirected_base_stats=159234
@@ -196,8 +196,8 @@ feet=cackling_soultreads,id=268255,bonus_id=13662/13848
 finger1=signet_of_snarling_servitude,id=251136,bonus_id=4786/12854/13750,gem_id=240908,enchant_id=7967
 finger2=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240908,enchant_id=7967
 trinket1=wavecallers_seastone,id=270167,bonus_id=12854/13662
-trinket2=gebbos_bottomless_bag,id=270164,bonus_id=12854/13662
-main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13662/13848,enchant_id=7981
-off_hand=frostscales_mystic_frond,id=268263,bonus_id=12854/13662
+trinket2=font_of_venomous_rage,id=270168,bonus_id=13662/13848
+main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13662/13848,enchant_id=8689
+off_hand=alnhara_lantern,id=245769,bonus_id=8960/13751/13771/13836/9627,crafted_stats=32/49
 
 save=MID2_Mage_Frost_Frostfire.simc
