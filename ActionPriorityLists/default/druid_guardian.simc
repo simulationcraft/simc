@@ -25,7 +25,7 @@ actions+=/call_action_list,name=bear
 actions.bear=bear_form,if=!buff.bear_form.up&!buff.feline_potential.up&!talent.fluid_form.enabled
 actions.bear+=/mangle,if=buff.cat_form.up
 actions.bear+=/ironfur,use_off_gcd=1,if=buff.gory_fur_ironfur.up
-actions.bear+=/ironfur,use_off_gcd=1,if=rage>=40&!talent.killing_blow.enabled&!buff.answered_calling.up
+actions.bear+=/ironfur,use_off_gcd=1,if=rage>=40&!talent.killing_blow.enabled&!buff.answered_calling.up&!buff.dream_conduit.up
 actions.bear+=/ironfur,use_off_gcd=1,if=rage>=80&!talent.killing_blow.enabled&buff.answered_calling.up
 actions.bear+=/ironfur,use_off_gcd=1,if=!buff.ironfur.up&!buff.answered_calling.up&talent.killing_blow.enabled&!buff.ravage.up
 actions.bear+=/ironfur,use_off_gcd=1,if=!buff.ironfur.up&rage>=80&buff.answered_calling.up&talent.killing_blow.enabled&!buff.ravage.up
