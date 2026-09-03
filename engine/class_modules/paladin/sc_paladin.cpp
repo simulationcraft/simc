@@ -1847,6 +1847,10 @@ struct divine_toll_t : public paladin_spell_t
       {
         p()->active.divine_toll->execute_on_target( s->target );
       }
+      if ( p()->talents.lightsmith.resounding_strike->ok() )
+      {
+        trigger_hammer_and_anvil( p(), s->target, haa, HAA_DIVINE_TOLL );
+      }
     }
   }
 
@@ -1892,10 +1896,6 @@ struct divine_toll_t : public paladin_spell_t
       {
         make_event<delayed_execute_event_t>( *sim, p(), a, execute_state->target, 300_ms * ( i + 1 ) );
       }
-    }
-    if ( p()->talents.lightsmith.resounding_strike->ok() )
-    {
-      trigger_hammer_and_anvil( p(), execute_state->target, haa, HAA_DIVINE_TOLL );
     }
   }
 };
