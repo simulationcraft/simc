@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69587 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.69594 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -11763,9 +11763,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: The Hunt (345335), The Hunt (370969), The Hunt (1246168)
                    Family Flags: 87
-Description      : $?a212612[When you activate Metamorphosis, reset the cooldown of Immolation Aura][Entering Void Metamorphosis resets the cooldown of Voidblade and The Hunt.
-
-The Hunt deals $s2% increased damage and resets the cooldown of Soul Immolation].
+Description      : $?a212612[When you activate Metamorphosis, reset the cooldown of Immolation Aura][Entering Void Metamorphosis resets the cooldown of Voidblade and Soul Immolation].
 
 Name             : Enduring Torment (id=452410) [Spell Family (107), Passive] 
 Talent Entry     : Fel-Scarred (Havoc, Devourer) [tree=hero, row=3, col=4, max_rank=1, req_points=1]
@@ -11876,7 +11874,7 @@ Effects          :
 #1 (id=1153558)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #2 (id=1311836)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Collapsing Star (1221162)
                    Family Flags: 103
 Description      : $?a212612[Agility][Intellect] increased by $?a212612[$452550s1][$452550s2]% while not in demon form.$?c3[
@@ -11897,7 +11895,9 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1153559)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Activating $?a212612[][Void ]Metamorphosis greatly empowers $?a212612[Eye Beam, Immolation Aura][The Hunt].
+#2 (id=1352783)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Description      : $?a212612[Activating ][Void ]Metamorphosis greatly empowers $?a212612[Eye Beam and Immolation Aura][The Hunt and casting Collapsing Star resets its cooldown].
 
 $?a212612[Demonsurge][Voidsurge] damage is increased by $?a212612[${$452416s2}][${$1246160s2}]% for each time it previously triggered while your demon form is active.
 
@@ -12329,7 +12329,7 @@ Effects          :
 #1 (id=1153826)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 8 | Scaled Value: 8 | Stat: Agi | Target: Self (1)
 #2 (id=1247648)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 15 | Scaled Value: 15 | Stat: Int | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Stat: Int | Target: Self (1)
 Description      : $@spelldesc452414
 Tooltip          : Agility increased by $w1%.
 
@@ -13465,10 +13465,10 @@ Spell Type       : None
 Range            : 25 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
-Cooldown         : 5 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
+Affecting Spells : Collapsing Star (1319061 effect#1)
 Family Flags     : 105
 Attributes       : Not Shapeshifted (16), Not In Spellbook Until Learned (269), Trigger Cooldown On Spell Start (407), Allow Class Ability Procs (416)
 Channel Interrupt: Damage (2), Action (3), Sheathing (10), Interacting (11), Looting (12), Attacking (13), Action (Delayed) (17)
@@ -15144,9 +15144,11 @@ Cast Time        : 1 seconds
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 90 seconds
+Category         : 2427 (Type 0x0): Eternal Hunt (1270900 effect#2)
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
+Category Cooldown: 90 seconds
 Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Any Means Necessary (388114 effects: #1, #3, #4), Violent Transformation (452409 effect#2), Devourer Demon Hunter (1213636 effect#5), Demonsurge (1245496 effects: #3, #6), Eternal Hunt (1270900 effect#1)
 Triggered By     : The Hunt (370966), The Hunt (1246169)
 Family Flags     : 32, 82
@@ -16150,10 +16152,12 @@ Cast Time        : 1 seconds
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 90 seconds
+Category         : 2427 (Type 0x0): Eternal Hunt (1270900 effect#2)
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3597
+Category Cooldown: 90 seconds
 Affecting Spells : Havoc Demon Hunter (212612 effect#6), Vengeance Demon Hunter (212613 effect#6), Any Means Necessary (388114 effects: #1, #3, #4), Violent Transformation (452409 effect#2), Devourer Demon Hunter (1213636 effect#5), Demonsurge (1245496 effects: #3, #6), Eternal Hunt (1270900 effect#1)
 Triggered By     : The Hunt (370966), The Hunt (1246169)
 Family Flags     : 32, 82
@@ -16994,7 +16998,7 @@ Effects          :
                    Family Flags: 82
 #2 (id=1283315)  : Apply Aura (6) | Modify Cooldown Time (Category) (341)
                    Base Value: -15000 | Scaled Value: -15000 | Misc Value: 2427 (Category) | Target: Self (1)
-                   Affected Spells (Category): The Hunt (370965)
+                   Affected Spells (Category): The Hunt (370965), The Hunt (1246167), Predator's Wake (1259431)
 #3 (id=1283316)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=1283497)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
@@ -17757,4 +17761,34 @@ Effects          :
                    Family Flags: 97
 Description      : $@spelldesc1296615
 Tooltip          : Your next Consume triggers a Soulburst, dealing additional damage.
+
+Name             : Collapsing Star (id=1319061) [Spell Family (107), Hidden] 
+Class            : Demon Hunter
+School           : Cosmic
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Cast Log (128), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1352832)  : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 5 | Target: Self (1)
+                   Affected Spells: Collapsing Star (1221150)
+                   Family Flags: 105
+Description      : $@spelldesc1221150
+
+Name             : Collapsing Star (id=1319066) [Spell Family (107), Hidden] 
+Class            : Demon Hunter
+School           : Cosmic
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Cast Log (128), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1352838)  : Apply Aura (6) | Periodic Dummy (226): every 0.1 seconds
+                   Base Value: 4600 | Scaled Value: 4600 | Target: Self (1)
+Description      : $@spelldesc1221150
 

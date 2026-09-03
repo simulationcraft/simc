@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69587 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.69594 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -1346,7 +1346,7 @@ Effects          :
 #1 (id=32866)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : As a side-effect of exposure to intense cold, the caster cannot Ice Block or Ice Cold again for $d.
-Tooltip          : $?a414659[Cannot cast Ice Cold][Cannot be made invulnerable by Ice Block].
+Tooltip          : $?s414658[Cannot cast Ice Cold][Cannot be made invulnerable by Ice Block].
 
 Name             : Reduced Blink GCD (id=44301) [Spell Family (3), Passive, Hidden] 
 School           : Physical
@@ -2176,7 +2176,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Master of Escape (210476 effect#1)
 Family Flags     : 31, 50
-Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Threat (42), No AutoCast (AI) (49), Do Not Display Range (126), Cannot Be Stolen (134), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Threat (42), No AutoCast (AI) (49), Do Not Display Range (126), Cannot Be Stolen (134), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Aura Interrupt   : Action (2), Interacting (10), Attacking (12), Mount (17), Leave World (19)
 Effects          :
 #1 (id=123208)   : Trigger Spell (64): Greater Invisibility
@@ -2594,17 +2594,17 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 19 | Scaled Value: 19 | Target: Self (1)
+                   Base Value: 23 | Scaled Value: 23 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Arcane Splinter (443763), Volatile Magic (444966), Volatile Magic (444967), Archmage's Wrath (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Arcane Pulse (1241462), Arcane Pulse (1243460), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863), Conflagration (1271173), Burnout (1271335), Winter's End (1280757), Prismatic Bolt (1295924), Prismatic Bolt (1295939)
                    Family Flags: 3
 #2 (id=191125)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 19 | Scaled Value: 19 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 23 | Scaled Value: 23 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Arcane Splinter (443763), Volatile Magic (444966), Volatile Magic (444967), Archmage's Wrath (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Arcane Pulse (1241462), Arcane Pulse (1243460), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863), Conflagration (1271173), Burnout (1271335), Winter's End (1280757), Prismatic Bolt (1295924), Prismatic Bolt (1295939)
                    Family Flags: 3
 #3 (id=191126)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 19 | Scaled Value: 19 | Target: Self (1)
+                   Base Value: 23 | Scaled Value: 23 | Target: Self (1)
 #4 (id=191127)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 19 | Scaled Value: 19 | Target: Self (1)
+                   Base Value: 23 | Scaled Value: 23 | Target: Self (1)
 #5 (id=191128)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 0.6769 | Target: Self (1)
                    Affected Spells: Frostfire Bolt (468655)
@@ -2629,17 +2629,17 @@ Proc Flags       : Enter Combat
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179703)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+                   Base Value: 19 | Scaled Value: 19 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Arcane Splinter (443763), Volatile Magic (444966), Volatile Magic (444967), Archmage's Wrath (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Arcane Pulse (1241462), Arcane Pulse (1243460), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863), Conflagration (1271173), Burnout (1271335), Winter's End (1280757), Prismatic Bolt (1295924), Prismatic Bolt (1295939)
                    Family Flags: 3
 #2 (id=191121)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 19 | Scaled Value: 19 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Ray of Frost (205021), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Blast Wave (389631), Arcane Explosion (414381), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Frost Splinter (443722), Arcane Splinter (443763), Volatile Magic (444966), Volatile Magic (444967), Archmage's Wrath (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Greater Pyroblast (450421), Pyroblast (450461), Flamestrike (450462), Arcane Barrage (450499), Living Bomb (453251), Arcane Surge (453326), Meteorite (456139), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Living Bomb (464884), Frostfire Bolt (468655), Frostbolt Volley (1216910), Glacial Spike (1236211), Arcane Pulse (1241462), Arcane Pulse (1243460), Shatter (1246949), Freezing Winds (1247554), Cinderstorm (1254024), Flamestrike (1254851), Hand of Frost (1262769), Glacial Spike (1262862), Pyroblast (1262863), Conflagration (1271173), Burnout (1271335), Winter's End (1280757), Prismatic Bolt (1295924), Prismatic Bolt (1295939)
                    Family Flags: 3
 #3 (id=191122)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+                   Base Value: 19 | Scaled Value: 19 | Target: Self (1)
 #4 (id=191123)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+                   Base Value: 19 | Scaled Value: 19 | Target: Self (1)
 #5 (id=191124)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2031 (Category) | Target: Self (1)
                    Affected Spells (Category): Flurry (44614)
@@ -4102,7 +4102,7 @@ Effects          :
 #1 (id=302663)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1588 (Category) | Target: Self (1)
                    Affected Spells (Category): Frost Nova (122)
-Description      : Frost Nova now has ${1+$m1} charges.
+Description      : Frost Nova gains an additional charge.
 
 Name             : Flame Patch (id=205037) [Spell Family (3), Passive] 
 Class            : Mage
@@ -4483,7 +4483,7 @@ Effects          :
 Description      : $@spelldesc205022
 Tooltip          : Maximum mana increased by $s1%.
 
-Name             : Master of Escape (desc=PvP Talent) (id=210476) [Spell Family (3), Passive, Hidden] 
+Name             : Master of Escape (id=210476) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=7, col=7, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
@@ -4496,7 +4496,7 @@ Effects          :
                    Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Invisibility (66), Greater Invisibility (110959), Greater Invisibility (113862), Greater Invisibility (122293)
                    Family Flags: 50
-Description      : Reduces the cooldown of Invisibility by ${-$s1/1000} sec.
+Description      : $?s110959[Greater ][]Invisibility's cooldown is reduced by ${-$s1/1000} sec.
 
 Name             : Mark of Aluneth (desc=Artifact) (id=210726) 
 Class            : Mage
@@ -8370,7 +8370,7 @@ Effects          :
 #2 (id=1244659)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 23 | Misc Value 2: 5291 (Label) | Target: Self (1)
                    Affected Spells (Label): Temporal Realignment (1244090), Temporal Realignment (1244093)
-Description      : Reduces the cooldown of $?a1244090[Temporal Realignment][Alter Time] by ${$s1/-1000} sec. 
+Description      : Alter Time's cooldown is reduced by ${$s1/-1000} sec. 
 
 Name             : From the Ashes (id=342344) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=9, col=3, max_rank=1, req_points=20]
@@ -9283,7 +9283,7 @@ Effects          :
 #2 (id=1013564)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 0.5 | Misc Value: 1632 (Category) | Target: Self (1)
                    Affected Spells (Category): Shimmer (212653)
-Description      : The cooldowns of Blink and Shimmer are reduced by ${$s1/-1000} sec.
+Description      : $?s212653[Shimmer's][Blink's] cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Tempest Barrier (id=382289) [Spell Family (3), Passive, Hidden] 
 Class            : Mage, Evoker
@@ -9393,7 +9393,7 @@ Effects          :
 #1 (id=1013746)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1560 (Category) | Target: Self (1)
                    Affected Spells (Category): Ice Block (45438), Ice Cold (414658)
-Description      : The cooldown of Ice Block is reduced by ${$s1/-1000} sec.
+Description      : $?s414659[Ice Cold][Ice Block]'s cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Tome of Antonidas (id=382490) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=7, col=5, max_rank=1, req_points=8]
@@ -9408,7 +9408,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1013847)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Increases Haste by $s1%. 
+Description      : Haste increased by $s1%. 
 
 Name             : Tome of Rhonin (id=382493) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=1, req_points=8]
@@ -9423,7 +9423,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1013852)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Increases critical strike chance by $s1%.
+Description      : Critical strike chance by $s1%.
 
 Name             : Arcane Warding (id=383092) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=2, req_points=0]
@@ -9439,7 +9439,7 @@ Effects          :
 #1 (id=1014783)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -4 | Scaled Value: -4 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-Description      : Reduces magic damage taken by $s1%.
+Description      : Magic damage taken reduced by $s1%.
 
 Name             : Mass Polymorph (id=383121) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=9, col=4, max_rank=1, req_points=20, select_idx=200]
@@ -9468,7 +9468,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
 #2 (id=1014831)  : Apply Aura (6) | Change Model (56)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 16372 | Misc Value 2: 9 | Radius: 0 - 10 yards | Target: Source (22) -> Enemy in Area (15)
-Description      : Transforms all enemies within $a yards into sheep, wandering around incapacitated for $d. While affected, the victims cannot take actions but will regenerate health very quickly. Damage will cancel the effect.
+Description      : Transforms all enemies within $a1 yds into sheep, wandering around incapacitated for $d. While affected, the victims cannot take actions but will regenerate health very quickly. Damage will cancel the effect.
 
 Only works on Beasts, Humanoids and Critters.
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
@@ -9792,7 +9792,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1016232)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Your Haste is increased by $s1%.
+Description      : Haste increased by $s1%.
 
 Name             : Arcane Tempo (id=383997) [Spell Family (3)] 
 Class            : Mage
@@ -10149,7 +10149,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=1021214)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Description      : Casting your barrier removes all snare effects.
+Description      : Casting $?c1[Prismatic]?c2[Blazing][Ice] Barrier removes all snare effects.
 
 Name             : Fervent Flickering (id=387044) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=4, col=2, max_rank=1, req_points=0]
@@ -10846,6 +10846,7 @@ Effects          :
 Description      : $@spelldesc389713
 
 Name             : Ice Cold (id=414658) [Spell Family (3)] 
+Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20, replace="Ice Block" (id=45438)]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -10887,11 +10888,12 @@ Description      : Your blood runs cold, reducing all damage you take by $s8% fo
 
 While Ice Cold is active, you heal for ${$382292s1*10}% of your maximum health over the duration.][]
 
+Does not incur the Global Cooldown.
+
 Causes Hypothermia, preventing you from recasting Ice Cold for $41425d.
 Tooltip          : Damage taken reduced by $s8%.
 
 Name             : Ice Cold (id=414659) [Spell Family (3), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -10950,7 +10952,7 @@ Effects          :
                    Base Value: -180000 | Scaled Value: -180000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Mass Invisibility (414664)
                    Family Flags: 103
-Description      : The cooldown of Mass Invisibility is reduced by ${$s1/-60000} min and it can affect allies in combat.
+Description      : Mass Invisibility's cooldown is reduced by ${$s1/-60000} min, and it can affect allies in combat.
 
 Name             : Fuel the Fire (id=416094) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Fire [tree=spec, row=3, col=6, max_rank=1, req_points=0]
@@ -11530,11 +11532,11 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 #2 (id=1131295)  : Apply Aura (6) | Dummy (4)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.6667 | Target: Self (1)
-Description      : $?a137019[Meteor now also calls down a Comet Storm, dealing ${$438609s1*7} Frost damage to nearby enemies]?a137020[Comet Storm now also calls down a Meteor, dealing $351140s1 Fire damage to nearby enemies. Damage reduced beyond 8 targets.
+Description      : $?a137019[Meteor now also calls down a Comet Storm, dealing ${$438609s1*7} Frost damage to nearby enemies]?a137020[Comet Storm now also calls down a Meteor, dealing $438607s1 Fire damage to nearby enemies. Damage reduced beyond 8 targets.
 
 Damage from Meteor Shatters $1246769s5 stacks of Freezing][Meteor now also calls down a Comet Storm, dealing ${$438609s1*7} Frost damage to nearby enemies.
 
-Comet Storm now also calls down a Meteor, dealing $351140s1 Fire damage to nearby enemies].
+Comet Storm now also calls down a Meteor, dealing $438607s1 Fire damage to nearby enemies].
 
 Name             : Flame and Frost (id=431112) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Frostfire (Fire, Frost) [tree=hero, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
@@ -12032,7 +12034,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100
 #3 (id=1250329)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : $?c1[Casting Arcane Surge generates $s1 Arcane Splinters][Each time Ray of Frost damages one or more enemies, it generates $s3 Frost $LSplinter:Splinters;].
+Description      : $?c1[Casting Arcane Surge conjures $s1 Arcane Splinters][Each time Ray of Frost damages one or more enemies, it conjures $s3 Frost $LSplinter:Splinters;].
 
 $?c1[During Arcane Surge, your chance to conjure an additional Arcane Splinter is increased to $s2%][For $1247908d after casting Ray of Frost, your chance to conjure an additional Frost Splinter is increased to $s2%].
 
@@ -12195,7 +12197,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1141352)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : While in combat, Blink summons a Mirror Image at your previous location.
+Description      : While in combat, $?s212653[Shimmer][Blink] summons a Mirror Image at your previous location.
 
 Name             : Phantasmal Image (id=444784) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Spellslinger (Arcane, Frost) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
@@ -12212,7 +12214,7 @@ Effects          :
 #2 (id=1141403)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Misc Value 2: 3672 (Label) | Target: Self (1)
                    Affected Spells (Label): Mirror Image (55342)
-Description      : Your Mirror Image summons $s2 extra $Lcopy:copies; of you.
+Description      : Casting Mirror Image summons $s2 extra $Lcopy:copies; of you.
 
 Name             : Reactive Barrier (id=444827) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Spellslinger (Arcane, Frost) [tree=hero, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
@@ -13579,7 +13581,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1158858)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 0.5 | Target: Self (1)
-Description      : When your Barrier is removed, reduce its cooldown by ${$s1/1000} sec.
+Description      : When $?c1[Prismatic]?c2[Blazing][Ice] Barrier is removed, its remaining cooldown is reduced by ${$s1/1000} sec.
 
 Name             : Intuition (id=455681) [Spell Family (3)] 
 Class            : Mage
@@ -15243,7 +15245,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 5291: Master of Time (342249 effect#2)
+                 : 5291: Master of Time (342249 effect#2), Time Twist (1255166 effect#2)
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1244648)  : Apply Aura (6) | Trigger Spell Based on Health% (468): Temporal Realignment
@@ -15252,8 +15254,10 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #3 (id=1279710)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60000 | Scaled Value: 60000 | Target: Self (1)
-                   Modified By: Master of Time (342249 effect#2)
-Description      : Upon dropping below $s1% health, your past self corrects your timeline, casting Alter Time and instantly returning $1244092s1% of your maximum health and healing you for an additional ${$1244092s2*$1244092d}% over $1244092d.
+                   Modified By: Master of Time (342249 effect#2), Time Twist (1255166 effect#2)
+Description      : When your health is brought below $s1%, your past self corrects your timeline if Alter Time is not on cooldown, instantly restoring $1244092s1% of your maximum health and healing you for an additional ${$1244092s2*$1244092d}% over $1244092d.
+
+This effect places Alter Time on cooldown as if it had been cast.
 
 Name             : Temporal Realignment (id=1244092) [Spell Family (3)] 
 Class            : Mage
@@ -15281,7 +15285,7 @@ Duration         : 90 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 5291: Master of Time (342249 effect#2)
+                 : 5291: Master of Time (342249 effect#2), Time Twist (1255166 effect#2)
 Attributes       : Aura Is Debuff (26), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1244653)  : Apply Aura (6) | Dummy (4)
@@ -15318,7 +15322,7 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
 Effects          :
 #1 (id=1244681)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Your Mastery is increased by $s1%.
+Description      : Mastery increased by $s1%.
 
 Name             : Glacial Bulwark (id=1244110) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Frost [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
@@ -15337,7 +15341,7 @@ Effects          :
 #2 (id=1244696)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1560 (Category) | Target: Self (1)
                    Affected Spells (Category): Ice Block (45438), Ice Cold (414658)
-Description      : Ice Block now has an additional charge and its cooldown is reduced by ${-$s2/1000} sec.
+Description      : $?s414658[Ice Cold][Ice Block] gains an additional charge and its cooldown is reduced by ${-$s2/1000} sec.
 
 Name             : Overpowered Missiles (id=1244329) [Spell Family (3), Passive] 
 Talent Entry     : Arcane [tree=spec, row=10, col=4, max_rank=1, req_points=20]
@@ -16254,7 +16258,10 @@ Effects          :
 #1 (id=1261855)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Cooldown (11)
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Misc Value 2: 892 (Label) | Target: Self (1)
                    Affected Spells (Label): Alter Time (108978), Alter Time (342245)
-Description      : The cooldown of Alter Time is reduced by ${-$s1/1000} sec.
+#2 (id=1340973)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 23 | Misc Value 2: 5291 (Label) | Target: Self (1)
+                   Affected Spells (Label): Temporal Realignment (1244090), Temporal Realignment (1244093)
+Description      : Alter Time's cooldown is reduced by ${-$s1/1000} sec.
 
 Name             : Phase Shift (id=1256245) [Spell Family (107), Passive] 
 Talent Entry     : Annihilator (Generic) [tree=hero, row=2, col=5, max_rank=1, req_points=0]
@@ -16702,7 +16709,7 @@ Effects          :
 #3 (id=1270122)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Misc Value 2: 4137 (Label) | Target: Self (1)
                    Affected Spells (Label): Meteorite (449569)
-Description      : $?c1[Arcane Salvo can stack $s1 additional times][Fire Blast cooldown reduced by ${-$s2/1000}.1 sec].
+Description      : $?c1[Arcane Salvo can stack $s1 additional times][Fire Blast's cooldown is reduced by ${-$s2/1000}.1 sec].
 
 Meteorite damage increased by $s3%.
 
@@ -16752,7 +16759,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #4 (id=1270702)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Direct damage from $?c1[Arcane][Frost] Splinters have a $?c1[$s1][$s2]% chance to $?c1[grant $s3 $Lstack:stacks; Arcane Salvo][apply $s4 $Lstack:stacks; of Freezing].$?c1[
+Description      : Direct damage from $?c1[Arcane][Frost] Splinters has a $?c1[$s1][$s2]% chance to $?c1[grant $s3 $Lstack:stacks; Arcane Salvo][apply $s4 $Lstack:stacks; of Freezing].$?c1[
 
 $@spellicon1242974 $@spellname1242974
 $@spellaura1242974][]
@@ -16875,7 +16882,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : $?c2[Comet Storm and Glacial Spike now apply Ignite][Meteor and Pyroblast now apply Ignite].
 
-Your Haste is increased by $s2%.
+Haste increased by $s2%.
 
 Name             : Glacial Spike (id=1262860) [Spell Family (3)] 
 Class            : Mage
@@ -17247,7 +17254,7 @@ Effects          :
 #1 (id=1277318)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1560 (Category) | Target: Self (1)
                    Affected Spells (Category): Ice Block (45438), Ice Cold (414658)
-Description      : The cooldown of Ice Block and Ice Cold are reduced by ${-$s1/1000} sec.
+Description      : $?s414659[Ice Cold][Ice Block]'s cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Blazing Barrier (id=1265927) 
 Class            : Mage

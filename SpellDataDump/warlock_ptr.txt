@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69587 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.69594 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -263,8 +263,7 @@ Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bo
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.077608 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (0.09313 -> 0.077608), PvP Coefficient (0.416667 -> 0.5)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.09313 | PvP Coefficient: 0.416667 | Target: Targeted Enemy (6)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$s1*$d/$t1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -3506,10 +3505,9 @@ Effects          :
 #4 (id=191029)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: -4 | Scaled Value: -4 | Target: Self (1)
 #5 (id=191030)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 45 | Scaled Value: 45 | Target: Self (1)
+                   Base Value: 95.75 | Scaled Value: 95.75 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506), Malefic Grasp (1261153)
                    Family Flags: 0
-Hotfixed         : Base Value (95.75 -> 45)
 #6 (id=1300810)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Misc Value 2: 6343 (Label) | Target: Self (1)
                    Affected Spells (Label): Wicked Reaping (449631)
@@ -6322,8 +6320,7 @@ Family Flags     : 49, 70
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.15006 | PvP Coefficient: 1.12346 | Target: Targeted Enemy (6)
-Hotfixed         : SP Coefficient (7.99508 -> 6.15006)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.99508 | PvP Coefficient: 1.12346 | Target: Targeted Enemy (6)
 #2 (id=1049817)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 #3 (id=1173941)  : Trigger Missiles (32): Doom
@@ -10406,7 +10403,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Shadowburn (17877), Conflagrate (17962)
                    Family Flags: 7, 55
-Description      : Conflagrate and Shadowburn have a $s1% chance to critical strike and their damage is increased by your critical strike chance.
+Description      : Conflagrate and Shadowburn have a $s1% chance to critically strike and their damage is increased by your critical strike chance.
 
 Name             : Ritual of Ruin (id=387156) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -13825,7 +13822,7 @@ Effects          :
 Description      : Dark magic erupts from you and corrupts your soul for $d, causing enemies suffering from your Wither to take $446285s1 Shadowflame damage and increase its stack count by $430014s1.
 
 While corrupted your Haste is increased by $s1% and spending Soul Shards on damaging spells grants $430014s2 additional stack of Wither.
-Tooltip          : Haste increased by $w1% and $?s324536[Malefic Rapture grants $w2 additional stack of Wither to targets affected by Unstable Affliction.][Chaos Bolt grants $w3 additional stack of Wither.]
+Tooltip          : Haste increased by $w1% and $?s1259790[Unstable Affliction grants $w2 additional stack of Wither.][Chaos Bolt grants $w3 additional stack of Wither.]
 
 All of your active Withers are acute.
 
@@ -16902,7 +16899,7 @@ Effects          :
                    Affected Spells: Seed of Corruption (27243), Unstable Affliction (30108), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Unstable Affliction (1219045), Unstable Affliction (1259790), Unstable Affliction (1261176)
                    Family Flags: 36, 40
 Description      : $@spelldesc1260264
-Tooltip          : Your next Unstable Affliction is instant cast and costs no Soul Shards.
+Tooltip          : Your next Unstable Affliction or Seed of Corruption is instant cast and costs no Soul Shards.
 
 Name             : Nightfall (id=1260279) [Spell Family (5)] 
 Class            : Warlock
@@ -17303,7 +17300,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.96 | Radius: 0 - 8 yards | Target: at Self (18) -> at Enemy in Area (16)
 #2 (id=1275242)  : None (0)
                    Base Value: 8 | Scaled Value: 8
-Description      : Cleaves the area in front of the caster, inflicting $s1 Shadowflame damage. Damage reduced beyond $s2 targets.
+Description      : Cleaves the area around the caster, inflicting $s1 Shadowflame damage to targets within $a1 yds. Damage reduced beyond $s2 targets.
 
 Name             : Warlock Affliction 12.0 Class Set 2pc (id=1264869) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
