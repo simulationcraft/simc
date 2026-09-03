@@ -15,7 +15,7 @@ def->add_action( "call_action_list,name=bear" );
 bear->add_action( "bear_form,if=!buff.bear_form.up&!buff.feline_potential.up&!talent.fluid_form.enabled" );
 bear->add_action( "mangle,if=buff.cat_form.up" );
 bear->add_action( "ironfur,use_off_gcd=1,if=buff.gory_fur_ironfur.up" );
-bear->add_action( "ironfur,use_off_gcd=1,if=rage>=40&!talent.killing_blow.enabled&!buff.answered_calling.up" );
+bear->add_action( "ironfur,use_off_gcd=1,if=rage>=40&!talent.killing_blow.enabled&!buff.answered_calling.up&!buff.dream_conduit.up" );
 bear->add_action( "ironfur,use_off_gcd=1,if=rage>=80&!talent.killing_blow.enabled&buff.answered_calling.up" );
 bear->add_action( "ironfur,use_off_gcd=1,if=!buff.ironfur.up&!buff.answered_calling.up&talent.killing_blow.enabled&!buff.ravage.up" );
 bear->add_action( "ironfur,use_off_gcd=1,if=!buff.ironfur.up&rage>=80&buff.answered_calling.up&talent.killing_blow.enabled&!buff.ravage.up" );
