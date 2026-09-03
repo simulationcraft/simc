@@ -4191,7 +4191,7 @@ struct ferocious_bite_base_t : public cp_spender_t
   stats_t* apex_stats = nullptr;
   stats_t* orig_stats;
   double excess_energy = 0.0;
-  double max_excess_energy;
+  double base_max_excess_energy;
   double saber_jaws_mul;
   double unseen_chance;
   double spattered_mul;
@@ -4201,7 +4201,7 @@ struct ferocious_bite_base_t : public cp_spender_t
   ferocious_bite_base_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
     : cp_spender_t( n, p, s, f ),
       orig_stats( stats ),
-      max_excess_energy( find_effect( this, E_POWER_BURN ).resource() ),
+      base_max_excess_energy( find_effect( this, E_POWER_BURN ).resource() ),
       saber_jaws_mul( p->talent.saber_jaws->effectN( 1 ).percent() ),
       unseen_chance( p->talent.unseen_predator_1->effectN( 1 ).percent() ),
       spattered_mul( p->talent.blood_spattered->effectN( 1 ).percent() ),
@@ -4240,11 +4240,17 @@ struct ferocious_bite_base_t : public cp_spender_t
       p()->resource_thresholds.push_back( maximum_energy() );
   }
 
+  // Incarn does affect the additional energy consumption.
+  double max_excess_energy() const
+  {
+    return base_max_excess_energy * ( 1.0 + p()->buff.incarnation_cat->check_value() );
+  }
+
   double maximum_energy() const
   {
-    double req = base_costs[ RESOURCE_ENERGY ] + max_excess_energy;
+    double req = base_costs[ RESOURCE_ENERGY ] * ( 1.0 + p()->buff.incarnation_cat->check_value() );
 
-    req *= 1.0 + p()->buff.incarnation_cat->check_value();
+    req += max_excess_energy();
 
     if ( p()->buff.apex_predators_craving->check() )
       req *= 1.0 + p()->buff.apex_predators_craving->data().effectN( 1 ).percent();
@@ -4262,10 +4268,7 @@ struct ferocious_bite_base_t : public cp_spender_t
 
   double get_excess_energy() const
   {
-    // Incarn does affect the additional energy consumption.
-    double _max_used = max_excess_energy * ( 1.0 + p()->buff.incarnation_cat->check_value() );
-
-    return std::min( _max_used, ( p()->resources.current[ RESOURCE_ENERGY ] - cost() ) );
+    return std::min( max_excess_energy(), p()->resources.current[ RESOURCE_ENERGY ] - cost() );
   }
 
   void execute() override
@@ -4369,7 +4372,7 @@ struct ferocious_bite_base_t : public cp_spender_t
     if ( _is_free() )
       return 1.0;
     else
-      return excess_energy / max_excess_energy;
+      return excess_energy / max_excess_energy();
   }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
