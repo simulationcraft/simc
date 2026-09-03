@@ -465,7 +465,7 @@ class RealPPMModifierGenerator(DataGenerator):
                      continue
 
                 for data in rppm.children('SpellProcsPerMinuteMod'):
-                    output_data.append((spell_id, data.id_chr_spec, data.unk_1, data.coefficient))
+                    output_data.append((spell_id, data.param, data.type, data.coefficient))
 
         self.output_header(
                 header = 'RPPM Modifiers',

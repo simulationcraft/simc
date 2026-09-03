@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.0.69587
+Class Spell ID List, wow build 12.1.5.69594
 
 Death Knight
 3714     Path of Frost
@@ -3259,6 +3259,8 @@ Demon Hunter
 1296616  Demon Hunter Devourer 12.1 Class Set 4pc
 1297432  Soulburst
 1297433  Soulburst
+1319061  Collapsing Star
+1319066  Collapsing Star
 
 Druid
 99       Incapacitating Roar
@@ -8827,7 +8829,7 @@ Hunter
 1277134  Deadly Insight
 1277136  Deadly Insight
 1277546  Focus Fire
-1277548  Unload
+1277548 *Unload
 1277549  Focus Fire
 1277558  Headshot
 1277565  Through the Eyes
@@ -8872,6 +8874,9 @@ Hunter
 1306990 *Dark Summon
 1308188 *Dire Beast
 1311963  Bombardier
+1319011  Blood Fletching
+1319015  Blood Fletching
+1319016  Blood Fletching
 
 Mage
 66       Invisibility
@@ -15305,6 +15310,8 @@ Paladin
 1310389  Divine Guidance
 1310461  Divine Arbiter
 1310686  Ardent Defender
+1315210 *Glyph of Matriarch's Wings
+1316624 *Avenging Wrath
 
 Priest
 17       Power Word: Shield
@@ -24032,7 +24039,7 @@ Warrior
 322540  *Berserker Rage
 324143   Conqueror's Banner
 324408  *Dive Attack
-325446  *Initial Warrior
+325446   Initial Warrior
 325787   Glory
 325788   Conqueror's Banner
 325862   Conqueror's Banner

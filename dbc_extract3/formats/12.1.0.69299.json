@@ -1899,8 +1899,8 @@
   "SpellProcsPerMinuteMod": {
     "parent": "SpellProcsPerMinute",
     "fields": [
-      { "data_type": "i", "field": "unk_1" },
-      { "data_type": "i", "field": "id_chr_spec" },
+      { "data_type": "i", "field": "type" },
+      { "data_type": "i", "field": "param" },
       { "data_type": "f", "field": "coefficient" }
     ]
   },

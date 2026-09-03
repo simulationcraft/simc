@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 12.1.0.69587
-static constexpr std::array<item_enchantment_data_t, 5342> __ptr_spell_item_ench_data { {
+// Item enchantment data, wow build 12.1.5.69594
+static constexpr std::array<item_enchantment_data_t, 5346> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 120,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },       0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 120,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },       0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 10, 120,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },    2831, "Reinforced (+$k1 Armor)"           },
@@ -5342,5 +5342,9 @@ static constexpr std::array<item_enchantment_data_t, 5342> __ptr_spell_item_ench
   { 8702,      0,  0,   0,  90, 10, 500, 2910,   1, {   7,   0,   0 }, {    0,   23,    0 }, { 1297523,      3,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1297585, "R0CKY"                             },
   { 8704,      0,  0,   0,  60, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Summer Sun Blossom"                },
   { 8705,      0,  0,   0,  60, 0, 0,   0,   0, {   7,   0,   0 }, {    0,    0,    0 }, { 1301266,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "[DNT] 12.1 Delves - Corrosive - ZGS TEST" },
+  { 8727,      0,  0,  90,  90, 0, 334,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1315100,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1314402, "|cnIQ4:Ancient Hash'ey Battle Art: Falco Strikes|r" },
+  { 8728,      0,  0,  90,  90, 0, 334,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1315094,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1315082, "|cnIQ4:Ancient Hash'ey Battle Art: Ursine's Ironhide|r" },
+  { 8729,      0,  0,  90,  90, 0, 334,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1315101,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1315083, "|cnIQ4:Ancient Hash'ey Battle Art: Heat Wave|r" },
+  { 8730,      0,  0,  90,  90, 0, 334,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1315099,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1315084, "|cnIQ4:Ancient Hash'ey Battle Art: Eye of the Lynx|r" },
 } };
 
