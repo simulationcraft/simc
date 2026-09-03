@@ -33,7 +33,7 @@ double player_collected_data_t::health_changes_timeline_t::get_bin_size() const
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t,
                                                                          timespan_t ts, timespan_t wait,
                                                                          const player_t* p )
-  : action( a ), target( t ), time( ts ), wait_time( wait ), queue_failed( false )
+  : action( a ), target( t ), time( ts ), wait_time( wait ), spell_id( 0 ), spell_name(), queue_failed( false )
 {
   for ( buff_t* b : p->buff_list )
   {
