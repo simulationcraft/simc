@@ -16200,6 +16200,7 @@ Effects          :
 Description      : $@spelldesc1244877
 
 Name             : Lake of Fire (id=1244918) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
@@ -16210,7 +16211,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Demonic Brutality (453908 effect#1), Devastation (454735 effect#1), Affliction Warlock (1256906 effects: #1, #2), Demonology Warlock (1256907 effects: #1, #2), Destruction Warlock (1256908 effects: #1, #2), Warlock - Midnight PrePatch - 11.2 Class Set 2pc (1283640 effects: #1, #2), Warlock - Midnight PrePatch - 11.2 Class Set 4pc (1283641 effects: #1, #2), Dark Titan's Mark (1305711 effect#1), Unstable Empowerment (1305774 effects: #1, #2)
 Family Flags     : 49
-Attributes       : Aura Icon Only For Caster (Limit 10) (212), Allow Class Ability Procs (416)
+Attributes       : Not an Action (92), Not an Attack (194), Aura Icon Only For Caster (Limit 10) (212), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1245713)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 20 | Scaled Value: 20 | Target: Targeted Enemy (6)
