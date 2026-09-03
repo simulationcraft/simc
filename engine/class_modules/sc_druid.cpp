@@ -10714,6 +10714,11 @@ void druid_t::init_spells()
     spec.wild_guardian_action =
       check( spec.wild_guardian_buff, apply_override( talent.berserk_bear, spec.wild_guardian_buff ) );
   }
+  else
+  {
+    spec.wild_guardian_buff   = spell_data_t::not_found();
+    spec.wild_guardian_action = spell_data_t::not_found();
+  }
 
   // Restoration Abilities
 
@@ -11389,7 +11394,7 @@ void druid_t::create_buffs()
   buff.celestial_might = make_fallback( sets->has_set_bonus( DRUID_GUARDIAN, MID1, B4 ),
     this, "celestial_might", find_trigger( sets->set( DRUID_GUARDIAN, MID1, B4 ) ).trigger() );
 
-  buff.dream_conduit = make_fallback( talent.wild_guardian_3.ok(),
+  buff.dream_conduit = make_fallback( spec.wild_guardian_action->ok(),
     this, "dream_conduit", find_trigger( spec.wild_guardian_action ).trigger() )
       ->set_consume_all_stacks( false );
 
@@ -11496,7 +11501,7 @@ void druid_t::create_buffs()
     this, "waking_nightmare", find_trigger( talent.waking_nightmare ).trigger() )
       ->set_proc_callbacks( false );
 
-  buff.wild_guardian = make_fallback( talent.wild_guardian_3.ok(), this, "wild_guardian", spec.wild_guardian_buff );
+  buff.wild_guardian = make_fallback( spec.wild_guardian_buff->ok(), this, "wild_guardian", spec.wild_guardian_buff );
 
   // Restoration buffs
   buff.abundance = make_fallback( talent.abundance.ok(), this, "abundance", find_spell( 207640 ) )
