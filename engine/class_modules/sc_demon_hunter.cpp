@@ -4984,6 +4984,9 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
 
           if ( !dh()->is_ptr() )
             dh()->cooldown.predators_wake->reset( true );
+
+          if ( dh()->is_ptr() )
+            dh()->cooldown.soul_immolation->reset( true );
         }
         break;
       case DEMON_HUNTER_HAVOC:
