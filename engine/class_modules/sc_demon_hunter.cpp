@@ -3161,7 +3161,7 @@ struct mass_acceleration_trigger_t : public BASE
     switch ( BASE::dh()->specialization() )
     {
       case DEMON_HUNTER_DEVOURER:
-        BASE::dh()->cooldown.reap->reset( true );
+        BASE::dh()->cooldown.reap->reset( false );
         break;
       case DEMON_HUNTER_VENGEANCE:
         BASE::dh()->cooldown.spirit_bomb->reset( true );
@@ -4980,8 +4980,16 @@ struct metamorphosis_t : public mass_acceleration_trigger_t<demon_hunter_spell_t
 
         if ( dh()->talent.scarred.violent_transformation->ok() )
         {
-          dh()->cooldown.voidblade->reset( true );
-          dh()->cooldown.predators_wake->reset( true );
+          dh()->cooldown.voidblade->reset( false );
+
+          if ( sim->dbc->wowv() >= wowv_t( 12, 1, 5 ) )
+          {
+            dh()->cooldown.soul_immolation->reset( false );
+          }
+          else
+          {
+            dh()->cooldown.predators_wake->reset( false );
+          }
         }
         break;
       case DEMON_HUNTER_HAVOC:
@@ -5539,7 +5547,8 @@ struct the_hunt_base_t
            dh()->talent.scarred.violent_transformation->ok() )
       {
         // only resets one charge of Soul Immo
-        dh()->cooldown.soul_immolation->reset( true, 1 );
+        if ( sim->dbc->wowv() < wowv_t( 12, 1, 5 ) )
+          dh()->cooldown.soul_immolation->reset( false, 1 );
       }
     }
   };
@@ -5583,6 +5592,8 @@ struct predators_wake_t : public voidsurge_trigger_t<voidsurge_ability::PREDATOR
   predators_wake_t( demon_hunter_t* p, util::string_view o )
     : base_t( "predators_wake", p, p->hero_spec.predators_wake, o )
   {
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 5 ) )
+      cooldown = p->cooldown.the_hunt;
   }
 
   bool action_ready() override
@@ -5684,7 +5695,7 @@ struct consume_base_t : public shattered_souls_trigger_t<voidfall_building_trigg
       if ( dh()->set_bonuses.mid2_devourer_4pc->ok() )
       {
         dh()->buff.moment_of_craving->trigger();
-        dh()->cooldown.reap->reset( true );
+        dh()->cooldown.reap->reset( false );
         dh()->spawn_soul_fragment( dh()->proc.soul_fragment_from_soulburst, soul_fragment::LESSER,
                                    as<unsigned int>( dh()->set_bonuses.mid2_devourer_4pc->effectN( 1 ).base_value() ) );
       }
@@ -6408,7 +6419,7 @@ struct void_ray_t
       if ( dh()->talent.devourer.moment_of_craving->ok() )
       {
         dh()->buff.moment_of_craving->trigger();
-        dh()->cooldown.reap->reset( true );
+        dh()->cooldown.reap->reset( false );
       }
       if ( voidglare_boon_energize )
       {
@@ -6556,6 +6567,11 @@ struct collapsing_star_t : public demon_hunter_spell_t
     dh()->buff.collapsing_star->expire();
     dh()->buff.collapsing_star_stack->decrement( soul_cost );
     demon_hunter_spell_t::execute();
+ 
+    if ( sim->dbc->wowv() >= wowv_t( 12, 1, 5 ) && dh()->talent.scarred.demonic_intensity->ok() )
+    {
+      dh()->cooldown.the_hunt->reset( false );
+    }
   }
 
   bool action_ready() override
@@ -11586,6 +11602,12 @@ void demon_hunter_t::init_spells()
       default:
         break;
     }
+  }
+
+  if ( talent.scarred.demonic_intensity->ok() )
+  {
+    // Create a hunt to guarantee the cooldown object exists properly formed.
+    background_actions.push_back( new the_hunt_t( this, "" ) );
   }
 
   if ( specialization() == DEMON_HUNTER_DEVOURER )
