@@ -89,6 +89,7 @@ void protection( player_t* p )
   default_->add_action( "shield_of_the_righteous,if=!buff.hammer_of_light_ready.up|(!buff.hammer_of_light_ready.remains<5&buff.undisputed_ruling.up)|buff.hammer_of_light_free.up|prev_gcd.1.divine_toll" );
   default_->add_action( "holy_armaments,if=next_armament=sacred_weapon&(buff.sacred_weapon.remains<6|!buff.sacred_weapon.up)" );
   default_->add_action( "hammer_of_wrath,if=buff.hammer_of_light_ready.up&!debuff.judgment.up" );
+  default_->add_action( "hammer_of_wrath,if=hero_tree.lightsmith" );
   default_->add_action( "judgment,if=buff.hammer_of_light_ready.up&!debuff.judgment.up" );
   default_->add_action( "avengers_shield,if=buff.vanguard.up|(buff.avenging_wrath.up&apex.3)" );
   default_->add_action( "holy_armaments,if=next_armament=holy_bulwark&cooldown.avenging_wrath.remains<5" );
