@@ -11607,7 +11607,7 @@ void demon_hunter_t::init_spells()
   if ( talent.scarred.demonic_intensity->ok() )
   {
     // Create a hunt to guarantee the cooldown object exists properly formed.
-    background_actions.push_back( new the_hunt_t( this, "" ) );
+    new the_hunt_t( this, "" );
   }
 
   if ( specialization() == DEMON_HUNTER_DEVOURER )
