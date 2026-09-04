@@ -258078,10 +258078,11 @@ Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a
 $healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
 
 Name             : Pulse Seeker's Oculus (id=1296971) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 300 seconds
-Attributes       : Allow Cast While Dead (23), Aura Is Debuff (26), No Aura Cancel (31), Allow Dead Target (64), Allow Aura While Dead (116), No Aura Log (202)
+Attributes       : Allow Cast While Dead (23), Aura Is Debuff (26), No Aura Cancel (31), Allow Dead Target (64), Hide In Raid Filter (110), Allow Aura While Dead (116), No Aura Log (202)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1319825)  : Apply Aura (6) | Dummy (4)
