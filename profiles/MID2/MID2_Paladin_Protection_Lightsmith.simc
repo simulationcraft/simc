@@ -41,6 +41,7 @@ actions+=/hammer_of_light,if=(!buff.undisputed_ruling.up|buff.hammer_of_light_re
 actions+=/shield_of_the_righteous,if=!buff.hammer_of_light_ready.up|(!buff.hammer_of_light_ready.remains<5&buff.undisputed_ruling.up)|buff.hammer_of_light_free.up|prev_gcd.1.divine_toll
 actions+=/holy_armaments,if=next_armament=sacred_weapon&(buff.sacred_weapon.remains<6|!buff.sacred_weapon.up)
 actions+=/hammer_of_wrath,if=buff.hammer_of_light_ready.up&!debuff.judgment.up
+actions+=/hammer_of_wrath,if=hero_tree.lightsmith
 actions+=/judgment,if=buff.hammer_of_light_ready.up&!debuff.judgment.up
 actions+=/avengers_shield,if=buff.vanguard.up|(buff.avenging_wrath.up&apex.3)
 actions+=/holy_armaments,if=next_armament=holy_bulwark&cooldown.avenging_wrath.remains<5
