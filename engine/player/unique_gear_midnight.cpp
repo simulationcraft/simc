@@ -5232,6 +5232,35 @@ create_callback:
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// band of the swarmcaller
+// 1310082 driver
+// 1310083 missile
+// 1310088 damage
+void call_the_swarm( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Band of the Swarmcaller: Damage is assumed to not be split amongst targets hit." );
+
+  auto missile = create_proc_action<generic_proc_t>( "call_the_swarm", effect, effect.trigger() );
+
+  // assumed to not split so use generic_proc_t and just set aoe = -1;
+  // possible 5 target DR based on driver effect#2?
+  auto damage =
+    create_proc_action<generic_proc_t>( "acidbrood_scourge", effect, missile->data().effectN( 1 ).trigger() );
+  damage->aoe = -1;
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  missile->dual = true;
+  missile->impact_action = damage;
+  missile->stats = damage->stats;  // report the damage only
+  damage->stats->action_list.push_back( missile );
+
+  effect.execute_action = missile;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace armors
 
 namespace sets
@@ -6071,6 +6100,7 @@ void register_special_effects()
   register_special_effect( 1317582, armors::venomcursed_ascendance );
   set_min_version( wowv_t( 12, 1, 5 ) );
   register_special_effect( 1310208, armors::void_eruption );
+  register_special_effect( 1310082, armors::call_the_swarm );
   reset_version_check();
   // Sets
   register_special_effect( 1281574, sets::voidlight_bindings );
