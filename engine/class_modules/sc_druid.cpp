@@ -5094,6 +5094,10 @@ public:
       // trigger wild guardian 3, if possible
       if ( p_->buff.answered_calling->trigger() )
       {
+        // if bugged, 1/4 apex will trigger the buff but not the reset
+        if ( !p_->talent.wild_guardian_3.ok() )
+          return;
+
         if ( p_->cooldown.mangle )
           p_->cooldown.mangle->reset( true );
         if ( p_->cooldown.thrash )
@@ -11347,7 +11351,11 @@ void druid_t::create_buffs()
       ->set_name_reporting( "Summon" )
       ->set_trigger_spell( talent.wild_guardian_1 );
 
-  buff.answered_calling = make_fallback( talent.wild_guardian_3.ok(), this, "answered_calling", find_spell( 1308647 ) );
+  // bugged and will proc from 1/4 apex instead
+  if ( bugs )
+    buff.answered_calling = make_fallback( talent.wild_guardian_1.ok(), this, "answered_calling", find_spell( 1308647 ) );
+  else
+    buff.answered_calling = make_fallback( talent.wild_guardian_3.ok(), this, "answered_calling", find_spell( 1308647 ) );
 
   buff.berserk_bear = make_fallback( talent.berserk_bear.ok(), this, "berserk_bear", talent.berserk_bear )
     ->set_name_reporting( "berserk" )
