@@ -11604,11 +11604,11 @@ void demon_hunter_t::init_spells()
     }
   }
 
-  if ( talent.scarred.demonic_intensity->ok() )
-  {
-    // Create a hunt to guarantee the cooldown object exists properly formed.
-    background_actions.push_back( new the_hunt_t( this, "" ) );
-  }
+  // No background the_hunt_t here: it registered under the name "the_hunt", which is the key
+  // the_hunt_base_t uses to look up its the_hunt_damage_t impact action, so the APL's hunt
+  // resolved a the_hunt_t and the dynamic_cast returned nullptr (The Hunt dealt no damage).
+  // cooldown.the_hunt is created in the constructor and initialised by whichever of The Hunt
+  // or Predator's Wake the APL creates; both carry the 90s data.
 
   if ( specialization() == DEMON_HUNTER_DEVOURER )
   {
