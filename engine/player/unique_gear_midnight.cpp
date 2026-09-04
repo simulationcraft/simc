@@ -3746,6 +3746,8 @@ void voracious_heart_of_ulatek( special_effect_t& effect )
       : generic_proc_t( e, "devour_morsel", e.player->find_spell( 1305374 ) ), buff( buff )
     {
       base_dd_min = base_dd_max = equip->effectN( 2 ).average( e );
+      // role mult not found in spell description
+      base_multiplier *= role_mult( e.player );
     }
 
     void execute() override
