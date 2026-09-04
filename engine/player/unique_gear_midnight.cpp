@@ -5194,6 +5194,44 @@ void venomcursed_ascendance( special_effect_t& effect )
 
   new venomcursed_ascendance_cb_t( effect );
 }
+
+// leggings of palpable terror
+// 1310208 driver
+// 1310209 damage
+void void_eruption( special_effect_t& effect )
+{
+  effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
+    "Leggings of Palpable Terror: Damage is assumed to not be split amongst targets hit." );
+
+  // assumed to not split so use generic_proc_t and just set aoe = -1;
+  auto damage = create_proc_action<generic_aoe_proc_t>( "void_eruption", effect, 1310209 );
+  damage->aoe = -1;
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  // TODO: generalize this into unique_gear.cpp if other item bonus tags need similar checks
+  for ( const auto& item : effect.player->items )
+  {
+    for ( auto bonus_id : item.parsed.bonus_id )
+    {
+      for ( const auto& bonus_entry : effect.player->dbc->item_bonus( bonus_id ) )
+      {
+        if ( bonus_entry.type == ITEM_BONUS_DESC && bonus_entry.value_1 == 14447 )
+        {
+          effect.player->sim->print_debug( "{} venomcursed item '{} ({})' found.", *effect.player, item.name(),
+                                           item.parsed.data.id );
+          damage->base_multiplier *= 1.0 + effect.driver()->effectN( 2 ).percent();
+          goto create_callback;
+        }
+      }
+    }
+  }
+
+create_callback:
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace armors
 
 namespace sets
@@ -6031,6 +6069,8 @@ void register_special_effects()
   set_min_version( wowv_t( 12, 1, 0 ) );
   register_special_effect( { 1307906, 1307923, 1307928 }, armors::venomcursed );
   register_special_effect( 1317582, armors::venomcursed_ascendance );
+  set_min_version( wowv_t( 12, 1, 5 ) );
+  register_special_effect( 1310208, armors::void_eruption );
   reset_version_check();
   // Sets
   register_special_effect( 1281574, sets::voidlight_bindings );
