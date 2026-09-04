@@ -6561,6 +6561,9 @@ struct collapsing_star_t : public demon_hunter_spell_t
     dh()->buff.collapsing_star->expire();
     dh()->buff.collapsing_star_stack->decrement( soul_cost );
     demon_hunter_spell_t::execute();
+
+    if ( dh()->is_ptr() && dh()->talent.scarred.demonic_intensity->ok() )
+      dh()->cooldown.predators_wake->reset( true );
   }
 
   bool action_ready() override
