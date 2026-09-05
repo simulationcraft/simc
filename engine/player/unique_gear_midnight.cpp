@@ -5291,7 +5291,7 @@ void venomcursed_ascendance( special_effect_t& effect )
 void void_eruption( special_effect_t& effect )
 {
   effect.player->sim->error( UNVERIFIED_IMPLEMENTATION,
-    "Leggings of Palpable Terror: Damage is assumed to not be split amongst targets hit." );
+    "{}: Damage is assumed to not be split amongst targets hit.", effect.item->full_name() );
 
   // assumed to not split so use generic_proc_t and just set aoe = -1;
   auto damage = create_proc_action<generic_aoe_proc_t>( "void_eruption", effect, 1310209 );
