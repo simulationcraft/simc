@@ -92,7 +92,7 @@ actions.single_target=stormkeeper,if=!buff.stormkeeper.up&!buff.tempest.up&set_b
 actions.single_target+=/ancestral_swiftness
 
 # Prespend SK charges before going into Ascendance - Farseer only in 1t, SB in both 1t and 2t
-actions.single_target+=/lightning_bolt,if=set_bonus.mid2_4pc&buff.stormkeeper.up&cooldown.ascendance.remains<2*gcd&&(spell_targets.chain_lightning=1|talent.tempest)
+actions.single_target+=/lightning_bolt,if=set_bonus.mid2_4pc&buff.stormkeeper.up&cooldown.ascendance.remains<2*gcd&(spell_targets.chain_lightning=1|talent.tempest)
 
 # Maintain Flame shock, minor gain to refresh it when FE is about to fade on up to 2 targets.
 actions.single_target+=/flame_shock,if=!buff.master_of_the_elements.up&dot.flame_shock.refreshable&cooldown.ascendance.remains>5
