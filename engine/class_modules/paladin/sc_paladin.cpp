@@ -1645,6 +1645,12 @@ hammer_of_wrath_t::hammer_of_wrath_t(paladin_t* p, util::string_view n, const sp
   triggers_divine_resonance = true;
   triggers_second_sunrise   = false;
   cooldown->duration        = 0_ms;
+
+  if ( p->talents.blessed_champion->ok() )
+  {
+    aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
+    base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
+  }
 }
 
 hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str,
