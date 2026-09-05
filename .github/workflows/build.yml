@@ -10,7 +10,7 @@ on:
 jobs:
   ubuntu-gcc-build:
     name: ubuntu-${{ matrix.compiler }}-cpp${{ matrix.cppVersion }}-build
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         compiler: [gcc-12, gcc-14]
@@ -18,12 +18,8 @@ jobs:
         include:
           - compiler: gcc-12
             cxx: g++-12
-            packages: gcc-12 g++-12
-            os: ubuntu-22.04
           - compiler: gcc-14
             cxx: g++-14
-            packages: gcc-14 g++-14
-            os: ubuntu-24.04
 
     steps:
       - uses: actions/checkout@v6
@@ -39,7 +35,7 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache ${{ matrix.packages }}
+          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache
 
       - name: Configure
         run:
@@ -70,19 +66,15 @@ jobs:
 
   ubuntu-clang-build:
     name: ubuntu-build-${{ matrix.compiler }}-C++${{ matrix.cppVersion }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         cppVersion: [17, 20]
-        compiler: [clang++-15, clang++-18]
+        compiler: [clang++-16, clang++-18]
         include:
-          - compiler: clang++-15
-            os: ubuntu-22.04
-            packages: clang-15 lld-15
+          - compiler: clang++-16
             enable_file_prefix_map: true
           - compiler: clang++-18
-            os: ubuntu-24.04
-            packages: clang-18 lld-18
             enable_file_prefix_map: true
 
     steps:
@@ -99,7 +91,7 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache ${{ matrix.packages }}
+          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache
 
       - name: Configure
         env:
