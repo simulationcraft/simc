@@ -11864,6 +11864,11 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     auto parts = util::string_split<util::string_view>( expression_str, "_" );
     double percent = -1.0;
 
+    if ( parts.size() < 3 )
+    {
+      throw sc_invalid_apl_argument( fmt::format( "Invalid 'time_to_' expression '{}'.", expression_str ) );
+    }
+
     if ( util::str_in_str_ci( parts[ 2 ], "die" ) )
     {
       percent = 0.0;
@@ -12620,6 +12625,11 @@ std::unique_ptr<expr_t> player_t::create_resource_expression( util::string_view 
     else if ( util::str_prefix_ci( splits[ 1 ], "time_to_" ) )
     {
       auto parts = util::string_split<util::string_view>( splits[ 1 ], "_" );
+
+      if ( parts.size() < 3 )
+      {
+        throw sc_invalid_apl_argument( fmt::format( "Invalid resource expression '{}'.", expression_str ) );
+      }
 
       // foo.time_to_max
       if ( util::str_in_str_ci( parts[ 2 ], "max" ) )
