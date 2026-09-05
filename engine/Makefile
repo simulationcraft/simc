@@ -83,10 +83,6 @@ endif
 
 # OSX
 ifeq (${FLAVOR},Darwin)
-  # Workaround for XCode 11 issues when using optimized builds. Potentially related to
-  # https://forums.developer.apple.com/thread/121887
-  CPP_FLAGS += -mmacosx-version-min=10.12
-
   # Explicitly state architectures to compile with
   ifneq ($(MACOS_ARCHS),)
     OPTS_INTERNAL += $(addprefix -arch ,$(MACOS_ARCHS))
@@ -109,6 +105,21 @@ endif
 ifneq (${NO_DEBUG},)
   CPP_FLAGS += -DNDEBUG
 endif
+
+# Variant builds: 'make debug|release|optimized' recurse with VARIANT set and
+# OBJ_DIR redirected to build/<variant>, so the three configurations get their
+# own object/binary directories and never share (and corrupt) each other's
+# objects.
+ifeq (debug,${VARIANT})
+  OPTS_INTERNAL += -g -fno-omit-frame-pointer -O0 -fno-optimize-sibling-calls
+endif
+ifeq (release,${VARIANT})
+  CPP_FLAGS += -DNDEBUG
+endif
+ifeq (optimized,${VARIANT})
+  CPP_FLAGS += -DNDEBUG
+  OPTS_INTERNAL += -fomit-frame-pointer
+endif
 ifneq (${C++20},)
   CPP_FLAGS += --std=c++20
 endif
@@ -118,13 +129,14 @@ endif
 ifneq (${LTO_AUTO},)
   OPTS_INTERNAL += -flto=auto
 endif
-
 ifneq (${LTO_THIN},)
   OPTS_INTERNAL += -flto=thin
-  -fuse-ld=lld
 endif
-ifneq (${MARCH_NATIVE},)
-  OPTS_INTERNAL += -march=native
+ifneq (${MARCH},)
+  OPTS_INTERNAL += -march=${MARCH}
+endif
+ifneq (${MCPU},)
+  OPTS_INTERNAL += -mcpu=${MCPU}
 endif
 
 ifeq (32,${BITS})
@@ -204,53 +216,29 @@ endif
 
 SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC)) $(filter %.hpp, $(SRC)) $(filter %.inc, $(SRC))
 SRC_CPP := $(filter %.cpp, $(SRC))
+# Variant builds land under build/<variant>; the default build still goes
+# in-tree (OBJ_DIR = .). The binary follows OBJ_DIR via TARGET_BIN.
+BUILD_DIR = build
 OBJ_DIR = .
 OBJ_EXT = o
 DEP_EXT = d
 SRC_OBJ := $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT))
 SRC_DEPS := $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(DEP_EXT))
+TARGET_BIN = $(OBJ_DIR)$(PATHSEP)$(MODULE)
 
 .PHONY: .FORCE all mostlyclean clean
 .FORCE:
 
-all: $(MODULE)
+all: $(TARGET_BIN)
 
 -include $(SRC_DEPS)
 
-debug:OPTS_INTERNAL += -g -fno-omit-frame-pointer -O0 -fno-optimize-sibling-calls
-debug: $(MODULE)
-
-release:CPP_FLAGS += -DNDEBUG
-release: $(MODULE)
-
-optimized:CPP_FLAGS += -DNDEBUG
-optimized:OPTS_INTERNAL += -fomit-frame-pointer
-
-# MacOS's default compiler, `clang`, does not support `-march=native` on Apple
-# Silicon chips, and as of 2021-11-22 will return an error like the following
-# at compile time:
-#
-#     clang: error: the clang compiler does not support '-march=native'
-#
-# This conditional preserves the existing default `-march=native` flag on all
-# non-Apple systems, and also on Apple Intel systems, while instead setting
-# `-mcpu=apple-m1` on Apple Silicon systems to enable any M1-specific
-# optimizations that clang supports.
-#
-# In a future release, presumably when there are M2 chips, M3 chips, and so on,
-# hopefully clang will support `-march=native` on these platforms and we can
-# eliminate this block.
-ifeq (${FLAVOR},Darwin)
-  ifeq (${ARCH},arm64)
-    optimized:OPTS_INTERNAL += -mcpu=apple-m1
-  else
-    optimized:OPTS_INTERNAL += -march=native
-  endif
-else
-  optimized:OPTS_INTERNAL += -march=native
-endif
-
-optimized: $(MODULE)
+# Build each variant in its own directory by recursing with OBJ_DIR redirected;
+# VARIANT (read in the flags section above) selects the extra compile flags.
+# 'make debug && make release' leaves both binaries side by side under build/.
+.PHONY: debug release optimized
+debug release optimized:
+	@$(MAKE) all OBJ_DIR=$(BUILD_DIR)$(PATHSEP)$@ VARIANT=$@
 
 install: all
 ifneq (${PREFIX},..)
@@ -262,12 +250,14 @@ ifneq (${PREFIX},..)
 	$(COPY) -r $(wildcard ../profiles/*) $(SHARE_INSTALL_PATH)
 endif
 
-$(MODULE): $(SRC_OBJ)
+$(TARGET_BIN): $(SRC_OBJ)
 	-@echo [$(MODULE)] Linking $@
+	@$(MKDIR) -p $(dir $@)
 	@$(CXX) $(OPTS_INTERNAL) $(OPTS) $(LINK_FLAGS) $^ -o $@ $(LINK_LIBS)
 
 $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $<
+	@$(MKDIR) -p $(dir $@)
 	@$(CXX) $(CPP_FLAGS) $(OPTS_INTERNAL) $(OPTS) -c $< -o $@
 
 %.s: %.cpp $(SRC_H)
@@ -276,7 +266,7 @@ $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 
 # Force regeneration of git_info.o on every recompilation to potntially get the
 # changed GIT shorthash into the binary
-util/git_info.o: .FORCE
+$(OBJ_DIR)$(PATHSEP)util/git_info.$(OBJ_EXT): .FORCE
 
 # cleanup targets
 mostlyclean:
@@ -286,6 +276,7 @@ mostlyclean:
 clean: mostlyclean
 	-@echo [$(MODULE)] Cleaning target files
 	@$(REMOVE) $(MODULE) sc_http$(MODULE_EXT)
+	-@$(REMOVE) -r $(BUILD_DIR)
 
 # Unit Tests
 sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp util$(PATHSEP)sc_io.cpp sc_thread.cpp sc_util.cpp
