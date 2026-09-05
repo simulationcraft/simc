@@ -4624,6 +4624,61 @@ void sszoraks_ferocity( special_effect_t& effect )
   auto ki_cb = new dbc_proc_callback_t( effect.player, *ki_proc );
   ki_cb->activate_with_buff( killer_instincts );
 }
+
+// twisted horror's tendril
+// 1310404 driver
+// 1310446 new target driver
+// 1310414 buff
+void twisted_horrors_tendril( special_effect_t& effect )
+{
+  auto new_target_id = 1310446;
+  auto new_target = find_special_effect( effect.player, new_target_id );
+  assert( new_target && "Twisted Horror's Tendril missing new target driver" );
+
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1310414 ) )
+    ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  auto eff2 = new special_effect_t( effect.player );
+  eff2->name_str = "twisted_horrors_tendril_new_target";
+  eff2->spell_id = new_target_id;
+  effect.player->special_effects.push_back( eff2 );
+
+  struct twisted_horrors_tendrils_new_target_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<int> _targets;
+    buff_t* _buff;
+
+    twisted_horrors_tendrils_new_target_cb_t( const special_effect_t& e, buff_t* b )
+      : dbc_proc_callback_t( e.player, e ), _buff( b )
+    {}
+
+    void reset() override
+    {
+      _targets.clear();
+    }
+
+    void trigger( const proc_data_t& pd, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
+    {
+      if ( !range::contains( _targets, t->actor_spawn_index ) )
+        dbc_proc_callback_t::trigger( pd, t, s, type );
+    }
+
+    void execute( const spell_data_t*, player_t* t, action_state_t* ) override
+    {
+      listener->sim->print_debug( "{} triggering on new target {} ({}) for Twisted Horror's Tendril.", *listener, *t,
+                                  t->actor_spawn_index );
+      _targets.push_back( t->actor_spawn_index );
+      // 3 stacks is hard coded based on tooltip
+      _buff->trigger( 3 );
+    }
+  };
+
+  new twisted_horrors_tendrils_new_target_cb_t( *eff2, buff );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -5197,7 +5252,10 @@ void venomcursed_ascendance( special_effect_t& effect )
   new venomcursed_ascendance_cb_t( effect );
 }
 
+// voidweaver's vestments
 // leggings of palpable terror
+// aberrant commander's gauntlets
+// corroded hulk's skullcap
 // 1310208 driver
 // 1310209 damage
 void void_eruption( special_effect_t& effect )
@@ -6075,6 +6133,9 @@ void register_special_effects()
   register_special_effect( 1296883, DISABLED_EFFECT );  // Ophidian Bone Whistle equip driver
   register_special_effect( 1295617, trinkets::sszoraks_ferocity );
   register_special_effect( 1307356, DISABLED_EFFECT );  // Sszorak's Ferocity killing blow driver
+  set_min_version( wowv_t( 12, 1, 5 ) );
+  register_special_effect( 1310404, trinkets::twisted_horrors_tendril );
+  register_special_effect( 1310446, DISABLED_EFFECT );  // twisted horror's tendril new target driver
   reset_version_check();
   // Weapons
   register_special_effect( { 1253357, 1253359 }, weapons::torments_duality );  // umbral sabre & radiant foil
