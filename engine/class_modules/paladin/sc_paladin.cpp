@@ -85,6 +85,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.righteous_cause_icd = get_cooldown( "righteous_cause_icd" );
   cooldowns.righteous_cause_icd->duration = find_spell( 402912 )->internal_cooldown();
 
+  cooldowns.divine_resonance_icd = get_cooldown( "divine_resonance_icd" );
+  cooldowns.divine_resonance_icd->duration = find_spell( 1266308 )->internal_cooldown();
+
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
   fake_lesser_weapon_set.clear();
@@ -1541,9 +1544,10 @@ struct judgment_ret_t : public judgment_t
   {
     judgment_t::execute();
 
-    if ( !background && p()->specialization() == PALADIN_RETRIBUTION && p()->buffs.divine_resonance->up() )
+    if ( !background && p()->specialization() == PALADIN_RETRIBUTION && p()->buffs.divine_resonance->up() && p()->cooldowns.divine_resonance_icd->up() )
     {
       p()->active.divine_resonance_ret->execute_on_target( execute_state->target );
+      p()->cooldowns.divine_resonance_icd->start();
       p()->buffs.divine_resonance->decrement();
     }
   }
@@ -1672,6 +1676,7 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
     echo->base_aoe_multiplier     = base_aoe_multiplier;
     echo->crit_bonus_multiplier   = crit_bonus_multiplier;
     echo->triggers_higher_calling = true;
+    echo->triggers_divine_resonance = false;
     echo->base_multiplier *= p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent();
   }
   if ( p->specialization() == PALADIN_PROTECTION )
@@ -1700,9 +1705,11 @@ void hammer_of_wrath_t::execute()
   if ( result_is_hit( execute_state->result ) && p()->talents.sanctified_wrath->ok() && p()->wings_up() )
     p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.judgment );
 
-  if ( triggers_divine_resonance && p()->specialization() == PALADIN_RETRIBUTION && p()->buffs.divine_resonance->up() )
+  if ( triggers_divine_resonance && p()->specialization() == PALADIN_RETRIBUTION && p()->buffs.divine_resonance->up() &&
+       p()->cooldowns.divine_resonance_icd->up() )
   {
     p()->active.divine_resonance_ret_how->execute_on_target( execute_state->target );
+    p()->cooldowns.divine_resonance_icd->start();
     p()->buffs.divine_resonance->decrement();
   }
   if (p()->talents.herald_of_the_sun.walk_into_light->ok() && p()->wings_up() && p()->cooldowns.walk_into_light_icd->up())

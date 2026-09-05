@@ -332,6 +332,7 @@ public:
     cooldown_t* ret_aura_icd;
     cooldown_t* consecrated_blade_icd;
     cooldown_t* righteous_cause_icd;
+    cooldown_t* divine_resonance_icd;
 
     cooldown_t* aurora_icd;
     cooldown_t* second_sunrise_icd;
