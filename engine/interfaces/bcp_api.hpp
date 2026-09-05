@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include "sc_enums.hpp"
 #include "util/cache.hpp"
+#include "util/string_view.hpp"
 #include <string>
 #include <vector>
 
@@ -33,5 +34,6 @@ void token_load();
 void token_save();
 
 slot_e translate_api_slot( const std::string& slot_str );
+stat_e translate_api_stat( util::string_view stat_str );
 bool validate_api_key( const std::string& key );
 }
