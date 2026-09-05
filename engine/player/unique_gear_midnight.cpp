@@ -4889,6 +4889,36 @@ void zathatek_breath_of_corruption( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Light's Justice
+// 1309762 Driver
+// 1309766 Buff (Driver effect 1 val)
+// 1309782 Damage (Driver effect 2 val)
+void lights_justice( special_effect_t& effect )
+{
+  auto buff_spell = effect.trigger();
+  auto buff       = create_buff<stat_buff_t>( effect.player, "lights_justice", buff_spell )
+                        ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) )
+                        ->set_rppm( RPPM_DISABLE );  // Disable RPPM checks on the buff, this is for the damage trigger.
+
+  auto damage         = create_proc_action<generic_proc_t>( "lights_justice_damage", effect, 1309782 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  auto damage_proc            = new special_effect_t( effect.player );
+  damage_proc->name_str       = "lights_justice_damage_proc";
+  damage_proc->spell_id       = buff_spell->id();
+  damage_proc->proc_flags2_   = PF2_ALL_HIT;
+  damage_proc->execute_action = damage;
+  effect.player->special_effects.push_back( damage_proc );
+
+  auto damage_cb = new dbc_proc_callback_t( effect.player, *damage_proc );
+  damage_cb->activate_with_buff( buff );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace weapons
 
 namespace armors
@@ -6147,6 +6177,8 @@ void register_special_effects()
   register_special_effect( 1296732, weapons::sharpened_lightwood_slasher );
   register_special_effect( 1298023, weapons::zathatek_breath_of_corruption );
   register_special_effect( 1291718, bite_of_zuljan::venomfang );
+  set_min_version( wowv_t( 12, 1, 5 ) );
+  register_special_effect( 1309762, weapons::lights_justice );
   reset_version_check();
   // Armor
   register_special_effect( 1271211, armors::eternal_voidsong_chain );
