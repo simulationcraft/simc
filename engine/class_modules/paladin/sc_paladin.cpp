@@ -36,7 +36,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     random_weapon_target( nullptr ),
     random_bulwark_target( nullptr ),
     divine_inspiration_next( -1 ),
-    reflection_of_radiance_proc_chance( .04 ) // ToDo Fluttershy: Find out real proc chance - Currently something very, very low
+    reflection_of_radiance_proc_chance_sacred_weapon( .1 ),
+    reflection_of_radiance_proc_chance_holy_bulwark(.05)
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
@@ -2387,7 +2388,7 @@ struct sacred_weapon_proc_damage_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    double chance = p()->reflection_of_radiance_proc_chance;
+    double chance = p()->reflection_of_radiance_proc_chance_sacred_weapon;
     if ( p()->options.fake_solidarity )
       chance = 1.0 - ( std::pow( 1.0 - chance, p()->buffs.lightsmith.fake_solidarity->stack() + 1 ) );
     if ( p()->talents.lightsmith.reflection_of_radiance->ok() && p()->rng().roll( chance ) )

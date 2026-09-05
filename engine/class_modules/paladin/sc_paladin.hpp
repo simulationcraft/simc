@@ -780,7 +780,8 @@ public:
   player_t* random_bulwark_target;
   int divine_inspiration_next;
 
-  double reflection_of_radiance_proc_chance;
+  double reflection_of_radiance_proc_chance_sacred_weapon;
+  double reflection_of_radiance_proc_chance_holy_bulwark;
 
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
@@ -992,7 +993,7 @@ struct holy_bulwark_absorb_t : public absorb_buff_t
   void absorb_used( double absorbed, player_t* source ) override
   {
     absorb_buff_t::absorb_used( absorbed, source );
-    double chance = caster->reflection_of_radiance_proc_chance;
+    double chance = caster->reflection_of_radiance_proc_chance_holy_bulwark;
     double stacks = caster->buffs.lightsmith.fake_solidarity_bulwark->stack();
     // Holy Bulwarks on the group don't trigger all that often, so it shouldn't be a 100% increased chance
     double increasedChance = stacks * caster->options.ror_bulwark_additional_proc_chance;  
