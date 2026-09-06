@@ -11993,6 +11993,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     if ( ( splits[ 0 ] == "main_hand" || splits[ 0 ] == "off_hand" ) )
     {
       double weapon_status = -1;
+
       if ( splits[ 0 ] == "main_hand" && util::str_compare_ci( splits[ 1 ], "2h" ) )
       {
         weapon_status = static_cast<double>( main_hand_weapon.group() == WEAPON_2H );
@@ -12010,6 +12011,15 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       {
         weapon_status =
             static_cast<double>( off_hand_weapon.group() == WEAPON_1H || off_hand_weapon.group() == WEAPON_SMALL );
+      }
+      else 
+      {
+        weapon_e weapon_type = util::parse_weapon_type( splits[ 1 ] );
+        if ( weapon_type != WEAPON_NONE )
+        {
+          weapon_status = static_cast<double>( ( splits[ 0 ] == "main_hand" ?
+                                                 main_hand_weapon.type : off_hand_weapon.type ) == weapon_type );
+        }
       }
 
       if ( weapon_status > -1 )
