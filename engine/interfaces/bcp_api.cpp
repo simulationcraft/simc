@@ -617,6 +617,42 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
     {
       item.option_ilevel_str =  util::to_string( slot_data[ "level" ][ "value" ].GetUint() );
     }
+    // Use the item stats directly from the Armory - needed to get the proper stats from catalyzed items in 12.1.
+    // Armory JSON doesn't return any other indication of the source item (unlike redirected_base_stats from the addon)
+    else if ( slot_data.HasMember( "stats" ) )
+    {
+      std::vector<std::string> tokens;
+      for ( auto stat_idx = 0U, stat_end = slot_data[ "stats" ].Size(); stat_idx < stat_end; ++stat_idx )
+      {
+        const auto& stat_data = slot_data[ "stats" ][ stat_idx ];
+
+        // Stat for another spec. Armory doesn't have AgiInt, it has Agi and Int and inactive ones are is_negated
+        if ( stat_data.HasMember( "is_negated" ) && stat_data[ "is_negated" ].GetBool() )
+        {
+          continue;
+        }
+
+        if ( !stat_data.HasMember( "type" ) || !stat_data[ "type" ].HasMember( "type" ) ||
+             !stat_data.HasMember( "value" ) )
+        {
+          continue;
+        }
+
+        auto stat = bcp_api::translate_api_stat( stat_data[ "type" ][ "type" ].GetString() );
+        if ( stat == STAT_NONE )
+        {
+          continue;
+        }
+
+        tokens.push_back( fmt::format( "{}{}", stat_data[ "value" ].GetInt(), util::stat_type_abbrev( stat ) ) );
+      }
+
+      if ( !tokens.empty() )
+      {
+        item.option_stats_str = util::string_join( tokens, "_" );
+        util::tolower( item.option_stats_str );
+      }
+    }
   }
 }
 
@@ -1092,6 +1128,35 @@ slot_e bcp_api::translate_api_slot( const std::string& slot_str )
 
   return it->second;
 }
+
+// bcp_api::translate_api_stat ==============================================
+
+stat_e bcp_api::translate_api_stat( util::string_view stat_str )
+{
+  using record_t = std::pair<util::string_view, stat_e>;
+  static constexpr record_t stat_map[] = {
+    { "AGILITY",                 STAT_AGILITY            },
+    { "STRENGTH",                STAT_STRENGTH           },
+    { "INTELLECT",               STAT_INTELLECT          },
+    { "STAMINA",                 STAT_STAMINA            },
+    { "CRIT_RATING",             STAT_CRIT_RATING        },
+    { "HASTE_RATING",            STAT_HASTE_RATING       },
+    { "MASTERY_RATING",          STAT_MASTERY_RATING     },
+    { "VERSATILITY",             STAT_VERSATILITY_RATING },
+    { "COMBAT_RATING_LIFESTEAL", STAT_LEECH_RATING       },
+    { "COMBAT_RATING_SPEED",     STAT_SPEED_RATING       },
+    { "COMBAT_RATING_AVOIDANCE", STAT_AVOIDANCE_RATING   }
+  };
+
+  auto it = range::find( stat_map, stat_str, &record_t::first );
+  if ( it == range::end( stat_map ) )
+  {
+    return STAT_NONE;
+  }
+
+  return it->second;
+}
+
 
 // bcp_api::download_player =================================================
 
