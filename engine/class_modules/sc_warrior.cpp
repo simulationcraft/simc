@@ -892,6 +892,7 @@ public:
   void combat_begin() override;
   void init_rng() override;
   bool validate_fight_style( fight_style_e style ) const override;
+  bool validate_actor() override;
   double composite_attribute( attribute_e attr ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
@@ -2209,7 +2210,7 @@ struct auto_attack_t : public warrior_attack_t
 
   void execute() override
   {
-    if ( p()->main_hand_attack->execute_event == nullptr )
+    if ( p()->main_hand_attack && p()->main_hand_attack->execute_event == nullptr )
     {
       p()->main_hand_attack->schedule_execute();
     }
@@ -2224,7 +2225,7 @@ struct auto_attack_t : public warrior_attack_t
     bool ready = warrior_attack_t::ready();
     if ( ready )  // Range check
     {
-      if ( p()->main_hand_attack->execute_event == nullptr )
+      if ( p()->main_hand_attack && p()->main_hand_attack->execute_event == nullptr )
       {
         return ready;
       }
@@ -8601,6 +8602,23 @@ bool warrior_t::validate_fight_style( fight_style_e style ) const
     }
   }
   return true;
+}
+
+// warrior_t::validate_actor ==============================================
+
+bool warrior_t::validate_actor()
+{
+  // Arms and Protection may not use a 2H main-hand with any off-hand item.
+  // Fury may dual-wield two 2H weapons, so it is exempt from this check.
+  if ( specialization() != WARRIOR_FURY && main_hand_weapon.group() == WEAPON_2H &&
+       off_hand_weapon.type != WEAPON_NONE )
+  {
+    throw sc_invalid_player_argument(
+        fmt::format( "Player {} has an Off-Hand weapon equipped with a 2h.", name() ) );
+    return false;
+  }
+
+  return player_t::validate_actor();
 }
 
 // warrior_t::init_scaling ==================================================

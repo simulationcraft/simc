@@ -7663,7 +7663,8 @@ bool player_t::has_hero_tree( hero_tree_e hero ) const
 
 bool player_t::has_shield_equipped() const
 {
-  return  items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD;
+  return items[ SLOT_OFF_HAND ].parsed.data.item_class == ITEM_CLASS_ARMOR &&
+         items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD;
 }
 
 bool player_t::record_healing() const
