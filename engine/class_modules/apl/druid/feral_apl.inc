@@ -32,6 +32,8 @@ def->add_action( "call_action_list,name=builder,if=spell_targets=1&combo_points<
 def->add_action( "call_action_list,name=aoe_builder,if=spell_targets>1&combo_points<=4" );
 def->add_action( "regrowth,if=buff.predatory_swiftness.up&variable.regrowth" );
 
+aoe_builder->add_action( "prowl,target_if=dot.rake.refreshable,if=!buff.shadowmeld.up" );
+aoe_builder->add_action( "shadowmeld,target_if=dot.rake.refreshable,if=!buff.prowl.up" );
 aoe_builder->add_action( "rake,target_if=refreshable,if=(talent.doubleclawed_rake&(!talent.lunar_inspiration|!talent.panthers_guile|active_dot.rake<5))|hero_tree.wildstalker&(active_dot.rake<2+!talent.panthers_guile+talent.lunar_inspiration)","ensure at last 2(pg)/3(nopg) rake at all times if wildstalker, rake highest prio with dcr. on 4t raking all 4 first (no pg) is 0.3% gain. DCR PG LI rakes up to 6 then moonfire" );
 aoe_builder->add_action( "moonfire_cat,target_if=refreshable","there are scenarios where this is -0.1/-0.2% vs being under cc swipe line, but im willing to scrap that complexity" );
 aoe_builder->add_action( "shred,if=spell_targets=2&talent.panthers_guile&buff.clearcasting.react","panthers guile, spend clearcast on shred" );
