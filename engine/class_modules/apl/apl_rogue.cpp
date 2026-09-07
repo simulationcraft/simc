@@ -106,7 +106,7 @@ void assassination( player_t* p )
   generate->add_action( "fan_of_knives,if=spell_targets.fan_of_knives>1+(talent.blindside&!talent.clear_the_witnesses)", "Fan of Knives in AoE" );
   generate->add_action( "ambush,if=spell_targets.fan_of_knives<=1+(talent.blindside&!talent.clear_the_witnesses)", "Ambush on low target counts when available" );
   generate->add_action( "mutilate,if=spell_targets.fan_of_knives<=1+(talent.blindside&!talent.clear_the_witnesses)", "Mutilate on low target counts" );
-  generate->add_action( "fan_of_knives,if=equipped.268209", "Fan of Knives fallback for Aman'muso Weapon Swaps" );
+  generate->add_action( "fan_of_knives,if=!(main_hand.dagger&off_hand.dagger)", "Fan of Knives fallback for non-dagger weapon swaps" );
 
   items->add_action( "variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2|dot.deathmark.ticking|fight_remains<=22", "Special Case Trinkets" );
   items->add_action( "use_item,name=astral_gladiators_badge_of_ferocity,use_off_gcd=1,if=dot.kingsbane.ticking|dot.deathmark.ticking|(cooldown.kingsbane.remains>60|cooldown.deathmark.remains>60)" );
