@@ -61,7 +61,7 @@ actions.HC_st+=/dark_harvest,if=execute_time<(dot.agony.remains<?dot.corruption.
 actions.SH_aoe=haunt
 actions.SH_aoe+=/seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight
 actions.SH_aoe+=/dark_harvest
-actions.SH_aoe+=/seed_of_corruption,target_if=!dot.unstable_affliction.ticking&prev.dark_harvest,if=set_bonus.midnight_season_2_4pc&active_enemies<=5
+actions.SH_aoe+=/seed_of_corruption,target_if=!dot.unstable_affliction.ticking&buff.succulent_soul.remains,if=set_bonus.midnight_season_2_4pc&active_enemies<=5
 actions.SH_aoe+=/agony,target_if=min:remains,if=active_dot.agony<12&remains<5
 actions.SH_aoe+=/summon_darkglare
 actions.SH_aoe+=/malefic_grasp,if=buff.nightfall.react>1&active_enemies<=6
@@ -75,9 +75,11 @@ actions.SH_cleave=haunt
 actions.SH_cleave+=/seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight
 actions.SH_cleave+=/agony,target_if=refreshable
 actions.SH_cleave+=/dark_harvest
-actions.SH_cleave+=/unstable_affliction,cycle_targets=1,if=!ticking&prev.dark_harvest
-actions.SH_cleave+=/unstable_affliction
 actions.SH_cleave+=/summon_darkglare
+actions.SH_cleave+=/seed_of_corruption,target_if=!dot.unstable_affliction.ticking,if=buff.succulent_soul.remains&talent.sow_the_seeds&!pet.darkglare.active
+actions.SH_cleave+=/seed_of_corruption,if=talent.sow_the_seeds&!pet.darkglare.active
+actions.SH_cleave+=/unstable_affliction,cycle_targets=1,if=!ticking&buff.succulent_soul.remains
+actions.SH_cleave+=/unstable_affliction
 actions.SH_cleave+=/malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd
 actions.SH_cleave+=/drain_soul,if=buff.nightfall.react>1
 actions.SH_cleave+=/shadow_bolt,if=buff.nightfall.react>1
