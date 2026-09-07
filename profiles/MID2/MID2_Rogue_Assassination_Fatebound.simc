@@ -84,8 +84,8 @@ actions.generate+=/fan_of_knives,if=spell_targets.fan_of_knives>1+(talent.blinds
 actions.generate+=/ambush,if=spell_targets.fan_of_knives<=1+(talent.blindside&!talent.clear_the_witnesses)
 # Mutilate on low target counts
 actions.generate+=/mutilate,if=spell_targets.fan_of_knives<=1+(talent.blindside&!talent.clear_the_witnesses)
-# Fan of Knives fallback for Axe Users
-actions.generate+=/fan_of_knives,if=main_hand.1h|off_hand.1h
+# Fan of Knives fallback for non-dagger weapon swaps
+actions.generate+=/fan_of_knives,if=!(main_hand.dagger&off_hand.dagger)
 
 # Special Case Trinkets
 actions.items=variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2|dot.deathmark.ticking|fight_remains<=22
@@ -115,31 +115,32 @@ actions.vanish=vanish,if=variable.single_target&talent.improved_garrote&dot.garr
 # AoE vanish check to spread improved garrote in multitarget
 actions.vanish+=/vanish,if=!variable.single_target&talent.improved_garrote&dot.garrote.pmultiplier<=1&(raid_event.adds.remains>=10|!raid_event.adds.in<=30)
 
-head=chosen_bloodslayers_spirit_shroud,id=271510,bonus_id=13692/13698/13750/13847/13848,gem_id=240983,redirected_base_stats=271875
-neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13708/13848,gem_id=240892/240892
-shoulders=chosen_bloodslayers_voodoo_guards,id=271508,bonus_id=12854/13694/13697,redirected_base_stats=251223
+head=chosen_bloodslayers_spirit_shroud,id=271510,bonus_id=13692/13698/13750/13847/13848,gem_id=240967,enchant_id=7991,redirected_base_stats=271875
+neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13708/13848,gem_id=240914/240900
+shoulders=chosen_bloodslayers_voodoo_guards,id=271508,bonus_id=12854/13694/13697,enchant_id=7973,redirected_base_stats=251223
 back=silken_voodoo_drape,id=268253,bonus_id=13662/13848
-chest=chosen_bloodslayers_banded_poncho,id=271513,bonus_id=12854/13690/13698,enchant_id=7987,redirected_base_stats=251159
-wrists=silvermoon_agents_deflectors,id=244576,bonus_id=8790/8960/12214/12685/13750/13751/13836/9627,gem_id=240892,crafted_stats=32/49
-hands=chosen_bloodslayers_fanged_grips,id=271511,bonus_id=12854/13691/13697
-waist=sash_of_the_forlorn_vessel,id=268256,bonus_id=13662/13750/13848,gem_id=240892
+chest=chosen_bloodslayers_banded_poncho,id=271513,bonus_id=12854/13690/13698,enchant_id=7987,redirected_base_stats=268235
+wrists=silvermoon_agents_deflectors,id=244576,bonus_id=8790/8960/12214/12384/13750/13751/13836/9627,gem_id=240892,crafted_stats=32/49
+hands=chosen_bloodslayers_fanged_grips,id=271511,bonus_id=12854/13691/13697,redirected_base_stats=159312
+waist=sash_of_the_forlorn_vessel,id=268256,bonus_id=13662/13750/13848,gem_id=240908
 legs=chosen_bloodslayers_reinforced_pants,id=271509,bonus_id=13693/13698/13848,enchant_id=8159,redirected_base_stats=268225
-feet=silvermoon_agents_sneakers,id=244569,bonus_id=8960/13751/13767/13836/9627,crafted_stats=32/36
-finger1=apex_brutes_claw_ring,id=268252,bonus_id=12854/13662/13668,gem_id=240892,enchant_id=7967
-finger2=vile_alchemists_band,id=268249,bonus_id=12854/13662/13668,gem_id=240892,enchant_id=7967
+feet=silvermoon_agents_sneakers,id=244569,bonus_id=8790/8960/12214/12384,ilevel=331,enchant_id=8019
+finger1=apex_brutes_claw_ring,id=268252,bonus_id=13534,ilevel=334,gem_id=240908,enchant_id=7967
+finger2=sickening_signet_of_atroxus,id=252258,bonus_id=13534,ilevel=334,gem_id=240906,enchant_id=7967
 trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=13662/13848
-trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13662/13848
-main_hand=zathatek_breath_of_corruption,id=271093,bonus_id=13662/13848,enchant_id=7983
-off_hand=sharpened_lightwood_slasher,id=275070,bonus_id=12854/13662,enchant_id=7983
+trinket2=zuljins_guillotine_technique,id=270173,ilevel=344
+main_hand=zathatek_breath_of_corruption,id=271093,bonus_id=13662/13848,enchant_id=8689
+off_hand=sharpened_lightwood_slasher,id=275070,ilevel=334,enchant_id=8689
 
 # Gear Summary
 # gear_ilvl=338.63
-# gear_agility=1914
-# gear_stamina=40380
-# gear_crit_rating=1186
-# gear_haste_rating=964
-# gear_mastery_rating=992
-# gear_versatility_rating=107
+# gear_agility=1905
+# gear_stamina=40612
+# gear_crit_rating=1159
+# gear_haste_rating=1240
+# gear_mastery_rating=726
+# gear_versatility_rating=123
+# gear_speed_rating=98
 # gear_armor=1201
 # set_bonus=midnight_season_2_2pc=1
 # set_bonus=midnight_season_2_4pc=1
