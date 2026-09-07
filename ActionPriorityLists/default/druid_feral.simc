@@ -48,6 +48,8 @@ actions+=/regrowth,if=buff.predatory_swiftness.up&variable.regrowth
 actions.aoe_builder=rake,target_if=refreshable,if=(talent.doubleclawed_rake&(!talent.lunar_inspiration|!talent.panthers_guile|active_dot.rake<5))|hero_tree.wildstalker&(active_dot.rake<2+!talent.panthers_guile+talent.lunar_inspiration)
 # there are scenarios where this is -0.1/-0.2% vs being under cc swipe line, but im willing to scrap that complexity
 actions.aoe_builder+=/moonfire_cat,target_if=refreshable
+# panthers guile, spend clearcast on shred
+actions.aoe_builder+=/shred,if=spell_targets=2&talent.panthers_guile&buff.clearcasting.react
 # with dotc, nodcr/nowildslashes, swipe spam in berserk at 2t. Wildstalker begins ignoring cc again if you have the energy to rake at 7t
 actions.aoe_builder+=/swipe_cat,if=hero_tree.druid_of_the_claw&buff.bs_inc.up|buff.clearcasting.react&(hero_tree.druid_of_the_claw|spell_targets<7)
 # sa swipe takes precedence over single-rake at 5t for dotc 7t for wildstalker (0.1% at 7t for wildstalker, 0.2% for dotc at 5t)
@@ -56,9 +58,9 @@ actions.aoe_builder+=/swipe_cat,if=buff.sudden_ambush.up&spell_targets.swipe_cat
 actions.aoe_builder+=/rake,target_if=refreshable,if=hero_tree.wildstalker|spell_targets.swipe_cat<=variable.dotc_rake_threshold
 # on 2t replace weaker rakes with stronger ones. (its a tiny gain for 3t too, @0.2% but keeping track of 3 snapshots is a bit much I think)
 actions.aoe_builder+=/rake,target_if=min:pmultiplier,if=persistent_multiplier>pmultiplier&spell_targets=2
-# with panther's guile, its worth using shred at 0/1 combo points on 2t
-actions.aoe_builder+=/shred,if=combo_points<=1&spell_targets=2&talent.panthers_guile
-actions.aoe_builder+=/swipe_cat,if=combo_points>1|spell_targets>2|!talent.panthers_guile
+# with panther's guile, its worth using shred on 2t
+actions.aoe_builder+=/shred,if=spell_targets=2&talent.panthers_guile
+actions.aoe_builder+=/swipe_cat,if=spell_targets>2|!talent.panthers_guile
 
 # primal wrath in pandemic during berserk, else with sub 6.5s remaining
 actions.aoe_finisher=primal_wrath,target_if=min:remains,if=combo_points>=5&spell_targets.primal_wrath>1&(dot.primal_wrath.remains<6.5&!buff.bs_inc.up|dot.primal_wrath.refreshable)
@@ -81,7 +83,6 @@ actions.builder+=/shred,if=buff.sudden_ambush.up&hero_tree.druid_of_the_claw
 actions.builder+=/rake,if=(buff.tigers_fury.up|remains<cooldown.tigers_fury.remains)&(refreshable&persistent_multiplier>=pmultiplier|remains<2|persistent_multiplier>pmultiplier)
 # freely upgrade li, aggressive moonfire clipping can be a gain in some talent builds, look further into this.
 actions.builder+=/moonfire_cat,if=(buff.tigers_fury.up|remains<cooldown.tigers_fury.remains)&(refreshable&persistent_multiplier>=pmultiplier|remains<2|persistent_multiplier>pmultiplier)
-# !buff.clearcasting.react&persistent_multiplier>=pmultiplier|remains<2
 actions.builder+=/shred
 
 # these variables math out how many uses of each relevant cooldown remain, with a buffer (as a %of a cast) as we dont care if a cd comes up as the fight ends
