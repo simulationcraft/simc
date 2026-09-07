@@ -17,11 +17,11 @@ bear->add_action( "mangle,if=buff.cat_form.up" );
 bear->add_action( "ironfur,use_off_gcd=1,if=buff.gory_fur_ironfur.up" );
 bear->add_action( "ironfur,use_off_gcd=1,if=rage>=40&!talent.killing_blow.enabled&!buff.answered_calling.up&!buff.dream_conduit.up" );
 bear->add_action( "ironfur,use_off_gcd=1,if=rage>=80&!talent.killing_blow.enabled&buff.answered_calling.up" );
-bear->add_action( "ironfur,use_off_gcd=1,if=!buff.ironfur.up&!buff.answered_calling.up&talent.killing_blow.enabled&!buff.ravage.up" );
-bear->add_action( "ironfur,use_off_gcd=1,if=!buff.ironfur.up&rage>=80&buff.answered_calling.up&talent.killing_blow.enabled&!buff.ravage.up" );
+bear->add_action( "ironfur,use_off_gcd=1,if=(!buff.ironfur.up|(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up))&!buff.answered_calling.up&talent.killing_blow.enabled&!buff.ravage.up&!buff.dream_conduit.up" );
+bear->add_action( "ironfur,use_off_gcd=1,if=(!buff.ironfur.up|(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up))&rage>=80&buff.answered_calling.up&talent.killing_blow.enabled&!buff.ravage.up&!buff.dream_conduit.up" );
 bear->add_action( "thrash,target_if=refreshable|(dot.thrash.stack<5&talent.flashing_claws.rank=2|dot.thrash.stack<4&talent.flashing_claws.rank=1|dot.thrash.stack<3&!talent.flashing_claws.enabled)" );
-bear->add_action( "mangle,if=buff.answered_calling.up&(active_enemies=1|buff.berserk.up&active_enemies<=4)&talent.fount_of_strength.enabled" );
-bear->add_action( "thrash,if=talent.lunar_calling.enabled|buff.answered_calling.up" );
+bear->add_action( "mangle,if=buff.answered_calling.up&active_enemies=1&talent.fount_of_strength.enabled" );
+bear->add_action( "thrash,if=talent.lunar_calling.enabled|set_bonus.midnight_season_2_4pc&(active_enemies>1|buff.answered_calling.up)" );
 bear->add_action( "maul,if=buff.dream_conduit.up&!talent.fount_of_strength.enabled&!buff.answered_calling.up" );
 bear->add_action( "maul,if=rage>=55&talent.killing_blow.enabled&!buff.answered_calling.up" );
 bear->add_action( "maul,if=rage>=80&talent.killing_blow.enabled&buff.answered_calling.up" );
@@ -44,8 +44,8 @@ bear->add_action( "maul,if=!buff.ravage.up&rage>=90&talent.fount_of_strength.ena
 bear->add_action( "mangle,if=(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up)|talent.red_moon.enabled&(cooldown.red_moon.remains>3&(((rage<88)&!talent.fount_of_strength.enabled)|((rage<83)&!talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled)|((rage<108)&talent.fount_of_strength.enabled)|((rage<103)&talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled)))" );
 bear->add_action( "mangle,if=!talent.red_moon.enabled&(((rage<88)&!talent.fount_of_strength.enabled)|((rage<83)&!talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled)|((rage<108)&talent.fount_of_strength.enabled)|((rage<103)&talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled))" );
 bear->add_action( "thrash" );
+bear->add_action( "moonfire,if=talent.lunation.enabled&buff.bear_form.up&!talent.red_moon.enabled&(buff.galactic_guardian.up|active_enemies<3|refreshable)" );
 bear->add_action( "swipe_bear,if=!talent.lunation.enabled|(talent.lunation.enabled&talent.red_moon.enabled)|talent.lunation.enabled&active_enemies>3" );
-bear->add_action( "moonfire,if=(talent.lunation.enabled)&buff.bear_form.up&!talent.red_moon.enabled&active_enemies<3" );
 
 cooldowns->add_action( "use_items" );
 cooldowns->add_action( "potion,if=buff.lunar_beam.up" );
