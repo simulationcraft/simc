@@ -1,11 +1,11 @@
 action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
 action_priority_list_t* def = p->get_action_priority_list( "default" );
 action_priority_list_t* aoe_builder = p->get_action_priority_list( "aoe_builder" );
-action_priority_list_t* builder = p->get_action_priority_list( "builder" );
 action_priority_list_t* aoe_finisher = p->get_action_priority_list( "aoe_finisher" );
-action_priority_list_t* finisher = p->get_action_priority_list( "finisher" );
+action_priority_list_t* builder = p->get_action_priority_list( "builder" );
 action_priority_list_t* cd_variable = p->get_action_priority_list( "cd_variable" );
 action_priority_list_t* cooldown = p->get_action_priority_list( "cooldown" );
+action_priority_list_t* finisher = p->get_action_priority_list( "finisher" );
 
 precombat->add_action( "variable,name=regrowth,op=reset","optional variable that sends regrowth casts. Turned off by default" );
 precombat->add_action( "variable,name=dotc_rake_threshold,op=set,value=99","see the 2nd rake line in aoe_builders. This determines when that line can return true" );
@@ -34,19 +34,13 @@ def->add_action( "regrowth,if=buff.predatory_swiftness.up&variable.regrowth" );
 
 aoe_builder->add_action( "rake,target_if=refreshable,if=(talent.doubleclawed_rake&(!talent.lunar_inspiration|!talent.panthers_guile|active_dot.rake<5))|hero_tree.wildstalker&(active_dot.rake<2+!talent.panthers_guile+talent.lunar_inspiration)","ensure at last 2(pg)/3(nopg) rake at all times if wildstalker, rake highest prio with dcr. on 4t raking all 4 first (no pg) is 0.3% gain. DCR PG LI rakes up to 6 then moonfire" );
 aoe_builder->add_action( "moonfire_cat,target_if=refreshable","there are scenarios where this is -0.1/-0.2% vs being under cc swipe line, but im willing to scrap that complexity" );
+aoe_builder->add_action( "shred,if=spell_targets=2&talent.panthers_guile&buff.clearcasting.react","panthers guile, spend clearcast on shred" );
 aoe_builder->add_action( "swipe_cat,if=hero_tree.druid_of_the_claw&buff.bs_inc.up|buff.clearcasting.react&(hero_tree.druid_of_the_claw|spell_targets<7)","with dotc, nodcr/nowildslashes, swipe spam in berserk at 2t. Wildstalker begins ignoring cc again if you have the energy to rake at 7t" );
 aoe_builder->add_action( "swipe_cat,if=buff.sudden_ambush.up&spell_targets.swipe_cat>=5+(2*hero_tree.wildstalker)","sa swipe takes precedence over single-rake at 5t for dotc 7t for wildstalker (0.1% at 7t for wildstalker, 0.2% for dotc at 5t)" );
 aoe_builder->add_action( "rake,target_if=refreshable,if=hero_tree.wildstalker|spell_targets.swipe_cat<=variable.dotc_rake_threshold","no dcr, spread rakes up to 3t(ws+noiw)->5t(nows+noiw/wild slashes+iw)->8t(no ws+iw)" );
 aoe_builder->add_action( "rake,target_if=min:pmultiplier,if=persistent_multiplier>pmultiplier&spell_targets=2","on 2t replace weaker rakes with stronger ones. (its a tiny gain for 3t too, @0.2% but keeping track of 3 snapshots is a bit much I think)" );
-aoe_builder->add_action( "shred,if=combo_points<=1&spell_targets=2&talent.panthers_guile","with panther's guile, its worth using shred at 0/1 combo points on 2t" );
-aoe_builder->add_action( "swipe_cat,if=combo_points>1|spell_targets>2|!talent.panthers_guile" );
-
-builder->add_action( "prowl,if=!buff.shadowmeld.up&(action.rake.pmultiplier<1.6|dot.rake.refreshable)" );
-builder->add_action( "shadowmeld,if=!buff.prowl.up&(action.rake.pmultiplier<1.6|dot.rake.refreshable)" );
-builder->add_action( "shred,if=buff.sudden_ambush.up&hero_tree.druid_of_the_claw","0.2% for dotc, like, do we even care? Like, the only reason I even put this in is to feel something" );
-builder->add_action( "rake,if=(buff.tigers_fury.up|remains<cooldown.tigers_fury.remains)&(refreshable&persistent_multiplier>=pmultiplier|remains<2|persistent_multiplier>pmultiplier)","freely upgrade rakes" );
-builder->add_action( "moonfire_cat,if=(buff.tigers_fury.up|remains<cooldown.tigers_fury.remains)&(refreshable&persistent_multiplier>=pmultiplier|remains<2|persistent_multiplier>pmultiplier)","freely upgrade li, aggressive moonfire clipping can be a gain in some talent builds, look further into this." );
-builder->add_action( "shred","!buff.clearcasting.react&persistent_multiplier>=pmultiplier|remains<2" );
+aoe_builder->add_action( "shred,if=spell_targets=2&talent.panthers_guile","with panther's guile, its worth using shred on 2t" );
+aoe_builder->add_action( "swipe_cat,if=spell_targets>2|!talent.panthers_guile" );
 
 aoe_finisher->add_action( "primal_wrath,target_if=min:remains,if=combo_points>=5&spell_targets.primal_wrath>1&(dot.primal_wrath.remains<6.5&!buff.bs_inc.up|dot.primal_wrath.refreshable)","primal wrath in pandemic during berserk, else with sub 6.5s remaining" );
 aoe_finisher->add_action( "ferocious_bite,if=buff.ravage.up&combo_points>=5&!talent.primal_wrath&spell_targets>=2+(3*!talent.rampant_ferocity)","without pw, we prio ravage>rip at 2t with rampant ferocity, and 5t without TODO: check vines" );
@@ -55,9 +49,12 @@ aoe_finisher->add_action( "ferocious_bite,target_if=min:dot.rip.remains,if=combo
 aoe_finisher->add_action( "primal_wrath,if=combo_points>=5","fallback primal wrath" );
 aoe_finisher->add_action( "ferocious_bite,target_if=min:dot.rip.remains,if=combo_points>=5","if we dont have primal wrath then bite here" );
 
-finisher->add_action( "rip,if=combo_points>=5&refreshable&(buff.tigers_fury.up|remains<cooldown.tigers_fury.remains)","maintain rip in single-target. 4cp rips is a ~0.1-0.2% gain, omitted for simplicity" );
-finisher->add_action( "pool_resource,for_next=1" );
-finisher->add_action( "ferocious_bite,max_energy=1,if=combo_points>=5" );
+builder->add_action( "prowl,if=!buff.shadowmeld.up&(action.rake.pmultiplier<1.6|dot.rake.refreshable)" );
+builder->add_action( "shadowmeld,if=!buff.prowl.up&(action.rake.pmultiplier<1.6|dot.rake.refreshable)" );
+builder->add_action( "shred,if=buff.sudden_ambush.up&hero_tree.druid_of_the_claw","0.2% for dotc, like, do we even care? Like, the only reason I even put this in is to feel something" );
+builder->add_action( "rake,if=(buff.tigers_fury.up|remains<cooldown.tigers_fury.remains)&(refreshable&persistent_multiplier>=pmultiplier|remains<2|persistent_multiplier>pmultiplier)","freely upgrade rakes" );
+builder->add_action( "moonfire_cat,if=(buff.tigers_fury.up|remains<cooldown.tigers_fury.remains)&(refreshable&persistent_multiplier>=pmultiplier|remains<2|persistent_multiplier>pmultiplier)","freely upgrade li, aggressive moonfire clipping can be a gain in some talent builds, look further into this." );
+builder->add_action( "shred" );
 
 cd_variable->add_action( "variable,name=convokeCountRemaining,value=floor(cooldown.convoke_the_spirits.charges_fractional+fight_remains%cooldown.convoke_the_spirits.duration-0.05)","these variables math out how many uses of each relevant cooldown remain, with a buffer (as a %of a cast) as we dont care if a cd comes up as the fight ends" );
 cd_variable->add_action( "variable,name=zerkCountRemaining,value=floor(cooldown.bs_inc.charges_fractional+fight_remains%cooldown.bs_inc.duration-0.05)" );
@@ -84,3 +81,7 @@ cooldown->add_action( "berserk,if=buff.tigers_fury.up&!variable.holdBerserk" );
 cooldown->add_action( "feral_frenzy,if=!talent.frantic_frenzy&combo_points<=2+(2*buff.bs_inc.up)","0-2 combo points outside zerk, 0-4 combo points inside zerk" );
 cooldown->add_action( "frantic_frenzy,if=(!fight_style.dungeonroute&!fight_style.dungeonslice|raid_event.adds.remains>5)&(buff.tigers_fury.up&spell_targets>=2|combo_points<=2+(2*buff.bs_inc.up))","we can find some gains in dslice by holding frantic frenzy for larger target counts occasionally, but its not by a lot, whereas holding tends to devolve pretty quickly in droute. I suspect this is due to how reliant on single target droute ends up being. Further investigations should be looked into." );
 cooldown->add_action( "convoke_the_spirits,if=(buff.bs_inc.up|talent.ashamanes_guidance&(cooldown.bs_inc.remains>45|variable.holdBerserk))&buff.tigers_fury.up&(prev_gcd.1.rip|prev_gcd.1.ferocious_bite|prev_gcd.1.primal_wrath|buff.tigers_fury.remains<=1+action.convoke_the_spirits.execute_time)|fight_remains<5","line up convoke with berserk" );
+
+finisher->add_action( "rip,if=combo_points>=5&refreshable&(buff.tigers_fury.up|remains<cooldown.tigers_fury.remains)","maintain rip in single-target. 4cp rips is a ~0.1-0.2% gain, omitted for simplicity" );
+finisher->add_action( "pool_resource,for_next=1" );
+finisher->add_action( "ferocious_bite,max_energy=1,if=combo_points>=5" );
