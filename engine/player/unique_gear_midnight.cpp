@@ -4720,6 +4720,125 @@ void twisted_horrors_tendril( special_effect_t& effect )
 
   new twisted_horrors_tendrils_new_target_cb_t( *eff2, buff );
 }
+
+// Idol of the Howling Nexus
+// 1295643 Driver
+// 1295649 Bolstering Gale buff
+// 1306822 Imminent Gale no-avoidance timer
+// 1306823 Recovering Winds 60s ICD
+void idol_of_the_howling_nexus( special_effect_t& effect )
+{
+  // Bolstering Gale: 12s, primary stat (Str/Agi) + run speed
+  auto bolstering_gale = create_buff<stat_buff_t>( effect.player, effect.trigger() );
+  bolstering_gale->set_stat_from_effect(
+                      effect.player->convert_hybrid_stat( STAT_STR_AGI ) == STAT_STRENGTH ? 2 : 1,
+                      effect.driver()->effectN( 1 ).average( effect ) )
+    ->add_stat_from_effect( 3, effect.driver()->effectN( 2 ).average( effect ) );
+
+  // Recovering Winds: 60s ICD gating the Imminent Gale force proc
+  auto recovering_winds = make_buff<buff_t>( effect.player, "recovering_winds", effect.player->find_spell( 1306823 ) );
+
+  // Imminent Gale: 15s no-avoidance timer. Armed at combat start and re-armed
+  // when Recovering Winds expires. Each dodge/parry/block refreshes it. If it
+  // expires naturally (no avoid for 15s), force-proc Bolstering Gale and start
+  // the 60s Recovering Winds ICD.
+  struct imminent_gale_t : public buff_t
+  {
+    buff_t* bolstering;
+    buff_t* recovering;
+
+    imminent_gale_t( player_t* p, const spell_data_t* s, buff_t* b, buff_t* r )
+      : buff_t( p, "imminent_gale", s ), bolstering( b ), recovering( r )
+    {}
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      buff_t::expire_override( expiration_stacks, remaining_duration );
+
+      // Only force-proc on natural expiry, not on combat-end/buff reset
+      if ( remaining_duration == timespan_t::zero() )
+      {
+        sim->print_debug( "{} Imminent Gale expired naturally, forcing Bolstering Gale.", *player );
+        bolstering->trigger();
+        recovering->trigger();
+      }
+    }
+  };
+
+  auto imminent_gale = make_buff<imminent_gale_t>( effect.player, effect.player->find_spell( 1306822 ),
+                                                   bolstering_gale, recovering_winds );
+
+  // Re-arm the no-avoidance timer once the 60s ICD expires (guard against reset expiry)
+  recovering_winds->set_expire_callback( [ imminent_gale ]( buff_t*, int, timespan_t remaining_duration ) {
+    if ( remaining_duration == timespan_t::zero() )
+      imminent_gale->trigger();
+  } );
+
+  effect.custom_buff = bolstering_gale;
+
+  struct idol_of_the_howling_nexus_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* bolstering;
+    buff_t* imminent_gale;
+    bool dungeon;
+
+    idol_of_the_howling_nexus_cb_t( const special_effect_t& e, buff_t* b, buff_t* ig )
+      : dbc_proc_callback_t( e.player, e ),
+        bolstering( b ),
+        imminent_gale( ig ),
+        dungeon( e.player->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE ||
+                 e.player->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+    {}
+
+    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
+    {
+      // Dungeon sims do not reliably melee the tank, so roll the tank's
+      // block/dodge/parry chance directly on its outgoing melee abilities to
+      // model avoidance-based procs at the tank spec's expected rate.
+      if ( dungeon )
+      {
+        if ( !( rng().roll( listener->cache.block() ) || rng().roll( listener->cache.dodge() ) ||
+                rng().roll( listener->cache.parry() ) ) )
+        {
+          return;
+        }
+      }
+      // Raid sims resolve the tank's avoidance on incoming swings; only proc on
+      // dodge/parry/block results. Blocks land as hits with a block result.
+      else if ( s->result != result_e::RESULT_DODGE && s->result != result_e::RESULT_PARRY &&
+                s->block_result != block_result_e::BLOCK_RESULT_BLOCKED &&
+                s->block_result != block_result_e::BLOCK_RESULT_CRIT_BLOCKED )
+      {
+        return;
+      }
+
+      // Refreshing the no-avoidance timer only while it is active (i.e. not during the 60s ICD)
+      if ( imminent_gale->check() )
+        imminent_gale->trigger();
+
+      dbc_proc_callback_t::trigger( data, t, s, type );
+    }
+  };
+
+  // Arm the no-avoidance timer at combat start
+  effect.player->register_precombat_begin( imminent_gale );
+
+  // Dungeon sims don't melee the tank, so proc on the tank's outgoing melee
+  // abilities and roll its block/dodge/parry chance directly in the callback.
+  if ( effect.player->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE ||
+       effect.player->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+  {
+    effect.proc_flags_  = PF_MELEE_ABILITY;
+    effect.proc_flags2_ = PF2_LANDED;
+  }
+  else
+  {
+    effect.proc_flags_  = PF_ALL_DAMAGE_TAKEN;
+    effect.proc_flags2_ = PF2_ALL_HIT | PF2_DODGE | PF2_PARRY | PF2_MISS;
+  }
+
+  new idol_of_the_howling_nexus_cb_t( effect, bolstering_gale, imminent_gale );
+}
 }  // namespace trinkets
 
 namespace weapons
@@ -6206,6 +6325,7 @@ void register_special_effects()
   register_special_effect( 1296883, DISABLED_EFFECT );  // Ophidian Bone Whistle equip driver
   register_special_effect( 1295617, trinkets::sszoraks_ferocity );
   register_special_effect( 1307356, DISABLED_EFFECT );  // Sszorak's Ferocity killing blow driver
+  register_special_effect( 1295643, trinkets::idol_of_the_howling_nexus );
   set_min_version( wowv_t( 12, 1, 5 ) );
   register_special_effect( 1310404, trinkets::twisted_horrors_tendril );
   register_special_effect( 1310446, DISABLED_EFFECT );  // twisted horror's tendril new target driver
