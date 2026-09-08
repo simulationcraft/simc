@@ -7621,7 +7621,7 @@ struct chaos_strike_base_t
       dh()->buff.inner_demon->expire();
     }
 
-    if ( dh()->talent.aldrachi_reaver.warblades_hunger && dh()->buff.warblades_hunger->up() )
+    if ( dh()->talent.aldrachi_reaver.warblades_hunger->ok() && dh()->buff.warblades_hunger->up() )
     {
       dh()->active.warblades_hunger->execute_on_target( target );
       dh()->buff.warblades_hunger->expire();
