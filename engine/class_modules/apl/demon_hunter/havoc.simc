@@ -43,7 +43,7 @@ actions+=/felblade
 actions+=/immolation_aura
 actions+=/arcane_torrent
 
-actions.items=potion,if=cooldown.metamorphosis.up&(cooldown.eye_beam.up|!talent.chaotic_transformation)|fight_remains<=30
+actions.items=potion,use_off_gcd=1,if=cooldown.metamorphosis.up&(cooldown.eye_beam.up|!talent.chaotic_transformation)|fight_remains<=30
 actions.items+=/use_item,slot=trinket1,use_off_gcd=1,if=variable.trinket1_steroids&(!variable.trinket2_special|trinket.2.cooldown.remains>20)|fight_remains<15
 actions.items+=/use_item,slot=trinket1,use_off_gcd=1,if=variable.trinket1_crit&(buff.initiative.up|!talent.initiative)&(!variable.trinket2_special|trinket.2.cooldown.remains>20)|fight_remains<15
 actions.items+=/use_item,name=font_of_venomous_rage,if=buff.initiative.up&buff.initiative.remains>2&(!buff.metamorphosis.up|fight_remains<buff.metamorphosis.remains)&!debuff.essence_break.up|fight_remains<19
