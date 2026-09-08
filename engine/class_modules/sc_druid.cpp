@@ -3867,13 +3867,14 @@ private:
   cooldown_t* pg_icd = nullptr;
   gain_t* pg_gain = nullptr;
   double pg_pct = 0.0;
+  double overflowing_power_max;
 
 protected:
   using base_t = trigger_panthers_guile_t<BASE>;
 
 public:
   trigger_panthers_guile_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f )
+    : BASE( n, p, s, f ), overflowing_power_max( as<double>( p->buff.overflowing_power->max_stack() ) )
   {
     if ( p->talent.panthers_guile.ok() )
     {
@@ -3892,8 +3893,13 @@ public:
 
     if ( rt == RESOURCE_COMBO_POINT && ret && pg_icd && pg_icd->up() && BASE::rng().roll( pg_pct ) )
     {
-      auto diff =
-        BASE::p()->resources.max[ RESOURCE_COMBO_POINT ] - BASE::p()->resources.current[ RESOURCE_COMBO_POINT ];
+      auto _max = BASE::p()->resources.max[ RESOURCE_COMBO_POINT ];
+
+      // panther's guile treats berserk as 8 max CP
+      if ( BASE::p()->buff.b_inc_cat->check() )
+        _max += overflowing_power_max;
+
+      auto diff = _max - BASE::p()->resources.current[ RESOURCE_COMBO_POINT ];
 
       if ( diff > 0 )
       {
