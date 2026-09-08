@@ -4889,6 +4889,8 @@ void paladin_t::create_options()
   add_option( opt_bool( "paladin_fake_sov", options.fake_sov ) );
   add_option( opt_bool( "fake_solidarity", options.fake_solidarity ) );
   add_option( opt_float( "blessed_hammer_strikes", options.blessed_hammer_strikes, 1, 3 ) );
+  add_option( opt_float( "reflection_of_radiance_proc_chance_sacred_weapon", options.reflection_of_radiance_proc_chance_sacred_weapon, 0, 1 ) );
+  add_option( opt_float( "reflection_of_radiance_proc_chance_holy_bulwark", options.reflection_of_radiance_proc_chance_holy_bulwark, 0, 1 ) );
   add_option( opt_float( "ror_bulwark_additional_proc_chance", options.ror_bulwark_additional_proc_chance, 0, 1 ) );
   add_option( opt_string( "starting_armament", options.starting_armament ) );
 
