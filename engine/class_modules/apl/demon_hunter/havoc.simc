@@ -27,7 +27,7 @@ actions+=/annihilation,if=buff.rending_strike.up&buff.glaive_flurry.down&debuff.
 actions+=/essence_break,if=action.death_sweep.demonsurge_available|action.annihilation.demonsurge_available
 actions+=/death_sweep,if=debuff.essence_break.up|action.death_sweep.demonsurge_available
 actions+=/annihilation,if=debuff.essence_break.up|action.annihilation.demonsurge_available
-actions+=/throw_glaive,if=active_enemies>1&talent.burning_wound&active_dot.burning_wound<(spell_targets>?3)&!variable.tab_target_burning_wound
+actions+=/throw_glaive,if=active_enemies>1&talent.burning_wound&!talent.screaming_brutality&active_dot.burning_wound<(spell_targets>?3)&!variable.tab_target_burning_wound
 actions+=/immolation_aura,if=talent.a_fire_inside&talent.burning_wound&(charges=2|full_recharge_time<gcd.max*2)
 actions+=/eye_beam
 actions+=/immolation_aura,,if=action.immolation_aura.demonsurge_available&buff.demonsurge.remains<gcd.max
