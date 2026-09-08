@@ -7540,12 +7540,6 @@ struct chaos_strike_base_t
         dh()->buff.serrated_glaive->trigger();
       }
 
-      if ( dh()->talent.aldrachi_reaver.warblades_hunger && dh()->buff.warblades_hunger->up() )
-      {
-        dh()->active.warblades_hunger->execute_on_target( target );
-        dh()->buff.warblades_hunger->expire();
-      }
-
       if ( result_is_hit( s->result ) && td( s->target )->debuffs.essence_break->up() )
       {
         cooldown_t* tcd = dh()->cooldown.essence_break_proc_icd->get_cooldown( s->target );
@@ -7626,6 +7620,12 @@ struct chaos_strike_base_t
       make_event<delayed_execute_event_t>( *sim, dh(), dh()->active.inner_demon, target, 1.25_s );
       dh()->buff.inner_demon->expire();
     }
+
+    if ( dh()->talent.aldrachi_reaver.warblades_hunger->ok() && dh()->buff.warblades_hunger->up() )
+    {
+      dh()->active.warblades_hunger->execute_on_target( target );
+      dh()->buff.warblades_hunger->expire();
+    } 
   }
 
   bool has_amount_result() const override
