@@ -6,7 +6,7 @@ race=blood_elf
 role=attack
 position=back
 talents=CEkAAAAAAAAAAAAAAAAAAAAAAYAzMzmxMzMmZmMmZAAAAAAAzyDMmtZYmxyMzYZm5BmZWmZWGjBWmFzYY200wMjhNAAAAAAAAmZwAAAAwA
-omnium_talents=136822:1/136816:1/136817:1/136815:1/136814:1
+omnium_talents=136822:1/136819:1/136817:1/136815:1/136814:1
 
 # Default consumables
 potion=potion_of_recklessness_2
@@ -62,34 +62,34 @@ actions+=/chaos_strike
 actions+=/felblade
 actions+=/immolation_aura
 
-head=abyssal_doomhounds_relentless_stare,id=271537,bonus_id=4786/13692/13698/13847/13848,redirected_base_stats=271875
+head=abyssal_doomhounds_relentless_stare,id=271537,bonus_id=13692/13698/13750/13847/13848,gem_id=240983,enchant_id=8017,redirected_base_stats=271875
 neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13708/13848,gem_id=240908/240908
-shoulders=frothing_venom_spaulders,id=268246,bonus_id=12854/13662
+shoulders=abyssal_doomhounds_jaws,id=271535,bonus_id=12854/13694/13697,enchant_id=8001,redirected_base_stats=268246
 back=silken_voodoo_drape,id=268253,bonus_id=13662/13848
-chest=abyssal_doomhounds_coreguard,id=271540,bonus_id=4786/13690/13698/13848,enchant_id=7987,redirected_base_stats=239048
+chest=vest_of_reverent_adoration,id=239048,bonus_id=12854/13662,enchant_id=7987
 wrists=silvermoon_agents_deflectors,id=244576,bonus_id=8960/12214/12384/13750/13751/13836/9627,gem_id=240908,crafted_stats=32/49
-hands=abyssal_doomhounds_studded_gauntlets,id=271538,bonus_id=4786/13691/13697/13848,redirected_base_stats=268234
+hands=abyssal_doomhounds_studded_gauntlets,id=271538,bonus_id=13691/13697,ilevel=334
 waist=sash_of_the_forlorn_vessel,id=268256,bonus_id=13662/13750/13848,gem_id=240908
-legs=abyssal_doomhounds_legwraps,id=271536,bonus_id=4786/13693/13698/13848,enchant_id=8159,redirected_base_stats=268225
-feet=silvermoon_agents_sneakers,id=244569,bonus_id=8960/12214/12384/13751/13836/9627,enchant_id=7963,crafted_stats=32/49
-finger1=vile_alchemists_band,id=268249,bonus_id=12854/13662/13668,gem_id=240908,enchant_id=7967
-finger2=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240908,enchant_id=7967
-trinket1=gebbos_bottomless_bag,id=270164,bonus_id=12854/13662
+legs=abyssal_doomhounds_legwraps,id=271536,bonus_id=13693/13698/13848,enchant_id=8159,redirected_base_stats=268225
+feet=sandshined_snakeskin_sandals,id=159327,ilevel=334,enchant_id=7963
+finger1=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240908,enchant_id=7967
+finger2=signet_of_snarling_servitude,id=251136,bonus_id=12854/13662/13668,gem_id=240908,enchant_id=7967
+trinket1=font_of_venomous_rage,id=270168,ilevel=344
 trinket2=zuljins_guillotine_technique,id=270173,bonus_id=13662/13848
-main_hand=amanmuso_warlords_vengeance,id=268209,bonus_id=13662/13848,enchant_id=7981
-off_hand=venomous_boneglaive,id=268201,bonus_id=12854/13662,enchant_id=7981
+main_hand=amanmuso_warlords_vengeance,id=268209,bonus_id=13662/13848,enchant_id=8689
+off_hand=spellbreakers_warglaive,id=237840,bonus_id=8791/8960/12214/13751/13771/13836/9627,enchant_id=8689,crafted_stats=49/36
 
 # Gear Summary
-# gear_ilvl=339.25
-# gear_agility=2093
-# gear_stamina=41443
-# gear_intellect=455
-# gear_crit_rating=968
+# gear_ilvl=338.63
+# gear_agility=1915
+# gear_stamina=40645
+# gear_intellect=442
+# gear_crit_rating=1226
 # gear_haste_rating=529
-# gear_mastery_rating=1512
+# gear_mastery_rating=1390
 # gear_versatility_rating=107
-# gear_avoidance_rating=19
-# gear_armor=1223
+# gear_avoidance_rating=167
+# gear_armor=1203
 # set_bonus=midnight_season_2_2pc=1
 # set_bonus=midnight_season_2_4pc=1
 # set_bonus=bite_of_zuljan_2pc=1
