@@ -7516,12 +7516,6 @@ struct chaos_strike_base_t
           dh()->buff.chaos_theory->expire();
         }
       }
-
-      if ( dh()->talent.aldrachi_reaver.warblades_hunger && dh()->buff.warblades_hunger->up() )
-      {
-        dh()->active.warblades_hunger->execute_on_target( target );
-        dh()->buff.warblades_hunger->expire();
-      }
     }
 
     void impact( action_state_t* s ) override
@@ -7626,6 +7620,12 @@ struct chaos_strike_base_t
       make_event<delayed_execute_event_t>( *sim, dh(), dh()->active.inner_demon, target, 1.25_s );
       dh()->buff.inner_demon->expire();
     }
+
+    if ( dh()->talent.aldrachi_reaver.warblades_hunger && dh()->buff.warblades_hunger->up() )
+    {
+      dh()->active.warblades_hunger->execute_on_target( target );
+      dh()->buff.warblades_hunger->expire();
+    } 
   }
 
   bool has_amount_result() const override
