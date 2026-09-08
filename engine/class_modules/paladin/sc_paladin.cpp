@@ -35,9 +35,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     next_armament( SACRED_WEAPON ),
     random_weapon_target( nullptr ),
     random_bulwark_target( nullptr ),
-    divine_inspiration_next( -1 ),
-    reflection_of_radiance_proc_chance_sacred_weapon( .1 ),
-    reflection_of_radiance_proc_chance_holy_bulwark(.05)
+    divine_inspiration_next( -1 )
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
@@ -1104,7 +1102,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
       }
     }
 
-    p()->trigger_grand_crusader();
+    p()->trigger_grand_crusader( GC_CS );
     p()->buffs.lightsmith.blessed_assurance->expire();
   }
 
@@ -2388,13 +2386,12 @@ struct sacred_weapon_proc_damage_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    double chance = p()->reflection_of_radiance_proc_chance_sacred_weapon;
+    double chance = p()->options.reflection_of_radiance_proc_chance_sacred_weapon;
     if ( p()->options.fake_solidarity )
       chance = 1.0 - ( std::pow( 1.0 - chance, p()->buffs.lightsmith.fake_solidarity->stack() + 1 ) );
     if ( p()->talents.lightsmith.reflection_of_radiance->ok() && p()->rng().roll( chance ) )
     {
-      p()->trigger_grand_crusader( GC_ROR );
-      p()->procs.grand_crusader_ror_sw->occur();
+      p()->trigger_grand_crusader( GC_ROR_SW );
     }
   }
 
@@ -3518,13 +3515,15 @@ void paladin_t::init_procs()
   procs.empyrean_power    = get_proc( "Empyrean Power" );
 
   procs.as_grand_crusader         = get_proc( "Avenger's Shield: Grand Crusader" );
-  procs.as_grand_crusader_wasted  = get_proc( "Avenger's Shield: Grand Crusader wasted" );
+  procs.as_grand_crusader_wasted = get_proc( "Avenger's Shield: Grand Crusader wasted" );
+  procs.as_grand_crusader_ror_sw = get_proc( "Grand Crusader: Reflection of Radiance Sacred Weapon" );
+  procs.as_grand_crusader_ror_hb = get_proc( "Grand Crusader: Reflection of Radiance Holy Bulwark" );
+  procs.as_grand_crusader_avoid   = get_proc( "Grand Crusader: Parry/Dodge/Miss" );
+  procs.as_grand_crusader_cs      = get_proc( "Grand Crusader: CS/BH/HotR" );
+
   procs.divine_inspiration = get_proc( "Divine Inspiration" );
 
   procs.templar_lights_judicator = get_proc( "Templar Light's Judicator LD additional stacks" );
-
-  procs.grand_crusader_ror_sw = get_proc( "Grand Crusader: Reflection of Radiance Sacred Weapon" );
-  procs.grand_crusader_ror_hb = get_proc( "Grand Crusader: Reflection of Radiance Holy Bulwark" );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -4876,7 +4875,7 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
   // Trigger Grand Crusader on an avoidance event (TODO: test if it triggers on misses)
   if ( s->result == RESULT_DODGE || s->result == RESULT_PARRY || s->result == RESULT_MISS )
   {
-    trigger_grand_crusader();
+    trigger_grand_crusader( GC_AVOID );
   }
 
   player_t::assess_damage( school, dtype, s );
