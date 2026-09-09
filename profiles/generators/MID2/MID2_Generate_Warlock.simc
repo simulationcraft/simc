@@ -61,7 +61,7 @@ off_hand=,id=245769,bonus_id=13836/13751/9627/13771/8960,crafted_stats=32/36,cra
 save=MID2_Warlock_Affliction_Hellcaller.simc
 
 
-warlock=MID2_Warlock_Demonology_Soulharvester
+warlock=MID2_Warlock_Demonology_Soul_Harvester
 level=90
 race=Orc
 role=spell
@@ -89,7 +89,7 @@ trinket2=stormbound_emblem_of_dazar,id=273649,bonus_id=12854/13662
 main_hand=janthrazet_the_soul_fang,id=271092,enchant_id=8689,bonus_id=40/13335/13848,content_tuning=883
 off_hand=alnhara_lantern,id=245769,bonus_id=8960/12214/13751/13771/13836/9627/8795,crafted_stats=49/36,crafting_quality=5
 
-save=MID2_Warlock_Demonology_Soulharvester.simc
+save=MID2_Warlock_Demonology_Soul_Harvester.simc
 
 warlock=MID2_Warlock_Demonology_Diabolist
 level=90
