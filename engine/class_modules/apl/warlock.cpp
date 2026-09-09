@@ -302,27 +302,6 @@ void destruction( player_t* p )
   precombat->add_action( "immolate,if=active_enemies>=2&talent.roaring_blaze" );
   precombat->add_action( "incinerate" );
 
-
-  default_->add_action( "call_action_list,name=variables" );
-  default_->add_action( "call_action_list,name=ogcd" );
-  default_->add_action( "call_action_list,name=items" );
-  default_->add_action( "call_action_list,name=aoe_hc,if=active_enemies>=2&talent.wither" );
-  default_->add_action( "call_action_list,name=aoe_dia,if=active_enemies>=2&talent.diabolic_ritual" );
-  default_->add_action( "soul_fire,if=soul_shard<=4" );
-  default_->add_action( "chaos_bolt,if=talent.diabolic_ritual&(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))&target.health.pct>20" );
-  default_->add_action( "conflagrate,if=soul_shard<=4.2&buff.backdraft.stack<1" );
-  default_->add_action( "summon_infernal" );
-  default_->add_action( "malevolence" );
-  default_->add_action( "incinerate,if=buff.chaotic_inferno_buff.up&soul_shard<=4.6" );
-  default_->add_action( "shadowburn,if=((!demonic_art&(variable.ritual_length>2|talent.wither))|target.health.pct<=20)&(buff.fiendish_cruelty.up|talent.conflagration_of_chaos)&(!talent.wither|soul_shard>=4|buff.malevolence.up|pet.infernal.active|fight_remains<=15)" );
-  default_->add_action( "wither,if=(((dot.wither.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))<dot.wither.duration*0.3)|refreshable|(dot.wither.remains-action.chaos_bolt.execute_time)<5&talent.internal_combustion&action.chaos_bolt.usable)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.wither.remains-5*talent.internal_combustion))&(!talent.cataclysm|(cooldown.cataclysm.remains+action.cataclysm.cast_time)>dot.wither.remains)&target.time_to_die>8" );
-  default_->add_action( "immolate,if=(((dot.immolate.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))<dot.immolate.duration*0.3)|refreshable|(dot.immolate.remains-action.chaos_bolt.execute_time)<5&talent.internal_combustion&action.chaos_bolt.usable)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.immolate.remains-5*talent.internal_combustion))&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&target.time_to_die>8" );
-  default_->add_action( "ruination" );
-  default_->add_action( "cataclysm,if=talent.lake_of_fire" );
-  default_->add_action( "chaos_bolt,if=(talent.wither&(soul_shard>=4|buff.malevolence.up|pet.infernal.active|fight_remains<=15))|(talent.diabolic_ritual&variable.ritual_length>4)" );
-  default_->add_action( "infernal_bolt,if=soul_shard<=3" );
-  default_->add_action( "incinerate" );
-
   default_->add_action( "call_action_list,name=variables" );
   default_->add_action( "call_action_list,name=ogcd" );
   default_->add_action( "call_action_list,name=items" );
