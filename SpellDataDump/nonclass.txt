@@ -260397,8 +260397,8 @@ Effects          :
 #1 (id=1333048)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
 #2 (id=1333049)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Type (3 -> 6), Sub Type (0 -> 4), Trigger Spell (1295775 -> 0)
+                   Base Value: 0 | Scaled Value: 0 | Target: Targeted Ally (21)
+Hotfixed         : Target 1 (1 -> 21)
 Description      : $@spelldesc1295775
 Tooltip          : Protected by a Preternatural Antivenom, which will heal you for 50% of any damage you take until $w1 health has been restored.
 
