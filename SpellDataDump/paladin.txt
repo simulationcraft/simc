@@ -21250,7 +21250,7 @@ Name             : Glory of the Vanguard (id=1267228) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
-Range            : 30 yards
+Range            : 100 yards
 Duration         : 0.75 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
@@ -21297,7 +21297,7 @@ Name             : Glory of the Vanguard (id=1269175) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
-Range            : 30 yards
+Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
