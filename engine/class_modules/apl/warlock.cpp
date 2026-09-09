@@ -355,7 +355,7 @@ void destruction( player_t* p )
   aoe_dia->add_action( "summon_infernal" );
   aoe_dia->add_action( "shadowburn,if=demonic_art" );
   aoe_dia->add_action( "chaos_bolt,if=demonic_art" );
-  aoe_dia->add_action( "(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))&(active_enemies<=(4-talent.destructive_rapidity))" );
+  aoe_dia->add_action( "chaos_bolt,if=(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))&(active_enemies<=(4-talent.destructive_rapidity))" );
   aoe_dia->add_action( "rain_of_fire,if=((soul_shard>=(3.5-0.1*(active_dot.immolate)))|buff.alythesss_ire.up)&active_enemies>=3" );
   aoe_dia->add_action( "conflagrate,target_if=max:(dot.immolate.remains-99*debuff.havoc.remains),if=dot_refreshable_count.immolate>0&!dot.immolate.refreshable" );
   aoe_dia->add_action( "shadowburn,target_if=min:(time_to_die+999*debuff.havoc.remains),if=(!talent.destructive_rapidity&active_enemies<=(2+2*buff.fiendish_cruelty.up))|(talent.conflagration_of_chaos&active_enemies<=(6-talent.destructive_rapidity+2*buff.fiendish_cruelty.up))" );
