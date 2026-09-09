@@ -46,6 +46,7 @@ actions.cds+=/invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&figh
 # Sync Power Infusion with Voidform
 actions.cds+=/power_infusion,if=(buff.voidform.up|!talent.voidform)&!buff.power_infusion.up
 actions.cds+=/halo
+actions.cds+=/use_item,name=stormbound_emblem_of_dazar,if=cooldown.voidform.remains<=2&active_dot.shadow_word_pain>=active_dot.vampiric_touch&!buff.crushing_void.up
 actions.cds+=/voidform,if=active_dot.shadow_word_pain>=active_dot.vampiric_touch
 actions.cds+=/call_action_list,name=trinkets
 # Use Desperate Prayer to heal up should Shadow Word: Death or other damage bring you below 75%

@@ -88,8 +88,9 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=20ssteroid_trinket_equipped,op=set,value=equipped.signet_of_the_priory|equipped.incorporeal_essencegorger|equipped.sealed_chaos_urn|equipped.hex_lords_dooming_idol" );
   precombat->add_action( "variable,name=15ssteroid_trinket_equipped,op=set,value=equipped.lily_of_the_eternal_weave|equipped.sunblood_amethyst|equipped.astral_gladiators_badge_of_ferocity|equipped.arazs_ritual_forge|equipped.freightrunners_flask|equipped.emberwing_feather|equipped.vaelgors_final_stare|equipped.galactic_gladiators_badge_of_ferocity|equipped.vile_vial_of_volatile_venom|equipped.venomous_gladiators_badge_of_ferocity" );
   precombat->add_action( "variable,name=12ssteroid_trinket_equipped,op=set,value=equipped.nevermelting_ice_crystal|equipped.ever_collapsing_void_fissure" );
-  precombat->add_action( "variable,name=steroid_trinket_equipped,op=set,value=equipped.lily_of_the_eternal_weave|equipped.sunblood_amethyst|equipped.astral_gladiators_badge_of_ferocity|equipped.arazs_ritual_forge|equipped.freightrunners_flask|equipped.emberwing_feather|equipped.vaelgors_final_stare|equipped.galactic_gladiators_badge_of_ferocity|equipped.nevermelting_ice_crystal|equipped.ever_collapsing_void_fissure|equipped.signet_of_the_priory|equipped.incorporeal_essencegorger|equipped.sealed_chaos_urn|equipped.venomous_gladiators_badge_of_ferocity|equipped.vile_vial_of_volatile_venom|equipped.stormbound_emblem_of_dazar" );
+  precombat->add_action( "variable,name=steroid_trinket_equipped,op=set,value=equipped.lily_of_the_eternal_weave|equipped.sunblood_amethyst|equipped.astral_gladiators_badge_of_ferocity|equipped.arazs_ritual_forge|equipped.freightrunners_flask|equipped.emberwing_feather|equipped.vaelgors_final_stare|equipped.galactic_gladiators_badge_of_ferocity|equipped.nevermelting_ice_crystal|equipped.ever_collapsing_void_fissure|equipped.signet_of_the_priory|equipped.incorporeal_essencegorger|equipped.sealed_chaos_urn|equipped.venomous_gladiators_badge_of_ferocity|equipped.vile_vial_of_volatile_venom|equipped.stormbound_emblem_of_dazar|equipped.hex_lords_dooming_idol" );
   precombat->add_action( "variable,name=nonsteroid_trinket_equipped,op=set,value=equipped.mereldars_toll|equipped.perfidious_projector|equipped.chaotic_nethergate|equipped.wraps_of_cosmic_madness|equipped.astalors_anguish_agitator|equipped.sethraliss_defiled_relic|equipped.vexhuls_everflowing_gland|equipped.font_of_venomous_rage|equipped.ophidian_bone_whistle|equipped.spiritrending_poison" );
+  precombat->add_action( "variable,name=hex_double_on_use,op=set,value=(equipped.lily_of_the_eternal_weave|equipped.sunblood_amethyst|equipped.astral_gladiators_badge_of_ferocity|equipped.arazs_ritual_forge|equipped.freightrunners_flask|equipped.emberwing_feather|equipped.vaelgors_final_stare|equipped.galactic_gladiators_badge_of_ferocity|equipped.nevermelting_ice_crystal|equipped.ever_collapsing_void_fissure|equipped.signet_of_the_priory|equipped.incorporeal_essencegorger|equipped.sealed_chaos_urn|equipped.venomous_gladiators_badge_of_ferocity|equipped.vile_vial_of_volatile_venom|equipped.stormbound_emblem_of_dazar)&equipped.hex_lords_dooming_idol" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
   precombat->add_action( "potion,if=talent.spellfire_spheres" );
@@ -103,8 +104,11 @@ void arcane( player_t* p )
   default_->add_action( "blood_fury,if=(buff.arcane_surge.up&debuff.touch_of_the_magi.up)|(fight_remains<9)" );
   default_->add_action( "fireblood,if=(buff.arcane_surge.up&debuff.touch_of_the_magi.up)|(fight_remains<16)" );
   default_->add_action( "ancestral_call,if=(buff.arcane_surge.up&debuff.touch_of_the_magi.up)|(fight_remains<16)" );
+  default_->add_action( "use_item,name=font_of_venomous_rage,if=((buff.arcane_surge.down&buff.arcane_soul.down&debuff.touch_of_the_magi.down)|(!potion.liquid_luster&time<5))&(time>25|!variable.steroid_trinket_equipped|equipped.hex_lords_dooming_idol)|fight_remains<30" );
+  default_->add_action( "use_item,name=hex_lords_dooming_idol,if=(buff.hex_lords_doom.stack>(24-(15*equipped.vile_vial_of_volatile_venom))&(cooldown.arcane_surge.ready|buff.arcane_surge.up)&variable.hex_double_on_use)|((cooldown.arcane_surge.ready|buff.arcane_surge.up)&!variable.hex_double_on_use)" );
   default_->add_action( "use_item,name=stormbound_emblem_of_dazar,if=(cooldown.arcane_surge.remains<2)|cooldown.arcane_surge.ready|(fight_remains<22)" );
-  default_->add_action( "use_items,if=((buff.arcane_surge.up&((variable.12ssteroid_trinket_equipped&debuff.touch_of_the_magi.up)|variable.15ssteroid_trinket_equipped))|(cooldown.arcane_surge.ready&variable.20ssteroid_trinket_equipped))|(fight_remains<13&variable.12ssteroid_trinket_equipped)|(fight_remains<16&variable.15ssteroid_trinket_equipped)|(fight_remains<21&variable.20ssteroid_trinket_equipped)|(variable.nonsteroid_trinket_equipped&((buff.arcane_surge.down&cooldown.arcane_surge.remains>20)|!variable.steroid_trinket_equipped))" );
+  default_->add_action( "use_items,if=((buff.arcane_surge.up&((variable.12ssteroid_trinket_equipped&debuff.touch_of_the_magi.up)|variable.15ssteroid_trinket_equipped))|(cooldown.arcane_surge.ready&variable.20ssteroid_trinket_equipped))|(fight_remains<13&variable.12ssteroid_trinket_equipped)|(fight_remains<16&variable.15ssteroid_trinket_equipped)|(fight_remains<21&variable.20ssteroid_trinket_equipped)|(variable.nonsteroid_trinket_equipped&((buff.arcane_surge.down&cooldown.arcane_surge.remains>20)|!variable.steroid_trinket_equipped))|fight_remains<((20*variable.steroid_trinket_equipped)+(20*variable.nonsteroid_trinket_equipped)+(10*equipped.hex_lords_dooming_idol))" );
+  default_->add_action( "use_item,name=hex_lords_dooming_idol,if=(fight_remains<(40+(3*variable.nonsteroid_trinket_equipped)+(20*variable.hex_double_on_use)-(15*equipped.vile_vial_of_volatile_venom)))" );
   default_->add_action( "arcane_barrage,if=fight_remains<gcd.max*2&buff.arcane_charge.stack=4" );
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "call_action_list,name=spellslinger,if=talent.splintering_sorcery" );
@@ -131,7 +135,7 @@ void arcane( player_t* p )
   sunfury->add_action( "prismatic_bolt,if=((!set_bonus.midnight_season_2_4pc)|buff.cumulative_power.stack=8)&buff.arcane_soul.down" );
   sunfury->add_action( "arcane_barrage,if=(buff.arcane_charge.stack=4&(((((cooldown.arcane_orb.charges_fractional>0.95|cooldown.arcane_pulse.charges_fractional>0.95)&active_enemies>=variable.aoe_count)|buff.clearcasting.react)&buff.arcane_salvo.react>=12)|((buff.arcane_surge.remains>gcd.max|buff.arcane_surge.down)&buff.arcane_salvo.react=25)))|buff.arcane_soul.up|(buff.arcane_salvo.react>8&cooldown.touch_of_the_magi.ready)" );
   sunfury->add_action( "prismatic_bolt" );
-  sunfury->add_action( "arcane_orb,if=buff.arcane_charge.stack<1" );
+  sunfury->add_action( "arcane_orb,if=buff.arcane_charge.stack<3" );
   sunfury->add_action( "arcane_pulse,if=active_enemies>=(variable.aoe_count-1)|buff.arcane_charge.stack<1" );
   sunfury->add_action( "arcane_blast" );
 }
@@ -270,17 +274,21 @@ void frost( player_t* p )
 
   cds->add_action( "variable,name=ff_trinket_timing,value=talent.frostfire_bolt&(fight_remains<15|prev_gcd.1.frozen_orb|prev_gcd.1.comet_storm|prev_gcd.1.glacial_spike|cooldown.ray_of_frost.charges>=1&debuff.freezing.react<12&buff.fingers_of_frost.react<2&buff.icicles.react<5&(!buff.frostfire_empowerment.react|active_enemies<=2)&(!buff.brain_freeze.react|buff.thermal_void.up))", "Frostfire uses potions, items and racials after Frozen Orb, Comet Storm or Glacial Spike, or together with Ray of Frost." );
   cds->add_action( "variable,name=ss_trinket_timing,value=!talent.frostfire_bolt&(fight_remains<15|prev_gcd.1.frozen_orb|time>1.5&cooldown.ray_of_frost.charges>=1&debuff.freezing.react<6&!buff.fingers_of_frost.react&buff.icicles.react<=3&(!buff.brain_freeze.react|buff.thermal_void.up))", "Spellslinger uses potions, items and racials after Frozen Orb or together with Ray of Frost." );
-  cds->add_action( "use_item,name=nevermelting_ice_crystal,if=variable.ff_trinket_timing|variable.ss_trinket_timing", "Haste trinkets are used after using potion (of recklessness). Crit trinkets are used before using potion. Mastery trinkets are used after using potion if Crit is your highest secondary stat, and before otherwise." );
-  cds->add_action( "use_item,name=freightrunners_flask,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
-  cds->add_action( "use_item,name=vaelgors_final_stare,if=(variable.ff_trinket_timing|variable.ss_trinket_timing)&(stat.haste_rating>stat.crit_rating|stat.versatility_rating>stat.crit_rating)" );
-  cds->add_action( "potion,if=variable.ff_trinket_timing|variable.ss_trinket_timing|fight_remains<35" );
-  cds->add_action( "use_item,name=vaelgors_final_stare,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
-  cds->add_action( "use_item,name=vile_vial_of_volatile_venom,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
-  cds->add_action( "use_items" );
-  cds->add_action( "blood_fury,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down&(variable.ff_trinket_timing|variable.ss_trinket_timing)", "Externals." );
+  cds->add_action( "blood_fury,if=variable.ff_trinket_timing|variable.ss_trinket_timing", "Racials." );
   cds->add_action( "berserking,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
   cds->add_action( "fireblood,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
   cds->add_action( "ancestral_call,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
+  cds->add_action( "use_item,name=font_of_venomous_rage,if=cooldown.potion.remains|!potion.potion_of_recklessness", "Flat-damage on-use trinkets are used immediately, after Potion of Recklessness on combat start." );
+  cds->add_action( "use_item,name=vexhuls_everflowing_gland,if=cooldown.potion.remains|!potion.potion_of_recklessness" );
+  cds->add_action( "use_item,name=nevermelting_ice_crystal,if=variable.ff_trinket_timing|variable.ss_trinket_timing", "Haste trinkets are used after using potion (of recklessness). Crit trinkets are used before using potion. Mastery trinkets are used after using potion if Crit is your highest secondary stat, and before otherwise." );
+  cds->add_action( "use_item,name=freightrunners_flask,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
+  cds->add_action( "use_item,name=vaelgors_final_stare,if=(variable.ff_trinket_timing|variable.ss_trinket_timing)&(stat.haste_rating>stat.crit_rating|stat.versatility_rating>stat.crit_rating)" );
+  cds->add_action( "potion,if=variable.ff_trinket_timing|variable.ss_trinket_timing|(trinket.font_of_venomous_rage.cooldown.ready|trinket.vexhuls_everflowing_gland.cooldown.ready)&potion.potion_of_recklessness|fight_remains<35" );
+  cds->add_action( "use_item,name=vaelgors_final_stare,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
+  cds->add_action( "use_item,name=vile_vial_of_volatile_venom,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
+  cds->add_action( "use_items" );
+  cds->add_action( "use_item,name=hex_lords_dooming_idol,if=variable.ff_trinket_timing|variable.ss_trinket_timing" );
   cds->add_action( "ray_of_frost,if=talent.frostfire_bolt,interrupt_if=!talent.hand_of_frost_4&active_enemies>=2&tick_time>gcd.remains&(!talent.crystalline_refraction|talent.crystalline_refraction&buff.fingers_of_frost.react=2),interrupt_global=1,interrupt_immediate=1,line_cd=9999", "Frostfire Opener: precast Frostfire Bolt/Blizzard --> Ray of Frost --> Flurry --> Frozen Orb." );
   cds->add_action( "flurry,if=talent.frostfire_bolt&talent.wintertide,line_cd=9999" );
   cds->add_action( "frozen_orb,if=talent.frostfire_bolt,line_cd=9999" );
@@ -289,7 +297,6 @@ void frost( player_t* p )
   cds->add_action( "ray_of_frost,if=!talent.frostfire_bolt,line_cd=9999" );
   cds->add_action( "ray_of_frost,if=fight_remains<12|charges=2,interrupt_if=talent.frostfire_bolt&!talent.hand_of_frost_4&active_enemies>=2&tick_time>gcd.remains&(!talent.crystalline_refraction|talent.crystalline_refraction&buff.fingers_of_frost.react=2),interrupt_global=1,interrupt_immediate=1", "End-Of-Fight actions and overcap protection." );
   cds->add_action( "comet_storm,if=fight_remains<8" );
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down", "Externals." );
 
   frostfire->add_action( "glacial_spike,if=buff.glacial_spike.react|time-buff.rapid_refreezing.last_trigger<1.5", "These Glacial Spike conditions prevent super-human behaviour. Chaincasting 4p proccs as GS --> X --> GS --> X is reasonable, as long as the cast time/gcd of X is longer than 1 second." );
   frostfire->add_action( "comet_storm,if=active_enemies<=2|prev_gcd.2.glacial_spike&(time-buff.rapid_refreezing.last_trigger>1.5|!set_bonus.midnight_season_2_4pc)", "In AoE, Comet Storm can quickly refill Icicles through the 2pc bonus. Cast it second-to-last after Glacial Spike, allowing time to react to a 4pc proc first." );

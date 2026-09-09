@@ -6835,11 +6835,13 @@ struct bestial_wrath_t: public hunter_ranged_attack_t
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p()->pets.main, p()->pets.animal_companion ) )
     {
-      trigger_buff( pet->buffs.bestial_wrath, precast_time );
-
       // Assume the pet is out of range / not engaged when precasting.
       if ( !is_precombat )
-        pet -> actions.bestial_wrath -> execute_on_target( target );
+        pet->actions.bestial_wrath->execute_on_target( target );
+
+      // 2026-09-07: Despite the buff being applied first in game, the damage does not benefit from it for the main pet and AC...
+      //             for simplicity of modelling, just trigger the buff straight afterwards.
+      trigger_buff( pet->buffs.bestial_wrath, precast_time );
     }
 
     // 2026-07-11: Apex pets have funky delays on Bestial Wrath's buff trigger and damage event

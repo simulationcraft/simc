@@ -5,7 +5,7 @@ on:
 
 jobs:
   update-generated-files:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/cache@v5
@@ -16,7 +16,7 @@ jobs:
             ActionPriorityLists
             profiles
             .git
-          key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
+          key: ubuntu-clang++-16-for_run-${{ github.sha }}-cpp-17
 
       - uses: actions/checkout@v6
 

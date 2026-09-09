@@ -41,8 +41,8 @@ actions.aoe+=/frost_strike,target_if=max:(talent.shattering_blade&debuff.razoric
 actions.aoe+=/frostscythe,if=buff.killing_machine.react&!variable.rune_pooling&active_enemies>=variable.frostscythe_priority
 actions.aoe+=/obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=buff.killing_machine.react&!variable.rune_pooling
 actions.aoe+=/howling_blast,if=buff.rime.react
-actions.aoe+=/glacial_advance,if=!variable.rp_pooling&active_enemies>=3
-actions.aoe+=/frost_strike,if=!variable.rp_pooling&active_enemies<=2
+actions.aoe+=/glacial_advance,if=!variable.rp_pooling&active_enemies>=3+(1*talent.deathly_blows)
+actions.aoe+=/frost_strike,if=!variable.rp_pooling
 actions.aoe+=/frostscythe,if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)&active_enemies>=variable.frostscythe_priority
 actions.aoe+=/obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)
 actions.aoe+=/howling_blast,if=!buff.killing_machine.react&(talent.obliteration&buff.pillar_of_frost.up)
@@ -111,6 +111,6 @@ actions.variables+=/variable,name=cooldown_check,value=(talent.pillar_of_frost&b
 actions.variables+=/variable,name=fwf_buffs,value=(buff.pillar_of_frost.remains<gcd.max|(buff.unholy_strength.up&buff.unholy_strength.remains<gcd.max)|(talent.bonegrinder.rank=2&buff.bonegrinder_frost.up&buff.bonegrinder_frost.remains<gcd.max))&(active_enemies>1|debuff.razorice.stack=5|talent.shattering_blade)
 actions.variables+=/variable,name=rune_pooling,value=hero_tree.deathbringer&cooldown.reapers_mark.remains<6&rune<3&variable.sending_cds
 actions.variables+=/variable,name=rp_pooling,value=talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains<4*gcd.max&runic_power<60+(35+5*buff.icy_onslaught.up)-(10*rune)&variable.sending_cds
-# Frostscythe is better at 2 targets
-actions.variables+=/variable,name=frostscythe_priority,value=2
+# Frostscythe is better at 3 targets
+actions.variables+=/variable,name=frostscythe_priority,value=3
 actions.variables+=/variable,name=breath_of_sindragosa_check,value=!talent.breath_of_sindragosa|(cooldown.breath_of_sindragosa.remains>20|(cooldown.breath_of_sindragosa.remains<1*gcd.max&runic_power>=(60-20*hero_tree.deathbringer)))

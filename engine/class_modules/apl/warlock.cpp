@@ -107,6 +107,7 @@ void affliction( player_t* p )
   items->add_action( "use_item,use_off_gcd=1,slot=main_hand" );
 
   ogcd->add_action( "potion,use_off_gcd=1,if=variable.cds_active|fight_remains<32" );
+  ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.cds_active|fight_remains<16" );
   ogcd->add_action( "berserking,use_off_gcd=1,if=variable.cds_active|fight_remains<14" );
   ogcd->add_action( "blood_fury,use_off_gcd=1,if=variable.cds_active|fight_remains<17" );
   ogcd->add_action( "fireblood,use_off_gcd=1,if=variable.cds_active|fight_remains<10" );
@@ -126,8 +127,8 @@ void affliction( player_t* p )
   SH_aoe->add_action( "haunt" );
   SH_aoe->add_action( "seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
   SH_aoe->add_action( "dark_harvest" );
-  SH_aoe->add_action( "seed_of_corruption,target_if=!dot.unstable_affliction.ticking&prev.dark_harvest,if=set_bonus.midnight_season_2_4pc&active_enemies<=5" );
-  SH_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<10&remains<5" );
+  SH_aoe->add_action( "seed_of_corruption,target_if=!dot.unstable_affliction.ticking&buff.succulent_soul.remains,if=set_bonus.midnight_season_2_4pc&active_enemies<=5" );
+  SH_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<12&remains<5" );
   SH_aoe->add_action( "summon_darkglare" );
   SH_aoe->add_action( "seed_of_corruption" );
   SH_aoe->add_action( "agony,target_if=min:remains,if=remains<duration*0.5" );
@@ -136,11 +137,11 @@ void affliction( player_t* p )
   SH_cleave->add_action( "haunt" );
   SH_cleave->add_action( "seed_of_corruption,if=(!dot.corruption.ticking|dot.corruption.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
   SH_cleave->add_action( "dark_harvest" );
-  SH_cleave->add_action( "unstable_affliction,cycle_targets=1,if=!ticking&prev.dark_harvest" );
-  SH_cleave->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
-  SH_cleave->add_action( "unstable_affliction" );
-  SH_cleave->add_action( "agony,target_if=refreshable" );
   SH_cleave->add_action( "summon_darkglare" );
+  SH_cleave->add_action( "seed_of_corruption,target_if=!dot.unstable_affliction.ticking,if=buff.succulent_soul.remains&talent.sow_the_seeds&!pet.darkglare.active" );
+  SH_cleave->add_action( "seed_of_corruption,if=talent.sow_the_seeds&!pet.darkglare.active" );
+  SH_cleave->add_action( "unstable_affliction,cycle_targets=1,if=!ticking&buff.succulent_soul.remains" );
+  SH_cleave->add_action( "unstable_affliction" );
   SH_cleave->add_action( "malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd" );
   SH_cleave->add_action( "drain_soul,if=buff.nightfall.react>1" );
   SH_cleave->add_action( "shadow_bolt,if=buff.nightfall.react>1" );
@@ -252,8 +253,8 @@ void demonology( player_t* p )
   soulharvest->add_action( "demonbolt,if=soul_shard<4&buff.demonic_core.react" );
   soulharvest->add_action( "shadow_bolt" );
 
-  items->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&(!pet.demonic_tyrant.active&trinket.1.cast_time>0|!trinket.1.cast_time>0)&(pet.demonic_tyrant.active|!talent.summon_demonic_tyrant|variable.trinket_priority=2&cooldown.summon_demonic_tyrant.remains>20&!pet.demonic_tyrant.active&trinket.2.cooldown.remains<cooldown.summon_demonic_tyrant.remains+5)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|variable.trinket_1_buff_duration>=fight_remains" );
-  items->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&(!pet.demonic_tyrant.active&trinket.2.cast_time>0|!trinket.2.cast_time>0)&(pet.demonic_tyrant.active|!talent.summon_demonic_tyrant|variable.trinket_priority=1&cooldown.summon_demonic_tyrant.remains>20&!pet.demonic_tyrant.active&trinket.1.cooldown.remains<cooldown.summon_demonic_tyrant.remains+5)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|variable.trinket_2_buff_duration>=fight_remains" );
+  items->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=variable.trinket_1_buffs&(!pet.demonic_tyrant.active&trinket.1.cast_time>0|!trinket.1.cast_time>0)&(pet.demonic_tyrant.active|trinket.1.cast_time>0&cooldown.summon_demonic_tyrant.remains<=4|!talent.summon_demonic_tyrant|variable.trinket_priority=2&cooldown.summon_demonic_tyrant.remains>20&!pet.demonic_tyrant.active&trinket.2.cooldown.remains<cooldown.summon_demonic_tyrant.remains+5)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|variable.trinket_1_buff_duration>=fight_remains" );
+  items->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_buffs&(!pet.demonic_tyrant.active&trinket.2.cast_time>0|!trinket.2.cast_time>0)&(pet.demonic_tyrant.active|trinket.2.cast_time>0&cooldown.summon_demonic_tyrant.remains<=4|!talent.summon_demonic_tyrant|variable.trinket_priority=1&cooldown.summon_demonic_tyrant.remains>20&!pet.demonic_tyrant.active&trinket.1.cooldown.remains<cooldown.summon_demonic_tyrant.remains+5)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|variable.trinket_2_buff_duration>=fight_remains" );
   items->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&((variable.damage_trinket_priority=1|trinket.2.cooldown.remains)&(trinket.1.cast_time>0&!pet.demonic_tyrant.active|!trinket.1.cast_time>0)|(time<20&variable.trinket_2_buffs)|cooldown.summon_demonic_tyrant.remains_expected>20)" );
   items->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&((variable.damage_trinket_priority=2|trinket.1.cooldown.remains)&(trinket.2.cast_time>0&!pet.demonic_tyrant.active|!trinket.2.cast_time>0)|(time<20&variable.trinket_1_buffs)|cooldown.summon_demonic_tyrant.remains_expected>20)" );
   items->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains)" );

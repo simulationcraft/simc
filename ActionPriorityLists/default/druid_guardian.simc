@@ -25,13 +25,13 @@ actions+=/call_action_list,name=bear
 actions.bear=bear_form,if=!buff.bear_form.up&!buff.feline_potential.up&!talent.fluid_form.enabled
 actions.bear+=/mangle,if=buff.cat_form.up
 actions.bear+=/ironfur,use_off_gcd=1,if=buff.gory_fur_ironfur.up
-actions.bear+=/ironfur,use_off_gcd=1,if=rage>=40&!talent.killing_blow.enabled&!buff.answered_calling.up
+actions.bear+=/ironfur,use_off_gcd=1,if=rage>=40&!talent.killing_blow.enabled&!buff.answered_calling.up&!buff.dream_conduit.up
 actions.bear+=/ironfur,use_off_gcd=1,if=rage>=80&!talent.killing_blow.enabled&buff.answered_calling.up
-actions.bear+=/ironfur,use_off_gcd=1,if=!buff.ironfur.up&!buff.answered_calling.up&talent.killing_blow.enabled&!buff.ravage.up
-actions.bear+=/ironfur,use_off_gcd=1,if=!buff.ironfur.up&rage>=80&buff.answered_calling.up&talent.killing_blow.enabled&!buff.ravage.up
+actions.bear+=/ironfur,use_off_gcd=1,if=(!buff.ironfur.up|(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up))&!buff.answered_calling.up&talent.killing_blow.enabled&!buff.ravage.up&!buff.dream_conduit.up
+actions.bear+=/ironfur,use_off_gcd=1,if=(!buff.ironfur.up|(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up))&rage>=80&buff.answered_calling.up&talent.killing_blow.enabled&!buff.ravage.up&!buff.dream_conduit.up
 actions.bear+=/thrash,target_if=refreshable|(dot.thrash.stack<5&talent.flashing_claws.rank=2|dot.thrash.stack<4&talent.flashing_claws.rank=1|dot.thrash.stack<3&!talent.flashing_claws.enabled)
-actions.bear+=/mangle,if=buff.answered_calling.up&(active_enemies=1|buff.berserk.up&active_enemies<=4)&talent.fount_of_strength.enabled
-actions.bear+=/thrash,if=talent.lunar_calling.enabled|buff.answered_calling.up
+actions.bear+=/mangle,if=buff.answered_calling.up&active_enemies=1&talent.fount_of_strength.enabled
+actions.bear+=/thrash,if=talent.lunar_calling.enabled|set_bonus.midnight_season_2_4pc&(active_enemies>1|buff.answered_calling.up)
 actions.bear+=/maul,if=buff.dream_conduit.up&!talent.fount_of_strength.enabled&!buff.answered_calling.up
 actions.bear+=/maul,if=rage>=55&talent.killing_blow.enabled&!buff.answered_calling.up
 actions.bear+=/maul,if=rage>=80&talent.killing_blow.enabled&buff.answered_calling.up
@@ -54,8 +54,8 @@ actions.bear+=/maul,if=!buff.ravage.up&rage>=90&talent.fount_of_strength.enabled
 actions.bear+=/mangle,if=(buff.incarnation_guardian_of_ursoc.up|buff.berserk.up)|talent.red_moon.enabled&(cooldown.red_moon.remains>3&(((rage<88)&!talent.fount_of_strength.enabled)|((rage<83)&!talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled)|((rage<108)&talent.fount_of_strength.enabled)|((rage<103)&talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled)))
 actions.bear+=/mangle,if=!talent.red_moon.enabled&(((rage<88)&!talent.fount_of_strength.enabled)|((rage<83)&!talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled)|((rage<108)&talent.fount_of_strength.enabled)|((rage<103)&talent.fount_of_strength.enabled&talent.soul_of_the_forest.enabled))
 actions.bear+=/thrash
+actions.bear+=/moonfire,if=talent.lunation.enabled&buff.bear_form.up&!talent.red_moon.enabled&(buff.galactic_guardian.up|active_enemies<3|refreshable)
 actions.bear+=/swipe_bear,if=!talent.lunation.enabled|(talent.lunation.enabled&talent.red_moon.enabled)|talent.lunation.enabled&active_enemies>3
-actions.bear+=/moonfire,if=(talent.lunation.enabled)&buff.bear_form.up&!talent.red_moon.enabled&active_enemies<3
 
 actions.cooldowns=use_items
 actions.cooldowns+=/potion,if=buff.lunar_beam.up

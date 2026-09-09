@@ -6,7 +6,7 @@ race=tauren
 role=spell
 position=ranged_back
 talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGGLzMzsMmZmYmZGjZMziZmZmZMDEAAYmZmllZm2AAAAAAgNA2WGzMzAbzYmZYBAAgZ2AmBGwADD
-omnium_talents=136822:1/136816:1/136817:1/136818:1/136814:1
+omnium_talents=136822:1/136816:1/136817:1/136815:1/136814:1
 
 # Default consumables
 potion=potion_of_recklessness_2
@@ -39,18 +39,25 @@ actions+=/run_action_list,name=spellslinger
 actions.cds=variable,name=ff_trinket_timing,value=talent.frostfire_bolt&(fight_remains<15|prev_gcd.1.frozen_orb|prev_gcd.1.comet_storm|prev_gcd.1.glacial_spike|cooldown.ray_of_frost.charges>=1&debuff.freezing.react<12&buff.fingers_of_frost.react<2&buff.icicles.react<5&(!buff.frostfire_empowerment.react|active_enemies<=2)&(!buff.brain_freeze.react|buff.thermal_void.up))
 # Spellslinger uses potions, items and racials after Frozen Orb or together with Ray of Frost.
 actions.cds+=/variable,name=ss_trinket_timing,value=!talent.frostfire_bolt&(fight_remains<15|prev_gcd.1.frozen_orb|time>1.5&cooldown.ray_of_frost.charges>=1&debuff.freezing.react<6&!buff.fingers_of_frost.react&buff.icicles.react<=3&(!buff.brain_freeze.react|buff.thermal_void.up))
-# Haste trinkets are used after using potion (of recklessness). Crit trinkets are used before using potion. Mastery trinkets are used after using potion if Crit is your highest secondary stat, and before otherwise.
-actions.cds+=/use_item,name=nevermelting_ice_crystal,if=variable.ff_trinket_timing|variable.ss_trinket_timing
-actions.cds+=/use_item,name=freightrunners_flask,if=variable.ff_trinket_timing|variable.ss_trinket_timing
-actions.cds+=/use_item,name=vaelgors_final_stare,if=(variable.ff_trinket_timing|variable.ss_trinket_timing)&(stat.haste_rating>stat.crit_rating|stat.versatility_rating>stat.crit_rating)
-actions.cds+=/potion,if=variable.ff_trinket_timing|variable.ss_trinket_timing|fight_remains<35
-actions.cds+=/use_item,name=vaelgors_final_stare,if=variable.ff_trinket_timing|variable.ss_trinket_timing
-actions.cds+=/use_item,name=vile_vial_of_volatile_venom,if=variable.ff_trinket_timing|variable.ss_trinket_timing
-actions.cds+=/use_items
+# Externals.
+actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.power_infusion.down&(variable.ff_trinket_timing|variable.ss_trinket_timing)
+# Racials.
 actions.cds+=/blood_fury,if=variable.ff_trinket_timing|variable.ss_trinket_timing
 actions.cds+=/berserking,if=variable.ff_trinket_timing|variable.ss_trinket_timing
 actions.cds+=/fireblood,if=variable.ff_trinket_timing|variable.ss_trinket_timing
 actions.cds+=/ancestral_call,if=variable.ff_trinket_timing|variable.ss_trinket_timing
+# Flat-damage on-use trinkets are used immediately, after Potion of Recklessness on combat start.
+actions.cds+=/use_item,name=font_of_venomous_rage,if=cooldown.potion.remains|!potion.potion_of_recklessness
+actions.cds+=/use_item,name=vexhuls_everflowing_gland,if=cooldown.potion.remains|!potion.potion_of_recklessness
+# Haste trinkets are used after using potion (of recklessness). Crit trinkets are used before using potion. Mastery trinkets are used after using potion if Crit is your highest secondary stat, and before otherwise.
+actions.cds+=/use_item,name=nevermelting_ice_crystal,if=variable.ff_trinket_timing|variable.ss_trinket_timing
+actions.cds+=/use_item,name=freightrunners_flask,if=variable.ff_trinket_timing|variable.ss_trinket_timing
+actions.cds+=/use_item,name=vaelgors_final_stare,if=(variable.ff_trinket_timing|variable.ss_trinket_timing)&(stat.haste_rating>stat.crit_rating|stat.versatility_rating>stat.crit_rating)
+actions.cds+=/potion,if=variable.ff_trinket_timing|variable.ss_trinket_timing|(trinket.font_of_venomous_rage.cooldown.ready|trinket.vexhuls_everflowing_gland.cooldown.ready)&potion.potion_of_recklessness|fight_remains<35
+actions.cds+=/use_item,name=vaelgors_final_stare,if=variable.ff_trinket_timing|variable.ss_trinket_timing
+actions.cds+=/use_item,name=vile_vial_of_volatile_venom,if=variable.ff_trinket_timing|variable.ss_trinket_timing
+actions.cds+=/use_items
+actions.cds+=/use_item,name=hex_lords_dooming_idol,if=variable.ff_trinket_timing|variable.ss_trinket_timing
 # Frostfire Opener: precast Frostfire Bolt/Blizzard --> Ray of Frost --> Flurry --> Frozen Orb.
 actions.cds+=/ray_of_frost,if=talent.frostfire_bolt,interrupt_if=!talent.hand_of_frost_4&active_enemies>=2&tick_time>gcd.remains&(!talent.crystalline_refraction|talent.crystalline_refraction&buff.fingers_of_frost.react=2),interrupt_global=1,interrupt_immediate=1,line_cd=9999
 actions.cds+=/flurry,if=talent.frostfire_bolt&talent.wintertide,line_cd=9999
@@ -62,8 +69,6 @@ actions.cds+=/ray_of_frost,if=!talent.frostfire_bolt,line_cd=9999
 # End-Of-Fight actions and overcap protection.
 actions.cds+=/ray_of_frost,if=fight_remains<12|charges=2,interrupt_if=talent.frostfire_bolt&!talent.hand_of_frost_4&active_enemies>=2&tick_time>gcd.remains&(!talent.crystalline_refraction|talent.crystalline_refraction&buff.fingers_of_frost.react=2),interrupt_global=1,interrupt_immediate=1
 actions.cds+=/comet_storm,if=fight_remains<8
-# Externals.
-actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.power_infusion.down
 
 # These Glacial Spike conditions prevent super-human behaviour. Chaincasting 4p proccs as GS --> X --> GS --> X is reasonable, as long as the cast time/gcd of X is longer than 1 second.
 actions.frostfire=glacial_spike,if=buff.glacial_spike.react|time-buff.rapid_refreezing.last_trigger<1.5
@@ -117,7 +122,7 @@ neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13848/13987,gem_id=240898
 shoulders=primal_leywardens_manaflux,id=271562,bonus_id=12854/13694/13697,redirected_base_stats=239031
 back=silken_voodoo_drape,id=268253,bonus_id=13662/13848
 chest=crest_of_the_primal_leywarden,id=271567,bonus_id=4786/4800/12854/13690/13698,enchant_id=7987,redirected_base_stats=268221
-wrists=martyrs_bindings,id=239648,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240908,crafted_stats=32/49
+wrists=winters_embrace_bracers,id=251154,bonus_id=4786/12854/13750,gem_id=240918
 hands=primal_leywardens_manashapers,id=271565,bonus_id=13691/13697/13848,redirected_base_stats=268243
 waist=martyrs_waistwrap,id=239649,bonus_id=8960/12384/13750/13751/13836/9627,gem_id=240890,crafted_stats=32/49
 legs=primal_leywardens_tailored_legwraps,id=271563,bonus_id=12854/13693/13698,enchant_id=7935,redirected_base_stats=159234
@@ -125,18 +130,18 @@ feet=cackling_soultreads,id=268255,bonus_id=13662/13848
 finger1=signet_of_snarling_servitude,id=251136,bonus_id=4786/12854/13750,gem_id=240908,enchant_id=7967
 finger2=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240908,enchant_id=7967
 trinket1=wavecallers_seastone,id=270167,bonus_id=12854/13662
-trinket2=gebbos_bottomless_bag,id=270164,bonus_id=12854/13662
-main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13662/13848,enchant_id=7981
-off_hand=frostscales_mystic_frond,id=268263,bonus_id=12854/13662
+trinket2=font_of_venomous_rage,id=270168,bonus_id=13662/13848
+main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=13662/13848,enchant_id=8689
+off_hand=alnhara_lantern,id=245769,bonus_id=8960/13751/13771/13836/9627,crafted_stats=32/49
 
 # Gear Summary
-# gear_ilvl=337.38
-# gear_stamina=40261
-# gear_intellect=2577
-# gear_crit_rating=1238
+# gear_ilvl=338.00
+# gear_stamina=40269
+# gear_intellect=2393
+# gear_crit_rating=1219
 # gear_haste_rating=713
-# gear_mastery_rating=1152
-# gear_versatility_rating=107
-# gear_armor=732
+# gear_mastery_rating=1304
+# gear_versatility_rating=123
+# gear_armor=733
 # set_bonus=midnight_season_2_2pc=1
 # set_bonus=midnight_season_2_4pc=1

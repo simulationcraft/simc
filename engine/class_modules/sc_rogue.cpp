@@ -3677,6 +3677,7 @@ struct lingering_shadow_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.lingering_shadow_attack )
   {
     base_dd_min = base_dd_max = 1; // Override from 0 for snapshot_flags
+    callbacks = false;
   }
 
   bool procs_shadow_blades_damage() const override
@@ -4125,9 +4126,12 @@ struct deathmark_t : public rogue_attack_t
   deathmark_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->talent.assassination.deathmark, options_str )
   {
-    energize_type = action_energize::PER_TICK;
-    energize_resource = RESOURCE_ENERGY;
-    energize_amount = data().effectN( 3 ).base_value() / ( data().duration() / data().effectN( 1 ).period() );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    rogue_attack_t::tick( d );
+    gain_energize_resource( RESOURCE_ENERGY, data().effectN( 3 ).base_value() / d->num_ticks(), gain );
   }
 
   void impact( action_state_t* state ) override
@@ -4838,6 +4842,33 @@ struct kingsbane_t : public rogue_attack_t
       add_child( implacable_strikes->nature_strike );
       add_child( implacable_strikes->physical_strike );
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_da_multiplier( state );
+
+    // 2028-08-31 -- Currently appears to double-dip from both Mastery and Implacable in-game
+    if ( p()->bugs )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+      m *= 1.0 + p()->talent.assassination.implacable_2->effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_ta_multiplier( const action_state_t* state ) const override
+  {
+    double m = rogue_attack_t::composite_ta_multiplier( state );
+
+    // 2028-08-31 -- Currently appears to double-dip from Implacable in-game
+    if ( p()->bugs )
+    {
+      m *= 1.0 + p()->talent.assassination.implacable_2->effectN( 3 ).percent();
+    }
+
+    return m;
   }
 
   void impact( action_state_t* state ) override
@@ -6351,6 +6382,7 @@ struct goremaws_bite_t : public rogue_attack_t
       aoe = -1;
       split_aoe_damage = true;
       dual = true;
+      callbacks = false;
       target_filter_callback = goremaws_bite_targets_only();
       base_multiplier = p->spec.goremaws_bite_finisher_debuff->effectN( 1 ).percent();
     }
@@ -6487,10 +6519,10 @@ struct deathstalkers_mark_t : public rogue_attack_t
 
 struct mass_casualty_t : public rogue_attack_t
 {
-  target_filter_callback_t rupture_targets_only()
+  target_filter_callback_t secondary_rupture_targets_only()
   {
-    return [ & ]( const action_t*, player_t* target ) {
-      return p()->get_target_data( target )->dots.rupture->is_ticking();
+    return [ & ]( const action_t* action, player_t* target ) {
+      return target != action->target && p()->get_target_data( target )->dots.rupture->is_ticking();
     };
   }
 
@@ -6503,11 +6535,12 @@ struct mass_casualty_t : public rogue_attack_t
     if ( p->specialization() == ROGUE_ASSASSINATION )
     {
       base_multiplier *= p->talent.deathstalker.mass_casualty->effectN( 1 ).percent();
-      target_filter_callback = rupture_targets_only();
+      target_filter_callback = secondary_rupture_targets_only();
     }
     else
     {
       base_multiplier *= p->talent.deathstalker.mass_casualty->effectN( 2 ).percent();
+      target_filter_callback = secondary_targets_only();
     }
   }
 
@@ -8664,12 +8697,10 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
     p()->buffs.unshakeable_drive->trigger();
     p()->active.deathstalker.deathstalkers_mark->execute_on_target( mark_target );
 
-    if ( p()->talent.deathstalker.mass_casualty->ok() )
+    if ( p()->talent.deathstalker.mass_casualty->ok() && p()->sim->active_enemies > 1 &&
+         ( p()->specialization() == ROGUE_ASSASSINATION || ab::data().id() == p()->spec.black_powder->id() ) )
     {
-      if ( p()->specialization() == ROGUE_ASSASSINATION || ab::data().id() == p()->spec.black_powder->id() )
-      {
-        p()->active.deathstalker.mass_casualty->execute_on_target( mark_target );
-      }
+      p()->active.deathstalker.mass_casualty->execute_on_target( mark_target );
     }
 
     if ( p()->talent.deathstalker.shadewalker->ok() )
@@ -8988,7 +9019,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 
   // Type-Based Tracking for Accumulators
   bleeds = { dots.deathmark, dots.garrote, dots.internal_bleeding, dots.rupture, dots.mutilated_flesh };
-  poison_dots = { dots.deadly_poison, dots.kingsbane };
+  poison_dots = { dots.deadly_poison }; // 2026-08-31 -- Kingsbane no longer contributes
   poison_debuffs = { debuffs.atrophic_poison, debuffs.crippling_poison, debuffs.numbing_poison,
                      debuffs.wound_poison, debuffs.amplifying_poison };
 

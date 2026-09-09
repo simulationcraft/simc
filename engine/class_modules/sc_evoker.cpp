@@ -369,7 +369,7 @@ struct simplified_player_t : public player_t
   // Options
   struct options_t
   {
-    int item_level      = 311;
+    int item_level      = 323;
     std::string variant = "default";
     double skill         = 1.0;
   } option;
@@ -1311,6 +1311,8 @@ struct evoker_t : public player_t
     bool nerf_em_for_external_sims                             = false;
     bool patchwerk_in_dungeon                                  = false;
     bool force_raid                                            = false;
+    std::string shifting_sands_target_if_str                   = "";
+    bool sands_shuffle_list                                    = true;
   } option;
 
   // Action pointers
@@ -3316,6 +3318,13 @@ struct empowered_release_t : public empowered_base_t<BASE>
         aoe = 1;
     }
 
+    void init() override
+    {
+      option.target_if_str = p()->option.shifting_sands_target_if_str;
+
+      evoker_augment_t::init();
+    }
+
     void execute() override
     {
       target_cache.is_valid = false;
@@ -3337,10 +3346,16 @@ struct empowered_release_t : public empowered_base_t<BASE>
     {
       target_list.clear();
 
+      target_list.push_back( target );
+
       for ( const auto& t : sim->player_no_pet_list )
       {
         if ( t->is_sleeping() )
           continue;
+
+        if ( t == target )
+          continue;
+
         target_list.push_back( t );
       }
 
@@ -3349,12 +3364,15 @@ struct empowered_release_t : public empowered_base_t<BASE>
 
       auto shifting_point = std::partition( target_list.begin(), target_list.end(), [ & ]( player_t* t ) {
         return std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } );
+                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.shifting_sands->up(); } ) &&
+               !p()->get_target_data( t )->buffs.shifting_sands->up();
       } );
 
       if ( shifting_point > target_list.begin() )
       {
-        rng().shuffle( target_list.begin(), shifting_point );
+        if ( p()->option.sands_shuffle_list )
+          rng().shuffle( target_list.begin(), shifting_point );
+
         std::partition( target_list.begin(), shifting_point, [ & ]( player_t* t ) {
           return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
                  t != player;
@@ -3363,7 +3381,9 @@ struct empowered_release_t : public empowered_base_t<BASE>
 
       if ( shifting_point < target_list.end() )
       {
-        rng().shuffle( shifting_point, target_list.end() );
+        if ( p()->option.sands_shuffle_list )
+          rng().shuffle( shifting_point, target_list.end() );
+
         std::partition( shifting_point, target_list.end(), [ & ]( player_t* t ) {
           return t->primary_role() != ROLE_HYBRID && t->primary_role() != ROLE_HEAL && t->primary_role() != ROLE_TANK &&
                  t != player;
@@ -3371,6 +3391,21 @@ struct empowered_release_t : public empowered_base_t<BASE>
       }
 
       return target_list.size();
+    }
+
+    bool target_ready( player_t* candidate_target ) override
+    {
+      auto ally_shifting = ( std::any_of(
+          p()->allied_augmentations.begin(), p()->allied_augmentations.end(), [ candidate_target ]( evoker_t* e ) {
+            return e->get_target_data( candidate_target )->buffs.shifting_sands->check();
+          } ) );
+
+      if ( ally_shifting || p()->get_target_data( candidate_target )->buffs.shifting_sands->check() )
+      {
+        return false;
+      }
+
+      return evoker_augment_t::target_ready( candidate_target );
     }
 
     // No point caching using basic cache, cache would be ruined by every cast.
@@ -8104,7 +8139,7 @@ public:
   bool force_external;
   bombardments_damage_t( player_t* p )
     : base( "bombardments", p, p->find_spell( 434481 ) ),
-      diverted_power_chance( 0.085 ),  // Reasonable guess. TODO: Get more accurate
+      diverted_power_chance( 0.1 ),  // Reasonable guess. TODO: Get more accurate
       cooldown_objects{ false },
       force_external( false )
   {
@@ -10750,6 +10785,8 @@ void evoker_t::create_options()
   add_option( opt_bool( "evoker.patchwerk_in_dungeon", option.patchwerk_in_dungeon ) );
   add_option( opt_bool( "evoker.nerf_em_for_external_sims", option.nerf_em_for_external_sims ) );
   add_option( opt_bool( "evoker.force_raid", option.force_raid ) );
+  add_option( opt_string( "evoker.shifting_sands_target_if_str", option.shifting_sands_target_if_str ) );
+  add_option( opt_bool( "evoker.sands_shuffle_list", option.sands_shuffle_list ) );
 }
 
 void evoker_t::analyze( sim_t& sim )

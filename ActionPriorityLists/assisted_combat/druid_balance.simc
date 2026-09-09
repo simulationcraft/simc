@@ -16,7 +16,7 @@ actions.assisted_combat+=/celestial_alignment,if=buff.eclipse_solar.down&buff.ec
 actions.assisted_combat+=/starfire,if=buff.eclipse_solar.down&buff.eclipse_lunar.down&active_enemies>3&buff.lunar_eclipse_override.down&talent.eclipse
 actions.assisted_combat+=/wrath,if=!talent.lunar_calling&buff.eclipse_solar.down&buff.eclipse_lunar.down&active_enemies<=2&buff.lunar_eclipse_override.up&talent.eclipse
 actions.assisted_combat+=/fury_of_elune,if=buff.eclipse_solar.down&buff.eclipse_lunar.down&astral_power>=55
-actions.assisted_combat+=/solar_eclipse,if=talent.eclipse&buff.eclipse_solar.down&buff.eclipse_lunar.down&astral_power>=60
+actions.assisted_combat+=/eclipse,if=talent.eclipse&buff.eclipse_solar.down&buff.eclipse_lunar.down&astral_power>=60
 actions.assisted_combat+=/starfall,if=active_enemies>3&astral_power>=90
 actions.assisted_combat+=/starsurge,if=active_enemies<=2&astral_power>=90
 actions.assisted_combat+=/wrath,if=buff.eclipse_solar.down&buff.eclipse_lunar.down&buff.lunar_eclipse_override.down&astral_power<=59.9

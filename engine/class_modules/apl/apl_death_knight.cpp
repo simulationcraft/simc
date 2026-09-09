@@ -254,8 +254,8 @@ void frost( player_t* p )
   aoe->add_action( "frostscythe,if=buff.killing_machine.react&!variable.rune_pooling&active_enemies>=variable.frostscythe_priority" );
   aoe->add_action( "obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=buff.killing_machine.react&!variable.rune_pooling" );
   aoe->add_action( "howling_blast,if=buff.rime.react" );
-  aoe->add_action( "glacial_advance,if=!variable.rp_pooling&active_enemies>=3" );
-  aoe->add_action( "frost_strike,if=!variable.rp_pooling&active_enemies<=2" );
+  aoe->add_action( "glacial_advance,if=!variable.rp_pooling&active_enemies>=3+(1*talent.deathly_blows)" );
+  aoe->add_action( "frost_strike,if=!variable.rp_pooling" );
   aoe->add_action( "frostscythe,if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)&active_enemies>=variable.frostscythe_priority" );
   aoe->add_action( "obliterate,target_if=max:(hero_tree.rider_of_the_apocalypse&debuff.chains_of_ice_trollbane_slow.react),if=!variable.rune_pooling&!(talent.obliteration&buff.pillar_of_frost.up)" );
   aoe->add_action( "howling_blast,if=!buff.killing_machine.react&(talent.obliteration&buff.pillar_of_frost.up)" );
@@ -315,7 +315,7 @@ void frost( player_t* p )
   variables->add_action( "variable,name=fwf_buffs,value=(buff.pillar_of_frost.remains<gcd.max|(buff.unholy_strength.up&buff.unholy_strength.remains<gcd.max)|(talent.bonegrinder.rank=2&buff.bonegrinder_frost.up&buff.bonegrinder_frost.remains<gcd.max))&(active_enemies>1|debuff.razorice.stack=5|talent.shattering_blade)" );
   variables->add_action( "variable,name=rune_pooling,value=hero_tree.deathbringer&cooldown.reapers_mark.remains<6&rune<3&variable.sending_cds" );
   variables->add_action( "variable,name=rp_pooling,value=talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains<4*gcd.max&runic_power<60+(35+5*buff.icy_onslaught.up)-(10*rune)&variable.sending_cds" );
-  variables->add_action( "variable,name=frostscythe_priority,value=2", "Frostscythe is better at 2 targets" );
+  variables->add_action( "variable,name=frostscythe_priority,value=3", "Frostscythe is better at 3 targets" );
   variables->add_action( "variable,name=breath_of_sindragosa_check,value=!talent.breath_of_sindragosa|(cooldown.breath_of_sindragosa.remains>20|(cooldown.breath_of_sindragosa.remains<1*gcd.max&runic_power>=(60-20*hero_tree.deathbringer)))" );
 }
 //frost_apl_end
@@ -369,7 +369,7 @@ void unholy( player_t* p )
   cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=pet.army_ghoul.active|buff.forbidden_knowledge.up|buff.dark_transformation.up", "Use<a href = 'https://www.wowhead.com/spell=10060/power-infusion'> Power Infusion</ a> while<a href = 'https://www.wowhead.com/spell=1233448/dark-transformation'> Dark Transformation</ a> is up" );
   cooldowns->add_action( "outbreak,if=(!talent.blightburst|talent.blightburst&(cooldown.putrefy.remains>gcd.max*2|time<5))&(dot.dread_plague.active_dots=0|dot.virulent_plague.active_dots=0)&(fight_remains>gcd.max*2&!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>gcd.max*2)" );
   cooldowns->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(buff.festering_scythe_tt.up|!talent.festering_scythe)" );
-  cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&!buff.blightfall.up&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead)|buff.blightfall.up&(talent.reaping&talent.soul_reaper&debuff.soul_reaper_debuff.up&debuff.soul_reaper_debuff.remains<gcd*2|!talent.soul_reaper|!talent.reaping)" );
+  cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&!buff.blightfall.up&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead)|buff.blightfall.up&(talent.reaping&talent.soul_reaper&debuff.soul_reaper_debuff.up&debuff.soul_reaper_debuff.remains<gcd*2|!talent.soul_reaper&buff.dark_transformation.remains<gcd*2|!talent.reaping&buff.dark_transformation.remains<gcd*2|raid_event.adds.exists&raid_event.adds.remains<3|fight_remains<3)" );
 
   racials->add_action( "ancestral_call,if=variable.cds_active", "Racials" );
   racials->add_action( "arcane_pulse,if=runic_power<20&rune<2" );
@@ -402,7 +402,7 @@ void unholy( player_t* p )
   variables->add_action( "variable,name=st_planning,op=setif,value=1,value_else=0,condition=active_enemies=1&(!raid_event.adds.exists|!raid_event.adds.in|raid_event.adds.in>15|!raid_event.pull.exists|raid_event.pull.exists&raid_event.pull.in>15)" );
   variables->add_action( "variable,name=adds_remain,value=active_enemies>=2&((!raid_event.adds.exists|!raid_event.pull.exists)|raid_event.adds.remains>5|raid_event.pull.remains>5)" );
   variables->add_action( "variable,name=cds_active,value=pet.army_ghoul.active|buff.forbidden_knowledge.up|buff.dark_transformation.up&buff.dark_transformation.remains>5" );
-  variables->add_action( "variable,name=epidemic_prio,value=active_enemies>=4&!buff.forbidden_knowledge.up|active_enemies>=6&buff.forbidden_knowledge.up" );
+  variables->add_action( "variable,name=epidemic_prio,value=active_enemies>=3&!buff.forbidden_knowledge.up|active_enemies>=4&buff.forbidden_knowledge.up" );
 }
 //unholy_apl_end
 

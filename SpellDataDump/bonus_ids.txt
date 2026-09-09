@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69497 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69587 Live
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
@@ -8305,3 +8305,5 @@ bonus_id={ 13902 }, base_ilevel={ 126 }, quality={ rare }
 bonus_id={ 13935 }, base_ilevel={ 120 }, quality={ uncommon }
 bonus_id={ 13936 }, base_ilevel={ 126 }, quality={ rare }
 bonus_id={ 13987 }, desc={ Venomcursed }, effects={ Venomcursed Ascendance (id=1317582, index=0, type=equip) }
+bonus_id={ 14047 }, base_ilevel={ 133 }
+bonus_id={ 14048 }, base_ilevel={ 133 }

@@ -35,8 +35,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     next_armament( SACRED_WEAPON ),
     random_weapon_target( nullptr ),
     random_bulwark_target( nullptr ),
-    divine_inspiration_next( -1 ),
-    reflection_of_radiance_proc_chance( .04 ) // ToDo Fluttershy: Find out real proc chance - Currently something very, very low
+    divine_inspiration_next( -1 )
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
@@ -84,6 +83,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
 
   cooldowns.righteous_cause_icd = get_cooldown( "righteous_cause_icd" );
   cooldowns.righteous_cause_icd->duration = find_spell( 402912 )->internal_cooldown();
+
+  cooldowns.divine_resonance_icd = get_cooldown( "divine_resonance_icd" );
+  cooldowns.divine_resonance_icd->duration = find_spell( 1266308 )->internal_cooldown();
 
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
@@ -1100,7 +1102,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
       }
     }
 
-    p()->trigger_grand_crusader();
+    p()->trigger_grand_crusader( GC_CS );
     p()->buffs.lightsmith.blessed_assurance->expire();
   }
 
@@ -1541,9 +1543,10 @@ struct judgment_ret_t : public judgment_t
   {
     judgment_t::execute();
 
-    if ( !background && p()->specialization() == PALADIN_RETRIBUTION && p()->buffs.divine_resonance->up() )
+    if ( !background && p()->specialization() == PALADIN_RETRIBUTION && p()->buffs.divine_resonance->up() && p()->cooldowns.divine_resonance_icd->up() )
     {
       p()->active.divine_resonance_ret->execute_on_target( execute_state->target );
+      p()->cooldowns.divine_resonance_icd->start();
       p()->buffs.divine_resonance->decrement();
     }
   }
@@ -1641,6 +1644,12 @@ hammer_of_wrath_t::hammer_of_wrath_t(paladin_t* p, util::string_view n, const sp
   triggers_divine_resonance = true;
   triggers_second_sunrise   = false;
   cooldown->duration        = 0_ms;
+
+  if ( p->talents.blessed_champion->ok() )
+  {
+    aoe = as<int>( 1 + p->talents.blessed_champion->effectN( 4 ).base_value() );
+    base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
+  }
 }
 
 hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util::string_view options_str,
@@ -1672,6 +1681,7 @@ hammer_of_wrath_t::hammer_of_wrath_t( paladin_t* p, util::string_view name, util
     echo->base_aoe_multiplier     = base_aoe_multiplier;
     echo->crit_bonus_multiplier   = crit_bonus_multiplier;
     echo->triggers_higher_calling = true;
+    echo->triggers_divine_resonance = false;
     echo->base_multiplier *= p->talents.herald_of_the_sun.second_sunrise->effectN( 2 ).percent();
   }
   if ( p->specialization() == PALADIN_PROTECTION )
@@ -1700,9 +1710,11 @@ void hammer_of_wrath_t::execute()
   if ( result_is_hit( execute_state->result ) && p()->talents.sanctified_wrath->ok() && p()->wings_up() )
     p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.judgment );
 
-  if ( triggers_divine_resonance && p()->specialization() == PALADIN_RETRIBUTION && p()->buffs.divine_resonance->up() )
+  if ( triggers_divine_resonance && p()->specialization() == PALADIN_RETRIBUTION && p()->buffs.divine_resonance->up() &&
+       p()->cooldowns.divine_resonance_icd->up() )
   {
     p()->active.divine_resonance_ret_how->execute_on_target( execute_state->target );
+    p()->cooldowns.divine_resonance_icd->start();
     p()->buffs.divine_resonance->decrement();
   }
   if (p()->talents.herald_of_the_sun.walk_into_light->ok() && p()->wings_up() && p()->cooldowns.walk_into_light_icd->up())
@@ -1847,6 +1859,10 @@ struct divine_toll_t : public paladin_spell_t
       {
         p()->active.divine_toll->execute_on_target( s->target );
       }
+      if ( p()->talents.lightsmith.resounding_strike->ok() )
+      {
+        trigger_hammer_and_anvil( p(), s->target, haa, HAA_DIVINE_TOLL );
+      }
     }
   }
 
@@ -1892,10 +1908,6 @@ struct divine_toll_t : public paladin_spell_t
       {
         make_event<delayed_execute_event_t>( *sim, p(), a, execute_state->target, 300_ms * ( i + 1 ) );
       }
-    }
-    if ( p()->talents.lightsmith.resounding_strike->ok() )
-    {
-      trigger_hammer_and_anvil( p(), execute_state->target, haa, HAA_DIVINE_TOLL );
     }
   }
 };
@@ -2374,13 +2386,12 @@ struct sacred_weapon_proc_damage_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    double chance = p()->reflection_of_radiance_proc_chance;
+    double chance = p()->options.reflection_of_radiance_proc_chance_sacred_weapon;
     if ( p()->options.fake_solidarity )
       chance = 1.0 - ( std::pow( 1.0 - chance, p()->buffs.lightsmith.fake_solidarity->stack() + 1 ) );
     if ( p()->talents.lightsmith.reflection_of_radiance->ok() && p()->rng().roll( chance ) )
     {
-      p()->trigger_grand_crusader( GC_ROR );
-      p()->procs.grand_crusader_ror_sw->occur();
+      p()->trigger_grand_crusader( GC_ROR_SW );
     }
   }
 
@@ -3504,13 +3515,15 @@ void paladin_t::init_procs()
   procs.empyrean_power    = get_proc( "Empyrean Power" );
 
   procs.as_grand_crusader         = get_proc( "Avenger's Shield: Grand Crusader" );
-  procs.as_grand_crusader_wasted  = get_proc( "Avenger's Shield: Grand Crusader wasted" );
+  procs.as_grand_crusader_wasted = get_proc( "Avenger's Shield: Grand Crusader wasted" );
+  procs.as_grand_crusader_ror_sw = get_proc( "Grand Crusader: Reflection of Radiance Sacred Weapon" );
+  procs.as_grand_crusader_ror_hb = get_proc( "Grand Crusader: Reflection of Radiance Holy Bulwark" );
+  procs.as_grand_crusader_avoid   = get_proc( "Grand Crusader: Parry/Dodge/Miss" );
+  procs.as_grand_crusader_cs      = get_proc( "Grand Crusader: CS/BH/HotR" );
+
   procs.divine_inspiration = get_proc( "Divine Inspiration" );
 
   procs.templar_lights_judicator = get_proc( "Templar Light's Judicator LD additional stacks" );
-
-  procs.grand_crusader_ror_sw = get_proc( "Grand Crusader: Reflection of Radiance Sacred Weapon" );
-  procs.grand_crusader_ror_hb = get_proc( "Grand Crusader: Reflection of Radiance Holy Bulwark" );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -4862,7 +4875,7 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
   // Trigger Grand Crusader on an avoidance event (TODO: test if it triggers on misses)
   if ( s->result == RESULT_DODGE || s->result == RESULT_PARRY || s->result == RESULT_MISS )
   {
-    trigger_grand_crusader();
+    trigger_grand_crusader( GC_AVOID );
   }
 
   player_t::assess_damage( school, dtype, s );
@@ -4876,6 +4889,8 @@ void paladin_t::create_options()
   add_option( opt_bool( "paladin_fake_sov", options.fake_sov ) );
   add_option( opt_bool( "fake_solidarity", options.fake_solidarity ) );
   add_option( opt_float( "blessed_hammer_strikes", options.blessed_hammer_strikes, 1, 3 ) );
+  add_option( opt_float( "reflection_of_radiance_proc_chance_sacred_weapon", options.reflection_of_radiance_proc_chance_sacred_weapon, 0, 1 ) );
+  add_option( opt_float( "reflection_of_radiance_proc_chance_holy_bulwark", options.reflection_of_radiance_proc_chance_holy_bulwark, 0, 1 ) );
   add_option( opt_float( "ror_bulwark_additional_proc_chance", options.ror_bulwark_additional_proc_chance, 0, 1 ) );
   add_option( opt_string( "starting_armament", options.starting_armament ) );
 

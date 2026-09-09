@@ -59,7 +59,10 @@ enum grand_crusader_source : unsigned int
 {
   GC_NORMAL   = 0,
   GC_JUDGMENT = 1,
-  GC_ROR      = 2,
+  GC_ROR_SW   = 2,
+  GC_ROR_HB   = 3,
+  GC_CS       = 4,
+  GC_AVOID    = 5,
 };
 
 // ==========================================================================
@@ -332,6 +335,7 @@ public:
     cooldown_t* ret_aura_icd;
     cooldown_t* consecrated_blade_icd;
     cooldown_t* righteous_cause_icd;
+    cooldown_t* divine_resonance_icd;
 
     cooldown_t* aurora_icd;
     cooldown_t* second_sunrise_icd;
@@ -378,15 +382,14 @@ public:
 
     proc_t* as_grand_crusader;
     proc_t* as_grand_crusader_wasted;
-    proc_t* as_moment_of_glory;
-    proc_t* as_moment_of_glory_wasted;
+    proc_t* as_grand_crusader_avoid;
+    proc_t* as_grand_crusader_cs;
+    proc_t* as_grand_crusader_ror_sw;
+    proc_t* as_grand_crusader_ror_hb;
 
     proc_t* divine_inspiration;
 
     proc_t* templar_lights_judicator;
-
-    proc_t* grand_crusader_ror_sw;
-    proc_t* grand_crusader_ror_hb;
   } procs;
 
   struct proc_data_entries_t
@@ -763,11 +766,13 @@ public:
   // Paladin options
   struct options_t
   {
-    bool fake_sov                         = true;
-    bool fake_solidarity                  = true;
-    double ror_bulwark_additional_proc_chance = .3;
-    double blessed_hammer_strikes          = 2.0;
-    std::string starting_armament             = "sacred_weapon";
+    bool fake_sov                                           = true;
+    bool fake_solidarity                                    = true;
+    double ror_bulwark_additional_proc_chance               = 1.0;
+    double blessed_hammer_strikes                           = 2.0;
+    double reflection_of_radiance_proc_chance_sacred_weapon = .1;
+    double reflection_of_radiance_proc_chance_holy_bulwark  = .2;
+    std::string starting_armament                           = "sacred_weapon";
   } options;
   player_t* beacon_target;
 
@@ -778,8 +783,6 @@ public:
   player_t* random_weapon_target;
   player_t* random_bulwark_target;
   int divine_inspiration_next;
-
-  double reflection_of_radiance_proc_chance;
 
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
@@ -991,16 +994,14 @@ struct holy_bulwark_absorb_t : public absorb_buff_t
   void absorb_used( double absorbed, player_t* source ) override
   {
     absorb_buff_t::absorb_used( absorbed, source );
-    double chance = caster->reflection_of_radiance_proc_chance;
+    double chance = caster->options.reflection_of_radiance_proc_chance_holy_bulwark;
     double stacks = caster->buffs.lightsmith.fake_solidarity_bulwark->stack();
-    // Holy Bulwarks on the group don't trigger all that often, so it shouldn't be a 100% increased chance
     double increasedChance = stacks * caster->options.ror_bulwark_additional_proc_chance;  
     if ( caster->options.fake_solidarity )
       chance = 1.0 - ( std::pow( 1.0 - chance, increasedChance  + 1 ) );
     if ( caster->talents.lightsmith.reflection_of_radiance->ok() && caster->rng().roll( chance ) )
     {
-      caster->trigger_grand_crusader( GC_ROR );
-      caster->procs.grand_crusader_ror_hb->occur();
+      caster->trigger_grand_crusader( GC_ROR_HB );
     }
   }
 };

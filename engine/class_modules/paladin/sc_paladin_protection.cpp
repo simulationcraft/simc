@@ -449,7 +449,7 @@ struct blessed_hammer_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
     // Grand Crusader can proc on cast, but not on impact
-    p()->trigger_grand_crusader();
+    p()->trigger_grand_crusader( GC_CS );
     if ( p()->buffs.lightsmith.masterwork_weapon->up() )
     {
       p()->buffs.lightsmith.masterwork_weapon->decrement();
@@ -641,7 +641,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     if ( result_is_hit( execute_state->result ) )
     {
       // Grand Crusader
-      p()->trigger_grand_crusader();
+      p()->trigger_grand_crusader( GC_CS );
 
       if ( hotr_aoe->target != execute_state->target )
         hotr_aoe->target_cache.is_valid = false;
@@ -900,7 +900,7 @@ block_result_e paladin_t::target_block_resolution( const action_state_t* s ) con
     return BLOCK_RESULT_UNBLOCKED;
 }
 
-void paladin_t::trigger_grand_crusader( grand_crusader_source /* source */ )
+void paladin_t::trigger_grand_crusader( grand_crusader_source source )
 {
   // escape if we don't have Grand Crusader
   if ( ! talents.grand_crusader->ok() )
@@ -908,10 +908,13 @@ void paladin_t::trigger_grand_crusader( grand_crusader_source /* source */ )
 
   double gc_proc_chance = talents.grand_crusader->effectN( 1 ).percent();
 
-  // The bonus from First Avenger is added after Inspiring Vanguard
-  bool success = rng().roll( gc_proc_chance );
-  if ( ! success )
-    return;
+  // Roll if GC was not triggered from Holy Bulwark or Sacred Weapon. They already rolled.
+  if ( source != GC_ROR_HB && source != GC_ROR_SW )
+  {
+    bool success = rng().roll( gc_proc_chance );
+    if ( !success )
+      return;
+  }
 
   // reset AS cooldown and count procs
   if ( ! cooldowns.avengers_shield->is_ready() )
@@ -921,6 +924,24 @@ void paladin_t::trigger_grand_crusader( grand_crusader_source /* source */ )
   }
   else
     procs.as_grand_crusader_wasted->occur();
+
+  switch (source)
+  {
+    case GC_AVOID:
+      procs.as_grand_crusader_avoid->occur();
+      break;
+    case GC_CS:
+      procs.as_grand_crusader_cs->occur();
+      break;
+    case GC_ROR_SW:
+      procs.as_grand_crusader_ror_sw->occur();
+      break;
+    case GC_ROR_HB:
+      procs.as_grand_crusader_ror_hb->occur();
+      break;
+    default:
+      break;
+  }
 
   if ( cooldowns.judgment != nullptr && talents.crusaders_judgment->ok() && cooldowns.judgment->current_charge < cooldowns.judgment->charges )
   {

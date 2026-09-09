@@ -267,31 +267,34 @@ void havoc( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* items = p->get_action_priority_list( "items" );
 
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=tab_target_burning_wound,op=reset,default=1" );
   precombat->add_action( "variable,name=rg_ds,default=0,op=reset" );
-  precombat->add_action( "variable,name=trinket1_special,value=trinket.1.is.algethar_puzzle_box" );
-  precombat->add_action( "variable,name=trinket2_special,value=trinket.2.is.algethar_puzzle_box" );
-  precombat->add_action( "variable,name=trinket1_crit,value=!variable.trinket1_special&trinket.1.has_cooldown&trinket.1.has_use_damage" );
-  precombat->add_action( "variable,name=trinket2_crit,value=!variable.trinket2_special&trinket.2.has_cooldown&trinket.2.has_use_damage" );
+  precombat->add_action( "variable,name=trinket1_special,value=0" );
+  precombat->add_action( "variable,name=trinket2_special,value=0" );
+  precombat->add_action( "variable,name=trinket1_crit,value=!variable.trinket1_special&trinket.1.has_cooldown&trinket.1.has_use_damage&!trinket.1.is.font_of_venomous_rage" );
+  precombat->add_action( "variable,name=trinket2_crit,value=!variable.trinket2_special&trinket.2.has_cooldown&trinket.2.has_use_damage&!trinket.1.is.font_of_venomous_rage" );
   precombat->add_action( "variable,name=trinket1_steroids,value=!variable.trinket1_special&trinket.1.has_cooldown&trinket.1.has_use_buff" );
   precombat->add_action( "variable,name=trinket2_steroids,value=!variable.trinket2_special&trinket.2.has_cooldown&trinket.2.has_use_buff" );
   precombat->add_action( "immolation_aura" );
 
   default_->add_action( "auto_attack" );
+  default_->add_action( "retarget_auto_attack,line_cd=1,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&active_dot.burning_wound<(spell_targets>?3)&variable.tab_target_burning_wound", "Default auto attack to spread Burning Wound, use tab_target_burning_wound=0 to spread with Throw Glaive instead" );
+  default_->add_action( "retarget_auto_attack,line_cd=1,target_if=min:!target.is_boss,if=talent.burning_wound&active_dot.burning_wound=(spell_targets>?3)&variable.tab_target_burning_wound" );
   default_->add_action( "immolation_aura,if=talent.violent_transformation&talent.a_fire_inside&cooldown.metamorphosis.remains<gcd.max*3" );
   default_->add_action( "metamorphosis,if=(!talent.chaotic_transformation|!cooldown.blade_dance.up&cooldown.eye_beam.remains>8)&!action.death_sweep.demonsurge_available&!action.annihilation.demonsurge_available" );
   default_->add_action( "the_hunt,if=(!talent.eternal_hunt|cooldown.eye_beam.remains<10&cooldown.metamorphosis.remains>15|!cooldown.eye_beam.up&cooldown.metamorphosis.up|!hero_tree.felscarred)&!buff.reavers_glaive.up", "actions+=/metamorphosis,if=!talent.chaotic_transformation|!cooldown.blade_dance.up&!cooldown.eye_beam.up" );
   default_->add_action( "vengeful_retreat,use_off_gcd=1,if=gcd.remains<0.3&cooldown.metamorphosis.remains&cooldown.eye_beam.remains<gcd.max*0.3&!buff.initiative.up|cooldown.metamorphosis.up&cooldown.eye_beam.remains&cooldown.blade_dance.remains&!buff.eternal_hunt.up" );
-  default_->add_action( "potion,if=cooldown.metamorphosis.up&(cooldown.eye_beam.up|!talent.chaotic_transformation)|fight_remains<=30" );
-  default_->add_action( "use_items,if=cooldown.metamorphosis.up|cooldown.eye_beam.up|fight_remains<=20" );
+  default_->add_action( "call_action_list,name=items" );
   default_->add_action( "pick_up_fragment,type=all,use_off_gcd=1,if=fury<=40" );
   default_->add_action( "reavers_glaive,if=buff.rending_strike.down&buff.glaive_flurry.down" );
   default_->add_action( "annihilation,if=buff.rending_strike.up&buff.glaive_flurry.down&debuff.reavers_mark.stack<2|buff.rending_strike.up&active_enemies>=2" );
   default_->add_action( "essence_break,if=action.death_sweep.demonsurge_available|action.annihilation.demonsurge_available" );
   default_->add_action( "death_sweep,if=debuff.essence_break.up|action.death_sweep.demonsurge_available" );
   default_->add_action( "annihilation,if=debuff.essence_break.up|action.annihilation.demonsurge_available" );
+  default_->add_action( "throw_glaive,if=active_enemies>1&talent.burning_wound&!talent.screaming_brutality&active_dot.burning_wound<(spell_targets>?3)&!variable.tab_target_burning_wound" );
   default_->add_action( "immolation_aura,if=talent.a_fire_inside&talent.burning_wound&(charges=2|full_recharge_time<gcd.max*2)" );
   default_->add_action( "eye_beam" );
   default_->add_action( "immolation_aura,,if=action.immolation_aura.demonsurge_available&buff.demonsurge.remains<gcd.max" );
@@ -305,6 +308,14 @@ void havoc( player_t* p )
   default_->add_action( "chaos_strike" );
   default_->add_action( "felblade" );
   default_->add_action( "immolation_aura" );
+  default_->add_action( "arcane_torrent" );
+
+  items->add_action( "potion,use_off_gcd=1,if=cooldown.metamorphosis.up&(cooldown.eye_beam.up|!talent.chaotic_transformation)|fight_remains<=30" );
+  items->add_action( "use_item,slot=trinket1,use_off_gcd=1,if=variable.trinket1_steroids&(!variable.trinket2_special|trinket.2.cooldown.remains>20)|fight_remains<15" );
+  items->add_action( "use_item,slot=trinket1,use_off_gcd=1,if=variable.trinket1_crit&(buff.initiative.up|!talent.initiative)&(!variable.trinket2_special|trinket.2.cooldown.remains>20)|fight_remains<15" );
+  items->add_action( "use_item,name=font_of_venomous_rage,if=buff.initiative.up&buff.initiative.remains>2&(!buff.metamorphosis.up|fight_remains<buff.metamorphosis.remains)&!debuff.essence_break.up|fight_remains<19" );
+  items->add_action( "use_item,slot=trinket2,use_off_gcd=1,if=variable.trinket2_steroids&(!variable.trinket1_special|trinket.1.cooldown.remains>20)|fight_remains<15" );
+  items->add_action( "use_item,slot=trinket2,use_off_gcd=1,if=variable.trinket2_crit&(buff.initiative.up|!talent.initiative)&(!variable.trinket1_special|trinket.1.cooldown.remains>20)|fight_remains<15" );
 }
 //havoc_apl_end
 // clang-format on

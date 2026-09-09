@@ -27,7 +27,7 @@ jobs:
       do-test: ${{ github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch }}
 
   spec-test-selection:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     if: github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch
     outputs:
       spec-matrix: ${{ steps.select.outputs.spec-matrix }}
@@ -191,7 +191,7 @@ jobs:
           echo "Selected spec matrix: $SPEC_JSON"
 
   environment-configuration-info:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Report Environment Configuration Information
         run: |
@@ -202,7 +202,7 @@ jobs:
     if: github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch
     uses: ./.github/workflows/spec_test.yml
     with:
-      cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
+      cache-key: ubuntu-clang++-16-for_run-${{ github.sha }}-cpp-17
       is-ptr: false
       spec-matrix: ${{ needs.spec-test-selection.outputs.spec-matrix }}
 
@@ -211,7 +211,7 @@ jobs:
     if: github.base_ref == github.event.repository.default_branch || github.ref_name == github.event.repository.default_branch
     uses: ./.github/workflows/spec_test.yml
     with:
-      cache-key: ubuntu-clang++-15-for_run-${{ github.sha }}-cpp-17
+      cache-key: ubuntu-clang++-16-for_run-${{ github.sha }}-cpp-17
       is-ptr: true
       spec-matrix: ${{ needs.spec-test-selection.outputs.spec-matrix }}
 
