@@ -1180,7 +1180,7 @@ public:
     heal_t* consume_soul_empowered_demon = nullptr;
     spell_t* immolation_aura_tick        = nullptr;
     spell_t* immolation_aura_initial     = nullptr;
-    spell_t* collective_anguish          = nullptr;
+    spell_t* the_hunt_dot                = nullptr;
 
     // Devourer
     spell_t* void_buildup = nullptr;
@@ -1197,6 +1197,7 @@ public:
     attack_t* screaming_brutality_slash_proc_throw_glaive          = nullptr;
     attack_t* essence_break_proc                                   = nullptr;
     spell_t* glaive_tempest                                        = nullptr;
+    spell_t* collective_anguish          = nullptr;
 
     // Vengeance
     spell_t* infernal_armor = nullptr;
@@ -4041,7 +4042,8 @@ struct eye_beam_base_t : public student_of_suffering_trigger_t<final_breath_trig
       // 08/01/2026 - Essence Break and Eyebeam currently reduce the value of the other by 2.5 seconds when stacks 2 - 4
       // are each applied.
       // 2026-08-17 -- EssB is only reduced if the playerh as the 4pc equipped.
-      if ( dh()->set_bonuses.mid2_havoc_4pc->ok() && dh()->buff.cycle_of_hatred->check() && dh()->buff.cycle_of_hatred->stack() < 4 )
+      if ( dh()->set_bonuses.mid2_havoc_4pc->ok() && dh()->buff.cycle_of_hatred->check() &&
+           dh()->buff.cycle_of_hatred->stack() < 4 )
       {
         dh()->cooldown.essence_break->adjust(
             -timespan_t::from_millis( as<int>( dh()->buff.cycle_of_hatred->check_value() ) ) );
@@ -5504,29 +5506,28 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
 
 // The Hunt =================================================================
 
+struct the_hunt_dot_t : public demon_hunter_spell_t
+{
+  the_hunt_dot_t( util::string_view n, demon_hunter_t* p )
+    : demon_hunter_spell_t( n, p, p->spec.the_hunt_dot )
+  {
+    dual         = true;
+    aoe          = as<int>( p->spec.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
+    dot_behavior = DOT_NONE;
+  }
+};
+
 struct the_hunt_base_t
   : public voidrush_trigger_t<hungering_slash_trigger_t<
         unbound_chaos_trigger_t<inertia_trigger_trigger_t<exergy_trigger_t<demon_hunter_spell_t>>>>>
 {
-  struct the_hunt_dot_t : public demon_hunter_spell_t
-  {
-    the_hunt_dot_t( util::string_view n, demon_hunter_t* p )
-      : demon_hunter_spell_t( fmt::format( "{}_dot", n ), p, p->spec.the_hunt_dot )
-    {
-      dual = true;
-      aoe  = as<int>( p->spec.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
-      dot_behavior = DOT_NONE;
-    }
-  };
-
   struct the_hunt_damage_t : public demon_hunter_spell_t
   {
     the_hunt_damage_t( util::string_view n, demon_hunter_t* p )
       : demon_hunter_spell_t( fmt::format( "{}_damage", n ), p, p->spec.the_hunt_impact )
     {
       dual          = true;
-      impact_action = p->get_background_action<the_hunt_dot_t>( n );
-      add_child( impact_action );
+      impact_action = p->active.the_hunt_dot;
     }
 
     void impact( action_state_t* s ) override
@@ -6567,7 +6568,7 @@ struct collapsing_star_t : public demon_hunter_spell_t
     dh()->buff.collapsing_star->expire();
     dh()->buff.collapsing_star_stack->decrement( soul_cost );
     demon_hunter_spell_t::execute();
- 
+
     if ( sim->dbc->wowv() >= wowv_t( 12, 1, 5 ) && dh()->talent.scarred.demonic_intensity->ok() )
     {
       dh()->cooldown.the_hunt->reset( false );
@@ -7625,7 +7626,7 @@ struct chaos_strike_base_t
     {
       dh()->active.warblades_hunger->execute_on_target( target );
       dh()->buff.warblades_hunger->expire();
-    } 
+    }
   }
 
   bool has_amount_result() const override
@@ -11497,9 +11498,9 @@ void demon_hunter_t::init_spells()
   // action
   active.burning_wound = get_background_action<burning_wound_t>( "burning_wound" );
 
-  if ( talent.havoc.collective_anguish->ok() )
+  if ( talent.devourer.the_hunt->ok() || talent.havoc.the_hunt->ok() )
   {
-    active.collective_anguish = get_background_action<collective_anguish_t>( "collective_anguish" );
+    active.the_hunt_dot = get_background_action<the_hunt_dot_t>( "the_hunt_dot" );
   }
 
   if ( spec.demon_blades_damage->ok() )
@@ -11540,6 +11541,10 @@ void demon_hunter_t::init_spells()
   if ( talent.havoc.glaive_tempest->ok() )
   {
     active.glaive_tempest = get_background_action<glaive_tempest_t>( "glaive_tempest" );
+  }
+  if ( talent.havoc.collective_anguish->ok() )
+  {
+    active.collective_anguish = get_background_action<collective_anguish_t>( "collective_anguish" );
   }
 
   if ( talent.vengeance.retaliation->ok() )
