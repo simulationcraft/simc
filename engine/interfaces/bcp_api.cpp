@@ -626,7 +626,8 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
       {
         const auto& stat_data = slot_data[ "stats" ][ stat_idx ];
 
-        // Stat for another spec. Armory doesn't have AgiInt, it has Agi and Int and inactive ones are is_negated
+        // Stat for another spec. Armory doesn't report the combined stats (StrAgiInt, AgiInt, etc). It uses the
+        // individual stats (Str, Agi, Int) uses is_negated to indicate which ones are inactive
         if ( stat_data.HasMember( "is_negated" ) && stat_data[ "is_negated" ].GetBool() )
         {
           continue;
