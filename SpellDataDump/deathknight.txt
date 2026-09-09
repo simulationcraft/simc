@@ -6729,6 +6729,7 @@ Attributes       : Do Not Log Immune Misses (3), Allow Cast While Dead (23), All
 Effects          :
 #1 (id=726036)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -90 | Scaled Value: -90 | PvP Coefficient: 0.666667 | Mechanic: Snare | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (0.666667 -> 0.666667)
                    Modified By: Grip of the Dead (273984 effect#1)
 Description      : $@spelldesc273952
 Tooltip          : Movement speed reduced by $w1% from $?s152280[Defile][Death and Decay].
