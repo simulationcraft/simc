@@ -773,6 +773,7 @@ public:
   // Counters
   unsigned int active_riders;     // Number of active Riders of the Apocalypse pets
   timespan_t lotd_magus_dur;      // Total Duration of Magus' consumed to summon a Lord of the Dead.
+  bool was_empowering;            // True while mid-empower and forced to move, blocks schedule_ready() so the release spell handles it
 
   std::vector<player_t*> undeath_tl;
 
@@ -1909,6 +1910,7 @@ public:
       runeforge_expression_warning( false ),
       active_riders( 0 ),
       lotd_magus_dur( 0_s ),
+      was_empowering( false ),
       undeath_tl(),
       buffs(),
       background_actions(),
@@ -2010,6 +2012,8 @@ public:
   double composite_bonus_armor() const override;
   void combat_begin() override;
   void activate() override;
+  void moving() override;
+  void schedule_ready( timespan_t, bool ) override;
   void reset() override;
   void arise() override;
   void adjust_dynamic_cooldowns() override;
@@ -5641,6 +5645,13 @@ struct death_knight_empowered_release_t : public death_knight_empowered_base_t<B
   {
     return static_cast<int>( base::cast_state( s )->empower );
   }
+
+  void execute() override
+  {
+    base::p()->was_empowering = false;
+
+    base::execute();
+  }
 };
 
 template <class BASE>
@@ -5826,15 +5837,12 @@ struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BA
 
     auto release_target = get_release_target( d );
 
-    // if ( empower_level( d ) == empower_e::EMPOWER_NONE || !release_target )
-    // {
-    //   base::p()->was_empowering = false;
-    //   return;
-    // }
-
     // If we have no valid targets, do not fire off the release spell
     if ( release_target == nullptr )
+    {
+      base::p()->was_empowering = false;
       return;
+    }
 
     release_spell->set_target( release_target );
 
@@ -16580,6 +16588,7 @@ void death_knight_t::reset()
   _runes.reset();
   runic_power_decay = nullptr;
   active_riders     = 0;
+  was_empowering    = false;
   if ( lesser_ghouls_summoned > 0 && options.extra_unholy_reporting )
     sample_data.lesser_ghouls_summoned->add( lesser_ghouls_summoned );
   lesser_ghouls_summoned = 0;
@@ -16587,6 +16596,29 @@ void death_knight_t::reset()
   active_lesser_ghouls.clear();
   active_dnds.clear();
   active_magi.clear();
+}
+
+// death_knight_t::moving ====================================================
+
+void death_knight_t::moving()
+{
+  // If we are mid-empower and forced to move, we don't want player_t::interrupt() to schedule_ready as the release
+  // action will handle that for us. We set the bool here and override player_t::schedule_ready to return if bool is
+  // set.
+  if ( channeling && dynamic_cast<death_knight_empowered_charge_spell_t*>( channeling ) )
+    was_empowering = true;
+
+  player_t::moving();
+}
+
+// death_knight_t::schedule_ready ============================================
+
+void death_knight_t::schedule_ready( timespan_t delta_time, bool waiting )
+{
+  if ( was_empowering )
+    return;
+
+  player_t::schedule_ready( delta_time, waiting );
 }
 
 // death_knight_t::assess_damage ============================================
