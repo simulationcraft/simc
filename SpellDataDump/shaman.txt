@@ -1632,7 +1632,7 @@ Cooldown         : 12 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Spiritwalker's Grace (79206 effect#1)
+Affecting Spells : Spiritwalker's Grace (79206 effect#1), Soothing Rain (1252874 effect#2)
 Family Flags     : 5
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow Low Level Buff (67), Spell Haste Affects Periodic (173), Always Show Ground Texture (190), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19)
@@ -17750,8 +17750,9 @@ Effects          :
                    Family Flags: 87
 #2 (id=1258294)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Healing Rain (1298679)
-                   Family Flags: 84
+                   Affected Spells: Healing Rain (73920)
+                   Family Flags: 5
+Hotfixed         : Affects Spells
 Description      : Increases the healing done by $?a455630[Surging Totem by $s1%.][Healing Rain by $s1% and reduces its cast time by ${$s2/-1000}.1 sec.]
 
 Name             : Double Dip (id=1252882) [Spell Family (11), Passive, Hidden] 
@@ -19267,7 +19268,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 6709
-Affecting Spells : Spiritwalker's Grace (79206 effect#1), Overflowing Shores (278077 effect#2), Nature's Swiftness (378081 effects: #1, #2), Overflowing Shores (383222 effect#1), Ancestral Swiftness (443454 effects: #1, #2), Soothing Rain (1252874 effect#2)
+Affecting Spells : Spiritwalker's Grace (79206 effect#1), Overflowing Shores (278077 effect#2), Nature's Swiftness (378081 effects: #1, #2), Overflowing Shores (383222 effect#1), Ancestral Swiftness (443454 effects: #1, #2)
 Triggered By     : Healing Rain (73920)
 Family Flags     : 84
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Low Level Buff (67), Allow Class Ability Procs (416)
