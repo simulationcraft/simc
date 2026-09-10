@@ -54,32 +54,34 @@
 
 # # save=MID2_Druid_Feral_DOTC.simc
 
-# druid="MID2_Druid_Feral_Wildstalker"
-# level=90
-# race=night_elf
-# timeofday=night
-# role=attack
-# position=back
-# spec=feral
-# talents=CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjZwMzMzMmtFPwyMbzYGzMDAAAALBzGMmZUzYWYmZGjZmZAAAAAAAGAAAABAz2MLNbzssBmZAWMDGAAzMAYA
+druid="MID2_Druid_Feral_Wildstalker"
+source=default
+spec=feral
+level=90
+race=night_elf
+timeofday=night
+role=attack
+position=back
+talents=CcGADBD3hSPCL9Y9gz68WcKvMAAAAAAwYMjHwYmZMmtFPwyYbmZGzMDAAAALBzmhxMjaGzyYmZmtxMAAAAAAwADAAAgmZZ2mZmZ2mZpZZmlNwMDwiZwAAYmBzshB
+omnium_talents=136814:1/136821:1/136817:1/136823:1/136822:1
 
-# head=branches_of_the_luminous_bloom,id=250024,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/1808,enchant_id=8017,gem_id=240983,ilevel=289
-# neck=amulet_of_the_abyssal_hymn,id=250247,bonus_id=12806/13577/13668,gem_id=240892/240892,ilevel=289
-# shoulder=fallen_grunts_mantle,id=251092,bonus_id=4795,enchant_id=8001,ilevel=289
-# back=defiant_defenders_drape,id=260312,bonus_id=4795,ilevel=289
-# chest=trunk_of_the_luminous_bloom,id=250027,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,enchant_id=7987,ilevel=289
-# wrist=silvermoon_agents_deflectors,id=244576,bonus_id=12214/12214/12214/12214/12214/12214/12214/12214/1808/8790/8960/12384,gem_id=240892,ilevel=285,crafted_stats=32/49
-# hands=arbortenders_of_the_luminous_bloom,id=250025,bonus_id=13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574/13574,ilevel=289
-# waist=scornscarred_shulkas_belt,id=249374,bonus_id=4795/1808,gem_id=240892,ilevel=289
-# legs=phloemwraps_of_the_luminous_bloom,id=250023,bonus_id=13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575/13575,enchant_id=8159,ilevel=289
-# feet=canopy_walkers_footwraps,id=249382,enchant_id=7993,ilevel=289
-# finger1=eye_of_midnight,id=249920,bonus_id=40/13534/13335/12806,enchant_id=7967,gem_id=240892/240892,ilevel=289
-# finger2=loa_worshipers_band,id=251513,bonus_id=8960/12214/8960/12214/12066/9627,enchant_id=7967,gem_id=240892,ilevel=285
-# trinket1=algethar_puzzle_box,id=193701,ilevel=289
-# trinket2=gaze_of_the_alnseer,id=249343,ilevel=289
-# main_hand=roostwardens_bough,id=251077,enchant_id=8039,ilevel=289
+head=enigmatic_dreamwatchers_somnolent_stare,id=271528,bonus_id=13692/13698/13847/4800/4786/13848,ilevel=344,enchant_id=8017,redirected_base_stats=271875
+neck=aqirbane_reliquary,id=268265,bonus_id=13987/4800/4786/13848/13750,ilevel=344,gem_id=240983
+shoulders=enigmatic_dreamwatchers_plumage,id=271526,bonus_id=13694/13697/4800/4786/12854,ilevel=334,enchant_id=8001,redirected_base_stats=268246
+back=adherents_silken_shroud,id=239656,bonus_id=12214/12497/13751/14001/8960/12384/8793/13836,ilevel=331,content_tuning=3615,crafted_stats=49/32,crafting_quality=5
+chest=enigmatic_dreamwatchers_lunar_raiment,id=271531,bonus_id=13690/13698/4800/4786/12854,ilevel=334,enchant_id=7987,redirected_base_stats=268235
+wrists=silvermoon_agents_deflectors,id=244576,bonus_id=12214/12497/13751/14001/8960/12384/8793/13836/13696,ilevel=331,content_tuning=3615,crafted_stats=49/36,crafting_quality=5
+hands=enigmatic_dreamwatchers_gauntlets,id=271529,bonus_id=13691/13697/4800/4786/12854,ilevel=334,redirected_base_stats=268234
+waist=sash_of_the_forlorn_vessel,id=268256,bonus_id=4800/4786/13848,ilevel=344
+legs=enigmatic_dreamwatchers_leggings,id=271527,bonus_id=13693/13698/4800/4786/13848,ilevel=344,enchant_id=8159,redirected_base_stats=268225
+feet=bespittled_slitherslippers,id=268261,bonus_id=4800/4786/12854,ilevel=334,enchant_id=7963
+finger1=vile_alchemists_band,id=268249,bonus_id=4800/4786/12854/13750,ilevel=334,gem_id=240898,enchant_id=7967
+finger2=apex_brutes_claw_ring,id=268252,bonus_id=4800/4786/12854/13750,ilevel=334,gem_id=240900,enchant_id=7967
+trinket1=voracious_heart_of_ulatek,id=270175,bonus_id=4800/4786/13848,ilevel=344
+trinket2=zuljins_guillotine_technique,id=270173,bonus_id=4800/4786/13848,ilevel=344
+main_hand=abyssal_broodfiends_bardiche,id=268215,bonus_id=13846/4800/4786/13848,ilevel=344,enchant_id=8039
 
-# save=MID2_Druid_Feral.simc
+save=MID2\MID2_Druid_Feral.simc
 
 # druid=MID2_Druid_Guardian
 # level=90
