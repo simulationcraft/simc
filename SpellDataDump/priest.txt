@@ -17499,6 +17499,7 @@ Description      : $@spelldesc1231346
 Tooltip          : Haste increased by ${$W1}.1%.
 
 Name             : Renewed Vigor (id=1306118) [Spell Family (6)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -17510,6 +17511,7 @@ Labels           : 16: Class Spells
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Aura Points On Client (268), Do Not Display Cast Time (441)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1333396)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Misc Value: 7 | Target: Self (1)
