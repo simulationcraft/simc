@@ -16373,6 +16373,7 @@ Effects          :
 Description      : Increases Earth Shock and Earthquake damage by $s1% and the stat bonuses granted by Elemental Blast by $s2%.
 
 Name             : Doom Winds (id=469270) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Stormstrike
 Spell Type       : Magic
@@ -16387,7 +16388,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #1, #2, #3, #4), Earthen Weapon (392375 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Primal Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Enhancement Shaman (1214207 effects: #1, #2), Elemental Shaman (1231772 effects: #1, #2), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effects: #1, #2), Natural Gift (1264691 effects: #1, #2), Feedback Loop (1270061 effects: #2, #3), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
 Triggered By     : Doom Winds (384352)
 Family Flags     : 39, 56, 58, 126
-Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1183500)  : School Damage (2): stormstrike
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.2 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
