@@ -3529,17 +3529,30 @@ void sporelords_mycelium( special_effect_t& effect )
 // 1295057 Tidal Insight Buff
 void wavecallers_seastone( special_effect_t& effect )
 {
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 1295057 ) )
-                  ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) )
-                  ->set_stack_change_callback( [ effect ]( buff_t* b, int, int new_ ) {
-                      if ( new_ == b->max_stack() )
-                        make_event( *effect.player->sim, 0_ms, [ b ] { b->set_reverse( true ); } );
-                    } )
-                  ->set_expire_callback( []( buff_t* b, int, timespan_t ) {
-                    // must be immediate; combat_end() expires buffs after the event manager stops, so a
-                    // delayed reset would never run and reverse would leak into the next iteration
-                    b->set_reverse( false );
-                  } );
+  struct tidal_insight_buff_t : public stat_buff_t
+  {
+    tidal_insight_buff_t( player_t* p, std::string_view n, const spell_data_t* s ) : stat_buff_t( p, n, s )
+    {
+      set_stack_change_callback( []( buff_t* b, int, int new_ ) {
+        if ( new_ == b->max_stack() )
+          make_event( *b->sim, 0_ms, [ b ] { b->set_reverse( true ); } );
+      } );
+
+      set_expire_callback( []( buff_t* b, int, timespan_t ) {
+        make_event( *b->sim, 0_ms, [ b ] { b->set_reverse( false ); } );
+      } );
+    }
+
+    void reset() override
+    {
+      stat_buff_t::reset();
+      set_reverse( false );
+    }
+  };
+
+  effect.custom_buff =
+      create_buff<tidal_insight_buff_t>( effect.player, "tidal_insight", effect.player->find_spell( 1295057 ) )
+          ->set_stat_from_effect_type( A_MOD_STAT, effect.driver()->effectN( 1 ).average( effect ) );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
