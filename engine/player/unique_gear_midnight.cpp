@@ -3535,8 +3535,10 @@ void wavecallers_seastone( special_effect_t& effect )
                       if ( new_ == b->max_stack() )
                         make_event( *effect.player->sim, 0_ms, [ b ] { b->set_reverse( true ); } );
                     } )
-                  ->set_expire_callback( [ effect ]( buff_t* b, int, timespan_t ) {
-                    make_event( *effect.player->sim, 0_ms, [ b ] { b->set_reverse( false ); } );
+                  ->set_expire_callback( []( buff_t* b, int, timespan_t ) {
+                    // must be immediate; combat_end() expires buffs after the event manager stops, so a
+                    // delayed reset would never run and reverse would leak into the next iteration
+                    b->set_reverse( false );
                   } );
 
   new dbc_proc_callback_t( effect.player, effect );
