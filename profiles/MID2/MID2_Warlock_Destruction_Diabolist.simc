@@ -61,10 +61,12 @@ actions+=/infernal_bolt,if=soul_shard<=3
 actions+=/incinerate
 
 actions.aoe_dia=summon_infernal
-actions.aoe_dia+=/chaos_bolt,if=talent.diabolic_ritual&(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))&(active_enemies<=(10-2*talent.destructive_rapidity))
+actions.aoe_dia+=/shadowburn,if=demonic_art
+actions.aoe_dia+=/chaos_bolt,if=demonic_art
+actions.aoe_dia+=/chaos_bolt,if=(demonic_art|(variable.ritual_length<action.chaos_bolt.execute_time))&(active_enemies<=(4-talent.destructive_rapidity))
 actions.aoe_dia+=/rain_of_fire,if=((soul_shard>=(3.5-0.1*(active_dot.immolate)))|buff.alythesss_ire.up)&active_enemies>=3
 actions.aoe_dia+=/conflagrate,target_if=max:(dot.immolate.remains-99*debuff.havoc.remains),if=dot_refreshable_count.immolate>0&!dot.immolate.refreshable
-actions.aoe_dia+=/shadowburn,target_if=min:(time_to_die+999*debuff.havoc.remains),if=(active_enemies<=(4-talent.destructive_rapidity+2*buff.fiendish_cruelty.up))|(talent.conflagration_of_chaos&active_enemies<=(6+2*buff.fiendish_cruelty.up))
+actions.aoe_dia+=/shadowburn,target_if=min:(time_to_die+999*debuff.havoc.remains),if=(!talent.destructive_rapidity&active_enemies<=(2+2*buff.fiendish_cruelty.up))|(talent.conflagration_of_chaos&active_enemies<=(6-talent.destructive_rapidity+2*buff.fiendish_cruelty.up))
 actions.aoe_dia+=/ruination
 actions.aoe_dia+=/cataclysm,if=raid_event.adds.in>15|talent.lake_of_fire
 actions.aoe_dia+=/havoc,target_if=min:((-target.time_to_die)<?-15)+dot.immolate.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal)&target.time_to_die>8|time<5
@@ -79,7 +81,7 @@ actions.aoe_hc=summon_infernal
 actions.aoe_hc+=/malevolence
 actions.aoe_hc+=/rain_of_fire,if=(soul_shard>=(4.0-0.1*(active_dot.wither)))&active_enemies>=4
 actions.aoe_hc+=/conflagrate,target_if=max:(dot.wither.remains-99*debuff.havoc.remains),if=dot_refreshable_count.wither>0&!dot.wither.refreshable
-actions.aoe_hc+=/shadowburn,target_if=min:(time_to_die+999*debuff.havoc.remains),if=buff.fiendish_cruelty.up|(talent.conflagration_of_chaos&(active_enemies<=(5-talent.destructive_rapidity)))
+actions.aoe_hc+=/shadowburn,target_if=min:(time_to_die+999*debuff.havoc.remains),if=(buff.fiendish_cruelty.up&active_enemies<=4)|(talent.conflagration_of_chaos&(active_enemies<=(5+buff.fiendish_cruelty.up)))
 actions.aoe_hc+=/cataclysm,if=raid_event.adds.in>15
 actions.aoe_hc+=/havoc,target_if=min:((-target.time_to_die)<?-15)+dot.wither.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal)&target.time_to_die>8&(cooldown.malevolence.remains>15|!talent.malevolence)|time<5
 actions.aoe_hc+=/rain_of_fire,if=active_enemies>=4
@@ -108,34 +110,33 @@ actions.variables+=/variable,name=ritual_length,value=buff.diabolic_ritual_mothe
 actions.variables+=/variable,name=trinket_1_will_lose_cast,value=((floor((fight_remains%trinket.1.cooldown.duration)+1)!=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(floor((fight_remains%trinket.1.cooldown.duration)+1))!=(floor(((fight_remains-cooldown.summon_infernal.remains)%trinket.1.cooldown.duration)+1))|((floor((fight_remains%trinket.1.cooldown.duration)+1)=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(((fight_remains-cooldown.summon_infernal.remains%%trinket.1.cooldown.duration)-cooldown.summon_infernal.remains-variable.trinket_1_buff_duration)>0)))&cooldown.summon_infernal.remains>20
 actions.variables+=/variable,name=trinket_2_will_lose_cast,value=((floor((fight_remains%trinket.2.cooldown.duration)+1)!=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(floor((fight_remains%trinket.2.cooldown.duration)+1))!=(floor(((fight_remains-cooldown.summon_infernal.remains)%trinket.2.cooldown.duration)+1))|((floor((fight_remains%trinket.2.cooldown.duration)+1)=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(((fight_remains-cooldown.summon_infernal.remains%%trinket.2.cooldown.duration)-cooldown.summon_infernal.remains-variable.trinket_2_buff_duration)>0)))&cooldown.summon_infernal.remains>20
 
-head=venomkeepers_horrific_cowl,id=271874,bonus_id=40/13335/13663/13695/13696/13846/13848,gem_id=240967,enchant_id=7961,content_tuning=883
-neck=aqirbane_reliquary,id=268265,bonus_id=40/13335/13668/13708/13848,gem_id=240914/240900,content_tuning=883
+head=venomkeepers_horrific_cowl,id=271874,bonus_id=13662/13750/13846/13848,gem_id=240967,enchant_id=8017
+neck=aqirbane_reliquary,id=268265,bonus_id=13662/13668/13848/13987,gem_id=240900/240900
 shoulders=spires_of_the_damned_necrolyte,id=271544,bonus_id=13694/13697,ilevel=334,enchant_id=8001,redirected_base_stats=239031
 back=silken_voodoo_drape,id=268253,ilevel=344
-chest=damned_necrolytes_rattling_robes,id=271549,bonus_id=12854/13690/13698,enchant_id=7987,redirected_base_stats=251139
+chest=damned_necrolytes_rattling_robes,id=271549,bonus_id=12854/13690/13698,enchant_id=7987,redirected_base_stats=268221
 wrists=martyrs_bindings,id=239648,bonus_id=8791/8960/12214/12384/13750,ilevel=331,gem_id=240900
 hands=damned_necrolytes_charred_grasps,id=271547,bonus_id=13691/13697/13848,redirected_base_stats=268243
-waist=ethereal_netherwrap,id=251222,bonus_id=12854/13662/13750,gem_id=240900
-legs=damned_necrolytes_leg_bindings,id=271545,bonus_id=40/12854/13335/13693/13698,enchant_id=7935,content_tuning=807
-feet=cackling_soultreads,id=268255,bonus_id=13662/13848,enchant_id=7993
-finger1=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240906,enchant_id=7967
-finger2=vile_alchemists_band,id=268249,bonus_id=12854/13662/13668,gem_id=240890,enchant_id=7967
-trinket1=wavecallers_seastone,id=270167,bonus_id=12854/13662
+waist=ethereal_netherwrap,id=251222,bonus_id=12854/13662/13750,gem_id=240906
+legs=damned_necrolytes_leg_bindings,id=271545,bonus_id=13693/13698/13848,enchant_id=7935,redirected_base_stats=273786
+feet=cackling_soultreads,id=268255,bonus_id=13662/13848,enchant_id=7963
+finger1=charged_sandstone_band,id=158366,bonus_id=12854/13662/13750,gem_id=240914,enchant_id=7967
+finger2=signet_of_snarling_servitude,id=251136,bonus_id=12854/13662/13668,gem_id=240890,enchant_id=7967
+trinket1=gebbos_bottomless_bag,id=270164,bonus_id=12854/13662
 trinket2=freightrunners_flask,id=250215,bonus_id=12854/13662
-main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=40/13335/13848,enchant_id=8041,content_tuning=883
+main_hand=janthrazet_the_soul_fang,id=271092,bonus_id=40/13335/13848,enchant_id=8689,content_tuning=883
 off_hand=alnhara_lantern,id=245769,bonus_id=8791/8960/12214/13751/13771/13836/9627,crafted_stats=32/36
 
 # Gear Summary
-# gear_ilvl=337.38
-# gear_stamina=40526
-# gear_intellect=2572
-# gear_crit_rating=810
-# gear_haste_rating=1108
-# gear_mastery_rating=1171
+# gear_ilvl=338.00
+# gear_stamina=41001
+# gear_intellect=2769
+# gear_crit_rating=1165
+# gear_haste_rating=787
+# gear_mastery_rating=1002
 # gear_versatility_rating=123
-# gear_leech_rating=83
-# gear_avoidance_rating=405
-# gear_armor=733
+# gear_avoidance_rating=212
+# gear_armor=740
 # set_bonus=midnight_season_2_2pc=1
 # set_bonus=midnight_season_2_4pc=1
 warlock.soul_shards=0

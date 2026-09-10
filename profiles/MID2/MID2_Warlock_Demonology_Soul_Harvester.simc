@@ -1,11 +1,11 @@
-warlock="MID2_Warlock_Demonology_Diabolist"
+warlock="MID2_Warlock_Demonology_Soul_Harvester"
 source=default
 spec=demonology
 level=90
 race=Orc
 role=spell
 position=ranged_back
-talents=CoQAAAAAAAAAAAAAAAAAAAAAAYmxMzoZjZ2mZGzyAAAAAAAAGzYYBGYb0CNsYMGLzyMzMmBAmZMzMzMDgZGzAAAYMzMjhhlZMgB
+talents=CoQAAAAAAAAAAAAAAAAAAAAAAwMzMzoZjhZmxsMAAAAAAAjtlBGwAmhtQGbmhZ2mlZmZMDAYMzMzAMzMmxMDAAwMzMzMjZYZAYA
 omnium_talents=136822:1/136816:1/136817:1/136815:1/136814:1
 
 # Default consumables
