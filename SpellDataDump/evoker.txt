@@ -10254,8 +10254,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2360 | Target: Self (1)
 #3 (id=1123476)  : Apply Aura (6) | Disable Gravity (488)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#4 (id=1123477)  : Apply Aura (6) | Decrease Movement Speed% (33)
+#4 (id=1123477)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Always Hit (22)
                    Base Value: -200 | Scaled Value: -200 | Target: Self (1)
+Hotfixed         : Attribute (0 -> 4194304)
 #5 (id=1149053)  : Apply Aura (6) | Periodic Dummy (226): every 0.2 seconds
                    Base Value: -200 | Scaled Value: -200 | Target: Self (1)
 #6 (id=1149054)  : Apply Aura (6) | Increase Speed% (31)
