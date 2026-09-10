@@ -87,7 +87,7 @@ actions.sentcleave+=/kill_command
 # ST - Sent
 actions.sentst=kill_command,if=buff.tip_of_the_spear.stack=0&(cooldown.takedown.remains|!talent.twin_fangs)
 actions.sentst+=/boomstick
-actions.sentst+=/wildfire_bomb,if=buff.tip_of_the_spear.up&(debuff.sentinels_mark.remains|full_recharge_time<4)
+actions.sentst+=/wildfire_bomb,if=(debuff.sentinels_mark.remains|full_recharge_time<4)
 actions.sentst+=/kill_command,if=cooldown.takedown.remains<gcd&buff.tip_of_the_spear.stack<2&!talent.twin_fangs
 actions.sentst+=/takedown,if=buff.tip_of_the_spear.stack>0&!talent.twin_fangs|buff.tip_of_the_spear.stack=0&talent.twin_fangs
 actions.sentst+=/moonlight_chakram
