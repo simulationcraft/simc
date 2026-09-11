@@ -4431,6 +4431,8 @@ struct ice_lance_t final : public frost_mage_spell_t
     p()->state.fingers_of_frost_active = p()->buffs.fingers_of_frost->up();
     p()->buffs.fingers_of_frost->decrement();
 
+    // TODO: This actually seems to be tracked per-cast, unlike FoF.
+    // Probably needs to be passed through the action state.
     p()->state.thermal_void_active = p()->buffs.thermal_void->up();
     p()->buffs.thermal_void->decrement();
   }
