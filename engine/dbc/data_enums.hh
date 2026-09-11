@@ -2029,6 +2029,7 @@ enum spell_label : unsigned
   LABEL_HEALING_SPELLS             = 741u,
   LABEL_COVENANT                   = 976u,
   LABEL_EVOKER_SPELLS              = 1216u,
+  LABEL_AVOID_CC_TARGETS           = 1387u,
   LABEL_EVOKER_RED_SPELLS          = 1464u,
   LABEL_EVOKER_BLUE_SPELLS         = 1465u,
   LABEL_EVOKER_GREEN_SPELLS        = 1466u,
