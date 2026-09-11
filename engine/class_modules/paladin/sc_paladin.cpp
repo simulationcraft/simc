@@ -88,6 +88,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.divine_resonance_icd = get_cooldown( "divine_resonance_icd" );
   cooldowns.divine_resonance_icd->duration = find_spell( 1266308 )->internal_cooldown();
 
+  cooldowns.guided_prayer_icd = get_cooldown( "guided_prayer_icd" );
+  cooldowns.guided_prayer_icd->duration = find_spell( 404357 )->internal_cooldown();
+
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
   fake_lesser_weapon_set.clear();
@@ -1202,7 +1205,8 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 {
   struct sacred_word_t : public paladin_heal_t
   {
-    sacred_word_t( paladin_t* p ) : paladin_heal_t( "sacred_word", p, p->spells.lightsmith.sacred_word )
+    sacred_word_t( paladin_t* p, util::string_view name )
+      : paladin_heal_t( "sacred_word_" + std::string( name ), p, p->spells.lightsmith.sacred_word )
     {
       background = true;
     }
@@ -1210,8 +1214,8 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 
   sacred_word_t* sacred_word;
   light_of_the_titans_t* light_of_the_titans;
-  word_of_glory_t( paladin_t* p, util::string_view options_str )
-    : holy_power_consumer_t( "word_of_glory", p, p->find_class_spell( "Word of Glory" ) ),
+  word_of_glory_t( paladin_t* p, util::string_view options_str, util::string_view name )
+    : holy_power_consumer_t( name, p, p->find_class_spell( "Word of Glory" ) ),
       sacred_word( nullptr ),
       light_of_the_titans( new light_of_the_titans_t( p, "" ) )
   {
@@ -1220,7 +1224,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
     is_wog = true;
     if ( p->talents.lightsmith.blessing_of_the_forge->ok() )
     {
-      sacred_word = new sacred_word_t( p );
+      sacred_word = new sacred_word_t( p, name );
       add_child( sacred_word );
     }
   }
@@ -1294,6 +1298,26 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
       // Shining Light does not benefit from divine purpose
       am /= 1.0 + p()->spells.divine_purpose_buff->effectN( 2 ).percent();
     return am;
+  }
+};
+
+struct word_of_glory_afterimage_t : word_of_glory_t
+{
+  word_of_glory_afterimage_t(paladin_t* p) : word_of_glory_t(p, "", "word_of_glory_afterimage")
+  {
+    base_multiplier = p->talents.afterimage->effectN( 1 ).percent();
+    background      = true;
+    doesnt_consume_dp = false;
+  }
+};
+
+struct word_of_glory_guided_prayer_t : word_of_glory_t
+{
+  word_of_glory_guided_prayer_t(paladin_t* p) : word_of_glory_t(p, "", "word_of_glory_guided_prayer")
+  {
+    base_multiplier = p->talents.guided_prayer_icd->effectN( 2 ).percent();
+    background      = true;
+    doesnt_consume_dp = true;
   }
 };
 
@@ -3330,6 +3354,9 @@ void paladin_t::create_actions()
   active.background_cons = new consecration_t( this, "blade_of_justice", BLADE_OF_JUSTICE );
   active.hammer_of_light_cons = new consecration_t( this, "hol", HAMMER_OF_LIGHT );
 
+  active.afterimage    = new word_of_glory_afterimage_t( this );
+  active.guided_prayer_icd = new word_of_glory_guided_prayer_t( this );
+
   player_t::create_actions();
 }
 
@@ -3398,7 +3425,7 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
   if ( name == "shield_of_the_righteous" )
     return new shield_of_the_righteous_t( this, options_str );
   if ( name == "word_of_glory" )
-    return new word_of_glory_t( this, options_str );
+    return new word_of_glory_t( this, options_str, "word_of_glory" );
   if ( name == "holy_armaments" )
     return new holy_armaments_t( this, options_str );
   if ( name == "hammer_of_light" )
@@ -3655,6 +3682,7 @@ void paladin_t::create_buffs()
   }
 
   buffs.hammer_of_wrath = make_buff( this, "hammer_of_wrath", find_spell( 1277026 ) );
+  buffs.afterimage      = make_buff( this, "afterimage", find_spell( 400745 ) );
 
   buffs.lightsmith.holy_bulwark =
       make_buff<buffs::holy_bulwark_buff_t>( this )
@@ -4154,7 +4182,7 @@ void paladin_t::init_spells()
   talents.a_just_reward                   = find_talent_spell( talent_tree::CLASS, "A Just Reward" );
   talents.afterimage                      = find_talent_spell( talent_tree::CLASS, "Afterimage" );
   talents.healing_hands                   = find_talent_spell( talent_tree::CLASS, "Healing Hands" );
-  talents.guided_prayer                   = find_talent_spell( talent_tree::CLASS, "Guided Prayer" );
+  talents.guided_prayer_icd                   = find_talent_spell( talent_tree::CLASS, "Guided Prayer" );
   talents.divine_steed                    = find_talent_spell( talent_tree::CLASS, "Divine Steed" );
   talents.lights_countenance              = find_talent_spell( talent_tree::CLASS, "Light's Countenance" );
   talents.greater_judgment                = find_talent_spell( talent_tree::CLASS, "Greater Judgment" );
@@ -4830,6 +4858,13 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
 double paladin_t::resource_loss( resource_e resource_type, double amount, gain_t* source, action_t* action )
 {
   double result     = player_t::resource_loss( resource_type, amount, source, action );
+
+  if (resource_type == RESOURCE_HEALTH && talents.guided_prayer_icd->ok() && cooldowns.guided_prayer_icd->up() && resources.pct(resource_type) < talents.guided_prayer_icd->effectN(1).percent())
+  {
+    active.guided_prayer_icd->execute_on_target( this );
+    cooldowns.guided_prayer_icd->start();
+  }
+
   return result;
 }
 

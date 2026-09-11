@@ -151,6 +151,9 @@ public:
 
     action_t* background_avenging_wrath;
     action_t* background_crusade;
+
+    action_t* afterimage;
+    action_t* guided_prayer_icd;
   } active;
 
   // Buffs
@@ -169,6 +172,7 @@ public:
     buff_t* blessing_of_protection;
     buff_t* faiths_armor;
     buff_t* hammer_of_wrath;
+    buff_t* afterimage;
 
     // Holy
     buff_t* divine_protection;
@@ -343,6 +347,8 @@ public:
 
     cooldown_t* hammerfall_icd;
     cooldown_t* art_of_war;
+
+    cooldown_t* guided_prayer_icd;
   } cooldowns;
 
   // Passives
@@ -484,7 +490,7 @@ public:
     const spell_data_t* a_just_reward;
     const spell_data_t* afterimage;
     const spell_data_t* healing_hands; // Ret only
-    const spell_data_t* guided_prayer;
+    const spell_data_t* guided_prayer_icd;
     const spell_data_t* divine_steed;
     const spell_data_t* lights_countenance;
     const spell_data_t* greater_judgment;
@@ -1533,7 +1539,7 @@ public:
     // p variable just to make this look neater
     paladin_t* p = ab::p();
 
-    bool isFreeSLDPSpender = p->buffs.divine_purpose->up() || ( is_wog && p->buffs.shining_light_free->up() ) ||
+    bool isFreeSLDPSpender = p->buffs.divine_purpose->up() || ( is_wog && p->buffs.shining_light_free->up() && !ab::background ) ||
                              ( is_divine_storm && p->buffs.empyrean_power->up() );
 
     [[maybe_unused]] double num_hopo_spent = as<double>( holy_power_consumer_t::cost() );
@@ -1736,6 +1742,18 @@ public:
     if ( p->talents.lightsmith.blessed_assurance->ok() )
     {
       p->buffs.lightsmith.blessed_assurance->trigger();
+    }
+
+    if ( p->talents.afterimage->ok() )
+    {
+      int stacksBefore = p->buffs.afterimage->stack();
+      if ( num_hopo_spent > 0 )
+        p->buffs.afterimage->trigger( num_hopo_spent );
+      if ( is_wog && !ab::background && stacksBefore >= p->talents.afterimage->effectN( 3 ).base_value() )
+      {
+        p->buffs.afterimage->decrement( p->talents.afterimage->effectN( 3 ).base_value() );
+        p->active.afterimage->execute_on_target( p );
+      }
     }
   }
 };
