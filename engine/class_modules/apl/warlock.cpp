@@ -154,13 +154,13 @@ void affliction( player_t* p )
   HC_st->add_action( "haunt" );
   HC_st->add_action( "agony,if=refreshable" );
   HC_st->add_action( "wither,if=refreshable" );
+  HC_st->add_action( "dark_harvest,if=execute_time<(dot.agony.remains<?dot.corruption.remains)" );
   HC_st->add_action( "malevolence" );
   HC_st->add_action( "malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd" );
   HC_st->add_action( "drain_soul,if=buff.nightfall.react>1" );
   HC_st->add_action( "shadow_bolt,if=buff.nightfall.react>1" );
   HC_st->add_action( "unstable_affliction,if=pet.darkglare.remains|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react|buff.cascading_calamity.remains<gcd.max" );
   HC_st->add_action( "summon_darkglare" );
-  HC_st->add_action( "dark_harvest,if=execute_time<(dot.agony.remains<?dot.corruption.remains)&(!talent.cascading_calamity|buff.cascading_calamity.remains)" );
 
   HC_aoe->add_action( "haunt" );
   HC_aoe->add_action( "seed_of_corruption,if=(!dot.wither.ticking|dot.wither.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
