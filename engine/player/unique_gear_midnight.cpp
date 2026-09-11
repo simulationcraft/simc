@@ -3556,6 +3556,7 @@ void wavecallers_seastone( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
 // Vile Vial of Volatile Venom
 // 1293316 on-use buff (Empowering Venom)
 // 1295123 debuff (Debilitating Venom), applies once the buff fades
@@ -4853,6 +4854,87 @@ void idol_of_the_howling_nexus( special_effect_t& effect )
   }
 
   new idol_of_the_howling_nexus_cb_t( effect, bolstering_gale, imminent_gale );
+}
+
+// Coiled Fangstone
+// 1293311 on-use driver (e1: trigger bite w/ 250ms delay, e2: bite count, e3: per-bite damage ramp)
+// 1295535 Envenomed Bite damage
+// 1295491 per-bite damage value
+void coiled_fangstone( special_effect_t& effect )
+{
+  struct envenomed_bite_t : public generic_aoe_proc_t
+  {
+    double ramp;
+    unsigned bite_index = 0;
+
+    envenomed_bite_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "envenomed_bite", e.trigger(), false ), ramp( e.driver()->effectN( 3 ).percent() )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 1295491 )->effectN( 1 ).average( e );
+      base_multiplier *= role_mult( e );
+      // split and scaling handled in composite_aoe_multiplier override
+      split_aoe_damage = false;
+    }
+
+    // Damage is split and scaled as if the primary target were hit twice, i.e. the usual split + 30%
+    // per additional target formula evaluated for n_targets + 1. This means single target damage, deals
+    // significantly reduced dmg compared to the tooltip.
+    double composite_aoe_multiplier( const action_state_t* s ) const override
+    {
+      auto n = s->n_targets + 1;
+
+      return generic_aoe_proc_t::composite_aoe_multiplier( s )
+              * ( 1.0 + 0.3 * std::min( n - 1, max_scaling_targets ) ) / n;
+    }
+
+    // Each bite deals 10% more damage than the first (1.0/1.1/1.2), but the third bite only applies
+    // its bonus to the first target hit; all other targets take unmodified damage.
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = generic_aoe_proc_t::composite_da_multiplier( s );
+
+      if ( bite_index < 2 || s->chain_target == 0 )
+        m *= 1.0 + ramp * bite_index;
+
+      return m;
+    }
+  };
+
+  struct coiled_fangstone_t : public generic_proc_t
+  {
+    envenomed_bite_t* bite;
+    timespan_t first_delay;
+    timespan_t bite_interval;
+    unsigned bites;
+
+    coiled_fangstone_t( const special_effect_t& e )
+      : generic_proc_t( e, "coiled_fangstone", e.driver() ),
+        first_delay( timespan_t::from_millis( e.driver()->effectN( 1 ).misc_value1() ) ),
+        bite_interval( 400_ms ),  // not in spell data, taken from logs
+        bites( as<unsigned>( e.driver()->effectN( 2 ).base_value() ) )
+    {
+      bite = debug_cast<envenomed_bite_t*>( create_proc_action<envenomed_bite_t>( "envenomed_bite", e ) );
+      add_child( bite );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+
+      for ( unsigned i = 0; i < bites; i++ )
+      {
+        make_event( *sim, first_delay + i * bite_interval, [ this, i, t = target ] {
+          if ( t->is_sleeping() )
+            return;
+
+          bite->bite_index = i;
+          bite->execute_on_target( t );
+        } );
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<coiled_fangstone_t>( "coiled_fangstone", effect );
 }
 }  // namespace trinkets
 
@@ -6341,6 +6423,7 @@ void register_special_effects()
   register_special_effect( 1295617, trinkets::sszoraks_ferocity );
   register_special_effect( 1307356, DISABLED_EFFECT );  // Sszorak's Ferocity killing blow driver
   register_special_effect( 1295643, trinkets::idol_of_the_howling_nexus );
+  register_special_effect( 1293311, trinkets::coiled_fangstone );
   set_min_version( wowv_t( 12, 1, 5 ) );
   register_special_effect( 1310404, trinkets::twisted_horrors_tendril );
   register_special_effect( 1310446, DISABLED_EFFECT );  // twisted horror's tendril new target driver
