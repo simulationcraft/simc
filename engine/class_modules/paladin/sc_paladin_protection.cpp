@@ -253,7 +253,7 @@ struct avengers_shield_base_t : public paladin_spell_t
     {
       make_event<delayed_execute_on_target_event_t>(
           *sim, p(), glory_of_the_vanguard, s->target,
-          s->result_amount * p()->talents.glory_of_the_vanguard_1->effectN( 1 ).percent(), 300_ms );
+          s->result_amount * p()->talents.glory_of_the_vanguard_1->effectN( 1 ).percent(), p()->glory_of_the_vanguard_delay );
       if ( !isApex3 )
         p()->buffs.vanguard->decrement();
     }

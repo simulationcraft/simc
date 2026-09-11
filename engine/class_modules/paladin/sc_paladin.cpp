@@ -35,7 +35,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     next_armament( SACRED_WEAPON ),
     random_weapon_target( nullptr ),
     random_bulwark_target( nullptr ),
-    divine_inspiration_next( -1 )
+    divine_inspiration_next( -1 ),
+    glory_of_the_vanguard_delay( 300_ms )
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
@@ -4893,6 +4894,7 @@ void paladin_t::create_options()
   add_option( opt_float( "reflection_of_radiance_proc_chance_holy_bulwark", options.reflection_of_radiance_proc_chance_holy_bulwark, 0, 1 ) );
   add_option( opt_float( "ror_bulwark_additional_proc_chance", options.ror_bulwark_additional_proc_chance, 0, 1 ) );
   add_option( opt_string( "starting_armament", options.starting_armament ) );
+  add_option( opt_bool( "max_range_apex", options.max_range_apex ) );
 
   player_t::create_options();
 }
@@ -4926,6 +4928,9 @@ void paladin_t::combat_begin()
     next_armament = HOLY_BULWARK;
   else
     next_armament = SACRED_WEAPON;
+
+  if ( options.max_range_apex )
+    glory_of_the_vanguard_delay = 800_ms;
 
   if ( talents.herald_of_the_sun.morning_star->ok() )
   {

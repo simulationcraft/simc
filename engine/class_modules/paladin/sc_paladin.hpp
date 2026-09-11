@@ -773,6 +773,7 @@ public:
     double reflection_of_radiance_proc_chance_sacred_weapon = .1;
     double reflection_of_radiance_proc_chance_holy_bulwark  = .2;
     std::string starting_armament                           = "sacred_weapon";
+    bool max_range_apex                                     = false;
   } options;
   player_t* beacon_target;
 
@@ -783,6 +784,7 @@ public:
   player_t* random_weapon_target;
   player_t* random_bulwark_target;
   int divine_inspiration_next;
+  timespan_t glory_of_the_vanguard_delay;
 
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
