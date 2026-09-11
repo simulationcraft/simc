@@ -4794,7 +4794,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 690: Major Cooldowns
-                 : 1387
+                 : 1387: Avoid CC Targets
 Affecting Spells : Norgannon's Foresight (236431 effect#1), Xalan's Cruelty (440040 effect#1), Eye Contract (1279521 effect#1)
 Family Flags     : 88
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Suppress Caster Procs (112), No Harmful Threat (132), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Important Spell (491)
@@ -6805,7 +6805,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-                 : 1387
+                 : 1387: Avoid CC Targets
 Attributes       : Not Shapeshifted (16), No Threat (42), Ignore Line of Sight (66), Not an Action (92), Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=714981)   : Take Max Health% Damage (165)
@@ -7900,7 +7900,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-                 : 1387
+                 : 1387: Avoid CC Targets
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not Shapeshifted (16), No Threat (42), Exclude Caster (51), Ignore Line of Sight (66), Ignore Caster & Target Restrictions (124), Allow Harmful on Friendly (373), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=741103)   : Dummy (3) | Attributes: Always Hit (22)
@@ -12521,7 +12521,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-                 : 1387
+                 : 1387: Avoid CC Targets
                  : 2848
 Attributes       : Can't Crit (93), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
 Effects          :

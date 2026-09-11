@@ -770,7 +770,7 @@ Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
                  : 948
-                 : 1387
+                 : 1387: Avoid CC Targets
 Mechanic         : Snare
 Affecting Spells : Warrior (137047 effect#2), Battlefield Commander (424742 effect#3), Resonant Voice (1243660 effect#1)
 Family Flags     : 8, 70, 71
@@ -14870,7 +14870,7 @@ Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
                  : 948
-                 : 1387
+                 : 1387: Avoid CC Targets
 Affecting Spells : Warrior (137047 effect#2), Battlefield Commander (424742 effect#3), Resonant Voice (1243660 effect#1)
 Triggered By     : Piercing Howl (12323)
 Family Flags     : 8, 70, 71

@@ -536,7 +536,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 1387
+                 : 1387: Avoid CC Targets
 Attributes       : Aura Unique (43), Ignore Line of Sight (66), Do Not Display Range (126), No Cast Log (128), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=126739)   : Apply Aura (6) | Modify Damage Taken% (87)
@@ -1449,7 +1449,7 @@ Cooldown         : 45 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 1387
+                 : 1387: Avoid CC Targets
 Affecting Spells : Peace and Prosperity (450448 effect#1), Windwalker Monk (1258122 effect#8), Brewmaster Monk (1258153 effect#7)
 Family Flags     : 99
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Always Show Ground Texture (190), Doesn't Reset Swing Timer if Instant (217), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -2264,7 +2264,7 @@ Cooldown         : 30 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 1387
+                 : 1387: Avoid CC Targets
 Affecting Spells : Brewmaster Monk (137023 effect#18), Windwalker Monk (137025 effect#16), Tear of Morning (337993 effect#2), Tear of Morning (387995 effect#2), Lighter Than Air (449609 effect#3), Manifestation (450875 effect#1), Windwalker Monk (1258122 effect#8), Brewmaster Monk (1258153 effect#7)
 Family Flags     : 38
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Do Not Reset Combat Timers (81), Always Hit (114), Delay Combat Timer During Cast (211), Bypass Visibility Check (320), Allow Defense While Casting (337), Allow Class Ability Procs (416)
@@ -2886,7 +2886,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 1387
+                 : 1387: Avoid CC Targets
 Affecting Spells : Brewmaster Monk (137023 effect#18), Windwalker Monk (137025 effect#12), Manifestation (450875 effect#1)
 Family Flags     : 27
 Attributes       : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Can Proc From Procs (122), Do Not Display Range (126), Allow Proc While Sitting (147), Aura Never Bounces (148), Limit N (165), AI Doesn't Face Target (179), Always AOE Line of Sight (186), Not an Attack (194), Vehicle Immunity Category (218), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -2980,7 +2980,7 @@ Class            : Paladin, Rogue, Death Knight, Shaman, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Labels           : 1387
+Labels           : 1387: Avoid CC Targets
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Triggered By     : Battle Fatigue (134732)
@@ -17039,7 +17039,7 @@ Cooldown         : 0.1 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 1387
+                 : 1387: Avoid CC Targets
                  : 3566: Balanced Stratagem (451508 effect#1)
 Affecting Spells : Brewmaster Monk (137023 effect#18), Windwalker Monk (137025 effect#16), Tear of Morning (337993 effect#2), Tear of Morning (387995 effect#2), Lighter Than Air (449609 effect#3), Manifestation (450875 effect#1), Windwalker Monk (1258122 effect#8), Brewmaster Monk (1258153 effect#7)
 Family Flags     : 38

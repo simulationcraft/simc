@@ -193,7 +193,7 @@ Duration         : 5 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-                 : 1387
+                 : 1387: Avoid CC Targets
                  : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
 Mechanic         : Snare
 Family Flags     : 32
@@ -2663,7 +2663,7 @@ Class            : Paladin, Rogue, Death Knight, Shaman, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Labels           : 1387
+Labels           : 1387: Avoid CC Targets
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Triggered By     : Battle Fatigue (134732)

@@ -885,7 +885,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 954
-                 : 1387
+                 : 1387: Avoid CC Targets
 Stance Mask      : 0x88000000
 Affecting Spells : Mental Agility (341167 effects: #1, #5, #6)
 Family Flags     : 39
@@ -969,7 +969,7 @@ Range            : 30 yards
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 1387
+                 : 1387: Avoid CC Targets
 Stance Mask      : 0x08000000
 Affecting Spells : Mental Agility (341167 effects: #1, #5, #6)
 Triggered By     : Mass Dispel (32375)
@@ -3199,7 +3199,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 1387
+                 : 1387: Avoid CC Targets
 Family Flags     : 29
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Exclude Caster (51), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
@@ -8048,7 +8048,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-                 : 1387
+                 : 1387: Avoid CC Targets
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Reflection (39), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Suppress Target Procs (113), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=841559)   : Dummy (3)

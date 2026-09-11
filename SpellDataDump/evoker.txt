@@ -71,7 +71,7 @@ Class            : Paladin, Rogue, Death Knight, Shaman, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
-Labels           : 1387
+Labels           : 1387: Avoid CC Targets
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Triggered By     : Battle Fatigue (134732)
