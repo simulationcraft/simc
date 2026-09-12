@@ -46,7 +46,8 @@ void devastation( player_t* p )
   action_priority_list_t* sc = p->get_action_priority_list( "sc" );
   action_priority_list_t* fs = p->get_action_priority_list( "fs" );
   action_priority_list_t* es = p->get_action_priority_list( "es" );
-  action_priority_list_t* fb = p->get_action_priority_list( "fb" );
+  action_priority_list_t* fb_fs = p->get_action_priority_list( "fb_fs" );
+  action_priority_list_t* fb_sc = p->get_action_priority_list( "fb_sc" );
   action_priority_list_t* green = p->get_action_priority_list( "green" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
@@ -58,8 +59,8 @@ void devastation( player_t* p )
   precombat->add_action( "variable,name=weapon_stat_value,value=0" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.dragonrage.duration=0|cooldown.dragonrage.duration%%trinket.1.cooldown.duration=0)" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.dragonrage.duration=0|cooldown.dragonrage.duration%%trinket.2.cooldown.duration=0)" );
-  precombat->add_action( "variable,name=trinket_1_manual,value=0" );
-  precombat->add_action( "variable,name=trinket_2_manual,value=0" );
+  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.font_of_venomous_rage" );
+  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.font_of_venomous_rage" );
   precombat->add_action( "variable,name=trinket_1_ogcd_cast,value=0" );
   precombat->add_action( "variable,name=trinket_2_ogcd_cast,value=0" );
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon" );
@@ -72,7 +73,6 @@ void devastation( player_t* p )
   precombat->add_action( "variable,name=dr_prep_time,default=6,op=reset" );
   precombat->add_action( "variable,name=dr_prep_time_aoe,default=4,op=reset" );
   precombat->add_action( "variable,name=can_use_empower,value=1,default=1,if=!talent.animosity|!talent.dragonrage" );
-  precombat->add_action( "variable,name=test,default=1,op=reset" );
   precombat->add_action( "verdant_embrace,if=talent.scarlet_adaptation" );
   precombat->add_action( "hover,if=talent.slipstream" );
   precombat->add_action( "hover,if=talent.slipstream" );
@@ -95,7 +95,7 @@ void devastation( player_t* p )
   sc->add_action( "azure_sweep,if=(buff.essence_burst.down|!buff.essence_burst.at_max_stacks)&set_bonus.mid1_2pc&cooldown.eternity_surge.remains<=6", "Use Azure Sweep if Eternity Surge is reasonably Soon. This is not a magic number, it's just simpler than writing out the expansion to account for azure sweep stacks." );
   sc->add_action( "call_action_list,name=es", "Swell Gaming with EoI is good, With EH its bad" );
   sc->add_action( "tip_the_scales,use_off_gcd=1,if=action.fire_breath.ready" );
-  sc->add_action( "fire_breath,empower_to=1", "Swell Gaming with EoI is good, With EH its bad" );
+  sc->add_action( "call_action_list,name=fb_sc" );
   sc->add_action( "deep_breath,if=active_enemies>=2,cancel_if=gcd.remains=0", "Using DB whenever is neutral at 2T and a gain above" );
   sc->add_action( "disintegrate,early_chain_if=ticks_remain<=1&buff.mass_disintegrate_stacks.up,if=(raid_event.movement.in>2|buff.hover.up)&buff.mass_disintegrate_stacks.up&buff.charged_blast.stack<15,interrupt_if=talent.volatility&active_enemies>=8" );
   sc->add_action( "pyre,target_if=max:target.health.pct,if=(active_enemies>=5|active_enemies>=4&talent.volatility.rank=2)&!buff.mass_disintegrate_stacks.up|active_enemies>=3&talent.charged_blast&buff.charged_blast.stack>=15" );
@@ -112,7 +112,7 @@ void devastation( player_t* p )
   fs->add_action( "hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5&!variable.use_pyre_fs" );
   fs->add_action( "tip_the_scales,use_off_gcd=1,if=buff.dragonrage.up&variable.use_tts" );
   fs->add_action( "call_action_list,name=es,if=variable.can_use_empower|buff.tip_the_scales.up", "Target Match with ES (Hitting everything is priority over lower ranks)" );
-  fs->add_action( "call_action_list,name=fb,if=variable.can_use_empower&dot.fire_breath_damage.refreshable&!buff.tip_the_scales.up", "Upranking in 2-3T is back on the menu boys" );
+  fs->add_action( "call_action_list,name=fb_fs,if=variable.can_use_empower&dot.fire_breath_damage.refreshable&!buff.tip_the_scales.up", "Upranking in 2-3T is back on the menu boys" );
   fs->add_action( "pyre,target_if=max:target.health.pct,if=variable.use_pyre_fs" );
   fs->add_action( "disintegrate,target_if=max:dot.fire_breath_damage.remains,chain=1,if=(raid_event.movement.in>2|buff.hover.up),early_chain_if=ticks_remain<=1,interrupt_if=ticks_remain<=1" );
   fs->add_action( "deep_breath,if=talent.imminent_destruction&active_dot.fire_breath_damage=0&active_enemies>=4,cancel_if=gcd.remains=0,interrupt_if=gcd.remains=0", "Queue the token deep breath condition" );
@@ -123,26 +123,32 @@ void devastation( player_t* p )
   fs->add_action( "call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&talent.scarlet_adaptation&!buff.dragonrage.up&active_enemies<4" );
   fs->add_action( "azure_strike" );
 
-  es->add_action( "eternity_surge,empower_to=1,target_if=max:target.health.pct,if=active_enemies<=3-talent.star_salvo", "Pick optimal Eternity Surge Rank" );
-  es->add_action( "eternity_surge,empower_to=2,target_if=max:target.health.pct,if=(active_enemies>=2+2*talent.eternitys_span)-talent.star_salvo" );
-  es->add_action( "eternity_surge,empower_to=3,target_if=max:target.health.pct,if=(active_enemies>=3+3*talent.eternitys_span)-talent.star_salvo" );
-  es->add_action( "eternity_surge,empower_to=4,target_if=max:target.health.pct" );
+  es->add_action( "eternity_surge,empower_to=4,target_if=max:target.health.pct,if=(active_enemies=4+4*talent.eternitys_span)&!talent.star_salvo|(active_enemies>=4+4*talent.eternitys_span-talent.star_salvo)&talent.star_salvo", "Pick optimal Eternity Surge Rank" );
+  es->add_action( "eternity_surge,empower_to=3,target_if=max:target.health.pct,if=(active_enemies=3+3*talent.eternitys_span)&!talent.star_salvo|(active_enemies>=3+3*talent.eternitys_span-talent.star_salvo)&talent.star_salvo" );
+  es->add_action( "eternity_surge,empower_to=2,target_if=max:target.health.pct,if=(active_enemies=2+2*talent.eternitys_span)&!talent.star_salvo|(active_enemies>=2+2*talent.eternitys_span-talent.star_salvo)&talent.star_salvo" );
+  es->add_action( "eternity_surge,empower_to=1,target_if=max:target.health.pct" );
 
-  fb->add_action( "fire_breath,empower_to=1,target_if=max:target.health.pct,if=active_enemies=1|variable.use_pyre_fs", "Fire Breath Upranking" );
-  fb->add_action( "fire_breath,empower_to=2,target_if=max:target.health.pct,if=active_enemies=2|buff.dragonrage.up|buff.rising_fury.up" );
-  fb->add_action( "fire_breath,empower_to=3,target_if=max:target.health.pct,if=active_enemies>=3", "Cap at R3 since R4 is just sort of bad for all cases" );
+  fb_fs->add_action( "fire_breath,empower_to=1,target_if=max:target.health.pct,if=active_enemies=1|variable.use_pyre_fs", "Fire Breath Upranking" );
+  fb_fs->add_action( "fire_breath,empower_to=2,target_if=max:target.health.pct,if=active_enemies=2|buff.dragonrage.up|buff.rising_fury.up" );
+  fb_fs->add_action( "fire_breath,empower_to=3,target_if=max:target.health.pct,if=active_enemies>=3", "Cap at R3 since R4 is just sort of bad for all cases" );
+
+  fb_sc->add_action( "fire_breath,empower_to=1,target_if=max:target.health.pct,if=active_enemies=1|active_enemies>4", "Fire Breath Upranking" );
+  fb_sc->add_action( "fire_breath,empower_to=2,target_if=max:target.health.pct,if=active_enemies=2" );
+  fb_sc->add_action( "fire_breath,empower_to=3,target_if=max:target.health.pct,if=active_enemies=3" );
+  fb_sc->add_action( "fire_breath,empower_to=4,target_if=max:target.health.pct,if=active_enemies=4" );
 
   green->add_action( "emerald_blossom", "Green Spells for Ancient Flame" );
   green->add_action( "verdant_embrace" );
 
-  trinkets->add_action( "use_item,slot=trinket1,if=(buff.dragonrage.up&(buff.rising_fury.stack>=4|talent.legacy_of_the_lifebinder)&((variable.trinket_2_buffs&!cooldown.fire_breath.up&trinket.2.cooldown.remains)|buff.tip_the_scales.up&variable.trinket_priority=1|(!cooldown.fire_breath.up)|active_enemies>=3)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains|trinket.1.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=1)&!variable.trinket_1_manual)", "Trinket Spaghetti" );
-  trinkets->add_action( "use_item,slot=trinket2,if=trinket.2.is.vaelgors_final_stare&buff.dragonrage.up&active_enemies>=3", "other spagetti is so complicated. Just Trinket in AoE without a delay." );
-  trinkets->add_action( "use_item,slot=trinket2,if=buff.dragonrage.up&(buff.rising_fury.stack>=4|talent.legacy_of_the_lifebinder)&((variable.trinket_1_buffs&!cooldown.fire_breath.up&trinket.1.cooldown.remains)|buff.tip_the_scales.up&variable.trinket_priority=2|(!cooldown.fire_breath.up)|active_enemies>=3)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2|variable.trinket_1_exclude)&!variable.trinket_2_manual|trinket.2.proc.any_dps.duration>=fight_remains|trinket.2.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=2)&!variable.trinket_2_manual" );
+  trinkets->add_action( "use_item,slot=trinket1,if=(buff.dragonrage.up&(buff.rising_fury.stack>=4|!talent.rising_fury|talent.legacy_of_the_lifebinder)&((variable.trinket_2_buffs&!cooldown.fire_breath.up&trinket.2.cooldown.remains)|buff.tip_the_scales.up&variable.trinket_priority=1|(!cooldown.fire_breath.up)|active_enemies>=3)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains|trinket.1.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=1)&!variable.trinket_1_manual)", "Trinket Spaghetti" );
+  trinkets->add_action( "use_item,slot=trinket2,if=buff.dragonrage.up&(buff.rising_fury.stack>=4|!talent.rising_fury|talent.legacy_of_the_lifebinder)&((variable.trinket_1_buffs&!cooldown.fire_breath.up&trinket.1.cooldown.remains)|buff.tip_the_scales.up&variable.trinket_priority=2|(!cooldown.fire_breath.up)|active_enemies>=3)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2|variable.trinket_1_exclude)&!variable.trinket_2_manual|trinket.2.proc.any_dps.duration>=fight_remains|trinket.2.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=2)&!variable.trinket_2_manual" );
   trinkets->add_action( "use_item,slot=main_hand,if=variable.weapon_buffs&((variable.trinket_2_buffs&(trinket.2.cooldown.remains|trinket.2.cooldown.duration<=20)|!variable.trinket_2_buffs|variable.trinket_2_exclude|variable.trinket_priority=3)&(variable.trinket_1_buffs&(trinket.1.cooldown.remains|trinket.1.cooldown.duration<=20)|!variable.trinket_1_buffs|variable.trinket_1_exclude|variable.trinket_priority=3)&(!cooldown.fire_breath.up|(!cooldown.fire_breath.up)|active_enemies>=3))&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=3|variable.trinket_priority=1&trinket.1.cooldown.remains|variable.trinket_priority=2&trinket.2.cooldown.remains)" );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&(gcd.remains>0.1&!prev_gcd.1.deep_breath)&(variable.next_dragonrage>20|!talent.dragonrage|!variable.trinket_2_buffs|trinket.2.is.spymasters_web&(buff.spymasters_report.stack<5|fight_remains>=130+variable.next_dragonrage))" );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&(gcd.remains>0.1&!prev_gcd.1.deep_breath)&(variable.next_dragonrage>20|!talent.dragonrage|!variable.trinket_1_buffs|trinket.1.is.spymasters_web&(buff.spymasters_report.stack<5|fight_remains>=130+variable.next_dragonrage))" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|trinket.2.is.spymasters_web|trinket.2.cooldown.duration=0)&(!variable.trinket_1_ogcd_cast)&(variable.next_dragonrage>20|!talent.dragonrage|!variable.trinket_2_buffs|trinket.2.is.spymasters_web&(buff.spymasters_report.stack<5|fight_remains>=130+variable.next_dragonrage))" );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&(!variable.trinket_2_ogcd_cast)&(variable.next_dragonrage>20|!talent.dragonrage|!variable.trinket_1_buffs|trinket.1.is.spymasters_web&(buff.spymasters_report.stack<5|fight_remains>=130+variable.next_dragonrage))" );
+  trinkets->add_action( "use_item,slot=trinket1,if=trinket.1.is.font_of_venomous_rage&!buff.dragonrage.up" );
+  trinkets->add_action( "use_item,slot=trinket2,if=trinket.2.is.font_of_venomous_rage&!buff.dragonrage.up" );
 }
 //devastation_apl_end
 
