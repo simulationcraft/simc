@@ -1751,7 +1751,7 @@ public:
         p->buffs.afterimage->trigger( as<int>( num_hopo_spent ) );
       if ( is_wog && !ab::background && stacksBefore >= p->talents.afterimage->effectN( 3 ).base_value() )
       {
-        p->buffs.afterimage->decrement( p->talents.afterimage->effectN( 3 ).base_value() );
+        p->buffs.afterimage->decrement( as<int>( p->talents.afterimage->effectN( 3 ).base_value() ) );
         p->active.afterimage->execute_on_target( p );
       }
     }
