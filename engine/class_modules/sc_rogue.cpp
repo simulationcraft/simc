@@ -4060,7 +4060,7 @@ struct crimson_tempest_t : public rogue_attack_t
     }
   }
 
-  void clone_dot( std::function<dot_t*( rogue_td_t* )> dot_selector, bool internal_bleeding = false )
+  void clone_dot( std::function<dot_t*( rogue_td_t* )> dot_selector, bool /* internal_bleeding */ = false )
   {
     std::vector<player_t*> tl = target_list();
     size_t num_copies = std::min( tl.size(), as<size_t>( data().effectN( 2 ).base_value() ) );
@@ -7783,7 +7783,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   if ( !ab::hit_any_target )
     return;
 
-  const auto rs = cast_state( state );
+  [[maybe_unused]] const auto rs = cast_state( state );
   double max_spend = std::min( p()->current_cp(), p()->consume_cp_max() );
   double cp_loss = max_spend;
 
@@ -8130,7 +8130,7 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques_cp( const action_s
 {
   // 2026-08-06 -- Special case for allowing Goremaw's Bite
   if ( !p()->spec.shadow_techniques->ok() || !p()->buffs.shadow_techniques->up() ||
-       ab::energize_amount == 0 && !( p()->bugs && ab::data().id() == p()->talent.subtlety.goremaws_bite->id() ) )
+       ( ab::energize_amount == 0 && !( p()->bugs && ab::data().id() == p()->talent.subtlety.goremaws_bite->id() ) ) )
     return;
 
   auto consume_stacks = std::min( p()->buffs.shadow_techniques->check(),

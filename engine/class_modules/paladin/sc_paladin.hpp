@@ -1748,7 +1748,7 @@ public:
     {
       int stacksBefore = p->buffs.afterimage->stack();
       if ( num_hopo_spent > 0 )
-        p->buffs.afterimage->trigger( num_hopo_spent );
+        p->buffs.afterimage->trigger( as<int>( num_hopo_spent ) );
       if ( is_wog && !ab::background && stacksBefore >= p->talents.afterimage->effectN( 3 ).base_value() )
       {
         p->buffs.afterimage->decrement( p->talents.afterimage->effectN( 3 ).base_value() );

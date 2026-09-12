@@ -2929,7 +2929,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
 
   void execute() override
   {
-    bool hasDpUp = p()->buffs.divine_purpose->up();
+    // bool hasDpUp = p()->buffs.divine_purpose->up();
 
     holy_power_consumer_t::execute();
 
