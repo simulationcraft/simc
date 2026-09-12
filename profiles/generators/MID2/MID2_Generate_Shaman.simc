@@ -8,21 +8,23 @@ position=ranged_back
 talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbbzMmZmZZbZMMjBAAAAsYmNYADY2YCZWAgZbmZGjtFTYmxYxMzMmZWsMjFzMMzyAAGGAzMGGGA
 omnium_talents=136822:1/136819:1/136817:1/136815:1/136814:1
 
-head=,id=271483,enchant_id=8017,gem_id=240967,bonus_id=13692/13698/13750/12854,redirected_base_stats=251220
-neck=,id=268265,gem_id=240918/240908,bonus_id=13708/13668/13848/13662
+flask=flask_of_the_shattered_sun_2
+
+head=,id=271483,enchant_id=8017,gem_id=240983,bonus_id=12854/13692/13698/13750,redirected_base_stats=251220
+neck=,id=268265,gem_id=240906/240906,bonus_id=13987/13668/13848/13662
 shoulder=,id=271481,enchant_id=8001,bonus_id=13694/13697/13848,redirected_base_stats=268231
-back=,id=268253,bonus_id=13848/13662
+back=,id=268253,bonus_id=13662/13848
 chest=,id=271486,enchant_id=7987,bonus_id=13690/13698/13846/13848,redirected_base_stats=271876
-wrist=,id=244584,gem_id=240900,bonus_id=12214/13836/13751/9627/8960/12384/13750,crafted_stats=36/49,crafting_quality=5
-hands=,id=271484,bonus_id=13691/13697/12854,redirected_base_stats=160213
-waist=,id=268254,gem_id=240892,bonus_id=12854/13662/13750
+wrist=,id=244584,gem_id=240906,bonus_id=8960/12214/12384/13750/13751/13836/9627/8790,crafted_stats=36/49,crafting_quality=5
+hands=,id=271484,bonus_id=13691/13697/12854,redirected_base_stats=268238
+waist=,id=268254,gem_id=240906,bonus_id=12854/13662/13750
 legs=,id=271482,enchant_id=7935,bonus_id=13693/13698/13848,redirected_base_stats=268237
-feet=,id=244577,enchant_id=8019,bonus_id=12214/13836/13751/9627/8960/12384/8790,crafted_stats=36/49,crafting_quality=5
-finger1=,id=268252,enchant_id=7967,gem_id=240892,bonus_id=13668/12854/13662
-finger2=,id=273792,enchant_id=7967,gem_id=240892,bonus_id=13668/12854/13662
+feet=,id=244577,enchant_id=8019,bonus_id=8790/8960/12214/12384/13751/13836/9627,crafted_stats=36/49,crafting_quality=5
+finger1=,id=251136,enchant_id=7967,gem_id=240906,bonus_id=13668/12854/13662
+finger2=,id=268252,enchant_id=7967,gem_id=240906,bonus_id=12854/13662/13668
 trinket1=,id=270164,bonus_id=12854/13662
 trinket2=,id=273796,bonus_id=12854/13662
-main_hand=,id=271092,enchant_id=7983,bonus_id=13848/13662
+main_hand=,id=271092,enchant_id=8689,bonus_id=13662/13848
 off_hand=,id=268262,bonus_id=12854/13662
 
 save=MID2_Shaman_Elemental.simc
@@ -37,21 +39,21 @@ position=ranged_back
 talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAzMbbzMmZmZZbZgxMDAAAAAWMjhNYBmRDN2AgZbmZGjtFTYmxYxMzMmZWsMjFzMjZWAAGGYmBGGGA
 omnium_talents=136822:1/136819:1/136817:1/136815:1/136814:1
 
-head=,id=271483,enchant_id=8017,gem_id=240967,bonus_id=13692/13698/13750/12854,redirected_base_stats=251220
-neck=,id=268265,gem_id=240918/240908,bonus_id=13708/13668/13848/13662
+head=,id=271483,enchant_id=8017,gem_id=240983,bonus_id=12854/13692/13698/13750,redirected_base_stats=251220
+neck=,id=268265,gem_id=240906/240906,bonus_id=13987/13668/13848/13662
 shoulder=,id=271481,enchant_id=8001,bonus_id=13694/13697/13848,redirected_base_stats=268231
-back=,id=268253,bonus_id=13848/13662
-chest=,id=271486,enchant_id=7987,bonus_id=13690/13698/13708/13848,redirected_base_stats=271876
-wrist=,id=244584,gem_id=240900,bonus_id=12214/13836/13751/9627/8960/12384/13750,crafted_stats=36/49,crafting_quality=5
-hands=,id=271484,bonus_id=13691/13697/12854,redirected_base_stats=160213
-waist=,id=268254,gem_id=240892,bonus_id=12854/13662/13750
+back=,id=268253,bonus_id=13662/13848
+chest=,id=271486,enchant_id=7987,bonus_id=13690/13698/13846/13848,redirected_base_stats=271876
+wrist=,id=244584,gem_id=240906,bonus_id=8960/12214/12384/13750/13751/13836/9627/8790,crafted_stats=36/49,crafting_quality=5
+hands=,id=271484,bonus_id=13691/13697/12854,redirected_base_stats=268238
+waist=,id=268254,gem_id=240906,bonus_id=12854/13662/13750
 legs=,id=271482,enchant_id=7935,bonus_id=13693/13698/13848,redirected_base_stats=268237
-feet=,id=244577,enchant_id=8019,bonus_id=12214/13836/13751/9627/8960/12384,crafted_stats=36/49,crafting_quality=5
-finger1=,id=268249,enchant_id=7967,gem_id=240892,bonus_id=13668/12854/13662
-finger2=,id=252258,enchant_id=7967,gem_id=240892,bonus_id=13668/12854/13662
+feet=,id=244577,enchant_id=8019,bonus_id=8790/8960/12214/12384/13751/13836/9627,crafted_stats=36/49,crafting_quality=5
+finger1=,id=251136,enchant_id=7967,gem_id=240906,bonus_id=13668/12854/13662
+finger2=,id=268252,enchant_id=7967,gem_id=240906,bonus_id=12854/13662/13668
 trinket1=,id=270164,bonus_id=12854/13662
 trinket2=,id=273796,bonus_id=12854/13662
-main_hand=,id=271092,enchant_id=7983,bonus_id=13848/13662
+main_hand=,id=271092,enchant_id=8689,bonus_id=13662/13848
 off_hand=,id=268262,bonus_id=12854/13662
 
 save=MID2_Shaman_Elemental_Stormbringer.simc
