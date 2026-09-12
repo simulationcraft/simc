@@ -97,7 +97,7 @@ void devastation( player_t* p )
   sc->add_action( "tip_the_scales,use_off_gcd=1,if=action.fire_breath.ready" );
   sc->add_action( "call_action_list,name=fb_sc" );
   sc->add_action( "deep_breath,if=active_enemies>=2,cancel_if=gcd.remains=0", "Using DB whenever is neutral at 2T and a gain above" );
-  sc->add_action( "disintegrate,early_chain_if=ticks_remain<=1&buff.mass_disintegrate_stacks.up,if=(raid_event.movement.in>2|buff.hover.up)&buff.mass_disintegrate_stacks.up&buff.charged_blast.stack<15" );
+  sc->add_action( "disintegrate,early_chain_if=ticks_remain<=1&buff.mass_disintegrate_stacks.up,if=(raid_event.movement.in>2|buff.hover.up)&buff.mass_disintegrate_stacks.up&buff.charged_blast.stack<15,interrupt_if=talent.volatility&active_enemies>=8" );
   sc->add_action( "pyre,target_if=max:target.health.pct,if=(active_enemies>=5|active_enemies>=4&talent.volatility.rank=2)&!buff.mass_disintegrate_stacks.up|active_enemies>=3&talent.charged_blast&buff.charged_blast.stack>=15" );
   sc->add_action( "disintegrate,target_if=max:dot.fire_breath_damage.remains,if=(raid_event.movement.in>2|buff.hover.up),early_chain_if=ticks_remain<=1,interrupt_if=ticks_remain<=1&active_enemies>=3" );
   sc->add_action( "living_flame,if=buff.burnout.up&buff.leaping_flames.up&active_enemies<=1+buff.leaping_flames.stack" );
