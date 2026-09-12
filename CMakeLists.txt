@@ -17,6 +17,7 @@ option(SC_NO_NETWORKING "Disable all networking related stuff." OFF)
 option(SC_USE_FLAT_INSTALL "Install files into a flat folder structure" ${WIN32})
 
 option(SC_EVENT_QUEUE_DEBUG "Enable Event Queue Debug Info" OFF)
+option(SC_ENABLE_LTO "Enable IPO/LTO for non-Debug builds" ON)
 
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard to conform to")
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
@@ -53,6 +54,26 @@ function(sc_common_compiler_options target)
   )
 endfunction()
 
+if(SC_ENABLE_LTO)
+  include(CheckIPOSupported)
+  check_ipo_supported(RESULT SC_IPO_SUPPORTED OUTPUT SC_IPO_OUTPUT LANGUAGES CXX)
+  if(SC_IPO_SUPPORTED)
+    message(STATUS "IPO/LTO enabled for non-Debug builds")
+  else()
+    message(STATUS "IPO/LTO requested but not supported by this toolchain: ${SC_IPO_OUTPUT}")
+  endif()
+endif()
+
+function(sc_enable_lto target)
+  if(SC_ENABLE_LTO AND SC_IPO_SUPPORTED)
+    set_target_properties(${target} PROPERTIES
+      INTERPROCEDURAL_OPTIMIZATION_RELEASE ON
+      INTERPROCEDURAL_OPTIMIZATION_RELWITHDEBINFO ON
+      INTERPROCEDURAL_OPTIMIZATION_MINSIZEREL ON
+    )
+  endif()
+endfunction()
+
 
 ### Git Hash ###
 # Get the current working branch
@@ -80,6 +101,7 @@ endif()
 add_executable(simc engine/sc_main.cpp)
 target_link_libraries(simc engine)
 sc_common_compiler_options(simc)
+sc_enable_lto(simc)
 
 install(TARGETS simc DESTINATION ${SIMC_INSTALL_BIN})
 
