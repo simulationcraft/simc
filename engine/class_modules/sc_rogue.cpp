@@ -6414,6 +6414,9 @@ struct goremaws_bite_t : public rogue_attack_t
         rogue_attack_t::execute_on_target( primary_target, result_damage );
       } );
     }
+
+    bool procs_shadow_blades_damage() const override
+    { return false; }
   };
 
   struct goremaws_bite_dot_t : public rogue_attack_t
@@ -6574,6 +6577,9 @@ struct singular_focus_t : public rogue_attack_t
   }
 
   bool procs_caustic_spatter() const override
+  { return false; }
+
+  bool procs_shadow_blades_damage() const override
   { return false; }
 };
 
