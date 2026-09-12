@@ -1315,7 +1315,7 @@ struct word_of_glory_guided_prayer_t : word_of_glory_t
 {
   word_of_glory_guided_prayer_t(paladin_t* p) : word_of_glory_t(p, "", "word_of_glory_guided_prayer")
   {
-    base_multiplier = p->talents.guided_prayer_icd->effectN( 2 ).percent();
+    base_multiplier = p->talents.guided_prayer->effectN( 2 ).percent();
     background      = true;
     doesnt_consume_dp = true;
   }
@@ -3355,7 +3355,7 @@ void paladin_t::create_actions()
   active.hammer_of_light_cons = new consecration_t( this, "hol", HAMMER_OF_LIGHT );
 
   active.afterimage    = new word_of_glory_afterimage_t( this );
-  active.guided_prayer_icd = new word_of_glory_guided_prayer_t( this );
+  active.guided_prayer = new word_of_glory_guided_prayer_t( this );
 
   player_t::create_actions();
 }
@@ -4182,7 +4182,7 @@ void paladin_t::init_spells()
   talents.a_just_reward                   = find_talent_spell( talent_tree::CLASS, "A Just Reward" );
   talents.afterimage                      = find_talent_spell( talent_tree::CLASS, "Afterimage" );
   talents.healing_hands                   = find_talent_spell( talent_tree::CLASS, "Healing Hands" );
-  talents.guided_prayer_icd                   = find_talent_spell( talent_tree::CLASS, "Guided Prayer" );
+  talents.guided_prayer                   = find_talent_spell( talent_tree::CLASS, "Guided Prayer" );
   talents.divine_steed                    = find_talent_spell( talent_tree::CLASS, "Divine Steed" );
   talents.lights_countenance              = find_talent_spell( talent_tree::CLASS, "Light's Countenance" );
   talents.greater_judgment                = find_talent_spell( talent_tree::CLASS, "Greater Judgment" );
@@ -4859,9 +4859,9 @@ double paladin_t::resource_loss( resource_e resource_type, double amount, gain_t
 {
   double result     = player_t::resource_loss( resource_type, amount, source, action );
 
-  if (resource_type == RESOURCE_HEALTH && talents.guided_prayer_icd->ok() && cooldowns.guided_prayer_icd->up() && resources.pct(resource_type) < talents.guided_prayer_icd->effectN(1).percent())
+  if (resource_type == RESOURCE_HEALTH && talents.guided_prayer->ok() && cooldowns.guided_prayer_icd->up() && resources.pct(resource_type) < talents.guided_prayer->effectN(1).percent())
   {
-    active.guided_prayer_icd->execute_on_target( this );
+    active.guided_prayer->execute_on_target( this );
     cooldowns.guided_prayer_icd->start();
   }
 

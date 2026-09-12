@@ -153,7 +153,7 @@ public:
     action_t* background_crusade;
 
     action_t* afterimage;
-    action_t* guided_prayer_icd;
+    action_t* guided_prayer;
   } active;
 
   // Buffs
@@ -490,7 +490,7 @@ public:
     const spell_data_t* a_just_reward;
     const spell_data_t* afterimage;
     const spell_data_t* healing_hands; // Ret only
-    const spell_data_t* guided_prayer_icd;
+    const spell_data_t* guided_prayer;
     const spell_data_t* divine_steed;
     const spell_data_t* lights_countenance;
     const spell_data_t* greater_judgment;
