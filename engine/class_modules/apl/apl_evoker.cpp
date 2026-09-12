@@ -132,10 +132,10 @@ void devastation( player_t* p )
   fb_fs->add_action( "fire_breath,empower_to=2,target_if=max:target.health.pct,if=active_enemies=2|buff.dragonrage.up|buff.rising_fury.up" );
   fb_fs->add_action( "fire_breath,empower_to=3,target_if=max:target.health.pct,if=active_enemies>=3", "Cap at R3 since R4 is just sort of bad for all cases" );
 
-  fb_sc->add_action( "fire_breath,empower_to=1,target_if=max:target.health.pct,if=talent.catalyze|active_enemies=1|active_enemies>4&!talent.catalyze", "Fire Breath Upranking" );
-  fb_sc->add_action( "fire_breath,empower_to=2,target_if=max:target.health.pct,if=active_enemies=2&!talent.catalyze" );
-  fb_sc->add_action( "fire_breath,empower_to=3,target_if=max:target.health.pct,if=active_enemies=3&!talent.catalyze" );
-  fb_sc->add_action( "fire_breath,empower_to=4,target_if=max:target.health.pct,if=active_enemies=4&!talent.catalyze" );
+  fb_sc->add_action( "fire_breath,empower_to=1,target_if=max:target.health.pct,if=active_enemies=1|active_enemies>4", "Fire Breath Upranking" );
+  fb_sc->add_action( "fire_breath,empower_to=2,target_if=max:target.health.pct,if=active_enemies=2" );
+  fb_sc->add_action( "fire_breath,empower_to=3,target_if=max:target.health.pct,if=active_enemies=3" );
+  fb_sc->add_action( "fire_breath,empower_to=4,target_if=max:target.health.pct,if=active_enemies=4" );
 
   green->add_action( "emerald_blossom", "Green Spells for Ancient Flame" );
   green->add_action( "verdant_embrace" );
