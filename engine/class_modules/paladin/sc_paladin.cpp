@@ -3773,7 +3773,7 @@ std::string paladin_t::default_potion() const
 {
   std::string retribution_pot = ( true_level > 80 ) ? "lights_potential_2" : "disabled";
 
-  std::string protection_pot = ( true_level > 80 ) ? "lights_potential_2" : "disabled";
+  std::string protection_pot = ( true_level > 80 ) ? "liquid_luster_2" : "disabled";
 
   std::string holy_dps_pot = ( true_level > 50 ) ? "spectral_intellect" : "disabled";
 
@@ -3796,7 +3796,7 @@ std::string paladin_t::default_food() const
 {
   std::string retribution_food = ( true_level > 80 ) ? "royal_roast" : "disabled";
 
-  std::string protection_food = ( true_level > 80 ) ? "blooming_feast" : "disabled";
+  std::string protection_food = ( true_level > 80 ) ? "silvermoon_parade" : "disabled";
 
   std::string holy_dps_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
@@ -3819,7 +3819,7 @@ std::string paladin_t::default_flask() const
 {
   std::string retribution_flask = ( true_level > 80 ) ? "flask_of_the_magisters_2" : "disabled";
 
-  std::string protection_flask = ( true_level > 80 ) ? "flask_of_the_shattered_sun_2" : "disabled";
+  std::string protection_flask = ( true_level > 80 ) ? "flask_of_the_blood_knights_2" : "disabled";
 
   std::string holy_dps_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
 
