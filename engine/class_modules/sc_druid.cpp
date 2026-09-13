@@ -578,7 +578,6 @@ struct druid_t final : public parse_player_effects_t
     double cenarius_guidance_exceptional_chance = 0.85;
 
     // Balance
-    double initial_astral_power = 0.0;
     int initial_moon_stage = static_cast<int>( moon_stage_e::NEW_MOON );
     int initial_orbit_breaker_stacks = -1;
 
@@ -1348,7 +1347,6 @@ struct druid_t final : public parse_player_effects_t
   void init_gains() override;
   void init_procs() override;
   void init_uptimes() override;
-  void init_resources( bool ) override;
   void init_special_effects() override;
   void init_spells() override;
   void init_items() override;
@@ -8700,7 +8698,7 @@ struct starsurge_t final : public trigger_call_of_the_elder_druid_t<ap_spender_t
       return false;
 
     // emulate performing resource_available( current_resource(), cost() )
-    if ( !p()->talent.natures_balance.ok() && p()->options.initial_astral_power < cost() )
+    if ( !p()->talent.natures_balance.ok() && p()->resources.current[ RESOURCE_ASTRAL_POWER ] < cost() )
       return false;
 
     return true;
@@ -10860,6 +10858,10 @@ void druid_t::init_base_stats()
     ready_type = ready_e::READY_POLL;
   else if ( specialization() == DRUID_FERAL )
     ready_type = ready_e::READY_TRIGGER;
+
+  // adjust starting astral power with nature's balance
+  if ( talent.natures_balance.ok() )
+    resources.start_at[ RESOURCE_ASTRAL_POWER ] = talent.natures_balance->effectN( 2 ).base_value();
 }
 
 void druid_t::init_initial_stats()
@@ -12468,18 +12470,6 @@ void druid_t::init_uptimes()
     uptime.atmospheric_exposure = get_uptime( "Atmospheric Exposure" );
 }
 
-// druid_t::init_resources ==================================================
-void druid_t::init_resources( bool force )
-{
-  player_t::init_resources( force );
-
-  if ( options.initial_astral_power == 0.0 && talent.natures_balance.ok() )
-    resources.current[ RESOURCE_ASTRAL_POWER ] = talent.natures_balance->effectN( 2 ).base_value();
-  else if ( options.initial_astral_power > 0.0 )
-    resources.current[ RESOURCE_ASTRAL_POWER ] = options.initial_astral_power;
-}
-
-
 // druid_t::init_special_effects ============================================
 void druid_t::init_special_effects()
 {
@@ -13222,7 +13212,7 @@ void druid_t::combat_begin()
 
     if ( in_boss_encounter )
     {
-      double cap = std::max( talent.natures_balance->effectN( 2 ).base_value(), 20.0 );
+      double cap = std::max( resources.start_at[ RESOURCE_ASTRAL_POWER ], 20.0 );
       double curr = resources.current[ RESOURCE_ASTRAL_POWER ];
 
       resources.current[ RESOURCE_ASTRAL_POWER ] = std::min( cap, curr );
@@ -13650,7 +13640,6 @@ void druid_t::create_options()
   add_option( opt_bool( "druid.raid_combat", options.raid_combat ) );
 
   // Balance
-  add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
   add_option( opt_int( "druid.initial_orbit_breaker_stacks", options.initial_orbit_breaker_stacks ) );
 
