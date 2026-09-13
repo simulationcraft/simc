@@ -4925,8 +4925,7 @@ void paladin_t::combat_begin()
   else if ( options.starting_armament == "holy_bulwark" || sim->rng().roll( .5 ) )
     next_armament = HOLY_BULWARK;
   else
-    // Default Starting Armament 
-    next_armament = HOLY_BULWARK;
+    next_armament = SACRED_WEAPON;
 
   if ( talents.herald_of_the_sun.morning_star->ok() )
   {

@@ -772,7 +772,7 @@ public:
     double blessed_hammer_strikes                           = 2.0;
     double reflection_of_radiance_proc_chance_sacred_weapon = .1;
     double reflection_of_radiance_proc_chance_holy_bulwark  = .2;
-    std::string starting_armament                           = "sacred_weapon";
+    std::string starting_armament                           = "holy_bulwark";
   } options;
   player_t* beacon_target;
 
