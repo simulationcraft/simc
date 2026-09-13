@@ -4541,7 +4541,7 @@ struct magus_pet_t : public magus_base_pet_t
     if ( dk()->talent.unholy.lord_of_the_dead.ok() &&
          dk()->active_magi.size() >= dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value() )
     {
-      int magi_required = as<int>( dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value() );
+      unsigned magi_required = as<unsigned>( dk()->talent.unholy.lord_of_the_dead->effectN( 5 ).base_value() );
       make_event( *sim, 0_ms, [ this, magi_required ] {
         if ( dk()->active_magi.size() < magi_required )
           return;
@@ -13799,7 +13799,7 @@ void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
   }
 }
 
-void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric, bool summoned_ghoul )
+void death_knight_t::trigger_sanlayn_execute_talents( bool is_vampiric, bool /* summoned_ghoul */ )
 {
   if ( !is_vampiric )
     return;
@@ -17035,7 +17035,7 @@ void death_knight_t::parse_player_effects()
       parse_effects( buffs.bone_shield, IGNORE_STACKS );
       parse_effects( buffs.perseverance_of_the_ebon_blade );
       parse_effects( buffs.dance_of_midnight_2 );
-      parse_effects( buffs.blood_debt, [ this ]( double v ) {
+      parse_effects( buffs.blood_debt, []( double v ) {
         v *= 0.1; // 0.5% in game, instead of 5% found in spelldata
         return v;
       } );

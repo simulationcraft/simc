@@ -4466,7 +4466,7 @@ struct moonlight_chakram_t final : public hunter_ranged_attack_t
       {
         if ( auto pet = p()->pets.main )
         {
-          p()->pets.main->actions.strike_as_one->execute_on_target( target );
+          pet->actions.strike_as_one->execute_on_target( target );
           p()->cooldowns.strike_as_one->start();
         }
       }
@@ -6071,7 +6071,7 @@ struct explosive_shot_t final : public explosive_shot_base_t
     }
   }
 
-  void queue_execute( execute_type et )
+  void queue_execute( execute_type et ) override
   {
     // Should always be foreground but just incase...
     if ( p()->buffs.unstable_trigger->check() && et == execute_type::FOREGROUND )
@@ -6444,7 +6444,7 @@ struct boomstick_t : public hunter_spell_t
       {
         if ( auto pet = p()->pets.main )
         {
-          p()->pets.main->actions.strike_as_one->execute_on_target( target );
+          pet->actions.strike_as_one->execute_on_target( target );
           p()->cooldowns.strike_as_one->start();
         }
       }

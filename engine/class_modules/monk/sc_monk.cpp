@@ -7338,7 +7338,7 @@ std::function<bool( std::tuple<talent_tree, unsigned, unsigned> )> matching_tale
 std::function<unsigned( unsigned )> has_expected_count( player_t *player, unsigned expected_count )
 {
   return [ = ]( unsigned hero_tree ) {
-    unsigned count = range::count_if( player->player_traits, matching_talent( player, hero_tree ) );
+    unsigned count = as<unsigned>( range::count_if( player->player_traits, matching_talent( player, hero_tree ) ) );
     return count > expected_count;
   };
 }

@@ -89,6 +89,8 @@ item_t::parsed_input_t::parsed_input_t()
     data(),
     initial_cd( timespan_t::zero() ),
     drop_level( 0 ),
+    titan_disc_driver_id( 0 ),
+    content_tuning_id( 0 ),
     has_midnight_scaling( false ),
     redirect_item_id( 0 ),
     base_level_priority( std::numeric_limits<int>::max() ),
