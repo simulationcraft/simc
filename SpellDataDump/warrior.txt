@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69587 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69814 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -4530,7 +4530,6 @@ Effects          :
 Description      : $@spelldesc215096
 
 Name             : Bladestorm (id=227847) [Spell Family (4)] 
-Hotfixed         : Attributes
 Talent Entry     : Fury [tree=spec, row=10, col=6, max_rank=1, req_points=20, select_idx=200]
                  : Arms [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Warrior
@@ -13250,7 +13249,6 @@ Effects          :
 Description      : $@spelldesc444775
 
 Name             : Bladestorm (id=446035) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -14899,7 +14897,6 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 5 | Misc Value 2: 2670 (Label) | Target: Self (1)
 #11 (id=1352907) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 10000 | Scaled Value: 10000 | Misc Value: 12 | Misc Value 2: 7157 (Label) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 
 Name             : Protection Warrior (id=1256935) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -14948,7 +14945,6 @@ Effects          :
                    Family Flags: 29
 #6 (id=1352908)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 10000 | Scaled Value: 10000 | Misc Value: 12 | Misc Value 2: 7157 (Label) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 
 Name             : Protection Warrior (id=1258163) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior

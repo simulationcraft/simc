@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69587 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69814 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -16200,7 +16200,6 @@ Effects          :
 Description      : $@spelldesc1244877
 
 Name             : Lake of Fire (id=1244918) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Fire
 Spell Type       : Magic
