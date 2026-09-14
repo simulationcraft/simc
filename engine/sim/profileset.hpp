@@ -142,12 +142,27 @@ class profile_output_data_item_t
   std::array<unsigned, MAX_GEM_SLOTS>              m_relic_bonus_ilevel;
 
 public:
-  profile_output_data_item_t() : m_slot_name( nullptr ), m_item_id( 0 ), m_item_level( 0 ), m_enchant_id( 0 )
-  { }
+  profile_output_data_item_t()
+    : m_slot_name( nullptr ),
+      m_item_id( 0 ),
+      m_item_level( 0 ),
+      m_enchant_id( 0 ),
+      m_gem_id(),
+      m_relic_data(),
+      m_relic_ilevel(),
+      m_relic_bonus_ilevel()
+  {}
 
-  profile_output_data_item_t( const char* slot_str, unsigned id, unsigned item_level ) :
-    m_slot_name( slot_str ), m_item_id( id ), m_item_level( item_level ), m_enchant_id( 0 )
-  { }
+  profile_output_data_item_t( const char* slot_str, unsigned id, unsigned item_level )
+    : m_slot_name( slot_str ),
+      m_item_id( id ),
+      m_item_level( item_level ),
+      m_enchant_id( 0 ),
+      m_gem_id(),
+      m_relic_data(),
+      m_relic_ilevel(),
+      m_relic_bonus_ilevel()
+  {}
 
   const char* slot_name() const
   { return m_slot_name; }
