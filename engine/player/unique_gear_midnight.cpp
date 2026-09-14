@@ -4578,7 +4578,7 @@ void ophidian_bone_whistle( special_effect_t& effect )
       // proc is guaranteed on next spell, so we can use register_callback_trigger_function to expire the buff
       e.player->callbacks.register_callback_trigger_function(
         repeat_eff->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-        [ this ]( dbc_proc_callback_t* cb, const auto&, auto, auto, auto ) {
+        [ this ]( [[maybe_unused]] dbc_proc_callback_t* cb, const auto&, auto, auto, auto ) {
           assert( cb->proc_chance >= 1.0 && buff->check() );
           buff->expire();
           return true;
@@ -4700,7 +4700,7 @@ void twisted_horrors_tendril( special_effect_t& effect )
 
   auto eff2 = new special_effect_t( effect.player );
   eff2->name_str = "twisted_horrors_tendril_new_target";
-  eff2->spell_id = new_target_id;
+  eff2->spell_id = new_target->spell_id;
   effect.player->special_effects.push_back( eff2 );
 
   struct twisted_horrors_tendrils_new_target_cb_t : public dbc_proc_callback_t
