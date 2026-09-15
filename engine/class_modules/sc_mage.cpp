@@ -456,7 +456,6 @@ public:
     bool trigger_overpowered_missiles;
     bool gained_initial_clearcasting; // Used to prevent queueing Arcane Missiles immediately after gaining the first stack Clearclasting.
     timespan_t last_random_clearcasting; // Brainstorm cannot be triggered twice if a singular spell/action triggers Clearcasting twice.
-    bool thermal_void_active;
     int glorious_incandescence_snapshot;
     int fired_up_count; // number of Fired Up procs in this Combustion
   } state;
@@ -4396,7 +4395,13 @@ struct winters_end_t final : public mage_spell_t
   }
 };
 
-struct ice_lance_t final : public frost_mage_spell_t
+struct ice_lance_data_t
+{
+  bool thermal_void = false;
+  void debug( std::ostringstream& s ) const { s << " thermal_void=" << thermal_void; }
+};
+
+struct ice_lance_t final : public custom_state_spell_t<frost_mage_spell_t, ice_lance_data_t>
 {
   int freezing_consume;
   shatter_source_t* shatter_source;
@@ -4406,7 +4411,7 @@ struct ice_lance_t final : public frost_mage_spell_t
   { return ( p->talents.thermal_void.ok() ? 2 : 1 ) * consume; }
 
   ice_lance_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->talents.ice_lance ),
+    custom_state_spell_t( n, p, p->talents.ice_lance ),
     freezing_consume( as<int>( p->spec.shatter->effectN( 4 ).base_value() ) ),
     shatter_source( p->get_shatter_source( name_str, max_consume( p, freezing_consume ) ) ),
     shatter_source_cleave( p->get_shatter_source( "Ice Lance cleave", max_consume( p, freezing_consume ) ) )
@@ -4424,26 +4429,30 @@ struct ice_lance_t final : public frost_mage_spell_t
       add_child( p->action.shatter.ice_lance );
   }
 
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    cast_state( s )->data.thermal_void = p()->buffs.thermal_void->check();
+    custom_state_spell_t::snapshot_state( s, rt );
+  }
+
   void execute() override
   {
-    frost_mage_spell_t::execute();
+    custom_state_spell_t::execute();
 
     p()->state.fingers_of_frost_active = p()->buffs.fingers_of_frost->up();
     p()->buffs.fingers_of_frost->decrement();
 
-    // TODO: This actually seems to be tracked per-cast, unlike FoF.
-    // Probably needs to be passed through the action state.
-    p()->state.thermal_void_active = p()->buffs.thermal_void->up();
+    p()->buffs.thermal_void->up(); // Benefit tracking
     p()->buffs.thermal_void->decrement();
   }
 
   void impact( action_state_t* s ) override
   {
-    frost_mage_spell_t::impact( s );
+    custom_state_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) && p()->action.shatter.ice_lance )
     {
-      int consume = ( p()->state.thermal_void_active ? 2 : 1 ) * freezing_consume;
+      int consume = ( cast_state( s )->data.thermal_void ? 2 : 1 ) * freezing_consume;
       int stacks = p()->trigger_shatter( s->target, p()->action.shatter.ice_lance, consume,
                                          s->chain_target == 0 ? shatter_source : shatter_source_cleave, p()->state.fingers_of_frost_active );
 
@@ -4459,7 +4468,7 @@ struct ice_lance_t final : public frost_mage_spell_t
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
   {
-    frost_mage_spell_t::available_targets( tl );
+    custom_state_spell_t::available_targets( tl );
 
     // Priority for target selection. Main target is always chosen, rest depends on Freezing stacks.
     auto value = [ this ] ( player_t* t )
@@ -4483,7 +4492,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     // Freezing stacks change often enough that trying to do a more
     // fine-grained invalidation isn't worth it.
     target_cache.is_valid = false;
-    return frost_mage_spell_t::target_list();
+    return custom_state_spell_t::target_list();
   }
 };
 
