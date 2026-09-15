@@ -9981,7 +9981,6 @@ struct use_item_t : public action_t
 
       // Create an action
       action = e->create_action();
-      action->action_list = action_list;
 
       // if the action is the same as the driver, has a direct/periodic damage effect, and the driver has a cast time,
       // then the action is not considered a proc
@@ -10478,10 +10477,11 @@ struct use_items_t : public action_t
 
       auto use_action = new use_item_t( player, std::string( "slot=" ) + item.slot_name() );
       use_action->option.if_expr_str = option.if_expr_str;
-      use_action->action_list = action_list;
-      // The use_item action is not triggered by the actor (through the APL), so background it
-      use_action->background = true;
       use_actions.push_back( use_action );
+
+      auto action = use_actions.back();
+      // The use_item action is not triggered by the actor (through the APL), so background it
+      action->background = true;
     } );
   }
 };
