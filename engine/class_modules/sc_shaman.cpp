@@ -13473,14 +13473,14 @@ void shaman_t::init_action_list_enhancement()
   single_sb->add_action( "flame_shock,if=!ticking" );
   single_sb->add_action( "lava_lash,if=!debuff.lashing_flames.up&time<5" );
   single_sb->add_action( "stormstrike,if=time<1" );
-  single_sb->add_action( "call_action_list,name=cooldowns" );
-  single_sb->add_action( "sundering,if=talent.surging_elements.enabled|talent.feral_spirit.enabled" );
-  single_sb->add_action( "doom_winds" );
+  single_sb->add_action( "call_action_list,name=cooldowns,if=raid_event.adds.in>=60|fight_remains<=20" );
+  single_sb->add_action( "sundering,if=(talent.surging_elements.enabled|talent.feral_spirit.enabled)&(raid_event.adds.in>=30|fight_remains<=12)" );
+  single_sb->add_action( "doom_winds,if=raid_event.adds.in>=30|fight_remains<=10" );
   single_sb->add_action( "voltaic_blaze,if=set_bonus.midnight_season_2_2pc" );
   single_sb->add_action( "crash_lightning,if=!buff.crash_lightning.up|talent.storm_unleashed.enabled" );
   single_sb->add_action( "voltaic_blaze,if=(buff.doom_winds.up&buff.maelstrom_weapon.stack>=10-(1+2*talent.fire_nova.enabled)&!buff.maelstrom_weapon.stack=10)&talent.thorims_invocation.enabled" );
   single_sb->add_action( "windstrike,if=buff.maelstrom_weapon.stack>0&talent.thorims_invocation.enabled" );
-  single_sb->add_action( "ascendance" );
+  single_sb->add_action( "ascendance,if=raid_event.adds.in>=60|fight_remains<=20" );
   single_sb->add_action( "stormstrike,if=buff.doom_winds.up&talent.thorims_invocation.enabled" );
   single_sb->add_action( "crash_lightning,if=buff.doom_winds.up&talent.thorims_invocation.enabled" );
   single_sb->add_action( "tempest,if=buff.maelstrom_weapon.stack=10" );
@@ -13499,11 +13499,11 @@ void shaman_t::init_action_list_enhancement()
   // Totemic Single Target
   single_totemic->add_action( "voltaic_blaze,if=dot.flame_shock.remains=0" );
   single_totemic->add_action( "flame_shock,if=!ticking" );
-  single_totemic->add_action( "surging_totem" );
+  single_totemic->add_action( "surging_totem,if=raid_event.adds.in>=30|fight_remains<=30" );
   single_totemic->add_action( "call_action_list,name=cooldowns" );
-  single_totemic->add_action( "sundering,if=talent.surging_elements.enabled|buff.whirling_earth.up|talent.feral_spirit.enabled" );
+  single_totemic->add_action( "sundering,if=(talent.surging_elements.enabled|buff.whirling_earth.up|talent.feral_spirit.enabled)&(raid_event.adds.in>=30|fight_remains<=12)" );
   single_totemic->add_action( "lava_lash,if=buff.whirling_fire.up|buff.hot_hand.up" );
-  single_totemic->add_action( "doom_winds" );
+  single_totemic->add_action( "doom_winds,if=raid_event.adds.in>=30|fight_remains<=10" );
   single_totemic->add_action( "voltaic_blaze,if=set_bonus.midnight_season_2_2pc" );
   single_totemic->add_action( "crash_lightning,if=!buff.crash_lightning.up|talent.storm_unleashed.enabled" );
   single_totemic->add_action( "primordial_storm,if=(buff.maelstrom_weapon.stack>=10|buff.primordial_storm.remains<3.5&buff.maelstrom_weapon.stack>=5)" );
