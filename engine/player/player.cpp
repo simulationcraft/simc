@@ -9982,13 +9982,18 @@ struct use_item_t : public action_t
       // Create an action
       action = e->create_action();
 
-      // if the action is the same as the driver, has a direct/periodic damage effect, and the driver has a cast time,
-      // then the action is not considered a proc
-      if ( action && action->id == e->spell_id && e->driver()->cast_time() > 0_ms &&
-           ( action_t::has_direct_damage_effect( *e->driver() ) ||
-             action_t::has_periodic_damage_effect( *e->driver() ) ) )
+      if ( action )
       {
-        action->not_a_proc = true;
+        action->action_list = action_list;
+
+        // if the action is the same as the driver, has a direct/periodic damage effect, and the driver has a cast time,
+        // then the action is not considered a proc
+        auto _driver = e->driver();
+        if ( action->id == e->spell_id && _driver->cast_time() > 0_ms &&
+             ( action_t::has_direct_damage_effect( *_driver ) || action_t::has_periodic_damage_effect( *_driver ) ) )
+        {
+          action->not_a_proc = true;
+        }
       }
 
       stats = player->get_stats( name_str, this );
@@ -10477,11 +10482,10 @@ struct use_items_t : public action_t
 
       auto use_action = new use_item_t( player, std::string( "slot=" ) + item.slot_name() );
       use_action->option.if_expr_str = option.if_expr_str;
-      use_actions.push_back( use_action );
-
-      auto action = use_actions.back();
+      use_action->action_list = action_list;
       // The use_item action is not triggered by the actor (through the APL), so background it
-      action->background = true;
+      use_action->background = true;
+      use_actions.push_back( use_action );
     } );
   }
 };
