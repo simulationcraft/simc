@@ -258528,9 +258528,11 @@ Triggered By     : Venom Splatter (1307222)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1321360)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 329056.3 (coefficient=2574.705) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 329056.3 (coefficient=2574.705) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.5 -> 0.25)
 #2 (id=1321379)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 57909.32 (coefficient=453.1122) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 57909.32 (coefficient=453.1122) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.5 -> 0.25)
 
 Name             : Zatha'tek, Breath of Corruption (id=1298023) [Passive] 
 School           : Physical
