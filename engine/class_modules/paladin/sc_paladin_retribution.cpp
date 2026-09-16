@@ -477,7 +477,7 @@ struct divine_storm_tempest_t : public holy_power_consumer_t<paladin_melee_attac
     clears_judgment          = false;
     is_divine_storm          = true;
     triggers_endless_gleam   = false;
-    triggers_divine_purpose  = true;
+    triggers_divine_purpose  = false;
     triggers_crusade_stacks  = false;
     triggers_righteous_cause = false;
   }
