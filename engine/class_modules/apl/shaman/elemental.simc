@@ -53,6 +53,9 @@ actions.aoe+=/flame_shock,if=!buff.master_of_the_elements.up&((dot.flame_shock.r
 # Apply Voltaic blaze for Inferno arc or Purging flames.
 actions.aoe+=/voltaic_blaze,if=!buff.master_of_the_elements.up&((dot.flame_shock.refreshable&cooldown.ascendance.remains>5)|(buff.fire_elemental.up&buff.fire_elemental.remains<2)|talent.purging_flames)
 
+#Spend SK stacks asap if you wont overcap (with MID s2 set)
+actions.aoe+=/chain_lightning,if=buff.stormkeeper.up&maelstrom.deficit>(spell_targets.chain_lightning>?5)*(2+(spell_targets.chain_lightning>?5)+2)&talent.call_of_the_ancestors&set_bonus.mid2_4pc
+
 # Ascendance on CD (always with MID2 set), unless SK can be sync'd with it.
 actions.aoe+=/ascendance,if=set_bonus.mid2_4pc|cooldown.stormkeeper.remains>15|fight_remains<20
 
