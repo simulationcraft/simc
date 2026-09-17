@@ -3556,42 +3556,52 @@ void wavecallers_seastone( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
 // Vile Vial of Volatile Venom
 // 1293316 on-use buff (Empowering Venom)
 // 1295123 debuff (Debilitating Venom), applies once the buff fades
 // 1295179 equip
 void vile_vial_of_volatile_venom( special_effect_t& effect )
 {
-  struct vile_vial_of_volatile_venom_t : public spell_t
-  {
-    std::unordered_map<stat_e, buff_t*> buffs;
-    std::unordered_map<stat_e, buff_t*> debuffs;
+  // NOTE: the buff/debuff use old-style with the coeffs being present on the buff/debuff spell data
+  // A secondary equip effect is also attached to the item as per the modern-style of having a separate
+  // coeff driver. For simplicity's sake we have it automatically handled as per the old system, but
+  // this may need to be updated if spell data changes in the future
 
-    vile_vial_of_volatile_venom_t( const special_effect_t& e ) : spell_t( "empowering_venom", e.player, e.driver() )
+  // placeholder action to trigger buffs
+  struct vile_vial_of_volatile_venom_t : public action_t
+  {
+    std::vector<buff_t*> buffs;
+    std::vector<buff_t*> debuffs;
+
+    vile_vial_of_volatile_venom_t( const special_effect_t& e )
+      : action_t( action_e::ACTION_OTHER, "empowering_venom", e.player, e.driver() )
     {
+      background = quiet = true;
+      callbacks = false;
+
       auto debuff_data = e.player->find_spell( 1295123 );
 
-      create_all_stat_buffs( e, debuff_data, 0, [ this ]( stat_e s, buff_t* b ) { debuffs[ s ] = b; } );
+      create_all_stat_buffs( e, debuff_data, 0, [ this ]( stat_e s, buff_t* b ) { debuffs.push_back( b ); } );
 
       create_all_stat_buffs( e, e.driver(), 0, [ this ]( stat_e s, buff_t* b ) {
+        b->set_cooldown( 0_ms );
         // The debuff rolls a stat independently of the stat granted by the buff
         b->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
-          debuffs.at( player->rng().range( secondary_ratings ) )->trigger();
+          player->rng().range( debuffs )->trigger();
         } );
-        buffs[ s ] = b;
-      } );
+        buffs.push_back( b );
+      }, true );
     }
 
     void execute() override
     {
-      spell_t::execute();
+      action_t::execute();
 
-      buffs.at( player->rng().range( secondary_ratings ) )->trigger();
+      player->rng().range( buffs )->trigger();
     }
   };
 
-  effect.disable_buff();
-  effect.has_use_buff_override = true;
   effect.execute_action = create_proc_action<vile_vial_of_volatile_venom_t>( "empowering_venom", effect );
 }
 
