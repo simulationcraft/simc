@@ -3582,9 +3582,9 @@ void vile_vial_of_volatile_venom( special_effect_t& effect )
 
       auto debuff_data = e.player->find_spell( 1295123 );
 
-      create_all_stat_buffs( e, debuff_data, 0, [ this ]( stat_e s, buff_t* b ) { debuffs.push_back( b ); } );
+      create_all_stat_buffs( e, debuff_data, 0, [ this ]( stat_e, buff_t* b ) { debuffs.push_back( b ); } );
 
-      create_all_stat_buffs( e, e.driver(), 0, [ this ]( stat_e s, buff_t* b ) {
+      create_all_stat_buffs( e, e.driver(), 0, [ this ]( stat_e, buff_t* b ) {
         b->set_cooldown( 0_ms );
         // The debuff rolls a stat independently of the stat granted by the buff
         b->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
