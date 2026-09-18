@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69814 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69875 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -17400,16 +17400,12 @@ Effects          :
                    Family Flags: 64, 107
 #10 (id=1353090) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: 5000 | Scaled Value: 5000 | Misc Value: 5 | Misc Value 2: 7165 (Label) | Target: Self (1)
-Hotfixed         : Sub Type (219 -> 648), Misc Value (3 -> 5)
 #11 (id=1353103) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 5 | Misc Value 2: 6720 (Label) | Target: Self (1)
-Hotfixed         : Sub Type (219 -> 648), Misc Value (3 -> 5)
 #12 (id=1353104) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 2 (6)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 6 | Misc Value 2: 6720 (Label) | Target: Self (1)
-Hotfixed         : Sub Type (219 -> 648), Misc Value (12 -> 6)
 #13 (id=1353105) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 2 (6)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 6 | Misc Value 2: 5149 (Label) | Target: Self (1)
-Hotfixed         : Sub Type (219 -> 648), Misc Value (12 -> 6)
 Description      : Elemental Shaman baseline passive
 
 Name             : Shaman Totemic 11.2 Class Set 4pc (id=1236411) [Spell Family (11), Passive, Hidden] 
