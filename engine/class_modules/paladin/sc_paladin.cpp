@@ -4949,6 +4949,12 @@ void paladin_t::combat_begin()
 {
   player_t::combat_begin();
 
+  // When we have Blessed Hammer, we can spam it pre-combat and start with full charges
+  if (talents.blessed_hammer->ok())
+  {
+    resources.current[ RESOURCE_HOLY_POWER ]++;
+  }
+
   auto hp_overflow = resources.current[ RESOURCE_HOLY_POWER ] - MAX_START_OF_COMBAT_HOLY_POWER;
 
   if ( hp_overflow > 0 )
