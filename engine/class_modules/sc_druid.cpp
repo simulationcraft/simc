@@ -9750,8 +9750,6 @@ void treant_base_t::demise()
 {
   pet_t::demise();
 
-  o()->buff.harmony_of_the_grove->decrement();
-
   if ( !o()->buff.treants_of_the_moon->is_fallback )
     static_cast<buffs::treants_of_the_moon_buff_t*>( o()->buff.treants_of_the_moon )->data.erase( this );
 }
