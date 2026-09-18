@@ -3495,7 +3495,14 @@ void paladin_t::reset()
   all_active_consecrations.clear();
   active_aura         = nullptr;
 
-  next_armament = SACRED_WEAPON;
+  if ( options.starting_armament == "sacred_weapon" )
+    next_armament = SACRED_WEAPON;
+  // If option is set to gibberish, just roll
+  else if ( options.starting_armament == "holy_bulwark" || sim->rng().roll( .5 ) )
+    next_armament = HOLY_BULWARK;
+  else
+    next_armament = SACRED_WEAPON;
+
   random_weapon_target = nullptr;
   random_bulwark_target = nullptr;
   divine_inspiration_next = -1;
@@ -4150,6 +4157,17 @@ void paladin_t::init()
 
   if ( specialization() == PALADIN_HOLY && primary_role() != ROLE_ATTACK )
     sim->errorf( "%s is using an unsupported spec.", name() );
+
+  if ( options.starting_armament == "sacred_weapon" )
+    next_armament = SACRED_WEAPON;
+  // If option is set to gibberish, just roll
+  else if ( options.starting_armament == "holy_bulwark" || sim->rng().roll( .5 ) )
+    next_armament = HOLY_BULWARK;
+  else
+    next_armament = SACRED_WEAPON;
+
+  if ( options.max_range_apex )
+    glory_of_the_vanguard_delay = 800_ms;
 }
 
 void paladin_t::init_spells()
@@ -4962,20 +4980,17 @@ void paladin_t::combat_begin()
     resource_loss( RESOURCE_HOLY_POWER, hp_overflow );
   }
 
-  if ( options.starting_armament == "sacred_weapon" )
-    next_armament = SACRED_WEAPON;
-  // If option is set to gibberish, just roll
-  else if ( options.starting_armament == "holy_bulwark" || sim->rng().roll( .5 ) )
-    next_armament = HOLY_BULWARK;
-  else
-    next_armament = SACRED_WEAPON;
-
-  if ( options.max_range_apex )
-    glory_of_the_vanguard_delay = 800_ms;
-
   if ( talents.herald_of_the_sun.morning_star->ok() )
   {
     buffs.herald_of_the_sun.morning_star_driver->trigger();
+  }
+
+  if (buffs.lightsmith.sacred_weapon->up())
+  {
+    // This gives Shining Light, which seems to be correct
+    buffs.lightsmith.sacred_weapon->cancel();
+    if ( buffs.lightsmith.fake_solidarity->up() )
+      buffs.lightsmith.fake_solidarity->cancel();
   }
 }
 
