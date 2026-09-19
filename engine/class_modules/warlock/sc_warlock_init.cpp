@@ -811,9 +811,7 @@ namespace warlock
                           ->set_duration( talents.summon_doomguard->duration() )
                           ->set_proc_callbacks( false );
 
-    buffs.tyrant = make_buff( this, "tyrant" )->set_max_stack( 1 )
-                       ->set_duration( talents.summon_demonic_tyrant->duration() )
-                       ->set_proc_callbacks( false );
+    buffs.tyrant = make_buff( this, "tyrant", talents.summon_demonic_tyrant )->set_max_stack( 1 )->set_cooldown( 0_s );
   }
 
   void warlock_t::create_buffs_destruction()

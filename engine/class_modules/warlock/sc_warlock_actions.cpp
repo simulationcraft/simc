@@ -2422,7 +2422,8 @@ using namespace helpers;
     summon_darkglare_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Summon Darkglare", p, p->talents.summon_darkglare, options_str )
     {
-      harmful = callbacks = true; // Set to true because of 10.1 class trinket
+      harmful = callbacks = caster_callbacks = enable_proc_from_suppressed =
+          true;  // Set to true because of 10.1 class trinket
       may_crit = may_miss = false;
     }
 

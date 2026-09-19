@@ -538,6 +538,8 @@ struct player_t : public actor_t
     buff_t* way_of_controlled_currents;
     buff_t* stormeaters_boon;
     buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
+
+    buff_t* sense_power;  // Sense of Power (Augmentation Evoker)
   } buffs;
 
   struct debuffs_t
