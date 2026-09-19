@@ -156,18 +156,18 @@ void affliction( player_t* p )
   HC_st->add_action( "wither,if=refreshable" );
   HC_st->add_action( "dark_harvest,if=execute_time<(dot.agony.remains<?dot.corruption.remains)" );
   HC_st->add_action( "malevolence" );
-  HC_st->add_action( "summon_darkglare" );
+  HC_st->add_action( "summon_darkglare,if=cooldown.summon_darkglare.duration<fight_remains|fight_remains<(20+5*talent.eye_contract+action.malefic_grasp.execute_time)" );
   HC_st->add_action( "malefic_grasp,if=buff.nightfall.react>1|pet.darkglare.remains<gcd" );
   HC_st->add_action( "drain_soul,if=buff.nightfall.react>1" );
   HC_st->add_action( "shadow_bolt,if=buff.nightfall.react>1" );
-  HC_st->add_action( "unstable_affliction,if=pet.darkglare.remains|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react|buff.cascading_calamity.remains<gcd.max" );
+  HC_st->add_action( "unstable_affliction,if=pet.darkglare.remains|buff.malevolence.remains|soul_shard>4|buff.shard_instability.react>2|buff.cascading_calamity.remains<gcd.max" );
 
   HC_aoe->add_action( "haunt" );
   HC_aoe->add_action( "seed_of_corruption,if=(!dot.wither.ticking|dot.wither.refreshable)&!dot.seed_of_corruption.ticking&!prev.seed_of_corruption&!action.seed_of_corruption.in_flight" );
   HC_aoe->add_action( "dark_harvest" );
   HC_aoe->add_action( "agony,target_if=min:remains,if=active_dot.agony<14&remains<5" );
-  HC_aoe->add_action( "summon_darkglare" );
   HC_aoe->add_action( "malevolence" );
+  HC_aoe->add_action( "summon_darkglare" );
   HC_aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds|active_enemies>5" );
   HC_aoe->add_action( "unstable_affliction" );
   HC_aoe->add_action( "agony,target_if=min:remains,if=remains<5" );
@@ -178,8 +178,8 @@ void affliction( player_t* p )
   HC_cleave->add_action( "wither,target_if=min:remains,if=remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)&fight_remains>remains+5" );
   HC_cleave->add_action( "agony,target_if=refreshable" );
   HC_cleave->add_action( "dark_harvest" );
-  HC_cleave->add_action( "summon_darkglare" );
   HC_cleave->add_action( "malevolence" );
+  HC_cleave->add_action( "summon_darkglare,if=cooldown.summon_darkglare.duration<fight_remains|fight_remains<(20+5*talent.eye_contract+action.malefic_grasp.execute_time)" );
   HC_cleave->add_action( "malefic_grasp,if=pet.darkglare.remains<gcd" );
   HC_cleave->add_action( "unstable_affliction" );
 
