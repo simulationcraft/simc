@@ -3259,6 +3259,47 @@ public:
     if ( auto_parse_options )
       parse_options( options_str );
   }
+    
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
+  {
+    auto splits = util::string_split<util::string_view>( name, "." );
+
+    if ( splits.size() >= 1 )
+    {
+      if ( util::str_compare_ci( splits[ 0 ], "target_cds_up" ) )
+      {
+        return make_fn_expr( "target_cds_up", [ this ] {
+          auto t = get_expression_target();
+
+          if ( !t || t->is_sleeping() || t->is_enemy() )
+            return false;
+
+          return p()->allied_major_cds.count( t ) && p()->allied_major_cds[ t ] && p()->allied_major_cds[ t ]->check();
+        } );
+      }
+      else if ( util::str_compare_ci( splits[ 0 ], "target_cd_remains" ) )
+      {
+        return make_fn_expr( "target_cd_remains", [ this ] {
+          auto t = get_expression_target();
+
+          if ( !t || t->is_sleeping() || t->is_enemy() )
+            return 0_s;
+
+          auto buff =
+              p()->allied_major_cds.count( t ) && p()->allied_major_cds[ t ] ? p()->allied_major_cds[ t ] : nullptr;
+
+          if ( buff )
+          {
+            return buff->remains();
+          }
+
+          return 0_s;
+        } );
+      }
+    }
+
+    return ab::create_expression( name );
+  }
 };
 
 // Empowered spell base templates
@@ -9542,6 +9583,7 @@ void evoker_t::init_finished()
 {
   auto CT = []( player_t* p, std::string_view n ) { return p->find_talent_spell( talent_tree::CLASS, n ); };
   auto ST = []( player_t* p, std::string_view n ) { return p->find_talent_spell( talent_tree::SPECIALIZATION, n ); };
+  auto HT = []( player_t* p, std::string_view n ) { return p->find_talent_spell( talent_tree::HERO, n ); };
 
   int dps = 0;
 
@@ -9687,8 +9729,39 @@ void evoker_t::init_finished()
       }
       else if ( p->specialization() == HUNTER_SURVIVAL )
       {
+        if ( ST( p, "Takedown" ).ok() )
+          allied_major_cds[ p ] = buff_t::find( p, "takedown" );
         if ( ST( p, "Coordinated Assault" ).ok() )
           allied_major_cds[ p ] = buff_t::find( p, "coordinated_assault" );
+      }
+      else if ( p->specialization() == HUNTER_BEAST_MASTERY )
+      {
+        if ( ST( p, "Bestial Wrath" ).ok() )
+          allied_major_cds[ p ] = buff_t::find( p, "bestial_wrath" );
+      }
+    }
+    else if ( p->type == WARLOCK )
+    {
+      if ( p->specialization() == WARLOCK_DEMONOLOGY )
+      {
+        // They have a buff helper for tyrant
+        if ( ST( p, "Demonic Tyrant" ).ok() )
+          allied_major_cds[ p ] = buff_t::find( p, "tyrant" );
+      }
+      else if ( p->specialization() == WARLOCK_AFFLICTION )
+      {
+        // No way to detect Darkglare, but we can detect Malevolence
+        if ( HT( p, "Malevolence" ).ok() )
+          allied_major_cds[ p ] = buff_t::find( p, "malevolence" );
+      }
+      else if ( p->specialization() == WARLOCK_DESTRUCTION )
+      {
+        if ( ST( p, "Rain of Chaos" ).ok() )
+          allied_major_cds[ p ] = buff_t::find( p, "rain_of_chaos" );
+        else if ( ST( p, "Crashing Chaos" ).ok() )
+          allied_major_cds[ p ] = buff_t::find( p, "crashing_chaos" );
+        else if ( HT( p, "Malevolence" ).ok() )
+          allied_major_cds[ p ] = buff_t::find( p, "malevolence" );
       }
     }
     else if ( p->type == PALADIN )
@@ -9719,6 +9792,16 @@ void evoker_t::init_finished()
           allied_major_cds[ p ] = buff_t::find( p, "shadow_dance" );
         }
       }
+      // Assa's Deathmark is a debuff, can't check for that with current implementation.
+    }
+    else if ( p->type == WARRIOR )
+    {
+      if ( ST( p, "Avatar" ).ok() )
+        allied_major_cds[ p ] = buff_t::find( p, "avatar" );
+      else if ( ST( p, "Ravager" ).ok() )
+        allied_major_cds[ p ] = buff_t::find( p, "ravager" );
+      else if ( ST( p, "Recklessness" ).ok() )
+        allied_major_cds[ p ] = buff_t::find( p, "recklessness" );
     }
   }
 
@@ -11033,8 +11116,7 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
 
           for ( auto p : *vec )
           {
-            if ( ( allied_major_cds.count( p ) && allied_major_cds[ p ] && allied_major_cds[ p ]->check() ) ||
-                 p->type == PLAYER_SIMPLIFIED )
+            if ( ( allied_major_cds.count( p ) && allied_major_cds[ p ] && allied_major_cds[ p ]->check() ) )
             {
               out++;
             }
