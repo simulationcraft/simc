@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.69594 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.69848 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -2387,7 +2387,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 3927 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Strike Ground Current (460670)
 #11 (id=261032)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 140 | Scaled Value: 140 | Target: Self (1)
+                   Base Value: 56 | Scaled Value: 56 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29
 #12 (id=261033)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -2634,7 +2634,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Resource         : 20 - 40 Rage (1) (id=9491) w/ Arms Warrior (id=137049)
-Resource         : 20 Rage (1) (id=314870) w/ Protection Warrior (id=137048)
+Resource         : 20 - 40 Rage (1) (id=314870) w/ Protection Warrior (id=137048)
 Resource         : 20 - 40 Rage (1) (id=314872) w/ Initial Warrior (id=325446)
 Spell Level      : 10
 Range            : 5 yards
@@ -2653,11 +2653,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 260798 | Target: Targeted Enemy (6)
 #2 (id=714082)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Targeted Enemy (6)
-Description      : Attempts to finish off a foe, causing $?c3[$<protDamage> Physical damage][up to $<damage> Physical damage based on Rage spent]. Only usable on enemies that have less than 20% health.$?s316405[
+Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than 20% health.$?s316405[
 
 If your foe survives, $s2% of the Rage spent is refunded.][]
-Variables        : $damage=${2.0*$260798s1}
-$protDamage=${$260798s1}
+Variables        : $damage=${2.0*$260798s1}
 
 Name             : Execute Off-Hand (id=163558) [Spell Family (4)] 
 Class            : Warrior
@@ -4550,7 +4549,7 @@ Labels           : 16: Class Spells
                  : 690: Major Cooldowns
 Affecting Spells : Recklessness (1719 effects: #7, #8), Warrior (137047 effect#2), Fury Warrior (137050 effect#8), Unrelenting Onslaught (444780 effect#4), Arms Warrior (1256919 effect#3), Fury Warrior (1257520 effect#3)
 Family Flags     : 8, 46
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Immunity Purges Effect (47), Requires Main-Hand Weapon (106), Extra Initial Period (169), Spell Haste Affects Periodic (173), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Immunity Purges Effect (47), Requires Main-Hand Weapon (106), Extra Initial Period (169), Spell Haste Affects Periodic (173), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Important Spell (491)
 Effects          :
 #1 (id=342669)   : Apply Aura (6) | Periodic Trigger Spell (23): Bladestorm every 1 seconds
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 50622 | Target: Self (1)
@@ -5157,8 +5156,7 @@ Effects          :
 #1 (id=486196)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.42125 | PvP Coefficient: 1.15 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 Description      : $@spelldesc163201
-Variables        : $damage=${2.0*$260798s1}
-$protDamage=${$260798s1}
+Variables        : $damage=${2.0*$260798s1}
 
 Name             : Deep Wounds (id=262115) [Spell Family (4)] 
 Class            : Warrior
@@ -6089,7 +6087,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Resource         : 20 - 40 Rage (1) (id=191875) w/ Arms Warrior (id=137049)
-Resource         : 20 Rage (1) (id=314871) w/ Protection Warrior (id=137048)
+Resource         : 20 - 40 Rage (1) (id=314871) w/ Protection Warrior (id=137048)
 Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -6110,11 +6108,10 @@ Effects          :
 #3 (id=738984)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35
                    Modified By: Recklessness (1719 effect#7), Precise Strikes (209493 effect#2), Improved Execute (316402 effect#3), Executioner's Wrath (1265570 effect#1)
-Description      : Attempts to finish off a foe, causing $?c3[$<protDamage> Physical damage][up to $<damage> Physical damage based on Rage spent]. Only usable on enemies that have less than $s3% health.$?s316405[
+Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than $s3% health.$?s316405[
 
 If your foe survives, $s2% of the Rage spent is refunded.][]
-Variables        : $damage=${2.0*$260798s1}
-$protDamage=${$260798s1}
+Variables        : $damage=${2.0*$260798s1}
 
 Name             : Massacre (id=281001) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Arms [tree=spec, row=7, col=5, max_rank=1, req_points=8]
@@ -13289,7 +13286,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Recklessness (1719 effects: #7, #8), Warrior (137047 effect#2), Fury Warrior (137050 effect#8), Unrelenting Onslaught (444780 effect#4), Arms Warrior (1256919 effect#3), Fury Warrior (1257520 effect#3)
 Family Flags     : 8, 46
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Immunity Purges Effect (47), Requires Main-Hand Weapon (106), Extra Initial Period (169), Spell Haste Affects Periodic (173), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Immunity Purges Effect (47), Requires Main-Hand Weapon (106), Extra Initial Period (169), Spell Haste Affects Periodic (173), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Important Spell (491)
 Effects          :
 #1 (id=1143207)  : Apply Aura (6) | Periodic Trigger Spell (23): Bladestorm every 1 seconds
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 50622 | Target: Self (1)
@@ -14077,8 +14074,7 @@ Effects          :
 #1 (id=1174753)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.2675 | PvP Coefficient: 1.15 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Targeted Enemy (6)
 Description      : $@spelldesc163201
-Variables        : $damage=${2.0*$260798s1}
-$protDamage=${$260798s1}
+Variables        : $damage=${2.0*$260798s1}
 
 Name             : Fury Execute FX Test (id=463816) [Spell Family (4)] 
 Class            : Warrior
@@ -14922,6 +14918,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value 2: 3450 (Label) | Target: Self (1)
 #10 (id=1351508) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 5 | Misc Value 2: 2670 (Label) | Target: Self (1)
+#11 (id=1352907) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 10000 | Scaled Value: 10000 | Misc Value: 12 | Misc Value 2: 7157 (Label) | Target: Self (1)
 
 Name             : Protection Warrior (id=1256935) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -14968,6 +14966,8 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29
+#6 (id=1352908)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 10000 | Scaled Value: 10000 | Misc Value: 12 | Misc Value 2: 7157 (Label) | Target: Self (1)
 
 Name             : Protection Warrior (id=1258163) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -15970,11 +15970,12 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee
 Triggered By     : Master of Warfare (1269314)
-Attributes       : No Aura Icon (60), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1281192)  : Apply Aura (6) | Override Action Spell (Misc w/ Base) (332): Heroic Strike overrides Slam
                    Base Value: 1269383 | Scaled Value: 1269383 | Misc Value: 1464 | Misc Value 2: 2 | Target: Self (1)
-Description      : $@spelldesc1269314
+Description      : Slam has been upgraded to Heroic Strike.
+Tooltip          : Slam has been upgraded to Heroic Strike.
 
 Name             : Master of Warfare (id=1269394) [Spell Family (4)] 
 Class            : Warrior

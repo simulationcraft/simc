@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.69594 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.69848 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, base_ilevel={ 30 }, req_ilevel={ 25 }, ilevel_adjust={ 20 }, crafting_quality={ 11 }
@@ -8317,3 +8317,6 @@ bonus_id={ 13967 }, desc={ Rank 2/4 }, quality={ uncommon }
 bonus_id={ 13968 }, desc={ Rank 3/4 }, quality={ rare }
 bonus_id={ 13969 }, desc={ Rank 4/4 }, quality={ epic }
 bonus_id={ 13987 }, desc={ Venomcursed }, effects={ Venomcursed Ascendance (id=1317582, index=0, type=equip) }
+bonus_id={ 14047 }, base_ilevel={ 133 }
+bonus_id={ 14048 }, base_ilevel={ 133 }
+bonus_id={ 14049 }, effects={ Void Eruption (id=1310208, index=0, type=equip) }
