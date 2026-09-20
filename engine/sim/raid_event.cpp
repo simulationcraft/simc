@@ -49,6 +49,7 @@ struct adds_event_t final : public raid_event_t
   std::string enemy_type_str;
   player_e enemy_type;
   bool same_duration;
+  double vulnerable;
 
   adds_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "adds" ),
@@ -70,7 +71,8 @@ struct adds_event_t final : public raid_event_t
       race( RACE_NONE ),
       enemy_type_str(),
       enemy_type( ENEMY_ADD ),
-      same_duration( false )
+      same_duration( false ),
+      vulnerable( 0.0 )
   {
     add_option( opt_string( "master", master_str ) );
     add_option( opt_float( "count", count ) );
@@ -87,6 +89,7 @@ struct adds_event_t final : public raid_event_t
     add_option( opt_string( "race", race_str ) );
     add_option( opt_string( "type", enemy_type_str ) );
     add_option( opt_bool( "same_duration", same_duration ) );
+    add_option( opt_float( "vulnerable", vulnerable ) );
 
     parse_options( options_str );
 
@@ -320,6 +323,11 @@ struct adds_event_t final : public raid_event_t
       adds[ i ]->summon( add_duration );
       adds[ i ]->x_position = x_offset + spawn_x_coord;
       adds[ i ]->y_position = y_offset + spawn_y_coord;
+
+      if ( vulnerable > 0 )
+      {
+        adds[ i ]->debuffs.vulnerable->increment( 1, vulnerable );
+      }
 
       if ( sim->log )
       {
