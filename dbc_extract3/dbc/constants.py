@@ -22,45 +22,9 @@ MAX_SPECIALIZATION = 4
 CONSUMABLE_ITEM_WHITELIST = {
   # Food
   5: [
-    62290,                             # Seafood Magnifique Feast
-    156526,                            # Bountiful Captain's Feast (8.0)
-    166804,                            # Boralus Blood Sausage (8.1)
     ],
   # "Other"
   8: [
-    # Battle for Azeroth
-    168489, 168498, 168500, 168499,    # Superior Battle potions (8.2)
-    168506, 168529, 169299,            # focused resolve, empowered proximity, unbridled fury (8.2)
-    # 8.2 gems are class/subclass of JC, not gems
-    168637, 168638, 168636,            # Epic main stat gems (8.2)
-    168639, 168641, 168640, 168642,    # Epic secondary gems (8.2)
-
-    163222, 163223, 163224, 163225,    # Battle potions
-    152560, 152559, 152557,            # Potions of Bursting Blood, Rising Death, Steelskin
-    160053,                            # Battle-Scarred Augment Rune
-    168506,                            # Potion of Focused Resolve
-    # Shadowlands
-    171270, 171273, 171275,            # Spectral Stat potions (9.0)
-    171352, 171351, 171349,            # Empowered Exorcisms, Deathly Fixation, Phantom Fire
-    # Dragonflight
-    191318, 191319, 191320,            # Phial of the Eye in the Storm
-    191321, 191322, 191323,            # Phial of Still Air
-    191324, 191325, 191326,            # Phial of Icy Preservation
-    191327, 191328, 191329,            # Iced Phial of Corrupting Rage
-    191330, 191331, 191332,            # Phial of Charged Isolation
-    191333, 191334, 191335,            # Phial of Glacial Fury
-    191336, 191337, 191338,            # Phial of Static Empowerment
-    191339, 191340, 191341,            # Phial of Tepid Versatility
-    191357, 191358, 191359,            # Phial of Elemental Chaos
-    191360, 191361, 191362,            # Bottled Putrescence
-    191366, 191367, 191368,            # Potion of Chilled Clarity
-    191399, 191400, 191401,            # Potion of Shocking Disclosure
-    # The War Within
-    224572,                            # Crystallized Augment Rune
-    # Midnight
-    259085,                            # Void-Touched Augment Rune
-    271886, 271887,                    # Liquid Luster
-    271889, 271890,                    # Alluring Nostrum
     ]
 }
 

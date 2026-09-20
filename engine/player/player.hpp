@@ -490,44 +490,6 @@ struct player_t : public actor_t
     buff_t* stunned;
     buff_t* rooted;
     buff_t* bloodlust;
-
-    // 7.0 trinket proxy buffs
-    buff_t* incensed;
-    buff_t* taste_of_mana; // Gnawed Thumb Ring buff
-
-    // 7.1
-    buff_t* nefarious_pact; // Whispers in the dark good buff
-    buff_t* devils_due; // Whispers in the dark bad buff
-
-    // Darkmoon Faire versatility food
-    buff_t* dmf_well_fed;
-
-    // 8.0
-    buff_t* galeforce_striking; // Gale-Force Striking weapon enchant
-    buff_t* torrent_of_elements; // Torrent of Elements weapon enchant
-
-    /// 8.2 Azerite Essences
-    buff_t* memory_of_lucid_dreams;
-    buff_t* lucid_dreams; // Versatility Buff from Rank 3
-    buff_t* seething_rage_essence; // Blood of the Enemy major - 25% crit dam
-
-    // 8.2 misc
-    buff_t* delirious_frenzy; // Dream's End 1H STR axe attack speed buff
-
-    // 9.0 Runecarves
-    buff_t* norgannons_sagacity;         // consume stacks to allow casting while moving
-    buff_t* echo_of_eonar;               // passive self buff
-
-    // 10.0 Buffs
-    buff_t* chilled_clarity;  // potion of chilled clarity
-    buff_t* elemental_chaos_fire;  // phial of elemental chaos
-    buff_t* elemental_chaos_earth;
-    buff_t* elemental_chaos_frost;
-    buff_t* way_of_controlled_currents;
-    buff_t* stormeaters_boon;
-    buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
-
-    buff_t* sense_power;  // Sense of Power (Augmentation Evoker)
   } buffs;
 
   struct debuffs_t
@@ -542,13 +504,6 @@ struct player_t : public actor_t
 
     // WoD debuffs
     buff_t* mortal_wounds;
-
-    // BfA Raid Damage Modifier Debuffs
-    buff_t* chaos_brand;  // Demon Hunter
-    buff_t* mystic_touch; // Monk
-
-    // Dragonflight Raid Damage Modifier Debuffs
-    buff_t* hunters_mark;
   } debuffs;
 
   struct external_buffs_t
@@ -556,9 +511,6 @@ struct player_t : public actor_t
     std::string pool;
     std::unordered_map<buff_t*, std::vector<cooldown_t*>> invoke_cds;
     std::vector<timespan_t> power_infusion;
-    std::vector<timespan_t> rallying_cry;
-    std::vector<timespan_t> potion_bomb_of_power;
-    int soleahs_secret_technique;
   } external_buffs;
 
   struct gains_t
@@ -622,201 +574,6 @@ struct player_t : public actor_t
   execute_type current_execute_type;
 
   using resource_callback_function_t = std::function<void( bool )>;
-
-  struct shadowlands_opt_t
-  {
-    /// Type stat gained from So'leah's Secret Technique
-    /// Buff type: "mastery", "haste", "crit", "versatility"
-    /// Overrides sim-wide option with a player-specific one
-    /// Empty value indicates use sim-wide option.
-    default_value_t<std::string> soleahs_secret_technique_type;
-  } shadowlands_opts;
-
-  struct dragonflight_opt_t
-  {
-    /// Stat to trigger for Gyroscopic Kaleidoscope
-    /// Buff type: "mastery", "haste", "crit", "versatility"
-    default_value_t<std::string> gyroscopic_kaleidoscope_stat = "haste";
-    // Ruby Whelp Shell training levels
-    // Overrides sim-wide option with a player-specific one
-    default_value_t<std::string> ruby_whelp_shell_training;
-    // A list of context-aware procs for Ruby Whelp Shell
-    // Overrides sim-wide option with a player-specific one
-    default_value_t<std::string> ruby_whelp_shell_context;
-    // Set the dragonflight for Glimmering Chromatic Orb
-    // Overrides sim-wide option with a player-specific one
-    default_value_t<std::string> ominous_chromatic_essence_dragonflight = "obsidian";
-    // Set the allies dragonflights for Glimmering Chromatic Orb
-    // Overrides sim-wide option with a player-specific one
-    default_value_t<std::string> ominous_chromatic_essence_allies;
-    // Set the target type for Askhandur's Damage Doubling
-    // Overrides sim-wide option with a player-specific one
-    default_value_t<bool> ashkandur_humanoid;
-    // Set the initial starting state for the igneous flowstone trinket Ebb/Flood/High/Low Tides.
-    // Any other input will have it randomly select between High and Low Tide, and this this is default.
-    // Overrides sim-wide option with a player-specific one
-    default_value_t<std::string> flowstone_starting_state = "random_active";
-    /// Type stat given by Spoils of Neltharus on pull
-    /// Buff type: "mastery", "haste", "crit", "vers", other for random
-    default_value_t<std::string> spoils_of_neltharus_initial_type;
-    /// Chance for igenous flowstone lave wave to hit twice
-    default_value_t<double> igneous_flowstone_double_lava_wave_chance;
-    /// Enable Voice of the Silent Star's proc
-    default_value_t<bool> voice_of_the_silent_star_enable = true;
-    // Force the extra damage from Nymue's Unraveling Spindle against Immobilized targets
-    default_value_t<bool> nymue_forced_immobilized;
-    // Option to control the timing to pick up each orb for the Witherbarks Branch Trinket.
-    timespan_t witherbarks_branch_timing[ 3 ] = { 1_s, 1_s, 7_s };
-    // Enable Rallied to Victory Ally estimation
-    bool rallied_to_victory_ally_estimate = false;
-    // Set the minimum number of allies buffed by Rallied to Victory
-    double rallied_to_victory_min_allies = 0;
-    // Set if the haste debuff for ashes of the embersoul can be prevented
-    bool embersoul_debuff_immune = false;
-    // Rallied to victory skip chance for multi actor sims. Makes it skip a buff to lower the power and simulate losing some to healers.
-    double rallied_to_victory_multi_actor_skip_chance = 0.2;
-    // Enable String of Delicacies Ally Estimation
-    bool string_of_delicacies_ally_estimate = false;
-    // Set the minimum number of allies buffed by STrong of Delicacies
-    double string_of_delicacies_min_allies = 0;
-    // String of Delicacies skip chance for multi actor sims. Makes it skip a buff to lower the power and simulate loosing some to healers.
-    double string_of_delicacies_multi_actor_skip_chance = 0.2;
-    // Which random method to use to determine Balefire Branch stack loss from damage. Accepts "rppm", "percent", or "constant"
-    default_value_t<std::string> balefire_branch_loss_rng_type = "constant";
-    // Set RPPM when "rppm" method is selected
-    double balefire_branch_loss_rppm = 2;
-    // Set percent chance when "percent" method is selected
-    double balefire_branch_loss_percent = 0.2;
-    // Set period of constant ticking loss when "constant" method is selected
-    timespan_t balefire_branch_loss_tick = 2_s;
-    // How many stacks to lose per loss
-    int balefire_branch_loss_stacks = 2;
-    // Amount of allies using Verdant Conduit to increase the amount and reduce RPPM
-    unsigned int verdant_conduit_allies = 0;
-    bool rashoks_use_true_overheal      = false;
-    double rashoks_fake_overheal        = 0.4;
-    // A list of stat amounts provided by the Timerunner's Advantage buff.
-    default_value_t<std::string> timerunners_advantage;
-    // Number of party members using the Brilliance Tinker.
-    int brilliance_party = 1;
-    // Number of party members using the Windweaver Tinker.
-    int windweaver_party = 4;
-    // Tinker Ilvls of party members using the Windweaver Tinker. If not specified they will be your Main Hands ilvl.
-    default_value_t<std::string> windweaver_party_ilvls;
-    // Item level of ally using emerald coach's whistle on you.
-    int emerald_coachs_whistle_ally_ilvl = -1;
-    // Whether the ally is a healer or not
-    bool emerald_coachs_whistle_ally_is_healer = true;
-  } dragonflight_opts;
-
-  struct thewarwithin_opt_t
-  {
-    // Starting stance for Sik'rans Shadow Arsenal
-    default_value_t<std::string> sikrans_endless_arsenal_stance;
-    // starting & desired stacks for Ovinax's Mercurial Egg
-    default_value_t<int> ovinaxs_mercurial_egg_initial_primary_stacks = 20;
-    default_value_t<int> ovinaxs_mercurial_egg_desired_primary_stacks = 20;
-    // how close to desired stacks you can be before potentially adjusting
-    int ovinaxs_mercurial_egg_desired_primary_stacks_leeway = 3;
-    // time to pick up Entropic Skardyn Core fragment
-    timespan_t entropic_skardyn_core_pickup_delay = 4_s;
-    timespan_t entropic_skardyn_core_pickup_stddev = 1_s;
-    // when to enter and how long to stay in light for carved blazikon wax
-    timespan_t carved_blazikon_wax_enter_light_delay = 4_s;
-    timespan_t carved_blazikon_wax_enter_light_stddev = 1_s;
-    timespan_t carved_blazikon_wax_stay_in_light_duration = 0_s;  // remain until the end
-    timespan_t carved_blazikon_wax_stay_in_light_stddev = 0_s;
-    // allies with signet of the priory
-    default_value_t<std::string> signet_of_the_priory_party_stats;
-    timespan_t signet_of_the_priory_party_use_cooldown = 120_s;
-    timespan_t signet_of_the_priory_party_use_stddev = 6_s;
-    // harvester's edict chance to intercept
-    double harvesters_edict_intercept_chance = 0.2;
-    // Dawn/Duskthread Lining
-    double dawn_dusk_thread_lining_uptime = 0.7;
-    // Interval between checking blue_silken_lining_uptime
-    timespan_t dawn_dusk_thread_lining_update_interval = 10_s;
-    // Standard Deviation of interval
-    timespan_t dawn_dusk_thread_lining_update_interval_stddev = 2.5_s;
-    // Embrace of the Cinderbee timing
-    timespan_t embrace_of_the_cinderbee_timing = 0_ms;
-    // Embrace of the Cinderbee miss chance
-    double embrace_of_the_cinderbee_miss_chance = 0;
-    // Nerubian Phearomone Secreter number of phearomones
-    int nerubian_pheromone_secreter_pheromones = 1;
-    // Allied Binding of Binding on you
-    int binding_of_binding_on_you                 = 0;
-    double binding_of_binding_ally_trigger_chance = 0.8;
-    // Concoction: Kiss of Death buff remaining time before you re-use for antidote
-    timespan_t concoction_kiss_of_death_buff_remaining_min = 1_s;
-    timespan_t concoction_kiss_of_death_buff_remaining_max = 2_s;
-    // time to pick up Fury of the Stormrook lightning orb
-    timespan_t fury_of_the_stormrook_pickup_delay  = 3_s;
-    timespan_t fury_of_the_stormrook_pickup_stddev = 0.75_s;
-    // Chance that an ally is ignored for Mereldar's Toll Evaluation. This is set high because pets exist and its
-    // currently bugged to trigger on them.
-    double mereldars_toll_ally_trigger_chance             = 0.6;
-    double sureki_zealots_insignia_rppm_multiplier        = 0.9;
-    default_value_t<std::string> windsingers_passive_stat;
-    // Mister Lock-n-Stalk mode of operation
-    default_value_t<std::string> mister_locknstalk_mode = "dynamic";
-    default_value_t<std::string> jastor_diamond_ally_stat = "none";
-    double suspicious_energy_drink_bonus_chance           = 0;
-    timespan_t additional_gcd_time                        = 0_s;
-    // Alchemical Chaos Flask
-    default_value_t<std::string> alchemical_initial_stat    = "none";  // Initial stat for Alchemical Chaos Flask
-    default_value_t<std::string> alchemical_initial_penalty = "none";  // Initial penalty for Alchemical Chaos Flask
-    // Whether or not to use lowest or highest (ethereal) secondary stat
-    bool incorporeal_essence_gorger_ethereal = false;
-    // Chance to miss the astral antenna orbs due to movement
-    double astral_antenna_miss_chance = 0.0;
-    // Initial debuff stacks for Scream of a Forgotten Sky
-    int screams_of_a_forgotten_sky_initial_stacks = 0;
-    // Proc Brand of Ceaseless Ire based on outgoing damage to emulate full uptime.
-    // NOTE: This behavior is default for Dungeon Slice & Dungeon Route
-    bool brand_of_ceaseless_ire_force_full_uptime = false;
-    // Activate Attuned to the Aether renown perk (50% weapon enchants, 10% dk runeforge)
-    bool attuned_to_the_aether = false;
-  } thewarwithin_opts;
-
-  struct midnight_opts_t
-  {
-    // Allow specifying the race for Darkmoon Deck/Embellishment: Hunt
-    // Should allow any valid race string, as well as "random" and "none"
-    // Default is "raid_random", picking a random race of a raid boss in the current tier
-    // "random" picks a random valid race.
-    // "none" will use the targets actual race.
-    default_value_t<std::string> darkmoon_hunt_race = "raid_random";
-    // Set the average duration after getting the sealed chaos urn fear effect where it is dispelled.
-    timespan_t sealed_chaos_urn_dispell_time = 2.5_s;
-    // Set weather you expect to be dispelled by a healer when getting the sealed chaos urn fear.
-    bool sealed_chaos_urn_dispell = false;
-    // Arcanoweave trappings
-    double arcanoweave_trappings_uptime = 0.7;
-    // Interval between checking arcanoweave trappings uptime
-    timespan_t arcanoweave_trappings_update_interval = 10_s;
-    timespan_t arcanoweave_trappings_update_interval_stddev = 2.5_s;
-    double sunfire_silk_trappings_uptime = 0.7;
-    // Interval between checking sunfire silk trappings uptime
-    timespan_t sunfire_silk_trappings_update_interval = 10_s;
-    timespan_t sunfire_silk_trappings_update_interval_stddev = 2.5_s;
-    // Chance refueling orb will count as healing. Increased because of pet bug.
-    double refueling_orb_heal_chance = 0.50;
-    bool crucible_of_erratic_energies_violence = false;
-    bool crucible_of_erratic_energies_sustenance = false;
-    bool crucible_of_erratic_energies_predation = false;
-    // Chance to miss vessel of tortured souls orb
-    double vessel_of_tortured_souls_miss_chance = 0.6;
-    // Duration multiplier for Lightspire Core's mastery buff
-    double lightspire_core_duration_multiplier = 0.5;
-    // Fraction of Rite of the Hash'ey procs that happen while above the enchant's 80% health
-    // threshold, i.e. how often the proc favors your highest secondary stat instead of a random one.
-    double rite_of_the_hashey_uptime = 0.6;
-    // Permafrost Essence chance to fire the absorb shield. Default 1% chance determined by WCL of keys and raid
-    double permafrost_essence_shield_proc_chance = 0.01;
-    // Use the original health-based (<25%) shield trigger instead of the static proc chance.
-    bool permafrost_essence_use_health_threshold = false;
-  } midnight_opts;
 
 private:
   /// Flag to activate/deactive resource callback checks. Motivation: performance.

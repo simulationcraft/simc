@@ -10,7 +10,6 @@
 #include "player/consumable.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "player/set_bonus.hpp"
-#include "player/unique_gear_shadowlands.hpp"
 #include "report/charts.hpp"
 #include "report/decorators.hpp"
 #include "report/highchart.hpp"

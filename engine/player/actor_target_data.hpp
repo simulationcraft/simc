@@ -23,20 +23,6 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     //
     // Debuffs that are entirely self-contained within the proc or use action should be handled within the
     // generic_proc_t or dbc_proc_callback_t via target_specific_debuff.
-
-    // BFA
-    buff_t* blood_of_the_enemy;
-    buff_t* condensed_lifeforce;
-    buff_t* focused_resolve;
-    // Shadowlands
-    buff_t* sinful_revelation;           // enchant
-    buff_t* putrid_burst;                // darkmoon deck: putrescence
-    buff_t* scouring_touch;              // Shard of Dyz
-    buff_t* exsanguinated;               // Shard of Bek
-    buff_t* remnants_despair;            // Soulwarped Seal of Menethil DK ring
-    // Dragonflight
-    // The War Within
-    buff_t* unwavering_focus;            // potion of unwavering focus
   } debuff;
 
   struct atd_dot_t

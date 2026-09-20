@@ -45,7 +45,6 @@
 #include "player/spawner_base.hpp"
 #include "player/stats.hpp"
 #include "player/unique_gear.hpp"
-#include "player/unique_gear_midnight.hpp"
 #include "report/decorators.hpp"
 #include "sim/benefit.hpp"
 #include "sim/cooldown.hpp"
@@ -2155,17 +2154,6 @@ void player_t::create_special_effects()
   }
 
   unique_gear::initialize_racial_effects( this );
-
-  if ( sim->overrides.skyfury && may_benefit_from_skyfury() )
-  {
-    special_effect_t effect( this );
-
-    unique_gear::initialize_special_effect( effect, 462854 );
-    if ( !effect.custom_init_object.empty() )
-    {
-      special_effects.push_back( new special_effect_t( effect ) );
-    }
-  }
 
   // 12.0.7 omnium folio talents
   unique_gear::initialize_expansion_trait_effects( this, omnium_talents_str );
@@ -4808,19 +4796,6 @@ void player_t::create_buffs()
     debuffs.flying        = make_buff( this, "flying" )->set_max_stack( 1 );
     debuffs.mortal_wounds = make_buff( this, "mortal_wounds", find_spell( 115804 ) )
       ->set_default_value( std::fabs( find_spell( 115804 )->effectN( 1 ).percent() ) );
-
-    // BfA Raid Damage Modifier Debuffs
-    debuffs.chaos_brand = make_buff( this, "chaos_brand", find_spell( 1490 ) )
-      ->set_default_value_from_effect( 1 )
-      ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
-    debuffs.mystic_touch = make_buff( this, "mystic_touch", find_spell( 113746 ) )
-      ->set_default_value_from_effect( 1 )
-      ->set_cooldown( timespan_t::from_seconds( 5.0 ) );
-
-    // Dragonflight Raid Damage Modifier Debuffs
-    debuffs.hunters_mark = make_buff( this, "hunters_mark", find_spell( 259556 ) )
-      ->disable_ticking( true )
-      ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
   }
 
   // set up always since this can be applied by enemy actions and raid events.
@@ -11872,57 +11847,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       throw sc_invalid_apl_argument( fmt::format( "Invalid 'movement' expression '{}'.", splits[ 1 ] ) );
     }
 
-    // Expansion specific option expressions
-    if ( splits[ 0 ] == "bfa" )
-    {
-      if ( splits[ 1 ] == "font_of_power_precombat_channel" )
-      {
-        return make_fn_expr( expression_str, [ this ] {
-          return sim->bfa_opts.font_of_power_precombat_channel.total_seconds();
-        } );
-      }
-
-      throw sc_invalid_apl_argument( fmt::format( "Invalid 'bfa.' option '{}'.", splits[ 1 ] ) );
-    }
-
-    if ( splits[ 0 ] == "shadowlands" )
-    {
-      if ( splits[ 1 ] == "shadowed_orb_of_torment_precombat_channel" )
-      {
-        return make_fn_expr( expression_str, [ this ] {
-          return sim->shadowlands_opts.shadowed_orb_of_torment_precombat_channel.total_seconds();
-        } );
-      }
-
-      throw sc_invalid_apl_argument( fmt::format( "Invalid 'shadowlands.' option '{}'.", splits[ 1 ] ) );
-    }
-
-    if ( splits[ 0 ] == "dragonflight" )
-    {
-      if ( splits[ 1 ] == "screaming_black_dragonscale_damage" )
-      {
-        return make_fn_expr( expression_str, [ this ] {
-          return sim->dragonflight_opts.screaming_black_dragonscale_damage;
-        } );
-      }
-
-      if ( splits[ 1 ] == "rallied_to_victory_ally_estimate" )
-      {
-        return make_fn_expr( expression_str, [ this ] {
-          return dragonflight_opts.rallied_to_victory_ally_estimate;
-        } );
-      }
-
-      if (splits[ 1 ] == "string_of_delicacies_ally_estimate")
-      {
-        return make_fn_expr( expression_str, [ this ] {
-           return dragonflight_opts.string_of_delicacies_ally_estimate;
-        } );
-      }
-
-      throw sc_invalid_apl_argument( fmt::format( "Invalid 'dragonflight.' option '{}'.", splits[ 1 ] ) );
-    }
-
     if ( splits[ 0 ] == "hero_tree" )
     {
       if ( auto id = trait_data_t::get_hero_tree_id( splits[ 1 ] ) )
@@ -12575,22 +12499,6 @@ std::string player_t::create_profile( save_e stype )
           profile_str += fmt::format( "{}={}{}", n, option, term );
       }
     };
-
-    // Shadowlands
-    print_option( "shadowlands.soleahs_secret_technique_type_override", shadowlands_opts.soleahs_secret_technique_type );
-
-    // Dragonflight
-    print_option( "dragonflight.gyroscopic_kaleidoscope_stat", dragonflight_opts.gyroscopic_kaleidoscope_stat );
-    print_option( "dragonflight.player.ruby_whelp_shell_training", dragonflight_opts.ruby_whelp_shell_training );
-    print_option( "dragonflight.player.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context );
-    print_option( "dragonflight.ominous_chromatic_essence_dragonflight", dragonflight_opts.ominous_chromatic_essence_dragonflight );
-    print_option( "dragonflight.ominous_chromatic_essence_allies", dragonflight_opts.ominous_chromatic_essence_allies );
-    print_option( "dragonflight.ashkandur_humanoid", dragonflight_opts.ashkandur_humanoid );
-    print_option( "dragonflight.flowstone_starting_state", dragonflight_opts.flowstone_starting_state );
-    print_option( "dragonflight.spoils_of_neltharus_initial_type", dragonflight_opts.spoils_of_neltharus_initial_type );
-
-    // The War Within
-    print_option( "thewarwithin.ovinaxs_mercurial_egg_desired_primary_stacks", thewarwithin_opts.ovinaxs_mercurial_egg_desired_primary_stacks );
   }
 
   if ( stype & SAVE_PLAYER )
@@ -12826,10 +12734,6 @@ void player_t::copy_from( player_t* source )
   player_traits                     = source->player_traits;
   player_sub_trees                  = source->player_sub_trees;
   player_sub_traits                 = source->player_sub_traits;
-  shadowlands_opts                  = source->shadowlands_opts;
-  dragonflight_opts                 = source->dragonflight_opts;
-  thewarwithin_opts                 = source->thewarwithin_opts;
-  midnight_opts                     = source->midnight_opts;
   load_default_gear                 = source->load_default_gear;
   load_default_talents              = source->load_default_talents;
   use_blizzard_action_list          = source->use_blizzard_action_list;
@@ -13153,9 +13057,6 @@ void player_t::create_options()
   // Invoke External Buffs
   add_option( opt_string( "external_buffs.pool", external_buffs.pool ) );
 
-  // Permanent External Buffs
-  add_option( opt_int( "external_buffs.soleahs_secret_technique_ilevel", external_buffs.soleahs_secret_technique, 1, MAX_ILEVEL ) );
-
   // Timed External Buffs
   auto opt_external_buff_times = [] ( std::string_view name, std::vector<timespan_t>& times )
   {
@@ -13176,11 +13077,6 @@ void player_t::create_options()
   };
 
   add_option( opt_external_buff_times( "external_buffs.power_infusion", external_buffs.power_infusion ) );
-  add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
-  add_option( opt_external_buff_times( "external_buffs.potion_bomb_of_power", external_buffs.potion_bomb_of_power ) );
-
-  // Additional Options for Timed External Buffs
-  add_option( opt_obsoleted( "external_buffs.the_long_summer_rank" ) );
 
   // Player only options
   if ( !is_enemy() && !is_pet() )
@@ -13190,165 +13086,6 @@ void player_t::create_options()
       return true;
     } ) );
   }
-
-  // Shadowlands options
-  add_option( opt_string( "shadowlands.soleahs_secret_technique_type_override", shadowlands_opts.soleahs_secret_technique_type ) );
-
-  // Dragonflight options
-  add_option( opt_string( "dragonflight.gyroscopic_kaleidoscope_stat", dragonflight_opts.gyroscopic_kaleidoscope_stat ) );
-  add_option( opt_string( "dragonflight.player.ruby_whelp_shell_training", dragonflight_opts.ruby_whelp_shell_training ) );
-  add_option( opt_string( "dragonflight.player.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context ) );
-  add_option( opt_string( "dragonflight.ominous_chromatic_essence_dragonflight", dragonflight_opts.ominous_chromatic_essence_dragonflight ) );
-  add_option( opt_string( "dragonflight.ominous_chromatic_essence_allies", dragonflight_opts.ominous_chromatic_essence_allies ) );
-  add_option( opt_bool( "dragonflight.ashkandur_humanoid", dragonflight_opts.ashkandur_humanoid ) );
-  add_option( opt_string( "dragonflight.flowstone_starting_state", dragonflight_opts.flowstone_starting_state ) );
-  add_option( opt_string( "dragonflight.spoils_of_neltharus_initial_type", dragonflight_opts.spoils_of_neltharus_initial_type ) );
-  add_option( opt_float( "dragonflight.igneous_flowstone_double_lava_wave_chance", dragonflight_opts.igneous_flowstone_double_lava_wave_chance ) );
-  add_option( opt_bool( "dragonflight.voice_of_the_silent_star_enable", dragonflight_opts.voice_of_the_silent_star_enable ) );
-  add_option( opt_bool( "dragonflight.nymue_forced_immobilized", dragonflight_opts.nymue_forced_immobilized ) );
-  add_option( opt_func( "dragonflight.witherbarks_branch_timing", [ this ]( sim_t*, std::string_view, std::string_view value ) {
-    auto splits = util::string_split<std::string>( value, "/" );
-    if ( splits.size() != 3 )
-      throw std::invalid_argument( "Requires three timings separated by '/'." );
-
-    for ( size_t i = 0; i < 3; i++ )
-      dragonflight_opts.witherbarks_branch_timing[ i ] = timespan_t::from_seconds( util::to_double( splits[ i ] ) );
-
-    return true;
-  } ) );
-  add_option( opt_bool( "dragonflight.rallied_to_victory_ally_estimate", dragonflight_opts.rallied_to_victory_ally_estimate ) );
-  add_option( opt_float( "dragonflight.rallied_to_victory_min_allies", dragonflight_opts.rallied_to_victory_min_allies, 0.0, 4 ) );
-  add_option( opt_bool( "dragonflight.player.embersoul_debuff_immune", dragonflight_opts.embersoul_debuff_immune ) );
-  add_option( opt_float( "dragonflight.rallied_to_victory_multi_actor_skip_chance", dragonflight_opts.rallied_to_victory_multi_actor_skip_chance, 0.0, 1 ) );
-  add_option( opt_bool( "dragonflight.string_of_delicacies_ally_estimate", dragonflight_opts.string_of_delicacies_ally_estimate ) );
-  add_option( opt_float( "dragonflight.string_of_delicacies_min_allies", dragonflight_opts.string_of_delicacies_min_allies, 0.0, 4 ) );
-  add_option( opt_float( "dragonflight.string_of_delicacies_multi_actor_skip_chance", dragonflight_opts.string_of_delicacies_multi_actor_skip_chance, 0.0, 1 ) );
-  add_option( opt_string( "dragonflight.balefire_branch_loss_rng_type", dragonflight_opts.balefire_branch_loss_rng_type ) );
-  add_option( opt_float( "dragonflight.balefire_branch_loss_rppm", dragonflight_opts.balefire_branch_loss_rppm, 0.0, std::numeric_limits<double>::max() ) );
-  add_option( opt_float( "dragonflight.balefire_branch_loss_percent", dragonflight_opts.balefire_branch_loss_percent, 0.0, 1.0 ) );
-  add_option( opt_timespan( "dragonflight.balefire_branch_loss_tick", dragonflight_opts.balefire_branch_loss_tick, 1_ms, 20_s ) );
-  add_option( opt_int( "dragonflight.balefire_branch_loss_stacks", dragonflight_opts.balefire_branch_loss_stacks, 0, 20 ) );
-  add_option( opt_uint( "dragonflight.verdant_conduit_allies", dragonflight_opts.verdant_conduit_allies, 0, 2 ) );
-  add_option( opt_bool( "dragonflight.rashoks_use_true_overheal", dragonflight_opts.rashoks_use_true_overheal ) );
-  add_option( opt_float( "dragonflight.rashoks_fake_overheal", dragonflight_opts.rashoks_fake_overheal, 0.0, 1.0 ) );
-  add_option( opt_string( "dragonflight.timerunners_advantage", dragonflight_opts.timerunners_advantage ) );
-  add_option( opt_int( "dragonflight.brilliance_party", dragonflight_opts.brilliance_party, 0, 4 ) );
-  add_option( opt_int( "dragonflight.windweaver_party", dragonflight_opts.windweaver_party, 0, 4 ) );
-  add_option( opt_string( "dragonflight.windweaver_party_ilvls", dragonflight_opts.windweaver_party_ilvls ) );
-  add_option( opt_int( "dragonflight.emerald_coachs_whistle_ally_ilvl", dragonflight_opts.emerald_coachs_whistle_ally_ilvl ) );
-  add_option( opt_bool( "dragonflight.emerald_coachs_whistle_ally_is_healer", dragonflight_opts.emerald_coachs_whistle_ally_is_healer ) );
-
-  // The War Within options
-  add_option( opt_string( "thewarwithin.sikrans_endless_arsenal_stance",
-                          thewarwithin_opts.sikrans_endless_arsenal_stance ) );
-  add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_primary_stacks",
-                       thewarwithin_opts.ovinaxs_mercurial_egg_initial_primary_stacks, 0, 30 ) );
-  add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_desired_primary_stacks",
-                       thewarwithin_opts.ovinaxs_mercurial_egg_desired_primary_stacks, 0, 30 ) );
-  add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_desired_primary_stacks_leeway",
-                       thewarwithin_opts.ovinaxs_mercurial_egg_desired_primary_stacks_leeway, 0, 30 ) );
-  add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_delay",
-                            thewarwithin_opts.entropic_skardyn_core_pickup_delay, 0_ms, 30_s ) );
-  add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_stddev",
-                            thewarwithin_opts.entropic_skardyn_core_pickup_stddev, 0_ms, 30_s ) );
-  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_enter_light_delay",
-                            thewarwithin_opts.carved_blazikon_wax_enter_light_delay, 0_ms, 15_s ) );
-  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_enter_light_stddev",
-                            thewarwithin_opts.carved_blazikon_wax_enter_light_stddev, 0_ms, 15_s ) );
-  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_stay_in_light_duration",
-                            thewarwithin_opts.carved_blazikon_wax_stay_in_light_duration, 0_ms, 15_s ) );
-  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_stay_in_light_stddev",
-                            thewarwithin_opts.carved_blazikon_wax_stay_in_light_stddev, 0_ms, 15_s ) );
-  add_option( opt_string( "thewarwithin.signet_of_the_priory_party_stats",
-                          thewarwithin_opts.signet_of_the_priory_party_stats ) );
-  add_option( opt_timespan( "thewarwithin.signet_of_the_priory_party_use_cooldown",
-                            thewarwithin_opts.signet_of_the_priory_party_use_cooldown, 120_s, 240_s ) );
-  add_option( opt_timespan( "thewarwithin.signet_of_the_priory_party_use_stddev",
-                            thewarwithin_opts.signet_of_the_priory_party_use_stddev, 0_ms, 120_s ) );
-  add_option( opt_float( "thewarwithin.harvesters_edict_intercept_chance",
-                         thewarwithin_opts.harvesters_edict_intercept_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "thewarwithin.dawn_dusk_thread_lining_uptime",
-                         thewarwithin_opts.dawn_dusk_thread_lining_uptime, 0.0, 1.0 ) );
-  add_option( opt_timespan( "thewarwithin.dawn_dusk_thread_lining_update_interval",
-                            thewarwithin_opts.dawn_dusk_thread_lining_update_interval, 1_s, timespan_t::max() ) );
-  add_option( opt_timespan( "thewarwithin.dawn_dusk_thread_lining_update_interval_stddev",
-                            thewarwithin_opts.dawn_dusk_thread_lining_update_interval_stddev, 1_s, timespan_t::max() ) );
-  add_option( opt_timespan( "thewarwithin.embrace_of_the_cinderbee_timing",
-                            thewarwithin_opts.embrace_of_the_cinderbee_timing, 100_ms, 10_s ) );
-  add_option( opt_float( "thewarwithin.embrace_of_the_cinderbee_miss_chance",
-                         thewarwithin_opts.embrace_of_the_cinderbee_miss_chance, 0, 1 ) );
-  add_option( opt_int( "thewarwithin.nerubian_pheromone_secreter_pheromones",
-                       thewarwithin_opts.nerubian_pheromone_secreter_pheromones, 0, 3 ) );
-  add_option( opt_int( "thewarwithin.binding_of_binding_on_you",
-                       thewarwithin_opts.binding_of_binding_on_you, 0, 29 ) );
-  add_option( opt_float( "thewarwithin.binding_of_binding_ally_trigger_chance",
-                         thewarwithin_opts.binding_of_binding_ally_trigger_chance, 0, 1 ) );
-  add_option( opt_timespan( "thewarwithin.concoction_kiss_of_death_buff_remaining_min",
-                            thewarwithin_opts.concoction_kiss_of_death_buff_remaining_min, 0_ms, 30_s ) );
-  add_option( opt_timespan( "thewarwithin.concoction_kiss_of_death_buff_remaining_max",
-                            thewarwithin_opts.concoction_kiss_of_death_buff_remaining_max, 0_ms, 30_s ) );
-  add_option( opt_timespan( "thewarwithin.fury_of_the_stormrook_pickup_delay",
-                            thewarwithin_opts.fury_of_the_stormrook_pickup_delay, 0_ms, 10_s ) );
-  add_option( opt_timespan( "thewarwithin.fury_of_the_stormrook_pickup_stddev",
-                            thewarwithin_opts.fury_of_the_stormrook_pickup_stddev, 0_ms, 10_s ) );
-  add_option( opt_float( "thewarwithin.mereldars_toll_ally_trigger_chance",
-                         thewarwithin_opts.mereldars_toll_ally_trigger_chance, 0, 1 ) );
-  add_option( opt_float( "thewarwithin.sureki_zealots_insignia_rppm_multiplier",
-                         thewarwithin_opts.sureki_zealots_insignia_rppm_multiplier, 0, 1 ) );
-  add_option( opt_string( "thewarwithin.windsingers_passive_stat",
-                           thewarwithin_opts.windsingers_passive_stat ) );
-  add_option( opt_string( "thewarwithin.mister_locknstalk_mode",
-                           thewarwithin_opts.mister_locknstalk_mode ) );
-  add_option( opt_string( "thewarwithin.jastor_diamond_ally_stat",
-                           thewarwithin_opts.jastor_diamond_ally_stat ) );
-  add_option( opt_float( "thewarwithin.suspicious_energy_drink_bonus_chance",
-                         thewarwithin_opts.suspicious_energy_drink_bonus_chance, 0, 1 ) );
-  add_option( opt_timespan( "thewarwithin.additional_gcd_time",
-                             thewarwithin_opts.additional_gcd_time, 0_s, 10_s ) );
-  add_option( opt_string( "thewarwithin.alchemical_chaos_initial_stat",
-                           thewarwithin_opts.alchemical_initial_stat ) );
-  add_option( opt_string( "thewarwithin.alchemical_chaos_initial_penalty_stats",
-                          thewarwithin_opts.alchemical_initial_penalty ) );
-  add_option( opt_bool( "thewarwithin.incorporeal_essence_gorger_ethereal", thewarwithin_opts.incorporeal_essence_gorger_ethereal ) );
-  add_option( opt_float( "thewarwithin.astral_antenna_miss_chance", thewarwithin_opts.astral_antenna_miss_chance, 0.0, 1.0 ) );
-  add_option( opt_int( "thewarwithin.screams_of_a_forgotten_sky_initial_stacks",
-                       thewarwithin_opts.screams_of_a_forgotten_sky_initial_stacks, 0, 99 ) );
-  add_option( opt_bool( "thewarwithin.brand_of_ceaseless_ire_force_full_uptime",
-                        thewarwithin_opts.brand_of_ceaseless_ire_force_full_uptime ) );
-  add_option( opt_bool( "thewarwithin.attuned_to_the_aether",
-                        thewarwithin_opts.attuned_to_the_aether ) );
-
-  // Midnight options
-  add_option(   opt_string( "midnight.darkmoon_hunt_race",
-                            midnight_opts.darkmoon_hunt_race ) );
-  add_option( opt_timespan( "midnight.sealed_chaos_urn_dispell_time",
-                            midnight_opts.sealed_chaos_urn_dispell_time, 500_ms, 5_s ) );
-  add_option(     opt_bool( "midnight.sealed_chaos_urn_dispell",
-                            midnight_opts.sealed_chaos_urn_dispell ) );
-  add_option(    opt_float( "midnight.refueling_orb_heal_chance",
-                            midnight_opts.refueling_orb_heal_chance, 0, 1 ) );
-  add_option(     opt_bool( "midnight.crucible_of_erratic_energies_violence",
-                            midnight_opts.crucible_of_erratic_energies_violence ) );
-  add_option(     opt_bool( "midnight.crucible_of_erratic_energies_sustenance",
-                            midnight_opts.crucible_of_erratic_energies_sustenance ) );
-  add_option(     opt_bool( "midnight.crucible_of_erratic_energies_predation",
-                            midnight_opts.crucible_of_erratic_energies_predation ) );
-  add_option(    opt_float( "midnight.vessel_of_tortured_souls_miss_chance",
-                            midnight_opts.vessel_of_tortured_souls_miss_chance, 0, 1 ) );
-  add_option(    opt_float( "midnight.arcanoweave_trappings_uptime",
-                            midnight_opts.arcanoweave_trappings_uptime, 0.0, 1.0 ) );
-  add_option( opt_timespan( "midnight.arcanoweave_trappings_update_interval",
-                            midnight_opts.arcanoweave_trappings_update_interval, 1_s, timespan_t::max() ) );
-  add_option( opt_timespan( "midnight.arcanoweave_trappings_update_interval_stddev",
-                            midnight_opts.arcanoweave_trappings_update_interval_stddev, 1_s, timespan_t::max() ) );
-  add_option(    opt_float( "midnight.lightspire_core_duration_multiplier",
-                            midnight_opts.lightspire_core_duration_multiplier, 0.1, 1.0 ) );
-  add_option(    opt_float( "midnight.rite_of_the_hashey_uptime",
-                            midnight_opts.rite_of_the_hashey_uptime, 0.0, 1.0 ) );
-  add_option(    opt_float( "midnight.permafrost_essence_shield_proc_chance",
-                            midnight_opts.permafrost_essence_shield_proc_chance, 0.0, 1.0 ) );
-  add_option(     opt_bool( "midnight.permafrost_essence_use_health_threshold",
-                            midnight_opts.permafrost_essence_use_health_threshold ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

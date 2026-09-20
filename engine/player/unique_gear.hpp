@@ -50,14 +50,11 @@ struct item_targetdata_initializer_t : public targetdata_initializer_t<const spe
 using special_effect_set_t = std::vector<const special_effect_db_item_t*>;
 
 void register_hotfixes();
-void register_hotfixes_legion();
-void register_hotfixes_bfa();
 
 void register_special_effects();
-void register_special_effects_legion();  // Legion special effects
-void register_special_effects_bfa();     // Battle for Azeroth special effects
 
 void sort_special_effects();
+
 void unregister_special_effects();
 
 void add_effect( const special_effect_db_item_t& );
@@ -67,8 +64,6 @@ special_effect_set_t find_passive_effect_db_item( unsigned spell_id );
 action_t* create_action( player_t* player, util::string_view name, util::string_view options );
 
 void register_target_data_initializers( sim_t* );
-void register_target_data_initializers_legion( sim_t* );  // Legion targetdata initializers
-void register_target_data_initializers_bfa( sim_t* );     // Battle for Azeroth targetdata initializers
 
 void register_actor_initializers( sim_t& );
 
