@@ -18,11 +18,7 @@ SRC += \
     action$(PATHSEP)stats.cpp \
     action$(PATHSEP)variable.cpp \
     buff$(PATHSEP)buff.cpp \
-    class_modules$(PATHSEP)apl$(PATHSEP)apl_death_knight.cpp \
-    class_modules$(PATHSEP)apl$(PATHSEP)apl_demon_hunter.cpp \
-    class_modules$(PATHSEP)apl$(PATHSEP)apl_evoker.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_hunter.cpp \
-    class_modules$(PATHSEP)apl$(PATHSEP)apl_monk.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_paladin.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_priest.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_rogue.cpp \
@@ -31,9 +27,6 @@ SRC += \
     class_modules$(PATHSEP)apl$(PATHSEP)druid$(PATHSEP)druid.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)mage.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)warlock.cpp \
-    class_modules$(PATHSEP)monk$(PATHSEP)sc_monk.cpp \
-    class_modules$(PATHSEP)monk$(PATHSEP)sc_monk_pets.cpp \
-    class_modules$(PATHSEP)monk$(PATHSEP)sc_stagger.cpp \
     class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin.cpp \
     class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin_holy.cpp \
     class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin_protection.cpp \
@@ -43,11 +36,8 @@ SRC += \
     class_modules$(PATHSEP)priest$(PATHSEP)sc_priest_holy.cpp \
     class_modules$(PATHSEP)priest$(PATHSEP)sc_priest_pets.cpp \
     class_modules$(PATHSEP)priest$(PATHSEP)sc_priest_shadow.cpp \
-    class_modules$(PATHSEP)sc_death_knight.cpp \
-    class_modules$(PATHSEP)sc_demon_hunter.cpp \
     class_modules$(PATHSEP)sc_druid.cpp \
     class_modules$(PATHSEP)sc_enemy.cpp \
-    class_modules$(PATHSEP)sc_evoker.cpp \
     class_modules$(PATHSEP)sc_hunter.cpp \
     class_modules$(PATHSEP)sc_mage.cpp \
     class_modules$(PATHSEP)sc_rogue.cpp \

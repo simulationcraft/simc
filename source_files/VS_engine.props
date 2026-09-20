@@ -21,9 +21,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\action\spell_base.hpp" />
 		<ClInclude Include="..\engine\action\variable.hpp" />
 		<ClInclude Include="..\engine\buff\buff.hpp" />
-		<ClInclude Include="..\engine\class_modules\apl\apl_death_knight.hpp" />
-		<ClInclude Include="..\engine\class_modules\apl\apl_demon_hunter.hpp" />
-		<ClInclude Include="..\engine\class_modules\apl\apl_evoker.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_hunter.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_paladin.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_priest.hpp" />
@@ -34,8 +31,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\class_modules\apl\mage.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\warlock.hpp" />
 		<ClInclude Include="..\engine\class_modules\class_module.hpp" />
-		<ClInclude Include="..\engine\class_modules\monk\sc_monk.hpp" />
-		<ClInclude Include="..\engine\class_modules\monk\sc_stagger.hpp" />
 		<ClInclude Include="..\engine\class_modules\paladin\sc_paladin.hpp" />
 		<ClInclude Include="..\engine\class_modules\priest\sc_priest.hpp" />
 		<ClInclude Include="..\engine\class_modules\warlock\sc_warlock.hpp" />
@@ -214,11 +209,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\action\stats.cpp" />
 		<ClCompile Include="..\engine\action\variable.cpp" />
 		<ClCompile Include="..\engine\buff\buff.cpp" />
-		<ClCompile Include="..\engine\class_modules\apl\apl_death_knight.cpp" />
-		<ClCompile Include="..\engine\class_modules\apl\apl_demon_hunter.cpp" />
-		<ClCompile Include="..\engine\class_modules\apl\apl_evoker.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_hunter.cpp" />
-		<ClCompile Include="..\engine\class_modules\apl\apl_monk.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_paladin.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_priest.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_rogue.cpp" />
@@ -227,9 +218,6 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\class_modules\apl\druid\druid.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\mage.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\warlock.cpp" />
-		<ClCompile Include="..\engine\class_modules\monk\sc_monk.cpp" />
-		<ClCompile Include="..\engine\class_modules\monk\sc_monk_pets.cpp" />
-		<ClCompile Include="..\engine\class_modules\monk\sc_stagger.cpp" />
 		<ClCompile Include="..\engine\class_modules\paladin\sc_paladin.cpp" />
 		<ClCompile Include="..\engine\class_modules\paladin\sc_paladin_holy.cpp" />
 		<ClCompile Include="..\engine\class_modules\paladin\sc_paladin_protection.cpp" />
@@ -239,11 +227,8 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\class_modules\priest\sc_priest_holy.cpp" />
 		<ClCompile Include="..\engine\class_modules\priest\sc_priest_pets.cpp" />
 		<ClCompile Include="..\engine\class_modules\priest\sc_priest_shadow.cpp" />
-		<ClCompile Include="..\engine\class_modules\sc_death_knight.cpp" />
-		<ClCompile Include="..\engine\class_modules\sc_demon_hunter.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_druid.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_enemy.cpp" />
-		<ClCompile Include="..\engine\class_modules\sc_evoker.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_hunter.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_mage.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_rogue.cpp" />
