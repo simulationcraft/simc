@@ -1086,31 +1086,6 @@ bool item_database::load_item_from_data( item_t& item )
 
   util::tokenize( item.name_str );
 
-  // Apply azerite level to item level conversion first, but only for Blizzard API sourced profiles
-  if ( item.player->profile_source_ == profile_source::BLIZZARD_API )
-  {
-    if ( item.parsed.azerite_level > 0 )
-    {
-      item.parsed.data.level = item.player->dbc->azerite_item_level( item.parsed.azerite_level );
-    }
-  }
-
-  // Apply any azerite powers that apply bonus ids
-  for ( auto power_id : item.parsed.azerite_ids )
-  {
-    const auto& power = item.player->dbc->azerite_power( power_id );
-    if ( power.id == 0 || power.bonus_id == 0 )
-    {
-      continue;
-    }
-
-    auto it = range::find( item.parsed.bonus_id, power.bonus_id );
-    if ( it == item.parsed.bonus_id.end() )
-    {
-      item.parsed.bonus_id.push_back( power.bonus_id );
-    }
-  }
-
   // Sort item bonuses to ensure consistent application order
   item_database::sort_item_bonuses( item );
 

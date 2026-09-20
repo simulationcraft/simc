@@ -4629,8 +4629,6 @@ void unique_gear::register_special_effects()
 {
   // Register legion special effects
   register_special_effects_legion();
-  // Register azerite special effects
-  azerite::register_azerite_powers();
   register_special_effects_bfa();
   shadowlands::register_special_effects();
   dragonflight::register_special_effects();
@@ -4850,7 +4848,6 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
 {
   register_target_data_initializers_legion( sim );
   register_target_data_initializers_bfa( sim );
-  azerite::register_azerite_target_data_initializers( sim );
   shadowlands::register_target_data_initializers( *sim );
   dragonflight::register_target_data_initializers( *sim );
   thewarwithin::register_target_data_initializers( *sim );

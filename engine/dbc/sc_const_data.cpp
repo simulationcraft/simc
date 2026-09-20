@@ -1210,60 +1210,6 @@ double dbc_t::combat_rating( unsigned combat_rating_id, unsigned level ) const
 #endif
 }
 
-unsigned dbc_t::azerite_item_level( unsigned power_level ) const
-{
-  if ( power_level == 0 )
-  {
-    return 0;
-  }
-
-#if SC_USE_PTR
-  auto arr = ptr ? _ptr__azerite_level_to_item_level
-                 : __azerite_level_to_item_level;
-#else
-  auto arr = __azerite_level_to_item_level;
-#endif
-
-  if ( power_level > MAX_AZERITE_LEVEL )
-  {
-    return 0;
-  }
-
-  return arr[ power_level - 1 ];
-}
-
-const azerite_power_entry_t& dbc_t::azerite_power( unsigned power_id ) const
-{
-  return azerite_power_entry_t::find( power_id, ptr );
-}
-
-const azerite_power_entry_t& dbc_t::azerite_power( util::string_view name, bool tokenized ) const
-{
-  for ( const auto& power : azerite_powers() )
-  {
-    if ( tokenized )
-    {
-      auto tokenized_name = util::tokenize_fn( power.name );
-      if ( util::str_compare_ci( name, tokenized_name ) )
-      {
-        return power;
-      }
-    }
-    else
-    {
-      if ( util::str_compare_ci( name, power.name ) )
-      {
-        return power;
-      }
-    }
-  }
-
-  return azerite_power_entry_t::nil();
-}
-
-util::span<const azerite_power_entry_t> dbc_t::azerite_powers() const
-{ return azerite_power_entry_t::data( ptr ); }
-
 unsigned dbc_t::class_max_size() const
 {
 #if SC_USE_PTR

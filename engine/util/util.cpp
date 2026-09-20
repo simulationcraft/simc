@@ -1435,8 +1435,6 @@ const char* util::special_effect_source_string( special_effect_source_e type )
     case SPECIAL_EFFECT_SOURCE_GEM: return "gem";
     case SPECIAL_EFFECT_SOURCE_SOCKET_BONUS: return "socket_bonus";
     case SPECIAL_EFFECT_SOURCE_RACE: return "race";
-    case SPECIAL_EFFECT_SOURCE_AZERITE: return "azerite";
-    case SPECIAL_EFFECT_SOURCE_AZERITE_ESSENCE: return "azerite_essence";
     case SPECIAL_EFFECT_SOURCE_FALLBACK: return "fallback";
     case SPECIAL_EFFECT_SOURCE_TEMPORARY_ENCHANT: return "temporary_enchant";
     default: return "unknown";

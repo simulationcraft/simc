@@ -40,8 +40,6 @@ struct action_callback_t;
 struct action_variable_t;
 struct actor_target_data_t;
 struct attack_t;
-class azerite_essence_t;
-class azerite_power_t;
 class dbc_t;
 class dbc_override_t;
 struct benefit_t;
@@ -72,10 +70,6 @@ struct stats_t;
 struct spell_data_t;
 struct uptime_t;
 struct ground_aoe_params_t;
-namespace azerite {
-  class azerite_state_t;
-  class azerite_essence_state_t;
-}
 namespace io {
   class ofstream;
 }
@@ -230,12 +224,6 @@ struct player_t : public actor_t
 
   // Profs
   std::array<int, PROFESSION_MAX> profession;
-
-  /// Azerite state object
-  std::unique_ptr<azerite::azerite_state_t> azerite;
-
-  /// Azerite essence state object
-  std::unique_ptr<azerite::azerite_essence_state_t> azerite_essence;
 
   // TODO: FIXME, these stats should not be increased by scale factor deltas
   struct base_initial_current_t
@@ -1006,11 +994,6 @@ public:
   pet_t* cast_pet();
   const pet_t* cast_pet() const;
 
-  azerite_power_t find_azerite_spell( util::string_view name, bool tokenized = false ) const;
-  azerite_power_t find_azerite_spell( unsigned power_id ) const;
-  azerite_essence_t find_azerite_essence( util::string_view name, bool tokenized = false ) const;
-  azerite_essence_t find_azerite_essence( unsigned power_id ) const;
-
   const spell_data_t* find_racial_spell( util::string_view name, race_e r = RACE_NONE ) const;
   const spell_data_t* find_class_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_rank_spell( util::string_view name, util::string_view rank,
@@ -1113,7 +1096,6 @@ public:
   virtual void init_professions();
   virtual void init_spells();
   virtual void init_items();
-  virtual void init_azerite(); /// Initialize azerite-related support structures for the actor
   virtual void init_weapon( weapon_t& );
   virtual void init_base_stats();
   virtual void init_initial_stats();

@@ -85,7 +85,6 @@ item_t::parsed_input_t::parsed_input_t()
     enchant_id( 0 ),
     addon_id( 0 ),
     armor( 0 ),
-    azerite_level( 0 ),
     data(),
     initial_cd( timespan_t::zero() ),
     drop_level( 0 ),
@@ -425,9 +424,6 @@ void sc_format_to( const item_t& item, fmt::format_context::iterator out )
   {
     fmt::format_to( out, " ({})", item.player -> items[ item.parent_slot ].slot_name() );
   }
-
-  if ( item.parsed.azerite_level > 0 )
-    fmt::format_to( out, " azerite_level={}", item.parsed.azerite_level );
 
   if ( item.parsed.data.lfr() )
     fmt::format_to( out, " LFR" );
@@ -865,8 +861,6 @@ void item_t::parse_options()
     opt_string("drop_level", option_drop_level_str),
     opt_string("relic_id", option_gem_bonus_id_str),
     opt_string("relic_ilevel", option_gem_ilevel_str),
-    opt_string("azerite_powers", option_azerite_powers_str),
-    opt_string("azerite_level", option_azerite_level_str),
     opt_string("context", DUMMY_CONTEXT),
     opt_string("crafted_stats", option_crafted_stat_str),
     opt_string("crafting_quality", DUMMY_CRAFTING_QUALITY),
@@ -966,28 +960,6 @@ void item_t::parse_options()
     }
   }
 
-  if ( !option_azerite_powers_str.empty() )
-  {
-    auto split = util::string_split<util::string_view>( option_azerite_powers_str, "/:" );
-    for ( const auto& power_str : split )
-    {
-      auto power_id = util::to_unsigned_ignore_error( power_str, 0 );
-      if ( power_id > 0 )
-      {
-        parsed.azerite_ids.push_back( power_id );
-      }
-      // Try to convert the name to a power (id)
-      else
-      {
-        const auto& power = player->dbc->azerite_power( power_str, true );
-        if ( power.id > 0 )
-        {
-          parsed.azerite_ids.push_back( power.id );
-        }
-      }
-    }
-  }
-
   if ( !option_enchant_id_str.empty() )
     parsed.enchant_id = util::to_unsigned( option_enchant_id_str );
 
@@ -1021,9 +993,6 @@ void item_t::parse_options()
 
   if ( !option_drop_level_str.empty() )
     parsed.drop_level = util::to_unsigned( option_drop_level_str );
-
-  if ( !option_azerite_level_str.empty() )
-    parsed.azerite_level = util::to_unsigned( option_azerite_level_str );
 
   if ( !option_crafted_stat_str.empty() )
   {
@@ -1131,11 +1100,6 @@ std::string item_t::encoded_item() const
   if ( !option_ilevel_str.empty() )
     s << ",ilevel=" << option_ilevel_str;
 
-  if ( !option_azerite_level_str.empty() )
-    s << ",azerite_level=" << option_azerite_level_str;
-  else if ( parsed.azerite_level > 0 )
-    s << ",azerite_level=" << parsed.azerite_level;
-
   if ( !option_armor_type_str.empty() )
     s << ",type=" << util::armor_type_string( parsed.data.item_subclass );
 
@@ -1230,15 +1194,6 @@ std::string item_t::encoded_item() const
   if ( !option_gem_ilevel_str.empty() )
   {
     s << ",gem_ilevel=" << option_gem_ilevel_str;
-  }
-
-  if ( !option_azerite_powers_str.empty() )
-  {
-    s << ",azerite_powers=" << option_azerite_powers_str;
-  }
-  else if ( !parsed.azerite_ids.empty() )
-  {
-    s << ",azerite_powers=" << util::string_join( parsed.azerite_ids, "/" );
   }
 
   if ( !option_enchant_str.empty() )

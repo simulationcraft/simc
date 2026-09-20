@@ -14,7 +14,6 @@
 #include "interfaces/sc_http.hpp"
 #include "interfaces/sc_js.hpp"
 #include "item/item.hpp"
-#include "player/azerite_data.hpp"
 #include "player/player.hpp"
 #include "sc_enums.hpp"
 #include "sim/sim.hpp"
@@ -609,53 +608,6 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
         item.parsed.crafted_stat_mod.push_back( stat_data[ "id" ].GetInt() );
       }
     }
-
-    azerite::parse_blizzard_azerite_information( item, slot_data );
-
-    auto it = __ILEVEL_OVERRIDE_MAP.find( item.parsed.data.id );
-    if ( it != __ILEVEL_OVERRIDE_MAP.end() )
-    {
-      item.option_ilevel_str =  util::to_string( slot_data[ "level" ][ "value" ].GetUint() );
-    }
-    // Use the item stats directly from the Armory - needed to get the proper stats from catalyzed items in 12.1.
-    // Armory JSON doesn't return any other indication of the source item (unlike redirected_base_stats from the addon)
-    else if ( slot_data.HasMember( "stats" ) )
-    {
-      std::vector<std::string> tokens;
-      for ( auto stat_idx = 0U, stat_end = slot_data[ "stats" ].Size(); stat_idx < stat_end; ++stat_idx )
-      {
-        const auto& stat_data = slot_data[ "stats" ][ stat_idx ];
-
-        // Stat for another spec. Armory doesn't report the combined stats (StrAgiInt, AgiInt, etc). It uses the
-        // individual stats (Str, Agi, Int) uses is_negated to indicate which ones are inactive
-        if ( stat_data.HasMember( "is_negated" ) && stat_data[ "is_negated" ].GetBool() )
-        {
-          continue;
-        }
-
-        if ( !stat_data.HasMember( "type" ) || !stat_data[ "type" ].HasMember( "type" ) ||
-             !stat_data.HasMember( "value" ) )
-        {
-          continue;
-        }
-
-        auto stat = bcp_api::translate_api_stat( stat_data[ "type" ][ "type" ].GetString() );
-        if ( stat == STAT_NONE )
-        {
-          continue;
-        }
-
-        tokens.push_back( fmt::format( "{}{}", stat_data[ "value" ].GetInt(), util::stat_type_abbrev( stat ) ) );
-      }
-
-      if ( !tokens.empty() )
-      {
-        item.option_stats_str = util::string_join( tokens, "_" );
-        util::tolower( item.option_stats_str );
-      }
-    }
-  }
-}
 
 void parse_media( player_t*            p,
                   const player_spec_t& spec,

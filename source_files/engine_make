@@ -38,7 +38,6 @@ SRC += \
     class_modules$(PATHSEP)sc_warlock.cpp \
     class_modules$(PATHSEP)sc_warrior.cpp \
     dbc$(PATHSEP)assisted_combat.cpp \
-    dbc$(PATHSEP)azerite.cpp \
     dbc$(PATHSEP)character_loadout.cpp \
     dbc$(PATHSEP)class_spells.cpp \
     dbc$(PATHSEP)client_data.cpp \
@@ -90,7 +89,6 @@ SRC += \
     player$(PATHSEP)action_variable.cpp \
     player$(PATHSEP)actor.cpp \
     player$(PATHSEP)actor_target_data.cpp \
-    player$(PATHSEP)azerite_data.cpp \
     player$(PATHSEP)consumable.cpp \
     player$(PATHSEP)darkmoon_deck.cpp \
     player$(PATHSEP)effect_callbacks.cpp \

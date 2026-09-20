@@ -87,8 +87,6 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, std::s
   { 37, "Spell Family"       },
   { 38, "Stance Mask"        },
   { 39, "Mechanic"           },
-  { 40, "Azerite Power Id"   },
-  { 41, "Azerite Essence Id" },
   { 46, "Max Aura Level"     },
   { 47, "Spell Type"         },
   { 48, "Max Targets"        },
@@ -1806,7 +1804,6 @@ static constexpr auto _label_strings = util::make_static_map<int, std::string_vi
   { LABEL_SHAMAN_SPELLS,        "Shaman Spells"        },  // 24
   { LABEL_WARRIOR_SPELLS,       "Warrior Spells"       },  // 25
   { LABEL_PALADIN_SPELLS,       "Paladin Spells"       },  // 26
-  { LABEL_AZERITE_ESSENCES,     "Azerite Essences"     },  // 640
   { LABEL_MAJOR_COOLDOWNS,      "Major Cooldowns"      },  // 690
   { LABEL_HEALING_SPELLS,       "Healing Spells"       },  // 741
   { LABEL_COVENANT,             "Covenant Spells"      },  // 976
@@ -1888,55 +1885,6 @@ void spell_flags_xml( const spell_data_t* spell, xml_node_t* parent )
   if ( spell->flags( spell_attribute::SX_PASSIVE ) )
     parent->add_parm( "passive", "true" );
 }
-
-std::string azerite_essence_str( const spell_data_t* spell, util::span<const azerite_essence_power_entry_t> data )
-{
-  // Locate spell in the array
-  auto it = range::find_if( data, [ spell ]( const azerite_essence_power_entry_t& e ) {
-    return e.spell_id_base[ 0 ] == spell->id() || e.spell_id_base[ 1 ] == spell->id() ||
-           e.spell_id_upgrade[ 0 ] == spell->id() || e.spell_id_upgrade[ 1 ] == spell->id();
-  } );
-
-  if ( it == data.end() )
-  {
-    return "";
-  }
-
-  std::ostringstream s;
-
-  s << "(";
-
-  s << "Type: ";
-
-  if ( it->spell_id_base[ 0 ] == spell->id() )
-  {
-    s << "Major/Base";
-  }
-  else if ( it->spell_id_base[ 1 ] == spell->id() )
-  {
-    s << "Minor/Base";
-  }
-  else if ( it->spell_id_upgrade[ 0 ] == spell->id() )
-  {
-    s << "Major/Upgrade";
-  }
-  else if ( it->spell_id_upgrade[ 1 ] == spell->id() )
-  {
-    s << "Minor/Upgrade";
-  }
-  else
-  {
-    s << "Unknown";
-  }
-  s << ", ";
-
-  s << "Rank: " << it->rank;
-
-  s << ")";
-
-  return s.str();
-}
-
 }  // unnamed namespace
 
 std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* e,
@@ -3068,21 +3016,6 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell->mechanic() > 0 )
   {
     s << "Mechanic         : " << mechanic_str( spell->mechanic() ) << std::endl;
-  }
-
-  if ( spell->power_id() > 0 )
-  {
-    s << "Azerite Power Id : " << spell->power_id() << std::endl;
-  }
-
-  if ( spell->essence_id() > 0 )
-  {
-    s << "Azerite EssenceId: " << spell->essence_id() << " ";
-
-    const auto data = azerite_essence_power_entry_t::data_by_essence_id( spell->essence_id(), dbc.ptr );
-
-    s << azerite_essence_str( spell, data );
-    s << std::endl;
   }
 
   if ( spell->proc_flags() > 0 )

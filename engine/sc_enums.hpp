@@ -72,11 +72,6 @@ constexpr auto POTION_COOLDOWN_CATEGORY    = 4;     /// "Item - Combat Cons. (Po
 constexpr auto ITEM_TRINKET_BURST_CATEGORY = 1141;  /// Trinket On-Use effect default category (for shared CD)
 constexpr auto MAX_GEM_SLOTS               = 4;     /// Global maximum number of gem slots in any specific item
 
-constexpr auto MAX_AZERITE_LEVEL =
-    300;  // Maximum Azerite level (for Heart of Azeroth) at the start of Battle for Azeroth
-
-constexpr auto MAX_AZERITE_ESSENCE_RANK = 4u;  // Maximum Azerite Essence power rank for patch BfA 8.2.0
-
 // Shadowlands: Curves used to apply diminishing returns to Combat Ratings
 constexpr auto DIMINISHING_RETURN_SECONDARY_CR_CURVE  = 21024u;
 constexpr auto DIMINISHING_RETURN_TERTIARY_CR_CURVE   = 21025u;
@@ -87,14 +82,6 @@ constexpr auto SQUISH_CURVE_MIDNIGHT = 92181u;
 
 // Maximum damage reduction from armor / block
 constexpr auto MAX_ARMOR_DAMAGE_REDUCTION = 0.85;
-
-// Enable/Disable azerite effects
-enum class azerite_control
-{
-  ENABLED,          // All azerite-related effects enabled (default)
-  DISABLED_ITEMS,   // Azerite effects from items are disabled
-  DISABLED_ALL      // All azerite-related effects disabled
-};
 
 enum class regen_type
 {
@@ -595,8 +582,6 @@ enum special_effect_source_e
   SPECIAL_EFFECT_SOURCE_GEM,
   SPECIAL_EFFECT_SOURCE_SOCKET_BONUS,
   SPECIAL_EFFECT_SOURCE_RACE,
-  SPECIAL_EFFECT_SOURCE_AZERITE,
-  SPECIAL_EFFECT_SOURCE_AZERITE_ESSENCE,
   SPECIAL_EFFECT_SOURCE_FALLBACK,
   SPECIAL_EFFECT_SOURCE_TEMPORARY_ENCHANT
 };

@@ -504,9 +504,6 @@ struct sim_t : private sc_thread_t
 
   auto_dispose<std::vector<cooldown_t*>> cooldown_list;
 
-  /// Status of azerite-related effects
-  azerite_control azerite_status;
-
   // Reporting
   progress_bar_t progress_bar;
   std::unique_ptr<scale_factor_control_t> scaling;

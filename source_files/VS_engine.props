@@ -33,7 +33,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\class_modules\class_module.hpp" />
 		<ClInclude Include="..\engine\config.hpp" />
 		<ClInclude Include="..\engine\dbc\assisted_combat.hpp" />
-		<ClInclude Include="..\engine\dbc\azerite.hpp" />
 		<ClInclude Include="..\engine\dbc\character_loadout.hpp" />
 		<ClInclude Include="..\engine\dbc\class_spells.hpp" />
 		<ClInclude Include="..\engine\dbc\client_data.hpp" />
@@ -94,7 +93,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\actor_pair.hpp" />
 		<ClInclude Include="..\engine\player\actor_target_data.hpp" />
 		<ClInclude Include="..\engine\player\assessor.hpp" />
-		<ClInclude Include="..\engine\player\azerite_data.hpp" />
 		<ClInclude Include="..\engine\player\consumable.hpp" />
 		<ClInclude Include="..\engine\player\darkmoon_deck.hpp" />
 		<ClInclude Include="..\engine\player\effect_callbacks.hpp" />
@@ -224,7 +222,6 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\class_modules\sc_warlock.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_warrior.cpp" />
 		<ClCompile Include="..\engine\dbc\assisted_combat.cpp" />
-		<ClCompile Include="..\engine\dbc\azerite.cpp" />
 		<ClCompile Include="..\engine\dbc\character_loadout.cpp" />
 		<ClCompile Include="..\engine\dbc\class_spells.cpp" />
 		<ClCompile Include="..\engine\dbc\client_data.cpp" />
@@ -276,7 +273,6 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\player\action_variable.cpp" />
 		<ClCompile Include="..\engine\player\actor.cpp" />
 		<ClCompile Include="..\engine\player\actor_target_data.cpp" />
-		<ClCompile Include="..\engine\player\azerite_data.cpp" />
 		<ClCompile Include="..\engine\player\consumable.cpp" />
 		<ClCompile Include="..\engine\player\darkmoon_deck.cpp" />
 		<ClCompile Include="..\engine\player\effect_callbacks.cpp" />

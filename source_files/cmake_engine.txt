@@ -27,7 +27,6 @@ class_modules/apl/warlock.hpp
 class_modules/class_module.hpp
 config.hpp
 dbc/assisted_combat.hpp
-dbc/azerite.hpp
 dbc/character_loadout.hpp
 dbc/class_spells.hpp
 dbc/client_data.hpp
@@ -88,7 +87,6 @@ player/actor.hpp
 player/actor_pair.hpp
 player/actor_target_data.hpp
 player/assessor.hpp
-player/azerite_data.hpp
 player/consumable.hpp
 player/darkmoon_deck.hpp
 player/effect_callbacks.hpp
@@ -218,7 +216,6 @@ class_modules/sc_shaman.cpp
 class_modules/sc_warlock.cpp
 class_modules/sc_warrior.cpp
 dbc/assisted_combat.cpp
-dbc/azerite.cpp
 dbc/character_loadout.cpp
 dbc/class_spells.cpp
 dbc/client_data.cpp
@@ -270,7 +267,6 @@ player/action_priority_list.cpp
 player/action_variable.cpp
 player/actor.cpp
 player/actor_target_data.cpp
-player/azerite_data.cpp
 player/consumable.cpp
 player/darkmoon_deck.cpp
 player/effect_callbacks.cpp

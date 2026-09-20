@@ -438,17 +438,3 @@ elif options.type == 'scale':
         sys.exit(1)
 
     g.generate()
-
-    g = CSVDataGenerator(options, {
-        'file': 'AzeriteLevelToItemLevel.txt',
-        'key': 'Level',
-        'comment': '// Azerite level to item level 1 - %d, wow build %s\n' % (
-            300, options.build),
-        'values': [ 'Item Level' ],
-        'base_type': 'unsigned',
-        'max_rows': 300
-    })
-    if not g.initialize():
-        sys.exit(1)
-
-    g.generate()

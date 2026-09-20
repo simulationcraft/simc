@@ -99,7 +99,6 @@ struct item_t
     std::vector<temporary_enchant_data_t>            temporary_enchants;
     unsigned                                         addon_id;
     int                                              armor;
-    unsigned                                         azerite_level;
     std::array<int, MAX_ITEM_STAT>                   stat_val;
     std::array<int, MAX_GEM_SLOTS>                   gem_id;
     std::array<std::vector<unsigned>, MAX_GEM_SLOTS> gem_bonus_id;
@@ -119,7 +118,6 @@ struct item_t
     std::vector<std::string>                         source_list;
     timespan_t                                       initial_cd;
     unsigned                                         drop_level;
-    std::vector<unsigned>                            azerite_ids;
     std::vector<int>                                 crafted_stat_mod;
     unsigned                                         titan_disc_driver_id;
     unsigned                                         content_tuning_id;
@@ -166,8 +164,6 @@ struct item_t
   std::string option_bonus_id_str;
   std::string option_initial_cd_str;
   std::string option_drop_level_str;
-  std::string option_azerite_powers_str;
-  std::string option_azerite_level_str;
   std::string option_crafted_stat_str;
   std::string option_titan_disc_driver_id;
   std::string option_content_tuning_id;

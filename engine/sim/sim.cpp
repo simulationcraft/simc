@@ -1488,7 +1488,6 @@ sim_t::sim_t()
     add_waves( 0 ),
     overrides( overrides_t() ),
     default_aura_delay( 30_ms, 5_ms ),
-    azerite_status( azerite_control::DISABLED_ALL ),
     progress_bar( *this ),
     scaling( new scale_factor_control_t( this ) ),
     plot( new plot_t( this ) ),
@@ -2961,7 +2960,6 @@ void sim_t::register_actor_initializers()
 
   // Initialize each actor's items, construct gear information & stats
   register_actor_initializer( INIT_ACTOR_ITEMS, &player_t::init_items, "items" );
-  register_actor_initializer( INIT_ACTOR_ITEMS + 10, &player_t::init_azerite, "azerite" );
 
   // Main spell looksup. Populate class/spec/hero talents & spells.
   register_actor_initializer( INIT_ACTOR_SPELLS, &player_t::init_spells, "spells" );
@@ -4026,32 +4024,6 @@ void sim_t::create_options()
   } ) );
 
   // Battle for Azeroth
-  add_option( opt_func( "disable_azerite", []( sim_t* sim, util::string_view, util::string_view value ) {
-    if ( value == "1" )
-    {
-      sim -> azerite_status = azerite_control::DISABLED_ALL;
-    }
-    else if ( util::str_compare_ci( value, "items" ) )
-    {
-      sim -> azerite_status = azerite_control::DISABLED_ITEMS;
-    }
-    else if ( util::str_compare_ci( value, "all" ) )
-    {
-      sim -> azerite_status = azerite_control::DISABLED_ALL;
-    }
-    else if ( util::str_compare_ci( value, "0" ) || util::str_compare_ci( value, "false" ) )
-    {
-     sim -> azerite_status = azerite_control::ENABLED;
-    }
-    else
-    {
-      sim -> error( "Unknown disable_azerite value '{}', valid values are 'items' or 'all'",
-          value );
-      return false;
-    }
-    return true;
-  } ) );
-
   add_option( opt_uint( "bfa.jes_howler_allies", bfa_opts.jes_howler_allies, 0, 4 ) );
   add_option( opt_float( "bfa.secrets_of_the_deep_chance",
         bfa_opts.secrets_of_the_deep_chance, 0, 1 ) );

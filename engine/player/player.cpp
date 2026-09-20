@@ -18,7 +18,6 @@
 #include "action/variable.hpp"
 #include "buff/buff.hpp"
 #include "dbc/class_spells.hpp"
-#include "dbc/azerite.hpp"
 #include "dbc/character_loadout.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
@@ -34,7 +33,6 @@
 #include "player/action_priority_list.hpp"
 #include "player/action_variable.hpp"
 #include "player/actor_target_data.hpp"
-#include "player/azerite_data.hpp"
 #include "player/consumable.hpp"
 #include "player/ground_aoe.hpp"
 #include "player/instant_absorb.hpp"
@@ -1027,7 +1025,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     dbc( new dbc_t(*(s->dbc)) ),
     dbc_override( sim->dbc_override.get() ),
     profession(),
-    azerite( nullptr ),
     base(),
     initial(),
     current(),
@@ -1152,8 +1149,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
 
   if ( ! is_enemy() && ! is_pet() )
   {
-    azerite = azerite::create_state( this );
-    azerite_essence = azerite::create_essence_state( this );
     dbc_override_ = std::make_unique<dbc_override_t>( dbc_override );
     dbc_override = dbc_override_.get();
   }
@@ -2039,29 +2034,6 @@ void player_t::init_items()
   init_weapon( off_hand_weapon );
 }
 
-/**
- * Initializes the Azerite-related support structures for an actor if there are any.
- *
- * Since multiple instances of the same azerite power can be worn by an actor, we need to ensure
- * that only one instance of the azerite power gets initialized. Ensure this by building a simple
- * map that keeps initialization status for all azerite powers defined for the actor from different
- * sources (currently only items). Initialization status changes automatically when an
- * azerite_power_t object is created for the actor.
- *
- * Note, guards against invocation from non-player actors (enemies, adds, pets ...)
- */
-void player_t::init_azerite()
-{
-  if ( is_enemy() || is_pet() )
-  {
-    return;
-  }
-
-  sim->print_debug( "Initializing Azerite sub-system for {}.", *this );
-
-  azerite->initialize();
-}
-
 void player_t::init_position()
 {
   sim->print_debug( "Initializing position for {}.", *this );
@@ -2206,13 +2178,6 @@ void player_t::create_special_effects()
       special_effects.push_back( new special_effect_t( effect ) );
     }
   }
-
-  // Initialize generic azerite powers. Note that this occurs later in the process than the class
-  // module spell initialization (init_spells()), which is where the core presumes that each class
-  // module gets the state their azerite powers (through the invocation of find_azerite_spells).
-  // This means that any enabled azerite power that is not referenced in a class module will be
-  // initialized here.
-  azerite::initialize_azerite_powers( this );
 
   // 12.0.7 omnium folio talents
   unique_gear::initialize_expansion_trait_effects( this, omnium_talents_str );
@@ -11099,9 +11064,6 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
   if ( auto action = unique_gear::create_action( this, name, options_str ) )
     return action;
 
-  if ( auto action = azerite::create_action( this, name, options_str ) )
-    return action;
-
   return consumable::create_action( this, name, options_str );
 }
 
@@ -11449,47 +11411,6 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s ) const
   }
 
   return spell_data_t::not_found();
-}
-
-azerite_power_t player_t::find_azerite_spell( unsigned id ) const
-{
-  if ( ! azerite )
-  {
-    return {};
-  }
-
-  return azerite -> get_power( id );
-}
-
-azerite_power_t player_t::find_azerite_spell( util::string_view name, bool tokenized ) const
-{
-  if ( ! azerite )
-  {
-    return {};
-  }
-
-  // Note, no const propagation here, so this works
-  return azerite -> get_power( name, tokenized );
-}
-
-azerite_essence_t player_t::find_azerite_essence( unsigned id ) const
-{
-  if ( !azerite_essence )
-  {
-    return { this };
-  }
-
-  return azerite_essence->get_essence( id );
-}
-
-azerite_essence_t player_t::find_azerite_essence( util::string_view name, bool tokenized ) const
-{
-  if ( !azerite_essence )
-  {
-    return { this };
-  }
-
-  return azerite_essence->get_essence( name, tokenized );
 }
 
 /**
@@ -12516,21 +12437,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     }
   }
 
-  if ( splits[ 0 ] == "azerite" )
-  {
-    return azerite -> create_expression( splits );
-  }
-
-  if ( splits[ 0 ] == "essence" )
-  {
-    return azerite_essence->create_expression( splits );
-  }
-
-  if ( splits[ 0 ] == "hyperthread_wristwraps" )
-  {
-    return unique_gear::create_expression( *this, expression_str );
-  }
-
   return sim->create_expression( expression_str );
 }
 
@@ -12827,24 +12733,6 @@ std::string player_t::create_profile( save_e stype )
       profile_str += "omnium_talents=" + omnium_talents_str + term;
     }
 
-    if ( azerite )
-    {
-      std::string azerite_overrides = azerite -> overrides_str();
-      if ( ! azerite_overrides.empty() )
-      {
-        profile_str += "azerite_override=" + azerite_overrides + term;
-      }
-    }
-
-    if ( azerite_essence )
-    {
-      std::string azerite_essence_str = azerite_essence->option_str();
-      if ( !azerite_essence_str.empty() )
-      {
-        profile_str += "azerite_essences=" + azerite_essence_str + term;
-      }
-    }
-
     auto print_option = [ &profile_str, term ]( std::string_view n, auto option ) {
       if ( !option.is_default() )
       {
@@ -13122,15 +13010,6 @@ void player_t::copy_from( player_t* source )
   use_cds_with_blizzard_action_list = source->use_cds_with_blizzard_action_list;
   enable_spell_queue                = source->enable_spell_queue;
   spell_queue_window                = source->spell_queue_window;
-
-  if ( azerite )
-  {
-    azerite -> copy_overrides( source -> azerite );
-  }
-  if ( azerite_essence )
-  {
-    azerite_essence -> copy_state( source -> azerite_essence );
-  }
 
   if ( source->dbc_override_ )
   {
@@ -13483,11 +13362,6 @@ void player_t::create_options()
   // Player only options
   if ( !is_enemy() && !is_pet() )
   {
-    add_option( opt_func( "azerite_override", std::bind( &azerite::azerite_state_t::parse_override,
-      azerite.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
-    add_option( opt_func( "azerite_essences", std::bind( &azerite::azerite_essence_state_t::parse_azerite_essence,
-      azerite_essence.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
-
     add_option( opt_func( "override.player.spell_data", [ this ]( sim_t*, std::string_view, std::string_view value ) {
       dbc_override_->parse( *dbc, value );
       return true;

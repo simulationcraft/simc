@@ -10,7 +10,6 @@
 #include "mastery_spells.hpp"
 #include "racial_spells.hpp"
 #include "sim/expressions.hpp"
-#include "azerite.hpp"
 #include "spell_query/spell_data_expr.hpp"
 #include "sim/sim.hpp"
 #include "util/util.hpp"
@@ -268,8 +267,7 @@ static constexpr std::array<expr_data_map_t, DATA_EXPR_MAX> expr_map { {
   { "class_spell", DATA_CLASS_SPELL },
   { "race_spell", DATA_RACIAL_SPELL },
   { "mastery", DATA_MASTERY_SPELL },
-  { "spec_spell", DATA_SPECIALIZATION_SPELL },
-  { "azerite", DATA_AZERITE_SPELL }
+  { "spec_spell", DATA_SPECIALIZATION_SPELL }
 } };
 
 expr_data_e parse_data_type( util::string_view name )
@@ -434,17 +432,6 @@ struct spell_list_expr_t : public spell_data_expr_t
           [ this ]( const specialization_spell_entry_t& e ) {
             result_spell_list.push_back( e.spell_id );
           } );
-        break;
-      }
-      case DATA_AZERITE_SPELL:
-      {
-        for ( const auto& p : azerite_power_entry_t::data( dbc.ptr ) )
-        {
-          if ( range::find( result_spell_list, p.spell_id ) == result_spell_list.end() )
-          {
-            result_spell_list.push_back( p.spell_id );
-          }
-        }
         break;
       }
       default:
@@ -800,8 +787,8 @@ struct spell_class_expr_t : public spell_list_expr_t
     }
 
     return filter_spells( [ label = it->spell_label, family = it->spell_family, mask = it->mask ]( const auto& spell ) {
-      // filter out racials & azerite
-      if ( spell.race_mask() || spell.power_id() || spell.essence_id() )
+      // filter out racials
+      if ( spell.race_mask() )
         return false;
 
       return range::contains( spell.labels(), label, &spelllabel_data_t::label ) || spell.class_family() == family ||

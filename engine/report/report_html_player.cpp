@@ -1288,67 +1288,6 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += " }";
     }
 
-    if ( !item.parsed.azerite_ids.empty() )
-    {
-      std::stringstream s;
-      for ( size_t j = 0; j < item.parsed.azerite_ids.size(); ++j )
-      {
-        const auto& power = item.player -> dbc->azerite_power( item.parsed.azerite_ids[ j ] );
-        if ( power.id == 0 || ! item.player -> azerite -> is_enabled( power.id ) )
-        {
-          continue;
-        }
-
-        const auto spell = item.player -> find_spell( power.spell_id );
-
-        s << report_decorators::decorated_spell_data_item(*item.sim, spell, item);
-
-        if ( j < item.parsed.azerite_ids.size() - 1 )
-        {
-          s << ", ";
-        }
-      }
-
-      if ( ! s.str().empty() )
-      {
-        item_sim_desc += "<br/>";
-        item_sim_desc += "azerite powers: { ";
-        item_sim_desc += s.str();
-        item_sim_desc += " }";
-      }
-    }
-
-    if ( item.parsed.data.id == 158075 )
-    {
-      std::stringstream s;
-      s << "level: " << item.parsed.azerite_level;
-
-      if ( item.player->azerite_essence )
-      {
-        std::stringstream s2;
-        auto spell_list = item.player->azerite_essence->enabled_essences();
-
-        for ( size_t j = 0; j < spell_list.size(); ++j )
-        {
-          const auto spell = item.player->find_spell( spell_list[ j ] );
-
-          s2 << report_decorators::decorated_spell_data_item(*item.sim, spell, item);
-
-          if ( j < spell_list.size() - 1 )
-            s2 << ", ";
-        }
-
-        if ( !s2.str().empty() )
-          s << ", azerite essences: { " << s2.str() << " }";
-      }
-
-      if ( !s.str().empty() )
-      {
-        item_sim_desc += "<br/>";
-        item_sim_desc += s.str();
-      }
-    }
-
     // Handle items with special effect gems
     if ( !item.parsed.gem_color.empty() )
     {
@@ -4015,18 +3954,6 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
 
         os << "</ul></td></tr>\n";
       }
-    }
-
-    // Essence
-    if ( p.azerite_essence )
-    {
-      p.azerite_essence->generate_report( os );
-    }
-
-    // Azerite
-    if ( p.azerite )
-    {
-      p.azerite->generate_report( os );
     }
 
     // Professions
