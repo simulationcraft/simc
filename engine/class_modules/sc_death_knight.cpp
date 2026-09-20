@@ -47,17 +47,6 @@ action_t* get_action( std::string_view name, Actor* actor, Args&&... args )
   return a;
 }
 
-// Only to be used with empowered release spells
-template <typename Action, typename Actor, typename... Args>
-action_t* get_empower_release_action( std::string_view name, Actor* actor, Args&&... args )
-{
-  action_t* a = actor->find_action( name );
-  if ( !a )
-    a = new Action( name, actor, std::forward<Args>( args )... );
-  assert( dynamic_cast<Action*>( a ) && a->name_str == name && a->background == false );
-  return a;
-}
-
 template <typename V>
 static const spell_data_t* resolve_spell_data( V data )
 {
@@ -776,6 +765,21 @@ public:
   bool was_empowering;            // True while mid-empower and forced to move, blocks schedule_ready() so the release spell handles it
 
   std::vector<player_t*> undeath_tl;
+
+  std::vector<action_t*> secondary_action_list;
+
+  template <typename T, typename... Ts>
+  T* get_secondary_action( std::string_view n, Ts&&... args )
+  {
+    auto it = range::find( secondary_action_list, n, &action_t::name_str );
+    if ( it != secondary_action_list.cend() )
+      return dynamic_cast<T*>( *it );
+
+    auto a        = new T( this, std::forward<Ts>( args )... );
+    a->background = true;
+    secondary_action_list.push_back( a );
+    return a;
+  }
 
   // Buffs
   struct buffs_t
@@ -5720,7 +5724,10 @@ struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BA
     static_assert( std::is_base_of_v<death_knight_empowered_release_t<BASE>, T>,
                    "Empowered release spell must be dervied from empowered_release_spell_t." );
 
-    this->release_spell             = get_empower_release_action<T>( n, base::p() );
+    this->release_spell             = base::p()->template get_secondary_action<T>( n );
+
+    base::add_child( release_spell );
+
     this->release_spell->stats      = base::stats;
     this->release_spell->background = false;
   }
@@ -5834,6 +5841,13 @@ struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BA
   void last_tick( dot_t* d ) override
   {
     base::last_tick( d );
+
+    // being stunned ends the empower without triggering the release spell
+    if ( static_cast<player_t*>( base::p() )->buffs.stunned->check() )
+    {
+      base::p()->was_empowering = false;
+      return;
+    }
 
     auto release_target = get_release_target( d );
 
@@ -9334,8 +9348,8 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
 {
   struct consumption_damage_t : public death_knight_empowered_release_spell_t
   {
-    consumption_damage_t( std::string_view name, death_knight_t* p )
-      : death_knight_empowered_release_spell_t( name, p, p->spell.consumption_damage ),
+    consumption_damage_t( death_knight_t* p )
+      : death_knight_empowered_release_spell_t( "consumption_release", p, p->spell.consumption_damage ),
       leech_damage_accumulator( 0 ),
       bp_consumption_multi( 0 )
     {
@@ -13249,6 +13263,12 @@ void death_knight_t::datacollection_end()
 
 void death_knight_t::analyze( sim_t& s )
 {
+  for ( auto a : secondary_action_list )
+  {
+    if ( auto emp = dynamic_cast<death_knight_empowered_charge_spell_t*>( a->stats->action_list[ 0 ] ) )
+      range::for_each( emp->stats->action_list, []( action_t* a ) { a->channeled = false; } );
+  }
+
   player_t::analyze( s );
 
   _runes.rune_waste.analyze();
