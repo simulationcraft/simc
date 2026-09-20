@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.69594 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.69848 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -14587,7 +14587,7 @@ Effects          :
 Description      : $@spelldesc1215265
 
 Name             : Holy Celerity (id=1215275) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -15536,7 +15536,7 @@ Effects          :
 Description      : $@spelldesc373280
 
 Name             : Ultimate Serenity (id=1246517) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=1, req_points=20, replace="Holy Word: Sanctify" (id=34861)]
+Talent Entry     : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, replace="Holy Word: Sanctify" (id=34861)]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -16139,7 +16139,7 @@ Name             : Master the Darkness (id=1253591) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Spell Type       : None
-Duration         : 60 seconds
+Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -17505,6 +17505,7 @@ Labels           : 16: Class Spells
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Aura Points On Client (268), Do Not Display Cast Time (441)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1333396)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Misc Value: 7 | Target: Self (1)

@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.69594 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.69848 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -4602,7 +4602,7 @@ Effects          :
 #1 (id=301125)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #2 (id=301126)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 12 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.4 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Consecration (204242), Consecration (413267)
                    Family Flags: 43
 #3 (id=1070952)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
@@ -21247,7 +21247,7 @@ Name             : Glory of the Vanguard (id=1267228) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
-Range            : 30 yards
+Range            : 100 yards
 Duration         : 0.75 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
@@ -21294,7 +21294,7 @@ Name             : Glory of the Vanguard (id=1269175) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
-Range            : 30 yards
+Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -22250,7 +22250,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1325331)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
-Description      : Enemies struck by Judgment or $?s204019[Blessed Hammer]?s53595[Hammer of the Righteous][Crusader Strike] take $s1% additional Holy damage. If they are struck by a critical strike the additional damage is increased by $s2%.
+Description      : Judgment and $?s204019[Blessed Hammer]?s53595[Hammer of the Righteous][Crusader Strike] deal $s1% additional damage as Holy. If they critically strike the additional damage is increased by $s2%.
 
 Name             : Paladin Retribution 12.1 Class Set 2pc (id=1296660) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin

@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.69594 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.69848 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -657,7 +657,7 @@ Family Flags     : 39, 58, 76
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21915)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.52324 | PvP Coefficient: 1.67 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.52324 | PvP Coefficient: 1.92 | Target: Targeted Enemy (6)
 #2 (id=172084)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc17364
@@ -678,7 +678,7 @@ Family Flags     : 39, 58, 76
 Attributes       : Is Ability (4), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21916)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.52324 | PvP Coefficient: 1.67 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.52324 | PvP Coefficient: 1.92 | Target: Targeted Enemy (6)
 #2 (id=172085)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : $@spelldesc17364
@@ -1364,7 +1364,7 @@ Family Flags     : 39, 56, 66, 103
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=53784)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.38717 | PvP Coefficient: 0.96 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.38717 | PvP Coefficient: 1.1 | Target: Targeted Enemy (6)
 #2 (id=53785)    : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Targeted Enemy (6)
 #3 (id=1033576)  : Dummy (3)
@@ -1629,7 +1629,7 @@ Cooldown         : 12 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting Spells : Spiritwalker's Grace (79206 effect#1)
+Affecting Spells : Spiritwalker's Grace (79206 effect#1), Nature's Swiftness (378081 effects: #1, #2), Ancestral Swiftness (443454 effects: #1, #2), Soothing Rain (1252874 effect#2)
 Family Flags     : 5
 Attributes       : Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Allow Low Level Buff (67), Spell Haste Affects Periodic (173), Always Show Ground Texture (190), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19)
@@ -10305,12 +10305,12 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph 
 Effects          :
 #1 (id=1006346)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472), Elemental Blast (117014), Tempest (452201), Healing Rain (1298679)
-                   Family Flags: 7, 8, 80, 84, 98, 107
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Tempest (452201)
+                   Family Flags: 5, 7, 8, 80, 98, 107
 #2 (id=1006347)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Wave (77472), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201), Healing Rain (1298679)
-                   Family Flags: 0, 1, 7, 8, 80, 84, 98, 107
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201)
+                   Family Flags: 0, 1, 5, 7, 8, 80, 98, 107
 #3 (id=1038703)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816)
@@ -13175,6 +13175,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
+                 : 7165
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1139362)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
@@ -13183,7 +13184,7 @@ Effects          :
 #2 (id=1142679)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #3 (id=1177797)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Misc Value 2: 4016 (Label) | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 12 | Misc Value 2: 4016 (Label) | Target: Self (1)
                    Affected Spells (Label): Nature's Guardian (30884)
 Description      : Reduces the cooldown of Nature's Guardian by ${$s1/-1000} sec and causes it to heal for an additional $s2% of your maximum health.
 
@@ -13375,12 +13376,12 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1139375)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Lava Burst (51505), Healing Wave (77472), Elemental Blast (117014), Lava Burst (285452), Healing Rain (1298679)
-                   Family Flags: 7, 8, 44, 80, 84, 98
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Lava Burst (51505), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Lava Burst (285452)
+                   Family Flags: 5, 7, 8, 44, 80, 98
 #2 (id=1144546)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Lava Burst (51505), Healing Wave (77472), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lava Burst (285452), Healing Rain (1298679)
-                   Family Flags: 0, 1, 7, 8, 44, 80, 84, 98
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Lava Burst (51505), Healing Rain (73920), Healing Wave (77472), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lava Burst (285452)
+                   Family Flags: 0, 1, 5, 7, 8, 44, 80, 98
 #3 (id=1144547)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 1 (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Chain Lightning (211094), Lightning Bolt (214815), Lightning Bolt Overload (214816)
@@ -16381,7 +16382,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #4, #5), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Primal Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Molten Weapon (224125 effects: #3, #4), Icy Edge (224126 effects: #3, #4), Crackling Surge (224127 effects: #1, #2, #3, #4), Earthen Weapon (392375 effects: #1, #2), Elemental Weapons (408390 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Primal Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5), Enhancement Shaman (1214207 effects: #1, #2), Elemental Shaman (1231772 effects: #1, #2), Elemental Tempo (1250364 effects: #1, #2), Restoration Shaman (1256945 effects: #3, #4), Elemental Resonance (1258895 effects: #1, #2), Natural Gift (1264691 effects: #1, #2), Feedback Loop (1270061 effects: #2, #3), Feedback Loop (1270062 effect#1), Shaman - Midnight PrePatch - 11.2 Class Set 2pc (1283655 effects: #1, #2), Shaman - Midnight PrePatch - 11.2 Class Set 4pc (1283656 effects: #1, #2)
 Triggered By     : Doom Winds (384352)
 Family Flags     : 39, 56, 58, 126
-Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1183500)  : School Damage (2): stormstrike
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.2 | Radius: 0 - 8 yards | Target: at Area (87) -> at Enemy in Area (16)
@@ -16721,7 +16722,7 @@ Effects          :
 #3 (id=1196252)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 1 (5)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 5 | Misc Value 2: 4046 (Label) | Target: Self (1)
 #4 (id=1196253)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 18 | Scaled Value: 18 | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
 #5 (id=1196254)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
@@ -17394,9 +17395,17 @@ Effects          :
                    Affected Spells: Frost Shock (196840)
                    Family Flags: 31
 #9 (id=1266397)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: 51 | Scaled Value: 51 | Target: Self (1)
+                   Base Value: 81 | Scaled Value: 81 | Target: Self (1)
                    Affected Spells: Tempest (452201), Tempest Overload (463351)
                    Family Flags: 64, 107
+#10 (id=1353090) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
+                   Base Value: 5000 | Scaled Value: 5000 | Misc Value: 5 | Misc Value 2: 7165 (Label) | Target: Self (1)
+#11 (id=1353103) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 5 | Misc Value 2: 6720 (Label) | Target: Self (1)
+#12 (id=1353104) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 2 (6)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 6 | Misc Value 2: 6720 (Label) | Target: Self (1)
+#13 (id=1353105) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 2 (6)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 6 | Misc Value 2: 5149 (Label) | Target: Self (1)
 Description      : Elemental Shaman baseline passive
 
 Name             : Shaman Totemic 11.2 Class Set 4pc (id=1236411) [Spell Family (11), Passive, Hidden] 
@@ -17725,8 +17734,8 @@ Effects          :
                    Family Flags: 87
 #2 (id=1258294)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Healing Rain (1298679)
-                   Family Flags: 84
+                   Affected Spells: Healing Rain (73920)
+                   Family Flags: 5
 Description      : Increases the healing done by $?a455630[Surging Totem by $s1%.][Healing Rain by $s1% and reduces its cast time by ${$s2/-1000}.1 sec.]
 
 Name             : Double Dip (id=1252882) [Spell Family (11), Passive, Hidden] 
@@ -19241,7 +19250,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 6709
-Affecting Spells : Spiritwalker's Grace (79206 effect#1), Overflowing Shores (278077 effect#2), Nature's Swiftness (378081 effects: #1, #2), Overflowing Shores (383222 effect#1), Ancestral Swiftness (443454 effects: #1, #2), Soothing Rain (1252874 effect#2)
+Affecting Spells : Spiritwalker's Grace (79206 effect#1), Overflowing Shores (278077 effect#2), Overflowing Shores (383222 effect#1)
 Triggered By     : Healing Rain (73920)
 Family Flags     : 84
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Low Level Buff (67), Allow Class Ability Procs (416)

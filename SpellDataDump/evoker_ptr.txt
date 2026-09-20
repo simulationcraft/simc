@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.69594 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.69848 PTR
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=5, col=6, max_rank=1, req_points=8, select_idx=200, replace="Roll" (id=109132)]
 Class            : Monk, Evoker
@@ -10254,7 +10254,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2360 | Target: Self (1)
 #3 (id=1123476)  : Apply Aura (6) | Disable Gravity (488)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#4 (id=1123477)  : Apply Aura (6) | Decrease Movement Speed% (33)
+#4 (id=1123477)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Always Hit (22)
                    Base Value: -200 | Scaled Value: -200 | Target: Self (1)
 #5 (id=1149053)  : Apply Aura (6) | Periodic Dummy (226): every 0.2 seconds
                    Base Value: -200 | Scaled Value: -200 | Target: Self (1)
@@ -12521,7 +12521,7 @@ Name             : Merithra's Blessing (id=1256579) [Spell Family (224)]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Duration         : 60 seconds
+Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells

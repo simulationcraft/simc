@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 12.1.5.69594
+Class Spell ID List, wow build 12.1.5.69848
 
 Death Knight
 3714     Path of Frost
@@ -15312,6 +15312,7 @@ Paladin
 1310686  Ardent Defender
 1315210 *Glyph of Matriarch's Wings
 1316624 *Avenging Wrath
+1319100 *Avenging Wrath
 
 Priest
 17       Power Word: Shield
