@@ -148,7 +148,6 @@ namespace color
   rgb school_color(school_e school);
 
   // Class colors
-  inline constexpr rgb COLOR_DEMON_HUNTER( "A330C9" );
   inline constexpr rgb COLOR_DRUID( "FF7D0A" );
   inline constexpr rgb COLOR_EVOKER( "33937F" );
   inline constexpr rgb COLOR_HUNTER( "ABD473" );

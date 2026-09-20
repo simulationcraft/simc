@@ -314,7 +314,6 @@ static constexpr std::array<class_map_entry_t, 15> _class_map { {
   { "Warlock",      WARLOCK       },  // 12
   { "Monk",         MONK          },  // 7
   { "Druid",        DRUID         },  // 3
-  { "Demon Hunter", DEMON_HUNTER  },  // 2
   { "Evoker",       EVOKER        },  // 4
   { nullptr,        PLAYER_NONE   },  // 0
 } };
@@ -1826,7 +1825,6 @@ static constexpr auto _label_strings = util::make_static_map<int, std::string_vi
   { LABEL_SHAMAN_SPELLS,        "Shaman Spells"        },  // 24
   { LABEL_WARRIOR_SPELLS,       "Warrior Spells"       },  // 25
   { LABEL_PALADIN_SPELLS,       "Paladin Spells"       },  // 26
-  { LABEL_DEMON_HUNTER_SPELLS,  "Demon Hunter Spells"  },  // 66
   { LABEL_AZERITE_ESSENCES,     "Azerite Essences"     },  // 640
   { LABEL_MAJOR_COOLDOWNS,      "Major Cooldowns"      },  // 690
   { LABEL_HEALING_SPELLS,       "Healing Spells"       },  // 741

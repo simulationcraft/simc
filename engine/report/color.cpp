@@ -38,8 +38,6 @@ rgb class_color( player_e type )
       return color::GREY;
     case PLAYER_GUARDIAN:
       return color::GREY;
-    case DEMON_HUNTER:
-      return color::COLOR_DEMON_HUNTER;
     case DRUID:
       return color::COLOR_DRUID;
     case EVOKER:

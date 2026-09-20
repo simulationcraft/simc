@@ -12,7 +12,6 @@ class Class(enum.IntEnum):
   WARLOCK      = 9
   MONK         = 10
   DRUID        = 11
-  DEMON_HUNTER = 12
   EVOKER       = 13
 
 class HotfixType(enum.IntEnum):

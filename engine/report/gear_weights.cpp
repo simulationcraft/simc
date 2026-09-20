@@ -251,8 +251,6 @@ const char* askmrrobot_player_type_name( player_e type )
   // Player type
   switch ( type )
   {
-    case DEMON_HUNTER:
-      return "DemonHunter";
     case DRUID:
       return "Druid";
     case HUNTER:

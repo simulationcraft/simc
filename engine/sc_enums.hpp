@@ -269,7 +269,6 @@ enum player_e
   PLAYER_SPECIAL_SCALE2  = -2,
   PLAYER_SPECIAL_SCALE   = -1,
   PLAYER_NONE            = 0,
-  DEMON_HUNTER,
   DRUID,
   EVOKER,
   HUNTER,
