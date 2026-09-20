@@ -269,8 +269,6 @@ const char* askmrrobot_player_type_name( player_e type )
       return "Warlock";
     case WARRIOR:
       return "Warrior";
-    case MONK:
-      return "Monk";
     default:
       // if this isn't a player, the AMR link is useless
       assert( false );

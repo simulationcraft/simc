@@ -2016,7 +2016,6 @@ enum spell_label : unsigned
   LABEL_WARLOCK_SPELLS             = 19u,
   LABEL_ROGUE_SPELLS               = 20u,
   LABEL_DRUID_SPELLS               = 21u,
-  LABEL_MONK_SPELLS                = 22u,
   LABEL_HUNTER_SPELLS              = 23u,
   LABEL_SHAMAN_SPELLS              = 24u,
   LABEL_WARRIOR_SPELLS             = 25u,

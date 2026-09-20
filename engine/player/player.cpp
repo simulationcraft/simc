@@ -1638,7 +1638,7 @@ void player_t::init_base_stats()
 
   // only certain classes get Agi->Dodge conversions, dodge_per_agility defaults to 0.00
   // exact values given by Blizzard, only have L90-L100 data
-  if ( type == MONK || type == DRUID || type == ROGUE || type == HUNTER || type == SHAMAN )
+  if ( type == DRUID || type == ROGUE || type == HUNTER || type == SHAMAN )
     base.dodge_per_agility = dbc->avoid_per_str_agi_by_level( level() ) / 100.0;
 
   // only certain classes get Str->Parry conversions, parry_per_strength defaults to 0.00
@@ -1680,7 +1680,6 @@ void player_t::init_base_stats()
       // Parry from base strength isn't affected by diminishing returns and is added here
       base.parry = ( dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength ) * base.parry_per_strength;
       SC_FALLTHROUGH;
-    case MONK:
     case ROGUE:
       base.parry += 0.03;
       base.parry = get_passive_player_value( base.parry, "parry" );
@@ -7697,7 +7696,6 @@ stat_e player_t::normalize_by() const
         case HUNTER:
         case SHAMAN:
         case ROGUE:
-        case MONK:
           return STAT_AGILITY;
         case PALADIN:
         case WARRIOR:
@@ -9063,12 +9061,6 @@ struct arcane_torrent_t : public racial_spell_t
       case WARLOCK_DEMONOLOGY:
       case WARLOCK_DESTRUCTION:
         gain_pct = data().effectN( 2 ).percent();
-        break;
-      case MONK_MISTWEAVER:
-        gain_pct = data().effectN( 3 ).percent();
-        break;
-      case MONK_BREWMASTER:
-        gain_energy = data().effectN( 4 ).base_value();
         break;
       default:
         break;

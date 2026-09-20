@@ -364,7 +364,6 @@ struct spelleffect_data_t
       case 7:   return SHAMAN;
       case 8:   return MAGE;
       case 9:   return WARLOCK;
-      case 10:  return MONK;
       case 11:  return DRUID;
       default:  break;
     }

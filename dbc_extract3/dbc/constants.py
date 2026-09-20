@@ -10,7 +10,6 @@ class Class(enum.IntEnum):
   SHAMAN       = 7
   MAGE         = 8
   WARLOCK      = 9
-  MONK         = 10
   DRUID        = 11
 
 class HotfixType(enum.IntEnum):
@@ -84,7 +83,6 @@ CLASS_SKILL_CATEGORIES = [
    924,   # Shaman
    904,   # Mage
    849,   # Warlock
-   829,   # Monk
    798,   # Druid
 ]
 
@@ -131,7 +129,6 @@ CLASS_INFO = [
   { 'id':  7, 'bit':  6, 'name': 'Shaman',       'skill':  924, 'family':  11, 'label':   24 },
   { 'id':  8, 'bit':  7, 'name': 'Mage',         'skill':  904, 'family':   3, 'label':   17 },
   { 'id':  9, 'bit':  8, 'name': 'Warlock',      'skill':  849, 'family':   5, 'label':   19 },
-  { 'id': 10, 'bit':  9, 'name': 'Monk',         'skill':  829, 'family':  53, 'label':   22 },
   { 'id': 11, 'bit': 10, 'name': 'Druid',        'skill':  798, 'family':   7, 'label':   21 }
 ]
 
@@ -145,7 +142,6 @@ SPEC_SKILL_CATEGORIES = [
   (  262,  263,  264,   0 ), # Shaman
   (   62,   63,   64,   0 ), # Mage
   (  265,  266,  267,   0 ), # Warlock
-  (  268,  270,  269,   0 ), # Monk
   (  102,  103,  104, 105 )  # Druid
 ]
 
@@ -164,19 +160,13 @@ PET_SKILL_CATEGORIES = [
   ( ),
   # Priest
   ( ),
-  # Death Knight
-  ( 782, ),
   # Shaman
   ( 962, 963, 1748 ),
   # Mage
   ( 805, ),
   # Warlock
   ( 188, 189, 204, 205, 206, 207, 761, 927, 928, 929, 930, 931, 1981, 1982 ),
-  # Monk
-  ( ),
   # Druid
-  ( ),
-  # Demon Hunter
   ( )
 ]
 

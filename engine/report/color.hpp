@@ -151,7 +151,6 @@ namespace color
   inline constexpr rgb COLOR_DRUID( "FF7D0A" );
   inline constexpr rgb COLOR_HUNTER( "ABD473" );
   inline constexpr rgb COLOR_MAGE( "69CCF0" );
-  inline constexpr rgb COLOR_MONK( "00FF96" );
   inline constexpr rgb COLOR_PALADIN( "F58CBA" );
   inline constexpr rgb COLOR_PRIEST( "FFFFFF" );
   inline constexpr rgb COLOR_ROGUE( "FFF569" );
@@ -179,7 +178,7 @@ namespace color
   inline constexpr rgb FROST = COLOR_SHAMAN;
   inline constexpr rgb SHADOW = PURPLE;
   inline constexpr rgb ARCANE = COLOR_MAGE;
-  inline constexpr rgb ELEMENTAL = COLOR_MONK;
+  inline constexpr rgb ELEMENTAL = TEAL;
   inline constexpr rgb FROSTFIRE( "9900CC" );
   inline constexpr rgb CHAOS( "00C800" );
 

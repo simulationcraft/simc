@@ -3913,7 +3913,6 @@ void sim_t::create_options()
   add_option( opt_func( "druid", parse_player ) );
   add_option( opt_func( "hunter", parse_player ) );
   add_option( opt_func( "mage", parse_player ) );
-  add_option( opt_func( "monk", parse_player ) );
   add_option( opt_func( "priest", parse_player ) );
   add_option( opt_func( "paladin", parse_player ) );
   add_option( opt_func( "rogue", parse_player ) );

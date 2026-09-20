@@ -624,7 +624,6 @@ const char* util::player_type_string( player_e type )
     case DRUID:                   return "druid";
     case HUNTER:                  return "hunter";
     case MAGE:                    return "mage";
-    case MONK:                    return "monk";
     case PALADIN:                 return "paladin";
     case PRIEST:                  return "priest";
     case ROGUE:                   return "rogue";
@@ -662,7 +661,6 @@ const char* util::player_type_string_long( player_e type )
     case DRUID:           return "Druid";
     case HUNTER:          return "Hunter";
     case MAGE:            return "Mage";
-    case MONK:            return "Monk";
     case PALADIN:         return "Paladin";
     case PRIEST:          return "Priest";
     case ROGUE:           return "Rogue";
@@ -1207,7 +1205,6 @@ item_subclass_armor util::matching_armor_type( player_e ptype )
       return ITEM_SUBCLASS_ARMOR_MAIL;
     case DRUID:
     case ROGUE:
-    case MONK:
       return ITEM_SUBCLASS_ARMOR_LEATHER;
     case MAGE:
     case PRIEST:
@@ -1956,7 +1953,6 @@ int util::class_id( player_e type )
     case SHAMAN:       return  7;
     case MAGE:         return  8;
     case WARLOCK:      return  9;
-    case MONK:         return 10;
     case DRUID:        return 11;
     case PLAYER_SPECIAL_SCALE: return 14;
     case PLAYER_SPECIAL_SCALE2: return 15;
@@ -2095,7 +2091,6 @@ player_e util::translate_class_id( int cid )
     case  7: return SHAMAN;
     case  8: return MAGE;
     case  9: return WARLOCK;
-    case 10: return MONK;
     case 11: return DRUID;
     default: return PLAYER_NONE;
   }

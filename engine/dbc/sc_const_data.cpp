@@ -462,30 +462,6 @@ specialization_e dbc::translate_spec_str( player_e ptype, util::string_view spec
         return MAGE_FROST;
       break;
     }
-    case MONK:
-    {
-      if ( str_compare_ci( spec_str, "brewmaster" ) )
-        return MONK_BREWMASTER;
-      else if ( str_compare_ci( spec_str, "brm" ) )
-        return MONK_BREWMASTER;
-      else if ( str_compare_ci( spec_str, "tank" ) )
-        return MONK_BREWMASTER;
-      else if ( str_compare_ci( spec_str, "mistweaver" ) )
-        return MONK_MISTWEAVER;
-      else if ( str_compare_ci( spec_str, "mw" ) )
-        return MONK_MISTWEAVER;
-      else if ( str_compare_ci( spec_str, "healer" ) )
-        return MONK_MISTWEAVER;
-      else if ( str_compare_ci( spec_str, "windwalker" ) )
-        return MONK_WINDWALKER;
-      else if ( str_compare_ci( spec_str, "ww" ) )
-        return MONK_WINDWALKER;
-      else if ( str_compare_ci( spec_str, "dps" ) )
-        return MONK_WINDWALKER;
-      else if ( str_compare_ci( spec_str, "melee" ) )
-        return MONK_WINDWALKER;
-      break;
-    }
     case PALADIN:
     {
       if ( str_compare_ci( spec_str, "holy" ) )
@@ -631,9 +607,6 @@ const char* dbc::specialization_string( specialization_e spec )
     case WARLOCK_AFFLICTION:     return "affliction";
     case WARLOCK_DEMONOLOGY:     return "demonology";
     case WARLOCK_DESTRUCTION:    return "destruction";
-    case MONK_BREWMASTER:        return "brewmaster";
-    case MONK_MISTWEAVER:        return "mistweaver";
-    case MONK_WINDWALKER:        return "windwalker";
     case DRUID_BALANCE:          return "balance";
     case DRUID_FERAL:            return "feral";
     case DRUID_GUARDIAN:         return "guardian";

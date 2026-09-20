@@ -39,7 +39,6 @@ struct module_t
   static const module_t* druid();
   static const module_t* hunter();
   static const module_t* mage();
-  static const module_t* monk();
   static const module_t* paladin();
   static const module_t* priest();
   static const module_t* rogue();
@@ -58,7 +57,6 @@ struct module_t
       case DRUID:             return druid();
       case HUNTER:            return hunter();
       case MAGE:              return mage();
-      case MONK:              return monk();
       case PALADIN:           return paladin();
       case PRIEST:            return priest();
       case ROGUE:             return rogue();

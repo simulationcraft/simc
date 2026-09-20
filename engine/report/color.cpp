@@ -44,8 +44,6 @@ rgb class_color( player_e type )
       return color::COLOR_HUNTER;
     case MAGE:
       return color::COLOR_MAGE;
-    case MONK:
-      return color::COLOR_MONK;
     case PALADIN:
       return color::COLOR_PALADIN;
     case PRIEST:
@@ -102,9 +100,6 @@ rgb resource_color( resource_e type )
     case RESOURCE_ASTRAL_POWER:
       return class_color( DRUID );
 
-    case RESOURCE_CHI:
-      return class_color( MONK );
-
     case RESOURCE_MAELSTROM:
       return { "FF9900" };
 
@@ -140,7 +135,7 @@ rgb stat_color( stat_e type )
     case STAT_MASTERY_RATING:
       return COLOR_ROGUE.dark();
     case STAT_DODGE_RATING:
-      return COLOR_MONK;
+      return COLOR_DRUID;
     case STAT_PARRY_RATING:
       return TEAL;
     case STAT_ARMOR:

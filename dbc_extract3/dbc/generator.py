@@ -268,14 +268,8 @@ class CSVDataGenerator(object):
         return True
 
 class DataGenerator(object):
-    _class_names = [ None,
-                     'Warrior', 'Paladin', 'Hunter', 'Rogue',
-                     'Priest', 'Shaman', 'Mage',
-                     'Warlock', 'Monk', 'Druid' ]
-    _class_masks = [ None,
-                     0x0001, 0x0002, 0x0004, 0x0008, # warrior paladin hunter rogue
-                     0x0010, 0x0040, 0x0080, # priest shaman mage
-                     0x0100, 0x0200, 0x0400 ] # warlock monk druid
+    _class_names = [ None, 'Warrior', 'Paladin', 'Hunter', 'Rogue', 'Priest', 'Shaman', 'Mage', 'Warlock', 'Druid' ]
+    _class_masks = [ None,    0x0001,    0x0002,   0x0004,  0x0008,   0x0010,   0x0040, 0x0080,    0x0100,  0x0200 ]
     _race_names  = [ None,
                      'Human', 'Orc', 'Dwarf', 'Night Elf',
                      'Undead', 'Tauren', 'Gnome', 'Troll',
@@ -2196,133 +2190,6 @@ class SpellDataGenerator(DataGenerator):
           ( 1276282, 0 ),   # Dominion of Argus: Doommaiden (Maybe Unused?)
           ( 1292384, 0 ),   # Dominion of Argus: Antoran Jailer soul barrage
           ( 1292391, 0 ),   # Dominion of Argus: Antoran Jailer soul barrage
-        ),
-
-        # Monk:
-        (
-          # General
-          ( 138311, 0 ), # Energy Sphere energy refund
-          ( 163272, 0 ), # Chi Sphere chi refund
-          ( 365080, 0 ), # Windwalking Movement Buff
-          ( 388199, 0 ), # Jadefire Debuff
-          ( 388203, 0 ), # Jadefire Reset
-          ( 388207, 0 ), # Jadefire Damage
-          ( 388814, 0 ), # Fortifying Brew Increases Dodge and Armor
-          ( 389541, 0 ), # White Tiger Statue - Claw of the White Tiger
-          ( 389684, 0 ), # Close to Heart Leech Buff
-          ( 389685, 0 ), # Generous Pour Avoidance Buff
-          ( 392883, 0 ), # Vivacious Vivification buff
-          ( 414143, 0 ), # Yu'lon's Grace buff
-          ( 450380, 0 ), # Chi Wave Buff
-
-          # Brewmaster
-          ( 195630, 1 ), # Brewmaster Mastery Buff
-          ( 115129, 1 ), # Expel Harm Damage
-          ( 124503, 1 ), # Gift of the Ox Orb Left
-          ( 124506, 1 ), # Gift of the Ox Orb Right
-          ( 178173, 1 ), # Gift of the Ox Explosion
-          ( 124275, 1 ), # Light Stagger
-          ( 124274, 1 ), # Medium Stagger
-          ( 124273, 1 ), # Heavy Stagger
-          ( 215479, 1 ), # shuffle buff
-          ( 205523, 1 ), # Blackout Kick Brewmaster version
-          ( 216521, 1 ), # Celestial Fortune Heal
-          ( 227679, 1 ), # Face Palm
-          ( 227291, 1 ), # Niuzao pet Stomp
-          ( 325092, 1 ), # Purified Chi
-          ( 383701, 1 ), # Gai Plin's Imperial Brew Heal
-          ( 383733, 1 ), # Training of Niuzao Mastery % Buff
-          ( 386959, 1 ), # Charred Passions Damage
-          ( 395267, 1 ), # Call to Arms Invoke Niuzao
-          ( 387179, 1 ), # Weapons of Order (Debuff)
-          ( 1242373, 1 ), # Walk With the Ox Stomp
-          ( 1242352, 1 ), # Walk With the Ox Driver
-
-          # Mistweaver
-          ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
-          ( 343820, 2 ), # Invoke Chi-Ji, the Red Crane - Enveloping Mist cast reduction
-          ( 388609, 2 ), # Zen Pulse Echoing Reverberation Damage
-          ( 388668, 2 ), # Zen Pulse Echoing Reverberation Heal
-
-          # Windwalker
-          ( 115057, 3 ), # Flying Serpent Kick Movement spell
-          ( 116768, 3 ), # Combo Breaker: Blackout Kick
-          ( 121283, 3 ), # Chi Sphere from Power Strikes
-          ( 125174, 3 ), # Touch of Karma redirect buff
-          ( 129914, 3 ), # Combat Wisdom Buff
-          ( 195651, 3 ), # Crosswinds Artifact trait trigger spell
-          ( 196061, 3 ), # Crosswinds Artifact trait damage spell
-          ( 196741, 3 ), # Hit Combo Buff
-          ( 196742, 3 ), # Whirling Dragon Punch Buff
-          ( 220358, 3 ), # Cyclone Strikes info
-          ( 228287, 3 ), # Spinning Crane Kick's Mark of the Crane debuff
-          ( 240672, 3 ), # Master of Combinations Artifact trait buff
-          ( 261682, 3 ), # Chi Burst Chi generation cap
-          ( 285594, 3 ), # Good Karma Healing Spell
-          ( 290461, 3 ), # Reverse Harm Damage
-          ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
-          ( 388201, 3 ), # Jadefire WW Damage
-          ( 396167, 3 ), # Fury of Xuen Stacking Buff
-          ( 396168, 3 ), # Fury of Xuen Haste Buff
-          ( 393048, 3 ), # Skyreach Debuff
-          ( 393050, 3 ), # Skyreach Exxhaustion Debuff
-          ( 393565, 3 ), # Thunderfist buff
-          ( 395413, 3 ), # Fae Exposure Healing Buff
-          ( 395414, 3 ), # Fae Exposure Damage Debuff
-          ( 451968, 3 ), # Combat Wisdom Expel Harm
-          ( 452117, 3 ), # Flurry of Xuen Driver
-          ( 461404, 3 ), # WW Chi Burst Cast
-
-          # Windwalker Combo Strike Display spells
-          ( 1249753, 3 ), # Rising Sun Kick
-          ( 1249754, 3 ), # Spinning Crane Kick
-          ( 1249756, 3 ), # Tiger Palm
-          ( 1249757, 3 ), # Blackout Kick
-          ( 1249758, 3 ), # Fists of Fury
-          ( 1249759, 3 ), # Slicing Winds
-          ( 1249762, 3 ), # Storm, Earth, and Fire
-          ( 1249763, 3 ), # Weapons of Order
-          ( 1249764, 3 ), # Crackling Jade Lightning
-          ( 1249765, 3 ), # Whirling Dragon Punch
-          ( 1249766, 3 ), # Strike of the Windlord
-          ( 1249790, 3 ), # Celestial Conduit
-          ( 1249791, 3 ), # Touch of Death
-          ( 1249987, 3 ), # Rushing Wind Kick
-
-          # Tier 28
-          ( 366793, 1 ), # BrM 4-piece Keg of the Heavens Heal
-          ( 363911, 3 ), # WW 4-piece Primordial Potential
-          ( 363924, 3 ), # WW 4-piece Primordial Power
-
-          # Tier 29
-          ( 394951, 3 ), # WW 4-piece Versatility buff
-
-          # Tier 30
-          ( 411376, 3 ), # WW 4-piece Shadowflame Vulnerability buff
-
-          # Tier 31
-          ( 425298, 1 ), # BrM 2-piece Charred Dreams Healing
-          ( 425299, 1 ), # BrM 2-piece Charred Dreams Damage
-          ( 425965, 1 ), # BrM 4-piece Celestial Brew Guard
-
-          # Tier 33
-          ( 457271, 1 ), # BrM 4-piece Flow of Battle
-
-          # Shado-Pan
-          ( 451021, 0 ), # Flurry Charge (Buff)
-          ( 470670, 0 ), # Flurry Strikes Energy Tracker (Buff)
-
-          # Conduit of the Celestials
-          ( 443616, 0 ), # Heart of the Jade Serpent (Buff)
-          ( 443574, 0 ), # Ox Stance
-          ( 443576, 0 ), # Serpent Stance
-          ( 443575, 0 ), # Tiger Stance
-          ( 443592, 0 ), # Unity Within
-          ( 443611, 0 ), # Flight of the Red Crane
-
-          # Master of Harmony
-          ( 451299, 0 ), # Mantra of Tenacity Chi Cocoon
-          ( 1270990, 0 ), # Potential Energy Buff
         ),
 
         # Druid:
