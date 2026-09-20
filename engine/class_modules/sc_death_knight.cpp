@@ -47,17 +47,6 @@ action_t* get_action( std::string_view name, Actor* actor, Args&&... args )
   return a;
 }
 
-// Only to be used with empowered release spells
-template <typename Action, typename Actor, typename... Args>
-action_t* get_empower_release_action( std::string_view name, Actor* actor, Args&&... args )
-{
-  action_t* a = actor->find_action( name );
-  if ( !a )
-    a = new Action( name, actor, std::forward<Args>( args )... );
-  assert( dynamic_cast<Action*>( a ) && a->name_str == name && a->background == false );
-  return a;
-}
-
 template <typename V>
 static const spell_data_t* resolve_spell_data( V data )
 {
@@ -773,8 +762,24 @@ public:
   // Counters
   unsigned int active_riders;     // Number of active Riders of the Apocalypse pets
   timespan_t lotd_magus_dur;      // Total Duration of Magus' consumed to summon a Lord of the Dead.
+  bool was_empowering;            // True while mid-empower and forced to move, blocks schedule_ready() so the release spell handles it
 
   std::vector<player_t*> undeath_tl;
+
+  std::vector<action_t*> secondary_action_list;
+
+  template <typename T, typename... Ts>
+  T* get_secondary_action( std::string_view n, Ts&&... args )
+  {
+    auto it = range::find( secondary_action_list, n, &action_t::name_str );
+    if ( it != secondary_action_list.cend() )
+      return dynamic_cast<T*>( *it );
+
+    auto a        = new T( this, std::forward<Ts>( args )... );
+    a->background = true;
+    secondary_action_list.push_back( a );
+    return a;
+  }
 
   // Buffs
   struct buffs_t
@@ -1909,6 +1914,7 @@ public:
       runeforge_expression_warning( false ),
       active_riders( 0 ),
       lotd_magus_dur( 0_s ),
+      was_empowering( false ),
       undeath_tl(),
       buffs(),
       background_actions(),
@@ -2010,6 +2016,8 @@ public:
   double composite_bonus_armor() const override;
   void combat_begin() override;
   void activate() override;
+  void moving() override;
+  void schedule_ready( timespan_t, bool ) override;
   void reset() override;
   void arise() override;
   void adjust_dynamic_cooldowns() override;
@@ -5641,6 +5649,13 @@ struct death_knight_empowered_release_t : public death_knight_empowered_base_t<B
   {
     return static_cast<int>( base::cast_state( s )->empower );
   }
+
+  void execute() override
+  {
+    base::p()->was_empowering = false;
+
+    base::execute();
+  }
 };
 
 template <class BASE>
@@ -5709,7 +5724,10 @@ struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BA
     static_assert( std::is_base_of_v<death_knight_empowered_release_t<BASE>, T>,
                    "Empowered release spell must be dervied from empowered_release_spell_t." );
 
-    this->release_spell             = get_empower_release_action<T>( n, base::p() );
+    this->release_spell             = base::p()->template get_secondary_action<T>( n );
+
+    base::add_child( release_spell );
+
     this->release_spell->stats      = base::stats;
     this->release_spell->background = false;
   }
@@ -5824,17 +5842,21 @@ struct death_knight_empowered_charge_t : public death_knight_empowered_base_t<BA
   {
     base::last_tick( d );
 
-    auto release_target = get_release_target( d );
+    // being stunned ends the empower without triggering the release spell
+    if ( static_cast<player_t*>( base::p() )->buffs.stunned->check() )
+    {
+      base::p()->was_empowering = false;
+      return;
+    }
 
-    // if ( empower_level( d ) == empower_e::EMPOWER_NONE || !release_target )
-    // {
-    //   base::p()->was_empowering = false;
-    //   return;
-    // }
+    auto release_target = get_release_target( d );
 
     // If we have no valid targets, do not fire off the release spell
     if ( release_target == nullptr )
+    {
+      base::p()->was_empowering = false;
       return;
+    }
 
     release_spell->set_target( release_target );
 
@@ -9326,8 +9348,8 @@ struct consumption_t final : public death_knight_empowered_charge_spell_t
 {
   struct consumption_damage_t : public death_knight_empowered_release_spell_t
   {
-    consumption_damage_t( std::string_view name, death_knight_t* p )
-      : death_knight_empowered_release_spell_t( name, p, p->spell.consumption_damage ),
+    consumption_damage_t( death_knight_t* p )
+      : death_knight_empowered_release_spell_t( "consumption_release", p, p->spell.consumption_damage ),
       leech_damage_accumulator( 0 ),
       bp_consumption_multi( 0 )
     {
@@ -13241,6 +13263,12 @@ void death_knight_t::datacollection_end()
 
 void death_knight_t::analyze( sim_t& s )
 {
+  for ( auto a : secondary_action_list )
+  {
+    if ( auto emp = dynamic_cast<death_knight_empowered_charge_spell_t*>( a->stats->action_list[ 0 ] ) )
+      range::for_each( emp->stats->action_list, []( action_t* a ) { a->channeled = false; } );
+  }
+
   player_t::analyze( s );
 
   _runes.rune_waste.analyze();
@@ -16587,6 +16615,7 @@ void death_knight_t::reset()
   _runes.reset();
   runic_power_decay = nullptr;
   active_riders     = 0;
+  was_empowering    = false;
   if ( lesser_ghouls_summoned > 0 && options.extra_unholy_reporting )
     sample_data.lesser_ghouls_summoned->add( lesser_ghouls_summoned );
   lesser_ghouls_summoned = 0;
@@ -16594,6 +16623,29 @@ void death_knight_t::reset()
   active_lesser_ghouls.clear();
   active_dnds.clear();
   active_magi.clear();
+}
+
+// death_knight_t::moving ====================================================
+
+void death_knight_t::moving()
+{
+  // If we are mid-empower and forced to move, we don't want player_t::interrupt() to schedule_ready as the release
+  // action will handle that for us. We set the bool here and override player_t::schedule_ready to return if bool is
+  // set.
+  if ( channeling && dynamic_cast<death_knight_empowered_charge_spell_t*>( channeling ) )
+    was_empowering = true;
+
+  player_t::moving();
+}
+
+// death_knight_t::schedule_ready ============================================
+
+void death_knight_t::schedule_ready( timespan_t delta_time, bool waiting )
+{
+  if ( was_empowering )
+    return;
+
+  player_t::schedule_ready( delta_time, waiting );
 }
 
 // death_knight_t::assess_damage ============================================
