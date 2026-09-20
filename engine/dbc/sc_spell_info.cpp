@@ -3528,8 +3528,8 @@ void spell_info::effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, con
 
   if ( level <= MAX_LEVEL )
   {
-    double v_min = dbc.effect_min( e->id(), level );
-    double v_max = dbc.effect_max( e->id(), level );
+    double v_min = dbc.effect_min( e, level );
+    double v_max = dbc.effect_max( e, level );
     node->add_parm( "scaled_value", v_min );
     if ( v_min != v_max )
     {
