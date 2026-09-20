@@ -179,7 +179,6 @@ const char* trait_definition_op_string( trait_definition_op op );
 const char* error_level_string( error_level_e level );
 const char* proc_trigger_type_string( proc_trigger_type_e type );
 
-std::string rppm_scaling_string( unsigned );
 std::string profile_source_string( profile_source );
 
 uint32_t school_type_component( school_e s_type, school_e c_type );

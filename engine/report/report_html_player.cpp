@@ -3410,8 +3410,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
     const auto* damage_buff = dynamic_cast<const damage_buff_t*>( &b );
 
     int first_rows    = 2 + ( b.item ? 16 : 15 );  // # of rows in the first column incl 2 for header (buff details)
-    int second_rows   = ( b.rppm ? 5 : 0 ) +
-                        ( stat_buff ? 2 + ( as<int>( stat_buff->stats.size() ) * 2 ) : 0 ) +
+    int second_rows   = ( stat_buff ? 2 + ( as<int>( stat_buff->stats.size() ) * 2 ) : 0 ) +
                         ( b.trigger_pct.mean() > 0 ? 5 : 0 );
     int stack_rows    = 2 + as<int>( range::count_if( b.stack_uptime, []( const uptime_simple_t& up ) {
                               return up.uptime_sum.mean() > 0;
@@ -3538,17 +3537,6 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
 
     if ( !constant_buffs )
     {
-      if ( b.rppm )
-      {
-        os.format( R"(<h4>RPPM Details</h4><ul class="label">)"
-                   "<li><span>scaling:</span>{}</li>"
-                   "<li><span>frequency:</span>{:.2f}</li>"
-                   "<li><span>modifier:</span>{:.2f}</li></ul>\n",
-                   util::rppm_scaling_string( b.rppm->get_scaling() ),
-                   b.rppm->get_frequency(),
-                   b.rppm->get_modifier() );
-      }
-
       if ( absorb_buff )
       {
         os.format( R"(<h4>Absorb Details</h4><ul class="label">)"

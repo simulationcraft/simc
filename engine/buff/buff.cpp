@@ -614,7 +614,6 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, std::string_view
     expiration_delay(),
     cooldown(),
     internal_cooldown(),
-    rppm( nullptr ),
     _max_stack( -1 ),
     _initial_stack( -1 ),
     default_value( DEFAULT_VALUE() ),
@@ -724,9 +723,6 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, std::string_view
 
   set_trigger_spell( spell_data_t::nil() );
 
-  // If there's no overridden proc chance (%), setup any potential custom RPPM-affecting attribute
-  set_rppm( RPPM_NONE, -1, -1 );
-
   // TODO: refactor refresh behavior parsing to consolidate calls across different methods like set_period and eliminate
   // need to manually manipulate refresh_behavior_overridden
   if ( s_data->flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
@@ -800,42 +796,35 @@ const spell_data_t& buff_t::data_reporting() const
 
 void buff_t::update_trigger_calculations()
 {
-  // No override of proc chance or RPPM-related attributes, setup the buff object's proc chance. The
+  // No override of proc chance setup the buff object's proc chance. The
   // spell used for the attributes is either the buff spell (by default), or the given trigger_spell
   // in buff_creator_t.
   if ( manual_chance == -1 )
   {
     default_chance = 1.0;
-    if ( !rppm )
-    {
-      if ( trigger_data->ok() )
-      {
-        if ( trigger_data->real_ppm() > 0 )
-        {
-          rppm = player->get_rppm( "buff_" + name_str + "_rppm", trigger_data, item );
-        }
-        else if ( trigger_data->proc_chance() != 0 )
-        {
-          default_chance = trigger_data->proc_chance();
-        }
 
-        // the driver's internal cooldown becomes the triggering cooldown of the buff
-        if ( trigger_data->id() != data().id() )
-          set_cooldown( trigger_data->internal_cooldown() );
-      }
-      // Note, if the spell is "not found", then the buff is disabled.  This allows the system to
-      // easily enable/disable spells based on conditional things (such as talents,
-      // specialization, etc.).
-      else if ( !trigger_data->found() )
+    if ( trigger_data->ok() )
+    {
+      if ( trigger_data->proc_chance() != 0 )
       {
-        default_chance = 0.0;
+        default_chance = trigger_data->proc_chance();
       }
+
+      // the driver's internal cooldown becomes the triggering cooldown of the buff
+      if ( trigger_data->id() != data().id() )
+        set_cooldown( trigger_data->internal_cooldown() );
+    }
+    // Note, if the spell is "not found", then the buff is disabled.  This allows the system to
+    // easily enable/disable spells based on conditional things (such as talents,
+    // specialization, etc.).
+    else if ( !trigger_data->found() )
+    {
+      default_chance = 0.0;
     }
   }
   else
   {
     default_chance = manual_chance;
-    rppm           = nullptr;
   }
 }
 
@@ -1672,37 +1661,6 @@ buff_t* buff_t::set_refresh_duration_callback( buff_refresh_duration_callback_t 
   return this;
 }
 
-buff_t* buff_t::set_rppm( rppm_scale_e scale, double freq, double mod )
-{
-  if ( is_fallback )
-    return this;
-
-  if ( scale == RPPM_DISABLE )
-  {
-    rppm = nullptr;
-    return this;
-  }
-
-  if ( freq > -1 )
-  {
-    rppm = player->get_rppm( "buff_" + name_str + "_rppm", trigger_data, item );
-    rppm->set_frequency( freq );
-  }
-
-  if ( mod > -1 )
-  {
-    rppm = player->get_rppm( "buff_" + name_str + "_rppm", trigger_data, item );
-    rppm->set_modifier( mod );
-  }
-
-  if ( scale != RPPM_NONE )
-  {
-    rppm = player->get_rppm( "buff_" + name_str + "_rppm", trigger_data, item );
-    rppm->set_scaling( scale );
-  }
-  return this;
-}
-
 buff_t* buff_t::set_trigger_spell( const spell_data_t* s )
 {
   if ( is_fallback )
@@ -2102,35 +2060,11 @@ bool buff_t::trigger( int stacks, double value, double chance, timespan_t durati
 
   trigger_attempts++;
 
-  if ( rppm )
-  {
-    double c = chance;
-    if ( chance > 0 )
-    {
-      c = rppm->get_frequency();
-      rppm->set_frequency( chance );
-    }
+  if ( chance < 0 )
+    chance = default_chance;
 
-    bool triggered = rppm->trigger();
-
-    if ( chance > 0 )
-    {
-      rppm->set_frequency( c );
-    }
-
-    if ( !triggered )
-    {
-      return false;
-    }
-  }
-  else
-  {
-    if ( chance < 0 )
-      chance = default_chance;
-
-    if ( !rng().roll( chance ) )
-      return false;
-  }
+  if ( !rng().roll( chance ) )
+    return false;
 
   // In-game, procs that happen "close to eachother" are usually delayed into the same time slot. We roughly model this
   // by allowing procs that happen during the buff's already existing delay period to trigger at the same time as the

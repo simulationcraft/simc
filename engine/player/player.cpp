@@ -5306,9 +5306,6 @@ double player_t::composite_crit_avoidance() const
   return current.crit_avoidance;
 }
 
-/**
- * This is the subset of the old_spell_haste that applies to RPPM
- */
 double player_t::composite_spell_haste() const
 {
   double h;
@@ -5993,12 +5990,10 @@ void player_t::invalidate_cache( cache_e c )
 
     case CACHE_ATTACK_HASTE:
       invalidate_cache( CACHE_AUTO_ATTACK_SPEED );
-      invalidate_cache( CACHE_RPPM_HASTE );
       break;
 
     case CACHE_SPELL_HASTE:
       invalidate_cache( CACHE_SPELL_CAST_SPEED );
-      invalidate_cache( CACHE_RPPM_HASTE );
       break;
 
     case CACHE_BONUS_ARMOR:
@@ -6008,14 +6003,6 @@ void player_t::invalidate_cache( cache_e c )
     case CACHE_CRIT_CHANCE:
       if( current.parry_rating_per_crit_rating > 0 )
         invalidate_cache( CACHE_PARRY );
-      break;
-
-    case CACHE_ATTACK_CRIT_CHANCE:
-      invalidate_cache( CACHE_RPPM_CRIT );
-      break;
-
-    case CACHE_SPELL_CRIT_CHANCE:
-      invalidate_cache( CACHE_RPPM_CRIT );
       break;
 
     default:
@@ -8695,17 +8682,6 @@ target_specific_cooldown_t* player_t::get_target_specific_cooldown( cooldown_t& 
 simple_proc_t* player_t::get_simple_proc_rng( std::string_view name, double chance )
 {
   return get_rng<simple_proc_t>( name, chance );
-}
-
-real_ppm_t* player_t::get_rppm( std::string_view name, double frequency, double modifier, unsigned scales_with,
-                                real_ppm_t::blp blp_state )
-{
-  return get_rng<real_ppm_t>( name, frequency, modifier, scales_with, blp_state );
-}
-
-real_ppm_t* player_t::get_rppm( std::string_view name, const spell_data_t* spell_data, const item_t* item )
-{
-  return get_rng<real_ppm_t>( name, spell_data, item );
 }
 
 shuffled_rng_t* player_t::get_shuffled_rng( std::string_view name, shuffled_rng_t::initializer data )

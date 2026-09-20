@@ -53,9 +53,6 @@ struct special_effect_t
   double stat_amount, discharge_amount, discharge_scaling;
   double proc_chance_;
   double ppm_;
-  unsigned rppm_scale_;
-  double rppm_modifier_;
-  int rppm_blp_;
   timespan_t duration_, cooldown_, tick;
   unsigned cooldown_category_;
   bool target_specific_cooldown;
@@ -159,9 +156,6 @@ public:
   uint64_t proc_flags() const;
   uint64_t proc_flags2() const;
   double ppm() const;
-  double rppm() const;
-  unsigned rppm_scale() const;
-  double rppm_modifier() const;
   double proc_chance() const;
   timespan_t cooldown() const;
   bool has_target_specific_cooldown() const;

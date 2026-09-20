@@ -130,7 +130,6 @@ static constexpr auto spell_data_fields = std::make_tuple(
   data_field( "proc_charges",      &spell_data_t::_proc_charges ),
   data_field( "proc_flags",        &spell_data_t::_proc_flags ),
   data_field( "cast_time",         &spell_data_t::_cast_time ),
-  data_field( "rppm",              &spell_data_t::_rppm ),
   data_field( "dmg_class",         &spell_data_t::_dmg_class ),
   data_field( "max_targets",       &spell_data_t::_max_targets ),
   data_field( "category",          &spell_data_t::_category ),

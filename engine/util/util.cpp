@@ -1330,8 +1330,6 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_MITIGATION_VERSATILITY:   return "mitigation_versatility";
     case CACHE_LEECH:                    return "leech";
     case CACHE_RUN_SPEED:                return "run_speed";
-    case CACHE_RPPM_HASTE:               return "rppm_haste_coeff";
-    case CACHE_RPPM_CRIT:                return "rppm_crit_coeff";
     case CACHE_CORRUPTION:               return "corruption";
     case CACHE_CORRUPTION_RESISTANCE:    return "corruption_resistance";
     case CACHE_AVOIDANCE:                return "avoidance";
@@ -2720,38 +2718,6 @@ const char* util::proc_trigger_type_string( proc_trigger_type_e type )
     case proc_trigger_type_e::TRIGGER_HEARTBEAT:         return "heartbeat";
     default:                                             return "unknown";
   }
-}
-
-/// Textual representation of rppm scaling bitfield
-std::string util::rppm_scaling_string( unsigned s )
-{
-  if ( s == RPPM_NONE )
-  {
-    return "none";
-  }
-  else if ( s == RPPM_DISABLE )
-  {
-    return "disabled";
-  }
-  using sp = std::pair<rppm_scale_e, const char*>;
-  const auto scalings = { sp{ RPPM_HASTE, "haste" },
-                          sp{ RPPM_CRIT, "crit" },
-                          sp{ RPPM_AUTO_ATTACK_SPEED, "auto_attack_speed" } };
-  std::string r;
-  int i = 0;
-  for ( const auto& scaling : scalings )
-  {
-    if ( s & scaling.first )
-    {
-      if ( i > 0 )
-      {
-        r += "&";
-      }
-      r += scaling.second;
-      i += 1;
-    }
-  }
-  return r;
 }
 
 std::string util::profile_source_string( profile_source ps )

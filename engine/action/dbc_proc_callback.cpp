@@ -244,7 +244,6 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, player_t* p, const sp
     target_specific_cooldown( nullptr ),
     target_specific_debuff( false ),
     target_debuff( spell_data_t::nil() ),
-    rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
     proc_buff( nullptr ),
@@ -284,15 +283,8 @@ void dbc_proc_callback_t::initialize()
 {
   listener->sim->print_debug( "Initializing proc: {}", effect );
 
-  // Initialize proc chance triggers. Note that this code only chooses one, and
-  // prioritizes RPPM > PPM > proc chance.
-  if ( effect.rppm() > 0 && effect.rppm_scale() != RPPM_DISABLE )
-  {
-    rppm = listener->get_rppm( fmt::format( "proc_{}_{}_rppm", effect.name(), effect.spell_id ), effect.rppm(),
-                               effect.rppm_modifier(), effect.rppm_scale() );
-    rppm->set_blp_state( static_cast<real_ppm_t::blp>( effect.rppm_blp_ ) );
-  }
-  else if ( effect.ppm() > 0 )
+  // Initialize proc chance triggers.
+  if ( effect.ppm() > 0 )
     ppm = effect.ppm();
   else if ( effect.proc_chance() != 0 )
     proc_chance = effect.proc_chance();
@@ -399,9 +391,7 @@ rng::rng_t& dbc_proc_callback_t::rng() const
 
 bool dbc_proc_callback_t::roll( action_t* action )
 {
-  if ( rppm )
-    return rppm->trigger();
-  else if ( ppm > 0 && action )
+  if ( ppm > 0 && action )
     return rng().roll( action->ppm_proc_chance( ppm ) );
   else if ( proc_chance > 0 )
     return rng().roll( proc_chance );

@@ -602,9 +602,6 @@ struct spell_data_t
   timespan_t internal_cooldown() const
   { return timespan_t::from_millis( _internal_cooldown ); }
 
-  double real_ppm() const
-  { return _rppm; }
-
   uint32_t school_mask() const
   { return _school; }
 

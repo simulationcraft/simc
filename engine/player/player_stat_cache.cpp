@@ -273,34 +273,6 @@ double player_stat_cache_t::spell_crit_chance() const
   return _spell_crit_chance;
 }
 
-double player_stat_cache_t::rppm_haste_coeff() const
-{
-  if ( !active || !valid[ CACHE_RPPM_HASTE ] )
-  {
-    valid[ CACHE_RPPM_HASTE ] = true;
-    _rppm_haste_coeff          = 1.0 / std::min( player->cache.spell_haste(), player->cache.attack_haste() );
-  }
-  else
-  {
-    assert( _rppm_haste_coeff == 1.0 / std::min( player->cache.spell_haste(), player->cache.attack_haste() ) );
-  }
-  return _rppm_haste_coeff;
-}
-
-double player_stat_cache_t::rppm_crit_coeff() const
-{
-  if ( !active || !valid[ CACHE_RPPM_CRIT ] )
-  {
-    valid[ CACHE_RPPM_CRIT ] = true;
-    _rppm_crit_coeff          = 1.0 + std::max( player->cache.attack_crit_chance(), player->cache.spell_crit_chance() );
-  }
-  else
-  {
-    assert( _rppm_crit_coeff == 1.0 + std::max( player->cache.attack_crit_chance(), player->cache.spell_crit_chance() ) );
-  }
-  return _rppm_crit_coeff;
-}
-
 double player_stat_cache_t::spell_haste() const
 {
   if ( !active || !valid[ CACHE_SPELL_HASTE ] )

@@ -18,7 +18,6 @@ struct cooldown_t;
 struct target_specific_cooldown_t;
 struct spell_data_t;
 struct item_t;
-struct real_ppm_t;
 namespace rng
 {
 struct rng_t;
@@ -79,7 +78,6 @@ struct dbc_proc_callback_t : public action_callback_t
 
   // Proc trigger types, cached/initialized here from special_effect_t to avoid
   // needless spell data lookups in vast majority of cases
-  real_ppm_t* rppm;
   double proc_chance;
   double ppm;
 

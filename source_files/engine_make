@@ -63,7 +63,6 @@ SRC += \
     dbc$(PATHSEP)racial_spells.cpp \
     dbc$(PATHSEP)rand_prop_points.cpp \
     dbc$(PATHSEP)rank_spells.cpp \
-    dbc$(PATHSEP)real_ppm_data.cpp \
     dbc$(PATHSEP)sc_const_data.cpp \
     dbc$(PATHSEP)sc_data.cpp \
     dbc$(PATHSEP)sc_item_data.cpp \

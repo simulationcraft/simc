@@ -31,7 +31,6 @@ struct event_t;
 struct expr_t;
 struct gain_t;
 struct item_t;
-struct real_ppm_t;
 struct spelleffect_data_t;
 struct stats_t;
 namespace rng
@@ -64,7 +63,6 @@ public:
   cooldown_t* cooldown;
   std::unique_ptr<cooldown_t> internal_cooldown;
   sc_timeline_t uptime_array;
-  real_ppm_t* rppm;
 
   // static values
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
@@ -428,7 +426,6 @@ public:
   buff_t* set_partial_tick( bool v ) { partial_tick = v; return this; }
   buff_t* set_freeze_stacks( bool v ) { freeze_stacks = v; return this; }
   buff_t* set_tick_time_behavior( buff_tick_time_behavior b ) { tick_time_behavior = b; return this; }
-  buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
   buff_t* set_trigger_spell( const spell_data_t* s );
   buff_t* set_proc_callbacks( bool v ) { proc_callbacks = v; return this; }
   buff_t* set_stack_change_callback( const buff_stack_change_callback_t& cb );

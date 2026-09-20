@@ -1007,11 +1007,9 @@ enum cache_e
   CACHE_CRIT_CHANCE,
   CACHE_ATTACK_CRIT_CHANCE,
   CACHE_SPELL_CRIT_CHANCE,
-  CACHE_RPPM_CRIT,
   CACHE_HASTE,
   CACHE_ATTACK_HASTE,
   CACHE_SPELL_HASTE,
-  CACHE_RPPM_HASTE,
   CACHE_AUTO_ATTACK_SPEED,
   CACHE_SPELL_CAST_SPEED,
   CACHE_VERSATILITY,
@@ -1324,21 +1322,10 @@ enum rng_type_e
 {
   RNG_NONE = 0,
   RNG_SIMPLE,
-  RNG_RPPM,
   RNG_SHUFFLE,
   RNG_ACCUMULATE,
   RNG_THRESHOLD,
   RNG_CUSTOM
-};
-
-/// Real PPM scale stats
-enum rppm_scale_e : uint8_t
-{
-  RPPM_NONE              = 0x00,
-  RPPM_HASTE             = 0x01,
-  RPPM_CRIT              = 0x02,
-  RPPM_AUTO_ATTACK_SPEED = 0x04,
-  RPPM_DISABLE           = UINT8_MAX
 };
 
 enum class action_energize

@@ -62,18 +62,6 @@ enum spell_mechanic {
   MECHANIC_TAUNT
 };
 
-enum rppm_modifier_type_e
-{
-  RPPM_MODIFIER_HASTE = 1,
-  RPPM_MODIFIER_CRIT,
-  RPPM_MODIFIER_CLASS,
-  RPPM_MODIFIER_SPEC,
-  RPPM_MODIFIER_RACE,
-  RPPM_MODIFIER_ILEVEL,
-  RPPM_MODIFIER_UNK_ADJUST,
-  RPPM_MODIFIER_AURA
-};
-
 enum item_bonus_type
 {
   ITEM_BONUS_ILEVEL           = 1,

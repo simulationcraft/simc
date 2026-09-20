@@ -25,7 +25,6 @@
 #include "dbc/item_weapon.hpp"
 #include "dbc/racial_spells.hpp"
 #include "dbc/rand_prop_points.hpp"
-#include "dbc/real_ppm_data.hpp"
 #include "dbc/spell_data.hpp"
 #include "dbc/spell_item_enchantment.hpp"
 #include "dbc/spelltext_data.hpp"
@@ -374,9 +373,6 @@ public:
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
 
   double avoid_per_str_agi_by_level( unsigned level ) const;
-
-  unsigned real_ppm_scale( unsigned ) const;
-  double real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level = 0, unsigned aura_id = 0 ) const;
 
 private:
   template <typename T>

@@ -116,11 +116,8 @@ void special_effect_t::reset()
   proc_chance_ = -1;
   expire_on_max_stack = -1;
 
-  // ppm < 0 = real ppm, ppm > 0 = normal "ppm", min_double off
+  // ppm > 0 = normal "ppm", min_double off
   ppm_ = std::numeric_limits<double>::min();
-  rppm_scale_ = RPPM_NONE;
-  rppm_modifier_ = -1.0;
-  rppm_blp_ = real_ppm_t::BLP_ENABLED;
 
   // Must match buff creator defaults for now
   duration_ = timespan_t::min();
@@ -698,44 +695,6 @@ double special_effect_t::ppm() const
   return 0;
 }
 
-double special_effect_t::rppm() const
-{
-  if ( ppm_ <= 0 && ppm_ != std::numeric_limits<double>::min() )
-    return std::fabs( ppm_ );
-
-  return driver()->real_ppm();
-}
-
-unsigned special_effect_t::rppm_scale() const
-{
-  if ( rppm_scale_ != RPPM_NONE )
-  {
-    return rppm_scale_;
-  }
-
-  if ( !player )
-  {
-    return 0;
-  }
-
-  return player->dbc->real_ppm_scale( spell_id );
-}
-
-double special_effect_t::rppm_modifier() const
-{
-  if ( rppm_modifier_ != -1.0 )
-  {
-    return rppm_modifier_;
-  }
-
-  if ( !player )
-  {
-    return 0.0;
-  }
-
-  return player->dbc->real_ppm_modifier( spell_id, player, item ? item->item_level() : 0 );
-}
-
 /**
  * Get cooldown duration.
  *
@@ -964,17 +923,6 @@ void sc_format_to( const special_effect_t& se, fmt::format_context::iterator out
   if ( se.ppm() > 0 )
     fmt::format_to( out, " ppm={}", se.ppm() );
 
-  if ( se.rppm() > 0 && se.rppm_scale() != RPPM_DISABLE )
-  {
-    fmt::format_to( out, " rppm={}", se.rppm() * se.rppm_modifier() );
-    if ( se.rppm_scale() & RPPM_HASTE )
-      fmt::format_to( out, " (Haste)" );
-    if ( se.rppm_scale() & RPPM_CRIT )
-      fmt::format_to( out, " (Crit)" );
-    if ( se.rppm_scale() & RPPM_AUTO_ATTACK_SPEED )
-      fmt::format_to( out, " (AASpeed)" );
-  }
-
   if ( se.cooldown() > timespan_t::zero() )
   {
     util::string_view name;
@@ -1043,24 +991,6 @@ void special_effect::parse_special_effect_encoding( special_effect_t& effect, co
     else if ( t.name == "ppm" )
     {
       effect.ppm_ = t.value;
-    }
-    else if ( util::str_prefix_ci( t.name, "rppm" ) )
-    {
-      if ( t.value != 0 )
-        effect.ppm_ = -t.value;
-
-      if ( util::str_in_str_ci( t.name, "spellcrit" ) )
-        effect.rppm_scale_ |= RPPM_CRIT;
-      else if ( util::str_in_str_ci( t.name, "attackcrit" ) )
-        effect.rppm_scale_ |= RPPM_CRIT;
-      else if ( util::str_in_str_ci( t.name, "haste" ) )
-        effect.rppm_scale_ |= RPPM_HASTE;
-      else
-        effect.rppm_scale_ = RPPM_NONE;
-    }
-    else if ( util::str_compare_ci( t.name, "noblp" ) )
-    {
-      effect.rppm_blp_ = real_ppm_t::BLP_DISABLED;
     }
     else if ( t.name == "duration" || t.name == "dur" )
     {
@@ -1171,7 +1101,7 @@ void special_effect::parse_special_effect_encoding( special_effect_t& effect, co
 /**
  * Ensure that the proc has enough information to actually proc in simc. This
  * essentially requires a non-zero proc_chance or PPM field in effect, or the
- * driver spell to contain a non-zero RPPM or proc chance. Additionally, we
+ * driver spell to contain a proc chance. Additionally, we
  * need to have some sort of flags indicating what events trigger the proc.
  *
  * TODO: Action support
@@ -1189,11 +1119,11 @@ bool special_effect::usable_proc( const special_effect_t& effect )
   }
 
   // A non-zero chance to proc it through one of the proc chance triggers
-  if ( effect.ppm() == 0 && effect.rppm() == 0 && effect.proc_chance() == 0 )
+  if ( effect.ppm() == 0 && effect.proc_chance() == 0 )
   {
     if ( effect.item )
     {
-      effect.item->sim->print_debug( "'{}' No RPPM / PPM / Proc chance", effect );
+      effect.item->sim->print_debug( "'{}' No PPM / Proc chance", effect );
     }
     return false;
   }

@@ -178,7 +178,6 @@ static constexpr std::array<sdata_field_t, 43> _spell_data_fields { {
   { "proc_chance",       nontype< &spell_data_t::_proc_chance > },
   { "initial_stack",     nontype< &spell_data_t::_proc_charges > },
   { "icd",               nontype< &spell_data_t::_internal_cooldown > },
-  { "rppm",              nontype< &spell_data_t::_rppm > },
   { "equip_class",       nontype< &spell_data_t::_equipped_class > },
   { "equip_imask",       nontype< &spell_data_t::_equipped_invtype_mask > },
   { "equip_scmask",      nontype< &spell_data_t::_equipped_subclass_mask > },
