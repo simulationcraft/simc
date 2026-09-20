@@ -328,7 +328,7 @@ class WDC1ColumnDataValue(WDC1ExtendedColumnValue):
                 break
 
             other_column = self.column.parser().column(column_idx)
-            if other_column.field_ext_type() in [COLUMN_TYPE_INDEXED, COLUMN_TYPE_ARRAY]:
+            if other_column.field_ext_type() == COLUMN_TYPE_INDEXED:
                 column_data_offset += other_column.field_block_size()
 
         self.base_offset = self.column.parser().column_data_block_offset + column_data_offset
@@ -360,9 +360,31 @@ class WDC1SparseDataValue(WDC1ExtendedColumnValue):
 
         return self.unpacker.unpack_from(data, value_offset)
 
-class WDC1ArrayDataValue(WDC1ColumnDataValue):
+class WDC1ArrayDataValue(WDC1ExtendedColumnValue):
     def __init__(self, column):
         super().__init__(column)
+
+        self.unpacker = Struct('<' + column.struct_type())
+
+        # We need to compute the column data offset for this column
+        column_data_offset = 0
+
+        # The data for all COLUMN_TYPE_INDEXED fields appears before any COLUMN_TYPE_ARRAY field
+        for column_idx in range(0, self.column.parser().fields):
+            other_column = self.column.parser().column(column_idx)
+            if other_column.field_ext_type() == COLUMN_TYPE_INDEXED:
+                column_data_offset += other_column.field_block_size()
+
+        for column_idx in range(0, self.column.parser().fields):
+            if column_idx == self.column.index():
+                break
+            other_column = self.column.parser().column(column_idx)
+            if other_column.field_ext_type() == COLUMN_TYPE_ARRAY:
+                column_data_offset += other_column.field_block_size()
+
+        self.base_offset = self.column.parser().column_data_block_offset + column_data_offset
+        logging.debug('%s column data for %s at base offset %d',
+            self.column.parser().full_name(), self.column, self.base_offset)
 
         bytes_per_element = self.column.format_bit_size() // 8
         # Array values are stored as 32-bit values, however the data type may be <4 bytes
