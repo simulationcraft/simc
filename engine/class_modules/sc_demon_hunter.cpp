@@ -5514,6 +5514,9 @@ struct the_hunt_dot_t : public demon_hunter_spell_t
     dual         = true;
     aoe          = as<int>( p->spec.the_hunt->effectN( 2 ).trigger()->effectN( 1 ).base_value() );
     dot_behavior = DOT_NONE;
+
+    // 09/20/2026 The Hunt does not benefit from chaotic disposition
+    affected_by.chaotic_disposition = false;
   }
 };
 
@@ -5528,6 +5531,9 @@ struct the_hunt_base_t
     {
       dual          = true;
       impact_action = p->active.the_hunt_dot;
+
+      // 09/20/2026 The Hunt does not benefit from chaotic disposition
+      affected_by.chaotic_disposition = false;
     }
 
     void impact( action_state_t* s ) override
