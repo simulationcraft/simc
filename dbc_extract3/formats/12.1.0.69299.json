@@ -1302,7 +1302,6 @@
   },
   "PlayerCondition": {
     "fields": [
-      { "data_type": "Q", "field": "race_mask" },
       { "data_type": "S", "field": "failure_description_lang" },
       { "data_type": "H", "field": "min_level" },
       { "data_type": "H", "field": "max_level" },
@@ -1351,7 +1350,7 @@
       { "data_type": "b", "field": "power_type" },
       { "data_type": "B", "field": "power_type_comp" },
       { "data_type": "b", "field": "power_type_value" },
-      { "data_type": "i", "field": "unk_85" },
+      { "data_type": "i", "field": "movement_flags" },
       { "data_type": "i", "field": "weapon_subclass_mask" },
       { "data_type": "B", "field": "max_guild_level" },
       { "data_type": "B", "field": "min_guild_level" },
@@ -1361,7 +1360,7 @@
       { "data_type": "b", "field": "max_pvp_rank" },
       { "data_type": "i", "field": "id_content_tuning" },
       { "data_type": "i", "field": "id_covenant" },
-      { "data_type": "I", "field": "unk_56" },
+      { "data_type": "I", "field": "trait_node_entry_logic" },
       { "data_type": "H", "field": "id_skill", "elements": 4 },
       { "data_type": "H", "field": "min_skill", "elements": 4 },
       { "data_type": "H", "field": "max_skill", "elements": 4 },
@@ -1385,9 +1384,8 @@
       { "data_type": "I", "field": "id_currency", "elements": 4 },
       { "data_type": "I", "field": "currency_count", "elements": 4 },
       { "data_type": "I", "field": "quest_kill_monster", "elements": 6 },
-      { "data_type": "i", "field": "movement_flags", "elements": 2 },
-      { "data_type": "i", "field": "unk_81", "elements": 4 },
-      { "data_type": "H", "field": "unk_82", "elements": 4 },
+      { "data_type": "i", "field": "race_masks", "elements": 2 },
+      { "data_type": "i", "field": "unk_82", "elements": 4 },
       { "data_type": "H", "field": "unk_83", "elements": 4 },
       { "data_type": "H", "field": "unk_84", "elements": 4 }
     ]
