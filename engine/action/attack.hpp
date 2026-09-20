@@ -38,7 +38,6 @@ struct attack_t : public action_t
   double composite_crit_chance() const override;
   double composite_crit_chance_multiplier() const override;
   double composite_haste() const override;
-  double composite_versatility( const action_state_t* state ) const override;
   double recharge_multiplier( const cooldown_t& cd ) const override;
 
   virtual double composite_expertise() const;

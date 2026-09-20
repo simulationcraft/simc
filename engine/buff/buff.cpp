@@ -1332,7 +1332,6 @@ buff_t* buff_t::set_pct_buff_type_from_effect( size_t effect_idx, bool set_defau
   {
     case A_MOD_ALL_CRIT_CHANCE: return set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     case A_HASTE_ALL:           return set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-    case A_MOD_VERSATILITY_PCT: return set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
     case A_MOD_TOTAL_STAT_PERCENTAGE:
     {
       auto _misc = _eff.misc_value2();
@@ -1362,7 +1361,6 @@ buff_t* buff_t::set_pct_buff_type_from_data( bool set_default )
     {
       case A_MOD_ALL_CRIT_CHANCE:
       case A_HASTE_ALL:
-      case A_MOD_VERSATILITY_PCT:
       case A_MOD_TOTAL_STAT_PERCENTAGE:
         set_pct_buff_type_from_effect( _eff.index() + 1, set_default );
         if ( set_default )

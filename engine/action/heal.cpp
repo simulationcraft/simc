@@ -109,11 +109,6 @@ double heal_t::composite_player_critical_multiplier( const action_state_t* ) con
   return player->composite_player_critical_healing_multiplier();
 }
 
-double heal_t::composite_versatility( const action_state_t* state ) const
-{
-  return spell_base_t::composite_versatility( state ) + player->cache.heal_versatility();
-}
-
 // duplicate of action_t::total_crit_bonus() with adjustment for final bonus calculation
 double heal_t::total_crit_bonus( const action_state_t* state ) const
 {

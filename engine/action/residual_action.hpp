@@ -61,7 +61,7 @@ public:
     // ab::hasted_ticks = false;
     // ab::rolling_periodic = false;
     // ab::dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
-    // ab::snapshot_flags |= STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+    // ab::snapshot_flags |= STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT;
   }
 
   action_state_t* new_state() override
@@ -156,9 +156,9 @@ public:
     // here.
     // ab::update_flags = ab::snapshot_flags = 0;
 
-    // Residuals snapshot versatility and player damage multipliers. Spell multipliers likely snapshot as well,
+    // Residuals snapshot player damage multipliers. Spell multipliers likely snapshot as well,
     // but there currently isn't a residual that could be used to test this.
-    ab::update_flags &= ~( STATE_MUL_SPELL_TA | STATE_VERSATILITY | STATE_MUL_PLAYER_DAM );
+    ab::update_flags &= ~( STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM );
   }
 };
 

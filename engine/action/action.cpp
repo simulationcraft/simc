@@ -2731,13 +2731,13 @@ void action_t::init()
   if ( does_periodic_damage() )
   {
     snapshot_flags |= STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM | STATE_MUL_VERSUS | STATE_TGT_MUL_TA |
-                      STATE_TGT_MITG_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+                      STATE_TGT_MITG_TA | STATE_MUL_PERSISTENT;
   }
 
   if ( does_direct_damage() )
   {
     snapshot_flags |= STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM | STATE_MUL_VERSUS | STATE_TGT_MUL_DA |
-                      STATE_TGT_MITG_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+                      STATE_TGT_MITG_DA | STATE_MUL_PERSISTENT;
 
     // Because schools can change during runtime, armor is flagged and not snapshot if determined to be non-physical
     if ( !ignores_armor )
@@ -2746,7 +2746,7 @@ void action_t::init()
 
   if ( player->is_pet() &&
        ( snapshot_flags & ( STATE_MUL_SPELL_DA | STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM | STATE_MUL_VERSUS |
-                            STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY ) ) )
+                            STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT ) ) )
   {
     snapshot_flags |= STATE_MUL_PET | STATE_TGT_MUL_PET;
   }
@@ -2754,7 +2754,7 @@ void action_t::init()
   if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) ||
        data().flags( spell_attribute::SX_DISABLE_PLAYER_HEALING_MULT ) )
   {
-    snapshot_flags &= ~( STATE_VERSATILITY | STATE_MUL_PLAYER_DAM | STATE_MUL_VERSUS | STATE_MUL_PET );
+    snapshot_flags &= ~( STATE_MUL_PLAYER_DAM | STATE_MUL_VERSUS | STATE_MUL_PET );
   }
 
   if ( data().flags( spell_attribute::SX_DISABLE_TARGET_MULT ) )
@@ -2805,8 +2805,7 @@ void action_t::init()
   {
     if ( is_periodic_damage_effect( eff ) && eff.flags( spelleffect_attribute::EX_COMPUTE_ON_CAST ) )
     {
-      update_flags &=
-        ~( STATE_AP | STATE_SP | STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM | STATE_MUL_VERSUS | STATE_VERSATILITY );
+      update_flags &= ~( STATE_AP | STATE_SP | STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM | STATE_MUL_VERSUS );
       break;
     }
   }
@@ -4332,9 +4331,6 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
 
   if ( flags & STATE_SP )
     state->spell_power = composite_total_spell_power();
-
-  if ( flags & STATE_VERSATILITY )
-    state->versatility = composite_versatility( state );
 
   if ( flags & STATE_MUL_SPELL_DA )
     state->da_multiplier = composite_da_multiplier( state );

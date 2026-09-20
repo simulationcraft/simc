@@ -270,9 +270,6 @@ double util::stat_value( const player_t* p, stat_e stat )
     case STAT_HASTE_RATING:
       v = p->composite_melee_haste_rating();
       break;
-    case STAT_VERSATILITY_RATING:
-      v = p->composite_damage_versatility_rating();
-      break;
     default:
       break;
   }
@@ -1320,10 +1317,6 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_BLOCK:                    return "block";
     case CACHE_ARMOR:                    return "armor";
     case CACHE_BONUS_ARMOR:              return "bonus_armor";
-    case CACHE_VERSATILITY:              return "versatility";
-    case CACHE_DAMAGE_VERSATILITY:       return "damage_versatility";
-    case CACHE_HEAL_VERSATILITY:         return "heal_versatility";
-    case CACHE_MITIGATION_VERSATILITY:   return "mitigation_versatility";
     case CACHE_LEECH:                    return "leech";
     case CACHE_RUN_SPEED:                return "run_speed";
     case CACHE_CORRUPTION:               return "corruption";
@@ -1491,7 +1484,6 @@ const char* util::stat_type_string( stat_e stat )
     case STAT_BLOCK_RATING: return "block_rating";
 
     case STAT_PVP_POWER: return "pvp_power";
-    case STAT_VERSATILITY_RATING: return "versatility_rating";
 
     case STAT_LEECH_RATING: return "leech_rating";
     case STAT_SPEED_RATING: return "speed_rating";
@@ -1514,7 +1506,6 @@ const char* util::stat_pct_buff_type_string( stat_pct_buff_type stat )
   {
     case STAT_PCT_BUFF_CRIT: return "crit";
     case STAT_PCT_BUFF_HASTE: return "haste";
-    case STAT_PCT_BUFF_VERSATILITY: return "versatility";
     case STAT_PCT_BUFF_STRENGTH: return "strength";
     case STAT_PCT_BUFF_AGILITY: return "agility";
     case STAT_PCT_BUFF_STAMINA: return "stamina";
@@ -1580,8 +1571,6 @@ const char* util::stat_type_abbrev( stat_e stat )
 
     case STAT_PVP_POWER: return "PvPP";
 
-    case STAT_VERSATILITY_RATING: return "Vers";
-
     case STAT_LEECH_RATING: return "Leech";
     case STAT_SPEED_RATING: return "RunSpeed";
     case STAT_AVOIDANCE_RATING: return "Avoidance";
@@ -1635,8 +1624,6 @@ const char* util::stat_type_wowhead( stat_e stat )
     case STAT_RESILIENCE_RATING: return "resilRating";
     case STAT_DODGE_RATING:      return "dodgeRating";
     case STAT_PARRY_RATING:      return "parryRating";
-
-    case STAT_VERSATILITY_RATING: return "versatility";
 
     case STAT_LEECH_RATING: return "lifesteal";
     case STAT_SPEED_RATING: return "speedbonus";
@@ -1743,9 +1730,6 @@ const char* util::rating_type_string( rating_e rating )
     case RATING_SPELL_HASTE:            return "spell_haste";
     case RATING_EXPERTISE:              return "expertise";
     case RATING_PVP_POWER:              return "pvp_power";
-    case RATING_DAMAGE_VERSATILITY:     return "damage_versatility";
-    case RATING_HEAL_VERSATILITY:       return "heal_versatility";
-    case RATING_MITIGATION_VERSATILITY: return "mitigation_versatility";
     case RATING_SPEED:                  return "speed";
     case RATING_AVOIDANCE:              return "avoidance";
     case RATING_CORRUPTION:             return "corruption";
@@ -2150,7 +2134,6 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_AGILITY_INTELLECT:   return STAT_AGI_INT;
     case ITEM_MOD_STRENGTH_AGILITY:    return STAT_STR_AGI;
     case ITEM_MOD_STRENGTH_INTELLECT:  return STAT_STR_INT;
-    case ITEM_MOD_VERSATILITY_RATING:  return STAT_VERSATILITY_RATING;
     case ITEM_MOD_LEECH_RATING:        return STAT_LEECH_RATING;
     case ITEM_MOD_SPEED_RATING:        return STAT_SPEED_RATING;
     case ITEM_MOD_AVOIDANCE_RATING:    return STAT_AVOIDANCE_RATING;
@@ -2184,7 +2167,6 @@ int util::translate_stat( stat_e stat )
     case STAT_AGI_INT:            return ITEM_MOD_AGILITY_INTELLECT;
     case STAT_STR_AGI:            return ITEM_MOD_STRENGTH_AGILITY;
     case STAT_STR_INT:            return ITEM_MOD_STRENGTH_INTELLECT;
-    case STAT_VERSATILITY_RATING: return ITEM_MOD_VERSATILITY_RATING;
     case STAT_LEECH_RATING:       return ITEM_MOD_LEECH_RATING;
     case STAT_SPEED_RATING:       return ITEM_MOD_SPEED_RATING;
     case STAT_AVOIDANCE_RATING:   return ITEM_MOD_AVOIDANCE_RATING;
@@ -2227,8 +2209,6 @@ stat_e util::translate_rating_mod( unsigned ratings )
     return STAT_RESILIENCE_RATING;
   else if ( ratings & ( RATING_MOD_HASTE_MELEE | RATING_MOD_HASTE_RANGED | RATING_MOD_HASTE_SPELL ) )
     return STAT_HASTE_RATING;
-  else if ( ratings & ( RATING_MOD_VERS_DAMAGE | RATING_MOD_VERS_HEAL | RATING_MOD_VERS_MITIG ) )
-    return STAT_VERSATILITY_RATING;
   else if ( ratings & RATING_MOD_EXPERTISE )
     return STAT_EXPERTISE_RATING;
   else if ( ratings & RATING_MOD_PVP_POWER )
@@ -2259,9 +2239,6 @@ unsigned util::rating_to_rating_mod( rating_e r )
     case RATING_MELEE_HASTE:            return RATING_MOD_HASTE_MELEE;
     case RATING_RANGED_HASTE:           return RATING_MOD_HASTE_RANGED;
     case RATING_SPELL_HASTE:            return RATING_MOD_HASTE_SPELL;
-    case RATING_DAMAGE_VERSATILITY:     return RATING_MOD_VERS_DAMAGE;
-    case RATING_HEAL_VERSATILITY:       return RATING_MOD_VERS_HEAL;
-    case RATING_MITIGATION_VERSATILITY: return RATING_MOD_VERS_MITIG;
     case RATING_EXPERTISE:              return RATING_MOD_EXPERTISE;
     case RATING_PVP_POWER:              return RATING_MOD_PVP_POWER;
     case RATING_LEECH:                  return RATING_MOD_LEECH;
@@ -2285,8 +2262,6 @@ rating_e util::stat_to_rating( stat_e s )
       return RATING_MELEE_CRIT;
     case STAT_HASTE_RATING:
       return RATING_MELEE_HASTE;
-    case STAT_VERSATILITY_RATING:
-      return RATING_DAMAGE_VERSATILITY;
     case STAT_LEECH_RATING:
       return RATING_LEECH;
     case STAT_SPEED_RATING:
@@ -3001,7 +2976,6 @@ bool util::is_combat_rating( item_mod_type t )
     case ITEM_MOD_SPEED_RATING:
     case ITEM_MOD_LEECH_RATING:
     case ITEM_MOD_AVOIDANCE_RATING:
-    case ITEM_MOD_VERSATILITY_RATING:
     case ITEM_MOD_EXTRA_ARMOR:
       return true;
     default:
@@ -3015,7 +2989,6 @@ bool util::is_combat_rating( stat_e t )
   {
     case STAT_CRIT_RATING:
     case STAT_HASTE_RATING:
-    case STAT_VERSATILITY_RATING:
       return true;
     default:
       return false;

@@ -100,11 +100,6 @@ double absorb_t::composite_ta_multiplier(const action_state_t* s) const
   return m;
 }
 
-double absorb_t::composite_versatility(const action_state_t* state) const
-{
-  return spell_base_t::composite_versatility(state) + player->cache.heal_versatility();
-}
-
 double absorb_t::composite_target_multiplier( player_t* t ) const
 {
   double m = spell_base_t::composite_target_multiplier( t );

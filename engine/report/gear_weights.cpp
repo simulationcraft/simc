@@ -73,8 +73,6 @@ int wowhead_stat_id( stat_e i, player_e type )
       return 41;
     case STAT_BONUS_ARMOR:
       return 109;
-    case STAT_VERSATILITY_RATING:
-      return 215;
     case STAT_WEAPON_DPS:
       if ( type == HUNTER )
         return 138;
@@ -176,8 +174,6 @@ const char* pawn_stat_name( stat_e stat )
       return "Armor";
     case STAT_BONUS_ARMOR:
       return "BonusArmor";
-    case STAT_VERSATILITY_RATING:
-      return "Versatility";
     case STAT_WEAPON_DPS:
       return "Dps";
     case STAT_WEAPON_OFFHAND_DPS:
@@ -300,8 +296,6 @@ const char* askmrrobot_stat_type( stat_e stat )
       return "Armor";
     case STAT_RESILIENCE_RATING:
       return "PvpResilience";
-    case STAT_VERSATILITY_RATING:
-      return "Versatility";
     case STAT_BONUS_ARMOR:
       return "BonusArmor";
     case STAT_PVP_POWER:

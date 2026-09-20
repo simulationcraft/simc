@@ -228,8 +228,6 @@ class profile_output_data_t
             m_crit_pct,
             m_haste_rating,
             m_haste_pct,
-            m_versatility_rating,
-            m_versatility_pct,
             m_agility,
             m_strength,
             m_intellect,
@@ -273,12 +271,6 @@ public:
   profile_output_data_t& haste_rating( double d )
   { m_haste_rating = d; return *this; }
 
-  double versatility_rating() const
-  { return m_versatility_rating; }
-
-  profile_output_data_t& versatility_rating( double d )
-  { m_versatility_rating = d; return *this; }
-
   double crit_pct() const
   { return m_crit_pct; }
 
@@ -290,12 +282,6 @@ public:
 
   profile_output_data_t& haste_pct( double d )
   { m_haste_pct = d; return *this; }
-
-  double versatility_pct() const
-  { return m_versatility_pct; }
-
-  profile_output_data_t& versatility_pct( double d )
-  { m_versatility_pct = d; return *this; }
 
   double agility() const
   { return m_agility; }

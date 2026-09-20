@@ -217,11 +217,6 @@ double spell_t::composite_hit() const
   return action_t::composite_hit() + player->cache.spell_hit();
 }
 
-double spell_t::composite_versatility( const action_state_t* state ) const
-{
-  return spell_base_t::composite_versatility( state ) + player->cache.damage_versatility();
-}
-
 double spell_t::composite_target_multiplier( player_t* t ) const
 {
   double mul = action_t::composite_target_multiplier( t );

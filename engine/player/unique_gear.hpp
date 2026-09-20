@@ -102,11 +102,4 @@ const spell_data_t* spell_from_spell_text( const special_effect_t& );
 std::vector<unsigned> equipped_gem_list( player_t*, util::span<const unsigned> );
 std::vector<unsigned> unique_gem_list( player_t*, util::span<const unsigned> );
 
-// assuming priority for highest/lowest secondary is vers > haste > crit
-static constexpr std::array<stat_e, 3> secondary_ratings = { STAT_VERSATILITY_RATING, STAT_HASTE_RATING,
-                                                             STAT_CRIT_RATING };
-
-static constexpr std::array<stat_e, 3> tertiary_ratings = { STAT_SPEED_RATING, STAT_AVOIDANCE_RATING,
-                                                            STAT_LEECH_RATING };
-
 }  // namespace unique_gear

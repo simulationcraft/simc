@@ -75,7 +75,6 @@ constexpr auto MAX_GEM_SLOTS               = 4;     /// Global maximum number of
 // Shadowlands: Curves used to apply diminishing returns to Combat Ratings
 constexpr auto DIMINISHING_RETURN_SECONDARY_CR_CURVE  = 21024u;
 constexpr auto DIMINISHING_RETURN_TERTIARY_CR_CURVE   = 21025u;
-constexpr auto DIMINISHING_RETURN_VERS_MITIG_CR_CURVE = 21035u;
 
 // Midnight curve from ItemSquishEra.db2
 constexpr auto SQUISH_CURVE_MIDNIGHT = 92181u;
@@ -879,7 +878,6 @@ enum stat_e
   STAT_HIT_RATING2,
   STAT_CRIT_RATING,
   STAT_HASTE_RATING,
-  STAT_VERSATILITY_RATING,
   STAT_LEECH_RATING,
   STAT_SPEED_RATING,
   STAT_AVOIDANCE_RATING,
@@ -931,9 +929,6 @@ enum rating_e
   RATING_SPELL_HASTE,
   RATING_EXPERTISE,
   RATING_PVP_POWER,
-  RATING_DAMAGE_VERSATILITY,
-  RATING_HEAL_VERSATILITY,
-  RATING_MITIGATION_VERSATILITY,
   RATING_SPEED,
   RATING_AVOIDANCE,
   RATING_CORRUPTION,
@@ -995,10 +990,6 @@ enum cache_e
   CACHE_SPELL_HASTE,
   CACHE_AUTO_ATTACK_SPEED,
   CACHE_SPELL_CAST_SPEED,
-  CACHE_VERSATILITY,
-  CACHE_DAMAGE_VERSATILITY,
-  CACHE_HEAL_VERSATILITY,
-  CACHE_MITIGATION_VERSATILITY,
   CACHE_DODGE,
   CACHE_PARRY,
   CACHE_BLOCK,
@@ -1022,7 +1013,6 @@ enum stat_pct_buff_type
 {
   STAT_PCT_BUFF_CRIT,
   STAT_PCT_BUFF_HASTE,
-  STAT_PCT_BUFF_VERSATILITY,
   STAT_PCT_BUFF_STRENGTH,
   STAT_PCT_BUFF_AGILITY,
   STAT_PCT_BUFF_STAMINA,
@@ -1087,8 +1077,6 @@ inline cache_e cache_from_stat( stat_e st )
         return CACHE_ARMOR;
       case STAT_BONUS_ARMOR:
         return CACHE_BONUS_ARMOR;
-      case STAT_VERSATILITY_RATING:
-        return CACHE_VERSATILITY;
       case STAT_LEECH_RATING:
         return CACHE_LEECH;
       case STAT_SPEED_RATING:
@@ -1107,7 +1095,6 @@ inline cache_e cache_from_stat_pct_buff( stat_pct_buff_type spb )
   {
     case STAT_PCT_BUFF_CRIT: return CACHE_CRIT_CHANCE;
     case STAT_PCT_BUFF_HASTE: return CACHE_HASTE;
-    case STAT_PCT_BUFF_VERSATILITY: return CACHE_VERSATILITY;
     case STAT_PCT_BUFF_STRENGTH: return CACHE_STRENGTH;
     case STAT_PCT_BUFF_AGILITY: return CACHE_AGILITY;
     case STAT_PCT_BUFF_STAMINA: return CACHE_STAMINA;
@@ -1139,9 +1126,6 @@ inline cache_e cache_from_rating( rating_e r )
     case RATING_BLOCK: return CACHE_BLOCK;
     case RATING_PVP_POWER: return CACHE_NONE;
     case RATING_PVP_RESILIENCE: return CACHE_NONE;
-    case RATING_DAMAGE_VERSATILITY: return CACHE_DAMAGE_VERSATILITY;
-    case RATING_HEAL_VERSATILITY: return CACHE_HEAL_VERSATILITY;
-    case RATING_MITIGATION_VERSATILITY: return CACHE_MITIGATION_VERSATILITY;
     case RATING_LEECH: return CACHE_LEECH;
     case RATING_SPEED: return CACHE_RUN_SPEED;
     case RATING_AVOIDANCE: return CACHE_AVOIDANCE;
@@ -1239,7 +1223,6 @@ enum snapshot_state_e
 
   STATE_MUL_SPELL_DA   = 0x00000010,  // Add Percent Modifier (108): Spell Direct Amount (0) list-based multiplier
   STATE_MUL_SPELL_TA   = 0x00000020,  // Add Percent Modifier (108): Spell Periodic Amount (22) list-based multiplier
-  STATE_VERSATILITY    = 0x00000040,
   STATE_MUL_PERSISTENT = 0x00000080,  // Persistent modifier for the few abilities that snapshot
 
   STATE_TGT_CRIT       = 0x00000100,
@@ -1275,7 +1258,7 @@ enum snapshot_state_e
    * No multiplier helper, use in action_t::init() (after parent init) by issuing snapshot_flags &= STATE_NO_MULTIPLIER
    * (and/or update_flags &= STATE_NO_MULTIPLIER if a dot). This disables all multipliers, including versatility, and
    * any/all persistent multipliers the action would use. */
-  STATE_NO_MULTIPLIER  = ~( STATE_MUL_SPELL_DA | STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM | STATE_VERSATILITY |
+  STATE_NO_MULTIPLIER  = ~( STATE_MUL_SPELL_DA | STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM |
                             STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_ARMOR |
                             STATE_MUL_PET | STATE_TGT_MUL_PET | STATE_MUL_VERSUS ),
 

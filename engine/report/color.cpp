@@ -140,8 +140,6 @@ rgb stat_color( stat_e type )
       return COLOR_PRIEST;
     case STAT_BONUS_ARMOR:
       return COLOR_PRIEST;
-    case STAT_VERSATILITY_RATING:
-      return PURPLE.dark();
     default:
       return GREY2;
   }

@@ -329,11 +329,8 @@ void print_generic_stats( std::ostream& os, const player_t& p )
   fmt::print(
       os,
       "  Generic Stats: "
-      "versatility={:.2f}%|{:.2f}%({:.0f})  "
       "leech={:.2f}%|{:.2f}%({:.0f})  "
       "runspeed={:.2f}%|{:.2f}%({:.0f})\n",
-      100 * p.composite_damage_versatility(),
-      p.composite_damage_versatility_rating(), 100 * buffed_stats.leech,
       100 * p.composite_leech(), p.composite_leech_rating(),
       buffed_stats.run_speed, p.composite_movement_speed(), p.composite_speed_rating() );
 }
@@ -432,8 +429,7 @@ void print_defense_stats( std::ostream& os, const player_t& p )
       os,
       "  Defense Stats: armor={:.0f}|{:.0f}({:.0f}) miss={:.2f}%|{:.2f}%  "
       "dodge={:.2f}%|{:.2f}%({:.0f})  parry={:.2f}%|{:.2f}%({:.0f})  "
-      "block={:.2f}%|{:.2f}%({:.0f}) crit={:.2f}%|{:.2f}%  "
-      "versatility={:.2f}%|{:.2f}%({:.0f})\n",
+      "block={:.2f}%|{:.2f}%({:.0f}) crit={:.2f}%|{:.2f}%\n",
       buffed_stats.armor,
       p.composite_armor(),
       p.initial.stats.armor,
@@ -449,10 +445,7 @@ void print_defense_stats( std::ostream& os, const player_t& p )
       100 * p.composite_block(),
       p.initial.stats.block_rating,
       100 * buffed_stats.crit,
-      100 * p.cache.crit_avoidance(),
-      100 * buffed_stats.mitigation_versatility,
-      100 * p.composite_mitigation_versatility(),
-      p.composite_mitigation_versatility_rating() );
+      100 * p.cache.crit_avoidance() );
 }
 
 void print_gain( std::ostream& os, const gain_t& g, size_t max_name_length )

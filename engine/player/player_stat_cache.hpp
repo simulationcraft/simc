@@ -59,7 +59,6 @@ private:
   mutable double _crit_avoidance, _miss;
   mutable std::array<double, SCHOOL_MAX + 1> _player_mult;
   mutable std::array<double, SCHOOL_MAX + 1> _player_heal_mult;
-  mutable double _damage_versatility, _heal_versatility, _mitigation_versatility;
   mutable double _leech, _run_speed, _avoidance;
   mutable double _corruption, _corruption_resistance;
   mutable std::array<double, 2> _pet_damage_multiplier;
@@ -97,9 +96,6 @@ public:
   double bonus_armor() const;
   double player_multiplier( school_e ) const;
   double player_heal_multiplier( const action_state_t* ) const;
-  double damage_versatility() const;
-  double heal_versatility() const;
-  double mitigation_versatility() const;
   double leech() const;
   double run_speed() const;
   double avoidance() const;
@@ -131,9 +127,6 @@ public:
   double crit_avoidance() const { return _player->composite_crit_avoidance(); }
   double miss() const { return _player->composite_miss(); }
   double armor() const { return _player->composite_armor(); }
-  double damage_versatility() const { return _player->composite_damage_versatility(); }
-  double heal_versatility() const { return _player->composite_heal_versatility(); }
-  double mitigation_versatility() const { return _player->composite_mitigation_versatility(); }
   double leech() const { return _player->composite_leech(); }
   double run_speed() const { return _player->composite_run_speed(); }
   double avoidance() const { return _player->composite_avoidance(); }

@@ -816,36 +816,6 @@ double parse_player_effects_t::composite_rating_multiplier( rating_e rating ) co
   return rm;
 }
 
-double parse_player_effects_t::composite_damage_versatility() const
-{
-  auto v = player_t::composite_damage_versatility();
-
-  for ( const auto& i : versatility_effects )
-    v += get_effect_value( i );
-
-  return v;
-}
-
-double parse_player_effects_t::composite_heal_versatility() const
-{
-  auto v = player_t::composite_heal_versatility();
-
-  for ( const auto& i : versatility_effects )
-    v += get_effect_value( i );
-
-  return v;
-}
-
-double parse_player_effects_t::composite_mitigation_versatility() const
-{
-  auto v = player_t::composite_mitigation_versatility();
-
-  for ( const auto& i : versatility_effects )
-    v += get_effect_value( i ) * 0.5;
-
-  return v;
-}
-
 double parse_player_effects_t::composite_player_multiplier( school_e school ) const
 {
   auto m = player_t::composite_player_multiplier( school );
@@ -1178,11 +1148,6 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       str = opt_strings::ratings_invalidate( tmp );
       return &rating_multiplier_effects;
 
-    case A_MOD_VERSATILITY_PCT:
-      str = "versatility";
-      invalidate( CACHE_VERSATILITY );
-      return &versatility_effects;
-
     case A_HASTE_ALL:
       str = "all haste";
       invalidate( CACHE_HASTE );
@@ -1460,7 +1425,6 @@ void parse_player_effects_t::print_custom_parsed_effects( report::sc_html_stream
     print_parsed_type( os, spell_crit_chance_effects, "Spell Crit Chance" );
     print_parsed_type( os, target_multiplier_effects, "Target Multiplier", &opt_strings::school );
     print_parsed_type( os, target_pet_multiplier_effects, "Target Pet Multiplier", &opt_strings::pet_type );
-    print_parsed_type( os, versatility_effects, "Versatility" );
     print_parsed_custom_type( os );
 
     os << "</table>\n";
@@ -1472,7 +1436,6 @@ size_t parse_player_effects_t::total_effects_count() const
   return auto_attack_speed_effects.size() +
          attribute_multiplier_effects.size() +
          rating_multiplier_effects.size() +
-         versatility_effects.size() +
          player_multiplier_effects.size() +
          pet_multiplier_effects.size() +
          attack_power_multiplier_effects.size() +

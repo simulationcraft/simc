@@ -46,7 +46,6 @@ struct action_state_t : private noncopyable
   double          attack_power;
   double          spell_power;
   // Snapshotted multipliers
-  double          versatility;
   double          da_multiplier;
   double          ta_multiplier;
   double          rolling_ta_multiplier;
@@ -84,19 +83,16 @@ struct action_state_t : private noncopyable
   virtual double composite_spell_power() const
   { return spell_power; }
 
-  virtual double composite_versatility() const
-  { return versatility; }
-
   virtual double composite_da_multiplier() const
   {
     return da_multiplier * player_multiplier * versus_multiplier * persistent_multiplier * target_da_multiplier *
-           versatility * pet_multiplier * target_pet_multiplier;
+           pet_multiplier * target_pet_multiplier;
   }
 
   virtual double composite_ta_multiplier() const
   {
     return ta_multiplier * player_multiplier * versus_multiplier * persistent_multiplier * target_ta_multiplier *
-           versatility * pet_multiplier * target_pet_multiplier;
+           pet_multiplier * target_pet_multiplier;
   }
 
   virtual double composite_rolling_ta_multiplier() const

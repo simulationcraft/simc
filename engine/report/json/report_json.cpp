@@ -427,10 +427,6 @@ void to_json( JsonOutput root, const player_collected_data_t::buffed_stats_t& bs
   add_non_zero( root[ "stats" ], "spell_cast_speed", bs.spell_cast_speed );
   add_non_zero( root[ "stats" ], "auto_attack_speed", bs.auto_attack_speed );
 
-  add_non_zero( root[ "stats" ], "damage_versatility", bs.damage_versatility );
-  add_non_zero( root[ "stats" ], "heal_versatility", bs.heal_versatility );
-  add_non_zero( root[ "stats" ], "mitigation_versatility", bs.mitigation_versatility );
-
   // some of these secondaries are dupes from above. Duplication is intended to preserve backwards compatibility while
   // making a few names more consistent with the game. they're intended to be a quicker/simpler reference to match paper
   // doll stats in-game. crit and haste pick the max between melee/spell which seems to be the game logic
@@ -445,9 +441,6 @@ void to_json( JsonOutput root, const player_collected_data_t::buffed_stats_t& bs
   add_non_zero( root[ "stats" ], "haste_rating",
                 bs.melee_haste_rating > bs.spell_haste_rating ? bs.melee_haste_rating : bs.spell_haste_rating );
   add_non_zero( root[ "stats" ], "haste_pct", attack_haste_pct > spell_haste_pct ? attack_haste_pct : spell_haste_pct );
-
-  add_non_zero( root[ "stats" ], "versatility_rating", bs.versatility_rating );
-  add_non_zero( root[ "stats" ], "versatility_pct", bs.damage_versatility );
 
   add_non_zero( root[ "stats" ], "avoidance_rating", bs.avoidance_rating );
   add_non_zero( root[ "stats" ], "avoidance_pct", bs.avoidance );
@@ -953,8 +946,6 @@ void profileset_fetch_output_data( const profileset::profile_output_data_t& outp
     ovr[ "stats" ][ "crit_pct" ] = output_data.crit_pct();
     ovr[ "stats" ][ "haste_rating" ] = output_data.haste_rating();
     ovr[ "stats" ][ "haste_pct" ] = output_data.haste_pct();
-    ovr[ "stats" ][ "versatility_rating" ] = output_data.versatility_rating();
-    ovr[ "stats" ][ "versatility_pct" ] = output_data.versatility_pct();
 
     ovr[ "stats" ][ "avoidance_rating" ] = output_data.avoidance_rating();
     ovr[ "stats" ][ "avoidance_pct" ] = output_data.avoidance_pct();

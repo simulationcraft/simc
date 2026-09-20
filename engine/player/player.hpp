@@ -240,7 +240,7 @@ struct player_t : public actor_t
     double miss, dodge, parry, block;
     double hit, expertise, leech, avoidance, crit_avoidance;
     double spell_crit_chance, attack_crit_chance, block_value;
-    double versatility, all_crit, all_haste;
+    double all_crit, all_haste;
     double melee_haste, spell_haste, ranged_haste;
     double skill, skill_debuff, distance;
     double distance_to_move;
@@ -1170,9 +1170,6 @@ public:
   virtual double composite_spell_crit_chance_multiplier() const
   { return 1.0; }
   virtual double composite_spell_hit() const;
-  virtual double composite_damage_versatility() const;
-  virtual double composite_heal_versatility() const;
-  virtual double composite_mitigation_versatility() const;
   virtual double composite_leech() const;
   virtual double composite_run_speed() const;
   virtual double composite_avoidance() const;
@@ -1245,12 +1242,6 @@ public:
   virtual double composite_parry_rating() const;
   virtual double composite_block_rating() const
   { return composite_rating( RATING_BLOCK ); }
-  virtual double composite_damage_versatility_rating() const
-  { return composite_rating( RATING_DAMAGE_VERSATILITY ); }
-  virtual double composite_heal_versatility_rating() const
-  { return composite_rating( RATING_HEAL_VERSATILITY ); }
-  virtual double composite_mitigation_versatility_rating() const
-  { return composite_rating( RATING_MITIGATION_VERSATILITY ); }
   virtual double composite_leech_rating() const
   { return composite_rating( RATING_LEECH ); }
   virtual double composite_speed_rating() const

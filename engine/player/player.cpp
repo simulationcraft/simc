@@ -467,8 +467,7 @@ struct leech_t : public heal_t
   {
     heal_t::init();
 
-    snapshot_flags = update_flags =
-      STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT;
+    snapshot_flags = update_flags = STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT;
 
     player->register_combat_begin( []( player_t* p ) {
       make_repeating_event( *p->sim,
@@ -1267,7 +1266,6 @@ player_t::base_initial_current_t::base_initial_current_t() :
   spell_crit_chance(),
   attack_crit_chance(),
   block_value(),
-  versatility( 0 ),
   all_crit( 0 ),
   all_haste( 1.0 ),
   melee_haste( 1.0 ),
@@ -1332,7 +1330,6 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " spell_crit_chance={:.6g}", s.spell_crit_chance );
   fmt::format_to( out, " attack_crit_chance={:.6g}", s.attack_crit_chance );
   fmt::format_to( out, " block_value={:.6g}", s.block_value );
-  fmt::format_to( out, " versatility={:.6g}", s.versatility );
   fmt::format_to( out, " all_haste={:.6g}", s.all_haste );
   fmt::format_to( out, " melee_haste={:.6g}", s.melee_haste );
   fmt::format_to( out, " spell_haste={:.6g}", s.spell_haste );
@@ -1518,8 +1515,6 @@ void player_t::init_base_stats()
     base.all_crit           = get_passive_player_value( dbc->all_crit_base( type, level() ), "all_crit" );
     base.spell_crit_chance  = get_passive_player_value( base.all_crit, "spell_crit" );
     base.attack_crit_chance = base.all_crit;
-
-    base.versatility = get_passive_player_value( base.versatility, "versatility" );
 
     base.leech          = get_passive_player_value( base.leech, "leech" );
     base.avoidance      = 0.0;
@@ -3429,7 +3424,6 @@ void player_t::init_scaling()
     scaling->set( STAT_ATTACK_POWER, attack );
     scaling->enable( STAT_CRIT_RATING );
     scaling->enable( STAT_HASTE_RATING );
-    scaling->enable( STAT_VERSATILITY_RATING );
 
     // scaling->enable( STAT_SPEED_RATING );  // handled in raid_events movement_event_t
     // scaling->set( STAT_AVOIDANCE_RATING, tank ); // can be enabled manually if need be
@@ -3482,10 +3476,6 @@ void player_t::init_scaling()
 
         case STAT_HASTE_RATING:
           add_stat( initial.stats.haste_rating, v, 0 );
-          break;
-
-        case STAT_VERSATILITY_RATING:
-          add_stat( initial.stats.versatility_rating, v, 0 );
           break;
 
         case STAT_DODGE_RATING:
@@ -4599,7 +4589,6 @@ void player_t::init_finished()
       {
         case STAT_CRIT_RATING:        stat_pct = STAT_PCT_BUFF_CRIT; break;
         case STAT_HASTE_RATING:       stat_pct = STAT_PCT_BUFF_HASTE; break;
-        case STAT_VERSATILITY_RATING: stat_pct = STAT_PCT_BUFF_VERSATILITY; break;
         case STAT_STRENGTH:           stat_pct = STAT_PCT_BUFF_STRENGTH; break;
         case STAT_AGILITY:            stat_pct = STAT_PCT_BUFF_AGILITY; break;
         case STAT_STAMINA:            stat_pct = STAT_PCT_BUFF_STAMINA; break;
@@ -4909,8 +4898,6 @@ double player_t::apply_combat_rating_dr( rating_e rating, double value ) const
     case RATING_SPEED:
     case RATING_AVOIDANCE:
       return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_TERTIARY_CR_CURVE, value * 100.0 ) / 100.0;
-    case RATING_MITIGATION_VERSATILITY:
-      return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_VERS_MITIG_CR_CURVE, value * 100.0 ) / 100.0;
     default:
       // Note, curve uses %-based values, not values divided by 100
       return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value * 100.0 ) / 100.0;
@@ -5369,54 +5356,6 @@ double player_t::composite_bonus_armor() const
   return current.stats.bonus_armor;
 }
 
-double player_t::composite_damage_versatility() const
-{
-  double cdv = current.versatility;
-
-  cdv += apply_combat_rating_dr( RATING_DAMAGE_VERSATILITY,
-           composite_damage_versatility_rating() / current.rating.damage_versatility );
-
-  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
-    cdv += b->check_stack_value();
-
-  if ( buffs.dmf_well_fed )
-    cdv += buffs.dmf_well_fed->check_value();
-
-  return cdv;
-}
-
-double player_t::composite_heal_versatility() const
-{
-  double chv = current.versatility;
-
-  chv += apply_combat_rating_dr( RATING_HEAL_VERSATILITY,
-           composite_heal_versatility_rating() / current.rating.heal_versatility );
-
-  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
-    chv += b->check_stack_value();
-
-  if ( buffs.dmf_well_fed )
-    chv += buffs.dmf_well_fed->check_value();
-
-  return chv;
-}
-
-double player_t::composite_mitigation_versatility() const
-{
-  double cmv = current.versatility / 2;
-
-  cmv += apply_combat_rating_dr( RATING_MITIGATION_VERSATILITY,
-           composite_mitigation_versatility_rating() / current.rating.mitigation_versatility );
-
-  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_VERSATILITY ] )
-    cmv += b->check_stack_value() / 2;
-
-  if ( buffs.dmf_well_fed )
-    cmv += buffs.dmf_well_fed->check_value() / 2;
-
-  return cmv;
-}
-
 double player_t::composite_leech() const
 {
   return current.leech + apply_combat_rating_dr( RATING_LEECH, composite_leech_rating() / current.rating.leech );
@@ -5751,11 +5690,6 @@ double player_t::composite_rating( rating_e rating ) const
     case RATING_RANGED_HIT:
       v = current.stats.hit_rating;
       break;
-    case RATING_DAMAGE_VERSATILITY:
-    case RATING_HEAL_VERSATILITY:
-    case RATING_MITIGATION_VERSATILITY:
-      v = current.stats.versatility_rating;
-      break;
     case RATING_EXPERTISE:
       v = current.stats.expertise_rating;
       break;
@@ -5839,14 +5773,6 @@ double player_t::composite_mitigation_multiplier( const action_state_t* s, schoo
 
       if ( buffs.pain_suppression && buffs.pain_suppression->up() )
         m *= 1.0 + buffs.pain_suppression->check_value();
-    }
-
-    m *= 1.0 - cache.mitigation_versatility();
-
-    if ( sim->debug )
-    {
-      sim->print_debug( "{} {} damage to {} reduced by {:.7g}% from versatility.", *s->action->player, *s->action,
-                        *s->target, cache.mitigation_versatility() * 100 );
     }
 
     if ( s->action->is_aoe() )
@@ -5949,12 +5875,6 @@ void player_t::invalidate_cache( cache_e c )
     case CACHE_HASTE:
       invalidate_cache( CACHE_ATTACK_HASTE );
       invalidate_cache( CACHE_SPELL_HASTE );
-      break;
-
-    case CACHE_VERSATILITY:
-      invalidate_cache( CACHE_DAMAGE_VERSATILITY );
-      invalidate_cache( CACHE_HEAL_VERSATILITY );
-      invalidate_cache( CACHE_MITIGATION_VERSATILITY );
       break;
 
     default:
@@ -7348,8 +7268,6 @@ double player_t::get_stat_value(stat_e stat)
     return composite_melee_crit_rating();
   case STAT_HASTE_RATING:
     return composite_melee_haste_rating();
-  case STAT_VERSATILITY_RATING:
-    return composite_damage_versatility_rating();
   case STAT_ARMOR:
     return cache.armor();
   default:
@@ -7701,7 +7619,6 @@ void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* ac
     case STAT_DODGE_RATING:
     case STAT_PARRY_RATING:
     case STAT_BLOCK_RATING:
-    case STAT_VERSATILITY_RATING:
     case STAT_LEECH_RATING:
     case STAT_AVOIDANCE_RATING:
     case STAT_SPEED_RATING:
@@ -7843,7 +7760,6 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
     case STAT_DODGE_RATING:
     case STAT_PARRY_RATING:
     case STAT_BLOCK_RATING:
-    case STAT_VERSATILITY_RATING:
     case STAT_LEECH_RATING:
     case STAT_AVOIDANCE_RATING:
     case STAT_SPEED_RATING:
@@ -11907,8 +11823,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
           return make_mem_fn_expr( expression_str, *this, &player_t::composite_parry_rating );
         case STAT_BLOCK_RATING:
           return make_mem_fn_expr( expression_str, *this, &player_t::composite_block_rating );
-        case STAT_VERSATILITY_RATING:
-          return make_mem_fn_expr( expression_str, *this, &player_t::composite_damage_versatility_rating );
         default:
           break;
       }
@@ -12866,9 +12780,6 @@ std::string player_t::create_profile( save_e stype )
     if ( enchant.crit_rating != 0 )
       profile_str += "enchant_crit_rating=" + util::to_string( enchant.crit_rating ) + term;
 
-    if ( enchant.versatility_rating != 0 )
-      profile_str += "enchant_versatility_rating=" + util::to_string( enchant.versatility_rating ) + term;
-
     if ( enchant.resource[ RESOURCE_HEALTH ] != 0 )
       profile_str += "enchant_health=" + util::to_string( enchant.resource[ RESOURCE_HEALTH ] ) + term;
 
@@ -13095,7 +13006,6 @@ void player_t::create_options()
   add_option( opt_float( "gear_focus", gear.resource[ RESOURCE_FOCUS ] ) );
   add_option( opt_float( "gear_runic", gear.resource[ RESOURCE_RUNIC_POWER ] ) );
   add_option( opt_float( "gear_armor", gear.armor ) );
-  add_option( opt_float( "gear_versatility_rating", gear.versatility_rating ) );
   add_option( opt_float( "gear_bonus_armor", gear.bonus_armor ) );
   add_option( opt_float( "gear_leech_rating", gear.leech_rating ) );
   add_option( opt_float( "gear_run_speed_rating", gear.speed_rating ) );
@@ -13115,7 +13025,6 @@ void player_t::create_options()
   add_option( opt_float( "enchant_haste_rating", enchant.haste_rating ) );
   add_option( opt_float( "enchant_hit_rating", enchant.hit_rating ) );
   add_option( opt_float( "enchant_crit_rating", enchant.crit_rating ) );
-  add_option( opt_float( "enchant_versatility_rating", enchant.versatility_rating ) );
   add_option( opt_float( "enchant_bonus_armor", enchant.bonus_armor ) );
   add_option( opt_float( "enchant_leech_rating", enchant.leech_rating ) );
   add_option( opt_float( "enchant_run_speed_rating", enchant.speed_rating ) );
@@ -14927,7 +14836,6 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_RECHARGE_TIME_PCT_CATEGORY,         "charge_cooldown"                  },  // 454
   { A_HASTED_CATEGORY,                        "hasted_cooldown"                  },  // 457
   { A_MOD_PARRY_FROM_CRIT_RATING,             "parry_from_crit_rating"           },  // 463
-  { A_MOD_VERSATILITY_PCT,                    "versatility"                      },  // 471
   { A_MOD_AUTO_ATTACK_DAMAGE_PCT,             "auto_attack_multiplier"           },  // 530
   { A_MOD_GUARDIAN_DAMAGE_DONE,               "guardian_damage_multiplier"       },  // 531
 };

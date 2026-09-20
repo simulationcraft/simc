@@ -381,42 +381,6 @@ double player_stat_cache_t::bonus_armor() const
   return _bonus_armor;
 }
 
-double player_stat_cache_t::damage_versatility() const
-{
-  if ( !active || !valid[ CACHE_DAMAGE_VERSATILITY ] )
-  {
-    valid[ CACHE_DAMAGE_VERSATILITY ] = true;
-    _damage_versatility               = player->composite_damage_versatility();
-  }
-  else
-    assert( _damage_versatility == player->composite_damage_versatility() );
-  return _damage_versatility;
-}
-
-double player_stat_cache_t::heal_versatility() const
-{
-  if ( !active || !valid[ CACHE_HEAL_VERSATILITY ] )
-  {
-    valid[ CACHE_HEAL_VERSATILITY ] = true;
-    _heal_versatility               = player->composite_heal_versatility();
-  }
-  else
-    assert( _heal_versatility == player->composite_heal_versatility() );
-  return _heal_versatility;
-}
-
-double player_stat_cache_t::mitigation_versatility() const
-{
-  if ( !active || !valid[ CACHE_MITIGATION_VERSATILITY ] )
-  {
-    valid[ CACHE_MITIGATION_VERSATILITY ] = true;
-    _mitigation_versatility               = player->composite_mitigation_versatility();
-  }
-  else
-    assert( _mitigation_versatility == player->composite_mitigation_versatility() );
-  return _mitigation_versatility;
-}
-
 double player_stat_cache_t::leech() const
 {
   if ( !active || !valid[ CACHE_LEECH ] )
@@ -541,9 +505,6 @@ double player_stat_cache_t::block() const { return _player->composite_block(); }
 double player_stat_cache_t::crit_avoidance() const { return _player->composite_crit_avoidance(); }
 double player_stat_cache_t::miss() const { return _player->composite_miss(); }
 double player_stat_cache_t::armor() const { return _player->composite_armor(); }
-double player_stat_cache_t::damage_versatility() const { return _player->composite_damage_versatility(); }
-double player_stat_cache_t::heal_versatility() const { return _player->composite_heal_versatility(); }
-double player_stat_cache_t::mitigation_versatility() const { return _player->composite_mitigation_versatility(); }
 double player_stat_cache_t::leech() const { return _player->composite_leech(); }
 double player_stat_cache_t::run_speed() const { return _player->composite_run_speed(); }
 double player_stat_cache_t::avoidance() const { return _player->composite_avoidance(); }

@@ -39,7 +39,6 @@ struct gear_stats_t
   double block_rating;
   double resilience_rating;
   double pvp_power;
-  double versatility_rating;
   double leech_rating;
   double speed_rating;
   double avoidance_rating;
@@ -69,7 +68,6 @@ struct gear_stats_t
       block_rating( 0.0 ),
       resilience_rating( 0.0 ),
       pvp_power( 0.0 ),
-      versatility_rating( 0.0 ),
       leech_rating( 0.0 ),
       speed_rating( 0.0 ),
       avoidance_rating( 0.0 ),
@@ -103,7 +101,6 @@ struct gear_stats_t
     block_rating = initializer;
     resilience_rating = initializer;
     pvp_power = initializer;
-    versatility_rating = initializer;
     leech_rating = initializer;
     speed_rating = initializer;
     avoidance_rating = initializer;
@@ -139,7 +136,6 @@ struct gear_stats_t
     block_rating += right.block_rating;
     resilience_rating += right.resilience_rating;
     pvp_power += right.pvp_power;
-    versatility_rating += right.versatility_rating;
     leech_rating += right.leech_rating;
     speed_rating += right.speed_rating;
     avoidance_rating += right.avoidance_rating;

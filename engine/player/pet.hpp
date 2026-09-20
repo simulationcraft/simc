@@ -126,15 +126,6 @@ public:
   double composite_bonus_armor() const override
   { return owner -> cache.bonus_armor(); }
 
-  double composite_damage_versatility() const override
-  { return owner -> cache.damage_versatility(); }
-
-  double composite_heal_versatility() const override
-  { return owner -> cache.heal_versatility(); }
-
-  double composite_mitigation_versatility() const override
-  { return owner -> cache.mitigation_versatility(); }
-
   double composite_melee_attack_power() const override;
 
   double composite_spell_power( school_e school ) const override;

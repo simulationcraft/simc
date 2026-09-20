@@ -26,9 +26,6 @@ double& rating_t::get_mutable(rating_e r)
   case RATING_BLOCK: return block;
   case RATING_PVP_POWER: return pvp_power;
   case RATING_PVP_RESILIENCE: return pvp_resilience;
-  case RATING_DAMAGE_VERSATILITY: return damage_versatility;
-  case RATING_HEAL_VERSATILITY: return heal_versatility;
-  case RATING_MITIGATION_VERSATILITY: return mitigation_versatility;
   case RATING_LEECH: return leech;
   case RATING_SPEED: return speed;
   case RATING_AVOIDANCE: return avoidance;
@@ -58,9 +55,6 @@ double rating_t::get(rating_e r) const
   case RATING_BLOCK: return block;
   case RATING_PVP_POWER: return pvp_power;
   case RATING_PVP_RESILIENCE: return pvp_resilience;
-  case RATING_DAMAGE_VERSATILITY: return damage_versatility;
-  case RATING_HEAL_VERSATILITY: return heal_versatility;
-  case RATING_MITIGATION_VERSATILITY: return mitigation_versatility;
   case RATING_LEECH: return leech;
   case RATING_SPEED: return speed;
   case RATING_AVOIDANCE: return avoidance;

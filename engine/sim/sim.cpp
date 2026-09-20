@@ -3943,7 +3943,6 @@ void sim_t::create_options()
   add_option( opt_float( "default_enchant_attack_power", enchant.attack_power ) );
   add_option( opt_float( "default_enchant_haste_rating", enchant.haste_rating ) );
   add_option( opt_float( "default_enchant_crit_rating", enchant.crit_rating ) );
-  add_option( opt_float( "default_enchant_versatility_rating", enchant.versatility_rating ) );
   add_option( opt_float( "default_enchant_health", enchant.resource[RESOURCE_HEALTH] ) );
   add_option( opt_float( "default_enchant_mana", enchant.resource[RESOURCE_MANA] ) );
   add_option( opt_float( "default_enchant_rage", enchant.resource[RESOURCE_RAGE] ) );

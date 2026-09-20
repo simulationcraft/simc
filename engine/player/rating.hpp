@@ -21,7 +21,6 @@ struct rating_t
   double expertise;
   double dodge, parry, block;
   double pvp_resilience, pvp_power;
-  double damage_versatility, heal_versatility, mitigation_versatility;
   double leech, speed, avoidance;
   double corruption, corruption_resistance;
 

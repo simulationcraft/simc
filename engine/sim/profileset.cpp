@@ -1106,9 +1106,6 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
     double spell_haste_pct = 1 / buffed_stats.spell_haste - 1;
     profileset.output_data().haste_pct( attack_haste_pct > spell_haste_pct ? attack_haste_pct : spell_haste_pct );
 
-    profileset.output_data().versatility_rating( util::floor( buffed_stats.versatility_rating ) );
-    profileset.output_data().versatility_pct( buffed_stats.damage_versatility );
-
     // tertiary stats
 
     profileset.output_data().avoidance_rating( buffed_stats.avoidance_rating );

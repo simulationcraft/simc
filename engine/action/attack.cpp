@@ -181,11 +181,6 @@ double attack_t::composite_expertise() const
   return base_attack_expertise + player->cache.attack_expertise();
 }
 
-double attack_t::composite_versatility( const action_state_t* state ) const
-{
-  return action_t::composite_versatility( state ) + player->cache.damage_versatility();
-}
-
 void attack_t::attack_table_t::build_table( double miss_chance, double dodge_chance, double parry_chance,
                                             double glance_chance, double crit_chance, sim_t* sim )
 {

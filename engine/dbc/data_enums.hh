@@ -538,7 +538,6 @@ enum item_mod_type {
   ITEM_MOD_EXPERTISE_RATING         = 37,
   ITEM_MOD_ATTACK_POWER             = 38,
   ITEM_MOD_RANGED_ATTACK_POWER      = 39,
-  ITEM_MOD_VERSATILITY_RATING       = 40,
   ITEM_MOD_SPELL_HEALING_DONE       = 41,                 // deprecated
   ITEM_MOD_SPELL_DAMAGE_DONE        = 42,                 // deprecated
   ITEM_MOD_MANA_REGENERATION        = 43,
@@ -594,11 +593,6 @@ enum rating_mod_type {
   RATING_MOD_AVOIDANCE    = 0x00100000,
   RATING_MOD_EXPERTISE    = 0x00800000,
   RATING_MOD_PVP_POWER    = 0x04000000,
-
-  RATING_MOD_VERS_DAMAGE  = 0x10000000,
-  RATING_MOD_VERS_HEAL    = 0x20000000,
-  RATING_MOD_VERS_MITIG   = 0x40000000,
-
 };
 
 // Property (misc_value) types for
