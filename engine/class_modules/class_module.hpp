@@ -36,7 +36,6 @@ struct module_t
 
   int offset() const { return static_cast<int>( type ); }
 
-  static const module_t* death_knight();
   static const module_t* demon_hunter();
   static const module_t* druid();
   static const module_t* evoker();
@@ -58,7 +57,6 @@ struct module_t
   {
     switch ( t )
     {
-      case DEATH_KNIGHT:      return death_knight();
       case DEMON_HUNTER:      return demon_hunter();
       case DRUID:             return druid();
       case EVOKER:            return evoker();

@@ -7,7 +7,6 @@ class Class(enum.IntEnum):
   HUNTER       = 3
   ROGUE        = 4
   PRIEST       = 5
-  DEATH_KNIGHT = 6
   SHAMAN       = 7
   MAGE         = 8
   WARLOCK      = 9

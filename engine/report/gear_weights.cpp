@@ -31,7 +31,7 @@ int wowhead_role( player_e type, role_e role )
   switch ( role )
   {
     case ROLE_ATTACK:
-      if ( type == DEATH_KNIGHT || type == PALADIN || type == WARRIOR )
+      if ( type == PALADIN || type == WARRIOR )
         return 3;
       else
         return 1;
@@ -251,8 +251,6 @@ const char* askmrrobot_player_type_name( player_e type )
   // Player type
   switch ( type )
   {
-    case DEATH_KNIGHT:
-      return "DeathKnight";
     case DEMON_HUNTER:
       return "DemonHunter";
     case DRUID:

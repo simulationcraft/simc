@@ -1643,7 +1643,7 @@ void player_t::init_base_stats()
 
   // only certain classes get Str->Parry conversions, parry_per_strength defaults to 0.00
   // exact values given by Blizzard, only have L90-L100 data
-  if ( type == PALADIN || type == WARRIOR || type == DEATH_KNIGHT )
+  if ( type == PALADIN || type == WARRIOR )
     base.parry_per_strength = dbc->avoid_per_str_agi_by_level( level() ) / 100.0;
 
   // All classes get 3% dodge and miss
@@ -1676,9 +1676,7 @@ void player_t::init_base_stats()
         base.block_value = 0;
 
       base.block_value = get_passive_player_value( base.block_value, "block_value" );
-      SC_FALLTHROUGH;
-    // Only certain classes can parry, and get 3% base parry, default is 0
-    case DEATH_KNIGHT:
+
       // Parry from base strength isn't affected by diminishing returns and is added here
       base.parry = ( dbc->race_base( race ).strength + dbc->attribute_base( type, level() ).strength ) * base.parry_per_strength;
       SC_FALLTHROUGH;
@@ -7703,7 +7701,6 @@ stat_e player_t::normalize_by() const
         case MONK:
         case DEMON_HUNTER:
           return STAT_AGILITY;
-        case DEATH_KNIGHT:
         case PALADIN:
         case WARRIOR:
           return STAT_STRENGTH;

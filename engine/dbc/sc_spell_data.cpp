@@ -213,7 +213,6 @@ static constexpr std::array<class_info_t, 13> _class_info { {
   { "Hunter",        1U <<  2,   9, LABEL_HUNTER_SPELLS,       137014 },
   { "Rogue",         1U <<  3,   8, LABEL_ROGUE_SPELLS,        137034 },
   { "Priest",        1U <<  4,   6, LABEL_PRIEST_SPELLS,       137030 },
-  { "DeathKnight",   1U <<  5,  15, LABEL_DEATH_KNIGHT_SPELLS, 137005 },
   { "Shaman",        1U <<  6,  11, LABEL_SHAMAN_SPELLS,       137038 },
   { "Mage",          1U <<  7,   3, LABEL_MAGE_SPELLS,         137018 },
   { "Warlock",       1U <<  8,   5, LABEL_WARLOCK_SPELLS,      137042 },

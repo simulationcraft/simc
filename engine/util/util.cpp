@@ -621,7 +621,6 @@ const char* util::player_type_string( player_e type )
   switch ( type )
   {
     case PLAYER_NONE:             return "none";
-    case DEATH_KNIGHT:            return "deathknight";
     case DEMON_HUNTER:            return "demonhunter";
     case DRUID:                   return "druid";
     case EVOKER:                  return "evoker";
@@ -662,7 +661,6 @@ const char* util::player_type_string_long( player_e type )
   switch ( type )
   {
     case PLAYER_NONE:     return "None";
-    case DEATH_KNIGHT:    return "Death Knight";
     case DEMON_HUNTER:    return "Demon Hunter";
     case DRUID:           return "Druid";
     case EVOKER:          return "Evoker";
@@ -1206,7 +1204,6 @@ item_subclass_armor util::matching_armor_type( player_e ptype )
   {
     case WARRIOR:
     case PALADIN:
-    case DEATH_KNIGHT:
     case PLAYER_SIMPLIFIED:
       return ITEM_SUBCLASS_ARMOR_PLATE;
     case HUNTER:
@@ -1962,7 +1959,6 @@ int util::class_id( player_e type )
     case HUNTER:       return  3;
     case ROGUE:        return  4;
     case PRIEST:       return  5;
-    case DEATH_KNIGHT: return  6;
     case SHAMAN:       return  7;
     case MAGE:         return  8;
     case WARLOCK:      return  9;
@@ -2104,7 +2100,6 @@ player_e util::translate_class_id( int cid )
     case  3: return HUNTER;
     case  4: return ROGUE;
     case  5: return PRIEST;
-    case  6: return DEATH_KNIGHT;
     case  7: return SHAMAN;
     case  8: return MAGE;
     case  9: return WARLOCK;

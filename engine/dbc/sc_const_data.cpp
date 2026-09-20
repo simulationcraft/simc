@@ -404,18 +404,6 @@ specialization_e dbc::translate_spec_str( player_e ptype, util::string_view spec
   using namespace util;
   switch ( ptype )
   {
-    case DEATH_KNIGHT:
-    {
-      if ( str_compare_ci( spec_str, "blood" ) )
-        return DEATH_KNIGHT_BLOOD;
-      if ( str_compare_ci( spec_str, "tank" ) )
-        return DEATH_KNIGHT_BLOOD;
-      else if ( str_compare_ci( spec_str, "frost" ) )
-        return DEATH_KNIGHT_FROST;
-      else if ( str_compare_ci( spec_str, "unholy" ) )
-        return DEATH_KNIGHT_UNHOLY;
-      break;
-    }
     case DEMON_HUNTER:
     {
       if ( str_compare_ci( spec_str, "devourer" ) )
@@ -654,9 +642,6 @@ const char* dbc::specialization_string( specialization_e spec )
     case PRIEST_DISCIPLINE:      return "discipline";
     case PRIEST_HOLY:            return "holy";
     case PRIEST_SHADOW:          return "shadow";
-    case DEATH_KNIGHT_BLOOD:     return "blood";
-    case DEATH_KNIGHT_FROST:     return "frost";
-    case DEATH_KNIGHT_UNHOLY:    return "unholy";
     case SHAMAN_ELEMENTAL:       return "elemental";
     case SHAMAN_ENHANCEMENT:     return "enhancement";
     case SHAMAN_RESTORATION:     return "restoration";

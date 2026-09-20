@@ -148,7 +148,6 @@ namespace color
   rgb school_color(school_e school);
 
   // Class colors
-  inline constexpr rgb COLOR_DEATH_KNIGHT( "C41F3B" );
   inline constexpr rgb COLOR_DEMON_HUNTER( "A330C9" );
   inline constexpr rgb COLOR_DRUID( "FF7D0A" );
   inline constexpr rgb COLOR_EVOKER( "33937F" );
@@ -169,7 +168,7 @@ namespace color
   inline constexpr rgb GREY3( "8A8A8A" );
   inline constexpr rgb YELLOW = COLOR_ROGUE;
   inline constexpr rgb PURPLE( "9482C9" );
-  inline constexpr rgb RED = COLOR_DEATH_KNIGHT;
+  inline constexpr rgb RED( "C41F3B" );
   inline constexpr rgb TEAL( "009090" );
   inline constexpr rgb BLACK( "000000" );
 
@@ -177,7 +176,7 @@ namespace color
   inline constexpr rgb COLOR_NONE = WHITE;
   inline constexpr rgb PHYSICAL = COLOR_WARRIOR;
   inline constexpr rgb HOLY( "FFCC00" );
-  inline constexpr rgb FIRE = COLOR_DEATH_KNIGHT;
+  inline constexpr rgb FIRE = RED;
   inline constexpr rgb NATURE = COLOR_HUNTER;
   inline constexpr rgb FROST = COLOR_SHAMAN;
   inline constexpr rgb SHADOW = PURPLE;

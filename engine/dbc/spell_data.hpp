@@ -361,7 +361,6 @@ struct spelleffect_data_t
       case 3:   return HUNTER;
       case 4:   return ROGUE;
       case 5:   return PRIEST;
-      case 6:   return DEATH_KNIGHT;
       case 7:   return SHAMAN;
       case 8:   return MAGE;
       case 9:   return WARLOCK;

@@ -38,8 +38,6 @@ rgb class_color( player_e type )
       return color::GREY;
     case PLAYER_GUARDIAN:
       return color::GREY;
-    case DEATH_KNIGHT:
-      return color::COLOR_DEATH_KNIGHT;
     case DEMON_HUNTER:
       return color::COLOR_DEMON_HUNTER;
     case DRUID:
@@ -97,8 +95,7 @@ rgb resource_color( resource_e type )
       return class_color( ROGUE );
 
     case RESOURCE_RAGE:
-    case RESOURCE_RUNIC_POWER:
-      return class_color( DEATH_KNIGHT );
+      return RED;
 
     case RESOURCE_HOLY_POWER:
       return class_color( PALADIN );
