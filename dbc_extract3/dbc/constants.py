@@ -12,7 +12,6 @@ class Class(enum.IntEnum):
   WARLOCK      = 9
   MONK         = 10
   DRUID        = 11
-  EVOKER       = 13
 
 class HotfixType(enum.IntEnum):
   DISABLED = 0
@@ -82,14 +81,11 @@ CLASS_SKILL_CATEGORIES = [
    795,   # Hunter
    921,   # Rogue
    804,   # Priest
-   796,   # Death Knight
    924,   # Shaman
    904,   # Mage
    849,   # Warlock
    829,   # Monk
    798,   # Druid
-   1848,  # Demon Hunter
-   2810,  # Evoker
 ]
 
 RACE_INFO = [
@@ -132,14 +128,11 @@ CLASS_INFO = [
   { 'id':  3, 'bit':  2, 'name': 'Hunter',       'skill':  795, 'family':   9, 'label':   23 },
   { 'id':  4, 'bit':  3, 'name': 'Rogue',        'skill':  921, 'family':   8, 'label':   20 },
   { 'id':  5, 'bit':  4, 'name': 'Priest',       'skill':  804, 'family':   6, 'label':   18 },
-  { 'id':  6, 'bit':  5, 'name': 'Death Knight', 'skill':  796, 'family':  15, 'label':   27 },
   { 'id':  7, 'bit':  6, 'name': 'Shaman',       'skill':  924, 'family':  11, 'label':   24 },
   { 'id':  8, 'bit':  7, 'name': 'Mage',         'skill':  904, 'family':   3, 'label':   17 },
   { 'id':  9, 'bit':  8, 'name': 'Warlock',      'skill':  849, 'family':   5, 'label':   19 },
   { 'id': 10, 'bit':  9, 'name': 'Monk',         'skill':  829, 'family':  53, 'label':   22 },
-  { 'id': 11, 'bit': 10, 'name': 'Druid',        'skill':  798, 'family':   7, 'label':   21 },
-  { 'id': 12, 'bit': 11, 'name': 'Demon Hunter', 'skill': 1848, 'family': 107, 'label':   66 },
-  { 'id': 13, 'bit': 12, 'name': 'Evoker',       'skill': 2810, 'family': 224, 'label': 1216 }
+  { 'id': 11, 'bit': 10, 'name': 'Druid',        'skill':  798, 'family':   7, 'label':   21 }
 ]
 
 SPEC_SKILL_CATEGORIES = [
@@ -149,14 +142,11 @@ SPEC_SKILL_CATEGORIES = [
   (  254,  255,  256,   0 ), # Hunter
   (  259,  260,  261,   0 ), # Rogue
   (  256,  257,  258,   0 ), # Priest
-  (  250,  251,  252,   0 ), # Death Knight
   (  262,  263,  264,   0 ), # Shaman
   (   62,   63,   64,   0 ), # Mage
   (  265,  266,  267,   0 ), # Warlock
   (  268,  270,  269,   0 ), # Monk
-  (  102,  103,  104, 105 ), # Druid
-  (  577,  581, 1480,   0 ), # Demon Hunter
-  ( 1467, 1468, 1473,   0 ), # Evoker
+  (  102,  103,  104, 105 )  # Druid
 ]
 
 PET_SKILL_CATEGORIES = [

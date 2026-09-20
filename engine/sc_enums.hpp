@@ -270,7 +270,6 @@ enum player_e
   PLAYER_SPECIAL_SCALE   = -1,
   PLAYER_NONE            = 0,
   DRUID,
-  EVOKER,
   HUNTER,
   MAGE,
   MONK,

@@ -218,7 +218,6 @@ static constexpr std::array<class_info_t, 13> _class_info { {
   { "Warlock",       1U <<  8,   5, LABEL_WARLOCK_SPELLS,      137042 },
   { "Monk",          1U <<  9,  53, LABEL_MONK_SPELLS,         137022 },
   { "Druid",         1U << 10,   7, LABEL_DRUID_SPELLS,        137009 },
-  { "Evoker",        1U << 12, 224, LABEL_EVOKER_SPELLS,       353167 },
 } };
 
 static constexpr std::array<util::string_view, 33> _race_strings { {

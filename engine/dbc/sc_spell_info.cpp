@@ -314,7 +314,6 @@ static constexpr std::array<class_map_entry_t, 15> _class_map { {
   { "Warlock",      WARLOCK       },  // 12
   { "Monk",         MONK          },  // 7
   { "Druid",        DRUID         },  // 3
-  { "Evoker",       EVOKER        },  // 4
   { nullptr,        PLAYER_NONE   },  // 0
 } };
 
@@ -1829,13 +1828,7 @@ static constexpr auto _label_strings = util::make_static_map<int, std::string_vi
   { LABEL_MAJOR_COOLDOWNS,      "Major Cooldowns"      },  // 690
   { LABEL_HEALING_SPELLS,       "Healing Spells"       },  // 741
   { LABEL_COVENANT,             "Covenant Spells"      },  // 976
-  { LABEL_EVOKER_SPELLS,        "Evoker Spells"        },  // 1216
   { LABEL_AVOID_CC_TARGETS,     "Avoid CC Targets"     },  // 1387
-  { LABEL_EVOKER_RED_SPELLS,    "Red Evoker Spells"    },  // 1464
-  { LABEL_EVOKER_BLUE_SPELLS,   "Blue Evoker Spells"   },  // 1465
-  { LABEL_EVOKER_GREEN_SPELLS,  "Green Evoker Spells"  },  // 1466
-  { LABEL_EVOKER_BRONZE_SPELLS, "Bronze Evoker Spells" },  // 1467
-  { LABEL_EVOKER_BLACK_SPELLS,  "Black Evoker Spells"  },  // 1468
   { LABEL_ITEM_EFFECTS,         "Item Effects"         },  // 3959
 } );
 

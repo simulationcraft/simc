@@ -366,7 +366,6 @@ struct spelleffect_data_t
       case 9:   return WARLOCK;
       case 10:  return MONK;
       case 11:  return DRUID;
-      case 13:  return EVOKER;
       default:  break;
     }
 

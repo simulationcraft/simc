@@ -180,7 +180,7 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
 bool is_actor_scope( const option_tuple_t& opt )
 {
   static constexpr std::array<util::string_view, 22> actor_scope_opts { {
-    "deathknight", "demonhunter", "druid", "evoker", "hunter", "mage", "monk",
+    "druid", "hunter", "mage", "monk",
     "paladin", "priest", "rogue", "shaman", "warlock", "warrior", "player_simplified",
     "enemy", "tank_dummy", "pet", "guardian", "copy", "armory", "local_json", "guild"
   } };

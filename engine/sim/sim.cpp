@@ -3611,26 +3611,6 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
   if ( util::str_compare_ci( name_str, "active_allies" ) )
     return make_ref_expr( name_str, active_allies );
 
-  if ( util::str_compare_ci( name_str, "active_allied_augmentations" ) )
-  {
-    if ( player_list.size() == 1U )
-    {
-      return expr_t::create_constant( name_str, 0 );
-    }
-    else
-    {
-      return make_fn_expr( name_str, [ this ] {
-        int augs = 0;
-        for ( auto& player : player_non_sleeping_list )
-        {
-          if ( player->specialization() == EVOKER_AUGMENTATION )
-            augs++;
-        }
-        return augs;
-      } );
-    }
-  }
-
   // Get the number of actors in the simulation that do not have execute abilities
   if ( name_str == "nonexecute_actors_pct" )
   {
@@ -3930,10 +3910,7 @@ void sim_t::create_options()
   add_option( opt_int( "dungeon_route_simple_dps_members", dungeon_route_simple_dps_members, 0, 3 ) );
 
   // Character Creation
-  add_option( opt_func( "deathknight", parse_player ) );
-  add_option( opt_func( "demonhunter", parse_player ) );
   add_option( opt_func( "druid", parse_player ) );
-  add_option( opt_func( "evoker", parse_player ) );
   add_option( opt_func( "hunter", parse_player ) );
   add_option( opt_func( "mage", parse_player ) );
   add_option( opt_func( "monk", parse_player ) );

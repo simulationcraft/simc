@@ -436,16 +436,6 @@ specialization_e dbc::translate_spec_str( player_e ptype, util::string_view spec
         return DRUID_RESTORATION;
       break;
     }
-    case EVOKER:
-    {
-      if ( str_compare_ci( spec_str, "devastation" ) )
-        return EVOKER_DEVASTATION;
-      else if ( str_compare_ci( spec_str, "preservation" ) )
-        return EVOKER_PRESERVATION;
-      else if ( str_compare_ci( spec_str, "augmentation" ) )
-        return EVOKER_AUGMENTATION;
-      break;
-    }
     case HUNTER:
     {
       if ( str_compare_ci( spec_str, "beast_mastery" ) )
@@ -648,9 +638,6 @@ const char* dbc::specialization_string( specialization_e spec )
     case DRUID_FERAL:            return "feral";
     case DRUID_GUARDIAN:         return "guardian";
     case DRUID_RESTORATION:      return "restoration";
-    case EVOKER_DEVASTATION:     return "devastation";
-    case EVOKER_PRESERVATION:    return "preservation";
-    case EVOKER_AUGMENTATION:    return "augmentation";
     case PET_FEROCITY:           return "ferocity";
     case PET_TENACITY:           return "tenacity";
     case PET_CUNNING:            return "cunning";
