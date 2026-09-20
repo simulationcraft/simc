@@ -35,11 +35,8 @@ SRC += \
     class_modules$(PATHSEP)sc_priest.cpp \
     class_modules$(PATHSEP)sc_rogue.cpp \
     class_modules$(PATHSEP)sc_shaman.cpp \
+    class_modules$(PATHSEP)sc_warlock.cpp \
     class_modules$(PATHSEP)sc_warrior.cpp \
-    class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock.cpp \
-    class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_actions.cpp \
-    class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_init.cpp \
-    class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_pets.cpp \
     dbc$(PATHSEP)assisted_combat.cpp \
     dbc$(PATHSEP)azerite.cpp \
     dbc$(PATHSEP)character_loadout.cpp \

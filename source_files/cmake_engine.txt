@@ -25,8 +25,6 @@ class_modules/apl/druid/druid.hpp
 class_modules/apl/mage.hpp
 class_modules/apl/warlock.hpp
 class_modules/class_module.hpp
-class_modules/warlock/sc_warlock.hpp
-class_modules/warlock/sc_warlock_pets.hpp
 config.hpp
 dbc/assisted_combat.hpp
 dbc/azerite.hpp
@@ -218,11 +216,8 @@ class_modules/sc_paladin.cpp
 class_modules/sc_priest.cpp
 class_modules/sc_rogue.cpp
 class_modules/sc_shaman.cpp
+class_modules/sc_warlock.cpp
 class_modules/sc_warrior.cpp
-class_modules/warlock/sc_warlock.cpp
-class_modules/warlock/sc_warlock_actions.cpp
-class_modules/warlock/sc_warlock_init.cpp
-class_modules/warlock/sc_warlock_pets.cpp
 dbc/assisted_combat.cpp
 dbc/azerite.cpp
 dbc/character_loadout.cpp
