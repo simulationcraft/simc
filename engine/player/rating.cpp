@@ -24,7 +24,6 @@ double& rating_t::get_mutable(rating_e r)
   case RATING_DODGE: return dodge;
   case RATING_PARRY: return parry;
   case RATING_BLOCK: return block;
-  case RATING_MASTERY: return mastery;
   case RATING_PVP_POWER: return pvp_power;
   case RATING_PVP_RESILIENCE: return pvp_resilience;
   case RATING_DAMAGE_VERSATILITY: return damage_versatility;
@@ -37,7 +36,7 @@ double& rating_t::get_mutable(rating_e r)
   case RATING_CORRUPTION_RESISTANCE: return corruption_resistance;
   default: break;
   }
-  assert(false); return mastery;
+  assert(false); return spell_haste;
 }
 
 double rating_t::get(rating_e r) const
@@ -57,7 +56,6 @@ double rating_t::get(rating_e r) const
   case RATING_DODGE: return dodge;
   case RATING_PARRY: return parry;
   case RATING_BLOCK: return block;
-  case RATING_MASTERY: return mastery;
   case RATING_PVP_POWER: return pvp_power;
   case RATING_PVP_RESILIENCE: return pvp_resilience;
   case RATING_DAMAGE_VERSATILITY: return damage_versatility;
@@ -70,7 +68,7 @@ double rating_t::get(rating_e r) const
   case RATING_CORRUPTION_RESISTANCE: return corruption_resistance;
   default: break;
   }
-  assert(false); return mastery;
+  assert(false); return spell_haste;
 }
 
 // Initialize all ratings to a very high number by default
@@ -89,8 +87,6 @@ void rating_t::init(dbc_t& dbc, int level)
   for (rating_e i = static_cast<rating_e>(0); i < RATING_MAX; ++i)
   {
     get_mutable(i) = dbc.combat_rating(i, level);
-    if (i == RATING_MASTERY || i == RATING_CORRUPTION || i == RATING_CORRUPTION_RESISTANCE)
-      get_mutable(i) /= 100.0;
 
     if (get_mutable(i) == 0.0)
       get_mutable(i) = 1.0;

@@ -329,12 +329,9 @@ void print_generic_stats( std::ostream& os, const player_t& p )
   fmt::print(
       os,
       "  Generic Stats: "
-      "mastery={:.2f}%|{:.2f}%({:.0f})  "
       "versatility={:.2f}%|{:.2f}%({:.0f})  "
       "leech={:.2f}%|{:.2f}%({:.0f})  "
       "runspeed={:.2f}%|{:.2f}%({:.0f})\n",
-      100.0 * buffed_stats.mastery_value, 100.0 * p.cache.mastery_value(),
-      p.composite_mastery_rating(), 100 * buffed_stats.damage_versatility,
       100 * p.composite_damage_versatility(),
       p.composite_damage_versatility_rating(), 100 * buffed_stats.leech,
       100 * p.composite_leech(), p.composite_leech_rating(),

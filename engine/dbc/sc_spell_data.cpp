@@ -7,7 +7,6 @@
 #include "dbc/trait_data.hpp"
 #include "specialization_spell.hpp"
 #include "class_spells.hpp"
-#include "mastery_spells.hpp"
 #include "racial_spells.hpp"
 #include "sim/expressions.hpp"
 #include "spell_query/spell_data_expr.hpp"
@@ -266,7 +265,6 @@ static constexpr std::array<expr_data_map_t, DATA_EXPR_MAX> expr_map { {
   { "talent_spell", DATA_TALENT_SPELL },
   { "class_spell", DATA_CLASS_SPELL },
   { "race_spell", DATA_RACIAL_SPELL },
-  { "mastery", DATA_MASTERY_SPELL },
   { "spec_spell", DATA_SPECIALIZATION_SPELL }
 } };
 
@@ -415,13 +413,6 @@ struct spell_list_expr_t : public spell_data_expr_t
       case DATA_RACIAL_SPELL:
       {
         range::for_each( racial_spell_entry_t::data( dbc.ptr ), [ this ]( const racial_spell_entry_t& entry ) {
-          result_spell_list.push_back( entry.spell_id );
-        } );
-        break;
-      }
-      case DATA_MASTERY_SPELL:
-      {
-        range::for_each( mastery_spell_entry_t::data( dbc.ptr ), [ this ]( const mastery_spell_entry_t& entry ) {
           result_spell_list.push_back( entry.spell_id );
         } );
         break;

@@ -1631,15 +1631,6 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
                  p.composite_melee_attack_power() * p.composite_attack_power_multiplier(),
                  p.initial.stats.attack_power );
     }
-    os.format( R"(<tr class="right"><th class="left">Mastery</th>)"
-               "<td></td>"
-               "<td></td>"
-               "<td>{:.2f}% ({:.0f})</td>"
-               "<td>{:.2f}%</td>"
-               "<td>{:.0f}</td></tr>\n",
-               100.0 * buffed_stats.mastery_value,
-               buffed_stats.mastery_rating,
-               100.0 * p.cache.mastery_value(), p.composite_mastery_rating() );
     if ( buffed_stats.mh_attack_expertise > 7.5 )
     {
       if ( p.dual_wield() )
@@ -3436,7 +3427,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
           os.format( "<li><span>stat:</span>{}</li>"
                      "<li><span>amount:</span>{:.2f}%</li>",
                      util::stat_pct_buff_type_string( stat ),
-                     b.default_value * ( stat == STAT_PCT_BUFF_MASTERY ? 1.0 : 100.0 ) );
+                     b.default_value * 100.0 );
         }
       }
 

@@ -270,9 +270,6 @@ double util::stat_value( const player_t* p, stat_e stat )
     case STAT_HASTE_RATING:
       v = p->composite_melee_haste_rating();
       break;
-    case STAT_MASTERY_RATING:
-      v = p->composite_mastery_rating();
-      break;
     case STAT_VERSATILITY_RATING:
       v = p->composite_damage_versatility_rating();
       break;
@@ -1316,7 +1313,6 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_SPELL_HASTE:              return "spell_haste";
     case CACHE_AUTO_ATTACK_SPEED:        return "auto_attack_speed";
     case CACHE_SPELL_CAST_SPEED:         return "spell_cast_speed";
-    case CACHE_MASTERY:                  return "mastery";
     case CACHE_PLAYER_DAMAGE_MULTIPLIER: return "player_dmg_mult";
     case CACHE_PLAYER_HEAL_MULTIPLIER:   return "player_heal_mult";
     case CACHE_PARRY:                    return "parry";
@@ -1494,8 +1490,6 @@ const char* util::stat_type_string( stat_e stat )
 
     case STAT_BLOCK_RATING: return "block_rating";
 
-    case STAT_MASTERY_RATING: return "mastery_rating";
-
     case STAT_PVP_POWER: return "pvp_power";
     case STAT_VERSATILITY_RATING: return "versatility_rating";
 
@@ -1521,7 +1515,6 @@ const char* util::stat_pct_buff_type_string( stat_pct_buff_type stat )
     case STAT_PCT_BUFF_CRIT: return "crit";
     case STAT_PCT_BUFF_HASTE: return "haste";
     case STAT_PCT_BUFF_VERSATILITY: return "versatility";
-    case STAT_PCT_BUFF_MASTERY: return "mastery";
     case STAT_PCT_BUFF_STRENGTH: return "strength";
     case STAT_PCT_BUFF_AGILITY: return "agility";
     case STAT_PCT_BUFF_STAMINA: return "stamina";
@@ -1585,8 +1578,6 @@ const char* util::stat_type_abbrev( stat_e stat )
 
     case STAT_BLOCK_RATING: return "BlockR";
 
-    case STAT_MASTERY_RATING: return "Mastery";
-
     case STAT_PVP_POWER: return "PvPP";
 
     case STAT_VERSATILITY_RATING: return "Vers";
@@ -1645,8 +1636,6 @@ const char* util::stat_type_wowhead( stat_e stat )
     case STAT_DODGE_RATING:      return "dodgeRating";
     case STAT_PARRY_RATING:      return "parryRating";
 
-    case STAT_MASTERY_RATING: return "masteryRating";
-
     case STAT_VERSATILITY_RATING: return "versatility";
 
     case STAT_LEECH_RATING: return "lifesteal";
@@ -1673,7 +1662,6 @@ const char* util::stat_type_gem( stat_e stat )
     case STAT_EXPERTISE_RATING: return "Expertise";
     case STAT_CRIT_RATING: return "Critical Strike";
     case STAT_HASTE_RATING: return "Haste";
-    case STAT_MASTERY_RATING: return "Mastery";
 
     case STAT_DODGE_RATING: return "Dodge";
     case STAT_PARRY_RATING: return "Parry";
@@ -1754,7 +1742,6 @@ const char* util::rating_type_string( rating_e rating )
     case RATING_RANGED_HASTE:           return "ranged_haste";
     case RATING_SPELL_HASTE:            return "spell_haste";
     case RATING_EXPERTISE:              return "expertise";
-    case RATING_MASTERY:                return "mastery";
     case RATING_PVP_POWER:              return "pvp_power";
     case RATING_DAMAGE_VERSATILITY:     return "damage_versatility";
     case RATING_HEAL_VERSATILITY:       return "heal_versatility";
@@ -1790,7 +1777,6 @@ stat_e util::parse_stat_type( util::string_view name )
   if ( name == "exprtng"        ) return STAT_EXPERTISE_RATING;
   if ( name == "hastertng"      ) return STAT_HASTE_RATING;
   if ( name == "hitrtng"        ) return STAT_HIT_RATING;
-  if ( name == "mastrtng"       ) return STAT_MASTERY_RATING;
   if ( name == "parryrtng"      ) return STAT_PARRY_RATING;
   if ( name == "resiliencertng" ) return STAT_RESILIENCE_RATING;
   if ( name == "splpwr"         ) return STAT_SPELL_POWER;
@@ -2157,7 +2143,6 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_ATTACK_POWER:        return STAT_ATTACK_POWER;
     case ITEM_MOD_RANGED_ATTACK_POWER: return STAT_ATTACK_POWER;
     case ITEM_MOD_SPELL_POWER:         return STAT_SPELL_POWER;
-    case ITEM_MOD_MASTERY_RATING:      return STAT_MASTERY_RATING;
     case ITEM_MOD_EXTRA_ARMOR:         return STAT_BONUS_ARMOR;
     case ITEM_MOD_RESILIENCE_RATING:   return STAT_RESILIENCE_RATING;
     case ITEM_MOD_PVP_POWER:           return STAT_PVP_POWER;
@@ -2192,7 +2177,6 @@ int util::translate_stat( stat_e stat )
     case STAT_EXPERTISE_RATING:   return ITEM_MOD_EXPERTISE_RATING;
     case STAT_ATTACK_POWER:       return ITEM_MOD_ATTACK_POWER;
     case STAT_SPELL_POWER:        return ITEM_MOD_SPELL_POWER;
-    case STAT_MASTERY_RATING:     return ITEM_MOD_MASTERY_RATING;
     case STAT_BONUS_ARMOR:        return ITEM_MOD_EXTRA_ARMOR;
     case STAT_RESILIENCE_RATING:  return ITEM_MOD_RESILIENCE_RATING;
     case STAT_PVP_POWER:          return ITEM_MOD_PVP_POWER;
@@ -2247,8 +2231,6 @@ stat_e util::translate_rating_mod( unsigned ratings )
     return STAT_VERSATILITY_RATING;
   else if ( ratings & RATING_MOD_EXPERTISE )
     return STAT_EXPERTISE_RATING;
-  else if ( ratings & RATING_MOD_MASTERY )
-    return STAT_MASTERY_RATING;
   else if ( ratings & RATING_MOD_PVP_POWER )
     return STAT_PVP_POWER;
   else if ( ratings & RATING_MOD_LEECH )
@@ -2281,7 +2263,6 @@ unsigned util::rating_to_rating_mod( rating_e r )
     case RATING_HEAL_VERSATILITY:       return RATING_MOD_VERS_HEAL;
     case RATING_MITIGATION_VERSATILITY: return RATING_MOD_VERS_MITIG;
     case RATING_EXPERTISE:              return RATING_MOD_EXPERTISE;
-    case RATING_MASTERY:                return RATING_MOD_MASTERY;
     case RATING_PVP_POWER:              return RATING_MOD_PVP_POWER;
     case RATING_LEECH:                  return RATING_MOD_LEECH;
     case RATING_SPEED:                  return RATING_MOD_SPEED;
@@ -2304,8 +2285,6 @@ rating_e util::stat_to_rating( stat_e s )
       return RATING_MELEE_CRIT;
     case STAT_HASTE_RATING:
       return RATING_MELEE_HASTE;
-    case STAT_MASTERY_RATING:
-      return RATING_MASTERY;
     case STAT_VERSATILITY_RATING:
       return RATING_DAMAGE_VERSATILITY;
     case STAT_LEECH_RATING:
@@ -2997,7 +2976,6 @@ bool util::is_combat_rating( item_mod_type t )
 {
   switch ( t )
   {
-    case ITEM_MOD_MASTERY_RATING:
     case ITEM_MOD_DODGE_RATING:
     case ITEM_MOD_PARRY_RATING:
     case ITEM_MOD_BLOCK_RATING:
@@ -3037,7 +3015,6 @@ bool util::is_combat_rating( stat_e t )
   {
     case STAT_CRIT_RATING:
     case STAT_HASTE_RATING:
-    case STAT_MASTERY_RATING:
     case STAT_VERSATILITY_RATING:
       return true;
     default:
@@ -3324,8 +3301,6 @@ void util::fuzzy_stats( std::string&      encoding,
   stat_search( encoding, splits, STAT_CRIT_RATING,      "critical strike" );
   stat_search( encoding, splits, STAT_CRIT_RATING,      "crit rating" );
   stat_search( encoding, splits, STAT_CRIT_RATING,      "crit" );
-  stat_search( encoding, splits, STAT_MASTERY_RATING,   "mastery rating" );
-  stat_search( encoding, splits, STAT_MASTERY_RATING,   "mastery" );
 
   stat_search( encoding, splits, STAT_DODGE_RATING,     "dodge rating" );
   stat_search( encoding, splits, STAT_PARRY_RATING,     "parry rating" );

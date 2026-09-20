@@ -83,7 +83,6 @@ void snapshot_stats_t::execute()
   buffed_stats.spell_cast_speed = p->cache.spell_cast_speed();
   buffed_stats.attack_haste = p->cache.attack_haste();
   buffed_stats.auto_attack_speed = p->cache.auto_attack_speed();
-  buffed_stats.mastery_value = p->cache.mastery_value();
   buffed_stats.bonus_armor = p->composite_bonus_armor();
   buffed_stats.damage_versatility = p->cache.damage_versatility();
   buffed_stats.heal_versatility = p->cache.heal_versatility();
@@ -98,7 +97,6 @@ void snapshot_stats_t::execute()
   buffed_stats.melee_crit_rating = p->composite_melee_crit_rating();
   buffed_stats.spell_haste_rating = p->composite_spell_haste_rating();
   buffed_stats.melee_haste_rating = p->composite_melee_haste_rating();
-  buffed_stats.mastery_rating = p->composite_mastery_rating();
   buffed_stats.versatility_rating = p->composite_damage_versatility_rating();
   buffed_stats.avoidance_rating = p->composite_avoidance_rating();
   buffed_stats.leech_rating = p->composite_leech_rating();

@@ -71,8 +71,6 @@ void gear_stats_t::add_stat( stat_e stat,
 
     case STAT_BLOCK_RATING: block_rating += value; break;
 
-    case STAT_MASTERY_RATING: mastery_rating += value; break;
-
     case STAT_RESILIENCE_RATING: resilience_rating += value; break;
     case STAT_PVP_POWER:                 pvp_power += value; break;
 
@@ -148,8 +146,6 @@ void gear_stats_t::set_stat( stat_e stat,
 
     case STAT_BLOCK_RATING: block_rating = value; break;
 
-    case STAT_MASTERY_RATING: mastery_rating = value; break;
-
     case STAT_RESILIENCE_RATING: resilience_rating = value; break;
     case STAT_PVP_POWER:                 pvp_power = value; break;
 
@@ -223,8 +219,6 @@ double gear_stats_t::get_stat( stat_e stat ) const
     case STAT_PARRY_RATING:      return parry_rating;
 
     case STAT_BLOCK_RATING: return block_rating;
-
-    case STAT_MASTERY_RATING: return mastery_rating;
 
     case STAT_RESILIENCE_RATING: return resilience_rating;
     case STAT_PVP_POWER:         return pvp_power;

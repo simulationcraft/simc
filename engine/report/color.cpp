@@ -132,8 +132,6 @@ rgb stat_color( stat_e type )
       return COLOR_PALADIN;
     case STAT_HASTE_RATING:
       return COLOR_SHAMAN;
-    case STAT_MASTERY_RATING:
-      return COLOR_ROGUE.dark();
     case STAT_DODGE_RATING:
       return COLOR_DRUID;
     case STAT_PARRY_RATING:

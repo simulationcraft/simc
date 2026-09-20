@@ -41,7 +41,6 @@ struct pet_t : public player_t
   struct current_pet_stats_t
   {
     // current pet stats stored in these doubles, and updated on the heartbeat event
-    // testing as of 6-6-2023 shows that Mastery, and Versatility update instantly, and are ommited due to that
     double attack_power_from_ap = 0.0;
     double attack_power_from_sp = 0.0;
     double spell_power_from_ap = 0.0;
@@ -123,14 +122,6 @@ public:
   double composite_spell_haste() const override;
 
   double composite_spell_cast_speed() const override;
-
-  // Pets have no mastery of their own. Actions sourced to them can benefit from the owner's mastery, and this should be
-  // handled within the action or the overridden in the dervied pet class.
-  double composite_mastery() const override
-  { return 0.0; }
-
-  double composite_mastery_value() const override
-  { return 0.0; }
 
   double composite_bonus_armor() const override
   { return owner -> cache.bonus_armor(); }

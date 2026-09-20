@@ -369,37 +369,6 @@ double player_stat_cache_t::armor() const
   return _armor;
 }
 
-double player_stat_cache_t::mastery() const
-{
-  if ( !active || !valid[ CACHE_MASTERY ] )
-  {
-    valid[ CACHE_MASTERY ] = true;
-    _mastery               = player->composite_mastery();
-    _mastery_value         = player->composite_mastery_value();
-  }
-  else
-    assert( _mastery == player->composite_mastery() );
-  return _mastery;
-}
-
-/**
- * This is composite_mastery * specialization_mastery_coefficient !
- *
- * If you need the pure mastery value, use player_t::composite_mastery
- */
-double player_stat_cache_t::mastery_value() const
-{
-  if ( !active || !valid[ CACHE_MASTERY ] )
-  {
-    valid[ CACHE_MASTERY ] = true;
-    _mastery               = player->composite_mastery();
-    _mastery_value         = player->composite_mastery_value();
-  }
-  else
-    assert( _mastery_value == player->composite_mastery_value() );
-  return _mastery_value;
-}
-
 double player_stat_cache_t::bonus_armor() const
 {
   if ( !active || !valid[ CACHE_BONUS_ARMOR ] )
@@ -572,8 +541,6 @@ double player_stat_cache_t::block() const { return _player->composite_block(); }
 double player_stat_cache_t::crit_avoidance() const { return _player->composite_crit_avoidance(); }
 double player_stat_cache_t::miss() const { return _player->composite_miss(); }
 double player_stat_cache_t::armor() const { return _player->composite_armor(); }
-double player_stat_cache_t::mastery() const { return _player->composite_mastery(); }
-double player_stat_cache_t::mastery_value() const { return _player->composite_mastery_value(); }
 double player_stat_cache_t::damage_versatility() const { return _player->composite_damage_versatility(); }
 double player_stat_cache_t::heal_versatility() const { return _player->composite_heal_versatility(); }
 double player_stat_cache_t::mitigation_versatility() const { return _player->composite_mitigation_versatility(); }

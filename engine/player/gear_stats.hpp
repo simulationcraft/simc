@@ -37,7 +37,6 @@ struct gear_stats_t
   double dodge_rating;
   double parry_rating;
   double block_rating;
-  double mastery_rating;
   double resilience_rating;
   double pvp_power;
   double versatility_rating;
@@ -47,14 +46,35 @@ struct gear_stats_t
   double corruption_rating;
   double corruption_resistance_rating;
 
-  gear_stats_t() :
-    default_value( 0.0 ), attribute(), resource(),
-    spell_power( 0.0 ), attack_power( 0.0 ), expertise_rating( 0.0 ), expertise_rating2( 0.0 ),
-    hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
-    weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
-    parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 ),
-    versatility_rating( 0.0 ), leech_rating( 0.0 ), speed_rating( 0.0 ),
-    avoidance_rating( 0.0 ), corruption_rating( 0.0 ), corruption_resistance_rating( 0.0 )
+  gear_stats_t()
+    : default_value( 0.0 ),
+      attribute(),
+      resource(),
+      spell_power( 0.0 ),
+      attack_power( 0.0 ),
+      expertise_rating( 0.0 ),
+      expertise_rating2( 0.0 ),
+      hit_rating( 0.0 ),
+      hit_rating2( 0.0 ),
+      crit_rating( 0.0 ),
+      haste_rating( 0.0 ),
+      weapon_dps( 0.0 ),
+      weapon_speed( 0.0 ),
+      weapon_offhand_dps( 0.0 ),
+      weapon_offhand_speed( 0.0 ),
+      armor( 0.0 ),
+      bonus_armor( 0.0 ),
+      dodge_rating( 0.0 ),
+      parry_rating( 0.0 ),
+      block_rating( 0.0 ),
+      resilience_rating( 0.0 ),
+      pvp_power( 0.0 ),
+      versatility_rating( 0.0 ),
+      leech_rating( 0.0 ),
+      speed_rating( 0.0 ),
+      avoidance_rating( 0.0 ),
+      corruption_rating( 0.0 ),
+      corruption_resistance_rating( 0.0 )
   { }
 
   void initialize( double initializer )
@@ -81,7 +101,6 @@ struct gear_stats_t
     dodge_rating = initializer;
     parry_rating = initializer;
     block_rating = initializer;
-    mastery_rating = initializer;
     resilience_rating = initializer;
     pvp_power = initializer;
     versatility_rating = initializer;
@@ -118,7 +137,6 @@ struct gear_stats_t
     dodge_rating += right.dodge_rating;
     parry_rating += right.parry_rating;
     block_rating += right.block_rating;
-    mastery_rating += right.mastery_rating;
     resilience_rating += right.resilience_rating;
     pvp_power += right.pvp_power;
     versatility_rating += right.versatility_rating;

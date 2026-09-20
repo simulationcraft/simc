@@ -544,9 +544,6 @@ double spelleffect_data_t::default_multiplier() const
           }
           break;
 
-        case A_MOD_MASTERY_PCT:
-          return 1.0;
-
         case A_RESTORE_HEALTH:
         case A_RESTORE_POWER:
           return 0.2;  // Resource per 5s

@@ -2730,10 +2730,6 @@ void sim_t::init()
                                    ->set_default_value_from_effect( 1 )
                                    ->add_invalidate( CACHE_STAMINA );
 
-  auras.skyfury = make_buff( this, "skyfury", dbc::find_spell( this, 462854 ) )
-                      ->set_default_value_from_effect( 1 )
-                      ->add_invalidate( CACHE_MASTERY );
-
   // Fight style initialization must be performed before target creation and raid event initialization, since fight
   // styles may define/override these things.
   init_fight_style();
@@ -3946,7 +3942,6 @@ void sim_t::create_options()
   add_option( opt_float( "default_enchant_spell_power", enchant.spell_power ) );
   add_option( opt_float( "default_enchant_attack_power", enchant.attack_power ) );
   add_option( opt_float( "default_enchant_haste_rating", enchant.haste_rating ) );
-  add_option( opt_float( "default_enchant_mastery_rating", enchant.mastery_rating ) );
   add_option( opt_float( "default_enchant_crit_rating", enchant.crit_rating ) );
   add_option( opt_float( "default_enchant_versatility_rating", enchant.versatility_rating ) );
   add_option( opt_float( "default_enchant_health", enchant.resource[RESOURCE_HEALTH] ) );

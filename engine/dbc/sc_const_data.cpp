@@ -10,7 +10,6 @@
 #include "client_data.hpp"
 #include "specialization_spell.hpp"
 #include "class_spells.hpp"
-#include "mastery_spells.hpp"
 #include "racial_spells.hpp"
 #include "trait_data.hpp"
 
@@ -1627,33 +1626,6 @@ bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specializatio
   }
 
   return !spec_list.empty();
-}
-
-unsigned dbc_t::mastery_ability_id( specialization_e spec ) const
-{
-  if ( spec == SPEC_NONE )
-  {
-    return 0;
-  }
-
-  const auto& entry = mastery_spell_entry_t::find( spec, ptr );
-  if ( entry.spell_id == 0 )
-  {
-    return 0;
-  }
-
-  if ( !spell( entry.spell_id )->id() )
-  {
-    return 0;
-  }
-
-  // Check if spell has been replaced by another
-  if ( !replaced_id( entry.spell_id ) )
-  {
-    return entry.spell_id;
-  }
-
-  return 0;
 }
 
 bool dbc_t::is_specialization_ability( specialization_e spec, unsigned spell_id ) const

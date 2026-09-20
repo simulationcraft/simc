@@ -240,7 +240,7 @@ struct player_t : public actor_t
     double miss, dodge, parry, block;
     double hit, expertise, leech, avoidance, crit_avoidance;
     double spell_crit_chance, attack_crit_chance, block_value;
-    double mastery, versatility, all_crit, all_haste;
+    double versatility, all_crit, all_haste;
     double melee_haste, spell_haste, ranged_haste;
     double skill, skill_debuff, distance;
     double distance_to_move;
@@ -595,7 +595,6 @@ struct player_t : public actor_t
   bool active_during_iteration;
   const spell_data_t* spec_spell;
   const spell_data_t* single_button_assistant;
-  const spelleffect_data_t* _mastery; // = find_mastery_spell( specialization() ) -> effectN( 1 );
   player_stat_cache_t cache;
   auto_dispose<std::vector<action_variable_t*>> variables;
   std::vector<std::string> action_map;
@@ -977,7 +976,6 @@ public:
   { return get_attribute( ATTR_INTELLECT ); }
   double spirit() const
   { return get_attribute( ATTR_SPIRIT ); }
-  double mastery_coefficient() const;
   double get_player_distance( const player_t& ) const;
   double get_ground_aoe_distance( const action_state_t& ) const;
   double get_position_distance( double m = 0, double v = 0 ) const;
@@ -1010,7 +1008,6 @@ public:
   const spell_data_t* find_specialization_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_specialization_spell( util::string_view name, util::string_view desc, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_specialization_spell( unsigned spell_id, specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_mastery_spell( specialization_e s ) const;
   const spell_data_t* find_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_spell( unsigned int id, specialization_e s ) const;
   const spell_data_t* find_spell( unsigned int id ) const;
@@ -1173,8 +1170,6 @@ public:
   virtual double composite_spell_crit_chance_multiplier() const
   { return 1.0; }
   virtual double composite_spell_hit() const;
-  virtual double composite_mastery() const;
-  virtual double composite_mastery_value() const;
   virtual double composite_damage_versatility() const;
   virtual double composite_heal_versatility() const;
   virtual double composite_mitigation_versatility() const;
@@ -1243,8 +1238,6 @@ public:
   { return composite_rating( RATING_RANGED_CRIT ); }
   virtual double composite_ranged_haste_rating() const
   { return composite_rating( RATING_RANGED_HASTE ); }
-  virtual double composite_mastery_rating() const
-  { return composite_rating( RATING_MASTERY ); }
   virtual double composite_expertise_rating() const
   { return composite_rating( RATING_EXPERTISE ); }
   virtual double composite_dodge_rating() const

@@ -22,7 +22,6 @@
 #include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
 #include "dbc/item_set_bonus.hpp"
-#include "dbc/mastery_spells.hpp"
 #include "dbc/rank_spells.hpp"
 #include "dbc/sc_spell_info.hpp"
 #include "dbc/specialization_spell.hpp"
@@ -1131,7 +1130,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     active_during_iteration( false ),
     spec_spell( spell_data_t::nil() ),
     single_button_assistant( spell_data_t::nil() ),
-    _mastery( &spelleffect_data_t::nil() ),
     cache( this ),
     resource_regeneration( regen_type::STATIC ),
     last_regen( timespan_t::zero() ),
@@ -1159,7 +1157,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
   gear.initialize( std::numeric_limits<double>::lowest() );
 
   base.skill              = sim->default_skill;
-  base.mastery            = 8.0;
   base.movement_direction = movement_direction_type::NONE;
 
   if ( !is_enemy() && type != HEALING_ENEMY )
@@ -1270,7 +1267,6 @@ player_t::base_initial_current_t::base_initial_current_t() :
   spell_crit_chance(),
   attack_crit_chance(),
   block_value(),
-  mastery( 0 ),
   versatility( 0 ),
   all_crit( 0 ),
   all_haste( 1.0 ),
@@ -1336,7 +1332,6 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
   fmt::format_to( out, " spell_crit_chance={:.6g}", s.spell_crit_chance );
   fmt::format_to( out, " attack_crit_chance={:.6g}", s.attack_crit_chance );
   fmt::format_to( out, " block_value={:.6g}", s.block_value );
-  fmt::format_to( out, " mastery={:.6g}", s.mastery );
   fmt::format_to( out, " versatility={:.6g}", s.versatility );
   fmt::format_to( out, " all_haste={:.6g}", s.all_haste );
   fmt::format_to( out, " melee_haste={:.6g}", s.melee_haste );
@@ -1524,7 +1519,6 @@ void player_t::init_base_stats()
     base.spell_crit_chance  = get_passive_player_value( base.all_crit, "spell_crit" );
     base.attack_crit_chance = base.all_crit;
 
-    base.mastery     = get_passive_player_value( 8.0, "mastery" );
     base.versatility = get_passive_player_value( base.versatility, "versatility" );
 
     base.leech          = get_passive_player_value( base.leech, "leech" );
@@ -1659,8 +1653,7 @@ void player_t::init_base_stats()
     // Only Warriors and Paladins can block, defaults to 0
     case PALADIN:
     case WARRIOR:
-      // Base block chance is 3%, increased in warriors' and paladins' class aura and protection warrior's spec aura
-      // Further increased by mastery for both Protection specs
+      // Base block chance is 3%
       base.block = 0.03;
       base.block = get_passive_player_value( base.block, "block" );
 
@@ -3318,10 +3311,6 @@ void player_t::init_spells()
   {
     spec_spell = find_spell( util::specialization_string( specialization() ) );
 
-    const spell_data_t* s = find_mastery_spell( specialization() );
-    if ( s->ok() )
-      _mastery = &( s->effectN( 1 ) );
-
     if ( sim->dbc->wowv() >= wowv_t{ 11, 1, 7 } )
       single_button_assistant = find_specialization_spell( "Single-Button Assistant" );
   }
@@ -3440,7 +3429,6 @@ void player_t::init_scaling()
     scaling->set( STAT_ATTACK_POWER, attack );
     scaling->enable( STAT_CRIT_RATING );
     scaling->enable( STAT_HASTE_RATING );
-    scaling->enable( STAT_MASTERY_RATING );
     scaling->enable( STAT_VERSATILITY_RATING );
 
     // scaling->enable( STAT_SPEED_RATING );  // handled in raid_events movement_event_t
@@ -3494,10 +3482,6 @@ void player_t::init_scaling()
 
         case STAT_HASTE_RATING:
           add_stat( initial.stats.haste_rating, v, 0 );
-          break;
-
-        case STAT_MASTERY_RATING:
-          add_stat( initial.stats.mastery_rating, v, 0 );
           break;
 
         case STAT_VERSATILITY_RATING:
@@ -4616,7 +4600,6 @@ void player_t::init_finished()
         case STAT_CRIT_RATING:        stat_pct = STAT_PCT_BUFF_CRIT; break;
         case STAT_HASTE_RATING:       stat_pct = STAT_PCT_BUFF_HASTE; break;
         case STAT_VERSATILITY_RATING: stat_pct = STAT_PCT_BUFF_VERSATILITY; break;
-        case STAT_MASTERY_RATING:     stat_pct = STAT_PCT_BUFF_MASTERY; stat_amount = c.amount; break;
         case STAT_STRENGTH:           stat_pct = STAT_PCT_BUFF_STRENGTH; break;
         case STAT_AGILITY:            stat_pct = STAT_PCT_BUFF_AGILITY; break;
         case STAT_STAMINA:            stat_pct = STAT_PCT_BUFF_STAMINA; break;
@@ -4926,8 +4909,6 @@ double player_t::apply_combat_rating_dr( rating_e rating, double value ) const
     case RATING_SPEED:
     case RATING_AVOIDANCE:
       return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_TERTIARY_CR_CURVE, value * 100.0 ) / 100.0;
-    case RATING_MASTERY:
-      return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_SECONDARY_CR_CURVE, value );
     case RATING_MITIGATION_VERSATILITY:
       return item_database::curve_point_value( *dbc, DIMINISHING_RETURN_VERS_MITIG_CR_CURVE, value * 100.0 ) / 100.0;
     default:
@@ -5383,23 +5364,6 @@ double player_t::composite_spell_hit() const
   return sh;
 }
 
-double player_t::composite_mastery() const
-{
-  double cm = current.mastery;
-
-  cm += apply_combat_rating_dr( RATING_MASTERY, composite_mastery_rating() / current.rating.mastery );
-
-  for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_MASTERY ] )
-    cm += b->check_stack_value();
-
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    cm += sim->auras.skyfury->check_value();
-  }
-
-  return cm;
-}
-
 double player_t::composite_bonus_armor() const
 {
   return current.stats.bonus_armor;
@@ -5787,9 +5751,6 @@ double player_t::composite_rating( rating_e rating ) const
     case RATING_RANGED_HIT:
       v = current.stats.hit_rating;
       break;
-    case RATING_MASTERY:
-      v = current.stats.mastery_rating;
-      break;
     case RATING_DAMAGE_VERSATILITY:
     case RATING_HEAL_VERSATILITY:
     case RATING_MITIGATION_VERSATILITY:
@@ -5900,13 +5861,6 @@ double player_t::composite_mitigation_from_player_multiplier( player_t*, const a
   double m = 1.0;
 
   return m;
-}
-
-double player_t::composite_mastery_value() const
-{
-  assert( cache.active && "Infinite recursion if base composite_mastery_value() is called without stat cache active." );
-
-  return cache.mastery() * mastery_coefficient();
 }
 
 #if defined( SC_USE_STAT_CACHE )
@@ -7394,8 +7348,6 @@ double player_t::get_stat_value(stat_e stat)
     return composite_melee_crit_rating();
   case STAT_HASTE_RATING:
     return composite_melee_haste_rating();
-  case STAT_MASTERY_RATING:
-    return composite_mastery_rating();
   case STAT_VERSATILITY_RATING:
     return composite_damage_versatility_rating();
   case STAT_ARMOR:
@@ -7749,7 +7701,6 @@ void player_t::stat_gain( stat_e stat, double amount, gain_t* gain, action_t* ac
     case STAT_DODGE_RATING:
     case STAT_PARRY_RATING:
     case STAT_BLOCK_RATING:
-    case STAT_MASTERY_RATING:
     case STAT_VERSATILITY_RATING:
     case STAT_LEECH_RATING:
     case STAT_AVOIDANCE_RATING:
@@ -7892,7 +7843,6 @@ void player_t::stat_loss( stat_e stat, double amount, gain_t* gain, action_t* ac
     case STAT_DODGE_RATING:
     case STAT_PARRY_RATING:
     case STAT_BLOCK_RATING:
-    case STAT_MASTERY_RATING:
     case STAT_VERSATILITY_RATING:
     case STAT_LEECH_RATING:
     case STAT_AVOIDANCE_RATING:
@@ -11394,25 +11344,6 @@ const spell_data_t* player_t::find_specialization_spell( unsigned spell_id, spec
   return spell_data_t::not_found();
 }
 
-const spell_data_t* player_t::find_mastery_spell( specialization_e s ) const
-{
-  if ( s == SPEC_NONE || s != _spec )
-  {
-    return spell_data_t::not_found();
-  }
-
-  if ( auto spell_id = dbc->mastery_ability_id( s != SPEC_NONE ? s : _spec ) )
-  {
-    const auto spell = dbc::find_spell( this, spell_id );
-    if ( spell->ok() && as<int>( spell->level() ) <= true_level )
-    {
-      return spell;
-    }
-  }
-
-  return spell_data_t::not_found();
-}
-
 /**
  * 8.2 Vision of Perfection proc handler
  *
@@ -11428,7 +11359,7 @@ void player_t::vision_of_perfection_proc()
  * Tries to find spell data by name.
  *
  * It does this by going through various spell lists in following order:
- * class spell, specialization spell, mastery spell, class/spec/hero talent spell, racial spell, pet_spell
+ * class spell, specialization spell, class/spec/hero talent spell, racial spell, pet_spell
  */
 const spell_data_t* player_t::find_spell( util::string_view name, specialization_e s ) const
 {
@@ -11439,13 +11370,6 @@ const spell_data_t* player_t::find_spell( util::string_view name, specialization
   sp = find_specialization_spell( name );
   if ( sp->ok() )
     return sp;
-
-  if ( s != SPEC_NONE )
-  {
-    sp = find_mastery_spell( s );
-    if ( sp->ok() )
-      return sp;
-  }
 
   sp = find_talent_spell( talent_tree::CLASS, name );
   if ( sp->ok() )
@@ -11708,9 +11632,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
   if ( expression_str == "spell_cast_speed" )
     return make_fn_expr( expression_str, [this] { return cache.spell_cast_speed(); } );
-
-  if ( expression_str == "mastery_value" )
-    return make_mem_fn_expr( expression_str, this->cache, &player_stat_cache_t::mastery_value );
 
   if ( expression_str == "attack_crit" )
     return make_fn_expr( expression_str, [this] { return cache.attack_crit_chance(); } );
@@ -11986,8 +11907,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
           return make_mem_fn_expr( expression_str, *this, &player_t::composite_parry_rating );
         case STAT_BLOCK_RATING:
           return make_mem_fn_expr( expression_str, *this, &player_t::composite_block_rating );
-        case STAT_MASTERY_RATING:
-          return make_mem_fn_expr( expression_str, *this, &player_t::composite_mastery_rating );
         case STAT_VERSATILITY_RATING:
           return make_mem_fn_expr( expression_str, *this, &player_t::composite_damage_versatility_rating );
         default:
@@ -12947,9 +12866,6 @@ std::string player_t::create_profile( save_e stype )
     if ( enchant.crit_rating != 0 )
       profile_str += "enchant_crit_rating=" + util::to_string( enchant.crit_rating ) + term;
 
-    if ( enchant.mastery_rating != 0 )
-      profile_str += "enchant_mastery_rating=" + util::to_string( enchant.mastery_rating ) + term;
-
     if ( enchant.versatility_rating != 0 )
       profile_str += "enchant_versatility_rating=" + util::to_string( enchant.versatility_rating ) + term;
 
@@ -13179,7 +13095,6 @@ void player_t::create_options()
   add_option( opt_float( "gear_focus", gear.resource[ RESOURCE_FOCUS ] ) );
   add_option( opt_float( "gear_runic", gear.resource[ RESOURCE_RUNIC_POWER ] ) );
   add_option( opt_float( "gear_armor", gear.armor ) );
-  add_option( opt_float( "gear_mastery_rating", gear.mastery_rating ) );
   add_option( opt_float( "gear_versatility_rating", gear.versatility_rating ) );
   add_option( opt_float( "gear_bonus_armor", gear.bonus_armor ) );
   add_option( opt_float( "gear_leech_rating", gear.leech_rating ) );
@@ -13200,7 +13115,6 @@ void player_t::create_options()
   add_option( opt_float( "enchant_haste_rating", enchant.haste_rating ) );
   add_option( opt_float( "enchant_hit_rating", enchant.hit_rating ) );
   add_option( opt_float( "enchant_crit_rating", enchant.crit_rating ) );
-  add_option( opt_float( "enchant_mastery_rating", enchant.mastery_rating ) );
   add_option( opt_float( "enchant_versatility_rating", enchant.versatility_rating ) );
   add_option( opt_float( "enchant_bonus_armor", enchant.bonus_armor ) );
   add_option( opt_float( "enchant_leech_rating", enchant.leech_rating ) );
@@ -14842,11 +14756,6 @@ double player_t::get_position_distance(double m, double v) const
   return util::approx_sqrt(sqrtnum);
 }
 
-double player_t::mastery_coefficient() const
-{
-  return _mastery->mastery_value();
-}
-
 double player_t::get_player_distance( const player_t& t ) const
 {
   if ( sim->distance_targeting_enabled )
@@ -14996,7 +14905,6 @@ static constexpr std::pair<int, std::string_view> field_type_map[] = {
   { A_MOD_MECHANIC_DAMAGE_DONE_PERCENT,       "mechanic_damage_done"             },  // 276
   { A_MOD_TARGET_ARMOR_PCT,                   "armor_penetration"                },  // 280
   { A_MOD_ALL_CRIT_CHANCE,                    "all_crit"                         },  // 290
-  { A_MOD_MASTERY_PCT,                        "mastery"                          },  // 318
   { A_MOD_MELEE_AUTO_ATTACK_SPEED,            "attack_speed"                     },  // 319
   { A_APPLY_HASTED_GCD_LABEL,                 "hasted_gcd"                       },  // 320
   { A_MODIFY_CATEGORY_COOLDOWN,               "category_cooldown"                },  // 341
@@ -15372,10 +15280,6 @@ bool player_t::register_passive_effect( const spelleffect_data_t& modifying_eff,
       case A_MOD_PARRY_FROM_CRIT_RATING:  // 463
         flat_val = modifying_eff.average( this ) * 0.01;
         break;
-      case A_MOD_MASTERY_PCT:  // 318
-        flat_val = modifying_eff.average( this );
-        break;
-
       case A_MOD_PERCENT_STAT:  // 80
         pct_val = modifying_eff.average( this );
         sim->error( SEVERE,
@@ -16214,12 +16118,9 @@ void player_t::parse_all_class_passives()
   }
 
   // spec passives & spec-only rank spells
-  auto mastery_id = mastery_spell_entry_t::find( specialization(), dbc->ptr ).spell_id;
-
   for ( const auto& spec_entry : specialization_spell_entry_t::data( dbc->ptr ) )
   {
-    if ( spec_entry.specialization_id == static_cast<unsigned>( specialization() ) &&
-         spec_entry.spell_id != mastery_id )
+    if ( spec_entry.specialization_id == static_cast<unsigned>( specialization() ) )
     {
       auto spell = find_spell( spec_entry.spell_id );
       if ( spell->flags( SX_PASSIVE ) )

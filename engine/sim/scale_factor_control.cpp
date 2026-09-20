@@ -200,7 +200,6 @@ void scale_factor_control_t::init_deltas()
   if ( stats->attack_power == 0 ) stats->attack_power = default_delta;
   if ( stats->crit_rating  == 0 ) stats->crit_rating  = default_delta;
   if ( stats->haste_rating == 0 ) stats->haste_rating = default_delta;
-  if ( stats->mastery_rating == 0 ) stats->mastery_rating = default_delta;
   if ( stats->versatility_rating == 0 ) stats->versatility_rating = default_delta;
 
   // Defensive
@@ -522,7 +521,6 @@ void scale_factor_control_t::create_options()
   sim->add_option(opt_float("scale_attack_power", stats->attack_power));
   sim->add_option(opt_float("scale_crit_rating", stats->crit_rating));
   sim->add_option(opt_float("scale_haste_rating", stats->haste_rating));
-  sim->add_option(opt_float("scale_mastery_rating", stats->mastery_rating));
   sim->add_option(opt_float("scale_versatility_rating", stats->versatility_rating));
   sim->add_option(opt_float("scale_weapon_dps", stats->weapon_dps));
   sim->add_option(opt_float("scale_speed_rating", stats->speed_rating));

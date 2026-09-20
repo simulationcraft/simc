@@ -69,8 +69,6 @@ struct player_effect_t
   std::function<bool()> func = nullptr;
   std::function<double( double )> value_func = nullptr;
   uint16_t type = USE_DATA;
-  bool mastery = false;
-  double base_mastery = 0.0;
   uint32_t idx = 0;  // index of parse_action_base_t::callback_list
   // effect linkback
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
@@ -97,12 +95,6 @@ struct player_effect_t
   player_effect_t& set_type( uint8_t t )
   { type = t; simple = false; return *this; }
 
-  player_effect_t& set_mastery( bool m )
-  { mastery = m; simple = false; return *this; }
-
-  player_effect_t& set_base_mastery( double v )
-  { base_mastery = v; simple = false; return *this; }
-
   player_effect_t& set_idx( uint32_t i )
   { idx = i; simple = false; return *this; }
 
@@ -124,8 +116,7 @@ struct player_effect_t
   bool operator==( const player_effect_t& other )
   {
     return simple == other.simple && buff == other.buff && value == other.value && use_stacks == other.use_stacks &&
-           type == other.type && mastery == other.mastery && base_mastery == other.base_mastery && idx == other.idx &&
-           eff == other.eff && opt_enum == other.opt_enum;
+           type == other.type && idx == other.idx && eff == other.eff && opt_enum == other.opt_enum;
   }
 
   std::string value_type_name( uint16_t ) const;
@@ -141,8 +132,6 @@ struct target_effect_t
   std::function<double( actor_target_data_t* )> func = nullptr;
   double value = 0.0;
   uint16_t type = USE_DATA;  // for internal flags only
-  bool mastery = false;
-  double base_mastery = 0.0;
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
   uint32_t opt_enum = UINT32_MAX;
   // note for html report
@@ -153,12 +142,6 @@ struct target_effect_t
 
   target_effect_t& set_value( double v )
   { value = v; return *this; }
-
-  target_effect_t& set_mastery( bool m )
-  { mastery = m; return *this; }
-
-  target_effect_t& set_base_mastery( double v )
-  { base_mastery = v; return *this; }
 
   target_effect_t& set_eff( const spelleffect_data_t* e )
   { eff = e; return *this; }
@@ -171,8 +154,7 @@ struct target_effect_t
 
   bool operator==( const target_effect_t& other )
   {
-    return value == other.value && mastery == other.mastery && base_mastery == other.base_mastery && eff == other.eff &&
-           opt_enum == other.opt_enum;
+    return value == other.value && eff == other.eff && opt_enum == other.opt_enum;
   }
 
   std::string value_type_name( uint16_t ) const;
@@ -273,17 +255,17 @@ struct parse_base_t
   double mod_spell_effects_value( const spell_data_t*, const spelleffect_data_t& e ) { return e.base_value(); }
 
   template <typename T>
-  void apply_affecting_mod( double&, bool&, const spell_data_t*, size_t, T );
+  void apply_affecting_mod( double&, const spell_data_t*, size_t, T );
 
   template <typename U>
-  void apply_affecting_mods( const pack_t<U>& pack, double& val, bool& mastery, size_t idx )
+  void apply_affecting_mods( const pack_t<U>& pack, double& val, size_t idx )
   {
     // Apply effect modifying effects from mod list. Blizz only currently supports modifying effects 1-5
     if ( idx > 5 )
       return;
 
     for ( size_t j = 0; j < pack.list.size(); j++ )
-      apply_affecting_mod( val, mastery, pack.spell, idx, pack.list[ j ] );
+      apply_affecting_mod( val, pack.spell, idx, pack.list[ j ] );
   }
 
   virtual void parse_callback_function( pack_t<player_effect_t>&, parse_cb_t )
@@ -535,7 +517,7 @@ inline modified_spell_data_t* modified_spell_data_t::nil() { return &modified_sp
 struct parse_effects_t : public parse_base_t
 {
 protected:
-  // Internal player pointer used to access target data and mastery, can differ from the player of the action
+  // Internal player pointer used to access target data, can differ from the player of the action
   player_t* _player;
   std::array<std::vector<parse_cb_t>, PARSE_CALLBACK_MAX> callback_list;
   std::array<uint32_t, PARSE_CALLBACK_MAX> callback_mask{};
@@ -714,7 +696,6 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> haste_effects;
   std::vector<player_effect_t> melee_haste_effects;
   std::vector<player_effect_t> spell_haste_effects;
-  std::vector<player_effect_t> mastery_effects;
   std::vector<player_effect_t> parry_rating_from_crit_effects;
   std::vector<player_effect_t> dodge_effects;
   std::vector<player_effect_t> mitigation_multiplier_effects;
@@ -754,7 +735,6 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   double composite_armor_multiplier() const override;
   double composite_melee_haste() const override;
   double composite_spell_haste() const override;
-  double composite_mastery() const override;
   double composite_parry_rating() const override;
   double composite_dodge() const override;
   double composite_player_absorb_multiplier( const action_state_t* ) const override;

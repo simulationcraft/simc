@@ -111,8 +111,6 @@ player_effect_t& player_effect_t::print_debug( sim_t* sim, std::string prefix )
 
   if ( buff && type & USE_CURRENT )
     val_str = "current value";
-  else if ( mastery )
-    val_str = fmt::format( "{:.5f}*mastery", value * 100 );
   else
     val_str = fmt::format( "{}", value );
 
@@ -170,9 +168,6 @@ void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
   if ( !use_stacks )
     notes.emplace_back( "No-stacks" );
 
-  if ( mastery )
-    notes.emplace_back( "Mastery" );
-
   if ( func )
     notes.emplace_back( "Conditional" );
 
@@ -202,9 +197,7 @@ void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
 
   range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
 
-  std::string val_str = val_str_fn ? val_str_fn( value )
-                        : mastery  ? fmt::format( "{:.5f}", value * 100 )
-                                   : fmt::format( "{:.1f}%", value * 100 );
+  std::string val_str = val_str_fn ? val_str_fn( value ) : fmt::format( "{:.1f}%", value * 100 );
 
   os.format(
     "<td class=\"left\">{}</td>"
@@ -236,9 +229,6 @@ void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
 {
   std::vector<std::string> notes;
 
-  if ( mastery )
-    notes.emplace_back( "Mastery" );
-
   if ( type & AFFECTED_OVERRIDE )
     notes.emplace_back( "Scripted" );
 
@@ -256,9 +246,7 @@ void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
 
   range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
 
-  std::string val_str = val_str_fn ? val_str_fn( value )
-                        : mastery  ? fmt::format( "{:.5f}", value * 100 )
-                                   : fmt::format( "{:.1f}%", value * 100 );
+  std::string val_str = val_str_fn ? val_str_fn( value ) : fmt::format( "{:.1f}%", value * 100 );
 
   os.format(
     "<td class=\"left\">{}</td>"
@@ -279,16 +267,8 @@ void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
 // currently supports P_EFFECT_1-5 and A_PROC_TRIGGER_SPELL_WITH_VALUE
 // TODO: add support for P_EFFECTS to modify all effects
 template <typename T>
-void parse_base_t::apply_affecting_mod( double& val, bool& mastery, const spell_data_t* base, size_t idx, T mod )
+void parse_base_t::apply_affecting_mod( double& val, const spell_data_t* base, size_t idx, T mod )
 {
-  bool mod_is_mastery = false;
-
-  if ( mod->effect_count() && mod->flags( SX_MASTERY_AFFECTS_POINTS ) )
-  {
-    mastery = true;
-    mod_is_mastery = true;
-  }
-
   for ( size_t i = 1; i <= mod->effect_count(); i++ )
   {
     const auto& eff = mod->effectN( i );
@@ -302,7 +282,7 @@ void parse_base_t::apply_affecting_mod( double& val, bool& mastery, const spell_
              ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
          ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() ) )
     {
-      double pct = mod_is_mastery ? eff.mastery_value() : mod_spell_effects_value( mod, eff );
+      double pct = mod_spell_effects_value( mod, eff );
 
       if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
         val += pct;
@@ -316,7 +296,7 @@ void parse_base_t::apply_affecting_mod( double& val, bool& mastery, const spell_
 
 // explicit template instantiation
 // NOTE: currently only spell_data_t is required, but this can be expanded as has been in the past with conduits
-template void parse_base_t::apply_affecting_mod<const spell_data_t*>( double&, bool&, const spell_data_t*, size_t,
+template void parse_base_t::apply_affecting_mod<const spell_data_t*>( double&, const spell_data_t*, size_t,
                                                                       const spell_data_t* );
 
 double modified_spelleffect_t::base_value( const action_t* action, const action_state_t* state ) const
@@ -636,19 +616,8 @@ template <typename U>
 bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
 {
   const auto& eff = pack.spell->effectN( i );
-  bool mastery = pack.spell->flags( SX_MASTERY_AFFECTS_POINTS );
-  double val = 0.0;
+  double val = eff.base_value();
   double val_mul = 0.01;
-
-  if ( mastery )
-  {
-    val = eff.mastery_value();
-    pack.data.base_mastery = eff.percent();
-  }
-  else
-  {
-    val = eff.base_value();
-  }
 
   if constexpr ( is_detected_v<detect_buff, U> && is_detected_v<detect_type, U> )
   {
@@ -668,14 +637,10 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
   {
     val = pack.data.value;
     val_mul = 1.0;
-    mastery = false;
   }
   else
   {
-    apply_affecting_mods( pack, val, mastery, i );
-
-    if ( mastery )
-      val_mul = 1.0;
+    apply_affecting_mods( pack, val, i );
   }
 
   auto tmp = pack.data;  // local copy
@@ -706,9 +671,8 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
 
   val *= val_mul;
 
-  std::string val_str = mastery ? fmt::format( "{:.5f}*mastery", val * 100 )
-                        : flat  ? fmt::format( "{}", val )
-                                : fmt::format( "{:.1f}%", val * ( tmp.value != 0.0 ? 100 : 1 / val_mul ) );
+  std::string val_str = flat ? fmt::format( "{}", val )
+                             : fmt::format( "{:.1f}%", val * ( tmp.value != 0.0 ? 100 : 1 / val_mul ) );
 
   if ( tmp.value != 0.0 )
     val_str = val_str + " (value override)";
@@ -739,13 +703,11 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
   debug_message( tmp, type_str, val_str, eff );
 
   tmp.value = val;
-  tmp.mastery = mastery;
   tmp.eff = &eff;
 
   if constexpr ( is_detected_v<detect_simple, U> )
   {
-    if ( tmp.func || tmp.value_func || tmp.type & USE_CURRENT || tmp.mastery || !tmp.use_stacks ||
-         pack.num_callbacks() )
+    if ( tmp.func || tmp.value_func || tmp.type & USE_CURRENT || !tmp.use_stacks || pack.num_callbacks() )
     {
       tmp.simple = false;
     }
@@ -806,12 +768,6 @@ double parse_effects_t::get_effect_value_full( const player_effect_t& i, bool be
       eff_val *= stack;
   }
 
-  if ( i.mastery )
-  {
-    eff_val *= _player->cache.mastery();
-    eff_val += i.base_mastery;
-  }
-
   callback_idx |= i.idx;
 
   return eff_val;
@@ -820,14 +776,7 @@ double parse_effects_t::get_effect_value_full( const player_effect_t& i, bool be
 double parse_effects_t::get_effect_value( const target_effect_t& i, actor_target_data_t* td ) const
 {
   if ( auto check = i.func( td ) )
-  {
-    auto eff_val = i.value * check;
-
-    if ( i.mastery )
-      eff_val *= _player->cache.mastery();
-
-    return eff_val;
-  }
+    return i.value * check;
 
   return 0.0;
 }
@@ -1050,16 +999,6 @@ double parse_player_effects_t::composite_spell_haste() const
   return sh;
 }
 
-double parse_player_effects_t::composite_mastery() const
-{
-  auto m = player_t::composite_mastery();
-
-  for ( const auto& i : mastery_effects )
-    m += get_effect_value( i );
-
-  return m;
-}
-
 double parse_player_effects_t::composite_parry_rating() const
 {
   auto pr = player_t::composite_parry_rating();
@@ -1258,12 +1197,6 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       str = "spell haste";
       invalidate( CACHE_SPELL_HASTE );
       return &spell_haste_effects;
-
-    case A_MOD_MASTERY_PCT:
-      str = "mastery";
-      val_mul = 1.0;
-      invalidate( CACHE_MASTERY );
-      return &mastery_effects;
 
     case A_MOD_ALL_CRIT_CHANCE:
       str = "all crit chance";
@@ -1497,10 +1430,6 @@ void parse_player_effects_t::print_custom_parsed_effects( report::sc_html_stream
        << "<th>Notes</th>"
        << "</tr></thead>\n";
 
-    auto mastery_val = [ this ]( double v ) {
-      return fmt::format( "{:.1f}%", v * mastery_coefficient() * 100 );
-    };
-
     print_parsed_type( os, absorb_multiplier_effects, "Absorb Multiplier" );
     print_parsed_type( os, absorb_received_mult_effects, "Absorb Received Multiplier" );
     print_parsed_type( os, attack_power_multiplier_effects, "Attack Power Multiplier" );
@@ -1521,7 +1450,6 @@ void parse_player_effects_t::print_custom_parsed_effects( report::sc_html_stream
     print_parsed_type( os, spell_haste_effects, "Spell Haste" );
     print_parsed_type( os, healing_received_effects, "Healing Received" );
     print_parsed_type( os, leech_effects, "Leech" );
-    print_parsed_type( os, mastery_effects, "Mastery", nullptr, mastery_val );
     print_parsed_type( os, non_stacking_movement_effects, "Move Speed Modifier - Exclusive" );
     print_parsed_type( os, stacking_movement_effects, "Move Speed Modifier - Stacking" );
     print_parsed_type( os, parry_effects, "Parry" );
@@ -1560,7 +1488,6 @@ size_t parse_player_effects_t::total_effects_count() const
          haste_effects.size() +
          melee_haste_effects.size() +
          spell_haste_effects.size() +
-         mastery_effects.size() +
          parry_rating_from_crit_effects.size() +
          dodge_effects.size() +
          mitigation_multiplier_effects.size() +

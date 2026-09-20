@@ -1094,7 +1094,6 @@ stat_e bcp_api::translate_api_stat( util::string_view stat_str )
     { "STAMINA",                 STAT_STAMINA            },
     { "CRIT_RATING",             STAT_CRIT_RATING        },
     { "HASTE_RATING",            STAT_HASTE_RATING       },
-    { "MASTERY_RATING",          STAT_MASTERY_RATING     },
     { "VERSATILITY",             STAT_VERSATILITY_RATING },
     { "COMBAT_RATING_LIFESTEAL", STAT_LEECH_RATING       },
     { "COMBAT_RATING_SPEED",     STAT_SPEED_RATING       },

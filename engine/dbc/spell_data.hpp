@@ -262,9 +262,6 @@ struct spelleffect_data_t
 
   bool has_common_school( school_e ) const;
 
-  double mastery_value() const
-  { return _sp_coeff * ( 1 / 100.0 ); }
-
   int misc_value1() const
   { return _misc_value; }
 
