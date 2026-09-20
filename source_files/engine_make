@@ -27,16 +27,12 @@ SRC += \
     class_modules$(PATHSEP)apl$(PATHSEP)druid$(PATHSEP)druid.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)mage.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)warlock.cpp \
-    class_modules$(PATHSEP)priest$(PATHSEP)sc_priest.cpp \
-    class_modules$(PATHSEP)priest$(PATHSEP)sc_priest_discipline.cpp \
-    class_modules$(PATHSEP)priest$(PATHSEP)sc_priest_holy.cpp \
-    class_modules$(PATHSEP)priest$(PATHSEP)sc_priest_pets.cpp \
-    class_modules$(PATHSEP)priest$(PATHSEP)sc_priest_shadow.cpp \
     class_modules$(PATHSEP)sc_druid.cpp \
     class_modules$(PATHSEP)sc_enemy.cpp \
     class_modules$(PATHSEP)sc_hunter.cpp \
     class_modules$(PATHSEP)sc_mage.cpp \
     class_modules$(PATHSEP)sc_paladin.cpp \
+    class_modules$(PATHSEP)sc_priest.cpp \
     class_modules$(PATHSEP)sc_rogue.cpp \
     class_modules$(PATHSEP)sc_shaman.cpp \
     class_modules$(PATHSEP)sc_warrior.cpp \
