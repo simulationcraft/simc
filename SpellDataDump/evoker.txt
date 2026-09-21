@@ -12964,6 +12964,7 @@ Name             : Unravel (desc=Blue) (id=1264379) [Spell Family (224)]
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : Magic
+Cone Angle       : 30 degrees
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Evoker Spells
