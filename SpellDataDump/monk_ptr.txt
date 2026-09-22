@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.69848 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.69952 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -3118,11 +3118,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179708)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -10 | Scaled Value: -10 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Awakening Spirit (1263631), Silent Sanctuary (1266720), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48
 #2 (id=191104)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Awakening Spirit (1263631), Silent Sanctuary (1266720), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48
 #3 (id=191105)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3140,7 +3140,7 @@ Effects          :
 #7 (id=260828)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 90 | Points Per Level: 1 | Target: Self (1)
 #8 (id=260829)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 92 | Scaled Value: 92 | Target: Self (1)
+                   Base Value: 121 | Scaled Value: 121 | PvP Coefficient: 0.77 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
 #9 (id=260830)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -3201,7 +3201,7 @@ Effects          :
 #4 (id=191102)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=191103)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 349 | Scaled Value: 349 | Target: Self (1)
+                   Base Value: 461 | Scaled Value: 461 | PvP Coefficient: 0.758 | Target: Self (1)
 #6 (id=260817)   : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=260818)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost 1 (14)
@@ -3236,7 +3236,7 @@ Effects          :
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
 #15 (id=739777)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 188 | Scaled Value: 188 | PvP Coefficient: 1.385 | Target: Self (1)
+                   Base Value: 211 | Scaled Value: 211 | PvP Coefficient: 1.234 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 39
 #16 (id=984572)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -12313,7 +12313,7 @@ Family Flags     : 48, 114
 Attributes       : Doesn't Reset Swing Timer if Instant (217), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1043545)  : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.1696 | PvP Coefficient: 0.8 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.79504 | PvP Coefficient: 0.869 | Radius: 0 - 40 yards | Target: at Self (18) -> At Ally in Area (31)
 #2 (id=1043548)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
                    Modified By: Legacy of Wisdom (404408 effect#1), Emperor's Favor (471761 effect#1)
@@ -13119,11 +13119,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1108337)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
-                   Base Value: -25 | Scaled Value: -25 | Target: Self (1)
+                   Base Value: -29 | Scaled Value: -29 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Awakening Spirit (1263631), Silent Sanctuary (1266720), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48
 #2 (id=1108338)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -29 | Scaled Value: -29 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968), Insurance! (1215544), Insurance! (1215545), Renewing Mist (1238851), Awakening Spirit (1263631), Silent Sanctuary (1266720), Rushing Wind Kick (1269159), Harmonic Surge (1271045)
                    Family Flags: 48
 #3 (id=1109279)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
@@ -13498,7 +13498,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 3441: Mistweaver Monk (137024 effect#16)
+                 : 3441: Mistweaver Monk (137024 effect#16), Windwalker Monk (1222923 effect#8)
 Affecting Spells : Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #3, #4), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Mistweaver Monk (428200 effects: #3, #4), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Family Flags     : 103
 Attributes       : Do Not Sheath (18), No Redirection (35), No Reflection (39), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Treat as Area Effect (175), Allow Class Ability Procs (416)
@@ -14940,7 +14940,7 @@ Range            : 40 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 3560: Pride of Pandaria (450979 effect#1), Vigilant Watch (451233 effect#1), Flow of Battle (457257 effect#3)
+                 : 3560: Pride of Pandaria (450979 effect#1), Vigilant Watch (451233 effect#1), Flow of Battle (457257 effect#3), Windwalker Monk (1222923 effect#9)
                  : 5841: Bring Me Another (1265138 effect#1), Bring Me Another (1265138 effect#3), Scorched (1301410 effect#1)
 Affecting Spells : Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #3, #4), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Mistweaver Monk (428200 effects: #3, #4), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Family Flags     : 103
@@ -15721,7 +15721,7 @@ Range            : 40 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 5669: Brewmaster Monk (137023 effect#14), Pride of Pandaria (450979 effect#2)
+                 : 5669: Brewmaster Monk (137023 effect#14), Pride of Pandaria (450979 effect#2), Windwalker Monk (1222923 effect#10)
                  : 5791
 Affecting Spells : Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #3, #4), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Mistweaver Monk (428200 effects: #3, #4), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Family Flags     : 103
@@ -16118,7 +16118,7 @@ Attributes       : Can Proc From Procs (122), Not In Spellbook (143), Allow Clas
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1152602)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.8438 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 5.81256 | PvP Coefficient: 0.8333 | Target: Targeted Enemy (6)
 Description      : $@spelldesc451823
 
 Name             : Knowledge of the Broken Temple (id=451859) [Spell Family (53)] 
@@ -17900,6 +17900,15 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 39
+#8 (id=1357276)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value 2: 3441 (Label) | Target: Self (1)
+                   Affected Spells (Label): Celestial Conduit (443038)
+#9 (id=1357280)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value 2: 3560 (Label) | Target: Self (1)
+                   Affected Spells (Label): Flurry Strike (450617)
+#10 (id=1357281) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value 2: 5669 (Label) | Target: Self (1)
+                   Affected Spells (Label): Flurry Strike (451250)
 
 Name             : Luck of the Draw! (id=1226058) [Spell Family (53)] 
 Class            : Monk

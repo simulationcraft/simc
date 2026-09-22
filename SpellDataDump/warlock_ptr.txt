@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.69848 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.69952 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -263,7 +263,7 @@ Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Aura Never Bo
 Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.09313 | PvP Coefficient: 0.416667 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.09313 | PvP Coefficient: 0.7 | Target: Targeted Enemy (6)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Targeted Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$s1*$d/$t1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -16717,7 +16717,7 @@ Effects          :
 #1 (id=1269007)  : Dummy (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: 6204 | Scaled Value: 6204 | Target: Targeted Enemy (6)
 #2 (id=1269008)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.869285 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.869285 | PvP Coefficient: 1.1 | Target: Targeted Enemy (6)
 #3 (id=1305431)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Targeted Enemy (6)
 #4 (id=1305448)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)

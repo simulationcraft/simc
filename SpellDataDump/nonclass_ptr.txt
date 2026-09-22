@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.5.69848 PTR
+SimulationCraft 1210-01 for World of Warcraft 12.1.5.69952 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -159934,7 +159934,7 @@ Category Cooldown: 20 seconds
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1015921)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 480.5574 (coefficient=3.666125) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 360.418 (coefficient=2.749593) | Rating: Mastery | Target: Self (1)
 Description      : Solve a puzzle, increasing your Mastery by $s1 for $d.
 Tooltip          : Mastery increased by $w1.
 
@@ -159989,23 +159989,23 @@ School           : Fire
 Spell Type       : None
 Labels           : 3959: Item Effects
 Proc Chance      : 101%
-Real PPM         : 1.01
+Real PPM         : 2
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Sleepy Ruby Warmth (383813), Under Red Wings (389820), Fire Shot (389839), Lobbing Fire Nova (390234), Curing Whiff (390896), Mending Breath (390941)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1015966)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 18307.77 (coefficient=143.2494) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 10618.51 (coefficient=83.08469) | Target: Self (1)
 #2 (id=1027885)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 15256.64 (coefficient=119.3758) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8848.835 (coefficient=69.23783) | Target: Self (1)
 #3 (id=1027886)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 27438.44 (coefficient=214.6924) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 37590.67 (coefficient=294.1287) | Target: Self (1)
 #4 (id=1027887)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 22865.58 (coefficient=178.912) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 24008.86 (coefficient=187.8576) | Target: Self (1)
 #5 (id=1027888)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 316.9404 (coefficient=2.417907) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 158.4701 (coefficient=1.208953) | Target: Self (1)
 #6 (id=1027889)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 316.9403 (coefficient=2.417906) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 158.4701 (coefficient=1.208953) | Target: Self (1)
 Description      : Your spells and abilities have a chance to call a Ruby Whelpling, which will try to be helpful and assist you in combat.
 
 
@@ -244804,15 +244804,15 @@ Name             : Mycolic Medicine (id=1250591) [Passive, Hidden]
 School           : Nature
 Spell Type       : None
 Proc Chance      : 101%
-Real PPM         : 3 (Haste multiplier)
+Real PPM         : 4 (Haste multiplier)
 Proc Flags       : Generic Helpful, Magic Heal, Helpful Periodic
 Triggered By     : Mycolic Medicine (1264293), Glowcap Mushroom's Rejuvenation (1264305)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254732)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 12788.22 (coefficient=100.0616) | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 20205.54 (coefficient=158.0985) | Misc Value: 127 | Target: Self (1)
 #2 (id=1254733)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 2.5 | Scaled Value: 7307.672 (coefficient=57.17898) | Target: Self (1)
+                   Base Value: 2.5 | Scaled Value: 11546.02 (coefficient=90.34201) | Target: Self (1)
 Description      : You gain Nalorakk's Favor of Growth. Your healing spells and abilities have a chance to instantly heal your target for $s1 and spawn a glowing mushroom near them that lasts for $1264294d.
 
 If an ally steps on and consumes the mushroom, they are healed for an additional $s2.
@@ -246788,7 +246788,7 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1264645)  : Apply Aura (6) | Proc Trigger Spell (42): Alnsight | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 15.14202 (coefficient=0.115517) | PvP Coefficient: 0.5 | Trigger Spell: 1266686 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 13.62778 (coefficient=0.103965) | PvP Coefficient: 0.5 | Trigger Spell: 1266686 | Target: Self (1)
 Description      : Your damage and healing has a chance to grant you Alnsight for $1266686d. While active, casting spells and abilities manifests unstable Alnscorned and consumes their essence to grant you $s1 $pri for $1266687d. Multiple applications may overlap.
 
 Name             : Nalorakk's Call to War (id=1257183) 
@@ -247663,7 +247663,7 @@ Labels           : 292
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1268341)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 679.7151 (coefficient=5.185479) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 611.7436 (coefficient=4.666931) | PvP Coefficient: 0.5 | Target: Self (1)
 
 Name             : Murder Row Materials (id=1259297) [Passive, Hidden] 
 School           : Physical
@@ -250538,13 +250538,13 @@ School           : Nature
 Spell Type       : None
 Range            : 40 yards
 Duration         : 12 seconds
-Cooldown         : 90 seconds
+Cooldown         : 60 seconds
 Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
 Attributes       : DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1274441)  : Apply Aura (6) | Periodic Heal (8): every 1.5 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4702.232 (coefficient=36.79268) | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 6583.125 (coefficient=51.50975) | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
 #2 (id=1274442)  : Apply Aura (6) | Trigger Spell Based on Health% (468): Seed of Radiant Hope
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Trigger Spell: 1263652 | Target: Targeted Ally (21)
 Description      : Surround your target ally with Lightblossoms, healing them for ${$s1*($d/$t1)} over $d.
@@ -251342,7 +251342,7 @@ Effects          :
 #4 (id=1278249)  : Apply Aura (6) | Threat (10)
                    Base Value: -90 | Scaled Value: -90 | Misc Value: 127 | Target: Self (1)
 #5 (id=1308952)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : $@spelldesc421373
 
 Name             : Nether Entropic Kris (id=1266072) 
@@ -252011,7 +252011,7 @@ Spell Type       : None
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1279509)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 97819.75 (coefficient=765.392) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 205421.5 (coefficient=1607.323) | PvP Coefficient: 0.5 | Target: Self (1)
 
 Name             : Deepening Temptation (id=1268058) 
 School           : Physical
@@ -253705,7 +253705,7 @@ Spell Type       : None
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1302330)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 42325.53 (coefficient=331.1767) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 59255.74 (coefficient=463.6473) | PvP Coefficient: 0.5 | Target: Self (1)
 
 Name             : Rotbloom (id=1286135) 
 School           : Nature
@@ -257130,7 +257130,7 @@ Proc Flags       : Yellow Melee, Generic Helpful, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1318047)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 61573.15 (coefficient=481.78) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 107752.7 (coefficient=843.1122) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1333118)  : Dummy (3)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
 Description      : Your healing has a high chance to infuse the target with Preternatural Antivenom for $1305846d, healing your ally for $s2% of any damage they take until $s1 health has been restored.
@@ -258371,7 +258371,7 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile
 Triggered By     : Rite of the Hash'ey (1297651), Rite of the Hash'ey (1297652)
 Attributes       : Passive (6)
 Effects          :
-#1 (id=1320953)  : Apply Aura (6) | Proc Trigger Spell (42): Halazzi's Rite
+#1 (id=1320953)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1297663 | Target: Self (1)
 #2 (id=1320954)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1297651
@@ -258555,9 +258555,9 @@ Triggered By     : Venom Splatter (1307222)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1321360)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 329056.3 (coefficient=2574.705) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 411320.8 (coefficient=3218.385) | PvP Coefficient: 0.25 | Target: Self (1)
 #2 (id=1321379)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 57909.32 (coefficient=453.1122) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 72386.39 (coefficient=566.3883) | PvP Coefficient: 0.25 | Target: Self (1)
 
 Name             : Zatha'tek, Breath of Corruption (id=1298023) [Passive] 
 School           : Physical
@@ -261372,7 +261372,6 @@ Tooltip          : Protected by a holy barrier, absorbing the next ${$w1} damage
 Name             : Light's Justice (id=1309762) [Passive] 
 School           : Holyfire
 Spell Type       : None
-Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Real PPM         : 2
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -261380,9 +261379,9 @@ Triggered By     : Light's Justice (1309766), Light's Justice (1309782)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1338834)  : Apply Aura (6) | Proc Trigger Spell (42): Light's Justice | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 514.6776 (coefficient=3.926424) | Trigger Spell: 1309766 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 345.1128 (coefficient=2.632831) | Trigger Spell: 1309766 | Target: Self (1)
 #2 (id=1338835)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4010.705 (coefficient=31.38181) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1818.576 (coefficient=14.22947) | Target: Self (1)
 Description      : Your damage has a chance to ignite Lu'selama for $1309766d, granting you $s1 Haste. While ablaze, further attacks have a chance to smite your target for an additional ${$<rolemult>*$s2} Radiant damage.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -261394,7 +261393,7 @@ Proc Chance      : 101%
 Real PPM         : 12
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Triggered By     : Light's Justice (1309762)
-Attributes       : Do Not Sheath (18), Aura Is Buff (140), Aura Points On Client (268)
+Attributes       : Do Not Sheath (18), Aura Is Buff (140), Aura Points On Client (268), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1338840)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
@@ -261431,7 +261430,6 @@ Description      : Add a socket to a Midnight Season $s3 item that does not alre
 Name             : Sigil of the Impending Eclipse (id=1309868) [Passive] 
 School           : Shadow
 Spell Type       : None
-Internal Cooldown: 15 seconds
 Proc Chance      : 101%
 Real PPM         : 2
 Proc Flags       : Generic Helpful, Magic Heal, Helpful Periodic
@@ -261450,7 +261448,7 @@ Name             : Forestall the End (id=1309909)
 School           : Shadow
 Spell Type       : None
 Duration         : 15 seconds
-Attributes       : Aura Points On Client (268)
+Attributes       : Aura Points On Client (268), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1339071)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
@@ -261544,7 +261542,6 @@ Description      : $@spelldesc1310208
 Name             : Luminescent Phoenixblade (id=1310252) [Passive] 
 School           : Holyfire
 Spell Type       : None
-Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Real PPM         : 6 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -261894,7 +261891,7 @@ Effects          :
 #1 (id=1346943)  : Apply Aura (6) | Increase Health% (133)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1346944)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 0 | Scaled Value: 0 | Stat: Str | Stat: Agi | Stat: Sta | Stat: Int | Stat: Spi | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Stat: Str | Stat: Agi | Stat: Int | Target: Self (1)
 Description      : Dust-covered claw sigils awaken beneath your touch, increasing your maximum health and $pri.
 Tooltip          : Dust-covered claw sigils awaken beneath your touch, increasing your maximum health by $w1% and $pri by $w2% for $d.
 
