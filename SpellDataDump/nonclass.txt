@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69875 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69933 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -159934,7 +159934,8 @@ Category Cooldown: 20 seconds
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1015921)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 480.5574 (coefficient=3.666125) | Rating: Mastery | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 360.418 (coefficient=2.749593) | Rating: Mastery | Target: Self (1)
+Hotfixed         : Coefficient (3.666125 -> 2.749593)
 Description      : Solve a puzzle, increasing your Mastery by $s1 for $d.
 Tooltip          : Mastery increased by $w1.
 
@@ -159989,23 +159990,29 @@ School           : Fire
 Spell Type       : None
 Labels           : 3959: Item Effects
 Proc Chance      : 101%
-Real PPM         : 1.01
+Real PPM         : 2
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Helpful, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Sleepy Ruby Warmth (383813), Under Red Wings (389820), Fire Shot (389839), Lobbing Fire Nova (390234), Curing Whiff (390896), Mending Breath (390941)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1015966)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 18307.77 (coefficient=143.2494) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 10618.51 (coefficient=83.08469) | Target: Self (1)
+Hotfixed         : Coefficient (143.249405 -> 83.084694)
 #2 (id=1027885)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 15256.64 (coefficient=119.3758) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8848.835 (coefficient=69.23783) | Target: Self (1)
+Hotfixed         : Coefficient (119.375763 -> 69.237831)
 #3 (id=1027886)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 27438.44 (coefficient=214.6924) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 37590.67 (coefficient=294.1287) | Target: Self (1)
+Hotfixed         : Coefficient (214.692444 -> 294.128693)
 #4 (id=1027887)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 22865.58 (coefficient=178.912) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 24008.86 (coefficient=187.8576) | Target: Self (1)
+Hotfixed         : Coefficient (178.912018 -> 187.857635)
 #5 (id=1027888)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 316.9404 (coefficient=2.417907) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 158.4701 (coefficient=1.208953) | Target: Self (1)
+Hotfixed         : Coefficient (2.417907 -> 1.208953)
 #6 (id=1027889)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 316.9403 (coefficient=2.417906) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 158.4701 (coefficient=1.208953) | Target: Self (1)
+Hotfixed         : Coefficient (2.417906 -> 1.208953)
 Description      : Your spells and abilities have a chance to call a Ruby Whelpling, which will try to be helpful and assist you in combat.
 
 
@@ -244804,15 +244811,17 @@ Name             : Mycolic Medicine (id=1250591) [Passive, Hidden]
 School           : Nature
 Spell Type       : None
 Proc Chance      : 101%
-Real PPM         : 3 (Haste multiplier)
+Real PPM         : 4 (Haste multiplier)
 Proc Flags       : Generic Helpful, Magic Heal, Helpful Periodic
 Triggered By     : Mycolic Medicine (1264293), Glowcap Mushroom's Rejuvenation (1264305)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1254732)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 12788.22 (coefficient=100.0616) | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 20205.54 (coefficient=158.0985) | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Coefficient (100.0616 -> 158.098511)
 #2 (id=1254733)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 2.5 | Scaled Value: 7307.672 (coefficient=57.17898) | Target: Self (1)
+                   Base Value: 2.5 | Scaled Value: 11546.02 (coefficient=90.34201) | Target: Self (1)
+Hotfixed         : Coefficient (57.178978 -> 90.34201)
 Description      : You gain Nalorakk's Favor of Growth. Your healing spells and abilities have a chance to instantly heal your target for $s1 and spawn a glowing mushroom near them that lasts for $1264294d.
 
 If an ally steps on and consumes the mushroom, they are healed for an additional $s2.
@@ -246202,10 +246211,11 @@ Description      : While echoing Xathuux's furious roar, each of your attacks gr
 Tooltip          : Critical Strike increased by $w1.
 
 Name             : Unstable Felheart Crystal (id=1254339) 
+Hotfixed         : Cooldown (120000 -> 90000)
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 40 yards
-Cooldown         : 120 seconds
+Cooldown         : 90 seconds
 Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
 Attributes       : Can't Crit (93), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Scales with Casting Item's Level (354)
@@ -246788,7 +246798,8 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1264645)  : Apply Aura (6) | Proc Trigger Spell (42): Alnsight | Scaling Class: Primary Attribute (-1)
-                   Base Value: 0 | Scaled Value: 15.14202 (coefficient=0.115517) | PvP Coefficient: 0.5 | Trigger Spell: 1266686 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 13.62778 (coefficient=0.103965) | PvP Coefficient: 0.5 | Trigger Spell: 1266686 | Target: Self (1)
+Hotfixed         : Coefficient (0.115517 -> 0.103965)
 Description      : Your damage and healing has a chance to grant you Alnsight for $1266686d. While active, casting spells and abilities manifests unstable Alnscorned and consumes their essence to grant you $s1 $pri for $1266687d. Multiple applications may overlap.
 
 Name             : Nalorakk's Call to War (id=1257183) 
@@ -247663,7 +247674,8 @@ Labels           : 292
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1268341)  : Apply Aura (6) | Dummy (4) | Scaling Class: Secondary Rating (-7)
-                   Base Value: 0 | Scaled Value: 679.7151 (coefficient=5.185479) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 611.7436 (coefficient=4.666931) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (5.185479 -> 4.666931)
 
 Name             : Murder Row Materials (id=1259297) [Passive, Hidden] 
 School           : Physical
@@ -250534,17 +250546,19 @@ Effects          :
 Description      : $@spelldesc1259153
 
 Name             : Seed of Radiant Hope (id=1263644) 
+Hotfixed         : Cooldown (90000 -> 60000)
 School           : Nature
 Spell Type       : None
 Range            : 40 yards
 Duration         : 12 seconds
-Cooldown         : 90 seconds
+Cooldown         : 60 seconds
 Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
 Attributes       : DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1274441)  : Apply Aura (6) | Periodic Heal (8): every 1.5 seconds | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 4702.232 (coefficient=36.79268) | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
+                   Base Value: 0 | Scaled Value: 6583.125 (coefficient=51.50975) | PvP Coefficient: 0.5 | Target: Targeted Ally (21)
+Hotfixed         : Coefficient (36.792675 -> 51.509747)
 #2 (id=1274442)  : Apply Aura (6) | Trigger Spell Based on Health% (468): Seed of Radiant Hope
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Trigger Spell: 1263652 | Target: Targeted Ally (21)
 Description      : Surround your target ally with Lightblossoms, healing them for ${$s1*($d/$t1)} over $d.
@@ -252011,7 +252025,8 @@ Spell Type       : None
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1279509)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 97819.75 (coefficient=765.392) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 154555.2 (coefficient=1209.319) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (765.391968 -> 1209.319214)
 
 Name             : Deepening Temptation (id=1268058) 
 School           : Physical
@@ -253705,7 +253720,8 @@ Spell Type       : None
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1302330)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Secondary (-9)
-                   Base Value: 0 | Scaled Value: 42325.53 (coefficient=331.1767) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 59255.74 (coefficient=463.6473) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (331.176697 -> 463.647339)
 
 Name             : Rotbloom (id=1286135) 
 School           : Nature
@@ -257103,7 +257119,8 @@ Proc Flags       : Yellow Melee, Generic Helpful, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1318047)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 61573.15 (coefficient=481.78) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 107752.7 (coefficient=843.1122) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (481.779968 -> 843.112244)
 #2 (id=1333118)  : Dummy (3)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
 Description      : Your healing has a high chance to infuse the target with Preternatural Antivenom for $1305846d, healing your ally for $s2% of any damage they take until $s1 health has been restored.
@@ -258528,11 +258545,11 @@ Triggered By     : Venom Splatter (1307222)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1321360)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 329056.3 (coefficient=2574.705) | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.5 -> 0.25)
+                   Base Value: 0 | Scaled Value: 411320.8 (coefficient=3218.385) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (2574.705078 -> 3218.38501)
 #2 (id=1321379)  : Apply Aura (6) | Dummy (4) | Scaling Class: Replace Primary (-8)
-                   Base Value: 0 | Scaled Value: 57909.32 (coefficient=453.1122) | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.5 -> 0.25)
+                   Base Value: 0 | Scaled Value: 72386.39 (coefficient=566.3883) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (453.112244 -> 566.388306)
 
 Name             : Zatha'tek, Breath of Corruption (id=1298023) [Passive] 
 School           : Physical
