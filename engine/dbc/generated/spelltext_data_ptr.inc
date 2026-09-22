@@ -1,4 +1,4 @@
-// Spell text, wow build 12.1.5.69848
+// Spell text, wow build 12.1.5.69952
 static constexpr std::array<spelltext_data_t, 29368> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -315,7 +315,7 @@ static constexpr std::array<spelltext_data_t, 29368> __ptr_spelltext_data { {
   {   12733, "Increases armor by $s2, all resistances by $s3 for $d.  Also grants immunity to Fear if you are level $ctrmax2067 or below.", "Armor increased by $s2 and all resistances increased by $s3.", 0 },
   {   12749, "Activates your Mithril Mechanical Dragonling to fight for you for $d.", 0, 0 },
   {   12766, "Poisons all enemies in an $A1 yard radius around the caster.  Victims of the poison suffer $s1 Nature damage every 5 sec for 45 sec.", "Inflicts $s1 Nature damage every $t1 sec.", 0 },
-  {   12846, "Your target burns for an additional ${$s1}.1% over $12654d of the total direct damage caused by your Fireball, Fire Blast,  Pyroblast$?s153561[, Meteor][], and Flamestrike. If this effect is reapplied, any remaining damage will be added to the new Ignite.$?a1254756[\r\n\r\nFire Blast causes $s1% of your Ignite to spread to $s5 nearby $Lenemy:enemies;.][]", 0, 0 },
+  {   12846, "Your target burns for an additional ${$s1}.1% over $12654d of the total direct damage caused by your Fireball, Fire Blast, Pyroblast$?s153561[, Meteor][], and Flamestrike. If this effect is reapplied, any remaining damage will be added to the new Ignite.$?a1254756[\r\n\r\nFire Blast causes $s2% of your Ignite to spread to $s5 nearby $Lenemy:enemies;.][]", 0, 0 },
   {   12883, "Allows you to look far into the distance.", "Increased vision range until you move.", 0 },
   {   12938, "Weakens the servants of Razelikh the Defiler. Must be within close proximity of the target to activate.", 0, 0 },
   {   12950, "Whirlwind $?s436707[and Thunder Clap cause][causes] your next $85739u single-target $lattack:attacks; to strike up to $85739s1 additional targets for $85739s2% damage.\r\n\r\nWhirlwind generates an additional $190411s2 Rage per target hit. Maximum $<maxRage> Rage.", 0, 0 },
@@ -2511,7 +2511,7 @@ static constexpr std::array<spelltext_data_t, 29368> __ptr_spelltext_data { {
   {   81333, "Wielding a two-handed weapon increases Obliterate damage by $81333s1%, Frostscythe damage by $s3%, and your auto attack critical strikes always grant Killing Machine.", 0, 0 },
   {   81340, "$@spelldesc49530", "Your next Death Coil or Epidemic costs ${$w1/10} less Runic Power and deals $w4% increased damage.", 0 },
   {   81700, "$@spelldesc197862", "Healing and absorption increased by $s1%.", 0 },
-  {   81749, "Power Word: Shield, Flash Heal, Shadow Mend, Plea, and Power Word: Radiance apply Atonement to your target for $194384d.\r\n\r\nYour spell damage heals all targets affected by Atonement for $s1% of the damage done. Healing is reduced when healing more than $s2 targets.", 0, 0 },
+  {   81749, "Power Word: Shield, Flash Heal, Shadow Mend, Plea, and Power Word: Radiance apply Atonement to your target for $194384d.\r\n\r\nYour spell damage heals all targets affected by Atonement for $s1% of the damage done. Healing is reduced when healing more than $s2 targets.\r\n\r\nHealing increased by $s3% when not in a raid.", 0, 0 },
   {   81751, "$@spelldesc81749", 0, 0 },
   {   81782, "$@spelldesc62618", "Reduces all damage taken by $s2%, and you resist all pushback while casting spells.", 0 },
   {   82184, "Restores $s1 health.", 0, 0 },
@@ -29370,11 +29370,11 @@ static constexpr std::array<spelltext_data_t, 29368> __ptr_spelltext_data { {
   { 1319066, "$@spelldesc1221150", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 12.1.5.69848
+// spelltext hotfix entries, wow build 12.1.5.69952
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 12.1.5.69848
+// Spell description variables, wow build 12.1.5.69952
 static constexpr std::array<spelldesc_vars_data_t, 743> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -29701,7 +29701,7 @@ static constexpr std::array<spelldesc_vars_data_t, 743> __ptr_spelldesc_vars_dat
   {  358164, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
   {  358267, "$flight=$?a375517[${$375517s1/1000}][${0}]\r\n$dura=$?a406380[${6*(1+$406380s2/100)+$<flight>}.1][${6+$<flight>}]" },
   {  359073, "$dmg=${$359077s2}" },
-  {  360827, "$perc=${$s2}\r\n$dmg=${$INT*0.3*(1+$@versadmg)*$pctD}" },
+  {  360827, "$perc=${$s2}\r\n$dmg=${$INT*0.6*(1+$@versadmg)*$pctD}" },
   {  360952, "$playerDmg=${$360969s1}\r\n$petDmg=${$360969s1*0.6}\r\n$combinedDmg=${$<playerDmg>+$<petDmg>}" },
   {  361382, "$wave=${$397693s1*12}" },
   {  361451, "$dmg=${($d/$t1)*($362178s1)}" },
@@ -30121,7 +30121,7 @@ static constexpr std::array<spelldesc_vars_data_t, 743> __ptr_spelldesc_vars_dat
   { 1310208, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 12.1.5.69848
+// spelldesc_vars hotfix entries, wow build 12.1.5.69952
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
