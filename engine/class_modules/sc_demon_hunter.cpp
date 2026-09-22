@@ -6513,9 +6513,9 @@ struct collapsing_star_t : public demon_hunter_spell_t
     {
       double m = base_t::composite_da_multiplier( s );
 
-      if ( s->chain_target == 0 )
+      if ( s->chain_target != 0 )
       {
-        m *= 1.0 + dh()->spec.collapsing_star_spell->effectN( 2 ).percent();
+        m *= dh()->spec.collapsing_star_spell->effectN( 2 ).percent();
       }
 
       return m;
@@ -13158,12 +13158,6 @@ public:
         .operation( hotfix::HOTFIX_SET )
         .modifier( 16.0 )
         .verification_value( 50.0 );
-    hotfix::register_effect( "Demon Hunter", "2025-03-26",
-                             "Collapsing star still only does 50% additional damage to primary target", 1290193 )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 50.0 )
-        .verification_value( 75.0 );
   }
 };
 
