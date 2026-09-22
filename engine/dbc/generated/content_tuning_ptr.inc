@@ -1,5 +1,5 @@
-// Content Tuning data, wow build 12.1.5.69848
-static constexpr std::array<content_tuning_data_t, 2947> __ptr_content_tuning_data { {
+// Content Tuning data, wow build 12.1.5.69952
+static constexpr std::array<content_tuning_data_t, 2950> __ptr_content_tuning_data { {
   {    1, 0, -3, 1, 0, 0 },
   {    2, 0, 0, 5, 30, 0 },
   {    3, 0, 0, 5, 30, 0 },
@@ -2947,5 +2947,8 @@ static constexpr std::array<content_tuning_data_t, 2947> __ptr_content_tuning_da
   { 7480, 0, 11, 90, 90, 0 },
   { 7481, 0, 11, 80, 90, 0 },
   { 7492, 0, 11, 90, 90, 0 },
+  { 7495, 0, 11, 90, 90, 0 },
+  { 7496, 0, 11, 90, 90, 0 },
+  { 7497, 0, -3, 1, 0, 0 },
 } };
 
