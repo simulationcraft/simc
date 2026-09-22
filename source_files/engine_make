@@ -37,14 +37,10 @@ SRC += \
     class_modules$(PATHSEP)sc_shaman.cpp \
     class_modules$(PATHSEP)sc_warlock.cpp \
     class_modules$(PATHSEP)sc_warrior.cpp \
-    dbc$(PATHSEP)assisted_combat.cpp \
-    dbc$(PATHSEP)character_loadout.cpp \
     dbc$(PATHSEP)class_spells.cpp \
     dbc$(PATHSEP)client_data.cpp \
     dbc$(PATHSEP)client_hotfix_entry.cpp \
     dbc$(PATHSEP)content_tuning.cpp \
-    dbc$(PATHSEP)embellishment_data.cpp \
-    dbc$(PATHSEP)expected_stat.cpp \
     dbc$(PATHSEP)gem_data.cpp \
     dbc$(PATHSEP)item_armor.cpp \
     dbc$(PATHSEP)item_bonus.cpp \
@@ -105,6 +101,7 @@ SRC += \
     player$(PATHSEP)target_specific.cpp \
     player$(PATHSEP)targetdata_initializer.cpp \
     player$(PATHSEP)unique_gear.cpp \
+    player$(PATHSEP)unique_gear_helper.cpp \
     report$(PATHSEP)charts.cpp \
     report$(PATHSEP)color.cpp \
     report$(PATHSEP)decorators.cpp \

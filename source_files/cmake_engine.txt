@@ -26,8 +26,6 @@ class_modules/apl/mage.hpp
 class_modules/apl/warlock.hpp
 class_modules/class_module.hpp
 config.hpp
-dbc/assisted_combat.hpp
-dbc/character_loadout.hpp
 dbc/class_spells.hpp
 dbc/client_data.hpp
 dbc/client_hotfix_entry.hpp
@@ -35,8 +33,6 @@ dbc/content_tuning.hpp
 dbc/data_definitions.hh
 dbc/data_enums.hh
 dbc/dbc.hpp
-dbc/embellishment_data.hpp
-dbc/expected_stat.hpp
 dbc/gem_data.hpp
 dbc/item_armor.hpp
 dbc/item_bonus.hpp
@@ -114,6 +110,7 @@ player/talent.hpp
 player/target_specific.hpp
 player/targetdata_initializer.hpp
 player/unique_gear.hpp
+player/unique_gear_helper.hpp
 player/weapon.hpp
 player/wrapper_callback.hpp
 report/charts.hpp
@@ -209,14 +206,10 @@ class_modules/sc_rogue.cpp
 class_modules/sc_shaman.cpp
 class_modules/sc_warlock.cpp
 class_modules/sc_warrior.cpp
-dbc/assisted_combat.cpp
-dbc/character_loadout.cpp
 dbc/class_spells.cpp
 dbc/client_data.cpp
 dbc/client_hotfix_entry.cpp
 dbc/content_tuning.cpp
-dbc/embellishment_data.cpp
-dbc/expected_stat.cpp
 dbc/gem_data.cpp
 dbc/item_armor.cpp
 dbc/item_bonus.cpp
@@ -277,6 +270,7 @@ player/talent.cpp
 player/target_specific.cpp
 player/targetdata_initializer.cpp
 player/unique_gear.cpp
+player/unique_gear_helper.cpp
 report/charts.cpp
 report/color.cpp
 report/decorators.cpp

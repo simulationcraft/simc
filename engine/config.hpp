@@ -158,7 +158,7 @@ constexpr double fp_epsilon = 1e-9;
 #endif
 
 #ifndef SC_USE_PTR
-#define SC_USE_PTR 1
+#define SC_USE_PTR 0
 #endif
 
 // ==========================================================================

@@ -2,13 +2,9 @@
 
 #include "config.hpp"
 
-#include "generated/class_spells.inc"
 #include "util/util.hpp"
 
 #include <array>
-#if SC_USE_PTR == 1
-#include "generated/class_spells_ptr.inc"
-#endif
 
 namespace
 {

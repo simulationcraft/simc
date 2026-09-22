@@ -9,7 +9,6 @@
 
 #include "actor.hpp"
 #include "assessor.hpp"
-#include "dbc/assisted_combat.hpp"
 #include "dbc/specialization.hpp"
 #include "effect_callbacks.hpp"
 #include "gear_stats.hpp"
@@ -668,7 +667,7 @@ public:
   // spell_id, effect_idx, effect_list
   std::map<unsigned, std::map<unsigned, std::vector<const spelleffect_data_t*>>> reporting_parse_effect;
   std::string_view get_parsed_source( unsigned ) const;
-  
+
   void print_parsed_effects( report::sc_html_stream& ) const;
   virtual void print_custom_parsed_effects( report::sc_html_stream& ) const {}
   void parse_passive_item_effect( const spell_data_t* );
