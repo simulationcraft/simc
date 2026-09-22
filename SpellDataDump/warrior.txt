@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69875 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69933 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -12069,9 +12069,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1114022)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.2 | Target: Self (1)
                    Affected Spells: Slam (1464), Mortal Strike (12294), Mortal Strike (339385), Heroic Strike (1269383), Concussive Slam (1300660)
                    Family Flags: 21, 25
+Hotfixed         : PvP Coefficient (0.6 -> 1.2)
 #2 (id=1184820)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Cleave (845), Whirlwind (1680), Whirlwind Off-Hand (44949), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Whirlwind (411547), Cleave (458459)
@@ -12270,7 +12271,8 @@ Family Flags     : 9
 Attributes       : Do Not Sheath (18), No Reflection (39), Do Not Display Range (126), Always Show Ground Texture (190), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1126722)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.551 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.3265 | PvP Coefficient: 0.5 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (1.551 -> 2.3265), PvP Coefficient (1 -> 0.5)
 #2 (id=1126723)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: rage | Target: Self (1)
                    Modified By: Thorim's Might (436152 effect#1)
@@ -13948,7 +13950,8 @@ Family Flags     : 9
 Attributes       : Do Not Sheath (18), No Reflection (39), Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1168536)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.11787 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.67681 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : AP Coefficient (1.11787 -> 1.67681), PvP Coefficient (1 -> 0.5)
 #2 (id=1168735)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc436148
@@ -14897,6 +14900,12 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 5 | Misc Value 2: 2670 (Label) | Target: Self (1)
 #11 (id=1352907) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 10000 | Scaled Value: 10000 | Misc Value: 12 | Misc Value 2: 7157 (Label) | Target: Self (1)
+#12 (id=1357274) : Apply Aura (6) | Modify Flat PVP Multiplier by Label (648): Modify Effect 1 (5)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 5 | Misc Value 2: 7268 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#13 (id=1357277) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Modify Effect 2 (6)
+                   Base Value: 67 | Scaled Value: 67 | Misc Value: 6 | Misc Value 2: 3306 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Protection Warrior (id=1256935) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -16134,6 +16143,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
+                 : 7268
 Triggered By     : Cut to the Bone (1270709)
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :

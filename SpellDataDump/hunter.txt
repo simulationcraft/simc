@@ -1,4 +1,4 @@
-SimulationCraft 1210-01 for World of Warcraft 12.1.0.69875 Live
+SimulationCraft 1210-01 for World of Warcraft 12.1.0.69933 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -6049,10 +6049,12 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 9 | Target: Self (1)
                    Modified By: Light Ammo (378913 effect#2)
 #4 (id=738673)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.54 | Misc Value: 9 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.54 | Misc Value: 9 | Target: Self (1)
+Hotfixed         : Base Value (60 -> 75)
                    Modified By: Blighted Quiver (1264291 effect#2)
 #5 (id=753424)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.54 | Misc Value: 9 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.54 | Misc Value: 9 | Target: Self (1)
+Hotfixed         : Base Value (60 -> 75)
                    Modified By: Blighted Quiver (1264291 effect#3)
 Description      : When Multi-Shot hits $s2 or more targets, your next Aimed Shot or Rapid Fire will ricochet and hit up to $s1 additional targets for $s4% of normal damage.
 
@@ -6308,7 +6310,8 @@ Effects          :
 #2 (id=997004)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Targeted Enemy (6)
 #3 (id=1099130)  : Dummy (3)
-                   Base Value: 80 | Scaled Value: 80 | Target: Targeted Enemy (6)
+                   Base Value: 50 | Scaled Value: 50 | Target: Targeted Enemy (6)
+Hotfixed         : Base Value (80 -> 50)
                    Modified By: Contained Explosion (426344 effect#1)
 Description      : Hurl a bomb at the target, exploding for $265157s1 Fire damage in a cone and coating enemies in wildfire, scorching them for $269747o1 Fire damage over $269747d. Deals reduced damage beyond $s2 targets.
 
@@ -6517,7 +6520,8 @@ Family Flags     : 34, 106
 Attributes       : Is Ability (4), Allow Cast While Dead (23), Initiates Combat (Enables Auto-Attack) (41), Ignore Line of Sight (66), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=485317)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.68 | Radius: 8 yards | Target: at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.85 | Radius: 8 yards | Target: at Enemy in Area (16)
+Hotfixed         : AP Coefficient (1.68 -> 1.85)
 Description      : $@spelldesc260243
 
 Name             : Bloodseeker (id=260248) [Spell Family (9), Passive] 
@@ -7566,7 +7570,8 @@ Family Flags     : 22, 25, 106
 Attributes       : Allow While Sitting (27), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=709120)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.5795 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.9 | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (1.5795 -> 1.9)
 Description      : $@spelldesc259495
 
 Name             : Wildfire Bomb (id=265163) [Spell Family (9)] 
@@ -14918,7 +14923,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 3022
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #8), Marksmanship Hunter (137016 effects: #1, #2, #7, #8), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #2, #3), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), In the Rhythm (407405 effect#1), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Banshee's Mark (467902 effect#1), Black Arrow (468572 effect#2), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2, #3), Marksmanship Hunter (1256940 effects: #1, #2, #3, #4), Survival Hunter (1256941 effects: #1, #2), Lethal Calibration (1262408 effect#1), Take Aim (1273129 effects: #1, #2, #3), Headshot (1277558 effect#1), Through the Eyes (1277565 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #8), Marksmanship Hunter (137016 effects: #1, #2, #7, #8), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #2, #3), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), In the Rhythm (407405 effect#1), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Banshee's Mark (467902 effect#1), Black Arrow (468572 effect#2), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2, #3, #7, #8), Marksmanship Hunter (1256940 effects: #1, #2, #3, #4), Survival Hunter (1256941 effects: #1, #2), Lethal Calibration (1262408 effect#1), Take Aim (1273129 effects: #1, #2, #3), Headshot (1277558 effect#1), Through the Eyes (1277565 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
 Family Flags     : 1, 11, 91, 106, 121
 Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Combat Feedback When Usable (137), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
@@ -15247,7 +15252,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 5085
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Beast Mastery Hunter (137015 effects: #1, #2, #8), Marksmanship Hunter (137016 effects: #1, #2, #7, #8), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #2, #3), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), In the Rhythm (407405 effect#1), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Banshee's Mark (467902 effect#1), Black Arrow (468572 effect#2), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2, #3), Marksmanship Hunter (1256940 effects: #1, #2, #3, #4), Survival Hunter (1256941 effects: #1, #2), Lethal Calibration (1262408 effect#1), Take Aim (1273129 effects: #1, #2, #3), Headshot (1277558 effect#1), Through the Eyes (1277565 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Mastery: Master of Beasts (76657 effects: #5, #6), Beast Mastery Hunter (137015 effects: #1, #2, #8), Marksmanship Hunter (137016 effects: #1, #2, #7, #8), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effects: #2, #3), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#4), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), In the Rhythm (407405 effect#1), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Banshee's Mark (467902 effect#1), Black Arrow (468572 effect#2), Wyvern's Cry (471881 effects: #1, #2), The Bell Tolls (1232992 effects: #1, #2), Takedown (1250646 effects: #1, #2), Stargazer (1253750 effect#1), Beast Mastery Hunter (1256939 effects: #1, #2, #3, #7, #8), Marksmanship Hunter (1256940 effects: #1, #2, #3, #4), Survival Hunter (1256941 effects: #1, #2), Lethal Calibration (1262408 effect#1), Take Aim (1273129 effects: #1, #2, #3), Headshot (1277558 effect#1), Through the Eyes (1277565 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 2pc (1283629 effects: #1, #2), Hunter- Midnight PrePatch - 11.2 Class Set 4pc (1283630 effects: #1, #2)
 Family Flags     : 11, 91, 106, 121
 Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Combat Feedback When Usable (137), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
@@ -15268,7 +15273,7 @@ Labels           : 16: Class Spells
                  : 3022
                  : 3993: Unnatural Causes (459529 effect#2)
                  : 6046
-Affecting Spells : Mastery: Master of Beasts (76657 effects: #5, #6), Beast Mastery Hunter (137015 effect#8), Marksmanship Hunter (137016 effects: #7, #8), Mastery: Sniper Training (193468 effect#4), Banshee's Mark (467902 effect#1), Marksmanship Hunter (1256940 effects: #3, #4), Take Aim (1273129 effect#3), Through the Eyes (1277565 effect#2)
+Affecting Spells : Mastery: Master of Beasts (76657 effects: #5, #6), Beast Mastery Hunter (137015 effect#8), Marksmanship Hunter (137016 effects: #7, #8), Mastery: Sniper Training (193468 effect#4), Banshee's Mark (467902 effect#1), Beast Mastery Hunter (1256939 effects: #7, #8), Marksmanship Hunter (1256940 effects: #3, #4), Take Aim (1273129 effect#3), Through the Eyes (1277565 effect#2)
 Family Flags     : 91
 Attributes       : No Redirection (35), No Reflection (39), DoT Stacking Rule (103), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -17819,7 +17824,8 @@ Family Flags     : 22, 106, 122
 Attributes       : Is Ability (4), Ignore Line of Sight (66), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1258741)  : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20988 | Mechanic: Bleed | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.252 | Mechanic: Bleed | Target: Targeted Enemy (6)
+Hotfixed         : AP Coefficient (0.20988 -> 0.252)
 Description      : $@spelldesc259495
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
@@ -18178,7 +18184,8 @@ Family Flags     : 84, 106
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Do Not Display Range (126), Melee Chain Targeting (172), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), Aura Points On Client (268), No PvP Battle Fatigue (387), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1259945)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 12 | PvP Coefficient: 0.5625 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 12 | PvP Coefficient: 0.50625 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : PvP Coefficient (0.5625 -> 0.50625)
 Description      : $@spelldesc1250646
 
 Name             : Takedown (id=1253860) [Spell Family (9)] 
@@ -18212,7 +18219,8 @@ Family Flags     : 84, 106
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Melee Chain Targeting (172), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1259949)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 6 | PvP Coefficient: 0.5625 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 6 | PvP Coefficient: 0.478125 | Radius: 0 - 8 yards | Target: At Enemy (53) -> at Enemy in Area (16)
+Hotfixed         : PvP Coefficient (0.5625 -> 0.478125)
 #2 (id=1259950)  : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | Resource: focus | Target: Self (1)
 Description      : $@spelldesc1250646
@@ -18349,6 +18357,16 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
                    Affected Spells: Stampede (201594)
                    Family Flags: 113
+#7 (id=1357256)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
+                   Family Flags: 91
+Hotfixed         : NEW EFFECT
+#8 (id=1357257)  : Apply Aura (6) | Modify Percent PVP Multiplier (647): Periodic Amount (1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
+                   Family Flags: 91
+Hotfixed         : NEW EFFECT
 
 Name             : Marksmanship Hunter (id=1256940) [Spell Family (9), Passive, Hidden] 
 Class            : Marksmanship Hunter
@@ -19581,7 +19599,8 @@ Family Flags     : 1, 74, 106
 Attributes       : Allow Cast While Dead (23), Ignore Line of Sight (66), DoT Stacking Rule (103), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1278279)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.844 | PvP Coefficient: 0.7 | Target: Targeted Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.844 | PvP Coefficient: 0.595 | Target: Targeted Enemy (6)
+Hotfixed         : PvP Coefficient (0.7 -> 0.595)
 Description      : $@spelldesc1264949
 
 Name             : Twilight Requiem (id=1266096) [Spell Family (9)] 
