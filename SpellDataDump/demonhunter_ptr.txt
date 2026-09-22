@@ -13476,7 +13476,7 @@ Effects          :
 #1 (id=1207505)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Targeted Enemy (6)
 #2 (id=1290193)  : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50
+                   Base Value: 75 | Scaled Value: 75
 Description      : Channel an immense amount of void energy into a single, cataclysmic blast, $?a1242486[critically striking for ${$1221162s1*2}][dealing $1221162s1] Cosmic damage to your target and $?a1242486[${2*($1221162s1*($s2/100))}][${$1221162s1*($s2/100)}] Cosmic damage to all nearby enemies. Damage reduced beyond $s1 targets.
 
 While casting Collapsing Star, your Fury drain is significantly reduced.$?a1240204[
