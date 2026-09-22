@@ -484,10 +484,18 @@ void to_json( JsonOutput root, const ::report::json::report_configuration_t& rep
     json[ "time" ] = entry.time;
     if ( entry.action )
     {
-      json[ "id" ] = entry.action->id;
+      json[ "id" ] = entry.action->id != 0 ? entry.action->id : entry.spell_id;
       json[ "name" ] = entry.action->name();
       json[ "target" ] = entry.action->harmful ? entry.target->name() : "none";
-      json[ "spell_name" ] = entry.action->data_reporting().name_cstr();
+      util::string_view spell_name_view = entry.spell_name;
+      if ( spell_name_view.empty() )
+      {
+        const char* spell_name = entry.action->data_reporting().name_cstr();
+        if ( spell_name == nullptr || spell_name[ 0 ] == '\0' )
+          spell_name = entry.action->name_reporting();
+        spell_name_view = spell_name;
+      }
+      json[ "spell_name" ] = spell_name_view;
       json[ "queue_failed" ] = entry.queue_failed;
       if ( entry.action->item )
       {

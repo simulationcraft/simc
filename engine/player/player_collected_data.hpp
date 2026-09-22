@@ -123,6 +123,8 @@ struct player_collected_data_t
     std::string target_reporting;  // reporting override
     const timespan_t time;
     timespan_t wait_time;
+    unsigned spell_id;
+    std::string spell_name;
     bool queue_failed;
     std::vector<record_t<buff_t>> buff_list;
     std::vector<record_t<cooldown_t>> cooldown_list;

@@ -185,7 +185,12 @@ void sequence_t::sequence_add_fn( std::string& a_str, std::string& t_str ) const
 {
   // current_action is advanced in schedule_execute so we need to use current_action - 1
   auto _idx = current_action - 1;
-  a_str = fmt::format( "</b>SEQ {}[{}]<br><b>{}", name_str, _idx, sub_actions[ _idx ]->name_str );
+  const action_t* sub_action = sub_actions[ _idx ];
+  const char* sub_action_name = sub_action->data_reporting().name_cstr();
+  if ( sub_action_name == nullptr || sub_action_name[ 0 ] == '\0' )
+    sub_action_name = sub_action->name_reporting();
+
+  a_str = fmt::format( "</b>SEQ {}[{}]<br><b>{}", name_str, _idx, sub_action_name );
   t_str = target->name_str;
 }
 
