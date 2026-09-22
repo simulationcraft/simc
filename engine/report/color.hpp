@@ -102,7 +102,7 @@ namespace color
 
       return *this;
     }
-    
+
     constexpr rgb operator+( rgb other ) const
     {
       rgb new_color( *this );
@@ -157,7 +157,6 @@ namespace color
   inline constexpr rgb COLOR_SHAMAN( "0070DE" );
   inline constexpr rgb COLOR_WARLOCK( "9482C9" );
   inline constexpr rgb COLOR_WARRIOR( "C79C6E" );
-  inline constexpr rgb COLOR_PLAYER_SIMPLIFIED( "FF69B4" );
 
   inline constexpr rgb WHITE( "FFFFFF" );
   inline constexpr rgb GREY( "333333" );

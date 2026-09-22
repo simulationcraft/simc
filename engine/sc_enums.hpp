@@ -264,7 +264,6 @@ enum player_e
   SHAMAN,
   WARLOCK,
   WARRIOR,
-  PLAYER_SIMPLIFIED,
   PLAYER_PET,
   PLAYER_GUARDIAN,
   HEALING_ENEMY,
@@ -453,7 +452,7 @@ enum dot_copy_e
 {
   DOT_COPY_START,            // Start a new DoT with the same remaining duration
   DOT_COPY_CLONE,            // Clone everything from source DoT (tick time, stacks, remaining duration, etc) and refresh if active
-  DOT_COPY_CLONE_NO_REFRESH, // Clone everything from source DoT (tick time, stacks, remaining duration, etc) 
+  DOT_COPY_CLONE_NO_REFRESH, // Clone everything from source DoT (tick time, stacks, remaining duration, etc)
 };
 
 enum dynamic_tick_action_e

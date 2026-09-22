@@ -1865,7 +1865,7 @@ void player_t::init_items()
     matching_gear_slots[ i ] = !util::is_match_slot( i );
 
   // Override with item slot overrides. Note this will completely replace any player-scoped item options
-  if ( is_player() && type != PLAYER_SIMPLIFIED )
+  if ( is_player() )
   {
     for ( const auto& [ override_slot, override_str ] : sim->item_slot_overrides )
     {
@@ -2139,7 +2139,7 @@ void player_t::create_special_effects()
     special_effects.push_back( new special_effect_t( effect ) );
   }
 
-  if ( sim->enable_all_item_effects && type != PLAYER_SIMPLIFIED )
+  if ( sim->enable_all_item_effects )
   {
     for ( auto id : unique_gear::midnight::__mid_special_effect_ids )
     {
@@ -10910,49 +10910,6 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
 
 void player_t::create_permanent_actors()
 {
-  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && sim->dungeon_route_simple_dps_members > 0 && is_player() && type != PLAYER_SIMPLIFIED )
-  {
-    // keep it simple and require one input player
-    int players = 0;
-    for ( player_t* p : sim->player_no_pet_list )
-    {
-      if ( p->is_player() && type != PLAYER_SIMPLIFIED )
-      {
-        players++;
-      }
-    }
-
-    if ( players > 1 )
-    {
-      sim->error( "Warning: ignoring dungeon_route_simple_dps_members since more than one player was defined" );
-      sim->dungeon_route_simple_dps_members = 0;
-      return;
-    }
-
-    // make sure we are actually simming the whole party together
-    if ( sim->single_actor_batch )
-    {
-      sim->error( "Warning: ignoring dungeon_route_simple_dps_members since single_actor_batch was enabed" );
-      sim->dungeon_route_simple_dps_members = 0;
-      return;
-    }
-
-    const module_t* module = module_t::get( PLAYER_SIMPLIFIED );
-
-    bool dps_role = primary_role() != ROLE_TANK && primary_role() != ROLE_HEAL && primary_role() != ROLE_HYBRID;
-
-    if ( dps_role && sim->dungeon_route_simple_dps_members > 2 )
-    {
-      sim->error( "Warning: clamping dungeon_route_simple_dps_members to 2 since player is dps" );
-      sim->dungeon_route_simple_dps_members = 2;
-    }
-
-    for ( int i = 1; i <= sim->dungeon_route_simple_dps_members; i++ )
-    {
-      player_t* p = module->create_player( sim, "Dungeon Buddy " + util::to_string( i ) );
-      p->true_level = level();
-    }
-  }
 }
 
 pet_t* player_t::create_pet( util::string_view, util::string_view )
@@ -11712,7 +11669,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
         weapon_status =
             static_cast<double>( off_hand_weapon.group() == WEAPON_1H || off_hand_weapon.group() == WEAPON_SMALL );
       }
-      else 
+      else
       {
         weapon_e weapon_type = util::parse_weapon_type( splits[ 1 ] );
         if ( weapon_type != WEAPON_NONE )

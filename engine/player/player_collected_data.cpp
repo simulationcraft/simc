@@ -154,7 +154,7 @@ void player_collected_data_t::reserve_memory( const player_t& p )
   heal_taken.reserve( size );
   deaths.reserve( size );
 
-  if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.type != PLAYER_SIMPLIFIED )
+  if ( !p.is_pet() && p.primary_role() == ROLE_TANK )
     p.sim->num_tanks++;
 }
 
@@ -385,7 +385,7 @@ void player_collected_data_t::collect_data( const player_t& p )
     combat_end_resource[ i ].add( p.resources.current[ i ] );
   }
 
-  if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.type != PLAYER_SIMPLIFIED )
+  if ( !p.is_pet() && p.primary_role() == ROLE_TANK )
     health_changes.merged_timeline.merge( health_changes.timeline );
 
   if ( p.sim->target_error > 0 && !p.is_pet() && !p.is_enemy() )

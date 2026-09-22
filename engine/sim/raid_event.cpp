@@ -540,58 +540,6 @@ struct pull_event_t final : raid_event_t
 
     double hp_mult = 1.0;
 
-    // adjust hp based on dungeon_route_simple_dps_members since the mob hp is assumed to be pre-adjusted for the player being simmed
-    if ( sim->dungeon_route_simple_dps_members > 0 )
-    {
-      // assume this is too much for a single player
-      if ( sim->dungeon_route_pct_hp > 40 )
-      {
-        sim->error( "Warning: using dungeon_route_simple_dps_members but keystone_pct_hp is over 40 which seems high for one player; hp will not be adjusted, \
-          make sure input health values accomodate the extra actors or set keystone_pct_hp according to only the player profile" );
-      }
-      // don't adjust hp if single_actor_batch=1 is mistakenly used, the simple dps players will just be ignored
-      else if ( sim->single_actor_batch == 1 )
-      {
-        sim->error( "Warning: single_actor_batch is enabled but dungeon_route_simple_dps_members was > 0; hp will not be adjusted" );
-      }
-      else
-      {
-        int player_mult = sim->dungeon_route_pct_hp;
-
-        player_t* sim_player = nullptr;
-        for ( player_t* player : sim->player_no_pet_list )
-        {
-          if ( player->is_player() && player->type != player_e::PLAYER_SIMPLIFIED )
-          {
-            sim_player = player;
-            break;
-          }
-        }
-
-        if ( sim_player )
-        {
-          // use rough pct values from logs that used to ship with the mdt sim export wa
-          if ( player_mult == 0 )
-          {
-            if ( sim_player->primary_role() == ROLE_HEAL || sim_player->primary_role() == ROLE_HYBRID )
-            {
-              player_mult = 5;
-            }
-            else if ( sim_player->primary_role() == ROLE_TANK )
-            {
-              player_mult = 14;
-            }
-            else
-            {
-              player_mult = 27;
-            }
-          }
-
-          hp_mult = ( player_mult + ( sim->dungeon_route_simple_dps_members * 27.0 ) ) / player_mult;
-        }
-      }
-    }
-
     name = "Pull_" + util::to_string( pull );
 
     real_duration.name_str = name + " Length";

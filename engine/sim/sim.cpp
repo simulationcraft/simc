@@ -1464,7 +1464,6 @@ sim_t::sim_t()
     timewalk( -1 ),
     scale_to_itemlevel( -1 ),
     dungeon_route_smart_targeting( true ),
-    dungeon_route_simple_dps_members( 0 ),
     dungeon_route_pct_hp( 0 ),
     dungeon_route_key_level( 0 ),
     challenge_mode( false ),
@@ -2362,7 +2361,7 @@ void sim_t::init_fight_style()
       // Bloodlust is handled by an option on each pull raid event.
       overrides.bloodlust = 0;
       // Only use for this should be setting the safeguard event (max_time * 2). As long as Blizzard remains sane and tunes around a typical dungeon
-      // taking about 30 minutes to complete, a safeguard of 1.5 hours should be a safe point to assume something has gone wrong in the sim, either the 
+      // taking about 30 minutes to complete, a safeguard of 1.5 hours should be a safe point to assume something has gone wrong in the sim, either the
       // input needs to be checked or something got stuck.
       max_time = 45_min;
       break;
@@ -3901,7 +3900,6 @@ void sim_t::create_options()
   add_option( opt_int( "keystone_level", dungeon_route_key_level ) );
   add_option( opt_int( "keystone_pct_hp", dungeon_route_pct_hp, 0, 100 ) );
   add_option( opt_bool( "dungeon_route_smart_targeting", dungeon_route_smart_targeting ) );
-  add_option( opt_int( "dungeon_route_simple_dps_members", dungeon_route_simple_dps_members, 0, 3 ) );
 
   // Character Creation
   add_option( opt_func( "druid", parse_player ) );
@@ -3913,7 +3911,6 @@ void sim_t::create_options()
   add_option( opt_func( "shaman", parse_player ) );
   add_option( opt_func( "warlock", parse_player ) );
   add_option( opt_func( "warrior", parse_player ) );
-  add_option( opt_func( "player_simplified", parse_player ) );
   add_option( opt_func( "enemy", parse_player ) );
   add_option( opt_func( "tank_dummy", parse_player ) );
   add_option( opt_func( "pet", parse_player ) );
