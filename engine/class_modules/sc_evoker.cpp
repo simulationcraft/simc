@@ -7840,7 +7840,7 @@ public:
     may_dodge = may_parry = may_block = false;
     background                        = true;
     aoe                               = -1;
-    spell_power_mod.direct            = 0.3;  // Hardcoded for some reason, 19/05/2023
+    spell_power_mod.direct            = 0.6;  // Hardcoded for some reason, 23/09/2026 DD/MM/YYYY
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
