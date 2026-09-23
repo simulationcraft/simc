@@ -451,11 +451,13 @@ struct simplified_player_t : public player_t
       { "demo",
         { ROLE_SPELL, 19.0, true, 1.5_s, 0.5, -1, 8, 1, -0.2, 9000.0, 0.0011, 0.1, 0.35,
           { 
-            { "60s_cds_p1", 0.2,  30_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
-            { "60s_cds_p2", 0.2,  30_s,  60_s,  7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
-            { "60s_cds_p3", 0.1,  30_s,  60_s, 11_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
+            { "60s_cds_p1", 0.1,  38_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
+            { "60s_cds_p2", 0.2,  34_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
+            { "60s_cds_p3", 0.2,  30_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
             { "60s_cds_p4", 0.1,  20_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
             { "60s_cds_p5", 0.3,  15_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, true },
+            { "60s_cds_p6", -0.0909,   7_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
+            { "60s_cds_p7", -0.1667,   3_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
             { "20s_cds",    0.2,  12_s,  20_s,  2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
             { "120s_cds",   0.2,  15_s, 120_s,  2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
             { "120s_cds_2", 0.2,  15_s, 120_s,  2_s, bob_buff_type_e::BUFF_HASTE, false },
@@ -585,15 +587,17 @@ struct simplified_player_t : public player_t
       { "demo",
         { ROLE_SPELL, 21.2, true, 1.5_s, 0.5, -1, 8, 1, -0.2, 9000.0, 0.0011, 0.1, 0.35,
           { 
-            { "60s_cds_p1", 0.2,  30_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
-            { "60s_cds_p2", 0.2,  30_s,  60_s,  7_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
-            { "60s_cds_p3", 0.1,  30_s,  60_s, 11_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
+            { "60s_cds_p1", 0.1,  38_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
+            { "60s_cds_p2", 0.2,  34_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
+            { "60s_cds_p3", 0.2,  30_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
             { "60s_cds_p4", 0.1,  20_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
             { "60s_cds_p5", 0.3,  15_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, true },
-            { "20s_cds",    0.2,  12_s,  20_s,  2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
-            { "120s_cds",   0.2,  15_s, 120_s,  2_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
-            { "120s_cds_2", 0.2,  15_s, 120_s,  2_s, bob_buff_type_e::BUFF_HASTE, false },
-            { "dps_pot",  695.0,  30_s, 300_s,  7_s, bob_buff_type_e::BUFF_FLAT_PRIMARY, false } 
+            { "60s_cds_p6", -0.0909,   7_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
+            { "60s_cds_p7", -0.1667,   3_s,  60_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
+            { "20s_cds",    0.2,  12_s,  20_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
+            { "120s_cds",   0.2,  15_s, 120_s,  3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
+            { "120s_cds_2", 0.2,  15_s, 120_s,  3_s, bob_buff_type_e::BUFF_HASTE, false },
+            { "dps_pot",  695.0,  30_s, 300_s,  3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY, false } 
           }
         } 
       },
@@ -602,7 +606,7 @@ struct simplified_player_t : public player_t
           { 
             { "90s_cds",   1.2, 15_s, 90_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, true },
             { "45s_cds",   0.8, 12_s, 45_s, 3_s, bob_buff_type_e::BUFF_PERCENT_DAMAGE, false },
-            { "dps_pot", 695.0, 30_s, 320_s, 2_s, bob_buff_type_e::BUFF_FLAT_PRIMARY, false } 
+            { "dps_pot", 695.0, 30_s, 320_s, 3_s, bob_buff_type_e::BUFF_FLAT_PRIMARY, false } 
           }
         }
       },
