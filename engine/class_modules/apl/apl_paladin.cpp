@@ -89,7 +89,6 @@ void protection( player_t* p )
   default_->add_action( "ardent_defender,if=talent.eye_for_an_eye" );
   default_->add_action( "variable,use_off_gcd=1,name=wants_to_hammer,value=buff.hammer_of_light_ready.up&debuff.judgment.up&(buff.undisputed_ruling.remains<=1.8|buff.hammer_of_light_ready.remains<5)" );
   default_->add_action( "holy_armaments,if=cooldown.avenging_wrath.remains<=gcd|time_to_die<30|charges=2" );
-  default_->add_action( "use_items,if=buff.avenging_wrath.up|cooldown.avenging_wrath.up" );
   default_->add_action( "fireblood,if=buff.avenging_wrath.up" );
   default_->add_action( "avenging_wrath" );
   default_->add_action( "divine_toll,if=buff.avenging_wrath.up|!apex.3" );
