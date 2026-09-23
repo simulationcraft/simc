@@ -19,6 +19,10 @@
 #include "sim/expressions.hpp"
 #include "sim/sim.hpp"
 #include "util/rng.hpp"
+#include "player/action_priority_list.hpp"
+#include "action/attack.hpp"
+#include "sim/cooldown.hpp"
+#include "player/stats.hpp"
 
 // ==========================================================================
 // Raid Events
@@ -389,8 +393,8 @@ struct pull_event_t final : raid_event_t
   {
     pull_event_t* pull_event;
 
-    mob_t( player_t* o, util::string_view n = "Mob", pet_e pt = PET_ENEMY ) : pet_t( o->sim, o, n, pt ),
-      pull_event( nullptr )
+    mob_t( player_t* o, util::string_view n = "Mob", pet_e pt = PET_ENEMY )
+      : pet_t( o->sim, o, n, pt ), pull_event( nullptr )
     {
     }
 
@@ -427,6 +431,437 @@ struct pull_event_t final : raid_event_t
       }
 
       return pet_t::time_to_percent( percent );
+    }
+
+    template <typename ACTION_TYPE>
+    struct enemy_action_t : public ACTION_TYPE
+    {
+      using action_type_t = ACTION_TYPE;
+      using base_t        = enemy_action_t<ACTION_TYPE>;
+
+      std::string dmg_type_override;
+      timespan_t cooldown_;
+      int aoe_tanks;
+
+      enemy_action_t( util::string_view name, player_t* player )
+        : action_type_t( name, player ),
+          cooldown_( timespan_t::zero() ),
+          aoe_tanks( 0 )
+      {
+        this->add_option( opt_timespan( "attack_speed", this->base_execute_time.base ) );
+        this->add_option( opt_int( "aoe_tanks", aoe_tanks ) );
+        this->add_option( opt_timespan( "cooldown", cooldown_ ) );
+        this->add_option( opt_string( "type", dmg_type_override ) );
+
+        this->special     = true;
+        dmg_type_override = "none";
+      }
+
+      virtual void set_name_string()
+      {
+        this->name_str = this->name_str + "_" + this->target->name();
+      }
+
+      // this is only used by helper structures
+      std::string filter_options_list( util::string_view options_str )
+      {
+        auto splits = util::string_split<util::string_view>( options_str, "," );
+        std::string filtered_options;
+        for ( auto split : splits )
+        {
+          if ( !util::str_in_str_ci( split, "if=" ) )
+          {
+            if ( filtered_options.length() > 0 )
+              filtered_options += ",";
+            filtered_options += std::string( split );
+          }
+        }
+        return filtered_options;
+      }
+
+      void init() override
+      {
+        action_type_t::init();
+
+        set_name_string();
+        this->cooldown = this->player->get_cooldown( this->name_str );
+
+        this->stats         = this->player->get_stats( this->name_str, this );
+        this->stats->school = this->school;
+
+        if ( cooldown_ > timespan_t::zero() )
+          this->cooldown->duration = cooldown_;
+
+        if ( dmg_type_override != "none" )
+          this->school = util::parse_school_type( dmg_type_override );
+
+        if ( this->base_dd_max < this->base_dd_min )
+          this->base_dd_max = this->base_dd_min;
+      }
+
+      size_t available_targets( std::vector<player_t*>& tl ) const override
+      {
+        // TODO: This does not work for heals at all, as it presumes enemies in the
+        // actor list.
+        tl.clear();
+        tl.push_back( this->target );
+
+        if ( this->sim->single_actor_batch )
+        {
+          player_t* actor = this->sim->player_no_pet_list[ this->sim->current_index ];
+          if ( !actor->is_sleeping() && !actor->is_enemy() && actor->primary_role() == ROLE_TANK &&
+               actor != this->target && actor != this->sim->heal_target )
+            tl.push_back( actor );
+        }
+        else
+        {
+          for ( size_t i = 0, actors = this->sim->actor_list.size(); i < actors; i++ )
+          {
+            player_t* actor = this->sim->actor_list[ i ];
+            // only add non heal_target tanks to this list for now
+            if ( !actor->is_sleeping() && !actor->is_enemy() && actor->primary_role() == ROLE_TANK &&
+                 actor != this->target && actor != this->sim->heal_target )
+              tl.push_back( actor );
+          }
+        }
+        // if we have no target (no tank), add the healing target as substitute
+        if ( tl.empty() )
+        {
+          tl.push_back( this->sim->heal_target );
+        }
+
+        return tl.size();
+      }
+
+      void snapshot_internal( action_state_t* s, unsigned fl, result_amount_type rt ) override
+      {
+        action_type_t::snapshot_internal( s, fl, rt );
+
+        if ( s->target->is_player() )
+          s->target_block_value = s->target->composite_block_value( s );
+      }
+
+      double base_da_min( const action_state_t* s ) const override
+      {
+        constexpr double aa_damage_base = 1'000'000;
+        const double dummy_scalar       = this->player->is_boss() ? 1 : 0.25;
+        return dummy_scalar * aa_damage_base * 0.95;
+      }
+
+      double base_da_max( const action_state_t* s ) const
+      {
+        constexpr double aa_damage_base = 1'500'000;
+        const double dummy_scalar       = this->player->is_boss() ? 1 : 0.25;
+        return dummy_scalar * aa_damage_base * 1.05;
+      }
+
+      double calculate_direct_amount( action_state_t* s ) const override
+      {
+        // force boss attack size to vary regardless of whether the sim itself does
+        int previous_average_range_state = this->sim->average_range;
+        this->sim->average_range         = 0;
+
+        double amount = action_type_t::calculate_direct_amount( s );
+
+        this->sim->average_range = previous_average_range_state;
+
+        return amount;
+      }
+
+      bool ready() override
+      {
+        if ( this->sim->single_actor_batch == 1 && this->target->primary_role() != ROLE_TANK )
+        {
+          return false;
+        }
+
+        return action_type_t::ready();
+      }
+    };
+
+    // enemy_action_driver_t handles all of the weird stuff necessary to aoe tanks
+    // it's basically a clone of whatever the child action is, but with extra fluff!
+
+    template <typename CHILD_ACTION_TYPE>
+    struct enemy_action_driver_t : public CHILD_ACTION_TYPE
+    {
+      using child_action_type_t = CHILD_ACTION_TYPE;
+      using base_t              = enemy_action_driver_t<CHILD_ACTION_TYPE>;
+
+      int aoe_tanks;
+      std::vector<child_action_type_t*> ch_list;
+      size_t num_attacks;
+
+      enemy_action_driver_t( player_t* player, util::string_view options_str )
+        : child_action_type_t( player, options_str ), aoe_tanks( 0 ), num_attacks( 0 )
+      {
+        this->add_option( opt_int( "aoe_tanks", aoe_tanks ) );
+        this->parse_options( options_str );
+
+        // construct the target list
+        std::vector<player_t*> target_list;
+
+        if ( this->sim->single_actor_batch )
+        {
+          target_list.push_back( this->sim->player_no_pet_list[ this->sim->current_index ] );
+        }
+        else
+        {
+          for ( size_t i = 0; i < this->sim->player_no_pet_list.size(); i++ )
+            if ( this->sim->player_no_pet_list[ i ]->primary_role() == ROLE_TANK )
+              target_list.push_back( this->sim->player_no_pet_list[ i ] );
+        }
+
+        // create a separate action for each potential target
+        for ( auto* i : target_list )
+        {
+          auto ch        = new child_action_type_t( player, this->filter_options_list( options_str ) );
+          ch->target     = i;
+          ch->background = true;
+          ch_list.push_back( ch );
+        }
+
+        // handle the aoe_tanks flag: negative or 1 for all, 2+ represents 2+ random targets
+        // Do this by defining num_attacks appropriately for later use
+        if ( aoe_tanks == 1 || aoe_tanks < 0 )
+          num_attacks = ch_list.size();
+        else
+          num_attacks = static_cast<size_t>( aoe_tanks );
+
+        this->interrupt_auto_attack = false;
+        // if there are no valid targets, disable
+        if ( ch_list.empty() )
+          this->background = true;
+      }
+
+      void schedule_execute( action_state_t* s ) override
+      {
+        // first, execute on the primary target
+        child_action_type_t::schedule_execute( s );
+
+        // if we're hitting more than one target, handle the children
+        if ( num_attacks > 1 )
+        {
+          if ( num_attacks == ch_list.size() )
+          {
+            // hit everyone
+            for ( size_t i = 0; i < ch_list.size(); i++ )
+              if ( ch_list[ i ]->target != this->target )
+                ch_list[ i ]->schedule_execute( s );
+          }
+          else
+          {
+            // hit a random subset
+            std::vector<child_action_type_t*> rt_list;
+            rt_list  = ch_list;
+            size_t i = 1;
+            while ( i < num_attacks )
+            {
+              size_t element = static_cast<size_t>( std::floor( this->rng().real() * rt_list.size() ) );
+              if ( rt_list[ element ]->target != this->target )
+              {
+                rt_list[ element ]->schedule_execute( s );
+                i++;
+              }
+              // remove this element
+              rt_list.erase( rt_list.begin() + element );
+
+              // infinte loop check
+              if ( rt_list.empty() )
+                break;
+            }
+          }
+        }
+      }
+
+      bool ready() override
+      {
+        if ( this->sim->single_actor_batch == 1 && this->target->primary_role() != ROLE_TANK )
+        {
+          return false;
+        }
+
+        return child_action_type_t::ready();
+      }
+    };
+
+    // Melee ====================================================================
+
+    struct melee_t : public enemy_action_t<melee_attack_t>
+    {
+      action_t* driver;
+      bool first;
+
+      melee_t( util::string_view name, player_t* player, action_t* a, util::string_view options_str )
+        : base_t( name, player ), driver( a ), first( false )
+      {
+        school            = SCHOOL_PHYSICAL;
+        trigger_gcd       = timespan_t::zero();
+        base_dd_min       = 1040;
+        base_execute_time = timespan_t::from_seconds( 1.5 );
+        may_crit = background = repeating = not_a_proc = true;
+        may_dodge = may_parry = may_block = true;
+        special                           = false;
+
+        parse_options( options_str );
+      }
+
+      void init() override
+      {
+        base_t::init();
+
+        // if the execute time is somehow less than 10 ms, set it back to the default of 1.5 seconds
+        if ( base_execute_time < 10_ms )
+          base_execute_time = 1.5_s;
+      }
+
+      void reset() override
+      {
+        base_t::reset();
+        first = true;
+      }
+
+      void execute() override
+      {
+        base_t::execute();
+        first = false;
+      }
+
+      timespan_t execute_time_flat_modifier() const override
+      {
+        if ( first )
+          return base_execute_time.base * rng().range( 0.25, 0.75 );
+
+        return 0_ms;
+      }
+    };
+
+    // Auto Attack ==============================================================
+
+    struct auto_attack_t : public enemy_action_t<attack_t>
+    {
+      std::vector<melee_t*> mh_list;
+
+      // default constructor
+      auto_attack_t( mob_t* p, util::string_view options_str ) : base_t( "auto_attack", p ), mh_list( 0 )
+      {
+        parse_options( options_str );
+
+        use_off_gcd = true;
+        trigger_gcd = timespan_t::zero();
+
+        size_t num_attacks = 0;
+        if ( this->sim->single_actor_batch )
+          num_attacks = 1;
+        else if ( aoe_tanks == 1 || aoe_tanks < 0 )
+          num_attacks = this->player->sim->actor_list.size();
+        else
+          num_attacks = static_cast<size_t>( aoe_tanks );
+
+        std::vector<player_t*> target_list;
+        if ( aoe_tanks )
+        {
+          for ( auto* i : sim->player_no_pet_list )
+            if ( target_list.size() < num_attacks && i->primary_role() == ROLE_TANK )
+              target_list.push_back( i );
+        }
+        else
+          target_list.push_back( target );
+
+        for ( auto* t : target_list )
+        {
+          melee_t* mh = new melee_t( "melee_main_hand", p, this, options_str );
+          mh->weapon  = &( p->main_hand_weapon );
+          mh->target  = t;
+          mh_list.push_back( mh );
+        }
+
+        if ( !mh_list.empty() )
+          p->main_hand_attack = mh_list[ 0 ];
+      }
+
+      void set_name_string() override
+      {
+        if ( mh_list.size() > 1 )
+          this->name_str = this->name_str + "_tanks";
+        else
+          base_t::set_name_string();
+      }
+
+      void execute() override
+      {
+        player->main_hand_attack = mh_list[ 0 ];
+        for ( auto* mh : mh_list )
+          mh->schedule_execute();
+      }
+
+      bool ready() override
+      {
+        if ( player->is_moving() || !player->main_hand_attack )
+          return false;
+        if ( debug_cast<mob_t*>( player )->pull_event->attack_tanks < 1 )
+          return false;
+        if ( !base_t::ready() )
+          return false;
+        return ( player->main_hand_attack->execute_event == nullptr );  // not swinging
+      }
+    };
+
+    action_t* create_action(util::string_view name, util::string_view options_str) override
+    {
+      if ( name == "auto_attack" )
+        return new auto_attack_t( this, options_str );
+
+      return pet_t::create_action( name, options_str );
+    }
+
+    void init_target() override
+    {
+      if ( !target_str.empty() )
+      {
+        target = sim->find_player( target_str );
+      }
+
+      for ( auto* p : sim->player_list )
+      {
+        if ( p->primary_role() != ROLE_TANK )
+          continue;
+
+        target = p;
+        break;
+      }
+
+      if ( !target )
+        target = sim->target;
+    }
+
+    void init_action_list() override
+    {
+      bool has_tank = false;
+
+      for ( auto* p : sim->player_no_pet_list )
+      {
+        if ( p->primary_role() == ROLE_TANK )
+        {
+          has_tank = true;
+          break;
+        }
+      }
+
+      if ( !has_tank )
+      {
+        base_t::init_action_list();
+        return;
+      }
+
+      // If the action list string is empty, automatically populate it
+      if ( action_list_str.empty() )
+      {
+        std::string& precombat_list = get_action_priority_list( "precombat" )->action_list_str;
+        precombat_list += "/snapshot_stats";
+
+        action_list_str += "/auto_attack,attack_speed=2,aoe_tanks=1";
+      }
     }
 
     void init_resources( bool force ) override
@@ -495,6 +930,7 @@ struct pull_event_t final : raid_event_t
   bool bloodlust;
   bool shared_health;
   bool has_boss;
+  int attack_tanks;
   event_t* spawn_event;
   event_t* redistribute_event;
   extended_sample_data_t real_duration;
@@ -521,12 +957,14 @@ struct pull_event_t final : raid_event_t
       has_boss( false ),
       spawn_event( nullptr ),
       redistribute_event( nullptr ),
-      real_duration( "Pull Length", false )
+      real_duration( "Pull Length", false ),
+      attack_tanks( -1 )
   {
     add_option( opt_string( "enemies", enemies_str ) );
     add_option( opt_timespan( "delay", delay ) );
     add_option( opt_bool( "bloodlust", bloodlust ) );
     add_option( opt_bool( "shared_health", shared_health ) );
+    add_option( opt_bool( "attack_tanks", attack_tanks ) );
 
     parse_options( options_str );
 
@@ -539,6 +977,19 @@ struct pull_event_t final : raid_event_t
     duration.stddev = duration.min = duration.max = 0_ms;
 
     double hp_mult = 1.0;
+
+    if ( attack_tanks < 0 )
+    {
+      for ( player_t* player : sim->player_no_pet_list )
+      {
+        // Always attack if there's an Augmentation Evoker. Go for blood.
+        if ( player->specialization() == EVOKER_AUGMENTATION )
+        {
+          attack_tanks = 1;
+          break;
+        }
+      }
+    }
 
     // adjust hp based on dungeon_route_simple_dps_members since the mob hp is assumed to be pre-adjusted for the player being simmed
     if ( sim->dungeon_route_simple_dps_members > 0 )
@@ -741,6 +1192,7 @@ struct pull_event_t final : raid_event_t
       sim->print_log( "Renaming {} to {}", adds[ i ]->name_str, mob_name );
       adds[ i ]->full_name_str = adds[ i ]->name_str = mob_name;
       total_health += spawn_parameters[ i ].health;
+      adds[ i ]->change_position( POSITION_FRONT );
     }
 
     if ( shared_health )

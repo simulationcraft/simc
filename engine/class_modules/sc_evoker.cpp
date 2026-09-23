@@ -979,6 +979,27 @@ struct simplified_player_t : public player_t
     type = PLAYER_SIMPLIFIED;
   }
 
+  double composite_mitigation_multiplier( const action_state_t* s, school_e school, bool ) const override
+  {
+    auto m = player_t::composite_mitigation_multiplier( s, school, true );
+    
+    if ( role == ROLE_TANK )
+      return 0.4 * m;
+
+    return m;
+  }
+
+  double composite_parry() const override
+  {
+    auto parry = player_t::composite_parry();
+
+    if ( role == ROLE_TANK )
+      return parry + 0.5;
+
+    return parry;
+  }
+
+
   void init_items() override
   {
     int item_level = option.item_level;
