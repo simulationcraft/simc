@@ -11353,6 +11353,10 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
     helper.erase( std::remove_if( helper.begin(), helper.end(), []( player_t* t ) { return t->is_pet(); } ),
                   helper.end() );
 
+    // People still seem to love eating their own balls
+    helper.push_back( target );
+    helper.push_back( target );
+
     switch ( mote_buff )
     {
       case mote_buffs_e::INFERNOS_BLESSING:
