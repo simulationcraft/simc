@@ -13,6 +13,7 @@
 #include "dbc/item_database.hpp"
 #include "dbc/spell_data.hpp"
 #include "item/item.hpp"
+#include "player/action_variable.hpp"
 #include "player/actor_target_data.hpp"
 #include "player/consumable.hpp"
 #include "player/darkmoon_deck.hpp"
@@ -3878,29 +3879,54 @@ void stormbound_emblem_of_dazar( special_effect_t& effect )
   struct stormbound_emblem_of_dazar_t : public proc_spell_t
   {
     buff_t* buff;
+    action_t* use_action;  // if this exists, then we're prechanneling via the APL
 
     stormbound_emblem_of_dazar_t( const special_effect_t& e, buff_t* b )
-      : proc_spell_t( "the_kings_unyielding_wind", e.player, e.driver() ), buff( b )
+      : proc_spell_t( "the_kings_unyielding_wind", e.player, e.driver(), e.item ), buff( b ), use_action( nullptr )
     {
-      channeled = true;
+      channeled             = true;
+      harmful               = false;
+      effect                = &e;
+      
+      target                = player;
+
+      for ( auto a : player->action_list )
+      {
+        if ( a->action_list && a->action_list->name_str == "precombat" && a->name_str == "use_item_" + item->name_str )
+        {
+          a->harmful = harmful;  // pass down harmful to allow action_t::init() precombat check bypass
+          use_action = a;
+          use_action->base_execute_time = 2_s;
+          break;
+        }
+      }
+
+      for ( auto a : player->action_list )
+      {
+        if ( a->action_list && a->name_str == "use_item_" + item->name_str )
+        {
+          a->target = player;
+        }
+      }
     }
 
     void execute() override
     {
-      proc_spell_t::execute();
-
-      // cancel the player-ready event triggered by use_item_t
-      event_t::cancel( player->readying );
-
-      // prevent auto attacks while channeling
-      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
-    }
-
-    void tick( dot_t* d ) override
-    {
-      proc_spell_t::tick( d );
-
-      buff->extend_duration_or_trigger();
+      target = player;
+      if ( !player->in_combat )  // if precombat...
+      {
+        if ( use_action )  // ...and use_item exists in the precombat apl
+        {
+          precombat_buff();
+        }
+      }
+      else
+      {
+        proc_spell_t::execute();
+        event_t::cancel( player->readying );
+        // prevent auto attacks while channeling
+        player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+      }
     }
 
     void last_tick( dot_t* d ) override
@@ -3908,9 +3934,109 @@ void stormbound_emblem_of_dazar( special_effect_t& effect )
       bool was_channeling = player->channeling == this;
 
       proc_spell_t::last_tick( d );
+      
+      if ( d->num_ticks() >= 1)
+      {
+        int stacks = d->num_ticks();
+        buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, stacks * buff->buff_duration() );
+      }
 
       if ( was_channeling && !player->readying )
         player->schedule_ready( rng().gauss( sim->channel_lag ) );
+    }
+
+    void precombat_buff()
+    {
+      timespan_t time = 0_ms;
+
+      if ( time == 0_ms )  // No global override, check for an override from an APL variable
+      {
+        for ( auto v : player->variables )
+        {
+          if ( v->name_ == "stormbound_emblem_of_dazar_precombat_cast" )
+          {
+            time = timespan_t::from_seconds( v->value() );
+            break;
+          }
+        }
+      }
+      
+      // Trigger the buff here as its a haste buff and will affect precombat spell cast times.
+      buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+
+      // shared cd (other trinkets & on-use items)
+      auto cdgrp = player->get_cooldown( effect->cooldown_group_name() );
+
+      if ( time == 0_ms )  // No hardcoded override, so dynamically calculate timing via the precombat APL
+      {
+        time            = 2_s;  // base 2s cast
+        const auto& apl = player->precombat_action_list;
+
+        auto it = range::find( apl, use_action );
+        if ( it == apl.end() )
+        {
+          sim->print_debug(
+              "WARNING: Precombat /use_item for Stormbound Emblem of Dazar exists but not found in precombat APL!" );
+          return;
+        }
+
+        cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
+
+        // add cast time or gcd for any following precombat action
+        std::for_each( it + 1, apl.end(), [ &time, this ]( action_t* a ) {
+          if ( a->action_ready() )
+          {
+            timespan_t delta =
+                std::max( std::max( a->base_execute_time.value(), a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+            sim->print_debug( "PRECOMBAT: Stormbound Emblem of Dazar precast timing pushed by {} for {}", delta, a->name() );
+            time += delta;
+
+            return a->harmful;  // stop processing after first valid harmful spell
+          }
+          return false;
+        } );
+      }
+      else if ( time < 2_s )  // If APL variable can't set to less than cast time
+      {
+        time = 2_s;
+      }
+
+      // total duration of the buff
+      auto cast  = 2_s;
+      auto total = buff->buff_duration() * 4;
+      // actual duration of the buff you'll get in combat
+      auto actual = total - time + cast;
+      // cooldown on effect/trinket at start of combat
+      auto cd_dur = cooldown->duration - time;
+      // shared cooldown at start of combat
+      auto cdgrp_dur = std::max( 0_ms, effect->cooldown_group_duration() - time );
+
+      sim->print_debug( "PRECOMBAT: Stormbound Emblem of Dazar started {}s before combat via {}, {}s in-combat buff", time,
+                        use_action ? "APL" : "OPT", actual );
+
+      buff->extend_duration( actual - buff->remains() );
+
+      if ( use_action )  // from the apl, so cooldowns will be started by use_item_t. adjust. we are still in precombat.
+      {
+        make_event( *sim, [ this, time, cdgrp ] {  // make an event so we adjust after cooldowns are started
+          cooldown->adjust( -time );
+
+          if ( use_action )
+            use_action->cooldown->adjust( -time );
+
+          cdgrp->adjust( -time );
+        } );
+      }
+      else  // via bfa. option override, start cooldowns. we are in-combat.
+      {
+        cooldown->start( cd_dur );
+
+        if ( use_action )
+          use_action->cooldown->start( cd_dur );
+
+        if ( cdgrp_dur > 0_ms )
+          cdgrp->start( cdgrp_dur );
+      }
     }
   };
 
