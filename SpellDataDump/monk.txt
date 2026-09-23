@@ -13506,7 +13506,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 3441: Mistweaver Monk (137024 effect#16), Windwalker Monk (1222923 effect#8)
+                 : 3441: Mistweaver Monk (137024 effect#16)
 Affecting Spells : Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #3, #4), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Mistweaver Monk (428200 effects: #3, #4), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Family Flags     : 103
 Attributes       : Do Not Sheath (18), No Redirection (35), No Reflection (39), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Treat as Area Effect (175), Allow Class Ability Procs (416)
@@ -14948,7 +14948,7 @@ Range            : 40 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 3560: Pride of Pandaria (450979 effect#1), Vigilant Watch (451233 effect#1), Flow of Battle (457257 effect#3), Windwalker Monk (1222923 effect#9)
+                 : 3560: Pride of Pandaria (450979 effect#1), Vigilant Watch (451233 effect#1), Flow of Battle (457257 effect#3)
                  : 5841: Bring Me Another (1265138 effect#1), Bring Me Another (1265138 effect#3), Scorched (1301410 effect#1)
 Affecting Spells : Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #3, #4), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Mistweaver Monk (428200 effects: #3, #4), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Family Flags     : 103
@@ -15729,7 +15729,7 @@ Range            : 40 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-                 : 5669: Brewmaster Monk (137023 effect#14), Pride of Pandaria (450979 effect#2), Windwalker Monk (1222923 effect#10)
+                 : 5669: Brewmaster Monk (137023 effect#14), Pride of Pandaria (450979 effect#2)
                  : 5791
 Affecting Spells : Invoke Xuen, the White Tiger (123904 effects: #4, #5), Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effects: #3, #4), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Mistweaver Monk (428200 effects: #3, #4), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2), Windwalker Monk (1222923 effects: #1, #2), Zenith (1249625 effects: #2, #4), Brewmaster Monk (1256978 effects: #1, #2), Tigereye Brew (1261844 effect#1), Monk - Midnight PrePatch - 11.2 Class Set 2pc (1283664 effects: #1, #2), Monk - Midnight PrePatch - 11.2 Class Set 4pc (1283665 effects: #1, #2)
 Family Flags     : 103
@@ -17909,18 +17909,15 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 39
-#8 (id=1357276)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+#8 (id=1357276)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Misc Value 2: 3441 (Label) | Target: Self (1)
-                   Affected Spells (Label): Celestial Conduit (443038)
-Hotfixed         : NEW EFFECT
-#9 (id=1357280)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+Hotfixed         : Sub Type (218 -> 649)
+#9 (id=1357280)  : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: -15 | Scaled Value: -15 | Misc Value 2: 3560 (Label) | Target: Self (1)
-                   Affected Spells (Label): Flurry Strike (450617)
-Hotfixed         : NEW EFFECT
-#10 (id=1357281) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+Hotfixed         : Sub Type (218 -> 649)
+#10 (id=1357281) : Apply Aura (6) | Modify Percent PVP Multiplier by Label (649): Direct Amount (0)
                    Base Value: -15 | Scaled Value: -15 | Misc Value 2: 5669 (Label) | Target: Self (1)
-                   Affected Spells (Label): Flurry Strike (451250)
-Hotfixed         : NEW EFFECT
+Hotfixed         : Sub Type (218 -> 649)
 
 Name             : Luck of the Draw! (id=1226058) [Spell Family (53)] 
 Class            : Monk
