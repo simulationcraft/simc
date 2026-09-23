@@ -16523,13 +16523,6 @@ bool death_knight_t::validate_actor()
     return false;
   }
 
-  if ( talent.unholy.blightfall.ok() )
-    sim->errorf(
-        "Player %s has Blightfall talent enabled. Sim results WILL NOT be accurate. This talent is bugged in game, and "
-        "we have yet to figure out how. Sims assume Blightfall is working as expected, leading to substantially more "
-        "DPS than expected.",
-        name() );
-
   return true;
 }
 
