@@ -7546,6 +7546,11 @@ public:
 
     da *= 1.0 + p( s )->talent.mighty_inferno->effectN( 1 ).percent();
 
+    if ( p( s )->buff.ebon_might_self_buff->check() )
+    {
+      da *= 1.0 + p( s )->buff.ebon_might_self_buff->data().effectN( 1 ).percent();
+    }
+
     return da;
   }
 };
@@ -7874,6 +7879,12 @@ public:
 
     da *= 1.0 + p( s )->buff.reactive_hide->check_stack_value();
     da *= 1.0 + p( s )->talent.regenerative_chitin->effectN( 2 ).percent();
+
+    if ( p( s )->buff.ebon_might_self_buff->check() )
+    {
+      da *= 1.0 + p( s )->buff.ebon_might_self_buff->data().effectN( 1 ).percent();
+    }
+
     return da;
   }
 
