@@ -70,51 +70,46 @@ void protection( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "rite_of_sanctification" );
   precombat->add_action( "rite_of_adjuration" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "devotion_aura" );
+  precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_cooldown&trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|!trinket.2.has_cooldown" );
+  precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_cooldown&trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|!trinket.1.has_cooldown" );
   precombat->add_action( "potion,pre_pot_time=8,if=potion.liquid_luster" );
-  precombat->add_action( "lights_judgment" );
   precombat->add_action( "consecration" );
+  precombat->add_action( "holy_armaments" );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "use_items" );
-  default_->add_action( "potion,if=(buff.avenging_wrath.up&!potion.liquid_luster)|(cooldown.avenging_wrath.remains<=8&potion.liquid_luster)" );
-  default_->add_action( "holy_armaments,if=next_armament=holy_bulwark&(cooldown.avenging_wrath.up|buff.avenging_wrath.up)" );
-  default_->add_action( "avenging_wrath,if=cooldown.divine_toll.remains<=10&(hero_tree.templar|(buff.holy_bulwark.up|next_armament=sacred_weapon&cooldown.holy_armaments.charges<2|cooldown.holy_armaments.charges<1))" );
+  default_->add_action( "call_action_list,name=trinkets" );
+  default_->add_action( "potion,if=potion.liquid_luster&cooldown.avenging_wrath.remains<8" );
+  default_->add_action( "potion,if=!potion.liquid_luster&(buff.avenging_wrath.up|cooldown.avenging_wrath.up)" );
+  default_->add_action( "ardent_defender,if=talent.eye_for_an_eye" );
+  default_->add_action( "variable,use_off_gcd=1,name=wants_to_hammer,value=buff.hammer_of_light_ready.up&debuff.judgment.up&(buff.undisputed_ruling.remains<=1.8|buff.hammer_of_light_ready.remains<5)" );
+  default_->add_action( "holy_armaments,if=cooldown.avenging_wrath.remains<=gcd|time_to_die<30|charges=2" );
+  default_->add_action( "use_items,if=buff.avenging_wrath.up|cooldown.avenging_wrath.up" );
   default_->add_action( "fireblood,if=buff.avenging_wrath.up" );
-  default_->add_action( "divine_toll,if=buff.avenging_wrath.up|(!talent.righteous_protector.enabled&cooldown.avenging_wrath.remains>30)" );
-  default_->add_action( "hammer_of_light,if=(!buff.undisputed_ruling.up|buff.hammer_of_light_ready.remains<5)&debuff.judgment.up" );
-  default_->add_action( "shield_of_the_righteous,if=hero_tree.templar&(!buff.hammer_of_light_ready.up|(!buff.hammer_of_light_ready.remains<5&buff.undisputed_ruling.up)|buff.hammer_of_light_free.up|prev_gcd.1.divine_toll)" );
-  default_->add_action( "shield_of_the_righteous,if=hero_tree.lightsmith&(((debuff.judgment.up&(holy_power>=5&buff.avenging_wrath.up)|(holy_power>=3&!buff.avenging_wrath.up))|holy_power=5)|!talent.instrument_of_the_divine.enabled|buff.divine_purpose.up)" );
-  default_->add_action( "holy_armaments,if=next_armament=sacred_weapon&((buff.sacred_weapon.remains<6|!buff.sacred_weapon.up|(cooldown.avenging_wrath.remains>20&!buff.avenging_wrath.up))|charges=2)" );
-  default_->add_action( "hammer_of_wrath,if=buff.hammer_of_light_ready.up&!debuff.judgment.up" );
-  default_->add_action( "hammer_of_wrath,if=hero_tree.lightsmith&full_recharge_time<=gcd*2" );
-  default_->add_action( "judgment,if=buff.hammer_of_light_ready.up&!debuff.judgment.up" );
-  default_->add_action( "shield_of_the_righteous,if=buff.avenging_wrath.up&talent.instrument_of_the_divine" );
+  default_->add_action( "avenging_wrath" );
+  default_->add_action( "divine_toll,if=buff.avenging_wrath.up|!apex.3" );
+  default_->add_action( "hammer_of_light,if=variable.wants_to_hammer" );
+  default_->add_action( "shield_of_the_righteous,if=(!talent.instrument_of_the_divine&buff.divine_guidance.stack<5|holy_power=5|!buff.valor.up&!buff.divine_purpose.up)&(!variable.wants_to_hammer|prev_gcd.1.divine_toll)" );
+  default_->add_action( "hammer_of_wrath,if=full_recharge_time<=gcd|buff.hammer_of_light_ready.up&!debuff.judgment.up" );
+  default_->add_action( "judgment,if=full_recharge_time<=gcd|buff.hammer_of_light_ready.up&!debuff.judgment.up" );
   default_->add_action( "avengers_shield,if=buff.vanguard.up|(buff.avenging_wrath.up&apex.3)" );
-  default_->add_action( "holy_armaments,if=next_armament=holy_bulwark&cooldown.avenging_wrath.remains<3" );
-  default_->add_action( "consecration,if=buff.divine_guidance.stack>=5" );
+  default_->add_action( "consecration,if=buff.divine_guidance.stack>=5|!consecration.up" );
   default_->add_action( "hammer_of_wrath" );
-  default_->add_action( "judgment,if=full_recharge_time<=gcd*2" );
-  default_->add_action( "avengers_shield" );
-  default_->add_action( "consecration,if=!consecration.up" );
-  default_->add_action( "hammer_of_the_righteous,if=buff.blessed_assurance.up" );
-  default_->add_action( "blessed_hammer,if=buff.blessed_assurance.up" );
   default_->add_action( "judgment" );
-  default_->add_action( "consecration,if=buff.divine_guidance.stack>=4" );
-  default_->add_action( "holy_armaments,if=next_armament=holy_bulwark&charges=2" );
-  default_->add_action( "consecration,if=!consecration.up" );
+  default_->add_action( "avengers_shield" );
   default_->add_action( "blessed_hammer" );
   default_->add_action( "hammer_of_the_righteous" );
   default_->add_action( "arcane_torrent" );
-  default_->add_action( "word_of_glory,if=buff.shining_light_free.up" );
-  default_->add_action( "hammer_of_the_righteous" );
-  default_->add_action( "arcane_torrent" );
-  default_->add_action( "word_of_glory,if=buff.shining_light_free.up" );
+  default_->add_action( "word_of_glory,if=buff.shining_light_free.up&!buff.divine_purpose.up" );
   default_->add_action( "consecration" );
+
+  trinkets->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|(!buff.avenging_wrath.up&!cooldown.avenging_wrath.ready)))|!variable.trinket_sync_slot)" );
+  trinkets->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|(!buff.avenging_wrath.up&!cooldown.avenging_wrath.ready)))|!variable.trinket_sync_slot)" );
 }
 //protection_apl_end
 }  // namespace paladin_apl
