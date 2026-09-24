@@ -48,7 +48,7 @@ struct sc_js_t
   rapidjson::Value& value( util::string_view path );
 
   // Set the value of JSON object indicated by path to value_
-  template <typename T, typename = std::enable_if_t<!std::is_convertible<T, util::string_view>::value>>
+  template <typename T, typename = std::enable_if_t<!std::is_convertible_v<T, util::string_view>>>
   sc_js_t& set( util::string_view path, const T& value_ );
   // Set the value of JSON object indicated by path to an array of values_
   template <typename T>
@@ -59,7 +59,7 @@ struct sc_js_t
   sc_js_t& set( util::string_view path, util::string_view value );
 
   // Set the JSON object property name_ to value_
-  template <typename T, typename = std::enable_if_t<!std::is_convertible<T, util::string_view>::value>>
+  template <typename T, typename = std::enable_if_t<!std::is_convertible_v<T, util::string_view>>>
   sc_js_t& set( rapidjson::Value& obj, util::string_view name_, const T& value_ );
   // Set the JSON object property name_ to a JSON array value_
   template <typename T>
@@ -68,7 +68,7 @@ struct sc_js_t
   sc_js_t& set( rapidjson::Value& obj, util::string_view name, util::string_view value );
 
   // Add elements to a JSON array indicated by path by appending value_
-  template <typename T, typename = std::enable_if_t<!std::is_convertible<T, util::string_view>::value>>
+  template <typename T, typename = std::enable_if_t<!std::is_convertible_v<T, util::string_view>>>
   sc_js_t& add( util::string_view path, const T& value_ );
   // Add elements to a JSON array indicated by path by appending data
   template <typename T>
@@ -226,7 +226,7 @@ public:
   { v_.SetArray(); return *this; }
 
   // Assign any primitive (supported value by RapidJSON) to the current value (v_)
-  template <typename T, typename = std::enable_if_t<!std::is_convertible<T, util::string_view>::value>>
+  template <typename T, typename = std::enable_if_t<!std::is_convertible_v<T, util::string_view>>>
   JsonOutput& operator=( const T& v )
   { v_ = v; return *this; }
 

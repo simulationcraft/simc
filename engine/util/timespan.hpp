@@ -64,19 +64,19 @@ namespace simc
       return time;
     }
 
-    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic<Rep>::value>>
+    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic_v<Rep>>>
     static constexpr timespan_t from_millis(Rep millis)
     {
       return timespan_t(millis);
     }
 
-    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic<Rep>::value>>
+    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic_v<Rep>>>
     static constexpr timespan_t from_seconds(Rep seconds)
     {
       return timespan_t(static_cast<time_t>(seconds * 1000));
     }
 
-    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic<Rep>::value>>
+    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic_v<Rep>>>
     static constexpr timespan_t from_minutes(Rep minutes)
     {
       return timespan_t(static_cast<time_t>(minutes * (60 * 1000)));
@@ -128,14 +128,14 @@ namespace simc
       return *this;
     }
 
-    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic<Rep>::value>>
+    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic_v<Rep>>>
     constexpr timespan_t& operator*=(Rep right)
     {
       time = static_cast<time_t>(time * right);
       return *this;
     }
 
-    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic<Rep>::value>>
+    template <typename Rep, typename = std::enable_if_t<std::is_arithmetic_v<Rep>>>
     constexpr timespan_t& operator/=(Rep right)
     {
       time = static_cast<time_t>(time / right);
@@ -162,19 +162,19 @@ namespace simc
     }
 
     template <typename Rep>
-    friend constexpr auto operator*(timespan_t left, Rep right) -> std::enable_if_t<std::is_arithmetic<Rep>::value, timespan_t>
+    friend constexpr auto operator*(timespan_t left, Rep right) -> std::enable_if_t<std::is_arithmetic_v<Rep>, timespan_t>
     {
       return left *= right;
     }
 
     template <typename Rep>
-    friend constexpr auto operator*(Rep left, timespan_t right) -> std::enable_if_t<std::is_arithmetic<Rep>::value, timespan_t>
+    friend constexpr auto operator*(Rep left, timespan_t right) -> std::enable_if_t<std::is_arithmetic_v<Rep>, timespan_t>
     {
       return right *= left;
     }
 
     template <typename Rep>
-    friend constexpr auto operator/(timespan_t left, Rep right) -> std::enable_if_t<std::is_arithmetic<Rep>::value, timespan_t>
+    friend constexpr auto operator/(timespan_t left, Rep right) -> std::enable_if_t<std::is_arithmetic_v<Rep>, timespan_t>
     {
       return left /= right;
     }
@@ -215,7 +215,7 @@ namespace simc
     }
     static constexpr timespan_t min()
     {
-      static_assert( !std::is_floating_point<time_t>::value );
+      static_assert( !std::is_floating_point_v<time_t> );
       return timespan_t( std::numeric_limits<time_t>::min() );
     }
 

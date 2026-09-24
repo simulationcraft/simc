@@ -120,7 +120,7 @@ protected:
 template <typename Event, typename... Args>
 inline Event* make_event( sim_t& sim, Args&&... args )
 {
-  static_assert( std::is_base_of<event_t, Event>::value,
+  static_assert( std::is_base_of_v<event_t, Event>,
                  "Event must be derived from event_t" );
   static_assert( sizeof( Event ) <= util::next_power_of_two( 2 * sizeof( event_t ) ),
                  "Event type is too big" );
