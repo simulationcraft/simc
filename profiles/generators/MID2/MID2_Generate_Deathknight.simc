@@ -118,7 +118,6 @@ role=attack
 position=back
 talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAwyMmZ2mZGjZAbmFDDZgZjhGLAYGAGzMjZAmZmxYA
 omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_masterful_cunning/rune_of_overload
-flask=flask_of_the_blood_knights_2
 
 head=baleful_graveknights_casque,id=271474,bonus_id=40/12854/13335/13692/13696/13698,gem_id=240983,enchant_id=7991,content_tuning=807,redirected_base_stats=251126
 neck=aqirbane_reliquary,id=268265,bonus_id=40/13335/13668/13987/13848,gem_id=240898/240898,content_tuning=883
@@ -144,7 +143,7 @@ level=90
 race=troll
 role=attack
 position=back
-talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTzmZmZMjBAAAAAAAgZGmZAw2MmZ2mZGjZMwAzYRjlFAbTsBgZAYMzMmBzMYGjB
+talents=CwPAAAAAAAAAAAAAAAAAAAAAAAwMjZMDDz2MzMTjZmxYGDAAAAAAAAzDMMGAsMDzsZmxMzYgBmxiGLbA2mYDAzAYmZmZMDmZwMzYA
 omnium_talents=rune_of_unleashed_fire/rune_of_lynxlike_reflexes/rune_of_lingering/rune_of_masterful_cunning/rune_of_overload
 flask=flask_of_the_blood_knights_2
 
