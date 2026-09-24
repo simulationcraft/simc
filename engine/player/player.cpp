@@ -1061,9 +1061,6 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     use_apl( "" ),
     // Actions
     use_default_action_list( false ),
-    use_blizzard_action_list( false ),
-    use_cds_with_blizzard_action_list( true ),
-    one_button_mode( false ),
     precombat_action_list( 0 ),
     active_action_list(),
     default_action_list(),
@@ -1392,15 +1389,12 @@ void player_t::init()
   pre_combat->used = true;
   get_action_priority_list( "default", "Executed every time the actor is available." );
 
-  if ( !use_blizzard_action_list )
+  for ( auto& elem : alist_map )
   {
-    for ( auto& elem : alist_map )
-    {
-      if ( elem.first == "default" )
-        sim->error( "Ignoring action list named default." );
-      else
-        get_action_priority_list( elem.first )->action_list_str = elem.second;
-    }
+    if ( elem.first == "default" )
+      sim->error( "Ignoring action list named default." );
+    else
+      get_action_priority_list( elem.first )->action_list_str = elem.second;
   }
 
   // If the owner is regenerating using dynamic resource regen, we need to
@@ -3529,524 +3523,6 @@ void player_t::init_scaling()
   }
 }
 
-void player_t::init_blizzard_action_list()
-{
-  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-  action_priority_list_t* default_  = get_action_priority_list( "default" );
-  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns",
-                                                                "Some cooldowns are not used by the Assisted Combat system. "
-                                                                "This simple default cooldown usage has been provided by simc." );
-  action_priority_list_t* assisted_combat = get_action_priority_list( "assisted_combat",
-                                                                      "This is the default action priority list from the game's Assisted Combat system." );
-
-  precombat->add_action( "snapshot_stats" );
-
-  if ( use_cds_with_blizzard_action_list )
-    default_->add_action( "call_action_list,name=cooldowns" );
-
-  default_->add_action( "call_action_list,name=assisted_combat" );
-
-  cooldowns->add_action( "use_items" );
-  cooldowns->add_action( "potion" );
-  cooldowns->add_action( "blood_fury" );
-  cooldowns->add_action( "berserking" );
-  cooldowns->add_action( "fireblood" );
-  cooldowns->add_action( "ancestral_call" );
-
-  try
-  {
-    for ( const auto& step : assisted_combat_step_data_t::data( specialization(), is_ptr() ) )
-      parse_assisted_combat_step( step, assisted_combat );
-  }
-  catch ( const std::exception& )
-  {
-    std::throw_with_nested( sc_initialization_error( "Assisted combat parse error" ) );
-  }
-}
-
-std::vector<std::string> player_t::action_names_from_spell_id( unsigned int spell_id ) const
-{
-  std::vector<std::string> names;
-  const spell_data_t* spell = find_spell( spell_id );
-
-  if ( spell && !spell->flags( SX_PASSIVE ) )
-    names.push_back( util::tokenize_fn( spell->name_cstr() ) );
-
-  return names;
-}
-
-std::string player_t::aura_expr_from_spell_id( unsigned int spell_id, bool on_self ) const
-{
-  const spell_data_t* spell = find_spell( spell_id );
-  std::string aura_name = util::tokenize_fn( spell->name_cstr() );
-  if ( aura_name.empty() )
-    aura_name = fmt::format( "unknown_spell_{}", spell_id );
-
-  if ( on_self )
-  {
-    if ( spell->flags( SX_PASSIVE ) )
-    {
-      // check if this is a talent
-      for ( const auto& tree : { talent_tree::CLASS, talent_tree::SPECIALIZATION, talent_tree::HERO } )
-      {
-        const auto& traits = trait_data_t::find_by_spell( tree, spell_id, util::class_id( type ), specialization(), is_ptr() );
-        if ( traits.size() > 0 )
-          return "talent." + aura_name;
-      }
-    }
-
-    // use an existing buff with the spell id if available
-    for ( const buff_t* buff : buff_list )
-    {
-      if ( buff->data().id() == spell_id )
-        return "buff." + buff->name_str;
-    }
-
-    return "buff." + aura_name;
-  }
-
-  for ( const auto& e : spell->effects() )
-  {
-    for ( auto a : { A_PERIODIC_DAMAGE, A_PERIODIC_LEECH } )
-    {
-      if ( a == e.subtype() )
-        return "dot." + aura_name;
-    }
-  }
-
-  return "debuff." + aura_name;
-}
-
-void player_t::parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat )
-{
-  std::string expr = "";
-  std::string base_expr = "";
-  std::string comment = "";
-  bool show_diff = false;
-  bool cooldown_allow_casting_success = false;
-  bool automation_only = false;
-  bool allow_duplicates = true;
-
-  for ( const auto& rule : assisted_combat_rule_data_t::data( step.id, is_ptr() ) )
-  {
-    if ( rule.condition_type == AC_COOLDOWN_ALLOW_CASTING_SUCCESS )
-      cooldown_allow_casting_success = true;
-
-    if ( rule.condition_type == AC_AUTOMATION_ONLY )
-      automation_only = true;
-
-    parsed_assisted_combat_rule_t derived_combat_rule = parse_assisted_combat_rule( rule, step );
-    parsed_assisted_combat_rule_t base_combat_rule = player_t::parse_assisted_combat_rule( rule, step );
-
-    if ( !derived_combat_rule.expr.empty() )
-      expr += expr.empty() ? derived_combat_rule.expr : "&" + derived_combat_rule.expr;
-    if ( !derived_combat_rule.comment.empty() )
-      comment += comment.empty() ? derived_combat_rule.comment : ", " + derived_combat_rule.comment;
-    if ( !derived_combat_rule.allow_duplicates )
-      allow_duplicates = false;
-
-    if ( !base_combat_rule.expr.empty() )
-      base_expr += base_expr.empty() ? base_combat_rule.expr : "&" + base_combat_rule.expr;
-
-    show_diff |= derived_combat_rule.show_diff;
-  }
-
-  if ( base_expr != expr && show_diff )
-    comment += ( comment.empty() ? ""  : " " ) + fmt::format( "(Overridden from '{}')", base_expr );
-
-  auto action_names = action_names_from_spell_id( step.spell_id );
-  if ( action_names.empty() )
-  {
-    sim->print_debug(
-      "{} action name not found for assisted combat step {} with spell id {} and expression '{}', skipping.", *this,
-      step.order_index, step.spell_id, expr );
-  }
-
-  for ( const auto& name : action_names )
-  {
-    if ( name.empty() )
-      continue;
-
-    std::string action_str = name;
-
-    if ( !expr.empty() )
-      action_str += ",if=" + expr;
-
-    if ( cooldown_allow_casting_success )
-      action_str += ",cooldown_allow_casting_success=1";
-
-    if ( automation_only )
-    {
-      if ( !use_cds_with_blizzard_action_list )
-        continue;
-      if ( !comment.empty() )
-        comment += " ";
-      comment += "This is for Blizzard automation and is not included in the game's Assisted Combat system.";
-    }
-
-    // Optional duplicate filtering for messy action lists or duplicated overriden criteria
-    if ( !allow_duplicates && range::contains( assisted_combat->action_list, action_str, []( const auto& entry ) { return entry.action_; } ) )
-      continue;
-
-    assisted_combat->add_action( action_str, comment );
-  }
-}
-
-parsed_assisted_combat_rule_t player_t::parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
-                                                                    const assisted_combat_step_data_t& step ) const
-{
-  auto tokenize_spell = [ & ]( unsigned int spell_id ) {
-    const spell_data_t* spell = find_spell( spell_id );
-    if ( !spell )
-    {
-      throw std::runtime_error( fmt::format( "Unable to find spell '{}' condition '{}'.", spell_id, rule.id ) );
-    }
-
-    std::string spell_name = util::tokenize_fn( spell->name_cstr() );
-    if ( spell_name.empty() )
-      return fmt::format( "unknown_spell_{}", spell_id );
-
-    return spell_name;
-  };
-
-  auto v1 = rule.condition_value_1;
-  auto v2 = rule.condition_value_2;
-  auto v3 = rule.condition_value_3;
-  std::string expr_str;
-  std::string expr_str_2;
-  std::string expr_str_3;
-  bool has_or = false;
-  bool is_duplicate_2;
-  bool is_duplicate_3;
-  bool is_modified;
-  // TODO: verify < vs <= and > vs >= on all condition types
-  switch ( rule.condition_type )
-  {
-    case AC_SPELL_LEARNED:
-      assert( v2 == 0 && v3 == 0 );
-      if ( v1 )
-      {
-        for ( const auto& tree : { talent_tree::CLASS, talent_tree::SPECIALIZATION, talent_tree::HERO } )
-        {
-          const auto& traits = trait_data_t::find_by_spell( tree, v1, util::class_id( type ), specialization(), is_ptr() );
-          if ( traits.size() > 0 )
-          {
-            auto tok_name = tokenize_spell( v1 );
-
-            // Resolve tiered talent names by adding a _# suffix to the tokenized name.
-            if ( traits.front()->node_type == trait_node_type_e::NODE_TIERED )
-            {
-              auto _entries = trait_data_t::data( traits.front()->id_node, util::class_id( type ), tree, is_ptr() );
-              auto _index = std::distance( _entries.begin(), range::find( _entries, v1, &trait_data_t::id_spell ) );
-
-              tok_name += "_" + util::to_string( _index + 1 );
-            }
-
-            return fmt::format( "talent.{}", tok_name );
-          }
-        }
-        // TODO: Are there any other types of passives to check here?
-        // TODO: What happens when Blizzard uses an aura here like they did with Mind Flay: Insanity?
-      }
-      return ""; // no check necessary because simc actions are filtered out if the spell is not known
-    case AC_SPELL_ON_COOLDOWN:
-      assert( v2 == 0 && v3 == 0 );
-      if ( v1 )
-        return fmt::format( "!cooldown.{}.ready", tokenize_spell( v1 ) );
-      return ""; // no check necessary because simc actions are not ready unless their cooldown is ready
-    case AC_SPELL_OFF_COOLDOWN:
-      assert( v2 == 0 && v3 == 0 );
-      if ( v1 )
-        return fmt::format( "cooldown.{}.ready", tokenize_spell( v1 ) );
-      return ""; // no check necessary because simc actions are not ready unless their cooldown is ready
-    case AC_TARGET_DISTANCE_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "target.distance<={}", v1 );
-    case AC_TARGET_DISTANCE_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "target.distance>{}", v1 );
-    case AC_HOSTILE_TARGET:
-    case AC_FRIENDLY_TARGET:
-      assert( v1 == 0 && v2 == 0 && v3 == 0 );
-      return "";
-    case AC_HEALTH_PCT_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "target.health.pct>={}", v1 );
-    case AC_HEALTH_PCT_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "target.health.pct<={}", v1 );
-    case AC_AURA_ON_PLAYER:
-      // TODO: Are there any cases where a passive here would not be a talent?
-      expr_str   = v1 ? aura_expr_from_spell_id( v1, true ) : "";
-      expr_str_2 = v2 ? aura_expr_from_spell_id( v2, true ) : "";
-      expr_str_3 = v3 ? aura_expr_from_spell_id( v3, true ) : "";
-      if ( v1 && !( expr_str.find( "talent." ) == 0 ) )
-        expr_str += ".up";
-      if ( v2 && !( expr_str_2.find( "talent." ) == 0 ) )
-        expr_str_2 += ".up";
-      if ( v3 && !( expr_str_3.find( "talent." ) == 0 ) )
-        expr_str_3 += ".up";
-      is_duplicate_2 = v2 && expr_str_2 == expr_str;
-      is_duplicate_3 = v3 && ( expr_str_3 == expr_str || expr_str_3 == expr_str_2 );
-      if ( v2 && !is_duplicate_2 )
-      {
-        if ( !expr_str.empty() )
-        {
-          expr_str += "|";
-          has_or = true;
-        }
-        expr_str += expr_str_2;
-      }
-      if ( v3 && !is_duplicate_3 )
-      {
-        if ( !expr_str.empty() )
-        {
-          expr_str += "|";
-          has_or = true;
-        }
-        expr_str += expr_str_3;
-      }
-      is_modified = is_duplicate_2 || is_duplicate_3;
-      if ( has_or )
-        return { fmt::format( "({})", expr_str ), is_modified };
-      return { expr_str, is_modified };
-    case AC_AURA_ON_TARGET:
-      assert( v2 == 0 && v3 == 0 );
-      expr_str = aura_expr_from_spell_id( v1, false );
-      if ( expr_str.find( "dot." ) == 0 )
-        return fmt::format( "{}.ticking", expr_str );
-      return fmt::format( "{}.up", expr_str );
-    case AC_TARGET_COUNT_NEAR_TARGET_GREATER:
-      assert( v3 == 0 );
-      // TODO: add distance targeting
-      return fmt::format( "active_enemies>{}", v1 );
-    case AC_TARGET_COUNT_NEAR_PLAYER_GREATER:
-      assert( v3 == 0 );
-      // TODO: add distance targeting
-      return fmt::format( "active_enemies>{}", v1 );
-    case AC_AURA_COUNT_NEAR_PLAYER_GREATER:
-      // TODO: add distance check?
-      // TODO: currently unused; verify condition value indices
-      expr_str = aura_expr_from_spell_id( v3, false );
-      if ( expr_str.find( "dot." ) == 0 )
-        return fmt::format( "active_{}>={}", expr_str, v1 ); // TODO: > or >=?
-      // TODO: support debuffs
-      throw std::runtime_error( "Debuffs are unsupported for condition AURA_COUNT_NEAR_PLAYER_GREATER." );
-    case AC_AFFORD_COST:
-      assert( v2 == 0 && v3 == 0 );
-      if ( v1 )
-        return fmt::format( "action.{}.cost_affordable", tokenize_spell( v1 ) );
-      return ""; // no check necessary because simc actions are not ready unless their cost is affordable
-    case AC_AURA_MISSING_TARGET:
-      assert( v2 == 0 && v3 == 0 );
-      expr_str = aura_expr_from_spell_id( v1, false );
-      if ( expr_str.find( "dot." ) == 0 )
-        return fmt::format( "!{}.ticking", expr_str );
-      return fmt::format( "{}.down", expr_str );
-    case AC_AURA_MISSING_PLAYER:
-      assert( v2 == 0 && v3 == 0 );
-      expr_str = aura_expr_from_spell_id( v1, true );
-      // TODO: Are there any cases where a passive here would not be a talent?
-      if ( expr_str.find( "talent." ) == 0 )
-        return "!" + expr_str;
-      return fmt::format( "{}.down", expr_str );
-    case AC_AURA_DURATION_PLAYER:
-      assert( v3 == 0 );
-      expr_str = aura_expr_from_spell_id( v1, true );
-      // TODO: Are there any cases where these would be talents we should worry about?
-      if ( expr_str.find( "talent." ) == 0 )
-        throw std::runtime_error( "Talents are unsupported for condition AURA_DURATION_PLAYER." );
-      return fmt::format( "{}.up&{}.remains<={:g}", expr_str, expr_str, v2 / 1000.0 );
-    case AC_AURA_DURATION_TARGET:
-      assert( v3 == 0 );
-      expr_str = aura_expr_from_spell_id( v1, false );
-      return fmt::format( "{}.remains<={:g}", expr_str, v2 / 1000.0 );
-    case AC_MANA_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "mana.pct>={:g}", v1 / 10.0 ); // TODO: Double check this
-    case AC_MANA_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "mana.pct<={:g}", v1 / 10.0 ); // TODO: Double check this
-    case AC_RAGE_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "rage>={:g}", v1 / 10.0 );
-    case AC_RAGE_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "rage<={:g}", v1 / 10.0 );
-    case AC_FOCUS_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "focus>={}", v1 );
-    case AC_FOCUS_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "focus<={}", v1 );
-    case AC_ENERGY_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "energy>={}", v1 );
-    case AC_ENERGY_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "energy<={}", v1 );
-    case AC_COMBO_POINTS_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "combo_points>={}", v1 );
-    case AC_COMBO_POINTS_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "combo_points<={}", v1 );
-    case AC_RUNES_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "rune>={}", v1 );
-    case AC_RUNES_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "rune<={}", v1 );
-    case AC_RUNIC_POWER_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "runic_power>={:g}", v1 / 10.0 );
-    case AC_RUNIC_POWER_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "runic_power<={:g}", v1 / 10.0 );
-    case AC_SOUL_SHARDS_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "soul_shard>={:g}", v1 / 10.0 );
-    case AC_SOUL_SHARDS_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "soul_shard<={:g}", v1 / 10.0 );
-    case AC_LUNAR_POWER_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "astral_power>={:g}", v1 / 10.0 );
-    case AC_LUNAR_POWER_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "astral_power<={:g}", v1 / 10.0 );
-    case AC_HOLY_POWER_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "holy_power>={}", v1 );
-    case AC_HOLY_POWER_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "holy_power<={}", v1 );
-    case AC_MAELSTROM_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "maelstrom>={}", v1 );
-    case AC_MAELSTROM_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "maelstrom<={}", v1 );
-    case AC_CHI_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "chi>={}", v1 );
-    case AC_CHI_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "chi<={}", v1 );
-    case AC_INSANITY_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "insanity>={:g}", v1 / 100.0 );
-    case AC_INSANITY_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "insanity<={:g}", v1 / 100.0 );
-    case AC_ESSENCE_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "essence>={}", v1 );
-    case AC_ESSENCE_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "essence<={}", v1 );
-    case AC_ARCANE_CHARGES_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "buff.arcane_charge.stack>={}", v1 );
-    case AC_ARCANE_CHARGES_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "buff.arcane_charge.stack<={}", v1 );
-    case AC_TARGET_COUNT_NEAR_TARGET_LESS:
-      assert( v3 == 0 );
-      // TODO: add distance targeting
-      return fmt::format( "active_enemies<={}", v1 );
-    case AC_TARGET_COUNT_NEAR_PLAYER_LESS:
-      assert( v3 == 0 );
-      // TODO: add distance targeting
-      return fmt::format( "active_enemies<={}", v1 );
-    case AC_AURA_COUNT_NEAR_PLAYER_LESS:
-      // TODO: add distance check?
-      expr_str = aura_expr_from_spell_id( v3, false );
-      if ( expr_str.find( "dot." ) == 0 )
-        return fmt::format( "active_{}<={}", expr_str, v1 ); // TODO: < or <=?
-      // TODO: support debuffs
-      throw std::runtime_error( "Debuffs are unsupported for condition AURA_COUNT_NEAR_PLAYER_LESS." );
-    case AC_TARGET_AURA_APPLICATION_GREATER:
-      assert( v3 == 0 );
-      expr_str = aura_expr_from_spell_id( v1, false );
-      return fmt::format( "{}.stack>={}", expr_str, v2 );
-    case AC_TARGET_AURA_APPLICATION_LESS:
-      assert( v3 == 0 );
-      expr_str = aura_expr_from_spell_id( v1, false );
-      return fmt::format( "{}.stack<={}", expr_str, v2 );
-    case AC_PLAYER_AURA_APPLICATION_GREATER:
-      assert( v3 == 0 );
-      expr_str = aura_expr_from_spell_id( v1, true );
-      return fmt::format( "{}.stack>={}", expr_str, v2 );
-    case AC_PLAYER_AURA_APPLICATION_LESS:
-      assert( v3 == 0 );
-      expr_str = aura_expr_from_spell_id( v1, true );
-      return fmt::format( "{}.stack<={}", expr_str, v2 );
-    case AC_SPELL_IN_RANGE:
-      assert( v2 == 0 && v3 == 0 );
-      if ( v1 )
-        return fmt::format( "spell_targets.{}>0", tokenize_spell( v1 ) );
-      return ""; // no check necessary because simc actions are not ready unless they have a target
-    case AC_HAS_PET:
-      assert( v1 == 0 && v2 == 0 && v3 == 0 );
-      return "pet.any.active";
-    case AC_HAS_NO_PET:
-      assert( v1 == 0 && v2 == 0 && v3 == 0 );
-      return "!pet.any.active";
-    case AC_FURY_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "fury>={}", v1 );
-    case AC_FURY_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "fury<={}", v1 );
-    case AC_PAIN_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "pain>={}", v1 );
-    case AC_PAIN_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "pain<={}", v1 );
-    case AC_SPELL_CHARGES_GREATER:
-      assert( v3 == 0 );
-      if ( v2 != 0 )
-      {
-        assisted_combat_rule_data_t fixed_rule = rule;
-        fixed_rule.condition_value_2 = 0;
-        auto result = player_t::parse_assisted_combat_rule( fixed_rule, step );
-        if ( v1 )
-          result.comment = fmt::format( "This checks for charges>={} instead of the intended action.{}.charges>={}.",
-                                        v1, tokenize_spell( v1 ), v2 );
-        else
-          result.comment = fmt::format( "This checks for charges>={} instead of the intended charges>={}.", v1, v2 );
-        return result;
-      }
-      return fmt::format( "charges>={}", v1 );
-    case AC_SPELL_CHARGES_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "charges<={}", v1 );
-    case AC_COOLDOWN_REMAINING_GREATER:
-      assert( v3 == 0 );
-      return fmt::format( "cooldown.{}.remains>={:g}", tokenize_spell( v1 ), v2 / 1000.0 );
-    case AC_COOLDOWN_REMAINING_LESS:
-      assert( v3 == 0 );
-      return fmt::format( "cooldown.{}.remains<={:g}", tokenize_spell( v1 ), v2 / 1000.0 );
-    case AC_COOLDOWN_ALLOW_CASTING_SUCCESS:
-      assert( v1 == 0 && v2 == 0 && v3 == 0 );
-      // This is handled elsewhere, since it removes a default condition instead of adding a new one.
-      return "";
-    case AC_PLAYER_HEALTH_PCT_GREATER:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "health.pct>={}", v1 );
-    case AC_PLAYER_HEALTH_PCT_LESS:
-      assert( v2 == 0 && v3 == 0 );
-      return fmt::format( "health.pct<={}", v1 );
-    case AC_AUTOMATION_ONLY:
-      // This is handled elsewhere.
-      return "";
-    default:
-      throw std::runtime_error( fmt::format( "Unknown condition type '{}.'", rule.condition_type ) );
-  }
-}
-
 void player_t::init_background_actions()
 {
   if ( !is_enemy() )
@@ -4066,21 +3542,13 @@ void player_t::create_actions()
   if ( action_list_str.empty() )
     no_action_list_provided = true;
 
-  if ( use_blizzard_action_list )
+  try
   {
-    clear_action_priority_lists();
-    init_blizzard_action_list();
+    init_action_list();  // virtual function which creates the action list string
   }
-  else
+  catch ( const std::exception& )
   {
-    try
-    {
-      init_action_list();  // virtual function which creates the action list string
-    }
-    catch ( const std::exception& )
-    {
-      std::throw_with_nested( sc_initialization_error( "Invalid action list" ) );
-    }
+    std::throw_with_nested( sc_initialization_error( "Invalid action list" ) );
   }
 
   std::string modify_action_options;
@@ -4108,7 +3576,7 @@ void player_t::create_actions()
   if ( !use_apl.empty() )
     copy_action_priority_list( "default", use_apl );
 
-  if ( !action_list_str.empty() && !use_blizzard_action_list )
+  if ( !action_list_str.empty() )
     get_action_priority_list( "default" )->action_list_str = action_list_str;
 
   if ( is_player() && sim->enable_all_item_effects )
@@ -4169,16 +3637,6 @@ void player_t::create_actions()
       if ( !a )
       {
         throw sc_initialization_error( fmt::format( "Unable to create action '{}'.", action_str ) );
-      }
-
-      // When using the assisted combat system, certain action options need different default values.
-      // TODO: Should this check for something instead of the name of the action list?
-      if ( apl->name_str == "assisted_combat" )
-      {
-        if ( a->option.can_have_one_button_penalty_str.empty() )
-          a->can_have_one_button_penalty = true;
-        if ( a->option.cooldown_allow_casting_success_str.empty() )
-          a->cooldown_allow_casting_success = false;
       }
 
       bool skip = false;
@@ -12522,10 +11980,10 @@ std::string player_t::create_profile( save_e stype )
 
   if ( stype & SAVE_ACTIONS )
   {
-    if ( !action_list_str.empty() || use_default_action_list || use_blizzard_action_list )
+    if ( !action_list_str.empty() || use_default_action_list )
     {
       // If we created a default action list, add comments
-      if ( no_action_list_provided && !use_blizzard_action_list )
+      if ( no_action_list_provided )
         profile_str += action_list_information;
 
       auto apls = sorted_action_priority_lists( this );
@@ -12693,9 +12151,6 @@ void player_t::copy_from( player_t* source )
   player_sub_traits                 = source->player_sub_traits;
   load_default_gear                 = source->load_default_gear;
   load_default_talents              = source->load_default_talents;
-  use_blizzard_action_list          = source->use_blizzard_action_list;
-  one_button_mode                   = source->one_button_mode;
-  use_cds_with_blizzard_action_list = source->use_cds_with_blizzard_action_list;
   enable_spell_queue                = source->enable_spell_queue;
   spell_queue_window                = source->spell_queue_window;
 
@@ -12914,9 +12369,6 @@ void player_t::create_options()
   add_option( opt_string( "skip_actions", action_list_skip ) );
   add_option( opt_string( "modify_action", modify_action ) );
   add_option( opt_string( "use_apl", use_apl ) );
-  add_option( opt_bool( "use_blizzard_action_list", use_blizzard_action_list ) );
-  add_option( opt_bool( "use_cds_with_blizzard_action_list", use_cds_with_blizzard_action_list ) );
-  add_option( opt_bool( "one_button_mode", one_button_mode ) );
   add_option( opt_timespan( "reaction_time_mean", reaction.mean ) );
   add_option( opt_timespan( "reaction_time_stddev", reaction.stddev ) );
   add_option( opt_timespan( "reaction_time_nu", reaction_nu ) );

@@ -98,37 +98,6 @@ public:
   virtual void html_customsection(report::sc_html_stream&) = 0;
 };
 
-struct parsed_assisted_combat_rule_t
-{
-  std::string expr;
-  std::string comment;
-  bool show_diff;
-  bool allow_duplicates;
-
-  parsed_assisted_combat_rule_t( const char* expr )
-    : expr( expr ), comment( {} ), show_diff( false ), allow_duplicates( true ) {}
-
-  parsed_assisted_combat_rule_t( std::string expr )
-    : expr( expr ), comment( {} ), show_diff( false ), allow_duplicates( true ) {}
-
-  parsed_assisted_combat_rule_t( std::string expr, bool show_diff )
-    : expr( expr ), comment( {} ), show_diff( show_diff ), allow_duplicates( true ) {}
-
-  parsed_assisted_combat_rule_t( std::string expr, const char* comment )
-    : expr( expr ), comment( comment ), show_diff( true ), allow_duplicates( true ) {}
-
-  parsed_assisted_combat_rule_t( std::string expr, std::string comment, bool show_diff )
-    : expr( expr ), comment( comment ), show_diff( show_diff ), allow_duplicates( true ) {}
-
-  parsed_assisted_combat_rule_t( std::string expr, const char* comment, bool show_diff, bool allow_duplicates )
-    : expr( expr ), comment( comment ), show_diff( show_diff ), allow_duplicates( allow_duplicates ) {}
-
-  parsed_assisted_combat_rule_t( std::string expr, std::string comment, bool show_diff, bool allow_duplicates )
-    : expr( expr ), comment( comment ), show_diff( show_diff ), allow_duplicates( allow_duplicates ) {}
-
-  operator std::string() { return expr; }
-};
-
 struct player_t : public actor_t
 {
   static const int default_level = MAX_LEVEL;
@@ -348,9 +317,6 @@ struct player_t : public actor_t
   std::string modify_action;
   std::string use_apl;
   bool use_default_action_list;
-  bool use_blizzard_action_list;
-  bool use_cds_with_blizzard_action_list;
-  bool one_button_mode;
   auto_dispose< std::vector<dot_t*> > dot_list;
   auto_dispose< std::vector<action_priority_list_t*> > action_priority_list;
   std::vector<action_t*> precombat_action_list;
@@ -866,13 +832,6 @@ public:
   virtual void init_special_effect( special_effect_t& effect );
   virtual void init_scaling();
   virtual void init_action_list() {}
-  virtual void init_blizzard_action_list();
-  virtual std::vector<std::string> action_names_from_spell_id( unsigned int spell_id ) const;
-  virtual std::string aura_expr_from_spell_id( unsigned int spell_id, bool on_self = true ) const;
-  virtual void parse_assisted_combat_step( const assisted_combat_step_data_t& step, action_priority_list_t* assisted_combat );
-
-  virtual parsed_assisted_combat_rule_t parse_assisted_combat_rule( const assisted_combat_rule_data_t& rule,
-                                                                    const assisted_combat_step_data_t& step ) const;
   virtual void init_gains();
   virtual void init_procs();
   virtual void init_uptimes();

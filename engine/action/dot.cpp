@@ -625,7 +625,7 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
   }
   else if ( name_str == "active_dots" )
   {
-    return make_dot_expr( "dot_active_dots", 
+    return make_dot_expr( "dot_active_dots",
       []( dot_t* dot ) {
       if ( !dot || !dot->current_action )
         return 0u;
@@ -719,13 +719,7 @@ bool dot_t::channel_interrupt()
         sim.print_debug( "Dot interrupt expression check={}", interrupt );
       }
     }
-    if ( !interrupt && current_action->player->one_button_mode
-      && current_action->player->gcd_ready <= sim.current_time() )
-    {
-      // When using one_button_mode, channels should always be interrupted if possible.
-      // TODO: This should happen exactly on the GCD instead of being aligned with a tick.
-      interrupt = true;
-    }
+
     if ( interrupt )
     {
       bool gcd_ready = current_action->player->gcd_ready <= sim.current_time();
@@ -985,8 +979,8 @@ bool dot_t::is_higher_priority_action_available() const
   auto apl = current_action->interrupt_global ? player->active_action_list : current_action->action_list;
 
   player->visited_apls_ = 0;
-  // Look for a higher priority action, unless one_button_mode is enabled, in which case lower priority actions are also okay.
-  auto action = player->select_action( *apl, execute_type::FOREGROUND, player->one_button_mode ? nullptr : current_action );
+  // Look for a higher priority action
+  auto action = player->select_action( *apl, execute_type::FOREGROUND, current_action );
   if ( action && action->internal_id != current_action->internal_id && sim.debug )
   {
     sim.out_debug.print( "{} action available for context {}: {}", player->name(),

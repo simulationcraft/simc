@@ -373,7 +373,6 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     use_while_casting(),
     usable_while_casting(),
     add_queue_lag(),
-    can_have_one_button_penalty(),
     cooldown_allow_casting_success( true ),
     interrupt_auto_attack( true ),
     reset_auto_attack(),
@@ -572,7 +571,6 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
   add_option( opt_bool( "use_off_gcd", use_off_gcd ) );
   add_option( opt_bool( "use_while_casting", use_while_casting ) );
   add_option( opt_bool( "add_queue_lag", add_queue_lag ) );
-  add_option( opt_string( "can_have_one_button_penalty", option.can_have_one_button_penalty_str ) );
   add_option( opt_string( "cooldown_allow_casting_success", option.cooldown_allow_casting_success_str ) );
 }
 
@@ -1088,7 +1086,6 @@ void action_t::parse_options( util::string_view options_str )
         b = true;
     };
 
-    parse_bool( can_have_one_button_penalty,    "can_have_one_button_penalty",    option.can_have_one_button_penalty_str );
     parse_bool( cooldown_allow_casting_success, "cooldown_allow_casting_success", option.cooldown_allow_casting_success_str );
   }
   catch ( const std::exception& )
@@ -1303,10 +1300,6 @@ timespan_t action_t::gcd() const
   {
     gcd_ = min_gcd;
   }
-
-  // TODO: Figure out how this works for spells with cast times.
-  if ( gcd_ != timespan_t::zero() && player->is_player() && player->one_button_mode && can_have_one_button_penalty )
-    gcd_ *= 1.0 + player->single_button_assistant->effectN( 1 ).percent();
 
   return gcd_;
 }

@@ -175,9 +175,6 @@ public:
   /// True if the off-gcd action should incur queue lag after execution
   bool add_queue_lag;
 
-  /// True if the action should receive the one button GCD penalty.
-  bool can_have_one_button_penalty;
-
   /// True if the action can be queued while it is already casting.
   bool cooldown_allow_casting_success;
 
@@ -546,7 +543,6 @@ public:
     std::string cancel_if_expr_str;
     std::string sync_str;
     std::string target_str;
-    std::string can_have_one_button_penalty_str;
     std::string cooldown_allow_casting_success_str;
     options_t();
   } option;
