@@ -5,7 +5,6 @@
 
 #include "simulationcraft.hpp"
 #include "util/util.hpp"
-#include "class_modules/apl/apl_rogue.hpp"
 
 namespace { // UNNAMED NAMESPACE
 

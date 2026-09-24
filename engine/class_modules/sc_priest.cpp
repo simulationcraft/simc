@@ -4,7 +4,6 @@
 // Wiki: https://github.com/simulationcraft/simc/wiki/Priests
 // ==========================================================================
 
-#include "class_modules/apl/apl_priest.hpp"
 #include "report/charts.hpp"
 #include "report/highchart.hpp"
 #include "sc_enums.hpp"

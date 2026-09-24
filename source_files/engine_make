@@ -18,15 +18,15 @@ SRC += \
     action$(PATHSEP)stats.cpp \
     action$(PATHSEP)variable.cpp \
     buff$(PATHSEP)buff.cpp \
-    class_modules$(PATHSEP)apl$(PATHSEP)apl_hunter.cpp \
-    class_modules$(PATHSEP)apl$(PATHSEP)apl_paladin.cpp \
-    class_modules$(PATHSEP)apl$(PATHSEP)apl_priest.cpp \
-    class_modules$(PATHSEP)apl$(PATHSEP)apl_rogue.cpp \
-    class_modules$(PATHSEP)apl$(PATHSEP)apl_shaman.cpp \
-    class_modules$(PATHSEP)apl$(PATHSEP)apl_warrior.cpp \
-    class_modules$(PATHSEP)apl$(PATHSEP)druid$(PATHSEP)druid.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)druid.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)hunter.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)mage.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)paladin.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)priest.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)rogue.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)shaman.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)warlock.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)warrior.cpp \
     class_modules$(PATHSEP)sc_druid.cpp \
     class_modules$(PATHSEP)sc_enemy.cpp \
     class_modules$(PATHSEP)sc_hunter.cpp \

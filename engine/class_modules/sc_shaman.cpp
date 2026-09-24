@@ -12,7 +12,6 @@
 #include "action/heal.hpp"
 #include "action/residual_action.hpp"
 #include "action/spell.hpp"
-#include "class_modules/apl/apl_shaman.hpp"
 #include "class_modules/class_module.hpp"
 #include "dbc/data_enums.hh"
 #include "dbc/dbc.hpp"

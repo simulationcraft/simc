@@ -5,7 +5,6 @@
 
 #include "dbc/specialization.hpp"
 #include "simulationcraft.hpp"
-#include "class_modules/apl/apl_warrior.hpp"
 #include "action/parse_effects.hpp"
 
 namespace

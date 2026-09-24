@@ -1,9 +1,9 @@
-#include "class_modules/apl/mage.hpp"
+#include "class_modules/apl/warrior.hpp"
 
 #include "player/action_priority_list.hpp"
 #include "player/player.hpp"
 
-namespace mage_apl
+namespace warrior_apl
 {
 std::string potion( const player_t* p )
 {
@@ -29,4 +29,4 @@ std::string temporary_enchant( const player_t* p )
 {
   return "disabled";
 }
-}  // namespace mage_apl
+}  // namespace warrior_apl
