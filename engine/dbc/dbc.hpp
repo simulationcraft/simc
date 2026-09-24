@@ -11,6 +11,7 @@
 #include "data_definitions.hh"
 #include "data_enums.hh"
 #include "dbc/content_tuning.hpp"
+#include "dbc/gem_data.hpp"
 #include "dbc/item_armor.hpp"
 #include "dbc/item_bonus.hpp"
 #include "dbc/item_child.hpp"
