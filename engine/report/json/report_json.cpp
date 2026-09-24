@@ -791,7 +791,7 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
   root[ "world_lag_stddev" ] = p.world_lag.stddev;
   root[ "brain_lag" ] = p.brain_lag.mean;
   root[ "brain_lag_stddev" ] = p.brain_lag.stddev;
-  
+
   to_json( root[ "dbc" ], *p.dbc );
 
   for ( auto i = PROFESSION_NONE; i < PROFESSION_MAX; ++i )
@@ -1227,8 +1227,6 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   add_non_zero( overrides, "arcane_intellect", sim.overrides.arcane_intellect );
   add_non_zero( overrides, "battle_shout", sim.overrides.battle_shout );
   add_non_zero( overrides, "power_word_fortitude", sim.overrides.power_word_fortitude );
-  add_non_zero( overrides, "chaos_brand", sim.overrides.chaos_brand );
-  add_non_zero( overrides, "mystic_touch", sim.overrides.mystic_touch );
   add_non_zero( overrides, "mortal_wounds", sim.overrides.mortal_wounds );
   add_non_zero( overrides, "bleeding", sim.overrides.bleeding );
   add_non_zero( overrides, "bloodlust", sim.overrides.bloodlust );

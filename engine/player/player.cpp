@@ -5168,15 +5168,6 @@ double player_t::composite_player_vulnerability( school_e school ) const
   if ( debuffs.damage_taken && debuffs.damage_taken->check() )
     m *= 1.0 + debuffs.damage_taken->current_stack * 0.01;
 
-  if ( debuffs.mystic_touch && debuffs.mystic_touch->has_common_school( school ) )
-    m *= 1.0 + debuffs.mystic_touch->check_value();
-
-  if ( debuffs.chaos_brand && debuffs.chaos_brand->has_common_school( school ) )
-    m *= 1.0 + debuffs.chaos_brand->check_value();
-
-  if ( debuffs.hunters_mark && debuffs.hunters_mark->has_common_school( school ) )
-    m *= 1.0 + debuffs.hunters_mark->check_value();
-
   return m;
 }
 
@@ -6317,10 +6308,6 @@ void player_t::arise()
     // When an enemy arises, trigger players to potentially acquire a new target
     range::for_each( sim->player_non_sleeping_list, [this]( player_t* p ) { p->acquire_target( retarget_source::ACTOR_ARISE, this ); } );
 
-    if ( sim->overrides.chaos_brand && debuffs.chaos_brand )
-      debuffs.chaos_brand->override_buff();
-    if ( sim->overrides.mystic_touch && debuffs.mystic_touch )
-      debuffs.mystic_touch->override_buff();
     if ( sim->overrides.bleeding && debuffs.bleeding )
       debuffs.bleeding->override_buff( 1, 1.0 );
     if ( sim->overrides.mortal_wounds && debuffs.mortal_wounds )

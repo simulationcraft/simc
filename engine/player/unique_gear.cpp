@@ -56,7 +56,6 @@ namespace racial
 
 namespace generic
 {
-  void skyfury( special_effect_t& );
   void enable_all_item_effects( special_effect_t& );
 }
 
@@ -431,86 +430,6 @@ void racial::combat_analysis( special_effect_t& effect )
   effect.player->register_combat_begin( [buff, buff_spell]( player_t* ) {
     make_repeating_event( *buff->sim, buff_spell->effectN( 1 ).period(), [buff]() { buff->trigger(); } );
   } );
-}
-
-void generic::skyfury( special_effect_t& effect )
-{
-  struct skyfury_cb_t : public dbc_proc_callback_t
-  {
-    proc_t* proc_mh, *proc_oh;
-
-    skyfury_cb_t( const special_effect_t& effect ) :
-      dbc_proc_callback_t( effect.player, effect ), proc_mh( nullptr ), proc_oh( nullptr )
-    {
-      if ( effect.player->items[ SLOT_MAIN_HAND ].active() &&
-           effect.player->items[ SLOT_MAIN_HAND ].dbc_inventory_type() != INVTYPE_RANGED )
-      {
-        proc_mh = effect.player->get_proc( "Skyfury (Main Hand)" );
-      }
-
-      if ( effect.player->items[ SLOT_OFF_HAND ].active() &&
-           effect.player->items[ SLOT_OFF_HAND ].dbc_inventory_type() != INVTYPE_RANGED )
-      {
-        proc_oh = effect.player->get_proc( "Skyfury (Off Hand)" );
-      }
-    }
-
-    void trigger( const proc_data_t& data, player_t* t, action_state_t* s, proc_trigger_type_e type ) override
-    {
-      if ( !s->action->weapon )
-      {
-        return;
-      }
-
-      auto action = s->action->weapon->slot == SLOT_MAIN_HAND
-        ? s->action->player->main_hand_attack
-        : s->action->player->off_hand_attack;
-
-      // If for some reason there's no auto attack action that would initialize the attack, bail out
-      if ( !action )
-      {
-        return;
-      }
-
-      dbc_proc_callback_t::trigger( data, t, s, type );
-    }
-
-    void execute( const spell_data_t*, player_t* t, action_state_t* state ) override
-    {
-      auto atk = state->action->weapon->slot == SLOT_MAIN_HAND
-        ? state->action->player->main_hand_attack
-        : state->action->player->off_hand_attack;
-      auto proc = state->action->weapon->slot == SLOT_MAIN_HAND
-        ? proc_mh
-        : proc_oh;
-
-      auto old_target = atk->target;
-
-      listener->sim->print_log( "{} skyfury repeats {}", *listener, *atk );
-      if ( proc )
-      {
-        proc->occur();
-      }
-
-      auto old_may_miss = atk->may_miss;
-
-      atk->may_miss = false;
-      atk->repeating = false;
-      atk->set_target( t );
-      atk->execute();
-
-      atk->repeating = true;
-      atk->may_miss = old_may_miss;
-      atk->set_target( old_target );
-    }
-  };
-
-  if ( effect.player->is_enemy() || effect.player->type == HEALING_ENEMY )
-  {
-    return;
-  }
-
-  new skyfury_cb_t( effect );
 }
 
 void generic::enable_all_item_effects( special_effect_t& effect )
@@ -2064,7 +1983,6 @@ void unique_gear::register_special_effects()
   register_special_effect( 312923, racial::combat_analysis );
 
   /* Generic "global scope" special effects */
-  register_special_effect( 462854, generic::skyfury );
   register_special_effect( 63604, generic::enable_all_item_effects );
 }
 

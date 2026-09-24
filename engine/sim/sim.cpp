@@ -1903,9 +1903,6 @@ void sim_t::combat_begin()
   if ( overrides.power_word_fortitude )
     auras.power_word_fortitude->override_buff();
 
-  if ( overrides.skyfury )
-    auras.skyfury->override_buff();
-
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
     const module_t* m = module_t::get( i );
@@ -3531,11 +3528,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.blessing_of_the_bronze  = optimal_raid;
   overrides.mark_of_the_wild        = optimal_raid;
   overrides.power_word_fortitude    = optimal_raid;
-  overrides.skyfury                 = optimal_raid;
 
-  overrides.chaos_brand             = optimal_raid;
-  overrides.mystic_touch            = optimal_raid;
-  overrides.hunters_mark            = optimal_raid;
   overrides.mortal_wounds           = optimal_raid;
   overrides.bleeding                = optimal_raid;
 
@@ -3621,16 +3614,9 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
         {
           if ( p->role != ROLE_NONE )
           {
-            switch ( p->specialization() )
-            {
-              case PRIEST_SHADOW:
-              case WARRIOR_ARMS:
-              case WARRIOR_FURY:
-                execute += 1.0;
-                break;
-              default:
-                nonexecute += 1.0;
-            }
+            // TODO (FOREVER): mark specs as having execute
+            // move this to class modules?
+            nonexecute += 1.0;
           }
         }
 
@@ -3799,10 +3785,6 @@ void sim_t::create_options()
   add_option( opt_int( "override.blessing_of_the_bronze", overrides.blessing_of_the_bronze ) );
   add_option( opt_int( "override.mark_of_the_wild", overrides.mark_of_the_wild ) );
   add_option( opt_int( "override.power_word_fortitude", overrides.power_word_fortitude ) );
-  add_option( opt_int( "override.skyfury", overrides.skyfury ) );
-  add_option( opt_int( "override.chaos_brand", overrides.chaos_brand ) );
-  add_option( opt_int( "override.mystic_touch", overrides.mystic_touch ) );
-  add_option( opt_int( "override.hunters_mark", overrides.hunters_mark ) );
   add_option( opt_int( "override.mortal_wounds", overrides.mortal_wounds ) );
   add_option( opt_int( "override.bleeding", overrides.bleeding ) );
   add_option( opt_func( "override.spell_data", parse_override_spell_data ) );
@@ -4494,24 +4476,6 @@ void sim_t::activate_actors()
       progress_bar.set_phase( player_no_pet_list[ current_index ] -> name_str );
     }
   }
-
-  if ( overrides.hunters_mark )
-    target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
-      player_t* new_mark = nullptr;
-      for (size_t i = 0; i < target_non_sleeping_list.size(); i++)
-      {
-        player_t* t = target_non_sleeping_list[ i ];
-        if ( !t->debuffs.hunters_mark )
-          continue;
-
-        if ( !new_mark )
-          new_mark = t;
-        else
-          t->debuffs.hunters_mark->expire();
-      }
-      if ( new_mark )
-        new_mark->debuffs.hunters_mark->trigger();
-    } );
 
   progress_bar.progress();
 
