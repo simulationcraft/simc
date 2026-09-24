@@ -541,14 +541,14 @@ struct pull_event_t final : raid_event_t
           s->target_block_value = s->target->composite_block_value( s );
       }
 
-      double base_da_min( const action_state_t* s ) const override
+      double base_da_min( const action_state_t* ) const override
       {
         constexpr double aa_damage_base = 1'000'000;
         const double dummy_scalar       = this->player->is_boss() ? 1 : 0.25;
         return dummy_scalar * aa_damage_base * 0.95;
       }
 
-      double base_da_max( const action_state_t* s ) const
+      double base_da_max( const action_state_t* ) const override
       {
         constexpr double aa_damage_base = 1'500'000;
         const double dummy_scalar       = this->player->is_boss() ? 1 : 0.25;
@@ -955,10 +955,10 @@ struct pull_event_t final : raid_event_t
       bloodlust( false ),
       shared_health( false ),
       has_boss( false ),
+      attack_tanks( -1 ),
       spawn_event( nullptr ),
       redistribute_event( nullptr ),
-      real_duration( "Pull Length", false ),
-      attack_tanks( -1 )
+      real_duration( "Pull Length", false )
   {
     add_option( opt_string( "enemies", enemies_str ) );
     add_option( opt_timespan( "delay", delay ) );

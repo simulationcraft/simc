@@ -719,7 +719,7 @@ struct simplified_player_t : public player_t
 
     if ( trigger_sense_power )
     {
-      b->add_stack_change_callback( [ this, duration ]( buff_t* b, int, int _new ) {
+      b->add_stack_change_callback( [ this, duration ]( buff_t*, int, int _new ) {
         if ( _new )
         {
           buffs.sense_power->trigger( duration );
@@ -11681,7 +11681,7 @@ struct evoker_module_t : public module_t
                 } );
 
             p->callbacks.register_callback_execute_function(
-                effect->spell_id, []( auto cb, auto spell, player_t* t, auto ) {
+                effect->spell_id, []( auto cb, auto spell, player_t*, auto ) {
                   auto duration = cb->listener->buffs.sense_power->buff_duration();
                   if ( spell->duration() > duration )
                     duration = spell->duration();
