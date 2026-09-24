@@ -2595,15 +2595,6 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
       for ( const specialization_e spec : spec_list )
       {
-        if ( spec == PET_FEROCITY || spec == PET_CUNNING || spec == PET_TENACITY )
-        {
-          class_str.emplace_back(
-            fmt::format( "{} Hunter Pet", util::inverse_tokenize( dbc::specialization_string( spec ) ) ) );
-
-          exclude.emplace_back( player_e::HUNTER );
-          continue;
-        }
-
         auto specialization_str = util::specialization_string( spec );
         if ( util::str_compare_ci( specialization_str, "Unknown" ) )
         {
@@ -3444,8 +3435,6 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
 
   if ( spell->class_mask() )
   {
-    bool pet_ability = false;
-
     if ( dbc.is_specialization_ability( spell->id() ) )
     {
       std::vector<specialization_e> spec_list;
@@ -3457,10 +3446,6 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
         xml_node_t* spec_node = node->add_child( "spec" );
         spec_node->add_parm( "id", *iter );
         spec_node->add_parm( "name", dbc::specialization_string( *iter ) );
-        if ( *iter == PET_FEROCITY || *iter == PET_CUNNING || *iter == PET_TENACITY )
-        {
-          pet_ability = true;
-        }
       }
       spec_list.clear();
     }
@@ -3476,9 +3461,6 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
           pt = _class_map[ i ].pt;
       }
     }
-
-    if ( pet_ability )
-      node->add_child( "class" )->add_parm( ".", "Pet" );
   }
 
   if ( spell->race_mask() )

@@ -2105,30 +2105,7 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
   // results but the one that is correct will generally be the one that has the ArmorConstMod value being greater
   // than 1.000.
 
-  /*
-    10.0 values here
-    Level 70 Base/open world: 11766.000 (Level 70 Armor mitigation constants (K-values))
-    Level 70 M0/M+: 12,824.94039274908 (ExpectedStatModID: 216; ArmorConstMod: 1.09000003338)
-    Vault of the Incarnates LFR: 13,083.79186539696 (ExpectedStatModID: 212; ArmorConstMod: 1.11199998856)
-    Vault of the Incarnates Normal: 14,025.07237027602 (ExpectedStatModID: 213; ArmorConstMod: 1.19200003147)
-    Vault of the Incarnates Heroic: 15,084.01136040024 (ExpectedStatModID: 214; ArmorConstMod: 1.28199994564)
-    Vault of the Incarnates Mythic: 16,284.14333792718 (ExpectedStatModID: 215; ArmorConstMod: 1.38399994373)
-    Level 70 Season 2 M0/M+: 14,742.79824685068 (ExpectedStatModID: 234; ArmorConstMod: 1.25300002098)
-    Aberrus, the Shadowed Crucible LFR: 15,084.01136040024 (ExpectedStatModID: 214; ArmorConstMod: 1.28199994564)
-    Aberrus, the Shadowed Crucible Normal: 16,284.14333792718 (ExpectedStatModID: 215; ArmorConstMod: 1.38399994373)
-    Aberrus, the Shadowed Crucible Heroic: 17,625.4683029745 (ExpectedStatModID: 227; ArmorConstMod: 1.49800002575)
-    Aberrus, the Shadowed Crucible Mythic: 19,155.04824685068 (ExpectedStatModID: 228; ArmorConstMod: 1.62800002098)
-    Level 70 Season 3 M0/M+: 18,672.64201458984 (ExpectedStatModID: 249; ArmorConstMod: 1.5870000124)
-    Amirdrassil, the Dream's Hope LFR: 19,155.04824685068 (ExpectedStatModID: 228; ArmorConstMod: 1.62800002098)
-    Amirdrassil, the Dream's Hope Normal: 20,872.88457229824 (ExpectedStatModID: 229; ArmorConstMod: 1.77400004864)
-    Amirdrassil, the Dream's Hope Heroic: 22,814.27412342534 (ExpectedStatModID: 230; ArmorConstMod: 1.93900001049)
-    Amirdrassil, the Dream's Hope Mythic: 25,014.51514720032 (ExpectedStatModID: 231; ArmorConstMod: 2.12599992752)
-    Level 70 Season 4 M0/M+: 27,485.37559607322 (ExpectedStatModID: 252; ArmorConstMod: 2.33599996567)
-    Awakened LFR: 24,308.55582045084 (ExpectedStatModID: 253; ArmorConstMod: 2.06599998474)
-    Awakened Normal: 27,485.37559607322 (ExpectedStatModID: 252; ArmorConstMod: 2.33599996567)
-    Awakened Heroic: 30,285.68260855284 (ExpectedStatModID: 251; ArmorConstMod: 2.57399988174)
-    Awakened Mythic: 33,438.97208977458 (ExpectedStatModID: 254; ArmorConstMod: 2.84200000763)
-  */
+  // TODO (FOREVER): Are k-values anything like this in the context of forever?
   double k = dbc->armor_mitigation_constant( level );
 
   switch ( dungeon_content )
