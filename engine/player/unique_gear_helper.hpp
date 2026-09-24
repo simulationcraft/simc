@@ -42,7 +42,7 @@ void register_special_effect( std::initializer_list<unsigned> spell_ids,
                               wowv_t max_build = wowv_t( UINT8_MAX ) );
 
 // New-style special effect registering function
-template <typename T, typename = std::enable_if_t<std::is_base_of<scoped_callback_t, T>::value>>
+template <typename T, typename = std::enable_if_t<std::is_base_of_v<scoped_callback_t, T>>>
 void register_special_effect( unsigned spell_id, const T& cb, bool fallback = false )
 {
   special_effect_db_item_t dbitem;

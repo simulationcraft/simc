@@ -53,7 +53,7 @@ bool override_field( T* data, const Fields& fields, util::string_view name, doub
         std::is_unsigned_v<std::remove_reference_t<decltype(field)>> && value < 0.0 ? 0.0 : value
       );
       return true;
-    }, false, detail::size_c<std::tuple_size<Fields>::value>{} );
+    }, false, detail::size_c<std::tuple_size_v<Fields>>{} );
 }
 
 template <typename T, typename Fields>
@@ -80,7 +80,7 @@ bool override_bit_array_field( T* data, const Fields& fields, util::string_view 
       field[idx] &= ~bit;
 
     return true;
-  }, false, detail::size_c<std::tuple_size<Fields>::value>{} );
+  }, false, detail::size_c<std::tuple_size_v<Fields>>{} );
 }
 
 template <typename T, typename Fields>
@@ -88,14 +88,14 @@ double get_field( const T* data, const Fields& fields, util::string_view name ) 
   return detail::handle_field( data, fields, name,
     [] ( const auto& field ) {
       return static_cast<double>( field );
-    }, -std::numeric_limits<double>::max(), detail::size_c<std::tuple_size<Fields>::value>{} );
+    }, -std::numeric_limits<double>::max(), detail::size_c<std::tuple_size_v<Fields>>{} );
 }
 
 template <typename T, typename Fields>
 bool is_bit_array_field( const T* data, const Fields& fields, util::string_view name ) {
   return detail::handle_field( data, fields, name, [] ( const auto& ) {
     return true;
-  }, false, detail::size_c<std::tuple_size<Fields>::value>{} );
+  }, false, detail::size_c<std::tuple_size_v<Fields>>{} );
 }
 
 } // anon namespace

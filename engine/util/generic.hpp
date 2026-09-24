@@ -546,8 +546,8 @@ inline To as( From f )
 {
   To t = static_cast<To>( f );
   // Casting between arithmetic types
-  static_assert( std::is_arithmetic<To>::value, "Output type is not arithmetic." );
-  static_assert( std::is_arithmetic<From>::value, "Input type is not arithmetic." );
+  static_assert( std::is_arithmetic_v<To>, "Output type is not arithmetic." );
+  static_assert( std::is_arithmetic_v<From>, "Input type is not arithmetic." );
   // is "safe" if (a) it's reversible, and
   assert( f == static_cast<From>( t ) );
   // (b) both values have the same sign.
@@ -586,7 +586,7 @@ class propagate_const
 {
 public:
   using element_type =
-      typename std::remove_reference<decltype( *std::declval<T&>() )>::type;
+      std::remove_reference_t<decltype( *std::declval<T&>() )>;
 
   propagate_const() = default;
 

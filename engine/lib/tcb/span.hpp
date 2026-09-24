@@ -225,7 +225,7 @@ using void_t = void;
 
 template <typename T>
 using uncvref_t =
-    typename std::remove_cv<typename std::remove_reference<T>::type>::type;
+    std::remove_cv_t<std::remove_reference_t<T>>;
 
 template <typename>
 struct is_span : std::false_type {};
@@ -251,11 +251,11 @@ template <typename C, typename U = uncvref_t<C>>
 struct is_container {
     static constexpr bool value =
         !is_span<U>::value && !is_std_array<U>::value &&
-        !std::is_array<U>::value && has_size_and_data<C>::value;
+        !std::is_array_v<U> && has_size_and_data<C>::value;
 };
 
 template <typename T>
-using remove_pointer_t = typename std::remove_pointer<T>::type;
+using remove_pointer_t = std::remove_pointer_t<T>;
 
 template <typename, typename, typename = void>
 struct is_container_element_type_compatible : std::false_type {};
@@ -263,14 +263,14 @@ struct is_container_element_type_compatible : std::false_type {};
 template <typename T, typename E>
 struct is_container_element_type_compatible<
     T, E,
-    typename std::enable_if<
-        !std::is_same<
-            typename std::remove_cv<decltype(detail::data(std::declval<T>()))>::type,
-            void>::value &&
-        std::is_convertible<
+    std::enable_if_t<
+        !std::is_same_v<
+            std::remove_cv_t<decltype(detail::data(std::declval<T>()))>,
+            void> &&
+        std::is_convertible_v<
             remove_pointer_t<decltype(detail::data(std::declval<T>()))> (*)[],
-            E (*)[]>::value
-        >::type>
+            E (*)[]>
+        >>
     : std::true_type {};
 
 template <typename, typename = size_t>
@@ -283,13 +283,13 @@ struct is_complete<T, decltype(sizeof(T))> : std::true_type {};
 
 template <typename ElementType, std::size_t Extent>
 class span {
-    static_assert(std::is_object<ElementType>::value,
+    static_assert(std::is_object_v<ElementType>,
                   "A span's ElementType must be an object type (not a "
                   "reference type or void)");
     static_assert(detail::is_complete<ElementType>::value,
                   "A span's ElementType must be a complete type (not a forward "
                   "declaration)");
-    static_assert(!std::is_abstract<ElementType>::value,
+    static_assert(!std::is_abstract_v<ElementType>,
                   "A span's ElementType cannot be an abstract class type");
 
     using storage_type = detail::span_storage<ElementType, Extent>;
@@ -297,7 +297,7 @@ class span {
 public:
     // constants and types
     using element_type = ElementType;
-    using value_type = typename std::remove_cv<ElementType>::type;
+    using value_type = std::remove_cv_t<ElementType>;
     using size_type = std::size_t;
     using difference_type = std::ptrdiff_t;
     using pointer = element_type*;
@@ -312,7 +312,7 @@ public:
     // [span.cons], span constructors, copy, assignment, and destructor
     template <
         std::size_t E = Extent,
-        typename std::enable_if<(E == dynamic_extent || E <= 0), int>::type = 0>
+        std::enable_if_t<(E == dynamic_extent || E <= 0), int> = 0>
     constexpr span() noexcept
     {}
 
@@ -331,52 +331,52 @@ public:
     }
 
     template <std::size_t N, std::size_t E = Extent,
-              typename std::enable_if<
+              std::enable_if_t<
                   (E == dynamic_extent || N == E) &&
                       detail::is_container_element_type_compatible<
                           element_type (&)[N], ElementType>::value,
-                  int>::type = 0>
+                  int> = 0>
     constexpr span(element_type (&arr)[N]) noexcept : storage_(arr, N)
     {}
 
     template <typename T, std::size_t N, std::size_t E = Extent,
-              typename std::enable_if<
+              std::enable_if_t<
                   (E == dynamic_extent || N == E) &&
                       detail::is_container_element_type_compatible<
                           std::array<T, N>&, ElementType>::value,
-                  int>::type = 0>
+                  int> = 0>
     TCB_SPAN_ARRAY_CONSTEXPR span(std::array<T, N>& arr) noexcept
         : storage_(arr.data(), N)
     {}
 
     template <typename T, std::size_t N, std::size_t E = Extent,
-              typename std::enable_if<
+              std::enable_if_t<
                   (E == dynamic_extent || N == E) &&
                       detail::is_container_element_type_compatible<
                           const std::array<T, N>&, ElementType>::value,
-                  int>::type = 0>
+                  int> = 0>
     TCB_SPAN_ARRAY_CONSTEXPR span(const std::array<T, N>& arr) noexcept
         : storage_(arr.data(), N)
     {}
 
     template <
         typename Container, std::size_t E = Extent,
-        typename std::enable_if<
+        std::enable_if_t<
             E == dynamic_extent && detail::is_container<Container>::value &&
                 detail::is_container_element_type_compatible<
                     Container&, ElementType>::value,
-            int>::type = 0>
+            int> = 0>
     constexpr span(Container& cont)
         : storage_(detail::data(cont), detail::size(cont))
     {}
 
     template <
         typename Container, std::size_t E = Extent,
-        typename std::enable_if<
+        std::enable_if_t<
             E == dynamic_extent && detail::is_container<Container>::value &&
                 detail::is_container_element_type_compatible<
                     const Container&, ElementType>::value,
-            int>::type = 0>
+            int> = 0>
     constexpr span(const Container& cont)
         : storage_(detail::data(cont), detail::size(cont))
     {}
@@ -384,12 +384,12 @@ public:
     constexpr span(const span& other) noexcept = default;
 
     template <typename OtherElementType, std::size_t OtherExtent,
-              typename std::enable_if<
+              std::enable_if_t<
                   (Extent == dynamic_extent || OtherExtent == dynamic_extent ||
                    Extent == OtherExtent) &&
-                      std::is_convertible<OtherElementType (*)[],
-                                          ElementType (*)[]>::value,
-                  int>::type = 0>
+                      std::is_convertible_v<OtherElementType (*)[],
+                                          ElementType (*)[]>,
+                  int> = 0>
     constexpr span(const span<OtherElementType, OtherExtent>& other) noexcept
         : storage_(other.data(), other.size())
     {}
@@ -519,8 +519,8 @@ template <class T, size_t N>
 span(const std::array<T, N>&)->span<const T, N>;
 
 template <class Container>
-span(Container&)->span<typename std::remove_reference<
-    decltype(*detail::data(std::declval<Container&>()))>::type>;
+span(Container&)->span<std::remove_reference_t<
+    decltype(*detail::data(std::declval<Container&>()))>>;
 
 template <class Container>
 span(const Container&)->span<const typename Container::value_type>;
@@ -554,8 +554,8 @@ make_span(const std::array<T, N>& arr) noexcept
 }
 
 template <typename Container>
-constexpr span<typename std::remove_reference<
-    decltype(*detail::data(std::declval<Container&>()))>::type>
+constexpr span<std::remove_reference_t<
+    decltype(*detail::data(std::declval<Container&>()))>>
 make_span(Container& cont)
 {
     return {cont};
@@ -578,7 +578,7 @@ as_bytes(span<ElementType, Extent> s) noexcept
 
 template <
     class ElementType, size_t Extent,
-    typename std::enable_if<!std::is_const<ElementType>::value, int>::type = 0>
+    std::enable_if_t<!std::is_const_v<ElementType>, int> = 0>
 span<byte, ((Extent == dynamic_extent) ? dynamic_extent
                                        : sizeof(ElementType) * Extent)>
 as_writable_bytes(span<ElementType, Extent> s) noexcept

@@ -68,7 +68,7 @@ struct decorator_data_t
 template <typename T>
 std::string decorate( const T& data )
 {
-  static_assert( std::is_base_of<decorator_data_t, T>::value );
+  static_assert( std::is_base_of_v<decorator_data_t, T> );
 
   if ( !data.can_decorate() )
   {
