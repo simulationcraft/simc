@@ -98,7 +98,6 @@ void protection( player_t* p )
   default_->add_action( "variable,use_off_gcd=1,name=wants_to_hammer,value=buff.hammer_of_light_ready.up&debuff.judgment.up&(buff.undisputed_ruling.remains<=1.8|buff.hammer_of_light_ready.remains<5)" );
   default_->add_action( "holy_armaments,if=cooldown.avenging_wrath.remains<=gcd|time_to_die<30|charges=2" );
   default_->add_action( "fireblood,if=buff.avenging_wrath.up" );
-  default_->add_action( "variable,name=cds_active,value=buff.avenging_wrath.up&buff.avenging_wrath.remains>5" );
   default_->add_action( "avenging_wrath" );
   default_->add_action( "divine_toll,if=buff.avenging_wrath.up|!apex.3" );
   default_->add_action( "hammer_of_light,if=variable.wants_to_hammer" );
@@ -116,7 +115,8 @@ void protection( player_t* p )
   default_->add_action( "word_of_glory,if=buff.shining_light_free.up&!buff.divine_purpose.up" );
   default_->add_action( "consecration" );
 
-  trinkets->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&(variable.trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown|variable.trinket_2_buffs&trinket.2.cooldown.remains)&(trinket.1.cast_time>0&trinket.1.cast_time>cooldown.avenging_wrath.remains|trinket.1.cast_time=0&variable.cds_active)", "Trinkets" );
+  trinkets->add_action( "variable,name=cds_active,value=buff.avenging_wrath.up&buff.avenging_wrath.remains>5", "Trinkets" );
+  trinkets->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&(variable.trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown|variable.trinket_2_buffs&trinket.2.cooldown.remains)&(trinket.1.cast_time>0&trinket.1.cast_time>cooldown.avenging_wrath.remains|trinket.1.cast_time=0&variable.cds_active)" );
   trinkets->add_action( "use_item,slot=trinket2,if=variable.trinket_2_buffs&(variable.trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown|variable.trinket_1_buffs&trinket.1.cooldown.remains)&(trinket.2.cast_time>0&trinket.2.cast_time>cooldown.avenging_wrath.remains|trinket.2.cast_time=0&variable.cds_active)" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|!variable.trinket_2_buffs)&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains)" );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|!variable.trinket_1_buffs)&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains)" );
