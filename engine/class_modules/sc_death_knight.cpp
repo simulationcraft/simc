@@ -12201,9 +12201,12 @@ struct putrefy_t final : public death_knight_spell_t
       add_child( p->pet_summon.lotd_magus );
     }
 
-    p->pets.lesser_ghoul_putrefy.set_creation_event_callback(
-        pets::parent_pet_action_fn( p->pet_summon.putrefy_ghoul ) );
-    add_child( p->pet_summon.putrefy_ghoul );
+    if ( p->talent.unholy.putrefy.ok() )
+    {
+      p->pets.lesser_ghoul_putrefy.set_creation_event_callback(
+          pets::parent_pet_action_fn( p->pet_summon.putrefy_ghoul ) );
+      add_child( p->pet_summon.putrefy_ghoul );
+    }
   }
 
   void init_finished() override
