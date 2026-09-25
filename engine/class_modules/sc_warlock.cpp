@@ -1,9 +1,5 @@
 #include "simulationcraft.hpp"
-
-#include "player/pet_spawner.hpp"
 #include "action/parse_effects.hpp"
-#include "util/util.hpp"
-#include "class_modules/apl/warlock.hpp"
 
 namespace warlock
 {

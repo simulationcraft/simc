@@ -21,7 +21,6 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\action\spell_base.hpp" />
 		<ClInclude Include="..\engine\action\variable.hpp" />
 		<ClInclude Include="..\engine\buff\buff.hpp" />
-		<ClInclude Include="..\engine\class_modules\apl\." />
 		<ClInclude Include="..\engine\class_modules\apl\druid.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\hunter.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\mage.hpp" />
@@ -40,6 +39,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\dbc\data_definitions.hh" />
 		<ClInclude Include="..\engine\dbc\data_enums.hh" />
 		<ClInclude Include="..\engine\dbc\dbc.hpp" />
+		<ClInclude Include="..\engine\dbc\expected_stat.hpp" />
 		<ClInclude Include="..\engine\dbc\gem_data.hpp" />
 		<ClInclude Include="..\engine\dbc\item_armor.hpp" />
 		<ClInclude Include="..\engine\dbc\item_bonus.hpp" />
@@ -217,6 +217,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\dbc\client_data.cpp" />
 		<ClCompile Include="..\engine\dbc\client_hotfix_entry.cpp" />
 		<ClCompile Include="..\engine\dbc\content_tuning.cpp" />
+		<ClCompile Include="..\engine\dbc\expected_stat.cpp" />
 		<ClCompile Include="..\engine\dbc\gem_data.cpp" />
 		<ClCompile Include="..\engine\dbc\item_armor.cpp" />
 		<ClCompile Include="..\engine\dbc\item_bonus.cpp" />

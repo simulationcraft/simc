@@ -4,12 +4,6 @@
 // Wiki: https://github.com/simulationcraft/simc/wiki/Priests
 // ==========================================================================
 
-#include "report/charts.hpp"
-#include "report/highchart.hpp"
-#include "sc_enums.hpp"
-#include "sim/option.hpp"
-#include "tcb/span.hpp"
-
 #include "simulationcraft.hpp"
 
 namespace priestspace

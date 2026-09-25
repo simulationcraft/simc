@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
-#include "util/util.hpp"
 
 namespace { // UNNAMED NAMESPACE
 

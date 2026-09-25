@@ -3,40 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "config.hpp"
-
-#include "action/action.hpp"
-#include "action/action_state.hpp"
-#include "action/attack.hpp"
-#include "action/dot.hpp"
-#include "action/heal.hpp"
-#include "action/residual_action.hpp"
-#include "action/spell.hpp"
-#include "class_modules/class_module.hpp"
-#include "dbc/data_enums.hh"
-#include "dbc/dbc.hpp"
-#include "item/item.hpp"
-#include "item/special_effect.hpp"
-#include "player/action_priority_list.hpp"
-#include "player/actor_target_data.hpp"
-#include "player/ground_aoe.hpp"
-#include "player/pet.hpp"
-#include "player/pet_spawner.hpp"
-#include "action/action_callback.hpp"
-#include "action/parse_effects.hpp"
-#include "report/highchart.hpp"
-#include "player/player_scaling.hpp"
-#include "player/set_bonus.hpp"
-#include "report/decorators.hpp"
-#include "sc_enums.hpp"
-#include "sim/cooldown.hpp"
-#include "sim/proc.hpp"
-#include "sim/proc_rng.hpp"
-#include "util/string_view.hpp"
-
-#include <cassert>
-#include <string>
-#include <sstream>
+#include "simulationcraft.hpp"
 
 namespace {
 

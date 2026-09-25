@@ -510,7 +510,7 @@
       { "data_type": "f", "field": "player_secondary_stat",    "formats": { "cpp": "%13.5ff" } },
       { "data_type": "f", "field": "armor_constant",           "formats": { "cpp": "%13.5ff" } },
       { "data_type": "f", "field": "creature_spell_damage",    "formats": { "cpp": "%13.5ff" } },
-      { "data_type": "i", "field": "unk_1" }
+      { "data_type": "f", "field": "unk_1" }
     ]
   },
   "ExpectedStatMod": {

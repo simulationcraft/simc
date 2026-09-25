@@ -3,11 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include <memory>
-#include <optional>
-
 #include "simulationcraft.hpp"
-#include "player/pet_spawner.hpp"
 
 namespace
 { // UNNAMED NAMESPACE

@@ -15,7 +15,6 @@ action/spell.hpp
 action/spell_base.hpp
 action/variable.hpp
 buff/buff.hpp
-class_modules/apl
 class_modules/apl/druid.hpp
 class_modules/apl/hunter.hpp
 class_modules/apl/mage.hpp
@@ -34,6 +33,7 @@ dbc/content_tuning.hpp
 dbc/data_definitions.hh
 dbc/data_enums.hh
 dbc/dbc.hpp
+dbc/expected_stat.hpp
 dbc/gem_data.hpp
 dbc/item_armor.hpp
 dbc/item_bonus.hpp
@@ -211,6 +211,7 @@ dbc/class_spells.cpp
 dbc/client_data.cpp
 dbc/client_hotfix_entry.cpp
 dbc/content_tuning.cpp
+dbc/expected_stat.cpp
 dbc/gem_data.cpp
 dbc/item_armor.cpp
 dbc/item_bonus.cpp

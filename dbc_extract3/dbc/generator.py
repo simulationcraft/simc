@@ -9,7 +9,7 @@ from dbc import constants, util
 from dbc.constants import Class
 from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet
 from dbc.filter import TemporaryEnchantItemSet
-from dbc.filter import PermanentEnchantItemSet, ExpectedStatModSet, TraitSet, EmbellishmentSet, CharacterLoadoutSet
+from dbc.filter import PermanentEnchantItemSet, TraitSet, EmbellishmentSet, CharacterLoadoutSet
 from dbc.filter import TraitLoadoutSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
@@ -3491,56 +3491,6 @@ class AzeriteEssenceDataGenerator(DataGenerator):
 
         self.output_footer()
 
-class ArmorMitigationConstantValues(DataGenerator):
-    def generate(self, data = None):
-        filtered_entries = [
-            v for _, v in self.db('ExpectedStat').items()
-                if v.id_expansion == -2 and v.id_parent <= self._options.level + 3
-        ]
-        entries = sorted(filtered_entries, key = lambda v: v.id_parent)
-
-        self.output_header(
-                header = 'Armor mitigation constants (K-values)',
-                type = 'double',
-                array = 'armor_mitigation_constants',
-                length = len(entries))
-
-        for index in range(0, len(entries), 5):
-            n_entries = min(len(entries) - index, 5)
-            values = [
-                '{: >8.3f}'.format(entries[index + value_idx].armor_constant)
-                    for value_idx in range(0, n_entries)
-            ]
-
-            self._out.write('  {},\n'.format(', '.join(values)))
-
-        self.output_footer()
-
-class NpcArmorValues(DataGenerator):
-    def generate(self, data = None):
-        filtered_entries = [
-            v for _, v in self.db('ExpectedStat').items()
-                if v.id_expansion == -2 and v.id_parent <= self._options.level + 3
-        ]
-        entries = sorted(filtered_entries, key = lambda v: v.id_parent)
-
-        self.output_header(
-                header = 'Npc base armor values',
-                type = 'double',
-                array = 'npc_armor',
-                length = len(entries))
-
-        for index in range(0, len(entries), 5):
-            n_entries = min(len(entries) - index, 5)
-            values = [
-                '{: >8.3f}'.format(entries[index + value_idx].creature_armor)
-                    for value_idx in range(0, n_entries)
-            ]
-
-            self._out.write('  {},\n'.format(', '.join(values)))
-
-        self.output_footer()
-
 class TactKeyGenerator(DataGenerator):
     def generate(self, data = None):
         map_ = {}
@@ -3970,7 +3920,7 @@ class ExpectedStatGenerator(DataGenerator):
 
 class ExpectedStatModGenerator(DataGenerator):
     def filter(self):
-        return ExpectedStatModSet(self._options).get()
+        return self.db('ExpectedStatMod').values()
 
     def generate(self, data = None):
         self.output_header(
@@ -3979,11 +3929,11 @@ class ExpectedStatModGenerator(DataGenerator):
             array = 'expected_stat_mod',
             length = len(data))
 
-        for esm in sorted(data, key = lambda e: (e[1], e[0].id)):
-            fields = esm[0].field('id', 'mod_creature_health', 'mod_creature_auto_attack_dps', 'mod_creature_armor',
+        for esm in sorted(data, key = lambda e: (e.id)):
+            fields = esm.field('id', 'mod_creature_health', 'mod_creature_auto_attack_dps', 'mod_creature_armor',
                                   'mod_player_primary_stat', 'mod_player_secondary_stat',
                                   'mod_armor_constant', 'mod_creature_spell_damage')
-            fields += [str(esm[1])]
+            fields += [str(0)]
 
             self.output_record(fields)
 

@@ -3,14 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "config.hpp"
-
-#include "action/parse_effects.hpp"
-#include "class_modules/apl/druid/druid.hpp"
-#include "player/pet_spawner.hpp"
-#include "report/highchart.hpp"
-
 #include "simulationcraft.hpp"
+#include "action/parse_effects.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE
