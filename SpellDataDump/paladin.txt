@@ -4606,9 +4606,10 @@ Effects          :
 #1 (id=301125)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #2 (id=301126)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 12 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.4 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Consecration (204242), Consecration (413267)
                    Family Flags: 43
+Hotfixed         : PvP Coefficient (1 -> 0.4)
 #3 (id=1070952)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Divine Hammer (198137)
