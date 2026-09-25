@@ -4366,15 +4366,6 @@ double player_t::composite_melee_auto_attack_speed() const
 
   h *= current.attack_speed_multiplier;
 
-  if ( buffs.galeforce_striking && buffs.galeforce_striking->check() )
-    h *= 1.0 / ( 1.0 + buffs.galeforce_striking->check_value() );
-
-  if ( buffs.delirious_frenzy && buffs.delirious_frenzy->check() )
-    h *= 1.0 / ( 1.0 + buffs.delirious_frenzy->check_stack_value() );
-
-  if ( buffs.way_of_controlled_currents && buffs.way_of_controlled_currents->check() )
-    h *= 1.0 / ( 1.0 + buffs.way_of_controlled_currents->check_stack_value() );
-
   return h;
 }
 
@@ -4700,22 +4691,7 @@ double player_t::composite_spell_haste() const
  */
 double player_t::composite_spell_cast_speed() const
 {
-  auto speed = cache.spell_haste();
-
-  if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
-  {
-    if ( buffs.nefarious_pact )
-    {
-      speed *= 1.0 / ( 1.0 + buffs.nefarious_pact->check_stack_value() );
-    }
-
-    if ( buffs.devils_due )
-    {
-      speed *= 1.0 - buffs.devils_due->check_stack_value();
-    }
-  }
-
-  return speed;
+  return cache.spell_haste();
 }
 
 double player_t::composite_spell_power( school_e /* school */ ) const
@@ -4840,17 +4816,8 @@ double player_t::composite_player_multiplier( school_e school ) const
 {
   double m = current.damage_multiplier[ school ];
 
-  if ( buffs.taste_of_mana && buffs.taste_of_mana->has_common_school( school ) )
-    m *= 1.0 + buffs.taste_of_mana->check_value();
-
-  if ( buffs.torrent_of_elements && buffs.torrent_of_elements->has_common_school( school ) )
-    m *= 1.0 + buffs.torrent_of_elements->check_value();
-
   if ( buffs.damage_done && buffs.damage_done->check() )
     m *= 1.0 + buffs.damage_done->check_stack_value();
-
-  if ( buffs.echo_of_eonar && buffs.echo_of_eonar->has_common_school( school ) )
-    m *= 1.0 + buffs.echo_of_eonar->check_value();
 
   if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
     m *= 1.0 + buffs.entropic_embrace->data().effectN( 1 ).percent();
@@ -4880,23 +4847,7 @@ double player_t::composite_versus_multiplier( player_t* t ) const
 
 double player_t::composite_player_target_multiplier( player_t* t, school_e /* school */ ) const
 {
-  double m = 1.0;
-
-  auto td = find_target_data( t );
-  if ( td )
-  {
-    // Always created debuffs, TODO: move to target_specific_debuffs
-    m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
-    m *= 1.0 + td->debuff.sinful_revelation->check_value();
-    m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
-    m *= 1.0 + td->debuff.exsanguinated->check_value();
-
-    // target specific debuffs, MUST check for null
-    if ( td->debuff.unwavering_focus )
-      m *= 1.0 + td->debuff.unwavering_focus->check_value();
-  }
-
-  return m;
+  return 1.0;
 }
 
 double player_t::composite_player_heal_multiplier( const action_state_t* ) const
@@ -4941,48 +4892,17 @@ double player_t::composite_player_absorb_received_multiplier() const
 
 double player_t::composite_player_target_crit_chance( player_t* t ) const
 {
-  double c = 0.0;
-
-  if ( const actor_target_data_t* td = get_owner_or_self()->find_target_data( t ) )
-  {
-    // Essence: Blood of the Enemy Major debuff
-    c += td->debuff.blood_of_the_enemy->check_stack_value();
-
-    // Consumable: Potion of Focused Resolve
-    c += td->debuff.focused_resolve->check_stack_value();
-
-    // Darkmoon Deck: Putrescence
-    c += td->debuff.putrid_burst->check_stack_value();
-  }
-
-  return c;
+  return 0.0;
 }
 
 double player_t::composite_player_critical_damage_multiplier( const action_state_t* /* s */, school_e school ) const
 {
-  double m = current.crit_damage_multiplier[ school ];
-
-  if ( buffs.elemental_chaos_fire && buffs.elemental_chaos_fire->data().effectN( 2 ).has_common_school( school ) )
-    m *= 1.0 + buffs.elemental_chaos_fire->check_value();
-
-  if ( buffs.incensed && buffs.incensed->data().effectN( 1 ).has_common_school( school ) )
-    m *= 1.0 + buffs.incensed->check_value();
-
-  // Critical hit damage buff from R3 Blood of the Enemy major on-use
-  if ( buffs.seething_rage_essence && buffs.seething_rage_essence->data().effectN( 1 ).has_common_school( school ) )
-    m *= 1.0 + buffs.seething_rage_essence->check_value();
-
-  return m;
+  return current.crit_damage_multiplier[ school ];
 }
 
 double player_t::composite_player_critical_healing_multiplier() const
 {
-  double m = current.crit_healing_multiplier;
-
-  if ( buffs.elemental_chaos_frost )
-    m *= 1.0 + buffs.elemental_chaos_frost->check_value();
-
-  return m;
+  return current.crit_healing_multiplier;
 }
 
 /**
@@ -5191,9 +5111,6 @@ double player_t::composite_mitigation_multiplier( const action_state_t* s, schoo
     {
       if ( buffs.stoneform && buffs.stoneform->up() && school == SCHOOL_PHYSICAL )
         m *= 1.0 + buffs.stoneform->check_value();
-
-      if ( buffs.elemental_chaos_earth && buffs.elemental_chaos_earth->up() )
-        m *= 1.0 + buffs.elemental_chaos_earth->check_value();
 
       if ( buffs.pain_suppression && buffs.pain_suppression->up() )
         m *= 1.0 + buffs.pain_suppression->check_value();

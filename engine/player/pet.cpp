@@ -103,20 +103,6 @@ double pet_t::composite_attribute( attribute_e attr ) const
   return a;
 }
 
-double pet_t::composite_player_target_multiplier( player_t* t, school_e school ) const
-{
-  double m = player_t::composite_player_target_multiplier( t, school );
-
-  if ( auto td = owner->find_target_data( t ) )
-  {
-    m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
-    m *= 1.0 + td->debuff.scouring_touch->check_stack_value();
-    m *= 1.0 + td->debuff.exsanguinated->check_value();
-  }
-
-  return m;
-}
-
 void pet_t::init()
 {
   player_t::init();
@@ -307,10 +293,6 @@ void pet_t::create_buffs()
       } );
 
     buffs.movement = new movement_buff_t( this );
-
-    // Blood of the Enemy Essence Major R3 increase crit damage buff
-    buffs.seething_rage_essence = make_buff( this, "seething_rage_essence", find_spell( 297126 ) )
-      ->set_default_value( find_spell( 297126 )->effectN( 1 ).percent() );
 
     debuffs.casting = make_buff( this, "casting" )
       ->set_max_stack( 1 )
