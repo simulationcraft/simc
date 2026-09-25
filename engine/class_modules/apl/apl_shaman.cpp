@@ -46,8 +46,8 @@ void elemental( player_t* p )
   precombat->add_action( "thunderstrike_ward" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=(trinket.1.has_use_buff|trinket.1.is.funhouse_lens)" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=(trinket.2.has_use_buff|trinket.2.is.funhouse_lens)" );
-  precombat->add_action( "variable,name=trinket_1_special,value=(trinket.1.is.stormbound_emblem_of_dazar|trinket.1.is.hex_lords_dooming_idol)" );
-  precombat->add_action( "variable,name=trinket_2_special,value=(trinket.2.is.stormbound_emblem_of_dazar|trinket.2.is.hex_lords_dooming_idol)" );
+  precombat->add_action( "variable,name=trinket_1_special,value=(trinket.1.is.stormbound_emblem_of_dazar|trinket.1.is.hex_lords_dooming_idol|trinket.1.is.font_of_venomous_rage)" );
+  precombat->add_action( "variable,name=trinket_2_special,value=(trinket.2.is.stormbound_emblem_of_dazar|trinket.2.is.hex_lords_dooming_idol|trinket.2.is.font_of_venomous_rage)" );
   precombat->add_action( "stormkeeper" );
 
   default_->add_action( "spiritwalkers_grace,moving=1,if=movement.distance>6", "Enable more movement." );
@@ -56,30 +56,32 @@ void elemental( player_t* p )
   default_->add_action( "berserking" );
   default_->add_action( "fireblood" );
   default_->add_action( "ancestral_call" );
-  default_->add_action( "use_item,name=stormbound_emblem_of_dazar,if=cooldown.ascendance.ready&(cooldown.stormkeeper.remains>15|cooldown.stormkeeper.remains<2)|fight_remains<23", "Special trinkets" );
-  default_->add_action( "use_item,name=hex_lords_dooming_idol,if=cooldown.ascendance.ready&cooldown.stormkeeper.remains>15|fight_remains<23" );
-  default_->add_action( "use_item,slot=trinket1,use_off_gcd=1,if=!variable.trinket_1_special&variable.trinket_1_buffs&(cooldown.ascendance.remains>trinket.1.cooldown.duration-5|cooldown.ascendance.ready&cooldown.stormkeeper.remains>15|fight_remains<21)", "Normal buff trinkets, mimic Ascendance activation conditions" );
-  default_->add_action( "use_item,slot=trinket2,use_off_gcd=1,if=!variable.trinket_2_special&variable.trinket_2_buffs&(cooldown.ascendance.remains>trinket.2.cooldown.duration-5|cooldown.ascendance.ready&cooldown.stormkeeper.remains>15|fight_remains<21)" );
+  default_->add_action( "use_item,name=stormbound_emblem_of_dazar,if=cooldown.ascendance.ready&(cooldown.stormkeeper.remains>15|cooldown.stormkeeper.remains<2)|fight_remains<23", "Special buff trinkets" );
+  default_->add_action( "use_item,name=hex_lords_dooming_idol,use_off_gcd=1,if=cooldown.ascendance.ready&cooldown.stormkeeper.remains>15|fight_remains<23" );
+  default_->add_action( "use_item,slot=trinket1,use_off_gcd=1,if=!variable.trinket_1_special&variable.trinket_1_buffs&(cooldown.ascendance.remains>trinket.1.cooldown.duration-5|cooldown.ascendance.ready&(!buff.stormkeeper.up|spell_targets.chain_lightning>=2)|fight_remains<21)", "Normal buff trinkets, mimic Ascendance activation conditions" );
+  default_->add_action( "use_item,slot=trinket2,use_off_gcd=1,if=!variable.trinket_2_special&variable.trinket_2_buffs&(cooldown.ascendance.remains>trinket.2.cooldown.duration-5|cooldown.ascendance.ready&(!buff.stormkeeper.up|spell_targets.chain_lightning>=2)|fight_remains<21)" );
   default_->add_action( "use_item,slot=main_hand,use_off_gcd=1", "Normal weapons" );
+  default_->add_action( "use_item,name=font_of_venomous_rage,if=!variable.trinket_1_buffs&!variable.trinket_2_buffs&!buff.ascendance.up|!buff.ascendance.up&!cooldown.ascendance.ready|fight_remains<23", "Special dmg trinkets" );
   default_->add_action( "use_item,slot=trinket1,use_off_gcd=1,if=!variable.trinket_1_special&!variable.trinket_1_buffs&(cooldown.ascendance.remains>20|trinket.2.cooldown.remains>20)", "Dmg trinkets" );
   default_->add_action( "use_item,slot=trinket2,use_off_gcd=1,if=!variable.trinket_2_special&!variable.trinket_2_buffs&(cooldown.ascendance.remains>20|trinket.1.cooldown.remains>20)" );
   default_->add_action( "lightning_shield,if=buff.lightning_shield.down" );
   default_->add_action( "natures_swiftness" );
   default_->add_action( "invoke_external_buff,name=power_infusion", "Use Power Infusion on Cooldown." );
-  default_->add_action( "potion,if=buff.bloodlust.up|cooldown.ascendance.ready&cooldown.stormkeeper.remains>15|fight_remains<31" );
+  default_->add_action( "potion,if=buff.bloodlust.up|cooldown.ascendance.ready|fight_remains<31" );
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.chain_lightning>=3" );
   default_->add_action( "run_action_list,name=single_target" );
 
-  aoe->add_action( "stormkeeper,if=cooldown.ascendance.remains>10|cooldown.ascendance.remains<gcd|fight_remains<20", "--- 3+ TARGET ROTATION ---  Stormkeeper on CD, unless sub 10s hold for Asc or the fight is about to end." );
+  aoe->add_action( "stormkeeper,if=set_bonus.mid2_4pc|cooldown.ascendance.remains>10|cooldown.ascendance.remains<gcd|fight_remains<20", "--- 3+ TARGET ROTATION ---  Stormkeeper on CD (always with MID2 set), unless sub 10s hold for Asc or the fight is about to end." );
   aoe->add_action( "ancestral_swiftness" );
   aoe->add_action( "flame_shock,if=!buff.master_of_the_elements.up&((dot.flame_shock.refreshable&cooldown.ascendance.remains>5)|(buff.fire_elemental.up&buff.fire_elemental.remains<2))&talent.master_of_the_elements&talent.inferno_arc&spell_targets.chain_lightning=3", "[3t] Apply Flame shock on 3t for MotE and Inferno arc." );
   aoe->add_action( "voltaic_blaze,if=!buff.master_of_the_elements.up&((dot.flame_shock.refreshable&cooldown.ascendance.remains>5)|(buff.fire_elemental.up&buff.fire_elemental.remains<2)|talent.purging_flames)", "Apply Voltaic blaze for Inferno arc or Purging flames." );
-  aoe->add_action( "ascendance,if=cooldown.stormkeeper.remains>15|fight_remains<20", "Ascendance on CD, unless SK can be sync'd with it." );
-  aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack<2&(buff.elemental_blast_critical_strike.up+buff.elemental_blast_haste.up+buff.elemental_blast_mastery.up=0)&talent.tempest", "[SB] Elemental Blast if no buffs or at 3t, Earthquake to spread Lightning Rod otherwise  [FS] EQ with ancestors, EB - without" );
+  aoe->add_action( "chain_lightning,if=buff.stormkeeper.up&maelstrom.deficit>(spell_targets.chain_lightning>?5)*(2+(spell_targets.chain_lightning>?5)+2)&talent.call_of_the_ancestors&set_bonus.mid2_4pc", "Spend SK stacks asap if you wont overcap (with MID s2 set)" );
+  aoe->add_action( "ascendance,if=set_bonus.mid2_4pc|cooldown.stormkeeper.remains>15|fight_remains<20", "Ascendance on CD (always with MID2 set), unless SK can be sync'd with it." );
+  aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack<2&(buff.elemental_blast_critical_strike.up+buff.elemental_blast_haste.up+buff.elemental_blast_mastery.up=0)&talent.tempest", "[SB] Elemental Blast if no buffs or at 3t, Earthquake to spread Lightning Rod otherwise" );
   aoe->add_action( "earthquake,if=buff.tempest.stack<2&lightning_rod<active_enemies&(spell_targets.chain_lightning>=3+talent.elemental_blast)&(buff.elemental_blast_critical_strike.up+buff.elemental_blast_haste.up+buff.elemental_blast_mastery.up>0|!talent.elemental_blast)&talent.tempest" );
-  aoe->add_action( "earthquake,if=buff.call_of_the_ancestors.up|(spell_targets.chain_lightning>=3+3*talent.elemental_blast)&talent.call_of_the_ancestors" );
-  aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack<2&(spell_targets.chain_lightning<=3+2*talent.call_of_the_ancestors)&!buff.call_of_the_ancestors.up" );
-  aoe->add_action( "lava_burst,if=buff.purging_flames.up&(buff.lava_surge.up&buff.flowing_elements.stack<2|cooldown.voltaic_blaze.remains<2)", "Spend Purging flames.  !!! Remove tier requirement once fixed ingame" );
+  aoe->add_action( "earthquake,if=buff.call_of_the_ancestors.up|(spell_targets.chain_lightning>=3+2*talent.elemental_blast)&talent.call_of_the_ancestors", "[FS] EQ with ancestors, EB (3 and 4t) - without" );
+  aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=buff.tempest.stack<2&(spell_targets.chain_lightning<=3+talent.call_of_the_ancestors)&!buff.call_of_the_ancestors.up" );
+  aoe->add_action( "lava_burst,if=buff.purging_flames.up&(buff.lava_surge.up|cooldown.voltaic_blaze.remains<2)", "Spend Purging flames." );
   aoe->add_action( "lava_burst,if=(buff.tempest.up|!talent.purging_flames&talent.call_of_the_ancestors)&buff.lava_surge.up&talent.master_of_the_elements&spell_targets.chain_lightning=3", "[3t] Spend Lava Surge procs to buff Tempest with MotE OR anything with Farseer (without PF specced)." );
   aoe->add_action( "tempest,target_if=min:debuff.lightning_rod.remains,if=buff.master_of_the_elements.up", "[3t] Tempest if you have MotE." );
   aoe->add_action( "tempest,target_if=min:debuff.lightning_rod.remains,if=buff.stormkeeper.stack<4&buff.tempest.stack=2" );
@@ -92,12 +94,13 @@ void elemental( player_t* p )
   aoe->add_action( "voltaic_blaze,moving=1" );
   aoe->add_action( "frost_shock,moving=1" );
 
-  single_target->add_action( "stormkeeper,if=cooldown.ascendance.remains>10|cooldown.ascendance.remains<gcd|fight_remains<20", "--- 1 and 2 TARGET ROTATION ---  Stormkeeper on CD, unless sub 10s hold for Asc or the fight is about to end." );
+  single_target->add_action( "stormkeeper,if=!buff.stormkeeper.up&!buff.tempest.up&set_bonus.mid2_4pc|!set_bonus.mid2_4pc&(cooldown.ascendance.remains>10|cooldown.ascendance.remains<gcd|fight_remains<20)", "--- 1 and 2 TARGET ROTATION ---  Stormkeeper on CD (proc all 4p first if using MID2 4pc), unless sub 10s hold for Asc or the fight is about to end." );
   single_target->add_action( "ancestral_swiftness" );
+  single_target->add_action( "lightning_bolt,if=set_bonus.mid2_4pc&buff.stormkeeper.up&cooldown.ascendance.remains<2*gcd&(spell_targets.chain_lightning=1|talent.tempest)", "Prespend SK charges before going into Ascendance - Farseer only in 1t, SB in both 1t and 2t" );
   single_target->add_action( "flame_shock,if=!buff.master_of_the_elements.up&dot.flame_shock.refreshable&cooldown.ascendance.remains>5", "Maintain Flame shock, minor gain to refresh it when FE is about to fade on up to 2 targets." );
   single_target->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,if=!buff.master_of_the_elements.up&!buff.ascendance.up&buff.fire_elemental.up&buff.fire_elemental.remains<6*active_enemies-4" );
   single_target->add_action( "voltaic_blaze,if=!buff.master_of_the_elements.up&(dot.flame_shock.refreshable&cooldown.ascendance.remains>5|talent.purging_flames&spell_targets.chain_lightning=2)", "Voltaic Blaze to maintain Flame shock and on cooldown to proc Purging Flames." );
-  single_target->add_action( "ascendance,if=cooldown.stormkeeper.remains>15|fight_remains<20", "Ascendance on CD, unless SK can be sync'd with it." );
+  single_target->add_action( "ascendance,if=set_bonus.mid2_4pc|cooldown.stormkeeper.remains>15|fight_remains<20", "Ascendance on CD (always with MID2 set), unless SK can be sync'd with it." );
   single_target->add_action( "earthquake,if=buff.flowing_elements.up&buff.overcharge_tier.up&buff.call_of_the_ancestors.stack>=3&spell_targets.chain_lightning=2", "Consume tier procs if you gona proc new one with next builder." );
   single_target->add_action( "elemental_blast,if=buff.flowing_elements.up&buff.overcharge_tier.up" );
   single_target->add_action( "earthquake,if=buff.flowing_elements.up&buff.overcharge_tier.up&buff.call_of_the_ancestors.up&spell_targets.chain_lightning=2" );
@@ -107,7 +110,6 @@ void elemental( player_t* p )
   single_target->add_action( "lava_burst,if=talent.master_of_the_elements&!buff.master_of_the_elements.up&maelstrom.deficit>15&(maelstrom>52-5*talent.eye_of_the_storm)&buff.call_of_the_ancestors.stack>=3&spell_targets.chain_lightning=2" );
   single_target->add_action( "lava_burst,if=!talent.master_of_the_elements&maelstrom.deficit>15&(!buff.storm_elemental.up|buff.wind_gust.stack=4)&((cooldown.lava_burst.charges_fractional>1.8|!buff.call_of_the_ancestors.up)&(talent.molten_wrath|talent.purging_flames)|buff.lava_surge.up)", "Lava Burst without MotE to prevent overcap (with any empowering talents) or with surge proc." );
   single_target->add_action( "lava_burst,if=!buff.master_of_the_elements.up&maelstrom.deficit>15&buff.flowing_elements.up" );
-  single_target->add_action( "lava_burst,if=!buff.master_of_the_elements.up&maelstrom.deficit>15&buff.power_of_the_maelstrom.stack=2" );
   single_target->add_action( "lava_burst,if=!buff.master_of_the_elements.up&maelstrom.deficit>15&buff.purging_flames.up&cooldown.voltaic_blaze.remains<2&active_dot.flame_shock=2" );
   single_target->add_action( "tempest,if=buff.master_of_the_elements.up|!talent.master_of_the_elements", "[SB] Tempest and Lightning Bolt with SK if you have MotE." );
   single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&buff.master_of_the_elements.up&talent.tempest" );
