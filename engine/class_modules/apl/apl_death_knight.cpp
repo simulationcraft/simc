@@ -395,8 +395,8 @@ void unholy( player_t* p )
 
   trinkets->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&(variable.trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown|trinket.2.cooldown.remains)&(trinket.1.cast_time>0&trinket.1.cast_time>cooldown.army_of_the_dead.remains&(!talent.festering_scythe|buff.festering_scythe_tt.up)|trinket.1.cast_time=0&variable.cds_active)", "Trinkets" );
   trinkets->add_action( "use_item,slot=trinket2,if=variable.trinket_2_buffs&(variable.trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown|trinket.1.cooldown.remains)&(trinket.2.cast_time>0&trinket.2.cast_time>cooldown.army_of_the_dead.remains&(!talent.festering_scythe|buff.festering_scythe_tt.up)|trinket.2.cast_time=0&variable.cds_active)" );
-  trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(!trinket.2.has_cooldown|!variable.trinket_2_buffs)&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains)" );
-  trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(!trinket.1.has_cooldown|!variable.trinket_1_buffs)&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains)" );
+  trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|!variable.trinket_2_buffs)&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains)" );
+  trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|!variable.trinket_1_buffs)&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains)" );
 
   variables->add_action( "variable,name=spending_rp,value=rune<2|buff.forbidden_knowledge.up&(rune<3|pet.gargoyle.active|buff.essence_of_the_blood_queen.stack>=2)|buff.sudden_doom.react", "Variables" );
   variables->add_action( "variable,name=st_planning,op=setif,value=1,value_else=0,condition=active_enemies=1&(!raid_event.adds.exists|!raid_event.adds.in|raid_event.adds.in>15|!raid_event.pull.exists|raid_event.pull.exists&raid_event.pull.in>15)" );
