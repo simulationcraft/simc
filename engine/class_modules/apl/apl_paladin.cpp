@@ -76,8 +76,16 @@ void protection( player_t* p )
   precombat->add_action( "rite_of_adjuration" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "devotion_aura" );
-  precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_cooldown&trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|!trinket.2.has_cooldown" );
-  precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_cooldown&trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|!trinket.1.has_cooldown" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
+  precombat->add_action( "variable,name=trinket_1_duration,op=setif,value=0,value_else=trinket.1.proc.any_dps.duration,condition=0" );
+  precombat->add_action( "variable,name=trinket_2_duration,op=setif,value=0,value_else=trinket.2.proc.any_dps.duration,condition=0" );
+  precombat->add_action( "variable,name=trinket_1_high_value,op=setif,value=3,value_else=1,condition=trinket.1.is.voracious_heart_of_ulatek" );
+  precombat->add_action( "variable,name=trinket_2_high_value,op=setif,value=3,value_else=1,condition=trinket.2.is.voracious_heart_of_ulatek" );
+  precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&trinket.1.cooldown.duration%%cooldown.avenging_wrath.duration=0" );
+  precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&trinket.2.cooldown.duration%%cooldown.avenging_wrath.duration=0" );
+  precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs&(trinket.2.has_cooldown|!trinket.1.has_cooldown)|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync)*(variable.trinket_2_high_value)*(1+((trinket.2.ilvl-trinket.1.ilvl)%100)))>((trinket.1.cooldown.duration%variable.trinket_1_duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync)*(variable.trinket_1_high_value)*(1+((trinket.1.ilvl-trinket.2.ilvl)%100)))" );
+  precombat->add_action( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl" );
   precombat->add_action( "potion,pre_pot_time=8,if=potion.liquid_luster" );
   precombat->add_action( "consecration" );
   precombat->add_action( "holy_armaments" );
@@ -90,6 +98,7 @@ void protection( player_t* p )
   default_->add_action( "variable,use_off_gcd=1,name=wants_to_hammer,value=buff.hammer_of_light_ready.up&debuff.judgment.up&(buff.undisputed_ruling.remains<=1.8|buff.hammer_of_light_ready.remains<5)" );
   default_->add_action( "holy_armaments,if=cooldown.avenging_wrath.remains<=gcd|time_to_die<30|charges=2" );
   default_->add_action( "fireblood,if=buff.avenging_wrath.up" );
+  default_->add_action( "variable,name=cds_active,value=buff.avenging_wrath.up&buff.avenging_wrath.remains>5" );
   default_->add_action( "avenging_wrath" );
   default_->add_action( "divine_toll,if=buff.avenging_wrath.up|!apex.3" );
   default_->add_action( "hammer_of_light,if=variable.wants_to_hammer" );
@@ -107,8 +116,10 @@ void protection( player_t* p )
   default_->add_action( "word_of_glory,if=buff.shining_light_free.up&!buff.divine_purpose.up" );
   default_->add_action( "consecration" );
 
-  trinkets->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|(!buff.avenging_wrath.up&!cooldown.avenging_wrath.ready)))|!variable.trinket_sync_slot)" );
-  trinkets->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|(!buff.avenging_wrath.up&!cooldown.avenging_wrath.ready)))|!variable.trinket_sync_slot)" );
+  trinkets->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&(variable.trinket_priority=1|!variable.trinket_2_buffs|!trinket.2.has_cooldown|variable.trinket_2_buffs&trinket.2.cooldown.remains)&(trinket.1.cast_time>0&trinket.1.cast_time>cooldown.avenging_wrath.remains|trinket.1.cast_time=0&variable.cds_active)", "Trinkets" );
+  trinkets->add_action( "use_item,slot=trinket2,if=variable.trinket_2_buffs&(variable.trinket_priority=2|!variable.trinket_1_buffs|!trinket.1.has_cooldown|variable.trinket_1_buffs&trinket.1.cooldown.remains)&(trinket.2.cast_time>0&trinket.2.cast_time>cooldown.avenging_wrath.remains|trinket.2.cast_time=0&variable.cds_active)" );
+  trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|!variable.trinket_2_buffs)&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains)" );
+  trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|!variable.trinket_1_buffs)&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains)" );
 }
 //protection_apl_end
 }  // namespace paladin_apl
