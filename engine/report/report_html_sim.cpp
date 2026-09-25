@@ -1170,20 +1170,37 @@ void print_profilesets( std::ostream& out, const profileset::profilesets_t& prof
   out << "</div>";
 }
 
+void set_global_locale()
+{
+  // Set global locale to en-US for consistent number formatting
+  for ( const auto& name :
+  {
+    "en_US.UTF-8",
+    "en_US.utf8",
+    "English_United States.65001",
+    "en_US",
+    "en-US",
+    "English_United States.1252",
+    "C"
+  } )
+  {
+    try
+    {
+      std::locale::global( std::locale( name ) );
+      return;
+    }
+    catch ( const std::runtime_error& )
+    { }
+  }
+  std::locale::global( std::locale::classic() );
+}
+
 /* Main function building the html document and calling subfunctions
  */
 void print_html_( report::sc_html_stream& os, sim_t& sim )
 {
-  // Set global locale to en-US for consistent number formatting
-  try
-  {
-    std::locale::global( std::locale( "en_US.UTF-8" ) );
-  }
-  catch ( const std::runtime_error& )
-  {
-    // backup spelling for CI
-    std::locale::global( std::locale( "en_US.utf8" ) );
-  }
+  // Set global locale formatting
+  set_global_locale();
 
   // Set floating point formatting
   os.precision( sim.report_precision );
