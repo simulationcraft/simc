@@ -88,7 +88,7 @@ void protection( player_t* p )
   precombat->add_action( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl" );
   precombat->add_action( "potion,pre_pot_time=8,if=potion.liquid_luster" );
   precombat->add_action( "consecration" );
-  precombat->add_action( "holy_armaments" );
+  precombat->add_action( "holy_armaments,if=next_armament=holy_bulwark" );
 
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=trinkets" );
