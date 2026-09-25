@@ -152,54 +152,6 @@ std::string tokenized_name( const spell_data_t* data )
   effect.player -> passive.add_stat( stat, amount );
 }
 
-// Items ====================================================================
-
-// Blazefury Medallion
-// 243988 Driver
-// 243991 Damage spell
-void item::blazefury_medallion( special_effect_t& effect )
-{
-  struct blazefury_medallion_t : public generic_proc_t
-  {
-    blazefury_medallion_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "blazefury_medallion", effect.driver()->effectN( 1 ).trigger() )
-    {
-    }
-  };
-
-  struct blazefury_medallion_cb_t : public dbc_proc_callback_t
-  {
-    action_t* damage;
-    double base_damage;
-
-    blazefury_medallion_cb_t( const special_effect_t& e, action_t* a ) :
-      dbc_proc_callback_t( e.player, e ),
-      damage( a ),
-      base_damage( e.driver()->effectN( 1 ).trigger()->effectN( 1 ).average( e.item ) )
-    {
-    }
-
-    void execute( const spell_data_t*, player_t* t, action_state_t* s ) override
-    {
-      if ( s->action->result_is_hit( s->result ) )
-      {
-        // Currently only uses MH weapon speed, not the speed of the triggering weapon
-        // Leaving this in a CB handler just in case this changes at some point via hotfix
-        // TOCHECK -- Unclear if this uses equipped weapon speed for Feral or not
-        double speed_mod = ( listener->main_hand_weapon.type == WEAPON_NONE ? 2.0 :
-                             listener->main_hand_weapon.swing_time.total_seconds() );
-        damage->execute_on_target( t, base_damage * speed_mod );
-      }
-    }
-  };
-
-  // if your autoattacks happen to be aoe, this will apply to all targets hit
-  effect.proc_flags2_ = PF2_ALL_HIT;
-
-  auto damage = create_proc_action<blazefury_medallion_t>( "blazefury_medallion", effect );
-  new blazefury_medallion_cb_t( effect, damage );
-}
-
 // Racial
 struct touch_of_the_grave_t : public spell_t
 {
@@ -456,17 +408,18 @@ void generic::enable_all_item_effects( special_effect_t& effect )
     {
       action_t::init();
 
-      for ( auto id : midnight::__mid_special_effect_ids )
-      {
-        if ( auto eff = find_special_effect( player, id, SPECIAL_EFFECT_USE ) )
-        {
-          if ( eff->custom_buff )
-            buff_effects.push_back( eff );
+      // TODO (FOREVER): set up enable all item effects option effect id vector
+      // for ( auto id : midnight::__mid_special_effect_ids )
+      // {
+      //   if ( auto eff = find_special_effect( player, id, SPECIAL_EFFECT_USE ) )
+      //   {
+      //     if ( eff->custom_buff )
+      //       buff_effects.push_back( eff );
 
-          if ( eff->execute_action )
-            action_effects.push_back( eff );
-        }
-      }
+      //     if ( eff->execute_action )
+      //       action_effects.push_back( eff );
+      //   }
+      // }
     }
 
     result_e calculate_result( action_state_t* ) const override
@@ -1809,172 +1762,6 @@ void unique_gear::DISABLED_EFFECT( special_effect_t& effect )
  */
 void unique_gear::register_special_effects()
 {
-  /* Legacy Effects, pre-5.0 */
-  register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */
-  register_special_effect( 45482,  "ProcOn/hit_45480Trigger"            ); /* Shattered Sun Pendant of Might */
-  register_special_effect( 45483,  "ProcOn/hit_45431Trigger"            ); /* Shattered Sun Pendant of Resolve */
-  register_special_effect( 45484,  "ProcOn/hit_45478Trigger"            ); /* Shattered Sun Pendant of Restoration */
-  register_special_effect( 57345,  item::darkmoon_card_greatness        );
-  register_special_effect( 71519,  item::deathbringers_will             );
-  register_special_effect( 71562,  item::deathbringers_will             );
-  register_special_effect( 71892,  item::heartpierce                    );
-  register_special_effect( 71880,  item::heartpierce                    );
-  register_special_effect( 72413,  "10%"                                ); /* ICC Melee Ring */
-  register_special_effect( 96976,  item::matrix_restabilizer            ); /* Matrix Restabilizer */
-  register_special_effect( 107824, "1Tick_108016Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
-  register_special_effect( 109862, "1Tick_109860Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
-  register_special_effect( 109865, "1Tick_109863Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
-  register_special_effect( 107995, item::vial_of_shadows                );
-  register_special_effect( 109725, item::vial_of_shadows                );
-  register_special_effect( 109722, item::vial_of_shadows                );
-  register_special_effect( 108006, item::cunning_of_the_cruel           );
-  register_special_effect( 109799, item::cunning_of_the_cruel           );
-  register_special_effect( 109801, item::cunning_of_the_cruel           );
-  register_special_effect( 243988, item::blazefury_medallion            ); /* Kazzak Neck */
-
-  /* Misc effects */
-  register_special_effect( 188534, item::felmouth_frenzy                );
-
-  /* Warlords of Draenor 6.2 */
-  register_special_effect( 184270, item::mirror_of_the_blademaster      );
-  register_special_effect( 184291, item::soul_capacitor                 );
-  register_special_effect( 183942, item::insatiable_hunger              );
-  register_special_effect( 184066, item::prophecy_of_fear               );
-  register_special_effect( 183951, item::unblinking_gaze_of_sethe       );
-  register_special_effect( 184249, item::discordant_chorus              );
-  register_special_effect( 184257, item::empty_drinking_horn            );
-  register_special_effect( 184767, item::tyrants_decree                 );
-  register_special_effect( 184762, item::warlords_unseeing_eye          );
-  register_special_effect( 201404, item::gronntooth_war_horn            );
-  register_special_effect( 201407, item::infallible_tracking_charm      );
-  register_special_effect( 201409, item::orb_of_voidsight               );
-  register_special_effect( 429257, item::witherbarks_branch             );
-
-  /* Warlords of Draenor 6.0 */
-  register_special_effect( 177085, item::blackiron_micro_crucible       );
-  register_special_effect( 177071, item::humming_blackiron_trigger      );
-  register_special_effect( 177104, item::battering_talisman_trigger     );
-  register_special_effect( 177098, item::forgemasters_insignia          );
-  register_special_effect( 177090, item::autorepairing_autoclave        );
-  register_special_effect( 177171, item::spellbound_runic_band          );
-  register_special_effect( 177163, item::spellbound_solium_band         );
-
-  /* Mists of Pandaria: 5.4 */
-  register_special_effect( 146195, item::flurry_of_xuen                 );
-  register_special_effect( 146197, item::essence_of_yulon               );
-
-  register_special_effect( 146219, "ProcOn/Hit"                         ); /* Yu'lon's Bite */
-  register_special_effect( 146251, "ProcOn/Hit"                         ); /* Thok's Tail Tip (Str proc) */
-
-  register_special_effect( 145955, item::readiness                      );
-  register_special_effect( 146019, item::readiness                      );
-  register_special_effect( 146025, item::readiness                      );
-  register_special_effect( 146051, item::amplification, false, true     );
-  register_special_effect( 146136, item::cleave                         );
-
-  register_special_effect( 146183, item::black_blood_of_yshaarj         );
-  register_special_effect( 146286, item::skeers_bloodsoaked_talisman    );
-  register_special_effect( 146315, item::prismatic_prison_of_pride      );
-  register_special_effect( 146047, item::purified_bindings_of_immerseus );
-  register_special_effect( 146251, item::thoks_tail_tip                 );
-
-  /* Mists of Pandaria: 5.2 */
-  register_special_effect( 139116, item::rune_of_reorigination          );
-  register_special_effect( 138957, item::spark_of_zandalar              );
-  register_special_effect( 138964, item::unerring_vision_of_leishen     );
-
-  register_special_effect( 138728, "Reverse"                            ); /* Steadfast Talisman of the Shado-Pan Assault */
-  register_special_effect( 138701, "ProcOn/Hit"                         ); /* Brutal Talisman of the Shado-Pan Assault */
-  register_special_effect( 138700, "ProcOn/Hit"                         ); /* Vicious Talisman of the Shado-Pan Assault */
-  register_special_effect( 139171, "ProcOn/Crit_RPPMAttackCrit"         ); /* Gaze of the Twins */
-  register_special_effect( 138757, "1Tick_138737Trigger"                ); /* Renataki's Soul Charm */
-  register_special_effect( 138790, "ProcOn/Hit_1Tick_138788Trigger"     ); /* Wushoolay's Final Choice */
-  register_special_effect( 138758, "1Tick_138760Trigger"                ); /* Fabled Feather of Ji-Kun */
-  register_special_effect( 139134, "ProcOn/Crit_RPPMSpellCrit"          ); /* Cha-Ye's Essence of Brilliance */
-
-  register_special_effect( 138865, "ProcOn/Dodge"                       ); /* Delicate Vial of the Sanguinaire */
-
-  /* Mists of Pandaria: 5.0 */
-  register_special_effect( 126650, "ProcOn/Hit"                         ); /* Terror in the Mists */
-  register_special_effect( 126658, "ProcOn/Hit"                         ); /* Darkmist Vortex */
-
-  /* Mists of Pandaria: Dungeon */
-  register_special_effect( 126473, "ProcOn/Hit"                         ); /* Vision of the Predator */
-  register_special_effect( 126516, "ProcOn/Hit"                         ); /* Carbonic Carbuncle */
-  register_special_effect( 126482, "ProcOn/Hit"                         ); /* Windswept Pages */
-  register_special_effect( 126490, "ProcOn/Crit"                        ); /* Searing Words */
-
-  /* Mists of Pandaria: Player versus Player */
-  register_special_effect( 126706, "ProcOn/Hit"                         ); /* Gladiator's Insignia of Dominance */
-
-  /* Mists of Pandaria: Darkmoon Faire */
-  register_special_effect( 128990, "ProcOn/Hit"                         ); /* Relic of Yu'lon */
-  register_special_effect( 128445, "ProcOn/Crit"                        ); /* Relic of Xuen (agi) */
-
-  /* Timewalking */
-  register_special_effect( 96963, item::necromantic_focus               ); // Firelands Timewalking Trinket
-  register_special_effect( 91003, item::sorrowsong                      ); // Lost City of Tol'vir Timewalking Trinket
-
-  /**
-   * Enchants
-   */
-  register_special_effect( { 44797, 55275, 55344 }, enchants::meta_gem_effect, false, true );
-
-  /* The Burning Crusade */
-  register_special_effect(  28093, "1PPM"                               ); /* Mongoose */
-
-  /* Wrath of the Lich King */
-  register_special_effect(  59620, "1PPM"                               ); /* Berserking */
-  register_special_effect(  42976, enchants::executioner                );
-
-  /* Cataclysm */
-  register_special_effect(  94747, enchants::hurricane_spell            );
-  register_special_effect(  74221, "1PPM"                               ); /* Hurricane Weapon */
-  register_special_effect(  74245, "1PPM"                               ); /* Landslide */
-
-  /* Mists of Pandaria */
-  register_special_effect( 118333, enchants::dancing_steel              );
-  register_special_effect( 142531, enchants::dancing_steel              ); /* Bloody Dancing Steel */
-  register_special_effect( 120033, enchants::jade_spirit                );
-  register_special_effect( 141178, enchants::jade_spirit                );
-  register_special_effect( 104561, enchants::windsong                   );
-  register_special_effect( 104428, "rppmhaste"                          ); /* Elemental Force */
-  register_special_effect( 104441, enchants::rivers_song                );
-  register_special_effect( 118314, enchants::colossus                   );
-
-  /* Warlords of Draenor */
-  register_special_effect( 159239, enchants::mark_of_the_shattered_hand );
-  register_special_effect( 159243, enchants::mark_of_the_thunderlord    );
-  register_special_effect( 159682, enchants::mark_of_warsong            );
-  register_special_effect( 159683, enchants::mark_of_the_frostwolf      );
-  register_special_effect( 159685, enchants::mark_of_blackrock          );
-  register_special_effect( 156059, enchants::megawatt_filament          );
-  register_special_effect( 156052, enchants::oglethorpes_missile_splitter );
-  register_special_effect( 173286, enchants::hemets_heartseeker         );
-  register_special_effect( 173321, enchants::mark_of_bleeding_hollow    );
-
-  /* Engineering enchants */
-  register_special_effect( 177708, "1PPM_109092Trigger"                 ); /* Mirror Scope */
-  register_special_effect( 177707, "1PPM_109085Trigger"                 ); /* Lord Blastingtons Scope of Doom */
-  register_special_effect(  95713, "1PPM_95712Trigger"                  ); /* Gnomish XRay */
-  register_special_effect(  99622, "1PPM_99621Trigger"                  ); /* Flintlocks Woodchucker */
-
-  /* Profession perks */
-  register_special_effect( 105574, profession::zen_alchemist_stone      ); /* Zen Alchemist Stone (stat proc) */
-  register_special_effect( 157136, profession::draenor_philosophers_stone ); /* Draenor Philosopher's Stone (stat proc) */
-  register_special_effect(  55004, profession::nitro_boosts             );
-  register_special_effect(  82626, profession::grounded_plasma_shield   );
-
-  /**
-   * Gems
-   */
-
-  // TODO: check why 20% PPM and not 100% from spell data?
-  register_special_effect(  39958, "0.2PPM"                             ); /* Thundering Skyfire */
-  register_special_effect(  55380, "0.2PPM"                             ); /* Thundering Skyflare */
-
-  /* Generic special effects begin here */
-
   /* Racial special effects */
   register_special_effect( 5227,   racial::touch_of_the_grave );
   register_special_effect( 255669, racial::entropic_embrace );
