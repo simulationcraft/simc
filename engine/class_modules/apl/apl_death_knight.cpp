@@ -369,7 +369,7 @@ void unholy( player_t* p )
   cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=pet.army_ghoul.active|buff.forbidden_knowledge.up|buff.dark_transformation.up", "Use<a href = 'https://www.wowhead.com/spell=10060/power-infusion'> Power Infusion</ a> while<a href = 'https://www.wowhead.com/spell=1233448/dark-transformation'> Dark Transformation</ a> is up" );
   cooldowns->add_action( "outbreak,if=(!talent.blightburst|talent.blightburst&(cooldown.putrefy.remains>gcd.max*2|time<5))&(dot.dread_plague.active_dots=0|dot.virulent_plague.active_dots=0)&(fight_remains>gcd.max*2&!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>gcd.max*2)" );
   cooldowns->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(buff.festering_scythe_tt.up|!talent.festering_scythe)" );
-  cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&!buff.blightfall.up&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead)|buff.blightfall.up&(talent.reaping&talent.soul_reaper&debuff.soul_reaper_debuff.up&debuff.soul_reaper_debuff.remains<gcd*2|!talent.soul_reaper&buff.dark_transformation.remains<gcd*2|!talent.reaping&buff.dark_transformation.remains<gcd*2|raid_event.adds.exists&raid_event.adds.remains<3|fight_remains<3)" );
+  cooldowns->add_action( "dark_transformation,if=(variable.st_planning|variable.adds_remain)&!buff.blightfall.up&(pet.army_ghoul.active|cooldown.army_of_the_dead.remains>30|!talent.army_of_the_dead)|buff.blightfall.up&(active_enemies<3&talent.reaping&talent.soul_reaper&debuff.soul_reaper_debuff.up&debuff.soul_reaper_debuff.remains<gcd*2|(!talent.soul_reaper|active_enemies>=3)&(buff.dark_transformation.remains<gcd*2|trinket.1.proc.any_dps.up&trinket.1.proc.any_dps.remains<gcd*2|trinket.2.proc.any_dps.up&trinket.2.proc.any_dps.remains<gcd*2)|!talent.reaping&buff.dark_transformation.remains<gcd*2|raid_event.adds.exists&raid_event.adds.remains<3|fight_remains<3)" );
 
   racials->add_action( "ancestral_call,if=variable.cds_active", "Racials" );
   racials->add_action( "arcane_pulse,if=runic_power<20&rune<2" );
@@ -381,12 +381,12 @@ void unholy( player_t* p )
   racials->add_action( "lights_judgment,if=runic_power<20&rune<2" );
 
   single_target->add_action( "festering_strike,if=talent.festering_scythe&fight_remains>10&(buff.festering_scythe.up&(buff.festering_scythe.remains<=3|buff.festering_scythe_tt.remains<3)|!buff.festering_scythe.up&buff.festering_scythe_tt.remains<3)", "Single Target Rotation" );
+  single_target->add_action( "soul_reaper,target_if=min:health.pct,if=buff.dark_transformation.up&cooldown.dark_transformation.remains<38|target.health.pct<35" );
   single_target->add_action( "scourge_strike,if=buff.vampiric_strike.up&buff.essence_of_the_blood_queen.up&buff.essence_of_the_blood_queen.remains<gcd*3" );
   single_target->add_action( "putrefy,if=buff.dark_transformation.up&runic_power.deficit>10" );
   single_target->add_action( "scourge_strike,if=runic_power.deficit<90&buff.essence_of_the_blood_queen.up&buff.essence_of_the_blood_queen.stack<buff.essence_of_the_blood_queen.max_stack" );
-  single_target->add_action( "death_coil,if=buff.sudden_doom.react" );
-  single_target->add_action( "putrefy,if=buff.dark_transformation.up" );
-  single_target->add_action( "soul_reaper,target_if=min:health.pct,if=pet.lord_of_the_dead.active&pet.lord_of_the_dead.remains<9|buff.dark_transformation.up&buff.dark_transformation.remains<12|target.health.pct<35" );
+  single_target->add_action( "death_coil,if=buff.sudden_doom.react|runic_power.deficit<=10" );
+  single_target->add_action( "putrefy,if=buff.dark_transformation.up&pet." );
   single_target->add_action( "death_coil,if=buff.dark_transformation.up|buff.forbidden_knowledge.up|buff.essence_of_the_blood_queen.remains<5&!buff.vampiric_strike.react" );
   single_target->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1&buff.blighted.up" );
   single_target->add_action( "death_coil,if=cooldown.army_of_the_dead.remains>5|runic_power.deficit<50" );
