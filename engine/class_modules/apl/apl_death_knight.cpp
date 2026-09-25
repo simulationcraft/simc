@@ -386,7 +386,7 @@ void unholy( player_t* p )
   single_target->add_action( "putrefy,if=buff.dark_transformation.up&runic_power.deficit>10" );
   single_target->add_action( "scourge_strike,if=runic_power.deficit<90&buff.essence_of_the_blood_queen.up&buff.essence_of_the_blood_queen.stack<buff.essence_of_the_blood_queen.max_stack" );
   single_target->add_action( "death_coil,if=buff.sudden_doom.react|runic_power.deficit<=10" );
-  single_target->add_action( "putrefy,if=buff.dark_transformation.up&pet." );
+  single_target->add_action( "putrefy,if=buff.dark_transformation.up" );
   single_target->add_action( "death_coil,if=buff.dark_transformation.up|buff.forbidden_knowledge.up|buff.essence_of_the_blood_queen.remains<5&!buff.vampiric_strike.react" );
   single_target->add_action( "scourge_strike,if=buff.lesser_ghoul_ready.stack>=1&buff.blighted.up" );
   single_target->add_action( "death_coil,if=cooldown.army_of_the_dead.remains>5|runic_power.deficit<50" );
