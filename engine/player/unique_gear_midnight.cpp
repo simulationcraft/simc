@@ -631,7 +631,9 @@ void rite_of_the_hashey( special_effect_t& effect )
     {
       // Currently this always triggers a Crit buff on every single trigger. This will have 0 stats on it unless it
       // rolls crit. We can simulate this behaviour by expiring the crit buff with every trigger.
-      rites[ STAT_CRIT_RATING ]->expire();
+      // TODO: Fixed in 12.1.5
+      if ( listener->dbc->wowv() < wowv_t{ 12, 1, 5 } )
+        rites[ STAT_CRIT_RATING ]->expire();
 
       // The enchant favors the highest secondary stat while above 80% health. Instead of tracking
       // health, roll against the configured uptime for how often that condition is met.
