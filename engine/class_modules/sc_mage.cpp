@@ -5257,7 +5257,7 @@ struct arcane_echo_t final : public arcane_mage_spell_t
 
 struct frostfire_empowerment_t final : public spell_t
 {
-   proc_t* freezing_source;
+  proc_t* freezing_source;
   // Counts the excluded main target towards the soft cap.
   double reduced_aoe_targets_2;
 
