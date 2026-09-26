@@ -37,6 +37,7 @@ if (${QT_VERSION_MAJOR} EQUAL 6)
 endif()
 
 sc_common_compiler_options(SimulationCraft)
+sc_enable_lto(SimulationCraft)
 
 target_include_directories(SimulationCraft PUBLIC ../engine/)
 target_link_libraries(SimulationCraft 

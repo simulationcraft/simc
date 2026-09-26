@@ -9,6 +9,7 @@ include(../source_files/cmake_engine.txt)
 add_library(engine ${source_files})
 target_include_directories(engine PUBLIC . ./include ./lib)
 sc_common_compiler_options(engine)
+sc_enable_lto(engine)
 
 # Make cmake selections visible to C++ code
 if(SC_NO_THREADING)
