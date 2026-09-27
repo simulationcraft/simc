@@ -3599,8 +3599,6 @@ void vile_vial_of_volatile_venom( special_effect_t& effect )
 
     void execute() override
     {
-      action_t::execute();
-
       player->rng().range( buffs )->trigger();
     }
   };
