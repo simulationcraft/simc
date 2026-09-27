@@ -3011,7 +3011,9 @@ struct chi_burst_t : monk_spell_t
         add_parse_entry( TBase::da_multiplier_effects )
             .set_buff( player->buff.balanced_stratagem_magic )
             .set_value( effect.percent() )
-            .set_eff( &effect );
+            .set_eff( &effect )
+            .add_parse_callback( this, PARSE_CALLBACK_POST_EXECUTE,
+                                 [ & ]( action_state_t * ) { p()->buff.balanced_stratagem_magic->consume( this ); } );
     }
   };
 
