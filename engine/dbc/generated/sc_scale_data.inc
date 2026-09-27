@@ -1,4 +1,4 @@
-// Hit points per stamina for level 1 - 90, wow build 1.60.1.69913
+// Hit points per stamina for level 1 - 90, wow build 1.60.1.70009
 static constexpr double __hp_per_sta[90] = {
     10,	10,	10,	10,	10,	//    5
     10,	10,	10,	10,	10,	//   10
@@ -20,7 +20,7 @@ static constexpr double __hp_per_sta[90] = {
     10,	10,	10,	10,	10,	//   90
 };
 
-// Spell scaling multipliers for levels 1 - 90, wow build 1.60.1.69913
+// Spell scaling multipliers for levels 1 - 90, wow build 1.60.1.70009
 static constexpr double __spell_scaling[][90] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -422,7 +422,7 @@ static constexpr double __spell_scaling[][90] = {
   },
 };
 
-// Base mana points for levels 1 - 90, wow build 1.60.1.69913
+// Base mana points for levels 1 - 90, wow build 1.60.1.70009
 static constexpr double __base_mp[][90] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -635,7 +635,7 @@ static constexpr double __base_mp[][90] = {
   },
 };
 
-// Combat rating values for level 1 - 90, wow build 1.60.1.69913
+// Combat rating values for level 1 - 90, wow build 1.60.1.70009
 static constexpr double __combat_ratings[][90] = {
   // Dodge
   {
@@ -1143,7 +1143,7 @@ static constexpr double __combat_ratings[][90] = {
   },
 };
 
-// Combat rating multipliers for item level 1 - 1300, wow build 1.60.1.69913
+// Combat rating multipliers for item level 1 - 1300, wow build 1.60.1.70009
 static constexpr double __combat_ratings_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {
@@ -2199,7 +2199,7 @@ static constexpr double __combat_ratings_mult_by_ilvl[][1300] = {
   },
 };
 
-// Item level translation for item level 1 - 1300, wow build 1.60.1.69913
+// Item level translation for item level 1 - 1300, wow build 1.60.1.70009
 static constexpr double __item_level_squish[1300] = {
     1,	1,	2,	2,	2,	//    5
     3,	3,	4,	4,	5,	//   10
@@ -2463,7 +2463,7 @@ static constexpr double __item_level_squish[1300] = {
     951,	952,	953,	954,	955,	// 1300
 };
 
-// Item socket costs for item levels 1 - 1300, wow build 1.60.1.69913
+// Item socket costs for item levels 1 - 1300, wow build 1.60.1.70009
 static constexpr double __item_socket_cost_per_level[1300] = {
     0,	0,	0,	0,	0,	//    5
     0,	0,	0,	0,	0,	//   10
@@ -2667,7 +2667,7 @@ static constexpr double __item_socket_cost_per_level[1300] = {
     8,	8,	8,	8,	8,	// 1000
     };
 
-// Stamina multipliers for item level 1 - 1300, wow build 1.60.1.69913
+// Stamina multipliers for item level 1 - 1300, wow build 1.60.1.70009
 static constexpr double __stamina_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {

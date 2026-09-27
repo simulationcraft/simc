@@ -1,4 +1,4 @@
-// Temporary item enchants, wow build 1.60.1.69913
+// Temporary item enchants, wow build 1.60.1.70009
 static constexpr std::array<temporary_enchant_entry_t, 314> __temporary_enchant_data { {
   {  6749,  0,  402857, "anodyne_epiphany"             },
   {  6749,  0,  402857, "aperitive_epiphany"           },

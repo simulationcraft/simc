@@ -1,4 +1,4 @@
-Class Spell ID List, wow build 1.60.1.69913
+Class Spell ID List, wow build 1.60.1.70009
 
 Druid
 99       Demoralizing Roar
@@ -352,7 +352,7 @@ Druid
 407977   Wild Strikes
 407988   Savage Roar
 407989  *Savage Roar
-407995   Mangle
+407995   Primal Bite
 408024   Survival Instincts
 408025   Survival Instincts
 408120   Wild Growth
@@ -633,9 +633,9 @@ Druid
 1237949  Revive
 1237950  Revive
 1237951  Revive
-1238069  Mangle
-1238070  Mangle
-1238073  Mangle
+1238069  Primal Bite
+1238070  Primal Bite
+1238073  Primal Bite
 1238122  Feral Charge
 1238124 *Feral Charge
 1238214  Wild Growth
@@ -2149,6 +2149,9 @@ Mage
 1312002  Ice Lance
 1312934  Wake of Fire
 1318432 *Fire Blast
+1321337 *DNT
+1321339 *DNT
+1321343 *DNT
 
 Paladin
 465      Devotion Aura
@@ -2694,6 +2697,7 @@ Paladin
 1306687 *Greathelm of the Colossus
 1306749  Steadfast
 1306786 *Libram of the Wild Sky
+1310735  Twist of Light
 1310897 *Voice of Truth
 1310902 *Improved Holy Strike
 1310904 *Divine Precision
@@ -3960,14 +3964,14 @@ Shaman
 8187     Magma Totem
 8190     Magma Totem
 8227     Flametongue Totem
-8230     Flametongue Totem Effect
+8230     Flametongue Totem
 8232     Windfury Weapon
 8233     Windfury Weapon
 8235     Windfury Weapon
 8236     Windfury Weapon
 8248     Flametongue Totem Proc
 8249     Flametongue Totem
-8250     Flametongue Totem Effect
+8250     Flametongue Totem
 8253     Flametongue Totem Proc
 8349     Fire Nova
 8443    *Fire Nova
@@ -4031,7 +4035,7 @@ Shaman
 10495    Mana Spring Totem
 10496    Mana Spring Totem
 10497    Mana Spring Totem
-10521    Flametongue Totem Effect
+10521    Flametongue Totem
 10523    Flametongue Totem Proc
 10526    Flametongue Totem
 10534    Fire Resistance
@@ -4063,7 +4067,7 @@ Shaman
 11307    Fire Nova
 11310   *Fire Nova
 11311   *Fire Nova
-15036    Flametongue Totem Effect
+15036    Flametongue Totem
 15107    Windwall Totem
 15108    Windwall
 15109    Windwall
@@ -5192,6 +5196,7 @@ Warlock
 1311677 *Curse of the Elements
 1311680 *Curse of the Elements
 1316697  Wrack
+1322007 *Summon Voidwalker
 
 Warrior
 71       Defensive Stance
