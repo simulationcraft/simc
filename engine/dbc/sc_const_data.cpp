@@ -5,24 +5,25 @@
 
 #include "dbc.hpp"
 
+#include "class_spells.hpp"
+#include "client_data.hpp"
 #include "data_definitions.hh"
 #include "item_database.hpp"
-#include "client_data.hpp"
-#include "specialization_spell.hpp"
-#include "class_spells.hpp"
 #include "racial_spells.hpp"
+#include "specialization_spell.hpp"
 #include "trait_data.hpp"
+#include "player/player.hpp"
+#include "item/item.hpp"
 
 #include "generated/sc_scale_data.inc"
+#include "generated/sc_spec_list.inc"
 #include "sc_extra_data.inc"
 
 #if SC_USE_PTR
 #include "generated/sc_scale_data_ptr.inc"
+#include "generated/sc_spec_list_ptr.inc"
 #include "sc_extra_data_ptr.inc"
 #endif
-
-#include "player/player.hpp"
-#include "item/item.hpp"
 
 namespace { // ANONYMOUS namespace ==========================================
 

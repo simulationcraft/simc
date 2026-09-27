@@ -1,0 +1,15 @@
+#define MAX_SPECS_PER_CLASS (2)
+#define MAX_SPEC_CLASS  (9)
+
+static constexpr specialization_e __class_spec_id[MAX_SPEC_CLASS][MAX_SPECS_PER_CLASS] =
+{
+  { SPEC_MAGE, SPEC_NONE },
+  { SPEC_DRUID, SPEC_NONE },
+  { SPEC_HUNTER, SPEC_NONE },
+  { SPEC_PALADIN, SPEC_NONE },
+  { SPEC_PRIEST, SPEC_NONE },
+  { SPEC_ROGUE, SPEC_NONE },
+  { SPEC_SHAMAN, SPEC_NONE },
+  { SPEC_WARLOCK, SPEC_NONE },
+  { SPEC_WARRIOR, SPEC_NONE },
+};
