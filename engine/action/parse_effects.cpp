@@ -535,7 +535,7 @@ void modified_spell_data_t::parse_effect( const pack_t<modify_effect_t>& pack, s
   }
   else
   {
-    apply_affecting_mods( pack, val, m, i );
+    apply_affecting_mods( pack, val, i );
     val *= val_mul;
   }
 

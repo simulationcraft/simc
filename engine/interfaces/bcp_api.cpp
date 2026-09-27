@@ -608,6 +608,8 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
         item.parsed.crafted_stat_mod.push_back( stat_data[ "id" ].GetInt() );
       }
     }
+  }
+}
 
 void parse_media( player_t*            p,
                   const player_spec_t& spec,

@@ -1932,10 +1932,6 @@ player_e util::pet_class_type( pet_e type )
   {
     p = WARRIOR;
   }
-  else if ( type == PET_GHOUL )
-  {
-    p = ROGUE;
-  }
   else if ( type == PET_FELGUARD )
   {
     p = WARRIOR;

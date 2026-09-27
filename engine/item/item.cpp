@@ -1531,7 +1531,6 @@ void item_t::init()
   decode_use_effect();
   decode_enchant();
   decode_addon();
-  decode_embellishment();
 
   if ( ! option_name_str.empty() && ( option_name_str != name_str ) )
   {
@@ -2038,36 +2037,6 @@ void item_t::decode_weapon()
     w -> max_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
     w -> min_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
   }
-}
-
-// item_t::decode_embellishment =============================================
-
-void item_t::decode_embellishment()
-{
-  if ( option_embellishment_str.empty() || option_embellishment_str == "none" )
-    return;
-
-  const auto& emb = embellishment_data_t::find( option_embellishment_str, is_ptr, true );
-  if ( emb.bonus_id == 0 )
-  {
-    player->sim->error( "Player {} item '{}' unknown embellishment '{}', ignoring",
-                        player->name(), name(), option_embellishment_str );
-    return;
-  }
-
-  const auto& effect = item_effect_t::find( emb.effect_id, is_ptr );
-  if ( effect.id == 0 )
-  {
-    player->sim->error( "Player {} item '{}' embellishment {} has no effect, ignoring",
-                        player->name(), name(), emb.name );
-    return;
-  }
-
-  parsed.data.add_effect( effect );
-
-  player->sim->print_debug( "Player {} item '{}' adding embellishment {}", player->name(), name(), emb.name );
-
-  return;
 }
 
 // item_t::decode_data_source ===============================================

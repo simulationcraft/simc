@@ -1903,11 +1903,6 @@ void player_t::init_items()
         items[ slot ].options_str = fmt::format( ",id={},ilevel={}", equipment.id_item,
                                                  character_loadout_data_t::default_item_level( is_ptr() ) );
       }
-
-      // TODO: temporary hack since fury only gets a single weapon
-      if ( specialization() == WARRIOR_FURY && items[ SLOT_OFF_HAND ].options_str.empty() )
-        items[ SLOT_OFF_HAND ].options_str = items[ SLOT_MAIN_HAND ].options_str;
-
     }
 
     // Legendary Shadoweave Shirt used as base item for enable_all_item_effects
@@ -2135,16 +2130,17 @@ void player_t::create_special_effects()
 
   if ( sim->enable_all_item_effects )
   {
-    for ( auto id : unique_gear::midnight::__mid_special_effect_ids )
-    {
-      if ( unique_gear::find_special_effect( this, id ) )
-        continue;
+    // TODO (FOREVER): set up enable all set bonuses option set vector
+    // for ( auto id : unique_gear::midnight::__mid_special_effect_ids )
+    // {
+    //   if ( unique_gear::find_special_effect( this, id ) )
+    //     continue;
 
-      special_effect_t effect( &items[ SLOT_SHIRT ] );
-      unique_gear::initialize_special_effect( effect, id );
+    //   special_effect_t effect( &items[ SLOT_SHIRT ] );
+    //   unique_gear::initialize_special_effect( effect, id );
 
-      special_effects.push_back( new special_effect_t( effect ) );
-    }
+    //   special_effects.push_back( new special_effect_t( effect ) );
+    // }
   }
 
   unique_gear::initialize_racial_effects( this );
@@ -8196,19 +8192,20 @@ struct arcane_torrent_t : public racial_spell_t
     target = p;
 
     // Some specs need special handling here
-    switch ( p->specialization() )
-    {
-      case MAGE_FROST:
-      case MAGE_FIRE:
-      case MAGE_ARCANE:
-      case WARLOCK_AFFLICTION:
-      case WARLOCK_DEMONOLOGY:
-      case WARLOCK_DESTRUCTION:
-        gain_pct = data().effectN( 2 ).percent();
-        break;
-      default:
-        break;
-    }
+    // TODO (forever): check if special handling of resource gain is still required
+    // switch ( p->specialization() )
+    // {
+    //   case MAGE_FROST:
+    //   case MAGE_FIRE:
+    //   case MAGE_ARCANE:
+    //   case WARLOCK_AFFLICTION:
+    //   case WARLOCK_DEMONOLOGY:
+    //   case WARLOCK_DESTRUCTION:
+    //     gain_pct = data().effectN( 2 ).percent();
+    //     break;
+    //   default:
+    //     break;
+    // }
   }
 
   void execute() override

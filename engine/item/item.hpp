@@ -226,8 +226,6 @@ struct item_t
   void decode_data_source();
   void decode_equip_effect();
   void decode_use_effect();
-  void decode_embellishment();
-
 
   bool verify_slot();
 
