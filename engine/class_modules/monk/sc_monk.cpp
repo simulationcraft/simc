@@ -4760,6 +4760,8 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
     purified_spirit = new spender_t::purified_spirit_t<actions::monk_spell_t>(
         player, player->talent.master_of_harmony.purified_spirit_damage, this );
     damage->add_child( purified_spirit );
+
+    spender->set_expire_callback( [ & ]( buff_t *, int, timespan_t ) { purified_spirit->execute(); } );
   }
 }
 
@@ -4888,12 +4890,6 @@ aspect_of_harmony_t::spender_t::spender_t( monk_t *player, aspect_of_harmony_t *
     pool( 0.0 )
 {
   set_default_value( 0.0 );
-
-  if ( aspect_of_harmony->purified_spirit )
-    set_stack_change_callback( [ = ]( buff_t *, int, int new_ ) {
-      if ( !new_ )
-        aspect_of_harmony->purified_spirit->execute();
-    } );
 }
 
 void aspect_of_harmony_t::spender_t::reset()
