@@ -31,7 +31,7 @@ struct priest_module_t final : public module_t
 
   void register_hotfixes() const override {}
 
-  void register_actor_initializers( sim_t* sim ) const override {}
+  void register_actor_initializers( sim_t* ) const override {}
 };
 
 }  // namespace priestspace

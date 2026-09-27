@@ -39,7 +39,7 @@ struct paladin_module_t : public module_t
     return true;
   }
 
-  void register_actor_initializers( sim_t* sim ) const override {}
+  void register_actor_initializers( sim_t* ) const override {}
 
   void register_hotfixes() const override {}
 };

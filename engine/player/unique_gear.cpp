@@ -102,19 +102,6 @@ struct select_attr
   }
 };
 
-std::string suffix( const item_t* item )
-{
-  assert( item );
-  if ( item -> slot == SLOT_OFF_HAND )
-    return "_oh";
-  return "";
-}
-
-std::string tokenized_name( const spell_data_t* data )
-{
-  return util::tokenize_fn( data -> name_cstr() );
-}
-
 // Enchants ================================================================
 
 // Profession perks =========================================================
@@ -1780,18 +1767,20 @@ void unique_gear::unregister_special_effects()
 
   for ( auto& dbitem : __passive_effect_db )
     delete dbitem.cb_obj;
-  }
+}
 
-action_t* unique_gear::create_action( player_t* player, util::string_view name, util::string_view options )
+action_t* unique_gear::create_action( player_t*, util::string_view, util::string_view )
 {
   return nullptr;
 }
 
-void unique_gear::register_hotfixes() {}
+void unique_gear::register_hotfixes()
+{
+}
 
-void unique_gear::register_target_data_initializers( sim_t* sim ) {}
+void unique_gear::register_target_data_initializers( sim_t* ) {}
 
-void unique_gear::register_actor_initializers( sim_t& sim ) {}
+void unique_gear::register_actor_initializers( sim_t& ) {}
 
 std::vector<special_effect_t*> unique_gear::find_special_effects( player_t* p, unsigned id, special_effect_e type )
 {

@@ -4841,7 +4841,7 @@ double player_t::composite_versus_multiplier( player_t* t ) const
   return m;
 }
 
-double player_t::composite_player_target_multiplier( player_t* t, school_e /* school */ ) const
+double player_t::composite_player_target_multiplier( player_t* /* target */, school_e /* school */ ) const
 {
   return 1.0;
 }
@@ -4886,7 +4886,7 @@ double player_t::composite_player_absorb_received_multiplier() const
   return current.absorb_received_multiplier;
 }
 
-double player_t::composite_player_target_crit_chance( player_t* t ) const
+double player_t::composite_player_target_crit_chance( player_t* /* target */ ) const
 {
   return 0.0;
 }
@@ -5073,7 +5073,7 @@ double player_t::composite_rating( rating_e rating ) const
   return util::round( v * composite_rating_multiplier( rating ), 0 );
 }
 
-double player_t::composite_player_vulnerability( school_e school ) const
+double player_t::composite_player_vulnerability( school_e ) const
 {
   double m = debuffs.invulnerable && debuffs.invulnerable->check() ? 0.0 : 1.0;
 
