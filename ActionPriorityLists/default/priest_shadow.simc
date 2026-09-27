@@ -59,6 +59,8 @@ actions.main=variable,name=dots_up,op=set,value=active_dot.vampiric_touch=active
 actions.main+=/call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_tentacle_slam|active_enemies>2)&variable.dots_up
 # High Priority Shadow Word: Death when Devour Matter is active (target shielded or forced)
 actions.main+=/shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.shadow_word_madness.ticking,if=(priest.force_devour_matter|target.has_absorb)&talent.devour_matter
+actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=!dot.vampiric_touch.ticking&target.time_to_die>=10&active_dot.vampiric_touch<5
+actions.main+=/vampiric_touch,target_if=min:dot.vampiric_touch.remains,if=!dot.vampiric_touch.ticking&target.time_to_die>=10&active_dot.vampiric_touch<5
 actions.main+=/shadow_word_madness,target_if=max:target.time_to_die*(dot.shadow_word_madness.remains<=gcd.max*2|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.shadow_word_madness<=1&dot.shadow_word_madness.remains<=gcd.max|insanity.deficit<=35&(cooldown.voidform.remains>25|target.time_to_die<25|active_enemies>1|insanity.deficit<=5)|buff.mind_devourer.react|!raid_event.adds.exists&target.time_to_die<=10|buff.entropic_rift.up&(cooldown.voidform.remains>=75|!talent.ancient_madness)|buff.voidform.up
 actions.main+=/tentacle_slam,target_if=min:dot.vampiric_touch.remains,if=dot.vampiric_touch.refreshable&(!in_flight|active_dot.vampiric_touch+6<active_enemies)|cooldown.tentacle_slam.full_recharge_time<=gcd.max*2
 # Use Void Torrent if it will get near full Mastery Value
