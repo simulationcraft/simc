@@ -1,8 +1,12 @@
 #include "class_spells.hpp"
 
 #include "config.hpp"
-
 #include "util/util.hpp"
+
+#include "generated/class_spells.inc"
+#if SC_USE_PTR == 1
+#include "generated/class_spells_ptr.inc"
+#endif
 
 #include <array>
 

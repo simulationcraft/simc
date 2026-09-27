@@ -32,6 +32,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\class_modules\apl\warrior.hpp" />
 		<ClInclude Include="..\engine\class_modules\class_module.hpp" />
 		<ClInclude Include="..\engine\config.hpp" />
+		<ClInclude Include="..\engine\dbc\character_loadout.hpp" />
 		<ClInclude Include="..\engine\dbc\class_spells.hpp" />
 		<ClInclude Include="..\engine\dbc\client_data.hpp" />
 		<ClInclude Include="..\engine\dbc\client_hotfix_entry.hpp" />
@@ -213,6 +214,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\class_modules\sc_shaman.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_warlock.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_warrior.cpp" />
+		<ClCompile Include="..\engine\dbc\character_loadout.cpp" />
 		<ClCompile Include="..\engine\dbc\class_spells.cpp" />
 		<ClCompile Include="..\engine\dbc\client_data.cpp" />
 		<ClCompile Include="..\engine\dbc\client_hotfix_entry.cpp" />

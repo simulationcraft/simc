@@ -26,6 +26,7 @@ class_modules/apl/warlock.hpp
 class_modules/apl/warrior.hpp
 class_modules/class_module.hpp
 config.hpp
+dbc/character_loadout.hpp
 dbc/class_spells.hpp
 dbc/client_data.hpp
 dbc/client_hotfix_entry.hpp
@@ -207,6 +208,7 @@ class_modules/sc_rogue.cpp
 class_modules/sc_shaman.cpp
 class_modules/sc_warlock.cpp
 class_modules/sc_warrior.cpp
+dbc/character_loadout.cpp
 dbc/class_spells.cpp
 dbc/client_data.cpp
 dbc/client_hotfix_entry.cpp
