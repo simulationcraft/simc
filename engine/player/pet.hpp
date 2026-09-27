@@ -89,7 +89,6 @@ public:
   const spell_data_t* find_pet_spell( util::string_view name );
 
   double composite_attribute( attribute_e attr ) const override;
-  double composite_player_target_multiplier( player_t*, school_e ) const override;
 
   // new pet scaling by Ghostcrawler, see http://us.battle.net/wow/en/forum/topic/5889309137?page=49#977
   // http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143
@@ -149,9 +148,9 @@ public:
   timespan_t composite_active_time() const override;
 
   void acquire_target( retarget_source /* event */, player_t* /* context */ = nullptr ) override;
-  
+
   void arise() override;
   void demise() override;
-  
+
   friend void sc_format_to( const pet_t&, fmt::format_context::iterator );
 };
